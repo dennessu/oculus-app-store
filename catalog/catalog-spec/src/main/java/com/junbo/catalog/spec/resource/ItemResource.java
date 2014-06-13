@@ -8,7 +8,6 @@ package com.junbo.catalog.spec.resource;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemsGetOptions;
 import com.junbo.common.filter.annotations.CacheMaxAge;
-import com.junbo.common.id.ItemId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -39,7 +38,7 @@ public interface ItemResource {
     @ApiOperation("Get an item")
     @GET
     @Path("/{itemId}")
-    Promise<Item> getItem(@PathParam("itemId") ItemId itemId);
+    Promise<Item> getItem(@PathParam("itemId") String itemId);
 
     @ApiOperation("Create an item")
     @POST
@@ -49,11 +48,11 @@ public interface ItemResource {
     @ApiOperation("Put an item")
     @PUT
     @Path("/{itemId}")
-    Promise<Item> update(@PathParam("itemId") ItemId itemId, Item item);
+    Promise<Item> update(@PathParam("itemId") String itemId, Item item);
 
     @ApiOperation("Delete an item")
     @DELETE
     @Path("/{itemId}")
-    Promise<Response> delete(@PathParam("itemId") ItemId itemId);
+    Promise<Response> delete(@PathParam("itemId") String itemId);
 }
 

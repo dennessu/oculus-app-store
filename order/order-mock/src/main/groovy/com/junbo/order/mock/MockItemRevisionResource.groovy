@@ -31,7 +31,7 @@ class MockItemRevisionResource extends BaseMock implements ItemRevisionResource 
     }
 
     @Override
-    Promise<ItemRevision> getItemRevision(@PathParam('revisionId') ItemRevisionId revisionId) {
+    Promise<ItemRevision> getItemRevision(@PathParam('revisionId') String revisionId) {
         return Promise.pure(generateItemRevision())
     }
 
@@ -42,12 +42,12 @@ class MockItemRevisionResource extends BaseMock implements ItemRevisionResource 
 
     @Override
     Promise<ItemRevision> updateItemRevision(
-            @PathParam('revisionId') ItemRevisionId revisionId, ItemRevision offerRevision) {
+            @PathParam('revisionId') String revisionId, ItemRevision offerRevision) {
         return null
     }
 
     @Override
-    Promise<Response> delete(@PathParam("revisionId") ItemRevisionId revisionId) {
+    Promise<Response> delete(@PathParam("revisionId") String revisionId) {
         return Promise.pure(null)
     }
 

@@ -17,23 +17,23 @@ import java.util.Set;
  */
 public class OffersGetOptions extends PageableGetOptions {
     @QueryParam("offerId")
-    private Set<OfferId> offerIds;
+    private Set<String> offerIds;
     @QueryParam("published")
     private Boolean published;
     @QueryParam("categoryId")
-    private OfferAttributeId category;
+    private String category;
     @QueryParam("itemId")
-    private ItemId itemId;
+    private String itemId;
     @QueryParam("ownerId")
     private OrganizationId ownerId;
     @QueryParam("q")
     private String query;
 
-    public Set<OfferId> getOfferIds() {
+    public Set<String> getOfferIds() {
         return offerIds;
     }
 
-    public void setOfferIds(Set<OfferId> offerIds) {
+    public void setOfferIds(Set<String> offerIds) {
         this.offerIds = offerIds;
     }
 
@@ -45,19 +45,19 @@ public class OffersGetOptions extends PageableGetOptions {
         this.published = published;
     }
 
-    public OfferAttributeId getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(OfferAttributeId category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 
-    public ItemId getItemId() {
+    public String getItemId() {
         return itemId;
     }
 
-    public void setItemId(ItemId itemId) {
+    public void setItemId(String itemId) {
         this.itemId = itemId;
     }
 

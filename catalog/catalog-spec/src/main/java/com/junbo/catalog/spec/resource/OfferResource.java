@@ -9,7 +9,6 @@ package com.junbo.catalog.spec.resource;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OffersGetOptions;
 import com.junbo.common.filter.annotations.CacheMaxAge;
-import com.junbo.common.id.OfferId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -40,7 +39,7 @@ public interface OfferResource {
     @ApiOperation("Get an offer")
     @GET
     @Path("/{offerId}")
-    Promise<Offer> getOffer(@PathParam("offerId") OfferId offerId);
+    Promise<Offer> getOffer(@PathParam("offerId") String offerId);
 
     @ApiOperation("Create an offer")
     @POST
@@ -50,10 +49,10 @@ public interface OfferResource {
     @ApiOperation("Put an offer")
     @PUT
     @Path("/{offerId}")
-    Promise<Offer> update(@PathParam("offerId") OfferId offerId, Offer offer);
+    Promise<Offer> update(@PathParam("offerId") String offerId, Offer offer);
 
     @ApiOperation("Delete an offer")
     @DELETE
     @Path("/{offerId}")
-    Promise<Response> delete(@PathParam("offerId") OfferId offerId);
+    Promise<Response> delete(@PathParam("offerId") String offerId);
 }

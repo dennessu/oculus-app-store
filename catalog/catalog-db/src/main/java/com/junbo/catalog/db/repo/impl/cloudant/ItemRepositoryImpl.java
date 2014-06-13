@@ -12,7 +12,6 @@ import com.junbo.catalog.spec.model.item.ItemsGetOptions;
 import com.junbo.common.cloudant.CloudantClient;
 import com.junbo.common.cloudant.model.CloudantSearchResult;
 import com.junbo.common.cloudant.model.CloudantViews;
-import com.junbo.common.id.ItemId;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -39,14 +38,14 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
     public List<Item> getItems(ItemsGetOptions options) {
         List<Item> items = new ArrayList<>();
         if (!CollectionUtils.isEmpty(options.getItemIds())) {
-            for (ItemId itemId : options.getItemIds()) {
-                Item item = cloudantGet(itemId.toString()).get();
+            for (String itemId : options.getItemIds()) {
+                Item item = cloudantGet(itemId).get();
                 if (item == null) {
                     continue;
                 }else if (!StringUtils.isEmpty(options.getType()) && !options.getType().equals(item.getType())) {
                     continue;
-                } else if (options.getGenre() != null
-                        &&(item.getGenres()==null || !item.getGenres().contains(options.getGenre().getValue()))) {
+                } else if (!StringUtils.isEmpty(options.getGenre())
+                        &&(item.getGenres()==null || !item.getGenres().contains(options.getGenre()))) {
                     continue;
                 } else if (options.getOwnerId() != null
                         && !options.getOwnerId().equals(item.getOwnerId())) {
@@ -67,7 +66,7 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
                 || options.getHostItemId() != null) {
             StringBuilder sb = new StringBuilder();
             if (options.getGenre() != null) {
-                sb.append("genreId:'").append(options.getGenre().getValue()).append("'");
+                sb.append("genreId:'").append(options.getGenre()).append("'");
             }
             if (!StringUtils.isEmpty(options.getType())) {
                 if (sb.length() > 0) {

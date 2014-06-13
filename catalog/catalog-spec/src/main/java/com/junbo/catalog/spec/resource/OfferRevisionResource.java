@@ -9,7 +9,6 @@ package com.junbo.catalog.spec.resource;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
 import com.junbo.common.filter.annotations.CacheMaxAge;
-import com.junbo.common.id.OfferRevisionId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -40,7 +39,7 @@ public interface OfferRevisionResource {
     @ApiOperation("Get an offer revision")
     @GET
     @Path("/{revisionId}")
-    Promise<OfferRevision> getOfferRevision(@PathParam("revisionId") OfferRevisionId revisionId);
+    Promise<OfferRevision> getOfferRevision(@PathParam("revisionId") String revisionId);
 
     @ApiOperation("Create an offer revision")
     @POST
@@ -50,11 +49,11 @@ public interface OfferRevisionResource {
     @ApiOperation("Put an offer revision")
     @PUT
     @Path("/{revisionId}")
-    Promise<OfferRevision> updateOfferRevision(@PathParam("revisionId") OfferRevisionId revisionId,
+    Promise<OfferRevision> updateOfferRevision(@PathParam("revisionId") String revisionId,
                                                OfferRevision offerRevision);
 
     @ApiOperation("Delete an item revision")
     @DELETE
     @Path("/{revisionId}")
-    Promise<Response> delete(@PathParam("revisionId") OfferRevisionId revisionId);
+    Promise<Response> delete(@PathParam("revisionId") String revisionId);
 }

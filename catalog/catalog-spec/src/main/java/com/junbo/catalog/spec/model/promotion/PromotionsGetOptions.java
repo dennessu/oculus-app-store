@@ -7,7 +7,6 @@
 package com.junbo.catalog.spec.model.promotion;
 
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
-import com.junbo.common.id.PromotionId;
 
 import javax.ws.rs.QueryParam;
 import java.util.List;
@@ -17,13 +16,13 @@ import java.util.List;
  */
 public class PromotionsGetOptions extends PageableGetOptions {
     @QueryParam("id")
-    private List<PromotionId> promotionIds;
+    private List<String> promotionIds;
 
-    public List<PromotionId> getPromotionIds() {
+    public List<String> getPromotionIds() {
         return promotionIds;
     }
 
-    public void setPromotionIds(List<PromotionId> promotionIds) {
+    public void setPromotionIds(List<String> promotionIds) {
         this.promotionIds = promotionIds;
     }
 }

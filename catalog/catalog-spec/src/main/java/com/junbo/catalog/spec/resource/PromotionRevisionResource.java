@@ -8,7 +8,6 @@ package com.junbo.catalog.spec.resource;
 
 import com.junbo.catalog.spec.model.promotion.PromotionRevision;
 import com.junbo.catalog.spec.model.promotion.PromotionRevisionsGetOptions;
-import com.junbo.common.id.PromotionRevisionId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -33,7 +32,7 @@ public interface PromotionRevisionResource {
     //@ApiOperation("Get an promotion revision")
     @GET
     @Path("/{revisionId}")
-    Promise<PromotionRevision> getPromotionRevision(@PathParam("revisionId") PromotionRevisionId revisionId);
+    Promise<PromotionRevision> getPromotionRevision(@PathParam("revisionId") String revisionId);
 
     //@ApiOperation("Create an promotion revision")
     @POST
@@ -43,6 +42,6 @@ public interface PromotionRevisionResource {
     //@ApiOperation("Put an promotion revision")
     @PUT
     @Path("/{revisionId}")
-    Promise<PromotionRevision> updatePromotionRevision(@PathParam("revisionId") PromotionRevisionId revisionId,
+    Promise<PromotionRevision> updatePromotionRevision(@PathParam("revisionId") String revisionId,
                                                PromotionRevision promotionRevision);
 }

@@ -24,9 +24,9 @@ class MockItemResource implements ItemResource {
     }
 
     @Override
-    Promise<Item> getItem(ItemId itemId) {
+    Promise<Item> getItem(String itemId) {
         def item = new Item(
-                itemId: itemId.value,
+                itemId: itemId,
                 type: 'DIGITAL'
         )
 
@@ -39,11 +39,11 @@ class MockItemResource implements ItemResource {
     }
 
     @Override
-    Promise<Item> update(ItemId itemId, Item item) {
+    Promise<Item> update(String itemId, Item item) {
         return null
     }
 
-    Promise<Response> delete(ItemId itemId) {
+    Promise<Response> delete(String itemId) {
         return null
     }
 }

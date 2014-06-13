@@ -10,7 +10,6 @@ import com.junbo.catalog.core.ItemAttributeService;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.attribute.ItemAttributesGetOptions;
 import com.junbo.catalog.spec.resource.ItemAttributeResource;
-import com.junbo.common.id.ItemAttributeId;
 import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
@@ -32,8 +31,8 @@ public class ItemAttributeResourceImpl implements ItemAttributeResource {
     private ItemAttributeService attributeService;
 
     @Override
-    public Promise<ItemAttribute> getAttribute(ItemAttributeId attributeId) {
-        return Promise.pure(attributeService.getAttribute(attributeId.getValue()));
+    public Promise<ItemAttribute> getAttribute(String attributeId) {
+        return Promise.pure(attributeService.getAttribute(attributeId));
     }
 
     @Override
@@ -72,13 +71,13 @@ public class ItemAttributeResourceImpl implements ItemAttributeResource {
     }
 
     @Override
-    public Promise<ItemAttribute> update(ItemAttributeId attributeId, ItemAttribute attribute) {
-        return Promise.pure(attributeService.update(attributeId.getValue(), attribute));
+    public Promise<ItemAttribute> update(String attributeId, ItemAttribute attribute) {
+        return Promise.pure(attributeService.update(attributeId, attribute));
     }
 
     @Override
-    public Promise<Response> delete(ItemAttributeId attributeId) {
-        attributeService.deleteAttribute(attributeId.getValue());
+    public Promise<Response> delete(String attributeId) {
+        attributeService.deleteAttribute(attributeId);
         return Promise.pure(Response.status(204).build());
     }
 }

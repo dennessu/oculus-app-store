@@ -11,9 +11,6 @@ import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.resource.ItemResource;
 import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
-import com.junbo.common.id.ItemId;
-import com.junbo.common.id.OfferId;
-import com.junbo.common.id.OfferRevisionId;
 import com.junbo.subscription.clientproxy.CatalogGateway;
 
 import com.junbo.subscription.common.exception.ResourceNotFoundException;
@@ -62,7 +59,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
         try {
             // TODO
             com.junbo.catalog.spec.model.offer.Offer offer =
-                    offerResource.getOffer(new OfferId(offerId)).get();
+                    offerResource.getOffer(offerId).get();
 
             if (offer == null) {
                 throw new ResourceNotFoundException(
@@ -79,7 +76,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
         try {
             // TODO
             OfferRevision offerRev =
-                    offerRevResource.getOfferRevision(new OfferRevisionId(offerRevId)).get();
+                    offerRevResource.getOfferRevision(offerRevId).get();
 
             if (offerRev == null) {
                 throw new ResourceNotFoundException(
@@ -96,7 +93,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
         try {
             // TODO
             Item item =
-                    itemResource.getItem(new ItemId(itemId)).get();
+                    itemResource.getItem(itemId).get();
 
             if (item == null) {
                 throw new ResourceNotFoundException(

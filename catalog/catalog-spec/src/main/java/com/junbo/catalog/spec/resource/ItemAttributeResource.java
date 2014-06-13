@@ -9,7 +9,6 @@ package com.junbo.catalog.spec.resource;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.attribute.ItemAttributesGetOptions;
 import com.junbo.common.filter.annotations.CacheMaxAge;
-import com.junbo.common.id.ItemAttributeId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -34,7 +33,7 @@ public interface ItemAttributeResource {
     @ApiOperation("Get an item attribute")
     @GET
     @Path("/{attributeId}")
-    Promise<ItemAttribute> getAttribute(@PathParam("attributeId") ItemAttributeId attributeId);
+    Promise<ItemAttribute> getAttribute(@PathParam("attributeId") String attributeId);
 
     @CacheMaxAge(duration = 30, unit = TimeUnit.MINUTES)
     @ApiOperation("Get all item attributes")
@@ -50,10 +49,10 @@ public interface ItemAttributeResource {
     @ApiOperation("Put an item attribute")
     @PUT
     @Path("/{attributeId}")
-    Promise<ItemAttribute> update(@PathParam("attributeId") ItemAttributeId attributeId, ItemAttribute attribute);
+    Promise<ItemAttribute> update(@PathParam("attributeId") String attributeId, ItemAttribute attribute);
 
     @ApiOperation("Delete an item attribute")
     @DELETE
     @Path("/{attributeId}")
-    Promise<Response> delete(@PathParam("attributeId") ItemAttributeId attributeId);
+    Promise<Response> delete(@PathParam("attributeId") String attributeId);
 }

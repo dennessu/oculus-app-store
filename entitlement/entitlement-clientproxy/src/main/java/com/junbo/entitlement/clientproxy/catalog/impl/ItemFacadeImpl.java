@@ -11,7 +11,6 @@ import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
 import com.junbo.catalog.spec.model.item.ItemsGetOptions;
 import com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy;
 import com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy;
-import com.junbo.common.id.ItemId;
 import com.junbo.common.model.Results;
 import com.junbo.entitlement.clientproxy.catalog.ItemFacade;
 import org.slf4j.Logger;
@@ -38,7 +37,7 @@ public class ItemFacadeImpl implements ItemFacade {
         Date now = new Date();
         ItemRevision itemRevision = null;
         ItemRevisionsGetOptions options = new ItemRevisionsGetOptions();
-        options.setItemIds(Collections.singleton(new ItemId(itemId)));
+        options.setItemIds(Collections.singleton(itemId));
         options.setTimestamp(now.getTime());
         try {
             LOGGER.info("Getting itemRevisions for item [{}] started.", itemId);
@@ -59,7 +58,7 @@ public class ItemFacadeImpl implements ItemFacade {
     public Set<String> getItemIdsByHostItemId(String hostItemId) {
         List<Item> items = new LinkedList<>();
         ItemsGetOptions options = new ItemsGetOptions();
-        options.setHostItemId(new ItemId(hostItemId));
+        options.setHostItemId(hostItemId);
         options.setSize(20000);  //TODO: temp work around
         options.setStart(0);
         try {

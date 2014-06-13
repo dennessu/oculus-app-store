@@ -11,8 +11,6 @@ import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
 import com.junbo.common.cloudant.CloudantClient;
 import com.junbo.common.cloudant.model.CloudantViews;
-import com.junbo.common.id.OfferId;
-import com.junbo.common.id.OfferRevisionId;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -40,7 +38,7 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
     public List<OfferRevision> getRevisions(OfferRevisionsGetOptions options) {
         List<OfferRevision> offerRevisions = new ArrayList<>();
         if (!CollectionUtils.isEmpty(options.getRevisionIds())) {
-            for (OfferRevisionId revisionId : options.getRevisionIds()) {
+            for (String revisionId : options.getRevisionIds()) {
                 OfferRevision revision = super.cloudantGet(revisionId.toString()).get();
                 if (revision==null) {
                     continue;
@@ -52,7 +50,7 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
                 }
             }
         } else if (!CollectionUtils.isEmpty(options.getOfferIds())) {
-            for (OfferId offerId : options.getOfferIds()) {
+            for (String offerId : options.getOfferIds()) {
                 List<OfferRevision> revisions = super.queryView("by_offerId", offerId.toString()).get();
                 if (!StringUtils.isEmpty(options.getStatus())) {
                     Iterator<OfferRevision> iterator = revisions.iterator();

@@ -11,7 +11,6 @@ import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions;
 import com.junbo.common.cloudant.CloudantClient;
 import com.junbo.common.cloudant.model.CloudantViews;
-import com.junbo.common.id.OfferAttributeId;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -36,7 +35,7 @@ public class OfferAttributeRepositoryImpl  extends CloudantClient<OfferAttribute
     public List<OfferAttribute> getAttributes(OfferAttributesGetOptions options) {
         if (!CollectionUtils.isEmpty(options.getAttributeIds())) {
             List<OfferAttribute> attributes = new ArrayList<>();
-            for (OfferAttributeId attributeId : options.getAttributeIds()) {
+            for (String attributeId : options.getAttributeIds()) {
                 OfferAttribute attribute = super.cloudantGet(attributeId.toString()).get();
                 if (attribute != null) {
                     attributes.add(attribute);

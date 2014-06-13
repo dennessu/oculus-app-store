@@ -66,7 +66,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
     @Override
     public Item getItem(String itemId) {
         try {
-            return itemResource.getItem(new ItemId(itemId)).get();
+            return itemResource.getItem(itemId).get();
         } catch (Exception e) {
             LOGGER.error("Error occurring when getting Item [" + itemId + "].", e);
             throw AppErrors.INSTANCE.catalogGatewayError().exception();
@@ -143,7 +143,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
     private Offer retrieveOffer(String offerId) {
         Offer offer;
         try {
-            offer = offerResource.getOffer(new OfferId(offerId)).get();
+            offer = offerResource.getOffer(offerId).get();
         } catch (Exception e) {
             LOGGER.error("Error occurring when getting Offer [" + offerId + "].", e);
             throw AppErrors.INSTANCE.catalogGatewayError().exception();
@@ -154,8 +154,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
     private OfferRevision getCurrentRevision(String revisionId) {
         OfferRevision offerRevision;
         try {
-            offerRevision = offerRevisionResource.getOfferRevision(
-                    new OfferRevisionId(revisionId)).get();
+            offerRevision = offerRevisionResource.getOfferRevision(revisionId).get();
         } catch (Exception e) {
             LOGGER.error("Error occurring when getting Offer Revision [" + revisionId + "]", e);
             throw AppErrors.INSTANCE.catalogGatewayError().exception();
@@ -168,7 +167,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
         List<OfferRevision> revisions = new ArrayList<>();
 
         OfferRevisionsGetOptions options = new OfferRevisionsGetOptions();
-        options.setOfferIds(new HashSet<OfferId>(Arrays.asList(new OfferId(offerId))));
+        options.setOfferIds(new HashSet<>(Arrays.asList(offerId)));
         options.setTimestamp(timestamp);
 
         try {
@@ -181,7 +180,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
 
         if (revisions.isEmpty()) {
             LOGGER.error("Revision with offerId [" + offerId + "] and timestamp [" + timestamp + "] does not exist.");
-            throw AppErrors.INSTANCE.offerRevisionNotFound(offerId.toString()).exception();
+            throw AppErrors.INSTANCE.offerRevisionNotFound(offerId).exception();
         }
 
         return revisions.get(Constants.UNIQUE);
@@ -200,8 +199,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
             case TIERED:
                 PriceTier priceTier;
                 try {
-                    priceTier = priceTierResource.getPriceTier(
-                            new PriceTierId(price.getPriceTier())).get();
+                    priceTier = priceTierResource.getPriceTier(price.getPriceTier()).get();
                 } catch (Exception e) {
                     throw AppErrors.INSTANCE.catalogGatewayError().exception();
                 }

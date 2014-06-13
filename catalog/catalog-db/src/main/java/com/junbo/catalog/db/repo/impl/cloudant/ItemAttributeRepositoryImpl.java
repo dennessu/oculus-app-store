@@ -11,7 +11,6 @@ import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.attribute.ItemAttributesGetOptions;
 import com.junbo.common.cloudant.CloudantClient;
 import com.junbo.common.cloudant.model.CloudantViews;
-import com.junbo.common.id.ItemAttributeId;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -36,8 +35,8 @@ public class ItemAttributeRepositoryImpl extends CloudantClient<ItemAttribute> i
     public List<ItemAttribute> getAttributes(ItemAttributesGetOptions options) {
         if (!CollectionUtils.isEmpty(options.getAttributeIds())) {
             List<ItemAttribute> attributes = new ArrayList<>();
-            for (ItemAttributeId attributeId : options.getAttributeIds()) {
-                ItemAttribute attribute = cloudantGet(attributeId.getValue()).get();
+            for (String attributeId : options.getAttributeIds()) {
+                ItemAttribute attribute = cloudantGet(attributeId).get();
                 if (attribute != null) {
                     attributes.add(attribute);
                 }

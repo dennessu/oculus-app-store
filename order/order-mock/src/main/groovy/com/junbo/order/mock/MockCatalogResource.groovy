@@ -32,7 +32,7 @@ class MockCatalogResource extends BaseMock implements OfferRevisionResource {
     }
 
     @Override
-    Promise<OfferRevision> getOfferRevision(@PathParam('revisionId') OfferRevisionId revisionId) {
+    Promise<OfferRevision> getOfferRevision(@PathParam('revisionId') String revisionId) {
         return Promise.pure(generateOfferRevision())
     }
 
@@ -43,12 +43,12 @@ class MockCatalogResource extends BaseMock implements OfferRevisionResource {
 
     @Override
     Promise<OfferRevision> updateOfferRevision(
-            @PathParam('revisionId') OfferRevisionId revisionId, OfferRevision offerRevision) {
+            @PathParam('revisionId') String revisionId, OfferRevision offerRevision) {
         return null
     }
 
     @Override
-    Promise<Response> delete(OfferRevisionId revisionId) {
+    Promise<Response> delete(String revisionId) {
 
     }
 

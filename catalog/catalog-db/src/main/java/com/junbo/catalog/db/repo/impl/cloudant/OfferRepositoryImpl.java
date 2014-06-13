@@ -12,7 +12,6 @@ import com.junbo.catalog.spec.model.offer.OffersGetOptions;
 import com.junbo.common.cloudant.CloudantClient;
 import com.junbo.common.cloudant.model.CloudantSearchResult;
 import com.junbo.common.cloudant.model.CloudantViews;
-import com.junbo.common.id.OfferId;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -37,13 +36,13 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
     public List<Offer> getOffers(OffersGetOptions options) {
         List<Offer> offers = new ArrayList<>();
         if (!CollectionUtils.isEmpty(options.getOfferIds())) {
-            for (OfferId offerId : options.getOfferIds()) {
+            for (String offerId : options.getOfferIds()) {
                 Offer offer = super.cloudantGet(offerId.toString()).get();
                 if (offer == null) {
                     continue;
                 }else if (options.getCategory() != null
                         && (offer.getCategories() == null
-                            || !offer.getCategories().contains(options.getCategory().getValue()))) {
+                            || !offer.getCategories().contains(options.getCategory()))) {
                     continue;
                 } else if (options.getPublished() != null && !options.getPublished().equals(offer.getPublished())) {
                     continue;
@@ -63,7 +62,7 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
         } else if (options.getCategory() != null || options.getPublished() != null || options.getOwnerId() != null) {
             StringBuilder sb = new StringBuilder();
             if (options.getCategory() != null) {
-                sb.append("categoryId:'").append(options.getCategory().getValue()).append("'");
+                sb.append("categoryId:'").append(options.getCategory()).append("'");
             }
             if (options.getPublished() != null) {
                 if (sb.length() > 0) {

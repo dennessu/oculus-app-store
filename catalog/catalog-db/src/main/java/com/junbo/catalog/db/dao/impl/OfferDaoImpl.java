@@ -30,7 +30,7 @@ public class OfferDaoImpl extends BaseDaoImpl<OfferEntity> implements OfferDao {
                     criteria.add(Restrictions.eq("published", options.getPublished()));
                 }
                 if (options.getCategory() != null) {
-                    criteria.add(Restrictions.sqlRestriction(options.getCategory().getValue() + "=ANY(categories)"));
+                    criteria.add(Restrictions.sqlRestriction(options.getCategory() + "=ANY(categories)"));
                 }
                 if (options.getOwnerId() != null) {
                     criteria.add(Restrictions.eq("ownerId", options.getOwnerId().getValue()));

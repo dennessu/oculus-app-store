@@ -30,7 +30,7 @@ public class ItemDaoImpl extends BaseDaoImpl<ItemEntity> implements ItemDao {
                     criteria.add(Restrictions.eq("type", options.getType()));
                 }
                 if (options.getGenre() != null) {
-                    criteria.add(Restrictions.sqlRestriction(options.getGenre().getValue() + "=ANY(genres)"));
+                    criteria.add(Restrictions.sqlRestriction(options.getGenre() + "=ANY(genres)"));
                 }
                 if (options.getOwnerId() != null) {
                     criteria.add(Restrictions.eq("ownerId", options.getOwnerId().getValue()));

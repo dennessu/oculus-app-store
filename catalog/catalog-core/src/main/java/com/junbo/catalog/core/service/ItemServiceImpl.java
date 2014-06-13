@@ -21,12 +21,14 @@ import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.item.*;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.common.error.AppError;
-import com.junbo.common.id.ItemId;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Item service implementation.
@@ -118,11 +120,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
             if (CollectionUtils.isEmpty(options.getItemIds())) {
                 throw AppErrors.INSTANCE.validation("itemId must be specified when timestamp is present.").exception();
             }
-            Set<String> itemIds = new HashSet<>();
-            for (ItemId itemId : options.getItemIds()) {
-                itemIds.add(itemId.getValue());
-            }
-            return itemRevisionRepo.getRevisions(itemIds, options.getTimestamp());
+            return itemRevisionRepo.getRevisions(options.getItemIds(), options.getTimestamp());
         } else {
             return itemRevisionRepo.getRevisions(options);
         }

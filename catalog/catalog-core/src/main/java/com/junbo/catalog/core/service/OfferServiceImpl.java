@@ -18,7 +18,6 @@ import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.common.error.AppError;
-import com.junbo.common.id.OfferId;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -89,7 +88,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     public List<Offer> getOffers(OffersGetOptions options) {
         List<Offer> offers;
         if (options.getItemId() != null) {
-            offers = getOffersByItemId(options.getItemId().getValue());
+            offers = getOffersByItemId(options.getItemId());
         } else {
             offers = offerRepo.getOffers(options);
         }
@@ -130,8 +129,8 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             }
 
             Set<String> offerIds = new HashSet<>();
-            for (OfferId offerId : options.getOfferIds()) {
-                offerIds.add(offerId.getValue());
+            for (String offerId : options.getOfferIds()) {
+                offerIds.add(offerId);
             }
             return offerRevisionRepo.getRevisions(offerIds, options.getTimestamp());
         } else {

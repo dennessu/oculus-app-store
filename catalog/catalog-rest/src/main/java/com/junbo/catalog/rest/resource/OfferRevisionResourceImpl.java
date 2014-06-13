@@ -18,7 +18,6 @@ import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
-import com.junbo.common.id.OfferRevisionId;
 import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
@@ -71,8 +70,8 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
     }
 
     @Override
-    public Promise<OfferRevision> getOfferRevision(OfferRevisionId revisionId) {
-        return Promise.pure(offerService.getRevision(revisionId.getValue()));
+    public Promise<OfferRevision> getOfferRevision(String revisionId) {
+        return Promise.pure(offerService.getRevision(revisionId));
     }
 
     @Override
@@ -92,7 +91,7 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
     }
 
     @Override
-    public Promise<OfferRevision> updateOfferRevision(final OfferRevisionId revisionId, final OfferRevision offerRevision) {
+    public Promise<OfferRevision> updateOfferRevision(final String revisionId, final OfferRevision offerRevision) {
         AuthorizeCallback<Offer> callback = offerAuthorizeCallbackFactory.create(offerRevision.getOfferId());
         return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<OfferRevision>>() {
             @Override
@@ -102,16 +101,16 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
                     throw AppErrors.INSTANCE.accessDenied().exception();
                 }
 
-                return Promise.pure(offerService.updateRevision(revisionId.getValue(), offerRevision));
+                return Promise.pure(offerService.updateRevision(revisionId, offerRevision));
             }
         });
     }
 
     @Override
-    public Promise<Response> delete(final OfferRevisionId revisionId) {
-        final OfferRevision offerRevision = offerService.getRevision(revisionId.getValue());
+    public Promise<Response> delete(final String revisionId) {
+        final OfferRevision offerRevision = offerService.getRevision(revisionId);
         if (offerRevision == null) {
-            throw AppErrors.INSTANCE.notFound("offer-revision", Utils.encodeId(revisionId.getValue())).exception();
+            throw AppErrors.INSTANCE.notFound("offer-revision", Utils.encodeId(revisionId)).exception();
         }
 
         AuthorizeCallback<Offer> callback = offerAuthorizeCallbackFactory.create(offerRevision.getOfferId());
@@ -123,7 +122,7 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
                     throw AppErrors.INSTANCE.accessDenied().exception();
                 }
 
-                offerService.deleteRevision(revisionId.getValue());
+                offerService.deleteRevision(revisionId);
                 return Promise.pure(Response.status(204).build());
             }
         });

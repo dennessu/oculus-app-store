@@ -16,11 +16,9 @@ import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemsGetOptions;
 import com.junbo.catalog.spec.resource.ItemResource;
-import com.junbo.common.id.ItemId;
 import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
-import com.junbo.common.util.IdFormatter;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -78,13 +76,13 @@ public class ItemResourceImpl implements ItemResource {
         }
 
         UriBuilder builder = UriBuilder.fromPath(IdUtil.getResourcePathPrefix()).path("items");
-        if (options.getGenre() != null) {
-            builder.queryParam("genre", IdFormatter.encodeId(options.getGenre()));
+        if (!StringUtils.isEmpty(options.getGenre())) {
+            builder.queryParam("genre", options.getGenre());
         }
         if (!StringUtils.isEmpty(options.getType())) {
             builder.queryParam("type", options.getType());
         }
-        if (options.getOwnerId() != null) {
+        if (!StringUtils.isEmpty(options.getOwnerId())) {
             builder.queryParam("developerId", options.getOwnerId());
         }
         builder.queryParam("size", options.getValidSize());
@@ -98,11 +96,11 @@ public class ItemResourceImpl implements ItemResource {
     }
 
     @Override
-    public Promise<Item> getItem(final ItemId itemId) {
-        final Item item = itemService.getEntity(itemId.getValue());
+    public Promise<Item> getItem(final String itemId) {
+        final Item item = itemService.getEntity(itemId);
 
         if (item == null) {
-            throw AppErrors.INSTANCE.notFound("Item", IdFormatter.encodeId(itemId)).exception();
+            throw AppErrors.INSTANCE.notFound("Item", itemId).exception();
         }
 
         AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(item);
@@ -111,7 +109,7 @@ public class ItemResourceImpl implements ItemResource {
             public Promise<Item> apply() {
 
                 if (!AuthorizeContext.hasRights("read")) {
-                    throw AppErrors.INSTANCE.notFound("Item", IdFormatter.encodeId(itemId)).exception();
+                    throw AppErrors.INSTANCE.notFound("Item", itemId).exception();
                 }
 
                 return Promise.pure(item);
@@ -120,7 +118,7 @@ public class ItemResourceImpl implements ItemResource {
     }
 
     @Override
-    public Promise<Item> update(final ItemId itemId, final Item item) {
+    public Promise<Item> update(final String itemId, final Item item) {
         AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(item);
         return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<Item>>() {
             @Override
@@ -130,7 +128,7 @@ public class ItemResourceImpl implements ItemResource {
                     throw AppErrors.INSTANCE.accessDenied().exception();
                 }
 
-                return Promise.pure(itemService.updateEntity(itemId.getValue(), item));
+                return Promise.pure(itemService.updateEntity(itemId, item));
             }
         });
     }
@@ -152,11 +150,11 @@ public class ItemResourceImpl implements ItemResource {
     }
 
     @Override
-    public Promise<Response> delete(final ItemId itemId) {
-        final Item item = itemService.getEntity(itemId.getValue());
+    public Promise<Response> delete(final String itemId) {
+        final Item item = itemService.getEntity(itemId);
 
         if (item == null) {
-            throw AppErrors.INSTANCE.notFound("Item", IdFormatter.encodeId(itemId)).exception();
+            throw AppErrors.INSTANCE.notFound("Item", itemId).exception();
         }
 
         AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(item);
@@ -168,7 +166,7 @@ public class ItemResourceImpl implements ItemResource {
                     throw AppErrors.INSTANCE.accessDenied().exception();
                 }
 
-                itemService.deleteEntity(itemId.getValue());
+                itemService.deleteEntity(itemId);
                 return Promise.pure(Response.status(204).build());
             }
         });

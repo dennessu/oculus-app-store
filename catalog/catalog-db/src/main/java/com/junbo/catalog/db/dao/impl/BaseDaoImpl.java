@@ -11,7 +11,6 @@ import com.junbo.catalog.common.util.Constants;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.dao.BaseDao;
 import com.junbo.catalog.db.entity.BaseEntity;
-import com.junbo.common.id.CloudantId;
 import com.junbo.sharding.IdGenerator;
 import com.junbo.sharding.ShardAlgorithm;
 import com.junbo.sharding.hibernate.ShardScope;
@@ -24,7 +23,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -102,13 +100,9 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
         return criteria.list();
     }
 
-    protected <E extends CloudantId> void addIdRestriction(String fieldName, Collection<E> ids, Criteria criteria) {
+    protected void addIdRestriction(String fieldName, Collection<String> ids, Criteria criteria) {
         if (!CollectionUtils.isEmpty(ids)) {
-            List<String> idValues = new ArrayList<>();
-            for (E id : ids) {
-                idValues.add(id.getValue());
-            }
-            criteria.add(Restrictions.in(fieldName, idValues));
+            criteria.add(Restrictions.in(fieldName, ids));
         }
     }
 

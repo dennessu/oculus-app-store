@@ -10,7 +10,6 @@ import com.junbo.catalog.core.PriceTierService;
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
 import com.junbo.catalog.spec.model.pricetier.PriceTiersGetOptions;
 import com.junbo.catalog.spec.resource.PriceTierResource;
-import com.junbo.common.id.PriceTierId;
 import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
@@ -32,8 +31,8 @@ public class PriceTierResourceImpl implements PriceTierResource {
     private PriceTierService priceTierService;
 
     @Override
-    public Promise<PriceTier> getPriceTier(PriceTierId tierId) {
-        return Promise.pure(priceTierService.getPriceTier(tierId.getValue()));
+    public Promise<PriceTier> getPriceTier(String tierId) {
+        return Promise.pure(priceTierService.getPriceTier(tierId));
     }
 
     @Override
@@ -69,13 +68,13 @@ public class PriceTierResourceImpl implements PriceTierResource {
     }
 
     @Override
-    public Promise<PriceTier> update(PriceTierId tierId, PriceTier priceTier) {
-        return Promise.pure(priceTierService.update(tierId.getValue(), priceTier));
+    public Promise<PriceTier> update(String tierId, PriceTier priceTier) {
+        return Promise.pure(priceTierService.update(tierId, priceTier));
     }
 
     @Override
-    public Promise<Response> delete(PriceTierId tierId) {
-        priceTierService.delete(tierId.getValue());
+    public Promise<Response> delete(String tierId) {
+        priceTierService.delete(tierId);
         return Promise.pure(Response.status(204).build());
     }
 }

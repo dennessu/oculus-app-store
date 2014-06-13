@@ -85,7 +85,7 @@ public class MegaGatewayImpl implements MegaGateway {
     @Override
     public OfferRevision getOfferRevision(String offerRevisionId) {
         try {
-            return offerRevisionResource.getOfferRevision(new OfferRevisionId(offerRevisionId)).get();
+            return offerRevisionResource.getOfferRevision(offerRevisionId).get();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -94,7 +94,7 @@ public class MegaGatewayImpl implements MegaGateway {
     @Override
     public ItemRevision getItemRevision(String itemRevisionId) {
         try {
-            return itemRevisionResource.getItemRevision(new ItemRevisionId(itemRevisionId)).get();
+            return itemRevisionResource.getItemRevision(itemRevisionId).get();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -104,7 +104,7 @@ public class MegaGatewayImpl implements MegaGateway {
     public String updateOfferRevision(OfferRevision offerRevision) {
         try {
             return offerRevisionResource.updateOfferRevision(
-                    new OfferRevisionId(offerRevision.getRevisionId()),
+                    offerRevision.getRevisionId(),
                     offerRevision).get().getRevisionId();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
@@ -115,7 +115,7 @@ public class MegaGatewayImpl implements MegaGateway {
     public String updateItemRevision(ItemRevision itemRevision) {
         try {
             return itemRevisionResource.updateItemRevision(
-                    new ItemRevisionId(itemRevision.getRevisionId()),
+                    itemRevision.getRevisionId(),
                     itemRevision).get().getRevisionId();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);

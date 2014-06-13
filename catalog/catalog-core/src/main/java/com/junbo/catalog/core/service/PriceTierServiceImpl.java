@@ -14,7 +14,6 @@ import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
 import com.junbo.catalog.spec.model.pricetier.PriceTiersGetOptions;
 import com.junbo.common.error.AppError;
-import com.junbo.common.id.PriceTierId;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -48,8 +47,8 @@ public class PriceTierServiceImpl implements PriceTierService {
         if (!CollectionUtils.isEmpty(options.getPriceTierIds())) {
             List<PriceTier> priceTiers = new ArrayList<>();
 
-            for (PriceTierId tierId : options.getPriceTierIds()) {
-                PriceTier priceTier = priceTierRepo.get(tierId.getValue());
+            for (String tierId : options.getPriceTierIds()) {
+                PriceTier priceTier = priceTierRepo.get(tierId);
 
                 if (priceTier != null) {
                     priceTiers.add(priceTier);

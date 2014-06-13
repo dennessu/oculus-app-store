@@ -7,7 +7,6 @@
 package com.junbo.catalog.spec.model.attribute;
 
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
-import com.junbo.common.id.ItemAttributeId;
 
 import javax.ws.rs.QueryParam;
 import java.util.Set;
@@ -17,16 +16,16 @@ import java.util.Set;
  */
 public class ItemAttributesGetOptions extends PageableGetOptions {
     @QueryParam("attributeId")
-    private Set<ItemAttributeId> attributeIds;
+    private Set<String> attributeIds;
 
     @QueryParam("type")
     private String attributeType;
 
-    public Set<ItemAttributeId> getAttributeIds() {
+    public Set<String> getAttributeIds() {
         return attributeIds;
     }
 
-    public void setAttributeIds(Set<ItemAttributeId> attributeIds) {
+    public void setAttributeIds(Set<String> attributeIds) {
         this.attributeIds = attributeIds;
     }
 

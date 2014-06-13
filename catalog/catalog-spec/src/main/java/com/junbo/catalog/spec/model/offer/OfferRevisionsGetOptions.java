@@ -7,8 +7,6 @@
 package com.junbo.catalog.spec.model.offer;
 
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
-import com.junbo.common.id.OfferId;
-import com.junbo.common.id.OfferRevisionId;
 
 import javax.ws.rs.QueryParam;
 import java.util.Set;
@@ -18,27 +16,27 @@ import java.util.Set;
  */
 public class OfferRevisionsGetOptions extends PageableGetOptions {
     @QueryParam("offerId")
-    private Set<OfferId> offerIds;
+    private Set<String> offerIds;
     @QueryParam("revisionId")
-    private Set<OfferRevisionId> revisionIds;
+    private Set<String> revisionIds;
     @QueryParam("status")
     private String status;
     @QueryParam("timeInMillis")
     private Long timestamp;
 
-    public Set<OfferId> getOfferIds() {
+    public Set<String> getOfferIds() {
         return offerIds;
     }
 
-    public void setOfferIds(Set<OfferId> offerIds) {
+    public void setOfferIds(Set<String> offerIds) {
         this.offerIds = offerIds;
     }
 
-    public Set<OfferRevisionId> getRevisionIds() {
+    public Set<String> getRevisionIds() {
         return revisionIds;
     }
 
-    public void setRevisionIds(Set<OfferRevisionId> revisionIds) {
+    public void setRevisionIds(Set<String> revisionIds) {
         this.revisionIds = revisionIds;
     }
 

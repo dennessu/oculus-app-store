@@ -7,8 +7,6 @@
 package com.junbo.catalog.spec.model.item;
 
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
-import com.junbo.common.id.ItemId;
-import com.junbo.common.id.ItemRevisionId;
 
 import javax.ws.rs.QueryParam;
 import java.util.Set;
@@ -18,27 +16,27 @@ import java.util.Set;
  */
 public class ItemRevisionsGetOptions extends PageableGetOptions {
     @QueryParam("itemId")
-    private Set<ItemId> itemIds;
+    private Set<String> itemIds;
     @QueryParam("revisionId")
-    private Set<ItemRevisionId> revisionIds;
+    private Set<String> revisionIds;
     @QueryParam("status")
     private String status;
     @QueryParam("timeInMillis")
     private Long timestamp;
 
-    public Set<ItemId> getItemIds() {
+    public Set<String> getItemIds() {
         return itemIds;
     }
 
-    public void setItemIds(Set<ItemId> itemIds) {
+    public void setItemIds(Set<String> itemIds) {
         this.itemIds = itemIds;
     }
 
-    public Set<ItemRevisionId> getRevisionIds() {
+    public Set<String> getRevisionIds() {
         return revisionIds;
     }
 
-    public void setRevisionIds(Set<ItemRevisionId> revisionIds) {
+    public void setRevisionIds(Set<String> revisionIds) {
         this.revisionIds = revisionIds;
     }
 

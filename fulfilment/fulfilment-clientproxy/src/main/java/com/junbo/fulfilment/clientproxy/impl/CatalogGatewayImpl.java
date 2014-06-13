@@ -14,8 +14,6 @@ import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
 import com.junbo.catalog.spec.resource.ItemRevisionResource;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
-import com.junbo.common.id.ItemId;
-import com.junbo.common.id.OfferId;
 import com.junbo.common.model.Results;
 import com.junbo.fulfilment.clientproxy.CatalogGateway;
 import com.junbo.fulfilment.common.util.Constant;
@@ -61,7 +59,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
     protected OfferRevision retrieveOfferRevision(String offerId, Long timestamp) {
         try {
             OfferRevisionsGetOptions options = new OfferRevisionsGetOptions();
-            options.setOfferIds(new HashSet(Arrays.asList(new OfferId(offerId))));
+            options.setOfferIds(new HashSet(Arrays.asList(offerId)));
             options.setTimestamp(timestamp);
 
             Results<OfferRevision> revisions = offerRevisionResource.getOfferRevisions(options).get();
@@ -81,7 +79,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
     protected ItemRevision retrieveItemRevision(String itemId, Long timestamp) {
         try {
             ItemRevisionsGetOptions options = new ItemRevisionsGetOptions();
-            options.setItemIds(new HashSet(Arrays.asList(new ItemId(itemId))));
+            options.setItemIds(new HashSet(Arrays.asList(itemId)));
             options.setTimestamp(timestamp);
 
             Results<ItemRevision> revisions = itemRevisionResource.getItemRevisions(options).get();

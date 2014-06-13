@@ -10,7 +10,6 @@ import com.junbo.catalog.core.PromotionService;
 import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.model.promotion.PromotionsGetOptions;
 import com.junbo.catalog.spec.resource.PromotionResource;
-import com.junbo.common.id.PromotionId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +33,8 @@ public class PromotionResourceImpl implements PromotionResource{
     }
 
     @Override
-    public Promise<Promotion> getPromotion(PromotionId promotionId) {
-        return Promise.pure(promotionService.getEntity(promotionId.getValue()));
+    public Promise<Promotion> getPromotion(String promotionId) {
+        return Promise.pure(promotionService.getEntity(promotionId));
     }
 
     @Override
@@ -44,13 +43,13 @@ public class PromotionResourceImpl implements PromotionResource{
     }
 
     @Override
-    public Promise<Promotion> update(PromotionId promotionId, Promotion promotion) {
-        return Promise.pure(promotionService.updateEntity(promotionId.getValue(), promotion));
+    public Promise<Promotion> update(String promotionId, Promotion promotion) {
+        return Promise.pure(promotionService.updateEntity(promotionId, promotion));
     }
 
     @Override
-    public Promise<Response> delete(PromotionId promotionId) {
-        promotionService.deleteEntity(promotionId.getValue());
+    public Promise<Response> delete(String promotionId) {
+        promotionService.deleteEntity(promotionId);
         return Promise.pure(Response.status(204).build());
     }
 }

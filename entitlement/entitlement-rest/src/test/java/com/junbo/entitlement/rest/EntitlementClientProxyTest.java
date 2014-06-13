@@ -120,7 +120,7 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
             item = itemResourceClientProxy.create(item).get();
             ItemRevision revision = itemRevisionResourceClientProxy.createItemRevision(buildAnItemRevision(item)).get();
             revision.setStatus(Status.APPROVED.name());
-            itemRevisionResourceClientProxy.updateItemRevision(new ItemRevisionId(revision.getRevisionId()), revision).get();
+            itemRevisionResourceClientProxy.updateItemRevision(revision.getRevisionId(), revision).get();
         } catch (Exception e) {
             e.printStackTrace();
         }

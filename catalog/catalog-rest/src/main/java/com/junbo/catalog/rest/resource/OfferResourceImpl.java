@@ -16,11 +16,9 @@ import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OffersGetOptions;
 import com.junbo.catalog.spec.resource.OfferResource;
-import com.junbo.common.id.OfferId;
 import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
-import com.junbo.common.util.IdFormatter;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -56,8 +54,8 @@ public class OfferResourceImpl implements OfferResource {
     }
 
     @Override
-    public Promise<Offer> getOffer(OfferId offerId) {
-        return Promise.pure(offerService.getEntity(offerId.getValue()));
+    public Promise<Offer> getOffer(String offerId) {
+        return Promise.pure(offerService.getEntity(offerId));
     }
 
     @Override
@@ -77,7 +75,7 @@ public class OfferResourceImpl implements OfferResource {
     }
 
     @Override
-    public Promise<Offer> update(final OfferId offerId, final Offer offer) {
+    public Promise<Offer> update(final String offerId, final Offer offer) {
         AuthorizeCallback<Offer> callback = offerAuthorizeCallbackFactory.create(offer);
         return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<Offer>>() {
             @Override
@@ -87,16 +85,16 @@ public class OfferResourceImpl implements OfferResource {
                     throw AppErrors.INSTANCE.accessDenied().exception();
                 }
 
-                return Promise.pure(offerService.updateEntity(offerId.getValue(), offer));
+                return Promise.pure(offerService.updateEntity(offerId, offer));
             }
         });
     }
 
     @Override
-    public Promise<Response> delete(final OfferId offerId) {
-        final Offer offer = offerService.getEntity(offerId.getValue());
+    public Promise<Response> delete(final String offerId) {
+        final Offer offer = offerService.getEntity(offerId);
         if (offer == null) {
-            throw AppErrors.INSTANCE.notFound("Offer", IdFormatter.encodeId(offerId)).exception();
+            throw AppErrors.INSTANCE.notFound("Offer", offerId).exception();
         }
 
 
@@ -109,7 +107,7 @@ public class OfferResourceImpl implements OfferResource {
                     throw AppErrors.INSTANCE.accessDenied().exception();
                 }
 
-                offerService.deleteEntity(offerId.getValue());
+                offerService.deleteEntity(offerId);
                 return Promise.pure(Response.status(204).build());
             }
         });
@@ -122,8 +120,8 @@ public class OfferResourceImpl implements OfferResource {
         }
 
         UriBuilder builder = UriBuilder.fromPath(IdUtil.getResourcePathPrefix()).path("offers");
-        if (options.getCategory() != null) {
-            builder.queryParam("category", IdFormatter.encodeId(options.getCategory()));
+        if (!StringUtils.isEmpty(options.getCategory())) {
+            builder.queryParam("category", options.getCategory());
         }
         if (options.getPublished() != null) {
             builder.queryParam("published", options.getPublished());

@@ -10,7 +10,6 @@ import com.junbo.catalog.core.OfferAttributeService;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions;
 import com.junbo.catalog.spec.resource.OfferAttributeResource;
-import com.junbo.common.id.OfferAttributeId;
 import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
@@ -32,8 +31,8 @@ public class OfferAttributeResourceImpl implements OfferAttributeResource {
     private OfferAttributeService attributeService;
 
     @Override
-    public Promise<OfferAttribute> getAttribute(OfferAttributeId attributeId) {
-        return Promise.pure(attributeService.getAttribute(attributeId.getValue()));
+    public Promise<OfferAttribute> getAttribute(String attributeId) {
+        return Promise.pure(attributeService.getAttribute(attributeId));
     }
 
     @Override
@@ -72,13 +71,13 @@ public class OfferAttributeResourceImpl implements OfferAttributeResource {
     }
 
     @Override
-    public Promise<OfferAttribute> update(OfferAttributeId attributeId, OfferAttribute attribute) {
-        return Promise.pure(attributeService.update(attributeId.getValue(), attribute));
+    public Promise<OfferAttribute> update(String attributeId, OfferAttribute attribute) {
+        return Promise.pure(attributeService.update(attributeId, attribute));
     }
 
     @Override
-    public Promise<Response> delete(OfferAttributeId attributeId) {
-        attributeService.deleteAttribute(attributeId.getValue());
+    public Promise<Response> delete(String attributeId) {
+        attributeService.deleteAttribute(attributeId);
         return Promise.pure(Response.status(204).build());
     }
 }

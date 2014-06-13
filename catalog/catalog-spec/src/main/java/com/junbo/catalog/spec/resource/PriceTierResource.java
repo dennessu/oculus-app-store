@@ -9,7 +9,6 @@ package com.junbo.catalog.spec.resource;
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
 import com.junbo.catalog.spec.model.pricetier.PriceTiersGetOptions;
 import com.junbo.common.filter.annotations.CacheMaxAge;
-import com.junbo.common.id.PriceTierId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -34,7 +33,7 @@ public interface PriceTierResource {
     @ApiOperation("Get a price tier")
     @GET
     @Path("/{tierId}")
-    Promise<PriceTier> getPriceTier(@PathParam("tierId") PriceTierId tierId);
+    Promise<PriceTier> getPriceTier(@PathParam("tierId") String tierId);
 
     @CacheMaxAge(duration = 1, unit = TimeUnit.HOURS)
     @ApiOperation("Get all price tiers")
@@ -50,10 +49,10 @@ public interface PriceTierResource {
     @ApiOperation("Put an price tier")
     @PUT
     @Path("/{tierId}")
-    Promise<PriceTier> update(@PathParam("tierId") PriceTierId tierId, PriceTier priceTier);
+    Promise<PriceTier> update(@PathParam("tierId") String tierId, PriceTier priceTier);
 
     @ApiOperation("Delete an price tier")
     @DELETE
     @Path("/{tierId}")
-    Promise<Response> delete(@PathParam("tierId") PriceTierId tierId);
+    Promise<Response> delete(@PathParam("tierId") String tierId);
 }

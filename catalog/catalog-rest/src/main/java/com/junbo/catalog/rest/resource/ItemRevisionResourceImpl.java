@@ -18,7 +18,6 @@ import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
 import com.junbo.catalog.spec.resource.ItemRevisionResource;
-import com.junbo.common.id.ItemRevisionId;
 import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
@@ -75,8 +74,8 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
     }
 
     @Override
-    public Promise<ItemRevision> getItemRevision(ItemRevisionId revisionId) {
-        return Promise.pure(itemService.getRevision(revisionId.getValue()));
+    public Promise<ItemRevision> getItemRevision(String revisionId) {
+        return Promise.pure(itemService.getRevision(revisionId));
     }
 
     @Override
@@ -96,7 +95,7 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
     }
 
     @Override
-    public Promise<ItemRevision> updateItemRevision(final ItemRevisionId revisionId, final ItemRevision itemRevision) {
+    public Promise<ItemRevision> updateItemRevision(final String revisionId, final ItemRevision itemRevision) {
         AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(itemRevision.getItemId());
         return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<ItemRevision>>() {
             @Override
@@ -106,16 +105,16 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
                     throw AppErrors.INSTANCE.accessDenied().exception();
                 }
 
-                return Promise.pure(itemService.updateRevision(revisionId.getValue(), itemRevision));
+                return Promise.pure(itemService.updateRevision(revisionId, itemRevision));
             }
         });
     }
 
     @Override
-    public Promise<Response> delete(final ItemRevisionId revisionId) {
-        ItemRevision itemRevision = itemService.getRevision(revisionId.getValue());
+    public Promise<Response> delete(final String revisionId) {
+        ItemRevision itemRevision = itemService.getRevision(revisionId);
         if (itemRevision == null) {
-            throw AppErrors.INSTANCE.notFound("item-revision", Utils.encodeId(revisionId.getValue())).exception();
+            throw AppErrors.INSTANCE.notFound("item-revision", Utils.encodeId(revisionId)).exception();
         }
 
         AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(itemRevision.getItemId());
@@ -127,7 +126,7 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
                     throw AppErrors.INSTANCE.accessDenied().exception();
                 }
 
-                itemService.deleteRevision(revisionId.getValue());
+                itemService.deleteRevision(revisionId);
                 return Promise.pure(Response.status(204).build());
             }
         });

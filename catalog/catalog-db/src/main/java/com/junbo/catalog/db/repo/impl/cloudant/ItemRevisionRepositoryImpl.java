@@ -12,8 +12,6 @@ import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
 import com.junbo.common.cloudant.CloudantClient;
 import com.junbo.common.cloudant.model.CloudantViews;
-import com.junbo.common.id.ItemId;
-import com.junbo.common.id.ItemRevisionId;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -41,8 +39,8 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
     public List<ItemRevision> getRevisions(ItemRevisionsGetOptions options) {
         List<ItemRevision> itemRevisions = new ArrayList<>();
         if (!CollectionUtils.isEmpty(options.getRevisionIds())) {
-            for (ItemRevisionId revisionId : options.getRevisionIds()) {
-                ItemRevision revision = super.cloudantGet(revisionId.toString()).get();
+            for (String revisionId : options.getRevisionIds()) {
+                ItemRevision revision = super.cloudantGet(revisionId).get();
                 if (revision==null) {
                     continue;
                 } else if (!StringUtils.isEmpty(options.getStatus())
@@ -53,8 +51,8 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
                 }
             }
         } else if (!CollectionUtils.isEmpty(options.getItemIds())) {
-            for (ItemId itemId : options.getItemIds()) {
-                List<ItemRevision> revisions = super.queryView("by_itemId", itemId.toString()).get();
+            for (String itemId : options.getItemIds()) {
+                List<ItemRevision> revisions = super.queryView("by_itemId", itemId).get();
                 if (!StringUtils.isEmpty(options.getStatus())) {
                     Iterator<ItemRevision> iterator = revisions.iterator();
                     while (iterator.hasNext()) {

@@ -7,7 +7,6 @@
 package com.junbo.catalog.spec.model.pricetier;
 
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
-import com.junbo.common.id.PriceTierId;
 
 import javax.ws.rs.QueryParam;
 import java.util.List;
@@ -17,13 +16,13 @@ import java.util.List;
  */
 public class PriceTiersGetOptions extends PageableGetOptions {
     @QueryParam("tierId")
-    private List<PriceTierId> priceTierIds;
+    private List<String> priceTierIds;
 
-    public List<PriceTierId> getPriceTierIds() {
+    public List<String> getPriceTierIds() {
         return priceTierIds;
     }
 
-    public void setPriceTierIds(List<PriceTierId> priceTierIds) {
+    public void setPriceTierIds(List<String> priceTierIds) {
         this.priceTierIds = priceTierIds;
     }
 }

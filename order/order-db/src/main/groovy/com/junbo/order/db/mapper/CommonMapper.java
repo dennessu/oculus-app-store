@@ -394,22 +394,6 @@ public class CommonMapper {
         return paymentInstrumentId.getValue().toString();
     }
 
-    public OfferRevisionId fromStringToOfferRevisionId(String offerRevisionId) {
-        if (offerRevisionId == null) {
-            return null;
-        }
-
-        return new OfferRevisionId(offerRevisionId);
-    }
-
-    public String fromOfferRevisionIdToString(OfferRevisionId offerRevisionId) {
-        if (offerRevisionId == null) {
-            return null;
-        }
-
-        return offerRevisionId.getValue().toString();
-    }
-
     public PromotionId fromStringToPromotionId(String promotionId) {
         if (promotionId == null) {
             return null;

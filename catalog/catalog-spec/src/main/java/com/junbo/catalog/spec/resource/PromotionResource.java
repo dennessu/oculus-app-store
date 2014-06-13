@@ -8,7 +8,6 @@ package com.junbo.catalog.spec.resource;
 
 import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.model.promotion.PromotionsGetOptions;
-import com.junbo.common.id.PromotionId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -35,7 +34,7 @@ public interface PromotionResource {
     //@ApiOperation("Get a promotion")
     @GET
     @Path("/{promotionId}")
-    Promise<Promotion> getPromotion(@PathParam("promotionId") PromotionId promotionId);
+    Promise<Promotion> getPromotion(@PathParam("promotionId") String promotionId);
 
     //@ApiOperation("Create a promotion")
     @POST
@@ -45,11 +44,11 @@ public interface PromotionResource {
     //@ApiOperation("Put a promotion")
     @PUT
     @Path("/{promotionId}")
-    Promise<Promotion> update(@PathParam("promotionId") PromotionId promotionId, Promotion promotion);
+    Promise<Promotion> update(@PathParam("promotionId") String promotionId, Promotion promotion);
 
 
     //@ApiOperation("Delete a promotion")
     @DELETE
     @Path("/{promotionId}")
-    Promise<Response> delete(@PathParam("promotionId") PromotionId promotionId);
+    Promise<Response> delete(@PathParam("promotionId") String promotionId);
 }

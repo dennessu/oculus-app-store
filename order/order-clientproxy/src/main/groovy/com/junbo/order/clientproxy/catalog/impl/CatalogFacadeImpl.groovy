@@ -16,8 +16,6 @@ import com.junbo.catalog.spec.resource.ItemResource
 import com.junbo.catalog.spec.resource.ItemRevisionResource
 import com.junbo.catalog.spec.resource.OfferResource
 import com.junbo.catalog.spec.resource.OfferRevisionResource
-import com.junbo.common.id.ItemId
-import com.junbo.common.id.OfferId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.catalog.CatalogFacade
@@ -64,7 +62,7 @@ class CatalogFacadeImpl implements CatalogFacade {
     Promise<OrderOfferRevision> getOfferRevision(String offerId, Date honoredTime) {
         def entityGetOption = new OfferRevisionsGetOptions(
                 timestamp: honoredTime.time,
-                offerIds: [new OfferId(offerId)] as Set
+                offerIds: [offerId] as Set
         )
         return offerRevisionResource.getOfferRevisions(entityGetOption).syncRecover {
             // TODO add logger and exception
@@ -89,7 +87,7 @@ class CatalogFacadeImpl implements CatalogFacade {
             )
 
             return Promise.each(or.items) { ItemEntry ie ->
-                return itemResource.getItem(new ItemId(ie.itemId)).syncRecover { Throwable ex ->
+                return itemResource.getItem(ie.itemId).syncRecover { Throwable ex ->
                     LOGGER.error('name=Failed_To_Get_Offer_Item. itemId: {}, timestamp: {}',
                             ie.itemId, honoredTime, ex)
                     throw AppErrors.INSTANCE.catalogConnectionError().exception()
@@ -108,7 +106,7 @@ class CatalogFacadeImpl implements CatalogFacade {
     Promise<OrderOfferItemRevision> getOfferItemRevision(String itemId, Date honoredTime) {
         def entityGetOption = new ItemRevisionsGetOptions(
                 timestamp: honoredTime.time,
-                itemIds: [new ItemId(itemId)] as Set
+                itemIds: [itemId] as Set
         )
         return itemRevisionResource.getItemRevisions(entityGetOption).syncRecover { Throwable ex ->
             LOGGER.error('name=Failed_To_Get_Item_Revision. itemId: {}, timestamp: {}',
