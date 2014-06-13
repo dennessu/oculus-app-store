@@ -24,6 +24,9 @@ public class UserCredentialListOptions extends PagingGetOptions {
     @QueryParam("credentialType")
     private String type;
 
+    @QueryParam("active")
+    private Boolean active;
+
     public String getProperties() {
         return properties;
     }
@@ -46,5 +49,13 @@ public class UserCredentialListOptions extends PagingGetOptions {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }

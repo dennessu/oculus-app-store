@@ -66,8 +66,11 @@
 
         <wf:action-state id="PRE_LOGIN_SUCCESS">
             <wf:action ref="checkEmailVerified"/>
+            <wf:action ref="checkChangePassword" />
             <wf:transition on="emailVerifyRequired" to="EMAIL_VERIFY_REQUIRED_VIEW" />
-            <wf:transition on="*" to="LOGIN_SUCCESS" />
+            <wf:transition on="changePasswordRequired"  to="CHANGE_CREDENTIAL_REQUIRED_VIEW" />
+            <wf:transition on="success" to="LOGIN_SUCCESS" />
+            <wf:transition on="*" to="LOGIN_REQUIRED" />
         </wf:action-state>
 
         <wf:view-state id="LOGIN_SUCCESS">
@@ -189,6 +192,13 @@
                 <wf:action ref="sendAccountVerifyEmail"/>
             </wf:transition>
         </wf:view-state>
+
+        <wf:end-state id="CHANGE_CREDENTIAL_REQUIRED_VIEW">
+            <wf:on-entry>
+                <wf:action ref="sendResetPasswordEmail" />
+                <wf:action ref="changeCredentialRequiredView"/>
+            </wf:on-entry>
+        </wf:end-state>
 
         <wf:end-state id="END">
             <wf:on-entry>
@@ -348,6 +358,10 @@
         <property name="userService" ref="userService" />
     </bean>
 
+    <bean id="sendResetPasswordEmail" class="com.junbo.oauth.core.action.SendResetPasswordEmail">
+        <property name="userService" ref="userService" />
+    </bean>
+
     <bean id="facebookLogin" class="com.junbo.oauth.core.action.FacebookLogin">
         <property name="facebookApi" ref="facebookApi"/>
     </bean>
@@ -381,6 +395,10 @@
         <property name="userPersonalInfoResource" ref="userPersonalInfoResource"/>
     </bean>
 
+    <bean id="checkChangePassword" class="com.junbo.oauth.core.action.CheckChangePassword">
+        <property name="userService" ref="userService"/>
+    </bean>
+
     <bean id="redirectToEmailVerifyRequired" class="com.junbo.oauth.core.view.RedirectToPageView">
         <property name="pageUrl" value="${oauth.core.portal.emailVerifyRequiredUri}"/>
     </bean>
@@ -388,6 +406,7 @@
     <bean id="emailVerifyRequiredView" class="com.junbo.oauth.core.view.EmailVerifyRequiredView">
         <property name="debugEnabled" value="${common.conf.debugMode}"/>
     </bean>
+    <bean id="changeCredentialRequiredView" class="com.junbo.oauth.core.view.ChangeCredentialRequiredView" />
 
     <bean id="verifyEmail" class="com.junbo.oauth.core.action.VerifyEmail">
         <property name="emailVerifyCodeRepository" ref="emailVerifyCodeRepository"/>

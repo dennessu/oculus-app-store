@@ -69,7 +69,7 @@ class CheckEmailVerified implements Action {
             return Promise.pure(new ActionResult('next', ['defaultEmail': defaultEmail] as Map<String, Object>))
         }.then { ActionResult result ->
             if (result.id == 'error') {
-                return Promise.pure(result)
+                return Promise.pure(null)
             }
 
             UserPersonalInfoLink defaultEmail = result.data['defaultEmail'] as UserPersonalInfoLink
@@ -80,12 +80,12 @@ class CheckEmailVerified implements Action {
                 return Promise.pure(null)
             }.then { UserPersonalInfo personalInfo ->
                 if (personalInfo == null) {
-                    return Promise.pure(new ActionResult('error'))
+                    return Promise.pure(null)
                 }
 
                 // the pii data has been validated if lastValidateTime is not null
                 if (personalInfo.lastValidateTime != null) {
-                    return Promise.pure(new ActionResult('success'))
+                    return Promise.pure(null)
                 }
 
                 def email = ObjectMapperProvider.instance().treeToValue(personalInfo.value, Email)

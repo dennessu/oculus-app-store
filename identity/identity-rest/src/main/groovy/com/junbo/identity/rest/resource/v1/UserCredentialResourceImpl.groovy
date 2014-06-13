@@ -131,30 +131,17 @@ class UserCredentialResourceImpl implements UserCredentialResource {
         def resultList = new Results<UserCredential>(items: [])
         return userCredentialValidator.validateForSearch(userId, listOptions).then {
             if (listOptions.type == CredentialType.PASSWORD.toString()) {
-                return userPasswordRepository.searchByUserId(listOptions.userId, listOptions.limit,
-                        listOptions.offset).then { List<UserPassword> userPasswordList ->
-                    if (userPasswordList == null) {
-                        return Promise.pure(resultList)
+                if (listOptions.active != null) {
+                    return userPasswordRepository.searchByUserIdAndActiveStatus(listOptions.userId, listOptions.active,
+                            listOptions.limit, listOptions.offset).then { List<UserPassword> userPasswordList ->
+                        return wrappUserCredential(userPasswordList, resultList, listOptions)
                     }
-
-                    return Promise.each(userPasswordList) { UserPassword userPassword ->
-                        def callback = authorizeCallbackFactory.create(userPassword.userId)
-                        return RightsScope.with(authorizeService.authorize(callback)) {
-                            UserCredential newUserCredential =
-                                    modelMapper.passwordToCredential(userPassword, new MappingContext())
-                            if (newUserCredential != null && AuthorizeContext.hasRights('read')) {
-                                newUserCredential.type = CredentialType.PASSWORD.toString()
-                                newUserCredential = userCredentialFilter.filterForGet(newUserCredential,
-                                        listOptions.properties?.split(',') as List<String>)
-
-                                resultList.items.add(newUserCredential)
-                            }
-                            return Promise.pure(null)
-                        }
-                    }.then {
-                        return Promise.pure(resultList)
+                }
+                else {
+                    return userPasswordRepository.searchByUserId(listOptions.userId, listOptions.limit,
+                            listOptions.offset).then { List<UserPassword> userPasswordList ->
+                        return wrappUserCredential(userPasswordList, resultList, listOptions)
                     }
-
                 }
             } else if (listOptions.type == CredentialType.PIN.toString()) {
                 return userPinRepository.searchByUserId(listOptions.userId, listOptions.limit,
@@ -176,8 +163,32 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                     return Promise.pure(resultList)
                 }
             } else {
-                throw new RuntimeException()
+                throw AppErrors.INSTANCE.parameterInvalid("credentialType").exception()
             }
+        }
+    }
+
+    private Promise<Results<UserCredential>> wrappUserCredential(List<UserPassword> userPasswordList, Results<UserCredential> resultList, UserCredentialListOptions listOptions) {
+        if (userPasswordList == null) {
+            return Promise.pure(resultList)
+        }
+
+        return Promise.each(userPasswordList) { UserPassword userPassword ->
+            def callback = authorizeCallbackFactory.create(userPassword.userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                UserCredential newUserCredential =
+                        modelMapper.passwordToCredential(userPassword, new MappingContext())
+                if (newUserCredential != null && AuthorizeContext.hasRights('read')) {
+                    newUserCredential.type = CredentialType.PASSWORD.toString()
+                    newUserCredential = userCredentialFilter.filterForGet(newUserCredential,
+                            listOptions.properties?.split(',') as List<String>)
+
+                    resultList.items.add(newUserCredential)
+                }
+                return Promise.pure(null)
+            }
+        }.then {
+            return Promise.pure(resultList)
         }
     }
 }

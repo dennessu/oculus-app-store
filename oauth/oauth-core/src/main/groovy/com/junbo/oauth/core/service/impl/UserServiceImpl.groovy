@@ -16,10 +16,13 @@ import com.junbo.email.spec.model.QueryParam
 import com.junbo.email.spec.resource.EmailResource
 import com.junbo.email.spec.resource.EmailTemplateResource
 import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserCredential
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
+import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
+import com.junbo.identity.spec.v1.resource.UserCredentialResource
 import com.junbo.identity.spec.v1.resource.UserCredentialVerifyAttemptResource
 import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.identity.spec.v1.resource.UserResource
@@ -66,6 +69,8 @@ class UserServiceImpl implements UserService {
 
     private UserResource userResource
 
+    private UserCredentialResource userCredentialResource
+
     private UserCredentialVerifyAttemptResource userCredentialVerifyAttemptResource
 
     private EmailResource emailResource
@@ -89,6 +94,11 @@ class UserServiceImpl implements UserService {
     @Required
     void setUserResource(UserResource userResource) {
         this.userResource = userResource
+    }
+
+    @Required
+    void setUserCredentialResource(UserCredentialResource userCredentialResource) {
+        this.userCredentialResource = userCredentialResource
     }
 
     @Required
@@ -136,6 +146,18 @@ class UserServiceImpl implements UserService {
         )
 
         return userCredentialVerifyAttemptResource.create(loginAttempt)
+    }
+
+    @Override
+    Promise<UserCredential> getUserCredential(UserId userId) {
+        return this.userCredentialResource.list(userId, new UserCredentialListOptions(type: 'PASSWORD', active: true)).then{ Results<UserCredential> results ->
+            if (results == null || results.items == null || results.items.isEmpty()) {
+                return Promise.pure(null)
+            }
+
+            // there is only one active userCredential
+            return Promise.pure(results.items.get(0))
+        }
     }
 
     @Override
@@ -236,6 +258,15 @@ class UserServiceImpl implements UserService {
                 return this.sendEmail(queryParam, user, email, uriBuilder.build().toString())
             }
         }
+    }
+
+    @Override
+    Promise<Void> sendResetPassword(UserId userId, ActionContextWrapper contextWrapper) {
+        String locale = contextWrapper.viewLocale
+        def request = (ContainerRequest) contextWrapper.request
+        URI baseUri = request.baseUri
+
+        return sendResetPassword(userId, locale, baseUri)
     }
 
     private Promise<String> getDefaultUserEmail(User user) {

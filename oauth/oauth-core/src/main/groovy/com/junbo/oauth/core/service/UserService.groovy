@@ -6,6 +6,7 @@
 package com.junbo.oauth.core.service
 
 import com.junbo.common.id.UserId
+import com.junbo.identity.spec.v1.model.UserCredential
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.core.context.ActionContextWrapper
@@ -22,7 +23,12 @@ interface UserService {
 
     Promise<UserInfo> getUserInfo(String authorization)
 
+    Promise<UserCredential> getUserCredential(UserId userId)
+
     Promise<Void> sendVerifyEmail(UserId userId, ActionContextWrapper contextWrapper)
 
+    Promise<Void> sendResetPassword(UserId userId, ActionContextWrapper contextWrapper)
+
     Promise<Void> sendResetPassword(UserId userId, String locale, URI baseUri)
+
 }

@@ -6,7 +6,6 @@
 package com.junbo.oauth.core.context
 
 import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserCredential
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.oauth.spec.model.*
 import groovy.transform.CompileStatic
@@ -250,14 +249,6 @@ class ActionContextWrapper {
 
     void setUser(User user) {
         actionContext.flowScope[USER] = user
-    }
-
-    UserCredential getUserCredential() {
-        return (UserCredential) actionContext.requestScope[USER_CREDENTIAL]
-    }
-
-    void setUserCredential(UserCredential userCredential) {
-        actionContext.requestScope[USER_CREDENTIAL] = userCredential
     }
 
     Date getDob() {
