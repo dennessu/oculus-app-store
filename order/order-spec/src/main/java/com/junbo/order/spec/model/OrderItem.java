@@ -19,6 +19,7 @@ import com.junbo.common.model.ResourceMetaForDualWrite;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -95,7 +96,7 @@ public class OrderItem extends ResourceMetaForDualWrite<OrderItemId> {
     private Boolean isPreorder;
 
     @JsonIgnore
-    private List<OrderItemRevision> orderItemRevisions;
+    private List<OrderItemRevision> orderItemRevisions = new ArrayList<>();
 
     @JsonIgnore
     private Long latestOrderItemRevisionId;

@@ -124,7 +124,7 @@
                     total_tax decimal not null,
                     total_discount decimal not null,
                     total_shipping_fee decimal default null,
-                    total_shipping_fee_tax decimal default null,
+                    total_shipping_fee_discount decimal default null,
 					resource_age bigint not null,
                     created_time timestamp not null,
                     created_by bigint not null,

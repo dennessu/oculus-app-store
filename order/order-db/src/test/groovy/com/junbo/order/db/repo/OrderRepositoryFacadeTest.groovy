@@ -15,6 +15,7 @@ import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.order.spec.model.PaymentInfo
 import groovy.transform.CompileStatic
+import com.junbo.order.spec.model.enums.OrderItemRevisionType
 import org.apache.commons.lang.RandomStringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.testng.annotations.Test
@@ -79,6 +80,37 @@ class OrderRepositoryFacadeTest extends BaseTest {
         orderRepository.updateOrder(order, false, false, null)
         verifyByRead(order)
     }
+
+    @Test
+    void testUpdateNonTentativeOrder() {
+        def order = createOrder()
+        orderRepository.createOrder(order)
+
+        verifyByRead(order)
+
+        // add order item, discount, paymentId
+        order.shippingAddress = new UserPersonalInfoId(TestHelper.generateId())
+        order.shippingMethod = TestHelper.generateLong() % 100
+        order.orderItems << createOrderItem()
+        order.discounts << createDiscount(order, order.orderItems.last())
+        order.payments << new PaymentInfo(paymentInstrument : new PaymentInstrumentId(TestHelper.generateId()))
+        orderRepository.updateOrder(order, false, false, null)
+        verifyByRead(order)
+
+        // update to non-tentative
+        order.tentative = false
+        orderRepository.updateOrder(order, true, null, null)
+        verifyByRead(order)
+
+        order.shippingAddress = new UserPersonalInfoId(TestHelper.generateId())
+        orderRepository.updateOrder(order, false, true, OrderItemRevisionType.ADJUST_SHIPPING)
+        verifyByRead(order)
+
+        order.orderItems[0].quantity = 0
+        orderRepository.updateOrder(order, false, true, OrderItemRevisionType.REFUND)
+        verifyByRead(order)
+    }
+
 
     void verifyByRead(Order order) {
         assertOrderEquals(orderRepository.getOrder(order.getId().value), order)
