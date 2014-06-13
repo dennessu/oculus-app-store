@@ -244,15 +244,15 @@ Install [PyCharm Community Edition](http://www.jetbrains.com/pycharm/features/ed
 #### Update bash_profile (Optional)
 It is possible that when building you will encounter the following error:
 
-    ```bash
-    java.lang.OutOfMemoryError: PermGen space
-    ```
+```bash
+java.lang.OutOfMemoryError: PermGen space
+```
 
 To fix this, you should add the following to your ~/.bash_profile:
 
-    ```bash
-    export GRADLE_OPTS="$GRADLE_OPTS -Xmx2048m -Xms1024m -XX:PermSize=512m -XX:MaxPermSize=1024m"
-    ```
+```bash
+export GRADLE_OPTS="$GRADLE_OPTS -Xmx2048m -Xms1024m -XX:PermSize=512m -XX:MaxPermSize=1024m"
+```
     
 ## Build and Run
 
