@@ -55,6 +55,7 @@ class ActionContextWrapper {
     public static final String THIRD_PARTY_ACCOUNT = 'third_party_account'
     public static final String SUB_FLOW_NAME = 'sub_flow_name'
     public static final String USER_DEFAULT_EMAIL = 'default_email'
+    public static final String EMAIL_VERIFY_LINK = 'email_verify_link'
 
     @Delegate
     private final ActionContext actionContext
@@ -372,5 +373,13 @@ class ActionContextWrapper {
 
     void setSubFlowName(String subFlowName) {
         actionContext.flowScope[SUB_FLOW_NAME] = subFlowName
+    }
+
+    String getEmailVerifyLink() {
+        return actionContext.flowScope[EMAIL_VERIFY_LINK] as String
+    }
+
+    void setEmailVerifyLink(String emailVerifyLink) {
+        actionContext.flowScope[EMAIL_VERIFY_LINK] = emailVerifyLink
     }
 }

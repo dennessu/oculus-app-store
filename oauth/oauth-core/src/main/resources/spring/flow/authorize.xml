@@ -385,7 +385,9 @@
         <property name="pageUrl" value="${oauth.core.portal.emailVerifyRequiredUri}"/>
     </bean>
 
-    <bean id="emailVerifyRequiredView" class="com.junbo.oauth.core.view.EmailVerifyRequiredView"/>
+    <bean id="emailVerifyRequiredView" class="com.junbo.oauth.core.view.EmailVerifyRequiredView">
+        <property name="debugEnabled" value="${common.conf.debugMode}"/>
+    </bean>
 
     <bean id="verifyEmail" class="com.junbo.oauth.core.action.VerifyEmail">
         <property name="emailVerifyCodeRepository" ref="emailVerifyCodeRepository"/>

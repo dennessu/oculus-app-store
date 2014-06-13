@@ -192,7 +192,9 @@ class UserServiceImpl implements UserService {
                         locale: contextWrapper.viewLocale
                 )
 
-                return this.sendEmail(queryParam, user, email, uriBuilder)
+                String link = uriBuilder.build().toString()
+                contextWrapper.emailVerifyLink = link
+                return this.sendEmail(queryParam, user, email, link)
             }
         }
     }
@@ -231,7 +233,7 @@ class UserServiceImpl implements UserService {
                         locale: locale
                 )
 
-                return this.sendEmail(queryParam, user, email, uriBuilder)
+                return this.sendEmail(queryParam, user, email, uriBuilder.build().toString())
             }
         }
     }
@@ -268,7 +270,7 @@ class UserServiceImpl implements UserService {
         return Promise.pure(null)
     }
 
-    private Promise<Void> sendEmail(QueryParam queryParam, User user, String email, UriBuilder uriBuilder) {
+    private Promise<Void> sendEmail(QueryParam queryParam, User user, String email, String uri) {
         // todo: remove this hard coded after email template has been setup
         queryParam.locale = 'en_US'
 
@@ -287,7 +289,7 @@ class UserServiceImpl implements UserService {
                     recipients: [email].asList(),
                     replacements: [
                             'name': user.username,
-                            'link': uriBuilder.build().toString()
+                            'link': uri
                     ]
             )
 
