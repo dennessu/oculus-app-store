@@ -3,7 +3,6 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
-import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.common.model.Results
@@ -61,7 +60,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
             return userSecurityQuestionValidator.validateForCreate(userId, userSecurityQuestion).then {
                 return userSecurityQuestionRepository.create(userSecurityQuestion).
                         then { UserSecurityQuestion newUserSecurityQuestion ->
-                            Created201Marker.mark((Id) newUserSecurityQuestion.id)
+                            Created201Marker.mark(newUserSecurityQuestion.getId())
 
                             newUserSecurityQuestion = userSecurityQuestionFilter.filterForGet(newUserSecurityQuestion, null)
                             return Promise.pure(newUserSecurityQuestion)

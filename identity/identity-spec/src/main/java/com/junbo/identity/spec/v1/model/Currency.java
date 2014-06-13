@@ -13,7 +13,6 @@ import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -47,8 +46,8 @@ public class Currency extends PropertyAssignedAwareResourceMeta<CurrencyId> {
     @JsonProperty("minimalAuthorizeAmount")
     private BigDecimal minAuthAmount;
 
-    @ApiModelProperty(position = 11, required = true, value = "Localizable properties and the corresponding Key value to look up via Translation service.")
-    private Map<String, String> localeKeys = new HashMap<>();
+    @ApiModelProperty(position = 11, required = true, value = "Localizable properties and the corresponding Key.")
+    private Map<String, CurrencyLocaleKey> locales;
 
     public CurrencyId getId() {
         return id;
@@ -115,12 +114,12 @@ public class Currency extends PropertyAssignedAwareResourceMeta<CurrencyId> {
         support.setPropertyAssigned("minimalAuthorizeAmount");
     }
 
-    public Map<String, String> getLocaleKeys() {
-        return localeKeys;
+    public Map<String, CurrencyLocaleKey> getLocales() {
+        return locales;
     }
 
-    public void setLocaleKeys(Map<String, String> localeKeys) {
-        this.localeKeys = localeKeys;
-        support.setPropertyAssigned("localeKeys");
+    public void setLocales(Map<String, CurrencyLocaleKey> locales) {
+        this.locales = locales;
+        support.setPropertyAssigned("locales");
     }
 }

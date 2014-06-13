@@ -311,36 +311,28 @@
         <property name="countryRepository" ref="countryRepository"/>
         <property name="localeRepository" ref="localeRepository" />
         <property name="currencyRepository" ref="currencyRepository" />
-        <property name="allowedLocaleKeys">
-            <list>
-                <value>shortNameKey</value>
-                <value>longNameKey</value>
-            </list>
-        </property>
-        <property name="minLocaleKeyValueLength" value="1" />
-        <property name="maxLocaleKeyValueLength" value="255" />
         <property name="minSubCountryShortNameLength" value="1" />
         <property name="maxSubCountryShortNameLength" value="255" />
         <property name="minSubCountryLongNameLength" value="1" />
         <property name="maxSubCountryLongNameLength" value="255" />
+        <property name="minCountryLongNameLength" value="1" />
+        <property name="maxCountryLongNameLength" value="255" />
+        <property name="minCountryShortNameLength" value="1" />
+        <property name="maxCountryShortNameLength" value="255" />
     </bean>
 
     <bean id="currencyValidator" class="com.junbo.identity.core.service.validator.impl.CurrencyValidatorImpl">
         <property name="currencyRepository" ref="currencyRepository"/>
-        <property name="allowedLocaleKeys">
-            <list>
-                <value>shortName</value>
-                <value>longName</value>
-            </list>
-        </property>
-        <property name="minLocaleKeyValueLength" value="1" />
-        <property name="maxLocaleKeyValueLength" value="255" />
         <property name="minNumberAfterDecimalLength" value="0" />
         <property name="maxNumberAfterDecimalLength" value="3" />
         <property name="minSymbolLength" value="1" />
         <property name="maxSymbolLength" value="10" />
         <property name="minMinAuthAmount" value="0" />
         <property name="maxMinAuthAmount" value="10" />
+        <property name="minLocaleKeyShortNameLength" value="1" />
+        <property name="maxLocaleKeyShortNameLength" value="255" />
+        <property name="minLocaleKeyLongNameLength" value="1" />
+        <property name="maxLocaleKeyLongNameLength" value="255" />
     </bean>
 
     <bean id="localeValidator" class="com.junbo.identity.core.service.validator.impl.LocaleValidatorImpl">

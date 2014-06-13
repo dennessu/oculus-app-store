@@ -1,6 +1,5 @@
 package com.junbo.identity.rest.resource.v1
 
-import com.junbo.common.id.Id
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -46,7 +45,7 @@ class OrganizationResourceImpl implements OrganizationResource {
 
         return organizationValidator.validateForCreate(organization).then {
             return organizationRepository.create(organization).then { Organization newOrganization ->
-                Created201Marker.mark((Id) newOrganization.id)
+                Created201Marker.mark(newOrganization.getId())
 
                 newOrganization = organizationFilter.filterForGet(newOrganization, null)
                 return Promise.pure(newOrganization)

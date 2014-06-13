@@ -3,7 +3,6 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
-import com.junbo.common.id.Id
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -92,7 +91,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                             UserCredential newUserCredential =
                                     modelMapper.passwordToCredential(userPassword, new MappingContext())
                             newUserCredential.type = CredentialType.PASSWORD.toString()
-                            Created201Marker.mark((Id) newUserCredential.id)
+                            Created201Marker.mark(newUserCredential.getId())
 
                             newUserCredential = userCredentialFilter.filterForGet(newUserCredential, null)
                             return Promise.pure(newUserCredential)
@@ -113,7 +112,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
 
                             UserCredential newUserCredential = modelMapper.pinToCredential(userPin, new MappingContext())
                             newUserCredential.type = CredentialType.PIN.toString()
-                            Created201Marker.mark((Id) newUserCredential.id)
+                            Created201Marker.mark(newUserCredential.getId())
 
                             newUserCredential = userCredentialFilter.filterForGet(newUserCredential, null)
                             return Promise.pure(newUserCredential)

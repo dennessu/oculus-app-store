@@ -10,11 +10,14 @@ import com.junbo.identity.data.repository.CurrencyRepository
 import com.junbo.identity.data.repository.LocaleRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Country
-import com.junbo.identity.spec.v1.model.SubCountry
+import com.junbo.identity.spec.v1.model.CountryLocaleKey
+import com.junbo.identity.spec.v1.model.SubCountryLocaleKey
+import com.junbo.identity.spec.v1.model.SubCountryLocaleKeys
 import com.junbo.identity.spec.v1.option.list.CountryListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.StringUtils
 
 /**
  * Check minimum and maximum subCountry's shortName length
@@ -41,10 +44,11 @@ class CountryValidatorImpl implements CountryValidator {
     private Integer minSubCountryLongNameLength
     private Integer maxSubCountryLongNameLength
 
-    private Integer minLocaleKeyValueLength
-    private Integer maxLocaleKeyValueLength
+    private Integer minCountryShortNameLength
+    private Integer maxCountryShortNameLength
 
-    private List<String> allowedLocaleKeys
+    private Integer minCountryLongNameLength
+    private Integer maxCountryLongNameLength
 
     @Required
     void setCountryRepository(CountryRepository countryRepository) {
@@ -82,18 +86,23 @@ class CountryValidatorImpl implements CountryValidator {
     }
 
     @Required
-    void setMinLocaleKeyValueLength(Integer minLocaleKeyValueLength) {
-        this.minLocaleKeyValueLength = minLocaleKeyValueLength
+    void setMinCountryShortNameLength(Integer minCountryShortNameLength) {
+        this.minCountryShortNameLength = minCountryShortNameLength
     }
 
     @Required
-    void setMaxLocaleKeyValueLength(Integer maxLocaleKeyValueLength) {
-        this.maxLocaleKeyValueLength = maxLocaleKeyValueLength
+    void setMaxCountryShortNameLength(Integer maxCountryShortNameLength) {
+        this.maxCountryShortNameLength = maxCountryShortNameLength
     }
 
     @Required
-    void setAllowedLocaleKeys(List<String> allowedLocaleKeys) {
-        this.allowedLocaleKeys = allowedLocaleKeys
+    void setMinCountryLongNameLength(Integer minCountryLongNameLength) {
+        this.minCountryLongNameLength = minCountryLongNameLength
+    }
+
+    @Required
+    void setMaxCountryLongNameLength(Integer maxCountryLongNameLength) {
+        this.maxCountryLongNameLength = maxCountryLongNameLength
     }
 
     @Override
@@ -184,7 +193,7 @@ class CountryValidatorImpl implements CountryValidator {
         }.then {
             return checkSupportedLocales(country)
         }.then {
-            return checkLocaleKeys(country)
+            return checkCountryLocaleKeys(country)
         }
     }
 
@@ -231,32 +240,12 @@ class CountryValidatorImpl implements CountryValidator {
             throw AppErrors.INSTANCE.fieldRequired('subCountries').exception()
         }
 
-        country.subCountries.each { Map.Entry<String, SubCountry> subCountryEntry ->
-            SubCountry subCountry = subCountryEntry.value
-
-            if (subCountry.shortNameKey == null) {
-                throw AppErrors.INSTANCE.fieldRequired('subCountries.shortNameKey').exception()
-            }
-            if (subCountry.shortNameKey.length() > maxSubCountryShortNameLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('subCountries.shortNameKey', maxSubCountryShortNameLength).
-                        exception()
-            }
-            if (subCountry.shortNameKey.length() < minSubCountryLongNameLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('subCountries.shortNameKey', minSubCountryLongNameLength).
-                        exception()
+        country.subCountries.each { Map.Entry<String, SubCountryLocaleKeys> subCountryEntry ->
+            if (StringUtils.isEmpty(subCountryEntry.key)) {
+                throw AppErrors.INSTANCE.fieldInvalidException('subCountries.key', 'key can\'t be null or empty').exception()
             }
 
-            if (subCountry.longNameKey == null) {
-                throw AppErrors.INSTANCE.fieldRequired('subCountries.longNameKey').exception()
-            }
-            if (subCountry.longNameKey.length() > maxSubCountryLongNameLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('subCountries.longNameKey', maxSubCountryLongNameLength).
-                        exception()
-            }
-            if (subCountry.longNameKey.length() < minSubCountryLongNameLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('subCountries.longNameKey', minSubCountryLongNameLength).
-                        exception()
-            }
+            checkSubCountryLocaleKeys(subCountryEntry.value)
         }
 
         return Promise.pure(null)
@@ -288,29 +277,78 @@ class CountryValidatorImpl implements CountryValidator {
         }
     }
 
-    private Promise<Void> checkLocaleKeys(Country country) {
+    private Promise<Void> checkCountryLocaleKeys(Country country) {
         if (country.locales == null) {
-            throw AppErrors.INSTANCE.fieldRequired('localeKeys').exception()
+            throw AppErrors.INSTANCE.fieldRequired('locales').exception()
         }
 
-        country.locales.each { Map.Entry<String, String> entry ->
-            String key = entry.key
-            if (!(key in allowedLocaleKeys)) {
-                throw AppErrors.INSTANCE.fieldInvalid('localeKeys', allowedLocaleKeys.join(',')).exception()
+        country.locales.locales.each { Map.Entry<String, CountryLocaleKey> entry ->
+            if (StringUtils.isEmpty(entry.key)) {
+                throw AppErrors.INSTANCE.fieldInvalidException('locales.key', 'locales.key can\'t be null or empty').exception()
             }
 
-            String value = entry.value
+            CountryLocaleKey value = entry.value
             if (value == null) {
-                throw AppErrors.INSTANCE.fieldRequired('localeKeys.value').exception()
+                throw AppErrors.INSTANCE.fieldRequired('locales.value').exception()
             }
-            if (value.length() > maxLocaleKeyValueLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('localeKeys.value', maxLocaleKeyValueLength).exception()
+            if (value.shortName == null) {
+                throw AppErrors.INSTANCE.fieldRequired('locales.value.shortName').exception()
             }
-            if (value.length() < minLocaleKeyValueLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('localeKeys.value', minLocaleKeyValueLength).exception()
+            if (value.shortName.length() > maxCountryShortNameLength) {
+                throw AppErrors.INSTANCE.fieldTooLong('locales.value.shortName', maxCountryShortNameLength).exception()
+            }
+            if (value.shortName.length() < minCountryShortNameLength) {
+                throw AppErrors.INSTANCE.fieldTooShort('locales.value.shortName', minCountryShortNameLength).exception()
+            }
+
+            if (value.longName == null) {
+                throw AppErrors.INSTANCE.fieldRequired('locales.value.longName').exception()
+            }
+            if (value.longName.length() > maxCountryLongNameLength) {
+                throw AppErrors.INSTANCE.fieldTooLong('locales.value.longName', maxCountryLongNameLength).exception()
+            }
+            if (value.longName.length() < minCountryLongNameLength) {
+                throw AppErrors.INSTANCE.fieldTooShort('locales.value.longName', minCountryLongNameLength).exception()
             }
         }
 
         return Promise.pure(null)
+    }
+
+    private void checkSubCountryLocaleKeys(SubCountryLocaleKeys locales) {
+        if (locales == null) {
+            throw AppErrors.INSTANCE.fieldInvalidException('locales', 'subCountries is null').exception()
+        }
+        if (locales.locales == null || locales.locales.isEmpty()) {
+            throw AppErrors.INSTANCE.fieldInvalidException('locales', 'subCountries can\'t be empty').exception()
+        }
+
+        locales.locales.each { Map.Entry<String, SubCountryLocaleKey> localeKeyEntry ->
+            if (localeKeyEntry.value == null) {
+                throw AppErrors.INSTANCE.fieldInvalid('subCountries.locales').exception()
+            }
+
+            SubCountryLocaleKey localeKey = localeKeyEntry.value
+
+            if (localeKey.shortName == null) {
+                throw AppErrors.INSTANCE.fieldRequired('subCountries.locales.shortName').exception()
+            }
+            if (localeKey.shortName.length() > maxSubCountryShortNameLength) {
+                throw AppErrors.INSTANCE.fieldTooLong('subCountries.locales.shortName', maxSubCountryShortNameLength).exception()
+            }
+            if (localeKey.shortName.length() < minSubCountryShortNameLength) {
+                throw AppErrors.INSTANCE.fieldTooShort('subCountries.locales.shortName', minSubCountryShortNameLength).exception()
+            }
+
+            if (localeKey.longName == null) {
+                throw AppErrors.INSTANCE.fieldRequired('subCountries.locales.longName').exception()
+            }
+            if (localeKey.longName.length() > maxSubCountryLongNameLength) {
+                throw AppErrors.INSTANCE.fieldTooLong('subCountries.locales.longName', maxSubCountryLongNameLength).exception()
+            }
+            if (localeKey.longName.length() < minSubCountryLongNameLength) {
+                throw AppErrors.INSTANCE.fieldTooShort('subCountries.locales.longName', minSubCountryLongNameLength).exception()
+            }
+        }
     }
 }

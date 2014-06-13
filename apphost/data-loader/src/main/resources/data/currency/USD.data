@@ -1,12 +1,17 @@
 {
-  "currencyCode": "USD",
-  "symbol": "$",
-  "symbolPosition": "BEFORE",
-  "numberAfterDecimal": 2,
-  "minimalAuthorizeAmount":1,
-  "localeKeys": {
-    "shortName": "USD_SHORT",
-    "longName": "USD_LONG"
-  },
-  "futureExpansion": {}
+ "currencyCode": "USD",
+ "symbol": "$",
+ "symbolPosition": "BEFORE",
+ "numberAfterDecimal": 2,
+ "minimalAuthorizeAmount":1,
+ "locales": {
+    "en_US":{
+        "shortName": "USD",
+        "longName": "US Dollar"
+    },
+    "zh_CN":{
+        "shortName": "美元",
+        "longName": "美元"
+    }
+ }
 }

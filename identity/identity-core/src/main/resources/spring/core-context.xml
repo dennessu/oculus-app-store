@@ -95,7 +95,7 @@
                 <value>symbolPosition</value>
                 <value>minAuthAmount</value>
                 <value>numberAfterDecimal</value>
-                <value>localeKeys</value>
+                <value>locales</value>
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>createdTime</value>
@@ -109,7 +109,7 @@
                 <value>symbolPosition</value>
                 <value>minAuthAmount</value>
                 <value>numberAfterDecimal</value>
-                <value>localeKeys</value>
+                <value>locales</value>
                 <value>futureExpansion</value>
             </list>
         </property>
@@ -121,7 +121,7 @@
                 <value>symbolPosition</value>
                 <value>minAuthAmount</value>
                 <value>numberAfterDecimal</value>
-                <value>localeKeys</value>
+                <value>locales</value>
                 <value>futureExpansion</value>
                 <value>rev</value>
             </list>

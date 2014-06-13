@@ -3,7 +3,6 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
-import com.junbo.common.id.Id
 import com.junbo.common.id.UserCredentialVerifyAttemptId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -70,7 +69,7 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
             return createInNewTran(userCredentialAttempt).then { UserCredentialVerifyAttempt attempt ->
 
                 if (attempt.succeeded == true) {
-                    Created201Marker.mark((Id)attempt.id)
+                    Created201Marker.mark(attempt.getId())
 
                     attempt = userCredentialVerifyAttemptFilter.filterForGet(attempt, null)
                     return Promise.pure(attempt)

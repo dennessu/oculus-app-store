@@ -6,6 +6,7 @@ import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.core.service.normalize.NormalizeService
+import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.OrganizationRepository
@@ -13,6 +14,7 @@ import com.junbo.identity.data.repository.UserPasswordRepository
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
+import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.model.migration.OculusInput
 import com.junbo.identity.spec.v1.model.migration.OculusOutput
@@ -54,16 +56,15 @@ class MigrationResourceImpl implements MigrationResource {
         if (StringUtils.isEmpty(oculusInput.email)) {
             throw new IllegalArgumentException('email can\'t be null')
         }
-        if (oculusInput.oldPasswordHash) {
-            throw new IllegalArgumentException('user has old PasswordHash')
-        }
 
         // Check current email isn't used by others
-        return checkEmailValid(oculusInput).then { User existing ->
-            return checkOrganizationValid(oculusInput, existing).then {
-                // If the user exists, update current user's information;
-                // else, create user's information
-                return createOrUpdateMigrateUser(oculusInput)
+        return checkPasswordValid(oculusInput).then {
+            return checkEmailValid(oculusInput).then { User existing ->
+                return checkOrganizationValid(oculusInput, existing).then {
+                    // If the user exists, update current user's information;
+                    // else, create user's information
+                    return createOrUpdateMigrateUser(oculusInput)
+                }
             }
         }
     }
@@ -172,6 +173,10 @@ class MigrationResourceImpl implements MigrationResource {
         }.then { User createdUser ->
             return userRepository.update(createdUser)
         }.then { User createdUser ->
+            return saveOrUpdatePassword(oculusInput, createdUser).then {
+                return Promise.pure(createdUser)
+            }
+        }.then { User createdUser ->
             if (StringUtils.isEmpty(oculusInput.devCenterCompany)) {
                 return Promise.pure(null)
             }
@@ -189,6 +194,30 @@ class MigrationResourceImpl implements MigrationResource {
                         organizationId: (OrganizationId)createdOrganization.id
                 )
                 return Promise.pure(output)
+            }
+        }
+    }
+
+    Promise<UserPassword> saveOrUpdatePassword(OculusInput oculusInput, User user) {
+        return userPasswordRepository.searchByUserId(user.getId(), Integer.MAX_VALUE, 0).then { List<UserPassword> userPasswordList ->
+            if (CollectionUtils.isEmpty(userPasswordList)) {
+                UserPassword userPassword = new UserPassword(
+                        changeAtNextLogin: oculusInput.forceResetPassword,
+                        userId: user.getId(),
+                        active: true,
+                        passwordHash: oculusInput.password
+                )
+                // create password
+                return userPasswordRepository.create(userPassword)
+            } else {
+                UserPassword activePassword = userPasswordList.find { UserPassword userPassword ->
+                    return userPassword.active
+                }
+
+                activePassword.changeAtNextLogin = oculusInput.forceResetPassword
+                activePassword.passwordHash = oculusInput.password
+
+                return userPasswordRepository.update(activePassword)
             }
         }
     }
@@ -259,6 +288,21 @@ class MigrationResourceImpl implements MigrationResource {
 
             throw AppErrors.INSTANCE.organizationAlreadyUsed(oculusInput.devCenterCompany).exception()
         }
+    }
+
+    Promise<Void> checkPasswordValid(OculusInput oculusInput) {
+        if (oculusInput.oldPasswordHash) {
+            throw new IllegalArgumentException('user has old PasswordHash')
+        }
+        if (StringUtils.isEmpty(oculusInput.password)) {
+            throw new IllegalArgumentException('password is null or empty')
+        }
+        String[] passwords = oculusInput.password.split(":")
+        if (passwords.length != 4 && passwords[0] != "1") {
+            throw new IllegalArgumentException('password only accept version 1')
+        }
+
+        return Promise.pure(null)
     }
 
     private String mapToLocaleCode(String language) {

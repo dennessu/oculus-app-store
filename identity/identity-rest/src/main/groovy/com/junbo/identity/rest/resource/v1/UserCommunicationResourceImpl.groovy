@@ -3,7 +3,6 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
-import com.junbo.common.id.Id
 import com.junbo.common.id.UserCommunicationId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -60,7 +59,7 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
             return userCommunicationValidator.validateForCreate(userCommunication).then {
                 return userCommunicationRepository.create(userCommunication).then {
                     UserCommunication newUserCommunication ->
-                    Created201Marker.mark((Id) newUserCommunication.id)
+                    Created201Marker.mark(newUserCommunication.getId())
 
                     newUserCommunication = userCommunicationFilter.filterForGet(newUserCommunication, null)
                     return Promise.pure(newUserCommunication)

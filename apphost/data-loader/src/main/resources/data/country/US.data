@@ -1,8 +1,8 @@
 {
   "countryCode": "US",
   "defaultLocale": {
-    "href": "/v1/locales/en-US",
-    "id": "en-US"
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
   },
   "defaultCurrency": {
     "href": "/v1/currencies/USD",
@@ -15,18 +15,45 @@
     }
   ],
   "subCountries": {
-    "NY": { "shortNameKey": "US_NY_SHORT", "longNameKey": "US_NY_LONG" },
-    "CA": { "shortNameKey": "US_CA_SHORT", "longNameKey": "US_CA_LONG" }
+    "NY": { 
+        "locales":{
+            "en_US":{
+                "shortName": "NY",
+                "longName": "New York"
+            },
+            "zh_CN":{
+                "shortName": "纽约",
+                "longName": "纽约"
+            }
+        }
+    },
+    "CA": {
+        "locales":{
+            "en_US":{
+                "shortName": "CA",
+                "longName": "California"
+            },
+            "zh_CN":{
+                "shortName": "加州",
+                "longName": "加利福尼亚"
+            }
+        }
+    }
   },
   "supportedLocales": [
     {
-      "href": "/v1/locales/en-US",
-      "id": "en-US"
+      "href": "/v1/locales/en_US",
+      "id": "en_US"
     }
  ],
- "localeKeys": {
-   "shortNameKey": "US_SHORT",
-   "longNameKey": "US_LONG"
- },
- "futureExpansion": {}
+ "locales": {
+    "en_US":{
+        "shortName": "USA",
+        "longName": "United States of America"
+    },
+    "zh_CN":{
+        "shortName": "美国",
+        "longName": "美利坚合众国"
+    }
+ }
 }
