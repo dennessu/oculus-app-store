@@ -187,10 +187,6 @@ public class CatalogGatewayImpl implements CatalogGateway{
     }
 
     private Price getPrice(com.junbo.catalog.spec.model.common.Price price) {
-        if (price == null) {
-            throw AppErrors.INSTANCE.missingConfiguration("price").exception();
-        }
-
         Map<String, Map<String, BigDecimal>> prices = new HashMap<>();
         switch(PriceType.valueOf(price.getPriceType())) {
             case CUSTOM:
@@ -214,8 +210,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
         RatingOffer offer = new RatingOffer();
 
         offer.setPrice(getPrice(offerRevision.getPrice()));
-        offer.setPreOrderPrice(offerRevision.getPreOrderPrice() == null? null :
-                getPrice(offerRevision.getPreOrderPrice()));
+        offer.setPreOrderPrice(getPrice(offerRevision.getPreOrderPrice()));
 
         for(String country : offerRevision.getCountries().keySet()) {
             CountryProperties properties = offerRevision.getCountries().get(country);
@@ -248,7 +243,8 @@ public class CatalogGatewayImpl implements CatalogGateway{
                 for (Action action : actions) {
                     OfferAction offerAction = new OfferAction();
                     offerAction.setType(action.getType());
-                    //offerAction.setPrice(action.getPrice()); TODO
+                    offerAction.setConditions(buildActionCondition(action.getCondition()));
+                    offerAction.setPrice(getPrice(action.getPrice()));
                     offerActions.add(offerAction);
                 }
                 offer.getEventActions().put(eventType, offerActions);
@@ -256,5 +252,19 @@ public class CatalogGatewayImpl implements CatalogGateway{
         }
 
         return offer;
+    }
+
+    private Map<String, Object> buildActionCondition(ActionCondition condition) {
+        Map<String, Object> result = new HashMap<>();
+        if (condition ==  null) {
+            return result;
+        }
+
+        result.put(Constants.FROM_CYCLE, condition.getFromCycle());
+        result.put(Constants.TO_CYCLE, condition.getToCycle());
+        result.put(Constants.EXTEND_DURATION, condition.getExtendDuration());
+        result.put(Constants.EXTEND_DURATION_UNIT, condition.getExtendDurationUnit());
+
+        return result;
     }
 }

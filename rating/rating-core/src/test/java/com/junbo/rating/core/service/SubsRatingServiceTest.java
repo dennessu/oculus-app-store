@@ -9,6 +9,8 @@ package com.junbo.rating.core.service;
 import com.junbo.rating.core.BaseTest;
 import com.junbo.rating.core.context.SubsRatingContext;
 import com.junbo.rating.spec.model.Currency;
+import com.junbo.rating.spec.model.subscription.DurationUnit;
+import com.junbo.rating.spec.model.subscription.SubsRatingRequest;
 import com.junbo.rating.spec.model.subscription.SubsRatingType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
@@ -34,5 +36,32 @@ public class SubsRatingServiceTest extends BaseTest {
 
         subsRatingService.rate(context);
         Assert.assertEquals(context.getAmount(), new BigDecimal("9.99"));
+    }
+
+    @Test
+    public void testCycleProcessor() {
+        SubsRatingContext context = new SubsRatingContext();
+        context.setType(SubsRatingType.CYCLE);
+        context.setOfferId("100L");
+        context.setCountry("US");
+        context.setCurrency(Currency.USD);
+        context.setCycleCount(1);
+
+        subsRatingService.rate(context);
+        Assert.assertEquals(context.getAmount(), new BigDecimal("0.99"));
+    }
+
+    @Test
+    public void testExtendProcessor() {
+        SubsRatingContext context = new SubsRatingContext();
+        context.setType(SubsRatingType.EXTEND);
+        context.setOfferId("100L");
+        context.setCountry("US");
+        context.setCurrency(Currency.USD);
+        context.setExtensionNum(10);
+        context.setExtensionUnit(DurationUnit.DAY);
+
+        subsRatingService.rate(context);
+        Assert.assertEquals(context.getAmount(), BigDecimal.ZERO);
     }
 }

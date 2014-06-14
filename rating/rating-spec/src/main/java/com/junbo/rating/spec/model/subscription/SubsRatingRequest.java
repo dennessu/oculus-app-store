@@ -28,6 +28,11 @@ public class SubsRatingRequest {
     @CurrencyId
     private String currency;
 
+    private int cycleCount;
+
+    private int extensionNum;
+    private DurationUnit extensionUnit;
+
     @Null
     private BigDecimal amount;
 
@@ -61,6 +66,30 @@ public class SubsRatingRequest {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public int getCycleCount() {
+        return cycleCount;
+    }
+
+    public void setCycleCount(int cycleCount) {
+        this.cycleCount = cycleCount;
+    }
+
+    public int getExtensionNum() {
+        return extensionNum;
+    }
+
+    public void setExtensionNum(int extensionNum) {
+        this.extensionNum = extensionNum;
+    }
+
+    public DurationUnit getExtensionUnit() {
+        return extensionUnit;
+    }
+
+    public void setExtensionUnit(DurationUnit extensionUnit) {
+        this.extensionUnit = extensionUnit;
     }
 
     public BigDecimal getAmount() {

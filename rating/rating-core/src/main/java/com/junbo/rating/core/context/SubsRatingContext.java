@@ -8,6 +8,7 @@ package com.junbo.rating.core.context;
 
 import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.model.Currency;
+import com.junbo.rating.spec.model.subscription.DurationUnit;
 import com.junbo.rating.spec.model.subscription.SubsRatingRequest;
 import com.junbo.rating.spec.model.subscription.SubsRatingType;
 
@@ -19,6 +20,9 @@ import java.math.BigDecimal;
 public class SubsRatingContext extends RatingContext {
     private String offerId;
     private SubsRatingType type;
+    private int cycleCount;
+    private int extensionNum;
+    private DurationUnit extensionUnit;
     private BigDecimal amount;
 
     public void fromRequest(SubsRatingRequest request) {
@@ -32,6 +36,9 @@ public class SubsRatingContext extends RatingContext {
 
         this.offerId = request.getOfferId();
         this.type = request.getType();
+        this.cycleCount = request.getCycleCount();
+        this.extensionNum = request.getExtensionNum();
+        this.extensionUnit = request.getExtensionUnit();
     }
 
     public String getOfferId() {
@@ -48,6 +55,30 @@ public class SubsRatingContext extends RatingContext {
 
     public void setType(SubsRatingType type) {
         this.type = type;
+    }
+
+    public int getCycleCount() {
+        return cycleCount;
+    }
+
+    public void setCycleCount(int cycleCount) {
+        this.cycleCount = cycleCount;
+    }
+
+    public int getExtensionNum() {
+        return extensionNum;
+    }
+
+    public void setExtensionNum(int extensionNum) {
+        this.extensionNum = extensionNum;
+    }
+
+    public DurationUnit getExtensionUnit() {
+        return extensionUnit;
+    }
+
+    public void setExtensionUnit(DurationUnit extensionUnit) {
+        this.extensionUnit = extensionUnit;
     }
 
     public BigDecimal getAmount() {

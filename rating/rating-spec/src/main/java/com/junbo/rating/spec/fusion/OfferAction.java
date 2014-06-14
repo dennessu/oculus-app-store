@@ -6,11 +6,15 @@
 
 package com.junbo.rating.spec.fusion;
 
+import java.util.Map;
+
 /**
  * Created by lizwu on 5/22/14.
  */
 public class OfferAction {
     private String type;
+
+    private Map<String, Object> conditions;
 
     private Price price;
 
@@ -20,6 +24,14 @@ public class OfferAction {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Map<String, Object> getConditions() {
+        return conditions;
+    }
+
+    public void setConditions(Map<String, Object> conditions) {
+        this.conditions = conditions;
     }
 
     public Price getPrice() {

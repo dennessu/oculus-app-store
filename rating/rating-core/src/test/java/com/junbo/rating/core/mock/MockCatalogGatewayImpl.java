@@ -105,9 +105,36 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
                 put(Constants.PURCHASE_EVENT, new ArrayList<OfferAction>() {{
                     add(new OfferAction() {{
                         setType(Constants.CHARGE_ACTION);
+                        setConditions(Collections.EMPTY_MAP);
                         setPrice(new Price(PriceType.CUSTOM.name(), new HashMap<String, Map<String, BigDecimal>>() {{
                             put("US", new HashMap<String, BigDecimal>() {{
                                 put("USD", new BigDecimal("9.99"));
+                            }});
+                        }}));
+                    }});
+                    add(new OfferAction() {{
+                        setType(Constants.CHARGE_ACTION);
+                        setConditions(new HashMap<String, Object>() {{
+                            put(Constants.EXTEND_DURATION, 10);
+                            put(Constants.EXTEND_DURATION_UNIT, "day");
+                        }});
+                        setPrice(new Price(PriceType.CUSTOM.name(), new HashMap<String, Map<String, BigDecimal>>() {{
+                            put("US", new HashMap<String, BigDecimal>() {{
+                                put("USD", BigDecimal.ZERO);
+                            }});
+                        }}));
+                    }});
+                }});
+                put(Constants.CYCLE_EVENT, new ArrayList<OfferAction>() {{
+                    add(new OfferAction() {{
+                        setType(Constants.CHARGE_ACTION);
+                        setConditions(new HashMap<String, Object>() {{
+                            put(Constants.FROM_CYCLE, 1);
+                            put(Constants.TO_CYCLE, 12);
+                        }});
+                        setPrice(new Price(PriceType.CUSTOM.name(), new HashMap<String, Map<String, BigDecimal>>() {{
+                            put("US", new HashMap<String, BigDecimal>() {{
+                                put("USD", new BigDecimal("0.99"));
                             }});
                         }}));
                     }});

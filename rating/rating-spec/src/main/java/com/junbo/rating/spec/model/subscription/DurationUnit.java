@@ -7,12 +7,11 @@
 package com.junbo.rating.spec.model.subscription;
 
 /**
- * Created by lizwu on 5/21/14.
+ * Created by lizwu on 6/13/14.
  */
-public enum SubsRatingType {
-    PURCHASE,
-    RENEW,
-    CANCEL,
-    EXTEND,
-    CYCLE
+public enum DurationUnit {
+    YEAR,
+    MONTH,
+    WEEK,
+    DAY
 }

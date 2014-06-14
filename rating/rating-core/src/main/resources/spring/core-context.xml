@@ -40,6 +40,9 @@
     <!--Processors-->
     <bean id="defaultProcessor" class="com.junbo.rating.core.processor.DefaultProcessor"/>
     <bean id="cancelProcessor" class="com.junbo.rating.core.processor.CancelProcessor"/>
+    <bean id="extendProcessor" class="com.junbo.rating.core.processor.ExtendProcessor"/>
+    <bean id="cycleProcessor" class="com.junbo.rating.core.processor.CycleProcessor"/>
+
 
     <!--Processor Register-->
     <bean id="processorRegister" class="com.junbo.rating.core.processor.ProcessorRegister">
@@ -48,6 +51,8 @@
                 <entry key="PURCHASE" value-ref="defaultProcessor"/>
                 <entry key="RENEW" value-ref="defaultProcessor"/>
                 <entry key="CANCEL" value-ref="cancelProcessor"/>
+                <entry key="EXTEND" value-ref="extendProcessor"/>
+                <entry key="CYCLE" value-ref="cycleProcessor"/>
             </util:map>
         </property>
     </bean>
