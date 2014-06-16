@@ -1,0 +1,20 @@
+{
+    "apiName": "subscriptions",
+    "scopes": {
+        "subscription": [{
+            "precondition": "ownedByCurrentUser()",
+            "rights": ["read", "create"],
+            "scriptType": "SPEL"
+        }],
+        "subscription.service": [{
+            "precondition": "true",
+            "rights": ["read", "create"],
+            "scriptType": "SPEL"
+        }],
+        "subscription.csr": [{
+            "precondition": "true",
+            "rights": ["read", "create"],
+            "scriptType": "SPEL"
+         }]
+    }
+}
