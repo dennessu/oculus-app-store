@@ -21,6 +21,7 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.StringUtils
 
 /**
  * Check owner exists
@@ -102,14 +103,6 @@ class OrganizationValidatorImpl implements OrganizationValidator {
             }
         }
 
-        if (organization.taxType != null) {
-            if (!OrganizationTaxType.values().any { OrganizationTaxType taxType ->
-                return taxType.toString() == organization.taxType
-            }) {
-                throw AppErrors.INSTANCE.fieldInvalid('taxType').exception()
-            }
-        }
-
         if (organization.ownerId == null) {
             throw AppErrors.INSTANCE.fieldRequired('owner').exception()
         }
@@ -141,11 +134,16 @@ class OrganizationValidatorImpl implements OrganizationValidator {
             if (organization.taxId == null) {
                 return Promise.pure(null)
             }
-            // Todo:    This validation may be changed later according to oculus's new requirement.
-            if (organization.type != OrganizationType.INDIVIDUAL.toString() || organization.taxType != UserPersonalInfoType.SSN.toString()) {
-                throw AppErrors.INSTANCE.fieldInvalidException('type', 'type can only support INDIVIDUAL, taxType can only support SSN.').exception()
+            List<String> allowedValues = OrganizationTaxType.values().collect { OrganizationTaxType type ->
+                return type.toString()
             }
-            return checkPersonalInfoIdOwner(organization.taxId, organization.ownerId, UserPersonalInfoType.SSN.toString())
+            return checkPersonalInfoIdOwner(organization.taxId, organization.ownerId, null).then { UserPersonalInfo userPersonalInfo ->
+                if (!(userPersonalInfo.type in allowedValues)) {
+                    throw AppErrors.INSTANCE.fieldInvalid('taxId.type', allowedValues.join(',')).exception()
+                }
+
+                return Promise.pure(null)
+            }
         }.then {
             return userRepository.get(organization.ownerId).then { User user ->
                 if (user == null) {
@@ -179,13 +177,13 @@ class OrganizationValidatorImpl implements OrganizationValidator {
         }
     }
 
-    private Promise<Void> checkPersonalInfoIdOwner(UserPersonalInfoId userPersonalInfoId, UserId ownerId, String expectedType) {
+    private Promise<UserPersonalInfo> checkPersonalInfoIdOwner(UserPersonalInfoId userPersonalInfoId, UserId ownerId, String expectedType) {
         return userPersonalInfoRepository.get(userPersonalInfoId).then { UserPersonalInfo userPersonalInfo ->
             if (userPersonalInfo == null) {
                 throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPersonalInfoId).exception()
             }
 
-            if (userPersonalInfo.type != expectedType) {
+            if (!StringUtils.isEmpty(expectedType) && userPersonalInfo.type != expectedType) {
                 throw AppErrors.INSTANCE.fieldInvalidException('userPersonalInfoId', 'Type isn\'t valid, expected: ' + expectedType).exception()
             }
 
@@ -193,7 +191,7 @@ class OrganizationValidatorImpl implements OrganizationValidator {
                 throw AppErrors.INSTANCE.fieldInvalidException('userPersonalInfoId', 'UserId isn\'t match with ownerId').exception()
             }
 
-            return Promise.pure(null)
+            return Promise.pure(userPersonalInfo)
         }
     }
 

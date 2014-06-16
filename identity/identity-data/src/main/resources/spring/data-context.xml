@@ -61,6 +61,10 @@
         <property name="salt" value="${identity.conf.indexHashSalt}" />
     </bean>
 
+    <bean id="userTINHash" class="com.junbo.identity.data.hash.impl.UserTINImpl" />
+
+    <bean id="userEINHash" class="com.junbo.identity.data.hash.impl.UserEINImpl" />
+
     <bean id="piiHashFactory" class="com.junbo.identity.data.hash.impl.PiiHashFactoryImpl">
         <constructor-arg name="piiHashList">
             <list>
@@ -78,6 +82,8 @@
                 <ref bean="whatsAppHash" />
                 <ref bean="wipedHash" />
                 <ref bean="userSSNHash" />
+                <ref bean="userTINHash" />
+                <ref bean="userEINHash" />
             </list>
         </constructor-arg>
     </bean>

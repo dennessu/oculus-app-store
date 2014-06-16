@@ -24,7 +24,9 @@ enum UserPersonalInfoType implements Identifiable<Short> {
     GOVERNMENT_ID((short)11),
     DRIVERS_LICENSE((short)12),
     GENDER((short)13),
-    SSN((short)14)
+    SSN((short)14),
+    TIN((short)15),
+    EIN((short)16)
 
     private final Short id
 
