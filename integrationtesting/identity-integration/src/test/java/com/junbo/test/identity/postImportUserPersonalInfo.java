@@ -112,4 +112,16 @@ public class postImportUserPersonalInfo {
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
     }
+
+    @Test(groups = "dailies")
+    public void importMigrationDataWithRandomPassword() throws Exception {
+        OculusInput oculusInput = IdentityModel.DefaultOculusInput();
+        oculusInput.setPassword(RandomHelper.randomAlphabetic(80));
+        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
+                Identity.DefaultIdentityV1ImportsURI, JsonHelper.JsonSerializer(oculusInput), 2);
+        Validator.Validate("validate response error code", 500, response.getStatusLine().getStatusCode());
+        String errorMessage = "password only accept version 1";
+        Validator.Validate("validate response error message", true,
+                EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+    }
 }
