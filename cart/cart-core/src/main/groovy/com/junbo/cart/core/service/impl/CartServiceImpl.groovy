@@ -4,6 +4,11 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.cart.core.service.impl
+
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.RightsScope
+import com.junbo.cart.auth.CartAuthorizeCallbackFactory
 import com.junbo.cart.core.client.IdentityClient
 import com.junbo.cart.core.service.CartPersistService
 import com.junbo.cart.core.service.CartService
@@ -23,6 +28,8 @@ import groovy.transform.CompileStatic
 import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
+import static com.junbo.authorization.spec.error.AppErrors.INSTANCE
+
 /**
  * Created by fzhang@wan-san.com on 14-2-14.
  */
@@ -37,6 +44,10 @@ class CartServiceImpl implements CartService {
 
     private IdentityClient identityClient
 
+    private AuthorizeService authorizeService
+
+    private CartAuthorizeCallbackFactory authorizeCallbackFactory
+
     void setValidation(Validation validation) {
         this.validation = validation
     }
@@ -49,29 +60,59 @@ class CartServiceImpl implements CartService {
         this.identityClient = userClient
     }
 
+    void setAuthorizeService(AuthorizeService authorizeService) {
+        this.authorizeService = authorizeService
+    }
+
+    void setAuthorizeCallbackFactory(CartAuthorizeCallbackFactory authorizeCallbackFactory) {
+        this.authorizeCallbackFactory = authorizeCallbackFactory
+    }
+
     @Override
     Promise<Cart> addCart(Cart cart, String clientId, UserId userId) {
         return identityClient.getUser(userId).then { User user ->
             validation.validateUser(user).validateCartAdd(clientId, userId, cart)
-            cart.clientId = clientId
-            cart.user = userId
-            cart.userLoggedIn = true // todo : set from user
-            processCartForAddOrUpdate(cart)
-            cartPersistService.saveNewCart(cart)
-            return Promise.pure(cart)
+            def callback = authorizeCallbackFactory.create(userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('create')) {
+                    throw INSTANCE.forbidden().exception()
+                }
+
+                cart.clientId = clientId
+                cart.user = userId
+                cart.userLoggedIn = true // todo : set from user
+                processCartForAddOrUpdate(cart)
+                cartPersistService.saveNewCart(cart)
+                return Promise.pure(cart)
+            }
         }
     }
 
     @Override
     Promise<Cart> getCart(UserId userId, CartId cartId) {
+        return internalGetCart(userId, cartId, 'read')
+    }
+
+    private Promise<Cart> internalGetCart(UserId userId, CartId cartId, String requiredRight) {
         return identityClient.getUser(userId).then {
             validation.validateUser((User) it)
-            Cart cart = cartPersistService.getCart(cartId, true)
-            if (cart == null) {
-                throw AppErrors.INSTANCE.cartNotFound().exception()
+            def callback = authorizeCallbackFactory.create(userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights(requiredRight)) {
+                    if (requiredRight == 'read') {
+                        throw AppErrors.INSTANCE.cartNotFound().exception()
+                    } else {
+                        throw INSTANCE.forbidden().exception()
+                    }
+                }
+
+                Cart cart = cartPersistService.getCart(cartId, true)
+                if (cart == null) {
+                    throw AppErrors.INSTANCE.cartNotFound().exception()
+                }
+                validation.validateCartOwner(cart, userId)
+                return Promise.pure(cart)
             }
-            validation.validateCartOwner(cart, userId)
-            return Promise.pure(cart)
         }
     }
 
@@ -85,12 +126,19 @@ class CartServiceImpl implements CartService {
         }
         return identityClient.getUser(userId).then {
             validation.validateUser((User) it)
-            Cart cart = cartPersistService.getCart(clientId, cartName, userId, true)
-            if (cart == null) {
-                return Promise.pure(null)
+            def callback = authorizeCallbackFactory.create(userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('read')) {
+                    throw AppErrors.INSTANCE.cartNotFound().exception()
+                }
+
+                Cart cart = cartPersistService.getCart(clientId, cartName, userId, true)
+                if (cart == null) {
+                    return Promise.pure(null)
+                }
+                validation.validateCartOwner(cart, userId)
+                return Promise.pure(cart)
             }
-            validation.validateCartOwner(cart, userId)
-            return Promise.pure(cart)
         }
     }
 
@@ -98,22 +146,29 @@ class CartServiceImpl implements CartService {
     Promise<Cart> getCartPrimary(String clientId, UserId userId) {
         return identityClient.getUser(userId).then {
             validation.validateUser((User) it)
-            Cart cart = cartPersistService.getCart(clientId, CART_NAME_PRIMARY, userId, true)
-            if (cart == null) {
-                cart = new Cart()
-                cart.cartName = CART_NAME_PRIMARY
-                cart.user = userId
-                cart.userLoggedIn = true // todo : set from user
-                cart.clientId = clientId
-                cartPersistService.saveNewCart(cart)
+            def callback = authorizeCallbackFactory.create(userId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('read')) {
+                    throw AppErrors.INSTANCE.cartNotFound().exception()
+                }
+
+                Cart cart = cartPersistService.getCart(clientId, CART_NAME_PRIMARY, userId, true)
+                if (cart == null) {
+                    cart = new Cart()
+                    cart.cartName = CART_NAME_PRIMARY
+                    cart.user = userId
+                    cart.userLoggedIn = true // todo : set from user
+                    cart.clientId = clientId
+                    cartPersistService.saveNewCart(cart)
+                }
+                return Promise.pure(cart)
             }
-            return Promise.pure(cart)
         }
     }
 
     @Override
     Promise<Cart> updateCart(UserId userId, CartId cartId, Cart cart) {
-        return getCart(userId, cartId).then {
+        return internalGetCart(userId, cartId, 'update').then {
             Cart oldCart = (Cart) it
             validation.validateCartUpdate(cart, oldCart)
             processCartForAddOrUpdate(cart)
@@ -135,8 +190,8 @@ class CartServiceImpl implements CartService {
     @Override
     Promise<Cart> mergeCart(UserId userId, CartId cartId, Cart fromCart) {
         validation.validateMerge(fromCart)
-        return getCart(userId, cartId).then { Cart destCart ->
-            return getCart(fromCart.user, fromCart.getId()).syncThen { Cart cart ->
+        return internalGetCart(userId, cartId, 'merge').then { Cart destCart ->
+            return internalGetCart(fromCart.user, fromCart.getId(), 'merge').syncThen { Cart cart ->
                 destCart.offers.each {
                     ((OfferItem) it).isSelected = false
                 }
@@ -155,7 +210,7 @@ class CartServiceImpl implements CartService {
 
     @Override
     Promise<Cart> addOfferItem(UserId userId, CartId cartId, OfferItem offerItem) {
-        return getCart(userId, cartId).then {
+        return internalGetCart(userId, cartId, 'update').then {
             Cart cart = (Cart) it
             validation.validateOfferAdd(offerItem)
             addCartItems(cart, [offerItem], [])
@@ -166,7 +221,7 @@ class CartServiceImpl implements CartService {
 
     @Override
     Promise<Cart> updateOfferItem(UserId userId, CartId cartId, CartItemId offerItemId, OfferItem offerItem) {
-        return getCart(userId, cartId).then {
+        return internalGetCart(userId, cartId, 'update').then {
             Cart cart = (Cart) it
             OfferItem o = cart.offers.find {
                 return ((OfferItem) it).id == offerItemId
@@ -188,7 +243,7 @@ class CartServiceImpl implements CartService {
 
     @Override
     Promise<Cart> deleteOfferItem(UserId userId, CartId cartId, CartItemId offerItemId) {
-        return getCart(userId, cartId).then {
+        return internalGetCart(userId, cartId, 'update').then {
             Cart cart = (Cart) it
             if (lookupAndRemoveItem((List<CartItem>) cart.offers, offerItemId) == null) {
                 throw AppErrors.INSTANCE.cartItemNotFound().exception()

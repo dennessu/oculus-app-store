@@ -1,6 +1,7 @@
 include 'cart-spec'
 include 'cart-common'
 include 'cart-db'
+include 'cart-auth'
 include 'cart-core'
 include 'cart-rest'
 include 'cart-app'

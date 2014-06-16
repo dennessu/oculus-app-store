@@ -10,6 +10,7 @@ dependencies {
     compile junboProject(':fulfilment-rest')
     compile junboProject(':entitlement-rest')
     compile junboProject(':catalog-rest')
+    runtime junboProject(':oauth-api')
 
     compile junboProject(':notification-core')
 

@@ -1,0 +1,7 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile junboProject(':cart-spec')
+    compile junboProject(':authorization-lib')
+    runtime junboProject(':identity-clientproxy')
+}

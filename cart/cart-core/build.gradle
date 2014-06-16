@@ -22,6 +22,7 @@ dependencies {
 
     compile junboProject(':cart-spec')
     compile junboProject(':cart-common')
+    compile junboProject(':cart-auth')
 
     testCompile (libraries.spring_test)
     testCompile (libraries.common_lang)

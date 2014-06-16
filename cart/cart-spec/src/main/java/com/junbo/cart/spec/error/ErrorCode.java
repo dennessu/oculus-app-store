@@ -21,5 +21,4 @@ public class ErrorCode {
     public static final String CART_ALREADY_EXIST = "CART_ALREADY_EXIST";
 
     public static final String INVALID_FIELD = "INVALID_FIELD";
-
 }

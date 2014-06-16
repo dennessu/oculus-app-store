@@ -1,0 +1,32 @@
+{
+    "apiName": "carts",
+    "scopes": {
+        "cart": [
+            {
+                "precondition": "ownedByCurrentUser()",
+                "rights": [
+                    "create", "read", "update", "merge"
+                ],
+                "scriptType": "SPEL"
+            }
+        ],
+        "cart.service": [
+            {
+                "precondition": "true",
+                "rights": [
+                    "create", "read", "update", "merge"
+                ],
+                "scriptType": "SPEL"
+            }
+        ],
+        "cart.csr": [
+            {
+                "precondition": "true",
+                "rights": [
+                    "create", "read", "update", "merge"
+                ],
+                "scriptType": "SPEL"
+            }
+        ],
+    }
+}

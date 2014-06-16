@@ -15,4 +15,5 @@ dependencies {
     runtime junboProject(":payment-rest")
     runtime junboProject(":rating-rest")
     runtime junboProject(":catalog-rest")
+    runtime junboProject(":oauth-api")
 }
