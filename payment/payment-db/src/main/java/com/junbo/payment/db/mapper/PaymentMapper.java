@@ -16,10 +16,7 @@ import com.junbo.payment.db.entity.payment.PaymentEntity;
 import com.junbo.payment.db.entity.payment.PaymentEventEntity;
 import com.junbo.payment.db.entity.paymentinstrument.CreditCardPaymentInstrumentEntity;
 import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentEntity;
-import com.junbo.payment.spec.model.PaymentEvent;
-import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.payment.spec.model.PaymentInstrumentType;
-import com.junbo.payment.spec.model.PaymentTransaction;
+import com.junbo.payment.spec.model.*;
 
 /**
  * oom mapper model.

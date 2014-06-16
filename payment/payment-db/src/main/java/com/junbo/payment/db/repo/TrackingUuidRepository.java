@@ -5,7 +5,7 @@
  */
 package com.junbo.payment.db.repo;
 
-import com.junbo.payment.db.mapper.TrackingUuid;
+import com.junbo.payment.spec.model.TrackingUuid;
 
 import java.util.UUID;
 

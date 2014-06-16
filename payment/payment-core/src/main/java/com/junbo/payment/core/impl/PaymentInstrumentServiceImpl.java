@@ -18,7 +18,7 @@ import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.core.util.ProxyExceptionResponse;
 import com.junbo.payment.db.repository.PITypeRepository;
-import com.junbo.payment.db.mapper.TrackingUuid;
+import com.junbo.payment.spec.model.TrackingUuid;
 import com.junbo.payment.db.repository.PaymentInstrumentRepository;
 import com.junbo.payment.db.repository.TrackingUuidRepository;
 import com.junbo.payment.spec.enums.PaymentAPI;

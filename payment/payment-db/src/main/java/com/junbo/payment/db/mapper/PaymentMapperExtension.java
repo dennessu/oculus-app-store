@@ -12,8 +12,6 @@ import com.junbo.oom.core.MappingContext;
 import com.junbo.payment.db.entity.payment.PaymentEntity;
 import com.junbo.payment.db.entity.payment.PaymentEventEntity;
 import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentEntity;
-import com.junbo.payment.db.repository.MerchantAccountRepository;
-import com.junbo.payment.db.repository.PaymentProviderRepository;
 import com.junbo.payment.spec.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,10 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class PaymentMapperExtension {
     @Autowired
     private PaymentMapper paymentMapperImpl;
-    @Autowired
-    private MerchantAccountRepository merchantAccountRepository;
-    @Autowired
-    private PaymentProviderRepository paymentProviderRepository;
+
 
     public PaymentInstrumentEntity toPIEntity(PaymentInstrument piRequest){
         if(piRequest == null){
@@ -76,13 +71,13 @@ public class PaymentMapperExtension {
             return null;
         }
         PaymentEntity payment = paymentMapperImpl.toPaymentEntityRaw(request, new MappingContext());
-        payment.setPaymentInstrumentId(request.getPaymentInstrumentId());
+        // payment.setPaymentInstrumentId(request.getPaymentInstrumentId());
         payment.setCurrency(request.getChargeInfo().getCurrency());
         payment.setNetAmount(request.getChargeInfo().getAmount());
         payment.setCountryCode(request.getChargeInfo().getCountry());
         payment.setBusinessDescriptor(request.getChargeInfo().getBusinessDescriptor());
-        payment.setMerchantAccountId(merchantAccountRepository.getMerchantAccountIdByRef(request.getMerchantAccount()));
-        payment.setPaymentProviderId(paymentProviderRepository.getProviderId(request.getPaymentProvider()));
+        // payment.setMerchantAccountId(merchantAccountRepository.getMerchantAccountIdByRef(request.getMerchantAccount()));
+        // payment.setPaymentProviderId(paymentProviderRepository.getProviderId(request.getPaymentProvider()));
         return payment;
     }
 

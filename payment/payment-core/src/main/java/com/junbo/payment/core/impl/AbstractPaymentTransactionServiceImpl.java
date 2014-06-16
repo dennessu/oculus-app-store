@@ -17,7 +17,7 @@ import com.junbo.payment.core.PaymentTransactionService;
 import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.provider.ProviderRoutingService;
 import com.junbo.payment.core.util.PaymentUtil;
-import com.junbo.payment.db.mapper.TrackingUuid;
+import com.junbo.payment.spec.model.TrackingUuid;
 import com.junbo.payment.db.repository.MerchantAccountRepository;
 import com.junbo.payment.db.repository.PaymentProviderRepository;
 import com.junbo.payment.db.repository.PaymentRepository;
