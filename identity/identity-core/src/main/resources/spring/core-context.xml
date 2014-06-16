@@ -245,7 +245,7 @@
                 <value>shortName</value>
                 <value>longName</value>
                 <value>localeName</value>
-                <value>fallbackLocale</value>
+                <value>ctoryllbackLocale</value>
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>createdTime</value>
@@ -1014,7 +1014,6 @@
                 <value>shippingPhone</value>
                 <value>isValidated</value>
                 <value>type</value>
-                <value>taxType</value>
                 <value>taxId</value>
                 <value>payoutInstrument</value>
                 <value>payoutTaxProfile</value>
@@ -1036,7 +1035,6 @@
                 <value>shippingPhone</value>
                 <value>isValidated</value>
                 <value>type</value>
-                <value>taxType</value>
                 <value>taxId</value>
                 <value>payoutInstrument</value>
                 <value>payoutTaxProfile</value>
@@ -1056,7 +1054,6 @@
                 <value>shippingPhone</value>
                 <value>isValidated</value>
                 <value>type</value>
-                <value>taxType</value>
                 <value>taxId</value>
                 <value>payoutInstrument</value>
                 <value>payoutTaxProfile</value>

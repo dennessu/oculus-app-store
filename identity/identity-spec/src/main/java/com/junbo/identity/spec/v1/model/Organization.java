@@ -47,10 +47,7 @@ public class Organization extends PropertyAssignedAwareResourceMeta<Organization
     @ApiModelProperty(position = 9, required = false, value = "The enum value of the organization, must in [INDIVIDUAL, CORPORATE]")
     private String type;
 
-    @ApiModelProperty(position = 10, required = false, value = "The enum value of tax type, must in [TIN, EIN, SSN]")
-    private String taxType;
-
-    @ApiModelProperty(position = 11, required = false, value = "The value of taxId.")
+    @ApiModelProperty(position = 11, required = false, value = "The type (EIN/TIN/SSN) and value of taxId.")
     private UserPersonalInfoId taxId;
 
     @ApiModelProperty(position = 12, required = false, value = "The payoutInstrument link.")
@@ -146,15 +143,6 @@ public class Organization extends PropertyAssignedAwareResourceMeta<Organization
     public void setType(String type) {
         this.type = type;
         support.setPropertyAssigned("type");
-    }
-
-    public String getTaxType() {
-        return taxType;
-    }
-
-    public void setTaxType(String taxType) {
-        this.taxType = taxType;
-        support.setPropertyAssigned("taxType");
     }
 
     public UserPersonalInfoId getTaxId() {
