@@ -1,0 +1,32 @@
+{
+    "apiName": "entitlements",
+    "scopes": {
+        "entitlement": [
+            {
+                "precondition": "ownedByCurrentUser()",
+                "rights": [
+                    "read", "search"
+                ],
+                "scriptType": "SPEL"
+            }
+        ],
+        "entitlement.service": [
+            {
+                "precondition": "true",
+                "rights": [
+                    "create", "read", "update", "delete", "search"
+                ],
+                "scriptType": "SPEL"
+            }
+        ],
+        "entitlement.csr": [
+            {
+                "precondition": "true",
+                "rights": [
+                    "create", "read", "update", "delete", "search"
+                ],
+                "scriptType": "SPEL"
+            }
+        ],
+    }
+}

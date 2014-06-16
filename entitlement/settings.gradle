@@ -2,6 +2,7 @@ include 'entitlement-spec'
 
 include 'entitlement-common'
 include 'entitlement-db'
+include 'entitlement-auth'
 include 'entitlement-core'
 include 'entitlement-rest'
 

@@ -6,10 +6,15 @@
 
 package com.junbo.entitlement.core.service;
 
+import com.junbo.authorization.AuthorizeCallback;
+import com.junbo.authorization.AuthorizeContext;
+import com.junbo.authorization.AuthorizeService;
+import com.junbo.authorization.RightsScope;
 import com.junbo.catalog.spec.model.item.EntitlementDef;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.model.Results;
+import com.junbo.entitlement.auth.EntitlementAuthorizeCallbackFactory;
 import com.junbo.entitlement.common.lib.CloneUtils;
 import com.junbo.entitlement.core.EntitlementService;
 import com.junbo.entitlement.db.repository.EntitlementRepository;
@@ -18,14 +23,18 @@ import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.EntitlementTransfer;
 import com.junbo.entitlement.spec.model.PageMetadata;
+import com.junbo.langur.core.promise.Promise;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
+
+import static com.junbo.authorization.spec.error.AppErrors.INSTANCE;
 
 /**
  * Service of Entitlement.
@@ -35,23 +44,60 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     @Autowired
     private EntitlementRepository entitlementRepository;
 
+    @Autowired
+    private AuthorizeService authorizeService;
+
+    @Autowired
+    private EntitlementAuthorizeCallbackFactory authorizeCallbackFactory;
+
     @Override
     @Transactional
-    public Entitlement getEntitlement(String entitlementId) {
-        Entitlement entitlement = entitlementRepository.get(entitlementId);
+    public Entitlement getEntitlement(final String entitlementId) {
+        final Entitlement entitlement = entitlementRepository.get(entitlementId);
+
         if (entitlement == null) {
-            throw AppErrors.INSTANCE.notFound("entitlement",
-                    entitlementId).exception();
+            throw AppErrors.INSTANCE.notFound("entitlement", entitlementId).exception();
         }
-        return entitlement;
+
+        AuthorizeCallback callback = authorizeCallbackFactory.create(entitlement);
+        return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Entitlement>() {
+
+            @Override
+            public Entitlement apply() {
+                if (!AuthorizeContext.hasRights("read")) {
+                    throw AppErrors.INSTANCE.notFound("entitlement", entitlementId).exception();
+                }
+
+                return entitlement;
+            }
+        });
     }
 
     @Override
     @Transactional
-    public Entitlement addEntitlement(Entitlement entitlement) {
+    public Entitlement addEntitlement(final Entitlement entitlement) {
+        if (entitlement.getTrackingUuid() != null) {
+            Entitlement existing = getByTrackingUuid(entitlement.getUserId(), entitlement.getTrackingUuid(), "create");
+            if (existing != null) {
+                return existing;
+            }
+        }
+
         fillCreate(entitlement);
         validateCreate(entitlement);
-        return merge(entitlement);
+
+        AuthorizeCallback callback = authorizeCallbackFactory.create(entitlement);
+        return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Entitlement>() {
+
+            @Override
+            public Entitlement apply() {
+                if (!AuthorizeContext.hasRights("create")) {
+                    throw INSTANCE.forbidden().exception();
+                }
+
+                return merge(entitlement);
+            }
+        });
     }
 
     private Entitlement merge(Entitlement entitlement) {
@@ -73,42 +119,86 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
     @Override
     @Transactional
-    public Entitlement updateEntitlement(String entitlementId, Entitlement entitlement) {
+    public Entitlement updateEntitlement(final String entitlementId, final Entitlement entitlement) {
         validateUpdateId(entitlementId, entitlement);
-        Entitlement existingEntitlement = entitlementRepository.get(entitlementId);
+        if (entitlement.getTrackingUuid() != null) {
+            Entitlement existing = getByTrackingUuid(entitlement.getUserId(), entitlement.getTrackingUuid(), "update");
+            if (existing != null) {
+                return existing;
+            }
+        }
+
+        final Entitlement existingEntitlement = entitlementRepository.get(entitlementId);
         if (existingEntitlement == null) {
             throw AppErrors.INSTANCE.notFound("entitlement", entitlementId).exception();
         }
-        fillUpdate(entitlement, existingEntitlement);
-        validateUpdate(entitlement, existingEntitlement);
-        return entitlementRepository.update(existingEntitlement);
+
+        AuthorizeCallback callback = authorizeCallbackFactory.create(entitlement);
+        return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Entitlement>() {
+
+            @Override
+            public Entitlement apply() {
+                if (!AuthorizeContext.hasRights("update")) {
+                    throw INSTANCE.forbidden().exception();
+                }
+
+                fillUpdate(entitlement, existingEntitlement);
+                validateUpdate(entitlement, existingEntitlement);
+                return entitlementRepository.update(existingEntitlement);
+            }
+        });
     }
 
     @Override
     @Transactional
-    public void deleteEntitlement(String entitlementId) {
+    public void deleteEntitlement(final String entitlementId) {
         Entitlement existingEntitlement = entitlementRepository.get(entitlementId);
         if (existingEntitlement == null) {
             throw AppErrors.INSTANCE.notFound("entitlement",
                     entitlementId).exception();
         }
         checkUser(existingEntitlement.getUserId());
-        entitlementRepository.delete(entitlementId);
+
+        AuthorizeCallback callback = authorizeCallbackFactory.create(existingEntitlement);
+        RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Void>() {
+
+            @Override
+            public Void apply() {
+                if (!AuthorizeContext.hasRights("delete")) {
+                    throw INSTANCE.forbidden().exception();
+                }
+
+                entitlementRepository.delete(entitlementId);
+                return null;
+            }
+        });
     }
 
     @Override
     @Transactional
-    public Results<Entitlement> searchEntitlement(EntitlementSearchParam entitlementSearchParam,
-                                                  PageMetadata pageMetadata) {
+    public Results<Entitlement> searchEntitlement(final EntitlementSearchParam entitlementSearchParam,
+                                                  final PageMetadata pageMetadata) {
         validateNotNull(entitlementSearchParam.getUserId(), "userId");
         checkUser(entitlementSearchParam.getUserId().getValue());
-        fillClient(entitlementSearchParam);
-        fillHostItemId(entitlementSearchParam);
-        checkSearchDateFormat(entitlementSearchParam);
-        checkIsActiveAndIsBanned(entitlementSearchParam);
-        Results<Entitlement> results = entitlementRepository.getBySearchParam(
-                entitlementSearchParam, pageMetadata);
-        return results;
+
+        AuthorizeCallback callback = authorizeCallbackFactory.create(entitlementSearchParam.getUserId().getValue());
+        return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Results<Entitlement>>() {
+
+            @Override
+            public Results<Entitlement> apply() {
+                if (!AuthorizeContext.hasRights("search")) {
+                    Results<Entitlement> results = new Results<>();
+                    results.setItems(new ArrayList<Entitlement>());
+                    return results;
+                }
+
+                fillClient(entitlementSearchParam);
+                fillHostItemId(entitlementSearchParam);
+                checkSearchDateFormat(entitlementSearchParam);
+                checkIsActiveAndIsBanned(entitlementSearchParam);
+                return entitlementRepository.getBySearchParam(entitlementSearchParam, pageMetadata);
+            }
+        });
     }
 
     private void fillHostItemId(EntitlementSearchParam entitlementSearchParam) {
@@ -167,5 +257,25 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     @Transactional
     public Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
         return entitlementRepository.getByTrackingUuid(shardMasterId, trackingUuid);
+    }
+
+    private Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid, final String requiredRight) {
+        final Entitlement existing = entitlementRepository.getByTrackingUuid(shardMasterId, trackingUuid);
+        if (existing == null) {
+            return null;
+        }
+
+        AuthorizeCallback callback = authorizeCallbackFactory.create(existing);
+        return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Entitlement>() {
+
+            @Override
+            public Entitlement apply() {
+                if (!AuthorizeContext.hasRights(requiredRight)) {
+                    throw INSTANCE.forbidden().exception();
+                }
+
+                return existing;
+            }
+        });
     }
 }

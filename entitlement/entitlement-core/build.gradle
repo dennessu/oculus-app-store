@@ -3,6 +3,7 @@ apply plugin: 'java'
 dependencies {
     compile junboProject(":entitlement-db")
     compile junboProject(":entitlement-spec")
+    compile junboProject(":entitlement-auth")
     compile junboProject(':entitlement-clientproxy')
     testCompile (libraries.spring_test)
 }
