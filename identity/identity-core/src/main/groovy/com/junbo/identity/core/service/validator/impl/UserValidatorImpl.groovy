@@ -1,7 +1,10 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.billing.spec.model.VatIdValidationResponse
+import com.junbo.billing.spec.resource.VatResource
 import com.junbo.common.id.UserId
 import com.junbo.identity.common.util.JsonHelper
+import com.junbo.identity.common.util.ValidatorUtil
 import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.TimezoneValidator
 import com.junbo.identity.core.service.validator.UserValidator
@@ -18,6 +21,7 @@ import com.junbo.identity.spec.v1.model.Email
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
+import com.junbo.identity.spec.v1.model.UserVAT
 import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -43,6 +47,8 @@ class UserValidatorImpl implements UserValidator {
     private TimezoneValidator timezoneValidator
 
     private NormalizeService normalizeService
+
+    private VatResource vatResource
 
     @Override
     Promise<Void> validateForCreate(User user) {
@@ -215,6 +221,8 @@ class UserValidatorImpl implements UserValidator {
             return validateGender(user)
         }.then {
             return validateCountryOfResidence(user)
+        }.then {
+            return validateVat(user)
         }
     }
 
@@ -456,6 +464,35 @@ class UserValidatorImpl implements UserValidator {
         return Promise.pure(null)
     }
 
+    Promise<Void> validateVat(User user) {
+        if (user.vat == null || user.vat.isEmpty()) {
+            return Promise.pure(null)
+        }
+
+        user.vat.each { Map.Entry<String, UserVAT> entry ->
+            if (!ValidatorUtil.isValidCountryCode(entry.key)) {
+                throw AppErrors.INSTANCE.fieldInvalid('vat.key').exception()
+            }
+        }
+
+        return Promise.each(user.vat.entrySet()) { Map.Entry<String, UserVAT> entry ->
+            UserVAT vat = entry.value
+            return vatResource.validateVatId(vat.vatNumber).then { VatIdValidationResponse response ->
+                if (response.status == 'VALID') {
+                    vat.lastValidateTime = new Date()
+                } else if (response.status == 'INVALID') {
+                    throw AppErrors.INSTANCE.fieldInvalid('vat.value', vat.vatNumber + ' isn\'t valid').exception()
+                } else if (response.status == 'SERVICE_UNAVAILABLE' || response.status == 'UNKNOWN') {
+                    // do nothing here.
+                }
+
+                return Promise.pure(null)
+            }
+        }.then {
+            return Promise.pure(null)
+        }
+    }
+
     @Required
     void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository
@@ -487,8 +524,12 @@ class UserValidatorImpl implements UserValidator {
     }
 
     @Required
-
     void setCountryRepository(CountryRepository countryRepository) {
         this.countryRepository = countryRepository
+    }
+
+    @Required
+    void setVatResource(VatResource vatResource) {
+        this.vatResource = vatResource
     }
 }

@@ -109,6 +109,7 @@
         <property name="timezoneValidator" ref="timezoneValidator" />
         <property name="usernameValidator" ref="usernameValidator" />
         <property name="countryRepository" ref="countryRepository" />
+        <property name="vatResource" ref="identityBillingResource" />
     </bean>
 
     <bean id="userSecurityQuestionValidator"
