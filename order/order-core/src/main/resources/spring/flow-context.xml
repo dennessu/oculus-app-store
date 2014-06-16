@@ -7,14 +7,17 @@
 
     <bean id="flowDefLoader" class="com.junbo.langur.core.webflow.definition.FlowDefLoaderImpl"/>
 
-    <bean id="stateRepository" class="com.junbo.langur.core.webflow.state.InMemoryStateRepository"/>
+    <bean id="orderStateRepository" class="com.junbo.common.webflow.CloudantStateRepositoryImpl" parent="cloudantClient">
+        <property name="dbName" value="oauth_flow_state"/>
+        <property name="marshaller" ref="polymorphicCloudantMarshaller"/>
+    </bean>
 
     <bean id="stateExecutorFactory" class="com.junbo.langur.core.webflow.executor.StateExecutorFactoryImpl"/>
 
     <bean id="flowExecutor" class="com.junbo.langur.core.webflow.executor.FlowExecutorImpl">
         <property name="flowDefLoader" ref="flowDefLoader"/>
         <property name="stateExecutorFactory" ref="stateExecutorFactory"/>
-        <property name="stateRepository" ref="stateRepository"/>
+        <property name="stateRepository" ref="orderStateRepository"/>
     </bean>
 
     <bean id="authSettleAction" class="com.junbo.order.core.impl.orderaction.AuthSettleAction">

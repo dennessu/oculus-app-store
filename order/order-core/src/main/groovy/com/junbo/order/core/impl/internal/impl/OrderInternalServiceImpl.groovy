@@ -178,11 +178,12 @@ class OrderInternalServiceImpl implements OrderInternalService {
 
             return facadeContainer.identityFacade.getCurrency(existingOrder.currency.value).then {
                 com.junbo.identity.spec.v1.model.Currency currency ->
-                    Order diffOrder = CoreUtils.diffRefundOrder(existingOrder, order, currency.numberAfterDecimal)
 
+                    Order diffOrder = CoreUtils.diffRefundOrder(existingOrder, order, currency.numberAfterDecimal)
                     return facadeContainer.billingFacade.getBalancesByOrderId(order.getId().value).syncRecover {
                         Throwable ex ->
                     }.then { List<Balance> bls ->
+
                         List<Balance> refundableBalances = bls.findAll { Balance bl ->
                             (bl.type == BalanceType.DEBIT.name() || bl.type == BalanceType.MANUAL_CAPTURE.name()) &&
                                     (bl.status == BalanceStatus.AWAITING_PAYMENT.name() ||
@@ -197,6 +198,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                             throw AppErrors.INSTANCE.orderNotRefundable().exception()
                         }
                         assert (refundBalances.size() <= 2)
+
                         return Promise.each(refundBalances) { Balance refundBalance ->
                             return facadeContainer.billingFacade.createBalance(refundBalance, true).syncRecover {
                                 Throwable ex ->
@@ -206,7 +208,8 @@ class OrderInternalServiceImpl implements OrderInternalService {
                                 if (refunded == null) {
                                     throw AppErrors.INSTANCE.billingRefundFailed('billing returns null balance').exception()
                                 }
-                                orderRepository.updateOrder(order, true, true, OrderItemRevisionType.REFUND)
+                                def refundedOrder = CoreUtils.calcRefundedOrder(existingOrder, refunded, diffOrder)
+                                orderRepository.updateOrder(refundedOrder, true, true, OrderItemRevisionType.REFUND)
                                 return Promise.pure(null)
                             }
                         }

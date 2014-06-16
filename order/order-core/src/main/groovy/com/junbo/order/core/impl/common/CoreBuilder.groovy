@@ -1,5 +1,4 @@
 package com.junbo.order.core.impl.common
-
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.enums.PropertyKey
 import com.junbo.billing.spec.model.Balance
@@ -13,7 +12,6 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.core.impl.orderaction.context.OrderActionResult
-import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
 import com.junbo.order.spec.model.enums.DiscountType
 import com.junbo.order.spec.model.enums.EventStatus
@@ -25,7 +23,6 @@ import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
 /**
  * Created by chriszhu on 2/24/14.
  */
@@ -126,27 +123,23 @@ class CoreBuilder {
 
         // handle partial refund
         diffOrder.orderItems.each { OrderItem diffItem ->
+            def totalAmount = diffItem.totalAmount
             returnBalances.each { Balance b ->
                 BalanceItem balanceItem = b.balanceItems.find { BalanceItem bi ->
                     bi.orderItemId.value == diffItem.getId().value
                 }
-                if (diffItem.totalAmount >= balanceItem.amount) {
-                    diffItem.totalAmount = diffItem.totalAmount - balanceItem.amount
+                if (totalAmount >= balanceItem.amount) {
+                    totalAmount = diffItem.totalAmount - balanceItem.amount
                 } else {
                     balanceItem.amount = diffItem.totalAmount
-                    diffItem.totalAmount = 0G
+                    totalAmount = 0G
                 }
             }
-        }
-
-        //validate
-        diffOrder.orderItems.each { OrderItem diffItem ->
-            if (diffItem.totalAmount != 0G) {
+            // validate
+            if (totalAmount != 0G) {
                 LOGGER.error('name=Refund_Item_Amount_Exceeded')
-                throw AppErrors.INSTANCE.billingRefundFailed('Refund_Item_Amount_Exceeded').exception()
             }
         }
-
         return returnBalances
     }
 

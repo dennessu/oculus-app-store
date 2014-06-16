@@ -26,6 +26,15 @@ class MockBalanceResource extends BaseMock implements BalanceResource {
     Promise<Balance> postBalance(Balance balance) {
         balance.id = new BalanceId(generateLong())
         balance.status = BalanceStatus.COMPLETED
+        balance.totalAmount = 0G
+        balance.taxAmount = 0G
+        balance.discountAmount = 0G
+        balance.balanceItems.each { BalanceItem bi ->
+            balance.totalAmount += bi.amount
+            bi.taxAmount = 1.00G
+            bi.discountAmount = 0G
+            balance.taxAmount += bi.taxAmount
+        }
         balanceMap[balance.getId()] = balance
         return Promise.pure(balance)
     }

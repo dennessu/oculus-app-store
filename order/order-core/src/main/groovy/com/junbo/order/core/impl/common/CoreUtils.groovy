@@ -1,19 +1,24 @@
 package com.junbo.order.core.impl.common
+
 import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
+import com.junbo.billing.spec.model.BalanceItem
+import com.junbo.billing.spec.model.TaxItem
 import com.junbo.order.clientproxy.model.OrderOfferItem
 import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.spec.error.AppErrors
-import com.junbo.order.spec.model.enums.BillingAction
-import com.junbo.order.spec.model.enums.ItemType
-import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.order.spec.model.BillingHistory
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
+import com.junbo.order.spec.model.OrderTaxItem
+import com.junbo.order.spec.model.enums.BillingAction
+import com.junbo.order.spec.model.enums.ItemType
+import com.junbo.order.spec.model.enums.OrderStatus
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
+
 /**
  * Created by chriszhu on 3/19/14.
  */
@@ -113,26 +118,26 @@ class CoreUtils {
         Order diffOrder = new Order()
         diffOrder.setId(existingOrder.getId())
         diffOrder.orderItems = []
+        diffOrder.totalAmount = 0G
 
         Boolean changed = false
-        existingOrder.orderItems.each {OrderItem i ->
+        existingOrder.orderItems.each { OrderItem i ->
             OrderItem diffItem = new OrderItem()
             diffItem.offer = i.offer
             diffItem.setId(i.getId())
             OrderItem requestItem = request.orderItems?.find { OrderItem ii ->
                 i.offer == ii.offer
             }
-            if(requestItem == null) {
+            if (requestItem == null) {
                 diffItem.quantity = i.quantity
                 diffItem.totalAmount = i.totalAmount
             } else {
-                if( i.quantity > requestItem.quantity) {
+                if (i.quantity > requestItem.quantity) {
                     diffItem.quantity = i.quantity - requestItem.quantity
-                    // TODO: use currency decimal
                     diffItem.totalAmount = (diffItem.quantity * i.totalAmount / i.quantity).setScale(
                             numberAfterDecimal, BigDecimal.ROUND_HALF_EVEN)
                     requestItem.totalAmount = requestItem.totalAmount - diffItem.totalAmount
-                } else if(i.quantity == requestItem.quantity && i.totalAmount > requestItem.totalAmount) {
+                } else if (i.quantity == requestItem.quantity && i.totalAmount > requestItem.totalAmount) {
                     diffItem.quantity = 0
                     diffItem.totalAmount = i.totalAmount - requestItem.totalAmount
                 } else {
@@ -140,6 +145,7 @@ class CoreUtils {
                     return
                 }
             }
+            diffOrder.totalAmount += diffItem.totalAmount
             diffOrder.orderItems << diffItem
             changed = true
         }
@@ -147,6 +153,48 @@ class CoreUtils {
             throw AppErrors.INSTANCE.orderNoItemRefund().exception()
         }
         return diffOrder
+    }
+
+    static Order calcRefundedOrder(Order existingOrder, Balance balance, Order diffOrder) {
+        assert(existingOrder != null)
+        assert(balance != null)
+        assert(diffOrder != null)
+        assert(balance.totalAmount != null)
+        assert(balance.taxAmount != null)
+        assert(balance.discountAmount != null)
+        def returnVal = existingOrder
+        returnVal.totalAmount -= balance.totalAmount
+        returnVal.totalTax -= balance.taxAmount
+        returnVal.totalDiscount -= balance.discountAmount
+        returnVal.orderItems?.each() { OrderItem oi ->
+            def balanceItem = balance.balanceItems?.find() { BalanceItem bi ->
+                bi.orderItemId.value == oi.getId().value
+            }
+            if (balanceItem != null) {
+                assert(balanceItem.amount != null)
+                assert(balanceItem.taxAmount != null)
+                assert(balanceItem.discountAmount != null)
+                oi.totalAmount -= balanceItem.amount
+                oi.totalTax -= balanceItem.taxAmount
+                oi.totalDiscount -= balanceItem.discountAmount
+                oi.taxes?.each() { OrderTaxItem oti ->
+                    def taxItem = balanceItem.taxItems?.find() { TaxItem bti ->
+                        // TODO: check taxType
+                        bti.taxAuthority == oti.taxType
+                    }
+                    if (taxItem != null) {
+                        oti.taxAmount -= taxItem.taxAmount
+                    }
+                }
+            }
+            def diffItem = diffOrder.orderItems?.find() { OrderItem doi ->
+                doi.getId().value == oi.getId().value
+            }
+            if (diffItem != null) {
+                oi.quantity -= diffItem.quantity
+            }
+        }
+        return returnVal
     }
 
     static Boolean checkOrderStatusRefundable(Order order) {
