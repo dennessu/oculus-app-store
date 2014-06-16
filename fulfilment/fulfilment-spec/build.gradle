@@ -11,6 +11,7 @@ dependencies {
     compile junboProject(':common-lib')
 
     compile junboProject(':fulfilment-common')
+    compile junboProject(':authorization-lib')
 
     processor junboProject(':langur-processor')
     processor (libraries.log4j)
