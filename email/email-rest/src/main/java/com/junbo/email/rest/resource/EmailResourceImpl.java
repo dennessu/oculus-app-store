@@ -5,6 +5,8 @@
  */
 package com.junbo.email.rest.resource;
 
+import com.junbo.authorization.AuthorizeContext;
+import com.junbo.authorization.spec.error.AppErrors;
 import com.junbo.common.id.EmailId;
 import com.junbo.email.core.EmailService;
 import com.junbo.email.spec.model.Email;
@@ -24,28 +26,39 @@ import javax.ws.rs.ext.Provider;
 @Component
 @Scope("prototype")
 public class EmailResourceImpl implements EmailResource {
+    private static final String EMAIL_SERVICE_SCOPE = "email.service";
 
     @Autowired
     private EmailService emailService;
 
     @Override
     public Promise<Email> postEmail(Email email) {
+        authorize();
         return emailService.postEmail(email);
     }
 
     @Override
     public Promise<Email> getEmail(EmailId id) {
+        authorize();
         return emailService.getEmail(id.getValue());
     }
 
     @Override
     public Promise<Email> putEmail(EmailId id, Email email) {
+        authorize();
         return emailService.updateEmail(id.getValue(), email);
     }
 
     @Override
     public Promise<Response> deleteEmail(EmailId id) {
+        authorize();
         emailService.deleteEmail(id.getValue());
         return Promise.pure(Response.status(204).build());
+    }
+
+    private static void authorize() {
+        if (!AuthorizeContext.hasScopes(EMAIL_SERVICE_SCOPE)) {
+            throw AppErrors.INSTANCE.insufficientScope().exception();
+        }
     }
 }

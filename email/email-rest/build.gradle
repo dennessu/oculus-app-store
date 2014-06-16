@@ -18,6 +18,7 @@ dependencies {
     compile junboProject(':email-core')
     compile junboProject(':email-spec')
     compile junboProject(':email-clientproxy')
+    compile junboProject(':authorization-lib')
 
     processor junboProject(':oom-processor')
 }
