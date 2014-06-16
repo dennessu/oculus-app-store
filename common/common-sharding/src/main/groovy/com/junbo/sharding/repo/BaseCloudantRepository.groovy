@@ -1,11 +1,8 @@
 package com.junbo.sharding.repo
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.CloudantEntity
-import com.junbo.common.util.Identifiable
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
 /**
  * The base repository for cloudant.
  * @param <K> the entity key.
@@ -13,21 +10,8 @@ import org.springframework.beans.factory.annotation.Required
  */
 @CompileStatic
 abstract class BaseCloudantRepository<T extends CloudantEntity, K> extends CloudantClient<T> {
-    protected IdGenerator idGenerator
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
-
-    protected abstract K generateId();
-
     @Override
     Promise<T> create(T entity) {
-        Identifiable<K> identifiable = (Identifiable<K>)entity;
-        if (identifiable.id == null) {
-            identifiable.id = generateId();
-        }
         return cloudantPost(entity)
     }
 
@@ -43,6 +27,6 @@ abstract class BaseCloudantRepository<T extends CloudantEntity, K> extends Cloud
 
     @Override
     Promise<Void> delete(K id) {
-        return super.cloudantDelete(id.toString())
+        return cloudantDelete(id.toString())
     }
 }

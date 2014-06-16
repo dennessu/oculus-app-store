@@ -10,16 +10,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.DeviceId;
 import com.junbo.common.jackson.annotation.LicenseId;
 import com.junbo.common.jackson.annotation.UserId;
+import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * drm.
  */
-public class License {
+public class License extends ResourceMeta<String> {
     @ApiModelProperty(position = 1, required = false, value = "[Client Immutable] The id of license resource.")
     @JsonProperty("self")
     @LicenseId
-    private Long licenseId;
+    private String id;
 
     @ApiModelProperty(position = 2, required = true, value = "[Client Immutable] The id of user resource.")
     @UserId
@@ -27,7 +28,7 @@ public class License {
 
     @ApiModelProperty(position = 3, required = true, value = "[Client Immutable] The id of device resource.")
     @DeviceId
-    private Long deviceId;
+    private String deviceId;
 
     @ApiModelProperty(position = 4, required = true, value = "The application id.")
     private String applicationId;
@@ -35,12 +36,12 @@ public class License {
     @ApiModelProperty(position = 5, required = true, value = "The machine hash.")
     private String machineHash;
 
-    public Long getLicenseId() {
-        return licenseId;
+    public String getId() {
+        return id;
     }
 
-    public void setLicenseId(Long licenseId) {
-        this.licenseId = licenseId;
+    public void setId(String licenseId) {
+        this.id = licenseId;
     }
 
     public Long getUserId() {
@@ -51,11 +52,11 @@ public class License {
         this.userId = userId;
     }
 
-    public Long getDeviceId() {
+    public String getDeviceId() {
         return deviceId;
     }
 
-    public void setDeviceId(Long deviceId) {
+    public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
     }
 
