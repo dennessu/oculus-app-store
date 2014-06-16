@@ -10,7 +10,6 @@ import com.junbo.rating.core.BaseTest;
 import com.junbo.rating.core.context.SubsRatingContext;
 import com.junbo.rating.spec.model.Currency;
 import com.junbo.rating.spec.model.subscription.DurationUnit;
-import com.junbo.rating.spec.model.subscription.SubsRatingRequest;
 import com.junbo.rating.spec.model.subscription.SubsRatingType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
