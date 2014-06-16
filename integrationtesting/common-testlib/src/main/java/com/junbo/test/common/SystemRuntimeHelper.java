@@ -15,29 +15,28 @@ import java.util.Date;
  */
 public class SystemRuntimeHelper {
 
-      public static void systemRuntime(Date date)
-      {
-          String osName = System.getProperty("os.name");
-          String cmd;
-          try {
-              if (osName.matches("^(?i)Windows.*$")) {
-                  cmd = "  cmd /c time 00:05:00";
-                  Runtime.getRuntime().exec(cmd);
-                  //2006-4-16
-                  String dateFormatted = DateFormat.getDateInstance(DateFormat.MEDIUM).format(date);
-                  cmd = " cmd /c date " + dateFormatted;
-                  Runtime.getRuntime().exec(cmd);
-              } else {
-                  //20060416
-                  DateFormat format = new SimpleDateFormat("yyyyMMdd");
-                  String dateFormatted = format.format(date);
-                  cmd = "  date -s 20090326";
-                  Runtime.getRuntime().exec(cmd);
-                  cmd = "  date -s 00:05:00";
-                  Runtime.getRuntime().exec(cmd);
-              }
-          } catch (IOException e) {
-              e.printStackTrace();
-          }
-      }
+    public static void systemRuntime(Date date) {
+        String osName = System.getProperty("os.name");
+        String cmd;
+        try {
+            if (osName.matches("^(?i)Windows.*$")) {
+                cmd = "  cmd /c time 00:05:00";
+                Runtime.getRuntime().exec(cmd);
+                //2006-4-16
+                String dateFormatted = DateFormat.getDateInstance(DateFormat.MEDIUM).format(date);
+                cmd = " cmd /c date " + dateFormatted;
+                Runtime.getRuntime().exec(cmd);
+            } else {
+                //20060416
+                DateFormat format = new SimpleDateFormat("yyyyMMdd");
+                String dateFormatted = format.format(date);
+                cmd = "  date -s 20090326";
+                Runtime.getRuntime().exec(cmd);
+                cmd = "  date -s 00:05:00";
+                Runtime.getRuntime().exec(cmd);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
