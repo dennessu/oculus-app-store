@@ -108,4 +108,7 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.BALANCE_ITEM_REFUND_TOTAL_EXCEEDED,
             description ="The refund balance item total {0} exceeded, the original total {1}, refunded total {2}")
     AppError balanceItemRefundTotalExceeded(BigDecimal refund, BigDecimal original, BigDecimal refunded);
+
+    @ErrorDef(httpStatusCode = 403, code = ErrorCode.INVALID_ACCESS, description = "Access Denied")
+    AppError accessDenied();
 }

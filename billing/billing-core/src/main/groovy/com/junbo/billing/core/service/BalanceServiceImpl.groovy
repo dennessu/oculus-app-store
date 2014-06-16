@@ -6,6 +6,10 @@
 
 package com.junbo.billing.core.service
 
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.RightsScope
+import com.junbo.billing.auth.BalanceAuthorizeCallbackFactory
 import com.junbo.billing.core.publisher.AsyncChargePublisher
 import com.junbo.billing.core.validator.BalanceValidator
 import com.junbo.billing.db.repo.facade.BalanceRepositoryFacade
@@ -52,6 +56,12 @@ class BalanceServiceImpl implements BalanceService {
     TransactionService transactionService
 
     @Autowired
+    private BalanceAuthorizeCallbackFactory authorizeCallbackFactory
+
+    @Autowired
+    private AuthorizeService authorizeService
+
+    @Autowired
     void setTransactionService(TransactionService transactionService) {
         this.transactionService = transactionService
     }
@@ -91,73 +101,84 @@ class BalanceServiceImpl implements BalanceService {
             return Promise.pure(tmpBalance)
         }
 
-        Balance originalBalance = null
-        if (balance.type == BalanceType.REFUND.name()) {
-            balanceValidator.validateRefund(balance)
-
-            originalBalance = balanceRepositoryFacade.getBalance(balance.originalBalanceId.value)
-            if (originalBalance == null) {
-                throw AppErrors.INSTANCE.balanceNotFound(balance.originalBalanceId.value.toString()).exception()
+        def callback = authorizeCallbackFactory.create(balance)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('create')) {
+                throw AppErrors.INSTANCE.accessDenied().exception()
             }
-            balanceValidator.validateBalanceStatus(originalBalance.status,
-                    [BalanceStatus.COMPLETED.name(), BalanceStatus.AWAITING_PAYMENT.name()])
-            balanceValidator.validateTransactionNotEmpty(originalBalance.getId(), originalBalance.transactions)
 
-            if (balance.balanceItems == null || balance.balanceItems.size() == 0) {
-                // if there is no balance items input, assume full refund
-                for (BalanceItem item : originalBalance.balanceItems) {
-                    def refundItem = new BalanceItem()
-                    refundItem.originalBalanceItemId = item.getId()
-                    refundItem.amount = item.amount
-                    refundItem.orderId = item.orderId
-                    refundItem.orderItemId = item.orderItemId
-                    balance.addBalanceItem(refundItem)
+            Balance originalBalance = null
+            if (balance.type == BalanceType.REFUND.name()) {
+                if (!AuthorizeContext.hasRights('refund')) {
+                    throw AppErrors.INSTANCE.accessDenied().exception()
                 }
+
+                balanceValidator.validateRefund(balance)
+
+                originalBalance = balanceRepositoryFacade.getBalance(balance.originalBalanceId.value)
+                if (originalBalance == null) {
+                    throw AppErrors.INSTANCE.balanceNotFound(balance.originalBalanceId.value.toString()).exception()
+                }
+                balanceValidator.validateBalanceStatus(originalBalance.status,
+                        [BalanceStatus.COMPLETED.name(), BalanceStatus.AWAITING_PAYMENT.name()])
+                balanceValidator.validateTransactionNotEmpty(originalBalance.getId(), originalBalance.transactions)
+
+                if (balance.balanceItems == null || balance.balanceItems.size() == 0) {
+                    // if there is no balance items input, assume full refund
+                    for (BalanceItem item : originalBalance.balanceItems) {
+                        def refundItem = new BalanceItem()
+                        refundItem.originalBalanceItemId = item.getId()
+                        refundItem.amount = item.amount
+                        refundItem.orderId = item.orderId
+                        refundItem.orderItemId = item.orderItemId
+                        balance.addBalanceItem(refundItem)
+                    }
+                }
+
             }
 
-        }
+            return balanceValidator.validateUser(balance.userId).then {
+                return balanceValidator.validateCountry(balance.country).then {
+                    return balanceValidator.validateCurrency(balance.currency).then { Currency currency ->
+                        return balanceValidator.validatePI(balance.piId).then { PaymentInstrument pi ->
+                            balanceValidator.validateBalanceType(balance.type)
+                            balanceValidator.validateBalance(balance, false)
 
-        return balanceValidator.validateUser(balance.userId).then {
-            return balanceValidator.validateCountry(balance.country).then {
-                return balanceValidator.validateCurrency(balance.currency).then { Currency currency ->
-                    return balanceValidator.validatePI(balance.piId).then { PaymentInstrument pi ->
-                        balanceValidator.validateBalanceType(balance.type)
-                        balanceValidator.validateBalance(balance, false)
-
-                        if (balance.isAsyncCharge == true && !SUPPORT_ASYNC_CHARGE_PI_TYPE.contains(pi.type)) {
-                            LOGGER.info('name=Not_Support_Async_Charge. pi type: ' + pi.type)
-                            balance.isAsyncCharge = false
-                        }
-
-                        return taxService.calculateTax(balance).then { Balance taxedBalance ->
-                            computeTotal(taxedBalance, currency.numberAfterDecimal)
-                            balanceValidator.validateBalanceTotal(taxedBalance)
-
-                            // set the balance status to INIT
-                            taxedBalance.setStatus(BalanceStatus.INIT.name())
-                            if (taxedBalance.isAsyncCharge == null) {
-                                taxedBalance.isAsyncCharge = false
+                            if (balance.isAsyncCharge == true && !SUPPORT_ASYNC_CHARGE_PI_TYPE.contains(pi.type)) {
+                                LOGGER.info('name=Not_Support_Async_Charge. pi type: ' + pi.type)
+                                balance.isAsyncCharge = false
                             }
 
-                            Balance savedBalance = saveAndCommitBalance(taxedBalance)
+                            return taxService.calculateTax(balance).then { Balance taxedBalance ->
+                                computeTotal(taxedBalance, currency.numberAfterDecimal)
+                                balanceValidator.validateBalanceTotal(taxedBalance)
 
-                            if (savedBalance.isAsyncCharge) {
-                                LOGGER.info('name=Async_Charge_Balance. balance id: ' + savedBalance.getId().value)
-                                try {
-                                    asyncChargePublisher.publish(savedBalance.id.toString())
-                                } catch (Exception ex) {
-                                    LOGGER.error('name=Async_Charge_Balance_Queue_Error. ', ex)
-                                    return Promise.pure(savedBalance)
+                                // set the balance status to INIT
+                                taxedBalance.setStatus(BalanceStatus.INIT.name())
+                                if (taxedBalance.isAsyncCharge == null) {
+                                    taxedBalance.isAsyncCharge = false
                                 }
-                                savedBalance.setStatus(BalanceStatus.QUEUING.name())
-                                return Promise.pure(balanceRepositoryFacade.updateBalance(savedBalance, EventActionType.QUEUE))
-                            }
-                            return transactionService.processBalance(savedBalance, originalBalance).recover {
-                                Throwable throwable ->
-                                updateAndCommitBalance(savedBalance, EventActionType.CHARGE)
-                                throw throwable
-                            }.then { Balance returnedBalance ->
-                                return Promise.pure(updateAndCommitBalance(returnedBalance, EventActionType.CHARGE))
+
+                                Balance savedBalance = saveAndCommitBalance(taxedBalance)
+
+                                if (savedBalance.isAsyncCharge) {
+                                    LOGGER.info('name=Async_Charge_Balance. balance id: ' + savedBalance.getId().value)
+                                    try {
+                                        asyncChargePublisher.publish(savedBalance.id.toString())
+                                    } catch (Exception ex) {
+                                        LOGGER.error('name=Async_Charge_Balance_Queue_Error. ', ex)
+                                        return Promise.pure(savedBalance)
+                                    }
+                                    savedBalance.setStatus(BalanceStatus.QUEUING.name())
+                                    return Promise.pure(balanceRepositoryFacade.updateBalance(savedBalance, EventActionType.QUEUE))
+                                }
+                                return transactionService.processBalance(savedBalance, originalBalance).recover {
+                                    Throwable throwable ->
+                                        updateAndCommitBalance(savedBalance, EventActionType.CHARGE)
+                                        throw throwable
+                                }.then { Balance returnedBalance ->
+                                    return Promise.pure(updateAndCommitBalance(returnedBalance, EventActionType.CHARGE))
+                                }
                             }
                         }
                     }
@@ -171,17 +192,24 @@ class BalanceServiceImpl implements BalanceService {
     Promise<Balance> quoteBalance(Balance balance) {
 
         return balanceValidator.validateUser(balance.userId).then {
-            return balanceValidator.validatePI(balance.piId).then {
-                return balanceValidator.validateCountry(balance.country).then {
-                    return balanceValidator.validateCurrency(balance.currency).then { Currency currency ->
-                        balanceValidator.validateBalanceType(balance.type)
-                        balanceValidator.validateBalance(balance, true)
+            def callback = authorizeCallbackFactory.create(balance)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('quote')) {
+                    throw AppErrors.INSTANCE.accessDenied().exception()
+                }
 
-                        return taxService.calculateTax(balance).then { Balance taxedBalance ->
-                            computeTotal(taxedBalance, currency.numberAfterDecimal)
-                            balanceValidator.validateBalanceTotal(taxedBalance)
+                return balanceValidator.validatePI(balance.piId).then {
+                    return balanceValidator.validateCountry(balance.country).then {
+                        return balanceValidator.validateCurrency(balance.currency).then { Currency currency ->
+                            balanceValidator.validateBalanceType(balance.type)
+                            balanceValidator.validateBalance(balance, true)
 
-                            return Promise.pure(taxedBalance)
+                            return taxService.calculateTax(balance).then { Balance taxedBalance ->
+                                computeTotal(taxedBalance, currency.numberAfterDecimal)
+                                balanceValidator.validateBalanceTotal(taxedBalance)
+
+                                return Promise.pure(taxedBalance)
+                            }
                         }
                     }
                 }
@@ -194,20 +222,27 @@ class BalanceServiceImpl implements BalanceService {
     Promise<Balance> captureBalance(Balance balance) {
 
         Balance savedBalance = balanceValidator.validateBalanceId(balance.getId())
-        balanceValidator.validateBalanceStatus(savedBalance.status, BalanceStatus.PENDING_CAPTURE.name())
-        balanceValidator.validateTransactionNotEmpty(savedBalance.getId(), savedBalance.transactions)
+        def callback = authorizeCallbackFactory.create(balance)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('capture')) {
+                throw AppErrors.INSTANCE.accessDenied().exception()
+            }
 
-        if (balance.totalAmount != null && balance.totalAmount > savedBalance.totalAmount) {
-            throw AppErrors.INSTANCE.invalidBalanceTotal(balance.totalAmount.toString()).exception()
-        }
+            balanceValidator.validateBalanceStatus(savedBalance.status, BalanceStatus.PENDING_CAPTURE.name())
+            balanceValidator.validateTransactionNotEmpty(savedBalance.getId(), savedBalance.transactions)
 
-        return transactionService.captureBalance(savedBalance, balance.totalAmount).recover { Throwable throwable ->
-            updateAndCommitBalance(savedBalance, EventActionType.CAPTURE)
-            throw throwable
-        }.then {
-            //persist the balance entity
-            Balance resultBalance = balanceRepositoryFacade.updateBalance(savedBalance, EventActionType.CAPTURE)
-            return Promise.pure(resultBalance)
+            if (balance.totalAmount != null && balance.totalAmount > savedBalance.totalAmount) {
+                throw AppErrors.INSTANCE.invalidBalanceTotal(balance.totalAmount.toString()).exception()
+            }
+
+            return transactionService.captureBalance(savedBalance, balance.totalAmount).recover { Throwable throwable ->
+                updateAndCommitBalance(savedBalance, EventActionType.CAPTURE)
+                throw throwable
+            }.then {
+                //persist the balance entity
+                Balance resultBalance = balanceRepositoryFacade.updateBalance(savedBalance, EventActionType.CAPTURE)
+                return Promise.pure(resultBalance)
+            }
         }
     }
 
@@ -216,16 +251,23 @@ class BalanceServiceImpl implements BalanceService {
     Promise<Balance> confirmBalance(Balance balance) {
 
         Balance savedBalance = balanceValidator.validateBalanceId(balance.getId())
-        balanceValidator.validateBalanceStatus(savedBalance.status, BalanceStatus.UNCONFIRMED.name())
-        balanceValidator.validateTransactionNotEmpty(savedBalance.getId(), savedBalance.transactions)
+        def callback = authorizeCallbackFactory.create(balance)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('confirm')) {
+                throw AppErrors.INSTANCE.accessDenied().exception()
+            }
 
-        return transactionService.confirmBalance(savedBalance).recover { Throwable throwable ->
-            updateAndCommitBalance(savedBalance, EventActionType.CONFIRM)
-            throw throwable
-        }.then {
-            //persist the balance entity
-            Balance resultBalance = balanceRepositoryFacade.updateBalance(savedBalance, EventActionType.CONFIRM)
-            return Promise.pure(resultBalance)
+            balanceValidator.validateBalanceStatus(savedBalance.status, BalanceStatus.UNCONFIRMED.name())
+            balanceValidator.validateTransactionNotEmpty(savedBalance.getId(), savedBalance.transactions)
+
+            return transactionService.confirmBalance(savedBalance).recover { Throwable throwable ->
+                updateAndCommitBalance(savedBalance, EventActionType.CONFIRM)
+                throw throwable
+            }.then {
+                //persist the balance entity
+                Balance resultBalance = balanceRepositoryFacade.updateBalance(savedBalance, EventActionType.CONFIRM)
+                return Promise.pure(resultBalance)
+            }
         }
     }
 
@@ -234,21 +276,28 @@ class BalanceServiceImpl implements BalanceService {
     Promise<Balance> checkBalance(Balance balance) {
 
         Balance savedBalance = balanceValidator.validateBalanceId(balance.getId())
-        balanceValidator.validateBalanceStatus(savedBalance.status,
-                [BalanceStatus.UNCONFIRMED.name(), BalanceStatus.AWAITING_PAYMENT.name(), BalanceStatus.INIT.name()])
+        def callback = authorizeCallbackFactory.create(balance)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('check')) {
+                throw AppErrors.INSTANCE.accessDenied().exception()
+            }
 
-        if (savedBalance.status == BalanceStatus.INIT.name()) {
-            return processAsyncBalance(balance)
-        } else {
-            balanceValidator.validateTransactionNotEmpty(savedBalance.getId(), savedBalance.transactions)
+            balanceValidator.validateBalanceStatus(savedBalance.status,
+                    [BalanceStatus.UNCONFIRMED.name(), BalanceStatus.AWAITING_PAYMENT.name(), BalanceStatus.INIT.name()])
 
-            return transactionService.checkBalance(savedBalance).recover { Throwable throwable ->
-                updateAndCommitBalance(savedBalance, EventActionType.CONFIRM)
-                throw throwable
-            }.then {
-                //persist the balance entity
-                Balance resultBalance = balanceRepositoryFacade.updateBalance(savedBalance, EventActionType.CHECK)
-                return Promise.pure(resultBalance)
+            if (savedBalance.status == BalanceStatus.INIT.name()) {
+                return processAsyncBalance(balance)
+            } else {
+                balanceValidator.validateTransactionNotEmpty(savedBalance.getId(), savedBalance.transactions)
+
+                return transactionService.checkBalance(savedBalance).recover { Throwable throwable ->
+                    updateAndCommitBalance(savedBalance, EventActionType.CONFIRM)
+                    throw throwable
+                }.then {
+                    //persist the balance entity
+                    Balance resultBalance = balanceRepositoryFacade.updateBalance(savedBalance, EventActionType.CHECK)
+                    return Promise.pure(resultBalance)
+                }
             }
         }
     }
@@ -258,21 +307,28 @@ class BalanceServiceImpl implements BalanceService {
     Promise<Balance> processAsyncBalance(Balance balance) {
 
         Balance savedBalance = balanceValidator.validateBalanceId(balance.getId())
-        balanceValidator.validateBalanceStatus(savedBalance.status,
-                [BalanceStatus.INIT.name(), BalanceStatus.QUEUING.name()])
-        if (savedBalance.isAsyncCharge != true) {
-            throw AppErrors.INSTANCE.notAsyncChargeBalance(balance.getId().toString()).exception()
-        }
+        def callback = authorizeCallbackFactory.create(balance)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('process-async')) {
+                throw AppErrors.INSTANCE.accessDenied().exception()
+            }
 
-        Balance originalBalance = null
-        if (balance.type == BalanceType.REFUND.name()) {
-            originalBalance = balanceRepositoryFacade.getBalance(balance.originalBalanceId.value)
-        }
-        return transactionService.processBalance(savedBalance, originalBalance).recover { Throwable throwable ->
-            updateAndCommitBalance(savedBalance, EventActionType.ASYNC_CHARGE)
-            throw throwable
-        }.then { Balance returnedBalance ->
-            return Promise.pure(balanceRepositoryFacade.updateBalance(returnedBalance, EventActionType.ASYNC_CHARGE))
+            balanceValidator.validateBalanceStatus(savedBalance.status,
+                    [BalanceStatus.INIT.name(), BalanceStatus.QUEUING.name()])
+            if (savedBalance.isAsyncCharge != true) {
+                throw AppErrors.INSTANCE.notAsyncChargeBalance(balance.id.toString()).exception()
+            }
+
+            Balance originalBalance = null
+            if (balance.type == BalanceType.REFUND.name()) {
+                originalBalance = balanceRepositoryFacade.getBalance(balance.originalBalanceId.value)
+            }
+            return transactionService.processBalance(savedBalance, originalBalance).recover { Throwable throwable ->
+                updateAndCommitBalance(savedBalance, EventActionType.ASYNC_CHARGE)
+                throw throwable
+            }.then { Balance returnedBalance ->
+                return Promise.pure(balanceRepositoryFacade.updateBalance(returnedBalance, EventActionType.ASYNC_CHARGE))
+            }
         }
     }
 
@@ -280,7 +336,14 @@ class BalanceServiceImpl implements BalanceService {
     @Transactional(readOnly = true)
     Promise<Balance> getBalance(BalanceId balanceId) {
         Balance savedBalance = balanceValidator.validateBalanceId(balanceId)
-        return Promise.pure(savedBalance)
+        def callback = authorizeCallbackFactory.create(savedBalance)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('read')) {
+                throw AppErrors.INSTANCE.accessDenied().exception()
+            }
+
+            return Promise.pure(savedBalance)
+        }
     }
 
     @Override
@@ -289,7 +352,19 @@ class BalanceServiceImpl implements BalanceService {
         if (orderId == null) {
             throw AppErrors.INSTANCE.fieldMissingValue('orderId').exception()
         }
-        return Promise.pure(balanceRepositoryFacade.getBalances(orderId.value))
+
+        List<Balance> results = []
+        List<Balance> balances = balanceRepositoryFacade.getBalances(orderId.value)
+        balances.each { Balance balance ->
+            def callback = authorizeCallbackFactory.create(balance)
+            RightsScope.with(authorizeService.authorize(callback)) {
+                if (AuthorizeContext.hasRights('read')) {
+                    results.add(balance)
+                }
+                return Promise.pure(null)
+            }
+        }
+        return Promise.pure(results)
     }
 
     private Balance checkTrackingUUID(UUID uuid) {
@@ -307,9 +382,16 @@ class BalanceServiceImpl implements BalanceService {
             throw AppErrors.INSTANCE.fieldMissingValue('shippingAddressId').exception()
         }
         Balance savedBalance = balanceValidator.validateBalanceId(balance.getId())
-        savedBalance.setShippingAddressId(balance.shippingAddressId)
-        Balance resultBalance = balanceRepositoryFacade.updateBalance(savedBalance, EventActionType.ADDRESS_CHANGE)
-        return Promise.pure(resultBalance)
+        def callback = authorizeCallbackFactory.create(savedBalance)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('put')) {
+                throw AppErrors.INSTANCE.accessDenied().exception()
+            }
+
+            savedBalance.setShippingAddressId(balance.shippingAddressId)
+            Balance resultBalance = balanceRepositoryFacade.updateBalance(savedBalance, EventActionType.ADDRESS_CHANGE)
+            return Promise.pure(resultBalance)
+        }
     }
 
     protected Balance saveAndCommitBalance(final Balance balance) {

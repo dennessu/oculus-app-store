@@ -3,10 +3,13 @@ apply plugin: 'groovy'
 dependencies {
     compile junboProject(':billing-db')
     compile junboProject(':billing-spec')
+    compile junboProject(':billing-auth')
     compile junboProject(':billing-clientproxy')
     compile 'net.sf.ehcache:ehcache-core:2.6.6'
     //compile 'org.springframework:spring-context-support:4.0.2.RELEASE'
     compile junboProject(':notification-core')
+
+    runtime junboProject(':identity-clientproxy')
 
     testCompile (libraries.spring_test)
     testCompile junboProject(':configuration-data')
