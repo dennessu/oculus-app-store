@@ -225,6 +225,10 @@
         <property name="userRepository" ref="userRepository" />
     </bean>
 
+    <bean id="userSSNValidator" class="com.junbo.identity.core.service.validator.impl.UserSSNValidatorImpl">
+        <property name="allowedSSNPattern" value="^[0-9]{9}$" />
+    </bean>
+
     <bean id="userPhoneNumberValidator" class="com.junbo.identity.core.service.validator.impl.UserPhoneNumberValidatorImpl">
         <property name="allowedValuePatterns">
             <list>
@@ -426,6 +430,7 @@
                 <ref bean="driverLicenseValidator" />
                 <ref bean="genderValidator" />
                 <ref bean="addressValidator" />
+                <ref bean="userSSNValidator" />
             </list>
         </constructor-arg>
     </bean>
