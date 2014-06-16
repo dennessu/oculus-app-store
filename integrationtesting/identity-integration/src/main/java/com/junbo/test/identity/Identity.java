@@ -171,6 +171,14 @@ public class Identity {
                 OculusOutput.class);
     }
 
+    public static UserCredential CredentialsGetByUserId(UserId userId) throws Exception {
+        JsonNode jsonNode = JsonHelper.ObjectToJsonNode((HttpclientHelper.SimpleGet(DefaultIdentityV1UserURI
+                        + "?userId=" + IdFormatter.encodeId(userId) + "/credentials?credentialType=PASSWORD",
+                (Results.class)
+        ).getItems().get(0)));
+        return (UserCredential) JsonHelper.JsonNodeToObject(jsonNode, UserCredential.class);
+    }
+
     public static Long GetUserIdFromUserPersonalInfo(UserPersonalInfo userPersonalInfo) throws Exception {
         return userPersonalInfo.getUserId().getValue();
     }

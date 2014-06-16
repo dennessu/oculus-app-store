@@ -106,7 +106,7 @@ public class IdentityModel {
 
     public static Email DefaultEmail() throws Exception {
         Email email = new Email();
-        email.setInfo("silkcloudtest+" + RandomHelper.randomAlphabetic(8) + "@gmail.com");
+        email.setInfo(RandomHelper.randomAlphabetic(10) + "@163.com");
         return email;
     }
 
@@ -134,7 +134,8 @@ public class IdentityModel {
         input.setLastName(RandomHelper.randomAlphabetic(10));
         input.setEmail(RandomHelper.randomAlphabetic(10) + "@163.com");
         input.setUsername(RandomHelper.randomAlphabetic(15));
-        input.setPassword(RandomHelper.randomAlphabetic(20));
+        input.setPassword("1:" + RandomHelper.randomAlphabetic(20) + ":" + RandomHelper.randomAlphabetic(30)
+                + ":" + RandomHelper.randomAlphabetic(40));
         input.setGender("male");
         input.setDob(sdf.parse("1980-01-01 00:00:00"));
         input.setNickName(RandomHelper.randomAlphabetic(10));
@@ -146,6 +147,7 @@ public class IdentityModel {
         input.setShareProfile(DefaultShareProfile());
         input.setOldPasswordHash(false);
         input.setStatus("ACTIVE");
+        input.setForceResetPassword(false);
         return input;
     }
 

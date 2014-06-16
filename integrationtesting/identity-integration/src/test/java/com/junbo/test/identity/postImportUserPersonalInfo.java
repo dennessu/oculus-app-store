@@ -43,6 +43,10 @@ public class postImportUserPersonalInfo {
         Validator.Validate("validate user name", oculusInput.getUsername(), user.getUsername());
         Validator.Validate("validate user status", oculusInput.getStatus(), user.getStatus());
 
+        UserCredential uc = Identity.CredentialsGetByUserId(user.getId());
+        Validator.Validate("validate forceResetPassword", oculusInput.getForceResetPassword(),
+                uc.getChangeAtNextLogin());
+
         List<UserPersonalInfo> userPersonalInfos = Identity.UserPersonalInfosGetByUserId(user.getId());
         for (UserPersonalInfo upi : userPersonalInfos) {
             if (upi.getType().equals("NAME")) {
@@ -95,5 +99,17 @@ public class postImportUserPersonalInfo {
         UserPersonalInfoLink upil2 = user2.getEmails().get(0);
         UserPersonalInfo upi2 = Identity.UserPersonalInfoGetByUserPersonalInfoId(upil2.getValue());
         Validator.Validate("validate original email", true, upi2.getValue().toString().contains(oculusInput.getEmail()));
+    }
+
+    @Test(groups = "dailies")
+    public void importMigrationDataWithOldPasswordHash() throws Exception {
+        OculusInput oculusInput = IdentityModel.DefaultOculusInput();
+        oculusInput.setOldPasswordHash(true);
+        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
+                Identity.DefaultIdentityV1ImportsURI, JsonHelper.JsonSerializer(oculusInput), 2);
+        Validator.Validate("validate response error code", 500, response.getStatusLine().getStatusCode());
+        String errorMessage = "user has old PasswordHash";
+        Validator.Validate("validate response error message", true,
+                EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
     }
 }
