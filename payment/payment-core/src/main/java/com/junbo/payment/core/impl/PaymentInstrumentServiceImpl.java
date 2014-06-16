@@ -98,7 +98,6 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
 
     @Override
     public void delete(final Long paymentInstrumentId) {
-        getById(paymentInstrumentId);
         paymentInstrumentRepository.delete(paymentInstrumentId);
     }
 

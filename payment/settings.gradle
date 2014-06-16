@@ -2,6 +2,7 @@ include 'payment-spec'
 
 include 'payment-common'
 include 'payment-db'
+include 'payment-auth'
 include 'payment-core'
 include 'payment-rest'
 

@@ -23,6 +23,7 @@ dependencies {
 	compile junboProject(':payment-spec')
     compile junboProject(':payment-db')
     compile junboProject(':payment-common')
+    compile junboProject(':payment-auth')
     compile junboProject(':payment-clientproxy')
     compile junboProject(':payment-core')
 

@@ -1,0 +1,7 @@
+apply plugin: 'java'
+
+dependencies {
+    compile junboProject(':payment-spec')
+    compile junboProject(':authorization-lib')
+    runtime junboProject(':identity-clientproxy')
+}
