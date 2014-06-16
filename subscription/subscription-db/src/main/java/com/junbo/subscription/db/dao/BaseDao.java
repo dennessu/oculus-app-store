@@ -8,6 +8,7 @@ package com.junbo.subscription.db.dao;
 import com.junbo.sharding.IdGenerator;
 import com.junbo.sharding.ShardAlgorithm;
 import com.junbo.sharding.hibernate.ShardScope;
+import com.junbo.sharding.view.ViewQueryFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,10 @@ public class BaseDao<T extends com.junbo.subscription.db.entity.Entity> {
     @Autowired
     @Qualifier("oculus48IdGenerator")
     private IdGenerator idGenerator;
+
+    @Autowired
+    @Qualifier("subscriptionViewQueryFactory")
+    protected ViewQueryFactory viewQueryFactory;
 
     private Class<T> classType;
 

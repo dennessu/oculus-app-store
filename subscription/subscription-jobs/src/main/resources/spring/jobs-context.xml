@@ -13,7 +13,7 @@
 
     <bean id="cycleChargeJobDetails" class="org.springframework.scheduling.quartz.JobDetailBean">
         <property name="jobClass">
-            <value>com.lbnet.lzx.timing.OrderNoRefact</value>
+            <value>com.junbo.subscription.jobs.cycle.CycleJob</value>
         </property>
         <property name="group" value="subscription" />
         <property name="name" value="cycleChargeJob" />
@@ -21,13 +21,13 @@
 
     <bean id="cycleChargeTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="cycleChargeJobDetails" />
-        <property name="cronExpression"  value="${subs.processorder.cronexpression}" />
+        <property name="cronExpression"  value="${subscription.jobs.cycle.cronexpression}" />
     </bean>
 
     <!-- schedule-->
     <bean id="subsSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="schedulerName" value="subscriptionScheduler"/>
-        <property name="autoStartup" value="${subs.job.scheduler.start}"/>
+        <property name="autoStartup" value="${subscription.jobs.cycle.autoStartup}"/>
         <property name="triggers">
             <list>
                 <ref bean="cycleChargeTrigger" />

@@ -11,4 +11,5 @@ import com.junbo.subscription.db.entity.SubscriptionEventActionEntity;
  * Created by Administrator on 14-3-28.
  */
 public class SubscriptionEventActionDao extends BaseDao<SubscriptionEventActionEntity> {
+
 }

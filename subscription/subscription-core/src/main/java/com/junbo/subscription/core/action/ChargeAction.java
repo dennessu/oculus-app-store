@@ -14,6 +14,7 @@ import com.junbo.subscription.clientproxy.RatingGateway;
 import com.junbo.subscription.common.util.Utils;
 import com.junbo.subscription.core.SubscriptionActionService;
 import com.junbo.subscription.db.entity.SubscriptionActionType;
+import com.junbo.subscription.db.entity.SubscriptionEventType;
 import com.junbo.subscription.db.entity.SubscriptionStatus;
 import com.junbo.subscription.db.repository.SubscriptionEventActionRepository;
 import com.junbo.subscription.spec.model.Subscription;
@@ -48,10 +49,28 @@ public class ChargeAction implements SubscriptionActionService {
 
         //Rating
         SubsRatingRequest request = new SubsRatingRequest();
-        //request.(subscription.getCountry());
         request.setCurrency(subscription.getCurrency());
-        request.setType(SubsRatingType.PURCHASE);
         request.setOfferId(subscription.getOfferId());
+        request.setCountry(subscription.getCountry());
+        //request.setExtensionNum();
+        //request.setExtensionUnit();
+
+        SubscriptionEventType eventType = SubscriptionEventType.valueOf(event.getEventType());
+        switch (eventType){
+            case CYCLED:
+                request.setType(SubsRatingType.PURCHASE);
+                break;
+            case CREATED:
+                request.setType(SubsRatingType.CYCLE);
+                request.setCycleCount(1); //todo: add biling cycle
+                break;
+            case CANCELLED:
+                request.setType(SubsRatingType.CANCEL);
+                break;
+            default:
+                break;
+        }
+
 
         SubsRatingRequest response = ratingGateway.subsRating(request);
 
@@ -69,7 +88,8 @@ public class ChargeAction implements SubscriptionActionService {
         paymentTransaction.setChargeInfo(chargeInfo);
 
         action.setRequest(Utils.toJson(paymentTransaction, null));
-        //LOGGER.info('name=Charge_Balance. balance currency: {}, amount: {}, pi id: {}',balance.currency, balance.totalAmount, balance.piId);
+        //LOGGER.info('name=chargePayment. currency: {}, amount: {}, pi id: {}',
+        //        chargeInfo.getCurrency(), chargeInfo.getAmount(), paymentTransaction.getPaymentInstrumentId());
         paymentTransaction = paymentGateway.chargePayment(paymentTransaction);
 
         action.setResponse(Utils.toJson(paymentTransaction, null));
