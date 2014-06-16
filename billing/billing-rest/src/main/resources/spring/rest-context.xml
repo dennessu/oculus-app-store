@@ -10,9 +10,11 @@
     <context:component-scan base-package="com.junbo.billing.spec.resource.adapter" />
 
     <bean id="defaultBalanceResource" class="com.junbo.billing.rest.resource.BalanceResourceImpl"/>
+    <bean id="defaultVatResource" class="com.junbo.billing.rest.resource.VatResourceImpl"/>
 
     <bean id="defaultBalanceResourceClientFactory" class="com.junbo.billing.spec.resource.proxy.BalanceResourceClientProxyFactory"/>
-
+    <bean id="defaultVatResourceClientFactory" class="com.junbo.billing.spec.resource.proxy.VatResourceClientProxyFactory"/>
     <bean id="defaultBalanceResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultVatResourceRouter" parent="routingRouterBase" />
     <bean id="defaultBillingCurrencyResourceRouter" parent="routingRouterBase" />
 </beans>

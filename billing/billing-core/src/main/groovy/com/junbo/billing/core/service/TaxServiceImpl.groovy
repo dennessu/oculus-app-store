@@ -13,6 +13,7 @@ import com.junbo.billing.spec.enums.TaxStatus
 import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
+import com.junbo.billing.spec.model.VatIdValidationResponse
 import com.junbo.identity.spec.v1.model.Address
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.model.PaymentInstrument
@@ -107,5 +108,10 @@ class TaxServiceImpl implements TaxService {
     @Override
     Promise<Address> validateAddress(Address address) {
         return taxFacade.validateAddress(address)
+    }
+
+    @Override
+    Promise<VatIdValidationResponse> validateVatId(String vatId) {
+        return taxFacade.validateVatId(vatId)
     }
 }
