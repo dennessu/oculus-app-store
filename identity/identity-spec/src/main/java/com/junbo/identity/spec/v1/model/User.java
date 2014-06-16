@@ -15,7 +15,9 @@ import com.junbo.common.model.Link;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by liangfu on 4/3/14.
@@ -83,6 +85,16 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> {
 
     @ApiModelProperty(position = 14, required = false, value = "The personalInfo Link to the personalInfo resource, which is Gender of the user.")
     private UserPersonalInfoLink gender;
+
+    @ApiModelProperty(position = 15, required = false, value = "A mapping between country code and User VAT number, country code must be exist valid country code.")
+    private Map<String, UserVAT> vat = new HashMap<>();
+
+    @ApiModelProperty(position = 16, required = false, value = "true if the user claims to be tax exempt, false if user has not claimed to be tax exempt")
+    private Boolean isTaxExemptionClaimed;
+
+    @ApiModelProperty(position = 17, required = false, value = "True if Oculus has verified user taxExemption material, " +
+            "False if Oculus hasn't verified user taxExemption material, this value should only be set by internal tool by Oculus employee")
+    private Boolean isTaxExemptionValidated;
 
     @ApiModelProperty(position = 6, required = false, value = " A link to the Groups resource, search the groups that contain the user.")
     @HateoasLink("/user-group-memberships?userId={id}")
@@ -452,5 +464,32 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> {
     public void setCountryOfResidence(CountryId countryOfResidence) {
         this.countryOfResidence = countryOfResidence;
         support.setPropertyAssigned("countryOfResidence");
+    }
+
+    public Map<String, UserVAT> getVat() {
+        return vat;
+    }
+
+    public void setVat(Map<String, UserVAT> vat) {
+        this.vat = vat;
+        support.setPropertyAssigned("vat");
+    }
+
+    public Boolean getIsTaxExemptionClaimed() {
+        return isTaxExemptionClaimed;
+    }
+
+    public void setIsTaxExemptionClaimed(Boolean isTaxExemptionClaimed) {
+        this.isTaxExemptionClaimed = isTaxExemptionClaimed;
+        support.setPropertyAssigned("isTaxExemptionClaimed");
+    }
+
+    public Boolean getIsTaxExemptionValidated() {
+        return isTaxExemptionValidated;
+    }
+
+    public void setIsTaxExemptionValidated(Boolean isTaxExemptionValidated) {
+        this.isTaxExemptionValidated = isTaxExemptionValidated;
+        support.setPropertyAssigned("isTaxExemptionValidated");
     }
 }

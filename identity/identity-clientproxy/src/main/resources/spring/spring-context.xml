@@ -15,6 +15,10 @@
         <property name="target" value="${clientproxy.crypto.url}"/>
     </bean>
 
+    <bean id="identityBillingResource" class="com.junbo.billing.spec.resource.proxy.VatResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.billing.url}" />
+    </bean>
+
     <bean id="identityAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
         <property name="scope" value="identity.service"/>
         <property name="deflectionInSeconds" value="300"/>

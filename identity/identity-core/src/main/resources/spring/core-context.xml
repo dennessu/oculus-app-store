@@ -549,6 +549,9 @@
                         <value>governmentId</value>
                         <value>driversLicense</value>
                         <value>gender</value>
+                        <value>vat</value>
+                        <value>isTaxExemptionClaimed</value>
+                        <value>isTaxExemptionValidated</value>
                         <value>futureExpansion</value>
                         <value>rev</value>
                         <value>createdTime</value>
@@ -580,6 +583,9 @@
                         <value>governmentId</value>
                         <value>driversLicense</value>
                         <value>gender</value>
+                        <value>vat</value>
+                        <value>isTaxExemptionClaimed</value>
+                        <value>isTaxExemptionValidated</value>
                         <value>futureExpansion</value>
                     </list>
                 </entry>
@@ -609,6 +615,9 @@
                         <value>governmentId</value>
                         <value>driversLicense</value>
                         <value>gender</value>
+                        <value>vat</value>
+                        <value>isTaxExemptionClaimed</value>
+                        <value>isTaxExemptionValidated</value>
                         <value>futureExpansion</value>
                         <value>rev</value>
                     </list>
