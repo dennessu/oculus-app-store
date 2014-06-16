@@ -5,19 +5,19 @@ source ${DIR}/../util/common.sh
 $PGBIN_PATH/psql repl_test -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "DELETE FROM teacher;"
 
 # insert against SLAVE server
-for k in $(seq 1 49)
+for k in $(seq 1 9)
 do
     $PGBIN_PATH/psql repl_test -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "INSERT INTO teacher VALUES ($k);"
 done
 
 # insert against primary pgbouncer proxy
-for k in $(seq 1 49)
+for k in $(seq 10 18)
 do
     $PGBIN_PATH/psql repl_test -h $PRIMARY_PGBOUNCER_HOST -p $PGBOUNCER_PORT -c "INSERT INTO teacher VALUES ($k);"
 done
 
 # insert against secondary pgbouncer proxy
-for k in $(seq 1 49)
+for k in $(seq 19 27)
 do
     $PGBIN_PATH/psql repl_test -h $SECONDARY_PGBOUNCER_HOST -p $PGBOUNCER_PORT -c "INSERT INTO teacher VALUES ($k);"
 done

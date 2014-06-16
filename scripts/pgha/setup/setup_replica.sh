@@ -45,7 +45,7 @@ port = $REPLICA_DB_PORT
 EOF
 
 echo "start replica database..."
-$PGBIN_PATH/pg_ctl -D $REPLICA_DATA_PATH start
+$PGBIN_PATH/pg_ctl -D $REPLICA_DATA_PATH start > /dev/null 2>&1 &
 
 while ! echo exit | nc $REPLICA_HOST $REPLICA_DB_PORT; do sleep 1 && echo "waiting for replica database..."; done
 echo "replica database started successfully!"

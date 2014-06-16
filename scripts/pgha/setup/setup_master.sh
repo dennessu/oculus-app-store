@@ -54,7 +54,7 @@ port = $MASTER_DB_PORT
 EOF
 
 echo "start master database..."
-$PGBIN_PATH/pg_ctl -D $MASTER_DATA_PATH start
+$PGBIN_PATH/pg_ctl -D $MASTER_DATA_PATH start > /dev/null 2>&1 &
 
 while ! echo exit | nc $MASTER_HOST $MASTER_DB_PORT; do sleep 1 && echo "waiting for master database startup..."; done
 echo "master database started successfully!"
