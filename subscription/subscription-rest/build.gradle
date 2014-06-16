@@ -21,6 +21,7 @@ dependencies {
 
     compile junboProject(':subscription-spec')
     compile junboProject(':subscription-db')
+    compile junboProject(':subscription-auth')
     compile junboProject(':subscription-common')
     compile junboProject(':subscription-clientproxy')
     compile junboProject(':subscription-core')

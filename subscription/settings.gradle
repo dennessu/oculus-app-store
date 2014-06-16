@@ -2,6 +2,7 @@ include 'subscription-spec'
 
 include 'subscription-common'
 include 'subscription-db'
+include 'subscription-auth'
 include 'subscription-core'
 include 'subscription-rest'
 
