@@ -124,10 +124,10 @@ public class OrderTestDataProvider {
                 IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId)));
         paymentInfos.add(paymentInfo);
         order.setPayments(paymentInfos);
-        order.setShippingMethod("0L");
+        order.setShippingMethod("0");
 
         if (hasPhysicalGood) {
-            order.setShippingMethod(String.valueOf(quantity));
+            order.setShippingMethod("0");
             order.setShippingAddress(Master.getInstance().getUser(uid).getAddresses().get(0).getValue());
         }
 
@@ -136,7 +136,7 @@ public class OrderTestDataProvider {
             OfferId offerId = new OfferId(offerClient.getOfferIdByName(offers.get(i)));
 
             OrderItem orderItem = new OrderItem();
-            orderItem.setQuantity(1);
+            orderItem.setQuantity(quantity);
             //orderItem.setQuantity(Integer.valueOf(RandomFactory.getRandomLong(1L, 1L).toString()));
             orderItem.setOffer(offerId);
             orderItemList.add(orderItem);
@@ -213,7 +213,7 @@ public class OrderTestDataProvider {
         BigDecimal totalAmount = new BigDecimal(0);
         Order order = Master.getInstance().getOrder(orderId);
         for (int i = 0; i < order.getOrderItems().size(); i++) {
-            totalAmount.add(order.getOrderItems().get(i).getTotalAmount());
+            totalAmount = totalAmount.add(order.getOrderItems().get(i).getTotalAmount());
             order.getOrderItems().get(i).setTotalAmount(new BigDecimal(0));
         }
         orderClient.updateOrder(order);
@@ -225,7 +225,7 @@ public class OrderTestDataProvider {
         BigDecimal totalAmount = new BigDecimal(0);
         Order order = Master.getInstance().getOrder(orderId);
         for (int i = 0; i < order.getOrderItems().size(); i++) {
-            totalAmount.add(order.getOrderItems().get(i).getTotalAmount());
+            totalAmount = totalAmount.add(order.getOrderItems().get(i).getTotalAmount());
             order.getOrderItems().get(i).setTotalAmount(new BigDecimal(0));
         }
         order.setOrderItems(null);
@@ -244,7 +244,7 @@ public class OrderTestDataProvider {
             if (refundAmount.compareTo(orderItemTotalAmount) > 0) {
                 throw new TestException("Refund amount more than actual order item amount");
             }
-            totalAmount.add(orderItemTotalAmount.subtract(refundAmount));
+            totalAmount = totalAmount.add(orderItemTotalAmount.subtract(refundAmount));
             order.getOrderItems().get(i).setTotalAmount(orderItemTotalAmount.subtract(refundAmount));
         }
 

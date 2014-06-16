@@ -10,6 +10,7 @@ import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.order.model.enums.EventStatus;
 import com.junbo.test.order.model.enums.OrderActionType;
+import com.junbo.test.order.model.enums.OrderEventInfo;
 import com.junbo.test.order.model.enums.OrderStatus;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
@@ -24,6 +25,7 @@ import org.testng.annotations.Test;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -243,7 +245,7 @@ public class OrderStatusTesting extends BaseOrderTestClass {
     )
     @Test
     public void testPhysicalGoodsOrderEvents() throws Exception {
-        Map<OrderActionType, EventStatus> expectedEventStatus = new HashMap<>();
+        List<OrderEventInfo> expectedEventStatus = new ArrayList<>();
 
         String uid = testDataProvider.createUser();
 
@@ -255,15 +257,15 @@ public class OrderStatusTesting extends BaseOrderTestClass {
 
         String orderId = testDataProvider.postOrder(
                 uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, true, offerList);
-        expectedEventStatus.put(OrderActionType.RATE, EventStatus.COMPLETED);
+        expectedEventStatus.add(new OrderEventInfo(OrderActionType.RATE, EventStatus.COMPLETED));
 
         validationHelper.validateOrderEvents(orderId, expectedEventStatus);
 
         testDataProvider.updateOrderTentative(orderId, false);
 
-        expectedEventStatus.put(OrderActionType.CHARGE, EventStatus.OPEN);
-        expectedEventStatus.put(OrderActionType.CHARGE, EventStatus.COMPLETED);
-        expectedEventStatus.put(OrderActionType.FULFILL, EventStatus.OPEN);
+        expectedEventStatus.add(new OrderEventInfo(OrderActionType.CHARGE, EventStatus.OPEN));
+        expectedEventStatus.add(new OrderEventInfo(OrderActionType.CHARGE, EventStatus.COMPLETED));
+        expectedEventStatus.add(new OrderEventInfo(OrderActionType.FULFILL, EventStatus.OPEN));
 
         validationHelper.validateOrderEvents(orderId, expectedEventStatus);
 
@@ -379,6 +381,8 @@ public class OrderStatusTesting extends BaseOrderTestClass {
     )
     @Test
     public void testRefundOrderEvents() throws Exception {
+        List<OrderEventInfo> expectedEventStatus = new ArrayList<>();
+        Map<String, OrderStatus> expectedOrderStatus = new HashMap<>();
         String uid = testDataProvider.createUser();
 
         ArrayList<String> offerList = new ArrayList<>();
@@ -388,12 +392,35 @@ public class OrderStatusTesting extends BaseOrderTestClass {
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
 
-        testDataProvider.invalidateCreditCard(uid, creditCardId);
-
         String orderId = testDataProvider.postOrder(
                 uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
 
         testDataProvider.updateOrderTentative(orderId, false);
+
+        testDataProvider.refundPartialAmount(orderId, new BigDecimal(2));
+
+        testDataProvider.getOrder(orderId);
+
+        expectedEventStatus.add(new OrderEventInfo(OrderActionType.RATE, EventStatus.COMPLETED));
+        expectedEventStatus.add(new OrderEventInfo(OrderActionType.CHARGE, EventStatus.OPEN));
+        expectedEventStatus.add(new OrderEventInfo(OrderActionType.CHARGE, EventStatus.COMPLETED));
+        expectedEventStatus.add(new OrderEventInfo(OrderActionType.FULFILL, EventStatus.OPEN));
+        expectedEventStatus.add(new OrderEventInfo(OrderActionType.FULFILL, EventStatus.COMPLETED));
+        expectedEventStatus.add(new OrderEventInfo(OrderActionType.PARTIAL_REFUND, EventStatus.OPEN));
+        expectedEventStatus.add(new OrderEventInfo(OrderActionType.PARTIAL_REFUND, EventStatus.COMPLETED));
+
+        expectedOrderStatus.put(orderId, OrderStatus.REFUNDED);
+
+        validationHelper.validateOrderEvents(orderId, expectedEventStatus);
+        validationHelper.validateOrderStatus(expectedOrderStatus);
+
+        testDataProvider.refundTotalQuantity(orderId);
+        expectedEventStatus.add(new OrderEventInfo(OrderActionType.REFUND, EventStatus.OPEN));
+        expectedEventStatus.add(new OrderEventInfo(OrderActionType.REFUND, EventStatus.COMPLETED));
+
+        validationHelper.validateOrderEvents(orderId, expectedEventStatus);
+        validationHelper.validateOrderStatus(expectedOrderStatus);
+
     }
 
 }

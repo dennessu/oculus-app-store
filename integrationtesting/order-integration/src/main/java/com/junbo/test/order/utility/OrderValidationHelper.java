@@ -14,8 +14,7 @@ import com.junbo.order.spec.model.OrderEvent;
 import com.junbo.test.billing.entities.TransactionInfo;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.IdConverter;
-import com.junbo.test.order.model.enums.EventStatus;
-import com.junbo.test.order.model.enums.OrderActionType;
+import com.junbo.test.order.model.enums.OrderEventInfo;
 import com.junbo.test.order.model.enums.OrderStatus;
 import com.junbo.test.common.Utility.BaseValidationHelper;
 import com.junbo.test.common.blueprint.Master;
@@ -40,22 +39,17 @@ public class OrderValidationHelper extends BaseValidationHelper {
         }
     }
 
-    public void validateOrderEvents(String orderId, Map<OrderActionType, EventStatus> expectedOrderEvents)
+    public void validateOrderEvents(String orderId, List<OrderEventInfo> expectedOrderEvents)
             throws Exception {
         Results<OrderEvent> orderEventResults = testDataProvider.getOrderEventsByOrderId(orderId);
         List<OrderEvent> orderEvents = orderEventResults.getItems();
 
         verifyEqual(orderEvents.size(), expectedOrderEvents.size(), "verify order events size");
 
-        Set<OrderActionType> key = expectedOrderEvents.keySet();
-        int i = 0;
-        for (Iterator it = key.iterator(); it.hasNext(); ) {
-            OrderActionType orderActionType = (OrderActionType) it.next();
-
-            EventStatus eventStatus = expectedOrderEvents.get(orderActionType);
-            verifyEqual(orderEvents.get(i).getAction(), orderActionType.toString(), "verify order action type");
-            verifyEqual(orderEvents.get(i).getStatus(), eventStatus.toString(), "verify event status");
-            i++;
+        for (int i = 0; i < expectedOrderEvents.size(); i++) {
+            verifyEqual(orderEvents.get(i).getAction(), expectedOrderEvents.get(i).toString(),
+                    "verify order action type");
+            verifyEqual(orderEvents.get(i).getStatus(), expectedOrderEvents.get(i).toString(), "verify event status");
         }
     }
 
@@ -67,7 +61,7 @@ public class OrderValidationHelper extends BaseValidationHelper {
                     transaction.getStatus().equals(expectedTransaction.getTransactionStatus().toString())) {
                 verifyEqual(IdConverter.idToHexString(transaction.getPiId()),
                         expectedTransaction.getPaymentInstrumentId(), "verify payment instrument id");
-                verifyEqual(transaction.getAmount(),expectedTransaction.getAmount(),"verify transaction amount");
+                verifyEqual(transaction.getAmount(), expectedTransaction.getAmount(), "verify transaction amount");
                 return;
             }
         }
