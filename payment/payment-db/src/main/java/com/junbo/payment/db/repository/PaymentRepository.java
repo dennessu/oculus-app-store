@@ -66,7 +66,7 @@ public class PaymentRepository {
     public void updatePayment(Long paymentId, PaymentStatus status, String externalToken){
         PaymentEntity entity = paymentDao.get(paymentId);
         if(status != null){
-            entity.setStatus(status);
+            entity.setStatusId(status.getId());
         }
         if(externalToken != null){
             entity.setExternalToken(externalToken);

@@ -17,12 +17,12 @@ import com.junbo.payment.core.PaymentTransactionService;
 import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.provider.ProviderRoutingService;
 import com.junbo.payment.core.util.PaymentUtil;
-import com.junbo.payment.db.mapper.PaymentAPI;
 import com.junbo.payment.db.mapper.TrackingUuid;
 import com.junbo.payment.db.repository.MerchantAccountRepository;
 import com.junbo.payment.db.repository.PaymentProviderRepository;
 import com.junbo.payment.db.repository.PaymentRepository;
 import com.junbo.payment.db.repository.TrackingUuidRepository;
+import com.junbo.payment.spec.enums.PaymentAPI;
 import com.junbo.payment.spec.enums.PaymentEventType;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.PaymentEvent;
@@ -128,7 +128,7 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
         }
         TrackingUuid trackingUuid = new TrackingUuid();
         trackingUuid.setPaymentId(request.getId());
-        trackingUuid.setApi(api);
+        trackingUuid.setApi(api.toString());
         trackingUuid.setTrackingUuid(request.getTrackingUuid());
         trackingUuid.setUserId(request.getUserId());
         trackingUuid.setResponse(CommonUtil.toJson(request, null));

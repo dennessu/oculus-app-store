@@ -17,7 +17,7 @@ public class TrackingUuid {
     private Long id;
     private UUID trackingUuid;
     private Long userId;
-    private PaymentAPI api;
+    private String api;
     private Long paymentInstrumentId;
     private Long paymentId;
     private String response;
@@ -46,11 +46,11 @@ public class TrackingUuid {
         this.userId = userId;
     }
 
-    public PaymentAPI getApi() {
+    public String getApi() {
         return api;
     }
 
-    public void setApi(PaymentAPI api) {
+    public void setApi(String api) {
         this.api = api;
     }
 

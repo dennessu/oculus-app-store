@@ -6,8 +6,6 @@
 
 package com.junbo.payment.db.entity;
 
-
-import com.junbo.payment.db.mapper.PaymentAPI;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
@@ -36,7 +34,7 @@ public class TrackingUuidEntity extends GenericEntity{
     private Long userId;
 
     @Column(name = "api_id")
-    private PaymentAPI api;
+    private Short apiId;
 
     @Column(name = "payment_instrument_id")
     private Long paymentInstrumentId;
@@ -86,12 +84,12 @@ public class TrackingUuidEntity extends GenericEntity{
         this.userId = userId;
     }
 
-    public PaymentAPI getApi() {
-        return api;
+    public Short getApiId() {
+        return apiId;
     }
 
-    public void setApi(PaymentAPI api) {
-        this.api = api;
+    public void setApiId(Short apiId) {
+        this.apiId = apiId;
     }
 
     public Long getPaymentInstrumentId() {

@@ -7,12 +7,12 @@
 package com.junbo.payment.db.entity.payment;
 
 import com.junbo.payment.db.entity.GenericEntity;
-import com.junbo.payment.spec.enums.PaymentStatus;
-import com.junbo.payment.spec.enums.PaymentType;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.math.BigDecimal;
-
-import javax.persistence.*;
 
 
 /**
@@ -30,7 +30,7 @@ public class PaymentEntity extends GenericEntity {
     private Long userId;
 
     @Column(name = "payment_type_id")
-    private PaymentType type;
+    private Short typeId;
 
     @Column(name = "currency_code")
     private String currency;
@@ -54,7 +54,7 @@ public class PaymentEntity extends GenericEntity {
     private Integer merchantAccountId;
 
     @Column(name = "payment_status_id")
-    private PaymentStatus status;
+    private Short statusId;
 
     @Column(name = "external_token")
     private String externalToken;
@@ -83,12 +83,12 @@ public class PaymentEntity extends GenericEntity {
         this.userId = userId;
     }
 
-    public PaymentType getType() {
-        return type;
+    public Short getTypeId() {
+        return typeId;
     }
 
-    public void setType(PaymentType type) {
-        this.type = type;
+    public void setTypeId(Short typeId) {
+        this.typeId = typeId;
     }
 
     public String getCurrency() {
@@ -147,12 +147,12 @@ public class PaymentEntity extends GenericEntity {
         this.merchantAccountId = merchantAccountId;
     }
 
-    public PaymentStatus getStatus() {
-        return status;
+    public Short getStatusId() {
+        return statusId;
     }
 
-    public void setStatus(PaymentStatus status) {
-        this.status = status;
+    public void setStatusId(Short statusId) {
+        this.statusId = statusId;
     }
 
     public String getExternalToken() {

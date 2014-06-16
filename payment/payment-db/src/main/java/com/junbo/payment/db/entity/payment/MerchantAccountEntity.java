@@ -7,8 +7,6 @@
 package com.junbo.payment.db.entity.payment;
 
 
-import com.junbo.common.id.PIType;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -34,7 +32,7 @@ public class MerchantAccountEntity {
     private Integer paymentProviderId;
 
     @Column(name = "payment_instrument_type_id")
-    private PIType piType;
+    private Long piType;
 
     @Column(name = "currency_code")
     private String currency;
@@ -81,11 +79,11 @@ public class MerchantAccountEntity {
         this.paymentProviderId = paymentProviderId;
     }
 
-    public PIType getPiType() {
+    public Long getPiType() {
         return piType;
     }
 
-    public void setPiType(PIType piType) {
+    public void setPiType(Long piType) {
         this.piType = piType;
     }
 

@@ -6,12 +6,12 @@
 
 package com.junbo.payment.db.mapper;
 
-import com.junbo.common.id.PIType;
+import com.junbo.common.util.EnumRegistry;
 import com.junbo.payment.db.repository.MerchantAccountRepository;
 import com.junbo.payment.db.repository.PaymentProviderRepository;
 import com.junbo.payment.spec.enums.*;
-import com.junbo.payment.spec.model.PIId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 import java.util.UUID;
 
@@ -25,77 +25,74 @@ public class CommonMapper {
     @Autowired
     private PaymentProviderRepository paymentProviderRepository;
 
-    public CreditCardType toCreditCardTypeEnum(String creditCardType) {
-        return CreditCardType.valueOf(creditCardType.replace(" ", "").toUpperCase());
+
+    public Short explicitMethod_convertCreditCardType(String type) {
+        if(!StringUtils.isEmpty(type)) {
+            CreditCardType creditCardType = CreditCardType.valueOf(type);
+            return creditCardType.getId();
+        }
+        return null;
     }
 
-    public String toCreditCardType(CreditCardType creditCardType) {
+    public String explicitMethod_convertCreditCardType(Short typeId) {
+        CreditCardType creditCardType = EnumRegistry.resolve(typeId, CreditCardType.class);
         return creditCardType.toString();
     }
 
-    public PIType toPITypeEnum(Long piType){
-        return PIType.get(piType);
-    }
-
-    public Long toPIType(PIType piType){
-        return piType.getId();
-    }
-
-    public PhoneType toPhoneTypeEnum(String phoneType){
-        return PhoneType.valueOf(phoneType.toUpperCase());
-    }
-
-    public String toPhoneType(PhoneType phoneType){
-        return phoneType.toString();
-    }
-
-    public UUID toUUID(UUID uuid){
+    public UUID toUUID(UUID uuid) {
         return uuid;
     }
 
-    public String toPaymentType(PaymentType type){
-        return type.toString();
+    public Short explicitMethod_convertPaymentType(String type) {
+        if(!StringUtils.isEmpty(type)) {
+            PaymentType paymentType = PaymentType.valueOf(type);
+            return paymentType.getId();
+        }
+        return null;
     }
 
-    public PaymentType toPaymentEnum(String type){
-        return PaymentType.valueOf(type.toUpperCase());
+    public String explicitMethod_convertPaymentType(Short typeId) {
+        PaymentType paymentType = EnumRegistry.resolve(typeId, PaymentType.class);
+        return paymentType.toString();
     }
 
-    public String toPaymentStatus(PaymentStatus status){
-        return status.toString();
+    public Short explicitMethod_convertPaymentStatus(String status) {
+        if(!StringUtils.isEmpty(status)) {
+            PaymentStatus paymentStatus = PaymentStatus.valueOf(status);
+            return paymentStatus.getId();
+        }
+        return null;
     }
 
-    public PaymentStatus toPaymentStatusEnum(String status){
-        return PaymentStatus.valueOf(status.toUpperCase());
+    public String explicitMethod_convertPaymentStatus(Short statusId) {
+        PaymentStatus paymentStatus = EnumRegistry.resolve(statusId, PaymentStatus.class);
+        return paymentStatus.toString();
     }
 
-    public String toPaymentEventType(PaymentEventType type){
-        return type.toString();
+    public Short explicitMethod_convertPaymentEventType(String type) {
+        if(!StringUtils.isEmpty(type)) {
+            PaymentEventType paymentEventType = PaymentEventType.valueOf(type);
+            return paymentEventType.getId();
+        }
+        return null;
     }
 
-    public PaymentEventType toPaymentEventTypeEnum(String type){
-        return PaymentEventType.valueOf(type.toUpperCase());
+    public String explicitMethod_convertPaymentEventType(Short typeId) {
+        PaymentEventType paymentEventType = EnumRegistry.resolve(typeId, PaymentEventType.class);
+        return paymentEventType.toString();
     }
 
-    public PaymentAPI toPaymentAPIEunm(String api){
-        return PaymentAPI.valueOf(api.toUpperCase());
+    public Short explicitMethod_convertPaymentAPI(String api) {
+        if(!StringUtils.isEmpty(api)) {
+            PaymentAPI paymentAPI = PaymentAPI.valueOf(api);
+            return paymentAPI.getId();
+        }
+        return null;
     }
 
-    public String toPaymentAPI(PaymentAPI api){
-        return api.toString();
-    }
-
-    public PaymentAPI toPaymentAPIEunm(PaymentAPI api){
-        return api;
-    }
-
-    public Long toPaymentInstrumentId(PIId piId){
-        return piId.getPaymentInstrumentId();
-    }
-
-    public PIId toPaymentInstrument(Long piId){
-        PIId pi = new PIId(piId, null);
-        return pi;
+    public String explicitMethod_convertPaymentAPI(Short apiId) {
+        PaymentAPI paymentAPI = EnumRegistry.resolve(apiId, PaymentAPI.class);
+        return paymentAPI.toString();
     }
 
     public Integer explicitMethod_toMerchantId(String merchant){

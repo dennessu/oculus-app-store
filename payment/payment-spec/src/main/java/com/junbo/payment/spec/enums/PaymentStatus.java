@@ -6,32 +6,52 @@
 
 package com.junbo.payment.spec.enums;
 
+import com.junbo.common.util.Identifiable;
+
+import javax.ws.rs.NotSupportedException;
+
 /**
  * payment status enum.
  */
-public enum PaymentStatus {
-    AUTH_CREATED,
-    AUTHORIZED,
-    AUTH_DECLINED,
-    AUTHORIZATION_EXPIRED,
-    AUTHORIZING,
-    SETTLEMENT_SUBMIT_CREATED,
-    SETTLEMENT_SUBMITTED,
-    SETTLEMENT_SUBMIT_DECLINED,
-    REVERSE_CREATED,
-    REVERSED,
-    REVERSE_DECLINED,
-    SETTLE_CREATED,
-    SETTLED,
-    SETTLE_DECLINED,
-    SETTLING,
-    REFUND_CREATED,
-    REFUNDED,
-    REFUND_DECLINED,
-    UNCONFIRMED,
-    CREDIT_CREATED,
-    CREDIT_DECLINED,
-    UNRECOGNIZED;
+public enum PaymentStatus implements Identifiable<Short> {
+    AUTH_CREATED((short)1),
+    AUTHORIZED((short)2),
+    AUTH_DECLINED((short)3),
+    AUTHORIZATION_EXPIRED((short)4),
+    AUTHORIZING((short)5),
+    SETTLEMENT_SUBMIT_CREATED((short)6),
+    SETTLEMENT_SUBMITTED((short)7),
+    SETTLEMENT_SUBMIT_DECLINED((short)8),
+    REVERSE_CREATED((short)9),
+    REVERSED((short)10),
+    REVERSE_DECLINED((short)11),
+    SETTLE_CREATED((short)12),
+    SETTLED((short)13),
+    SETTLE_DECLINED((short)14),
+    SETTLING((short)15),
+    REFUND_CREATED((short)16),
+    REFUNDED((short)17),
+    REFUND_DECLINED((short)18),
+    UNCONFIRMED((short)19),
+    CREDIT_CREATED((short)20),
+    CREDIT_DECLINED((short)21),
+    UNRECOGNIZED((short)22);
+
+    private final Short id;
+
+    PaymentStatus(Short id) {
+        this.id = id;
+    }
+
+    @Override
+    public Short getId() {
+        return this.id;
+    }
+
+    @Override
+    public void setId(Short id) {
+        throw new NotSupportedException("enum PaymentStatus not settable");
+    }
 
 
     /**

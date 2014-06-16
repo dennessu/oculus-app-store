@@ -106,7 +106,7 @@ public class PaymentMapperExtension {
             CreditCardDetail generalDetail = (CreditCardDetail)specificDetail;
             result.setId(generalDetail.getId());
             result.setExpireDate(generalDetail.getExpireDate());
-            result.setCreditCardType(generalDetail.getType());
+            result.setCreditCardType(generalDetail.getType().toString());
             result.setEncryptedCvmCode(generalDetail.getEncryptedCvmCode());
             result.setLastBillingDate(generalDetail.getLastBillingDate());
             result.setCommercial(generalDetail.getIsCommercial());

@@ -7,7 +7,6 @@
 package com.junbo.payment.db.entity.paymentinstrument;
 
 import com.junbo.payment.db.entity.GenericEntity;
-import com.junbo.payment.spec.enums.CreditCardType;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -29,7 +28,7 @@ public class CreditCardPaymentInstrumentEntity extends GenericEntity {
     private Long id;
 
     @Column(name = "credit_card_type_id")
-    private CreditCardType type;
+    private Short ccTypeId;
 
     @Column(name = "expire_time")
     private String expireDate;
@@ -63,12 +62,12 @@ public class CreditCardPaymentInstrumentEntity extends GenericEntity {
         return id;
     }
 
-    public CreditCardType getType() {
-        return type;
+    public Short getCcTypeId() {
+        return ccTypeId;
     }
 
-    public void setType(CreditCardType type) {
-        this.type = type;
+    public void setCcTypeId(Short ccTypeId) {
+        this.ccTypeId = ccTypeId;
     }
 
     public String getExpireDate() {
