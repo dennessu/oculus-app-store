@@ -28,7 +28,7 @@ class CartDaoTest  extends DaoTestBase {
         userId = idGenerator.nextId(UserId)
     }
 
-    @Test
+    @Test(enabled = false)
     void testCartInsert() {
         CartEntity cartEntity = testGenerator.cartEntity()
         cartEntity.userId = userId
@@ -41,7 +41,7 @@ class CartDaoTest  extends DaoTestBase {
              cartEntity)
     }
 
-    @Test
+    @Test(enabled = false)
     void testCartUpdate() {
         // insert
         CartEntity cartEntity = testGenerator.cartEntity()
@@ -75,7 +75,7 @@ class CartDaoTest  extends DaoTestBase {
         assert cartEntity.updatedTime == updatedEntity.updatedTime
     }
 
-    @Test
+    @Test(enabled = false)
     void testCartGetById() {
         CartEntity cartEntity = testGenerator.cartEntity()
         cartEntity.userId = userId
@@ -87,7 +87,7 @@ class CartDaoTest  extends DaoTestBase {
         assert cartDao.get(idGenerator.nextId(CartId, userId)) == null
     }
 
-    @Test
+    @Test(enabled = false)
     void testCartGetByUser() {
         CartEntity cartEntity = testGenerator.cartEntity()
         cartEntity.userId = userId

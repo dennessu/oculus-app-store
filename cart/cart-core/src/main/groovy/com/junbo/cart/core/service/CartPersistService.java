@@ -8,17 +8,18 @@ package com.junbo.cart.core.service;
 import com.junbo.cart.spec.model.Cart;
 import com.junbo.common.id.CartId;
 import com.junbo.common.id.UserId;
+import com.junbo.langur.core.promise.Promise;
 
 /**
  * Created by fzhang@wan-san.com on 14-1-28.
  */
 public interface CartPersistService {
 
-    Cart getCart(CartId cartId, boolean includeItems);
+    Promise<Cart> get(CartId cartId);
 
-    Cart getCart(String clientId, String cartName, UserId userId, boolean includeItems);
+    Promise<Cart> get(String clientId, String cartName, UserId userId);
 
-    void saveNewCart(Cart newCart);
+    Promise<Cart> create(Cart cart);
 
-    void updateCart(Cart cart);
+    Promise<Cart> update(Cart cart);
 }

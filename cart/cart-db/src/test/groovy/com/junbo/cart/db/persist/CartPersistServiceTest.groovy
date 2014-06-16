@@ -11,6 +11,7 @@ import com.junbo.common.id.CouponId
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.UserId
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.testng.annotations.Test
 /**
  * Created by fzhang@wan-san.com on 14-2-17.
@@ -18,6 +19,7 @@ import org.testng.annotations.Test
 class CartPersistServiceTest extends DaoTestBase {
 
     @Autowired
+    @Qualifier("cartPersistService")
     private CartPersistService service
 
     @Test
@@ -32,8 +34,8 @@ class CartPersistServiceTest extends DaoTestBase {
                 isApproved: true
         )]
 
-        service.saveNewCart(cart)
-        def read = service.getCart(cart.getId(), true)
+        cart = service.create(cart).get()
+        def read = service.get(cart.getId()).get()
         assert read.coupons[0] == cart.coupons[0]
         assert read.offers[0].offer == cart.offers[0].offer
     }

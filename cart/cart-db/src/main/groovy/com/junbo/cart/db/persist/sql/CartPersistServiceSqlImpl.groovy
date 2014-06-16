@@ -3,7 +3,8 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.cart.db.persist
+package com.junbo.cart.db.persist.sql
+
 import com.google.common.collect.HashMultimap
 import com.junbo.cart.common.util.SystemOperation
 import com.junbo.cart.core.service.CartPersistService
@@ -16,11 +17,8 @@ import com.junbo.cart.db.entity.OfferItemEntity
 import com.junbo.cart.db.mapper.CartMapper
 import com.junbo.cart.spec.model.Cart
 import com.junbo.cart.spec.model.item.OfferItem
-import com.junbo.common.id.CartId
-import com.junbo.common.id.CartItemId
-import com.junbo.common.id.CouponId
-import com.junbo.common.id.Id
-import com.junbo.common.id.UserId
+import com.junbo.common.id.*
+import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import com.junbo.sharding.IdGeneratorFacade
 import groovy.transform.CompileStatic
@@ -29,13 +27,14 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.CollectionUtils
+
 /**
  * Created by fzhang@wan-san.com on 14-1-28.
  */
 @CompileStatic
-class CartPersistServiceImpl implements CartPersistService {
+class CartPersistServiceSqlImpl implements CartPersistService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CartPersistServiceImpl)
+    private static final Logger LOGGER = LoggerFactory.getLogger(CartPersistServiceSqlImpl)
 
     private SystemOperation systemOperation
 
@@ -78,21 +77,21 @@ class CartPersistServiceImpl implements CartPersistService {
 
     @Override
     @Transactional
-    Cart getCart(CartId cartId, boolean includeItems) {
-        CartEntity entity = cartDao.get(cartId.value)
-        return entity == null ? null : toCart(entity, includeItems)
+    Promise<Cart> get(CartId cartId) {
+        CartEntity entity = cartDao.get(cartId.asLong())
+        return Promise.pure(entity == null ? null : toCart(entity, true))
     }
 
     @Override
     @Transactional
-    Cart getCart(String clientId, String cartName, UserId userId, boolean includeItems) {
+    Promise<Cart> get(String clientId, String cartName, UserId userId) {
         CartEntity entity = cartDao.get(clientId, cartName, userId.value)
-        return entity == null ? null : toCart(entity, includeItems)
+        return Promise.pure(entity == null ? null : toCart(entity, true))
     }
 
     @Override
     @Transactional
-    void saveNewCart(Cart newCart) {
+    Promise<Cart> create(Cart newCart) {
         // add cart
         CartId cartId = getId(newCart.user, CartId)
         Date currentTime = systemOperation.currentTime()
@@ -108,12 +107,14 @@ class CartPersistServiceImpl implements CartPersistService {
         saveOffers(newCart, newCart.offers, [], currentTime)
         // add coupon
         saveCoupons(newCart, newCart.coupons, [], currentTime)
+
+        return Promise.pure(newCart)
     }
 
     @Override
     @Transactional()
-    void updateCart(Cart cart) {
-        Cart oldCart = getCart(cart.getId(), true)
+    Promise<Cart> update(Cart cart) {
+        Cart oldCart = get(cart.getId()).get()
 
         // update cart
         Date currentTime = systemOperation.currentTime()
@@ -128,6 +129,8 @@ class CartPersistServiceImpl implements CartPersistService {
         // update items
         cart.offers = saveOffers(cart, cart.offers, oldCart.offers, currentTime)
         cart.coupons = saveCoupons(cart, cart.coupons, oldCart.coupons, currentTime)
+
+        return Promise.pure(cart)
     }
 
     private List<OfferItem> saveOffers(Cart cart, List<OfferItem> newItems,
@@ -140,7 +143,7 @@ class CartPersistServiceImpl implements CartPersistService {
         }
 
         offerPersistFuncSet.delete = { OfferItem offerItem ->
-            return offerItemDao.markDelete(offerItem.id.value, currentTime)
+            return offerItemDao.markDelete(offerItem.id.asLong(), currentTime)
         }
 
         offerPersistFuncSet.update = { OfferItem newOfferItem, OfferItem oldOfferItem ->
@@ -164,7 +167,7 @@ class CartPersistServiceImpl implements CartPersistService {
                                          Date currentTime) {
 
         Map<String, Long> couponCodesToId = new HashMap<>()
-        couponItemDao.getItems(cart.getId().value, ItemStatus.OPEN)?.each { CouponItemEntity entity ->
+        couponItemDao.getItems(cart.getId().asLong(), ItemStatus.OPEN)?.each { CouponItemEntity entity ->
             couponCodesToId[entity.couponCode] = entity.cartItemId
         }
 
@@ -240,7 +243,7 @@ class CartPersistServiceImpl implements CartPersistService {
         newItem.id = getId(cart.user, CartItemId)
 
         def entity =  dataMapper.toOfferItemEntity(newItem, new MappingContext())
-        entity.cartId = cart.getId().value
+        entity.cartId = cart.getId().asLong()
         entity.status = ItemStatus.OPEN
         entity.createdTime = currentTime
         entity.updatedTime = currentTime
@@ -249,7 +252,7 @@ class CartPersistServiceImpl implements CartPersistService {
     }
 
     private void updateOfferItem(OfferItem updateItem, Date currentTime) {
-        def oldEntity = offerItemDao.get(updateItem.id.value)
+        def oldEntity = offerItemDao.get(updateItem.id.asLong())
 
         def entity = dataMapper.toOfferItemEntity(updateItem, new MappingContext())
         entity.status = oldEntity.status
@@ -262,8 +265,8 @@ class CartPersistServiceImpl implements CartPersistService {
 
     private void addCoupon(String couponCode, Date currentTime, Cart cart) {
         def entity = new CouponItemEntity(
-                cartItemId: getId(cart.user, CartItemId).value,
-                cartId: cart.getId().value,
+                cartItemId: getId(cart.user, CartItemId).asLong(),
+                cartId: cart.getId().asLong(),
                 status: ItemStatus.OPEN,
                 couponCode: couponCode,
                 createdTime: currentTime,
@@ -273,7 +276,7 @@ class CartPersistServiceImpl implements CartPersistService {
         couponItemDao.insert(entity)
     }
 
-    private Cart toCart(CartEntity cartEntity, includeItems) {
+    private Cart toCart(CartEntity cartEntity, boolean includeItems) {
         Cart result = dataMapper.toCartModel(cartEntity, new MappingContext())
         result.offers = []
         result.coupons = []
@@ -294,9 +297,9 @@ class CartPersistServiceImpl implements CartPersistService {
         return result
     }
 
-    private <T extends Id> T getId(UserId userId, Class<T> type) {
+    private <T extends CloudantId> T getId(UserId userId, Class<T> type) {
         T id = type.newInstance()
-        id.value = idGenerator.nextId(type, userId.value)
+        id.value = idGenerator.nextId(type, userId.value).toString()
         return id
     }
 

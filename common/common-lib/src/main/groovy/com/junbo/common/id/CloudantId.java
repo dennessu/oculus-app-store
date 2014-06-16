@@ -20,7 +20,6 @@ public abstract class CloudantId implements UniversalId {
 
     // default ctor needed for Class.newInstance in deserializer
     public CloudantId() {
-        // value = new Long(-1);
     }
 
     public CloudantId(String value) {
@@ -33,6 +32,18 @@ public abstract class CloudantId implements UniversalId {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public Long asLong() {
+        return Long.parseLong(value);
+    }
+
+    public void setLongValue(Long value) {
+        if (value == null) {
+            this.value = null;
+        } else {
+            this.value = value.toString();
+        }
     }
 
     public Properties getResourcePathPlaceHolder() {

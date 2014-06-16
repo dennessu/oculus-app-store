@@ -12,10 +12,10 @@ package com.junbo.common.id;
 @IdResourcePath(value = "/users/{userId}/carts/{0}",
                 resourceType = "carts",
                 regex = "/users/(?<userId>[0-9A-Za-z]+)/carts/(?<id>[0-9A-Za-z]+)")
-public class CartId extends Id {
+public class CartId extends CloudantId {
 
     public CartId() {}
-    public CartId(long value) {
+    public CartId(String value) {
         super(value);
     }
 }

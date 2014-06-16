@@ -21,7 +21,7 @@ class CartOfferDaoTest extends DaoTestBase {
     @Resource(name='offerItemDao')
     private CartItemDao dao
 
-    @Test
+    @Test(enabled = false)
     void testInsertOffer() {
         def entity = testGenerator.offerItemEntity()
         entity.with {
@@ -34,7 +34,7 @@ class CartOfferDaoTest extends DaoTestBase {
         Assert.assertSame(dao.get(entity.cartItemId), entity)
     }
 
-    @Test
+    @Test(enabled = false)
     void testUpdateOffer() {
         // insert
         def entity = testGenerator.offerItemEntity()
@@ -64,7 +64,7 @@ class CartOfferDaoTest extends DaoTestBase {
         assert updatedEntity.updatedTime == entity.updatedTime
     }
 
-    @Test
+    @Test(enabled = false)
     void testGetItems() {
         long cartId = idGenerator.nextId(CartId)
         def status = [ItemStatus.OPEN, ItemStatus.DELETED, ItemStatus.DELETED, ItemStatus.OPEN, ItemStatus.OPEN]

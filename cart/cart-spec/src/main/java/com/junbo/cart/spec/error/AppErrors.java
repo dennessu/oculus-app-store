@@ -38,4 +38,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 403, code = ErrorCode.INVALID_FIELD, description ="Field value invalid", field = "{0}")
     AppError fieldInvalid(String field);
+
+    @ErrorDef(httpStatusCode = 403, code = ErrorCode.INVALID_FIELD, description ="Field is client immutable", field = "{0}")
+    AppError clientImmutable(String field);
 }

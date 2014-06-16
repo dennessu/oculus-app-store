@@ -9,10 +9,10 @@ package com.junbo.common.id;
 /**
  * Created by fzhang@wan-san.com on 2/13/14.
  */
-public class CartItemId extends Id {
+public class CartItemId extends CloudantId {
 
     public CartItemId() {}
-    public CartItemId(long value) {
+    public CartItemId(String value) {
         super(value);
     }
 }

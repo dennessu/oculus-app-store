@@ -19,7 +19,7 @@ class CartCouponDaoTest extends DaoTestBase {
     @Resource(name='couponItemDao')
     private CartItemDao dao
 
-    @Test
+    @Test(enabled = false)
     void testInsertCoupon() {
         def entity = testGenerator.couponItemEntity()
         entity.with {
@@ -32,7 +32,7 @@ class CartCouponDaoTest extends DaoTestBase {
         Assert.assertSame(dao.get(entity.cartItemId), entity)
     }
 
-    @Test
+    @Test(enabled = false)
     void testUpdateCoupon() {
         // insert
         def entity = testGenerator.couponItemEntity()

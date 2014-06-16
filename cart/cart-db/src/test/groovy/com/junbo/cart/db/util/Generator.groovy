@@ -1,5 +1,4 @@
 package com.junbo.cart.db.util
-
 import com.junbo.cart.db.entity.CartEntity
 import com.junbo.cart.db.entity.CouponItemEntity
 import com.junbo.cart.db.entity.ItemStatus
@@ -12,7 +11,6 @@ import org.apache.commons.lang.RandomStringUtils
 import org.springframework.stereotype.Component
 
 import java.security.SecureRandom
-
 /**
  * Created by fzhang@wan-san.com on 14-2-15.
  */
@@ -37,7 +35,7 @@ class Generator {
             resourceAge = rand.nextLong()
             createdTime = date()
             updatedTime = date()
-            id = new CartId(nextId)
+            id = new CartId(nextId.toString())
             user = new UserId(nextId)
             userLoggedIn = rand.nextBoolean()
         }
@@ -62,8 +60,8 @@ class Generator {
     OfferItem offerItem() {
         def o = new OfferItem()
         o.with {
-            id = nextId
-            offer = nextId
+            id = nextId.toString()
+            offer = nextId.toString()
             quantity = rand.nextLong()
             isSelected = rand.nextBoolean()
             isApproved = rand.nextBoolean()

@@ -30,19 +30,19 @@ public class CommonMapper {
     }
 
     public CartId fromLongToCartId(Long source) {
-        return source == null ? null : new CartId(source);
+        return source == null ? null : new CartId(source.toString());
     }
 
     public Long fromCartIdToLong(CartId source) {
-        return source == null ? null : source.getValue();
+        return source == null ? null : Long.parseLong(source.getValue());
     }
 
     public CartItemId fromLongToCartItemId(Long source) {
-        return source == null ? null : new CartItemId(source);
+        return source == null ? null : new CartItemId(source.toString());
     }
 
     public Long fromCartItemIdToLong(CartItemId source) {
-        return source == null ? null : source.getValue();
+        return source == null ? null : source.asLong();
     }
 
     public OfferId fromStringToOffer(String source) {

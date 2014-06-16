@@ -82,8 +82,7 @@ class CartServiceImpl implements CartService {
                 cart.user = userId
                 cart.userLoggedIn = true // todo : set from user
                 processCartForAddOrUpdate(cart)
-                cartPersistService.saveNewCart(cart)
-                return Promise.pure(cart)
+                return cartPersistService.create(cart)
             }
         }
     }
@@ -106,12 +105,13 @@ class CartServiceImpl implements CartService {
                     }
                 }
 
-                Cart cart = cartPersistService.getCart(cartId, true)
-                if (cart == null) {
-                    throw AppErrors.INSTANCE.cartNotFound().exception()
+                return cartPersistService.get(cartId).then { Cart cart ->
+                    if (cart == null) {
+                        throw AppErrors.INSTANCE.cartNotFound().exception()
+                    }
+                    validation.validateCartOwner(cart, userId)
+                    return Promise.pure(cart)
                 }
-                validation.validateCartOwner(cart, userId)
-                return Promise.pure(cart)
             }
         }
     }
@@ -132,12 +132,14 @@ class CartServiceImpl implements CartService {
                     throw AppErrors.INSTANCE.cartNotFound().exception()
                 }
 
-                Cart cart = cartPersistService.getCart(clientId, cartName, userId, true)
-                if (cart == null) {
-                    return Promise.pure(null)
+                return cartPersistService.get(clientId, cartName, userId).then { Cart cart ->
+
+                    if (cart == null) {
+                        return Promise.pure(null)
+                    }
+                    validation.validateCartOwner(cart, userId)
+                    return Promise.pure(cart)
                 }
-                validation.validateCartOwner(cart, userId)
-                return Promise.pure(cart)
             }
         }
     }
@@ -152,16 +154,18 @@ class CartServiceImpl implements CartService {
                     throw AppErrors.INSTANCE.cartNotFound().exception()
                 }
 
-                Cart cart = cartPersistService.getCart(clientId, CART_NAME_PRIMARY, userId, true)
-                if (cart == null) {
-                    cart = new Cart()
-                    cart.cartName = CART_NAME_PRIMARY
-                    cart.user = userId
-                    cart.userLoggedIn = true // todo : set from user
-                    cart.clientId = clientId
-                    cartPersistService.saveNewCart(cart)
+                return cartPersistService.get(clientId, CART_NAME_PRIMARY, userId).then { Cart cart ->
+                    if (cart == null) {
+                        cart = new Cart()
+                        cart.cartName = CART_NAME_PRIMARY
+                        cart.user = userId
+                        cart.userLoggedIn = true // todo : set from user
+                        cart.clientId = clientId
+
+                        return cartPersistService.create(cart)
+                    }
+                    return Promise.pure(cart)
                 }
-                return Promise.pure(cart)
             }
         }
     }
@@ -178,8 +182,7 @@ class CartServiceImpl implements CartService {
             cart.clientId = oldCart.clientId
             cart.userLoggedIn = oldCart.userLoggedIn
             cart.createdTime = oldCart.createdTime
-            cartPersistService.updateCart(cart)
-            return Promise.pure(cart)
+            return cartPersistService.update(cart)
         }
     }
 
@@ -201,9 +204,9 @@ class CartServiceImpl implements CartService {
                 addCartItems(destCart, cart.offers, cart.coupons)
                 cart.offers = Collections.EMPTY_LIST
                 cart.coupons = Collections.EMPTY_LIST
-                cartPersistService.updateCart(cart)
-                cartPersistService.updateCart(destCart)
-                return destCart
+                return cartPersistService.update(cart).then {
+                    return cartPersistService.update(destCart)
+                }
             }
         }
     }
@@ -214,8 +217,7 @@ class CartServiceImpl implements CartService {
             Cart cart = (Cart) it
             validation.validateOfferAdd(offerItem)
             addCartItems(cart, [offerItem], [])
-            cartPersistService.updateCart(cart)
-            return Promise.pure(cart)
+            return cartPersistService.update(cart)
         }
     }
 
@@ -236,8 +238,7 @@ class CartServiceImpl implements CartService {
             o.quantity = offerItem.quantity
             o.isSelected = offerItem.isSelected
             cart.offers = mergeOffers(cart.offers)
-            cartPersistService.updateCart(cart)
-            return Promise.pure(cart)
+            return cartPersistService.update(cart)
         }
     }
 
@@ -248,8 +249,7 @@ class CartServiceImpl implements CartService {
             if (lookupAndRemoveItem((List<CartItem>) cart.offers, offerItemId) == null) {
                 throw AppErrors.INSTANCE.cartItemNotFound().exception()
             }
-            cartPersistService.updateCart(cart)
-            return Promise.pure(cart)
+            return cartPersistService.update(cart)
         }
     }
 
