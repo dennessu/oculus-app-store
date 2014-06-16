@@ -6,6 +6,8 @@
 
 package com.junbo.rating.rest.resource;
 
+import com.junbo.authorization.AuthorizeContext;
+import com.junbo.authorization.spec.error.AppErrors;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.rating.core.builder.RatingResultBuilder;
 import com.junbo.rating.core.context.PriceRatingContext;
@@ -21,7 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * RatingResourceImpl.
  */
-public class RatingResourceImpl implements RatingResource{
+public class RatingResourceImpl implements RatingResource {
+    private static final String RATING_SERVICE_SCOPE = "rating.service";
+
     @Autowired
     private OfferRatingService offerRatingService;
 
@@ -33,6 +37,7 @@ public class RatingResourceImpl implements RatingResource{
 
     @Override
     public Promise<RatingRequest> priceRating(RatingRequest request) {
+        authorize();
         PriceRatingContext context = new PriceRatingContext();
         context.fromRequest(request);
 
@@ -49,6 +54,7 @@ public class RatingResourceImpl implements RatingResource{
 
     @Override
     public Promise<SubsRatingRequest> subsRating(SubsRatingRequest request) {
+        authorize();
         SubsRatingContext context = new SubsRatingContext();
         context.fromRequest(request);
 
@@ -56,5 +62,11 @@ public class RatingResourceImpl implements RatingResource{
 
         SubsRatingRequest response = RatingResultBuilder.buildForSubs(context);
         return Promise.pure(response);
+    }
+
+    private static void authorize() {
+        if (!AuthorizeContext.hasScopes(RATING_SERVICE_SCOPE)) {
+            throw AppErrors.INSTANCE.insufficientScope().exception();
+        }
     }
 }

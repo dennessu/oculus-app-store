@@ -20,6 +20,7 @@ dependencies {
     compile junboProject(':rating-common')
     compile junboProject(':rating-clientproxy')
     compile junboProject(':rating-core')
+    compile junboProject(':authorization-lib')
 
 
     compile junboProject(':oom-core')
