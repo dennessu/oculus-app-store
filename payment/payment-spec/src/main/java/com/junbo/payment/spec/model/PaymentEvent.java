@@ -7,31 +7,36 @@
 package com.junbo.payment.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.junbo.common.model.ResourceMetaForDualWrite;
 
 /**
  * payment event model.
  */
-public class PaymentEvent {
-    private Long paymentEventId;
+public class PaymentEvent extends ResourceMetaForDualWrite<Long> {
+    @JsonIgnore
+    private Long id;
+    @JsonIgnore
     private Long paymentId;
     private String type;
     private String status;
     private ChargeInfo chargeInfo;
     private String request;
     private String response;
-    @JsonIgnore
-    public Long getPaymentEventId() {
-        return paymentEventId;
+
+    @Override
+    public Long getId() {
+        return this.id;
     }
-    @JsonIgnore
-    public void setPaymentEventId(Long paymentEventId) {
-        this.paymentEventId = paymentEventId;
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
     }
-    @JsonIgnore
+
     public Long getPaymentId() {
         return paymentId;
     }
-    @JsonIgnore
+
     public void setPaymentId(Long paymentId) {
         this.paymentId = paymentId;
     }

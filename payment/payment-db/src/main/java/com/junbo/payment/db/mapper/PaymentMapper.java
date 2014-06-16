@@ -14,6 +14,7 @@ import com.junbo.payment.db.entity.PaymentInstrumentTypeEntity;
 import com.junbo.payment.db.entity.TrackingUuidEntity;
 import com.junbo.payment.db.entity.payment.PaymentEntity;
 import com.junbo.payment.db.entity.payment.PaymentEventEntity;
+import com.junbo.payment.db.entity.payment.PaymentPropertyEntity;
 import com.junbo.payment.db.entity.paymentinstrument.CreditCardPaymentInstrumentEntity;
 import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentEntity;
 import com.junbo.payment.spec.model.*;
@@ -80,6 +81,10 @@ public interface PaymentMapper {
             @Mapping(source = "apiId", target = "api", explicitMethod = "convertPaymentAPI"),
     })
     TrackingUuid toTrackingUuid(TrackingUuidEntity entity, MappingContext context);
+
+    PaymentProperty toPaymentProperty(PaymentPropertyEntity entity, MappingContext context);
+
+    PaymentPropertyEntity toPaymentPropertyEntity(PaymentProperty paymentProperty, MappingContext context);
 
     PaymentInstrumentTypeEntity toPITypeEntity(PaymentInstrumentType piType, MappingContext context);
 

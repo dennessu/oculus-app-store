@@ -17,7 +17,7 @@ import com.junbo.payment.db.entity.payment.PaymentPropertyEntity;
 import com.junbo.payment.db.mapper.PaymentMapperExtension;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.PaymentEvent;
-import com.junbo.payment.spec.model.PaymentProperties;
+import com.junbo.payment.spec.model.PaymentCallbackParams;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -83,7 +83,7 @@ public class PaymentRepository {
         return events;
     }
 
-    public void addPaymentProperties(Long paymentId, PaymentProperties properties){
+    public void addPaymentProperties(Long paymentId, PaymentCallbackParams properties){
         if(properties == null){
             return;
         }
@@ -97,7 +97,7 @@ public class PaymentRepository {
         }
     }
 
-    public PaymentProperties getPaymentProperties(Long paymentId){
+    public PaymentCallbackParams getPaymentProperties(Long paymentId){
         PaymentEntity entity = paymentDao.get(paymentId);
         if(entity == null){
             return null;
@@ -110,6 +110,6 @@ public class PaymentRepository {
         for(PaymentPropertyEntity property : properties){
             paymentProperties.put(property.getPropertyName(), property.getPropertyValue());
         }
-        return CommonUtil.parseJson(CommonUtil.toJson(paymentProperties, null), PaymentProperties.class);
+        return CommonUtil.parseJson(CommonUtil.toJson(paymentProperties, null), PaymentCallbackParams.class);
     }
 }

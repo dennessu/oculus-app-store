@@ -9,7 +9,7 @@ package com.junbo.payment.rest.resource;
 import com.junbo.common.id.PaymentId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.core.PaymentCallbackService;
-import com.junbo.payment.spec.model.PaymentProperties;
+import com.junbo.payment.spec.model.PaymentCallbackParams;
 import com.junbo.payment.spec.resource.PaymentCallbackResource;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,7 +23,7 @@ public class PaymentCallbackResourceImpl implements PaymentCallbackResource{
     private PaymentCallbackService paymentCallbackService;
 
     @Override
-    public Promise<Response> postPaymentProperties(PaymentId paymentId, PaymentProperties properties) {
+    public Promise<Response> postPaymentProperties(PaymentId paymentId, PaymentCallbackParams properties) {
         paymentCallbackService.addPaymentProperties(paymentId.getValue(), properties);
         return Promise.pure(null);
     }

@@ -9,13 +9,14 @@ package com.junbo.payment.spec.model;
 /**
  * payment call back property.
  */
-public class PaymentProperties {
+public class PaymentCallbackParams {
     //paypal
     private String externalAccessToken;
     private String externalPayerId;
     //adyen
     private String authResult;
     private String pspReference;
+
 
     public String getExternalPayerId() {
         return externalPayerId;

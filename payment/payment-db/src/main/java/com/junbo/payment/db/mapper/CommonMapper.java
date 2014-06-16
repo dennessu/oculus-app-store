@@ -25,6 +25,13 @@ public class CommonMapper {
     @Autowired
     private PaymentProviderRepository paymentProviderRepository;
 
+    public Long fromStringToLong(String source) {
+        return source == null ? null : Long.parseLong(source);
+    }
+
+    public String fromLongToString(Long source) {
+        return source == null ? null : source.toString();
+    }
 
     public Short explicitMethod_convertCreditCardType(String type) {
         if(!StringUtils.isEmpty(type)) {

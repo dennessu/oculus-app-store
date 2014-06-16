@@ -7,6 +7,7 @@
 package com.junbo.payment.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.junbo.common.model.ResourceMetaForDualWrite;
 import com.junbo.payment.common.FilterIn;
 import com.junbo.payment.common.FilterOut;
 
@@ -15,7 +16,7 @@ import java.util.Date;
 /**
  * credit card model.
  */
-public class CreditCardDetail {
+public class CreditCardDetail extends ResourceMetaForDualWrite<Long> {
 
     private Long id;
     private String expireDate;

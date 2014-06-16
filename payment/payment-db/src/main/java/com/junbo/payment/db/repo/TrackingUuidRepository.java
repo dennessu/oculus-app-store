@@ -6,16 +6,10 @@
 package com.junbo.payment.db.repo;
 
 import com.junbo.payment.spec.model.TrackingUuid;
-
-import java.util.UUID;
+import com.junbo.sharding.repo.BaseRepository;
 
 /**
  * Created by minhao on 6/16/14.
  */
-public interface TrackingUuidRepository {
-    // payment internal use
-    TrackingUuid getByTrackUuid(Long userId, UUID trackingUuid);
-
-    // payment internal use
-    void saveTrackingUuid(TrackingUuid trackingUuid);
+public interface TrackingUuidRepository extends BaseRepository<TrackingUuid, Long> {
 }

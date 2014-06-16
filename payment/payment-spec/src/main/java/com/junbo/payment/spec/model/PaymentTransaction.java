@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.PaymentInstrumentId;
 import com.junbo.common.jackson.annotation.PaymentTransactionId;
 import com.junbo.common.jackson.annotation.UserId;
+import com.junbo.common.model.ResourceMetaForDualWrite;
 import com.junbo.payment.common.FilterIn;
 
 import java.util.List;
@@ -20,7 +21,11 @@ import java.util.UUID;
 /**
  * payment transaction model.
  */
-public class PaymentTransaction {
+public class PaymentTransaction extends ResourceMetaForDualWrite<Long> {
+    @PaymentTransactionId
+    @FilterIn
+    @JsonProperty("self")
+    private Long id;
     private UUID trackingUuid;
     @UserId
     @JsonProperty("user")
@@ -31,10 +36,6 @@ public class PaymentTransaction {
     private String billingRefId;
     private ChargeInfo chargeInfo;
     private WebPaymentInfo webPaymentInfo;
-    @PaymentTransactionId
-    @FilterIn
-    @JsonProperty("self")
-    private Long id;
     @FilterIn
     private String paymentProvider;
     @FilterIn
@@ -49,7 +50,7 @@ public class PaymentTransaction {
     private List<PaymentEvent> paymentEvents;
     @FilterIn
     @JsonIgnore
-    PaymentProperties paymentProperties;
+    PaymentCallbackParams paymentCallbackParams;
     @JsonIgnore
     private UserInfo userInfo;
 
@@ -157,12 +158,12 @@ public class PaymentTransaction {
         this.paymentEvents = paymentEvents;
     }
 
-    public PaymentProperties getPaymentProperties() {
-        return paymentProperties;
+    public PaymentCallbackParams getPaymentCallbackParams() {
+        return paymentCallbackParams;
     }
 
-    public void setPaymentProperties(PaymentProperties paymentProperties) {
-        this.paymentProperties = paymentProperties;
+    public void setPaymentCallbackParams(PaymentCallbackParams paymentCallbackParams) {
+        this.paymentCallbackParams = paymentCallbackParams;
     }
 
     public UserInfo getUserInfo() {

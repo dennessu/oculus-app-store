@@ -7,12 +7,14 @@
 package com.junbo.payment.spec.model;
 
 
+import com.junbo.common.model.ResourceMetaForDualWrite;
+
 import java.util.UUID;
 
 /**
  * tracking uuid model.
  */
-public class TrackingUuid {
+public class TrackingUuid extends ResourceMetaForDualWrite<Long> {
 
     private Long id;
     private UUID trackingUuid;

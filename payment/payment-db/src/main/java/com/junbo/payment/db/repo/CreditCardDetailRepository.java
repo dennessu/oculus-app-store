@@ -5,11 +5,11 @@
  */
 package com.junbo.payment.db.repo;
 
-import com.junbo.payment.spec.model.PaymentInstrument;
+import com.junbo.payment.spec.model.CreditCardDetail;
 import com.junbo.sharding.repo.BaseRepository;
 
 /**
  * Created by minhao on 6/16/14.
  */
-public interface PaymentInstrumentRepository extends BaseRepository<PaymentInstrument, Long> {
+public interface CreditCardDetailRepository extends BaseRepository<CreditCardDetail, Long> {
 }

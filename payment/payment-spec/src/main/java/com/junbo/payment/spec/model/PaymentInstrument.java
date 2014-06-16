@@ -11,6 +11,7 @@ import com.junbo.common.jackson.annotation.PaymentInstrumentId;
 import com.junbo.common.jackson.annotation.PaymentInstrumentTypeId;
 import com.junbo.common.jackson.annotation.PersonalInfoId;
 import com.junbo.common.jackson.annotation.UserId;
+import com.junbo.common.model.ResourceMetaForDualWrite;
 import com.junbo.payment.common.FilterIn;
 import com.junbo.payment.common.InnerFilter;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -24,7 +25,7 @@ import java.util.UUID;
 /**
  * payment instrument model.
  */
-public class PaymentInstrument {
+public class PaymentInstrument extends ResourceMetaForDualWrite<Long> {
     @ApiModelProperty(position = 1, required = true, value = "The id of payment instrument resource.")
     @PaymentInstrumentId
     @JsonProperty("self")
