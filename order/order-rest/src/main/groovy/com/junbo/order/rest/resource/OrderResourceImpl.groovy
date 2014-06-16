@@ -1,9 +1,13 @@
 package com.junbo.order.rest.resource
 
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.RightsScope
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
+import com.junbo.order.auth.OrderAuthorizeCallbackFactory
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.impl.common.OrderValidator
 import com.junbo.order.core.impl.order.OrderServiceContext
@@ -19,6 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
+
+import static com.junbo.authorization.spec.error.AppErrors.INSTANCE
 
 //import javax.ws.rs.container.ContainerRequestContext
 //import javax.ws.rs.core.Context
@@ -38,66 +44,100 @@ class OrderResourceImpl implements OrderResource {
     @Autowired
     OrderValidator orderValidator
 
+    @Autowired
+    AuthorizeService authorizeService
+
+    @Autowired
+    OrderAuthorizeCallbackFactory authorizeCallbackFactory
+
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderResourceImpl)
 
     @Override
     Promise<Order> getOrderByOrderId(OrderId orderId) {
-        return orderService.getOrderByOrderId(orderId.value, true)
+        return orderService.getOrderByOrderId(orderId.value, true).then { Order order ->
+            def callback = authorizeCallbackFactory.create(order)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('read')) {
+                    throw AppErrors.INSTANCE.orderNotFound().exception()
+                }
+
+                return Promise.pure(order)
+            }
+        }
     }
 
     @Override
     Promise<Order> createOrder(Order order) {
         orderValidator.notNull(order, 'order').notNull(order.user, 'user')
 
-        orderValidator.validateSettleOrderRequest(order)
-        Boolean isTentative = order.tentative
-        order.tentative = true
-        return orderService.createQuote(order,
-                new OrderServiceContext(order, new ApiContext())).then { Order ratedOrder ->
-            if (!isTentative) {
-                ratedOrder.tentative = isTentative
-                return orderService.settleQuote(ratedOrder, new OrderServiceContext(order, new ApiContext()))
+        def callback = authorizeCallbackFactory.create(order)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('create')) {
+                throw INSTANCE.forbidden().exception()
             }
-            return Promise.pure(ratedOrder)
+
+            orderValidator.validateSettleOrderRequest(order)
+            Boolean isTentative = order.tentative
+            order.tentative = true
+            return orderService.createQuote(order,
+                    new OrderServiceContext(order, new ApiContext())).then { Order ratedOrder ->
+                if (!isTentative) {
+                    ratedOrder.tentative = isTentative
+                    return orderService.settleQuote(ratedOrder, new OrderServiceContext(order, new ApiContext()))
+                }
+                return Promise.pure(ratedOrder)
+            }
         }
+
     }
 
     @Override
     Promise<Order> updateOrderByOrderId(OrderId orderId, Order order) {
         orderValidator.notNull(order, 'order').notNull(order.user, 'user')
 
-        order.id = orderId
+        def callback = authorizeCallbackFactory.create(order)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('update')) {
+                throw INSTANCE.forbidden().exception()
+            }
 
-        return orderService.getOrderByOrderId(orderId.value, false).then { Order oldOrder ->
-            // handle the update request per scenario
-            if (oldOrder.tentative) { // order not settled
-                if (order.tentative) {
-                    // rate and update the tentative order
-                    return orderService.updateTentativeOrder(order,
-                            new OrderServiceContext(order, new ApiContext())).syncThen { Order result ->
-                        return result
+            order.id = orderId
+
+            return orderService.getOrderByOrderId(orderId.value, false).then { Order oldOrder ->
+                // handle the update request per scenario
+                if (oldOrder.tentative) { // order not settled
+                    if (order.tentative) {
+                        // rate and update the tentative order
+                        return orderService.updateTentativeOrder(order,
+                                new OrderServiceContext(order, new ApiContext())).syncThen { Order result ->
+                            return result
+                        }
+                    } else { // handle settle order scenario: the tentative flag is updated from true to false
+                        return orderService.settleQuote(order, new OrderServiceContext(order, new ApiContext()))
                     }
-                } else { // handle settle order scenario: the tentative flag is updated from true to false
-                    return orderService.settleQuote(order, new OrderServiceContext(order, new ApiContext()))
+                } else { // order already settle
+                    // determine the refund request
+                    if (isARefund(oldOrder, order)) {
+                        if (!AuthorizeContext.hasRights('refund')) {
+                            throw INSTANCE.forbidden().exception()
+                        }
+
+                        LOGGER.info('name=Refund_Non_Tentative_Offer')
+                        oldOrder.orderItems = order.orderItems
+                        return orderService.refundOrder(oldOrder, new OrderServiceContext(order, new ApiContext()))
+                    }
+                    LOGGER.info('name=Update_Non_Tentative_Offer')
+                    // update shipping address after settlement
+                    if (allowModification(oldOrder, order)) {
+                        oldOrder.shippingAddress = order.shippingAddress
+                        oldOrder.shippingToPhone = order.shippingToPhone
+                        oldOrder.shippingToName = order.shippingToName
+                        return orderService.updateNonTentativeOrder(oldOrder,
+                                new OrderServiceContext(order, new ApiContext()))
+                    }
+                    LOGGER.error('name=Update_Not_Allow')
+                    throw AppErrors.INSTANCE.invalidSettledOrderUpdate().exception()
                 }
-            } else { // order already settle
-                // determine the refund request
-                if(isARefund(oldOrder, order)) {
-                    LOGGER.info('name=Refund_Non_Tentative_Offer')
-                    oldOrder.orderItems = order.orderItems
-                    return orderService.refundOrder(oldOrder, new OrderServiceContext(order, new ApiContext()))
-                }
-                LOGGER.info('name=Update_Non_Tentative_Offer')
-                // update shipping address after settlement
-                if (allowModification(oldOrder, order)) {
-                    oldOrder.shippingAddress = order.shippingAddress
-                    oldOrder.shippingToPhone = order.shippingToPhone
-                    oldOrder.shippingToName = order.shippingToName
-                    return orderService.updateNonTentativeOrder(oldOrder,
-                            new OrderServiceContext(order, new ApiContext()))
-                }
-                LOGGER.error('name=Update_Not_Allow')
-                throw AppErrors.INSTANCE.invalidSettledOrderUpdate().exception()
             }
         }
     }
@@ -143,10 +183,19 @@ class OrderResourceImpl implements OrderResource {
         if (userId == null) {
             throw AppErrors.INSTANCE.missingParameterField('userId').exception()
         }
-        return orderService.getOrdersByUserId(userId.value, orderQueryParam, pageParam).syncThen { List<Order> orders ->
+
+        def callback = authorizeCallbackFactory.create(userId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
             Results<Order> results = new Results<>()
-            results.setItems(orders)
-            return results
+            if (!AuthorizeContext.hasRights('read')) {
+                results.setItems([])
+                return Promise.pure(results)
+            }
+
+            return orderService.getOrdersByUserId(userId.value, orderQueryParam, pageParam).syncThen { List<Order> orders ->
+                results.setItems(orders)
+                return results
+            }
         }
     }
 }

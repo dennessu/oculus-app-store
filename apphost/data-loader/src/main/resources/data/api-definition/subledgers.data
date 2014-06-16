@@ -1,0 +1,23 @@
+{
+    "apiName": "subledgers",
+    "scopes": {
+        "subledger": [
+            {
+                "precondition": "hasRole(\"seller\", \"admin\")",
+                "rights": [
+                    "read"
+                ],
+                "scriptType": "SPEL"
+            }
+        ],
+        "subledger.service": [
+            {
+                "precondition": "true",
+                "rights": [
+                    "read", "create", "update", "create-item"
+                ],
+                "scriptType": "SPEL"
+            }
+        ]
+    }
+}

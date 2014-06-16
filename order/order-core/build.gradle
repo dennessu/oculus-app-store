@@ -2,6 +2,7 @@ apply plugin: 'groovy'
 
 dependencies {
     compile junboProject(":order-spec")
+    compile junboProject(":order-auth")
     compile junboProject(":order-clientproxy")
     compile junboProject(":order-db")
     compile (libraries.aspectjrt)

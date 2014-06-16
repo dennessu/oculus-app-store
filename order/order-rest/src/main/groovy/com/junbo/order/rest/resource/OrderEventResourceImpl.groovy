@@ -1,8 +1,13 @@
 package com.junbo.order.rest.resource
+
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.RightsScope
 import com.junbo.common.id.OrderEventId
 import com.junbo.common.id.OrderId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
+import com.junbo.order.auth.OrderAuthorizeCallbackFactory
 import com.junbo.order.core.OrderEventService
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.impl.common.OrderValidator
@@ -17,6 +22,8 @@ import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
 import javax.ws.rs.PathParam
+
+import static com.junbo.authorization.spec.error.AppErrors.INSTANCE
 /**
  * Created by chriszhu on 3/12/14.
  */
@@ -34,21 +41,43 @@ class OrderEventResourceImpl implements OrderEventResource {
     @Resource
     OrderValidator orderValidator
 
+    @Resource
+    AuthorizeService authorizeService
+
+    @Resource
+    OrderAuthorizeCallbackFactory authorizeCallbackFactory
+
     @Override
     Promise<Results<OrderEvent>> getOrderEvents(OrderId orderId, PageParam pageParam) {
-        return orderEventService.getOrderEvents(orderId.value, pageParam).then { List<OrderEvent> orderEvents ->
+        def callback = authorizeCallbackFactory.create(orderId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
             Results<OrderEvent> results = new Results<>()
-            results.setItems(orderEvents)
-            return Promise.pure(results)
+            if (!AuthorizeContext.hasRights('read-event')) {
+                results.setItems([])
+                return Promise.pure(results)
+            }
+
+            return orderEventService.getOrderEvents(orderId.value, pageParam).then { List<OrderEvent> orderEvents ->
+                results.setItems(orderEvents)
+                return Promise.pure(results)
+            }
         }
     }
 
     @Override
     Promise<OrderEvent> createOrderEvent(OrderEvent orderEvent) {
         orderValidator.notNull(orderEvent, 'orderEvent').notNull(orderEvent.order, 'orderId')
-        def context = new OrderServiceContext()
-        return orderService.updateOrderByOrderEvent(orderEvent, context).then { OrderEvent event ->
-            return orderEventService.recordEventHistory(event, context)
+
+        def callback = authorizeCallbackFactory.create(orderEvent.order as OrderId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('create-event')) {
+                throw INSTANCE.forbidden().exception()
+            }
+
+            def context = new OrderServiceContext()
+            return orderService.updateOrderByOrderEvent(orderEvent, context).then { OrderEvent event ->
+                return orderEventService.recordEventHistory(event, context)
+            }
         }
     }
 

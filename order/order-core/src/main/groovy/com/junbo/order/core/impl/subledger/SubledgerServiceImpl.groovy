@@ -1,5 +1,11 @@
 package com.junbo.order.core.impl.subledger
+
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.RightsScope
+import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.SubledgerId
+import com.junbo.order.auth.SubledgerAuthorizeCallbackFactory
 import com.junbo.order.core.SubledgerService
 import com.junbo.order.core.impl.common.OrderValidator
 import com.junbo.order.core.impl.common.ParamUtils
@@ -21,6 +27,8 @@ import org.springframework.stereotype.Component
 import javax.annotation.Resource
 import javax.transaction.Transactional
 
+
+import static com.junbo.authorization.spec.error.AppErrors.INSTANCE
 /**
  * Created by fzhang on 4/2/2014.
  */
@@ -39,6 +47,12 @@ class SubledgerServiceImpl implements SubledgerService {
     @Resource(name = 'orderValidator')
     OrderValidator orderValidator
 
+    @Resource
+    AuthorizeService authorizeService
+
+    @Resource
+    SubledgerAuthorizeCallbackFactory authorizeCallbackFactory
+
     @Override
     @Transactional
     Subledger createSubledger(Subledger subledger) {
@@ -56,24 +70,50 @@ class SubledgerServiceImpl implements SubledgerService {
         if (persisted == null) {
             throw AppErrors.INSTANCE.subledgerNotFound().exception()
         }
-        persisted.payoutStatus = subledger.payoutStatus
 
-        Subledger result = subledgerRepository.updateSubledger(persisted)
-        return result
+        def callback = authorizeCallbackFactory.create(persisted)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('update')) {
+                throw INSTANCE.forbidden().exception()
+            }
+
+            persisted.payoutStatus = subledger.payoutStatus
+
+            Subledger result = subledgerRepository.updateSubledger(persisted)
+            return result
+        }
     }
 
     @Override
     @Transactional
     Subledger getSubledger(SubledgerId subledgerId) {
         orderValidator.notNull(subledgerId, 'subledgerId')
-        return subledgerRepository.getSubledger(subledgerId)
+        Subledger subledger = subledgerRepository.getSubledger(subledgerId)
+        if (subledger == null) {
+            throw AppErrors.INSTANCE.subledgerNotFound().exception()
+        }
+
+        def callback = authorizeCallbackFactory.create(subledger)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('read')) {
+                throw AppErrors.INSTANCE.subledgerNotFound().exception()
+            }
+            return subledger
+        }
     }
 
     @Override
     @Transactional
     List<Subledger> getSubledgers(SubledgerParam subledgerParam, PageParam pageParam) {
-        return subledgerRepository.getSubledgers(ParamUtils.processSubledgerParam(subledgerParam),
-            ParamUtils.processPageParam(pageParam))
+        def param = ParamUtils.processSubledgerParam(subledgerParam)
+        def callback = authorizeCallbackFactory.create(param.sellerId as OrganizationId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('read')) {
+                return []
+            }
+
+            return subledgerRepository.getSubledgers(param, ParamUtils.processPageParam(pageParam))
+        }
     }
 
     @Override
@@ -86,15 +126,22 @@ class SubledgerServiceImpl implements SubledgerService {
         orderValidator.notNull(subledgerItem.subledgerItemAction, 'subledgerItemAction').
                 validEnumString(subledgerItem.subledgerItemAction, 'subledgerItemAction', SubledgerItemAction)
 
-        subledgerItem.status = SubledgerItemStatus.PENDING.name()
-        def result =  subledgerRepository.createSubledgerItem(subledgerItem)
+        def callback = authorizeCallbackFactory.create(subledgerItem.subledger as SubledgerId)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('create-item')) {
+                throw INSTANCE.forbidden().exception()
+            }
 
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.info('name=CreateSubledgerItem, subledgerItemId={}, orderItemId={}, offerId={}, latency={}',
-                result.id, result.orderItem, result.offer, System.currentTimeMillis() - start)
+            subledgerItem.status = SubledgerItemStatus.PENDING.name()
+            def result = subledgerRepository.createSubledgerItem(subledgerItem)
+
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.info('name=CreateSubledgerItem, subledgerItemId={}, orderItemId={}, offerId={}, latency={}',
+                        result.id, result.orderItem, result.offer, System.currentTimeMillis() - start)
+            }
+
+            return result
         }
-
-        return result
     }
 
     @Override
