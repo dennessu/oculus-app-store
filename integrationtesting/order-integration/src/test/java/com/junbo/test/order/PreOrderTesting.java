@@ -5,11 +5,22 @@
  */
 package com.junbo.test.order;
 
+import com.junbo.test.common.Entities.enums.Country;
+import com.junbo.test.common.Entities.enums.Currency;
+import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
+import com.junbo.test.common.SystemRuntimeHelper;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
+import com.junbo.test.order.model.enums.EventStatus;
+import com.junbo.test.order.model.enums.OrderActionType;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * Created by weiyu_000 on 6/16/14.
@@ -42,6 +53,25 @@ public class PreOrderTesting extends BaseOrderTestClass  {
     )
     @Test
     public void testPreOrderCheckout() throws Exception {
+        String uid = testDataProvider.createUser();
+
+        ArrayList<String> offerList = new ArrayList<>();
+        offerList.add(offer_digital_preOrder);
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
+
+        String orderId = testDataProvider.postOrder(
+                uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
+
+        testDataProvider.updateOrderTentative(orderId, false);
+        Calendar calendar = Calendar.getInstance();
+        Date currentDate = new Date();
+        calendar.set(Calendar.YEAR, 2020);
+        Date releaseDate = calendar.getTime();
+        SystemRuntimeHelper.systemRuntime(releaseDate);
+
+        testDataProvider.postOrderEvent(orderId, EventStatus.COMPLETED, OrderActionType.FULFILL);
 
     }
 
@@ -59,7 +89,7 @@ public class PreOrderTesting extends BaseOrderTestClass  {
                     "4. Modify system runtime to current time",
                     "5. Post order events(fulfil completed)",
                     "6. Verify order response error",
-                    "10. Reset system runtime back"
+                    "7. Reset system runtime back"
 
             }
     )

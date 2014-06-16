@@ -189,8 +189,8 @@ public class RefundTesting extends BaseOrderTestClass {
                     "8. Verify orders response",
                     "9. Get order events by order Id",
                     "10. Verify order events response",
-                    "6. Get balance by order Id",
-                    "7. Verify transactions contain expected refund info,"
+                    "11. Get balance by order Id",
+                    "12. Verify transactions contain expected refund info,"
             }
     )
     @Test
