@@ -6,14 +6,12 @@
 package com.junbo.test.oauth;
 
 import com.junbo.common.id.UserId;
-import com.junbo.identity.spec.v1.model.UserPersonalInfo;
 import com.junbo.oauth.spec.model.AccessTokenResponse;
 import com.junbo.oauth.spec.model.TokenInfo;
 import com.junbo.oauth.spec.model.ViewModel;
 import com.junbo.test.common.*;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.ShardIdHelper;
-import com.junbo.test.identity.Identity;
 import org.apache.http.Header;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -43,6 +41,7 @@ public class Oauth {
     public static final String DefaultGrantType = "authorization_code";
     public static final String DefaultRedirectURI = ConfigHelper.getSetting("defaultRedirectURI");
     public static final String DefaultRegisterEvent = "register";
+    public static final String DefaultResetPasswordURI = ConfigHelper.getSetting("defaultResetPasswordURI");
     public static final String DefaultTokenURI = ConfigHelper.getSetting("defaultTokenURI");
     public static final String DefaultTokenInfoURI = ConfigHelper.getSetting("defaultTokenInfoURI");
     public static final String DefaultLogoutURI = ConfigHelper.getSetting("defaultLogoutURI");
@@ -57,7 +56,8 @@ public class Oauth {
     public static final String DefaultFNRedirectURI = "redirect_uri";
     public static final String DefaultFNEvent = "event";
 
-    // register user related
+    public static final String DefaultFNUserId = "userId";
+    public static final String DefaultFNLocale = "locale";
     public static final String DefaultFNUserName = "username";
     public static final String DefaultFNPassword = "password";
     public static final String DefaultFNEmail = "email";
@@ -182,13 +182,12 @@ public class Oauth {
             return responseString;
         } finally {
             response.close();
-            UserPersonalInfo userPersonalInfo = Identity.UserPersonalInfoGetByUserEmail(email);
-            VerifyEmail(GetEmailVerificationLink(Identity.GetUserIdFromUserPersonalInfo(userPersonalInfo)));
+            RunPostRegistrationWithEmailVerification(cid);
         }
     }
 
     public static String GetAuthCodeAfterRegisterUser(String cid) throws Exception {
-        CloseableHttpResponse response = RunPostRegistrationFlow(cid);
+        CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid, false);
         try {
             String tarHeader = "Location";
             for (Header h : response.getAllHeaders()) {
@@ -204,7 +203,7 @@ public class Oauth {
     }
 
     public static String GetLoginStateAfterRegisterUser(String cid) throws Exception {
-        CloseableHttpResponse response = RunPostRegistrationFlow(cid);
+        CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid, false);
         try {
             String tarHeader = "Set-Cookie";
             for (Header h : response.getAllHeaders()) {
@@ -219,22 +218,23 @@ public class Oauth {
         }
     }
 
-    private static CloseableHttpResponse RunPostRegistrationFlow(String cid) throws Exception {
+    private static void RunPostRegistrationWithEmailVerification(String cid) throws Exception {
         // get payment method view
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid, false);
         response.close();
         // skip payment method view
         response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid + "&event=skip", false);
         response.close();
-        // get email verification view
-        response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid, false);
+        // goto next and get email verified
+        response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid + "&event=next", false);
+        ViewModel viewModelResponse = JsonHelper.JsonDeserializer(
+                new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
         response.close();
+        String emailLink = viewModelResponse.getModel().get("link").toString();
+        VerifyEmail(emailLink);
         // goto next
         response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid + "&event=next", false);
         response.close();
-        // get auth code
-        response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid, false);
-        return response;
     }
 
     private static String GetPropertyValueFromString(String input, String property, String splitor) throws Exception {
@@ -340,6 +340,19 @@ public class Oauth {
             }
             throw new NotFoundException(
                     "Did not found expected response header: " + tarHeader + " in response");
+        } finally {
+            response.close();
+        }
+    }
+
+    public static void PostResetPassword(String userId, String locale) throws Exception {
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair(DefaultFNUserId, userId));
+        nvps.add(new BasicNameValuePair(DefaultFNLocale, locale == null ? "en_US" : locale));
+
+        CloseableHttpResponse response = HttpclientHelper.SimplePost(DefaultResetPasswordURI, nvps, false);
+        try {
+
         } finally {
             response.close();
         }
