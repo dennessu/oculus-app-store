@@ -47,10 +47,6 @@ class UserResourceImpl implements UserResource {
     private UserFilter userFilter
 
     @Autowired
-    @Qualifier('userCryptoResourceClientProxy')
-    private UserCryptoResource userCryptoResource
-
-    @Autowired
     private NormalizeService normalizeService
 
     @Autowired
@@ -75,15 +71,10 @@ class UserResourceImpl implements UserResource {
 
             return userValidator.validateForCreate(user).then {
                 return userRepository.create(user).then { User newUser ->
+                    Created201Marker.mark(newUser.getId())
 
-                    return userCryptoResource.create(new UserCryptoKey(
-                            userId: (UserId)newUser.id
-                    )).then {
-                        Created201Marker.mark(newUser.getId())
-
-                        newUser = userFilter.filterForGet(newUser, null)
-                        return Promise.pure(newUser)
-                    }
+                    newUser = userFilter.filterForGet(newUser, null)
+                    return Promise.pure(newUser)
                 }
             }
         }

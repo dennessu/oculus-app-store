@@ -16,6 +16,7 @@
     <bean id="cryptoMessageValidator" class="com.junbo.crypto.core.validator.impl.CryptoMessageValidatorImpl">
         <property name="userResource" ref="cryptoUserResource" />
         <property name="versionSeparator" value="${crypto.core.versionSeparator}" />
+        <property name="enableUserKeyEncrypt" value="${crypto.core.enableUserKeyEncrypt}" />
     </bean>
 
     <bean id="aesCipherService" class="com.junbo.crypto.core.service.impl.AESCipherServiceImpl" />
