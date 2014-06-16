@@ -59,6 +59,8 @@ class MigrationResourceImpl implements MigrationResource {
 
         // Check current email isn't used by others
         return checkPasswordValid(oculusInput).then {
+            return checkUserStatusValid(oculusInput)
+        }.then {
             return checkEmailValid(oculusInput).then { User existing ->
                 return checkOrganizationValid(oculusInput, existing).then {
                     // If the user exists, update current user's information;
@@ -75,7 +77,7 @@ class MigrationResourceImpl implements MigrationResource {
                 canonicalUsername: normalizeService.normalize(oculusInput.username),
                 preferredLocale: new LocaleId(mapToLocaleCode(oculusInput.language)),
                 preferredTimezone: timeZoneMap.get(oculusInput.timezone),
-                status: mapToStatus(oculusInput.status),
+                status: getMappedUserStatus(oculusInput),
                 isAnonymous: StringUtils.isEmpty(oculusInput.username),
                 createdTime: oculusInput.createdDate,
                 updatedTime: oculusInput.updateDate
@@ -111,6 +113,7 @@ class MigrationResourceImpl implements MigrationResource {
                     userId: (UserId)createdUser.id,
                     type: UserPersonalInfoType.EMAIL.toString(),
                     value: ObjectMapperProvider.instance().valueToTree(userEmail),
+                    lastValidateTime: getMappedEmailValidateTime(oculusInput),
                     createdTime: oculusInput.createdDate,
                     updatedTime: oculusInput.updateDate
             )
@@ -185,7 +188,7 @@ class MigrationResourceImpl implements MigrationResource {
                     ownerId: (UserId)createdUser.id,
                     name: oculusInput.devCenterCompany,
                     canonicalName: normalizeService.normalize(oculusInput.devCenterCompany),
-                    isValidated: false
+                    isValidated: getOrganizationStatus(oculusInput)
             )
 
             return saveOrUpdateOrganization(organization).then { Organization createdOrganization ->
@@ -290,6 +293,21 @@ class MigrationResourceImpl implements MigrationResource {
         }
     }
 
+    Promise<Void> checkUserStatusValid(OculusInput oculusInput) {
+        if (StringUtils.isEmpty(oculusInput.status)) {
+            throw new IllegalArgumentException('user Status error')
+        }
+        List<String> allowedValues = MigrateUserStatus.values().collect { MigrateUserStatus userStatus ->
+            userStatus.toString()
+        }
+
+        if (!(oculusInput.status in allowedValues)) {
+            throw AppErrors.INSTANCE.fieldInvalid('status', allowedValues.join(',')).exception()
+        }
+
+        return Promise.pure(null)
+    }
+
     Promise<Void> checkPasswordValid(OculusInput oculusInput) {
         if (oculusInput.oldPasswordHash) {
             throw new IllegalArgumentException('user has old PasswordHash')
@@ -315,12 +333,27 @@ class MigrationResourceImpl implements MigrationResource {
         }
     }
 
-    private String mapToStatus(String status) {
-        if ("ACTIVE".equalsIgnoreCase(status)) {
-            return UserStatus.ACTIVE.toString()
+    private Date getMappedEmailValidateTime(OculusInput oculusInput) {
+        if (oculusInput.status == MigrateUserStatus.ACTIVE.toString()
+         || oculusInput.status == MigrateUserStatus.VERIFIED.toString()) {
+            return oculusInput.updateDate == null ? oculusInput.createdDate : oculusInput.updateDate
         } else {
-            // Need to do map
-            throw new IllegalArgumentException('Unknown status')
+            return null
+        }
+    }
+
+    private Boolean getOrganizationStatus(OculusInput oculusInput) {
+        if (oculusInput.status == MigrateUserStatus.ACTIVE.toString()) {
+            return true
+        }
+        return false
+    }
+
+    private String getMappedUserStatus(OculusInput oculusInput) {
+        if (oculusInput.status == MigrateUserStatus.ARCHIVE.toString()) {
+            return UserStatus.DELETED.toString()
+        } else {
+            return UserStatus.ACTIVE.toString()
         }
     }
 
@@ -361,5 +394,13 @@ class MigrationResourceImpl implements MigrationResource {
         timeZoneMap.put(11, "UTC+11:00")
         timeZoneMap.put(12, "UTC+12:00")
         timeZoneMap.put(13, "UTC+13:00")
+    }
+
+    enum MigrateUserStatus {
+        ACTIVE,
+        ARCHIVE,
+        PENDING,
+        PENDING_EMAIL_VERIFICATION,
+        VERIFIED
     }
 }
