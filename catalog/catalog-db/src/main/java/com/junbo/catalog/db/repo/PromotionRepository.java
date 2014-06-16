@@ -22,7 +22,7 @@ import java.util.List;
  * Promotion repository.
  */
 public class PromotionRepository implements BaseEntityRepository<Promotion> {
-    @Autowired
+    @Autowired(required = false)
     private PromotionDao promotionDao;
 
     @Override

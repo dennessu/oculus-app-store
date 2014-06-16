@@ -47,7 +47,7 @@ public class EmailTemplateServiceTest extends BaseTest {
     @Test(enabled = false)
     public void testUpdate() throws Exception {
         EmailTemplate emailTemplate = templateService.postEmailTemplate(template).get();
-        Long id = emailTemplate.getId().getValue();
+        String id = emailTemplate.getId().getValue();
         emailTemplate.setId(null);
         emailTemplate.setProviderName("unittest");
         EmailTemplate updateTemplate = templateService.putEmailTemplate(id, emailTemplate).get();
@@ -59,7 +59,7 @@ public class EmailTemplateServiceTest extends BaseTest {
     public void testDelete() throws Exception {
 
         EmailTemplate emailTemplate = templateService.postEmailTemplate(template).get();
-        templateService.deleteEmailTemplate(emailTemplate.getId().getValue());
+        templateService.deleteEmailTemplate(emailTemplate.getId().getValue()).get();
         EmailTemplate deleteTemplate = templateService.getEmailTemplate(emailTemplate.getId().getValue())
                 .get();
         Assert.assertNull(deleteTemplate, "Email template delete failed");

@@ -18,7 +18,7 @@ public class OfferDaoTest extends BaseTest {
     @Autowired
     private OfferDao offerDao;
 
-    @Test
+    @Test(enabled = false)
     public void testCreateAndGet() {
         OfferEntity entity = buildOfferEntity();
         //List<Long> res = Utils.fromJson(Utils.toJson(new ArrayList<Long>()), List.class);

@@ -25,8 +25,8 @@ class EmailTemplateRepositorySqlImpl extends EmailBaseRepository implements Emai
     void setEmailTemplateDao(EmailTemplateDao emailTemplateDao) {
         this.emailTemplateDao = emailTemplateDao
     }
-    public Promise<EmailTemplate> getEmailTemplate(Long id) {
-        EmailTemplateEntity entity = emailTemplateDao.get(id)
+    public Promise<EmailTemplate> getEmailTemplate(String id) {
+        EmailTemplateEntity entity = emailTemplateDao.get(Long.parseLong(id))
         return Promise.pure(emailMapper.toEmailTemplate(entity))
     }
 
@@ -42,7 +42,7 @@ class EmailTemplateRepositorySqlImpl extends EmailBaseRepository implements Emai
 
     public Promise<EmailTemplate> updateEmailTemplate(EmailTemplate template) {
         def entity = emailMapper.toEmailTemplateEntity(template)
-        def savedEntity = emailTemplateDao.get(template.getId().value)
+        def savedEntity = emailTemplateDao.get(template.getId().asLong())
         this.merge(entity, savedEntity)
         savedEntity.setUpdatedTime(new Date())
         savedEntity.setUpdatedBy('internal system')
@@ -63,11 +63,12 @@ class EmailTemplateRepositorySqlImpl extends EmailBaseRepository implements Emai
         return Promise.pure(emailMapper.toEmailTemplates(entities))
     }
 
-    public void deleteEmailTemplate(Long id) {
-        def entity = emailTemplateDao.get(id)
+    public Promise<Void> deleteEmailTemplate(String id) {
+        def entity = emailTemplateDao.get(Long.parseLong(id))
         if(entity != null) {
             emailTemplateDao.delete(entity)
         }
+        return Promise.pure(null)
     }
 
     private void merge(EmailTemplateEntity updateEntity, EmailTemplateEntity savedEntity) {

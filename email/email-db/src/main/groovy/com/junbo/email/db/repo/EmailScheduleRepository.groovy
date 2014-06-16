@@ -12,11 +12,11 @@ import com.junbo.langur.core.promise.Promise
  * Interface of EmailScheduleRepository.
  */
 interface EmailScheduleRepository {
-    public Promise<Email> getEmailSchedule(Long id)
+    public Promise<Email> getEmailSchedule(String id)
 
     public Promise<Email> saveEmailSchedule(Email email)
 
     public Promise<Email> updateEmailSchedule(Email email)
 
-    public void deleteEmailSchedule(Long id)
+    public Promise<Void> deleteEmailSchedule(String id)
 }

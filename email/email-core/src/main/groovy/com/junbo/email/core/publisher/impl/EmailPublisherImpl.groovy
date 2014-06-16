@@ -15,7 +15,7 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class EmailPublisherImpl extends TransactionalPublisher implements EmailPublisher {
     @Override
-    void send(Long id) {
-        super.publishText(UUID.randomUUID().toString(), id.toString())
+    void send(String id) {
+        super.publishText(UUID.randomUUID().toString(), id)
     }
 }

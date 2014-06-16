@@ -25,8 +25,8 @@ class EmailHistoryRepositorySqlImpl extends EmailBaseRepository implements Email
         this.emailHistoryDao = emailHistoryDao
     }
 
-    public Promise<Email> getEmailHistory(Long id) {
-        def entity = emailHistoryDao.get(id)
+    public Promise<Email> getEmailHistory(String id) {
+        def entity = emailHistoryDao.get(Long.parseLong(id))
 
         return Promise.pure(emailMapper.toEmail(entity))
     }

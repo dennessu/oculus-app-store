@@ -37,7 +37,7 @@ class EmailListenerSqlImpl extends EmailBaseListener implements EmailListener {
     public void onMessage(final String eventId, final String message) {
         LOGGER.info('EMAIL_LISTENER_INFO. Receive a message with event id:{} and message is:{}', eventId, message)
         try {
-            def emailId = Long.parseLong(message)
+            def emailId = message
             this.sendEmail(emailId)
         } catch (NumberFormatException nfe) {
             LOGGER.error('EMAIL_LISTENER_ERROR. Failed to parse message:{}', message)
@@ -46,7 +46,7 @@ class EmailListenerSqlImpl extends EmailBaseListener implements EmailListener {
         }
     }
 
-    public void sendEmail(Long emailId) {
+    public void sendEmail(String emailId) {
         def email = this.findEmail(emailId).recover {Throwable throwable ->
             LOGGER.error('EMAIL_LISTENER_ERROR. Failed to get email:',throwable)
         }.then { Email email ->
@@ -76,7 +76,7 @@ class EmailListenerSqlImpl extends EmailBaseListener implements EmailListener {
         }
     }
 
-    private Promise<Email> findEmail(Long emailId) {
+    private Promise<Email> findEmail(String emailId) {
         def transactionTemplate = new AsyncTransactionTemplate(transactionManager)
         transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
         return transactionTemplate.execute(new TransactionCallback<Promise<Email>>() {
@@ -87,13 +87,13 @@ class EmailListenerSqlImpl extends EmailBaseListener implements EmailListener {
         })
     }
 
-    private Promise<EmailTemplate> findEmailTemplate(Long emailTemplateId) {
+    private Promise<EmailTemplate> findEmailTemplate(String emailTemplateId) {
         def transactionTemplate = new AsyncTransactionTemplate(transactionManager)
         transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
         return transactionTemplate.execute(new TransactionCallback<Promise<EmailTemplate>>() {
             @Override
             public Promise<EmailTemplate> doInTransaction(TransactionStatus status) {
-                return emailTemplateRepository.getEmailTemplate(emailTemplateId)
+                return emailTemplateRepository.getEmailTemplate(emailTemplateId.toString())
             }
         })
     }

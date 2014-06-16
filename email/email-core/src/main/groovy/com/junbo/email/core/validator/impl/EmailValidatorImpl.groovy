@@ -47,19 +47,19 @@ class EmailValidatorImpl extends CommonValidator implements EmailValidator {
     }
 
     @Override
-    void validateDelete(Long id) {
+    void validateDelete(String id) {
         if (id == null) {
             throw AppErrors.INSTANCE.missingField('id').exception()
         }
         if (emailScheduleRepository.getEmailSchedule(id).get() == null) {
-            throw AppErrors.INSTANCE.emailScheduleNotFound(IdUtils.encodeEmailId(id)).exception()
+            throw AppErrors.INSTANCE.emailScheduleNotFound(id).exception()
         }
     }
 
     private void validateEmailSchedule(Email email) {
         Email schedule = emailScheduleRepository.getEmailSchedule(email.getId().value).get()
         if (schedule == null) {
-            throw AppErrors.INSTANCE.emailScheduleNotFound(IdUtils.encodeId(email.getId())).exception()
+            throw AppErrors.INSTANCE.emailScheduleNotFound(email.getId().getValue()).exception()
         }
     }
 

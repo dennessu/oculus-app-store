@@ -66,7 +66,7 @@ class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    Promise<Email> getEmail(Long id) {
+    Promise<Email> getEmail(String id) {
         return  emailHistoryRepository.getEmailHistory(id).then {Email email ->
             if (email == null) {
                return emailScheduleRepository.getEmailSchedule(id)
@@ -76,14 +76,14 @@ class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    Void deleteEmail(Long id) {
+    Promise<Void> deleteEmail(String id) {
         emailValidator.validateDelete(id)
         emailScheduleRepository.deleteEmailSchedule(id)
-        return null
+        return Promise.pure(null)
     }
 
     @Override
-    Promise<Email> updateEmail(Long id, Email email) {
+    Promise<Email> updateEmail(String id, Email email) {
         email.setId(new EmailId(id))
         emailValidator.validateUpdate(email)
         return this.handle(email)
