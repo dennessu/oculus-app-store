@@ -5,6 +5,9 @@
  */
 
 package com.junbo.ewallet.rest.resource
+
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.spec.error.AppErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.WalletId
 import com.junbo.common.model.Results
@@ -19,17 +22,22 @@ import org.springframework.beans.factory.annotation.Autowired
  */
 @CompileStatic
 class WalletResourceImpl implements WalletResource {
+    private static final String WALLET_SERVICE_SCOPE = 'wallet.service'
+    private static final String WALLET_CSR_SCOPE = 'wallet.csr'
+
     @Autowired
     private WalletService walletService
 
     @Override
     Promise<Wallet> getWallet(WalletId walletId) {
+        authorize()
         Wallet result = walletService.get(walletId.value)
         return Promise.pure(result)
     }
 
     @Override
     Promise<Results<Wallet>> getWallets(UserId userId) {
+        authorize()
         List<Wallet> wallets = walletService.getWallets(userId)
         Results<Wallet> result = new Results<>()
         result.items = wallets
@@ -38,6 +46,7 @@ class WalletResourceImpl implements WalletResource {
 
     @Override
     Promise<Wallet> postWallet(Wallet wallet) {
+        authorize()
         Wallet existed = getByTrackingUuid(wallet.userId, wallet.trackingUuid)
         if (existed != null) {
             return Promise.pure(existed)
@@ -48,6 +57,7 @@ class WalletResourceImpl implements WalletResource {
 
     @Override
     Promise<Wallet> updateWallet(WalletId walletId, Wallet wallet) {
+        authorize()
         Wallet existed = getByTrackingUuid(wallet.userId, wallet.trackingUuid)
         if (existed != null) {
             return Promise.pure(existed)
@@ -58,6 +68,7 @@ class WalletResourceImpl implements WalletResource {
 
     @Override
     Promise<Transaction> credit(CreditRequest creditRequest) {
+        authorize()
         Transaction existed = getTransactionByTrackingUuid(creditRequest.userId, creditRequest.trackingUuid)
         if (existed != null) {
             return Promise.pure(existed)
@@ -68,6 +79,7 @@ class WalletResourceImpl implements WalletResource {
 
     @Override
     Promise<Transaction> debit(WalletId walletId, DebitRequest debitRequest) {
+        authorize()
         Transaction existed = getTransactionByTrackingUuid(walletId.value, debitRequest.trackingUuid)
         if (existed != null) {
             return Promise.pure(existed)
@@ -78,6 +90,7 @@ class WalletResourceImpl implements WalletResource {
 
     @Override
     Promise<Transaction> refund(Long transactionId, RefundRequest refundRequest) {
+        authorize()
         Transaction existed = getTransactionByTrackingUuid(transactionId, refundRequest.trackingUuid)
         if (existed != null) {
             return Promise.pure(existed)
@@ -88,6 +101,7 @@ class WalletResourceImpl implements WalletResource {
 
     @Override
     Promise<Results<Transaction>> getTransactions(WalletId walletId) {
+        authorize()
         List<Transaction> transactions = walletService.getTransactions(walletId.value)
         Results<Transaction> results = new Results<>()
         results.setItems(transactions)
@@ -106,5 +120,11 @@ class WalletResourceImpl implements WalletResource {
             return null
         }
         return walletService.getTransactionByTrackingUuid(shardMasterId, trackingUuid)
+    }
+
+    private static void authorize() {
+        if (!AuthorizeContext.hasScopes(WALLET_SERVICE_SCOPE) && !AuthorizeContext.hasScopes(WALLET_CSR_SCOPE)) {
+            throw AppErrors.INSTANCE.insufficientScope().exception()
+        }
     }
 }

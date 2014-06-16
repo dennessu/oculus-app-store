@@ -3,6 +3,7 @@ apply plugin: 'groovy'
 dependencies {
     compile junboProject(':ewallet-spec')
     compile junboProject(':ewallet-core')
+    compile junboProject(':authorization-lib')
 
     compile(libraries.servlet_api)
     //compile(libraries.jersey_spring3)
