@@ -25,19 +25,22 @@ class MasterKeyResourceImpl extends CommonResourceImpl implements MasterKeyResou
         if (!enableEncrypt) {
             return Promise.pure(null)
         }
-        return masterKeyValidator.validateMasterKeyCreate(masterKey).then {
 
-            return getCurrentMasterKey().then { MasterKey key ->
-                masterKey.encryptValue = asymmetricEncryptMasterKey(masterKey.value)
-                masterKey.value = null
-                if (key != null && key.keyVersion != null) {
-                    masterKey.keyVersion = key.keyVersion + 1
-                } else {
-                    masterKey.keyVersion = 1
-                }
+        return authorize().then {
+            return masterKeyValidator.validateMasterKeyCreate(masterKey).then {
 
-                return masterKeyRepo.create(masterKey).then {
-                    return Promise.pure(null)
+                return getCurrentMasterKey().then { MasterKey key ->
+                    masterKey.encryptValue = asymmetricEncryptMasterKey(masterKey.value)
+                    masterKey.value = null
+                    if (key != null && key.keyVersion != null) {
+                        masterKey.keyVersion = key.keyVersion + 1
+                    } else {
+                        masterKey.keyVersion = 1
+                    }
+
+                    return masterKeyRepo.create(masterKey).then {
+                        return Promise.pure(null)
+                    }
                 }
             }
         }

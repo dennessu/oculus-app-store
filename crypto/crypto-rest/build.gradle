@@ -9,4 +9,5 @@ dependencies {
     compile junboProject(':crypto-data')
 
     compile junboProject(':common-lib')
+    compile junboProject(':authorization-lib')
 }

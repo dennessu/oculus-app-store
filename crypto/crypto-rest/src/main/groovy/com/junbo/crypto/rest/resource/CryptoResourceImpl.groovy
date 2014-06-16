@@ -30,18 +30,21 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
         if (!enableEncrypt) {
             return Promise.pure(rawMessage)
         }
-        return validator.validateEncrypt(userId, rawMessage).then {
-            if (enableUserKeyEncrypt) {
-                return symmetricEncryptUserMessageByUserKey(userId, rawMessage.value).then { String encryptMessage ->
-                    CryptoMessage result = new CryptoMessage()
-                    result.value = encryptMessage
-                    return Promise.pure(result)
-                }
-            } else {
-                return symmetricEncryptUserMessageByMasterKey(rawMessage.value).then { String encryptMessage ->
-                    CryptoMessage result = new CryptoMessage()
-                    result.value = encryptMessage
-                    return Promise.pure(result)
+
+        return authorize().then {
+            return validator.validateEncrypt(userId, rawMessage).then {
+                if (enableUserKeyEncrypt) {
+                    return symmetricEncryptUserMessageByUserKey(userId, rawMessage.value).then { String encryptMessage ->
+                        CryptoMessage result = new CryptoMessage()
+                        result.value = encryptMessage
+                        return Promise.pure(result)
+                    }
+                } else {
+                    return symmetricEncryptUserMessageByMasterKey(rawMessage.value).then { String encryptMessage ->
+                        CryptoMessage result = new CryptoMessage()
+                        result.value = encryptMessage
+                        return Promise.pure(result)
+                    }
                 }
             }
         }
@@ -52,20 +55,23 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
         if (!enableEncrypt) {
             return Promise.pure(encryptMessage)
         }
-        return validator.validateDecrypt(userId, encryptMessage).then {
-            if (enableUserKeyEncrypt) {
-                return symmetricDecryptUserMessageByUserKey(userId, encryptMessage.value).then { String rawMessage ->
-                    CryptoMessage result = new CryptoMessage()
-                    result.value = rawMessage
 
-                    return Promise.pure(result)
-                }
-            } else {
-                return symmetricDecryptUserMessageByMasterKey(encryptMessage.value).then { String rawMessage ->
-                    CryptoMessage result = new CryptoMessage()
-                    result.value = rawMessage
+        return authorize().then {
+            return validator.validateDecrypt(userId, encryptMessage).then {
+                if (enableUserKeyEncrypt) {
+                    return symmetricDecryptUserMessageByUserKey(userId, encryptMessage.value).then { String rawMessage ->
+                        CryptoMessage result = new CryptoMessage()
+                        result.value = rawMessage
 
-                    return Promise.pure(result)
+                        return Promise.pure(result)
+                    }
+                } else {
+                    return symmetricDecryptUserMessageByMasterKey(encryptMessage.value).then { String rawMessage ->
+                        CryptoMessage result = new CryptoMessage()
+                        result.value = rawMessage
+
+                        return Promise.pure(result)
+                    }
                 }
             }
         }

@@ -59,4 +59,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 500, code = "5000013", description = "Field invalid: {0}.")
     AppError fieldInvalid(String message);
+
+    @ErrorDef(httpStatusCode = 403, code = "5000014", description = "Access denied")
+    AppError accessDenied();
 }
