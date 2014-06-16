@@ -22,6 +22,8 @@ class CryptoMessageValidatorImpl implements CryptoMessageValidator {
 
     private String versionSeparator
 
+    private Boolean enableUserKeyEncrypt
+
     @Override
     Promise<Void> validateEncrypt(UserId userId, CryptoMessage rawMessage) {
         if (userId == null) {
@@ -32,6 +34,10 @@ class CryptoMessageValidatorImpl implements CryptoMessageValidator {
         }
         if (rawMessage.value == null) {
             throw AppErrors.INSTANCE.fieldMissing('value').exception()
+        }
+
+        if (!enableUserKeyEncrypt) {
+            return Promise.pure(null)
         }
 
         return userResource.get(userId, new UserGetOptions()).then { User user ->
@@ -90,5 +96,10 @@ class CryptoMessageValidatorImpl implements CryptoMessageValidator {
     @Required
     void setVersionSeparator(String versionSeparator) {
         this.versionSeparator = versionSeparator
+    }
+
+    @Required
+    void setEnableUserKeyEncrypt(Boolean enableUserKeyEncrypt) {
+        this.enableUserKeyEncrypt = enableUserKeyEncrypt
     }
 }
