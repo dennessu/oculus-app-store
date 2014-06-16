@@ -14,7 +14,7 @@ import javax.ws.rs.QueryParam;
  * Created by liangfu on 5/22/14.
  */
 public class OrganizationListOptions extends PagingGetOptions {
-    @QueryParam("owner")
+    @QueryParam("ownerId")
     private UserId ownerId;
 
     @QueryParam("properties")

@@ -138,6 +138,15 @@ class OrganizationValidatorImpl implements OrganizationValidator {
             }
             return checkPersonalInfoIdOwner(organization.shippingPhone, organization.ownerId, UserPersonalInfoType.PHONE.toString())
         }.then {
+            if (organization.taxId == null) {
+                return Promise.pure(null)
+            }
+            // Todo:    This validation may be changed later according to oculus's new requirement.
+            if (organization.type != OrganizationType.INDIVIDUAL.toString() || organization.taxType != UserPersonalInfoType.SSN.toString()) {
+                throw AppErrors.INSTANCE.fieldInvalidException('type', 'type can only support INDIVIDUAL, taxType can only support SSN.').exception()
+            }
+            return checkPersonalInfoIdOwner(organization.taxId, organization.ownerId, UserPersonalInfoType.SSN.toString())
+        }.then {
             return userRepository.get(organization.ownerId).then { User user ->
                 if (user == null) {
                     throw AppErrors.INSTANCE.userNotFound(organization.ownerId).exception()

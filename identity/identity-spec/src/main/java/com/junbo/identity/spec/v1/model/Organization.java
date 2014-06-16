@@ -51,7 +51,7 @@ public class Organization extends PropertyAssignedAwareResourceMeta<Organization
     private String taxType;
 
     @ApiModelProperty(position = 11, required = false, value = "The value of taxId.")
-    private String taxId;
+    private UserPersonalInfoId taxId;
 
     @ApiModelProperty(position = 12, required = false, value = "The payoutInstrument link.")
     private UserPersonalInfoId payoutInstrument;
@@ -157,11 +157,11 @@ public class Organization extends PropertyAssignedAwareResourceMeta<Organization
         support.setPropertyAssigned("taxType");
     }
 
-    public String getTaxId() {
+    public UserPersonalInfoId getTaxId() {
         return taxId;
     }
 
-    public void setTaxId(String taxId) {
+    public void setTaxId(UserPersonalInfoId taxId) {
         this.taxId = taxId;
         support.setPropertyAssigned("taxId");
     }
