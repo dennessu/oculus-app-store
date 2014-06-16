@@ -170,4 +170,32 @@ public class RefundTesting extends BaseOrderTestClass {
         //TODO verify order response
     }
 
+
+    @Property(
+            priority = Priority.BVT,
+            features = "Put /orders/{key}",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test refund pre-order offer",
+            steps = {
+                    "1. Post a new user",
+                    "2. Post credit card to user",
+                    "3. Post an order (pre-order offer)",
+                    "4. Modify system runtime to current time",
+                    "5. Post order events(fulfil completed)",
+                    "6. Reset system runtime back",
+                    "7. Put order without order items",
+                    "8. Verify orders response",
+                    "9. Get order events by order Id",
+                    "10. Verify order events response",
+                    "6. Get balance by order Id",
+                    "7. Verify transactions contain expected refund info,"
+            }
+    )
+    @Test
+    public void testRefundPreOrder() throws Exception {
+    }
+
+
 }
