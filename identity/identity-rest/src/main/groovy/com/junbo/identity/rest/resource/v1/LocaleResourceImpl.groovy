@@ -134,7 +134,7 @@ class LocaleResourceImpl implements LocaleResource {
                 String location = JunboHttpContext.requestUri.toString().replaceFirst(
                         "/${oldValue}", '/' + pathParamTranscoder.encode(newLocale.id))
 
-                JunboHttpContext.responseStatus = 302
+                JunboHttpContext.responseStatus = 301
                 JunboHttpContext.responseHeaders.add('Location', location)
 
                 return Promise.pure(null)

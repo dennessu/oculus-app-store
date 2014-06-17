@@ -66,7 +66,7 @@ class CountryRepositoryCloudantImpl extends CloudantClient<Country> implements C
 
     @Override
     Promise<List<Country>> searchAll(Integer limit, Integer offset) {
-        return super.cloudantGetAll()
+        return super.cloudantGetAll(limit, offset, false)
     }
 
     protected CloudantViews views = new CloudantViews(

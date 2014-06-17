@@ -63,7 +63,7 @@ class CartResourceImpl implements CartResource {
             String location = JunboHttpContext.requestUri.toString().replaceFirst(
                     '/primary$', '/' + pathParamTranscoder.encode(cart.id))
 
-            JunboHttpContext.responseStatus = 302
+            JunboHttpContext.responseStatus = 301
             JunboHttpContext.responseHeaders.add('Location', location)
 
             return Promise.pure(null)
