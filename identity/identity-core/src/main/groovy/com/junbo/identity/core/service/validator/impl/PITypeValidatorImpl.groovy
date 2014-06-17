@@ -128,7 +128,6 @@ class PITypeValidatorImpl implements PITypeValidator {
             if (StringUtils.isEmpty(key)) {
                 throw AppErrors.INSTANCE.fieldRequired('locales.key').exception()
             }
-            key = key.replace('-', '_')
             if (!ValidatorUtil.isValidLocale(key)) {
                 throw AppErrors.INSTANCE.fieldInvalid('locales.key').exception()
             }

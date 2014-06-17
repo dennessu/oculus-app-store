@@ -17,30 +17,4 @@ public class LocaleId extends EnumId {
     public LocaleId(String value) {
         super(value);
     }
-
-    @Override
-    public String getValue() {
-        String value = super.getValue();
-        if (value != null) {
-            value = value.replace('-', '_');
-        }
-        return value;
-    }
-
-    @Override
-    public void setValue(String value) {
-        if (value != null) {
-            value = value.replace('-', '_');
-        }
-        super.setValue(value);
-    }
-
-    @Override
-    public String toString() {
-        String value = super.toString();
-        if (value != null) {
-            value = value.replace('-', '_');
-        }
-        return value;
-    }
 }
