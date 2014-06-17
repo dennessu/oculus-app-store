@@ -69,7 +69,7 @@ set CMD_LINE_ARGS=%$
 for /f "delims=" %%i in ('dir .\lib\ /s /b^|find "data-loader"') do (set CLASSPATH=%%i)
 
 @rem Execute data-loader
-"%JAVA_EXE%" %JAVA_OPTS% -classpath "%CLASSPATH%" -Dfile.encoding=UTF-8 com.junbo.data.loader.DataLoader %CMD_LINE_ARGS%
+"%JAVA_EXE%" %JAVA_OPTS% -classpath "%CLASSPATH%" -DconfigDir=./conf -Denvironment=onebox -Dfile.encoding=UTF-8 com.junbo.data.loader.DataLoader %CMD_LINE_ARGS%
 
 :end
 @rem End local scope for the variables with windows NT shell

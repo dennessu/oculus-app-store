@@ -23,6 +23,18 @@ die ( ) {
     exit 1
 }
 
+export APPHOST_CLI_OPTS="-DconfigDir=./conf"
+
+# check environment
+if [[ "$silkcloudenv" == "" ]]; then
+    if ! grep '^environment=[a-zA-Z0-9_]\+' ./conf/configuration.properties; then
+        echo "ERROR: environment not set!"
+        exit 1
+    fi
+else
+    export APPHOST_CLI_OPTS="$APPHOST_CLI_OPTS -Denvironment=$silkcloudenv"
+fi
+
 # OS specific support (must be 'true' or 'false').
 cygwin=false
 msys=false
@@ -152,4 +164,10 @@ if $cygwin ; then
     esac
 fi
 
+# Split up the JVM_OPTS And APPHOST_CLI_OPTS values into an array, following the shell quoting and substitution rules
+function splitJvmOpts() {
+    JVM_OPTS=("$@")
+}
+eval splitJvmOpts $JAVA_OPTS $APPHOST_CLI_OPTS
+echo "${JVM_OPTS[@]}"
 exec "$JAVACMD" "${JVM_OPTS[@]}" -classpath "$CLASSPATH" -Dfile.encoding=UTF-8 com.junbo.data.loader.DataLoader "$@"
