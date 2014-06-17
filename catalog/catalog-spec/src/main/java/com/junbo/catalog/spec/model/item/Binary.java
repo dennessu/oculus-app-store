@@ -18,6 +18,8 @@ public class Binary {
     private Long size;
     @ApiModelProperty(position = 3, required = true, value = "Item version")
     private String version;
+    @ApiModelProperty(position = 4, required = true, value = "The MD5 signature/hash of the binary - 32 lowercase hex chars")
+    private String md5;
 
     public String getHref() {
         return href;
@@ -41,5 +43,13 @@ public class Binary {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public String getMd5() {
+        return md5;
+    }
+
+    public void setMd5(String md5) {
+        this.md5 = md5;
     }
 }
