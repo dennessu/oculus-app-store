@@ -298,7 +298,7 @@ class LogProcessor:
         printResponse("<samples>")
         indent += 1
         for sample in self.__requests:
-            printResponseEscape('<sample description="%s">', sample.description)
+            printResponseEscape('<sample method="%s" endpoint="%s" description="%s">', sample.method, sample.endpoint, sample.description)
             indent += 1
             printResponseEscape('<requestUrl>%s</requestUrl>', sample.requestUrl)
             printResponseCdata('<requestHeaders>%s</requestHeaders>', sample.requestHeaders)
