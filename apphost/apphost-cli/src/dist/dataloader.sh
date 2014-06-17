@@ -26,13 +26,8 @@ die ( ) {
 export APPHOST_CLI_OPTS="-DconfigDir=./conf"
 
 # check environment
-if [[ "$silkcloudenv" == "" ]]; then
-    if ! grep '^environment=[a-zA-Z0-9_]\+' ./conf/configuration.properties; then
-        echo "ERROR: environment not set!"
-        exit 1
-    fi
-else
-    export APPHOST_CLI_OPTS="$APPHOST_CLI_OPTS -Denvironment=$silkcloudenv"
+if ! grep '^environment=[a-zA-Z0-9_]\+' ./conf/configuration.properties; then
+    export APPHOST_CLI_OPTS="$APPHOST_CLI_OPTS -Denvironment=onebox"
 fi
 
 # OS specific support (must be 'true' or 'false').
