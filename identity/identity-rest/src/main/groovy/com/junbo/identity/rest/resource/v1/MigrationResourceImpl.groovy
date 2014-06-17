@@ -188,7 +188,10 @@ class MigrationResourceImpl implements MigrationResource {
                     ownerId: (UserId)createdUser.id,
                     name: oculusInput.devCenterCompany,
                     canonicalName: normalizeService.normalize(oculusInput.devCenterCompany),
-                    isValidated: getOrganizationStatus(oculusInput)
+                    isValidated: getOrganizationStatus(oculusInput),
+                    headline: getHeadline(oculusInput),
+                    summary: getSummary(oculusInput),
+                    url: getUrl(oculusInput)
             )
 
             return saveOrUpdateOrganization(organization).then { Organization createdOrganization ->
@@ -248,6 +251,9 @@ class MigrationResourceImpl implements MigrationResource {
                 organizationToUpdate.name = organization.name
                 organizationToUpdate.isValidated = organization.isValidated
                 organizationToUpdate.canonicalName = organization.canonicalName
+                organizationToUpdate.headline = organization.headline
+                organizationToUpdate.summary = organization.summary
+                organizationToUpdate.url = organization.url
                 return organizationRepository.update(organizationToUpdate)
             }
         }
@@ -355,6 +361,29 @@ class MigrationResourceImpl implements MigrationResource {
         } else {
             return UserStatus.ACTIVE.toString()
         }
+    }
+
+    private String getHeadline(OculusInput oculusInput) {
+        if (oculusInput.shareProfile != null) {
+            return oculusInput.shareProfile.headline
+        }
+
+        return null
+    }
+
+    private String getSummary(OculusInput oculusInput) {
+        if (oculusInput.shareProfile != null) {
+            return oculusInput.shareProfile.summary
+        }
+        return null
+    }
+
+    private String getUrl(OculusInput oculusInput) {
+        if (oculusInput.shareProfile != null) {
+            return oculusInput.shareProfile.url
+        }
+
+        return null
     }
 
     private static Map<Number, String> timeZoneMap

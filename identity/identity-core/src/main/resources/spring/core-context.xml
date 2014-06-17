@@ -1018,6 +1018,9 @@
                 <value>payoutInstrument</value>
                 <value>payoutTaxProfile</value>
                 <value>annualTaxReportIds</value>
+                <value>headline</value>
+                <value>summary</value>
+                <value>url</value>
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>createdTime</value>
@@ -1039,6 +1042,9 @@
                 <value>payoutInstrument</value>
                 <value>payoutTaxProfile</value>
                 <value>annualTaxReportIds</value>
+                <value>headline</value>
+                <value>summary</value>
+                <value>url</value>
                 <value>futureExpansion</value>
             </list>
         </property>
@@ -1058,6 +1064,9 @@
                 <value>payoutInstrument</value>
                 <value>payoutTaxProfile</value>
                 <value>annualTaxReportIds</value>
+                <value>headline</value>
+                <value>summary</value>
+                <value>url</value>
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>createdTime</value>
