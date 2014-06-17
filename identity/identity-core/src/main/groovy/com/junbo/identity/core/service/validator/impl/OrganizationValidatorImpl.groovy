@@ -160,6 +160,8 @@ class OrganizationValidatorImpl implements OrganizationValidator {
     }
 
     private Promise<Void> checkOrganizationNameUnique(Organization organization) {
+
+        // todo:    Temporary disable organization canonicalName validation
         return organizationRepository.searchByCanonicalName(organization.canonicalName, Integer.MAX_VALUE, 0).then { List<Organization> organizationList ->
             if (CollectionUtils.isEmpty(organizationList)) {
                 return Promise.pure(null)
