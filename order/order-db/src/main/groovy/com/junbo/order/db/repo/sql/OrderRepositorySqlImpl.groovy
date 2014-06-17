@@ -119,6 +119,7 @@ class OrderRepositorySqlImpl implements OrderRepository {
             orderRevisionDao.create(orderRevisionEntity)
             oldEntity.latestOrderRevisionId = orderRevisionEntity.orderRevisionId
             oldEntity.resourceAge = order.resourceAge
+            oldEntity.orderStatusId = OrderStatus.valueOf(order.status)
             orderDao.update(oldEntity)
             def newEntity = orderDao.read(oldEntity.orderId)
             order.resourceAge = newEntity.resourceAge

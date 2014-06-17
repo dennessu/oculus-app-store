@@ -5,13 +5,13 @@
  */
 package com.junbo.test.payment.apihelper.impl;
 
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.payment.apihelper.PaymentCallbackService;
 import com.junbo.payment.spec.model.PaymentCallbackParams;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
-import com.junbo.test.common.libs.RestUrl;
 
 /**
  @author Jason
@@ -20,7 +20,7 @@ import com.junbo.test.common.libs.RestUrl;
  */
 public class PaymentCallbackServiceImpl extends HttpClientBase implements PaymentCallbackService {
 
-    private static String paymentCallbackUrl = RestUrl.getRestUrl(RestUrl.ComponentName.COMMERCE) + "payment-callback";
+    private static String paymentCallbackUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "payment-callback";
 
     private LogHelper logger = new LogHelper(PaymentServiceImpl.class);
 

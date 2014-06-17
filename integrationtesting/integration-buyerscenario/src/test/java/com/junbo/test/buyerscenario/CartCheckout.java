@@ -1,5 +1,6 @@
 package com.junbo.test.buyerscenario;
 
+import com.junbo.payment.spec.model.PaymentCallbackParams;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.apihelper.order.impl.OrderEventServiceImpl;
 import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
@@ -21,6 +22,8 @@ import com.junbo.test.common.property.*;
 import com.junbo.common.model.Results;
 import com.junbo.common.id.UserId;
 
+import com.junbo.test.payment.apihelper.PaymentCallbackService;
+import com.junbo.test.payment.apihelper.impl.PaymentCallbackServiceImpl;
 import org.testng.annotations.Test;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -382,8 +385,10 @@ public class CartCheckout extends BaseTestClass {
     }
 
     private void emulatePayPalCheckout(Order order, String token, CatalogItemType itemType) throws Exception {
-        /*PaymentTransactionService paymentTransactionService = PaymentTransactionServiceImpl.getInstance();
         Long paymentTransactionId = getTransactionId(order.getUser().getValue());
+
+        /*PaymentTransactionService paymentTransactionService = PaymentTransactionServiceImpl.getInstance();
+
 
         PaymentTransaction paymentTransaction = paymentTransactionService.getPaymentTransaction(paymentTransactionId);
         paymentTransaction.setTrackingUuid(UUID.randomUUID());
@@ -396,13 +401,14 @@ public class CartCheckout extends BaseTestClass {
         webPaymentInfo.setCancelURL("http://www.abc.com/cancel/");
         webPaymentInfo.setReturnURL("http://www.abc.com/");
         paymentTransaction.setWebPaymentInfo(webPaymentInfo);
+*/
 
         //Post callback properties
-        PaymentProperties paymentProperties = new PaymentProperties();
+        PaymentCallbackParams paymentProperties = new PaymentCallbackParams();
         paymentProperties.setExternalAccessToken(token);
         paymentProperties.setExternalPayerId(payerId);
         PaymentCallbackService paymentCallbackService = PaymentCallbackServiceImpl.getInstance();
-        paymentCallbackService.postPaymentProperties(paymentTransactionId, paymentProperties);*/
+        paymentCallbackService.postPaymentProperties(paymentTransactionId, paymentProperties);
 
         //confirm
         //mockPaymentTransactionConfirm(paymentTransactionId, paymentTransaction);
