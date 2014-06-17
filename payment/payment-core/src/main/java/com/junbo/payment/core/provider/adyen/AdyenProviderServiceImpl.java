@@ -25,7 +25,7 @@ import com.junbo.payment.db.repository.PaymentInstrumentRepository;
 import com.junbo.payment.db.repository.PaymentRepository;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.payment.spec.model.PaymentProperties;
+import com.junbo.payment.spec.model.PaymentCallbackParams;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import com.junbo.payment.spec.model.WebPaymentInfo;
 import org.slf4j.Logger;
@@ -326,7 +326,7 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
     }
 
     @Override
-    public Promise<PaymentTransaction> confirmNotify(PaymentTransaction payment, PaymentProperties properties){
+    public Promise<PaymentTransaction> confirmNotify(PaymentTransaction payment, PaymentCallbackParams properties){
         if(!CommonUtil.isNullOrEmpty(properties.getPspReference())
                 && !CommonUtil.isNullOrEmpty(properties.getAuthResult())
                 && properties.getAuthResult().equalsIgnoreCase(CONFIRMED_STATUS)){

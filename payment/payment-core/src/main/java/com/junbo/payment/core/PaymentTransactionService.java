@@ -8,7 +8,7 @@ package com.junbo.payment.core;
 
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.spec.model.PaymentEvent;
-import com.junbo.payment.spec.model.PaymentProperties;
+import com.junbo.payment.spec.model.PaymentCallbackParams;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,5 +37,5 @@ public interface PaymentTransactionService {
     @Transactional(readOnly = true)
     Promise<PaymentTransaction> getProviderTransaction(Long paymentId);
     @Transactional
-    Promise<PaymentTransaction> reportPaymentEvent(PaymentEvent event, PaymentProperties paymentProperties);
+    Promise<PaymentTransaction> reportPaymentEvent(PaymentEvent event, PaymentCallbackParams paymentCallbackParams);
 }

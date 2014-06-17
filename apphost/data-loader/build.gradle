@@ -2,6 +2,7 @@ apply plugin: 'groovy'
 apply plugin: 'application'
 
 mainClassName = "com.junbo.data.loader.DataLoader"
+applicationDefaultJvmArgs = ["-Dfile.encoding=UTF-8"]
 
 dependencies {
     compile (libraries.common_io)

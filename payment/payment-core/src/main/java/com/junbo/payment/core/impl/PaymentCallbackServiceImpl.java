@@ -14,7 +14,7 @@ import com.junbo.payment.core.PaymentTransactionService;
 import com.junbo.payment.db.repository.PaymentRepository;
 import com.junbo.payment.spec.enums.PaymentEventType;
 import com.junbo.payment.spec.model.PaymentEvent;
-import com.junbo.payment.spec.model.PaymentProperties;
+import com.junbo.payment.spec.model.PaymentCallbackParams;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ public class PaymentCallbackServiceImpl implements PaymentCallbackService{
     @Autowired
     private PaymentRepository paymentRepository;
     @Override
-    public Promise<Void> addPaymentProperties(Long paymentId, PaymentProperties properties) {
+    public Promise<Void> addPaymentProperties(Long paymentId, PaymentCallbackParams properties) {
         PaymentTransaction existedTransaction = paymentRepository.getByPaymentId(paymentId);
         if(existedTransaction == null){
             LOGGER.error("the payment id is invalid.");

@@ -4,6 +4,7 @@ dependencies {
     compile junboProject(':order-spec')
     compile junboProject(':order-core')
     compile junboProject(':order-db')
+    compile junboProject(':order-auth')
     compile junboProject(':oom-core')
     compile (libraries.servlet_api)
     //compile (libraries.jersey_spring3)

@@ -164,8 +164,15 @@ class CoreUtils {
         assert(balance.discountAmount != null)
         def returnVal = existingOrder
         returnVal.totalAmount -= balance.totalAmount
+        if(balance.taxIncluded) {
+            returnVal.totalAmount += balance.taxAmount
+        }
         returnVal.totalTax -= balance.taxAmount
         returnVal.totalDiscount -= balance.discountAmount
+        assert(returnVal.totalTax >= 0G)
+        assert(returnVal.totalAmount >= 0G)
+        assert(returnVal.totalDiscount >= 0G)
+
         returnVal.orderItems?.each() { OrderItem oi ->
             def balanceItem = balance.balanceItems?.find() { BalanceItem bi ->
                 bi.orderItemId.value == oi.getId().value
@@ -193,6 +200,10 @@ class CoreUtils {
             if (diffItem != null) {
                 oi.quantity -= diffItem.quantity
             }
+            assert(oi.totalAmount >= 0G)
+            assert(oi.totalTax >= 0G)
+            assert(oi.totalDiscount >= 0G)
+            assert(oi.quantity >= 0G)
         }
         return returnVal
     }

@@ -10,7 +10,7 @@ echo "stop primary pgbouncer proxy"
 forceKill $PGBOUNCER_PORT
 
 ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
-source $DEPLOYMENT_PATH/common.sh
+source $DEPLOYMENT_PATH/util/common.sh
 
 echo "stop secondary pgbouncer proxy"
 forceKill $PGBOUNCER_PORT

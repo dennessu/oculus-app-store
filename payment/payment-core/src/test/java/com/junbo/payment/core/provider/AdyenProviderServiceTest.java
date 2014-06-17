@@ -7,14 +7,13 @@ import com.junbo.payment.core.provider.adyen.AdyenProviderServiceImpl;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.ChargeInfo;
 import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.payment.spec.model.PaymentProperties;
+import com.junbo.payment.spec.model.PaymentCallbackParams;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -45,7 +44,7 @@ public class AdyenProviderServiceTest extends BaseTest {
         Assert.assertNotNull(result.getWebPaymentInfo().getRedirectURL());
         Assert.assertEquals(result.getStatus(), PaymentStatus.UNCONFIRMED.toString());
         //manual pay through redirectURL
-        PaymentProperties properties = new PaymentProperties();
+        PaymentCallbackParams properties = new PaymentCallbackParams();
         properties.setPspReference("ut1234");
         properties.setAuthResult("AUTHORISED");
         paymentCallbackService.addPaymentProperties(result.getId(), properties);
@@ -88,7 +87,7 @@ public class AdyenProviderServiceTest extends BaseTest {
         Assert.assertNotNull(result.getWebPaymentInfo().getRedirectURL());
         Assert.assertEquals(result.getStatus(), PaymentStatus.UNCONFIRMED.toString());
         //manual pay through redirectURL
-        PaymentProperties properties = new PaymentProperties();
+        PaymentCallbackParams properties = new PaymentCallbackParams();
         properties.setPspReference("ut1234");
         properties.setAuthResult("AUTHORISED");
         paymentCallbackService.addPaymentProperties(result.getId(), properties).get();
@@ -135,7 +134,7 @@ public class AdyenProviderServiceTest extends BaseTest {
         Assert.assertNotNull(result.getWebPaymentInfo().getRedirectURL());
         Assert.assertEquals(result.getStatus(), PaymentStatus.UNCONFIRMED.toString());
         //manual pay through redirectURL
-        PaymentProperties properties = new PaymentProperties();
+        PaymentCallbackParams properties = new PaymentCallbackParams();
         properties.setPspReference("ut1234");
         properties.setAuthResult("AUTHORISED");
         paymentCallbackService.addPaymentProperties(result.getId(), properties).get();

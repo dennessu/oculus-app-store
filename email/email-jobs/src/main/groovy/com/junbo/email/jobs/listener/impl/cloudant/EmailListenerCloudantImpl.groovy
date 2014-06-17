@@ -24,7 +24,7 @@ class EmailListenerCloudantImpl extends EmailBaseListener implements EmailListen
     public void onMessage(final String eventId, final String message) {
         LOGGER.info('EMAIL_LISTENER_INFO. Receive a message with event id:{} and message is:{}', eventId, message)
         try {
-            Long emailId = Long.parseLong(message)
+            String emailId = message
             this.sendEmail(emailId)
         } catch (NumberFormatException nfe) {
             LOGGER.error('EMAIL_LISTENER_ERROR. Failed to parse message:{}', message)
@@ -33,7 +33,7 @@ class EmailListenerCloudantImpl extends EmailBaseListener implements EmailListen
         }
     }
 
-    private void sendEmail(Long emailId) {
+    private void sendEmail(String emailId) {
         emailHistoryRepository.getEmailHistory(emailId).recover { Throwable throwable ->
             LOGGER.error('EMAIL_LISTENER_ERROR. Failed to get email:',throwable)
         }.then { Email email ->

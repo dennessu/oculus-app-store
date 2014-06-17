@@ -13,7 +13,7 @@ import com.junbo.langur.core.promise.Promise
  * Interface of EmailTemplate Repository.
  */
 public interface EmailTemplateRepository {
-    public Promise<EmailTemplate> getEmailTemplate(Long id)
+    public Promise<EmailTemplate> getEmailTemplate(String id)
 
     public Promise<EmailTemplate> saveEmailTemplate(EmailTemplate template)
 
@@ -23,5 +23,5 @@ public interface EmailTemplateRepository {
 
     public Promise<List<EmailTemplate>> getEmailTemplates(Map<String, String> queries, Pagination pagination)
 
-    public void deleteEmailTemplate(Long id)
+    public Promise<Void> deleteEmailTemplate(String id)
 }

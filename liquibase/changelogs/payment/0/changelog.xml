@@ -104,7 +104,6 @@
                   payment_instrument_holder_name    varchar(100)            null,
                   encrypted_account_number          varchar(200)            null,
                   account_number                    varchar(100)            null,
-                  revision                          varchar(64)         not null,
                   address_id                        bigint                  null,
                   label                             varchar(128)            null,
                   phone_num                         bigint                  null,
@@ -145,10 +144,7 @@
                   updated_time                      date                    null,
                   updated_by                        varchar(50)             null,
 
-                  constraint cc_payment_instrument_id_pk primary key (payment_instrument_id),
-                  constraint credit_card_type_id_fk foreign key (credit_card_type_id)
-                      references credit_card_type (credit_card_type_id) match simple
-                      on update no action on delete no action
+                  constraint cc_payment_instrument_id_pk primary key (payment_instrument_id)
                 );
         ]]>
         </sql>
@@ -311,20 +307,7 @@
                   updated_time                    date                 null,
                   updated_by                      varchar(50)          null,
 
-                  constraint payment_id_pk primary key (payment_id),                  
-                  
-                  constraint merchant_account_id_fk foreign key (merchant_account_id)
-                      references merchant_account (merchant_account_id) match simple
-                      on update no action on delete no action,
-                  constraint payment_provider_id_fk foreign key (payment_provider_id)
-                      references payment_provider (payment_provider_id) match simple
-                      on update no action on delete no action,
-                  constraint payment_status_id_fk foreign key (payment_status_id)
-                      references payment_status (payment_status_id) match simple
-                      on update no action on delete no action,
-                  constraint payment_type_id_fk foreign key (payment_type_id)
-                      references payment_type (payment_type_id) match simple
-                      on update no action on delete no action
+                  constraint payment_id_pk primary key (payment_id)
                 );
         ]]>
         </sql>
@@ -348,16 +331,7 @@
 				  updated_time               date                 null,
                   updated_by                 varchar(50)          null,
 
-                  constraint payment_event_id_pk primary key (payment_event_id),
-                  constraint payment_id_fk foreign key (payment_id)
-                      references payment (payment_id) match simple
-                      on update no action on delete no action,
-				  constraint event_status_id_fk foreign key (event_status_id)
-                      references payment_status (payment_status_id) match simple
-                      on update no action on delete no action,
-                  constraint payment_event_type_id_fk foreign key (payment_event_type_id)
-                      references payment_event_type (payment_event_type_id) match simple
-                      on update no action on delete no action
+                  constraint payment_event_id_pk primary key (payment_event_id)
                 );
         ]]>
         </sql>
@@ -895,10 +869,7 @@
                    updated_time                    date                   null,
                    updated_by                      varchar(50)            null,
  
-                   constraint tracking_uuid_id primary key (tracking_uuid_id), 
-                   constraint payment_api_fk foreign key (api_id)
-                      references payment_api (api_id) match simple
-                      on update no action on delete no action    
+                   constraint tracking_uuid_id primary key (tracking_uuid_id)
             );
         ]]>
         </sql>
@@ -935,10 +906,7 @@
 				  updated_time               date                 null,
                   updated_by                 varchar(50)          null,
 
-                  constraint payment_property_id_pk primary key (payment_property_id),
-                  constraint payment_id_fk foreign key (payment_id)
-                      references payment (payment_id) match simple
-                      on update no action on delete no action
+                  constraint payment_property_id_pk primary key (payment_property_id)
                 );
         ]]>
         </sql>

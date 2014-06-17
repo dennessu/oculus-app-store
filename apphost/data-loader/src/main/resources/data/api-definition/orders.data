@@ -1,0 +1,32 @@
+{
+    "apiName": "orders",
+    "scopes": {
+        "order": [
+            {
+                "precondition": "ownedByCurrentUser()",
+                "rights": [
+                    "create", "read", "update"
+                ],
+                "scriptType": "SPEL"
+            }
+        ],
+        "order.service": [
+            {
+                "precondition": "true",
+                "rights": [
+                    "create", "read", "update", "refund", "create-event", "read-event"
+                ],
+                "scriptType": "SPEL"
+            }
+        ],
+        "order.csr": [
+            {
+                "precondition": "true",
+                "rights": [
+                    "create", "read", "update", "refund", "create-event", "read-event"
+                ],
+                "scriptType": "SPEL"
+            }
+        ],
+    }
+}

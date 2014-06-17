@@ -6,6 +6,7 @@
 package com.junbo.test.oauth;
 
 import com.junbo.identity.spec.v1.model.User;
+import com.junbo.identity.spec.v1.model.UserPersonalInfo;
 import com.junbo.oauth.spec.model.TokenInfo;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.RandomHelper;
@@ -51,7 +52,7 @@ public class authorizeUser {
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
-        String email = RandomHelper.randomAlphabetic(10).toLowerCase() + "@163.com";
+        String email = RandomHelper.randomAlphabetic(10) + "@163.com";
         String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
         ValidateErrorFreeResponse(postRegisterUserResponse);
 
@@ -83,7 +84,7 @@ public class authorizeUser {
         assertEquals("validate view state after post register view", postRegisterViewResponse, currentViewState);
 
         String userName = RandomHelper.randomAlphabetic(15);
-        String email = RandomHelper.randomAlphabetic(10).toLowerCase() + "@163.com";
+        String email = RandomHelper.randomAlphabetic(10) + "@163.com";
         String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
         ValidateErrorFreeResponse(postRegisterUserResponse);
 
@@ -119,7 +120,7 @@ public class authorizeUser {
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
-        String email = RandomHelper.randomAlphabetic(10).toLowerCase() + "@163.com";
+        String email = RandomHelper.randomAlphabetic(10) + "@163.com";
         String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
         ValidateErrorFreeResponse(postRegisterUserResponse);
 
@@ -152,9 +153,13 @@ public class authorizeUser {
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
-        String email = RandomHelper.randomAlphabetic(10).toLowerCase() + "@163.com";
+        String email = RandomHelper.randomAlphabetic(10) + "@163.com";
         String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
         ValidateErrorFreeResponse(postRegisterUserResponse);
+
+        HttpclientHelper.ResetHttpClient();
+        UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
+        Oauth.PostResetPassword(Identity.GetHexUserId(upi.getUserId().getValue()), null);
     }
 
     private static void ValidateErrorFreeResponse(String responseString) throws Exception {

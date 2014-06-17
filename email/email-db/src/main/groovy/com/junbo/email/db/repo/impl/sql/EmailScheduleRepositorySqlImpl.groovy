@@ -26,8 +26,8 @@ class EmailScheduleRepositorySqlImpl extends EmailBaseRepository implements Emai
         this.emailScheduleDao = emailScheduleDao
     }
 
-    public Promise<Email> getEmailSchedule(Long id) {
-        def entity = emailScheduleDao.get(id)
+    public Promise<Email> getEmailSchedule(String id) {
+        def entity = emailScheduleDao.get(Long.parseLong(id))
         return Promise.pure(emailMapper.toEmailSchedule(entity))
     }
 
@@ -52,8 +52,9 @@ class EmailScheduleRepositorySqlImpl extends EmailBaseRepository implements Emai
         return Promise.pure(emailMapper.toEmailSchedule(updatedEntity))
     }
 
-    public void deleteEmailSchedule(Long id) {
-        emailScheduleDao.deleteEmailScheduleById(id)
+    public Promise<Void> deleteEmailSchedule(String id) {
+        emailScheduleDao.deleteEmailScheduleById(Long.parseLong(id))
+        return Promise.pure(null)
     }
 
     private void merge(EmailScheduleEntity savedEntity, EmailScheduleEntity updateEntity){

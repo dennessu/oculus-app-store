@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="orderAuthorizeCallbackFactory" class="com.junbo.order.auth.OrderAuthorizeCallbackFactory"
+          parent="abstractAuthorizeCallbackFactory">
+        <property name="orderResource" ref="order.orderResourceClientProxy"/>
+    </bean>
+
+    <bean id="subledgerAuthorizeCallbackFactory" class="com.junbo.order.auth.SubledgerAuthorizeCallbackFactory"
+          parent="abstractAuthorizeCallbackFactory">
+        <property name="subledgerResource" ref="order.subledgerResourceClientProxy"/>
+    </bean>
+
+    <bean id="orderAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
+        <property name="scope" value="order.service subledger.service"/>
+        <property name="deflectionInSeconds" value="300"/>
+        <property name="clientSecret" value="secret"/>
+        <property name="clientId" value="service"/>
+        <property name="tokenEndpoint" ref="tokenEndpoint"/>
+    </bean>
+
+    <bean id="order.orderResourceClientProxy" class="com.junbo.order.spec.resource.proxy.OrderResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
+        <property name="target" value="${clientproxy.order.url}"/>
+    </bean>
+
+    <bean id="order.subledgerResourceClientProxy" class="com.junbo.order.spec.resource.proxy.SubledgerResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
+        <property name="target" value="${clientproxy.order.url}"/>
+    </bean>
+</beans>

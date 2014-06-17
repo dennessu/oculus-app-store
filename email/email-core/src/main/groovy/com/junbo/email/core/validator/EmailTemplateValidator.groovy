@@ -14,9 +14,9 @@ import com.junbo.email.spec.model.Pagination
 interface EmailTemplateValidator {
     void validateCreate(EmailTemplate template)
 
-    void validateUpdate(EmailTemplate template, Long templateId)
+    void validateUpdate(EmailTemplate template, String templateId)
 
-    void validateDelete(Long id)
+    void validateDelete(String id)
 
     void validateGet(Pagination pagination)
 }

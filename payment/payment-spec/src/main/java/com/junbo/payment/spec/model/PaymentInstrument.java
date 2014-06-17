@@ -11,6 +11,7 @@ import com.junbo.common.jackson.annotation.PaymentInstrumentId;
 import com.junbo.common.jackson.annotation.PaymentInstrumentTypeId;
 import com.junbo.common.jackson.annotation.PersonalInfoId;
 import com.junbo.common.jackson.annotation.UserId;
+import com.junbo.common.model.ResourceMetaForDualWrite;
 import com.junbo.payment.common.FilterIn;
 import com.junbo.payment.common.InnerFilter;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -24,7 +25,7 @@ import java.util.UUID;
 /**
  * payment instrument model.
  */
-public class PaymentInstrument {
+public class PaymentInstrument extends ResourceMetaForDualWrite<Long> {
     @ApiModelProperty(position = 1, required = true, value = "The id of payment instrument resource.")
     @PaymentInstrumentId
     @JsonProperty("self")
@@ -67,8 +68,7 @@ public class PaymentInstrument {
     @ApiModelProperty(position = 12, required = true, value = "The email resource of the PI.")
     @PersonalInfoId
     private Long email;
-    @ApiModelProperty(position = 13, required = true, value = "[Client Immutable]The current revision of the PI.")
-    private String rev;
+
     @JsonIgnore
     private String relationToHolder;
     //response:
@@ -160,14 +160,6 @@ public class PaymentInstrument {
 
     public void setLabel(String label) {
         this.label = label;
-    }
-
-    public String getRev() {
-        return rev;
-    }
-
-    public void setRev(String rev) {
-        this.rev = rev;
     }
 
     public Address getAddress() {

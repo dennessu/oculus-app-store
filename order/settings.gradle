@@ -2,6 +2,7 @@ include 'order-spec'
 
 include 'order-db'
 include 'order-clientproxy'
+include 'order-auth'
 include 'order-core'
 include 'order-rest'
 include 'order-mock'

@@ -53,7 +53,7 @@ port = $SLAVE_DB_PORT
 EOF
 
 echo "start slave database..."
-$PGBIN_PATH/pg_ctl -D $SLAVE_DATA_PATH start
+$PGBIN_PATH/pg_ctl -D $SLAVE_DATA_PATH start > /dev/null 2>&1 &
 
 while ! echo exit | nc $SLAVE_HOST $SLAVE_DB_PORT; do sleep 1 && echo "waiting for slave database..."; done
 echo "slave database started successfully!"

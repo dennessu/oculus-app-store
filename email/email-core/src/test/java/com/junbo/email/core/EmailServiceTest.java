@@ -68,7 +68,7 @@ public class EmailServiceTest extends BaseTest {
     public void testUpdateEmail() throws Exception {
         Email result = emailService.postEmail(email).get();
         Date scheduleTime = new Date(System.currentTimeMillis() + 5000000);
-        Long id = result.getId().getValue();
+        String id = result.getId().getValue();
         result.setId(null);
         result.setStatus(null);
         result.setIsResend(null);

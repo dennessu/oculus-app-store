@@ -11,7 +11,7 @@ import com.junbo.oom.core.MappingContext;
 import com.junbo.payment.db.dao.TrackingUuidDao;
 import com.junbo.payment.db.entity.TrackingUuidEntity;
 import com.junbo.payment.db.mapper.PaymentMapper;
-import com.junbo.payment.db.mapper.TrackingUuid;
+import com.junbo.payment.spec.model.TrackingUuid;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;

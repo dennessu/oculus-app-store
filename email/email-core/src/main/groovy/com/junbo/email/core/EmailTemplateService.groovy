@@ -16,11 +16,11 @@ import com.junbo.langur.core.promise.Promise
 interface EmailTemplateService {
     Promise<EmailTemplate> postEmailTemplate(EmailTemplate template)
 
-    Promise<EmailTemplate> getEmailTemplate(Long id)
+    Promise<EmailTemplate> getEmailTemplate(String id)
 
-    Promise<EmailTemplate> putEmailTemplate(Long id, EmailTemplate template)
+    Promise<EmailTemplate> putEmailTemplate(String id, EmailTemplate template)
 
-    Void deleteEmailTemplate(Long id)
+    Promise<Void> deleteEmailTemplate(String id)
 
     Promise<Results<EmailTemplate>> getEmailTemplates(QueryParam queryParam)
 }

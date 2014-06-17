@@ -6,10 +6,8 @@
 
     <bean id="emailBaseListener" class="com.junbo.email.jobs.listener.impl.EmailBaseListener" abstract="true">
         <property name="emailProvider" ref="emailProvider"/>
-        <!--<property name="emailHistoryRepository" ref="emailHistorySqlRepo"/>-->
-        <property name="emailHistoryRepository" ref="emailHistoryCloudantRepo"/>
-        <!--<property name="EmailTemplateRepository" ref="emailTemplateSqlRepo"/>-->
-        <property name="EmailTemplateRepository" ref="emailTemplateCloudantRepo"/>
+        <property name="emailHistoryRepository" ref="emailHistoryRepo"/>
+        <property name="EmailTemplateRepository" ref="emailTemplateRepo"/>
     </bean>
 
     <!--<bean id="emailListener" class="com.junbo.email.jobs.listener.impl.sql.EmailListenerSqlImpl" parent="emailBaseListener">-->

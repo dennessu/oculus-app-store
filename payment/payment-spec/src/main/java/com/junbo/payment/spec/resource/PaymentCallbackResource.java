@@ -10,7 +10,7 @@ import com.junbo.common.id.PaymentId;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.payment.spec.model.PaymentProperties;
+import com.junbo.payment.spec.model.PaymentCallbackParams;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -27,5 +27,5 @@ import javax.ws.rs.core.Response;
 public interface PaymentCallbackResource {
     @POST
     @Path("/{paymentId}/properties")
-    Promise<Response> postPaymentProperties(@PathParam("paymentId") PaymentId paymentId, PaymentProperties properties);
+    Promise<Response> postPaymentProperties(@PathParam("paymentId") PaymentId paymentId, PaymentCallbackParams properties);
 }

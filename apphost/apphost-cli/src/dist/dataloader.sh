@@ -152,4 +152,4 @@ if $cygwin ; then
     esac
 fi
 
-exec "$JAVACMD" "${JVM_OPTS[@]}" -classpath "$CLASSPATH" com.junbo.data.loader.DataLoader "$@"
+exec "$JAVACMD" "${JVM_OPTS[@]}" -classpath "$CLASSPATH" -Dfile.encoding=UTF-8 com.junbo.data.loader.DataLoader "$@"

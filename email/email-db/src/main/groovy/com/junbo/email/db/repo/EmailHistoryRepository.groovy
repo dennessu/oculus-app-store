@@ -13,7 +13,7 @@ import com.junbo.langur.core.promise.Promise
  */
 
 interface EmailHistoryRepository {
-    public Promise<Email> getEmailHistory(Long id)
+    public Promise<Email> getEmailHistory(String id)
 
     public Promise<Email> createEmailHistory(Email email)
 

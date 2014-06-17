@@ -18,10 +18,10 @@ import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.core.util.ProxyExceptionResponse;
 import com.junbo.payment.db.repository.PITypeRepository;
-import com.junbo.payment.db.mapper.PaymentAPI;
-import com.junbo.payment.db.mapper.TrackingUuid;
+import com.junbo.payment.spec.model.TrackingUuid;
 import com.junbo.payment.db.repository.PaymentInstrumentRepository;
 import com.junbo.payment.db.repository.TrackingUuidRepository;
+import com.junbo.payment.spec.enums.PaymentAPI;
 import com.junbo.payment.spec.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,13 +104,8 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     @Override
     public void update(PaymentInstrument request) {
         validateRequest(request);
-        if(request.getRev() == null){
-            throw AppClientExceptions.INSTANCE.missingRevision().exception();
-        }
+
         PaymentInstrument piTarget = getPaymentInstrument(request.getId());
-        if(!request.getRev().equals(piTarget.getRev())){
-            throw AppClientExceptions.INSTANCE.invalidRevision().exception();
-        }
         //Validate the info:
         if(!piTarget.getUserId().equals(request.getUserId())
                 || !piTarget.getType().equals(request.getType())
@@ -208,7 +203,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         TrackingUuid trackingUuid = new TrackingUuid();
         trackingUuid.setTrackingUuid(request.getTrackingUuid());
         trackingUuid.setPaymentInstrumentId(request.getId());
-        trackingUuid.setApi(api);
+        trackingUuid.setApi(api.toString());
         trackingUuid.setUserId(request.getUserId());
         trackingUuid.setResponse(CommonUtil.toJson(request, null));
         trackingUuidRepository.saveTrackingUuid(trackingUuid);

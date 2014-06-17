@@ -30,9 +30,9 @@ public class EmailMapper {
         if(entity == null) {
             return null;
         }
-        Email email =Utils.toObject(entity.getPayload(),Email.class);
+        Email email = Utils.toObject(entity.getPayload(),Email.class);
         email.setSentTime(entity.getSentTime());
-        email.setId(new EmailId(entity.getId()));
+        email.setId(new EmailId(entity.getId().toString()));
         email.setPriority(entity.getPriority());
         email.setRetryCount(entity.getRetryCount());
         email.setStatus(fromEmailStatus(entity.getStatus()));
@@ -53,9 +53,9 @@ public class EmailMapper {
             entity.setUserId(email.getUserId().getValue());
         }
         if(email.getId() != null) {
-            entity.setId(email.getId().getValue());
+            entity.setId(email.getId().asLong());
         }
-        entity.setTemplateId(email.getTemplateId().getValue());
+        entity.setTemplateId(email.getTemplateId().asLong());
         entity.setPayload(Utils.toJson(email));
         entity.setPriority(email.getPriority());
         entity.setStatus(toEmailStatus(email.getStatus()));
@@ -74,12 +74,12 @@ public class EmailMapper {
         }
         EmailScheduleEntity entity = new EmailScheduleEntity();
         if(email.getId() != null) {
-            entity.setId(email.getId().getValue());
+            entity.setId(email.getId().asLong());
         }
         if(email.getUserId() != null) {
             entity.setUserId(email.getUserId().getValue());
         }
-        entity.setTemplateId(email.getTemplateId().getValue());
+        entity.setTemplateId(email.getTemplateId().asLong());
         entity.setPayload(Utils.toJson(email));
         entity.setRecipients(Utils.toJson(email.getRecipients()));
         entity.setPriority(email.getPriority());
@@ -93,9 +93,9 @@ public class EmailMapper {
             return null;
         }
         Email email = Utils.toObject(entity.getPayload(), Email.class);
-        email.setId(new EmailId(entity.getId()));
+        email.setId(new EmailId(entity.getId().toString()));
         email.setIsResend(false);
-        email.setTemplateId(new EmailTemplateId(entity.getTemplateId()));
+        email.setTemplateId(new EmailTemplateId(entity.getTemplateId().toString()));
         email.setStatus(EmailStatus.PENDING.toString());
         email.setRecipients(Utils.toObject(entity.getRecipients(), List.class));
         email.setScheduleTime(entity.getScheduleTime());
@@ -113,7 +113,7 @@ public class EmailMapper {
         template.setSource(entity.getSource());
         template.setAction(entity.getAction());
         template.setLocale(entity.getLocale());
-        template.setId(new EmailTemplateId(entity.getId()));
+        template.setId(new EmailTemplateId(entity.getId().toString()));
         template.setFromAddress(entity.getFromAddress());
         template.setFromName(entity.getFromName());
         template.setProviderIndex(entity.getProviderIndex());
@@ -141,7 +141,7 @@ public class EmailMapper {
     public EmailTemplateEntity toEmailTemplateEntity(EmailTemplate template) throws IOException {
         EmailTemplateEntity entity = new EmailTemplateEntity();
         if(template.getId()!=null) {
-            entity.setId(template.getId().getValue());
+            entity.setId(template.getId().asLong());
         }
         entity.setName(template.getName());
         entity.setSource(template.getSource());

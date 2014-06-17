@@ -15,9 +15,11 @@ import com.junbo.payment.db.entity.payment.PaymentEntity;
 import com.junbo.payment.db.entity.payment.PaymentEventEntity;
 import com.junbo.payment.db.entity.paymentinstrument.AddressEntity;
 import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentEntity;
-import com.junbo.payment.db.mapper.*;
 import com.junbo.payment.db.repository.MerchantAccountRepository;
-import com.junbo.payment.spec.enums.*;
+import com.junbo.payment.spec.enums.PaymentAPI;
+import com.junbo.payment.spec.enums.PaymentEventType;
+import com.junbo.payment.spec.enums.PaymentStatus;
+import com.junbo.payment.spec.enums.PaymentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.Assert;
@@ -164,8 +166,7 @@ public class PaymentDaoTest extends BaseTest {
         entity.setAccountName("David");
         entity.setBillingAddressId(123L);
         entity.setIsActive(true);
-        entity.setRev("1");
-        entity.setType(PIType.CREDITCARD);
+        entity.setType(PIType.CREDITCARD.getId());
         entity.setUserId(userId);
         entity.setUpdatedBy("ut");
         entity.setCreatedTime(new Date());
@@ -184,16 +185,16 @@ public class PaymentDaoTest extends BaseTest {
         entity.setPaymentInstrumentId(pi.getId());
         entity.setPaymentProviderId(0);
         entity.setBillingRefId("123");
-        entity.setStatus(PaymentStatus.AUTH_CREATED);
-        entity.setType(PaymentType.AUTHORIZE);
+        entity.setStatusId(PaymentStatus.AUTH_CREATED.getId());
+        entity.setTypeId(PaymentType.AUTHORIZE.getId());
         return entity;
     }
 
     protected PaymentEventEntity getPaymentEventEntity(PaymentEntity payment) {
         PaymentEventEntity eventEntity = new PaymentEventEntity();
         eventEntity.setPaymentId(payment.getId());
-        eventEntity.setType(PaymentEventType.AUTH_CREATE);
-        eventEntity.setStatus(PaymentStatus.AUTH_CREATED);
+        eventEntity.setEventTypeId(PaymentEventType.AUTH_CREATE.getId());
+        eventEntity.setStatusId(PaymentStatus.AUTH_CREATED.getId());
         eventEntity.setCurrency("USD");
         eventEntity.setNetAmount(new BigDecimal(23));
         eventEntity.setCreatedTime(new Date());
@@ -206,7 +207,7 @@ public class PaymentDaoTest extends BaseTest {
     protected MerchantAccountEntity buildMerchantRequest(){
         MerchantAccountEntity merchant = new MerchantAccountEntity();
         merchant.setCurrency("USD");
-        merchant.setPiType(PIType.CREDITCARD);
+        merchant.setPiType(PIType.CREDITCARD.getId());
         merchant.setCountryCode("US");
         merchant.setMerchantAccountId(new Random().nextInt());
         merchant.setPaymentProviderId(0);
@@ -218,7 +219,7 @@ public class PaymentDaoTest extends BaseTest {
 
     protected TrackingUuidEntity buildTrackingUuidRequest(){
         TrackingUuidEntity entity = new TrackingUuidEntity();
-        entity.setApi(PaymentAPI.AddPI);
+        entity.setApiId(PaymentAPI.AddPI.getId());
         entity.setTrackingUuid(generateUUID());
         return entity;
     }

@@ -1,22 +1,16 @@
 package com.junbo.test.buyerscenario;
 
-import com.junbo.test.payment.apihelper.impl.PaymentTransactionServiceImpl;
-import com.junbo.test.payment.apihelper.impl.PaymentCallbackServiceImpl;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.apihelper.order.impl.OrderEventServiceImpl;
 import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
-import com.junbo.test.payment.apihelper.PaymentTransactionService;
-import com.junbo.test.payment.apihelper.PaymentCallbackService;
 import com.junbo.test.common.apihelper.order.OrderEventService;
 import com.junbo.test.buyerscenario.util.BaseTestClass;
 import com.junbo.payment.spec.model.PaymentTransaction;
-import com.junbo.payment.spec.model.PaymentProperties;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.entitlement.spec.model.Entitlement;
-import com.junbo.payment.spec.model.WebPaymentInfo;
 import com.junbo.test.common.libs.ShardIdHelper;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
@@ -30,7 +24,6 @@ import com.junbo.common.id.UserId;
 import org.testng.annotations.Test;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.UUID;
 
 /**
  * Created by Yunlong on 3/20/14.
@@ -389,7 +382,7 @@ public class CartCheckout extends BaseTestClass {
     }
 
     private void emulatePayPalCheckout(Order order, String token, CatalogItemType itemType) throws Exception {
-        PaymentTransactionService paymentTransactionService = PaymentTransactionServiceImpl.getInstance();
+        /*PaymentTransactionService paymentTransactionService = PaymentTransactionServiceImpl.getInstance();
         Long paymentTransactionId = getTransactionId(order.getUser().getValue());
 
         PaymentTransaction paymentTransaction = paymentTransactionService.getPaymentTransaction(paymentTransactionId);
@@ -409,7 +402,7 @@ public class CartCheckout extends BaseTestClass {
         paymentProperties.setExternalAccessToken(token);
         paymentProperties.setExternalPayerId(payerId);
         PaymentCallbackService paymentCallbackService = PaymentCallbackServiceImpl.getInstance();
-        paymentCallbackService.postPaymentProperties(paymentTransactionId, paymentProperties);
+        paymentCallbackService.postPaymentProperties(paymentTransactionId, paymentProperties);*/
 
         //confirm
         //mockPaymentTransactionConfirm(paymentTransactionId, paymentTransaction);
@@ -422,7 +415,6 @@ public class CartCheckout extends BaseTestClass {
         orderEvent.setStatus("COMPLETED");
 
         orderEventService.postOrderEvent(orderEvent);
-
     }
 
     private Long getTransactionId(Long uid) throws Exception {

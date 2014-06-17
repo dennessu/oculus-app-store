@@ -15,9 +15,9 @@ import com.junbo.langur.core.promise.Promise
 interface EmailService {
     Promise<Email> postEmail(Email request)
 
-    Promise<Email> getEmail(Long id)
+    Promise<Email> getEmail(String id)
 
-    Promise<Email> updateEmail(Long id, Email email)
+    Promise<Email> updateEmail(String id, Email email)
 
-    Void deleteEmail(Long id)
+    Promise<Void> deleteEmail(String id)
 }

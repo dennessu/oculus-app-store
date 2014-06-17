@@ -9,5 +9,5 @@ package com.junbo.email.core.publisher
  * Interface of EmailPublisher.
  */
 public interface EmailPublisher {
-    void send(Long id)
+    void send(String id)
 }

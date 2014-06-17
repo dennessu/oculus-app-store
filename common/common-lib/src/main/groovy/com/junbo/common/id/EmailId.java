@@ -11,10 +11,10 @@ package com.junbo.common.id;
 @IdResourcePath(value = "/emails/{0}",
                 resourceType = "emails",
                 regex = "/emails/(?<id>[0-9A-Za-z]+)")
-public class EmailId extends Id {
+public class EmailId extends CloudantId {
     public EmailId() {}
 
-    public EmailId(Long value) {
+    public EmailId(String value) {
         super(value);
     }
 }

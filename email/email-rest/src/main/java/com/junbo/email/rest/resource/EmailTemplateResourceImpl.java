@@ -59,8 +59,12 @@ public class EmailTemplateResourceImpl implements EmailTemplateResource{
             throw AppErrors.INSTANCE.insufficientScope().exception();
         }
 
-        templateService.deleteEmailTemplate(id.getValue());
-        return Promise.pure(Response.status(204).build());
+        return templateService.deleteEmailTemplate(id.getValue()).then(new Promise.Func<Void, Promise<Response>>() {
+            @Override
+            public Promise<Response> apply(Void aVoid) {
+                return Promise.pure(Response.status(204).build());
+            }
+        });
     }
 
     public Promise<Results<EmailTemplate>> getEmailTemplates(QueryParam queryParam) {

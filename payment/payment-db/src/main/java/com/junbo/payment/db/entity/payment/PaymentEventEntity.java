@@ -8,15 +8,15 @@ package com.junbo.payment.db.entity.payment;
 
 import com.junbo.payment.db.entity.GenericEntity;
 import com.junbo.payment.db.entity.JSONStringUserType;
-import com.junbo.payment.spec.enums.PaymentEventType;
-import com.junbo.payment.spec.enums.PaymentStatus;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.math.BigDecimal;
-
-import javax.persistence.*;
 
 
 /**
@@ -35,10 +35,10 @@ public class PaymentEventEntity extends GenericEntity {
     private Long paymentId;
 
     @Column(name = "payment_event_type_id")
-    private PaymentEventType type;
+    private Short eventTypeId;
 
     @Column(name = "event_status_id")
-    private PaymentStatus status;
+    private Short statusId;
 
     @Column(name = "currency_code")
     private String currency;
@@ -75,20 +75,20 @@ public class PaymentEventEntity extends GenericEntity {
         this.paymentId = paymentId;
     }
 
-    public PaymentEventType getType() {
-        return type;
+    public Short getEventTypeId() {
+        return eventTypeId;
     }
 
-    public void setType(PaymentEventType type) {
-        this.type = type;
+    public void setEventTypeId(Short eventTypeId) {
+        this.eventTypeId = eventTypeId;
     }
 
-    public PaymentStatus getStatus() {
-        return status;
+    public Short getStatusId() {
+        return statusId;
     }
 
-    public void setStatus(PaymentStatus status) {
-        this.status = status;
+    public void setStatusId(Short statusId) {
+        this.statusId = statusId;
     }
 
     public String getCurrency() {

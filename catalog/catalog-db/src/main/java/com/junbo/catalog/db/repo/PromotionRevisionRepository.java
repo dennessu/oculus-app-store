@@ -21,7 +21,7 @@ import java.util.List;
  * Offer revision repository.
  */
 public class PromotionRevisionRepository implements BaseRevisionRepository<PromotionRevision> {
-    @Autowired
+    @Autowired(required = false)
     private PromotionRevisionDao promotionRevisionDao;
 
     public PromotionRevision create(PromotionRevision promotionRevision) {

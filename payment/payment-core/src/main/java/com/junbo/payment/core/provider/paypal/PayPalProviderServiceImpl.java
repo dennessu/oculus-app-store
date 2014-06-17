@@ -171,7 +171,7 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
     }
 
     @Override
-    public Promise<PaymentTransaction> confirmNotify(PaymentTransaction payment, PaymentProperties properties){
+    public Promise<PaymentTransaction> confirmNotify(PaymentTransaction payment, PaymentCallbackParams properties){
         return Promise.pure(payment);
     }
 
@@ -222,8 +222,8 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
             @Override
             public PaymentTransaction call() throws Exception {
                 String token = request.getExternalToken();
-                if(CommonUtil.isNullOrEmpty(token) && request.getPaymentProperties() != null){
-                    token = request.getPaymentProperties().getExternalAccessToken();
+                if(CommonUtil.isNullOrEmpty(token) && request.getPaymentCallbackParams() != null){
+                    token = request.getPaymentCallbackParams().getExternalAccessToken();
                 }
                 if(CommonUtil.isNullOrEmpty(token)){
                     return null;
@@ -269,7 +269,7 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
         return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
             @Override
             public PaymentTransaction call() throws Exception {
-                PaymentProperties properties = paymentRequest.getPaymentProperties();
+                PaymentCallbackParams properties = paymentRequest.getPaymentCallbackParams();
                 if(properties != null){
                     paymentRequest.getWebPaymentInfo().setToken(properties.getExternalAccessToken());
                     paymentRequest.getWebPaymentInfo().setPayerId(properties.getExternalPayerId());

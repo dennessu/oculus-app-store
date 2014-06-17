@@ -122,7 +122,7 @@ class DefaultFlowSelector implements FlowSelector {
                 case PIType.CREDITCARD:
                     // TODO: do not support mixed order containing both physical item & digital item now
                     if (CoreUtils.isPreorder(context.order)) {
-                        return FlowType.PHYSICAL_SETTLE.name()
+                        return Promise.pure(FlowType.PHYSICAL_SETTLE.name())
                     }
                     return CoreUtils.hasPhysicalOffer(context.order) ? Promise.pure(FlowType.AUTH_SETTLE.name()) :
                             Promise.pure(FlowType.IMMEDIATE_SETTLE.name())

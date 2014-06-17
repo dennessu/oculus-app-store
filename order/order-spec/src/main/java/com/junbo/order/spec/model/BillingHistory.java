@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.model.ResourceMetaForDualWrite;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created by fzhang on 14-3-11.
@@ -27,6 +28,10 @@ public class BillingHistory extends ResourceMetaForDualWrite<Long> {
 
     private BigDecimal totalAmount;
     private String billingEvent;
+
+    private List<BillingPaymentInfo> payments;
+
+    private List<RefundOrderItem> refundedOrderItems;
 
     public Long getId() {
         return id;
@@ -66,5 +71,21 @@ public class BillingHistory extends ResourceMetaForDualWrite<Long> {
 
     public void setBillingEvent(String billingEvent) {
         this.billingEvent = billingEvent;
+    }
+
+    public List<BillingPaymentInfo> getPayments() {
+        return payments;
+    }
+
+    public void setPayments(List<BillingPaymentInfo> payments) {
+        this.payments = payments;
+    }
+
+    public List<RefundOrderItem> getRefundedOrderItems() {
+        return refundedOrderItems;
+    }
+
+    public void setRefundedOrderItems(List<RefundOrderItem> refundedOrderItems) {
+        this.refundedOrderItems = refundedOrderItems;
     }
 }

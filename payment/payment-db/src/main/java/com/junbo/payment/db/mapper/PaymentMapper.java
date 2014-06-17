@@ -10,13 +10,11 @@ import com.junbo.oom.core.Mapper;
 import com.junbo.oom.core.Mapping;
 import com.junbo.oom.core.MappingContext;
 import com.junbo.oom.core.Mappings;
-import com.junbo.payment.db.entity.CountryTypeEntity;
-import com.junbo.payment.db.entity.CurrencyTypeEntity;
 import com.junbo.payment.db.entity.PaymentInstrumentTypeEntity;
 import com.junbo.payment.db.entity.TrackingUuidEntity;
 import com.junbo.payment.db.entity.payment.PaymentEntity;
 import com.junbo.payment.db.entity.payment.PaymentEventEntity;
-import com.junbo.payment.db.entity.paymentinstrument.AddressEntity;
+import com.junbo.payment.db.entity.payment.PaymentPropertyEntity;
 import com.junbo.payment.db.entity.paymentinstrument.CreditCardPaymentInstrumentEntity;
 import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentEntity;
 import com.junbo.payment.spec.model.*;
@@ -28,27 +26,26 @@ import com.junbo.payment.spec.model.*;
         CommonMapper.class,
 })
 public interface PaymentMapper {
-    AddressEntity toAddressEntity(Address address, MappingContext context);
 
     @Mappings({
-            @Mapping(source = "countryTypeId", excluded = true, bidirectional = false),
+            @Mapping(source = "type", target = "ccTypeId", explicitMethod = "convertCreditCardType"),
     })
-    Address toAddress(AddressEntity addressEntity, MappingContext context);
-
     CreditCardPaymentInstrumentEntity toCreditCardEntity(CreditCardDetail ccRequest, MappingContext context);
-
+    @Mappings({
+            @Mapping(source = "ccTypeId", target = "type", explicitMethod = "convertCreditCardType"),
+    })
     CreditCardDetail toCreditCardDetail(CreditCardPaymentInstrumentEntity ccEntity, MappingContext context);
 
-    CountryTypeEntity toCountryEntity(Country country, MappingContext context);
-
-    Country toCountry(CountryTypeEntity countryEntity, MappingContext context);
-
-    CurrencyTypeEntity toCurrencyEntity(Currency currency, MappingContext context);
-
-    Currency toCurrency(CurrencyTypeEntity currencyEntity, MappingContext context);
-
+    @Mappings({
+            @Mapping(source = "type", target = "eventTypeId", explicitMethod = "convertPaymentEventType"),
+            @Mapping(source = "status", target = "statusId", explicitMethod = "convertPaymentStatus"),
+    })
     PaymentEventEntity toPaymentEventEntityRaw(PaymentEvent event, MappingContext context);
 
+    @Mappings({
+            @Mapping(source = "eventTypeId", target = "type", explicitMethod = "convertPaymentEventType"),
+            @Mapping(source = "statusId", target = "status", explicitMethod = "convertPaymentStatus"),
+    })
     PaymentEvent toPaymentEventRaw(PaymentEventEntity eventEntity, MappingContext context);
 
 
@@ -57,23 +54,37 @@ public interface PaymentMapper {
                     explicitMethod = "toMerchantId", bidirectional = false),
             @Mapping(source = "paymentProvider", target = "paymentProviderId",
                     explicitMethod = "toProviderId", bidirectional = false),
+            @Mapping(source = "type", target = "typeId", explicitMethod = "convertPaymentType"),
+            @Mapping(source = "status", target = "statusId", explicitMethod = "convertPaymentStatus"),
     })
     PaymentEntity toPaymentEntityRaw(PaymentTransaction request, MappingContext context);
+
     @Mappings({
             @Mapping(source = "merchantAccountId", target = "merchantAccount",
                     explicitMethod = "toMerchantName", bidirectional = false),
             @Mapping(source = "paymentProviderId", target = "paymentProvider",
                     explicitMethod = "toProviderName", bidirectional = false),
+            @Mapping(source = "typeId", target = "type", explicitMethod = "convertPaymentType"),
+            @Mapping(source = "statusId", target = "status", explicitMethod = "convertPaymentStatus"),
     })
     PaymentTransaction toPaymentRaw(PaymentEntity paymentEntity, MappingContext context);
 
     PaymentInstrumentEntity toPIEntityRaw(PaymentInstrument piRequest, MappingContext context);
-
     PaymentInstrument toPaymentInstrumentRaw(PaymentInstrumentEntity piEntity, MappingContext context);
 
+    @Mappings({
+            @Mapping(source = "api", target = "apiId", explicitMethod = "convertPaymentAPI"),
+    })
     TrackingUuidEntity toTrackingUuidEntity(TrackingUuid trackingUuid, MappingContext context);
 
+    @Mappings({
+            @Mapping(source = "apiId", target = "api", explicitMethod = "convertPaymentAPI"),
+    })
     TrackingUuid toTrackingUuid(TrackingUuidEntity entity, MappingContext context);
+
+    PaymentProperty toPaymentProperty(PaymentPropertyEntity entity, MappingContext context);
+
+    PaymentPropertyEntity toPaymentPropertyEntity(PaymentProperty paymentProperty, MappingContext context);
 
     PaymentInstrumentTypeEntity toPITypeEntity(PaymentInstrumentType piType, MappingContext context);
 

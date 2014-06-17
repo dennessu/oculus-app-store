@@ -1,0 +1,7 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile junboProject(':order-spec')
+    compile junboProject(':authorization-lib')
+    runtime junboProject(':identity-clientproxy')
+}

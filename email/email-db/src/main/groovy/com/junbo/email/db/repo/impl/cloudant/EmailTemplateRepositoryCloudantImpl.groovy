@@ -4,49 +4,36 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.email.db.repo.impl.cloudant
-
+import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.cloudant.model.CloudantViews
-import com.junbo.common.id.EmailTemplateId
 import com.junbo.email.db.repo.EmailTemplateRepository
 import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.email.spec.model.Pagination
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
-
 /**
  * Impl of EmailTemplate Repository(Cloudant).
  */
 @CompileStatic
-class EmailTemplateRepositoryCloudantImpl extends EmailBaseRepository<EmailTemplate> implements EmailTemplateRepository {
-    private IdGenerator idGenerator
+class EmailTemplateRepositoryCloudantImpl extends CloudantClient<EmailTemplate> implements EmailTemplateRepository {
 
-    @Required
-    public void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
-
-    public Promise<EmailTemplate> getEmailTemplate(Long id) {
-        return super.cloudantGet(id.toString())
+    public Promise<EmailTemplate> getEmailTemplate(String id) {
+        return super.cloudantGet(id)
     }
 
     public Promise<EmailTemplate> saveEmailTemplate(EmailTemplate template) {
-        template.setId(new EmailTemplateId(idGenerator.nextIdByShardId(0)))
-
         return super.cloudantPost(template)
     }
 
     public Promise<EmailTemplate> updateEmailTemplate(EmailTemplate template) {
         return cloudantGet(template.getId().value.toString()).then {EmailTemplate savedTemplate ->
-            template.setCloudantRev(savedTemplate.cloudantRev)
             return cloudantPut(template)
         }
     }
 
     public Promise<EmailTemplate> getEmailTemplateByName(String name) {
         def template = super.queryView('by_name', name)
-        template.then {List<EmailTemplate> templates ->
+        return template.then {List<EmailTemplate> templates ->
             if (templates == null || templates.size() == 0) {
                 return Promise.pure(null)
             }
@@ -65,8 +52,8 @@ class EmailTemplateRepositoryCloudantImpl extends EmailBaseRepository<EmailTempl
         }
     }
 
-    public void deleteEmailTemplate(Long id) {
-        super.cloudantDelete(id.toString()).get()
+    public Promise<Void> deleteEmailTemplate(String id) {
+        return super.cloudantDelete(id)
     }
 
     private Map<String, String> buildViewKey(Map<String, String> queries) {

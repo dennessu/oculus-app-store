@@ -29,14 +29,14 @@ class EmailTemplateValidatorImpl extends CommonValidator implements EmailTemplat
     }
 
     @Override
-    void validateUpdate(EmailTemplate template, Long templateId) {
+    void validateUpdate(EmailTemplate template, String templateId) {
         this.validateTemplateId(templateId)
         this.validateCommonField(template)
         this.validatePlaceholderNamesField(template)
     }
 
     @Override
-    void validateDelete(Long id) {
+    void validateDelete(String id) {
         if (id == null) {
             throw AppErrors.INSTANCE.missingField('id').exception()
         }
@@ -92,7 +92,7 @@ class EmailTemplateValidatorImpl extends CommonValidator implements EmailTemplat
         }
     }
 
-    private void validateTemplateId(Long id) {
+    private void validateTemplateId(String id) {
         EmailTemplate template = emailTemplateRepository.getEmailTemplate(id).get()
         if (template == null) {
             throw AppErrors.INSTANCE.templateNotFound().exception()

@@ -52,8 +52,12 @@ public class EmailResourceImpl implements EmailResource {
     @Override
     public Promise<Response> deleteEmail(EmailId id) {
         authorize();
-        emailService.deleteEmail(id.getValue());
-        return Promise.pure(Response.status(204).build());
+        return emailService.deleteEmail(id.getValue()).then(new Promise.Func<Void, Promise<Response>>() {
+            @Override
+            public Promise<Response> apply(Void aVoid) {
+                return Promise.pure(Response.status(204).build());
+            }
+        });
     }
 
     private static void authorize() {

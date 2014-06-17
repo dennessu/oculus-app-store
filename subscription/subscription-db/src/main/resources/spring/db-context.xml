@@ -97,4 +97,23 @@
     <bean id="subscriptionEventRepository" class="com.junbo.subscription.db.repository.SubscriptionEventRepository"></bean>
     <bean id="subscriptionEventActionRepository" class="com.junbo.subscription.db.repository.SubscriptionEventActionRepository"></bean>
     <bean id="subscriptionEntitlementRepository" class="com.junbo.subscription.db.repository.SubscriptionEntitlementRepository"></bean>
+
+    <bean id="subscriptionEntityViewRepository" class="com.junbo.sharding.view.DefaultEntityViewRepository">
+        <property name="entityViews">
+            <list>
+                <bean class="com.junbo.subscription.db.view.SubscriptionEventStatusView" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="subscriptionMultimapDAO" class="com.junbo.sharding.view.DefaultMultimapDAO">
+        <property name="sessionFactory" ref="indexSessionFactory" />
+        <property name="shardAlgorithm" ref="externalShardAlgorithm" />
+    </bean>
+
+
+    <bean id="subscriptionViewQueryFactory" class="com.junbo.sharding.view.DefaultViewQueryFactory">
+        <property name="entityViewRepository" ref="subscriptionEntityViewRepository" />
+        <property name="multimapDAO" ref="subscriptionMultimapDAO" />
+    </bean>
 </beans>

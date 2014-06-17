@@ -16,7 +16,7 @@ public class AttributeDaoTest extends BaseTest {
     @Autowired
     private ItemAttributeDao attributeDao;
 
-    @Test
+    @Test(enabled = false)
     public void testCreateAndGet() {
         ItemAttributeEntity entity = buildAttributeEntity();
         String id = attributeDao.create(entity);

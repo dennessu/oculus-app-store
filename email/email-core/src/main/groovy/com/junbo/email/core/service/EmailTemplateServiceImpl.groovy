@@ -45,21 +45,20 @@ import javax.transaction.Transactional
         return templateRepository.saveEmailTemplate(template)
     }
 
-    Promise<EmailTemplate> getEmailTemplate(Long id) {
+    Promise<EmailTemplate> getEmailTemplate(String id) {
         return templateRepository.getEmailTemplate(id)
     }
 
-    Promise<EmailTemplate> putEmailTemplate(Long id, EmailTemplate template) {
+    Promise<EmailTemplate> putEmailTemplate(String id, EmailTemplate template) {
         templateValidator.validateUpdate(template, id)
         template.setId(new EmailTemplateId(id))
         this.build(template)
         return templateRepository.updateEmailTemplate(template)
     }
 
-    Void deleteEmailTemplate(Long id) {
+    Promise<Void> deleteEmailTemplate(String id) {
         templateValidator.validateDelete(id)
-        templateRepository.deleteEmailTemplate(id)
-        return null
+        return templateRepository.deleteEmailTemplate(id)
     }
 
     Promise<Results<EmailTemplate>> getEmailTemplates(QueryParam queryParam) {

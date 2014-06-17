@@ -6,21 +6,14 @@
 
 package com.junbo.payment.db.entity.paymentinstrument;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import com.junbo.common.id.PIType;
 import com.junbo.payment.db.entity.GenericEntity;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+
+import javax.persistence.*;
+import java.util.Date;
 
 
 /**
@@ -38,7 +31,7 @@ public class PaymentInstrumentEntity extends GenericEntity {
     private Long userId;
 
     @Column(name = "payment_instrument_type_id")
-    private PIType type;
+    private Long type;
 
     @Column(name = "payment_instrument_holder_name")
     private String accountName;
@@ -48,9 +41,6 @@ public class PaymentInstrumentEntity extends GenericEntity {
 
     @Column(name = "account_number")
     private String accountNum;
-
-    @Column(name = "revision")
-    private String rev;
 
     @Column(name = "address_id")
     private Long billingAddressId;
@@ -101,11 +91,11 @@ public class PaymentInstrumentEntity extends GenericEntity {
         this.userId = userId;
     }
 
-    public PIType getType() {
+    public Long getType() {
         return type;
     }
 
-    public void setType(PIType type) {
+    public void setType(Long type) {
         this.type = type;
     }
 
@@ -131,14 +121,6 @@ public class PaymentInstrumentEntity extends GenericEntity {
 
     public void setAccountNum(String accountNum) {
         this.accountNum = accountNum;
-    }
-
-    public String getRev() {
-        return rev;
-    }
-
-    public void setRev(String rev) {
-        this.rev = rev;
     }
 
     public Long getBillingAddressId() {
