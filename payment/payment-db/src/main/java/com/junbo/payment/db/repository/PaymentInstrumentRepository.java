@@ -45,7 +45,6 @@ public class PaymentInstrumentRepository {
     private IdGenerator idGenerator;
 
     public void save(PaymentInstrument request){
-        request.setRev("1");
         Long piId = null;
         PaymentInstrumentEntity piEntity = paymentMapperExtension.toPIEntity(request);
         if(request.getId() == null){
@@ -75,8 +74,6 @@ public class PaymentInstrumentRepository {
     public void update(PaymentInstrument request){
         PaymentInstrumentEntity pi = paymentInstrumentDao.get(request.getId());
         //setup column allowed to be updated:
-        Long currentRev = Long.parseLong(request.getRev()) + 1;
-        pi.setRev(currentRev.toString());
         pi.setLabel(request.getLabel());
         pi.setAccountNum(request.getAccountNum());
         pi.setUserId(request.getUserId());

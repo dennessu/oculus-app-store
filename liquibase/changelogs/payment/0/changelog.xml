@@ -104,7 +104,6 @@
                   payment_instrument_holder_name    varchar(100)            null,
                   encrypted_account_number          varchar(200)            null,
                   account_number                    varchar(100)            null,
-                  revision                          varchar(64)         not null,
                   address_id                        bigint                  null,
                   label                             varchar(128)            null,
                   phone_num                         bigint                  null,

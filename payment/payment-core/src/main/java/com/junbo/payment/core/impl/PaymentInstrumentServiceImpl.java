@@ -104,13 +104,8 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     @Override
     public void update(PaymentInstrument request) {
         validateRequest(request);
-        if(request.getRev() == null){
-            throw AppClientExceptions.INSTANCE.missingRevision().exception();
-        }
+
         PaymentInstrument piTarget = getPaymentInstrument(request.getId());
-        if(!request.getRev().equals(piTarget.getRev())){
-            throw AppClientExceptions.INSTANCE.invalidRevision().exception();
-        }
         //Validate the info:
         if(!piTarget.getUserId().equals(request.getUserId())
                 || !piTarget.getType().equals(request.getType())

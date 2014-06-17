@@ -68,8 +68,7 @@ public class PaymentInstrument extends ResourceMetaForDualWrite<Long> {
     @ApiModelProperty(position = 12, required = true, value = "The email resource of the PI.")
     @PersonalInfoId
     private Long email;
-    @ApiModelProperty(position = 13, required = true, value = "[Client Immutable]The current revision of the PI.")
-    private String rev;
+
     @JsonIgnore
     private String relationToHolder;
     //response:
@@ -161,14 +160,6 @@ public class PaymentInstrument extends ResourceMetaForDualWrite<Long> {
 
     public void setLabel(String label) {
         this.label = label;
-    }
-
-    public String getRev() {
-        return rev;
-    }
-
-    public void setRev(String rev) {
-        this.rev = rev;
     }
 
     public Address getAddress() {
