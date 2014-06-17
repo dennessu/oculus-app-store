@@ -66,6 +66,7 @@ class SendEmailAction implements Action {
                             case PIType.CREDITCARD:
                             case PIType.STOREDVALUE:
                             case PIType.PAYPAL:
+                            case PIType.OTHERS:
                                 emailType = 'ORDER_CONFIRMATION'
                                 break
                             default:

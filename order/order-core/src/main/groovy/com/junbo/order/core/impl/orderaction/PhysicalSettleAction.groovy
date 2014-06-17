@@ -58,7 +58,7 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
              */
             return orderServiceContextBuilder.getPaymentInstruments(context.orderServiceContext)
                     .then { List<PaymentInstrument> pis ->
-                if (PIType.get(pis[0].type) == PIType.PAYPAL) {
+                if (PIType.get(pis[0].type) == PIType.PAYPAL || PIType.get(pis[0].type) == PIType.OTHERS) {
                     return Promise.pure(actionContext)
                 }
                 // complete charge, update the balance to the remaining amount
