@@ -222,7 +222,7 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    Promise<Void> sendResetPassword(UserId userId, String locale, URI baseUri) {
+    Promise<String> sendResetPassword(UserId userId, String locale, URI baseUri) {
         if (userId == null || userId.value == null) {
             throw AppExceptions.INSTANCE.missingUserId().exception()
         }
@@ -261,7 +261,7 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    Promise<Void> sendResetPassword(UserId userId, ActionContextWrapper contextWrapper) {
+    Promise<String> sendResetPassword(UserId userId, ActionContextWrapper contextWrapper) {
         String locale = contextWrapper.viewLocale
         def request = (ContainerRequest) contextWrapper.request
         URI baseUri = request.baseUri
@@ -301,7 +301,7 @@ class UserServiceImpl implements UserService {
         return Promise.pure(null)
     }
 
-    private Promise<Void> sendEmail(QueryParam queryParam, User user, String email, String uri) {
+    private Promise<String> sendEmail(QueryParam queryParam, User user, String email, String uri) {
         // todo: remove this hard coded after email template has been setup
         queryParam.locale = 'en_US'
 
@@ -331,7 +331,7 @@ class UserServiceImpl implements UserService {
                 }
 
                 // Return success no matter the email has been successfully sent.
-                return Promise.pure(null)
+                return Promise.pure(uri)
             }
         }
     }

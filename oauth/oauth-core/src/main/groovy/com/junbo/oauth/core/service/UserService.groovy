@@ -25,10 +25,10 @@ interface UserService {
 
     Promise<UserCredential> getUserCredential(UserId userId)
 
-    Promise<Void> sendVerifyEmail(UserId userId, ActionContextWrapper contextWrapper)
+    Promise<String> sendVerifyEmail(UserId userId, ActionContextWrapper contextWrapper)
 
-    Promise<Void> sendResetPassword(UserId userId, ActionContextWrapper contextWrapper)
+    Promise<String> sendResetPassword(UserId userId, ActionContextWrapper contextWrapper)
 
-    Promise<Void> sendResetPassword(UserId userId, String locale, URI baseUri)
+    Promise<String> sendResetPassword(UserId userId, String locale, URI baseUri)
 
 }
