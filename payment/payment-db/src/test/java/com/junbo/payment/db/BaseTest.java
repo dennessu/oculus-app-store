@@ -16,7 +16,7 @@ import javax.sql.DataSource;
 import java.util.UUID;
 
 @ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
-@TransactionConfiguration(defaultRollback = false)
+@TransactionConfiguration(defaultRollback = true)
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
 @Transactional("transactionManager")
 public abstract class BaseTest extends AbstractTestNGSpringContextTests {

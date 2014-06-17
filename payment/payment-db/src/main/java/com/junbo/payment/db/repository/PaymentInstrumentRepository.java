@@ -9,14 +9,16 @@ package com.junbo.payment.db.repository;
 import com.junbo.common.id.PIType;
 import com.junbo.oom.core.MappingContext;
 import com.junbo.payment.common.CommonUtil;
-import com.junbo.payment.db.dao.paymentinstrument.AddressDao;
 import com.junbo.payment.db.dao.paymentinstrument.CreditCardPaymentInstrumentDao;
 import com.junbo.payment.db.dao.paymentinstrument.PaymentInstrumentDao;
-import com.junbo.payment.db.entity.paymentinstrument.*;
-import com.junbo.payment.spec.model.CreditCardDetail;
-import com.junbo.payment.db.mapper.PaymentMapperExtension;
+import com.junbo.payment.db.entity.paymentinstrument.CreditCardPaymentInstrumentEntity;
+import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentEntity;
 import com.junbo.payment.db.mapper.PaymentMapper;
-import com.junbo.payment.spec.model.*;
+import com.junbo.payment.db.mapper.PaymentMapperExtension;
+import com.junbo.payment.spec.model.CreditCardDetail;
+import com.junbo.payment.spec.model.PageMetaData;
+import com.junbo.payment.spec.model.PaymentInstrument;
+import com.junbo.payment.spec.model.PaymentInstrumentSearchParam;
 import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -32,8 +34,6 @@ import java.util.List;
 public class PaymentInstrumentRepository {
     @Autowired
     private PaymentInstrumentDao paymentInstrumentDao;
-    @Autowired
-    private AddressDao addressDao;
     @Autowired
     private CreditCardPaymentInstrumentDao ccPaymentInstrumentDao;
     @Autowired
@@ -87,9 +87,11 @@ public class PaymentInstrumentRepository {
         }
         paymentInstrumentDao.update(pi);
         if(PIType.get(request.getType()).equals(PIType.CREDITCARD)){
-            ccPaymentInstrumentDao.update(paymentMapperImpl.toCreditCardEntity(
-                    (CreditCardDetail)paymentMapperExtension.toSpecificDetail(request.getTypeSpecificDetails(),
-                            PIType.CREDITCARD), new MappingContext()));
+            CreditCardDetail creditCardDetail = paymentMapperExtension.toSpecificDetail(request.getTypeSpecificDetails(), PIType.CREDITCARD);
+            CreditCardPaymentInstrumentEntity entity = ccPaymentInstrumentDao.get(pi.getId());
+            // setup column allowed to be updated:
+            entity.setExpireDate(creditCardDetail.getExpireDate());
+            ccPaymentInstrumentDao.update(entity);
         }
     }
 

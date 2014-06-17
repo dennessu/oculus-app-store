@@ -101,11 +101,6 @@
           class="com.junbo.payment.db.dao.GenericDAOImpl" abstract="true">
     </bean>
 
-    <bean id="addressDao"
-          class="com.junbo.payment.db.dao.paymentinstrument.AddressDao" parent="genericDao">
-        <property name="persistentClass" value="com.junbo.payment.db.entity.paymentinstrument.AddressEntity"/>
-    </bean>
-
     <bean id="PaymentInstrumentDao"
           class="com.junbo.payment.db.dao.paymentinstrument.PaymentInstrumentDao" parent="genericDao">
         <property name="persistentClass" value="com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentEntity"/>
@@ -143,12 +138,12 @@
 
     <bean id="paymentInstrumentTypeDao"
           class="com.junbo.payment.db.dao.PaymentInstrumentTypeDao" parent="genericDao">
-        <property name="persistentClass" value="com.junbo.payment.db.entity.PaymentInstrumentTypeEntity"/>
+        <property name="persistentClass" value="com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentTypeEntity"/>
     </bean>
 
     <bean id="trackingUuidDao"
-          class="com.junbo.payment.db.dao.TrackingUuidDao" parent="genericDao">
-        <property name="persistentClass" value="com.junbo.payment.db.entity.TrackingUuidEntity"/>
+          class="com.junbo.payment.db.dao.payment.TrackingUuidDao" parent="genericDao">
+        <property name="persistentClass" value="com.junbo.payment.db.entity.payment.TrackingUuidEntity"/>
     </bean>
 
     <bean id="paymentInstrumentRepository" class="com.junbo.payment.db.repository.PaymentInstrumentRepository"></bean>
