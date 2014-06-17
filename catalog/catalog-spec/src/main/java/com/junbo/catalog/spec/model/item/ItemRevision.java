@@ -77,7 +77,6 @@ public class ItemRevision extends BaseRevisionModel {
 
     @ApiModelProperty(position = 40, required = true, value = "Locale properties of the item revision")
     private Map<String, ItemRevisionLocaleProperties> locales;
-    @JsonProperty("regions")
     @ApiModelProperty(position = 41, required = true, value = "Country properties of the item revision")
     private Map<String, ItemRevisionCountryProperties> countries;
     @ApiModelProperty(position = 42, required = true,
