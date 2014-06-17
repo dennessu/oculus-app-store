@@ -1,4 +1,5 @@
 package com.junbo.common.cloudant
+
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.junbo.common.cloudant.exception.CloudantConnectException
 import com.junbo.common.cloudant.exception.CloudantException
@@ -22,6 +23,7 @@ import java.lang.reflect.ParameterizedType
 import java.util.concurrent.Executor
 
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
+
 /**
  * CloudantClient.
  */
@@ -91,7 +93,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
 
     @Override
     Promise<T> cloudantPost(T entity) {
-        return executeRequest(HttpMethod.POST, '', [:], entity).then ({ Response response ->
+        return executeRequest(HttpMethod.POST, '', [:], entity).then({ Response response ->
             if (response.statusCode != HttpStatus.CREATED.value()) {
                 CloudantError cloudantError = unmarshall(response.responseBody, CloudantError)
 
@@ -117,7 +119,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
 
     @Override
     Promise<T> cloudantGet(String id) {
-        return executeRequest(HttpMethod.GET, id, [:], null).then ({ Response response ->
+        return executeRequest(HttpMethod.GET, id, [:], null).then({ Response response ->
 
             if (response.statusCode != HttpStatus.OK.value()) {
                 return Promise.pure(null)
@@ -135,7 +137,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
     Promise<T> cloudantPut(T entity) {
         // force update cloudantId
         entity.setCloudantId(entity.getId().toString())
-        return executeRequest(HttpMethod.PUT, entity.cloudantId, [:], entity).then ({ Response response ->
+        return executeRequest(HttpMethod.PUT, entity.cloudantId, [:], entity).then({ Response response ->
             if (response.statusCode != HttpStatus.CREATED.value()) {
                 CloudantError cloudantError = unmarshall(response.responseBody, CloudantError)
 
@@ -164,7 +166,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
     Promise<Void> cloudantDelete(String id) {
         return getCloudantDocument(id).then { CloudantEntity cloudantDoc ->
             if (cloudantDoc != null) {
-                return executeRequest(HttpMethod.DELETE, id.toString(), ['rev': cloudantDoc.cloudantRev], null).then ({ Response response ->
+                return executeRequest(HttpMethod.DELETE, id.toString(), ['rev': cloudantDoc.cloudantRev], null).then({ Response response ->
                     if (response.statusCode != HttpStatus.OK.value() && response.statusCode != HttpStatus.NOT_FOUND.value()) {
                         CloudantError cloudantError = unmarshall(response.responseBody, CloudantError)
                         throw new CloudantException("Failed to delete object from Cloudant, error: $cloudantError.error," +
@@ -179,7 +181,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
 
     @Override
     Promise<List<T>> cloudantGetAll() {
-        return executeRequest(HttpMethod.GET, '_all_docs', [:], null).then ({ Response response ->
+        return executeRequest(HttpMethod.GET, '_all_docs', [:], null).then({ Response response ->
             if (response.statusCode != HttpStatus.OK.value()) {
                 CloudantError cloudantError = unmarshall(response.responseBody, CloudantError)
 
@@ -250,7 +252,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
     }
 
     protected Promise<T> getCloudantDocument(String id) {
-        return executeRequest(HttpMethod.GET, id, [:], null).then ({ Response response ->
+        return executeRequest(HttpMethod.GET, id, [:], null).then({ Response response ->
 
             if (response.statusCode != HttpStatus.OK.value()) {
                 return Promise.pure(null)
@@ -275,16 +277,16 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
     }
 
     protected Promise<CloudantQueryResult> queryView(String viewName, String key, Integer limit, Integer skip,
-                                boolean descending, boolean includeDocs) {
+                                                     boolean descending, boolean includeDocs) {
         return internalQueryView(viewName, key, null, null, limit, skip, descending, includeDocs)
     }
 
     protected Promise<List<T>> queryView(String viewName, String key, Integer limit, Integer skip,
-                                boolean descending) {
+                                         boolean descending) {
         return internalQueryView(viewName, key, null, null, limit, skip, descending, true).syncThen { CloudantQueryResult searchResult ->
             if (searchResult.rows != null) {
                 return searchResult.rows.collect { CloudantQueryResult.ResultObject result ->
-                    return (T)result.doc
+                    return (T) result.doc
                 }
             }
 
@@ -301,11 +303,11 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
     }
 
     protected Promise<List<T>> queryView(String viewName, String startKey, String endKey, Integer limit, Integer skip,
-                                boolean descending, boolean includeDocs) {
+                                         boolean descending, boolean includeDocs) {
         return internalQueryView(viewName, null, startKey, endKey, limit, skip, descending, includeDocs).syncThen { CloudantQueryResult searchResult ->
             if (searchResult.rows != null) {
                 return searchResult.rows.collect { CloudantQueryResult.ResultObject result ->
-                    return (T)(result.doc)
+                    return (T) (result.doc)
                 }
             }
 
@@ -314,8 +316,8 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
     }
 
     private Promise<CloudantQueryResult> internalQueryView(String viewName, String key, String startKey, String endKey,
-                                                  Integer limit, Integer skip, boolean descending,
-                                                  boolean includeDocs) {
+                                                           Integer limit, Integer skip, boolean descending,
+                                                           boolean includeDocs) {
         CloudantViews.CloudantView cloudantView = cloudantViews.views[viewName]
         if (cloudantView == null) {
             throw new CloudantException("The view $viewName does not exist")
@@ -344,7 +346,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
             query.put('include_docs', includeDocs.toString())
         }
 
-        return executeRequest(HttpMethod.GET, Utils.combineUrl(VIEW_PATH, viewName), query, null).then ({ Response response ->
+        return executeRequest(HttpMethod.GET, Utils.combineUrl(VIEW_PATH, viewName), query, null).then({ Response response ->
 
             if (response.statusCode != HttpStatus.OK.value()) {
                 CloudantError cloudantError = unmarshall(response.responseBody, CloudantError)
@@ -360,7 +362,9 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         return internalSearch(searchName, queryString, limit, bookmark, true).syncThen { CloudantQueryResult searchResult ->
             if (searchResult.rows != null) {
                 return new CloudantSearchResult<T>(
-                        results: searchResult.rows.collect { CloudantQueryResult.ResultObject result ->
+                        results: searchResult.rows.unique {
+                            CloudantQueryResult.ResultObject a, CloudantQueryResult.ResultObject b -> a.id<=>b.id
+                        }.collect { CloudantQueryResult.ResultObject result ->
                             return result.doc
                         },
                         bookmark: searchResult.bookmark
@@ -374,12 +378,12 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
     }
 
     protected Promise<CloudantQueryResult> search(String searchName, String queryString, Integer limit, String bookmark,
-                                             boolean includeDocs) {
+                                                  boolean includeDocs) {
         return internalSearch(searchName, queryString, limit, bookmark, includeDocs)
     }
 
     private Promise<CloudantQueryResult> internalSearch(String searchName, String queryString, Integer limit, String bookmark,
-                                               boolean includeDocs) {
+                                                        boolean includeDocs) {
         CloudantViews.CloudantIndex cloudantView = cloudantViews.indexes[searchName]
         if (cloudantView == null) {
             throw new CloudantException("The index $searchName does not exist")
@@ -392,7 +396,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
                 include_docs: includeDocs
         )
 
-        return executeRequest(HttpMethod.POST, Utils.combineUrl(SEARCH_PATH, searchName), [:], searchRequest).then ({ Response response ->
+        return executeRequest(HttpMethod.POST, Utils.combineUrl(SEARCH_PATH, searchName), [:], searchRequest).then({ Response response ->
             if (response.statusCode != HttpStatus.OK.value()) {
                 CloudantError cloudantError = unmarshall(response.responseBody, CloudantError)
                 throw new CloudantException("Failed to query the view, error: $cloudantError.error," +
@@ -409,7 +413,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         uriBuilder.path(path)
 
         def requestBuilder = getRequestBuilder(method, uriBuilder.toTemplate())
-        
+
         requestBuilder.setBodyEncoding("UTF-8");
 
         if (!StringUtils.isEmpty(cloudantUser)) {
