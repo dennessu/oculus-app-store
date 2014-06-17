@@ -35,6 +35,7 @@ class CartPersistServiceTest extends DaoTestBase {
         )]
 
         cart = service.create(cart).get()
+        cart = service.get(cart.clientId, cart.cartName, cart.user).get();
         def read = service.get(cart.getId()).get()
         assert read.coupons[0] == cart.coupons[0]
         assert read.offers[0].offer == cart.offers[0].offer

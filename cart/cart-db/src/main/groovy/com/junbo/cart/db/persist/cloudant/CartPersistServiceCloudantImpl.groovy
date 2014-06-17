@@ -39,7 +39,7 @@ class CartPersistServiceCloudantImpl extends CloudantClient<Cart> implements Car
             views: [
                     'by_client_name_user': new CloudantViews.CloudantView(
                             map: 'function(doc) {' +
-                                    '  emit(doc.clientId + ":" + doc.cartName + ":" + doc.user], doc._id)' +
+                                    '  emit(doc.clientId + ":" + doc.user + ":" + doc.cartName, doc._id)' +
                                  '}',
                             resultClass: String)
             ]
@@ -52,8 +52,8 @@ class CartPersistServiceCloudantImpl extends CloudantClient<Cart> implements Car
 
     @Override
     Promise<Cart> get(String clientId, String cartName, UserId userId) {
-        return queryView("by_client_name_user", clientId + ":" + cartName + ":" + userId.toString()).then { List<Cart> carts ->
-            return carts.size() == 0 ? null : carts.get(0);
+        return queryView("by_client_name_user", clientId + ":" + userId.toString() + ":" + cartName).then { List<Cart> carts ->
+            return Promise.pure(carts.size() == 0 ? null : carts.get(0));
         }
     }
 
@@ -63,6 +63,7 @@ class CartPersistServiceCloudantImpl extends CloudantClient<Cart> implements Car
         Date currentTime = systemOperation.currentTime()
         newCart.createdTime = currentTime
         newCart.updatedTime = currentTime
+        fillMissingField(newCart)
 
         return cloudantPost(newCart)
     }
@@ -72,7 +73,16 @@ class CartPersistServiceCloudantImpl extends CloudantClient<Cart> implements Car
         // update cart
         Date currentTime = systemOperation.currentTime()
         cart.updatedTime = currentTime
-
+        fillMissingField(cart)
         return cloudantPut(cart)
     }
+
+    private static void fillMissingField(Cart cart) {
+        cart.offers = cart.offers == null ? [] as List : cart.offers
+        cart.coupons = cart.coupons == null ? [] as List : cart.coupons
+    }
+
+
+
+
 }
