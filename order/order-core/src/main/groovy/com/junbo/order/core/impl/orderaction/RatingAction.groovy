@@ -1,5 +1,5 @@
 package com.junbo.order.core.impl.orderaction
-import com.junbo.common.error.AppErrorException
+
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
@@ -36,16 +36,10 @@ class RatingAction implements Action {
                 oi.honoredTime = order.honoredTime
             }
         }
-        return orderInternalService.rateOrder(order).recover { Throwable ex ->
-            LOGGER.error('name=Rating_Action_Error', ex)
-            if (ex instanceof AppErrorException) {
-                throw ex
-            }
-            throw AppErrors.INSTANCE.unexpectedError().exception()
-        }.syncThen { Order o ->
+        return orderInternalService.rateOrder(order).syncThen { Order o ->
             if (o == null) {
                 LOGGER.error('name=Rating_Action_Error_Null')
-                throw AppErrors.INSTANCE.ratingResultInvalid().exception()
+                throw AppErrors.INSTANCE.ratingResultInvalid('Rating Result Null').exception()
             }
             return null
         }

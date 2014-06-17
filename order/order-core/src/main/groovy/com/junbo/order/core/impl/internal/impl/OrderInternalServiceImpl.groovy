@@ -4,20 +4,20 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.order.core.impl.internal.impl
-
 import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
+import com.junbo.common.error.AppErrorException
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.common.*
 import com.junbo.order.core.impl.internal.OrderInternalService
-import com.junbo.order.spec.model.enums.BillingAction
-import com.junbo.order.spec.model.enums.OrderItemRevisionType
-import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
+import com.junbo.order.spec.model.enums.BillingAction
+import com.junbo.order.spec.model.enums.OrderItemRevisionType
+import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.rating.spec.model.request.RatingRequest
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -51,32 +51,22 @@ class OrderInternalServiceImpl implements OrderInternalService {
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderInternalServiceImpl)
 
     @Override
-    Promise<Order> rateOrder(Order order) {
-        return facadeContainer.ratingFacade.rateOrder(order).recover { Throwable throwable ->
-            LOGGER.error('name=Order_Rating_Error', throwable)
-            // TODO parse the rating error
-            throw AppErrors.INSTANCE.ratingConnectionError().exception()
-        }.then { RatingRequest ratingResult ->
+    Promise<Order> rateOrder(Order order) throws AppErrorException {
+        LOGGER.info('name=OrderInternalServiceImpl_Rate_Order')
+        return facadeContainer.ratingFacade.rateOrder(order).then { RatingRequest ratingResult ->
             // todo handle rating violation
-            if (ratingResult == null) {
-                // TODO: log order charge action error?
-                LOGGER.error('name=Rating_Result_Null')
-                throw AppErrors.INSTANCE.ratingResultInvalid().exception()
-            }
+            assert (ratingResult != null)
             CoreBuilder.fillRatingInfo(order, ratingResult)
-            LOGGER.info('name=Rating_Result_Successfully')
-            // no need to log order event for rating
+            LOGGER.info('name=OrderInternalServiceImpl_Get_Rating_Result_Successfully')
             // call billing to calculate tax
-            if (order.totalAmount == 0) {
+            if (CoreUtils.isFreeOrder(order)) {
                 LOGGER.info('name=Skip_Calculate_Tax_Zero_Total_Amount')
                 return Promise.pure(order)
             }
-
             if (CoreUtils.hasStoredValueOffer(order)) {
                 LOGGER.info('name=Skip_Calculate_Tax_Credit_Stored_Value')
                 return Promise.pure(order)
             }
-
             // validate the tax calculation precondition
             // check pi is there, it means the billing address is there.
             if (CollectionUtils.isEmpty(order.payments)) {
@@ -98,22 +88,11 @@ class OrderInternalServiceImpl implements OrderInternalService {
                     throw AppErrors.INSTANCE.missingParameterField('shippingAddressId').exception()
                 }
             }
-
             // calculateTax
             return facadeContainer.billingFacade.quoteBalance(
-                    CoreBuilder.buildBalance(order, BalanceType.DEBIT)).syncRecover {
-                Throwable throwable ->
-                    LOGGER.error('name=Fail_To_Calculate_Tax', throwable)
-                    // TODO parse the tax error
-                    throw AppErrors.INSTANCE.billingConnectionError().exception()
-            }.then { Balance balance ->
-                if (balance == null) {
-                    // TODO: log order charge action error?
-                    LOGGER.info('name=Fail_To_Calculate_Tax_Balance_Not_Found')
-                    throw AppErrors.INSTANCE.balanceNotFound().exception()
-                } else {
-                    CoreBuilder.fillTaxInfo(order, balance)
-                }
+                    CoreBuilder.buildBalance(order, BalanceType.DEBIT)).then { Balance balance ->
+                assert (balance != null)
+                CoreBuilder.fillTaxInfo(order, balance)
                 return Promise.pure(order)
             }
         }

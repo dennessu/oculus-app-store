@@ -313,7 +313,7 @@ class OrderServiceImpl implements OrderService {
             if (throwable instanceof AppErrorException) {
                 throw throwable
             } else {
-                throw AppErrors.INSTANCE.unexpectedError().exception()
+                throw AppErrors.INSTANCE.unexpectedError(throwable.message).exception()
             }
         }.syncThen {
             return context
