@@ -21,27 +21,6 @@ class CommunicationRepositoryCloudantImpl extends CloudantClient<Communication> 
     }
 
     @Override
-    Promise<List<Communication>> search(CommunicationListOptions options) {
-        if (options.region != null && options.translation != null) {
-            return super.queryView('by_region', options.region.value).then { List<Communication> list ->
-                list.removeAll { Communication communication ->
-                    return !communication.translations.contains(options.translation)
-                }
-
-                return Promise.pure(list)
-            }
-        }
-        if (options.region != null) {
-            return super.queryView('by_region', options.region.value)
-        }
-        if (options.translation != null) {
-            return super.queryView('by_translation', options.translation.value)
-        }
-
-        return super.cloudantGetAll()
-    }
-
-    @Override
     Promise<Communication> create(Communication model) {
         return super.cloudantPost(model)
     }
@@ -78,8 +57,7 @@ class CommunicationRepositoryCloudantImpl extends CloudantClient<Communication> 
 
     @Override
     Promise<List<Communication>> searchAll(Integer limit, Integer offset) {
-        // todo:    CloudantGetAll should support limit, offset and descending
-        return super.cloudantGetAll()
+        return super.cloudantGetAll(limit, offset, false)
     }
 
     protected CloudantViews views = new CloudantViews(

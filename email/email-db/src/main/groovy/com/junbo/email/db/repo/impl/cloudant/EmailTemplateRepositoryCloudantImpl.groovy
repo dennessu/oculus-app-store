@@ -48,7 +48,7 @@ class EmailTemplateRepositoryCloudantImpl extends CloudantClient<EmailTemplate> 
             return super.queryView(view, key, pagination?.page, pagination?.size, false)
         }
         else {
-            return super.cloudantGetAll()
+            return super.cloudantGetAll(null, null, false)
         }
     }
 

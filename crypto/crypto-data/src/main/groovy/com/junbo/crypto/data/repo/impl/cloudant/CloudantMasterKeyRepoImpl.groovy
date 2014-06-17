@@ -25,7 +25,7 @@ class CloudantMasterKeyRepoImpl extends CloudantClient<MasterKey> implements Mas
 
     @Override
     Promise<List<MasterKey>> getAllMaterKeys() {
-        return cloudantGetAll()
+        return cloudantGetAll(null, null, false)
     }
 
     @Override

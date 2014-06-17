@@ -180,8 +180,21 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
     }
 
     @Override
-    Promise<List<T>> cloudantGetAll() {
-        return executeRequest(HttpMethod.GET, '_all_docs', [:], null).then({ Response response ->
+    Promise<List<T>> cloudantGetAll(Integer limit, Integer skip, boolean descending) {
+
+        def query = [:]
+
+        if (limit != null) {
+            query.put('limit', limit.toString())
+        }
+        if (skip != null) {
+            query.put('skip', skip.toString())
+        }
+        if (descending) {
+            query.put('descending', 'true')
+        }
+
+        return executeRequest(HttpMethod.GET, '_all_docs', query, null).then ({ Response response ->
             if (response.statusCode != HttpStatus.OK.value()) {
                 CloudantError cloudantError = unmarshall(response.responseBody, CloudantError)
 
