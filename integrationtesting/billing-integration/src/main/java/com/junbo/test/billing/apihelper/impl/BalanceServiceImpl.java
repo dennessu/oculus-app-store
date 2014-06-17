@@ -8,6 +8,7 @@ package com.junbo.test.billing.apihelper.impl;
 import com.junbo.billing.spec.model.Balance;
 import com.junbo.common.model.Results;
 import com.junbo.test.billing.apihelper.BalanceService;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
@@ -23,7 +24,7 @@ import java.util.List;
  */
 public class BalanceServiceImpl extends HttpClientBase implements BalanceService {
 
-    private static String balanceUrl = RestUrl.getRestUrl(RestUrl.ComponentName.COMMERCE);
+    private static String balanceUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1");
     private static BalanceService instance;
     private String userId;
 
