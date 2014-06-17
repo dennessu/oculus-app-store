@@ -4,13 +4,11 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.data.handler
-
 import com.junbo.langur.core.client.MessageTranscoder
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
-
 /**
  * BaseDataHandler.
  */
@@ -20,6 +18,7 @@ abstract class BaseDataHandler implements DataHandler {
     protected MessageTranscoder transcoder
     protected boolean alwaysOverwrite
 
+
     @Required
     void setTranscoder(MessageTranscoder transcoder) {
         this.transcoder = transcoder
@@ -28,5 +27,9 @@ abstract class BaseDataHandler implements DataHandler {
     @Required
     void setAlwaysOverwrite(boolean alwaysOverwrite) {
         this.alwaysOverwrite = alwaysOverwrite
+    }
+
+    void exit() {
+        System.exit(0)
     }
 }

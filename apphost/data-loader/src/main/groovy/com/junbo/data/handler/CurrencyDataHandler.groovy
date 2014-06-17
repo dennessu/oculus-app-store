@@ -1,4 +1,5 @@
 package com.junbo.data.handler
+
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.error.AppErrorException
 import com.junbo.identity.spec.v1.model.Currency
@@ -7,6 +8,7 @@ import com.junbo.identity.spec.v1.resource.CurrencyResource
 import com.junbo.langur.core.client.TypeReference
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+
 /**
  * Created by haomin on 14-6-3.
  */
@@ -21,14 +23,15 @@ class CurrencyDataHandler extends BaseDataHandler {
 
     @Override
     void handle(String content) {
-        Currency currency = null
-
+        Currency currency
         try {
             currency = transcoder.decode(new TypeReference<Currency>() {}, content) as Currency
         } catch (Exception e) {
-            logger.warn('Error parsing Currency, skip this content:' + content, e)
-            return
+            logger.error("Error parsing currency $content", e)
+            exit()
         }
+
+        logger.info("loading currency $currency.currencyCode")
 
         Currency existing = null
         try {
@@ -40,15 +43,23 @@ class CurrencyDataHandler extends BaseDataHandler {
         if (existing != null) {
             if (alwaysOverwrite) {
                 logger.debug("Overwrite Currency $currency.currencyCode with this content.")
-                currency.id = (CurrencyId)existing.id
+                currency.id = (CurrencyId) existing.id
                 currency.rev = existing.rev
-                currencyResource.patch(new CurrencyId(currency.currencyCode), currency).get()
+                try {
+                    currencyResource.patch(new CurrencyId(currency.currencyCode), currency).get()
+                } catch (Exception e) {
+                    logger.error("Error updating currency $currency.currencyCode.", e)
+                }
             } else {
                 logger.debug("$currency.currencyCode already exists, skipped!")
             }
         } else {
             logger.debug('Create new currency with this content')
-            currencyResource.create(currency).get()
+            try {
+                currencyResource.create(currency).get()
+            } catch (Exception e) {
+                logger.error("Error creating currency $currency.currencyCode.", e)
+            }
         }
     }
 }

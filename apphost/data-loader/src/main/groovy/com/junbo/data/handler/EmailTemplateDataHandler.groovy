@@ -25,9 +25,11 @@ class EmailTemplateDataHandler extends BaseDataHandler {
         try {
             template = transcoder.decode(new TypeReference<EmailTemplate>() {}, content) as EmailTemplate
         } catch (Exception e) {
-            logger.warn('Error parsing EmailTemplate, skip this content:' + content, e)
-            return
+            logger.error("Error parsing emailTemplate $content", e)
+            exit()
         }
+
+        logger.info("loading emailTemplate $template.action")
 
         EmailTemplate existing
         try {
@@ -42,15 +44,23 @@ class EmailTemplateDataHandler extends BaseDataHandler {
 
         if (existing != null) {
             if (alwaysOverwrite) {
-                logger.debug("Overwrite EmailTemplate ${existing.name} with this content.")
+                logger.debug("Overwrite EmailTemplate ${existing.action} with this content.")
                 template.rev = existing.rev
-                templateResource.putEmailTemplate(existing.getId(), template).get()
+                try {
+                    templateResource.putEmailTemplate(existing.getId(), template).get()
+                } catch (Exception e) {
+                    logger.error("Error updating emailTemplate $template.action", e)
+                }
             } else {
-                logger.debug("EmailTemplate ${existing.name} already exists, skipped!")
+                logger.debug("EmailTemplate ${existing.action} already exists, skipped!")
             }
         } else {
             logger.debug('Create new EmailTemplate with this content.')
-            templateResource.postEmailTemplate(template).get()
+            try {
+                templateResource.postEmailTemplate(template).get()
+            } catch (Exception e) {
+                logger.error("Error creating emailTemplate $template.action", e)
+            }
         }
     }
 }

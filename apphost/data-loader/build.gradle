@@ -6,6 +6,7 @@ applicationDefaultJvmArgs = ["-Dfile.encoding=UTF-8"]
 
 dependencies {
     compile (libraries.common_io)
+    compile (libraries.log4j)
 
     compile junboProject(':common-lib')
     compile junboProject(':authorization-spec')

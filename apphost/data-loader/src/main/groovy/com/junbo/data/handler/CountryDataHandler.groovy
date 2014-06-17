@@ -23,14 +23,15 @@ class CountryDataHandler extends BaseDataHandler {
 
     @Override
     void handle(String content) {
-        Country country = null
-
+        Country country
         try {
             country = transcoder.decode(new TypeReference<Country>() {}, content) as Country
         } catch (Exception e) {
-            logger.warn('Error parsing Country, skip this content:' + content, e)
-            return
+            logger.error("Error parsing country $content", e)
+            exit()
         }
+
+        logger.info("loading country $country.countryCode")
 
         Country existing = null
         try {
@@ -42,15 +43,23 @@ class CountryDataHandler extends BaseDataHandler {
         if (existing != null) {
             if (alwaysOverwrite) {
                 logger.debug("Overwrite Country $country.countryCode with this content.")
-                country.id = (CountryId)existing.id
+                country.id = (CountryId) existing.id
                 country.rev = existing.rev
-                countryResource.patch(new CountryId(country.countryCode), country).get()
+                try {
+                    countryResource.patch(new CountryId(country.countryCode), country).get()
+                } catch (Exception e) {
+                    logger.error("Error updating country $country.countryCode.", e)
+                }
             } else {
                 logger.debug("$country.countryCode already exists, skipped!")
             }
         } else {
             logger.debug('Create new country with this content')
-            countryResource.create(country).get()
+            try {
+                countryResource.create(country).get()
+            } catch (Exception e) {
+                logger.error("Error creating country $country.countryCode.", e)
+            }
         }
     }
 }

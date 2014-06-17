@@ -25,13 +25,14 @@ class PITypeDataHandler extends BaseDataHandler {
     @Override
     void handle(String content) {
         PIType piType
-
         try {
             piType = transcoder.decode(new TypeReference<PIType>() {}, content) as PIType
         } catch (Exception e) {
-            logger.warn('Error parsing pitype, skip this content:' + content, e)
-            return
+            logger.error("Error parsing piType $content", e)
+            exit()
         }
+
+        logger.info("loading piType $piType.typeCode")
 
         Results<PIType> results = null
         try {
@@ -44,15 +45,23 @@ class PITypeDataHandler extends BaseDataHandler {
             PIType existing = results.items.get(0)
             if (alwaysOverwrite) {
                 logger.debug("Overwrite PIType $piType.typeCode with this content")
-                piType.id = (PITypeId)existing.id
+                piType.id = (PITypeId) existing.id
                 piType.rev = existing.rev
-                piTypeResource.patch((PITypeId)existing.id, piType).get()
+                try {
+                    piTypeResource.patch((PITypeId) existing.id, piType).get()
+                } catch (Exception e) {
+                    logger.error("Error updating piType $piType.typeCode", e)
+                }
             } else {
                 logger.debug("$piType.typeCode already exists, skipped!")
             }
         } else {
             logger.debug('Create new piType with this content')
-            piTypeResource.create(piType).get()
+            try {
+                piTypeResource.create(piType).get()
+            } catch (Exception e) {
+                logger.error("Error creating piType $piType.typeCode", e)
+            }
         }
     }
 }

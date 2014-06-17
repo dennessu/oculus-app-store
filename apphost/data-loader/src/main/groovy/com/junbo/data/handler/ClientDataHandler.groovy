@@ -26,13 +26,14 @@ class ClientDataHandler extends BaseDataHandler {
     @Override
     void handle(String content) {
         Client client
-
         try {
             client = transcoder.decode(new TypeReference<Client>() {}, content) as Client
         } catch (Exception e) {
-            logger.warn('Error parsing Client, skip this content', e)
-            return
+            logger.error("Error parsing client $content", e)
+            exit()
         }
+
+        logger.info("loading client $client.clientId")
 
         Client existing = clientRepository.getClient(client.clientId)
 
@@ -41,13 +42,21 @@ class ClientDataHandler extends BaseDataHandler {
                 logger.debug("Overwrite Client $client.clientId with this content.")
                 client.clientId = existing.clientId
                 client.revision = existing.revision
-                clientRepository.updateClient(client)
+                try {
+                    clientRepository.updateClient(client)
+                } catch (Exception e) {
+                    logger.error("Error updating client $client.clientId.", e)
+                }
             } else {
                 logger.debug("The Client $client.clientId already exists, skip this content.")
             }
         } else {
             logger.debug("Create new Client $client.clientId with this content.")
-            clientRepository.saveClient(client)
+            try {
+                clientRepository.saveClient(client)
+            } catch (Exception e) {
+                logger.error("Error creating client $client.clientId.", e)
+            }
         }
     }
 }

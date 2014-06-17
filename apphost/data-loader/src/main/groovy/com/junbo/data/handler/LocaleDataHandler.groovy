@@ -24,13 +24,14 @@ class LocaleDataHandler extends BaseDataHandler {
     @Override
     void handle(String content) {
         Locale locale
-
         try {
             locale = transcoder.decode(new TypeReference<Locale>() {}, content) as Locale
         } catch (Exception e) {
-            logger.warn('Error parsing Locale, skip this content:' + content, e)
-            return
+            logger.error("Error parsing locale $content", e)
+            exit()
         }
+
+        logger.info("loading locale $locale.localeCode")
 
         Locale existing = null
         try {
@@ -42,15 +43,23 @@ class LocaleDataHandler extends BaseDataHandler {
         if (existing != null) {
             if (alwaysOverwrite) {
                 logger.debug("Overwrite Locale $locale.localeName with this content")
-                locale.id = (LocaleId)existing.id
+                locale.id = (LocaleId) existing.id
                 locale.rev = existing.rev
-                localeResource.patch(locale.id as LocaleId, locale).get()
+                try {
+                    localeResource.patch(locale.id as LocaleId, locale).get()
+                } catch (Exception e) {
+                    logger.error("Error updating locale $locale.localeName", e)
+                }
             } else {
                 logger.debug("$locale.localeCode already exists, skipped!")
             }
         } else {
             logger.debug('Create new locale with this content')
-            localeResource.create(locale).get()
+            try {
+                localeResource.create(locale).get()
+            } catch (Exception e) {
+                logger.error("Error creating locale $locale.localeName", e)
+            }
         }
     }
 }
