@@ -63,6 +63,7 @@ public class OfferRevision extends BaseRevisionModel {
     private Map<String, List<AgeRating>> ageRatings;
     @ApiModelProperty(position = 33, required = true, value = "Offer pre-order price")
     private Price preOrderPrice;
+    @JsonProperty("regions")
     @ApiModelProperty(position = 34, required = true,
             value = "Maps from a country-code-name to a JSON object containing the country-specific properties")
     private Map<String, CountryProperties> countries;
