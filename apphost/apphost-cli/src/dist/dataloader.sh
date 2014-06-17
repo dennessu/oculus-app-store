@@ -169,5 +169,5 @@ function splitJvmOpts() {
     JVM_OPTS=("$@")
 }
 eval splitJvmOpts $JAVA_OPTS $APPHOST_CLI_OPTS
-echo "${JVM_OPTS[@]}"
+
 exec "$JAVACMD" "${JVM_OPTS[@]}" -classpath "$CLASSPATH" -Dfile.encoding=UTF-8 com.junbo.data.loader.DataLoader "$@"
