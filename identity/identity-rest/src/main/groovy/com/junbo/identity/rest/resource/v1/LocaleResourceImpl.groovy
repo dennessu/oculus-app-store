@@ -4,6 +4,7 @@ import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
+import com.junbo.identity.common.util.ValidatorUtil
 import com.junbo.identity.core.service.filter.LocaleFilter
 import com.junbo.identity.core.service.validator.LocaleValidator
 import com.junbo.identity.data.repository.LocaleRepository
@@ -12,6 +13,8 @@ import com.junbo.identity.spec.v1.model.Locale
 import com.junbo.identity.spec.v1.option.list.LocaleListOptions
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
 import com.junbo.identity.spec.v1.resource.LocaleResource
+import com.junbo.langur.core.client.PathParamTranscoder
+import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
@@ -34,6 +37,8 @@ class LocaleResourceImpl implements LocaleResource {
     @Autowired
     private LocaleValidator localeValidator
 
+    @Autowired
+    private PathParamTranscoder pathParamTranscoder
 
     @Override
     Promise<Locale> create(Locale locale) {
@@ -122,14 +127,28 @@ class LocaleResourceImpl implements LocaleResource {
             throw new IllegalArgumentException('getOptions is null')
         }
 
-        return localeValidator.validateForGet(localeId).then {
-            return localeRepository.get(localeId).then { Locale newLocale ->
-                if (newLocale == null) {
-                    throw AppErrors.INSTANCE.localeNotFound(localeId).exception()
-                }
+        if (localeId.value.contains('-')) {
+            String oldValue = localeId.value
+            localeId.value = localeId.value.replace('-', '_')
+            return localeValidator.validateForGet(localeId).then { Locale newLocale ->
+                String location = JunboHttpContext.requestUri.toString().replaceFirst(
+                        "/${oldValue}", '/' + pathParamTranscoder.encode(newLocale.id))
 
-                newLocale = localeFilter.filterForGet(newLocale, null)
-                return Promise.pure(newLocale)
+                JunboHttpContext.responseStatus = 302
+                JunboHttpContext.responseHeaders.add('Location', location)
+
+                return Promise.pure(null)
+            }
+        } else {
+            return localeValidator.validateForGet(localeId).then {
+                return localeRepository.get(localeId).then { Locale newLocale ->
+                    if (newLocale == null) {
+                        throw AppErrors.INSTANCE.localeNotFound(localeId).exception()
+                    }
+
+                    newLocale = localeFilter.filterForGet(newLocale, null)
+                    return Promise.pure(newLocale)
+                }
             }
         }
     }

@@ -128,10 +128,7 @@ class LocaleValidatorImpl implements LocaleValidator {
         }
 
         return checkBasicLocaleInfo(locale).then {
-            String normalizedLocaleCode = locale.localeCode.replace('-', '_')
-            String normalizedOldLocaleCode = oldLocale.localeCode.replace('-', '_')
-
-            if (normalizedLocaleCode != normalizedOldLocaleCode) {
+            if (locale.localeCode != oldLocale.localeCode) {
                 throw AppErrors.INSTANCE.fieldInvalid('localeCode').exception()
             }
             return Promise.pure(null)
@@ -146,7 +143,6 @@ class LocaleValidatorImpl implements LocaleValidator {
         if (locale.localeCode == null) {
             throw AppErrors.INSTANCE.fieldRequired('localeCode').exception()
         }
-        locale.localeCode = locale.localeCode.replace('-', '_')
         if (!ValidatorUtil.isValidLocale(locale.localeCode)) {
             throw AppErrors.INSTANCE.fieldInvalid('localeCode').exception()
         }

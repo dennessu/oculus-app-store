@@ -331,7 +331,7 @@ class MigrationResourceImpl implements MigrationResource {
 
     private String mapToLocaleCode(String language) {
         if ("en".equalsIgnoreCase(language)) {
-            return "en-US"
+            return "en_US"
         } else {
             throw new IllegalArgumentException('language is not supported.')
             // to determine, throw exception first
