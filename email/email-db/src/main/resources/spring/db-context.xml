@@ -6,7 +6,7 @@
        ">
     <context:annotation-config />
     
-    <alias alias="emailHistorySqlRepo" name="emailHistoryCloudantRepo" />
-    <alias alias="emailTemplateSqlRepo" name="emailScheduleCloudantRepo" />
-    <alias alias="emailScheduleSqlRepo" name="emailTemplateCloudantRepo" />
+    <alias alias="emailHistoryRepo" name="emailHistoryCloudantRepo" />
+    <alias alias="emailTemplateRepo" name="emailTemplateCloudantRepo" />
+    <alias alias="emailScheduleRepo" name="emailScheduleCloudantRepo" />
 </beans>

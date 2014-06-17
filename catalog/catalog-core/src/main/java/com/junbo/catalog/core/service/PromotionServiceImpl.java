@@ -25,9 +25,9 @@ import java.util.List;
  */
 public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, PromotionRevision>
         implements PromotionService {
-    @Autowired
+    @Autowired(required = false)
     private PromotionRepository promotionRepo;
-    @Autowired
+    @Autowired(required = false)
     private PromotionRevisionRepository promotionRevisionRepo;
 
     @Override
