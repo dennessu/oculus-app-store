@@ -46,8 +46,6 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
     protected String fullDbName
     protected Executor executor
 
-    abstract protected CloudantViews getCloudantViews()
-
     @Required
     void setAsyncHttpClient(AsyncHttpClient asyncHttpClient) {
         this.asyncHttpClient = asyncHttpClient
@@ -224,43 +222,10 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
 
     @Override
     void afterPropertiesSet() throws Exception {
-
         if (dbNamePrefix != null) {
             fullDbName = dbNamePrefix + dbName;
         } else {
             fullDbName = dbName;
-        }
-
-        def response = executeRequest(HttpMethod.GET, '', [:], null).get()
-        if (response.statusCode == HttpStatus.NOT_FOUND.value()) {
-            response = executeRequest(HttpMethod.PUT, '', [:], null).get()
-
-            if (response.statusCode != HttpStatus.CREATED.value()) {
-                CloudantError cloudantError = unmarshall(response.responseBody, CloudantError)
-                throw new CloudantException("Failed to create the database, error: $cloudantError.error," +
-                        " reason: $cloudantError.reason")
-            }
-        }
-
-        if (cloudantViews != null) {
-            response = executeRequest(HttpMethod.GET, '_design/views', [:], cloudantViews).get()
-
-            if (response.statusCode == HttpStatus.NOT_FOUND.value()) {
-                putViews(cloudantViews)
-            } else if (response.statusCode == HttpStatus.OK.value()) {
-                CloudantViews existingViews = unmarshall(response.responseBody, CloudantViews)
-                def newView = cloudantViews.views.keySet().find { !existingViews.views.containsKey(it) }
-                def newIndex
-                if (cloudantViews.indexes != null && existingViews.indexes != null) {
-                    newIndex = cloudantViews.indexes.keySet().find {
-                        !existingViews.indexes.containsKey(it)
-                    }
-                }
-                if (newView != null || newIndex != null) {
-                    cloudantViews.revision = existingViews.revision
-                    putViews(cloudantViews)
-                }
-            }
         }
     }
 
@@ -277,16 +242,6 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
 
             return Promise.pure((T) unmarshall(response.responseBody, entityClass))
         }, executor)
-    }
-
-    private void putViews(CloudantViews views) {
-        def response = executeRequest(HttpMethod.PUT, '_design/views', [:], views).get()
-
-        if (response.statusCode != HttpStatus.CREATED.value()) {
-            CloudantError cloudantError = unmarshall(response.responseBody, CloudantError)
-            throw new CloudantException("Failed to create the views in the database, error: $cloudantError.error," +
-                    " reason: $cloudantError.reason")
-        }
     }
 
     protected Promise<CloudantQueryResult> queryView(String viewName, String key, Integer limit, Integer skip,
@@ -331,11 +286,6 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
     private Promise<CloudantQueryResult> internalQueryView(String viewName, String key, String startKey, String endKey,
                                                            Integer limit, Integer skip, boolean descending,
                                                            boolean includeDocs) {
-        CloudantViews.CloudantView cloudantView = cloudantViews.views[viewName]
-        if (cloudantView == null) {
-            throw new CloudantException("The view $viewName does not exist")
-        }
-
         def query = [:]
         if (key != null) {
             query.put('key', "\"$key\"")
@@ -367,7 +317,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
                         " reason: $cloudantError.reason")
             }
 
-            return Promise.pure(unmarshall(response.responseBody, CloudantQueryResult, cloudantView.resultClass, entityClass))
+            return Promise.pure(unmarshall(response.responseBody, CloudantQueryResult, String, entityClass))
         }, executor)
     }
 
@@ -397,11 +347,6 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
 
     private Promise<CloudantQueryResult> internalSearch(String searchName, String queryString, Integer limit, String bookmark,
                                                         boolean includeDocs) {
-        CloudantViews.CloudantIndex cloudantView = cloudantViews.indexes[searchName]
-        if (cloudantView == null) {
-            throw new CloudantException("The index $searchName does not exist")
-        }
-
         def searchRequest = new SearchRequest(
                 query: queryString,
                 limit: limit,
@@ -416,7 +361,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
                         " reason: $cloudantError.reason")
             }
 
-            return Promise.pure(unmarshall(response.responseBody, CloudantQueryResult, cloudantView.resultClass, entityClass))
+            return Promise.pure(unmarshall(response.responseBody, CloudantQueryResult, String, entityClass))
         }, executor)
     }
 

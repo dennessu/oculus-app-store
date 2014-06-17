@@ -5,7 +5,6 @@
  */
 package com.junbo.email.db.repo.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.email.db.repo.EmailHistoryRepository
 import com.junbo.email.spec.model.Email
 import com.junbo.langur.core.promise.Promise
@@ -26,10 +25,5 @@ class EmailHistoryRepositoryCloudantImpl extends CloudantClient<Email> implement
 
     public Promise<Email> updateEmailHistory(Email email) {
         return cloudantPut(email)
-    }
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return null
     }
 }

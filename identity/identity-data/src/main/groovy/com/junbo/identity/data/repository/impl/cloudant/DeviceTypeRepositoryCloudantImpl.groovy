@@ -1,6 +1,5 @@
 package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.enumid.DeviceTypeId
 import com.junbo.identity.data.repository.DeviceTypeRepository
 import com.junbo.identity.spec.v1.model.DeviceType
@@ -11,11 +10,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class DeviceTypeRepositoryCloudantImpl extends CloudantClient<DeviceType> implements DeviceTypeRepository {
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return views
-    }
 
     @Override
     Promise<List<DeviceType>> searchAll(Integer limit, Integer offset) {
@@ -50,14 +44,4 @@ class DeviceTypeRepositoryCloudantImpl extends CloudantClient<DeviceType> implem
     Promise<Void> delete(DeviceTypeId id) {
         return super.cloudantDelete(id.value.toString())
     }
-
-    protected CloudantViews views = new CloudantViews(
-            views: [
-                    'by_type_code': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.typeCode, doc._id)' +
-                                    '}',
-                            resultClass: String)
-            ]
-    )
 }

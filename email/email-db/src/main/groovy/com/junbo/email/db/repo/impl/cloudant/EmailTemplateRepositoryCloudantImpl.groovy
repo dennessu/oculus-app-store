@@ -5,7 +5,6 @@
  */
 package com.junbo.email.db.repo.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.email.db.repo.EmailTemplateRepository
 import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.email.spec.model.Pagination
@@ -87,63 +86,5 @@ class EmailTemplateRepositoryCloudantImpl extends CloudantClient<EmailTemplate> 
             viewKey = null
         }
         return viewKey
-    }
-
-    private CloudantViews cloudantViews = new CloudantViews() {{
-        Map<String, CloudantViews.CloudantView> viewMap = new HashMap<>()
-        Map<String, CloudantViews.CloudantIndex> indexMap = new HashMap<>()
-
-        def view = new CloudantViews.CloudantView()
-        view.setMap("function(doc) {emit(doc.name, doc._id)}")
-        view.setResultClass(String)
-        viewMap.put('by_name', view)
-
-        view = new CloudantViews.CloudantView()
-        view.setMap('function(doc) {emit(doc.source, doc._id)}')
-        view.setResultClass(String)
-        viewMap.put('by_source', view)
-
-        view = new CloudantViews.CloudantView()
-        view.setMap('function(doc) {emit(doc.action, doc._id)}')
-        view.setResultClass(String)
-        viewMap.put('by_action', view)
-
-        view = new CloudantViews.CloudantView()
-        view.setMap('function(doc) {emit(doc.locale, doc._id)}')
-        view.setResultClass(String)
-        viewMap.put('by_locale', view)
-
-        view = new CloudantViews.CloudantView()
-        view.setMap('function(doc) {emit(doc.source + \':\' + doc.action, doc._id)}')
-        view.setResultClass(String)
-        viewMap.put('by_source_action', view)
-
-        view = new CloudantViews.CloudantView()
-        view.setMap('function(doc) {emit(doc.source + \':\' + doc.locale, doc._id)}')
-        view.setResultClass(String)
-        viewMap.put('by_source_locale', view)
-
-        view = new CloudantViews.CloudantView()
-        view.setMap('function(doc) {emit(doc.action + \':\' + doc.locale, doc._id)}')
-        view.setResultClass(String)
-        viewMap.put('by_action_locale', view)
-
-        view = new CloudantViews.CloudantView()
-        view.setMap('function(doc) {emit(doc.source + \':\' + doc.action +\':\' + doc.locale, doc._id)}')
-        view.setResultClass(String)
-        viewMap.put('by_source_action_locale', view)
-
-        setViews(viewMap)
-
-        def index = new CloudantViews.CloudantIndex()
-        index.setResultClass(String)
-        index.setIndex("function(doc) {index(\'name\', doc.name)}")
-        indexMap.put("search", index)
-        setIndexes(indexMap)
-    }}
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return cloudantViews
     }
 }

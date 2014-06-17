@@ -1,6 +1,5 @@
 package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.PITypeId
 import com.junbo.identity.data.repository.PITypeRepository
 import com.junbo.identity.spec.v1.model.PIType
@@ -11,11 +10,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class PITypeRepositoryCloudantImpl extends CloudantClient<PIType> implements PITypeRepository {
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return views
-    }
 
     @Override
     Promise<PIType> create(PIType model) {
@@ -46,14 +40,4 @@ class PITypeRepositoryCloudantImpl extends CloudantClient<PIType> implements PIT
     Promise<List<PIType>> searchAll(Integer limit, Integer offset) {
         return super.cloudantGetAll(limit, offset, false)
     }
-
-    protected CloudantViews views = new CloudantViews(
-            views: [
-                    'by_typeCode': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.typeCode, doc._id)' +
-                                    '}',
-                            resultClass: String)
-            ]
-    )
 }

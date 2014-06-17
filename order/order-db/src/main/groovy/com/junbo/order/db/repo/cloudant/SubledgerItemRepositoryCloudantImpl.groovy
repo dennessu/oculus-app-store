@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.order.db.repo.cloudant
-import com.junbo.common.cloudant.model.CloudantViews
+
 import com.junbo.common.id.SubledgerItemId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.db.repo.SubledgerItemRepository
@@ -21,16 +21,7 @@ import groovy.transform.TypeChecked
 class SubledgerItemRepositoryCloudantImpl extends BaseCloudantRepositoryForDualWrite<SubledgerItem, SubledgerItemId> implements SubledgerItemRepository {
 
     @Override
-    protected CloudantViews getCloudantViews() {
-        return views
-    }
-
-    @Override
     Promise<List<SubledgerItem>> getByStatus(Object shardKey, String status, PageParam pageParam) {
         throw new RuntimeException("SubledgerItemRepository::getByStatus is only available in SQL mode for backend jobs.");
     }
-
-    private CloudantViews views = new CloudantViews(
-        views: [:]
-    )
 }

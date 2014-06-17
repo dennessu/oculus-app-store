@@ -1,6 +1,5 @@
 package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.GroupId
 import com.junbo.identity.data.repository.GroupRepository
 import com.junbo.identity.spec.v1.model.Group
@@ -37,19 +36,5 @@ class GroupRepositoryCloudantImpl extends CloudantClient<Group> implements Group
     @Override
     Promise<Void> delete(GroupId id) {
         throw new IllegalStateException('delete group not support')
-    }
-    protected CloudantViews views = new CloudantViews(
-            views: [
-                    'by_name': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.name, doc._id)' +
-                                    '}',
-                            resultClass: String)
-            ]
-    )
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return views
     }
 }

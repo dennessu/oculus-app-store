@@ -278,6 +278,41 @@ class LogProcessor:
             return body
 
     # print the result as xml
+    def dumpByOrder(self):
+        self.__finishLastSampleRequest()
+
+        indent = 0
+
+        from xml.sax.saxutils import escape
+        def printResponse(fmt, *params):
+            print (' ' * indent * 4) + fmt % params
+
+        def printResponseEscape(fmt, *param):
+            param = map(lambda x: escape(x), param)
+            printResponse(fmt, *param)
+
+        def printResponseCdata(fmt, param):
+            if param.strip() != "":
+                printResponse(fmt, "<![CDATA[" + param + "]]>")
+
+        printResponse("<samples>")
+        indent += 1
+        for sample in self.__requests:
+            printResponseEscape('<sample description="%s">', sample.description)
+            indent += 1
+            printResponseEscape('<requestUrl>%s</requestUrl>', sample.requestUrl)
+            printResponseCdata('<requestHeaders>%s</requestHeaders>', sample.requestHeaders)
+            printResponseCdata('<requestBody>%s</requestBody>', sample.requestBody)
+            printResponseEscape('<responseCode>%s</responseCode>', sample.responseCode)
+            printResponseCdata('<responseHeaders>%s</responseHeaders>', sample.responseHeaders)
+            printResponseCdata('<responseBody>%s</responseBody>', sample.responseBody)
+            indent -= 1
+            printResponse('</sample>')
+        indent -= 1
+        printResponse('</samples>')
+
+
+    # print the result as xml
     def dump(self):
         self.__finishLastSampleRequest()
 
@@ -325,8 +360,8 @@ class LogProcessor:
         indent -= 1
         printResponse('</samples>')
 
-p = LogProcessor("/rest")
+p = LogProcessor("/v1")
 for line in fileinput.input():
     p.process(line)
-p.dump()
+p.dumpByOrder()
 

@@ -4,12 +4,10 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.cart.db.persist.cloudant
-
 import com.junbo.cart.common.util.SystemOperation
 import com.junbo.cart.core.service.CartPersistService
 import com.junbo.cart.spec.model.Cart
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.CartId
 import com.junbo.common.id.UserId
 import com.junbo.langur.core.promise.Promise
@@ -29,21 +27,6 @@ class CartPersistServiceCloudantImpl extends CloudantClient<Cart> implements Car
     void setSystemOperation(SystemOperation systemOperation) {
         this.systemOperation = systemOperation
     }
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return views
-    }
-
-    protected CloudantViews views = new CloudantViews(
-            views: [
-                    'by_client_name_user': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.clientId + ":" + doc.user + ":" + doc.cartName, doc._id)' +
-                                 '}',
-                            resultClass: String)
-            ]
-    )
 
     @Override
     Promise<Cart> get(CartId cartId) {

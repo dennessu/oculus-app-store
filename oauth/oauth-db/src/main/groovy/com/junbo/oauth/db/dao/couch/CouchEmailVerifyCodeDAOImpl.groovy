@@ -14,8 +14,4 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class CouchEmailVerifyCodeDAOImpl extends CouchBaseDAO<EmailVerifyCodeEntity> implements EmailVerifyCodeDAO {
-    @Override
-    protected CouchViews getCouchViews() {
-        return null
-    }
 }

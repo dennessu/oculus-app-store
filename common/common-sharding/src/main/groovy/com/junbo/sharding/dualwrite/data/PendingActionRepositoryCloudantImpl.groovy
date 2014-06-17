@@ -5,7 +5,6 @@
  */
 package com.junbo.sharding.dualwrite.data
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
@@ -38,11 +37,6 @@ public class PendingActionRepositoryCloudantImpl extends CloudantClient<PendingA
     @Required
     void setIdGenerator(IdGenerator idGenerator) {
         this.idGenerator = idGenerator
-    }
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return views
     }
 
     @Override
@@ -89,8 +83,4 @@ public class PendingActionRepositoryCloudantImpl extends CloudantClient<PendingA
     public Promise<List<PendingAction>> list(Integer dc, Integer shardId, int maxSize) {
         return null;
     }
-
-    protected CloudantViews views = new CloudantViews(
-        views: [:]
-    )
 }

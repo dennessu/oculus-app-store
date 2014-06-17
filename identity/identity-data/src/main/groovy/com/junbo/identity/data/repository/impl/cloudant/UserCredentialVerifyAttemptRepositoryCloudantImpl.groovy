@@ -1,6 +1,5 @@
 package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserCredentialVerifyAttemptId
 import com.junbo.common.id.UserId
 import com.junbo.identity.data.repository.UserCredentialVerifyAttemptRepository
@@ -13,11 +12,6 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class UserCredentialVerifyAttemptRepositoryCloudantImpl extends CloudantClient<UserCredentialVerifyAttempt>
         implements UserCredentialVerifyAttemptRepository{
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return views
-    }
 
     @Override
     Promise<UserCredentialVerifyAttempt> create(UserCredentialVerifyAttempt entity) {
@@ -50,19 +44,4 @@ class UserCredentialVerifyAttemptRepositoryCloudantImpl extends CloudantClient<U
     Promise<Void> delete(UserCredentialVerifyAttemptId id) {
         return super.cloudantDelete(id.toString())
     }
-
-    protected CloudantViews views = new CloudantViews(
-        views: [
-            'by_user_id': new CloudantViews.CloudantView(
-                map: 'function(doc) {' +
-                        '  emit(doc.userId, doc._id)' +
-                        '}',
-                resultClass: String),
-            'by_user_id_credential_type': new CloudantViews.CloudantView(
-                map: 'function(doc) {' +
-                        ' emit(doc.userId + \':\' + doc.type, doc._id)' +
-                        '}',
-                resultClass: String)
-        ]
-    )
 }

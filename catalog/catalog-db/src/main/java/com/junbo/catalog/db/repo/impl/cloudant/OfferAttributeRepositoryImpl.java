@@ -10,11 +10,11 @@ import com.junbo.catalog.db.repo.OfferAttributeRepository;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions;
 import com.junbo.common.cloudant.CloudantClient;
-import com.junbo.common.cloudant.model.CloudantViews;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Offer repository.
@@ -59,24 +59,4 @@ public class OfferAttributeRepositoryImpl  extends CloudantClient<OfferAttribute
         super.cloudantDelete(attributeId);
     }
 
-    private CloudantViews cloudantViews = new CloudantViews() {{
-        Map<String, CloudantView> viewMap = new HashMap<>();
-
-        CloudantViews.CloudantView view = new CloudantViews.CloudantView();
-        view.setMap("function(doc) {emit(doc.type, doc._id)}");
-        view.setResultClass(String.class);
-        viewMap.put("by_type", view);
-
-        view = new CloudantViews.CloudantView();
-        view.setMap("function(doc) {emit(doc._id, doc._id)}");
-        view.setResultClass(String.class);
-        viewMap.put("by_attributeId", view);
-
-        setViews(viewMap);
-    }};
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return cloudantViews;
-    }
 }

@@ -9,11 +9,8 @@ package com.junbo.catalog.db.repo.impl.cloudant;
 import com.junbo.catalog.db.repo.PriceTierRepository;
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
 import com.junbo.common.cloudant.CloudantClient;
-import com.junbo.common.cloudant.model.CloudantViews;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Price tier repository.
@@ -40,19 +37,4 @@ public class PriceTierRepositoryImpl extends CloudantClient<PriceTier> implement
         super.cloudantDelete(tierId).get();
     }
 
-    private CloudantViews cloudantViews = new CloudantViews() {{
-        Map<String, CloudantView> viewMap = new HashMap<>();
-
-        CloudantViews.CloudantView view = new CloudantViews.CloudantView();
-        view.setMap("function(doc) {emit(doc._id, doc._id)}");
-        view.setResultClass(String.class);
-        viewMap.put("by_tierId", view);
-
-        setViews(viewMap);
-    }};
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return cloudantViews;
-    }
 }

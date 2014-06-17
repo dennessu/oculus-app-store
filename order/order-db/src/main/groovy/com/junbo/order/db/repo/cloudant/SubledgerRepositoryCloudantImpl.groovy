@@ -5,7 +5,6 @@
  */
 package com.junbo.order.db.repo.cloudant
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.OfferId
@@ -32,11 +31,6 @@ class SubledgerRepositoryCloudantImpl extends BaseCloudantRepositoryForDualWrite
     private DateFormat dateFormat = new ISO8601DateFormat()
 
     @Override
-    protected CloudantViews getCloudantViews() {
-        return views
-    }
-
-    @Override
     Promise<List<Subledger>> list(SubledgerParam subledgerParam, PageParam pageParam) {
         String fromDateStr = subledgerParam.fromDate == null ? "" : dateFormat.format(subledgerParam.fromDate)
         String endDateStr = subledgerParam.toDate == null ? DATE_STRING_MAX : dateFormat.format(subledgerParam.toDate)
@@ -59,16 +53,5 @@ class SubledgerRepositoryCloudantImpl extends BaseCloudantRepositoryForDualWrite
             return Promise.pure(list.isEmpty() ? null : list.iterator().next())
         }
     }
-
-    private CloudantViews views = new CloudantViews(
-            views: [
-                    'by_seller_status_offer_time_cc': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    'emit(doc.seller + \';\' + doc.payoutStatus + \';\' + doc.startTime ' +
-                                    '+ \';\' + doc.offer + \';\' + doc.currency + \';\' + doc.country, doc._id)' +
-                                    '}',
-                            resultClass: String)
-            ]
-    )
 }
 

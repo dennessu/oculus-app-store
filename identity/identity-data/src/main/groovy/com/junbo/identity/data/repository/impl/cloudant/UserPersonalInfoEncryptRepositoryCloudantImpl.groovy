@@ -1,12 +1,9 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.crypto.spec.model.CryptoMessage
 import com.junbo.crypto.spec.resource.CryptoResource
-import com.junbo.identity.common.util.HashHelper
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.data.hash.PiiHash
 import com.junbo.identity.data.hash.PiiHashFactory
@@ -14,17 +11,15 @@ import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.repository.EncryptUserPersonalInfoRepository
 import com.junbo.identity.data.repository.UserPersonalInfoIdToUserIdLinkRepository
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
-import com.junbo.identity.spec.v1.model.Email
-import com.junbo.identity.spec.v1.model.EncryptUserPersonalInfo
-import com.junbo.identity.spec.v1.model.PhoneNumber
-import com.junbo.identity.spec.v1.model.UserPersonalInfo
-import com.junbo.identity.spec.v1.model.UserPersonalInfoIdToUserIdLink
+import com.junbo.identity.spec.v1.model.*
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
+
+import java.util.Locale
 
 /**
  * Created by liangfu on 5/14/14.
@@ -42,11 +37,6 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     private CryptoResource cryptoResource
 
     private IdGenerator idGenerator
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return null
-    }
 
     @Override
     Promise<List<UserPersonalInfo>> searchByUserId(UserId userId, Integer limit, Integer offset) {

@@ -1,6 +1,5 @@
 package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.identity.data.repository.UserSecurityQuestionRepository
@@ -13,11 +12,6 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class UserSecurityQuestionRepositoryCloudantImpl extends CloudantClient<UserSecurityQuestion>
         implements UserSecurityQuestionRepository {
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return views
-    }
 
     @Override
     Promise<UserSecurityQuestion> create(UserSecurityQuestion entity) {
@@ -45,14 +39,4 @@ class UserSecurityQuestionRepositoryCloudantImpl extends CloudantClient<UserSecu
     Promise<Void> delete(UserSecurityQuestionId id) {
         return super.cloudantDelete(id.toString())
     }
-
-    protected CloudantViews views = new CloudantViews(
-        views: [
-            'by_user_id': new CloudantViews.CloudantView(
-                map: 'function(doc) {' +
-                    '    emit(doc.userId, doc._id)' +
-                    '}',
-                resultClass: String)
-        ]
-    )
 }

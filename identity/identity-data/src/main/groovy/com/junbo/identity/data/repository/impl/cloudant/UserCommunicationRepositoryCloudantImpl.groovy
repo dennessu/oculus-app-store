@@ -1,6 +1,5 @@
 package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.CommunicationId
 import com.junbo.common.id.UserCommunicationId
 import com.junbo.common.id.UserId
@@ -13,11 +12,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class UserCommunicationRepositoryCloudantImpl extends CloudantClient<UserCommunication> implements UserCommunicationRepository {
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return views
-    }
 
     @Override
     Promise<UserCommunication> create(UserCommunication entity) {
@@ -56,25 +50,4 @@ class UserCommunicationRepositoryCloudantImpl extends CloudantClient<UserCommuni
     Promise<Void> delete(UserCommunicationId id) {
         return super.cloudantDelete(id.toString())
     }
-
-    protected CloudantViews views = new CloudantViews(
-            views: [
-                    'by_user_id': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.userId, doc._id)' +
-                                    '}',
-                            resultClass: String),
-                    'by_communication_id': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.communicationId, doc._id)' +
-                                    '}',
-                            resultClass: String),
-                    'by_user_id_communication_id': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                '  emit(doc.userId + \':\' + doc.communicationId, ' +
-                                'doc._id)' +
-                                '}',
-                            resultClass: String)
-            ]
-    )
 }

@@ -6,7 +6,6 @@
 package com.junbo.oauth.db.dao.couch
 
 import com.junbo.oauth.db.dao.AccessTokenDAO
-import com.junbo.oauth.db.dao.couch.CouchViews.CouchView
 import com.junbo.oauth.db.entity.AccessTokenEntity
 import groovy.transform.CompileStatic
 
@@ -15,25 +14,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class CouchAccessTokenDAOImpl extends CouchBaseDAO<AccessTokenEntity> implements AccessTokenDAO {
-    protected CouchViews views = new CouchViews(
-            views: ['by_refresh_token': new CouchView(
-                    map: 'function(doc) {' +
-                            '  if (doc.refreshToken != null) {' +
-                            '    emit(doc.refreshToken, doc._id);' +
-                            '  }' +
-                            '}',
-                    resultClass: String),
-                    'by_user_id_client_id': new CouchView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.userId + \':\' + doc.clientId, doc._id)' +
-                                    '}',
-                            resultClass: String)]
-    )
-
-    @Override
-    CouchViews getCouchViews() {
-        return views
-    }
 
     @Override
     List<AccessTokenEntity> findByRefreshToken(String refreshTokenValue) {

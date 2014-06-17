@@ -1,6 +1,5 @@
 package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.enumid.LocaleId
 import com.junbo.identity.data.repository.LocaleRepository
 import com.junbo.identity.spec.v1.model.Locale
@@ -11,11 +10,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class LocaleRepositoryCloudantImpl extends CloudantClient<Locale> implements LocaleRepository {
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return null
-    }
-
     @Override
     Promise<Locale> create(Locale model) {
         if (model.id == null) {

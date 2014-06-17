@@ -5,21 +5,18 @@
  */
 package com.junbo.ewallet.db.dao.cloudant;
 
-import com.junbo.common.cloudant.model.CloudantViews;
 import com.junbo.ewallet.db.dao.LotTransactionDao;
 import com.junbo.ewallet.db.entity.LotTransactionEntity;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * cloudantImpl of LotTransactionDao.
  */
 public class LotTransactionDaoImpl extends TransactionBaseDao<LotTransactionEntity> implements LotTransactionDao {
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return cloudantViews;
-    }
 
     @Override
     public LotTransactionEntity insert(LotTransactionEntity lotTransactionEntity) {
@@ -47,18 +44,4 @@ public class LotTransactionDaoImpl extends TransactionBaseDao<LotTransactionEnti
         });
         return results;
     }
-
-    protected CloudantViews cloudantViews = new CloudantViews() {{
-        Map<String, CloudantView> viewMap = new HashMap<>();
-
-        CloudantView byTransactionIdAndIsRefundEnded = new CloudantView();
-        byTransactionIdAndIsRefundEnded.setMap("function(doc) {" +
-                "emit(doc.transactionId.toString() + \':\' + " +
-                "doc.isRefundEnded, doc._id)" +
-                "}");
-        byTransactionIdAndIsRefundEnded.setResultClass(String.class);
-        viewMap.put("byTransactionIdAndIsRefundEnded", byTransactionIdAndIsRefundEnded);
-
-        setViews(viewMap);
-    }};
 }

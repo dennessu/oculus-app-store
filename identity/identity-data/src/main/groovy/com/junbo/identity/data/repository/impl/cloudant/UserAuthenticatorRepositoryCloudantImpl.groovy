@@ -1,6 +1,5 @@
 package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserAuthenticatorId
 import com.junbo.common.id.UserId
 import com.junbo.identity.data.repository.UserAuthenticatorRepository
@@ -67,44 +66,5 @@ class UserAuthenticatorRepositoryCloudantImpl extends CloudantClient<UserAuthent
                                                                Integer offset) {
         return super.queryView('by_authenticator_externalId_auth_type', "${externalId}:${type}", limit, offset,
                 false)
-    }
-    protected CloudantViews views = new CloudantViews(
-            views: [
-                    'by_authenticator_externalId': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.externalId, doc._id)' +
-                                    '}',
-                            resultClass: String),
-                    'by_user_id_auth_type': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.userId + \':\' + doc.type, doc._id)' +
-                                    '}',
-                            resultClass: String),
-                    'by_user_id_externalId': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.userId + \':\' + doc.externalId, doc._id)' +
-                                    '}',
-                            resultClass: String),
-                    'by_user_id_auth_type_externalId': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.userId + \':\' + doc.type + \':\' + doc.externalId, doc._id)' +
-                                    '}',
-                            resultClass: String),
-                    'by_user_id': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.userId, doc._id)' +
-                                    '}',
-                            resultClass: String),
-                    'by_authenticator_externalId_auth_type': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    ' emit(doc.externalId + \':\' + doc.type, doc._id)' +
-                                    '}',
-                            resultClass: String)
-            ]
-    )
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return views
     }
 }

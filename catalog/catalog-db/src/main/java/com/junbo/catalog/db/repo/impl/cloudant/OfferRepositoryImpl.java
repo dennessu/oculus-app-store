@@ -11,11 +11,12 @@ import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OffersGetOptions;
 import com.junbo.common.cloudant.CloudantClient;
 import com.junbo.common.cloudant.model.CloudantSearchResult;
-import com.junbo.common.cloudant.model.CloudantViews;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Offer repository.
@@ -111,86 +112,4 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
         super.cloudantDelete(offerId).get();
     }
 
-    private CloudantViews cloudantViews = new CloudantViews() {{
-        Map<String, CloudantView> viewMap = new HashMap<>();
-        Map<String, CloudantIndex> indexMap = new HashMap<>();
-
-        CloudantViews.CloudantView view = new CloudantViews.CloudantView();
-        view.setMap("function(doc) {emit(doc.offerId, doc._id)}");
-        view.setResultClass(String.class);
-        viewMap.put("by_offerId", view);
-
-        CloudantIndex index = new CloudantIndex();
-        index.setResultClass(String.class);
-        index.setIndex("function(doc) {" +
-                "index(\'offerId\', doc.offerId);" +
-                "index(\'default\', doc.offerId);" +
-                "if (doc.published != null && doc.published != undefined) {" +
-                    "index(\'published\', doc.published);" +
-                "}" +
-                "if (doc.environment) {" +
-                    "index(\'environment\', doc.environment);" +
-                    "index(\'default\', doc.environment);" +
-                "}" +
-                "if (doc.categories) {" +
-                    "for (var idx in doc.categories) {" +
-                        "index(\'categoryId\', doc.categories[idx]);" +
-                        "index(\'default\', doc.categories[idx]);" +
-                    "}" +
-                "}" +
-                "index(\'ownerId\', doc.ownerId);" +
-                "index(\'default\', doc.ownerId);" +
-                "if (!doc.currentRevisionId) {" +
-                    "index(\'scheduledPublish\', true);" +
-                "}" +
-                "if (doc.activeRevision) {" +
-                    "index(\'revisionId\', doc.activeRevision.revisionId);" +
-                    "index(\'default\', doc.activeRevision.revisionId);" +
-                    "if (doc.activeRevision.items) {" +
-                        "for (var itemIdx in doc.activeRevision.items) {" +
-                            "if (doc.activeRevision.items[itemIdx].itemId) {" +
-                                "index(\'itemId\', doc.activeRevision.items[itemIdx].itemId);" +
-                            "}" +
-                        "}" +
-                    "}" +
-                    "if (doc.activeRevision.subOffers) {" +
-                        "for (var subOfferIdx in doc.activeRevision.subOffers) {" +
-                            "if (doc.activeRevision.subOffers[subOfferIdx]) {" +
-                                "index(\'subOfferId\', doc.activeRevision.subOffers[subOfferIdx]);" +
-                            "}" +
-                        "}" +
-                    "}" +
-                    "if (doc.activeRevision.locales) {" +
-                        "for (var localeIdx in doc.activeRevision.locales) {" +
-                            "var locale = doc.activeRevision.locales[localeIdx];" +
-                            "if (locale.name) {" +
-                                "index(\'name\', locale.name);" +
-                                "index(\'default\', locale.name);" +
-                            "}" +
-                            "if (locale.revisionNotes) {" +
-                                "index(\'revisionNotes\', locale.revisionNotes);" +
-                                "index(\'default\', locale.revisionNotes);" +
-                            "}" +
-                            "if (locale.longDescription) {" +
-                                "index(\'longDescription\', locale.longDescription);" +
-                                "index(\'default\', locale.longDescription);" +
-                            "}" +
-                            "if (locale.shortDescription) {" +
-                                "index(\'shortDescription\', locale.shortDescription);" +
-                                "index(\'default\', locale.shortDescription);" +
-                            "}" +
-                        "}" +
-                    "}" +
-                "}" +
-            "}");
-        indexMap.put("search", index);
-
-        setIndexes(indexMap);
-        setViews(viewMap);
-    }};
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return cloudantViews;
-    }
 }

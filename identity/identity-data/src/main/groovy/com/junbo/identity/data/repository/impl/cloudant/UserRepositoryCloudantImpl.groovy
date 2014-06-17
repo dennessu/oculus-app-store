@@ -1,6 +1,5 @@
 package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserId
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.v1.model.User
@@ -19,21 +18,6 @@ class UserRepositoryCloudantImpl extends CloudantClient<User> implements UserRep
     void setIdGenerator(IdGenerator idGenerator) {
         this.idGenerator = idGenerator
     }
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return views
-    }
-
-    protected CloudantViews views = new CloudantViews(
-        views: [
-            'by_canonical_username': new CloudantViews.CloudantView(
-                map: 'function(doc) {' +
-                        '  emit(doc.canonicalUsername, doc._id)' +
-                        '}',
-                resultClass: String)
-        ]
-    )
 
     @Override
     Promise<User> create(User user) {

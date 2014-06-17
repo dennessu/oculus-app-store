@@ -1,29 +1,18 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFAAttemptId
 import com.junbo.common.id.UserTFAId
 import com.junbo.identity.data.repository.UserTFAAttemptRepository
 import com.junbo.identity.spec.v1.model.UserTFAAttempt
 import com.junbo.langur.core.promise.Promise
-import com.junbo.sharding.IdGenerator
-import com.junbo.sharding.ShardAlgorithm
 import groovy.transform.CompileStatic
-import org.springframework.beans.factory.annotation.Required
-
 /**
  * Created by liangfu on 4/23/14.
  */
 @CompileStatic
 class UserTFAAttemptRepositoryCloudantImpl extends CloudantClient<UserTFAAttempt>
         implements UserTFAAttemptRepository {
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return views
-    }
 
     @Override
     Promise<List<UserTFAAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
@@ -56,19 +45,4 @@ class UserTFAAttemptRepositoryCloudantImpl extends CloudantClient<UserTFAAttempt
     Promise<Void> delete(UserTFAAttemptId id) {
         return super.cloudantDelete(id.toString())
     }
-
-    protected CloudantViews views = new CloudantViews(
-            views: [
-                'by_user_id_tfa_id': new CloudantViews.CloudantView(
-                    map: 'function(doc) {' +
-                            '  emit(doc.userId + \':\' + doc.userTFAId , doc._id)' +
-                            '}',
-                    resultClass: String),
-                'by_user_id': new CloudantViews.CloudantView(
-                    map: 'function(doc) {' +
-                            '  emit(doc.userId, doc._id)' +
-                            '}',
-                    resultClass: String)
-            ]
-    )
 }
