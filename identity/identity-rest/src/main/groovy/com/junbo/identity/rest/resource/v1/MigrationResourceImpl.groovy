@@ -281,6 +281,8 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     Promise<Void> checkOrganizationValid(OculusInput oculusInput, User user) {
+        // temporary disable organization name unique
+        /*
         return organizationRepository.searchByCanonicalName(normalizeService.normalize(oculusInput.devCenterCompany),
                 Integer.MAX_VALUE, 0).then { List<Organization> organizationList ->
             if (CollectionUtils.isEmpty(organizationList)) {
@@ -297,6 +299,8 @@ class MigrationResourceImpl implements MigrationResource {
 
             throw AppErrors.INSTANCE.organizationAlreadyUsed(oculusInput.devCenterCompany).exception()
         }
+        */
+        return Promise.pure(null)
     }
 
     Promise<Void> checkUserStatusValid(OculusInput oculusInput) {
