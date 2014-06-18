@@ -1,5 +1,6 @@
 package com.junbo.test.buyerscenario;
 
+import com.junbo.test.common.Entities.paymentInstruments.AdyenInfo;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.apihelper.order.impl.OrderEventServiceImpl;
 import com.junbo.test.payment.apihelper.impl.PaymentCallbackServiceImpl;
@@ -24,6 +25,7 @@ import com.junbo.common.model.Results;
 import com.junbo.common.id.UserId;
 
 import org.testng.annotations.Test;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
@@ -412,6 +414,44 @@ public class CartCheckout extends BaseTestClass {
         String paymentId = dbHelper.executeScalar(sqlStr, DBHelper.DBName.PAYMENT);
         return Long.parseLong(paymentId);
     }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "BuyerScenarios",
+            component = Component.Order,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Test digital goods checkout by Adyen",
+            steps = {
+                    "1. Post a new user",
+                    "2. Post new Adyen to the user above",
+                    "3. Post order to checkout",
+
+            }
+    )
+    @Test
+    public void testDigitalGoodCheckoutByAdyen() throws Exception {
+        String uid = testDataProvider.createUser();
+
+        ArrayList<String> offerList = new ArrayList<>();
+        offerList.add(offer_digital_normal1);
+        offerList.add(offer_digital_normal2);
+
+        AdyenInfo adyenInfo = AdyenInfo.getAdyenInfo(Country.DEFAULT);
+        String adyenId = testDataProvider.postPaymentInstrument(uid, adyenInfo);
+
+        String orderId = testDataProvider.postOrder(uid, Country.DEFAULT, Currency.DEFAULT, adyenId, false, offerList);
+
+        Order order = Master.getInstance().getOrder(orderId);
+        order.setTentative(false);
+        order.setSuccessRedirectUrl("http://www.abc.com/");
+        order.setCancelRedirectUrl("http://www.abc.com/cancel/");
+        orderId = testDataProvider.updateOrder(order);
+        order = Master.getInstance().getOrder(orderId);
+        String providerConfirmUrl = order.getProviderConfirmUrl();
+
+    }
+
 
 }
 
