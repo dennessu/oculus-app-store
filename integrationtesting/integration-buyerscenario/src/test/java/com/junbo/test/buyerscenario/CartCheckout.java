@@ -1,13 +1,14 @@
 package com.junbo.test.buyerscenario;
 
-import com.junbo.payment.spec.model.PaymentCallbackParams;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.apihelper.order.impl.OrderEventServiceImpl;
+import com.junbo.test.payment.apihelper.impl.PaymentCallbackServiceImpl;
 import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
 import com.junbo.test.common.apihelper.order.OrderEventService;
+import com.junbo.test.payment.apihelper.PaymentCallbackService;
+import com.junbo.payment.spec.model.PaymentCallbackParams;
 import com.junbo.test.buyerscenario.util.BaseTestClass;
-import com.junbo.payment.spec.model.PaymentTransaction;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.common.Entities.enums.Country;
@@ -22,8 +23,6 @@ import com.junbo.test.common.property.*;
 import com.junbo.common.model.Results;
 import com.junbo.common.id.UserId;
 
-import com.junbo.test.payment.apihelper.PaymentCallbackService;
-import com.junbo.test.payment.apihelper.impl.PaymentCallbackServiceImpl;
 import org.testng.annotations.Test;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -374,12 +373,10 @@ public class CartCheckout extends BaseTestClass {
             case DIGITAL:
                 validationHelper.validateOrderInfoByCartId(
                         uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, payPalId, false);
-                validationHelper.validateEmailHistory(uid, orderId);
                 break;
             default:
                 validationHelper.validateOrderInfoByCartId(
                         uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, payPalId, false);
-                validationHelper.validateEmailHistory(uid, orderId);
                 break;
         }
     }
@@ -387,31 +384,12 @@ public class CartCheckout extends BaseTestClass {
     private void emulatePayPalCheckout(Order order, String token, CatalogItemType itemType) throws Exception {
         Long paymentTransactionId = getTransactionId(order.getUser().getValue());
 
-        /*PaymentTransactionService paymentTransactionService = PaymentTransactionServiceImpl.getInstance();
-
-
-        PaymentTransaction paymentTransaction = paymentTransactionService.getPaymentTransaction(paymentTransactionId);
-        paymentTransaction.setTrackingUuid(UUID.randomUUID());
-        paymentTransaction.setId(null);
-        paymentTransaction.setPaymentProvider(null);
-        paymentTransaction.setStatus(null);
-        paymentTransaction.setType(null);
-        paymentTransaction.setPaymentEvents(null);
-        WebPaymentInfo webPaymentInfo = new WebPaymentInfo();
-        webPaymentInfo.setCancelURL("http://www.abc.com/cancel/");
-        webPaymentInfo.setReturnURL("http://www.abc.com/");
-        paymentTransaction.setWebPaymentInfo(webPaymentInfo);
-*/
-
         //Post callback properties
         PaymentCallbackParams paymentProperties = new PaymentCallbackParams();
-        paymentProperties.setExternalAccessToken(token);
-        paymentProperties.setExternalPayerId(payerId);
+        paymentProperties.setToken(token);
+        paymentProperties.setPayerID(payerId);
         PaymentCallbackService paymentCallbackService = PaymentCallbackServiceImpl.getInstance();
         paymentCallbackService.postPaymentProperties(paymentTransactionId, paymentProperties);
-
-        //confirm
-        //mockPaymentTransactionConfirm(paymentTransactionId, paymentTransaction);
 
         //Post "charge completed" order event
         OrderEventService orderEventService = OrderEventServiceImpl.getInstance();
@@ -433,17 +411,6 @@ public class CartCheckout extends BaseTestClass {
 
         String paymentId = dbHelper.executeScalar(sqlStr, DBHelper.DBName.PAYMENT);
         return Long.parseLong(paymentId);
-    }
-
-    private void mockPaymentTransactionConfirm(Long paymentTransactionId, PaymentTransaction paymentTransaction) throws Exception {
-        DBHelper dbHelper = new DBHelper();
-        String userId = IdConverter.idToUrlString(UserId.class, paymentTransaction.getUserId());
-
-        String sqlStr = String.format(
-                "update shard_%s.payment set payment_status_id = 12, external_token = '%s'" +
-                        "where payment_id = %s",
-                ShardIdHelper.getShardIdByUid(userId), paymentTransaction.getExternalToken(), paymentTransactionId);
-        dbHelper.executeUpdate(sqlStr, DBHelper.DBName.PAYMENT);
     }
 
 }
