@@ -31,7 +31,10 @@ do
     $PGBIN_PATH/psql $db -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "DROP SCHEMA londiste CASCADE;"
     set -e
 
-    echo "create root node for database [$db]"
+    echo "drop leaf node if exist"
+    londiste3 $config drop-node leaf_node_${db} || echo "node [leaf_node_${db}] does not exist"
+
+    echo "create leaf node for database [$db]"
     londiste3 $config create-leaf leaf_node_${db} "dbname=$db host=$REPLICA_HOST port=$REPLICA_DB_PORT" --provider="dbname=$db host=$MASTER_HOST port=$MASTER_DB_PORT"
 
     echo "start worker for database [$db]"

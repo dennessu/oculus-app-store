@@ -200,4 +200,5 @@
 =====Release Memo=====
 # Londiste doesn't support DDL replication, liquibase scripts should be first run against REPLICA then MASTER
 # Liquibase change log related tables should not be published for replication
+# Londiste doc: https://github.com/markokr/skytools/blob/master/doc/londiste3.txt
 
