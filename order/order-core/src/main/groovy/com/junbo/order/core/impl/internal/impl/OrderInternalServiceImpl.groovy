@@ -126,7 +126,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
         LOGGER.info('name=Order_Is_Cancelable, orderId = {}, orderStatus={}', order.getId().value, order.status)
 
         order.status = OrderStatus.CANCELED.name()
-        orderRepository.updateOrder(order, true, true, OrderItemRevisionType.CANCEL)
+        orderRepository.updateOrder(order, false, true, OrderItemRevisionType.CANCEL)
 
         // TODO: reverse authorize if physical goods
 
@@ -182,22 +182,21 @@ class OrderInternalServiceImpl implements OrderInternalService {
                             return facadeContainer.billingFacade.createBalance(refundBalance, true).syncRecover {
                                 Throwable ex ->
                                     LOGGER.error('name=Refund_Failed', ex)
-                                    throw AppErrors.INSTANCE.billingRefundFailed('billing returns error').exception()
+                                    throw AppErrors.INSTANCE.
+                                            billingRefundFailed('billing returns error: ' + ex.message).exception()
                             }.then { Balance refunded ->
                                 if (refunded == null) {
                                     throw AppErrors.INSTANCE.billingRefundFailed('billing returns null balance').exception()
                                 }
                                 def refundedOrder = CoreUtils.calcRefundedOrder(existingOrder, refunded, diffOrder)
-                                orderRepository.updateOrder(refundedOrder, true, true, OrderItemRevisionType.REFUND)
+                                refundedOrder.status = OrderStatus.REFUNDED.name()
+                                orderRepository.updateOrder(refundedOrder, false, true, OrderItemRevisionType.REFUND)
                                 return Promise.pure(null)
                             }
                         }
                     }
             }
         }.then {
-            // TODO handle partial refund
-            order.status = OrderStatus.REFUNDED.name()
-            orderRepository.updateOrder(order, true, true, OrderItemRevisionType.REFUND)
             return getOrderByOrderId(order.getId().value)
         }
     }
@@ -275,12 +274,13 @@ class OrderInternalServiceImpl implements OrderInternalService {
         order.setBillingHistories(orderRepository.getBillingHistories(order.getId().value))
         // tax
         return facadeContainer.billingFacade.getBalancesByOrderId(order.getId().value).then { List<Balance> balances ->
-            // TODO: handle the case when the size of taxed balances > 1
-            def taxedBalance = balances.find { Balance balance ->
+            def taxedBalances = balances.findAll { Balance balance ->
                 balance.balanceItems?.taxItems?.size() > 0
-            }
-            if (taxedBalance != null) {
-                CoreBuilder.fillTaxInfo(order, taxedBalance)
+            }.toList()
+            if (!CollectionUtils.isEmpty(taxedBalances)) {
+                order.orderItems?.each { OrderItem item ->
+                    CoreBuilder.mergeTaxInfo(taxedBalances, item)
+                }
             }
             return Promise.pure(order)
         }
@@ -294,7 +294,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                     orderRepository.getOrderEvents(order.getId().value, null))
             if (updateOrder && order.status != oldOrder.status) {
                 oldOrder.status = order.status
-                orderRepository.updateOrder(oldOrder, true, null, null)
+                orderRepository.updateOrder(oldOrder, true, false, null)
             }
         }
         return order
@@ -310,6 +310,6 @@ class OrderInternalServiceImpl implements OrderInternalService {
             throw AppErrors.INSTANCE.orderNotTentative().exception()
         }
         order.tentative = false
-        orderRepository.updateOrder(order, true, null, null)
+        orderRepository.updateOrder(order, true, false, null)
     }
 }

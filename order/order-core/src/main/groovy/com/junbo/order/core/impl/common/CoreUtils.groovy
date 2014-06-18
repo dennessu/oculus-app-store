@@ -60,7 +60,7 @@ class CoreUtils {
             return false
         }
         if (order.orderItems.any { OrderItem oi ->
-            oi.type == ItemType.PHYSICAL.toString()
+            oi.type == ItemType.PHYSICAL.name()
         }) {
             return true
         }
@@ -72,7 +72,7 @@ class CoreUtils {
             return false
         }
         if (order.orderItems.any { OrderItem oi ->
-            oi.type == ItemType.STORED_VALUE.toString()
+            oi.type == ItemType.STORED_VALUE.name()
         }) {
             return true
         }
@@ -156,31 +156,31 @@ class CoreUtils {
     }
 
     static Order calcRefundedOrder(Order existingOrder, Balance balance, Order diffOrder) {
-        assert(existingOrder != null)
-        assert(balance != null)
-        assert(diffOrder != null)
-        assert(balance.totalAmount != null)
-        assert(balance.taxAmount != null)
-        assert(balance.discountAmount != null)
+        assert (existingOrder != null)
+        assert (balance != null)
+        assert (diffOrder != null)
+        assert (balance.totalAmount != null)
+        assert (balance.taxAmount != null)
+        assert (balance.discountAmount != null)
         def returnVal = existingOrder
         returnVal.totalAmount -= balance.totalAmount
-        if(balance.taxIncluded) {
+        if (!balance.taxIncluded) {
             returnVal.totalAmount += balance.taxAmount
         }
         returnVal.totalTax -= balance.taxAmount
         returnVal.totalDiscount -= balance.discountAmount
-        assert(returnVal.totalTax >= 0G)
-        assert(returnVal.totalAmount >= 0G)
-        assert(returnVal.totalDiscount >= 0G)
+        assert (returnVal.totalTax >= 0G)
+        assert (returnVal.totalAmount >= 0G)
+        assert (returnVal.totalDiscount >= 0G)
 
         returnVal.orderItems?.each() { OrderItem oi ->
             def balanceItem = balance.balanceItems?.find() { BalanceItem bi ->
                 bi.orderItemId.value == oi.getId().value
             }
             if (balanceItem != null) {
-                assert(balanceItem.amount != null)
-                assert(balanceItem.taxAmount != null)
-                assert(balanceItem.discountAmount != null)
+                assert (balanceItem.amount != null)
+                assert (balanceItem.taxAmount != null)
+                assert (balanceItem.discountAmount != null)
                 oi.totalAmount -= balanceItem.amount
                 oi.totalTax -= balanceItem.taxAmount
                 oi.totalDiscount -= balanceItem.discountAmount
@@ -200,10 +200,10 @@ class CoreUtils {
             if (diffItem != null) {
                 oi.quantity -= diffItem.quantity
             }
-            assert(oi.totalAmount >= 0G)
-            assert(oi.totalTax >= 0G)
-            assert(oi.totalDiscount >= 0G)
-            assert(oi.quantity >= 0G)
+            assert (oi.totalAmount >= 0G)
+            assert (oi.totalTax >= 0G)
+            assert (oi.totalDiscount >= 0G)
+            assert (oi.quantity >= 0G)
         }
         return returnVal
     }
@@ -233,9 +233,11 @@ class CoreUtils {
     }
 
     static Boolean isValidBalance(Balance balance) {
-        if (balance.status == BalanceStatus.CANCELLED ||
-                balance.status == BalanceStatus.ERROR ||
-                balance.status == BalanceStatus.FAILED) {
+        if (balance.status == BalanceStatus.CANCELLED.name() ||
+                balance.status == BalanceStatus.ERROR.name() ||
+                balance.status == BalanceStatus.FAILED.name() ||
+                balance.status == BalanceStatus.INIT.name() ||
+                balance.status == BalanceStatus.PENDING_CAPTURE.name() ) {
             return false
         }
         return true
@@ -244,7 +246,7 @@ class CoreUtils {
     static Boolean checkDepositOrderRefundable(Order order, List<Balance> balances) {
 
         BillingHistory bh = getLatestBillingHistory(order)
-        if (bh.billingEvent != BillingAction.DEPOSIT) {
+        if (bh.billingEvent != BillingAction.DEPOSIT.name()) {
             return false
         }
         // check there's only one deposit balance and the balance id is same with the billinghistory
@@ -254,7 +256,7 @@ class CoreUtils {
 
         if (validBalances != null && validBalances.size() == 1) {
             def depositBalance = validBalances[0]
-            if (depositBalance.type == BalanceType.DEBIT && depositBalance.id == bh.balanceId) {
+            if (depositBalance.type == BalanceType.DEBIT.name() && depositBalance.id == bh.balanceId) {
                 return true
             }
         }

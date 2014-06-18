@@ -54,7 +54,7 @@ class DiscountRepositorySqlImpl implements DiscountRepository {
 
     @Override
     Promise<Discount> update(Discount discount) {
-        assert discount != null && discount.orderItemId != null
+        assert discount != null && (discount.orderItemId != null || discount.orderId != null)
 
         def entity = modelMapper.toDiscountEntity(discount, new MappingContext())
         def oldEntity = discountDao.read(entity.discountInfoId)

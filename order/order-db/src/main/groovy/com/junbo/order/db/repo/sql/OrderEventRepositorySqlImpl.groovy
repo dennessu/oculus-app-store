@@ -59,8 +59,10 @@ class OrderEventRepositorySqlImpl implements OrderEventRepository {
         def entity = modelMapper.toOrderEventEntity(event, new MappingContext())
         entity.eventId = idGenerator.nextId(entity.orderId)
         orderEventDao.create(entity)
+        event.setId(new OrderEventId(entity.eventId))
+        Utils.fillDateInfo(event, entity)
 
-        return Promise.pure(modelMapper.toOrderEventModel(entity, new MappingContext()))
+        return Promise.pure(event)
     }
 
     @Override

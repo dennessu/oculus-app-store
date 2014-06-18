@@ -58,5 +58,6 @@ class Utils {
         baseModelWithDate.createdTime = commonDbEntityWithDate.createdTime
         baseModelWithDate.updatedByClient = commonDbEntityWithDate.updatedBy
         baseModelWithDate.updatedTime = commonDbEntityWithDate.updatedTime
+        baseModelWithDate.resourceAge = commonDbEntityWithDate.resourceAge
     }
 }

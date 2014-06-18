@@ -52,22 +52,13 @@ class ImmediateSettleAction extends BaseOrderEventAwareAction {
                 facadeContainer.billingFacade.createBalance(
                         CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DEBIT),
                         context?.orderServiceContext?.apiContext?.asyncCharge)
-        return promise.syncRecover { Throwable throwable ->
-            LOGGER.error('name=Order_ImmediateSettle_Error', throwable)
-            throw facadeContainer.billingFacade.convertError(throwable).exception()
-        }.then { Balance balance ->
-            if (balance == null) {
-                LOGGER.error('name=Order_ImmediateSettle_Error_Balance_Null')
-                throw AppErrors.INSTANCE.
-                        billingConnectionError().exception()
-            }
-
+        return promise.then { Balance balance ->
+            assert(balance != null)
             if (balance.status != BalanceStatus.AWAITING_PAYMENT.name() &&
                     balance.status != BalanceStatus.COMPLETED.name() &&
                     balance.status != BalanceStatus.QUEUING.name()) {
                 LOGGER.error('name=Order_ImmediateSettle_Failed')
-                throw AppErrors.INSTANCE.
-                        billingChargeFailed().exception()
+                throw AppErrors.INSTANCE.billingChargeFailed().exception()
             }
 
             context.orderServiceContext.isAsyncCharge = balance.isAsyncCharge
