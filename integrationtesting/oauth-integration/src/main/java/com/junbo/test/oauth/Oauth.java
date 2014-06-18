@@ -278,17 +278,18 @@ public class Oauth {
         }
     }
 
-    public static String UserLogin(String cid, String userName) throws Exception {
+    public static String UserLogin(String cid, String userName, String password) throws Exception {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
         nvps.add(new BasicNameValuePair(DefaultFNEvent, "next"));
         nvps.add(new BasicNameValuePair(DefaultFNLogin, userName));
-        nvps.add(new BasicNameValuePair(DefaultFNPassword, DefaultUserPwd));
+        nvps.add(new BasicNameValuePair(DefaultFNPassword, password == null ? DefaultUserPwd : password));
 
         CloseableHttpResponse response = HttpclientHelper.SimplePost(DefaultAuthorizeURI, nvps, false);
         try {
             ViewModel viewModelResponse = JsonHelper.JsonDeserializer(
                     new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
+            Validator.Validate("validate no error", true, viewModelResponse.getErrors().isEmpty());
             return viewModelResponse.getModel().get("location").toString();
         } finally {
             response.close();
@@ -345,14 +346,61 @@ public class Oauth {
         }
     }
 
-    public static void PostResetPassword(String userId, String locale) throws Exception {
+    public static String PostResetPassword(String userId, String locale) throws Exception {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair(DefaultFNUserId, userId));
         nvps.add(new BasicNameValuePair(DefaultFNLocale, locale == null ? "en_US" : locale));
 
         CloseableHttpResponse response = HttpclientHelper.SimplePost(DefaultResetPasswordURI, nvps, false);
         try {
+            return EntityUtils.toString(response.getEntity(), "UTF-8");
+        } finally {
+            response.close();
+        }
+    }
 
+    public static String GetResetPasswordCid(String resetPasswordLink) throws Exception {
+        CloseableHttpResponse response = HttpclientHelper.SimpleGet(resetPasswordLink, false);
+        try {
+            String tarHeader = "Location";
+            for (Header h : response.getAllHeaders()) {
+                if (h.toString().startsWith(tarHeader)) {
+                    return GetPropertyValueFromString(h.toString(), DefaultFNCid, "&");
+                }
+            }
+            throw new NotFoundException(
+                    "Did not found expected response header: " + tarHeader + " in response");
+        } finally {
+            response.close();
+        }
+    }
+
+    public static void GetResetPasswordView(String cid) throws Exception {
+        CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultResetPasswordURI + "?cid=" + cid, false);
+        try {
+            ViewModel viewModelResponse = JsonHelper.JsonDeserializer(
+                    new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
+            Validator.Validate("validate view", "reset_password", viewModelResponse.getView());
+            Validator.Validate("validate no error", true, viewModelResponse.getErrors().isEmpty());
+        } finally {
+            response.close();
+        }
+    }
+
+    public static void PostResetPasswordWithNewPassword(String cid, String newPassword) throws Exception {
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
+        nvps.add(new BasicNameValuePair(DefaultFNPassword, newPassword));
+        nvps.add(new BasicNameValuePair(DefaultFNEvent, "next"));
+
+        CloseableHttpResponse response = HttpclientHelper.SimplePost(DefaultResetPasswordURI, nvps, false);
+        try {
+            ViewModel viewModelResponse = JsonHelper.JsonDeserializer(
+                    new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
+            Validator.Validate("validate view", "reset_password_result", viewModelResponse.getView());
+            Validator.Validate("validate reset password result", "true",
+                    viewModelResponse.getModel().get("reset_password_success"));
+            Validator.Validate("validate no error", true, viewModelResponse.getErrors().isEmpty());
         } finally {
             response.close();
         }

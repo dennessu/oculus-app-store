@@ -16,7 +16,6 @@ import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -94,8 +93,6 @@ public class OrderBalanceLinkRepositorySqlImpl implements OrderBalanceLinkReposi
     @Override
     public Promise<OrderBalanceLink> update(OrderBalanceLink model) {
         OrderBalanceLinkEntity entity = modelMapper.toOrderBalanceLinkEntity(model, new MappingContext());
-        entity.setModifiedBy("BILLING");
-        entity.setModifiedTime(new Date());
         orderBalanceLinkEntityDao.update(entity);
         return get(entity.getLinkId());
     }

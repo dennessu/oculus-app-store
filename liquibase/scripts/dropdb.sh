@@ -1,5 +1,5 @@
 #!/bin/bash
-source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is needed, see common.sh for detail
+source "$( dirname "${BASH_SOURCE[0]}" )/pgcommon.sh" # ignore \r in windows. The comment is needed.
 
 function dropdb {
     dbname=$1

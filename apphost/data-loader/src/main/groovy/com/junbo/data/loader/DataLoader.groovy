@@ -5,31 +5,44 @@
  */
 package com.junbo.data.loader
 
+import ch.qos.logback.classic.LoggerContext
+import ch.qos.logback.classic.util.ContextInitializer
 import com.junbo.data.handler.DataHandler
 import groovy.transform.CompileStatic
 import org.apache.commons.io.IOUtils
+import org.slf4j.ILoggerFactory
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.slf4j.impl.StaticLoggerBinder
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.context.support.ClassPathXmlApplicationContext
 import org.springframework.core.io.Resource
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.util.CollectionUtils
+import org.springframework.util.ResourceUtils
 
 /**
  * DataLoader.
  */
 @CompileStatic
 class DataLoader {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataLoader)
     private static Map<String, DataHandler> handlers
     private static List<String> dataList
     private
     static PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(this.class.classLoader)
 
     static void main(String[] args) {
-        new ClassPathXmlApplicationContext("classpath*:/spring/*-context.xml")
+        configLog()
+        LOGGER.info("loading spring context start")
+        new ClassPathXmlApplicationContext("classpath*:/spring/*-context.xml", "classpath*:/spring/validators.xml", "classpath*:/spring/transaction.xml")
+        LOGGER.info("loading spring context end")
 
         if (args.length == 0 || args[0].equalsIgnoreCase("all")) {
+            LOGGER.info("loading all data")
             try {
                 load(dataList)
+                LOGGER.info("loading data end")
             } finally {
                 exit()
             }
@@ -40,6 +53,7 @@ class DataLoader {
 
             try {
                 load(list)
+                LOGGER.info("loading data end")
             } finally {
                 exit()
             }
@@ -49,7 +63,7 @@ class DataLoader {
     static void checkData(List<String> list) {
         list.each { data ->
             if (!dataList.contains(data)) {
-                System.out.println("$data not found")
+                LOGGER.error("$data not found in directory")
                 exit()
             }
         }
@@ -65,14 +79,29 @@ class DataLoader {
                         String content = IOUtils.toString(resource.URI)
                         handler.handle(content)
                     } else {
-                        System.out.println("no handler for $data")
+                        LOGGER.error("no handler for $data")
+                        exit()
                     }
                 }
             } catch (Exception e) {
-                System.out.println("Error ocuured while loading $data")
-                System.out.println(e.getStackTrace())
+                LOGGER.error("Error ocuured while loading $data", e)
                 exit()
             }
+        }
+    }
+
+    static void configLog() {
+        System.setProperty('net.spy.log.LoggerImpl', 'net.spy.memcached.compat.log.SLF4JLogger')
+        ILoggerFactory factory = StaticLoggerBinder.singleton.loggerFactory
+        LoggerContext context = (LoggerContext) factory
+        context.stop()
+        String location = 'classpath:logging/logback-dataloader.xml'
+
+        try {
+            URL url = ResourceUtils.getURL(location)
+            new ContextInitializer(context).configureByResource(url)
+        } catch (Exception ex) {
+            throw new IllegalStateException("Could not initialize logging from $location", ex)
         }
     }
 

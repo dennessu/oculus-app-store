@@ -1,6 +1,5 @@
 package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
@@ -14,11 +13,6 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class UserSecurityQuestionAttemptRepositoryCloudantImpl extends CloudantClient<UserSecurityQuestionVerifyAttempt>
         implements UserSecurityQuestionAttemptRepository {
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return views
-    }
 
     @Override
     Promise<UserSecurityQuestionVerifyAttempt> create(UserSecurityQuestionVerifyAttempt entity) {
@@ -52,19 +46,4 @@ class UserSecurityQuestionAttemptRepositoryCloudantImpl extends CloudantClient<U
         return super.queryView('by_user_id_security_question_id',
                 "${userId.toString()}:${userSecurityQuestionId.toString()}", limit, offset, false)
     }
-
-    protected CloudantViews views = new CloudantViews(
-            views: [
-                    'by_user_id': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.userId, doc._id)' +
-                                    '}',
-                            resultClass: String),
-                    'by_user_id_security_question_id': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.userId + \':\' + doc.userSecurityQuestionId, doc._id)' +
-                                    '}',
-                            resultClass: String)
-            ]
-    )
 }

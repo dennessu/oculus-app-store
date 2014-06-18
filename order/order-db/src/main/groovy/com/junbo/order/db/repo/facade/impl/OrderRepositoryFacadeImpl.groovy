@@ -76,13 +76,27 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
 
     @Override
     Order updateOrder(Order order, Boolean updateOnlyOrder,
-                      Boolean updateNonTentativeOrder, OrderItemRevisionType revisionType) {
+                      Boolean saveRevision, OrderItemRevisionType revisionType) {
         try {
-            return ((Promise<Order>) orderRepository.update(order).then { Order savedOrder ->
+            def existingOrder = orderRepository.get(order.getId()).get()
+            if (existingOrder == null) {
+                throw AppErrors.INSTANCE.orderNotFound().exception()
+            }
+
+            if (!existingOrder.tentative && saveRevision) {
+                def orderRevision = toOrderRevision(order)
+                existingOrder.latestOrderRevisionId = orderRevision.getId()
+                existingOrder.orderRevisions << orderRevision
+                existingOrder.status = order.status
+            } else {
+                existingOrder= order
+            }
+
+            return ((Promise<Order>) orderRepository.update(existingOrder).then { Order savedOrder ->
                 if (!updateOnlyOrder) {
                     // update non-tentative order items to item revision
                     return saveOrderItems(savedOrder.getId(), order.orderItems,
-                            updateNonTentativeOrder, revisionType).then {
+                            saveRevision, revisionType).then {
                         return saveDiscounts(savedOrder.getId(), order.discounts)
                     }.then {
                         return Promise.pure(order)
@@ -302,5 +316,22 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
         item.totalTax = revision.totalTax
         item.totalDiscount = revision.totalTax
         return item
+    }
+
+    private OrderRevision toOrderRevision(Order order) {
+        def val = new OrderRevision()
+        val.isTaxInclusive = order.isTaxInclusive
+        val.orderId = order.getId()
+        val.setId(idGenerator.nextId(val.orderId.value))
+        val.shippingAddress = order.shippingAddress
+        val.shippingMethod = order.shippingMethod
+        val.shippingToName = order.shippingToName
+        val.shippingToPhone = order.shippingToPhone
+        val.totalAmount = order.totalAmount
+        val.totalDiscount = order.totalDiscount
+        val.totalShippingFee = order.totalShippingFee
+        val.totalShippingFeeDiscount = order.totalShippingFeeDiscount
+        val.totalTax = order.totalTax
+        return val
     }
 }

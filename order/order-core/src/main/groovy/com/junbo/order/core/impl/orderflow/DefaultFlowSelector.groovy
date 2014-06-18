@@ -118,7 +118,7 @@ class DefaultFlowSelector implements FlowSelector {
             // TODO: do not support multiple payment methods now
             assert(!CollectionUtils.isEmpty(pis))
             switch (PIType.get(pis[0].type)) {
-                // TODO reference to payment instrument type
+            // TODO reference to payment instrument type
                 case PIType.CREDITCARD:
                     // TODO: do not support mixed order containing both physical item & digital item now
                     if (CoreUtils.isPreorder(context.order)) {
@@ -129,6 +129,7 @@ class DefaultFlowSelector implements FlowSelector {
                 case PIType.STOREDVALUE:
                     return Promise.pure(FlowType.IMMEDIATE_SETTLE.name())
                 case PIType.PAYPAL:
+                case PIType.OTHERS:
                     return Promise.pure(FlowType.WEB_PAYMENT_CHARGE.name())
                 default:
                     LOGGER.error('name=Payment_Instrument_Type_Not_Supported, action: {}', pis[0]?.type)
@@ -141,7 +142,7 @@ class DefaultFlowSelector implements FlowSelector {
     private Promise<String> selectFlowForChargeEvent(OrderEvent event, OrderServiceContext context) {
         orderServiceContextBuilder.getPaymentInstruments(context).then { List<PaymentInstrument> pis ->
             boolean hasWebPayment = pis.any { PaymentInstrument pi ->
-                return PIType.get(pi.type) == PIType.PAYPAL
+                return PIType.get(pi.type) == PIType.PAYPAL || PIType.get(pi.type) == PIType.OTHERS
             }
 
             if (hasWebPayment) {

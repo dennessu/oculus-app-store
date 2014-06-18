@@ -4,6 +4,12 @@ import com.junbo.common.id.PIType;
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
 import com.junbo.payment.core.BaseTest;
 import com.junbo.payment.core.mock.MockPaymentProviderServiceImpl;
+import com.junbo.payment.core.provider.PaymentProviderService;
+import com.junbo.payment.core.provider.adyen.AdyenCCProivderServiceImpl;
+import com.junbo.payment.core.provider.adyen.AdyenProviderServiceImpl;
+import com.junbo.payment.core.provider.braintree.BrainTreePaymentProviderServiceImpl;
+import com.junbo.payment.core.provider.ewallet.EWalletProviderServiceImpl;
+import com.junbo.payment.core.provider.paypal.PayPalProviderServiceImpl;
 import com.junbo.payment.spec.enums.CreditCardType;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.*;
@@ -110,6 +116,18 @@ public class PaymentServiceTest extends BaseTest {
         PaymentTransaction result = paymentService.charge(payment).get();
         Assert.assertEquals(result.getStatus(), PaymentStatus.SETTLED.toString());
         Assert.assertNotNull(result.getExternalToken());
+    }
+
+    @Test
+    public void testRoutingService() throws ExecutionException, InterruptedException {
+        PaymentProviderService service = providerRoutingService.getPaymentProvider(PIType.CREDITCARD);
+        Assert.assertEquals(true, service instanceof BrainTreePaymentProviderServiceImpl);
+        service = providerRoutingService.getPaymentProvider(PIType.PAYPAL);
+        Assert.assertEquals(true, service instanceof PayPalProviderServiceImpl);
+        service = providerRoutingService.getPaymentProvider(PIType.STOREDVALUE);
+        Assert.assertEquals(true, service instanceof EWalletProviderServiceImpl);
+        service = providerRoutingService.getPaymentProvider(PIType.OTHERS);
+        Assert.assertEquals(true, service instanceof AdyenProviderServiceImpl);
     }
 
     private PaymentInstrument buildWalletPIRequest() {

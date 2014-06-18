@@ -27,34 +27,42 @@ class ApiDefinitionDataHandler extends BaseDataHandler {
     @Override
     void handle(String content) {
         ApiDefinition apiDefinition
-
         try {
             apiDefinition = transcoder.decode(new TypeReference<ApiDefinition>() {}, content) as ApiDefinition
         } catch (Exception e) {
-            logger.warn('Error parsing ApiDefinition, skip this content', e)
-            return
+            logger.error("Error parsing apiDefinition $content", e)
+            exit()
         }
+
+        logger.info("loading apiDefinition $apiDefinition.apiName")
 
         ApiDefinition existing = null
         try {
             existing = apiDefinitionResource.get(apiDefinition.apiName).get()
         } catch (AppErrorException e) {
-            logger.debug('This content does not exist in current database', e)
+            logger.debug('This content does not exist in current database.', e)
         }
 
         if (existing != null) {
             if (alwaysOverwrite) {
-                logger.debug("Overwrite ApiDefinition $apiDefinition.apiName with this content.")
+                logger.debug("Overwrite apiDefinition $apiDefinition.apiName with this content.")
                 apiDefinition.id = existing.id
                 apiDefinition.rev = existing.rev
-                apiDefinitionResource.update(apiDefinition.apiName, apiDefinition).get()
-            }
-            else {
+                try {
+                    apiDefinitionResource.update(apiDefinition.apiName, apiDefinition).get()
+                } catch (Exception e) {
+                    logger.error("Error updating apiDefinition $apiDefinition.apiName.", e)
+                }
+            } else {
                 logger.debug("ApiDefinition $apiDefinition.apiName already exists, skip this content.")
             }
         } else {
             logger.debug("Create new ApiDefinition $apiDefinition.apiName with this content.")
-            apiDefinitionResource.create(apiDefinition).get()
+            try {
+                apiDefinitionResource.create(apiDefinition).get()
+            } catch (Exception e) {
+                logger.error("Error creating apiDefinition $apiDefinition.apiName.", e)
+            }
         }
     }
 }

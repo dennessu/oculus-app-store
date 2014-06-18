@@ -1,6 +1,5 @@
 package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.id.UserPersonalInfoIdToUserIdLinkId
@@ -15,11 +14,6 @@ import org.springframework.util.CollectionUtils
 @CompileStatic
 class UserPersonalInfoIdToUserIdLinkRepositoryImpl extends CloudantClient<UserPersonalInfoIdToUserIdLink>
         implements UserPersonalInfoIdToUserIdLinkRepository {
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return views
-    }
 
     @Override
     Promise<List<UserPersonalInfoIdToUserIdLink>> searchByUserId(UserId userId, Integer limit, Integer offset) {
@@ -56,19 +50,4 @@ class UserPersonalInfoIdToUserIdLinkRepositoryImpl extends CloudantClient<UserPe
     Promise<Void> delete(UserPersonalInfoIdToUserIdLinkId id) {
         return super.cloudantDelete(id.toString())
     }
-
-    protected CloudantViews views = new CloudantViews(
-            views: [
-                    'by_user_id': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.userId, doc._id)' +
-                                    '}',
-                            resultClass: String),
-                    'by_user_personal_info_id': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.userPersonalInfoId, doc._id)' +
-                                    '}',
-                            resultClass: String)
-            ]
-    )
 }

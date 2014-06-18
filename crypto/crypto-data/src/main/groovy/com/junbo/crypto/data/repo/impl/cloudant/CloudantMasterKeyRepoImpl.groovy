@@ -1,7 +1,5 @@
 package com.junbo.crypto.data.repo.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.MasterKeyId
 import com.junbo.crypto.data.repo.MasterKeyRepo
 import com.junbo.crypto.spec.model.MasterKey
@@ -10,18 +8,12 @@ import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.CollectionUtils
-
 /**
  * Created by liangfu on 5/12/14.
  */
 @CompileStatic
 class CloudantMasterKeyRepoImpl extends CloudantClient<MasterKey> implements MasterKeyRepo {
     private IdGenerator idGenerator
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return views
-    }
 
     @Override
     Promise<List<MasterKey>> getAllMaterKeys() {
@@ -57,16 +49,6 @@ class CloudantMasterKeyRepoImpl extends CloudantClient<MasterKey> implements Mas
     Promise<MasterKey> get(MasterKeyId id) {
         return cloudantGet(id.toString())
     }
-
-    protected CloudantViews views = new CloudantViews(
-            views: [
-                    'by_key_version': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.keyVersion.toString(), doc._id)' +
-                                    '}',
-                            resultClass: String)
-            ]
-    )
 
     @Override
     Promise<Void> delete(MasterKeyId id) {

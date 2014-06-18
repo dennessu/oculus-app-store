@@ -6,96 +6,9 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <!-->
     <changeSet id="1" author='WenhongZhu' context="PREDEPLOY">
         <sql>
-        <![CDATA[
-            create table country_type
-                (
-                  country_type_id                 int           not null,
-                  iso_3166_country_number         int           not null,
-                  iso_3166_country_code           char(2)       not null,
-                  iso_3166_country_3_code         char(3)       not null,
-                  iso_3166_country_name           varchar(128)  not null,
-                  phone_country_code              varchar(8)        null,
-                  default_currency_id             smallint          null,
-                  country_vat_code                char(2)           null,
-                  created_time                    date          not null,
-                  created_by                      varchar(50)       null,
-
-                  constraint country_type_id_pk primary key (country_type_id)
-                );
-        ]]>
-        </sql>
-    </changeSet>
-    -->
-    <changeSet id="3" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
-            create table payment_instrument_type
-                (
-                  payment_instrument_type_id        smallint            not null,
-				  name                              varchar(32)         not null, 
-				  recurring                         varchar(16)             null,
-				  refundable                        varchar(16)             null,
-				  authorizable                      varchar(16)             null,
-				  defaultable                       varchar(16)             null,                  
-                  created_time                      date                not null,
-                  created_by                        varchar(50)         not null,
-
-                  constraint payment_instrument_type_id_pk primary key (payment_instrument_type_id)
-                );
-        ]]>
-        </sql>
-    </changeSet>
-
-    <changeSet id="4" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
-            create table credit_card_type
-                (
-                  credit_card_type_id           smallint            not null,
-                  description                   varchar(20)         not null,
-                  display_name                  varchar             not null,
-                  created_time                  date                not null,
-                  created_by                    varchar(50)             null,
-
-                  constraint credit_card_type_id_pk primary key (credit_card_type_id)
-                );
-        ]]>
-        </sql>
-    </changeSet>
-
-    
-    <changeSet id="5" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
-            create table address
-                (
-                  address_id                bigint              not null,
-                  unit_number               varchar(10)             null,
-                  address_line_1            varchar(100)        not null,
-                  address_line_2            char(100)               null,
-                  address_line_3            varchar(100)            null,
-                  city                      varchar(50)             null,
-                  district                  char(50)                null,
-                  state                     varchar(50)             null,
-                  country_code              char(3)             not null,
-                  postal_code               varchar(50)         not null,
-                  created_time              date                not null,
-                  created_by                varchar(50)             null,
-                  updated_time              date                    null,
-                  updated_by                varchar(50)             null,
-
-                  constraint address_id_pk primary key (address_id)
-                );
-        ]]>
-        </sql>
-    </changeSet>
-
-    <changeSet id="8" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
+            <![CDATA[
             create table payment_instrument
                 (
                   payment_instrument_id             bigint              not null,
@@ -113,22 +26,15 @@
                   deleted                           boolean                 null,
 				  last_validated_time               date                    null,
 				  external_token                    varchar(64)             null,
-                  created_time                      date                not null,
+				  resource_age                      bigint              not null,
+                  created_time                      timestamp           not null,
                   created_by                        varchar(50)             null,
-                  updated_time                      date                    null,
+                  updated_time                      timestamp               null,
                   updated_by                        varchar(50)             null,
 
                   constraint payment_instrument_id_pk primary key (payment_instrument_id)
                 );
-        ]]>
-        </sql>
-    </changeSet>
 
-
-
-    <changeSet id="9" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
             create table credit_card_payment_instrument
                 (
                   payment_instrument_id             bigint              not null,
@@ -138,80 +44,91 @@
 				  prepaid                           boolean                 null,
 				  debit                             boolean                 null,
 				  commercial                        boolean                 null,
-				  issue_country                     varchar(16)              null,
-				  created_time                      date                not null,
+				  issue_country                     varchar(16)             null,
+				  resource_age                      bigint              not null,
+                  created_time                      timestamp           not null,
                   created_by                        varchar(50)             null,
-                  updated_time                      date                    null,
+                  updated_time                      timestamp               null,
                   updated_by                        varchar(50)             null,
 
                   constraint cc_payment_instrument_id_pk primary key (payment_instrument_id)
                 );
-        ]]>
-        </sql>
-    </changeSet>
 
-    <!--
-    <changeSet id="10" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
-            create table currency_type 
+            create table payment
                 (
-                    currency_iso_num                int            not null, 
-                    currency_description            varchar(32)    not null, 
-                    currency_code                   char(3)        not null, 
-                    implied_decimals                smallint       not null, 
-                    base_unit                       smallint       not null,
-                    min_auth_amount                 numeric        not null default 1,
-                    created_time                    date           not null,
-                    created_by                      varchar(50)    not null,
-                    
-                    constraint currency_iso_num_pk
-                    primary key (currency_iso_num)   
-                );
-        ]]>
-        </sql>
-    </changeSet>
-    -->
+                  payment_id                      bigint           not null,
+                  user_id                         bigint           not null,
+                  payment_type_id                 smallint         not null,
+                  currency_code                   char(3)          not null,
+                  net_amount                      numeric          not null,
+                  country_code                    char(3)              null,
+				  business_descriptor             varchar(50)          null,
+                  payment_instrument_id           bigint           not null,
+                  payment_provider_id             int              not null,
+                  merchant_account_id             int                  null,
+                  payment_status_id               smallint         not null,
+				  external_token                  varchar(128)         null,
+				  billing_ref_id                  varchar(128)     not null,
+				  resource_age                    bigint           not null,
+                  created_time                    timestamp        not null,
+                  created_by                      varchar(50)          null,
+                  updated_time                    timestamp            null,
+                  updated_by                      varchar(50)          null,
 
-    <changeSet id="11" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
-            create table payment_provider
+                  constraint payment_id_pk primary key (payment_id)
+                );
+
+            create table payment_event
                 (
-                  payment_provider_id           smallint            not null,
-                  payment_provider_name         varchar(50)         not null,
-                  payment_instrument_type_id    smallint            not null,
-                  country_code                  char(3)                 null,
-                  currency_code                 char(3)                 null,
-                  created_time                  date                not null,
-                  created_by                    varchar(50)         not null,
+                  payment_event_id           bigint           not null,
+                  payment_id                 bigint           not null,
+                  payment_event_type_id      smallint         not null,
+				  event_status_id            smallint         not null,
+                  currency_code              char(3)              null,
+                  net_amount                 numeric              null,
+				  request                    json             not null,
+				  response                   json             not null,
+				  resource_age               bigint           not null,
+                  created_time               timestamp        not null,
+                  created_by                 varchar(50)          null,
+                  updated_time               timestamp            null,
+                  updated_by                 varchar(50)          null,
 
-                  constraint payment_provider_id_pk primary key (payment_provider_id)
+                  constraint payment_event_id_pk primary key (payment_event_id)
                 );
-        ]]>
-        </sql>
-    </changeSet>
 
-    <changeSet id="12" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-            <![CDATA[
-            create table tenant
+            CREATE TABLE payment_tracking_uuid (
+                   tracking_uuid_id                bigint             not null,
+                   tracking_uuid                   uuid               NOT NULL,
+                   user_id                         bigint                 null,
+                   api_id                          int                NOT NULL,
+                   payment_instrument_id           bigint                 NULL,
+                   payment_id                      bigint                 NULL,
+                   response                        json                   NULL,
+                   resource_age                    bigint             not null,
+                   created_time                    timestamp          not null,
+                   created_by                      varchar(50)            null,
+                   updated_time                    timestamp              null,
+                   updated_by                      varchar(50)            null,
+
+                   constraint tracking_uuid_id primary key (tracking_uuid_id)
+            );
+
+            create table payment_property
                 (
-                    tenant_id                     int                 not null,
-                    name                          varchar(128)        not null,
-                    description                   varchar(1024)       not null,
-                    created_time                  date                not null,
-                    created_by                    varchar(64)         not null,
+                  payment_property_id        bigint           not null,
+                  payment_id                 bigint           not null,
+                  property_name              varchar(64)      not null,
+                  property_value             varchar(64)      not null,
+                  resource_age               bigint           not null,
+                  created_time               timestamp        not null,
+                  created_by                 varchar(50)          null,
+                  updated_time               timestamp            null,
+                  updated_by                 varchar(50)          null,
 
-                    constraint tenant_id_pk primary key (tenant_id)
+                  constraint payment_property_id_pk primary key (payment_property_id)
                 );
-        ]]>
-        </sql>
-    </changeSet>
 
-    <changeSet id="120" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
             create table merchant_account
                 (
                   merchant_account_id            int                not null,
@@ -226,113 +143,70 @@
 
                   constraint merchant_account_id_pk primary key (merchant_account_id)
                 );
-        ]]>
-        </sql>
-    </changeSet>
 
-    <changeSet id="13" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
-            create table payment_type
+            create table payment_provider
                 (
-                    payment_type_id               smallint            not null,
-                    name                          varchar(128)        not null,
-                    description                   varchar(1024)       not null,
-                    created_time                  date                not null,
-                    created_by                    varchar(64)         not null,
+                  payment_provider_id           smallint            not null,
+                  payment_provider_name         varchar(50)         not null,
+                  payment_instrument_type_id    smallint            not null,
+                  country_code                  char(3)                 null,
+                  currency_code                 char(3)                 null,
+                  created_time                  date                not null,
+                  created_by                    varchar(50)         not null,
 
-                    constraint payment_type_id_pk primary key (payment_type_id)
+                  constraint payment_provider_id_pk primary key (payment_provider_id)
+                );
+
+            create table payment_instrument_type
+                (
+                  payment_instrument_type_id        smallint            not null,
+				  name                              varchar(32)         not null,
+				  recurring                         varchar(16)             null,
+				  refundable                        varchar(16)             null,
+				  authorizable                      varchar(16)             null,
+				  defaultable                       varchar(16)             null,
+                  created_time                      date                not null,
+                  created_by                        varchar(50)         not null,
+
+                  constraint payment_instrument_type_id_pk primary key (payment_instrument_type_id)
                 );
         ]]>
         </sql>
     </changeSet>
 
-    <changeSet id="14" author='WenhongZhu' context="PREDEPLOY">
+    <!-- switch to Adyen CC
+     ,(4, 'AdyenCC', 0, null, 'USD', '2014-02-10', 'wenhongzhu');
+    -->
+
+    <changeSet id="2" author='WenhongZhu' context="PREDEPLOY">
         <sql>
-        <![CDATA[
-            create table payment_event_type
-                (
-                    payment_event_type_id        smallint            not null,
-                    name                          varchar(128)        not null,
-                    description                   varchar(1024)       not null,
-                    created_time                  date                not null,
-                    created_by                    varchar(64)         not null,
+            <![CDATA[
+            insert into payment_provider values (0, 'BrainTree', 0, null, 'USD', '2014-02-10','wenhongzhu')
+                                               ,(1, 'Wallet', 2, null, 'WLT', '2014-02-10', 'wenhongzhu')
+                                               ,(2, 'PayPal', 3, null, 'USD', '2014-02-10', 'wenhongzhu')
+                                               ,(3, 'Adyen', 4, null, 'USD', '2014-02-10', 'wenhongzhu');
 
-                    constraint payment_event_type_id_pk primary key (payment_event_type_id)
-                );
-        ]]>
-        </sql>
-    </changeSet>
-
-
-    <changeSet id="15" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
-            create table payment_status
-                (
-                    payment_status_id             smallint            not null,
-                    name                          varchar(128)        not null,
-                    description                   varchar(1024)       not null,
-                    created_time                  date                not null,
-                    created_by                    varchar(64)         not null,
-
-                    constraint payment_status_id_pk primary key (payment_status_id)
-                );
-        ]]>
-        </sql>
-    </changeSet>
-
-    
-
-    <changeSet id="16" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
-            create table payment
-                (
-                  payment_id                      bigint           not null,
-                  user_id                         bigint           not null,
-                  payment_type_id                 smallint         not null,
-                  currency_code                   char(3)          not null,
-                  net_amount                      numeric          not null,
-                  country_code                    char(3)              null,
-				  business_descriptor             varchar(50)          null,
-                  payment_instrument_id           bigint           not null,
-                  payment_provider_id             int              not null,
-                  merchant_account_id             int                  null,
-                  payment_status_id               smallint         not null,                  
-				  external_token                  varchar(128)         null,
-				  billing_ref_id                  varchar(128)     not null,
-                  created_time                    date             not null,
-                  created_by                      varchar(50)          null,
-                  updated_time                    date                 null,
-                  updated_by                      varchar(50)          null,
-
-                  constraint payment_id_pk primary key (payment_id)
-                );
-        ]]>
-        </sql>
-    </changeSet>
-
-    <changeSet id="17" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
-            create table payment_event
-                (
-                  payment_event_id           bigint           not null,
-                  payment_id                 bigint           not null,
-                  payment_event_type_id      smallint         not null,
-				  event_status_id            smallint         not null,
-                  currency_code              char(3)              null,
-                  net_amount                 numeric              null,
-				  request                    json             not null,
-				  response                   json             not null,
-                  created_time               date             not null,
-                  created_by                 varchar(50)          null,
-				  updated_time               date                 null,
-                  updated_by                 varchar(50)          null,
-
-                  constraint payment_event_id_pk primary key (payment_event_id)
-                );
+            insert into merchant_account values (0, '5ck86h27m34nrh6f', 0, 0, null, null, 'USD', '2014-02-10','wenhongzhu')
+			                                   ,(1, 'OculusAED', 0, 0, null, null, 'AED', '2014-02-10','wenhongzhu')
+			                                   ,(2, 'OculusAUD', 0, 0, null, null, 'AUD', '2014-02-10','wenhongzhu')
+			                                   ,(3, 'OculusCAD', 0, 0, null, null, 'CAD', '2014-02-10','wenhongzhu')
+			                                   ,(4, 'OculusCNY', 0, 0, null, null, 'CNY', '2014-02-10','wenhongzhu')
+			                                   ,(5, 'OculusEUR', 0, 0, null, null, 'EUR', '2014-02-10','wenhongzhu')
+			                                   ,(6, 'OculusGBP', 0, 0, null, null, 'GBP', '2014-02-10','wenhongzhu')
+			                                   ,(7, 'OculusHKD', 0, 0, null, null, 'HKD', '2014-02-10','wenhongzhu')
+			                                   ,(8, 'OculusIDR', 0, 0, null, null, 'IDR', '2014-02-10','wenhongzhu')
+			                                   ,(9, 'OculusINR', 0, 0, null, null, 'INR', '2014-02-10','wenhongzhu')
+			                                   ,(10, 'OculusJPY', 0, 0, null, null, 'JPY', '2014-02-10','wenhongzhu')
+			                                   ,(11, 'OculusKRW', 0, 0, null, null, 'KRW', '2014-02-10','wenhongzhu')
+			                                   ,(12, 'OculusMXN', 0, 0, null, null, 'MXN', '2014-02-10','wenhongzhu')
+			                                   ,(13, 'OculusMYR', 0, 0, null, null, 'MYR', '2014-02-10','wenhongzhu')
+			                                   ,(14, 'OculusRUB', 0, 0, null, null, 'RUB', '2014-02-10','wenhongzhu')
+			                                   ,(15, 'OculusSAR', 0, 0, null, null, 'SAR', '2014-02-10','wenhongzhu')
+			                                   ,(16, 'OculusSGB', 0, 0, null, null, 'SGB', '2014-02-10','wenhongzhu')
+			                                   ,(17, 'OculusTHB', 0, 0, null, null, 'THB', '2014-02-10','wenhongzhu')
+			                                   ,(18, 'OculusTRY', 0, 0, null, null, 'TRY', '2014-02-10','wenhongzhu')
+			                                   ,(19, 'OculusTWD', 0, 0, null, null, 'TWD', '2014-02-10','wenhongzhu')
+			                                   ,(20, 'OculusZAR', 0, 0, null, null, 'ZAR', '2014-02-10','wenhongzhu');
         ]]>
         </sql>
     </changeSet>
@@ -578,22 +452,6 @@
     </changeSet>
     -->
 
-    <changeSet id="19" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
-            insert into credit_card_type values (0, 'VISA', 'Visa', '2014-02-10', 'wenhongzhu')
-                        ,( 1, 'MC', 'Master Card',  '2014-02-10', 'wenhongzhu')
-                        ,( 2, 'AMEX', 'American Express', '2014-02-10', 'wenhongzhu')
-                        ,( 3, 'DISCOVER', 'Discover Network',  '2014-02-10', 'wenhongzhu')
-                        ,( 4, 'JCB', 'JCB', '2014-02-10', 'wenhongzhu')
-                        ,( 5, 'DINERS', 'Diners', '2014-02-10', 'wenhongzhu')
-                        ,( 6, 'KLCC', 'KLCC', '2014-02-10', 'wenhongzhu')
-                        ,( 7, 'ELO', 'ELo', '2014-02-10', 'wenhongzhu')
-                        ,( 8, 'HIPERCARD', 'Hipercard', '2014-02-10', 'wenhongzhu');
-        ]]>
-        </sql>
-    </changeSet>
-
     <!--
     <changeSet id="20" author='WenhongZhu' context="PREDEPLOY">
         <sql>
@@ -713,203 +571,7 @@
     </changeSet>
     -->
 
-    <changeSet id="21" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
-            insert into payment_instrument_type values
-                        (0,'CREDITCARD','YES','YES','YES','YES', '2014-02-10', 'wenhongzhu')
-                       ,(1,'DIRECTDEBIT','YES','YES','NO','NO','2014-02-10', 'wenhongzhu')                       
-                       ,(2,'WALLET','YES','YES','NO','NO', '2014-02-10', 'wenhongzhu')                       
-                       ,(3,'PAYPAL','YES','YES','YES','YES', '2014-02-10', 'wenhongzhu');                   
-        ]]>
-        </sql>
-    </changeSet>
 
 
-    <changeSet id="23" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
-            insert into payment_type values
-                    (0, 'AUTHORIZE','A authorize request.', '2014-02-10', 'wenhongzhu')
-                   ,(1, 'CREDIT','A credit request.', '2014-02-10', 'wenhongzhu')
-                   ,(2, 'CHARGE','A charge request.', '2014-02-10', 'wenhongzhu');
-        ]]>
-        </sql>
-    </changeSet>
-
-    <changeSet id="24" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
-            insert into payment_status values
-                  (0, 'AUTH_CREATED', 'Authorize created', '2014-02-10', 'wenhongzhu')
-                 ,(1,'AUTHORIZED', 'Authorized successfully', '2014-02-10', 'wenhongzhu')
-                 ,(2,'AUTH_DECLINED', 'Authorize declined by provider', '2014-02-10', 'wenhongzhu')
-                 ,(3,'AUTHORIZATION_EXPIRED', 'Authorize is expired', '2014-02-10', 'wenhongzhu')
-                 ,(4,'AUTHORIZING', 'Authorize is processing', '2014-02-10', 'wenhongzhu')
-                 ,(5,'SETTLEMENT_SUBMIT_CREATED', 'Settlement submit created', '2014-02-10', 'wenhongzhu')
-                 ,(6,'SETTLEMENT_SUBMITTED', 'Settlement is submitted', '2014-02-10', 'wenhongzhu')
-                 ,(7,'SETTLEMENT_SUBMIT_DECLINED', 'Settlement submit is declined by provider', '2014-02-10', 'wenhongzhu')
-                 ,(8,'REVERSE_CREATED', 'Reverse created', '2014-02-10', 'wenhongzhu')
-                 ,(9,'REVERSED', 'Reverse successfully', '2014-02-10', 'wenhongzhu')
-                 ,(10,'REVERSE_DECLINED', 'Reverse is declined by provider', '2014-02-10', 'wenhongzhu')
-                 ,(11,'SETTLE_CREATED', 'Settlement is created', '2014-02-10', 'wenhongzhu')
-                 ,(12,'SETTLED', 'Settlement is completed', '2014-02-10', 'wenhongzhu')
-                 ,(13,'SETTLE_DECLINED', 'Settlement is processing', '2014-02-10', 'wenhongzhu')
-                 ,(14,'SETTLING', 'Settlement is processing', '2014-02-10', 'wenhongzhu')
-                 ,(15,'REFUND_CREATED', 'Refund is created', '2014-02-10', 'wenhongzhu')
-                 ,(16,'REFUNDED', 'Refund is completed', '2014-02-10', 'wenhongzhu')
-                 ,(17,'REFUND_DECLINED', 'Refund is declined', '2014-02-10', 'wenhongzhu')
-                 ,(18,'UNCONFIRMED', 'the transaction is unconfirmed by payer', '2014-02-10', 'wenhongzhu')
-                 ,(19,'CREDIT_CREATED', 'a credit is declined', '2014-02-10', 'wenhongzhu')
-                 ,(20,'CREDIT_DECLINED', 'the credit is declined', '2014-02-10', 'wenhongzhu')
-                 ,(21,'UNRECOGNIZED', 'Unkonw status', '2014-02-10', 'wenhongzhu');
-        ]]>
-        </sql>
-    </changeSet>
-
-
-    <changeSet id="26" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
-            insert into payment_event_type values (0,'AUTH_CREATE', 'create an authorize transaction.', '2014-02-14', 'wenhongzhu')
-                  ,(1,'AUTHORIZE','authorize a payment.', '2014-02-14', 'wenhongzhu')
-                  ,(2,'SUBMIT_SETTLE_CREATE','create a settlement submit.', '2014-02-14', 'wenhongzhu')
-                  ,(3,'SUBMIT_SETTLE', 'submit a settlement.', '2014-02-14', 'wenhongzhu')
-                  ,(4,'REVERSE_CREATE','create a reverse transaction.', '2014-02-14', 'wenhongzhu')
-                  ,(5,'AUTH_REVERSE','reverse an authorize transaction', '2014-02-14', 'wenhongzhu')
-				  ,(6,'SUBMIT_SETTLE_REVERSE','reverse a settlement_submit transaction', '2014-02-14', 'wenhongzhu')
-				  ,(7,'IMMEDIATE_SETTLE_CREATE','create a transaction settlement immediately', '2014-02-14', 'wenhongzhu')
-				  ,(8,'IMMEDIATE_SETTLE','settle a transaction immediately', '2014-02-14', 'wenhongzhu')
-				  ,(9,'REFUND_CREATE','create a transaction refund', '2014-02-14', 'wenhongzhu')
-				  ,(10,'REFUND','refund a transaction', '2014-02-14', 'wenhongzhu')
-				  ,(11,'REPORT_EVENT','provider reports a new event', '2014-02-14', 'wenhongzhu')
-				  ,(12,'CREDIT_CREATE','create a credit transaction', '2014-02-14', 'wenhongzhu')
-				  ,(13,'CREDIT','credit transaction', '2014-02-14', 'wenhongzhu')
-				  ,(14,'NOTIFY','Notify event from Client or Provider', '2014-02-14', 'wenhongzhu');
-        ]]>
-        </sql>
-    </changeSet>
-
-    <changeSet id="27" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
-            insert into payment_provider values (0, 'BrainTree', 0, null, 'USD', '2014-02-10','wenhongzhu')
-                                               ,(1, 'Wallet', 2, null, 'WLT', '2014-02-10', 'wenhongzhu')
-                                               ,(2, 'PayPal', 3, null, 'USD', '2014-02-10', 'wenhongzhu')
-                                               ,(3, 'Adyen', 3, null, 'USD', '2014-02-10', 'wenhongzhu')
-                                               ,(4, 'AdyenCreditCard', 3, null, 'USD', '2014-02-10', 'wenhongzhu');
-        ]]>
-        </sql>
-    </changeSet>
-
-    <changeSet id="28" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-            <![CDATA[
-            insert into tenant values (0, 'OVR','Oculus Vitual Reality', '2014-02-10','wenhongzhu');
-        ]]>
-        </sql>
-    </changeSet>
-	
-	<changeSet id="280" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
-            insert into merchant_account values (0, '5ck86h27m34nrh6f', 0, 0, null, null, 'USD', '2014-02-10','wenhongzhu')
-			                                   ,(1, 'OculusAED', 0, 0, null, null, 'AED', '2014-02-10','wenhongzhu')
-			                                   ,(2, 'OculusAUD', 0, 0, null, null, 'AUD', '2014-02-10','wenhongzhu')
-			                                   ,(3, 'OculusCAD', 0, 0, null, null, 'CAD', '2014-02-10','wenhongzhu')
-			                                   ,(4, 'OculusCNY', 0, 0, null, null, 'CNY', '2014-02-10','wenhongzhu')
-			                                   ,(5, 'OculusEUR', 0, 0, null, null, 'EUR', '2014-02-10','wenhongzhu')
-			                                   ,(6, 'OculusGBP', 0, 0, null, null, 'GBP', '2014-02-10','wenhongzhu')
-			                                   ,(7, 'OculusHKD', 0, 0, null, null, 'HKD', '2014-02-10','wenhongzhu')
-			                                   ,(8, 'OculusIDR', 0, 0, null, null, 'IDR', '2014-02-10','wenhongzhu')
-			                                   ,(9, 'OculusINR', 0, 0, null, null, 'INR', '2014-02-10','wenhongzhu')
-			                                   ,(10, 'OculusJPY', 0, 0, null, null, 'JPY', '2014-02-10','wenhongzhu')
-			                                   ,(11, 'OculusKRW', 0, 0, null, null, 'KRW', '2014-02-10','wenhongzhu')
-			                                   ,(12, 'OculusMXN', 0, 0, null, null, 'MXN', '2014-02-10','wenhongzhu')
-			                                   ,(13, 'OculusMYR', 0, 0, null, null, 'MYR', '2014-02-10','wenhongzhu')
-			                                   ,(14, 'OculusRUB', 0, 0, null, null, 'RUB', '2014-02-10','wenhongzhu')
-			                                   ,(15, 'OculusSAR', 0, 0, null, null, 'SAR', '2014-02-10','wenhongzhu')
-			                                   ,(16, 'OculusSGB', 0, 0, null, null, 'SGB', '2014-02-10','wenhongzhu')
-			                                   ,(17, 'OculusTHB', 0, 0, null, null, 'THB', '2014-02-10','wenhongzhu')
-			                                   ,(18, 'OculusTRY', 0, 0, null, null, 'TRY', '2014-02-10','wenhongzhu')
-			                                   ,(19, 'OculusTWD', 0, 0, null, null, 'TWD', '2014-02-10','wenhongzhu')
-			                                   ,(20, 'OculusZAR', 0, 0, null, null, 'ZAR', '2014-02-10','wenhongzhu');
-        ]]>
-        </sql>
-    </changeSet>
-
-    <changeSet id="29" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
-            CREATE TABLE payment_api(
-                   api_id                   int               NOT NULL,
-                   api_name                 varchar(64)           NULL,
-                   created_time             date              not null,
-                   created_by               varchar(50)           null,
-
-                   constraint api_id primary key (api_id) 
-            );
-        ]]>
-        </sql>
-    </changeSet>
-
-    <changeSet id="30" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
-            CREATE TABLE payment_tracking_uuid (
-                   tracking_uuid_id                bigint             not null,
-                   tracking_uuid                   uuid               NOT NULL,
-                   user_id                         bigint                 null,
-                   api_id                          int                NOT NULL,
-                   payment_instrument_id           bigint                 NULL,
-                   payment_id                      bigint                 NULL,
-                   response                        json                   NULL,
-                   created_time                    date               not null,
-                   created_by                      varchar(50)            null,
-                   updated_time                    date                   null,
-                   updated_by                      varchar(50)            null,
- 
-                   constraint tracking_uuid_id primary key (tracking_uuid_id)
-            );
-        ]]>
-        </sql>
-    </changeSet>
-
-    <changeSet id="31" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-        <![CDATA[
-            insert into payment_api values (0, 'AddPI', '2014-02-10','wenhongzhu'),
-                                           (1, 'RemovePI', '2014-02-10','wenhongzhu'),
-                                           (2, 'UpdatePI', '2014-02-10','wenhongzhu'),
-                                           (3, 'Auth', '2014-02-10','wenhongzhu'),
-                                           (4, 'Capture', '2014-02-10','wenhongzhu'),
-                                           (5, 'Confirm', '2014-02-10','wenhongzhu'),
-                                           (6, 'Charge', '2014-02-10','wenhongzhu'),
-                                           (7, 'Reverse', '2014-02-10','wenhongzhu'),
-                                           (8, 'Refund', '2014-02-10','wenhongzhu'),
-                                           (9, 'Credit', '2014-02-10','wenhongzhu');
-        ]]>
-        </sql>
-    </changeSet>
-
-    <changeSet id="32" author='WenhongZhu' context="PREDEPLOY">
-        <sql>
-            <![CDATA[
-            create table payment_property
-                (
-                  payment_property_id        bigint           not null,
-                  payment_id                 bigint           not null,
-                  property_name              varchar(64)      not null,
-                  property_value             varchar(64)      not null,
-                  created_time               date             not null,
-                  created_by                 varchar(50)          null,
-				  updated_time               date                 null,
-                  updated_by                 varchar(50)          null,
-
-                  constraint payment_property_id_pk primary key (payment_property_id)
-                );
-        ]]>
-        </sql>
-    </changeSet>
 
 </databaseChangeLog>

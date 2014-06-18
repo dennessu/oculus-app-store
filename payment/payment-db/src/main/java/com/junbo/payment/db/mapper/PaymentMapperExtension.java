@@ -9,7 +9,7 @@ package com.junbo.payment.db.mapper;
 
 import com.junbo.common.id.PIType;
 import com.junbo.oom.core.MappingContext;
-import com.junbo.payment.db.entity.payment.PaymentEntity;
+import com.junbo.payment.db.entity.payment.PaymentTransactionEntity;
 import com.junbo.payment.db.entity.payment.PaymentEventEntity;
 import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentEntity;
 import com.junbo.payment.spec.model.*;
@@ -66,11 +66,11 @@ public class PaymentMapperExtension {
     }
 
 
-    public PaymentEntity toPaymentEntity(PaymentTransaction request){
+    public PaymentTransactionEntity toPaymentTransactionEntity(PaymentTransaction request){
         if(request == null){
             return null;
         }
-        PaymentEntity payment = paymentMapperImpl.toPaymentEntityRaw(request, new MappingContext());
+        PaymentTransactionEntity payment = paymentMapperImpl.toPaymentEntityRaw(request, new MappingContext());
         // payment.setPaymentInstrumentId(request.getPaymentInstrumentId());
         payment.setCurrency(request.getChargeInfo().getCurrency());
         payment.setNetAmount(request.getChargeInfo().getAmount());
@@ -81,16 +81,16 @@ public class PaymentMapperExtension {
         return payment;
     }
 
-    public PaymentTransaction toPayment(PaymentEntity paymentEntity){
-        if(paymentEntity == null){
+    public PaymentTransaction toPaymentTransaction(PaymentTransactionEntity paymentTransactionEntity){
+        if(paymentTransactionEntity == null){
             return null;
         }
-        PaymentTransaction request = paymentMapperImpl.toPaymentRaw(paymentEntity, new MappingContext());
+        PaymentTransaction request = paymentMapperImpl.toPaymentRaw(paymentTransactionEntity, new MappingContext());
         ChargeInfo chargeInfo = new ChargeInfo();
-        chargeInfo.setAmount(paymentEntity.getNetAmount());
-        chargeInfo.setBusinessDescriptor(paymentEntity.getBusinessDescriptor());
-        chargeInfo.setCurrency(paymentEntity.getCurrency());
-        chargeInfo.setCountry(paymentEntity.getCountryCode());
+        chargeInfo.setAmount(paymentTransactionEntity.getNetAmount());
+        chargeInfo.setBusinessDescriptor(paymentTransactionEntity.getBusinessDescriptor());
+        chargeInfo.setCurrency(paymentTransactionEntity.getCurrency());
+        chargeInfo.setCountry(paymentTransactionEntity.getCountryCode());
         request.setChargeInfo(chargeInfo);
         return request;
     }

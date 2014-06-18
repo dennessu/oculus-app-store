@@ -1,6 +1,5 @@
 package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.identity.data.repository.CurrencyRepository
 import com.junbo.identity.spec.v1.model.Currency
@@ -11,10 +10,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class CurrencyRepositoryCloudantImpl extends CloudantClient<Currency> implements CurrencyRepository {
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return null
-    }
 
     @Override
     Promise<Currency> create(Currency model) {

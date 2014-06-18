@@ -6,7 +6,6 @@
 package com.junbo.authorization.db.repository
 import com.junbo.authorization.spec.model.Role
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.RoleId
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -15,11 +14,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class RoleRepositoryCloudantImpl extends CloudantClient<Role> implements RoleRepository {
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return views
-    }
 
     @Override
     Promise<Role> create(Role role) {
@@ -49,16 +43,4 @@ class RoleRepositoryCloudantImpl extends CloudantClient<Role> implements RoleRep
             return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
         }
     }
-
-    protected CloudantViews views = new CloudantViews(
-            views: [
-                    'by_role_name': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.name + \':\' + doc.target.targetType + \':\'' +
-                                    ' + doc.target.filterType + \':\' + doc.target.filterLinkIdType + \':\'' +
-                                    ' + doc.target.filterLinkId, doc._id)' +
-                                    '}',
-                            resultClass: String)
-            ]
-    )
 }

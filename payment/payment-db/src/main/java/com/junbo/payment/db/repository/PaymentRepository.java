@@ -7,11 +7,11 @@
 package com.junbo.payment.db.repository;
 
 import com.junbo.payment.common.CommonUtil;
-import com.junbo.payment.db.dao.payment.PaymentDao;
+import com.junbo.payment.db.dao.payment.PaymentTransactionDao;
 import com.junbo.payment.db.dao.payment.PaymentEventDao;
 import com.junbo.payment.db.dao.payment.PaymentPropertyDao;
 import com.junbo.payment.db.dao.paymentinstrument.PaymentInstrumentDao;
-import com.junbo.payment.db.entity.payment.PaymentEntity;
+import com.junbo.payment.db.entity.payment.PaymentTransactionEntity;
 import com.junbo.payment.db.entity.payment.PaymentEventEntity;
 import com.junbo.payment.db.entity.payment.PaymentPropertyEntity;
 import com.junbo.payment.db.mapper.PaymentMapperExtension;
@@ -33,7 +33,7 @@ public class PaymentRepository {
     @Autowired
     private PaymentInstrumentDao piDao;
     @Autowired
-    private PaymentDao paymentDao;
+    private PaymentTransactionDao paymentTransactionDao;
     @Autowired
     private PaymentEventDao paymentEventDao;
     @Autowired
@@ -43,15 +43,15 @@ public class PaymentRepository {
     private PaymentMapperExtension paymentMapperExtension;
 
     public void save(PaymentTransaction request){
-        Long paymentId = paymentDao.save(paymentMapperExtension.toPaymentEntity(request));
+        Long paymentId = paymentTransactionDao.save(paymentMapperExtension.toPaymentTransactionEntity(request));
         request.setId(paymentId);
         savePaymentEvent(paymentId, request.getPaymentEvents());
     }
 
     public PaymentTransaction getByPaymentId(Long paymentId){
-        PaymentEntity entity = paymentDao.get(paymentId);
+        PaymentTransactionEntity entity = paymentTransactionDao.get(paymentId);
         //PaymentInstrumentEntity pi = piDao.get(entity.getPaymentInstrumentId());
-        PaymentTransaction transaction = paymentMapperExtension.toPayment(entity);
+        PaymentTransaction transaction = paymentMapperExtension.toPaymentTransaction(entity);
         //transaction.getPaymentInstrumentId().setUserId(pi.getUserId());
         return transaction;
     }
@@ -64,14 +64,14 @@ public class PaymentRepository {
     }
 
     public void updatePayment(Long paymentId, PaymentStatus status, String externalToken){
-        PaymentEntity entity = paymentDao.get(paymentId);
+        PaymentTransactionEntity entity = paymentTransactionDao.get(paymentId);
         if(status != null){
             entity.setStatusId(status.getId());
         }
         if(externalToken != null){
             entity.setExternalToken(externalToken);
         }
-        paymentDao.update(entity);
+        paymentTransactionDao.update(entity);
     }
 
     public List<PaymentEvent> getPaymentEventsByPaymentId(Long paymentId){
@@ -98,7 +98,7 @@ public class PaymentRepository {
     }
 
     public PaymentCallbackParams getPaymentProperties(Long paymentId){
-        PaymentEntity entity = paymentDao.get(paymentId);
+        PaymentTransactionEntity entity = paymentTransactionDao.get(paymentId);
         if(entity == null){
             return null;
         }

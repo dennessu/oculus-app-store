@@ -30,6 +30,10 @@ public abstract class GenericEntity implements Serializable {
     @Column(name = "updated_by")
     private String updatedBy;
 
+    @Column(name = "resource_age")
+    @Version
+    private Integer resourceAge;
+
     public Date getCreatedTime() {
         return createdTime;
     }
@@ -60,6 +64,14 @@ public abstract class GenericEntity implements Serializable {
 
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    public Integer getResourceAge() {
+        return resourceAge;
+    }
+
+    public void setResourceAge(Integer resourceAge) {
+        this.resourceAge = resourceAge;
     }
 
     @Transient

@@ -128,7 +128,7 @@ public class authorizeUser {
         cid = Oauth.GetLoginCid();
         currentViewState = Oauth.GetViewStateByCid(cid);
         ValidateErrorFreeResponse(currentViewState);
-        String loginResponseLink = Oauth.UserLogin(cid, userName);
+        String loginResponseLink = Oauth.UserLogin(cid, userName, null);
         String idToken = Oauth.GetLoginUserIdToken(loginResponseLink);
         Oauth.Logout(idToken);
     }
@@ -158,8 +158,20 @@ public class authorizeUser {
         ValidateErrorFreeResponse(postRegisterUserResponse);
 
         HttpclientHelper.ResetHttpClient();
+        String newPassword = "ASDFqwer1234";
         UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
-        Oauth.PostResetPassword(Identity.GetHexUserId(upi.getUserId().getValue()), null);
+        String resetPasswordLink = Oauth.PostResetPassword(Identity.GetHexUserId(upi.getUserId().getValue()), null);
+        String resetPasswordCid = Oauth.GetResetPasswordCid(resetPasswordLink);
+        Oauth.GetResetPasswordView(resetPasswordCid);
+        Oauth.PostResetPasswordWithNewPassword(resetPasswordCid, newPassword);
+
+        HttpclientHelper.ResetHttpClient();
+        cid = Oauth.GetLoginCid();
+        currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        String loginResponseLink = Oauth.UserLogin(cid, userName, newPassword);
+        String idToken = Oauth.GetLoginUserIdToken(loginResponseLink);
+        Oauth.Logout(idToken);
     }
 
     private static void ValidateErrorFreeResponse(String responseString) throws Exception {

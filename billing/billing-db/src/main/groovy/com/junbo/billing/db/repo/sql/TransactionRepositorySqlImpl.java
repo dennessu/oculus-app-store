@@ -17,7 +17,6 @@ import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -66,8 +65,6 @@ public class TransactionRepositorySqlImpl implements TransactionRepository {
     @Override
     public Promise<Transaction> update(Transaction model) {
         TransactionEntity entity = modelMapper.toTransactionEntity(model, new MappingContext());
-        entity.setModifiedBy("BILLING");
-        entity.setModifiedTime(new Date());
         transactionEntityDao.update(entity);
 
         return get(new TransactionId(entity.getTransactionId()));

@@ -26,14 +26,15 @@ class ScopeDataHandler extends BaseDataHandler {
 
     @Override
     void handle(String content) {
-        Scope scope = null
-
+        Scope scope
         try {
             scope = transcoder.decode(new TypeReference<Scope>() {}, content) as Scope
         } catch (Exception e) {
-            logger.warn('Error parsing Scope, skip this content', e)
-            return
+            logger.error("Error parsing scope $content", e)
+            exit()
         }
+
+        logger.info("loading scope $scope.name")
 
         Scope existing = null
         try {
@@ -46,13 +47,21 @@ class ScopeDataHandler extends BaseDataHandler {
             if (alwaysOverwrite) {
                 logger.debug("Overwrite Scope $existing.name with this content")
                 scope.revision = existing.revision
-                scopeEndpoint.putScope(scope.name, scope).get()
+                try {
+                    scopeEndpoint.putScope(scope.name, scope).get()
+                } catch (Exception e) {
+                    logger.error("Error updating scope $scope.name", e)
+                }
             } else {
                 logger.debug("The Scope $scope.name exists, skip this content")
             }
         } else {
             logger.debug("Create new Scope $scope.name with this content")
-            scopeEndpoint.postScope(scope).get()
+            try {
+                scopeEndpoint.postScope(scope).get()
+            } catch (Exception e) {
+                logger.error("Error creating scope $scope.name", e)
+            }
         }
     }
 }

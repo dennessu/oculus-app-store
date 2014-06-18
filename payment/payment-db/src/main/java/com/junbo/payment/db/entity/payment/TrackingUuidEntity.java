@@ -4,8 +4,9 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.payment.db.entity;
+package com.junbo.payment.db.entity.payment;
 
+import com.junbo.payment.db.entity.GenericEntity;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
@@ -20,7 +21,7 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "payment_tracking_uuid")
-public class TrackingUuidEntity extends GenericEntity{
+public class TrackingUuidEntity extends GenericEntity {
 
     @Id
     @Column(name = "tracking_uuid_id")

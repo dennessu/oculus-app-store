@@ -320,11 +320,50 @@ class CoreBuilder {
         }
     }
 
+    static void mergeTaxInfo(List<Balance> balances, OrderItem orderItem) {
+        def init = true
+        balances?.eachWithIndex { Balance bl, int i ->
+            if (!CoreUtils.isValidBalance(bl)) {
+                return
+            }
+            def direction = 1
+            if (bl.type == BalanceType.REFUND.name() || bl.type == BalanceType.CREDIT.name()) {
+                direction = -1
+            }
+            def balanceItem = bl.balanceItems.find { BalanceItem balanceItem ->
+                return balanceItem.orderItemId.value == orderItem.getId().value
+            }
+            if (balanceItem != null) {
+                if(init) {
+                    // init the tax item
+                    orderItem.taxes = []
+                    fillTaxItem(orderItem, balanceItem, direction)
+                    init = false
+                } else {
+                    orderItem.taxes?.each() { OrderTaxItem oti ->
+                        def taxItem = balanceItem.taxItems?.find() { TaxItem bti ->
+                            // TODO: check taxType
+                            bti.taxAuthority == oti.taxType
+                        }
+                        if (taxItem != null) {
+                            oti.taxAmount += taxItem.taxAmount * direction
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
     static void fillTaxItem(OrderItem orderItem, BalanceItem balanceItem) {
+        fillTaxItem(orderItem, balanceItem, 1)
+    }
+
+    static void fillTaxItem(OrderItem orderItem, BalanceItem balanceItem, int direction) {
         def taxes = []
         balanceItem.taxItems.each { TaxItem taxItem ->
             def orderTaxItem = new OrderTaxItem()
-            orderTaxItem.taxAmount = taxItem.taxAmount
+            orderTaxItem.taxAmount = taxItem.taxAmount * direction
             orderTaxItem.taxRate = taxItem.taxRate
             orderTaxItem.taxType = taxItem.taxAuthority
             orderTaxItem.isTaxExempted = taxItem.isTaxExempt ?: false

@@ -20,7 +20,7 @@ import java.math.BigDecimal;
  */
 @Entity
 @Table(name = "payment")
-public class PaymentEntity extends GenericEntity {
+public class PaymentTransactionEntity extends GenericEntity {
 
     @Id
     @Column(name = "payment_id")

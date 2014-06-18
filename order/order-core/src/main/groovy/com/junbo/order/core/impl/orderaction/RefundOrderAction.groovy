@@ -37,6 +37,7 @@ class RefundOrderAction extends BaseOrderEventAwareAction {
 
         assert(order != null)
         return orderInternalService.refundOrder(order).syncThen { Order o ->
+            context.orderServiceContext.order = o
             return CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.COMPLETED)
         }
     }

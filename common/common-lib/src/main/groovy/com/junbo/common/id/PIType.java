@@ -16,7 +16,6 @@ import java.util.Map;
  */
 public enum PIType {
     CREDITCARD(0L),
-    DIRECTDEBIT(1L),
     STOREDVALUE(2L),
     PAYPAL(3L),
     OTHERS(4L);

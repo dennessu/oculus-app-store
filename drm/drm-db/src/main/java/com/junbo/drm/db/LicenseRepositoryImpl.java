@@ -5,7 +5,6 @@
  */
 package com.junbo.drm.db;
 
-import com.junbo.common.cloudant.model.CloudantViews;
 import com.junbo.drm.spec.model.License;
 import com.junbo.sharding.repo.BaseCloudantRepository;
 
@@ -13,8 +12,4 @@ import com.junbo.sharding.repo.BaseCloudantRepository;
  * drm.
  */
 public class LicenseRepositoryImpl extends BaseCloudantRepository<License, String> implements LicenseRepository {
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return null;
-    }
 }

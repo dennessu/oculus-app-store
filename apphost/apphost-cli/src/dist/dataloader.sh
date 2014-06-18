@@ -23,6 +23,13 @@ die ( ) {
     exit 1
 }
 
+export APPHOST_CLI_OPTS="-DconfigDir=./conf"
+
+# check environment
+if ! grep '^environment=[a-zA-Z0-9_]\+' ./conf/configuration.properties; then
+    export APPHOST_CLI_OPTS="$APPHOST_CLI_OPTS -Denvironment=onebox"
+fi
+
 # OS specific support (must be 'true' or 'false').
 cygwin=false
 msys=false
@@ -151,5 +158,11 @@ if $cygwin ; then
         (9) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" "$args7" "$args8" ;;
     esac
 fi
+
+# Split up the JVM_OPTS And APPHOST_CLI_OPTS values into an array, following the shell quoting and substitution rules
+function splitJvmOpts() {
+    JVM_OPTS=("$@")
+}
+eval splitJvmOpts $JAVA_OPTS $APPHOST_CLI_OPTS
 
 exec "$JAVACMD" "${JVM_OPTS[@]}" -classpath "$CLASSPATH" -Dfile.encoding=UTF-8 com.junbo.data.loader.DataLoader "$@"

@@ -4,13 +4,10 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.common.webflow
-
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.langur.core.webflow.state.Conversation
 import com.junbo.langur.core.webflow.state.StateRepository
 import groovy.transform.CompileStatic
-
 /**
  * CloudantStateRepositoryImpl.
  */
@@ -59,11 +56,6 @@ class CloudantStateRepositoryImpl extends CloudantClient<ConversationEntity> imp
                 cloudantPut(entity).get()
             }
         }
-    }
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return null
     }
 
     private static Conversation wrap(ConversationEntity entity) {

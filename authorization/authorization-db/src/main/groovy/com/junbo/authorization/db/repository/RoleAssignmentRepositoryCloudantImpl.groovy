@@ -1,7 +1,6 @@
 package com.junbo.authorization.db.repository
 import com.junbo.authorization.spec.model.RoleAssignment
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.RoleAssignmentId
 import com.junbo.common.id.RoleId
 import com.junbo.langur.core.promise.Promise
@@ -37,19 +36,4 @@ class RoleAssignmentRepositoryCloudantImpl extends CloudantClient<RoleAssignment
             return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
         }
     }
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return views
-    }
-
-    protected CloudantViews views = new CloudantViews(
-        views: [
-            'by_role_id': new CloudantViews.CloudantView(
-                map: 'function(doc) {' +
-                    '  emit(doc.roleId + \':\' + doc.assigneeType + \':\' + doc.assigneeId, doc._id)' +
-                    '}',
-                resultClass: String)
-        ]
-    )
 }

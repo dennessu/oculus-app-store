@@ -9,8 +9,4 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class CouchResetPasswordCodeDAOImpl extends CouchBaseDAO<ResetPasswordCodeEntity> implements ResetPasswordCodeDAO {
-    @Override
-    protected CouchViews getCouchViews() {
-        return null
-    }
 }

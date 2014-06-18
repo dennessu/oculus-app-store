@@ -44,7 +44,7 @@ public class OrderRevision extends ResourceMetaForDualWrite<Long> {
 
     @JsonIgnore
     @ShippingMethodId
-    private Long shippingMethod;
+    private String shippingMethod;
 
     @JsonIgnore
     private UserPersonalInfoId shippingAddress;
@@ -119,11 +119,11 @@ public class OrderRevision extends ResourceMetaForDualWrite<Long> {
         this.totalShippingFeeDiscount = totalShippingFeeDiscount;
     }
 
-    public Long getShippingMethod() {
+    public String getShippingMethod() {
         return shippingMethod;
     }
 
-    public void setShippingMethod(Long shippingMethod) {
+    public void setShippingMethod(String shippingMethod) {
         this.shippingMethod = shippingMethod;
     }
 

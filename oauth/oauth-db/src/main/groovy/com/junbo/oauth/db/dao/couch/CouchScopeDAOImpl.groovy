@@ -14,8 +14,4 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class CouchScopeDAOImpl extends CouchBaseDAO<ScopeEntity> implements ScopeDAO {
-    @Override
-    protected CouchViews getCouchViews() {
-        return null
-    }
 }

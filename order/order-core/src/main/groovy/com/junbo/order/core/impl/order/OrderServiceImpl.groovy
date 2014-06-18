@@ -312,8 +312,10 @@ class OrderServiceImpl implements OrderService {
             LOGGER.error('name=Flow_Execution_Failed. flowName: ' + flowName, throwable)
             if (throwable instanceof AppErrorException) {
                 throw throwable
+            } else if (throwable instanceof AssertionError ){
+                throw AppErrors.INSTANCE.unexpectedError('Unexpected assertion failure').exception()
             } else {
-                throw AppErrors.INSTANCE.unexpectedError().exception()
+                throw AppErrors.INSTANCE.unexpectedError(throwable.message).exception()
             }
         }.syncThen {
             return context

@@ -55,22 +55,19 @@ public class CommonDataDAOImpl<T extends GenericEntity, ID extends Serializable>
         if(entity.getId() == null){
             entity.setId(idGenerator.nextId(entity.getShardMasterId()));
         }
-        if(entity.getCreatedTime() == null){
-            entity.setCreatedTime(new Date());
-        }
-        if(entity.getUpdatedTime() == null){
-            entity.setUpdatedTime(new Date());
+        entity.setCreatedTime(new Date());
+        if (entity.getCreatedBy() == null) {
+            entity.setCreatedBy("0");
         }
         return  (ID) currentSession(entity.getShardMasterId()).save(entity);
     }
 
     public T update(T entity) {
-        if(entity.getUpdatedTime() == null){
-            entity.setUpdatedTime(new Date());
+        entity.setUpdatedTime(new Date());
+        if (entity.getUpdatedBy() == null) {
+            entity.setUpdatedBy("0");
         }
         T newt = (T) currentSession(entity.getShardMasterId()).merge(entity);
-        //currentSession().update(newt);
-        //currentSession().evict(newt);
         return newt;
     }
 

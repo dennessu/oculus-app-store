@@ -24,4 +24,8 @@ public class BillingErrorCode {
     public static final String BILLING_INSUFFICIENT_FUND = "33004";
 
     public static final String BILLING_REFUND_FAILED = "33005";
+
+    public static final String BILLING_TAX_FAILED = "33006";
+
+    public static final String BILLING_RESULT_INVALID = "33007";
 }

@@ -1,6 +1,5 @@
 package com.junbo.crypto.data.repo.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserCryptoKeyId
 import com.junbo.common.id.UserId
 import com.junbo.crypto.data.repo.UserCryptoKeyRepo
@@ -13,11 +12,6 @@ import org.springframework.util.CollectionUtils
  */
 @CompileStatic
 class CloudantUserCryptoKeyRepoImpl extends CloudantClient<UserCryptoKey> implements UserCryptoKeyRepo {
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return views
-    }
 
     @Override
     Promise<List<UserCryptoKey>> getAllUserCryptoKeys(UserId userId) {
@@ -57,19 +51,4 @@ class CloudantUserCryptoKeyRepoImpl extends CloudantClient<UserCryptoKey> implem
             return Promise.pure((UserCryptoKey)list.get(0))
         }
     }
-
-    protected CloudantViews views = new CloudantViews(
-            views: [
-                    'by_user_id': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.userId, doc._id)' +
-                                    '}',
-                            resultClass: String),
-                    'by_user_id_key_version': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.userId + \':\' + doc.keyVersion.toString(), doc._id)' +
-                                    '}',
-                            resultClass: String)
-            ]
-    )
 }

@@ -14,8 +14,4 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class CouchConsentDAOImpl extends CouchBaseDAO<ConsentEntity> implements ConsentDAO {
-    @Override
-    protected CouchViews getCouchViews() {
-        return null
-    }
 }

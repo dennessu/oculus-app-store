@@ -32,7 +32,7 @@ public class PaymentInstrumentDao extends CommonDataDAOImpl<PaymentInstrumentEnt
         Criteria criteria = currentSession(userId).createCriteria(PaymentInstrumentEntity.class);
         criteria.add(Restrictions.eq("userId", userId));
         if(piType != null){
-            criteria.add(Restrictions.eq("type", piType));
+            criteria.add(Restrictions.eq("type", piType.getId()));
         }
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         return criteria.list();

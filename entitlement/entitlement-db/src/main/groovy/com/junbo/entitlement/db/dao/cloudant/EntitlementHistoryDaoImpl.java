@@ -7,7 +7,6 @@
 package com.junbo.entitlement.db.dao.cloudant;
 
 import com.junbo.common.cloudant.CloudantClient;
-import com.junbo.common.cloudant.model.CloudantViews;
 import com.junbo.entitlement.db.dao.EntitlementHistoryDao;
 import com.junbo.entitlement.db.entity.EntitlementHistoryEntity;
 
@@ -15,11 +14,6 @@ import com.junbo.entitlement.db.entity.EntitlementHistoryEntity;
  * cloudantImpl of entitlementHistoryDao.
  */
 public class EntitlementHistoryDaoImpl extends CloudantClient<EntitlementHistoryEntity> implements EntitlementHistoryDao {
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return null;
-    }
 
     @Override
     public EntitlementHistoryEntity insert(EntitlementHistoryEntity entitlementHistory) {

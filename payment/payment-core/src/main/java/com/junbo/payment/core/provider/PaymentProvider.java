@@ -13,5 +13,6 @@ public enum PaymentProvider {
     BrainTree,
     PayPal,
     Wallet,
-    Adyen
+    Adyen,
+    AdyenCC
 }

@@ -10,13 +10,13 @@ import com.junbo.oom.core.Mapper;
 import com.junbo.oom.core.Mapping;
 import com.junbo.oom.core.MappingContext;
 import com.junbo.oom.core.Mappings;
-import com.junbo.payment.db.entity.PaymentInstrumentTypeEntity;
-import com.junbo.payment.db.entity.TrackingUuidEntity;
-import com.junbo.payment.db.entity.payment.PaymentEntity;
 import com.junbo.payment.db.entity.payment.PaymentEventEntity;
 import com.junbo.payment.db.entity.payment.PaymentPropertyEntity;
+import com.junbo.payment.db.entity.payment.PaymentTransactionEntity;
+import com.junbo.payment.db.entity.payment.TrackingUuidEntity;
 import com.junbo.payment.db.entity.paymentinstrument.CreditCardPaymentInstrumentEntity;
 import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentEntity;
+import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentTypeEntity;
 import com.junbo.payment.spec.model.*;
 
 /**
@@ -57,7 +57,7 @@ public interface PaymentMapper {
             @Mapping(source = "type", target = "typeId", explicitMethod = "convertPaymentType"),
             @Mapping(source = "status", target = "statusId", explicitMethod = "convertPaymentStatus"),
     })
-    PaymentEntity toPaymentEntityRaw(PaymentTransaction request, MappingContext context);
+    PaymentTransactionEntity toPaymentEntityRaw(PaymentTransaction request, MappingContext context);
 
     @Mappings({
             @Mapping(source = "merchantAccountId", target = "merchantAccount",
@@ -67,7 +67,7 @@ public interface PaymentMapper {
             @Mapping(source = "typeId", target = "type", explicitMethod = "convertPaymentType"),
             @Mapping(source = "statusId", target = "status", explicitMethod = "convertPaymentStatus"),
     })
-    PaymentTransaction toPaymentRaw(PaymentEntity paymentEntity, MappingContext context);
+    PaymentTransaction toPaymentRaw(PaymentTransactionEntity paymentTransactionEntity, MappingContext context);
 
     PaymentInstrumentEntity toPIEntityRaw(PaymentInstrument piRequest, MappingContext context);
     PaymentInstrument toPaymentInstrumentRaw(PaymentInstrumentEntity piEntity, MappingContext context);

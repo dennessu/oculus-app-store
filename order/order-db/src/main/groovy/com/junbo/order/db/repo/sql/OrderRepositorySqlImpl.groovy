@@ -83,7 +83,6 @@ class OrderRepositorySqlImpl implements OrderRepository {
         def id = orderDao.create(orderEntity)
         def orderId = new OrderId(id)
         order.setId(orderId)
-        order.resourceAge = orderEntity.resourceAge
         Utils.fillDateInfo(order, orderEntity)
 
         savePaymentInstruments(order.getId(), order.payments)
@@ -95,36 +94,36 @@ class OrderRepositorySqlImpl implements OrderRepository {
     @Override
     Promise<Order> update(Order order) {       // Validations
         // TODO Log error and throw exception
-        if (order == null) {
-            return null
-        }
-        if (order.id == null) {
-            return null
-        }
-
-        // save non tentative order update to order_revision table
-
+        assert (order != null)
+        assert (order.id != null)
 
         def oldEntity = orderDao.read(order.getId().value)
         if (oldEntity == null) {
             throw new IllegalArgumentException('name=Order_Not_Found')
         }
+        // Update Order
+        def orderEntity = modelMapper.toOrderEntity(order, new MappingContext())
 
-        if(oldEntity.tentative) {
-            return updateToTentativeOrder(oldEntity, order)
-        } else {
-            // save non tentative order‘s update to order_revision table
-            // TODO switch pi support
-            def orderRevisionEntity = toOrderRevisionEntity(order)
-            orderRevisionDao.create(orderRevisionEntity)
-            oldEntity.latestOrderRevisionId = orderRevisionEntity.orderRevisionId
-            oldEntity.resourceAge = order.resourceAge
-            orderDao.update(oldEntity)
-            def newEntity = orderDao.read(oldEntity.orderId)
-            order.resourceAge = newEntity.resourceAge
-            Utils.fillDateInfo(order, newEntity)
-            return Promise.pure(order)
+        if (oldEntity.latestOrderRevisionId != orderEntity.latestOrderRevisionId) {
+            def latestRevision = order.orderRevisions.find() { OrderRevision revision ->
+                revision.id == orderEntity.latestOrderRevisionId
+            }
+            assert (latestRevision != null)
+            orderRevisionDao.create(modelMapper.toOrderRevisionEntity(latestRevision, new MappingContext()))
         }
+
+        orderEntity.createdTime = oldEntity.createdTime
+        orderEntity.createdBy = oldEntity.createdBy
+        if (orderEntity.resourceAge == null) {
+            orderEntity.resourceAge = oldEntity.resourceAge
+        }
+        orderDao.update(orderEntity)
+        orderEntity = orderDao.read(orderEntity.orderId)
+        Utils.fillDateInfo(order, orderEntity)
+
+        savePaymentInstruments(order.getId(), order.payments)
+
+        return Promise.pure(order)
     }
 
     @Override
@@ -155,28 +154,6 @@ class OrderRepositorySqlImpl implements OrderRepository {
             result.setOrderRevisions(getOrderRevisions(result.getId().value))
             return result
         })
-    }
-
-    private Promise<Order> updateToTentativeOrder(OrderEntity oldEntity, Order order) {
-
-        assert(oldEntity.tentative)
-
-        // Update Order
-        def orderEntity = modelMapper.toOrderEntity(order, new MappingContext())
-        orderEntity.createdTime = oldEntity.createdTime
-        orderEntity.createdBy = oldEntity.createdBy
-        if (orderEntity.resourceAge == null) {
-            orderEntity.resourceAge = oldEntity.resourceAge
-        }
-
-        orderDao.update(orderEntity)
-        orderEntity = orderDao.read(orderEntity.orderId)
-        order.resourceAge = orderEntity.resourceAge
-        Utils.fillDateInfo(order, orderEntity)
-
-        savePaymentInstruments(order.getId(), order.payments)
-
-        return Promise.pure(order)
     }
 
     private List<PaymentInfo> getPayments(Long orderId) {
@@ -250,22 +227,5 @@ class OrderRepositorySqlImpl implements OrderRepository {
             entity.orderPaymentId = oldEntityId
             orderPaymentInfoDao.update(entity)
         }
-    }
-
-    private OrderRevisionEntity toOrderRevisionEntity(Order order) {
-        def val = new OrderRevisionEntity()
-        val.isTaxInclusive = order.isTaxInclusive
-        val.orderId = order.getId().value
-        val.orderRevisionId = idGenerator.nextId(val.orderId)
-        val.shippingAddressId = order.shippingAddress?.value
-        val.shippingMethodId = order.shippingMethod
-        val.shippingNameId = order.shippingToName?.value
-        val.shippingPhoneId = order.shippingToPhone?.value
-        val.totalAmount = order.totalAmount
-        val.totalDiscount = order.totalDiscount
-        val.totalShippingFee = order.totalShippingFee
-        val.totalShippingFeeDiscount = order.totalShippingFeeDiscount
-        val.totalTax = order.totalTax
-        return val
     }
 }

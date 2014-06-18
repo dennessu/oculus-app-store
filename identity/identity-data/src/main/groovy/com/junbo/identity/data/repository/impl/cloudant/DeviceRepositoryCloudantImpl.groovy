@@ -1,6 +1,5 @@
 package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.DeviceId
 import com.junbo.identity.data.repository.DeviceRepository
 import com.junbo.identity.spec.v1.model.Device
@@ -37,20 +36,5 @@ class DeviceRepositoryCloudantImpl extends CloudantClient<Device> implements Dev
         return super.queryView('by_serial_number', externalRef).then { List<Device> list ->
             return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
         }
-    }
-
-    protected CloudantViews views = new CloudantViews(
-            views: [
-                    'by_serial_number': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.serialNumber, doc._id)' +
-                                    '}',
-                            resultClass: String)
-            ]
-    )
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return views
     }
 }

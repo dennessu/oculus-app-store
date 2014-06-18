@@ -1,6 +1,5 @@
 package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.identity.data.repository.OrganizationRepository
@@ -9,7 +8,6 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-
 /**
  * Created by liangfu on 5/22/14.
  */
@@ -20,11 +18,6 @@ class OrganizationRepositoryCloudantImpl extends CloudantClient<Organization> im
     @Required
     void setIdGenerator(IdGenerator idGenerator) {
         this.idGenerator = idGenerator
-    }
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return views
     }
 
     @Override
@@ -61,19 +54,4 @@ class OrganizationRepositoryCloudantImpl extends CloudantClient<Organization> im
     Promise<Void> delete(OrganizationId id) {
         return super.cloudantDelete(id.toString())
     }
-
-    protected CloudantViews views = new CloudantViews(
-            views: [
-                    'by_owner_id': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.ownerId, doc._id)' +
-                                    '}',
-                            resultClass: String),
-                    'by_canonical_name': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.canonicalName, doc._id)' +
-                                    '}',
-                            resultClass: String)
-                   ]
-    )
 }

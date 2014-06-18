@@ -5,11 +5,8 @@
  */
 
 package com.junbo.authorization.db.repository
-
 import com.junbo.authorization.spec.model.ApiDefinition
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
-
 /**
  * Created by Zhanxin on 5/23/2014.
  */
@@ -32,10 +29,5 @@ class ApiDefinitionRepositoryCloudantImpl extends CloudantClient<ApiDefinition> 
     @Override
     void deleteApi(ApiDefinition api) {
         cloudantDelete(api.apiName).get()
-    }
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return null
     }
 }

@@ -1,6 +1,5 @@
 package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPinId
 import com.junbo.identity.data.repository.UserPinRepository
@@ -12,11 +11,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class UserPinRepositoryCloudantImpl extends CloudantClient<UserPin> implements UserPinRepository {
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return views
-    }
 
     @Override
     Promise<UserPin> create(UserPin userPin) {
@@ -49,19 +43,4 @@ class UserPinRepositoryCloudantImpl extends CloudantClient<UserPin> implements U
     Promise<Void> delete(UserPinId id) {
         return super.cloudantDelete(id.toString())
     }
-
-    protected CloudantViews views = new CloudantViews(
-            views: [
-                    'by_user_id': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.userId, doc._id)' +
-                                    '}',
-                            resultClass: String),
-                    'by_user_id_active_status': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.userId + \':\' + doc.active, doc._id)' +
-                                    '}',
-                            resultClass: String)
-            ]
-    )
 }

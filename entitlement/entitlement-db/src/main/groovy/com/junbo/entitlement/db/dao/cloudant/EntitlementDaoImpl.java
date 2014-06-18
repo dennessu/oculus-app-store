@@ -8,7 +8,6 @@ package com.junbo.entitlement.db.dao.cloudant;
 
 import com.junbo.common.cloudant.CloudantClient;
 import com.junbo.common.cloudant.model.CloudantSearchResult;
-import com.junbo.common.cloudant.model.CloudantViews;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
@@ -28,11 +27,6 @@ import java.util.*;
  * cloudantImpl of entitlementDao.
  */
 public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implements EntitlementDao {
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return views;
-    }
 
     @Override
     public EntitlementEntity insert(EntitlementEntity entitlement) {
@@ -172,43 +166,6 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
         List<EntitlementEntity> results = super.queryView("byUserIdAndItemIdAndType", key).get();
         return results.size() == 0 ? null : results.get(0);
     }
-
-    protected CloudantViews views = new CloudantViews() {{
-        Map<String, CloudantView> viewMap = new HashMap<>();
-        Map<String, CloudantIndex> indexMap = new HashMap<>();
-
-        CloudantView byTrackingUuid = new CloudantView();
-        byTrackingUuid.setMap("function(doc) {" +
-                "emit(doc.trackingUuid.toString(), doc._id)" +
-                "}");
-        byTrackingUuid.setResultClass(String.class);
-        viewMap.put("byTrackingUuid", byTrackingUuid);
-
-        CloudantView byUserIdAndItemIdAndType = new CloudantView();
-        byUserIdAndItemIdAndType.setMap("function(doc) {" +
-                "emit(doc.userId.toString() + \':\' + " +
-                "doc.itemId.toString() + \':\' + doc.type, doc._id)" +
-                "}");
-        byUserIdAndItemIdAndType.setResultClass(String.class);
-        viewMap.put("byUserIdAndItemIdAndType", byUserIdAndItemIdAndType);
-
-        CloudantIndex searchIndex = new CloudantIndex();
-        searchIndex.setIndex("function(doc) {" +
-                "index(\'userId\', doc.userId);" +
-                "index(\'isDeleted\', doc.isDeleted);" +
-                "index(\'type\', doc.type);" +
-                "index(\'isBanned\', doc.isBanned);" +
-                "index(\'itemId\', doc.itemId);" +
-                "index(\'useCount\', doc.useCount);" +
-                "index(\'grantTime\', doc.grantTime);" +
-                "index(\'expirationTime\', doc.expirationTime);" +
-                "index(\'updatedTime\', doc.updatedTime);}");
-        searchIndex.setResultClass(String.class);
-        indexMap.put("search", searchIndex);
-
-        setViews(viewMap);
-        setIndexes(indexMap);
-    }};
 
     private Long parse(String date) throws ParseException {
         return EntitlementConsts.DATE_FORMAT.parse(date).getTime();

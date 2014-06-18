@@ -16,7 +16,6 @@ import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -79,8 +78,6 @@ public class DiscountItemRepositorySqlImpl implements DiscountItemRepository {
     @Override
     public Promise<DiscountItem> update(DiscountItem model) {
         DiscountItemEntity entity = modelMapper.toDiscountItemEntity(model, new MappingContext());
-        entity.setModifiedBy("BILLING");
-        entity.setModifiedTime(new Date());
         discountItemEntityDao.update(entity);
         return get(entity.getDiscountItemId());
     }

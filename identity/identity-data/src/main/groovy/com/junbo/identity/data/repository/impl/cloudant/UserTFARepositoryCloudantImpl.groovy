@@ -1,6 +1,5 @@
 package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.id.UserTFAId
@@ -13,11 +12,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class UserTFARepositoryCloudantImpl extends CloudantClient<UserTFA> implements UserTFARepository  {
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return views
-    }
 
     @Override
     Promise<List<UserTFA>> searchTFACodeByUserIdAndPersonalInfoId(UserId userId, UserPersonalInfoId personalInfo,
@@ -45,14 +39,4 @@ class UserTFARepositoryCloudantImpl extends CloudantClient<UserTFA> implements U
     Promise<Void> delete(UserTFAId id) {
         return super.cloudantDelete(id.toString())
     }
-
-    protected CloudantViews views = new CloudantViews(
-            views: [
-                'by_user_id_personal_info': new CloudantViews.CloudantView(
-                    map: 'function(doc) {' +
-                            '  emit(doc.userId + \':\' + doc.personalInfo, doc._id)' +
-                            '}',
-                    resultClass: String)
-            ]
-    )
 }

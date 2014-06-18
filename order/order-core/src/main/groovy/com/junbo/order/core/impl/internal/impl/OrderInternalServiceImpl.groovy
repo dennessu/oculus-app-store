@@ -4,20 +4,20 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.order.core.impl.internal.impl
-
 import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
+import com.junbo.common.error.AppErrorException
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.common.*
 import com.junbo.order.core.impl.internal.OrderInternalService
-import com.junbo.order.spec.model.enums.BillingAction
-import com.junbo.order.spec.model.enums.OrderItemRevisionType
-import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
+import com.junbo.order.spec.model.enums.BillingAction
+import com.junbo.order.spec.model.enums.OrderItemRevisionType
+import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.rating.spec.model.request.RatingRequest
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -51,32 +51,22 @@ class OrderInternalServiceImpl implements OrderInternalService {
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderInternalServiceImpl)
 
     @Override
-    Promise<Order> rateOrder(Order order) {
-        return facadeContainer.ratingFacade.rateOrder(order).recover { Throwable throwable ->
-            LOGGER.error('name=Order_Rating_Error', throwable)
-            // TODO parse the rating error
-            throw AppErrors.INSTANCE.ratingConnectionError().exception()
-        }.then { RatingRequest ratingResult ->
+    Promise<Order> rateOrder(Order order) throws AppErrorException {
+        LOGGER.info('name=OrderInternalServiceImpl_Rate_Order')
+        return facadeContainer.ratingFacade.rateOrder(order).then { RatingRequest ratingResult ->
             // todo handle rating violation
-            if (ratingResult == null) {
-                // TODO: log order charge action error?
-                LOGGER.error('name=Rating_Result_Null')
-                throw AppErrors.INSTANCE.ratingResultInvalid().exception()
-            }
+            assert (ratingResult != null)
             CoreBuilder.fillRatingInfo(order, ratingResult)
-            LOGGER.info('name=Rating_Result_Successfully')
-            // no need to log order event for rating
+            LOGGER.info('name=OrderInternalServiceImpl_Get_Rating_Result_Successfully')
             // call billing to calculate tax
-            if (order.totalAmount == 0) {
+            if (CoreUtils.isFreeOrder(order)) {
                 LOGGER.info('name=Skip_Calculate_Tax_Zero_Total_Amount')
                 return Promise.pure(order)
             }
-
             if (CoreUtils.hasStoredValueOffer(order)) {
                 LOGGER.info('name=Skip_Calculate_Tax_Credit_Stored_Value')
                 return Promise.pure(order)
             }
-
             // validate the tax calculation precondition
             // check pi is there, it means the billing address is there.
             if (CollectionUtils.isEmpty(order.payments)) {
@@ -98,22 +88,11 @@ class OrderInternalServiceImpl implements OrderInternalService {
                     throw AppErrors.INSTANCE.missingParameterField('shippingAddressId').exception()
                 }
             }
-
             // calculateTax
             return facadeContainer.billingFacade.quoteBalance(
-                    CoreBuilder.buildBalance(order, BalanceType.DEBIT)).syncRecover {
-                Throwable throwable ->
-                    LOGGER.error('name=Fail_To_Calculate_Tax', throwable)
-                    // TODO parse the tax error
-                    throw AppErrors.INSTANCE.billingConnectionError().exception()
-            }.then { Balance balance ->
-                if (balance == null) {
-                    // TODO: log order charge action error?
-                    LOGGER.info('name=Fail_To_Calculate_Tax_Balance_Not_Found')
-                    throw AppErrors.INSTANCE.balanceNotFound().exception()
-                } else {
-                    CoreBuilder.fillTaxInfo(order, balance)
-                }
+                    CoreBuilder.buildBalance(order, BalanceType.DEBIT)).then { Balance balance ->
+                assert (balance != null)
+                CoreBuilder.fillTaxInfo(order, balance)
                 return Promise.pure(order)
             }
         }
@@ -147,7 +126,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
         LOGGER.info('name=Order_Is_Cancelable, orderId = {}, orderStatus={}', order.getId().value, order.status)
 
         order.status = OrderStatus.CANCELED.name()
-        orderRepository.updateOrder(order, true, true, OrderItemRevisionType.CANCEL)
+        orderRepository.updateOrder(order, false, true, OrderItemRevisionType.CANCEL)
 
         // TODO: reverse authorize if physical goods
 
@@ -203,22 +182,21 @@ class OrderInternalServiceImpl implements OrderInternalService {
                             return facadeContainer.billingFacade.createBalance(refundBalance, true).syncRecover {
                                 Throwable ex ->
                                     LOGGER.error('name=Refund_Failed', ex)
-                                    throw AppErrors.INSTANCE.billingRefundFailed('billing returns error').exception()
+                                    throw AppErrors.INSTANCE.
+                                            billingRefundFailed('billing returns error: ' + ex.message).exception()
                             }.then { Balance refunded ->
                                 if (refunded == null) {
                                     throw AppErrors.INSTANCE.billingRefundFailed('billing returns null balance').exception()
                                 }
                                 def refundedOrder = CoreUtils.calcRefundedOrder(existingOrder, refunded, diffOrder)
-                                orderRepository.updateOrder(refundedOrder, true, true, OrderItemRevisionType.REFUND)
+                                refundedOrder.status = OrderStatus.REFUNDED.name()
+                                orderRepository.updateOrder(refundedOrder, false, true, OrderItemRevisionType.REFUND)
                                 return Promise.pure(null)
                             }
                         }
                     }
             }
         }.then {
-            // TODO handle partial refund
-            order.status = OrderStatus.REFUNDED.name()
-            orderRepository.updateOrder(order, true, true, OrderItemRevisionType.REFUND)
             return getOrderByOrderId(order.getId().value)
         }
     }
@@ -296,12 +274,13 @@ class OrderInternalServiceImpl implements OrderInternalService {
         order.setBillingHistories(orderRepository.getBillingHistories(order.getId().value))
         // tax
         return facadeContainer.billingFacade.getBalancesByOrderId(order.getId().value).then { List<Balance> balances ->
-            // TODO: handle the case when the size of taxed balances > 1
-            def taxedBalance = balances.find { Balance balance ->
+            def taxedBalances = balances.findAll { Balance balance ->
                 balance.balanceItems?.taxItems?.size() > 0
-            }
-            if (taxedBalance != null) {
-                CoreBuilder.fillTaxInfo(order, taxedBalance)
+            }.toList()
+            if (!CollectionUtils.isEmpty(taxedBalances)) {
+                order.orderItems?.each { OrderItem item ->
+                    CoreBuilder.mergeTaxInfo(taxedBalances, item)
+                }
             }
             return Promise.pure(order)
         }
@@ -315,7 +294,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                     orderRepository.getOrderEvents(order.getId().value, null))
             if (updateOrder && order.status != oldOrder.status) {
                 oldOrder.status = order.status
-                orderRepository.updateOrder(oldOrder, true, null, null)
+                orderRepository.updateOrder(oldOrder, true, false, null)
             }
         }
         return order
@@ -331,6 +310,6 @@ class OrderInternalServiceImpl implements OrderInternalService {
             throw AppErrors.INSTANCE.orderNotTentative().exception()
         }
         order.tentative = false
-        orderRepository.updateOrder(order, true, null, null)
+        orderRepository.updateOrder(order, true, false, null)
     }
 }

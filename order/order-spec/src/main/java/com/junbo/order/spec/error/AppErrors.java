@@ -102,24 +102,32 @@ public interface AppErrors {
     AppError catalogConnectionError();
 
     @ErrorDef(httpStatusCode = 500, code = ErrorCode.UNEXPECTED_ERROR,
-            description = "Unexpected Error")
-    AppError unexpectedError();
+            description = "Order service failure: {0}")
+    AppError unexpectedError(String cause);
 
     @ErrorDef(httpStatusCode = 400, code = RatingErrorCode.RATING_RESULT_INVALID,
-            description = "Rating result invalid")
-    AppError ratingResultInvalid();
+            description = "Rating result invalid: {0}")
+    AppError ratingResultInvalid(String cause);
 
     @ErrorDef(httpStatusCode = 500, code = RatingErrorCode.RATING_CONNECTION_ERROR,
-            description = "Rating connection error")
-    AppError ratingConnectionError();
+            description = "Order rating error")
+    AppError ratingConnectionError(AppError error);
+
+    @ErrorDef(httpStatusCode = 500, code = RatingErrorCode.RATING_CONNECTION_ERROR,
+            description = "Order rating error: {0}")
+    AppError ratingConnectionError(String error);
 
     @ErrorDef(httpStatusCode = 500, code = BillingErrorCode.BILLING_CONNECTION_ERROR,
-            description = "Billing connection error")
+            description = "Billing service returns error")
     AppError billingConnectionError(AppError[] causes);
 
     @ErrorDef(httpStatusCode = 500, code = BillingErrorCode.BILLING_CONNECTION_ERROR,
-            description = "Billing connection error")
-    AppError billingConnectionError();
+            description = "Billing service returns error: {0}")
+    AppError billingConnectionError(String causes);
+
+    @ErrorDef(httpStatusCode = 500, code = BillingErrorCode.BILLING_RESULT_INVALID,
+            description = "Billing result invalid: {0}")
+    AppError billingResultInvalid(String cause);
 
     @ErrorDef(httpStatusCode = 500, code = BillingErrorCode.BALANCE_NOT_FOUND,
             description = "Balance not found")
@@ -200,4 +208,12 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.ORDER_NO_ITEM_TO_REFUND_IN_REQUEST,
             description = "There's no item to refund per request")
     AppError orderNoItemRefund();
+
+    @ErrorDef(httpStatusCode = 409, code = BillingErrorCode.BILLING_TAX_FAILED,
+            description = "Failed to calculate tax")
+    AppError calculateTaxError(AppError error);
+
+    @ErrorDef(httpStatusCode = 409, code = BillingErrorCode.BILLING_TAX_FAILED,
+            description = "Failed to calculate tax: {0}")
+    AppError calculateTaxError(String error);
 }

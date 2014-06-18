@@ -16,7 +16,6 @@ import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -79,8 +78,6 @@ public class TaxItemRepositorySqlImpl implements TaxItemRepository {
     @Override
     public Promise<TaxItem> update(TaxItem model) {
         TaxItemEntity entity = modelMapper.toTaxItemEntity(model, new MappingContext());
-        entity.setModifiedBy("BILLING");
-        entity.setModifiedTime(new Date());
         taxItemEntityDao.update(entity);
         return get(entity.getTaxItemId());
     }

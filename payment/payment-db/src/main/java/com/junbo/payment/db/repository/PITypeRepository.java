@@ -9,7 +9,7 @@ package com.junbo.payment.db.repository;
 import com.junbo.oom.core.MappingContext;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.db.dao.PaymentInstrumentTypeDao;
-import com.junbo.payment.db.entity.PaymentInstrumentTypeEntity;
+import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentTypeEntity;
 import com.junbo.payment.db.mapper.PaymentMapper;
 import com.junbo.payment.spec.model.PaymentInstrumentType;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -4,10 +4,11 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.payment.db.dao;
+package com.junbo.payment.db.dao.payment;
 
 
-import com.junbo.payment.db.entity.TrackingUuidEntity;
+import com.junbo.payment.db.dao.CommonDataDAOImpl;
+import com.junbo.payment.db.entity.payment.TrackingUuidEntity;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import java.util.List;

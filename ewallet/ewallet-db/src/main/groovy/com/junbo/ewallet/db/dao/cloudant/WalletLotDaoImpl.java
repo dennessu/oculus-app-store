@@ -5,22 +5,20 @@
  */
 package com.junbo.ewallet.db.dao.cloudant;
 
-import com.junbo.common.cloudant.model.CloudantViews;
 import com.junbo.ewallet.common.def.WalletConst;
 import com.junbo.ewallet.db.dao.WalletLotDao;
 import com.junbo.ewallet.db.entity.WalletLotEntity;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
 /**
  * cloudantImpl of WalletLotDao.
  */
 public class WalletLotDaoImpl extends BaseDao<WalletLotEntity> implements WalletLotDao {
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return cloudantViews;
-    }
 
     @Override
     public WalletLotEntity insert(WalletLotEntity walletLotEntity) {
@@ -64,20 +62,4 @@ public class WalletLotDaoImpl extends BaseDao<WalletLotEntity> implements Wallet
         }
         return result;
     }
-
-    protected CloudantViews cloudantViews = new CloudantViews() {{
-        Map<String, CloudantView> viewMap = new HashMap<>();
-        Map<String, CloudantIndex> indexMap = new HashMap<>();
-        CloudantIndex index = new CloudantIndex();
-        index.setIndex("function(doc) {" +
-                "index(\'walletId\', doc.walletId);" +
-                "index(\'isActive\', doc.isActive);" +
-                "index(\'expirationDate\', doc.expirationDate);" +
-                "}");
-        index.setResultClass(String.class);
-        indexMap.put("search", index);
-
-        setViews(viewMap);
-        setIndexes(indexMap);
-    }};
 }

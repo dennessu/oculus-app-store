@@ -196,7 +196,7 @@ public class BalanceRepositoryFacadeImpl implements BalanceRepositoryFacade {
 
     @Override
     public Balance updateBalance(Balance balance, EventActionType eventActionType) {
-        Balance savedBalance = balanceRepository.get(balance.getId()).get();
+        Balance savedBalance = getBalance(balance.getId().getValue());
 
         savedBalance.setType(balance.getType());
         savedBalance.setStatus(balance.getStatus());

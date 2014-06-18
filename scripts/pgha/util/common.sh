@@ -82,7 +82,7 @@ function forceKillPid {
         for f in `ls $1`
         do
             cat $1/$f | xargs echo
-            cat $1/$f | xargs kill -9
+            cat $1/$f | xargs kill -9 || echo 'failed to kill'
         done
     else
         echo "path [$1] does not exist"

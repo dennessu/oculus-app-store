@@ -223,7 +223,7 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
             public PaymentTransaction call() throws Exception {
                 String token = request.getExternalToken();
                 if(CommonUtil.isNullOrEmpty(token) && request.getPaymentCallbackParams() != null){
-                    token = request.getPaymentCallbackParams().getExternalAccessToken();
+                    token = request.getPaymentCallbackParams().getToken();
                 }
                 if(CommonUtil.isNullOrEmpty(token)){
                     return null;
@@ -271,8 +271,8 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
             public PaymentTransaction call() throws Exception {
                 PaymentCallbackParams properties = paymentRequest.getPaymentCallbackParams();
                 if(properties != null){
-                    paymentRequest.getWebPaymentInfo().setToken(properties.getExternalAccessToken());
-                    paymentRequest.getWebPaymentInfo().setPayerId(properties.getExternalPayerId());
+                    paymentRequest.getWebPaymentInfo().setToken(properties.getToken());
+                    paymentRequest.getWebPaymentInfo().setPayerId(properties.getPayerID());
                 }
                 PaymentDetailsType paymentDetail = new PaymentDetailsType();
                 paymentDetail.setNotifyURL("http://replaceIpnUrl.com");

@@ -55,8 +55,8 @@ public class PayPalProviderServiceTest extends BaseTest {
         PaymentTransaction result = paymentService.charge(payment).get();
         Assert.assertNotNull(result.getWebPaymentInfo().getToken());
         PaymentCallbackParams properties = new PaymentCallbackParams();
-        properties.setExternalAccessToken(result.getWebPaymentInfo().getToken());
-        properties.setExternalPayerId("CCZA9BJT9NKTS");
+        properties.setToken(result.getWebPaymentInfo().getToken());
+        properties.setPayerID("CCZA9BJT9NKTS");
         //manual step: should go to the redirectRUL and save the PAYER_ID and token
         paymentCallbackService.addPaymentProperties(result.getId(), properties);
         PaymentTransaction newStatus = paymentService.getUpdatedTransaction(result.getId()).get();
@@ -101,8 +101,8 @@ public class PayPalProviderServiceTest extends BaseTest {
         PaymentTransaction result = paymentService.charge(payment).get();
         Assert.assertNotNull(result.getWebPaymentInfo().getToken());
         PaymentCallbackParams properties = new PaymentCallbackParams();
-        properties.setExternalAccessToken(result.getWebPaymentInfo().getToken());
-        properties.setExternalPayerId("CCZA9BJT9NKTS");
+        properties.setToken(result.getWebPaymentInfo().getToken());
+        properties.setPayerID("CCZA9BJT9NKTS");
         //manual step: should go to the redirectRUL and save the PAYER_ID and token
         paymentCallbackService.addPaymentProperties(result.getId(), properties);
         PaymentTransaction newStatus = paymentService.getUpdatedTransaction(result.getId()).get();

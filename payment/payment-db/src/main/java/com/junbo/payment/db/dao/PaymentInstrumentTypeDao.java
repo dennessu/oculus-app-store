@@ -6,7 +6,7 @@
 
 package com.junbo.payment.db.dao;
 
-import com.junbo.payment.db.entity.PaymentInstrumentTypeEntity;
+import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentTypeEntity;
 
 /**
  * PI Type Dao.

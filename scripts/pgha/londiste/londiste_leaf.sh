@@ -9,7 +9,7 @@ echo "kill skytools instance"
 forceKillPid $SKYTOOL_PID_PATH
 
 echo "waiting for replica catching up with master..."
-while ! echo exit | psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT 'x' from pg_stat_replication where sent_location != replay_location;" | grep "(0 rows)"; do sleep 1 && echo "slave is catching up..."; done
+while ! echo exit | psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT 'x' from pg_stat_replication where sent_location != replay_location;" | grep "(0 rows)"; do sleep 1 && echo "replica is catching up..."; done
 echo "replica catch up with slave!"
 
 echo "promote replcia database to cut off streaming replication..."
@@ -31,7 +31,10 @@ do
     $PGBIN_PATH/psql $db -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "DROP SCHEMA londiste CASCADE;"
     set -e
 
-    echo "create root node for database [$db]"
+    echo "drop leaf node if exist"
+    londiste3 $config drop-node leaf_node_${db} || echo "node [leaf_node_${db}] does not exist"
+
+    echo "create leaf node for database [$db]"
     londiste3 $config create-leaf leaf_node_${db} "dbname=$db host=$REPLICA_HOST port=$REPLICA_DB_PORT" --provider="dbname=$db host=$MASTER_HOST port=$MASTER_DB_PORT"
 
     echo "start worker for database [$db]"
@@ -40,5 +43,7 @@ do
     echo "subscribe all tables"
     londiste3 $config add-table --all
 
-    #TODO: unsubscribe liquibase related tables
+    echo "remove liquibase change log tables"
+    londiste3 $config remove-table databasechangelog || echo "table missing"
+    londiste3 $config remove-table databasechangeloglock || echo "table missing"
 done

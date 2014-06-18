@@ -11,7 +11,6 @@ import com.junbo.catalog.db.repo.ItemRevisionRepository;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
 import com.junbo.common.cloudant.CloudantClient;
-import com.junbo.common.cloudant.model.CloudantViews;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -130,48 +129,4 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
         super.cloudantDelete(revisionId).get();
     }
 
-    private CloudantViews cloudantViews = new CloudantViews() {{
-        Map<String, CloudantView> viewMap = new HashMap<>();
-        Map<String, CloudantIndex> indexMap = new HashMap<>();
-
-        CloudantViews.CloudantView view = new CloudantViews.CloudantView();
-        view.setMap("function(doc) {emit(doc.itemId, doc._id)}");
-        view.setResultClass(String.class);
-        viewMap.put("by_itemId", view);
-
-        view = new CloudantViews.CloudantView();
-        view.setMap("function(doc) {if (doc.status){ emit(doc.status, doc._id); }}");
-        view.setResultClass(String.class);
-        viewMap.put("by_status", view);
-
-        view = new CloudantViews.CloudantView();
-        view.setMap(
-            "function(doc) {" +
-                "if (doc.iapHostItemIds) {" +
-                    "for (var idx in doc.iapHostItemIds) {" +
-                        "emit(doc.iapHostItemIds[idx], doc._id);" +
-                    "}" +
-                "}" +
-            "}");
-        view.setResultClass(String.class);
-        viewMap.put("by_hostItemId", view);
-
-        CloudantIndex index = new CloudantIndex();
-        index.setResultClass(String.class);
-        index.setIndex("function(doc) {" +
-                "index(\'itemId\', doc.itemId);" +
-                "index(\'revisionId\', doc.revisionId);" +
-                "index(\'status\', doc.status);" +
-                "index(\'timeInMillis\', doc.timestamp);" +
-            "}");
-        indexMap.put("search", index);
-
-        setIndexes(indexMap);
-        setViews(viewMap);
-    }};
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return cloudantViews;
-    }
 }

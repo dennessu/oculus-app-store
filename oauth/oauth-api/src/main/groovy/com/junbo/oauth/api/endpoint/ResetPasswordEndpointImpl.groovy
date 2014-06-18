@@ -28,6 +28,7 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
     private String resetPasswordFlow
     private String forgetPasswordFlow
     private UserService userService
+    private boolean debugEnabled
 
     @Required
     void setFlowExecutor(FlowExecutor flowExecutor) {
@@ -47,6 +48,11 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
     @Required
     void setUserService(UserService userService) {
         this.userService = userService
+    }
+
+    @Required
+    void setDebugEnabled(boolean debugEnabled) {
+        this.debugEnabled = debugEnabled
     }
 
     @Override
@@ -92,7 +98,11 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
     Promise<Response> resetPassword(String conversationId, String event, String locale, UserId userId,
                                     ContainerRequestContext request, MultivaluedMap<String, String> formParams) {
         if (conversationId == null) {
-            return userService.sendResetPassword(userId, locale, ((ContainerRequest)request).baseUri).then {
+            return userService.sendResetPassword(userId, locale, ((ContainerRequest)request).baseUri).then { String uri ->
+                if (debugEnabled) {
+                    return Promise.pure(Response.ok().entity(uri).build())
+                }
+                
                 return Promise.pure(Response.noContent().build())
             }
         }

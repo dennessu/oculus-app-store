@@ -1,6 +1,5 @@
 package com.junbo.email.db.repo.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.email.db.repo.EmailScheduleRepository
 import com.junbo.email.spec.model.Email
 import com.junbo.langur.core.promise.Promise
@@ -37,10 +36,5 @@ class EmailScheduleRepositoryCloudantImpl extends CloudantClient<Email> implemen
 
     public Promise<Void> deleteEmailSchedule(String id) {
         return super.cloudantDelete(id)
-    }
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return null
     }
 }

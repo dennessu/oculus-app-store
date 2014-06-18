@@ -1,6 +1,5 @@
 package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.cloudant.model.CloudantViews
 import com.junbo.common.id.EncryptUserPersonalInfoId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.identity.data.repository.EncryptUserPersonalInfoRepository
@@ -14,11 +13,6 @@ import org.springframework.util.CollectionUtils
 @CompileStatic
 class EncryptUserPersonalInfoRepositoryImpl extends CloudantClient<EncryptUserPersonalInfo>
         implements EncryptUserPersonalInfoRepository {
-
-    @Override
-    protected CloudantViews getCloudantViews() {
-        return views
-    }
 
     @Override
     Promise<EncryptUserPersonalInfo> searchByUserPersonalInfoId(UserPersonalInfoId userPersonalInfoId) {
@@ -62,19 +56,4 @@ class EncryptUserPersonalInfoRepositoryImpl extends CloudantClient<EncryptUserPe
     Promise<Void> delete(EncryptUserPersonalInfoId id) {
         return super.cloudantDelete(id.toString())
     }
-
-    protected CloudantViews views = new CloudantViews(
-            views: [
-                    'by_hash_value': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.hashSearchInfo, doc._id)' +
-                                    '}',
-                            resultClass: String),
-                    'by_user_personal_info_id': new CloudantViews.CloudantView(
-                            map: 'function(doc) {' +
-                                    '  emit(doc.userPersonalInfoId, doc._id)' +
-                                    '}',
-                            resultClass: String)
-            ]
-    )
 }

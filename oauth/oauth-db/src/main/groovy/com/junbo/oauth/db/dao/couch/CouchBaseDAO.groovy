@@ -174,52 +174,9 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
         } else {
             fullDbName = dbName;
         }
-
-        def response = executeRequest(HttpMethod.GET, '', [:], null)
-        if (response.statusCode == HttpStatus.NOT_FOUND.value()) {
-            response = executeRequest(HttpMethod.PUT, '', [:], null)
-
-            if (response.statusCode != HttpStatus.CREATED.value()) {
-                CouchError couchError = JsonMarshaller.unmarshall(response.responseBody, CouchError)
-                throw new DBException("Failed to create the database, error: $couchError.error," +
-                        " reason: $couchError.reason")
-            }
-        }
-
-        if (couchViews != null) {
-            response = executeRequest(HttpMethod.GET, '_design/views', [:], couchViews)
-
-            if (response.statusCode == HttpStatus.NOT_FOUND.value()) {
-                putViews(couchViews)
-            } else if (response.statusCode == HttpStatus.OK.value()) {
-                CouchViews existingViews = JsonMarshaller.unmarshall(response.responseBody, CouchViews)
-                def newView = couchViews.views.keySet().find { !existingViews.views.containsKey(it) }
-                if (newView != null) {
-                    couchViews.revision = existingViews.revision
-                    putViews(couchViews)
-                }
-            }
-        }
     }
-
-    private void putViews(CouchViews views) {
-        def response = executeRequest(HttpMethod.PUT, '_design/views', [:], views)
-
-        if (response.statusCode != HttpStatus.CREATED.value()) {
-            CouchError couchError = JsonMarshaller.unmarshall(response.responseBody, CouchError)
-            throw new DBException("Failed to create the views in the database, error: $couchError.error," +
-                    " reason: $couchError.reason")
-        }
-    }
-
-    abstract protected CouchViews getCouchViews()
 
     protected CouchSearchResult internalQueryView(String viewName, String key) {
-        CouchViews.CouchView couchView = couchViews.views[viewName]
-        if (couchView == null) {
-            throw new DBException("The view $viewName does not exist")
-        }
-
         def response = executeRequest(HttpMethod.GET, VIEW_PATH + viewName,
                 key == null ? [:] : ['key': "\"$key\""], null)
 
@@ -229,8 +186,7 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
                     " reason: $couchError.reason")
         }
 
-        return (CouchSearchResult) JsonMarshaller.unmarshall(response.responseBody, CouchSearchResult,
-                couchView.resultClass)
+        return (CouchSearchResult) JsonMarshaller.unmarshall(response.responseBody, CouchSearchResult, String)
     }
 
     protected List<T> queryView(String viewName, String key) {

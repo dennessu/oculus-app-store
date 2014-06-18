@@ -104,7 +104,7 @@ class OrderRepositoryFacadeTest extends BaseTest {
 
         // update to non-tentative
         order.tentative = false
-        orderRepository.updateOrder(order, true, null, null)
+        orderRepository.updateOrder(order, true, true, null)
         verifyByRead(order)
 
         def newShippingAddress = TestHelper.generateId()
@@ -113,12 +113,12 @@ class OrderRepositoryFacadeTest extends BaseTest {
         verifyByRead(order)
         def newOrder = orderRepository.getOrder(order.getId().value)
         def newOrderRevisionLastIndex = newOrder.orderRevisions.size() - 1;
-        assert(newOrder.orderRevisions.size() == 3)
+        assert(newOrder.orderRevisions.size() == 2)
         assert(newOrder.shippingAddress.value == newShippingAddress)
         assert(newOrder.latestOrderRevisionId == newOrder.orderRevisions[newOrderRevisionLastIndex].getId())
         def newOrders = orderRepository.getOrdersByUserId(order.user.value, new OrderQueryParam(), new PageParam())
         assert(newOrders[0].id == newOrder.id)
-        assert(newOrders[0].orderRevisions.size() == 3)
+        assert(newOrders[0].orderRevisions.size() == 2)
         assert(newOrders[0].shippingAddress.value == newShippingAddress)
         assert(newOrders[0].latestOrderRevisionId == newOrder.orderRevisions[newOrderRevisionLastIndex].getId())
 

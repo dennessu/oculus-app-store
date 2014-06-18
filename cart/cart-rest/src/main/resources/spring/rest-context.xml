@@ -48,6 +48,8 @@
         <property name="cartPersistService" ref="cartPersistService"/>
         <property name="validation" ref="validation"/>
         <property name="identityClient" ref="identityClient"/>
+        <property name="authorizeCallbackFactory" ref="cartAuthorizeCallbackFactory"/>
+        <property name="authorizeService" ref="authorizeService"/>
     </bean>
 
     <bean id="validation" class="com.junbo.cart.core.validation.ValidationImpl">

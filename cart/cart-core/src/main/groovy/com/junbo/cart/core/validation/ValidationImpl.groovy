@@ -64,7 +64,7 @@ class ValidationImpl implements Validation {
             throw AppErrors.INSTANCE.fieldInvalid('cartName').exception()
         }
         // validate if cart with the name already exist
-        if (cartPersistService.get(clientId, cart.cartName, userId) != null) {
+        if (cartPersistService.get(clientId, cart.cartName, userId).get() != null) {
             throw AppErrors.INSTANCE.cartAlreadyExists(userId.value, cart.cartName).exception()
         }
         return this

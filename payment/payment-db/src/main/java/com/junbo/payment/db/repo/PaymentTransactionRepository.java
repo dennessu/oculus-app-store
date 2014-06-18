@@ -11,5 +11,5 @@ import com.junbo.sharding.repo.BaseRepository;
 /**
  * Created by minhao on 6/16/14.
  */
-public interface PaymentRepository extends BaseRepository<PaymentTransaction, Long> {
+public interface PaymentTransactionRepository extends BaseRepository<PaymentTransaction, Long> {
 }
