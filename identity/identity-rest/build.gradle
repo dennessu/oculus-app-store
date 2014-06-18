@@ -22,6 +22,7 @@ dependencies {
     compile (libraries.jersey_common)
 
     compile junboProject(':oauth-spec')
+    compile junboProject(':authorization-spec')
 
     compile junboProject(':identity-core')
     compile junboProject(':identity-spec')

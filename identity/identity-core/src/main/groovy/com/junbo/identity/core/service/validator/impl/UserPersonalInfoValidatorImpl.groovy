@@ -6,9 +6,11 @@ import com.junbo.identity.core.service.validator.PiiValidatorFactory
 import com.junbo.identity.core.service.validator.UserPersonalInfoValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.identifiable.UserStatus
+import com.junbo.identity.data.repository.OrganizationRepository
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
+import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.option.list.UserPersonalInfoListOptions
@@ -29,6 +31,7 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
 
     private UserPersonalInfoRepository userPersonalInfoRepository
     private UserRepository userRepository
+    private OrganizationRepository organizationRepository
 
     private PiiValidatorFactory piiValidatorFactory
 
@@ -94,10 +97,6 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
             throw AppErrors.INSTANCE.fieldInvalid('id', oldUserPersonalInfo.id.toString()).exception()
         }
 
-        if (userPersonalInfo.userId != oldUserPersonalInfo.userId) {
-            throw AppErrors.INSTANCE.fieldInvalidException('userId', 'userId can\'t be updated.').exception()
-        }
-
         if (userPersonalInfo.type != oldUserPersonalInfo.type) {
             throw AppErrors.INSTANCE.fieldInvalidException('type', 'type can\'t be updated.').exception()
         }
@@ -115,8 +114,13 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
         if (userPersonalInfo == null) {
             throw new IllegalArgumentException('userPersonalInfo is null')
         }
-        if (userPersonalInfo.userId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+        if (userPersonalInfo.userId == null && userPersonalInfo.organizationId == null) {
+            throw AppErrors.INSTANCE.fieldRequired('userId or organizationId').exception()
+        }
+
+        if (userPersonalInfo.userId != null && userPersonalInfo.organizationId != null) {
+            throw AppErrors.INSTANCE.fieldInvalidException('userId or organizationId',
+                    'userId and organizationId can\'t appear both.').exception()
         }
 
         if (userPersonalInfo.value == null) {
@@ -144,17 +148,7 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
     Promise<Void> checkAdvancedCreate(UserPersonalInfo userPersonalInfo) {
         List<PiiValidator> piiValidatorList = piiValidatorFactory.validators
         return iterateValidateCreate(piiValidatorList.iterator(), userPersonalInfo).then {
-            return userRepository.get(userPersonalInfo.userId).then { User user ->
-                if (user == null) {
-                    throw AppErrors.INSTANCE.userNotFound(userPersonalInfo.userId).exception()
-                }
-
-                if (user.status != UserStatus.ACTIVE.toString()) {
-                    throw AppErrors.INSTANCE.userInInvalidStatus(userPersonalInfo.userId).exception()
-                }
-
-                return Promise.pure(null)
-            }
+            return checkPiiOwnerShipExists(userPersonalInfo)
         }
     }
 
@@ -162,7 +156,7 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
         if (iterator.hasNext()) {
             PiiValidator piiValidator = iterator.next()
             if (piiValidator.handles(userPersonalInfo.type)) {
-                return piiValidator.validateCreate(userPersonalInfo.value, userPersonalInfo.userId).then {
+                return piiValidator.validateCreate(userPersonalInfo.value, userPersonalInfo.userId, userPersonalInfo.organizationId).then {
                     return iterateValidateCreate(iterator, userPersonalInfo)
                 }
             }
@@ -174,6 +168,26 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
     Promise<Void> checkAdvancedUpdate(UserPersonalInfo userPersonalInfo, UserPersonalInfo oldUserPersonalInfo) {
         List<PiiValidator> piiValidatorList = piiValidatorFactory.validators
         return iterateValidateUpdate(piiValidatorList.iterator(), userPersonalInfo, oldUserPersonalInfo).then {
+            return checkPiiOwnerShipExists(userPersonalInfo)
+        }
+    }
+
+    Promise<Void> iterateValidateUpdate(Iterator<PiiValidator> iterator, UserPersonalInfo userPersonalInfo,
+                                        UserPersonalInfo oldUserPersonalInfo) {
+        if (iterator.hasNext()) {
+            PiiValidator piiValidator = iterator.next()
+            if (piiValidator.handles(userPersonalInfo.type)) {
+                return piiValidator.validateUpdate(userPersonalInfo.value, oldUserPersonalInfo.value).then {
+                    return iterateValidateUpdate(iterator, userPersonalInfo, oldUserPersonalInfo)
+                }
+            }
+            return iterateValidateUpdate(iterator, userPersonalInfo, oldUserPersonalInfo)
+        }
+        return Promise.pure(null)
+    }
+
+    Promise<Void> checkPiiOwnerShipExists(UserPersonalInfo userPersonalInfo) {
+        if (userPersonalInfo.userId != null) {
             return userRepository.get(userPersonalInfo.userId).then { User user ->
                 if (user == null) {
                     throw AppErrors.INSTANCE.userNotFound(userPersonalInfo.userId).exception()
@@ -185,22 +199,17 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
 
                 return Promise.pure(null)
             }
-        }
-    }
-
-    Promise<Void> iterateValidateUpdate(Iterator<PiiValidator> iterator, UserPersonalInfo userPersonalInfo,
-                                        UserPersonalInfo oldUserPersonalInfo) {
-        if (iterator.hasNext()) {
-            PiiValidator piiValidator = iterator.next()
-            if (piiValidator.handles(userPersonalInfo.type)) {
-                return piiValidator.validateUpdate(userPersonalInfo.value, oldUserPersonalInfo.value,
-                        userPersonalInfo.userId).then {
-                    return iterateValidateUpdate(iterator, userPersonalInfo, oldUserPersonalInfo)
+        } else if (userPersonalInfo.organizationId) {
+            return organizationRepository.get(userPersonalInfo.organizationId).then { Organization organization ->
+                if (organization == null) {
+                    throw AppErrors.INSTANCE.organizationNotFound(userPersonalInfo.organizationId).exception()
                 }
+
+                return Promise.pure(null)
             }
-            return iterateValidateUpdate(iterator, userPersonalInfo, oldUserPersonalInfo)
+        } else {
+            throw AppErrors.INSTANCE.fieldRequired('userId or organizationId').exception()
         }
-        return Promise.pure(null)
     }
 
     private Boolean isValidTimeScope(Date date) {
@@ -218,6 +227,11 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
     @Required
     void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository
+    }
+
+    @Required
+    void setOrganizationRepository(OrganizationRepository organizationRepository) {
+        this.organizationRepository = organizationRepository
     }
 
     @Required

@@ -26,9 +26,6 @@ class CryptoMessageValidatorImpl implements CryptoMessageValidator {
 
     @Override
     Promise<Void> validateEncrypt(UserId userId, CryptoMessage rawMessage) {
-        if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
-        }
         if (rawMessage == null) {
             throw new IllegalArgumentException('rawMessage is null')
         }
@@ -38,6 +35,10 @@ class CryptoMessageValidatorImpl implements CryptoMessageValidator {
 
         if (!enableUserKeyEncrypt) {
             return Promise.pure(null)
+        }
+
+        if (userId == null) {
+            throw new IllegalArgumentException('userId is null')
         }
 
         return userResource.get(userId, new UserGetOptions()).then { User user ->
@@ -51,9 +52,7 @@ class CryptoMessageValidatorImpl implements CryptoMessageValidator {
 
     @Override
     Promise<Void> validateDecrypt(UserId userId, CryptoMessage decryptMessage) {
-        if (userId == null) {
-            throw new IllegalArgumentException('userId is null')
-        }
+
         if (decryptMessage == null) {
             throw new IllegalArgumentException('decryptMessage is null')
         }
@@ -65,6 +64,14 @@ class CryptoMessageValidatorImpl implements CryptoMessageValidator {
         if (messageInfo == null || messageInfo.length != 2 || !(isValidInteger(messageInfo[0]))) {
             throw AppErrors.INSTANCE.fieldInvalid('EncryptMessage must be in the format as versionNumber' +
                     versionSeparator + 'encryptValue').exception()
+        }
+
+        if (!enableUserKeyEncrypt) {
+            return Promise.pure(null)
+        }
+
+        if (userId == null) {
+            throw new IllegalArgumentException('userId is null')
         }
 
         return Promise.pure(null)

@@ -96,7 +96,7 @@ class RoleAssignmentValidatorImpl implements RoleAssignmentValidator {
             throw AppErrors.INSTANCE.fieldInvalid('assignee').exception()
         }
 
-        options.assigneeIdType = resourceId.class.canonicalName
+            options.assigneeIdType = resourceId.class.canonicalName
         options.assigneeId = resourceId.toString()
 
         return Promise.pure(null)

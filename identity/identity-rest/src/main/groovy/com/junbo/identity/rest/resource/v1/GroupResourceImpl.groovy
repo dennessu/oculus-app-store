@@ -16,7 +16,6 @@ import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Group
 import com.junbo.identity.spec.v1.model.UserGroup
 import com.junbo.identity.spec.v1.option.list.GroupListOptions
-import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
 import com.junbo.identity.spec.v1.option.model.GroupGetOptions
 import com.junbo.identity.spec.v1.resource.GroupResource
 import com.junbo.langur.core.promise.Promise
@@ -117,8 +116,8 @@ class GroupResourceImpl implements GroupResource {
     Promise<Results<Group>> list(GroupListOptions listOptions) {
         return groupValidator.validateForSearch(listOptions).then {
             def resultList = new Results<Group>(items: [])
-            if (listOptions.name != null) {
-                return groupRepository.searchByName(listOptions.name).then { Group newGroup ->
+            if (listOptions.organizationId != null && listOptions.name != null) {
+                return groupRepository.searchByOrganizationIdAndName(listOptions.organizationId, listOptions.name, Integer.MAX_VALUE, 0).then { Group newGroup ->
                     if (newGroup != null) {
                         newGroup = groupFilter.filterForGet(newGroup, listOptions.properties?.split(',') as List<String>)
                     }
@@ -130,6 +129,7 @@ class GroupResourceImpl implements GroupResource {
                     return Promise.pure(resultList)
                 }
             } else {
+                // todo:    Need to filter by organization first
                 return userGroupRepository.searchByUserId(listOptions.userId, listOptions.limit,
                         listOptions.offset).then { List<UserGroup> userGroupList ->
                     return fillUserGroups(userGroupList.iterator(), resultList, listOptions).then {

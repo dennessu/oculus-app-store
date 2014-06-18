@@ -245,7 +245,7 @@
                 <value>shortName</value>
                 <value>longName</value>
                 <value>localeName</value>
-                <value>ctoryllbackLocale</value>
+                <value>fallbackLocale</value>
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>createdTime</value>

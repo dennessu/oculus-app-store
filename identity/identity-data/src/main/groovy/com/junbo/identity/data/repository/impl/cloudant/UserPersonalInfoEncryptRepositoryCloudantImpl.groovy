@@ -83,7 +83,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     Promise<UserPersonalInfo> decryptUserPersonalInfo(UserId userId, String message) {
         CryptoMessage cryptoMessage = new CryptoMessage()
         cryptoMessage.value = message
-        return cryptoResource.decrypt(userId, cryptoMessage).then { CryptoMessage decryptValue ->
+        return cryptoResource.decrypt(cryptoMessage).then { CryptoMessage decryptValue ->
             return Promise.pure(marshaller.unmarshall(decryptValue.value, UserPersonalInfo))
         }
     }
@@ -166,13 +166,13 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     @Override
     Promise<UserPersonalInfo> create(UserPersonalInfo model) {
         if (model.id == null) {
-            model.id = new UserPersonalInfoId(idGenerator.nextId(model.userId.value))
+            model.id = new UserPersonalInfoId(idGenerator.nextId(model.userId == null ? model.organizationId.value : model.userId.value))
         }
 
         CryptoMessage cryptoMessage = new CryptoMessage()
         cryptoMessage.value = marshaller.marshall(model)
 
-        return cryptoResource.encrypt(model.userId, cryptoMessage).then { CryptoMessage messageValue ->
+        return cryptoResource.encrypt(cryptoMessage).then { CryptoMessage messageValue ->
             EncryptUserPersonalInfo encryptUserPersonalInfo = new EncryptUserPersonalInfo()
             encryptUserPersonalInfo.encryptUserPersonalInfo = messageValue.value
             encryptUserPersonalInfo.userPersonalInfoId = (UserPersonalInfoId)model.id
@@ -198,7 +198,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
         CryptoMessage cryptoMessage = new CryptoMessage()
         cryptoMessage.value = marshaller.marshall(model)
 
-        return cryptoResource.encrypt(model.userId, cryptoMessage).then { CryptoMessage messageValue ->
+        return cryptoResource.encrypt(cryptoMessage).then { CryptoMessage messageValue ->
 
             return encryptUserPersonalInfoRepository.searchByUserPersonalInfoId((UserPersonalInfoId)model.id).then {
                 EncryptUserPersonalInfo info ->
@@ -227,7 +227,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
                     CryptoMessage cryptoMessage = new CryptoMessage(
                             value: encryptUserPersonalInfo.encryptUserPersonalInfo
                     )
-                    return cryptoResource.decrypt(link.userId, cryptoMessage).then { CryptoMessage decrypt ->
+                    return cryptoResource.decrypt(cryptoMessage).then { CryptoMessage decrypt ->
                         UserPersonalInfo userPersonalInfo = marshaller.unmarshall(decrypt.value, UserPersonalInfo)
                         userPersonalInfo.createdBy = encryptUserPersonalInfo.createdBy
                         userPersonalInfo.createdTime = encryptUserPersonalInfo.createdTime

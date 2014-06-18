@@ -77,6 +77,41 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
         }
     }
 
+    @Override
+    Promise<CryptoMessage> encrypt(CryptoMessage rawMessage) {
+        if (!enableEncrypt) {
+            return Promise.pure(rawMessage)
+        }
+
+        return authorize().then {
+            return validator.validateDecrypt(null, rawMessage).then {
+                return symmetricEncryptUserMessageByMasterKey(rawMessage.value).then { String encryptMessage ->
+                    CryptoMessage result = new CryptoMessage()
+                    result.value = encryptMessage
+                    return Promise.pure(result)
+                }
+            }
+        }
+    }
+
+    @Override
+    Promise<CryptoMessage> decrypt(CryptoMessage encryptMessage) {
+        if (!enableEncrypt) {
+            return Promise.pure(encryptMessage)
+        }
+
+        return authorize().then {
+            return validator.validateDecrypt(null, encryptMessage).then {
+                return symmetricDecryptUserMessageByMasterKey(encryptMessage.value).then { String rawMessage ->
+                    CryptoMessage result = new CryptoMessage()
+                    result.value = rawMessage
+
+                    return Promise.pure(result)
+                }
+            }
+        }
+    }
+
     @Required
     void setValidator(CryptoMessageValidator validator) {
         this.validator = validator

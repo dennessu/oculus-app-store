@@ -96,6 +96,9 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> {
             "False if Oculus hasn't verified user taxExemption material, this value should only be set by internal tool by Oculus employee")
     private Boolean isTaxExemptionValidated;
 
+    @ApiModelProperty(position = 18, required = false, value = "The profile of the user resource.")
+    private UserProfile profile;
+
     @ApiModelProperty(position = 6, required = false, value = " A link to the Groups resource, search the groups that contain the user.")
     @HateoasLink("/user-group-memberships?userId={id}")
     private Link groupMemeberships;
@@ -491,5 +494,14 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> {
     public void setIsTaxExemptionValidated(Boolean isTaxExemptionValidated) {
         this.isTaxExemptionValidated = isTaxExemptionValidated;
         support.setPropertyAssigned("isTaxExemptionValidated");
+    }
+
+    public UserProfile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(UserProfile profile) {
+        this.profile = profile;
+        support.setPropertyAssigned("profile");
     }
 }

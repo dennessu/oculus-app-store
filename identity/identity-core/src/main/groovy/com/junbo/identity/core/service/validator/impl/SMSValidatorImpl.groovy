@@ -1,6 +1,7 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.validator.PiiValidator
@@ -29,7 +30,7 @@ class SMSValidatorImpl implements PiiValidator {
     }
 
     @Override
-    Promise<Void> validateCreate(JsonNode value, UserId userId) {
+    Promise<Void> validateCreate(JsonNode value, UserId userId, OrganizationId organizationId) {
         UserSMS userSMS = (UserSMS)JsonHelper.jsonNodeToObj(value, UserSMS)
         checkUserSMS(userSMS)
 
@@ -37,7 +38,7 @@ class SMSValidatorImpl implements PiiValidator {
     }
 
     @Override
-    Promise<Void> validateUpdate(JsonNode value, JsonNode oldValue, UserId userId) {
+    Promise<Void> validateUpdate(JsonNode value, JsonNode oldValue) {
         UserSMS userSMS = (UserSMS)JsonHelper.jsonNodeToObj(value, UserSMS)
         UserSMS oldUserSMS = (UserSMS)JsonHelper.jsonNodeToObj(oldValue, UserSMS)
         if (userSMS != oldUserSMS) {

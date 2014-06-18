@@ -13,6 +13,12 @@ dependencies {
 
     runtime (junboProject(':billing-rest')) {
         exclude group: 'com.junbo.identity', module: 'identity-spec'
+        exclude group: 'com.junbo.identity', module: 'identity-clientproxy'
+    }
+
+    runtime (junboProject(':authorization-rest')) {
+        exclude group: 'com.junbo.identity', module: 'identity-spec'
+        exclude group: 'com.junbo.identity', module: 'identity-clientproxy'
     }
 
     compile junboProject(':identity-rest')

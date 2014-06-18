@@ -211,7 +211,7 @@ public interface AppErrors {
     AppError requestBodyRequired();
 
     @ErrorDef(httpStatusCode = 400, code = "2000058", description = "User {0} Email {1} already used.", field = "{0}")
-    AppError userEmailAlreadyUsed(String currentId, String email);
+    AppError userEmailAlreadyUsed(String email);
 
     @ErrorDef(httpStatusCode = 404, code = "2000059", description = "Organization {0} is already used.", field = "{0}")
     AppError organizationAlreadyUsed(String organizationName);

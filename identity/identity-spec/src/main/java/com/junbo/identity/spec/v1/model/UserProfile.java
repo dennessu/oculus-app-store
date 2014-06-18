@@ -3,20 +3,25 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.identity.spec.v1.model.migration;
+package com.junbo.identity.spec.v1.model;
 
 import com.junbo.common.model.Link;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
- * Created by liangfu on 6/6/14.
+ * Created by liangfu on 6/18/14.
  */
-public class ShareProfile {
+public class UserProfile {
+    @ApiModelProperty(position = 1, required = false, value = "The headline of the user resource.")
     private String headline;
 
+    @ApiModelProperty(position = 2, required = false, value = "The summary of the user resource.")
     private String summary;
 
+    @ApiModelProperty(position = 3, required = false, value = "The url of the user resource.")
     private String url;
 
+    @ApiModelProperty(position = 4, required = false, value = "The avatar link of the user resource.")
     private Link avatar;
 
     public String getHeadline() {
