@@ -14,7 +14,11 @@ function run_gradle {
 
 cd `git rev-parse --show-toplevel`
 run_gradle gradle/bootstrap
-$GRADLE_CMD 
+$GRADLE_CMD
+
+pushd apphost/apphost-cli
+gradle
+popd
 
 pushd integrationtesting 
 gradle -x test
