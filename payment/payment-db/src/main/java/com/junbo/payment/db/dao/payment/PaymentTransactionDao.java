@@ -7,13 +7,13 @@
 package com.junbo.payment.db.dao.payment;
 
 import com.junbo.payment.db.dao.CommonDataDAOImpl;
-import com.junbo.payment.db.entity.payment.PaymentEntity;
+import com.junbo.payment.db.entity.payment.PaymentTransactionEntity;
 
 /**
  * payment dao.
  */
-public class PaymentDao extends CommonDataDAOImpl<PaymentEntity, Long> {
-    public PaymentDao() {
-        super(PaymentEntity.class);
+public class PaymentTransactionDao extends CommonDataDAOImpl<PaymentTransactionEntity, Long> {
+    public PaymentTransactionDao() {
+        super(PaymentTransactionEntity.class);
     }
 }

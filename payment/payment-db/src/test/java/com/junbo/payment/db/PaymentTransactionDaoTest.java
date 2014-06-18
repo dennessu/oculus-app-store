@@ -2,15 +2,15 @@ package com.junbo.payment.db;
 
 
 import com.junbo.common.id.PIType;
+import com.junbo.payment.db.dao.payment.PaymentTransactionDao;
 import com.junbo.payment.db.dao.payment.TrackingUuidDao;
 import com.junbo.payment.db.dao.payment.MerchantAccountDao;
-import com.junbo.payment.db.dao.payment.PaymentDao;
 import com.junbo.payment.db.dao.payment.PaymentEventDao;
 import com.junbo.payment.db.dao.paymentinstrument.CreditCardPaymentInstrumentDao;
 import com.junbo.payment.db.dao.paymentinstrument.PaymentInstrumentDao;
+import com.junbo.payment.db.entity.payment.PaymentTransactionEntity;
 import com.junbo.payment.db.entity.payment.TrackingUuidEntity;
 import com.junbo.payment.db.entity.payment.MerchantAccountEntity;
-import com.junbo.payment.db.entity.payment.PaymentEntity;
 import com.junbo.payment.db.entity.payment.PaymentEventEntity;
 import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentEntity;
 import com.junbo.payment.db.repository.MerchantAccountRepository;
@@ -29,13 +29,13 @@ import java.util.List;
 import java.util.Random;
 
 
-public class PaymentDaoTest extends BaseTest {
+public class PaymentTransactionDaoTest extends BaseTest {
     @Autowired
     private PaymentInstrumentDao piDao;
     @Autowired
     private CreditCardPaymentInstrumentDao ccDao;
     @Autowired
-    private PaymentDao paymentDao;
+    private PaymentTransactionDao paymentTransactionDao;
     @Autowired
     private PaymentEventDao paymentEventDao;
     @Autowired
@@ -89,9 +89,9 @@ public class PaymentDaoTest extends BaseTest {
         entity.setId(piid);
         piDao.save(entity);
 
-        PaymentEntity payment = buildPaymentRequest(entity);
+        PaymentTransactionEntity payment = buildPaymentRequest(entity);
         payment.setId(piid);
-        paymentDao.save(payment);
+        paymentTransactionDao.save(payment);
 
         PaymentEventEntity eventEntity = getPaymentEventEntity(payment);
         eventEntity.setPaymentId(piid);
@@ -107,9 +107,9 @@ public class PaymentDaoTest extends BaseTest {
         entity.setId(piid);
         piDao.save(entity);
 
-        PaymentEntity payment = buildPaymentRequest(entity);
+        PaymentTransactionEntity payment = buildPaymentRequest(entity);
         payment.setId(piid);
-        paymentDao.save(payment);
+        paymentTransactionDao.save(payment);
 
         PaymentEventEntity eventEntity1 = getPaymentEventEntity(payment);
         eventEntity1.setPaymentId(piid);
@@ -118,7 +118,7 @@ public class PaymentDaoTest extends BaseTest {
         eventEntity2.setPaymentId(piid);
         paymentEventDao.save(eventEntity2);
 
-        PaymentEntity result = paymentDao.get(payment.getId());
+        PaymentTransactionEntity result = paymentTransactionDao.get(payment.getId());
         Assert.assertNotNull(result, "Entity should not be null.");
         List<PaymentEventEntity> results = paymentEventDao.getByPaymentId(result.getId());
         Assert.assertEquals(results.size(), 2);
@@ -146,8 +146,8 @@ public class PaymentDaoTest extends BaseTest {
         return entity;
     }
 
-    protected PaymentEntity buildPaymentRequest(PaymentInstrumentEntity pi){
-        PaymentEntity entity = new PaymentEntity();
+    protected PaymentTransactionEntity buildPaymentRequest(PaymentInstrumentEntity pi){
+        PaymentTransactionEntity entity = new PaymentTransactionEntity();
         entity.setUserId(userId);
         entity.setCreatedBy("ut");
         entity.setCurrency("USD");
@@ -162,7 +162,7 @@ public class PaymentDaoTest extends BaseTest {
         return entity;
     }
 
-    protected PaymentEventEntity getPaymentEventEntity(PaymentEntity payment) {
+    protected PaymentEventEntity getPaymentEventEntity(PaymentTransactionEntity payment) {
         PaymentEventEntity eventEntity = new PaymentEventEntity();
         eventEntity.setPaymentId(payment.getId());
         eventEntity.setEventTypeId(PaymentEventType.AUTH_CREATE.getId());
