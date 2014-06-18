@@ -10,10 +10,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.ewallet.spec.model.CreditRequest;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.TypeSpecificDetails;
-import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
-import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
-import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
-import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
+import com.junbo.test.common.Entities.paymentInstruments.*;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
@@ -118,6 +115,17 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument));
                 return paymentInfo.getPid();
 
+            case OTHERS:
+                AdyenInfo adyenInfo = (AdyenInfo) paymentInfo;
+                paymentInstrument.setAccountName(adyenInfo.getAccountName());
+                paymentInstrument.setAccountNum(adyenInfo.getAccountNum());
+                paymentInstrument.setIsValidated(adyenInfo.isValidated());
+                paymentInstrument.setType(adyenInfo.getType().getValue());
+                paymentInstrument.setBillingAddressId(adyenInfo.getBillingAddressId());
+
+                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument));
+                return paymentInfo.getPid();
+
             default:
                 throw new TestException(String.format("%s is not supported", paymentInfo.getType().toString()));
         }
@@ -154,7 +162,7 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
         paymentClient.deletePaymentInstrument(uid, paymentId);
     }
 
-    public void invalidateCreditCard(String uid,String formattedPaymentId) throws Exception{
+    public void invalidateCreditCard(String uid, String formattedPaymentId) throws Exception {
         String paymentId = IdConverter.hexStringToId(PaymentInstrumentId.class, formattedPaymentId).toString();
         String sqlStr = String.format(
                 "update shard_%s.payment_instrument set external_token='123' where payment_instrument_id='%s'",
