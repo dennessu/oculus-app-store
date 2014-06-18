@@ -7,35 +7,45 @@
 package com.junbo.payment.core.provider.impl;
 
 import com.junbo.common.id.PIType;
+import com.junbo.payment.common.CommonUtil;
+import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.PaymentProvider;
 import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.provider.ProviderRoutingService;
+import com.junbo.payment.db.repository.PaymentProviderRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * payment provider routing implementation.
  */
 public class ProviderRoutingServiceImpl implements ProviderRoutingService{
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProviderRoutingServiceImpl.class);
+
+    private PaymentProviderRepository paymentProviderRepository;
 
     @Override
     public PaymentProviderService getPaymentProvider(PIType piType) {
-        //TODO: hard code braintree first
-        if(piType.equals(PIType.CREDITCARD)){
-            return PaymentProviderRegistry.getPaymentProviderService(PaymentProvider.BrainTree);
-        }else if(piType.equals(PIType.STOREDVALUE)){
-            return PaymentProviderRegistry.getPaymentProviderService(PaymentProvider.Wallet);
-        }else if(piType.equals(PIType.PAYPAL)){
-            return PaymentProviderRegistry.getPaymentProviderService(PaymentProvider.PayPal);
-        }else if(piType.equals(PIType.OTHERS)){
-            return PaymentProviderRegistry.getPaymentProviderService(PaymentProvider.Adyen);
+        String provider = paymentProviderRepository.getProviderName(piType);
+        if(CommonUtil.isNullOrEmpty(provider)){
+            throw AppServerExceptions.INSTANCE.providerNotFound(piType.name()).exception();
         }
-        else{
-            //TODO: find some default PI
-            return null;
+        PaymentProvider paymentProvider = null;
+        try{
+            paymentProvider = PaymentProvider.valueOf(provider);
+        }catch(Exception ex){
+            LOGGER.error("provider routing failed:" + ex.toString());
+            throw AppServerExceptions.INSTANCE.providerNotFound(piType.name()).exception();
         }
+        return PaymentProviderRegistry.getPaymentProviderService(paymentProvider);
     }
 
     @Override
     public void updatePaymentConfiguration() {
 
+    }
+
+    public void setPaymentProviderRepository(PaymentProviderRepository paymentProviderRepository) {
+        this.paymentProviderRepository = paymentProviderRepository;
     }
 }

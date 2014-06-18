@@ -120,7 +120,7 @@ public class PaymentInstrumentRepository {
     }
 
     private void setAdditionalInfo(PaymentInstrumentEntity pi, PaymentInstrument request) {
-        if(pi.getType().equals(PIType.CREDITCARD)){
+        if(pi.getType().equals(PIType.CREDITCARD.getId())){
             CreditCardPaymentInstrumentEntity ccPi = ccPaymentInstrumentDao.get(pi.getId());
             request.setTypeSpecificDetails(paymentMapperExtension.toTypeSpecificDetails(
                     paymentMapperImpl.toCreditCardDetail(ccPi, new MappingContext())));

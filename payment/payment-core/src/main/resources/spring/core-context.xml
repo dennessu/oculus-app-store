@@ -59,7 +59,9 @@
     <bean id="adyenCCProviderService" class="com.junbo.payment.core.provider.adyen.AdyenCCProivderServiceImpl" parent="adyenProviderService">
     </bean>
 
-    <bean id="providerRoutingService" class="com.junbo.payment.core.provider.impl.ProviderRoutingServiceImpl"/>
+    <bean id="providerRoutingService" class="com.junbo.payment.core.provider.impl.ProviderRoutingServiceImpl">
+        <property name="paymentProviderRepository" ref="paymentProviderRepository" />
+    </bean>
 
     <!-- regiester brainTreeRestProviderService for async and brainTreePaymentProviderService for sync call -->
     <bean id="paymentHandlerRegistry" class="com.junbo.payment.core.provider.impl.PaymentProviderRegistry">
@@ -69,6 +71,7 @@
                 <entry key="Wallet" value-ref="walletProviderService"/>
                 <entry key="PayPal" value-ref="paypalProviderService"/>
                 <entry key="Adyen" value-ref="adyenProviderService"/>
+                <entry key="AdyenCC" value-ref="adyenCCProviderService"/>
             </util:map>
         </property>
     </bean>

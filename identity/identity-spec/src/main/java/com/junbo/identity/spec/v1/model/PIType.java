@@ -23,7 +23,7 @@ public class PIType extends PropertyAssignedAwareResourceMeta<PITypeId> {
     private PITypeId id;
 
     @ApiModelProperty(position = 2, required = true, value = "The type code of payment instrument resource, " +
-            "ENUM value include (CREDITCARD, DIRECTDEBIT, STOREDVALUE, PAYPAL, OTHERS)")
+            "ENUM value include (CREDITCARD, STOREDVALUE, PAYPAL, OTHERS)")
     private String typeCode;
 
     @ApiModelProperty(position = 3, required = true, value = "whether the PI is recurring-able or not.")

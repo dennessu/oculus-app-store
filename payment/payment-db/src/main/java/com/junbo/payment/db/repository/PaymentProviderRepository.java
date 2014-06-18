@@ -24,7 +24,7 @@ public class PaymentProviderRepository  extends DomainDataRepository<PaymentProv
     public String getProviderName(PIType piType){
         List<PaymentProviderEntity> entities = getDomainData();
         for(PaymentProviderEntity entity : entities){
-            if(entity.getPiType().equals(piType)){
+            if(entity.getPiType().equals(piType.getId())){
                 return entity.getProviderName();
             }
         }

@@ -2,6 +2,7 @@ package com.junbo.payment.core;
 
 import com.junbo.common.id.PIType;
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
+import com.junbo.payment.core.provider.ProviderRoutingService;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.TypeSpecificDetails;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,8 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
 
     protected PaymentInstrumentService piService;
     protected PaymentTransactionService paymentService;
+    @Autowired
+    protected ProviderRoutingService providerRoutingService;
 
     protected long generateLong() {
         return System.currentTimeMillis();

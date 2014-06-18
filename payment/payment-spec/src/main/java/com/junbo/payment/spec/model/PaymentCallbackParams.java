@@ -11,27 +11,27 @@ package com.junbo.payment.spec.model;
  */
 public class PaymentCallbackParams {
     //paypal
-    private String externalAccessToken;
-    private String externalPayerId;
+    private String token;
+    private String payerID;
     //adyen
     private String authResult;
     private String pspReference;
 
 
-    public String getExternalPayerId() {
-        return externalPayerId;
+    public String getPayerID() {
+        return payerID;
     }
 
-    public void setExternalPayerId(String externalPayerId) {
-        this.externalPayerId = externalPayerId;
+    public void setPayerID(String payerID) {
+        this.payerID = payerID;
     }
 
-    public String getExternalAccessToken() {
-        return externalAccessToken;
+    public String getToken() {
+        return token;
     }
 
-    public void setExternalAccessToken(String externalAccessToken) {
-        this.externalAccessToken = externalAccessToken;
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public String getPspReference() {

@@ -174,14 +174,17 @@
         </sql>
     </changeSet>
 
+    <!-- switch to Adyen CC
+     ,(4, 'AdyenCC', 0, null, 'USD', '2014-02-10', 'wenhongzhu');
+    -->
+
     <changeSet id="2" author='WenhongZhu' context="PREDEPLOY">
         <sql>
             <![CDATA[
             insert into payment_provider values (0, 'BrainTree', 0, null, 'USD', '2014-02-10','wenhongzhu')
                                                ,(1, 'Wallet', 2, null, 'WLT', '2014-02-10', 'wenhongzhu')
                                                ,(2, 'PayPal', 3, null, 'USD', '2014-02-10', 'wenhongzhu')
-                                               ,(3, 'Adyen', 3, null, 'USD', '2014-02-10', 'wenhongzhu')
-                                               ,(4, 'AdyenCreditCard', 3, null, 'USD', '2014-02-10', 'wenhongzhu');
+                                               ,(3, 'Adyen', 4, null, 'USD', '2014-02-10', 'wenhongzhu');
 
             insert into merchant_account values (0, '5ck86h27m34nrh6f', 0, 0, null, null, 'USD', '2014-02-10','wenhongzhu')
 			                                   ,(1, 'OculusAED', 0, 0, null, null, 'AED', '2014-02-10','wenhongzhu')

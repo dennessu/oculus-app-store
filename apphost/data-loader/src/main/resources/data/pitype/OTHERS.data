@@ -1,0 +1,10 @@
+{
+    "typeCode": "OTHERS",
+    "locales" : {
+        "en_US": {
+            "description": "Others"
+        }
+    },
+    "isRefundable": true,
+    "capableOfRecurring": false
+}
