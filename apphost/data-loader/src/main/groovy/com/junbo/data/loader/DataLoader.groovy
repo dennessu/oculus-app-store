@@ -35,7 +35,7 @@ class DataLoader {
     static void main(String[] args) {
         configLog()
         LOGGER.info("loading spring context start")
-        new ClassPathXmlApplicationContext("classpath*:/spring/*-context.xml")
+        new ClassPathXmlApplicationContext("classpath*:/spring/*-context.xml", "classpath*:/spring/validators.xml", "classpath*:/spring/transaction.xml")
         LOGGER.info("loading spring context end")
 
         if (args.length == 0 || args[0].equalsIgnoreCase("all")) {

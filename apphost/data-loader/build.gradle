@@ -9,8 +9,9 @@ dependencies {
     compile (libraries.log4j)
 
     compile junboProject(':common-lib')
-    compile junboProject(':authorization-spec')
+    compile junboProject(':authorization-rest')
     compile junboProject(':authorization-lib')
-    compile junboProject(':oauth-db')
-    compile junboProject(':email-spec')
+    compile junboProject(':oauth-api')
+    compile junboProject(':email-rest')
+    compile junboProject(':identity-rest')
 }
