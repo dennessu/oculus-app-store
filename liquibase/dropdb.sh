@@ -1,5 +1,5 @@
 #!/bin/bash
-source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is needed, see common.sh for detail
+(set -o igncr) 2>/dev/null && set -o igncr; # ignore \r in windows. The comment is needed.
 
 dbVersion=0
 
