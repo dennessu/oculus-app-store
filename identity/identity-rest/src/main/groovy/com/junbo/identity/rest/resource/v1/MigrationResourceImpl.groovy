@@ -12,7 +12,6 @@ import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.id.util.IdUtil
-import com.junbo.common.json.IdPathParamTranscoder
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Link
 import com.junbo.common.model.Results
@@ -77,9 +76,6 @@ class MigrationResourceImpl implements MigrationResource {
 
     @Autowired
     private NormalizeService normalizeService
-
-    @Autowired
-    private IdPathParamTranscoder idPathParamTranscoder
 
     @Override
     Promise<OculusOutput> migrate(OculusInput oculusInput) {
