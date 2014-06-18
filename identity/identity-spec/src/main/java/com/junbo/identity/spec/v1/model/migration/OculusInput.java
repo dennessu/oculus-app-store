@@ -11,34 +11,22 @@ import java.util.Date;
  * Created by liangfu on 6/6/14.
  */
 public class OculusInput {
-
-    private String currentId;
     private String firstName;
     private String lastName;
-    private String nickname;
     private String email;
     private String username;
     private String password;
     private String gender;
     private Date dob;
+    private String nickname;
     private Number timezone;
     private String language;
     private Date createdDate;
     private Date updateDate;
-    private String devCenterCompany;
+    private Company company;
+    private ShareProfile profile;
     private Boolean forceResetPassword;
-
-    private ShareProfile shareProfile;
-    private Boolean oldPasswordHash;
     private String status;
-
-    public String getCurrentId() {
-        return currentId;
-    }
-
-    public void setCurrentId(String currentId) {
-        this.currentId = currentId;
-    }
 
     public String getFirstName() {
         return firstName;
@@ -54,14 +42,6 @@ public class OculusInput {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickName(String nickname) {
-        this.nickname = nickname;
     }
 
     public String getEmail() {
@@ -104,6 +84,14 @@ public class OculusInput {
         this.dob = dob;
     }
 
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
     public Number getTimezone() {
         return timezone;
     }
@@ -136,20 +124,20 @@ public class OculusInput {
         this.updateDate = updateDate;
     }
 
-    public String getDevCenterCompany() {
-        return devCenterCompany;
+    public Company getCompany() {
+        return company;
     }
 
-    public void setDevCenterCompany(String devCenterCompany) {
-        this.devCenterCompany = devCenterCompany;
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
-    public ShareProfile getShareProfile() {
-        return shareProfile;
+    public ShareProfile getProfile() {
+        return profile;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setProfile(ShareProfile profile) {
+        this.profile = profile;
     }
 
     public Boolean getForceResetPassword() {
@@ -158,18 +146,6 @@ public class OculusInput {
 
     public void setForceResetPassword(Boolean forceResetPassword) {
         this.forceResetPassword = forceResetPassword;
-    }
-
-    public void setShareProfile(ShareProfile shareProfile) {
-        this.shareProfile = shareProfile;
-    }
-
-    public Boolean getOldPasswordHash() {
-        return oldPasswordHash;
-    }
-
-    public void setOldPasswordHash(Boolean oldPasswordHash) {
-        this.oldPasswordHash = oldPasswordHash;
     }
 
     public String getStatus() {

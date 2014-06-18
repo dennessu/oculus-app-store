@@ -113,7 +113,12 @@ class IdUtil {
         }
 
         if (matchingClass != null && id != null && (id == link.id || link.id == null)) {
-            return matchingClass.newInstance(IdFormatter.decodeId(matchingClass, id)) as Id
+            // todo:hack for cloudant id
+            if (Id.class.isAssignableFrom(matchingClass)) {
+                return matchingClass.newInstance(IdFormatter.decodeId(matchingClass, id)) as Id
+            } else {
+                return matchingClass.newInstance(id) as CloudantId
+            }
         }
         return null
     }
@@ -121,7 +126,7 @@ class IdUtil {
     static String toHref(UniversalId value) {
         if (value instanceof Id) {
             return toHref((Id)value)
-        } else if (value instanceof Id) {
+        } else if (value instanceof CloudantId) {
             return toHref((CloudantId)value)
         } else {
             return null

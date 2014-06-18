@@ -1,6 +1,7 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.validator.PiiValidator
@@ -42,14 +43,19 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
     }
 
     @Override
-    Promise<Void> validateCreate(JsonNode value, UserId userId) {
+    Promise<Void> validateCreate(JsonNode value, UserId userId, OrganizationId organizationId) {
         PhoneNumber phoneNumber = (PhoneNumber)JsonHelper.jsonNodeToObj(value, PhoneNumber)
         checkUserPhone(phoneNumber)
-        return checkAdvanceUserPhone(phoneNumber, userId)
+        if (userId != null) {
+            return checkAdvanceUserPhone(phoneNumber, userId)
+        } else {
+            // todo:    Organization phone won't do any advanced check to user, do we need to change this?
+            return Promise.pure(null)
+        }
     }
 
     @Override
-    Promise<Void> validateUpdate(JsonNode value, JsonNode oldValue, UserId userId) {
+    Promise<Void> validateUpdate(JsonNode value, JsonNode oldValue) {
         PhoneNumber phoneNumber = (PhoneNumber)JsonHelper.jsonNodeToObj(value, PhoneNumber)
         PhoneNumber oldPhoneNumber = (PhoneNumber)JsonHelper.jsonNodeToObj(oldValue, PhoneNumber)
 
@@ -169,7 +175,6 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
     }
 
     @Required
-
     void setMaxNewPhoneNumberPerMonth(Integer maxNewPhoneNumberPerMonth) {
         this.maxNewPhoneNumberPerMonth = maxNewPhoneNumberPerMonth
     }

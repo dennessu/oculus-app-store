@@ -224,6 +224,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     @Test
     public void testGroupRepository() {
         Group group = new Group()
+        group.setOrganizationId(new OrganizationId(789L))
         group.setName(UUID.randomUUID().toString())
         group.setActive(true)
         group.setCreatedTime(new Date())
@@ -236,7 +237,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         newGroup.setName(newValue)
         newGroup = groupRepository.update(newGroup).get()
         Assert.assertEquals(newValue, newGroup.getName())
-        Group groupSearched = groupRepository.searchByName(newValue).get()
+        Group groupSearched = groupRepository.searchByOrganizationIdAndName(new OrganizationId(789L), newValue, Integer.MAX_VALUE, 0).get()
         Assert.assertNotNull(groupSearched)
     }
 

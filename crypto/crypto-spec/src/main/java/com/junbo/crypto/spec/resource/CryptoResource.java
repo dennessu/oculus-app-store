@@ -19,7 +19,7 @@ import javax.ws.rs.core.MediaType;
  */
 @RestResource
 @InProcessCallable
-@Path("/crypto/{userId}")
+@Path("/")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface CryptoResource {
@@ -27,13 +27,22 @@ public interface CryptoResource {
     // Encrypt the object based on key,
     // It will use the latest version to encrypt
     @POST
-    @Path("/encrypt")
+    @Path("/crypto/{userId}/encrypt")
     Promise<CryptoMessage> encrypt(@PathParam("userId") UserId userId, CryptoMessage rawMessage);
+
+    @POST
+    @Path("/crypto/encrypt")
+    Promise<CryptoMessage> encrypt(CryptoMessage rawMessage);
 
     // Decrypt the object based on key
     // It will use the latest version to decrypt, if unsuccessful, it will fall back to the older version
     @POST
-    @Path("/decrypt")
+    @Path("/crypto/{userId}/decrypt")
     Promise<CryptoMessage> decrypt(@PathParam("userId") UserId userId, CryptoMessage encryptMessage);
+
+    @POST
+    @Path("/crypto/decrypt")
+    Promise<CryptoMessage> decrypt(CryptoMessage encryptMessage);
+
 }
 

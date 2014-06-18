@@ -23,6 +23,7 @@ import org.springframework.util.StringUtils
  */
 @CompileStatic
 class GroupValidatorImpl implements GroupValidator {
+    // todo:    Need to implement group search must have organization id validation
 
     private GroupRepository groupRepository
     
@@ -73,6 +74,11 @@ class GroupValidatorImpl implements GroupValidator {
             throw new IllegalArgumentException('options is null')
         }
 
+        if (options.organizationId == null) {
+            throw AppErrors.INSTANCE.parameterRequired('organizaionId').exception()
+        }
+
+        // todo:    How to define userId
         if (options.name == null && options.userId == null) {
             throw AppErrors.INSTANCE.parameterRequired('name').exception()
         }
@@ -102,7 +108,7 @@ class GroupValidatorImpl implements GroupValidator {
                 throw AppErrors.INSTANCE.fieldInvalid('organization').exception()
             }
 
-            return groupRepository.searchByName(group.name).then { Group existing ->
+            return groupRepository.searchByOrganizationIdAndName(group.organizationId, group.name, Integer.MAX_VALUE, 0).then { Group existing ->
                 if (existing != null) {
                     throw AppErrors.INSTANCE.fieldDuplicate('name').exception()
                 }
@@ -134,7 +140,7 @@ class GroupValidatorImpl implements GroupValidator {
         }
 
         if (group.name != oldGroup.name) {
-            return groupRepository.searchByName(group.name).then { Group existing ->
+            return groupRepository.searchByOrganizationIdAndName(group.organizationId, group.name, Integer.MAX_VALUE, 0).then { Group existing ->
                 if (existing != null) {
                     throw AppErrors.INSTANCE.fieldDuplicate('name').exception()
                 }

@@ -19,6 +19,14 @@
         <property name="target" value="${clientproxy.billing.url}" />
     </bean>
 
+    <bean id="identityRoleResource" class="com.junbo.authorization.spec.resource.proxy.RoleResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.authorization.url}" />
+    </bean>
+
+    <bean id="identityRoleAssignmentResource" class="com.junbo.authorization.spec.resource.proxy.RoleAssignmentResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.authorization.url}" />
+    </bean>
+
     <bean id="identityAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
         <property name="scope" value="identity.service"/>
         <property name="deflectionInSeconds" value="300"/>

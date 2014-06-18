@@ -7,6 +7,7 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
@@ -49,9 +50,13 @@ public class UserPersonalInfo extends PropertyAssignedAwareResourceMeta<UserPers
             "e.g., addresses and phone numbers can be put into some normalized form via a normalizer service.")
     private Boolean isNormalized;
 
-    @ApiModelProperty(position = 7, required = true, value = "Link to the user resource.")
+    @ApiModelProperty(position = 7, required = false, value = "Link to the user resource.")
     @JsonProperty("user")
     private UserId userId;
+
+    @ApiModelProperty(position = 8, required = false, value = "Link to the organization resource.")
+    @JsonProperty("organization")
+    private OrganizationId organizationId;
 
     public UserPersonalInfoId getId() {
         return id;
@@ -116,6 +121,16 @@ public class UserPersonalInfo extends PropertyAssignedAwareResourceMeta<UserPers
     public void setIsValidated(Boolean isValidated) {
         this.isValidated = isValidated;
         support.setPropertyAssigned("isValidated");
+    }
+
+    public OrganizationId getOrganizationId() {
+        return organizationId;
+    }
+
+    public void setOrganizationId(OrganizationId organizationId) {
+        this.organizationId = organizationId;
+        support.setPropertyAssigned("organizationId");
+        support.setPropertyAssigned("organization");
     }
 }
 

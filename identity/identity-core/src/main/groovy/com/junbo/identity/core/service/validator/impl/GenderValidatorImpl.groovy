@@ -1,6 +1,7 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.validator.PiiValidator
@@ -28,14 +29,14 @@ class GenderValidatorImpl implements PiiValidator {
     }
 
     @Override
-    Promise<Void> validateCreate(JsonNode value, UserId userId) {
+    Promise<Void> validateCreate(JsonNode value, UserId userId, OrganizationId organizationId) {
         UserGender userGender = (UserGender)JsonHelper.jsonNodeToObj(value, UserGender)
         checkUserGender(userGender)
         return Promise.pure(null)
     }
 
     @Override
-    Promise<Void> validateUpdate(JsonNode value, JsonNode oldValue, UserId userId) {
+    Promise<Void> validateUpdate(JsonNode value, JsonNode oldValue) {
         UserGender userGender = (UserGender)JsonHelper.jsonNodeToObj(value, UserGender)
         UserGender oldUserGender = (UserGender)JsonHelper.jsonNodeToObj(oldValue, UserGender)
 

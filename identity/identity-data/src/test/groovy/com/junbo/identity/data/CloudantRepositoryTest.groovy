@@ -177,6 +177,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
     public void testGroupRepository() {
         Group group = new Group()
         group.setName(UUID.randomUUID().toString())
+        group.setOrganizationId(new OrganizationId(456L))
         group.setActive(true)
         group.setCreatedTime(new Date())
         group = groupRepository.create(group).get()
@@ -190,7 +191,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         newGroup = groupRepository.get(group.getId()).get()
         Assert.assertEquals(newValue, newGroup.getName())
 
-        Group groupSearched = groupRepository.searchByName(newValue).get()
+        Group groupSearched = groupRepository.searchByOrganizationIdAndName(new OrganizationId(456L), newValue, Integer.MAX_VALUE, null).get()
 
         Assert.assertNotNull(groupSearched)
     }

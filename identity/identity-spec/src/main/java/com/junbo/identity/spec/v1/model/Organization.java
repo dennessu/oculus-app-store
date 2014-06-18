@@ -29,18 +29,6 @@ public class Organization extends PropertyAssignedAwareResourceMeta<Organization
     @ApiModelProperty(position = 3, required = true, value = "The name of the organization.")
     private String name;
 
-    @ApiModelProperty(position = 3, required = false, value = "The headline of the organization, migrate value from " +
-            "existing \"share\" platform developer profile headline")
-    private String headline;
-
-    @ApiModelProperty(position = 3, required = false, value = "The summary of the organization, migrate value from " +
-            "existing \"share\" platform developer profile summary")
-    private String summary;
-
-    @ApiModelProperty(position = 3, required = false, value = "The url of the organization, migrate value from " +
-            "existing \"share\" platform developer profile url")
-    private String url;
-
     @ApiModelProperty(position = 4, required = false, value = "The billing address of the organization.")
     private UserPersonalInfoId billingAddress;
 
@@ -101,33 +89,6 @@ public class Organization extends PropertyAssignedAwareResourceMeta<Organization
     public void setName(String name) {
         this.name = name;
         support.setPropertyAssigned("name");
-    }
-
-    public String getHeadline() {
-        return headline;
-    }
-
-    public void setHeadline(String headline) {
-        this.headline = headline;
-        support.setPropertyAssigned("headline");
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-        support.setPropertyAssigned("summary");
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-        support.setPropertyAssigned("url");
     }
 
     public UserPersonalInfoId getBillingAddress() {

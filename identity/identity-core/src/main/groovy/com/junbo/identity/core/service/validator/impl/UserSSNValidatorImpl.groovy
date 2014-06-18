@@ -1,6 +1,7 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.validator.PiiValidator
@@ -29,7 +30,7 @@ class UserSSNValidatorImpl implements PiiValidator {
     }
 
     @Override
-    Promise<Void> validateCreate(JsonNode value, UserId userId) {
+    Promise<Void> validateCreate(JsonNode value, UserId userId, OrganizationId organizationId) {
         UserSSN userSSN = (UserSSN)JsonHelper.jsonNodeToObj(value, UserSSN)
 
         checkBasicUserSSN(userSSN)
@@ -38,7 +39,7 @@ class UserSSNValidatorImpl implements PiiValidator {
     }
 
     @Override
-    Promise<Void> validateUpdate(JsonNode value, JsonNode oldValue, UserId userId) {
+    Promise<Void> validateUpdate(JsonNode value, JsonNode oldValue) {
         UserSSN userSSN = (UserSSN)JsonHelper.jsonNodeToObj(value, UserSSN)
         UserSSN oldUserSSN = (UserSSN)JsonHelper.jsonNodeToObj(oldValue, UserSSN)
 
