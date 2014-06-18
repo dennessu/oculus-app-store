@@ -173,7 +173,7 @@ public class Identity {
 
     public static UserCredential CredentialsGetByUserId(UserId userId) throws Exception {
         JsonNode jsonNode = JsonHelper.ObjectToJsonNode((HttpclientHelper.SimpleGet(DefaultIdentityV1UserURI
-                        + "?userId=" + IdFormatter.encodeId(userId) + "/credentials?credentialType=PASSWORD",
+                        + "/" + IdFormatter.encodeId(userId) + "/credentials?credentialType=PASSWORD",
                 (Results.class)
         ).getItems().get(0)));
         return (UserCredential) JsonHelper.JsonNodeToObject(jsonNode, UserCredential.class);

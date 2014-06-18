@@ -68,6 +68,12 @@ public class postImportUserPersonalInfo {
 
         Organization organization = Identity.OrganizationGetByOrganizationId(oculusOutput.getOrganizationId());
         Validator.Validate("validate organization name", oculusInput.getDevCenterCompany(), organization.getName());
+        Validator.Validate("validate share profile headline",
+                oculusInput.getShareProfile().getHeadline(), organization.getHeadline());
+        Validator.Validate("validate share profile summary",
+                oculusInput.getShareProfile().getSummary(), organization.getSummary());
+        Validator.Validate("validate share profile url",
+                oculusInput.getShareProfile().getUrl(), organization.getUrl());
     }
 
     @Test(groups = "dailies")
