@@ -21,5 +21,7 @@ do
     echo "publish all tables"
     londiste3 $config add-table --all
 
-    #TODO remove liquibase table publication
+    echo "remove liquibase change log tables"
+	londiste3 $config remove-table databasechangelog ||  echo "table missing"
+	londiste3 $config remove-table databasechangeloglock || echo "table missing"
 done

@@ -9,7 +9,7 @@ config=$SKYTOOL_CONFIG_PATH/pgqd.ini
 
 echo "kill pgqd process"
 if [ -f $SKYTOOL_PID_PATH/pgqd.pid ]; then
-    cat $SKYTOOL_PID_PATH/pgqd.pid | xargs kill -9
+    cat $SKYTOOL_PID_PATH/pgqd.pid | xargs kill -9 || echo 'failed to kill'
 fi
 
 echo "generate pgqd process"

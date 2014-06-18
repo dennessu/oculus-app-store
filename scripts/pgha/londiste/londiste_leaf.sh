@@ -9,7 +9,7 @@ echo "kill skytools instance"
 forceKillPid $SKYTOOL_PID_PATH
 
 echo "waiting for replica catching up with master..."
-while ! echo exit | psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT 'x' from pg_stat_replication where sent_location != replay_location;" | grep "(0 rows)"; do sleep 1 && echo "slave is catching up..."; done
+while ! echo exit | psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT 'x' from pg_stat_replication where sent_location != replay_location;" | grep "(0 rows)"; do sleep 1 && echo "replica is catching up..."; done
 echo "replica catch up with slave!"
 
 echo "promote replcia database to cut off streaming replication..."
@@ -40,5 +40,7 @@ do
     echo "subscribe all tables"
     londiste3 $config add-table --all
 
-    #TODO: unsubscribe liquibase related tables
+    echo "remove liquibase change log tables"
+    londiste3 $config remove-table databasechangelog || echo "table missing"
+    londiste3 $config remove-table databasechangeloglock || echo "table missing"
 done
