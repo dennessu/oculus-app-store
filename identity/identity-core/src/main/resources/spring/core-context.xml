@@ -552,6 +552,7 @@
                         <value>vat</value>
                         <value>isTaxExemptionClaimed</value>
                         <value>isTaxExemptionValidated</value>
+                        <value>profile</value>
                         <value>futureExpansion</value>
                         <value>rev</value>
                         <value>createdTime</value>
@@ -586,6 +587,7 @@
                         <value>vat</value>
                         <value>isTaxExemptionClaimed</value>
                         <value>isTaxExemptionValidated</value>
+                        <value>profile</value>
                         <value>futureExpansion</value>
                     </list>
                 </entry>
@@ -618,6 +620,7 @@
                         <value>vat</value>
                         <value>isTaxExemptionClaimed</value>
                         <value>isTaxExemptionValidated</value>
+                        <value>profile</value>
                         <value>futureExpansion</value>
                         <value>rev</value>
                     </list>
@@ -639,6 +642,7 @@
                         <value>isNormalized</value>
                         <value>label</value>
                         <value>userId</value>
+                        <value>organizationId</value>
                         <value>rev</value>
                         <value>createdTime</value>
                         <value>updatedTime</value>
@@ -657,6 +661,7 @@
                         <value>isNormalized</value>
                         <value>label</value>
                         <value>userId</value>
+                        <value>organizationId</value>
                     </list>
                 </entry>
             </map>
@@ -672,6 +677,7 @@
                         <value>isValidated</value>
                         <value>isNormalized</value>
                         <value>label</value>
+                        <value>organizationId</value>
                         <value>rev</value>
                     </list>
                 </entry>
@@ -1018,9 +1024,6 @@
                 <value>payoutInstrument</value>
                 <value>payoutTaxProfile</value>
                 <value>annualTaxReportIds</value>
-                <value>headline</value>
-                <value>summary</value>
-                <value>url</value>
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>createdTime</value>
@@ -1042,9 +1045,6 @@
                 <value>payoutInstrument</value>
                 <value>payoutTaxProfile</value>
                 <value>annualTaxReportIds</value>
-                <value>headline</value>
-                <value>summary</value>
-                <value>url</value>
                 <value>futureExpansion</value>
             </list>
         </property>
@@ -1064,9 +1064,6 @@
                 <value>payoutInstrument</value>
                 <value>payoutTaxProfile</value>
                 <value>annualTaxReportIds</value>
-                <value>headline</value>
-                <value>summary</value>
-                <value>url</value>
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>createdTime</value>
