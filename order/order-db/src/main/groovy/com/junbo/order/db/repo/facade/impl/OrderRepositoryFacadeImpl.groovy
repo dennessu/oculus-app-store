@@ -114,6 +114,9 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
     @Override
     Order getOrder(Long orderId) {
         def order = orderRepository.get(new OrderId(orderId)).get()
+        if (order == null) {
+            return null
+        }
         // update order with order revision for non-tentative order
         if (!order.tentative && !CollectionUtils.isEmpty(order.orderRevisions)) {
             def latestRevision = order.orderRevisions.find() { OrderRevision revision ->
@@ -128,6 +131,9 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
     @Override
     List<Order> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
         List<Order> orders = orderRepository.getByUserId(userId, orderQueryParam, pageParam).get()
+        if (orders == null) {
+            return []
+        }
         orders.each {Order order ->
             if (!order.tentative && !CollectionUtils.isEmpty(order.orderRevisions)) {
                 def latestRevision = order.orderRevisions.find() { OrderRevision revision ->

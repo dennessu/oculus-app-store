@@ -76,6 +76,9 @@ class WebPaymentChargeAction extends BaseOrderEventAwareAction {
             }
             order.providerConfirmUrl = balance.providerConfirmUrl
             def oldOrder = orderRepository.getOrder(order.getId().value)
+            if (oldOrder == null) {
+                throw AppErrors.INSTANCE.orderNotFound().exception()
+            }
             oldOrder.providerConfirmUrl = order.providerConfirmUrl
             orderRepository.updateOrder(oldOrder, true, false, null)
             CoreBuilder.fillTaxInfo(order, balance)

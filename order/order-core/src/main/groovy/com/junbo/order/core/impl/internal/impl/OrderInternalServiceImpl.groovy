@@ -321,6 +321,9 @@ class OrderInternalServiceImpl implements OrderInternalService {
     Order refreshOrderStatus(Order order, boolean updateOrder) {
         transactionHelper.executeInTransaction {
             def oldOrder = orderRepository.getOrder(order.getId().value)
+            if (oldOrder == null) {
+                throw AppErrors.INSTANCE.orderNotFound().exception()
+            }
             order.status = OrderStatusBuilder.buildOrderStatus(oldOrder,
                     orderRepository.getOrderEvents(order.getId().value, null))
             if (updateOrder && order.status != oldOrder.status) {
@@ -336,6 +339,9 @@ class OrderInternalServiceImpl implements OrderInternalService {
     void markSettlement(Order order) {
 
         def latest = orderRepository.getOrder(order.getId().value)
+        if (latest == null) {
+            throw AppErrors.INSTANCE.orderNotFound().exception()
+        }
 
         if (!latest?.tentative) {
             throw AppErrors.INSTANCE.orderNotTentative().exception()
