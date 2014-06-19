@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "CHF",
+			"longName": "Swiss franc"
+		},
+		"de_CH": {
+			"shortName": "Schweizer Franken",
+			"longName": "Schweizer Franken"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=CHF",
+		"id": null
+	},
+	"currencyCode": "CHF",
+	"symbol": "CHF",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

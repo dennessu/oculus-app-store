@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_SG": {
+			"shortName": "SGD",
+			"longName": "Singapore dollar"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=SGD",
+		"id": null
+	},
+	"currencyCode": "SGD",
+	"symbol": "S$",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

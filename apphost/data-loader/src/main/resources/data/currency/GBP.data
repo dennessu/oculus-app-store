@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_GB": {
+			"shortName": "Pound",
+			"longName": "Pound sterling"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=GBP",
+		"id": null
+	},
+	"currencyCode": "GBP",
+	"symbol": "£",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

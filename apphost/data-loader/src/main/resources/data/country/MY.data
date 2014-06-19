@@ -1,0 +1,158 @@
+{
+	"countryCode": "MY",
+	"defaultLocale": {
+		"href": "/v1/locales/en_SG",
+		"id": "en_SG"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/MYR",
+		"id": "MYR"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/MDA",
+		"id": "MDA"
+	}],
+	"subCountries": {
+		"01": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Johor state ",
+					"longName": "Johor state "
+				}
+			}
+		},
+		"02": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Kedah state ",
+					"longName": "Kedah state "
+				}
+			}
+		},
+		"03": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Kelantan state ",
+					"longName": "Kelantan state "
+				}
+			}
+		},
+		"04": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Melaka state ",
+					"longName": "Melaka state "
+				}
+			}
+		},
+		"05": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Negeri Sembilan state ",
+					"longName": "Negeri Sembilan state "
+				}
+			}
+		},
+		"06": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Pahang state ",
+					"longName": "Pahang state "
+				}
+			}
+		},
+		"07": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Pulau Pinang state ",
+					"longName": "Pulau Pinang state "
+				}
+			}
+		},
+		"08": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Perak state ",
+					"longName": "Perak state "
+				}
+			}
+		},
+		"09": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Perlis state ",
+					"longName": "Perlis state "
+				}
+			}
+		},
+		"10": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Selangor state ",
+					"longName": "Selangor state "
+				}
+			}
+		},
+		"11": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Terengganu state ",
+					"longName": "Terengganu state "
+				}
+			}
+		},
+		"12": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Sabah state ",
+					"longName": "Sabah state "
+				}
+			}
+		},
+		"13": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Sarawak state ",
+					"longName": "Sarawak state "
+				}
+			}
+		},
+		"14": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Wilayah Persekutuan Kuala Lumpur federal territory ",
+					"longName": "Wilayah Persekutuan Kuala Lumpur federal territory "
+				}
+			}
+		},
+		"15": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Wilayah Persekutuan Labuan federal territory ",
+					"longName": "Wilayah Persekutuan Labuan federal territory "
+				}
+			}
+		},
+		"16": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Wilayah Persekutuan Putrajaya federal territory ",
+					"longName": "Wilayah Persekutuan Putrajaya federal territory "
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_SG",
+		"id": "en_SG"
+	}],
+	"locales": {
+		"en_SG": {
+			"shortName": "Malaysia",
+			"longName": "Malaysia"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

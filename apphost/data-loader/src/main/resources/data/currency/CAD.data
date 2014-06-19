@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_CA": {
+			"shortName": "CAD",
+			"longName": "Canadian Dollar"
+		},
+		"fr_CA": {
+			"shortName": "CAD",
+			"longName": "Dollar Canadien"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=CAD",
+		"id": null
+	},
+	"currencyCode": "CAD",
+	"symbol": "$",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

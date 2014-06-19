@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "HKD",
+			"longName": "Hong Kong dollar"
+		},
+		"zh_HK": {
+			"shortName": "港幣",
+			"longName": "港幣"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=HKD",
+		"id": null
+	},
+	"currencyCode": "HKD",
+	"symbol": "HK$",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

@@ -1,17 +1,20 @@
 {
- "currencyCode": "USD",
- "symbol": "$",
- "symbolPosition": "BEFORE",
- "numberAfterDecimal": 2,
- "minimalAuthorizeAmount":1,
- "locales": {
-    "en_US":{
-        "shortName": "USD",
-        "longName": "US Dollar"
-    },
-    "zh_CN":{
-        "shortName": "美元",
-        "longName": "美元"
-    }
- }
+	"locales": {
+		"en_US": {
+			"shortName": "USD",
+			"longName": "US Dollar"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=USD",
+		"id": null
+	},
+	"currencyCode": "USD",
+	"symbol": "$",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
 }

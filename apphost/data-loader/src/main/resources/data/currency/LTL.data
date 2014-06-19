@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "LTL",
+			"longName": "Lithuanian litas"
+		},
+		"lt_LT": {
+			"shortName": "Lietuvos litas",
+			"longName": "Lietuvos litas"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=LTL",
+		"id": null
+	},
+	"currencyCode": "LTL",
+	"symbol": "Lt",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

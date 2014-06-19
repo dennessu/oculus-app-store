@@ -1,0 +1,307 @@
+{
+	"countryCode": "IN",
+	"defaultLocale": {
+		"href": "/v1/locales/en_IN",
+		"id": "en_IN"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/INR",
+		"id": "INR"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"AN": {
+			"locales": {
+				"en_IN": {
+					"shortName": "AN",
+					"longName": "Andaman and Nicobar Islands"
+				}
+			}
+		},
+		"AP": {
+			"locales": {
+				"en_IN": {
+					"shortName": "AP",
+					"longName": "Andhra Pradesh"
+				}
+			}
+		},
+		"AR": {
+			"locales": {
+				"en_IN": {
+					"shortName": "AR",
+					"longName": "Arunachal Pradesh"
+				}
+			}
+		},
+		"AS": {
+			"locales": {
+				"en_IN": {
+					"shortName": "AS",
+					"longName": "Assam"
+				}
+			}
+		},
+		"BR": {
+			"locales": {
+				"en_IN": {
+					"shortName": "BR",
+					"longName": "Bihar"
+				}
+			}
+		},
+		"CH": {
+			"locales": {
+				"en_IN": {
+					"shortName": "CH",
+					"longName": "Chandigarh"
+				}
+			}
+		},
+		"CT": {
+			"locales": {
+				"en_IN": {
+					"shortName": "CT",
+					"longName": "Chhattisgarh"
+				}
+			}
+		},
+		"DD": {
+			"locales": {
+				"en_IN": {
+					"shortName": "DD",
+					"longName": "Daman and Diu"
+				}
+			}
+		},
+		"DL": {
+			"locales": {
+				"en_IN": {
+					"shortName": "DL",
+					"longName": "Delhi"
+				}
+			}
+		},
+		"DN": {
+			"locales": {
+				"en_IN": {
+					"shortName": "DN",
+					"longName": "Dadra and Nagar Haveli"
+				}
+			}
+		},
+		"GA": {
+			"locales": {
+				"en_IN": {
+					"shortName": "GA",
+					"longName": "Goa"
+				}
+			}
+		},
+		"GJ": {
+			"locales": {
+				"en_IN": {
+					"shortName": "GJ",
+					"longName": "Gujarat"
+				}
+			}
+		},
+		"HP": {
+			"locales": {
+				"en_IN": {
+					"shortName": "HP",
+					"longName": "Himachal Pradesh"
+				}
+			}
+		},
+		"HR": {
+			"locales": {
+				"en_IN": {
+					"shortName": "HR",
+					"longName": "Haryana"
+				}
+			}
+		},
+		"JH": {
+			"locales": {
+				"en_IN": {
+					"shortName": "JH",
+					"longName": "Jharkhand"
+				}
+			}
+		},
+		"JK": {
+			"locales": {
+				"en_IN": {
+					"shortName": "JK",
+					"longName": "Jammu and Kashmir"
+				}
+			}
+		},
+		"KA": {
+			"locales": {
+				"en_IN": {
+					"shortName": "KA",
+					"longName": "Karnataka"
+				}
+			}
+		},
+		"KL": {
+			"locales": {
+				"en_IN": {
+					"shortName": "KL",
+					"longName": "Kerala"
+				}
+			}
+		},
+		"LD": {
+			"locales": {
+				"en_IN": {
+					"shortName": "LD",
+					"longName": "Lakshadweep"
+				}
+			}
+		},
+		"MH": {
+			"locales": {
+				"en_IN": {
+					"shortName": "MH",
+					"longName": "Maharashtra"
+				}
+			}
+		},
+		"ML": {
+			"locales": {
+				"en_IN": {
+					"shortName": "ML",
+					"longName": "Meghalaya"
+				}
+			}
+		},
+		"MN": {
+			"locales": {
+				"en_IN": {
+					"shortName": "MN",
+					"longName": "Manipur"
+				}
+			}
+		},
+		"MP": {
+			"locales": {
+				"en_IN": {
+					"shortName": "MP",
+					"longName": "Madhya Pradesh"
+				}
+			}
+		},
+		"MZ": {
+			"locales": {
+				"en_IN": {
+					"shortName": "MZ",
+					"longName": "Mizoram"
+				}
+			}
+		},
+		"NL": {
+			"locales": {
+				"en_IN": {
+					"shortName": "NL",
+					"longName": "Nagaland"
+				}
+			}
+		},
+		"OR": {
+			"locales": {
+				"en_IN": {
+					"shortName": "OR",
+					"longName": "Orissa"
+				}
+			}
+		},
+		"PB": {
+			"locales": {
+				"en_IN": {
+					"shortName": "PB",
+					"longName": "Punjab"
+				}
+			}
+		},
+		"PY": {
+			"locales": {
+				"en_IN": {
+					"shortName": "PY",
+					"longName": "Puducherry"
+				}
+			}
+		},
+		"RJ": {
+			"locales": {
+				"en_IN": {
+					"shortName": "RJ",
+					"longName": "Rajasthan"
+				}
+			}
+		},
+		"SK": {
+			"locales": {
+				"en_IN": {
+					"shortName": "SK",
+					"longName": "Sikkim"
+				}
+			}
+		},
+		"TN": {
+			"locales": {
+				"en_IN": {
+					"shortName": "TN",
+					"longName": "Tamil Nadu"
+				}
+			}
+		},
+		"TR": {
+			"locales": {
+				"en_IN": {
+					"shortName": "TR",
+					"longName": "Tripura"
+				}
+			}
+		},
+		"UP": {
+			"locales": {
+				"en_IN": {
+					"shortName": "UP",
+					"longName": "UttarPradesh"
+				}
+			}
+		},
+		"UT": {
+			"locales": {
+				"en_IN": {
+					"shortName": "UT",
+					"longName": "Uttarakhand"
+				}
+			}
+		},
+		"WB": {
+			"locales": {
+				"en_IN": {
+					"shortName": "WB",
+					"longName": "West Bengal"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_IN",
+		"id": "en_IN"
+	}],
+	"locales": {
+		"en_IN": {
+			"shortName": "India",
+			"longName": "Republic of India"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

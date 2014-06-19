@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "DKK",
+			"longName": "Danish krone"
+		},
+		"da_DK": {
+			"shortName": "dansk krone",
+			"longName": "dansk krone"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=DKK",
+		"id": null
+	},
+	"currencyCode": "DKK",
+	"symbol": "kr.",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

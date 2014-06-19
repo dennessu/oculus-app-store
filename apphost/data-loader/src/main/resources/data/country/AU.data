@@ -1,0 +1,94 @@
+{
+	"countryCode": "AU",
+	"defaultLocale": {
+		"href": "/v1/locales/en_AU",
+		"id": "en_AU"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/AUD",
+		"id": "AUD"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/COB",
+		"id": "COB"
+	}],
+	"subCountries": {
+		"ACT": {
+			"locales": {
+				"en_AU": {
+					"shortName": "ACT",
+					"longName": "Australian Capital Territory"
+				}
+			}
+		},
+		"NSW": {
+			"locales": {
+				"en_AU": {
+					"shortName": "NSW",
+					"longName": "New South Wales"
+				}
+			}
+		},
+		"NT": {
+			"locales": {
+				"en_AU": {
+					"shortName": "NT",
+					"longName": "Northern Territory"
+				}
+			}
+		},
+		"QLD": {
+			"locales": {
+				"en_AU": {
+					"shortName": "QLD",
+					"longName": "Queensland"
+				}
+			}
+		},
+		"SA": {
+			"locales": {
+				"en_AU": {
+					"shortName": "SA",
+					"longName": "South Australia"
+				}
+			}
+		},
+		"TAS": {
+			"locales": {
+				"en_AU": {
+					"shortName": "TAS",
+					"longName": "Tasmania"
+				}
+			}
+		},
+		"VIC": {
+			"locales": {
+				"en_AU": {
+					"shortName": "VIC",
+					"longName": "Victoria"
+				}
+			}
+		},
+		"WA": {
+			"locales": {
+				"en_AU": {
+					"shortName": "WA",
+					"longName": "Western Australia"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_AU",
+		"id": "en_AU"
+	}],
+	"locales": {
+		"en_AU": {
+			"shortName": "Australia",
+			"longName": "Commonwealth of Australia"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

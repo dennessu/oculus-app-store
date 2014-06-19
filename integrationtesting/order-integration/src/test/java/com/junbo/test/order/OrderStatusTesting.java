@@ -406,8 +406,8 @@ public class OrderStatusTesting extends BaseOrderTestClass {
         expectedEventStatus.add(new OrderEventInfo(OrderActionType.CHARGE, EventStatus.COMPLETED));
         expectedEventStatus.add(new OrderEventInfo(OrderActionType.FULFILL, EventStatus.OPEN));
         expectedEventStatus.add(new OrderEventInfo(OrderActionType.FULFILL, EventStatus.COMPLETED));
-        expectedEventStatus.add(new OrderEventInfo(OrderActionType.PARTIAL_REFUND, EventStatus.OPEN));
-        expectedEventStatus.add(new OrderEventInfo(OrderActionType.PARTIAL_REFUND, EventStatus.COMPLETED));
+        expectedEventStatus.add(new OrderEventInfo(OrderActionType.REFUND, EventStatus.OPEN));
+        expectedEventStatus.add(new OrderEventInfo(OrderActionType.REFUND, EventStatus.COMPLETED));
 
         expectedOrderStatus.put(orderId, OrderStatus.REFUNDED);
 

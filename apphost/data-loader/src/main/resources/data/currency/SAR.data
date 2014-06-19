@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "SAR",
+			"longName": "Saudi riyal "
+		},
+		"ar_SA": {
+			"shortName": "ريال سعودي",
+			"longName": "ريال سعودي"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=SAR",
+		"id": null
+	},
+	"currencyCode": "SAR",
+	"symbol": "ر.س.‏",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

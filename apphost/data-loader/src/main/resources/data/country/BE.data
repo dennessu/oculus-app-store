@@ -1,0 +1,78 @@
+{
+	"countryCode": "BE",
+	"defaultLocale": {
+		"href": "/v1/locales/fr_BE",
+		"id": "fr_BE"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/EUR",
+		"id": "EUR"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/PEGI",
+		"id": "PEGI"
+	}],
+	"subCountries": {
+		"BRU": {
+			"locales": {
+				"nl_BE": {
+					"shortName": "Brussel",
+					"longName": "Brussels Hoofdstedelijk Gewest"
+				},
+				"en_US": {
+					"shortName": "Brussels",
+					"longName": "Brussels-Capital Region"
+				}
+			}
+		},
+		"VLG": {
+			"locales": {
+				"nl_BE": {
+					"shortName": "Vlaams",
+					"longName": "Vlaams Gewest"
+				},
+				"en_US": {
+					"shortName": "Flemish",
+					"longName": "Flemish Region"
+				}
+			}
+		},
+		"WAL": {
+			"locales": {
+				"nl_BE": {
+					"shortName": "Walloon Region",
+					"longName": "Walloon Region"
+				},
+				"en_US": {
+					"shortName": "Wallonia",
+					"longName": "Walloon Region"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/fr_BE",
+		"id": "fr_BE"
+	},
+	{
+		"href": "/v1/locales/nl_BE",
+		"id": "nl_BE"
+	},
+	{
+		"href": "/v1/locales/de_BE",
+		"id": "de_BE"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Belgium",
+			"longName": "Kingdom of Belgium"
+		},
+		"nl_BE": {
+			"shortName": "België",
+			"longName": "Koninkrijk België"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "BGN",
+			"longName": "Bulgarian lev"
+		},
+		"bg_BG": {
+			"shortName": "български лев",
+			"longName": "български лев"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=BGN",
+		"id": null
+	},
+	"currencyCode": "BGN",
+	"symbol": "лв.",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

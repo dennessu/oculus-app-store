@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "ARS",
+			"longName": "Argentine peso"
+		},
+		"es_AR": {
+			"shortName": "Peso argentino",
+			"longName": "Peso argentino"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=ARS",
+		"id": null
+	},
+	"currencyCode": "ARS",
+	"symbol": "$",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,70 @@
+{
+	"countryCode": "SG",
+	"defaultLocale": {
+		"href": "/v1/locales/en_SG",
+		"id": "en_SG"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/SGD",
+		"id": "SGD"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/MDA",
+		"id": "MDA"
+	}],
+	"subCountries": {
+		"01": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Central Singapore",
+					"longName": "Central Singapore"
+				}
+			}
+		},
+		"02": {
+			"locales": {
+				"en_SG": {
+					"shortName": "North East",
+					"longName": "North East"
+				}
+			}
+		},
+		"03": {
+			"locales": {
+				"en_SG": {
+					"shortName": "North West",
+					"longName": "North West"
+				}
+			}
+		},
+		"04": {
+			"locales": {
+				"en_SG": {
+					"shortName": "South East",
+					"longName": "South East"
+				}
+			}
+		},
+		"05": {
+			"locales": {
+				"en_SG": {
+					"shortName": "South West",
+					"longName": "South West"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_SG",
+		"id": "en_SG"
+	}],
+	"locales": {
+		"en_SG": {
+			"shortName": "Singapore",
+			"longName": "Republic of Singapore"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

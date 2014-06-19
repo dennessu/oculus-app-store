@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "TRY",
+			"longName": "Turkish lira"
+		},
+		"tr_TR": {
+			"shortName": "Türk lirası",
+			"longName": "Türk lirası"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=TRY",
+		"id": null
+	},
+	"currencyCode": "TRY",
+	"symbol": "TL",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

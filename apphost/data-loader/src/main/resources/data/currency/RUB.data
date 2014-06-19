@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "RUB",
+			"longName": "Russian ruble"
+		},
+		"ru_RU": {
+			"shortName": "Российский рубль",
+			"longName": "Российский рубль"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=RUB",
+		"id": null
+	},
+	"currencyCode": "RUB",
+	"symbol": "руб.",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

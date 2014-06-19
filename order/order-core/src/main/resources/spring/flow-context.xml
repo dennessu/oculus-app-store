@@ -42,6 +42,10 @@
         <property name="orderActionType" value="CHARGE"/>
     </bean>
 
+    <bean id="refundOrderAction" class="com.junbo.order.core.impl.orderaction.RefundOrderAction">
+        <property name="orderActionType" value="REFUND"/>
+    </bean>
+
     <bean id="ratingAction" class="com.junbo.order.core.impl.orderaction.RatingAction">
     </bean>
 

@@ -10,7 +10,7 @@ forceKillPid $SKYTOOL_PID_PATH
 
 echo "waiting for replica catching up with master..."
 while ! echo exit | psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT 'x' from pg_stat_replication where sent_location != replay_location;" | grep "(0 rows)"; do sleep 1 && echo "replica is catching up..."; done
-echo "replica catch up with slave!"
+echo "replica catch up with master!"
 
 echo "promote replcia database to cut off streaming replication..."
 touch $PROMOTE_TRIGGER_FILE

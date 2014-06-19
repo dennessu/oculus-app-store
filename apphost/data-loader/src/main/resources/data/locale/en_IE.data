@@ -1,0 +1,11 @@
+{
+  "localeCode": "en_IE",
+  "shortName": "English (IE)",
+  "longName": "English (Ireland)",
+  "localeName": "English (IE)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

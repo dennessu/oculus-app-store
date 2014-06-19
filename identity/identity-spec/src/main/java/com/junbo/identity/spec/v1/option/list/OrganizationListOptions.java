@@ -17,6 +17,9 @@ public class OrganizationListOptions extends PagingGetOptions {
     @QueryParam("ownerId")
     private UserId ownerId;
 
+    @QueryParam("name")
+    private String name;
+
     @QueryParam("properties")
     private String properties;
 
@@ -34,5 +37,13 @@ public class OrganizationListOptions extends PagingGetOptions {
 
     public void setProperties(String properties) {
         this.properties = properties;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_ZA": {
+			"shortName": "South African rand",
+			"longName": "South African rand"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=ZAR",
+		"id": null
+	},
+	"currencyCode": "ZAR",
+	"symbol": "R",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

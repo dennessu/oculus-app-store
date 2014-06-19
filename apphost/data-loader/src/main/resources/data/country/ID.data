@@ -1,0 +1,86 @@
+{
+	"countryCode": "ID",
+	"defaultLocale": {
+		"href": "/v1/locales/en_SG",
+		"id": "en_SG"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/IDR",
+		"id": "IDR"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/MDA",
+		"id": "MDA"
+	}],
+	"subCountries": {
+		"IJ": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Papua",
+					"longName": "Papua"
+				}
+			}
+		},
+		"JW": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Jawa",
+					"longName": "Jawa"
+				}
+			}
+		},
+		"KA": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Kalimantan",
+					"longName": "Kalimantan"
+				}
+			}
+		},
+		"ML": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Maluku",
+					"longName": "Maluku"
+				}
+			}
+		},
+		"NU": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Nusa Tenggara",
+					"longName": "Nusa Tenggara"
+				}
+			}
+		},
+		"SL": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Sulawesi",
+					"longName": "Sulawesi"
+				}
+			}
+		},
+		"SM": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Sumatera",
+					"longName": "Sumatera"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_SG",
+		"id": "en_SG"
+	}],
+	"locales": {
+		"en_SG": {
+			"shortName": "Indonesia",
+			"longName": "Republic of Indonesia"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

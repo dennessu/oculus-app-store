@@ -47,14 +47,15 @@
     [devops] sudo apt-get install postgresql-server-dev-9.3
 
     [devops] wget http://pgfoundry.org/frs/download.php/3622/skytools-3.2.tar.gz -o /tmp/skytools-3.2.tar.gz
-    [devops] ./configure --prefix=/usr/local
+    [devops] sudo ./configure --prefix=/usr/local
     [devops] sudo make
     [devops] sudo make install
 
 [SSH key]
     [silkcloud] ssh-keygen -t rsa (no passphase)
     [silkcloud] chmod 600 /home/silkcloud/.ssh/id_rsa*
-    [silkcloud] connect to the remote machine you want to login to, edit /home/silkcloud/.ssh/authorized_keys and append the content of id_rsa.pub file
+    [silkcloud] ssh-copy-id username@hostname
+        connect to the remote machine you want to login to, edit /home/silkcloud/.ssh/authorized_keys and append the content of id_rsa.pub file
 
 [Open ports]
     `5432`: postgresql database port

@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "JPY",
+			"longName": "Japanese Yen"
+		},
+		"ja_JP": {
+			"shortName": "円",
+			"longName": "円"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=JPY",
+		"id": null
+	},
+	"currencyCode": "JPY",
+	"symbol": "¥",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,226 @@
+{
+	"countryCode": "PL",
+	"defaultLocale": {
+		"href": "/v1/locales/pl_PL",
+		"id": "pl_PL"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/PLN",
+		"id": "PLN"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/PEGI",
+		"id": "PEGI"
+	}],
+	"subCountries": {
+		"DS": {
+			"locales": {
+				"pl_PL": {
+					"shortName": "Województwo dolnośląskie",
+					"longName": "Województwo dolnośląskie"
+				},
+				"en_US": {
+					"shortName": "Lower Silesian Voivodeship",
+					"longName": "Lower Silesian Voivodeship"
+				}
+			}
+		},
+		"KP": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kuyavian-Pomeranian Voivodeship",
+					"longName": "Kuyavian-Pomeranian Voivodeship"
+				},
+				"pl_PL": {
+					"shortName": "Województwo kujawsko-pomorskie",
+					"longName": "Województwo kujawsko-pomorskie"
+				}
+			}
+		},
+		"LB": {
+			"locales": {
+				"pl_PL": {
+					"shortName": "Województwo lubuskie",
+					"longName": "Województwo lubuskie"
+				},
+				"en_US": {
+					"shortName": "Lubusz Voivodeship",
+					"longName": "Lubusz Voivodeship"
+				}
+			}
+		},
+		"LD": {
+			"locales": {
+				"en_US": {
+					"shortName": "Łódź Voivodeship",
+					"longName": "Łódź Voivodeship"
+				},
+				"pl_PL": {
+					"shortName": "Województwo łódzkie",
+					"longName": "Województwo łódzkie"
+				}
+			}
+		},
+		"LU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Lublin Voivodeship",
+					"longName": "Lublin Voivodeship"
+				},
+				"pl_PL": {
+					"shortName": "Województwo lubelskie",
+					"longName": "Województwo lubelskie"
+				}
+			}
+		},
+		"MA": {
+			"locales": {
+				"pl_PL": {
+					"shortName": "Województwo małopolskie",
+					"longName": "Województwo małopolskie"
+				},
+				"en_US": {
+					"shortName": "Lesser Poland Voivodeship",
+					"longName": "Lesser Poland Voivodeship"
+				}
+			}
+		},
+		"MZ": {
+			"locales": {
+				"pl_PL": {
+					"shortName": "Województwo mazowieckie",
+					"longName": "Województwo mazowieckie"
+				},
+				"en_US": {
+					"shortName": "Masovian Voivodeship",
+					"longName": "Masovian Voivodeship"
+				}
+			}
+		},
+		"OP": {
+			"locales": {
+				"en_US": {
+					"shortName": "Opole Voivodeship",
+					"longName": "Opole Voivodeship"
+				},
+				"pl_PL": {
+					"shortName": "Województwo opolskie",
+					"longName": "Województwo opolskie"
+				}
+			}
+		},
+		"PD": {
+			"locales": {
+				"en_US": {
+					"shortName": "Podlaskie Voivodeship",
+					"longName": "Podlaskie Voivodeship"
+				},
+				"pl_PL": {
+					"shortName": "Województwo podlaskie",
+					"longName": "Województwo podlaskie"
+				}
+			}
+		},
+		"PK": {
+			"locales": {
+				"pl_PL": {
+					"shortName": "Województwo podkarpackie",
+					"longName": "Województwo podkarpackie"
+				},
+				"en_US": {
+					"shortName": "Podkarpackie Voivodeship",
+					"longName": "Podkarpackie Voivodeship"
+				}
+			}
+		},
+		"PM": {
+			"locales": {
+				"en_US": {
+					"shortName": "Pomeranian Voivodeship",
+					"longName": "Pomeranian Voivodeship"
+				},
+				"pl_PL": {
+					"shortName": "Województwo Pomorskie",
+					"longName": "Województwo Pomorskie"
+				}
+			}
+		},
+		"SK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Świętokrzyskie Voivodeship",
+					"longName": "Świętokrzyskie Voivodeship"
+				},
+				"pl_PL": {
+					"shortName": "Województwo świętokrzyskie",
+					"longName": "Województwo świętokrzyskie"
+				}
+			}
+		},
+		"SL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Silesian Voivodeship",
+					"longName": "Silesian Voivodeship"
+				},
+				"pl_PL": {
+					"shortName": "Województwo śląskie",
+					"longName": "Województwo śląskie"
+				}
+			}
+		},
+		"WN": {
+			"locales": {
+				"en_US": {
+					"shortName": "Warmian-Masurian Voivodeship",
+					"longName": "Warmian-Masurian Voivodeship"
+				},
+				"pl_PL": {
+					"shortName": "Województwo warmińsko-mazurskie",
+					"longName": "Województwo warmińsko-mazurskie"
+				}
+			}
+		},
+		"WP": {
+			"locales": {
+				"en_US": {
+					"shortName": "Greater Poland Voivodeship",
+					"longName": "Greater Poland Voivodeship"
+				},
+				"pl_PL": {
+					"shortName": "Województwo wielkopolskie",
+					"longName": "Województwo wielkopolskie"
+				}
+			}
+		},
+		"ZP": {
+			"locales": {
+				"pl_PL": {
+					"shortName": "Województwo zachodniopomorskie",
+					"longName": "Województwo zachodniopomorskie"
+				},
+				"en_US": {
+					"shortName": "West Pomeranian Voivodeship",
+					"longName": "West Pomeranian Voivodeship"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/pl_PL",
+		"id": "pl_PL"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Poland",
+			"longName": "Republic of Poland"
+		},
+		"pl_PL": {
+			"shortName": "Polska",
+			"longName": "Rzeczpospolita Polska"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

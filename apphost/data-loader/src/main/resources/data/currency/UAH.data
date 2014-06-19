@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "UAH",
+			"longName": "Ukrainian hryvnia"
+		},
+		"uk_UA": {
+			"shortName": "українська гривня",
+			"longName": "українська гривня"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=UAH",
+		"id": null
+	},
+	"currencyCode": "UAH",
+	"symbol": "₴",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

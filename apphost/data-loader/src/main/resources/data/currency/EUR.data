@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "EUR",
+			"longName": "Euro"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=EUR",
+		"id": null
+	},
+	"currencyCode": "EUR",
+	"symbol": "€",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

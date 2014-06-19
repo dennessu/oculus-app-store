@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_AU": {
+			"shortName": "AUD",
+			"longName": "Australian dollar"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=AUD",
+		"id": null
+	},
+	"currencyCode": "AUD",
+	"symbol": "$",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

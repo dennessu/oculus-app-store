@@ -77,12 +77,12 @@ function forceKillPid {
 
     if [ -f $1 ];then
         cat $1 | xargs echo
-        cat $1 | xargs kill -9
+        cat $1 | xargs kill -9 || echo 'process does not exist'
     elif [ -d $1 ];then
         for f in `ls $1`
         do
             cat $1/$f | xargs echo
-            cat $1/$f | xargs kill -9 || echo 'failed to kill'
+            cat $1/$f | xargs kill -9 || echo 'process does not exist'
         done
     else
         echo "path [$1] does not exist"
