@@ -229,7 +229,7 @@
         <property name="cloudantRepositoryImpl" ref="cloudantDiscountItemRepository" />
     </bean>
 
-    <bean id="OrderBalanceLinkRepository" parent="baseRepository">
+    <bean id="orderBalanceLinkRepository" parent="baseRepository">
         <property name="repositoryInterface" value="com.junbo.billing.db.repo.OrderBalanceLinkRepository"/>
         <property name="sqlRepositoryImpl" ref="sqlOrderBalanceLinkRepository" />
         <property name="cloudantRepositoryImpl" ref="cloudantOrderBalanceLinkRepository" />
@@ -249,18 +249,18 @@
 
     <!-- repository facade -->
     <bean id="balanceRepositoryFacade" class="com.junbo.billing.db.repo.facade.impl.BalanceRepositoryFacadeImpl">
-        <property name="balanceEventRepository" ref="sqlBalanceEventRepository"/>
-        <property name="balanceItemRepository" ref="sqlBalanceItemRepository"/>
-        <property name="balanceItemEventRepository" ref="sqlBalanceItemEventRepository"/>
-        <property name="orderBalanceLinkRepository" ref="sqlOrderBalanceLinkRepository"/>
-        <property name="balanceRepository" ref="sqlBalanceRepository"/>
+        <property name="balanceEventRepository" ref="balanceEventRepository"/>
+        <property name="balanceItemRepository" ref="balanceItemRepository"/>
+        <property name="balanceItemEventRepository" ref="balanceItemEventRepository"/>
+        <property name="orderBalanceLinkRepository" ref="orderBalanceLinkRepository"/>
+        <property name="balanceRepository" ref="balanceRepository"/>
         <property name="transactionRepositoryFacade" ref="billingTransactionRepositoryFacade"/>
-        <property name="taxItemRepository" ref="sqlTaxItemRepository"/>
-        <property name="discountItemRepository" ref="sqlDiscountItemRepository"/>
+        <property name="taxItemRepository" ref="taxItemRepository"/>
+        <property name="discountItemRepository" ref="discountItemRepository"/>
     </bean>
 
     <bean id="billingTransactionRepositoryFacade" class="com.junbo.billing.db.repo.facade.impl.TransactionRepositoryFacadeImpl">
-        <property name="transactionRepository" ref="sqlBillingTransactionRepository"/>
+        <property name="transactionRepository" ref="billingTransactionRepository"/>
     </bean>
 
 </beans>
