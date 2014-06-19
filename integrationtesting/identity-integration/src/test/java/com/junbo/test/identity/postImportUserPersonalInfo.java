@@ -42,7 +42,7 @@ public class postImportUserPersonalInfo {
 
         User user = Identity.UserGetByUserId(oculusOutput.getUserId());
         Validator.Validate("validate user name", oculusInput.getUsername(), user.getUsername());
-        Validator.Validate("validate user status", oculusInput.getStatus(), user.getStatus());
+        Validator.Validate("validate user status", IdentityModel.MigrateUserStatus.ACTIVE.name(), user.getStatus());
 
         UserCredential uc = Identity.CredentialsGetByUserId(user.getId());
         Validator.Validate("validate forceResetPassword", oculusInput.getForceResetPassword(),
@@ -126,7 +126,7 @@ public class postImportUserPersonalInfo {
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.DefaultIdentityV1ImportsURI,
                 JsonHelper.JsonSerializer(oculusInput), 2);
         Validator.Validate("validate response error code", 409, response.getStatusLine().getStatusCode());
-        String errorMessage = "Field username invalid due to username is already used by others.";
+        String errorMessage = "Field name invalid due to company.name is already used by others.";
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
     }
@@ -200,7 +200,57 @@ public class postImportUserPersonalInfo {
                 userIsAdmin ? IdentityModel.MigrateCompanyGroup.admin.name()
                         : IdentityModel.MigrateCompanyGroup.developer.name()
         );
-        UserGroup userGroup = Identity.SearchUserGroup(group.getId());
+        UserGroup userGroup = Identity.SearchUserGroup(group.getId(), false);
         Validator.Validate("validate user is in correct group", oculusOutput.getUserId(), userGroup.getUserId());
+    }
+
+    @Test(groups = "dailies")
+    public void importMigrationDataSwitchUserOrganizationGroup() throws Exception {
+        OculusInput oculusInput = IdentityModel.DefaultOculusInput();
+        OculusOutput oculusOutput = Identity.ImportMigrationData(oculusInput);
+        Boolean userIsAdmin = oculusInput.getCompany().getIsAdmin();
+        Company company = oculusInput.getCompany();
+        company.setIsAdmin(userIsAdmin ? false : true);
+        Identity.ImportMigrationData(oculusInput);
+        userIsAdmin = oculusInput.getCompany().getIsAdmin();
+        Group groupWithUser = Identity.SearchOrganizationGroup(oculusOutput.getOrganizationId(),
+                userIsAdmin ? IdentityModel.MigrateCompanyGroup.admin.name()
+                        : IdentityModel.MigrateCompanyGroup.developer.name()
+        );
+        UserGroup userGroup = Identity.SearchUserGroup(groupWithUser.getId(), false);
+        Validator.Validate("validate user is in correct group", oculusOutput.getUserId(), userGroup.getUserId());
+        Group groupWithoutUser = Identity.SearchOrganizationGroup(oculusOutput.getOrganizationId(),
+                userIsAdmin ? IdentityModel.MigrateCompanyGroup.developer.name()
+                        : IdentityModel.MigrateCompanyGroup.admin.name()
+        );
+        Identity.SearchUserGroup(groupWithoutUser.getId(), true);
+    }
+
+    @Test(groups = "dailies")
+    public void importMigrationDataUserSwitchOrganization() throws Exception {
+        OculusInput oculusInput = IdentityModel.DefaultOculusInput();
+        OculusOutput oculusOutput1 = Identity.ImportMigrationData(oculusInput);
+
+        Company company = oculusInput.getCompany();
+        company.setCompanyId(RandomHelper.randomLong());
+        company.setName(RandomHelper.randomAlphabetic(20));
+        oculusInput.setCompany(company);
+        OculusOutput oculusOutput2 = Identity.ImportMigrationData(oculusInput);
+
+        Validator.Validate("validate there are 2 organizations generated", true,
+                oculusOutput1.getOrganizationId() != oculusOutput2.getOrganizationId());
+
+        Boolean userIsAdmin = oculusInput.getCompany().getIsAdmin();
+        Group group1 = Identity.SearchOrganizationGroup(oculusOutput1.getOrganizationId(),
+                userIsAdmin ? IdentityModel.MigrateCompanyGroup.admin.name()
+                        : IdentityModel.MigrateCompanyGroup.developer.name()
+        );
+        Identity.SearchUserGroup(group1.getId(), true);
+        Group group2 = Identity.SearchOrganizationGroup(oculusOutput2.getOrganizationId(),
+                userIsAdmin ? IdentityModel.MigrateCompanyGroup.admin.name()
+                        : IdentityModel.MigrateCompanyGroup.developer.name()
+        );
+        UserGroup userGroup = Identity.SearchUserGroup(group2.getId(), false);
+        Validator.Validate("validate user is in correct group", oculusOutput1.getUserId(), userGroup.getUserId());
     }
 }

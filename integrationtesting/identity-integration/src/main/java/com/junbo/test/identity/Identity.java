@@ -18,6 +18,7 @@ import com.junbo.identity.spec.v1.model.migration.OculusOutput;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.JsonHelper;
+import com.junbo.test.common.Validator;
 import com.junbo.test.common.libs.IdConverter;
 
 import java.util.ArrayList;
@@ -190,11 +191,17 @@ public class Identity {
         return ((Group) JsonHelper.JsonNodeToObject(jsonNode, Group.class));
     }
 
-    public static UserGroup SearchUserGroup(GroupId groupId) throws Exception {
+    public static UserGroup SearchUserGroup(GroupId groupId, Boolean emptyResult) throws Exception {
         String requestURI = DefaultIdentityV1UserGroupMemberURI + "?groupId=" + groupId;
-        JsonNode jsonNode = JsonHelper.ObjectToJsonNode(
-                (HttpclientHelper.SimpleGet(requestURI, (Results.class)).getItems().get(0)));
-        return ((UserGroup) JsonHelper.JsonNodeToObject(jsonNode, UserGroup.class));
+        if (emptyResult) {
+            Validator.Validate("validate result is empty", true,
+                    HttpclientHelper.SimpleGet(requestURI, (Results.class)).getItems().isEmpty());
+            return null;
+        } else {
+            JsonNode jsonNode = JsonHelper.ObjectToJsonNode(
+                    (HttpclientHelper.SimpleGet(requestURI, (Results.class)).getItems().get(0)));
+            return ((UserGroup) JsonHelper.JsonNodeToObject(jsonNode, UserGroup.class));
+        }
     }
 
     public static String GetHexUserId(Long userId) throws Exception {

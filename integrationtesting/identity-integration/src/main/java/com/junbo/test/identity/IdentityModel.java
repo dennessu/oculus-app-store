@@ -147,7 +147,7 @@ public class IdentityModel {
         input.setUpdateDate(sdf.parse("2013-11-26 17:35:03"));
         input.setCompany(DefaultCompany());
         input.setProfile(DefaultShareProfile());
-        input.setStatus(MigrateUserStatus.ACTIVE.name());
+        input.setStatus(RandomMigrteUserStatus());
         input.setForceResetPassword(RandomBoolean());
         return input;
     }
@@ -162,7 +162,7 @@ public class IdentityModel {
         company.setPostalCode(RandomHelper.randomAlphabetic(10));
         company.setCountry("US");
         company.setPhone(RandomHelper.randomAlphabetic(30));
-        company.setType(MigrateCompanyType.CORPORATE.name());
+        company.setType(RandomMigrateCompanyType());
         company.setIsAdmin(RandomBoolean());
         return company;
     }
@@ -203,6 +203,23 @@ public class IdentityModel {
         List<Object> array = new ArrayList<>();
         array.add("male");
         array.add("female");
+        return RandomHelper.randomValueFromList(RandomHelper.randomInt(), array).toString();
+    }
+
+    public static String RandomMigrteUserStatus() {
+        List<Object> array = new ArrayList<>();
+        array.add(MigrateUserStatus.ACTIVE.name());
+        array.add(MigrateUserStatus.ARCHIVE.name());
+        array.add(MigrateUserStatus.PENDING.name());
+        array.add(MigrateUserStatus.PENDING_EMAIL_VERIFICATION.name());
+        array.add(MigrateUserStatus.VERIFIED.name());
+        return RandomHelper.randomValueFromList(RandomHelper.randomInt(), array).toString();
+    }
+
+    public static String RandomMigrateCompanyType() {
+        List<Object> array = new ArrayList<>();
+        array.add(MigrateCompanyType.CORPORATE.name());
+        array.add(MigrateCompanyType.INDIVIDUAL.name());
         return RandomHelper.randomValueFromList(RandomHelper.randomInt(), array).toString();
     }
 
