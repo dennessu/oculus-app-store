@@ -15,7 +15,7 @@ echo "create pgbouncer home"
 createDir $PGBOUNCER_BASE
 
 # primary pgbouncer proxy
-echo "generate primary pgbouncer configuration..."
+echo "generate primary pgbouncer configuration"
 
 cat > $PGBOUNCER_CONF <<EOF
 [databases]
@@ -35,14 +35,14 @@ default_pool_size = $PGBOUNCER_DEFAULT_POOL_SIZE
 ignore_startup_parameters = extra_float_digits
 EOF
 
-echo "kill pgbouncer process with port [$PGBOUNCER_PORT]..."
+echo "kill pgbouncer process with port [$PGBOUNCER_PORT]"
 forceKill $PGBOUNCER_PORT
 
 echo "remove pgbouncer socket and pid files"
 rm -f $PGBOUNCER_SOCKET_PATH/.s.PGSQL.$PROXY_DB_PORT
 rm -f $PGBOUNCER_PID
 
-echo "start pgbouncer..."
+echo "start pgbouncer"
 $PGBOUNCER_BIN/pgbouncer -d -v $PGBOUNCER_CONF
 
 while ! echo exit | nc localhost $PGBOUNCER_PORT; do sleep 1 && echo "waiting for pgbouncer proxy..."; done

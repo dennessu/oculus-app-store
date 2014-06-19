@@ -5,7 +5,7 @@ source ${DIR}/../util/common.sh
 #check running under specified account
 checkAccount $DEPLOYMENT_ACCOUNT
 
-echo "kill postgres instance with port [$MASTER_DB_PORT]..."
+echo "kill postgres instance with port [$MASTER_DB_PORT]"
 forceKill $MASTER_DB_PORT
 
 echo "create database data folder $MASTER_DATA_PATH"
@@ -17,10 +17,10 @@ createDir $MASTER_BACKUP_PATH
 echo "create database archive folder $MASTER_ARCHIVE_PATH"
 createDir $MASTER_ARCHIVE_PATH
 
-echo "initialize master database..."
+echo "initialize master database"
 $PGBIN_PATH/pg_ctl -D $MASTER_DATA_PATH initdb
 
-echo "configure pg_hba.conf..."
+echo "configure pg_hba.conf"
 cat > $MASTER_DATA_PATH/pg_hba.conf <<EOF
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 
@@ -40,7 +40,7 @@ host    replication     ${PGUSER}       ${SLAVE_HOST}/32        ident
 host    replication     ${PGUSER}       ${REPLICA_HOST}/32      ident
 EOF
 
-echo "configure postgres.conf..."
+echo "configure postgres.conf"
 cat >> $MASTER_DATA_PATH/postgresql.conf <<EOF
 wal_level = hot_standby
 archive_mode = on
@@ -53,7 +53,7 @@ archive_command = 'cp %p $MASTER_ARCHIVE_PATH/%f'
 port = $MASTER_DB_PORT
 EOF
 
-echo "start master database..."
+echo "start master database"
 $PGBIN_PATH/pg_ctl -D $MASTER_DATA_PATH start > /dev/null 2>&1 &
 
 while ! echo exit | nc $MASTER_HOST $MASTER_DB_PORT; do sleep 1 && echo "waiting for master database startup..."; done
