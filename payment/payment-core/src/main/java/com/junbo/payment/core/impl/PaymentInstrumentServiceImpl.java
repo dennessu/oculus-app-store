@@ -19,8 +19,8 @@ import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.core.util.ProxyExceptionResponse;
 import com.junbo.payment.db.repository.PITypeRepository;
 import com.junbo.payment.spec.model.TrackingUuid;
-import com.junbo.payment.db.repository.PaymentInstrumentRepository;
-import com.junbo.payment.db.repository.TrackingUuidRepository;
+import com.junbo.payment.db.repo.facade.PaymentInstrumentRepositoryFacade;
+import com.junbo.payment.db.repo.TrackingUuidRepository;
 import com.junbo.payment.spec.enums.PaymentAPI;
 import com.junbo.payment.spec.model.*;
 import org.slf4j.Logger;
@@ -42,7 +42,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         this.providerRoutingService = providerRoutingService;
     }
     @Autowired
-    private PaymentInstrumentRepository paymentInstrumentRepository;
+    private PaymentInstrumentRepositoryFacade paymentInstrumentRepositoryFacade;
     @Autowired
     private TrackingUuidRepository trackingUuidRepository;
     @Autowired
@@ -53,8 +53,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     public Promise<PaymentInstrument> add(final PaymentInstrument request) {
         validateRequest(request);
         if(request.getTrackingUuid() != null){
-            TrackingUuid result = trackingUuidRepository.getByTrackUuid(request.getUserId(),
-                    request.getTrackingUuid());
+            TrackingUuid result = trackingUuidRepository.getByTrackingUuid(request.getUserId(), request.getTrackingUuid()).get();
             if(result != null && result.getApi().equals(PaymentAPI.AddPI)){
                 return Promise.pure(CommonUtil.parseJson(result.getResponse(), PaymentInstrument.class));
             }
@@ -92,13 +91,13 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     }
 
     private void saveAndCommitPI(final PaymentInstrument request) {
-        paymentInstrumentRepository.save(request);
+        paymentInstrumentRepositoryFacade.save(request);
         saveTrackingUuid(request, PaymentAPI.AddPI);
     }
 
     @Override
     public void delete(final Long paymentInstrumentId) {
-        paymentInstrumentRepository.delete(paymentInstrumentId);
+        paymentInstrumentRepositoryFacade.delete(paymentInstrumentId);
     }
 
     @Override
@@ -116,7 +115,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
             request.getTypeSpecificDetails().setId(request.getId());
         }
         //TODO: need re-validate the PI according to the lastValidatedTime
-        paymentInstrumentRepository.update(request);
+        paymentInstrumentRepositoryFacade.update(request);
     }
 
     @Override
@@ -144,7 +143,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
 
     @Override
     public List<PaymentInstrument> getByUserId(Long userId) {
-        List<PaymentInstrument> results = paymentInstrumentRepository.getByUserId(userId);
+        List<PaymentInstrument> results = paymentInstrumentRepositoryFacade.getByUserId(userId);
         if(results == null || results.isEmpty()){
             throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
         }
@@ -153,13 +152,13 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
 
     @Override
     public Promise<List<PaymentInstrument>> searchPi(Long userId, PaymentInstrumentSearchParam searchParam, PageMetaData page) {
-        if(userId == null){
+        if(userId == null) {
             throw AppClientExceptions.INSTANCE.missingUserId().exception();
         }
-        if(!CommonUtil.isNullOrEmpty(searchParam.getType())){
+        if(!CommonUtil.isNullOrEmpty(searchParam.getType())) {
             PaymentUtil.getPIType(searchParam.getType());
         }
-        final List<PaymentInstrument> results = paymentInstrumentRepository.search(userId, searchParam, page);
+        final List<PaymentInstrument> results = paymentInstrumentRepositoryFacade.search(userId, searchParam, page);
         final List<PaymentInstrument> detailedResults = new ArrayList<PaymentInstrument>();
         return Promise.each(results.iterator(), new Promise.Func<PaymentInstrument, Promise>() {
             @Override
@@ -206,7 +205,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         trackingUuid.setApi(api.toString());
         trackingUuid.setUserId(request.getUserId());
         trackingUuid.setResponse(CommonUtil.toJson(request, null));
-        trackingUuidRepository.saveTrackingUuid(trackingUuid);
+        trackingUuidRepository.create(trackingUuid).get();
     }
 
     private void validateRequest(PaymentInstrument request){
@@ -248,7 +247,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     }
 
     private PaymentInstrument getPaymentInstrument(Long paymentInstrumentId){
-        PaymentInstrument result = paymentInstrumentRepository.getByPIId(paymentInstrumentId);
+        PaymentInstrument result = paymentInstrumentRepositoryFacade.getByPIId(paymentInstrumentId);
         if(result == null){
             throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
         }

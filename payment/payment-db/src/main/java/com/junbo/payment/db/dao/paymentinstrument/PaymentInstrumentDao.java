@@ -24,6 +24,7 @@ public class PaymentInstrumentDao extends CommonDataDAOImpl<PaymentInstrumentEnt
     public List<PaymentInstrumentEntity> getByUserId(final Long userId) {
         Criteria criteria = currentSession(userId).createCriteria(PaymentInstrumentEntity.class);
         criteria.add(Restrictions.eq("userId", userId));
+        criteria.add(Restrictions.eq("isDeleted", Boolean.FALSE));
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         return criteria.list();
     }
@@ -31,10 +32,24 @@ public class PaymentInstrumentDao extends CommonDataDAOImpl<PaymentInstrumentEnt
     public List<PaymentInstrumentEntity> getByUserAndType(final Long userId, final PIType piType) {
         Criteria criteria = currentSession(userId).createCriteria(PaymentInstrumentEntity.class);
         criteria.add(Restrictions.eq("userId", userId));
+        criteria.add(Restrictions.eq("isDeleted", Boolean.FALSE));
         if(piType != null){
             criteria.add(Restrictions.eq("type", piType.getId()));
         }
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         return criteria.list();
+    }
+
+    @Override
+    public Long save(PaymentInstrumentEntity entity) {
+        entity.setDeleted(false);
+        return super.save(entity);
+    }
+
+    @Override
+    public void delete(Long id) {
+        PaymentInstrumentEntity entity = get(id);
+        entity.setDeleted(true);
+        update(entity);
     }
 }

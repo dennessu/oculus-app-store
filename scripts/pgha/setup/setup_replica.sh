@@ -14,7 +14,7 @@ createDir $REPLICA_ARCHIVE_PATH
 echo "copy backup file from remote master"
 rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_BACKUP_PATH/* $REPLICA_DATA_PATH
 
-echo "configure recovery.conf..."
+echo "configure recovery.conf"
 cat > $SLAVE_DATA_PATH/recovery.conf <<EOF
 recovery_target_timeline = 'latest'
 restore_command = 'cp $REPLICA_ARCHIVE_PATH/%f %p'
@@ -23,7 +23,7 @@ primary_conninfo = 'user=$PGUSER host=$MASTER_HOST port=$MASTER_DB_PORT sslmode=
 trigger_file = '$PROMOTE_TRIGGER_FILE'
 EOF
 
-echo "configure pg_hba.conf..."
+echo "configure pg_hba.conf"
 cat > $REPLICA_DATA_PATH/pg_hba.conf <<EOF
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 
@@ -38,13 +38,13 @@ host    all             ${PGUSER}       ${REPLICA_HOST}/32      ident
 host    all             ${PGUSER}       ::1/128                 ident
 EOF
 
-echo "configure postgres.conf..."
+echo "configure postgres.conf"
 cat >> $REPLICA_DATA_PATH/postgresql.conf <<EOF
 archive_command = 'cp %p $REPLICA_ARCHIVE_PATH/%f'
 port = $REPLICA_DB_PORT
 EOF
 
-echo "start replica database..."
+echo "start replica database"
 $PGBIN_PATH/pg_ctl -D $REPLICA_DATA_PATH start > /dev/null 2>&1 &
 
 while ! echo exit | nc $REPLICA_HOST $REPLICA_DB_PORT; do sleep 1 && echo "waiting for replica database..."; done

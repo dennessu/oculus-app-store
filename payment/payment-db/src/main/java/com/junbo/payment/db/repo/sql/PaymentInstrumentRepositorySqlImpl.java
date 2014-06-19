@@ -99,6 +99,7 @@ public class PaymentInstrumentRepositorySqlImpl implements PaymentInstrumentRepo
 
     @Override
     public Promise<Void> delete(Long id) {
-        throw new UnsupportedOperationException("Delete on payment instrument not support");
+        paymentInstrumentDao.delete(id);
+        return Promise.pure(null);
     }
 }

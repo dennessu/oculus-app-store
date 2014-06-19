@@ -15,6 +15,7 @@ import com.junbo.payment.spec.model.TrackingUuid;
 import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Required;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,8 +43,22 @@ public class TrackingUuidRepositorySqlImpl implements TrackingUuidRepository {
     }
 
     @Override
-    public Promise<List<TrackingUuid>> getByTrackingUuid(Long userId, UUID trackingUuid) {
-        return null;
+    public Promise<TrackingUuid> getByTrackingUuid(Long userId, UUID trackingUuid) {
+        List<TrackingUuidEntity> list = trackingUuidDao.getByTrackingUuid(userId, trackingUuid);
+        List<TrackingUuid> trackingUuidRecords = new ArrayList<>();
+        for (TrackingUuidEntity entity : list) {
+            TrackingUuid trackingUuidRecord = paymentMapper.toTrackingUuid(entity, new MappingContext());
+            if (trackingUuid != null) {
+                trackingUuidRecords.add(trackingUuidRecord);
+            }
+        }
+
+        if (trackingUuidRecords.isEmpty()) {
+            return Promise.pure(null);
+        }
+        else {
+            return Promise.pure(trackingUuidRecords.get(0));
+        }
     }
 
     @Override
@@ -59,7 +74,15 @@ public class TrackingUuidRepositorySqlImpl implements TrackingUuidRepository {
     @Override
     public Promise<TrackingUuid> create(TrackingUuid model) {
         if (model.getId() == null) {
-            model.setId(idGenerator.nextId(model.getPaymentInstrumentId()));
+            if(model.getPaymentInstrumentId() != null){
+                model.setId(idGenerator.nextId(model.getPaymentInstrumentId()));
+            }
+            else if(model.getPaymentId() != null){
+                model.setId(idGenerator.nextId(model.getPaymentId()));
+            }
+            else if(model.getUserId() != null){
+                model.setId(idGenerator.nextId(model.getUserId()));
+            }
         }
 
         TrackingUuidEntity entity = paymentMapper.toTrackingUuidEntity(model, new MappingContext());

@@ -28,7 +28,7 @@ public class PayPalProviderServiceTest extends BaseTest {
         PaymentInstrument request = addPI(buildPayPalRequest());
         PaymentTransaction payment = new PaymentTransaction();
         payment.setBillingRefId("123");
-        payment.setUserId(userId);
+        payment.setUserId(request.getUserId());
         payment.setPaymentInstrumentId(request.getId());
         payment.setTrackingUuid(generateUUID());
         final Item item = new Item(){
@@ -74,7 +74,7 @@ public class PayPalProviderServiceTest extends BaseTest {
         PaymentInstrument request = addPI(buildPayPalRequest());
         PaymentTransaction payment = new PaymentTransaction();
         payment.setBillingRefId("123");
-        payment.setUserId(userId);
+        payment.setUserId(request.getUserId());
         payment.setPaymentInstrumentId(request.getId());
         payment.setTrackingUuid(generateUUID());
         final Item item = new Item(){

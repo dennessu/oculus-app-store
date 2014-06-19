@@ -39,6 +39,7 @@ public class AdyenCCProviderServiceTest  extends BaseTest {
     public void setMockAdyenPaymentService(@Qualifier("mockAdyenPaymentService")PaymentTransactionService mockAdyenPaymentService) {
         this.mockAdyenPaymentService = mockAdyenPaymentService;
     }
+
     @Test(enabled = false)
     public void testAddPI(){
         PaymentInstrument request = buildPIRequest();
@@ -67,7 +68,7 @@ public class AdyenCCProviderServiceTest  extends BaseTest {
 
         PaymentTransaction payment = new PaymentTransaction();
         payment.setBillingRefId("123");
-        payment.setUserId(userId);
+        payment.setUserId(request.getUserId());
         payment.setPaymentInstrumentId(result.getId());
         payment.setTrackingUuid(generateUUID());
         payment.setChargeInfo(new ChargeInfo() {
@@ -98,7 +99,7 @@ public class AdyenCCProviderServiceTest  extends BaseTest {
 
         PaymentTransaction payment = new PaymentTransaction();
         payment.setBillingRefId("123");
-        payment.setUserId(userId);
+        payment.setUserId(request.getUserId());
         payment.setPaymentInstrumentId(result.getId());
         payment.setTrackingUuid(generateUUID());
         payment.setChargeInfo(new ChargeInfo() {

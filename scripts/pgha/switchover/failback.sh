@@ -2,10 +2,6 @@
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 source ${DIR}/../util/common.sh
 
-echo "waiting for master catching up with slave..."
-while ! echo exit | psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "SELECT 'x' from pg_stat_replication where sent_location != replay_location;" | grep "(0 rows)"; do sleep 1 && echo "master is catching up..."; done
-echo "master catch up with slave!"
-
 echo "stop primary pgbouncer proxy"
 forceKill $PGBOUNCER_PORT
 
@@ -14,18 +10,29 @@ source $DEPLOYMENT_PATH/util/common.sh
 
 echo "stop secondary pgbouncer proxy"
 forceKill $PGBOUNCER_PORT
+ENDSSH
 
-echo "gracefully shutdown current master database..."
+echo "waiting for master catching up with slave"
+while ! echo exit | psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "SELECT 'x' from pg_stat_replication where sent_location != replay_location;" | grep "(0 rows)"; do sleep 1 && echo "master is catching up..."; done
+echo "master catch up with slave!"
+
+echo "gracefully shutdown slave database"
+ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
 $PGBIN_PATH/pg_ctl stop -m fast -D $SLAVE_DATA_PATH
 ENDSSH
 
 echo "copy unarchived log files..."
 rsync -azhv $DEPLOYMENT_ACCOUNT@$SLAVE_HOST:$SLAVE_DATA_PATH/pg_xlog/* $MASTER_ARCHIVE_PATH
 
-echo "promote master database to take traffic..."
+echo "promote master database to take traffic"
 touch $PROMOTE_TRIGGER_FILE
 
-echo "configure recovery.conf for slave..."
+echo "change replica provider "
+ssh $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
+londiste3 $config change-provider --provider="dbname=$db host=$MASTER_HOST port=$MASTER_DB_PORT"
+ENDSSH
+
+echo "configure recovery.conf for slave"
 ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
 
 cat > $SLAVE_DATA_PATH/recovery.conf <<EOF
@@ -36,7 +43,7 @@ primary_conninfo = 'user=$PGUSER host=$MASTER_HOST port=$MASTER_DB_PORT sslmode=
 trigger_file = '$PROMOTE_TRIGGER_FILE'
 EOF
 
-echo "start slave database..."
+echo "start slave database"
 $PGBIN_PATH/pg_ctl -D $SLAVE_DATA_PATH start
 
 while ! echo exit | nc $SLAVE_HOST $SLAVE_DB_PORT; do sleep 1 && echo "waiting for slave database..."; done

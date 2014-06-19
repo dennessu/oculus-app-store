@@ -8,6 +8,9 @@
     <context:component-scan base-package="com.junbo.oom.core.builtin"/>
     <context:component-scan base-package="com.junbo.payment.db"/>
 
+    <import resource="classpath*:spring/sharding-context.xml"/>
+    <import resource="classpath*:spring/dualwrite-context.xml"/>
+
     <!--Data source has the database information -->
     <bean id="paymentDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${payment.db.jdbcUrls}"/>
@@ -22,20 +25,7 @@
             </props>
         </property>
     </bean>
-<!--
-    <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
-            <property name="driverClass" value="${payment.db.driverClassName}"/>
-            <property name="jdbcUrl" value="${payment.db.jdbcUrls}"/>
-            <property name="username" value="${payment.db.username}"/>
-            <property name="password" value="${payment.db.password}"/>
-            <property name="maxConnectionsPerPartition" value="${payment.db.maxConnectionsPerPartition}"/>
-            <property name="minConnectionsPerPartition" value="${payment.db.minConnectionsPerPartition}"/>
-            <property name="partitionCount" value="${payment.db.partitionCount}"/>
-            <property name="acquireIncrement" value="${payment.db.acquireIncrement}"/>
-            <property name="statementsCacheSize" value="${payment.db.statementsCacheSize}"/>
-            <property name="releaseHelperThreads" value="${payment.db.releaseHelperThreads}"/>
-        </bean>
-        -->
+
     <!-- SessonFactory for Hibernate -->
     <bean id="paymentSessionFactory"
           class="com.junbo.sharding.hibernate.LocalSessionFactoryWithListenerBean">
@@ -66,36 +56,10 @@
         </property>
     </bean>
 
-    <!--
-    <bean id="sessionFactory"
-          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="paymentDataSource"/>
-        <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">${payment.hibernate.dialect}</prop>
-                <prop key="hibernate.max_fetch_depth">${payment.hibernate.max_fetch_depth}</prop>
-                <prop key="hibernate.jdbc.fetch_size">${payment.hibernate.jdbc.fetch_size}</prop>
-                <prop key="hibernate.jdbc.batch_size">${payment.hibernate.jdbc.batch_size}</prop>
-                <prop key="hibernate.show_sql">${payment.hibernate.show_sql}</prop>
-            </props>
-        </property>
-        <property name="packagesToScan">
-            <list>
-                <value>com.junbo.payment.db</value>
-                <value>com.junbo.payment.db.dao.payment</value>
-                <value>com.junbo.payment.db.entity.payment</value>
-                <value>com.junbo.payment.db.dao.paymentinstrument</value>
-                <value>com.junbo.payment.db.entity.paymentinstrument</value>
-            </list>
-        </property>
-    </bean>
+    <!--mapper-->
+    <bean id="paymentCommonMapper" class="com.junbo.payment.db.mapper.CommonMapper" />
+    <bean id="paymentMapperExtension" class="com.junbo.payment.db.mapper.PaymentMapperExtension" />
 
-    -->
-    <!-- Transaction Manager
-    <bean id="transactionManager"
-          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory"/>
-    </bean> -->
     <!-- Dao -->
     <bean id="genericDao"
           class="com.junbo.payment.db.dao.GenericDAOImpl" abstract="true">
@@ -146,31 +110,100 @@
         <property name="persistentClass" value="com.junbo.payment.db.entity.payment.TrackingUuidEntity"/>
     </bean>
 
-    <bean id="paymentInstrumentRepository" class="com.junbo.payment.db.repository.PaymentInstrumentRepository"></bean>
-
-    <bean id="paymentRepository" class="com.junbo.payment.db.repository.PaymentRepository"></bean>
-
-    <bean id="trackingUuidRepository" class="com.junbo.payment.db.repository.TrackingUuidRepository" ></bean>
-
-    <bean id="domainDataRepository"
-          class="com.junbo.payment.db.repository.DomainDataRepository" abstract="true">
+    <!-- sql repositories -->
+    <bean id="sqlCreditCardDetailRepository" class="com.junbo.payment.db.repo.sql.CreditCardDetailRepositorySqlImpl">
+        <property name="creditCardPaymentInstrumentDao" ref="ccPaymentInstrumentDao"/>
+        <property name="paymentMapper" ref="com.junbo.payment.db.mapper.PaymentMapperImpl"/>
     </bean>
 
-    <bean id="merchantAccountRepository"
-          class="com.junbo.payment.db.repository.MerchantAccountRepository" parent="domainDataRepository">
+    <bean id="sqlPaymentEventRepository" class="com.junbo.payment.db.repo.sql.PaymentEventRepositorySqlImpl">
+        <property name="paymentEventDao" ref="paymentEventDao"/>
+        <property name="paymentMapperExtension" ref="paymentMapperExtension"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="sqlPaymentInstrumentRepository" class="com.junbo.payment.db.repo.sql.PaymentInstrumentRepositorySqlImpl">
+        <property name="paymentMapperExtension" ref="paymentMapperExtension"/>
+        <property name="paymentInstrumentDao" ref="PaymentInstrumentDao"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="sqlPaymentPropertyRepository" class="com.junbo.payment.db.repo.sql.PaymentPropertyRepositorySqlImpl">
+        <property name="paymentMapper" ref="com.junbo.payment.db.mapper.PaymentMapperImpl"/>
+        <property name="paymentPropertyDao" ref="paymentPropertyDao"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="sqlPaymentTransactionRepository" class="com.junbo.payment.db.repo.sql.PaymentTransactionRepositorySqlImpl">
+        <property name="paymentMapperExtension" ref="paymentMapperExtension"/>
+        <property name="paymentTransactionDao" ref="paymentTransactionDao"/>
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+    </bean>
+
+    <bean id="sqlTrackingUuidRepository" class="com.junbo.payment.db.repo.sql.TrackingUuidRepositorySqlImpl">
+        <property name="idGenerator" ref="oculus48IdGenerator"/>
+        <property name="trackingUuidDao" ref="trackingUuidDao"/>
+        <property name="paymentMapper" ref="com.junbo.payment.db.mapper.PaymentMapperImpl"/>
+    </bean>
+
+    <!-- dual write repositories -->
+    <bean id="creditCardDetailRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.payment.db.repo.CreditCardDetailRepository"/>
+        <property name="sqlRepositoryImpl" ref="sqlCreditCardDetailRepository" />
+    </bean>
+
+    <bean id="paymentEventRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.payment.db.repo.PaymentEventRepository"/>
+        <property name="sqlRepositoryImpl" ref="sqlPaymentEventRepository" />
+    </bean>
+
+    <bean id="paymentInstrumentRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.payment.db.repo.PaymentInstrumentRepository"/>
+        <property name="sqlRepositoryImpl" ref="sqlPaymentInstrumentRepository" />
+    </bean>
+
+    <bean id="paymentPropertyRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.payment.db.repo.PaymentPropertyRepository"/>
+        <property name="sqlRepositoryImpl" ref="sqlPaymentPropertyRepository" />
+    </bean>
+
+    <bean id="paymentTransactionRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.payment.db.repo.PaymentTransactionRepository"/>
+        <property name="sqlRepositoryImpl" ref="sqlPaymentTransactionRepository" />
+    </bean>
+
+    <bean id="trackingUuidRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.payment.db.repo.TrackingUuidRepository"/>
+        <property name="sqlRepositoryImpl" ref="sqlTrackingUuidRepository" />
+    </bean>
+
+    <!-- sql only repositories -->
+    <bean id="domainDataRepository" class="com.junbo.payment.db.repository.DomainDataRepository" abstract="true">
+    </bean>
+
+    <bean id="merchantAccountRepository" class="com.junbo.payment.db.repository.MerchantAccountRepository" parent="domainDataRepository">
         <property name="dao" ref="merchantAccountDao"/>
     </bean>
 
-    <bean id="paymentProviderRepository"
-          class="com.junbo.payment.db.repository.PaymentProviderRepository" parent="domainDataRepository">
+    <bean id="paymentProviderRepository" class="com.junbo.payment.db.repository.PaymentProviderRepository" parent="domainDataRepository">
         <property name="dao" ref="paymentProviderDao"/>
     </bean>
 
-    <bean id="paymentPiTypeRepository"
-          class="com.junbo.payment.db.repository.PITypeRepository" parent="domainDataRepository">
+    <bean id="paymentPiTypeRepository" class="com.junbo.payment.db.repository.PITypeRepository" parent="domainDataRepository">
         <property name="dao" ref="paymentInstrumentTypeDao"/>
     </bean>
 
-    <bean id="paymentCommonMapper" class="com.junbo.payment.db.mapper.CommonMapper" />
-    <bean id="paymentMapperExtension" class="com.junbo.payment.db.mapper.PaymentMapperExtension" />
+    <!-- repository facade -->
+    <bean id="paymentInstrumentRepositoryFacade" class="com.junbo.payment.db.repo.facade.impl.PaymentInstrumentRepositoryFacadeImpl">
+        <property name="paymentInstrumentRepository" ref="paymentInstrumentRepository"/>
+        <property name="creditCardDetailRepository" ref="creditCardDetailRepository"/>
+        <property name="paymentMapperExtension" ref="paymentMapperExtension"/>
+    </bean>
+
+    <bean id="paymentRepositoryFacade" class="com.junbo.payment.db.repo.facade.impl.PaymentRepositoryFacadeImpl">
+        <property name="paymentEventRepository" ref="paymentEventRepository"/>
+        <property name="paymentTransactionRepository" ref="paymentTransactionRepository"/>
+        <property name="paymentPropertyRepository" ref="paymentPropertyRepository"/>
+    </bean>
+
 </beans>
