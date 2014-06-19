@@ -129,7 +129,7 @@ public class IdentityModel {
     public static OculusInput DefaultOculusInput() throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         OculusInput input = new OculusInput();
-        input.setCurrentId(RandomHelper.randomNumeric(2));
+        //input.setCurrentId(RandomHelper.randomNumeric(2));
         input.setFirstName(RandomHelper.randomAlphabetic(10));
         input.setLastName(RandomHelper.randomAlphabetic(10));
         input.setEmail(RandomHelper.randomAlphabetic(10) + "@163.com");
@@ -138,14 +138,14 @@ public class IdentityModel {
                 + ":" + RandomHelper.randomAlphabetic(40));
         input.setGender("male");
         input.setDob(sdf.parse("1980-01-01 00:00:00"));
-        input.setNickName(RandomHelper.randomAlphabetic(10));
+        //input.setNickName(RandomHelper.randomAlphabetic(10));
         input.setTimezone(-8);
         input.setLanguage("en");
         input.setCreatedDate(sdf.parse("2013-02-07 05:30:32"));
         input.setUpdateDate(sdf.parse("2013-11-26 17:35:03"));
-        input.setDevCenterCompany(RandomHelper.randomAlphabetic(15));
-        input.setShareProfile(DefaultShareProfile());
-        input.setOldPasswordHash(false);
+        //input.setDevCenterCompany(RandomHelper.randomAlphabetic(15));
+        //input.setShareProfile(DefaultShareProfile());
+        //input.setOldPasswordHash(false);
         input.setStatus("ACTIVE");
         input.setForceResetPassword(false);
         return input;
