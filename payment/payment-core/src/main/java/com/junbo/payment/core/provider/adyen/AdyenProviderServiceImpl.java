@@ -21,8 +21,8 @@ import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.core.util.PaymentUtil;
-import com.junbo.payment.db.repository.PaymentInstrumentRepository;
-import com.junbo.payment.db.repository.PaymentRepository;
+import com.junbo.payment.db.repo.facade.PaymentInstrumentRepositoryFacade;
+import com.junbo.payment.db.repo.facade.PaymentRepositoryFacade;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentCallbackParams;
@@ -67,9 +67,9 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
     protected PaymentPortType service;
     protected RecurringPortType recurService;
     @Autowired
-    protected PaymentInstrumentRepository paymentInstrumentRepository;
+    protected PaymentInstrumentRepositoryFacade paymentInstrumentRepositoryFacade;
     @Autowired
-    protected PaymentRepository paymentRepository;
+    protected PaymentRepositoryFacade paymentRepositoryFacade;
     @Autowired
     protected CountryServiceFacade countryResource;
     @Autowired
@@ -330,7 +330,7 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
         if(!CommonUtil.isNullOrEmpty(properties.getPspReference())
                 && !CommonUtil.isNullOrEmpty(properties.getAuthResult())
                 && properties.getAuthResult().equalsIgnoreCase(CONFIRMED_STATUS)){
-            paymentRepository.updatePayment(payment.getId(), PaymentUtil.getPaymentStatus(
+            paymentRepositoryFacade.updatePayment(payment.getId(), PaymentUtil.getPaymentStatus(
                     PaymentStatus.SETTLED.toString()), properties.getPspReference());
             payment.setStatus(PaymentStatus.SETTLED.toString());
             payment.setExternalToken(properties.getPspReference());
@@ -362,7 +362,7 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
                     label = "Elv";
                 }
             }
-            paymentInstrumentRepository.updateExternalInfo(piId,
+            paymentInstrumentRepositoryFacade.updateExternalInfo(piId,
                     recurringReference.getRecurringDetailReference(), label, accountNum);
         }
     }

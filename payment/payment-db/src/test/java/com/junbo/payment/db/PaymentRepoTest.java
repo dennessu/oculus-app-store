@@ -1,7 +1,7 @@
 package com.junbo.payment.db;
 
 import com.junbo.common.id.PIType;
-import com.junbo.payment.db.repository.PaymentInstrumentRepository;
+import com.junbo.payment.db.repo.facade.PaymentInstrumentRepositoryFacade;
 import com.junbo.payment.spec.enums.CreditCardType;
 import com.junbo.payment.spec.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +12,7 @@ import java.util.Date;
 
 public class PaymentRepoTest extends BaseTest {
     @Autowired
-    private PaymentInstrumentRepository piRepo;
-
-    private static final Long userId = 1493188608L;
+    private PaymentInstrumentRepositoryFacade piRepo;
 
     @Test
     public void testRepo() {
@@ -26,16 +24,17 @@ public class PaymentRepoTest extends BaseTest {
     }
 
     private PaymentInstrument buildPIRequest(){
+        Long userId = generateShardId();
         PaymentInstrument pi = new PaymentInstrument();
         pi.setUserId(userId);
         pi.setType(PIType.CREDITCARD.getId());
         pi.setAccountName("David");
         pi.setAccountNum("1111");
         pi.setIsActive(true);
-        pi.setBillingAddressId(123L);
+        pi.setBillingAddressId(generateShardId(userId));
         pi.setPhoneNumber(12345676L);
         pi.setTypeSpecificDetails(new TypeSpecificDetails() {
-            {
+            {;
                 setExpireDate("2025-10-12");
                 setCreditCardType(CreditCardType.VISA.toString());
                 setLastBillingDate(new Date());

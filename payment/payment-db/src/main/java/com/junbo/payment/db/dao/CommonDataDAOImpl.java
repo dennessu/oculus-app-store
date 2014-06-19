@@ -71,8 +71,8 @@ public class CommonDataDAOImpl<T extends GenericEntity, ID extends Serializable>
         return newt;
     }
 
-    public void delete(T entity) {
-        currentSession(entity.getShardMasterId()).delete(entity);
+    public void delete(ID id) {
+        throw new UnsupportedOperationException("Delete action not support on payment class: " + persistentClass.getCanonicalName());
     }
 
     public Class<T> getPersistentClass() {

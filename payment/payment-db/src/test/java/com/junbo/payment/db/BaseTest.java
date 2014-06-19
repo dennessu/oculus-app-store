@@ -20,22 +20,21 @@ import java.util.UUID;
 @TestExecutionListeners(TransactionalTestExecutionListener.class)
 @Transactional("transactionManager")
 public abstract class BaseTest extends AbstractTestNGSpringContextTests {
-    protected static final Long userId = 1493188608L;
     @Autowired
     @Qualifier("oculus48IdGenerator")
     protected IdGenerator idGenerator;
     @Autowired
     protected PlatformTransactionManager transactionManager;
 
-    protected long generateShardId(long masterId) {
+    protected long generateShardId() {
+        return idGenerator.nextIdByShardId(0);
+    }
+
+    protected long generateShardId(Long masterId) {
         return idGenerator.nextId(masterId);
     }
 
     protected UUID generateUUID() {
         return UUID.randomUUID();
-    }
-
-    protected long generateLong() {
-        return System.currentTimeMillis();
     }
 }

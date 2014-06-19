@@ -5,11 +5,14 @@ import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
 import com.junbo.payment.core.provider.ProviderRoutingService;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.TypeSpecificDetails;
+import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,9 +24,9 @@ import java.util.concurrent.ExecutionException;
 
 @ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
 @TransactionConfiguration(defaultRollback = false)
+@TestExecutionListeners(TransactionalTestExecutionListener.class)
 @Transactional("transactionManager")
 public abstract class BaseTest extends AbstractTestNGSpringContextTests {
-    public final Long userId = 1493188608L;
     @Autowired
     protected PlatformTransactionManager transactionManager;
     @Autowired
@@ -35,13 +38,17 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
         this.paymentService = paymentService;
     }
 
+    @Autowired
+    @Qualifier("oculus48IdGenerator")
+    protected IdGenerator idGenerator;
+
     protected PaymentInstrumentService piService;
     protected PaymentTransactionService paymentService;
     @Autowired
     protected ProviderRoutingService providerRoutingService;
 
-    protected long generateLong() {
-        return System.currentTimeMillis();
+    protected long generateUserId() {
+        return idGenerator.nextIdByShardId(0);
     }
 
     protected UUID generateUUID() {
@@ -73,7 +80,7 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
 
     public PaymentInstrument buildBasePIRequest(){
         PaymentInstrument request = new PaymentInstrument();
-        request.setUserId(userId);
+        request.setUserId(generateUserId());
         request.setTrackingUuid(generateUUID());
         request.setAccountName("ut");
         request.setIsValidated(true);

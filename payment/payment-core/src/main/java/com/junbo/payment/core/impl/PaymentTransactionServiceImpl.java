@@ -178,7 +178,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
                 api, PaymentStatus.SETTLE_CREATED, false);
         PaymentInstrument pi = getPaymentInstrument(existedTransaction);
         final PaymentProviderService provider = getPaymentProviderService(pi);
-        PaymentCallbackParams properties = paymentRepository.getPaymentProperties(paymentId);
+        PaymentCallbackParams properties = paymentRepositoryFacade.getPaymentProperties(paymentId);
         request.setPaymentCallbackParams(properties);
         return provider.confirm(existedTransaction.getExternalToken(), request).
                 recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
@@ -338,10 +338,10 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
 
     @Override
     public Promise<PaymentTransaction> getProviderTransaction(Long paymentId) {
-        PaymentTransaction payment = paymentRepository.getByPaymentId(paymentId);
+        PaymentTransaction payment = paymentRepositoryFacade.getByPaymentId(paymentId);
         String externalToken = payment.getExternalToken();
         if(CommonUtil.isNullOrEmpty(externalToken)){
-            PaymentCallbackParams properties = paymentRepository.getPaymentProperties(paymentId);
+            PaymentCallbackParams properties = paymentRepositoryFacade.getPaymentProperties(paymentId);
             if(properties != null){
                 payment.setPaymentCallbackParams(properties);
             }
@@ -367,14 +367,14 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
             LOGGER.error("the payment id is missing for the event.");
             throw AppClientExceptions.INSTANCE.invalidPaymentId("null paymentId").exception();
         }
-        PaymentTransaction payment = paymentRepository.getByPaymentId(event.getPaymentId());
+        PaymentTransaction payment = paymentRepositoryFacade.getByPaymentId(event.getPaymentId());
         if(payment == null){
             throw AppClientExceptions.INSTANCE.invalidPaymentId(event.getPaymentId().toString()).exception();
         }
         LOGGER.info("report event for payment:" + event.getPaymentId());
-        paymentRepository.updatePayment(event.getPaymentId()
+        paymentRepositoryFacade.updatePayment(event.getPaymentId()
                     , PaymentUtil.getPaymentStatus(event.getStatus()), null);
-        paymentRepository.savePaymentEvent(event.getPaymentId(), Arrays.asList(event));
+        paymentRepositoryFacade.savePaymentEvent(event.getPaymentId(), Arrays.asList(event));
         payment.setPaymentEvents(Arrays.asList(event));
         if(paymentCallbackParams != null){
             PaymentInstrument pi = getPaymentInstrument(payment);

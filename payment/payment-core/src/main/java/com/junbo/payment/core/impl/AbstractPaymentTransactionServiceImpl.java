@@ -20,8 +20,8 @@ import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.spec.model.TrackingUuid;
 import com.junbo.payment.db.repository.MerchantAccountRepository;
 import com.junbo.payment.db.repository.PaymentProviderRepository;
-import com.junbo.payment.db.repository.PaymentRepository;
-import com.junbo.payment.db.repository.TrackingUuidRepository;
+import com.junbo.payment.db.repo.facade.PaymentRepositoryFacade;
+import com.junbo.payment.db.repo.TrackingUuidRepository;
 import com.junbo.payment.spec.enums.PaymentAPI;
 import com.junbo.payment.spec.enums.PaymentEventType;
 import com.junbo.payment.spec.enums.PaymentStatus;
@@ -60,7 +60,7 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
     }
 
     @Autowired
-    protected PaymentRepository paymentRepository;
+    protected PaymentRepositoryFacade paymentRepositoryFacade;
     @Autowired
     protected MerchantAccountRepository merchantAccountRepository;
     @Autowired
@@ -111,8 +111,8 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
         template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
         return template.execute(new TransactionCallback<PaymentTransaction>() {
             public PaymentTransaction doInTransaction(TransactionStatus txnStatus) {
-                TrackingUuid trackingUuid = trackingUuidRepository.getByTrackUuid(
-                        request.getUserId(), request.getTrackingUuid());
+                TrackingUuid trackingUuid = trackingUuidRepository.getByTrackingUuid(
+                        request.getUserId(), request.getTrackingUuid()).get();
                 if(trackingUuid != null && trackingUuid.getApi().equals(api)){
                     return CommonUtil.parseJson(trackingUuid.getResponse(), PaymentTransaction.class);
                 }
@@ -132,7 +132,7 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
         trackingUuid.setTrackingUuid(request.getTrackingUuid());
         trackingUuid.setUserId(request.getUserId());
         trackingUuid.setResponse(CommonUtil.toJson(request, null));
-        trackingUuidRepository.saveTrackingUuid(trackingUuid);
+        trackingUuidRepository.create(trackingUuid).get();
     }
 
     protected PaymentInstrument getPaymentInstrument(PaymentTransaction request){
@@ -174,7 +174,7 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
         template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
         return template.execute(new TransactionCallback<PaymentTransaction>() {
             public PaymentTransaction doInTransaction(TransactionStatus txnStatus) {
-                PaymentTransaction existedTransaction = paymentRepository.getByPaymentId(paymentId);
+                PaymentTransaction existedTransaction = paymentRepositoryFacade.getByPaymentId(paymentId);
                 if(existedTransaction == null){
                     LOGGER.error("the payment id is invalid for the event.");
                     throw AppClientExceptions.INSTANCE.invalidPaymentId(paymentId.toString()).exception();
@@ -185,11 +185,11 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
     }
 
     protected PaymentTransaction getPaymentAndEvents(Long paymentId) {
-        final PaymentTransaction result = paymentRepository.getByPaymentId(paymentId);
+        final PaymentTransaction result = paymentRepositoryFacade.getByPaymentId(paymentId);
         if(result == null){
             throw AppClientExceptions.INSTANCE.resourceNotFound("payment_transaction").exception();
         }
-        final List<PaymentEvent> events = paymentRepository.getPaymentEventsByPaymentId(paymentId);
+        final List<PaymentEvent> events = paymentRepositoryFacade.getPaymentEventsByPaymentId(paymentId);
         result.setPaymentEvents(events);
         return result;
     }
@@ -199,7 +199,7 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
         template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
         return template.execute(new TransactionCallback<PaymentTransaction>() {
             public PaymentTransaction doInTransaction(TransactionStatus txnStatus) {
-                paymentRepository.save(request);
+                paymentRepositoryFacade.save(request);
                 return request;
             }
         });
@@ -212,10 +212,10 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
         return template.execute(new TransactionCallback<List<PaymentEvent>>() {
             public List<PaymentEvent> doInTransaction(TransactionStatus txnStatus) {
                 if(status != null){
-                    paymentRepository.updatePayment(payment.getId()
+                    paymentRepositoryFacade.updatePayment(payment.getId()
                             , status, payment.getExternalToken());
                 }
-                paymentRepository.savePaymentEvent(payment.getId(), events);
+                paymentRepositoryFacade.savePaymentEvent(payment.getId(), events);
                 if(saveUuid){
                     saveTrackingUuid(payment, api);
                 }

@@ -31,7 +31,7 @@ public class AdyenProviderServiceTest extends BaseTest {
         PaymentInstrument request = addPI(piRequest);
         PaymentTransaction payment = new PaymentTransaction();
         payment.setBillingRefId("123");
-        payment.setUserId(userId);
+        payment.setUserId(piRequest.getUserId());
         payment.setPaymentInstrumentId(request.getId());
         payment.setTrackingUuid(generateUUID());
         payment.setChargeInfo(new ChargeInfo() {
@@ -74,7 +74,7 @@ public class AdyenProviderServiceTest extends BaseTest {
         PaymentInstrument request = addPI(piRequest);
         PaymentTransaction payment = new PaymentTransaction();
         payment.setBillingRefId("123");
-        payment.setUserId(userId);
+        payment.setUserId(piRequest.getUserId());
         payment.setPaymentInstrumentId(request.getId());
         payment.setTrackingUuid(generateUUID());
         payment.setChargeInfo(new ChargeInfo() {
@@ -120,7 +120,7 @@ public class AdyenProviderServiceTest extends BaseTest {
         PaymentInstrument request = addPI(piRequest);
         PaymentTransaction payment = new PaymentTransaction();
         payment.setBillingRefId("123");
-        payment.setUserId(userId);
+        payment.setUserId(piRequest.getUserId());
         payment.setPaymentInstrumentId(request.getId());
         payment.setTrackingUuid(generateUUID());
         payment.setChargeInfo(new ChargeInfo() {

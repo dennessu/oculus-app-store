@@ -11,10 +11,10 @@ import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.core.PaymentCallbackService;
 import com.junbo.payment.core.PaymentTransactionService;
-import com.junbo.payment.db.repository.PaymentRepository;
+import com.junbo.payment.db.repo.facade.PaymentRepositoryFacade;
 import com.junbo.payment.spec.enums.PaymentEventType;
-import com.junbo.payment.spec.model.PaymentEvent;
 import com.junbo.payment.spec.model.PaymentCallbackParams;
+import com.junbo.payment.spec.model.PaymentEvent;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,15 +29,15 @@ public class PaymentCallbackServiceImpl implements PaymentCallbackService{
     protected static final String SUCCESS_EVENT_RESPONSE = "{\"result\": \"OK\"}";
     private PaymentTransactionService paymentTransactionService;
     @Autowired
-    private PaymentRepository paymentRepository;
+    private PaymentRepositoryFacade paymentRepositoryFacade;
     @Override
     public Promise<Void> addPaymentProperties(Long paymentId, PaymentCallbackParams properties) {
-        PaymentTransaction existedTransaction = paymentRepository.getByPaymentId(paymentId);
+        PaymentTransaction existedTransaction = paymentRepositoryFacade.getByPaymentId(paymentId);
         if(existedTransaction == null){
             LOGGER.error("the payment id is invalid.");
             throw AppClientExceptions.INSTANCE.invalidPaymentId(paymentId.toString()).exception();
         }
-        paymentRepository.addPaymentProperties(paymentId, properties);
+        paymentRepositoryFacade.addPaymentProperties(paymentId, properties);
         //report a payment notify event to notify corresponding partner
         PaymentEvent event = new PaymentEvent();
         event.setPaymentId(paymentId);
