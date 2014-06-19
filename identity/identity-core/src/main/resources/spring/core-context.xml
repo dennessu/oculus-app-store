@@ -211,7 +211,7 @@
                 <value>userMemberships</value>
                 <value>users</value>
                 <value>rev</value>
-                <value>ownerOrganizationId</value>
+                <value>organizationId</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
             </list>
@@ -222,7 +222,7 @@
                 <value>name</value>
                 <value>active</value>
                 <value>futureExpansion</value>
-                <value>ownerOrganizationId</value>
+                <value>organizationId</value>
             </list>
         </property>
 
