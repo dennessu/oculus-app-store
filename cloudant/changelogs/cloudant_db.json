@@ -450,6 +450,45 @@
                 "map": "function(doc) {  emit(doc.balanceId, doc._id)}"
             }
         }
+    },
+    "creditcard_detail": {},
+    "payment_event": {
+      "views": {
+          "by_payment_id": {
+              "map": "function(doc) {  emit(doc.paymentId, doc._id)}"
+          }
+      }
+    },
+    "payment_instrument": {
+        "views": {
+            "by_user_id": {
+                "map": "function(doc) {  emit(doc.userId, doc._id)}"
+            },
+            "by_user_id_type": {
+                "map": "function(doc) {  emit(doc.userId  + ':' + doc.type, doc._id)}"
+            }
+        }
+    },
+    "payment_property": {
+      "views": {
+          "by_payment_id": {
+              "map": "function(doc) {  emit(doc.paymentId, doc._id)}"
+          }
+      }
+    },
+    "payment_transaction": {
+      "views": {
+          "by_balance_id": {
+              "map": "function(doc) {  emit(doc.balanceId, doc._id)}"
+          }
+      }
+    },
+    "payment_tracking_uuid": {
+      "views": {
+          "by_tracking_uuid": {
+              "map": "function(doc) {  emit(doc.trackingUuid, doc._id)}"
+          }
+      }
     }
   }, 
   "cloudant_search": {

@@ -146,35 +146,66 @@
         <property name="paymentMapper" ref="com.junbo.payment.db.mapper.PaymentMapperImpl"/>
     </bean>
 
+    <!-- cloudant repositories -->
+    <bean id="cloudantCreditCardDetailRepository" class="com.junbo.payment.db.repo.cloudant.CreditCardDetailRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="creditcard_detail"/>
+    </bean>
+
+    <bean id="cloudantPaymentEventRepository" class="com.junbo.payment.db.repo.cloudant.PaymentEventRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="payment_event"/>
+    </bean>
+
+    <bean id="cloudantPaymentInstrumentRepository" class="com.junbo.payment.db.repo.cloudant.PaymentInstrumentRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="payment_instrument"/>
+    </bean>
+
+    <bean id="cloudantPaymentPropertyRepository" class="com.junbo.payment.db.repo.cloudant.PaymentPropertyRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="payment_property"/>
+    </bean>
+
+    <bean id="cloudantPaymentTransactionRepository" class="com.junbo.payment.db.repo.cloudant.PaymentTransactionRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="payment_transaction"/>
+    </bean>
+
+    <bean id="cloudantTrackingUuidRepository" class="com.junbo.payment.db.repo.cloudant.TrackingUuidRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="payment_tracking_uuid" />
+    </bean>
+
     <!-- dual write repositories -->
     <bean id="creditCardDetailRepository" parent="baseRepository">
         <property name="repositoryInterface" value="com.junbo.payment.db.repo.CreditCardDetailRepository"/>
         <property name="sqlRepositoryImpl" ref="sqlCreditCardDetailRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantCreditCardDetailRepository" />
     </bean>
 
     <bean id="paymentEventRepository" parent="baseRepository">
         <property name="repositoryInterface" value="com.junbo.payment.db.repo.PaymentEventRepository"/>
         <property name="sqlRepositoryImpl" ref="sqlPaymentEventRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantPaymentEventRepository" />
     </bean>
 
     <bean id="paymentInstrumentRepository" parent="baseRepository">
         <property name="repositoryInterface" value="com.junbo.payment.db.repo.PaymentInstrumentRepository"/>
         <property name="sqlRepositoryImpl" ref="sqlPaymentInstrumentRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantPaymentInstrumentRepository" />
     </bean>
 
     <bean id="paymentPropertyRepository" parent="baseRepository">
         <property name="repositoryInterface" value="com.junbo.payment.db.repo.PaymentPropertyRepository"/>
         <property name="sqlRepositoryImpl" ref="sqlPaymentPropertyRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantPaymentPropertyRepository" />
     </bean>
 
     <bean id="paymentTransactionRepository" parent="baseRepository">
         <property name="repositoryInterface" value="com.junbo.payment.db.repo.PaymentTransactionRepository"/>
         <property name="sqlRepositoryImpl" ref="sqlPaymentTransactionRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantPaymentTransactionRepository" />
     </bean>
 
     <bean id="trackingUuidRepository" parent="baseRepository">
         <property name="repositoryInterface" value="com.junbo.payment.db.repo.TrackingUuidRepository"/>
         <property name="sqlRepositoryImpl" ref="sqlTrackingUuidRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantTrackingUuidRepository" />
     </bean>
 
     <!-- sql only repositories -->
