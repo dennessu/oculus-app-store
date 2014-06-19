@@ -436,13 +436,30 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     private Promise<OculusOutput> migrateOrganization(OculusInput oculusInput, User createdUser) {
-        return saveOrUpdateOrganization(oculusInput, createdUser).then { Organization org ->
-            OculusOutput oculusOutput = new OculusOutput(
-                    userId: createdUser.getId(),
-                    organizationId: org.getId()
-            )
+        // During the migration, remove all the relationship between this user and all his group
+        return deleteAllUserGroup(createdUser).then {
+            return saveOrUpdateOrganization(oculusInput, createdUser).then { Organization org ->
+                OculusOutput oculusOutput = new OculusOutput(
+                        userId: createdUser.getId(),
+                        organizationId: org.getId()
+                )
 
-            return Promise.pure(oculusOutput)
+                return Promise.pure(oculusOutput)
+            }
+        }
+    }
+
+    private Promise<Void> deleteAllUserGroup(User createdUser) {
+        return userGroupRepository.searchByUserId(createdUser.getId(), Integer.MAX_VALUE, 0).then { List<UserGroup> userGroupList ->
+            if (CollectionUtils.isEmpty(userGroupList)) {
+                return Promise.pure(null)
+            }
+
+            return Promise.each(userGroupList) { UserGroup userGroup ->
+                return userGroupRepository.delete(userGroup.getId()).then {
+                    return Promise.pure(null)
+                }
+            }
         }
     }
 
