@@ -84,7 +84,7 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
         }
 
         return authorize().then {
-            return validator.validateDecrypt(null, rawMessage).then {
+            return validator.validateEncrypt(null, rawMessage).then {
                 return symmetricEncryptUserMessageByMasterKey(rawMessage.value).then { String encryptMessage ->
                     CryptoMessage result = new CryptoMessage()
                     result.value = encryptMessage
