@@ -397,6 +397,59 @@
           "map": "function(doc) { emit(doc.userId + ':' + doc.tosId, doc._id)}"
         }
       }
+    },
+    "balance_event": {},
+    "balance_item_event": {},
+    "balance_item": {
+        "views": {
+            "by_balance_id": {
+                "map": "function(doc) {  emit(doc.balanceId, doc._id)}"
+            }
+        }
+    },
+    "balance": {
+        "views": {
+            "by_balance_status": {
+                "map": "function(doc) {  emit(doc.status, doc._id)}"
+            },
+            "by_tracking_uuid": {
+                "map": "function(doc) {  emit(doc.trackingUuid, doc._id)}"
+            },
+            "by_original_balance_id": {
+                "map": "function(doc) {  emit(doc.originalBalanceId, doc._id)}"
+            }
+        }
+    },
+    "discount_item": {
+        "views": {
+            "by_balance_item_id": {
+                "map": "function(doc) {  emit(doc.balanceItemId, doc._id)}"
+            }
+        }
+    },
+    "order_balance_link": {
+        "views": {
+            "by_balance_id": {
+                "map": "function(doc) {  emit(doc.balanceId, doc._id)}"
+            },
+            "by_order_id": {
+                "map": "function(doc) {  emit(doc.orderId, doc._id)}"
+            }
+        }
+    },
+    "tax_item": {
+        "views": {
+            "by_balance_item_id": {
+                "map": "function(doc) {  emit(doc.balanceItemId, doc._id)}"
+            }
+        }
+    },
+    "billing_transaction": {
+        "views": {
+            "by_balance_id": {
+                "map": "function(doc) {  emit(doc.balanceId, doc._id)}"
+            }
+        }
     }
   }, 
   "cloudant_search": {

@@ -165,46 +165,86 @@
         <property name="transactionEntityDao" ref="transactionEntityDao"/>
     </bean>
 
+    <!-- cloudant repositories -->
+    <bean id="cloudantBalanceEventRepository" class="com.junbo.billing.db.repo.cloudant.BalanceEventRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="balance_event"/>
+    </bean>
+
+    <bean id="cloudantBalanceItemEventRepository" class="com.junbo.billing.db.repo.cloudant.BalanceItemEventRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="balance_item_event"/>
+    </bean>
+
+    <bean id="cloudantBalanceItemRepository" class="com.junbo.billing.db.repo.cloudant.BalanceItemRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="balance_item"/>
+    </bean>
+
+    <bean id="cloudantBalanceRepository" class="com.junbo.billing.db.repo.cloudant.BalanceRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="balance"/>
+    </bean>
+
+    <bean id="cloudantDiscountItemRepository" class="com.junbo.billing.db.repo.cloudant.DiscountItemRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="discount_item"/>
+    </bean>
+
+    <bean id="cloudantOrderBalanceLinkRepository" class="com.junbo.billing.db.repo.cloudant.OrderBalanceLinkRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="order_balance_link"/>
+    </bean>
+
+    <bean id="cloudantTaxItemRepository" class="com.junbo.billing.db.repo.cloudant.TaxItemRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="tax_item"/>
+    </bean>
+
+    <bean id="cloudantTransactionRepository" class="com.junbo.billing.db.repo.cloudant.TransactionRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="billing_transaction"/>
+    </bean>
 
     <!-- repositories -->
     <bean id="balanceRepository" parent="baseRepository">
         <property name="repositoryInterface" value="com.junbo.billing.db.repo.BalanceRepository"/>
         <property name="sqlRepositoryImpl" ref="sqlBalanceRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantBalanceRepository" />
     </bean>
 
     <bean id="balanceItemRepository" parent="baseRepository">
         <property name="repositoryInterface" value="com.junbo.billing.db.repo.BalanceItemRepository"/>
         <property name="sqlRepositoryImpl" ref="sqlBalanceItemRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantBalanceItemRepository" />
     </bean>
 
     <bean id="balanceEventRepository" parent="baseRepository">
         <property name="repositoryInterface" value="com.junbo.billing.db.repo.BalanceEventRepository"/>
         <property name="sqlRepositoryImpl" ref="sqlBalanceEventRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantBalanceEventRepository" />
     </bean>
 
     <bean id="balanceItemEventRepository" parent="baseRepository">
         <property name="repositoryInterface" value="com.junbo.billing.db.repo.BalanceItemEventRepository"/>
         <property name="sqlRepositoryImpl" ref="sqlBalanceItemEventRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantBalanceItemEventRepository" />
     </bean>
 
     <bean id="discountItemRepository" parent="baseRepository">
         <property name="repositoryInterface" value="com.junbo.billing.db.repo.DiscountItemRepository"/>
         <property name="sqlRepositoryImpl" ref="sqlDiscountItemRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantDiscountItemRepository" />
     </bean>
 
     <bean id="OrderBalanceLinkRepository" parent="baseRepository">
         <property name="repositoryInterface" value="com.junbo.billing.db.repo.OrderBalanceLinkRepository"/>
         <property name="sqlRepositoryImpl" ref="sqlOrderBalanceLinkRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantOrderBalanceLinkRepository" />
     </bean>
 
     <bean id="taxItemRepository" parent="baseRepository">
         <property name="repositoryInterface" value="com.junbo.billing.db.repo.TaxItemRepository"/>
         <property name="sqlRepositoryImpl" ref="sqlTaxItemRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantTaxItemRepository" />
     </bean>
 
     <bean id="billingTransactionRepository" parent="baseRepository">
         <property name="repositoryInterface" value="com.junbo.billing.db.repo.TransactionRepository"/>
         <property name="sqlRepositoryImpl" ref="sqlBillingTransactionRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantTransactionRepository" />
     </bean>
 
     <!-- repository facade -->
