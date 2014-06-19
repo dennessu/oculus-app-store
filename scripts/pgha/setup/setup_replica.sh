@@ -15,7 +15,7 @@ echo "copy backup file from remote master"
 rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_BACKUP_PATH/* $REPLICA_DATA_PATH
 
 echo "configure recovery.conf"
-cat > $SLAVE_DATA_PATH/recovery.conf <<EOF
+cat > $REPLICA_DATA_PATH/recovery.conf <<EOF
 recovery_target_timeline = 'latest'
 restore_command = 'cp $REPLICA_ARCHIVE_PATH/%f %p'
 standby_mode = 'on'
