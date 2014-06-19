@@ -55,8 +55,12 @@ class OrganizationValidatorImpl implements OrganizationValidator {
             throw new IllegalArgumentException('options is null')
         }
 
-        if (options.ownerId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('owner').exception()
+        if (options.ownerId == null && StringUtils.isEmpty(options.name)) {
+            throw AppErrors.INSTANCE.parameterRequired('owner or name').exception()
+        }
+
+        if (options.ownerId != null && !StringUtils.isEmpty(options.name)) {
+            throw AppErrors.INSTANCE.parameterInvalid('owner and name can\'t be exist at the same time').exception()
         }
 
         return Promise.pure(null)
