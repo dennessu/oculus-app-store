@@ -406,7 +406,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         newUser = userRepository.update(newUser).get()
         Assert.assertEquals(newUser.getPreferredTimezone(), newPreferredTimeZone)
 
-        User findUser = userRepository.getUserByCanonicalUsername(newUser.getUsername()).get()
+        User findUser = userRepository.searchUserByCanonicalUsername(newUser.getUsername()).get()
         Assert.assertNotNull(findUser)
     }
 

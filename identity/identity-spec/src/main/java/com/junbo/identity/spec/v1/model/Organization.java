@@ -62,6 +62,10 @@ public class Organization extends PropertyAssignedAwareResourceMeta<Organization
     @JsonIgnore
     private String canonicalName;
 
+    // This is just for migration only, please don't use them
+    @JsonIgnore
+    private Long migratedCompanyId;
+
     public OrganizationId getId() {
         return id;
     }
@@ -187,5 +191,13 @@ public class Organization extends PropertyAssignedAwareResourceMeta<Organization
 
     public void setCanonicalName(String canonicalName) {
         this.canonicalName = canonicalName;
+    }
+
+    public Long getMigratedCompanyId() {
+        return migratedCompanyId;
+    }
+
+    public void setMigratedCompanyId(Long migratedCompanyId) {
+        this.migratedCompanyId = migratedCompanyId;
     }
 }

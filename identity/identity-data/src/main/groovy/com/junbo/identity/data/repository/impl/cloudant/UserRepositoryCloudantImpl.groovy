@@ -44,8 +44,15 @@ class UserRepositoryCloudantImpl extends CloudantClient<User> implements UserRep
     }
 
     @Override
-    Promise<User> getUserByCanonicalUsername(String canonicalUsername) {
+    Promise<User> searchUserByCanonicalUsername(String canonicalUsername) {
         return super.queryView('by_canonical_username', canonicalUsername).then { List<User> list ->
+            return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
+        }
+    }
+
+    @Override
+    Promise<User> searchUserByMigrateId(Long migratedUserId) {
+        return super.queryView('by_migrate_user_id', migratedUserId.toString()).then { List<User> list ->
             return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
         }
     }

@@ -162,6 +162,10 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> {
     @JsonIgnore
     private String canonicalUsername;
 
+    // This field is just for migration only, please don't use it in any API
+    @JsonIgnore
+    private Long migratedUserId;
+
     public UserId getId() {
         return id;
     }
@@ -503,5 +507,13 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> {
     public void setProfile(UserProfile profile) {
         this.profile = profile;
         support.setPropertyAssigned("profile");
+    }
+
+    public Long getMigratedUserId() {
+        return migratedUserId;
+    }
+
+    public void setMigratedUserId(Long migratedUserId) {
+        this.migratedUserId = migratedUserId;
     }
 }

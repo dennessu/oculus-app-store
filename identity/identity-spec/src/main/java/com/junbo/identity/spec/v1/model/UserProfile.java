@@ -5,7 +5,6 @@
  */
 package com.junbo.identity.spec.v1.model;
 
-import com.junbo.common.model.Link;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
@@ -21,8 +20,8 @@ public class UserProfile {
     @ApiModelProperty(position = 3, required = false, value = "The url of the user resource.")
     private String url;
 
-    @ApiModelProperty(position = 4, required = false, value = "The avatar link of the user resource.")
-    private Link avatar;
+    @ApiModelProperty(position = 4, required = false, value = "The avatar url of the user resource.")
+    private UserAvatar avatar;
 
     public String getHeadline() {
         return headline;
@@ -48,11 +47,11 @@ public class UserProfile {
         this.url = url;
     }
 
-    public Link getAvatar() {
+    public UserAvatar getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(Link avatar) {
+    public void setAvatar(UserAvatar avatar) {
         this.avatar = avatar;
     }
 }

@@ -1,7 +1,9 @@
 package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
+import com.junbo.common.id.EncryptUserPersonalInfoId
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
+import com.junbo.common.id.UserPersonalInfoIdToUserIdLinkId
 import com.junbo.crypto.spec.model.CryptoMessage
 import com.junbo.crypto.spec.resource.CryptoResource
 import com.junbo.identity.common.util.JsonHelper
@@ -190,7 +192,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
 
         return cryptoResource.encrypt(cryptoMessage).then { CryptoMessage messageValue ->
 
-            return encryptUserPersonalInfoRepository.searchByUserPersonalInfoId((UserPersonalInfoId)model.id).then {
+            return encryptUserPersonalInfoRepository.get(new EncryptUserPersonalInfoId(model.getId().value)).then {
                 EncryptUserPersonalInfo info ->
 
                     PiiHash piiHash = getPiiHash(model.type)
@@ -205,15 +207,18 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     }
 
     @Override
-    Promise<UserPersonalInfo> get(UserPersonalInfoId id) {
-        return encryptUserPersonalInfoRepository.searchByUserPersonalInfoId(id).then {
+    Promise<UserPersonalInfo> get(UserPersonalInfoId personalInfoId) {
+        if (personalInfoId == null || personalInfoId.value == null) {
+            return Promise.pure(null)
+        }
+        return encryptUserPersonalInfoRepository.get(new EncryptUserPersonalInfoId(personalInfoId.value)).then {
             EncryptUserPersonalInfo encryptUserPersonalInfo ->
 
                 if (encryptUserPersonalInfo == null) {
                     return Promise.pure(null)
                 }
 
-                return userIdLinkRepository.searchByUserPersonalInfoId(id).then { UserPersonalInfoIdToUserIdLink link ->
+                return userIdLinkRepository.get(new UserPersonalInfoIdToUserIdLinkId(personalInfoId.value.toString())).then { UserPersonalInfoIdToUserIdLink link ->
                     CryptoMessage cryptoMessage = new CryptoMessage(
                             value: encryptUserPersonalInfo.encryptUserPersonalInfo
                     )

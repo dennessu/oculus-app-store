@@ -6,8 +6,6 @@ import com.junbo.authorization.RightsScope
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
-import com.junbo.crypto.spec.model.UserCryptoKey
-import com.junbo.crypto.spec.resource.UserCryptoResource
 import com.junbo.identity.auth.UserAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserFilter
 import com.junbo.identity.core.service.normalize.NormalizeService
@@ -17,14 +15,12 @@ import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserGroup
-import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
 import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -199,7 +195,7 @@ class UserResourceImpl implements UserResource {
 
             if (listOptions.username != null) {
                 String canonicalUsername = normalizeService.normalize(listOptions.username)
-                return userRepository.getUserByCanonicalUsername(canonicalUsername).then { User user ->
+                return userRepository.searchUserByCanonicalUsername(canonicalUsername).then { User user ->
                     if (user == null) {
                         return Promise.pure(resultList)
                     }

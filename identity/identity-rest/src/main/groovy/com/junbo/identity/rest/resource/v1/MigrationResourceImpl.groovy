@@ -15,6 +15,7 @@ import com.junbo.common.id.util.IdUtil
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Link
 import com.junbo.common.model.Results
+import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.common.util.ValidatorUtil
 import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
@@ -101,19 +102,7 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     Promise<Void> createOrUpdateMigrateUser(OculusInput oculusInput) {
-        User user = new User(
-                username: oculusInput.username,
-                canonicalUsername: normalizeService.normalize(oculusInput.username),
-                preferredLocale: new LocaleId(oculusInput.language),
-                preferredTimezone: timeZoneMap.get(oculusInput.timezone),
-                status: getMappedUserStatus(oculusInput),
-                isAnonymous: StringUtils.isEmpty(oculusInput.username),
-                profile: getMappedUserProfile(oculusInput),
-                createdTime: oculusInput.createdDate,
-                updatedTime: oculusInput.updateDate
-        )
-
-        return saveOrUpdateUser(user).then { User createdUser ->
+        return saveOrUpdateUser(oculusInput).then { User createdUser ->
             // Create user name
             UserName userName = new UserName(
                 givenName: oculusInput.firstName,
@@ -240,20 +229,41 @@ class MigrationResourceImpl implements MigrationResource {
         }
     }
 
-    Promise<User> saveOrUpdateUser(User user) {
-        return userRepository.getUserByCanonicalUsername(normalizeService.normalize(user.username)).then { User existing ->
+    Promise<User> saveOrUpdateUser(OculusInput oculusInput) {
+        User user = new User(
+                username: oculusInput.username,
+                canonicalUsername: normalizeService.normalize(oculusInput.username),
+                preferredLocale: new LocaleId(oculusInput.language),
+                preferredTimezone: timeZoneMap.get(oculusInput.timezone),
+                status: getMappedUserStatus(oculusInput),
+                isAnonymous: StringUtils.isEmpty(oculusInput.username),
+                profile: getMappedUserProfile(oculusInput),
+                migratedUserId: oculusInput.currentId,
+                createdTime: oculusInput.createdDate,
+                updatedTime: oculusInput.updateDate
+        )
+
+        return userRepository.searchUserByMigrateId(oculusInput.currentId).then { User existing ->
             if (existing == null) {
                 return userRepository.create(user)
             } else {
-                user.id = (UserId)existing.id
-                user.rev = existing.rev
-                return userRepository.update(user)
+                existing.username = user.username
+                existing.canonicalUsername = user.canonicalUsername
+                existing.preferredLocale = user.preferredLocale
+                existing.preferredTimezone = user.preferredTimezone
+                existing.status = user.status
+                existing.isAnonymous = user.isAnonymous
+                existing.profile = user.profile
+                existing.migratedUserId = user.migratedUserId
+                existing.createdTime = user.createdTime
+                existing.updatedTime = user.updatedTime
+                return userRepository.update(existing)
             }
         }
     }
 
     Promise<User> checkEmailValid(OculusInput oculusInput) {
-        return userRepository.getUserByCanonicalUsername(normalizeService.normalize(oculusInput.username)).then { User existing ->
+        return userRepository.searchUserByMigrateId(oculusInput.currentId).then { User existing ->
             return userPersonalInfoRepository.searchByEmail(oculusInput.email.toLowerCase(java.util.Locale.ENGLISH),
                     Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> emails ->
                 if (CollectionUtils.isEmpty(emails)) {
@@ -273,6 +283,12 @@ class MigrationResourceImpl implements MigrationResource {
         }
     }
 
+    // The logic here should be:
+    // 1.   search organization by migratedCompanyId
+    //      i.  if organization is null, this organization is valid, create organization with this name;
+    //      ii. if organization isn't null, check the organization name is changed or not
+    //              a.  If the organization name isn't changed, update organization;
+    //              b.  If the organization name is changed, check the organization name isn't used, then update organization
     Promise<Void> checkOrganizationValid(OculusInput oculusInput, User user) {
         if (oculusInput.company == null) {
             throw new IllegalArgumentException('company is null')
@@ -282,11 +298,35 @@ class MigrationResourceImpl implements MigrationResource {
             throw new IllegalArgumentException('company.name is null')
         }
 
+        if (oculusInput.company.companyId == null) {
+            throw new IllegalArgumentException('company.companyId is null')
+        }
+
         checkCompanyType(oculusInput)
+
+        return organizationRepository.searchByMigrateCompanyId(oculusInput.company.companyId).then { Organization existingOrg ->
+            if (existingOrg == null || existingOrg.canonicalName == normalizeService.normalize(oculusInput.company.name)) {
+                return Promise.pure(null)
+            }
+
+            return organizationRepository.searchByCanonicalName(normalizeService.normalize(oculusInput.company.name)).then { Organization newOrg ->
+                if (newOrg == null) {
+                    return Promise.pure(null)
+                }
+
+                throw AppErrors.INSTANCE.fieldInvalidException('name', 'company.name is already used by others').exception()
+            }
+        }
 
         return Promise.pure(null)
     }
 
+    // The logic here should be:
+    // 1.   search user by migratedUserId
+    //      i.  if user is null, this username is valid, create user with this username;
+    //      ii. if user isn't null, check the username is changed or not
+    //              a.  If the username isn't changed, update user;
+    //              b.  If the username is changed, check this username isn't used, then update user.
     Promise<Void> checkUserValid(OculusInput oculusInput) {
         if (StringUtils.isEmpty(oculusInput.status)) {
             throw new IllegalArgumentException('user Status error')
@@ -305,7 +345,24 @@ class MigrationResourceImpl implements MigrationResource {
             }
         }
 
-        return Promise.pure(null)
+        if (oculusInput.currentId == null) {
+            throw AppErrors.INSTANCE.fieldInvalidException('currentId', 'Migration must have user\'s currentId').exception()
+        }
+
+        return userRepository.searchUserByMigrateId(oculusInput.currentId).then { User existingUser ->
+            if (existingUser != null ||
+               (existingUser != null && existingUser.canonicalUsername != normalizeService.normalize(oculusInput.username))) {
+                return Promise.pure(null)
+            }
+
+            return userRepository.searchUserByCanonicalUsername(normalizeService.normalize(oculusInput.username)).then { User newUser ->
+                if (newUser == null) {
+                    return Promise.pure(null)
+                }
+
+                throw AppErrors.INSTANCE.fieldInvalidException('username', 'username is already used by others').exception()
+            }
+        }
     }
 
     void checkCompanyType(OculusInput oculusInput) {
@@ -370,7 +427,9 @@ class MigrationResourceImpl implements MigrationResource {
             headline: oculusInput.profile.headline,
             summary: oculusInput.profile.summary,
             url: oculusInput.profile.url,
-            avatar: oculusInput.profile.avatar
+            avatar: new UserAvatar(
+                    href: oculusInput.profile.avatar == null ? null : oculusInput.profile.avatar.href
+            )
         )
 
         return userProfile
@@ -388,12 +447,12 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     // if organization.name exists, then
-    //          i.  if the user is the owner of the organization:
+    //          i.  if the user is the first founder of the organization:
     //                      a.  update the organization;
     //                      b.  check and update role;
     //                      c.  check and update group;
     //                      d.  check and update roleAssignment
-    //          ii. if the user isn't the owner of the organization:
+    //          ii. if the user isn't the first founder of the organization:
     //                      a.  if isAdmin = true,
     //                              a): If the user doesn't exist in "Admin" group, add the user to group having "Organization Admin",
     //                              b): If the user exist in "Admin" group, do nothing
@@ -401,33 +460,21 @@ class MigrationResourceImpl implements MigrationResource {
     //                              a): If the user doesn't exist in "Developer" group, add the user to "Developer" group; if it doesn't exists, create "Developer" group.
     //                              b): If the user exists in "Developer" group, do nothing
     // if organization.name doesn't exists, then
-    //          i.  if isAdmin = true, create organization, create group with "Organization Admin" role;
-    //          ii. if isAdmin = false, throw exception
+    //          i.  create organization, create group with "Organization Admin" role and "Developer Admin" role;
     Promise<Organization> saveOrUpdateOrganization(OculusInput oculusInput, User createdUser) {
-        return organizationRepository.searchByCanonicalName(normalizeService.normalize(oculusInput.company.name),
-                Integer.MAX_VALUE, 0).then { List<Organization> organizationList ->
-            if (CollectionUtils.isEmpty(organizationList)) {
-                // todo:    Need to communicate with Tianxiang, isAdmin=true should be posted at first.
+        return organizationRepository.searchByMigrateCompanyId(oculusInput.company.companyId).then { Organization organization ->
+            if (organization == null) {
                 // create organization, create role, create group
                 return createNewOrg(oculusInput, createdUser)
             } else {
-                Organization existingOrg = organizationList.find { Organization organization ->
-                    organization.ownerId == createdUser.id
-                }
-
-                if (existingOrg == null) {
-                    // user isn't the owner of the organization
-                    return addToUserGroup(oculusInput, createdUser, organizationList.get(0))
-                } else {
-                    // user is the owner of the organization
-                    return updateNewOrg(oculusInput, createdUser, existingOrg)
-                }
+                // user is not the first found of the organization
+                return updateNewOrg(oculusInput, createdUser, organization)
             }
         }
     }
 
     private Promise<Organization> updateNewOrg(OculusInput oculusInput, User createdUser, Organization existingOrg) {
-        return saveOrUpdateOrg(oculusInput, createdUser, existingOrg).then { Organization org ->
+        return saveOrUpdateOrg(oculusInput, existingOrg).then { Organization org ->
             return addToUserGroup(oculusInput, createdUser, org)
         }
     }
@@ -436,7 +483,7 @@ class MigrationResourceImpl implements MigrationResource {
         // create organization, create role, create group
         Role createdRole = null
         Group createdGroup = null
-        return saveOrUpdateOrg(oculusInput, null, null).then { Organization organization ->
+        return saveOrUpdateOrg(oculusInput, null).then { Organization organization ->
             return saveOrUpdateRole(organization, ADMIN_ROLE).then { Role role ->
                 createdRole = oculusInput.company.isAdmin ? role : createdRole
                 return saveOrUpdateRole(organization, DEVELOPER_ROLE).then { Role developerRole ->
@@ -464,42 +511,87 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     private Promise<Organization> addToUserGroup(OculusInput oculusInput, User createdUser, Organization existingOrganization) {
+
         if (oculusInput.company.isAdmin) {
             // Add to ADMIN group
-            return groupRepository.searchByOrganizationIdAndName(existingOrganization.getId(), ADMIN_ROLE, Integer.MAX_VALUE, null).then { Group group ->
-                return saveOrUpdateUserGroup(createdUser, group).then {
-                    return Promise.pure(existingOrganization)
+            return removeUserGroupMemberShip(oculusInput, createdUser, existingOrganization, DEVELOPER_ROLE).then {
+                return groupRepository.searchByOrganizationIdAndName(existingOrganization.getId(), ADMIN_ROLE, Integer.MAX_VALUE, null).then { Group group ->
+                    if (group == null) {
+                        return saveOrUpdateGroup(existingOrganization, ADMIN_ROLE).then { Group newGroup ->
+                            return saveOrUpdateUserGroup(createdUser, newGroup).then {
+                                return Promise.pure(existingOrganization)
+                            }
+                        }
+                    }
+                    return saveOrUpdateUserGroup(createdUser, group).then {
+                        return Promise.pure(existingOrganization)
+                    }
                 }
             }
         } else {
             // Add to DEVELOPER group
-            return groupRepository.searchByOrganizationIdAndName(existingOrganization.getId(), DEVELOPER_ROLE, Integer.MAX_VALUE, null).then { Group group ->
-                return saveOrUpdateUserGroup(createdUser, group).then {
-                    return Promise.pure(existingOrganization)
+            return removeUserGroupMemberShip(oculusInput, createdUser, existingOrganization, ADMIN_ROLE).then {
+                return groupRepository.searchByOrganizationIdAndName(existingOrganization.getId(), DEVELOPER_ROLE, Integer.MAX_VALUE, null).then { Group group ->
+                    if (group == null) {
+                        return saveOrUpdateGroup(existingOrganization, DEVELOPER_ROLE).then { Group newGroup ->
+                            return saveOrUpdateUserGroup(createdUser, newGroup).then {
+                                return Promise.pure(existingOrganization)
+                            }
+                        }
+                    }
+
+                    return saveOrUpdateUserGroup(createdUser, group).then {
+                        return Promise.pure(existingOrganization)
+                    }
                 }
             }
         }
     }
 
-    private Promise<Organization> saveOrUpdateOrg(OculusInput oculusInput, User createdUser, Organization existingOrg) {
+
+    private Promise<Void> removeUserGroupMemberShip(OculusInput oculusInput, User createdUser, Organization existingOrganization, String roleName) {
+        // remove from developer group
+        return groupRepository.searchByOrganizationIdAndName(existingOrganization.getId(), roleName, Integer.MAX_VALUE, null).then { Group group ->
+            if (group == null) {
+                return Promise.pure(null)
+            }
+
+            return userGroupRepository.searchByUserIdAndGroupId(createdUser.getId(), group.getId(), Integer.MAX_VALUE, null).then { List<UserGroup> userGroupList ->
+                if (CollectionUtils.isEmpty(userGroupList)) {
+                    return Promise.pure(null)
+                }
+
+                return Promise.each(userGroupList) { UserGroup userGroup ->
+                    return userGroupRepository.delete(userGroup.getId()).then {
+                        return Promise.pure(null)
+                    }
+                }.then {
+                    return Promise.pure(null)
+                }
+            }
+        }
+    }
+
+    private Promise<Organization> saveOrUpdateOrg(OculusInput oculusInput, Organization existingOrg) {
         if (existingOrg == null) {
             Organization org = new Organization()
             org.name = oculusInput.company.name
+            org.migratedCompanyId = oculusInput.company.companyId
             org.canonicalName = normalizeService.normalize(oculusInput.company.name)
-            org.ownerId = createdUser != null ? createdUser.id : null
+            org.ownerId = null
             org.isValidated = getOrganizationStatus(oculusInput)
             org.type = oculusInput.company.type
             org.createdTime = oculusInput.createdDate
             org.updatedTime = oculusInput.updateDate
 
             return organizationRepository.create(org).then { Organization createdOrg ->
-                return getOrgShippingAddress(oculusInput, createdOrg).then { UserPersonalInfo orgShippingAddress ->
-                    org.shippingAddress = orgShippingAddress.getId()
+                return getOrgShippingAddressId(oculusInput, createdOrg).then { UserPersonalInfoId orgShippingAddressId ->
+                    org.shippingAddress = orgShippingAddressId
                     return Promise.pure(createdOrg)
                 }
             }.then { Organization createdOrg ->
-                return getOrgPhone(oculusInput, createdOrg).then { UserPersonalInfo orgPhone ->
-                    org.shippingPhone = orgPhone.getId()
+                return getOrgPhoneId(oculusInput, createdOrg).then { UserPersonalInfoId orgPhoneId ->
+                    org.shippingPhone = orgPhoneId
                     return Promise.pure(createdOrg)
                 }
             }.then { Organization createdOrg ->
@@ -509,15 +601,16 @@ class MigrationResourceImpl implements MigrationResource {
             existingOrg.name = oculusInput.company.name
             existingOrg.isValidated = getOrganizationStatus(oculusInput)
             existingOrg.type = oculusInput.company.type
+            existingOrg.migratedCompanyId = oculusInput.company.companyId
             existingOrg.createdTime = oculusInput.createdDate
             existingOrg.updatedTime = oculusInput.updateDate
 
-            return getOrgShippingAddress(oculusInput, existingOrg).then { UserPersonalInfo orgShippingAddress ->
-                existingOrg.shippingAddress = orgShippingAddress.getId()
+            return getOrgShippingAddressId(oculusInput, existingOrg).then { UserPersonalInfoId orgShippingAddressId ->
+                existingOrg.shippingAddress = orgShippingAddressId
                 return Promise.pure(existingOrg)
             }.then { Organization updatedOrg ->
-                return getOrgPhone(oculusInput, updatedOrg).then { UserPersonalInfo orgPhone ->
-                    existingOrg.shippingPhone = orgPhone.getId()
+                return getOrgPhoneId(oculusInput, updatedOrg).then { UserPersonalInfoId orgPhoneId ->
+                    existingOrg.shippingPhone = orgPhoneId
                     return Promise.pure(existingOrg)
                 }
             }.then { Organization updatedOrg ->
@@ -618,7 +711,10 @@ class MigrationResourceImpl implements MigrationResource {
         }
     }
 
-    private Promise<UserPersonalInfo> getOrgShippingAddress(OculusInput oculusInput, Organization createdOrg) {
+    // check whether the address is changed or not
+    // if the address is changed, just create new and return;
+    // if the address isn't changed, just return
+    private Promise<UserPersonalInfoId> getOrgShippingAddressId(OculusInput oculusInput, Organization createdOrg) {
         Address address = new Address(
             street1: oculusInput.company.address,
             city: oculusInput.company.city,
@@ -627,31 +723,79 @@ class MigrationResourceImpl implements MigrationResource {
             postalCode: oculusInput.company.postalCode
         )
 
-        UserPersonalInfo orgShippingAddress = new UserPersonalInfo()
-        orgShippingAddress.userId = null
-        orgShippingAddress.organizationId = createdOrg.getId()
-        orgShippingAddress.type = UserPersonalInfoType.ADDRESS.toString()
-        orgShippingAddress.value = ObjectMapperProvider.instance().valueToTree(address)
-        orgShippingAddress.createdTime = oculusInput.createdDate
-        orgShippingAddress.updatedTime = oculusInput.updateDate
+        return checkAddressEqual(address, createdOrg).then { Boolean isEquals ->
+            if (isEquals) {
+                return Promise.pure(createdOrg.shippingAddress)
+            }
 
-        return userPersonalInfoRepository.create(orgShippingAddress)
+            UserPersonalInfo orgShippingAddress = new UserPersonalInfo()
+            orgShippingAddress.userId = null
+            orgShippingAddress.organizationId = createdOrg.getId()
+            orgShippingAddress.type = UserPersonalInfoType.ADDRESS.toString()
+            orgShippingAddress.value = ObjectMapperProvider.instance().valueToTree(address)
+            orgShippingAddress.createdTime = oculusInput.createdDate
+            orgShippingAddress.updatedTime = oculusInput.updateDate
+
+            return userPersonalInfoRepository.create(orgShippingAddress).then { UserPersonalInfo userPersonalInfo ->
+                return Promise.pure(userPersonalInfo.getId())
+            }
+        }
     }
 
-    private Promise<UserPersonalInfo> getOrgPhone(OculusInput oculusInput, Organization createdOrg) {
+    private Promise<Boolean> checkAddressEqual(Address address, Organization createdOrg) {
+        if (createdOrg == null || createdOrg.shippingAddress == null) {
+            return Promise.pure(false)
+        }
+
+        return userPersonalInfoRepository.get(createdOrg.shippingAddress).then { UserPersonalInfo userPersonalInfo ->
+            Address existingAddress = (Address)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Address)
+
+            if (address != existingAddress) {
+                return Promise.pure(false)
+            }
+
+            return Promise.pure(true)
+        }
+    }
+
+    private Promise<UserPersonalInfoId> getOrgPhoneId(OculusInput oculusInput, Organization createdOrg) {
         PhoneNumber phoneNumber = new PhoneNumber(
                 info: oculusInput.company.phone
         )
 
-        UserPersonalInfo orgPhone = new UserPersonalInfo()
-        orgPhone.userId = null
-        orgPhone.organizationId = createdOrg.getId()
-        orgPhone.type = UserPersonalInfoType.PHONE.toString()
-        orgPhone.value = ObjectMapperProvider.instance().valueToTree(phoneNumber)
-        orgPhone.createdTime = oculusInput.createdDate
-        orgPhone.updatedTime = oculusInput.updateDate
+        return checkPhoneEqual(phoneNumber, createdOrg).then { Boolean isEquals ->
+            if (isEquals) {
+                return Promise.pure(createdOrg.shippingPhone)
+            }
 
-        return userPersonalInfoRepository.create(orgPhone)
+            UserPersonalInfo orgPhone = new UserPersonalInfo()
+            orgPhone.userId = null
+            orgPhone.organizationId = createdOrg.getId()
+            orgPhone.type = UserPersonalInfoType.PHONE.toString()
+            orgPhone.value = ObjectMapperProvider.instance().valueToTree(phoneNumber)
+            orgPhone.createdTime = oculusInput.createdDate
+            orgPhone.updatedTime = oculusInput.updateDate
+
+            return userPersonalInfoRepository.create(orgPhone).then { UserPersonalInfo userPersonalInfo ->
+                return Promise.pure(userPersonalInfo.getId())
+            }
+        }
+    }
+
+    private Promise<Boolean> checkPhoneEqual(PhoneNumber phoneNumber, Organization createdOrg) {
+        if (createdOrg == null || createdOrg.shippingPhone == null) {
+            return Promise.pure(false)
+        }
+
+        return userPersonalInfoRepository.get(createdOrg.shippingPhone).then { UserPersonalInfo userPersonalInfo ->
+            PhoneNumber existingPhoneNumber = (PhoneNumber)JsonHelper.jsonNodeToObj(userPersonalInfo.value, PhoneNumber)
+
+            if (existingPhoneNumber != phoneNumber) {
+                return Promise.pure(false)
+            }
+
+            return Promise.pure(true)
+        }
     }
 
     private static Map<Number, String> timeZoneMap

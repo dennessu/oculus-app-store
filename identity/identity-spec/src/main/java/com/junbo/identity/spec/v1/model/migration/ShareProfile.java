@@ -5,8 +5,6 @@
  */
 package com.junbo.identity.spec.v1.model.migration;
 
-import com.junbo.common.model.Link;
-
 /**
  * Created by liangfu on 6/6/14.
  */
@@ -17,7 +15,7 @@ public class ShareProfile {
 
     private String url;
 
-    private Link avatar;
+    private ShareProfileAvatar avatar;
 
     public String getHeadline() {
         return headline;
@@ -43,11 +41,11 @@ public class ShareProfile {
         this.url = url;
     }
 
-    public Link getAvatar() {
+    public ShareProfileAvatar getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(Link avatar) {
+    public void setAvatar(ShareProfileAvatar avatar) {
         this.avatar = avatar;
     }
 }

@@ -161,25 +161,17 @@ class OrganizationValidatorImpl implements OrganizationValidator {
 
     private Promise<Void> checkOrganizationNameUnique(Organization organization) {
 
-        // todo:    Temporary disable organization canonicalName validation
-        /*
-        return organizationRepository.searchByCanonicalName(organization.canonicalName, Integer.MAX_VALUE, 0).then { List<Organization> organizationList ->
-            if (CollectionUtils.isEmpty(organizationList)) {
+        return organizationRepository.searchByCanonicalName(organization.canonicalName).then { Organization existingOrg ->
+            if (existingOrg == null) {
                 return Promise.pure(null)
             }
 
-            organizationList.retainAll { Organization org ->
-                return org.id != organization.id
-            }
-
-            if (!CollectionUtils.isEmpty(organizationList)) {
+            if (existingOrg.id != organization.id) {
                 throw AppErrors.INSTANCE.fieldDuplicate('name').exception()
             }
 
             return Promise.pure(null)
         }
-        */
-        return Promise.pure(null)
     }
 
     private Promise<UserPersonalInfo> checkPersonalInfoIdOwner(UserPersonalInfoId userPersonalInfoId, UserId ownerId, String expectedType) {

@@ -5,10 +5,14 @@
  */
 package com.junbo.identity.spec.v1.model.migration;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Created by liangfu on 6/18/14.
  */
 public class Company {
+    @JsonProperty("id")
+    private Long companyId;
     private String name;
     private String address;
     private String city;
@@ -18,6 +22,14 @@ public class Company {
     private String phone;
     private String type;
     private Boolean isAdmin;
+
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
+    }
 
     public String getName() {
         return name;
