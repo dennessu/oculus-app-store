@@ -317,8 +317,6 @@ class MigrationResourceImpl implements MigrationResource {
                 throw AppErrors.INSTANCE.fieldInvalidException('name', 'company.name is already used by others').exception()
             }
         }
-
-        return Promise.pure(null)
     }
 
     // The logic here should be:
