@@ -27,6 +27,8 @@ import com.junbo.common.id.UserId;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 /**
@@ -449,6 +451,19 @@ public class CartCheckout extends BaseTestClass {
         orderId = testDataProvider.updateOrder(order);
         order = Master.getInstance().getOrder(orderId);
         String providerConfirmUrl = order.getProviderConfirmUrl();
+
+        String[] params = providerConfirmUrl.split("&");
+        String urlEncoded = new String();
+
+        for (int i = 0; i < params.length; i++) {
+            if (params[i].contains("merchantSig")) {
+                String sig = params[i].substring(12);
+                String sigEncoded = URLEncoder.encode(sig, "utf-8");
+                params[i] = "merchantSig=" + sigEncoded;
+            }
+            urlEncoded += params[i] + "&";
+        }
+        urlEncoded = urlEncoded.substring(0, urlEncoded.length() - 1);
 
     }
 
