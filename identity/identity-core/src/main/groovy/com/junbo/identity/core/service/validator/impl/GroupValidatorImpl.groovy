@@ -23,8 +23,6 @@ import org.springframework.util.StringUtils
  */
 @CompileStatic
 class GroupValidatorImpl implements GroupValidator {
-    // todo:    Need to implement group search must have organization id validation
-
     private GroupRepository groupRepository
     
     private Integer groupValueMinLength
@@ -74,18 +72,18 @@ class GroupValidatorImpl implements GroupValidator {
             throw new IllegalArgumentException('options is null')
         }
 
+        if (options.userId != null) {
+            if (options.name != null || options.organizationId != null) {
+                throw AppErrors.INSTANCE.parameterInvalid('userId can\'t be search together with organizationId or name').exception()
+            }
+
+            return Promise.pure(null)
+        }
+
         if (options.organizationId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('organizaionId').exception()
+            throw AppErrors.INSTANCE.parameterRequired('organizaionId or userId').exception()
         }
 
-        // todo:    How to define userId
-        if (options.name == null && options.userId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('name').exception()
-        }
-
-        if (options.name != null && options.userId != null) {
-            throw AppErrors.INSTANCE.parameterInvalid('name and userId can\'t search together.').exception()
-        }
         return Promise.pure(null)
     }
 

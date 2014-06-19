@@ -20,8 +20,10 @@ import com.junbo.identity.spec.v1.option.model.GroupGetOptions
 import com.junbo.identity.spec.v1.resource.GroupResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.util.StringUtils
 
 /**
  * Created by xiali_000 on 4/8/2014.
@@ -116,23 +118,32 @@ class GroupResourceImpl implements GroupResource {
     Promise<Results<Group>> list(GroupListOptions listOptions) {
         return groupValidator.validateForSearch(listOptions).then {
             def resultList = new Results<Group>(items: [])
-            if (listOptions.organizationId != null && listOptions.name != null) {
-                return groupRepository.searchByOrganizationIdAndName(listOptions.organizationId, listOptions.name, Integer.MAX_VALUE, 0).then { Group newGroup ->
-                    if (newGroup != null) {
-                        newGroup = groupFilter.filterForGet(newGroup, listOptions.properties?.split(',') as List<String>)
+            if (listOptions.organizationId != null) {
+                return search(listOptions).then { List<Group> groupList ->
+                    if (CollectionUtils.isEmpty(groupList)) {
+                        return Promise.pure(resultList)
                     }
 
-                    if (newGroup != null) {
-                        resultList.items.add(newGroup)
+                    groupList.each { Group existingGroup ->
+                        Group filterGroup = groupFilter.filterForGet(existingGroup, listOptions.properties?.split(',') as List<String>)
+                        resultList.items.add(filterGroup)
                     }
 
                     return Promise.pure(resultList)
                 }
             } else {
-                // todo:    Need to filter by organization first
-                return userGroupRepository.searchByUserId(listOptions.userId, listOptions.limit,
-                        listOptions.offset).then { List<UserGroup> userGroupList ->
-                    return fillUserGroups(userGroupList.iterator(), resultList, listOptions).then {
+                return userGroupRepository.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset).then { List<UserGroup> userGroupList ->
+                    if (CollectionUtils.isEmpty(userGroupList)) {
+                        return Promise.pure(resultList)
+                    }
+
+                    return Promise.each(userGroupList) { UserGroup userGroup ->
+                        return groupValidator.validateForGet(userGroup.groupId).then { Group existing ->
+                            existing = groupFilter.filterForGet(existing, listOptions.properties?.split(',') as List<String>)
+                            resultList.items.add(existing)
+                            return Promise.pure(null)
+                        }
+                    }.then {
                         return Promise.pure(resultList)
                     }
                 }
@@ -140,19 +151,20 @@ class GroupResourceImpl implements GroupResource {
         }
     }
 
-    private Promise<Void> fillUserGroups(Iterator<UserGroup> it, Results<Group> resultList,
-                                         GroupListOptions listOptions) {
-        if (it.hasNext()) {
-            UserGroup userGroup = it.next()
-            return groupValidator.validateForGet(userGroup.groupId).then { Group existing ->
-                existing = groupFilter.filterForGet(existing, listOptions.properties?.split(',') as List<String>)
-                resultList.items.add(existing)
+    private Promise<List<Group>> search(GroupListOptions listOptions) {
+        List<Group> result = new ArrayList<>()
+        if (listOptions.organizationId != null && listOptions.name != null) {
+            return groupRepository.searchByOrganizationIdAndName(listOptions.organizationId, listOptions.name,
+                    listOptions.limit, listOptions.offset).then { Group group ->
+                if (group != null) {
+                    result.add(group)
+                }
 
-                return fillUserGroups(it, resultList, listOptions)
+                return Promise.pure(result)
             }
+        } else if (listOptions.organizationId != null) {
+            return groupRepository.searchByOrganizationId(listOptions.organizationId, listOptions.limit, listOptions.offset)
         }
-
-        return Promise.pure(null)
     }
 
     @Override
