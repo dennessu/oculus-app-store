@@ -42,7 +42,10 @@ public class postImportUserPersonalInfo {
 
         User user = Identity.UserGetByUserId(oculusOutput.getUserId());
         Validator.Validate("validate user name", oculusInput.getUsername(), user.getUsername());
-        Validator.Validate("validate user status", IdentityModel.MigrateUserStatus.ACTIVE.name(), user.getStatus());
+        Validator.Validate("validate user status",
+                oculusInput.getStatus().equals(IdentityModel.MigrateUserStatus.ARCHIVE.name()) ?
+                        "DELETED" : "ACTIVE", user.getStatus()
+        );
 
         UserCredential uc = Identity.CredentialsGetByUserId(user.getId());
         Validator.Validate("validate forceResetPassword", oculusInput.getForceResetPassword(),
