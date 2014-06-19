@@ -22,10 +22,13 @@ public class TrackingUuidRepositoryCloudantImpl extends BaseCloudantRepositoryFo
     public Promise<TrackingUuid> getByTrackingUuid(Long userId, UUID trackingUuid) {
         return super.queryView("by_tracking_uuid", trackingUuid.toString()).then(new Closure<Promise<TrackingUuid>>(this, this) {
             public Promise<TrackingUuid> doCall(List<TrackingUuid> list) {
-                return Promise.pure(list.get(0));
+                if (list.size() > 0) {
+                    return Promise.pure(list.get(0));
+                }
+                else {
+                    return Promise.pure(null);
+                }
             }
-
         });
     }
-
 }

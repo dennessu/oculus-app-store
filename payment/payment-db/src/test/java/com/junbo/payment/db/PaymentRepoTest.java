@@ -34,7 +34,7 @@ public class PaymentRepoTest extends BaseTest {
         pi.setBillingAddressId(generateShardId(userId));
         pi.setPhoneNumber(12345676L);
         pi.setTypeSpecificDetails(new TypeSpecificDetails() {
-            {;
+            {
                 setExpireDate("2025-10-12");
                 setCreditCardType(CreditCardType.VISA.toString());
                 setLastBillingDate(new Date());
