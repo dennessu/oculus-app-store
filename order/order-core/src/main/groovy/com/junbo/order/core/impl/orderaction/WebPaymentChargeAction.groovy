@@ -14,6 +14,7 @@ import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
+import com.junbo.order.spec.model.enums.BillingAction
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -78,16 +79,7 @@ class WebPaymentChargeAction extends BaseOrderEventAwareAction {
             oldOrder.providerConfirmUrl = order.providerConfirmUrl
             orderRepository.updateOrder(oldOrder, true, false, null)
             CoreBuilder.fillTaxInfo(order, balance)
-            def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(balance)
-            if (billingHistory.billingEvent != null) {
-                def savedHistory = orderRepository.createBillingHistory(order.getId().value, billingHistory)
-                if (order.billingHistories == null) {
-                    order.billingHistories = [savedHistory]
-                }
-                else {
-                    order.billingHistories.add(savedHistory)
-                }
-            }
+            orderInternalService.persistBillingHistory(balance, BillingAction.PENDING_CHARGE, order)
             return orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
                 // TODO: save order level tax
                 return CoreBuilder.buildActionResultForOrderEventAwareAction(context,

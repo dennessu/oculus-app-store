@@ -108,13 +108,16 @@ class CoreBuilder {
         List<Balance> returnBalances = []
         originalBalances.each { Balance b ->
             Balance balance = buildRefundBalance(b)
-            diffOrder.each {}
             b.balanceItems.each { BalanceItem item ->
-                Boolean matched = diffOrder.orderItems.any { OrderItem orderItem ->
+                def matched = diffOrder.orderItems.find { OrderItem orderItem ->
                     orderItem.getId().value == item.orderItemId.value
                 }
-                if (matched) {
+                if (matched != null) {
                     def balanceItem = buildRefundBalanceItem(item)
+                    balanceItem.orderItemId = matched.getId()
+                    balanceItem.propertySet.put(PropertyKey.ITEM_TYPE.name(), matched.type)
+                    balanceItem.propertySet.put(PropertyKey.ITEM_QUANTITY.name(), matched.quantity.toString())
+                    balanceItem.propertySet.put(PropertyKey.ITEM_NAME.name(), matched.offer.value)
                     balance.addBalanceItem(balanceItem)
                 }
             }
@@ -128,6 +131,7 @@ class CoreBuilder {
                 BalanceItem balanceItem = b.balanceItems.find { BalanceItem bi ->
                     bi.orderItemId.value == diffItem.getId().value
                 }
+                assert(balanceItem != null)
                 if (totalAmount >= balanceItem.amount) {
                     totalAmount = diffItem.totalAmount - balanceItem.amount
                 } else {
@@ -190,6 +194,8 @@ class CoreBuilder {
         balanceItem.amount = item.totalAmount
         balanceItem.orderItemId = item.getId()
         balanceItem.propertySet.put(PropertyKey.ITEM_TYPE.name(), item.type)
+        balanceItem.propertySet.put(PropertyKey.ITEM_QUANTITY.name(), item.quantity.toString())
+        balanceItem.propertySet.put(PropertyKey.ITEM_NAME.name(), item.offer.value)
         if (item.totalDiscount > BigDecimal.ZERO) {
             DiscountItem discountItem = new DiscountItem()
             discountItem.discountAmount = item.totalDiscount

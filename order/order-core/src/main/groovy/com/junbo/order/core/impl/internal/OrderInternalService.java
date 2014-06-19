@@ -10,6 +10,7 @@ import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderQueryParam;
 import com.junbo.order.spec.model.PageParam;
+import com.junbo.order.spec.model.enums.BillingAction;
 
 import java.util.List;
 
@@ -34,5 +35,7 @@ public interface OrderInternalService {
     Promise<Order> refundOrder(Order order);
 
     Promise<List<Balance>> getBalancesByOrderId(Long orderId);
+
+    void persistBillingHistory(Balance balance, BillingAction action, Order order);
 
 }

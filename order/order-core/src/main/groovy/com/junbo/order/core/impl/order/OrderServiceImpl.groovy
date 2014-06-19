@@ -101,14 +101,13 @@ class OrderServiceImpl implements OrderService {
                 return executeFlow(flowName, orderServiceContext, requestScope)
             }.syncRecover { Throwable throwable ->
                 error = throwable
-            }.syncThen {
+            }.then {
                 def result = orderInternalService.refreshOrderStatus(orderServiceContext.order,
                         !orderServiceContext.isAsyncCharge) // In asyncCharge case, update status via order event
-
                 if (error != null) {
                     throw error
                 }
-                return result
+                return getOrderByOrderId(result.getId().value, false)
             }
         }
     }
@@ -127,8 +126,8 @@ class OrderServiceImpl implements OrderService {
                 orderActionContext.trackingUuid = UUID.randomUUID()
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
                 return executeFlow(flowName, orderServiceContext, requestScope)
-            }.syncThen {
-                return orderServiceContext.order
+            }.then {
+                return getOrderByOrderId(orderServiceContext.order.getId().value, false)
             }
         }
     }
@@ -146,8 +145,8 @@ class OrderServiceImpl implements OrderService {
                 orderActionContext.trackingUuid = UUID.randomUUID()
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
                 return executeFlow(flowName, orderServiceContext, requestScope)
-            }.syncThen {
-                return orderServiceContext.order
+            }.then {
+                return getOrderByOrderId(orderServiceContext.order.getId().value, false)
             }
         }
     }
@@ -170,8 +169,8 @@ class OrderServiceImpl implements OrderService {
                 orderActionContext.trackingUuid = UUID.randomUUID()
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
                 return executeFlow(flowName, orderServiceContext, requestScope)
-            }.syncThen {
-                return orderServiceContext.order
+            }.then {
+                return getOrderByOrderId(orderServiceContext.order.getId().value, false)
             }
         }
     }
@@ -207,8 +206,8 @@ class OrderServiceImpl implements OrderService {
             orderActionContext.trackingUuid = UUID.randomUUID()
             requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
             return executeFlow(flowName, orderServiceContext, requestScope)
-        }.syncThen {
-            return orderServiceContext.order
+        }.then {
+            return getOrderByOrderId(orderServiceContext.order.getId().value, false)
         }
     }
 
@@ -278,9 +277,9 @@ class OrderServiceImpl implements OrderService {
                 orderRepository.createOrderEvent(event)
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
                 return executeFlow(flowName, orderServiceContext, requestScope)
-            }.syncThen {
+            }.then {
                 orderInternalService.refreshOrderStatus(orderServiceContext.order, true)
-                return orderServiceContext.orderEvent
+                return Promise.pure(orderServiceContext.orderEvent)
             }
         }
     }

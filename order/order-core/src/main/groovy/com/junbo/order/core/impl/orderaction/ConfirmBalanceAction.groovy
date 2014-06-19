@@ -1,5 +1,4 @@
 package com.junbo.order.core.impl.orderaction
-
 import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.model.Balance
 import com.junbo.langur.core.promise.Promise
@@ -8,10 +7,10 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
-import com.junbo.order.core.impl.common.BillingEventHistoryBuilder
-import com.junbo.order.spec.model.enums.BillingAction
+import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
+import com.junbo.order.spec.model.enums.BillingAction
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
@@ -19,7 +18,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import javax.annotation.Resource
-
 /**
  * Action for balance status confirmation.
  */
@@ -31,6 +29,9 @@ class ConfirmBalanceAction extends BaseOrderEventAwareAction {
 
     @Resource(name = 'orderRepositoryFacade')
     OrderRepositoryFacade orderRepository
+
+    @Resource(name = 'orderInternalService')
+    OrderInternalService orderInternalService
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfirmBalanceAction)
 
@@ -59,19 +60,7 @@ class ConfirmBalanceAction extends BaseOrderEventAwareAction {
                     throw facadeContainer.billingFacade.convertError(throwable).exception()
                 }.then { Balance confirmedBalance ->
                     if (confirmedBalance.status == BalanceStatus.COMPLETED.name()) {
-                        def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(confirmedBalance)
-                        if (billingHistory.billingEvent != null) {
-                            if (billingHistory.billingEvent == BillingAction.CHARGE.name()) {
-                                order.payments?.get(0)?.paymentAmount = billingHistory.totalAmount
-                            }
-                            def savedHistory = orderRepository.createBillingHistory(order.getId().value, billingHistory)
-                            if (order.billingHistories == null) {
-                                order.billingHistories = [savedHistory]
-                            }
-                            else {
-                                order.billingHistories.add(savedHistory)
-                            }
-                        }
+                        orderInternalService.persistBillingHistory(confirmedBalance, BillingAction.CAPTURE, order)
                         balanceConfirmed = true
                     }
                     return Promise.pure(null)

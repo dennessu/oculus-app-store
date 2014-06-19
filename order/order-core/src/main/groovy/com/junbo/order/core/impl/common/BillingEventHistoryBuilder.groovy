@@ -59,6 +59,12 @@ class BillingEventHistoryBuilder {
                     return BillingAction.PENDING_CHARGE.name()
                 }
                 return null
+            case BalanceType.REFUND:
+                if (status == EventStatus.COMPLETED) {
+                    return BillingAction.REFUND.name()
+                } else if (status == EventStatus.PENDING) {
+                    return BillingAction.REFUND.name()
+                }
         }
         throw new IllegalArgumentException("Balance_Type_Not_Supported, type-${balanceType}")
     }

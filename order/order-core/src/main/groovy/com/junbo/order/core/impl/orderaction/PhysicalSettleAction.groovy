@@ -86,21 +86,7 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
                             throw AppErrors.INSTANCE.billingConnectionError().exception()
                         }
                         context.orderServiceContext.isAsyncCharge = resultBalance.isAsyncCharge
-                        def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(resultBalance)
-                        if (billingHistory.billingEvent != null) {
-                            if (billingHistory.billingEvent == BillingAction.CHARGE.name()) {
-                                order.payments?.get(0)?.paymentAmount = order.payments?.get(0)?.paymentAmount == null ?
-                                        billingHistory.totalAmount :
-                                        order.payments?.get(0)?.paymentAmount + billingHistory.totalAmount
-                            }
-                            def savedHistory = orderRepository.createBillingHistory(order.getId().value, billingHistory)
-                            if (order.billingHistories == null) {
-                                order.billingHistories = [savedHistory]
-                            }
-                            else {
-                                order.billingHistories.add(savedHistory)
-                            }
-                        }
+                        orderInternalService.persistBillingHistory(balance, BillingAction.CHARGE, order)
                         return orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
                             return CoreBuilder.buildActionResultForOrderEventAwareAction(context,
                                     BillingEventHistoryBuilder.buildEventStatusFromBalance(resultBalance))
@@ -128,21 +114,7 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
                         billingConnectionError().exception()
             }
             context.orderServiceContext.isAsyncCharge = resultBalance.isAsyncCharge
-            def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(resultBalance)
-            if (billingHistory.billingEvent != null) {
-                if (billingHistory.billingEvent == BillingAction.CHARGE.name()) {
-                    // partial charge
-                    billingHistory.billingEvent = BillingAction.DEPOSIT.name()
-                    order.payments?.get(0)?.paymentAmount = billingHistory.totalAmount
-                }
-                def savedHistory = orderRepository.createBillingHistory(order.getId().value, billingHistory)
-                if (order.billingHistories == null) {
-                    order.billingHistories = [savedHistory]
-                }
-                else {
-                    order.billingHistories.add(savedHistory)
-                }
-            }
+            orderInternalService.persistBillingHistory(balance, BillingAction.DEPOSIT, order)
             return orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
                 return CoreBuilder.buildActionResultForOrderEventAwareAction(context,
                         BillingEventHistoryBuilder.buildEventStatusFromBalance(resultBalance))

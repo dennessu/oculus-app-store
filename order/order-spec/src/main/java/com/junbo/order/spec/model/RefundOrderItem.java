@@ -5,6 +5,7 @@
  */
 package com.junbo.order.spec.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.id.OfferId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -26,6 +27,9 @@ public class RefundOrderItem {
 
     @ApiModelProperty(required = true, position = 50, value = "[Client Immutable] The offer refunded tax.")
     private BigDecimal refundedTax;
+
+    @JsonIgnore
+    private Long orderItemId;
 
     public OfferId getOffer() {
         return offer;
@@ -57,5 +61,13 @@ public class RefundOrderItem {
 
     public void setRefundedTax(BigDecimal refundedTax) {
         this.refundedTax = refundedTax;
+    }
+
+    public Long getOrderItemId() {
+        return orderItemId;
+    }
+
+    public void setOrderItemId(Long orderItemId) {
+        this.orderItemId = orderItemId;
     }
 }

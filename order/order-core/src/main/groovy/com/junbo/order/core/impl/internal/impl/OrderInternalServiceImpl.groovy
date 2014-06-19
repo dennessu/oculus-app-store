@@ -6,8 +6,11 @@
 package com.junbo.order.core.impl.internal.impl
 import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
+import com.junbo.billing.spec.enums.PropertyKey
 import com.junbo.billing.spec.model.Balance
+import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.common.error.AppErrorException
+import com.junbo.common.id.OfferId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.common.*
@@ -191,6 +194,8 @@ class OrderInternalServiceImpl implements OrderInternalService {
                                 def refundedOrder = CoreUtils.calcRefundedOrder(existingOrder, refunded, diffOrder)
                                 refundedOrder.status = OrderStatus.REFUNDED.name()
                                 orderRepository.updateOrder(refundedOrder, false, true, OrderItemRevisionType.REFUND)
+                                // TODO handel multiple balances
+                                persistBillingHistory(refunded, BillingAction.REFUND, order)
                                 return Promise.pure(null)
                             }
                         }
@@ -270,8 +275,6 @@ class OrderInternalServiceImpl implements OrderInternalService {
         }
         // discount
         order.setDiscounts(orderRepository.getDiscounts(order.getId().value))
-        // event
-        order.setBillingHistories(orderRepository.getBillingHistories(order.getId().value))
         // tax
         return facadeContainer.billingFacade.getBalancesByOrderId(order.getId().value).then { List<Balance> balances ->
             def taxedBalances = balances.findAll { Balance balance ->
@@ -280,6 +283,34 @@ class OrderInternalServiceImpl implements OrderInternalService {
             if (!CollectionUtils.isEmpty(taxedBalances)) {
                 order.orderItems?.each { OrderItem item ->
                     CoreBuilder.mergeTaxInfo(taxedBalances, item)
+                }
+            }
+            order.setBillingHistories(orderRepository.getBillingHistories(order.getId().value))
+            // fill balance info
+            order.billingHistories.each { BillingHistory bh ->
+                def balance = balances.find() { Balance ba ->
+                    ba.getId().value == Long.parseLong(bh.balanceId)
+                }
+                assert (balance != null)
+                bh.payments = []
+                def payment = new BillingPaymentInfo()
+                payment.paymentAmount = balance.totalAmount
+                payment.paymentInstrument = balance.piId
+                bh.payments << payment
+
+                if (balance.type == BalanceType.REFUND.name()) {
+                    bh.refundedOrderItems = []
+                    balance.balanceItems?.each { BalanceItem bi ->
+                        def roi = new RefundOrderItem()
+                        roi.orderItemId = bi.orderItemId.value
+                        roi.refundedAmount = 0G - bi.amount
+                        roi.refundedTax = 0G - bi.taxAmount
+                        // fill quantity and offer id
+                        roi.offer = new OfferId(bi.propertySet.get(PropertyKey.ITEM_NAME.name()))
+                        roi.quantity = Integer.parseInt(bi.propertySet.get(PropertyKey.ITEM_QUANTITY.name()))
+                        bh.refundedOrderItems << roi
+                    }
+                    payment.paymentAmount = 0G - balance.totalAmount
                 }
             }
             return Promise.pure(order)
@@ -311,5 +342,20 @@ class OrderInternalServiceImpl implements OrderInternalService {
         }
         order.tentative = false
         orderRepository.updateOrder(order, true, false, null)
+    }
+
+    @Override
+    @Transactional
+    void persistBillingHistory(Balance balance, BillingAction action, Order order) {
+        def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(balance)
+        if (billingHistory.billingEvent != null) {
+            def savedHistory = orderRepository.createBillingHistory(order.getId().value, billingHistory)
+            if (order.billingHistories == null) {
+                order.billingHistories = [savedHistory]
+            }
+            else {
+                order.billingHistories.add(savedHistory)
+            }
+        }
     }
 }

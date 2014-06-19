@@ -27,6 +27,7 @@ public class BillingHistory extends ResourceMetaForDualWrite<Long> {
     private Long orderId;
 
     private BigDecimal totalAmount;
+
     private String billingEvent;
 
     private List<BillingPaymentInfo> payments;
