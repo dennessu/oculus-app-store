@@ -181,6 +181,9 @@
         }, 
         "by_owner_id": {
           "map": "function(doc) {  emit(doc.ownerId, doc._id)}"
+        },
+        "by_migrate_company_id": {
+          "map": "function(doc) {  emit(doc.migratedCompanyId.toString(), doc._id)}"
         }
       }
     }, 
@@ -227,6 +230,9 @@
       "views": {
         "by_canonical_username": {
           "map": "function(doc) {  emit(doc.canonicalUsername, doc._id)}"
+        },
+        "by_migrate_user_id": {
+          "map": "function(doc) {  emit(doc.migratedUserId.toString(), doc._id) }"
         }
       }
     }, 

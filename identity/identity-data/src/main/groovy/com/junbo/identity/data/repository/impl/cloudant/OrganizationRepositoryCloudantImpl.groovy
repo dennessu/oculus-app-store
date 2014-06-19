@@ -7,6 +7,7 @@ import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
+import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Required
 /**
  * Created by liangfu on 5/22/14.
@@ -26,10 +27,25 @@ class OrganizationRepositoryCloudantImpl extends CloudantClient<Organization> im
     }
 
     @Override
-    Promise<List<Organization>> searchByCanonicalName(String name, Integer limit, Integer offset) {
-        def result = super.queryView('by_canonical_name', name, limit, offset, false)
+    Promise<Organization> searchByCanonicalName(String name) {
+        return super.queryView('by_canonical_name', name).then { List<Organization> organizationList ->
+            if (CollectionUtils.isEmpty(organizationList)) {
+                return Promise.pure(null)
+            }
 
-        return result
+            return Promise.pure(organizationList.get(0))
+        }
+    }
+
+    @Override
+    Promise<Organization> searchByMigrateCompanyId(Long migratedCompanyId) {
+        return super.queryView('by_migrate_company_id', migratedCompanyId.toString()).then { List<Organization> organizationList ->
+            if (CollectionUtils.isEmpty(organizationList)) {
+                return Promise.pure(null)
+            }
+
+            return Promise.pure(organizationList.get(0))
+        }
     }
 
     @Override

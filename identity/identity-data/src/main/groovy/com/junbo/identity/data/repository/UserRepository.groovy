@@ -18,5 +18,8 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface UserRepository extends BaseRepository<User, UserId> {
     @ReadMethod
-    Promise<User> getUserByCanonicalUsername(String canonicalUsername)
+    Promise<User> searchUserByCanonicalUsername(String canonicalUsername)
+
+    @ReadMethod
+    Promise<User> searchUserByMigrateId(Long migratedUserId)
 }

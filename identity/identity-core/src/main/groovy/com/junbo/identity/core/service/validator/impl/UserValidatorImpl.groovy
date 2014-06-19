@@ -69,7 +69,7 @@ class UserValidatorImpl implements UserValidator {
 
                 user.canonicalUsername = normalizeService.normalize(user.username)
 
-                return userRepository.getUserByCanonicalUsername(user.canonicalUsername).then { User existingUser ->
+                return userRepository.searchUserByCanonicalUsername(user.canonicalUsername).then { User existingUser ->
                     if (existingUser != null) {
                         throw AppErrors.INSTANCE.fieldDuplicate('username').exception()
                     }
@@ -108,7 +108,7 @@ class UserValidatorImpl implements UserValidator {
             if (user.username != oldUser.username) {
                 user.canonicalUsername = normalizeService.normalize(user.username)
                 if (user.canonicalUsername != oldUser.canonicalUsername) {
-                    return userRepository.getUserByCanonicalUsername(user.canonicalUsername).then { User existingUser ->
+                    return userRepository.searchUserByCanonicalUsername(user.canonicalUsername).then { User existingUser ->
                         if (existingUser != null) {
                             throw AppErrors.INSTANCE.fieldDuplicate('username').exception()
                         }

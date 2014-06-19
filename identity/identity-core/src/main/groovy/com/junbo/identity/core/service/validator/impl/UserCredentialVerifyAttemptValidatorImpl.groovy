@@ -201,7 +201,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     }
                 }
         } else {
-            return userRepository.getUserByCanonicalUsername(normalizeService.normalize(userLoginAttempt.username))
+            return userRepository.searchUserByCanonicalUsername(normalizeService.normalize(userLoginAttempt.username))
         }
     }
 
