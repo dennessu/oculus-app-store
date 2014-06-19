@@ -17,6 +17,7 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.util.StringUtils
 
 import javax.ws.rs.BeanParam
 
@@ -122,6 +123,14 @@ class OrganizationResourceImpl implements OrganizationResource {
     Promise<List<Organization>> search(OrganizationListOptions listOptions) {
         if (listOptions.ownerId != null) {
             return organizationRepository.searchByOwner(listOptions.ownerId, listOptions.limit, listOptions.offset)
+        } else if (!StringUtils.isEmpty(listOptions.name)) {
+            return organizationRepository.searchByCanonicalName(normalizeService.normalize(listOptions.name)).then { Organization org ->
+                List<Organization> organizationList = new ArrayList<>()
+                if (org != null) {
+                    organizationList.add(org)
+                }
+                return Promise.pure(organizationList)
+            }
         } else {
             throw new IllegalArgumentException('Not support search')
         }
