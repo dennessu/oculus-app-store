@@ -305,7 +305,7 @@ class MigrationResourceImpl implements MigrationResource {
         checkCompanyType(oculusInput)
 
         return organizationRepository.searchByMigrateCompanyId(oculusInput.company.companyId).then { Organization existingOrg ->
-            if (existingOrg == null || existingOrg.canonicalName == normalizeService.normalize(oculusInput.company.name)) {
+            if (existingOrg != null && existingOrg.canonicalName == normalizeService.normalize(oculusInput.company.name)) {
                 return Promise.pure(null)
             }
 
@@ -348,8 +348,7 @@ class MigrationResourceImpl implements MigrationResource {
         }
 
         return userRepository.searchUserByMigrateId(oculusInput.currentId).then { User existingUser ->
-            if (existingUser != null ||
-               (existingUser != null && existingUser.canonicalUsername != normalizeService.normalize(oculusInput.username))) {
+            if (existingUser != null && existingUser.canonicalUsername == normalizeService.normalize(oculusInput.username)) {
                 return Promise.pure(null)
             }
 
