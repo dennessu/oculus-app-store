@@ -1,0 +1,24 @@
+﻿{
+	"locales": {
+		"en_US": {
+			"shortName": "CLP",
+			"longName": "Chilean peso"
+		},
+		"es_CL": {
+			"shortName": "peso chileno",
+			"longName": "peso chileno"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=CLP",
+		"id": null
+	},
+	"currencyCode": "CLP",
+	"symbol": "$",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

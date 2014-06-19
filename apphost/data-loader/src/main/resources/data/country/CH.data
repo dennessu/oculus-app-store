@@ -1,0 +1,346 @@
+﻿{
+	"countryCode": "CH",
+	"defaultLocale": {
+		"href": "/v1/locales/de_CH",
+		"id": "de_CH"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/CHF",
+		"id": "CHF"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/PEGI",
+		"id": "PEGI"
+	}],
+	"subCountries": {
+		"AG": {
+			"locales": {
+				"de_CH": {
+					"shortName": "Aargau",
+					"longName": "Kanton Aargau"
+				},
+				"en_US": {
+					"shortName": "Aargau",
+					"longName": "Canton of Aargau "
+				}
+			}
+		},
+		"AI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Appenzell Innerrhoden",
+					"longName": "Canton of Appenzell Ausserrhoden"
+				},
+				"de_CH": {
+					"shortName": "Appenzell Innerrhoden",
+					"longName": "Kanton Appenzell Innerrhoden"
+				}
+			}
+		},
+		"AR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Appenzell Ausserrhoden",
+					"longName": "Canton of Appenzell Ausserrhoden"
+				},
+				"de_CH": {
+					"shortName": "Appenzell Ausserrhoden",
+					"longName": "Kanton Appenzell Ausserrhoden"
+				}
+			}
+		},
+		"BE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Bern",
+					"longName": "Canton of Bern"
+				},
+				"de_CH": {
+					"shortName": "Bern",
+					"longName": "Kanton Bern"
+				}
+			}
+		},
+		"BL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Basel-Landschaft",
+					"longName": "Canton of Basel-Landschaft"
+				},
+				"de_CH": {
+					"shortName": "Basel-Landschaft",
+					"longName": "Kanton Basel-Landschaft"
+				}
+			}
+		},
+		"BS": {
+			"locales": {
+				"de_CH": {
+					"shortName": "Basel-Stadt",
+					"longName": "Kanton Basel-Stadt"
+				},
+				"en_US": {
+					"shortName": "Basel-Stadt",
+					"longName": "Canton of Basel-Stadt"
+				}
+			}
+		},
+		"FR": {
+			"locales": {
+				"de_CH": {
+					"shortName": "Freiburg",
+					"longName": "Staat Freiburg"
+				},
+				"en_US": {
+					"shortName": "Fribourg",
+					"longName": "Canton of Fribourg"
+				}
+			}
+		},
+		"GE": {
+			"locales": {
+				"fr_CH": {
+					"shortName": "Genève",
+					"longName": "République et Canton de Genève"
+				},
+				"en_US": {
+					"shortName": "Geneva",
+					"longName": "Republic and Canton of Geneva"
+				}
+			}
+		},
+		"GL": {
+			"locales": {
+				"de_CH": {
+					"shortName": "Glarus",
+					"longName": "Kanton Glarus"
+				},
+				"en_US": {
+					"shortName": "Glarus",
+					"longName": "Canton of Glarus"
+				}
+			}
+		},
+		"GR": {
+			"locales": {
+				"de_CH": {
+					"shortName": "Graubünden",
+					"longName": "Kanton Graubünden"
+				},
+				"en_US": {
+					"shortName": "Graubünden",
+					"longName": "Canton of Graubünden"
+				}
+			}
+		},
+		"JU": {
+			"locales": {
+				"fr_CH": {
+					"shortName": "Jura",
+					"longName": "République et Canton du Jura"
+				},
+				"en_US": {
+					"shortName": "Jura",
+					"longName": "Republic and Canton of the Jura"
+				}
+			}
+		},
+		"LU": {
+			"locales": {
+				"de_CH": {
+					"shortName": "Luzern",
+					"longName": "Kanton Luzern"
+				},
+				"en_US": {
+					"shortName": "Lucerne",
+					"longName": "Canton of Lucerne"
+				}
+			}
+		},
+		"NE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Neuchâtel",
+					"longName": "Republic and Canton of Neuchâtel"
+				},
+				"fr_CH": {
+					"shortName": "Neuchâtel",
+					"longName": "République et Canton de Neuchâtel"
+				}
+			}
+		},
+		"NW": {
+			"locales": {
+				"en_US": {
+					"shortName": "Nidwalden",
+					"longName": "Canton of Nidwalden"
+				},
+				"de_CH": {
+					"shortName": "Nidwalden",
+					"longName": "Kanton Nidwalden"
+				}
+			}
+		},
+		"OW": {
+			"locales": {
+				"en_US": {
+					"shortName": "Obwalden",
+					"longName": "Canton of Obwalden"
+				},
+				"de_CH": {
+					"shortName": "Obwalden",
+					"longName": "Kanton Obwalden"
+				}
+			}
+		},
+		"SG": {
+			"locales": {
+				"en_US": {
+					"shortName": "Sankt Gallen",
+					"longName": "Canton of St. Gallen"
+				},
+				"de_CH": {
+					"shortName": "Sankt Gallen",
+					"longName": "Kanton St. Gallen"
+				}
+			}
+		},
+		"SH": {
+			"locales": {
+				"en_US": {
+					"shortName": "Schaffhausen",
+					"longName": "Canton of Schaffhausen"
+				},
+				"de_CH": {
+					"shortName": "Schaffhausen",
+					"longName": "Kanton Schaffhausen"
+				}
+			}
+		},
+		"SO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Solothurn",
+					"longName": "Canton of Solothurn"
+				},
+				"de_CH": {
+					"shortName": "Solothurn",
+					"longName": "Kanton Solothurn"
+				}
+			}
+		},
+		"SZ": {
+			"locales": {
+				"de_CH": {
+					"shortName": "Schwyz",
+					"longName": "Kanton Schwyz"
+				},
+				"en_US": {
+					"shortName": "Schwyz",
+					"longName": "Canton of Schwyz"
+				}
+			}
+		},
+		"TG": {
+			"locales": {
+				"en_US": {
+					"shortName": "Thurgau",
+					"longName": "Canton of Thurgau"
+				},
+				"de_CH": {
+					"shortName": "Thurgau",
+					"longName": "Kanton Thurgau"
+				}
+			}
+		},
+		"TI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ticino",
+					"longName": "Republic and Canton of Ticino"
+				},
+				"it_CH": {
+					"shortName": "Ticino",
+					"longName": "Repubblica e Cantone Ticino"
+				}
+			}
+		},
+		"UR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Uri",
+					"longName": "Canton of Uri"
+				},
+				"de_CH": {
+					"shortName": "Uri",
+					"longName": "Kanton Uri"
+				}
+			}
+		},
+		"VD": {
+			"locales": {
+				"fr_CH": {
+					"shortName": "Vaud",
+					"longName": "Canton de Vaud"
+				},
+				"en_US": {
+					"shortName": "Vaud",
+					"longName": "Canton of Vaud"
+				}
+			}
+		},
+		"VS": {
+			"locales": {
+				"de_CH": {
+					"shortName": "Valais",
+					"longName": "Kanton Wallis"
+				},
+				"en_US": {
+					"shortName": "Valais",
+					"longName": "Canton of Valais"
+				}
+			}
+		},
+		"ZG": {
+			"locales": {
+				"en_US": {
+					"shortName": "Zug",
+					"longName": "Canton of Zug"
+				},
+				"de_CH": {
+					"shortName": "Zug",
+					"longName": "Kanton Zug"
+				}
+			}
+		},
+		"ZH": {
+			"locales": {
+				"en_US": {
+					"shortName": "Zürich",
+					"longName": "Canton of Zürich"
+				},
+				"de_CH": {
+					"shortName": "Zürich",
+					"longName": "Kanton Zürich"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/de_CH",
+		"id": "de_CH"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Switzerland",
+			"longName": "Swiss Confederation"
+		},
+		"de_CH": {
+			"shortName": "Schweiz",
+			"longName": "Schweizerische Eidgenossenschaft"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

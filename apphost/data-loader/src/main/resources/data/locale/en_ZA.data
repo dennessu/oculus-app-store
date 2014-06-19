@@ -1,0 +1,11 @@
+﻿{
+  "localeCode": "en_ZA",
+  "shortName": "English (ZA)",
+  "longName": "English (South Africa)",
+  "localeName": "English (ZA)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

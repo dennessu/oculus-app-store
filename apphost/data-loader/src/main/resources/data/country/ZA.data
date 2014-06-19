@@ -1,0 +1,102 @@
+﻿{
+	"countryCode": "ZA",
+	"defaultLocale": {
+		"href": "/v1/locales/en_ZA",
+		"id": "en_ZA"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/ZAR",
+		"id": "ZAR"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/FPB",
+		"id": "FPB"
+	}],
+	"subCountries": {
+		"EC": {
+			"locales": {
+				"en_ZA": {
+					"shortName": "EC",
+					"longName": "Eastern Cape"
+				}
+			}
+		},
+		"FS": {
+			"locales": {
+				"en_ZA": {
+					"shortName": "FS",
+					"longName": "Free State"
+				}
+			}
+		},
+		"GT": {
+			"locales": {
+				"en_ZA": {
+					"shortName": "GT",
+					"longName": "Gauteng"
+				}
+			}
+		},
+		"LP": {
+			"locales": {
+				"en_ZA": {
+					"shortName": "LP",
+					"longName": "Limpopo"
+				}
+			}
+		},
+		"MP": {
+			"locales": {
+				"en_ZA": {
+					"shortName": "MP",
+					"longName": "Mpumalanga"
+				}
+			}
+		},
+		"NC": {
+			"locales": {
+				"en_ZA": {
+					"shortName": "NC",
+					"longName": "Northern Cape"
+				}
+			}
+		},
+		"NL": {
+			"locales": {
+				"en_ZA": {
+					"shortName": "NL",
+					"longName": "KwaZulu-Natal"
+				}
+			}
+		},
+		"NW": {
+			"locales": {
+				"en_ZA": {
+					"shortName": "NW",
+					"longName": "North West"
+				}
+			}
+		},
+		"WC": {
+			"locales": {
+				"en_ZA": {
+					"shortName": "WC",
+					"longName": "Western Cape"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_ZA",
+		"id": "en_ZA"
+	}],
+	"locales": {
+		"en_ZA": {
+			"shortName": "South Africa",
+			"longName": "Republic of South Africa"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

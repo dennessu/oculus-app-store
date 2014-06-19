@@ -1,16 +1,16 @@
 ﻿{
 	"locales": {
-		"en_US": {
-			"shortName": "USD",
-			"longName": "US Dollar"
+		"en_SG": {
+			"shortName": "SGD",
+			"longName": "Singapore dollar"
 		}
 	},
 	"countries": {
-		"href": "/v1/countries?defaultCurrencyId=USD",
+		"href": "/v1/countries?defaultCurrencyId=SGD",
 		"id": null
 	},
-	"currencyCode": "USD",
-	"symbol": "$",
+	"currencyCode": "SGD",
+	"symbol": "S$",
 	"symbolPosition": "BEFORE",
 	"numberAfterDecimal": "2",
 	"minimalAuthorizeAmount": "1",

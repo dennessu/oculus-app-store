@@ -1,16 +1,16 @@
 ﻿{
 	"locales": {
-		"en_US": {
-			"shortName": "USD",
-			"longName": "US Dollar"
+		"en_SG": {
+			"shortName": "MYR",
+			"longName": "Malaysian ringgit"
 		}
 	},
 	"countries": {
-		"href": "/v1/countries?defaultCurrencyId=USD",
+		"href": "/v1/countries?defaultCurrencyId=MYR",
 		"id": null
 	},
-	"currencyCode": "USD",
-	"symbol": "$",
+	"currencyCode": "MYR",
+	"symbol": "RM",
 	"symbolPosition": "BEFORE",
 	"numberAfterDecimal": "2",
 	"minimalAuthorizeAmount": "1",

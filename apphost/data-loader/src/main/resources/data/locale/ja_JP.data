@@ -1,0 +1,11 @@
+﻿{
+  "localeCode": "ja_JP",
+  "shortName": "Japanese (JP)",
+  "longName": "Japanese (Japan)",
+  "localeName": "Japanese (JP)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

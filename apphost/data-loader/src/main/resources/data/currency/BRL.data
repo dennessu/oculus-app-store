@@ -1,0 +1,24 @@
+﻿{
+	"locales": {
+		"en_US": {
+			"shortName": "BRL",
+			"longName": "Brazilian real"
+		},
+		"pt_BR": {
+			"shortName": "real brasileiro",
+			"longName": "real brasileiro"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=BRL",
+		"id": null
+	},
+	"currencyCode": "BRL",
+	"symbol": "R$",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

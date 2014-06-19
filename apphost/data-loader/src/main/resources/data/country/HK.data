@@ -1,0 +1,251 @@
+﻿{
+	"countryCode": "HK",
+	"defaultLocale": {
+		"href": "/v1/locales/zh_HK",
+		"id": "zh_HK"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/HKD",
+		"id": "HKD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"01": {
+			"locales": {
+				"zh_HK": {
+					"shortName": "離島",
+					"longName": "離島"
+				},
+				"en_HK": {
+					"shortName": "Islands",
+					"longName": "Islands"
+				}
+			}
+		},
+		"02": {
+			"locales": {
+				"en_HK": {
+					"shortName": "Kwai Tsing ",
+					"longName": "Kwai Tsing "
+				},
+				"zh_HK": {
+					"shortName": "葵青",
+					"longName": "葵青"
+				}
+			}
+		},
+		"03": {
+			"locales": {
+				"zh_HK": {
+					"shortName": "北",
+					"longName": "北"
+				},
+				"en_HK": {
+					"shortName": "North",
+					"longName": "North"
+				}
+			}
+		},
+		"04": {
+			"locales": {
+				"zh_HK": {
+					"shortName": "西貢",
+					"longName": "西貢"
+				},
+				"en_HK": {
+					"shortName": "Sai Kung",
+					"longName": "Sai Kung"
+				}
+			}
+		},
+		"05": {
+			"locales": {
+				"zh_HK": {
+					"shortName": "沙田",
+					"longName": "沙田"
+				},
+				"en_HK": {
+					"shortName": "Sha Tin",
+					"longName": "Sha Tin"
+				}
+			}
+		},
+		"06": {
+			"locales": {
+				"en_HK": {
+					"shortName": "Tai Po",
+					"longName": "Tai Po"
+				},
+				"zh_HK": {
+					"shortName": "大埔",
+					"longName": "大埔"
+				}
+			}
+		},
+		"07": {
+			"locales": {
+				"en_HK": {
+					"shortName": "Tsuen Wan",
+					"longName": "Tsuen Wan"
+				},
+				"zh_HK": {
+					"shortName": "荃灣",
+					"longName": "荃灣"
+				}
+			}
+		},
+		"08": {
+			"locales": {
+				"en_HK": {
+					"shortName": "Tuen Mun",
+					"longName": "Tuen Mun"
+				},
+				"zh_HK": {
+					"shortName": "屯門",
+					"longName": "屯門"
+				}
+			}
+		},
+		"09": {
+			"locales": {
+				"en_HK": {
+					"shortName": "Yuen Long",
+					"longName": "Yuen Long"
+				},
+				"zh_HK": {
+					"shortName": "元朗",
+					"longName": "元朗"
+				}
+			}
+		},
+		"10": {
+			"locales": {
+				"en_HK": {
+					"shortName": "Sham Shui Po",
+					"longName": "Sham Shui Po"
+				},
+				"zh_HK": {
+					"shortName": "深水埗",
+					"longName": "深水埗"
+				}
+			}
+		},
+		"11": {
+			"locales": {
+				"en_HK": {
+					"shortName": "Kowloon City",
+					"longName": "Kowloon City"
+				},
+				"zh_HK": {
+					"shortName": "九龍城",
+					"longName": "九龍城"
+				}
+			}
+		},
+		"12": {
+			"locales": {
+				"zh_HK": {
+					"shortName": "觀塘",
+					"longName": "觀塘"
+				},
+				"en_HK": {
+					"shortName": "Kwun Tong",
+					"longName": "Kwun Tong"
+				}
+			}
+		},
+		"13": {
+			"locales": {
+				"en_HK": {
+					"shortName": "Wong Tai Sin",
+					"longName": "Wong Tai Sin"
+				},
+				"zh_HK": {
+					"shortName": "黃大仙",
+					"longName": "黃大仙"
+				}
+			}
+		},
+		"14": {
+			"locales": {
+				"en_HK": {
+					"shortName": "Yau Tsim Mong",
+					"longName": "Yau Tsim Mong"
+				},
+				"zh_HK": {
+					"shortName": "油尖旺",
+					"longName": "油尖旺"
+				}
+			}
+		},
+		"15": {
+			"locales": {
+				"en_HK": {
+					"shortName": "Central and Western",
+					"longName": "Central and Western"
+				},
+				"zh_HK": {
+					"shortName": "中西",
+					"longName": "中西"
+				}
+			}
+		},
+		"16": {
+			"locales": {
+				"en_HK": {
+					"shortName": "Eastern",
+					"longName": "Eastern"
+				},
+				"zh_HK": {
+					"shortName": "東",
+					"longName": "東"
+				}
+			}
+		},
+		"17": {
+			"locales": {
+				"en_HK": {
+					"shortName": "Southern",
+					"longName": "Southern"
+				},
+				"zh_HK": {
+					"shortName": "南",
+					"longName": "南"
+				}
+			}
+		},
+		"18": {
+			"locales": {
+				"zh_HK": {
+					"shortName": "灣仔",
+					"longName": "灣仔"
+				},
+				"en_HK": {
+					"shortName": "Wan Chai",
+					"longName": "Wan Chai"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_HK",
+		"id": "en_HK"
+	},
+	{
+		"href": "/v1/locales/zh_HK",
+		"id": "zh_HK"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "HongKong",
+			"longName": "HongKong"
+		},
+		"zh_HK": {
+			"shortName": "香港",
+			"longName": "香港"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

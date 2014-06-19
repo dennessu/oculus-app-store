@@ -1,15 +1,15 @@
 ﻿{
 	"locales": {
-		"en_US": {
-			"shortName": "USD",
-			"longName": "US Dollar"
+		"en_AU": {
+			"shortName": "AUD",
+			"longName": "Australian dollar"
 		}
 	},
 	"countries": {
-		"href": "/v1/countries?defaultCurrencyId=USD",
+		"href": "/v1/countries?defaultCurrencyId=AUD",
 		"id": null
 	},
-	"currencyCode": "USD",
+	"currencyCode": "AUD",
 	"symbol": "$",
 	"symbolPosition": "BEFORE",
 	"numberAfterDecimal": "2",

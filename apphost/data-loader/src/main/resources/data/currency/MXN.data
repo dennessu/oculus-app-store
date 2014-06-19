@@ -1,15 +1,19 @@
 ﻿{
 	"locales": {
 		"en_US": {
-			"shortName": "USD",
-			"longName": "US Dollar"
+			"shortName": "MXN",
+			"longName": "Mexican peso"
+		},
+		"es_MX": {
+			"shortName": "Mexican peso",
+			"longName": "Mexican peso"
 		}
 	},
 	"countries": {
-		"href": "/v1/countries?defaultCurrencyId=USD",
+		"href": "/v1/countries?defaultCurrencyId=MXN",
 		"id": null
 	},
-	"currencyCode": "USD",
+	"currencyCode": "MXN",
 	"symbol": "$",
 	"symbolPosition": "BEFORE",
 	"numberAfterDecimal": "2",

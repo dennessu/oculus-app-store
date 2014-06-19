@@ -1,0 +1,24 @@
+﻿{
+	"locales": {
+		"en_US": {
+			"shortName": "PLN",
+			"longName": "Polish złoty"
+		},
+		"pl_PL": {
+			"shortName": "Polski złoty",
+			"longName": "Polski złoty"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=PLN",
+		"id": null
+	},
+	"currencyCode": "PLN",
+	"symbol": "zł",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

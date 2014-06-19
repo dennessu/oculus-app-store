@@ -13,7 +13,14 @@
         "priceType": "CUSTOM",
         "priceTier": null,
         "prices": {
-            "US": {"USD": 19.99},
+            "CN": {"CNY": 50.00},
+            "US": {"USD": 10.00},
+            "DE": {"EUR": 11.00},
+            "FR": {"EUR": 11.00},
+            "NL": {"EUR": 11.00},
+            "RU": {"RUB": 110.00},
+            "MX": {"MXN": 12.00},
+            "KR": {"KRW": 1100},
             "JP": {"JPY": 1000}
         }
     },

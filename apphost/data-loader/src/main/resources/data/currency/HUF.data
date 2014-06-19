@@ -1,0 +1,24 @@
+﻿{
+	"locales": {
+		"en_US": {
+			"shortName": "HUF",
+			"longName": "Hungarian forint"
+		},
+		"hu_HU": {
+			"shortName": "Magyar forint",
+			"longName": "Magyar forint"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=HUF",
+		"id": null
+	},
+	"currencyCode": "HUF",
+	"symbol": "Ft",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

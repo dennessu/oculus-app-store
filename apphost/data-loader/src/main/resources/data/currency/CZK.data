@@ -1,0 +1,24 @@
+﻿{
+	"locales": {
+		"en_US": {
+			"shortName": "CZK",
+			"longName": "Czech koruna"
+		},
+		"cs_CZ": {
+			"shortName": "koruna česká",
+			"longName": "koruna česká"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=CZK",
+		"id": null
+	},
+	"currencyCode": "CZK",
+	"symbol": "Kč",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,20 @@
+﻿{
+	"locales": {
+		"en_SG": {
+			"shortName": "PHP",
+			"longName": "Philippine peso"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=PHP",
+		"id": null
+	},
+	"currencyCode": "PHP",
+	"symbol": "₱",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

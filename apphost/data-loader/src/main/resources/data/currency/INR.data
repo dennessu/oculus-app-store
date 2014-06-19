@@ -1,16 +1,16 @@
 ﻿{
 	"locales": {
-		"en_US": {
-			"shortName": "USD",
-			"longName": "US Dollar"
+		"en_IN": {
+			"shortName": "INR",
+			"longName": "Indian rupee"
 		}
 	},
 	"countries": {
-		"href": "/v1/countries?defaultCurrencyId=USD",
+		"href": "/v1/countries?defaultCurrencyId=INR",
 		"id": null
 	},
-	"currencyCode": "USD",
-	"symbol": "$",
+	"currencyCode": "INR",
+	"symbol": "₹",
 	"symbolPosition": "BEFORE",
 	"numberAfterDecimal": "2",
 	"minimalAuthorizeAmount": "1",

@@ -1,0 +1,11 @@
+﻿{
+  "localeCode": "de_CH",
+  "shortName": "Germany (CH)",
+  "longName": "Germany (Switzerland)",
+  "localeName": "Germany (CH)",
+  "fallbackLocale": {
+    "href": "/v1/locales/de_DE",
+    "id": "de_DE"
+  },
+  "futureExpansion": {}
+}

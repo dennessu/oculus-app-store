@@ -1,0 +1,24 @@
+﻿{
+	"locales": {
+		"en_US": {
+			"shortName": "VND",
+			"longName": "Vietnamese dong"
+		},
+		"vi_VN": {
+			"shortName": "đồng Việt Nam",
+			"longName": "đồng Việt Nam"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=VND",
+		"id": null
+	},
+	"currencyCode": "VND",
+	"symbol": "₫",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,24 @@
+﻿{
+	"locales": {
+		"en_US": {
+			"shortName": "RON",
+			"longName": "Romanian leu"
+		},
+		"ro_RO": {
+			"shortName": "Leu românesc",
+			"longName": "Leu românesc"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=RON",
+		"id": null
+	},
+	"currencyCode": "RON",
+	"symbol": "RON",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

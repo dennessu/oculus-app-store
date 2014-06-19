@@ -1,0 +1,1878 @@
+﻿{
+	"countryCode": "GB",
+	"defaultLocale": {
+		"href": "/v1/locales/en_GB",
+		"id": "en_GB"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/GBP",
+		"id": "GBP"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/PEGI",
+		"id": "PEGI"
+	}],
+	"subCountries": {
+		"ABD": {
+			"locales": {
+				"en_GB": {
+					"shortName": "ABD",
+					"longName": "Aberdeenshire"
+				}
+			}
+		},
+		"ABE": {
+			"locales": {
+				"en_GB": {
+					"shortName": "ABE",
+					"longName": "Aberdeen City"
+				}
+			}
+		},
+		"AGB": {
+			"locales": {
+				"en_GB": {
+					"shortName": "AGB",
+					"longName": "Argyll and Bute"
+				}
+			}
+		},
+		"AGY": {
+			"locales": {
+				"en_GB": {
+					"shortName": "AGY",
+					"longName": "Isle of Anglesey"
+				}
+			}
+		},
+		"ANS": {
+			"locales": {
+				"en_GB": {
+					"shortName": "ANS",
+					"longName": "Angus"
+				}
+			}
+		},
+		"ANT": {
+			"locales": {
+				"en_GB": {
+					"shortName": "ANT",
+					"longName": "Antrim"
+				}
+			}
+		},
+		"ARD": {
+			"locales": {
+				"en_GB": {
+					"shortName": "ARD",
+					"longName": "Ards"
+				}
+			}
+		},
+		"ARM": {
+			"locales": {
+				"en_GB": {
+					"shortName": "ARM",
+					"longName": "Armagh"
+				}
+			}
+		},
+		"BAS": {
+			"locales": {
+				"en_GB": {
+					"shortName": "BAS",
+					"longName": "Bath and North East Somerset"
+				}
+			}
+		},
+		"BBD": {
+			"locales": {
+				"en_GB": {
+					"shortName": "BBD",
+					"longName": "Blackburn with Darwen"
+				}
+			}
+		},
+		"BDF": {
+			"locales": {
+				"en_GB": {
+					"shortName": "BDF",
+					"longName": "Bedford"
+				}
+			}
+		},
+		"BDG": {
+			"locales": {
+				"en_GB": {
+					"shortName": "BDG",
+					"longName": "Barking and Dagenham"
+				}
+			}
+		},
+		"BEN": {
+			"locales": {
+				"en_GB": {
+					"shortName": "BEN",
+					"longName": "Brent"
+				}
+			}
+		},
+		"BEX": {
+			"locales": {
+				"en_GB": {
+					"shortName": "BEX",
+					"longName": "Bexley"
+				}
+			}
+		},
+		"BFS": {
+			"locales": {
+				"en_GB": {
+					"shortName": "BFS",
+					"longName": "Belfast"
+				}
+			}
+		},
+		"BGE": {
+			"locales": {
+				"en_GB": {
+					"shortName": "BGE",
+					"longName": "Bridgend"
+				}
+			}
+		},
+		"BGW": {
+			"locales": {
+				"en_GB": {
+					"shortName": "BGW",
+					"longName": "Blaenau Gwent"
+				}
+			}
+		},
+		"BIR": {
+			"locales": {
+				"en_GB": {
+					"shortName": "BIR",
+					"longName": "Birmingham"
+				}
+			}
+		},
+		"BKM": {
+			"locales": {
+				"en_GB": {
+					"shortName": "BKM",
+					"longName": "Buckinghamshire"
+				}
+			}
+		},
+		"BLA": {
+			"locales": {
+				"en_GB": {
+					"shortName": "BLA",
+					"longName": "Ballymena"
+				}
+			}
+		},
+		"BLY": {
+			"locales": {
+				"en_GB": {
+					"shortName": "BLY",
+					"longName": "Ballymoney"
+				}
+			}
+		},
+		"BMH": {
+			"locales": {
+				"en_GB": {
+					"shortName": "BMH",
+					"longName": "Bournemouth"
+				}
+			}
+		},
+		"BNB": {
+			"locales": {
+				"en_GB": {
+					"shortName": "BNB",
+					"longName": "Banbridge"
+				}
+			}
+		},
+		"BNE": {
+			"locales": {
+				"en_GB": {
+					"shortName": "BNE",
+					"longName": "Barnet"
+				}
+			}
+		},
+		"BNH": {
+			"locales": {
+				"en_GB": {
+					"shortName": "BNH",
+					"longName": "Brighton and Hove"
+				}
+			}
+		},
+		"BNS": {
+			"locales": {
+				"en_GB": {
+					"shortName": "BNS",
+					"longName": "Barnsley"
+				}
+			}
+		},
+		"BOL": {
+			"locales": {
+				"en_GB": {
+					"shortName": "BOL",
+					"longName": "Bolton"
+				}
+			}
+		},
+		"BPL": {
+			"locales": {
+				"en_GB": {
+					"shortName": "BPL",
+					"longName": "Blackpool"
+				}
+			}
+		},
+		"BRC": {
+			"locales": {
+				"en_GB": {
+					"shortName": "BRC",
+					"longName": "Bracknell Forest"
+				}
+			}
+		},
+		"BRD": {
+			"locales": {
+				"en_GB": {
+					"shortName": "BRD",
+					"longName": "Bradford"
+				}
+			}
+		},
+		"BRY": {
+			"locales": {
+				"en_GB": {
+					"shortName": "BRY",
+					"longName": "Bromley"
+				}
+			}
+		},
+		"BST": {
+			"locales": {
+				"en_GB": {
+					"shortName": "BST",
+					"longName": "Bristol, City of"
+				}
+			}
+		},
+		"BUR": {
+			"locales": {
+				"en_GB": {
+					"shortName": "BUR",
+					"longName": "Bury"
+				}
+			}
+		},
+		"CAM": {
+			"locales": {
+				"en_GB": {
+					"shortName": "CAM",
+					"longName": "Cambridgeshire"
+				}
+			}
+		},
+		"CAY": {
+			"locales": {
+				"en_GB": {
+					"shortName": "CAY",
+					"longName": "Caerphilly"
+				}
+			}
+		},
+		"CBF": {
+			"locales": {
+				"en_GB": {
+					"shortName": "CBF",
+					"longName": "Central Bedfordshire"
+				}
+			}
+		},
+		"CGN": {
+			"locales": {
+				"en_GB": {
+					"shortName": "CGN",
+					"longName": "Ceredigion"
+				}
+			}
+		},
+		"CGV": {
+			"locales": {
+				"en_GB": {
+					"shortName": "CGV",
+					"longName": "Craigavon"
+				}
+			}
+		},
+		"CHE": {
+			"locales": {
+				"en_GB": {
+					"shortName": "CHE",
+					"longName": "Cheshire East"
+				}
+			}
+		},
+		"CHW": {
+			"locales": {
+				"en_GB": {
+					"shortName": "CHW",
+					"longName": "Cheshire West and Chester"
+				}
+			}
+		},
+		"CKF": {
+			"locales": {
+				"en_GB": {
+					"shortName": "CKF",
+					"longName": "Carrickfergus"
+				}
+			}
+		},
+		"CKT": {
+			"locales": {
+				"en_GB": {
+					"shortName": "CKT",
+					"longName": "Cookstown"
+				}
+			}
+		},
+		"CLD": {
+			"locales": {
+				"en_GB": {
+					"shortName": "CLD",
+					"longName": "Calderdale"
+				}
+			}
+		},
+		"CLK": {
+			"locales": {
+				"en_GB": {
+					"shortName": "CLK",
+					"longName": "Clackmannanshire"
+				}
+			}
+		},
+		"CLR": {
+			"locales": {
+				"en_GB": {
+					"shortName": "CLR",
+					"longName": "Coleraine"
+				}
+			}
+		},
+		"CMA": {
+			"locales": {
+				"en_GB": {
+					"shortName": "CMA",
+					"longName": "Cumbria"
+				}
+			}
+		},
+		"CMD": {
+			"locales": {
+				"en_GB": {
+					"shortName": "CMD",
+					"longName": "Camden"
+				}
+			}
+		},
+		"CMN": {
+			"locales": {
+				"en_GB": {
+					"shortName": "CMN",
+					"longName": "Carmarthenshire"
+				}
+			}
+		},
+		"CON": {
+			"locales": {
+				"en_GB": {
+					"shortName": "CON",
+					"longName": "Cornwall"
+				}
+			}
+		},
+		"COV": {
+			"locales": {
+				"en_GB": {
+					"shortName": "COV",
+					"longName": "Coventry"
+				}
+			}
+		},
+		"CRF": {
+			"locales": {
+				"en_GB": {
+					"shortName": "CRF",
+					"longName": "Cardiff"
+				}
+			}
+		},
+		"CRY": {
+			"locales": {
+				"en_GB": {
+					"shortName": "CRY",
+					"longName": "Croydon"
+				}
+			}
+		},
+		"CSR": {
+			"locales": {
+				"en_GB": {
+					"shortName": "CSR",
+					"longName": "Castlereagh"
+				}
+			}
+		},
+		"CWY": {
+			"locales": {
+				"en_GB": {
+					"shortName": "CWY",
+					"longName": "Conwy"
+				}
+			}
+		},
+		"DAL": {
+			"locales": {
+				"en_GB": {
+					"shortName": "DAL",
+					"longName": "Darlington"
+				}
+			}
+		},
+		"DBY": {
+			"locales": {
+				"en_GB": {
+					"shortName": "DBY",
+					"longName": "Derbyshire"
+				}
+			}
+		},
+		"DEN": {
+			"locales": {
+				"en_GB": {
+					"shortName": "DEN",
+					"longName": "Denbighshire"
+				}
+			}
+		},
+		"DER": {
+			"locales": {
+				"en_GB": {
+					"shortName": "DER",
+					"longName": "Derby"
+				}
+			}
+		},
+		"DEV": {
+			"locales": {
+				"en_GB": {
+					"shortName": "DEV",
+					"longName": "Devon"
+				}
+			}
+		},
+		"DGN": {
+			"locales": {
+				"en_GB": {
+					"shortName": "DGN",
+					"longName": "Dungannon and South Tyrone"
+				}
+			}
+		},
+		"DGY": {
+			"locales": {
+				"en_GB": {
+					"shortName": "DGY",
+					"longName": "Dumfries and Galloway"
+				}
+			}
+		},
+		"DNC": {
+			"locales": {
+				"en_GB": {
+					"shortName": "DNC",
+					"longName": "Doncaster"
+				}
+			}
+		},
+		"DND": {
+			"locales": {
+				"en_GB": {
+					"shortName": "DND",
+					"longName": "Dundee City"
+				}
+			}
+		},
+		"DOR": {
+			"locales": {
+				"en_GB": {
+					"shortName": "DOR",
+					"longName": "Dorset"
+				}
+			}
+		},
+		"DOW": {
+			"locales": {
+				"en_GB": {
+					"shortName": "DOW",
+					"longName": "Down"
+				}
+			}
+		},
+		"DRY": {
+			"locales": {
+				"en_GB": {
+					"shortName": "DRY",
+					"longName": "Derry"
+				}
+			}
+		},
+		"DUD": {
+			"locales": {
+				"en_GB": {
+					"shortName": "DUD",
+					"longName": "Dudley"
+				}
+			}
+		},
+		"DUR": {
+			"locales": {
+				"en_GB": {
+					"shortName": "DUR",
+					"longName": "Durham, County"
+				}
+			}
+		},
+		"EAL": {
+			"locales": {
+				"en_GB": {
+					"shortName": "EAL",
+					"longName": "Ealing"
+				}
+			}
+		},
+		"EAY": {
+			"locales": {
+				"en_GB": {
+					"shortName": "EAY",
+					"longName": "East Ayrshire"
+				}
+			}
+		},
+		"EDH": {
+			"locales": {
+				"en_GB": {
+					"shortName": "EDH",
+					"longName": "Edinburgh, City of"
+				}
+			}
+		},
+		"EDU": {
+			"locales": {
+				"en_GB": {
+					"shortName": "EDU",
+					"longName": "East Dunbartonshire"
+				}
+			}
+		},
+		"ELN": {
+			"locales": {
+				"en_GB": {
+					"shortName": "ELN",
+					"longName": "East Lothian"
+				}
+			}
+		},
+		"ELS": {
+			"locales": {
+				"en_GB": {
+					"shortName": "ELS",
+					"longName": "Eilean Siar"
+				}
+			}
+		},
+		"ENF": {
+			"locales": {
+				"en_GB": {
+					"shortName": "ENF",
+					"longName": "Enfield"
+				}
+			}
+		},
+		"ERW": {
+			"locales": {
+				"en_GB": {
+					"shortName": "ERW",
+					"longName": "East Renfrewshire"
+				}
+			}
+		},
+		"ERY": {
+			"locales": {
+				"en_GB": {
+					"shortName": "ERY",
+					"longName": "East Riding of Yorkshire"
+				}
+			}
+		},
+		"ESS": {
+			"locales": {
+				"en_GB": {
+					"shortName": "ESS",
+					"longName": "Essex"
+				}
+			}
+		},
+		"ESX": {
+			"locales": {
+				"en_GB": {
+					"shortName": "ESX",
+					"longName": "East Sussex"
+				}
+			}
+		},
+		"FAL": {
+			"locales": {
+				"en_GB": {
+					"shortName": "FAL",
+					"longName": "Falkirk"
+				}
+			}
+		},
+		"FER": {
+			"locales": {
+				"en_GB": {
+					"shortName": "FER",
+					"longName": "Fermanagh"
+				}
+			}
+		},
+		"FIF": {
+			"locales": {
+				"en_GB": {
+					"shortName": "FIF",
+					"longName": "Fife"
+				}
+			}
+		},
+		"FLN": {
+			"locales": {
+				"en_GB": {
+					"shortName": "FLN",
+					"longName": "Flintshire"
+				}
+			}
+		},
+		"GAT": {
+			"locales": {
+				"en_GB": {
+					"shortName": "GAT",
+					"longName": "Gateshead"
+				}
+			}
+		},
+		"GLG": {
+			"locales": {
+				"en_GB": {
+					"shortName": "GLG",
+					"longName": "Glasgow City"
+				}
+			}
+		},
+		"GLS": {
+			"locales": {
+				"en_GB": {
+					"shortName": "GLS",
+					"longName": "Gloucestershire"
+				}
+			}
+		},
+		"GRE": {
+			"locales": {
+				"en_GB": {
+					"shortName": "GRE",
+					"longName": "Greenwich"
+				}
+			}
+		},
+		"GWN": {
+			"locales": {
+				"en_GB": {
+					"shortName": "GWN",
+					"longName": "Gwynedd"
+				}
+			}
+		},
+		"HAL": {
+			"locales": {
+				"en_GB": {
+					"shortName": "HAL",
+					"longName": "Halton"
+				}
+			}
+		},
+		"HAM": {
+			"locales": {
+				"en_GB": {
+					"shortName": "HAM",
+					"longName": "Hampshire"
+				}
+			}
+		},
+		"HAV": {
+			"locales": {
+				"en_GB": {
+					"shortName": "HAV",
+					"longName": "Havering"
+				}
+			}
+		},
+		"HCK": {
+			"locales": {
+				"en_GB": {
+					"shortName": "HCK",
+					"longName": "Hackney"
+				}
+			}
+		},
+		"HEF": {
+			"locales": {
+				"en_GB": {
+					"shortName": "HEF",
+					"longName": "Herefordshire"
+				}
+			}
+		},
+		"HIL": {
+			"locales": {
+				"en_GB": {
+					"shortName": "HIL",
+					"longName": "Hillingdon"
+				}
+			}
+		},
+		"HLD": {
+			"locales": {
+				"en_GB": {
+					"shortName": "HLD",
+					"longName": "Highland"
+				}
+			}
+		},
+		"HMF": {
+			"locales": {
+				"en_GB": {
+					"shortName": "HMF",
+					"longName": "Hammersmith and Fulham"
+				}
+			}
+		},
+		"HNS": {
+			"locales": {
+				"en_GB": {
+					"shortName": "HNS",
+					"longName": "Hounslow"
+				}
+			}
+		},
+		"HPL": {
+			"locales": {
+				"en_GB": {
+					"shortName": "HPL",
+					"longName": "Hartlepool"
+				}
+			}
+		},
+		"HRT": {
+			"locales": {
+				"en_GB": {
+					"shortName": "HRT",
+					"longName": "Hertfordshire"
+				}
+			}
+		},
+		"HRW": {
+			"locales": {
+				"en_GB": {
+					"shortName": "HRW",
+					"longName": "Harrow"
+				}
+			}
+		},
+		"HRY": {
+			"locales": {
+				"en_GB": {
+					"shortName": "HRY",
+					"longName": "Haringey"
+				}
+			}
+		},
+		"IOW": {
+			"locales": {
+				"en_GB": {
+					"shortName": "IOW",
+					"longName": "Isle of Wight"
+				}
+			}
+		},
+		"ISL": {
+			"locales": {
+				"en_GB": {
+					"shortName": "ISL",
+					"longName": "Islington"
+				}
+			}
+		},
+		"IVC": {
+			"locales": {
+				"en_GB": {
+					"shortName": "IVC",
+					"longName": "Inverclyde"
+				}
+			}
+		},
+		"KEC": {
+			"locales": {
+				"en_GB": {
+					"shortName": "KEC",
+					"longName": "Kensington and Chelsea"
+				}
+			}
+		},
+		"KEN": {
+			"locales": {
+				"en_GB": {
+					"shortName": "KEN",
+					"longName": "Kent"
+				}
+			}
+		},
+		"KHL": {
+			"locales": {
+				"en_GB": {
+					"shortName": "KHL",
+					"longName": "Kingston upon Hull"
+				}
+			}
+		},
+		"KIR": {
+			"locales": {
+				"en_GB": {
+					"shortName": "KIR",
+					"longName": "Kirklees"
+				}
+			}
+		},
+		"KTT": {
+			"locales": {
+				"en_GB": {
+					"shortName": "KTT",
+					"longName": "Kingston upon Thames"
+				}
+			}
+		},
+		"KWL": {
+			"locales": {
+				"en_GB": {
+					"shortName": "KWL",
+					"longName": "Knowsley"
+				}
+			}
+		},
+		"LAN": {
+			"locales": {
+				"en_GB": {
+					"shortName": "LAN",
+					"longName": "Lancashire"
+				}
+			}
+		},
+		"LBH": {
+			"locales": {
+				"en_GB": {
+					"shortName": "LBH",
+					"longName": "Lambeth"
+				}
+			}
+		},
+		"LCE": {
+			"locales": {
+				"en_GB": {
+					"shortName": "LCE",
+					"longName": "Leicester"
+				}
+			}
+		},
+		"LDS": {
+			"locales": {
+				"en_GB": {
+					"shortName": "LDS",
+					"longName": "Leeds"
+				}
+			}
+		},
+		"LEC": {
+			"locales": {
+				"en_GB": {
+					"shortName": "LEC",
+					"longName": "Leicestershire"
+				}
+			}
+		},
+		"LEW": {
+			"locales": {
+				"en_GB": {
+					"shortName": "LEW",
+					"longName": "Lewisham"
+				}
+			}
+		},
+		"LIN": {
+			"locales": {
+				"en_GB": {
+					"shortName": "LIN",
+					"longName": "Lincolnshire"
+				}
+			}
+		},
+		"LIV": {
+			"locales": {
+				"en_GB": {
+					"shortName": "LIV",
+					"longName": "Liverpool"
+				}
+			}
+		},
+		"LMV": {
+			"locales": {
+				"en_GB": {
+					"shortName": "LMV",
+					"longName": "Limavady"
+				}
+			}
+		},
+		"LND": {
+			"locales": {
+				"en_GB": {
+					"shortName": "LND",
+					"longName": "London, City of"
+				}
+			}
+		},
+		"LRN": {
+			"locales": {
+				"en_GB": {
+					"shortName": "LRN",
+					"longName": "Larne"
+				}
+			}
+		},
+		"LSB": {
+			"locales": {
+				"en_GB": {
+					"shortName": "LSB",
+					"longName": "Lisburn"
+				}
+			}
+		},
+		"LUT": {
+			"locales": {
+				"en_GB": {
+					"shortName": "LUT",
+					"longName": "Luton"
+				}
+			}
+		},
+		"MAN": {
+			"locales": {
+				"en_GB": {
+					"shortName": "MAN",
+					"longName": "Manchester"
+				}
+			}
+		},
+		"MDB": {
+			"locales": {
+				"en_GB": {
+					"shortName": "MDB",
+					"longName": "Middlesbrough"
+				}
+			}
+		},
+		"MDW": {
+			"locales": {
+				"en_GB": {
+					"shortName": "MDW",
+					"longName": "Medway"
+				}
+			}
+		},
+		"MFT": {
+			"locales": {
+				"en_GB": {
+					"shortName": "MFT",
+					"longName": "Magherafelt"
+				}
+			}
+		},
+		"MIK": {
+			"locales": {
+				"en_GB": {
+					"shortName": "MIK",
+					"longName": "Milton Keynes"
+				}
+			}
+		},
+		"MLN": {
+			"locales": {
+				"en_GB": {
+					"shortName": "MLN",
+					"longName": "Midlothian"
+				}
+			}
+		},
+		"MON": {
+			"locales": {
+				"en_GB": {
+					"shortName": "MON",
+					"longName": "Monmouthshire"
+				}
+			}
+		},
+		"MRT": {
+			"locales": {
+				"en_GB": {
+					"shortName": "MRT",
+					"longName": "Merton"
+				}
+			}
+		},
+		"MRY": {
+			"locales": {
+				"en_GB": {
+					"shortName": "MRY",
+					"longName": "Moray"
+				}
+			}
+		},
+		"MTY": {
+			"locales": {
+				"en_GB": {
+					"shortName": "MTY",
+					"longName": "Merthyr Tydfil"
+				}
+			}
+		},
+		"MYL": {
+			"locales": {
+				"en_GB": {
+					"shortName": "MYL",
+					"longName": "Moyle"
+				}
+			}
+		},
+		"NAY": {
+			"locales": {
+				"en_GB": {
+					"shortName": "NAY",
+					"longName": "North Ayrshire"
+				}
+			}
+		},
+		"NBL": {
+			"locales": {
+				"en_GB": {
+					"shortName": "NBL",
+					"longName": "Northumberland"
+				}
+			}
+		},
+		"NDN": {
+			"locales": {
+				"en_GB": {
+					"shortName": "NDN",
+					"longName": "North Down"
+				}
+			}
+		},
+		"NEL": {
+			"locales": {
+				"en_GB": {
+					"shortName": "NEL",
+					"longName": "North East Lincolnshire"
+				}
+			}
+		},
+		"NET": {
+			"locales": {
+				"en_GB": {
+					"shortName": "NET",
+					"longName": "Newcastle upon Tyne"
+				}
+			}
+		},
+		"NFK": {
+			"locales": {
+				"en_GB": {
+					"shortName": "NFK",
+					"longName": "Norfolk"
+				}
+			}
+		},
+		"NGM": {
+			"locales": {
+				"en_GB": {
+					"shortName": "NGM",
+					"longName": "Nottingham"
+				}
+			}
+		},
+		"NLK": {
+			"locales": {
+				"en_GB": {
+					"shortName": "NLK",
+					"longName": "North Lanarkshire"
+				}
+			}
+		},
+		"NLN": {
+			"locales": {
+				"en_GB": {
+					"shortName": "NLN",
+					"longName": "North Lincolnshire"
+				}
+			}
+		},
+		"NSM": {
+			"locales": {
+				"en_GB": {
+					"shortName": "NSM",
+					"longName": "North Somerset"
+				}
+			}
+		},
+		"NTA": {
+			"locales": {
+				"en_GB": {
+					"shortName": "NTA",
+					"longName": "Newtownabbey"
+				}
+			}
+		},
+		"NTH": {
+			"locales": {
+				"en_GB": {
+					"shortName": "NTH",
+					"longName": "Northamptonshire"
+				}
+			}
+		},
+		"NTL": {
+			"locales": {
+				"en_GB": {
+					"shortName": "NTL",
+					"longName": "Neath Port Talbot"
+				}
+			}
+		},
+		"NTT": {
+			"locales": {
+				"en_GB": {
+					"shortName": "NTT",
+					"longName": "Nottinghamshire"
+				}
+			}
+		},
+		"NTY": {
+			"locales": {
+				"en_GB": {
+					"shortName": "NTY",
+					"longName": "North Tyneside"
+				}
+			}
+		},
+		"NWM": {
+			"locales": {
+				"en_GB": {
+					"shortName": "NWM",
+					"longName": "Newham"
+				}
+			}
+		},
+		"NWP": {
+			"locales": {
+				"en_GB": {
+					"shortName": "NWP",
+					"longName": "Newport"
+				}
+			}
+		},
+		"NYK": {
+			"locales": {
+				"en_GB": {
+					"shortName": "NYK",
+					"longName": "North Yorkshire"
+				}
+			}
+		},
+		"NYM": {
+			"locales": {
+				"en_GB": {
+					"shortName": "NYM",
+					"longName": "Newry and Mourne District"
+				}
+			}
+		},
+		"OLD": {
+			"locales": {
+				"en_GB": {
+					"shortName": "OLD",
+					"longName": "Oldham"
+				}
+			}
+		},
+		"OMH": {
+			"locales": {
+				"en_GB": {
+					"shortName": "OMH",
+					"longName": "Omagh"
+				}
+			}
+		},
+		"ORK": {
+			"locales": {
+				"en_GB": {
+					"shortName": "ORK",
+					"longName": "Orkney Islands"
+				}
+			}
+		},
+		"OXF": {
+			"locales": {
+				"en_GB": {
+					"shortName": "OXF",
+					"longName": "Oxfordshire"
+				}
+			}
+		},
+		"PEM": {
+			"locales": {
+				"en_GB": {
+					"shortName": "PEM",
+					"longName": "Pembrokeshire"
+				}
+			}
+		},
+		"PKN": {
+			"locales": {
+				"en_GB": {
+					"shortName": "PKN",
+					"longName": "Perth and Kinross"
+				}
+			}
+		},
+		"PLY": {
+			"locales": {
+				"en_GB": {
+					"shortName": "PLY",
+					"longName": "Plymouth"
+				}
+			}
+		},
+		"POL": {
+			"locales": {
+				"en_GB": {
+					"shortName": "POL",
+					"longName": "Poole"
+				}
+			}
+		},
+		"POR": {
+			"locales": {
+				"en_GB": {
+					"shortName": "POR",
+					"longName": "Portsmouth"
+				}
+			}
+		},
+		"POW": {
+			"locales": {
+				"en_GB": {
+					"shortName": "POW",
+					"longName": "Powys"
+				}
+			}
+		},
+		"PTE": {
+			"locales": {
+				"en_GB": {
+					"shortName": "PTE",
+					"longName": "Peterborough"
+				}
+			}
+		},
+		"RCC": {
+			"locales": {
+				"en_GB": {
+					"shortName": "RCC",
+					"longName": "Redcar and Cleveland"
+				}
+			}
+		},
+		"RCH": {
+			"locales": {
+				"en_GB": {
+					"shortName": "RCH",
+					"longName": "Rochdale"
+				}
+			}
+		},
+		"RCT": {
+			"locales": {
+				"en_GB": {
+					"shortName": "RCT",
+					"longName": "Rhondda, Cynon, Taff"
+				}
+			}
+		},
+		"RDB": {
+			"locales": {
+				"en_GB": {
+					"shortName": "RDB",
+					"longName": "Redbridge"
+				}
+			}
+		},
+		"RDG": {
+			"locales": {
+				"en_GB": {
+					"shortName": "RDG",
+					"longName": "Reading"
+				}
+			}
+		},
+		"RFW": {
+			"locales": {
+				"en_GB": {
+					"shortName": "RFW",
+					"longName": "Renfrewshire"
+				}
+			}
+		},
+		"RIC": {
+			"locales": {
+				"en_GB": {
+					"shortName": "RIC",
+					"longName": "Richmond upon Thames"
+				}
+			}
+		},
+		"ROT": {
+			"locales": {
+				"en_GB": {
+					"shortName": "ROT",
+					"longName": "Rotherham"
+				}
+			}
+		},
+		"RUT": {
+			"locales": {
+				"en_GB": {
+					"shortName": "RUT",
+					"longName": "Rutland"
+				}
+			}
+		},
+		"SAW": {
+			"locales": {
+				"en_GB": {
+					"shortName": "SAW",
+					"longName": "Sandwell"
+				}
+			}
+		},
+		"SAY": {
+			"locales": {
+				"en_GB": {
+					"shortName": "SAY",
+					"longName": "South Ayrshire"
+				}
+			}
+		},
+		"SCB": {
+			"locales": {
+				"en_GB": {
+					"shortName": "SCB",
+					"longName": "Scottish Borders, The"
+				}
+			}
+		},
+		"SFK": {
+			"locales": {
+				"en_GB": {
+					"shortName": "SFK",
+					"longName": "Suffolk"
+				}
+			}
+		},
+		"SFT": {
+			"locales": {
+				"en_GB": {
+					"shortName": "SFT",
+					"longName": "Sefton"
+				}
+			}
+		},
+		"SGC": {
+			"locales": {
+				"en_GB": {
+					"shortName": "SGC",
+					"longName": "South Gloucestershire"
+				}
+			}
+		},
+		"SHF": {
+			"locales": {
+				"en_GB": {
+					"shortName": "SHF",
+					"longName": "Sheffield"
+				}
+			}
+		},
+		"SHN": {
+			"locales": {
+				"en_GB": {
+					"shortName": "SHN",
+					"longName": "Saint Helens !St. Helens"
+				}
+			}
+		},
+		"SHR": {
+			"locales": {
+				"en_GB": {
+					"shortName": "SHR",
+					"longName": "Shropshire"
+				}
+			}
+		},
+		"SKP": {
+			"locales": {
+				"en_GB": {
+					"shortName": "SKP",
+					"longName": "Stockport"
+				}
+			}
+		},
+		"SLF": {
+			"locales": {
+				"en_GB": {
+					"shortName": "SLF",
+					"longName": "Salford"
+				}
+			}
+		},
+		"SLG": {
+			"locales": {
+				"en_GB": {
+					"shortName": "SLG",
+					"longName": "Slough"
+				}
+			}
+		},
+		"SLK": {
+			"locales": {
+				"en_GB": {
+					"shortName": "SLK",
+					"longName": "South Lanarkshire"
+				}
+			}
+		},
+		"SND": {
+			"locales": {
+				"en_GB": {
+					"shortName": "SND",
+					"longName": "Sunderland"
+				}
+			}
+		},
+		"SOL": {
+			"locales": {
+				"en_GB": {
+					"shortName": "SOL",
+					"longName": "Solihull"
+				}
+			}
+		},
+		"SOM": {
+			"locales": {
+				"en_GB": {
+					"shortName": "SOM",
+					"longName": "Somerset"
+				}
+			}
+		},
+		"SOS": {
+			"locales": {
+				"en_GB": {
+					"shortName": "SOS",
+					"longName": "Southend-on-Sea"
+				}
+			}
+		},
+		"SRY": {
+			"locales": {
+				"en_GB": {
+					"shortName": "SRY",
+					"longName": "Surrey"
+				}
+			}
+		},
+		"STB": {
+			"locales": {
+				"en_GB": {
+					"shortName": "STB",
+					"longName": "Strabane"
+				}
+			}
+		},
+		"STE": {
+			"locales": {
+				"en_GB": {
+					"shortName": "STE",
+					"longName": "Stoke-on-Trent"
+				}
+			}
+		},
+		"STG": {
+			"locales": {
+				"en_GB": {
+					"shortName": "STG",
+					"longName": "Stirling"
+				}
+			}
+		},
+		"STH": {
+			"locales": {
+				"en_GB": {
+					"shortName": "STH",
+					"longName": "Southampton"
+				}
+			}
+		},
+		"STN": {
+			"locales": {
+				"en_GB": {
+					"shortName": "STN",
+					"longName": "Sutton"
+				}
+			}
+		},
+		"STS": {
+			"locales": {
+				"en_GB": {
+					"shortName": "STS",
+					"longName": "Staffordshire"
+				}
+			}
+		},
+		"STT": {
+			"locales": {
+				"en_GB": {
+					"shortName": "STT",
+					"longName": "Stockton-on-Tees"
+				}
+			}
+		},
+		"STY": {
+			"locales": {
+				"en_GB": {
+					"shortName": "STY",
+					"longName": "South Tyneside"
+				}
+			}
+		},
+		"SWA": {
+			"locales": {
+				"en_GB": {
+					"shortName": "SWA",
+					"longName": "Swansea"
+				}
+			}
+		},
+		"SWD": {
+			"locales": {
+				"en_GB": {
+					"shortName": "SWD",
+					"longName": "Swindon"
+				}
+			}
+		},
+		"SWK": {
+			"locales": {
+				"en_GB": {
+					"shortName": "SWK",
+					"longName": "Southwark"
+				}
+			}
+		},
+		"TAM": {
+			"locales": {
+				"en_GB": {
+					"shortName": "TAM",
+					"longName": "Tameside"
+				}
+			}
+		},
+		"TFW": {
+			"locales": {
+				"en_GB": {
+					"shortName": "TFW",
+					"longName": "Telford and Wrekin"
+				}
+			}
+		},
+		"THR": {
+			"locales": {
+				"en_GB": {
+					"shortName": "THR",
+					"longName": "Thurrock"
+				}
+			}
+		},
+		"TOB": {
+			"locales": {
+				"en_GB": {
+					"shortName": "TOB",
+					"longName": "Torbay"
+				}
+			}
+		},
+		"TOF": {
+			"locales": {
+				"en_GB": {
+					"shortName": "TOF",
+					"longName": "Torfaen"
+				}
+			}
+		},
+		"TRF": {
+			"locales": {
+				"en_GB": {
+					"shortName": "TRF",
+					"longName": "Trafford"
+				}
+			}
+		},
+		"TWH": {
+			"locales": {
+				"en_GB": {
+					"shortName": "TWH",
+					"longName": "Tower Hamlets"
+				}
+			}
+		},
+		"VGL": {
+			"locales": {
+				"en_GB": {
+					"shortName": "VGL",
+					"longName": "Vale of Glamorgan"
+				}
+			}
+		},
+		"WAR": {
+			"locales": {
+				"en_GB": {
+					"shortName": "WAR",
+					"longName": "Warwickshire"
+				}
+			}
+		},
+		"WBK": {
+			"locales": {
+				"en_GB": {
+					"shortName": "WBK",
+					"longName": "West Berkshire"
+				}
+			}
+		},
+		"WDU": {
+			"locales": {
+				"en_GB": {
+					"shortName": "WDU",
+					"longName": "West Dunbartonshire"
+				}
+			}
+		},
+		"WFT": {
+			"locales": {
+				"en_GB": {
+					"shortName": "WFT",
+					"longName": "Waltham Forest"
+				}
+			}
+		},
+		"WGN": {
+			"locales": {
+				"en_GB": {
+					"shortName": "WGN",
+					"longName": "Wigan"
+				}
+			}
+		},
+		"WIL": {
+			"locales": {
+				"en_GB": {
+					"shortName": "WIL",
+					"longName": "Wiltshire"
+				}
+			}
+		},
+		"WKF": {
+			"locales": {
+				"en_GB": {
+					"shortName": "WKF",
+					"longName": "Wakefield"
+				}
+			}
+		},
+		"WLL": {
+			"locales": {
+				"en_GB": {
+					"shortName": "WLL",
+					"longName": "Walsall"
+				}
+			}
+		},
+		"WLN": {
+			"locales": {
+				"en_GB": {
+					"shortName": "WLN",
+					"longName": "West Lothian"
+				}
+			}
+		},
+		"WLV": {
+			"locales": {
+				"en_GB": {
+					"shortName": "WLV",
+					"longName": "Wolverhampton"
+				}
+			}
+		},
+		"WND": {
+			"locales": {
+				"en_GB": {
+					"shortName": "WND",
+					"longName": "Wandsworth"
+				}
+			}
+		},
+		"WNM": {
+			"locales": {
+				"en_GB": {
+					"shortName": "WNM",
+					"longName": "Windsor and Maidenhead"
+				}
+			}
+		},
+		"WOK": {
+			"locales": {
+				"en_GB": {
+					"shortName": "WOK",
+					"longName": "Wokingham"
+				}
+			}
+		},
+		"WOR": {
+			"locales": {
+				"en_GB": {
+					"shortName": "WOR",
+					"longName": "Worcestershire"
+				}
+			}
+		},
+		"WRL": {
+			"locales": {
+				"en_GB": {
+					"shortName": "WRL",
+					"longName": "Wirral"
+				}
+			}
+		},
+		"WRT": {
+			"locales": {
+				"en_GB": {
+					"shortName": "WRT",
+					"longName": "Warrington"
+				}
+			}
+		},
+		"WRX": {
+			"locales": {
+				"en_GB": {
+					"shortName": "WRX",
+					"longName": "Wrexham"
+				}
+			}
+		},
+		"WSM": {
+			"locales": {
+				"en_GB": {
+					"shortName": "WSM",
+					"longName": "Westminster"
+				}
+			}
+		},
+		"WSX": {
+			"locales": {
+				"en_GB": {
+					"shortName": "WSX",
+					"longName": "West Sussex"
+				}
+			}
+		},
+		"YOR": {
+			"locales": {
+				"en_GB": {
+					"shortName": "YOR",
+					"longName": "York"
+				}
+			}
+		},
+		"ZET": {
+			"locales": {
+				"en_GB": {
+					"shortName": "ZET",
+					"longName": "Shetland Islands"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_GB",
+		"id": "en_GB"
+	}],
+	"locales": {
+		"en_GB": {
+			"shortName": "United Kingdom",
+			"longName": "United Kingdom of Great Britain and Northern Ireland"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

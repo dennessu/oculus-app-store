@@ -1,16 +1,16 @@
 ﻿{
 	"locales": {
-		"en_US": {
-			"shortName": "USD",
-			"longName": "US Dollar"
+		"en_ZA": {
+			"shortName": "South African rand",
+			"longName": "South African rand"
 		}
 	},
 	"countries": {
-		"href": "/v1/countries?defaultCurrencyId=USD",
+		"href": "/v1/countries?defaultCurrencyId=ZAR",
 		"id": null
 	},
-	"currencyCode": "USD",
-	"symbol": "$",
+	"currencyCode": "ZAR",
+	"symbol": "R",
 	"symbolPosition": "BEFORE",
 	"numberAfterDecimal": "2",
 	"minimalAuthorizeAmount": "1",

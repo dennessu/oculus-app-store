@@ -1,16 +1,16 @@
 ﻿{
 	"locales": {
-		"en_US": {
-			"shortName": "USD",
-			"longName": "US Dollar"
+		"en_GB": {
+			"shortName": "Pound",
+			"longName": "Pound sterling"
 		}
 	},
 	"countries": {
-		"href": "/v1/countries?defaultCurrencyId=USD",
+		"href": "/v1/countries?defaultCurrencyId=GBP",
 		"id": null
 	},
-	"currencyCode": "USD",
-	"symbol": "$",
+	"currencyCode": "GBP",
+	"symbol": "£",
 	"symbolPosition": "BEFORE",
 	"numberAfterDecimal": "2",
 	"minimalAuthorizeAmount": "1",

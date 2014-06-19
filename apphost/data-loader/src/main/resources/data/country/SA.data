@@ -1,0 +1,187 @@
+﻿{
+	"countryCode": "SA",
+	"defaultLocale": {
+		"href": "/v1/locales/ar_SA",
+		"id": "ar_SA"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/SAR",
+		"id": "SAR"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"01": {
+			"locales": {
+				"ar_SA": {
+					"shortName": "الرياض",
+					"longName": "الرياض"
+				},
+				"en_US": {
+					"shortName": "Riyadh",
+					"longName": "Riyadh"
+				}
+			}
+		},
+		"02": {
+			"locales": {
+				"ar_SA": {
+					"shortName": "مكة المكرمة",
+					"longName": "مكة المكرمة"
+				},
+				"en_US": {
+					"shortName": "Makkah",
+					"longName": "Makkah"
+				}
+			}
+		},
+		"03": {
+			"locales": {
+				"ar_SA": {
+					"shortName": "المدينة المنورة",
+					"longName": "المدينة المنورة"
+				},
+				"en_US": {
+					"shortName": "Madinah",
+					"longName": "Madinah"
+				}
+			}
+		},
+		"04": {
+			"locales": {
+				"ar_SA": {
+					"shortName": "الشرقية",
+					"longName": "الشرقية"
+				},
+				"en_US": {
+					"shortName": "Eastern",
+					"longName": "Eastern"
+				}
+			}
+		},
+		"05": {
+			"locales": {
+				"ar_SA": {
+					"shortName": "القصيم",
+					"longName": "القصيم"
+				},
+				"en_US": {
+					"shortName": "Al-Qsim",
+					"longName": "Al-Qsim"
+				}
+			}
+		},
+		"06": {
+			"locales": {
+				"ar_SA": {
+					"shortName": "حائل",
+					"longName": "حائل"
+				},
+				"en_US": {
+					"shortName": "Ha'il",
+					"longName": "Ha'il"
+				}
+			}
+		},
+		"07": {
+			"locales": {
+				"en_US": {
+					"shortName": "Tabuk",
+					"longName": "Tabuk"
+				},
+				"ar_SA": {
+					"shortName": "تبوك",
+					"longName": "تبوك"
+				}
+			}
+		},
+		"08": {
+			"locales": {
+				"en_US": {
+					"shortName": "Northern Borders",
+					"longName": "Northern Borders"
+				},
+				"ar_SA": {
+					"shortName": "الحدود الشمالية",
+					"longName": "الحدود الشمالية"
+				}
+			}
+		},
+		"09": {
+			"locales": {
+				"en_US": {
+					"shortName": "Jazan",
+					"longName": "Jazan"
+				},
+				"ar_SA": {
+					"shortName": "جازان",
+					"longName": "جازان"
+				}
+			}
+		},
+		"10": {
+			"locales": {
+				"en_US": {
+					"shortName": "Najran",
+					"longName": "Najran"
+				},
+				"ar_SA": {
+					"shortName": "نجران",
+					"longName": "نجران"
+				}
+			}
+		},
+		"11": {
+			"locales": {
+				"en_US": {
+					"shortName": "Al-Bahah",
+					"longName": "Al-Bahah"
+				},
+				"ar_SA": {
+					"shortName": "الباحة",
+					"longName": "الباحة"
+				}
+			}
+		},
+		"12": {
+			"locales": {
+				"en_US": {
+					"shortName": "Al-Jawf",
+					"longName": "Al-Jawf"
+				},
+				"ar_SA": {
+					"shortName": "الجوف",
+					"longName": "الجوف"
+				}
+			}
+		},
+		"14": {
+			"locales": {
+				"ar_SA": {
+					"shortName": "عسير",
+					"longName": "عسير"
+				},
+				"en_US": {
+					"shortName": "Asir",
+					"longName": "Asir"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/ar_SA",
+		"id": "ar_SA"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Saudi Arabia",
+			"longName": "Kingdom of Saudi Arabia"
+		},
+		"ar_SA": {
+			"shortName": "العربية السعودية",
+			"longName": "المملكة العربية السعودية"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

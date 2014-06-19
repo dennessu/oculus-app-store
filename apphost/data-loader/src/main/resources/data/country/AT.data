@@ -1,0 +1,142 @@
+﻿{
+	"countryCode": "AT",
+	"defaultLocale": {
+		"href": "/v1/locales/de_AT",
+		"id": "de_AT"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/EUR",
+		"id": "EUR"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/PEGI",
+		"id": "PEGI"
+	}],
+	"subCountries": {
+		"1": {
+			"locales": {
+				"de_AT": {
+					"shortName": "Burgenland",
+					"longName": "Burgenland"
+				},
+				"en_US": {
+					"shortName": "Burgenland",
+					"longName": "Burgenland"
+				}
+			}
+		},
+		"2": {
+			"locales": {
+				"de_AT": {
+					"shortName": "Kärnten",
+					"longName": "Kärnten"
+				},
+				"en_US": {
+					"shortName": "Carinthia",
+					"longName": "Carinthia"
+				}
+			}
+		},
+		"3": {
+			"locales": {
+				"en_US": {
+					"shortName": "Lower Austria",
+					"longName": "Lower Austria"
+				},
+				"de_AT": {
+					"shortName": "Niederösterreich",
+					"longName": "Niederösterreich"
+				}
+			}
+		},
+		"4": {
+			"locales": {
+				"en_US": {
+					"shortName": "Upper Austria",
+					"longName": "Upper Austria"
+				},
+				"de_AT": {
+					"shortName": "Oberösterreich",
+					"longName": "Oberösterreich"
+				}
+			}
+		},
+		"5": {
+			"locales": {
+				"en_US": {
+					"shortName": "Salzburg",
+					"longName": "Salzburg"
+				},
+				"de_AT": {
+					"shortName": "Salzburg",
+					"longName": "Salzburg"
+				}
+			}
+		},
+		"6": {
+			"locales": {
+				"en_US": {
+					"shortName": "Styria",
+					"longName": "Styria"
+				},
+				"de_AT": {
+					"shortName": "Steiermark",
+					"longName": "Steiermark"
+				}
+			}
+		},
+		"7": {
+			"locales": {
+				"en_US": {
+					"shortName": "Tyrol",
+					"longName": "Tyrol"
+				},
+				"de_AT": {
+					"shortName": "Tirol",
+					"longName": "Tirol"
+				}
+			}
+		},
+		"8": {
+			"locales": {
+				"en_US": {
+					"shortName": "Vorarlberg",
+					"longName": "Vorarlberg"
+				},
+				"de_AT": {
+					"shortName": "Vorarlberg",
+					"longName": "Vorarlberg"
+				}
+			}
+		},
+		"9": {
+			"locales": {
+				"de_AT": {
+					"shortName": "Wien",
+					"longName": "Wien"
+				},
+				"en_US": {
+					"shortName": "Vienna",
+					"longName": "Vienna"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/de_AT",
+		"id": "de_AT"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Austria",
+			"longName": "Republic of Austria"
+		},
+		"de_AT": {
+			"shortName": "Österreich",
+			"longName": "Republik Österreich"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

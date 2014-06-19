@@ -1,0 +1,24 @@
+﻿{
+	"locales": {
+		"en_US": {
+			"shortName": "HRK",
+			"longName": "Croatian kuna"
+		},
+		"hr_HR": {
+			"shortName": "hrvatska kuna",
+			"longName": "hrvatska kuna"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=HRK",
+		"id": null
+	},
+	"currencyCode": "HRK",
+	"symbol": "kn",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

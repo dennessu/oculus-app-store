@@ -1,0 +1,115 @@
+﻿{
+	"countryCode": "AE",
+	"defaultLocale": {
+		"href": "/v1/locales/ar_AE",
+		"id": "ar_AE"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/AED",
+		"id": "AED"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"AJ": {
+			"locales": {
+				"en_US": {
+					"shortName": "AJ",
+					"longName": "Ajman"
+				},
+				"ar_AE": {
+					"shortName": "إمارة عجمانّ",
+					"longName": "إمارة عجمانّ"
+				}
+			}
+		},
+		"AZ": {
+			"locales": {
+				"ar_AE": {
+					"shortName": "أبوظبي",
+					"longName": "أبوظبي"
+				},
+				"en_US": {
+					"shortName": "AZ",
+					"longName": "Abu Dhabi"
+				}
+			}
+		},
+		"DU": {
+			"locales": {
+				"ar_AE": {
+					"shortName": "دبي",
+					"longName": "دبي"
+				},
+				"en_US": {
+					"shortName": "DU",
+					"longName": "Dubai"
+				}
+			}
+		},
+		"FU": {
+			"locales": {
+				"en_US": {
+					"shortName": "FU",
+					"longName": "Al Fujairah"
+				},
+				"ar_AE": {
+					"shortName": "الفجيرة",
+					"longName": "الفجيرة"
+				}
+			}
+		},
+		"RK": {
+			"locales": {
+				"en_US": {
+					"shortName": "RK",
+					"longName": "Ras al-Khaimah"
+				},
+				"ar_AE": {
+					"shortName": "إمارة رأس الخيمة",
+					"longName": "إمارة رأس الخيمة"
+				}
+			}
+		},
+		"SH": {
+			"locales": {
+				"en_US": {
+					"shortName": "SH",
+					"longName": "Sharjah"
+				},
+				"ar_AE": {
+					"shortName": "إمارة الشارقةّ",
+					"longName": "إمارة الشارقةّ"
+				}
+			}
+		},
+		"UQ": {
+			"locales": {
+				"ar_AE": {
+					"shortName": "إمارة أمّ القيوين",
+					"longName": "إمارة أمّ القيوين"
+				},
+				"en_US": {
+					"shortName": "UQ",
+					"longName": "Umm al-Quwain"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/ar_AE",
+		"id": "ar_AE"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "UAE",
+			"longName": "United Arab Emirates"
+		},
+		"ar_AE": {
+			"shortName": "دولة الإمارات العربية المتحدة",
+			"longName": "دولة الإمارات العربية المتحدة"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

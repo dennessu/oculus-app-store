@@ -1,0 +1,151 @@
+﻿{
+	"countryCode": "LT",
+	"defaultLocale": {
+		"href": "/v1/locales/lt_LT",
+		"id": "lt_LT"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/LTL",
+		"id": "LTL"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"AL": {
+			"locales": {
+				"lt_LT": {
+					"shortName": "Alytaus apskritis",
+					"longName": "Alytaus apskritis"
+				},
+				"en_US": {
+					"shortName": "Alytus County",
+					"longName": "Alytus County"
+				}
+			}
+		},
+		"KL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Klaipėda County",
+					"longName": "Klaipėda County"
+				},
+				"lt_LT": {
+					"shortName": "Klaipėdos apskritis",
+					"longName": "Klaipėdos apskritis"
+				}
+			}
+		},
+		"KU": {
+			"locales": {
+				"lt_LT": {
+					"shortName": "Kauno apskritis",
+					"longName": "Kauno apskritis"
+				},
+				"en_US": {
+					"shortName": "Kaunas County",
+					"longName": "Kaunas County"
+				}
+			}
+		},
+		"MR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Marijampolė County",
+					"longName": "Marijampolė County"
+				},
+				"lt_LT": {
+					"shortName": "Marijampolės apskritis",
+					"longName": "Marijampolės apskritis"
+				}
+			}
+		},
+		"PN": {
+			"locales": {
+				"en_US": {
+					"shortName": "Panevėžys County",
+					"longName": "Panevėžys County"
+				},
+				"lt_LT": {
+					"shortName": "Panevėžio apskritis",
+					"longName": "Panevėžio apskritis"
+				}
+			}
+		},
+		"SA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Šiauliai County",
+					"longName": "Šiauliai County"
+				},
+				"lt_LT": {
+					"shortName": "Šiaulių apskritis",
+					"longName": "Šiaulių apskritis"
+				}
+			}
+		},
+		"TA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Šiauliai County",
+					"longName": "Šiauliai County"
+				},
+				"lt_LT": {
+					"shortName": "Tauragės apskritis",
+					"longName": "Tauragės apskritis"
+				}
+			}
+		},
+		"TE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Telšiai County",
+					"longName": "Telšiai County"
+				},
+				"lt_LT": {
+					"shortName": "Telšių apskritis",
+					"longName": "Telšių apskritis"
+				}
+			}
+		},
+		"UT": {
+			"locales": {
+				"en_US": {
+					"shortName": "Utena County",
+					"longName": "Utena County"
+				},
+				"lt_LT": {
+					"shortName": "Utenos apskritis",
+					"longName": "Utenos apskritis"
+				}
+			}
+		},
+		"VL": {
+			"locales": {
+				"lt_LT": {
+					"shortName": "Vilniaus apskritis",
+					"longName": "Vilniaus apskritis"
+				},
+				"en_US": {
+					"shortName": "Vilnius County",
+					"longName": "Vilnius County"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/lt_LT",
+		"id": "lt_LT"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Lithuania",
+			"longName": "Republic of Lithuania"
+		},
+		"lt_LT": {
+			"shortName": "Lietuva",
+			"longName": "Lietuvos Respublika"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

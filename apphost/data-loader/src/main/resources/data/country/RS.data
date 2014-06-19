@@ -1,0 +1,391 @@
+﻿{
+	"countryCode": "RS",
+	"defaultLocale": {
+		"href": "/v1/locales/sr_RS",
+		"id": "sr_RS"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/RSD",
+		"id": "RSD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"00": {
+			"locales": {
+				"sr-RS": {
+					"shortName": "Београд",
+					"longName": "Београд"
+				},
+				"en_US": {
+					"shortName": "Belgrade",
+					"longName": "Belgrade"
+				}
+			}
+		},
+		"01": {
+			"locales": {
+				"en_US": {
+					"shortName": "North Bačka District",
+					"longName": "North Bačka District"
+				},
+				"sr-RS": {
+					"shortName": "Севернобачки округ",
+					"longName": "Севернобачки округ"
+				}
+			}
+		},
+		"02": {
+			"locales": {
+				"en_US": {
+					"shortName": "Central Banat District",
+					"longName": "Central Banat District"
+				},
+				"sr-RS": {
+					"shortName": "Средњебанатски округ",
+					"longName": "Средњебанатски округ"
+				}
+			}
+		},
+		"03": {
+			"locales": {
+				"en_US": {
+					"shortName": "North Banat District",
+					"longName": "North Banat District"
+				},
+				"sr-RS": {
+					"shortName": "Севернобанатски округ",
+					"longName": "Севернобанатски округ"
+				}
+			}
+		},
+		"04": {
+			"locales": {
+				"sr-RS": {
+					"shortName": "Јужнобанатски округ",
+					"longName": "Јужнобанатски округ"
+				},
+				"en_US": {
+					"shortName": "South Banat District",
+					"longName": "South Banat District"
+				}
+			}
+		},
+		"05": {
+			"locales": {
+				"sr-RS": {
+					"shortName": "Западнобачки округ",
+					"longName": "Западнобачки округ"
+				},
+				"en_US": {
+					"shortName": "West Bačka District",
+					"longName": "West Bačka District"
+				}
+			}
+		},
+		"06": {
+			"locales": {
+				"en_US": {
+					"shortName": "South Bačka District",
+					"longName": "South Bačka District"
+				},
+				"sr-RS": {
+					"shortName": "Јужнобачки округ",
+					"longName": "Јужнобачки округ"
+				}
+			}
+		},
+		"07": {
+			"locales": {
+				"en_US": {
+					"shortName": "Srem District",
+					"longName": "Srem District"
+				},
+				"sr-RS": {
+					"shortName": "Сремски округ",
+					"longName": "Сремски округ"
+				}
+			}
+		},
+		"08": {
+			"locales": {
+				"sr-RS": {
+					"shortName": "Мачвански округ",
+					"longName": "Мачвански округ"
+				},
+				"en_US": {
+					"shortName": "Mačva District",
+					"longName": "Mačva District"
+				}
+			}
+		},
+		"09": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kolubara District",
+					"longName": "Kolubara District"
+				},
+				"sr-RS": {
+					"shortName": "Колубарски округ",
+					"longName": "Колубарски округ"
+				}
+			}
+		},
+		"10": {
+			"locales": {
+				"en_US": {
+					"shortName": "Podunavlje District",
+					"longName": "Podunavlje District"
+				},
+				"sr-RS": {
+					"shortName": "Подунавски округ",
+					"longName": "Подунавски округ"
+				}
+			}
+		},
+		"11": {
+			"locales": {
+				"sr-RS": {
+					"shortName": "Браничевски округ",
+					"longName": "Браничевски округ"
+				},
+				"en_US": {
+					"shortName": "Braničevo District",
+					"longName": "Braničevo District"
+				}
+			}
+		},
+		"12": {
+			"locales": {
+				"en_US": {
+					"shortName": "Šumadija District",
+					"longName": "Šumadija District"
+				},
+				"sr-RS": {
+					"shortName": "Шумадијски округ",
+					"longName": "Шумадијски округ"
+				}
+			}
+		},
+		"13": {
+			"locales": {
+				"en_US": {
+					"shortName": "Pomoravlje District",
+					"longName": "Pomoravlje District"
+				},
+				"sr-RS": {
+					"shortName": "Поморавски округ",
+					"longName": "Поморавски округ"
+				}
+			}
+		},
+		"14": {
+			"locales": {
+				"sr-RS": {
+					"shortName": "Борски округ",
+					"longName": "Борски округ"
+				},
+				"en_US": {
+					"shortName": "Bor District",
+					"longName": "Bor District"
+				}
+			}
+		},
+		"15": {
+			"locales": {
+				"en_US": {
+					"shortName": "Zaječar District",
+					"longName": "Zaječar District"
+				},
+				"sr-RS": {
+					"shortName": "Зајечарски округ",
+					"longName": "Зајечарски округ"
+				}
+			}
+		},
+		"16": {
+			"locales": {
+				"sr-RS": {
+					"shortName": "Златиборски округ",
+					"longName": "Златиборски округ"
+				},
+				"en_US": {
+					"shortName": "Zlatibor District",
+					"longName": "Zlatibor District"
+				}
+			}
+		},
+		"17": {
+			"locales": {
+				"sr-RS": {
+					"shortName": "Моравички округ",
+					"longName": "Моравички округ"
+				},
+				"en_US": {
+					"shortName": "Moravica District",
+					"longName": "Moravica District"
+				}
+			}
+		},
+		"18": {
+			"locales": {
+				"en_US": {
+					"shortName": "Raška District",
+					"longName": "Raška District"
+				},
+				"sr-RS": {
+					"shortName": "Рашки округ",
+					"longName": "Рашки округ"
+				}
+			}
+		},
+		"19": {
+			"locales": {
+				"en_US": {
+					"shortName": "Rasina District",
+					"longName": "Rasina District"
+				},
+				"sr-RS": {
+					"shortName": "Расински округ",
+					"longName": "Расински округ"
+				}
+			}
+		},
+		"20": {
+			"locales": {
+				"en_US": {
+					"shortName": "Nišava District",
+					"longName": "Nišava District"
+				},
+				"sr-RS": {
+					"shortName": "Нишавски округ",
+					"longName": "Нишавски округ"
+				}
+			}
+		},
+		"21": {
+			"locales": {
+				"en_US": {
+					"shortName": "Toplica District",
+					"longName": "Toplica District"
+				},
+				"sr-RS": {
+					"shortName": "Топлички округ",
+					"longName": "Топлички округ"
+				}
+			}
+		},
+		"22": {
+			"locales": {
+				"sr-RS": {
+					"shortName": "Пиротски Oкруг",
+					"longName": "Пиротски Oкруг"
+				},
+				"en_US": {
+					"shortName": "Pirot District",
+					"longName": "Pirot District"
+				}
+			}
+		},
+		"23": {
+			"locales": {
+				"en_US": {
+					"shortName": "Jablanica District",
+					"longName": "Jablanica District"
+				},
+				"sr-RS": {
+					"shortName": "Јабланички округ",
+					"longName": "Јабланички округ"
+				}
+			}
+		},
+		"24": {
+			"locales": {
+				"sr-RS": {
+					"shortName": "Пчињски округ",
+					"longName": "Пчињски округ"
+				},
+				"en_US": {
+					"shortName": "Pčinja District",
+					"longName": "Pčinja District"
+				}
+			}
+		},
+		"25": {
+			"locales": {
+				"sr-RS": {
+					"shortName": "Косовски округ",
+					"longName": "Косовски округ"
+				},
+				"en_US": {
+					"shortName": "Kosovo District",
+					"longName": "Kosovo District"
+				}
+			}
+		},
+		"26": {
+			"locales": {
+				"sr-RS": {
+					"shortName": "Пећки округ",
+					"longName": "Пећки округ"
+				},
+				"en_US": {
+					"shortName": "Peć District",
+					"longName": "Peć District"
+				}
+			}
+		},
+		"27": {
+			"locales": {
+				"sr-RS": {
+					"shortName": "Призренски округ",
+					"longName": "Призренски округ"
+				},
+				"en_US": {
+					"shortName": "Prizren District",
+					"longName": "Prizren District"
+				}
+			}
+		},
+		"28": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kosovska Mitrovica District",
+					"longName": "Kosovska Mitrovica District"
+				},
+				"sr-RS": {
+					"shortName": "Косовскомитровички округ",
+					"longName": "Косовскомитровички округ"
+				}
+			}
+		},
+		"29": {
+			"locales": {
+				"sr-RS": {
+					"shortName": "Косовско-Поморавски округ",
+					"longName": "Косовско-Поморавски округ"
+				},
+				"en_US": {
+					"shortName": "Kosovo-Pomoravlje District",
+					"longName": "Kosovo-Pomoravlje District"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/sr_RS",
+		"id": "sr_RS"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Serbia",
+			"longName": "Republic of Serbia"
+		},
+		"sr_RS": {
+			"shortName": "Srbija",
+			"longName": "Republika Srbija"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

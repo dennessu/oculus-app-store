@@ -1,0 +1,20 @@
+﻿{
+	"locales": {
+		"en_SG": {
+			"shortName": "IDR",
+			"longName": "Indonesian rupiah"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=IDR",
+		"id": null
+	},
+	"currencyCode": "IDR",
+	"symbol": "Rp",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,547 @@
+﻿{
+	"countryCode": "HU",
+	"defaultLocale": {
+		"href": "/v1/locales/hu_HU",
+		"id": "hu_HU"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/HUF",
+		"id": "HUF"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"BA": {
+			"locales": {
+				"hu_HU": {
+					"shortName": "Baranya",
+					"longName": "Baranya"
+				},
+				"en_US": {
+					"shortName": "Baranya",
+					"longName": "Baranya"
+				}
+			}
+		},
+		"BC": {
+			"locales": {
+				"en_US": {
+					"shortName": "Békéscsaba",
+					"longName": "Békéscsaba"
+				},
+				"hu_HU": {
+					"shortName": "Békéscsaba",
+					"longName": "Békéscsaba"
+				}
+			}
+		},
+		"BE": {
+			"locales": {
+				"hu_HU": {
+					"shortName": "Békés",
+					"longName": "Békés"
+				},
+				"en_US": {
+					"shortName": "Békés",
+					"longName": "Békés"
+				}
+			}
+		},
+		"BK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Bács-Kiskun",
+					"longName": "Bács-Kiskun"
+				},
+				"hu_HU": {
+					"shortName": "Bács-Kiskun",
+					"longName": "Bács-Kiskun"
+				}
+			}
+		},
+		"BU": {
+			"locales": {
+				"hu_HU": {
+					"shortName": "Budapest",
+					"longName": "Budapest"
+				},
+				"en_US": {
+					"shortName": "Budapest",
+					"longName": "Budapest"
+				}
+			}
+		},
+		"BZ": {
+			"locales": {
+				"hu_HU": {
+					"shortName": "Borsod-Abaúj-Zemplén",
+					"longName": "Borsod-Abaúj-Zemplén"
+				},
+				"en_US": {
+					"shortName": "Borsod-Abaúj-Zemplén",
+					"longName": "Borsod-Abaúj-Zemplén"
+				}
+			}
+		},
+		"CS": {
+			"locales": {
+				"hu_HU": {
+					"shortName": "Csongrád",
+					"longName": "Csongrád"
+				},
+				"en_US": {
+					"shortName": "Csongrád",
+					"longName": "Csongrád"
+				}
+			}
+		},
+		"DE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Debrecen",
+					"longName": "Debrecen"
+				},
+				"hu_HU": {
+					"shortName": "Debrecen",
+					"longName": "Debrecen"
+				}
+			}
+		},
+		"DU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Dunaújváros",
+					"longName": "Dunaújváros"
+				},
+				"hu_HU": {
+					"shortName": "Dunaújváros",
+					"longName": "Dunaújváros"
+				}
+			}
+		},
+		"EG": {
+			"locales": {
+				"en_US": {
+					"shortName": "Eger",
+					"longName": "Eger"
+				},
+				"hu_HU": {
+					"shortName": "Eger",
+					"longName": "Eger"
+				}
+			}
+		},
+		"ER": {
+			"locales": {
+				"hu_HU": {
+					"shortName": "Érd",
+					"longName": "Érd"
+				},
+				"en_US": {
+					"shortName": "Érd",
+					"longName": "Érd"
+				}
+			}
+		},
+		"FE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Fejér",
+					"longName": "Fejér"
+				},
+				"hu_HU": {
+					"shortName": "Fejér",
+					"longName": "Fejér"
+				}
+			}
+		},
+		"GS": {
+			"locales": {
+				"hu_HU": {
+					"shortName": "Győr-Moson-Sopron",
+					"longName": "Győr-Moson-Sopron"
+				},
+				"en_US": {
+					"shortName": "Győr-Moson-Sopron",
+					"longName": "Győr-Moson-Sopron"
+				}
+			}
+		},
+		"GY": {
+			"locales": {
+				"hu_HU": {
+					"shortName": "Győr",
+					"longName": "Győr"
+				},
+				"en_US": {
+					"shortName": "Győr",
+					"longName": "Győr"
+				}
+			}
+		},
+		"HB": {
+			"locales": {
+				"hu_HU": {
+					"shortName": "Hajdú-Bihar",
+					"longName": "Hajdú-Bihar"
+				},
+				"en_US": {
+					"shortName": "Hajdú-Bihar",
+					"longName": "Hajdú-Bihar"
+				}
+			}
+		},
+		"HE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Heves",
+					"longName": "Heves"
+				},
+				"hu_HU": {
+					"shortName": "Heves",
+					"longName": "Heves"
+				}
+			}
+		},
+		"HV": {
+			"locales": {
+				"en_US": {
+					"shortName": "Hódmezővásárhely",
+					"longName": "Hódmezővásárhely"
+				},
+				"hu_HU": {
+					"shortName": "Hódmezővásárhely",
+					"longName": "Hódmezővásárhely"
+				}
+			}
+		},
+		"JN": {
+			"locales": {
+				"en_US": {
+					"shortName": "Jász-Nagykun-Szolnok",
+					"longName": "Jász-Nagykun-Szolnok"
+				},
+				"hu_HU": {
+					"shortName": "Jász-Nagykun-Szolnok",
+					"longName": "Jász-Nagykun-Szolnok"
+				}
+			}
+		},
+		"KE": {
+			"locales": {
+				"hu_HU": {
+					"shortName": "Komárom-Esztergom",
+					"longName": "Komárom-Esztergom"
+				},
+				"en_US": {
+					"shortName": "Komárom-Esztergom",
+					"longName": "Komárom-Esztergom"
+				}
+			}
+		},
+		"KM": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kecskemét",
+					"longName": "Kecskemét"
+				},
+				"hu_HU": {
+					"shortName": "Kecskemét",
+					"longName": "Kecskemét"
+				}
+			}
+		},
+		"KV": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kaposvár",
+					"longName": "Kaposvár"
+				},
+				"hu_HU": {
+					"shortName": "Kaposvár",
+					"longName": "Kaposvár"
+				}
+			}
+		},
+		"MI": {
+			"locales": {
+				"hu_HU": {
+					"shortName": "Miskolc",
+					"longName": "Miskolc"
+				},
+				"en_US": {
+					"shortName": "Miskolc",
+					"longName": "Miskolc"
+				}
+			}
+		},
+		"NK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Nagykanizsa",
+					"longName": "Nagykanizsa"
+				},
+				"hu_HU": {
+					"shortName": "Nagykanizsa",
+					"longName": "Nagykanizsa"
+				}
+			}
+		},
+		"NO": {
+			"locales": {
+				"hu_HU": {
+					"shortName": "Nográd !Nógrád",
+					"longName": "Nográd !Nógrád"
+				},
+				"en_US": {
+					"shortName": "Nográd !Nógrád",
+					"longName": "Nográd !Nógrád"
+				}
+			}
+		},
+		"NY": {
+			"locales": {
+				"hu_HU": {
+					"shortName": "Nyíregyháza",
+					"longName": "Nyíregyháza"
+				},
+				"en_US": {
+					"shortName": "Nyíregyháza",
+					"longName": "Nyíregyháza"
+				}
+			}
+		},
+		"PE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Pest",
+					"longName": "Pest"
+				},
+				"hu_HU": {
+					"shortName": "Pest",
+					"longName": "Pest"
+				}
+			}
+		},
+		"PS": {
+			"locales": {
+				"en_US": {
+					"shortName": "Pécs",
+					"longName": "Pécs"
+				},
+				"hu_HU": {
+					"shortName": "Pécs",
+					"longName": "Pécs"
+				}
+			}
+		},
+		"SD": {
+			"locales": {
+				"en_US": {
+					"shortName": "Szeged",
+					"longName": "Szeged"
+				},
+				"hu_HU": {
+					"shortName": "Szeged",
+					"longName": "Szeged"
+				}
+			}
+		},
+		"SF": {
+			"locales": {
+				"en_US": {
+					"shortName": "Székesfehérvár",
+					"longName": "Székesfehérvár"
+				},
+				"hu_HU": {
+					"shortName": "Székesfehérvár",
+					"longName": "Székesfehérvár"
+				}
+			}
+		},
+		"SH": {
+			"locales": {
+				"en_US": {
+					"shortName": "Szombathely",
+					"longName": "Szombathely"
+				},
+				"hu_HU": {
+					"shortName": "Szombathely",
+					"longName": "Szombathely"
+				}
+			}
+		},
+		"SK": {
+			"locales": {
+				"hu_HU": {
+					"shortName": "Szolnok",
+					"longName": "Szolnok"
+				},
+				"en_US": {
+					"shortName": "Szolnok",
+					"longName": "Szolnok"
+				}
+			}
+		},
+		"SN": {
+			"locales": {
+				"en_US": {
+					"shortName": "Sopron",
+					"longName": "Sopron"
+				},
+				"hu_HU": {
+					"shortName": "Sopron",
+					"longName": "Sopron"
+				}
+			}
+		},
+		"SO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Somogy",
+					"longName": "Somogy"
+				},
+				"hu_HU": {
+					"shortName": "Somogy",
+					"longName": "Somogy"
+				}
+			}
+		},
+		"SS": {
+			"locales": {
+				"hu_HU": {
+					"shortName": "Szekszárd",
+					"longName": "Szekszárd"
+				},
+				"en_US": {
+					"shortName": "Szekszárd",
+					"longName": "Szekszárd"
+				}
+			}
+		},
+		"ST": {
+			"locales": {
+				"en_US": {
+					"shortName": "Salgótarján",
+					"longName": "Salgótarján"
+				},
+				"hu_HU": {
+					"shortName": "Salgótarján",
+					"longName": "Salgótarján"
+				}
+			}
+		},
+		"SZ": {
+			"locales": {
+				"hu_HU": {
+					"shortName": "Szabolcs-Szatmár-Bereg",
+					"longName": "Szabolcs-Szatmár-Bereg"
+				},
+				"en_US": {
+					"shortName": "Szabolcs-Szatmár-Bereg",
+					"longName": "Szabolcs-Szatmár-Bereg"
+				}
+			}
+		},
+		"TB": {
+			"locales": {
+				"hu_HU": {
+					"shortName": "Tatabánya",
+					"longName": "Tatabánya"
+				},
+				"en_US": {
+					"shortName": "Tatabánya",
+					"longName": "Tatabánya"
+				}
+			}
+		},
+		"TO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Tolna",
+					"longName": "Tolna"
+				},
+				"hu_HU": {
+					"shortName": "Tolna",
+					"longName": "Tolna"
+				}
+			}
+		},
+		"VA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Vas",
+					"longName": "Vas"
+				},
+				"hu_HU": {
+					"shortName": "Vas",
+					"longName": "Vas"
+				}
+			}
+		},
+		"VE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Veszprém",
+					"longName": "Veszprém"
+				},
+				"hu_HU": {
+					"shortName": "Veszprém",
+					"longName": "Veszprém"
+				}
+			}
+		},
+		"VM": {
+			"locales": {
+				"en_US": {
+					"shortName": "Veszprém",
+					"longName": "Veszprém"
+				},
+				"hu_HU": {
+					"shortName": "Veszprém",
+					"longName": "Veszprém"
+				}
+			}
+		},
+		"ZA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Zala",
+					"longName": "Zala"
+				},
+				"hu_HU": {
+					"shortName": "Zala",
+					"longName": "Zala"
+				}
+			}
+		},
+		"ZE": {
+			"locales": {
+				"hu_HU": {
+					"shortName": "Zalaegerszeg",
+					"longName": "Zalaegerszeg"
+				},
+				"en_US": {
+					"shortName": "Zalaegerszeg",
+					"longName": "Zalaegerszeg"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/hu_HU",
+		"id": "hu_HU"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Hungary",
+			"longName": "Hungary"
+		},
+		"hu_HU": {
+			"shortName": "Magyarország",
+			"longName": "Magyarország"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

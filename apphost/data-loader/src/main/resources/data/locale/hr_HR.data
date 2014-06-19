@@ -1,0 +1,11 @@
+﻿{
+  "localeCode": "hr_HR",
+  "shortName": "Croatian (HR)",
+  "longName": "Croatian (Croatia)",
+  "localeName": "Croatian (HR)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

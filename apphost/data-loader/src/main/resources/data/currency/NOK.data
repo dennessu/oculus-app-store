@@ -1,0 +1,24 @@
+﻿{
+	"locales": {
+		"en_US": {
+			"shortName": "NOK",
+			"longName": "Norwegian krone"
+		},
+		"no_NO": {
+			"shortName": "norsk krone",
+			"longName": "norsk krone"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=NOK",
+		"id": null
+	},
+	"currencyCode": "NOK",
+	"symbol": "kr",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

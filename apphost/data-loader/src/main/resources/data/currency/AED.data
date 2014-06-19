@@ -1,0 +1,24 @@
+﻿{
+	"locales": {
+		"en_US": {
+			"shortName": "AED",
+			"longName": "United Arab Emirates dirham"
+		},
+		"ar_AE": {
+			"shortName": "درهم إماراتي",
+			"longName": "درهم إماراتي"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=AED",
+		"id": null
+	},
+	"currencyCode": "AED",
+	"symbol": "د.إ",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

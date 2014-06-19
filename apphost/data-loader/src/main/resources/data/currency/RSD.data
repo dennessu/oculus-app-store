@@ -1,0 +1,24 @@
+﻿{
+	"locales": {
+		"en_US": {
+			"shortName": "RSD",
+			"longName": "Serbian dinar"
+		},
+		"sr_RS": {
+			"shortName": "Srpski dinar",
+			"longName": "Srpski dinar"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=RSD",
+		"id": null
+	},
+	"currencyCode": "RSD",
+	"symbol": "RSD",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}
