@@ -17,6 +17,7 @@ import com.junbo.fulfilment.core.service.TransactionSupport;
 import com.junbo.fulfilment.db.repo.FulfilmentActionRepository;
 import com.junbo.fulfilment.spec.constant.FulfilmentStatus;
 import com.junbo.fulfilment.spec.model.FulfilmentAction;
+import com.junbo.fulfilment.spec.model.FulfilmentResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,7 @@ public abstract class HandlerSupport<T extends FulfilmentContext>
             try {
                 LOGGER.info("Start processing action [" + action.getActionId() + "].");
 
-                action.setResult(Utils.toJson(handle(context, action)));
+                action.setResult(handle(context, action));
                 action.setStatus(FulfilmentStatus.SUCCEED);
 
                 LOGGER.info("Finish processing action [" + action.getActionId() + "].");
@@ -69,13 +70,13 @@ public abstract class HandlerSupport<T extends FulfilmentContext>
 
             executeInNewTransaction(new Callback() {
                 public void apply() {
-                    updateAction(action.getActionId(), action.getStatus(), action.getResult());
+                    updateAction(action.getActionId(), action.getStatus(), Utils.toJson(action.getResult()));
                 }
             });
         }
     }
 
-    protected Object handle(T context, FulfilmentAction action) {
+    protected FulfilmentResult handle(T context, FulfilmentAction action) {
         throw new RuntimeException("not implemented");
     }
 }

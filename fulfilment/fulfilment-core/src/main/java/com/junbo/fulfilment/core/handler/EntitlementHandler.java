@@ -12,6 +12,7 @@ import com.junbo.fulfilment.spec.fusion.Entitlement;
 import com.junbo.fulfilment.spec.fusion.EntitlementMeta;
 import com.junbo.fulfilment.spec.fusion.Item;
 import com.junbo.fulfilment.spec.model.FulfilmentAction;
+import com.junbo.fulfilment.spec.model.FulfilmentResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +22,8 @@ import java.util.List;
  */
 public class EntitlementHandler extends HandlerSupport<EntitlementContext> {
     @Override
-    protected Object handle(EntitlementContext context, FulfilmentAction action) {
-        List<String> results = new ArrayList<>();
+    protected FulfilmentResult handle(EntitlementContext context, FulfilmentAction action) {
+        List<String> entitlementIds = new ArrayList<>();
 
         Item item = catalogGateway.getItem(action.getItemId(), action.getTimestamp());
 
@@ -43,10 +44,13 @@ public class EntitlementHandler extends HandlerSupport<EntitlementContext> {
 
                 String rawEntitlementid = entitlementGateway.grant(entitlement);
 
-                results.add(rawEntitlementid);
+                entitlementIds.add(rawEntitlementid);
             }
         }
 
-        return results;
+        FulfilmentResult result = new FulfilmentResult();
+        result.setEntitlementIds(entitlementIds);
+
+        return result;
     }
 }

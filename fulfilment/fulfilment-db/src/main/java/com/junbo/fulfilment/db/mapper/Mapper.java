@@ -11,6 +11,7 @@ import com.junbo.fulfilment.db.entity.*;
 import com.junbo.fulfilment.spec.model.FulfilmentAction;
 import com.junbo.fulfilment.spec.model.FulfilmentItem;
 import com.junbo.fulfilment.spec.model.FulfilmentRequest;
+import com.junbo.fulfilment.spec.model.FulfilmentResult;
 
 import java.util.UUID;
 
@@ -91,7 +92,7 @@ public class Mapper {
         model.setActionId(entity.getId());
         model.setStatus(entity.getStatus().toString());
         model.setType(entity.getType().toString());
-        model.setResult(entity.getResult());
+        model.setResult(JSON.parseObject(entity.getResult(), FulfilmentResult.class));
         model.setFulfilmentId(entity.getFulfilmentId());
 
         return model;
@@ -106,7 +107,7 @@ public class Mapper {
         entity.setFulfilmentId(model.getFulfilmentId());
         entity.setType(FulfilmentActionType.valueOf(model.getType()));
         entity.setStatus(FulfilmentStatus.valueOf(model.getStatus()));
-        entity.setResult(model.getResult());
+        entity.setResult(Utils.toJson(model.getResult()));
 
         entity.setPayload(Utils.toJson(model, FULFILMENT_ACTION_FILTER));
 

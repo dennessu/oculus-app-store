@@ -1,15 +1,18 @@
 package com.junbo.fulfilment.db.repo;
 
+import com.junbo.fulfilment.common.util.Utils;
 import com.junbo.fulfilment.db.BaseTest;
 import com.junbo.fulfilment.spec.constant.FulfilmentActionType;
 import com.junbo.fulfilment.spec.constant.FulfilmentStatus;
 import com.junbo.fulfilment.spec.fusion.CatalogEntityType;
 import com.junbo.fulfilment.spec.fusion.LinkedEntry;
 import com.junbo.fulfilment.spec.model.FulfilmentAction;
+import com.junbo.fulfilment.spec.model.FulfilmentResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +35,7 @@ public class FulfilmentActionRepositoryTest extends BaseTest {
         repo.create(action);
 
         FulfilmentAction retrieved = repo.get(action.getActionId());
-        Assert.assertEquals(retrieved.getResult(), action.getResult(), "[result] should match.");
+        Assert.assertEquals(retrieved.getResult().getAmount(), action.getResult().getAmount(), "[result] amount should match.");
         Assert.assertEquals(retrieved.getType(), action.getType(), "[type] should match.");
         Assert.assertEquals(retrieved.getStatus(), action.getStatus(), "[status] should match.");
     }
@@ -43,18 +46,28 @@ public class FulfilmentActionRepositoryTest extends BaseTest {
         repo.create(action);
 
         String updatedStatus = FulfilmentStatus.SUCCEED;
-        String updatedResult = "/entitlements/1234";
-        repo.update(action.getActionId(), updatedStatus, updatedResult);
+
+        FulfilmentResult updatedResult = new FulfilmentResult();
+        updatedResult.setAmount(new BigDecimal("456.78"));
+        updatedResult.setCurrency("CNY");
+
+        repo.update(action.getActionId(), updatedStatus, Utils.toJson(updatedResult));
 
         FulfilmentAction retrieved = repo.get(action.getActionId());
         Assert.assertEquals(retrieved.getStatus(), updatedStatus, "[status] should match.");
-        Assert.assertEquals(retrieved.getResult(), updatedResult, "[result] should match.");
+        Assert.assertEquals(retrieved.getResult().getAmount(), updatedResult.getAmount(), "[result] amount should match.");
     }
 
     private FulfilmentAction buildFulfilmentAction() {
+        FulfilmentResult result = new FulfilmentResult();
+        result.setAmount(new BigDecimal("123.45"));
+        result.setCurrency("USD");
+        result.setTransactionId(1234L);
+
+
         FulfilmentAction action = new FulfilmentAction();
         action.setFulfilmentId(generateLong());
-        action.setResult("test result");
+        action.setResult(result);
         action.setStatus(FulfilmentStatus.SUCCEED);
         action.setType(FulfilmentActionType.GRANT_ENTITLEMENT);
         action.setCopyCount(10);

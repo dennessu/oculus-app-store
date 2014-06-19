@@ -10,6 +10,7 @@ import com.junbo.ewallet.spec.model.Transaction;
 import com.junbo.fulfilment.common.util.Constant;
 import com.junbo.fulfilment.core.context.WalletContext;
 import com.junbo.fulfilment.spec.model.FulfilmentAction;
+import com.junbo.fulfilment.spec.model.FulfilmentResult;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -20,14 +21,15 @@ import java.util.UUID;
  */
 public class WalletHandler extends HandlerSupport<WalletContext> {
     @Override
-    protected Object handle(WalletContext context, FulfilmentAction action) {
+    protected FulfilmentResult handle(WalletContext context, FulfilmentAction action) {
         Map<String, Object> actionProp = action.getProperties();
+        String currency = actionProp.get(Constant.STORED_VALUE_CURRENCY).toString();
 
         CreditRequest request = new CreditRequest();
 
         request.setTrackingUuid(UUID.randomUUID());
         request.setUserId(context.getUserId());
-        request.setCurrency(actionProp.get(Constant.STORED_VALUE_CURRENCY).toString());
+        request.setCurrency(currency);
 
         // aggregate credit amount
         BigDecimal amount = (BigDecimal) actionProp.get(Constant.STORED_VALUE_AMOUNT);
@@ -37,6 +39,12 @@ public class WalletHandler extends HandlerSupport<WalletContext> {
         request.setAmount(totalCreditAmount);
         Transaction transaction = walletGateway.credit(request);
 
-        return transaction.getTransactionId();
+        // build fulfilment result
+        FulfilmentResult result = new FulfilmentResult();
+        result.setAmount(totalCreditAmount);
+        result.setCurrency(currency);
+        result.setTransactionId(transaction.getTransactionId());
+
+        return result;
     }
 }

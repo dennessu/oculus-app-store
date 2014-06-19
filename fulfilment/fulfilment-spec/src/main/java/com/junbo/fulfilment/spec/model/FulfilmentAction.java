@@ -28,7 +28,7 @@ public class FulfilmentAction {
     private String status;
 
     @JsonProperty
-    private String result;
+    private FulfilmentResult result;
 
     private Long fulfilmentId;
 
@@ -50,11 +50,11 @@ public class FulfilmentAction {
         this.actionId = actionId;
     }
 
-    public String getResult() {
+    public FulfilmentResult getResult() {
         return result;
     }
 
-    public void setResult(String result) {
+    public void setResult(FulfilmentResult result) {
         this.result = result;
     }
 
