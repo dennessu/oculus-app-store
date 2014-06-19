@@ -34,5 +34,5 @@ public class EntitlementConsts {
     public static final Date NEVER_EXPIRE = new Date(NEVER_EXPIRE_LONG);
     public static final Integer UNCONSUMABLE_USECOUNT = Integer.MAX_VALUE;
 
-    public static final Set<String> ALLOWED_TYPE = new HashSet<>(Arrays.asList(new String[]{"DOWNLOAD", "RUN", "DEVELOPER"}));
+    public static final Set<String> ALLOWED_TYPE = new HashSet<>(Arrays.asList(new String[]{"DOWNLOAD", "RUN", "DEVELOPER", "DIGITAL_ASSET"}));
 }

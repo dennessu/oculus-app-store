@@ -60,7 +60,6 @@ public class Entitlement extends ResourceMeta<String> {
     private String itemId;
 
     @ApiModelProperty(position = 9, required = true, value = "enumeration; values are \"DOWNLOAD\" and \"RUN\"")
-    @JsonProperty("entitlementType")
     private String type;
 
     @JsonIgnore

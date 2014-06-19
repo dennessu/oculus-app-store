@@ -67,7 +67,6 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
                 if (!AuthorizeContext.hasRights("read")) {
                     throw AppErrors.INSTANCE.notFound("entitlement", entitlementId).exception();
                 }
-
                 return entitlement;
             }
         });
