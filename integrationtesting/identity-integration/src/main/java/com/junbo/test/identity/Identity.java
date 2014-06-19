@@ -6,6 +6,7 @@
 package com.junbo.test.identity;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.junbo.common.id.GroupId;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
@@ -30,10 +31,12 @@ public class Identity {
     public static final String DefaultIdentityEndPointV1 = ConfigHelper.getSetting("defaultIdentityEndPointV1");
     public static final String DefaultIdentityV1CountryURI = DefaultIdentityEndPointV1 + "/countries";
     public static final String DefaultIdentityV1CurrencyURI = DefaultIdentityEndPointV1 + "/currencies";
+    public static final String DefaultIdentityV1GroupURI = DefaultIdentityEndPointV1 + "/groups";
     public static final String DefaultIdentityV1ImportsURI = DefaultIdentityEndPointV1 + "/imports";
     public static final String DefaultIdentityV1LocaleURI = DefaultIdentityEndPointV1 + "/locales";
     public static final String DefaultIdentityV1OrganizationURI = DefaultIdentityEndPointV1 + "/organizations";
     public static final String DefaultIdentityV1UserURI = DefaultIdentityEndPointV1 + "/users";
+    public static final String DefaultIdentityV1UserGroupMemberURI = DefaultIdentityEndPointV1 + "/user-group-memberships";
     public static final String DefaultIdentityV1UserPersonalInfoURI = DefaultIdentityEndPointV1 + "/personal-info";
 
     private Identity() {
@@ -179,8 +182,19 @@ public class Identity {
         return (UserCredential) JsonHelper.JsonNodeToObject(jsonNode, UserCredential.class);
     }
 
-    public static Long GetUserIdFromUserPersonalInfo(UserPersonalInfo userPersonalInfo) throws Exception {
-        return userPersonalInfo.getUserId().getValue();
+    public static Group SearchOrganizationGroup(OrganizationId organizationId, String groupName) throws Exception {
+        String requestURI = DefaultIdentityV1GroupURI + "?organizationId=" + IdFormatter.encodeId(organizationId)
+                + "&name=" + groupName;
+        JsonNode jsonNode = JsonHelper.ObjectToJsonNode(
+                (HttpclientHelper.SimpleGet(requestURI, (Results.class)).getItems().get(0)));
+        return ((Group) JsonHelper.JsonNodeToObject(jsonNode, Group.class));
+    }
+
+    public static UserGroup SearchUserGroup(GroupId groupId) throws Exception {
+        String requestURI = DefaultIdentityV1UserGroupMemberURI + "?groupId=" + groupId;
+        JsonNode jsonNode = JsonHelper.ObjectToJsonNode(
+                (HttpclientHelper.SimpleGet(requestURI, (Results.class)).getItems().get(0)));
+        return ((UserGroup) JsonHelper.JsonNodeToObject(jsonNode, UserGroup.class));
     }
 
     public static String GetHexUserId(Long userId) throws Exception {

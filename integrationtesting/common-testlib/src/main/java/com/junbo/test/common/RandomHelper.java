@@ -7,6 +7,9 @@ package com.junbo.test.common;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
+import java.util.List;
+import java.util.Random;
+
 /**
  * @author dw
  */
@@ -22,5 +25,18 @@ public class RandomHelper {
 
     public static String randomNumeric(int count) {
         return RandomStringUtils.randomNumeric(count);
+    }
+
+    public static Long randomLong() {
+        return new Random().nextLong();
+    }
+
+    public static int randomInt() {
+        return new Random().nextInt();
+    }
+
+    public static Object randomValueFromList(int rand, List<Object> values) {
+        int result = Math.abs(rand) % values.size();
+        return values.get(result);
     }
 }

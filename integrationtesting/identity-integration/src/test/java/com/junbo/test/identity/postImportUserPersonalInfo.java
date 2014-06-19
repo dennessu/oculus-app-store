@@ -6,6 +6,7 @@
 package com.junbo.test.identity;
 
 import com.junbo.identity.spec.v1.model.*;
+import com.junbo.identity.spec.v1.model.migration.Company;
 import com.junbo.identity.spec.v1.model.migration.OculusInput;
 import com.junbo.identity.spec.v1.model.migration.OculusOutput;
 import com.junbo.test.common.HttpclientHelper;
@@ -63,39 +64,89 @@ public class postImportUserPersonalInfo {
             } else if (upi.getType().equals("DOB")) {
                 UserDOB userDob = (UserDOB) JsonHelper.JsonNodeToObject(upi.getValue(), UserDOB.class);
                 Validator.Validate("validate dob", oculusInput.getDob(), userDob.getInfo());
+            } else if (upi.getType().equals("profile")) {
+                UserProfile userProfile = (UserProfile) JsonHelper.JsonNodeToObject(upi.getValue(), UserProfile.class);
+                Validator.Validate("validate user profile headline", oculusInput.getProfile().getHeadline(),
+                        userProfile.getHeadline());
+                Validator.Validate("validate user profile summary", oculusInput.getProfile().getSummary(),
+                        userProfile.getSummary());
+                Validator.Validate("validate user profile url", oculusInput.getProfile().getUrl(),
+                        userProfile.getUrl());
+                Validator.Validate("validate user profile avatar",
+                        JsonHelper.ObjectToJsonNode(oculusInput.getProfile().getAvatar()),
+                        JsonHelper.ObjectToJsonNode(userProfile.getAvatar()));
             }
         }
 
         Organization organization = Identity.OrganizationGetByOrganizationId(oculusOutput.getOrganizationId());
-        /*
-        Validator.Validate("validate organization name", oculusInput.getDevCenterCompany(), organization.getName());
-        Validator.Validate("validate share profile headline",
-                oculusInput.getShareProfile().getHeadline(), organization.getHeadline());
-        Validator.Validate("validate share profile summary",
-                oculusInput.getShareProfile().getSummary(), organization.getSummary());
-        Validator.Validate("validate share profile url",
-                oculusInput.getShareProfile().getUrl(), organization.getUrl());
-        */
+        Validator.Validate("validate organization name", oculusInput.getCompany().getName(), organization.getName());
+        Validator.Validate("validate organization type", oculusInput.getCompany().getType(), organization.getType());
+        UserPersonalInfo companyAddress = Identity.UserPersonalInfoGetByUserPersonalInfoId(
+                organization.getShippingAddress());
+        Validator.Validate("validate company address type", IdentityModel.UserPersonalInfoType.ADDRESS.name(),
+                companyAddress.getType());
+        Address address = (Address) JsonHelper.JsonNodeToObject(companyAddress.getValue(), Address.class);
+        Validator.Validate("validate company address street", oculusInput.getCompany().getAddress(),
+                address.getStreet1());
+        Validator.Validate("validate company address city", oculusInput.getCompany().getCity(),
+                address.getCity());
+        Validator.Validate("validate company address state", oculusInput.getCompany().getState(),
+                address.getSubCountry());
+        Validator.Validate("validate company address postal code", oculusInput.getCompany().getPostalCode(),
+                address.getPostalCode());
+        UserPersonalInfo companyPhone = Identity.UserPersonalInfoGetByUserPersonalInfoId(
+                organization.getShippingPhone());
+        Validator.Validate("validate company phone type", IdentityModel.UserPersonalInfoType.PHONE.name(),
+                companyPhone.getType());
+        PhoneNumber phoneNumber = (PhoneNumber) JsonHelper.JsonNodeToObject(companyPhone.getValue(), PhoneNumber.class);
+        Validator.Validate("validate company phone number", oculusInput.getCompany().getPhone(),
+                phoneNumber.getInfo());
     }
 
     @Test(groups = "dailies")
-    public void importMigrationDataWithDuplicateEmailDifferentUserName() throws Exception {
+    public void importMigrationDataWithDuplicateUserNameDifferentCurrentId() throws Exception {
         OculusInput oculusInput = IdentityModel.DefaultOculusInput();
         Identity.ImportMigrationData(oculusInput);
-        oculusInput.setUsername(RandomHelper.randomAlphabetic(10));
+        oculusInput.setCurrentId(RandomHelper.randomLong());
+        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.DefaultIdentityV1ImportsURI,
+                JsonHelper.JsonSerializer(oculusInput), 2);
+        Validator.Validate("validate response error code", 409, response.getStatusLine().getStatusCode());
+        String errorMessage = "Field username invalid due to username is already used by others.";
+        Validator.Validate("validate response error message", true,
+                EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+    }
+
+    @Test(groups = "dailies")
+    public void importMigrationDataWithDuplicateCompanyNameDifferentCompanyId() throws Exception {
+        OculusInput oculusInput = IdentityModel.DefaultOculusInput();
+        Identity.ImportMigrationData(oculusInput);
+        Company company = oculusInput.getCompany();
+        company.setCompanyId(RandomHelper.randomLong());
+        oculusInput.setCompany(company);
+        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.DefaultIdentityV1ImportsURI,
+                JsonHelper.JsonSerializer(oculusInput), 2);
+        Validator.Validate("validate response error code", 409, response.getStatusLine().getStatusCode());
+        String errorMessage = "Field username invalid due to username is already used by others.";
+        Validator.Validate("validate response error message", true,
+                EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+    }
+
+    @Test(groups = "dailies")
+    public void importMigrationDataWithDuplicateEmailDifferentCurrentIdDifferentUserName() throws Exception {
+        OculusInput oculusInput = IdentityModel.DefaultOculusInput();
+        Identity.ImportMigrationData(oculusInput);
+        oculusInput.setCurrentId(RandomHelper.randomLong());
+        oculusInput.setUsername(RandomHelper.randomAlphabetic(20));
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.DefaultIdentityV1ImportsURI,
                 JsonHelper.JsonSerializer(oculusInput), 2);
         Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
-        /*
-        String errorMessage = String.format("User %s Email %s already used.",
-                oculusInput.getCurrentId(), oculusInput.getEmail());
+        String errorMessage = String.format("User email %s already used.", oculusInput.getEmail());
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
-        */
     }
 
     @Test(groups = "dailies")
-    public void importMigrationDataWithDuplicateUserName() throws Exception {
+    public void importMigrationDataWithDuplicateCurrentIdDifferentUserNameDifferentEmail() throws Exception {
         OculusInput oculusInput = IdentityModel.DefaultOculusInput();
         OculusOutput oculusOutput = Identity.ImportMigrationData(oculusInput);
         User user1 = Identity.UserGetByUserId(oculusOutput.getUserId());
@@ -103,24 +154,29 @@ public class postImportUserPersonalInfo {
         UserPersonalInfo upi1 = Identity.UserPersonalInfoGetByUserPersonalInfoId(upil1.getValue());
         Validator.Validate("validate original email", true, upi1.getValue().toString().contains(oculusInput.getEmail()));
 
-        oculusInput.setEmail(RandomHelper.randomAlphabetic(10) + "@163.com");
+        String newUserName = RandomHelper.randomAlphabetic(20);
+        String newUserEmail = RandomHelper.randomAlphabetic(10) + "@163.com";
+        oculusInput.setUsername(newUserName);
+        oculusInput.setEmail(newUserEmail);
         Identity.ImportMigrationData(oculusInput);
         User user2 = Identity.UserGetByUserId(oculusOutput.getUserId());
+        Validator.Validate("validate user name is updated", newUserName, user2.getUsername());
         UserPersonalInfoLink upil2 = user2.getEmails().get(0);
         UserPersonalInfo upi2 = Identity.UserPersonalInfoGetByUserPersonalInfoId(upil2.getValue());
-        Validator.Validate("validate original email", true, upi2.getValue().toString().contains(oculusInput.getEmail()));
+        Validator.Validate("validate original email", true, upi2.getValue().toString().contains(newUserEmail));
     }
 
     @Test(groups = "dailies")
-    public void importMigrationDataWithOldPasswordHash() throws Exception {
+    public void importMigrationDataWithDuplicateCompanyIdDifferentCompanyName() throws Exception {
         OculusInput oculusInput = IdentityModel.DefaultOculusInput();
-        //oculusInput.setOldPasswordHash(true);
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
-                Identity.DefaultIdentityV1ImportsURI, JsonHelper.JsonSerializer(oculusInput), 2);
-        Validator.Validate("validate response error code", 500, response.getStatusLine().getStatusCode());
-        String errorMessage = "user has old PasswordHash";
-        Validator.Validate("validate response error message", true,
-                EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+        OculusOutput oculusOutput = Identity.ImportMigrationData(oculusInput);
+        String newCompanyName = RandomHelper.randomAlphabetic(20);
+        Company company = oculusInput.getCompany();
+        company.setName(newCompanyName);
+        oculusInput.setCompany(company);
+        Identity.ImportMigrationData(oculusInput);
+        Organization organization = Identity.OrganizationGetByOrganizationId(oculusOutput.getOrganizationId());
+        Validator.Validate("validate company name is updated", newCompanyName, organization.getName());
     }
 
     @Test(groups = "dailies")
@@ -133,5 +189,18 @@ public class postImportUserPersonalInfo {
         String errorMessage = "password only accept version 1";
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+    }
+
+    @Test(groups = "dailies")
+    public void importMigrationDataValidateUserOrganizationGroup() throws Exception {
+        OculusInput oculusInput = IdentityModel.DefaultOculusInput();
+        OculusOutput oculusOutput = Identity.ImportMigrationData(oculusInput);
+        Boolean userIsAdmin = oculusInput.getCompany().getIsAdmin();
+        Group group = Identity.SearchOrganizationGroup(oculusOutput.getOrganizationId(),
+                userIsAdmin ? IdentityModel.MigrateCompanyGroup.admin.name()
+                        : IdentityModel.MigrateCompanyGroup.developer.name()
+        );
+        UserGroup userGroup = Identity.SearchUserGroup(group.getId());
+        Validator.Validate("validate user is in correct group", oculusOutput.getUserId(), userGroup.getUserId());
     }
 }
