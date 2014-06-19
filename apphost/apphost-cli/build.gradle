@@ -32,5 +32,13 @@ dependencies {
     // more to add
 }
 
+applicationDistribution.from("../../cloudant") {
+    into "dbsetup/cloudant"
+}
+
+applicationDistribution.from("../../liquibase") {
+    into "dbsetup/liquibase"
+}
+
 defaultTasks 'clean', 'install', 'installApp', 'distZip'
 
