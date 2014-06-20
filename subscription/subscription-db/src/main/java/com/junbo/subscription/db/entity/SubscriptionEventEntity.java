@@ -5,8 +5,6 @@
  */
 package com.junbo.subscription.db.entity;
 
-import com.junbo.common.util.Identifiable;
-
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -17,7 +15,7 @@ import javax.persistence.Transient;
  */
 @javax.persistence.Entity
 @Table(name = "subscription_event")
-public class SubscriptionEventEntity extends Entity implements Identifiable<Long> {
+public class SubscriptionEventEntity extends Entity{
 
     private Long subscriptionId;
     private Long subsEventId;

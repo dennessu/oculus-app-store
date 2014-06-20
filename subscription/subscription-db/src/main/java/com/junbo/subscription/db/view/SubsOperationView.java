@@ -7,7 +7,7 @@
 package com.junbo.subscription.db.view;
 
 import com.junbo.sharding.view.EntityView;
-import com.junbo.subscription.db.entity.SubscriptionEventEntity;
+import com.junbo.subscription.db.entity.SubscriptionOperationEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by Administrator on 14-6-16.
  */
-public class SubscriptionEventStatusView implements EntityView<Long, SubscriptionEventEntity, String> {
+public class SubsOperationView implements EntityView<Long, SubscriptionOperationEntity, String> {
     @Override
     public String getName() {
         return "subscription_event_status";
@@ -27,8 +27,8 @@ public class SubscriptionEventStatusView implements EntityView<Long, Subscriptio
     }
 
     @Override
-    public Class<SubscriptionEventEntity> getEntityType() {
-        return SubscriptionEventEntity.class;
+    public Class<SubscriptionOperationEntity> getEntityType() {
+        return SubscriptionOperationEntity.class;
     }
 
     @Override
@@ -37,21 +37,21 @@ public class SubscriptionEventStatusView implements EntityView<Long, Subscriptio
     }
 
     @Override
-    public boolean handlesEntity(SubscriptionEventEntity entity) {
+    public boolean handlesEntity(SubscriptionOperationEntity entity) {
         if (entity == null) {
             throw new IllegalArgumentException("entity is null");
         }
 
-        return entity.getEventStatusId() != null;
+        return entity.getOperationStatusId() != null;
     }
 
     @Override
-    public List<String> mapEntity(SubscriptionEventEntity entity) {
+    public List<String> mapEntity(SubscriptionOperationEntity entity) {
         if (entity == null) {
             throw new IllegalArgumentException("entity is null");
         }
         List<String> result = new ArrayList<>();
-        result.add(entity.getEventStatusId().toString());
+        result.add(entity.getOperationStatusId().toString());
         return result;
     }
 }

@@ -101,7 +101,7 @@
     <bean id="subscriptionEntityViewRepository" class="com.junbo.sharding.view.DefaultEntityViewRepository">
         <property name="entityViews">
             <list>
-                <bean class="com.junbo.subscription.db.view.SubscriptionEventStatusView" />
+                <bean class="com.junbo.subscription.db.view.SubsOperationView" />
             </list>
         </property>
     </bean>
