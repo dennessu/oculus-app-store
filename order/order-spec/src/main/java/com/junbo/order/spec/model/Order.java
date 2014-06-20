@@ -138,14 +138,15 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
     private Link orderEvents;
 
     // urls for web payment
-    @ApiModelProperty(required = true, position = 200, value = "[Client Immutable]]The redirect url on success. ")
+    @ApiModelProperty(required = true, position = 200, value = "[Client Immutable] The redirect url on success. ")
     private String successRedirectUrl;
-    @ApiModelProperty(required = true, position = 210, value = "[Client Immutable]]The redirect url on cancellation. ")
+    @ApiModelProperty(required = true, position = 210, value = "[Client Immutable] The redirect url on cancellation. ")
     private String cancelRedirectUrl;
-    @ApiModelProperty(required = true, position = 220, value = "[Client Immutable]]The redirect url on confirmation. ")
+    @ApiModelProperty(required = true, position = 220, value = "[Client Immutable] The redirect url on confirmation. ")
     private String providerConfirmUrl;
     // end of urls
 
+    @ApiModelProperty(required = true, position = 300, value = "[Client Immutable] The billing histories of the order. ")
     private List<BillingHistory> billingHistories;
 
     @JsonIgnore
