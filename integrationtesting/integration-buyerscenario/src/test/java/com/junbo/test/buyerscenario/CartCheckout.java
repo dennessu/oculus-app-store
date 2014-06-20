@@ -409,13 +409,16 @@ public class CartCheckout extends BaseTestClass {
     private void emulateAdyenCheckout(Order order) throws Exception {
         Long paymentTransactionId = getTransactionId(order.getUser().getValue());
 
-        /*
+        String authResult = "AUTHORISED";
+        String pspReference = "";
+
+
         PaymentCallbackParams paymentProperties = new PaymentCallbackParams();
-        paymentProperties.setToken(token);
-        paymentProperties.setPayerID(payerId);
+        paymentProperties.setAuthResult(authResult);
+        paymentProperties.setPspReference(pspReference);
         PaymentCallbackService paymentCallbackService = PaymentCallbackServiceImpl.getInstance();
         paymentCallbackService.postPaymentProperties(paymentTransactionId, paymentProperties);
-        */
+
 
         //Post "charge completed" order event
         OrderEventService orderEventService = OrderEventServiceImpl.getInstance();
@@ -457,8 +460,8 @@ public class CartCheckout extends BaseTestClass {
     public void testDigitalGoodCheckoutByAdyen() throws Exception {
         String uid = testDataProvider.createUser();
 
-        Country country = Country.CN;
-        Currency currency = Currency.CNY;
+        Country country = Country.MX;
+        Currency currency = Currency.MXN;
 
         ArrayList<String> offerList = new ArrayList<>();
         offerList.add(offer_digital_normal1);
@@ -471,8 +474,8 @@ public class CartCheckout extends BaseTestClass {
 
         Order order = Master.getInstance().getOrder(orderId);
         order.setTentative(false);
-        order.setSuccessRedirectUrl("http://www.abc.com/");
-        order.setCancelRedirectUrl("http://www.abc.com/cancel/");
+        order.setSuccessRedirectUrl("http://www.baidu.com/");
+        order.setCancelRedirectUrl("http://www.baidu.com/cancel/");
         orderId = testDataProvider.updateOrder(order);
         order = Master.getInstance().getOrder(orderId);
         String providerConfirmUrl = order.getProviderConfirmUrl();
@@ -485,6 +488,12 @@ public class CartCheckout extends BaseTestClass {
                 String sig = params[i].substring(12);
                 String sigEncoded = URLEncoder.encode(sig, "utf-8");
                 params[i] = "merchantSig=" + sigEncoded;
+            }
+            if(params[i].contains("shopperEmail"))
+            {
+                String email = params[i].substring(13);
+                String emailEncoded = URLEncoder.encode(email, "utf-8");
+                params[i] = "shopperEmail=" + emailEncoded;
             }
             urlEncoded += params[i] + "&";
         }
