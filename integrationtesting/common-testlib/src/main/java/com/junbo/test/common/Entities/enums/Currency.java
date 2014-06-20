@@ -21,6 +21,7 @@ public enum Currency {
     CHF("CHF", "CHF"),
     CLP("CLP", "$"),
     COP("COP", "$"),
+    CNY("CNY", "￥"),
     CZK("CZK", "Kč"),
 
     DKK("DKK", "kr"),

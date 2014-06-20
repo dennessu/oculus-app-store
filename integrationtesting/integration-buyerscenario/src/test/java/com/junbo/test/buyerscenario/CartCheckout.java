@@ -25,6 +25,7 @@ import com.junbo.common.model.Results;
 import com.junbo.common.id.UserId;
 
 import org.testng.annotations.Test;
+import sun.util.resources.CurrencyNames_zh_CN;
 
 import java.math.BigDecimal;
 import java.net.URL;
@@ -405,6 +406,27 @@ public class CartCheckout extends BaseTestClass {
         orderEventService.postOrderEvent(orderEvent);
     }
 
+    private void emulateAdyenCheckout(Order order) throws Exception {
+        Long paymentTransactionId = getTransactionId(order.getUser().getValue());
+
+        /*
+        PaymentCallbackParams paymentProperties = new PaymentCallbackParams();
+        paymentProperties.setToken(token);
+        paymentProperties.setPayerID(payerId);
+        PaymentCallbackService paymentCallbackService = PaymentCallbackServiceImpl.getInstance();
+        paymentCallbackService.postPaymentProperties(paymentTransactionId, paymentProperties);
+        */
+
+        //Post "charge completed" order event
+        OrderEventService orderEventService = OrderEventServiceImpl.getInstance();
+        OrderEvent orderEvent = new OrderEvent();
+        orderEvent.setOrder(order.getId());
+        orderEvent.setAction("CHARGE");
+        orderEvent.setStatus("COMPLETED");
+
+        orderEventService.postOrderEvent(orderEvent);
+    }
+
     private Long getTransactionId(Long uid) throws Exception {
         DBHelper dbHelper = new DBHelper();
         String userId = IdConverter.idToUrlString(UserId.class, uid);
@@ -435,14 +457,17 @@ public class CartCheckout extends BaseTestClass {
     public void testDigitalGoodCheckoutByAdyen() throws Exception {
         String uid = testDataProvider.createUser();
 
+        Country country = Country.CN;
+        Currency currency = Currency.CNY;
+
         ArrayList<String> offerList = new ArrayList<>();
         offerList.add(offer_digital_normal1);
         offerList.add(offer_digital_normal2);
 
-        AdyenInfo adyenInfo = AdyenInfo.getAdyenInfo(Country.DEFAULT);
+        AdyenInfo adyenInfo = AdyenInfo.getAdyenInfo(country);
         String adyenId = testDataProvider.postPaymentInstrument(uid, adyenInfo);
 
-        String orderId = testDataProvider.postOrder(uid, Country.DEFAULT, Currency.DEFAULT, adyenId, false, offerList);
+        String orderId = testDataProvider.postOrder(uid, country, currency, adyenId, false, offerList);
 
         Order order = Master.getInstance().getOrder(orderId);
         order.setTentative(false);
@@ -464,6 +489,9 @@ public class CartCheckout extends BaseTestClass {
             urlEncoded += params[i] + "&";
         }
         urlEncoded = urlEncoded.substring(0, urlEncoded.length() - 1);
+
+        emulateAdyenCheckout(order);
+
 
     }
 
