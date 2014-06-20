@@ -7,6 +7,7 @@ dependencies {
     compile junboProject(":order-db")
     compile (libraries.aspectjrt)
     compile (libraries.aspectjweaver)
+    compile 'com.kount:kount-ris-sdk:5.5.5-SNAPSHOT'
     testCompile (libraries.spring_test)
     testCompile (libraries.easy_mock)
 }
