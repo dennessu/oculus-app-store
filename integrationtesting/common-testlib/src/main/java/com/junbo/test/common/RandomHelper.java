@@ -7,6 +7,7 @@ package com.junbo.test.common;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -33,6 +34,13 @@ public class RandomHelper {
 
     public static int randomInt() {
         return new Random().nextInt();
+    }
+
+    public static Boolean randomBoolean() {
+        List<Object> array = new ArrayList<>();
+        array.add(true);
+        array.add(false);
+        return Boolean.parseBoolean(randomValueFromList(randomInt(), array).toString());
     }
 
     public static Object randomValueFromList(int rand, List<Object> values) {

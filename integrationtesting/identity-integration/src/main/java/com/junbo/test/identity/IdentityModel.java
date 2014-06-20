@@ -148,7 +148,7 @@ public class IdentityModel {
         input.setCompany(DefaultCompany());
         input.setProfile(DefaultShareProfile());
         input.setStatus(RandomMigrteUserStatus());
-        input.setForceResetPassword(RandomBoolean());
+        input.setForceResetPassword(RandomHelper.randomBoolean());
         return input;
     }
 
@@ -163,7 +163,7 @@ public class IdentityModel {
         company.setCountry("US");
         company.setPhone(RandomHelper.randomAlphabetic(30));
         company.setType(RandomMigrateCompanyType());
-        company.setIsAdmin(RandomBoolean());
+        company.setIsAdmin(RandomHelper.randomBoolean());
         return company;
     }
 
@@ -197,13 +197,6 @@ public class IdentityModel {
         org.setName(RandomHelper.randomAlphabetic(20));
         org.setIsValidated(true);
         return org;
-    }
-
-    public static Boolean RandomBoolean() {
-        List<Object> array = new ArrayList<>();
-        array.add(true);
-        array.add(false);
-        return Boolean.parseBoolean(RandomHelper.randomValueFromList(RandomHelper.randomInt(), array).toString());
     }
 
     public static String RandomGender() {

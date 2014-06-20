@@ -8,6 +8,7 @@ package com.junbo.test.identity;
 import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.JsonHelper;
+import com.junbo.test.common.RandomHelper;
 import com.junbo.test.common.Validator;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
@@ -32,16 +33,19 @@ public class postOrganization {
 
     @Test(groups = "bvt")
     public void postOrganization() throws Exception {
-        Organization org = Identity.OrganizationPostDefault(null);
+        Organization org = IdentityModel.DefaultOrganization();
+        Organization posted = Identity.OrganizationPostDefault(org);
+        Validator.Validate("validate organization name is correct", true,
+                org.getName().equals(posted.getName()));
     }
 
     @Test(groups = "dailies")
     public void postOrganizationDuplicateNameIsValidatedTrue() throws Exception {
         Organization org = IdentityModel.DefaultOrganization();
         Identity.OrganizationPostDefault(org);
-        org.setIsValidated(IdentityModel.RandomBoolean());
+        org.setIsValidated(RandomHelper.randomBoolean());
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.DefaultIdentityV1OrganizationURI,
-                JsonHelper.JsonSerializer(org), 2);
+                JsonHelper.JsonSerializer(org), HttpclientHelper.HttpRequestType.post);
         Validator.Validate("validate response error code", 409, response.getStatusLine().getStatusCode());
         String errorMessage = "Field name duplicate.";
         Validator.Validate("validate response error message", true,

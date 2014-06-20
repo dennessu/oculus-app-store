@@ -113,7 +113,7 @@ public class postImportUserPersonalInfo {
         Identity.ImportMigrationData(oculusInput);
         oculusInput.setCurrentId(RandomHelper.randomLong());
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.DefaultIdentityV1ImportsURI,
-                JsonHelper.JsonSerializer(oculusInput), 2);
+                JsonHelper.JsonSerializer(oculusInput), HttpclientHelper.HttpRequestType.post);
         Validator.Validate("validate response error code", 409, response.getStatusLine().getStatusCode());
         String errorMessage = "Field username invalid due to username is already used by others.";
         Validator.Validate("validate response error message", true,
@@ -139,7 +139,7 @@ public class postImportUserPersonalInfo {
         oculusInput.setCurrentId(RandomHelper.randomLong());
         oculusInput.setUsername(RandomHelper.randomAlphabetic(20));
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.DefaultIdentityV1ImportsURI,
-                JsonHelper.JsonSerializer(oculusInput), 2);
+                JsonHelper.JsonSerializer(oculusInput), HttpclientHelper.HttpRequestType.post);
         Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
         String errorMessage = String.format("User email %s already used.", oculusInput.getEmail());
         Validator.Validate("validate response error message", true,
@@ -185,7 +185,8 @@ public class postImportUserPersonalInfo {
         OculusInput oculusInput = IdentityModel.DefaultOculusInput();
         oculusInput.setPassword(RandomHelper.randomAlphabetic(80));
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
-                Identity.DefaultIdentityV1ImportsURI, JsonHelper.JsonSerializer(oculusInput), 2);
+                Identity.DefaultIdentityV1ImportsURI, JsonHelper.JsonSerializer(oculusInput),
+                HttpclientHelper.HttpRequestType.post);
         Validator.Validate("validate response error code", 500, response.getStatusLine().getStatusCode());
         String errorMessage = "password only accept version 1";
         Validator.Validate("validate response error message", true,
