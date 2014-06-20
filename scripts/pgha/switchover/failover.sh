@@ -67,6 +67,9 @@ for db in ${REPLICA_DATABASES[@]}
 do
     config=$SKYTOOL_CONFIG_PATH/${db}_root.ini
 
+    echo "[SLAVE] update root node location"
+    psql ${db} -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "update pgq_node.node_location set node_location = 'dbname=${db} host=$SLAVE_HOST port=$SLAVE_DB_PORT' where queue_name = 'queue_${db}' and node_name = 'root_node_${db}';"
+
     echo "[SLAVE] start londiste worker for database [$db]"
     londiste3 -d $config worker > /dev/null 2>&1 &
 done
@@ -77,13 +80,13 @@ $DEPLOYMENT_PATH/londiste/londiste_pgqd.sh
 ssh $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
     for db in ${REPLICA_DATABASES[@]}
     do
-        config=$SKYTOOL_CONFIG_PATH/${db}_leaf.ini
+        config=$SKYTOOL_CONFIG_PATH/\${db}_leaf.ini
 
-        echo "[REPLICA] change replica provider"
-        londiste3 $config change-provider --provider="dbname=$db host=$SLAVE_HOST port=$SLAVE_DB_PORT"    
+        echo "[REPLICA] update root node location"
+        psql ${db} -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "update pgq_node.node_location set node_location = 'dbname=${db} host=$SLAVE_HOST port=$SLAVE_DB_PORT' where queue_name = 'queue_${db}' and node_name = 'root_node_${db}';"
 
-        echo "[REPLICA] start worker for database [$db]"
-        londiste3 -d $config worker > /dev/null 2>&1 &
+        echo "[REPLICA] start worker for database [\$db]"
+        londiste3 -d \$config worker > /dev/null 2>&1 &
     done
 
     echo "[REPLICA] start pgqd deamon"
