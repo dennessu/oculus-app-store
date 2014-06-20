@@ -31,8 +31,6 @@ public class FulfilmentItem {
     private Long timestamp;
     private Integer quantity;
 
-    private String status;
-
     @JsonIgnore
     private Long requestId;
 
@@ -46,14 +44,6 @@ public class FulfilmentItem {
         }
 
         actions.add(action);
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public Long getFulfilmentId() {
