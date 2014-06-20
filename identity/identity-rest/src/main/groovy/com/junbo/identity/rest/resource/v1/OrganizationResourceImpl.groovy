@@ -71,9 +71,11 @@ class OrganizationResourceImpl implements OrganizationResource {
 
             organization = organizationFilter.filterForPatch(organization, oldOrganization)
 
-            return organizationRepository.update(organization).then { Organization newOrganization ->
-                newOrganization = organizationFilter.filterForGet(newOrganization, null)
-                return Promise.pure(newOrganization)
+            return organizationValidator.validateForUpdate(organizationId, organization, oldOrganization).then {
+                return organizationRepository.update(organization).then { Organization newOrganization ->
+                    newOrganization = organizationFilter.filterForGet(newOrganization, null)
+                    return Promise.pure(newOrganization)
+                }
             }
         }
     }
@@ -124,13 +126,8 @@ class OrganizationResourceImpl implements OrganizationResource {
         if (listOptions.ownerId != null) {
             return organizationRepository.searchByOwner(listOptions.ownerId, listOptions.limit, listOptions.offset)
         } else if (!StringUtils.isEmpty(listOptions.name)) {
-            return organizationRepository.searchByCanonicalName(normalizeService.normalize(listOptions.name)).then { Organization org ->
-                List<Organization> organizationList = new ArrayList<>()
-                if (org != null) {
-                    organizationList.add(org)
-                }
-                return Promise.pure(organizationList)
-            }
+            return organizationRepository.searchByCanonicalName(normalizeService.normalize(listOptions.name), listOptions.limit,
+                    listOptions.offset)
         } else {
             throw new IllegalArgumentException('Not support search')
         }

@@ -27,14 +27,8 @@ class OrganizationRepositoryCloudantImpl extends CloudantClient<Organization> im
     }
 
     @Override
-    Promise<Organization> searchByCanonicalName(String name) {
-        return super.queryView('by_canonical_name', name).then { List<Organization> organizationList ->
-            if (CollectionUtils.isEmpty(organizationList)) {
-                return Promise.pure(null)
-            }
-
-            return Promise.pure(organizationList.get(0))
-        }
+    Promise<List<Organization>> searchByCanonicalName(String name, Integer limit, Integer offset) {
+        return super.queryView('by_canonical_name', name, limit, offset, false)
     }
 
     @Override
