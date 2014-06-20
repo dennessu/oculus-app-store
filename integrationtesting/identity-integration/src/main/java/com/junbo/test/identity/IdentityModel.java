@@ -253,11 +253,17 @@ public class IdentityModel {
         VERIFIED
     }
 
+    /**
+     * migration only support two groups.
+     */
     public static enum MigrateCompanyGroup {
         admin,
         developer
     }
 
+    /**
+     * copied from com/junbo/identity/rest/resource/v1/MigrationResourceImpl.groovy.
+     */
     public static enum MigrateCompanyType {
         CORPORATE,
         INDIVIDUAL

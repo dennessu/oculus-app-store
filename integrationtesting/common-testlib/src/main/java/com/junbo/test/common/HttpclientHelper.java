@@ -221,6 +221,9 @@ public class HttpclientHelper {
         httpclient = HttpClients.createDefault();
     }
 
+    /**
+     * http verb.
+     */
     public enum HttpRequestType {
         get,
         post,
