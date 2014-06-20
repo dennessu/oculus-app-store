@@ -14,14 +14,8 @@ import javax.ws.rs.NotSupportedException;
  */
 public enum FulfillmentAction implements Identifiable<Short> {
     FULFILL(0),
-    REVERSE(1),
-    RETURN(2),
-    PREORDER(3),
-    SHIP(4),
-    DELIVER(5),
-    REPLACE(6),
-    PENDING_FULFILL(7);
-
+    REVERSE_FULFILL(1),
+    PREORDER(2);
 
     private FulfillmentAction(int id) {
         this.id = (short) id;

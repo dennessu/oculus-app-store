@@ -41,7 +41,8 @@ class  FulfillmentAction extends BaseOrderEventAwareAction {
     private static final Map<EventStatus, Integer> ITEMSTATUSPRIORITY = [
             (EventStatus.COMPLETED) : 0,
             (EventStatus.PENDING) : 1,
-            (EventStatus.FAILED) : 2
+            (EventStatus.FAILED) : 2,
+            (EventStatus.ERROR): 3
     ]
 
     @Override

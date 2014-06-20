@@ -65,6 +65,8 @@ class FulfillmentActionTest extends BaseTest{
                 EasyMock.same(order))).andReturn(Promise.pure(fulfilmentResult))
         EasyMock.expect(fulfillmentAction.orderRepository.createFulfillmentHistory(
                 Matcher.memberEquals(fulfillmentHistories[0]))).andReturn(null)
+        EasyMock.expect(fulfillmentAction.orderRepository.createFulfillmentHistory(
+                Matcher.memberEquals(fulfillmentHistories[1]))).andReturn(null)
 
         EasyMock.replay(fulfillmentAction.facadeContainer.fulfillmentFacade, fulfillmentAction.orderRepository)
 

@@ -4,6 +4,7 @@ import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.*
+import com.junbo.fulfilment.spec.model.FulfilmentAction
 import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.langur.core.webflow.action.ActionContext
@@ -129,7 +130,9 @@ class TestBuilder {
         def item = new FulfilmentItem()
         item.fulfilmentId = generateLong()
         item.orderItemId = orderItem.getId().value
-        item.status = itemStatus
+        item.actions = []
+        item.actions  << new FulfilmentAction()
+        item.actions[0].status = itemStatus
         return item
     }
 }

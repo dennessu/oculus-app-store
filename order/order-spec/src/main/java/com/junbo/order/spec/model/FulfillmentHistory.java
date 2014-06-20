@@ -8,7 +8,6 @@ package com.junbo.order.spec.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.id.CouponId;
 import com.junbo.common.id.EntitlementId;
-import com.junbo.common.id.OfferId;
 import com.junbo.common.model.ResourceMetaForDualWrite;
 
 import java.math.BigDecimal;
@@ -24,11 +23,6 @@ public class FulfillmentHistory extends ResourceMetaForDualWrite<Long> {
 
     @JsonIgnore
     private Long orderItemId;
-
-    private OfferId offerId;
-
-    @JsonIgnore
-    private Long orderId;
 
     @JsonIgnore
     private UUID trackingUuid;
@@ -84,14 +78,6 @@ public class FulfillmentHistory extends ResourceMetaForDualWrite<Long> {
 
     public void setFulfillmentEvent(String fulfillmentEvent) {
         this.fulfillmentEvent = fulfillmentEvent;
-    }
-
-    public OfferId getOfferId() {
-        return offerId;
-    }
-
-    public void setOfferId(OfferId offerId) {
-        this.offerId = offerId;
     }
 
     public List<EntitlementId> getEntitlements() {
