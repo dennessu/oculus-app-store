@@ -31,7 +31,11 @@ class SendResetPasswordEmail implements Action {
     Promise<ActionResult> execute(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
         def user = contextWrapper.user
+        def loginState = contextWrapper.loginState
+
         Assert.notNull(user, 'user is null')
+        Assert.notNull(loginState, 'loginState is null')
+        user.id = new UserId(loginState.userId)
 
         return userService.sendResetPassword((UserId)(user.id), contextWrapper).recover { Throwable e ->
             handleException(e, contextWrapper)

@@ -49,8 +49,11 @@ class CreateAddress implements Action {
         def contextWrapper = new ActionContextWrapper(context)
         def parameterMap = contextWrapper.parameterMap
         def user = contextWrapper.user
+        def loginState = contextWrapper.loginState
 
         Assert.notNull(user, 'user is null')
+        Assert.notNull(loginState, 'loginState is null')
+        user.id = new UserId(loginState.userId)
 
         String address1 = parameterMap.getFirst(OAuthParameters.ADDRESS1)
         String address2 = parameterMap.getFirst(OAuthParameters.ADDRESS2)

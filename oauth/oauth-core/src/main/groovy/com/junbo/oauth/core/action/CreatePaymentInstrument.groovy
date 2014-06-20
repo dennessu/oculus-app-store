@@ -1,6 +1,7 @@
 package com.junbo.oauth.core.action
 
 import com.junbo.common.error.AppErrorException
+import com.junbo.common.id.UserId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
@@ -34,8 +35,12 @@ class CreatePaymentInstrument implements Action {
         def contextWrapper = new ActionContextWrapper(context)
         def parameterMap = contextWrapper.parameterMap
         def user = contextWrapper.user
+        def loginState = contextWrapper.loginState
 
         Assert.notNull(user, 'user is null')
+        Assert.notNull(loginState, 'loginState is null')
+        user.id = new UserId(loginState.userId)
+
         String cardNumber = parameterMap.getFirst(OAuthParameters.CARD_NUMBER)
         String nameOnCard = parameterMap.getFirst(OAuthParameters.NAME_ON_CARD)
         String expirationDate = parameterMap.getFirst(OAuthParameters.EXPIRATION_DATE)
