@@ -76,6 +76,11 @@ public class ItemRevisionRepositoryImpl implements ItemRevisionRepository {
     }
 
     @Override
+    public boolean checkPackageName(String itemId, String packageName) {
+        return false;
+    }
+
+    @Override
     public ItemRevision update(ItemRevision revision) {
         ItemRevisionEntity dbEntity = itemRevisionDao.get(revision.getRevisionId());
         ItemRevisionMapper.fillDBEntity(revision, dbEntity);

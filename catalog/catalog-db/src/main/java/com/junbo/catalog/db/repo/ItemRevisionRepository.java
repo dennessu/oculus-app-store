@@ -21,6 +21,7 @@ public interface ItemRevisionRepository extends BaseRevisionRepository<ItemRevis
     List<ItemRevision> getRevisions(ItemRevisionsGetOptions options);
     List<ItemRevision> getRevisions(Collection<String> itemIds, Long timestamp);
     List<ItemRevision> getRevisions(String hostItemId);
+    boolean checkPackageName(String itemId, String packageName);
     ItemRevision update(ItemRevision revision);
     void delete(String revisionId);
 }

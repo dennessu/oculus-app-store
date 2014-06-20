@@ -11,6 +11,7 @@ import com.junbo.catalog.db.repo.ItemRevisionRepository;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
 import com.junbo.common.cloudant.CloudantClient;
+import com.junbo.common.cloudant.model.CloudantQueryResult;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -117,6 +118,13 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
         }
 
         return itemRevisions;
+    }
+
+    @Override
+    public boolean checkPackageName(String itemId, String packageName) {
+        String query = "packageName:'" + packageName.replace("'","") + "' AND -itemId:'" + itemId.replace("'","") + "'";
+        CloudantQueryResult searchResult = super.search("search", query, 1, null, false).get();
+        return searchResult.getTotalRows() == 0;
     }
 
     @Override

@@ -65,16 +65,17 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
         } else if (options.getGenre() != null
                 || !StringUtils.isEmpty(options.getType())
                 || options.getOwnerId() != null
+                || !StringUtils.isEmpty(options.getPackageName())
                 || options.getHostItemId() != null) {
             StringBuilder sb = new StringBuilder();
             if (options.getGenre() != null) {
-                sb.append("genreId:'").append(options.getGenre()).append("'");
+                sb.append("genreId:'").append(options.getGenre().replace("'", "")).append("'");
             }
             if (!StringUtils.isEmpty(options.getType())) {
                 if (sb.length() > 0) {
                     sb.append(" AND ");
                 }
-                sb.append("type:'").append(options.getType()).append("'");
+                sb.append("type:'").append(options.getType().replace("'", "")).append("'");
             }
             if (!StringUtils.isEmpty(options.getOwnerId())) {
                 if (sb.length() > 0) {
@@ -82,11 +83,17 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
                 }
                 sb.append("ownerId:'").append(options.getOwnerId().getValue()).append("'");
             }
+            if (!StringUtils.isEmpty(options.getPackageName())) {
+                if (sb.length() > 0) {
+                    sb.append(" AND ");
+                }
+                sb.append("packageName:'").append(options.getPackageName().replace("'", "")).append("'");
+            }
             if (options.getHostItemId() != null) {
                 if (sb.length() > 0) {
                     sb.append(" AND ");
                 }
-                sb.append("hostItemId:'").append(options.getHostItemId()).append("'");
+                sb.append("hostItemId:'").append(options.getHostItemId().replace("'", "")).append("'");
             }
             CloudantSearchResult<Item> searchResult =
                     super.search("search", sb.toString(), options.getValidSize(), options.getBookmark()).get();

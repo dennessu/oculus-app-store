@@ -303,6 +303,12 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
                     }
                 }
             }
+            if (revision.getPackageName() != null) {
+                boolean valid = itemRevisionRepo.checkPackageName(revision.getItemId(), revision.getPackageName());
+                if (!valid) {
+                    errors.add(AppErrors.INSTANCE.fieldNotCorrect("packageName", "Already used by another item."));
+                }
+            }
         }
         if (revision.getMsrp() != null) {
             checkPrice(revision.getMsrp(), errors);
