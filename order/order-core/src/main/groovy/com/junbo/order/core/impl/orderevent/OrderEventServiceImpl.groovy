@@ -12,7 +12,6 @@ import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
-import com.junbo.order.spec.error.ErrorUtils
 import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.model.enums.OrderActionType
@@ -78,16 +77,11 @@ class OrderEventServiceImpl implements OrderEventService {
     }
 
     private Promise<OrderEvent> recordFulfillHistory(OrderEvent event) {
-        return facadeContainer.fulfillmentFacade.getFulfillment(event.order)
-                .syncRecover { Throwable throwable ->
-            LOGGER.error('name=Order_FulfillmentAction_Error', throwable)
-            throw AppErrors.INSTANCE.
-                    fulfilmentConnectionError(ErrorUtils.toAppErrors(throwable)).exception()
-        }.then { FulfilmentRequest fulfillment ->
+        return facadeContainer.fulfillmentFacade.getFulfillment(event.order).then { FulfilmentRequest fulfillment ->
             if (fulfillment == null) {
                 LOGGER.error('name=Order_GetFulfillment_Error_Fulfillment_Null')
                 throw AppErrors.INSTANCE.
-                        fulfillmentConnectionError().exception()
+                        fulfillmentConnectionError('get fulfillment returns null').exception()
             }
             fulfillment.items.each { FulfilmentItem fulfilmentItem ->
                 def fulfillmentHistory = FulfillmentEventHistoryBuilder.buildFulfillmentHistory(

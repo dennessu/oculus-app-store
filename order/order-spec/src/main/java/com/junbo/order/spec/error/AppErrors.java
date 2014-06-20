@@ -150,11 +150,11 @@ public interface AppErrors {
     AppError userConnectionError();
 
     @ErrorDef(httpStatusCode = 500, code = FulfillmentErrorCode.FULFILLMENT_CONNECTION_ERROR,
-            description = "Fulfillment connection error")
-    AppError fulfillmentConnectionError();
+            description = "Fulfilment service error: {0}")
+    AppError fulfillmentConnectionError(String cause);
 
     @ErrorDef(httpStatusCode = 500, code = FulfillmentErrorCode.FULFILLMENT_CONNECTION_ERROR,
-            description = "Fulfilment connection error")
+            description = "Fulfilment service error")
     AppError fulfilmentConnectionError(AppError[] causes);
 
     @ErrorDef(httpStatusCode = 404, code = ErrorCode.SUBLEDGER_NOT_FOUND,

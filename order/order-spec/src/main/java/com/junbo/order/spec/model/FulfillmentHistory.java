@@ -6,8 +6,13 @@
 package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.junbo.common.id.CouponId;
+import com.junbo.common.id.EntitlementId;
+import com.junbo.common.id.OfferId;
 import com.junbo.common.model.ResourceMetaForDualWrite;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -20,6 +25,11 @@ public class FulfillmentHistory extends ResourceMetaForDualWrite<Long> {
     @JsonIgnore
     private Long orderItemId;
 
+    private OfferId offerId;
+
+    @JsonIgnore
+    private Long orderId;
+
     @JsonIgnore
     private UUID trackingUuid;
 
@@ -27,6 +37,14 @@ public class FulfillmentHistory extends ResourceMetaForDualWrite<Long> {
     private String fulfillmentId;
 
     private String fulfillmentEvent;
+
+    private List<EntitlementId> entitlements;
+
+    private BigDecimal walletAmount;
+
+    private List<FulfillmentShippingDetail> shippingDetails;
+
+    private List<CouponId> coupons;
 
     public Long getId() {
         return id;
@@ -66,5 +84,45 @@ public class FulfillmentHistory extends ResourceMetaForDualWrite<Long> {
 
     public void setFulfillmentEvent(String fulfillmentEvent) {
         this.fulfillmentEvent = fulfillmentEvent;
+    }
+
+    public OfferId getOfferId() {
+        return offerId;
+    }
+
+    public void setOfferId(OfferId offerId) {
+        this.offerId = offerId;
+    }
+
+    public List<EntitlementId> getEntitlements() {
+        return entitlements;
+    }
+
+    public void setEntitlements(List<EntitlementId> entitlements) {
+        this.entitlements = entitlements;
+    }
+
+    public BigDecimal getWalletAmount() {
+        return walletAmount;
+    }
+
+    public void setWalletAmount(BigDecimal walletAmount) {
+        this.walletAmount = walletAmount;
+    }
+
+    public List<FulfillmentShippingDetail> getShippingDetails() {
+        return shippingDetails;
+    }
+
+    public void setShippingDetails(List<FulfillmentShippingDetail> shippingDetails) {
+        this.shippingDetails = shippingDetails;
+    }
+
+    public List<CouponId> getCoupons() {
+        return coupons;
+    }
+
+    public void setCoupons(List<CouponId> coupons) {
+        this.coupons = coupons;
     }
 }

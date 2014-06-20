@@ -74,6 +74,9 @@ class BillingEventHistoryBuilder {
         billingHistory.balanceId = (balance.id == null || balance.getId().value == null) ?
                 null : balance.id.toString()
         billingHistory.totalAmount = balance.totalAmount
+        if (balance.type == BalanceType.REFUND.name() || balance.type == BalanceType.CREDIT.name()) {
+            billingHistory.totalAmount = 0G - balance.totalAmount
+        }
         billingHistory.billingEvent = buildBillingEvent(balance)
         return billingHistory
     }

@@ -21,6 +21,4 @@ public interface FulfilmentSupport {
     ClassifyResult classify(FulfilmentRequest request);
 
     void dispatch(FulfilmentRequest request, ClassifyResult classifyResult);
-
-    void windup(FulfilmentRequest request);
 }
