@@ -84,6 +84,7 @@ public class postImportUserPersonalInfo {
         Organization organization = Identity.OrganizationGetByOrganizationId(oculusOutput.getOrganizationId());
         Validator.Validate("validate organization name", oculusInput.getCompany().getName(), organization.getName());
         Validator.Validate("validate organization type", oculusInput.getCompany().getType(), organization.getType());
+        Validator.Validate("validate imported organization isValidated == false", false, organization.getIsValidated());
         UserPersonalInfo companyAddress = Identity.UserPersonalInfoGetByUserPersonalInfoId(
                 organization.getShippingAddress());
         Validator.Validate("validate company address type", IdentityModel.UserPersonalInfoType.ADDRESS.name(),
@@ -122,16 +123,13 @@ public class postImportUserPersonalInfo {
     @Test(groups = "dailies")
     public void importMigrationDataWithDuplicateCompanyNameDifferentCompanyId() throws Exception {
         OculusInput oculusInput = IdentityModel.DefaultOculusInput();
-        Identity.ImportMigrationData(oculusInput);
+        OculusOutput oculusOutput1 = Identity.ImportMigrationData(oculusInput);
         Company company = oculusInput.getCompany();
         company.setCompanyId(RandomHelper.randomLong());
         oculusInput.setCompany(company);
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.DefaultIdentityV1ImportsURI,
-                JsonHelper.JsonSerializer(oculusInput), 2);
-        Validator.Validate("validate response error code", 409, response.getStatusLine().getStatusCode());
-        String errorMessage = "Field name invalid due to company.name is already used by others.";
-        Validator.Validate("validate response error message", true,
-                EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+        OculusOutput oculusOutput2 = Identity.ImportMigrationData(oculusInput);
+        Validator.Validate("validate created 2 companies", true,
+                oculusOutput1.getOrganizationId() != oculusOutput2.getOrganizationId());
     }
 
     @Test(groups = "dailies")

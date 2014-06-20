@@ -192,6 +192,13 @@ public class IdentityModel {
         return userPersonalInfo;
     }
 
+    public static Organization DefaultOrganization() throws Exception {
+        Organization org = new Organization();
+        org.setName(RandomHelper.randomAlphabetic(20));
+        org.setIsValidated(true);
+        return org;
+    }
+
     public static Boolean RandomBoolean() {
         List<Object> array = new ArrayList<>();
         array.add(true);

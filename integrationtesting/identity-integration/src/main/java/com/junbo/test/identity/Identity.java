@@ -204,6 +204,14 @@ public class Identity {
         }
     }
 
+    public static Organization OrganizationPostDefault(Organization organization) throws Exception {
+        Organization org = organization == null ? IdentityModel.DefaultOrganization() : organization;
+        return (Organization) HttpclientHelper.SimpleJsonPost(
+                DefaultIdentityV1OrganizationURI,
+                JsonHelper.JsonSerializer(org),
+                Organization.class);
+    }
+
     public static String GetHexUserId(Long userId) throws Exception {
         return IdConverter.idToUrlString(UserId.class, userId);
     }
