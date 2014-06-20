@@ -14,13 +14,13 @@ import java.util.List;
 /**
  * LotTransactionDao Impl.
  */
-public class LotTransactionDaoImpl extends TransactionBaseDao<LotTransactionEntity> implements LotTransactionDao {
+public class LotTransactionDaoImpl extends BaseDaoImpl<LotTransactionEntity> implements LotTransactionDao {
     @Override
     public List<LotTransactionEntity> getByTransactionId(Long transactionId) {
         String queryString = "select * from lot_transaction" +
                 " where transaction_id = (:transactionId)" +
                 " and unrefunded_amount > 0" +
-                " order by wallet_lot_type asc";
+                " order by wallet_lot_type_id asc";
         Query q = currentSession(transactionId).createSQLQuery(queryString)
                 .addEntity(this.getEntityType())
                 .setLong("transactionId", transactionId);

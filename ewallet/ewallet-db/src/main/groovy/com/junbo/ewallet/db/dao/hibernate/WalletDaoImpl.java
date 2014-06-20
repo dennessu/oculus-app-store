@@ -17,7 +17,7 @@ import java.util.UUID;
 /**
  * Hibernate impl of WalletDao.
  */
-public class WalletDaoImpl extends BaseDao<WalletEntity> implements WalletDao {
+public class WalletDaoImpl extends BaseDaoImpl<WalletEntity> implements WalletDao {
     @Override
     public WalletEntity getByTrackingUuid(Long shardMasterId, UUID uuid) {
         String queryString = "from WalletEntity where trackingUuid = (:trackingUuid)";
@@ -27,10 +27,10 @@ public class WalletDaoImpl extends BaseDao<WalletEntity> implements WalletDao {
 
     @Override
     public WalletEntity get(Long userId, WalletType type, String currency) {
-        String queryString = "from WalletEntity where userId = (:userId) and type = (:type) and currency = (:currency)";
+        String queryString = "from WalletEntity where userId = (:userId) and typeId = (:typeId) and currency = (:currency)";
         Query q = currentSession(userId).createQuery(queryString)
                 .setLong("userId", userId)
-                .setInteger("type", type.getId())
+                .setInteger("typeId", type.getId())
                 .setString("currency", currency.toUpperCase());
         return (WalletEntity) q.uniqueResult();
     }

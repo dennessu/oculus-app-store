@@ -11,95 +11,68 @@
             create table ewallet (
               id bigint not null,
               user_id bigint not null,
-              type smallint not null,
-              status smallint not null,
-              currency varchar(128) not null,
+              type_id int not null,
+              status_id smallint not null,
+              currency varchar(12) not null,
               balance numeric not null,
+
+              resource_age bigint not null,
               created_time timestamp not null,
-              created_by varchar(256) not null,
-              modified_time timestamp,
-              modified_by varchar(256),
+              created_by varchar(128),
+              updated_time timestamp,
+              updated_by varchar(128),
               tracking_uuid uuid UNIQUE,
               primary key (id)
             );
 
-            create table ewallet_status (
-              id int not null,
-              name varchar(64) not null,
-              created_by varchar(32) not null,
-              created_time timestamp not null,
-              primary key (id)
-            );
-
-            insert into ewallet_status values( 1, 'Active', '', '2014-01-10');
-            insert into ewallet_status values( 2, 'Locked', '', '2014-01-10');
-            insert into ewallet_status values( 3, 'Expired', '', '2014-01-10');
-
             create table ewallet_lot (
               id bigint not null,
               ewallet_id bigint not null,
-              type smallint not null,
+              type_id int not null,
               total numeric not null,
               remaining numeric not null,
               expiration_date timestamp,
+
+              resource_age bigint not null,
               created_time timestamp not null,
-              created_by varchar(256) not null,
-              modified_time timestamp,
-              modified_by varchar(256),
+              created_by varchar(128) not null,
+              updated_time timestamp,
+              updated_by varchar(128),
               primary key (id)
             );
-
-            create table lot_type (
-              id int not null,
-              name varchar(64) not null,
-              created_by varchar(32) not null,
-              created_time timestamp not null,
-              primary key (id)
-            );
-
-            insert into lot_type values( 1, 'CASH', '', '2014-01-10');
-            insert into lot_type values( 2, 'PROMOTION', '', '2014-01-10');
-            insert into lot_type values( 3, 'REFUND', '', '2014-01-10');
 
             create table transaction (
               id bigint not null,
               tracking_uuid uuid UNIQUE,
               ewallet_id bigint not null,
-              type int not null,
+              type_id int not null,
               amount numeric not null,
               unrefunded_amount numeric default null,
               offer_id bigint,
+
+              resource_age bigint not null,
               created_time timestamp not null,
-              created_by varchar(256) not null,
+              created_by varchar(128),
+              updated_time timestamp,
+              updated_by varchar(128),
               primary key (id)
             );
-
-            create table transaction_type (
-              id int not null,
-              name varchar(64) not null,
-              created_by varchar(32) not null,
-              created_time timestamp not null,
-              primary key (id)
-            );
-
-            insert into transaction_type values( 0, 'Create', '', '2014-01-10');
-            insert into transaction_type values( 1, 'Credit', '', '2014-01-10');
-            insert into transaction_type values( 2, 'Debit', '', '2014-01-10');
-            insert into transaction_type values( 3, 'Refund', '', '2014-01-10');
-            insert into transaction_type values( 4, 'Delete', '', '2014-01-10');
-            
 
             create table lot_transaction (
               id bigint not null,
               ewallet_id bigint not null,
               ewallet_lot_id bigint not null,
               transaction_id bigint not null,
-              type int not null,
-              wallet_lot_type int,
+              type_id int not null,
+              wallet_lot_type_id int,
               amount numeric,
               unrefunded_amount numeric,
+
+              resource_age bigint not null,
               created_time timestamp not null,
-              created_by varchar(256) not null,
+              created_by varchar(128),
+              updated_time timestamp,
+              updated_by varchar(128),
               primary key (id)
             );
             

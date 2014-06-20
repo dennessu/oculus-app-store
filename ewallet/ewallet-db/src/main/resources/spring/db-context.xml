@@ -6,6 +6,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <context:component-scan base-package="com.junbo.ewallet.db"/>
+    <context:component-scan base-package="com.junbo.oom.core.builtin"/>
 
     <!-- DataSource -->
     <bean id="ewalletDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
@@ -49,15 +50,14 @@
     <tx:annotation-driven/>
 
     <!-- Dao -->
-    <bean id="baseTransactionDao" class="com.junbo.ewallet.db.dao.hibernate.TransactionBaseDao" abstract="true"/>
-    <bean id="transactionDao" class="com.junbo.ewallet.db.dao.hibernate.TransactionDaoImpl" parent="baseTransactionDao">
+    <bean id="baseDao" class="com.junbo.ewallet.db.dao.hibernate.BaseDaoImpl" abstract="true"/>
+
+    <bean id="transactionDao" class="com.junbo.ewallet.db.dao.hibernate.TransactionDaoImpl" parent="baseDao">
         <property name="entityType" value="com.junbo.ewallet.db.entity.TransactionEntity"/>
     </bean>
-    <bean id="lotTransactionDao" class="com.junbo.ewallet.db.dao.hibernate.LotTransactionDaoImpl" parent="baseTransactionDao">
+    <bean id="lotTransactionDao" class="com.junbo.ewallet.db.dao.hibernate.LotTransactionDaoImpl" parent="baseDao">
         <property name="entityType" value="com.junbo.ewallet.db.entity.LotTransactionEntity"/>
     </bean>
-
-    <bean id="baseDao" class="com.junbo.ewallet.db.dao.hibernate.BaseDao" abstract="true" parent="baseTransactionDao"/>
     <bean id="walletDao" class="com.junbo.ewallet.db.dao.hibernate.WalletDaoImpl" parent="baseDao">
         <property name="entityType" value="com.junbo.ewallet.db.entity.WalletEntity"/>
     </bean>
@@ -87,7 +87,7 @@
     <!--</bean>-->
 
     <!-- mapper -->
-    <bean id="walletMapper" class="com.junbo.ewallet.db.mapper.WalletMapper"/>
+    <bean id="ewalletCommonMapper" class="com.junbo.ewallet.db.mapper.CommonMapper" />
 
     <!-- repo -->
     <bean id="walletRepository" class="com.junbo.ewallet.db.repo.WalletRepository"/>

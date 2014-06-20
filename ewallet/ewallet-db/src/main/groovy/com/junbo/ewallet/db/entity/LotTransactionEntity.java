@@ -6,14 +6,6 @@
 
 package com.junbo.ewallet.db.entity;
 
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.junbo.common.cloudant.json.annotations.CloudantDeserialize;
-import com.junbo.common.cloudant.json.annotations.CloudantSerialize;
-import com.junbo.common.jackson.deserializer.BigDecimalFromStringDeserializer;
-import com.junbo.ewallet.db.entity.def.*;
-import com.junbo.ewallet.spec.def.WalletLotType;
-import org.hibernate.annotations.Type;
-
 import javax.persistence.Column;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -24,24 +16,28 @@ import java.math.BigDecimal;
  */
 @javax.persistence.Entity
 @Table(name = "lot_transaction")
-public class LotTransactionEntity extends EntityWithCreated<LotTransactionId> {
+public class LotTransactionEntity extends BaseEntity {
+    @Column(name = "ewallet_id")
     private Long walletId;
+
+    @Column(name = "ewallet_lot_id")
     private Long walletLotId;
+
+    @Column(name = "transaction_id")
     private Long transactionId;
-    private TransactionType type;
-    @CloudantSerialize(TypeSerializer.WalletLotTypeSerializer.class)
-    @CloudantDeserialize(TypeDeserializer.WalletLotTypeDeserializer.class)
-    private WalletLotType walletLotType;
-    @CloudantDeserialize(BigDecimalFromStringDeserializer.class)
-    @CloudantSerialize(ToStringSerializer.class)
+
+    @Column(name = "type_id")
+    private Integer typeId;
+
+    @Column(name = "wallet_lot_type_id")
+    private Integer walletLotTypeId;
+
+    @Column(name = "amount")
     private BigDecimal amount;
-    @CloudantDeserialize(BigDecimalFromStringDeserializer.class)
-    @CloudantSerialize(ToStringSerializer.class)
+
+    @Column(name = "unrefunded_amount")
     private BigDecimal unrefundedAmount;
 
-    private Boolean isRefundEnded;
-
-    @Column(name = "ewallet_id")
     public Long getWalletId() {
         return walletId;
     }
@@ -50,7 +46,6 @@ public class LotTransactionEntity extends EntityWithCreated<LotTransactionId> {
         this.walletId = walletId;
     }
 
-    @Column(name = "ewallet_lot_id")
     public Long getWalletLotId() {
         return walletLotId;
     }
@@ -59,7 +54,6 @@ public class LotTransactionEntity extends EntityWithCreated<LotTransactionId> {
         this.walletLotId = walletLotId;
     }
 
-    @Column(name = "transaction_id")
     public Long getTransactionId() {
         return transactionId;
     }
@@ -68,27 +62,22 @@ public class LotTransactionEntity extends EntityWithCreated<LotTransactionId> {
         this.transactionId = transactionId;
     }
 
-    @Column(name = "type")
-    @Type(type = IdentifiableType.TYPE)
-    public TransactionType getType() {
-        return type;
+    public Integer getTypeId() {
+        return typeId;
     }
 
-    public void setType(TransactionType type) {
-        this.type = type;
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
     }
 
-    @Column(name = "wallet_lot_type")
-    @Type(type = IdentifiableType.TYPE)
-    public WalletLotType getWalletLotType() {
-        return walletLotType;
+    public Integer getWalletLotTypeId() {
+        return walletLotTypeId;
     }
 
-    public void setWalletLotType(WalletLotType walletLotType) {
-        this.walletLotType = walletLotType;
+    public void setWalletLotTypeId(Integer walletLotTypeId) {
+        this.walletLotTypeId = walletLotTypeId;
     }
 
-    @Column(name = "amount")
     public BigDecimal getAmount() {
         return amount;
     }
@@ -97,7 +86,6 @@ public class LotTransactionEntity extends EntityWithCreated<LotTransactionId> {
         this.amount = amount;
     }
 
-    @Column(name = "unrefunded_amount")
     public BigDecimal getUnrefundedAmount() {
         return unrefundedAmount;
     }
@@ -110,25 +98,5 @@ public class LotTransactionEntity extends EntityWithCreated<LotTransactionId> {
     @Override
     public Long getShardMasterId() {
         return walletId;
-    }
-
-    @Transient
-    public Boolean getIsRefundEnded() {
-        return isRefundEnded;
-    }
-
-    public void setIsRefundEnded(Boolean isRefundEnded) {
-        this.isRefundEnded = isRefundEnded;
-    }
-
-    @Transient
-    @Override
-    public LotTransactionId getId() {
-        return new LotTransactionId(getpId());
-    }
-
-    @Override
-    public void setId(LotTransactionId id) {
-        this.setpId(id.getValue());
     }
 }

@@ -11,18 +11,18 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.junbo.common.jackson.annotation.UserId
 import com.junbo.common.jackson.annotation.WalletId
+import com.junbo.common.model.ResourceMetaForDualWrite
 import groovy.transform.CompileStatic
 /**
  * Wallet Entity.
  */
 @CompileStatic
-@JsonPropertyOrder(['walletId', 'userId', 'type', 'currency', 'balance', 'status'])
+@JsonPropertyOrder(['id', 'userId', 'type', 'currency', 'balance', 'status'])
 @JsonInclude(JsonInclude.Include.NON_NULL)
-class Wallet {
+class Wallet extends ResourceMetaForDualWrite<Long> {
     @WalletId
     @JsonProperty('self')
-    Long walletId
-    UUID trackingUuid
+    Long id
     @UserId
     @JsonProperty('user')
     Long userId
@@ -30,4 +30,5 @@ class Wallet {
     String status
     String currency
     BigDecimal balance
+    UUID trackingUuid
 }

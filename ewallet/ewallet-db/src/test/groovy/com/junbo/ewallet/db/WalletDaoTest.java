@@ -29,25 +29,28 @@ public class WalletDaoTest extends BaseTest {
     @Test
     public void testCreateWallet() {
         WalletEntity walletEntity = buildAWallet();
-        WalletEntity insertedWallet = walletDao.insert(walletEntity);
-        Assert.assertNotNull(insertedWallet.getpId());
+        Long id = walletDao.insert(walletEntity);
+        WalletEntity insertedWallet = walletDao.get(id);
+        Assert.assertNotNull(insertedWallet);
         Assert.assertEquals(walletEntity.getBalance(), insertedWallet.getBalance());
     }
 
     @Test
     public void testUpdateWallet() {
         WalletEntity walletEntity = buildAWallet();
-        WalletEntity insertedWallet = walletDao.insert(walletEntity);
-        insertedWallet.setStatus(Status.LOCKED);
-        WalletEntity updatedWallet = walletDao.update(insertedWallet);
-        Assert.assertEquals(updatedWallet.getStatus(), Status.LOCKED);
+        Long id = walletDao.insert(walletEntity);
+        WalletEntity insertedWallet = walletDao.get(id);
+        insertedWallet.setStatusId(Status.LOCKED.getId());
+        walletDao.update(insertedWallet);
+        WalletEntity updatedWallet = walletDao.get(id);
+        Assert.assertEquals(updatedWallet.getStatusId(), Status.LOCKED.getId());
     }
 
     private WalletEntity buildAWallet() {
         WalletEntity walletEntity = new WalletEntity();
         walletEntity.setUserId(idGenerator.nextId());
-        walletEntity.setType(WalletType.STORED_VALUE);
-        walletEntity.setStatus(Status.ACTIVE);
+        walletEntity.setTypeId(WalletType.STORED_VALUE.getId());
+        walletEntity.setStatusId(Status.ACTIVE.getId());
         walletEntity.setCurrency(Currency.USD.toString());
         walletEntity.setBalance(BigDecimal.ZERO);
         return walletEntity;

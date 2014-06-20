@@ -44,7 +44,7 @@ class WalletServiceImpl implements WalletService {
     @Override
     @Transactional
     Wallet add(Wallet wallet) {
-        if (wallet.walletId != null) {
+        if (wallet.getId() != null) {
             throw AppErrors.INSTANCE.unnecessaryField('id').exception()
         }
 
@@ -85,8 +85,8 @@ class WalletServiceImpl implements WalletService {
     @Override
     @Transactional
     Wallet update(Long walletId, Wallet wallet) {
-        validateNotNull(wallet.walletId, 'id')
-        validateEquals(wallet.walletId, walletId, 'id')
+        validateNotNull(wallet.getId(), 'id')
+        validateEquals(wallet.getId(), walletId, 'id')
 
         Wallet existed = get(walletId)
 
@@ -95,7 +95,7 @@ class WalletServiceImpl implements WalletService {
         validateEquals(wallet.currency, existed.currency, 'currency')
         validateEquals(wallet.balance, existed.balance, 'balance')
 
-        wallet.walletId = walletId
+        wallet.setId(walletId)
         Wallet result = walletRepo.update(wallet)
         return result
     }
@@ -136,7 +136,7 @@ class WalletServiceImpl implements WalletService {
         }
         checkUserId(wallet.userId)
         if (wallet.status.equalsIgnoreCase(Status.LOCKED.toString())) {
-            throw AppErrors.INSTANCE.locked(wallet.walletId).exception()
+            throw AppErrors.INSTANCE.locked(wallet.getId()).exception()
         }
 
         Transaction result = walletRepo.credit(wallet, creditRequest)
@@ -223,7 +223,7 @@ class WalletServiceImpl implements WalletService {
         checkUserId(wallet.userId)
         validateEquals(refundRequest.currency, wallet.currency, "currency")
         if (wallet.status.equalsIgnoreCase(Status.LOCKED.toString())) {
-            throw AppErrors.INSTANCE.locked(wallet.walletId).exception()
+            throw AppErrors.INSTANCE.locked(wallet.getId()).exception()
         }
 
         return walletRepo.refund(wallet, transactionId, refundRequest)

@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Hibernate impl of WalletLotDao.
  */
-public class WalletLotDaoImpl extends BaseDao<WalletLotEntity> implements WalletLotDao {
+public class WalletLotDaoImpl extends BaseDaoImpl<WalletLotEntity> implements WalletLotDao {
     @Override
     public void delete(Long id) {
         currentSession(id).delete(get(id));
@@ -28,7 +28,7 @@ public class WalletLotDaoImpl extends BaseDao<WalletLotEntity> implements Wallet
                 " where ewallet_id = (:walletId)" +
                 " and remaining > 0" +
                 " and expiration_date >= (:now)" +
-                " order by type desc";
+                " order by type_id desc";
         Query q = currentSession(walletId).createSQLQuery(queryString)
                 .addEntity(WalletLotEntity.class)
                 .setLong("walletId", walletId)
@@ -43,7 +43,7 @@ public class WalletLotDaoImpl extends BaseDao<WalletLotEntity> implements Wallet
                 " and remaining > 0" +
                 " and expiration_date >= (:now)";
         Query q = currentSession(walletId).createSQLQuery(queryString)
-                .setLong("walletId", walletId).setTimestamp("now", new Date());;
+                .setLong("walletId", walletId).setTimestamp("now", new Date());
         return (BigDecimal) q.uniqueResult();
     }
 }

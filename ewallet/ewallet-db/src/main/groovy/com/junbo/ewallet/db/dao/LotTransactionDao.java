@@ -12,12 +12,6 @@ import java.util.List;
 /**
  * interface of LotTransactionDao.
  */
-public interface LotTransactionDao {
-    LotTransactionEntity get(Long id);
-
-    LotTransactionEntity insert(LotTransactionEntity lotTransactionEntity);
-
-    void update(LotTransactionEntity lotTransactionEntity);
-
+public interface LotTransactionDao extends BaseDao<LotTransactionEntity> {
     List<LotTransactionEntity> getByTransactionId(Long transactionId);
 }

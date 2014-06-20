@@ -4,6 +4,7 @@ dependencies {
     compile junboProject(':common-lib')
     compile junboProject(':common-sharding')
     compile junboProject(':common-configuration')
+    compile junboProject(':oom-core')
 
     compile(libraries.spring_aop)
     compile(libraries.spring_context)
@@ -13,18 +14,14 @@ dependencies {
     compile(libraries.spring_jdbc)
     compile(libraries.spring_orm)
     compile(libraries.spring_beans)
-
     compile (libraries.persistence_api)
     compile (libraries.validation_api)
-
     compile (libraries.hibernate_core)
     compile (libraries.hibernate_entitymanager)
     compile (libraries.hibernate_annotation)
     compile (libraries.hibernate_validator)
-
     compile (libraries.HikariCP)
     compile (libraries.postgresql)
-
     compile (libraries.rs_api)
 
     testCompile (libraries.guava)
@@ -32,4 +29,6 @@ dependencies {
 
     compile junboProject(':ewallet-spec')
     compile junboProject(':ewallet-common')
+
+    processor junboProject(':oom-processor')
 }

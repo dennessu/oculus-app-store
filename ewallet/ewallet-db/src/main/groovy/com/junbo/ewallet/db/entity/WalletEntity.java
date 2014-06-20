@@ -6,16 +6,6 @@
 
 package com.junbo.ewallet.db.entity;
 
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.junbo.common.cloudant.json.annotations.CloudantDeserialize;
-import com.junbo.common.cloudant.json.annotations.CloudantSerialize;
-import com.junbo.common.jackson.deserializer.BigDecimalFromStringDeserializer;
-import com.junbo.ewallet.db.entity.def.IdentifiableType;
-import com.junbo.ewallet.db.entity.def.TypeDeserializer;
-import com.junbo.ewallet.db.entity.def.TypeSerializer;
-import com.junbo.ewallet.db.entity.def.WalletId;
-import com.junbo.ewallet.spec.def.Status;
-import com.junbo.ewallet.spec.def.WalletType;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
@@ -29,20 +19,26 @@ import java.util.UUID;
  */
 @javax.persistence.Entity
 @Table(name = "ewallet")
-public class WalletEntity extends Entity<WalletId> {
-    private UUID trackingUuid;
-    private Long userId;
-    @CloudantSerialize(TypeSerializer.WalletTypeSerializer.class)
-    @CloudantDeserialize(TypeDeserializer.WalletTypeDeserializer.class)
-    private WalletType type;
-    private Status status;
-    private String currency;
-    @CloudantDeserialize(BigDecimalFromStringDeserializer.class)
-    @CloudantSerialize(ToStringSerializer.class)
-    private BigDecimal balance;
-
+public class WalletEntity extends BaseEntity {
     @Column(name = "tracking_uuid")
     @Type(type = "pg-uuid")
+    private UUID trackingUuid;
+
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "type_id")
+    private Integer typeId;
+
+    @Column(name = "status_id")
+    private Integer statusId;
+
+    @Column(name = "currency")
+    private String currency;
+
+    @Column(name = "balance")
+    private BigDecimal balance;
+
     public UUID getTrackingUuid() {
         return trackingUuid;
     }
@@ -51,7 +47,6 @@ public class WalletEntity extends Entity<WalletId> {
         this.trackingUuid = trackingUuid;
     }
 
-    @Column(name = "user_id")
     public Long getUserId() {
         return userId;
     }
@@ -60,27 +55,22 @@ public class WalletEntity extends Entity<WalletId> {
         this.userId = userId;
     }
 
-    @Column(name = "type")
-    @Type(type = IdentifiableType.TYPE)
-    public WalletType getType() {
-        return type;
+    public Integer getTypeId() {
+        return typeId;
     }
 
-    public void setType(WalletType type) {
-        this.type = type;
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
     }
 
-    @Column(name = "status")
-    @Type(type = IdentifiableType.TYPE)
-    public Status getStatus() {
-        return status;
+    public Integer getStatusId() {
+        return statusId;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setStatusId(Integer statusId) {
+        this.statusId = statusId;
     }
 
-    @Column(name = "currency")
     public String getCurrency() {
         return currency;
     }
@@ -89,7 +79,6 @@ public class WalletEntity extends Entity<WalletId> {
         this.currency = currency;
     }
 
-    @Column(name = "balance")
     public BigDecimal getBalance() {
         return balance;
     }
@@ -102,16 +91,5 @@ public class WalletEntity extends Entity<WalletId> {
     @Override
     public Long getShardMasterId() {
         return userId;
-    }
-
-    @Transient
-    @Override
-    public WalletId getId() {
-        return new WalletId(getpId());
-    }
-
-    @Override
-    public void setId(WalletId id) {
-        this.setpId(id.getValue());
     }
 }

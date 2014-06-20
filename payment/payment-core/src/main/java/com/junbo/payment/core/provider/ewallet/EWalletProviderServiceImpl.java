@@ -88,7 +88,7 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
         }).then(new Promise.Func<Wallet, Promise<PaymentInstrument>>() {
             @Override
             public Promise<PaymentInstrument> apply(Wallet wallet) {
-                request.setExternalToken(wallet.getWalletId().toString());
+                request.setExternalToken(wallet.getId().toString());
                 return Promise.pure(request);
             }
         });
@@ -159,7 +159,7 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
                 }).then(new Promise.Func<Transaction, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(Transaction transaction) {
-                if (transaction == null || transaction.getTransactionId() == null) {
+                if (transaction == null || transaction.getId() == null) {
                     throw AppServerExceptions.INSTANCE.providerProcessError(
                             PROVIDER_NAME, "No transaction happens").exception();
                 }
@@ -201,11 +201,11 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
                 }).then(new Promise.Func<Transaction, Promise<PaymentTransaction>>() {
             @Override
             public Promise<PaymentTransaction> apply(Transaction transaction) {
-                if (transaction == null || transaction.getTransactionId() == null) {
+                if (transaction == null || transaction.getId() == null) {
                     throw AppServerExceptions.INSTANCE.providerProcessError(
                             PROVIDER_NAME, "No transaction happens").exception();
                 }
-                paymentRequest.setExternalToken(transaction.getTransactionId().toString());
+                paymentRequest.setExternalToken(transaction.getId().toString());
                 paymentRequest.setStatus(PaymentStatus.SETTLED.toString());
                 return Promise.pure(paymentRequest);
             }
@@ -248,7 +248,7 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
                 }).then(new Promise.Func<Transaction, Promise<PaymentTransaction>>() {
                     @Override
                     public Promise<PaymentTransaction> apply(Transaction transaction) {
-                        if (transaction == null || transaction.getTransactionId() == null) {
+                        if (transaction == null || transaction.getId() == null) {
                             throw AppServerExceptions.INSTANCE.providerProcessError(
                                     PROVIDER_NAME, "No transaction happens").exception();
                         }

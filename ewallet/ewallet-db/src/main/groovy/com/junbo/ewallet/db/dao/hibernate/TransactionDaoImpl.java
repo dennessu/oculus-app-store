@@ -16,7 +16,7 @@ import java.util.UUID;
 /**
  * Hibernate impl of TransactionDao.
  */
-public class TransactionDaoImpl extends TransactionBaseDao<TransactionEntity> implements TransactionDao {
+public class TransactionDaoImpl extends BaseDaoImpl<TransactionEntity> implements TransactionDao {
     @Override
     public List<TransactionEntity> getByWalletId(Long walletId) {
         String queryString = "from TransactionEntity where walletId = (:walletId)";

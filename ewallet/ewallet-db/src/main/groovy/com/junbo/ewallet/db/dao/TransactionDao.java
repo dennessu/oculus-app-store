@@ -14,14 +14,7 @@ import java.util.UUID;
 /**
  * Interface of TransactionDao.
  */
-public interface TransactionDao {
-    TransactionEntity get(Long id);
-
-    TransactionEntity insert(TransactionEntity transactionEntity);
-
-    void update(TransactionEntity transactionEntity);
-
+public interface TransactionDao extends BaseDao<TransactionEntity> {
     List<TransactionEntity> getByWalletId(Long walletId);
-
     TransactionEntity getByTrackingUuid(Long shardMasterId, UUID uuid);
 }

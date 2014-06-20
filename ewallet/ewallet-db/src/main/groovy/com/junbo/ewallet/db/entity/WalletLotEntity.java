@@ -6,14 +6,6 @@
 
 package com.junbo.ewallet.db.entity;
 
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.junbo.common.cloudant.json.annotations.CloudantDeserialize;
-import com.junbo.common.cloudant.json.annotations.CloudantSerialize;
-import com.junbo.common.jackson.deserializer.BigDecimalFromStringDeserializer;
-import com.junbo.ewallet.db.entity.def.*;
-import com.junbo.ewallet.spec.def.WalletLotType;
-import org.hibernate.annotations.Type;
-
 import javax.persistence.Column;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -25,24 +17,22 @@ import java.util.Date;
  */
 @javax.persistence.Entity
 @Table(name = "ewallet_lot")
-public class WalletLotEntity extends Entity<WalletLotId> {
+public class WalletLotEntity extends BaseEntity {
+    @Column(name = "ewallet_id")
     private Long walletId;
-    @CloudantSerialize(TypeSerializer.WalletLotTypeSerializer.class)
-    @CloudantDeserialize(TypeDeserializer.WalletLotTypeDeserializer.class)
-    private WalletLotType type;
-    @CloudantDeserialize(BigDecimalFromStringDeserializer.class)
-    @CloudantSerialize(ToStringSerializer.class)
+
+    @Column(name = "type_id")
+    private Integer typeId;
+
+    @Column(name = "total")
     private BigDecimal totalAmount;
-    @CloudantDeserialize(BigDecimalFromStringDeserializer.class)
-    @CloudantSerialize(ToStringSerializer.class)
+
+    @Column(name = "remaining")
     private BigDecimal remainingAmount;
-    @CloudantSerialize(DateSerializer.class)
-    @CloudantDeserialize(DateDeserializer.class)
+
+    @Column(name = "expiration_date")
     private Date expirationDate;
 
-    private Boolean isActive;
-
-    @Column(name = "ewallet_id")
     public Long getWalletId() {
         return walletId;
     }
@@ -51,17 +41,14 @@ public class WalletLotEntity extends Entity<WalletLotId> {
         this.walletId = walletId;
     }
 
-    @Column(name = "type")
-    @Type(type = IdentifiableType.TYPE)
-    public WalletLotType getType() {
-        return type;
+    public Integer getTypeId() {
+        return typeId;
     }
 
-    public void setType(WalletLotType type) {
-        this.type = type;
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
     }
 
-    @Column(name = "total")
     public BigDecimal getTotalAmount() {
         return totalAmount;
     }
@@ -70,7 +57,6 @@ public class WalletLotEntity extends Entity<WalletLotId> {
         this.totalAmount = totalAmount;
     }
 
-    @Column(name = "remaining")
     public BigDecimal getRemainingAmount() {
         return remainingAmount;
     }
@@ -79,7 +65,6 @@ public class WalletLotEntity extends Entity<WalletLotId> {
         this.remainingAmount = remainingAmount;
     }
 
-    @Column(name = "expiration_date")
     public Date getExpirationDate() {
         return expirationDate;
     }
@@ -92,25 +77,5 @@ public class WalletLotEntity extends Entity<WalletLotId> {
     @Override
     public Long getShardMasterId() {
         return walletId;
-    }
-
-    @Transient
-    public Boolean getIsActive() {
-        return isActive;
-    }
-
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
-    }
-
-    @Transient
-    @Override
-    public WalletLotId getId() {
-        return new WalletLotId(getpId());
-    }
-
-    @Override
-    public void setId(WalletLotId id) {
-        this.setpId(id.getValue());
     }
 }

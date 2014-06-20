@@ -14,16 +14,7 @@ import java.util.List;
 /**
  * Interface of WalletLotDao.
  */
-public interface WalletLotDao {
-    WalletLotEntity get(Long id);
-
-    WalletLotEntity insert(WalletLotEntity walletLotEntity);
-
-    WalletLotEntity update(WalletLotEntity walletLotEntity);
-
-    void delete(Long id);
-
+public interface WalletLotDao extends BaseDao<WalletLotEntity> {
     List<WalletLotEntity> getValidLot(Long walletId);
-
     BigDecimal getValidAmount(Long walletId);
 }

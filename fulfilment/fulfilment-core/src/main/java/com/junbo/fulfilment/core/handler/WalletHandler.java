@@ -43,7 +43,7 @@ public class WalletHandler extends HandlerSupport<WalletContext> {
         FulfilmentResult result = new FulfilmentResult();
         result.setAmount(totalCreditAmount);
         result.setCurrency(currency);
-        result.setTransactionId(transaction.getTransactionId());
+        result.setTransactionId(transaction.getId());
 
         return result;
     }

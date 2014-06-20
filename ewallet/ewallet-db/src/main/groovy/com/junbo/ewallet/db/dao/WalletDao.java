@@ -15,16 +15,8 @@ import java.util.UUID;
 /**
  * Interface of WalletDao.
  */
-public interface WalletDao {
-    WalletEntity get(Long id);
-
-    WalletEntity update(WalletEntity walletEntity);
-
-    WalletEntity insert(WalletEntity walletEntity);
-
+public interface WalletDao extends BaseDao<WalletEntity> {
     WalletEntity getByTrackingUuid(Long shardMasterId, UUID uuid);
-
     WalletEntity get(Long userId, WalletType type, String currency);
-
     List<WalletEntity> getAll(Long userId);
 }

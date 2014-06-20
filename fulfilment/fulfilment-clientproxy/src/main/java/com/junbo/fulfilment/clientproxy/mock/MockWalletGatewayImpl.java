@@ -16,7 +16,7 @@ public class MockWalletGatewayImpl implements WalletGateway {
     @Override
     public Transaction credit(CreditRequest request) {
         Transaction trx = new Transaction();
-        trx.setTransactionId(System.currentTimeMillis());
+        trx.setId(System.currentTimeMillis());
 
         return trx;
     }

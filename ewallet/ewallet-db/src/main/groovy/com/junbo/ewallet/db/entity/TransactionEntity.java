@@ -6,13 +6,6 @@
 
 package com.junbo.ewallet.db.entity;
 
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.junbo.common.cloudant.json.annotations.CloudantDeserialize;
-import com.junbo.common.cloudant.json.annotations.CloudantSerialize;
-import com.junbo.common.jackson.deserializer.BigDecimalFromStringDeserializer;
-import com.junbo.ewallet.db.entity.def.IdentifiableType;
-import com.junbo.ewallet.db.entity.def.TransactionId;
-import com.junbo.ewallet.db.entity.def.TransactionType;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
@@ -26,20 +19,27 @@ import java.util.UUID;
  */
 @javax.persistence.Entity
 @Table(name = "transaction")
-public class TransactionEntity extends EntityWithCreated<TransactionId> {
-    private UUID trackingUuid;
-    private Long walletId;
-    private TransactionType type;
-    @CloudantDeserialize(BigDecimalFromStringDeserializer.class)
-    @CloudantSerialize(ToStringSerializer.class)
-    private BigDecimal amount;
-    private Long offerId;
-    @CloudantDeserialize(BigDecimalFromStringDeserializer.class)
-    @CloudantSerialize(ToStringSerializer.class)
-    private BigDecimal unrefundedAmount;
+public class TransactionEntity extends BaseEntity {
 
     @Column(name = "tracking_uuid")
     @Type(type = "pg-uuid")
+    private UUID trackingUuid;
+
+    @Column(name = "ewallet_id")
+    private Long walletId;
+
+    @Column(name = "type_id")
+    private Integer typeId;
+
+    @Column(name = "amount")
+    private BigDecimal amount;
+
+    @Column(name = "offer_id")
+    private Long offerId;
+
+    @Column(name = "unrefunded_amount")
+    private BigDecimal unrefundedAmount;
+
     public UUID getTrackingUuid() {
         return trackingUuid;
     }
@@ -48,7 +48,6 @@ public class TransactionEntity extends EntityWithCreated<TransactionId> {
         this.trackingUuid = trackingUuid;
     }
 
-    @Column(name = "ewallet_id")
     public Long getWalletId() {
         return walletId;
     }
@@ -57,35 +56,22 @@ public class TransactionEntity extends EntityWithCreated<TransactionId> {
         this.walletId = walletId;
     }
 
-    @Column(name = "type")
-    @Type(type = IdentifiableType.TYPE)
-    public TransactionType getType() {
-        return type;
+    public Integer getTypeId() {
+        return typeId;
     }
 
-    public void setType(TransactionType type) {
-        this.type = type;
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
     }
 
-    @Column(name = "amount")
     public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(BigDecimal mount) {
-        this.amount = mount;
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
-    @Column(name = "unrefunded_amount")
-    public BigDecimal getUnrefundedAmount() {
-        return unrefundedAmount;
-    }
-
-    public void setUnrefundedAmount(BigDecimal unrefundedAmount) {
-        this.unrefundedAmount = unrefundedAmount;
-    }
-
-    @Column(name = "offer_id")
     public Long getOfferId() {
         return offerId;
     }
@@ -94,20 +80,17 @@ public class TransactionEntity extends EntityWithCreated<TransactionId> {
         this.offerId = offerId;
     }
 
+    public BigDecimal getUnrefundedAmount() {
+        return unrefundedAmount;
+    }
+
+    public void setUnrefundedAmount(BigDecimal unrefundedAmount) {
+        this.unrefundedAmount = unrefundedAmount;
+    }
+
     @Transient
     @Override
     public Long getShardMasterId() {
         return walletId;
-    }
-
-    @Transient
-    @Override
-    public TransactionId getId() {
-        return new TransactionId(getpId());
-    }
-
-    @Override
-    public void setId(TransactionId id) {
-        this.setpId(id.getValue());
     }
 }

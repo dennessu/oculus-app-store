@@ -12,16 +12,17 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.junbo.common.jackson.annotation.OfferId
 import com.junbo.common.jackson.annotation.WalletId
+import com.junbo.common.model.ResourceMetaForDualWrite
 import groovy.transform.CompileStatic
 
 /**
  * Transaction Entity. Only for response.
  */
 @CompileStatic
-@JsonPropertyOrder(['transactionId', 'type', 'amount', 'offerId', 'createdBy', 'createdTime'])
+@JsonPropertyOrder(['id', 'type', 'amount', 'offerId', 'createdBy', 'createdTime'])
 @JsonInclude(JsonInclude.Include.NON_NULL)
-class Transaction {
-    Long transactionId
+class Transaction extends ResourceMetaForDualWrite<Long> {
+    Long id
     @WalletId
     Long walletId
     String type
@@ -29,8 +30,6 @@ class Transaction {
     @OfferId
     @JsonProperty('offer')
     Long offerId
-    Date createdTime
-    String createdBy
     @JsonIgnore
     BigDecimal unrefundedAmount
 }

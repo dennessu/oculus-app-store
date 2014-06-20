@@ -46,7 +46,7 @@ class WalletServiceTest extends AbstractTestNGSpringContextTests {
     public void testAdd() {
         Wallet wallet = buildAWallet()
         Wallet inserted = walletService.add(wallet)
-        Assert.assertNotNull(inserted.getWalletId())
+        Assert.assertNotNull(inserted.getId())
         Assert.assertEquals(inserted.balance, wallet.balance)
     }
 
@@ -54,7 +54,7 @@ class WalletServiceTest extends AbstractTestNGSpringContextTests {
     public void testUpdate() {
         Wallet wallet = walletService.add(buildAWallet())
         wallet.status = com.junbo.ewallet.spec.def.Status.LOCKED.toString()
-        Wallet updated = walletService.update(wallet.walletId, wallet)
+        Wallet updated = walletService.update(wallet.getId(), wallet)
         Assert.assertEquals(updated.status, com.junbo.ewallet.spec.def.Status.LOCKED.toString())
     }
 
@@ -62,15 +62,15 @@ class WalletServiceTest extends AbstractTestNGSpringContextTests {
     public void testCreditAndDebit() {
         Wallet wallet = walletService.add(buildAWallet())
         CreditRequest creditRequest = buildACreditRequest()
-        creditRequest.setWalletId(wallet.walletId)
+        creditRequest.setWalletId(wallet.getId())
         walletService.credit(creditRequest)
         creditRequest.creditType = com.junbo.ewallet.spec.def.WalletLotType.CASH.toString()
         walletService.credit(creditRequest)
-        wallet = walletService.get(wallet.walletId)
+        wallet = walletService.get(wallet.getId())
         Assert.assertEquals(wallet.balance, new BigDecimal(20))
         DebitRequest debitRequest = buildADebitRequest()
-        walletService.debit(wallet.walletId, debitRequest)
-        wallet = walletService.get(wallet.walletId)
+        walletService.debit(wallet.getId(), debitRequest)
+        wallet = walletService.get(wallet.getId())
         Assert.assertEquals(wallet.balance, new BigDecimal(3))
     }
 
@@ -78,24 +78,24 @@ class WalletServiceTest extends AbstractTestNGSpringContextTests {
     public void testRefund() {
         Wallet wallet = walletService.add(buildAWallet())
         CreditRequest creditRequest = buildACreditRequest()
-        creditRequest.setWalletId(wallet.walletId)
+        creditRequest.setWalletId(wallet.getId())
         walletService.credit(creditRequest)
 
         DebitRequest debitRequest = buildADebitRequest()
         debitRequest.amount = new BigDecimal(5)
-        walletService.debit(wallet.walletId, debitRequest)
+        walletService.debit(wallet.getId(), debitRequest)
 
-        Transaction transaction = walletService.getTransactions(wallet.walletId).get(1)
-        wallet = walletService.get(wallet.walletId)
+        Transaction transaction = walletService.getTransactions(wallet.getId()).get(1)
+        wallet = walletService.get(wallet.getId())
         Assert.assertEquals(wallet.balance, new BigDecimal(5))
 
-        RefundRequest refundRequest = buildARefundRequest(transaction.transactionId)
-        walletService.refund(transaction.transactionId, refundRequest)
-        wallet = walletService.get(wallet.walletId)
+        RefundRequest refundRequest = buildARefundRequest(transaction.getId())
+        walletService.refund(transaction.getId(), refundRequest)
+        wallet = walletService.get(wallet.getId())
         Assert.assertEquals(wallet.balance, new BigDecimal(7))
 
-        walletService.refund(transaction.transactionId, refundRequest)
-        wallet = walletService.get(wallet.walletId)
+        walletService.refund(transaction.getId(), refundRequest)
+        wallet = walletService.get(wallet.getId())
         Assert.assertEquals(wallet.balance, new BigDecimal(9))
     }
 
@@ -103,7 +103,7 @@ class WalletServiceTest extends AbstractTestNGSpringContextTests {
     public void testExpiredCredit() {
         Wallet wallet = walletService.add(buildAWallet())
         CreditRequest creditRequest = buildACreditRequest()
-        creditRequest.setWalletId(wallet.walletId)
+        creditRequest.setWalletId(wallet.getId())
         creditRequest.expirationDate = new Date(100000)
         creditRequest.amount = new BigDecimal(100)
         walletService.credit(creditRequest)
@@ -115,20 +115,20 @@ class WalletServiceTest extends AbstractTestNGSpringContextTests {
         CreditRequest creditRequest = buildACreditRequest()
         walletService.credit(creditRequest)
         DebitRequest debitRequest = buildADebitRequest()
-        walletService.debit(wallet.walletId, debitRequest)
+        walletService.debit(wallet.getId(), debitRequest)
     }
 
     @Test
     public void testGetTransactions() {
         Wallet wallet = walletService.add(buildAWallet())
         CreditRequest creditRequest = buildACreditRequest()
-        creditRequest.setWalletId(wallet.walletId)
+        creditRequest.setWalletId(wallet.getId())
         walletService.credit(creditRequest)
         creditRequest.creditType = com.junbo.ewallet.spec.def.WalletLotType.CASH.toString()
         walletService.credit(creditRequest)
         DebitRequest debitRequest = buildADebitRequest()
-        walletService.debit(wallet.walletId, debitRequest)
-        List<Transaction> transactionList = walletService.getTransactions(wallet.walletId)
+        walletService.debit(wallet.getId(), debitRequest)
+        List<Transaction> transactionList = walletService.getTransactions(wallet.getId())
         Assert.assertEquals(transactionList.size(), 3)
     }
 
