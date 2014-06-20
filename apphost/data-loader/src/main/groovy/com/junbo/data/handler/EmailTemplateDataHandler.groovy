@@ -6,6 +6,7 @@ import com.junbo.email.spec.resource.EmailTemplateResource
 import com.junbo.langur.core.client.TypeReference
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.core.io.Resource
 
 /**
  * Created by Wei on 6/12/14.
@@ -17,6 +18,11 @@ class EmailTemplateDataHandler extends BaseDataHandler {
     @Required
     void setTemplateResource(EmailTemplateResource templateResource) {
         this.templateResource = templateResource
+    }
+
+    @Override
+    Resource[] resolveDependencies(Resource[] resources) {
+        return resources
     }
 
     @Override

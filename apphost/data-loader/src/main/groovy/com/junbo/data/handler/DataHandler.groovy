@@ -6,6 +6,7 @@
 package com.junbo.data.handler
 
 import groovy.transform.CompileStatic
+import org.springframework.core.io.Resource
 
 /**
  * DataHandler.
@@ -13,4 +14,6 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface DataHandler {
     void handle(String content)
+
+    Resource[] resolveDependencies(Resource[] resources)
 }

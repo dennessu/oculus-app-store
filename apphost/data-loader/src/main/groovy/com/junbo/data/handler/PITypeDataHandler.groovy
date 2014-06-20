@@ -9,6 +9,7 @@ import com.junbo.identity.spec.v1.resource.PITypeResource
 import com.junbo.langur.core.client.TypeReference
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.core.io.Resource
 
 /**
  * Created by haomin on 14-6-3.
@@ -20,6 +21,11 @@ class PITypeDataHandler extends BaseDataHandler {
     @Required
     void setPiTypeResource(PITypeResource piTypeResource) {
         this.piTypeResource = piTypeResource
+    }
+
+    @Override
+    Resource[] resolveDependencies(Resource[] resources) {
+        return resources
     }
 
     @Override
