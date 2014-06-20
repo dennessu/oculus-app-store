@@ -286,9 +286,7 @@ class MigrationResourceImpl implements MigrationResource {
     // The logic here should be:
     // 1.   search organization by migratedCompanyId
     //      i.  if organization is null, this organization is valid, create organization with this name;
-    //      ii. if organization isn't null, check the organization name is changed or not
-    //              a.  If the organization name isn't changed, update organization;
-    //              b.  If the organization name is changed, check the organization name isn't used, then update organization
+    //      ii. if organization isn't null, during the migration we will ignore this case
     Promise<Void> checkOrganizationValid(OculusInput oculusInput, User user) {
         if (oculusInput.company == null) {
             throw new IllegalArgumentException('company is null')
@@ -304,19 +302,7 @@ class MigrationResourceImpl implements MigrationResource {
 
         checkCompanyType(oculusInput)
 
-        return organizationRepository.searchByMigrateCompanyId(oculusInput.company.companyId).then { Organization existingOrg ->
-            if (existingOrg != null && existingOrg.canonicalName == normalizeService.normalize(oculusInput.company.name)) {
-                return Promise.pure(null)
-            }
-
-            return organizationRepository.searchByCanonicalName(normalizeService.normalize(oculusInput.company.name)).then { Organization newOrg ->
-                if (newOrg == null) {
-                    return Promise.pure(null)
-                }
-
-                throw AppErrors.INSTANCE.fieldInvalidException('name', 'company.name is already used by others').exception()
-            }
-        }
+        return Promise.pure(null)
     }
 
     // The logic here should be:
@@ -401,9 +387,12 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     private Boolean getOrganizationStatus(OculusInput oculusInput) {
+        // always set organization status to false
+        /*
         if (oculusInput.status == MigrateUserStatus.ACTIVE.toString()) {
             return true
         }
+        */
         return false
     }
 

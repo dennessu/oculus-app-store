@@ -106,15 +106,9 @@ class OrganizationValidatorImpl implements OrganizationValidator {
                 throw AppErrors.INSTANCE.fieldInvalid('type').exception()
             }
         }
-
-        if (organization.ownerId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('owner').exception()
-        }
-
         organization.canonicalName = normalizeService.normalize(organization.name)
 
-        // todo:    Need to add validation according to the requirement
-        return checkOrganizationNameUnique(organization).then {
+        return checkValidOrganizationNameUnique(organization).then {
             if (organization.billingAddress == null) {
                 return Promise.pure(null)
             }
@@ -149,6 +143,9 @@ class OrganizationValidatorImpl implements OrganizationValidator {
                 return Promise.pure(null)
             }
         }.then {
+            if (organization.ownerId == null) {
+                return Promise.pure(null)
+            }
             return userRepository.get(organization.ownerId).then { User user ->
                 if (user == null) {
                     throw AppErrors.INSTANCE.userNotFound(organization.ownerId).exception()
@@ -163,14 +160,18 @@ class OrganizationValidatorImpl implements OrganizationValidator {
         }
     }
 
-    private Promise<Void> checkOrganizationNameUnique(Organization organization) {
+    private Promise<Void> checkValidOrganizationNameUnique(Organization organization) {
 
-        return organizationRepository.searchByCanonicalName(organization.canonicalName).then { Organization existingOrg ->
-            if (existingOrg == null) {
+        return organizationRepository.searchByCanonicalName(organization.canonicalName, Integer.MAX_VALUE, 0).then { List<Organization> organizationList ->
+            if (CollectionUtils.isEmpty(organizationList)) {
                 return Promise.pure(null)
             }
 
-            if (existingOrg.id != organization.id) {
+            organizationList.removeAll { Organization org ->
+                return !org.isValidated || org.id == organization.id
+            }
+
+            if (!CollectionUtils.isEmpty(organizationList)) {
                 throw AppErrors.INSTANCE.fieldDuplicate('name').exception()
             }
 

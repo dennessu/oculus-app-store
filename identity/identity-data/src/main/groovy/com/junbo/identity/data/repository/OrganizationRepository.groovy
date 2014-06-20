@@ -16,7 +16,7 @@ public interface OrganizationRepository extends BaseRepository<Organization, Org
     public Promise<List<Organization>> searchByOwner(UserId ownerId, Integer limit, Integer offset)
 
     @ReadMethod
-    public Promise<Organization> searchByCanonicalName(String name)
+    public Promise<List<Organization>> searchByCanonicalName(String name, Integer limit, Integer offset)
 
     @ReadMethod
     public Promise<Organization> searchByMigrateCompanyId(Long migratedCompanyId)
