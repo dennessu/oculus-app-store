@@ -10,6 +10,7 @@ import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.spec.model.Client
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.core.io.Resource
 
 /**
  * ClientDataHandler.
@@ -21,6 +22,11 @@ class ClientDataHandler extends BaseDataHandler {
     @Required
     void setClientRepository(ClientRepository clientRepository) {
         this.clientRepository = clientRepository
+    }
+
+    @Override
+    Resource[] resolveDependencies(Resource[] resources) {
+        return resources
     }
 
     @Override

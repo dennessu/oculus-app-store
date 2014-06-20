@@ -11,6 +11,7 @@ import com.junbo.common.error.AppErrorException
 import com.junbo.langur.core.client.TypeReference
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.core.io.Resource
 
 /**
  * ApiDefinitionDataHandler.
@@ -22,6 +23,11 @@ class ApiDefinitionDataHandler extends BaseDataHandler {
     @Required
     void setApiDefinitionResource(ApiDefinitionResource apiDefinitionResource) {
         this.apiDefinitionResource = apiDefinitionResource
+    }
+
+    @Override
+    Resource[] resolveDependencies(Resource[] resources) {
+        return resources
     }
 
     @Override

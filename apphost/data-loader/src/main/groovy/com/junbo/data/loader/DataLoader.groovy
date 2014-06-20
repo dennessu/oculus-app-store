@@ -73,8 +73,10 @@ class DataLoader {
         for (String data : dataList) {
             try {
                 Resource[] resources = resolver.getResources("data/$data/*.data")
+                DataHandler handler = handlers[data]
+                resources = handler.resolveDependencies(resources)
+
                 for (Resource resource : resources) {
-                    DataHandler handler = handlers[data]
                     if (handler != null) {
                         String content = IOUtils.toString(resource.URI)
                         handler.handle(content)

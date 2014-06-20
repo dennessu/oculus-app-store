@@ -6,8 +6,14 @@ import com.junbo.identity.spec.v1.model.Locale
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
 import com.junbo.identity.spec.v1.resource.LocaleResource
 import com.junbo.langur.core.client.TypeReference
+import org.apache.commons.io.IOUtils
 import groovy.transform.CompileStatic
+import org.apache.commons.lang3.ArrayUtils
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.core.io.Resource
+import org.springframework.util.StringUtils
+
+import javax.ejb.Local
 
 /**
  * Created by haomin on 14-6-3.
@@ -19,6 +25,65 @@ class LocaleDataHandler extends BaseDataHandler {
     @Required
     void setLocaleResource(LocaleResource localeResource) {
         this.localeResource = localeResource
+    }
+
+    @Override
+    Resource[] resolveDependencies(Resource[] resources) {
+        Map<String, Resource> localeCodeToResourceMap = new HashMap<>()
+        Map<String, Locale> localeMap = new HashMap<>()
+
+        resources.each { Resource resource ->
+            String content = IOUtils.toString(resource.URI)
+            try {
+                Locale locale = transcoder.decode(new TypeReference<Locale>() {}, content) as Locale
+                localeMap.put(locale.localeCode, locale)
+                localeCodeToResourceMap.put(locale.localeCode, resource)
+            } catch (Exception e) {
+                logger.error("Error parsing locale $content", e)
+                exit()
+            }
+        }
+
+        logger.info("resolve locale dependency failure")
+
+        List<Resource> resolvedResource = new ArrayList<>()
+        List<String> result = new ArrayList<>()
+        localeMap.each { Map.Entry<String, Locale> entry ->
+            String localeCode = entry.key
+
+            List<String> temp = new ArrayList<>()
+            resolveLocales(localeCode, localeMap, temp)
+
+            result.addAll(temp.reverse())
+
+            result.unique { String value ->
+                return value
+            }
+        }
+
+        logger.info("resolve resolves: " + result.join(','))
+
+        result.each { String localeCode ->
+            resolvedResource.add(localeCodeToResourceMap.get(localeCode))
+        }
+
+        return resolvedResource.toArray(new Resource[resolvedResource.size()])
+    }
+
+    private void resolveLocales(String localeCode, Map<String, Locale> localeMap, List<String> result) {
+        if (!result.contains(localeCode)) {
+            result.push(localeCode)
+            Locale locale = localeMap.get(localeCode)
+
+            if (locale == null) {
+                logger.error("Cannot find locale $localeCode")
+                exit()
+            }
+
+            if (locale.fallbackLocale != null && !StringUtils.isEmpty(locale.fallbackLocale.value)) {
+                resolveLocales(locale.fallbackLocale.value, localeMap, result)
+            }
+        }
     }
 
     @Override

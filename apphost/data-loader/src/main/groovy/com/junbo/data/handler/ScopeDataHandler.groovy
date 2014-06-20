@@ -11,6 +11,7 @@ import com.junbo.oauth.spec.endpoint.ScopeEndpoint
 import com.junbo.oauth.spec.model.Scope
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.core.io.Resource
 
 /**
  * ScopeDataHandler.
@@ -22,6 +23,11 @@ class ScopeDataHandler extends BaseDataHandler {
     @Required
     void setScopeEndpoint(ScopeEndpoint scopeEndpoint) {
         this.scopeEndpoint = scopeEndpoint
+    }
+
+    @Override
+    Resource[] resolveDependencies(Resource[] resources) {
+        return resources
     }
 
     @Override
