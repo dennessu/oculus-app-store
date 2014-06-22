@@ -12,7 +12,7 @@ import com.junbo.common.model.ResourceMeta;
 /**
  * Entitlement Consumption for IAP.
  */
-public class Consumption extends ResourceMeta<String> implements SignedModel {
+public class Consumption extends ResourceMeta<String> {
 
     private String userId;
     private String entitlementId;
@@ -84,7 +84,6 @@ public class Consumption extends ResourceMeta<String> implements SignedModel {
         return signatureTimestamp;
     }
 
-    @Override
     public void setSignatureTimestamp(Long signatureTimestamp) {
         this.signatureTimestamp = signatureTimestamp;
     }

@@ -10,7 +10,7 @@ import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
 /**
  * Entitlement used for IAP.
  */
-public class Entitlement implements SignedModel {
+public class Entitlement {
     private String userId;
     private String entitlementId;
     private Integer useCount;
@@ -82,7 +82,6 @@ public class Entitlement implements SignedModel {
         return signatureTimestamp;
     }
 
-    @Override
     public void setSignatureTimestamp(Long signatureTimestamp) {
         this.signatureTimestamp = signatureTimestamp;
     }

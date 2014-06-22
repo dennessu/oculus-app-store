@@ -14,7 +14,7 @@ import com.junbo.langur.core.promise.Promise;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 /**
- * The resource for IAP.
+ * The wrapper api for IAP (In-App Purchase).
  */
 @Path("/iap")
 @Produces({MediaType.APPLICATION_JSON})
@@ -30,6 +30,7 @@ public interface IAPResource {
     @Path("/entitlements")
     Promise<Results<Entitlement>> getEntitlements(@QueryParam("packageName") String packageName,
                                                   @QueryParam("userId") UserId userId,
+                                                  @QueryParam("type") String type,
                                                   @BeanParam PageParam pageParam);
 
     @POST

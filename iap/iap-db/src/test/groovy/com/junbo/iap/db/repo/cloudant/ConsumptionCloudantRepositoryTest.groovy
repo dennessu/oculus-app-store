@@ -20,7 +20,7 @@ class ConsumptionCloudantRepositoryTest extends AbstractTestNGSpringContextTests
     @Resource(name = 'cloudantConsumptionRepository')
     private ConsumptionRepository consumptionRepository
 
-    def rand = new SecureRandom()
+    private def rand = new SecureRandom()
 
     @Test
     public void testAddAndGet() {
@@ -44,7 +44,7 @@ class ConsumptionCloudantRepositoryTest extends AbstractTestNGSpringContextTests
 
     }
 
-    void validate(Consumption c1, Consumption c2) {
+    private static void validate(Consumption c1, Consumption c2) {
         assert c1.trackingGuid == c2.trackingGuid
         assert c1.entitlementId == c2.entitlementId
         assert c1.packageName == c2.packageName

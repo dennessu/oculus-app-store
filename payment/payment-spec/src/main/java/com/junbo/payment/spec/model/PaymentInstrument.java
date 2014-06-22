@@ -80,7 +80,8 @@ public class PaymentInstrument extends ResourceMetaForDualWrite<Long> {
     @JsonIgnore
     private UserInfo userInfo;
 
-    public Long getId() {
+    public Long
+    getId() {
         return id;
     }
 

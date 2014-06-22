@@ -14,6 +14,9 @@ public class Purchase {
     private String offerId;
     private String type;
     private String packageName;
+    private String currency;
+    private String country;
+    private String locale;
 
     public String getUserId() {
         return userId;
@@ -45,5 +48,29 @@ public class Purchase {
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getLocale() {
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 }

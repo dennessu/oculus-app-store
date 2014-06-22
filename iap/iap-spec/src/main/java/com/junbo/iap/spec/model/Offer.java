@@ -15,9 +15,7 @@ import java.util.Map;
  */
 public class Offer {
     private String offerId;
-    private String title;
-    private String description;
-    private Map<String, OfferRevisionLocaleProperties> locales;
+    private Map<String, OfferRevisionLocaleProperties> offerLocales;
     private Price price;
     private Boolean isConsumable;
     private String type;
@@ -31,28 +29,12 @@ public class Offer {
         this.offerId = offerId;
     }
 
-    public String getTitle() {
-        return title;
+    public Map<String, OfferRevisionLocaleProperties> getOfferLocales() {
+        return offerLocales;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Map<String, OfferRevisionLocaleProperties> getLocales() {
-        return locales;
-    }
-
-    public void setLocales(Map<String, OfferRevisionLocaleProperties> locales) {
-        this.locales = locales;
+    public void setOfferLocales(Map<String, OfferRevisionLocaleProperties> offerLocales) {
+        this.offerLocales = offerLocales;
     }
 
     public Price getPrice() {
