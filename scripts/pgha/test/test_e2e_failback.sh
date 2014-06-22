@@ -2,15 +2,17 @@
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 source ${DIR}/../util/common.sh
 
-echo "do failback..."
-#$DEPLOYMENT_PATH/switchover/failback.sh
-#$DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
+#run this test E2E script on master server
 
-#ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
-#$DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
-#ENDSSH
+echo "do failback"
+$DEPLOYMENT_PATH/switchover/failback.sh
+$DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
 
-#echo "test failback..."
-#$DEPLOYMENT_PATH/test/test_master2slave.sh
+ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
+    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
+ENDSSH
 
-echo "e2e failover finished!"
+echo "test failback"
+$DEPLOYMENT_PATH/test/test_master2slave.sh
+
+echo "e2e failback finished!"

@@ -2,40 +2,50 @@
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 source ${DIR}/../util/common.sh
 
-echo "stop primary pgbouncer proxy"
+echo "[MASTER] stop traffic for failover"
+
+echo "[MASTER] stop primary pgbouncer proxy"
 forceKill $PGBOUNCER_PORT
 
 ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
 source $DEPLOYMENT_PATH/util/common.sh
 
-echo "stop secondary pgbouncer proxy"
+echo "[SLAVE] stop secondary pgbouncer proxy"
 forceKill $PGBOUNCER_PORT
+
+echo "[SLAVE] kill skytools instances"
+forceKillPid $SKYTOOL_PID_PATH
 ENDSSH
 
-echo "waiting for master catching up with slave"
-while ! echo exit | psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "SELECT 'x' from pg_stat_replication where sent_location != replay_location;" | grep "(0 rows)"; do sleep 1 && echo "master is catching up..."; done
-echo "master catch up with slave!"
+ssh $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
+    source $DEPLOYMENT_PATH/util/common.sh
 
-echo "gracefully shutdown slave database"
+    echo "[REPLICA] kill skytools instances"
+    forceKillPid $SKYTOOL_PID_PATH
+ENDSSH
+
+echo "[MASTER] waiting for master catching up with slave"
+while ! echo exit | psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "SELECT 'x' from pg_stat_replication where sent_location != replay_location;" | grep "(0 rows)"; do sleep 1 && echo "[MASTER] master is catching up..."; done
+echo "[MASTER] master catch up with slave!"
+
 ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
-$PGBIN_PATH/pg_ctl stop -m fast -D $SLAVE_DATA_PATH
+    echo "[SLAVE] gracefully shutdown slave database"
+    $PGBIN_PATH/pg_ctl stop -m fast -D $SLAVE_DATA_PATH
 ENDSSH
 
-echo "copy unarchived log files..."
+echo "[MASTER] copy unarchived log files"
 rsync -azhv $DEPLOYMENT_ACCOUNT@$SLAVE_HOST:$SLAVE_DATA_PATH/pg_xlog/* $MASTER_ARCHIVE_PATH
 
-echo "promote master database to take traffic"
+echo "[MASTER] promote master database to take traffic"
 touch $PROMOTE_TRIGGER_FILE
 
-echo "change replica provider "
-ssh $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
-londiste3 $config change-provider --provider="dbname=$db host=$MASTER_HOST port=$MASTER_DB_PORT"
-ENDSSH
+echo "[MASTER] waiting for master bring up"
+#TODO: seek for a better solution
+sleep 5s
 
-echo "configure recovery.conf for slave"
 ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
-
-cat > $SLAVE_DATA_PATH/recovery.conf <<EOF
+    echo "[SLAVE] configure recovery.conf for slave"
+    cat > $SLAVE_DATA_PATH/recovery.conf <<EOF
 recovery_target_timeline = 'latest'
 restore_command = 'cp $SLAVE_ARCHIVE_PATH/%f %p'
 standby_mode = 'on'
@@ -43,9 +53,42 @@ primary_conninfo = 'user=$PGUSER host=$MASTER_HOST port=$MASTER_DB_PORT sslmode=
 trigger_file = '$PROMOTE_TRIGGER_FILE'
 EOF
 
-echo "start slave database"
-$PGBIN_PATH/pg_ctl -D $SLAVE_DATA_PATH start
+    echo "[SLAVE] start slave database"
+    $PGBIN_PATH/pg_ctl -D $SLAVE_DATA_PATH start > /dev/null 2>&1 &
 
-while ! echo exit | nc $SLAVE_HOST $SLAVE_DB_PORT; do sleep 1 && echo "waiting for slave database..."; done
-echo "slave database started successfully!"
+    while ! echo exit | nc $SLAVE_HOST $SLAVE_DB_PORT; do sleep 1 && echo "[SLAVE] waiting for slave database start up..."; done
+    echo "[SLAVE] slave database started successfully!"
+ENDSSH
+
+echo "[MASTER] generate londiste root configuration"
+$DEPLOYMENT_PATH/londiste/londiste_config_root.sh
+
+for db in ${REPLICA_DATABASES[@]}
+do
+    config=$SKYTOOL_CONFIG_PATH/${db}_root.ini
+
+    echo "[MASTER] update root node location"
+    psql ${db} -h $MASTER_HOST -p $MASTER_DB_PORT -c "update pgq_node.node_location set node_location = 'dbname=${db} host=$MASTER_HOST port=$MASTER_DB_PORT' where queue_name = 'queue_${db}' and node_name = 'root_node_${db}';"
+
+    echo "[MASTER] start londiste worker for database [$db]"
+    londiste3 -d $config worker > /dev/null 2>&1 &
+done
+
+echo "[MASTER] start pgqd deamon on slave"
+$DEPLOYMENT_PATH/londiste/londiste_pgqd.sh
+
+ssh $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
+    for db in ${REPLICA_DATABASES[@]}
+    do
+        config=$SKYTOOL_CONFIG_PATH/\${db}_leaf.ini
+
+        echo "[REPLICA] update root node location"
+        psql ${db} -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "update pgq_node.node_location set node_location = 'dbname=${db} host=$MASTER_HOST port=$MASTER_DB_PORT' where queue_name = 'queue_${db}' and node_name = 'root_node_${db}';"
+
+        echo "[REPLICA] start worker for database [\$db]"
+        londiste3 -d \$config worker > /dev/null 2>&1 &
+    done
+
+    echo "[REPLICA] start pgqd deamon"
+	$DEPLOYMENT_PATH/londiste/londiste_pgqd.sh
 ENDSSH
