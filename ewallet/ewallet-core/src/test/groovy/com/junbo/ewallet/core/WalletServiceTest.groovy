@@ -1,7 +1,8 @@
 package com.junbo.ewallet.core
 
-import com.junbo.ewallet.db.repo.TransactionSupport
+import com.junbo.ewallet.db.repo.WalletRepository
 import com.junbo.ewallet.service.WalletService
+import com.junbo.ewallet.service.impl.TransactionSupport
 import com.junbo.ewallet.spec.model.*
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
@@ -30,17 +31,15 @@ import javax.ws.rs.WebApplicationException
 @ContextConfiguration(locations = ['classpath:spring/context-test.xml'])
 @TransactionConfiguration(defaultRollback = true)
 @CompileStatic
-@TestExecutionListeners(TransactionalTestExecutionListener.class)
-@Transactional("transactionManager")
 class WalletServiceTest extends AbstractTestNGSpringContextTests {
     @Autowired
     @Qualifier('oculus48IdGenerator')
     protected IdGenerator idGenerator
 
     @Autowired
-    private TransactionSupport transactionSupport;
-    @Autowired
     private WalletService walletService
+    @Autowired
+    private WalletRepository walletRepo
 
     @Test
     public void testAdd() {

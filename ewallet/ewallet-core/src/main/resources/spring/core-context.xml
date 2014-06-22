@@ -8,4 +8,6 @@
 
     <bean id="walletService" class="com.junbo.ewallet.service.impl.WalletServiceImpl"/>
 
+    <!-- transactionSupport -->
+    <bean id="transactionSupport" class="com.junbo.ewallet.service.impl.TransactionSupport"/>
 </beans>

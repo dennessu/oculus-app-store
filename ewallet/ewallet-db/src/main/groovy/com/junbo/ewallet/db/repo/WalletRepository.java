@@ -40,8 +40,6 @@ public class WalletRepository {
     private TransactionDao transactionDao;
     @Autowired
     private LotTransactionDao lotTransactionDao;
-    //@Autowired
-    //private TransactionSupport transactionSupport;
 
     public Wallet get(Long walletId) {
         return mapper.toWallet(walletDao.get(walletId), new MappingContext());
@@ -116,22 +114,16 @@ public class WalletRepository {
             sum = sum.subtract(remaining);
         }
 
-        /*
-        if (sum.compareTo(BigDecimal.ZERO) > 0) {
-            transactionSupport.executeInNewTransaction(new Callback() {
-                @Override
-                public void apply() {
-                    BigDecimal validAmount = walletLotDao.getValidAmount(walletId);
-                    WalletEntity entity = walletDao.get(walletId);
-                    entity.setBalance(validAmount == null ? BigDecimal.ZERO : validAmount);
-                    walletDao.update(entity);
-                }
-            });
-            throw new NotEnoughMoneyException();
-        }*/
         if (sum.compareTo(BigDecimal.ZERO) > 0) {
             throw new NotEnoughMoneyException();
         }
+    }
+
+    public void correctBalance(Long walletId){
+        BigDecimal validAmount = walletLotDao.getValidAmount(walletId);
+        WalletEntity entity = walletDao.get(walletId);
+        entity.setBalance(validAmount == null ? BigDecimal.ZERO : validAmount);
+        walletDao.update(entity);
     }
 
     public Transaction refund(Wallet wallet, Long transactionId, RefundRequest refundRequest) {

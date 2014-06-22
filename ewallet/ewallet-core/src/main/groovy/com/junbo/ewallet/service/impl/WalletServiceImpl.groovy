@@ -1,6 +1,7 @@
 package com.junbo.ewallet.service.impl
 
 import com.junbo.common.id.UserId
+import com.junbo.ewallet.common.util.Callback
 import com.junbo.ewallet.db.entity.def.NotEnoughMoneyException
 import com.junbo.ewallet.db.repo.TransactionRepository
 import com.junbo.ewallet.db.repo.WalletRepository
@@ -11,7 +12,11 @@ import com.junbo.ewallet.spec.def.WalletType
 import com.junbo.ewallet.spec.error.AppErrors
 import com.junbo.ewallet.spec.model.*
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.ApplicationContext
+import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.annotation.Transactional
 
 /*
@@ -25,10 +30,18 @@ import org.springframework.transaction.annotation.Transactional
  */
 @CompileStatic
 class WalletServiceImpl implements WalletService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(WalletService.class)
+
+    @Autowired
+    private ApplicationContext applicationContext
     @Autowired
     private WalletRepository walletRepo
     @Autowired
     private TransactionRepository transactionRepo
+    @Autowired
+    private PlatformTransactionManager transactionManager
+    @Autowired
+    private TransactionSupport transactionSupport
 
     @Override
     @Transactional
@@ -144,11 +157,10 @@ class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    @Transactional
     Transaction debit(Long walletId, DebitRequest debitRequest) {
         validateAmount(debitRequest.amount)
 
-        Wallet wallet = get(walletId)
+        Wallet wallet = ((WalletService) applicationContext.getBean("walletService")).get(walletId)
         if (wallet == null) {
             throw AppErrors.INSTANCE.common('wallet not found').exception()
         }
@@ -162,8 +174,24 @@ class WalletServiceImpl implements WalletService {
 
         Transaction result
         try {
-            result = walletRepo.debit(wallet, debitRequest)
+            transactionSupport.executeInNewTransaction(new Callback() {
+                @Override
+                void apply() {
+                    result = walletRepo.debit(wallet, debitRequest)
+                }
+            })
+
         } catch (NotEnoughMoneyException e) {
+            LOGGER.error("There is not enough money in wallet [$walletId]" +
+                    " because some of the walletLots have expired.")
+            //correct the wallet balance
+            transactionSupport.executeInNewTransaction(new Callback() {
+                @Override
+                void apply() {
+                    LOGGER.info("Correct the balance in wallet [$walletId].")
+                    walletRepo.correctBalance(wallet.getId())
+                }
+            })
             throw AppErrors.INSTANCE.notEnoughMoney(walletId).exception()
         }
 

@@ -93,6 +93,4 @@
     <bean id="walletRepository" class="com.junbo.ewallet.db.repo.WalletRepository"/>
     <bean id="transactionRepository" class="com.junbo.ewallet.db.repo.TransactionRepository"/>
 
-    <!-- transactionSupport -->
-    <bean id="transactionSupport" class="com.junbo.ewallet.db.repo.TransactionSupport"/>
 </beans>
