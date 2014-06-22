@@ -85,7 +85,7 @@ class IAPResourceImpl implements IAPResource {
 
         return getItemByPackageName(packageName).then { Item hostItem ->
             return getInAppOffers(hostItem, type).then { List<Offer> offers ->
-                return new Results<Offer>(items: offers)
+                return Promise.pure(new Results<Offer>(items: offers))
             }
         }
 
@@ -109,7 +109,8 @@ class IAPResourceImpl implements IAPResource {
                                 // todo: how to set the type ?
                                 userId: userId,
                                 isActive: true,
-                                hostItemId: new ItemId(hostItem.id)
+                                hostItemId: new ItemId(hostItem.id),
+                                itemIds: new HashSet<ItemId>()
                         ),
                         new PageMetadata(
                                 start: pageParam.start,
@@ -172,6 +173,7 @@ class IAPResourceImpl implements IAPResource {
         // post order with tentative = false & get entitlements
         return promise.then {
             Order order = new Order(
+                    user: userId,
                     payments: [new PaymentInfo(paymentInstrument : new PaymentInstrumentId(piUsed.getId()))],
                     country: new CountryId(purchase.country),
                     currency: new CurrencyId(purchase.currency),
@@ -238,7 +240,7 @@ class IAPResourceImpl implements IAPResource {
 
         Map<String, Offer> offers = new HashMap<>()
         return iteratePageRead {
-            resourceContainer.itemResource.getItems(itemOption).then { Results<Item> itemResults ->
+            return resourceContainer.itemResource.getItems(itemOption).then { Results<Item> itemResults ->
                 boolean hasMore = itemResults.items.size() >= itemOption.size
                 itemOption.start += itemResults.items.size()
                 return Promise.each(itemResults.items) { Item item ->
@@ -247,6 +249,8 @@ class IAPResourceImpl implements IAPResource {
                             return Promise.pure(hasMore)
                         }
                     }
+                }.then {
+                    return Promise.pure(hasMore)
                 }
             }
         }.syncThen {
@@ -317,15 +321,17 @@ class IAPResourceImpl implements IAPResource {
         }
 
         // get entitlements
-        return Promise.each(entitlementIds) { String entitlementId ->
-            return resourceContainer.entitlementResource.getEntitlement(new EntitlementId(entitlementId)).then { com.junbo.entitlement.spec.model.Entitlement catalogEntitlement ->
-                return convertEntitlement(catalogEntitlement).then { Entitlement e ->
-                    result << e
-                    return Promise.pure(null)
+        return promise.then {
+            return Promise.each(entitlementIds) { String entitlementId ->
+                return resourceContainer.entitlementResource.getEntitlement(new EntitlementId(entitlementId)).then { com.junbo.entitlement.spec.model.Entitlement catalogEntitlement ->
+                    return convertEntitlement(catalogEntitlement).then { Entitlement e ->
+                        result << e
+                        return Promise.pure(null)
+                    }
                 }
+            }.then {
+                return Promise.pure(result)
             }
-        }.then {
-            return Promise.pure(result)
         }
     }
 
