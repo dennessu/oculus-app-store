@@ -41,7 +41,7 @@ do
     londiste3 -d $config worker > /dev/null 2>&1 &
 
     echo "subscribe all tables"
-    londiste3 $config add-table --all
+    londiste3 $config add-table --all --expect-sync
 
     echo "remove liquibase change log tables"
     londiste3 $config remove-table databasechangelog || echo "table missing"
