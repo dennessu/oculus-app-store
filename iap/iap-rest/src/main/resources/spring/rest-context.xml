@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <import resource="classpath*:spring/routing-context.xml"/>
+    <context:component-scan base-package="com.junbo.oom.core.builtin"/>
+    <context:component-scan base-package="com.junbo.iap.spec.resource.adapter" />
+    <context:component-scan base-package="com.junbo.iap.rest" />
+    <bean id="defaultIAPResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultIAPResourceClientFactory" class="com.junbo.iap.spec.resource.proxy.IAPResourceClientProxyFactory"/>
+
+    <bean id="configService" class="com.junbo.configuration.impl.ConfigServiceImpl" />
+    <bean id="configPropertyPlaceholderConfigurer" class="com.junbo.configuration.impl.ConfigPropertyPlaceholderConfigurer" />
+    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <bean class="com.junbo.configuration.reloadable.impl.ReloadableConfigConverterFactory" />
+            </set>
+        </property>
+    </bean>
+
+    <bean id="iap.offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.catalog.url}"/>
+    </bean>
+
+    <bean id="iap.offerItemClient" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.catalog.url}"/>
+    </bean>
+
+    <bean id="iap.offerRevisionClient" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.catalog.url}"/>
+    </bean>
+
+    <bean id="iap.offerItemRevisionClient"
+          class="com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.catalog.url}"/>
+    </bean>
+
+    <bean id="iap.fulfilmentClient"
+          class="com.junbo.fulfilment.spec.resource.proxy.FulfilmentResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.fulfilment.url}"/>
+    </bean>
+
+    <bean id="iap.entitlementClient"
+          class="com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.entitlement.url}"/>
+    </bean>
+
+    <bean id="iap.paymentInstrumentClient"
+          class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.payment.url}"/>
+    </bean>
+
+    <bean id="iap.orderClient"
+          class="com.junbo.order.spec.resource.proxy.OrderResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.order.url}"/>
+    </bean>
+</beans>
