@@ -128,13 +128,13 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
     }
 
     @Override
-    public List<String> getBalanceByOrderId(String uid, String orderId) throws Exception {
-        return getBalanceByOrderId(uid, orderId, 200);
+    public List<String> getBalancesByOrderId(String orderId) throws Exception {
+        return getBalancesByOrderId(orderId, 200);
     }
 
     @Override
-    public List<String> getBalanceByOrderId(String uid, String orderId, int expectedResponseCode) throws Exception {
-        setUserId(uid);
+    public List<String> getBalancesByOrderId(String orderId, int expectedResponseCode) throws Exception {
+        //setUserId(uid);
         String responseBody = restApiCall(HTTPMethod.GET, balanceUrl +
                 "balances?orderId=" + orderId, expectedResponseCode);
 

@@ -25,10 +25,8 @@ import com.junbo.common.model.Results;
 import com.junbo.common.id.UserId;
 
 import org.testng.annotations.Test;
-import sun.util.resources.CurrencyNames_zh_CN;
 
 import java.math.BigDecimal;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
@@ -81,7 +79,7 @@ public class CartCheckout extends BaseTestClass {
                 uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, false);
         Results<Entitlement> entitlementResults = testDataProvider.getEntitlementByUserId(uid);
 
-        validationHelper.validateEntitlments(entitlementResults, offerList.size());
+        validationHelper.validateEntitlements(entitlementResults, offerList.size());
 
         testDataProvider.emptyCartByCartId(uid, cartId);
         //validationHelper.validateEmailHistory(uid, orderId);
@@ -122,6 +120,7 @@ public class CartCheckout extends BaseTestClass {
         String orderId = testDataProvider.postOrder(uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
         orderId = testDataProvider.updateOrderTentative(orderId, false);
         offerList.clear();
+
 
         offerList.add(offer_digital_normal1);
         offerList.add(offer_digital_normal2);
@@ -387,8 +386,9 @@ public class CartCheckout extends BaseTestClass {
     }
 
     private void emulatePayPalCheckout(Order order, String token, CatalogItemType itemType) throws Exception {
-        Long paymentTransactionId = getTransactionId(order.getUser().getValue());
+        //Long paymentTransactionId = getTransactionId(order.getUser().getValue());
 
+        String paymentTransactionId = "";
         //Post callback properties
         PaymentCallbackParams paymentProperties = new PaymentCallbackParams();
         paymentProperties.setToken(token);
@@ -407,8 +407,8 @@ public class CartCheckout extends BaseTestClass {
     }
 
     private void emulateAdyenCheckout(Order order) throws Exception {
-        Long paymentTransactionId = getTransactionId(order.getUser().getValue());
-
+        //Long paymentTransactionId = getTransactionId(order.getUser().getValue());
+        String paymentTransactionId = "";
         String authResult = "AUTHORISED";
         String pspReference = "";
 
@@ -460,8 +460,8 @@ public class CartCheckout extends BaseTestClass {
     public void testDigitalGoodCheckoutByAdyen() throws Exception {
         String uid = testDataProvider.createUser();
 
-        Country country = Country.MX;
-        Currency currency = Currency.MXN;
+        Country country = Country.DE;
+        Currency currency = Currency.EUR;
 
         ArrayList<String> offerList = new ArrayList<>();
         offerList.add(offer_digital_normal1);

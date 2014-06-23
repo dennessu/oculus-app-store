@@ -10,7 +10,7 @@ import com.junbo.fulfilment.spec.model.FulfilmentItem;
 import com.junbo.fulfilment.spec.model.FulfilmentRequest;
 import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderItem;
-import com.junbo.test.buyerscenario.BuyerTestDataProvider;
+import com.junbo.test.common.Utility.BaseTestDataProvider;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.DBHelper;
 import com.junbo.test.common.libs.IdConverter;
@@ -25,7 +25,7 @@ import java.util.UUID;
 /**
  * Created by yunlongzhao on 5/14/14.
  */
-public class FulfilmentTestDataProvider extends BuyerTestDataProvider {
+public class FulfilmentTestDataProvider extends BaseTestDataProvider{
     private FulfilmentService fulfilmentClient = FulfilmentServiceImpl.getInstance();
 
     public String postFulfilment(String uid, String orderId) throws Exception {

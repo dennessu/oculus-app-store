@@ -272,8 +272,8 @@ public class OrderTestDataProvider {
         return totalAmount;
     }
 
-    public String getBalanceByOrderId(String uid, String orderId) throws Exception {
-        return billingProvider.getBalanceByOrderId(uid, orderId);
+    public String getBalancesByOrderId(String orderId) throws Exception {
+        return billingProvider.getBalancesByOrderId(orderId);
     }
 
 }

@@ -19,6 +19,7 @@ import com.junbo.common.model.Results;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.order.spec.model.OrderItem;
 import com.junbo.order.spec.model.PaymentInfo;
+import com.junbo.test.billing.utility.BillingTestDataProvider;
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
@@ -39,6 +40,7 @@ import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.entitlement.EntitlementService;
+import com.junbo.test.fulfilment.utility.FulfilmentTestDataProvider;
 import com.junbo.test.order.utility.OrderTestDataProvider;
 import com.junbo.test.payment.apihelper.PaymentService;
 import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
@@ -59,6 +61,8 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
     protected OrderTestDataProvider orderProvider = new OrderTestDataProvider();
     protected PaymentService paymentClient = PaymentServiceImpl.getInstance();
     protected PaymentTestDataProvider paymentProvider = new PaymentTestDataProvider();
+    protected FulfilmentTestDataProvider fulfilmentProvider = new FulfilmentTestDataProvider();
+    protected BillingTestDataProvider billingProvider = new BillingTestDataProvider();
 
     private LogHelper logger = new LogHelper(BuyerTestDataProvider.class);
 
@@ -239,7 +243,9 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
             cartId = cartClient.getCartPrimary(uid);
         }
         logger.LogSample("Put cart");
-        cartClient.updateCart(uid, cartId, new Cart());
+        Cart cart = new Cart();
+        cart.setRev(new String(Master.getInstance().getCart(cartId).getRev()));
+        cartClient.updateCart(uid, cartId, cart);
     }
 
     public String updateOrder(Order order) throws Exception {
@@ -252,5 +258,13 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
 
     public Results<Entitlement> getEntitlementByUserId(String uid) throws Exception {
         return EntitlementService.getEntitlements(uid);
+    }
+
+    public String getFulfilmentsByOrderId(String orderId) throws Exception {
+        return fulfilmentProvider.getFulfilmentByOrderId(orderId);
+    }
+
+    public String getBalancesByOrderId(String orderId) throws Exception {
+        return billingProvider.getBalancesByOrderId(orderId);
     }
 }

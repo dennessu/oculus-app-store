@@ -27,6 +27,7 @@ public class FulfilmentTesting extends BaseTestClass {
 
     private Country country = Country.DEFAULT;
     private Currency currency = Currency.DEFAULT;
+    /*
 
     @Property(
             priority = Priority.Dailies,
@@ -131,5 +132,6 @@ public class FulfilmentTesting extends BaseTestClass {
         validationHelper.validateSingleFulfilmentItem(fulfilmentItem, orderId, false);
 
     }
+    */
 
 }

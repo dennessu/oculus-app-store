@@ -5,6 +5,9 @@
  */
 package com.junbo.test.buyerscenario;
 
+import com.junbo.fulfilment.spec.model.FulfilmentItem;
+import com.junbo.fulfilment.spec.model.FulfilmentRequest;
+import com.junbo.order.spec.model.FulfillmentHistory;
 import com.junbo.test.common.Utility.BaseValidationHelper;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.Entities.enums.Currency;
@@ -51,15 +54,16 @@ public class BuyerValidationHelper extends BaseValidationHelper {
     }
 
     public void validateOrderInfoByCartId(String uid, String orderId, String cartId, Country country, Currency currency,
-                                          String paymentInstrumentId) {
+                                          String paymentInstrumentId) throws Exception {
         validateOrderInfoByCartId(uid, orderId, cartId, country, currency, paymentInstrumentId, false);
     }
 
     public void validateOrderInfoByCartId(String uid, String orderId, String cartId, Country country, Currency currency,
-                                          String paymentInstrumentId, boolean hasPhysicalGood) {
+                                          String paymentInstrumentId, boolean hasPhysicalGood) throws Exception {
         Order order = Master.getInstance().getOrder(orderId);
         Cart cart = Master.getInstance().getCart(cartId);
-
+        String fulfilmentId = testDataProvider.getFulfilmentsByOrderId(orderId);
+        String balancecId = testDataProvider.getBalancesByOrderId(orderId);
         verifyEqual(order.getTentative(), false, "verify tentative after order complete");
         verifyEqual(order.getCountry().toString(), country.toString(), "verify country field in order");
         verifyEqual(order.getCurrency().toString(), currency.toString(), "verify currency field in order");
@@ -111,6 +115,8 @@ public class BuyerValidationHelper extends BaseValidationHelper {
                     }
                     expectedTotalTaxAmount = expectedTotalTaxAmount.add(orderItem.getTotalTax());
                     expectedTotalAmount = expectedTotalAmount.add(expectedOrderItemAmount);
+
+                    validateFulfilmentHistory(orderItem, getFulfilmentItemByOfferId(fulfilmentId, offerId));
                     break;
                 }
             }
@@ -121,7 +127,31 @@ public class BuyerValidationHelper extends BaseValidationHelper {
 
     }
 
-    public void validateEntitlments(Results<Entitlement> entitlementResults, int expectedCount) {
+    public void validateBillingHistory(Order order) {
+        //TODO Pending billing cloudant bug fixed
+
+    }
+
+    private void validateFulfilmentHistory(OrderItem orderItem, FulfilmentItem fulfilmentItem) {
+        List<FulfillmentHistory> fulfillmentHistories = orderItem.getFulfillmentHistories();
+        verifyEqual(fulfillmentHistories.size(), fulfilmentItem.getActions().size(), "verify fulfilment action size");
+        //TODO validate detail info
+
+    }
+
+    private FulfilmentItem getFulfilmentItemByOfferId(String fulfilmentId, String offerId) throws Exception {
+        FulfilmentRequest fulfilment = Master.getInstance().getFulfilment(fulfilmentId);
+        List<FulfilmentItem> fulfilmentItems = fulfilment.getItems();
+        for (FulfilmentItem fulfilmentItem : fulfilmentItems) {
+            if (fulfilmentItem.getOfferId().equals(offerId)) {
+                return fulfilmentItem;
+            }
+        }
+
+        throw new TestException("Can not find specific offer id in fulfilment item");
+    }
+
+    public void validateEntitlements(Results<Entitlement> entitlementResults, int expectedCount) {
         List<Entitlement> entitlements = entitlementResults.getItems();
         for (int i = 0; i < entitlements.size(); i++) {
             Entitlement entitlement = entitlements.get(i);

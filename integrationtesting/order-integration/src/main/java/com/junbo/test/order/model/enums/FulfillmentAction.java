@@ -14,13 +14,8 @@ package com.junbo.test.order.model.enums;
 
 public enum FulfillmentAction {
     FULFILL("FULFILL"),
-    REVERSE("REVERSE"),
-    RETURN("RETURN"),
-    PREORDER("PREORDER"),
-    SHIP("SHIP"),
-    DELIVER("DELIVER"),
-    REPLACE("REPLACE"),
-    PENDING_FULFILL("PENDING_FULFILL");
+    REVERSE_FULFILL("REVERSE_FULFILL"),
+    PREORDER("PREORDER");
 
     private String name;
 

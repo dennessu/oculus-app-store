@@ -57,7 +57,7 @@ public class RefundTesting extends BaseOrderTestClass {
 
         BigDecimal refundTotalAmount = testDataProvider.refundTotalQuantity(orderId);
 
-        String balanceId = testDataProvider.getBalanceByOrderId(uid, orderId);
+        String balanceId = testDataProvider.getBalancesByOrderId(orderId);
 
         TransactionInfo transactionInfo = new TransactionInfo();
         transactionInfo.setPaymentInstrumentId(creditCardId);
@@ -106,7 +106,7 @@ public class RefundTesting extends BaseOrderTestClass {
 
         BigDecimal refundTotalAmount = testDataProvider.refundPartialAmount(orderId, new BigDecimal(4.5));
 
-        String balanceId = testDataProvider.getBalanceByOrderId(uid, orderId);
+        String balanceId = testDataProvider.getBalancesByOrderId(orderId);
 
         TransactionInfo transactionInfo = new TransactionInfo();
         transactionInfo.setPaymentInstrumentId(creditCardId);
@@ -156,7 +156,7 @@ public class RefundTesting extends BaseOrderTestClass {
 
         BigDecimal refundTotalAmount = testDataProvider.refundPartialQuantity(orderId, 2);
 
-        String balanceId = testDataProvider.getBalanceByOrderId(uid, orderId);
+        String balanceId = testDataProvider.getBalancesByOrderId(orderId);
 
         TransactionInfo transactionInfo = new TransactionInfo();
         transactionInfo.setPaymentInstrumentId(creditCardId);
