@@ -3,21 +3,23 @@
 # set environment variables
 export DEVOPS_ACCOUNT='ubuntu'
 export DEPLOYMENT_ACCOUNT='silkcloud'
+
 export DEPLOYMENT_PATH='/tmp/pgha'
 
-export DATA_PATH='/tmp/data'
-export BACKUP_PATH='/tmp/backup'
-export ARCHIVE_PATH='/tmp/archive'
-export CRON_PATH='/tmp/pgcron'
+export PGHA_BASE='/var/pgha'
+export DATA_PATH=$PGHA_BASE/data
+export BACKUP_PATH=$PGHA_BASE/backup
+export ARCHIVE_PATH=$PGHA_BASE/archive
+export CRON_PATH=$PGHA_BASE/pgron
 
-export SKYTOOL_PATH='/tmp/skytool'
+export SKYTOOL_PATH=$PGHA_BASE/skytool
 export SKYTOOL_CONFIG_PATH=$SKYTOOL_PATH/config
 export SKYTOOL_PID_PATH=$SKYTOOL_PATH/pid
 export SKYTOOL_LOG_PATH=$SKYTOOL_PATH/log
 
 export PGBIN_PATH='/usr/lib/postgresql/9.3/bin'
 export PGLOCK_PATH='/run/postgresql'
-export PROMOTE_TRIGGER_FILE='/tmp/bring_me_up'
+export PROMOTE_TRIGGER_FILE=$PGHA_BASE/bring_me_up
 export PGUSER='silkcloud'
 
 export DB_PORT=5432
