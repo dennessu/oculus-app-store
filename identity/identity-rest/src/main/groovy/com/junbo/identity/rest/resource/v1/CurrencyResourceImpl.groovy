@@ -7,6 +7,7 @@ import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.CurrencyFilter
 import com.junbo.identity.core.service.validator.CurrencyValidator
+import com.junbo.identity.data.identifiable.LocaleAccuracy
 import com.junbo.identity.data.repository.CurrencyRepository
 import com.junbo.identity.data.repository.LocaleRepository
 import com.junbo.identity.spec.error.AppErrors
@@ -191,8 +192,10 @@ class CurrencyResourceImpl implements CurrencyResource {
             return Promise.pure(currency)
         }
 
+        CurrencyLocaleKey currencyLocaleKey = currency.locales.get(getOptions.locale)
         return fillCurrencyLocaleKey(currency, getOptions.locale).then { Map<String, CurrencyLocaleKey> map ->
             currency.locales = map
+            currency.localeAccuracy = calcCurrencyLocaleKeyAccuracy(currencyLocaleKey, map.get(getOptions.locale))
             return Promise.pure(currency)
         }
     }
@@ -218,6 +221,32 @@ class CurrencyResourceImpl implements CurrencyResource {
             Map<String, CurrencyLocaleKey> map = new HashMap<>()
             map.put(locale, currencyLocaleKey)
             return Promise.pure(map)
+        }
+    }
+
+    static String calcCurrencyLocaleKeyAccuracy(CurrencyLocaleKey source, CurrencyLocaleKey target) {
+        if (source == target) {
+            return LocaleAccuracy.HIGH.toString()
+        }
+
+        if (source == null && (target.shortName == null && target.longName == null)) {
+            return LocaleAccuracy.HIGH.toString()
+        } else if (source == null) {
+            return LocaleAccuracy.LOW.toString()
+        }
+
+        if (target == null && (source.shortName == null && source.longName == null)) {
+            return LocaleAccuracy.HIGH.toString()
+        } else if (target == null) {
+            return LocaleAccuracy.LOW.toString()
+        }
+
+        if (source.shortName == target.shortName && source.longName == target.longName) {
+            return LocaleAccuracy.HIGH.toString()
+        } else if (source.shortName == target.shortName || source.longName == target.longName) {
+            return LocaleAccuracy.MEDIUM.toString()
+        } else {
+            return LocaleAccuracy.LOW.toString()
         }
     }
 
