@@ -119,7 +119,7 @@ class IAPResourceImpl implements IAPResource {
                 ).then { Results<com.junbo.entitlement.spec.model.Entitlement> results -> // get the IAP entitlements from entitlement & catalog component
                     // start page, offset, last index
                     Promise.each(results.items) { com.junbo.entitlement.spec.model.Entitlement catalogEntitlement ->
-                        return convertEntitlement(catalogEntitlement).then { Entitlement entitlement ->
+                        return convertEntitlement(catalogEntitlement, packageName).then { Entitlement entitlement ->
                             if (entitlement.useCount > 0) {
                                 entitlements << entitlement
                             }
@@ -178,12 +178,15 @@ class IAPResourceImpl implements IAPResource {
                     country: new CountryId(purchase.country),
                     currency: new CurrencyId(purchase.currency),
                     locale: new LocaleId(purchase.locale),
-                    tentative: false,
+                    tentative: true,
                     orderItems: [new OrderItem(offer: new OfferId(purchase.offerId), quantity: 1)]
             )
-            return resourceContainer.orderResource.createOrder(order).then { Order resultOrder ->
+            return resourceContainer.orderResource.createOrder(order).then { Order tentativeOrder ->
                 // todo verify the order status
-                return getEntitlementsByOrder(order)
+                tentativeOrder.tentative = false
+                return resourceContainer.orderResource.createOrder(tentativeOrder).then { Order settledOrder ->
+                    return getEntitlementsByOrder(settledOrder, purchase.packageName)
+                }
             }
         }
     }
@@ -195,10 +198,14 @@ class IAPResourceImpl implements IAPResource {
                 return Promise.pure(existed)
             }
 
+            // todo: validate entitlement ownership & package name
             resourceContainer.entitlementResource.getEntitlement(new EntitlementId(consumption.entitlementId)).then { com.junbo.entitlement.spec.model.Entitlement catalogEntitlement ->
-                return convertEntitlement(catalogEntitlement).then { Entitlement entitlement ->
-                    if (!entitlement.isConsumable || entitlement.useCount < consumption.useCountConsumed) {
-                        // todo throw error
+                return convertEntitlement(catalogEntitlement, consumption.packageName).then { Entitlement entitlement ->
+                    if (!entitlement.isConsumable) {
+                        throw AppErrors.INSTANCE.entitlementNotConsumable(consumption.entitlementId).exception()
+                    }
+                    if (entitlement.useCount < consumption.useCountConsumed) {
+                        throw AppErrors.INSTANCE.entitlementNotEnoughUsecount(consumption.entitlementId).exception()
                     }
 
                     consumption.packageName = entitlement.packageName
@@ -294,7 +301,7 @@ class IAPResourceImpl implements IAPResource {
         }
     }
 
-    private Promise<List<Entitlement>> getEntitlementsByOrder(Order order) {
+    private Promise<Results<Entitlement>> getEntitlementsByOrder(Order order, String packageName) {
         List<Entitlement> result = [] as LinkedList
         Set<String> entitlementIds = [] as HashSet
 
@@ -317,6 +324,7 @@ class IAPResourceImpl implements IAPResource {
                     }
                 }
             }
+            return Promise.pure(null)
 
         }
 
@@ -324,27 +332,29 @@ class IAPResourceImpl implements IAPResource {
         return promise.then {
             return Promise.each(entitlementIds) { String entitlementId ->
                 return resourceContainer.entitlementResource.getEntitlement(new EntitlementId(entitlementId)).then { com.junbo.entitlement.spec.model.Entitlement catalogEntitlement ->
-                    return convertEntitlement(catalogEntitlement).then { Entitlement e ->
+                    return convertEntitlement(catalogEntitlement, packageName).then { Entitlement e ->
                         result << e
                         return Promise.pure(null)
                     }
                 }
             }.then {
-                return Promise.pure(result)
+                Results<Entitlement> results = new Results<>()
+                results.items = result
+                return Promise.pure(results)
             }
         }
     }
 
-    private Promise<Entitlement> convertEntitlement(com.junbo.entitlement.spec.model.Entitlement catalogEntitlement) {
+    private Promise<Entitlement> convertEntitlement(com.junbo.entitlement.spec.model.Entitlement catalogEntitlement, String packageName) {
         return resourceContainer.itemResource.getItem(catalogEntitlement.itemId).then { Item item ->
             return resourceContainer.itemRevisionResource.getItemRevision(item.currentRevisionId).then { ItemRevision itemRevision ->
-                return Promise.pure(convertEntitlement(item, itemRevision, catalogEntitlement))
+                return Promise.pure(convertEntitlement(item, itemRevision, catalogEntitlement, packageName))
             }
         }
     }
 
     private Entitlement convertEntitlement(Item item, ItemRevision itemRevision,
-                                           com.junbo.entitlement.spec.model.Entitlement entitlement) {
+                                           com.junbo.entitlement.spec.model.Entitlement entitlement, String packageName) {
         assert item.currentRevisionId == itemRevision.id, 'itemRevision not match'
         assert entitlement.itemId == item.id, 'item not match'
 
@@ -355,7 +365,7 @@ class IAPResourceImpl implements IAPResource {
                 useCount: consumable ? entitlement.useCount : 1,
                 sku: itemRevision.sku,
                 type: item.type,
-                packageName: itemRevision.packageName,
+                packageName: packageName,
                 isConsumable: consumable
         )
     }

@@ -19,4 +19,12 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 404, code = ErrorCode.ITEM_NOT_FOUND_WITH_PACKAGE_NAME,
             description = "Item could not be found with given packageName")
     AppError itemNotFoundWithPackageName();
+
+    @ErrorDef(httpStatusCode = 409, code = ErrorCode.ENTITLEMENT_NOT_CONSUMABLE,
+            description = "Entitlement not consumable, entitlementId={0}")
+    AppError entitlementNotConsumable(String entitlementId);
+
+    @ErrorDef(httpStatusCode = 409, code = ErrorCode.ENTITLEMENT_NOT_ENOUGH_USECOUNT,
+            description = "Entitlement not enough use count, entitlementId={0}")
+    AppError entitlementNotEnoughUsecount(String entitlementId);
 }

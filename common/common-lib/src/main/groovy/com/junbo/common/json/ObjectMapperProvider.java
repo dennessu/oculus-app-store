@@ -23,6 +23,8 @@ import com.junbo.common.jackson.serializer.CloudantIdSerializer;
 import com.junbo.common.jackson.serializer.EnumIdSerializer;
 import com.junbo.common.jackson.serializer.IdSerializer;
 import com.junbo.common.jackson.deserializer.IdDeserializer;
+import com.junbo.common.jackson.serializer.SigningSupportSerializer;
+import com.junbo.common.model.SigningSupport;
 
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
@@ -37,6 +39,10 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
     private static ObjectMapper objectMapper = createObjectMapper();
 
     private static ObjectMapper createObjectMapper() {
+        return createObjectMapper(true);
+    }
+
+    private static ObjectMapper createObjectMapper(boolean supportSign) {
         ObjectMapper objectMapper = new ObjectMapper(null,
                 new CustomSerializerProvider(),
                 new CustomDeserializationContext());
@@ -67,6 +73,10 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
         for (Class cls : IdUtil.ENUM_ID_CLASSES) {
             module.addSerializer(cls, new EnumIdSerializer());
             module.addDeserializer(cls, new EnumIdDeserizlizer(cls));
+        }
+
+        if (supportSign) {
+            module.addSerializer(SigningSupport.class, new SigningSupportSerializer(createObjectMapper(false)));
         }
 
         objectMapper.registerModule(module);

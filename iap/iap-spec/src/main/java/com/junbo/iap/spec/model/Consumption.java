@@ -6,13 +6,15 @@
 
 package com.junbo.iap.spec.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
 import com.junbo.common.model.ResourceMeta;
+import com.junbo.common.model.SigningSupport;
 
 /**
  * Entitlement Consumption for IAP.
  */
-public class Consumption extends ResourceMeta<String> {
+public class Consumption extends ResourceMeta<String> implements SigningSupport {
 
     private String userId;
     private String entitlementId;
@@ -23,6 +25,8 @@ public class Consumption extends ResourceMeta<String> {
     private String packageName;
     @CloudantIgnore
     private Long signatureTimestamp;
+    @JsonIgnore
+    private String signingKey;
 
     public String getUserId() {
         return userId;
@@ -96,5 +100,14 @@ public class Consumption extends ResourceMeta<String> {
     @Override
     public void setId(String id) {
         setTrackingGuid(id);
+    }
+
+    @Override
+    public String getSigningKey() {
+        return signingKey;
+    }
+
+    public void setSigningKey(String signingKey) {
+        this.signingKey = signingKey;
     }
 }
