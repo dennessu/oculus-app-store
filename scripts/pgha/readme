@@ -135,15 +135,11 @@
 #[replica] create londiste config on replcia
     $DEPLOYMENT_PATH/londiste/londiste_config_leaf.sh
 
-#[master] >>>>>>>>>>downtime window start<<<<<<<<<<
-
 #[replica] start londiste deamon on replica
     $DEPLOYMENT_PATH/londiste/londiste_leaf.sh
 
 #[replica] start londiste pgq ticker deamon
     $DEPLOYMENT_PATH/londiste/lodiste_pgqd.sh
-
-#[master] >>>>>>>>>>>downtime window end<<<<<<<<<<<
 
 
 =====Planned Failover=====

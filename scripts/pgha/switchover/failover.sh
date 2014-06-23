@@ -8,13 +8,13 @@ echo "[SLAVE] stop secondary pgbouncer proxy"
 forceKill $PGBOUNCER_PORT
 
 ssh $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
-source $DEPLOYMENT_PATH/util/common.sh
+    source $DEPLOYMENT_PATH/util/common.sh
 
-echo "[MASTER] stop primary pgbouncer proxy"
-forceKill $PGBOUNCER_PORT
+    echo "[MASTER] stop primary pgbouncer proxy"
+    forceKill $PGBOUNCER_PORT
 
-echo "[MASTER] kill skytools instances"
-forceKillPid $SKYTOOL_PID_PATH
+    echo "[MASTER] kill skytools instances"
+    forceKillPid $SKYTOOL_PID_PATH
 ENDSSH
 
 ssh $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH

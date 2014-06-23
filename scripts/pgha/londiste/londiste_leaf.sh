@@ -5,14 +5,28 @@ source ${DIR}/../util/common.sh
 #check running under specified account
 checkAccount $DEPLOYMENT_ACCOUNT
 
+ssh $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
+    source $DEPLOYMENT_PATH/util/common.sh
+
+    echo "[MASTER] stop primary pgbouncer proxy"
+    forceKill $PGBOUNCER_PORT
+ENDSSH
+
+ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
+    source $DEPLOYMENT_PATH/util/common.sh
+
+    echo "[SLAVE] stop secondary pgbouncer proxy"
+    forceKill $PGBOUNCER_PORT
+ENDSSH
+
 echo "kill skytools instance"
 forceKillPid $SKYTOOL_PID_PATH
 
-echo "waiting for replica catching up with master..."
+echo "waiting for replica catching up with master"
 while ! echo exit | psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT 'x' from pg_stat_replication where sent_location != replay_location;" | grep "(0 rows)"; do sleep 1 && echo "replica is catching up..."; done
 echo "replica catch up with master!"
 
-echo "promote replcia database to cut off streaming replication..."
+echo "promote replcia database to cut off streaming replication"
 touch $PROMOTE_TRIGGER_FILE
 
 echo "waiting for replica promote"
@@ -47,3 +61,13 @@ do
     londiste3 $config remove-table databasechangelog || echo "table missing"
     londiste3 $config remove-table databasechangeloglock || echo "table missing"
 done
+
+ssh $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
+    echo "[MASTER] start primary pgbouncer proxy"
+    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
+ENDSSH
+
+ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
+    echo "[SLAVE] start secondary pgbouncer proxy"
+    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
+ENDSSH
