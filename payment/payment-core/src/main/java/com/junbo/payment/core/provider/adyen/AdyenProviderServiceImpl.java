@@ -12,6 +12,7 @@ import com.adyen.services.payment.Recurring;
 import com.adyen.services.recurring.*;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.junbo.common.util.PromiseFacade;
+import com.junbo.langur.core.context.JunboHttpContext;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.clientproxy.CountryServiceFacade;
 import com.junbo.payment.clientproxy.CurrencyServiceFacade;
@@ -20,6 +21,7 @@ import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
+import com.junbo.payment.core.provider.PaymentProvider;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.db.repo.facade.PaymentInstrumentRepositoryFacade;
 import com.junbo.payment.db.repo.facade.PaymentRepositoryFacade;
@@ -28,6 +30,7 @@ import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentCallbackParams;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import com.junbo.payment.spec.model.WebPaymentInfo;
+import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -37,8 +40,7 @@ import javax.ws.rs.core.Response;
 import javax.xml.rpc.Stub;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 /**
@@ -54,6 +56,9 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
     protected static final String CAPTURE_STATE = "[capture-received]";
     private static final String AUTH_USER = "javax.xml.rpc.security.auth.username";
     private static final String AUTH_PWD = "javax.xml.rpc.security.auth.password";
+    private static final String[] NOTIFY_FIELDS = {"eventDate","reason","originalReference",
+        "merchantReference","currency",
+        "pspReference","merchantAccountCode","eventCode","value","operations","success","live"};
     private static final int SHIP_DELAY = 1;
     private static final int VALID_HOURS = 3;
     private String redirectURL;
@@ -374,6 +379,59 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
 
     @Override
     public Promise<PaymentTransaction> getByTransactionToken(PaymentTransaction request) {
+        return Promise.pure(null);
+    }
+
+    @Override
+    public Promise<PaymentTransaction> processNotify(String request){
+        // Check user and password
+        String authHeader = JunboHttpContext.getRequestHeaders().getFirst("authorization");
+        if (authHeader != null){
+            String encodedValue = authHeader.split(" ")[1];
+            String decodedValue = new String(Base64.decodeBase64(encodedValue.getBytes()));
+            //TODO: validate the value:
+            LOGGER.info(decodedValue);
+        }
+        else{
+            LOGGER.error("missing authorize header");
+            throw AppServerExceptions.INSTANCE.missingRequiredField("authorize header").exception();
+        }
+        //get results
+        Map<String, String> notifies = new HashMap<>();
+        String[] requests = request.split("&");
+        for(String field : requests){
+            String[] results = field.split("=");
+            if(Arrays.asList(NOTIFY_FIELDS).contains(results[0])){
+                notifies.put(results[0], results[1]);
+            }
+        }
+        AdyenNotifyRequest notify = CommonUtil.parseJson(CommonUtil.toJson(notifies, null), AdyenNotifyRequest.class);
+        //TODO: check redundant notification
+        //TODO: save to DB for check and update status
+        Long paymentId = CommonUtil.decode(notify.getMerchantReference());
+        PaymentTransaction transaction = paymentRepositoryFacade.getByPaymentId(paymentId);
+        String externalToken = notify.getPspReference();
+        if(notify.getSuccess().equals("true") && externalToken.equalsIgnoreCase(transaction.getExternalToken())){
+            if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.AUTHORISATION.name())){
+                //Ignore of Credit Card Auth as CC use API call directly
+                if(!transaction.getPaymentProvider().equalsIgnoreCase(PaymentProvider.AdyenCC.toString())){
+                    paymentRepositoryFacade.updatePayment(paymentId, PaymentUtil.getPaymentStatus(
+                            PaymentStatus.SETTLED.toString()), null);
+                }
+            }else if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.CANCELLATION.name())){
+                paymentRepositoryFacade.updatePayment(paymentId, PaymentUtil.getPaymentStatus(
+                        PaymentStatus.REVERSED.toString()), null);
+            }else if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.REFUND.name())){
+                paymentRepositoryFacade.updatePayment(paymentId, PaymentUtil.getPaymentStatus(
+                        PaymentStatus.REFUNDED.toString()), null);
+            }else if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.CAPTURE_FAILED.name())){
+                paymentRepositoryFacade.updatePayment(paymentId, PaymentUtil.getPaymentStatus(
+                        PaymentStatus.SETTLE_DECLINED.toString()), null);
+            }else if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.REFUND_FAILED.name())){
+                paymentRepositoryFacade.updatePayment(paymentId, PaymentUtil.getPaymentStatus(
+                        PaymentStatus.REFUND_DECLINED.toString()), null);
+            }
+        }
         return Promise.pure(null);
     }
 

@@ -7,6 +7,7 @@ package com.junbo.payment.core;
 
 
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.payment.core.provider.PaymentProvider;
 import com.junbo.payment.spec.model.PaymentEvent;
 import com.junbo.payment.spec.model.PaymentCallbackParams;
 import com.junbo.payment.spec.model.PaymentTransaction;
@@ -38,4 +39,6 @@ public interface PaymentTransactionService {
     Promise<PaymentTransaction> getProviderTransaction(Long paymentId);
     @Transactional
     Promise<PaymentTransaction> reportPaymentEvent(PaymentEvent event, PaymentCallbackParams paymentCallbackParams);
+    @Transactional
+    Promise<PaymentTransaction> processNotification(PaymentProvider provider, String request);
 }

@@ -10,7 +10,9 @@ import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
+import com.junbo.payment.core.provider.PaymentProvider;
 import com.junbo.payment.core.provider.PaymentProviderService;
+import com.junbo.payment.core.provider.impl.PaymentProviderRegistry;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.core.util.ProxyExceptionResponse;
 import com.junbo.payment.spec.enums.*;
@@ -382,6 +384,18 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
             return provider.confirmNotify(payment, paymentCallbackParams);
         }
         return Promise.pure(payment);
+    }
+
+    @Override
+    public Promise<PaymentTransaction> processNotification(PaymentProvider provider, String request) {
+        PaymentProviderService providerService = PaymentProviderRegistry.getPaymentProviderService(provider);
+        return providerService.processNotify(request)
+                .then(new Promise.Func<PaymentTransaction, Promise<PaymentTransaction>>() {
+            @Override
+            public Promise<PaymentTransaction> apply(PaymentTransaction paymentTransaction) {
+                return Promise.pure(null);
+            }
+        });
     }
 
     @Override

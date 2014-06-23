@@ -31,4 +31,9 @@ public abstract class AbstractPaymentProviderService implements PaymentProviderS
     public Promise<PaymentTransaction> confirmNotify(PaymentTransaction paymentRequest, PaymentCallbackParams properties){
         throw AppServerExceptions.INSTANCE.serviceNotImplemented("confirmNotify").exception();
     }
+
+    @Override
+    public Promise<PaymentTransaction> processNotify(String request){
+        throw AppServerExceptions.INSTANCE.serviceNotImplemented("processNotify").exception();
+    }
 }

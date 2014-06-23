@@ -37,4 +37,6 @@ public interface PaymentProviderService{
 
     Promise<PaymentTransaction> confirm(String transactionId, PaymentTransaction paymentRequest);
     Promise<PaymentTransaction> confirmNotify(PaymentTransaction paymentRequest, PaymentCallbackParams properties);
+
+    Promise<PaymentTransaction> processNotify(String request);
 }
