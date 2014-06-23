@@ -51,6 +51,16 @@ public class Country extends PropertyAssignedAwareResourceMeta<CountryId> {
     @ApiModelProperty(position = 8, required = true, value = "Localizable properties and the corresponding Key value to lookup in Translation service.")
     private Map<String, CountryLocaleKey> locales;
 
+    @ApiModelProperty(position = 9, required = false, value = "[Client Immutable] This is the calculated value to give how accurate the localizable attributes is. " +
+            "The value must be in (HIGH, MEDIUM, LOW).  For a GET request without ?locale parameter, all localizable attributes are returned in all available locales, " +
+            "the localAccuracy value should be \"HIGH\". In a GET request with ?locale parameter, " +
+            "for example ?locale=\"es_ES\", if all the localizable attributes exist in the requested locale (\"es_ES\"), " +
+            "the localAccuracy should be \"HIGH\". If partial of the localizable attributes are from requested locale (\"es_ES\"), " +
+            "other part of the localizable attributes are from fallback locale, the localAccuracy value should be \"MEDIUM\". " +
+            "If all of the localizable attributes are not from request locale (\"es_ES\"), all localizable attributes are from fall back locale, " +
+            "the localAccracy value should be \"LOW\". ")
+    private String localeAccuracy;
+
     public CountryId getId() {
         return id;
     }
@@ -122,5 +132,14 @@ public class Country extends PropertyAssignedAwareResourceMeta<CountryId> {
     public void setLocales(Map<String, CountryLocaleKey> locales) {
         this.locales = locales;
         support.setPropertyAssigned("locales");
+    }
+
+    public String getLocaleAccuracy() {
+        return localeAccuracy;
+    }
+
+    public void setLocaleAccuracy(String localeAccuracy) {
+        this.localeAccuracy = localeAccuracy;
+        support.setPropertyAssigned("localeAccuracy");
     }
 }

@@ -7,6 +7,7 @@ import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.CountryFilter
 import com.junbo.identity.core.service.validator.CountryValidator
+import com.junbo.identity.data.identifiable.LocaleAccuracy
 import com.junbo.identity.data.repository.CountryRepository
 import com.junbo.identity.data.repository.LocaleRepository
 import com.junbo.identity.spec.error.AppErrors
@@ -208,8 +209,10 @@ class CountryResourceImpl implements CountryResource {
         }
 
         return filterSubCountries(country, getOptions).then { Country newCountry ->
+            CountryLocaleKey localeKey = country.locales.get(getOptions.locale)
             return filterCountryLocaleKeys(newCountry.locales, getOptions.locale).then { Map<String, CountryLocaleKey> map ->
                 newCountry.locales = map
+                newCountry.localeAccuracy = calcCountryLocaleKeyAccuracy(localeKey, map.get(getOptions.locale))
                 return Promise.pure(newCountry)
             }
         }
@@ -231,9 +234,63 @@ class CountryResourceImpl implements CountryResource {
     }
 
     private Promise<SubCountryLocaleKeys> filterSubCountryLocaleKeys(SubCountryLocaleKeys keys, CountryGetOptions getOptions) {
+        SubCountryLocaleKey subCountryLocaleKey = keys.locales.get(getOptions.locale)
         return filterSubCountryLocaleKeys(keys.locales, getOptions.locale).then { Map<String, SubCountryLocaleKey> map ->
             keys.locales = map
+            keys.localeAccuracy = calcSubCountryLocaleAccuracy(subCountryLocaleKey, map.get(getOptions.locale))
             return Promise.pure(keys)
+        }
+    }
+
+    static String calcSubCountryLocaleAccuracy(SubCountryLocaleKey source, SubCountryLocaleKey target) {
+        if (source == target) {
+            return LocaleAccuracy.HIGH.toString()
+        }
+
+        if (source == null && (target.shortName == null && target.longName == null)) {
+            return LocaleAccuracy.HIGH.toString()
+        } else if (source == null) {
+            return LocaleAccuracy.LOW.toString()
+        }
+
+        if (target == null && (source.shortName == null && source.longName == null)) {
+            return LocaleAccuracy.HIGH.toString()
+        } else if (target == null) {
+            return LocaleAccuracy.LOW.toString()
+        }
+
+        if (source.shortName == target.shortName && source.longName == target.longName) {
+            return LocaleAccuracy.HIGH.toString()
+        } else if (source.shortName == target.shortName || source.longName == target.longName) {
+            return LocaleAccuracy.MEDIUM.toString()
+        } else {
+            return LocaleAccuracy.LOW.toString()
+        }
+    }
+
+    static String calcCountryLocaleKeyAccuracy(CountryLocaleKey source, CountryLocaleKey target) {
+        if (source == target) {
+            return LocaleAccuracy.HIGH.toString()
+        }
+
+        if (source == null && (target.shortName == null && target.longName == null)) {
+            return LocaleAccuracy.HIGH.toString()
+        } else if (source == null) {
+            return LocaleAccuracy.LOW.toString()
+        }
+
+        if (target == null && (source.shortName == null && source.longName == null)) {
+            return LocaleAccuracy.HIGH.toString()
+        } else if (target == null) {
+            return LocaleAccuracy.HIGH.toString()
+        }
+
+        if (source.shortName == target.shortName && source.longName == target.longName) {
+            return LocaleAccuracy.HIGH.toString()
+        } else if (source.shortName == target.shortName || source.longName == target.longName) {
+            return LocaleAccuracy.MEDIUM.toString()
+        } else {
+            return LocaleAccuracy.LOW.toString()
         }
     }
 
