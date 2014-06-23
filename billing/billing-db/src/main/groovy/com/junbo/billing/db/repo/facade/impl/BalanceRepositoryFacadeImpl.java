@@ -211,6 +211,7 @@ public class BalanceRepositoryFacadeImpl implements BalanceRepositoryFacade {
                 transaction.setCreatedBy(balance.getUserId().getValue());
                 transaction.setCreatedTime(new Date());
                 transactionRepositoryFacade.saveTransaction(transaction);
+                savedBalance.addTransaction(transaction);
             }
             else {
                 transactionRepositoryFacade.updateTransaction(transaction);

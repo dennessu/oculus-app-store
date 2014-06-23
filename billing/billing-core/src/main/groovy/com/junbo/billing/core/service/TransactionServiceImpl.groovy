@@ -106,28 +106,34 @@ class TransactionServiceImpl implements TransactionService {
     @Override
     Promise<Balance> confirmBalance(Balance balance) {
 
-        return checkBalance(balance).then {
+        return checkBalance(balance).then { Balance checkBalance ->
 
-            Long paymentId = getPaymentIdByRef(balance.transactions[0].paymentRefId)
+            if (checkBalance.status != BalanceStatus.UNCONFIRMED.name()) {
+                LOGGER.info('name=No_Need_Confirm_Balance. the balance status is {}, no need to confirm balance.',
+                    checkBalance.status)
+                return Promise.pure(checkBalance)
+            }
+
+            Long paymentId = getPaymentIdByRef(checkBalance.transactions[0].paymentRefId)
 
             def newTransaction = new Transaction()
-            newTransaction.setAmount(balance.totalAmount)
-            newTransaction.setCurrency(balance.currency)
+            newTransaction.setAmount(checkBalance.totalAmount)
+            newTransaction.setCurrency(checkBalance.currency)
             newTransaction.setType(TransactionType.CONFIRM.name())
-            newTransaction.setPiId(balance.piId)
+            newTransaction.setPiId(checkBalance.piId)
             newTransaction.setTransactionTime(new Date())
 
-            def paymentTransaction = generatePaymentTransaction(balance)
+            def paymentTransaction = generatePaymentTransaction(checkBalance)
 
             LOGGER.info('name=Confirm_Balance. balance currency: {}, amount: {}, pi id: {}',
-                    balance.currency, balance.totalAmount, balance.piId)
+                    checkBalance.currency, checkBalance.totalAmount, checkBalance.piId)
             return paymentFacade.postPaymentConfirm(paymentId, paymentTransaction).recover { Throwable throwable ->
                 LOGGER.error('name=Confirm_Balance_Error. error in post payment confirm', throwable)
                 newTransaction.setStatus(TransactionStatus.ERROR.name())
-                balance.addTransaction(newTransaction)
+                checkBalance.addTransaction(newTransaction)
 
                 if (throwable instanceof AppErrorException) {
-                    throw AppErrors.INSTANCE.paymentProcessingFailed(balance.piId.value.toString()).exception()
+                    throw AppErrors.INSTANCE.paymentProcessingFailed(checkBalance.piId.value.toString()).exception()
                 }
                 throw throwable
             }.then { PaymentTransaction pt ->
@@ -136,10 +142,10 @@ class TransactionServiceImpl implements TransactionService {
                 newTransaction.setPaymentRefId(pt.id.toString())
                 newTransaction.setAmount(pt.chargeInfo.amount)
                 newTransaction.setStatus(getTransactionStatusByPaymentStatus(pt.status).name())
-                balance.setStatus(getBalanceStatusByPaymentStatus(pt.status).name())
+                checkBalance.setStatus(getBalanceStatusByPaymentStatus(pt.status).name())
 
-                balance.addTransaction(newTransaction)
-                return Promise.pure(balance)
+                checkBalance.addTransaction(newTransaction)
+                return Promise.pure(checkBalance)
             }
         }
     }
@@ -179,16 +185,15 @@ class TransactionServiceImpl implements TransactionService {
                 if (checkPt.status != PaymentStatus.UNCONFIRMED) {
                     newTransaction.setStatus(getTransactionStatusByPaymentStatus(checkPt.status).name())
                     balance.addTransaction(newTransaction)
-                    return Promise.pure(balance)
+                } else {
+                    if (isTimeLimitReached(balance.transactions[0].transactionTime)) {
+                        LOGGER.info('name=Confirm_Balance_Timeout. ')
+                        newTransaction.setStatus(TransactionStatus.TIMEOUT.name())
+                        balance.addTransaction(newTransaction)
+                        balance.setStatus(BalanceStatus.FAILED.name())
+                    }
                 }
-
-                if (isTimeLimitReached(balance.transactions[0].transactionTime)) {
-                    LOGGER.info('name=Confirm_Balance_Timeout. ')
-                    newTransaction.setStatus(TransactionStatus.TIMEOUT.name())
-                    balance.addTransaction(newTransaction)
-                    balance.setStatus(BalanceStatus.FAILED.name())
-                    return Promise.pure(balance)
-                }
+                return Promise.pure(balance)
             } else {
                 LOGGER.info('name=Check_Balance_Get_Payment. There is no new status update.')
                 return Promise.pure(balance)

@@ -238,10 +238,9 @@ class BalanceServiceImpl implements BalanceService {
             return transactionService.captureBalance(savedBalance, balance.totalAmount).recover { Throwable throwable ->
                 updateAndCommitBalance(savedBalance, EventActionType.CAPTURE)
                 throw throwable
-            }.then {
+            }.then { Balance capturedBalance ->
                 //persist the balance entity
-                Balance resultBalance = balanceRepositoryFacade.updateBalance(savedBalance, EventActionType.CAPTURE)
-                return Promise.pure(resultBalance)
+                return Promise.pure(updateAndCommitBalance(capturedBalance, EventActionType.CAPTURE))
             }
         }
     }
@@ -263,10 +262,9 @@ class BalanceServiceImpl implements BalanceService {
             return transactionService.confirmBalance(savedBalance).recover { Throwable throwable ->
                 updateAndCommitBalance(savedBalance, EventActionType.CONFIRM)
                 throw throwable
-            }.then {
+            }.then { Balance confirmedBalance ->
                 //persist the balance entity
-                Balance resultBalance = balanceRepositoryFacade.updateBalance(savedBalance, EventActionType.CONFIRM)
-                return Promise.pure(resultBalance)
+                return Promise.pure(updateAndCommitBalance(confirmedBalance, EventActionType.CONFIRM))
             }
         }
     }
@@ -291,12 +289,11 @@ class BalanceServiceImpl implements BalanceService {
                 balanceValidator.validateTransactionNotEmpty(savedBalance.getId(), savedBalance.transactions)
 
                 return transactionService.checkBalance(savedBalance).recover { Throwable throwable ->
-                    updateAndCommitBalance(savedBalance, EventActionType.CONFIRM)
+                    updateAndCommitBalance(savedBalance, EventActionType.CHECK)
                     throw throwable
-                }.then {
+                }.then { Balance checkedBalance ->
                     //persist the balance entity
-                    Balance resultBalance = balanceRepositoryFacade.updateBalance(savedBalance, EventActionType.CHECK)
-                    return Promise.pure(resultBalance)
+                    return Promise.pure(updateAndCommitBalance(checkedBalance, EventActionType.CHECK))
                 }
             }
         }
@@ -327,7 +324,7 @@ class BalanceServiceImpl implements BalanceService {
                 updateAndCommitBalance(savedBalance, EventActionType.ASYNC_CHARGE)
                 throw throwable
             }.then { Balance returnedBalance ->
-                return Promise.pure(balanceRepositoryFacade.updateBalance(returnedBalance, EventActionType.ASYNC_CHARGE))
+                return Promise.pure(updateAndCommitBalance(returnedBalance, EventActionType.ASYNC_CHARGE))
             }
         }
     }

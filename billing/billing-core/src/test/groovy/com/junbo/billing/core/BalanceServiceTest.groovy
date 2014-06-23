@@ -72,14 +72,10 @@ class BalanceServiceTest extends BaseTest {
         captureBalance = balanceService.captureBalance(captureBalance)?.get()
 
         assert captureBalance != null
+        assert captureBalance.status == BalanceStatus.AWAITING_PAYMENT.name()
+        assert captureBalance.type == BalanceType.MANUAL_CAPTURE.name()
 
-        Balance returnedBalance = balanceService.getBalance(balance.getId())?.get()
-
-        assert returnedBalance != null
-        assert returnedBalance.status == BalanceStatus.AWAITING_PAYMENT.name()
-        assert returnedBalance.type == BalanceType.MANUAL_CAPTURE.name()
-
-        Transaction transaction = returnedBalance.getTransactions()[1]
+        Transaction transaction = captureBalance.getTransactions()[1]
 
         assert transaction != null
         assert transaction.status == TransactionStatus.SUCCESS.name()
