@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.core.service;
 
+import com.junbo.catalog.common.util.Configuration;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.OfferService;
 import com.junbo.catalog.db.repo.ItemRepository;
@@ -18,6 +19,7 @@ import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.common.error.AppError;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -32,6 +34,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     private OfferRevisionRepository offerRevisionRepo;
     private ItemRepository itemRepo;
     private OfferAttributeRepository offerAttributeRepo;
+
+    @Autowired
+    private Configuration config;
 
     @Required
     public void setOfferRepo(OfferRepository offerRepo) {
@@ -56,6 +61,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     @Override
     public Offer createEntity(Offer offer) {
         validateOfferCreation(offer);
+        fillDefaultValue(offer);
         return offerRepo.create(offer);
     }
 
@@ -70,7 +76,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         offer.setCurrentRevisionId(oldOffer.getCurrentRevisionId());
         offer.setApprovedRevisions(oldOffer.getApprovedRevisions());
         offer.setActiveRevision(oldOffer.getActiveRevision());
-
+        fillDefaultValue(offer);
         Offer updatedOffer = offerRepo.update(offer);
         updatedOffer.setCurrentRevisionId(oldOffer.getCurrentRevisionId());
         return updatedOffer;
@@ -228,6 +234,12 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     @Override
     protected String getEntityType() {
         return "offer";
+    }
+
+    private void fillDefaultValue(Offer offer) {
+        if (offer.getDeveloperRatio() == null) {
+            offer.setDeveloperRatio(config.getDeveloperRatio());
+        }
     }
 
     private List<Offer> getOffersByItemId(String itemId) {

@@ -14,6 +14,7 @@ import com.junbo.common.jackson.annotation.*;
 import com.junbo.common.model.Link;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +50,9 @@ public class Offer extends BaseEntityModel {
 
     @ApiModelProperty(position = 26, required = true, value = "Environment", allowableValues = "DEV, STAGING, PROD")
     private String environment;
+
+    @ApiModelProperty(position = 27, required = true, value = "Revenue ratio to developer")
+    private BigDecimal developerRatio;
 
     // current revision used for index & search, periodically updated by backend job
     @JsonIgnore
@@ -111,6 +115,14 @@ public class Offer extends BaseEntityModel {
 
     public void setEnvironment(String environment) {
         this.environment = environment;
+    }
+
+    public BigDecimal getDeveloperRatio() {
+        return developerRatio;
+    }
+
+    public void setDeveloperRatio(BigDecimal developerRatio) {
+        this.developerRatio = developerRatio;
     }
 
     public OfferRevision getActiveRevision() {
