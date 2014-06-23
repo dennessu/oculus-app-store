@@ -1,6 +1,7 @@
 [#-- @ftlvariable name="" type="com.junbo.langur.processor.model.ClientMethodModel" --]
 
 public Promise<${returnType}> ${methodName}([#list parameters as parameter]final ${parameter.paramType} ${parameter.paramName}[#if parameter_has_next], [/#if][/#list]) {
+    final long __startTime = System.currentTimeMillis();
 
     javax.ws.rs.core.UriBuilder __uriBuilder = UriBuilder.fromUri(__target);
     __uriBuilder.path("${path}");
@@ -53,7 +54,13 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
         return com.junbo.langur.core.context.JunboHttpContextScope.with(__httpContextData, __junboHttpContextScopeListeners, new Promise.Func0<Promise<${returnType}>>() {
             @Override
             public Promise<${returnType}> apply() {
-                return __service.${methodName}([#list parameters as parameter]${parameter.paramName}[#if parameter_has_next], [/#if][/#list]);
+                return __service.${methodName}([#list parameters as parameter]${parameter.paramName}[#if parameter_has_next], [/#if][/#list]).then(new Promise.Func<${returnType}, Promise<${returnType}>>() {
+                    @Override
+                    public Promise<${returnType}> apply(${returnType} __result) {
+                        LOGGER.info("Method ${methodName} (InProc) total duration: " + (System.currentTimeMillis() - __startTime) + "ms.");
+                        return Promise.pure(__result);
+                    }
+                });
             }
         });
     }
@@ -80,6 +87,8 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
             if (__responseHandler != null) {
                 __responseHandler.onResponse(response);
             }
+
+            LOGGER.info("Method ${methodName} (Remote) total duration: " + (System.currentTimeMillis() - __startTime) + "ms.");
             if (response.getStatusCode() / 100 == 2) {
                 try {
                     return Promise.pure(__transcoder.<${returnType}>decode(new TypeReference<${returnType}>() {}, response.getResponseBody()));

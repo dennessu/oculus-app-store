@@ -4,22 +4,22 @@
 
 package ${packageName};
 
-import com.junbo.langur.core.client.*;
+import com.junbo.langur.core.client.AbstractClientProxy;
+import com.junbo.langur.core.client.TypeReference;
 import com.junbo.langur.core.promise.Promise;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.Response;
-import org.springframework.beans.factory.annotation.Required;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriBuilder;
-import java.util.*;
 
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture;
 
 @org.springframework.stereotype.Component
 public class ${className} extends AbstractClientProxy implements ${interfaceType},
     org.springframework.context.ApplicationContextAware {
+    private static final Logger LOGGER = LoggerFactory.getLogger(${className}.class);
 
     private org.springframework.context.ApplicationContext __applicationContext;
 
