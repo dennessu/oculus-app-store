@@ -12,6 +12,11 @@ class ValidatorUtil {
             throw new IllegalArgumentException('countryCode is null')
         }
 
+        // Due to Oculus's requirement, this will need to hack WORLD as one new countryCode
+        if (countryCode == "WORLD") {
+            return true
+        }
+
         CountryCode cc = CountryCode.getByCode(countryCode)
         if (cc == null) {
             return false
