@@ -13,7 +13,7 @@ do
     config=$SKYTOOL_CONFIG_PATH/${db}_root.ini
 
     echo "drop root node if exist"
-    londiste3 $config drop-node root_node_${db} || echo "node [root_node_${db}] does not exist"
+    londiste3 $config drop-node root_node_${db} > /dev/null 2>&1 || echo "node [root_node_${db}] does not exist"
 
     echo "create root node for database [$db]"
     londiste3 $config create-root root_node_${db} "dbname=$db host=$MASTER_HOST port=$MASTER_DB_PORT"

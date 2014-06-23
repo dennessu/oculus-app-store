@@ -15,9 +15,9 @@ echo "replica catch up with master!"
 echo "promote replcia database to cut off streaming replication..."
 touch $PROMOTE_TRIGGER_FILE
 
-echo "waiting for straming replication cut off"
-#TODO: seek for a better solution
-sleep 5s
+echo "waiting for replica promote"
+while ! echo exit | [ -f $REPLICA_DATA_PATH/recovery.done ]; do sleep 1 && echo "replica is promoting..."; done
+echo "replica promoted!"
 
 for db in ${REPLICA_DATABASES[@]}
 do
@@ -32,7 +32,7 @@ do
     set -e
 
     echo "drop leaf node if exist"
-    londiste3 $config drop-node leaf_node_${db} || echo "node [leaf_node_${db}] does not exist"
+    londiste3 $config drop-node leaf_node_${db} > /dev/null 2>&1 || echo "node [leaf_node_${db}] does not exist"
 
     echo "create leaf node for database [$db]"
     londiste3 $config create-leaf leaf_node_${db} "dbname=$db host=$REPLICA_HOST port=$REPLICA_DB_PORT" --provider="dbname=$db host=$MASTER_HOST port=$MASTER_DB_PORT"

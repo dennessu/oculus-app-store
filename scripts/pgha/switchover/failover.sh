@@ -39,9 +39,9 @@ rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_DATA_PATH/pg_xlog/* $SLAVE_
 echo "[SLAVE] promote slave database to take traffic"
 touch $PROMOTE_TRIGGER_FILE
 
-echo "[SLAVE] waiting for slave bring up"
-#TODO: seek for a better solution
-sleep 5s
+echo "[SLAVE] waiting for slave promote"
+while ! echo exit | [ -f $SLAVE_DATA_PATH/recovery.done ]; do sleep 1 && echo "[SLAVE] slave is prmoting..."; done
+echo "[SLAVE] slave promoted!"
 
 ssh $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
     echo "[MASTER] configure recovery.conf for master"
