@@ -7,13 +7,13 @@
     <import resource="classpath*:spring/common-context.xml"/>
     <import resource="classpath*:spring/transaction.xml"/>
     <import resource="classpath*:spring/cloudant-context.xml"/>
-    <import resource="classpath*:spring/db-context.xml"/>
     <import resource="classpath*:spring/repo-context.xml"/>
     <import resource="classpath*:spring/sharding-context.xml"/>
     <import resource="classpath*:spring/dualwrite-context.xml"/>
     <import resource="classpath*:spring/common-lib-context.xml" />
-    <import resource="classpath*:spring/spring-context.xml" />
+    <import resource="classpath*:spring/identity-clientproxy-context.xml" />
     <import resource="classpath*:spring/data-context.xml" />
     <import resource="classpath*:spring/threadpool-context.xml"/>
     <import resource="classpath*:spring/authorize-context.xml"/>
+    <import resource="classpath*:spring/*-context.xml"/>
 </beans>

@@ -489,7 +489,8 @@
               "map": "function(doc) {  emit(doc.trackingUuid, doc._id)}"
           }
       }
-    }
+    },
+    "iap_consumption": {}
   }, 
   "cloudant_search": {
     "entitlement": {
@@ -597,8 +598,7 @@
           "map": "function(doc) {emit(doc._id, doc._id)}"
         }
       }
-    },
-	"iap_consumption": {}
+    }
   }
 }
 

@@ -33,8 +33,17 @@
         <property name="userResource" ref="cartUserResourceClientProxy"/>
     </bean>
 
-    <bean id="cartUserResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.identity.url}"/>
+    <bean id="cartAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
+        <property name="scope" value="identity.service"/>
+        <property name="deflectionInSeconds" value="300"/>
+        <property name="clientSecret" value="${cart.clientproxy.service.clientSecret}"/>
+        <property name="clientId" value="${cart.clientproxy.service.clientId}"/>
+        <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
+    </bean>
+
+    <bean id="cartUserResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
+          parent="userResourceClientProxy">
+        <property name="accessTokenProvider" ref="cartAccessTokenProvider"/>
     </bean>
 
     <bean id="mockUserClient" class="com.junbo.cart.core.client.impl.MockUserClientImpl">

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="cryptoResourceClientProxy" class="com.junbo.crypto.spec.resource.proxy.CryptoResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.crypto.url}"/>
+    </bean>
+</beans>

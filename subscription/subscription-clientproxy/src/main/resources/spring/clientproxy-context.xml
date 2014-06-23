@@ -19,33 +19,46 @@
     <bean id="ratingGateway" class="com.junbo.subscription.clientproxy.impl.RatingGatewayImpl">
     <bean id="paymentGateway" class="com.junbo.subscription.clientproxy.impl.PaymentGatewayImpl"/-->
 
+    <bean id="subscriptionAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
+        <property name="scope" value="catalog.service entitlement.service payment.service rating.service"/>
+        <property name="deflectionInSeconds" value="300"/>
+        <property name="clientSecret" value="${subscription.clientproxy.service.clientSecret}"/>
+        <property name="clientId" value="${subscription.clientproxy.service.clientId}"/>
+        <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
+    </bean>
 
     <bean id="catalogGateway" class="com.junbo.subscription.clientproxy.mock.MockCatalogGatewayImpl"/>
     <bean id="entitlementGateway" class="com.junbo.subscription.clientproxy.mock.MockEntitlementGatewayImpl"/>
     <bean id="paymentGateway" class="com.junbo.subscription.clientproxy.mock.MockPaymentGatewayImpl"/>
     <bean id="ratingGateway" class="com.junbo.subscription.clientproxy.mock.MockRatingGatewayImpl"/>
 
-    <bean id="offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.catalog.url}"/>
+    <bean id="offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy"
+          parent="offerResourceClientProxy">
+        <property name="accessTokenProvider" ref="subscriptionAccessTokenProvider"/>
     </bean>
 
-    <bean id="offerRevClient" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.catalog.url}"/>
+    <bean id="offerRevClient" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy"
+          parent="offerRevisionClientProxy">
+        <property name="accessTokenProvider" ref="subscriptionAccessTokenProvider"/>
     </bean>
 
-    <bean id="itemClient" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.catalog.url}"/>
+    <bean id="itemClient" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy"
+          parent="itemResourceClientProxy">
+        <property name="accessTokenProvider" ref="subscriptionAccessTokenProvider"/>
     </bean>
 
-    <bean id="entitlementClient" class="com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.entitlement.url}"/>
+    <bean id="entitlementClient" class="com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxy"
+          parent="entitlementResourceClientProxy">
+        <property name="accessTokenProvider" ref="subscriptionAccessTokenProvider"/>
     </bean>
 
-    <bean id="paymentClient" class="com.junbo.payment.spec.resource.proxy.PaymentTransactionResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.payment.url}"/>
+    <bean id="paymentClient" class="com.junbo.payment.spec.resource.proxy.PaymentTransactionResourceClientProxy"
+          parent="paymentTransactionProxy">
+        <property name="accessTokenProvider" ref="subscriptionAccessTokenProvider"/>
     </bean>
 
-    <bean id="ratingClient" class="com.junbo.rating.spec.resource.proxy.RatingResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.rating.url}"/>
+    <bean id="ratingClient" class="com.junbo.rating.spec.resource.proxy.RatingResourceClientProxy"
+          parent="ratingResourceClientProxy">
+        <property name="accessTokenProvider" ref="subscriptionAccessTokenProvider"/>
     </bean>
 </beans>

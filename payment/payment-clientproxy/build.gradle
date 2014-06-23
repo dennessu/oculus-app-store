@@ -18,6 +18,7 @@ dependencies {
     processor junboProject(':langur-processor')
     processor (libraries.log4j)
 
+    compile junboProject(':oauth-spec')
     compile junboProject(':ewallet-spec')
     compile junboProject(':identity-spec')
 }

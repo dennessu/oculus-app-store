@@ -16,6 +16,7 @@ dependencies {
     compile junboProject(':billing-spec')
     compile junboProject(':identity-spec')
     compile junboProject(':ewallet-spec')
+    compile junboProject(':oauth-spec')
 
     testCompile (libraries.spring_test)
 

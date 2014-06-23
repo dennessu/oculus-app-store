@@ -13,6 +13,7 @@ dependencies {
     compile junboProject(':payment-spec')
     compile junboProject(':subscription-common')
     compile junboProject(':rating-spec')
+    compile junboProject(':oauth-spec')
 
     testCompile(libraries.spring_test)
     processor junboProject(':langur-processor')

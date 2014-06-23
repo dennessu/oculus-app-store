@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="itemResourceClientProxy" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.catalog.url}"/>
+    </bean>
+
+    <bean id="offerResourceClientProxy" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.catalog.url}"/>
+    </bean>
+
+    <bean id="itemRevisionClientProxy" class="com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.catalog.url}"/>
+    </bean>
+
+    <bean id="offerRevisionClientProxy" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.catalog.url}"/>
+    </bean>
+
+    <bean id="priceTierResourceClientProxy" class="com.junbo.catalog.spec.resource.proxy.PriceTierResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.catalog.url}"/>
+    </bean>
+
+    <bean id="promotionResourceClientProxy" class="com.junbo.catalog.spec.resource.proxy.PromotionResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.catalog.url}"/>
+    </bean>
+
+    <bean id="promotionRevisionResourceClientProxy"
+          class="com.junbo.catalog.spec.resource.proxy.PromotionRevisionResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.catalog.url}"/>
+    </bean>
+</beans>

@@ -24,39 +24,48 @@
     <bean id="ratingCatalogGateway" class="com.junbo.rating.clientproxy.impl.CatalogGatewayImpl"/>
     <bean id="ratingEntitlementGateway" class="com.junbo.rating.clientproxy.impl.EntitlementGatewayImpl"/>
 
+    <bean id="ratingAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
+        <property name="scope" value="catalog.service entitlement.service"/>
+        <property name="deflectionInSeconds" value="300"/>
+        <property name="clientSecret" value="${rating.clientproxy.service.clientSecret}"/>
+        <property name="clientId" value="${rating.clientproxy.service.clientId}"/>
+        <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
+    </bean>
+
     <bean id="ratingItemClient" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.catalog.url}"/>
+          parent="itemResourceClientProxy">
+        <property name="accessTokenProvider" ref="ratingAccessTokenProvider"/>
     </bean>
 
     <bean id="ratingOfferClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.catalog.url}"/>
+          parent="offerResourceClientProxy">
+        <property name="accessTokenProvider" ref="ratingAccessTokenProvider"/>
     </bean>
 
     <bean id="ratingOfferRevisionClient" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.catalog.url}"/>
+          parent="offerRevisionClientProxy">
+        <property name="accessTokenProvider" ref="ratingAccessTokenProvider"/>
     </bean>
 
 
     <bean id="priceTierClient" class="com.junbo.catalog.spec.resource.proxy.PriceTierResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.catalog.url}"/>
+          parent="priceTierResourceClientProxy">
+        <property name="accessTokenProvider" ref="ratingAccessTokenProvider"/>
     </bean>
 
     <bean id="promotionClient" class="com.junbo.catalog.spec.resource.proxy.PromotionResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.catalog.url}"/>
+          parent="promotionResourceClientProxy">
+        <property name="accessTokenProvider" ref="ratingAccessTokenProvider"/>
     </bean>
 
     <bean id="promotionRevisionClient"
-          class="com.junbo.catalog.spec.resource.proxy.PromotionRevisionResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.catalog.url}"/>
+          class="com.junbo.catalog.spec.resource.proxy.PromotionRevisionResourceClientProxy"
+          parent="promotionRevisionResourceClientProxy">
+        <property name="accessTokenProvider" ref="ratingAccessTokenProvider"/>
     </bean>
 
     <bean id="ratingEntitlementClient" class="com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.entitlement.url}"/>
+          parent="entitlementResourceClientProxy">
+        <property name="accessTokenProvider" ref="ratingAccessTokenProvider"/>
     </bean>
 </beans>

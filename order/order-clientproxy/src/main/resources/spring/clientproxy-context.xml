@@ -8,6 +8,14 @@
 
     <context:component-scan base-package="com.junbo.order.clientproxy"/>
 
+    <bean id="orderAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
+        <property name="scope" value="identity.service email.service billing.service fulfilment.service rating.service payment.service"/>
+        <property name="deflectionInSeconds" value="300"/>
+        <property name="clientSecret" value="${order.clientproxy.service.clientSecret}"/>
+        <property name="clientId" value="${order.clientproxy.service.clientId}"/>
+        <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
+    </bean>
+
     <!-- Config service -->
     <bean id="configService" class="com.junbo.configuration.impl.ConfigServiceImpl" />
     <bean id="configPropertyPlaceholderConfigurer" class="com.junbo.configuration.impl.ConfigPropertyPlaceholderConfigurer" />
@@ -20,66 +28,72 @@
     </bean>
 
     <bean id="order.identityUserClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.identity.url}"/>
+          parent="userResourceClientProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
-    <bean id="order.identityUserPersonalInfoClient" class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.identity.url}"/>
+    <bean id="order.identityUserPersonalInfoClient"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy"
+          parent="userPersonalInfoResourceClientProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
     <bean id="order.billingBalanceClient"
-          class="com.junbo.billing.spec.resource.proxy.BalanceResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.billing.url}"/>
+          class="com.junbo.billing.spec.resource.proxy.BalanceResourceClientProxy" parent="balanceResourceClientProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
-    <bean id="order.identityCurrencyClient" class="com.junbo.identity.spec.v1.resource.proxy.CurrencyResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.order.url}"/>
+    <bean id="order.identityCurrencyClient"
+          class="com.junbo.identity.spec.v1.resource.proxy.CurrencyResourceClientProxy"
+          parent="currencyResourceClientProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
     <bean id="order.ratingClient"
-          class="com.junbo.rating.spec.resource.proxy.RatingResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.rating.url}"/>
+          class="com.junbo.rating.spec.resource.proxy.RatingResourceClientProxy" parent="ratingResourceClientProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
     <bean id="order.offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.catalog.url}"/>
+          parent="offerResourceClientProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
     <bean id="order.offerItemClient" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.catalog.url}"/>
+          parent="itemResourceClientProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
     <bean id="order.offerRevisionClient" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.catalog.url}"/>
+          parent="offerRevisionClientProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
     <bean id="order.offerItemRevisionClient"
-          class="com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.catalog.url}"/>
+          class="com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy" parent="itemRevisionClientProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
     <bean id="order.fulfilmentClient"
-          class="com.junbo.fulfilment.spec.resource.proxy.FulfilmentResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.fulfilment.url}"/>
+          class="com.junbo.fulfilment.spec.resource.proxy.FulfilmentResourceClientProxy"
+          parent="fulfilmentResourceClientProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
     <bean id="order.paymentInstrumentClient"
-          class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.payment.url}"/>
+          class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy"
+          parent="paymentInstrumentProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
     <bean id="order.emailClient" class="com.junbo.email.spec.resource.proxy.EmailResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.email.url}"/>
+          parent="emailResourceClientProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
     <bean id="order.emailTemplateClient" class="com.junbo.email.spec.resource.proxy.EmailTemplateResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.email.url}"/>
+          parent="emailTemplateResourceClientProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
     <!-- cache -->

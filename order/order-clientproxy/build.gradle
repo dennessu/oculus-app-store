@@ -16,6 +16,7 @@ dependencies {
     compile junboProject(':fulfilment-spec')
     compile junboProject(':payment-spec')
     compile junboProject(':email-spec')
+    compile junboProject(':oauth-spec')
     compile 'net.sf.ehcache:ehcache-core:2.6.6'
     compile 'org.springframework:spring-context-support:4.0.2.RELEASE'
     compile 'javax.transaction:jta:1.1'

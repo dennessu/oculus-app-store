@@ -3,63 +3,61 @@
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     <bean id="oauthAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
-        <property name="scope" value="identity.service"/>
+        <property name="scope" value="identity.service email.service payment.service"/>
         <property name="deflectionInSeconds" value="300"/>
-        <property name="clientSecret" value="secret"/>
-        <property name="clientId" value="service"/>
-        <property name="tokenEndpoint" ref="tokenEndpoint"/>
+        <property name="clientSecret" value="${oauth.clientproxy.service.clientSecret}"/>
+        <property name="clientId" value="${oauth.clientproxy.service.clientId}"/>
+        <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
     </bean>
 
-    <bean id="userResource" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.identity.url}"/>
+    <bean id="oauth_userResource" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
+          parent="userResourceClientProxy">
         <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
     </bean>
 
-    <bean id="userCredentialVerifyAttemptResource"
+    <bean id="oauth_userCredentialVerifyAttemptResource"
           class="com.junbo.identity.spec.v1.resource.proxy.UserCredentialVerifyAttemptResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.identity.url}"/>
+          parent="userCredentialVerifyAttemptResourceClientProxy">
         <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
     </bean>
 
-    <bean id="userCredentialResource"
-          class="com.junbo.identity.spec.v1.resource.proxy.UserCredentialResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.identity.url}"/>
+    <bean id="oauth_userCredentialResource"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserCredentialResourceClientProxy"
+          parent="userCredentialResourceClientProxy">
         <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
     </bean>
 
-    <bean id="userPersonalInfoResource"
+    <bean id="oauth_userPersonalInfoResource"
           class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.identity.url}"/>
+          parent="userPersonalInfoResourceClientProxy">
         <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
     </bean>
 
-    <bean id="emailResource" class="com.junbo.email.spec.resource.proxy.EmailResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.email.url}"/>
-    </bean>
-
-    <bean id="emailTemplateResource" class="com.junbo.email.spec.resource.proxy.EmailTemplateResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.email.url}"/>
-    </bean>
-
-    <bean id="authenticatorResource" class="com.junbo.identity.spec.v1.resource.proxy.AuthenticatorResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.identity.url}"/>
+    <bean id="oauth_emailResource" class="com.junbo.email.spec.resource.proxy.EmailResourceClientProxy"
+          parent="emailResourceClientProxy">
         <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
     </bean>
 
-    <bean id="countryResource" class="com.junbo.identity.spec.v1.resource.proxy.CountryResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.identity.url}"/>
+    <bean id="oauth_emailTemplateResource" class="com.junbo.email.spec.resource.proxy.EmailTemplateResourceClientProxy"
+          parent="emailTemplateResourceClientProxy">
+        <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
     </bean>
 
-    <bean id="paymentInstrumentResource"
-          class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.payment.url}"/>
+    <bean id="oauth_authenticatorResource"
+          class="com.junbo.identity.spec.v1.resource.proxy.AuthenticatorResourceClientProxy"
+          parent="authenticatorResourceClientProxy">
+        <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
+    </bean>
+
+    <bean id="oauth_countryResource" class="com.junbo.identity.spec.v1.resource.proxy.CountryResourceClientProxy"
+          parent="countryResourceClientProxy">
+        <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
+    </bean>
+
+    <bean id="oauth_paymentInstrumentResource"
+          class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy"
+          parent="paymentInstrumentProxy">
+        <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
     </bean>
 
     <bean id="facebookExceptionHandler" class="com.junbo.oauth.clientproxy.facebook.FacebookExceptionHandler">

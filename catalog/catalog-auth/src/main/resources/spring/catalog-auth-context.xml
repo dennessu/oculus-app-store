@@ -2,21 +2,39 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="catalogAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
+        <property name="scope" value="catalog.service"/>
+        <property name="deflectionInSeconds" value="300"/>
+        <property name="clientSecret" value="${catalog.clientproxy.service.clientSecret}"/>
+        <property name="clientId" value="${catalog.clientproxy.service.clientId}"/>
+        <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
+    </bean>
+
+    <bean id="catalogAuth_itemResource" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy"
+          parent="itemResourceClientProxy">
+        <property name="accessTokenProvider" ref="catalogAccessTokenProvider"/>
+    </bean>
+
+    <bean id="catalogAuth_offerResource" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy"
+          parent="offerResourceClientProxy">
+        <property name="accessTokenProvider" ref="catalogAccessTokenProvider"/>
+    </bean>
+
     <bean id="itemAuthorizeCallbackFactory" class="com.junbo.catalog.auth.ItemAuthorizeCallbackFactory"
           parent="abstractAuthorizeCallbackFactory">
-        <property name="itemResource" ref="itemResourceClientProxy"/>
+        <property name="itemResource" ref="catalogAuth_itemResource"/>
     </bean>
 
     <bean id="itemOwnerCallback" class="com.junbo.catalog.auth.ItemOwnerCallback">
-        <property name="itemResource" ref="itemResourceClientProxy"/>
+        <property name="itemResource" ref="catalogAuth_itemResource"/>
     </bean>
 
     <bean id="offerAuthorizeCallbackFactory" class="com.junbo.catalog.auth.OfferAuthorizeCallbackFactory"
           parent="abstractAuthorizeCallbackFactory">
-        <property name="offerResource" ref="offerResourceClientProxy"/>
+        <property name="offerResource" ref="catalogAuth_offerResource"/>
     </bean>
 
     <bean id="offerOwnerCallback" class="com.junbo.catalog.auth.OfferOwnerCallback">
-        <property name="offerResource" ref="offerResourceClientProxy"/>
+        <property name="offerResource" ref="catalogAuth_offerResource"/>
     </bean>
 </beans>

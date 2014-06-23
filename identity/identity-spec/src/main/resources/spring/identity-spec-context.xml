@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="userResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
+
+    <bean id="userPersonalInfoResourceClientProxy"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
+
+    <bean id="currencyResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.CurrencyResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
+
+    <bean id="countryResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.CountryResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
+
+    <bean id="groupResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.GroupResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
+
+    <bean id="userGroupMembershipResourceClientProxy"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserGroupMembershipResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
+
+    <bean id="userCredentialVerifyAttemptResourceClientProxy"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserCredentialVerifyAttemptResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
+
+    <bean id="userCredentialResourceClientProxy"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserCredentialResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
+
+    <bean id="authenticatorResourceClientProxy"
+          class="com.junbo.identity.spec.v1.resource.proxy.AuthenticatorResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
+</beans>

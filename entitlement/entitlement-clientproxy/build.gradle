@@ -8,6 +8,7 @@ dependencies {
     compile (libraries.guava)
 
     compile junboProject(':catalog-spec')
+    compile junboProject(':oauth-spec')
 
     testCompile (libraries.guava)
     testCompile (libraries.spring_test)

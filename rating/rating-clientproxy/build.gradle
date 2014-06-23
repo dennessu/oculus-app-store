@@ -12,6 +12,7 @@ dependencies {
     compile junboProject(':rating-spec')
     compile junboProject(':catalog-spec')
     compile junboProject(':entitlement-spec')
+    compile junboProject(':oauth-spec')
 
     processor junboProject(':langur-processor')
     processor (libraries.log4j)

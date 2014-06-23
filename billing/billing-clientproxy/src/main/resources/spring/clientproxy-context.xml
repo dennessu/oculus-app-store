@@ -7,32 +7,46 @@
 
     <context:component-scan base-package="com.junbo.billing.clientproxy"/>
 
+    <bean id="billingAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
+        <property name="scope" value="payment.service identity.service"/>
+        <property name="deflectionInSeconds" value="300"/>
+        <property name="clientSecret" value="${billing.clientproxy.service.clientSecret}"/>
+        <property name="clientId" value="${billing.clientproxy.service.clientId}"/>
+        <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
+    </bean>
+
     <!-- proxy -->
-    <bean id="billingIdentityUserClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.identity.url}"/>
+    <bean id="billingIdentityUserClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
+          parent="userResourceClientProxy">
+        <property name="accessTokenProvider" ref="billingAccessTokenProvider"/>
     </bean>
 
     <bean id="billingIdentityUserPersonalInfoClient"
-          class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.identity.url}"/>
+          class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy"
+          parent="userPersonalInfoResourceClientProxy">
+        <property name="accessTokenProvider" ref="billingAccessTokenProvider"/>
     </bean>
 
     <bean id="billingPaymentInstrumentClient"
-          class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.payment.url}"/>
+          class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy"
+          parent="paymentInstrumentProxy">
+        <property name="accessTokenProvider" ref="billingAccessTokenProvider"/>
     </bean>
 
     <bean id="billingPaymentTransactionClient"
-          class="com.junbo.payment.spec.resource.proxy.PaymentTransactionResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.payment.url}"/>
+          class="com.junbo.payment.spec.resource.proxy.PaymentTransactionResourceClientProxy"
+          parent="paymentTransactionProxy">
+        <property name="accessTokenProvider" ref="billingAccessTokenProvider"/>
     </bean>
 
-    <bean id="billingCurrencyClient" class="com.junbo.identity.spec.v1.resource.proxy.CurrencyResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.identity.url}"/>
+    <bean id="billingCurrencyClient" class="com.junbo.identity.spec.v1.resource.proxy.CurrencyResourceClientProxy"
+          parent="currencyResourceClientProxy">
+        <property name="accessTokenProvider" ref="billingAccessTokenProvider"/>
     </bean>
 
-    <bean id="billingCountryClient" class="com.junbo.identity.spec.v1.resource.proxy.CountryResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.identity.url}"/>
+    <bean id="billingCountryClient" class="com.junbo.identity.spec.v1.resource.proxy.CountryResourceClientProxy"
+          parent="countryResourceClientProxy">
+        <property name="accessTokenProvider" ref="billingAccessTokenProvider"/>
     </bean>
 
     <!-- facade -->

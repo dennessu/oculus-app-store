@@ -4,13 +4,17 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="roleResourceClientProxy" class="com.junbo.authorization.spec.resource.proxy.RoleResourceClientProxy"
-          parent="baseClientProxy">
+          parent="baseClientProxy" abstract="true">
         <property name="target" value="${clientproxy.authorization.url}"/>
     </bean>
 
     <bean id="roleAssignmentResourceClientProxy"
-          class="com.junbo.authorization.spec.resource.proxy.RoleAssignmentResourceClientProxy" parent="baseClientProxy">
+          class="com.junbo.authorization.spec.resource.proxy.RoleAssignmentResourceClientProxy" parent="baseClientProxy" abstract="true">
         <property name="target" value="${clientproxy.authorization.url}"/>
     </bean>
 
+    <bean id="apiDefinitionResourceClientProxy" class="com.junbo.authorization.spec.resource.proxy.ApiDefinitionResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.authorization.url}"/>
+    </bean>
 </beans>

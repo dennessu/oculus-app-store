@@ -6,6 +6,7 @@
     "api.manage",
     "client.register",
     "identity.admin",
+    "crypto.service",
     "billing.service",
     "cart.service",
     "crypto.service",

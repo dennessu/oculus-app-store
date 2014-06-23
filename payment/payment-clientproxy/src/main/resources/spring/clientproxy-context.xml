@@ -3,29 +3,37 @@
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+    <bean id="paymentAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
+        <property name="scope" value="identity.service ewallet.service"/>
+        <property name="deflectionInSeconds" value="300"/>
+        <property name="clientSecret" value="${payment.clientproxy.service.clientSecret}"/>
+        <property name="clientId" value="${payment.clientproxy.service.clientId}"/>
+        <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
+    </bean>
+
     <bean id="brainTreeClient" class="com.junbo.payment.spec.internal.proxy.BrainTreeResourceClientProxy"
           parent="baseClientProxy">
         <property name="target" value="${payment.clientproxy.braintree.target}"/>
     </bean>
 
     <bean id="currencyClient" class="com.junbo.identity.spec.v1.resource.proxy.CurrencyResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.identity.url}"/>
+          parent="currencyResourceClientProxy">
+        <property name="accessTokenProvider" ref="paymentAccessTokenProvider"/>
     </bean>
 
     <bean id="countryClient" class="com.junbo.identity.spec.v1.resource.proxy.CountryResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.identity.url}"/>
+          parent="countryResourceClientProxy">
+        <property name="accessTokenProvider" ref="paymentAccessTokenProvider"/>
     </bean>
 
     <bean id="piiClient" class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.identity.url}"/>
+          parent="userPersonalInfoResourceClientProxy">
+        <property name="accessTokenProvider" ref="paymentAccessTokenProvider"/>
     </bean>
 
     <bean id="userClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.identity.url}"/>
+          parent="userResourceClientProxy">
+        <property name="accessTokenProvider" ref="paymentAccessTokenProvider"/>
     </bean>
 
     <bean id="personalInfoFacade" class="com.junbo.payment.clientproxy.impl.PersonalInfoFacadeImpl">

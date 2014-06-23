@@ -2,9 +2,16 @@
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="cryptoAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
+        <property name="scope" value="identity.service"/>
+        <property name="deflectionInSeconds" value="300"/>
+        <property name="clientSecret" value="${crypto.clientproxy.service.clientSecret}"/>
+        <property name="clientId" value="${crypto.clientproxy.service.clientId}"/>
+        <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
+    </bean>
 
     <bean id="cryptoUserResource" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
-          parent="baseClientProxy">
+          parent="userResourceClientProxy">
         <property name="target" value="${clientproxy.identity.url}"/>
     </bean>
 </beans>

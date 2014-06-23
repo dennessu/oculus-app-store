@@ -9,37 +9,46 @@
     <bean id="walletGateway" class="com.junbo.fulfilment.clientproxy.impl.WalletGatewayImpl"/>
     <bean id="billingGateway" class="com.junbo.fulfilment.clientproxy.impl.BillingGatewayImpl"/>
 
+    <bean id="fulfilmentAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
+        <property name="scope" value="catalog.service entitlement.service identity.service ewallet.service"/>
+        <property name="deflectionInSeconds" value="300"/>
+        <property name="clientSecret" value="${fulfilment.clientproxy.service.clientSecret}"/>
+        <property name="clientId" value="${fulfilment.clientproxy.service.clientId}"/>
+        <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
+    </bean>
+
     <bean id="entitlementClient" class="com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.entitlement.url}"/>
+          parent="entitlementResourceClientProxy">
+        <property name="accessTokenProvider" ref="fulfilmentAccessTokenProvider"/>
     </bean>
 
     <bean id="offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.catalog.url}"/>
+          parent="offerResourceClientProxy">
+        <property name="accessTokenProvider" ref="fulfilmentAccessTokenProvider"/>
     </bean>
 
     <bean id="offerRevisionClient" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.catalog.url}"/>
+          parent="offerRevisionClientProxy">
+        <property name="accessTokenProvider" ref="fulfilmentAccessTokenProvider"/>
     </bean>
 
-    <bean id="itemClient" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.catalog.url}"/>
+    <bean id="itemClient" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy"
+          parent="itemResourceClientProxy">
+        <property name="accessTokenProvider" ref="fulfilmentAccessTokenProvider"/>
     </bean>
 
     <bean id="itemRevisionClient" class="com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.catalog.url}"/>
+          parent="itemRevisionClientProxy">
+        <property name="accessTokenProvider" ref="fulfilmentAccessTokenProvider"/>
     </bean>
 
     <bean id="shippingAddressClient"
-          class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.identity.url}"/>
+          class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy"
+          parent="userPersonalInfoResourceClientProxy">
+        <property name="accessTokenProvider" ref="fulfilmentAccessTokenProvider"/>
     </bean>
 
-    <bean id="walletClient"
-          class="com.junbo.ewallet.spec.resource.proxy.WalletResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.ewallet.url}"/>
+    <bean id="walletClient" class="com.junbo.ewallet.spec.resource.proxy.WalletResourceClientProxy" parent="walletProxy">
+        <property name="accessTokenProvider" ref="fulfilmentAccessTokenProvider"/>
     </bean>
 </beans>

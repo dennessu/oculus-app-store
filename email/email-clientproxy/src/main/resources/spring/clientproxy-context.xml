@@ -9,15 +9,24 @@
 
      <tx:annotation-driven/>
 
+    <bean id="emailAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
+        <property name="scope" value="identity.service"/>
+        <property name="deflectionInSeconds" value="300"/>
+        <property name="clientSecret" value="${email.clientproxy.service.clientSecret}"/>
+        <property name="clientId" value="${email.clientproxy.service.clientId}"/>
+        <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
+    </bean>
+
     <!-- proxy -->
     <bean id="emailIdentityUserClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
-          parent="baseClientProxy">
-        <property name="target" value="${clientproxy.identity.url}"/>
+          parent="userResourceClientProxy">
+        <property name="accessTokenProvider" ref="emailAccessTokenProvider"/>
     </bean>
 
     <bean id="emailIdentityUserPersonalInfoClient"
-          class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy" parent="baseClientProxy">
-        <property name="target" value="${clientproxy.identity.url}"/>
+          class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy"
+          parent="userPersonalInfoResourceClientProxy">
+        <property name="accessTokenProvider" ref="emailAccessTokenProvider"/>
     </bean>
     
     <bean id="emailProvider" class="com.junbo.email.clientproxy.impl.MandrillProviderImpl">

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="teleSign" class="com.junbo.identity.clientproxy.impl.TeleSignImpl">
+        <constructor-arg><value>${identity.conf.teleSign.customerId}</value></constructor-arg>
+        <constructor-arg><value>${identity.conf.teleSign.secretKey}</value></constructor-arg>
+        <constructor-arg ref="userPersonalInfoRepository"></constructor-arg>
+        <constructor-arg ref="localeRepository"></constructor-arg>
+    </bean>
+
+    <bean id="identityAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
+        <property name="scope" value="crypto.service billing.service"/>
+        <property name="deflectionInSeconds" value="300"/>
+        <property name="clientSecret" value="${identity.clientproxy.service.clientSecret}"/>
+        <property name="clientId" value="${identity.clientproxy.service.clientId}"/>
+        <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
+    </bean>
+
+    <bean id="identityCryptoResource" class="com.junbo.crypto.spec.resource.proxy.CryptoResourceClientProxy"
+          parent="cryptoResourceClientProxy">
+        <property name="accessTokenProvider" ref="identityAccessTokenProvider"/>
+    </bean>
+
+    <bean id="identityVatResource" class="com.junbo.billing.spec.resource.proxy.VatResourceClientProxy"
+          parent="vatResourceClientProxy">
+        <property name="accessTokenProvider" ref="identityAccessTokenProvider"/>
+    </bean>
+</beans>
