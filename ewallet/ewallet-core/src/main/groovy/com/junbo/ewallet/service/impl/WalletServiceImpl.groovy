@@ -3,8 +3,8 @@ package com.junbo.ewallet.service.impl
 import com.junbo.common.id.UserId
 import com.junbo.ewallet.common.util.Callback
 import com.junbo.ewallet.db.entity.def.NotEnoughMoneyException
-import com.junbo.ewallet.db.repo.TransactionRepository
-import com.junbo.ewallet.db.repo.WalletRepository
+import com.junbo.ewallet.db.repo.facade.TransactionRepositoryFacade
+import com.junbo.ewallet.db.repo.facade.WalletRepositoryFacade
 import com.junbo.ewallet.service.WalletService
 import com.junbo.ewallet.spec.def.Status
 import com.junbo.ewallet.spec.def.WalletLotType
@@ -35,9 +35,9 @@ class WalletServiceImpl implements WalletService {
     @Autowired
     private ApplicationContext applicationContext
     @Autowired
-    private WalletRepository walletRepo
+    private WalletRepositoryFacade walletRepo
     @Autowired
-    private TransactionRepository transactionRepo
+    private TransactionRepositoryFacade transactionRepo
     @Autowired
     private PlatformTransactionManager transactionManager
     @Autowired

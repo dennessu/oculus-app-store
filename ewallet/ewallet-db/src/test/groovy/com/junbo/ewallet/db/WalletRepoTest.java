@@ -5,8 +5,8 @@
  */
 package com.junbo.ewallet.db;
 
-import com.junbo.ewallet.db.repo.TransactionRepository;
-import com.junbo.ewallet.db.repo.WalletRepository;
+import com.junbo.ewallet.db.repo.facade.TransactionRepositoryFacade;
+import com.junbo.ewallet.db.repo.facade.WalletRepositoryFacade;
 import com.junbo.ewallet.spec.def.Currency;
 import com.junbo.ewallet.spec.def.Status;
 import com.junbo.ewallet.spec.def.WalletLotType;
@@ -20,7 +20,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,9 +27,9 @@ import java.util.List;
  */
 public class WalletRepoTest extends BaseTest {
     @Autowired
-    private WalletRepository walletRepo;
+    private WalletRepositoryFacade walletRepo;
     @Autowired
-    private TransactionRepository transactionRepo;
+    private TransactionRepositoryFacade transactionRepo;
 
     @Test
     public void testCreate() {

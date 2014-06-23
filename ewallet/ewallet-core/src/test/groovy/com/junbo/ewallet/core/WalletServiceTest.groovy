@@ -1,19 +1,15 @@
 package com.junbo.ewallet.core
 
-import com.junbo.ewallet.db.repo.WalletRepository
+import com.junbo.ewallet.db.repo.facade.WalletRepositoryFacade
 import com.junbo.ewallet.service.WalletService
-import com.junbo.ewallet.service.impl.TransactionSupport
 import com.junbo.ewallet.spec.model.*
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.TestExecutionListeners
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests
 import org.springframework.test.context.transaction.TransactionConfiguration
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener
-import org.springframework.transaction.annotation.Transactional
 import org.testng.Assert
 import org.testng.annotations.Test
 
@@ -39,7 +35,7 @@ class WalletServiceTest extends AbstractTestNGSpringContextTests {
     @Autowired
     private WalletService walletService
     @Autowired
-    private WalletRepository walletRepo
+    private WalletRepositoryFacade walletRepo
 
     @Test
     public void testAdd() {

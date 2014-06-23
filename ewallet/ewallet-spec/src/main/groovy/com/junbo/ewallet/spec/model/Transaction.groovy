@@ -32,4 +32,6 @@ class Transaction extends ResourceMetaForDualWrite<Long> {
     Long offerId
     @JsonIgnore
     BigDecimal unrefundedAmount
+    @JsonIgnore
+    UUID trackingUuid
 }

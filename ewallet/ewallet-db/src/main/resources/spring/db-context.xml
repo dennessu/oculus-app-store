@@ -8,6 +8,8 @@
     <context:component-scan base-package="com.junbo.ewallet.db"/>
     <context:component-scan base-package="com.junbo.oom.core.builtin"/>
 
+    <import resource="classpath*:spring/dualwrite-context.xml"/>
+
     <!-- DataSource -->
     <bean id="ewalletDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${ewallet.db.jdbcUrls}"/>
@@ -86,11 +88,82 @@
         <!--<property name="dbName" value="wallet_lot"/>-->
     <!--</bean>-->
 
+    <!-- sql repositories -->
+    <bean id="sqlLotTransactionRepository" class="com.junbo.ewallet.db.repo.sql.LotTransactionRepositorySqlImpl">
+        <property name="modelMapper" ref="com.junbo.ewallet.db.mapper.ModelMapperImpl"/>
+        <property name="lotTransactionDao" ref="lotTransactionDao"/>
+    </bean>
+
+    <bean id="sqlTransactionRepository" class="com.junbo.ewallet.db.repo.sql.TransactionRepositorySqlImpl">
+        <property name="modelMapper" ref="com.junbo.ewallet.db.mapper.ModelMapperImpl" />
+        <property name="transactionDao" ref="transactionDao" />
+    </bean>
+
+    <bean id="sqlWalletLotRepository" class="com.junbo.ewallet.db.repo.sql.WalletLotRepositorySqlImpl">
+        <property name="modelMapper" ref="com.junbo.ewallet.db.mapper.ModelMapperImpl" />
+        <property name="walletLotDao" ref="walletLotDao" />
+    </bean>
+
+    <bean id="sqlWalletRepository" class="com.junbo.ewallet.db.repo.sql.WalletRepositorySqlImpl">
+        <property name="modelMapper" ref="com.junbo.ewallet.db.mapper.ModelMapperImpl" />
+        <property name="walletDao" ref="walletDao" />
+    </bean>
+
+    <!-- cloudant repositories -->
+    <bean id="cloudantLotTransactionRepository" class="com.junbo.ewallet.db.repo.cloudant.LotTransactionRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="wallet_lot_transaction"/>
+    </bean>
+
+    <bean id="cloudantTransactionRepository" class="com.junbo.ewallet.db.repo.cloudant.LotTransactionRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="wallet_transaction"/>
+    </bean>
+
+    <bean id="cloudantWalletLotRepository" class="com.junbo.ewallet.db.repo.cloudant.WalletLotRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="wallet_lot"/>
+    </bean>
+
+    <bean id="cloudantWalletRepository" class="com.junbo.ewallet.db.repo.cloudant.WalletRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="wallet"/>
+    </bean>
+
+    <!-- dual write repositories -->
+    <bean id="lotTransactionRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.ewallet.db.repo.LotTransactionRepository"/>
+        <property name="sqlRepositoryImpl" ref="sqlLotTransactionRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantLotTransactionRepository" />
+    </bean>
+
+    <bean id="transactionRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.ewallet.db.repo.TransactionRepository"/>
+        <property name="sqlRepositoryImpl" ref="sqlTransactionRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantTransactionRepository" />
+    </bean>
+
+    <bean id="walletLotRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.ewallet.db.repo.WalletLotRepository"/>
+        <property name="sqlRepositoryImpl" ref="sqlWalletLotRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantWalletLotRepository" />
+    </bean>
+
+    <bean id="walletRepository" parent="baseRepository">
+        <property name="repositoryInterface" value="com.junbo.ewallet.db.repo.WalletRepository"/>
+        <property name="sqlRepositoryImpl" ref="sqlWalletRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantWalletRepository" />
+    </bean>
+
     <!-- mapper -->
     <bean id="ewalletCommonMapper" class="com.junbo.ewallet.db.mapper.CommonMapper" />
 
     <!-- repo -->
-    <bean id="walletRepository" class="com.junbo.ewallet.db.repo.WalletRepository"/>
-    <bean id="transactionRepository" class="com.junbo.ewallet.db.repo.TransactionRepository"/>
+    <bean id="walletRepositoryFacade" class="com.junbo.ewallet.db.repo.facade.WalletRepositoryFacade">
+        <property name="lotTransactionRepository" ref="lotTransactionRepository"/>
+        <property name="walletLotRepository" ref="walletLotRepository"/>
+        <property name="transactionRepository" ref="transactionRepository"/>
+        <property name="walletRepository" ref="walletRepository"/>
+    </bean>
+
+    <bean id="transactionRepositoryFacade" class="com.junbo.ewallet.db.repo.facade.TransactionRepositoryFacade">
+        <property name="transactionRepository" ref="transactionRepository" />
+    </bean>
 
 </beans>
