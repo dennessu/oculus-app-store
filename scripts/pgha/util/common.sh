@@ -1,10 +1,12 @@
 #!/bin/bash
 
-# set environment variables
+export DEPLOYMENT_PATH='/tmp/pgha'
+
+ENVIRONMENT='amazon'
+source $DEPLOYMENT_PATH/env/${ENVIRONMENT}.sh
+
 export DEVOPS_ACCOUNT='ubuntu'
 export DEPLOYMENT_ACCOUNT='silkcloud'
-
-export DEPLOYMENT_PATH='/tmp/pgha'
 
 export PGHA_BASE='/var/pgha'
 export DATA_PATH=$PGHA_BASE/data
