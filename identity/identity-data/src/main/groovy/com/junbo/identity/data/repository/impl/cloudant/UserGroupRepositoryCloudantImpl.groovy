@@ -15,36 +15,36 @@ class UserGroupRepositoryCloudantImpl extends CloudantClient<UserGroup> implemen
 
     @Override
     Promise<UserGroup> create(UserGroup entity) {
-        return super.cloudantPost(entity)
+        return cloudantPost(entity)
     }
 
     @Override
     Promise<UserGroup> update(UserGroup entity) {
-        return super.cloudantPut(entity)
+        return cloudantPut(entity)
     }
 
     @Override
     Promise<UserGroup> get(UserGroupId id) {
-        return super.cloudantGet(id.toString())
+        return cloudantGet(id.toString())
     }
 
     @Override
     Promise<List<UserGroup>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        return super.queryView('by_user_id', userId.toString(), limit, offset, false)
+        return queryView('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<UserGroup>> searchByGroupId(GroupId groupId, Integer limit, Integer offset) {
-        return super.queryView('by_group_id', groupId.toString(), limit, offset, false)
+        return queryView('by_group_id', groupId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<UserGroup>> searchByUserIdAndGroupId(UserId userId, GroupId groupId, Integer limit, Integer offset) {
-        return super.queryView('by_user_id_group_id', "${userId.value}:${groupId.value}", limit, offset, false)
+        return queryView('by_user_id_group_id', "${userId.value}:${groupId.value}", limit, offset, false)
     }
 
     @Override
     Promise<Void> delete(UserGroupId id) {
-        return super.cloudantDelete(id.toString())
+        return cloudantDelete(id.toString())
     }
 }

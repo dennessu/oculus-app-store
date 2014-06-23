@@ -13,17 +13,17 @@ class DeviceRepositoryCloudantImpl extends CloudantClient<Device> implements Dev
 
     @Override
     Promise<Device> get(DeviceId groupId) {
-        return super.cloudantGet(groupId.toString())
+        return cloudantGet(groupId.toString())
     }
 
     @Override
     Promise<Device> create(Device device) {
-        return super.cloudantPost(device)
+        return cloudantPost(device)
     }
 
     @Override
     Promise<Device> update(Device device) {
-        return super.cloudantPut(device)
+        return cloudantPut(device)
     }
 
     @Override
@@ -33,7 +33,7 @@ class DeviceRepositoryCloudantImpl extends CloudantClient<Device> implements Dev
 
     @Override
     Promise<Device> searchBySerialNumber(String externalRef) {
-        return super.queryView('by_serial_number', externalRef).then { List<Device> list ->
+        return queryView('by_serial_number', externalRef).then { List<Device> list ->
             return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
         }
     }

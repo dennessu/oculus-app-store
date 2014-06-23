@@ -27,6 +27,8 @@ class JunboThreadPoolFactoryBean implements FactoryBean<JunboThreadPool> {
 
     private int queueLimit = AbstractThreadPool.DEFAULT_MAX_TASKS_QUEUED
 
+    private String poolName = "JunboThreadPool"
+
     void setCorePoolSize(int corePoolSize) {
         this.corePoolSize = corePoolSize
     }
@@ -43,10 +45,15 @@ class JunboThreadPoolFactoryBean implements FactoryBean<JunboThreadPool> {
         this.queueLimit = queueLimit
     }
 
+    void setPoolName(String poolName) {
+        this.poolName = poolName
+    }
+
     @Override
     JunboThreadPool getObject() throws Exception {
         ThreadPoolConfig threadPoolConfig = ThreadPoolConfig.defaultConfig()
 
+        threadPoolConfig.poolName = poolName
         threadPoolConfig.corePoolSize = corePoolSize
         threadPoolConfig.maxPoolSize = maxPoolSize
         threadPoolConfig.setKeepAliveTime(keepAliveTimeMillis, TimeUnit.MILLISECONDS)

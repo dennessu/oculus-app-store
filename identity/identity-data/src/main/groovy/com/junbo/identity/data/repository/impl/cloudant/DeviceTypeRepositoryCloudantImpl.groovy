@@ -13,12 +13,12 @@ class DeviceTypeRepositoryCloudantImpl extends CloudantClient<DeviceType> implem
 
     @Override
     Promise<List<DeviceType>> searchAll(Integer limit, Integer offset) {
-        return super.cloudantGetAll(limit, offset, false)
+        return cloudantGetAll(limit, offset, false)
     }
 
     @Override
     Promise<List<DeviceType>> searchByDeviceTypeCode(String typeCode, Integer limit, Integer offset) {
-        return super.queryView('by_type_code', typeCode, limit, offset, false)
+        return queryView('by_type_code', typeCode, limit, offset, false)
     }
 
     @Override
@@ -27,21 +27,21 @@ class DeviceTypeRepositoryCloudantImpl extends CloudantClient<DeviceType> implem
             deviceType.id = new DeviceTypeId(deviceType.typeCode)
         }
 
-        return super.cloudantPost(deviceType)
+        return cloudantPost(deviceType)
     }
 
     @Override
     Promise<DeviceType> update(DeviceType deviceType) {
-        return super.cloudantPut(deviceType)
+        return cloudantPut(deviceType)
     }
 
     @Override
     Promise<DeviceType> get(DeviceTypeId id) {
-        return super.cloudantGet(id.toString())
+        return cloudantGet(id.toString())
     }
 
     @Override
     Promise<Void> delete(DeviceTypeId id) {
-        return super.cloudantDelete(id.value.toString())
+        return cloudantDelete(id.value.toString())
     }
 }

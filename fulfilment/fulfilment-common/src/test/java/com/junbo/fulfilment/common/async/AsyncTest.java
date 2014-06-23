@@ -6,7 +6,7 @@
 package com.junbo.fulfilment.common.async;
 
 import com.google.common.util.concurrent.*;
-import com.junbo.fulfilment.common.promise.PromiseShell;
+import com.junbo.common.util.PromiseFacade;
 import com.junbo.langur.core.promise.Promise;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -56,7 +56,7 @@ public class AsyncTest {
         MyContext.current().setName("sharkmao");
         System.out.println(MyContext.current().getName());
 
-        PromiseShell.FULFILMENT.decorate(new Runnable() {
+        PromiseFacade.FULFILMENT.decorate(new Runnable() {
             public void run() {
                 logThreadInfo();
                 FulfilmentSDK.ship("test shipping info", 1000);
@@ -94,7 +94,7 @@ public class AsyncTest {
         logThreadInfo();
         MyContext.current().setName("sharkmao");
 
-        PromiseShell.FULFILMENT.decorate(new Callable<Long>() {
+        PromiseFacade.FULFILMENT.decorate(new Callable<Long>() {
             public Long call() {
                 logThreadInfo();
 

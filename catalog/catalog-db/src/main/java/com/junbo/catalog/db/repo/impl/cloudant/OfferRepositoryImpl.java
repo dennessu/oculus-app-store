@@ -24,21 +24,21 @@ import java.util.List;
 public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferRepository {
 
     public Offer create(Offer offer) {
-        return super.cloudantPost(offer).get();
+        return cloudantPost(offer).get();
     }
 
     public Offer get(String offerId) {
         if (offerId == null) {
             return null;
         }
-        return super.cloudantGet(offerId).get();
+        return cloudantGet(offerId).get();
     }
 
     public List<Offer> getOffers(OffersGetOptions options) {
         List<Offer> offers = new ArrayList<>();
         if (!CollectionUtils.isEmpty(options.getOfferIds())) {
             for (String offerId : options.getOfferIds()) {
-                Offer offer = super.cloudantGet(offerId.toString()).get();
+                Offer offer = cloudantGet(offerId.toString()).get();
                 if (offer == null) {
                     continue;
                 }else if (options.getCategory() != null
@@ -56,7 +56,7 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
             }
         } else if (!StringUtils.isEmpty(options.getQuery())) {
             CloudantSearchResult<Offer> searchResult =
-                    super.search("search", options.getQuery(), options.getValidSize(), options.getBookmark()).get();
+                    search("search", options.getQuery(), options.getValidSize(), options.getBookmark()).get();
             offers = searchResult.getResults();
             options.setNextBookmark(searchResult.getBookmark());
             options.setStart(null);
@@ -78,12 +78,12 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
                 sb.append("ownerId:'").append(options.getOwnerId().getValue()).append("'");
             }
             CloudantSearchResult<Offer> searchResult =
-                    super.search("search", sb.toString(), options.getValidSize(), options.getBookmark()).get();
+                    search("search", sb.toString(), options.getValidSize(), options.getBookmark()).get();
             offers = searchResult.getResults();
             options.setNextBookmark(searchResult.getBookmark());
             options.setStart(null);
         } else {
-            offers = super.queryView("by_offerId", null, options.getValidSize(), options.getValidStart(), false).get();
+            offers = queryView("by_offerId", null, options.getValidSize(), options.getValidStart(), false).get();
             options.setNextBookmark(null);
         }
 
@@ -93,7 +93,7 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
     public List<Offer> getOffers(Collection<String> offerIds) {
         List<Offer> offers = new ArrayList<>();
         for (String offerId : offerIds) {
-            Offer offer = super.cloudantGet(offerId).get();
+            Offer offer = cloudantGet(offerId).get();
             if (offer != null) {
                 offers.add(offer);
             }
@@ -104,12 +104,12 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
 
     @Override
     public Offer update(Offer offer) {
-        return super.cloudantPut(offer).get();
+        return cloudantPut(offer).get();
     }
 
     @Override
     public void delete(String offerId) {
-        super.cloudantDelete(offerId).get();
+        cloudantDelete(offerId).get();
     }
 
 }

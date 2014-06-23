@@ -15,13 +15,13 @@ class CloudantUserCryptoKeyRepoImpl extends CloudantClient<UserCryptoKey> implem
 
     @Override
     Promise<List<UserCryptoKey>> getAllUserCryptoKeys(UserId userId) {
-        return super.queryView('by_user_id', userId.value.toString(),
+        return queryView('by_user_id', userId.value.toString(),
                 Integer.MAX_VALUE, 0, false)
     }
 
     @Override
     Promise<UserCryptoKey> create(UserCryptoKey model) {
-        return super.cloudantPost(model)
+        return cloudantPost(model)
     }
 
     @Override
@@ -31,17 +31,17 @@ class CloudantUserCryptoKeyRepoImpl extends CloudantClient<UserCryptoKey> implem
 
     @Override
     Promise<UserCryptoKey> get(UserCryptoKeyId id) {
-        return super.cloudantGet(id.toString())
+        return cloudantGet(id.toString())
     }
 
     @Override
     Promise<Void> delete(UserCryptoKeyId id) {
-        return super.cloudantDelete(id.toString())
+        return cloudantDelete(id.toString())
     }
 
     @Override
     Promise<UserCryptoKey> getUserCryptoKeyByVersion(UserId userId, Integer version) {
-        return super.queryView('by_user_id_key_version', "${userId.value.toString()}:${version.toString()}",
+        return queryView('by_user_id_key_version', "${userId.value.toString()}:${version.toString()}",
                 Integer.MAX_VALUE, 0, false).then { List<UserCryptoKey> list ->
 
             if (CollectionUtils.isEmpty(list)) {

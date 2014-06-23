@@ -100,5 +100,5 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
                 return Promise.pure(null);
             }
         }
-    }, __executor);
+    });
 }

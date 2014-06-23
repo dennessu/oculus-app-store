@@ -11,15 +11,15 @@ import groovy.transform.CompileStatic
 class EmailScheduleRepositoryCloudantImpl extends CloudantClient<Email> implements EmailScheduleRepository {
 
     public Promise<Email> getEmailSchedule(String id) {
-        return super.cloudantGet(id)
+        return cloudantGet(id)
     }
 
     public Promise<Email> saveEmailSchedule(Email email) {
-        return super.cloudantPost(email)
+        return cloudantPost(email)
     }
 
     public Promise<Email> updateEmailSchedule(Email email) {
-        return super.cloudantGet(email.getId().value.toString()).then {Email savedEmail ->
+        return cloudantGet(email.getId().value.toString()).then {Email savedEmail ->
             if (email.priority !=null ) {
                 savedEmail.setPriority(email.priority)
             }
@@ -30,11 +30,11 @@ class EmailScheduleRepositoryCloudantImpl extends CloudantClient<Email> implemen
             savedEmail.setReplacements(email.replacements)
             savedEmail.setTemplateId(email.templateId)
             savedEmail.setScheduleTime(email.scheduleTime)
-            return super.cloudantPut(savedEmail)
+            return cloudantPut(savedEmail)
         }
     }
 
     public Promise<Void> deleteEmailSchedule(String id) {
-        return super.cloudantDelete(id)
+        return cloudantDelete(id)
     }
 }

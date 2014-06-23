@@ -16,22 +16,22 @@ class UserTosRepositoryCloudantImpl extends CloudantClient<UserTosAgreement> imp
 
     @Override
     Promise<UserTosAgreement> create(UserTosAgreement entity) {
-        return super.cloudantPost(entity)
+        return cloudantPost(entity)
     }
 
     @Override
     Promise<UserTosAgreement> update(UserTosAgreement entity) {
-        return super.cloudantPut(entity)
+        return cloudantPut(entity)
     }
 
     @Override
     Promise<UserTosAgreement> get(UserTosAgreementId id) {
-        return super.cloudantGet(id.toString())
+        return cloudantGet(id.toString())
     }
 
     @Override
     Promise<List<UserTosAgreement>> search(UserTosAgreementListOptions getOption) {
-        return super.queryView('by_user_id', getOption.userId.value.toString(),
+        return queryView('by_user_id', getOption.userId.value.toString(),
                 getOption.limit, getOption.offset, false).then { List<UserTosAgreement> list ->
             if (getOption.tosId != null) {
                 list.retainAll { UserTosAgreement agreement ->
@@ -44,21 +44,21 @@ class UserTosRepositoryCloudantImpl extends CloudantClient<UserTosAgreement> imp
 
     @Override
     Promise<List<UserTosAgreement>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        return super.queryView('by_user_id', userId.toString(), limit, offset, false)
+        return queryView('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<UserTosAgreement>> searchByTosId(TosId tosId, Integer limit, Integer offset) {
-        return super.queryView('by_tos_id', tosId.toString(), limit, offset, false)
+        return queryView('by_tos_id', tosId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<UserTosAgreement>> searchByUserIdAndTosId(UserId userId, TosId tosId, Integer limit, Integer offset) {
-        return super.queryView('by_user_id_tos_id', "${userId.toString()}:${tosId.toString()}", limit, offset, false)
+        return queryView('by_user_id_tos_id', "${userId.toString()}:${tosId.toString()}", limit, offset, false)
     }
 
     @Override
     Promise<Void> delete(UserTosAgreementId id) {
-        return super.cloudantDelete(id.toString())
+        return cloudantDelete(id.toString())
     }
 }

@@ -33,18 +33,18 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
         entitlement.setIsDeleted(false);
         entitlement.setUpdatedBy(123L);
         entitlement.setUpdatedTime(new Date());
-        return super.cloudantPost(entitlement).get();
+        return cloudantPost(entitlement).get();
     }
 
     @Override
     public EntitlementEntity get(String entitlementId) {
-        return super.cloudantGet(entitlementId).get();
+        return cloudantGet(entitlementId).get();
     }
 
     @Override
     public EntitlementEntity update(EntitlementEntity entitlement) {
         entitlement.setIsDeleted(false);
-        return super.cloudantPut(entitlement).get();
+        return cloudantPut(entitlement).get();
     }
 
     @Override
@@ -63,7 +63,7 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
                 ? EntitlementConsts.DEFAULT_PAGE_SIZE : pageMetadata.getCount();
         String bookmark = pageMetadata.getBookmark();
 
-        CloudantSearchResult<EntitlementEntity> searchResult = super.search("search", query, size, bookmark).get();
+        CloudantSearchResult<EntitlementEntity> searchResult = search("search", query, size, bookmark).get();
         Results<EntitlementEntity> results = new Results<>();
         results.setItems(searchResult.getResults());
         //use next to store bookmark
@@ -156,14 +156,14 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
 
     @Override
     public EntitlementEntity getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
-        List<EntitlementEntity> results = super.queryView("byTrackingUuid", trackingUuid.toString()).get();
+        List<EntitlementEntity> results = queryView("byTrackingUuid", trackingUuid.toString()).get();
         return results.size() == 0 ? null : results.get(0);
     }
 
     @Override
     public EntitlementEntity get(Long userId, String itemId, String type) {
         String key = userId.toString() + ":" + itemId + ":" + (type == null ? EntitlementConsts.NO_TYPE : type.toUpperCase());
-        List<EntitlementEntity> results = super.queryView("byUserIdAndItemIdAndType", key).get();
+        List<EntitlementEntity> results = queryView("byUserIdAndItemIdAndType", key).get();
         return results.size() == 0 ? null : results.get(0);
     }
 

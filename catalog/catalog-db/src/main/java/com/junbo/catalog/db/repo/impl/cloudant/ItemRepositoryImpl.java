@@ -58,7 +58,7 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
             }
         } else if (!StringUtils.isEmpty(options.getQuery())) {
             CloudantSearchResult<Item> searchResult =
-                    super.search("search", options.getQuery(), options.getValidSize(), options.getBookmark()).get();
+                    search("search", options.getQuery(), options.getValidSize(), options.getBookmark()).get();
             items = searchResult.getResults();
             options.setNextBookmark(searchResult.getBookmark());
             options.setStart(null);
@@ -96,12 +96,12 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
                 sb.append("hostItemId:'").append(options.getHostItemId().replace("'", "")).append("'");
             }
             CloudantSearchResult<Item> searchResult =
-                    super.search("search", sb.toString(), options.getValidSize(), options.getBookmark()).get();
+                    search("search", sb.toString(), options.getValidSize(), options.getBookmark()).get();
             items = searchResult.getResults();
             options.setNextBookmark(searchResult.getBookmark());
             options.setStart(null);
         } else {
-            items = super.queryView("by_itemId", null, options.getValidSize(), options.getValidStart(), false).get();
+            items = queryView("by_itemId", null, options.getValidSize(), options.getValidStart(), false).get();
             options.setNextBookmark(null);
         }
 
@@ -115,7 +115,7 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
 
         List<Item> items = new ArrayList<>();
         for (String itemId : itemIds) {
-            Item item = super.cloudantGet(itemId).get();
+            Item item = cloudantGet(itemId).get();
             if (item != null) {
                 items.add(item);
             }
@@ -126,12 +126,12 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
 
     @Override
     public Item update(Item item) {
-        return super.cloudantPut(item).get();
+        return cloudantPut(item).get();
     }
 
     @Override
     public void delete(String itemId) {
-        super.cloudantDelete(itemId).get();
+        cloudantDelete(itemId).get();
     }
 
 }

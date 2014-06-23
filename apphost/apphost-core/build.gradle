@@ -18,4 +18,5 @@ dependencies {
     compile (libraries.jackson_databind)
 
     compile junboProject(':common-configuration')
+    compile junboProject(':langur-core')
 }

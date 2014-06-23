@@ -19,4 +19,6 @@ dependencies {
     compile (libraries.slf4j_api)
 
     compile ('net.sf.dozer:dozer:5.5.1')
+
+    testCompile junboProject(':langur-core')
 }

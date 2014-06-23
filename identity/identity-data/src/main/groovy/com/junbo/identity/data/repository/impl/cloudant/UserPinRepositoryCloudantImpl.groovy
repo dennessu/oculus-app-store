@@ -15,32 +15,32 @@ class UserPinRepositoryCloudantImpl extends CloudantClient<UserPin> implements U
     @Override
     Promise<UserPin> create(UserPin userPin) {
         userPin.value = null
-        return super.cloudantPost(userPin)
+        return cloudantPost(userPin)
     }
 
     @Override
     Promise<UserPin> update(UserPin userPin) {
         userPin.value = null
-        return super.cloudantPut(userPin)
+        return cloudantPut(userPin)
     }
 
     @Override
     Promise<UserPin> get(UserPinId id) {
-        return super.cloudantGet(id.toString())
+        return cloudantGet(id.toString())
     }
 
     @Override
     Promise<List<UserPin>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        return super.queryView('by_user_id', userId.toString(), limit, offset, false)
+        return queryView('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<UserPin>> searchByUserIdAndActiveStatus(UserId userId, Boolean active, Integer limit, Integer offset) {
-        return super.queryView('by_user_id_active_status', "${userId.toString()}:${active}", limit, offset, false)
+        return queryView('by_user_id_active_status', "${userId.toString()}:${active}", limit, offset, false)
     }
 
     @Override
     Promise<Void> delete(UserPinId id) {
-        return super.cloudantDelete(id.toString())
+        return cloudantDelete(id.toString())
     }
 }

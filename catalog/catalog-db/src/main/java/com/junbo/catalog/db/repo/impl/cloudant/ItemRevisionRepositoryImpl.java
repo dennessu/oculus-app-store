@@ -24,7 +24,7 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
 
     @Override
     public ItemRevision create(ItemRevision itemRevision) {
-        return super.cloudantPost(itemRevision).get();
+        return cloudantPost(itemRevision).get();
     }
 
     @Override
@@ -32,7 +32,7 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
         if (revisionId == null) {
             return null;
         }
-        return super.cloudantGet(revisionId).get();
+        return cloudantGet(revisionId).get();
     }
 
     @Override
@@ -40,7 +40,7 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
         List<ItemRevision> itemRevisions = new ArrayList<>();
         if (!CollectionUtils.isEmpty(options.getRevisionIds())) {
             for (String revisionId : options.getRevisionIds()) {
-                ItemRevision revision = super.cloudantGet(revisionId).get();
+                ItemRevision revision = cloudantGet(revisionId).get();
                 if (revision==null) {
                     continue;
                 } else if (!StringUtils.isEmpty(options.getStatus())
@@ -52,7 +52,7 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
             }
         } else if (!CollectionUtils.isEmpty(options.getItemIds())) {
             for (String itemId : options.getItemIds()) {
-                List<ItemRevision> revisions = super.queryView("by_itemId", itemId).get();
+                List<ItemRevision> revisions = queryView("by_itemId", itemId).get();
                 if (!StringUtils.isEmpty(options.getStatus())) {
                     Iterator<ItemRevision> iterator = revisions.iterator();
                     while (iterator.hasNext()) {
@@ -65,10 +65,10 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
                 itemRevisions.addAll(revisions);
             }
         } else if (!StringUtils.isEmpty(options.getStatus())){
-            itemRevisions = super.queryView("by_status", options.getStatus().toUpperCase(),
+            itemRevisions = queryView("by_status", options.getStatus().toUpperCase(),
                     options.getValidSize(), options.getValidStart(), false).get();
         } else {
-            itemRevisions = super.queryView("by_itemId", null, options.getValidSize(), options.getValidStart(), false).get();
+            itemRevisions = queryView("by_itemId", null, options.getValidSize(), options.getValidStart(), false).get();
         }
 
         return itemRevisions;
@@ -78,7 +78,7 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
     public List<ItemRevision> getRevisions(Collection<String> itemIds, Long timestamp) {
         List<ItemRevision> revisions = new ArrayList<>();
         for (String itemId : itemIds) {
-            List<ItemRevision> itemRevisions = super.queryView("by_itemId", itemId).get();
+            List<ItemRevision> itemRevisions = queryView("by_itemId", itemId).get();
             ItemRevision revision = null;
             Long maxTimestamp = 0L;
             for (ItemRevision itemRevision : itemRevisions) {
@@ -100,7 +100,7 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
 
     @Override
     public List<ItemRevision> getRevisions(String hostItemId) {
-        List<ItemRevision> itemRevisions = super.queryView("by_hostItemId", hostItemId).get();
+        List<ItemRevision> itemRevisions = queryView("by_hostItemId", hostItemId).get();
         Set<String> itemIds = new HashSet<>();
         Set<String> itemRevisionIds = new HashSet<>();
         for (ItemRevision itemRevision : itemRevisions) {
@@ -129,12 +129,12 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
 
     @Override
     public ItemRevision update(ItemRevision revision) {
-        return super.cloudantPut(revision).get();
+        return cloudantPut(revision).get();
     }
 
     @Override
     public void delete(String revisionId) {
-        super.cloudantDelete(revisionId).get();
+        cloudantDelete(revisionId).get();
     }
 
 }

@@ -13,7 +13,6 @@
     <alias alias="routingQueryParamTranscoder" name="commonQueryParamTranscoder" />
     <alias alias="routingTranscoder" name="commonTranscoder" />
     <alias alias="routingExceptionHandler" name="commonExceptionHandler" />
-    <alias alias="routingExecutor" name="junboThreadPool" />
 
     <bean id="routingHeadersProvider" class="com.junbo.common.routing.RoutingHeadersProvider" />
     <bean id="routingResponseHandler" class="com.junbo.common.routing.RoutingResponseHandler">

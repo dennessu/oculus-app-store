@@ -22,12 +22,12 @@ class RoleRepositoryCloudantImpl extends CloudantClient<Role> implements RoleRep
 
     @Override
     Promise<Role> get(RoleId roleId) {
-        return super.cloudantGet(roleId.toString())
+        return cloudantGet(roleId.toString())
     }
 
     @Override
     Promise<Role> update(Role role) {
-        return super.cloudantPut(role)
+        return cloudantPut(role)
     }
 
     @Override

@@ -16,27 +16,27 @@ class UserTFARepositoryCloudantImpl extends CloudantClient<UserTFA> implements U
     @Override
     Promise<List<UserTFA>> searchTFACodeByUserIdAndPersonalInfoId(UserId userId, UserPersonalInfoId personalInfo,
                                                                Integer limit, Integer offset) {
-        return super.queryView('by_user_id_personal_info',
+        return queryView('by_user_id_personal_info',
                 "${userId.toString()}:${personalInfo.toString()}", limit, offset, false)
     }
 
     @Override
     Promise<UserTFA> create(UserTFA entity) {
-        return super.cloudantPost(entity)
+        return cloudantPost(entity)
     }
 
     @Override
     Promise<UserTFA> update(UserTFA entity) {
-        return super.cloudantPut(entity)
+        return cloudantPut(entity)
     }
 
     @Override
     Promise<UserTFA> get(UserTFAId id) {
-        return super.cloudantGet(id.toString())
+        return cloudantGet(id.toString())
     }
 
     @Override
     Promise<Void> delete(UserTFAId id) {
-        return super.cloudantDelete(id.toString())
+        return cloudantDelete(id.toString())
     }
 }

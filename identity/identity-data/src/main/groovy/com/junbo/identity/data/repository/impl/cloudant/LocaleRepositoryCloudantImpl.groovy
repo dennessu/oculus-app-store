@@ -16,26 +16,26 @@ class LocaleRepositoryCloudantImpl extends CloudantClient<Locale> implements Loc
             model.id = new LocaleId(model.localeCode)
         }
 
-        return super.cloudantPost(model)
+        return cloudantPost(model)
     }
 
     @Override
     Promise<Locale> update(Locale model) {
-        return super.cloudantPut(model)
+        return cloudantPut(model)
     }
 
     @Override
     Promise<Locale> get(LocaleId id) {
-        return super.cloudantGet(id.toString())
+        return cloudantGet(id.toString())
     }
 
     @Override
     Promise<Void> delete(LocaleId id) {
-        return super.cloudantDelete(id.value)
+        return cloudantDelete(id.value)
     }
 
     @Override
     Promise<List<Locale>> searchAll(Integer limit, Integer offset) {
-        return super.cloudantGetAll(limit, offset, false)
+        return cloudantGetAll(limit, offset, false)
     }
 }

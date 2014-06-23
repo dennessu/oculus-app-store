@@ -16,7 +16,7 @@ class EncryptUserPersonalInfoRepositoryImpl extends CloudantClient<EncryptUserPe
 
     @Override
     Promise<EncryptUserPersonalInfo> searchByUserPersonalInfoId(UserPersonalInfoId userPersonalInfoId) {
-        return super.queryView('by_user_personal_info_id', userPersonalInfoId.value.toString()).then { List<EncryptUserPersonalInfo> list ->
+        return queryView('by_user_personal_info_id', userPersonalInfoId.value.toString()).then { List<EncryptUserPersonalInfo> list ->
 
             if (CollectionUtils.isEmpty(list)) {
                 return Promise.pure(null)
@@ -28,7 +28,7 @@ class EncryptUserPersonalInfoRepositoryImpl extends CloudantClient<EncryptUserPe
 
     @Override
     Promise<List<EncryptUserPersonalInfo>> searchByHashValue(String hashSearchInfo) {
-        return super.queryView('by_hash_value', hashSearchInfo)
+        return queryView('by_hash_value', hashSearchInfo)
     }
 
     @Override
@@ -36,7 +36,7 @@ class EncryptUserPersonalInfoRepositoryImpl extends CloudantClient<EncryptUserPe
         if (model.id == null) {
             model.id = new EncryptUserPersonalInfoId(model.userPersonalInfoId.value)
         }
-        return super.cloudantPost(model)
+        return cloudantPost(model)
     }
 
     @Override
@@ -44,16 +44,16 @@ class EncryptUserPersonalInfoRepositoryImpl extends CloudantClient<EncryptUserPe
         if (model.id == null) {
             model.id = new EncryptUserPersonalInfoId(model.userPersonalInfoId.value)
         }
-        return super.cloudantPut(model)
+        return cloudantPut(model)
     }
 
     @Override
     Promise<EncryptUserPersonalInfo> get(EncryptUserPersonalInfoId id) {
-        return super.cloudantGet(id.toString())
+        return cloudantGet(id.toString())
     }
 
     @Override
     Promise<Void> delete(EncryptUserPersonalInfoId id) {
-        return super.cloudantDelete(id.toString())
+        return cloudantDelete(id.toString())
     }
 }

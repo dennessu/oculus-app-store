@@ -13,26 +13,26 @@ class TosRepositoryCloudantImpl extends CloudantClient<Tos> implements TosReposi
 
     @Override
     Promise<Tos> get(TosId tosId) {
-        return super.cloudantGet(tosId.toString())
+        return cloudantGet(tosId.toString())
     }
 
     @Override
     Promise<Tos> create(Tos tos) {
-        return super.cloudantPost(tos)
+        return cloudantPost(tos)
     }
 
     @Override
     Promise<Void> delete(TosId tosId) {
-        return super.cloudantDelete(tosId.toString())
+        return cloudantDelete(tosId.toString())
     }
 
     @Override
     Promise<Tos> update(Tos model) {
-        return super.cloudantPut(model)
+        return cloudantPut(model)
     }
 
     @Override
     Promise<List<Tos>> searchAll(Integer limit, Integer offset) {
-        return super.cloudantGetAll(limit, offset, false)
+        return cloudantGetAll(limit, offset, false)
     }
 }

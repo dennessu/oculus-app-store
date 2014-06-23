@@ -15,56 +15,56 @@ class UserAuthenticatorRepositoryCloudantImpl extends CloudantClient<UserAuthent
 
     @Override
     Promise<UserAuthenticator> create(UserAuthenticator authenticator) {
-        return super.cloudantPost(authenticator)
+        return cloudantPost(authenticator)
     }
 
     @Override
     Promise<UserAuthenticator> update(UserAuthenticator authenticator) {
-        return super.cloudantPut(authenticator)
+        return cloudantPut(authenticator)
     }
 
     @Override
     Promise<UserAuthenticator> get(UserAuthenticatorId authenticatorId) {
-        return super.cloudantGet(authenticatorId.toString())
+        return cloudantGet(authenticatorId.toString())
     }
 
     @Override
     Promise<Void> delete(UserAuthenticatorId authenticatorId) {
-        return super.cloudantDelete(authenticatorId.toString())
+        return cloudantDelete(authenticatorId.toString())
     }
 
     @Override
     Promise<List<UserAuthenticator>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        return super.queryView('by_user_id', userId.toString(), limit, offset, false)
+        return queryView('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<UserAuthenticator>> searchByUserIdAndType(UserId userId, String type, Integer limit, Integer offset) {
-        return super.queryView('by_user_id_auth_type', "${userId.toString()}:${type}", limit, offset, false)
+        return queryView('by_user_id_auth_type', "${userId.toString()}:${type}", limit, offset, false)
     }
 
     @Override
     Promise<List<UserAuthenticator>> searchByExternalId(String externalId, Integer limit, Integer offset) {
-        return super.queryView('by_authenticator_externalId', externalId, limit, offset, false)
+        return queryView('by_authenticator_externalId', externalId, limit, offset, false)
     }
 
     @Override
     Promise<List<UserAuthenticator>> searchByUserIdAndTypeAndExternalId(UserId userId, String type, String externalId,
                                                                         Integer limit, Integer offset) {
-        return super.queryView('by_user_id_auth_type_externalId', "${userId.value}:${type}:${externalId}", limit,
+        return queryView('by_user_id_auth_type_externalId', "${userId.value}:${type}:${externalId}", limit,
                 offset, false)
     }
 
     @Override
     Promise<List<UserAuthenticator>> searchByUserIdAndExternalId(UserId userId, String externalId, Integer limit,
                                                                  Integer offset) {
-        return super.queryView('by_user_id_externalId', "${userId.toString()}:${externalId}", limit, offset, false)
+        return queryView('by_user_id_externalId', "${userId.toString()}:${externalId}", limit, offset, false)
     }
 
     @Override
     Promise<List<UserAuthenticator>> searchByExternalIdAndType(String externalId, String type, Integer limit,
                                                                Integer offset) {
-        return super.queryView('by_authenticator_externalId_auth_type', "${externalId}:${type}", limit, offset,
+        return queryView('by_authenticator_externalId_auth_type', "${externalId}:${type}", limit, offset,
                 false)
     }
 }

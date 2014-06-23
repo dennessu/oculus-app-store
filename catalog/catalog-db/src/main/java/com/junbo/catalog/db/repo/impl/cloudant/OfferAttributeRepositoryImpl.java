@@ -22,41 +22,41 @@ import java.util.List;
 public class OfferAttributeRepositoryImpl  extends CloudantClient<OfferAttribute> implements OfferAttributeRepository {
 
     public OfferAttribute create(OfferAttribute attribute) {
-        return super.cloudantPost(attribute).get();
+        return cloudantPost(attribute).get();
     }
 
     public OfferAttribute get(String attributeId) {
         if (attributeId == null) {
             return null;
         }
-        return super.cloudantGet(attributeId).get();
+        return cloudantGet(attributeId).get();
     }
 
     public List<OfferAttribute> getAttributes(OfferAttributesGetOptions options) {
         if (!CollectionUtils.isEmpty(options.getAttributeIds())) {
             List<OfferAttribute> attributes = new ArrayList<>();
             for (String attributeId : options.getAttributeIds()) {
-                OfferAttribute attribute = super.cloudantGet(attributeId.toString()).get();
+                OfferAttribute attribute = cloudantGet(attributeId.toString()).get();
                 if (attribute != null) {
                     attributes.add(attribute);
                 }
             }
             return attributes;
         } else if (!StringUtils.isEmpty(options.getAttributeType())){
-            return super.queryView("by_type", options.getAttributeType(),
+            return queryView("by_type", options.getAttributeType(),
                     options.getValidSize(), options.getValidStart(), false).get();
         } else {
-            return super.queryView("by_attributeId", null, options.getValidSize(), options.getValidStart(), false).get();
+            return queryView("by_attributeId", null, options.getValidSize(), options.getValidStart(), false).get();
         }
     }
 
     public OfferAttribute update(OfferAttribute attribute) {
-        return super.cloudantPut(attribute).get();
+        return cloudantPut(attribute).get();
     }
 
 
     public void delete(String attributeId) {
-        super.cloudantDelete(attributeId);
+        cloudantDelete(attributeId).get();
     }
 
 }

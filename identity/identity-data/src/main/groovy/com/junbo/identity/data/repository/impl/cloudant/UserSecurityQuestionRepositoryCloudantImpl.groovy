@@ -16,27 +16,27 @@ class UserSecurityQuestionRepositoryCloudantImpl extends CloudantClient<UserSecu
     @Override
     Promise<UserSecurityQuestion> create(UserSecurityQuestion entity) {
         entity.answer = null
-        return super.cloudantPost(entity)
+        return cloudantPost(entity)
     }
 
     @Override
     Promise<UserSecurityQuestion> update(UserSecurityQuestion entity) {
         entity.answer = null
-        return super.cloudantPut(entity)
+        return cloudantPut(entity)
     }
 
     @Override
     Promise<UserSecurityQuestion> get(UserSecurityQuestionId id) {
-        return super.cloudantGet(id.toString())
+        return cloudantGet(id.toString())
     }
 
     @Override
     Promise<List<UserSecurityQuestion>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        return super.queryView('by_user_id', userId.toString(), limit, offset, false)
+        return queryView('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<Void> delete(UserSecurityQuestionId id) {
-        return super.cloudantDelete(id.toString())
+        return cloudantDelete(id.toString())
     }
 }

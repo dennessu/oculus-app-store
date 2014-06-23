@@ -18,41 +18,41 @@ class CountryRepositoryCloudantImpl extends CloudantClient<Country> implements C
         if (model.id == null) {
             model.id = new CountryId(model.countryCode)
         }
-        return super.cloudantPost(model)
+        return cloudantPost(model)
     }
 
     @Override
     Promise<Country> update(Country model) {
-        return super.cloudantPut(model)
+        return cloudantPut(model)
     }
 
     @Override
     Promise<Country> get(CountryId id) {
-        return super.cloudantGet(id.toString())
+        return cloudantGet(id.toString())
     }
 
     @Override
     Promise<Void> delete(CountryId id) {
-        return super.cloudantDelete(id.value)
+        return cloudantDelete(id.value)
     }
 
     @Override
     Promise<List<Country>> searchByDefaultCurrencyId(CurrencyId currencyId, Integer limit, Integer offset) {
-        return super.queryView('by_default_currency', currencyId.value, limit, offset, false)
+        return queryView('by_default_currency', currencyId.value, limit, offset, false)
     }
 
     @Override
     Promise<List<Country>> searchByDefaultLocaleId(LocaleId localeId, Integer limit, Integer offset) {
-        return super.queryView('by_default_locale', localeId.value, limit, offset, false)
+        return queryView('by_default_locale', localeId.value, limit, offset, false)
     }
 
     @Override
     Promise<List<Country>> searchByDefaultCurrencyIdAndLocaleId(CurrencyId currencyId, LocaleId localeId, Integer limit, Integer offset) {
-        return super.queryView('by_default_locale_currency', "${currencyId.value}:${localeId.value}", limit, offset, false)
+        return queryView('by_default_locale_currency', "${currencyId.value}:${localeId.value}", limit, offset, false)
     }
 
     @Override
     Promise<List<Country>> searchAll(Integer limit, Integer offset) {
-        return super.cloudantGetAll(limit, offset, false)
+        return cloudantGetAll(limit, offset, false)
     }
 }

@@ -5,14 +5,18 @@
  */
 package org.glassfish.grizzly.threadpool;
 
+import com.junbo.langur.core.promise.ExecutorContext;
+import com.junbo.langur.core.promise.LocatableExecutorService;
+
 import java.lang.reflect.Field;
 
 /**
  * JunboThreadPool.
  */
-public class JunboThreadPool extends FixedThreadPool {
+public class JunboThreadPool extends FixedThreadPool implements LocatableExecutorService {
     public JunboThreadPool(ThreadPoolConfig config) {
         super(config);
+        ExecutorContext.setDefaultExecutorService(this);
     }
 
     @Override
@@ -25,6 +29,12 @@ public class JunboThreadPool extends FixedThreadPool {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public boolean isExecutorThread() {
+        String threadName = Thread.currentThread().getName();
+        return threadName != null && threadName.startsWith(this.config.getPoolName() + "(");
     }
 
     private static final Field THREAD_LOCALS_FIELD;

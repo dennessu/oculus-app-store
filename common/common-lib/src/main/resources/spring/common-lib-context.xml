@@ -38,7 +38,6 @@
     <bean id="baseClientProxy" class="com.junbo.langur.core.client.AbstractClientProxy" abstract="true">
         <property name="client" ref="commonAsyncHttpClient"/>
         <property name="exceptionHandler" ref="commonExceptionHandler"/>
-        <property name="executor" ref="junboThreadPool"/>
         <property name="pathParamTranscoder" ref="commonPathParamTranscoder"/>
         <property name="queryParamTranscoder" ref="commonQueryParamTranscoder"/>
         <property name="headersProvider" ref="commonClientProxyHeadersProvider"/>
@@ -58,7 +57,6 @@
         <property name="cloudantUser" value="${common.cloudant.user}" />
         <property name="cloudantPassword" value="${common.cloudant.password}" />
         <property name="dbNamePrefix" value="${common.cloudant.dbNamePrefix}" />
-        <property name="executor" ref="junboThreadPool"/>
     </bean>
 
     <bean id="cloudantClientWithSearch" parent="cloudantClient" abstract="true">

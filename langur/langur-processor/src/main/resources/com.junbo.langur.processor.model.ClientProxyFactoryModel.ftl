@@ -7,7 +7,6 @@ package ${packageName};
 import com.junbo.langur.core.client.*;
 import com.ning.http.client.AsyncHttpClient;
 
-import java.util.concurrent.Executor;
 import com.junbo.langur.core.context.JunboHttpContextScopeListener;
 import java.util.List;
 
@@ -43,10 +42,6 @@ public class ${className} implements ClientProxyFactory<${resourceName}> {
     @org.springframework.beans.factory.annotation.Qualifier("routingResponseHandler")
     private ResponseHandler __responseHandler;
 
-    @org.springframework.beans.factory.annotation.Autowired
-    @org.springframework.beans.factory.annotation.Qualifier("routingExecutor")
-    private Executor __executor;
-
     @org.springframework.beans.factory.annotation.Autowired(required = false)
     protected List<JunboHttpContextScopeListener> __junboHttpContextScopeListeners;
 
@@ -59,15 +54,13 @@ public class ${className} implements ClientProxyFactory<${resourceName}> {
             QueryParamTranscoder queryParamTranscoder,
             ExceptionHandler exceptionHandler,
             HeadersProvider headersProvider,
-            ResponseHandler responseHandler,
-            Executor executor) {
+            ResponseHandler responseHandler) {
         assert client != null : "client is null";
         assert transcoder != null : "transcoder is null";
         assert pathParamTranscoder != null : "pathParamTranscoder is null";
         assert queryParamTranscoder != null : "queryParamTranscoder is null";
         assert exceptionHandler != null : "exceptionHandler is null";
         assert headersProvider != null : "headersProvider is null";
-        assert executor != null : "executor is null";
 
         __client = client;
         __transcoder = transcoder;
@@ -76,7 +69,6 @@ public class ${className} implements ClientProxyFactory<${resourceName}> {
         __exceptionHandler = exceptionHandler;
         __headersProvider = headersProvider;
         __responseHandler = responseHandler;
-        __executor = executor;
     }
 
     public ${resourceName} create(String targetUrl) {
@@ -90,7 +82,6 @@ public class ${className} implements ClientProxyFactory<${resourceName}> {
         clientProxy.setTarget(targetUrl);
         clientProxy.setHeaders(__headersProvider.getHeaders());
         clientProxy.setResponseHandler(__responseHandler);
-        clientProxy.setExecutor(__executor);
         clientProxy.setJunboHttpContextScopeListeners(__junboHttpContextScopeListeners);
 
         return clientProxy;

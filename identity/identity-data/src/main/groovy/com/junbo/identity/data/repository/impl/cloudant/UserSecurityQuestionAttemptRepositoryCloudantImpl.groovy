@@ -17,12 +17,12 @@ class UserSecurityQuestionAttemptRepositoryCloudantImpl extends CloudantClient<U
     @Override
     Promise<UserSecurityQuestionVerifyAttempt> create(UserSecurityQuestionVerifyAttempt entity) {
         entity.value = null
-        return super.cloudantPost(entity)
+        return cloudantPost(entity)
     }
 
     @Override
     Promise<UserSecurityQuestionVerifyAttempt> get(UserSecurityQuestionVerifyAttemptId id) {
-        return super.cloudantGet(id.toString())
+        return cloudantGet(id.toString())
     }
 
     @Override
@@ -37,13 +37,13 @@ class UserSecurityQuestionAttemptRepositoryCloudantImpl extends CloudantClient<U
 
     @Override
     Promise<List<UserSecurityQuestionVerifyAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        return super.queryView('by_user_id', userId.toString(), limit, offset, false)
+        return queryView('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<UserSecurityQuestionVerifyAttempt>> searchByUserIdAndSecurityQuestionId(UserId userId,
                                      UserSecurityQuestionId userSecurityQuestionId, Integer limit, Integer offset) {
-        return super.queryView('by_user_id_security_question_id',
+        return queryView('by_user_id_security_question_id',
                 "${userId.toString()}:${userSecurityQuestionId.toString()}", limit, offset, false)
     }
 }

@@ -15,39 +15,39 @@ class UserCommunicationRepositoryCloudantImpl extends CloudantClient<UserCommuni
 
     @Override
     Promise<UserCommunication> create(UserCommunication entity) {
-        return super.cloudantPost(entity)
+        return cloudantPost(entity)
     }
 
     @Override
     Promise<UserCommunication> update(UserCommunication entity) {
-        return super.cloudantPut(entity)
+        return cloudantPut(entity)
     }
 
     @Override
     Promise<UserCommunication> get(UserCommunicationId id) {
-        return super.cloudantGet(id.toString())
+        return cloudantGet(id.toString())
     }
 
     @Override
     Promise<List<UserCommunication>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        return super.queryView('by_user_id', userId.toString(), limit, offset, false)
+        return queryView('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<UserCommunication>> searchByCommunicationId(CommunicationId communicationId, Integer limit,
                                                              Integer offset) {
-        return super.queryView('by_communication_id', communicationId.toString(), limit, offset, false)
+        return queryView('by_communication_id', communicationId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<UserCommunication>> searchByUserIdAndCommunicationId(UserId userId, CommunicationId communicationId,
                                                                       Integer limit, Integer offset) {
-        return super.queryView('by_user_id_communication_id', "${userId.toString()}:${communicationId.toString()}",
+        return queryView('by_user_id_communication_id', "${userId.toString()}:${communicationId.toString()}",
                 limit, offset, false)
     }
 
     @Override
     Promise<Void> delete(UserCommunicationId id) {
-        return super.cloudantDelete(id.toString())
+        return cloudantDelete(id.toString())
     }
 }

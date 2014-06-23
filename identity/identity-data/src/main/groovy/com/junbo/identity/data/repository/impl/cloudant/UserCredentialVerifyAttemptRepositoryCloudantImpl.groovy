@@ -16,32 +16,32 @@ class UserCredentialVerifyAttemptRepositoryCloudantImpl extends CloudantClient<U
     @Override
     Promise<UserCredentialVerifyAttempt> create(UserCredentialVerifyAttempt entity) {
         entity.setValue(null)
-        return super.cloudantPost(entity)
+        return cloudantPost(entity)
     }
 
     @Override
     Promise<UserCredentialVerifyAttempt> update(UserCredentialVerifyAttempt entity) {
-        return super.cloudantPut(entity)
+        return cloudantPut(entity)
     }
 
     @Override
     Promise<UserCredentialVerifyAttempt> get(UserCredentialVerifyAttemptId id) {
-        return super.cloudantGet(id.toString())
+        return cloudantGet(id.toString())
     }
 
     @Override
     Promise<List<UserCredentialVerifyAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        return super.queryView('by_user_id', userId.toString(), limit, offset, false)
+        return queryView('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<UserCredentialVerifyAttempt>> searchByUserIdAndCredentialType(UserId userId, String type,
                                                                                Integer limit, Integer offset) {
-        return super.queryView('by_user_id_credential_type', "${userId.toString()}:${type}", limit, offset, false)
+        return queryView('by_user_id_credential_type', "${userId.toString()}:${type}", limit, offset, false)
     }
 
     @Override
     Promise<Void> delete(UserCredentialVerifyAttemptId id) {
-        return super.cloudantDelete(id.toString())
+        return cloudantDelete(id.toString())
     }
 }

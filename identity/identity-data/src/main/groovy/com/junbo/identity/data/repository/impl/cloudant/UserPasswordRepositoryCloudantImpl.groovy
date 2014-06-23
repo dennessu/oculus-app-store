@@ -15,33 +15,33 @@ class UserPasswordRepositoryCloudantImpl extends CloudantClient<UserPassword> im
     @Override
     Promise<UserPassword> create(UserPassword userPassword) {
         userPassword.value = null
-        return super.cloudantPost(userPassword)
+        return cloudantPost(userPassword)
     }
 
     @Override
     Promise<UserPassword> update(UserPassword userPassword) {
         userPassword.value = null
-        return super.cloudantPut(userPassword)
+        return cloudantPut(userPassword)
     }
 
     @Override
     Promise<UserPassword> get(UserPasswordId id) {
-        return super.cloudantGet(id.toString())
+        return cloudantGet(id.toString())
     }
 
     @Override
     Promise<List<UserPassword>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        return super.queryView('by_user_id', userId.toString(), limit, offset, false)
+        return queryView('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<UserPassword>> searchByUserIdAndActiveStatus(UserId userId, Boolean active, Integer limit,
                                                               Integer offset) {
-        return super.queryView('by_user_id_active_status', "${userId.toString()}:${active}", limit, offset, false)
+        return queryView('by_user_id_active_status', "${userId.toString()}:${active}", limit, offset, false)
     }
 
     @Override
     Promise<Void> delete(UserPasswordId id) {
-        return super.cloudantDelete(id.toString())
+        return cloudantDelete(id.toString())
     }
 }

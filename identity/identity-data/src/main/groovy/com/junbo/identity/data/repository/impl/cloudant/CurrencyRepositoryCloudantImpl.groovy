@@ -16,26 +16,26 @@ class CurrencyRepositoryCloudantImpl extends CloudantClient<Currency> implements
         if (model.id == null) {
             model.id = new CurrencyId(model.currencyCode)
         }
-        return super.cloudantPost(model)
+        return cloudantPost(model)
     }
 
     @Override
     Promise<Currency> update(Currency model) {
-        return super.cloudantPut(model)
+        return cloudantPut(model)
     }
 
     @Override
     Promise<Currency> get(CurrencyId id) {
-        return super.cloudantGet(id.toString())
+        return cloudantGet(id.toString())
     }
 
     @Override
     Promise<Void> delete(CurrencyId id) {
-        return super.cloudantDelete(id.value)
+        return cloudantDelete(id.value)
     }
 
     @Override
     Promise<List<Currency>> searchAll(Integer limit, Integer offset) {
-        return super.cloudantGetAll(limit, offset, false)
+        return cloudantGetAll(limit, offset, false)
     }
 }

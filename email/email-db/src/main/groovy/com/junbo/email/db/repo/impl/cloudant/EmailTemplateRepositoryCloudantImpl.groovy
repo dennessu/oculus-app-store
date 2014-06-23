@@ -17,11 +17,11 @@ import groovy.transform.CompileStatic
 class EmailTemplateRepositoryCloudantImpl extends CloudantClient<EmailTemplate> implements EmailTemplateRepository {
 
     public Promise<EmailTemplate> getEmailTemplate(String id) {
-        return super.cloudantGet(id)
+        return cloudantGet(id)
     }
 
     public Promise<EmailTemplate> saveEmailTemplate(EmailTemplate template) {
-        return super.cloudantPost(template)
+        return cloudantPost(template)
     }
 
     public Promise<EmailTemplate> updateEmailTemplate(EmailTemplate template) {
@@ -31,7 +31,7 @@ class EmailTemplateRepositoryCloudantImpl extends CloudantClient<EmailTemplate> 
     }
 
     public Promise<EmailTemplate> getEmailTemplateByName(String name) {
-        def template = super.queryView('by_name', name)
+        def template = queryView('by_name', name)
         return template.then {List<EmailTemplate> templates ->
             if (templates == null || templates.size() == 0) {
                 return Promise.pure(null)
@@ -44,15 +44,15 @@ class EmailTemplateRepositoryCloudantImpl extends CloudantClient<EmailTemplate> 
         def viewKey = this.buildViewKey(queries)
         if (viewKey != null) {
             def view =viewKey.keySet().getAt(0), key = viewKey.values().getAt(0)
-            return super.queryView(view, key, pagination?.page, pagination?.size, false)
+            return queryView(view, key, pagination?.page, pagination?.size, false)
         }
         else {
-            return super.cloudantGetAll(null, null, false)
+            return cloudantGetAll(null, null, false)
         }
     }
 
     public Promise<Void> deleteEmailTemplate(String id) {
-        return super.cloudantDelete(id)
+        return cloudantDelete(id)
     }
 
     private Map<String, String> buildViewKey(Map<String, String> queries) {

@@ -239,7 +239,7 @@ public final class Promise<T> {
             public ListenableFuture<R> apply(T input) {
                 return wrapped.apply(input).wrapped();
             }
-        }));
+        }, ExecutorContext.getExecutor()));
     }
 
     public <R> Promise<R> then(final Func<? super T, Promise<R>> func, final Executor executor) {
@@ -306,7 +306,7 @@ public final class Promise<T> {
             @Override
             public void onFailure(Throwable t) {
             }
-        });
+        }, ExecutorContext.getExecutor());
     }
 
     // the sequence of the invocation is not guaranteed. Disable for now.
@@ -334,7 +334,7 @@ public final class Promise<T> {
             public void onFailure(Throwable t) {
                 wrapped.invoke(t);
             }
-        });
+        }, ExecutorContext.getExecutor());
     }
 
     // the sequence of the invocation is not guaranteed. Disable for now.

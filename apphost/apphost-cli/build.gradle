@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.*
+
 apply plugin: 'groovy'
 apply plugin: 'application'
 
@@ -40,6 +42,11 @@ applicationDistribution.from("../../cloudant") {
 
 applicationDistribution.from("../../liquibase") {
     into "dbsetup/liquibase"
+}
+
+applicationDistribution.eachFile { FileCopyDetails f ->
+    if (!f.name.endsWith('.sh')) return
+    f.filter(FixCrLfFilter, eol: FixCrLfFilter.CrLf.newInstance("lf"))
 }
 
 defaultTasks 'clean', 'install', 'installApp', 'distZip'

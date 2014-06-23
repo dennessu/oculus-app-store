@@ -15,32 +15,32 @@ class UserTFABackupCodeRepositoryCloudantImpl extends CloudantClient<UserTFABack
 
     @Override
     Promise<List<UserTFABackupCode>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        return super.queryView('by_user_id', userId.toString(), limit, offset, false)
+        return queryView('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<UserTFABackupCode>> searchByUserIdAndActiveStatus(UserId userId, Boolean active, Integer limit,
                                                                     Integer offset) {
-        return super.queryView('by_user_id_active', "${userId.toString()}:${active}", limit, offset, false)
+        return queryView('by_user_id_active', "${userId.toString()}:${active}", limit, offset, false)
     }
 
     @Override
     Promise<UserTFABackupCode> create(UserTFABackupCode entity) {
-        return super.cloudantPost(entity)
+        return cloudantPost(entity)
     }
 
     @Override
     Promise<UserTFABackupCode> update(UserTFABackupCode entity) {
-        return super.cloudantPut(entity)
+        return cloudantPut(entity)
     }
 
     @Override
     Promise<UserTFABackupCode> get(UserTFABackupCodeId id) {
-        return super.cloudantGet(id.toString())
+        return cloudantGet(id.toString())
     }
 
     @Override
     Promise<Void> delete(UserTFABackupCodeId id) {
-        return super.cloudantDelete(id.toString())
+        return cloudantDelete(id.toString())
     }
 }

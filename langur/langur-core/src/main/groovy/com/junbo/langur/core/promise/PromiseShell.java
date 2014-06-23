@@ -8,16 +8,22 @@ package com.junbo.langur.core.promise;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * PromiseShell.
  */
 public class PromiseShell {
-    private static final int POOL_THREADS = 50;
+    private static final Logger logger = LoggerFactory.getLogger(PromiseShell.class);
+
+    private static int corePoolSize = 2;
+    private static int maxPoolSize = 50;
+    private static long keepAliveTimeMillis = 10 * 60 * 1000;   // 10 mins
+    private static int queueLimit = -1;
 
     private static ConcurrentHashMap<String, ListeningExecutorService> pool = new ConcurrentHashMap<>();
 
@@ -35,9 +41,49 @@ public class PromiseShell {
 
     private static ListeningExecutorService locate(String poolName) {
         if (!pool.containsKey(poolName)) {
-            pool.putIfAbsent(poolName, MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(POOL_THREADS)));
+            pool.putIfAbsent(poolName, MoreExecutors.listeningDecorator(new PromiseShellThreadPool(poolName)));
+        }
+        return pool.get(poolName);
+    }
+
+    /**
+     * Customize the promise shell thread pool to set pool name and properly handle exceptions.
+     */
+    private static class PromiseShellThreadPool extends ThreadPoolExecutor {
+        public PromiseShellThreadPool(String poolName) {
+            super(corePoolSize, maxPoolSize, keepAliveTimeMillis, TimeUnit.MILLISECONDS, createQueue(queueLimit), getDefaultThreadFactory(poolName));
         }
 
-        return pool.get(poolName);
+        private static LinkedBlockingQueue createQueue(int queueLimit) {
+            if (queueLimit == -1) {
+                return new LinkedBlockingQueue<>();
+            } else {
+                return new LinkedBlockingQueue<>(queueLimit);
+            }
+        }
+
+        private static ThreadFactory getDefaultThreadFactory(final String poolName) {
+            final AtomicInteger counter = new AtomicInteger();
+
+            SecurityManager s = System.getSecurityManager();
+            final ThreadGroup group = (s != null) ? s.getThreadGroup() :
+                    Thread.currentThread().getThreadGroup();
+
+            return new ThreadFactory() {
+                @Override
+                public Thread newThread(Runnable r) {
+                    Thread thread = new Thread(group, r, poolName + "(" + counter.incrementAndGet() + ")");
+                    thread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+                        @Override
+                        public void uncaughtException(Thread t, Throwable e) {
+                            logger.error("Uncaught exception in thread: " + t.getName(), e);
+                        }
+                    });
+                    thread.setDaemon(false);
+                    thread.setPriority(Thread.NORM_PRIORITY);
+                    return thread;
+                }
+            };
+        }
     }
 }

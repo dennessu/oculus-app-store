@@ -12,7 +12,6 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executor;
 
 /**
  * AbstractClientProxy.
@@ -38,8 +37,6 @@ public abstract class AbstractClientProxy {
     protected ResponseHandler __responseHandler;
 
     protected AccessTokenProvider __accessTokenProvider;
-
-    protected Executor __executor;
 
     protected boolean __inProcessCallable;
 
@@ -90,11 +87,6 @@ public abstract class AbstractClientProxy {
 
     public void setAccessTokenProvider(AccessTokenProvider __accessTokenProvider) {
         this.__accessTokenProvider = __accessTokenProvider;
-    }
-
-    @Required
-    public void setExecutor(Executor __executor) {
-        this.__executor = __executor;
     }
 
     public void setInProcessCallable(boolean inProcessCallable) {

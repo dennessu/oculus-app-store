@@ -20,7 +20,6 @@ import org.springframework.util.StringUtils
 
 import javax.ws.rs.core.UriBuilder
 import java.lang.reflect.ParameterizedType
-import java.util.concurrent.Executor
 
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
 
@@ -44,7 +43,6 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
     protected String dbNamePrefix
     protected String dbName
     protected String fullDbName
-    protected Executor executor
 
     @Required
     void setAsyncHttpClient(AsyncHttpClient asyncHttpClient) {
@@ -80,11 +78,6 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         this.dbName = dbName
     }
 
-    @Required
-    void setExecutor(Executor executor) {
-        this.executor = executor
-    }
-
     protected CloudantClientBase() {
         entityClass = (Class<T>) ((ParameterizedType) getClass().genericSuperclass).actualTypeArguments[0]
     }
@@ -112,7 +105,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
             entity.cloudantRev = cloudantResponse.revision
 
             return Promise.pure(entity)
-        }, executor)
+        })
     }
 
     @Override
@@ -128,7 +121,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
             }
 
             return Promise.pure((T) unmarshall(response.responseBody, entityClass))
-        }, executor)
+        })
     }
 
     @Override
@@ -157,7 +150,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
             entity.cloudantRev = cloudantResponse.revision
 
             return Promise.pure(entity)
-        }, executor)
+        })
     }
 
     @Override
@@ -171,7 +164,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
                                 " reason: $cloudantError.reason")
                     }
                     return Promise.pure(null);
-                }, executor)
+                })
             }
             return Promise.pure(null);
         }
@@ -217,7 +210,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
             }.then {
                 return Promise.pure(list)
             }
-        }, executor)
+        })
     }
 
     @Override
@@ -241,7 +234,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
             }
 
             return Promise.pure((T) unmarshall(response.responseBody, entityClass))
-        }, executor)
+        })
     }
 
     protected Promise<CloudantQueryResult> queryView(String viewName, String key, Integer limit, Integer skip,
@@ -318,7 +311,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
             }
 
             return Promise.pure(unmarshall(response.responseBody, CloudantQueryResult, String, entityClass))
-        }, executor)
+        })
     }
 
     protected Promise<CloudantSearchResult<T>> search(String searchName, String queryString, Integer limit, String bookmark) {
@@ -362,7 +355,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
             }
 
             return Promise.pure(unmarshall(response.responseBody, CloudantQueryResult, String, entityClass))
-        }, executor)
+        })
     }
 
     protected Promise<Response> executeRequest(HttpMethod method, String path, Map<String, String> queryParams, Object body) {

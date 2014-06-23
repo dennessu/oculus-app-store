@@ -13,31 +13,31 @@ class PITypeRepositoryCloudantImpl extends CloudantClient<PIType> implements PIT
 
     @Override
     Promise<PIType> create(PIType model) {
-        return super.cloudantPost(model)
+        return cloudantPost(model)
     }
 
     @Override
     Promise<PIType> update(PIType model) {
-        return super.cloudantPut(model)
+        return cloudantPut(model)
     }
 
     @Override
     Promise<PIType> get(PITypeId id) {
-        return super.cloudantGet(id.toString())
+        return cloudantGet(id.toString())
     }
 
     @Override
     Promise<Void> delete(PITypeId id) {
-        return super.cloudantDelete(id.toString())
+        return cloudantDelete(id.toString())
     }
 
     @Override
     Promise<List<PIType>> searchByTypeCode(String typeCode, Integer limit, Integer offset) {
-        return super.queryView('by_typeCode', typeCode, limit, offset, false)
+        return queryView('by_typeCode', typeCode, limit, offset, false)
     }
 
     @Override
     Promise<List<PIType>> searchAll(Integer limit, Integer offset) {
-        return super.cloudantGetAll(limit, offset, false)
+        return cloudantGetAll(limit, offset, false)
     }
 }

@@ -17,12 +17,12 @@ class UserPersonalInfoIdToUserIdLinkRepositoryImpl extends CloudantClient<UserPe
 
     @Override
     Promise<List<UserPersonalInfoIdToUserIdLink>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        return super.queryView('by_user_id', userId.value.toString(), limit, offset, false)
+        return queryView('by_user_id', userId.value.toString(), limit, offset, false)
     }
 
     @Override
     Promise<UserPersonalInfoIdToUserIdLink> searchByUserPersonalInfoId(UserPersonalInfoId userPersonalInfoId) {
-        return super.queryView('by_user_personal_info_id', userPersonalInfoId.value.toString()).then { List<UserPersonalInfoIdToUserIdLink> list ->
+        return queryView('by_user_personal_info_id', userPersonalInfoId.value.toString()).then { List<UserPersonalInfoIdToUserIdLink> list ->
             if (CollectionUtils.isEmpty(list)) {
                 return Promise.pure(null)
             }
@@ -33,21 +33,21 @@ class UserPersonalInfoIdToUserIdLinkRepositoryImpl extends CloudantClient<UserPe
 
     @Override
     Promise<UserPersonalInfoIdToUserIdLink> create(UserPersonalInfoIdToUserIdLink model) {
-        return super.cloudantPost(model)
+        return cloudantPost(model)
     }
 
     @Override
     Promise<UserPersonalInfoIdToUserIdLink> update(UserPersonalInfoIdToUserIdLink model) {
-        return super.cloudantPut(model)
+        return cloudantPut(model)
     }
 
     @Override
     Promise<UserPersonalInfoIdToUserIdLink> get(UserPersonalInfoIdToUserIdLinkId id) {
-        return super.cloudantGet(id.toString())
+        return cloudantGet(id.toString())
     }
 
     @Override
     Promise<Void> delete(UserPersonalInfoIdToUserIdLinkId id) {
-        return super.cloudantDelete(id.toString())
+        return cloudantDelete(id.toString())
     }
 }
