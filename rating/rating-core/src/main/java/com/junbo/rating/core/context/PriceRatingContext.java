@@ -10,8 +10,8 @@ import com.junbo.catalog.spec.model.promotion.PromotionRevision;
 import com.junbo.catalog.spec.model.promotion.PromotionType;
 import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.model.*;
-import com.junbo.rating.spec.model.request.RatingItem;
-import com.junbo.rating.spec.model.request.RatingRequest;
+import com.junbo.rating.spec.model.priceRating.RatingItem;
+import com.junbo.rating.spec.model.priceRating.RatingRequest;
 
 import java.util.HashMap;
 import java.util.HashSet;

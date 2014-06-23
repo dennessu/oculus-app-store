@@ -9,8 +9,8 @@ import com.junbo.identity.spec.v1.model.User
 import com.junbo.order.spec.model.Discount
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
-import com.junbo.rating.spec.model.request.RatingItem
-import com.junbo.rating.spec.model.request.RatingRequest
+import com.junbo.rating.spec.model.priceRating.RatingItem
+import com.junbo.rating.spec.model.priceRating.RatingRequest
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 

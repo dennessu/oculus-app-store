@@ -15,7 +15,7 @@ import com.junbo.rating.core.context.SubsRatingContext;
 import com.junbo.rating.core.service.OfferRatingService;
 import com.junbo.rating.core.service.OrderRatingService;
 import com.junbo.rating.core.service.SubsRatingService;
-import com.junbo.rating.spec.model.request.RatingRequest;
+import com.junbo.rating.spec.model.priceRating.RatingRequest;
 import com.junbo.rating.spec.model.subscription.SubsRatingRequest;
 import com.junbo.rating.spec.resource.RatingResource;
 import org.springframework.beans.factory.annotation.Autowired;

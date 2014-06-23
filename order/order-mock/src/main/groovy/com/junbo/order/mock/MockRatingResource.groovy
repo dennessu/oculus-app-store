@@ -1,7 +1,7 @@
 package com.junbo.order.mock
 
 import com.junbo.langur.core.promise.Promise
-import com.junbo.rating.spec.model.request.*
+import com.junbo.rating.spec.model.priceRating.*
 import com.junbo.rating.spec.model.subscription.SubsRatingRequest
 import com.junbo.rating.spec.resource.RatingResource
 import groovy.transform.CompileStatic

@@ -14,7 +14,7 @@ import com.junbo.order.clientproxy.rating.RatingFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.error.ErrorUtils
 import com.junbo.order.spec.model.Order
-import com.junbo.rating.spec.model.request.RatingRequest
+import com.junbo.rating.spec.model.priceRating.RatingRequest
 import com.junbo.rating.spec.resource.RatingResource
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked

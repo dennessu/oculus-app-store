@@ -16,8 +16,8 @@ import com.junbo.order.spec.model.*
 import com.junbo.order.spec.model.enums.DiscountType
 import com.junbo.order.spec.model.enums.EventStatus
 import com.junbo.order.spec.model.enums.OrderActionType
-import com.junbo.rating.spec.model.request.RatingItem
-import com.junbo.rating.spec.model.request.RatingRequest
+import com.junbo.rating.spec.model.priceRating.RatingItem
+import com.junbo.rating.spec.model.priceRating.RatingRequest
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils

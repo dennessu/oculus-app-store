@@ -11,7 +11,7 @@ import com.junbo.rating.core.builder.RatingResultBuilder;
 import com.junbo.rating.core.context.PriceRatingContext;
 import com.junbo.rating.spec.model.Currency;
 import com.junbo.rating.spec.model.RatableItem;
-import com.junbo.rating.spec.model.request.RatingRequest;
+import com.junbo.rating.spec.model.priceRating.RatingRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;

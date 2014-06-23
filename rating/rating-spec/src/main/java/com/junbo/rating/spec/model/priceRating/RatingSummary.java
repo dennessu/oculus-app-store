@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.rating.spec.model.request;
+package com.junbo.rating.spec.model.priceRating;
 
 import com.junbo.common.jackson.annotation.PromotionRevisionId;
 import com.wordnik.swagger.annotations.ApiModelProperty;

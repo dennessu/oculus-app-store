@@ -15,7 +15,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.rating.spec.model.request.RatingRequest;
+import com.junbo.rating.spec.model.priceRating.RatingRequest;
 import com.junbo.rating.spec.model.subscription.SubsRatingRequest;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
