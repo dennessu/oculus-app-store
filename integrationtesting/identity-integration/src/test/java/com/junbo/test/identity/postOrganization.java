@@ -44,7 +44,7 @@ public class postOrganization {
         Organization org = IdentityModel.DefaultOrganization();
         Identity.OrganizationPostDefault(org);
         org.setIsValidated(RandomHelper.randomBoolean());
-        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.DefaultIdentityV1OrganizationURI,
+        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1OrganizationURI,
                 JsonHelper.JsonSerializer(org), HttpclientHelper.HttpRequestType.post);
         Validator.Validate("validate response error code", 409, response.getStatusLine().getStatusCode());
         String errorMessage = "Field name duplicate.";

@@ -10,6 +10,7 @@ import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.enumid.RatingBoardId;
+import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.identity.spec.v1.model.Currency;
 import com.junbo.identity.spec.v1.model.Locale;
@@ -197,6 +198,24 @@ public class IdentityModel {
         org.setName(RandomHelper.randomAlphabetic(20));
         org.setIsValidated(true);
         return org;
+    }
+
+    public static UserCredential DefaultUserCredential(UserId userId, String password) throws Exception {
+        UserCredential userCredential = new UserCredential();
+        userCredential.setUserId(userId);
+        userCredential.setValue(password);
+        userCredential.setType("PASSWORD");
+        userCredential.setChangeAtNextLogin(false);
+        return userCredential;
+    }
+
+    public static UserCredentialVerifyAttempt DefaultUserCredentialAttempts(String userName, String password)
+            throws Exception {
+        UserCredentialVerifyAttempt ucva = new UserCredentialVerifyAttempt();
+        ucva.setUsername(userName);
+        ucva.setValue(password);
+        ucva.setType("PASSWORD");
+        return ucva;
     }
 
     public static String RandomGender() {
