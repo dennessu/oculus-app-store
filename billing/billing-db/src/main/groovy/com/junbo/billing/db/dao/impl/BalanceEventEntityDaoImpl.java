@@ -11,6 +11,8 @@ import com.junbo.billing.db.entity.BalanceEventEntity;
 import com.junbo.billing.db.dao.BalanceEventEntityDao;
 import org.hibernate.Session;
 
+import java.util.Date;
+
 /**
  * Created by xmchen on 14-1-21.
  */
@@ -22,22 +24,29 @@ public class BalanceEventEntityDaoImpl extends BaseDao implements BalanceEventEn
 
     @Override
     public BalanceEventEntity save(BalanceEventEntity balanceEvent) {
-
-        balanceEvent.setEventId(idGenerator.nextId(balanceEvent.getBalanceId()));
-
-        Session session = currentSession(balanceEvent.getEventId());
+        if (balanceEvent.getId() == null) {
+            balanceEvent.setId(idGenerator.nextId(balanceEvent.getBalanceId()));
+        }
+        balanceEvent.setCreatedTime(new Date());
+        if (balanceEvent.getCreatedBy() == null) {
+            balanceEvent.setCreatedBy("0");
+        }
+        Session session = currentSession(balanceEvent.getId());
         session.save(balanceEvent);
         session.flush();
-        return get(balanceEvent.getEventId());
+        return get(balanceEvent.getId());
     }
 
     @Override
     public BalanceEventEntity update(BalanceEventEntity balanceEvent) {
+        balanceEvent.setUpdatedTime(new Date());
+        if (balanceEvent.getUpdatedBy() == null) {
+            balanceEvent.setUpdatedBy("0");
+        }
 
-        Session session = currentSession(balanceEvent.getEventId());
+        Session session = currentSession(balanceEvent.getId());
         session.merge(balanceEvent);
         session.flush();
-
-        return get(balanceEvent.getEventId());
+        return get(balanceEvent.getId());
     }
 }

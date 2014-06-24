@@ -12,7 +12,6 @@ import com.junbo.billing.db.repo.TaxItemRepository;
 import com.junbo.billing.spec.model.TaxItem;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.oom.core.MappingContext;
-import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.util.ArrayList;
@@ -24,7 +23,6 @@ import java.util.List;
 public class TaxItemRepositorySqlImpl implements TaxItemRepository {
     private TaxItemEntityDao taxItemEntityDao;
     private ModelMapper modelMapper;
-    private IdGenerator idGenerator;
 
     @Required
     public void setTaxItemEntityDao(TaxItemEntityDao taxItemEntityDao) {
@@ -34,11 +32,6 @@ public class TaxItemRepositorySqlImpl implements TaxItemRepository {
     @Required
     public void setModelMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
-    }
-
-    @Required
-    public void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator;
     }
 
     @Override
@@ -67,19 +60,16 @@ public class TaxItemRepositorySqlImpl implements TaxItemRepository {
 
     @Override
     public Promise<TaxItem> create(TaxItem model) {
-        if (model.getId() == null) {
-            model.setId(idGenerator.nextId(model.getBalanceItemId()));
-        }
         TaxItemEntity entity = modelMapper.toTaxItemEntity(model, new MappingContext());
         TaxItemEntity saved = taxItemEntityDao.save(entity);
-        return get(saved.getTaxItemId());
+        return get(saved.getId());
     }
 
     @Override
     public Promise<TaxItem> update(TaxItem model) {
         TaxItemEntity entity = modelMapper.toTaxItemEntity(model, new MappingContext());
         taxItemEntityDao.update(entity);
-        return get(entity.getTaxItemId());
+        return get(entity.getId());
     }
 
     @Override

@@ -12,7 +12,6 @@ import com.junbo.billing.db.repo.BalanceEventRepository;
 import com.junbo.billing.spec.model.BalanceEvent;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.oom.core.MappingContext;
-import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.util.Date;
@@ -23,7 +22,6 @@ import java.util.Date;
 public class BalanceEventRepositorySqlImpl implements BalanceEventRepository {
     private BalanceEventEntityDao balanceEventEntityDao;
     private ModelMapper modelMapper;
-    private IdGenerator idGenerator;
 
     @Required
     public void setBalanceEventEntityDao(BalanceEventEntityDao balanceEventEntityDao) {
@@ -33,11 +31,6 @@ public class BalanceEventRepositorySqlImpl implements BalanceEventRepository {
     @Required
     public void setModelMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
-    }
-
-    @Required
-    public void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator;
     }
 
     @Override
@@ -52,13 +45,10 @@ public class BalanceEventRepositorySqlImpl implements BalanceEventRepository {
 
     @Override
     public Promise<BalanceEvent> create(BalanceEvent model) {
-        if (model.getId() == null) {
-            model.setId(idGenerator.nextId(model.getBalanceId()));
-        }
         BalanceEventEntity entity = modelMapper.toBalanceEventEntity(model, new MappingContext());
         entity.setEventDate(new Date());
         BalanceEventEntity saved = balanceEventEntityDao.save(entity);
-        return get(saved.getEventId());
+        return get(saved.getId());
     }
 
     @Override
@@ -66,7 +56,7 @@ public class BalanceEventRepositorySqlImpl implements BalanceEventRepository {
         BalanceEventEntity entity = modelMapper.toBalanceEventEntity(model, new MappingContext());
         entity.setEventDate(new Date());
         balanceEventEntityDao.update(entity);
-        return get(entity.getEventId());
+        return get(entity.getId());
     }
 
     @Override

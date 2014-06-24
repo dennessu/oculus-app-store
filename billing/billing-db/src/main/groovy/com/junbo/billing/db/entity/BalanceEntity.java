@@ -13,7 +13,10 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
@@ -27,7 +30,7 @@ import java.util.UUID;
 public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
     @Id
     @Column(name = "balance_id")
-    private Long balanceId;
+    private Long id;
 
     @Column(name = "tracking_uuid")
     @Type(type = "pg-uuid")
@@ -94,11 +97,12 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
     @Type(type = "json-string")
     private String propertySet;
 
-    public Long getBalanceId() {
-        return balanceId;
+    public Long getId() {
+        return id;
     }
-    public void setBalanceId(Long balanceId) {
-        this.balanceId = balanceId;
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public UUID getTrackingUuid() {
@@ -239,14 +243,6 @@ public class BalanceEntity extends BaseEntity implements Identifiable<Long> {
     }
     public void setOriginalBalanceId(Long originalBalanceId) {
         this.originalBalanceId = originalBalanceId;
-    }
-
-    @Override
-    public Long getId() {
-        return balanceId;
-    }
-    public void setId(Long id) {
-        balanceId = id;
     }
 
     public String getPropertySet() {

@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 public class TaxItemEntity extends BaseEntity {
     @Id
     @Column(name = "tax_item_id")
-    private Long taxItemId;
+    private Long id;
 
     @Column(name = "balance_item_id")
     private Long balanceItemId;
@@ -39,11 +39,12 @@ public class TaxItemEntity extends BaseEntity {
     @Column(name = "deleted")
     private Boolean isDeleted = false;
 
-    public Long getTaxItemId() {
-        return taxItemId;
+    public Long getId() {
+        return id;
     }
-    public void setTaxItemId(Long taxItemId) {
-        this.taxItemId = taxItemId;
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getBalanceItemId() {

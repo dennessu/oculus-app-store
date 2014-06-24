@@ -13,7 +13,6 @@ import com.junbo.billing.spec.model.Transaction;
 import com.junbo.common.id.TransactionId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.oom.core.MappingContext;
-import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.util.ArrayList;
@@ -25,7 +24,6 @@ import java.util.List;
 public class TransactionRepositorySqlImpl implements TransactionRepository {
     private TransactionEntityDao transactionEntityDao;
     private ModelMapper modelMapper;
-    private IdGenerator idGenerator;
 
     @Required
     public void setTransactionEntityDao(TransactionEntityDao transactionEntityDao) {
@@ -37,19 +35,11 @@ public class TransactionRepositorySqlImpl implements TransactionRepository {
         this.modelMapper = modelMapper;
     }
 
-    @Required
-    public void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator;
-    }
-
     @Override
     public Promise<Transaction> create(Transaction model) {
-        if (model.getId() == null) {
-            model.setId(new TransactionId(idGenerator.nextId(model.getBalanceId().getValue())));
-        }
         TransactionEntity entity = modelMapper.toTransactionEntity(model, new MappingContext());
         TransactionEntity saved = transactionEntityDao.save(entity);
-        return get(new TransactionId(saved.getTransactionId()));
+        return get(new TransactionId(saved.getId()));
     }
 
     @Override
@@ -67,7 +57,7 @@ public class TransactionRepositorySqlImpl implements TransactionRepository {
         TransactionEntity entity = modelMapper.toTransactionEntity(model, new MappingContext());
         transactionEntityDao.update(entity);
 
-        return get(new TransactionId(entity.getTransactionId()));
+        return get(new TransactionId(entity.getId()));
     }
 
     @Override

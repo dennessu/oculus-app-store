@@ -13,6 +13,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,22 +28,31 @@ public class DiscountItemEntityDaoImpl extends BaseDao implements DiscountItemEn
 
     @Override
     public DiscountItemEntity save(DiscountItemEntity discountItem) {
-        discountItem.setDiscountItemId(idGenerator.nextId(discountItem.getBalanceItemId()));
+        if (discountItem.getId() == null) {
+            discountItem.setId(idGenerator.nextId(discountItem.getBalanceItemId()));
+        }
+        discountItem.setCreatedTime(new Date());
+        if (discountItem.getCreatedBy() == null) {
+            discountItem.setCreatedBy("0");
+        }
 
-        Session session = currentSession(discountItem.getDiscountItemId());
+        Session session = currentSession(discountItem.getId());
         session.save(discountItem);
         session.flush();
-        return get(discountItem.getDiscountItemId());
+        return get(discountItem.getId());
     }
 
     @Override
     public DiscountItemEntity update(DiscountItemEntity discountItem) {
-
-        Session session = currentSession(discountItem.getDiscountItemId());
+        discountItem.setUpdatedTime(new Date());
+        if (discountItem.getUpdatedBy() == null) {
+            discountItem.setUpdatedBy("0");
+        }
+        Session session = currentSession(discountItem.getId());
         session.merge(discountItem);
         session.flush();
 
-        return get(discountItem.getDiscountItemId());
+        return get(discountItem.getId());
     }
 
     public List<DiscountItemEntity> findByBalanceItemId(Long balanceItemId) {

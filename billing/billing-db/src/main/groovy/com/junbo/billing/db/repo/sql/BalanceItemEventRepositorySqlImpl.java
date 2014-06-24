@@ -12,7 +12,6 @@ import com.junbo.billing.db.repo.BalanceItemEventRepository;
 import com.junbo.billing.spec.model.BalanceItemEvent;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.oom.core.MappingContext;
-import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.util.Date;
@@ -23,7 +22,6 @@ import java.util.Date;
 public class BalanceItemEventRepositorySqlImpl implements BalanceItemEventRepository {
     private BalanceItemEventEntityDao balanceItemEventEntityDao;
     private ModelMapper modelMapper;
-    private IdGenerator idGenerator;
 
     @Required
     public void setBalanceItemEventEntityDao(BalanceItemEventEntityDao balanceItemEventEntityDao) {
@@ -33,11 +31,6 @@ public class BalanceItemEventRepositorySqlImpl implements BalanceItemEventReposi
     @Required
     public void setModelMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
-    }
-
-    @Required
-    public void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator;
     }
 
     @Override
@@ -52,12 +45,9 @@ public class BalanceItemEventRepositorySqlImpl implements BalanceItemEventReposi
 
     @Override
     public Promise<BalanceItemEvent> create(BalanceItemEvent model) {
-        if (model.getId() == null) {
-            model.setId(idGenerator.nextId(model.getBalanceItemId()));
-        }
         BalanceItemEventEntity entity = modelMapper.toBalanceItemEventEntity(model, new MappingContext());
         BalanceItemEventEntity saved = balanceItemEventEntityDao.save(entity);
-        return get(saved.getEventId());
+        return get(saved.getId());
     }
 
     @Override
@@ -65,7 +55,7 @@ public class BalanceItemEventRepositorySqlImpl implements BalanceItemEventReposi
         BalanceItemEventEntity entity = modelMapper.toBalanceItemEventEntity(model, new MappingContext());
         entity.setEventDate(new Date());
         balanceItemEventEntityDao.update(entity);
-        return get(entity.getEventId());
+        return get(entity.getId());
     }
 
     @Override

@@ -8,8 +8,8 @@ package com.junbo.billing.db.dao.impl;
 
 
 import com.junbo.billing.db.BaseDao;
-import com.junbo.billing.db.entity.BalanceEntity;
 import com.junbo.billing.db.dao.BalanceEntityDao;
+import com.junbo.billing.db.entity.BalanceEntity;
 import com.junbo.billing.spec.enums.BalanceStatus;
 import com.junbo.billing.spec.enums.BalanceType;
 import com.junbo.sharding.view.ViewQuery;
@@ -17,10 +17,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by xmchen on 14-1-21.
@@ -33,23 +30,30 @@ public class BalanceEntityDaoImpl extends BaseDao implements BalanceEntityDao {
 
     @Override
     public BalanceEntity save(BalanceEntity balance) {
-
-        balance.setBalanceId(idGenerator.nextId(balance.getUserId()));
-
-        Session session = currentSession(balance.getBalanceId());
+        if (balance.getId() == null) {
+            balance.setId(idGenerator.nextId(balance.getUserId()));
+        }
+        balance.setCreatedTime(new Date());
+        if (balance.getCreatedBy() == null) {
+            balance.setCreatedBy("0");
+        }
+        Session session = currentSession(balance.getId());
         session.save(balance);
         session.flush();
-        return get(balance.getBalanceId());
+        return get(balance.getId());
     }
 
     @Override
     public BalanceEntity update(BalanceEntity balance) {
+        balance.setUpdatedTime(new Date());
+        if (balance.getUpdatedBy() == null) {
+            balance.setUpdatedBy("0");
+        }
 
-        Session session = currentSession(balance.getBalanceId());
+        Session session = currentSession(balance.getId());
         session.merge(balance);
         session.flush();
-
-        return get(balance.getBalanceId());
+        return get(balance.getId());
     }
 
     @Override

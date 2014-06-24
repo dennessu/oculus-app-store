@@ -13,7 +13,6 @@ import com.junbo.billing.spec.model.Balance;
 import com.junbo.common.id.BalanceId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.oom.core.MappingContext;
-import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.util.ArrayList;
@@ -26,7 +25,6 @@ import java.util.UUID;
 public class BalanceRepositorySqlImpl implements BalanceRepository {
     private BalanceEntityDao balanceEntityDao;
     private ModelMapper modelMapper;
-    private IdGenerator idGenerator;
 
     @Required
     public void setBalanceEntityDao(BalanceEntityDao balanceEntityDao) {
@@ -38,10 +36,6 @@ public class BalanceRepositorySqlImpl implements BalanceRepository {
         this.modelMapper = modelMapper;
     }
 
-    @Required
-    public void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator;
-    }
 
     @Override
     public Promise<List<Balance>> getByTrackingUuid(UUID trackingUuid) {
@@ -125,19 +119,16 @@ public class BalanceRepositorySqlImpl implements BalanceRepository {
 
     @Override
     public Promise<Balance> create(Balance model) {
-        if (model.getId() == null) {
-            model.setId(new BalanceId(idGenerator.nextId(model.getUserId().getValue())));
-        }
         BalanceEntity entity = modelMapper.toBalanceEntity(model, new MappingContext());
         BalanceEntity saved = balanceEntityDao.save(entity);
-        return get(new BalanceId(saved.getBalanceId()));
+        return get(new BalanceId(saved.getId()));
     }
 
     @Override
     public Promise<Balance> update(Balance model) {
         BalanceEntity entity = modelMapper.toBalanceEntity(model, new MappingContext());
         balanceEntityDao.update(entity);
-        return get(new BalanceId(entity.getBalanceId()));
+        return get(new BalanceId(entity.getId()));
     }
 
     @Override
