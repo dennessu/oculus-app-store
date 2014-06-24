@@ -1,13 +1,13 @@
 #!/bin/bash
-
-export DEPLOYMENT_PATH='/tmp/pgha'
+DIR="$( cd "$( dirname "$BASH_SOURCE[0]" )" && pwd )"
 
 ENVIRONMENT='amazon'
-source $DEPLOYMENT_PATH/env/${ENVIRONMENT}.sh
+source $DIR/../env/${ENVIRONMENT}.sh
 
 export DEVOPS_ACCOUNT='ubuntu'
 export DEPLOYMENT_ACCOUNT='silkcloud'
 
+export DEPLOYMENT_PATH='/tmp/pgha'
 export PGHA_BASE='/var/pgha'
 export DATA_PATH=$PGHA_BASE/data
 export BACKUP_PATH=$PGHA_BASE/backup

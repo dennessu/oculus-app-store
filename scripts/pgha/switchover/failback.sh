@@ -2,19 +2,19 @@
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 source ${DIR}/../util/common.sh
 
-echo "[MASTER] stop traffic for failover"
+echo "[MASTER] stop traffic for failback"
 
 echo "[MASTER] stop primary pgbouncer proxy"
 forceKill $PGBOUNCER_PORT
 
 ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
-source $DEPLOYMENT_PATH/util/common.sh
+    source $DEPLOYMENT_PATH/util/common.sh
 
-echo "[SLAVE] stop secondary pgbouncer proxy"
-forceKill $PGBOUNCER_PORT
+    echo "[SLAVE] stop secondary pgbouncer proxy"
+    forceKill $PGBOUNCER_PORT
 
-echo "[SLAVE] kill skytools instances"
-forceKillPid $SKYTOOL_PID_PATH
+    echo "[SLAVE] kill skytools instances"
+    forceKillPid $SKYTOOL_PID_PATH
 ENDSSH
 
 ssh $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
