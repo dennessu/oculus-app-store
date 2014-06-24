@@ -41,6 +41,6 @@ public class SigningSupportSerializer extends JsonSerializer<SigningSupport> {
     }
 
     private String sign(String key, String payload) {
-        return ""; // todo implement this
+        return "some_signature_" + String.valueOf(payload).hashCode(); // todo implement this
     }
 }
