@@ -5,8 +5,8 @@
 		"id": "lv_LV"
 	},
 	"defaultCurrency": {
-		"href": "/v1/currencies/LVL",
-		"id": "LVL"
+		"href": "/v1/currencies/EUR",
+		"id": "EUR"
 	},
 	"ratingBoards": [],
 	"subCountries": {
