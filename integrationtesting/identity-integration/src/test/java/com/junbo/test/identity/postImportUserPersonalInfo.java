@@ -74,7 +74,7 @@ public class postImportUserPersonalInfo {
                 Validator.Validate("validate user profile summary", oculusInput.getProfile().getSummary(),
                         userProfile.getSummary());
                 Validator.Validate("validate user profile url", oculusInput.getProfile().getUrl(),
-                        userProfile.getUrl());
+                        userProfile.getWebpage());
                 Validator.Validate("validate user profile avatar",
                         JsonHelper.ObjectToJsonNode(oculusInput.getProfile().getAvatar()),
                         JsonHelper.ObjectToJsonNode(userProfile.getAvatar()));
