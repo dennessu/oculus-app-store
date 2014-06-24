@@ -200,4 +200,58 @@ public class Organization extends PropertyAssignedAwareResourceMeta<Organization
     public void setMigratedCompanyId(Long migratedCompanyId) {
         this.migratedCompanyId = migratedCompanyId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Organization that = (Organization) o;
+
+        if (annualTaxReportIds != null ? !annualTaxReportIds.equals(that.annualTaxReportIds) : that.annualTaxReportIds != null)
+            return false;
+        if (billingAddress != null ? !billingAddress.equals(that.billingAddress) : that.billingAddress != null)
+            return false;
+        if (canonicalName != null ? !canonicalName.equals(that.canonicalName) : that.canonicalName != null)
+            return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (isValidated != null ? !isValidated.equals(that.isValidated) : that.isValidated != null) return false;
+        if (migratedCompanyId != null ? !migratedCompanyId.equals(that.migratedCompanyId) : that.migratedCompanyId != null)
+            return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (ownerId != null ? !ownerId.equals(that.ownerId) : that.ownerId != null) return false;
+        if (payoutInstrument != null ? !payoutInstrument.equals(that.payoutInstrument) : that.payoutInstrument != null)
+            return false;
+        if (payoutTaxProfile != null ? !payoutTaxProfile.equals(that.payoutTaxProfile) : that.payoutTaxProfile != null)
+            return false;
+        if (shippingAddress != null ? !shippingAddress.equals(that.shippingAddress) : that.shippingAddress != null)
+            return false;
+        if (shippingName != null ? !shippingName.equals(that.shippingName) : that.shippingName != null) return false;
+        if (shippingPhone != null ? !shippingPhone.equals(that.shippingPhone) : that.shippingPhone != null)
+            return false;
+        if (taxId != null ? !taxId.equals(that.taxId) : that.taxId != null) return false;
+        if (type != null ? !type.equals(that.type) : that.type != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (ownerId != null ? ownerId.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (billingAddress != null ? billingAddress.hashCode() : 0);
+        result = 31 * result + (shippingAddress != null ? shippingAddress.hashCode() : 0);
+        result = 31 * result + (shippingName != null ? shippingName.hashCode() : 0);
+        result = 31 * result + (shippingPhone != null ? shippingPhone.hashCode() : 0);
+        result = 31 * result + (isValidated != null ? isValidated.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (taxId != null ? taxId.hashCode() : 0);
+        result = 31 * result + (payoutInstrument != null ? payoutInstrument.hashCode() : 0);
+        result = 31 * result + (payoutTaxProfile != null ? payoutTaxProfile.hashCode() : 0);
+        result = 31 * result + (annualTaxReportIds != null ? annualTaxReportIds.hashCode() : 0);
+        result = 31 * result + (canonicalName != null ? canonicalName.hashCode() : 0);
+        result = 31 * result + (migratedCompanyId != null ? migratedCompanyId.hashCode() : 0);
+        return result;
+    }
 }
