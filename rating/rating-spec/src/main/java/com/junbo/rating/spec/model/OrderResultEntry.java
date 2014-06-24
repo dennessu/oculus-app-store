@@ -6,27 +6,29 @@
 
 package com.junbo.rating.spec.model;
 
+import java.math.BigDecimal;
+
 /**
  * Created by lizwu on 2/27/14.
  */
 public class OrderResultEntry {
-    private Money originalAmount;
-    private Money discountAmount;
+    private BigDecimal originalAmount;
+    private BigDecimal discountAmount;
     private String appliedPromotion;
 
-    public Money getOriginalAmount() {
+    public BigDecimal getOriginalAmount() {
         return originalAmount;
     }
 
-    public void setOriginalAmount(Money originalAmount) {
+    public void setOriginalAmount(BigDecimal originalAmount) {
         this.originalAmount = originalAmount;
     }
 
-    public Money getDiscountAmount() {
+    public BigDecimal getDiscountAmount() {
         return discountAmount;
     }
 
-    public void setDiscountAmount(Money discountAmount) {
+    public void setDiscountAmount(BigDecimal discountAmount) {
         this.discountAmount = discountAmount;
     }
 

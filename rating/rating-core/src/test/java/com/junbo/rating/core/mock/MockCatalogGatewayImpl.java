@@ -75,6 +75,7 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
     private RatingOffer genOffer100() {
         return new RatingOffer() {{
             setId("100L");
+            setDeveloperRatio(new BigDecimal("0.8"));
             setPrice(new Price(PriceType.CUSTOM.name(), new HashMap<String, Map<String, BigDecimal>>() {{
                 put("US", new HashMap<String, BigDecimal>() {{
                     put("USD", new BigDecimal("9.99"));
@@ -146,6 +147,7 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
     private RatingOffer genOffer102() {
         return new RatingOffer() {{
             setId("102L");
+            setDeveloperRatio(BigDecimal.ZERO);
             setPrice(new Price(PriceType.CUSTOM.name(), new HashMap<String, Map<String, BigDecimal>>() {{
                 put("US", new HashMap<String, BigDecimal>() {{
                     put("USD", new BigDecimal("9.99"));
@@ -174,6 +176,7 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
     private RatingOffer genOffer107() {
         return new RatingOffer() {{
             setId("107L");
+            setDeveloperRatio(BigDecimal.ZERO);
             setPrice(new Price(PriceType.CUSTOM.name(), new HashMap<String, Map<String, BigDecimal>>() {{
                 put("US", new HashMap<String, BigDecimal>() {{
                     put("USD", new BigDecimal("1.99"));
@@ -196,6 +199,7 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
     private RatingOffer genOffer109() {
         return new RatingOffer() {{
             setId("109L");
+            setDeveloperRatio(BigDecimal.ZERO);
             setPrice(new Price(PriceType.CUSTOM.name(), new HashMap<String, Map<String, BigDecimal>>() {{
                 put("US", new HashMap<String, BigDecimal>() {{
                     put("USD", new BigDecimal("9.99"));

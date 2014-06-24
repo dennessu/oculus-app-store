@@ -6,6 +6,7 @@
 
 package com.junbo.rating.spec.model;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 /**
@@ -15,9 +16,10 @@ public class RatingResultEntry {
     private String offerId;
     private int quantity;
     private String shippingMethodId;
-    private Money preOrderPrice;
-    private Money originalPrice;
-    private Money discountAmount;
+    private BigDecimal developerRatio;
+    private BigDecimal preOrderPrice;
+    private BigDecimal originalPrice;
+    private BigDecimal discountAmount;
     private Set<String> appliedPromotion;
 
     public String getOfferId() {
@@ -44,27 +46,35 @@ public class RatingResultEntry {
         this.shippingMethodId = shippingMethodId;
     }
 
-    public Money getPreOrderPrice() {
+    public BigDecimal getDeveloperRatio() {
+        return developerRatio;
+    }
+
+    public void setDeveloperRatio(BigDecimal developerRatio) {
+        this.developerRatio = developerRatio;
+    }
+
+    public BigDecimal getPreOrderPrice() {
         return preOrderPrice;
     }
 
-    public void setPreOrderPrice(Money preOrderPrice) {
+    public void setPreOrderPrice(BigDecimal preOrderPrice) {
         this.preOrderPrice = preOrderPrice;
     }
 
-    public Money getOriginalPrice() {
+    public BigDecimal getOriginalPrice() {
         return originalPrice;
     }
 
-    public void setOriginalPrice(Money originalPrice) {
+    public void setOriginalPrice(BigDecimal originalPrice) {
         this.originalPrice = originalPrice;
     }
 
-    public Money getDiscountAmount() {
+    public BigDecimal getDiscountAmount() {
         return discountAmount;
     }
 
-    public void setDiscountAmount(Money discountAmount) {
+    public void setDiscountAmount(BigDecimal discountAmount) {
         this.discountAmount = discountAmount;
     }
 
