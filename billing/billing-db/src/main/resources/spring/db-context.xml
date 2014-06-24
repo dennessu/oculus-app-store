@@ -186,7 +186,7 @@
         <property name="dbName" value="tax_item"/>
     </bean>
 
-    <bean id="cloudantTransactionRepository" class="com.junbo.billing.db.repo.cloudant.TransactionRepositoryCloudantImpl" parent="cloudantClient">
+    <bean id="cloudantBillingTransactionRepository" class="com.junbo.billing.db.repo.cloudant.TransactionRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="billing_transaction"/>
     </bean>
 
@@ -236,7 +236,7 @@
     <bean id="billingTransactionRepository" parent="baseRepository">
         <property name="repositoryInterface" value="com.junbo.billing.db.repo.TransactionRepository"/>
         <property name="sqlRepositoryImpl" ref="sqlBillingTransactionRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantTransactionRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantBillingTransactionRepository" />
     </bean>
 
     <!-- repository facade -->
