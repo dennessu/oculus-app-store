@@ -291,18 +291,31 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
 
     @Override
     public Promise<PaymentTransaction> confirmNotify(PaymentTransaction payment, PaymentCallbackParams properties){
-        if(!CommonUtil.isNullOrEmpty(properties.getPspReference())
-                && !CommonUtil.isNullOrEmpty(properties.getAuthResult())
-                && properties.getAuthResult().equalsIgnoreCase(CONFIRMED_STATUS)){
-            //TODO: should return Unconfirmed first and update to SETTLED after notification
+        if(!CommonUtil.isNullOrEmpty(properties.getPspReference()) && !CommonUtil.isNullOrEmpty(properties.getAuthResult())){
+            String strToSign = properties.getAuthResult() + properties.getPspReference() +
+                    properties.getMerchantReference() + skinCode;
+            if(!CommonUtil.calHMCASHA1(strToSign, skinSecret).equals(properties.getMerchantSig())){
+                LOGGER.error("Signature is not matched for:" + properties.getMerchantSig());
+                throw AppServerExceptions.INSTANCE.errorCalculateHMCA().exception();
+            }
+        }else{
+            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "invalid callback").exception();
+        }
+        //validate signature: authResult + pspReference + merchantReference + skinCode + merchantReturnData
+        if(properties.getAuthResult().equalsIgnoreCase(CONFIRMED_STATUS)){
             paymentRepositoryFacade.updatePayment(payment.getId(), PaymentUtil.getPaymentStatus(
                     PaymentStatus.SETTLED.toString()), properties.getPspReference());
             payment.setStatus(PaymentStatus.SETTLED.toString());
             payment.setExternalToken(properties.getPspReference());
+            //get the recurring info and save it back as pi external token:
+            RecurringDetail recurringReference = getRecurringReference(payment.getPaymentInstrumentId());
+            updateExternalToken(payment.getPaymentInstrumentId(), recurringReference);
+        }else{
+            paymentRepositoryFacade.updatePayment(payment.getId(), PaymentUtil.getPaymentStatus(
+                    PaymentStatus.UNCONFIRMED.toString()), properties.getPspReference());
+            payment.setStatus(PaymentStatus.UNCONFIRMED.toString());
+            payment.setExternalToken(properties.getPspReference());
         }
-        //get the recurring info and save it back as pi external token:
-        RecurringDetail recurringReference = getRecurringReference(payment.getPaymentInstrumentId());
-        updateExternalToken(payment.getPaymentInstrumentId(), recurringReference);
         return Promise.pure(payment);
     }
 
