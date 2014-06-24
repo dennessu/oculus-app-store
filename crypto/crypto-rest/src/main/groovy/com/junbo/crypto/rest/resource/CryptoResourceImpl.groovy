@@ -8,11 +8,14 @@ package com.junbo.crypto.rest.resource
 import com.junbo.common.id.UserId
 import com.junbo.crypto.core.validator.CryptoMessageValidator
 import com.junbo.crypto.spec.model.CryptoMessage
+import com.junbo.crypto.spec.model.MasterKey
 import com.junbo.crypto.spec.resource.CryptoResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.transaction.annotation.Transactional
+
+import java.security.Key
 
 /**
  * Created by liangfu on 5/6/14.
@@ -20,6 +23,10 @@ import org.springframework.transaction.annotation.Transactional
 @CompileStatic
 @Transactional
 class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
+
+    private static HashMap<Integer, Key> cachedEncryptMasterKey = new HashMap<>()
+
+    private static HashMap<Integer, Key> cachedDecryptMasterKey = new HashMap<>()
 
     private CryptoMessageValidator validator
 
@@ -120,5 +127,62 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
     @Required
     void setEnableEncrypt(Boolean enableEncrypt) {
         this.enableEncrypt = enableEncrypt
+    }
+
+    // Used to encrypt and decrypt user message by masterKey
+    protected Promise<String> symmetricDecryptUserMessageByMasterKey(String encryptedMessage) {
+        String[] messageInfo = (String [])encryptedMessage.split(versionSeparator)
+        if (messageInfo == null || messageInfo.length != 2) {
+            throw new IllegalArgumentException('message should be separated by ' + versionSeparator)
+        }
+
+        Integer masterKeyVersion = Integer.parseInt(messageInfo[0])
+
+        String messageEncryptValue = messageInfo[1]
+        return getRawMasterKeyByVersion(masterKeyVersion).then { Key masterKeyLoaded ->
+            return Promise.pure(aesCipherService.decrypt(messageEncryptValue, masterKeyLoaded))
+        }
+    }
+
+    private Promise<Key> getRawMasterKeyByVersion(Integer version) {
+        if (cachedDecryptMasterKey.get(version) == null) {
+            return masterKeyRepo.getMasterKeyByVersion(version).then { MasterKey masterKey ->
+                if (masterKey == null) {
+                    throw new IllegalArgumentException('master key with version: ' + version + ' not found.')
+                }
+
+                String decryptedMasterKey = asymmetricDecryptMasterKey(masterKey.encryptValue)
+                Key masterKeyLoaded = stringToKey(decryptedMasterKey)
+
+                cachedDecryptMasterKey.put(version, masterKeyLoaded)
+                return Promise.pure(masterKeyLoaded)
+            }
+        } else {
+            return Promise.pure(cachedDecryptMasterKey.get(version))
+        }
+    }
+
+    protected Promise<String> symmetricEncryptUserMessageByMasterKey(String rawMessage) {
+        return getCurrentRawMasterKey().then {
+            return Promise.pure(((Integer)(cachedEncryptMasterKey.keySet().asList().get(0))) +
+                    versionSeparator + aesCipherService.encrypt(rawMessage, cachedEncryptMasterKey.values().asList().get(0)))
+        }
+    }
+
+    private Promise<Void> getCurrentRawMasterKey() {
+        if (cachedEncryptMasterKey.isEmpty()) {
+            return getCurrentMasterKey().then { MasterKey masterKey ->
+                if (masterKey == null) {
+                    throw new IllegalArgumentException('master key doesn\'t exist in current system')
+                }
+
+                String decryptedMasterKey = asymmetricDecryptMasterKey(masterKey.encryptValue)
+                Key masterKeyLoaded = stringToKey(decryptedMasterKey)
+                cachedEncryptMasterKey.put(masterKey.keyVersion, masterKeyLoaded)
+                return Promise.pure(null)
+            }
+        } else {
+            return Promise.pure(null)
+        }
     }
 }
