@@ -630,6 +630,7 @@ class MigrationResourceImpl implements MigrationResource {
             existingOrg.rev = organization.rev
             return organizationRepository.update(existingOrg)
         }.recover { Throwable e ->
+            // retry here
             return organizationRepository.get(existingOrg.getId()).then { Organization organization ->
                 if (existingOrg == organization) {
                     return Promise.pure(existingOrg)
@@ -638,6 +639,7 @@ class MigrationResourceImpl implements MigrationResource {
                 return organizationRepository.update(existingOrg)
             }
         }.recover { Throwable e ->
+            // retry here
             return organizationRepository.get(existingOrg.getId()).then { Organization organization ->
                 if (existingOrg == organization) {
                     return Promise.pure(existingOrg)
@@ -646,7 +648,7 @@ class MigrationResourceImpl implements MigrationResource {
                 return organizationRepository.update(existingOrg)
             }
         }.recover { Throwable e ->
-            // do nothing here
+            // retry here
             return organizationRepository.get(existingOrg.getId()).then { Organization organization ->
                 if (existingOrg == organization) {
                     return Promise.pure(existingOrg)
