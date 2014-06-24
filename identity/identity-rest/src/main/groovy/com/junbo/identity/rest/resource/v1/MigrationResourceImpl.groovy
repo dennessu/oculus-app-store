@@ -598,7 +598,7 @@ class MigrationResourceImpl implements MigrationResource {
                     return Promise.pure(createdOrg)
                 }
             }.then { Organization createdOrg ->
-                return organizationRepository.update(createdOrg)
+                return retryOrganizationUpdate(createdOrg)
             }
         } else {
             existingOrg.name = oculusInput.company.name
@@ -617,8 +617,42 @@ class MigrationResourceImpl implements MigrationResource {
                     return Promise.pure(existingOrg)
                 }
             }.then { Organization updatedOrg ->
+                return retryOrganizationUpdate(updatedOrg)
+            }
+        }
+    }
+
+    private Promise<Organization> retryOrganizationUpdate(Organization existingOrg) {
+        return organizationRepository.get(existingOrg.getId()).then { Organization organization ->
+            existingOrg.rev = organization.rev
+            return organizationRepository.update(existingOrg)
+        }.recover { Throwable e ->
+            // do nothing here
+            return Promise.pure(null)
+        }.then {
+            return organizationRepository.get(existingOrg.getId()).then { Organization organization ->
+                existingOrg.rev = organization.rev
+                return organizationRepository.update(existingOrg)
+        }.recover { Throwable e ->
+            // do nothing here
+            return Promise.pure(null)
+        }.then {
+            return organizationRepository.get(existingOrg.getId()).then { Organization organization ->
+                existingOrg.rev = organization.rev
                 return organizationRepository.update(existingOrg)
             }
+        }.recover { Throwable e ->
+            // do nothing here
+            return Promise.pure(null)
+        }.then {
+            return organizationRepository.get(existingOrg.getId()).then { Organization organization ->
+                existingOrg.rev = organization.rev
+                return organizationRepository.update(existingOrg)
+            }
+        }.recover { Throwable e ->
+            return Promise.pure(null)
+        }.then {
+            return Promise.pure(existingOrg)}
         }
     }
 
