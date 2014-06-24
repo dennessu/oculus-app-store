@@ -27,4 +27,12 @@
           parent="vatResourceClientProxy">
         <property name="accessTokenProvider" ref="identityAccessTokenProvider"/>
     </bean>
+
+    <bean id="identityRoleResource" class="com.junbo.authorization.spec.resource.proxy.RoleResourceClientProxy" parent="roleResourceClientProxy">
+        <property name="accessTokenProvider" ref="identityAccessTokenProvider"/>
+    </bean>
+
+    <bean id="identityRoleAssignmentResource" class="com.junbo.authorization.spec.resource.proxy.RoleAssignmentResourceClientProxy" parent="roleAssignmentResourceClientProxy">
+        <property name="accessTokenProvider" ref="identityAccessTokenProvider"/>
+    </bean>
 </beans>
