@@ -156,9 +156,9 @@ class CoreBuilder {
         balance.piId = order.payments?.get(0)?.paymentInstrument
         balance.trackingUuid = UUID.randomUUID()
         balance.shippingAddressId = order.shippingAddress
-        balance.providerConfirmUrl = order.providerConfirmUrl
-        balance.successRedirectUrl = order.successRedirectUrl
-        balance.cancelRedirectUrl = order.cancelRedirectUrl
+        balance.providerConfirmUrl = order.payments[0].providerConfirmUrl
+        balance.successRedirectUrl = order.payments[0].successRedirectUrl
+        balance.cancelRedirectUrl = order.payments[0].cancelRedirectUrl
         if (order.paymentDescription != null) {
             balance.propertySet.put(PropertyKey.BALANCE_DESCRIPTION.name(), order.paymentDescription)
         }

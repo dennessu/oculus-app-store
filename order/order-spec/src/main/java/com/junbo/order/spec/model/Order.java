@@ -37,8 +37,7 @@ import java.util.List;
         "totalShippingFeeDiscount", "honoredTime",
         "resourceAge", "ratingInfo", "shippingMethod",
         "shippingToAddress", "shippingToName", "shippingToPhone",
-        "orderItems", "payments", "discounts",
-        "successRedirectUrl", "cancelRedirectUrl", "providerConfirmUrl"
+        "orderItems", "payments", "discounts"
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Order extends ResourceMetaForDualWrite<OrderId> {
@@ -136,15 +135,6 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
     @ApiModelProperty(required = true, position = 170, value = "[Client Immutable]]The link to the order events. ")
     @HateoasLink("/order-events?orderId={id}")
     private Link orderEvents;
-
-    // urls for web payment
-    @ApiModelProperty(required = true, position = 200, value = "[Client Immutable] The redirect url on success. ")
-    private String successRedirectUrl;
-    @ApiModelProperty(required = true, position = 210, value = "[Client Immutable] The redirect url on cancellation. ")
-    private String cancelRedirectUrl;
-    @ApiModelProperty(required = true, position = 220, value = "[Client Immutable] The redirect url on confirmation. ")
-    private String providerConfirmUrl;
-    // end of urls
 
     @ApiModelProperty(required = true, position = 300, value = "[Client Immutable] The billing histories of the order. ")
     private List<BillingHistory> billingHistories;
@@ -327,30 +317,6 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
 
     public void setOrderEvents(Link orderEvents) {
         this.orderEvents = orderEvents;
-    }
-
-    public String getSuccessRedirectUrl() {
-        return successRedirectUrl;
-    }
-
-    public void setSuccessRedirectUrl(String successRedirectUrl) {
-        this.successRedirectUrl = successRedirectUrl;
-    }
-
-    public String getCancelRedirectUrl() {
-        return cancelRedirectUrl;
-    }
-
-    public void setCancelRedirectUrl(String cancelRedirectUrl) {
-        this.cancelRedirectUrl = cancelRedirectUrl;
-    }
-
-    public String getProviderConfirmUrl() {
-        return providerConfirmUrl;
-    }
-
-    public void setProviderConfirmUrl(String providerConfirmUrl) {
-        this.providerConfirmUrl = providerConfirmUrl;
     }
 
     public List<BillingHistory> getBillingHistories() {
