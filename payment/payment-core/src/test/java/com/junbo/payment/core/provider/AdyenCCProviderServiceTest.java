@@ -74,7 +74,7 @@ public class AdyenCCProviderServiceTest  extends BaseTest {
         payment.setChargeInfo(new ChargeInfo() {
             {
                 setCurrency("USD");
-                setAmount(new BigDecimal(1500.00));
+                setAmount(new BigDecimal("12.34"));
             }
         });
         PaymentTransaction autResult = mockAdyenPaymentService.authorize(payment).get();

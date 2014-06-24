@@ -54,6 +54,8 @@
         <property name="recurringURL" value="${payment.provider.adyen.recurringurl}"/>
         <property name="authUser" value="${payment.provider.adyen.user}"/>
         <property name="authPassword" value="${payment.provider.adyen.password}"/>
+        <property name="notifyUser" value="${payment.provider.adyen.notifyUser}"/>
+        <property name="notifyPassword" value="${payment.provider.adyen.notifyPassword}"/>
     </bean>
 
     <bean id="adyenCCProviderService" class="com.junbo.payment.core.provider.adyen.AdyenCCProivderServiceImpl" parent="adyenProviderService">

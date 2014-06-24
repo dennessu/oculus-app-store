@@ -14,17 +14,11 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.junbo.common.util.PromiseFacade;
 import com.junbo.langur.core.context.JunboHttpContext;
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.payment.clientproxy.CountryServiceFacade;
-import com.junbo.payment.clientproxy.CurrencyServiceFacade;
-import com.junbo.payment.clientproxy.PersonalInfoFacade;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
-import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.core.provider.PaymentProvider;
 import com.junbo.payment.core.util.PaymentUtil;
-import com.junbo.payment.db.repo.facade.PaymentInstrumentRepositoryFacade;
-import com.junbo.payment.db.repo.facade.PaymentRepositoryFacade;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentCallbackParams;
@@ -34,10 +28,10 @@ import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.core.Response;
 import javax.xml.rpc.Stub;
+import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -46,41 +40,8 @@ import java.util.concurrent.Callable;
 /**
  * adyen provider service implementation.
  */
-public class AdyenProviderServiceImpl extends AbstractPaymentProviderService implements InitializingBean {
+public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl implements InitializingBean {
     private static final Logger LOGGER = LoggerFactory.getLogger(AdyenProviderServiceImpl.class);
-    private static final String PROVIDER_NAME = "Adyen";
-    protected static final String CONFIRMED_STATUS = "AUTHORISED";
-    protected static final String RECURRING = "RECURRING";
-    protected static final String CANCEL_STATE = "[cancel-received]";
-    protected static final String REFUND_STATE = "[refund-received]";
-    protected static final String CAPTURE_STATE = "[capture-received]";
-    private static final String AUTH_USER = "javax.xml.rpc.security.auth.username";
-    private static final String AUTH_PWD = "javax.xml.rpc.security.auth.password";
-    private static final String[] NOTIFY_FIELDS = {"eventDate","reason","originalReference",
-        "merchantReference","currency",
-        "pspReference","merchantAccountCode","eventCode","value","operations","success","live"};
-    private static final int SHIP_DELAY = 1;
-    private static final int VALID_HOURS = 3;
-    private String redirectURL;
-    private String paymentURL;
-    private String recurringURL;
-    private String merchantAccount;
-    private String skinCode;
-    private String skinSecret;
-    private String authUser;
-    private String authPassword;
-    protected PaymentPortType service;
-    protected RecurringPortType recurService;
-    @Autowired
-    protected PaymentInstrumentRepositoryFacade paymentInstrumentRepositoryFacade;
-    @Autowired
-    protected PaymentRepositoryFacade paymentRepositoryFacade;
-    @Autowired
-    protected CountryServiceFacade countryResource;
-    @Autowired
-    protected CurrencyServiceFacade currencyResource;
-    @Autowired
-    protected PersonalInfoFacade personalInfoFacade;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -102,7 +63,6 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
 
     @Override
     public void clonePIResult(PaymentInstrument source, PaymentInstrument target) {
-
     }
 
     @Override
@@ -171,11 +131,11 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
         try {
             result = recurService.listRecurringDetails(request);
         } catch (RemoteException e) {
+            LOGGER.error("error get recurring reference: " + e.toString());
             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, e.toString()).exception();
         }
         if(result != null && result.getDetails() != null && result.getDetails().length > 0){
-            RecurringDetail[] details = result.getDetails();
-            return details[0];
+            return result.getDetails()[0];
         }
         return null;
     }
@@ -184,8 +144,8 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
         StringBuffer strRequest = new StringBuffer();
         StringBuffer strToSign = new StringBuffer();
         String currency = paymentRequest.getChargeInfo().getCurrency();
-        long amount = paymentRequest.getChargeInfo().getAmount().longValue()
-                * currencyResource.getNumberAfterDecimal(currency).get();
+        long amount = paymentRequest.getChargeInfo().getAmount()
+                .multiply(new BigDecimal(currencyResource.getNumberAfterDecimal(currency).get())).longValue();
         strToSign.append(amount);
         strRequest.append("paymentAmount=" + amount);
         strToSign.append(currency);
@@ -241,9 +201,8 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
         request.setSelectedRecurringDetailReference(pi.getExternalToken());
         request.setRecurring(new Recurring(RECURRING, null));
         String currencyCode = paymentRequest.getChargeInfo().getCurrency();
-        request.setAmount(new Amount(currencyCode,
-                paymentRequest.getChargeInfo().getAmount().longValue()
-                        * currencyResource.getNumberAfterDecimal(currencyCode).get()));
+        request.setAmount(new Amount(currencyCode, paymentRequest.getChargeInfo().getAmount().multiply(
+                     new BigDecimal(currencyResource.getNumberAfterDecimal(currencyCode).get())).longValue()));
         request.setReference(CommonUtil.encode(paymentRequest.getId()));
         request.setShopperEmail(paymentRequest.getUserInfo().getEmail());
         request.setShopperReference(nullToEmpty(paymentRequest.getPaymentInstrumentId().toString()));
@@ -308,8 +267,8 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
                 refundReq.setOriginalReference(transactionId);
                 String currency = request.getChargeInfo().getCurrency();
                 refundReq.setModificationAmount(new Amount(currency,
-                        request.getChargeInfo().getAmount().longValue()
-                                * currencyResource.getNumberAfterDecimal(currency).get()));
+                        request.getChargeInfo().getAmount().multiply(
+                            new BigDecimal(currencyResource.getNumberAfterDecimal(currency).get())).longValue()));
                 ModificationResult refundResult = null;
                 try{
                     refundResult = service.refund(refundReq);
@@ -335,6 +294,7 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
         if(!CommonUtil.isNullOrEmpty(properties.getPspReference())
                 && !CommonUtil.isNullOrEmpty(properties.getAuthResult())
                 && properties.getAuthResult().equalsIgnoreCase(CONFIRMED_STATUS)){
+            //TODO: should return Unconfirmed first and update to SETTLED after notification
             paymentRepositoryFacade.updatePayment(payment.getId(), PaymentUtil.getPaymentStatus(
                     PaymentStatus.SETTLED.toString()), properties.getPspReference());
             payment.setStatus(PaymentStatus.SETTLED.toString());
@@ -343,7 +303,6 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
         //get the recurring info and save it back as pi external token:
         RecurringDetail recurringReference = getRecurringReference(payment.getPaymentInstrumentId());
         updateExternalToken(payment.getPaymentInstrumentId(), recurringReference);
-        //TODO: send back ACK [accepted] to adyen for notifications
         return Promise.pure(payment);
     }
 
@@ -385,33 +344,30 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
     @Override
     public Promise<PaymentTransaction> processNotify(String request){
         // Check user and password
-        String authHeader = JunboHttpContext.getRequestHeaders().getFirst("authorization");
-        if (authHeader != null){
-            String encodedValue = authHeader.split(" ")[1];
-            String decodedValue = new String(Base64.decodeBase64(encodedValue.getBytes()));
-            //TODO: validate the value:
-            LOGGER.info(decodedValue);
-        }
-        else{
-            LOGGER.error("missing authorize header");
-            throw AppServerExceptions.INSTANCE.missingRequiredField("authorize header").exception();
-        }
+        checkAuthorization();
         //get results
         Map<String, String> notifies = new HashMap<>();
         String[] requests = request.split("&");
         for(String field : requests){
             String[] results = field.split("=");
             if(Arrays.asList(NOTIFY_FIELDS).contains(results[0])){
-                notifies.put(results[0], results[1]);
+                notifies.put(results[0], results.length > 1 ? results[1] : null);
             }
         }
         AdyenNotifyRequest notify = CommonUtil.parseJson(CommonUtil.toJson(notifies, null), AdyenNotifyRequest.class);
-        //TODO: check redundant notification
-        //TODO: save to DB for check and update status
+        if(notify.getPspReference() == null){
+            return Promise.pure(null);
+        }
+        //TODO: save to DB and check redundant notification
         Long paymentId = CommonUtil.decode(notify.getMerchantReference());
+        String merchantAccount = notify.getMerchantAccountCode();
         PaymentTransaction transaction = paymentRepositoryFacade.getByPaymentId(paymentId);
+        if(transaction == null){
+            return Promise.pure(null);
+        }
         String externalToken = notify.getPspReference();
-        if(notify.getSuccess().equals("true") && externalToken.equalsIgnoreCase(transaction.getExternalToken())){
+        if(notify.getSuccess().equalsIgnoreCase("true") && merchantAccount.equalsIgnoreCase(this.merchantAccount)
+                && externalToken.equalsIgnoreCase(transaction.getExternalToken())){
             if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.AUTHORISATION.name())){
                 //Ignore of Credit Card Auth as CC use API call directly
                 if(!transaction.getPaymentProvider().equalsIgnoreCase(PaymentProvider.AdyenCC.toString())){
@@ -435,71 +391,19 @@ public class AdyenProviderServiceImpl extends AbstractPaymentProviderService imp
         return Promise.pure(null);
     }
 
-    public String getRedirectURL() {
-        return redirectURL;
-    }
-
-    public void setRedirectURL(String redirectURL) {
-        this.redirectURL = redirectURL;
-    }
-
-    public String getMerchantAccount() {
-        return merchantAccount;
-    }
-
-    public void setMerchantAccount(String merchantAccount) {
-        this.merchantAccount = merchantAccount;
-    }
-
-    public String getSkinCode() {
-        return skinCode;
-    }
-
-    public void setSkinCode(String skinCode) {
-        this.skinCode = skinCode;
-    }
-
-    protected String nullToEmpty(String value){
-        return value == null ? "" : value;
-    }
-
-    public String getSkinSecret() {
-        return skinSecret;
-    }
-
-    public void setSkinSecret(String skinSecret) {
-        this.skinSecret = skinSecret;
-    }
-
-    public String getPaymentURL() {
-        return paymentURL;
-    }
-
-    public void setPaymentURL(String paymentURL) {
-        this.paymentURL = paymentURL;
-    }
-
-    public String getRecurringURL() {
-        return recurringURL;
-    }
-
-    public void setRecurringURL(String recurringURL) {
-        this.recurringURL = recurringURL;
-    }
-
-    public String getAuthUser() {
-        return authUser;
-    }
-
-    public void setAuthUser(String authUser) {
-        this.authUser = authUser;
-    }
-
-    public String getAuthPassword() {
-        return authPassword;
-    }
-
-    public void setAuthPassword(String authPassword) {
-        this.authPassword = authPassword;
+    private void checkAuthorization() {
+        String authHeader = JunboHttpContext.getRequestHeaders().getFirst("authorization");
+        if (authHeader != null){
+            String encodedValue = authHeader.split(" ")[1];
+            String decodedValue = new String(Base64.decodeBase64(encodedValue.getBytes()));
+            //TODO: encrypt&decrypt password:
+            if(!decodedValue.equals(notifyUser + ":" + notifyPassword)){
+                LOGGER.error("invalid authorization to receive notification:" + authHeader);
+                throw AppServerExceptions.INSTANCE.unAuthorized(authHeader).exception();
+            }
+        }else{
+            LOGGER.error("missing authorize header");
+            throw AppServerExceptions.INSTANCE.missingRequiredField("authorize header").exception();
+        }
     }
 }

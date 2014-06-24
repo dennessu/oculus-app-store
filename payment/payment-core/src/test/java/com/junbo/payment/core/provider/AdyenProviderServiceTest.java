@@ -37,7 +37,7 @@ public class AdyenProviderServiceTest extends BaseTest {
         payment.setChargeInfo(new ChargeInfo() {
             {
                 setCurrency("CNY");
-                setAmount(new BigDecimal(1500.00));
+                setAmount(new BigDecimal("12.34"));
             }
         });
         PaymentTransaction result = paymentService.charge(payment).get();

@@ -57,4 +57,7 @@ public interface AppServerExceptions {
 
     @ErrorDef(httpStatusCode = 500, code = "50012", description = "error happens when calculation the HMCA")
     AppError errorCalculateHMCA();
+
+    @ErrorDef(httpStatusCode = 401, code = "50014", description = "{0} is un-authorized for calling API")
+    AppError unAuthorized(String authCode);
 }
