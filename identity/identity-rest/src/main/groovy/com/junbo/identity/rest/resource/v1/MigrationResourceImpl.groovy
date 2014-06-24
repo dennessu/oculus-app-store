@@ -624,35 +624,40 @@ class MigrationResourceImpl implements MigrationResource {
 
     private Promise<Organization> retryOrganizationUpdate(Organization existingOrg) {
         return organizationRepository.get(existingOrg.getId()).then { Organization organization ->
+            if (existingOrg == organization) {
+                return Promise.pure(existingOrg)
+            }
             existingOrg.rev = organization.rev
             return organizationRepository.update(existingOrg)
         }.recover { Throwable e ->
-            // do nothing here
-            return Promise.pure(null)
-        }.then {
             return organizationRepository.get(existingOrg.getId()).then { Organization organization ->
+                if (existingOrg == organization) {
+                    return Promise.pure(existingOrg)
+                }
                 existingOrg.rev = organization.rev
                 return organizationRepository.update(existingOrg)
+            }
         }.recover { Throwable e ->
-            // do nothing here
-            return Promise.pure(null)
-        }.then {
             return organizationRepository.get(existingOrg.getId()).then { Organization organization ->
+                if (existingOrg == organization) {
+                    return Promise.pure(existingOrg)
+                }
                 existingOrg.rev = organization.rev
                 return organizationRepository.update(existingOrg)
             }
         }.recover { Throwable e ->
             // do nothing here
-            return Promise.pure(null)
-        }.then {
             return organizationRepository.get(existingOrg.getId()).then { Organization organization ->
+                if (existingOrg == organization) {
+                    return Promise.pure(existingOrg)
+                }
                 existingOrg.rev = organization.rev
                 return organizationRepository.update(existingOrg)
             }
         }.recover { Throwable e ->
             return Promise.pure(null)
         }.then {
-            return Promise.pure(existingOrg)}
+            return Promise.pure(existingOrg)
         }
     }
 
