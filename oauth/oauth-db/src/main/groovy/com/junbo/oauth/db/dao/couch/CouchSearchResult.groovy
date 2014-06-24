@@ -12,17 +12,18 @@ import groovy.transform.CompileStatic
  * CouchSearchResult.
  */
 @CompileStatic
-class CouchSearchResult<T> {
+class CouchSearchResult<T, V> {
     @JsonProperty('total_rows')
     int totalRows
     long offset
 
-    List<ResultObject<T>> rows
+    List<ResultObject<T, V>> rows
 
-    static class ResultObject<T> {
+    static class ResultObject<T, V> {
         String id
         String key
         T value
+        V doc
     }
 
     static class AllResultEntity {

@@ -177,8 +177,13 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
     }
 
     protected CouchSearchResult internalQueryView(String viewName, String key) {
-        def response = executeRequest(HttpMethod.GET, VIEW_PATH + viewName,
-                key == null ? [:] : ['key': "\"$key\""], null)
+        def query = ['include_docs': 'true']
+
+        if (key != null) {
+            query.put('key', "\"$key\"")
+        }
+
+        def response = executeRequest(HttpMethod.GET, VIEW_PATH + viewName, query, null)
 
         if (response.statusCode != HttpStatus.OK.value()) {
             CouchError couchError = JsonMarshaller.unmarshall(response.responseBody, CouchError)
@@ -186,14 +191,14 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
                     " reason: $couchError.reason")
         }
 
-        return (CouchSearchResult) JsonMarshaller.unmarshall(response.responseBody, CouchSearchResult, String)
+        return (CouchSearchResult) JsonMarshaller.unmarshall(response.responseBody, CouchSearchResult, String, entityClass)
     }
 
     protected List<T> queryView(String viewName, String key) {
         CouchSearchResult searchResult = internalQueryView(viewName, key)
         if (searchResult.rows != null) {
             return searchResult.rows.collect { CouchSearchResult.ResultObject result ->
-                return get(result.id)
+                return (T)result.doc
             }
         }
 

@@ -53,7 +53,7 @@ class JsonMarshaller {
      * @param parameterClass The generic class generic part.
      * @return The unmashalled Object of the given generic class.
      */
-    static <T> T unmarshall(String string, Class<?> parametrized, Class<?> parameterClass) {
+    static <T> T unmarshall(String string, Class<?> parametrized, Class<?>... parameterClass) {
         // Construct the JavaType with the given parametrized class and generic type.
         JavaType javaType = objectMapper.typeFactory.constructParametricType(parametrized, parameterClass)
         return objectMapper.readValue(string, javaType)

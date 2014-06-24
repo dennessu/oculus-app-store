@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.ser.impl.BeanAsArraySerializer;
 import com.fasterxml.jackson.databind.ser.impl.ObjectIdWriter;
 import com.fasterxml.jackson.databind.ser.impl.UnwrappingBeanSerializer;
@@ -75,14 +76,7 @@ public class CloudantBeanSerializer extends BeanSerializerBase {
     @Override
     public void serialize(Object bean, JsonGenerator jgen, SerializerProvider provider)
             throws IOException, JsonGenerationException {
-        if (bean instanceof CloudantEntity) {
-            CloudantEntity entity = (CloudantEntity)bean;
-            if (entity.getId() != null) {
-                entity.setCloudantId(entity.getId().toString());
-            } else {
-                entity.setCloudantId(null);
-            }
-        }
+        updateCloudantId(bean);
 
         if (_objectIdWriter != null) {
             _serializeWithObjectId(bean, jgen, provider, true);
@@ -95,6 +89,25 @@ public class CloudantBeanSerializer extends BeanSerializerBase {
             serializeFields(bean, jgen, provider);
         }
         jgen.writeEndObject();
+    }
+
+    @Override
+    public void serializeWithType(Object bean, JsonGenerator jgen,
+                                  SerializerProvider provider, TypeSerializer typeSer)
+            throws IOException, JsonGenerationException {
+        updateCloudantId(bean);
+        super.serializeWithType(bean, jgen, provider, typeSer);
+    }
+
+    private void updateCloudantId(Object bean) {
+        if (bean instanceof CloudantEntity) {
+            CloudantEntity entity = (CloudantEntity)bean;
+            if (entity.getId() != null) {
+                entity.setCloudantId(entity.getId().toString());
+            } else {
+                entity.setCloudantId(null);
+            }
+        }
     }
 
     @Override
