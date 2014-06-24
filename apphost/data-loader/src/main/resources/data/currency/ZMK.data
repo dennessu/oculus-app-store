@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "ZMK",
+			"longName": "Zambian kwacha"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=ZMK",
+		"id": null
+	},
+	"currencyCode": "ZMK",
+	"symbol": "ZMK",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

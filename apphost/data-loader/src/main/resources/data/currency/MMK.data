@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "MMK",
+			"longName": "Burmese kyat"
+		},
+		"my_MM": {
+			"shortName": "ကျပ်",
+			"longName": "ကျပ်"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=MMK",
+		"id": null
+	},
+	"currencyCode": "MMK",
+	"symbol": "K",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

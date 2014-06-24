@@ -1,0 +1,32 @@
+{
+	"countryCode": "PR",
+	"defaultLocale": {
+		"href": "/v1/locales/es_PR",
+		"id": "es_PR"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/USD",
+		"id": "USD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/es_PR",
+		"id": "es_PR"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Puerto Rico",
+			"longName": "Commonwealth of Puerto Rico "
+		},
+		"es_PR": {
+			"shortName": "Puerto Rico",
+			"longName": "Estado Libre Asociado de Puerto Rico"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

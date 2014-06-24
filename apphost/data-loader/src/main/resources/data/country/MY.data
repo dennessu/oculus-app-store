@@ -147,6 +147,10 @@
 		"id": "en_SG"
 	}],
 	"locales": {
+		"en_US": {
+			"shortName": "Malaysia",
+			"longName": "Malaysia"
+		},
 		"en_SG": {
 			"shortName": "Malaysia",
 			"longName": "Malaysia"

@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "LRD",
+			"longName": "Liberian dollar"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=LRD",
+		"id": null
+	},
+	"currencyCode": "LRD",
+	"symbol": "L$",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

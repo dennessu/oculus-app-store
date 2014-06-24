@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "TTD",
+			"longName": "Trinidad and Tobago dollar"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=TTD",
+		"id": null
+	},
+	"currencyCode": "TTD",
+	"symbol": "$",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

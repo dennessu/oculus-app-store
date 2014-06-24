@@ -1,0 +1,86 @@
+{
+	"countryCode": "TJ",
+	"defaultLocale": {
+		"href": "/v1/locales/ru_RU",
+		"id": "ru_RU"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/TJS",
+		"id": "TJS"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/RGRS",
+		"id": "RGRS"
+	}],
+	"subCountries": {
+		"GB": {
+			"locales": {
+				"tg_TJ": {
+					"shortName": "Вилояти Мухтори Кӯҳистони Бадахшон",
+					"longName": "Вилояти Мухтори Кӯҳистони Бадахшон"
+				},
+				"ru_RU": {
+					"shortName": "Горно-Бадахшанская автономная область",
+					"longName": "Горно-Бадахшанская автономная область"
+				},
+				"en_US": {
+					"shortName": "Gorno-Badakhshan Autonomous Province",
+					"longName": "Gorno-Badakhshan Autonomous Province"
+				}
+			}
+		},
+		"KT": {
+			"locales": {
+				"tg_TJ": {
+					"shortName": "Хатлон",
+					"longName": "Хатлон"
+				},
+				"ru_RU": {
+					"shortName": "Хатлонской",
+					"longName": "Хатлонской"
+				},
+				"en_US": {
+					"shortName": "Khatlon Province",
+					"longName": "Khatlon Province"
+				}
+			}
+		},
+		"SU": {
+			"locales": {
+				"tg_TJ": {
+					"shortName": "Вилояти Суғд",
+					"longName": "Вилояти Суғд"
+				},
+				"ru_RU": {
+					"shortName": "Согдийская",
+					"longName": "Согдийская"
+				},
+				"en_US": {
+					"shortName": "Sughd Province",
+					"longName": "Sughd Province"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/tg_TJ",
+		"id": "tg_TJ"
+	},
+	{
+		"href": "/v1/locales/ru_RU",
+		"id": "ru_RU"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Tajikistan",
+			"longName": "Republic of Tajikistan "
+		},
+		"ru_RU": {
+			"shortName": "Таджикистан",
+			"longName": "Респу́блика Таджикистан"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,103 @@
+{
+	"countryCode": "IL",
+	"defaultLocale": {
+		"href": "/v1/locales/he_IL",
+		"id": "he_IL"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/ILS",
+		"id": "ILS"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"D": {
+			"locales": {
+				"he_IL": {
+					"shortName": "מחוז הדרום",
+					"longName": "מחוז הדרום"
+				},
+				"en_US": {
+					"shortName": "South District",
+					"longName": "South District"
+				}
+			}
+		},
+		"HA": {
+			"locales": {
+				"he_IL": {
+					"shortName": "מחוז חיפה",
+					"longName": "מחוז חיפה"
+				},
+				"en_US": {
+					"shortName": "Haifa District",
+					"longName": "Haifa District"
+				}
+			}
+		},
+		"JM": {
+			"locales": {
+				"he_IL": {
+					"shortName": "מחוז ירושלים",
+					"longName": "מחוז ירושלים"
+				},
+				"en_US": {
+					"shortName": "Jerusalem District",
+					"longName": "Jerusalem District"
+				}
+			}
+		},
+		"M": {
+			"locales": {
+				"en_US": {
+					"shortName": "Central District",
+					"longName": "Central District"
+				},
+				"he_IL": {
+					"shortName": "מָחוֹז הַמֶרְכָּז",
+					"longName": "מָחוֹז הַמֶרְכָּז"
+				}
+			}
+		},
+		"TA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Tel Aviv District",
+					"longName": "Tel Aviv District"
+				},
+				"he_IL": {
+					"shortName": "מָחוֹז תֵּל אָבִיב",
+					"longName": "מָחוֹז תֵּל אָבִיב"
+				}
+			}
+		},
+		"Z": {
+			"locales": {
+				"he_IL": {
+					"shortName": "מחוז הצפון",
+					"longName": "מחוז הצפון"
+				},
+				"en_US": {
+					"shortName": "North District",
+					"longName": "North District"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/he_IL",
+		"id": "he_IL"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Israel",
+			"longName": "State of Israel"
+		},
+		"he_IL": {
+			"shortName": "יִשְׂרָאֵל",
+			"longName": "מְדִינַת יִשְׂרָאֵל"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

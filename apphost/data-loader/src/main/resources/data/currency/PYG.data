@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "PYG",
+			"longName": "Paraguayan guaraní"
+		},
+		"es_PY": {
+			"shortName": "Guaraní paraguayo",
+			"longName": "Guaraní paraguayo"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=PYG",
+		"id": null
+	},
+	"currencyCode": "PYG",
+	"symbol": "₲",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

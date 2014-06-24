@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "KWD",
+			"longName": "Kuwaiti dinar"
+		},
+		"ar_KW": {
+			"shortName": "دينار",
+			"longName": "دينار كويتي"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=KWD",
+		"id": null
+	},
+	"currencyCode": "KWD",
+	"symbol": "K.D.",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "3",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "JMD",
+			"longName": "Jamaican dollar"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=JMD",
+		"id": null
+	},
+	"currencyCode": "JMD",
+	"symbol": "$",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "SOS",
+			"longName": "Somali shilling"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=SOS",
+		"id": null
+	},
+	"currencyCode": "SOS",
+	"symbol": "Sh.So.",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "QAR",
+			"longName": "Qatari riyal"
+		},
+		"ar_QA": {
+			"shortName": "ريال",
+			"longName": "ريال قطري"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=QAR",
+		"id": null
+	},
+	"currencyCode": "QAR",
+	"symbol": "ر.ق.",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

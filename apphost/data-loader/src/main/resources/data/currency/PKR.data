@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "PKR",
+			"longName": "Pakistani rupee"
+		},
+		"ur_PK": {
+			"shortName": "روپیہ",
+			"longName": "پاکستانی روپیہ"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=PKR",
+		"id": null
+	},
+	"currencyCode": "PKR",
+	"symbol": "₨",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

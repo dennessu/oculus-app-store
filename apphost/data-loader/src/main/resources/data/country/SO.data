@@ -1,0 +1,174 @@
+{
+	"countryCode": "SO",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/SOS",
+		"id": "SOS"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/FPB",
+		"id": "FPB"
+	}],
+	"subCountries": {
+		"AW": {
+			"locales": {
+				"en_US": {
+					"shortName": "Awdal",
+					"longName": "Awdal"
+				}
+			}
+		},
+		"BK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Bakool",
+					"longName": "Bakool"
+				}
+			}
+		},
+		"BN": {
+			"locales": {
+				"en_US": {
+					"shortName": "Banaadir",
+					"longName": "Banaadir"
+				}
+			}
+		},
+		"BR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Bari",
+					"longName": "Bari"
+				}
+			}
+		},
+		"BY": {
+			"locales": {
+				"en_US": {
+					"shortName": "Bay",
+					"longName": "Bay"
+				}
+			}
+		},
+		"GA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Galguduud",
+					"longName": "Galguduud"
+				}
+			}
+		},
+		"GE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Gedo",
+					"longName": "Gedo"
+				}
+			}
+		},
+		"HI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Hiiraan",
+					"longName": "Hiiraan"
+				}
+			}
+		},
+		"JD": {
+			"locales": {
+				"en_US": {
+					"shortName": "Jubbada Dhexe",
+					"longName": "Jubbada Dhexe"
+				}
+			}
+		},
+		"JH": {
+			"locales": {
+				"en_US": {
+					"shortName": "Jubbada Hoose",
+					"longName": "Jubbada Hoose"
+				}
+			}
+		},
+		"MU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Mudug",
+					"longName": "Mudug"
+				}
+			}
+		},
+		"NU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Nugaal",
+					"longName": "Nugaal"
+				}
+			}
+		},
+		"SA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Sanaag",
+					"longName": "Sanaag"
+				}
+			}
+		},
+		"SD": {
+			"locales": {
+				"en_US": {
+					"shortName": "Shabeellaha Dhexe",
+					"longName": "Shabeellaha Dhexe"
+				}
+			}
+		},
+		"SH": {
+			"locales": {
+				"en_US": {
+					"shortName": "Shabeellaha Hoose",
+					"longName": "Shabeellaha Hoose"
+				}
+			}
+		},
+		"SO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Sool",
+					"longName": "Sool"
+				}
+			}
+		},
+		"TO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Togdheer",
+					"longName": "Togdheer"
+				}
+			}
+		},
+		"WO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Woqooyi Galbeed",
+					"longName": "Woqooyi Galbeed"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Somalia",
+			"longName": "Federal Republic of Somalia"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

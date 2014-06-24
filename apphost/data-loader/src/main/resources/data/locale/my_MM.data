@@ -1,0 +1,11 @@
+{
+  "localeCode": "my_MM",
+  "shortName": "Burmese (MM)",
+  "longName": "Burmese (Myanmar)",
+  "localeName": "Burmese (MM)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

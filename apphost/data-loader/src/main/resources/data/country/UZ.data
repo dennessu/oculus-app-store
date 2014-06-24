@@ -1,0 +1,206 @@
+{
+	"countryCode": "UZ",
+	"defaultLocale": {
+		"href": "/v1/locales/uz_UZ",
+		"id": "uz_UZ"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/RUB",
+		"id": "RUB"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/RGRS",
+		"id": "RGRS"
+	}],
+	"subCountries": {
+		"AN": {
+			"locales": {
+				"en_US": {
+					"shortName": "Andijan",
+					"longName": "Andijan"
+				},
+				"uz_UZ": {
+					"shortName": "Andijon",
+					"longName": "Andijon"
+				}
+			}
+		},
+		"BU": {
+			"locales": {
+				"uz_UZ": {
+					"shortName": "Buxoro",
+					"longName": "Buxoro"
+				},
+				"en_US": {
+					"shortName": "Bukhara",
+					"longName": "Bukhara"
+				}
+			}
+		},
+		"FA": {
+			"locales": {
+				"uz_UZ": {
+					"shortName": " Farg‘ona",
+					"longName": " Farg‘ona"
+				},
+				"en_US": {
+					"shortName": "Fergana",
+					"longName": "Fergana"
+				}
+			}
+		},
+		"JI": {
+			"locales": {
+				"uz_UZ": {
+					"shortName": "Jizzax",
+					"longName": "Jizzax"
+				},
+				"en_US": {
+					"shortName": "Jizzakh",
+					"longName": "Jizzakh"
+				}
+			}
+		},
+		"NG": {
+			"locales": {
+				"uz_UZ": {
+					"shortName": "Namangan",
+					"longName": "Namangan"
+				},
+				"en_US": {
+					"shortName": "Namangan",
+					"longName": "Namangan"
+				}
+			}
+		},
+		"NW": {
+			"locales": {
+				"en_US": {
+					"shortName": "Navoiy",
+					"longName": "Navoiy"
+				},
+				"uz_UZ": {
+					"shortName": "Navoiy",
+					"longName": "Navoiy"
+				}
+			}
+		},
+		"QA": {
+			"locales": {
+				"uz_UZ": {
+					"shortName": "Qashqadaryo",
+					"longName": "Qashqadaryo"
+				},
+				"en_US": {
+					"shortName": "Qashqadaryo",
+					"longName": "Qashqadaryo"
+				}
+			}
+		},
+		"QR": {
+			"locales": {
+				"uz_UZ": {
+					"shortName": "Qoraqalpog'iston",
+					"longName": "Qoraqalpog'iston"
+				},
+				"en_US": {
+					"shortName": "Karakalpakstan",
+					"longName": "Karakalpakstan"
+				}
+			}
+		},
+		"SA": {
+			"locales": {
+				"uz_UZ": {
+					"shortName": "Samarqand",
+					"longName": "Samarqand"
+				},
+				"en_US": {
+					"shortName": "Samarqand",
+					"longName": "Samarqand"
+				}
+			}
+		},
+		"SI": {
+			"locales": {
+				"uz_UZ": {
+					"shortName": "Sirdaryo",
+					"longName": "Sirdaryo"
+				},
+				"en_US": {
+					"shortName": "Sirdaryo",
+					"longName": "Sirdaryo"
+				}
+			}
+		},
+		"SU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Surxondaryo",
+					"longName": "Surxondaryo"
+				},
+				"uz_UZ": {
+					"shortName": "Surxondaryo",
+					"longName": "Surxondaryo"
+				}
+			}
+		},
+		"TK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Tashkent",
+					"longName": "Tashkent"
+				},
+				"uz_UZ": {
+					"shortName": "Toshkent",
+					"longName": "Toshkent"
+				}
+			}
+		},
+		"TO": {
+			"locales": {
+				"uz_UZ": {
+					"shortName": "Toshkent viloyati",
+					"longName": "Toshkent viloyati"
+				},
+				"en_US": {
+					"shortName": "Tashkent Province",
+					"longName": "Tashkent Province"
+				}
+			}
+		},
+		"XO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Xorazm",
+					"longName": "Xorazm"
+				},
+				"uz_UZ": {
+					"shortName": "Xorazm",
+					"longName": "Xorazm"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/uz_UZ",
+		"id": "uz_UZ"
+	},
+	{
+		"href": "/v1/locales/ru_RU",
+		"id": "ru_RU"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Uzbekistan",
+			"longName": "Republic of Uzbekistan"
+		},
+		"uz_UZ": {
+			"shortName": "O'zbekiston",
+			"longName": "O'zbekiston Respublikasi"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

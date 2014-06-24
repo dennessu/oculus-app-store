@@ -1,0 +1,463 @@
+{
+	"countryCode": "AL",
+	"defaultLocale": {
+		"href": "/v1/locales/sq_AL",
+		"id": "sq_AL"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/ALL",
+		"id": "ALL"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"BR": {
+			"locales": {
+				"sq_AL": {
+					"shortName": "Beratit",
+					"longName": "Beratit"
+				},
+				"en_US": {
+					"shortName": "Berat",
+					"longName": "Berat"
+				}
+			}
+		},
+		"BU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Bulqizë",
+					"longName": "Bulqizë"
+				},
+				"sq_AL": {
+					"shortName": "Bulqizës",
+					"longName": "Bulqizës"
+				}
+			}
+		},
+		"DI": {
+			"locales": {
+				"sq_AL": {
+					"shortName": "Dibrës",
+					"longName": "Dibrës"
+				},
+				"en_US": {
+					"shortName": "Dibër",
+					"longName": "Dibër"
+				}
+			}
+		},
+		"DL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Delvinë",
+					"longName": "Delvinë"
+				},
+				"sq_AL": {
+					"shortName": "Delvinës",
+					"longName": "Delvinës"
+				}
+			}
+		},
+		"DR": {
+			"locales": {
+				"sq_AL": {
+					"shortName": "Durrësit",
+					"longName": "Durrësit"
+				},
+				"en_US": {
+					"shortName": "Durrës",
+					"longName": "Durrës"
+				}
+			}
+		},
+		"DV": {
+			"locales": {
+				"en_US": {
+					"shortName": "Devoll",
+					"longName": "Devoll"
+				},
+				"sq_AL": {
+					"shortName": "Devollit",
+					"longName": "Devollit"
+				}
+			}
+		},
+		"EL": {
+			"locales": {
+				"sq_AL": {
+					"shortName": "Elbasanit",
+					"longName": "Elbasanit"
+				},
+				"en_US": {
+					"shortName": "Elbasan",
+					"longName": "Elbasan"
+				}
+			}
+		},
+		"ER": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kolonjë",
+					"longName": "Kolonjë"
+				},
+				"sq_AL": {
+					"shortName": "Kolonjës",
+					"longName": "Kolonjës"
+				}
+			}
+		},
+		"FR": {
+			"locales": {
+				"sq_AL": {
+					"shortName": "Fierit",
+					"longName": "Fierit"
+				},
+				"en_US": {
+					"shortName": "Fier",
+					"longName": "Fier"
+				}
+			}
+		},
+		"GJ": {
+			"locales": {
+				"en_US": {
+					"shortName": "Gjirokastër",
+					"longName": "Gjirokastër"
+				},
+				"sq_AL": {
+					"shortName": "Gjirokastrës",
+					"longName": "Gjirokastrës"
+				}
+			}
+		},
+		"GR": {
+			"locales": {
+				"sq_AL": {
+					"shortName": "Gramshit",
+					"longName": "Gramshit"
+				},
+				"en_US": {
+					"shortName": "Gramsh",
+					"longName": "Gramsh"
+				}
+			}
+		},
+		"HA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Has",
+					"longName": "Has"
+				},
+				"sq_AL": {
+					"shortName": "Hasit",
+					"longName": "Hasit"
+				}
+			}
+		},
+		"KA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kavajë",
+					"longName": "Kavajë"
+				},
+				"sq_AL": {
+					"shortName": "Kavajës",
+					"longName": "Kavajës"
+				}
+			}
+		},
+		"KB": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kurbin",
+					"longName": "Kurbin"
+				},
+				"sq_AL": {
+					"shortName": "Kurbinit",
+					"longName": "Kurbinit"
+				}
+			}
+		},
+		"KC": {
+			"locales": {
+				"sq_AL": {
+					"shortName": "Kuçovës",
+					"longName": "Kuçovës"
+				},
+				"en_US": {
+					"shortName": "Kuçovë",
+					"longName": "Kuçovë"
+				}
+			}
+		},
+		"KO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Korçë",
+					"longName": "Korçë"
+				},
+				"sq_AL": {
+					"shortName": "Korçës",
+					"longName": "Korçës"
+				}
+			}
+		},
+		"KR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Krujë",
+					"longName": "Krujë"
+				},
+				"sq_AL": {
+					"shortName": "Krujës",
+					"longName": "Krujës"
+				}
+			}
+		},
+		"KU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kukës",
+					"longName": "Kukës"
+				},
+				"sq_AL": {
+					"shortName": "Kukësit",
+					"longName": "Kukësit"
+				}
+			}
+		},
+		"LB": {
+			"locales": {
+				"sq_AL": {
+					"shortName": "Librazhdit",
+					"longName": "Librazhdit"
+				},
+				"en_US": {
+					"shortName": "Librazhd",
+					"longName": "Librazhd"
+				}
+			}
+		},
+		"LE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Lezhë",
+					"longName": "Lezhë"
+				},
+				"sq_AL": {
+					"shortName": "Lezhës",
+					"longName": "Lezhës"
+				}
+			}
+		},
+		"LU": {
+			"locales": {
+				"sq_AL": {
+					"shortName": "Lushnjës",
+					"longName": "Lushnjës"
+				},
+				"en_US": {
+					"shortName": "Lushnjë",
+					"longName": "Lushnjë"
+				}
+			}
+		},
+		"MK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Mallakastër",
+					"longName": "Mallakastër"
+				},
+				"sq_AL": {
+					"shortName": "Mallakastrës",
+					"longName": "Mallakastrës"
+				}
+			}
+		},
+		"MM": {
+			"locales": {
+				"sq_AL": {
+					"shortName": "Malësisë së Madhe",
+					"longName": "Malësisë së Madhe"
+				},
+				"en_US": {
+					"shortName": "Malësi e Madhe",
+					"longName": "Malësi e Madhe"
+				}
+			}
+		},
+		"MR": {
+			"locales": {
+				"sq_AL": {
+					"shortName": "Mirditës",
+					"longName": "Mirditës"
+				},
+				"en_US": {
+					"shortName": "Mirditë",
+					"longName": "Mirditë"
+				}
+			}
+		},
+		"MT": {
+			"locales": {
+				"en_US": {
+					"shortName": "Mat",
+					"longName": "Mat"
+				},
+				"sq_AL": {
+					"shortName": "Matit",
+					"longName": "Matit"
+				}
+			}
+		},
+		"PG": {
+			"locales": {
+				"en_US": {
+					"shortName": "Pogradec",
+					"longName": "Pogradec"
+				},
+				"sq_AL": {
+					"shortName": "Pogradecit",
+					"longName": "Pogradecit"
+				}
+			}
+		},
+		"PQ": {
+			"locales": {
+				"sq_AL": {
+					"shortName": "Peqinit",
+					"longName": "Peqinit"
+				},
+				"en_US": {
+					"shortName": "Peqin",
+					"longName": "Peqin"
+				}
+			}
+		},
+		"PR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Përmet",
+					"longName": "Përmet"
+				},
+				"sq_AL": {
+					"shortName": "Përmetit",
+					"longName": "Përmetit"
+				}
+			}
+		},
+		"PU": {
+			"locales": {
+				"sq_AL": {
+					"shortName": "Pukës",
+					"longName": "Pukës"
+				},
+				"en_US": {
+					"shortName": "Pukë",
+					"longName": "Pukë"
+				}
+			}
+		},
+		"SH": {
+			"locales": {
+				"sq_AL": {
+					"shortName": "Shkodrës",
+					"longName": "Shkodrës"
+				},
+				"en_US": {
+					"shortName": "Shkodër",
+					"longName": "Shkodër"
+				}
+			}
+		},
+		"SK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Skrapar",
+					"longName": "Skrapar"
+				},
+				"sq_AL": {
+					"shortName": "Skraparit",
+					"longName": "Skraparit"
+				}
+			}
+		},
+		"SR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Sarandë",
+					"longName": "Sarandë"
+				},
+				"sq_AL": {
+					"shortName": "Sarandës",
+					"longName": "Sarandës"
+				}
+			}
+		},
+		"TE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Tepelenë",
+					"longName": "Tepelenë"
+				},
+				"sq_AL": {
+					"shortName": "Tepelenës",
+					"longName": "Tepelenës"
+				}
+			}
+		},
+		"TP": {
+			"locales": {
+				"en_US": {
+					"shortName": "Tropojë",
+					"longName": "Tropojë"
+				},
+				"sq_AL": {
+					"shortName": "Tropojës",
+					"longName": "Tropojës"
+				}
+			}
+		},
+		"TR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Tiranë",
+					"longName": "Tiranë"
+				},
+				"sq_AL": {
+					"shortName": "Tiranës",
+					"longName": "Tiranës"
+				}
+			}
+		},
+		"VL": {
+			"locales": {
+				"sq_AL": {
+					"shortName": "Vlorës",
+					"longName": "Vlorës"
+				},
+				"en_US": {
+					"shortName": "Vlorë",
+					"longName": "Vlorë"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/sq_AL",
+		"id": "sq_AL"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Albania",
+			"longName": "Republic of Albania"
+		},
+		"sq_AL": {
+			"shortName": "Shqipëri",
+			"longName": "Republika e Shqipërisë"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

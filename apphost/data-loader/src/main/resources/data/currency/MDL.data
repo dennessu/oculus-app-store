@@ -1,0 +1,17 @@
+{
+	"locales": {
+		
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=MDL",
+		"id": null
+	},
+	"currencyCode": "MDL",
+	"symbol": "lei",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

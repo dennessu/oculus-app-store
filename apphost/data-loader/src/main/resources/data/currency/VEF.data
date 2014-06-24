@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "VEF",
+			"longName": "Venezuelan bolívar"
+		},
+		"es_VE": {
+			"shortName": "Bolívar",
+			"longName": "Bolívar fuerte venezolano"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=VEF",
+		"id": null
+	},
+	"currencyCode": "VEF",
+	"symbol": "Bs.F.",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

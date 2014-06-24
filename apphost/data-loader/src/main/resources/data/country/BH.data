@@ -1,0 +1,91 @@
+{
+	"countryCode": "BH",
+	"defaultLocale": {
+		"href": "/v1/locales/ar_BH",
+		"id": "ar_BH"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/BHD",
+		"id": "BHD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"13": {
+			"locales": {
+				"ar_BH": {
+					"shortName": "محافظة العاصمة‎",
+					"longName": "محافظة العاصمة‎"
+				},
+				"en_US": {
+					"shortName": "Capital",
+					"longName": "Capital"
+				}
+			}
+		},
+		"14": {
+			"locales": {
+				"ar_BH": {
+					"shortName": "المحافظة الجنوبية‎",
+					"longName": "المحافظة الجنوبية‎"
+				},
+				"en_US": {
+					"shortName": "Southern",
+					"longName": "Southern"
+				}
+			}
+		},
+		"15": {
+			"locales": {
+				"en_US": {
+					"shortName": "Muharraq",
+					"longName": "Muharraq"
+				},
+				"ar_BH": {
+					"shortName": "محافظة المحرق",
+					"longName": "محافظة المحرق"
+				}
+			}
+		},
+		"16": {
+			"locales": {
+				"en_US": {
+					"shortName": "Central",
+					"longName": "Central"
+				},
+				"ar_BH": {
+					"shortName": "المحافظة الوسطى",
+					"longName": "المحافظة الوسطى"
+				}
+			}
+		},
+		"17": {
+			"locales": {
+				"ar_BH": {
+					"shortName": "المحافظة الشمالية",
+					"longName": "المحافظة الشمالية"
+				},
+				"en_US": {
+					"shortName": "Northern",
+					"longName": "Northern"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/ar_BH",
+		"id": "ar_BH"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Bahrain",
+			"longName": "Kingdom of Bahrain"
+		},
+		"ar_BH": {
+			"shortName": "‏البحرين",
+			"longName": "مملكة البحرين"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

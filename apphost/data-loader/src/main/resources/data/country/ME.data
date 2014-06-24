@@ -1,0 +1,195 @@
+{
+	"countryCode": "ME",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/EUR",
+		"id": "EUR"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"01": {
+			"locales": {
+				"en_US": {
+					"shortName": "Andrijevica",
+					"longName": "Andrijevica"
+				}
+			}
+		},
+		"02": {
+			"locales": {
+				"en_US": {
+					"shortName": "Bar",
+					"longName": "Bar"
+				}
+			}
+		},
+		"03": {
+			"locales": {
+				"en_US": {
+					"shortName": "Berane",
+					"longName": "Berane"
+				}
+			}
+		},
+		"04": {
+			"locales": {
+				"en_US": {
+					"shortName": "Bijelo Polje",
+					"longName": "Bijelo Polje"
+				}
+			}
+		},
+		"05": {
+			"locales": {
+				"en_US": {
+					"shortName": "Budva",
+					"longName": "Budva"
+				}
+			}
+		},
+		"06": {
+			"locales": {
+				"en_US": {
+					"shortName": "Cetinje",
+					"longName": "Cetinje"
+				}
+			}
+		},
+		"07": {
+			"locales": {
+				"en_US": {
+					"shortName": "Danilovgrad",
+					"longName": "Danilovgrad"
+				}
+			}
+		},
+		"08": {
+			"locales": {
+				"en_US": {
+					"shortName": "Herceg-Novi",
+					"longName": "Herceg-Novi"
+				}
+			}
+		},
+		"09": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kolašin",
+					"longName": "Kolašin"
+				}
+			}
+		},
+		"10": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kotor",
+					"longName": "Kotor"
+				}
+			}
+		},
+		"11": {
+			"locales": {
+				"en_US": {
+					"shortName": "Mojkovac",
+					"longName": "Mojkovac"
+				}
+			}
+		},
+		"12": {
+			"locales": {
+				"en_US": {
+					"shortName": "Nikšić",
+					"longName": "Nikšić"
+				}
+			}
+		},
+		"13": {
+			"locales": {
+				"en_US": {
+					"shortName": "Plav",
+					"longName": "Plav"
+				}
+			}
+		},
+		"14": {
+			"locales": {
+				"en_US": {
+					"shortName": "Pljevlja",
+					"longName": "Pljevlja"
+				}
+			}
+		},
+		"15": {
+			"locales": {
+				"en_US": {
+					"shortName": "Plužine",
+					"longName": "Plužine"
+				}
+			}
+		},
+		"16": {
+			"locales": {
+				"en_US": {
+					"shortName": "Podgorica",
+					"longName": "Podgorica"
+				}
+			}
+		},
+		"17": {
+			"locales": {
+				"en_US": {
+					"shortName": "Rožaje",
+					"longName": "Rožaje"
+				}
+			}
+		},
+		"18": {
+			"locales": {
+				"en_US": {
+					"shortName": "Šavnik",
+					"longName": "Šavnik"
+				}
+			}
+		},
+		"19": {
+			"locales": {
+				"en_US": {
+					"shortName": "Tivat",
+					"longName": "Tivat"
+				}
+			}
+		},
+		"20": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ulcinj",
+					"longName": "Ulcinj"
+				}
+			}
+		},
+		"21": {
+			"locales": {
+				"en_US": {
+					"shortName": "Žabljak",
+					"longName": "Žabljak"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Montenegro",
+			"longName": "Montenegro"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

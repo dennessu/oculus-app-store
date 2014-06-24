@@ -265,12 +265,12 @@
 		"X": {
 			"locales": {
 				"en_US": {
-					"shortName": "Córdoba",
-					"longName": "Córdoba"
+					"shortName": "Cordoba !Córdoba",
+					"longName": "Cordoba !Córdoba"
 				},
 				"es_AR": {
-					"shortName": "Córdoba",
-					"longName": "Córdoba"
+					"shortName": "Cordoba !Córdoba",
+					"longName": "Cordoba !Córdoba"
 				}
 			}
 		},

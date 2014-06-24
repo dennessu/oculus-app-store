@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "HNL",
+			"longName": "Honduran lempira"
+		},
+		"es_HN": {
+			"shortName": "lempira hondureño",
+			"longName": "lempira hondureño"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=HNL",
+		"id": null
+	},
+	"currencyCode": "HNL",
+	"symbol": "L",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,127 @@
+{
+	"countryCode": "LB",
+	"defaultLocale": {
+		"href": "/v1/locales/ar_LB",
+		"id": "ar_LB"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/LBP",
+		"id": "LBP"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"AK": {
+			"locales": {
+				"ar_LB": {
+					"shortName": "عكار",
+					"longName": "عكار"
+				},
+				"en_US": {
+					"shortName": "Aakkar",
+					"longName": "Aakkar"
+				}
+			}
+		},
+		"AS": {
+			"locales": {
+				"ar_LB": {
+					"shortName": "الشمال",
+					"longName": "الشمال"
+				},
+				"en_US": {
+					"shortName": "North",
+					"longName": "North"
+				}
+			}
+		},
+		"BA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Beirut",
+					"longName": "Beirut"
+				},
+				"ar_LB": {
+					"shortName": "محافظة بيروت",
+					"longName": "محافظة بيروت"
+				}
+			}
+		},
+		"BH": {
+			"locales": {
+				"en_US": {
+					"shortName": "Baalbek-Hermel",
+					"longName": "Baalbek-Hermel"
+				},
+				"ar_LB": {
+					"shortName": "بعلبك الهرمل",
+					"longName": "بعلبك الهرمل"
+				}
+			}
+		},
+		"BI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Beqaa",
+					"longName": "Beqaa"
+				},
+				"ar_LB": {
+					"shortName": "البقاع",
+					"longName": "البقاع"
+				}
+			}
+		},
+		"JA": {
+			"locales": {
+				"en_US": {
+					"shortName": "South",
+					"longName": "South"
+				},
+				"ar_LB": {
+					"shortName": "الجنوب",
+					"longName": "الجنوب"
+				}
+			}
+		},
+		"JL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Mount Lebanon",
+					"longName": "Mount Lebanon"
+				},
+				"ar_LB": {
+					"shortName": "جبل لبنان",
+					"longName": "جبل لبنان"
+				}
+			}
+		},
+		"NA": {
+			"locales": {
+				"ar_LB": {
+					"shortName": "محافظة النبطية",
+					"longName": "محافظة النبطية"
+				},
+				"en_US": {
+					"shortName": "Nabatieh",
+					"longName": "Nabatieh"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/ar_LB",
+		"id": "ar_LB"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Lebanon",
+			"longName": "Lebanese Republic"
+		},
+		"ar_LB": {
+			"shortName": "لبنان",
+			"longName": "الجمهورية اللبنانية"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

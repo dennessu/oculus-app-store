@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "PEN",
+			"longName": "Peruvian nuevo sol"
+		},
+		"es_PE": {
+			"shortName": "Nuevo Sol",
+			"longName": "Nuevo Sol peruano"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=PEN",
+		"id": null
+	},
+	"currencyCode": "PEN",
+	"symbol": "S/.",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

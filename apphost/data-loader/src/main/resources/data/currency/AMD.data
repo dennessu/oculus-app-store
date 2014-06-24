@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "AMD",
+			"longName": "Armenian dram"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=AMD",
+		"id": null
+	},
+	"currencyCode": "AMD",
+	"symbol": "AMD",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

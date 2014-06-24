@@ -75,6 +75,10 @@
 		"id": "en_SG"
 	}],
 	"locales": {
+		"en_US": {
+			"shortName": "Indonesia",
+			"longName": "Republic of Indonesia"
+		},
 		"en_SG": {
 			"shortName": "Indonesia",
 			"longName": "Republic of Indonesia"

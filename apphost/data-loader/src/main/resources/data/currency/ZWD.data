@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "ZWD",
+			"longName": "Zimbabwean dollar"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=ZWD",
+		"id": null
+	},
+	"currencyCode": "ZWD",
+	"symbol": "$",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

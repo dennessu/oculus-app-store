@@ -1,0 +1,126 @@
+{
+	"countryCode": "BJ",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/XOF",
+		"id": "XOF"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/FPB",
+		"id": "FPB"
+	}],
+	"subCountries": {
+		"AK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Atakora",
+					"longName": "Atakora"
+				}
+			}
+		},
+		"AL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Alibori",
+					"longName": "Alibori"
+				}
+			}
+		},
+		"AQ": {
+			"locales": {
+				"en_US": {
+					"shortName": "Atlantique",
+					"longName": "Atlantique"
+				}
+			}
+		},
+		"BO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Borgou",
+					"longName": "Borgou"
+				}
+			}
+		},
+		"CO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Collines",
+					"longName": "Collines"
+				}
+			}
+		},
+		"DO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Donga",
+					"longName": "Donga"
+				}
+			}
+		},
+		"KO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kouffo",
+					"longName": "Kouffo"
+				}
+			}
+		},
+		"LI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Littoral",
+					"longName": "Littoral"
+				}
+			}
+		},
+		"MO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Mono",
+					"longName": "Mono"
+				}
+			}
+		},
+		"OU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ouémé",
+					"longName": "Ouémé"
+				}
+			}
+		},
+		"PL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Plateau",
+					"longName": "Plateau"
+				}
+			}
+		},
+		"ZO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Zou",
+					"longName": "Zou"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Benin",
+			"longName": "Republic of Benin"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

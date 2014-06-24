@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "MKD",
+			"longName": "Macedonian denar"
+		},
+		"mk_MK": {
+			"shortName": "денар",
+			"longName": "Македонски денар"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=MKD",
+		"id": null
+	},
+	"currencyCode": "MKD",
+	"symbol": "ден",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

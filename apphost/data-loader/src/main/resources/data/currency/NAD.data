@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "NAD",
+			"longName": "Namibian dollar"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=NAD",
+		"id": null
+	},
+	"currencyCode": "NAD",
+	"symbol": "N$",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

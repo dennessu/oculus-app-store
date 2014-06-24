@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "AOA",
+			"longName": "Angolan kwanza"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=AOA",
+		"id": null
+	},
+	"currencyCode": "AOA",
+	"symbol": "Kz",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

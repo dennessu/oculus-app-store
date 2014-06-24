@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "LBP",
+			"longName": "Lebanese pound"
+		},
+		"ar_LB": {
+			"shortName": "lira",
+			"longName": "ليرة لبنانية"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=LBP",
+		"id": null
+	},
+	"currencyCode": "LBP",
+	"symbol": "ل.ل",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

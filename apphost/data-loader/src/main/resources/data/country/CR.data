@@ -1,0 +1,115 @@
+{
+	"countryCode": "CR",
+	"defaultLocale": {
+		"href": "/v1/locales/es_CR",
+		"id": "es_CR"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/CRC",
+		"id": "CRC"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"A": {
+			"locales": {
+				"es_CR": {
+					"shortName": "Alajuela",
+					"longName": "Alajuela"
+				},
+				"en_US": {
+					"shortName": "Alajuela",
+					"longName": "Alajuela"
+				}
+			}
+		},
+		"C": {
+			"locales": {
+				"en_US": {
+					"shortName": "Cartago",
+					"longName": "Cartago"
+				},
+				"es_CR": {
+					"shortName": "Cartago",
+					"longName": "Cartago"
+				}
+			}
+		},
+		"G": {
+			"locales": {
+				"es_CR": {
+					"shortName": "Guanacaste",
+					"longName": "Guanacaste"
+				},
+				"en_US": {
+					"shortName": "Guanacaste",
+					"longName": "Guanacaste"
+				}
+			}
+		},
+		"H": {
+			"locales": {
+				"en_US": {
+					"shortName": "Heredia",
+					"longName": "Heredia"
+				},
+				"es_CR": {
+					"shortName": "Heredia",
+					"longName": "Heredia"
+				}
+			}
+		},
+		"L": {
+			"locales": {
+				"en_US": {
+					"shortName": "Limón",
+					"longName": "Limón"
+				},
+				"es_CR": {
+					"shortName": "Limón",
+					"longName": "Limón"
+				}
+			}
+		},
+		"P": {
+			"locales": {
+				"en_US": {
+					"shortName": "Puntarenas",
+					"longName": "Puntarenas"
+				},
+				"es_CR": {
+					"shortName": "Puntarenas",
+					"longName": "Puntarenas"
+				}
+			}
+		},
+		"SJ": {
+			"locales": {
+				"es_CR": {
+					"shortName": "San José",
+					"longName": "San José"
+				},
+				"en_US": {
+					"shortName": "San José",
+					"longName": "San José"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/es_CR",
+		"id": "es_CR"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Costa Rica",
+			"longName": "Republic of Costa Rica"
+		},
+		"es_CR": {
+			"shortName": "Costa Rica",
+			"longName": "República de Costa Rica"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

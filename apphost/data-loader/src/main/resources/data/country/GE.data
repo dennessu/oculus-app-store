@@ -1,0 +1,123 @@
+{
+	"countryCode": "GE",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/GEL",
+		"id": "GEL"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"AB": {
+			"locales": {
+				"en_US": {
+					"shortName": "Abkhazia",
+					"longName": "Abkhazia"
+				}
+			}
+		},
+		"AJ": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ajaria",
+					"longName": "Ajaria"
+				}
+			}
+		},
+		"GU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Guria",
+					"longName": "Guria"
+				}
+			}
+		},
+		"IM": {
+			"locales": {
+				"en_US": {
+					"shortName": "Imereti",
+					"longName": "Imereti"
+				}
+			}
+		},
+		"KA": {
+			"locales": {
+				"en_US": {
+					"shortName": "K'akheti",
+					"longName": "K'akheti"
+				}
+			}
+		},
+		"KK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kvemo Kartli",
+					"longName": "Kvemo Kartli"
+				}
+			}
+		},
+		"MM": {
+			"locales": {
+				"en_US": {
+					"shortName": "Mtskheta-Mtianeti",
+					"longName": "Mtskheta-Mtianeti"
+				}
+			}
+		},
+		"RL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Rach'a-Lechkhumi-Kvemo Svaneti",
+					"longName": "Rach'a-Lechkhumi-Kvemo Svaneti"
+				}
+			}
+		},
+		"SJ": {
+			"locales": {
+				"en_US": {
+					"shortName": "Samtskhe-Javakheti",
+					"longName": "Samtskhe-Javakheti"
+				}
+			}
+		},
+		"SK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Shida Kartli",
+					"longName": "Shida Kartli"
+				}
+			}
+		},
+		"SZ": {
+			"locales": {
+				"en_US": {
+					"shortName": "Samegrelo-Zemo Svaneti",
+					"longName": "Samegrelo-Zemo Svaneti"
+				}
+			}
+		},
+		"TB": {
+			"locales": {
+				"en_US": {
+					"shortName": "Tbilisi",
+					"longName": "Tbilisi"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Georgia",
+			"longName": "Georgia"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

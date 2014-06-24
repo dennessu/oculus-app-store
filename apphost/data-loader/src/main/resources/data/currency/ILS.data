@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "ILS",
+			"longName": "Israeli new shekel"
+		},
+		"he_IL": {
+			"shortName": "שֶׁקֶל חָדָשׁ",
+			"longName": "שֶׁקֶל חָדָשׁ"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=ILS",
+		"id": null
+	},
+	"currencyCode": "ILS",
+	"symbol": "₪",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

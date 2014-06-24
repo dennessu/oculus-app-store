@@ -155,6 +155,10 @@
 		"id": "en_SG"
 	}],
 	"locales": {
+		"en_US": {
+			"shortName": "Philippines",
+			"longName": "Republic of the Philippines"
+		},
 		"en_SG": {
 			"shortName": "Philippines",
 			"longName": "Republic of the Philippines"

@@ -1,0 +1,178 @@
+{
+	"countryCode": "LA",
+	"defaultLocale": {
+		"href": "/v1/locales/en_SG",
+		"id": "en_SG"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/LAK",
+		"id": "LAK"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/MDA",
+		"id": "MDA"
+	}],
+	"subCountries": {
+		"AT": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Attapeu",
+					"longName": "Attapeu"
+				}
+			}
+		},
+		"BK": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Bokeo",
+					"longName": "Bokeo"
+				}
+			}
+		},
+		"BL": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Bolikhamsai",
+					"longName": "Bolikhamsai"
+				}
+			}
+		},
+		"CH": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Champasak",
+					"longName": "Champasak"
+				}
+			}
+		},
+		"HO": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Houaphanh",
+					"longName": "Houaphanh"
+				}
+			}
+		},
+		"KH": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Khammouane",
+					"longName": "Khammouane"
+				}
+			}
+		},
+		"LM": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Luang Namtha",
+					"longName": "Luang Namtha"
+				}
+			}
+		},
+		"LP": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Luang Prabang",
+					"longName": "Luang Prabang"
+				}
+			}
+		},
+		"OU": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Oudomxay",
+					"longName": "Oudomxay"
+				}
+			}
+		},
+		"PH": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Phongsaly",
+					"longName": "Phongsaly"
+				}
+			}
+		},
+		"SL": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Salavan",
+					"longName": "Salavan"
+				}
+			}
+		},
+		"SV": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Savannakhet",
+					"longName": "Savannakhet"
+				}
+			}
+		},
+		"VI": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Vientiane Province",
+					"longName": "Vientiane Province"
+				}
+			}
+		},
+		"VT": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Vientiane Prefecture",
+					"longName": "Vientiane Prefecture"
+				}
+			}
+		},
+		"XA": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Sainyabuli",
+					"longName": "Sainyabuli"
+				}
+			}
+		},
+		"XE": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Sekong",
+					"longName": "Sekong"
+				}
+			}
+		},
+		"XI": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Xiangkhouang",
+					"longName": "Xiangkhouang"
+				}
+			}
+		},
+		"XN": {
+			"locales": {
+				"en_SG": {
+					"shortName": "Xaisomboun",
+					"longName": "Xaisomboun"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_SG",
+		"id": "en_SG"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Laos",
+			"longName": "Lao People's Democratic Republic"
+		},
+		"en_SG": {
+			"shortName": "Laos",
+			"longName": "Lao People's Democratic Republic"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

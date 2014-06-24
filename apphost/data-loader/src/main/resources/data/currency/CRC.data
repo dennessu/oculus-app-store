@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "CRC",
+			"longName": "Costa Rican colón"
+		},
+		"es_CR": {
+			"shortName": "colón costarricense",
+			"longName": "colón costarricense"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=CRC",
+		"id": null
+	},
+	"currencyCode": "CRC",
+	"symbol": "₡",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

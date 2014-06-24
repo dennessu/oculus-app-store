@@ -1,0 +1,110 @@
+{
+	"countryCode": "TM",
+	"defaultLocale": {
+		"href": "/v1/locales/ru_RU",
+		"id": "ru_RU"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/TMT",
+		"id": "TMT"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/RGRS",
+		"id": "RGRS"
+	}],
+	"subCountries": {
+		"A": {
+			"locales": {
+				"tk_TM": {
+					"shortName": "Ahal",
+					"longName": "Ahal"
+				},
+				"en_US": {
+					"shortName": "Ahal",
+					"longName": "Ahal"
+				}
+			}
+		},
+		"B": {
+			"locales": {
+				"tk_TM": {
+					"shortName": "Balkan ",
+					"longName": "Balkan "
+				},
+				"en_US": {
+					"shortName": "Balkan",
+					"longName": "Balkan"
+				}
+			}
+		},
+		"D": {
+			"locales": {
+				"tk_TM": {
+					"shortName": "Daşoguz",
+					"longName": "Daşoguz"
+				},
+				"en_US": {
+					"shortName": "Daşoguz",
+					"longName": "Daşoguz"
+				}
+			}
+		},
+		"L": {
+			"locales": {
+				"en_US": {
+					"shortName": "Lebap",
+					"longName": "Lebap"
+				},
+				"tk_TM": {
+					"shortName": "Lebap",
+					"longName": "Lebap"
+				}
+			}
+		},
+		"M": {
+			"locales": {
+				"en_US": {
+					"shortName": "Mary",
+					"longName": "Mary"
+				},
+				"tk_TM": {
+					"shortName": "Mary",
+					"longName": "Mary"
+				}
+			}
+		},
+		"S": {
+			"locales": {
+				"tk_TM": {
+					"shortName": "Aşgabat",
+					"longName": "Aşgabat"
+				},
+				"en_US": {
+					"shortName": "Ashgabat",
+					"longName": "Ashgabat"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/tk_TM",
+		"id": "tk_TM"
+	},
+	{
+		"href": "/v1/locales/ru_RU",
+		"id": "ru_RU"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Turkmenistan",
+			"longName": "Turkmenistan"
+		},
+		"tk_TM": {
+			"shortName": "Türkmenistan",
+			"longName": "Türkmenistan"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

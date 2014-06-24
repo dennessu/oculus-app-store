@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "DOP",
+			"longName": "Dominican peso"
+		},
+		"es_DO": {
+			"shortName": "peso",
+			"longName": "peso dominicano"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=DOP",
+		"id": null
+	},
+	"currencyCode": "DOP",
+	"symbol": "RD$",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

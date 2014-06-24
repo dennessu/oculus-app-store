@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "UYU",
+			"longName": "Uruguayan peso"
+		},
+		"es_UY": {
+			"shortName": "peso uruguayo",
+			"longName": "peso uruguayo"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=UYU",
+		"id": null
+	},
+	"currencyCode": "UYU",
+	"symbol": "$",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "BHD",
+			"longName": "Bahraini dinar"
+		},
+		"ar_BH": {
+			"shortName": "دينار",
+			"longName": "دينار بحريني"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=BHD",
+		"id": null
+	},
+	"currencyCode": "BHD",
+	"symbol": "BD",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "3",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

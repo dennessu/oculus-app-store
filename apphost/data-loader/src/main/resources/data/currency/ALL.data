@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "ALL",
+			"longName": "Albanian lek"
+		},
+		"sq_AL": {
+			"shortName": "Leku Shqiptar",
+			"longName": "Leku Shqiptar"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=ALL",
+		"id": null
+	},
+	"currencyCode": "ALL",
+	"symbol": "L",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

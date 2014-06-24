@@ -59,6 +59,10 @@
 		"id": "en_SG"
 	}],
 	"locales": {
+		"en_US": {
+			"shortName": "Singapore",
+			"longName": "Republic of Singapore"
+		},
 		"en_SG": {
 			"shortName": "Singapore",
 			"longName": "Republic of Singapore"

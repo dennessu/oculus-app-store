@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "PAB",
+			"longName": "Panamanian balboa"
+		},
+		"es_PA": {
+			"shortName": "Balboa Panameña",
+			"longName": "Balboa Panameña"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=PAB",
+		"id": null
+	},
+	"currencyCode": "PAB",
+	"symbol": "B/.",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

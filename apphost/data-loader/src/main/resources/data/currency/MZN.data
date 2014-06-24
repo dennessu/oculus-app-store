@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "MZN",
+			"longName": "Mozambican metical"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=MZN",
+		"id": null
+	},
+	"currencyCode": "MZN",
+	"symbol": "MT",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

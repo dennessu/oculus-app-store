@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "EGP",
+			"longName": "Egyptian pound"
+		},
+		"ar_EG": {
+			"shortName": "جنيه مصرى",
+			"longName": "جنيه مصرى"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=EGP",
+		"id": null
+	},
+	"currencyCode": "EGP",
+	"symbol": "£",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}
