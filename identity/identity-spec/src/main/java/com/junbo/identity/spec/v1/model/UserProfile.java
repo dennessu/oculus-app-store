@@ -17,8 +17,8 @@ public class UserProfile {
     @ApiModelProperty(position = 2, required = false, value = "The summary of the user resource.")
     private String summary;
 
-    @ApiModelProperty(position = 3, required = false, value = "The url of the user resource.")
-    private String url;
+    @ApiModelProperty(position = 3, required = false, value = "The webpage of the user resource.")
+    private String webpage;
 
     @ApiModelProperty(position = 4, required = false, value = "The avatar url of the user resource.")
     private UserAvatar avatar;
@@ -39,12 +39,12 @@ public class UserProfile {
         this.summary = summary;
     }
 
-    public String getUrl() {
-        return url;
+    public String getWebpage() {
+        return webpage;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setWebpage(String webpage) {
+        this.webpage = webpage;
     }
 
     public UserAvatar getAvatar() {

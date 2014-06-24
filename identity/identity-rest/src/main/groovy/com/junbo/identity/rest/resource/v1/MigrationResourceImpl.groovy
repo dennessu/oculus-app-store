@@ -412,7 +412,7 @@ class MigrationResourceImpl implements MigrationResource {
         UserProfile userProfile = new UserProfile(
             headline: oculusInput.profile.headline,
             summary: oculusInput.profile.summary,
-            url: oculusInput.profile.url,
+            webpage: oculusInput.profile.url,
             avatar: new UserAvatar(
                     href: oculusInput.profile.avatar == null ? null : oculusInput.profile.avatar.href
             )
