@@ -148,42 +148,6 @@ abstract class CommonResourceImpl {
         return maxVersion.toString() + versionSeparator + rsaCipherService.encrypt(rawMaterKey, publicKey)
     }
 
-    // Used to encrypt and decrypt user message by masterKey
-    protected Promise<String> symmetricDecryptUserMessageByMasterKey(String encryptedMessage) {
-        String[] messageInfo = (String [])encryptedMessage.split(versionSeparator)
-        if (messageInfo == null || messageInfo.length != 2) {
-            throw new IllegalArgumentException('message should be separated by ' + versionSeparator)
-        }
-
-        Integer masterKeyVersion = Integer.parseInt(messageInfo[0])
-        String messageEncryptValue = messageInfo[1]
-        return masterKeyRepo.getMasterKeyByVersion(masterKeyVersion).then { MasterKey masterKey ->
-            if (masterKey == null) {
-                throw new IllegalArgumentException('master key with version: ' + masterKeyVersion + ' not found.')
-            }
-
-            String decryptedMasterKey = asymmetricDecryptMasterKey(masterKey.encryptValue)
-
-            Key masterKeyLoaded = stringToKey(decryptedMasterKey)
-
-            return Promise.pure(aesCipherService.decrypt(messageEncryptValue, masterKeyLoaded))
-        }
-    }
-
-    protected Promise<String> symmetricEncryptUserMessageByMasterKey(String rawMessage) {
-        return getCurrentMasterKey().then { MasterKey masterKey ->
-            if (masterKey == null) {
-                throw new IllegalArgumentException('master key doesn\'t exist in current system')
-            }
-
-            String decryptedMasterKey = asymmetricDecryptMasterKey(masterKey.encryptValue)
-            Key masterKeyLoaded = stringToKey(decryptedMasterKey)
-
-            return Promise.pure(masterKey.keyVersion.toString() +
-                    versionSeparator + aesCipherService.encrypt(rawMessage, masterKeyLoaded))
-        }
-    }
-
     // Used to encrypt and decrypt user message by userKey
     protected Promise<String> symmetricDecryptUserMessageByUserKey(UserId userId, String message) {
         String[] messageInfo = (String [])message.split(versionSeparator)
