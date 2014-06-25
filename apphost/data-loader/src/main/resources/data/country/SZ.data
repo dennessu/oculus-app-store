@@ -1,0 +1,62 @@
+{
+	"countryCode": "SZ",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/ZAR",
+		"id": "ZAR"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/FPB",
+		"id": "FPB"
+	}],
+	"subCountries": {
+		"HH": {
+			"locales": {
+				"en_US": {
+					"shortName": "Hhohho",
+					"longName": "Hhohho"
+				}
+			}
+		},
+		"LU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Lubombo",
+					"longName": "Lubombo"
+				}
+			}
+		},
+		"MA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Manzini",
+					"longName": "Manzini"
+				}
+			}
+		},
+		"SH": {
+			"locales": {
+				"en_US": {
+					"shortName": " Shiselweni ",
+					"longName": " Shiselweni "
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Swaziland",
+			"longName": "Kingdom of Swaziland"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

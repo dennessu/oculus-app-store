@@ -44,17 +44,21 @@ public class RatingItem {
     @Null
     private BigDecimal finalTotalAmount;
 
-    @ApiModelProperty(position = 7, required = true, value = "[Client Immutable] Total discount amount of offer.")
+    @ApiModelProperty(position = 7, required = true, value = "[Client Immutable] Revenue split for developer.")
+    @Null
+    private BigDecimal developerRevenue;
+
+    @ApiModelProperty(position = 8, required = true, value = "[Client Immutable] Total discount amount of offer.")
     @Null
     private BigDecimal totalDiscountAmount;
 
-    @ApiModelProperty(position = 8, required = true,
+    @ApiModelProperty(position = 9, required = true,
             value = "[Client Immutable] Promotion rules which make discount for offer.")
     @Null
     @PromotionRevisionId
     private Set<String> promotions;
 
-    @ApiModelProperty(position = 9, required = true, value = "Specify shipping method for offer.")
+    @ApiModelProperty(position = 10, required = true, value = "Specify shipping method for offer.")
     @ShippingMethodId
     @JsonProperty("shippingMethod")
     private String shippingMethodId;
@@ -105,6 +109,14 @@ public class RatingItem {
 
     public void setFinalTotalAmount(BigDecimal finalTotalAmount) {
         this.finalTotalAmount = finalTotalAmount;
+    }
+
+    public BigDecimal getDeveloperRevenue() {
+        return developerRevenue;
+    }
+
+    public void setDeveloperRevenue(BigDecimal developerRevenue) {
+        this.developerRevenue = developerRevenue;
     }
 
     public BigDecimal getTotalDiscountAmount() {

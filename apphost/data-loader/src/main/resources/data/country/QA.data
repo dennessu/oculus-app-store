@@ -1,0 +1,115 @@
+{
+	"countryCode": "QA",
+	"defaultLocale": {
+		"href": "/v1/locales/ar_QA",
+		"id": "ar_QA"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/QAR",
+		"id": "QAR"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"DA": {
+			"locales": {
+				"ar_QA": {
+					"shortName": "الدوحة",
+					"longName": "الدوحة"
+				},
+				"en_US": {
+					"shortName": "Doha",
+					"longName": "Doha"
+				}
+			}
+		},
+		"KH": {
+			"locales": {
+				"en_US": {
+					"shortName": "Al Khor",
+					"longName": "Al Khor"
+				},
+				"ar_QA": {
+					"shortName": "الخور‎",
+					"longName": "الخور‎"
+				}
+			}
+		},
+		"MS": {
+			"locales": {
+				"ar_QA": {
+					"shortName": "الشمال",
+					"longName": "الشمال"
+				},
+				"en_US": {
+					"shortName": "Ash Shamal",
+					"longName": "Ash Shamal"
+				}
+			}
+		},
+		"RA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Al Rayyan",
+					"longName": "Al Rayyan"
+				},
+				"ar_QA": {
+					"shortName": "الريان",
+					"longName": "الريان"
+				}
+			}
+		},
+		"US": {
+			"locales": {
+				"en_US": {
+					"shortName": "Umm Salal",
+					"longName": "Umm Salal"
+				},
+				"ar_QA": {
+					"shortName": "أم صلال",
+					"longName": "أم صلال"
+				}
+			}
+		},
+		"WA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Al Wakrah",
+					"longName": "Al Wakrah"
+				},
+				"ar_QA": {
+					"shortName": "الوكرة",
+					"longName": "الوكرة"
+				}
+			}
+		},
+		"ZA": {
+			"locales": {
+				"ar_QA": {
+					"shortName": "Al Daayen",
+					"longName": "Al Daayen"
+				},
+				"en_US": {
+					"shortName": "Al Daayen",
+					"longName": "Al Daayen"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/ar_QA",
+		"id": "ar_QA"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Qatar",
+			"longName": "State of Qatar"
+		},
+		"ar_QA": {
+			"shortName": "قطر",
+			"longName": "دولة قطر‎"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

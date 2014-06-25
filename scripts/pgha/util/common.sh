@@ -1,13 +1,13 @@
 #!/bin/bash
-
-export DEPLOYMENT_PATH='/tmp/pgha'
+DIR="$( cd "$( dirname "$BASH_SOURCE[0]" )" && pwd )"
 
 ENVIRONMENT='amazon'
-source $DEPLOYMENT_PATH/env/${ENVIRONMENT}.sh
+source $DIR/../env/${ENVIRONMENT}.sh
 
 export DEVOPS_ACCOUNT='ubuntu'
 export DEPLOYMENT_ACCOUNT='silkcloud'
 
+export DEPLOYMENT_PATH='/tmp/pgha'
 export PGHA_BASE='/var/pgha'
 export DATA_PATH=$PGHA_BASE/data
 export BACKUP_PATH=$PGHA_BASE/backup
@@ -27,21 +27,18 @@ export PGUSER='silkcloud'
 export DB_PORT=5432
 
 #master info
-export MASTER_HOST=54.254.246.13
 export MASTER_DB_PORT=$DB_PORT
 export MASTER_DATA_PATH=$DATA_PATH
 export MASTER_BACKUP_PATH=$BACKUP_PATH
 export MASTER_ARCHIVE_PATH=$ARCHIVE_PATH
 
 #slave info
-export SLAVE_HOST=54.255.148.38
 export SLAVE_DB_PORT=$DB_PORT
 export SLAVE_DATA_PATH=$DATA_PATH
 export SLAVE_BACKUP_PATH=$BACKUP_PATH
 export SLAVE_ARCHIVE_PATH=$ARCHIVE_PATH
 
 #replica info
-export REPLICA_HOST=54.255.213.75
 export REPLICA_DB_PORT=$DB_PORT
 export REPLICA_DATA_PATH=$DATA_PATH
 export REPLICA_ARCHIVE_PATH=$ARCHIVE_PATH

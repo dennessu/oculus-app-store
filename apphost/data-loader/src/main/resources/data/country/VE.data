@@ -1,0 +1,331 @@
+{
+	"countryCode": "VE",
+	"defaultLocale": {
+		"href": "/v1/locales/es_VE",
+		"id": "es_VE"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/VEF",
+		"id": "VEF"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"A": {
+			"locales": {
+				"es_VE": {
+					"shortName": "Distrito Capital",
+					"longName": "Distrito Capital"
+				},
+				"en_US": {
+					"shortName": "Distrito Capital",
+					"longName": "Distrito Capital"
+				}
+			}
+		},
+		"B": {
+			"locales": {
+				"es_VE": {
+					"shortName": "Anzoátegui",
+					"longName": "Anzoátegui"
+				},
+				"en_US": {
+					"shortName": "Anzoátegui",
+					"longName": "Anzoátegui"
+				}
+			}
+		},
+		"C": {
+			"locales": {
+				"es_VE": {
+					"shortName": "Apure",
+					"longName": "Apure"
+				},
+				"en_US": {
+					"shortName": "Apure",
+					"longName": "Apure"
+				}
+			}
+		},
+		"D": {
+			"locales": {
+				"es_VE": {
+					"shortName": "Aragua",
+					"longName": "Aragua"
+				},
+				"en_US": {
+					"shortName": "Aragua",
+					"longName": "Aragua"
+				}
+			}
+		},
+		"E": {
+			"locales": {
+				"en_US": {
+					"shortName": "Barinas",
+					"longName": "Barinas"
+				},
+				"es_VE": {
+					"shortName": "Barinas",
+					"longName": "Barinas"
+				}
+			}
+		},
+		"F": {
+			"locales": {
+				"en_US": {
+					"shortName": "Bolívar",
+					"longName": "Bolívar"
+				},
+				"es_VE": {
+					"shortName": "Bolívar",
+					"longName": "Bolívar"
+				}
+			}
+		},
+		"G": {
+			"locales": {
+				"es_VE": {
+					"shortName": "Carabobo",
+					"longName": "Carabobo"
+				},
+				"en_US": {
+					"shortName": "Carabobo",
+					"longName": "Carabobo"
+				}
+			}
+		},
+		"H": {
+			"locales": {
+				"es_VE": {
+					"shortName": "Cojedes",
+					"longName": "Cojedes"
+				},
+				"en_US": {
+					"shortName": "Cojedes",
+					"longName": "Cojedes"
+				}
+			}
+		},
+		"I": {
+			"locales": {
+				"es_VE": {
+					"shortName": "Falcón",
+					"longName": "Falcón"
+				},
+				"en_US": {
+					"shortName": "Falcón",
+					"longName": "Falcón"
+				}
+			}
+		},
+		"J": {
+			"locales": {
+				"en_US": {
+					"shortName": "Guárico",
+					"longName": "Guárico"
+				},
+				"es_VE": {
+					"shortName": "Guárico",
+					"longName": "Guárico"
+				}
+			}
+		},
+		"K": {
+			"locales": {
+				"en_US": {
+					"shortName": "Lara",
+					"longName": "Lara"
+				},
+				"es_VE": {
+					"shortName": "Lara",
+					"longName": "Lara"
+				}
+			}
+		},
+		"L": {
+			"locales": {
+				"en_US": {
+					"shortName": "Mérida",
+					"longName": "Mérida"
+				},
+				"es_VE": {
+					"shortName": "Mérida",
+					"longName": "Mérida"
+				}
+			}
+		},
+		"M": {
+			"locales": {
+				"en_US": {
+					"shortName": "Miranda",
+					"longName": "Miranda"
+				},
+				"es_VE": {
+					"shortName": "Miranda",
+					"longName": "Miranda"
+				}
+			}
+		},
+		"N": {
+			"locales": {
+				"en_US": {
+					"shortName": "Monagas",
+					"longName": "Monagas"
+				},
+				"es_VE": {
+					"shortName": "Monagas",
+					"longName": "Monagas"
+				}
+			}
+		},
+		"O": {
+			"locales": {
+				"en_US": {
+					"shortName": "Nueva Esparta",
+					"longName": "Nueva Esparta"
+				},
+				"es_VE": {
+					"shortName": "Nueva Esparta",
+					"longName": "Nueva Esparta"
+				}
+			}
+		},
+		"P": {
+			"locales": {
+				"es_VE": {
+					"shortName": "Portuguesa",
+					"longName": "Portuguesa"
+				},
+				"en_US": {
+					"shortName": "Portuguesa",
+					"longName": "Portuguesa"
+				}
+			}
+		},
+		"R": {
+			"locales": {
+				"en_US": {
+					"shortName": "Sucre",
+					"longName": "Sucre"
+				},
+				"es_VE": {
+					"shortName": "Sucre",
+					"longName": "Sucre"
+				}
+			}
+		},
+		"S": {
+			"locales": {
+				"es_VE": {
+					"shortName": "Táchira",
+					"longName": "Táchira"
+				},
+				"en_US": {
+					"shortName": "Táchira",
+					"longName": "Táchira"
+				}
+			}
+		},
+		"T": {
+			"locales": {
+				"es_VE": {
+					"shortName": "Trujillo",
+					"longName": "Trujillo"
+				},
+				"en_US": {
+					"shortName": "Trujillo",
+					"longName": "Trujillo"
+				}
+			}
+		},
+		"U": {
+			"locales": {
+				"en_US": {
+					"shortName": "Yaracuy",
+					"longName": "Yaracuy"
+				},
+				"es_VE": {
+					"shortName": "Yaracuy",
+					"longName": "Yaracuy"
+				}
+			}
+		},
+		"V": {
+			"locales": {
+				"en_US": {
+					"shortName": "Zulia",
+					"longName": "Zulia"
+				},
+				"es_VE": {
+					"shortName": "Zulia",
+					"longName": "Zulia"
+				}
+			}
+		},
+		"W": {
+			"locales": {
+				"en_US": {
+					"shortName": "Dependencias Federales",
+					"longName": "Dependencias Federales"
+				},
+				"es_VE": {
+					"shortName": "Dependencias Federales",
+					"longName": "Dependencias Federales"
+				}
+			}
+		},
+		"X": {
+			"locales": {
+				"en_US": {
+					"shortName": "Vargas",
+					"longName": "Vargas"
+				},
+				"es_VE": {
+					"shortName": "Vargas",
+					"longName": "Vargas"
+				}
+			}
+		},
+		"Y": {
+			"locales": {
+				"en_US": {
+					"shortName": "Delta Amacuro",
+					"longName": "Delta Amacuro"
+				},
+				"es_VE": {
+					"shortName": "Delta Amacuro",
+					"longName": "Delta Amacuro"
+				}
+			}
+		},
+		"Z": {
+			"locales": {
+				"es_VE": {
+					"shortName": "Amazonas",
+					"longName": "Amazonas"
+				},
+				"en_US": {
+					"shortName": "Amazonas",
+					"longName": "Amazonas"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/es_VE",
+		"id": "es_VE"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Venezuela",
+			"longName": "Bolivarian Republic of Venezuela"
+		},
+		"es_VE": {
+			"shortName": "Venezuela",
+			"longName": "República Bolivariana de Venezuela"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

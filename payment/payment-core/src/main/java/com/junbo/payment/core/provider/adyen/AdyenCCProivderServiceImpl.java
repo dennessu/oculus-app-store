@@ -24,6 +24,7 @@ import com.junbo.payment.spec.model.Address;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import com.junbo.sharding.IdGenerator;
+import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.rmi.RemoteException;
 import java.util.*;
@@ -112,7 +114,8 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                     //result = service.authorise(adyenRequest);
                     //Rest call
                     MultivaluedMap<String, String> headers = new MultivaluedHashMap<String, String>();
-                    headers.putSingle("Authorization", "Basic d3NAQ29tcGFueS5PY3VsdXM6I0J1Z3NmMHIkJiNCdWdzZjByJDE=");
+                    String authCode = Base64.encodeBase64String((getAuthUser() + ":" + getAuthPassword()).getBytes());
+                    headers.putSingle("Authorization", "Basic " + authCode);
                     headers.putSingle("Accept", "text/html");
                     ((AdyenApiClientProxy)adyenRestClient).setHeaders(headers);
                     StringBuffer sbReq = getRawRequest(defaultCurrency, minAuthAmount, piId, request, address);
@@ -259,8 +262,8 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                 request.setMerchantAccount(getMerchantAccount());
                 String currency = paymentRequest.getChargeInfo().getCurrency();
                 request.setModificationAmount(new Amount(currency,
-                        paymentRequest.getChargeInfo().getAmount().longValue()
-                                * currencyResource.getNumberAfterDecimal(currency).get()));
+                        paymentRequest.getChargeInfo().getAmount().multiply(
+                           new BigDecimal(currencyResource.getNumberAfterDecimal(currency).get())).longValue()));
                 request.setOriginalReference(transactionId);
                 ModificationResult result = null;
                 try {

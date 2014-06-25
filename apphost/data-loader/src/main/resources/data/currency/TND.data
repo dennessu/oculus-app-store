@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "TND",
+			"longName": "Tunisian dinar"
+		},
+		"ar_TN": {
+			"shortName": "دينار",
+			"longName": "دينار تونسي"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=TND",
+		"id": null
+	},
+	"currencyCode": "TND",
+	"symbol": "د.ت.",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "3",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

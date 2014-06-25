@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "OMR",
+			"longName": "Omani rial"
+		},
+		"ar_OM": {
+			"shortName": "ريال‎,",
+			"longName": "ريال عماني"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=OMR",
+		"id": null
+	},
+	"currencyCode": "OMR",
+	"symbol": "ر.ع.",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "3",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

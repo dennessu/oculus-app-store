@@ -7,4 +7,5 @@ $PGBIN_PATH/dropdb repl_test -h $MASTER_HOST -p $MASTER_DB_PORT
 $PGBIN_PATH/createdb repl_test -h $MASTER_HOST -p $MASTER_DB_PORT
 $PGBIN_PATH/psql repl_test -h $MASTER_HOST -p $MASTER_DB_PORT -c "CREATE TABLE student (id bigint, PRIMARY KEY(id));"
 $PGBIN_PATH/psql repl_test -h $MASTER_HOST -p $MASTER_DB_PORT -c "CREATE TABLE teacher (id bigint, PRIMARY KEY(id));"
+$PGBIN_PATH/psql repl_test -h $MASTER_HOST -p $MASTER_DB_PORT -c "CREATE TABLE perf (id bigint, PRIMARY KEY(id));"
 set -e

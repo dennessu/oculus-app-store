@@ -1,0 +1,139 @@
+{
+	"countryCode": "BO",
+	"defaultLocale": {
+		"href": "/v1/locales/es_BO",
+		"id": "es_BO"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/BOB",
+		"id": "BOB"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"B": {
+			"locales": {
+				"es_BO": {
+					"shortName": "El Beni",
+					"longName": "El Beni"
+				},
+				"en_US": {
+					"shortName": "El Beni",
+					"longName": "El Beni"
+				}
+			}
+		},
+		"C": {
+			"locales": {
+				"es_BO": {
+					"shortName": "Cochabamba",
+					"longName": "Cochabamba"
+				},
+				"en_US": {
+					"shortName": "Cochabamba",
+					"longName": "Cochabamba"
+				}
+			}
+		},
+		"H": {
+			"locales": {
+				"en_US": {
+					"shortName": "Chuquisaca",
+					"longName": "Chuquisaca"
+				},
+				"es_BO": {
+					"shortName": "Chuquisaca",
+					"longName": "Chuquisaca"
+				}
+			}
+		},
+		"L": {
+			"locales": {
+				"en_US": {
+					"shortName": "La Paz",
+					"longName": "La Paz"
+				},
+				"es_BO": {
+					"shortName": "La Paz",
+					"longName": "La Paz"
+				}
+			}
+		},
+		"N": {
+			"locales": {
+				"en_US": {
+					"shortName": "Pando",
+					"longName": "Pando"
+				},
+				"es_BO": {
+					"shortName": "Pando",
+					"longName": "Pando"
+				}
+			}
+		},
+		"O": {
+			"locales": {
+				"en_US": {
+					"shortName": "Oruro",
+					"longName": "Oruro"
+				},
+				"es_BO": {
+					"shortName": "Oruro",
+					"longName": "Oruro"
+				}
+			}
+		},
+		"P": {
+			"locales": {
+				"en_US": {
+					"shortName": "Potosí",
+					"longName": "Potosí"
+				},
+				"es_BO": {
+					"shortName": "Potosí",
+					"longName": "Potosí"
+				}
+			}
+		},
+		"S": {
+			"locales": {
+				"en_US": {
+					"shortName": "Santa Cruz",
+					"longName": "Santa Cruz"
+				},
+				"es_BO": {
+					"shortName": "Santa Cruz",
+					"longName": "Santa Cruz"
+				}
+			}
+		},
+		"T": {
+			"locales": {
+				"es_BO": {
+					"shortName": "Tarija",
+					"longName": "Tarija"
+				},
+				"en_US": {
+					"shortName": "Tarija",
+					"longName": "Tarija"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/es_BO",
+		"id": "es_BO"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Bolivia",
+			"longName": "Plurinational State of Bolivia"
+		},
+		"es_BO": {
+			"shortName": "Bolivia",
+			"longName": "Estado Plurinacional de Bolivia"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

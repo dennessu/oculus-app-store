@@ -1,0 +1,235 @@
+{
+	"countryCode": "NI",
+	"defaultLocale": {
+		"href": "/v1/locales/es_NI",
+		"id": "es_NI"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/NIO",
+		"id": "NIO"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"AN": {
+			"locales": {
+				"es_NI": {
+					"shortName": "Atlántico Norte",
+					"longName": "Atlántico Norte"
+				},
+				"en_US": {
+					"shortName": "Atlántico Norte",
+					"longName": "Atlántico Norte"
+				}
+			}
+		},
+		"AS": {
+			"locales": {
+				"en_US": {
+					"shortName": "Atlántico Sur",
+					"longName": "Atlántico Sur"
+				},
+				"es_NI": {
+					"shortName": "Atlántico Sur",
+					"longName": "Atlántico Sur"
+				}
+			}
+		},
+		"BO": {
+			"locales": {
+				"es_NI": {
+					"shortName": "Boaco",
+					"longName": "Boaco"
+				},
+				"en_US": {
+					"shortName": "Boaco",
+					"longName": "Boaco"
+				}
+			}
+		},
+		"CA": {
+			"locales": {
+				"es_NI": {
+					"shortName": "Carazo",
+					"longName": "Carazo"
+				},
+				"en_US": {
+					"shortName": "Carazo",
+					"longName": "Carazo"
+				}
+			}
+		},
+		"CI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Chinandega",
+					"longName": "Chinandega"
+				},
+				"es_NI": {
+					"shortName": "Chinandega",
+					"longName": "Chinandega"
+				}
+			}
+		},
+		"CO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Chontales",
+					"longName": "Chontales"
+				},
+				"es_NI": {
+					"shortName": "Chontales",
+					"longName": "Chontales"
+				}
+			}
+		},
+		"ES": {
+			"locales": {
+				"en_US": {
+					"shortName": "Estelí",
+					"longName": "Estelí"
+				},
+				"es_NI": {
+					"shortName": "Estelí",
+					"longName": "Estelí"
+				}
+			}
+		},
+		"GR": {
+			"locales": {
+				"es_NI": {
+					"shortName": "Granada",
+					"longName": "Granada"
+				},
+				"en_US": {
+					"shortName": "Granada",
+					"longName": "Granada"
+				}
+			}
+		},
+		"JI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Jinotega",
+					"longName": "Jinotega"
+				},
+				"es_NI": {
+					"shortName": "Jinotega",
+					"longName": "Jinotega"
+				}
+			}
+		},
+		"LE": {
+			"locales": {
+				"en_US": {
+					"shortName": "León",
+					"longName": "León"
+				},
+				"es_NI": {
+					"shortName": "León",
+					"longName": "León"
+				}
+			}
+		},
+		"MD": {
+			"locales": {
+				"es_NI": {
+					"shortName": "Madriz",
+					"longName": "Madriz"
+				},
+				"en_US": {
+					"shortName": "Madriz",
+					"longName": "Madriz"
+				}
+			}
+		},
+		"MN": {
+			"locales": {
+				"en_US": {
+					"shortName": "Managua",
+					"longName": "Managua"
+				},
+				"es_NI": {
+					"shortName": "Managua",
+					"longName": "Managua"
+				}
+			}
+		},
+		"MS": {
+			"locales": {
+				"en_US": {
+					"shortName": "Masaya",
+					"longName": "Masaya"
+				},
+				"es_NI": {
+					"shortName": "Masaya",
+					"longName": "Masaya"
+				}
+			}
+		},
+		"MT": {
+			"locales": {
+				"en_US": {
+					"shortName": "Matagalpa",
+					"longName": "Matagalpa"
+				},
+				"es_NI": {
+					"shortName": "Matagalpa",
+					"longName": "Matagalpa"
+				}
+			}
+		},
+		"NS": {
+			"locales": {
+				"en_US": {
+					"shortName": "Nueva Segovia",
+					"longName": "Nueva Segovia"
+				},
+				"es_NI": {
+					"shortName": "Nueva Segovia",
+					"longName": "Nueva Segovia"
+				}
+			}
+		},
+		"RI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Rivas",
+					"longName": "Rivas"
+				},
+				"es_NI": {
+					"shortName": "Rivas",
+					"longName": "Rivas"
+				}
+			}
+		},
+		"SJ": {
+			"locales": {
+				"es_NI": {
+					"shortName": "Río San Juan",
+					"longName": "Río San Juan"
+				},
+				"en_US": {
+					"shortName": "Río San Juan",
+					"longName": "Río San Juan"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/es_NI",
+		"id": "es_NI"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Nicaragua",
+			"longName": "Republic of Nicaragua"
+		},
+		"es_NI": {
+			"shortName": "Nicaragua",
+			"longName": "República de Nicaragua"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

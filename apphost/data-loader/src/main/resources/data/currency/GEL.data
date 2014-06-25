@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "GEL",
+			"longName": "Georgian lari"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=GEL",
+		"id": null
+	},
+	"currencyCode": "GEL",
+	"symbol": "ლ",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

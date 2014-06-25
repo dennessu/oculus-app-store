@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "KES",
+			"longName": "Kenyan shilling"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=KES",
+		"id": null
+	},
+	"currencyCode": "KES",
+	"symbol": "Ksh",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

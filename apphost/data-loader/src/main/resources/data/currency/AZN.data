@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "AZN",
+			"longName": "Azerbaijani manat"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=AZN",
+		"id": null
+	},
+	"currencyCode": "AZN",
+	"symbol": "m.",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

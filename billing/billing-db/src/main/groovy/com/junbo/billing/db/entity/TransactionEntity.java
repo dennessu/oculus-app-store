@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 public class TransactionEntity extends BaseEntity {
     @Id
     @Column(name = "transaction_id")
-    private Long transactionId;
+    private Long id;
 
     @Column(name = "pi_id")
     private Long piId;
@@ -42,11 +42,12 @@ public class TransactionEntity extends BaseEntity {
     @Column(name = "status_id")
     private Short statusId;
 
-    public Long getTransactionId() {
-        return transactionId;
+    public Long getId() {
+        return id;
     }
-    public void setTransactionId(Long transactionId) {
-        this.transactionId = transactionId;
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getBalanceId() {

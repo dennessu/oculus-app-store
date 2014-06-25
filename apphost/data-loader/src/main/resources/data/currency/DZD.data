@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "DZD",
+			"longName": "Algerian dinar"
+		},
+		"ar_DZ": {
+			"shortName": "دينار",
+			"longName": "دينار جزائري"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=DZD",
+		"id": null
+	},
+	"currencyCode": "DZD",
+	"symbol": "DA",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

@@ -17,7 +17,7 @@
         <property name="deflectionInSeconds" value="300"/>
         <property name="clientSecret" value="secret"/>
         <property name="clientId" value="service"/>
-        <property name="tokenEndpoint" ref="tokenEndpoint"/>
+        <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
     </bean>
 
     <bean id="order.orderResourceClientProxy" class="com.junbo.order.spec.resource.proxy.OrderResourceClientProxy"

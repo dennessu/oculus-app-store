@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "NZD",
+			"longName": "New Zealand dollar"
+		},
+		"en_NZ": {
+			"shortName": "NZD",
+			"longName": "New Zealand dollar"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=NZD",
+		"id": null
+	},
+	"currencyCode": "NZD",
+	"symbol": "$",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

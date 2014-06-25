@@ -1,0 +1,174 @@
+{
+	"countryCode": "AO",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/AOA",
+		"id": "AOA"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/FPB",
+		"id": "FPB"
+	}],
+	"subCountries": {
+		"BGO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Bengo",
+					"longName": "Bengo"
+				}
+			}
+		},
+		"BGU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Benguela",
+					"longName": "Benguela"
+				}
+			}
+		},
+		"BIE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Bié",
+					"longName": "Bié"
+				}
+			}
+		},
+		"CAB": {
+			"locales": {
+				"en_US": {
+					"shortName": "Cabinda",
+					"longName": "Cabinda"
+				}
+			}
+		},
+		"CCU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Cuando-Cubango",
+					"longName": "Cuando-Cubango"
+				}
+			}
+		},
+		"CNN": {
+			"locales": {
+				"en_US": {
+					"shortName": "Cunene",
+					"longName": "Cunene"
+				}
+			}
+		},
+		"CNO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Cuanza Norte",
+					"longName": "Cuanza Norte"
+				}
+			}
+		},
+		"CUS": {
+			"locales": {
+				"en_US": {
+					"shortName": "Cuanza Sul",
+					"longName": "Cuanza Sul"
+				}
+			}
+		},
+		"HUA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Huambo",
+					"longName": "Huambo"
+				}
+			}
+		},
+		"HUI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Huíla",
+					"longName": "Huíla"
+				}
+			}
+		},
+		"LNO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Lunda Norte",
+					"longName": "Lunda Norte"
+				}
+			}
+		},
+		"LSU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Lunda Sul",
+					"longName": "Lunda Sul"
+				}
+			}
+		},
+		"LUA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Luanda",
+					"longName": "Luanda"
+				}
+			}
+		},
+		"MAL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Malange",
+					"longName": "Malange"
+				}
+			}
+		},
+		"MOX": {
+			"locales": {
+				"en_US": {
+					"shortName": "Moxico",
+					"longName": "Moxico"
+				}
+			}
+		},
+		"NAM": {
+			"locales": {
+				"en_US": {
+					"shortName": "Namibe",
+					"longName": "Namibe"
+				}
+			}
+		},
+		"UIG": {
+			"locales": {
+				"en_US": {
+					"shortName": "Uíge",
+					"longName": "Uíge"
+				}
+			}
+		},
+		"ZAI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Zaire",
+					"longName": "Zaire"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Angola",
+			"longName": "Republic of Angola"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

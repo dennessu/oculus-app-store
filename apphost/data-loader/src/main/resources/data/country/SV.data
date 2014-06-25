@@ -1,0 +1,199 @@
+{
+	"countryCode": "SV",
+	"defaultLocale": {
+		"href": "/v1/locales/es_SV",
+		"id": "es_SV"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/USD",
+		"id": "USD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"AH": {
+			"locales": {
+				"es_SV": {
+					"shortName": "Ahuachapán",
+					"longName": "Ahuachapán"
+				},
+				"en_US": {
+					"shortName": "Ahuachapán",
+					"longName": "Ahuachapán"
+				}
+			}
+		},
+		"CA": {
+			"locales": {
+				"es_SV": {
+					"shortName": "Cabañas",
+					"longName": "Cabañas"
+				},
+				"en_US": {
+					"shortName": "Cabañas",
+					"longName": "Cabañas"
+				}
+			}
+		},
+		"CH": {
+			"locales": {
+				"en_US": {
+					"shortName": "Chalatenango",
+					"longName": "Chalatenango"
+				},
+				"es_SV": {
+					"shortName": "Chalatenango",
+					"longName": "Chalatenango"
+				}
+			}
+		},
+		"CU": {
+			"locales": {
+				"es_SV": {
+					"shortName": "Cuscatlán",
+					"longName": "Cuscatlán"
+				},
+				"en_US": {
+					"shortName": "Cuscatlán",
+					"longName": "Cuscatlán"
+				}
+			}
+		},
+		"LI": {
+			"locales": {
+				"es_SV": {
+					"shortName": "La Libertad",
+					"longName": "La Libertad"
+				},
+				"en_US": {
+					"shortName": "La Libertad",
+					"longName": "La Libertad"
+				}
+			}
+		},
+		"MO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Morazán",
+					"longName": "Morazán"
+				},
+				"es_SV": {
+					"shortName": "Morazán",
+					"longName": "Morazán"
+				}
+			}
+		},
+		"PA": {
+			"locales": {
+				"en_US": {
+					"shortName": "La Paz",
+					"longName": "La Paz"
+				},
+				"es_SV": {
+					"shortName": "La Paz",
+					"longName": "La Paz"
+				}
+			}
+		},
+		"SA": {
+			"locales": {
+				"es_SV": {
+					"shortName": "Santa Ana",
+					"longName": "Santa Ana"
+				},
+				"en_US": {
+					"shortName": "Santa Ana",
+					"longName": "Santa Ana"
+				}
+			}
+		},
+		"SM": {
+			"locales": {
+				"en_US": {
+					"shortName": "San Miguel",
+					"longName": "San Miguel"
+				},
+				"es_SV": {
+					"shortName": "San Miguel",
+					"longName": "San Miguel"
+				}
+			}
+		},
+		"SO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Sonsonate",
+					"longName": "Sonsonate"
+				},
+				"es_SV": {
+					"shortName": "Sonsonate",
+					"longName": "Sonsonate"
+				}
+			}
+		},
+		"SS": {
+			"locales": {
+				"en_US": {
+					"shortName": "San Salvador",
+					"longName": "San Salvador"
+				},
+				"es_SV": {
+					"shortName": "San Salvador",
+					"longName": "San Salvador"
+				}
+			}
+		},
+		"SV": {
+			"locales": {
+				"en_US": {
+					"shortName": "San Vicente",
+					"longName": "San Vicente"
+				},
+				"es_SV": {
+					"shortName": "San Vicente",
+					"longName": "San Vicente"
+				}
+			}
+		},
+		"UN": {
+			"locales": {
+				"en_US": {
+					"shortName": "La Unión",
+					"longName": "La Unión"
+				},
+				"es_SV": {
+					"shortName": "La Unión",
+					"longName": "La Unión"
+				}
+			}
+		},
+		"US": {
+			"locales": {
+				"es_SV": {
+					"shortName": "Usulután",
+					"longName": "Usulután"
+				},
+				"en_US": {
+					"shortName": "Usulután",
+					"longName": "Usulután"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/es_SV",
+		"id": "es_SV"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "El Salvador",
+			"longName": "Republic of El Salvador"
+		},
+		"es_SV": {
+			"shortName": "El Salvador",
+			"longName": "República de El Salvador"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

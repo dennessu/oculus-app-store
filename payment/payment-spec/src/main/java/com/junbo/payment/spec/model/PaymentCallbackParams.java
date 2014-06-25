@@ -16,7 +16,8 @@ public class PaymentCallbackParams {
     //adyen
     private String authResult;
     private String pspReference;
-
+    private String merchantReference;
+    private String merchantSig;
 
     public String getPayerID() {
         return payerID;
@@ -48,5 +49,21 @@ public class PaymentCallbackParams {
 
     public void setAuthResult(String authResult) {
         this.authResult = authResult;
+    }
+
+    public String getMerchantReference() {
+        return merchantReference;
+    }
+
+    public void setMerchantReference(String merchantReference) {
+        this.merchantReference = merchantReference;
+    }
+
+    public String getMerchantSig() {
+        return merchantSig;
+    }
+
+    public void setMerchantSig(String merchantSig) {
+        this.merchantSig = merchantSig;
     }
 }

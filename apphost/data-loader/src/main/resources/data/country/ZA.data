@@ -91,6 +91,10 @@
 		"id": "en_ZA"
 	}],
 	"locales": {
+		"en_US": {
+			"shortName": "South Africa",
+			"longName": "Republic of South Africa"
+		},
 		"en_ZA": {
 			"shortName": "South Africa",
 			"longName": "Republic of South Africa"

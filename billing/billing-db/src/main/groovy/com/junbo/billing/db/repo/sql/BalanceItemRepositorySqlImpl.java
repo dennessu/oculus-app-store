@@ -12,7 +12,6 @@ import com.junbo.billing.db.repo.BalanceItemRepository;
 import com.junbo.billing.spec.model.BalanceItem;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.oom.core.MappingContext;
-import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.util.ArrayList;
@@ -24,7 +23,6 @@ import java.util.List;
 public class BalanceItemRepositorySqlImpl implements BalanceItemRepository {
     private BalanceItemEntityDao balanceItemEntityDao;
     private ModelMapper modelMapper;
-    private IdGenerator idGenerator;
 
     @Required
     public void setBalanceItemEntityDao(BalanceItemEntityDao balanceItemEntityDao) {
@@ -34,11 +32,6 @@ public class BalanceItemRepositorySqlImpl implements BalanceItemRepository {
     @Required
     public void setModelMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
-    }
-
-    @Required
-    public void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator;
     }
 
     @Override
@@ -67,19 +60,16 @@ public class BalanceItemRepositorySqlImpl implements BalanceItemRepository {
 
     @Override
     public Promise<BalanceItem> create(BalanceItem model) {
-        if (model.getId() == null) {
-            model.setId(idGenerator.nextId(model.getOrderId().getValue()));
-        }
         BalanceItemEntity entity = modelMapper.toBalanceItemEntity(model, new MappingContext());
         BalanceItemEntity saved = balanceItemEntityDao.save(entity);
-        return get(saved.getBalanceItemId());
+        return get(saved.getId());
     }
 
     @Override
     public Promise<BalanceItem> update(BalanceItem model) {
         BalanceItemEntity entity = modelMapper.toBalanceItemEntity(model, new MappingContext());
         balanceItemEntityDao.update(entity);
-        return get(entity.getBalanceItemId());
+        return get(entity.getId());
     }
 
     @Override

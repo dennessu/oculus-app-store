@@ -12,7 +12,6 @@ import com.junbo.billing.db.repo.OrderBalanceLinkRepository;
 import com.junbo.billing.spec.model.OrderBalanceLink;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.oom.core.MappingContext;
-import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.util.ArrayList;
@@ -24,7 +23,6 @@ import java.util.List;
 public class OrderBalanceLinkRepositorySqlImpl implements OrderBalanceLinkRepository {
     private OrderBalanceLinkEntityDao orderBalanceLinkEntityDao;
     private ModelMapper modelMapper;
-    private IdGenerator idGenerator;
 
     @Required
     public void setOrderBalanceLinkEntityDao(OrderBalanceLinkEntityDao orderBalanceLinkEntityDao) {
@@ -34,11 +32,6 @@ public class OrderBalanceLinkRepositorySqlImpl implements OrderBalanceLinkReposi
     @Required
     public void setModelMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
-    }
-
-    @Required
-    public void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator;
     }
 
     @Override
@@ -81,20 +74,16 @@ public class OrderBalanceLinkRepositorySqlImpl implements OrderBalanceLinkReposi
 
     @Override
     public Promise<OrderBalanceLink> create(OrderBalanceLink model) {
-        if (model.getId() == null) {
-            model.setId(idGenerator.nextId(model.getOrderId()));
-        }
-
         OrderBalanceLinkEntity entity = modelMapper.toOrderBalanceLinkEntity(model, new MappingContext());
         OrderBalanceLinkEntity saved = orderBalanceLinkEntityDao.save(entity);
-        return get(saved.getLinkId());
+        return get(saved.getId());
     }
 
     @Override
     public Promise<OrderBalanceLink> update(OrderBalanceLink model) {
         OrderBalanceLinkEntity entity = modelMapper.toOrderBalanceLinkEntity(model, new MappingContext());
         orderBalanceLinkEntityDao.update(entity);
-        return get(entity.getLinkId());
+        return get(entity.getId());
     }
 
     @Override

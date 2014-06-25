@@ -10,6 +10,7 @@ import com.junbo.catalog.spec.model.domaindata.ShippingMethod;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.promotion.PromotionRevision;
 import com.junbo.catalog.spec.model.promotion.PromotionType;
+import com.junbo.rating.common.util.Constants;
 import com.junbo.rating.core.context.PriceRatingContext;
 import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.fusion.LinkedEntry;
@@ -58,18 +59,19 @@ public class OrderRatingService extends RatingServiceSupport{
             Set<PromotionRevision> promotions = candidates.get(offerId) == null?
                     new HashSet<PromotionRevision>() : candidates.get(offerId);
 
-            Money originalPrice = getPrice(item.getOffer().getPrice(), context.getCountry(), currency.getCode());
-            if (originalPrice == Money.NOT_FOUND) {
+            BigDecimal originalPrice = getPrice(item.getOffer().getPrice(), context.getCountry(), currency.getCode());
+            if (originalPrice == Constants.PRICE_NOT_FOUND) {
                 LOGGER.error("Price of Offer [" + offerId + "] is not found for Currency [" + currency + "].");
                 throw AppErrors.INSTANCE.missingConfiguration("price").exception();
             }
 
-            Money bestBenefit = new Money(BigDecimal.ZERO, originalPrice.getCurrency());
+            BigDecimal bestBenefit = BigDecimal.ZERO;
 
             RatingResultEntry entry = new RatingResultEntry();
             entry.setOfferId(item.getOfferId());
             entry.setQuantity(item.getQuantity());
             entry.setShippingMethodId(item.getShippingMethodId());
+            entry.setDeveloperRatio(item.getOffer().getDeveloperRatio());
             entry.setPreOrderPrice(getPreOrderPrice(item.getOffer(), context.getCountry(), currency.getCode()));
             entry.setOriginalPrice(originalPrice);
             entry.setAppliedPromotion(new HashSet<String>());
@@ -78,24 +80,23 @@ public class OrderRatingService extends RatingServiceSupport{
                     continue;
                 }
 
-                Money currentBenefit = applyBenefit(originalPrice, promotion.getBenefit());
-                if (currentBenefit.greaterThan(bestBenefit)) {
+                BigDecimal currentBenefit = applyBenefit(originalPrice, promotion.getBenefit());
+                if (currentBenefit.compareTo(bestBenefit) >= 0) {
                     bestBenefit = currentBenefit;
                     entry.getAppliedPromotion().add(promotion.getRevisionId());
                 }
             }
-            bestBenefit.rounding(currency.getDigits());
             entry.setDiscountAmount(bestBenefit);
             context.getEntries().add(entry);
         }
     }
 
     private void calculateOrderLevelPromotion(PriceRatingContext context) {
-        Money totalAmount = new Money(BigDecimal.ZERO, context.getCurrency().getCode());
+        BigDecimal totalAmount = BigDecimal.ZERO;
         for (RatingResultEntry entry : context.getEntries()) {
             //calculate the total amount of line items in current order
             totalAmount = totalAmount.add(
-                    entry.getOriginalPrice().subtract(entry.getDiscountAmount()).multiple(entry.getQuantity()));
+                    entry.getOriginalPrice().subtract(entry.getDiscountAmount()).multiply(new BigDecimal(entry.getQuantity())));
         }
 
         OrderResultEntry result = new OrderResultEntry();
@@ -103,7 +104,7 @@ public class OrderRatingService extends RatingServiceSupport{
         //for criterion validation
         context.setOrderResult(result);
 
-        Money bestBenefit = new Money(BigDecimal.ZERO, context.getCurrency().getCode());
+        BigDecimal bestBenefit = BigDecimal.ZERO;
 
         Set<PromotionRevision> candidates = context.getRules().get(PromotionType.ORDER_PROMOTION) == null?
                 new HashSet<PromotionRevision>() : context.getRules().get(PromotionType.ORDER_PROMOTION);
@@ -119,13 +120,13 @@ public class OrderRatingService extends RatingServiceSupport{
                 continue;
             }
 
-            Money currentBenefit = applyBenefit(totalAmount, promotion.getBenefit());
-            if (currentBenefit.greaterThan(bestBenefit)) {
+            BigDecimal currentBenefit = applyBenefit(totalAmount, promotion.getBenefit());
+            if (currentBenefit.compareTo(bestBenefit) >= 0) {
                 bestBenefit = currentBenefit;
                 result.setAppliedPromotion(promotion.getRevisionId());
             }
         }
-        bestBenefit.rounding(context.getCurrency().getDigits());
+        //bestBenefit.rounding(context.getCurrency().getDigits());
         result.setDiscountAmount(bestBenefit);
         context.setOrderResult(result);
     }

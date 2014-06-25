@@ -1,0 +1,299 @@
+{
+	"countryCode": "AF",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/AFN",
+		"id": "AFN"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"BAL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Balkh",
+					"longName": "Balkh"
+				}
+			}
+		},
+		"BAM": {
+			"locales": {
+				"en_US": {
+					"shortName": "Bāmyān",
+					"longName": "Bāmyān"
+				}
+			}
+		},
+		"BDG": {
+			"locales": {
+				"en_US": {
+					"shortName": "Bādghīs",
+					"longName": "Bādghīs"
+				}
+			}
+		},
+		"BDS": {
+			"locales": {
+				"en_US": {
+					"shortName": "Badakhshān",
+					"longName": "Badakhshān"
+				}
+			}
+		},
+		"BGL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Baghlān",
+					"longName": "Baghlān"
+				}
+			}
+		},
+		"DAY": {
+			"locales": {
+				"en_US": {
+					"shortName": "Dāykundī",
+					"longName": "Dāykundī"
+				}
+			}
+		},
+		"FRA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Farāh",
+					"longName": "Farāh"
+				}
+			}
+		},
+		"FYB": {
+			"locales": {
+				"en_US": {
+					"shortName": "Fāryāb",
+					"longName": "Fāryāb"
+				}
+			}
+		},
+		"GHA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ghaznī",
+					"longName": "Ghaznī"
+				}
+			}
+		},
+		"GHO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ghōr",
+					"longName": "Ghōr"
+				}
+			}
+		},
+		"HEL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Helmand",
+					"longName": "Helmand"
+				}
+			}
+		},
+		"HER": {
+			"locales": {
+				"en_US": {
+					"shortName": "Herāt",
+					"longName": "Herāt"
+				}
+			}
+		},
+		"JOW": {
+			"locales": {
+				"en_US": {
+					"shortName": "Jowzjān",
+					"longName": "Jowzjān"
+				}
+			}
+		},
+		"KAB": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kābul",
+					"longName": "Kābul"
+				}
+			}
+		},
+		"KAN": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kandahār",
+					"longName": "Kandahār"
+				}
+			}
+		},
+		"KAP": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kāpīsā",
+					"longName": "Kāpīsā"
+				}
+			}
+		},
+		"KDZ": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kunduz",
+					"longName": "Kunduz"
+				}
+			}
+		},
+		"KHO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Khōst",
+					"longName": "Khōst"
+				}
+			}
+		},
+		"KNR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kunar",
+					"longName": "Kunar"
+				}
+			}
+		},
+		"LAG": {
+			"locales": {
+				"en_US": {
+					"shortName": "Laghmān",
+					"longName": "Laghmān"
+				}
+			}
+		},
+		"LOG": {
+			"locales": {
+				"en_US": {
+					"shortName": "Lōgar",
+					"longName": "Lōgar"
+				}
+			}
+		},
+		"NAN": {
+			"locales": {
+				"en_US": {
+					"shortName": "Nangarhār",
+					"longName": "Nangarhār"
+				}
+			}
+		},
+		"NIM": {
+			"locales": {
+				"en_US": {
+					"shortName": "Nīmrōz",
+					"longName": "Nīmrōz"
+				}
+			}
+		},
+		"NUR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Nūristān",
+					"longName": "Nūristān"
+				}
+			}
+		},
+		"PAN": {
+			"locales": {
+				"en_US": {
+					"shortName": "Panjshayr",
+					"longName": "Panjshayr"
+				}
+			}
+		},
+		"PAR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Parwān",
+					"longName": "Parwān"
+				}
+			}
+		},
+		"PIA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Paktiyā",
+					"longName": "Paktiyā"
+				}
+			}
+		},
+		"PKA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Paktīkā",
+					"longName": "Paktīkā"
+				}
+			}
+		},
+		"SAM": {
+			"locales": {
+				"en_US": {
+					"shortName": "Samangān",
+					"longName": "Samangān"
+				}
+			}
+		},
+		"SAR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Sar-e Pul",
+					"longName": "Sar-e Pul"
+				}
+			}
+		},
+		"TAK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Takhār",
+					"longName": "Takhār"
+				}
+			}
+		},
+		"URU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Uruzgān",
+					"longName": "Uruzgān"
+				}
+			}
+		},
+		"WAR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Wardak",
+					"longName": "Wardak"
+				}
+			}
+		},
+		"ZAB": {
+			"locales": {
+				"en_US": {
+					"shortName": "Zābul",
+					"longName": "Zābul"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Afghanistan",
+			"longName": "Islamic Republic of Afghanistan"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

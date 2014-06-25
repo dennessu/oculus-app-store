@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "YER",
+			"longName": "Yemeni rial"
+		},
+		"ar_YE": {
+			"shortName": "ريال يمني",
+			"longName": "ريال يمني"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=YER",
+		"id": null
+	},
+	"currencyCode": "YER",
+	"symbol": "﷼",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

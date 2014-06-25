@@ -83,6 +83,10 @@
 		"id": "en_AU"
 	}],
 	"locales": {
+		"en_US": {
+			"shortName": "Australia",
+			"longName": "Commonwealth of Australia"
+		},
 		"en_AU": {
 			"shortName": "Australia",
 			"longName": "Commonwealth of Australia"

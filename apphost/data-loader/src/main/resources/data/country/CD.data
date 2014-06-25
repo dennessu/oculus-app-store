@@ -1,0 +1,118 @@
+{
+	"countryCode": "CD",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/CDF",
+		"id": "CDF"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/FPB",
+		"id": "FPB"
+	}],
+	"subCountries": {
+		"BC": {
+			"locales": {
+				"en_US": {
+					"shortName": "Bas-Congo",
+					"longName": "Bas-Congo"
+				}
+			}
+		},
+		"BN": {
+			"locales": {
+				"en_US": {
+					"shortName": "Bandundu",
+					"longName": "Bandundu"
+				}
+			}
+		},
+		"EQ": {
+			"locales": {
+				"en_US": {
+					"shortName": "Équateur",
+					"longName": "Équateur"
+				}
+			}
+		},
+		"KA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Katanga",
+					"longName": "Katanga"
+				}
+			}
+		},
+		"KE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kasai-Oriental",
+					"longName": "Kasai-Oriental"
+				}
+			}
+		},
+		"KN": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kinshasa",
+					"longName": "Kinshasa"
+				}
+			}
+		},
+		"KW": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kasai-Occidental",
+					"longName": "Kasai-Occidental"
+				}
+			}
+		},
+		"MA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Maniema",
+					"longName": "Maniema"
+				}
+			}
+		},
+		"NK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Nord-Kivu",
+					"longName": "Nord-Kivu"
+				}
+			}
+		},
+		"OR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Orientale",
+					"longName": "Orientale"
+				}
+			}
+		},
+		"SK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Sud-Kivu",
+					"longName": "Sud-Kivu"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Congo-Kinshasa",
+			"longName": "Democratic Republic of the Congo"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

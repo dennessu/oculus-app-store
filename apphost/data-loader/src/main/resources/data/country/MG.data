@@ -1,0 +1,78 @@
+{
+	"countryCode": "MG",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/MGA",
+		"id": "MGA"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/FPB",
+		"id": "FPB"
+	}],
+	"subCountries": {
+		"A": {
+			"locales": {
+				"en_US": {
+					"shortName": "Toamasina",
+					"longName": "Toamasina"
+				}
+			}
+		},
+		"D": {
+			"locales": {
+				"en_US": {
+					"shortName": "Antsiranana",
+					"longName": "Antsiranana"
+				}
+			}
+		},
+		"F": {
+			"locales": {
+				"en_US": {
+					"shortName": "Fianarantsoa",
+					"longName": "Fianarantsoa"
+				}
+			}
+		},
+		"M": {
+			"locales": {
+				"en_US": {
+					"shortName": "Mahajanga",
+					"longName": "Mahajanga"
+				}
+			}
+		},
+		"T": {
+			"locales": {
+				"en_US": {
+					"shortName": "Antananarivo",
+					"longName": "Antananarivo"
+				}
+			}
+		},
+		"U": {
+			"locales": {
+				"en_US": {
+					"shortName": "Toliara",
+					"longName": "Toliara"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Madagascar",
+			"longName": "Republic of Madagascar"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

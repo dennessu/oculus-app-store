@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "KGS",
+			"longName": "Kyrgyzstani som"
+		},
+		"ru_Ru": {
+			"shortName": "сом",
+			"longName": "Киргизский сом"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=KGS",
+		"id": null
+	},
+	"currencyCode": "KGS",
+	"symbol": "som",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

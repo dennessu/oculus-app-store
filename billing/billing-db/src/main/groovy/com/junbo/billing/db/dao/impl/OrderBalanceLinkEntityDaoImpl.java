@@ -13,6 +13,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,22 +29,30 @@ public class OrderBalanceLinkEntityDaoImpl extends BaseDao implements OrderBalan
 
     @Override
     public OrderBalanceLinkEntity save(OrderBalanceLinkEntity orderBalanceLink) {
-        orderBalanceLink.setLinkId(idGenerator.nextId(orderBalanceLink.getBalanceId()));
-
-        Session session = currentSession(orderBalanceLink.getLinkId());
+        if (orderBalanceLink.getId() == null) {
+            orderBalanceLink.setId(idGenerator.nextId(orderBalanceLink.getBalanceId()));
+        }
+        orderBalanceLink.setCreatedTime(new Date());
+        if (orderBalanceLink.getCreatedBy() == null) {
+            orderBalanceLink.setCreatedBy("0");
+        }
+        Session session = currentSession(orderBalanceLink.getId());
         session.save(orderBalanceLink);
         session.flush();
-        return get(orderBalanceLink.getLinkId());
+        return get(orderBalanceLink.getId());
     }
 
     @Override
     public OrderBalanceLinkEntity update(OrderBalanceLinkEntity orderBalanceLink) {
-
-        Session session = currentSession(orderBalanceLink.getLinkId());
+        orderBalanceLink.setUpdatedTime(new Date());
+        if (orderBalanceLink.getUpdatedBy() == null) {
+            orderBalanceLink.setUpdatedBy("0");
+        }
+        Session session = currentSession(orderBalanceLink.getId());
         session.merge(orderBalanceLink);
         session.flush();
 
-        return get(orderBalanceLink.getLinkId());
+        return get(orderBalanceLink.getId());
     }
 
     public List<OrderBalanceLinkEntity> findByOrderId(Long orderId) {

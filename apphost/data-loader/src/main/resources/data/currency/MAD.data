@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "MAD",
+			"longName": "Moroccan dirham"
+		},
+		"ar_MA": {
+			"shortName": "درهم مغربي",
+			"longName": "درهم مغربي"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=MAD",
+		"id": null
+	},
+	"currencyCode": "MAD",
+	"symbol": "د.م. ",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

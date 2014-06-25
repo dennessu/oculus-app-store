@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "NPR",
+			"longName": "Nepalese rupee"
+		},
+		"ne_NP": {
+			"shortName": "रूपैयाँ",
+			"longName": "रूपैयाँ "
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=NPR",
+		"id": null
+	},
+	"currencyCode": "NPR",
+	"symbol": "₨",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "ETB",
+			"longName": "Ethiopian birr"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=ETB",
+		"id": null
+	},
+	"currencyCode": "ETB",
+	"symbol": "Br",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

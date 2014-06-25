@@ -93,6 +93,7 @@
                 <wf:action ref="createUser"/>
                 <wf:action ref="createUserCredential"/>
                 <wf:action ref="createUserPii"/>
+                <wf:action ref="createUserTosAgreement"/>
                 <wf:action ref="sendAccountVerifyEmail"/>
             </wf:transition>
             <wf:transition on="cancel" to="CANCEL_VIEW"/>
@@ -442,4 +443,8 @@
         <property name="paymentInstrumentResource" ref="oauth_paymentInstrumentResource"/>
     </bean>
 
+    <bean id="createUserTosAgreement" class="com.junbo.oauth.core.action.CreateUserTosAgreement">
+        <property name="tosResource" ref="oauth_tosResource"/>
+        <property name="userTosAgreementResource" ref="oauth_userTosAgreementResource"/>
+    </bean>
 </beans>

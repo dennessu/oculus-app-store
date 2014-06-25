@@ -1867,6 +1867,10 @@
 		"id": "en_GB"
 	}],
 	"locales": {
+		"en_US": {
+			"shortName": "United Kingdom",
+			"longName": "United Kingdom of Great Britain and Northern Ireland"
+		},
 		"en_GB": {
 			"shortName": "United Kingdom",
 			"longName": "United Kingdom of Great Britain and Northern Ireland"

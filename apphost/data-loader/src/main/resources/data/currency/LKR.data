@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "LKR",
+			"longName": "Sri Lankan rupee"
+		},
+		"si_LK": {
+			"shortName": "රුපියල්",
+			"longName": "ශ්‍රී ලංකා රුපියල්"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=LKR",
+		"id": null
+	},
+	"currencyCode": "LKR",
+	"symbol": "Rs",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

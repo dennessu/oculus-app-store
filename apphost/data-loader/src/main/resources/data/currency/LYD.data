@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "LYD",
+			"longName": "Libyan dinar"
+		},
+		"ar_LY": {
+			"shortName": "دينار",
+			"longName": "دينار ليبي"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=LYD",
+		"id": null
+	},
+	"currencyCode": "LYD",
+	"symbol": "ل.د",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "3",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

@@ -121,6 +121,7 @@ class IAPResourceImpl implements IAPResource {
                     Promise.each(results.items) { com.junbo.entitlement.spec.model.Entitlement catalogEntitlement ->
                         return convertEntitlement(catalogEntitlement, packageName).then { Entitlement entitlement ->
                             if (entitlement.useCount > 0) {
+                                entitlement.setSignatureTimestamp(System.currentTimeMillis())
                                 entitlements << entitlement
                             }
                             pageParam.start++
@@ -211,6 +212,7 @@ class IAPResourceImpl implements IAPResource {
                     consumption.packageName = entitlement.packageName
                     consumption.sku = entitlement.sku
                     consumption.type = entitlement.type
+                    consumption.signatureTimestamp = System.currentTimeMillis()
 
                     // consume via update the use count
                     catalogEntitlement.useCount -= consumption.useCountConsumed
@@ -333,6 +335,7 @@ class IAPResourceImpl implements IAPResource {
             return Promise.each(entitlementIds) { String entitlementId ->
                 return resourceContainer.entitlementResource.getEntitlement(new EntitlementId(entitlementId)).then { com.junbo.entitlement.spec.model.Entitlement catalogEntitlement ->
                     return convertEntitlement(catalogEntitlement, packageName).then { Entitlement e ->
+                        e.setSignatureTimestamp(System.currentTimeMillis())
                         result << e
                         return Promise.pure(null)
                     }

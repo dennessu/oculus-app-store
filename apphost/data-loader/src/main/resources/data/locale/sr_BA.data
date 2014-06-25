@@ -1,0 +1,11 @@
+{
+  "localeCode": "sr_BA",
+  "shortName": "Serbian (BA)",
+  "longName": "Serbian (Bosnia)",
+  "localeName": "Serbian (BA)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

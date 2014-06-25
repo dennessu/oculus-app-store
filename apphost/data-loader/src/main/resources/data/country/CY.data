@@ -1,0 +1,135 @@
+{
+	"countryCode": "CY",
+	"defaultLocale": {
+		"href": "/v1/locales/el_CY",
+		"id": "el_CY"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/EUR",
+		"id": "EUR"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"01": {
+			"locales": {
+				"el_CY": {
+					"shortName": "Λευκωσία (Lefkosía)",
+					"longName": "Λευκωσία (Lefkosía)"
+				},
+				"tr_CY": {
+					"shortName": "Lefkoşa",
+					"longName": "Lefkoşa"
+				},
+				"en_US": {
+					"shortName": "Nicosia",
+					"longName": "Nicosia"
+				}
+			}
+		},
+		"02": {
+			"locales": {
+				"el_CY": {
+					"shortName": "Λεμεσός (Lemesós)",
+					"longName": "Λεμεσός (Lemesós)"
+				},
+				"en_US": {
+					"shortName": "Limassol",
+					"longName": "Limassol"
+				},
+				"tr_CY": {
+					"shortName": "Limasol, or Leymosun",
+					"longName": "Limasol, or Leymosun"
+				}
+			}
+		},
+		"03": {
+			"locales": {
+				"el_CY": {
+					"shortName": "Λάρνακα (Lárnaka)",
+					"longName": "Λάρνακα (Lárnaka)"
+				},
+				"tr_CY": {
+					"shortName": "Larnaka",
+					"longName": "Larnaka"
+				},
+				"en_US": {
+					"shortName": "Larnaca",
+					"longName": "Larnaca"
+				}
+			}
+		},
+		"04": {
+			"locales": {
+				"en_US": {
+					"shortName": "Famagusta",
+					"longName": "Famagusta"
+				},
+				"tr_CY": {
+					"shortName": "Mağusa, or Gazimağusa",
+					"longName": "Mağusa, or Gazimağusa"
+				},
+				"el_CY": {
+					"shortName": "Αμμόχωστος (Ammóchostos)",
+					"longName": "Αμμόχωστος (Ammóchostos)"
+				}
+			}
+		},
+		"05": {
+			"locales": {
+				"tr_CY": {
+					"shortName": "Baf, or Gazibaf",
+					"longName": "Baf, or Gazibaf"
+				},
+				"el_CY": {
+					"shortName": "Πάφος (Páfos)",
+					"longName": "Πάφος (Páfos)"
+				},
+				"en_US": {
+					"shortName": "Paphos",
+					"longName": "Paphos"
+				}
+			}
+		},
+		"06": {
+			"locales": {
+				"tr_CY": {
+					"shortName": "Girne",
+					"longName": "Girne"
+				},
+				"el_CY": {
+					"shortName": "Κερύvεια (Kerýneia)",
+					"longName": "Κερύvεια (Kerýneia)"
+				},
+				"en_US": {
+					"shortName": "Kyrenia",
+					"longName": "Kyrenia"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/el_CY",
+		"id": "el_CY"
+	},
+	{
+		"href": "/v1/locales/tr_CY",
+		"id": "tr_CY"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Cyprus",
+			"longName": "Republic of Cyprus"
+		},
+		"el_CY": {
+			"shortName": "Κύπρος",
+			"longName": "Κυπριακή Δημοκρατία"
+		},
+		"tr_CY": {
+			"shortName": "Kıbrıs",
+			"longName": "Kıbrıs Cumhuriyeti"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

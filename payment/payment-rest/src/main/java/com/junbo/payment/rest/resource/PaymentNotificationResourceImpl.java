@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.ws.rs.core.Response;
 
 /**
- * Created by Administrator on 14-6-23.
+ * Payment Notification Resource Implementation.
  */
 public class PaymentNotificationResourceImpl implements PaymentNotificationResource {
     @Autowired

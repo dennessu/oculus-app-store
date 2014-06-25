@@ -1,6 +1,7 @@
 package com.junbo.payment.core.provider;
 
 import com.junbo.common.id.PIType;
+import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.core.BaseTest;
 import com.junbo.payment.core.PaymentCallbackService;
 import com.junbo.payment.core.provider.adyen.AdyenProviderServiceImpl;
@@ -37,7 +38,7 @@ public class AdyenProviderServiceTest extends BaseTest {
         payment.setChargeInfo(new ChargeInfo() {
             {
                 setCurrency("CNY");
-                setAmount(new BigDecimal(1500.00));
+                setAmount(new BigDecimal("12.34"));
             }
         });
         PaymentTransaction result = paymentService.charge(payment).get();
@@ -47,6 +48,9 @@ public class AdyenProviderServiceTest extends BaseTest {
         PaymentCallbackParams properties = new PaymentCallbackParams();
         properties.setPspReference("ut1234");
         properties.setAuthResult("AUTHORISED");
+        properties.setMerchantReference("ut111");
+        String strToSign="AUTHORISEDut1234ut1110ceFRQOp";
+        properties.setMerchantSig(CommonUtil.calHMCASHA1(strToSign, "1234"));
         paymentCallbackService.addPaymentProperties(result.getId(), properties);
         result = paymentService.getUpdatedTransaction(result.getId()).get();
         Assert.assertNotNull(result.getExternalToken());

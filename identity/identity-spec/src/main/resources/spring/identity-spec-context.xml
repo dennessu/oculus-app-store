@@ -52,4 +52,15 @@
           parent="baseClientProxy" abstract="true">
         <property name="target" value="${clientproxy.identity.url}"/>
     </bean>
+
+    <bean id="tosResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.TosResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
+
+    <bean id="userTosAgreementResourceClientProxy"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserTosAgreementResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
 </beans>

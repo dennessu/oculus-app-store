@@ -114,7 +114,7 @@
         <property name="dbName" value="wallet_lot_transaction"/>
     </bean>
 
-    <bean id="cloudantTransactionRepository" class="com.junbo.ewallet.db.repo.cloudant.LotTransactionRepositoryCloudantImpl" parent="cloudantClient">
+    <bean id="cloudantWalletTransactionRepository" class="com.junbo.ewallet.db.repo.cloudant.LotTransactionRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="wallet_transaction"/>
     </bean>
 
@@ -136,7 +136,7 @@
     <bean id="transactionRepository" parent="baseRepository">
         <property name="repositoryInterface" value="com.junbo.ewallet.db.repo.TransactionRepository"/>
         <property name="sqlRepositoryImpl" ref="sqlTransactionRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantTransactionRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantWalletTransactionRepository" />
     </bean>
 
     <bean id="walletLotRepository" parent="baseRepository">

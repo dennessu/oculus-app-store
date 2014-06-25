@@ -1,0 +1,110 @@
+{
+	"countryCode": "GH",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/GHS",
+		"id": "GHS"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/FPB",
+		"id": "FPB"
+	}],
+	"subCountries": {
+		"AA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Greater Accra",
+					"longName": "Greater Accra"
+				}
+			}
+		},
+		"AH": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ashanti",
+					"longName": "Ashanti"
+				}
+			}
+		},
+		"BA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Brong-Ahafo",
+					"longName": "Brong-Ahafo"
+				}
+			}
+		},
+		"CP": {
+			"locales": {
+				"en_US": {
+					"shortName": "Central",
+					"longName": "Central"
+				}
+			}
+		},
+		"EP": {
+			"locales": {
+				"en_US": {
+					"shortName": "Eastern",
+					"longName": "Eastern"
+				}
+			}
+		},
+		"NP": {
+			"locales": {
+				"en_US": {
+					"shortName": "Northern",
+					"longName": "Northern"
+				}
+			}
+		},
+		"TV": {
+			"locales": {
+				"en_US": {
+					"shortName": "Volta",
+					"longName": "Volta"
+				}
+			}
+		},
+		"UE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Upper East",
+					"longName": "Upper East"
+				}
+			}
+		},
+		"UW": {
+			"locales": {
+				"en_US": {
+					"shortName": "Upper West",
+					"longName": "Upper West"
+				}
+			}
+		},
+		"WP": {
+			"locales": {
+				"en_US": {
+					"shortName": "Western",
+					"longName": "Western"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Ghana",
+			"longName": "Republic of Ghana"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

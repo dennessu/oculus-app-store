@@ -296,6 +296,10 @@
 		"id": "en_IN"
 	}],
 	"locales": {
+		"en_US": {
+			"shortName": "India",
+			"longName": "Republic of India"
+		},
 		"en_IN": {
 			"shortName": "India",
 			"longName": "Republic of India"

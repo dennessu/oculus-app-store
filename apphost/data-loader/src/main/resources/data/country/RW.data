@@ -1,0 +1,70 @@
+{
+	"countryCode": "RW",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/RWF",
+		"id": "RWF"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/FPB",
+		"id": "FPB"
+	}],
+	"subCountries": {
+		"01": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kigali",
+					"longName": "Kigali"
+				}
+			}
+		},
+		"02": {
+			"locales": {
+				"en_US": {
+					"shortName": "Eastern",
+					"longName": "Eastern"
+				}
+			}
+		},
+		"03": {
+			"locales": {
+				"en_US": {
+					"shortName": "Northern",
+					"longName": "Northern"
+				}
+			}
+		},
+		"04": {
+			"locales": {
+				"en_US": {
+					"shortName": "Western",
+					"longName": "Western"
+				}
+			}
+		},
+		"05": {
+			"locales": {
+				"en_US": {
+					"shortName": "Southern",
+					"longName": "Southern"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Rwanda",
+			"longName": "Republic of Rwanda"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

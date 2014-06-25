@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "SDG",
+			"longName": "Sudanese pound"
+		},
+		"ar_SD": {
+			"shortName": "جنيه سوداني",
+			"longName": "جنيه سوداني"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=SDG",
+		"id": null
+	},
+	"currencyCode": "SDG",
+	"symbol": "ج.س.",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

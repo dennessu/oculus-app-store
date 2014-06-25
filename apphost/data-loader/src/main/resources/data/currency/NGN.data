@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "NGN",
+			"longName": "Nigerian naira"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=NGN",
+		"id": null
+	},
+	"currencyCode": "NGN",
+	"symbol": " ₦",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

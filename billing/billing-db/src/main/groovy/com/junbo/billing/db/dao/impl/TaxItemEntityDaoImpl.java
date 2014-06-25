@@ -13,6 +13,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,23 +28,30 @@ public class TaxItemEntityDaoImpl extends BaseDao implements TaxItemEntityDao {
 
     @Override
     public TaxItemEntity save(TaxItemEntity taxItem) {
-
-        taxItem.setTaxItemId(idGenerator.nextId(taxItem.getBalanceItemId()));
-
-        Session session = currentSession(taxItem.getTaxItemId());
+        if (taxItem.getId() == null) {
+            taxItem.setId(idGenerator.nextId(taxItem.getBalanceItemId()));
+        }
+        taxItem.setCreatedTime(new Date());
+        if (taxItem.getCreatedBy() == null) {
+            taxItem.setCreatedBy("0");
+        }
+        Session session = currentSession(taxItem.getId());
         session.save(taxItem);
         session.flush();
-        return get(taxItem.getTaxItemId());
+        return get(taxItem.getId());
     }
 
     @Override
     public TaxItemEntity update(TaxItemEntity taxItem) {
-
-        Session session = currentSession(taxItem.getTaxItemId());
+        taxItem.setUpdatedTime(new Date());
+        if (taxItem.getUpdatedBy() == null) {
+            taxItem.setUpdatedBy("0");
+        }
+        Session session = currentSession(taxItem.getId());
         session.merge(taxItem);
         session.flush();
 
-        return get(taxItem.getTaxItemId());
+        return get(taxItem.getId());
     }
 
     public List<TaxItemEntity> findByBalanceItemId(Long balanceItemId) {

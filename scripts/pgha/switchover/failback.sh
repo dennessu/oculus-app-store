@@ -2,19 +2,19 @@
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 source ${DIR}/../util/common.sh
 
-echo "[MASTER] stop traffic for failover"
+echo "[MASTER] stop traffic for failback"
 
 echo "[MASTER] stop primary pgbouncer proxy"
 forceKill $PGBOUNCER_PORT
 
 ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
-source $DEPLOYMENT_PATH/util/common.sh
+    source $DEPLOYMENT_PATH/util/common.sh
 
-echo "[SLAVE] stop secondary pgbouncer proxy"
-forceKill $PGBOUNCER_PORT
+    echo "[SLAVE] stop secondary pgbouncer proxy"
+    forceKill $PGBOUNCER_PORT
 
-echo "[SLAVE] kill skytools instances"
-forceKillPid $SKYTOOL_PID_PATH
+    echo "[SLAVE] kill skytools instances"
+    forceKillPid $SKYTOOL_PID_PATH
 ENDSSH
 
 ssh $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
@@ -25,7 +25,7 @@ ssh $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
 ENDSSH
 
 echo "[MASTER] waiting for master catching up with slave"
-while ! echo exit | psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "SELECT 'x' from pg_stat_replication where sent_location != replay_location;" | grep "(0 rows)"; do sleep 1 && echo "[MASTER] master is catching up..."; done
+while ! echo exit | psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "SELECT 'x' from pg_stat_replication where sent_location != replay_location;" -t | grep -v "x"; do sleep 1 && echo "[MASTER] master is catching up..."; done
 echo "[MASTER] master catch up with slave!"
 
 ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
@@ -39,9 +39,9 @@ rsync -azhv $DEPLOYMENT_ACCOUNT@$SLAVE_HOST:$SLAVE_DATA_PATH/pg_xlog/* $MASTER_A
 echo "[MASTER] promote master database to take traffic"
 touch $PROMOTE_TRIGGER_FILE
 
-echo "[MASTER] waiting for master prmote"
-while ! echo exit | [ -f $MASTER_DATA_PATH/recovery.done ]; do sleep 1 && echo "[MASTER] master is promoting..."; done
-echo "[MASTER] master promoted!"
+echo "[SLAVE] waiting for master promote"
+while ! echo exit | psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT pg_is_in_recovery();" -t | grep "f"; do sleep 1 && echo "[MASTER] master is promoting..."; done
+echo "[SLAVE] master promoted!"
 
 ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
     echo "[SLAVE] configure recovery.conf for slave"

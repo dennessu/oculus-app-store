@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "JOD",
+			"longName": "Jordanian dinar"
+		},
+		"ar_JO": {
+			"shortName": "دينار",
+			"longName": "دينار أردني"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=JOD",
+		"id": null
+	},
+	"currencyCode": "JOD",
+	"symbol": "د.أ.",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "3",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

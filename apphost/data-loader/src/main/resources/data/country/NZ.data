@@ -1,0 +1,170 @@
+{
+	"countryCode": "NZ",
+	"defaultLocale": {
+		"href": "/v1/locales/en_NZ",
+		"id": "en_NZ"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/NZD",
+		"id": "NZD"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/OFLC",
+		"id": "OFLC"
+	}],
+	"subCountries": {
+		"AUK": {
+			"locales": {
+				"en_NZ": {
+					"shortName": "AUK",
+					"longName": "Auckland"
+				}
+			}
+		},
+		"BOP": {
+			"locales": {
+				"en_NZ": {
+					"shortName": "BOP",
+					"longName": "Bay of Plenty"
+				}
+			}
+		},
+		"CAN": {
+			"locales": {
+				"en_NZ": {
+					"shortName": "CAN",
+					"longName": "Canterbury"
+				}
+			}
+		},
+		"CIT": {
+			"locales": {
+				"en_NZ": {
+					"shortName": "CIT",
+					"longName": "Chatham Islands Territory"
+				}
+			}
+		},
+		"GIS": {
+			"locales": {
+				"en_NZ": {
+					"shortName": "GIS",
+					"longName": "Gisborne District"
+				}
+			}
+		},
+		"HKB": {
+			"locales": {
+				"en_NZ": {
+					"shortName": "HKB",
+					"longName": "Hawke's Bay"
+				}
+			}
+		},
+		"MBH": {
+			"locales": {
+				"en_NZ": {
+					"shortName": "MBH",
+					"longName": "Marlborough District"
+				}
+			}
+		},
+		"MWT": {
+			"locales": {
+				"en_NZ": {
+					"shortName": "MWT",
+					"longName": "Manawatu-Wanganui"
+				}
+			}
+		},
+		"NSN": {
+			"locales": {
+				"en_NZ": {
+					"shortName": "NSN",
+					"longName": "Nelson City"
+				}
+			}
+		},
+		"NTL": {
+			"locales": {
+				"en_NZ": {
+					"shortName": "NTL",
+					"longName": "Northland"
+				}
+			}
+		},
+		"OTA": {
+			"locales": {
+				"en_NZ": {
+					"shortName": "OTA",
+					"longName": "Otago"
+				}
+			}
+		},
+		"STL": {
+			"locales": {
+				"en_NZ": {
+					"shortName": "STL",
+					"longName": "Southland"
+				}
+			}
+		},
+		"TAS": {
+			"locales": {
+				"en_NZ": {
+					"shortName": "TAS",
+					"longName": "Tasman District"
+				}
+			}
+		},
+		"TKI": {
+			"locales": {
+				"en_NZ": {
+					"shortName": "TKI",
+					"longName": "Taranaki"
+				}
+			}
+		},
+		"WGN": {
+			"locales": {
+				"en_NZ": {
+					"shortName": "WGN",
+					"longName": "Wellington"
+				}
+			}
+		},
+		"WKO": {
+			"locales": {
+				"en_NZ": {
+					"shortName": "WKO",
+					"longName": "Waikato"
+				}
+			}
+		},
+		"WTC": {
+			"locales": {
+				"en_NZ": {
+					"shortName": "WTC",
+					"longName": "West Coast"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_NZ",
+		"id": "en_NZ"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "New Zealand",
+			"longName": "New Zealand"
+		},
+		"en_NZ": {
+			"shortName": "New Zealand",
+			"longName": "New Zealand"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

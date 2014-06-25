@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "BDT",
+			"longName": "Bangladeshi taka"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=BDT",
+		"id": null
+	},
+	"currencyCode": "BDT",
+	"symbol": "৳",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

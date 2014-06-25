@@ -1,0 +1,118 @@
+{
+	"countryCode": "BY",
+	"defaultLocale": {
+		"href": "/v1/locales/be_BY",
+		"id": "be_BY"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/BYR",
+		"id": "BYR"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/RGRS",
+		"id": "RGRS"
+	}],
+	"subCountries": {
+		"BR": {
+			"locales": {
+				"be_BY": {
+					"shortName": "Брэ́сцкая во́бласць",
+					"longName": "Брэ́сцкая во́бласць"
+				},
+				"en_US": {
+					"shortName": "Brest Region",
+					"longName": "Brest Region"
+				}
+			}
+		},
+		"HM": {
+			"locales": {
+				"en_US": {
+					"shortName": "Minsk",
+					"longName": "Minsk"
+				},
+				"be_BY": {
+					"shortName": "Мінск",
+					"longName": "Мінск"
+				}
+			}
+		},
+		"HO": {
+			"locales": {
+				"be_BY": {
+					"shortName": "Гомельская вобласць",
+					"longName": "Гомельская вобласць"
+				},
+				"en_US": {
+					"shortName": "Gomel Region",
+					"longName": "Gomel Region"
+				}
+			}
+		},
+		"HR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Grodno Region",
+					"longName": "Grodno Region"
+				},
+				"be_BY": {
+					"shortName": "Гродзенская вобласць",
+					"longName": "Гродзенская вобласць"
+				}
+			}
+		},
+		"MA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Mogilev Region",
+					"longName": "Mogilev Region"
+				},
+				"be_BY": {
+					"shortName": "Магілёўская вобласць",
+					"longName": "Магілёўская вобласць"
+				}
+			}
+		},
+		"MI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Minsk Region",
+					"longName": "Minsk Region"
+				},
+				"be_BY": {
+					"shortName": "Мінская вобласць",
+					"longName": "Мінская вобласць"
+				}
+			}
+		},
+		"VI": {
+			"locales": {
+				"be_BY": {
+					"shortName": "Віцебская вобласць",
+					"longName": "Віцебская вобласць"
+				},
+				"en_US": {
+					"shortName": "Vitebsk Region",
+					"longName": "Vitebsk Region"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/be_BY",
+		"id": "be_BY"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Belarus",
+			"longName": "Republic of Belarus"
+		},
+		"be_BY": {
+			"shortName": "Белару́сь",
+			"longName": "Рэспубліка Беларусь"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

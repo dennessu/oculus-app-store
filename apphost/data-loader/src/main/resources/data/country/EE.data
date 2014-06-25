@@ -1,0 +1,211 @@
+{
+	"countryCode": "EE",
+	"defaultLocale": {
+		"href": "/v1/locales/et_EE",
+		"id": "et_EE"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/EUR",
+		"id": "EUR"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"37": {
+			"locales": {
+				"et_EE": {
+					"shortName": "Harju maakond",
+					"longName": "Harju maakond"
+				},
+				"en_US": {
+					"shortName": "Harjumaa",
+					"longName": "Harjumaa"
+				}
+			}
+		},
+		"39": {
+			"locales": {
+				"et_EE": {
+					"shortName": "Hiiu maakond",
+					"longName": "Hiiu maakond"
+				},
+				"en_US": {
+					"shortName": "Hiiumaa",
+					"longName": "Hiiumaa"
+				}
+			}
+		},
+		"44": {
+			"locales": {
+				"et_EE": {
+					"shortName": "Ida-Viru maakond",
+					"longName": "Ida-Viru maakond"
+				},
+				"en_US": {
+					"shortName": "Ida-Virumaa",
+					"longName": "Ida-Virumaa"
+				}
+			}
+		},
+		"49": {
+			"locales": {
+				"en_US": {
+					"shortName": "Jõgevamaa",
+					"longName": "Jõgevamaa"
+				},
+				"et_EE": {
+					"shortName": "Jõgeva maakond",
+					"longName": "Jõgeva maakond"
+				}
+			}
+		},
+		"51": {
+			"locales": {
+				"et_EE": {
+					"shortName": "Järva maakond",
+					"longName": "Järva maakond"
+				},
+				"en_US": {
+					"shortName": "Järvamaa",
+					"longName": "Järvamaa"
+				}
+			}
+		},
+		"57": {
+			"locales": {
+				"en_US": {
+					"shortName": "Läänemaa",
+					"longName": "Läänemaa"
+				},
+				"et_EE": {
+					"shortName": "Lääne maakond",
+					"longName": "Lääne maakond"
+				}
+			}
+		},
+		"59": {
+			"locales": {
+				"et_EE": {
+					"shortName": "Lääne-Viru maakond",
+					"longName": "Lääne-Viru maakond"
+				},
+				"en_US": {
+					"shortName": "Lääne-Virumaa",
+					"longName": "Lääne-Virumaa"
+				}
+			}
+		},
+		"65": {
+			"locales": {
+				"en_US": {
+					"shortName": "Põlvamaa",
+					"longName": "Põlvamaa"
+				},
+				"et_EE": {
+					"shortName": "Põlva maakond",
+					"longName": "Põlva maakond"
+				}
+			}
+		},
+		"67": {
+			"locales": {
+				"et_EE": {
+					"shortName": "Pärnu County",
+					"longName": "Pärnu County"
+				},
+				"en_US": {
+					"shortName": "Pärnumaa",
+					"longName": "Pärnumaa"
+				}
+			}
+		},
+		"70": {
+			"locales": {
+				"en_US": {
+					"shortName": "Raplamaa",
+					"longName": "Raplamaa"
+				},
+				"et_EE": {
+					"shortName": "Rapla maakond",
+					"longName": "Rapla maakond"
+				}
+			}
+		},
+		"74": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saaremaa",
+					"longName": "Saaremaa"
+				},
+				"et_EE": {
+					"shortName": "Saare maakond",
+					"longName": "Saare maakond"
+				}
+			}
+		},
+		"78": {
+			"locales": {
+				"en_US": {
+					"shortName": "Tartumaa",
+					"longName": "Tartumaa"
+				},
+				"et_EE": {
+					"shortName": "Tartu maakond",
+					"longName": "Tartu maakond"
+				}
+			}
+		},
+		"82": {
+			"locales": {
+				"en_US": {
+					"shortName": "Valgamaa",
+					"longName": "Valgamaa"
+				},
+				"et_EE": {
+					"shortName": "Valga maakond",
+					"longName": "Valga maakond"
+				}
+			}
+		},
+		"84": {
+			"locales": {
+				"en_US": {
+					"shortName": "Viljandimaa",
+					"longName": "Viljandimaa"
+				},
+				"et_EE": {
+					"shortName": "Viljandi maakond",
+					"longName": "Viljandi maakond"
+				}
+			}
+		},
+		"86": {
+			"locales": {
+				"et_EE": {
+					"shortName": "Võru maakond",
+					"longName": "Võru maakond"
+				},
+				"en_US": {
+					"shortName": "Võrumaa",
+					"longName": "Võrumaa"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/et_EE",
+		"id": "et_EE"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Estonia",
+			"longName": "Republic of Estonia"
+		},
+		"et_EE": {
+			"shortName": "Eesti",
+			"longName": "Eesti Vabariik"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

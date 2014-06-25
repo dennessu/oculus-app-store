@@ -1,0 +1,70 @@
+{
+	"countryCode": "TG",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/XOF",
+		"id": "XOF"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/FPB",
+		"id": "FPB"
+	}],
+	"subCountries": {
+		"C": {
+			"locales": {
+				"en_US": {
+					"shortName": " Centre",
+					"longName": " Centre"
+				}
+			}
+		},
+		"K": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kara",
+					"longName": "Kara"
+				}
+			}
+		},
+		"M": {
+			"locales": {
+				"en_US": {
+					"shortName": "Maritime",
+					"longName": "Maritime"
+				}
+			}
+		},
+		"P": {
+			"locales": {
+				"en_US": {
+					"shortName": "Plateaux",
+					"longName": "Plateaux"
+				}
+			}
+		},
+		"S": {
+			"locales": {
+				"en_US": {
+					"shortName": " Savannes",
+					"longName": " Savannes"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Togo",
+			"longName": "Togolese Republic"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

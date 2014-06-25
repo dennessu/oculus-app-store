@@ -6,19 +6,24 @@
 
 package com.junbo.billing.db.entity;
 
-import com.junbo.billing.db.BaseEventEntity;
+import com.junbo.billing.db.BaseEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by xmchen on 14-4-17.
  */
 @Entity
 @Table(name = "balance_item_event")
-public class BalanceItemEventEntity extends BaseEventEntity {
+public class BalanceItemEventEntity extends BaseEntity {
+    @Id
+    @Column(name = "event_id")
+    private Long id;
 
     @Column(name = "balance_item_id")
     private Long balanceItemId;
@@ -32,12 +37,42 @@ public class BalanceItemEventEntity extends BaseEventEntity {
     @Column(name = "discount_amount")
     private BigDecimal discountAmount;
 
+    @Column(name = "action_type_id")
+    private Short actionTypeId;
+
+    @Column(name = "event_date")
+    private Date eventDate;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Long getBalanceItemId() {
         return balanceItemId;
     }
 
     public void setBalanceItemId(Long balanceItemId) {
         this.balanceItemId = balanceItemId;
+    }
+
+    public Short getActionTypeId() {
+        return actionTypeId;
+    }
+
+    public void setActionTypeId(Short actionTypeId) {
+        this.actionTypeId = actionTypeId;
+    }
+
+    public Date getEventDate() {
+        return eventDate;
+    }
+
+    public void setEventDate(Date eventDate) {
+        this.eventDate = eventDate;
     }
 
     public BigDecimal getAmount() {

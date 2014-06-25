@@ -1,0 +1,175 @@
+{
+	"countryCode": "JO",
+	"defaultLocale": {
+		"href": "/v1/locales/ar_JO",
+		"id": "ar_JO"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/JOD",
+		"id": "JOD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"AJ": {
+			"locales": {
+				"ar_JO": {
+					"shortName": "محافظة عجلون",
+					"longName": "محافظة عجلون"
+				},
+				"en_US": {
+					"shortName": "Ajloun Governorate ",
+					"longName": "Ajloun Governorate "
+				}
+			}
+		},
+		"AM": {
+			"locales": {
+				"ar_JO": {
+					"shortName": "محافظة العاصمة",
+					"longName": "محافظة العاصمة"
+				},
+				"en_US": {
+					"shortName": "Amman Governorate",
+					"longName": "Amman Governorate"
+				}
+			}
+		},
+		"AQ": {
+			"locales": {
+				"ar_JO": {
+					"shortName": "محافظة العقبة",
+					"longName": "محافظة العقبة"
+				},
+				"en_US": {
+					"shortName": "Aqaba Governorate",
+					"longName": "Aqaba Governorate"
+				}
+			}
+		},
+		"AT": {
+			"locales": {
+				"ar_JO": {
+					"shortName": "محافظة الطفيلة",
+					"longName": "محافظة الطفيلة"
+				},
+				"en_US": {
+					"shortName": "Tafilah Governorate",
+					"longName": "Tafilah Governorate"
+				}
+			}
+		},
+		"AZ": {
+			"locales": {
+				"ar_JO": {
+					"shortName": "محافظة الزرقاء",
+					"longName": "محافظة الزرقاء"
+				},
+				"en_US": {
+					"shortName": "Zarqa Governorate",
+					"longName": "Zarqa Governorate"
+				}
+			}
+		},
+		"BA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Balqa Governorate",
+					"longName": "Balqa Governorate"
+				},
+				"ar_JO": {
+					"shortName": "محافظة البلقاء",
+					"longName": "محافظة البلقاء"
+				}
+			}
+		},
+		"IR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Irbid Governorate",
+					"longName": "Irbid Governorate"
+				},
+				"ar_JO": {
+					"shortName": "محافظة إربد",
+					"longName": "محافظة إربد"
+				}
+			}
+		},
+		"JA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Jerash Governorate",
+					"longName": "Jerash Governorate"
+				},
+				"ar_JO": {
+					"shortName": "محافظة جرش",
+					"longName": "محافظة جرش"
+				}
+			}
+		},
+		"KA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Karak Governorate",
+					"longName": "Karak Governorate"
+				},
+				"ar_JO": {
+					"shortName": "محافظة الكرك",
+					"longName": "محافظة الكرك"
+				}
+			}
+		},
+		"MA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Mafraq Governorate",
+					"longName": "Mafraq Governorate"
+				},
+				"ar_JO": {
+					"shortName": "محافظة المفرق",
+					"longName": "محافظة المفرق"
+				}
+			}
+		},
+		"MD": {
+			"locales": {
+				"en_US": {
+					"shortName": "Madaba Governorate",
+					"longName": "Madaba Governorate"
+				},
+				"ar_JO": {
+					"shortName": "محافظة مادبا",
+					"longName": "محافظة مادبا"
+				}
+			}
+		},
+		"MN": {
+			"locales": {
+				"ar_JO": {
+					"shortName": "محافظة معان",
+					"longName": "محافظة معان"
+				},
+				"en_US": {
+					"shortName": "Ma'an Governorate",
+					"longName": "Ma'an Governorate"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/ar_JO",
+		"id": "ar_JO"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Jordan",
+			"longName": "Hashemite Kingdom of Jordan"
+		},
+		"ar_JO": {
+			"shortName": "الأردن",
+			"longName": "المملكة الأردنية الهاشمية"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

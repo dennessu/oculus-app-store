@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "GHS",
+			"longName": "Ghana cedi"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=GHS",
+		"id": null
+	},
+	"currencyCode": "GHS",
+	"symbol": "GH₵",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

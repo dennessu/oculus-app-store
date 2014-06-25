@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "CDF",
+			"longName": "Congolese franc"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=CDF",
+		"id": null
+	},
+	"currencyCode": "CDF",
+	"symbol": "FC",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

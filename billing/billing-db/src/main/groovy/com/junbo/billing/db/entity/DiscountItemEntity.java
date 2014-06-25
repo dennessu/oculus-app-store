@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 public class DiscountItemEntity extends BaseEntity {
     @Id
     @Column(name = "discount_item_id")
-    private Long discountItemId;
+    private Long id;
 
     @Column(name = "balance_item_id")
     private Long balanceItemId;
@@ -36,11 +36,12 @@ public class DiscountItemEntity extends BaseEntity {
     @Column(name = "deleted")
     private Boolean isDeleted = false;
 
-    public Long getDiscountItemId() {
-        return discountItemId;
+    public Long getId() {
+        return id;
     }
-    public void setDiscountItemId(Long discountItemId) {
-        this.discountItemId = discountItemId;
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getBalanceItemId() {

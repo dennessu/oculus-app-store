@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "TMT",
+			"longName": "Turkmenistan manat"
+		},
+		"tk_TM": {
+			"shortName": "Türkmen manady ",
+			"longName": "Türkmen manady "
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=TMT",
+		"id": null
+	},
+	"currencyCode": "TMT",
+	"symbol": "T",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,102 @@
+{
+	"countryCode": "BW",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/BWP",
+		"id": "BWP"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/FPB",
+		"id": "FPB"
+	}],
+	"subCountries": {
+		"CE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Central",
+					"longName": "Central"
+				}
+			}
+		},
+		"GH": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ghanzi",
+					"longName": "Ghanzi"
+				}
+			}
+		},
+		"KG": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kgalagadi",
+					"longName": "Kgalagadi"
+				}
+			}
+		},
+		"KL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kgatleng",
+					"longName": "Kgatleng"
+				}
+			}
+		},
+		"KW": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kweneng",
+					"longName": "Kweneng"
+				}
+			}
+		},
+		"NE": {
+			"locales": {
+				"en_US": {
+					"shortName": "North-East",
+					"longName": "North-East"
+				}
+			}
+		},
+		"NW": {
+			"locales": {
+				"en_US": {
+					"shortName": "North-West",
+					"longName": "North-West"
+				}
+			}
+		},
+		"SE": {
+			"locales": {
+				"en_US": {
+					"shortName": "South-East",
+					"longName": "South-East"
+				}
+			}
+		},
+		"SO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Southern",
+					"longName": "Southern"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Botswana",
+			"longName": "Republic of Botswana"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

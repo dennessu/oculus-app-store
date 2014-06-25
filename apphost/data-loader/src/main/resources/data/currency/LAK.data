@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "LAK",
+			"longName": "Lao kip"
+		},
+		"en_SG": {
+			"shortName": "LAK",
+			"longName": "Lao kip"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=LAK",
+		"id": null
+	},
+	"currencyCode": "LAK",
+	"symbol": "₭",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

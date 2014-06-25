@@ -1,0 +1,103 @@
+{
+	"countryCode": "KW",
+	"defaultLocale": {
+		"href": "/v1/locales/ar_KW",
+		"id": "ar_KW"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/KWD",
+		"id": "KWD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"AH": {
+			"locales": {
+				"ar_KW": {
+					"shortName": "الاحمدي",
+					"longName": "الاحمدي"
+				},
+				"en_US": {
+					"shortName": "Al Ahmadi",
+					"longName": "Al Ahmadi"
+				}
+			}
+		},
+		"FA": {
+			"locales": {
+				"ar_KW": {
+					"shortName": "الفروانية‎",
+					"longName": "الفروانية‎"
+				},
+				"en_US": {
+					"shortName": "Al Farwaniyah",
+					"longName": "Al Farwaniyah"
+				}
+			}
+		},
+		"HA": {
+			"locales": {
+				"ar_KW": {
+					"shortName": "حولي",
+					"longName": "حولي"
+				},
+				"en_US": {
+					"shortName": "Hawalli",
+					"longName": "Hawalli"
+				}
+			}
+		},
+		"JA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Al Jahra",
+					"longName": "Al Jahra"
+				},
+				"ar_KW": {
+					"shortName": "الجهراء",
+					"longName": "الجهراء"
+				}
+			}
+		},
+		"KU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Al Asimah",
+					"longName": "Al Asimah"
+				},
+				"ar_KW": {
+					"shortName": "العاصمه",
+					"longName": "العاصمه"
+				}
+			}
+		},
+		"MU": {
+			"locales": {
+				"ar_KW": {
+					"shortName": "مبارك الكبير",
+					"longName": "مبارك الكبير"
+				},
+				"en_US": {
+					"shortName": "Mubarak Al-Kabeer",
+					"longName": "Mubarak Al-Kabeer"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/ar_KW",
+		"id": "ar_KW"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Kuwait",
+			"longName": "State of Kuwait"
+		},
+		"ar_KW": {
+			"shortName": "الكويت",
+			"longName": "دولة الكويت‎"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

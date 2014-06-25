@@ -6,6 +6,7 @@
 
 package com.junbo.rating.core.builder;
 
+import com.junbo.rating.common.util.Utils;
 import com.junbo.rating.core.context.PriceRatingContext;
 import com.junbo.rating.core.context.SubsRatingContext;
 import com.junbo.rating.spec.model.RatingResultEntry;
@@ -35,22 +36,31 @@ public class RatingResultBuilder {
             item.setOfferId(entry.getOfferId());
             item.setQuantity(entry.getQuantity());
             item.setShippingMethodId(entry.getShippingMethodId());
-            item.setPreOrderPrice(entry.getPreOrderPrice().getValue());
-            item.setOriginalUnitPrice(entry.getOriginalPrice().getValue());
-            item.setOriginalTotalPrice(entry.getOriginalPrice().multiple(entry.getQuantity()).getValue());
-            item.setTotalDiscountAmount(entry.getDiscountAmount().multiple(entry.getQuantity()).getValue());
-            item.setFinalTotalAmount(item.getOriginalTotalPrice().subtract(item.getTotalDiscountAmount()));
+
+            item.setPreOrderPrice(entry.getPreOrderPrice());
+            item.setOriginalUnitPrice(entry.getOriginalPrice());
+            item.setOriginalTotalPrice(entry.getOriginalPrice().multiply(new BigDecimal(entry.getQuantity())));
+
+            BigDecimal totalDiscount = entry.getDiscountAmount().multiply(new BigDecimal(entry.getQuantity()));
+            item.setTotalDiscountAmount(Utils.rounding(totalDiscount, context.getCurrency().getDigits()));
             item.setPromotions(entry.getAppliedPromotion());
+
+            item.setFinalTotalAmount(item.getOriginalTotalPrice().subtract(item.getTotalDiscountAmount()));
+            item.setDeveloperRevenue(Utils.rounding(item.getFinalTotalAmount().multiply(entry.getDeveloperRatio()),
+                    context.getCurrency().getDigits()));
+
             result.getLineItems().add(item);
         }
 
         //build order level results
         RatingSummary ratingSummary = new RatingSummary();
-        ratingSummary.setDiscountAmount(context.getOrderResult().getDiscountAmount().getValue());
-        BigDecimal finalTotalAmount = context.getOrderResult().getOriginalAmount().subtract(
-                context.getOrderResult().getDiscountAmount()).getValue();
-        ratingSummary.setFinalAmount(finalTotalAmount);
+        ratingSummary.setDiscountAmount(Utils.rounding(context.getOrderResult().getDiscountAmount(),                context.getCurrency().getDigits()));
         ratingSummary.setPromotion(context.getOrderResult().getAppliedPromotion());
+
+        BigDecimal finalTotalAmount = context.getOrderResult().getOriginalAmount().subtract(
+                context.getOrderResult().getDiscountAmount());
+        ratingSummary.setFinalAmount(finalTotalAmount);
+
         result.setRatingSummary(ratingSummary);
 
         //build shipping fee calculation results
@@ -73,10 +83,10 @@ public class RatingResultBuilder {
             RatingItem item = new RatingItem();
             item.setOfferId(entry.getOfferId());
             item.setQuantity(1);
-            item.setPreOrderPrice(entry.getPreOrderPrice().getValue());
-            item.setOriginalUnitPrice(entry.getOriginalPrice().getValue());
+            item.setPreOrderPrice(entry.getPreOrderPrice());
+            item.setOriginalUnitPrice(entry.getOriginalPrice());
             item.setOriginalTotalPrice(item.getOriginalUnitPrice());
-            item.setTotalDiscountAmount(entry.getDiscountAmount().getValue());
+            item.setTotalDiscountAmount(entry.getDiscountAmount());
             item.setFinalTotalAmount(item.getOriginalTotalPrice().subtract(item.getTotalDiscountAmount()));
             item.setPromotions(entry.getAppliedPromotion());
             result.getLineItems().add(item);

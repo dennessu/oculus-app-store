@@ -1,0 +1,155 @@
+{
+	"countryCode": "TT",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/TTD",
+		"id": "TTD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"ARI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Arima",
+					"longName": "Arima"
+				}
+			}
+		},
+		"CHA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Chaguanas",
+					"longName": "Chaguanas"
+				}
+			}
+		},
+		"CTT": {
+			"locales": {
+				"en_US": {
+					"shortName": "Couva-Tabaquite-Talparo",
+					"longName": "Couva-Tabaquite-Talparo"
+				}
+			}
+		},
+		"DMN": {
+			"locales": {
+				"en_US": {
+					"shortName": "Diego Martin",
+					"longName": "Diego Martin"
+				}
+			}
+		},
+		"ETO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Eastern Tobago",
+					"longName": "Eastern Tobago"
+				}
+			}
+		},
+		"PED": {
+			"locales": {
+				"en_US": {
+					"shortName": "Penal-Debe",
+					"longName": "Penal-Debe"
+				}
+			}
+		},
+		"POS": {
+			"locales": {
+				"en_US": {
+					"shortName": "Port of Spain",
+					"longName": "Port of Spain"
+				}
+			}
+		},
+		"PRT": {
+			"locales": {
+				"en_US": {
+					"shortName": "Princes Town",
+					"longName": "Princes Town"
+				}
+			}
+		},
+		"PTF": {
+			"locales": {
+				"en_US": {
+					"shortName": "Point Fortin",
+					"longName": "Point Fortin"
+				}
+			}
+		},
+		"RCM": {
+			"locales": {
+				"en_US": {
+					"shortName": "Rio Claro-Mayaro",
+					"longName": "Rio Claro-Mayaro"
+				}
+			}
+		},
+		"SFO": {
+			"locales": {
+				"en_US": {
+					"shortName": "San Fernando",
+					"longName": "San Fernando"
+				}
+			}
+		},
+		"SGE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Sangre Grande",
+					"longName": "Sangre Grande"
+				}
+			}
+		},
+		"SIP": {
+			"locales": {
+				"en_US": {
+					"shortName": "Siparia",
+					"longName": "Siparia"
+				}
+			}
+		},
+		"SJL": {
+			"locales": {
+				"en_US": {
+					"shortName": "San Juan-Laventille",
+					"longName": "San Juan-Laventille"
+				}
+			}
+		},
+		"TUP": {
+			"locales": {
+				"en_US": {
+					"shortName": "Tunapuna-Piarco",
+					"longName": "Tunapuna-Piarco"
+				}
+			}
+		},
+		"WTO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Western Tobago",
+					"longName": "Western Tobago"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Trinidad and Tobago",
+			"longName": "Republic of Trinidad and Tobago"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

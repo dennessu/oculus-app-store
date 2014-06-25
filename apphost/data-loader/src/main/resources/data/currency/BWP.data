@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "BWP",
+			"longName": "Botswana pula"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=BWP",
+		"id": null
+	},
+	"currencyCode": "BWP",
+	"symbol": "P",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

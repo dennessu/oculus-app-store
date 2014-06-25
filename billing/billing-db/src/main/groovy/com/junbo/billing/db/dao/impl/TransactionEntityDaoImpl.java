@@ -14,6 +14,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,22 +29,30 @@ public class TransactionEntityDaoImpl extends BaseDao implements TransactionEnti
 
     @Override
     public TransactionEntity save(TransactionEntity transaction) {
-        transaction.setTransactionId(idGenerator.nextId(transaction.getBalanceId()));
-
-        Session session = currentSession(transaction.getTransactionId());
+        if (transaction.getId() == null) {
+            transaction.setId(idGenerator.nextId(transaction.getBalanceId()));
+        }
+        transaction.setCreatedTime(new Date());
+        if (transaction.getCreatedBy() == null) {
+            transaction.setCreatedBy("0");
+        }
+        Session session = currentSession(transaction.getId());
         session.save(transaction);
         session.flush();
-        return get(transaction.getTransactionId());
+        return get(transaction.getId());
     }
 
     @Override
     public TransactionEntity update(TransactionEntity transaction) {
-
-        Session session = currentSession(transaction.getTransactionId());
+        transaction.setUpdatedTime(new Date());
+        if (transaction.getUpdatedBy() == null) {
+            transaction.setUpdatedBy("0");
+        }
+        Session session = currentSession(transaction.getId());
         session.merge(transaction);
         session.flush();
 
-        return get(transaction.getTransactionId());
+        return get(transaction.getId());
     }
 
     @Override

@@ -12,6 +12,7 @@ import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.promotion.*;
 import com.junbo.catalog.spec.model.promotion.criterion.Criterion;
 import com.junbo.rating.clientproxy.CatalogGateway;
+import com.junbo.rating.common.util.Constants;
 import com.junbo.rating.common.util.Func;
 import com.junbo.rating.common.util.Utils;
 import com.junbo.rating.core.RatingService;
@@ -20,7 +21,6 @@ import com.junbo.rating.core.handler.HandlerRegister;
 import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.fusion.*;
 import com.junbo.rating.spec.fusion.Properties;
-import com.junbo.rating.spec.model.Money;
 import com.junbo.rating.spec.model.RatableItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -169,30 +169,30 @@ public abstract class RatingServiceSupport implements RatingService<PriceRatingC
         return true;
     }
 
-    protected Money getPrice(Price price, String country, String currency) {
+    protected BigDecimal getPrice(Price price, String country, String currency) {
         if (price == null) {
-            return Money.NOT_FOUND;
+            return Constants.PRICE_NOT_FOUND;
         }
 
         if (PriceType.FREE.name().equalsIgnoreCase(price.getPriceType())) {
-            return new Money(BigDecimal.ZERO, currency);
+            return BigDecimal.ZERO;
         }
 
         if (price.getPrices() == null || !price.getPrices().containsKey(country)) {
-            return Money.NOT_FOUND;
+            return Constants.PRICE_NOT_FOUND;
         }
 
         Map<String, BigDecimal> prices = price.getPrices().get(country);
         if (!prices.containsKey(currency)) {
-            return Money.NOT_FOUND;
+            return Constants.PRICE_NOT_FOUND;
         }
 
-        return new Money(prices.get(currency), currency);
+        return prices.get(currency);
     }
 
-    protected Money getPreOrderPrice(RatingOffer offer, String country, String currency) {
+    protected BigDecimal getPreOrderPrice(RatingOffer offer, String country, String currency) {
         if (offer.getPreOrderPrice() == null) {
-            return new Money(BigDecimal.ZERO, currency);
+            return BigDecimal.ZERO;
         }
 
         Map<String, Properties> countries = offer.getCountries();
@@ -201,27 +201,21 @@ public abstract class RatingServiceSupport implements RatingService<PriceRatingC
         }
 
         if (Utils.now().after(countries.get(country).getReleaseDate())) {
-            return new Money(BigDecimal.ZERO, currency);
+            return BigDecimal.ZERO;
         }
 
         return getPrice(offer.getPreOrderPrice(), country, currency);
     }
 
-    protected Money applyBenefit(Money original, Benefit benefit) {
-        Money result = new Money(original.getCurrency());
+    protected BigDecimal applyBenefit(BigDecimal original, Benefit benefit) {
         switch (benefit.getType()) {
             case FLAT_DISCOUNT:
-                result.setValue(benefit.getValue());
-                break;
+                return benefit.getValue();
             case RATIO_DISCOUNT:
-                result.setValue(original.getValue().multiply(benefit.getValue()));
-                break;
+                return original.multiply(benefit.getValue());
             case FIXED_PRICE:
-                result.setValue(original.getValue().subtract(benefit.getValue()));
-                break;
-            default:
-                return Money.NOT_FOUND;
-            }
-        return result;
+                return original.subtract(benefit.getValue());
+        }
+        return Constants.PRICE_NOT_FOUND;
     }
 }

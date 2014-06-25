@@ -1,0 +1,62 @@
+{
+	"countryCode": "SL",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/SLL",
+		"id": "SLL"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/FPB",
+		"id": "FPB"
+	}],
+	"subCountries": {
+		"E": {
+			"locales": {
+				"en_US": {
+					"shortName": "Eastern",
+					"longName": "Eastern"
+				}
+			}
+		},
+		"N": {
+			"locales": {
+				"en_US": {
+					"shortName": "Northern",
+					"longName": "Northern"
+				}
+			}
+		},
+		"S": {
+			"locales": {
+				"en_US": {
+					"shortName": "Southern",
+					"longName": "Southern"
+				}
+			}
+		},
+		"W": {
+			"locales": {
+				"en_US": {
+					"shortName": " Western Area",
+					"longName": " Western Area"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Sierra Leone",
+			"longName": "Republic of Sierra Leone"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

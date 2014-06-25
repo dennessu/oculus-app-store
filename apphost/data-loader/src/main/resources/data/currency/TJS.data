@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "TJS",
+			"longName": "Tajikistani somoni"
+		},
+		"ru_RU": {
+			"shortName": "cомонӣ",
+			"longName": "cомонӣ"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=TJS",
+		"id": null
+	},
+	"currencyCode": "TJS",
+	"symbol": "Diram",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "BYR",
+			"longName": "Belarusian ruble"
+		},
+		"be_BY": {
+			"shortName": "рубель",
+			"longName": "беларускі рубель"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=BYR",
+		"id": null
+	},
+	"currencyCode": "BYR",
+	"symbol": "Br",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

@@ -27,7 +27,7 @@ import java.math.BigDecimal;
 public class BalanceItemEntity extends BaseEntity {
     @Id
     @Column(name = "balance_item_id")
-    private Long balanceItemId;
+    private Long id;
 
     @Column(name = "balance_id")
     private Long balanceId;
@@ -57,11 +57,12 @@ public class BalanceItemEntity extends BaseEntity {
     @Type(type = "json-string")
     private String propertySet;
 
-    public Long getBalanceItemId() {
-        return balanceItemId;
+    public Long getId() {
+        return id;
     }
-    public void setBalanceItemId(Long balanceItemId) {
-        this.balanceItemId = balanceItemId;
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getBalanceId() {

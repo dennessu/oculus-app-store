@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "XOF",
+			"longName": "West African CFA franc"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=XOF",
+		"id": null
+	},
+	"currencyCode": "XOF",
+	"symbol": "CFA",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

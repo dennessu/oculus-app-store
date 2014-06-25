@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "IQD",
+			"longName": "Iraqi dinar"
+		},
+		"ar_IQ": {
+			"shortName": "دينار",
+			"longName": "دينار عراقي"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=IQD",
+		"id": null
+	},
+	"currencyCode": "IQD",
+	"symbol": "ع.د",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

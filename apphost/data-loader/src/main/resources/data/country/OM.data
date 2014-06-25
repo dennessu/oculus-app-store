@@ -1,0 +1,139 @@
+{
+	"countryCode": "OM",
+	"defaultLocale": {
+		"href": "/v1/locales/ar_OM",
+		"id": "ar_OM"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/OMR",
+		"id": "OMR"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"BA": {
+			"locales": {
+				"ar_OM": {
+					"shortName": "الباطنة",
+					"longName": "الباطنة"
+				},
+				"en_US": {
+					"shortName": "Al Batinah",
+					"longName": "Al Batinah"
+				}
+			}
+		},
+		"BU": {
+			"locales": {
+				"ar_OM": {
+					"shortName": "البريمي‎",
+					"longName": "البريمي‎"
+				},
+				"en_US": {
+					"shortName": "Al Buraimi",
+					"longName": "Al Buraimi"
+				}
+			}
+		},
+		"DA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ad Dakhiliyah",
+					"longName": "Ad Dakhiliyah"
+				},
+				"ar_OM": {
+					"shortName": "الداخلية‎",
+					"longName": "الداخلية‎"
+				}
+			}
+		},
+		"MA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Muscat",
+					"longName": "Muscat"
+				},
+				"ar_OM": {
+					"shortName": "المسكات عنب طيب الشذا",
+					"longName": "المسكات عنب طيب الشذا"
+				}
+			}
+		},
+		"MU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Musandam",
+					"longName": "Musandam"
+				},
+				"ar_OM": {
+					"shortName": "محافظة مسندم",
+					"longName": "محافظة مسندم"
+				}
+			}
+		},
+		"SH": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ash Sharqiyah",
+					"longName": "Ash Sharqiyah"
+				},
+				"ar_OM": {
+					"shortName": "الشرقية‎",
+					"longName": "الشرقية‎"
+				}
+			}
+		},
+		"WU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Al Wusta",
+					"longName": "Al Wusta"
+				},
+				"ar_OM": {
+					"shortName": "الوسطى‎",
+					"longName": "الوسطى‎"
+				}
+			}
+		},
+		"ZA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ad Dhahirah",
+					"longName": "Ad Dhahirah"
+				},
+				"ar_OM": {
+					"shortName": "الظاهرة‎",
+					"longName": "الظاهرة‎"
+				}
+			}
+		},
+		"ZU": {
+			"locales": {
+				"ar_OM": {
+					"shortName": "محافطة ظفار",
+					"longName": "محافطة ظفار"
+				},
+				"en_US": {
+					"shortName": "Dhofar",
+					"longName": "Dhofar"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/ar_OM",
+		"id": "ar_OM"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Oman",
+			"longName": "Sultanate of Oman"
+		},
+		"ar_OM": {
+			"shortName": "عمان",
+			"longName": "سلطنة عُمان"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

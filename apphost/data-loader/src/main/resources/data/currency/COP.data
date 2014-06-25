@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "COP",
+			"longName": "Colombian peso"
+		},
+		"es_CO": {
+			"shortName": "peso colombiano",
+			"longName": "peso colombiano"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=COP",
+		"id": null
+	},
+	"currencyCode": "COP",
+	"symbol": "$",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

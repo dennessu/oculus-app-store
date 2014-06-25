@@ -490,7 +490,41 @@
           }
       }
     },
-    "iap_consumption": {}
+    "iap_consumption": {},
+    "wallet_lot_transaction": {
+        "views": {
+            "by_transaction_id": {
+                "map": "function(doc) {  emit(doc.transactionId, doc._id)}"
+            }
+        }
+    },
+    "wallet_transaction": {
+        "views": {
+            "by_wallet_id": {
+                "map": "function(doc) {  emit(doc.walletId, doc._id)}"
+            },
+            "by_tracking_uuid": {
+                "map": "function(doc) {  emit(doc.trackingUuid, doc._id)}"
+            }
+        }
+    },
+    "wallet_lot": {
+        "views": {
+            "by_wallet_id": {
+                "map": "function(doc) {  emit(doc.walletId, doc._id)}"
+            }
+        }
+    },
+    "wallet": {
+        "views": {
+            "by_user_id": {
+                "map": "function(doc) {  emit(doc.userId, doc._id)}"
+            },
+            "by_tracking_uuid": {
+                "map": "function(doc) {  emit(doc.trackingUuid, doc._id)}"
+            }
+        }
+    }
   }, 
   "cloudant_search": {
     "entitlement": {

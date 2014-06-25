@@ -119,49 +119,41 @@
     <bean id="sqlBalanceRepository" class="com.junbo.billing.db.repo.sql.BalanceRepositorySqlImpl">
         <property name="modelMapper" ref="com.junbo.billing.db.mapper.ModelMapperImpl"/>
         <property name="balanceEntityDao" ref="balanceEntityDao"/>
-        <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
     <bean id="sqlBalanceEventRepository" class="com.junbo.billing.db.repo.sql.BalanceEventRepositorySqlImpl">
         <property name="modelMapper" ref="com.junbo.billing.db.mapper.ModelMapperImpl"/>
-        <property name="idGenerator" ref="oculus48IdGenerator"/>
         <property name="balanceEventEntityDao" ref="balanceEventEntityDao"/>
 
     </bean>
 
     <bean id="sqlBalanceItemRepository" class="com.junbo.billing.db.repo.sql.BalanceItemRepositorySqlImpl">
         <property name="modelMapper" ref="com.junbo.billing.db.mapper.ModelMapperImpl"/>
-        <property name="idGenerator" ref="oculus48IdGenerator"/>
         <property name="balanceItemEntityDao" ref="balanceItemEntityDao"/>
     </bean>
 
     <bean id="sqlBalanceItemEventRepository" class="com.junbo.billing.db.repo.sql.BalanceItemEventRepositorySqlImpl">
         <property name="modelMapper" ref="com.junbo.billing.db.mapper.ModelMapperImpl"/>
-        <property name="idGenerator" ref="oculus48IdGenerator"/>
         <property name="balanceItemEventEntityDao" ref="balanceItemEventEntityDao"/>
     </bean>
 
     <bean id="sqlDiscountItemRepository" class="com.junbo.billing.db.repo.sql.DiscountItemRepositorySqlImpl">
         <property name="modelMapper" ref="com.junbo.billing.db.mapper.ModelMapperImpl"/>
-        <property name="idGenerator" ref="oculus48IdGenerator"/>
         <property name="discountItemEntityDao" ref="discountItemEntityDao"/>
     </bean>
 
     <bean id="sqlOrderBalanceLinkRepository" class="com.junbo.billing.db.repo.sql.OrderBalanceLinkRepositorySqlImpl">
         <property name="modelMapper" ref="com.junbo.billing.db.mapper.ModelMapperImpl"/>
-        <property name="idGenerator" ref="oculus48IdGenerator"/>
         <property name="orderBalanceLinkEntityDao" ref="orderBalanceLinkEntityDao"/>
     </bean>
 
     <bean id="sqlTaxItemRepository" class="com.junbo.billing.db.repo.sql.TaxItemRepositorySqlImpl">
         <property name="modelMapper" ref="com.junbo.billing.db.mapper.ModelMapperImpl"/>
-        <property name="idGenerator" ref="oculus48IdGenerator"/>
         <property name="taxItemEntityDao" ref="taxItemEntityDao"/>
     </bean>
 
     <bean id="sqlBillingTransactionRepository" class="com.junbo.billing.db.repo.sql.TransactionRepositorySqlImpl">
         <property name="modelMapper" ref="com.junbo.billing.db.mapper.ModelMapperImpl"/>
-        <property name="idGenerator" ref="oculus48IdGenerator"/>
         <property name="transactionEntityDao" ref="transactionEntityDao"/>
     </bean>
 
@@ -194,7 +186,7 @@
         <property name="dbName" value="tax_item"/>
     </bean>
 
-    <bean id="cloudantTransactionRepository" class="com.junbo.billing.db.repo.cloudant.TransactionRepositoryCloudantImpl" parent="cloudantClient">
+    <bean id="cloudantBillingTransactionRepository" class="com.junbo.billing.db.repo.cloudant.TransactionRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="billing_transaction"/>
     </bean>
 
@@ -244,7 +236,7 @@
     <bean id="billingTransactionRepository" parent="baseRepository">
         <property name="repositoryInterface" value="com.junbo.billing.db.repo.TransactionRepository"/>
         <property name="sqlRepositoryImpl" ref="sqlBillingTransactionRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantTransactionRepository" />
+        <property name="cloudantRepositoryImpl" ref="cloudantBillingTransactionRepository" />
     </bean>
 
     <!-- repository facade -->

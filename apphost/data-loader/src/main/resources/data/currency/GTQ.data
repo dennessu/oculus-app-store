@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "GTQ",
+			"longName": "Guatemalan quetzal"
+		},
+		"es_GT": {
+			"shortName": "quetzal",
+			"longName": "quetzal guatemalteco"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=GTQ",
+		"id": null
+	},
+	"currencyCode": "GTQ",
+	"symbol": "Q",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,102 @@
+{
+	"countryCode": "GA",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/XAF",
+		"id": "XAF"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/FPB",
+		"id": "FPB"
+	}],
+	"subCountries": {
+		"1": {
+			"locales": {
+				"en_US": {
+					"shortName": "Estuaire",
+					"longName": "Estuaire"
+				}
+			}
+		},
+		"2": {
+			"locales": {
+				"en_US": {
+					"shortName": "Haut-Ogooué",
+					"longName": "Haut-Ogooué"
+				}
+			}
+		},
+		"3": {
+			"locales": {
+				"en_US": {
+					"shortName": "Moyen-Ogooué",
+					"longName": "Moyen-Ogooué"
+				}
+			}
+		},
+		"4": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ngounié",
+					"longName": "Ngounié"
+				}
+			}
+		},
+		"5": {
+			"locales": {
+				"en_US": {
+					"shortName": "Nyanga",
+					"longName": "Nyanga"
+				}
+			}
+		},
+		"6": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ogooué-Ivindo",
+					"longName": "Ogooué-Ivindo"
+				}
+			}
+		},
+		"7": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ogooué-Lolo",
+					"longName": "Ogooué-Lolo"
+				}
+			}
+		},
+		"8": {
+			"locales": {
+				"en_US": {
+					"shortName": "Ogooué-Maritime",
+					"longName": "Ogooué-Maritime"
+				}
+			}
+		},
+		"9": {
+			"locales": {
+				"en_US": {
+					"shortName": "Woleu-Ntem",
+					"longName": "Woleu-Ntem"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Gabon",
+			"longName": "Gabonese Republic"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

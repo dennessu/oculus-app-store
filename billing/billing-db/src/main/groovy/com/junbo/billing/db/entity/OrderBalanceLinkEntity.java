@@ -21,7 +21,7 @@ import javax.persistence.Table;
 public class OrderBalanceLinkEntity extends BaseEntity {
     @Id
     @Column(name = "order_balance_link_id")
-    private Long linkId;
+    private Long id;
 
     @Column(name = "order_id")
     private Long orderId;
@@ -29,11 +29,12 @@ public class OrderBalanceLinkEntity extends BaseEntity {
     @Column(name = "balance_id")
     private Long balanceId;
 
-    public Long getLinkId() {
-        return linkId;
+    public Long getId() {
+        return id;
     }
-    public void setLinkId(Long linkId) {
-        this.linkId = linkId;
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getOrderId() {

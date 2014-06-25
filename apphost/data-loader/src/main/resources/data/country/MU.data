@@ -1,0 +1,166 @@
+{
+	"countryCode": "MU",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/MUR",
+		"id": "MUR"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/FPB",
+		"id": "FPB"
+	}],
+	"subCountries": {
+		"AG": {
+			"locales": {
+				"en_US": {
+					"shortName": "Agalega Islands",
+					"longName": "Agalega Islands"
+				}
+			}
+		},
+		"BL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Black River",
+					"longName": "Black River"
+				}
+			}
+		},
+		"BR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Beau Bassin-Rose Hill",
+					"longName": "Beau Bassin-Rose Hill"
+				}
+			}
+		},
+		"CC": {
+			"locales": {
+				"en_US": {
+					"shortName": "Cargados Carajos Shoals [Saint Brandon Islands]",
+					"longName": "Cargados Carajos Shoals [Saint Brandon Islands]"
+				}
+			}
+		},
+		"CU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Curepipe",
+					"longName": "Curepipe"
+				}
+			}
+		},
+		"FL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Flacq",
+					"longName": "Flacq"
+				}
+			}
+		},
+		"GP": {
+			"locales": {
+				"en_US": {
+					"shortName": "Grand Port",
+					"longName": "Grand Port"
+				}
+			}
+		},
+		"MO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Moka",
+					"longName": "Moka"
+				}
+			}
+		},
+		"PA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Pamplemousses",
+					"longName": "Pamplemousses"
+				}
+			}
+		},
+		"PL": {
+			"locales": {
+				"en_US": {
+					"shortName": "Port Louis",
+					"longName": "Port Louis"
+				}
+			}
+		},
+		"PU": {
+			"locales": {
+				"en_US": {
+					"shortName": "Port Louis",
+					"longName": "Port Louis"
+				}
+			}
+		},
+		"PW": {
+			"locales": {
+				"en_US": {
+					"shortName": "Plaines Wilhems",
+					"longName": "Plaines Wilhems"
+				}
+			}
+		},
+		"QB": {
+			"locales": {
+				"en_US": {
+					"shortName": "Quatre Bornes",
+					"longName": "Quatre Bornes"
+				}
+			}
+		},
+		"RO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Rodrigues Island",
+					"longName": "Rodrigues Island"
+				}
+			}
+		},
+		"RR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Rivière du Rempart",
+					"longName": "Rivière du Rempart"
+				}
+			}
+		},
+		"SA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Savanne",
+					"longName": "Savanne"
+				}
+			}
+		},
+		"VP": {
+			"locales": {
+				"en_US": {
+					"shortName": "Vacoas-Phoenix",
+					"longName": "Vacoas-Phoenix"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Mauritius",
+			"longName": "Republic of Mauritius"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

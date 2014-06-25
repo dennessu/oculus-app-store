@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "GNF",
+			"longName": "Guinean franc"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=GNF",
+		"id": null
+	},
+	"currencyCode": "GNF",
+	"symbol": "FG",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

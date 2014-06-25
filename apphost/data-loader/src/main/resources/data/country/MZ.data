@@ -1,0 +1,118 @@
+{
+	"countryCode": "MZ",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/MZN",
+		"id": "MZN"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/FPB",
+		"id": "FPB"
+	}],
+	"subCountries": {
+		"A": {
+			"locales": {
+				"en_US": {
+					"shortName": "Niassa",
+					"longName": "Niassa"
+				}
+			}
+		},
+		"B": {
+			"locales": {
+				"en_US": {
+					"shortName": "Manica",
+					"longName": "Manica"
+				}
+			}
+		},
+		"G": {
+			"locales": {
+				"en_US": {
+					"shortName": "Gaza",
+					"longName": "Gaza"
+				}
+			}
+		},
+		"I": {
+			"locales": {
+				"en_US": {
+					"shortName": "Inhambane",
+					"longName": "Inhambane"
+				}
+			}
+		},
+		"L": {
+			"locales": {
+				"en_US": {
+					"shortName": "Maputo Province",
+					"longName": "Maputo Province"
+				}
+			}
+		},
+		"MPM": {
+			"locales": {
+				"en_US": {
+					"shortName": "Maputo",
+					"longName": "Maputo"
+				}
+			}
+		},
+		"N": {
+			"locales": {
+				"en_US": {
+					"shortName": "Nampula",
+					"longName": "Nampula"
+				}
+			}
+		},
+		"P": {
+			"locales": {
+				"en_US": {
+					"shortName": "Cabo Delgado",
+					"longName": "Cabo Delgado"
+				}
+			}
+		},
+		"Q": {
+			"locales": {
+				"en_US": {
+					"shortName": "Zambézia",
+					"longName": "Zambézia"
+				}
+			}
+		},
+		"S": {
+			"locales": {
+				"en_US": {
+					"shortName": "Sofala",
+					"longName": "Sofala"
+				}
+			}
+		},
+		"T": {
+			"locales": {
+				"en_US": {
+					"shortName": "Tete",
+					"longName": "Tete"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Mozambique",
+			"longName": "Republic of Mozambique"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

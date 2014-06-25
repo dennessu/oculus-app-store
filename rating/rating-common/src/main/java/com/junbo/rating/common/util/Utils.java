@@ -7,6 +7,7 @@
 package com.junbo.rating.common.util;
 
 import javax.xml.bind.DatatypeConverter;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -30,5 +31,9 @@ public class Utils {
 
     public static Long parseDateTime(String time) {
         return DatatypeConverter.parseDateTime(time).getTimeInMillis();
+    }
+
+    public static BigDecimal rounding(BigDecimal value, int fractionDigits) {
+        return value.setScale(fractionDigits, Constants.ROUNDING_MODE);
     }
 }

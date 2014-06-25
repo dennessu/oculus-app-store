@@ -1,0 +1,139 @@
+{
+	"countryCode": "JM",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/JMD",
+		"id": "JMD"
+	},
+	"ratingBoards": [],
+	"subCountries": {
+		"01": {
+			"locales": {
+				"en_US": {
+					"shortName": "Kingston",
+					"longName": "Kingston"
+				}
+			}
+		},
+		"02": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Andrew",
+					"longName": "Saint Andrew"
+				}
+			}
+		},
+		"03": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Thomas",
+					"longName": "Saint Thomas"
+				}
+			}
+		},
+		"04": {
+			"locales": {
+				"en_US": {
+					"shortName": "Portland",
+					"longName": "Portland"
+				}
+			}
+		},
+		"05": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Mary",
+					"longName": "Saint Mary"
+				}
+			}
+		},
+		"06": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Ann",
+					"longName": "Saint Ann"
+				}
+			}
+		},
+		"07": {
+			"locales": {
+				"en_US": {
+					"shortName": "Trelawny",
+					"longName": "Trelawny"
+				}
+			}
+		},
+		"08": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint James",
+					"longName": "Saint James"
+				}
+			}
+		},
+		"09": {
+			"locales": {
+				"en_US": {
+					"shortName": "Hanover",
+					"longName": "Hanover"
+				}
+			}
+		},
+		"10": {
+			"locales": {
+				"en_US": {
+					"shortName": "Westmoreland",
+					"longName": "Westmoreland"
+				}
+			}
+		},
+		"11": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Elizabeth",
+					"longName": "Saint Elizabeth"
+				}
+			}
+		},
+		"12": {
+			"locales": {
+				"en_US": {
+					"shortName": "Manchester",
+					"longName": "Manchester"
+				}
+			}
+		},
+		"13": {
+			"locales": {
+				"en_US": {
+					"shortName": "Clarendon",
+					"longName": "Clarendon"
+				}
+			}
+		},
+		"14": {
+			"locales": {
+				"en_US": {
+					"shortName": "Saint Catherine",
+					"longName": "Saint Catherine"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Jamaica",
+			"longName": "Jamaica"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

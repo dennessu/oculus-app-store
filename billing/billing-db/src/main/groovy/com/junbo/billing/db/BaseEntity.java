@@ -8,6 +8,7 @@ package com.junbo.billing.db;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Version;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -16,17 +17,21 @@ import java.util.Date;
  */
 @MappedSuperclass
 public class BaseEntity implements Serializable {
-    @Column(name = "created_date")
+    @Column(name = "created_date", updatable = false)
     protected Date createdTime;
 
-    @Column(name = "created_by")
+    @Column(name = "created_by", updatable = false)
     protected String createdBy;
 
-    @Column(name = "modified_date")
-    protected Date modifiedTime;
+    @Column(name = "updated_date")
+    protected Date updatedTime;
 
-    @Column(name = "modified_by")
-    protected String modifiedBy;
+    @Column(name = "updated_by")
+    protected String updatedBy;
+
+    @Column(name = "resource_age")
+    @Version
+    private Integer resourceAge;
 
     public Date getCreatedTime() {
         return createdTime;
@@ -42,18 +47,27 @@ public class BaseEntity implements Serializable {
         this.createdBy = createdBy;
     }
 
-    public Date getModifiedTime() {
-        return modifiedTime;
-    }
-    public void setModifiedTime(Date modifiedTime) {
-        this.modifiedTime = modifiedTime;
+    public Date getUpdatedTime() {
+        return updatedTime;
     }
 
-    public String getModifiedBy() {
-        return modifiedBy;
-    }
-    public void setModifiedBy(String modifiedBy) {
-        this.modifiedBy = modifiedBy;
+    public void setUpdatedTime(Date updatedTime) {
+        this.updatedTime = updatedTime;
     }
 
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Integer getResourceAge() {
+        return resourceAge;
+    }
+
+    public void setResourceAge(Integer resourceAge) {
+        this.resourceAge = resourceAge;
+    }
 }

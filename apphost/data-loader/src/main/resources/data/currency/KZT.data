@@ -1,0 +1,24 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "KZT",
+			"longName": "Kazakhstani tenge"
+		},
+		"kk_KZ": {
+			"shortName": "теңге",
+			"longName": "Қазақ теңгесі"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=KZT",
+		"id": null
+	},
+	"currencyCode": "KZT",
+	"symbol": "〒",
+	"symbolPosition": "AFTER",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

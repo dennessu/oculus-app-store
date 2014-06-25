@@ -1,0 +1,118 @@
+{
+	"countryCode": "ET",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/ETB",
+		"id": "ETB"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/FPB",
+		"id": "FPB"
+	}],
+	"subCountries": {
+		"AA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Addis Ababa",
+					"longName": "Addis Ababa"
+				}
+			}
+		},
+		"AF": {
+			"locales": {
+				"en_US": {
+					"shortName": "Afar",
+					"longName": "Afar"
+				}
+			}
+		},
+		"AM": {
+			"locales": {
+				"en_US": {
+					"shortName": "Amara",
+					"longName": "Amara"
+				}
+			}
+		},
+		"BE": {
+			"locales": {
+				"en_US": {
+					"shortName": "Benshangul-Gumaz",
+					"longName": "Benshangul-Gumaz"
+				}
+			}
+		},
+		"DD": {
+			"locales": {
+				"en_US": {
+					"shortName": "Dire Dawa",
+					"longName": "Dire Dawa"
+				}
+			}
+		},
+		"GA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Gambela Peoples'",
+					"longName": "Gambela Peoples'"
+				}
+			}
+		},
+		"HA": {
+			"locales": {
+				"en_US": {
+					"shortName": "Harari People",
+					"longName": "Harari People"
+				}
+			}
+		},
+		"OR": {
+			"locales": {
+				"en_US": {
+					"shortName": "Oromia",
+					"longName": "Oromia"
+				}
+			}
+		},
+		"SN": {
+			"locales": {
+				"en_US": {
+					"shortName": "Southern Nations, Nationalities and Peoples'",
+					"longName": "Southern Nations, Nationalities and Peoples'"
+				}
+			}
+		},
+		"SO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Somali",
+					"longName": "Somali"
+				}
+			}
+		},
+		"TI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Tigrai",
+					"longName": "Tigrai"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Ethiopia",
+			"longName": "Federal Democratic Republic of Ethiopia"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "SLL",
+			"longName": "Sierra Leonean leone"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=SLL",
+		"id": null
+	},
+	"currencyCode": "SLL",
+	"symbol": "Le",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}

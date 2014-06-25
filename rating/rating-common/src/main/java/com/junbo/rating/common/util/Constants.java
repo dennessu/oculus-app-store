@@ -5,10 +5,16 @@
  */
 package com.junbo.rating.common.util;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 /**
  * Created by lizwu on 3/4/14.
  */
 public class Constants {
+    public static final RoundingMode ROUNDING_MODE = RoundingMode.HALF_UP;
+    public static final BigDecimal PRICE_NOT_FOUND = null;
+
     public static final Integer DEFAULT_PAGE_START = 0;
     public static final Integer DEFAULT_PAGE_SIZE = 20;
     public static final int UNIQUE = 0;

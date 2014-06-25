@@ -1,0 +1,150 @@
+{
+	"countryCode": "LR",
+	"defaultLocale": {
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	},
+	"defaultCurrency": {
+		"href": "/v1/currencies/LRD",
+		"id": "LRD"
+	},
+	"ratingBoards": [{
+		"href": "/v1/age-rating-boards/FPB",
+		"id": "FPB"
+	}],
+	"subCountries": {
+		"BG": {
+			"locales": {
+				"en_US": {
+					"shortName": "Bong",
+					"longName": "Bong"
+				}
+			}
+		},
+		"BM": {
+			"locales": {
+				"en_US": {
+					"shortName": "Bomi",
+					"longName": "Bomi"
+				}
+			}
+		},
+		"CM": {
+			"locales": {
+				"en_US": {
+					"shortName": "Grand Cape Mount",
+					"longName": "Grand Cape Mount"
+				}
+			}
+		},
+		"GB": {
+			"locales": {
+				"en_US": {
+					"shortName": "Grand Bassa",
+					"longName": "Grand Bassa"
+				}
+			}
+		},
+		"GG": {
+			"locales": {
+				"en_US": {
+					"shortName": "Grand Gedeh",
+					"longName": "Grand Gedeh"
+				}
+			}
+		},
+		"GK": {
+			"locales": {
+				"en_US": {
+					"shortName": "Grand Kru",
+					"longName": "Grand Kru"
+				}
+			}
+		},
+		"GP": {
+			"locales": {
+				"en_US": {
+					"shortName": "Gbarpolu",
+					"longName": "Gbarpolu"
+				}
+			}
+		},
+		"LO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Lofa",
+					"longName": "Lofa"
+				}
+			}
+		},
+		"MG": {
+			"locales": {
+				"en_US": {
+					"shortName": "Margibi",
+					"longName": "Margibi"
+				}
+			}
+		},
+		"MO": {
+			"locales": {
+				"en_US": {
+					"shortName": "Montserrado",
+					"longName": "Montserrado"
+				}
+			}
+		},
+		"MY": {
+			"locales": {
+				"en_US": {
+					"shortName": "Maryland",
+					"longName": "Maryland"
+				}
+			}
+		},
+		"NI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Nimba",
+					"longName": "Nimba"
+				}
+			}
+		},
+		"RG": {
+			"locales": {
+				"en_US": {
+					"shortName": "River Gee",
+					"longName": "River Gee"
+				}
+			}
+		},
+		"RI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Rivercess",
+					"longName": "Rivercess"
+				}
+			}
+		},
+		"SI": {
+			"locales": {
+				"en_US": {
+					"shortName": "Sinoe",
+					"longName": "Sinoe"
+				}
+			}
+		}
+	},
+	"supportedLocales": [{
+		"href": "/v1/locales/en_US",
+		"id": "en_US"
+	}],
+	"locales": {
+		"en_US": {
+			"shortName": "Liberia",
+			"longName": "Republic of Liberia"
+		}
+	},
+	"futureExpansion": {
+		
+	}
+}

@@ -12,7 +12,6 @@ import com.junbo.billing.db.repo.DiscountItemRepository;
 import com.junbo.billing.spec.model.DiscountItem;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.oom.core.MappingContext;
-import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.util.ArrayList;
@@ -24,7 +23,6 @@ import java.util.List;
 public class DiscountItemRepositorySqlImpl implements DiscountItemRepository {
     private DiscountItemEntityDao discountItemEntityDao;
     private ModelMapper modelMapper;
-    private IdGenerator idGenerator;
 
     @Required
     public void setDiscountItemEntityDao(DiscountItemEntityDao discountItemEntityDao) {
@@ -34,11 +32,6 @@ public class DiscountItemRepositorySqlImpl implements DiscountItemRepository {
     @Required
     public void setModelMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
-    }
-
-    @Required
-    public void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator;
     }
 
     @Override
@@ -67,19 +60,16 @@ public class DiscountItemRepositorySqlImpl implements DiscountItemRepository {
 
     @Override
     public Promise<DiscountItem> create(DiscountItem model) {
-        if (model.getId() == null) {
-            model.setId(idGenerator.nextId(model.getBalanceItemId()));
-        }
         DiscountItemEntity entity = modelMapper.toDiscountItemEntity(model, new MappingContext());
         DiscountItemEntity saved = discountItemEntityDao.save(entity);
-        return get(saved.getDiscountItemId());
+        return get(saved.getId());
     }
 
     @Override
     public Promise<DiscountItem> update(DiscountItem model) {
         DiscountItemEntity entity = modelMapper.toDiscountItemEntity(model, new MappingContext());
         discountItemEntityDao.update(entity);
-        return get(entity.getDiscountItemId());
+        return get(entity.getId());
     }
 
     @Override

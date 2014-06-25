@@ -1,0 +1,20 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "MGA",
+			"longName": "Malagasy ariary"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=MGA",
+		"id": null
+	},
+	"currencyCode": "MGA",
+	"symbol": "Ar",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "0",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {
+		
+	}
+}
