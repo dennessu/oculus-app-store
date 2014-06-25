@@ -1,5 +1,5 @@
 package com.junbo.order.core.impl.orderevent
-import com.junbo.billing.spec.model.Balance
+
 import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.langur.core.promise.Promise
@@ -58,6 +58,7 @@ class OrderEventServiceImpl implements OrderEventService {
     }
 
     @Override
+    @Transactional
     Promise<OrderEvent> recordEventHistory(OrderEvent event, OrderServiceContext orderServiceContext) {
         switch (event.action) {
             case OrderActionType.FULFILL.name():
@@ -70,7 +71,6 @@ class OrderEventServiceImpl implements OrderEventService {
             case OrderActionType.REFUND.name():
             case OrderActionType.PARTIAL_REFUND.name():
                 return recordBillingHistory(event, orderServiceContext)
-
             default:
                 return Promise.pure(event)
         }
@@ -94,21 +94,20 @@ class OrderEventServiceImpl implements OrderEventService {
         }
     }
 
-    private Promise<OrderEvent> recordBillingHistory(OrderEvent event, OrderServiceContext orderServiceContext) {
+    @Override
+    @Transactional
+    Promise<OrderEvent> recordBillingHistory(OrderEvent event, OrderServiceContext orderServiceContext) {
         if (event?.billingInfo?.balance != null) {
-            return builder.getOrderEventBalance(orderServiceContext).then { Balance balance ->
-                if (balance == null) {
-                    throw AppErrors.INSTANCE.balanceNotFound().exception()
-                }
+            def balance = builder.getOrderEventBalance(orderServiceContext).get()
+            if (balance == null) {
+                throw AppErrors.INSTANCE.balanceNotFound().exception()
+            }
 
-                def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(balance)
-                if (billingHistory.billingEvent != null) {
-                    orderRepository.createBillingHistory(event.order.value, billingHistory)
-                }
-                return Promise.pure(event)
+            def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(balance)
+            if (billingHistory.billingEvent != null) {
+                orderRepository.createBillingHistory(event.order.value, billingHistory)
             }
         }
         return Promise.pure(event)
     }
-
 }

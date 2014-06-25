@@ -12,4 +12,6 @@ interface OrderEventService {
     Promise<List<OrderEvent>> getOrderEvents(Long orderId, PageParam pageParam)
 
     Promise<OrderEvent> recordEventHistory(OrderEvent event, OrderServiceContext orderServiceContext)
+
+    Promise<OrderEvent> recordBillingHistory(OrderEvent event, OrderServiceContext orderServiceContext)
 }
