@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Token Set Offer Dao.
  */
-public class TokenSetOfferDao extends CommonDataDAOImpl<TokenSetOfferEntity, Long> {
+public class TokenSetOfferDao extends GenericDAOImpl<TokenSetOfferEntity, Long> {
     public TokenSetOfferDao() {
         super(TokenSetOfferEntity.class);
     }

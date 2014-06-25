@@ -5,10 +5,10 @@ dependencies {
     compile project(":token-common")
     compile project(":token-spec")
 
-    compile (libraries.common_lib)
-    compile (libraries.common_sharding)
-    compile (libraries.common_configuration)
-	
+    compile junboProject(':common-lib')
+    compile junboProject(':common-sharding')
+    compile junboProject(':common-configuration')
+
 	compile(libraries.persistence_api)
 	compile(libraries.validation_api)
 	compile(libraries.spring_aop)
@@ -19,8 +19,8 @@ dependencies {
 	compile(libraries.spring_jdbc)
 	compile(libraries.spring_orm)
 
-    compile (libraries.oom_processor)
-    compile (libraries.oom)
+    compile junboProject(':oom-core')
+    processor junboProject(':oom-processor')
 	
 	compile(libraries.hibernate_core)
 	compile(libraries.hibernate_annotation)
@@ -29,7 +29,6 @@ dependencies {
 	compile(libraries.common_lang)
 	
 	compile(libraries.postgresql)
-    compile (libraries.bonecp_spring)
 
     testCompile(libraries.spring_test)
 }

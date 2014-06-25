@@ -22,13 +22,13 @@ public class TokenConsumptionEntity extends GenericEntity {
     @Column(name = "consumption_id")
     private Long id;
 
-    @Column(name = "hash_value")
-    private Long hashValue;
+    @Column(name = "item_id")
+    private Long itemId;
 
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "product")
+    @Column(name = "products")
     private Long product;
 
     public Long getId() {
@@ -39,12 +39,17 @@ public class TokenConsumptionEntity extends GenericEntity {
         this.id = id;
     }
 
-    public Long getHashValue() {
-        return hashValue;
+    @Override
+    public Long getShardMasterId() {
+        return itemId;
     }
 
-    public void setHashValue(Long hashValue) {
-        this.hashValue = hashValue;
+    public Long getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
     }
 
     public Long getUserId() {

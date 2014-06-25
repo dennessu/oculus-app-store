@@ -49,6 +49,7 @@
 				  description                     varchar(128)         null,
                   token_set_status                smallint         not null,
                   generation_length               smallint             null,
+				  resource_age                    bigint           not null,
                   created_time                    date             not null,
                   created_by                      varchar(64)          null,
 				  updated_time                    date                 null,
@@ -112,6 +113,7 @@
                   creation_method                   smallint            not null,
                   quantity                          int                 not null,
 				  activation                        varchar(10)             null,
+				  resource_age                      bigint              not null,
 				  created_time                      date                not null,
                   created_by                        varchar(64)             null,
 				  updated_time                      date                    null,
@@ -151,17 +153,19 @@
         <sql>
         <![CDATA[
             create table token_item
-                (                  
+                (    
+				  item_id                       bigint              not null,
                   hash_value                    bigint              not null,
 				  order_id                      bigint              not null,
                   token_item_status             smallint            not null,
 				  disable_reason                varchar(512)            null,
+				  resource_age                  bigint              not null,
                   created_time                  date                not null,
                   created_by                    varchar(64)             null,
 				  updated_time                  date                    null,
                   updated_by                    varchar(64)             null, 
 
-                  constraint hash_value_pk primary key (hash_value),
+                  constraint hash_value_pk primary key (item_id),
 				  constraint token_order_status_fk foreign key (token_item_status)
                       references token_item_status (item_status_id) match simple
                       on update no action on delete no action,
@@ -182,7 +186,8 @@
                   set_offer_id                  bigint              not null,
                   set_id                        bigint              not null,
 				  product_id                    bigint              not null,
-                  product_type                  varchar(16)             null,                  
+                  product_type                  varchar(16)             null,   
+				  resource_age                  bigint              not null,
                   created_time                  date                not null,
                   created_by                    varchar(64)             null,
 				  updated_time                  date                    null,
@@ -204,17 +209,18 @@
             create table token_consumption
                 (
                   consumption_id            bigint              not null,
-                  hash_value                bigint              not null,
+                  item_id                   bigint              not null,
                   products                  varchar(1024)             null,
-                  user_id                   bigint              not null,                  
+                  user_id                   bigint              not null,    
+				  resource_age              bigint              not null,				  
                   created_time              date                not null,
                   created_by                varchar(64)             null,    
                   updated_time              date                    null,
                   updated_by                varchar(64)             null, 				  
 
                   constraint consumption_id_pk primary key (consumption_id),
-				  constraint token_consumption_item_hash_fk foreign key (hash_value)
-                      references token_item (hash_value) match simple
+				  constraint token_consumption_item_hash_fk foreign key (item_id)
+                      references token_item (item_id) match simple
                       on update no action on delete no action				  
                 );
         ]]>

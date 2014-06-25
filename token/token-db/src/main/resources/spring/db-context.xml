@@ -5,8 +5,6 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <import resource="classpath*:spring/common-context.xml"/>
-    <import resource="classpath*:spring/transaction.xml"/>
     <import resource="classpath*:spring/sharding-context.xml"/>
 
     <context:component-scan base-package="com.junbo.oom.core.builtin"/>
@@ -14,15 +12,14 @@
     <context:annotation-config />
 
     <!--Data source has the database information -->
-    <bean id="tokenDataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource"
-          init-method="init" destroy-method="close">
-        <property name="uniqueName" value="jdbc/id_ds1"/>
+    <bean id="tokenDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
+        <property name="jdbcUrls" value="${token.db.jdbcUrls}"/>
+        <property name="uniqueName" value="jdbc/token"/>
         <property name="className" value="org.postgresql.xa.PGXADataSource"/>
         <property name="minPoolSize" value="${token.db.minConnectionsPerPartition}"/>
         <property name="maxPoolSize" value="${token.db.maxConnectionsPerPartition}"/>
         <property name="driverProperties">
             <props>
-                <prop key="url">${token.db.jdbcUrls}</prop>
                 <prop key="user">${token.db.username}</prop>
                 <prop key="password">${token.db.password}</prop>
             </props>
@@ -31,17 +28,22 @@
 
     <!-- SessonFactory for Hibernate -->
     <bean id="tokenSessionFactory"
-          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-        <property name="dataSource" ref="tokenDataSource"/>
+          class="com.junbo.sharding.hibernate.LocalSessionFactoryWithListenerBean">
         <property name="jtaTransactionManager" ref="transactionManager"/>
         <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">${token.hibernate.dialect}</prop>
-                <prop key="hibernate.max_fetch_depth">${token.hibernate.max_fetch_depth}</prop>
-                <prop key="hibernate.jdbc.fetch_size">${token.hibernate.jdbc.fetch_size}</prop>
-                <prop key="hibernate.jdbc.batch_size">${token.hibernate.jdbc.batch_size}</prop>
-                <prop key="hibernate.show_sql">${token.hibernate.show_sql}</prop>
-            </props>
+            <map>
+                <entry key="hibernate.dialect" value="${token.hibernate.dialect}"/>
+                <entry key="hibernate.max_fetch_depth" value="${token.hibernate.max_fetch_depth}"/>
+                <entry key="hibernate.jdbc.fetch_size" value="${token.hibernate.jdbc.fetch_size}"/>
+                <entry key="hibernate.jdbc.batch_size" value="${token.hibernate.jdbc.batch_size}"/>
+                <entry key="hibernate.show_sql" value="${token.hibernate.show_sql}"/>
+
+                <entry key="hibernate.multiTenancy" value="SCHEMA"/>
+                <entry key="hibernate.current_session_context_class" value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
+                <entry key="hibernate.tenant_identifier_resolver" value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
+                <entry key="hibernate.multi_tenant_connection_provider" value-ref="tokenDataSource"/>
+                <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+            </map>
         </property>
         <property name="packagesToScan">
             <list>
@@ -51,7 +53,6 @@
             </list>
         </property>
     </bean>
-
     <!-- Transaction Manager
     <bean id="transactionManager"
           class="org.springframework.orm.hibernate4.HibernateTransactionManager">

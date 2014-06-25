@@ -1,14 +1,14 @@
 apply plugin: 'java'
 
 dependencies {
-    compile project(":token-spec")
+    compile junboProject(":token-spec")
 	compile (libraries.rs_api)
-    compile (libraries.langur)
+    compile junboProject(':langur-core')
     compile (libraries.spring_beans)
     compile (libraries.spring_context)
     compile (libraries.guava)
 
-    processor (libraries.langur_processor)
+    processor junboProject(':langur-processor')
     processor (libraries.log4j)
 
     testCompile(libraries.spring_test)

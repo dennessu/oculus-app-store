@@ -79,6 +79,8 @@ public class TokenRepository {
     public List<TokenItem> addTokenItems(List<TokenItem> items){
         for(TokenItem item : items){
             TokenItemEntity itemEntity = tokenMapper.toTokenItemEntity(item, new MappingContext());
+            //TODO: use hashValue as PK first. Need to consider partitionable-id
+            itemEntity.setId(itemEntity.getHashValue());
             Long itemEntityId = tokenItemDao.save(itemEntity);
         }
         return items;
@@ -89,7 +91,7 @@ public class TokenRepository {
         if(item == null){
             return null;
         }
-        item.setTokenConsumptions(getTokenConsumption(hashValue));
+        item.setTokenConsumptions(getTokenConsumption(item.getId()));
         return item;
     }
 
@@ -101,9 +103,9 @@ public class TokenRepository {
         return consumption;
     }
 
-    public List<TokenConsumption> getTokenConsumption(Long hashValue){
+    public List<TokenConsumption> getTokenConsumption(Long itemId){
         List<TokenConsumption> consumptions = new ArrayList<TokenConsumption>();
-        for(TokenConsumptionEntity entity : tokenConsumptionDao.getByTokenHashValue(hashValue)){
+        for(TokenConsumptionEntity entity : tokenConsumptionDao.getByTokenItemId(itemId)){
             if(entity != null){
                 consumptions.add(tokenMapper.toTokenConsumption(entity, new MappingContext()));
             }

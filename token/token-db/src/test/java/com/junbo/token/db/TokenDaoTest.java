@@ -1,10 +1,12 @@
 package com.junbo.token.db;
 
 
+import com.junbo.sharding.IdGenerator;
 import com.junbo.token.db.dao.*;
 import com.junbo.token.db.entity.*;
 import com.junbo.token.spec.enums.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -22,6 +24,9 @@ public class TokenDaoTest extends BaseTest {
     private TokenOrderDao orderDao;
     @Autowired
     private TokenSetOfferDao tokenSetOfferDao;
+    @Autowired
+    @Qualifier("idGenerator")
+    protected IdGenerator idGenerator;
 
     @Test(enabled = true)
     public void testCreate() {
@@ -76,7 +81,7 @@ public class TokenDaoTest extends BaseTest {
 
     protected TokenItemEntity buildTokenItemRequest(TokenOrderEntity order){
         TokenItemEntity entity = new TokenItemEntity();
-        entity.setId(generateId());
+        entity.setHashValue(generateLong());
         entity.setStatus(ItemStatus.ACTIVATED);
         entity.setOrderId(order.getId());
         return entity;
@@ -84,8 +89,7 @@ public class TokenDaoTest extends BaseTest {
 
     protected TokenConsumptionEntity buildTokenItemRequest(TokenItemEntity item){
         TokenConsumptionEntity entity = new TokenConsumptionEntity();
-        entity.setHashValue(123L);
-        entity.setId(generateId());
+        entity.setItemId(idGenerator.nextId());
         entity.setProduct(123L);
         entity.setUserId(generateId());
         return entity;

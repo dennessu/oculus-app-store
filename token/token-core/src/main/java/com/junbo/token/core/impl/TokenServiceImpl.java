@@ -100,7 +100,7 @@ public class TokenServiceImpl implements TokenService {
         }
         validateTokenItem(item, order, tokenSet, consumption);
         updateTokenItem(item, order);
-        consumption.setHashValue(hashValue);
+        consumption.setItemId(item.getId());
         TokenConsumption result = tokenRepository.addConsumption(consumption);
         item.setTokenConsumptions(Arrays.asList(result));
         return Promise.pure(item);

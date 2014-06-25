@@ -1,9 +1,12 @@
 apply plugin: 'groovy'
+apply plugin: 'application'
+
+mainClassName = "com.junbo.apphost.core.JunboApplication"
 
 dependencies {
-    compile project(':token-rest')
-    
-	compile(libraries.jersey_container_grizzly2_http)
-	compile(libraries.jersey_spring3)
-    runtime (libraries.common_configuration_data)
+    runtime junboProject(':apphost-core')
+    runtime junboProject(':configuration-data')
+
+    compile junboProject(':token-rest')
+
 }

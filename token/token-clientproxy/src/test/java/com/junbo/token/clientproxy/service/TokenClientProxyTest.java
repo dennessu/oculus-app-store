@@ -12,7 +12,7 @@ import com.junbo.token.spec.model.OrderRequest;
 import com.junbo.token.spec.model.TokenConsumption;
 import com.junbo.token.spec.model.TokenItem;
 import com.junbo.token.spec.resource.proxy.TokenResourceClientProxy;
-import junit.framework.Assert;
+import org.testng.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 

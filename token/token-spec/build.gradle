@@ -1,11 +1,11 @@
 apply plugin: 'java'
 
 dependencies {
-    compile project(':token-common')
+    compile junboProject(':token-common')
 
     compile (libraries.jersey_bean_validation)
-	compile (libraries.langur)
-    compile (libraries.common_lib)
+    compile junboProject(':langur-core')
+    compile junboProject(':common-lib')
 
     compile (libraries.rs_api)
     compile (libraries.guava)
@@ -16,7 +16,7 @@ dependencies {
     compile (libraries.jackson_annotations)
     compile (libraries.jackson_databind)
 
-    processor (libraries.langur_processor)
+    processor junboProject(':langur-processor')
     processor (libraries.log4j)
 }
 

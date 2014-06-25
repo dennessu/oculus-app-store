@@ -16,14 +16,12 @@ dependencies {
     compile (libraries.spring_web)
 
     compile (libraries.asyncclient)
-    compile (libraries.oom_processor)
-    compile (libraries.oom)
     compile (libraries.jersey_common)
-	
-	 compile project(':token-spec')
-    compile project(':token-db')
-    compile project(':token-common')
-    compile project(':token-clientproxy')
-    compile project(':token-core')
+
+    compile junboProject(':token-spec')
+    compile junboProject(':token-db')
+    compile junboProject(':token-common')
+    compile junboProject(':token-clientproxy')
+    compile junboProject(':token-core')
 
 }
