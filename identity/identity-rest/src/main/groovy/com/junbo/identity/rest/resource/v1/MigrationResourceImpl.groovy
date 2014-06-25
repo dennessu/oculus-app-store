@@ -756,11 +756,12 @@ class MigrationResourceImpl implements MigrationResource {
     // check whether the address is changed or not
     // if the address is changed, just create new and return;
     // if the address isn't changed, just return
+    // Due to state isn't valid in oculus side, so we decided to use street2 to put oculus' state
     private Promise<UserPersonalInfoId> getOrgShippingAddressId(OculusInput oculusInput, Organization createdOrg) {
         Address address = new Address(
             street1: oculusInput.company.address,
             city: oculusInput.company.city,
-            subCountry: oculusInput.company.state,
+            street2: oculusInput.company.state,
             countryId: new CountryId(oculusInput.company.country),
             postalCode: oculusInput.company.postalCode
         )
