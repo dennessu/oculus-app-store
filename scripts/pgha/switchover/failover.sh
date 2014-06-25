@@ -24,17 +24,12 @@ ssh $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
     forceKillPid $SKYTOOL_PID_PATH
 ENDSSH
 
+echo "[SLAVE] copy unarchived log files"
+rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_DATA_PATH/pg_xlog/* $SLAVE_ARCHIVE_PATH
+
 echo "[SLAVE] waiting for slave catching up with master"
 while ! echo exit | psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT 'x' from pg_stat_replication where sent_location != replay_location;" -t | grep -v "x"; do sleep 1 && echo "[SLAVE] slave is catching up..."; done
 echo "[SLAVE] slave catch up with master!"
-
-ssh $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
-    echo "[MASTER] gracefully shutdown master database"
-    $PGBIN_PATH/pg_ctl stop -m fast -D $MASTER_DATA_PATH
-ENDSSH
-
-echo "[SLAVE] copy unarchived log files"
-rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_DATA_PATH/pg_xlog/* $SLAVE_ARCHIVE_PATH
 
 echo "[SLAVE] promote slave database to take traffic"
 touch $PROMOTE_TRIGGER_FILE
@@ -43,7 +38,13 @@ echo "[SLAVE] waiting for slave promote"
 while ! echo exit | psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "SELECT pg_is_in_recovery();" -t | grep "f"; do sleep 1 && echo "[SLAVE] slave is promoting..."; done
 echo "[SLAVE] slave promoted!"
 
+echo "[SLAVE] force wait beforing writing"
+sleep 5s
+
 ssh $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
+    echo "[MASTER] gracefully shutdown master database"
+    $PGBIN_PATH/pg_ctl stop -m fast -D $MASTER_DATA_PATH
+
     echo "[MASTER] configure recovery.conf for master"
     cat > $MASTER_DATA_PATH/recovery.conf <<EOF
 recovery_target_timeline = 'latest'
