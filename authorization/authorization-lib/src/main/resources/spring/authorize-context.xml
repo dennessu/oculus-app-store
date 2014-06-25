@@ -4,7 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="authlib_accessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
-        <property name="scope" value="api.manage authorization.service identity.service"/>
+        <property name="scope" value="api.manage identity.service"/>
         <property name="deflectionInSeconds" value="300"/>
         <property name="clientSecret" value="${authorization.lib.service.clientSecret}"/>
         <property name="clientId" value="${authorization.lib.service.clientId}"/>

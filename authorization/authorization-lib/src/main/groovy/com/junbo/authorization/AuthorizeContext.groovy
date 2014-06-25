@@ -1,6 +1,8 @@
 package com.junbo.authorization
 
 import com.junbo.common.id.UserId
+import com.junbo.configuration.ConfigService
+import com.junbo.configuration.ConfigServiceManager
 import com.junbo.oauth.spec.model.TokenInfo
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
@@ -18,6 +20,12 @@ class AuthorizeContext {
     public static final String SUPER_RIGHT = '_SUPER_RIGHT_'
 
     public static final String SUPER_SCOPE = '_SUPER_SCOPE_'
+
+    private static boolean authorizeDisabled = false
+
+    static void setAuthorizeDisabled(boolean disabled) {
+        authorizeDisabled = disabled
+    }
 
     static void setCurrentTokenInfo(TokenInfo tokenInfo) {
         CURRENT_TOKEN_INFO.set(tokenInfo)
@@ -46,7 +54,9 @@ class AuthorizeContext {
     }
 
     static boolean hasScopes(String... scopes) {
-        return true;
+        if (authorizeDisabled) {
+            return true;
+        }
 
         if (scopes == null || scopes.length == 0) {
             throw new IllegalArgumentException('scopes is null or empty')
@@ -83,7 +93,9 @@ class AuthorizeContext {
     }
 
     static boolean hasRights(String... rights) {
-        return true;
+        if (authorizeDisabled) {
+            return true;
+        }
 
         if (rights == null || rights.length == 0) {
             throw new IllegalArgumentException('rights is null or empty')
@@ -108,5 +120,15 @@ class AuthorizeContext {
     }
 
     private AuthorizeContext() {
+    }
+
+    static {
+        ConfigService configService = ConfigServiceManager.instance();
+        if (configService != null) {
+            String authorizeDisabled = configService.getConfigValue('authorization.lib.service.disabled');
+            if (authorizeDisabled != null) {
+                this.authorizeDisabled = Boolean.parseBoolean(authorizeDisabled);
+            }
+        }
     }
 }

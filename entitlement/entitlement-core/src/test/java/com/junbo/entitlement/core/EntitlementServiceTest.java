@@ -6,6 +6,9 @@
 
 package com.junbo.entitlement.core;
 
+import com.junbo.authorization.AuthorizeContext;
+import com.junbo.authorization.AuthorizeService;
+import com.junbo.authorization.AuthorizeServiceImpl;
 import com.junbo.catalog.spec.model.item.EntitlementDef;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.common.error.AppErrorException;
@@ -26,6 +29,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.WebApplicationException;
@@ -156,5 +160,14 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
             }
         });
         return entitlement;
+    }
+
+    @Override
+    @BeforeClass(alwaysRun = true, dependsOnMethods = "springTestContextBeforeTestClass")
+    protected void springTestContextPrepareTestInstance() throws Exception {
+        super.springTestContextPrepareTestInstance();
+        AuthorizeServiceImpl authorizeService = (AuthorizeServiceImpl)applicationContext.getBean(AuthorizeService.class);
+        authorizeService.setDisabled(true);
+        AuthorizeContext.setAuthorizeDisabled(true);
     }
 }
