@@ -26,4 +26,8 @@ interface UserCredentialVerifyAttemptRepository
     @ReadMethod
     Promise<List<UserCredentialVerifyAttempt>> searchByUserIdAndCredentialType(UserId userId, String type,
                                                                                Integer limit, Integer offset)
+
+    @ReadMethod
+    Promise<List<UserCredentialVerifyAttempt>> searchByIPAddressAndCredentialType(String ipAddress, String type,
+                                                                                  Integer limit, Integer offset)
 }

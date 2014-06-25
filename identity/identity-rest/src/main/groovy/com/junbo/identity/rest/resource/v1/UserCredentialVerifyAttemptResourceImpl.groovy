@@ -68,7 +68,7 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
 
             return createInNewTran(userCredentialAttempt).then { UserCredentialVerifyAttempt attempt ->
 
-                if (attempt.succeeded == true) {
+                if (attempt.succeeded) {
                     Created201Marker.mark(attempt.getId())
 
                     attempt = userCredentialVerifyAttemptFilter.filterForGet(attempt, null)

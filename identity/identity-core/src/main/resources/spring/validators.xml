@@ -78,6 +78,11 @@
         <property name="userAgentMinLength" value="1"/>
         <property name="userAgentMaxLength" value="255"/>
         <property name="maxRetryCount" value="${identity.conf.maxCredentialRetryCount}" />
+        <property name="retryInterval" value="1000" />
+        <property name="maxAttemptCount" value="1000" />
+        <property name="attemptRetryInterval" value="1000" />
+        <property name="maxSameIPRetryCount" value="1000" />
+        <property name="sameIPRetryInterval" value="1000" />
         <property name="transactionManager" ref="transactionManager" />
     </bean>
 

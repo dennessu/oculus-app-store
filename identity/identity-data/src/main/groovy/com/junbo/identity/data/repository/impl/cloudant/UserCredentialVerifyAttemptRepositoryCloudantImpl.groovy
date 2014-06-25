@@ -41,6 +41,12 @@ class UserCredentialVerifyAttemptRepositoryCloudantImpl extends CloudantClient<U
     }
 
     @Override
+    Promise<List<UserCredentialVerifyAttempt>> searchByIPAddressAndCredentialType(String ipAddress, String type,
+                                                                                  Integer limit, Integer offset) {
+        return queryView('by_ip_address_credential_type', "${ipAddress}:${type}", limit, offset, false)
+    }
+
+    @Override
     Promise<Void> delete(UserCredentialVerifyAttemptId id) {
         return cloudantDelete(id.toString())
     }
