@@ -83,7 +83,7 @@ ssh $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
         config=$SKYTOOL_CONFIG_PATH/\${db}_leaf.ini
 
         echo "[REPLICA] update root node location"
-        psql ${db} -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "update pgq_node.node_location set node_location = 'dbname=${db} host=$SLAVE_HOST port=$SLAVE_DB_PORT' where queue_name = 'queue_${db}' and node_name = 'root_node_${db}';"
+        psql \${db} -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "update pgq_node.node_location set node_location = 'dbname=\${db} host=$SLAVE_HOST port=$SLAVE_DB_PORT' where queue_name = 'queue_\${db}' and node_name = 'root_node_\${db}';"
 
         echo "[REPLICA] start worker for database [\$db]"
         londiste3 -d \$config worker > /dev/null 2>&1 &

@@ -30,7 +30,7 @@ while ! echo exit | psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT 
 echo "[REPLICA] replica catch up with master!"
 
 echo "[REPLICA] copy unarchived log files"
-#rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_DATA_PATH/pg_xlog/* $REPLICA_ARCHIVE_PATH
+rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_DATA_PATH/pg_xlog/* $REPLICA_ARCHIVE_PATH
 
 echo "[REPLICA] promote replcia database to cut off streaming replication"
 touch $PROMOTE_TRIGGER_FILE
@@ -38,6 +38,8 @@ touch $PROMOTE_TRIGGER_FILE
 echo "[REPLICA] waiting for replica promote"
 while ! echo exit | psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT pg_is_in_recovery();" -t | grep "f"; do sleep 1 && echo "[REPLICA] replica is promoting..."; done
 echo "[REPLICA] replica promoted!"
+
+sleep 5s
 
 for db in ${REPLICA_DATABASES[@]}
 do
@@ -71,10 +73,10 @@ done
 ssh $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
     for db in ${REPLICA_DATABASES[@]}
     do
-        config=$SKYTOOL_CONFIG_PATH/${db}_root.ini
+        config=$SKYTOOL_CONFIG_PATH/\${db}_root.ini
 
-        echo "[MASTER] start worker for database [$db]"
-        londiste3 -d $config worker > /dev/null 2>&1 &
+        echo "[MASTER] start worker for database [\$db]"
+        londiste3 -d \$config worker > /dev/null 2>&1 &
     done
 
     echo "[MASTER] start pgqd deamon"
