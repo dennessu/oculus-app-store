@@ -7,14 +7,13 @@ import com.junbo.token.spec.enums.CreateMethod;
 import com.junbo.token.spec.enums.ItemStatus;
 import com.junbo.token.spec.enums.ProductType;
 import com.junbo.token.spec.enums.TokenLength;
-import com.junbo.token.spec.model.OrderRequest;
+import com.junbo.token.spec.model.TokenRequest;
 import com.junbo.token.spec.model.TokenConsumption;
 import com.junbo.token.spec.model.TokenItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
@@ -24,7 +23,7 @@ public class TokenServiceTest extends BaseTest {
 
     @Test(enabled = true)
     public void testGenerate() throws ExecutionException, InterruptedException {
-        OrderRequest request = new OrderRequest(){
+        TokenRequest request = new TokenRequest(){
             {
                 setActivation("yes");
                 setCreateMethod(CreateMethod.GENERATION.toString());
@@ -37,10 +36,10 @@ public class TokenServiceTest extends BaseTest {
                 setUsageLimit("1");
             }
         };
-        OrderRequest result = tokenService.createOrderRequest(request).get();
+        TokenRequest result = tokenService.createOrderRequest(request).get();
         Assert.assertNotNull(result.getTokenItems());
         Assert.assertNotNull(result.getId());
-        OrderRequest getResult = tokenService.getOrderRequest(result.getId()).get();
+        TokenRequest getResult = tokenService.getOrderRequest(result.getId()).get();
         Assert.assertEquals(getResult.getQuantity(), (Long)2L);
         Assert.assertEquals(result.getOfferIds().get(0), getResult.getOfferIds().get(0));
     }
@@ -57,7 +56,7 @@ public class TokenServiceTest extends BaseTest {
                 setEncryptedString("item2" + generateLong());
             }
         };
-        OrderRequest request = new OrderRequest(){
+        TokenRequest request = new TokenRequest(){
             {
                 setActivation("yes");
                 setCreateMethod(CreateMethod.UPLOAD.toString());
@@ -70,10 +69,10 @@ public class TokenServiceTest extends BaseTest {
             }
 
         };
-        OrderRequest result = tokenService.createOrderRequest(request).get();
+        TokenRequest result = tokenService.createOrderRequest(request).get();
         Assert.assertNotNull(result.getTokenItems());
         Assert.assertNotNull(result.getId());
-        OrderRequest getResult = tokenService.getOrderRequest(result.getId()).get();
+        TokenRequest getResult = tokenService.getOrderRequest(result.getId()).get();
         Assert.assertEquals(getResult.getQuantity(), (Long)2L);
         Assert.assertEquals(result.getOfferIds().get(0), getResult.getOfferIds().get(0));
     }
@@ -90,7 +89,7 @@ public class TokenServiceTest extends BaseTest {
                 setEncryptedString("item2" + generateLong());
             }
         };
-        OrderRequest request = new OrderRequest(){
+        TokenRequest request = new TokenRequest(){
             {
                 setActivation("yes");
                 setCreateMethod(CreateMethod.UPLOAD.toString());
@@ -103,7 +102,7 @@ public class TokenServiceTest extends BaseTest {
             }
 
         };
-        OrderRequest result = tokenService.createOrderRequest(request).get();
+        TokenRequest result = tokenService.createOrderRequest(request).get();
         Assert.assertNotNull(result.getTokenItems());
         Assert.assertNotNull(result.getId());
         TokenConsumption consumption = new TokenConsumption(){
@@ -112,8 +111,7 @@ public class TokenServiceTest extends BaseTest {
                 setUserId(generateLong());
             }
         };
-        TokenItem consumedItem = tokenService.consumeToken(item.getEncryptedString(), consumption).get();
-        Assert.assertEquals(consumedItem.getStatus(), ItemStatus.USED.toString());
+        TokenConsumption consumedItem = tokenService.consumeToken(item.getEncryptedString(), consumption).get();
         TokenItem getItem = tokenService.getToken(item.getEncryptedString()).get();
         Assert.assertEquals(getItem.getStatus(), ItemStatus.USED.toString());
     }

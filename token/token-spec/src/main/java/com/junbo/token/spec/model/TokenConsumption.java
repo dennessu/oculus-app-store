@@ -15,6 +15,7 @@ public class TokenConsumption {
     private Long itemId;
     private Long userId;
     private Long product;
+    private String tokenString;
 
     public Long getId() {
         return id;
@@ -46,5 +47,13 @@ public class TokenConsumption {
 
     public void setProduct(Long product) {
         this.product = product;
+    }
+
+    public String getTokenString() {
+        return tokenString;
+    }
+
+    public void setTokenString(String tokenString) {
+        this.tokenString = tokenString;
     }
 }

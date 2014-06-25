@@ -87,7 +87,7 @@ public class TokenRepository {
     }
 
     public TokenItem getTokenItem(Long hashValue){
-        TokenItem item = tokenMapper.toTokenItem(tokenItemDao.get(hashValue), new MappingContext());
+        TokenItem item = tokenMapper.toTokenItem(tokenItemDao.getByHashValue(hashValue), new MappingContext());
         if(item == null){
             return null;
         }
@@ -114,7 +114,7 @@ public class TokenRepository {
     }
 
     public void updateTokenStatus(long hashValue, ItemStatus status){
-        TokenItemEntity entity = tokenItemDao.get(hashValue);
+        TokenItemEntity entity = tokenItemDao.getByHashValue(hashValue);
         entity.setStatus(status);
         tokenItemDao.update(entity);
     }

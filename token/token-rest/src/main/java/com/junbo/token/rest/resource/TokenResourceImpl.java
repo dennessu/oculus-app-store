@@ -16,8 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.ws.rs.*;
-
 /**
  * token resource implementation.
  */
@@ -28,12 +26,12 @@ public class TokenResourceImpl implements TokenResource{
     private TokenService tokenService;
 
     @Override
-    public Promise<OrderRequest> postOrder(OrderRequest request) {
+    public Promise<TokenRequest> postOrder(TokenRequest request) {
         CommonUtil.preValidation(request);
         return tokenService.createOrderRequest(request).
-                then(new Promise.Func<OrderRequest, Promise<OrderRequest>>() {
+                then(new Promise.Func<TokenRequest, Promise<TokenRequest>>() {
             @Override
-            public Promise<OrderRequest> apply(OrderRequest request) {
+            public Promise<TokenRequest> apply(TokenRequest request) {
                 CommonUtil.postFilter(request);
                 return Promise.pure(request);
             }
@@ -41,19 +39,13 @@ public class TokenResourceImpl implements TokenResource{
     }
 
     @Override
-    public Promise<OrderRequest> getOrderById(TokenOrderId tokenOrderId) {
+    public Promise<TokenRequest> getOrderById(TokenOrderId tokenOrderId) {
         return tokenService.getOrderRequest(tokenOrderId.getValue());
     }
 
     @Override
-    public Promise<ResultList<OrderRequest>> searchOrder(@BeanParam TokenOrderSearchParam searchParam,
-                                                       @BeanParam PageMetaData pageMetadata) {
-        return null;
-    }
-
-    @Override
-    public Promise<TokenItem> consumeToken(String tokenString, TokenConsumption consumption) {
-        return tokenService.consumeToken(tokenString, consumption);
+    public Promise<TokenConsumption> consumeToken(TokenConsumption consumption) {
+        return tokenService.consumeToken(consumption.getTokenString(), consumption);
     }
 
     @Override
