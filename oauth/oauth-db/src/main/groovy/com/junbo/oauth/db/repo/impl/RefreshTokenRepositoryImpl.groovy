@@ -44,7 +44,7 @@ class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
             refreshToken.tokenValue = tokenGenerator.generateRefreshToken() +
                     DELIMITER + tokenGenerator.generateRefreshTokenSeries()
         } else {
-            String[] tokens = refreshToken.tokenValue.split(DELIMITER)
+            String[] tokens = refreshToken.tokenValue.split('\\.')
             Assert.isTrue(tokens.length == 2)
 
             refreshToken.tokenValue = tokens[0] + DELIMITER + tokenGenerator.generateRefreshTokenSeries()

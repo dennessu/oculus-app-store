@@ -28,20 +28,23 @@ echo "[MASTER] waiting for master catching up with slave"
 while ! echo exit | psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "SELECT 'x' from pg_stat_replication where sent_location != replay_location;" -t | grep -v "x"; do sleep 1 && echo "[MASTER] master is catching up..."; done
 echo "[MASTER] master catch up with slave!"
 
+echo "[MASTER] copy unarchived log files"
+rsync -azhv $DEPLOYMENT_ACCOUNT@$SLAVE_HOST:$SLAVE_DATA_PATH/pg_xlog/* $MASTER_ARCHIVE_PATH
+
 ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
     echo "[SLAVE] gracefully shutdown slave database"
     $PGBIN_PATH/pg_ctl stop -m fast -D $SLAVE_DATA_PATH
 ENDSSH
 
-echo "[MASTER] copy unarchived log files"
-rsync -azhv $DEPLOYMENT_ACCOUNT@$SLAVE_HOST:$SLAVE_DATA_PATH/pg_xlog/* $MASTER_ARCHIVE_PATH
-
 echo "[MASTER] promote master database to take traffic"
 touch $PROMOTE_TRIGGER_FILE
 
-echo "[SLAVE] waiting for master promote"
+echo "[MASTER] waiting for master promote"
 while ! echo exit | psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT pg_is_in_recovery();" -t | grep "f"; do sleep 1 && echo "[MASTER] master is promoting..."; done
-echo "[SLAVE] master promoted!"
+echo "[MASTER] master promoted!"
+
+echo "[MASTER] force wait beforing writing"
+sleep 5s
 
 ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
     echo "[SLAVE] configure recovery.conf for slave"
@@ -83,7 +86,7 @@ ssh $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
         config=$SKYTOOL_CONFIG_PATH/\${db}_leaf.ini
 
         echo "[REPLICA] update root node location"
-        psql ${db} -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "update pgq_node.node_location set node_location = 'dbname=${db} host=$MASTER_HOST port=$MASTER_DB_PORT' where queue_name = 'queue_${db}' and node_name = 'root_node_${db}';"
+        psql \${db} -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "update pgq_node.node_location set node_location = 'dbname=\${db} host=$MASTER_HOST port=$MASTER_DB_PORT' where queue_name = 'queue_\${db}' and node_name = 'root_node_\${db}';"
 
         echo "[REPLICA] start worker for database [\$db]"
         londiste3 -d \$config worker > /dev/null 2>&1 &

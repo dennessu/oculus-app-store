@@ -272,6 +272,29 @@ public class OrderTestDataProvider {
         return totalAmount;
     }
 
+    public BigDecimal refundPartialItem(String orderId) throws Exception {
+        orderClient.getOrderByOrderId(orderId);
+        BigDecimal totalAmount = new BigDecimal(0);
+        Order order = Master.getInstance().getOrder(orderId);
+
+        List<OrderItem> orderItems = order.getOrderItems();
+        if (orderItems.size() < 2) {
+            throw new TestException("Refund item quantity more than actual quantity!");
+        }
+        orderItems.remove(0);
+        for (int i = 0; i < orderItems.size(); i++) {
+            OrderItem orderItem = orderItems.get(i);
+
+            BigDecimal orderItemTotalAmount = orderItem.getTotalAmount();
+            totalAmount = totalAmount.add(orderItemTotalAmount);
+        }
+
+        order.setOrderItems(orderItems);
+        orderClient.updateOrder(order);
+        return totalAmount;
+
+    }
+
     public String getBalancesByOrderId(String orderId) throws Exception {
         return billingProvider.getBalancesByOrderId(orderId);
     }

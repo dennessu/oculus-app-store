@@ -24,6 +24,9 @@ ssh $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
     forceKillPid $SKYTOOL_PID_PATH
 ENDSSH
 
+echo "[SLAVE] copy unarchived log files"
+rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_DATA_PATH/pg_xlog/* $SLAVE_ARCHIVE_PATH
+
 echo "[SLAVE] waiting for slave catching up with master"
 while ! echo exit | psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT 'x' from pg_stat_replication where sent_location != replay_location;" -t | grep -v "x"; do sleep 1 && echo "[SLAVE] slave is catching up..."; done
 echo "[SLAVE] slave catch up with master!"
@@ -33,15 +36,15 @@ ssh $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
     $PGBIN_PATH/pg_ctl stop -m fast -D $MASTER_DATA_PATH
 ENDSSH
 
-echo "[SLAVE] copy unarchived log files"
-rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_DATA_PATH/pg_xlog/* $SLAVE_ARCHIVE_PATH
-
 echo "[SLAVE] promote slave database to take traffic"
 touch $PROMOTE_TRIGGER_FILE
 
 echo "[SLAVE] waiting for slave promote"
 while ! echo exit | psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "SELECT pg_is_in_recovery();" -t | grep "f"; do sleep 1 && echo "[SLAVE] slave is promoting..."; done
 echo "[SLAVE] slave promoted!"
+
+echo "[SLAVE] force wait beforing writing"
+sleep 5s
 
 ssh $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
     echo "[MASTER] configure recovery.conf for master"
@@ -83,7 +86,7 @@ ssh $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
         config=$SKYTOOL_CONFIG_PATH/\${db}_leaf.ini
 
         echo "[REPLICA] update root node location"
-        psql ${db} -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "update pgq_node.node_location set node_location = 'dbname=${db} host=$SLAVE_HOST port=$SLAVE_DB_PORT' where queue_name = 'queue_${db}' and node_name = 'root_node_${db}';"
+        psql \${db} -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "update pgq_node.node_location set node_location = 'dbname=\${db} host=$SLAVE_HOST port=$SLAVE_DB_PORT' where queue_name = 'queue_\${db}' and node_name = 'root_node_\${db}';"
 
         echo "[REPLICA] start worker for database [\$db]"
         londiste3 -d \$config worker > /dev/null 2>&1 &
