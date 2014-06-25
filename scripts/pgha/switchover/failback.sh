@@ -24,12 +24,18 @@ ssh $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
     forceKillPid $SKYTOOL_PID_PATH
 ENDSSH
 
-echo "[MASTER] waiting for master catching up with slave"
-while ! echo exit | psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "SELECT 'x' from pg_stat_replication where sent_location != replay_location;" -t | grep -v "x"; do sleep 1 && echo "[MASTER] master is catching up..."; done
-echo "[MASTER] master catch up with slave!"
-
 echo "[MASTER] copy unarchived log files"
 rsync -azhv $DEPLOYMENT_ACCOUNT@$SLAVE_HOST:$SLAVE_DATA_PATH/pg_xlog/* $MASTER_ARCHIVE_PATH
+
+echo "[MASTER] waiting for master catching up with slave"
+xlog_location=`psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "SELECT pg_current_xlog_location();" -t | tr -d ' '`
+echo "[MASTER] current xlog location is [$xlog_location]"
+
+while [ `psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT pg_xlog_location_diff(pg_last_xlog_replay_location(), '$xlog_location');" -t | tr -d ' '` -lt 0 ]
+do
+    sleep 1 && echo "[MASTER] slave is catching up..."; 
+done
+echo "[MASTER] master catch up with slave!"
 
 ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
     echo "[SLAVE] gracefully shutdown slave database"
