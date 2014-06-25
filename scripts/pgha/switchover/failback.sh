@@ -31,6 +31,11 @@ echo "[MASTER] master catch up with slave!"
 echo "[MASTER] copy unarchived log files"
 rsync -azhv $DEPLOYMENT_ACCOUNT@$SLAVE_HOST:$SLAVE_DATA_PATH/pg_xlog/* $MASTER_ARCHIVE_PATH
 
+ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
+    echo "[SLAVE] gracefully shutdown slave database"
+    $PGBIN_PATH/pg_ctl stop -m fast -D $SLAVE_DATA_PATH
+ENDSSH
+
 echo "[MASTER] promote master database to take traffic"
 touch $PROMOTE_TRIGGER_FILE
 
@@ -42,9 +47,6 @@ echo "[MASTER] force wait beforing writing"
 sleep 5s
 
 ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
-    echo "[SLAVE] gracefully shutdown slave database"
-    $PGBIN_PATH/pg_ctl stop -m fast -D $SLAVE_DATA_PATH
-
     echo "[SLAVE] configure recovery.conf for slave"
     cat > $SLAVE_DATA_PATH/recovery.conf <<EOF
 recovery_target_timeline = 'latest'

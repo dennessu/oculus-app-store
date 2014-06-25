@@ -31,6 +31,11 @@ echo "[SLAVE] waiting for slave catching up with master"
 while ! echo exit | psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT 'x' from pg_stat_replication where sent_location != replay_location;" -t | grep -v "x"; do sleep 1 && echo "[SLAVE] slave is catching up..."; done
 echo "[SLAVE] slave catch up with master!"
 
+ssh $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
+    echo "[MASTER] gracefully shutdown master database"
+    $PGBIN_PATH/pg_ctl stop -m fast -D $MASTER_DATA_PATH
+ENDSSH
+
 echo "[SLAVE] promote slave database to take traffic"
 touch $PROMOTE_TRIGGER_FILE
 
@@ -42,9 +47,6 @@ echo "[SLAVE] force wait beforing writing"
 sleep 5s
 
 ssh $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
-    echo "[MASTER] gracefully shutdown master database"
-    $PGBIN_PATH/pg_ctl stop -m fast -D $MASTER_DATA_PATH
-
     echo "[MASTER] configure recovery.conf for master"
     cat > $MASTER_DATA_PATH/recovery.conf <<EOF
 recovery_target_timeline = 'latest'
