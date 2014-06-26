@@ -50,6 +50,10 @@
         <property name="templateResource" ref="defaultEmailTemplateResource"/>
     </bean>
 
+    <bean id="masterKeyDataHandler" class="com.junbo.data.handler.MasterKeyDataHandler" parent="baseDataHandler">
+        <property name="masterKeyResource" ref="defaultMasterKeyResource" />
+    </bean>
+
     <bean id="dataLoader" class="com.junbo.data.loader.DataLoader">
         <property name="handlers">
             <map>
@@ -61,6 +65,7 @@
                 <entry key="locale" value-ref="localeDataHandler"/>
                 <entry key="pitype" value-ref="piTypeDataHandler"/>
                 <entry key="email-template" value-ref="emailTemplateDataHandler"/>
+                <entry key="masterkey" value-ref="masterKeyDataHandler" />
             </map>
         </property>
         <property name="dataList">
@@ -73,6 +78,7 @@
                 <value>country</value>
                 <value>pitype</value>
                 <value>email-template</value>
+                <value>masterkey</value>
             </list>
         </property>
     </bean>

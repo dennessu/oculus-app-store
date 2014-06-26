@@ -1,3 +1,5 @@
+import com.sun.org.apache.regexp.internal.recompile
+
 apply plugin: 'groovy'
 apply plugin: 'application'
 
@@ -14,4 +16,5 @@ dependencies {
     compile junboProject(':oauth-api')
     compile junboProject(':email-rest')
     compile junboProject(':identity-rest')
+    compile junboProject(':crypto-rest')
 }
