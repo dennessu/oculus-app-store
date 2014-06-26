@@ -5,16 +5,16 @@ source ${DIR}/../util/common.sh
 #check running under specified account
 checkAccount $DEPLOYMENT_ACCOUNT
 
-echo "kill postgres instance with port [$REPLICA_DB_PORT]..."
+echo "[PURGE][REPLICA] kill postgres instance with port [$REPLICA_DB_PORT]..."
 forceKill $REPLICA_DB_PORT
 
-echo "kill skytools instance"
+echo "[PURGE][REPLICA] kill skytools instance"
 forceKillPid $SKYTOOL_PID_PATH
 
-echo 'remove database data'
+echo "[PURGE][REPLICA] remove database data"
 rm -rf $REPLICA_DATA_PATH
 
-echo "remove skytools data"
+echo "[PURGE][REPLICA] remove skytools data"
 rm -rf $SKYTOOL_PATH
 
-echo 'purge replica finished!'
+echo "[PURGE][REPLICA] purge replica finished!"
