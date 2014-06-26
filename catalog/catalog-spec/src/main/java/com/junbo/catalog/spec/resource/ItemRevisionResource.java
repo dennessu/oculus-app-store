@@ -7,6 +7,7 @@
 package com.junbo.catalog.spec.resource;
 
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.catalog.spec.model.item.ItemRevisionGetOptions;
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
 import com.junbo.common.filter.annotations.CacheMaxAge;
 import com.junbo.common.model.Results;
@@ -39,7 +40,7 @@ public interface ItemRevisionResource {
     @ApiOperation("Get an item revision")
     @GET
     @Path("/{revisionId}")
-    Promise<ItemRevision> getItemRevision(@PathParam("revisionId") String revisionId);
+    Promise<ItemRevision> getItemRevision(@PathParam("revisionId") String revisionId, @BeanParam ItemRevisionGetOptions options);
 
     @ApiOperation("Create an item revision")
     @POST

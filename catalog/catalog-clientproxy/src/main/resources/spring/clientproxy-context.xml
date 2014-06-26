@@ -2,4 +2,11 @@
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="catalogLocaleClient" class="com.junbo.identity.spec.v1.resource.proxy.LocaleResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
+
+    <bean id="catalogLocaleFacade" class="com.junbo.catalog.clientproxy.impl.LocaleFacadeImpl">
+        <property name="localeResource" ref="catalogLocaleClient" />
+    </bean>
 </beans>
