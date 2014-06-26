@@ -10,6 +10,7 @@ import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.spec.v1.model.Address
+import com.junbo.identity.spec.v1.model.Email
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.option.model.CurrencyGetOptions
@@ -98,6 +99,27 @@ class IdentityFacadeImpl implements IdentityFacade {
                 throw AppErrors.INSTANCE.currencyNotValid(currency).exception()
             }
             return Promise.pure(cur)
+        }
+    }
+
+    @Override
+    Promise<String> getEmail(UserPersonalInfoId emailId) {
+        if (emailId == null) {
+            return Promise.pure(null)
+        }
+
+        return userPersonalInfoResource.get(emailId, new UserPersonalInfoGetOptions())
+                .then { UserPersonalInfo info ->
+            if (info == null || !info.type.equalsIgnoreCase('email')) {
+                return Promise.pure(null)
+            }
+
+            try {
+                Email email = ObjectMapperProvider.instance().treeToValue(info.value, Email)
+                return Promise.pure(email.info)
+            } catch (Exception ex) {
+                return Promise.pure(null)
+            }
         }
     }
 }
