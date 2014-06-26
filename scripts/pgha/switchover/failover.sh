@@ -28,7 +28,13 @@ echo "[SLAVE] copy unarchived log files"
 rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_DATA_PATH/pg_xlog/* $SLAVE_ARCHIVE_PATH
 
 echo "[SLAVE] waiting for slave catching up with master"
-while ! echo exit | psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT 'x' from pg_stat_replication where sent_location != replay_location;" -t | grep -v "x"; do sleep 1 && echo "[SLAVE] slave is catching up..."; done
+xlog_location=`psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT pg_current_xlog_location();" -t | tr -d ' '`
+echo "[SLAVE] current xlog location is [$xlog_location]"
+
+while [ `psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "SELECT pg_xlog_location_diff(pg_last_xlog_replay_location(), '$xlog_location');" -t | tr -d ' '` -lt 0 ]
+do
+    sleep 1 && echo "[SLAVE] slave is catching up..."; 
+done
 echo "[SLAVE] slave catch up with master!"
 
 ssh $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH

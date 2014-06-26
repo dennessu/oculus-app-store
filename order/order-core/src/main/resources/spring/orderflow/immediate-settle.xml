@@ -9,7 +9,7 @@
         <wf:action-state id="validation">
             <wf:action ref="validateUserAction"/>
             <wf:action ref="validatePaymentInstrumentsAction"/>
-            <wf:transition on="*" to="charge"/>
+            <wf:transition on="*" to="checkChargeEvent"/>
         </wf:action-state>
 
         <wf:action-state id="checkChargeEvent">
