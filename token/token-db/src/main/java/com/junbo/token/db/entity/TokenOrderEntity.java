@@ -58,6 +58,11 @@ public class TokenOrderEntity extends GenericEntity {
         this.id = id;
     }
 
+    @Override
+    public Long getShardMasterId() {
+        return null;
+    }
+
     public String getDescription() {
         return description;
     }

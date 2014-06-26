@@ -15,4 +15,9 @@ public class TokenItemDao extends CommonDataDAOImpl<TokenItemEntity, Long> {
     public TokenItemDao() {
         super(TokenItemEntity.class);
     }
+
+    public TokenItemEntity getByHashValue(final Long hashValue) {
+        //TODO: currently hashValue is the itemId PK
+        return get(hashValue);
+    }
 }

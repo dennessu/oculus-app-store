@@ -118,7 +118,7 @@ public class BillingTesting extends BaseTestClass {
 
         orderId = testDataProvider.updateOrderTentative(orderId, false);
 
-        String balanceId = testDataProvider.getBalancesByOrderId(orderId);
+        String balanceId = testDataProvider.getBalancesByOrderId(orderId).get(0);
 
         validationHelper.validateBalance(randomUid, balanceId, orderId, false);
     }

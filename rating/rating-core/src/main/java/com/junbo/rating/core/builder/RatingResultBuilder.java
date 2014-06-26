@@ -54,7 +54,8 @@ public class RatingResultBuilder {
 
         //build order level results
         RatingSummary ratingSummary = new RatingSummary();
-        ratingSummary.setDiscountAmount(Utils.rounding(context.getOrderResult().getDiscountAmount(),                context.getCurrency().getDigits()));
+        ratingSummary.setDiscountAmount(Utils.rounding(context.getOrderResult().getDiscountAmount(),
+                context.getCurrency().getDigits()));
         ratingSummary.setPromotion(context.getOrderResult().getAppliedPromotion());
 
         BigDecimal finalTotalAmount = context.getOrderResult().getOriginalAmount().subtract(
@@ -86,7 +87,7 @@ public class RatingResultBuilder {
             item.setPreOrderPrice(entry.getPreOrderPrice());
             item.setOriginalUnitPrice(entry.getOriginalPrice());
             item.setOriginalTotalPrice(item.getOriginalUnitPrice());
-            item.setTotalDiscountAmount(entry.getDiscountAmount());
+            item.setTotalDiscountAmount(Utils.rounding(entry.getDiscountAmount(), context.getCurrency().getDigits()));
             item.setFinalTotalAmount(item.getOriginalTotalPrice().subtract(item.getTotalDiscountAmount()));
             item.setPromotions(entry.getAppliedPromotion());
             result.getLineItems().add(item);

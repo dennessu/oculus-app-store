@@ -7,8 +7,13 @@
 package com.junbo.token.db.dao;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
+import com.junbo.sharding.IdGenerator;
+import com.junbo.sharding.ShardAlgorithm;
+import com.junbo.sharding.hibernate.ShardScope;
+import com.junbo.token.db.entity.GenericEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,18 +25,30 @@ import org.springframework.beans.factory.annotation.Qualifier;
  * @param <ID> the id for the entity
  */
 @SuppressWarnings("unchecked")
-public class GenericDAOImpl<T, ID extends Serializable> {
+public class GenericDAOImpl<T extends GenericEntity, ID extends Serializable> {
+    @Autowired
+    @Qualifier("userShardAlgorithm")
+    private ShardAlgorithm shardAlgorithm;
+    @Autowired
+    @Qualifier("idGenerator")
+    protected IdGenerator idGenerator;
     @Autowired
     @Qualifier("tokenSessionFactory")
-    private SessionFactory sessionFactory;
+    protected SessionFactory sessionFactory;
     private Class<T> persistentClass;
 
     public GenericDAOImpl(Class<T> persistentClass) {
         this.persistentClass = persistentClass;
     }
 
+    //TODO: move all the configuration data to config DB and remove the generic DAO here
     protected Session currentSession() {
-        return sessionFactory.getCurrentSession();
+        ShardScope shardScope = new ShardScope(0);
+        try {
+            return sessionFactory.getCurrentSession();
+        } finally {
+            shardScope.close();
+        }
     }
 
     public T get(ID id) {
@@ -39,12 +56,23 @@ public class GenericDAOImpl<T, ID extends Serializable> {
     }
 
     public ID save(T entity) {
+        if(entity.getId() == null){
+            entity.setId(idGenerator.nextId());
+        }
+        entity.setCreatedTime(new Date());
+        if (entity.getCreatedBy() == null) {
+            entity.setCreatedBy("0");
+        }
         return  (ID) currentSession().save(entity);
     }
 
     public T update(T entity) {
-        currentSession().update(entity);
-        return entity;
+        entity.setUpdatedTime(new Date());
+        if (entity.getUpdatedBy() == null) {
+            entity.setUpdatedBy("0");
+        }
+        T newt = (T) currentSession().merge(entity);
+        return newt;
     }
 
     public T saveOrUpdate(T entity) {

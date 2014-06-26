@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * order request from developer.
  */
-public class OrderRequest {
+public class TokenRequest {
     @JsonProperty("self")
     @TokenOrderId
     private Long id;

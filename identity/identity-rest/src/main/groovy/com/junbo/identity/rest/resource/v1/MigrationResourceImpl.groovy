@@ -313,7 +313,7 @@ class MigrationResourceImpl implements MigrationResource {
     //              b.  If the username is changed, check this username isn't used, then update user.
     Promise<Void> checkUserValid(OculusInput oculusInput) {
         if (StringUtils.isEmpty(oculusInput.status)) {
-            throw new IllegalArgumentException('user Status error')
+            throw new IllegalArgumentException('user Status error with currentId: ' + oculusInput.currentId)
         }
         List<String> allowedValues = MigrateUserStatus.values().collect { MigrateUserStatus userStatus ->
             userStatus.toString()
@@ -350,11 +350,11 @@ class MigrationResourceImpl implements MigrationResource {
 
     void checkCompanyType(OculusInput oculusInput) {
         if (oculusInput.company == null) {
-            throw new IllegalArgumentException('company is missing')
+            throw new IllegalArgumentException('company is missing with currentId: ' + oculusInput.currentId)
         }
 
         if (oculusInput.company.type == null) {
-            throw new IllegalArgumentException('company.type is missing')
+            throw new IllegalArgumentException('company.type is missing with currentId: ' + oculusInput.currentId)
         }
 
         List<String> allowedValues = MigrateCompanyType.values().collect { MigrateCompanyType migrateCompanyType ->
@@ -367,11 +367,11 @@ class MigrationResourceImpl implements MigrationResource {
 
     Promise<Void> checkPasswordValid(OculusInput oculusInput) {
         if (StringUtils.isEmpty(oculusInput.password)) {
-            throw new IllegalArgumentException('password is null or empty')
+            throw new IllegalArgumentException('password is null or empty with currentId: ' + oculusInput.currentId)
         }
         String[] passwords = oculusInput.password.split(":")
         if (passwords.length != 4 && passwords[0] != "1") {
-            throw new IllegalArgumentException('password only accept version 1')
+            throw new IllegalArgumentException('password only accept version 1 with currentId: ' + oculusInput.currentId)
         }
 
         return Promise.pure(null)
@@ -758,11 +758,12 @@ class MigrationResourceImpl implements MigrationResource {
     // check whether the address is changed or not
     // if the address is changed, just create new and return;
     // if the address isn't changed, just return
+    // Due to state isn't valid in oculus side, so we decided to use street2 to put oculus' state
     private Promise<UserPersonalInfoId> getOrgShippingAddressId(OculusInput oculusInput, Organization createdOrg) {
         Address address = new Address(
             street1: oculusInput.company.address,
             city: oculusInput.company.city,
-            subCountry: oculusInput.company.state,
+            street2: oculusInput.company.state,
             countryId: new CountryId(oculusInput.company.country),
             postalCode: oculusInput.company.postalCode
         )

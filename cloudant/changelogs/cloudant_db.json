@@ -546,12 +546,12 @@
     "item": {
       "indexes": {
         "search": {
-          "index": "function(doc) {index('type', doc.type);index('default', doc.type);if (doc.genres) {for (var genreIdx in doc.genres) {index('genreId', doc.genres[genreIdx]);index('default', doc.genres[genreIdx]);}}index('ownerId', doc.ownerId);index('default', doc.ownerId);index('itemId', doc.itemId);index('default', doc.itemId);if (doc.activeRevision) {index('revisionId', doc.activeRevision.revisionId);index('default', doc.activeRevision.revisionId);if (doc.activeRevision.sku) {index('sku', doc.activeRevision.sku);index('default', doc.activeRevision.sku);}if(doc.activeRevision.packageName) {index('packageName', doc.activeRevision.packageName);index('default', doc.activeRevision.packageName);}if (doc.activeRevision.iapHostItemIds) {for (var iapIdx in doc.activeRevision.iapHostItemIds) {index('hostItemId', doc.activeRevision.iapHostItemIds[iapIdx]);index('default', doc.activeRevision.iapHostItemIds[iapIdx]);}}if (doc.activeRevision.gameModes) {for (var modeIdx in doc.activeRevision.gameModes) {index('gameMode', doc.activeRevision.gameModes[modeIdx]);index('default', doc.activeRevision.gameModes[modeIdx]);}}if (doc.activeRevision.platforms) {for (var platformIdx in doc.activeRevision.platforms) {index('platform', doc.activeRevision.platforms[platformIdx]);index('default', doc.activeRevision.platforms[platformIdx]);}}if (doc.activeRevision.locales) {for (var localeIdx in doc.activeRevision.locales) {var locale = doc.activeRevision.locales[localeIdx];if (locale.name) {index('name', locale.name);index('default', locale.name);}if (locale.revisionNotes) {index('revisionNotes', locale.revisionNotes);index('default', locale.revisionNotes);}if (locale.longDescription) {index('longDescription', locale.longDescription);index('default', locale.longDescription);}if (locale.shortDescription) {index('shortDescription', locale.shortDescription);index('default', locale.shortDescription);}}}}}"
+          "index": "function(doc) {index('type', doc.type);index('default', doc.type);if (doc.genres) {for (var genreIdx in doc.genres) {index('genreId', doc.genres[genreIdx]);index('default', doc.genres[genreIdx]);}}index('ownerId', doc.ownerId);index('default', doc.ownerId);index('itemId', doc._id);index('default', doc._id);if (doc.activeRevision) {index('revisionId', doc.activeRevision._id);index('default', doc.activeRevision._id);if (doc.activeRevision.sku) {index('sku', doc.activeRevision.sku);index('default', doc.activeRevision.sku);}if(doc.activeRevision.packageName) {index('packageName', doc.activeRevision.packageName);index('default', doc.activeRevision.packageName);}if (doc.activeRevision.iapHostItemIds) {for (var iapIdx in doc.activeRevision.iapHostItemIds) {index('hostItemId', doc.activeRevision.iapHostItemIds[iapIdx]);index('default', doc.activeRevision.iapHostItemIds[iapIdx]);}}if (doc.activeRevision.gameModes) {for (var modeIdx in doc.activeRevision.gameModes) {index('gameMode', doc.activeRevision.gameModes[modeIdx]);index('default', doc.activeRevision.gameModes[modeIdx]);}}if (doc.activeRevision.platforms) {for (var platformIdx in doc.activeRevision.platforms) {index('platform', doc.activeRevision.platforms[platformIdx]);index('default', doc.activeRevision.platforms[platformIdx]);}}if (doc.activeRevision.locales) {for (var localeIdx in doc.activeRevision.locales) {var locale = doc.activeRevision.locales[localeIdx];if (locale.name) {index('name', locale.name);index('default', locale.name);}if (locale.revisionNotes) {index('revisionNotes', locale.revisionNotes);index('default', locale.revisionNotes);}if (locale.longDescription) {index('longDescription', locale.longDescription);index('default', locale.longDescription);}if (locale.shortDescription) {index('shortDescription', locale.shortDescription);index('default', locale.shortDescription);}}}}}"
         }
       }, 
       "views": {
         "by_itemId": {
-          "map": "function(doc) {emit(doc.itemId, doc._id)}"
+          "map": "function(doc) {emit(doc._id, doc._id)}"
         }
       }
     }, 
@@ -568,7 +568,7 @@
     "item_revision": {
       "indexes": {
         "search": {
-          "index": "function(doc) {index('itemId', doc.itemId);index('revisionId', doc.revisionId);index('status', doc.status);index('timeInMillis', doc.timestamp);if(doc.packageName){index('packageName',doc.packageName);}}"
+          "index": "function(doc) {index('itemId', doc.itemId);index('revisionId', doc._id);index('status', doc.status);index('timeInMillis', doc.timestamp);if(doc.packageName){index('packageName',doc.packageName);}}"
         }
       }, 
       "views": {
@@ -586,12 +586,12 @@
     "offer": {
       "indexes": {
         "search": {
-          "index": "function(doc) {index('offerId', doc.offerId);index('default', doc.offerId);if (doc.published != null && doc.published != undefined) {index('published', doc.published);}if (doc.environment) {index('environment', doc.environment);index('default', doc.environment);}if (doc.categories) {for (var idx in doc.categories) {index('categoryId', doc.categories[idx]);index('default', doc.categories[idx]);}}index('ownerId', doc.ownerId);index('default', doc.ownerId);if (!doc.currentRevisionId) {index('scheduledPublish', true);}if (doc.activeRevision) {index('revisionId', doc.activeRevision.revisionId);index('default', doc.activeRevision.revisionId);if (doc.activeRevision.items) {for (var itemIdx in doc.activeRevision.items) {if (doc.activeRevision.items[itemIdx].itemId) {index('itemId', doc.activeRevision.items[itemIdx].itemId);}}}if (doc.activeRevision.subOffers) {for (var subOfferIdx in doc.activeRevision.subOffers) {if (doc.activeRevision.subOffers[subOfferIdx]) {index('subOfferId', doc.activeRevision.subOffers[subOfferIdx]);}}}if (doc.activeRevision.locales) {for (var localeIdx in doc.activeRevision.locales) {var locale = doc.activeRevision.locales[localeIdx];if (locale.name) {index('name', locale.name);index('default', locale.name);}if (locale.revisionNotes) {index('revisionNotes', locale.revisionNotes);index('default', locale.revisionNotes);}if (locale.longDescription) {index('longDescription', locale.longDescription);index('default', locale.longDescription);}if (locale.shortDescription) {index('shortDescription', locale.shortDescription);index('default', locale.shortDescription);}}}}}"
+          "index": "function(doc) {index('offerId', doc._id);index('default', doc._id);if (doc.published !== null && doc.published !== undefined) {index('published', doc.published);}if (doc.environment) {index('environment', doc.environment);index('default', doc.environment);}if (doc.categories) {for (var idx in doc.categories) {index('categoryId', doc.categories[idx]);index('default', doc.categories[idx]);}}index('ownerId', doc.ownerId);index('default', doc.ownerId);if (!doc.currentRevisionId) {index('scheduledPublish', true);}if (doc.activeRevision) {index('revisionId', doc.activeRevision._id);index('default', doc.activeRevision._id);if (doc.activeRevision.items) {for (var itemIdx in doc.activeRevision.items) {if (doc.activeRevision.items[itemIdx].itemId) {index('itemId', doc.activeRevision.items[itemIdx].itemId);}}}if (doc.activeRevision.subOffers) {for (var subOfferIdx in doc.activeRevision.subOffers) {if (doc.activeRevision.subOffers[subOfferIdx]) {index('subOfferId', doc.activeRevision.subOffers[subOfferIdx]);}}}if (doc.activeRevision.locales) {for (var localeIdx in doc.activeRevision.locales) {var locale = doc.activeRevision.locales[localeIdx];if (locale.name) {index('name', locale.name);index('default', locale.name);}if (locale.revisionNotes) {index('revisionNotes', locale.revisionNotes);index('default', locale.revisionNotes);}if (locale.longDescription) {index('longDescription', locale.longDescription);index('default', locale.longDescription);}if (locale.shortDescription) {index('shortDescription', locale.shortDescription);index('default', locale.shortDescription);}}}}}"
         }
       }, 
       "views": {
         "by_offerId": {
-          "map": "function(doc) {emit(doc.offerId, doc._id)}"
+          "map": "function(doc) {emit(doc._id, doc._id)}"
         }
       }
     }, 
@@ -608,7 +608,7 @@
     "offer_revision": {
       "indexes": {
         "search": {
-          "index": "function(doc) {index('offerId', doc.offerId);index('revisionId', doc.revisionId);index('status', doc.status);index('timeInMillis', doc.timestamp);}"
+          "index": "function(doc) {index('offerId', doc.offerId);index('revisionId', doc._id);index('status', doc.status);index('timeInMillis', doc.timestamp);}"
         }
       }, 
       "views": {

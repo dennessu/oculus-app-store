@@ -21,6 +21,9 @@ import javax.persistence.Table;
 public class TokenItemEntity extends GenericEntity {
 
     @Id
+    @Column(name = "item_id")
+    private Long id;
+
     @Column(name = "hash_value")
     private Long hashValue;
 
@@ -35,12 +38,17 @@ public class TokenItemEntity extends GenericEntity {
 
     @Override
     public Long getId() {
-        return hashValue;
+        return id;
     }
 
     @Override
     public void setId(Long id) {
-        this.hashValue = id;
+        this.id = id;
+    }
+
+    @Override
+    public Long getShardMasterId() {
+        return hashValue;
     }
 
     public Long getHashValue() {

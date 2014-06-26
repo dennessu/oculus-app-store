@@ -396,10 +396,11 @@ class OrderInternalServiceImpl implements OrderInternalService {
         }
 
         if (!latest?.tentative) {
-            throw AppErrors.INSTANCE.orderNotTentative().exception()
+            LOGGER.info("name=Already_Tentative")
+        } else {
+            order.tentative = false
+            orderRepository.updateOrder(order, true, false, null)
         }
-        order.tentative = false
-        orderRepository.updateOrder(order, true, false, null)
     }
 
     @Override

@@ -12,6 +12,8 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.List;
+
 /**
  * @author dw
  */
@@ -39,6 +41,20 @@ public class postCountry {
             Identity.CountryDeleteByCountryId(IdentityModel.DefaultCountry);
             Identity.CurrencyDeleteByCurrencyCode(IdentityModel.DefaultCurrency);
             Identity.LocaleDeleteByLocaleId(IdentityModel.DefaultLocale);
+        }
+    }
+
+    @Test(groups = "dailies")
+    public void getCountry() throws Exception {
+        List<Country> countries = Identity.CountriesGet();
+        List<Country> tier1Countries = CountryDomainData.Tier1CountryData();
+        for (Country c : tier1Countries) {
+            for (Country cc : countries) {
+                if (c.getCountryCode() == cc.getCountryCode()) {
+                    Validator.Validate("validate currency", c.getDefaultCurrency(), cc.getDefaultCurrency());
+                    Validator.Validate("validate locale", c.getDefaultLocale(), cc.getDefaultLocale());
+                }
+            }
         }
     }
 }

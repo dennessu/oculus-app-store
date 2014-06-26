@@ -15,6 +15,8 @@ import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.*;
 import com.junbo.common.model.Results;
 import com.junbo.order.spec.model.*;
+import com.junbo.order.spec.model.PaymentInfo;
+import com.junbo.test.billing.enums.TransactionType;
 import com.junbo.test.billing.utility.BillingTestDataProvider;
 import com.junbo.test.catalog.OfferRevisionService;
 import com.junbo.test.catalog.OfferService;
@@ -32,15 +34,16 @@ import com.junbo.test.order.apihelper.OrderEventService;
 import com.junbo.test.order.apihelper.OrderService;
 import com.junbo.test.order.apihelper.impl.OrderEventServiceImpl;
 import com.junbo.test.order.apihelper.impl.OrderServiceImpl;
+import com.junbo.test.order.model.*;
+import com.junbo.test.order.model.BillingHistory;
 import com.junbo.test.order.model.enums.EventStatus;
 import com.junbo.test.order.model.enums.OrderActionType;
+import com.junbo.test.order.model.enums.OrderStatus;
 import com.junbo.test.payment.utility.PaymentTestDataProvider;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.math.RoundingMode;
+import java.util.*;
 
 /**
  * Created by weiyu_000 on 5/19/14.
@@ -100,19 +103,13 @@ public class OrderTestDataProvider {
     }
 
     public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
-                            boolean hasPhysicalGood, ArrayList<String> offers)
+                            boolean hasPhysicalGood, Map<String, Integer> offers)
             throws Exception {
-        return postOrder(uid, country, currency, paymentInstrumentId, hasPhysicalGood, 1, offers, 200);
+        return postOrder(uid, country, currency, paymentInstrumentId, hasPhysicalGood, offers, 200);
     }
 
     public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
-                            boolean hasPhysicalGood, int quantity, ArrayList<String> offers)
-            throws Exception {
-        return postOrder(uid, country, currency, paymentInstrumentId, hasPhysicalGood, quantity, offers, 200);
-    }
-
-    public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
-                            boolean hasPhysicalGood, int quantity, ArrayList<String> offers, int expectedResponseCode)
+                            boolean hasPhysicalGood, Map<String, Integer> offers, int expectedResponseCode)
             throws Exception {
         Order order = new Order();
         order.setUser(new UserId(IdConverter.hexStringToId(UserId.class, uid)));
@@ -132,27 +129,20 @@ public class OrderTestDataProvider {
         }
 
         List<OrderItem> orderItemList = new ArrayList<>();
-        for (int i = 0; i < offers.size(); i++) {
-            OfferId offerId = new OfferId(offerClient.getOfferIdByName(offers.get(i)));
-
+        Set<String> key = offers.keySet();
+        for (Iterator it = key.iterator(); it.hasNext(); ) {
             OrderItem orderItem = new OrderItem();
-            orderItem.setQuantity(quantity);
-            //orderItem.setQuantity(Integer.valueOf(RandomFactory.getRandomLong(1L, 1L).toString()));
+            String offerName = (String) it.next();
+            OfferId offerId = new OfferId(offerClient.getOfferIdByName(offerName));
+            orderItem.setQuantity(offers.get(offerName));
             orderItem.setOffer(offerId);
             orderItemList.add(orderItem);
+
         }
         order.setOrderItems(orderItemList);
         order.setTentative(true);
         order.setLocale(new LocaleId("en_US"));
         return orderClient.postOrder(order, expectedResponseCode);
-    }
-
-
-    public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
-                            boolean hasPhysicalGood, ArrayList<String> offers, int expectedResponseCode)
-            throws Exception {
-
-        return postOrder(uid, country, currency, paymentInstrumentId, hasPhysicalGood, 1, offers, expectedResponseCode);
     }
 
     public String updateOrderTentative(String orderId, boolean isTentative, int expectedResponseCode) throws Exception {
@@ -206,6 +196,132 @@ public class OrderTestDataProvider {
         orderEvent.setAction(orderActionType.toString());
         orderEvent.setStatus(eventStatus.toString());
         orderEventClient.postOrderEvent(orderEvent);
+    }
+
+    public OrderInfo getRefundedOrderInfo(OrderInfo orderInfo, Map<String, Integer> refundedOffers,
+                                          Map<String, BigDecimal> partialRefundAmounts) throws Exception {
+
+        BillingHistory billingHistory = new BillingHistory();
+
+        BigDecimal orderTotalRefundedAmount = new BigDecimal(0);
+        BigDecimal orderTotalRefundedTax = new BigDecimal(0);
+
+        for (int i = 0; i < orderInfo.getOrderItems().size(); i++) {
+            String offerId = orderInfo.getOrderItems().get(i).getOfferId();
+
+            String currentOfferRevisionId = IdConverter.idToUrlString(OfferRevisionId.class,
+                    Master.getInstance().getOffer(offerId).getCurrentRevisionId());
+
+            String offerName = Master.getInstance().getOfferRevision(currentOfferRevisionId)
+                    .getLocales().get(orderInfo.getLocale()).getName();
+            BigDecimal unitPrice = Master.getInstance().getOfferRevision(currentOfferRevisionId).getPrice()
+                    .getPrices().get(orderInfo.getCountry().toString()).get(orderInfo.getCurrency().toString());
+
+            int refundQuantity = 0;
+            if (refundedOffers.containsKey(offerName)) {
+                refundQuantity = refundedOffers.get(offerName);
+            }
+            OrderItemInfo orderItem = orderInfo.getOrderItems().get(i);
+            RefundOrderItemInfo refundOrderItem = new RefundOrderItemInfo();
+            BigDecimal refundAmount = unitPrice.multiply(
+                    new BigDecimal(refundQuantity)).setScale(1, RoundingMode.HALF_UP);
+
+            if (partialRefundAmounts.containsKey(offerName)) {
+                refundAmount = refundAmount.add(partialRefundAmounts.get(offerName));
+            }
+
+            BigDecimal refundTax = refundAmount.multiply(
+                    orderInfo.getTaxRate()).setScale(1, RoundingMode.HALF_UP);
+
+            orderTotalRefundedAmount = orderTotalRefundedAmount.add(refundAmount);
+            orderTotalRefundedTax = orderTotalRefundedTax.add(refundTax);
+
+            orderInfo.getOrderItems().get(i).setOfferId(offerId);
+            orderInfo.getOrderItems().get(i).setTotalAmount(orderItem.getTotalAmount().subtract(refundAmount));
+            orderInfo.getOrderItems().get(i).setTotalTax(orderItem.getTotalTax().subtract(refundTax));
+            orderInfo.getOrderItems().get(i).setQuantity(orderItem.getQuantity() - refundQuantity);
+
+            refundOrderItem.setOfferId(offerId);
+            refundOrderItem.setQuantity(refundQuantity);
+            refundOrderItem.setRefundAmount(refundAmount.multiply(
+                    new BigDecimal(-1)).setScale(1, RoundingMode.HALF_UP));
+            refundOrderItem.setRefundTax(refundTax.multiply(
+                    new BigDecimal(-1)).setScale(1, RoundingMode.HALF_UP));
+
+            billingHistory.getRefundOrderItemInfos().add(refundOrderItem);
+        }
+
+        orderInfo.setTotalAmount(orderInfo.getTotalAmount().subtract(orderTotalRefundedAmount));
+        orderInfo.setTotalTax(orderInfo.getTotalTax().subtract(orderTotalRefundedTax));
+
+        BigDecimal totalRefundAmount = orderTotalRefundedAmount.add(orderTotalRefundedTax);
+        billingHistory.setTransactionType(TransactionType.REFUND);
+        billingHistory.setTotalAmount(totalRefundAmount.multiply(
+                new BigDecimal(-1)).setScale(1, RoundingMode.HALF_UP));
+
+        orderInfo.getBillingHistories().add(billingHistory);
+
+        return orderInfo;
+    }
+
+    public OrderInfo getExpectedOrderInfo(String userId, Country country, Currency currency,
+                                          String locale, boolean isTentative, OrderStatus orderStatus, String paymentId,
+                                          Map<String, Integer> offers) throws Exception {
+        OrderInfo orderInfo = new OrderInfo();
+        orderInfo.setUserId(userId);
+        orderInfo.setOrderStatus(orderStatus);
+        orderInfo.setTentative(isTentative);
+        orderInfo.setCountry(country);
+        orderInfo.setCurrency(currency);
+        orderInfo.setLocale(locale);
+
+        orderInfo.setTaxRate(new BigDecimal(0.08));
+
+        BigDecimal orderTotalAmount = new BigDecimal(0);
+        BigDecimal orderTotalTax = new BigDecimal(0);
+
+        Set<String> key = offers.keySet();
+        for (Iterator it = key.iterator(); it.hasNext(); ) {
+            OrderItemInfo orderItem = new OrderItemInfo();
+
+            String offerName = (String) it.next();
+            int quantity = offers.get(offerName);
+            String offerId = offerClient.getOfferIdByName(offerName);
+            String currentOfferRevisionId = IdConverter.idToUrlString(OfferRevisionId.class,
+                    Master.getInstance().getOffer(offerId).getCurrentRevisionId());
+            BigDecimal unitPrice = Master.getInstance().getOfferRevision(currentOfferRevisionId).getPrice()
+                    .getPrices().get(country.toString()).get(currency.toString());
+            orderItem.setOfferId(offerId);
+            orderItem.setUnitPrice(unitPrice);
+            orderItem.setQuantity(quantity);
+            BigDecimal totalAmount = unitPrice.multiply(new BigDecimal(quantity)).setScale(1, RoundingMode.HALF_UP);
+            orderItem.setTotalAmount(totalAmount);
+            BigDecimal totalTax = totalAmount.multiply(orderInfo.getTaxRate()).setScale(1, RoundingMode.HALF_UP);
+            orderItem.setTotalTax(totalTax);
+            orderTotalAmount = orderTotalAmount.add(totalAmount);
+            orderTotalTax = orderTotalTax.add(totalTax);
+            orderInfo.getOrderItems().add(orderItem);
+        }
+
+        PaymentInstrumentInfo paymentInfo = new PaymentInstrumentInfo();
+        paymentInfo.setPaymentId(paymentId);
+        paymentInfo.setPaymentAmount(orderTotalAmount.add(orderTotalTax));
+
+        orderInfo.getPaymentInfos().add(paymentInfo);
+
+        if (!isTentative) {
+            BillingHistory billingHistory = new BillingHistory();
+            billingHistory.setTotalAmount(orderTotalAmount.add(orderTotalTax));
+            paymentInfo.setPaymentAmount(orderTotalAmount.add(orderTotalTax));
+            billingHistory.getPaymentInfos().add(paymentInfo);
+            billingHistory.setTransactionType(TransactionType.CHARGE);
+            orderInfo.getBillingHistories().add(billingHistory);
+        }
+
+        orderInfo.setTotalAmount(orderTotalAmount);
+        orderInfo.setTotalTax(orderTotalTax);
+
+        return orderInfo;
     }
 
     public BigDecimal refundTotalAmount(String orderId) throws Exception {
@@ -272,7 +388,30 @@ public class OrderTestDataProvider {
         return totalAmount;
     }
 
-    public String getBalancesByOrderId(String orderId) throws Exception {
+    public BigDecimal refundPartialItem(String orderId) throws Exception {
+        orderClient.getOrderByOrderId(orderId);
+        BigDecimal totalAmount = new BigDecimal(0);
+        Order order = Master.getInstance().getOrder(orderId);
+
+        List<OrderItem> orderItems = order.getOrderItems();
+        if (orderItems.size() < 2) {
+            throw new TestException("Refund item quantity more than actual quantity!");
+        }
+        orderItems.remove(0);
+        for (int i = 0; i < orderItems.size(); i++) {
+            OrderItem orderItem = orderItems.get(i);
+
+            BigDecimal orderItemTotalAmount = orderItem.getTotalAmount();
+            totalAmount = totalAmount.add(orderItemTotalAmount);
+        }
+
+        order.setOrderItems(orderItems);
+        orderClient.updateOrder(order);
+        return totalAmount;
+
+    }
+
+    public List<String> getBalancesByOrderId(String orderId) throws Exception {
         return billingProvider.getBalancesByOrderId(orderId);
     }
 

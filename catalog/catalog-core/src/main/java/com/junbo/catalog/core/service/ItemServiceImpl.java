@@ -151,9 +151,16 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
             revision.setEntitlementDefs(new ArrayList<EntitlementDef>());
         }
         List<EntitlementDef> entitlementDefs = revision.getEntitlementDefs();
-        if (ItemType.DIGITAL.is(itemType)) {
+        if (ItemType.APP.is(itemType) || ItemType.DIGITAL.is(itemType)) {
             addEntitlementIfNotExist(entitlementDefs, EntitlementType.DOWNLOAD, false);
             addEntitlementIfNotExist(entitlementDefs, EntitlementType.RUN, false);
+        } else if (ItemType.DOWNLOADED_ADDITION.is(itemType)) {
+            addEntitlementIfNotExist(entitlementDefs, EntitlementType.DOWNLOAD, false);
+            addEntitlementIfNotExist(entitlementDefs, EntitlementType.ALLOW_IN_APP, false);
+        } else if (ItemType.IN_APP_UNLOCK.is(itemType)) {
+            addEntitlementIfNotExist(entitlementDefs, EntitlementType.ALLOW_IN_APP, false);
+        } else if (ItemType.IN_APP_CONSUMABLE.is(itemType)) {
+            addEntitlementIfNotExist(entitlementDefs, EntitlementType.ALLOW_IN_APP, true);
         }
     }
 

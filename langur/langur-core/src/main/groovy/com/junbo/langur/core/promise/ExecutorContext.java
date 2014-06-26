@@ -7,7 +7,6 @@
  */
 package com.junbo.langur.core.promise;
 
-import com.google.common.util.concurrent.MoreExecutors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,35 +18,34 @@ import java.util.concurrent.Executor;
 public final class ExecutorContext {
     private static final Logger logger = LoggerFactory.getLogger(ExecutorContext.class);
     private static volatile LocatableExecutorService defaultExecutorService = null;
-    private static final ThreadLocal<LocatableExecutorService> executorContext = new ThreadLocal<>();
+
+    private static final Executor theExecutor = new Executor() {
+        @Override
+        public void execute(Runnable command) {
+            LocatableExecutorService executorService = defaultExecutorService;
+            if (executorService != null) {
+                execute(command, executorService);
+                return;
+            }
+
+            logger.warn("Executor Service not set in current thread: " + Thread.currentThread().getName());
+            command.run();
+        }
+
+        private void execute(Runnable command, LocatableExecutorService executorService) {
+            if (executorService.isExecutorThread()) {
+                command.run();
+            } else {
+                executorService.execute(command);
+            }
+        }
+    };
 
     public static void setDefaultExecutorService(LocatableExecutorService executorService) {
         defaultExecutorService = executorService;
     }
 
-    public static void setExecutorService(LocatableExecutorService executorService) {
-        executorContext.set(executorService);
-    }
-
     public static Executor getExecutor() {
-        LocatableExecutorService executorService = executorContext.get();
-        if (executorService != null) {
-            if (executorService.isExecutorThread()) {
-                return MoreExecutors.sameThreadExecutor();
-            } else {
-                return MoreExecutors.listeningDecorator(executorService);
-            }
-        }
-        executorService = defaultExecutorService;
-        if (executorService != null) {
-            if (executorService.isExecutorThread()) {
-                return MoreExecutors.sameThreadExecutor();
-            } else {
-                return MoreExecutors.listeningDecorator(executorService);
-            }
-        }
-
-        logger.warn("Executor Service not set in current thread: " + Thread.currentThread().getName());
-        return MoreExecutors.sameThreadExecutor();
+        return theExecutor;
     }
 }

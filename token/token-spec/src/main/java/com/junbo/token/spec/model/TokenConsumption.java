@@ -12,9 +12,10 @@ package com.junbo.token.spec.model;
 public class TokenConsumption {
 
     private Long id;
-    private Long hashValue;
+    private Long itemId;
     private Long userId;
     private Long product;
+    private String tokenString;
 
     public Long getId() {
         return id;
@@ -24,12 +25,12 @@ public class TokenConsumption {
         this.id = id;
     }
 
-    public Long getHashValue() {
-        return hashValue;
+    public Long getItemId() {
+        return itemId;
     }
 
-    public void setHashValue(Long hashValue) {
-        this.hashValue = hashValue;
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
     }
 
     public Long getUserId() {
@@ -46,5 +47,13 @@ public class TokenConsumption {
 
     public void setProduct(Long product) {
         this.product = product;
+    }
+
+    public String getTokenString() {
+        return tokenString;
+    }
+
+    public void setTokenString(String tokenString) {
+        this.tokenString = tokenString;
     }
 }

@@ -11,24 +11,26 @@ import com.junbo.authorization.AuthorizeContext;
 import com.junbo.authorization.AuthorizeService;
 import com.junbo.authorization.RightsScope;
 import com.junbo.catalog.auth.ItemAuthorizeCallbackFactory;
+import com.junbo.catalog.clientproxy.LocaleFacade;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.spec.error.AppErrors;
-import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
+import com.junbo.catalog.spec.model.item.*;
 import com.junbo.catalog.spec.resource.ItemRevisionResource;
 import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Item revision resource implementation.
@@ -43,9 +45,20 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
     @Autowired
     private AuthorizeService authorizeService;
 
+    @Autowired
+    private LocaleFacade localeFacade;
+
     @Override
-    public Promise<Results<ItemRevision>> getItemRevisions(ItemRevisionsGetOptions options) {
+    public Promise<Results<ItemRevision>> getItemRevisions(final ItemRevisionsGetOptions options) {
         List<ItemRevision> revisions = itemService.getRevisions(options);
+        if (!StringUtils.isEmpty(options.getLocale())) {
+            for (ItemRevision revision : revisions) {
+                final ItemRevisionLocaleProperties localeProperties = getLocaleProperties(revision, options.getLocale());
+                revision.setLocales(new HashMap<String, ItemRevisionLocaleProperties>() {{
+                        put(options.getLocale(), localeProperties);
+                }});
+            }
+        }
         Results<ItemRevision> results = new Results<>();
         results.setItems(revisions);
         Link nextLink = new Link();
@@ -74,8 +87,15 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
     }
 
     @Override
-    public Promise<ItemRevision> getItemRevision(String revisionId) {
-        return Promise.pure(itemService.getRevision(revisionId));
+    public Promise<ItemRevision> getItemRevision(String revisionId, final ItemRevisionGetOptions options) {
+        ItemRevision itemRevision = itemService.getRevision(revisionId);
+        if (!StringUtils.isEmpty(options.getLocale())) {
+            final ItemRevisionLocaleProperties localeProperties = getLocaleProperties(itemRevision, options.getLocale());
+            itemRevision.setLocales(new HashMap<String, ItemRevisionLocaleProperties>(){{
+                put(options.getLocale(), localeProperties);
+            }});
+        }
+        return Promise.pure(itemRevision);
     }
 
     @Override
@@ -130,5 +150,59 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
                 return Promise.pure(Response.status(204).build());
             }
         });
+    }
+
+    private ItemRevisionLocaleProperties getLocaleProperties(ItemRevision revision, String locale) {
+        if (revision == null || locale == null) {
+            return new ItemRevisionLocaleProperties();
+        }
+        Map<String, String> localeRelations = localeFacade.getLocaleRelations();
+        ItemRevisionLocaleProperties result = revision.getLocales().get(locale);
+        if (result == null) {
+            result = new ItemRevisionLocaleProperties();
+        }
+        String fallbackLocale = locale;
+        while (!checkItemRevisionLocales(result)) {
+            if (localeRelations.get(fallbackLocale) == null) {
+                break;
+            }
+            fallbackLocale = localeRelations.get(fallbackLocale);
+            ItemRevisionLocaleProperties fallbackLocaleProperties = revision.getLocales().get(fallbackLocale);
+            if (fallbackLocaleProperties != null) {
+                addFallbackProperties(result, fallbackLocaleProperties);
+            }
+        }
+        return result;
+    }
+
+    // TODO: don't use reflection in future
+    private void addFallbackProperties(ItemRevisionLocaleProperties properties,
+                                       ItemRevisionLocaleProperties fallbackProperties) {
+        try {
+            Map<String, Object> fields = BeanUtils.describe(properties);
+            for(String fieldName : fields.keySet()) {
+                if (BeanUtils.getProperty(properties, fieldName) == null) {
+                    BeanUtils.setProperty(properties, fieldName,
+                            BeanUtils.getProperty(fallbackProperties, fieldName));
+                }
+            }
+        } catch (Exception e) {
+            //
+        }
+    }
+
+    // TODO: don't use reflection in future
+    private boolean checkItemRevisionLocales(ItemRevisionLocaleProperties properties) {
+        try {
+            Map<String, Object> fields = BeanUtils.describe(properties);
+            for(String fieldName : fields.keySet()) {
+                if (BeanUtils.getProperty(properties, fieldName) == null) {
+                    return false;
+                }
+            }
+        } catch (Exception e) {
+            //
+        }
+        return true;
     }
 }

@@ -26,6 +26,7 @@ import org.springframework.transaction.TransactionDefinition
 import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionCallback
 import org.springframework.util.CollectionUtils
+import org.springframework.util.StringUtils
 
 import java.util.regex.Pattern
 
@@ -50,7 +51,17 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     private List<Pattern> allowedIpAddressPatterns
     private Integer userAgentMinLength
     private Integer userAgentMaxLength
+    // This is to check good user can't fail to login in some time
     private Integer maxRetryCount
+    private Integer retryInterval
+
+    // This is to check maxSameUserAttemptCount login attempts for the same user within attemptRetryCount time frame
+    private Integer maxSameUserAttemptCount
+    private Integer sameUserAttemptRetryInterval
+
+    // This is to check More than maxSameIPRetryCount login attempts from the same IP address for different user account within sameIPRetryInterval timeframe
+    private Integer maxSameIPRetryCount
+    private Integer sameIPRetryInterval
 
     private NormalizeService normalizeService
 
@@ -141,14 +152,12 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     CredentialHash matched = credentialHashList.find { CredentialHash hash ->
                         return hash.matches(userLoginAttempt.value, userPasswordList.get(0).passwordHash)
                     }
-
-                    if (matched != null) {
-                        userLoginAttempt.setSucceeded(true)
-                    } else {
-                        userLoginAttempt.setSucceeded(false)
+                    userLoginAttempt.setSucceeded(matched != null)
+                    return checkMaximumRetryCount(user, userLoginAttempt).then {
+                        return checkMaximumSameUserAttemptCount(user, userLoginAttempt)
+                    }.then {
+                        return checkMaximumSameIPAttemptCount(userLoginAttempt)
                     }
-
-                    return checkMaximumRetryCount(user, userLoginAttempt)
                 }
             }
             else {
@@ -163,13 +172,12 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                         return hash.matches(userLoginAttempt.value, userPinList.get(0).pinHash)
                     }
 
-                    if (matched != null) {
-                        userLoginAttempt.setSucceeded(true)
-                    } else {
-                        userLoginAttempt.setSucceeded(false)
+                    userLoginAttempt.setSucceeded(matched != null)
+                    return checkMaximumRetryCount(user, userLoginAttempt).then {
+                        return checkMaximumSameUserAttemptCount(user, userLoginAttempt)
+                    }.then {
+                        return checkMaximumSameIPAttemptCount(userLoginAttempt)
                     }
-
-                    return checkMaximumRetryCount(user, userLoginAttempt)
                 }
             }
         }
@@ -230,10 +238,6 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     }
 
     private Promise<Void> checkMaximumRetryCount(User user, UserCredentialVerifyAttempt userLoginAttempt) {
-        if (userLoginAttempt.succeeded) {
-            return Promise.pure(null)
-        }
-
         return userLoginAttemptRepository.searchByUserIdAndCredentialType((UserId)user.id, userLoginAttempt.type,
                 Integer.MAX_VALUE, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
             if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount) {
@@ -247,24 +251,118 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                 }
             })
 
-            int index = 0
-            for ( ; index < maxRetryCount; index++) {
-                if (attemptList.get(index).succeeded) {
-                    break
+            return getActiveCredentialCreatedTime(user, userLoginAttempt).then { Date passwordActiveTime ->
+                UserCredentialVerifyAttempt attempt = attemptList.get(maxRetryCount - 1)
+
+                if (attempt.createdTime.before(passwordActiveTime)) {
+                    return Promise.pure(null)
+                }
+
+                if (attempt.createdTime.before(getTimeFrame(retryInterval))) {
+                    return Promise.pure(null)
+                }
+
+                int index = maxRetryCount - 1;
+                for(; index >=0; index--) {
+                    UserCredentialVerifyAttempt tempAttempt = attemptList.get(index)
+                    if (tempAttempt.succeeded) {
+                        break
+                    }
+                }
+
+                if (index >= 0) {
+                    return Promise.pure(null)
+                }
+
+                userLoginAttempt.succeeded = false
+                return createInNewTran(userLoginAttempt).then {
+                    throw AppErrors.INSTANCE.fieldInvalid('username', 'User reaches maximum allowed retry count').exception()
                 }
             }
+        }
+    }
 
-            // Reach maximum count, lock account
-            if (index == maxRetryCount) {
-                user.status = UserStatus.SUSPEND.toString()
-                return createInNewTran(user).then {
-                    throw AppErrors.INSTANCE.fieldInvalid('userId',
-                            'User reaches maximum allowed retry count').exception()
+    private Promise<Date> getActiveCredentialCreatedTime(User user, UserCredentialVerifyAttempt userLoginAttempt) {
+        if (userLoginAttempt.type == CredentialType.PASSWORD.toString()) {
+            return userPasswordRepository.searchByUserIdAndActiveStatus(user.getId(), true, 1, 0).then { List<UserPassword> userPasswordList ->
+                if (CollectionUtils.isEmpty(userPasswordList)) {
+                    throw AppErrors.INSTANCE.fieldInvalidException('username', 'No Active password exists').exception()
                 }
+
+                return Promise.pure(userPasswordList.get(0).createdTime)
+            }
+        } else {
+            return userPinRepository.searchByUserIdAndActiveStatus(user.getId(), true, 1, 0).then { List<UserPin> userPinList ->
+                if (CollectionUtils.isEmpty(userPinList)) {
+                    throw AppErrors.INSTANCE.fieldInvalidException('username', 'No Active pin exists').exception()
+                }
+
+                return Promise.pure(userPinList.get(0).createdTime)
+            }
+        }
+    }
+
+    private Promise<Void> checkMaximumSameUserAttemptCount(User user, UserCredentialVerifyAttempt userLoginAttempt) {
+        return userLoginAttemptRepository.searchByUserIdAndCredentialType(user.getId(), userLoginAttempt.type,
+                Integer.MAX_VALUE, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
+            if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxSameUserAttemptCount) {
+                return Promise.pure(null)
             }
 
+            attemptList.sort(new Comparator<UserCredentialVerifyAttempt>() {
+                @Override
+                int compare(UserCredentialVerifyAttempt o1, UserCredentialVerifyAttempt o2) {
+                    return o2.createdTime <=> o1.createdTime
+                }
+            })
+
+            if (attemptList.get(maxSameUserAttemptCount - 1).createdTime.before(getTimeFrame(sameUserAttemptRetryInterval))) {
+                return Promise.pure(null)
+            }
+
+            userLoginAttempt.succeeded = false
+            return createInNewTran(userLoginAttempt).then {
+                throw AppErrors.INSTANCE.fieldInvalid('username', 'User reaches maximum login attempt').exception()
+            }
+        }
+    }
+
+    private Promise<Void> checkMaximumSameIPAttemptCount(UserCredentialVerifyAttempt userLoginAttempt) {
+        if (StringUtils.isEmpty(userLoginAttempt.ipAddress)) {
             return Promise.pure(null)
         }
+        return userLoginAttemptRepository.searchByIPAddressAndCredentialType(userLoginAttempt.ipAddress, userLoginAttempt.type,
+                Integer.MAX_VALUE, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
+            if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxSameIPRetryCount) {
+                return Promise.pure(null)
+            }
+
+            attemptList.sort(new Comparator<UserCredentialVerifyAttempt>() {
+                @Override
+                int compare(UserCredentialVerifyAttempt o1, UserCredentialVerifyAttempt o2) {
+                    return o2.createdTime <=> o1.createdTime
+                }
+            })
+
+            if (attemptList.get(maxSameIPRetryCount - 1).createdTime.before(getTimeFrame(sameIPRetryInterval))) {
+                return Promise.pure(null)
+            }
+
+            userLoginAttempt.succeeded = false
+            return createInNewTran(userLoginAttempt).then {
+                throw AppErrors.INSTANCE.fieldInvalid('username', 'User reaches maximum login attempt').exception()
+            }
+        }
+    }
+
+    Promise<UserCredentialVerifyAttempt> createInNewTran(UserCredentialVerifyAttempt userLoginAttempt) {
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager)
+        template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
+        return template.execute(new TransactionCallback<Promise<UserCredentialVerifyAttempt>>() {
+            Promise<UserCredentialVerifyAttempt> doInTransaction(TransactionStatus txnStatus) {
+                return userLoginAttemptRepository.create(userLoginAttempt)
+            }
+        })
     }
 
     private void checkBasicUserLoginAttemptInfo(UserCredentialVerifyAttempt userLoginAttempt) {
@@ -307,21 +405,18 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         }
     }
 
-    Promise<User> createInNewTran(User user) {
-        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager)
-        template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
-        return template.execute(new TransactionCallback<Promise<User>>() {
-            Promise<User> doInTransaction(TransactionStatus txnStatus) {
-                return userRepository.update(user)
-            }
-        })
-    }
-
-    private boolean isEmail(String value) {
+    static boolean isEmail(String value) {
         if (value.contains(MAIL_IDENTIFIER)) {
             return true
         }
         return false
+    }
+
+    static Date getTimeFrame(Integer timeFrame) {
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.SECOND, -timeFrame)
+        return calendar.time
     }
 
     @Required
@@ -369,6 +464,31 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     @Required
     void setMaxRetryCount(Integer maxRetryCount) {
         this.maxRetryCount = maxRetryCount
+    }
+
+    @Required
+    void setRetryInterval(Integer retryInterval) {
+        this.retryInterval = retryInterval
+    }
+
+    @Required
+    void setMaxAttemptCount(Integer maxAttemptCount) {
+        this.maxSameUserAttemptCount = maxAttemptCount
+    }
+
+    @Required
+    void setAttemptRetryInterval(Integer attemptRetryInterval) {
+        this.sameUserAttemptRetryInterval = attemptRetryInterval
+    }
+
+    @Required
+    void setMaxSameIPRetryCount(Integer maxSameIPRetryCount) {
+        this.maxSameIPRetryCount = maxSameIPRetryCount
+    }
+
+    @Required
+    void setSameIPRetryInterval(Integer sameIPRetryInterval) {
+        this.sameIPRetryInterval = sameIPRetryInterval
     }
 
     @Required

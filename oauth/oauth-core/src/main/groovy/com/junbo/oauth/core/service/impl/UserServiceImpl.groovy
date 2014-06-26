@@ -20,6 +20,7 @@ import com.junbo.identity.spec.v1.model.UserCredential
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions
+import com.junbo.identity.spec.v1.option.list.UserPersonalInfoListOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.identity.spec.v1.resource.UserCredentialResource
@@ -149,6 +150,17 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
+    Promise<UserId> getUserIdByUserEmail(String userEmail) {
+        return userPersonalInfoResource.list(new UserPersonalInfoListOptions(email: userEmail)).then { Results<UserPersonalInfo> results ->
+            if (results == null || results.items == null || results.items.isEmpty()) {
+                throw AppExceptions.INSTANCE.noAccountFound().exception()
+            }
+
+            return Promise.pure(results.items.get(0).userId)
+        }
+    }
+
+    @Override
     Promise<UserCredential> getUserCredential(UserId userId) {
         return this.userCredentialResource.list(userId, new UserCredentialListOptions(type: 'PASSWORD', active: true)).then{ Results<UserCredential> results ->
             if (results == null || results.items == null || results.items.isEmpty()) {
@@ -207,6 +219,7 @@ class UserServiceImpl implements UserService {
                 uriBuilder.path(EMAIL_VERIFY_PATH)
                 uriBuilder.queryParam(OAuthParameters.EMAIL_VERIFY_CODE, code.code)
                 uriBuilder.queryParam(OAuthParameters.LOCALE, contextWrapper.viewLocale)
+                uriBuilder.queryParam(OAuthParameters.COUNTRY, contextWrapper.viewCountry)
 
                 QueryParam queryParam = new QueryParam(
                         source: EMAIL_SOURCE,
@@ -222,7 +235,7 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    Promise<String> sendResetPassword(UserId userId, String locale, URI baseUri) {
+    Promise<String> sendResetPassword(UserId userId, String locale, String country, URI baseUri) {
         if (userId == null || userId.value == null) {
             throw AppExceptions.INSTANCE.missingUserId().exception()
         }
@@ -247,7 +260,12 @@ class UserServiceImpl implements UserService {
                 UriBuilder uriBuilder = UriBuilder.fromUri(baseUri)
                 uriBuilder.path(EMAIL_RESET_PASSWORD_PATH)
                 uriBuilder.queryParam(OAuthParameters.RESET_PASSWORD_CODE, code.code)
-                uriBuilder.queryParam(OAuthParameters.LOCALE, locale)
+                if (!StringUtils.isEmpty(locale)) {
+                    uriBuilder.queryParam(OAuthParameters.LOCALE, locale)
+                }
+                if (!StringUtils.isEmpty(country)) {
+                    uriBuilder.queryParam(OAuthParameters.COUNTRY, country)
+                }
 
                 QueryParam queryParam = new QueryParam(
                         source: EMAIL_SOURCE,
@@ -263,10 +281,11 @@ class UserServiceImpl implements UserService {
     @Override
     Promise<String> sendResetPassword(UserId userId, ActionContextWrapper contextWrapper) {
         String locale = contextWrapper.viewLocale
+        String country = contextWrapper.viewCountry
         def request = (ContainerRequest) contextWrapper.request
         URI baseUri = request.baseUri
 
-        return sendResetPassword(userId, locale, baseUri)
+        return sendResetPassword(userId, locale, country, baseUri)
     }
 
     private Promise<String> getDefaultUserEmail(User user) {

@@ -41,6 +41,11 @@ public class TokenSetOfferEntity extends GenericEntity {
         this.id = id;
     }
 
+    @Override
+    public Long getShardMasterId() {
+        return null;
+    }
+
     public Long getTokenSetId() {
         return tokenSetId;
     }
