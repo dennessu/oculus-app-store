@@ -20,6 +20,9 @@
         <queueSize>512</queueSize>
         <appender-ref ref="CONSOLE"/>
     </appender>
+	
+	<appender name="NEW_RELIC_ASYNC" class="com.junbo.common.logappender.NewRelicAppender">
+	</appender>
 
 
     <appender name="MAIN" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -74,6 +77,7 @@
         <appender-ref ref="CONSOLE_ASYNC"/>
         <appender-ref ref="MAIN_ASYNC"/>
         <appender-ref ref="ALERT_ASYNC"/>
+		<appender-ref ref="NEW_RELIC_ASYNC"/>
     </root>
 
     <logger name="org.glassfish.grizzly.http.server.HttpHandlerChain" level="DEBUG">
