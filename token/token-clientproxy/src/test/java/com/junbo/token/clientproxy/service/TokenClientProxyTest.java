@@ -1,6 +1,5 @@
 package com.junbo.token.clientproxy.service;
 
-import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.TokenOrderId;
 import com.junbo.common.id.UserId;
 import com.junbo.token.clientproxy.BaseTest;
@@ -8,11 +7,11 @@ import com.junbo.token.common.exception.AppClientExceptions;
 import com.junbo.token.spec.enums.ItemStatus;
 import com.junbo.token.spec.enums.OrderStatus;
 import com.junbo.token.spec.enums.TokenLength;
-import com.junbo.token.spec.model.OrderRequest;
+import com.junbo.token.spec.model.TokenRequest;
 import com.junbo.token.spec.model.TokenConsumption;
 import com.junbo.token.spec.model.TokenItem;
 import com.junbo.token.spec.resource.proxy.TokenResourceClientProxy;
-import junit.framework.Assert;
+import org.testng.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
@@ -26,7 +25,7 @@ public class TokenClientProxyTest extends BaseTest {
     @Test(enabled = false)
     public void createOrderAndConsumeToken() throws ExecutionException, InterruptedException {
         final UserId userId = new UserId(generateLong());
-        OrderRequest order = new OrderRequest(){
+        TokenRequest order = new TokenRequest(){
             {
                 setActivation("yes");
                 setCreateMethod("generation");
@@ -38,30 +37,29 @@ public class TokenClientProxyTest extends BaseTest {
                 setUsageLimit("1");
             }
         };
-        OrderRequest result = tokenClient.postOrder(order).get();
+        TokenRequest result = tokenClient.postOrder(order).get();
         Assert.assertEquals(result.getStatus(), OrderStatus.COMPLETED.toString());
         Assert.assertEquals(result.getTokenItems().size(), 1);
 
-        OrderRequest getResult = tokenClient.getOrderById(new TokenOrderId(result.getId())).get();
+        TokenRequest getResult = tokenClient.getOrderById(new TokenOrderId(result.getId())).get();
         Assert.assertEquals(result.getStatus(), OrderStatus.COMPLETED.toString());
         Assert.assertEquals(result.getId(), getResult.getId());
+        final String tokenString = result.getTokenItems().get(0).getEncryptedString();
         TokenConsumption consumption= new TokenConsumption(){
             {
                 setUserId(userId.getValue());
                 setProduct(10000L);
+                setTokenString(tokenString);
             }
         };
-        String tokenString = result.getTokenItems().get(0).getEncryptedString();
-        TokenItem consumeResult = tokenClient.consumeToken(tokenString, consumption).get();
-        Assert.assertEquals(consumeResult.getStatus(), ItemStatus.USED.toString());
-        Assert.assertEquals(consumeResult.getTokenConsumptions().size(), 1);
-        Assert.assertEquals(consumeResult.getTokenConsumptions().get(0).getProduct(), new Long(10000L));
+        TokenConsumption consumeResult = tokenClient.consumeToken(consumption).get();
+        Assert.assertEquals(consumeResult.getProduct(), new Long(10000L));
     }
 
     @Test(enabled = false)
     public void updateToken() throws ExecutionException, InterruptedException {
         final UserId userId = new UserId(generateLong());
-        OrderRequest order = new OrderRequest(){
+        TokenRequest order = new TokenRequest(){
             {
                 setActivation("yes");
                 setCreateMethod("generation");
@@ -73,8 +71,8 @@ public class TokenClientProxyTest extends BaseTest {
                 setUsageLimit("1");
             }
         };
-        OrderRequest result = tokenClient.postOrder(order).get();
-        String tokenString = result.getTokenItems().get(0).getEncryptedString();
+        TokenRequest result = tokenClient.postOrder(order).get();
+        final String tokenString = result.getTokenItems().get(0).getEncryptedString();
         TokenItem item = tokenClient.getToken(tokenString).get();
         Assert.assertEquals(item.getStatus(), ItemStatus.ACTIVATED.toString());
         item.setStatus(ItemStatus.BLACKLISTED.toString());
@@ -86,10 +84,11 @@ public class TokenClientProxyTest extends BaseTest {
             {
                 setUserId(userId.getValue());
                 setProduct(10000L);
+                setTokenString(tokenString);
             }
         };
         try{
-            TokenItem consumeResult = tokenClient.consumeToken(tokenString, consumption).get();
+            TokenConsumption consumeResult = tokenClient.consumeToken(consumption).get();
         }catch (Exception ex){
             if(ex instanceof AppClientExceptions){
                 String code = ((AppClientExceptions) ex).invalidToken().getCode();
@@ -100,7 +99,7 @@ public class TokenClientProxyTest extends BaseTest {
         updatedItem = tokenClient.updateToken(tokenString, item).get();
         item = tokenClient.getToken(tokenString).get();
         Assert.assertEquals(item.getStatus(), ItemStatus.ACTIVATED.toString());
-        TokenItem consumeResult = tokenClient.consumeToken(tokenString, consumption).get();
+        TokenConsumption consumeResult = tokenClient.consumeToken(consumption).get();
         item = tokenClient.getToken(tokenString).get();
         Assert.assertEquals(item.getStatus(), ItemStatus.USED.toString());
     }

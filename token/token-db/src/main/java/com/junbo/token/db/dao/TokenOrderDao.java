@@ -11,7 +11,7 @@ import com.junbo.token.db.entity.TokenOrderEntity;
 /**
  * token order dao.
  */
-public class TokenOrderDao extends CommonDataDAOImpl<TokenOrderEntity, Long> {
+public class TokenOrderDao extends GenericDAOImpl<TokenOrderEntity, Long> {
     public TokenOrderDao() {
         super(TokenOrderEntity.class);
     }
