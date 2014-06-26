@@ -5,26 +5,46 @@
  */
 package com.junbo.common.logappender;
 
+import java.util.Date;
+
 /**
  * Created by liangfu on 6/25/14.
  */
 public class NewRelicEvent {
-    private String apiName;
-    private String apiDuration;
+    private String eventType;
+    private String methodName;
+    private String duration;
+    private Date eventStartTime;
 
-    public String getApiName() {
-        return apiName;
+    public String getEventType() {
+        return eventType;
     }
 
-    public void setApiName(String apiName) {
-        this.apiName = apiName;
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
     }
 
-    public String getApiDuration() {
-        return apiDuration;
+    public String getMethodName() {
+        return methodName;
     }
 
-    public void setApiDuration(String apiDuration) {
-        this.apiDuration = apiDuration;
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
+
+    public Date getEventStartTime() {
+        return eventStartTime;
+    }
+
+    public void setEventStartTime(Date eventStartTime) {
+        this.eventStartTime = eventStartTime;
     }
 }

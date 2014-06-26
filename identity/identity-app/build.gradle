@@ -11,7 +11,7 @@ dependencies {
         exclude group: 'com.junbo.identity', module: 'identity-spec'
     }
 
-    runtime (junboProject(':oauth-rest')) {
+    runtime (junboProject(':oauth-api')) {
         exclude group: 'com.junbo.identity', module: 'identity-spec'
     }
 

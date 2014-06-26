@@ -21,7 +21,7 @@
         <appender-ref ref="CONSOLE"/>
     </appender>
 	
-	<appender name="NEW_RELIC_ASYNC" class="com.junbo.common.logappender.NewRelicAppenderBase">
+	<appender name="NEW_RELIC_ASYNC" class="com.junbo.common.logappender.NewRelicAppender">
 	</appender>
 
 

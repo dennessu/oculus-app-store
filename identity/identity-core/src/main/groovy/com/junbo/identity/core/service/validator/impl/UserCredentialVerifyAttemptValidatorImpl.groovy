@@ -26,6 +26,7 @@ import org.springframework.transaction.TransactionDefinition
 import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionCallback
 import org.springframework.util.CollectionUtils
+import org.springframework.util.StringUtils
 
 import java.util.regex.Pattern
 
@@ -238,7 +239,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
     private Promise<Void> checkMaximumRetryCount(User user, UserCredentialVerifyAttempt userLoginAttempt) {
         return userLoginAttemptRepository.searchByUserIdAndCredentialType((UserId)user.id, userLoginAttempt.type,
-                maxRetryCount, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
+                Integer.MAX_VALUE, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
             if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount) {
                 return Promise.pure(null)
             }
@@ -261,9 +262,15 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     return Promise.pure(null)
                 }
 
-                if (attemptList.any { UserCredentialVerifyAttempt verifyAttempt ->
-                    return verifyAttempt.succeeded
-                }) {
+                int index = maxRetryCount - 1;
+                for(; index >=0; index--) {
+                    UserCredentialVerifyAttempt tempAttempt = attemptList.get(index)
+                    if (tempAttempt.succeeded) {
+                        break
+                    }
+                }
+
+                if (index >= 0) {
                     return Promise.pure(null)
                 }
 
@@ -282,7 +289,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     throw AppErrors.INSTANCE.fieldInvalidException('username', 'No Active password exists').exception()
                 }
 
-                return userPasswordList.get(0).createdTime
+                return Promise.pure(userPasswordList.get(0).createdTime)
             }
         } else {
             return userPinRepository.searchByUserIdAndActiveStatus(user.getId(), true, 1, 0).then { List<UserPin> userPinList ->
@@ -290,14 +297,14 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     throw AppErrors.INSTANCE.fieldInvalidException('username', 'No Active pin exists').exception()
                 }
 
-                return userPinList.get(0).createdTime
+                return Promise.pure(userPinList.get(0).createdTime)
             }
         }
     }
 
     private Promise<Void> checkMaximumSameUserAttemptCount(User user, UserCredentialVerifyAttempt userLoginAttempt) {
         return userLoginAttemptRepository.searchByUserIdAndCredentialType(user.getId(), userLoginAttempt.type,
-                maxSameUserAttemptCount, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
+                Integer.MAX_VALUE, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
             if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxSameUserAttemptCount) {
                 return Promise.pure(null)
             }
@@ -321,8 +328,11 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     }
 
     private Promise<Void> checkMaximumSameIPAttemptCount(UserCredentialVerifyAttempt userLoginAttempt) {
+        if (StringUtils.isEmpty(userLoginAttempt.ipAddress)) {
+            return Promise.pure(null)
+        }
         return userLoginAttemptRepository.searchByIPAddressAndCredentialType(userLoginAttempt.ipAddress, userLoginAttempt.type,
-                maxSameIPRetryCount, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
+                Integer.MAX_VALUE, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
             if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxSameIPRetryCount) {
                 return Promise.pure(null)
             }
