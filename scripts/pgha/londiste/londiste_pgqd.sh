@@ -7,12 +7,12 @@ checkAccount $DEPLOYMENT_ACCOUNT
 
 config=$SKYTOOL_CONFIG_PATH/pgqd.ini
 
-echo "kill pgqd process"
+echo "[LONDISTE] kill pgqd process"
 if [ -f $SKYTOOL_PID_PATH/pgqd.pid ]; then
     cat $SKYTOOL_PID_PATH/pgqd.pid | xargs kill -9 || echo 'process does not exist'
 fi
 
-echo "generate pgqd configuration"
+echo "[LONDISTE] generate pgqd configuration"
 cat > $config <<EOF
 [pgqd]
 
@@ -20,5 +20,5 @@ logfile = $SKYTOOL_LOG_PATH/pgqd.log
 pidfile = $SKYTOOL_PID_PATH/pgqd.pid
 EOF
 
-echo "start pgqd ticker process"
+echo "[LONDISTE] start pgqd ticker process"
 pgqd $config  > /dev/null 2>&1 &

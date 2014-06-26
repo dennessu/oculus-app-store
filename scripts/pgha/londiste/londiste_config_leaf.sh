@@ -5,10 +5,10 @@ source ${DIR}/../util/common.sh
 #check running under specified account
 checkAccount $DEPLOYMENT_ACCOUNT
 
-echo "kill skytools instance"
+echo "[LONDISTE] kill skytools instance"
 forceKillPid $SKYTOOL_PID_PATH
 
-echo "create skytool folder"
+echo "[LONDISTE] create skytool folder"
 createDir $SKYTOOL_PATH
 createDir $SKYTOOL_CONFIG_PATH
 createDir $SKYTOOL_PID_PATH
@@ -18,7 +18,7 @@ for db in ${REPLICA_DATABASES[@]}
 do
     config=$SKYTOOL_CONFIG_PATH/${db}_leaf.ini
 
-    echo "generate londiste3 configuration files for database [$db]"
+    echo "[LONDISTE] generate londiste3 configuration files for database [$db]"
     cat > $config <<EOF
 [londiste3]
 job_name = job_leaf_${db}

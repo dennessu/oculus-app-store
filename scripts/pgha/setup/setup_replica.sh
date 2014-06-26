@@ -5,16 +5,16 @@ source ${DIR}/../util/common.sh
 #check running under specified account
 checkAccount $DEPLOYMENT_ACCOUNT
 
-echo "create database data folder $REPLICA_DATA_PATH"
+echo "[SETUP][REPLICA] create database data folder $REPLICA_DATA_PATH"
 createDir $REPLICA_DATA_PATH
 
-echo "create database archive folder $REPLICA_ARCHIVE_PATH"
+echo "[SETUP][REPLICA] create database archive folder $REPLICA_ARCHIVE_PATH"
 createDir $REPLICA_ARCHIVE_PATH
 
-echo "copy backup file from remote master"
+echo "[SETUP][REPLICA] copy backup file from remote master"
 rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_BACKUP_PATH/* $REPLICA_DATA_PATH
 
-echo "configure recovery.conf"
+echo "[SETUP][REPLICA] configure recovery.conf"
 cat > $REPLICA_DATA_PATH/recovery.conf <<EOF
 recovery_target_timeline = 'latest'
 restore_command = 'cp $REPLICA_ARCHIVE_PATH/%f %p'
@@ -23,7 +23,7 @@ primary_conninfo = 'user=$PGUSER host=$MASTER_HOST port=$MASTER_DB_PORT sslmode=
 trigger_file = '$PROMOTE_TRIGGER_FILE'
 EOF
 
-echo "configure pg_hba.conf"
+echo "[SETUP][REPLICA] configure pg_hba.conf"
 cat > $REPLICA_DATA_PATH/pg_hba.conf <<EOF
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 
@@ -38,14 +38,17 @@ host    all             ${PGUSER}       ${REPLICA_HOST}/32      ident
 host    all             ${PGUSER}       ::1/128                 ident
 EOF
 
-echo "configure postgres.conf"
+echo "[SETUP][REPLICA] configure postgres.conf"
 cat >> $REPLICA_DATA_PATH/postgresql.conf <<EOF
 archive_command = 'cp %p $REPLICA_ARCHIVE_PATH/%f'
 port = $REPLICA_DB_PORT
 EOF
 
-echo "start replica database"
+echo "[SETUP][REPLICA] start replica database"
 $PGBIN_PATH/pg_ctl -D $REPLICA_DATA_PATH start > /dev/null 2>&1 &
 
-while ! echo exit | nc $REPLICA_HOST $REPLICA_DB_PORT; do sleep 1 && echo "waiting for replica database..."; done
-echo "replica database started successfully!"
+while ! echo exit | nc $REPLICA_HOST $REPLICA_DB_PORT;
+do
+    sleep 1 && echo "[SETUP][REPLICA] waiting for replica database...";
+done
+echo "[SETUP][REPLICA] replica database started successfully!"
