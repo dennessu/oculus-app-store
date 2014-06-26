@@ -65,32 +65,32 @@ public class NewRelicAppender extends UnsynchronizedAppenderBase<ILoggingEvent> 
         message = message.trim();
 
         String methodName = extract(message, ' ');
-        message = message.replaceFirst(methodName, "").trim();
+        message = replaceFirstOccur(message, methodName, "").trim();
         event.setMethodName(methodName);
 
         String base = extract(message, ' ');
-        message = message.replaceFirst(base, "").trim();
+        message = replaceFirstOccur(message, base, "").trim();
         int endIndex = message.indexOf("uri:");
         base = message.substring(0, endIndex).trim();
         event.setBase(base);
-        message = message.replaceFirst(base, "").trim();
+        message = replaceFirstOccur(message, base, "").trim();
 
         endIndex = message.indexOf("duration:");
         String uri = message.substring(0, endIndex).trim();
-        message = message.replaceFirst(uri, "").trim();
-        uri = uri.replaceFirst("uri:", "").trim();
+        message = replaceFirstOccur(message, uri, "").trim();
+        uri = replaceFirstOccur(uri, "uri:", "").trim();
         event.setEventType(formatEventType(uri));
 
         String duration = extract(message, ' ');
-        message = message.replaceFirst(duration, "").trim();
+        message = replaceFirstOccur(message, duration, "").trim();
         duration = extract(message, ' ');
-        message = message.replaceFirst(duration, "").trim();
+        message = replaceFirstOccur(message, duration, "").trim();
         duration = duration.replace("ms", "");
         event.setDuration(duration);
 
         endIndex = message.indexOf("machineName:");
         String dataStr = message.substring(0, endIndex).trim();
-        message = message.replaceFirst(dataStr, "").trim();
+        message = replaceFirstOccur(message, dataStr, "").trim();
 
         try {
             event.setEventStartTime(new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy", Locale.ENGLISH).parse(dataStr));
@@ -98,10 +98,28 @@ public class NewRelicAppender extends UnsynchronizedAppenderBase<ILoggingEvent> 
             System.err.println("Exception while Parsing date: " + e.getMessage());
         }
 
-        message = message.replaceFirst("machineName:", "").trim();
+        message = replaceFirstOccur(message, "machineName:", "").trim();
         event.setMachineName(message);
 
         return event;
+    }
+
+    String replaceFirstOccur(String inString, String oldPattern, String newPattern) {
+        if (StringUtils.isEmpty(inString) || StringUtils.isEmpty(oldPattern)) {
+            return inString;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        int pos = 0; // our position in the old string
+        int index = inString.indexOf(oldPattern);
+        // the index of an occurrence we've found, or -1
+        int patLen = oldPattern.length();
+        sb.append(inString.substring(pos, index));
+        sb.append(newPattern);
+        pos = index + patLen;
+        sb.append(inString.substring(pos));
+        // remember to append any characters to the right of a match
+        return sb.toString();
     }
 
     String extract(String original, char splitChar) {
