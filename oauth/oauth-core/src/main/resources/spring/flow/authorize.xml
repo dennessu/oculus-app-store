@@ -96,6 +96,15 @@
                 <wf:action ref="createUserTosAgreement"/>
                 <wf:action ref="sendAccountVerifyEmail"/>
             </wf:transition>
+            <wf:transition on="next2" to="REDIRECT_TO_EMAIL_VERIFY_REQUIRED">
+                <wf:action ref="validateRegister"/>
+                <wf:action ref="validateCaptcha"/>
+                <wf:action ref="createUser"/>
+                <wf:action ref="createUserCredential"/>
+                <wf:action ref="createUserPii"/>
+                <wf:action ref="createUserTosAgreement"/>
+                <wf:action ref="sendAccountVerifyEmail"/>
+            </wf:transition>
             <wf:transition on="cancel" to="CANCEL_VIEW"/>
         </wf:view-state>
 
