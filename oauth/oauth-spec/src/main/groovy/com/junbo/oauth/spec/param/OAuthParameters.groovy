@@ -56,6 +56,7 @@ class OAuthParameters {
     public static final String EMAIL = 'email'
     public static final String PIN = 'pin'
     public static final String TOS = 'tos'
+    public static final String USER_EMAIL = 'user_email'
 
     public static final String ADDRESS1 = 'address1'
     public static final String ADDRESS2 = 'address2'

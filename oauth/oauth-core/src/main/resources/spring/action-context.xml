@@ -87,6 +87,10 @@
         <property name="defaultLocale" value="en_US"/>
     </bean>
 
+    <bean id="validateCountry" class="com.junbo.oauth.core.action.ValidateCountry">
+        <property name="defaultCountry" value="US"/>
+    </bean>
+
     <bean id="validateEmailVerifyCode" class="com.junbo.oauth.core.action.ValidateEmailVerifyCode">
         <property name="tokenGenerator" ref="tokenGenerator" />
     </bean>

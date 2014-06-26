@@ -81,10 +81,11 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
     }
 
     @Override
-    Promise<Response> resetPasswordLink(String cid, String code, String locale) {
+    Promise<Response> resetPasswordLink(String cid, String code, String locale, String country) {
         Map<String, Object> requestScope = new HashMap<>()
         requestScope[OAuthParameters.RESET_PASSWORD_CODE] = code
         requestScope[OAuthParameters.LOCALE] = locale
+        requestScope[OAuthParameters.COUNTRY] = country
 
         if (cid == null) {
             //start a new conversation in the flowExecutor.
@@ -95,15 +96,28 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
     }
 
     @Override
-    Promise<Response> resetPassword(String conversationId, String event, String locale, UserId userId,
+    Promise<Response> resetPassword(String conversationId, String event, String locale, String country, UserId userId, String userEmail,
                                     ContainerRequestContext request, MultivaluedMap<String, String> formParams) {
         if (conversationId == null) {
-            return userService.sendResetPassword(userId, locale, ((ContainerRequest)request).baseUri).then { String uri ->
-                if (debugEnabled) {
-                    return Promise.pure(Response.ok().entity(uri).build())
+            if (userId != null) {
+                return userService.sendResetPassword(userId, locale, country, ((ContainerRequest)request).baseUri).then { String uri ->
+                    if (debugEnabled) {
+                        return Promise.pure(Response.ok().entity(uri).build())
+                    }
+
+                    return Promise.pure(Response.noContent().build())
                 }
-                
-                return Promise.pure(Response.noContent().build())
+            }
+            else if (userEmail != null) {
+                return userService.getUserIdByUserEmail(userEmail).then { UserId id ->
+                    return userService.sendResetPassword(id, locale, country, ((ContainerRequest)request).baseUri).then { String uri ->
+                        if (debugEnabled) {
+                            return Promise.pure(Response.ok().entity(uri).build())
+                        }
+
+                        return Promise.pure(Response.noContent().build())
+                    }
+                }
             }
         }
 

@@ -17,6 +17,7 @@
             <wf:action ref="validateMaxAge"/>
             <wf:action ref="validateNonce"/>
             <wf:action ref="validateLocale" />
+            <wf:action ref="validateCountry" />
             <wf:action ref="validateExtraParameters" />
             <wf:transition on="*" to="CHECK_LOGIN"/>
         </wf:action-state>
@@ -425,10 +426,6 @@
     </bean>
 
     <bean id="emailVerifyView" class="com.junbo.oauth.core.view.EmailVerifyView"/>
-
-    <bean id="redirectToEmailVerifyResult" class="com.junbo.oauth.core.view.RedirectToPage">
-        <property name="pageUrl" value="${oauth.core.portal.verifyUri}"/>
-    </bean>
 
     <bean id="redirectToPaymentMethod" class="com.junbo.oauth.core.view.RedirectToPageView">
         <property name="pageUrl" value="${oauth.core.portal.paymentMethodUri}"/>
