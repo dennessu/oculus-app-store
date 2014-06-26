@@ -23,12 +23,14 @@ interface UserService {
 
     Promise<UserInfo> getUserInfo(String authorization)
 
+    Promise<UserId> getUserIdByUserEmail(String userEmail)
+
     Promise<UserCredential> getUserCredential(UserId userId)
 
     Promise<String> sendVerifyEmail(UserId userId, ActionContextWrapper contextWrapper)
 
     Promise<String> sendResetPassword(UserId userId, ActionContextWrapper contextWrapper)
 
-    Promise<String> sendResetPassword(UserId userId, String locale, URI baseUri)
+    Promise<String> sendResetPassword(UserId userId, String locale, String country, URI baseUri)
 
 }

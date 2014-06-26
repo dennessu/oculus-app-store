@@ -19,9 +19,9 @@ public class TokenConsumptionDao extends CommonDataDAOImpl<TokenConsumptionEntit
         super(TokenConsumptionEntity.class);
     }
 
-    public List<TokenConsumptionEntity> getByTokenHashValue(final Long tokenHashValue) {
-        Criteria criteria = currentSession().createCriteria(TokenConsumptionEntity.class);
-        criteria.add(Restrictions.eq("hashValue", tokenHashValue));
+    public List<TokenConsumptionEntity> getByTokenItemId(final Long itemID) {
+        Criteria criteria = currentSession(itemID).createCriteria(TokenConsumptionEntity.class);
+        criteria.add(Restrictions.eq("itemId", itemID));
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         return criteria.list();
     }

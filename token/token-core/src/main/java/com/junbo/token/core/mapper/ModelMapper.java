@@ -8,7 +8,7 @@ package com.junbo.token.core.mapper;
 
 import com.junbo.token.spec.internal.TokenOrder;
 import com.junbo.token.spec.internal.TokenSet;
-import com.junbo.token.spec.model.OrderRequest;
+import com.junbo.token.spec.model.TokenRequest;
 
 /**
  * Model mapper: map from API to Service.
@@ -18,7 +18,7 @@ public final class ModelMapper {
 
     }
 
-    public static OrderWrapper getOrderModel(OrderRequest request){
+    public static OrderWrapper getOrderModel(TokenRequest request){
         TokenSet tokenSet = new TokenSet();
         tokenSet.setProductType(request.getProductType());
         tokenSet.setDescription(request.getDescription());
@@ -35,8 +35,8 @@ public final class ModelMapper {
         return new OrderWrapper(tokenSet, tokenOrder);
     }
 
-    public static OrderRequest getOrderRequest(TokenSet tokenSet, TokenOrder tokenOrder){
-        OrderRequest request = new OrderRequest();
+    public static TokenRequest getOrderRequest(TokenSet tokenSet, TokenOrder tokenOrder){
+        TokenRequest request = new TokenRequest();
         request.setProductType(tokenSet.getProductType());
         request.setDescription(tokenSet.getDescription());
         request.setGenerationLength(tokenSet.getGenerationLength());

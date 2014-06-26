@@ -11,7 +11,7 @@ import com.junbo.token.db.entity.TokenSetEntity;
 /**
  * token set dao.
  */
-public class TokenSetDao extends CommonDataDAOImpl<TokenSetEntity, Long> {
+public class TokenSetDao extends GenericDAOImpl<TokenSetEntity, Long> {
     public TokenSetDao() {
         super(TokenSetEntity.class);
     }

@@ -59,7 +59,7 @@ public class CommonDataDAOImpl<T extends GenericEntity, ID extends Serializable>
         if (entity.getCreatedBy() == null) {
             entity.setCreatedBy("0");
         }
-        return  (ID) currentSession(entity.getShardMasterId()).save(entity);
+        return  (ID) currentSession(entity.getId()).save(entity);
     }
 
     public T update(T entity) {

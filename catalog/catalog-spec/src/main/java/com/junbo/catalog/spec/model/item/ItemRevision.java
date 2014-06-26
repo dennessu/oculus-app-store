@@ -62,9 +62,9 @@ public class ItemRevision extends BaseRevisionModel {
             allowableValues = "KEYBOARD, MOUSE")
     private List<String> supportedInputDevices;
     @ApiModelProperty(position = 25, required = true, value = "game modes",
-            allowableValues = "SINGLE_PLAYER, MULTI_PLAYER, CO_OP")
+            allowableValues = "SINGLE_USER, MULTI_USER, CO_OP")
     private List<String> gameModes;
-    @ApiModelProperty(position = 26, required = true, value = "Download Link", allowableValues = "PC, MAC, LINUX")
+    @ApiModelProperty(position = 26, required = true, value = "Download Link", allowableValues = "PC, MAC, LINUX, ANDROID")
     private Map<String, Binary> binaries;
 
     @ApiModelProperty(position = 27, required = true, value = "The platform name, for digital goods only",

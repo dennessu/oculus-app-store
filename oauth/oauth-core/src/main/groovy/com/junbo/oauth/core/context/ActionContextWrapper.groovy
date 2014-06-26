@@ -48,6 +48,7 @@ class ActionContextWrapper {
     public static final String CAPTCHA_REQUIRED = 'captcha_required'
     public static final String CAPTCHA_SUCCEED = 'captcha_succeed'
     public static final String VIEW_LOCALE = 'view_locale'
+    public static final String VIEW_COUNTRY = 'view_country'
     public static final String EXTRA_PARAM_MAP = 'extra_param_map'
     public static final String EMAIL_VERIFY_CODE = 'email_verify_code'
     public static final String RESET_PASSWORD_CODE = 'reset_password_code'
@@ -313,6 +314,14 @@ class ActionContextWrapper {
 
     void setViewLocale(String locale) {
         actionContext.flowScope[VIEW_LOCALE] = locale
+    }
+
+    String getViewCountry() {
+        return (String) actionContext.flowScope[VIEW_COUNTRY]
+    }
+
+    void setViewCountry(String country) {
+        actionContext.flowScope[VIEW_COUNTRY] = country
     }
 
     EmailVerifyCode getEmailVerifyCode() {

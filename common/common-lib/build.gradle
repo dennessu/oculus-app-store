@@ -36,6 +36,7 @@ dependencies {
 
     compile (libraries.grizzly_http_server)
     compile (libraries.grizzly_websockets)
+    compile (libraries.apache_commons_lang)
 
     testRuntime junboProject(':configuration-data')
 }

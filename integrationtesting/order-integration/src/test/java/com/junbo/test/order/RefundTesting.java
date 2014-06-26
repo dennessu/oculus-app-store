@@ -170,6 +170,55 @@ public class RefundTesting extends BaseOrderTestClass {
         //TODO verify order response
     }
 
+    @Property(
+            priority = Priority.Dailies,
+            features = "Put /orders/{key}",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Manual,
+            release = Release.June2014,
+            description = "Test order refund - partial item refund ",
+            steps = {
+                    "1. Post a new user",
+                    "2. Post new credit card to user",
+                    "3. Post an order and complete it",
+                    "4. Put order with partial item(refund the first item)",
+                    "5. Get balance by order Id",
+                    "6. Verify transactions contain expected refund info,",
+                    "7. Get order by order Id",
+                    "8. Verify order response info"
+            }
+    )
+    @Test
+    public void testOrderPartialItemRefund() throws Exception {
+        ArrayList<String> offerList = new ArrayList<>();
+        offerList.add(offer_digital_normal1);
+
+        String uid = testDataProvider.createUser();
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
+
+        String orderId = testDataProvider.postOrder(
+                uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, 4, offerList);
+
+        testDataProvider.updateOrderTentative(orderId, false);
+
+        BigDecimal refundTotalAmount = testDataProvider.refundPartialItem(orderId);
+
+        String balanceId = testDataProvider.getBalancesByOrderId(orderId);
+
+        TransactionInfo transactionInfo = new TransactionInfo();
+        transactionInfo.setPaymentInstrumentId(creditCardId);
+        transactionInfo.setAmount(refundTotalAmount);
+        transactionInfo.setCurrency(Currency.DEFAULT);
+        transactionInfo.setTransactionStatus(TransactionStatus.SUCCESS);
+        transactionInfo.setTransactionType(TransactionType.REFUND);
+
+        validationHelper.validateSingleTransaction(balanceId, transactionInfo);
+
+        //TODO verify order response
+    }
+
 
     @Property(
             priority = Priority.BVT,
@@ -196,6 +245,8 @@ public class RefundTesting extends BaseOrderTestClass {
     @Test
     public void testRefundPreOrder() throws Exception {
     }
+
+
 
 
 }

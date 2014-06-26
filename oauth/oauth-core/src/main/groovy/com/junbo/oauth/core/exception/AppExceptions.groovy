@@ -349,4 +349,8 @@ interface AppExceptions {
 
     @ErrorDef(httpStatusCode = 500, code = '20081', description = 'Error happened while calling the payment')
     AppError errorCallingPayment()
+
+    @ErrorDef(httpStatusCode = 400, code = '20082', description = 'The country parameter is invalid',
+            field = 'country')
+    AppError invalidCountryCode()
 }

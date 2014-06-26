@@ -80,6 +80,8 @@ class WalletServiceImpl implements WalletService {
             throw AppErrors.INSTANCE.missingField('currency').exception()
         }
 
+        wallet.currency = wallet.currency.toUpperCase()
+
         if (wallet.balance == null) {
             wallet.balance = BigDecimal.ZERO
         } else if (!wallet.balance == BigDecimal.ZERO) {
@@ -139,7 +141,7 @@ class WalletServiceImpl implements WalletService {
         } else if (creditRequest.userId != null &&
                 creditRequest.currency != null &&
                 creditRequest.walletType != null) {
-            wallet = walletRepo.get(creditRequest.userId, creditRequest.walletType, creditRequest.currency)
+            wallet = walletRepo.get(creditRequest.userId, creditRequest.walletType, creditRequest.currency.toUpperCase())
         } else {
             throw AppErrors.INSTANCE.common('wallet or user, currency and walletType should not be null').exception()
         }

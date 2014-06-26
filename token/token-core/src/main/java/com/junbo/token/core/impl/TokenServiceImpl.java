@@ -17,7 +17,7 @@ import com.junbo.token.common.TokenUtil;
 import com.junbo.token.db.repository.TokenRepository;
 import com.junbo.token.spec.enums.*;
 import com.junbo.token.spec.internal.TokenSet;
-import com.junbo.token.spec.model.OrderRequest;
+import com.junbo.token.spec.model.TokenRequest;
 import com.junbo.token.spec.model.TokenConsumption;
 import com.junbo.token.spec.model.TokenItem;
 import com.junbo.token.spec.internal.TokenOrder;
@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -58,7 +57,7 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public Promise<OrderRequest> createOrderRequest(OrderRequest request) {
+    public Promise<TokenRequest> createOrderRequest(TokenRequest request) {
         OrderWrapper orderWrapper = ModelMapper.getOrderModel(request);
         TokenSet tokenSet = addSet(orderWrapper.getTokenSet());
         orderWrapper.getTokenOrder().setTokenSetId(tokenSet.getId());
@@ -72,7 +71,7 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public Promise<OrderRequest> getOrderRequest(Long tokenOrderId) {
+    public Promise<TokenRequest> getOrderRequest(Long tokenOrderId) {
         TokenOrder order = tokenRepository.getTokenOrder(tokenOrderId);
         if(order == null){
             throw AppClientExceptions.INSTANCE.resourceNotFound("orderId:" + tokenOrderId).exception();
@@ -82,7 +81,7 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public Promise<TokenItem> consumeToken(String token, TokenConsumption consumption) {
+    public Promise<TokenConsumption> consumeToken(String token, TokenConsumption consumption) {
         validateTokenConsumption(consumption);
         String decryptedToken = TokenUtil.decrypt(token);
         Long hashValue = TokenUtil.computeHash(decryptedToken).getHashValue();
@@ -100,10 +99,9 @@ public class TokenServiceImpl implements TokenService {
         }
         validateTokenItem(item, order, tokenSet, consumption);
         updateTokenItem(item, order);
-        consumption.setHashValue(hashValue);
+        consumption.setItemId(item.getId());
         TokenConsumption result = tokenRepository.addConsumption(consumption);
-        item.setTokenConsumptions(Arrays.asList(result));
-        return Promise.pure(item);
+        return Promise.pure(result);
     }
 
     @Override
