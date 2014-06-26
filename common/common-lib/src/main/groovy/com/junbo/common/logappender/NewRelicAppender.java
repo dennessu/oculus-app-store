@@ -9,8 +9,10 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.configuration.ConfigServiceManager;
-import com.ning.http.util.DateUtil;
 import org.springframework.util.StringUtils;
+
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 /**
  * Created by liangfu on 6/25/14.
@@ -54,35 +56,50 @@ public class NewRelicAppender extends UnsynchronizedAppenderBase<ILoggingEvent> 
 
     private NewRelicEvent build(ILoggingEvent loggingEvent) {
         // The log format should be
-        // "(InProc/Remote) Method: create uri: " + __pathTemplate +" duration: " + (System.currentTimeMillis() - __startTime) + "ms " + __startDate.toString()
+        // "(Remote) Method: ${methodName} base: " + __target + " uri: ${path} duration: " + (System.currentTimeMillis() - __startTime) + "ms "
+        // + __startDate.toString() + " machineName: " + __machineName
         String message = loggingEvent.getMessage();
         NewRelicEvent event = new NewRelicEvent();
-        message = message.replaceFirst(PATTERN_INPROC_PREFIX, "");
-        message = message.replaceFirst(PATTERN_REMOTE_PREFIX, "");
+        message = message.replace(PATTERN_INPROC_PREFIX, "");
+        message = message.replace(PATTERN_REMOTE_PREFIX, "");
         message = message.trim();
 
         String methodName = extract(message, ' ');
         message = message.replaceFirst(methodName, "").trim();
         event.setMethodName(methodName);
 
-        String uri = extract(message, ' ');
+        String base = extract(message, ' ');
+        message = message.replaceFirst(base, "").trim();
+        int endIndex = message.indexOf("uri:");
+        base = message.substring(0, endIndex).trim();
+        event.setBase(base);
+        message = message.replaceFirst(base, "").trim();
+
+        endIndex = message.indexOf("duration:");
+        String uri = message.substring(0, endIndex).trim();
         message = message.replaceFirst(uri, "").trim();
-        uri = extract(message, ' ');
-        message = message.replaceFirst(uri, "").trim();
-        event.setEventType(uri);
+        uri = uri.replaceFirst("uri:", "").trim();
+        event.setEventType(formatEventType(uri));
 
         String duration = extract(message, ' ');
         message = message.replaceFirst(duration, "").trim();
         duration = extract(message, ' ');
         message = message.replaceFirst(duration, "").trim();
-        duration = duration.replaceAll("ms", "");
-        event.setEventType(duration);
+        duration = duration.replace("ms", "");
+        event.setDuration(duration);
+
+        endIndex = message.indexOf("machineName:");
+        String dataStr = message.substring(0, endIndex).trim();
+        message = message.replaceFirst(dataStr, "").trim();
 
         try {
-            event.setEventStartTime(DateUtil.parseDate(message));
+            event.setEventStartTime(new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy", Locale.ENGLISH).parse(dataStr));
         } catch (Exception e) {
             System.err.println("Exception while Parsing date: " + e.getMessage());
         }
+
+        message = message.replaceFirst("machineName:", "").trim();
+        event.setMachineName(message);
 
         return event;
     }
@@ -90,5 +107,14 @@ public class NewRelicAppender extends UnsynchronizedAppenderBase<ILoggingEvent> 
     String extract(String original, char splitChar) {
         int endIndex = original.indexOf(splitChar);
         return original.substring(0, endIndex).trim();
+    }
+
+    String formatEventType(String value) {
+        value = value.replace("/", "_");
+        value = value.replace(" ", "_");
+        value = value.replace(",", "_");
+        value = value.replace(".", "_");
+
+        return value;
     }
 }

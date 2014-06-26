@@ -13,8 +13,10 @@ import java.util.Date;
 public class NewRelicEvent {
     private String eventType;
     private String methodName;
+    private String base;
     private String duration;
     private Date eventStartTime;
+    private String machineName;
 
     public String getEventType() {
         return eventType;
@@ -46,5 +48,21 @@ public class NewRelicEvent {
 
     public void setEventStartTime(Date eventStartTime) {
         this.eventStartTime = eventStartTime;
+    }
+
+    public String getBase() {
+        return base;
+    }
+
+    public void setBase(String base) {
+        this.base = base;
+    }
+
+    public String getMachineName() {
+        return machineName;
+    }
+
+    public void setMachineName(String machineName) {
+        this.machineName = machineName;
     }
 }
