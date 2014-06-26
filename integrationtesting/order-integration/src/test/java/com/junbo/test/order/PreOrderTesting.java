@@ -15,12 +15,10 @@ import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
 import com.junbo.test.order.model.enums.EventStatus;
 import com.junbo.test.order.model.enums.OrderActionType;
+import org.apache.commons.collections.map.HashedMap;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.*;
 
 /**
  * Created by weiyu_000 on 6/16/14.
@@ -55,8 +53,9 @@ public class PreOrderTesting extends BaseOrderTestClass  {
     public void testPreOrderCheckout() throws Exception {
         String uid = testDataProvider.createUser();
 
-        ArrayList<String> offerList = new ArrayList<>();
-        offerList.add(offer_digital_preOrder);
+        Map<String, Integer> offerList = new HashedMap();
+
+        offerList.put(offer_digital_preOrder, 1);
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);

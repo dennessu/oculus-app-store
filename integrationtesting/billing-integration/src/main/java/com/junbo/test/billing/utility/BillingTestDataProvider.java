@@ -234,8 +234,8 @@ public class BillingTestDataProvider extends BaseTestDataProvider {
         return orderClient.updateOrder(order);
     }
 
-    public String getBalancesByOrderId(String orderId) throws Exception {
-        return balanceClient.getBalancesByOrderId(orderId).get(0);
+    public List<String> getBalancesByOrderId(String orderId) throws Exception {
+        return balanceClient.getBalancesByOrderId(orderId);
     }
 
     public String getBalanceByBalanceId(String uid, String balanceId) throws Exception {

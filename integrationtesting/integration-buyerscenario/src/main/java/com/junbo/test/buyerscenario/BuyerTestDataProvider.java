@@ -38,7 +38,6 @@ import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
-import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.entitlement.EntitlementService;
 import com.junbo.test.fulfilment.utility.FulfilmentTestDataProvider;
 import com.junbo.test.order.utility.OrderTestDataProvider;
@@ -47,8 +46,7 @@ import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
 import com.junbo.test.payment.utility.PaymentTestDataProvider;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Yunlong on 3/20/14.
@@ -105,36 +103,29 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         return IdConverter.idToUrlString(OfferId.class, offer.getOfferId());
     }
 
-    public String postOffersToPrimaryCart(String uid, boolean hasPhysicalGood, ArrayList<String> offers) throws Exception {
+    public String postOffersToPrimaryCart(String uid, Map<String, Integer> offers) throws Exception {
         String primaryCartId = cartClient.getCartPrimary(uid);
         Cart primaryCart = Master.getInstance().getCart(primaryCartId);
         List<OfferItem> offerItemList = new ArrayList<>();
-        for (int i = 0; i < offers.size(); i++) {
+
+        Set<String> key = offers.keySet();
+        for (Iterator it = key.iterator(); it.hasNext(); ) {
             OfferItem offerItem = new OfferItem();
-            if (hasPhysicalGood) {
-                offerItem.setQuantity(RandomFactory.getRandomLong(1L, 5L));
-            } else {
-                offerItem.setQuantity(1L);
-            }
+            String offerName = (String) it.next();
+            OfferId offerId = new OfferId(offerClient.getOfferIdByName(offerName));
+            offerItem.setQuantity(new Long(offers.get(offerName).toString()));
             offerItem.setIsSelected(true);
-            OfferId offerId = new OfferId(offerClient.getOfferIdByName(offers.get(i)));
             offerItem.setOffer(offerId);
             offerItem.setIsApproved(true);
             offerItemList.add(offerItem);
         }
+
         primaryCart.setOffers(offerItemList);
 
         Master.getInstance().addCart(primaryCartId, primaryCart);
         return cartClient.updateCart(uid, primaryCartId, primaryCart);
     }
 
-    public String postDefaultOffersToPrimaryCart(String uid, CatalogItemType itemType) throws Exception {
-        String offerId = this.postDefaultOffer(itemType);
-        //String offerId = IdConverter.idToUrlString(OfferId.class, new OfferId(100001L).getValue());
-        ArrayList<String> offerList = new ArrayList<>();
-        offerList.add(offerId);
-        return this.postOffersToPrimaryCart(uid, false, offerList);
-    }
 
     public String postPaymentInstrument(String uid, PaymentInstrumentBase paymentInfo) throws Exception {
         return paymentProvider.postPaymentInstrument(uid, paymentInfo);
@@ -168,13 +159,13 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
     }
 
     public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
-                            boolean hasPhysicalGood, ArrayList<String> offers) throws Exception {
+                            boolean hasPhysicalGood, Map<String, Integer> offers) throws Exception {
 
         return this.postOrder(uid, country, currency, paymentInstrumentId, hasPhysicalGood, offers, 200);
     }
 
     public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
-                            boolean hasPhysicalGood, ArrayList<String> offers, int expectedResponseCode)
+                            boolean hasPhysicalGood, Map<String, Integer> offers, int expectedResponseCode)
             throws Exception {
 
         return orderProvider.postOrder(uid, country, currency, paymentInstrumentId, hasPhysicalGood, offers, expectedResponseCode);
@@ -264,7 +255,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         return fulfilmentProvider.getFulfilmentByOrderId(orderId);
     }
 
-    public String getBalancesByOrderId(String orderId) throws Exception {
+    public List<String> getBalancesByOrderId(String orderId) throws Exception {
         return billingProvider.getBalancesByOrderId(orderId);
     }
 }

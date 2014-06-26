@@ -63,7 +63,7 @@ public class BuyerValidationHelper extends BaseValidationHelper {
         Order order = Master.getInstance().getOrder(orderId);
         Cart cart = Master.getInstance().getCart(cartId);
         String fulfilmentId = testDataProvider.getFulfilmentsByOrderId(orderId);
-        String balancecId = testDataProvider.getBalancesByOrderId(orderId);
+        String balancecId = testDataProvider.getBalancesByOrderId(orderId).get(0);
         verifyEqual(order.getTentative(), false, "verify tentative after order complete");
         verifyEqual(order.getCountry().toString(), country.toString(), "verify country field in order");
         verifyEqual(order.getCurrency().toString(), currency.toString(), "verify currency field in order");
