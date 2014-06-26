@@ -88,7 +88,7 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
     try {
         __future = Promise.wrap(asGuavaFuture(__client.executeRequest(__request)));
     } catch (java.io.IOException ex) {
-        //LOGGER.error("(Remote) Method: ${methodName} base: " + __target + " uri: ${path} duration: " + (System.currentTimeMillis() - __startTime) + "ms " + __startDate.toString() + " machineName: " + __machineName);
+        LOGGER.error("(Remote) Method: ${methodName} base: " + __target + " uri: ${path} duration: " + (System.currentTimeMillis() - __startTime) + "ms " + __startDate.toString() + " machineName: " + __machineName);
         throw new RuntimeException(ex);
     }
 
@@ -99,7 +99,7 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
                 __responseHandler.onResponse(response);
             }
 
-        //LOGGER.info("(Remote) Method: ${methodName} base: " + __target + " uri: ${path} duration: " + (System.currentTimeMillis() - __startTime) + "ms " + __startDate.toString() + " machineName: " + __machineName);
+        LOGGER.info("(Remote) Method: ${methodName} base: " + __target + " uri: ${path} duration: " + (System.currentTimeMillis() - __startTime) + "ms " + __startDate.toString() + " machineName: " + __machineName);
         if (response.getStatusCode() / 100 == 2) {
                 try {
                     return Promise.pure(__transcoder.<${returnType}>decode(new TypeReference<${returnType}>() {}, response.getResponseBody()));
