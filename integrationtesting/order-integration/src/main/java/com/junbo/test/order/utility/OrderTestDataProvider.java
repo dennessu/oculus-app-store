@@ -35,7 +35,6 @@ import com.junbo.test.order.apihelper.OrderService;
 import com.junbo.test.order.apihelper.impl.OrderEventServiceImpl;
 import com.junbo.test.order.apihelper.impl.OrderServiceImpl;
 import com.junbo.test.order.model.*;
-import com.junbo.test.order.model.BillingHistory;
 import com.junbo.test.order.model.enums.EventStatus;
 import com.junbo.test.order.model.enums.OrderActionType;
 import com.junbo.test.order.model.enums.OrderStatus;
@@ -201,7 +200,7 @@ public class OrderTestDataProvider {
     public OrderInfo getRefundedOrderInfo(OrderInfo orderInfo, Map<String, Integer> refundedOffers,
                                           Map<String, BigDecimal> partialRefundAmounts) throws Exception {
 
-        BillingHistory billingHistory = new BillingHistory();
+        BillingHistoryInfo billingHistory = new BillingHistoryInfo();
 
         BigDecimal orderTotalRefundedAmount = new BigDecimal(0);
         BigDecimal orderTotalRefundedTax = new BigDecimal(0);
@@ -218,7 +217,7 @@ public class OrderTestDataProvider {
                     .getPrices().get(orderInfo.getCountry().toString()).get(orderInfo.getCurrency().toString());
 
             int refundQuantity = 0;
-            if (refundedOffers.containsKey(offerName)) {
+            if (refundedOffers != null && refundedOffers.containsKey(offerName)) {
                 refundQuantity = refundedOffers.get(offerName);
             }
             OrderItemInfo orderItem = orderInfo.getOrderItems().get(i);
@@ -226,7 +225,7 @@ public class OrderTestDataProvider {
             BigDecimal refundAmount = unitPrice.multiply(
                     new BigDecimal(refundQuantity)).setScale(1, RoundingMode.HALF_UP);
 
-            if (partialRefundAmounts.containsKey(offerName)) {
+            if (partialRefundAmounts != null && partialRefundAmounts.containsKey(offerName)) {
                 refundAmount = refundAmount.add(partialRefundAmounts.get(offerName));
             }
 
@@ -255,12 +254,15 @@ public class OrderTestDataProvider {
         orderInfo.setTotalTax(orderInfo.getTotalTax().subtract(orderTotalRefundedTax));
 
         BigDecimal totalRefundAmount = orderTotalRefundedAmount.add(orderTotalRefundedTax);
-        billingHistory.setTransactionType(TransactionType.REFUND);
+        billingHistory.setTransactionType(TransactionType.PENDING_REFUND);
         billingHistory.setTotalAmount(totalRefundAmount.multiply(
                 new BigDecimal(-1)).setScale(1, RoundingMode.HALF_UP));
-
         orderInfo.getBillingHistories().add(billingHistory);
 
+        billingHistory.setTransactionType(TransactionType.REFUND);
+        orderInfo.getBillingHistories().add(billingHistory);
+
+        orderInfo.setOrderStatus(OrderStatus.REFUNDED);
         return orderInfo;
     }
 
@@ -310,18 +312,51 @@ public class OrderTestDataProvider {
         orderInfo.getPaymentInfos().add(paymentInfo);
 
         if (!isTentative) {
-            BillingHistory billingHistory = new BillingHistory();
+            BillingHistoryInfo billingHistory = new BillingHistoryInfo();
             billingHistory.setTotalAmount(orderTotalAmount.add(orderTotalTax));
             paymentInfo.setPaymentAmount(orderTotalAmount.add(orderTotalTax));
             billingHistory.getPaymentInfos().add(paymentInfo);
+            billingHistory.setTransactionType(TransactionType.PENDING_CHARGE);
+            orderInfo.getBillingHistories().add(billingHistory);
             billingHistory.setTransactionType(TransactionType.CHARGE);
             orderInfo.getBillingHistories().add(billingHistory);
+
         }
 
         orderInfo.setTotalAmount(orderTotalAmount);
         orderInfo.setTotalTax(orderTotalTax);
 
         return orderInfo;
+    }
+
+    public void refundOrder(String orderId, Map<String, Integer> refundedOffers,
+                            Map<String, BigDecimal> partialRefundAmounts) throws Exception {
+        orderClient.getOrderByOrderId(orderId);
+        Order order = Master.getInstance().getOrder(orderId);
+
+        for (int i = 0; i < order.getOrderItems().size(); i++) {
+            String offerId = IdConverter.idToHexString(order.getOrderItems().get(i).getOffer());
+            OrderItem orderItem = order.getOrderItems().get(i);
+
+            String currentOfferRevisionId = IdConverter.idToUrlString(OfferRevisionId.class,
+                    Master.getInstance().getOffer(offerId).getCurrentRevisionId());
+
+            String offerName = Master.getInstance().getOfferRevision(currentOfferRevisionId)
+                    .getLocales().get(order.getLocale().getValue()).getName();
+
+            if (refundedOffers != null && refundedOffers.containsKey(offerName)) {
+                int refundQuantity = refundedOffers.get(offerName);
+                order.getOrderItems().get(i).setQuantity(orderItem.getQuantity() - refundQuantity);
+            }
+
+            if (partialRefundAmounts != null && partialRefundAmounts.containsKey(offerName)) {
+                BigDecimal refundAmount = partialRefundAmounts.get(offerName);
+                order.getOrderItems().get(i).setTotalAmount(orderItem.getTotalAmount().subtract(refundAmount)
+                        .setScale(1, RoundingMode.HALF_UP));
+            }
+        }
+
+        orderClient.updateOrder(order);
     }
 
     public BigDecimal refundTotalAmount(String orderId) throws Exception {

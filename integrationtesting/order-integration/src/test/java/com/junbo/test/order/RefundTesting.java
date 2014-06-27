@@ -38,7 +38,7 @@ public class RefundTesting extends BaseOrderTestClass {
                     "1. Post a new user",
                     "2. Post new credit card to user",
                     "3. Post an order and complete it",
-                    "4. Put order without order items",
+                    "4. Refund order 1 quantity and refund order 2 total amount",
                     "5. Get balance by order Id",
                     "6. Verify transactions contain expected refund info",
                     "7. Get order by order Id",
@@ -71,25 +71,25 @@ public class RefundTesting extends BaseOrderTestClass {
         refundOfferList.put(offer_digital_normal1, 1);
 
         Map<String, BigDecimal> partialRefundAmounts = new HashedMap();
-        partialRefundAmounts.put(offer_digital_normal2, new BigDecimal(2));
+        partialRefundAmounts.put(offer_digital_normal2, new BigDecimal(10));
 
-        testDataProvider.getRefundedOrderInfo(expectedOrderInfo,refundOfferList,partialRefundAmounts);
+        testDataProvider.getRefundedOrderInfo(expectedOrderInfo, refundOfferList, partialRefundAmounts);
 
-        BigDecimal refundTotalAmount = testDataProvider.refundTotalQuantity(orderId);
+        testDataProvider.refundOrder(orderId, refundOfferList, partialRefundAmounts);
+
+        validationHelper.validateOrderInfo(orderId, expectedOrderInfo);
 
         String balanceId = testDataProvider.getBalancesByOrderId(orderId).get(1);
 
         TransactionInfo transactionInfo = new TransactionInfo();
         transactionInfo.setPaymentInstrumentId(creditCardId);
-        transactionInfo.setAmount(refundTotalAmount);
+        transactionInfo.setAmount(expectedOrderInfo.getTotalAmount().add(expectedOrderInfo.getTotalTax()));
         transactionInfo.setCurrency(Currency.DEFAULT);
         transactionInfo.setTransactionStatus(TransactionStatus.SUCCESS);
         transactionInfo.setTransactionType(TransactionType.REFUND);
 
         validationHelper.validateSingleTransaction(balanceId, transactionInfo);
 
-
-        //TODO verify order response
     }
 
     @Property(
@@ -114,9 +114,11 @@ public class RefundTesting extends BaseOrderTestClass {
     @Test
     public void testOrderPartialAmountRefund() throws Exception {
         Map<String, Integer> offerList = new HashedMap();
+        Country country = Country.DEFAULT;
+        Currency currency = Currency.DEFAULT;
 
         offerList.put(offer_digital_normal1, 1);
-        offerList.put(offer_digital_normal2, 2);
+        offerList.put(offer_digital_normal2, 1);
 
         String uid = testDataProvider.createUser();
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
@@ -127,20 +129,31 @@ public class RefundTesting extends BaseOrderTestClass {
 
         testDataProvider.updateOrderTentative(orderId, false);
 
-        BigDecimal refundTotalAmount = testDataProvider.refundPartialAmount(orderId, new BigDecimal(4.5));
+        OrderInfo expectedOrderInfo = testDataProvider.getExpectedOrderInfo(uid, country, currency,
+                "en_US", false, OrderStatus.COMPLETED, creditCardId, offerList);
+
+
+        Map<String, BigDecimal> partialRefundAmounts = new HashedMap();
+        partialRefundAmounts.put(offer_digital_normal1, new BigDecimal(9));
+        partialRefundAmounts.put(offer_digital_normal2, new BigDecimal(1));
+
+        testDataProvider.getRefundedOrderInfo(expectedOrderInfo, null, partialRefundAmounts);
+
+        testDataProvider.refundOrder(orderId, null, partialRefundAmounts);
+
+        validationHelper.validateOrderInfo(orderId, expectedOrderInfo);
 
         String balanceId = testDataProvider.getBalancesByOrderId(orderId).get(1);
 
         TransactionInfo transactionInfo = new TransactionInfo();
         transactionInfo.setPaymentInstrumentId(creditCardId);
-        transactionInfo.setAmount(refundTotalAmount);
+        transactionInfo.setAmount(expectedOrderInfo.getTotalAmount().add(expectedOrderInfo.getTotalTax()));
         transactionInfo.setCurrency(Currency.DEFAULT);
         transactionInfo.setTransactionStatus(TransactionStatus.SUCCESS);
         transactionInfo.setTransactionType(TransactionType.REFUND);
 
         validationHelper.validateSingleTransaction(balanceId, transactionInfo);
 
-        //TODO verify order response
     }
 
 
@@ -166,9 +179,11 @@ public class RefundTesting extends BaseOrderTestClass {
     @Test
     public void testOrderPartialQuantityRefund() throws Exception {
         Map<String, Integer> offerList = new HashedMap();
+        Country country = Country.DEFAULT;
+        Currency currency = Currency.DEFAULT;
 
-        offerList.put(offer_digital_normal1, 1);
-        offerList.put(offer_digital_normal2, 2);
+        offerList.put(offer_digital_normal1, 3);
+        offerList.put(offer_digital_normal2, 3);
 
         String uid = testDataProvider.createUser();
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
@@ -179,20 +194,30 @@ public class RefundTesting extends BaseOrderTestClass {
 
         testDataProvider.updateOrderTentative(orderId, false);
 
-        BigDecimal refundTotalAmount = testDataProvider.refundPartialQuantity(orderId, 2);
+        OrderInfo expectedOrderInfo = testDataProvider.getExpectedOrderInfo(uid, country, currency,
+                "en_US", false, OrderStatus.COMPLETED, creditCardId, offerList);
+
+        Map<String, Integer> refundOfferList = new HashedMap();
+        refundOfferList.put(offer_digital_normal1, 1);
+        refundOfferList.put(offer_digital_normal2, 2);
+
+        testDataProvider.getRefundedOrderInfo(expectedOrderInfo, refundOfferList, null);
+
+        testDataProvider.refundOrder(orderId, refundOfferList, null);
+
+        validationHelper.validateOrderInfo(orderId, expectedOrderInfo);
 
         String balanceId = testDataProvider.getBalancesByOrderId(orderId).get(1);
 
         TransactionInfo transactionInfo = new TransactionInfo();
         transactionInfo.setPaymentInstrumentId(creditCardId);
-        transactionInfo.setAmount(refundTotalAmount);
+        transactionInfo.setAmount(expectedOrderInfo.getTotalAmount().add(expectedOrderInfo.getTotalTax()));
         transactionInfo.setCurrency(Currency.DEFAULT);
         transactionInfo.setTransactionStatus(TransactionStatus.SUCCESS);
         transactionInfo.setTransactionType(TransactionType.REFUND);
 
         validationHelper.validateSingleTransaction(balanceId, transactionInfo);
 
-        //TODO verify order response
     }
 
     @Property(
@@ -217,9 +242,11 @@ public class RefundTesting extends BaseOrderTestClass {
     @Test
     public void testOrderPartialItemRefund() throws Exception {
         Map<String, Integer> offerList = new HashedMap();
+        Country country = Country.DEFAULT;
+        Currency currency = Currency.DEFAULT;
 
         offerList.put(offer_digital_normal1, 1);
-        offerList.put(offer_digital_normal2, 2);
+        offerList.put(offer_digital_normal2, 1);
 
         String uid = testDataProvider.createUser();
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
@@ -230,20 +257,29 @@ public class RefundTesting extends BaseOrderTestClass {
 
         testDataProvider.updateOrderTentative(orderId, false);
 
-        BigDecimal refundTotalAmount = testDataProvider.refundPartialItem(orderId);
+        OrderInfo expectedOrderInfo = testDataProvider.getExpectedOrderInfo(uid, country, currency,
+                "en_US", false, OrderStatus.COMPLETED, creditCardId, offerList);
+
+        Map<String, Integer> refundOfferList = new HashedMap();
+        refundOfferList.put(offer_digital_normal1, 1);
+
+        testDataProvider.getRefundedOrderInfo(expectedOrderInfo, refundOfferList, null);
+
+        testDataProvider.refundOrder(orderId, refundOfferList, null);
+
+        validationHelper.validateOrderInfo(orderId, expectedOrderInfo);
 
         String balanceId = testDataProvider.getBalancesByOrderId(orderId).get(1);
 
         TransactionInfo transactionInfo = new TransactionInfo();
         transactionInfo.setPaymentInstrumentId(creditCardId);
-        transactionInfo.setAmount(refundTotalAmount);
+        transactionInfo.setAmount(expectedOrderInfo.getTotalAmount().add(expectedOrderInfo.getTotalTax()));
         transactionInfo.setCurrency(Currency.DEFAULT);
         transactionInfo.setTransactionStatus(TransactionStatus.SUCCESS);
         transactionInfo.setTransactionType(TransactionType.REFUND);
 
         validationHelper.validateSingleTransaction(balanceId, transactionInfo);
 
-        //TODO verify order response
     }
 
 
@@ -252,7 +288,7 @@ public class RefundTesting extends BaseOrderTestClass {
             features = "Put /orders/{key}",
             component = Component.Order,
             owner = "ZhaoYunlong",
-            status = Status.Enable,
+            status = Status.Disable,
             description = "Test refund pre-order offer",
             steps = {
                     "1. Post a new user",
@@ -271,7 +307,8 @@ public class RefundTesting extends BaseOrderTestClass {
     )
     @Test
     public void testRefundPreOrder() throws Exception {
+        Country country = Country.DEFAULT;
+        Currency currency = Currency.DEFAULT;
     }
-
 
 }

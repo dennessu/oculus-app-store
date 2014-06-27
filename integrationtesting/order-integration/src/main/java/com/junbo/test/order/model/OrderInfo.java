@@ -29,7 +29,7 @@ public class OrderInfo {
     private BigDecimal shippingFee;
     private BigDecimal shippingFeeDiscount;
     private String rev;
-    private List<BillingHistory> billingHistories;
+    private List<BillingHistoryInfo> billingHistories;
     private List<FulfilmentHistory> fulfilmentHistories;
 
     private List<PaymentInstrumentInfo> payments;
@@ -163,11 +163,11 @@ public class OrderInfo {
         this.orderItems = orderItems;
     }
 
-    public List<BillingHistory> getBillingHistories() {
+    public List<BillingHistoryInfo> getBillingHistories() {
         return billingHistories;
     }
 
-    public void setBillingHistories(List<BillingHistory> billingHistories) {
+    public void setBillingHistories(List<BillingHistoryInfo> billingHistories) {
         this.billingHistories = billingHistories;
     }
 
