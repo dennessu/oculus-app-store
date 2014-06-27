@@ -9,6 +9,7 @@
 		"id": "CZK"
 	},
 	"ratingBoards": [],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"JC": {
 			"locales": {

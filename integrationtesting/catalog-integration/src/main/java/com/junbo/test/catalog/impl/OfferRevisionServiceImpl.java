@@ -220,7 +220,7 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
 
         //Attach item revision to the item
         ItemRevision itemRevision;
-        if (itemType.equals(CatalogItemType.DIGITAL)) {
+        if (itemType.equals(CatalogItemType.APP) || itemType.equals(CatalogItemType.DOWNLOADED_ADDITION)) {
             itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
         }
         else if (itemType.equals(CatalogItemType.STORED_VALUE)) {

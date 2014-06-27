@@ -9,6 +9,7 @@
 		"id": "KES"
 	},
 	"ratingBoards": [],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"110": {
 			"locales": {

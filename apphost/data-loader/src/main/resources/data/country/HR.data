@@ -9,6 +9,7 @@
 		"id": "HRK"
 	},
 	"ratingBoards": [],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"01": {
 			"locales": {

@@ -297,7 +297,7 @@ public class CartCheckout extends BaseTestClass {
     )
     @Test
     public void testDigitalGoodsCheckoutByPayPal() throws Exception {
-        testCheckoutByPalPal(CatalogItemType.DIGITAL);
+        testCheckoutByPalPal(CatalogItemType.APP);
     }
 
     @Property(
@@ -329,7 +329,7 @@ public class CartCheckout extends BaseTestClass {
 
 
         switch (itemType) {
-            case DIGITAL:
+            case APP:
                 offerList.put(offer_digital_normal1, 1);
                 offerList.put(offer_digital_normal2, 1);
                 break;
@@ -346,7 +346,7 @@ public class CartCheckout extends BaseTestClass {
 
         String orderId;
         switch (itemType) {
-            case DIGITAL:
+            case APP:
                 orderId = testDataProvider.postOrderByCartId(
                         uid, cartId, Country.DEFAULT, Currency.DEFAULT, payPalId, false);
                 break;
@@ -380,7 +380,7 @@ public class CartCheckout extends BaseTestClass {
                 validationHelper.validateOrderInfoByCartId(
                         uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, payPalId, true);
                 break;
-            case DIGITAL:
+            case APP:
                 validationHelper.validateOrderInfoByCartId(
                         uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, payPalId, false);
                 break;

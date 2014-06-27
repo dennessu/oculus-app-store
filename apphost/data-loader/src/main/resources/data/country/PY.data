@@ -9,6 +9,7 @@
 		"id": "PYG"
 	},
 	"ratingBoards": [],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"1": {
 			"locales": {

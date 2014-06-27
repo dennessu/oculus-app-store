@@ -12,6 +12,7 @@
 		"href": "/v1/age-rating-boards/OFLC",
 		"id": "OFLC"
 	}],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"AUK": {
 			"locales": {

@@ -9,6 +9,7 @@
 		"id": "ILS"
 	},
 	"ratingBoards": [],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"D": {
 			"locales": {

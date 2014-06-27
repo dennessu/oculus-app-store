@@ -1,5 +1,5 @@
 {
-    "type": "DIGITAL",
+    "type": "APP",
     "currentRevision": null,
     "revisions": null,
     "developer": {"href": "https://api.oculusvr.com/v1/organizations/1234", "id": "1234"},

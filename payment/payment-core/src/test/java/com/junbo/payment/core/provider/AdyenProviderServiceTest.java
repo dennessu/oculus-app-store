@@ -6,10 +6,8 @@ import com.junbo.payment.core.BaseTest;
 import com.junbo.payment.core.PaymentCallbackService;
 import com.junbo.payment.core.provider.adyen.AdyenProviderServiceImpl;
 import com.junbo.payment.spec.enums.PaymentStatus;
-import com.junbo.payment.spec.model.ChargeInfo;
-import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.payment.spec.model.PaymentCallbackParams;
-import com.junbo.payment.spec.model.PaymentTransaction;
+import com.junbo.payment.spec.enums.Platform;
+import com.junbo.payment.spec.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -49,23 +47,63 @@ public class AdyenProviderServiceTest extends BaseTest {
         properties.setPspReference("ut1234");
         properties.setAuthResult("AUTHORISED");
         properties.setMerchantReference("ut111");
+        properties.setSkinCode("0ceFRQOp");
         String strToSign="AUTHORISEDut1234ut1110ceFRQOp";
         properties.setMerchantSig(CommonUtil.calHMCASHA1(strToSign, "1234"));
-        paymentCallbackService.addPaymentProperties(result.getId(), properties);
+        paymentCallbackService.addPaymentProperties(result.getId(), properties).get();
         result = paymentService.getUpdatedTransaction(result.getId()).get();
         Assert.assertNotNull(result.getExternalToken());
         Assert.assertNotNull(result.getStatus(), PaymentStatus.SETTLED.toString());
-        boolean exception = false;
-        try{
-            result = paymentService.confirm(result.getId(), payment).get();
-        }catch (Exception ex){
-            exception = true;
-        }
-        //since the transaction is settled, so the exception should be true.
-        Assert.assertTrue(exception);
         //Charge the user again, this time. there should be no ReturnURL and the transaction becomes settled immediately as we use recurring
         payment.setTrackingUuid(generateUUID());
         payment.setId(null);
+        payment.setPaymentEvents(null);
+        result = paymentService.charge(payment).get();
+        Assert.assertNull(result.getWebPaymentInfo());
+        Assert.assertEquals(result.getStatus(), PaymentStatus.SETTLED.toString());
+    }
+
+    @Test(enabled = false)
+    public void testMobileCharge() throws ExecutionException, InterruptedException {
+        PaymentInstrument piRequest = buildBasePIRequest();
+        piRequest.setType(PIType.OTHERS.getId());
+        PaymentInstrument request = addPI(piRequest);
+        PaymentTransaction payment = new PaymentTransaction();
+        payment.setBillingRefId("123");
+        payment.setUserId(piRequest.getUserId());
+        payment.setPaymentInstrumentId(request.getId());
+        payment.setTrackingUuid(generateUUID());
+        WebPaymentInfo webPaymentInfo = new WebPaymentInfo(){
+            {
+                setPlatform(Platform.Mobile);
+            }
+        };
+        payment.setChargeInfo(new ChargeInfo() {
+            {
+                setCurrency("CNY");
+                setAmount(new BigDecimal("12.34"));
+            }
+        });
+        payment.setWebPaymentInfo(webPaymentInfo);
+        PaymentTransaction result = paymentService.charge(payment).get();
+        Assert.assertNotNull(result.getWebPaymentInfo().getRedirectURL());
+        Assert.assertEquals(result.getStatus(), PaymentStatus.UNCONFIRMED.toString());
+        //manual pay through redirectURL
+        PaymentCallbackParams properties = new PaymentCallbackParams();
+        properties.setPspReference("ut1234");
+        properties.setAuthResult("AUTHORISED");
+        properties.setMerchantReference("ut111");
+        properties.setSkinCode("RbpqLL88");
+        String strToSign="AUTHORISEDut1234ut111RbpqLL88";
+        properties.setMerchantSig(CommonUtil.calHMCASHA1(strToSign, "1234"));
+        paymentCallbackService.addPaymentProperties(result.getId(), properties).get();
+        result = paymentService.getUpdatedTransaction(result.getId()).get();
+        Assert.assertNotNull(result.getExternalToken());
+        Assert.assertNotNull(result.getStatus(), PaymentStatus.SETTLED.toString());
+        //Charge the user again, this time. there should be no ReturnURL and the transaction becomes settled immediately as we use recurring
+        payment.setTrackingUuid(generateUUID());
+        payment.setId(null);
+        payment.setPaymentEvents(null);
         result = paymentService.charge(payment).get();
         Assert.assertNull(result.getWebPaymentInfo());
         Assert.assertEquals(result.getStatus(), PaymentStatus.SETTLED.toString());

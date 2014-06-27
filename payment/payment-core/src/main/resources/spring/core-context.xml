@@ -49,6 +49,8 @@
         <property name="redirectURL" value="${payment.provider.adyen.redirecturl}"/>
         <property name="merchantAccount" value="${payment.provider.adyen.merchantaccount}"/>
         <property name="skinCode" value="${payment.provider.adyen.skincode}"/>
+        <property name="mobileSkinCode" value="${payment.provider.adyen.mobileskincode}"/>
+        <property name="oldMobileSkinCode" value="${payment.provider.adyen.oldmobileskincode}"/>
         <property name="skinSecret" value="${payment.provider.adyen.skinsecret}"/>
         <property name="paymentURL" value="${payment.provider.adyen.paymenturl}"/>
         <property name="recurringURL" value="${payment.provider.adyen.recurringurl}"/>

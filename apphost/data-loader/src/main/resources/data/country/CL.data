@@ -9,6 +9,7 @@
 		"id": "CLP"
 	},
 	"ratingBoards": [],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"AI": {
 			"locales": {

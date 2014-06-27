@@ -52,6 +52,7 @@
                 <value>supportedLocales</value>
                 <value>locales</value>
                 <value>localeAccuracy</value>
+                <value>countrySpecificNameForPostalCode</value>
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>createdTime</value>
@@ -67,6 +68,7 @@
                 <value>subCountries</value>
                 <value>supportedLocales</value>
                 <value>localeAccuracy</value>
+                <value>countrySpecificNameForPostalCode</value>
                 <value>locales</value>
                 <value>futureExpansion</value>
             </list>
@@ -81,6 +83,7 @@
                 <value>subCountries</value>
                 <value>supportedLocales</value>
                 <value>localeAccuracy</value>
+                <value>countrySpecificNameForPostalCode</value>
                 <value>locales</value>
                 <value>futureExpansion</value>
                 <value>rev</value>

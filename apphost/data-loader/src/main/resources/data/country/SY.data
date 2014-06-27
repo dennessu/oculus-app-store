@@ -9,6 +9,7 @@
 		"id": "SYP"
 	},
 	"ratingBoards": [],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"DI": {
 			"locales": {

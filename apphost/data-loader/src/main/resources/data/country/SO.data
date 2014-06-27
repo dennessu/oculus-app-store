@@ -12,6 +12,7 @@
 		"href": "/v1/age-rating-boards/FPB",
 		"id": "FPB"
 	}],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"AW": {
 			"locales": {

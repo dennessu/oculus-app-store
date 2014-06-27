@@ -12,6 +12,7 @@
 		"href": "/v1/age-rating-boards/USK",
 		"id": "USK"
 	}],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"BB": {
 			"locales": {

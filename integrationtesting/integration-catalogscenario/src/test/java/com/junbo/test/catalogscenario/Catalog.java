@@ -193,7 +193,7 @@ public class Catalog extends TestClass {
 
         //Post a Digital item
         Item digitalItem = itemServiceAPI.prepareItemEntity(defaultItemFileName);
-        digitalItem.setType(CatalogItemType.DIGITAL.getItemType());
+        digitalItem.setType(CatalogItemType.APP.getItemType());
         logger.LogSample("Post a digital(app) item");
         Item digitalItemGet = itemServiceAPI.postItem(digitalItem);
         Assert.assertNotNull(digitalItemGet);
@@ -343,7 +343,7 @@ public class Catalog extends TestClass {
 
         //Simulate app submission process
         //1. Post an Item
-        Item item = itemService.postDefaultItem(CatalogItemType.DIGITAL);
+        Item item = itemService.postDefaultItem(CatalogItemType.APP);
 
         //2. Post an item revision
         ItemRevision itemRevision = itemRevisionService.postDefaultItemRevision(item);

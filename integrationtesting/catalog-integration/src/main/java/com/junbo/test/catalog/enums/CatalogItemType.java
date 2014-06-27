@@ -12,10 +12,12 @@ package com.junbo.test.catalog.enums;
  */
 public enum CatalogItemType {
     PHYSICAL("PHYSICAL"),
-    DIGITAL("DIGITAL"),
+    APP("APP"),
+    DOWNLOADED_ADDITION("DOWNLOADED_ADDITION"),
     STORED_VALUE("STORED_VALUE"),
     SUBSCRIPTION("SUBSCRIPTION"),
-    VIRTUAL("VIRTUAL");
+    IN_APP_UNLOCK("IN_APP_UNLOCK"),
+    IN_APP_CONSUMABLE("IN_APP_CONSUMABLE"),;
 
     private String itemType;
 

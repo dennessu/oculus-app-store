@@ -14,9 +14,9 @@ import java.util.List;
 /**
  * Created by weiyu_000 on 6/26/14.
  */
-public class BillingHistory {
+public class BillingHistoryInfo {
 
-    public BillingHistory() {
+    public BillingHistoryInfo() {
         paymentInfos = new ArrayList<>();
         refundOrderItemInfos = new ArrayList<>();
     }

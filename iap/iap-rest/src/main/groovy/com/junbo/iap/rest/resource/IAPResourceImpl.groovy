@@ -109,7 +109,7 @@ class IAPResourceImpl implements IAPResource {
                         new EntitlementSearchParam(
                                 // todo: how to set the type ?
                                 userId: userId,
-                                isActive: true,
+                                // isActive: true,
                                 hostItemId: new ItemId(hostItem.id),
                                 itemIds: new HashSet<ItemId>()
                         ),
@@ -121,7 +121,7 @@ class IAPResourceImpl implements IAPResource {
                     // start page, offset, last index
                     Promise.each(results.items) { com.junbo.entitlement.spec.model.Entitlement catalogEntitlement ->
                         return convertEntitlement(catalogEntitlement, packageName).then { Entitlement entitlement ->
-                            if (entitlement.useCount > 0) {
+                            if (entitlement.useCount > 0 && catalogEntitlement.isActive) {
                                 entitlement.setSignatureTimestamp(System.currentTimeMillis())
                                 entitlements << entitlement
                             }

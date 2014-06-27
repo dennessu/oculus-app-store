@@ -20,6 +20,7 @@ import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.PaymentProvider;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.spec.enums.PaymentStatus;
+import com.junbo.payment.spec.enums.Platform;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentCallbackParams;
 import com.junbo.payment.spec.model.PaymentTransaction;
@@ -109,6 +110,9 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
                     String strRequest = getRedirectInfo(pi, paymentRequest);
                     paymentRequest.setWebPaymentInfo(new WebPaymentInfo());
                     paymentRequest.getWebPaymentInfo().setRedirectURL(redirectURL + "?" + strRequest);
+                    if(paymentRequest.getWebPaymentInfo() != null){
+                        paymentRequest.getWebPaymentInfo().setPlatform(paymentRequest.getWebPaymentInfo().getPlatform());
+                    }
                     paymentRequest.setStatus(PaymentStatus.UNCONFIRMED.toString());
                     return paymentRequest;
                 }else{
@@ -160,8 +164,9 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
         strToSign.append(CommonUtil.encode(paymentRequest.getId()));
         strRequest.append("&merchantReference=" + CommonUtil.encode(paymentRequest.getId()));
         //skinCode
-        strToSign.append(skinCode);
-        strRequest.append("&skinCode=" + skinCode);
+        String skinToUse = getSkinCode(paymentRequest);
+        strToSign.append(skinToUse);
+        strRequest.append("&skinCode=" + skinToUse);
         //merchantAccount
         strToSign.append(merchantAccount);
         strRequest.append("&merchantAccount=" + merchantAccount);
@@ -193,6 +198,26 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
             strRequest.append("&shopperIP=" + paymentRequest.getChargeInfo().getIpAddress());
         }
         return strRequest.toString();
+    }
+
+    private String getSkinCode(PaymentTransaction paymentTransaction){
+        if(paymentTransaction == null || paymentTransaction.getWebPaymentInfo() == null){
+            return skinCode;
+        }
+        Platform platform = paymentTransaction.getWebPaymentInfo().getPlatform();
+        if(platform == null){
+            return skinCode;
+        }
+        switch (platform){
+            case PC:
+                return skinCode;
+            case Mobile:
+                return mobileSkinCode;
+            case OldMobile:
+                return oldMobileSkinCode;
+            default:
+                throw AppServerExceptions.INSTANCE.invalidPlatform(platform.toString()).exception();
+        }
     }
 
     protected PaymentResult doReferenceCharge(PaymentInstrument pi, PaymentTransaction paymentRequest){
@@ -293,7 +318,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
     public Promise<PaymentTransaction> confirmNotify(PaymentTransaction payment, PaymentCallbackParams properties){
         if(!CommonUtil.isNullOrEmpty(properties.getPspReference()) && !CommonUtil.isNullOrEmpty(properties.getAuthResult())){
             String strToSign = properties.getAuthResult() + properties.getPspReference() +
-                    properties.getMerchantReference() + skinCode;
+                    properties.getMerchantReference() + properties.getSkinCode();
             if(!CommonUtil.calHMCASHA1(strToSign, skinSecret).equals(properties.getMerchantSig())){
                 LOGGER.error("Signature is not matched for:" + properties.getMerchantSig());
                 throw AppServerExceptions.INSTANCE.errorCalculateHMCA().exception();
@@ -303,23 +328,21 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
         }
         //validate signature: authResult + pspReference + merchantReference + skinCode + merchantReturnData
         if(properties.getAuthResult().equalsIgnoreCase(CONFIRMED_STATUS)){
-            paymentRepositoryFacade.updatePayment(payment.getId(), PaymentUtil.getPaymentStatus(
-                    PaymentStatus.SETTLED.toString()), properties.getPspReference());
+            updatePayment(payment,PaymentUtil.getPaymentStatus(PaymentStatus.SETTLED.toString()), properties.getPspReference());
             payment.setStatus(PaymentStatus.SETTLED.toString());
             payment.setExternalToken(properties.getPspReference());
             //get the recurring info and save it back as pi external token:
             RecurringDetail recurringReference = getRecurringReference(payment.getPaymentInstrumentId());
-            updateExternalToken(payment.getPaymentInstrumentId(), recurringReference);
+            updatePIInfo(payment.getPaymentInstrumentId(), recurringReference);
         }else{
-            paymentRepositoryFacade.updatePayment(payment.getId(), PaymentUtil.getPaymentStatus(
-                    PaymentStatus.UNCONFIRMED.toString()), properties.getPspReference());
+            updatePayment(payment,PaymentUtil.getPaymentStatus(PaymentStatus.UNCONFIRMED.toString()), properties.getPspReference());
             payment.setStatus(PaymentStatus.UNCONFIRMED.toString());
             payment.setExternalToken(properties.getPspReference());
         }
         return Promise.pure(payment);
     }
 
-    protected void updateExternalToken(Long piId, RecurringDetail recurringReference) {
+    protected void updatePIInfo(Long piId, RecurringDetail recurringReference) {
         if(recurringReference != null){
             String label = recurringReference.getVariant();
             String accountNum = null;
@@ -339,8 +362,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
                     label = "Elv";
                 }
             }
-            paymentInstrumentRepositoryFacade.updateExternalInfo(piId,
-                    recurringReference.getRecurringDetailReference(), label, accountNum);
+            updatePIInfo(piId, recurringReference.getRecurringDetailReference(), label, accountNum);
         }
     }
 

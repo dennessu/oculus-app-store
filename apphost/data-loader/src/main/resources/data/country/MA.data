@@ -9,6 +9,7 @@
 		"id": "MAD"
 	},
 	"ratingBoards": [],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"AGD": {
 			"locales": {

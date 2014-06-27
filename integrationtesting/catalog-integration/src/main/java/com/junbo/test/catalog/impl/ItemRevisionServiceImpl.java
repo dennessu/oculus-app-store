@@ -91,7 +91,8 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
 
         ItemRevision itemRevisionForPost;
 
-        if (item.getType().equalsIgnoreCase(CatalogItemType.DIGITAL.getItemType())) {
+        if (item.getType().equalsIgnoreCase(CatalogItemType.APP.getItemType()) ||
+                item.getType().equalsIgnoreCase(CatalogItemType.DOWNLOADED_ADDITION.getItemType())) {
             itemRevisionForPost = prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
         } else if (item.getType().equalsIgnoreCase(CatalogItemType.STORED_VALUE.getItemType())) {
             itemRevisionForPost = prepareItemRevisionEntity(defaultStoredValueItemRevisionFileName);

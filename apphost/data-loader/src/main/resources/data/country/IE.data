@@ -12,6 +12,7 @@
 		"href": "/v1/age-rating-boards/PEGI",
 		"id": "PEGI"
 	}],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"C": {
 			"locales": {

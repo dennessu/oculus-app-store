@@ -12,6 +12,7 @@
 		"href": "/v1/age-rating-boards/TWAR",
 		"id": "TWAR"
 	}],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"CHA": {
 			"locales": {

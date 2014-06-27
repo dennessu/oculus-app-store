@@ -9,6 +9,7 @@
 		"id": "JOD"
 	},
 	"ratingBoards": [],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"AJ": {
 			"locales": {

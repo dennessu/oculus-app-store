@@ -358,7 +358,8 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
         //Attach item revision to the item
         ItemRevision itemRevision;
-        if (itemType.equalsIgnoreCase(CatalogItemType.DIGITAL.getItemType())) {
+        if (itemType.equalsIgnoreCase(CatalogItemType.APP.getItemType()) ||
+                itemType.equalsIgnoreCase(CatalogItemType.DOWNLOADED_ADDITION.getItemType())) {
             itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
         }
         else if (itemType.equalsIgnoreCase(CatalogItemType.STORED_VALUE.getItemType())) {

@@ -9,6 +9,7 @@
 		"id": "NPR"
 	},
 	"ratingBoards": [],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"BA": {
 			"locales": {

@@ -299,12 +299,15 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
                 errors.add(AppErrors.INSTANCE
                         .fieldNotCorrect("itemId", "Cannot find item " + Utils.encodeId(revision.getItemId())));
             } else {
-                if (ItemType.DIGITAL.is(item.getType())) {
+                if ((Status.APPROVED.is(revision.getStatus()) || Status.PENDING_REVIEW.is(revision.getStatus()))
+                        && (ItemType.DIGITAL.is(item.getType())
+                            || ItemType.APP.is(item.getType()) || ItemType.DOWNLOADED_ADDITION.is(item.getType()))) {
                     if (CollectionUtils.isEmpty(revision.getBinaries())) {
                         errors.add(AppErrors.INSTANCE.missingField("binaries"));
                     }
                 }
-                if (!ItemType.DIGITAL.is(item.getType())) {
+                if (!(ItemType.DIGITAL.is(item.getType())
+                        || ItemType.APP.is(item.getType()) || ItemType.DOWNLOADED_ADDITION.is(item.getType()))) {
                     if (!CollectionUtils.isEmpty(revision.getBinaries())) {
                         errors.add(AppErrors.INSTANCE.unnecessaryField("binaries"));
                     }

@@ -9,6 +9,7 @@
 		"id": "AED"
 	},
 	"ratingBoards": [],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"AJ": {
 			"locales": {

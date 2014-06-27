@@ -20,15 +20,10 @@
     [devops] sudo apt-get install -y postgresql-9.3
     
 #create link
-    [devops] sudo rm /usr/bin/psql
-    [devops] sudo rm /usr/bin/pg_ctl
-    [devops] sudo rm /usr/bin/dropdb
-    [devops] sudo rm /usr/bin/createdb
-
-    [devops] sudo ln -s /usr/lib/postgresql/9.3/bin/psql /usr/bin/psql
-    [devops] sudo ln -s /usr/lib/postgresql/9.3/bin/pg_ctl /usr/bin/pg_ctl
-    [devops] sudo ln -s /usr/lib/postgresql/9.3/bin/createdb /usr/bin/createdb
-    [devops] sudo ln -s /usr/lib/postgresql/9.3/bin/dropdb /usr/bin/dropdb
+    [devops] sudo ln -sf /usr/lib/postgresql/9.3/bin/psql /usr/bin/psql
+    [devops] sudo ln -sf /usr/lib/postgresql/9.3/bin/pg_ctl /usr/bin/pg_ctl
+    [devops] sudo ln -sf /usr/lib/postgresql/9.3/bin/createdb /usr/bin/createdb
+    [devops] sudo ln -sf /usr/lib/postgresql/9.3/bin/dropdb /usr/bin/dropdb
 
 #clean up exisitng db instance
     [devops] sudo kill $(fuser -n tcp 5432 2> /dev/null)

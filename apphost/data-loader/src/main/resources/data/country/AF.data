@@ -9,6 +9,7 @@
 		"id": "AFN"
 	},
 	"ratingBoards": [],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"BAL": {
 			"locales": {

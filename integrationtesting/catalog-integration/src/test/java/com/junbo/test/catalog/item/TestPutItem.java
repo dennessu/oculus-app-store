@@ -158,12 +158,12 @@ public class TestPutItem {
 
         //todo: type should not be updated
         item = itemService.postDefaultItem(CatalogItemType.getRandom());
-        if (item.getType().equalsIgnoreCase(CatalogItemType.DIGITAL.getItemType()) ) {
+        if (item.getType().equalsIgnoreCase(CatalogItemType.APP.getItemType()) ) {
             item.setType(CatalogItemType.PHYSICAL.getItemType());
             verifyExpectedError(item.getItemId(), item);
         }
         else {
-            item.setType(CatalogItemType.DIGITAL.getItemType());
+            item.setType(CatalogItemType.APP.getItemType());
             verifyExpectedError(item.getItemId(), item);
         }
 
