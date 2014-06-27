@@ -9,6 +9,7 @@
 		"id": "HUF"
 	},
 	"ratingBoards": [],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"BA": {
 			"locales": {

@@ -12,6 +12,7 @@
 		"href": "/v1/age-rating-boards/GRB",
 		"id": "GRB"
 	}],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"11": {
 			"locales": {

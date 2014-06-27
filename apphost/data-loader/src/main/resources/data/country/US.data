@@ -12,6 +12,7 @@
 		"href": "/v1/age-rating-boards/ESRB",
 		"id": "ESRB"
 	}],
+	"countrySpecificNameForPostalCode":"ZIP code",
 	"subCountries": {
 		"AK": {
 			"locales": {

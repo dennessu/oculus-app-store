@@ -9,6 +9,7 @@
 		"id": "YER"
 	},
 	"ratingBoards": [],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"AB": {
 			"locales": {

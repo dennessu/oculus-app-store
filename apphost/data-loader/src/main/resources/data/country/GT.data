@@ -9,6 +9,7 @@
 		"id": "GTQ"
 	},
 	"ratingBoards": [],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"AV": {
 			"locales": {

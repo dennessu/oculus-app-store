@@ -9,6 +9,7 @@
 		"id": "THB"
 	},
 	"ratingBoards": [],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"10": {
 			"locales": {

@@ -9,6 +9,7 @@
 		"id": "ISK"
 	},
 	"ratingBoards": [],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"0": {
 			"locales": {

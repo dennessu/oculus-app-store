@@ -9,6 +9,7 @@
 		"id": "TRY"
 	},
 	"ratingBoards": [],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"01": {
 			"locales": {

@@ -9,6 +9,7 @@
 		"id": "ARS"
 	},
 	"ratingBoards": [],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"A": {
 			"locales": {

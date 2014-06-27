@@ -9,6 +9,7 @@
 		"id": "CRC"
 	},
 	"ratingBoards": [],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"A": {
 			"locales": {

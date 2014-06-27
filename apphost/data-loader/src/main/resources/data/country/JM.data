@@ -9,6 +9,7 @@
 		"id": "JMD"
 	},
 	"ratingBoards": [],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"01": {
 			"locales": {

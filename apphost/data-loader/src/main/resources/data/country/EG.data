@@ -9,6 +9,7 @@
 		"id": "EGP"
 	},
 	"ratingBoards": [],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"ALX": {
 			"locales": {

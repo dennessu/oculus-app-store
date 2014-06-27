@@ -9,6 +9,7 @@
 		"id": "USD"
 	},
 	"ratingBoards": [],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		
 	},

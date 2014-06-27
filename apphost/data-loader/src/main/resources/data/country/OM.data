@@ -9,6 +9,7 @@
 		"id": "OMR"
 	},
 	"ratingBoards": [],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"BA": {
 			"locales": {

@@ -9,6 +9,7 @@
 		"id": "PKR"
 	},
 	"ratingBoards": [],
+	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"BA": {
 			"locales": {
