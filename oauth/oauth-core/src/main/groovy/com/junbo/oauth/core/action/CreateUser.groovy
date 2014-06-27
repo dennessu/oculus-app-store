@@ -6,6 +6,7 @@
 package com.junbo.oauth.core.action
 
 import com.junbo.common.enumid.CountryId
+import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppErrorException
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.resource.UserResource
@@ -39,6 +40,7 @@ class CreateUser implements Action {
 
         String username = parameterMap.getFirst(OAuthParameters.USERNAME)
         String countryOfResidence = parameterMap.getFirst(OAuthParameters.COUNTRY)
+        String preferLocale = contextWrapper.viewLocale
 
         // check username has been created or not
         if (contextWrapper.user != null && contextWrapper.user.username == username) {
@@ -53,7 +55,8 @@ class CreateUser implements Action {
         User user = new User(
                 username: username,
                 isAnonymous: false,
-                countryOfResidence: countryOfResidence == null ? null : new CountryId(countryOfResidence)
+                countryOfResidence: countryOfResidence == null ? null : new CountryId(countryOfResidence),
+                preferredLocale: preferLocale == null ? null : new LocaleId(preferLocale)
         )
 
         return userResource.create(user).recover { Throwable throwable ->
@@ -68,8 +71,6 @@ class CreateUser implements Action {
             if (newUser == null) {
                 return Promise.pure(new ActionResult('error'))
             }
-
-
 
             contextWrapper.user = newUser
             return Promise.pure(new ActionResult('success'))
