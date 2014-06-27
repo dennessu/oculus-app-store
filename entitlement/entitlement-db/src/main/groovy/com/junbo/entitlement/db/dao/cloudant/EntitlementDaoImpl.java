@@ -85,11 +85,11 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
         if (Boolean.FALSE.equals(entitlementSearchParam.getIsActive())) {
             sb.append(" AND ( grantTime:{" + now + " TO " + EntitlementConsts.MAX_DATE + "}" +
                     " OR expirationTime:{" + EntitlementConsts.MIN_DATE + " TO " + now + "}" +
-                    " OR useCount:0" +
+                    " OR useCount:{" +  + EntitlementConsts.MIN_USECOUNT + " TO 0]" +
                     " OR isBanned:true )");
         } else if (Boolean.TRUE.equals(entitlementSearchParam.getIsActive())) {
             sb.append(
-                    " AND useCount:{1 TO " + EntitlementConsts.UNCONSUMABLE_USECOUNT + "}" +
+                    " AND useCount:{0 TO " + EntitlementConsts.UNCONSUMABLE_USECOUNT + "}" +
                             " AND grantTime:{" + EntitlementConsts.MIN_DATE + " TO " + now + "}" +
                             " AND expirationTime:{" + now + " TO " + EntitlementConsts.MAX_DATE + "}" +
                             " AND isBanned:false");

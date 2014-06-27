@@ -112,7 +112,7 @@ public class EntitlementRepoTest extends AbstractTestNGSpringContextTests {
         Entitlement entitlementEntity = buildAnEntitlement();
         entitlementEntity.setUserId(userId);
         entitlementEntity.setExpirationTime(null);
-        entitlementEntity.setUseCount(10);
+        entitlementEntity.setUseCount(1);
         entitlementRepository.insert(entitlementEntity);
         entitlementEntity.setUseCount(0);
         entitlementRepository.insert(entitlementEntity);
