@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface ProviderRoutingService {
     @Transactional(readOnly = true)
     PaymentProviderService getPaymentProvider(PIType piType);
+    PaymentProviderService getProviderByName(String provider);
     @Transactional
     void updatePaymentConfiguration();
 }

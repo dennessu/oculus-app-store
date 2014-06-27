@@ -6,6 +6,8 @@
 
 package com.junbo.payment.spec.model;
 
+import com.junbo.payment.spec.enums.Platform;
+
 /**
  * web payment info.
  */
@@ -15,6 +17,7 @@ public class WebPaymentInfo {
     private String payerId;
     private String token;
     private String redirectURL;
+    private Platform platform = Platform.PC;
 
     public String getReturnURL() {
         return returnURL;
@@ -54,5 +57,13 @@ public class WebPaymentInfo {
 
     public void setRedirectURL(String redirectURL) {
         this.redirectURL = redirectURL;
+    }
+
+    public Platform getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(Platform platform) {
+        this.platform = platform;
     }
 }

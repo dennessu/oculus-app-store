@@ -17,6 +17,7 @@ public class PaymentCallbackParams {
     private String authResult;
     private String pspReference;
     private String merchantReference;
+    private String skinCode;
     private String merchantSig;
 
     public String getPayerID() {
@@ -57,6 +58,14 @@ public class PaymentCallbackParams {
 
     public void setMerchantReference(String merchantReference) {
         this.merchantReference = merchantReference;
+    }
+
+    public String getSkinCode() {
+        return skinCode;
+    }
+
+    public void setSkinCode(String skinCode) {
+        this.skinCode = skinCode;
     }
 
     public String getMerchantSig() {

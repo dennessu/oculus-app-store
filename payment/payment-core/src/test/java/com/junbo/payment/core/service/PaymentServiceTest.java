@@ -79,7 +79,7 @@ public class PaymentServiceTest extends BaseTest {
         PaymentTransaction payment = buildPaymentTransaction(request);
         PaymentTransaction result = paymentService.authorize(payment).get();
         payment.setChargeInfo(null);
-        paymentService.reverse(result.getId(), payment);
+        paymentService.reverse(result.getId(), payment).get();
         PaymentTransaction getResult = paymentService.getUpdatedTransaction(result.getId()).get();
         Assert.assertEquals(result.getExternalToken(), MockPaymentProviderServiceImpl.authExternalToken);
         Assert.assertEquals(getResult.getStatus().toString(), PaymentStatus.REVERSED.toString());

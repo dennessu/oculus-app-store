@@ -22,7 +22,8 @@ public enum PaymentAPI implements Identifiable<Short> {
     Charge((short)7),
     Reverse((short)8),
     Refund((short)9),
-    Credit((short)10);
+    Credit((short)10),
+    ReportEvent((short)11);
 
     private final Short id;
 

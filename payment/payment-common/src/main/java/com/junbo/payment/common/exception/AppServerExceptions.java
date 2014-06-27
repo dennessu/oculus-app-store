@@ -60,4 +60,7 @@ public interface AppServerExceptions {
 
     @ErrorDef(httpStatusCode = 401, code = "50014", description = "{0} is un-authorized for calling API")
     AppError unAuthorized(String authCode);
+
+    @ErrorDef(httpStatusCode = 401, code = "50015", description = "Platform {platform} is invalid")
+    AppError invalidPlatform(String platform);
 }
