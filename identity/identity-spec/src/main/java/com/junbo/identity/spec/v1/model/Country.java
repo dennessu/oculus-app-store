@@ -61,6 +61,12 @@ public class Country extends PropertyAssignedAwareResourceMeta<CountryId> {
             "the localAccracy value should be \"LOW\". ")
     private String localeAccuracy;
 
+    @ApiModelProperty(position = 10, required = false, value = "Name of the postal code in this specific country, as per our research, " +
+            "postal code is interperated differently in different countries. For example, in US, it's called \"ZIP code\" and need to be translated based on \"ZIP code\"; " +
+            "while in Brizil, it's called \"CEP\" and need to be translated based on \"CEP\". In this attribute, " +
+            "it stores the country specific name of the postal code in this country.")
+    private String countrySpecificNameForPostalCode;
+
     public CountryId getId() {
         return id;
     }
@@ -141,5 +147,14 @@ public class Country extends PropertyAssignedAwareResourceMeta<CountryId> {
     public void setLocaleAccuracy(String localeAccuracy) {
         this.localeAccuracy = localeAccuracy;
         support.setPropertyAssigned("localeAccuracy");
+    }
+
+    public String getCountrySpecificNameForPostalCode() {
+        return countrySpecificNameForPostalCode;
+    }
+
+    public void setCountrySpecificNameForPostalCode(String countrySpecificNameForPostalCode) {
+        this.countrySpecificNameForPostalCode = countrySpecificNameForPostalCode;
+        support.setPropertyAssigned("countrySpecificNameForPostalCode");
     }
 }
