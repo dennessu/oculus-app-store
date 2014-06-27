@@ -225,7 +225,7 @@ public class TestGetItem extends BaseTestClass {
 
         //set type to DIGITAL
         listType.clear();
-        listType.add(CatalogItemType.DIGITAL.getItemType());
+        listType.add(CatalogItemType.APP.getItemType());
         paraMap.put("type", listType);
         verifyGetItemsScenarios(paraMap, 1, itemId2);
 
