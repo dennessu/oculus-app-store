@@ -63,7 +63,7 @@ trigger_file = '$PROMOTE_TRIGGER_FILE'
 EOF
 
     echo "[FAILBACK][SLAVE] start slave database"
-    $PGBIN_PATH/pg_ctl -D $SLAVE_DATA_PATH start > /dev/null 2>&1 &
+    $PGBIN_PATH/pg_ctl -D $SLAVE_DATA_PATH -l "${SLAVE_LOG_PATH}/postgresql-$(date +%Y.%m.%d.%S.%N).log" start > /dev/null 2>&1 &
 
     while ! echo exit | nc $SLAVE_HOST $SLAVE_DB_PORT;
     do

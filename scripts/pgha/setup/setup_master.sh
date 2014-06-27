@@ -17,6 +17,9 @@ createDir $MASTER_BACKUP_PATH
 echo "[SETUP][MASTER] create database archive folder $MASTER_ARCHIVE_PATH"
 createDir $MASTER_ARCHIVE_PATH
 
+echo "[SETUP][MASTER] create database log folder $MASTER_LOG_PATH"
+createDir $MASTER_LOG_PATH
+
 echo "[SETUP][MASTER] initialize master database"
 $PGBIN_PATH/pg_ctl -D $MASTER_DATA_PATH initdb
 
@@ -54,7 +57,7 @@ port = $MASTER_DB_PORT
 EOF
 
 echo "[SETUP][MASTER] start master database"
-$PGBIN_PATH/pg_ctl -D $MASTER_DATA_PATH start > /dev/null 2>&1 &
+$PGBIN_PATH/pg_ctl -D $MASTER_DATA_PATH -l "${MASTER_LOG_PATH}/postgresql-$(date +%Y.%m.%d.%S.%N).log" start > /dev/null 2>&1 &
 
 while ! echo exit | nc $MASTER_HOST $MASTER_DB_PORT;
 do 
