@@ -85,6 +85,5 @@
         <property name="shipFromCountry" value="${shipFrom.address.country}"/>
         <property name="baseUrl" value="${sabrix.baseUrl}"/>
     </bean>
-    <bean id="billingAsyncHttpClient" class="com.ning.http.client.AsyncHttpClient"/>
     <bean id="transcoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
 </beans>

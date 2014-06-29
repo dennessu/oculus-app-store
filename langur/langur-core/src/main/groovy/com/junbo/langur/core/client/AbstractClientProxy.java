@@ -1,9 +1,9 @@
 // CHECKSTYLE:OFF
 package com.junbo.langur.core.client;
 
+import com.junbo.langur.core.async.JunboAsyncHttpClient;
 import com.junbo.langur.core.context.JunboHttpContext;
 import com.junbo.langur.core.context.JunboHttpContextScopeListener;
-import com.ning.http.client.AsyncHttpClient;
 import groovy.transform.CompileStatic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
@@ -18,7 +18,7 @@ import java.util.Map;
  */
 @CompileStatic
 public abstract class AbstractClientProxy {
-    protected AsyncHttpClient __client;
+    protected JunboAsyncHttpClient __client;
 
     protected String __target;
 
@@ -44,7 +44,7 @@ public abstract class AbstractClientProxy {
     protected List<JunboHttpContextScopeListener> __junboHttpContextScopeListeners;
 
     @Required
-    public void setClient(AsyncHttpClient __client) {
+    public void setClient(JunboAsyncHttpClient __client) {
         this.__client = __client;
     }
 
@@ -112,7 +112,7 @@ public abstract class AbstractClientProxy {
         return httpContextData;
     }
 
-    protected void __addHeadersFromHeadersProvider(AsyncHttpClient.BoundRequestBuilder requestBuilder) {
+    protected void __addHeadersFromHeadersProvider(JunboAsyncHttpClient.BoundRequestBuilder requestBuilder) {
         if (__headersProvider != null) {
             for (java.util.Map.Entry<String, java.util.List<String>> entry : __headersProvider.getHeaders().entrySet()) {
                 for (String value : entry.getValue()) {

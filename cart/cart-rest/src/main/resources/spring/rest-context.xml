@@ -22,9 +22,6 @@
 
     <bean id="defaultCartResourceTopology" parent="routingTopologyBase" />
 
-    <bean id="httpClient" class="com.ning.http.client.AsyncHttpClient">
-    </bean>
-
     <bean id="pathParamTranscoder" class="com.junbo.common.json.IdPathParamTranscoder"/>
     <bean id="transcoder" class="com.junbo.common.json.JsonMessageTranscoder"/>
     <bean id="queryParamTranscoder" class="com.junbo.common.json.QueryParamTranscoderImpl"/>

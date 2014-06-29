@@ -9,7 +9,6 @@ import time
 from threading import Thread
 from Queue import Queue
 
-
 def main():
     # Enforce python version
     if sys.version_info[0] != 2 or sys.version_info[1] < 7:
@@ -31,8 +30,18 @@ def main():
          t.daemon = True
          t.start()
 
+    count = 0
+    lines = []
     for line in sys.stdin:
-        q.put(line)
+        lines.append(line)
+        count += 1
+        if count == 1:
+            q.put(lines)
+            count = 0
+            lines = []
+        break
+    if len(lines) > 0:
+        q.put(lines)
 
     q.join()       # block until all tasks are done
 
@@ -41,8 +50,18 @@ def main():
 
 def worker(q):
     while True:
-        line = q.get()
-        curl('http://localhost:8080/v1/imports', 'POST', line, { 'Content-Type': 'application/json' })
+        lines = '['
+        inputLines = q.get()
+        for line in inputLines:
+            lines += line + ','
+        lines = lines[0 : len(lines) - 1] + ']'
+        startTime = time.time()
+        try:
+            print 'Processing %d lines.' % len(inputLines)
+            curl('http://127.0.0.1:8080/v1/imports/bulk', 'POST', lines, { 'Content-Type': 'application/json' })
+        except Exception, e:
+            print e
+        print 'Processing done, elapsed time: %s' % (time.time() - startTime)
         q.task_done()
 
 def curl(url, method = 'GET', body = None, headers = None, raiseOnError = True):

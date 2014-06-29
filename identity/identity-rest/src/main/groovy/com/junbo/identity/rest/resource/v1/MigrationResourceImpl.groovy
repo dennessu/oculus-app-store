@@ -1,5 +1,4 @@
 package com.junbo.identity.rest.resource.v1
-
 import com.junbo.authorization.spec.model.Role
 import com.junbo.authorization.spec.model.RoleAssignment
 import com.junbo.authorization.spec.model.RoleTarget
@@ -7,8 +6,10 @@ import com.junbo.authorization.spec.option.list.RoleAssignmentListOptions
 import com.junbo.authorization.spec.option.list.RoleListOptions
 import com.junbo.authorization.spec.resource.RoleAssignmentResource
 import com.junbo.authorization.spec.resource.RoleResource
+import com.junbo.common.cloudant.CloudantClientBase
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.id.util.IdUtil
@@ -34,7 +35,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.StringUtils
-
 /**
  * Created by liangfu on 6/6/14.
  */
@@ -80,6 +80,8 @@ class MigrationResourceImpl implements MigrationResource {
 
     @Override
     Promise<OculusOutput> migrate(OculusInput oculusInput) {
+        CloudantClientBase.useBulk = true
+
         if (StringUtils.isEmpty(oculusInput.username)) {
             throw new IllegalArgumentException('username can\'t be null')
         }
@@ -98,6 +100,29 @@ class MigrationResourceImpl implements MigrationResource {
                     return createOrUpdateMigrateUser(oculusInput)
                 }
             }
+        }
+    }
+
+    @Override
+    Promise<List<OculusOutput>> bulkMigrate(List<OculusInput> oculusInputs) {
+        CloudantClientBase.useBulk = true
+
+        List<OculusOutput> result = new ArrayList<>()
+        return Promise.each(oculusInputs) { OculusInput oculusInput ->
+            return migrate(oculusInput).then { OculusOutput output ->
+                result.add(output)
+                return Promise.pure(null)
+            }.recover { Throwable ex ->
+                if (ex instanceof AppErrorException) {
+                    OculusOutput output = new OculusOutput(error: ((AppErrorException)ex).error)
+                    result.add(output)
+                    return Promise.pure(null)
+                } else {
+                    throw ex;
+                }
+            }
+        }.then {
+            return Promise.pure(result)
         }
     }
 

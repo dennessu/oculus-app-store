@@ -128,23 +128,16 @@ public final class Promise<T> {
         });
     }
 
-    // it could introduce multiple threads using the same thread local. Disable for now
-    @Deprecated
-    public static <T> Promise<List<T>> all(Iterable<Promise<? extends T>> promises) {
+    public static <T> Promise<List<T>> all(final Iterable<?> iterable, final Closure<Promise<? extends T>> closure) {
+        final Iterator<?> iterator = iterable.iterator();
         List<ListenableFuture<? extends T>> futures = new ArrayList<>();
-
-        for (Promise<? extends T> promise : promises) {
-            futures.add(promise.wrapped());
+        while (iterator.hasNext()) {
+            Object item = iterator.next();
+            try (ThreadLocalRequireNew scope = new ThreadLocalRequireNew()) {
+                futures.add(closure.call(item).wrapped());
+            }
         }
-
         return wrap(Futures.allAsList(futures));
-    }
-
-    // it could introduce multiple threads using the same thread local. Disable for now
-    @Deprecated
-    @SafeVarargs
-    public static <T> Promise<List<T>> all(Promise<? extends T>... promises) {
-        return all(Arrays.asList(promises));
     }
 
     @SuppressWarnings("unchecked")

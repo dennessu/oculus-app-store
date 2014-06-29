@@ -6,6 +6,7 @@
 package com.junbo.identity.spec.v1.model.migration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.error.AppError;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.common.id.UserId;
 
@@ -19,6 +20,9 @@ public class OculusOutput {
 
     @JsonProperty("organization")
     private OrganizationId organizationId;
+
+    @JsonProperty("error")
+    private AppError error;
 
     public UserId getUserId() {
         return userId;
@@ -34,5 +38,13 @@ public class OculusOutput {
 
     public void setOrganizationId(OrganizationId organizationId) {
         this.organizationId = organizationId;
+    }
+
+    public AppError getError() {
+        return error;
+    }
+
+    public void setError(AppError error) {
+        this.error = error;
     }
 }

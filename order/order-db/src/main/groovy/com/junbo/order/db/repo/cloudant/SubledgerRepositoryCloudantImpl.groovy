@@ -40,7 +40,7 @@ class SubledgerRepositoryCloudantImpl extends BaseCloudantRepositoryForDualWrite
         String endKey = [subledgerParam.sellerId.toString(), subledgerParam.payOutStatus,
                                           endDateStr].join(';')
         return super.queryView('by_seller_status_offer_time_cc', startKey, endKey,
-            pageParam?.count, pageParam?.start, false, true)
+            pageParam?.count, pageParam?.start, false)
     }
 
     @Override

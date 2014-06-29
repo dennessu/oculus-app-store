@@ -16,7 +16,7 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
     javax.ws.rs.core.UriBuilder __uriBuilder = UriBuilder.fromUri(__target);
     __uriBuilder.path("${path}");
 
-    AsyncHttpClient.BoundRequestBuilder __requestBuilder = __client.prepare${httpMethodName}("http://127.0.0.1"); // the url will be overwritten later
+    JunboAsyncHttpClient.BoundRequestBuilder __requestBuilder = __client.prepare${httpMethodName}("http://127.0.0.1"); // the url will be overwritten later
 
     __addHeadersFromHeadersProvider(__requestBuilder);
 
