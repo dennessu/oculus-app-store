@@ -57,7 +57,7 @@ class Invoice {
     Boolean isAudited
 
     @XStreamAlias('ORIGINAL_INVOICE_DATE')
-    Date originalInvoiceDate
+    String originalInvoiceDate
 
     @XStreamAlias('ORIGINAL_INVOICE_NUMBER')
     String originalInvoiceNumber
@@ -70,6 +70,12 @@ class Invoice {
 
     @XStreamAlias('SHIP_FROM')
     SabrixAddress shipFrom
+
+    @XStreamAlias('CUSTOMER_NAME')
+    String customerName
+
+    @XStreamAlias('CUSTOMER_NUMBER')
+    String customerNumber
     // end of input
 
     // output
@@ -100,11 +106,13 @@ class Invoice {
                 ", line=" + line +
                 ", userElement=" + userElement +
                 ", isAudited=" + isAudited +
-                ", originalInvoiceDate=" + originalInvoiceDate +
+                ", originalInvoiceDate='" + originalInvoiceDate + '\'' +
                 ", originalInvoiceNumber='" + originalInvoiceNumber + '\'' +
                 ", billTo=" + billTo +
                 ", shipTo=" + shipTo +
                 ", shipFrom=" + shipFrom +
+                ", customerName='" + customerName + '\'' +
+                ", customerNumber='" + customerNumber + '\'' +
                 ", requestStatus=" + requestStatus +
                 ", totalTaxAmount=" + totalTaxAmount +
                 ", message=" + message +

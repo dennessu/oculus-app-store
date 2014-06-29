@@ -15,7 +15,6 @@ import groovy.transform.CompileStatic
 class SabrixConfiguration {
     String hostSystem
     String callingSystemNumber
-    String calculationDirection
     String companyRole
     String username
     String password

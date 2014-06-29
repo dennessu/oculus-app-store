@@ -124,8 +124,8 @@ public class SubledgerTesting extends BaseOrderTestClass {
 
         Order order = Master.getInstance().getOrder(orderId3);
         order.setTentative(false);
-        order.setSuccessRedirectUrl("http://www.abc.com/");
-        order.setCancelRedirectUrl("http://www.abc.com/cancel/");
+        order.getPayments().get(0).setSuccessRedirectUrl("http://www.abc.com/");
+        order.getPayments().get(0).setCancelRedirectUrl("http://www.abc.com/cancel/");
         orderId3 = testDataProvider.updateOrder(order);
 
         offerList.clear();

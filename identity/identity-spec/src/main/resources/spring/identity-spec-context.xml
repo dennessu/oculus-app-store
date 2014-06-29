@@ -63,4 +63,9 @@
           parent="baseClientProxy" abstract="true">
         <property name="target" value="${clientproxy.identity.url}"/>
     </bean>
+
+    <bean id="organizationResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.OrganizationResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
 </beans>

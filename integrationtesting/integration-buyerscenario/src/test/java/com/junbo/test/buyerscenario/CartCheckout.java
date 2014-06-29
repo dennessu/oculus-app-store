@@ -362,11 +362,11 @@ public class CartCheckout extends BaseTestClass {
 
         Order order = Master.getInstance().getOrder(orderId);
         order.setTentative(false);
-        order.setSuccessRedirectUrl("http://www.abc.com/");
-        order.setCancelRedirectUrl("http://www.abc.com/cancel/");
+        order.getPayments().get(0).setSuccessRedirectUrl("http://www.abc.com/");
+        order.getPayments().get(0).setCancelRedirectUrl("http://www.abc.com/cancel/");
         orderId = testDataProvider.updateOrder(order);
         order = Master.getInstance().getOrder(orderId);
-        String providerConfirmUrl = order.getProviderConfirmUrl();
+        String providerConfirmUrl = order.getPayments().get(0).getProviderConfirmUrl();
         int tokenIndex = providerConfirmUrl.indexOf("token=");
         String token = providerConfirmUrl.substring(tokenIndex + 6);
 
@@ -481,11 +481,11 @@ public class CartCheckout extends BaseTestClass {
 
         Order order = Master.getInstance().getOrder(orderId);
         order.setTentative(false);
-        order.setSuccessRedirectUrl("http://www.baidu.com/");
-        order.setCancelRedirectUrl("http://www.baidu.com/cancel/");
+        order.getPayments().get(0).setSuccessRedirectUrl("http://www.baidu.com/");
+        order.getPayments().get(0).setCancelRedirectUrl("http://www.baidu.com/cancel/");
         orderId = testDataProvider.updateOrder(order);
         order = Master.getInstance().getOrder(orderId);
-        String providerConfirmUrl = order.getProviderConfirmUrl();
+        String providerConfirmUrl = order.getPayments().get(0).getProviderConfirmUrl();
 
         String[] params = providerConfirmUrl.split("&");
         String urlEncoded = new String();

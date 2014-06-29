@@ -49,6 +49,14 @@ public interface AppErrors {
             description ="Country with name {0} not found")
     AppError countryNotFound(String name);
 
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.OFFER_NOT_FOUND,
+            description ="Offer revision with name {0} not found")
+    AppError offerNotFound(String name);
+
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.ORGANIZATION_NOT_FOUND,
+            description ="Organization with name {0} not found")
+    AppError organizationNotFound(String name);
+
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.PAYMENT_INSTRUMENT_NOT_FOUND,
             description ="PI with id {0} not found")
     AppError piNotFound(String id);

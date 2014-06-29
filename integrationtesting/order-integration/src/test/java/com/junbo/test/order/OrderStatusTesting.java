@@ -74,8 +74,8 @@ public class OrderStatusTesting extends BaseOrderTestClass {
 
         Order order = Master.getInstance().getOrder(orderId2);
         order.setTentative(false);
-        order.setSuccessRedirectUrl("http://www.abc.com/");
-        order.setCancelRedirectUrl("http://www.abc.com/cancel/");
+        order.getPayments().get(0).setSuccessRedirectUrl("http://www.abc.com/");
+        order.getPayments().get(0).setCancelRedirectUrl("http://www.abc.com/cancel/");
         orderId2 = testDataProvider.updateOrder(order);
 
         expectedOrderStatus.put(orderId2, OrderStatus.PENDING_CHARGE);

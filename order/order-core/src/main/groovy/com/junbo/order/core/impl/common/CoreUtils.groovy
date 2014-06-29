@@ -119,6 +119,7 @@ class CoreUtils {
         diffOrder.setId(existingOrder.getId())
         diffOrder.orderItems = []
         diffOrder.totalAmount = 0G
+        diffOrder.purchaseTime = existingOrder.purchaseTime
 
         Boolean changed = false
         existingOrder.orderItems.each { OrderItem i ->

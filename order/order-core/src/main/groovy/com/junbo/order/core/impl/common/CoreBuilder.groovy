@@ -23,6 +23,9 @@ import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+
+import java.text.SimpleDateFormat
+
 /**
  * Created by chriszhu on 2/24/14.
  */
@@ -31,6 +34,16 @@ import org.slf4j.LoggerFactory
 class CoreBuilder {
     private static final Logger LOGGER = LoggerFactory.getLogger(CoreBuilder)
 
+    private static final ThreadLocal<SimpleDateFormat> DATE_FORMATTER =
+            new ThreadLocal<SimpleDateFormat>() {
+                @Override
+                protected SimpleDateFormat initialValue() {
+                    def ret = new SimpleDateFormat('yyyy-MM-dd', Locale.US)
+                    ret.timeZone = TimeZone.getTimeZone('UTC')
+                    return ret
+                }
+            }
+
     static Balance buildBalance(Order order, BalanceType balanceType) {
         if (order == null) {
             return null
@@ -38,6 +51,8 @@ class CoreBuilder {
 
         Balance balance = buildBalance(order)
         balance.type = balanceType.toString()
+        balance.propertySet.put(PropertyKey.CUSTOMER_NUMBER.name(), order.user.value.toString())
+        balance.propertySet.put(PropertyKey.LOCALE.name(), order.locale.value?.replace('-', '_'))
 
         order.orderItems.eachWithIndex { OrderItem item, int i ->
             def balanceItem = buildBalanceItem(item)
@@ -117,8 +132,11 @@ class CoreBuilder {
                     balanceItem.orderItemId = matched.getId()
                     balanceItem.propertySet.put(PropertyKey.ITEM_TYPE.name(), matched.type)
                     balanceItem.propertySet.put(PropertyKey.ITEM_QUANTITY.name(), matched.quantity.toString())
-                    balanceItem.propertySet.put(PropertyKey.ITEM_NAME.name(), matched.offer.value)
+                    balanceItem.propertySet.put(PropertyKey.OFFER_ID.name(), matched.offer.value)
+                    balanceItem.propertySet.put(PropertyKey.ORDER_ITEM_ID.name(), matched.getId().value.toString())
                     balance.addBalanceItem(balanceItem)
+                    balance.propertySet.put(PropertyKey.ORIGINAL_INVOICE_DATE.name(),
+                            DATE_FORMATTER.get().format(diffOrder.purchaseTime))
                 }
             }
             returnBalances << balance
@@ -156,9 +174,9 @@ class CoreBuilder {
         balance.piId = order.payments?.get(0)?.paymentInstrument
         balance.trackingUuid = UUID.randomUUID()
         balance.shippingAddressId = order.shippingAddress
-        balance.providerConfirmUrl = order.payments[0].providerConfirmUrl
-        balance.successRedirectUrl = order.payments[0].successRedirectUrl
-        balance.cancelRedirectUrl = order.payments[0].cancelRedirectUrl
+        balance.providerConfirmUrl = order.payments?.get(0)?.providerConfirmUrl
+        balance.successRedirectUrl = order.payments?.get(0)?.successRedirectUrl
+        balance.cancelRedirectUrl = order.payments?.get(0)?.cancelRedirectUrl
         if (order.paymentDescription != null) {
             balance.propertySet.put(PropertyKey.BALANCE_DESCRIPTION.name(), order.paymentDescription)
         }
@@ -195,7 +213,7 @@ class CoreBuilder {
         balanceItem.orderItemId = item.getId()
         balanceItem.propertySet.put(PropertyKey.ITEM_TYPE.name(), item.type)
         balanceItem.propertySet.put(PropertyKey.ITEM_QUANTITY.name(), item.quantity.toString())
-        balanceItem.propertySet.put(PropertyKey.ITEM_NAME.name(), item.offer.value)
+        balanceItem.propertySet.put(PropertyKey.OFFER_ID.name(), item.offer.value)
         if (item.totalDiscount > BigDecimal.ZERO) {
             DiscountItem discountItem = new DiscountItem()
             discountItem.discountAmount = item.totalDiscount

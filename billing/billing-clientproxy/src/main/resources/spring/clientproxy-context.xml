@@ -21,9 +21,20 @@
         <property name="accessTokenProvider" ref="billingAccessTokenProvider"/>
     </bean>
 
+    <bean id="billingOfferRevisionClient" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy"
+          parent="offerRevisionClientProxy">
+        <property name="accessTokenProvider" ref="billingAccessTokenProvider"/>
+    </bean>
+
     <bean id="billingIdentityUserPersonalInfoClient"
           class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy"
           parent="userPersonalInfoResourceClientProxy">
+        <property name="accessTokenProvider" ref="billingAccessTokenProvider"/>
+    </bean>
+
+    <bean id="billingIdentityOrganizationClient"
+          class="com.junbo.identity.spec.v1.resource.proxy.OrganizationResourceClientProxy"
+          parent="organizationResourceClientProxy">
         <property name="accessTokenProvider" ref="billingAccessTokenProvider"/>
     </bean>
 
@@ -54,6 +65,7 @@
     <bean id="billingPaymentFacade" class="com.junbo.billing.clientproxy.impl.PaymentFacadeImpl" />
     <bean id="billingCurrencyFacade" class="com.junbo.billing.clientproxy.impl.CurrencyFacadeImpl" />
     <bean id="billingCountryFacade" class="com.junbo.billing.clientproxy.impl.CountryFacadeImpl" />
+    <bean id="billingCatalogFacade" class="com.junbo.billing.clientproxy.impl.CatalogFacadeImpl" />
 
     <!--<bean id="identityFacade" class="com.junbo.billing.clientproxy.mock.MockIdentityFacadeImpl" />
     <bean id="paymentFacade" class="com.junbo.billing.clientproxy.mock.MockPaymentFacadeImpl" />-->
@@ -74,7 +86,6 @@
     <bean id="sabrixConfiguration" class="com.junbo.billing.clientproxy.impl.sabrix.SabrixConfiguration">
         <property name="hostSystem" value="${sabrix.host.system}"/>
         <property name="callingSystemNumber" value="${sabrix.calling.system.number}"/>
-        <property name="calculationDirection" value="${sabrix.calculation.direction}"/>
         <property name="companyRole" value="${sabrix.company.role}"/>
         <property name="username" value="${sabrix.username}"/>
         <property name="password" value="${sabrix.password}"/>
