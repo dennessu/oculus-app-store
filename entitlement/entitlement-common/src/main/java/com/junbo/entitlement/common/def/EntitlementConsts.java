@@ -33,6 +33,7 @@ public class EntitlementConsts {
     public static final String NO_TYPE = "NULL";
     public static final Date NEVER_EXPIRE = new Date(NEVER_EXPIRE_LONG);
     public static final Integer UNCONSUMABLE_USECOUNT = Integer.MAX_VALUE;
+    public static final Integer MIN_USECOUNT = Integer.MIN_VALUE;
 
     public static final Set<String> ALLOWED_TYPE = new HashSet<>(Arrays.asList(new String[]{"DOWNLOAD", "RUN", "DEVELOPER", "ALLOW_IN_APP"}));
 }
