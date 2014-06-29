@@ -16,6 +16,11 @@ public class RestAdapterAfterInvocationFilter implements AfterInvocationFilter {
 
     @Override
     public Promise<Void> process() {
-        return Context.get().drainPendingTasks();
+        return Context.get().executeCleanupActions().then(new Promise.Func<Void, Promise<Void>>() {
+            @Override
+            public Promise<Void> apply(Void aVoid) {
+                return Context.get().drainPendingTasks();
+            }
+        });
     }
 }

@@ -4,14 +4,13 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.oauth.core.action
-
+import com.junbo.langur.core.async.JunboAsyncHttpClient
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
-import com.ning.http.client.AsyncHttpClient
 import com.ning.http.client.Response
 import com.ning.http.client.extra.ListenableFutureAdapter
 import groovy.transform.CompileStatic
@@ -19,7 +18,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
-
 /**
  * ValidateCaptcha.
  */
@@ -35,7 +33,7 @@ class ValidateCaptcha implements Action {
 
     private String recaptchaVerifyEndpoint
 
-    private AsyncHttpClient asyncHttpClient
+    private JunboAsyncHttpClient asyncHttpClient
 
     @Required
     void setEnabled(boolean enabled) {
@@ -58,7 +56,7 @@ class ValidateCaptcha implements Action {
     }
 
     @Required
-    void setAsyncHttpClient(AsyncHttpClient asyncHttpClient) {
+    void setAsyncHttpClient(JunboAsyncHttpClient asyncHttpClient) {
         this.asyncHttpClient = asyncHttpClient
     }
 

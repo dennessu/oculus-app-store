@@ -22,7 +22,7 @@ abstract class CloudantClientForDualWrite<T extends CloudantEntity> extends Clou
         // for dual write, always treat as save.
         entity.cloudantId = entity.id.toString()
 
-        return getCloudantDocument(entity.cloudantId).then { T cloudantDoc ->
+        return cloudantGet(entity.cloudantId).then { T cloudantDoc ->
             if (cloudantDoc == null) {
                 // create
                 return super.cloudantPost(entity);

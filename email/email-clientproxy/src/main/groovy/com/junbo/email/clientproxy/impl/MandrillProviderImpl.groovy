@@ -1,7 +1,5 @@
 package com.junbo.email.clientproxy.impl
 
-import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
-
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.junbo.common.id.Id
@@ -13,15 +11,16 @@ import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.model.EmailStatus
 import com.junbo.email.spec.model.EmailTemplate
+import com.junbo.langur.core.async.JunboAsyncHttpClient
+import com.junbo.langur.core.async.JunboAsyncHttpClient.BoundRequestBuilder
 import com.junbo.langur.core.promise.Promise
-import com.ning.http.client.AsyncHttpClient
-import com.ning.http.client.AsyncHttpClient.BoundRequestBuilder
 import com.ning.http.client.Response
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.util.StringUtils
 
+import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
 
 /**
  * Email Provider implement by Mandrill.
@@ -38,13 +37,13 @@ class MandrillProviderImpl implements EmailProvider {
 
     private MandrillConfiguration configuration
 
-    private AsyncHttpClient asyncHttpClient
+    private JunboAsyncHttpClient asyncHttpClient
 
     void setConfiguration(MandrillConfiguration configuration) {
         this.configuration = configuration
     }
 
-    void setAsyncHttpClient(AsyncHttpClient asyncHttpClient) {
+    void setAsyncHttpClient(JunboAsyncHttpClient asyncHttpClient) {
         this.asyncHttpClient = asyncHttpClient
     }
 

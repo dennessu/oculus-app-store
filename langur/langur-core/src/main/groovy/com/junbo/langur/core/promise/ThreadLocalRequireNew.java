@@ -14,7 +14,7 @@ import java.lang.reflect.Field;
  * Create a new thread local context.
  */
 public class ThreadLocalRequireNew implements AutoCloseable {
-    private static final Logger logger = LoggerFactory.getLogger(Snapshot.class);
+    private static final Logger logger = LoggerFactory.getLogger(ThreadLocalRequireNew.class);
 
     private static final Field threadLocalsField;
     private static final Field inheritableThreadLocalsField;

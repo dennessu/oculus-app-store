@@ -36,8 +36,8 @@ public class Context {
         private Topology topology;
         private DataAccessPolicy dataAccessPolicy;
 
-        private List<?> pendingActions;
         private List<Promise> pendingTasks = new ArrayList<>();
+        private List<Closure<Promise<Void>>> cleanupActions = new ArrayList<>();
 
         public Integer getShardId() {
             return shardId;
@@ -71,12 +71,24 @@ public class Context {
             this.dataAccessPolicy = dataAccessPolicy;
         }
 
-        public List<?> getPendingActions() {
-            return pendingActions;
+        /**
+         * Register cleanup actions.
+         * The cleanup actions are run when the request finishes. They are run before drainPendingTasks(), so they can
+         * generate new pending actions.
+         *
+         * @param command The function run when the request finishes.
+         */
+        public void registerCleanupActions(Closure<Promise<Void>> command) {
+            this.cleanupActions.add(command);
         }
 
-        public void setPendingActions(List<?> pendingActions) {
-            this.pendingActions = pendingActions;
+        public Promise<Void> executeCleanupActions() {
+            return Promise.each(cleanupActions, new Promise.Func<Closure<Promise<Void>>, Promise>() {
+                @Override
+                public Promise<Void> apply(Closure<Promise<Void>> promiseClosure) {
+                    return promiseClosure.call();
+                }
+            });
         }
 
         /**
