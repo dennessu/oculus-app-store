@@ -95,6 +95,7 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
             }
 
             if (locale != null) {
+                locale = locale.replace('-', '_')
                 String[] parts = locale.split('_')
                 switch (parts.length) {
                     case 3: case 2:

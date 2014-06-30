@@ -42,7 +42,7 @@ class CreateUser implements Action {
         String countryOfResidence = parameterMap.getFirst(OAuthParameters.COUNTRY)
         String preferLocale = contextWrapper.viewLocale
         if (preferLocale != null) {
-            preferLocale = preferLocale.replaceFirst('-', '_')
+            preferLocale = preferLocale.replace('-', '_')
         }
 
         // check username has been created or not
