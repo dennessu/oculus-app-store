@@ -157,11 +157,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Philippines",
-			"longName": "Republic of the Philippines"
+			"longName": "Republic of the Philippines",
+			"postalCode": "Postal Code"
 		},
 		"en_SG": {
 			"shortName": "Philippines",
-			"longName": "Republic of the Philippines"
+			"longName": "Republic of the Philippines",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

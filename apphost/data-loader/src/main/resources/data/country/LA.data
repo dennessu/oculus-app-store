@@ -165,11 +165,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Laos",
-			"longName": "Lao People's Democratic Republic"
+			"longName": "Lao People's Democratic Republic",
+			"postalCode": "Postal Code"
 		},
 		"en_SG": {
 			"shortName": "Laos",
-			"longName": "Lao People's Democratic Republic"
+			"longName": "Lao People's Democratic Republic",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

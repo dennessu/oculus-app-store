@@ -306,11 +306,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Argentina",
-			"longName": "Argentine Republic"
+			"longName": "Argentine Republic",
+			"postalCode": "Postal Code"
 		},
 		"es_AR": {
 			"shortName": "Argentina",
-			"longName": "República Argentina"
+			"longName": "República Argentina",
+			"postalCode": "Código Postal"
 		}
 	},
 	"futureExpansion": {

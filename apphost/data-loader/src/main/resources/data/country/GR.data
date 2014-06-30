@@ -174,11 +174,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Greece",
-			"longName": "Hellenic Republic"
+			"longName": "Hellenic Republic",
+			"postalCode": "Postal Code"
 		},
 		"el_GR": {
 			"shortName": "Ελλάδα",
-			"longName": "Ελληνική Δημοκρατία"
+			"longName": "Ελληνική Δημοκρατία",
+			"postalCode": "Ταχυδρομικός Κώδικας"
 		}
 	},
 	"futureExpansion": {

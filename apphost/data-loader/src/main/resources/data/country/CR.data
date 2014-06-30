@@ -102,11 +102,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Costa Rica",
-			"longName": "Republic of Costa Rica"
+			"longName": "Republic of Costa Rica",
+			"postalCode": "Postal Code"
 		},
 		"es_CR": {
 			"shortName": "Costa Rica",
-			"longName": "República de Costa Rica"
+			"longName": "República de Costa Rica",
+			"postalCode": "Código Postal"
 		}
 	},
 	"futureExpansion": {

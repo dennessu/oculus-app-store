@@ -61,7 +61,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Togo",
-			"longName": "Togolese Republic"
+			"longName": "Togolese Republic",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

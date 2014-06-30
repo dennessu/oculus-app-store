@@ -838,11 +838,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Malta",
-			"longName": "Republic of Malta"
+			"longName": "Republic of Malta",
+			"postalCode": "Postal Code"
 		},
 		"mt_MT": {
 			"shortName": "ta' Malta",
-			"longName": "Repubblika ta' Malta"
+			"longName": "Repubblika ta' Malta",
+			"postalCode": "Kodiċi postali"
 		}
 	},
 	"futureExpansion": {

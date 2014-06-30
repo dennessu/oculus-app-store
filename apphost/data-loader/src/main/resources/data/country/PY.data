@@ -234,11 +234,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Paraguay",
-			"longName": "Republic of Paraguay"
+			"longName": "Republic of Paraguay",
+			"postalCode": "Postal Code"
 		},
 		"es_PY": {
 			"shortName": "Paraguay",
-			"longName": "República del Paraguay"
+			"longName": "República del Paraguay",
+			"postalCode": "Código Postal"
 		}
 	},
 	"futureExpansion": {

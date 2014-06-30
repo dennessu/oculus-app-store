@@ -261,11 +261,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Portugal",
-			"longName": "Portuguese Republic"
+			"longName": "Portuguese Republic",
+			"postalCode": "Postal Code"
 		},
 		"pt_PT": {
 			"shortName": "Portugal",
-			"longName": "República Portuguesa"
+			"longName": "República Portuguesa",
+			"postalCode": "código postal"
 		}
 	},
 	"futureExpansion": {

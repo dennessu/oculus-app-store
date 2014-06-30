@@ -309,11 +309,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Cambodia",
-			"longName": "Kingdom of Cambodia"
+			"longName": "Kingdom of Cambodia",
+			"postalCode": "Postal Code"
 		},
 		"km_KH": {
 			"shortName": "កម្ពុជា",
-			"longName": "ព្រះរាជាណាចក្រកម្ពុជា"
+			"longName": "ព្រះរាជាណាចក្រកម្ពុជា",
+			"postalCode": "ប្រៃសណីយ៍កូដ"
 		}
 	},
 	"futureExpansion": {

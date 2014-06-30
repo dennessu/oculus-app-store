@@ -330,11 +330,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Peru",
-			"longName": "Republic of Peru"
+			"longName": "Republic of Peru",
+			"postalCode": "Postal Code"
 		},
 		"es_PE": {
 			"shortName": "Perú",
-			"longName": "República del Perú"
+			"longName": "República del Perú",
+			"postalCode": "Código Postal"
 		}
 	},
 	"futureExpansion": {

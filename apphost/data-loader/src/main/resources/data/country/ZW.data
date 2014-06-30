@@ -101,7 +101,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Zimbabwe",
-			"longName": "Republic of Zimbabwe"
+			"longName": "Republic of Zimbabwe",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

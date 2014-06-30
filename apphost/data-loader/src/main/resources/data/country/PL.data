@@ -213,11 +213,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Poland",
-			"longName": "Republic of Poland"
+			"longName": "Republic of Poland",
+			"postalCode": "Postal Code"
 		},
 		"pl_PL": {
 			"shortName": "Polska",
-			"longName": "Rzeczpospolita Polska"
+			"longName": "Rzeczpospolita Polska",
+			"postalCode": "Kod pocztowy"
 		}
 	},
 	"futureExpansion": {

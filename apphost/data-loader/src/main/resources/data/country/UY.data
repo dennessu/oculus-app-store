@@ -246,11 +246,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Uruguay",
-			"longName": "Oriental Republic of Uruguay"
+			"longName": "Oriental Republic of Uruguay",
+			"postalCode": "Postal Code"
 		},
 		"es_UY": {
 			"shortName": "Uruguay",
-			"longName": "República Oriental del Uruguay"
+			"longName": "República Oriental del Uruguay",
+			"postalCode": "Código Postal"
 		}
 	},
 	"futureExpansion": {

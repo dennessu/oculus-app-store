@@ -309,11 +309,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Tunisia",
-			"longName": "Tunisian Republic"
+			"longName": "Tunisian Republic",
+			"postalCode": "Postal Code"
 		},
 		"ar_TN": {
 			"shortName": "تونس",
-			"longName": "الجمهورية التونسية"
+			"longName": "الجمهورية التونسية",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

@@ -125,7 +125,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Namibia",
-			"longName": "Republic of Namibia"
+			"longName": "Republic of Namibia",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

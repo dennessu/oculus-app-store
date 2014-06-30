@@ -414,11 +414,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Colombia",
-			"longName": "Republic of Colombia"
+			"longName": "Republic of Colombia",
+			"postalCode": "Postal Code"
 		},
 		"es_CO": {
 			"shortName": "Colombia",
-			"longName": "República de Colombia"
+			"longName": "República de Colombia",
+			"postalCode": "Código Postal"
 		}
 	},
 	"futureExpansion": {

@@ -69,7 +69,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Madagascar",
-			"longName": "Republic of Madagascar"
+			"longName": "Republic of Madagascar",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

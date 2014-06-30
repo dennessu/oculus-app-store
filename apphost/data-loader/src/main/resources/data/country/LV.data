@@ -1446,11 +1446,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Latvia",
-			"longName": "Republic of Latvia"
+			"longName": "Republic of Latvia",
+			"postalCode": "Postal Code"
 		},
 		"lv_LV": {
 			"shortName": "Latvija",
-			"longName": "Latvijas Republika"
+			"longName": "Latvijas Republika",
+			"postalCode": "pasta indekss"
 		}
 	},
 	"futureExpansion": {

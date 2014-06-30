@@ -78,11 +78,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Bahrain",
-			"longName": "Kingdom of Bahrain"
+			"longName": "Kingdom of Bahrain",
+			"postalCode": "Postal Code"
 		},
 		"ar_BH": {
 			"shortName": "‏البحرين",
-			"longName": "مملكة البحرين"
+			"longName": "مملكة البحرين",
+			"postalCode": "الرمز البريدي"
 		}
 	},
 	"futureExpansion": {

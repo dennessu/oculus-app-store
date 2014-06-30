@@ -317,7 +317,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Nigeria",
-			"longName": "Federal Republic of Nigeria"
+			"longName": "Federal Republic of Nigeria",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

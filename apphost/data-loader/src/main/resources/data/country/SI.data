@@ -2538,11 +2538,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Slovenia",
-			"longName": "Republic of Slovenia"
+			"longName": "Republic of Slovenia",
+			"postalCode": "Postal Code"
 		},
 		"sl_SI": {
 			"shortName": "Slovenija",
-			"longName": "Republika Slovenija"
+			"longName": "Republika Slovenija",
+			"postalCode": "Poštna številka"
 		}
 	},
 	"futureExpansion": {

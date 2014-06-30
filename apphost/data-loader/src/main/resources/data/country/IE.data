@@ -53,11 +53,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Ireland",
-			"longName": "Ireland"
+			"longName": "Ireland",
+			"postalCode": "Postal Code"
 		},
 		"en_IE": {
 			"shortName": "Ireland",
-			"longName": "Ireland"
+			"longName": "Ireland",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

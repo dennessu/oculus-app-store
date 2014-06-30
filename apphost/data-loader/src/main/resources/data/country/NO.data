@@ -273,11 +273,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Norway",
-			"longName": "Kingdom of Norway"
+			"longName": "Kingdom of Norway",
+			"postalCode": "Postal Code"
 		},
 		"no_NO": {
 			"shortName": "Norge",
-			"longName": "Kongeriket Norge"
+			"longName": "Kongeriket Norge",
+			"postalCode": "Postnummer"
 		}
 	},
 	"futureExpansion": {

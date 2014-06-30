@@ -270,11 +270,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Yemen",
-			"longName": "Republic of Yemen"
+			"longName": "Republic of Yemen",
+			"postalCode": "Postal Code"
 		},
 		"ar_YE": {
 			"shortName": "اليَمَن",
-			"longName": "الجمهورية اليمنية"
+			"longName": "الجمهورية اليمنية",
+			"postalCode": "الرمز البريدي"
 		}
 	},
 	"futureExpansion": {

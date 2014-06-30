@@ -990,11 +990,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Turkey",
-			"longName": "Republic of Turkey"
+			"longName": "Republic of Turkey",
+			"postalCode": "Postal Code"
 		},
 		"tr_TR": {
 			"shortName": "Türkiye",
-			"longName": "Türkiye Cumhuriyeti"
+			"longName": "Türkiye Cumhuriyeti",
+			"postalCode": "Posta Kodu"
 		}
 	},
 	"futureExpansion": {

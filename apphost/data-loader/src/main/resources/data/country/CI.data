@@ -173,7 +173,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Ivory Coast (Cote D'Ivoire)",
-			"longName": "Republic of Ivory Coast"
+			"longName": "Republic of Ivory Coast",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

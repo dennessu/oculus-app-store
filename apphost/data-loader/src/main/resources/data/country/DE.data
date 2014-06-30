@@ -213,11 +213,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Germany",
-			"longName": "Federal Republic of Germany"
+			"longName": "Federal Republic of Germany",
+			"postalCode": "Postal Code"
 		},
 		"de_DE": {
 			"shortName": "Deutschland",
-			"longName": "Bundesrepublik Deutschland"
+			"longName": "Bundesrepublik Deutschland",
+			"postalCode": "Postleitzahl"
 		}
 	},
 	"futureExpansion": {

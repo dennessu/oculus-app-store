@@ -126,11 +126,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Iceland",
-			"longName": "Republic of Iceland"
+			"longName": "Republic of Iceland",
+			"postalCode": "Postal Code"
 		},
 		"is_IS": {
 			"shortName": "Ísland",
-			"longName": "Lýðveldið Ísland"
+			"longName": "Lýðveldið Ísland",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

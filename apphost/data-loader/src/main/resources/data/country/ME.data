@@ -186,7 +186,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Montenegro",
-			"longName": "Montenegro"
+			"longName": "Montenegro",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

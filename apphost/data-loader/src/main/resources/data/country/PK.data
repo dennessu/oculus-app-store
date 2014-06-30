@@ -118,11 +118,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Pakistan",
-			"longName": "Islamic Republic of Pakistan"
+			"longName": "Islamic Republic of Pakistan",
+			"postalCode": "Postal Code"
 		},
 		"ur_PK": {
 			"shortName": "پاكستان",
-			"longName": "اسلامی جمہوریۂ پاكستان"
+			"longName": "اسلامی جمہوریۂ پاكستان",
+			"postalCode": "پوسٹل کوڈ"
 		}
 	},
 	"futureExpansion": {

@@ -165,7 +165,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Somalia",
-			"longName": "Federal Republic of Somalia"
+			"longName": "Federal Republic of Somalia",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

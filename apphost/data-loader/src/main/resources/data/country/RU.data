@@ -1017,11 +1017,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Russia",
-			"longName": "Russian Federation"
+			"longName": "Russian Federation",
+			"postalCode": "Postal Code"
 		},
 		"ru_RU": {
 			"shortName": "Россия",
-			"longName": "Российская Федерация"
+			"longName": "Российская Федерация",
+			"postalCode": "Почтовый индекс"
 		}
 	},
 	"futureExpansion": {

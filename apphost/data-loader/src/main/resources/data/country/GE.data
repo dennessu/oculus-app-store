@@ -114,7 +114,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Georgia",
-			"longName": "Georgia"
+			"longName": "Georgia",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

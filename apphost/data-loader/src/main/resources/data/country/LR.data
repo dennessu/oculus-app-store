@@ -141,7 +141,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Liberia",
-			"longName": "Republic of Liberia"
+			"longName": "Republic of Liberia",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

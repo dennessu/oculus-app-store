@@ -65,11 +65,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Belgium",
-			"longName": "Kingdom of Belgium"
+			"longName": "Kingdom of Belgium",
+			"postalCode": "Postal Code"
 		},
 		"nl_BE": {
 			"shortName": "België",
-			"longName": "Koninkrijk België"
+			"longName": "Koninkrijk België",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

@@ -101,7 +101,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Ghana",
-			"longName": "Republic of Ghana"
+			"longName": "Republic of Ghana",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

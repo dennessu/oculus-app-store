@@ -282,11 +282,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Libya",
-			"longName": "State of Libya"
+			"longName": "State of Libya",
+			"postalCode": "Postal Code"
 		},
 		"ar_LY": {
 			"shortName": "ليبيا",
-			"longName": "دولة ليبيا"
+			"longName": "دولة ليبيا",
+			"postalCode": "الرمز البريدي"
 		}
 	},
 	"futureExpansion": {

@@ -345,11 +345,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Ukraine",
-			"longName": "Ukraine"
+			"longName": "Ukraine",
+			"postalCode": "Postal Code"
 		},
 		"uk_UA": {
 			"shortName": "Україна",
-			"longName": "Україна"
+			"longName": "Україна",
+			"postalCode": "Поштовий індекс"
 		}
 	},
 	"futureExpansion": {

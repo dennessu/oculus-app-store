@@ -93,7 +93,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Gabon",
-			"longName": "Gabonese Republic"
+			"longName": "Gabonese Republic",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

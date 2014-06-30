@@ -73,11 +73,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Tajikistan",
-			"longName": "Republic of Tajikistan "
+			"longName": "Republic of Tajikistan",
+			"postalCode": "Postal Code"
 		},
 		"ru_RU": {
 			"shortName": "Таджикистан",
-			"longName": "Респу́блика Таджикистан"
+			"longName": "Респу́блика Таджикистан",
+			"postalCode": "Почтовый индекс"
 		}
 	},
 	"futureExpansion": {

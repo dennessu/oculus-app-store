@@ -234,11 +234,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Iraq",
-			"longName": "Republic of Iraq"
+			"longName": "Republic of Iraq",
+			"postalCode": "Postal Code"
 		},
 		"ar_IQ": {
 			"shortName": "العراق",
-			"longName": "جمهورية العـراق"
+			"longName": "جمهورية العـراق",
+			"postalCode": "الرمز البريدي"
 		}
 	},
 	"futureExpansion": {

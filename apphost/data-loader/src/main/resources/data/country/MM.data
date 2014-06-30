@@ -193,11 +193,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Myanmar",
-			"longName": "Republic of the Union of Myanmar"
+			"longName": "Republic of the Union of Myanmar",
+			"postalCode": "Postal Code"
 		},
 		"my_MM": {
 			"shortName": "မြန်မာနိုင်ငံတော်",
-			"longName": "ပြည်ထောင်စု သမ္မတ မြန်မာနိုင်ငံတော်"
+			"longName": "ပြည်ထောင်စု သမ္မတ မြန်မာနိုင်ငံတော်",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

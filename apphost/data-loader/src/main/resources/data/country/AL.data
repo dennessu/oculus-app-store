@@ -450,11 +450,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Albania",
-			"longName": "Republic of Albania"
+			"longName": "Republic of Albania",
+			"postalCode": "Postal Code"
 		},
 		"sq_AL": {
 			"shortName": "Shqipëri",
-			"longName": "Republika e Shqipërisë"
+			"longName": "Republika e Shqipërisë",
+			"postalCode": "Kodi Postar"
 		}
 	},
 	"futureExpansion": {

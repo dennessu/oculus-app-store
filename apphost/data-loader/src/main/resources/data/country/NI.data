@@ -222,11 +222,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Nicaragua",
-			"longName": "Republic of Nicaragua"
+			"longName": "Republic of Nicaragua",
+			"postalCode": "Postal Code"
 		},
 		"es_NI": {
 			"shortName": "Nicaragua",
-			"longName": "República de Nicaragua"
+			"longName": "República de Nicaragua",
+			"postalCode": "Código Postal"
 		}
 	},
 	"futureExpansion": {

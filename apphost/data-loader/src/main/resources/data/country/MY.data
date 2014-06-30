@@ -149,11 +149,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Malaysia",
-			"longName": "Malaysia"
+			"longName": "Malaysia",
+			"postalCode": "Postal Code"
 		},
 		"en_SG": {
 			"shortName": "Malaysia",
-			"longName": "Malaysia"
+			"longName": "Malaysia",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

@@ -318,11 +318,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Sri Lanka",
-			"longName": "Democratic Socialist Republic of Sri Lanka"
+			"longName": "Democratic Socialist Republic of Sri Lanka",
+			"postalCode": "Postal Code"
 		},
 		"si_LK": {
 			"shortName": "ශ්‍රී ලංකාව",
-			"longName": "ශ්‍රී ලංකා ප්‍රජාතාන්ත්‍රික සමාජවාදී ජනරජය"
+			"longName": "ශ්‍රී ලංකා ප්‍රජාතාන්ත්‍රික සමාජවාදී ජනරජය",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

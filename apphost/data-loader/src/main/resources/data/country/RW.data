@@ -61,7 +61,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Rwanda",
-			"longName": "Republic of Rwanda"
+			"longName": "Republic of Rwanda",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

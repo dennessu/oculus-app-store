@@ -61,15 +61,18 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Luxembourg",
-			"longName": "Grand Duchy of Luxembourg"
+			"longName": "Grand Duchy of Luxembourg",
+			"postalCode": "Postal Code"
 		},
 		"fr_LU": {
 			"shortName": "Luxembourg",
-			"longName": "Grand-Duché de Luxembourg"
+			"longName": "Grand-Duché de Luxembourg",
+			"postalCode": "code postal"
 		},
 		"de_LU": {
 			"shortName": "Luxembourg",
-			"longName": "Großherzogtum Luxemburg"
+			"longName": "Großherzogtum Luxemburg",
+			"postalCode": "Postleitzahl"
 		}
 	},
 	"futureExpansion": {

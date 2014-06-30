@@ -282,11 +282,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Guatemala",
-			"longName": "Republic of Guatemala"
+			"longName": "Republic of Guatemala",
+			"postalCode": "Postal Code"
 		},
 		"es_GT": {
 			"shortName": "Guatemala",
-			"longName": "República de Guatemala"
+			"longName": "República de Guatemala",
+			"postalCode": "Código Postal"
 		}
 	},
 	"futureExpansion": {

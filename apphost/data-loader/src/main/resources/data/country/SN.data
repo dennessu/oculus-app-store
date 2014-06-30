@@ -133,7 +133,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Senegal",
-			"longName": "Republic of Senegal"
+			"longName": "Republic of Senegal",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

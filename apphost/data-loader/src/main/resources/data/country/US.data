@@ -477,7 +477,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "USA",
-			"longName": "United Status of America"
+			"longName": "United Status of America",
+			"postalCode": "ZIP Code"
 		}
 	},
 	"futureExpansion": {
