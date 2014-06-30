@@ -430,6 +430,46 @@
         </property>
     </bean>
 
+    <bean id="addressAdvanceFilter" class="com.junbo.identity.core.service.filter.pii.impl.AddressAdvanceFilter" />
+    <bean id="dobAdvanceFilter" class="com.junbo.identity.core.service.filter.pii.impl.DOBAdvanceFilter" />
+    <bean id="driverLicenseAdvanceFilter" class="com.junbo.identity.core.service.filter.pii.impl.DriverLicenseAdvanceFilter" />
+    <bean id="einAdvanceFilter" class="com.junbo.identity.core.service.filter.pii.impl.EINAdvanceFilter" />
+    <bean id="emailAdvanceFilter" class="com.junbo.identity.core.service.filter.pii.impl.EmailAdvanceFilter" />
+    <bean id="genderAdvanceFilter" class="com.junbo.identity.core.service.filter.pii.impl.GenderAdvanceFilter" />
+    <bean id="governmentIdAdvanceFilter" class="com.junbo.identity.core.service.filter.pii.impl.GovernmentIdAdvanceFilter" />
+    <bean id="nameAdvanceFilter" class="com.junbo.identity.core.service.filter.pii.impl.NameAdvanceFilter" />
+    <bean id="passportAdvanceFilter" class="com.junbo.identity.core.service.filter.pii.impl.PassportAdvanceFilter" />
+    <bean id="phoneAdvanceFilter" class="com.junbo.identity.core.service.filter.pii.impl.PhoneAdvanceFilter" />
+    <bean id="qqAdvanceFilter" class="com.junbo.identity.core.service.filter.pii.impl.QQAdvanceFilter" />
+    <bean id="smsAdvanceFilter" class="com.junbo.identity.core.service.filter.pii.impl.SMSAdvanceFilter" />
+    <bean id="ssnAdvanceFilter" class="com.junbo.identity.core.service.filter.pii.impl.SSNAdvanceFilter" />
+    <bean id="tinAdvanceFilter" class="com.junbo.identity.core.service.filter.pii.impl.TINAdvanceFilter" />
+    <bean id="whatsappAdvanceFilter" class="com.junbo.identity.core.service.filter.pii.impl.WHATSAPPAdvanceFilter" />
+    <bean id="wipedAdvanceFilter" class="com.junbo.identity.core.service.filter.pii.impl.WipedAdvanceFilter" />
+
+    <bean id="piiAdvanceFilterFactory" class="com.junbo.identity.core.service.filter.pii.impl.PIIAdvanceFilterFactoryImpl">
+        <constructor-arg>
+            <list>
+                <ref bean="addressAdvanceFilter" />
+                <ref bean="dobAdvanceFilter" />
+                <ref bean="driverLicenseAdvanceFilter" />
+                <ref bean="einAdvanceFilter" />
+                <ref bean="emailAdvanceFilter" />
+                <ref bean="genderAdvanceFilter" />
+                <ref bean="governmentIdAdvanceFilter" />
+                <ref bean="nameAdvanceFilter" />
+                <ref bean="passportAdvanceFilter" />
+                <ref bean="phoneAdvanceFilter" />
+                <ref bean="qqAdvanceFilter" />
+                <ref bean="smsAdvanceFilter" />
+                <ref bean="ssnAdvanceFilter" />
+                <ref bean="tinAdvanceFilter" />
+                <ref bean="whatsappAdvanceFilter" />
+                <ref bean="wipedAdvanceFilter" />
+            </list>
+        </constructor-arg>
+    </bean>
+
     <bean id="piiValidatorFactory" class="com.junbo.identity.core.service.validator.impl.PiiValidatorFactoryImpl">
         <constructor-arg>
             <list>
