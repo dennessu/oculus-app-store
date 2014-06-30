@@ -155,7 +155,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
     private OfferRevision getCurrentRevision(String revisionId) {
         OfferRevision offerRevision;
         try {
-            offerRevision = offerRevisionResource.getOfferRevision(revisionId).get();
+            offerRevision = offerRevisionResource.getOfferRevision(revisionId, new OfferRevisionGetOptions()).get();
         } catch (Exception e) {
             LOGGER.error("Error occurring when getting Offer Revision [" + revisionId + "]", e);
             throw AppErrors.INSTANCE.catalogGatewayError().exception();

@@ -16,6 +16,7 @@ import com.junbo.catalog.core.OfferService;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions;
 import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
 import com.junbo.common.id.util.IdUtil;
@@ -70,7 +71,7 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
     }
 
     @Override
-    public Promise<OfferRevision> getOfferRevision(String revisionId) {
+    public Promise<OfferRevision> getOfferRevision(String revisionId, OfferRevisionGetOptions options) {
         return Promise.pure(offerService.getRevision(revisionId));
     }
 

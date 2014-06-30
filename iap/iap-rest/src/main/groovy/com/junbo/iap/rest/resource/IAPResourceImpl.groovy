@@ -7,6 +7,7 @@ import com.junbo.catalog.spec.model.item.ItemsGetOptions
 import com.junbo.catalog.spec.model.item.ItemRevisionGetOptions
 import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.catalog.spec.model.offer.OffersGetOptions
+import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
@@ -295,7 +296,7 @@ class IAPResourceImpl implements IAPResource {
                 if (offers.containsKey(cOffer.offerId)) {
                     return Promise.pure(null)
                 }
-                return resourceContainer.offerRevisionResource.getOfferRevision(cOffer.currentRevisionId).then { OfferRevision offerRevision ->
+                return resourceContainer.offerRevisionResource.getOfferRevision(cOffer.currentRevisionId, new OfferRevisionGetOptions()).then { OfferRevision offerRevision ->
                     offers.put(cOffer.id, convertOffer(cOffer, offerRevision, item, itemRevision))
                     return Promise.pure(null)
                 }

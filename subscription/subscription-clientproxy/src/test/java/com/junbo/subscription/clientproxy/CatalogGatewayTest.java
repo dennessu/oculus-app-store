@@ -132,7 +132,7 @@ public class CatalogGatewayTest extends AbstractTestNGSpringContextTests {
 
     public OfferRevision getOfferRevision(String offerRevisionId) {
         try {
-            return offerRevisionResource.getOfferRevision(offerRevisionId).get();
+            return offerRevisionResource.getOfferRevision(offerRevisionId, new OfferRevisionGetOptions()).get();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
