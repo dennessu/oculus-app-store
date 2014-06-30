@@ -30,7 +30,7 @@ import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.core.service.TokenService
+import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.core.service.UserService
 import com.junbo.oauth.db.generator.TokenGenerator
 import com.junbo.oauth.db.repo.EmailVerifyCodeRepository
@@ -62,7 +62,7 @@ class UserServiceImpl implements UserService {
     private static final String EMAIL_RESET_PASSWORD_PATH = 'oauth2/reset-password'
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl)
 
-    private TokenService tokenService
+    private OAuthTokenService tokenService
 
     private TokenGenerator tokenGenerator
 
@@ -83,7 +83,7 @@ class UserServiceImpl implements UserService {
     private EmailVerifyCodeRepository emailVerifyCodeRepository
 
     @Required
-    void setTokenService(TokenService tokenService) {
+    void setTokenService(OAuthTokenService tokenService) {
         this.tokenService = tokenService
     }
 

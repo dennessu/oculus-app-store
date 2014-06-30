@@ -28,7 +28,7 @@ public class CommonDataDAOImpl<T extends GenericEntity, ID extends Serializable>
     @Qualifier("userShardAlgorithm")
     private ShardAlgorithm shardAlgorithm;
     @Autowired
-    @Qualifier("idGenerator")
+    @Qualifier("oculus48IdGenerator")
     protected IdGenerator idGenerator;
     private Class<T> persistentClass;
     @Autowired

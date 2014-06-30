@@ -24,7 +24,7 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
     @Autowired
     protected PlatformTransactionManager transactionManager;
     @Autowired
-    @Qualifier("idGenerator")
+    @Qualifier("oculus48IdGenerator")
     private IdGenerator idGenerator;
 
     protected long generateLong() {

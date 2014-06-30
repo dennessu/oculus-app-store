@@ -9,7 +9,9 @@
     <context:component-scan base-package="com.junbo.token.rest.resource"/>
     <context:component-scan base-package="com.junbo.token.spec.resource.adapter"/>
 
-    <bean id="defaultTokenResource" class="com.junbo.token.rest.resource.TokenResourceImpl" scope="prototype"/>
+    <bean id="defaultTokenResource" class="com.junbo.token.rest.resource.TokenResourceImpl" scope="prototype">
+        <property name="tokenService" ref="tokenKeyService"/>
+    </bean>
 
     <bean id="defaultTokenResourceClientFactory" class="com.junbo.token.spec.resource.proxy.TokenResourceClientProxyFactory"/>
 

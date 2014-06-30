@@ -19,6 +19,7 @@ public class TokenItem {
     private Long id;
     @FilterOut
     private Long hashValue;
+    @FilterOut
     private Long orderId;
     private String disableReason;
     @FilterIn

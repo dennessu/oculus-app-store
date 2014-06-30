@@ -8,7 +8,7 @@ package com.junbo.oauth.api.endpoint
 import com.junbo.common.id.UserId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.core.service.TokenService
+import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.spec.endpoint.TokenInfoEndpoint
 import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.TokenInfo
@@ -28,12 +28,12 @@ import org.springframework.util.StringUtils
 @Scope('prototype')
 class TokenInfoEndpointImpl implements TokenInfoEndpoint {
     /**
-     * The TokenService to handle the token related logic.
+     * The OAuthTokenService to handle the token related logic.
      */
-    private TokenService tokenService
+    private OAuthTokenService tokenService
 
     @Required
-    void setTokenService(TokenService tokenService) {
+    void setTokenService(OAuthTokenService tokenService) {
         this.tokenService = tokenService
     }
 

@@ -13,7 +13,7 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.core.service.TokenService
+import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.db.repo.LoginStateRepository
 import com.junbo.oauth.db.repo.RememberMeTokenRepository
@@ -35,7 +35,7 @@ class Logout implements Action {
 
     private LoginStateRepository loginStateRepository
     private RememberMeTokenRepository rememberMeTokenRepository
-    private TokenService tokenService
+    private OAuthTokenService tokenService
     private ClientRepository clientRepository
 
     private String confirmationUri
@@ -51,7 +51,7 @@ class Logout implements Action {
     }
 
     @Required
-    void setTokenService(TokenService tokenService) {
+    void setTokenService(OAuthTokenService tokenService) {
         this.tokenService = tokenService
     }
 

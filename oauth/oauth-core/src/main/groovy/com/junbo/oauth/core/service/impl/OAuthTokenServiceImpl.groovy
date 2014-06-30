@@ -9,7 +9,7 @@ import com.junbo.common.id.UserId
 import com.junbo.common.util.IdFormatter
 import com.junbo.oauth.common.JsonMarshaller
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.core.service.TokenService
+import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.core.util.AuthorizationHeaderUtil
 import com.junbo.oauth.core.util.UriUtil
 import com.junbo.oauth.db.generator.TokenGenerator
@@ -35,8 +35,8 @@ import java.text.ParseException
  * Javadoc.
  */
 @CompileStatic
-class TokenServiceImpl implements TokenService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TokenServiceImpl)
+class OAuthTokenServiceImpl implements OAuthTokenService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(OAuthTokenServiceImpl)
 
     private static final String JWT_CONTENT_TYPE = 'JWT'
     private static final int LEFT_MOST_128_BITS = 16

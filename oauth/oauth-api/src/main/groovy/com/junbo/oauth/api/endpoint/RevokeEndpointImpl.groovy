@@ -7,7 +7,7 @@ package com.junbo.oauth.api.endpoint
 
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.core.service.TokenService
+import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.core.util.AuthorizationHeaderUtil
 import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.db.repo.ConsentRepository
@@ -38,9 +38,9 @@ class RevokeEndpointImpl implements RevokeEndpoint {
     private static final String CONSENT_MANAGE_SCOPE = 'consent.manage'
 
     /**
-     * The TokenService to handle token related operations.
+     * The OAuthTokenService to handle token related operations.
      */
-    private TokenService tokenService
+    private OAuthTokenService tokenService
 
     /**
      * The ClientRepository to handle client related operations.
@@ -53,7 +53,7 @@ class RevokeEndpointImpl implements RevokeEndpoint {
     private ConsentRepository consentRepository
 
     @Required
-    void setTokenService(TokenService tokenService) {
+    void setTokenService(OAuthTokenService tokenService) {
         this.tokenService = tokenService
     }
 
