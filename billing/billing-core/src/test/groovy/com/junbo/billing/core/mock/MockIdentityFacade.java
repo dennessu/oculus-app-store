@@ -8,6 +8,7 @@ package com.junbo.billing.core.mock;
 
 import com.junbo.billing.clientproxy.IdentityFacade;
 import com.junbo.common.enumid.CountryId;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.v1.model.Address;
 import com.junbo.identity.spec.v1.model.Organization;
@@ -42,6 +43,11 @@ public class MockIdentityFacade implements IdentityFacade {
 
     @Override
     public Promise<Organization> getOrganization(Long organizationId) {
-        return null;
+        Organization organization = new Organization();
+
+        organization.setName("test organization");
+        organization.setId(new OrganizationId(123));
+
+        return Promise.pure(organization);
     }
 }

@@ -128,7 +128,7 @@ class TaxServiceImpl implements TaxService {
                         throw AppErrors.INSTANCE.offerNotFound(offerRevisionId).exception()
                     }.then { OfferRevision offer ->
                         def locale = balance.propertySet.get(PropertyKey.LOCALE.name())
-                        def properties = offer.locales.get(locale)
+                        def properties = offer.locales?.get(locale)
                         if (properties != null) {
                             item.propertySet.put(PropertyKey.ITEM_NAME.name(), properties.name)
                             item.propertySet.put(PropertyKey.ITEM_DESCRIPTION.name(), properties.shortDescription)
