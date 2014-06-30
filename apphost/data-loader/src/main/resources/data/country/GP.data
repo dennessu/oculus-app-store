@@ -16,7 +16,6 @@
 		"href": "/v1/locales/fr_FR",
 		"id": "fr_FR"
 	}],
-	"countrySpecificNameForPostalCode":"Postal code",
 	"locales": {
 		"en_US": {
 			"shortName": "Guadeloupe",

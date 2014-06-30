@@ -9,7 +9,6 @@
 		"id": "LBP"
 	},
 	"ratingBoards": [],
-	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"AK": {
 			"locales": {

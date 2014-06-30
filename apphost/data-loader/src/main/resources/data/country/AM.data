@@ -12,7 +12,6 @@
 		"href": "/v1/age-rating-boards/RGRS",
 		"id": "RGRS"
 	}],
-	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"AG": {
 			"locales": {

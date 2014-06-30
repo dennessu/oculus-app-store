@@ -9,7 +9,6 @@
 		"id": "COP"
 	},
 	"ratingBoards": [],
-	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"AMA": {
 			"locales": {

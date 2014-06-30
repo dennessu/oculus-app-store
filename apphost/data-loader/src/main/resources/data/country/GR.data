@@ -9,7 +9,6 @@
 		"id": "EUR"
 	},
 	"ratingBoards": [],
-	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"A": {
 			"locales": {

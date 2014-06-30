@@ -9,7 +9,6 @@
 		"id": "BOB"
 	},
 	"ratingBoards": [],
-	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"B": {
 			"locales": {

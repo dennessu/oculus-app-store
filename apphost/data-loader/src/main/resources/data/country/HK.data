@@ -9,7 +9,6 @@
 		"id": "HKD"
 	},
 	"ratingBoards": [],
-	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"01": {
 			"locales": {

@@ -12,7 +12,6 @@
 		"href": "/v1/age-rating-boards/ESRB",
 		"id": "ESRB"
 	}],
-	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"AGU": {
 			"locales": {

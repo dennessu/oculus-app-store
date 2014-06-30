@@ -9,7 +9,6 @@
 		"id": "INR"
 	},
 	"ratingBoards": [],
-	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"AN": {
 			"locales": {

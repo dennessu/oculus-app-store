@@ -12,7 +12,6 @@
 		"href": "/v1/age-rating-boards/CERO",
 		"id": "CERO"
 	}],
-	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"01": {
 			"locales": {
