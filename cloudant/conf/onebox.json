@@ -1,4 +1,4 @@
 {
     "cloudant": "http://localhost:5984",
-    "cloudant_search": "http://localhost:5984"
+    "cloudant_search": "https://silkcloudtest1:#Bugsfor$@silkcloudtest1.cloudant.com"
 }
