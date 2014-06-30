@@ -14,6 +14,7 @@ import com.junbo.catalog.auth.OfferAuthorizeCallbackFactory;
 import com.junbo.catalog.clientproxy.LocaleFacade;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.OfferService;
+import com.junbo.catalog.spec.enums.LocaleAccuracy;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
@@ -52,6 +53,7 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
         List<OfferRevision> revisions = offerService.getRevisions(options);
         if (!StringUtils.isEmpty(options.getLocale())) {
             for (final OfferRevision revision : revisions) {
+                revision.setLocaleAccuracy(getLocaleAccuracy(revision.getLocales().get(options.getLocale())));
                 revision.setLocales(new HashMap<String, OfferRevisionLocaleProperties>() {{
                     put(options.getLocale(), getLocaleProperties(revision, options.getLocale()));
                 }});
@@ -85,6 +87,7 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
     public Promise<OfferRevision> getOfferRevision(String revisionId, final OfferRevisionGetOptions options) {
         final OfferRevision revision = offerService.getRevision(revisionId);
         if (!StringUtils.isEmpty(options.getLocale())) {
+            revision.setLocaleAccuracy(getLocaleAccuracy(revision.getLocales().get(options.getLocale())));
             revision.setLocales(new HashMap<String, OfferRevisionLocaleProperties>(){{
                 put(options.getLocale(), getLocaleProperties(revision, options.getLocale()));
             }});
@@ -200,5 +203,33 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
             //
         }
         return true;
+    }
+
+    // TODO: don't use reflection in future
+    private String getLocaleAccuracy(OfferRevisionLocaleProperties properties) {
+        if (properties == null) {
+            return LocaleAccuracy.LOW.name();
+        }
+        boolean containsNull = false, containsNonNull = false;
+        try {
+            Map<String, Object> fields = PropertyUtils.describe(properties);
+            for(String fieldName : fields.keySet()) {
+                if (PropertyUtils.getProperty(properties, fieldName) == null) {
+                    containsNull = true;
+                } else {
+                    containsNonNull = true;
+                }
+            }
+        } catch (Exception e) {
+            //
+        }
+
+        if (containsNull && containsNonNull) {
+            return LocaleAccuracy.MEDIUM.name();
+        } else if (containsNull) {
+            return LocaleAccuracy.LOW.name();
+        } else {
+            return LocaleAccuracy.HIGH.name();
+        }
     }
 }

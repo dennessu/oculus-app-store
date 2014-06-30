@@ -14,6 +14,7 @@ import com.junbo.catalog.auth.ItemAuthorizeCallbackFactory;
 import com.junbo.catalog.clientproxy.LocaleFacade;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.ItemService;
+import com.junbo.catalog.spec.enums.LocaleAccuracy;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.item.*;
 import com.junbo.catalog.spec.resource.ItemRevisionResource;
@@ -52,10 +53,10 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
     public Promise<Results<ItemRevision>> getItemRevisions(final ItemRevisionsGetOptions options) {
         List<ItemRevision> revisions = itemService.getRevisions(options);
         if (!StringUtils.isEmpty(options.getLocale())) {
-            for (ItemRevision revision : revisions) {
-                final ItemRevisionLocaleProperties localeProperties = getLocaleProperties(revision, options.getLocale());
+            for (final ItemRevision revision : revisions) {
+                revision.setLocaleAccuracy(getLocaleAccuracy(revision.getLocales().get(options.getLocale())));
                 revision.setLocales(new HashMap<String, ItemRevisionLocaleProperties>() {{
-                        put(options.getLocale(), localeProperties);
+                        put(options.getLocale(), getLocaleProperties(revision, options.getLocale()));
                 }});
             }
         }
@@ -88,11 +89,11 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
 
     @Override
     public Promise<ItemRevision> getItemRevision(String revisionId, final ItemRevisionGetOptions options) {
-        ItemRevision itemRevision = itemService.getRevision(revisionId);
+        final ItemRevision itemRevision = itemService.getRevision(revisionId);
         if (!StringUtils.isEmpty(options.getLocale())) {
-            final ItemRevisionLocaleProperties localeProperties = getLocaleProperties(itemRevision, options.getLocale());
+            itemRevision.setLocaleAccuracy(getLocaleAccuracy(itemRevision.getLocales().get(options.getLocale())));
             itemRevision.setLocales(new HashMap<String, ItemRevisionLocaleProperties>(){{
-                put(options.getLocale(), localeProperties);
+                put(options.getLocale(), getLocaleProperties(itemRevision, options.getLocale()));
             }});
         }
         return Promise.pure(itemRevision);
@@ -204,5 +205,33 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
             //
         }
         return true;
+    }
+
+    // TODO: don't use reflection in future
+    private String getLocaleAccuracy(ItemRevisionLocaleProperties properties) {
+        if (properties == null) {
+            return LocaleAccuracy.LOW.name();
+        }
+        boolean containsNull = false, containsNonNull = false;
+        try {
+            Map<String, Object> fields = PropertyUtils.describe(properties);
+            for(String fieldName : fields.keySet()) {
+                if (PropertyUtils.getProperty(properties, fieldName) == null) {
+                    containsNull = true;
+                } else {
+                    containsNonNull = true;
+                }
+            }
+        } catch (Exception e) {
+            //
+        }
+
+        if (containsNull && containsNonNull) {
+            return LocaleAccuracy.MEDIUM.name();
+        } else if (containsNull) {
+            return LocaleAccuracy.LOW.name();
+        } else {
+            return LocaleAccuracy.HIGH.name();
+        }
     }
 }
