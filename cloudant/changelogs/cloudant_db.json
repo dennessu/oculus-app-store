@@ -226,6 +226,13 @@
     }, 
     "subledger_item": {}, 
     "tos": {}, 
+    "unique": {
+      "views": {
+        "by_doc": {
+          "map": "function(doc) {  emit(doc.doc, doc._id) }"
+        }
+      }
+    },
     "user": {
       "views": {
         "by_canonical_username": {

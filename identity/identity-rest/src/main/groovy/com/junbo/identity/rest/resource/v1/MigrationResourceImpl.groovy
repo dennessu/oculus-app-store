@@ -7,6 +7,9 @@ import com.junbo.authorization.spec.option.list.RoleListOptions
 import com.junbo.authorization.spec.resource.RoleAssignmentResource
 import com.junbo.authorization.spec.resource.RoleResource
 import com.junbo.common.cloudant.CloudantClientBase
+import com.junbo.common.cloudant.CloudantEntity
+import com.junbo.common.cloudant.client.CloudantClientBulk
+import com.junbo.common.cloudant.model.CloudantQueryResult
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppErrorException
@@ -28,9 +31,12 @@ import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.model.migration.OculusInput
 import com.junbo.identity.spec.v1.model.migration.OculusOutput
 import com.junbo.identity.spec.v1.resource.MigrationResource
+import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
@@ -41,6 +47,7 @@ import org.springframework.util.StringUtils
 @Transactional
 @CompileStatic
 class MigrationResourceImpl implements MigrationResource {
+    private static final Logger logger = LoggerFactory.getLogger(MigrationResourceImpl)
 
     private static final String ADMIN_ROLE = 'admin'
     private static final String DEVELOPER_ROLE = 'developer'
@@ -80,8 +87,6 @@ class MigrationResourceImpl implements MigrationResource {
 
     @Override
     Promise<OculusOutput> migrate(OculusInput oculusInput) {
-        CloudantClientBase.useBulk = true
-
         if (StringUtils.isEmpty(oculusInput.username)) {
             throw new IllegalArgumentException('username can\'t be null')
         }
@@ -106,6 +111,7 @@ class MigrationResourceImpl implements MigrationResource {
     @Override
     Promise<List<OculusOutput>> bulkMigrate(List<OculusInput> oculusInputs) {
         CloudantClientBase.useBulk = true
+        CloudantClientBulk.callback = new MigrationQueryViewCallback()
 
         List<OculusOutput> result = new ArrayList<>()
         return Promise.each(oculusInputs) { OculusInput oculusInput ->
@@ -116,13 +122,39 @@ class MigrationResourceImpl implements MigrationResource {
                 if (ex instanceof AppErrorException) {
                     OculusOutput output = new OculusOutput(error: ((AppErrorException)ex).error)
                     result.add(output)
+                    JunboHttpContext.responseStatus = 400
                     return Promise.pure(null)
                 } else {
                     throw ex;
                 }
             }
         }.then {
+            return CloudantClientBulk.commit()
+        }.then {
             return Promise.pure(result)
+        }.recover { Throwable exOuter ->
+            logger.warn("Migrate bulk is under retry.", exOuter)
+
+            // retry once
+            result.clear()
+            CloudantClientBulk.clearBulkData()
+            JunboHttpContext.responseStatus = 200
+
+            return Promise.each(oculusInputs) { OculusInput oculusInput ->
+                return migrate(oculusInput).then { OculusOutput output ->
+                    result.add(output)
+                    return Promise.pure(null)
+                }.recover { Throwable ex ->
+                    if (ex instanceof AppErrorException) {
+                        OculusOutput output = new OculusOutput(error: ((AppErrorException) ex).error)
+                        result.add(output)
+                        JunboHttpContext.responseStatus = 400
+                        return Promise.pure(null)
+                    } else {
+                        throw ex;
+                    }
+                }
+            }
         }
     }
 
@@ -918,5 +950,88 @@ class MigrationResourceImpl implements MigrationResource {
     enum MigrateCompanyType {
         CORPORATE,
         INDIVIDUAL
+    }
+
+    private static class MigrationQueryViewCallback implements CloudantClientBulk.Callback {
+        void onQueryView(CloudantQueryResult results, String fullDbName, String dbName, String viewName, String key, String startKey, String endKey) {
+            if (dbName == "user" && viewName == "by_migrate_user_id") {
+                Map<String, CloudantEntity> bulkCache = CloudantClientBulk.getBulkReadonly(fullDbName)
+                searchUserByMigrateId(results, key, bulkCache)
+                return
+            } else if (dbName == "organization" && viewName == "by_migrate_company_id") {
+                Map<String, CloudantEntity> bulkCache = CloudantClientBulk.getBulkReadonly(fullDbName)
+                searchByMigrateCompanyId(results, key, bulkCache)
+                return
+            } else if (dbName == "group" && viewName == "by_organization_id_and_name") {
+                Map<String, CloudantEntity> bulkCache = CloudantClientBulk.getBulkReadonly(fullDbName)
+                searchGroupByOrganizationIdAndName(results, key, bulkCache)
+                return
+            } else if (dbName == "group" && viewName == "by_organization_id") {
+                Map<String, CloudantEntity> bulkCache = CloudantClientBulk.getBulkReadonly(fullDbName)
+                searchGroupByOrganizationId(results, key, bulkCache)
+                return
+            }
+
+        }
+
+        void onSearch(CloudantQueryResult results, String fullDbName, String dbName, String searchName, String queryString) {
+            throw new RuntimeException("Not supported.");
+        }
+
+        private void searchUserByMigrateId(CloudantQueryResult results, String key, Map<String, CloudantEntity> bulkCache) {
+            for (CloudantEntity entity : bulkCache.values()) {
+                User user = (User)entity
+                if (user.getMigratedUserId().toString() == key) {
+                    results.rows.add(new CloudantQueryResult.ResultObject(
+                            id: user.cloudantId,
+                            key: key,
+                            value: user.cloudantId,
+                            doc: user
+                    ))
+                }
+            }
+        }
+
+        private void searchByMigrateCompanyId(CloudantQueryResult results, String key, Map<String, CloudantEntity> bulkCache) {
+            for (CloudantEntity entity : bulkCache.values()) {
+                Organization org = (Organization)entity
+                if (org.getMigratedCompanyId().toString() == key) {
+                    results.rows.add(new CloudantQueryResult.ResultObject(
+                            id: org.cloudantId,
+                            key: key,
+                            value: org.cloudantId,
+                            doc: org
+                    ))
+                }
+            }
+        }
+
+        private void searchGroupByOrganizationIdAndName(CloudantQueryResult results, String key, Map<String, CloudantEntity> bulkCache) {
+            for (CloudantEntity entity : bulkCache.values()) {
+                Group group = (Group)entity
+                if ("${group.getOrganizationId().value}:${group.name}" == key) {
+                    results.rows.add(new CloudantQueryResult.ResultObject(
+                            id: group.cloudantId,
+                            key: key,
+                            value: group.cloudantId,
+                            doc: group
+                    ))
+                }
+            }
+        }
+
+        private void searchGroupByOrganizationId(CloudantQueryResult results, String key, Map<String, CloudantEntity> bulkCache) {
+            for (CloudantEntity entity : bulkCache.values()) {
+                Group group = (Group)entity
+                if ("${group.getOrganizationId().value}" == key) {
+                    results.rows.add(new CloudantQueryResult.ResultObject(
+                            id: group.cloudantId,
+                            key: key,
+                            value: group.cloudantId,
+                            doc: group
+                    ))
+                }
+            }
+        }
     }
 }
