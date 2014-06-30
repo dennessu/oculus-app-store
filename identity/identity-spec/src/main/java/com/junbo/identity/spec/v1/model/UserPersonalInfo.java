@@ -31,8 +31,7 @@ public class UserPersonalInfo extends PropertyAssignedAwareResourceMeta<UserPers
 
     @ApiModelProperty(position = 3, required = true, value = "The userPersonal information, it must be json structure." +
             "ADDRESS Type[street1(string),street2(string),street3(string),city(string),phoneNumber(string),subCountry(string)," +
-            "country(link)];" +
-            "Other Types[info(string)]")
+            "country(link)]; Other Types[info(string)]")
     private JsonNode value;
 
     @ApiModelProperty(position = 4, required = false, value = "[Nullable] Null if the 'value' has not been validated, " +
