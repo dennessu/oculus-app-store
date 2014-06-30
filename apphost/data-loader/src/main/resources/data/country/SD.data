@@ -9,7 +9,6 @@
 		"id": "SDG"
 	},
 	"ratingBoards": [],
-	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"DC": {
 			"locales": {

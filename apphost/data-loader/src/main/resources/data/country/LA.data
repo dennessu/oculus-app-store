@@ -12,7 +12,6 @@
 		"href": "/v1/age-rating-boards/MDA",
 		"id": "MDA"
 	}],
-	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"AT": {
 			"locales": {

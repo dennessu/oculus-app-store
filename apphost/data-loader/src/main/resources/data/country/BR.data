@@ -12,7 +12,6 @@
 		"href": "/v1/age-rating-boards/DJCTQ",
 		"id": "DJCTQ"
 	}],
-	"countrySpecificNameForPostalCode":"CEP",
 	"subCountries": {
 		"AC": {
 			"locales": {

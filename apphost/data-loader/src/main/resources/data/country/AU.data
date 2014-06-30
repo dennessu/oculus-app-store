@@ -12,7 +12,6 @@
 		"href": "/v1/age-rating-boards/COB",
 		"id": "COB"
 	}],
-	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"ACT": {
 			"locales": {

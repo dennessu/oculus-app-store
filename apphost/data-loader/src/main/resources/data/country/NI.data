@@ -9,7 +9,6 @@
 		"id": "NIO"
 	},
 	"ratingBoards": [],
-	"countrySpecificNameForPostalCode":"Postal code",
 	"subCountries": {
 		"AN": {
 			"locales": {
