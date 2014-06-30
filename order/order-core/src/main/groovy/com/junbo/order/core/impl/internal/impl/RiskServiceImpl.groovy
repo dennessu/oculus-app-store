@@ -10,8 +10,10 @@ import com.junbo.order.core.impl.internal.RiskReviewResult
 import com.junbo.order.core.impl.internal.RiskService
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
+import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.OrderItem
+import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.kount.ris.Inquiry
 import com.kount.ris.KountRisClient
@@ -23,6 +25,7 @@ import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 import javax.annotation.Resource
@@ -41,9 +44,16 @@ class RiskServiceImpl implements RiskService {
     @Resource(name = 'orderServiceContextBuilder')
     OrderServiceContextBuilder builder
 
+    @Autowired
+    OrderRepositoryFacade orderRepository
+
     int merchantId = 600900
 
     String kountUrl = 'https://risk.test.kount.net'
+
+    String kountKeyFile = 'ris_kount_test.p12'
+
+    String kountPass = '#Bugsfor$'
 
     /*@Required
     void setMerchantId(int merchantId) {
@@ -76,30 +86,29 @@ class RiskServiceImpl implements RiskService {
             }
         }
 
-        return facadeContainer.identityFacade.getCurrency(order.currency.value).syncThen { Currency currency ->
+        return facadeContainer.identityFacade.getCurrency(order.currency.value).then { Currency currency ->
 
             int baseUnit = Math.pow(10, currency.numberAfterDecimal).intValue();
 
             Inquiry q = new Inquiry();
             q.setMerchantId(merchantId)
-            //todo: client should pass in the session id for kount
-            q.setSessionId("")
+            q.setSessionId(UUID.randomUUID().toString().replaceAll('-', ''))
             q.setCurrency(order.currency.value)
             q.setTotal((int)(order.totalAmount * baseUnit))
             q.setIpAddress(ip)
             q.setMerchantAcknowledgment(MerchantAcknowledgment.YES)
 
-            return facadeContainer.identityFacade.getEmail(emailId).syncRecover { Throwable throwable ->
+            return facadeContainer.identityFacade.getEmail(emailId).recover { Throwable throwable ->
                 LOGGER.error("name=Error_Review_Order_Get_Email", throwable)
-                return null
-            }.syncThen { String email ->
+                return Promise.pure(null)
+            }.then { String email ->
                 if (email == null) {
                     q.setEmail(NO_EMAIL)
                 } else {
                     q.setEmail(email)
                 }
 
-                return builder.getOffers(orderContext).syncThen {
+                return builder.getOffers(orderContext).then {
                     Collection<CartItem> cart = new Vector<CartItem>()
 
                     order.orderItems?.each { OrderItem orderItem ->
@@ -133,10 +142,10 @@ class RiskServiceImpl implements RiskService {
                                 break
                         }
                     }
-                    q.setWebsite("OCULUS")
+                    q.setWebsite("DEFAULT")
 
-                    InputStream stream = RiskServiceImpl.classLoader.getResourceAsStream('risk_kount_test.p12')
-                    KountRisClient kountRisClient = new KountRisClient('#Bugsfor$', kountUrl, stream)
+                    InputStream stream = RiskServiceImpl.classLoader.getResourceAsStream(kountKeyFile)
+                    KountRisClient kountRisClient = new KountRisClient(kountPass, kountUrl, stream)
 
                     try {
                         LOGGER.info('name=Review_Order_Request, ' + q.getParams().toString())
@@ -144,7 +153,14 @@ class RiskServiceImpl implements RiskService {
                         LOGGER.info('name=Review_Order_Response, ' + r.toString())
                         orderContext.riskTransactionId = r.getTransactionId()
 
-                        return RiskReviewResult.APPROVED
+                        if (r.auto == 'D') {
+                            order.setStatus(OrderStatus.RISK_REJECT.name())
+                            orderRepository.updateOrder(order, true, false, null)
+
+                            return Promise.pure(RiskReviewResult.REJECT)
+                        } else {
+                            return Promise.pure(RiskReviewResult.APPROVED)
+                        }
                     } catch (RisException re) {
                         LOGGER.error('name=Review_Order_Exception', re)
                         throw AppErrors.INSTANCE.orderRiskReviewError(re.getMessage()).exception()

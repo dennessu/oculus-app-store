@@ -21,7 +21,8 @@
 
         <wf:action-state id="riskReview">
             <wf:action ref="riskReviewAction"/>
-            <wf:transition on="*" to="charge"/>
+            <wf:transition on="APPROVED" to="charge"/>
+            <wf:transition on="*" to="endState"/>
         </wf:action-state>
 
         <wf:action-state id="charge">
