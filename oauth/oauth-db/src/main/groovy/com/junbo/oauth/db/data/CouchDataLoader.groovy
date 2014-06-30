@@ -5,11 +5,10 @@
  */
 package com.junbo.oauth.db.data
 
+import com.junbo.langur.core.async.JunboAsyncHttpClient
 import com.junbo.oauth.common.JsonMarshaller
-
 import com.junbo.oauth.db.dao.ClientDAO
 import com.junbo.oauth.db.dao.ScopeDAO
-
 import com.junbo.oauth.db.dao.couch.CouchClientDAOImpl
 import com.junbo.oauth.db.dao.couch.CouchScopeDAOImpl
 import com.junbo.oauth.db.repo.ClientRepository
@@ -33,7 +32,7 @@ class CouchDataLoader {
     private static final int ENTITY_BODY_INDEX = 2
 
     private String dbUri
-    private final AsyncHttpClient asyncHttpClient
+    private final JunboAsyncHttpClient asyncHttpClient
 
     private final ClientRepository clientRepository
     private final ScopeRepository scopeRepository
@@ -42,7 +41,7 @@ class CouchDataLoader {
 
     CouchDataLoader(String dbUri) {
         this.dbUri = dbUri
-        asyncHttpClient = new AsyncHttpClient()
+        asyncHttpClient = new JunboAsyncHttpClient(new AsyncHttpClient())
 
         ClientDAO clientDAO = new CouchClientDAOImpl()
         clientDAO.dbName = 'client'

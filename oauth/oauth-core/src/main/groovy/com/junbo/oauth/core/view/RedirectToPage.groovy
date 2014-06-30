@@ -32,6 +32,14 @@ class RedirectToPage implements Action {
     Promise<ActionResult> execute(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
 
+        if (contextWrapper.viewCountry != null) {
+            pageUrl = pageUrl.replaceFirst('/country', '/' + contextWrapper.viewCountry)
+        }
+
+        if (contextWrapper.viewLocale != null) {
+            pageUrl = pageUrl.replaceFirst('/locale', '/' + contextWrapper.viewLocale)
+        }
+
         contextWrapper.responseBuilder = Response.status(Response.Status.FOUND)
                 .location(URI.create("${pageUrl}cid=${context.conversationId}"))
 

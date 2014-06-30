@@ -184,14 +184,20 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
         });
     }
 
-    protected PaymentTransaction getPaymentAndEvents(Long paymentId) {
-        final PaymentTransaction result = paymentRepositoryFacade.getByPaymentId(paymentId);
-        if(result == null){
-            throw AppClientExceptions.INSTANCE.resourceNotFound("payment_transaction").exception();
-        }
-        final List<PaymentEvent> events = paymentRepositoryFacade.getPaymentEventsByPaymentId(paymentId);
-        result.setPaymentEvents(events);
-        return result;
+    protected PaymentTransaction getPaymentAndEvents(final Long paymentId) {
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
+        template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+        return template.execute(new TransactionCallback<PaymentTransaction>() {
+            public PaymentTransaction doInTransaction(TransactionStatus txnStatus) {
+                final PaymentTransaction result = paymentRepositoryFacade.getByPaymentId(paymentId);
+                if(result == null){
+                    throw AppClientExceptions.INSTANCE.resourceNotFound("payment_transaction").exception();
+                }
+                final List<PaymentEvent> events = paymentRepositoryFacade.getPaymentEventsByPaymentId(paymentId);
+                result.setPaymentEvents(events);
+                return result;
+            }
+        });
     }
 
     protected PaymentTransaction saveAndCommitPayment(final PaymentTransaction request) {
@@ -245,6 +251,14 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
                     PaymentUtil.getPIType(pi.getType()).toString()).exception();
         }
         return provider;
+    }
+
+    protected PaymentProviderService getProviderByName(String provider){
+        PaymentProviderService service = providerRoutingService.getProviderByName(provider);
+        if(service == null){
+            throw AppServerExceptions.INSTANCE.providerNotFound(provider).exception();
+        }
+        return service;
     }
 
     public void setUserInfoFacade(UserInfoFacade userInfoFacade) {

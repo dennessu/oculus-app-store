@@ -7,8 +7,10 @@ package com.junbo.fulfilment.clientproxy.impl;
 
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.catalog.spec.model.item.ItemRevisionGetOptions;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions;
 import com.junbo.catalog.spec.resource.ItemResource;
 import com.junbo.catalog.spec.resource.ItemRevisionResource;
 import com.junbo.catalog.spec.resource.OfferResource;
@@ -85,7 +87,7 @@ public class MegaGatewayImpl implements MegaGateway {
     @Override
     public OfferRevision getOfferRevision(String offerRevisionId) {
         try {
-            return offerRevisionResource.getOfferRevision(offerRevisionId).get();
+            return offerRevisionResource.getOfferRevision(offerRevisionId, new OfferRevisionGetOptions()).get();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -94,7 +96,7 @@ public class MegaGatewayImpl implements MegaGateway {
     @Override
     public ItemRevision getItemRevision(String itemRevisionId) {
         try {
-            return itemRevisionResource.getItemRevision(itemRevisionId).get();
+            return itemRevisionResource.getItemRevision(itemRevisionId, new ItemRevisionGetOptions()).get();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }

@@ -9,12 +9,11 @@ package com.junbo.test.order.utility;
 import com.junbo.billing.spec.model.Balance;
 import com.junbo.billing.spec.model.Transaction;
 import com.junbo.common.model.Results;
-import com.junbo.order.spec.model.Order;
-import com.junbo.order.spec.model.OrderEvent;
+import com.junbo.order.spec.model.*;
 import com.junbo.test.billing.entities.TransactionInfo;
 import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.IdConverter;
-import com.junbo.test.order.model.enums.OrderEventInfo;
+import com.junbo.test.order.model.*;
 import com.junbo.test.order.model.enums.OrderStatus;
 import com.junbo.test.common.Utility.BaseValidationHelper;
 import com.junbo.test.common.blueprint.Master;
@@ -66,6 +65,80 @@ public class OrderValidationHelper extends BaseValidationHelper {
             }
         }
         throw new TestException("missing expected transaction in transaction list");
+    }
+
+    public void validateOrderInfo(String orderId, OrderInfo expectedOrderInfo) throws Exception {
+        testDataProvider.getOrder(orderId);
+        Order order = Master.getInstance().getOrder(orderId);
+        verifyEqual(IdConverter.idToHexString(order.getUser()), expectedOrderInfo.getUserId(), "verify user id");
+        verifyEqual(order.getStatus(), expectedOrderInfo.getOrderStatus().toString(), "verify order status");
+        verifyEqual(order.getTentative(), expectedOrderInfo.isTentative(), "verify order tentative");
+        verifyEqual(order.getCountry().getValue(), expectedOrderInfo.getCountry().toString(), "verify order country");
+        verifyEqual(order.getCurrency().getValue(),
+                expectedOrderInfo.getCurrency().toString(), "verify order currency");
+        verifyEqual(order.getLocale().getValue(), expectedOrderInfo.getLocale(), "verify order locale");
+        verifyEqual(order.getTotalAmount(), expectedOrderInfo.getTotalAmount(), "verify order total amount");
+        verifyEqual(order.getTotalTax(), expectedOrderInfo.getTotalTax(), "verify order total tax");
+
+        verifyEqual(order.getOrderItems().size(), expectedOrderInfo.getOrderItems().size(), "verify order items count");
+
+        for (OrderItemInfo orderItemInfo : expectedOrderInfo.getOrderItems()) {
+            for (OrderItem orderItem : order.getOrderItems()) {
+                if (IdConverter.idToHexString(orderItem.getOffer()).equals(orderItemInfo.getOfferId())) {
+                    verifyEqual(orderItem.getQuantity(), orderItemInfo.getQuantity(), "verify order item quantity");
+                    verifyEqual(orderItem.getUnitPrice(), orderItemInfo.getUnitPrice(), "verify order item unit price");
+                    verifyEqual(orderItem.getTotalAmount(), orderItemInfo.getTotalAmount(), "verify order item amount");
+                    verifyEqual(orderItem.getTotalTax(), orderItem.getTotalTax(), "verify order item tax");
+                    break;
+                }
+            }
+        }
+
+        verifyEqual(IdConverter.idToHexString(order.getPayments().get(0).getPaymentInstrument()),
+                expectedOrderInfo.getPaymentInfos().get(0).getPaymentId(), "verify payment id");
+
+        verifyEqual(order.getBillingHistories().size(), expectedOrderInfo.getBillingHistories().size(),
+                "verify billing history size");
+
+        for (BillingHistoryInfo billingHistoryInfo : expectedOrderInfo.getBillingHistories()) {
+            for (BillingHistory billingHistory : order.getBillingHistories()) {
+                if (billingHistory.getBillingEvent().equals(billingHistoryInfo.getTransactionType().toString())) {
+                    verifyEqual(billingHistory.getTotalAmount(), billingHistoryInfo.getTotalAmount(),
+                            "verify billing history total amount");
+                    verifyEqual(billingHistory.getPayments().size(), billingHistoryInfo.getPaymentInfos().size(),
+                            "verify bulling history payment size");
+                    for (PaymentInstrumentInfo paymentInstrumentInfo : billingHistoryInfo.getPaymentInfos()) {
+                        for (BillingPaymentInfo billingPaymentInfo : billingHistory.getPayments()) {
+                            if (IdConverter.idToHexString(billingPaymentInfo.getPaymentInstrument()).
+                                    equals(paymentInstrumentInfo.getPaymentId())) {
+                                verifyEqual(billingPaymentInfo.getPaymentAmount(),
+                                        paymentInstrumentInfo.getPaymentAmount(),
+                                        "verify billing history payment amount");
+                            }
+                        }
+                    }
+
+                    verifyEqual(billingHistory.getRefundedOrderItems().size(),
+                            billingHistoryInfo.getRefundOrderItemInfos().size(), "verify refunded items count");
+
+                    for (RefundOrderItemInfo refundOrderItemInfo : billingHistoryInfo.getRefundOrderItemInfos()) {
+                        for (RefundOrderItem refundOrderItem : billingHistory.getRefundedOrderItems()) {
+                            if (IdConverter.idToHexString(refundOrderItem.getOffer()).
+                                    equals(refundOrderItemInfo.getOfferId())) {
+                                verifyEqual(refundOrderItem.getQuantity(), refundOrderItemInfo.getQuantity(),
+                                        "verify refund quantity");
+                                verifyEqual(refundOrderItem.getRefundedAmount(),refundOrderItemInfo.getRefundAmount(),
+                                        "verify refund amount");
+                                verifyEqual(refundOrderItem.getRefundedTax(), refundOrderItemInfo.getRefundTax(),
+                                        "verify refund tax");
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
     }
 
 }

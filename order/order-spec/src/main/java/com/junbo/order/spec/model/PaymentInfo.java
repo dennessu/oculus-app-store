@@ -22,6 +22,15 @@ public class PaymentInfo {
             value = "[Client Immutable]The distributed amount to this payment instrument.")
     private BigDecimal paymentAmount;
 
+    // urls for web payment
+    @ApiModelProperty(required = true, position = 30, value = "[Client Immutable] The redirect url on success. ")
+    private String successRedirectUrl;
+    @ApiModelProperty(required = true, position = 40, value = "[Client Immutable] The redirect url on cancellation. ")
+    private String cancelRedirectUrl;
+    @ApiModelProperty(required = true, position = 50, value = "[Client Immutable] The redirect url on confirmation. ")
+    private String providerConfirmUrl;
+    // end of urls
+
     public PaymentInstrumentId getPaymentInstrument() {
         return paymentInstrument;
     }
@@ -36,5 +45,29 @@ public class PaymentInfo {
 
     public void setPaymentAmount(BigDecimal paymentAmount) {
         this.paymentAmount = paymentAmount;
+    }
+
+    public String getSuccessRedirectUrl() {
+        return successRedirectUrl;
+    }
+
+    public void setSuccessRedirectUrl(String successRedirectUrl) {
+        this.successRedirectUrl = successRedirectUrl;
+    }
+
+    public String getCancelRedirectUrl() {
+        return cancelRedirectUrl;
+    }
+
+    public void setCancelRedirectUrl(String cancelRedirectUrl) {
+        this.cancelRedirectUrl = cancelRedirectUrl;
+    }
+
+    public String getProviderConfirmUrl() {
+        return providerConfirmUrl;
+    }
+
+    public void setProviderConfirmUrl(String providerConfirmUrl) {
+        this.providerConfirmUrl = providerConfirmUrl;
     }
 }

@@ -60,6 +60,16 @@ public class Identity {
                 Country.class);
     }
 
+    public static List<Country> CountriesGet() throws Exception {
+        List<Country> countries = new ArrayList<>();
+        for (Object obj : HttpclientHelper.SimpleGet(IdentityV1CountryURI, (Results.class)).getItems()) {
+            countries.add((Country) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
+                            Country.class)
+            );
+        }
+        return countries;
+    }
+
     public static void CountryDeleteByCountryId(String countryId) throws Exception {
         HttpclientHelper.SimpleDelete(IdentityV1CountryURI + "/" + countryId);
     }

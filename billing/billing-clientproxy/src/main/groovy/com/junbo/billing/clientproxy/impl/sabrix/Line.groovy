@@ -52,10 +52,22 @@ class Line {
     Registrations registrations
 
     @XStreamAlias('PART_NUMBER')
-    Registrations partNumber
+    String partNumber
 
     @XStreamAlias('TOTAL_TAX_AMOUNT')
     Double totalTaxAmount
+
+    @XStreamAlias('VENDOR_NUMBER')
+    String vendorNumber
+
+    @XStreamAlias('VENDOR_NAME')
+    String vendorName
+
+    @XStreamAlias('DESCRIPTION')
+    String description
+
+    @XStreamImplicit(itemFieldName='USER_ELEMENT')
+    List<UserElement> userElement
 
     @XStreamImplicit(itemFieldName='TAX')
     List<Tax> tax
@@ -75,7 +87,11 @@ class Line {
                 ", discountAmount=" + discountAmount +
                 ", lineNumber=" + lineNumber +
                 ", registrations=" + registrations +
+                ", partNumber=" + partNumber +
                 ", totalTaxAmount=" + totalTaxAmount +
+                ", vendorNumber=" + vendorNumber +
+                ", vendorName=" + vendorName +
+                ", userElement=" + userElement +
                 ", tax=" + tax +
                 '}';
     }

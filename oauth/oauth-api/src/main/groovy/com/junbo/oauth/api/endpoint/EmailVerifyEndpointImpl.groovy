@@ -20,6 +20,7 @@ import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.util.CookieUtil
+import com.junbo.oauth.core.util.ValidatorUtil
 import com.junbo.oauth.db.repo.EmailVerifyCodeRepository
 import com.junbo.oauth.db.repo.LoginStateRepository
 import com.junbo.oauth.spec.endpoint.EmailVerifyEndpoint
@@ -51,7 +52,6 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
     private UserPersonalInfoResource userPersonalInfoResource
 
     private String successRedirectUri
-
     private String failedRedirectUri
 
     private LoginStateRepository loginStateRepository
@@ -88,6 +88,24 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
 
     @Override
     Promise<Response> verifyEmail(String code, String locale) {
+        if (StringUtils.isEmpty(locale)) {
+            if (ValidatorUtil.isValidLocale(locale)) {
+                this.failedRedirectUri = this.failedRedirectUri.replaceFirst('/locale', '/' + locale)
+                this.successRedirectUri = this.successRedirectUri.replaceFirst('/locale', '/' + locale)
+            }
+
+            if (locale != null) {
+                String[] parts = locale.split('_')
+                switch (parts.length) {
+                    case 3: case 2:
+                        this.failedRedirectUri = this.failedRedirectUri.replaceFirst('/country', '/' + parts[1])
+                        this.successRedirectUri = this.successRedirectUri.replaceFirst('/country', '/' + parts[1])
+                    default:
+                        break
+                }
+            }
+        }
+
         if (StringUtils.isEmpty(code)) {
             LOGGER.warn(AppExceptions.INSTANCE.missingEmailVerifyCode().description)
             Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)

@@ -223,7 +223,7 @@ public class BillingTestDataProvider extends BaseTestDataProvider {
 
     private String getOrderItemId(String uid, Long orderId, String offerId) throws Exception {
         String sqlStr = String.format(
-                "select order_item_id from shard_%s.order_item where order_id='%s' and product_item_id='%s'",
+                "select order_item_id from shard_%s.order_item where order_id='%s' and offer_id='%s'",
                 ShardIdHelper.getShardIdByUid(uid), orderId, offerId);
         return dbHelper.executeScalar(sqlStr, DBHelper.DBName.ORDER);
     }
@@ -234,8 +234,8 @@ public class BillingTestDataProvider extends BaseTestDataProvider {
         return orderClient.updateOrder(order);
     }
 
-    public String getBalancesByOrderId(String orderId) throws Exception {
-        return balanceClient.getBalancesByOrderId(orderId).get(0);
+    public List<String> getBalancesByOrderId(String orderId) throws Exception {
+        return balanceClient.getBalancesByOrderId(orderId);
     }
 
     public String getBalanceByBalanceId(String uid, String balanceId) throws Exception {

@@ -39,13 +39,16 @@ public interface ResetPasswordEndpoint {
     @Path("/reset-password")
     Promise<Response> resetPasswordLink(@QueryParam("cid") String conversationId,
                                         @QueryParam("rpc") String code,
-                                        @QueryParam("locale") String locale);
+                                        @QueryParam("locale") String locale,
+                                        @QueryParam("country") String country);
     @POST
     @Path("/reset-password")
     Promise<Response> resetPassword(@FormParam("cid") String conversationId,
                                     @FormParam("event") String event,
                                     @FormParam("locale") String locale,
+                                    @FormParam("country") String country,
                                     @FormParam("userId") UserId userId,
+                                    @FormParam("user_email") String userEmail,
                                     @Context ContainerRequestContext request,
                                     MultivaluedMap<String, String> formParams);
 }

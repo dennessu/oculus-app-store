@@ -24,23 +24,24 @@ ssh $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
     forceKillPid $SKYTOOL_PID_PATH
 ENDSSH
 
+xlog_location=`psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "SELECT pg_current_xlog_location();" -t | tr -d ' '`
+echo "[FAILBACK][SLAVE] current xlog location is [$xlog_location]"
+
+ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
+    echo "[FAILBACK][SLAVE] gracefully shutdown slave database"
+    $PGBIN_PATH/pg_ctl stop -m fast -D $SLAVE_DATA_PATH
+ENDSSH
+
 echo "[FAILBACK][MASTER] copy unarchived log files"
 rsync -azhv $DEPLOYMENT_ACCOUNT@$SLAVE_HOST:$SLAVE_DATA_PATH/pg_xlog/* $MASTER_ARCHIVE_PATH
 
 echo "[FAILBACK][MASTER] waiting for master catching up with slave"
-xlog_location=`psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "SELECT pg_current_xlog_location();" -t | tr -d ' '`
-echo "[FAILBACK][MASTER] current xlog location is [$xlog_location]"
-
 while [ `psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT pg_xlog_location_diff(pg_last_xlog_replay_location(), '$xlog_location');" -t | tr -d ' '` -lt 0 ]
 do
     sleep 1 && echo "[FAILBACK][MASTER] slave is catching up..."; 
 done
 echo "[FAILBACK][MASTER] master catch up with slave!"
 
-ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
-    echo "[FAILBACK][SLAVE] gracefully shutdown slave database"
-    $PGBIN_PATH/pg_ctl stop -m fast -D $SLAVE_DATA_PATH
-ENDSSH
 
 echo "[FAILBACK][MASTER] promote master database to take traffic"
 touch $PROMOTE_TRIGGER_FILE
@@ -63,7 +64,7 @@ trigger_file = '$PROMOTE_TRIGGER_FILE'
 EOF
 
     echo "[FAILBACK][SLAVE] start slave database"
-    $PGBIN_PATH/pg_ctl -D $SLAVE_DATA_PATH start > /dev/null 2>&1 &
+    $PGBIN_PATH/pg_ctl -D $SLAVE_DATA_PATH -l "${SLAVE_LOG_PATH}/postgresql-$(date +%Y.%m.%d.%S.%N).log" start > /dev/null 2>&1 &
 
     while ! echo exit | nc $SLAVE_HOST $SLAVE_DB_PORT;
     do

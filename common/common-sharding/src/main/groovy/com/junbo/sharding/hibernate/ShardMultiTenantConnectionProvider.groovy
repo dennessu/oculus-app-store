@@ -39,6 +39,10 @@ class ShardMultiTenantConnectionProvider implements MultiTenantConnectionProvide
 
     @Override
     Connection getConnection(String tenantIdentifier) throws SQLException {
+        return getDataSource(tenantIdentifier).connection
+    }
+
+    SimpleDataSourceProxy getDataSource(String tenantIdentifier) {
         if (tenantIdentifier == null) {
             throw new IllegalArgumentException('tenantIdentifier is null')
         }
@@ -49,7 +53,7 @@ class ShardMultiTenantConnectionProvider implements MultiTenantConnectionProvide
             throw new IllegalArgumentException("shardId $shardId should be in [0, ${dataSourceList.size()})")
         }
 
-        return dataSourceList.get(shardId).connection
+        return dataSourceList.get(shardId)
     }
 
     @Override

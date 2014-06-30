@@ -10,7 +10,7 @@ import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.order.model.enums.EventStatus;
 import com.junbo.test.order.model.enums.OrderActionType;
-import com.junbo.test.order.model.enums.OrderEventInfo;
+import com.junbo.test.order.model.OrderEventInfo;
 import com.junbo.test.order.model.enums.OrderStatus;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
@@ -20,6 +20,7 @@ import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
+import org.apache.commons.collections.map.HashedMap;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
@@ -55,9 +56,10 @@ public class OrderStatusTesting extends BaseOrderTestClass {
 
         String uid = testDataProvider.createUser();
 
-        ArrayList<String> offerList = new ArrayList<>();
-        offerList.add(offer_digital_normal1);
-        offerList.add(offer_digital_normal2);
+        Map<String, Integer> offerList = new HashedMap();
+
+        offerList.put(offer_digital_normal1, 1);
+        offerList.put(offer_digital_normal2, 2);
 
         PayPalInfo payPalInfo = PayPalInfo.getPayPalInfo(Country.DEFAULT);
         String payPalId = testDataProvider.postPaymentInstrument(uid, payPalInfo);
@@ -72,8 +74,8 @@ public class OrderStatusTesting extends BaseOrderTestClass {
 
         Order order = Master.getInstance().getOrder(orderId2);
         order.setTentative(false);
-        order.setSuccessRedirectUrl("http://www.abc.com/");
-        order.setCancelRedirectUrl("http://www.abc.com/cancel/");
+        order.getPayments().get(0).setSuccessRedirectUrl("http://www.abc.com/");
+        order.getPayments().get(0).setCancelRedirectUrl("http://www.abc.com/cancel/");
         orderId2 = testDataProvider.updateOrder(order);
 
         expectedOrderStatus.put(orderId2, OrderStatus.PENDING_CHARGE);
@@ -111,9 +113,10 @@ public class OrderStatusTesting extends BaseOrderTestClass {
 
         String uid = testDataProvider.createUser();
 
-        ArrayList<String> offerList = new ArrayList<>();
-        offerList.add(offer_digital_normal1);
-        offerList.add(offer_digital_normal2);
+        Map<String, Integer> offerList = new HashedMap();
+
+        offerList.put(offer_digital_normal1, 1);
+        offerList.put(offer_digital_normal2, 2);
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
@@ -131,8 +134,8 @@ public class OrderStatusTesting extends BaseOrderTestClass {
         expectedOrderStatus.put(orderId_Completed, OrderStatus.COMPLETED);
 
         offerList.clear();
-        offerList.add(offer_physical_normal1);
-        offerList.add(offer_physical_normal2);
+        offerList.put(offer_physical_normal1, 1);
+        offerList.put(offer_physical_normal2, 1);
 
         EwalletInfo ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT, Currency.DEFAULT);
         String ewalletId = testDataProvider.postPaymentInstrument(uid, ewalletInfo);
@@ -190,8 +193,9 @@ public class OrderStatusTesting extends BaseOrderTestClass {
 
         String uid = testDataProvider.createUser();
 
-        ArrayList<String> offerList = new ArrayList<>();
-        offerList.add(offer_digital_normal1);
+        Map<String, Integer> offerList = new HashedMap();
+
+        offerList.put(offer_digital_normal1, 1);
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
@@ -249,8 +253,9 @@ public class OrderStatusTesting extends BaseOrderTestClass {
 
         String uid = testDataProvider.createUser();
 
-        ArrayList<String> offerList = new ArrayList<>();
-        offerList.add(offer_physical_normal1);
+        Map<String, Integer> offerList = new HashedMap();
+
+        offerList.put(offer_physical_normal1, 1);
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
@@ -294,9 +299,10 @@ public class OrderStatusTesting extends BaseOrderTestClass {
     public void testCheckoutFailure() throws Exception {
         String uid = testDataProvider.createUser();
 
-        ArrayList<String> offerList = new ArrayList<>();
-        offerList.add(offer_digital_normal1);
-        offerList.add(offer_digital_normal2);
+        Map<String, Integer> offerList = new HashedMap();
+
+        offerList.put(offer_digital_normal1, 1);
+        offerList.put(offer_digital_normal2, 2);
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
@@ -335,8 +341,9 @@ public class OrderStatusTesting extends BaseOrderTestClass {
 
         String uid = testDataProvider.createUser();
 
-        ArrayList<String> offerList = new ArrayList<>();
-        offerList.add(offer_digital_normal1);
+        Map<String, Integer> offerList = new HashedMap();
+
+        offerList.put(offer_digital_normal1, 1);
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
@@ -385,9 +392,10 @@ public class OrderStatusTesting extends BaseOrderTestClass {
         Map<String, OrderStatus> expectedOrderStatus = new HashMap<>();
         String uid = testDataProvider.createUser();
 
-        ArrayList<String> offerList = new ArrayList<>();
-        offerList.add(offer_digital_normal1);
-        offerList.add(offer_digital_normal2);
+        Map<String, Integer> offerList = new HashedMap();
+
+        offerList.put(offer_digital_normal1, 1);
+        offerList.put(offer_digital_normal2, 1);
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);

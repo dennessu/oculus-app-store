@@ -15,8 +15,12 @@
     </bean>
 
     <!-- due to https://github.com/AsyncHttpClient/async-http-client/issues/484, use the default provider: netty -->
-    <bean id="commonAsyncHttpClient" class="com.ning.http.client.AsyncHttpClient">
-        <constructor-arg ref="asyncHttpClientConfig" />
+    <bean id="commonAsyncHttpClient" class="com.junbo.langur.core.async.JunboAsyncHttpClient">
+        <constructor-arg>
+            <bean class="com.ning.http.client.AsyncHttpClient">
+                <constructor-arg ref="asyncHttpClientConfig" />
+            </bean>
+        </constructor-arg>
     </bean>
 
     <bean id="commonPathParamTranscoder" class="com.junbo.common.json.IdPathParamTranscoder"/>

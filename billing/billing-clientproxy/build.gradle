@@ -12,6 +12,7 @@ dependencies {
     compile junboProject(':identity-spec')
     compile junboProject(':payment-spec')
     compile junboProject(':oauth-spec')
+    compile junboProject(':catalog-spec')
     compile 'com.thoughtworks.xstream:xstream:1.4.7'
 
     testCompile (libraries.spring_test)

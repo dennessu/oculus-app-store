@@ -11,8 +11,10 @@ package com.junbo.test.billing.enums;
 public enum  TransactionType {
     AUTHORIZE("AUTHORIZE"),
     CAPTURE("CAPTURE"),
+    PENDING_CHARGE("PENDING_CHARGE"),
     CHARGE("CHARGE"),
     REVERSE("REVERSE"),
+    PENDING_REFUND("PENDING_REFUND"),
     REFUND("REFUND"),
     CONFIRM("CONFIRM"),
     CHECK("CHECK");

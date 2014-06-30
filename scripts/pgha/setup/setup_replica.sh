@@ -11,6 +11,9 @@ createDir $REPLICA_DATA_PATH
 echo "[SETUP][REPLICA] create database archive folder $REPLICA_ARCHIVE_PATH"
 createDir $REPLICA_ARCHIVE_PATH
 
+echo "[SETUP][REPLICA] create database archive folder $REPLICA_LOG_PATH"
+createDir $REPLICA_LOG_PATH
+
 echo "[SETUP][REPLICA] copy backup file from remote master"
 rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_BACKUP_PATH/* $REPLICA_DATA_PATH
 
@@ -45,7 +48,7 @@ port = $REPLICA_DB_PORT
 EOF
 
 echo "[SETUP][REPLICA] start replica database"
-$PGBIN_PATH/pg_ctl -D $REPLICA_DATA_PATH start > /dev/null 2>&1 &
+$PGBIN_PATH/pg_ctl -D $REPLICA_DATA_PATH -l "${REPLICA_LOG_PATH}/postgresql-$(date +%Y.%m.%d.%S.%N).log"  start > /dev/null 2>&1 &
 
 while ! echo exit | nc $REPLICA_HOST $REPLICA_DB_PORT;
 do

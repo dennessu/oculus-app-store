@@ -6,8 +6,6 @@
 
 package com.junbo.billing.clientproxy.impl
 
-import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
-
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.junbo.billing.clientproxy.TaxFacade
 import com.junbo.billing.clientproxy.impl.avalara.*
@@ -20,16 +18,18 @@ import com.junbo.billing.spec.model.TaxItem
 import com.junbo.billing.spec.model.VatIdValidationResponse
 import com.junbo.common.enumid.CountryId
 import com.junbo.identity.spec.v1.model.Address
+import com.junbo.langur.core.async.JunboAsyncHttpClient
+import com.junbo.langur.core.async.JunboAsyncHttpClient.BoundRequestBuilder
 import com.junbo.langur.core.client.MessageTranscoder
 import com.junbo.langur.core.promise.Promise
-import com.ning.http.client.AsyncHttpClient
-import com.ning.http.client.AsyncHttpClient.BoundRequestBuilder
 import com.ning.http.client.Response
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import javax.annotation.Resource
+
+import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
 
 /**
  * Created by LinYi on 14-3-10.
@@ -39,8 +39,8 @@ class AvalaraFacadeImpl implements TaxFacade {
     @Resource(name = 'avalaraConfiguration')
     AvalaraConfiguration configuration
 
-    @Resource(name = 'billingAsyncHttpClient')
-    AsyncHttpClient asyncHttpClient
+    @Resource(name = 'commonAsyncHttpClient')
+    JunboAsyncHttpClient asyncHttpClient
 
     @Resource(name = 'transcoder')
     MessageTranscoder transcoder

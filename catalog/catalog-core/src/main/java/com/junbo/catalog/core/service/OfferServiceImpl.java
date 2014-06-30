@@ -507,6 +507,10 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         for (ItemEntry itemEntry : revision.getItems()) {
             Item item = itemRepo.get(itemEntry.getItemId());
             if ((ItemType.DIGITAL.is(item.getType())
+                    || ItemType.APP.is(item.getType())
+                    || ItemType.DOWNLOADED_ADDITION.is(item.getType())
+                    || ItemType.IN_APP_UNLOCK.is(item.getType())
+                    || ItemType.IN_APP_CONSUMABLE.is(item.getType())
                     || ItemType.SUBSCRIPTION.is(item.getType())
                     || ItemType.VIRTUAL.is(item.getType())
                     ) && !definedActions.get(itemEntry.getItemId()).contains(ActionType.GRANT_ENTITLEMENT.name())) {

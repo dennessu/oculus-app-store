@@ -180,7 +180,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
 
         // create item
         Item item = new Item();
-        item.setType(ItemType.DIGITAL.name());
+        item.setType(ItemType.APP.name());
         item.setOwnerId(ownerId);
 
         final String itemId = megaGateway.createItem(item);

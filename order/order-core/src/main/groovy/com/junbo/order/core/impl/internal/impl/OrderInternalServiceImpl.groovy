@@ -316,7 +316,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                             roi.refundedAmount = 0G - bi.amount
                             roi.refundedTax = 0G - bi.taxAmount
                             // fill quantity and offer id
-                            roi.offer = new OfferId(bi.propertySet.get(PropertyKey.ITEM_NAME.name()))
+                            roi.offer = new OfferId(bi.propertySet.get(PropertyKey.OFFER_ID.name()))
                             roi.quantity = Integer.parseInt(bi.propertySet.get(PropertyKey.ITEM_QUANTITY.name()))
                             bh.refundedOrderItems << roi
                         }

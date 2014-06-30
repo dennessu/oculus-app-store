@@ -8,13 +8,20 @@ package com.junbo.payment.core.provider.adyen;
 
 import com.adyen.services.payment.PaymentPortType;
 import com.adyen.services.recurring.RecurringPortType;
+import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
 import com.junbo.payment.clientproxy.CountryServiceFacade;
 import com.junbo.payment.clientproxy.CurrencyServiceFacade;
 import com.junbo.payment.clientproxy.PersonalInfoFacade;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.db.repo.facade.PaymentInstrumentRepositoryFacade;
 import com.junbo.payment.db.repo.facade.PaymentRepositoryFacade;
+import com.junbo.payment.spec.enums.PaymentStatus;
+import com.junbo.payment.spec.model.PaymentTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * Abstract Adyen ProviderService Impl.
@@ -38,6 +45,8 @@ public abstract class AbstractAdyenProviderServiceImpl extends AbstractPaymentPr
     protected String recurringURL;
     protected String merchantAccount;
     protected String skinCode;
+    protected String mobileSkinCode;
+    protected String oldMobileSkinCode;
     protected String skinSecret;
     protected String authUser;
     protected String authPassword;
@@ -55,6 +64,33 @@ public abstract class AbstractAdyenProviderServiceImpl extends AbstractPaymentPr
     protected CurrencyServiceFacade currencyResource;
     @Autowired
     protected PersonalInfoFacade personalInfoFacade;
+    @Autowired
+    protected PlatformTransactionManager transactionManager;
+
+    protected PaymentTransaction updatePayment(final PaymentTransaction payment,final PaymentStatus status, final String token){
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
+        template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+        return template.execute(new TransactionCallback<PaymentTransaction>() {
+            public PaymentTransaction doInTransaction(TransactionStatus txnStatus) {
+                if(status != null){
+                    paymentRepositoryFacade.updatePayment(payment.getId(), status, token);
+                }
+                return payment;
+            }
+        });
+    }
+
+    protected Long updatePIInfo(final Long piId, final String token, final String label, final String accountNum){
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
+        template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+        return template.execute(new TransactionCallback<Long>() {
+            public Long doInTransaction(TransactionStatus txnStatus) {
+                paymentInstrumentRepositoryFacade.updateExternalInfo(piId,token, label, accountNum);
+                return piId;
+            }
+        });
+
+    }
 
     public String getRedirectURL() {
         return redirectURL;
@@ -78,6 +114,22 @@ public abstract class AbstractAdyenProviderServiceImpl extends AbstractPaymentPr
 
     public void setSkinCode(String skinCode) {
         this.skinCode = skinCode;
+    }
+
+    public String getMobileSkinCode() {
+        return mobileSkinCode;
+    }
+
+    public void setMobileSkinCode(String mobileSkinCode) {
+        this.mobileSkinCode = mobileSkinCode;
+    }
+
+    public String getOldMobileSkinCode() {
+        return oldMobileSkinCode;
+    }
+
+    public void setOldMobileSkinCode(String oldMobileSkinCode) {
+        this.oldMobileSkinCode = oldMobileSkinCode;
     }
 
     protected String nullToEmpty(String value){

@@ -132,8 +132,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         //commit the payment event
         updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(submitCreateEvent),
                 api, createStatus, false);
-        PaymentInstrument pi = getPaymentInstrument(existedTransaction);
-        final PaymentProviderService provider = getPaymentProviderService(pi);
+        final PaymentProviderService provider = getProviderByName(existedTransaction.getPaymentProvider());
         return provider.capture(existedTransaction.getExternalToken(), request).
                 recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
             @Override
@@ -178,8 +177,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         //commit the payment event
         updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(submitCreateEvent),
                 api, PaymentStatus.SETTLE_CREATED, false);
-        PaymentInstrument pi = getPaymentInstrument(existedTransaction);
-        final PaymentProviderService provider = getPaymentProviderService(pi);
+        final PaymentProviderService provider = getProviderByName(existedTransaction.getPaymentProvider());
         PaymentCallbackParams properties = paymentRepositoryFacade.getPaymentProperties(paymentId);
         request.setPaymentCallbackParams(properties);
         return provider.confirm(existedTransaction.getExternalToken(), request).
@@ -265,14 +263,13 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         }else{
             eventType = PaymentEventType.SUBMIT_SETTLE_REVERSE;
         }
-        PaymentInstrument pi = getPaymentInstrument(existedTransaction);
         PaymentStatus createStatus = PaymentStatus.REVERSE_CREATED;
         PaymentEvent reverseCreateEvent = createPaymentEvent(existedTransaction,
                 PaymentEventType.REVERSE_CREATE, createStatus, SUCCESS_EVENT_RESPONSE);
         existedTransaction.setStatus(createStatus.toString());
         addPaymentEvent(existedTransaction, reverseCreateEvent);
         updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(reverseCreateEvent), api, createStatus, false);
-        final PaymentProviderService provider = getPaymentProviderService(pi);
+        final PaymentProviderService provider = getProviderByName(existedTransaction.getPaymentProvider());
         return provider.reverse(existedTransaction.getExternalToken(), request)
                 .recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
             @Override
@@ -348,8 +345,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
                 payment.setPaymentCallbackParams(properties);
             }
         }
-        PaymentInstrument pi = getPaymentInstrument(payment);
-        final PaymentProviderService provider = getPaymentProviderService(pi);
+        final PaymentProviderService provider = getProviderByName(payment.getPaymentProvider());
         return provider.getByTransactionToken(payment)
                 .recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
                     @Override
@@ -369,18 +365,13 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
             LOGGER.error("the payment id is missing for the event.");
             throw AppClientExceptions.INSTANCE.invalidPaymentId("null paymentId").exception();
         }
-        PaymentTransaction payment = paymentRepositoryFacade.getByPaymentId(event.getPaymentId());
-        if(payment == null){
-            throw AppClientExceptions.INSTANCE.invalidPaymentId(event.getPaymentId().toString()).exception();
-        }
+        PaymentTransaction payment = getPaymentById(event.getPaymentId());
         LOGGER.info("report event for payment:" + event.getPaymentId());
-        paymentRepositoryFacade.updatePayment(event.getPaymentId()
-                    , PaymentUtil.getPaymentStatus(event.getStatus()), null);
-        paymentRepositoryFacade.savePaymentEvent(event.getPaymentId(), Arrays.asList(event));
+        updatePaymentAndSaveEvent(payment, Arrays.asList(event), PaymentAPI.ReportEvent,
+                PaymentUtil.getPaymentStatus(event.getStatus()), false);
         payment.setPaymentEvents(Arrays.asList(event));
         if(paymentCallbackParams != null){
-            PaymentInstrument pi = getPaymentInstrument(payment);
-            final PaymentProviderService provider = getPaymentProviderService(pi);
+            final PaymentProviderService provider = getProviderByName(payment.getPaymentProvider());
             return provider.confirmNotify(payment, paymentCallbackParams);
         }
         return Promise.pure(payment);
@@ -419,8 +410,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         //commit the payment event
         updatePaymentAndSaveEvent(existedTransaction, Arrays.asList(submitCreateEvent),
                 api, createStatus, false);
-        PaymentInstrument pi = getPaymentInstrument(existedTransaction);
-        final PaymentProviderService provider = getPaymentProviderService(pi);
+        final PaymentProviderService provider = getProviderByName(existedTransaction.getPaymentProvider());
         return provider.refund(existedTransaction.getExternalToken(), request).
                 recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
                     @Override
@@ -448,7 +438,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
                                          PaymentStatus status, PaymentEventType event) {
         ProxyExceptionResponse proxyResponse = new ProxyExceptionResponse(throwable);
         LOGGER.error(api.toString() + " declined by " + provider.getProviderName() +
-                "; error detail: " + proxyResponse.getBody());
+                "; error detail: " + throwable.toString());
         request.setStatus(status.toString());
         PaymentEvent authDeclined = createPaymentEvent(request, event, status, proxyResponse.getBody());
         addPaymentEvent(request, authDeclined);

@@ -24,23 +24,23 @@ ssh $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
     forceKillPid $SKYTOOL_PID_PATH
 ENDSSH
 
-echo "[FAILOVER][SLAVE] copy unarchived log files"
-rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_DATA_PATH/pg_xlog/* $SLAVE_ARCHIVE_PATH
-
-echo "[FAILOVER][SLAVE] waiting for slave catching up with master"
 xlog_location=`psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT pg_current_xlog_location();" -t | tr -d ' '`
-echo "[FAILOVER][SLAVE] current xlog location is [$xlog_location]"
-
-while [ `psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "SELECT pg_xlog_location_diff(pg_last_xlog_replay_location(), '$xlog_location');" -t | tr -d ' '` -lt 0 ]
-do
-    sleep 1 && echo "[SLAVE] slave is catching up..."; 
-done
-echo "[FAILOVER][SLAVE] slave catch up with master!"
+echo "[FAILOVER][MASTER] current xlog location is [$xlog_location]"
 
 ssh $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
     echo "[FAILOVER][MASTER] gracefully shutdown master database"
     $PGBIN_PATH/pg_ctl stop -m fast -D $MASTER_DATA_PATH
 ENDSSH
+
+echo "[FAILOVER][SLAVE] copy unarchived log files"
+rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_DATA_PATH/pg_xlog/* $SLAVE_ARCHIVE_PATH
+
+echo "[FAILOVER][SLAVE] waiting for slave catching up with master"
+while [ `psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "SELECT pg_xlog_location_diff(pg_last_xlog_replay_location(), '$xlog_location');" -t | tr -d ' '` -lt 0 ]
+do
+    sleep 1 && echo "[SLAVE] slave is catching up..."; 
+done
+echo "[FAILOVER][SLAVE] slave catch up with master!"
 
 echo "[FAILOVER][SLAVE] promote slave database to take traffic"
 touch $PROMOTE_TRIGGER_FILE
@@ -63,7 +63,7 @@ trigger_file = '$PROMOTE_TRIGGER_FILE'
 EOF
 
     echo "[FAILOVER][MASTER] start master database"
-    $PGBIN_PATH/pg_ctl -D $MASTER_DATA_PATH start > /dev/null 2>&1 &
+    $PGBIN_PATH/pg_ctl -D $MASTER_DATA_PATH -l "${MASTER_LOG_PATH}/postgresql-$(date +%Y.%m.%d.%S.%N).log" start > /dev/null 2>&1 &
 
     while ! echo exit | nc $MASTER_HOST $MASTER_DB_PORT;
     do

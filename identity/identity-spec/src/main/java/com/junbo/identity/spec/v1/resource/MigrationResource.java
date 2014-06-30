@@ -17,6 +17,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * Created by liangfu on 6/6/14.
@@ -30,4 +31,9 @@ public interface MigrationResource {
     @POST
     @RouteAnyLocal
     Promise<OculusOutput> migrate(OculusInput oculusInput);
+
+    @POST
+    @RouteAnyLocal
+    @Path("/bulk")
+    Promise<List<OculusOutput>> bulkMigrate(List<OculusInput> oculusInputs);
 }

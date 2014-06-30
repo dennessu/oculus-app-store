@@ -31,6 +31,10 @@ public class ErrorCode {
 
     public static final String PAYMENT_INSTRUMENT_NOT_FOUND = "PAYMENT_INSTRUMENT_NOT_FOUND";
 
+    public static final String OFFER_NOT_FOUND = "OFFER_NOT_FOUND";
+
+    public static final String ORGANIZATION_NOT_FOUND = "ORGANIZATION_NOT_FOUND";
+
     public static final String INVALID_BALANCE_TYPE = "INVALID_BALANCE_TYPE";
 
     public static final String INVALID_BALANCE_TOTAL = "INVALID_BALANCE_TOTAL";

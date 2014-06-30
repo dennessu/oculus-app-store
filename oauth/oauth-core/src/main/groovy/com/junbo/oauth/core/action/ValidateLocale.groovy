@@ -46,7 +46,8 @@ class ValidateLocale implements Action {
             locale = defaultLocale
         }
 
-        contextWrapper.viewLocale = locale
+        // change from en_US to en-US
+        contextWrapper.viewLocale = locale.replaceFirst('_', '-')
 
         return Promise.pure(null)
     }

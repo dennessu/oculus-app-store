@@ -76,7 +76,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
         CryptoMessage cryptoMessage = new CryptoMessage()
         cryptoMessage.value = message
         return cryptoResource.decrypt(cryptoMessage).then { CryptoMessage decryptValue ->
-            return Promise.pure(marshaller.unmarshall(decryptValue.value, UserPersonalInfo))
+            return Promise.pure(unmarshall(decryptValue.value, UserPersonalInfo))
         }
     }
 
@@ -162,7 +162,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
         }
 
         CryptoMessage cryptoMessage = new CryptoMessage()
-        cryptoMessage.value = marshaller.marshall(model)
+        cryptoMessage.value = marshall(model)
 
         return cryptoResource.encrypt(cryptoMessage).then { CryptoMessage messageValue ->
             EncryptUserPersonalInfo encryptUserPersonalInfo = new EncryptUserPersonalInfo()
@@ -188,7 +188,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     @Override
     Promise<UserPersonalInfo> update(UserPersonalInfo model) {
         CryptoMessage cryptoMessage = new CryptoMessage()
-        cryptoMessage.value = marshaller.marshall(model)
+        cryptoMessage.value = marshall(model)
 
         return cryptoResource.encrypt(cryptoMessage).then { CryptoMessage messageValue ->
 
@@ -223,7 +223,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
                             value: encryptUserPersonalInfo.encryptUserPersonalInfo
                     )
                     return cryptoResource.decrypt(cryptoMessage).then { CryptoMessage decrypt ->
-                        UserPersonalInfo userPersonalInfo = marshaller.unmarshall(decrypt.value, UserPersonalInfo)
+                        UserPersonalInfo userPersonalInfo = unmarshall(decrypt.value, UserPersonalInfo)
                         userPersonalInfo.createdBy = encryptUserPersonalInfo.createdBy
                         userPersonalInfo.createdTime = encryptUserPersonalInfo.createdTime
                         userPersonalInfo.updatedBy = encryptUserPersonalInfo.updatedBy

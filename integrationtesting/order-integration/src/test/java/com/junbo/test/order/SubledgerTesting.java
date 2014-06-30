@@ -13,10 +13,12 @@ import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.property.*;
+import org.apache.commons.collections.map.HashedMap;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by weiyu_000 on 5/26/14.
@@ -44,8 +46,9 @@ public class SubledgerTesting extends BaseOrderTestClass {
     )
     @Test
     public void testGetSubledger() throws Exception {
-        ArrayList<String> offerList = new ArrayList<>();
-        offerList.add(offer_digital_normal1);
+        Map<String, Integer> offerList = new HashedMap();
+
+        offerList.put(offer_digital_normal1, 1);
 
         String uid1 = testDataProvider.createUser();
         CreditCardInfo creditCardInfo1 = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
@@ -93,8 +96,9 @@ public class SubledgerTesting extends BaseOrderTestClass {
     )
     @Test
     public void testMixedOrderStatusSubledger() throws Exception {
-        ArrayList<String> offerList = new ArrayList<>();
-        offerList.add(offer_digital_normal1);
+        Map<String, Integer> offerList = new HashedMap();
+
+        offerList.put(offer_digital_normal1, 1);
 
         String uid1 = testDataProvider.createUser();
         CreditCardInfo creditCardInfo1 = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
@@ -104,7 +108,7 @@ public class SubledgerTesting extends BaseOrderTestClass {
                 uid1, Country.DEFAULT, Currency.DEFAULT, creditCardId1, false, offerList);
 
         offerList.clear();
-        offerList.add(offer_physical_normal1);
+        offerList.put(offer_physical_normal1, 1);
         String order2 = testDataProvider.postOrder(
                 uid1, Country.DEFAULT, Currency.DEFAULT, creditCardId1, false, offerList);
         testDataProvider.updateOrderTentative(order2, false);
@@ -114,18 +118,18 @@ public class SubledgerTesting extends BaseOrderTestClass {
         String payPalId = testDataProvider.postPaymentInstrument(uid2, payPalInfo);
 
         offerList.clear();
-        offerList.add(offer_digital_normal1);
+        offerList.put(offer_digital_normal1, 1);
         String orderId3 = testDataProvider.postOrder(
                 uid2, Country.DEFAULT, Currency.DEFAULT, payPalId, false, offerList);
 
         Order order = Master.getInstance().getOrder(orderId3);
         order.setTentative(false);
-        order.setSuccessRedirectUrl("http://www.abc.com/");
-        order.setCancelRedirectUrl("http://www.abc.com/cancel/");
+        order.getPayments().get(0).setSuccessRedirectUrl("http://www.abc.com/");
+        order.getPayments().get(0).setCancelRedirectUrl("http://www.abc.com/cancel/");
         orderId3 = testDataProvider.updateOrder(order);
 
         offerList.clear();
-        offerList.add(offer_physical_normal1);
+        offerList.put(offer_physical_normal1, 1);
         EwalletInfo ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT, Currency.DEFAULT);
         String ewalletId = testDataProvider.postPaymentInstrument(uid2, ewalletInfo);
         testDataProvider.creditWallet(uid2, new BigDecimal(100));

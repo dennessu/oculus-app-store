@@ -6,19 +6,20 @@
 package com.junbo.oauth.db.dao.couch
 
 import com.junbo.common.util.Utils
+import com.junbo.langur.core.async.JunboAsyncHttpClient
+import com.junbo.langur.core.async.JunboAsyncHttpClient.BoundRequestBuilder
 import com.junbo.oauth.common.JsonMarshaller
 import com.junbo.oauth.db.dao.BaseDAO
 import com.junbo.oauth.db.entity.BaseEntity
 import com.junbo.oauth.db.exception.DBConnectException
 import com.junbo.oauth.db.exception.DBException
 import com.junbo.oauth.db.exception.DBUpdateConflictException
-import com.ning.http.client.AsyncHttpClient
-import com.ning.http.client.AsyncHttpClient.BoundRequestBuilder
 import com.ning.http.client.Realm
 import com.ning.http.client.Response
 import groovy.transform.CompileStatic
-//import junit.framework.Assert
 import org.springframework.beans.factory.InitializingBean
+
+//import junit.framework.Assert
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
@@ -34,7 +35,7 @@ import java.lang.reflect.ParameterizedType
 abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, BaseDAO<T, String> {
     protected static final String VIEW_PATH = '/_design/views/_view/'
     protected final Class<T> entityClass
-    protected AsyncHttpClient asyncHttpClient
+    protected JunboAsyncHttpClient asyncHttpClient
     protected String couchDBUri
     protected String couchDBUser
     protected String couchDBPassword
@@ -43,7 +44,7 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
     protected String fullDbName
 
     @Required
-    void setAsyncHttpClient(AsyncHttpClient asyncHttpClient) {
+    void setAsyncHttpClient(JunboAsyncHttpClient asyncHttpClient) {
         this.asyncHttpClient = asyncHttpClient
     }
 

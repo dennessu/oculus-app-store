@@ -5,7 +5,7 @@
 package ${packageName};
 
 import com.junbo.langur.core.client.*;
-import com.ning.http.client.AsyncHttpClient;
+import com.junbo.langur.core.async.JunboAsyncHttpClient;
 
 import com.junbo.langur.core.context.JunboHttpContextScopeListener;
 import java.util.List;
@@ -16,7 +16,7 @@ public class ${className} implements ClientProxyFactory<${resourceName}> {
 
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.beans.factory.annotation.Qualifier("routingAsyncHttpClient")
-    private AsyncHttpClient __client;
+    private JunboAsyncHttpClient __client;
 
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.beans.factory.annotation.Qualifier("routingTranscoder")
@@ -48,7 +48,7 @@ public class ${className} implements ClientProxyFactory<${resourceName}> {
     public ${className}() { }
 
     public ${className}(
-            AsyncHttpClient client,
+            JunboAsyncHttpClient client,
             MessageTranscoder transcoder,
             PathParamTranscoder pathParamTranscoder,
             QueryParamTranscoder queryParamTranscoder,

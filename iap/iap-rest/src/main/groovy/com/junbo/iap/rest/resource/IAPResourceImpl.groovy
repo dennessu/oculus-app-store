@@ -4,8 +4,10 @@ import com.junbo.catalog.spec.model.item.EntitlementDef
 import com.junbo.catalog.spec.model.item.Item
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemsGetOptions
+import com.junbo.catalog.spec.model.item.ItemRevisionGetOptions
 import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.catalog.spec.model.offer.OffersGetOptions
+import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
@@ -108,7 +110,7 @@ class IAPResourceImpl implements IAPResource {
                         new EntitlementSearchParam(
                                 // todo: how to set the type ?
                                 userId: userId,
-                                isActive: true,
+                                // isActive: true,
                                 hostItemId: new ItemId(hostItem.id),
                                 itemIds: new HashSet<ItemId>()
                         ),
@@ -120,7 +122,7 @@ class IAPResourceImpl implements IAPResource {
                     // start page, offset, last index
                     Promise.each(results.items) { com.junbo.entitlement.spec.model.Entitlement catalogEntitlement ->
                         return convertEntitlement(catalogEntitlement, packageName).then { Entitlement entitlement ->
-                            if (entitlement.useCount > 0) {
+                            if (entitlement.useCount > 0 && catalogEntitlement.isActive) {
                                 entitlement.setSignatureTimestamp(System.currentTimeMillis())
                                 entitlements << entitlement
                             }
@@ -253,7 +255,7 @@ class IAPResourceImpl implements IAPResource {
                 boolean hasMore = itemResults.items.size() >= itemOption.size
                 itemOption.start += itemResults.items.size()
                 return Promise.each(itemResults.items) { Item item ->
-                    return resourceContainer.itemRevisionResource.getItemRevision(item.currentRevisionId).then { ItemRevision itemRevision ->
+                    return resourceContainer.itemRevisionResource.getItemRevision(item.currentRevisionId, new ItemRevisionGetOptions()).then { ItemRevision itemRevision ->
                         return getOffersFromItem(item, itemRevision, offers).then {
                             return Promise.pure(hasMore)
                         }
@@ -294,7 +296,7 @@ class IAPResourceImpl implements IAPResource {
                 if (offers.containsKey(cOffer.offerId)) {
                     return Promise.pure(null)
                 }
-                return resourceContainer.offerRevisionResource.getOfferRevision(cOffer.currentRevisionId).then { OfferRevision offerRevision ->
+                return resourceContainer.offerRevisionResource.getOfferRevision(cOffer.currentRevisionId, new OfferRevisionGetOptions()).then { OfferRevision offerRevision ->
                     offers.put(cOffer.id, convertOffer(cOffer, offerRevision, item, itemRevision))
                     return Promise.pure(null)
                 }
@@ -350,7 +352,7 @@ class IAPResourceImpl implements IAPResource {
 
     private Promise<Entitlement> convertEntitlement(com.junbo.entitlement.spec.model.Entitlement catalogEntitlement, String packageName) {
         return resourceContainer.itemResource.getItem(catalogEntitlement.itemId).then { Item item ->
-            return resourceContainer.itemRevisionResource.getItemRevision(item.currentRevisionId).then { ItemRevision itemRevision ->
+            return resourceContainer.itemRevisionResource.getItemRevision(item.currentRevisionId, new ItemRevisionGetOptions()).then { ItemRevision itemRevision ->
                 return Promise.pure(convertEntitlement(item, itemRevision, catalogEntitlement, packageName))
             }
         }

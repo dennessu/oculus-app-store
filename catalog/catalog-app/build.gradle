@@ -9,5 +9,6 @@ dependencies {
 
     compile junboProject(':catalog-jobs')
     compile junboProject(':catalog-rest')
-    compile junboProject(':oauth-api')
+    runtime junboProject(':oauth-api')
+    runtime junboProject(":identity-rest")
 }

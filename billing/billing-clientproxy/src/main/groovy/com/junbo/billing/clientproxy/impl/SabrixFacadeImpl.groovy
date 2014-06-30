@@ -8,6 +8,8 @@ package com.junbo.billing.clientproxy.impl
 
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
 
+import com.junbo.billing.spec.enums.BalanceType
+import com.junbo.catalog.spec.enums.ItemType
 import com.junbo.billing.clientproxy.TaxFacade
 import com.junbo.billing.clientproxy.impl.common.XmlConvertor
 import com.junbo.billing.clientproxy.impl.sabrix.*
@@ -21,9 +23,9 @@ import com.junbo.billing.spec.model.TaxItem
 import com.junbo.billing.spec.model.VatIdValidationResponse
 import com.junbo.common.enumid.CountryId
 import com.junbo.identity.spec.v1.model.Address
+import com.junbo.langur.core.async.JunboAsyncHttpClient
+import com.junbo.langur.core.async.JunboAsyncHttpClient.BoundRequestBuilder
 import com.junbo.langur.core.promise.Promise
-import com.ning.http.client.AsyncHttpClient
-import com.ning.http.client.AsyncHttpClient.BoundRequestBuilder
 import com.ning.http.client.Response
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
@@ -38,8 +40,8 @@ import java.text.SimpleDateFormat
  */
 @CompileStatic
 class SabrixFacadeImpl implements TaxFacade {
-    @Resource(name = 'billingAsyncHttpClient')
-    AsyncHttpClient asyncHttpClient
+    @Resource(name = 'commonAsyncHttpClient')
+    JunboAsyncHttpClient asyncHttpClient
 
     @Resource(name = 'sabrixConfiguration')
     SabrixConfiguration configuration
@@ -50,6 +52,8 @@ class SabrixFacadeImpl implements TaxFacade {
     static final int SUCCESSFUL_PROCESSING = 0
     static final String GOODS = 'GS'
     static final String ELECTRONIC_SERVICES = 'ES'
+    static final String CALCULATION_DIRECTION_FORWARD = 'F'
+    static final String CALCULATION_DIRECTION_REVERSE = 'R'
     private static final Logger LOGGER = LoggerFactory.getLogger(SabrixFacadeImpl)
     private static final ThreadLocal<SimpleDateFormat> DATE_FORMATTER =
             new ThreadLocal<SimpleDateFormat>() {
@@ -61,29 +65,42 @@ class SabrixFacadeImpl implements TaxFacade {
                 }
             }
     private static final Map<String, TaxAuthority> AUTHORITY_MAP
+    private static final Map<String, String> PRODUCT_CODE_MAP
     static {
-        Map<String, TaxAuthority> map = new HashMap<String, TaxAuthority>()
-        map.put('Country', TaxAuthority.COUNTRY)
-        map.put('State Sales/Use', TaxAuthority.STATE)
-        map.put('County Sales/Use', TaxAuthority.COUNTY)
-        map.put('City Sales/Use', TaxAuthority.CITY)
-        map.put('District Sales/Use', TaxAuthority.DISTRICT)
-        map.put('Territory', TaxAuthority.TERRITORY)
-        map.put('GST', TaxAuthority.GST)
-        map.put('HST', TaxAuthority.GST)
-        map.put('PST', TaxAuthority.PST)
-        map.put('QST', TaxAuthority.PST)
-        map.put('IST', TaxAuthority.IST)
-        map.put('IPI', TaxAuthority.IPI)
-        map.put('PIS', TaxAuthority.PIS)
-        map.put('COF', TaxAuthority.COF)
-        map.put('ICMS', TaxAuthority.ICMS)
-        map.put('ISS', TaxAuthority.ISS)
-        map.put('CBT', TaxAuthority.BT)
-        map.put('CSC', TaxAuthority.SURCHARGE)
-        map.put('VAT', TaxAuthority.VAT)
+        Map<String, TaxAuthority> authorityMap = new HashMap<String, TaxAuthority>()
+        authorityMap.put('Country', TaxAuthority.COUNTRY)
+        authorityMap.put('State Sales/Use', TaxAuthority.STATE)
+        authorityMap.put('County Sales/Use', TaxAuthority.COUNTY)
+        authorityMap.put('City Sales/Use', TaxAuthority.CITY)
+        authorityMap.put('District Sales/Use', TaxAuthority.DISTRICT)
+        authorityMap.put('Territory', TaxAuthority.TERRITORY)
+        authorityMap.put('GST', TaxAuthority.GST)
+        authorityMap.put('HST', TaxAuthority.GST)
+        authorityMap.put('PST', TaxAuthority.PST)
+        authorityMap.put('QST', TaxAuthority.PST)
+        authorityMap.put('IST', TaxAuthority.IST)
+        authorityMap.put('IPI', TaxAuthority.IPI)
+        authorityMap.put('PIS', TaxAuthority.PIS)
+        authorityMap.put('COF', TaxAuthority.COF)
+        authorityMap.put('ICMS', TaxAuthority.ICMS)
+        authorityMap.put('ISS', TaxAuthority.ISS)
+        authorityMap.put('CBT', TaxAuthority.BT)
+        authorityMap.put('CSC', TaxAuthority.SURCHARGE)
+        authorityMap.put('VAT', TaxAuthority.VAT)
 
-        AUTHORITY_MAP = Collections.unmodifiableMap(map)
+        AUTHORITY_MAP = Collections.unmodifiableMap(authorityMap)
+
+        Map<String, String> productCodeMap = new HashMap<String, String>()
+        productCodeMap.put(ItemType.DIGITAL.name(), ProductCode.DOWNLOADABLE_SOFTWARE.code)
+        productCodeMap.put(ItemType.APP.name(), ProductCode.DOWNLOADABLE_SOFTWARE.code)
+        productCodeMap.put(ItemType.DOWNLOADED_ADDITION.name(), ProductCode.DOWNLOADABLE_SOFTWARE.code)
+        productCodeMap.put(ItemType.VIRTUAL.name(), ProductCode.DIGITAL_CONTENT.code)
+        productCodeMap.put(ItemType.IN_APP_CONSUMABLE.name(), ProductCode.DIGITAL_CONTENT.code)
+        productCodeMap.put(ItemType.IN_APP_UNLOCK.name(), ProductCode.DIGITAL_CONTENT.code)
+        productCodeMap.put(ItemType.PHYSICAL.name(), ProductCode.PHYSICAL_GOODS.code)
+        productCodeMap.put(ItemType.STORED_VALUE.name(), ProductCode.STORE_BALANCE.code)
+
+        PRODUCT_CODE_MAP = Collections.unmodifiableMap(productCodeMap)
     }
     @Override
     Promise<Balance> calculateTaxQuote(Balance balance, Address shippingAddress, Address piAddress) {
@@ -181,16 +198,23 @@ class SabrixFacadeImpl implements TaxFacade {
             // combination of hostSystem, callingSystemNumber and uniqueInvoiceNumber makes a audit key
             invoice.hostSystem = configuration.hostSystem
             invoice.callingSystemNumber = configuration.callingSystemNumber
-            invoice.uniqueInvoiceNumber = balance.orderIds[0]?.value
-            invoice.invoiceNumber = balance.orderIds[0]?.value
+            invoice.uniqueInvoiceNumber = getUniqueInvoiceNumber(balance)
+            invoice.invoiceNumber = balance.orderIds?.get(0)?.value
         }
         invoice.deliveryTerm = DeliveryTerm.DDP.name()
         invoice.companyRole = configuration.companyRole
         invoice.externalCompanyId = getEntity(piAddress).externalCompanyId
-        invoice.calculationDirection = configuration.calculationDirection
+        boolean isRefund = BalanceType.REFUND.name() == balance.type
+        if (isRefund) {
+            invoice.originalInvoiceNumber = balance.orderIds?.get(0)?.value
+            invoice.originalInvoiceDate = balance.propertySet.get(PropertyKey.ORIGINAL_INVOICE_DATE.name())
+        }
+        invoice.calculationDirection = isRefund ? CALCULATION_DIRECTION_REVERSE : CALCULATION_DIRECTION_FORWARD
         invoice.invoiceDate = DATE_FORMATTER.get().format(new Date())
         invoice.currencyCode = balance.currency
         invoice.isAudited = isAudited
+        invoice.customerName = balance.propertySet.get(PropertyKey.CUSTOMER_NAME.name())
+        invoice.customerNumber = balance.propertySet.get(PropertyKey.CUSTOMER_NUMBER.name())
         SabrixAddress billToAddress = toSabrixAddress(piAddress)
         SabrixAddress shipToAddress
         if (shippingAddress != null) {
@@ -204,7 +228,7 @@ class SabrixFacadeImpl implements TaxFacade {
 //        invoice.shipFrom = getSabrixShipFromAddress()
         def lines = generateLine(balance, billToAddress, shipToAddress)
         invoice.line = lines
-        setupUserElement(invoice)
+        setupUserElement(invoice, balance)
 
         return invoice
     }
@@ -220,29 +244,92 @@ class SabrixFacadeImpl implements TaxFacade {
             line.discountAmount = item.discountAmount?.toDouble()
             line.productCode = item.financeId
             line.transactionType = getTransactionType(item)
+            line.productCode = getProductCode(item)
+            line.description = item.propertySet.get(PropertyKey.ITEM_DESCRIPTION.name())
+            line.partNumber = item.propertySet.get(PropertyKey.ORDER_ITEM_ID.name())
+            if (item.propertySet.get(PropertyKey.VAT_ID.name()) != null) {
+                def registrations = new Registrations()
+                registrations.buyerRole = item.propertySet.get(PropertyKey.VAT_ID.name())
+                line.registrations = registrations
+            }
+            line.vendorNumber = item.propertySet.get(PropertyKey.VENDOR_NUMBER.name())
+            line.vendorName = item.propertySet.get(PropertyKey.VENDOR_NAME.name())
             line.billTo = billToAddress
             line.shipTo = shipToAddress
             if (line.transactionType == GOODS) {
                 line.shipFrom = getSabrixShipFromAddress()
             }
-            setupUserElement(line)
+            setupUserElement(line, item)
             lines << line
         }
 
         return lines
     }
 
-    void setupUserElement(Invoice invoice) {
-        // TODO: setup invoice level custom attribute
-//        invoice.userElement = new ArrayList<UserElement>()
-//        UserElement attribute1 = new UserElement()
-//        attribute1.name = 'ATTRIBUTE1'
-//        attribute1.value = 'TEST'
-//        invoice.userElement.add(attribute1)
+    String getUniqueInvoiceNumber(Balance balance) {
+        return balance.orderIds[0]?.value
     }
 
-    void setupUserElement(Line line) {
-        // TODO: setup line level custom attribute
+    void setupUserElement(Invoice invoice, Balance balance) {
+        invoice.userElement = new ArrayList<UserElement>()
+        if (balance.propertySet.get(PropertyKey.IP_GEO_LOCATION.name()) != null) {
+            UserElement attribute1 = new UserElement()
+            attribute1.name = 'ATTRIBUTE1'
+            attribute1.value = balance.propertySet.get(PropertyKey.IP_GEO_LOCATION.name())
+            invoice.userElement.add(attribute1)
+        }
+        if (balance.propertySet.get(PropertyKey.PI_ADDRESS.name()) != null) {
+            UserElement attribute2 = new UserElement()
+            attribute2.name = 'ATTRIBUTE2'
+            attribute2.value = balance.propertySet.get(PropertyKey.PI_ADDRESS.name())
+            invoice.userElement.add(attribute2)
+        }
+        if (balance.propertySet.get(PropertyKey.TAX_STATUS.name()) != null) {
+            UserElement attribute3 = new UserElement()
+            attribute3.name = 'ATTRIBUTE3'
+            attribute3.value = balance.propertySet.get(PropertyKey.TAX_STATUS.name())
+            invoice.userElement.add(attribute3)
+        }
+        if (balance.propertySet.get(PropertyKey.PAYMENT_METHOD.name()) != null) {
+            UserElement attribute4 = new UserElement()
+            attribute4.name = 'ATTRIBUTE4'
+            attribute4.value = balance.propertySet.get(PropertyKey.PAYMENT_METHOD.name())
+            invoice.userElement.add(attribute4)
+        }
+        if (balance.propertySet.get(PropertyKey.EXCHANGE_RATE.name()) != null) {
+            UserElement attribute5 = new UserElement()
+            attribute5.name = 'ATTRIBUTE5'
+            attribute5.value = balance.propertySet.get(PropertyKey.EXCHANGE_RATE.name())
+            invoice.userElement.add(attribute5)
+        }
+        if (balance.propertySet.get(PropertyKey.IP_ADDRESS.name()) != null) {
+            UserElement attribute6 = new UserElement()
+            attribute6.name = 'ATTRIBUTE6'
+            attribute6.value = balance.propertySet.get(PropertyKey.IP_ADDRESS.name())
+            invoice.userElement.add(attribute6)
+        }
+        if (balance.propertySet.get(PropertyKey.FUNCTIONAL_CURRENCY.name()) != null) {
+            UserElement attribute7 = new UserElement()
+            attribute7.name = 'ATTRIBUTE7'
+            attribute7.value = balance.propertySet.get(PropertyKey.FUNCTIONAL_CURRENCY.name())
+            invoice.userElement.add(attribute7)
+        }
+    }
+
+    void setupUserElement(Line line, BalanceItem item) {
+        line.userElement = new ArrayList<UserElement>()
+        if (item.propertySet.get(PropertyKey.OFFER_ID.name()) != null) {
+            UserElement attribute1 = new UserElement()
+            attribute1.name = 'ATTRIBUTE1'
+            attribute1.value = item.propertySet.get(PropertyKey.OFFER_ID.name())
+            line.userElement.add(attribute1)
+        }
+        if (item.propertySet.get(PropertyKey.ITEM_NAME.name()) != null) {
+            UserElement attribute2 = new UserElement()
+            attribute2.name = 'ATTRIBUTE2'
+            attribute2.value = item.propertySet.get(PropertyKey.ITEM_NAME.name())
+            line.userElement.add(attribute2)
+        }
     }
 
     Entity getEntity(Address piAddress) {
@@ -268,6 +355,15 @@ class SabrixFacadeImpl implements TaxFacade {
             default:
                 return ELECTRONIC_SERVICES
         }
+    }
+
+    String getProductCode(BalanceItem item) {
+        String type = item.propertySet.get(PropertyKey.ITEM_TYPE.name())
+        if (type == null) {
+            return null
+        }
+
+        return PRODUCT_CODE_MAP.get(type)
     }
 
     SabrixAddress toSabrixAddress(Address address) {

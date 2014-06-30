@@ -3,6 +3,7 @@ package com.junbo.order.mock
 import com.junbo.catalog.spec.model.common.Price
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions
+import com.junbo.catalog.spec.model.item.ItemRevisionGetOptions;
 import com.junbo.catalog.spec.resource.ItemRevisionResource
 import com.junbo.common.id.ItemRevisionId
 import com.junbo.common.id.OrganizationId
@@ -31,7 +32,7 @@ class MockItemRevisionResource extends BaseMock implements ItemRevisionResource 
     }
 
     @Override
-    Promise<ItemRevision> getItemRevision(@PathParam('revisionId') String revisionId) {
+    Promise<ItemRevision> getItemRevision(@PathParam('revisionId') String revisionId, @BeanParam ItemRevisionGetOptions options) {
         return Promise.pure(generateItemRevision())
     }
 

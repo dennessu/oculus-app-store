@@ -14,6 +14,9 @@ createDir $SLAVE_BACKUP_PATH
 echo "[SETUP][SLAVE] create database archive folder $SLAVE_ARCHIVE_PATH"
 createDir $SLAVE_ARCHIVE_PATH
 
+echo "[SETUP][SLAVE] create database archive folder $SLAVE_LOG_PATH"
+createDir $SLAVE_LOG_PATH
+
 echo "[SETUP][SLAVE] copy backup file from remote master"
 rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_BACKUP_PATH/* $SLAVE_DATA_PATH
 
@@ -53,7 +56,7 @@ port = $SLAVE_DB_PORT
 EOF
 
 echo "[SETUP][SLAVE] start slave database"
-$PGBIN_PATH/pg_ctl -D $SLAVE_DATA_PATH start > /dev/null 2>&1 &
+$PGBIN_PATH/pg_ctl -D $SLAVE_DATA_PATH -l "${SLAVE_LOG_PATH}/postgresql-$(date +%Y.%m.%d.%S.%N).log" start > /dev/null 2>&1 &
 
 while ! echo exit | nc $SLAVE_HOST $SLAVE_DB_PORT;
 do

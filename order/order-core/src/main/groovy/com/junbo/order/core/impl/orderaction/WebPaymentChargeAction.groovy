@@ -46,10 +46,10 @@ class WebPaymentChargeAction extends BaseOrderEventAwareAction {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def order = context.orderServiceContext.order
         orderInternalService.markSettlement(order)
-        if (order.successRedirectUrl == null) {
+        if (order.payments[0].successRedirectUrl == null) {
             throw AppErrors.INSTANCE.missingParameterField('successRedirectUrl').exception()
         }
-        if (order.cancelRedirectUrl == null) {
+        if (order.payments[0].cancelRedirectUrl == null) {
             throw AppErrors.INSTANCE.missingParameterField('cancelRedirectUrl').exception()
         }
         Promise promise =
@@ -74,13 +74,7 @@ class WebPaymentChargeAction extends BaseOrderEventAwareAction {
                 LOGGER.error('name=Order_WebPaymentCharge_Empty_ProviderConfirmUrl')
                 throw AppErrors.INSTANCE.billingChargeFailed().exception()
             }
-            order.providerConfirmUrl = balance.providerConfirmUrl
-            def oldOrder = orderRepository.getOrder(order.getId().value)
-            if (oldOrder == null) {
-                throw AppErrors.INSTANCE.orderNotFound().exception()
-            }
-            oldOrder.providerConfirmUrl = order.providerConfirmUrl
-            orderRepository.updateOrder(oldOrder, true, false, null)
+            order.payments[0].providerConfirmUrl = balance.providerConfirmUrl
             CoreBuilder.fillTaxInfo(order, balance)
             orderInternalService.persistBillingHistory(balance, BillingAction.PENDING_CHARGE, order)
             return orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {

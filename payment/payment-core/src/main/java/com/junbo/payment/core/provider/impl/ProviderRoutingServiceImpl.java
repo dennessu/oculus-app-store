@@ -27,15 +27,20 @@ public class ProviderRoutingServiceImpl implements ProviderRoutingService{
     @Override
     public PaymentProviderService getPaymentProvider(PIType piType) {
         String provider = paymentProviderRepository.getProviderName(piType);
+        return getProviderByName(provider);
+    }
+
+    @Override
+    public PaymentProviderService getProviderByName(String provider) {
         if(CommonUtil.isNullOrEmpty(provider)){
-            throw AppServerExceptions.INSTANCE.providerNotFound(piType.name()).exception();
+            throw AppServerExceptions.INSTANCE.providerNotFound(provider).exception();
         }
         PaymentProvider paymentProvider = null;
         try{
             paymentProvider = PaymentProvider.valueOf(provider);
         }catch(Exception ex){
             LOGGER.error("provider routing failed:" + ex.toString());
-            throw AppServerExceptions.INSTANCE.providerNotFound(piType.name()).exception();
+            throw AppServerExceptions.INSTANCE.providerNotFound(provider).exception();
         }
         return PaymentProviderRegistry.getPaymentProviderService(paymentProvider);
     }

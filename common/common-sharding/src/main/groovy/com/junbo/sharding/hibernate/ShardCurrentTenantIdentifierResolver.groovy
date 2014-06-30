@@ -16,6 +16,6 @@ class ShardCurrentTenantIdentifierResolver implements CurrentTenantIdentifierRes
 
     @Override
     boolean validateExistingCurrentSessions() {
-        return true
+        return false
     }
 }

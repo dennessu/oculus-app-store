@@ -24,11 +24,13 @@ import com.junbo.test.common.property.*;
 import com.junbo.common.model.Results;
 import com.junbo.common.id.UserId;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by Yunlong on 3/20/14.
@@ -61,11 +63,12 @@ public class CartCheckout extends BaseTestClass {
     public void testDigitalGoodCheckoutByCreditCard() throws Exception {
         String uid = testDataProvider.createUser();
 
-        ArrayList<String> offerList = new ArrayList<>();
-        offerList.add(offer_digital_normal1);
-        offerList.add(offer_digital_normal2);
+        Map<String, Integer> offerList = new HashedMap();
 
-        String cartId = testDataProvider.postOffersToPrimaryCart(uid, false, offerList);
+        offerList.put(offer_digital_normal1, 1);
+        offerList.put(offer_digital_normal2, 1);
+
+        String cartId = testDataProvider.postOffersToPrimaryCart(uid, offerList);
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
@@ -107,9 +110,9 @@ public class CartCheckout extends BaseTestClass {
     @Test
     public void testDigitalGoodCheckoutByEwallet() throws Exception {
         String uid = testDataProvider.createUser();
+        Map<String, Integer> offerList = new HashedMap();
 
-        ArrayList<String> offerList = new ArrayList<>();
-        offerList.add(offer_storedValue_normal);
+        offerList.put(offer_storedValue_normal, 1);
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
@@ -122,10 +125,10 @@ public class CartCheckout extends BaseTestClass {
         offerList.clear();
 
 
-        offerList.add(offer_digital_normal1);
-        offerList.add(offer_digital_normal2);
+        offerList.put(offer_digital_normal1, 1);
+        offerList.put(offer_digital_normal2, 1);
 
-        String cartId = testDataProvider.postOffersToPrimaryCart(uid, false, offerList);
+        String cartId = testDataProvider.postOffersToPrimaryCart(uid, offerList);
 
         orderId = testDataProvider.postOrderByCartId(
                 uid, cartId, Country.DEFAULT, Currency.DEFAULT, ewalletId, null);
@@ -163,11 +166,12 @@ public class CartCheckout extends BaseTestClass {
     public void testPhysicalGoodCheckoutByCreditCard() throws Exception {
         String uid = testDataProvider.createUser();
 
-        ArrayList<String> offerList = new ArrayList<>();
-        offerList.add(offer_physical_normal1);
-        offerList.add(offer_physical_normal2);
+        Map<String, Integer> offerList = new HashedMap();
 
-        String cartId = testDataProvider.postOffersToPrimaryCart(uid, true, offerList);
+        offerList.put(offer_physical_normal1, 1);
+        offerList.put(offer_physical_normal2, 1);
+
+        String cartId = testDataProvider.postOffersToPrimaryCart(uid, offerList);
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
@@ -205,9 +209,10 @@ public class CartCheckout extends BaseTestClass {
     @Test
     public void testPhysicalGoodCheckoutByEwallet() throws Exception {
         String uid = testDataProvider.createUser();
+        Map<String, Integer> offerList = new HashedMap();
 
-        ArrayList<String> offerList = new ArrayList<>();
-        offerList.add(offer_storedValue_normal);
+
+        offerList.put(offer_storedValue_normal, 1);
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
@@ -219,10 +224,10 @@ public class CartCheckout extends BaseTestClass {
         testDataProvider.updateOrderTentative(orderId, false);
         offerList.clear();
 
-        offerList.add(offer_physical_normal1);
-        offerList.add(offer_physical_normal2);
+        offerList.put(offer_physical_normal1, 1);
+        offerList.put(offer_physical_normal2, 2);
 
-        String cartId = testDataProvider.postOffersToPrimaryCart(uid, false, offerList);
+        String cartId = testDataProvider.postOffersToPrimaryCart(uid, offerList);
 
         orderId = testDataProvider.postOrderByCartId(
                 uid, cartId, Country.DEFAULT, Currency.DEFAULT, ewalletId, true);
@@ -256,10 +261,10 @@ public class CartCheckout extends BaseTestClass {
     @Test
     public void testInsufficientEwalletCheckout() throws Exception {
         String uid = testDataProvider.createUser();
+        Map<String, Integer> offerList = new HashedMap();
 
-        ArrayList<String> offerList = new ArrayList<>();
-        offerList.add(offer_physical_normal1);
-        offerList.add(offer_physical_normal2);
+        offerList.put(offer_physical_normal1, 1);
+        offerList.put(offer_physical_normal2, 1);
 
         EwalletInfo ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT, Currency.DEFAULT);
         String ewalletId = testDataProvider.postPaymentInstrument(uid, ewalletInfo);
@@ -292,7 +297,7 @@ public class CartCheckout extends BaseTestClass {
     )
     @Test
     public void testDigitalGoodsCheckoutByPayPal() throws Exception {
-        testCheckoutByPalPal(CatalogItemType.DIGITAL);
+        testCheckoutByPalPal(CatalogItemType.APP);
     }
 
     @Property(
@@ -320,27 +325,28 @@ public class CartCheckout extends BaseTestClass {
     private void testCheckoutByPalPal(CatalogItemType itemType) throws Exception {
         String uid = testDataProvider.createUser();
 
-        ArrayList<String> offerList = new ArrayList<>();
+        Map<String, Integer> offerList = new HashedMap();
+
 
         switch (itemType) {
-            case DIGITAL:
-                offerList.add(offer_digital_normal1);
-                offerList.add(offer_digital_normal2);
+            case APP:
+                offerList.put(offer_digital_normal1, 1);
+                offerList.put(offer_digital_normal2, 1);
                 break;
             case PHYSICAL:
-                offerList.add(offer_physical_normal1);
-                offerList.add(offer_physical_normal2);
+                offerList.put(offer_physical_normal1, 1);
+                offerList.put(offer_physical_normal2, 1);
                 break;
         }
 
-        String cartId = testDataProvider.postOffersToPrimaryCart(uid, false, offerList);
+        String cartId = testDataProvider.postOffersToPrimaryCart(uid, offerList);
 
         PayPalInfo payPalInfo = PayPalInfo.getPayPalInfo(Country.DEFAULT);
         String payPalId = testDataProvider.postPaymentInstrument(uid, payPalInfo);
 
         String orderId;
         switch (itemType) {
-            case DIGITAL:
+            case APP:
                 orderId = testDataProvider.postOrderByCartId(
                         uid, cartId, Country.DEFAULT, Currency.DEFAULT, payPalId, false);
                 break;
@@ -356,11 +362,11 @@ public class CartCheckout extends BaseTestClass {
 
         Order order = Master.getInstance().getOrder(orderId);
         order.setTentative(false);
-        order.setSuccessRedirectUrl("http://www.abc.com/");
-        order.setCancelRedirectUrl("http://www.abc.com/cancel/");
+        order.getPayments().get(0).setSuccessRedirectUrl("http://www.abc.com/");
+        order.getPayments().get(0).setCancelRedirectUrl("http://www.abc.com/cancel/");
         orderId = testDataProvider.updateOrder(order);
         order = Master.getInstance().getOrder(orderId);
-        String providerConfirmUrl = order.getProviderConfirmUrl();
+        String providerConfirmUrl = order.getPayments().get(0).getProviderConfirmUrl();
         int tokenIndex = providerConfirmUrl.indexOf("token=");
         String token = providerConfirmUrl.substring(tokenIndex + 6);
 
@@ -374,7 +380,7 @@ public class CartCheckout extends BaseTestClass {
                 validationHelper.validateOrderInfoByCartId(
                         uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, payPalId, true);
                 break;
-            case DIGITAL:
+            case APP:
                 validationHelper.validateOrderInfoByCartId(
                         uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, payPalId, false);
                 break;
@@ -463,9 +469,10 @@ public class CartCheckout extends BaseTestClass {
         Country country = Country.DE;
         Currency currency = Currency.EUR;
 
-        ArrayList<String> offerList = new ArrayList<>();
-        offerList.add(offer_digital_normal1);
-        offerList.add(offer_digital_normal2);
+        Map<String, Integer> offerList = new HashedMap();
+
+        offerList.put(offer_digital_normal1, 1);
+        offerList.put(offer_digital_normal2, 2);
 
         AdyenInfo adyenInfo = AdyenInfo.getAdyenInfo(country);
         String adyenId = testDataProvider.postPaymentInstrument(uid, adyenInfo);
@@ -474,11 +481,11 @@ public class CartCheckout extends BaseTestClass {
 
         Order order = Master.getInstance().getOrder(orderId);
         order.setTentative(false);
-        order.setSuccessRedirectUrl("http://www.baidu.com/");
-        order.setCancelRedirectUrl("http://www.baidu.com/cancel/");
+        order.getPayments().get(0).setSuccessRedirectUrl("http://www.baidu.com/");
+        order.getPayments().get(0).setCancelRedirectUrl("http://www.baidu.com/cancel/");
         orderId = testDataProvider.updateOrder(order);
         order = Master.getInstance().getOrder(orderId);
-        String providerConfirmUrl = order.getProviderConfirmUrl();
+        String providerConfirmUrl = order.getPayments().get(0).getProviderConfirmUrl();
 
         String[] params = providerConfirmUrl.split("&");
         String urlEncoded = new String();
@@ -489,8 +496,7 @@ public class CartCheckout extends BaseTestClass {
                 String sigEncoded = URLEncoder.encode(sig, "utf-8");
                 params[i] = "merchantSig=" + sigEncoded;
             }
-            if(params[i].contains("shopperEmail"))
-            {
+            if (params[i].contains("shopperEmail")) {
                 String email = params[i].substring(13);
                 String emailEncoded = URLEncoder.encode(email, "utf-8");
                 params[i] = "shopperEmail=" + emailEncoded;

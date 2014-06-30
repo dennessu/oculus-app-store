@@ -13,9 +13,11 @@ import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
+import org.apache.commons.collections.map.HashedMap;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by Yunlong on 5/28/14.
@@ -38,8 +40,8 @@ public class FraudManagement extends BaseTestClass {
     )
     @Test
     public void testFraudCheckByEmail() throws Exception {
-        ArrayList<String> offerList = new ArrayList<>();
-        offerList.add(offer_digital_normal1);
+        Map<String, Integer> offerList = new HashedMap();
+        offerList.put(offer_digital_normal1, 1);
 
         String uid = testDataProvider.createUser("FraudTest", "FraudRejection_test@silkcloud.com");
 
@@ -88,8 +90,8 @@ public class FraudManagement extends BaseTestClass {
     )
     @Test
     public void testFraudCheckByCreditCardNum() throws Exception {
-        ArrayList<String> offerList = new ArrayList<>();
-        offerList.add(offer_digital_normal1);
+        Map<String, Integer> offerList = new HashedMap();
+        offerList.put(offer_digital_normal1, 1);
 
         String uid1 = testDataProvider.createUser();
         String uid2 = testDataProvider.createUser();

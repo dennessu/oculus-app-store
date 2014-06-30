@@ -151,9 +151,16 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
             revision.setEntitlementDefs(new ArrayList<EntitlementDef>());
         }
         List<EntitlementDef> entitlementDefs = revision.getEntitlementDefs();
-        if (ItemType.DIGITAL.is(itemType)) {
+        if (ItemType.APP.is(itemType) || ItemType.DIGITAL.is(itemType)) {
             addEntitlementIfNotExist(entitlementDefs, EntitlementType.DOWNLOAD, false);
             addEntitlementIfNotExist(entitlementDefs, EntitlementType.RUN, false);
+        } else if (ItemType.DOWNLOADED_ADDITION.is(itemType)) {
+            addEntitlementIfNotExist(entitlementDefs, EntitlementType.DOWNLOAD, false);
+            addEntitlementIfNotExist(entitlementDefs, EntitlementType.ALLOW_IN_APP, false);
+        } else if (ItemType.IN_APP_UNLOCK.is(itemType)) {
+            addEntitlementIfNotExist(entitlementDefs, EntitlementType.ALLOW_IN_APP, false);
+        } else if (ItemType.IN_APP_CONSUMABLE.is(itemType)) {
+            addEntitlementIfNotExist(entitlementDefs, EntitlementType.ALLOW_IN_APP, true);
         }
     }
 
@@ -292,12 +299,15 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
                 errors.add(AppErrors.INSTANCE
                         .fieldNotCorrect("itemId", "Cannot find item " + Utils.encodeId(revision.getItemId())));
             } else {
-                if (ItemType.DIGITAL.is(item.getType())) {
+                if ((Status.APPROVED.is(revision.getStatus()) || Status.PENDING_REVIEW.is(revision.getStatus()))
+                        && (ItemType.DIGITAL.is(item.getType())
+                            || ItemType.APP.is(item.getType()) || ItemType.DOWNLOADED_ADDITION.is(item.getType()))) {
                     if (CollectionUtils.isEmpty(revision.getBinaries())) {
                         errors.add(AppErrors.INSTANCE.missingField("binaries"));
                     }
                 }
-                if (!ItemType.DIGITAL.is(item.getType())) {
+                if (!(ItemType.DIGITAL.is(item.getType())
+                        || ItemType.APP.is(item.getType()) || ItemType.DOWNLOADED_ADDITION.is(item.getType()))) {
                     if (!CollectionUtils.isEmpty(revision.getBinaries())) {
                         errors.add(AppErrors.INSTANCE.unnecessaryField("binaries"));
                     }

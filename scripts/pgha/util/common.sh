@@ -12,6 +12,7 @@ export PGHA_BASE='/var/pgha'
 export DATA_PATH=$PGHA_BASE/data
 export BACKUP_PATH=$PGHA_BASE/backup
 export ARCHIVE_PATH=$PGHA_BASE/archive
+export DB_LOG_PATH=$PGHA_BASE/log
 export CRON_PATH=$PGHA_BASE/pgron
 
 export SKYTOOL_PATH=$PGHA_BASE/skytool
@@ -31,22 +32,24 @@ export MASTER_DB_PORT=$DB_PORT
 export MASTER_DATA_PATH=$DATA_PATH
 export MASTER_BACKUP_PATH=$BACKUP_PATH
 export MASTER_ARCHIVE_PATH=$ARCHIVE_PATH
+export MASTER_LOG_PATH=$DB_LOG_PATH
 
 #slave info
 export SLAVE_DB_PORT=$DB_PORT
 export SLAVE_DATA_PATH=$DATA_PATH
 export SLAVE_BACKUP_PATH=$BACKUP_PATH
 export SLAVE_ARCHIVE_PATH=$ARCHIVE_PATH
+export SLAVE_LOG_PATH=$DB_LOG_PATH
 
 #replica info
 export REPLICA_DB_PORT=$DB_PORT
 export REPLICA_DATA_PATH=$DATA_PATH
 export REPLICA_ARCHIVE_PATH=$ARCHIVE_PATH
+export REPLICA_LOG_PATH=$DB_LOG_PATH
 
 #pgbouncer
 export PRIMARY_PGBOUNCER_HOST=$MASTER_HOST
 export SECONDARY_PGBOUNCER_HOST=$SLAVE_HOST
-export REPLICA_DATABASES=('repl_test')
 
 export PGBOUNCER_PORT=6543
 
@@ -105,4 +108,8 @@ function createDir {
     rm -rf $1
     mkdir $1
     chmod 700 $1
+}
+
+function now {
+    return $(date +"%Y.%m.%d.%S.%N")
 }

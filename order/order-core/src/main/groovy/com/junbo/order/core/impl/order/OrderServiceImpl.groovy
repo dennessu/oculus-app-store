@@ -86,8 +86,8 @@ class OrderServiceImpl implements OrderService {
 
             // TODO: compare the reqeust and the order persisted
             orderValidator.validateSettleOrderRequest(ratedOrder)
-            ratedOrder.successRedirectUrl = order.successRedirectUrl
-            ratedOrder.cancelRedirectUrl = order.cancelRedirectUrl
+            ratedOrder.payments[0].successRedirectUrl = order.payments[0].successRedirectUrl
+            ratedOrder.payments[0].cancelRedirectUrl = order.payments[0].cancelRedirectUrl
             ratedOrder.purchaseTime = ratedOrder.honoredTime
 
             Throwable error

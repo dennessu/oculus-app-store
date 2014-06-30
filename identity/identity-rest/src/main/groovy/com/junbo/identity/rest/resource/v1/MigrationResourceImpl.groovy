@@ -1,5 +1,4 @@
 package com.junbo.identity.rest.resource.v1
-
 import com.junbo.authorization.spec.model.Role
 import com.junbo.authorization.spec.model.RoleAssignment
 import com.junbo.authorization.spec.model.RoleTarget
@@ -7,8 +6,10 @@ import com.junbo.authorization.spec.option.list.RoleAssignmentListOptions
 import com.junbo.authorization.spec.option.list.RoleListOptions
 import com.junbo.authorization.spec.resource.RoleAssignmentResource
 import com.junbo.authorization.spec.resource.RoleResource
+import com.junbo.common.cloudant.CloudantClientBase
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.id.util.IdUtil
@@ -34,7 +35,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.StringUtils
-
 /**
  * Created by liangfu on 6/6/14.
  */
@@ -80,6 +80,8 @@ class MigrationResourceImpl implements MigrationResource {
 
     @Override
     Promise<OculusOutput> migrate(OculusInput oculusInput) {
+        CloudantClientBase.useBulk = true
+
         if (StringUtils.isEmpty(oculusInput.username)) {
             throw new IllegalArgumentException('username can\'t be null')
         }
@@ -98,6 +100,29 @@ class MigrationResourceImpl implements MigrationResource {
                     return createOrUpdateMigrateUser(oculusInput)
                 }
             }
+        }
+    }
+
+    @Override
+    Promise<List<OculusOutput>> bulkMigrate(List<OculusInput> oculusInputs) {
+        CloudantClientBase.useBulk = true
+
+        List<OculusOutput> result = new ArrayList<>()
+        return Promise.each(oculusInputs) { OculusInput oculusInput ->
+            return migrate(oculusInput).then { OculusOutput output ->
+                result.add(output)
+                return Promise.pure(null)
+            }.recover { Throwable ex ->
+                if (ex instanceof AppErrorException) {
+                    OculusOutput output = new OculusOutput(error: ((AppErrorException)ex).error)
+                    result.add(output)
+                    return Promise.pure(null)
+                } else {
+                    throw ex;
+                }
+            }
+        }.then {
+            return Promise.pure(result)
         }
     }
 
@@ -313,7 +338,7 @@ class MigrationResourceImpl implements MigrationResource {
     //              b.  If the username is changed, check this username isn't used, then update user.
     Promise<Void> checkUserValid(OculusInput oculusInput) {
         if (StringUtils.isEmpty(oculusInput.status)) {
-            throw new IllegalArgumentException('user Status error')
+            throw new IllegalArgumentException('user Status error with currentId: ' + oculusInput.currentId)
         }
         List<String> allowedValues = MigrateUserStatus.values().collect { MigrateUserStatus userStatus ->
             userStatus.toString()
@@ -350,11 +375,11 @@ class MigrationResourceImpl implements MigrationResource {
 
     void checkCompanyType(OculusInput oculusInput) {
         if (oculusInput.company == null) {
-            throw new IllegalArgumentException('company is missing')
+            throw new IllegalArgumentException('company is missing with currentId: ' + oculusInput.currentId)
         }
 
         if (oculusInput.company.type == null) {
-            throw new IllegalArgumentException('company.type is missing')
+            throw new IllegalArgumentException('company.type is missing with currentId: ' + oculusInput.currentId)
         }
 
         List<String> allowedValues = MigrateCompanyType.values().collect { MigrateCompanyType migrateCompanyType ->
@@ -367,11 +392,11 @@ class MigrationResourceImpl implements MigrationResource {
 
     Promise<Void> checkPasswordValid(OculusInput oculusInput) {
         if (StringUtils.isEmpty(oculusInput.password)) {
-            throw new IllegalArgumentException('password is null or empty')
+            throw new IllegalArgumentException('password is null or empty with currentId: ' + oculusInput.currentId)
         }
         String[] passwords = oculusInput.password.split(":")
         if (passwords.length != 4 && passwords[0] != "1") {
-            throw new IllegalArgumentException('password only accept version 1')
+            throw new IllegalArgumentException('password only accept version 1 with currentId: ' + oculusInput.currentId)
         }
 
         return Promise.pure(null)
@@ -758,11 +783,12 @@ class MigrationResourceImpl implements MigrationResource {
     // check whether the address is changed or not
     // if the address is changed, just create new and return;
     // if the address isn't changed, just return
+    // Due to state isn't valid in oculus side, so we decided to use street2 to put oculus' state
     private Promise<UserPersonalInfoId> getOrgShippingAddressId(OculusInput oculusInput, Organization createdOrg) {
         Address address = new Address(
             street1: oculusInput.company.address,
             city: oculusInput.company.city,
-            subCountry: oculusInput.company.state,
+            street2: oculusInput.company.state,
             countryId: new CountryId(oculusInput.company.country),
             postalCode: oculusInput.company.postalCode
         )

@@ -7,10 +7,12 @@ package ${packageName};
 import com.junbo.langur.core.client.AbstractClientProxy;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.langur.core.promise.Promise;
-import com.ning.http.client.AsyncHttpClient;
+import com.junbo.langur.core.async.JunboAsyncHttpClient;
 import com.ning.http.client.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.Date;
+import java.net.InetAddress;
 
 import javax.ws.rs.core.UriBuilder;
 
