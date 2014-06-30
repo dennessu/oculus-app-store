@@ -15,7 +15,7 @@
         <wf:action-state id="checkChargeEvent">
             <wf:action ref="chargeEventCheckAction"/>
             <wf:transition on="COMPLETED" to="fullfill"/>
-            <wf:transition on="__NONE" to="charge"/>
+            <wf:transition on="__NONE" to="riskReview"/>
             <wf:transition on="*" to="endState"/>
         </wf:action-state>
 

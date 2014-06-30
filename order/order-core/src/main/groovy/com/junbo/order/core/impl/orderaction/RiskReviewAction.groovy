@@ -9,6 +9,8 @@ import com.junbo.order.core.impl.internal.RiskService
 import com.junbo.order.spec.model.enums.EventStatus
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
@@ -24,11 +26,16 @@ class RiskReviewAction implements Action {
     @Resource(name = 'riskService')
     RiskService riskService
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(RiskReviewAction)
+
     @Override
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
 
-        return riskService.reviewOrder(context.getOrderServiceContext()).syncThen {
+        return riskService.reviewOrder(context.getOrderServiceContext()).syncRecover { Throwable throwable ->
+            LOGGER.error('name=Risk_Review_Error', throwable)
+            throw throwable
+        }.syncThen {
             return null
         }
     }

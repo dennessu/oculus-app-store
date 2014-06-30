@@ -13,5 +13,5 @@ import com.junbo.order.core.impl.order.OrderServiceContext;
  * Created by xmchen on 14-6-23.
  */
 public interface RiskService {
-    Promise<Void> reviewOrder(OrderServiceContext orderContext);
+    Promise<RiskReviewResult> reviewOrder(OrderServiceContext orderContext);
 }

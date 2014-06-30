@@ -216,4 +216,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 409, code = BillingErrorCode.BILLING_TAX_FAILED,
             description = "Failed to calculate tax: {0}")
     AppError calculateTaxError(String error);
+
+    @ErrorDef(httpStatusCode = 500, code = ErrorCode.ORDER_RISK_REVIEW_ERROR,
+            description = "Failed to review risk of order: {0}")
+    AppError orderRiskReviewError(String error);
 }

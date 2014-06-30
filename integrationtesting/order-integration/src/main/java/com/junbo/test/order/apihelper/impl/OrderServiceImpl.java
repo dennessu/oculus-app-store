@@ -13,11 +13,14 @@ import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderEvent;
 import com.junbo.order.spec.model.Subledger;
 import com.junbo.test.common.ConfigHelper;
+import com.junbo.test.common.apihelper.Header;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
+import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.order.apihelper.OrderService;
+import com.ning.http.client.FluentCaseInsensitiveStringsMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +41,14 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
             instance = new OrderServiceImpl();
         }
         return instance;
+    }
+
+    @Override
+    protected FluentCaseInsensitiveStringsMap getHeader() {
+        FluentCaseInsensitiveStringsMap header = super.getHeader();
+        header.add(Header.USER_IP, RandomFactory.getRandomIp());
+
+        return header;
     }
 
     @Override

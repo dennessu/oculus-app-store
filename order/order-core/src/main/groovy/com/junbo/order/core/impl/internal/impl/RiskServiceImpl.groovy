@@ -6,9 +6,11 @@ import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
 import com.junbo.langur.core.promise.Promise
 import com.junbo.identity.spec.v1.model.Currency
 import com.junbo.order.clientproxy.FacadeContainer
+import com.junbo.order.core.impl.internal.RiskReviewResult
 import com.junbo.order.core.impl.internal.RiskService
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
+import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.kount.ris.Inquiry
@@ -58,10 +60,14 @@ class RiskServiceImpl implements RiskService {
     private static final Logger LOGGER = LoggerFactory.getLogger(RiskServiceImpl)
 
     @Override
-    Promise<Void> reviewOrder(OrderServiceContext orderContext) {
+    Promise<RiskReviewResult> reviewOrder(OrderServiceContext orderContext) {
         def order = orderContext.order
         def user = orderContext.user
         def ip = orderContext.apiContext.userIp
+
+        if (ip == null || ip.isEmpty()) {
+            throw AppErrors.INSTANCE.orderRiskReviewError("ip address missing").exception()
+        }
 
         UserPersonalInfoId emailId = null
         for (UserPersonalInfoLink link : user.emails) {
@@ -129,16 +135,19 @@ class RiskServiceImpl implements RiskService {
                     }
                     q.setWebsite("OCULUS")
 
-                    KountRisClient kountRisClient = new KountRisClient('#Bugsfor$', kountUrl,
-                        'risk_kount_test.p12')
+                    InputStream stream = RiskServiceImpl.classLoader.getResourceAsStream('risk_kount_test.p12')
+                    KountRisClient kountRisClient = new KountRisClient('#Bugsfor$', kountUrl, stream)
 
                     try {
-                        LOGGER.info('name=Review_Order_Request, ' + q.toString())
+                        LOGGER.info('name=Review_Order_Request, ' + q.getParams().toString())
                         Response r = kountRisClient.process(q);
                         LOGGER.info('name=Review_Order_Response, ' + r.toString())
-                        orderContext.riskTransactionId = r.getTransactionId();
+                        orderContext.riskTransactionId = r.getTransactionId()
+
+                        return RiskReviewResult.APPROVED
                     } catch (RisException re) {
                         LOGGER.error('name=Review_Order_Exception', re)
+                        throw AppErrors.INSTANCE.orderRiskReviewError(re.getMessage()).exception()
                     }
                 }
             }
