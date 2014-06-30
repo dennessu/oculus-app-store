@@ -21,7 +21,7 @@ import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
-import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -179,11 +179,11 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
     private void addFallbackProperties(ItemRevisionLocaleProperties properties,
                                        ItemRevisionLocaleProperties fallbackProperties) {
         try {
-            Map<String, Object> fields = BeanUtils.describe(properties);
+            Map<String, Object> fields = PropertyUtils.describe(properties);
             for(String fieldName : fields.keySet()) {
-                if (BeanUtils.getProperty(properties, fieldName) == null) {
-                    BeanUtils.setProperty(properties, fieldName,
-                            BeanUtils.getProperty(fallbackProperties, fieldName));
+                if (PropertyUtils.getProperty(properties, fieldName) == null) {
+                    PropertyUtils.setProperty(properties, fieldName,
+                            PropertyUtils.getProperty(fallbackProperties, fieldName));
                 }
             }
         } catch (Exception e) {
@@ -194,9 +194,9 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
     // TODO: don't use reflection in future
     private boolean checkItemRevisionLocales(ItemRevisionLocaleProperties properties) {
         try {
-            Map<String, Object> fields = BeanUtils.describe(properties);
+            Map<String, Object> fields = PropertyUtils.describe(properties);
             for(String fieldName : fields.keySet()) {
-                if (BeanUtils.getProperty(properties, fieldName) == null) {
+                if (PropertyUtils.getProperty(properties, fieldName) == null) {
                     return false;
                 }
             }
