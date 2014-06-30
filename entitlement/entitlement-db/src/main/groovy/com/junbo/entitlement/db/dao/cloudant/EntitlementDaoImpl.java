@@ -83,15 +83,15 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
 
         Long now = EntitlementContext.current().getNow().getTime();
         if (Boolean.FALSE.equals(entitlementSearchParam.getIsActive())) {
-            sb.append(" AND ( grantTime:{" + now + " TO " + EntitlementConsts.MAX_DATE + "}" +
-                    " OR expirationTime:{" + EntitlementConsts.MIN_DATE + " TO " + now + "}" +
-                    " OR useCount:{" +  + EntitlementConsts.MIN_USECOUNT + " TO 0]" +
+            sb.append(" AND ( grantTime:[" + now + " TO " + EntitlementConsts.MAX_DATE + "]" +
+                    " OR expirationTime:[" + EntitlementConsts.MIN_DATE + " TO " + now + "]" +
+                    " OR useCount:[" +  + EntitlementConsts.MIN_USECOUNT + " TO 0]" +
                     " OR isBanned:true )");
         } else if (Boolean.TRUE.equals(entitlementSearchParam.getIsActive())) {
             sb.append(
-                    " AND useCount:{0 TO " + EntitlementConsts.UNCONSUMABLE_USECOUNT + "}" +
-                            " AND grantTime:{" + EntitlementConsts.MIN_DATE + " TO " + now + "}" +
-                            " AND expirationTime:{" + now + " TO " + EntitlementConsts.MAX_DATE + "}" +
+                    " AND useCount:{0 TO " + EntitlementConsts.UNCONSUMABLE_USECOUNT + "]" +
+                            " AND grantTime:[" + EntitlementConsts.MIN_DATE + " TO " + now + "]" +
+                            " AND expirationTime:[" + now + " TO " + EntitlementConsts.MAX_DATE + "]" +
                             " AND isBanned:false");
         }
 
@@ -117,14 +117,14 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
         }
         if (isStartGrantNull) {
             if (!isEndGrantNull) {
-                sb.append(" AND grantTime:{" + EntitlementConsts.MIN_DATE + " TO " + endGrant + "}");
+                sb.append(" AND grantTime:[" + EntitlementConsts.MIN_DATE + " TO " + endGrant + "]");
             }
         } else {
             Long startGrant = parse(entitlementSearchParam.getStartGrantTime());
             if (isEndGrantNull) {
-                sb.append(" AND grantTime:{" + startGrant + " TO " + EntitlementConsts.MAX_DATE + "}");
+                sb.append(" AND grantTime:[" + startGrant + " TO " + EntitlementConsts.MAX_DATE + "]");
             } else {
-                sb.append(" AND grantTime:{" + startGrant + " TO " + endGrant + "}");
+                sb.append(" AND grantTime:[" + startGrant + " TO " + endGrant + "]");
             }
         }
 
@@ -136,19 +136,19 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
         }
         if (isStartExpirationNull) {
             if (!isEndExpirationNull) {
-                sb.append(" AND expirationTime:{" + EntitlementConsts.MIN_DATE + " TO " + endExpiration + "}");
+                sb.append(" AND expirationTime:[" + EntitlementConsts.MIN_DATE + " TO " + endExpiration + "]");
             }
         } else {
             Long startExpiration = parse(entitlementSearchParam.getStartExpirationTime());
             if (isEndExpirationNull) {
-                sb.append(" AND expirationTime:{" + startExpiration + " TO " + EntitlementConsts.MAX_DATE + "}");
+                sb.append(" AND expirationTime:[" + startExpiration + " TO " + EntitlementConsts.MAX_DATE + "]");
             } else {
-                sb.append(" AND expirationTime:{" + startExpiration + " TO " + endExpiration + "}");
+                sb.append(" AND expirationTime:[" + startExpiration + " TO " + endExpiration + "]");
             }
         }
 
         if (!StringUtils.isEmpty(entitlementSearchParam.getLastModifiedTime())) {
-            sb.append(" AND updatedTime:{" + parse(entitlementSearchParam.getLastModifiedTime()) + " TO " + EntitlementConsts.MAX_DATE + "}");
+            sb.append(" AND updatedTime:[" + parse(entitlementSearchParam.getLastModifiedTime()) + " TO " + EntitlementConsts.MAX_DATE + "]");
         }
 
         return sb.toString();
