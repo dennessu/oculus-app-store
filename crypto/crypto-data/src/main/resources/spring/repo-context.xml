@@ -58,6 +58,15 @@
         <property name="cloudantPassword" value="${crypto.userkey.cloudant.password}" />
     </bean>
 
+    <bean id="itemCryptoRepo" class="com.junbo.crypto.data.repo.impl.cloudant.CloudantItemCryptoRepoImpl" parent="cloudantClient">
+        <property name="dbName" value="item_crypt_key" />
+        <property name="cloudantDBUri" value="${crypto.itemCryptoKey.cloudant.url}" />
+        <property name="asyncHttpClient" ref="commonAsyncHttpClient" />
+        <property name="marshaller" ref="cloudantDefaultMarshaller" />
+        <property name="cloudantUser" value="${crypto.userkey.cloudant.user}" />
+        <property name="cloudantPassword" value="${crypto.userkey.cloudant.password}" />
+    </bean>
+
     <bean id="masterkeyRepository" class="com.junbo.crypto.data.repo.impl.sql.SqlMasterKeyRepoImpl">
         <property name="masterKeyDAO" ref="masterKeyDAO" />
     </bean>
