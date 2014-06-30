@@ -44,7 +44,7 @@ class LocaleDataHandler extends BaseDataHandler {
             }
         }
 
-        logger.info("resolve locale dependency failure")
+        logger.info("resolve locale dependency")
 
         List<Resource> resolvedResource = new ArrayList<>()
         List<String> result = new ArrayList<>()
