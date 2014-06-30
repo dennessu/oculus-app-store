@@ -1,8 +1,8 @@
 {
     "apiName": "payment-instruments",
     "scopes": {
-        "payment": [{
-            "precondition": "ownedByCurrentUser()",
+        "commerce": [{
+            "precondition": "ownedByCurrentUser",
             "rights": ["read", "create", "update", "delete"],
             "scriptType": "SPEL"
         }],

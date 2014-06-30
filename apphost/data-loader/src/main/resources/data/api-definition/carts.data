@@ -1,9 +1,9 @@
 {
     "apiName": "carts",
     "scopes": {
-        "cart": [
+        "commerce": [
             {
-                "precondition": "ownedByCurrentUser()",
+                "precondition": "ownedByCurrentUser",
                 "rights": [
                     "create", "read", "update", "merge"
                 ],

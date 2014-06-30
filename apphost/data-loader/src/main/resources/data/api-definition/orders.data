@@ -1,9 +1,9 @@
 {
     "apiName": "orders",
     "scopes": {
-        "order": [
+        "commerce": [
             {
-                "precondition": "ownedByCurrentUser()",
+                "precondition": "ownedByCurrentUser",
                 "rights": [
                     "create", "read", "update"
                 ],

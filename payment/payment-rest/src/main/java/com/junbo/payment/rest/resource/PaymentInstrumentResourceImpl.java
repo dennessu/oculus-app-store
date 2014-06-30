@@ -10,14 +10,12 @@ import com.junbo.authorization.AuthorizeCallback;
 import com.junbo.authorization.AuthorizeContext;
 import com.junbo.authorization.AuthorizeService;
 import com.junbo.authorization.RightsScope;
-import com.junbo.common.id.PIType;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.auth.PaymentInstrumentAuthorizeCallbackFactory;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
-import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.spec.model.PageMetaData;
 import com.junbo.payment.spec.model.PaymentInstrument;
@@ -78,8 +76,7 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
                     @Override
                     public Promise<PaymentInstrument> apply() {
                         if (!AuthorizeContext.hasRights("read")) {
-                            throw AppServerExceptions.INSTANCE
-                                    .providerNotFound(PIType.get(paymentInstrument.getType()).toString()).exception();
+                            throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
                         }
 
                         return Promise.pure(paymentInstrument);

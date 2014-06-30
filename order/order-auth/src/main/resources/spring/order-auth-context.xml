@@ -12,7 +12,7 @@
         <property name="subledgerResource" ref="order.subledgerResourceClientProxy"/>
     </bean>
 
-    <bean id="orderAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
+    <bean id="order.authAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
         <property name="scope" value="order.service subledger.service"/>
         <property name="deflectionInSeconds" value="300"/>
         <property name="clientSecret" value="secret"/>
@@ -22,13 +22,13 @@
 
     <bean id="order.orderResourceClientProxy" class="com.junbo.order.spec.resource.proxy.OrderResourceClientProxy"
           parent="baseClientProxy">
-        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
+        <property name="accessTokenProvider" ref="order.authAccessTokenProvider"/>
         <property name="target" value="${clientproxy.order.url}"/>
     </bean>
 
     <bean id="order.subledgerResourceClientProxy" class="com.junbo.order.spec.resource.proxy.SubledgerResourceClientProxy"
           parent="baseClientProxy">
-        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
+        <property name="accessTokenProvider" ref="order.authAccessTokenProvider"/>
         <property name="target" value="${clientproxy.order.url}"/>
     </bean>
 </beans>

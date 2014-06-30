@@ -1,9 +1,9 @@
 {
     "apiName": "entitlements",
     "scopes": {
-        "entitlement": [
+        "commerce": [
             {
-                "precondition": "ownedByCurrentUser()",
+                "precondition": "ownedByCurrentUser",
                 "rights": [
                     "read", "search"
                 ],
