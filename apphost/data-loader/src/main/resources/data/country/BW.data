@@ -93,7 +93,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Botswana",
-			"longName": "Republic of Botswana"
+			"longName": "Republic of Botswana",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

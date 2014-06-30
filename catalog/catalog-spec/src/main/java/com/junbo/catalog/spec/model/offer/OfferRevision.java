@@ -67,6 +67,10 @@ public class OfferRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 34, required = true,
             value = "Maps from a country-code-name to a JSON object containing the country-specific properties")
     private Map<String, CountryProperties> countries;
+    @ApiModelProperty(position = 35, required = true,
+            value = "This is the calculated value to give how accurate the localizable attributes is.",
+            allowableValues = "HIGH, MEDIUM, LOW")
+    private String localeAccuracy;
 
     public String getRevisionId() {
         return revisionId;
@@ -178,6 +182,14 @@ public class OfferRevision extends BaseRevisionModel {
 
     public void setCountries(Map<String, CountryProperties> countries) {
         this.countries = countries;
+    }
+
+    public String getLocaleAccuracy() {
+        return localeAccuracy;
+    }
+
+    public void setLocaleAccuracy(String localeAccuracy) {
+        this.localeAccuracy = localeAccuracy;
     }
 
     @Override

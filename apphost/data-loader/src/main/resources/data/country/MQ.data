@@ -19,11 +19,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Martinique",
-			"longName": "Martinique"
+			"longName": "Martinique",
+			"postalCode": "Postal Code"
 		},
 		"fr_FR": {
 			"shortName": "Martinique",
-			"longName": "Martinique"
+			"longName": "Martinique",
+			"postalCode": "code postal"
 		}
 	},
 	"futureExpansion": {

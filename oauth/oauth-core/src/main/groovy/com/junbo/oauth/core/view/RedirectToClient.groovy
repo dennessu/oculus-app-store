@@ -10,7 +10,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.service.TokenService
+import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.core.util.OAuthInfoUtil
 import com.junbo.oauth.spec.model.TokenType
 import com.junbo.oauth.spec.param.OAuthParameters
@@ -27,10 +27,10 @@ import javax.ws.rs.core.Response
 @CompileStatic
 class RedirectToClient implements Action {
 
-    private TokenService tokenService
+    private OAuthTokenService tokenService
 
     @Required
-    void setTokenService(TokenService tokenService) {
+    void setTokenService(OAuthTokenService tokenService) {
         this.tokenService = tokenService
     }
 

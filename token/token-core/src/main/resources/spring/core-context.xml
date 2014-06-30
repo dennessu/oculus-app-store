@@ -7,10 +7,9 @@
 
     <context:component-scan base-package="com.junbo.token.core"/>
 
-    <tx:annotation-driven/>
-
-    <!-- payment method serivce -->
-    <bean id="tokenService" class="com.junbo.token.core.impl.TokenServiceImpl">
+    <!-- token serivce -->
+    <bean id="tokenKeyService" class="com.junbo.token.core.impl.TokenServiceImpl">
+        <property name="cryptoResource" ref="tokenCryptoResource"/>
     </bean>
 
 </beans>

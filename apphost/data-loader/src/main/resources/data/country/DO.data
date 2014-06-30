@@ -402,11 +402,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Dominican Republic",
-			"longName": "Dominican Republic"
+			"longName": "Dominican Republic",
+			"postalCode": "Postal Code"
 		},
 		"es_Do": {
 			"shortName": "República Dominicana",
-			"longName": "República Dominicana"
+			"longName": "República Dominicana",
+			"postalCode": "Código Postal"
 		}
 	},
 	"futureExpansion": {

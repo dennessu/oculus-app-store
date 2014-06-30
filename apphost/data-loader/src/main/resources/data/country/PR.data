@@ -19,11 +19,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Puerto Rico",
-			"longName": "Commonwealth of Puerto Rico "
+			"longName": "Commonwealth of Puerto Rico",
+			"postalCode": "Postal Code"
 		},
 		"es_PR": {
 			"shortName": "Puerto Rico",
-			"longName": "Estado Libre Asociado de Puerto Rico"
+			"longName": "Estado Libre Asociado de Puerto Rico",
+			"postalCode": "Código Postal"
 		}
 	},
 	"futureExpansion": {

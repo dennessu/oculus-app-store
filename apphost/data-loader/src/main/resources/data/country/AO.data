@@ -165,7 +165,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Angola",
-			"longName": "Republic of Angola"
+			"longName": "Republic of Angola",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

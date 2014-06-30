@@ -53,7 +53,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Sierra Leone",
-			"longName": "Republic of Sierra Leone"
+			"longName": "Republic of Sierra Leone",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

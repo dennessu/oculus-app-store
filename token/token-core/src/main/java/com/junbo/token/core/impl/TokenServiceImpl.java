@@ -6,6 +6,8 @@
 
 package com.junbo.token.core.impl;
 
+import com.junbo.crypto.spec.model.CryptoMessage;
+import com.junbo.crypto.spec.resource.CryptoResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.token.common.CommonUtil;
 import com.junbo.token.common.exception.AppClientExceptions;
@@ -40,6 +42,7 @@ public class TokenServiceImpl implements TokenService {
 
     @Autowired
     private TokenRepository tokenRepository;
+    private CryptoResource cryptoResource;
 
     @Override
     public Promise<TokenSet> createTokenSet(TokenSet request) {
@@ -83,7 +86,7 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public Promise<TokenConsumption> consumeToken(String token, TokenConsumption consumption) {
         validateTokenConsumption(consumption);
-        String decryptedToken = TokenUtil.decrypt(token);
+        String decryptedToken = decrypt(token);
         Long hashValue = TokenUtil.computeHash(decryptedToken).getHashValue();
         TokenItem item = tokenRepository.getTokenItem(hashValue);
         if(item == null){
@@ -112,7 +115,7 @@ public class TokenServiceImpl implements TokenService {
         if(CommonUtil.isNullOrEmpty(token.getDisableReason())){
             throw AppClientExceptions.INSTANCE.missingField("disableReason").exception();
         }
-        String decryptedToken = TokenUtil.decrypt(tokenString);
+        String decryptedToken = decrypt(tokenString);
         Long hashValue = TokenUtil.computeHash(decryptedToken).getHashValue();
         if(!hashValue.equals(token.getHashValue())){
             throw AppClientExceptions.INSTANCE.invalidToken().exception();
@@ -123,7 +126,7 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public Promise<TokenItem> getToken(String token) {
-        String decryptedToken = TokenUtil.decrypt(token);
+        String decryptedToken = decrypt(token);
         Long hashValue = TokenUtil.computeHash(decryptedToken).getHashValue();
         TokenItem item = tokenRepository.getTokenItem(hashValue);
         if(item == null){
@@ -161,7 +164,7 @@ public class TokenServiceImpl implements TokenService {
                 tokenItem.setStatus(CommonUtil.toBool(request.getActivation())
                         ? ItemStatus.ACTIVATED.toString() : ItemStatus.DEACTIVATED.toString());
                 tokenItem.setHashValue(TokenUtil.computeHash(item).getHashValue());
-                tokenItem.setEncryptedString(TokenUtil.encrypt(item));
+                tokenItem.setEncryptedString(encrypt(item));
                 tokenItems.add(tokenItem);
             }
         }else if(request.getCreateMethod().equalsIgnoreCase(CreateMethod.UPLOAD.toString())){
@@ -171,7 +174,7 @@ public class TokenServiceImpl implements TokenService {
                 tokenItem.setStatus(CommonUtil.toBool(request.getActivation())
                         ? ItemStatus.ACTIVATED.toString() : ItemStatus.DEACTIVATED.toString());
                 String itemString = item.getEncryptedString();
-                tokenItem.setHashValue(TokenUtil.computeHash(TokenUtil.decrypt(itemString)).getHashValue());
+                tokenItem.setHashValue(TokenUtil.computeHash(decrypt(itemString)).getHashValue());
                 tokenItems.add(tokenItem);
             }
         }
@@ -265,5 +268,25 @@ public class TokenServiceImpl implements TokenService {
                 item.setStatus(ItemStatus.USED.toString());
             }
         }
+    }
+
+    private String encrypt(String data){
+        CryptoMessage msg = new CryptoMessage();
+        msg.setValue(data);
+        return cryptoResource.encrypt(msg).get().getValue();
+    }
+
+    private String decrypt(String data){
+        CryptoMessage msg = new CryptoMessage();
+        msg.setValue(data);
+        return cryptoResource.decrypt(msg).get().getValue();
+    }
+
+    public CryptoResource getCryptoResource() {
+        return cryptoResource;
+    }
+
+    public void setCryptoResource(CryptoResource cryptoResource) {
+        this.cryptoResource = cryptoResource;
     }
 }

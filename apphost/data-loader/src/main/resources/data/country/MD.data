@@ -314,7 +314,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Moldova",
-			"longName": "Republic of Moldova"
+			"longName": "Republic of Moldova",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

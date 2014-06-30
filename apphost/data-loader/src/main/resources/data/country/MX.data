@@ -405,11 +405,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Mexico",
-			"longName": "United Mexican States"
+			"longName": "United Mexican States",
+			"postalCode": "Postal Code"
 		},
 		"es_MX": {
 			"shortName": "México",
-			"longName": "Estados Unidos Mexicanos"
+			"longName": "Estados Unidos Mexicanos",
+			"postalCode": "Código Postal"
 		}
 	},
 	"futureExpansion": {

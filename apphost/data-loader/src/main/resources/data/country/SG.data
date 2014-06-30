@@ -61,11 +61,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Singapore",
-			"longName": "Republic of Singapore"
+			"longName": "Republic of Singapore",
+			"postalCode": "Postal Code"
 		},
 		"en_SG": {
 			"shortName": "Singapore",
-			"longName": "Republic of Singapore"
+			"longName": "Republic of Singapore",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

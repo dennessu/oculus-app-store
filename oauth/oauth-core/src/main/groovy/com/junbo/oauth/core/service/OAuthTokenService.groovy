@@ -9,10 +9,10 @@ import com.junbo.oauth.spec.model.*
 import groovy.transform.CompileStatic
 
 /**
- * TokenService.
+ * OAuthTokenService.
  */
 @CompileStatic
-interface TokenService {
+interface OAuthTokenService {
     AccessToken generateAccessToken(Client appClient, Long userId, Set<String> scopes)
 
     AccessToken getAccessToken(String tokenValue)

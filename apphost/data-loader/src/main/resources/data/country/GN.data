@@ -285,7 +285,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Guinea",
-			"longName": "Republic of Guinea"
+			"longName": "Republic of Guinea",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

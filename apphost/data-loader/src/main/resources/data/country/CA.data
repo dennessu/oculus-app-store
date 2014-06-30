@@ -181,11 +181,13 @@
 	"locales": {
 		"en_CA": {
 			"shortName": "Canada",
-			"longName": "Canada"
+			"longName": "Canada",
+			"postalCode": "Postal Code"
 		},
 		"fr_CA": {
 			"shortName": "Le Canada",
-			"longName": "Le Canada"
+			"longName": "Le Canada",
+			"postalCode": "code postal"
 		}
 	},
 	"futureExpansion": {

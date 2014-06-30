@@ -261,11 +261,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Italy",
-			"longName": "Italian Republic"
+			"longName": "Italian Republic",
+			"postalCode": "Postal Code"
 		},
 		"it_IT": {
 			"shortName": "Italia",
-			"longName": "Repubblica italiana"
+			"longName": "Repubblica italiana",
+			"postalCode": "Codice Postale"
 		}
 	},
 	"futureExpansion": {

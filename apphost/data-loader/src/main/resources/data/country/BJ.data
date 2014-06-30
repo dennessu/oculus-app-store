@@ -117,7 +117,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Benin",
-			"longName": "Republic of Benin"
+			"longName": "Republic of Benin",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

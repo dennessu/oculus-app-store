@@ -186,11 +186,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "El Salvador",
-			"longName": "Republic of El Salvador"
+			"longName": "Republic of El Salvador",
+			"postalCode": "Postal Code"
 		},
 		"es_SV": {
 			"shortName": "El Salvador",
-			"longName": "República de El Salvador"
+			"longName": "República de El Salvador",
+			"postalCode": "Código Postal"
 		}
 	},
 	"futureExpansion": {

@@ -249,11 +249,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Finland",
-			"longName": "Republic of Finland"
+			"longName": "Republic of Finland",
+			"postalCode": "Postal Code"
 		},
 		"fi_FI": {
 			"shortName": "Suomi",
-			"longName": "Suomen tasavalta"
+			"longName": "Suomen tasavalta",
+			"postalCode": "postinumero"
 		}
 	},
 	"futureExpansion": {

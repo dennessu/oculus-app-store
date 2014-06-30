@@ -30,7 +30,7 @@ public class GenericDAOImpl<T extends GenericEntity, ID extends Serializable> {
     @Qualifier("userShardAlgorithm")
     private ShardAlgorithm shardAlgorithm;
     @Autowired
-    @Qualifier("idGenerator")
+    @Qualifier("oculus48IdGenerator")
     protected IdGenerator idGenerator;
     @Autowired
     @Qualifier("tokenSessionFactory")

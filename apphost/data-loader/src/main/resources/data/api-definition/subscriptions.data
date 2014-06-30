@@ -1,8 +1,8 @@
 {
     "apiName": "subscriptions",
     "scopes": {
-        "subscription": [{
-            "precondition": "ownedByCurrentUser()",
+        "commerce": [{
+            "precondition": "ownedByCurrentUser",
             "rights": ["read", "create"],
             "scriptType": "SPEL"
         }],

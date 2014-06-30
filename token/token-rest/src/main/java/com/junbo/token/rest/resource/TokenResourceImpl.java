@@ -14,15 +14,12 @@ import com.junbo.token.spec.model.*;
 import com.junbo.token.spec.resource.TokenResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * token resource implementation.
  */
 public class TokenResourceImpl implements TokenResource{
-
     private static final Logger LOGGER = LoggerFactory.getLogger(TokenResourceImpl.class);
-    @Autowired
     private TokenService tokenService;
 
     @Override
@@ -40,12 +37,27 @@ public class TokenResourceImpl implements TokenResource{
 
     @Override
     public Promise<TokenRequest> getOrderById(TokenOrderId tokenOrderId) {
-        return tokenService.getOrderRequest(tokenOrderId.getValue());
+        return tokenService.getOrderRequest(tokenOrderId.getValue())
+                .then(new Promise.Func<TokenRequest, Promise<TokenRequest>>() {
+                    @Override
+                    public Promise<TokenRequest> apply(TokenRequest tokenRequest) {
+                        CommonUtil.postFilter(tokenRequest);
+                        return Promise.pure(tokenRequest);
+                    }
+                });
     }
 
     @Override
     public Promise<TokenConsumption> consumeToken(TokenConsumption consumption) {
-        return tokenService.consumeToken(consumption.getTokenString(), consumption);
+        CommonUtil.preValidation(consumption);
+        return tokenService.consumeToken(consumption.getTokenString(), consumption)
+                .then(new Promise.Func<TokenConsumption, Promise<TokenConsumption>>() {
+                    @Override
+                    public Promise<TokenConsumption> apply(TokenConsumption consumption) {
+                        CommonUtil.postFilter(consumption);
+                        return Promise.pure(consumption);
+                    }
+                });
     }
 
     @Override
@@ -55,7 +67,21 @@ public class TokenResourceImpl implements TokenResource{
 
     @Override
     public Promise<TokenItem> getToken(String tokenString) {
-        return tokenService.getToken(tokenString);
+        return tokenService.getToken(tokenString).then(new Promise.Func<TokenItem, Promise<TokenItem>>() {
+            @Override
+            public Promise<TokenItem> apply(TokenItem tokenItem) {
+                CommonUtil.postFilter(tokenItem);
+                return Promise.pure(tokenItem);
+            }
+        });
+    }
+
+    public TokenService getTokenService() {
+        return tokenService;
+    }
+
+    public void setTokenService(TokenService tokenService) {
+        this.tokenService = tokenService;
     }
 }
 

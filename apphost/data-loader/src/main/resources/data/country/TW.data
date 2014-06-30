@@ -297,11 +297,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Taiwan",
-			"longName": "Taiwan"
+			"longName": "Republic of China",
+			"postalCode": "Postal Code"
 		},
 		"zh_TW": {
 			"shortName": "台灣",
-			"longName": "中華民國"
+			"longName": "中華民國",
+			"postalCode": "郵政編碼"
 		}
 	},
 	"futureExpansion": {

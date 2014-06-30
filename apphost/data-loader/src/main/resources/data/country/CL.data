@@ -198,11 +198,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Chile",
-			"longName": "Republic of Chile"
+			"longName": "Republic of Chile",
+			"postalCode": "Postal Code"
 		},
 		"es_CL": {
 			"shortName": "Chile",
-			"longName": "República de Chile"
+			"longName": "República de Chile",
+			"postalCode": "Código Postal"
 		}
 	},
 	"futureExpansion": {

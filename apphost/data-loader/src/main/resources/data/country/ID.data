@@ -77,11 +77,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Indonesia",
-			"longName": "Republic of Indonesia"
+			"longName": "Republic of Indonesia",
+			"postalCode": "Postal Code"
 		},
 		"en_SG": {
 			"shortName": "Indonesia",
-			"longName": "Republic of Indonesia"
+			"longName": "Republic of Indonesia",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

@@ -530,7 +530,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Bangladesh",
-			"longName": "People's Republic of Bangladesh"
+			"longName": "People's Republic of Bangladesh",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

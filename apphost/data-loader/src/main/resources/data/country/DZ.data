@@ -597,11 +597,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Algeria",
-			"longName": "People's Democratic Republic of Algeria"
+			"longName": "People's Democratic Republic of Algeria",
+			"postalCode": "Postal Code"
 		},
 		"ar_DZ": {
 			"shortName": "الجزائر",
-			"longName": "جمهورية الجزائر الديمقراطية الشعبية"
+			"longName": "جمهورية الجزائر الديمقراطية الشعبية",
+			"postalCode": "الرمز البريدي"
 		}
 	},
 	"futureExpansion": {

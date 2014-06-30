@@ -19,11 +19,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Guadeloupe",
-			"longName": "Guadeloupe"
+			"longName": "Guadeloupe",
+			"postalCode": "Postal Code"
 		},
 		"fr_FR": {
 			"shortName": "Guadeloupe",
-			"longName": "Guadeloupe"
+			"longName": "Guadeloupe",
+			"postalCode": "code postal"
 		}
 	},
 	"futureExpansion": {

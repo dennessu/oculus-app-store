@@ -93,11 +93,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "South Africa",
-			"longName": "Republic of South Africa"
+			"longName": "Republic of South Africa",
+			"postalCode": "Postal Code"
 		},
 		"en_ZA": {
 			"shortName": "South Africa",
-			"longName": "Republic of South Africa"
+			"longName": "Republic of South Africa",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

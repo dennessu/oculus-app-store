@@ -7,9 +7,9 @@ dependencies {
     runtime junboProject(':apphost-core')
     runtime junboProject(':configuration-data')
 
-    compile (junboProject(':crypto-rest'))
+    runtime junboProject(':crypto-rest')
 
-    compile junboProject(':payment-rest')
-    compile junboProject(':ewallet-rest')
-    compile junboProject(':identity-rest')
+    runtime junboProject(':payment-rest')
+    runtime junboProject(':ewallet-rest')
+    runtime junboProject(':identity-rest')
 }

@@ -138,11 +138,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Lithuania",
-			"longName": "Republic of Lithuania"
+			"longName": "Republic of Lithuania",
+			"postalCode": "Postal Code"
 		},
 		"lt_LT": {
 			"shortName": "Lietuva",
-			"longName": "Lietuvos Respublika"
+			"longName": "Lietuvos Respublika",
+			"postalCode": "pašto kodas"
 		}
 	},
 	"futureExpansion": {

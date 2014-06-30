@@ -11,6 +11,7 @@ import com.junbo.token.spec.model.TokenRequest;
 import com.junbo.token.spec.model.TokenConsumption;
 import com.junbo.token.spec.model.TokenItem;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -18,8 +19,11 @@ import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 public class TokenServiceTest extends BaseTest {
-    @Autowired
     private TokenService tokenService;
+    @Autowired
+    public void setTokenService(@Qualifier("mockTokenService")TokenService tokenService) {
+        this.tokenService = tokenService;
+    }
 
     @Test(enabled = true)
     public void testGenerate() throws ExecutionException, InterruptedException {

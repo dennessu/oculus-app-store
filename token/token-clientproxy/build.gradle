@@ -1,6 +1,10 @@
 apply plugin: 'java'
 
 dependencies {
+    compile junboProject(':oauth-spec')
+    compile junboProject(':crypto-spec')
+    compile junboProject(':crypto-spec')
+
     compile junboProject(":token-spec")
 	compile (libraries.rs_api)
     compile junboProject(':langur-core')

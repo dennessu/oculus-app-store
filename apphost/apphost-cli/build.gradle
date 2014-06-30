@@ -33,6 +33,7 @@ dependencies {
     compile junboProject(':order-jobs')
     compile junboProject(':email-jobs')
     compile junboProject(':catalog-jobs')
+    compile junboProject(':token-rest')
     // more to add
 }
 

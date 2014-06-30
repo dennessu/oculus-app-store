@@ -7,6 +7,8 @@ package com.junbo.data.loader
 
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.util.ContextInitializer
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.AuthorizeServiceImpl
 import com.junbo.data.handler.DataHandler
 import groovy.transform.CompileStatic
 import org.apache.commons.io.IOUtils
@@ -15,6 +17,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.slf4j.impl.StaticLoggerBinder
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.context.ApplicationContext
 import org.springframework.context.support.ClassPathXmlApplicationContext
 import org.springframework.core.io.Resource
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
@@ -35,8 +38,13 @@ class DataLoader {
     static void main(String[] args) {
         configLog()
         LOGGER.info("loading spring context start")
-        new ClassPathXmlApplicationContext("classpath*:/spring/*-context.xml", "classpath*:/spring/validators.xml", "classpath*:/spring/transaction.xml")
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath*:/spring/*-context.xml",
+                "classpath*:/spring/validators.xml", "classpath*:/spring/transaction.xml")
         LOGGER.info("loading spring context end")
+
+        AuthorizeServiceImpl authorizeService = applicationContext.getBean(AuthorizeServiceImpl)
+        authorizeService.setDisabled(true)
+        AuthorizeContext.setAuthorizeDisabled(true)
 
         if (args.length == 0 || args[0].equalsIgnoreCase("all")) {
             LOGGER.info("loading all data")

@@ -270,11 +270,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Croatia",
-			"longName": "Republic of Croatia"
+			"longName": "Republic of Croatia",
+			"postalCode": "Postal Code"
 		},
 		"hr_HR": {
 			"shortName": "Hrvatska",
-			"longName": "Republika Hrvatska"
+			"longName": "Republika Hrvatska",
+			"postalCode": "Poštanski broj"
 		}
 	},
 	"futureExpansion": {

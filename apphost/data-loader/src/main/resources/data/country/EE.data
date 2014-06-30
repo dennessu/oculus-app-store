@@ -198,11 +198,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Estonia",
-			"longName": "Republic of Estonia"
+			"longName": "Republic of Estonia",
+			"postalCode": "Postal Code"
 		},
 		"et_EE": {
 			"shortName": "Eesti",
-			"longName": "Eesti Vabariik"
+			"longName": "Eesti Vabariik",
+			"postalCode": "Postiindeks"
 		}
 	},
 	"futureExpansion": {

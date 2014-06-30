@@ -126,11 +126,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Bolivia",
-			"longName": "Plurinational State of Bolivia"
+			"longName": "Plurinational State of Bolivia",
+			"postalCode": "Postal Code"
 		},
 		"es_BO": {
 			"shortName": "Bolivia",
-			"longName": "Estado Plurinacional de Bolivia"
+			"longName": "Estado Plurinacional de Bolivia",
+			"postalCode": "Código Postal"
 		}
 	},
 	"futureExpansion": {

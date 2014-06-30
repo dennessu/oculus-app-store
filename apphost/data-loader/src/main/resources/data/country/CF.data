@@ -225,11 +225,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Central African Republic",
-			"longName": "Central African Republic"
+			"longName": "Central African Republic",
+			"postalCode": "Postal Code"
 		},
 		"fr_CF": {
 			"shortName": "République centrafricaine",
-			"longName": "République centrafricaine"
+			"longName": "République centrafricaine",
+			"postalCode": "code postal"
 		}
 	},
 	"futureExpansion": {

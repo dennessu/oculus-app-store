@@ -141,7 +141,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Cameroon",
-			"longName": "Republic of Cameroon"
+			"longName": "Republic of Cameroon",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

@@ -109,7 +109,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Armenia",
-			"longName": "Republic of Armenia"
+			"longName": "Republic of Armenia",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

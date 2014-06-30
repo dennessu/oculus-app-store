@@ -354,11 +354,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Bulgaria",
-			"longName": "Republic of Bulgaria"
+			"longName": "Republic of Bulgaria",
+			"postalCode": "Postal Code"
 		},
 		"bg_BG": {
 			"shortName": "България",
-			"longName": "Република България"
+			"longName": "Република България",
+			"postalCode": "Пощенски код"
 		}
 	},
 	"futureExpansion": {

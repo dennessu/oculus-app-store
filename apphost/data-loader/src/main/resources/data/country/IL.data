@@ -90,11 +90,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Israel",
-			"longName": "State of Israel"
+			"longName": "State of Israel",
+			"postalCode": "Postal Code"
 		},
 		"he_IL": {
 			"shortName": "יִשְׂרָאֵל",
-			"longName": "מְדִינַת יִשְׂרָאֵל"
+			"longName": "מְדִינַת יִשְׂרָאֵל",
+			"postalCode": "מיקוד"
 		}
 	},
 	"futureExpansion": {

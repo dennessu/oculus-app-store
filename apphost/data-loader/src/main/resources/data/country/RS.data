@@ -378,11 +378,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Serbia",
-			"longName": "Republic of Serbia"
+			"longName": "Republic of Serbia",
+			"postalCode": "Postal Code"
 		},
 		"sr_RS": {
 			"shortName": "Srbija",
-			"longName": "Republika Srbija"
+			"longName": "Republika Srbija",
+			"postalCode": "Поштански број"
 		}
 	},
 	"futureExpansion": {

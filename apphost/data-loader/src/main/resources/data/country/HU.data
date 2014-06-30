@@ -534,11 +534,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Hungary",
-			"longName": "Hungary"
+			"longName": "Hungary",
+			"postalCode": "Postal Code"
 		},
 		"hu_HU": {
 			"shortName": "Magyarország",
-			"longName": "Magyarország"
+			"longName": "Magyarország",
+			"postalCode": "irányítószám"
 		}
 	},
 	"futureExpansion": {

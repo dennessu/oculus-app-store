@@ -237,11 +237,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Netherlands",
-			"longName": "Netherlands"
+			"longName": "Netherlands",
+			"postalCode": "Postal Code"
 		},
 		"nl_NL": {
 			"shortName": "Nederland",
-			"longName": "Nederland"
+			"longName": "Nederland",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

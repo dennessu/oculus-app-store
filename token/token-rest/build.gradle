@@ -3,7 +3,6 @@ apply plugin: 'groovy'
 dependencies {   
 	
 	compile (libraries.servlet_api)
-    compile (libraries.jersey_spring3)
     compile (libraries.jackson_jaxrs_json_provider)
     compile (libraries.jackson_annotations)
     compile (libraries.common_beanutils)

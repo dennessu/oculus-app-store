@@ -661,7 +661,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Uganda",
-			"longName": "Republic of Uganda"
+			"longName": "Republic of Uganda",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

@@ -81,11 +81,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Denmark",
-			"longName": "Kingdom of Denmark"
+			"longName": "Kingdom of Denmark",
+			"postalCode": "Postal Code"
 		},
 		"da_DK": {
 			"shortName": "Danmark",
-			"longName": "Kongeriget Danmark"
+			"longName": "Kongeriget Danmark",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

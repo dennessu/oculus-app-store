@@ -82,7 +82,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Kenya",
-			"longName": "Republic of Kenya"
+			"longName": "Republic of Kenya",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

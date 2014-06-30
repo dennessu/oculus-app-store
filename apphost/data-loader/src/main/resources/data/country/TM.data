@@ -97,11 +97,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Turkmenistan",
-			"longName": "Turkmenistan"
+			"longName": "Turkmenistan",
+			"postalCode": "Postal Code"
 		},
 		"tk_TM": {
 			"shortName": "Türkmenistan",
-			"longName": "Türkmenistan"
+			"longName": "Türkmenistan",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

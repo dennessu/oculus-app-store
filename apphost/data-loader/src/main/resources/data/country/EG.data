@@ -366,11 +366,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Egypt",
-			"longName": "Arab Republic of Egypt"
+			"longName": "Arab Republic of Egypt",
+			"postalCode": "Postal Code"
 		},
 		"ar_EG": {
 			"shortName": "مصر",
-			"longName": "جمهورية مصر العربية"
+			"longName": "جمهورية مصر العربية",
+			"postalCode": "الرمز البريدي"
 		}
 	},
 	"futureExpansion": {

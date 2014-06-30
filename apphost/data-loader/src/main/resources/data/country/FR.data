@@ -441,11 +441,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "France",
-			"longName": "French Republic"
+			"longName": "French Republic",
+			"postalCode": "Postal Code"
 		},
 		"fr_FR": {
 			"shortName": "La France",
-			"longName": "République française"
+			"longName": "République française",
+			"postalCode": "code postal"
 		}
 	},
 	"futureExpansion": {

@@ -1,9 +1,9 @@
 {
     "apiName": "balances",
     "scopes": {
-        "billing": [
+        "commerce": [
             {
-                "precondition": "ownedByCurrentUser()",
+                "precondition": "ownedByCurrentUser",
                 "rights": [
                     "create", "quote", "read"
                 ],

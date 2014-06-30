@@ -114,11 +114,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Lebanon",
-			"longName": "Lebanese Republic"
+			"longName": "Lebanese Republic",
+			"postalCode": "Postal Code"
 		},
 		"ar_LB": {
 			"shortName": "لبنان",
-			"longName": "الجمهورية اللبنانية"
+			"longName": "الجمهورية اللبنانية",
+			"postalCode": "الرمز البريدي"
 		}
 	},
 	"futureExpansion": {

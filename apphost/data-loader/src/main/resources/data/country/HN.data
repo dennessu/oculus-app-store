@@ -234,11 +234,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Honduras",
-			"longName": "Republic of Honduras"
+			"longName": "Republic of Honduras",
+			"postalCode": "Postal Code"
 		},
 		"es_HN": {
 			"shortName": "Honduras",
-			"longName": "República de Honduras"
+			"longName": "República de Honduras",
+			"postalCode": "Código Postal"
 		}
 	},
 	"futureExpansion": {

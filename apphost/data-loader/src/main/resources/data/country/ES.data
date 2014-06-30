@@ -249,11 +249,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Spain",
-			"longName": "Kingdom of Spain"
+			"longName": "Kingdom of Spain",
+			"postalCode": "Postal Code"
 		},
 		"es_ES": {
 			"shortName": "España",
-			"longName": "Reino de España"
+			"longName": "Reino de España",
+			"postalCode": "Código Postal"
 		}
 	},
 	"futureExpansion": {

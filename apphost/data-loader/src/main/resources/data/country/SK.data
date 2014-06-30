@@ -114,11 +114,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Slovakia",
-			"longName": "Slovak Republic"
+			"longName": "Slovak Republic",
+			"postalCode": "Postal Code"
 		},
 		"sk_SK": {
 			"shortName": "Slovensko",
-			"longName": "Slovenská republika"
+			"longName": "Slovenská republika",
+			"postalCode": "PSČ"
 		}
 	},
 	"futureExpansion": {

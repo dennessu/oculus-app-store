@@ -1869,11 +1869,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "United Kingdom",
-			"longName": "United Kingdom of Great Britain and Northern Ireland"
+			"longName": "United Kingdom of Great Britain and Northern Ireland",
+			"postalCode": "Postal Code"
 		},
 		"en_GB": {
 			"shortName": "United Kingdom",
-			"longName": "United Kingdom of Great Britain and Northern Ireland"
+			"longName": "United Kingdom of Great Britain and Northern Ireland",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

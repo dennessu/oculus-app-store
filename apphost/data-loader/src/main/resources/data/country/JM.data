@@ -130,7 +130,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Jamaica",
-			"longName": "Jamaica"
+			"longName": "Jamaica",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

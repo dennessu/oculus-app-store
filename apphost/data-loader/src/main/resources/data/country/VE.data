@@ -318,11 +318,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Venezuela",
-			"longName": "Bolivarian Republic of Venezuela"
+			"longName": "Bolivarian Republic of Venezuela",
+			"postalCode": "Postal Code"
 		},
 		"es_VE": {
 			"shortName": "Venezuela",
-			"longName": "República Bolivariana de Venezuela"
+			"longName": "República Bolivariana de Venezuela",
+			"postalCode": "Código Postal"
 		}
 	},
 	"futureExpansion": {

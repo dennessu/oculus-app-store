@@ -1,5 +1,6 @@
 package com.junbo.token.db;
 
+import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
@@ -21,15 +22,12 @@ import java.util.UUID;
 public abstract class BaseTest extends AbstractTestNGSpringContextTests {
     @Autowired
     protected PlatformTransactionManager transactionManager;
+    @Autowired
+    @Qualifier("oculus48IdGenerator")
+    protected IdGenerator idGenerator;
 
     protected long generateId() {
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            //ignore
-        }
-
-        return System.currentTimeMillis();
+        return idGenerator.nextId();
     }
 
     protected UUID generateUUID() {

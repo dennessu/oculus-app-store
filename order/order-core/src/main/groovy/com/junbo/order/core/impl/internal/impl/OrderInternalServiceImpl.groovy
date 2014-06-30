@@ -359,7 +359,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                                         fa.status != FulfilmentStatus.FAILED
                             }
                             if (walletAction != null) {
-                                fh.walletAmount == walletAction.result.amount
+                                fh.walletAmount = walletAction.result.amount
                             }
                         }
                     }

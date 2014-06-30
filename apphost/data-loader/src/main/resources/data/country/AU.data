@@ -85,11 +85,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Australia",
-			"longName": "Commonwealth of Australia"
+			"longName": "Commonwealth of Australia",
+			"postalCode": "Postal Code"
 		},
 		"en_AU": {
 			"shortName": "Australia",
-			"longName": "Commonwealth of Australia"
+			"longName": "Commonwealth of Australia",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

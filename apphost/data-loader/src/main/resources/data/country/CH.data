@@ -333,11 +333,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Switzerland",
-			"longName": "Swiss Confederation"
+			"longName": "Swiss Confederation",
+			"postalCode": "Postal Code"
 		},
 		"de_CH": {
 			"shortName": "Schweiz",
-			"longName": "Schweizerische Eidgenossenschaft"
+			"longName": "Schweizerische Eidgenossenschaft",
+			"postalCode": "Postleitzahl"
 		}
 	},
 	"futureExpansion": {

@@ -8,7 +8,10 @@ import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserPersonalInfoFilter
+import com.junbo.identity.core.service.filter.pii.PIIAdvanceFilter
+import com.junbo.identity.core.service.filter.pii.PIIAdvanceFilterFactory
 import com.junbo.identity.core.service.validator.UserPersonalInfoValidator
+import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
@@ -42,17 +45,19 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
     @Autowired
     private UserPropertyAuthorizeCallbackFactory userPropertyAuthorizeCallbackFactory
 
+    @Autowired
+    private PIIAdvanceFilterFactory piiAdvanceFilterFactory
+
     @Override
     Promise<UserPersonalInfo> create(UserPersonalInfo userPii) {
         if (userPii == null) {
             throw new IllegalArgumentException('userPii is null')
         }
 
+        PIIAdvanceFilter piiAdvanceFilter = getCurrentPIIAdvanceFilter(userPii)
         def callback = userPropertyAuthorizeCallbackFactory.create(userPii.userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
-            if (!AuthorizeContext.hasRights('create')) {
-                throw AppErrors.INSTANCE.invalidAccess().exception()
-            }
+            piiAdvanceFilter.checkCreatePermission()
 
             userPii = userPersonalInfoFilter.filterForCreate(userPii)
 
@@ -62,6 +67,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
                     Created201Marker.mark(newUserPii.getId())
 
                     newUserPii = userPersonalInfoFilter.filterForGet(newUserPii, null)
+                    newUserPii = piiAdvanceFilter.getFilter(newUserPii)
                     return Promise.pure(newUserPii)
                 }
             }
@@ -80,13 +86,13 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
 
         return userPersonalInfoValidator.validateForGet(userPiiId).then { UserPersonalInfo userPii ->
             def callback = userPropertyAuthorizeCallbackFactory.create(userPii.userId)
+            PIIAdvanceFilter piiAdvanceFilter = getCurrentPIIAdvanceFilter(userPii)
             return RightsScope.with(authorizeService.authorize(callback)) {
-                if (!AuthorizeContext.hasRights('read')) {
-                    throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPiiId).exception()
-                }
+                piiAdvanceFilter.checkGetPermission(userPii.getId())
 
                 userPii.isValidated = userPii.lastValidateTime != null
                 userPii = userPersonalInfoFilter.filterForGet(userPii, getOptions.properties?.split(',') as List)
+                userPii = piiAdvanceFilter.getFilter(userPii)
                 return Promise.pure(userPii)
             }
         }
@@ -110,10 +116,9 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
             }
 
             def callback = userPropertyAuthorizeCallbackFactory.create(oldUserPersonalInfo.userId)
+            PIIAdvanceFilter piiAdvanceFilter = getCurrentPIIAdvanceFilter(userPersonalInfo)
             return RightsScope.with(authorizeService.authorize(callback)) {
-                if (!AuthorizeContext.hasRights('update')) {
-                    throw AppErrors.INSTANCE.invalidAccess().exception()
-                }
+                piiAdvanceFilter.checkUpdatePermission()
 
                 userPersonalInfo = userPersonalInfoFilter.filterForPatch(userPersonalInfo, oldUserPersonalInfo)
 
@@ -121,6 +126,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
                     return userPersonalInfoRepository.update(userPersonalInfo).then { UserPersonalInfo newUserPii ->
                         newUserPii.isValidated = newUserPii.lastValidateTime != null
                         newUserPii = userPersonalInfoFilter.filterForGet(newUserPii, null)
+                        newUserPii = piiAdvanceFilter.getFilter(newUserPii)
                         return Promise.pure(newUserPii)
                     }
                 }
@@ -146,10 +152,9 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
             }
 
             def callback = userPropertyAuthorizeCallbackFactory.create(oldUserPersonalInfo.userId)
+            PIIAdvanceFilter piiAdvanceFilter = getCurrentPIIAdvanceFilter(userPii)
             return RightsScope.with(authorizeService.authorize(callback)) {
-                if (!AuthorizeContext.hasRights('update')) {
-                    throw AppErrors.INSTANCE.invalidAccess().exception()
-                }
+                piiAdvanceFilter.checkUpdatePermission()
 
                 userPii = userPersonalInfoFilter.filterForPut(userPii, oldUserPersonalInfo)
 
@@ -157,6 +162,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
                     return userPersonalInfoRepository.update(userPii).then { UserPersonalInfo newUserPersonalInfo ->
                         newUserPersonalInfo.isValidated = newUserPersonalInfo.lastValidateTime != null
                         newUserPersonalInfo = userPersonalInfoFilter.filterForGet(newUserPersonalInfo, null)
+                        newUserPersonalInfo = piiAdvanceFilter.getFilter(newUserPersonalInfo)
                         return Promise.pure(newUserPersonalInfo)
                     }
                 }
@@ -172,10 +178,9 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
 
         return userPersonalInfoValidator.validateForGet(userPiiId).then { UserPersonalInfo userPii ->
             def callback = userPropertyAuthorizeCallbackFactory.create(userPii.userId)
+            PIIAdvanceFilter piiAdvanceFilter = getCurrentPIIAdvanceFilter(userPii)
             return RightsScope.with(authorizeService.authorize(callback)) {
-                if (!AuthorizeContext.hasRights('delete')) {
-                    throw AppErrors.INSTANCE.invalidAccess().exception()
-                }
+                piiAdvanceFilter.checkDeletePermission()
 
                 return userPersonalInfoRepository.delete(userPiiId)
             }
@@ -193,12 +198,14 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
 
             return Promise.each(userPersonalInfoList) { UserPersonalInfo userPersonalInfo ->
                 def callback = userPropertyAuthorizeCallbackFactory.create(userPersonalInfo.userId)
+                PIIAdvanceFilter piiAdvanceFilter = getCurrentPIIAdvanceFilter(userPersonalInfo)
                 return RightsScope.with(authorizeService.authorize(callback)) {
                     userPersonalInfo.isValidated = userPersonalInfo.lastValidateTime != null
                     userPersonalInfo = userPersonalInfoFilter.filterForGet(userPersonalInfo,
                             listOptions.properties?.split(',') as List<String>)
 
                     if (userPersonalInfo != null && AuthorizeContext.hasRights('read')) {
+                        userPersonalInfo = piiAdvanceFilter.getFilter(userPersonalInfo)
                         resultList.items.add(userPersonalInfo)
                     }
 
@@ -237,5 +244,19 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
         userPersonalInfo.isValidated = null
 
         return userPersonalInfo
+    }
+
+    private PIIAdvanceFilter getCurrentPIIAdvanceFilter(UserPersonalInfo userPersonalInfo) {
+        List<PIIAdvanceFilter> piiAdvanceFilterList = piiAdvanceFilterFactory.getAll()
+
+        PIIAdvanceFilter filter = piiAdvanceFilterList.find { PIIAdvanceFilter piiAdvanceFilter ->
+            return piiAdvanceFilter.handles(userPersonalInfo)
+        }
+
+        if (filter == null) {
+            throw new IllegalStateException('can\'t find filter for type ' + userPersonalInfo.type)
+        }
+
+        return filter
     }
 }

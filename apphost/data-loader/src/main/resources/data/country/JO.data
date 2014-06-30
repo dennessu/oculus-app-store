@@ -162,11 +162,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Jordan",
-			"longName": "Hashemite Kingdom of Jordan"
+			"longName": "Hashemite Kingdom of Jordan",
+			"postalCode": "Postal Code"
 		},
 		"ar_JO": {
 			"shortName": "الأردن",
-			"longName": "المملكة الأردنية الهاشمية"
+			"longName": "المملكة الأردنية الهاشمية",
+			"postalCode": "الرمز البريدي"
 		}
 	},
 	"futureExpansion": {
