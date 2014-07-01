@@ -26,6 +26,7 @@ import groovy.transform.TypeChecked
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Required
 import org.springframework.stereotype.Service
 
 import javax.annotation.Resource
@@ -35,7 +36,6 @@ import javax.annotation.Resource
  */
 @CompileStatic
 @TypeChecked
-@Service('riskService')
 class RiskServiceImpl implements RiskService {
 
     @Resource(name = 'orderFacadeContainer')
@@ -47,23 +47,33 @@ class RiskServiceImpl implements RiskService {
     @Autowired
     OrderRepositoryFacade orderRepository
 
-    int merchantId = 600900
+    int merchantId
 
-    String kountUrl = 'https://risk.test.kount.net'
+    String kountUrl
 
-    String kountKeyFile = 'ris_kount_test.p12'
+    String kountKeyFileName
 
-    String kountPass = '#Bugsfor$'
+    String kountKeyFilePass
 
-    /*@Required
+    @Required
     void setMerchantId(int merchantId) {
         this.merchantId = merchantId
     }
 
     @Required
-    void setKountUrl(int kountUrl) {
+    void setKountUrl(String kountUrl) {
         this.kountUrl = kountUrl
-    }*/
+    }
+
+    @Required
+    void setKountKeyFileName(String kountKeyFileName) {
+        this.kountKeyFileName = kountKeyFileName
+    }
+
+    @Required
+    void setKountKeyFilePass(String kountKeyFilePass) {
+        this.kountKeyFilePass = kountKeyFilePass
+    }
 
     private final static String NO_EMAIL = "noemail@kount.com"
 
@@ -144,8 +154,8 @@ class RiskServiceImpl implements RiskService {
                     }
                     q.setWebsite("DEFAULT")
 
-                    InputStream stream = RiskServiceImpl.classLoader.getResourceAsStream(kountKeyFile)
-                    KountRisClient kountRisClient = new KountRisClient(kountPass, kountUrl, stream)
+                    InputStream stream = RiskServiceImpl.classLoader.getResourceAsStream(kountKeyFileName)
+                    KountRisClient kountRisClient = new KountRisClient(kountKeyFilePass, kountUrl, stream)
 
                     try {
                         LOGGER.info('name=Review_Order_Request, ' + q.getParams().toString())
