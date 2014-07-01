@@ -45,11 +45,26 @@
         <property name="enableUserKeyEncrypt" value="${crypto.core.enableUserKeyEncrypt}" />
     </bean>
 
+    <bean id="defaultItemCryptoResource" class="com.junbo.crypto.rest.resource.ItemCryptoResourceImpl" scope="prototype">
+        <property name="aesCipherService" ref="aesCipherService" /><property name="keyStoreService" ref="keyStoreService" />
+        <property name="masterKeyRepo" ref="masterkeyRepository" />
+        <property name="userCryptoKeyRepo" ref="userCryptoKeyRepo" />
+        <property name="rsaCipherService" ref="rsaCipherService" />
+        <property name="enableUserKeyEncrypt" value="${crypto.core.enableUserKeyEncrypt}" />
+        <property name="cryptoResource" ref="defaultCryptoResource" />
+        <property name="itemCryptoRepo" ref="itemCryptoRepo" />
+        <property name="validator" ref="itemCryptoValidator" />
+        <property name="versionSeparator" value="${crypto.core.versionSeparator}" />
+    </bean>
+
     <bean id="defaultCryptoResourceClientFactory" class="com.junbo.crypto.spec.resource.proxy.CryptoResourceClientProxyFactory" />
     <bean id="defaultMasterKeyResourceClientFactory" class="com.junbo.crypto.spec.resource.proxy.MasterKeyResourceClientProxyFactory" />
     <bean id="defaultUserCryptoResourceClientFactory" class="com.junbo.crypto.spec.resource.proxy.UserCryptoResourceClientProxyFactory" />
+    <bean id="defaultItemCryptoResourceClientFactory" class="com.junbo.crypto.spec.resource.proxy.ItemCryptoResourceClientProxyFactory" />
 
     <bean id="defaultCryptoResourceRouter" parent="routingRouterBase" />
     <bean id="defaultMasterKeyResourceRouter" parent="routingRouterBase" />
     <bean id="defaultUserCryptoResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultItemCryptoResourceRouter" parent="routingRouterBase" />
+
 </beans>

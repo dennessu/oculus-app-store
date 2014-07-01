@@ -17,9 +17,9 @@ public class ItemCryptoRepoData extends ResourceMeta<ItemCryptoId> {
 
     private String itemId;
 
-    private String publicKey;
+    private String encryptedPublicKey;
 
-    private String privateKey;
+    private String encryptedPrivateKey;
 
     @Override
     public ItemCryptoId getId() {
@@ -39,19 +39,19 @@ public class ItemCryptoRepoData extends ResourceMeta<ItemCryptoId> {
         this.itemId = itemId;
     }
 
-    public String getPublicKey() {
-        return publicKey;
+    public String getEncryptedPublicKey() {
+        return encryptedPublicKey;
     }
 
-    public void setPublicKey(String publicKey) {
-        this.publicKey = publicKey;
+    public void setEncryptedPublicKey(String encryptedPublicKey) {
+        this.encryptedPublicKey = encryptedPublicKey;
     }
 
-    public String getPrivateKey() {
-        return privateKey;
+    public String getEncryptedPrivateKey() {
+        return encryptedPrivateKey;
     }
 
-    public void setPrivateKey(String privateKey) {
-        this.privateKey = privateKey;
+    public void setEncryptedPrivateKey(String encryptedPrivateKey) {
+        this.encryptedPrivateKey = encryptedPrivateKey;
     }
 }

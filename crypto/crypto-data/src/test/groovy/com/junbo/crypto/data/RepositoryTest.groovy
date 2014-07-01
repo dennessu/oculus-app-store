@@ -9,7 +9,6 @@ import com.junbo.crypto.spec.model.MasterKey
 import com.junbo.crypto.spec.model.UserCryptoKey
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestExecutionListeners
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests
@@ -78,16 +77,16 @@ class RepositoryTest extends AbstractTestNGSpringContextTests {
     public void testItemCryptoRepo() {
         ItemCryptoRepoData data = new ItemCryptoRepoData()
         data.setItemId(UUID.randomUUID().toString())
-        data.setPrivateKey(UUID.randomUUID().toString())
-        data.setPublicKey(UUID.randomUUID().toString())
+        data.setEncryptedPrivateKey(UUID.randomUUID().toString())
+        data.setEncryptedPublicKey(UUID.randomUUID().toString())
 
         ItemCryptoRepoData newDate = itemCryptoRepo.create(data).get()
 
         data = itemCryptoRepo.get(newDate.id).get()
 
-        assert data.publicKey == newDate.publicKey
+        assert data.encryptedPublicKey == newDate.encryptedPublicKey
 
         data = itemCryptoRepo.getByItemId(newDate.itemId).get()
-        assert data.privateKey == newDate.privateKey
+        assert data.encryptedPrivateKey == newDate.encryptedPrivateKey
     }
 }

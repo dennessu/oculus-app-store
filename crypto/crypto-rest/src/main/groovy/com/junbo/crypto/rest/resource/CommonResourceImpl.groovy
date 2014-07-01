@@ -184,6 +184,32 @@ abstract class CommonResourceImpl {
         }
     }
 
+    // Used to get raw masterKey
+    protected Promise<MasterKey> getCurrentDecryptedMasterKey() {
+        return getCurrentMasterKey().then { MasterKey masterKey ->
+            if (masterKey == null) {
+                throw new IllegalArgumentException('master key doesn\'t exist in current system')
+            }
+
+            String decryptedMasterKey = asymmetricDecryptMasterKey(masterKey.encryptValue)
+            masterKey.value = decryptedMasterKey
+            return Promise.pure(masterKey)
+        }
+    }
+
+    // Used to get raw masterKey by version
+    protected Promise<MasterKey> getCurrentDecryptedMasterKeyByVersion(Integer keyVersion) {
+        return masterKeyRepo.getMasterKeyByVersion(keyVersion).then { MasterKey masterKey ->
+            if (masterKey == null) {
+                throw new IllegalArgumentException('master key with version: ' + keyVersion + ' not found.')
+            }
+
+            String decryptedMasterKey = asymmetricDecryptMasterKey(masterKey.encryptValue)
+            masterKey.value = decryptedMasterKey
+            return Promise.pure(masterKey)
+        }
+    }
+
     protected Promise<Integer> getCurrentUserCryptoKey(UserId userId) {
         return userCryptoKeyRepo.getAllUserCryptoKeys(userId).then { List<UserCryptoKey> userCryptoKeyList ->
             if (CollectionUtils.isEmpty(userCryptoKeyList)) {

@@ -6,6 +6,7 @@
 package com.junbo.crypto.spec.resource;
 
 import com.junbo.crypto.spec.model.ItemCryptoMessage;
+import com.junbo.crypto.spec.model.ItemCryptoVerify;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -29,4 +30,8 @@ public interface ItemCryptoResource {
     @GET
     @Path("crypto/{itemId}/public-key")
     Promise<String> getPublicKey(@PathParam("itemId")String itemId);
+
+    @POST
+    @Path("crypto/{itemId}/verify")
+    Promise<Boolean> verify(@PathParam("itemId") String itemId, ItemCryptoVerify message);
 }

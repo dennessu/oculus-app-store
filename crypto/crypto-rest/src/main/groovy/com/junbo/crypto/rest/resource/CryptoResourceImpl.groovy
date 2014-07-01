@@ -146,15 +146,9 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
 
     private Promise<Key> getRawMasterKeyByVersion(Integer version) {
         if (cachedDecryptMasterKey.get(version) == null) {
-            return masterKeyRepo.getMasterKeyByVersion(version).then { MasterKey masterKey ->
-                if (masterKey == null) {
-                    throw new IllegalArgumentException('master key with version: ' + version + ' not found.')
-                }
-
-                String decryptedMasterKey = asymmetricDecryptMasterKey(masterKey.encryptValue)
-                Key masterKeyLoaded = stringToKey(decryptedMasterKey)
-
-                cachedDecryptMasterKey.put(version, masterKeyLoaded)
+            return getCurrentDecryptedMasterKeyByVersion(version).then { MasterKey masterKey ->
+                Key masterKeyLoaded = aesCipherService.stringToKey(masterKey.value)
+                cachedDecryptMasterKey.put(masterKey.keyVersion, masterKeyLoaded)
                 return Promise.pure(masterKeyLoaded)
             }
         } else {
@@ -171,13 +165,8 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
 
     private Promise<Void> getCurrentRawMasterKey() {
         if (cachedEncryptMasterKey.isEmpty()) {
-            return getCurrentMasterKey().then { MasterKey masterKey ->
-                if (masterKey == null) {
-                    throw new IllegalArgumentException('master key doesn\'t exist in current system')
-                }
-
-                String decryptedMasterKey = asymmetricDecryptMasterKey(masterKey.encryptValue)
-                Key masterKeyLoaded = stringToKey(decryptedMasterKey)
+            return getCurrentDecryptedMasterKey().then { MasterKey masterKey ->
+                Key masterKeyLoaded = aesCipherService.stringToKey(masterKey.value)
                 cachedEncryptMasterKey.put(masterKey.keyVersion, masterKeyLoaded)
                 return Promise.pure(null)
             }

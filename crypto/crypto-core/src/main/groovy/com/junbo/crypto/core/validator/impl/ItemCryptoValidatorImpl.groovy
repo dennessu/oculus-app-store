@@ -2,6 +2,7 @@ package com.junbo.crypto.core.validator.impl
 
 import com.junbo.crypto.core.validator.ItemCryptoValidator
 import com.junbo.crypto.spec.model.ItemCryptoMessage
+import com.junbo.crypto.spec.model.ItemCryptoVerify
 import groovy.transform.CompileStatic
 import org.springframework.util.StringUtils
 
@@ -28,6 +29,24 @@ class ItemCryptoValidatorImpl implements ItemCryptoValidator {
     void validateForGetPublicKey(String itemId) {
         if (StringUtils.isEmpty(itemId)) {
             throw new IllegalArgumentException('itemId is null')
+        }
+    }
+
+    @Override
+    void validateForVerify(String itemId, ItemCryptoVerify message) {
+        if (StringUtils.isEmpty(itemId)) {
+            throw new IllegalArgumentException('itemId is null')
+        }
+        if (message == null) {
+            throw new IllegalArgumentException('message is null')
+        }
+
+        if (StringUtils.isEmpty(message.rawMessage)) {
+            throw new IllegalArgumentException('message to verify is empty or null')
+        }
+
+        if (StringUtils.isEmpty(message.messageSigned)) {
+            throw new IllegalArgumentException('messageSigned is empty or null')
         }
     }
 }
