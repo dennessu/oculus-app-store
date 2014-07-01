@@ -11,7 +11,7 @@ import com.junbo.crypto.spec.resource.CryptoResource
 import com.junbo.crypto.spec.resource.ItemCryptoResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
-import org.apache.commons.codec.binary.Hex
+import org.apache.commons.codec.binary.Base64
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.transaction.annotation.Transactional
 
@@ -194,7 +194,7 @@ class ItemCryptoResourceImpl extends CommonResourceImpl implements ItemCryptoRes
             Signature instance = Signature.getInstance(SIGNATURE_ALGORITHM)
             instance.initSign(key)
             instance.update(message.getBytes("UTF-8"))
-            String signed = new String(Hex.encodeHex(instance.sign()))
+            String signed = new String(Base64.encodeBase64(instance.sign()))
             ItemCryptoMessage itemCryptoMessage = new ItemCryptoMessage(
                     message: signed
             )
@@ -212,7 +212,7 @@ class ItemCryptoResourceImpl extends CommonResourceImpl implements ItemCryptoRes
             Signature instance = Signature.getInstance(SIGNATURE_ALGORITHM)
             instance.initVerify(key)
             instance.update(rawMessage.getBytes("UTF-8"))
-            return Promise.pure(instance.verify(Hex.decodeHex(signedMessage.toCharArray())))
+            return Promise.pure(instance.verify(Base64.decodeBase64(signedMessage)))
         } catch (Exception e) {
             throw new IllegalStateException('Verify failed. Exception: ' + e.message)
         }
@@ -220,7 +220,7 @@ class ItemCryptoResourceImpl extends CommonResourceImpl implements ItemCryptoRes
 
     public static PrivateKey loadPrivateKey(String key) {
         try {
-            byte[] clear = Hex.decodeHex(key.toCharArray())
+            byte[] clear = Base64.decodeBase64(key)
             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(clear)
             KeyFactory fact = KeyFactory.getInstance(KEY_GENERATOR_ALGORITHM)
             PrivateKey priv = fact.generatePrivate(keySpec)
@@ -233,7 +233,7 @@ class ItemCryptoResourceImpl extends CommonResourceImpl implements ItemCryptoRes
 
     public static PublicKey loadPublicKey(String key) {
         try {
-            byte[] data = Hex.decodeHex(key.toCharArray())
+            byte[] data = Base64.decodeBase64(key)
             X509EncodedKeySpec spec = new X509EncodedKeySpec(data)
             KeyFactory fact = KeyFactory.getInstance(KEY_GENERATOR_ALGORITHM)
             return fact.generatePublic(spec)
@@ -247,7 +247,7 @@ class ItemCryptoResourceImpl extends CommonResourceImpl implements ItemCryptoRes
             KeyFactory fact = KeyFactory.getInstance(KEY_GENERATOR_ALGORITHM)
             PKCS8EncodedKeySpec spec = fact.getKeySpec(privateKey, PKCS8EncodedKeySpec.class);
             byte[] packed = spec.getEncoded()
-            String key = new String(Hex.encodeHex(packed))
+            String key = new String(Base64.encodeBase64(packed))
             Arrays.fill(packed, (byte) 0)
             return key
         } catch (Exception e) {
@@ -259,7 +259,7 @@ class ItemCryptoResourceImpl extends CommonResourceImpl implements ItemCryptoRes
         try {
             KeyFactory fact = KeyFactory.getInstance(KEY_GENERATOR_ALGORITHM)
             X509EncodedKeySpec spec = fact.getKeySpec(publicKey, X509EncodedKeySpec.class)
-            return new String(Hex.encodeHex(spec.getEncoded()))
+            return new String(Base64.encodeBase64(spec.getEncoded()))
         } catch (Exception e) {
             throw new IllegalStateException('Convert public key to string failed. Exception: ' + e.message)
         }
