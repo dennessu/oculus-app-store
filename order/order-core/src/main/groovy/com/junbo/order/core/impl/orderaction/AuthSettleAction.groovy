@@ -71,7 +71,7 @@ class AuthSettleAction extends BaseOrderEventAwareAction {
             context.orderServiceContext.order.tentative = false
             context.orderServiceContext.isAsyncCharge = balance.isAsyncCharge
             CoreBuilder.fillTaxInfo(order, resultBalance)
-            orderInternalService.persistBillingHistory(resultBalance, BillingAction.AUTHORIZE, order)
+            orderInternalService.persistBillingHistory(resultBalance, BillingAction.REQUEST_AUTHORIZE, order)
             return orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
                 // TODO: save order level tax
                 return CoreBuilder.buildActionResultForOrderEventAwareAction(context,

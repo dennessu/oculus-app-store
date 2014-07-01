@@ -46,9 +46,9 @@ public class OrderValidationHelper extends BaseValidationHelper {
         verifyEqual(orderEvents.size(), expectedOrderEvents.size(), "verify order events size");
 
         for (int i = 0; i < expectedOrderEvents.size(); i++) {
-            verifyEqual(orderEvents.get(i).getAction(), expectedOrderEvents.get(i).toString(),
+            verifyEqual(orderEvents.get(i).getAction().toString(), expectedOrderEvents.get(i).getOrderActionType().toString(),
                     "verify order action type");
-            verifyEqual(orderEvents.get(i).getStatus(), expectedOrderEvents.get(i).toString(), "verify event status");
+            verifyEqual(orderEvents.get(i).getStatus(), expectedOrderEvents.get(i).getEventStatus().toString(), "verify event status");
         }
     }
 

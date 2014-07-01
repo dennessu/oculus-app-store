@@ -80,11 +80,26 @@ class CoreUtils {
     }
 
     static Boolean isChargeCompleted(List<Balance> balances) {
+
         if (CollectionUtils.isEmpty(balances)) {
             return false
         }
         if (balances.any { Balance balance ->
-            balance.status == BalanceStatus.COMPLETED.name() && balance.type == BalanceType.DEBIT.name()
+            (balance.status != BalanceStatus.AWAITING_PAYMENT.name() &&
+                    balance.status != BalanceStatus.COMPLETED.name()) ||
+                    balance.type != BalanceType.DEBIT.name()
+        }) {
+            return false
+        }
+        return true
+    }
+
+    static Boolean isChargeFailed(List<Balance> balances) {
+        if (CollectionUtils.isEmpty(balances)) {
+            return false
+        }
+        if (balances.any { Balance balance ->
+            balance.status == BalanceStatus.FAILED.name() && balance.type == BalanceType.DEBIT.name()
         }) {
             return true
         }

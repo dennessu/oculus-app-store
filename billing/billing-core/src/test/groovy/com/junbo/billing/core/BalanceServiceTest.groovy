@@ -1,8 +1,6 @@
 package com.junbo.billing.core
-
 import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
-import com.junbo.billing.spec.enums.PropertyKey
 import com.junbo.billing.spec.enums.TransactionStatus
 import com.junbo.billing.spec.enums.TransactionType
 import com.junbo.billing.spec.model.Balance
@@ -15,7 +13,6 @@ import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.common.id.UserId
 import groovy.transform.CompileStatic
 import org.testng.annotations.Test
-
 /**
  * Created by xmchen on 14-3-14.
  */
@@ -101,7 +98,6 @@ class BalanceServiceTest extends BaseTest {
         refundBalance.currency = 'USD'
         refundBalance.createdBy = refundBalance.userId.value
         refundBalance.createdTime = new Date()
-        refundBalance.propertySet.put(PropertyKey.CUSTOMER_NUMBER.name(), "123");
 
         balance = balanceService.addBalance(refundBalance)?.get()
         assert balance != null
@@ -119,7 +115,6 @@ class BalanceServiceTest extends BaseTest {
         balance.type = type.name()
         balance.createdBy = balance.userId.value
         balance.createdTime = new Date()
-        balance.propertySet.put(PropertyKey.CUSTOMER_NUMBER.name(), "123");
 
         BalanceItem item = new BalanceItem()
         item.orderItemId = new OrderItemId(idGenerator.nextId(balance.userId.value))

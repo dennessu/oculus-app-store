@@ -63,7 +63,7 @@ class ImmediateSettleAction extends BaseOrderEventAwareAction {
 
             context.orderServiceContext.isAsyncCharge = balance.isAsyncCharge
             CoreBuilder.fillTaxInfo(order, balance)
-            orderInternalService.persistBillingHistory(balance, BillingAction.CHARGE, order)
+            orderInternalService.persistBillingHistory(balance, BillingAction.REQUEST_CHARGE, order)
             return orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
                 // TODO: save order level tax
                 return CoreBuilder.buildActionResultForOrderEventAwareAction(context,

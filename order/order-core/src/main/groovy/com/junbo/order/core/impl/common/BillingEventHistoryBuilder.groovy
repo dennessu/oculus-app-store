@@ -56,7 +56,7 @@ class BillingEventHistoryBuilder {
                     return BillingAction.CHARGE.name()
                 }
                 else if (status == EventStatus.PENDING) {
-                    return BillingAction.PENDING_CHARGE.name()
+                    return BillingAction.REQUEST_CHARGE.name()
                 }
                 return null
             case BalanceType.REFUND:
@@ -78,7 +78,10 @@ class BillingEventHistoryBuilder {
             billingHistory.totalAmount = 0G - balance.totalAmount
         }
         billingHistory.billingEvent = buildBillingEvent(balance)
+        billingHistory.isSuccess = true
+        if (balance.status == BalanceStatus.FAILED.name() || balance.status == BalanceStatus.ERROR) {
+            billingHistory.isSuccess = false
+        }
         return billingHistory
     }
-
 }

@@ -24,9 +24,7 @@ import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
-import com.junbo.order.spec.model.enums.BillingAction
-import com.junbo.order.spec.model.enums.OrderItemRevisionType
-import com.junbo.order.spec.model.enums.OrderStatus
+import com.junbo.order.spec.model.enums.*
 import com.junbo.rating.spec.model.priceRating.RatingRequest
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -125,7 +123,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
     @Transactional
     Promise<Order> cancelOrder(Order order) {
 
-        assert(order != null)
+        assert (order != null)
 
         def isCancelable = CoreUtils.checkOrderStatusCancelable(order)
         if (!isCancelable) {
@@ -201,7 +199,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                                 refundedOrder.status = OrderStatus.REFUNDED.name()
                                 orderRepository.updateOrder(refundedOrder, false, true, OrderItemRevisionType.REFUND)
                                 // TODO handel multiple balances
-                                persistBillingHistory(refunded, BillingAction.REFUND, order)
+                                persistBillingHistory(refunded, BillingAction.REQUEST_REFUND, order)
                                 return Promise.pure(null)
                             }
                         }
@@ -218,7 +216,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
             return Promise.pure(null)
         }
         BillingHistory bh = CoreUtils.getLatestBillingHistory(order)
-        assert(bh != null)
+        assert (bh != null)
         if (bh.billingEvent == BillingAction.DEPOSIT) {
             return facadeContainer.billingFacade.getBalancesByOrderId(order.getId().value).syncRecover {
                 Throwable ex ->
@@ -411,10 +409,38 @@ class OrderInternalServiceImpl implements OrderInternalService {
             def savedHistory = orderRepository.createBillingHistory(order.getId().value, billingHistory)
             if (order.billingHistories == null) {
                 order.billingHistories = [savedHistory]
-            }
-            else {
+            } else {
                 order.billingHistories.add(savedHistory)
             }
         }
+    }
+
+    @Override
+    OrderEvent checkOrderEventStatus(Order order, OrderEvent event, List<Balance> balances) {
+        if (event.action == OrderActionType.CHARGE.name()) {
+            switch(event.status) {
+                case EventStatus.COMPLETED.name():
+                    if (!CoreUtils.isChargeCompleted(balances)) {
+                        throw AppErrors.INSTANCE.orderEvenStatusNotMatch().exception()
+                    }
+                    return event
+                case EventStatus.FAILED.name():
+                    if (!CoreUtils.isChargeFailed(balances)) {
+                        throw AppErrors.INSTANCE.orderEvenStatusNotMatch().exception()
+                    }
+                    def failedBalance = balances.find { Balance b ->
+                        b.status = BalanceStatus.FAILED.name() && b.type == BalanceType.DEBIT.name()
+                    }
+                    // persist charge failed billing event
+                    persistBillingHistory(failedBalance, BillingAction.CHARGE, order)
+                    return event
+                default:
+                    throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
+            }
+        }
+        if (event.action == OrderActionType.FULFILL.name()) {
+            // TODO
+        }
+        return event
     }
 }

@@ -76,7 +76,7 @@ class WebPaymentChargeAction extends BaseOrderEventAwareAction {
             }
             order.payments[0].providerConfirmUrl = balance.providerConfirmUrl
             CoreBuilder.fillTaxInfo(order, balance)
-            orderInternalService.persistBillingHistory(balance, BillingAction.PENDING_CHARGE, order)
+            orderInternalService.persistBillingHistory(balance, BillingAction.REQUEST_CHARGE, order)
             return orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
                 // TODO: save order level tax
                 return CoreBuilder.buildActionResultForOrderEventAwareAction(context,

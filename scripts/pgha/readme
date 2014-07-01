@@ -26,7 +26,7 @@
     [devops] sudo ln -sf /usr/lib/postgresql/9.3/bin/dropdb /usr/bin/dropdb
 
 #clean up exisitng db instance
-    [devops] sudo kill $(fuser -n tcp 5432 2> /dev/null)
+    [devops] sudo kill $(sudo fuser -n tcp 5432 2> /dev/null)
     [devops] sudo chown silkcloud:silkcloud /var/run/postgresql
     [devops] clean up all files including hidden files in /var/run/postgresql
 
@@ -101,12 +101,6 @@
 #[slave] setup slave database
     $DEPLOYMENT_PATH/setup/setup_slave.sh
 
-#[master] schedule archive log sync cron job
-    $DEPLOYMENT_PATH/cron/cron_master.sh
-
-#[slave] schedule archive log sync cron job
-    $DEPLOYMENT_PATH/cron/cron_slave.sh
-
 #[master] start primary PGBouncer proxy (connect to master db)
     $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
 
@@ -175,9 +169,6 @@
 
 #[slave] setup slave database
     $DEPLOYMENT_PATH/setup/setup_slave.sh
-
-#[slave] schedule archive log sync cron job
-    $DEPLOYMENT_PATH/cron/cron_slave.sh
 
 #[slave] start secondary PGBouncer proxy (connect to master db)
     $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh

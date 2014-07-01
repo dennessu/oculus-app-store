@@ -19,7 +19,12 @@ public enum BillingAction implements Identifiable<Short> {
     REFUND(3),
     CAPTURE(4),
     DEPOSIT(5),
-    PENDING_CHARGE(6);
+    REQUEST_CHARGE(100),
+    REQUEST_AUTHORIZE(101),
+    REQUEST_CREDIT(102),
+    REQUEST_REFUND(103),
+    REQUEST_CAPTURE(104),
+    REQUEST_DEPOSIT(105);
 
     private BillingAction(int id) {
         this.id = (short) id;
@@ -34,7 +39,7 @@ public enum BillingAction implements Identifiable<Short> {
 
     @Override
     public void setId(Short id) {
-        throw new NotSupportedException("enum DiscountType not settable");
+        throw new NotSupportedException("enum BillingAction not settable");
     }
 
 }
