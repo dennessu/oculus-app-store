@@ -22,7 +22,4 @@
         </property>
     </bean>
 
-    <!-- fusion -->
-    <bean id="catalogGateway" class="com.junbo.fulfilment.clientproxy.impl.CatalogGatewayImpl"/>
-    <bean id="entitlementGateway" class="com.junbo.fulfilment.clientproxy.impl.EntitlementGatewayImpl"/>
 </beans>

@@ -42,7 +42,7 @@ class AvalaraFacadeImpl implements TaxFacade {
     @Resource(name = 'commonAsyncHttpClient')
     JunboAsyncHttpClient asyncHttpClient
 
-    @Resource(name = 'transcoder')
+    @Resource(name = 'commonTranscoder')
     MessageTranscoder transcoder
 
     static final String[] SUPPORT_COUNTRY_LIST = ['US', 'CA']

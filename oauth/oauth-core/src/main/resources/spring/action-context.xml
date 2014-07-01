@@ -95,10 +95,6 @@
         <property name="tokenGenerator" ref="tokenGenerator" />
     </bean>
 
-    <bean id="validateResetPasswordCode" class="com.junbo.oauth.core.action.ValidateResetPasswordCode">
-        <property name="tokenGenerator" ref="tokenGenerator" />
-    </bean>
-
     <bean id="validateExtraParameters" class="com.junbo.oauth.core.action.ValidateExtraParameters"/>
 
     <bean id="logout" class="com.junbo.oauth.core.action.Logout">

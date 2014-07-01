@@ -12,16 +12,6 @@
     <bean id="defaultIAPResourceRouter" parent="routingRouterBase" />
     <bean id="defaultIAPResourceClientFactory" class="com.junbo.iap.spec.resource.proxy.IAPResourceClientProxyFactory"/>
 
-    <bean id="configService" class="com.junbo.configuration.impl.ConfigServiceImpl" />
-    <bean id="configPropertyPlaceholderConfigurer" class="com.junbo.configuration.impl.ConfigPropertyPlaceholderConfigurer" />
-    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
-        <property name="converters">
-            <set>
-                <bean class="com.junbo.configuration.reloadable.impl.ReloadableConfigConverterFactory" />
-            </set>
-        </property>
-    </bean>
-
     <bean id="iap.offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy"
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.catalog.url}"/>

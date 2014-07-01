@@ -104,6 +104,7 @@ class JunboApplication {
 
         JunboBeanFactory(BeanFactory parentBeanFactory) {
             super(parentBeanFactory)
+            this.allowBeanDefinitionOverriding = false
         }
 
         @Override
