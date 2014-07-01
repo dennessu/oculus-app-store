@@ -21,7 +21,6 @@ import javax.annotation.Resource
  */
 @CompileStatic
 @TypeChecked
-@Component("refundOrderAction")
 class RefundOrderAction extends BaseOrderEventAwareAction {
 
     @Resource(name = 'orderInternalService')

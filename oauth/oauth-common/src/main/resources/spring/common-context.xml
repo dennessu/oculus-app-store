@@ -3,14 +3,4 @@
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="connectionFactoryBuilder" class="net.spy.memcached.ConnectionFactoryBuilder">
-        <property name="protocol" value="BINARY"/>
-        <property name="opTimeout" value="${oauth.common.memcached.timeout}"/>
-    </bean>
-
-    <bean id="memcachedClient" class="com.junbo.common.memcached.MemcachedClientFactoryBean">
-    <property name="connectionFactoryBuilder" ref="connectionFactoryBuilder"/>
-        <property name="servers" value="${oauth.common.memcached.servers}"/>
-    </bean>
-
 </beans>

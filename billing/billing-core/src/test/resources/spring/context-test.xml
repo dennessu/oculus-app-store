@@ -9,7 +9,6 @@
 
     <context:component-scan base-package="com.junbo.billing.db"/>
     <context:component-scan base-package="com.junbo.billing.core"/>
-
     <bean id="mockPaymentFacade" class="com.junbo.billing.core.mock.MockPaymentFacade" />
     <bean id="mockIdentityFacade" class="com.junbo.billing.core.mock.MockIdentityFacade" />
     <bean id="mockTaxFacade" class="com.junbo.billing.core.mock.MockTaxFacade" />

@@ -16,17 +16,6 @@
         <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
     </bean>
 
-    <!-- Config service -->
-    <bean id="configService" class="com.junbo.configuration.impl.ConfigServiceImpl" />
-    <bean id="configPropertyPlaceholderConfigurer" class="com.junbo.configuration.impl.ConfigPropertyPlaceholderConfigurer" />
-    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
-        <property name="converters">
-            <set>
-                <bean class="com.junbo.configuration.reloadable.impl.ReloadableConfigConverterFactory" />
-            </set>
-        </property>
-    </bean>
-
     <bean id="order.identityUserClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
           parent="userResourceClientProxy">
         <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>

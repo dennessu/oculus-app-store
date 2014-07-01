@@ -3,20 +3,18 @@
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <import resource="classpath*:spring/orderflow/*.xml"/>
-
-    <bean id="flowDefLoader" class="com.junbo.langur.core.webflow.definition.FlowDefLoaderImpl"/>
+    <bean id="orderFlowDefLoader" class="com.junbo.langur.core.webflow.definition.FlowDefLoaderImpl"/>
 
     <bean id="orderStateRepository" class="com.junbo.common.webflow.CloudantStateRepositoryImpl" parent="cloudantClient">
         <property name="dbName" value="oauth_flow_state"/>
         <property name="marshaller" ref="polymorphicCloudantMarshaller"/>
     </bean>
 
-    <bean id="stateExecutorFactory" class="com.junbo.langur.core.webflow.executor.StateExecutorFactoryImpl"/>
+    <bean id="orderStateExecutorFactory" class="com.junbo.langur.core.webflow.executor.StateExecutorFactoryImpl"/>
 
     <bean id="flowExecutor" class="com.junbo.langur.core.webflow.executor.FlowExecutorImpl">
-        <property name="flowDefLoader" ref="flowDefLoader"/>
-        <property name="stateExecutorFactory" ref="stateExecutorFactory"/>
+        <property name="flowDefLoader" ref="orderFlowDefLoader"/>
+        <property name="stateExecutorFactory" ref="orderStateExecutorFactory"/>
         <property name="stateRepository" ref="orderStateRepository"/>
     </bean>
 

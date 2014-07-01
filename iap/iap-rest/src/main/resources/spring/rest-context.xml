@@ -5,22 +5,12 @@
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
-    <import resource="classpath*:spring/routing-context.xml"/>
+
     <context:component-scan base-package="com.junbo.oom.core.builtin"/>
     <context:component-scan base-package="com.junbo.iap.spec.resource.adapter" />
     <context:component-scan base-package="com.junbo.iap.rest" />
     <bean id="defaultIAPResourceRouter" parent="routingRouterBase" />
     <bean id="defaultIAPResourceClientFactory" class="com.junbo.iap.spec.resource.proxy.IAPResourceClientProxyFactory"/>
-
-    <bean id="configService" class="com.junbo.configuration.impl.ConfigServiceImpl" />
-    <bean id="configPropertyPlaceholderConfigurer" class="com.junbo.configuration.impl.ConfigPropertyPlaceholderConfigurer" />
-    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
-        <property name="converters">
-            <set>
-                <bean class="com.junbo.configuration.reloadable.impl.ReloadableConfigConverterFactory" />
-            </set>
-        </property>
-    </bean>
 
     <bean id="iap.offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy"
           parent="baseClientProxy">

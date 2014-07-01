@@ -5,8 +5,6 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <import resource="classpath*:spring/sharding-context.xml"/>
-
     <context:component-scan base-package="com.junbo.oom.core.builtin"/>
     <context:component-scan base-package="com.junbo.token.db"/>
     <context:annotation-config />
@@ -59,36 +57,36 @@
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean> -->
     <!-- Dao -->
-    <bean id="genericDao"
+    <bean id="tokenGenericDao"
           class="com.junbo.token.db.dao.GenericDAOImpl" abstract="true">
     </bean>
 
     <bean id="tokenSetDao"
-          class="com.junbo.token.db.dao.TokenSetDao" parent="genericDao">
+          class="com.junbo.token.db.dao.TokenSetDao" parent="tokenGenericDao">
         <property name="persistentClass" value="com.junbo.token.db.entity.TokenSetEntity"/>
     </bean>
 
     <bean id="tokenOrderDao"
-          class="com.junbo.token.db.dao.TokenOrderDao" parent="genericDao">
+          class="com.junbo.token.db.dao.TokenOrderDao" parent="tokenGenericDao">
         <property name="persistentClass" value="com.junbo.token.db.entity.TokenOrderEntity"/>
     </bean>
 
     <bean id="tokenItemDao"
-          class="com.junbo.token.db.dao.TokenItemDao" parent="genericDao">
+          class="com.junbo.token.db.dao.TokenItemDao" parent="tokenGenericDao">
         <property name="persistentClass" value="com.junbo.token.db.entity.TokenItemEntity"/>
     </bean>
 
     <bean id="tokenSetOfferDao"
-          class="com.junbo.token.db.dao.TokenSetOfferDao" parent="genericDao">
+          class="com.junbo.token.db.dao.TokenSetOfferDao" parent="tokenGenericDao">
         <property name="persistentClass" value="com.junbo.token.db.entity.TokenSetOfferEntity"/>
     </bean>
 
     <bean id="tokenConsumptionDao"
-          class="com.junbo.token.db.dao.TokenConsumptionDao" parent="genericDao">
+          class="com.junbo.token.db.dao.TokenConsumptionDao" parent="tokenGenericDao">
         <property name="persistentClass" value="com.junbo.token.db.entity.TokenConsumptionEntity"/>
     </bean>
 
-    <bean id="domainDataRepository"
+    <bean id="tokenDomainDataRepository"
           class="com.junbo.token.db.repository.DomainDataRepository" abstract="true">
     </bean>
 

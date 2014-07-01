@@ -23,7 +23,7 @@
     </bean>
 
     <!-- Scheduler -->
-    <bean id="orderSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+    <bean id="offerSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="schedulerName" value="catalogScheduler" />
         <property name="autoStartup" value="${catalog.jobs.autoStartup}" />
         <property name="triggers">

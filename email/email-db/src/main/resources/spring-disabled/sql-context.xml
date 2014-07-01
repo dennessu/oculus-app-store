@@ -7,9 +7,6 @@
     <context:annotation-config />
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
-    <import resource="classpath*:spring/transaction.xml"/>
-    <import resource="classpath*:spring/sharding-context.xml"/>
-
     <!-- Email source -->
     <bean id="emailDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${email.db.jdbcUrls}"/>

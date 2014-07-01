@@ -8,10 +8,6 @@
     <context:component-scan base-package="com.junbo.oom.core.builtin"/>
     <context:component-scan base-package="com.junbo.order.db"/>
 
-    <import resource="classpath*:spring/transaction.xml"/>
-    <import resource="classpath*:spring/sharding-context.xml"/>
-    <import resource="classpath*:spring/dualwrite-context.xml"/>
-
     <bean id="orderDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${order.db.jdbcUrls}"/>
 
