@@ -7,6 +7,7 @@ package com.junbo.test.fulfilment.apihelper.impl;
 
 import com.junbo.fulfilment.spec.model.FulfilmentItem;
 import com.junbo.fulfilment.spec.model.FulfilmentRequest;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.RestUrl;
@@ -19,7 +20,7 @@ import com.junbo.langur.core.client.TypeReference;
  */
 public class FulfilmentServiceImpl extends HttpClientBase implements FulfilmentService {
 
-    private static String fulfilmentUrl = RestUrl.getRestUrl(RestUrl.ComponentName.COMMERCE);
+    private static String fulfilmentUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1");
     private static FulfilmentService instance;
 
     public static synchronized FulfilmentService getInstance() {

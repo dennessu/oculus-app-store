@@ -272,6 +272,7 @@ public class OrderStatusTesting extends BaseOrderTestClass {
         expectedEventStatus.add(new OrderEventInfo(OrderActionType.CHARGE, EventStatus.COMPLETED));
         expectedEventStatus.add(new OrderEventInfo(OrderActionType.FULFILL, EventStatus.OPEN));
 
+
         validationHelper.validateOrderEvents(orderId, expectedEventStatus);
 
     }
