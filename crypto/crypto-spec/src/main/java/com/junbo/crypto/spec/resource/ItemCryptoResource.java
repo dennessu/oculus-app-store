@@ -27,6 +27,11 @@ public interface ItemCryptoResource {
     @Path("crypto/{itemId}/sign")
     Promise<ItemCryptoMessage> sign(@PathParam("itemId") String itemId, ItemCryptoMessage rawMessage);
 
+    @POST
+    @Path("crypto/{itemId}/refresh-token")
+    // refresh and return public key
+    Promise<String> refresh(@PathParam("itemId") String itemId);
+
     @GET
     @Path("crypto/{itemId}/public-key")
     Promise<String> getPublicKey(@PathParam("itemId")String itemId);

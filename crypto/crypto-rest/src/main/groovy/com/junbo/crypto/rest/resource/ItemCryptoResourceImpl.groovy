@@ -73,6 +73,36 @@ class ItemCryptoResourceImpl extends CommonResourceImpl implements ItemCryptoRes
     }
 
     @Override
+    Promise<String> refresh(String itemId) {
+        return validator.validateForRefresh(itemId).then { ItemCryptoRepoData data ->
+            KeyPairGenerator kpg = KeyPairGenerator.getInstance(KEY_GENERATOR_ALGORITHM)
+            kpg.initialize(KEY_GENERATOR_ALGORITHM_LENGTH)
+            KeyPair kp = kpg.genKeyPair()
+            PublicKey key1 = kp.getPublic()
+            PrivateKey key2 = kp.getPrivate()
+            return encryptByMasterKey(savePrivateKey(key2)).then { String str ->
+                data.encryptedPrivateKey = str
+                return encryptByMasterKey(savePublicKey(key1))
+            }.then { String str ->
+                data.encryptedPublicKey = str
+
+                return itemCryptoRepo.update(data)
+            }.then { ItemCryptoRepoData cryptoRepoData ->
+
+                return decryptByMasterKey(cryptoRepoData.encryptedPrivateKey).then { String value ->
+                    privateKeyMap.put(itemId, loadPrivateKey(value))
+
+                    return decryptByMasterKey(cryptoRepoData.encryptedPublicKey)
+                }.then { String value ->
+                    publicKeyMap.put(itemId, loadPublicKey(value))
+
+                    return Promise.pure(value)
+                }
+            }
+        }
+    }
+
+    @Override
     Promise<String> getPublicKey(String itemId) {
         validator.validateForGetPublicKey(itemId)
         return checkAndUpdateItemKey(itemId).then {
