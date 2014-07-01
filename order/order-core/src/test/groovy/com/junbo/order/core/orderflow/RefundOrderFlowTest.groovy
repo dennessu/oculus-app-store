@@ -55,7 +55,7 @@ class RefundOrderFlowTest extends BaseTest {
         repo.createOrder(ratedOrder)
 
         //mock balance
-        def balance = CoreBuilder.buildBalance(order, BalanceType.DEBIT )
+        def balance = CoreBuilder.buildBalance(order, BalanceType.DEBIT)
         facadeContainer.billingFacade.createBalance(balance, false)
 
         orderActionContext.orderServiceContext.order.orderItems = []

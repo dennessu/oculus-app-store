@@ -60,7 +60,7 @@ class ConfirmBalanceAction extends BaseOrderEventAwareAction {
                     throw facadeContainer.billingFacade.convertError(throwable).exception()
                 }.then { Balance confirmedBalance ->
                     if (confirmedBalance.status == BalanceStatus.COMPLETED.name()) {
-                        orderInternalService.persistBillingHistory(confirmedBalance, BillingAction.CAPTURE, order)
+                        orderInternalService.persistBillingHistory(confirmedBalance, BillingAction.REQUEST_CAPTURE, order)
                         balanceConfirmed = true
                     }
                     return Promise.pure(null)

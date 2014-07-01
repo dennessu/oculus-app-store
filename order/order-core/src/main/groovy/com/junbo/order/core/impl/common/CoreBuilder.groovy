@@ -51,7 +51,6 @@ class CoreBuilder {
 
         Balance balance = buildBalance(order)
         balance.type = balanceType.toString()
-        balance.propertySet.put(PropertyKey.CUSTOMER_NUMBER.name(), order.user.value.toString())
         balance.propertySet.put(PropertyKey.LOCALE.name(), order.locale.value?.replace('-', '_'))
 
         order.orderItems.eachWithIndex { OrderItem item, int i ->

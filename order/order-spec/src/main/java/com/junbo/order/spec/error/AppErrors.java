@@ -220,4 +220,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 500, code = ErrorCode.ORDER_RISK_REVIEW_ERROR,
             description = "Failed to review risk of order: {0}")
     AppError orderRiskReviewError(String error);
+
+    @ErrorDef(httpStatusCode = 409, code = ErrorCode.ORDER_EVENT_STATUS_NOT_MATCH,
+            description = "Order event status not match")
+    AppError orderEvenStatusNotMatch();
 }

@@ -59,12 +59,13 @@ public class ErrorCode {
 
     public static final String ORDER_NO_ITEM_TO_REFUND_IN_REQUEST = "20012";
 
+    public static final String ORDER_EVENT_STATUS_NOT_MATCH = "20013";
+
     public static final String ORDER_RISK_REVIEW_ERROR = "20020";
 
     // subledger error starts from 20000
     public static final String SUBLEDGER_NOT_FOUND = "20200";
 
     public static final String SUBLEDGER_CONCURRENT_UPDATE = "20201";
-
 
 }

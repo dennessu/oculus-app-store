@@ -8,6 +8,7 @@ package com.junbo.order.core.impl.internal;
 import com.junbo.billing.spec.model.Balance;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.spec.model.Order;
+import com.junbo.order.spec.model.OrderEvent;
 import com.junbo.order.spec.model.OrderQueryParam;
 import com.junbo.order.spec.model.PageParam;
 import com.junbo.order.spec.model.enums.BillingAction;
@@ -38,4 +39,5 @@ public interface OrderInternalService {
 
     void persistBillingHistory(Balance balance, BillingAction action, Order order);
 
+    OrderEvent checkOrderEventStatus(Order order, OrderEvent event, List<Balance> balances);
 }

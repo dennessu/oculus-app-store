@@ -214,7 +214,7 @@ class SabrixFacadeImpl implements TaxFacade {
         invoice.currencyCode = balance.currency
         invoice.isAudited = isAudited
         invoice.customerName = balance.propertySet.get(PropertyKey.CUSTOMER_NAME.name())
-        invoice.customerNumber = balance.propertySet.get(PropertyKey.CUSTOMER_NUMBER.name())
+        invoice.customerNumber = balance.userId.value.toString()
         SabrixAddress billToAddress = toSabrixAddress(piAddress)
         SabrixAddress shipToAddress
         if (shippingAddress != null) {

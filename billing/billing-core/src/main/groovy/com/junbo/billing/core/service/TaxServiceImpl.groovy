@@ -105,9 +105,9 @@ class TaxServiceImpl implements TaxService {
                 throw AppErrors.INSTANCE.addressNotFound("null").exception()
             }
             balance.propertySet.put(PropertyKey.PAYMENT_METHOD.name(), PIType.get(pi.type).name())
-            String userId = balance.propertySet.get(PropertyKey.CUSTOMER_NUMBER.name())
+            String userId = balance.userId.value.toString()
             if (userId == null) {
-                throw AppErrors.INSTANCE.userNotFound('null').exception()
+                throw AppErrors.INSTANCE.userNotFound('not nullable').exception()
             }
             return identityFacade.getUser(Long.valueOf(userId)).recover { Throwable throwable ->
                 LOGGER.error('name=Error_Get_User. user id: ' + userId, throwable)
