@@ -10,7 +10,6 @@ import com.junbo.fulfilment.spec.model.FulfilmentRequest;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.blueprint.Master;
-import com.junbo.test.common.libs.RestUrl;
 import com.junbo.test.fulfilment.apihelper.FulfilmentService;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
