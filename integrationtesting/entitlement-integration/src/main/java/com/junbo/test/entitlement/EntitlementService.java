@@ -39,7 +39,7 @@ public class EntitlementService {
     }
 
     public static Entitlement grantEntitlement(Entitlement entitlement, int expectedResponseCode) throws Exception {
-        byte[] requestBody = new JsonMessageTranscoder().encode(entitlement);
+        String requestBody = new String(new JsonMessageTranscoder().encode(entitlement));
 
         String entitlementEndpointUrl = commerceUrl + "/entitlements/";
 
@@ -94,7 +94,7 @@ public class EntitlementService {
     public static Entitlement updateEntitlement(String entitlementId, Entitlement entitlement, int expectedResponseCode)
             throws Exception {
 
-        byte[] requestBody = new JsonMessageTranscoder().encode(entitlement);
+        String requestBody = new String(new JsonMessageTranscoder().encode(entitlement));
 
         String entitlementEndpointUrl = commerceUrl + "/entitlements/" + entitlementId;
 

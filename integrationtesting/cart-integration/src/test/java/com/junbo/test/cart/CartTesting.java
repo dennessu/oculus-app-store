@@ -195,9 +195,10 @@ public class CartTesting extends TestClass {
         addOrRemoveOfferInCart(primaryCart, testOffer1, 3, true);
         addOrRemoveOfferInCart(primaryCart, testOffer2, 2, true);
         addCouponInCart(primaryCart, testCoupon1);
-        CartService.updateCart(user.getId(), primaryCart.getId(), primaryCart);
+        Cart updatedCart = CartService.updateCart(user.getId(), primaryCart.getId(), primaryCart);
         Cart newCart = new Cart();
-        newCart.setId(primaryCart.getId());
+        newCart.setId(updatedCart.getId());
+        newCart.setRev(updatedCart.getRev());
         addOrRemoveOfferInCart(newCart, testOffer2, 1, true);
         addOrRemoveOfferInCart(newCart, testOffer3, 3, true);
         addCouponInCart(newCart, testCoupon2);
