@@ -101,12 +101,6 @@
 #[slave] setup slave database
     $DEPLOYMENT_PATH/setup/setup_slave.sh
 
-#[master] schedule archive log sync cron job
-    $DEPLOYMENT_PATH/cron/cron_master.sh
-
-#[slave] schedule archive log sync cron job
-    $DEPLOYMENT_PATH/cron/cron_slave.sh
-
 #[master] start primary PGBouncer proxy (connect to master db)
     $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
 
@@ -175,9 +169,6 @@
 
 #[slave] setup slave database
     $DEPLOYMENT_PATH/setup/setup_slave.sh
-
-#[slave] schedule archive log sync cron job
-    $DEPLOYMENT_PATH/cron/cron_slave.sh
 
 #[slave] start secondary PGBouncer proxy (connect to master db)
     $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
