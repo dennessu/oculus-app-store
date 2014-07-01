@@ -29,8 +29,8 @@ ext {
             jersey_server: "org.glassfish.jersey.core:jersey-server:${jerseyVersion}",
             jersey_bean_validation: "org.glassfish.jersey.ext:jersey-bean-validation:${jerseyVersion}",
 
-            grizzly_http_server: "org.glassfish.grizzly:grizzly-http-server:2.3.11",
-            grizzly_websockets: "org.glassfish.grizzly:grizzly-websockets:2.3.11",
+            grizzly_http_server: "org.glassfish.grizzly:grizzly-http-server:2.3.14",
+            grizzly_websockets: "org.glassfish.grizzly:grizzly-websockets:2.3.14",
 
             spring_bridge: 'org.glassfish.hk2:spring-bridge:2.2.0',
 
