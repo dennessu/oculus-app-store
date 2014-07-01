@@ -26,7 +26,7 @@
     [devops] sudo ln -sf /usr/lib/postgresql/9.3/bin/dropdb /usr/bin/dropdb
 
 #clean up exisitng db instance
-    [devops] sudo kill $(fuser -n tcp 5432 2> /dev/null)
+    [devops] sudo kill $(sudo fuser -n tcp 5432 2> /dev/null)
     [devops] sudo chown silkcloud:silkcloud /var/run/postgresql
     [devops] clean up all files including hidden files in /var/run/postgresql
 
