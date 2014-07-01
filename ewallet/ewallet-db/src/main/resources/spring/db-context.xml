@@ -8,8 +8,6 @@
     <context:component-scan base-package="com.junbo.ewallet.db"/>
     <context:component-scan base-package="com.junbo.oom.core.builtin"/>
 
-    <import resource="classpath*:spring/dualwrite-context.xml"/>
-
     <!-- DataSource -->
     <bean id="ewalletDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${ewallet.db.jdbcUrls}"/>

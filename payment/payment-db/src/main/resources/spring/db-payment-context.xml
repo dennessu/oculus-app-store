@@ -8,9 +8,6 @@
     <context:component-scan base-package="com.junbo.oom.core.builtin"/>
     <context:component-scan base-package="com.junbo.payment.db"/>
 
-    <import resource="classpath*:spring/sharding-context.xml"/>
-    <import resource="classpath*:spring/dualwrite-context.xml"/>
-
     <!--Data source has the database information -->
     <bean id="paymentDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
         <property name="jdbcUrls" value="${payment.db.jdbcUrls}"/>

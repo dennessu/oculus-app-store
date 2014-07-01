@@ -4,10 +4,6 @@
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <import resource="classpath*:spring/common-context.xml"/>
-    <import resource="classpath*:spring/common-lib-context.xml"/>
-    <import resource="classpath*:spring/threadpool-context.xml"/>
-
     <alias alias="routingAsyncHttpClient" name="commonAsyncHttpClient" />
     <alias alias="routingPathParamTranscoder" name="commonPathParamTranscoder" />
     <alias alias="routingQueryParamTranscoder" name="commonQueryParamTranscoder" />
