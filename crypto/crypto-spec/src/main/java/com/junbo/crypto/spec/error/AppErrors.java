@@ -62,4 +62,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 403, code = "5000014", description = "Access denied")
     AppError accessDenied();
+
+    @ErrorDef(httpStatusCode = 500, code = "5000015", description = "Signature exception: {0}.")
+    AppError signatureException(String message);
 }

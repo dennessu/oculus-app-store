@@ -12,6 +12,7 @@ import javax.crypto.Cipher
 import javax.crypto.IllegalBlockSizeException
 import javax.crypto.NoSuchPaddingException
 import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.SecretKeySpec
 import java.security.InvalidAlgorithmParameterException
 import java.security.InvalidKeyException
 import java.security.Key
@@ -98,7 +99,8 @@ class AESCipherServiceImpl implements CipherService {
     }
 
     @Override
-    String getKeyAlgorithm() {
-        return 'AES'
+    Key stringToKey(String keyStr) {
+        byte [] bytes = keyStr.getBytes()
+        return new SecretKeySpec(bytes, 0, bytes.length, 'AES')
     }
 }
