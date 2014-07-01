@@ -57,7 +57,7 @@ class WebPaymentChargeAction extends BaseOrderEventAwareAction {
                         CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DEBIT),
                         context?.orderServiceContext?.apiContext?.asyncCharge)
         return promise.syncRecover { Throwable throwable ->
-            LOGGER.error('name=Order_WebPaymentCharge_Error', throwable)
+            LOGGER.error('name=Order_WebPymentCharge_Error', throwable)
             throw facadeContainer.billingFacade.convertError(throwable).exception()
         }.then { Balance balance ->
             if (balance == null) {
@@ -76,6 +76,7 @@ class WebPaymentChargeAction extends BaseOrderEventAwareAction {
             }
             order.payments[0].providerConfirmUrl = balance.providerConfirmUrl
             CoreBuilder.fillTaxInfo(order, balance)
+            orderRepository.updateOrder(order, true, false, null)
             orderInternalService.persistBillingHistory(balance, BillingAction.REQUEST_CHARGE, order)
             return orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
                 // TODO: save order level tax

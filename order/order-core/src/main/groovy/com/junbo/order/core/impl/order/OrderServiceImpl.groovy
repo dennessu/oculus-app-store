@@ -237,20 +237,12 @@ class OrderServiceImpl implements OrderService {
     Promise<OrderEvent> updateOrderByOrderEvent(OrderEvent event, OrderServiceContext orderServiceContext) {
 
         switch (event.action) {
-            case OrderActionType.CANCEL.name():
-                LOGGER.info('name=Cancel_Order. orderId: {}, action:{}, status{}',
-                        event.order.value, event.action, event.status)
-                break
             case OrderActionType.CHARGE.name():
                 LOGGER.info('name=Update_Charge_Status. orderId: {}, action:{}, status{}',
                         event.order.value, event.action, event.status)
                 break
             case OrderActionType.FULFILL.name():
                 LOGGER.info('name=Update_Fulfillment_Status. orderId: {}, action:{}, status{}',
-                        event.order.value, event.action, event.status)
-                break
-            case OrderActionType.AUTHORIZE.name():
-                LOGGER.info('name=Authorize_Order. orderId: {}, action:{}, status{}',
                         event.order.value, event.action, event.status)
                 break
             default:
@@ -265,6 +257,9 @@ class OrderServiceImpl implements OrderService {
         return getOrderByOrderId(event.order.value).then { Order order ->
             orderServiceContext.order = order
             orderServiceContext.orderEvent = event
+            if (!CoreUtils.isPendingOnEvent(order, event)) {
+                throw AppErrors.INSTANCE.orderEvenStatusNotMatch().exception()
+            }
             return flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE).then { String flowName ->
                 // Prepare Flow Request
                 assert (flowName != null)

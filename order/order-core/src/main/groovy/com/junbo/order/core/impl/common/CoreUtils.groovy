@@ -8,12 +8,10 @@ import com.junbo.billing.spec.model.TaxItem
 import com.junbo.order.clientproxy.model.OrderOfferItem
 import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.spec.error.AppErrors
-import com.junbo.order.spec.model.BillingHistory
-import com.junbo.order.spec.model.Order
-import com.junbo.order.spec.model.OrderItem
-import com.junbo.order.spec.model.OrderTaxItem
+import com.junbo.order.spec.model.*
 import com.junbo.order.spec.model.enums.BillingAction
 import com.junbo.order.spec.model.enums.ItemType
+import com.junbo.order.spec.model.enums.OrderActionType
 import com.junbo.order.spec.model.enums.OrderStatus
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -318,5 +316,16 @@ class CoreUtils {
             return true
         }
         return false
+    }
+
+    static Boolean isPendingOnEvent(Order order, OrderEvent event) {
+        switch (event.action) {
+            case OrderActionType.CHARGE.name():
+                return order.status == OrderStatus.PENDING_CHARGE.name()
+            case OrderActionType.FULFILL.name():
+                return order.status == OrderStatus.PENDING_FULFILL.name()
+            default:
+                throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
+        }
     }
 }

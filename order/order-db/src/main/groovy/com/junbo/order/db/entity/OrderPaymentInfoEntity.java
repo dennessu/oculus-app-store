@@ -25,6 +25,10 @@ public class OrderPaymentInfoEntity extends CommonDbEntityDeletable {
     private Long orderId;
     private String paymentInstrumentId;
     private String paymentInstrumentType;
+    private String successRedirectUrl;
+    private String cancelRedirectUrl;
+    private String providerConfirmUrl;
+
 
     @Id
     @Column(name = "ORDER_PAYMENT_INFO_ID")
@@ -67,6 +71,33 @@ public class OrderPaymentInfoEntity extends CommonDbEntityDeletable {
 
     public void setPaymentInstrumentType(String paymentInstrumentType) {
         this.paymentInstrumentType = paymentInstrumentType;
+    }
+
+    @Column(name = "SUCCESS_REDIRECT_URL")
+    public String getSuccessRedirectUrl() {
+        return successRedirectUrl;
+    }
+
+    public void setSuccessRedirectUrl(String successRedirectUrl) {
+        this.successRedirectUrl = successRedirectUrl;
+    }
+
+    @Column(name = "CANCEL_REDIRECT_URL")
+    public String getCancelRedirectUrl() {
+        return cancelRedirectUrl;
+    }
+
+    public void setCancelRedirectUrl(String cancelRedirectUrl) {
+        this.cancelRedirectUrl = cancelRedirectUrl;
+    }
+
+    @Column(name = "PROVIDER_CONFIRM_URL")
+    public String getProviderConfirmUrl() {
+        return providerConfirmUrl;
+    }
+
+    public void setProviderConfirmUrl(String providerConfirmUrl) {
+        this.providerConfirmUrl = providerConfirmUrl;
     }
 
     @Override
