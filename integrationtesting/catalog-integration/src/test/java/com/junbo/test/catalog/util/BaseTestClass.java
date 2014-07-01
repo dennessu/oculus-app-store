@@ -22,6 +22,10 @@ import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.catalog.OfferService;
 import com.junbo.test.catalog.ItemService;
 import com.junbo.common.model.Results;
+import org.testng.Assert;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  @author Jason
@@ -111,4 +115,16 @@ public class BaseTestClass extends TestClass {
         return contain;
     }
 
+    protected void verifyGetItemsScenarios(HashMap<String, List<String>> paraMap, int expectedRtnSize, String... itemId) throws Exception {
+
+        ItemService itemService = ItemServiceImpl.instance();
+        Results<Item> itemRtn = itemService.getItems(paraMap);
+
+        Assert.assertEquals(itemRtn.getItems().size(), expectedRtnSize);
+
+        for (String itemGetId : itemId) {
+            Item item = itemService.getItem(itemGetId);
+            Assert.assertTrue(isContain(itemRtn, item));
+        }
+    }
 }

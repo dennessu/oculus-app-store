@@ -236,15 +236,4 @@ public class TestGetItem extends BaseTestClass {
         verifyGetItemsScenarios(paraMap, 0);
     }
 
-    private void verifyGetItemsScenarios(HashMap<String, List<String>> paraMap, int expectedRtnSize, String... itemId) throws Exception {
-        Results<Item> itemRtn = itemService.getItems(paraMap);
-
-        Assert.assertEquals(itemRtn.getItems().size(), expectedRtnSize);
-
-        for (String itemGetId : itemId) {
-            Item item = itemService.getItem(itemGetId);
-            Assert.assertTrue(isContain(itemRtn, item));
-        }
-    }
-
 }

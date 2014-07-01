@@ -27,6 +27,7 @@ public interface ItemService {
     Results<Item> getItems(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception;
 
     Item postDefaultItem(CatalogItemType itemType) throws Exception;
+    Item postDefaultItem(CatalogItemType itemType, OrganizationId organizationId) throws Exception;
     Item prepareItemEntity(String fileName) throws Exception;
     Item prepareItemEntity(String fileName, OrganizationId organizationId) throws Exception;
     Item postItem(Item item) throws Exception;

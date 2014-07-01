@@ -94,6 +94,13 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
         return postItem(itemForPost);
     }
 
+    public Item postDefaultItem(CatalogItemType itemType, OrganizationId organizationId) throws Exception {
+        Item itemForPost = prepareItemEntity(defaultItemFileName, organizationId);
+        itemForPost.setType(itemType.getItemType());
+
+        return postItem(itemForPost);
+    }
+
     public Item postItem(Item item) throws Exception {
         return postItem(item, 200);
     }
