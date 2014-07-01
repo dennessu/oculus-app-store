@@ -51,4 +51,9 @@
           class="com.junbo.order.spec.resource.proxy.OrderResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.order.url}"/>
     </bean>
+
+    <bean id="iap.itemCryptoClient"
+          class="com.junbo.crypto.spec.resource.proxy.ItemCryptoResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.crypto.url}"/>
+    </bean>
 </beans>

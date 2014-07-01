@@ -27,4 +27,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 409, code = ErrorCode.ENTITLEMENT_NOT_ENOUGH_USECOUNT,
             description = "Entitlement not enough use count, entitlementId={0}")
     AppError entitlementNotEnoughUsecount(String entitlementId);
+
+    @ErrorDef(httpStatusCode = 409, code = ErrorCode.STORE_VALUE_PI_NOT_FOUND,
+            description = "Store value PI not found")
+    AppError storeValuePINotFound();
 }

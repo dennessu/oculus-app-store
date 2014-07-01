@@ -14,7 +14,7 @@ import com.junbo.common.model.SigningSupport;
 /**
  * Entitlement Consumption for IAP.
  */
-public class Consumption extends ResourceMeta<String> implements SigningSupport {
+public class Consumption extends ResourceMeta<String> implements SigningSupport, SigningSetter {
 
     private String userId;
     private String entitlementId;
@@ -25,8 +25,12 @@ public class Consumption extends ResourceMeta<String> implements SigningSupport 
     private String packageName;
     @CloudantIgnore
     private Long signatureTimestamp;
+
     @JsonIgnore
-    private String signingKey;
+    private String payload;
+
+    @JsonIgnore
+    private String signature;
 
     public String getUserId() {
         return userId;
@@ -103,11 +107,22 @@ public class Consumption extends ResourceMeta<String> implements SigningSupport 
     }
 
     @Override
-    public String getSigningKey() {
-        return signingKey;
+    public String getPayload() {
+        return payload;
     }
 
-    public void setSigningKey(String signingKey) {
-        this.signingKey = signingKey;
+    @Override
+    public void setPayload(String payload) {
+        this.payload = payload;
+    }
+
+    @Override
+    public String getSignature() {
+        return signature;
+    }
+
+    @Override
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 }

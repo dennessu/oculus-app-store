@@ -38,6 +38,8 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
     // thread safe
     private static ObjectMapper objectMapper = createObjectMapper();
 
+    private static ObjectMapper objectMapperNoSigningSupport = createObjectMapper(false);
+
     private static ObjectMapper createObjectMapper() {
         return createObjectMapper(true);
     }
@@ -76,7 +78,7 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
         }
 
         if (supportSign) {
-            module.addSerializer(SigningSupport.class, new SigningSupportSerializer(createObjectMapper(false)));
+            module.addSerializer(SigningSupport.class, new SigningSupportSerializer());
         }
 
         objectMapper.registerModule(module);
@@ -91,6 +93,10 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
 
     public static ObjectMapper instance() {
         return objectMapper;
+    }
+
+    public static ObjectMapper instanceNoSigningSupport() {
+        return objectMapperNoSigningSupport;
     }
 
     public static void setInstance(ObjectMapper objectMapper) {

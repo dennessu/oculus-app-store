@@ -28,4 +28,5 @@ dependencies {
     compile junboProject(':fulfilment-spec')
     compile junboProject(':payment-spec')
     compile junboProject(':order-spec')
+    compile junboProject(':crypto-spec')
 }

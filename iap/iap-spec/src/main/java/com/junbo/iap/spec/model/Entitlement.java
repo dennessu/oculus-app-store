@@ -12,7 +12,7 @@ import com.junbo.common.model.SigningSupport;
 /**
  * Entitlement used for IAP.
  */
-public class Entitlement implements SigningSupport {
+public class Entitlement implements SigningSupport, SigningSetter {
     private String userId;
     private String entitlementId;
     private Integer useCount;
@@ -23,8 +23,12 @@ public class Entitlement implements SigningSupport {
 
     @CloudantIgnore
     private Long signatureTimestamp;
+
     @JsonIgnore
-    private String signingKey;
+    private String payload;
+
+    @JsonIgnore
+    private String signature;
 
     public String getUserId() {
         return userId;
@@ -91,11 +95,22 @@ public class Entitlement implements SigningSupport {
     }
 
     @Override
-    public String getSigningKey() {
-        return signingKey;
+    public String getPayload() {
+        return payload;
     }
 
-    public void setSigningKey(String signingKey) {
-        this.signingKey = signingKey;
+    @Override
+    public void setPayload(String payload) {
+        this.payload = payload;
+    }
+
+    @Override
+    public String getSignature() {
+        return signature;
+    }
+
+    @Override
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 }

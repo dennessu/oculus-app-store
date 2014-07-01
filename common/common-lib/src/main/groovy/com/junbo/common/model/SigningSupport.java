@@ -9,5 +9,8 @@ package com.junbo.common.model;
  * Interface for model that needs to be sign during serialize.
  */
 public interface SigningSupport {
-    String getSigningKey();
+
+    String getPayload();
+
+    String getSignature();
 }

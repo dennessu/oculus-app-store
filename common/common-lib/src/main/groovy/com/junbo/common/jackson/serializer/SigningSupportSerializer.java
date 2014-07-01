@@ -20,27 +20,16 @@ import java.io.IOException;
  */
 public class SigningSupportSerializer extends JsonSerializer<SigningSupport> {
 
-    private ObjectMapper objectMapperWithoutSign;
-
-    public SigningSupportSerializer(ObjectMapper objectMapperWithoutSign) {
-        this.objectMapperWithoutSign = objectMapperWithoutSign;
-    }
-
     @Override
     public void serialize(SigningSupport value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
         ObjectMapper mapper = ObjectMapperProvider.instance();
 
         SignedModel signedModel = new SignedModel();
         if (value != null) {
-            String payload = objectMapperWithoutSign.writeValueAsString(value);
-            signedModel.setPayload(payload);
-            signedModel.setSignature(sign(value.getSigningKey(), payload));
+            signedModel.setPayload(value.getPayload());
+            signedModel.setSignature(value.getSignature());
         }
 
         mapper.writeValue(jgen, signedModel);
-    }
-
-    private String sign(String key, String payload) {
-        return "some_signature_" + String.valueOf(payload).hashCode(); // todo implement this
     }
 }

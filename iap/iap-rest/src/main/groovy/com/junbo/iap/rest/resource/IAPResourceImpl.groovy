@@ -1,26 +1,18 @@
 package com.junbo.iap.rest.resource
-
-import com.junbo.catalog.spec.model.item.EntitlementDef
-import com.junbo.catalog.spec.model.item.Item
-import com.junbo.catalog.spec.model.item.ItemRevision
-import com.junbo.catalog.spec.model.item.ItemsGetOptions
-import com.junbo.catalog.spec.model.item.ItemRevisionGetOptions
+import com.junbo.catalog.spec.model.item.*
 import com.junbo.catalog.spec.model.offer.OfferRevision
-import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
+import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
-import com.junbo.common.id.EntitlementId
-import com.junbo.common.id.ItemId
-import com.junbo.common.id.OfferId
-import com.junbo.common.id.PIType
-import com.junbo.common.id.PaymentInstrumentId
-import com.junbo.common.id.UserId
+import com.junbo.common.id.*
 import com.junbo.common.id.util.IdUtil
+import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Link
 import com.junbo.common.model.Results
 import com.junbo.common.util.IdFormatter
+import com.junbo.crypto.spec.model.ItemCryptoMessage
 import com.junbo.entitlement.spec.model.EntitlementSearchParam
 import com.junbo.entitlement.spec.model.PageMetadata
 import com.junbo.fulfilment.spec.model.FulfilmentAction
@@ -33,6 +25,7 @@ import com.junbo.iap.spec.error.AppErrors
 import com.junbo.iap.spec.model.*
 import com.junbo.iap.spec.resource.IAPResource
 import com.junbo.langur.core.client.PathParamTranscoder
+import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
@@ -51,7 +44,6 @@ import javax.ws.rs.BeanParam
 import javax.ws.rs.QueryParam
 import javax.ws.rs.core.UriBuilder
 import javax.ws.rs.ext.Provider
-
 /**
  * The wrapper api for IAP (In-App Purchase).
  */
@@ -102,16 +94,17 @@ class IAPResourceImpl implements IAPResource {
 
         pageParam.start = pageParam.start == null ? 0 : pageParam.start
         pageParam.count = pageParam.count == null ? PAGE_SIZE : pageParam.count
-
+        Item hostItem = null
         List<Entitlement> entitlements = [] as LinkedList<Entitlement>
-        return getItemByPackageName(packageName).then { Item hostItem ->
+        return getItemByPackageName(packageName).then { Item item ->
+            hostItem = item
             iteratePageRead {
                 resourceContainer.entitlementResource.searchEntitlements(
                         new EntitlementSearchParam(
                                 // todo: how to set the type ?
                                 userId: userId,
                                 // isActive: true,
-                                hostItemId: new ItemId(hostItem.id),
+                                hostItemId: new ItemId(hostItem.itemId),
                                 itemIds: new HashSet<ItemId>()
                         ),
                         new PageMetadata(
@@ -123,7 +116,6 @@ class IAPResourceImpl implements IAPResource {
                     Promise.each(results.items) { com.junbo.entitlement.spec.model.Entitlement catalogEntitlement ->
                         return convertEntitlement(catalogEntitlement, packageName).then { Entitlement entitlement ->
                             if (entitlement.useCount > 0 && catalogEntitlement.isActive) {
-                                entitlement.setSignatureTimestamp(System.currentTimeMillis())
                                 entitlements << entitlement
                             }
                             pageParam.start++
@@ -151,22 +143,36 @@ class IAPResourceImpl implements IAPResource {
             } else {
                 results.items = entitlements
             }
-            return Promise.pure(results)
+
+            return Promise.each(results.items) { Entitlement entitlement ->
+                entitlement.setSignatureTimestamp(System.currentTimeMillis())
+                return signObject(entitlement, hostItem.itemId)
+            }.then {
+                return Promise.pure(results)
+            }
+
         }
     }
 
     @Override
     Promise<Results<Entitlement>> postPurchase(Purchase purchase) {
+        // todo remove the mock ip
+        JunboHttpContext.requestHeaders.add('oculus-end-user-ip', '10.0.0.1')
+
          // todo some basic validate
         def promise = getItemByPackageName(purchase.packageName)
 
         PaymentInstrument piUsed = null
         UserId userId = new UserId(IdFormatter.decodeId(UserId, purchase.userId))
-
+        Item theHostItem = null
         // validate offer and select pi
         promise = promise.then { Item hostItem ->
+            theHostItem= hostItem
             return iapValidator.validateInAppOffer(new OfferId(purchase.offerId), hostItem).then {
                 return selectPaymentInstrument(userId).then { PaymentInstrument paymentInstrument ->
+                    if (paymentInstrument == null) {
+                        throw AppErrors.INSTANCE.storeValuePINotFound().exception()
+                    }
                     piUsed = paymentInstrument
                     return Promise.pure(null)
                 }
@@ -191,38 +197,52 @@ class IAPResourceImpl implements IAPResource {
                     return getEntitlementsByOrder(settledOrder, purchase.packageName)
                 }
             }
+        }.then { Results<Entitlement> results ->
+            return Promise.each(results.items) { Entitlement entitlement ->
+                entitlement.signatureTimestamp = System.currentTimeMillis()
+                return signObject(entitlement, theHostItem.itemId)
+            }.then {
+                return Promise.pure(results)
+            }
         }
     }
 
     @Override
     Promise<Consumption> postConsumption(Consumption consumption) {
-        consumptionRepository.get(consumption.trackingGuid).then { Consumption existed ->
+        Item hostItem = null
+        return consumptionRepository.get(consumption.trackingGuid).then { Consumption existed ->
             if (existed != null) {
                 return Promise.pure(existed)
             }
 
-            // todo: validate entitlement ownership & package name
-            resourceContainer.entitlementResource.getEntitlement(new EntitlementId(consumption.entitlementId)).then { com.junbo.entitlement.spec.model.Entitlement catalogEntitlement ->
-                return convertEntitlement(catalogEntitlement, consumption.packageName).then { Entitlement entitlement ->
-                    if (!entitlement.isConsumable) {
-                        throw AppErrors.INSTANCE.entitlementNotConsumable(consumption.entitlementId).exception()
-                    }
-                    if (entitlement.useCount < consumption.useCountConsumed) {
-                        throw AppErrors.INSTANCE.entitlementNotEnoughUsecount(consumption.entitlementId).exception()
-                    }
+            return getItemByPackageName(consumption.packageName).then { Item item ->
+                hostItem = item
+                // todo: validate entitlement ownership & package name
+                resourceContainer.entitlementResource.getEntitlement(new EntitlementId(consumption.entitlementId)).then { com.junbo.entitlement.spec.model.Entitlement catalogEntitlement ->
+                    return convertEntitlement(catalogEntitlement, consumption.packageName).then { Entitlement entitlement ->
+                        if (!entitlement.isConsumable) {
+                            throw AppErrors.INSTANCE.entitlementNotConsumable(consumption.entitlementId).exception()
+                        }
+                        if (entitlement.useCount < consumption.useCountConsumed) {
+                            throw AppErrors.INSTANCE.entitlementNotEnoughUsecount(consumption.entitlementId).exception()
+                        }
 
-                    consumption.packageName = entitlement.packageName
-                    consumption.sku = entitlement.sku
-                    consumption.type = entitlement.type
-                    consumption.signatureTimestamp = System.currentTimeMillis()
+                        consumption.packageName = entitlement.packageName
+                        consumption.sku = entitlement.sku
+                        consumption.type = entitlement.type
 
-                    // consume via update the use count
-                    catalogEntitlement.useCount -= consumption.useCountConsumed
-                    return resourceContainer.entitlementResource.updateEntitlement(new EntitlementId(catalogEntitlement.getId()), catalogEntitlement).then {
-                        return consumptionRepository.create(consumption)
+                        // consume via update the use count
+                        catalogEntitlement.useCount -= consumption.useCountConsumed
+                        return resourceContainer.entitlementResource.updateEntitlement(new EntitlementId(catalogEntitlement.getId()), catalogEntitlement).then {
+                            return consumptionRepository.create(consumption)
+                        }
                     }
                 }
             }
+
+        }.then { Consumption consumptionResult ->
+            consumptionResult.signatureTimestamp = System.currentTimeMillis()
+            return signObject(consumptionResult, hostItem.itemId)
         }
     }
 
@@ -337,7 +357,6 @@ class IAPResourceImpl implements IAPResource {
             return Promise.each(entitlementIds) { String entitlementId ->
                 return resourceContainer.entitlementResource.getEntitlement(new EntitlementId(entitlementId)).then { com.junbo.entitlement.spec.model.Entitlement catalogEntitlement ->
                     return convertEntitlement(catalogEntitlement, packageName).then { Entitlement e ->
-                        e.setSignatureTimestamp(System.currentTimeMillis())
                         result << e
                         return Promise.pure(null)
                     }
@@ -420,6 +439,15 @@ class IAPResourceImpl implements IAPResource {
                         start: 0
                 )).then { Results<PaymentInstrument> paymentInstrumentResults ->
             return Promise.pure(paymentInstrumentResults.items.isEmpty() ? null : paymentInstrumentResults.items[0])
+        }
+    }
+
+    private Promise<SigningSetter> signObject(SigningSetter object, String itemId) {
+        String jsonText = ObjectMapperProvider.instanceNoSigningSupport().writeValueAsString(object)
+        object.setPayload(jsonText)
+        return resourceContainer.itemCryptoResource.sign(itemId, new ItemCryptoMessage(message: jsonText)).then { ItemCryptoMessage itemCryptoMessage ->
+            object.setSignature(itemCryptoMessage.message)
+            return Promise.pure(object)
         }
     }
 }

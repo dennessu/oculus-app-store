@@ -16,7 +16,6 @@ public class ApiContext {
     public static final String HEADER_DELEGATE_USER = "Delegate-User-Id";
     public static final String HEADER_REQUESTOR = "Requestor-Id";
     public static final String HEADER_ON_BEHALF_OF_REQUESTOR = "On-Behalf-Of-Requestor-Id";
-    public static final String HEADER_USER_IP = "oculus-end-user-ip";
 
     public static final String QA_HEADER_ASYNC_CHARGE = "X-QA-Async-Charge";
 
@@ -28,9 +27,7 @@ public class ApiContext {
 
     public ApiContext() {
 
-        if (!CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(HEADER_USER_IP))) {
-            setUserIp(JunboHttpContext.getRequestHeaders().getFirst(HEADER_USER_IP));
-        }
+        setUserIp(JunboHttpContext.getRequestIpAddress());
 
         if (!CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(QA_HEADER_ASYNC_CHARGE))) {
             asyncCharge = Boolean.valueOf(JunboHttpContext.getRequestHeaders().getFirst(QA_HEADER_ASYNC_CHARGE));
