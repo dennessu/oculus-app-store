@@ -103,6 +103,7 @@ class RiskServiceImpl implements RiskService {
             Inquiry q = new Inquiry();
             q.setMerchantId(merchantId)
             q.setSessionId(UUID.randomUUID().toString().replaceAll('-', ''))
+            q.setOrderNumber(order.id.toString())
             q.setCurrency(order.currency.value)
             q.setTotal((int)(order.totalAmount * baseUnit))
             q.setIpAddress(ip)

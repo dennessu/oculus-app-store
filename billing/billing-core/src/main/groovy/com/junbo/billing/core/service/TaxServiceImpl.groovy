@@ -121,7 +121,7 @@ class TaxServiceImpl implements TaxService {
                     }
                 }
 
-                return Promise.each(balance.balanceItems) { BalanceItem item ->
+                /*return Promise.each(balance.balanceItems) { BalanceItem item ->
                     String offerRevisionId = item.propertySet.get(PropertyKey.OFFER_ID.name())
                     return catalogFacade.getOfferRevision(offerRevisionId).recover { Throwable throwable ->
                         LOGGER.error('name=Error_Get_OfferRevision. offerRevision id: ' + offerRevisionId, throwable)
@@ -147,9 +147,9 @@ class TaxServiceImpl implements TaxService {
                             return Promise.pure(null)
                         }
                     }
-                }.then {
+                }.then {*/
                     return calculateTax(balance, pi.billingAddressId)
-                }
+                //}
             }
         }
     }
