@@ -96,7 +96,9 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
             entitlementService.getEntitlement(addedEntitlement.getId());
         } catch (WebApplicationException e) {
             Assert.assertEquals(e.getResponse().getStatus(), 404);
+            return;
         }
+        Assert.assertEquals(true, false);
 
     }
 

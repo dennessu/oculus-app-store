@@ -38,12 +38,15 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
 
     @Override
     public EntitlementEntity get(String entitlementId) {
-        return cloudantGet(entitlementId).get();
+        EntitlementEntity result = cloudantGet(entitlementId).get();
+        return result.getIsDeleted().equals(true) ? null : result;
     }
 
     @Override
     public EntitlementEntity update(EntitlementEntity entitlement) {
-        entitlement.setIsDeleted(false);
+        if (entitlement.getIsDeleted() == null) {
+            entitlement.setIsDeleted(false);
+        }
         return cloudantPut(entitlement).get();
     }
 
@@ -85,7 +88,7 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
         if (Boolean.FALSE.equals(entitlementSearchParam.getIsActive())) {
             sb.append(" AND ( grantTime:[" + now + " TO " + EntitlementConsts.MAX_DATE + "]" +
                     " OR expirationTime:[" + EntitlementConsts.MIN_DATE + " TO " + now + "]" +
-                    " OR useCount:[" +  + EntitlementConsts.MIN_USECOUNT + " TO 0]" +
+                    " OR useCount:[" + EntitlementConsts.MIN_USECOUNT + " TO 0]" +
                     " OR isBanned:true )");
         } else if (Boolean.TRUE.equals(entitlementSearchParam.getIsActive())) {
             sb.append(
