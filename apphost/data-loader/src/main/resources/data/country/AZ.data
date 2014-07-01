@@ -637,7 +637,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Azerbaijan",
-			"longName": "Republic of Azerbaijan"
+			"longName": "Republic of Azerbaijan",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

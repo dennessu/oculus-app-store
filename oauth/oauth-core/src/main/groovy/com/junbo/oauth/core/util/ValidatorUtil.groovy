@@ -13,6 +13,8 @@ class ValidatorUtil {
             throw new IllegalArgumentException('locale is null')
         }
 
+        locale = locale.replace('-', '_')
+
         String[] parts = locale.split('_')
         switch (parts.length) {
             case 3:
@@ -30,6 +32,8 @@ class ValidatorUtil {
         if (locale == null) {
             throw new IllegalArgumentException('locale is null')
         }
+
+        locale = locale.replace('-', '_')
 
         String[] parts = locale.split('_')
         switch (parts.length) {

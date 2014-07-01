@@ -101,7 +101,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Lesotho",
-			"longName": "Kingdom of Lesotho"
+			"longName": "Kingdom of Lesotho",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

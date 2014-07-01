@@ -282,11 +282,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Mongolia",
-			"longName": "Mongolia"
+			"longName": "Mongolia",
+			"postalCode": "Postal Code"
 		},
 		"mn_MN": {
 			"shortName": "Монгол улс",
-			"longName": "Монгол улс"
+			"longName": "Монгол улс",
+			"postalCode": "Шуудангийн тухай хууль"
 		}
 	},
 	"futureExpansion": {

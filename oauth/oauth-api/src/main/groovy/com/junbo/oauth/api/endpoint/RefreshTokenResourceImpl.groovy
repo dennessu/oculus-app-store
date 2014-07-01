@@ -8,7 +8,7 @@ package com.junbo.oauth.api.endpoint
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.core.service.TokenService
+import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.spec.endpoint.RefreshTokenResource
 import com.junbo.oauth.spec.model.RefreshToken
 import groovy.transform.CompileStatic
@@ -20,10 +20,10 @@ import org.springframework.beans.factory.annotation.Required
 @CompileStatic
 class RefreshTokenResourceImpl implements RefreshTokenResource {
     private static final String TOKEN_INFO_SCOPE = 'token.info'
-    private TokenService tokenService
+    private OAuthTokenService tokenService
 
     @Required
-    void setTokenService(TokenService tokenService) {
+    void setTokenService(OAuthTokenService tokenService) {
         this.tokenService = tokenService
     }
 

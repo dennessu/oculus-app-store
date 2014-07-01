@@ -213,11 +213,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Korea",
-			"longName": "Korea"
+			"longName": "Korea",
+			"postalCode": "Postal Code"
 		},
 		"ko_KR": {
 			"shortName": "한국",
-			"longName": "한국"
+			"longName": "한국",
+			"postalCode": "우편 번호"
 		}
 	},
 	"futureExpansion": {

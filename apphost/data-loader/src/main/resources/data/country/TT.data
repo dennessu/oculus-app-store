@@ -146,7 +146,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Trinidad and Tobago",
-			"longName": "Republic of Trinidad and Tobago"
+			"longName": "Republic of Trinidad and Tobago",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

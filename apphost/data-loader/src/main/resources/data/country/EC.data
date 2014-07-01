@@ -306,11 +306,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Ecuador",
-			"longName": "Republic of Ecuador"
+			"longName": "Republic of Ecuador",
+			"postalCode": "Postal Code"
 		},
 		"es_EC": {
 			"shortName": "Ecuador",
-			"longName": "República del Ecuador"
+			"longName": "República del Ecuador",
+			"postalCode": "Código Postal"
 		}
 	},
 	"futureExpansion": {

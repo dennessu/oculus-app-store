@@ -24,9 +24,6 @@ public class TokenDaoTest extends BaseTest {
     private TokenOrderDao orderDao;
     @Autowired
     private TokenSetOfferDao tokenSetOfferDao;
-    @Autowired
-    @Qualifier("idGenerator")
-    protected IdGenerator idGenerator;
 
     @Test(enabled = true)
     public void testCreate() {
@@ -84,6 +81,7 @@ public class TokenDaoTest extends BaseTest {
         entity.setHashValue(generateLong());
         entity.setStatus(ItemStatus.ACTIVATED);
         entity.setOrderId(order.getId());
+        entity.setId(generateId());
         return entity;
     }
 

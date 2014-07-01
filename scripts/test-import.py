@@ -35,11 +35,10 @@ def main():
     for line in sys.stdin:
         lines.append(line)
         count += 1
-        if count == 1:
+        if count == 20:
             q.put(lines)
             count = 0
             lines = []
-        break
     if len(lines) > 0:
         q.put(lines)
 

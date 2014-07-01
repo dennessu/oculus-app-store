@@ -126,11 +126,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Oman",
-			"longName": "Sultanate of Oman"
+			"longName": "Sultanate of Oman",
+			"postalCode": "Postal Code"
 		},
 		"ar_OM": {
 			"shortName": "عمان",
-			"longName": "سلطنة عُمان"
+			"longName": "سلطنة عُمان",
+			"postalCode": "الرمز البريدي"
 		}
 	},
 	"futureExpansion": {

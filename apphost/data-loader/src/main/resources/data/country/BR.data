@@ -345,11 +345,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Brazil",
-			"longName": "Federative Republic of Brazil"
+			"longName": "Federative Republic of Brazil",
+			"postalCode": "CEP"
 		},
 		"pt_BR": {
 			"shortName": "Brasil",
-			"longName": "República Federativa do Brasil"
+			"longName": "República Federativa do Brasil",
+			"postalCode": "CEP"
 		}
 	},
 	"futureExpansion": {

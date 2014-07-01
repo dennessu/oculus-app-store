@@ -66,6 +66,7 @@ class TestBuilder {
         order.discounts.add(buildDiscount('AAA', orderItem))
         order.locale = new LocaleId('en-US')
         order.honoredTime = new Date()
+        order.purchaseTime = new Date()
         return order
     }
 

@@ -430,11 +430,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "China",
-			"longName": "China"
+			"longName": "People's Republic of China",
+			"postalCode": "Postal Code"
 		},
 		"zh_CN": {
 			"shortName": "中国",
-			"longName": "中华人民共和国"
+			"longName": "中华人民共和国",
+			"postalCode": "邮政编码"
 		}
 	},
 	"futureExpansion": {

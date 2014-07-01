@@ -25,7 +25,7 @@ class SabrixFacadeTest extends BaseTest{
     @Resource(name = 'sabrixFacade')
     TaxFacade sabrixFacade
 
-    @Test(enabled = true)
+    @Test(enabled = false)
     void testTaxCalculation() {
         def physicalBalance = buildBalance(true)
         def address = buildAddress()

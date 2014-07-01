@@ -162,11 +162,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Panama",
-			"longName": "Republic of Panama"
+			"longName": "Republic of Panama",
+			"postalCode": "Postal Code"
 		},
 		"es_PA": {
 			"shortName": "Panamá",
-			"longName": "República de Panamá"
+			"longName": "República de Panamá",
+			"postalCode": "Código Postal"
 		}
 	},
 	"futureExpansion": {

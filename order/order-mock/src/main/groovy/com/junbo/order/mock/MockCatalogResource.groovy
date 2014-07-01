@@ -2,7 +2,9 @@ package com.junbo.order.mock
 
 import com.junbo.catalog.spec.model.offer.ItemEntry
 import com.junbo.catalog.spec.model.offer.OfferRevision
+import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
 import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions
+
 import com.junbo.catalog.spec.resource.OfferRevisionResource
 import com.junbo.common.id.OfferRevisionId
 import com.junbo.common.id.OrganizationId
@@ -32,7 +34,8 @@ class MockCatalogResource extends BaseMock implements OfferRevisionResource {
     }
 
     @Override
-    Promise<OfferRevision> getOfferRevision(@PathParam('revisionId') String revisionId) {
+    Promise<OfferRevision> getOfferRevision(@PathParam('revisionId') String revisionId,
+                                            @BeanParam OfferRevisionGetOptions options) {
         return Promise.pure(generateOfferRevision())
     }
 

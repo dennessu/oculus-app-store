@@ -222,11 +222,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Sudan",
-			"longName": "Republic of the Sudan"
+			"longName": "Republic of the Sudan",
+			"postalCode": "Postal Code"
 		},
 		"ar_SD": {
 			"shortName": "السودان",
-			"longName": "جمهورية السودان"
+			"longName": "جمهورية السودان",
+			"postalCode": "الرمز البريدي"
 		}
 	},
 	"futureExpansion": {

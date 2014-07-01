@@ -23,6 +23,8 @@ public class OfferRevisionsGetOptions extends PageableGetOptions {
     private String status;
     @QueryParam("timeInMillis")
     private Long timestamp;
+    @QueryParam("locale")
+    private String locale;
 
     public Set<String> getOfferIds() {
         return offerIds;
@@ -54,5 +56,13 @@ public class OfferRevisionsGetOptions extends PageableGetOptions {
 
     public void setTimestamp(Long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getLocale() {
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 }

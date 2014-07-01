@@ -157,11 +157,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "New Zealand",
-			"longName": "New Zealand"
+			"longName": "New Zealand",
+			"postalCode": "Postal Code"
 		},
 		"en_NZ": {
 			"shortName": "New Zealand",
-			"longName": "New Zealand"
+			"longName": "New Zealand",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

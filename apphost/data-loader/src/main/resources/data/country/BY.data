@@ -105,11 +105,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Belarus",
-			"longName": "Republic of Belarus"
+			"longName": "Republic of Belarus",
+			"postalCode": "Postal Code"
 		},
 		"be_BY": {
 			"shortName": "Белару́сь",
-			"longName": "Рэспубліка Беларусь"
+			"longName": "Рэспубліка Беларусь",
+			"postalCode": "паштовы індэкс"
 		}
 	},
 	"futureExpansion": {

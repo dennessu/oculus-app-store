@@ -19,11 +19,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Macao",
-			"longName": "Macao Special Administrative Region of the People's Republic of China"
+			"longName": "Macao Special Administrative Region of the People's Republic of China",
+			"postalCode": "Postal Code"
 		},
 		"zh_HK": {
 			"shortName": "澳門",
-			"longName": "中華人民共和國澳門特別行政區"
+			"longName": "中華人民共和國澳門特別行政區",
+			"postalCode": "郵政編碼"
 		}
 	},
 	"futureExpansion": {

@@ -193,11 +193,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Uzbekistan",
-			"longName": "Republic of Uzbekistan"
+			"longName": "Republic of Uzbekistan",
+			"postalCode": "Postal Code"
 		},
 		"uz_UZ": {
 			"shortName": "O'zbekiston",
-			"longName": "O'zbekiston Respublikasi"
+			"longName": "O'zbekiston Respublikasi",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

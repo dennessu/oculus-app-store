@@ -29,17 +29,18 @@ import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
  */
 @CompileStatic
 class CloudantClientImpl<T extends CloudantEntity> implements CloudantClient<T>, InitializingBean {
-    protected Class<T> entityClass
-    protected JunboAsyncHttpClient asyncHttpClient
+    private Class<T> entityClass
+    private JunboAsyncHttpClient asyncHttpClient
 
-    protected CloudantMarshaller marshaller
+    // marshaller is used to marshall/unmarshall payload
+    private CloudantMarshaller marshaller
 
-    protected String cloudantUser
-    protected String cloudantPassword
-    protected String cloudantDBUri
-    protected String dbNamePrefix
-    protected String dbName
-    protected String fullDbName
+    private String cloudantUser
+    private String cloudantPassword
+    private String cloudantDBUri
+    private String dbNamePrefix
+    private String dbName
+    private String fullDbName
 
     @Required
     void setAsyncHttpClient(JunboAsyncHttpClient asyncHttpClient) {
@@ -78,6 +79,10 @@ class CloudantClientImpl<T extends CloudantEntity> implements CloudantClient<T>,
     @Required
     void setEntityClass(Class<T> entityClass) {
         this.entityClass = entityClass
+    }
+
+    String getFullDbName() {
+        return fullDbName
     }
 
     @Override
@@ -152,20 +157,18 @@ class CloudantClientImpl<T extends CloudantEntity> implements CloudantClient<T>,
     }
 
     @Override
-    Promise<Void> cloudantDelete(String id) {
-        return cloudantGet(id).then { CloudantEntity cloudantDoc ->
-            if (cloudantDoc != null) {
-                return executeRequest(HttpMethod.DELETE, id.toString(), ['rev': cloudantDoc.cloudantRev], null).then({ Response response ->
-                    if (response.statusCode != HttpStatus.OK.value() && response.statusCode != HttpStatus.NOT_FOUND.value()) {
-                        CloudantError cloudantError = unmarshall(response.responseBody, CloudantError)
-                        throw new CloudantException("Failed to delete object from Cloudant, error: $cloudantError.error," +
-                                " reason: $cloudantError.reason")
-                    }
-                    return Promise.pure(null);
-                })
-            }
-            return Promise.pure(null);
+    Promise<Void> cloudantDelete(T entity) {
+        if (entity != null) {
+            return executeRequest(HttpMethod.DELETE, entity.cloudantId, ['rev': entity.cloudantRev], null).then({ Response response ->
+                if (response.statusCode != HttpStatus.OK.value() && response.statusCode != HttpStatus.NOT_FOUND.value()) {
+                    CloudantError cloudantError = unmarshall(response.responseBody, CloudantError)
+                    throw new CloudantException("Failed to delete object from Cloudant, error: $cloudantError.error," +
+                            " reason: $cloudantError.reason")
+                }
+                return Promise.pure(null);
+            })
         }
+        return Promise.pure(null);
     }
 
     @Override
@@ -279,11 +282,11 @@ class CloudantClientImpl<T extends CloudantEntity> implements CloudantClient<T>,
         })
     }
 
-    protected Promise<Response> executeRequest(HttpMethod method, String path, Map<String, String> queryParams, Object body) {
+    private Promise<Response> executeRequest(HttpMethod method, String path, Map<String, String> queryParams, Object body) {
         return executeRequest(method, path, queryParams, body, true)
     }
 
-    protected Promise<Response> executeRequest(HttpMethod method, String path, Map<String, String> queryParams, Object body, boolean useDbPath) {
+    private Promise<Response> executeRequest(HttpMethod method, String path, Map<String, String> queryParams, Object body, boolean useDbPath) {
         UriBuilder uriBuilder = UriBuilder.fromUri(cloudantDBUri)
         if (useDbPath) {
             uriBuilder.path(fullDbName)
@@ -314,7 +317,6 @@ class CloudantClientImpl<T extends CloudantEntity> implements CloudantClient<T>,
         }
 
         try {
-            final long startTime = System.currentTimeMillis()
             return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover { Throwable e ->
                 throw new CloudantConnectException('Exception happened while executing request to cloudant DB', e)
             }
@@ -323,7 +325,7 @@ class CloudantClientImpl<T extends CloudantEntity> implements CloudantClient<T>,
         }
     }
 
-    protected JunboAsyncHttpClient.BoundRequestBuilder getRequestBuilder(HttpMethod method, String uri) {
+    private JunboAsyncHttpClient.BoundRequestBuilder getRequestBuilder(HttpMethod method, String uri) {
         switch (method) {
             case HttpMethod.GET:
                 return asyncHttpClient.prepareGet(uri)

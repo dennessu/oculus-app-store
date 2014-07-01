@@ -53,7 +53,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Swaziland",
-			"longName": "Kingdom of Swaziland"
+			"longName": "Kingdom of Swaziland",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

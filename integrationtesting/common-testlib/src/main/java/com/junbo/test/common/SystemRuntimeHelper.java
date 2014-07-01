@@ -23,17 +23,20 @@ public class SystemRuntimeHelper {
                 cmd = "  cmd /c time 00:05:00";
                 Runtime.getRuntime().exec(cmd);
                 //2006-4-16
-                String dateFormatted = DateFormat.getDateInstance(DateFormat.MEDIUM).format(date);
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yy");
+                //String dateFormatted = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.US).format(date);
+
+                String dateFormatted = simpleDateFormat.format(date);
                 cmd = " cmd /c date " + dateFormatted;
                 Runtime.getRuntime().exec(cmd);
             } else {
                 //20060416
                 DateFormat format = new SimpleDateFormat("yyyyMMdd");
                 String dateFormatted = format.format(date);
-                cmd = "  date -s 20090326";
+                cmd = "  date -s " + dateFormatted;
                 Runtime.getRuntime().exec(cmd);
-                cmd = "  date -s 00:05:00";
-                Runtime.getRuntime().exec(cmd);
+                //cmd = "  date -s 00:05:00";
+                //Runtime.getRuntime().exec(cmd);
             }
         } catch (IOException e) {
             e.printStackTrace();

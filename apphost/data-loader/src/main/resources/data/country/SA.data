@@ -174,11 +174,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Saudi Arabia",
-			"longName": "Kingdom of Saudi Arabia"
+			"longName": "Kingdom of Saudi Arabia",
+			"postalCode": "Postal Code"
 		},
 		"ar_SA": {
 			"shortName": "العربية السعودية",
-			"longName": "المملكة العربية السعودية"
+			"longName": "المملكة العربية السعودية",
+			"postalCode": "الرمز البريدي"
 		}
 	},
 	"futureExpansion": {

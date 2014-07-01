@@ -11,7 +11,7 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.core.service.TokenService
+import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.db.repo.AuthorizationCodeRepository
 import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.AuthorizationCode
@@ -29,7 +29,7 @@ class GrantTokenByCode implements Action {
 
     private AuthorizationCodeRepository authorizationCodeRepository
 
-    private TokenService tokenService
+    private OAuthTokenService tokenService
 
     @Required
     void setAuthorizationCodeRepository(AuthorizationCodeRepository authorizationCodeRepository) {
@@ -37,7 +37,7 @@ class GrantTokenByCode implements Action {
     }
 
     @Required
-    void setTokenService(TokenService tokenService) {
+    void setTokenService(OAuthTokenService tokenService) {
         this.tokenService = tokenService
     }
 

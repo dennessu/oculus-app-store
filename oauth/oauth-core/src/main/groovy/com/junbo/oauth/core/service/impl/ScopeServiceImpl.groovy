@@ -8,7 +8,7 @@ package com.junbo.oauth.core.service.impl
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.ScopeService
-import com.junbo.oauth.core.service.TokenService
+import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.core.util.UriUtil
 import com.junbo.oauth.db.exception.DBUpdateConflictException
 import com.junbo.oauth.db.repo.ScopeRepository
@@ -26,7 +26,7 @@ class ScopeServiceImpl implements ScopeService {
     private static final String SCOPE_MANAGE_SCOPE = 'scope.manage'
 
     private ScopeRepository scopeRepository
-    private TokenService tokenService
+    private OAuthTokenService tokenService
 
     @Required
     void setScopeRepository(ScopeRepository scopeRepository) {
@@ -34,7 +34,7 @@ class ScopeServiceImpl implements ScopeService {
     }
 
     @Required
-    void setTokenService(TokenService tokenService) {
+    void setTokenService(OAuthTokenService tokenService) {
         this.tokenService = tokenService
     }
 

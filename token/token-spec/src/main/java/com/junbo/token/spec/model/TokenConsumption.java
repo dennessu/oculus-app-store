@@ -6,13 +6,18 @@
 
 package com.junbo.token.spec.model;
 
+import com.junbo.common.jackson.annotation.UserId;
+import com.junbo.token.common.FilterOut;
+
 /**
  * Token Consumption model.
  */
 public class TokenConsumption {
 
+    @FilterOut
     private Long id;
     private Long itemId;
+    @UserId
     private Long userId;
     private Long product;
     private String tokenString;

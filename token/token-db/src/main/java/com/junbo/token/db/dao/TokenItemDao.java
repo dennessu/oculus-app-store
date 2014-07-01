@@ -7,6 +7,10 @@
 package com.junbo.token.db.dao;
 
 import com.junbo.token.db.entity.TokenItemEntity;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+
+import java.util.List;
 
 /**
  * token item dao.
@@ -17,7 +21,13 @@ public class TokenItemDao extends CommonDataDAOImpl<TokenItemEntity, Long> {
     }
 
     public TokenItemEntity getByHashValue(final Long hashValue) {
-        //TODO: currently hashValue is the itemId PK
-        return get(hashValue);
+        Criteria criteria = currentSession(hashValue).createCriteria(TokenItemEntity.class);
+        criteria.add(Restrictions.eq("hashValue", hashValue));
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        List<TokenItemEntity> results = criteria.list();
+        if(results == null || results.size() == 0){
+            return  null;
+        }
+        return results.get(0);
     }
 }

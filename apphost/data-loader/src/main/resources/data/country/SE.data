@@ -273,11 +273,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Sweden",
-			"longName": "Kingdom of Sweden"
+			"longName": "Kingdom of Sweden",
+			"postalCode": "Postal Code"
 		},
 		"sv_SE": {
 			"shortName": "Sverige",
-			"longName": "Konungariket Sverige"
+			"longName": "Konungariket Sverige",
+			"postalCode": "postnummer"
 		}
 	},
 	"futureExpansion": {

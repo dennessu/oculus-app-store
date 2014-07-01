@@ -22,6 +22,7 @@ includeDir 'docs'
 includeDir 'apphost'
 includeDir 'crypto'
 includeDir 'iap'
+includeDir 'token'
 
 def includeDir(String dir) {
     new File(rootDir, "$dir/settings.gradle").eachLine { line ->

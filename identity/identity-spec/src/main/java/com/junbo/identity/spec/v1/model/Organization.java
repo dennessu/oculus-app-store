@@ -7,6 +7,7 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.cloudant.CloudantUnique;
 import com.junbo.common.id.*;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -17,7 +18,7 @@ import java.util.List;
 /**
  * Created by liangfu on 5/22/14.
  */
-public class Organization extends PropertyAssignedAwareResourceMeta<OrganizationId> {
+public class Organization extends PropertyAssignedAwareResourceMeta<OrganizationId> implements CloudantUnique {
     @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of organization resource.")
     @JsonProperty("self")
     private OrganizationId id;
@@ -253,5 +254,20 @@ public class Organization extends PropertyAssignedAwareResourceMeta<Organization
         result = 31 * result + (canonicalName != null ? canonicalName.hashCode() : 0);
         result = 31 * result + (migratedCompanyId != null ? migratedCompanyId.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String[] getUniqueKeys() {
+        return new String[] {
+                getMigrationUniqueKey()
+        };
+    }
+
+    private String getMigrationUniqueKey() {
+        if (migratedCompanyId == null) {
+            return null;
+        } else {
+            return "ORG_MIGRATION_ID: " + migratedCompanyId.toString();
+        }
     }
 }

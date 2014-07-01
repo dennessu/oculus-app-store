@@ -238,11 +238,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "HongKong",
-			"longName": "HongKong"
+			"longName": "HongKong",
+			"postalCode": "Postal Code"
 		},
 		"zh_HK": {
 			"shortName": "香港",
-			"longName": "香港"
+			"longName": "香港",
+			"postalCode": "郵政編碼"
 		}
 	},
 	"futureExpansion": {

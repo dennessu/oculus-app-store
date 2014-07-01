@@ -109,7 +109,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Ethiopia",
-			"longName": "Federal Democratic Republic of Ethiopia"
+			"longName": "Federal Democratic Republic of Ethiopia",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

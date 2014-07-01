@@ -174,11 +174,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Bosnia",
-			"longName": "Bosnia and Herzegovina"
+			"longName": "Bosnia and Herzegovina",
+			"postalCode": "Postal Code"
 		},
 		"sr_BA": {
 			"shortName": "Bosna",
-			"longName": "Bosna i Hercegovina"
+			"longName": "Bosna i Hercegovina",
+			"postalCode": "Поштански број"
 		}
 	},
 	"futureExpansion": {

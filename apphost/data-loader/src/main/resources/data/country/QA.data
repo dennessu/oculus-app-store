@@ -102,11 +102,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Qatar",
-			"longName": "State of Qatar"
+			"longName": "State of Qatar",
+			"postalCode": "Postal Code"
 		},
 		"ar_QA": {
 			"shortName": "قطر",
-			"longName": "دولة قطر‎"
+			"longName": "دولة قطر‎",
+			"postalCode": "الرمز البريدي"
 		}
 	},
 	"futureExpansion": {

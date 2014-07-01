@@ -213,11 +213,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Kazakhstan",
-			"longName": "Republic of Kazakhstan"
+			"longName": "Republic of Kazakhstan",
+			"postalCode": "Postal Code"
 		},
 		"kk_KZ": {
 			"shortName": "Қазақстан",
-			"longName": "Қазақстан Республикасы"
+			"longName": "Қазақстан Республикасы",
+			"postalCode": "Почтовый индекс"
 		}
 	},
 	"futureExpansion": {

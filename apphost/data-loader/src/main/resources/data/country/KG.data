@@ -115,8 +115,17 @@
 		"id": "ru_RU"
 	}],
 	"locales": {
-		
-	},
+    		"en_US": {
+    			"shortName": "Kyrgyzstan",
+    			"longName": "Kyrgyz Republic",
+    			"postalCode": "Postal Code"
+    		},
+    		"ru_RU": {
+    			"shortName": "Киргизия",
+    			"longName": "Кыргызская Республика",
+    			"postalCode": "Почтовый индекс"
+    		}
+    	},
 	"futureExpansion": {
 		
 	}

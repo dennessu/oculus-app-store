@@ -19,11 +19,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Réunion",
-			"longName": "Réunion"
+			"longName": "Réunion",
+			"postalCode": "Postal Code"
 		},
 		"fr_FR": {
 			"shortName": "La Réunion",
-			"longName": "La Réunion"
+			"longName": "La Réunion",
+			"postalCode": "code postal"
 		}
 	},
 	"futureExpansion": {

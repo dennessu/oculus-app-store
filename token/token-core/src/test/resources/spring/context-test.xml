@@ -7,4 +7,11 @@
     <import resource="classpath*:spring/*-context.xml"/>
     <import resource="classpath*:spring/transaction.xml"/>
 
+    <bean id="mockTokenService" class="com.junbo.token.core.impl.TokenServiceImpl">
+        <property name="cryptoResource" ref="mockTokenCryptoResource"/>
+    </bean>
+
+    <bean id="mockTokenCryptoResource" class="com.junbo.token.core.service.MockCryptoServiceImpl">
+    </bean>
+
 </beans>

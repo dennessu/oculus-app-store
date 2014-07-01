@@ -118,15 +118,18 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Cyprus",
-			"longName": "Republic of Cyprus"
+			"longName": "Republic of Cyprus",
+			"postalCode": "Postal Code"
 		},
 		"el_CY": {
 			"shortName": "Κύπρος",
-			"longName": "Κυπριακή Δημοκρατία"
+			"longName": "Κυπριακή Δημοκρατία",
+			"postalCode": "Ταχυδρομικός Κώδικας"
 		},
 		"tr_CY": {
 			"shortName": "Kıbrıs",
-			"longName": "Kıbrıs Cumhuriyeti"
+			"longName": "Kıbrıs Cumhuriyeti",
+			"postalCode": "Posta Kodu"
 		}
 	},
 	"futureExpansion": {

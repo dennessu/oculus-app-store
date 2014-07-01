@@ -8,6 +8,7 @@ package com.junbo.subscription.clientproxy.impl;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions;
 import com.junbo.catalog.spec.resource.ItemResource;
 import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
@@ -76,7 +77,7 @@ public class CatalogGatewayImpl implements CatalogGateway {
         try {
             // TODO
             OfferRevision offerRev =
-                    offerRevResource.getOfferRevision(offerRevId).get();
+                    offerRevResource.getOfferRevision(offerRevId, new OfferRevisionGetOptions()).get();
 
             if (offerRev == null) {
                 throw new ResourceNotFoundException(

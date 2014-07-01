@@ -585,11 +585,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Japan",
-			"longName": "Japan"
+			"longName": "Japan",
+			"postalCode": "Postal Code"
 		},
 		"ja_JP": {
 			"shortName": "日本国",
-			"longName": "日本国"
+			"longName": "日本国",
+			"postalCode": "郵便番号"
 		}
 	},
 	"futureExpansion": {

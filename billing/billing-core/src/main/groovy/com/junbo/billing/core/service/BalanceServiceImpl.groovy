@@ -304,7 +304,7 @@ class BalanceServiceImpl implements BalanceService {
     Promise<Balance> processAsyncBalance(Balance balance) {
 
         Balance savedBalance = balanceValidator.validateBalanceId(balance.getId())
-        def callback = authorizeCallbackFactory.create(balance)
+        def callback = authorizeCallbackFactory.create(savedBalance)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('process-async')) {
                 throw AppErrors.INSTANCE.accessDenied().exception()
@@ -313,12 +313,12 @@ class BalanceServiceImpl implements BalanceService {
             balanceValidator.validateBalanceStatus(savedBalance.status,
                     [BalanceStatus.INIT.name(), BalanceStatus.QUEUING.name()])
             if (savedBalance.isAsyncCharge != true) {
-                throw AppErrors.INSTANCE.notAsyncChargeBalance(balance.id.toString()).exception()
+                throw AppErrors.INSTANCE.notAsyncChargeBalance(savedBalance.id.toString()).exception()
             }
 
             Balance originalBalance = null
-            if (balance.type == BalanceType.REFUND.name()) {
-                originalBalance = balanceRepositoryFacade.getBalance(balance.originalBalanceId.value)
+            if (savedBalance.type == BalanceType.REFUND.name()) {
+                originalBalance = balanceRepositoryFacade.getBalance(savedBalance.originalBalanceId.value)
             }
             return transactionService.processBalance(savedBalance, originalBalance).recover { Throwable throwable ->
                 updateAndCommitBalance(savedBalance, EventActionType.ASYNC_CHARGE)

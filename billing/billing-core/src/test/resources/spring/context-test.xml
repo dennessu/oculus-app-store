@@ -15,6 +15,7 @@
     <bean id="mockTaxFacade" class="com.junbo.billing.core.mock.MockTaxFacade" />
     <bean id="mockCurrencyFacade" class="com.junbo.billing.core.mock.MockCurrencyFacade" />
     <bean id="mockCountryFacade" class="com.junbo.billing.core.mock.MockCountryFacade" />
+    <bean id="mockCatalogFacade" class="com.junbo.billing.core.mock.MockCatalogFacade" />
 
     <bean id="mockBalanceValidator" class="com.junbo.billing.core.validator.BalanceValidator">
         <property name="identityFacade" ref="mockIdentityFacade" />
@@ -36,6 +37,7 @@
         <constructor-arg name="providerName" value="MOCK"/>
         <property name="identityFacade" ref="mockIdentityFacade" />
         <property name="paymentFacade" ref="mockPaymentFacade" />
+        <property name="catalogFacade" ref="mockCatalogFacade" />
     </bean>
 
     <bean id="mockBalanceService" class="com.junbo.billing.core.service.BalanceServiceImpl">

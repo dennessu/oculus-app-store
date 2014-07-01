@@ -18,7 +18,7 @@ interface CloudantClient<T extends CloudantEntity> {
 
     Promise<T> cloudantPut(T entity)
 
-    Promise<Void> cloudantDelete(String id)
+    Promise<Void> cloudantDelete(T entity)
 
     Promise<List<T>> cloudantGetAll(Integer limit, Integer skip, boolean descending)
 

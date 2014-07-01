@@ -157,7 +157,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Burundi",
-			"longName": "Republic of Burundi"
+			"longName": "Republic of Burundi",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

@@ -942,11 +942,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Thailand",
-			"longName": "Kingdom of Thailand"
+			"longName": "Kingdom of Thailand",
+			"postalCode": "Postal Code"
 		},
 		"th_TH": {
 			"shortName": "ประเทศไทย",
-			"longName": "ราชอาณาจักรไทย"
+			"longName": "ราชอาณาจักรไทย",
+			"postalCode": "รหัสไปรษณีย์"
 		}
 	},
 	"futureExpansion": {

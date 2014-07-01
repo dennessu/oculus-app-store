@@ -10,7 +10,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.service.TokenService
+import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.spec.model.AccessToken
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
@@ -22,10 +22,10 @@ import org.springframework.util.Assert
 @CompileStatic
 class GrantTokenByPassword implements Action {
 
-    private TokenService tokenService
+    private OAuthTokenService tokenService
 
     @Required
-    void setTokenService(TokenService tokenService) {
+    void setTokenService(OAuthTokenService tokenService) {
         this.tokenService = tokenService
     }
 

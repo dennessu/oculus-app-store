@@ -140,6 +140,9 @@ public class BalanceRepositoryFacadeImpl implements BalanceRepositoryFacade {
     @Override
     public Balance getBalance(Long balanceId) {
         Balance balance = balanceRepository.get(new BalanceId(balanceId)).get();
+        if (balance == null) {
+            return null;
+        }
 
         List<BalanceItem> itemEntities = balanceItemRepository.findByBalanceId(balanceId).get();
         for(BalanceItem balanceItem : itemEntities) {

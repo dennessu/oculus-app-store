@@ -102,11 +102,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "UAE",
-			"longName": "United Arab Emirates"
+			"longName": "United Arab Emirates",
+			"postalCode": "Postal Code"
 		},
 		"ar_AE": {
 			"shortName": "دولة الإمارات العربية المتحدة",
-			"longName": "دولة الإمارات العربية المتحدة"
+			"longName": "دولة الإمارات العربية المتحدة",
+            "postalCode": "الرمز البريدي"
 		}
 	},
 	"futureExpansion": {

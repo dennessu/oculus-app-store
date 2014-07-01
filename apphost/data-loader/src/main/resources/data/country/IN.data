@@ -298,11 +298,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "India",
-			"longName": "Republic of India"
+			"longName": "Republic of India",
+			"postalCode": "Postal Code"
 		},
 		"en_IN": {
 			"shortName": "India",
-			"longName": "Republic of India"
+			"longName": "Republic of India",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

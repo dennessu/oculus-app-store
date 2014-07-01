@@ -762,11 +762,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Morocco",
-			"longName": "Kingdom of Morocco"
+			"longName": "Kingdom of Morocco",
+			"postalCode": "Postal Code"
 		},
 		"ar_MA": {
 			"shortName": "المغرب",
-			"longName": "المملكة المغربية"
+			"longName": "المملكة المغربية",
+			"postalCode": "الرمز البريدي"
 		}
 	},
 	"futureExpansion": {

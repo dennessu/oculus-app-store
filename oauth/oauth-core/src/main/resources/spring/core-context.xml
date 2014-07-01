@@ -3,7 +3,7 @@
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="tokenService" class="com.junbo.oauth.core.service.impl.TokenServiceImpl">
+    <bean id="tokenService" class="com.junbo.oauth.core.service.impl.OAuthTokenServiceImpl">
         <property name="accessTokenRepository" ref="accessTokenRepository"/>
         <property name="defaultAccessTokenExpiration" value="${oauth.core.accessToken.default.expiration}"/>
         <property name="defaultRefreshTokenExpiration" value="${oauth.core.refreshToken.default.expiration}"/>

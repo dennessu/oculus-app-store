@@ -7,6 +7,7 @@
 package com.junbo.token.db.repository;
 
 import com.junbo.oom.core.MappingContext;
+import com.junbo.sharding.IdGenerator;
 import com.junbo.token.common.TokenUtil;
 import com.junbo.token.db.dao.*;
 import com.junbo.token.db.entity.*;
@@ -18,6 +19,7 @@ import com.junbo.token.spec.internal.TokenOrder;
 import com.junbo.token.spec.model.TokenConsumption;
 import com.junbo.token.spec.model.TokenItem;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +40,9 @@ public class TokenRepository {
     private TokenConsumptionDao tokenConsumptionDao;
     @Autowired
     private TokenMapper tokenMapper;
+    @Autowired
+    @Qualifier("oculus48IdGenerator")
+    protected IdGenerator idGenerator;
 
     public TokenSet addTokenSet(TokenSet tokenSet){
         TokenSetEntity entity = tokenMapper.toTokenSetEntity(tokenSet, new MappingContext());
@@ -79,9 +84,9 @@ public class TokenRepository {
     public List<TokenItem> addTokenItems(List<TokenItem> items){
         for(TokenItem item : items){
             TokenItemEntity itemEntity = tokenMapper.toTokenItemEntity(item, new MappingContext());
-            //TODO: use hashValue as PK first. Need to consider partitionable-id
-            itemEntity.setId(itemEntity.getHashValue());
-            Long itemEntityId = tokenItemDao.save(itemEntity);
+            //TODO: use new generated PK first. Need to consider partitionable-id
+            itemEntity.setId(idGenerator.nextId());
+            tokenItemDao.save(itemEntity);
         }
         return items;
     }

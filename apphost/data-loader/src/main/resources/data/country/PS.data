@@ -146,7 +146,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Palestine",
-			"longName": "Palestine"
+			"longName": "Palestine",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

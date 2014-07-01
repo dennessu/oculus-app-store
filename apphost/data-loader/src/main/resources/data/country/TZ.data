@@ -229,7 +229,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Tanzania",
-			"longName": "United Republic of Tanzania"
+			"longName": "United Republic of Tanzania",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

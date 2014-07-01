@@ -522,11 +522,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Romania",
-			"longName": "Romania"
+			"longName": "Romania",
+			"postalCode": "Postal Code"
 		},
 		"ro_RO": {
 			"shortName": "România",
-			"longName": "România"
+			"longName": "România",
+			"postalCode": "Cod poștal"
 		}
 	},
 	"futureExpansion": {

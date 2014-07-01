@@ -45,6 +45,8 @@ class OrderServiceContext {
     Address shippingAddress
     Boolean isAsyncCharge
 
+    String riskTransactionId;
+
     /**
      * Offers in order in map structure
      */

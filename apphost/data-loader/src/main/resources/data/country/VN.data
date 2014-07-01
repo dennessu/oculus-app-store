@@ -786,11 +786,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Vietnam",
-			"longName": "Socialist Republic of Vietnam"
+			"longName": "Socialist Republic of Vietnam",
+			"postalCode": "Postal Code"
 		},
 		"vi_VN": {
 			"shortName": "Việt Nam",
-			"longName": "Cộng hòa Xã hội chủ nghĩa Việt Nam"
+			"longName": "Cộng hòa Xã hội chủ nghĩa Việt Nam",
+			"postalCode": "Mã bưu chính"
 		}
 	},
 	"futureExpansion": {

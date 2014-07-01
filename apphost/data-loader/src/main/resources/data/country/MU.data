@@ -157,7 +157,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Mauritius",
-			"longName": "Republic of Mauritius"
+			"longName": "Republic of Mauritius",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {

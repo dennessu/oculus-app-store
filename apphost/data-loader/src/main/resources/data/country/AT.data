@@ -129,11 +129,13 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Austria",
-			"longName": "Republic of Austria"
+			"longName": "Republic of Austria",
+			"postalCode": "Postal Code"
 		},
 		"de_AT": {
 			"shortName": "Österreich",
-			"longName": "Republik Österreich"
+			"longName": "Republik Österreich",
+			"postalCode": "Postleitzahl"
 		}
 	},
 	"futureExpansion": {

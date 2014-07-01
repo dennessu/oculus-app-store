@@ -109,7 +109,8 @@
 	"locales": {
 		"en_US": {
 			"shortName": "Congo-Kinshasa",
-			"longName": "Democratic Republic of the Congo"
+			"longName": "Democratic Republic of the Congo",
+			"postalCode": "Postal Code"
 		}
 	},
 	"futureExpansion": {
