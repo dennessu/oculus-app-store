@@ -8,16 +8,12 @@
         <property name="accessTokenPostfix" value="${oauth.db.accessTokenPostfix}"/>
         <property name="authorizationCodeLength" value="${oauth.db.authorizationCodeLength}"/>
         <property name="authorizationCodePostfix" value="${oauth.db.authorizationCodePostfix}"/>
-        <property name="loginStateLength" value="${oauth.db.loginStateLength}"/>
-        <property name="loginStatePostfix" value="${oauth.db.loginStatePostfix}"/>
         <property name="refreshTokenLength" value="${oauth.db.refreshTokenLength}"/>
         <property name="refreshTokenPostfix" value="${oauth.db.refreshTokenPostfix}"/>
         <property name="refreshTokenSeriesLength" value="${oauth.db.refreshTokenSeriesLength}"/>
         <property name="rememberMeTokenLength" value="${oauth.db.rememberMeTokenLength}"/>
         <property name="rememberMeTokenPostfix" value="${oauth.db.rememberMeTokenPostfix}"/>
         <property name="rememberMeTokenSeriesLength" value="${oauth.db.rememberMeTokenSeriesLength}"/>
-        <property name="sessionStateLength" value="${oauth.db.sessionStateLength}"/>
-        <property name="sessionStatePostfix" value="${oauth.db.sessionStatePostfix}"/>
         <property name="clientIdLength" value="${oauth.db.clientIdLength}"/>
         <property name="clientSecretLength" value="${oauth.db.clientSecretLength}"/>
         <property name="saltLength" value="${oauth.db.saltLength}"/>
