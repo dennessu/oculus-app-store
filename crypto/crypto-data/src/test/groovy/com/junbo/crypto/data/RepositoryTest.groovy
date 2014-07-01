@@ -1,13 +1,14 @@
 package com.junbo.crypto.data
 
 import com.junbo.common.id.UserId
+import com.junbo.crypto.data.repo.ItemCryptoRepo
 import com.junbo.crypto.data.repo.MasterKeyRepo
 import com.junbo.crypto.data.repo.UserCryptoKeyRepo
+import com.junbo.crypto.spec.model.ItemCryptoRepoData
 import com.junbo.crypto.spec.model.MasterKey
 import com.junbo.crypto.spec.model.UserCryptoKey
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestExecutionListeners
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests
@@ -34,7 +35,10 @@ class RepositoryTest extends AbstractTestNGSpringContextTests {
     @Autowired
     private UserCryptoKeyRepo userCryptoKeyRepo
 
-    @Test
+    @Autowired
+    private ItemCryptoRepo itemCryptoRepo
+
+    @Test(enabled = false)
     public void testMasterKeyRepo() {
         SecureRandom random = new SecureRandom()
         MasterKey masterKey = new MasterKey()
@@ -67,5 +71,22 @@ class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         List<UserCryptoKey> list = userCryptoKeyRepo.getAllUserCryptoKeys(userId).get()
         assert list.size() != 0
+    }
+
+    @Test
+    public void testItemCryptoRepo() {
+        ItemCryptoRepoData data = new ItemCryptoRepoData()
+        data.setItemId(UUID.randomUUID().toString())
+        data.setEncryptedPrivateKey(UUID.randomUUID().toString())
+        data.setEncryptedPublicKey(UUID.randomUUID().toString())
+
+        ItemCryptoRepoData newDate = itemCryptoRepo.create(data).get()
+
+        data = itemCryptoRepo.get(newDate.id).get()
+
+        assert data.encryptedPublicKey == newDate.encryptedPublicKey
+
+        data = itemCryptoRepo.getByItemId(newDate.itemId).get()
+        assert data.encryptedPrivateKey == newDate.encryptedPrivateKey
     }
 }

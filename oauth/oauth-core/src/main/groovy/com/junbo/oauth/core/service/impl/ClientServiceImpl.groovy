@@ -66,8 +66,7 @@ class ClientServiceImpl implements ClientService {
 
         validateClient(client)
 
-        TokenInfo tokenInfo = AuthorizeContext.currentTokenInfo
-        client.ownerUserId = tokenInfo.sub.value
+        client.ownerUserId = AuthorizeContext.currentUserId.value
         String clientId = tokenGenerator.generateClientId()
         while (clientRepository.getClient(clientId) != null) {
             clientId = tokenGenerator.generateClientId()
@@ -89,12 +88,11 @@ class ClientServiceImpl implements ClientService {
 
         Client client = clientRepository.getClient(clientId)
 
-        TokenInfo tokenInfo = AuthorizeContext.currentTokenInfo
         if (client == null) {
             throw AppExceptions.INSTANCE.notExistClient(clientId).exception()
         }
 
-        if (client.ownerUserId != tokenInfo.sub.value) {
+        if (client.ownerUserId != AuthorizeContext.currentUserId) {
             throw AppExceptions.INSTANCE.notClientOwner().exception()
         }
 

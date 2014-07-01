@@ -29,4 +29,8 @@
         <constructor-arg name="keyPasswords" value="${crypto.core.keyPassword}" />
         <constructor-arg name="enableEncrypt" value="${crypto.core.enable}" />
     </bean>
+
+    <bean id="itemCryptoValidator" class="com.junbo.crypto.core.validator.impl.ItemCryptoValidatorImpl">
+        <property name="itemCryptoRepo" ref="itemCryptoRepo" />
+    </bean>
 </beans>

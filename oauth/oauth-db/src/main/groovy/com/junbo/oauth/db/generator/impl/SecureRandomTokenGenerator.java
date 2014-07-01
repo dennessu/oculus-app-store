@@ -12,6 +12,7 @@ import org.springframework.util.Assert;
 
 import java.security.SecureRandom;
 import java.util.Random;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 /**
@@ -27,12 +28,6 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
     private static final String TOKEN_DELIMITER = ";";
 
     private final Random random = new SecureRandom();
-
-    private int loginStateLength;
-    private String loginStatePostfix;
-
-    private int sessionStateLength;
-    private String sessionStatePostfix;
 
     private int authorizationCodeLength;
     private String authorizationCodePostfix;
@@ -55,16 +50,6 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
 
     private int emailVerifyCodeLength;
     private int resetPasswordCodeLength;
-
-    @Required
-    public void setLoginStateLength(int loginStateLength) {
-        this.loginStateLength = loginStateLength;
-    }
-
-    @Required
-    public void setLoginStatePostfix(String loginStatePostfix) {
-        this.loginStatePostfix = loginStatePostfix;
-    }
 
     @Required
     public void setAuthorizationCodeLength(int authorizationCodeLength) {
@@ -117,16 +102,6 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
     }
 
     @Required
-    public void setSessionStateLength(int sessionStateLength) {
-        this.sessionStateLength = sessionStateLength;
-    }
-
-    @Required
-    public void setSessionStatePostfix(String sessionStatePostfix) {
-        this.sessionStatePostfix = sessionStatePostfix;
-    }
-
-    @Required
     public void setClientIdLength(int clientIdLength) {
         this.clientIdLength = clientIdLength;
     }
@@ -170,12 +145,12 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
 
     @Override
     public String generateLoginStateId() {
-        return generate(loginStateLength) + loginStatePostfix;
+        return UUID.randomUUID().toString();
     }
 
     @Override
     public String generateSessionStateId() {
-        return generate(sessionStateLength) + sessionStatePostfix;
+        return UUID.randomUUID().toString();
     }
 
     @Override

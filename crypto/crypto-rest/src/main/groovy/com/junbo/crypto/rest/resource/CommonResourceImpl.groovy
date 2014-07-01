@@ -14,7 +14,6 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.CollectionUtils
 
-import javax.crypto.spec.SecretKeySpec
 import java.security.Key
 import java.security.PublicKey
 
@@ -91,7 +90,7 @@ abstract class CommonResourceImpl {
 
             String decryptedMasterKey = asymmetricDecryptMasterKey(masterKey.encryptValue)
 
-            Key masterKeyLoaded = stringToKey(decryptedMasterKey)
+            Key masterKeyLoaded = aesCipherService.stringToKey(decryptedMasterKey)
 
             return Promise.pure(aesCipherService.decrypt(userEncryptValue, masterKeyLoaded))
         }
@@ -102,15 +101,10 @@ abstract class CommonResourceImpl {
 
             String decryptMasterKey = asymmetricDecryptMasterKey(current.encryptValue)
 
-            String encryptUserKey = aesCipherService.encrypt(rawUserKey, stringToKey(decryptMasterKey))
+            String encryptUserKey = aesCipherService.encrypt(rawUserKey, aesCipherService.stringToKey(decryptMasterKey))
 
             return Promise.pure(current.keyVersion.toString() + versionSeparator + encryptUserKey)
         }
-    }
-
-    protected Key stringToKey(String keyStr) {
-        byte [] bytes = keyStr.getBytes()
-        return new SecretKeySpec(bytes, 0, bytes.length, aesCipherService.getKeyAlgorithm());
     }
 
     // Used to encrypt and decrypt master key
@@ -139,13 +133,13 @@ abstract class CommonResourceImpl {
         return decryptedValue
     }
 
-    protected String asymmetricEncryptMasterKey(String rawMaterKey) {
+    protected String asymmetricEncryptMasterKey(String rawData) {
         Map<Integer, PublicKey> publicKeyMap = keyStoreService.getPublicKeys()
         Integer maxVersion = publicKeyMap.keySet().max()
 
         PublicKey publicKey = publicKeyMap[maxVersion]
 
-        return maxVersion.toString() + versionSeparator + rsaCipherService.encrypt(rawMaterKey, publicKey)
+        return maxVersion.toString() + versionSeparator + rsaCipherService.encrypt(rawData, publicKey)
     }
 
     // Used to encrypt and decrypt user message by userKey
@@ -165,7 +159,7 @@ abstract class CommonResourceImpl {
             }
 
             return symmetricDecryptUserKey(key.encryptValue).then { String userKey ->
-                Key userKeyLoaded = stringToKey(userKey)
+                Key userKeyLoaded = aesCipherService.stringToKey(userKey)
                 String value = aesCipherService.decrypt(encryptMessage, userKeyLoaded)
 
                 return Promise.pure(value)
@@ -181,12 +175,38 @@ abstract class CommonResourceImpl {
                 }
 
                 return symmetricDecryptUserKey(key.encryptValue).then { String userKey ->
-                    Key userKeyLoaded = stringToKey(userKey)
+                    Key userKeyLoaded = aesCipherService.stringToKey(userKey)
                     String value = aesCipherService.encrypt(message, userKeyLoaded)
 
                     return Promise.pure(userKeyVersion.toString() + versionSeparator + value)
                 }
             }
+        }
+    }
+
+    // Used to get raw masterKey
+    protected Promise<MasterKey> getCurrentDecryptedMasterKey() {
+        return getCurrentMasterKey().then { MasterKey masterKey ->
+            if (masterKey == null) {
+                throw new IllegalArgumentException('master key doesn\'t exist in current system')
+            }
+
+            String decryptedMasterKey = asymmetricDecryptMasterKey(masterKey.encryptValue)
+            masterKey.value = decryptedMasterKey
+            return Promise.pure(masterKey)
+        }
+    }
+
+    // Used to get raw masterKey by version
+    protected Promise<MasterKey> getCurrentDecryptedMasterKeyByVersion(Integer keyVersion) {
+        return masterKeyRepo.getMasterKeyByVersion(keyVersion).then { MasterKey masterKey ->
+            if (masterKey == null) {
+                throw new IllegalArgumentException('master key with version: ' + keyVersion + ' not found.')
+            }
+
+            String decryptedMasterKey = asymmetricDecryptMasterKey(masterKey.encryptValue)
+            masterKey.value = decryptedMasterKey
+            return Promise.pure(masterKey)
         }
     }
 

@@ -26,7 +26,7 @@
     [devops] sudo ln -sf /usr/lib/postgresql/9.3/bin/dropdb /usr/bin/dropdb
 
 #clean up exisitng db instance
-    [devops] sudo kill $(fuser -n tcp 5432 2> /dev/null)
+    [devops] sudo kill $(sudo fuser -n tcp 5432 2> /dev/null)
     [devops] sudo chown silkcloud:silkcloud /var/run/postgresql
     [devops] clean up all files including hidden files in /var/run/postgresql
 
@@ -38,15 +38,15 @@
     [devops] /etc/init.d/oidentd start
 
 [Skytool Londiste Installation]
-    [devops] sudo apt-get install make
-    [devops] sudo apt-get install gcc
-    [devops] sudo apt-get install python-all
-    [devops] sudo apt-get install python-dev
-    [devops] sudo apt-get install python-psycopg2
-    [devops] sudo apt-get install libpq-dev
-    [devops] sudo apt-get install postgresql-server-dev-9.3
+    [devops] sudo apt-get install -y make
+    [devops] sudo apt-get install -y gcc
+    [devops] sudo apt-get install -y python-all
+    [devops] sudo apt-get install -y python-dev
+    [devops] sudo apt-get install -y python-psycopg2
+    [devops] sudo apt-get install -y libpq-dev
+    [devops] sudo apt-get install -y postgresql-server-dev-9.3
 
-    [devops] wget http://pgfoundry.org/frs/download.php/3622/skytools-3.2.tar.gz -o /tmp/skytools-3.2.tar.gz
+    [devops] pushd /tmp && wget http://pgfoundry.org/frs/download.php/3622/skytools-3.2.tar.gz
     [devops] sudo ./configure --prefix=/usr/local
     [devops] sudo make
     [devops] sudo make install

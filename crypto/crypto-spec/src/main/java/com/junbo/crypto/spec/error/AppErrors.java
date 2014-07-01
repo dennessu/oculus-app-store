@@ -62,4 +62,10 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 403, code = "5000014", description = "Access denied")
     AppError accessDenied();
+
+    @ErrorDef(httpStatusCode = 500, code = "5000015", description = "Signature exception: {0}.")
+    AppError signatureException(String message);
+
+    @ErrorDef(httpStatusCode = 500, code = "5000016", description = "Item: {0} has no key.")
+    AppError itemKeyNotFound(String itemId);
 }

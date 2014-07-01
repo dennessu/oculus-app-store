@@ -12,6 +12,7 @@ import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.spec.enums.PaymentStatus;
+import com.junbo.payment.spec.enums.Platform;
 import com.junbo.payment.spec.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,9 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
     private String userName;
     private String password;
     private String signature;
-    private static final String REDIRECT_URL_PATH = "?cmd=_express-checkout&token=";
+    private static final String REDIRECT_CMD = "?cmd=_express-checkout";
+    private static final String REDIRECT_CMD_MOBILE = "?cmd=_express-checkout-mobile";
+    private static final String REDIRECT_TOKEN = "&token=";
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -155,7 +158,13 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
                 }
                 if(isSuccessAck(setResponse.getAck())){
                     paymentRequest.getWebPaymentInfo().setToken(setResponse.getToken());
-                    paymentRequest.getWebPaymentInfo().setRedirectURL(redirectURL + REDIRECT_URL_PATH + setResponse.getToken());
+                    String redirectPath = null;
+                    if(paymentRequest.getWebPaymentInfo().getPlatform().equals(Platform.PC)){
+                        redirectPath = REDIRECT_CMD + REDIRECT_TOKEN;
+                    }else{
+                        redirectPath = REDIRECT_CMD_MOBILE + REDIRECT_TOKEN;
+                    }
+                    paymentRequest.getWebPaymentInfo().setRedirectURL(redirectURL + redirectPath + setResponse.getToken());
                     paymentRequest.setStatus(PaymentStatus.UNCONFIRMED.toString());
                 }else{
                     handleErrorResponse(setResponse);

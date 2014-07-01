@@ -15,6 +15,7 @@ import com.junbo.payment.spec.model.PaymentProperty;
 import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Required;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,7 +43,13 @@ public class PaymentPropertyRepositorySqlImpl implements PaymentPropertyReposito
 
     @Override
     public Promise<List<PaymentProperty>> getByPaymentId(Long paymentId) {
-        return null;
+        List<PaymentPropertyEntity> entities = paymentPropertyDao.getByPaymentId(paymentId);
+        List<PaymentProperty> results = new ArrayList<PaymentProperty>();
+        for(PaymentPropertyEntity entity : entities){
+            PaymentProperty result = paymentMapper.toPaymentProperty(entity, new MappingContext());
+            results.add(result);
+        }
+        return Promise.pure(results);
     }
 
     @Override

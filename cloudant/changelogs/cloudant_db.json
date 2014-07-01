@@ -284,7 +284,14 @@
           "map": "function(doc) {  emit(doc.userId + ':' + doc.keyVersion.toString(), doc._id)}"
         }
       }
-    }, 
+    },
+      "item_crypt_key": {
+          "views": {
+              "by_item_id": {
+                  "map": "function(doc) { emit(doc.itemId, doc._id)}"
+              }
+          }
+      },
     "user_group": {
       "views": {
         "by_group_id": {

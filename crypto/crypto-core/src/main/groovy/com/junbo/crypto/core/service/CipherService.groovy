@@ -14,5 +14,5 @@ interface CipherService {
 
     public String decrypt(String encryptMessage, Key key)
 
-    public String getKeyAlgorithm()
+    public Key stringToKey(String str)
 }
