@@ -96,6 +96,7 @@ public class OrderTestDataProvider {
         offerRevision.setId(null);
         offerRevision.setResourceAge(null);
         offerRevision.setStatus("DRAFT");
+        offerRevision.setRev(null);
         OfferRevision offerRevisionUpdated = offerRevisionClient.postOfferRevision(offerRevision);
         offerRevisionUpdated.setStatus("APPROVED");
         offerRevisionClient.updateOfferRevision(offerRevisionUpdated.getRevisionId(), offerRevisionUpdated);
