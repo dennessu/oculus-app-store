@@ -6,7 +6,6 @@
 
 package com.junbo.catalog.db.repo;
 
-import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.dao.PromotionDao;
 import com.junbo.catalog.db.entity.PromotionEntity;
 import com.junbo.catalog.db.mapper.PromotionMapper;
@@ -49,7 +48,7 @@ public class PromotionRepository implements BaseEntityRepository<Promotion> {
     public Promotion update(Promotion promotion) {
         PromotionEntity dbEntity = promotionDao.get(promotion.getPromotionId());
         if (dbEntity == null) {
-            throw AppErrors.INSTANCE.notFound("offer", Utils.encodeId(promotion.getPromotionId())).exception();
+            throw AppErrors.INSTANCE.notFound("offer", promotion.getPromotionId()).exception();
         }
         PromotionMapper.fillDBEntity(promotion, dbEntity);
         return get(promotionDao.update(dbEntity));
@@ -59,7 +58,7 @@ public class PromotionRepository implements BaseEntityRepository<Promotion> {
     public void delete(String promotionId) {
         PromotionEntity dbEntity = promotionDao.get(promotionId);
         if (dbEntity == null) {
-            throw AppErrors.INSTANCE.notFound("promotion", Utils.encodeId(promotionId)).exception();
+            throw AppErrors.INSTANCE.notFound("promotion", promotionId).exception();
         }
         dbEntity.setDeleted(true);
         promotionDao.update(dbEntity);

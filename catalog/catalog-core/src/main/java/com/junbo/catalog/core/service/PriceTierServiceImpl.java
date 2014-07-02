@@ -6,7 +6,6 @@
 
 package com.junbo.catalog.core.service;
 
-import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.PriceTierService;
 import com.junbo.catalog.db.repo.PriceTierRepository;
 import com.junbo.catalog.spec.error.AppErrors;
@@ -14,6 +13,9 @@ import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
 import com.junbo.catalog.spec.model.pricetier.PriceTiersGetOptions;
 import com.junbo.common.error.AppError;
+import com.junbo.common.error.AppErrorException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -26,6 +28,7 @@ import java.util.List;
  * Price tier service implementation.
  */
 public class PriceTierServiceImpl implements PriceTierService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PriceTierServiceImpl.class);
     private PriceTierRepository priceTierRepo;
 
     @Required
@@ -37,7 +40,9 @@ public class PriceTierServiceImpl implements PriceTierService {
     public PriceTier getPriceTier(String tierId) {
         PriceTier priceTier = priceTierRepo.get(tierId);
         if (priceTier==null) {
-            throw AppErrors.INSTANCE.notFound("price-tiers", Utils.encodeId(tierId)).exception();
+            AppErrorException exception = AppErrors.INSTANCE.notFound("price-tiers", tierId).exception();
+            LOGGER.error("price-tier not found.", exception);
+            throw exception;
         }
         return priceTier;
     }
@@ -49,7 +54,7 @@ public class PriceTierServiceImpl implements PriceTierService {
 
             for (String tierId : options.getPriceTierIds()) {
                 PriceTier priceTier = priceTierRepo.get(tierId);
-
+                LOGGER.warn("price-tier not found: " + tierId);
                 if (priceTier != null) {
                     priceTiers.add(priceTier);
                 }
@@ -76,7 +81,9 @@ public class PriceTierServiceImpl implements PriceTierService {
     public void delete(String tierId) {
         PriceTier priceTier = priceTierRepo.get(tierId);
         if (priceTier == null) {
-            throw AppErrors.INSTANCE.notFound("price-tier", Utils.encodeId(tierId)).exception();
+            AppErrorException exception = AppErrors.INSTANCE.notFound("price-tiers", tierId).exception();
+            LOGGER.error("price-tier not found.", exception);
+            throw exception;
         }
         priceTierRepo.delete(tierId);
     }
@@ -90,7 +97,9 @@ public class PriceTierServiceImpl implements PriceTierService {
 
         validateCommon(priceTier, errors);
         if (!errors.isEmpty()) {
-            throw AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            AppErrorException exception = AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            LOGGER.error("Error creating price-tier.", exception);
+            throw exception;
         }
     }
 
@@ -102,7 +111,9 @@ public class PriceTierServiceImpl implements PriceTierService {
         }
         validateCommon(priceTier, errors);
         if (!errors.isEmpty()) {
-            throw AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            AppErrorException exception = AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            LOGGER.error("Error updating price-tier.", exception);
+            throw exception;
         }
     }
 
@@ -144,7 +155,9 @@ public class PriceTierServiceImpl implements PriceTierService {
 
     private void checkRequestNotNull(PriceTier priceTier) {
         if (priceTier == null) {
-            throw AppErrors.INSTANCE.invalidJson("Invalid json.").exception();
+            AppErrorException exception = AppErrors.INSTANCE.invalidJson("Invalid json.").exception();
+            LOGGER.error("Invalid json.", exception);
+            throw exception;
         }
     }
 }

@@ -21,6 +21,9 @@ import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.item.*;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.common.error.AppError;
+import com.junbo.common.error.AppErrorException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -34,6 +37,8 @@ import java.util.Map;
  * Item service implementation.
  */
 public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevision> implements ItemService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(OfferServiceImpl.class);
+
     private ItemRepository itemRepo;
     private ItemRevisionRepository itemRevisionRepo;
     private ItemAttributeRepository itemAttributeRepo;
@@ -70,7 +75,9 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     public Item updateEntity(String itemId, Item item) {
         Item oldItem = itemRepo.get(itemId);
         if (oldItem == null) {
-            throw AppErrors.INSTANCE.notFound("item", Utils.encodeId(itemId)).exception();
+            AppErrorException exception = AppErrors.INSTANCE.notFound("item", itemId).exception();
+            LOGGER.error("Error updating item. ", exception);
+            throw exception;
         }
         validateItemUpdate(item, oldItem);
 
@@ -95,10 +102,15 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     public ItemRevision updateRevision(String revisionId, ItemRevision revision) {
         ItemRevision oldRevision = itemRevisionRepo.get(revisionId);
         if (oldRevision == null) {
-            throw AppErrors.INSTANCE.notFound("item-revision", Utils.encodeId(revisionId)).exception();
+            AppErrorException exception = AppErrors.INSTANCE.notFound("item-revision", revisionId).exception();
+            LOGGER.error("Error updating item-revision. ", exception);
+            throw exception;
         }
         if (Status.APPROVED.is(oldRevision.getStatus())) {
-            throw AppErrors.INSTANCE.validation("Cannot update an approved revision").exception();
+            AppErrorException exception =
+                    AppErrors.INSTANCE.validation("Cannot update an approved revision").exception();
+            LOGGER.error("Error updating item-revision. ", exception);
+            throw exception;
         }
         validateRevisionUpdate(revision, oldRevision);
         Item item = itemRepo.get(revision.getItemId());
@@ -118,7 +130,10 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     public List<ItemRevision> getRevisions(ItemRevisionsGetOptions options) {
         if (options.getTimestamp() != null) {
             if (CollectionUtils.isEmpty(options.getItemIds())) {
-                throw AppErrors.INSTANCE.validation("itemId must be specified when timestamp is present.").exception();
+                AppErrorException exception =
+                        AppErrors.INSTANCE.validation("itemId must be specified when timestamp is present.").exception();
+                LOGGER.error("Error updating item-revision. ", exception);
+                throw exception;
             }
             return itemRevisionRepo.getRevisions(options.getItemIds(), options.getTimestamp());
         } else {
@@ -193,7 +208,9 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         validateItemCommon(item, errors);
 
         if (!errors.isEmpty()) {
-            throw AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            AppErrorException exception = AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            LOGGER.error("Error creating item. ", exception);
+            throw exception;
         }
     }
 
@@ -214,7 +231,9 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         validateItemCommon(item, errors);
 
         if (!errors.isEmpty()) {
-            throw AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            AppErrorException exception = AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            LOGGER.error("Error updating item. ", exception);
+            throw exception;
         }
     }
 
@@ -229,7 +248,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
             Offer offer = offerRepo.get(item.getDefaultOffer());
             if (offer == null) {
                 errors.add(AppErrors.INSTANCE.fieldNotCorrect("defaultOffer",
-                        "Cannot find offer " + Utils.encodeId(item.getDefaultOffer())));
+                        "Cannot find offer " + item.getDefaultOffer()));
             }
         }
         if (!CollectionUtils.isEmpty(item.getGenres())) {
@@ -239,8 +258,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
                 } else {
                     ItemAttribute attribute = itemAttributeRepo.get(genreId);
                     if (attribute == null || !ItemAttributeType.GENRE.is(attribute.getType())) {
-                        errors.add(AppErrors.INSTANCE
-                                .fieldNotCorrect("categories", "Cannot find genre " + Utils.encodeId(genreId)));
+                        errors.add(AppErrors.INSTANCE.fieldNotCorrect("categories", "Cannot find genre " + genreId));
                     }
                 }
             }
@@ -260,7 +278,9 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         validateRevisionCommon(revision, errors);
 
         if (!errors.isEmpty()) {
-            throw AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            AppErrorException exception = AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            LOGGER.error("Error creating item-revision. ", exception);
+            throw exception;
         }
     }
 
@@ -283,7 +303,9 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         validateRevisionCommon(revision, errors);
 
         if (!errors.isEmpty()) {
-            throw AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            AppErrorException exception = AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            LOGGER.error("Error updating item-revision. ", exception);
+            throw exception;
         }
     }
 
@@ -297,7 +319,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
             Item item = itemRepo.get(revision.getItemId());
             if (item == null) {
                 errors.add(AppErrors.INSTANCE
-                        .fieldNotCorrect("itemId", "Cannot find item " + Utils.encodeId(revision.getItemId())));
+                        .fieldNotCorrect("itemId", "Cannot find item " + revision.getItemId()));
             } else {
                 if ((Status.APPROVED.is(revision.getStatus()) || Status.PENDING_REVIEW.is(revision.getStatus()))
                         && (ItemType.DIGITAL.is(item.getType())
