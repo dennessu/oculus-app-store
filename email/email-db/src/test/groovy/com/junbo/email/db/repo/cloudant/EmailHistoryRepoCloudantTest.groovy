@@ -5,6 +5,7 @@ import com.junbo.email.db.repo.EmailHistoryRepository
 import com.junbo.email.spec.model.Email
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
+import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
 /**
@@ -16,6 +17,8 @@ class EmailHistoryRepoCloudantTest extends BaseCloudantTest {
     private EmailHistoryRepository emailHistoryRepository
 
     private Email email
+
+    private List<String> ids = new ArrayList<>()
 
     @BeforeClass
     private buildEmail() {
@@ -31,5 +34,17 @@ class EmailHistoryRepoCloudantTest extends BaseCloudantTest {
     void testCreate() {
         def email = emailHistoryRepository.createEmailHistory(email).get()
         assert email != null, 'Email create failed'
+        ids.add(email.getId().value)
+    }
+
+    @AfterClass
+    private void cleanup() {
+        if(ids != null && ids.size() != 0) {
+            ids.each {String id ->
+                if (id != null && id !='') {
+                    emailHistoryRepository.deleteEmailHistory(id).get()
+                }
+            }
+        }
     }
 }

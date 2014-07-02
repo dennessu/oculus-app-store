@@ -26,4 +26,8 @@ class EmailHistoryRepositoryCloudantImpl extends CloudantClient<Email> implement
     public Promise<Email> updateEmailHistory(Email email) {
         return cloudantPut(email)
     }
+
+    public Promise<Void> deleteEmailHistory(String id) {
+        return cloudantDelete(id)
+    }
 }
