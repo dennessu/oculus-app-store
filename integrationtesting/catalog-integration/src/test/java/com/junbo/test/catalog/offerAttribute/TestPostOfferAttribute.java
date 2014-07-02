@@ -99,7 +99,7 @@ public class TestPostOfferAttribute extends BaseTestClass {
         attributeProperties.setName("testOfferAttribute_" + RandomFactory.getRandomStringOfAlphabet(10));
         locales.put("en_US", attributeProperties);
         offerAttribute.setLocales(locales);
-        offerAttribute.setResourceAge(1);
+        offerAttribute.setRev("1");
         verifyExpectedError(offerAttribute);
     }
 

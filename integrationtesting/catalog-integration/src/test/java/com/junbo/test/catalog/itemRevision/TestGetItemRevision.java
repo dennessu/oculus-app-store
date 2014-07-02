@@ -126,7 +126,7 @@ public class TestGetItemRevision extends BaseTestClass {
         getOptions.put("itemId", itemIds);
         verifyGetResults(getOptions, 2, itemRevision3, itemRevision4);
 
-        //get revisions by itemId and revisionId
+        //get revisions by itemId and revisionId, only revisionId works
         revisionIds.add(IdConverter.idToUrlString(ItemRevisionId.class, itemRevision4.getRevisionId()));
         getOptions.put("revisionId", revisionIds);
         verifyGetResults(getOptions, 1, itemRevision4);
@@ -138,7 +138,7 @@ public class TestGetItemRevision extends BaseTestClass {
         revisionIds.add(IdConverter.idToUrlString(ItemRevisionId.class, itemRevision1.getRevisionId()));
         revisionIds.add(IdConverter.idToUrlString(ItemRevisionId.class, itemRevision2.getRevisionId()));
         getOptions.put("revisionId", revisionIds);
-        verifyGetResults(getOptions, 1, itemRevision4);
+        verifyGetResults(getOptions, 3, itemRevision1, itemRevision2, itemRevision4);
 
         itemIds.clear();
         itemIds.add(itemId2);
@@ -152,7 +152,7 @@ public class TestGetItemRevision extends BaseTestClass {
 
         itemIds.add("000000");
         getOptions.put("itemId", itemIds);
-        verifyGetResults(getOptions, 0);
+        verifyGetResults(getOptions, 3, itemRevision1, itemRevision2, itemRevision4);
     }
 
     @Property(
@@ -174,23 +174,17 @@ public class TestGetItemRevision extends BaseTestClass {
     @Test
     public void testGetItemRevisionsByRevisionStatus() throws Exception {
         HashMap<String, List<String>> getOptions = new HashMap<>();
-        List<String> itemIds = new ArrayList<>();
         List<String> revisionIds = new ArrayList<>();
 
         //Prepare two items
         Item item1 = itemService.postDefaultItem(CatalogItemType.getRandom());
         Item item2 = itemService.postDefaultItem(CatalogItemType.getRandom());
-        String itemId1 = IdConverter.idToUrlString(ItemId.class, item1.getItemId());
-        String itemId2 = IdConverter.idToUrlString(ItemId.class, item2.getItemId());
+
         //Prepare some item revisions
         ItemRevision itemRevision1 = itemRevisionService.postDefaultItemRevision(item1);
         ItemRevision itemRevision2 = itemRevisionService.postDefaultItemRevision(item2);
         String itemRevisionId1 = IdConverter.idToUrlString(ItemRevisionId.class, itemRevision1.getRevisionId());
         String itemRevisionId2 = IdConverter.idToUrlString(ItemRevisionId.class, itemRevision2.getRevisionId());
-
-        itemIds.add(itemId1);
-        itemIds.add(itemId2);
-        getOptions.put("itemId", itemIds);
 
         revisionIds.add(itemRevisionId1);
         revisionIds.add(itemRevisionId2);
@@ -215,16 +209,6 @@ public class TestGetItemRevision extends BaseTestClass {
         setSearchStatus(CatalogEntityStatus.APPROVED.getEntityStatus(), getOptions, 2, itemRevision1, itemRevision2);
         setSearchStatus(CatalogEntityStatus.PENDING_REVIEW.getEntityStatus(), getOptions, 0);
         setSearchStatus("invalidStatus", getOptions, 0);
-
-        //delete the two item revisions
-        itemRevisionService.deleteItemRevision(itemRevision1.getRevisionId());
-        itemRevisionService.deleteItemRevision(itemRevision2.getRevisionId());
-
-        setSearchStatus(CatalogEntityStatus.DRAFT.getEntityStatus(), getOptions, 0);
-        setSearchStatus(CatalogEntityStatus.APPROVED.getEntityStatus(), getOptions, 0);
-        setSearchStatus(CatalogEntityStatus.PENDING_REVIEW.getEntityStatus(), getOptions, 0);
-        setSearchStatus("invalidStatus", getOptions, 0);
-
     }
 
     @Property(

@@ -90,7 +90,7 @@ public class TestPutItemAttribute extends BaseTestClass {
         verifyExpectedError(attributeId, itemAttribute);
 
         //test rev
-        itemAttribute.setResourceAge(0);
+        itemAttribute.setRev("0");
         verifyExpectedError(attributeId, itemAttribute);
 
         //test type is invalid enums

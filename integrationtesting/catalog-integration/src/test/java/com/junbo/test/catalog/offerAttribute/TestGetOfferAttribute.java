@@ -89,27 +89,29 @@ public class TestGetOfferAttribute extends BaseTestClass {
         OfferAttribute offerAttribute3 = offerAttributeService.postDefaultOfferAttribute();
 
         listOfferAttributeId.add(IdConverter.idToUrlString(OfferAttributeId.class, offerAttribute1.getId()));
-        paraMap.put("id", listOfferAttributeId);
+        paraMap.put("attributeId", listOfferAttributeId);
         verifyGetOfferAttributes(paraMap, 1, offerAttribute1);
 
         listOfferAttributeId.add(IdConverter.idToUrlString(OfferAttributeId.class, offerAttribute2.getId()));
-        paraMap.put("id", listOfferAttributeId);
+        paraMap.put("attributeId", listOfferAttributeId);
         verifyGetOfferAttributes(paraMap, 2, offerAttribute1, offerAttribute2);
 
         listOfferAttributeId.add(IdConverter.idToUrlString(OfferAttributeId.class, offerAttribute3.getId()));
-        paraMap.put("id", listOfferAttributeId);
+        paraMap.put("attributeId", listOfferAttributeId);
         verifyGetOfferAttributes(paraMap, 3, offerAttribute1, offerAttribute2, offerAttribute3);
 
         listOfferAttributeId.clear();
         listOfferAttributeId.add("0000000000");
         listOfferAttributeId.add(IdConverter.idToUrlString(OfferAttributeId.class, offerAttribute2.getId()));
         listOfferAttributeId.add(IdConverter.idToUrlString(OfferAttributeId.class, offerAttribute3.getId()));
+        paraMap.put("attributeId", listOfferAttributeId);
         verifyGetOfferAttributes(paraMap, 2, offerAttribute2, offerAttribute3);
 
         listOfferAttributeId.clear();
         listOfferAttributeId.add("0000000000");
         listOfferAttributeId.add("0000000001");
         listOfferAttributeId.add("0000000001");
+        paraMap.put("attributeId", listOfferAttributeId);
         verifyGetOfferAttributes(paraMap, 0);
     }
 
@@ -139,16 +141,16 @@ public class TestGetOfferAttribute extends BaseTestClass {
 
         listOfferAttributeId.add(IdConverter.idToUrlString(OfferAttributeId.class, offerAttribute1.getId()));
         listType.add(CatalogOfferAttributeType.CATEGORY.getType());
-        paraMap.put("id", listOfferAttributeId);
+        paraMap.put("attributeId", listOfferAttributeId);
         paraMap.put("type", listType);
         verifyGetOfferAttributes(paraMap, 1, offerAttribute1);
 
         listOfferAttributeId.add(IdConverter.idToUrlString(OfferAttributeId.class, offerAttribute2.getId()));
-        paraMap.put("id", listOfferAttributeId);
+        paraMap.put("attributeId", listOfferAttributeId);
         verifyGetOfferAttributes(paraMap, 2, offerAttribute1, offerAttribute2);
 
         listOfferAttributeId.add(IdConverter.idToUrlString(OfferAttributeId.class, offerAttribute3.getId()));
-        paraMap.put("id", listOfferAttributeId);
+        paraMap.put("attributeId", listOfferAttributeId);
         verifyGetOfferAttributes(paraMap, 3, offerAttribute1, offerAttribute2, offerAttribute3);
 
         listType.clear();
@@ -162,6 +164,7 @@ public class TestGetOfferAttribute extends BaseTestClass {
         listOfferAttributeId.add(IdConverter.idToUrlString(OfferAttributeId.class, offerAttribute3.getId()));
         listType.clear();
         listType.add(CatalogOfferAttributeType.CATEGORY.getType());
+        paraMap.put("attributeId", listOfferAttributeId);
         paraMap.put("type", listType);
         verifyGetOfferAttributes(paraMap, 2, offerAttribute2, offerAttribute3);
 
@@ -169,6 +172,7 @@ public class TestGetOfferAttribute extends BaseTestClass {
         listOfferAttributeId.add("0000000000");
         listOfferAttributeId.add("0000000001");
         listOfferAttributeId.add("0000000001");
+        paraMap.put("attributeId", listOfferAttributeId);
         verifyGetOfferAttributes(paraMap, 0);
     }
 

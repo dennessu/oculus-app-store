@@ -98,7 +98,7 @@ public class TestPostItemAttribute extends BaseTestClass {
         attributeProperties.setName("testItemAttribute_" + RandomFactory.getRandomStringOfAlphabet(10));
         locales.put("en_US", attributeProperties);
         itemAttribute.setLocales(locales);
-        itemAttribute.setResourceAge(1);
+        itemAttribute.setRev("1");
         verifyExpectedError(itemAttribute);
     }
 
