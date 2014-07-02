@@ -14,6 +14,7 @@ import org.springframework.web.util.UriComponentsBuilder
  * Created by minhao on 5/21/14.
  */
 @CompileStatic
+@Deprecated
 class RedirectToPageView extends AbstractView {
 
     private String pageUrl
