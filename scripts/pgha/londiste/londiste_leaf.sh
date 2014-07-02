@@ -28,10 +28,10 @@ forceKillPid $SKYTOOL_PID_PATH
 echo "[LONDISTE][REPLICA] copy unarchived log files"
 rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_DATA_PATH/pg_xlog/* $REPLICA_ARCHIVE_PATH
 
-echo "[LONDISTE][REPLICA] waiting for replica catching up with master"
 xlog_location=`psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT pg_current_xlog_location();" -t | tr -d ' '`
 echo "[LONDISTE][REPLICA] current xlog location is [$xlog_location]"
 
+echo "[LONDISTE][REPLICA] waiting for replica catching up with master"
 while [ `psql postgres -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "SELECT pg_xlog_location_diff(pg_last_xlog_replay_location(), '$xlog_location');" -t | tr -d ' '` -lt 0 ]
 do
     sleep 1 && echo "[LONDISTE][REPLICA] replica is catching up..."; 
