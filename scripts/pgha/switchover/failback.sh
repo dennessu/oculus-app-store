@@ -7,7 +7,7 @@ echo "[FAILBACK][MASTER] stop traffic for failback"
 echo "[FAILBACK][MASTER] stop primary pgbouncer proxy"
 forceKill $PGBOUNCER_PORT
 
-ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
     source $DEPLOYMENT_PATH/util/common.sh
 
     echo "[FAILBACK][SLAVE] stop secondary pgbouncer proxy"
@@ -17,7 +17,7 @@ ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
     forceKillPid $SKYTOOL_PID_PATH
 ENDSSH
 
-ssh $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
     source $DEPLOYMENT_PATH/util/common.sh
 
     echo "[FAILBACK][REPLICA] kill skytools instances"
@@ -27,7 +27,7 @@ ENDSSH
 xlog_location=`psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "SELECT pg_current_xlog_location();" -t | tr -d ' '`
 echo "[FAILBACK][SLAVE] current xlog location is [$xlog_location]"
 
-ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
     echo "[FAILBACK][SLAVE] gracefully shutdown slave database"
     $PGBIN_PATH/pg_ctl stop -m fast -D $SLAVE_DATA_PATH
 ENDSSH
@@ -53,7 +53,7 @@ echo "[FAILBACK][MASTER] master promoted!"
 echo "[FAILBACK][MASTER] force wait beforing writing"
 sleep 5s
 
-ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
     echo "[SLAVE] configure recovery.conf for slave"
     cat > $SLAVE_DATA_PATH/recovery.conf <<EOF
 recovery_target_timeline = 'latest'
@@ -90,7 +90,7 @@ done
 echo "[FAILBACK][MASTER] start pgqd deamon on slave"
 $DEPLOYMENT_PATH/londiste/londiste_pgqd.sh
 
-ssh $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
     for db in ${REPLICA_DATABASES[@]}
     do
         config=$SKYTOOL_CONFIG_PATH/\${db}_leaf.ini

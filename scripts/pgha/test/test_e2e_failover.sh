@@ -5,7 +5,7 @@ source ${DIR}/../util/common.sh
 #run this test E2E script on master server
 
 echo "do failover"
-ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
     $DEPLOYMENT_PATH/switchover/failover.sh
     $DEPLOYMENT_PATH/pgbouncer/pgbouncer_slave.sh
 ENDSSH

@@ -16,13 +16,13 @@ $DEPLOYMENT_PATH/londiste/londiste_pgqd.sh
 $DEPLOYMENT_PATH/util/base_backup.sh
 
 echo "setup slave..."
-ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
 $DEPLOYMENT_PATH/setup/setup_slave.sh
 $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
 ENDSSH
 
 echo "setup replica..."
-ssh $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
 $DEPLOYMENT_PATH/setup/setup_replica.sh
 $DEPLOYMENT_PATH/londiste/londiste_config_leaf.sh
 $DEPLOYMENT_PATH/londiste/londiste_leaf.sh

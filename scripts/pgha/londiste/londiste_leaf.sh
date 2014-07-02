@@ -5,7 +5,7 @@ source ${DIR}/../util/common.sh
 #check running under specified account
 checkAccount $DEPLOYMENT_ACCOUNT
 
-ssh $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
     source $DEPLOYMENT_PATH/util/common.sh
 
     echo "[LONDISTE][MASTER] stop primary pgbouncer proxy"
@@ -15,7 +15,7 @@ ssh $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
     forceKillPid $SKYTOOL_PID_PATH
 ENDSSH
 
-ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
     source $DEPLOYMENT_PATH/util/common.sh
 
     echo "[LONDISTE][SLAVE] stop secondary pgbouncer proxy"
@@ -80,7 +80,7 @@ do
     londiste3 $config remove-table databasechangeloglock || echo "table missing"
 done
 
-ssh $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
     for db in ${REPLICA_DATABASES[@]}
     do
         config=$SKYTOOL_CONFIG_PATH/\${db}_root.ini
@@ -96,7 +96,7 @@ ssh $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
     $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
 ENDSSH
 
-ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
     echo "[LONDISTE][SLAVE] start secondary pgbouncer proxy"
     $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
 ENDSSH
