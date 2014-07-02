@@ -39,6 +39,7 @@ public class FulfillmentHistory extends ResourceMetaForDualWrite<Long> {
     private List<FulfillmentShippingDetail> shippingDetails;
 
     private List<CouponId> coupons;
+    private Boolean success;
 
     public Long getId() {
         return id;
@@ -110,5 +111,13 @@ public class FulfillmentHistory extends ResourceMetaForDualWrite<Long> {
 
     public void setCoupons(List<CouponId> coupons) {
         this.coupons = coupons;
+    }
+
+    public Boolean getSuccess() {
+        return success;
+    }
+
+    public void setSuccess(Boolean success) {
+        this.success = success;
     }
 }

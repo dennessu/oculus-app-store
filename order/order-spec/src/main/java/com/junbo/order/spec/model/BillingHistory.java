@@ -30,7 +30,7 @@ public class BillingHistory extends ResourceMetaForDualWrite<Long> {
 
     private String billingEvent;
 
-    private Boolean isSuccess;
+    private Boolean success;
 
     private List<BillingPaymentInfo> payments;
 
@@ -92,11 +92,11 @@ public class BillingHistory extends ResourceMetaForDualWrite<Long> {
         this.refundedOrderItems = refundedOrderItems;
     }
 
-    public Boolean getIsSuccess() {
-        return isSuccess;
+    public Boolean getSuccess() {
+        return success;
     }
 
-    public void setIsSuccess(Boolean isSuccess) {
-        this.isSuccess = isSuccess;
+    public void setSuccess(Boolean success) {
+        this.success = success;
     }
 }

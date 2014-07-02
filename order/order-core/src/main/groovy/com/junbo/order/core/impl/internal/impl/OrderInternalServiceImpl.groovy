@@ -308,7 +308,10 @@ class OrderInternalServiceImpl implements OrderInternalService {
                     payment.paymentAmount = balance.totalAmount
                     payment.paymentInstrument = balance.piId
                     bh.payments << payment
-
+                    bh.success = true
+                    if (balance.status == BalanceStatus.FAILED.name() || balance.status == BalanceStatus.ERROR) {
+                        bh.success = false
+                    }
                     if (balance.type == BalanceType.REFUND.name()) {
                         bh.refundedOrderItems = []
                         balance.balanceItems?.each { BalanceItem bi ->
@@ -345,10 +348,16 @@ class OrderInternalServiceImpl implements OrderInternalService {
                             fh.walletAmount = 0G
                             fh.shippingDetails = []
                             fh.entitlements = []
+                            fh.success = true
+                            if (CollectionUtils.isEmpty(fi.actions)) {
+                                fh.success = fi.actions?.any { FulfilmentAction fa ->
+                                    fa.status == FulfilmentStatus.FAILED || fa.status == FulfilmentStatus.UNKNOWN
+                                }
+                            }
                             // TODO: parse shippingDetails and coupons
                             def entitlementAction = fi.actions?.find() { FulfilmentAction fa ->
                                 fa.type == FulfilmentActionType.GRANT_ENTITLEMENT &&
-                                        fa.status != FulfilmentStatus.FAILED
+                                        fa.status != FulfilmentStatus.FAILED && fa.status != FulfilmentStatus.UNKNOWN
                             }
                             if (entitlementAction != null) {
                                 entitlementAction.result?.entitlementIds?.each { String eid ->
@@ -357,11 +366,12 @@ class OrderInternalServiceImpl implements OrderInternalService {
                             }
                             def walletAction = fi.actions?.find() { FulfilmentAction fa ->
                                 fa.type == FulfilmentActionType.CREDIT_WALLET &&
-                                        fa.status != FulfilmentStatus.FAILED
+                                        fa.status != FulfilmentStatus.FAILED && fa.status != FulfilmentStatus.UNKNOWN
                             }
                             if (walletAction != null) {
                                 fh.walletAmount = walletAction.result.amount
                             }
+
                         }
                     }
                 }

@@ -78,10 +78,6 @@ class BillingEventHistoryBuilder {
             billingHistory.totalAmount = 0G - balance.totalAmount
         }
         billingHistory.billingEvent = buildBillingEvent(balance)
-        billingHistory.isSuccess = true
-        if (balance.status == BalanceStatus.FAILED.name() || balance.status == BalanceStatus.ERROR) {
-            billingHistory.isSuccess = false
-        }
         return billingHistory
     }
 }
