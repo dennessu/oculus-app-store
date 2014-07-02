@@ -108,6 +108,12 @@ class OrganizationValidatorImpl implements OrganizationValidator {
         }
         organization.canonicalName = normalizeService.normalize(organization.name)
 
+        if (organization.publisherRevenueRatio != null) {
+            if (organization.publisherRevenueRatio < 0.0 || organization.publisherRevenueRatio > 1) {
+                throw AppErrors.INSTANCE.fieldInvalidException('publisherRevenueRatio', 'publisherRevenueRatio should be between 0 and 1').exception()
+            }
+        }
+
         return checkValidOrganizationNameUnique(organization).then {
             if (organization.billingAddress == null) {
                 return Promise.pure(null)

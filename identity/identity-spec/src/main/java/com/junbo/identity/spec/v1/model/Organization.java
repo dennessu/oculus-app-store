@@ -19,7 +19,7 @@ import java.util.List;
  * Created by liangfu on 5/22/14.
  */
 public class Organization extends PropertyAssignedAwareResourceMeta<OrganizationId> implements CloudantUnique {
-    @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of organization resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Nullable]Link to organization resource.")
     @JsonProperty("self")
     private OrganizationId id;
 
@@ -30,35 +30,41 @@ public class Organization extends PropertyAssignedAwareResourceMeta<Organization
     @ApiModelProperty(position = 3, required = true, value = "The name of the organization.")
     private String name;
 
-    @ApiModelProperty(position = 4, required = false, value = "The billing address of the organization.")
+    @ApiModelProperty(position = 4, required = false, value = "[Nullable] The billing address of the organization.")
     private UserPersonalInfoId billingAddress;
 
-    @ApiModelProperty(position = 5, required = false, value = "The shipping address of the organization.")
+    @ApiModelProperty(position = 5, required = false, value = "[Nullable] The shipping address of the organization.")
     private UserPersonalInfoId shippingAddress;
 
-    @ApiModelProperty(position = 6, required = false, value = "The shipping name of the organization.")
+    @ApiModelProperty(position = 6, required = false, value = "[Nullable] The shipping name of the organization.")
     private UserPersonalInfoId shippingName;
 
-    @ApiModelProperty(position = 7, required = false, value = "The shipping phone of the organization.")
+    @ApiModelProperty(position = 7, required = false, value = "[Nullable] The shipping phone of the organization.")
     private UserPersonalInfoId shippingPhone;
 
     @ApiModelProperty(position = 8, required = true, value = "Whether the organization is validated.")
     private Boolean isValidated;
 
-    @ApiModelProperty(position = 9, required = false, value = "The enum value of the organization, must in [INDIVIDUAL, CORPORATE]")
+    @ApiModelProperty(position = 9, required = false, value = "The enum value of the organization, must in [INDIVIDUAL, CORPORATE].")
     private String type;
 
-    @ApiModelProperty(position = 11, required = false, value = "The type (EIN/TIN/SSN) and value of taxId.")
+    @ApiModelProperty(position = 11, required = false, value = "[Nullable] The type (EIN/TIN/SSN) and value of taxId.")
     private UserPersonalInfoId taxId;
 
-    @ApiModelProperty(position = 12, required = false, value = "The payoutInstrument link.")
+    @ApiModelProperty(position = 12, required = false, value = "[Nullable] The payment Instrument link for the Payout protocal.")
     private UserPersonalInfoId payoutInstrument;
 
-    @ApiModelProperty(position = 13, required = false, value = "The payout tax profile.")
+    @ApiModelProperty(position = 13, required = false, value = "[Nullable] The payout tax profile.")
     private PayoutTaxProfileId payoutTaxProfile;
 
     @ApiModelProperty(position = 14, required = false, value = "")
     private List<AnnualTaxReportId> annualTaxReportIds = new ArrayList<>();
+
+    @ApiModelProperty(position = 15, required = false, value = "The ratio of revenue that goes to the publisher, e.g., 0.7. " +
+            "The backend protects this during POST, PUT, and PATCH to make sure the the value is appropriate for the publisher/offer combo. " +
+            "If it is null in the offer then we fall back to the publisher organization. It is not nullable in the publisher organization - " +
+            "but the UI of the publisher organization defaults it to 0.7.")
+    private Double publisherRevenueRatio;
 
     @JsonIgnore
     private String canonicalName;
@@ -202,6 +208,31 @@ public class Organization extends PropertyAssignedAwareResourceMeta<Organization
         this.migratedCompanyId = migratedCompanyId;
     }
 
+
+    @Override
+    public String[] getUniqueKeys() {
+        return new String[] {
+                getMigrationUniqueKey()
+        };
+    }
+
+    private String getMigrationUniqueKey() {
+        if (migratedCompanyId == null) {
+            return null;
+        } else {
+            return "ORG_MIGRATION_ID: " + migratedCompanyId.toString();
+        }
+    }
+
+    public Double getPublisherRevenueRatio() {
+        return publisherRevenueRatio;
+    }
+
+    public void setPublisherRevenueRatio(Double publisherRevenueRatio) {
+        this.publisherRevenueRatio = publisherRevenueRatio;
+        support.setPropertyAssigned("publisherRevenueRatio");
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -224,6 +255,8 @@ public class Organization extends PropertyAssignedAwareResourceMeta<Organization
         if (payoutInstrument != null ? !payoutInstrument.equals(that.payoutInstrument) : that.payoutInstrument != null)
             return false;
         if (payoutTaxProfile != null ? !payoutTaxProfile.equals(that.payoutTaxProfile) : that.payoutTaxProfile != null)
+            return false;
+        if (publisherRevenueRatio != null ? !publisherRevenueRatio.equals(that.publisherRevenueRatio) : that.publisherRevenueRatio != null)
             return false;
         if (shippingAddress != null ? !shippingAddress.equals(that.shippingAddress) : that.shippingAddress != null)
             return false;
@@ -251,23 +284,9 @@ public class Organization extends PropertyAssignedAwareResourceMeta<Organization
         result = 31 * result + (payoutInstrument != null ? payoutInstrument.hashCode() : 0);
         result = 31 * result + (payoutTaxProfile != null ? payoutTaxProfile.hashCode() : 0);
         result = 31 * result + (annualTaxReportIds != null ? annualTaxReportIds.hashCode() : 0);
+        result = 31 * result + (publisherRevenueRatio != null ? publisherRevenueRatio.hashCode() : 0);
         result = 31 * result + (canonicalName != null ? canonicalName.hashCode() : 0);
         result = 31 * result + (migratedCompanyId != null ? migratedCompanyId.hashCode() : 0);
         return result;
-    }
-
-    @Override
-    public String[] getUniqueKeys() {
-        return new String[] {
-                getMigrationUniqueKey()
-        };
-    }
-
-    private String getMigrationUniqueKey() {
-        if (migratedCompanyId == null) {
-            return null;
-        } else {
-            return "ORG_MIGRATION_ID: " + migratedCompanyId.toString();
-        }
     }
 }

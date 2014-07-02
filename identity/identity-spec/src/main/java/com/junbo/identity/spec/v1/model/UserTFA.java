@@ -21,33 +21,34 @@ import java.util.Date;
  */
 public class UserTFA extends PropertyAssignedAwareResourceMeta<UserTFAId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The id of UserTFA resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]Link to this UserTfaCode resource.")
     @JsonProperty("self")
     private UserTFAId id;
 
-    @ApiModelProperty(position = 2, required = false, value = "[Client Immutable]The id of user resource.")
+    @ApiModelProperty(position = 2, required = false, value = "[Client Immutable]User who initialize the TFA request.")
     @JsonProperty("user")
     private UserId userId;
 
-    @ApiModelProperty(position = 3, required = true, value = "User Phone number used to verify.")
+    @ApiModelProperty(position = 3, required = true, value = "User Phone number used to complete the TFA verification.")
+    @JsonProperty("phoneNumber")
     private UserPersonalInfoId personalInfo;
 
-    @ApiModelProperty(position = 4, required = false, value = "The language to sent to the user.")
+    @ApiModelProperty(position = 4, required = false, value = "What Locale does the verification info sent to the user.")
     private LocaleId sentLocale;
 
     @JsonIgnore
     private String verifyCode;
 
-    @ApiModelProperty(position = 6, required = false, value = "The template sent to the user.")
+    @ApiModelProperty(position = 6, required = false, value = "In which template the TFA code is sent to the user.")
     private String template;
 
     @ApiModelProperty(position = 7, required = true, value = "The verify type, it must be in [CALL, SMS].")
     private String verifyType;
 
-    @ApiModelProperty(position = 8, required = false, value = "[Client Immutable]The verify expires time.")
+    @ApiModelProperty(position = 8, required = false, value = "[Client Immutable]The expiration time for the verify Code, must be ISO 8601.")
     private Date expiresBy;
 
-    @ApiModelProperty(position = 9, required = false, value = "[Client Immutable]Whether user Tele resource is active.")
+    @ApiModelProperty(position = 9, required = false, value = "[Client Immutable]Whether TFA request is still active.")
     private Boolean active;
 
     public void setId(UserTFAId id) {

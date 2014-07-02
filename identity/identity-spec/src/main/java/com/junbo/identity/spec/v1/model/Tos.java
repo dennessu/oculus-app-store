@@ -19,26 +19,26 @@ import java.util.List;
  */
 public class Tos extends PropertyAssignedAwareResourceMeta<TosId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The Link to the tos resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]Link to the TOS resource.")
     @JsonProperty("self")
     private TosId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "The type of the TOS, pick from an enum list (EULA, TOS, PP).")
+    @ApiModelProperty(position = 2, required = true, value = "The type of the TOS, must be from an enum list (EULA, TOS, PP, etc).")
     private String type;
 
-    @ApiModelProperty(position = 3, required = true, value = "Array of links to Country resource, represents this tos is good in which country.")
+    @ApiModelProperty(position = 3, required = true, value = "Array of links to Country resource, represents which countries this TOS is good in.")
     private List<CountryId> countries = new ArrayList<>();
 
-    @ApiModelProperty(position = 4, required = true, value = "Version number of the tos.")
+    @ApiModelProperty(position = 4, required = true, value = "Version number of the TOS.")
     private String version;
 
-    @ApiModelProperty(position = 5, required = true, value = "The title of the tos resource.")
+    @ApiModelProperty(position = 5, required = true, value = "The title of the TOS.")
     private String title;
 
-    @ApiModelProperty(position = 6, required = true, value = "The content of the tos resource.")
+    @ApiModelProperty(position = 6, required = true, value = "The content of the TOS resource.")
     private String content;
 
-    @ApiModelProperty(position = 7, required = true, value = "Tos state, it must in [DRAFT, APPROVED, OBSOLETE].")
+    @ApiModelProperty(position = 7, required = true, value = "State of the TOS, it must in [DRAFT, APPROVED, OBSOLETE].")
     private String state;
 
     @Override

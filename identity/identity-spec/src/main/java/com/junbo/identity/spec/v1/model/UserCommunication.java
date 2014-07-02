@@ -17,16 +17,16 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  */
 public class UserCommunication extends PropertyAssignedAwareResourceMeta<UserCommunicationId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The Link of user optin resource, " +
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]Link to this user optin resource, " +
             "OptIn represents a link between a user and a communication, it means user decides to subscribe to the communication.")
     @JsonProperty("self")
     private UserCommunicationId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "Link to the user resource, who decides to optin the communication.")
+    @ApiModelProperty(position = 2, required = true, value = "Link to the user, who decides to optin the communication.")
     @JsonProperty("user")
     private UserId userId;
 
-    @ApiModelProperty(position = 3, required = true, value = "Link to the communication resource, which communication user opts in to.")
+    @ApiModelProperty(position = 3, required = true, value = "Link to the communication, which user subscribes to.")
     @JsonProperty("communication")
     private CommunicationId communicationId;
 

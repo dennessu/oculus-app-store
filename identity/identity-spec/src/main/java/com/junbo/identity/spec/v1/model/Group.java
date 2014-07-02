@@ -18,15 +18,15 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  */
 public class Group extends PropertyAssignedAwareResourceMeta<GroupId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "[Nullable]Link to this Group resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] Link to this Group resource.")
     @JsonProperty("self")
     private GroupId id;
 
     @ApiModelProperty(position = 2, required = true, value = "The name of the group resource.")
     private String name;
 
-    @ApiModelProperty(position = 3, required = false, value = "[Nullable] The status of the group; When do POST call, " +
-            "the isActive maybe null if client doesn't provide so. When do GET call, the isActive will always have a value..")
+    @ApiModelProperty(position = 3, required = false, value = " [Nullable] The status of the group; When do POST call, " +
+            "the isActive maybe null if client doesn't provide so. When do GET call, the isActive will always have a value.")
     @JsonProperty("isActive")
     private Boolean active;
 
@@ -38,7 +38,9 @@ public class Group extends PropertyAssignedAwareResourceMeta<GroupId> {
     @HateoasLink("/users?groupId={id}")
     private Link users;
 
-    @ApiModelProperty(position = 6, required = true, value = "The owner organization of this group.")
+    @ApiModelProperty(position = 6, required = true, value = "[Nullable] Link to the Organization resource. The \"owner\" is specified by the caller " +
+            "when creating a group. But after that, the \"owner\" can not be changed. It's null-able. " +
+            "A group with “owner\" = null is a so-called \"global\" group. This group can only be created by the internal admin users.")
     @JsonProperty("organization")
     private OrganizationId organizationId;
 

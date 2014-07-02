@@ -23,7 +23,7 @@ import java.util.Map;
  * Created by liangfu on 4/3/14.
  */
 public class User extends PropertyAssignedAwareResourceMeta<UserId> {
-    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The Link to the User resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] Link to the User resource.")
     @JsonProperty("self")
     private UserId id;
 
@@ -37,26 +37,30 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> {
     @ApiModelProperty(position = 4, required = false, value = "The preferred timezone of the user, must be the format as UTC+08:00.")
     private String preferredTimezone;
 
-    @ApiModelProperty(position = 5, required = true, value = "True if/only if this User is anonymous " +
-            "(happens when 'username' is non-null and/or the 'authenticators' list is non-empty)")
+    @ApiModelProperty(position = 5, required = true, value = "True if/only if this User is anonymous (happens when 'username' is non-null " +
+            "and/or the 'authenticators' list is non-empty)")
     private Boolean isAnonymous;
 
     @ApiModelProperty(position = 6, required = false, value = "User status. It must be in [ACTIVE, SUSPEND, BANNED DELETED].")
     private String status;
 
-    @ApiModelProperty(position = 5, required = false, value = "The address book.")
+    @ApiModelProperty(position = 5, required = false, value = "The address book, an array of personalInfo Links," +
+            "the Links to the current addresses that the user has, every link has a label such as \"Grandma's Home Address\".")
     private List<UserPersonalInfoLink> addresses;
 
-    @ApiModelProperty(position = 5, required = false, value = "The personal phones information.")
+    @ApiModelProperty(position = 5, required = false, value = "The phone list, an array of personalInfo Links, " +
+            "the Links to the current phone info list that the user has, every link has a label such as \"mobile\".")
     private List<UserPersonalInfoLink> phones;
 
-    @ApiModelProperty(position = 5, required = false, value = "The personal email information.")
+    @ApiModelProperty(position = 5, required = false, value = "The email list, an array of personalInfo Links, " +
+            "the Links to the current email list that the user has,every link has a label such as \"business email\".")
     private List<UserPersonalInfoLink> emails;
 
     @ApiModelProperty(position = 6, required = false, value = "The PersonalInfo resource that contains the user's name (given name, family name, etc.).")
     private UserPersonalInfoLink name;
 
-    @ApiModelProperty(position = 6, required = false, value = "The Country of Residence")
+    @ApiModelProperty(position = 6, required = false, value = "Country Link to User's Country of Residence.")
+    @JsonProperty("cor")
     private CountryId countryOfResidence;
 
     @ApiModelProperty(position = 7, required = false, value = "The personalInfo Link to the personalInfo resource, which is date of birth of the user.")
@@ -89,17 +93,17 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> {
     @ApiModelProperty(position = 15, required = false, value = "A mapping between country code and User VAT number, country code must be exist valid country code.")
     private Map<String, UserVAT> vat = new HashMap<>();
 
-    @ApiModelProperty(position = 16, required = false, value = "true if the user claims to be tax exempt, false if user has not claimed to be tax exempt")
+    @ApiModelProperty(position = 16, required = false, value = "true if the user claims to be tax exempt, false if user has not claimed to be tax exempt.")
     private Boolean isTaxExemptionClaimed;
 
     @ApiModelProperty(position = 17, required = false, value = "True if Oculus has verified user taxExemption material, " +
-            "False if Oculus hasn't verified user taxExemption material, this value should only be set by internal tool by Oculus employee")
+            "False if Oculus hasn't verified user taxExemption material, this value should only be set by internal tool by Oculus employee.")
     private Boolean isTaxExemptionValidated;
 
-    @ApiModelProperty(position = 18, required = false, value = "The profile of the user resource.")
+    @ApiModelProperty(position = 18, required = false, value = "User profile information object, contains the profile info migrated from share.")
     private UserProfile profile;
 
-    @ApiModelProperty(position = 6, required = false, value = " A link to the Groups resource, search the groups that contain the user.")
+    @ApiModelProperty(position = 6, required = false, value = "A link to the Groups resource, search the groups that contain the user.")
     @HateoasLink("/user-group-memberships?userId={id}")
     private Link groupMemeberships;
 
@@ -123,12 +127,12 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> {
     @HateoasLink("/users/{id}/credentials")
     private Link credentials;
 
-    @ApiModelProperty(position = 12, required = false, value = " [Client Immutable] A Link to CredentialAttempt-List resource to " +
+    @ApiModelProperty(position = 12, required = false, value = "[Client Immutable] A Link to CredentialAttempt-List resource to " +
             "Search credential attempts of the user.")
     @HateoasLink("/credential-attempts?userId={id}")
     private Link credentialAttempts;
 
-    @ApiModelProperty(position = 13, required = false, value = "[Client Immutable] A Link to OptIn-List resource to Search opt-in of the user.")
+    @ApiModelProperty(position = 13, required = false, value = " [Client Immutable] A Link to OptIn-List resource to Search opt-in of the user.")
     @HateoasLink("/opt-ins?userId={id}")
     private Link optins;
 
@@ -137,8 +141,8 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> {
     @HateoasLink("/users/{id}/security-questions")
     private Link securityQuestions;
 
-    @ApiModelProperty(position = 16, required = false, value = "[Client Immutable] A Link to SecurityQuestionAttempt-List " +
-            "resource to Search Security Questions Attempts of the user.")
+    @ApiModelProperty(position = 16, required = false, value = "[Client Immutable] A Link to SecurityQuestionAttempt-List resource " +
+            "to Search Security Questions Attempts of the user.")
     @HateoasLink("/users/{id}/security-question-attempts")
     private Link securityQuestionAttempts;
 

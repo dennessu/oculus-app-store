@@ -25,13 +25,12 @@ public class UserPersonalInfo extends PropertyAssignedAwareResourceMeta<UserPers
     private UserPersonalInfoId id;
 
     @ApiModelProperty(position = 2, required = true, value = "Enumeration giving the type of information in the 'value' property. " +
-            "The enumerations are ADDRESS, EMAIL, PHONE, NAME, DOB, SMS, QQ, WHATSAPP, PASSPORT, GOVERNMENT_ID, DRIVERS_LICENSE, GENDER. " +
+            "The enumerations are ADDRESS, EMAIL, PHONE, NAME, DOB, SMS, QQ, WHATSAPP, PASSPORT, etc. " +
             "The type is encrypted when storing the info into the DB.")
     private String type;
 
-    @ApiModelProperty(position = 3, required = true, value = "The userPersonal information, it must be json structure." +
-            "ADDRESS Type[street1(string),street2(string),street3(string),city(string),phoneNumber(string),subCountry(string)," +
-            "country(link)]; Other Types[info(string)]")
+    @ApiModelProperty(position = 3, required = true, value = "A JSON object containing the PersonalInfo value. " +
+            "The properties in this depend on the 'type' property; see Value_when_type_is_X below for those rules")
     private JsonNode value;
 
     @ApiModelProperty(position = 4, required = false, value = "[Nullable] Null if the 'value' has not been validated, " +
@@ -45,15 +44,23 @@ public class UserPersonalInfo extends PropertyAssignedAwareResourceMeta<UserPers
             "Used primarily for convenience in query-params, e.g., /personal-info?isValidated=true.")
     private Boolean isValidated;
 
-    @ApiModelProperty(position = 6, required = true, value = "True if/only if the value is normalized, " +
-            "e.g., addresses and phone numbers can be put into some normalized form via a normalizer service.")
+    @ApiModelProperty(position = 6, required = true, value = "True if/only if the value is normalized, e.g., " +
+            "addresses and phone numbers can be put into some normalized form via a normalizer service.")
     private Boolean isNormalized;
 
-    @ApiModelProperty(position = 7, required = false, value = "Link to the user resource.")
+    @ApiModelProperty(position = 7, required = false, value = "[Nullable] Link to the user resource.")
     @JsonProperty("user")
     private UserId userId;
 
-    @ApiModelProperty(position = 8, required = false, value = "Link to the organization resource.")
+    @ApiModelProperty(position = 8, required = false, value = "[Nullable] Link to the organization resource,\n" +
+            "         // A personal info is going to be associated:\n" +
+            "         //      1. either with a user (attribute \"user\" will have value, attribute \"organization\" will be null)\n" +
+            "         //      2. or with an organization (attribute \"user\" will be null, attribute \"organization\" will have value)\n" +
+            "         //  When the personal-info is associated with a user, it's a user's personal info, such as Name, date of birth, email, " +
+            "                   phone number, or address etc\n" +
+            "         //  When the personal-info is associated with an organization, it's the organization's personal info, such as Tax ID, SSN, or address.\n" +
+            "         //  If the personal info is null on both user and organization, it's an error state\n" +
+            "         //  If the personal info has value on both user and organization, it's an error state.")
     @JsonProperty("organization")
     private OrganizationId organizationId;
 

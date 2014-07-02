@@ -18,18 +18,18 @@ import java.util.Map;
  * Created by haomin on 14-4-25.
  */
 public class PIType extends PropertyAssignedAwareResourceMeta<PITypeId> {
-    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The link to payment instrument type resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] Link to payment instrument type resource.")
     @JsonProperty("self")
     private PITypeId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "The type code of payment instrument resource, " +
-            "ENUM value include (CREDITCARD, STOREDVALUE, PAYPAL, OTHERS)")
+    @ApiModelProperty(position = 2, required = true, value = "The type code of payment instrument resource, ENUM value include " +
+            "(CREDITCARD, DIRECTDEBIT, STOREDVALUE, PAYPAL, OTHERS).")
     private String typeCode;
 
-    @ApiModelProperty(position = 3, required = true, value = "whether the PI is recurring-able or not.")
+    @ApiModelProperty(position = 3, required = true, value = "True if this PI is recurring-abled; False if this PI is not recurring-abled.")
     private Boolean capableOfRecurring;
 
-    @ApiModelProperty(position = 4, required = true, value = "Whether the PI is refund-able or not.")
+    @ApiModelProperty(position = 4, required = true, value = "True if this PI is refund-able, False if this PI is not refund-able.")
     private Boolean isRefundable;
 
     @ApiModelProperty(position = 5, required = true, value = "The description of payment instrument resource.")
