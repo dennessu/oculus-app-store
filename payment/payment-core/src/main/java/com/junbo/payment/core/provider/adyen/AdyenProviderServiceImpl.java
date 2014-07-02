@@ -166,10 +166,10 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
         //skinCode
         String skinToUse = getSkinCode(paymentRequest);
         strToSign.append(skinToUse);
-        strRequest.append("&skinCode=" + skinToUse);
+        strRequest.append("&skinCode=" + urlEncode(skinToUse));
         //merchantAccount
         strToSign.append(merchantAccount);
-        strRequest.append("&merchantAccount=" + merchantAccount);
+        strRequest.append("&merchantAccount=" + urlEncode(merchantAccount));
         //sessionValidity
         Calendar calValid = Calendar.getInstance();
         calValid.add(Calendar.HOUR_OF_DAY, VALID_HOURS);
@@ -180,17 +180,17 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
         //TODO: get user email
         String email = paymentRequest.getUserInfo().getEmail();
         strToSign.append(email);
-        strRequest.append("&shopperEmail=" + email);
+        strRequest.append("&shopperEmail=" + urlEncode(email));
         //"shopperReference": user piid other than userId, as we only get recurring token for each PI
         String shopperReference = nullToEmpty(pi.getId().toString());
         strToSign.append(shopperReference);
-        strRequest.append("&shopperReference=" + shopperReference);
+        strRequest.append("&shopperReference=" + urlEncode(shopperReference));
         //recurringContract
         strToSign.append(RECURRING);
         strRequest.append("&recurringContract=" + RECURRING);
          //signature
         String merchantSig = CommonUtil.calHMCASHA1(strToSign.toString(), skinSecret);
-        strRequest.append("&merchantSig=" + merchantSig);
+        strRequest.append("&merchantSig=" + urlEncode(merchantSig));
         if(!CommonUtil.isNullOrEmpty(paymentRequest.getChargeInfo().getCountry())){
             strRequest.append("&countryCode=" + paymentRequest.getChargeInfo().getCountry());
         }
