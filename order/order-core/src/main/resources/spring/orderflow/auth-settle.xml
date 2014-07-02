@@ -15,7 +15,13 @@
         <wf:action-state id="checkAuthEvent">
             <wf:action ref="authEventCheckAction"/>
             <wf:transition on="COMPLETED" to="fullfill"/>
-            <wf:transition on="__NONE" to="auth"/>
+            <wf:transition on="__NONE" to="riskReview"/>
+            <wf:transition on="*" to="endState"/>
+        </wf:action-state>
+
+        <wf:action-state id="riskReview">
+            <wf:action ref="riskReviewAction"/>
+            <wf:transition on="APPROVED" to="auth"/>
             <wf:transition on="*" to="endState"/>
         </wf:action-state>
 

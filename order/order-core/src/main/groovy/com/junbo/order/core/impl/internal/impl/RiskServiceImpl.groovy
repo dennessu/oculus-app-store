@@ -18,6 +18,7 @@ import com.junbo.payment.spec.model.PaymentInstrument
 import com.kount.ris.Inquiry
 import com.kount.ris.KountRisClient
 import com.kount.ris.Response
+import com.kount.ris.util.AuthorizationStatus
 import com.kount.ris.util.CartItem
 import com.kount.ris.util.MerchantAcknowledgment
 import com.kount.ris.util.RisException
@@ -107,6 +108,7 @@ class RiskServiceImpl implements RiskService {
             q.setCurrency(order.currency.value)
             q.setTotal((int)(order.totalAmount * baseUnit))
             q.setIpAddress(ip)
+            q.setAuthorizationStatus(AuthorizationStatus.APPROVED)
             q.setMerchantAcknowledgment(MerchantAcknowledgment.YES)
 
             return facadeContainer.identityFacade.getEmail(emailId).recover { Throwable throwable ->
@@ -142,14 +144,12 @@ class RiskServiceImpl implements RiskService {
                             case PIType.CREDITCARD:
                                 q.setPayment("CARD", pi.accountNum)
                                 break;
-                            case PIType.PAYPAL:
-                                q.setPayment("PYPL", "")
-                                break;
                             case PIType.STOREDVALUE:
                                 q.setPayment("GIFT", pi.id.toString())
                                 break;
+                            case PIType.PAYPAL:
                             case PIType.OTHERS:
-                                q.setPayment("NONE", "")
+                                q.setPayment("NONE", null)
                                 break
                         }
                     }
