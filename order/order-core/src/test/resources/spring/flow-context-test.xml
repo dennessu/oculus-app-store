@@ -68,6 +68,7 @@
 
     <bean id="mockOrderInternalService" class="com.junbo.order.core.impl.internal.impl.OrderInternalServiceImpl">
         <property name="facadeContainer" ref="mockFacadeContainer"/>
+        <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
     </bean>
 
     <bean id="mockOrderServiceContextBuilder" class="com.junbo.order.core.impl.order.OrderServiceContextBuilder">

@@ -1,5 +1,4 @@
 package com.junbo.order.core.impl.orderaction
-
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
@@ -11,11 +10,9 @@ import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.enums.EventStatus
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
-import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
-
 /**
  * Created by chriszhu on 5/14/14.
  */
@@ -35,7 +32,7 @@ class RefundOrderAction extends BaseOrderEventAwareAction {
         def order = context.orderServiceContext.order
 
         assert(order != null)
-        return orderInternalService.refundOrder(order).syncThen { Order o ->
+        return orderInternalService.refundOrder(order, context.orderServiceContext).syncThen { Order o ->
             context.orderServiceContext.order = o
             return CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.COMPLETED)
         }

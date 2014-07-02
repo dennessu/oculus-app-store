@@ -21,13 +21,13 @@ public interface OrderService {
 
     Promise<Order> createQuote(Order order, OrderServiceContext orderServiceContext);
 
-    Promise<Order> getOrderByOrderId(Long orderId, Boolean doRate);
+    Promise<Order> getOrderByOrderId(Long orderId, Boolean doRate, OrderServiceContext context);
 
     Promise<Order> cancelOrder(Order request, OrderServiceContext orderServiceContext);
 
     Promise<Order> refundOrder(Order request, OrderServiceContext orderServiceContext);
 
-    Promise<List<Order>> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam);
+    Promise<List<Order>> getOrdersByUserId(Long userId, OrderServiceContext context, OrderQueryParam orderQueryParam, PageParam pageParam);
 
     Promise<OrderEvent> updateOrderByOrderEvent(OrderEvent event, OrderServiceContext orderServiceContext);
 

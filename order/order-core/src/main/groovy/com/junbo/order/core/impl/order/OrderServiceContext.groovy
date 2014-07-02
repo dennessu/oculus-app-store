@@ -8,8 +8,10 @@ package com.junbo.order.core.impl.order
 
 import com.junbo.billing.spec.model.Balance
 import com.junbo.common.id.OfferId
+import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.identity.spec.v1.model.Address
 import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.Currency
 import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.spec.model.ApiContext
 import com.junbo.order.spec.model.Order
@@ -44,8 +46,9 @@ class OrderServiceContext {
     List<Balance> balances
     Address shippingAddress
     Boolean isAsyncCharge
-
-    String riskTransactionId;
+    String riskTransactionId
+    Currency currency
+    FulfilmentRequest fulfillmentRequest
 
     /**
      * Offers in order in map structure

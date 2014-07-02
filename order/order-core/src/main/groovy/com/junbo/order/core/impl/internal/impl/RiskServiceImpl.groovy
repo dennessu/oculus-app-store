@@ -1,10 +1,9 @@
 package com.junbo.order.core.impl.internal.impl
-
 import com.junbo.common.id.PIType
 import com.junbo.common.id.UserPersonalInfoId
+import com.junbo.identity.spec.v1.model.Currency
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
 import com.junbo.langur.core.promise.Promise
-import com.junbo.identity.spec.v1.model.Currency
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.internal.RiskReviewResult
 import com.junbo.order.core.impl.internal.RiskService
@@ -28,10 +27,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.stereotype.Service
 
 import javax.annotation.Resource
-
 /**
  * Created by xmchen on 14-6-23.
  */
@@ -47,6 +44,9 @@ class RiskServiceImpl implements RiskService {
 
     @Autowired
     OrderRepositoryFacade orderRepository
+
+    @Resource(name = 'orderServiceContextBuilder')
+    OrderServiceContextBuilder orderServiceContextBuilder
 
     int merchantId
 
@@ -97,7 +97,7 @@ class RiskServiceImpl implements RiskService {
             }
         }
 
-        return facadeContainer.identityFacade.getCurrency(order.currency.value).then { Currency currency ->
+        return orderServiceContextBuilder.getCurrency(orderContext).then { Currency currency ->
 
             int baseUnit = Math.pow(10, currency.numberAfterDecimal).intValue();
 

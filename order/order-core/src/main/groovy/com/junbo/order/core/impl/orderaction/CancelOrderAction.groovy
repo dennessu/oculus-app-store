@@ -36,7 +36,7 @@ class CancelOrderAction extends BaseOrderEventAwareAction {
         def order = context.orderServiceContext.order
 
         assert(order != null)
-        return orderInternalService.cancelOrder(order).syncThen { Order o ->
+        return orderInternalService.cancelOrder(order, context.orderServiceContext).syncThen { Order o ->
             return CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.COMPLETED)
         }
     }
