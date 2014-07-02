@@ -1,4 +1,5 @@
 package com.junbo.identity.data.repository.impl.cloudant
+
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.id.UserId
 import com.junbo.identity.data.repository.UserRepository
@@ -7,6 +8,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+
 /**
  * Created by haomin on 14-4-11.
  */

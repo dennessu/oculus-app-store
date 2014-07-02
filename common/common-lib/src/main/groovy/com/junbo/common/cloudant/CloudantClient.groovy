@@ -2,7 +2,6 @@ package com.junbo.common.cloudant
 
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
-
 /**
  * CloudantClient used for CloudantOnly resources.
  */

@@ -83,7 +83,7 @@ public class RouterImpl implements Router {
 
         DataAccessPolicy policy = resolveDataAccessPolicy(resourceClass);
 
-        if (policy == null || policy == DataAccessPolicy.CLOUDANT_FIRST || policy == DataAccessPolicy.CLOUDANT_ONLY) {
+        if (policy == null || policy == DataAccessPolicy.CLOUDANT_ONLY) {
             return getDefault(false);
         }
 

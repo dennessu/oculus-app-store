@@ -11,11 +11,13 @@ import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 /**
  * Created by liangfu on 5/14/14.
  */
-public class EncryptUserPersonalInfo extends PropertyAssignedAwareResourceMeta<UserPersonalInfoId> {
+public class HashUserPersonalInfo extends PropertyAssignedAwareResourceMeta<UserPersonalInfoId> {
 
     private UserPersonalInfoId id;
 
-    private String encryptUserPersonalInfo;
+    private UserPersonalInfoId userPersonalInfoId;
+
+    private String hashSearchInfo;
 
     public UserPersonalInfoId getId() {
         return id;
@@ -25,11 +27,11 @@ public class EncryptUserPersonalInfo extends PropertyAssignedAwareResourceMeta<U
         this.id = id;
     }
 
-    public String getEncryptUserPersonalInfo() {
-        return encryptUserPersonalInfo;
+    public String getHashSearchInfo() {
+        return hashSearchInfo;
     }
 
-    public void setEncryptUserPersonalInfo(String encryptUserPersonalInfo) {
-        this.encryptUserPersonalInfo = encryptUserPersonalInfo;
+    public void setHashSearchInfo(String hashSearchInfo) {
+        this.hashSearchInfo = hashSearchInfo;
     }
 }

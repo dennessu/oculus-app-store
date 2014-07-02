@@ -16,7 +16,7 @@ import groovy.transform.CompileStatic
 class EmailHistoryRepositoryCloudantImpl extends CloudantClient<Email> implements EmailHistoryRepository {
 
     public Promise<Email> getEmailHistory(String id) {
-        return cloudantGet(id)
+        return cloudantGet(id.toString())
     }
 
     public Promise<Email> createEmailHistory(Email email) {

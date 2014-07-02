@@ -17,7 +17,7 @@ import groovy.transform.CompileStatic
 class EmailTemplateRepositoryCloudantImpl extends CloudantClient<EmailTemplate> implements EmailTemplateRepository {
 
     public Promise<EmailTemplate> getEmailTemplate(String id) {
-        return cloudantGet(id)
+        return cloudantGet(id.toString())
     }
 
     public Promise<EmailTemplate> saveEmailTemplate(EmailTemplate template) {
@@ -52,7 +52,7 @@ class EmailTemplateRepositoryCloudantImpl extends CloudantClient<EmailTemplate> 
     }
 
     public Promise<Void> deleteEmailTemplate(String id) {
-        return cloudantDelete(id)
+        return cloudantDelete(id.toString())
     }
 
     private Map<String, String> buildViewKey(Map<String, String> queries) {

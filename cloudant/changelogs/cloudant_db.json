@@ -99,14 +99,12 @@
       }
     }, 
     "email_verify_code": {}, 
-    "encrypt_user_personal_info": {
+    "encrypt_user_personal_info": { }, 
+    "hash_user_personal_info": {
       "views": {
         "by_hash_value": {
           "map": "function(doc) {  emit(doc.hashSearchInfo, doc._id)}"
-        }, 
-        "by_user_personal_info_id": {
-          "map": "function(doc) {  emit(doc.userPersonalInfoId, doc._id)}"
-        }
+        } 
       }
     }, 
     "group": {

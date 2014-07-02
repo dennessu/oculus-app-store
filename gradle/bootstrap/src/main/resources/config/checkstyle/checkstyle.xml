@@ -59,10 +59,10 @@
             See http://checkstyle.sourceforge.net/config_design.html
             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         -->
-        <module name="HideUtilityClassConstructor">
+        <!--module name="HideUtilityClassConstructor"-->
             <!-- Some classes in o.h.metamodel on master do this -->
-            <property name="severity" value="warning" />
-        </module>
+            <!--property name="severity" value="warning" />
+        </module-->
         <module name="MutableException" />
 
 

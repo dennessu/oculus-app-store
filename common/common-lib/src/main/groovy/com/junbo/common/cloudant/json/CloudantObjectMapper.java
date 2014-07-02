@@ -17,17 +17,20 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.junbo.common.cloudant.json.deserializer.CloudantIdCloudantDeserializer;
 import com.junbo.common.cloudant.json.deserializer.EnumIdCloudantDeserializer;
 import com.junbo.common.cloudant.json.deserializer.IdCloudantDeserializer;
+import com.junbo.common.cloudant.json.deserializer.PolymorphicCloudantDeserializer;
 import com.junbo.common.cloudant.json.serializer.CloudantIdCloudantSerializer;
 import com.junbo.common.cloudant.json.serializer.EnumIdCloudantSerializer;
 import com.junbo.common.cloudant.json.serializer.IdCloudantSerializer;
+import com.junbo.common.cloudant.json.serializer.PolymorphicCloudantSerializer;
 import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.jackson.common.CustomDeserializationContext;
 import com.junbo.common.jackson.common.CustomSerializerProvider;
 import com.junbo.common.jackson.deserializer.BigDecimalFromStringDeserializer;
 import com.junbo.common.jackson.deserializer.LongFromStringDeserializer;
 import com.junbo.common.jackson.deserializer.UUIDFromStringDeserializer;
+import com.junbo.langur.core.webflow.state.Conversation;
+import com.junbo.langur.core.webflow.state.FlowState;
 
-import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -36,12 +39,34 @@ import java.util.UUID;
  * Created by minhao on 2/13/14.
  */
 @Provider
-public class CloudantObjectMapper implements ContextResolver<ObjectMapper> {
+public class CloudantObjectMapper {
 
     // thread safe
-    private static ObjectMapper objectMapper = createObjectMapper();
+    private static ObjectMapper objectMapper = createObjectMapper(new ModifyModule() {
+        @Override
+        public void modify(SimpleModule module) {
+            // hack: the Map<String, Object> in Conversation object needs the polymorphic serializer/deserializer
+            // this cannot be achieved through annotations because it will add circular dependency to langur-core
+            module.addSerializer(Conversation.class, new PolymorphicCloudantSerializer());
+            module.addDeserializer(Conversation.class, new PolymorphicCloudantDeserializer(Conversation.class));
+
+            module.addSerializer(FlowState.class, new PolymorphicCloudantSerializer());
+            module.addDeserializer(FlowState.class, new PolymorphicCloudantDeserializer(FlowState.class));
+        }
+    });
+
+    /**
+     * The callback to be called before register module.
+     */
+    protected interface ModifyModule {
+        void modify(SimpleModule module);
+    }
 
     protected static ObjectMapper createObjectMapper() {
+        return createObjectMapper(null);
+    }
+
+    protected static ObjectMapper createObjectMapper(ModifyModule modifyModule) {
         ObjectMapper objectMapper = new ObjectMapper(null,
                 new CustomSerializerProvider(),
                 new CustomDeserializationContext());
@@ -93,6 +118,10 @@ public class CloudantObjectMapper implements ContextResolver<ObjectMapper> {
             module.addDeserializer(cls, new EnumIdCloudantDeserializer(cls));
         }
 
+        if (modifyModule != null) {
+            modifyModule.modify(module);
+        }
+
         objectMapper.registerModule(module);
         objectMapper.setAnnotationIntrospector(new CloudantAnnotationIntrospector());
         return objectMapper;
@@ -104,10 +133,5 @@ public class CloudantObjectMapper implements ContextResolver<ObjectMapper> {
 
     public static void setInstance(ObjectMapper objectMapper) {
         CloudantObjectMapper.objectMapper = objectMapper;
-    }
-
-    @Override
-    public ObjectMapper getContext(Class<?> type) {
-        return objectMapper;
     }
 }
