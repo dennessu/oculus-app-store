@@ -17,21 +17,21 @@ import java.util.Date;
  * Created by liangfu on 4/22/14.
  */
 public class UserTFABackupCode extends PropertyAssignedAwareResourceMeta<UserTFABackupCodeId> {
-    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The id of UserTFA resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]Link to the UserTfaBackupCode resource.")
     @JsonProperty("self")
     private UserTFABackupCodeId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "[Client Immutable]The id of user resource.")
+    @ApiModelProperty(position = 2, required = true, value = "[Client Immutable]The User who did the tfa backup.")
     @JsonProperty("user")
     private UserId userId;
 
-    @ApiModelProperty(position = 3, required = true, value = "[Client Immutable]The verify code generated..")
+    @ApiModelProperty(position = 3, required = true, value = "The code to verify via TFA.")
     private String verifyCode;
 
-    @ApiModelProperty(position = 4, required = true, value = "The verify expires time.")
+    @ApiModelProperty(position = 4, required = true, value = "[Client Immutable]The expiration time for the verify Code, must be ISO 8601.")
     private Date expiresBy;
 
-    @ApiModelProperty(position = 5, required = false, value = "[Client Immutable]Whether user Tele resource is active.")
+    @ApiModelProperty(position = 5, required = false, value = "[Client Immutable]Whether user Tfa Backup is active.")
     private Boolean active;
 
     public UserTFABackupCodeId getId() {

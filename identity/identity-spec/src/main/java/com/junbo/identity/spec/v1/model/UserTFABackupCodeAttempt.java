@@ -17,24 +17,29 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  */
 public class UserTFABackupCodeAttempt extends PropertyAssignedAwareResourceMeta<UserTFABackupCodeAttemptId> {
     @ApiModelProperty(position = 1, required = true,
-            value = "[Client Immutable]The id of the userTFA backup code attempt resource.")
+            value = "[Client Immutable] Link to the userTfaBackupCodeAttempt resource.")
     @JsonProperty("self")
     private UserTFABackupCodeAttemptId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "User resource.")
+    @ApiModelProperty(position = 2, required = true, value = "The attempter of the TfaBackupCodeAttempt.")
     @JsonProperty("user")
     private UserId userId;
 
-    @ApiModelProperty(position = 3, required = true, value = "User TFA backup verify code.")
+    @ApiModelProperty(position = 3, required = true, value = "The code generated in the TfaBackupCodeAttempt.")
     private String verifyCode;
 
-    @ApiModelProperty(position = 4, required = false, value = "The ip address of the verify attempt caller.")
+    @ApiModelProperty(position = 4, required = false, value = "[Nullable]The ip address where user initiate the TfaBackupCodeAttempt.")
     private String ipAddress;
 
-    @ApiModelProperty(position = 5, required = false, value = "The user agent of the verify attempt caller.")
+    @ApiModelProperty(position = 5, required = false, value = "[Nullable]The agent where the TfaBackupCodeAttempt is passed through. " +
+            "For example, if user do the TfaBackupCodeAttempt via a webkit from game \"Angry Bird\", the userAgent will be the Webkit(FireFox or Chrome, etc).")
     private String userAgent;
 
-    @ApiModelProperty(position = 6, required = false, value = "The client id of the verify attempt caller.")
+    @ApiModelProperty(position = 6, required = false, value = "The OAuth client ID for the component where the TfaBackupCodeAttempt is initiated. " +
+            "For example, if user do the TfaBackupCodeAtempt via a webkit from game \"Angry Bird\", " +
+            "the clientId will be the clientId string for the game \"Angry Bird\". " +
+            "The clientId is a string developer get from Oculus platform and embed into the game binary. " +
+            "It then get embedded to the game binary, and get passed everytime game binary call into Oculus API to identify the game.")
     private ClientId clientId;
 
     @ApiModelProperty(position = 7, required = false, value = "[Client Immutable]Whether the attempt is success.")
