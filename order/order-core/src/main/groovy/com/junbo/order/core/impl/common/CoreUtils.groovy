@@ -132,6 +132,7 @@ class CoreUtils {
         diffOrder.setId(existingOrder.getId())
         diffOrder.orderItems = []
         diffOrder.totalAmount = 0G
+        diffOrder.totalTax = 0G
         diffOrder.purchaseTime = existingOrder.purchaseTime
 
         Boolean changed = false
@@ -145,21 +146,29 @@ class CoreUtils {
             if (requestItem == null) {
                 diffItem.quantity = i.quantity
                 diffItem.totalAmount = i.totalAmount
+                diffItem.totalTax = i.totalTax
             } else {
                 if (i.quantity > requestItem.quantity) {
                     diffItem.quantity = i.quantity - requestItem.quantity
                     diffItem.totalAmount = (diffItem.quantity * i.totalAmount / i.quantity).setScale(
                             numberAfterDecimal, BigDecimal.ROUND_HALF_EVEN)
+                    if (i.totalAmount != BigDecimal.ZERO) {
+                        diffItem.totalTax = (i.totalTax * diffItem.totalAmount / i.totalAmount).setScale(
+                            numberAfterDecimal, BigDecimal.ROUND_HALF_EVEN)
+                    }
                     requestItem.totalAmount = requestItem.totalAmount - diffItem.totalAmount
                 } else if (i.quantity == requestItem.quantity && i.totalAmount > requestItem.totalAmount) {
                     diffItem.quantity = 0
                     diffItem.totalAmount = i.totalAmount - requestItem.totalAmount
+                    diffItem.totalTax = (i.totalTax * requestItem.totalAmount / i.totalAmount).setScale(
+                            numberAfterDecimal, BigDecimal.ROUND_HALF_EVEN)
                 } else {
                     // no change
                     return
                 }
             }
             diffOrder.totalAmount += diffItem.totalAmount
+            diffOrder.totalTax += diffItem.totalTax
             diffOrder.orderItems << diffItem
             changed = true
         }

@@ -153,6 +153,7 @@ class CoreBuilder {
                     totalAmount = diffItem.totalAmount - balanceItem.amount
                 } else {
                     balanceItem.amount = diffItem.totalAmount
+                    balanceItem.taxAmount = diffItem.totalTax
                     totalAmount = 0G
                 }
             }
@@ -227,6 +228,7 @@ class CoreBuilder {
         }
         BalanceItem balanceItem = new BalanceItem()
         balanceItem.amount = item.amount
+        balanceItem.taxAmount = item.taxAmount
         DiscountItem discountItem = new DiscountItem()
         discountItem.discountAmount = item.discountAmount
         balanceItem.addDiscountItem(discountItem)

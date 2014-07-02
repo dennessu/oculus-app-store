@@ -205,7 +205,7 @@ class SabrixFacadeImpl implements TaxFacade {
         invoice.companyRole = configuration.companyRole
         invoice.externalCompanyId = getEntity(piAddress).externalCompanyId
         boolean isRefund = BalanceType.REFUND.name() == balance.type
-        if (isRefund) {
+        if (isRefund && isAudited) {
             invoice.originalInvoiceNumber = balance.orderIds?.get(0)?.value
             invoice.originalInvoiceDate = balance.propertySet.get(PropertyKey.ORIGINAL_INVOICE_DATE.name())
         }
@@ -437,6 +437,7 @@ class SabrixFacadeImpl implements TaxFacade {
                                 newItem.taxAmount = BigDecimal.valueOf(tax.taxAmount.documentAmount)
                                 newItem.taxRate = BigDecimal.valueOf(tax.taxRate)
                                 newItem.taxAuthority = authority
+                                newItem.isTaxExempt = tax.isExempt
                                 map.put(authority, newItem)
                             }
                             else {
