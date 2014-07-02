@@ -109,19 +109,19 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     @Override
-    Promise<List<OculusOutput>> bulkMigrate(List<OculusInput> oculusInputs) {
+    Promise<Map<String, OculusOutput>> bulkMigrate(List<OculusInput> oculusInputs) {
         CloudantClientBase.useBulk = true
         CloudantClientBulk.callback = new MigrationQueryViewCallback()
 
-        List<OculusOutput> result = new ArrayList<>()
+        Map<String, OculusOutput> result = new HashMap<>()
         return Promise.each(oculusInputs) { OculusInput oculusInput ->
             return migrate(oculusInput).then { OculusOutput output ->
-                result.add(output)
+                result.put(oculusInput.currentId.toString(), output)
                 return Promise.pure(null)
             }.recover { Throwable ex ->
                 if (ex instanceof AppErrorException) {
                     OculusOutput output = new OculusOutput(error: ((AppErrorException)ex).error)
-                    result.add(output)
+                    result.put(oculusInput.currentId.toString(), output)
                     JunboHttpContext.responseStatus = 400
                     return Promise.pure(null)
                 } else {
@@ -142,12 +142,12 @@ class MigrationResourceImpl implements MigrationResource {
 
             return Promise.each(oculusInputs) { OculusInput oculusInput ->
                 return migrate(oculusInput).then { OculusOutput output ->
-                    result.add(output)
+                    result.put(oculusInput.currentId.toString(), output)
                     return Promise.pure(null)
                 }.recover { Throwable ex ->
                     if (ex instanceof AppErrorException) {
                         OculusOutput output = new OculusOutput(error: ((AppErrorException) ex).error)
-                        result.add(output)
+                        result.put(oculusInput.currentId.toString(), output)
                         JunboHttpContext.responseStatus = 400
                         return Promise.pure(null)
                     } else {
@@ -256,9 +256,12 @@ class MigrationResourceImpl implements MigrationResource {
                 return Promise.pure(createdUser)
             }
         }.then { User createdUser ->
-
+            if (oculusInput.company == null) {
+                return Promise.pure(new OculusOutput(
+                        userId: createdUser.getId()
+                ))
+            }
             return migrateOrganization(oculusInput, createdUser)
-
         }
     }
 
@@ -346,7 +349,7 @@ class MigrationResourceImpl implements MigrationResource {
     //      ii. if organization isn't null, during the migration we will ignore this case
     Promise<Void> checkOrganizationValid(OculusInput oculusInput, User user) {
         if (oculusInput.company == null) {
-            throw new IllegalArgumentException('company is null')
+            return Promise.pure(null)
         }
 
         if (oculusInput.company.name == null) {
