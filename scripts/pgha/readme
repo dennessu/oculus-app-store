@@ -61,7 +61,7 @@
 [Open ports]
     `5432`: postgresql database port
     `6543`: pgbouncer proxy port
-    `133`:  oident server port
+    `113`:  oident server port
 
 
 =====Deloyment Preparation=====
