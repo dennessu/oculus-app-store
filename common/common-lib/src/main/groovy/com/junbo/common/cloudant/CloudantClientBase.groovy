@@ -9,6 +9,7 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.Assert
 
 import java.lang.reflect.ParameterizedType
 /**
@@ -31,11 +32,11 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         return bulk
     }
 
-    protected static CloudantClientImpl impl = CloudantClientImpl.instance()
-    protected static CloudantClientBulk bulk = CloudantClientBulk.instance()
+    protected static String dbNamePrefix = ConfigServiceManager.instance().getConfigValue("common.cloudant.dbNamePrefix")
     protected static CloudantMarshaller marshaller = DefaultCloudantMarshaller.instance()
     protected static CloudantUniqueClient cloudantUniqueClient = CloudantUniqueClient.instance()
-    protected static final String dbNamePrefix = ConfigServiceManager.instance().getConfigValue("common.cloudant.dbNamePrefix")
+    protected static CloudantClientImpl impl = CloudantClientImpl.instance()
+    protected static CloudantClientBulk bulk = CloudantClientBulk.instance()
 
     protected CloudantGlobalUri cloudantGlobalUri
     protected CloudantDbUri cloudantDbUri
@@ -58,6 +59,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
 
     @Override
     void afterPropertiesSet() throws Exception {
+        Assert.isTrue(dbNamePrefix != null)
         this.cloudantDbUri = new CloudantDbUri(
             cloudantUri: cloudantGlobalUri.currentDcUri,
             dbName: dbName,

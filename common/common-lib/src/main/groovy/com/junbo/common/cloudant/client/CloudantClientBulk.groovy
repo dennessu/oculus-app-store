@@ -175,7 +175,10 @@ class CloudantClientBulk implements CloudantClient {
 
         Closure<Promise> commitToDb = { CloudantDbUri dbUri ->
             CloudantBulkDocs bulkDocs = new CloudantBulkDocs()
-            bulkDocs.docs = (CloudantEntity[])cloudantBulk.get(dbUri).values().toArray(new CloudantEntity[0])
+            def entitiesWithType = cloudantBulk.get(dbUri).values().toArray(new EntityWithType[0])
+            bulkDocs.docs = (CloudantEntity[])entitiesWithType.collect { EntityWithType entityWithType ->
+                return marshaller.unmarshall(entityWithType.entity, entityWithType.type)
+            }.toArray(new CloudantEntity[0])
 
             if (bulkDocs.docs.length > 0) {
                 logger.info("Committing {} docs to {}", bulkDocs.docs.length, dbUri)

@@ -29,17 +29,13 @@ class CloudantIdGenerator {
 
     private static CloudantGlobalUri cloudantGlobalUri
     private static CloudantDbUri cloudantDbUri
-    private static int batchSize = 100
+    private static int batchSize
 
-    private CloudantIdGenerator() {
+    static {
         ConfigService configService = ConfigServiceManager.instance()
         cloudantGlobalUri = new CloudantGlobalUri(configService.getConfigValue("common.cloudant.url"))
         batchSize = Integer.parseInt(configService.getConfigValue("common.cloudant.bulk.idBatchSize"))
         cloudantDbUri = new CloudantDbUri(cloudantUri: cloudantGlobalUri.currentDcUri)
-    }
-
-    public void setBatchSize(int batchSize) {
-        CloudantIdGenerator.batchSize = batchSize
     }
 
     public static Promise<String> nextId() {

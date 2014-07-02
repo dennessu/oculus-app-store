@@ -4,8 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.oauth.db.dao.couch
-
-import com.junbo.common.util.Utils
+import com.junbo.common.cloudant.client.CloudantGlobalUri
 import com.junbo.langur.core.async.JunboAsyncHttpClient
 import com.junbo.langur.core.async.JunboAsyncHttpClient.BoundRequestBuilder
 import com.junbo.oauth.common.JsonMarshaller
@@ -18,16 +17,15 @@ import com.ning.http.client.Realm
 import com.ning.http.client.Response
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.InitializingBean
+import org.springframework.beans.factory.annotation.Required
 
 //import junit.framework.Assert
-import org.springframework.beans.factory.annotation.Required
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.util.StringUtils
 
 import javax.ws.rs.core.UriBuilder
 import java.lang.reflect.ParameterizedType
-
 /**
  * CouchBaseDAO.
  */
@@ -50,7 +48,10 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
 
     @Required
     void setCouchDBUri(String couchDBUri) {
-        this.couchDBUri = Utils.filterPerDataCenterConfig(couchDBUri, "couchDBUri")
+        CloudantGlobalUri uri = new CloudantGlobalUri(couchDBUri)
+        this.couchDBUri = uri.currentDcUri.value
+        this.couchDBUser = uri.currentDcUri.username
+        this.couchDBPassword = uri.currentDcUri.password
     }
 
     void setCouchDBUser(String couchDBUser) {
