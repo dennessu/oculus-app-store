@@ -73,7 +73,13 @@ public class PriceTierServiceImpl implements PriceTierService {
 
     @Override
     public PriceTier update(String tierId, PriceTier priceTier) {
-        validateUpdate(priceTier);
+        PriceTier oldPriceTier = priceTierRepo.get(tierId);
+        if (oldPriceTier == null) {
+            AppErrorException exception = AppErrors.INSTANCE.notFound("price-tier", tierId).exception();
+            LOGGER.error("Error updating price-tier. ", exception);
+            throw exception;
+        }
+        validateUpdate(priceTier, oldPriceTier);
         return priceTierRepo.update(priceTier);
     }
 
@@ -103,11 +109,11 @@ public class PriceTierServiceImpl implements PriceTierService {
         }
     }
 
-    private void validateUpdate(PriceTier priceTier) {
+    private void validateUpdate(PriceTier priceTier, PriceTier oldPriceTier) {
         checkRequestNotNull(priceTier);
         List<AppError> errors = new ArrayList<>();
-        if (priceTier.getRev() == null) {
-            errors.add(AppErrors.INSTANCE.missingField("rev"));
+        if (!oldPriceTier.getRev().equals(priceTier.getRev())) {
+            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", priceTier.getRev(), oldPriceTier.getRev()));
         }
         validateCommon(priceTier, errors);
         if (!errors.isEmpty()) {

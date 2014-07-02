@@ -47,7 +47,13 @@ public abstract class AttributeServiceSupport<T extends Attribute> {
     }
 
     public T update(String attributeId, T attribute) {
-        validateUpdate(attribute);
+        T oldAttribute = getRepo().get(attributeId);
+        if (oldAttribute == null) {
+            AppErrorException exception = AppErrors.INSTANCE.notFound(getEntityType(), attributeId).exception();
+            LOGGER.error("Error updating " + getEntityType(), exception);
+            throw exception;
+        }
+        validateUpdate(attribute, oldAttribute);
         return getRepo().update(attribute);
     }
 
@@ -76,10 +82,10 @@ public abstract class AttributeServiceSupport<T extends Attribute> {
         }
     }
 
-    private void validateUpdate(T attribute) {
+    private void validateUpdate(T attribute, T oldAttribute) {
         checkRequestNotNull(attribute);
         List<AppError> errors = new ArrayList<>();
-        if (attribute.getRev() == null) {
+        if (!oldAttribute.getRev().equals(attribute.getRev())) {
             errors.add(AppErrors.INSTANCE.missingField("rev"));
         }
         validateCommon(attribute, errors);

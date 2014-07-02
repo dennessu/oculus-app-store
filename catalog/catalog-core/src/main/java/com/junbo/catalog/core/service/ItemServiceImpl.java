@@ -227,6 +227,9 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         if (!oldItem.getRev().equals(item.getRev())) {
             errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", item.getRev(), oldItem.getRev()));
         }
+        if (!oldItem.getType().equals(item.getType())) {
+            errors.add(AppErrors.INSTANCE.fieldNotMatch("type", item.getType(), oldItem.getType()));
+        }
 
         validateItemCommon(item, errors);
 

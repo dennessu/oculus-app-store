@@ -334,10 +334,10 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         if (!oldOffer.getOfferId().equals(offer.getOfferId())) {
             errors.add(AppErrors.INSTANCE.fieldNotMatch("self.id", offer.getOfferId(), oldOffer.getOfferId()));
         }
-        /*if (!isEqual(offer.getCurrentRevisionId(), oldOffer.getCurrentRevisionId())) {
+        if (!isEqual(offer.getCurrentRevisionId(), oldOffer.getCurrentRevisionId())) {
             errors.add(AppErrors.INSTANCE
                     .fieldNotCorrect("currentRevision", "The field can only be changed through revision approve"));
-        }*/
+        }
         if (!oldOffer.getRev().equals(offer.getRev())) {
             errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", offer.getRev(), oldOffer.getRev()));
         }
@@ -509,7 +509,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         Iterator<Action> iterator = purchaseActions.iterator();
         while(iterator.hasNext()) {
             Action action = iterator.next();
-            if (ActionType.CREDIT_WALLET.is(action.getType()) || action.getItemId() == null) {
+            if (action.getItemId() == null) {
                 continue;
             }
             if (!result.containsKey(action.getItemId())) {
