@@ -85,6 +85,12 @@ public abstract class AttributeServiceSupport<T extends Attribute> {
     private void validateUpdate(T attribute, T oldAttribute) {
         checkRequestNotNull(attribute);
         List<AppError> errors = new ArrayList<>();
+        if (!oldAttribute.getType().equals(attribute.getType())) {
+            errors.add(AppErrors.INSTANCE.fieldNotMatch("type", attribute.getType(), oldAttribute.getType()));
+        }
+        if (!oldAttribute.getId().equals(attribute.getId())) {
+            errors.add(AppErrors.INSTANCE.fieldNotMatch("self.id", attribute.getId(), oldAttribute.getId()));
+        }
         if (!oldAttribute.getRev().equals(attribute.getRev())) {
             errors.add(AppErrors.INSTANCE.missingField("rev"));
         }
