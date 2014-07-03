@@ -7,35 +7,37 @@
 package com.junbo.catalog.spec.model.item;
 
 import com.junbo.catalog.spec.model.common.Images;
+import com.junbo.catalog.spec.model.common.RevisionNotes;
 import com.junbo.catalog.spec.model.common.Video;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Locale properties for item revision.
  */
 public class ItemRevisionLocaleProperties {
     @ApiModelProperty(position = 1, required = true, value = "item revision name")
-    String name;
+    private String name;
     @ApiModelProperty(position = 3, required = true, value = "revision notes")
-    String revisionNotes;
+    private RevisionNotes revisionNotes;
     @ApiModelProperty(position = 4, required = true, value = "long description")
-    String longDescription;
+    private String longDescription;
     @ApiModelProperty(position = 5, required = true, value = "short description")
-    String shortDescription;
+    private String shortDescription;
     @ApiModelProperty(position = 6, required = true, value = "minimum system requirements")
-    String minimumSystemRequirements;
+    private Map<String, SystemRequirement> minimumSystemRequirements;
     @ApiModelProperty(position = 7, required = true, value = "recommended system requirements")
-    String recommendedSystemRequirements;
+    private Map<String, SystemRequirement> recommendedSystemRequirements;
     @ApiModelProperty(position = 8, required = true, value = "legal information")
-    String legalInformation;
+    private String legalInformation;
     @ApiModelProperty(position = 11, required = true, value = "credits")
-    String credits;
+    private String credits;
     @ApiModelProperty(position = 12, required = true, value = "copyright")
-    String copyright;
+    private String copyright;
     @ApiModelProperty(position = 13, required = true, value = "known bugs")
-    String knownBugs;
+    private String knownBugs;
     @ApiModelProperty(position = 27, required = false, value = "Support email")
     private String supportEmail;
     @ApiModelProperty(position = 28, required = false, value = "Website for the item revision resource")
@@ -61,11 +63,11 @@ public class ItemRevisionLocaleProperties {
         this.name = name;
     }
 
-    public String getRevisionNotes() {
+    public RevisionNotes getRevisionNotes() {
         return revisionNotes;
     }
 
-    public void setRevisionNotes(String revisionNotes) {
+    public void setRevisionNotes(RevisionNotes revisionNotes) {
         this.revisionNotes = revisionNotes;
     }
 
@@ -85,19 +87,19 @@ public class ItemRevisionLocaleProperties {
         this.shortDescription = shortDescription;
     }
 
-    public String getMinimumSystemRequirements() {
+    public Map<String, SystemRequirement> getMinimumSystemRequirements() {
         return minimumSystemRequirements;
     }
 
-    public void setMinimumSystemRequirements(String minimumSystemRequirements) {
+    public void setMinimumSystemRequirements(Map<String, SystemRequirement> minimumSystemRequirements) {
         this.minimumSystemRequirements = minimumSystemRequirements;
     }
 
-    public String getRecommendedSystemRequirements() {
+    public Map<String, SystemRequirement> getRecommendedSystemRequirements() {
         return recommendedSystemRequirements;
     }
 
-    public void setRecommendedSystemRequirements(String recommendedSystemRequirements) {
+    public void setRecommendedSystemRequirements(Map<String, SystemRequirement> recommendedSystemRequirements) {
         this.recommendedSystemRequirements = recommendedSystemRequirements;
     }
 

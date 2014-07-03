@@ -78,6 +78,8 @@ public class ItemRevision extends BaseRevisionModel {
             value = "This is the calculated value to give how accurate the localizable attributes is.",
             allowableValues = "HIGH, MEDIUM, LOW")
     private String localeAccuracy;
+    @ApiModelProperty(position = 30, required = true, value = "Supported locales.")
+    private Map<String, SupportedLocale> supportedLocales;
 
     @ApiModelProperty(position = 40, required = true, value = "Locale properties of the item revision")
     private Map<String, ItemRevisionLocaleProperties> locales;
@@ -221,6 +223,14 @@ public class ItemRevision extends BaseRevisionModel {
 
     public void setEntitlementDefs(List<EntitlementDef> entitlementDefs) {
         this.entitlementDefs = entitlementDefs;
+    }
+
+    public Map<String, SupportedLocale> getSupportedLocales() {
+        return supportedLocales;
+    }
+
+    public void setSupportedLocales(Map<String, SupportedLocale> supportedLocales) {
+        this.supportedLocales = supportedLocales;
     }
 
     @Override
