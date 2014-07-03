@@ -30,7 +30,8 @@ public class Group extends PropertyAssignedAwareResourceMeta<GroupId> {
     @JsonProperty("isActive")
     private Boolean active;
 
-    @ApiModelProperty(position = 5, required = false, value = "[Client Immutable] UserGroupMembership resources in this group.")
+    @ApiModelProperty(position = 5, required = false, value = "[Client Immutable] UserGroupMembership resources in this group, " +
+            "userMemberships provides an association between users and groups, a user can have multiple groups, and a group can have multiple users.")
     @HateoasLink("/user-group-memberships?groupId={id}")
     private Link userMemberships;
 
@@ -38,9 +39,10 @@ public class Group extends PropertyAssignedAwareResourceMeta<GroupId> {
     @HateoasLink("/users?groupId={id}")
     private Link users;
 
-    @ApiModelProperty(position = 6, required = true, value = "[Nullable] Link to the Organization resource. The \"owner\" is specified by the caller " +
-            "when creating a group. But after that, the \"owner\" can not be changed. It's null-able. " +
-            "A group with “owner\" = null is a so-called \"global\" group. This group can only be created by the internal admin users.")
+    @ApiModelProperty(position = 6, required = true, value = "Group provides an association between the users and an organization. " +
+            "One group belongs to one organization, and one organization can have multiple groups. " +
+            "In the authorization model, Group represents a collection of users, role represents a collection of rights, " +
+            "and roles assigned to groups via roleAssignment resource.")
     @JsonProperty("organization")
     private OrganizationId organizationId;
 

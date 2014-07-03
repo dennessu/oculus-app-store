@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="com.junbo.identity.job"/>
+
+    <!-- Identity Scheduler -->
+    <bean id="identitySchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="schedulerName" value="identityScheduler" />
+        <property name="autoStartup" value="${identity.jobs.scheduler.start}" /><property name="triggers">
+        <list>
+            <ref bean="identityJobTrigger"/>
+        </list>
+    </property>
+        <property name="applicationContextSchedulerContextKey" value="applicationContext" />
+    </bean>
+
+    <!-- Identity Job Trigger -->
+    <bean id="identityJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean" >
+        <property name="jobDetail" ref="identityJobDetail" />
+        <property name="cronExpression" value="${identity.jobs.job.cronexpression}" />
+    </bean>
+
+    <!-- Identity Job -->
+    <bean id="identityJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="identityJob" />
+        <property name="targetMethod" value="execute" />
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <bean id="identityJob" class="com.junbo.identity.job.IdentityJob" >
+        <property name="threadPoolTaskExecutor" ref="identityJobAsyncTaskExecutor"/>
+        <property name="identityProcessor" ref="identityVatCheckProcessor" />
+        <property name="userRepository" ref="cloudantUserRepository" />
+        <property name="limit" value="${identity.jobs.pagesize}" />
+        <property name="maxThreadPoolSize" value="${identity.jobs.identity.processor.poolsize}" />
+    </bean>
+
+    <bean id="identityVatCheckProcessor" class="com.junbo.identity.job.IdentityVatCheckProcessor">
+        <property name="userRepository" ref="cloudantUserRepository" />
+        <property name="vatResource" ref="identityVatResource" />
+    </bean>
+
+    <bean id="identityJobAsyncTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="${identity.jobs.identity.thread.poolsize}" />
+        <property name="maxPoolSize" value="${identity.jobs.identity.thread.poolsize}" />
+        <property name="queueCapacity" value="1000" />
+        <property name="rejectedExecutionHandler">
+            <bean class="java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy"/>
+        </property>
+    </bean>
+</beans>
