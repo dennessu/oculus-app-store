@@ -22,4 +22,7 @@ interface UserRepository extends BaseRepository<User, UserId> {
 
     @ReadMethod
     Promise<User> searchUserByMigrateId(Long migratedUserId)
+
+    @ReadMethod
+    Promise<List<User>> searchInvalidVatUser(Integer limit, Integer offset)
 }
