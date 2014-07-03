@@ -49,15 +49,15 @@ class FulfillmentActionTest extends BaseTest{
 
         def fulfillmentHistories = [new FulfillmentHistory(), new FulfillmentHistory()]
         fulfillmentHistories[0].with {
-            trackingUuid = UUID.fromString(fulfilmentResult.trackingGuid)
+            trackingUuid = UUID.fromString(fulfilmentResult.trackingUuid)
             fulfillmentEvent = com.junbo.order.spec.model.enums.FulfillmentAction.FULFILL.toString()
-            orderItemId = fulfilmentResult.items[0].orderItemId
+            orderItemId = fulfilmentResult.items[0].itemReferenceId
             fulfillmentId =  fulfilmentResult.items[0].fulfilmentId
         }
         fulfillmentHistories[1].with {
-            trackingUuid = UUID.fromString(fulfilmentResult.trackingGuid)
+            trackingUuid = UUID.fromString(fulfilmentResult.trackingUuid)
             fulfillmentEvent = com.junbo.order.spec.model.enums.FulfillmentAction.FULFILL.toString()
-            orderItemId = fulfilmentResult.items[1].orderItemId
+            orderItemId = fulfilmentResult.items[1].itemReferenceId
             fulfillmentId =  fulfilmentResult.items[1].fulfilmentId
         }
 

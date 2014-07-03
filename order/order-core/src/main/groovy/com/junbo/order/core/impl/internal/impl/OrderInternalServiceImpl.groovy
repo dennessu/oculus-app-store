@@ -333,6 +333,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
             if (!hasFulfillment) {
                 return Promise.pure(order)
             }
+
             // fill fulfillment histories
             return orderServiceContextBuilder.refreshFulfillmentRequest(orderServiceContext).then { FulfilmentRequest fr ->
                 if (fr == null) {
@@ -340,7 +341,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 }
                 fr.items?.collect() { FulfilmentItem fi ->
                     def fulfillOrderItem = order.orderItems?.find() { OrderItem oi ->
-                        oi.getId().value == fi.orderItemId
+                        oi.getId().value == fi.itemReferenceId
                     }
                     if (fulfillOrderItem != null) {
                         fulfillOrderItem.fulfillmentHistories.collect() { FulfillmentHistory fh ->

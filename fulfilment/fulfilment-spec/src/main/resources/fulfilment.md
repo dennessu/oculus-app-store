@@ -9,17 +9,17 @@ post new fulfilments
 
         {
             "userId": {"href": "http://api.wan-san.com/v1/users/12345", "id": "12345"},
-            "orderId": {"href": "http://api.wan-san.com/v1/orders/12345", "id": "12345"},
-            "trackingGuid": "151907d5-807e-4a69-83e6-e709b6f75359",
+            "orderId": "12345",
+            "trackingUuid": "151907d5-807e-4a69-83e6-e709b6f75359",
             "items":[
                 {
-                    "orderItemId": {"href": "http://api.wan-san.com/v1/billing-lineitems/100000001", "id": "100000001"},
+                    "itemReferenceId": "100000001",
                     "offerId": {"href": "http://api.wan-san.com/v1/offers/11111", "id": "11111"},
                     "timestamp": 10000000000000,
                     "quantity": 1
                 },
                 {
-                    "orderItemId": {"href": "http://api.wan-san.com/v1/billing-lineitems/100000002", "id": "100000002"},
+                    "itemReferenceId": "100000002",
                     "offerId": {"href": "http://api.wan-san.com/v1/offers/22222", "id": "22222"},
                     "timestamp": 10000000000000,
                     "quantity": 10
@@ -35,12 +35,12 @@ post new fulfilments
         {
             "self": {"href": "http://api.wan-san.com/v1/fulfilments?orderId=123456789, "id":""},
             "userId": {"href": "http://api.wan-san.com/v1/users/12345", "id": "12345"},
-            "orderId": {"href": "http://api.wan-san.com/v1/orders/12345", "id": "12345"},
-            "trackingGuid": "151907d5-807e-4a69-83e6-e709b6f75359",
+            "orderId": "12345",
+            "trackingUuid": "151907d5-807e-4a69-83e6-e709b6f75359",
             "items":[
                 {
                     "self": {"href": "http://api.wan-san.com/v1/fulfilments/11111", "id": "11111"},
-                    "orderItemId": {"href": "http://api.wan-san.com/v1/billing-lineitems/100000001", "id": "100000001"},
+                    "itemReferenceId": "100000001",
                     "offerId": {"href": "http://api.wan-san.com/v1/offers/11111", "id": "11111"},
                     "timestamp": 10000000000000,
                     "quantity": 1,
@@ -55,7 +55,7 @@ post new fulfilments
                 },
                 {
                     "self": {"href": "http://api.wan-san.com/v1/fulfilments/22222", "id": "22222"},
-                    "orderItemId": {"href": "http://api.wan-san.com/v1/billing-lineitems/100000002", "id": "100000002"},
+                    "itemReferenceId": "100000002",
                     "offerId": {"href": "http://api.wan-san.com/v1/offers/22222", "id": "22222"},
                     "timestamp": 10000000000000,
                     "quantity": 10,
@@ -92,7 +92,7 @@ get fulfilment detail
 
         {
             "self": {"href": "http://api.wan-san.com/v1/fulfilments/11111", "id": "11111"},
-            "orderItemId": {"href": "http://api.wan-san.com/v1/billing-lineitems/100000001", "id": "100000001"},
+            "itemReferenceId": "100000001",
             "offerId": {"href": "http://api.wan-san.com/v1/offers/11111", "id": "11111"},
             "timestamp": 10000000000000,
             "quantity": 1,
@@ -119,12 +119,12 @@ get fulfilments by billing order addressId
         {
             "self": {"href": "http://api.wan-san.com/v1/fulfilments?orderId=123456789, "id":""},
             "userId": {"href": "http://api.wan-san.com/v1/users/12345", "id": "12345"},
-            "orderId": {"href": "http://api.wan-san.com/v1/orders/123456789", "id": "123456789"},
-            "trackingGuid": "151907d5-807e-4a69-83e6-e709b6f75359",
+            "orderId": "123456789",
+            "trackingUuid": "151907d5-807e-4a69-83e6-e709b6f75359",
             "items":[
                 {
                     "self": {"href": "http://api.wan-san.com/v1/fulfilments/11111", "id": "11111"},
-                    "orderItemId": {"href": "http://api.wan-san.com/v1/billing-lineitems/100000001", "id": "100000001"},
+                    "itemReferenceId": "100000001",
                     "offerId": "{"href": "http://api.wan-san.com/v1/offers/11111", "id": "11111"},
                     "timestamp": 10000000000000,
                     "quantity": 10,
@@ -139,7 +139,7 @@ get fulfilments by billing order addressId
                 },
                 {
                     "self": {"href": "http://api.wan-san.com/v1/fulfilments/22222", "id": "22222"},
-                    "orderItemId": {"href": "http://api.wan-san.com/v1/billing-lineitems/100000002", "id": "100000002"},
+                    "itemReferenceId": "100000002",
                     "offerId": {"href": "http://api.wan-san.com/v1/offers/22222", "id": "22222"},
                     "timestamp": 10000000000000,
                     "quantity": 10,

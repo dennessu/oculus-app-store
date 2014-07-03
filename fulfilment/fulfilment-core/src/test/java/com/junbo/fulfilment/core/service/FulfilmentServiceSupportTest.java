@@ -62,7 +62,7 @@ public class FulfilmentServiceSupportTest extends BaseTest {
     private FulfilmentRequest buildFulfilmentRequest() {
         FulfilmentRequest request = new FulfilmentRequest();
         request.setRequester("SYSTEM");
-        request.setTrackingGuid(generateUUID().toString());
+        request.setTrackingUuid(generateUUID().toString());
         request.setUserId(generateLong());
         request.setOrderId(generateLong());
 
@@ -71,13 +71,13 @@ public class FulfilmentServiceSupportTest extends BaseTest {
                 setOfferId("100L");
                 setTimestamp(System.currentTimeMillis());
                 setQuantity(2);
-                setOrderItemId(10000L);
+                setItemReferenceId(10000L);
             }});
             add(new FulfilmentItem() {{
                 setOfferId("400L");
                 setTimestamp(System.currentTimeMillis());
                 setQuantity(3);
-                setOrderItemId(20000L);
+                setItemReferenceId(20000L);
             }});
         }});
 

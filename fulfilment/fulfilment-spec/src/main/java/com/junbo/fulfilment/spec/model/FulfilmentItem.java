@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.FulfilmentId;
 import com.junbo.common.jackson.annotation.OfferId;
-import com.junbo.common.jackson.annotation.OrderItemId;
 
 import javax.validation.constraints.Null;
 import java.util.ArrayList;
@@ -23,8 +22,7 @@ public class FulfilmentItem {
     @FulfilmentId
     private Long fulfilmentId;
 
-    @OrderItemId
-    private Long orderItemId;
+    private Long itemReferenceId;
 
     @OfferId
     private String offerId;
@@ -54,12 +52,12 @@ public class FulfilmentItem {
         this.fulfilmentId = fulfilmentId;
     }
 
-    public Long getOrderItemId() {
-        return orderItemId;
+    public Long getItemReferenceId() {
+        return itemReferenceId;
     }
 
-    public void setOrderItemId(Long orderItemId) {
-        this.orderItemId = orderItemId;
+    public void setItemReferenceId(Long itemReferenceId) {
+        this.itemReferenceId = itemReferenceId;
     }
 
     public String getOfferId() {

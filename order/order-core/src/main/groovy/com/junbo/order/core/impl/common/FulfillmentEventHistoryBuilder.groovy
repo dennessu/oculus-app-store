@@ -25,9 +25,9 @@ class FulfillmentEventHistoryBuilder {
     static FulfillmentHistory buildFulfillmentHistory(FulfilmentRequest fulfilmentResult,
                                                       FulfilmentItem fulfilmentItem, OrderItem orderItem) {
         def fulfillmentHistory = new FulfillmentHistory()
-        fulfillmentHistory.trackingUuid = UUID.fromString(fulfilmentResult.trackingGuid)
+        fulfillmentHistory.trackingUuid = UUID.fromString(fulfilmentResult.trackingUuid)
         fulfillmentHistory.fulfillmentEvent = getFulfillmentEvent(fulfilmentItem, orderItem)
-        fulfillmentHistory.orderItemId = fulfilmentItem.orderItemId
+        fulfillmentHistory.orderItemId = fulfilmentItem.itemReferenceId
         fulfillmentHistory.fulfillmentId = fulfilmentItem.fulfilmentId
         return fulfillmentHistory
     }
@@ -35,9 +35,9 @@ class FulfillmentEventHistoryBuilder {
     static FulfillmentHistory buildFulfillmentHistory(FulfilmentRequest fulfilmentResult,
                                                       FulfilmentItem fulfilmentItem, OrderEvent event) {
         def fulfillmentHistory = new FulfillmentHistory()
-        fulfillmentHistory.trackingUuid = UUID.fromString(fulfilmentResult.trackingGuid)
+        fulfillmentHistory.trackingUuid = UUID.fromString(fulfilmentResult.trackingUuid)
         fulfillmentHistory.fulfillmentEvent = getFulfillmentEvent(fulfilmentItem, event)
-        fulfillmentHistory.orderItemId = fulfilmentItem.orderItemId
+        fulfillmentHistory.orderItemId = fulfilmentItem.itemReferenceId
         fulfillmentHistory.fulfillmentId = fulfilmentItem.fulfilmentId
         return fulfillmentHistory
     }
@@ -87,7 +87,7 @@ class FulfillmentEventHistoryBuilder {
         }
 
         LOGGER.warn('name=Unknown_Fulfillment_Status, fulfilmentId={}, orderItemId={}',
-                fulfilmentItem.fulfilmentId.toString(), fulfilmentItem.orderItemId.toString())
+                fulfilmentItem.fulfilmentId.toString(), fulfilmentItem.itemReferenceId.toString())
         return EventStatus.ERROR
     }
 }

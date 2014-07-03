@@ -10,6 +10,7 @@ import com.junbo.billing.spec.model.Balance
 import com.junbo.common.id.OfferId
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.identity.spec.v1.model.Address
+import com.junbo.identity.spec.v1.model.Email
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.Currency
 import com.junbo.order.clientproxy.model.OrderOfferRevision
@@ -41,8 +42,10 @@ class OrderServiceContext {
 
     Order order
     User user
+    String email
     ApiContext apiContext
     List<PaymentInstrument> paymentInstruments
+    List<Address> billingAddresses
     List<Balance> balances
     Address shippingAddress
     Boolean isAsyncCharge

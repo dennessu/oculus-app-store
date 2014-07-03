@@ -20,13 +20,12 @@ public class FulfilmentRequest {
     @JsonProperty("self")
     private Long requestId;
 
-    private String trackingGuid;
+    private String trackingUuid;
     private String requester;
 
     @UserId
     private Long userId;
 
-    @OrderId
     private Long orderId;
 
     @ShippingAddressId
@@ -51,12 +50,12 @@ public class FulfilmentRequest {
         this.requestId = requestId;
     }
 
-    public String getTrackingGuid() {
-        return trackingGuid;
+    public String getTrackingUuid() {
+        return trackingUuid;
     }
 
-    public void setTrackingGuid(String trackingGuid) {
-        this.trackingGuid = trackingGuid;
+    public void setTrackingUuid(String trackingGuid) {
+        this.trackingUuid = trackingGuid;
     }
 
     public String getRequester() {

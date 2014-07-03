@@ -17,10 +17,10 @@ import java.util.UUID;
  * FulfilmentRequestDaoImpl.
  */
 public class FulfilmentRequestDaoImpl extends BaseDaoImpl<FulfilmentRequestEntity> implements FulfilmentRequestDao {
-    public FulfilmentRequestEntity findByTrackingGuid(Long userId, final String trackingGuid) {
+    public FulfilmentRequestEntity findByTrackingUuid(Long userId, final String trackingUuid) {
         return findBy(userId, new Action<Criteria>() {
             public void apply(Criteria criteria) {
-                criteria.add(Restrictions.eq("trackingGuid", UUID.fromString(trackingGuid)));
+                criteria.add(Restrictions.eq("trackingUuid", UUID.fromString(trackingUuid)));
             }
         });
     }

@@ -107,7 +107,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
 
         String trackingGuid = UUID.randomUUID().toString();
         FulfilmentRequest request = prepareFulfilmentRequest(offerId);
-        request.setTrackingGuid(trackingGuid);
+        request.setTrackingUuid(trackingGuid);
 
         try {
             request = fulfilmentResource.fulfill(request).get();
@@ -117,7 +117,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
         Assert.assertNotNull(request, "fulfilmentRequest should not be null.");
 
         FulfilmentRequest request2 = prepareFulfilmentRequest(offerId);
-        request2.setTrackingGuid(trackingGuid);
+        request2.setTrackingUuid(trackingGuid);
 
         try {
             request2 = fulfilmentResource.fulfill(request2).get();
@@ -157,7 +157,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
 
     private FulfilmentRequest prepareFulfilmentRequest(final String offerId) {
         return new FulfilmentRequest() {{
-            setTrackingGuid(UUID.randomUUID().toString());
+            setTrackingUuid(UUID.randomUUID().toString());
             setRequester("SYSTEM_INTERNAL");
             setOrderId(getRandomLong());
             setUserId(getRandomLong());
@@ -166,7 +166,7 @@ public class IntegrationTest extends AbstractTestNGSpringContextTests {
 
             setItems(new ArrayList<FulfilmentItem>() {{
                 add(new FulfilmentItem() {{
-                    setOrderItemId(1111L);
+                    setItemReferenceId(1111L);
                     setOfferId(offerId);
                     setQuantity(1);
                     setTimestamp(System.currentTimeMillis());

@@ -68,14 +68,14 @@ public class FulfilmentTestDataProvider extends BaseTestDataProvider{
             OrderItem orderItem = order.getOrderItems().get(i);
             String orderItemId = getOrderItemId(uid, IdConverter.hexStringToId(OrderId.class, orderId),
                     orderItem.getOffer().getValue());
-            fulfilmentItem.setOrderItemId(IdConverter.hexStringToId(OrderId.class, orderItemId));
+            fulfilmentItem.setItemReferenceId(IdConverter.hexStringToId(OrderId.class, orderItemId));
             fulfilmentItem.setOfferId(orderItem.getOffer().getValue());
             fulfilmentItem.setQuantity(Integer.parseInt(orderItem.getQuantity().toString()));
             fulfilmentItems.add(fulfilmentItem);
         }
         fulfilmentRequest.setItems(fulfilmentItems);
         fulfilmentRequest.setUserId(order.getUser().getValue());
-        fulfilmentRequest.setTrackingGuid(UUID.randomUUID().toString());
+        fulfilmentRequest.setTrackingUuid(UUID.randomUUID().toString());
 
         if (hasPhysicalGood) {
             fulfilmentRequest.setShippingMethodId("0");

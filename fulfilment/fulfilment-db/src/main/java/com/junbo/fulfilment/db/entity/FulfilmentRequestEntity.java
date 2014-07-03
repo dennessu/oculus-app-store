@@ -21,8 +21,9 @@ import java.util.UUID;
 @TypeDefs({@TypeDef(name = "json-string", typeClass = JSONStringUserType.class)})
 public class FulfilmentRequestEntity extends BaseEntity {
     private Long id;
-    private UUID trackingGuid;
+    private UUID trackingUuid;
     private String payload;
+    private Long userId;
     private Long orderId;
 
     @Id
@@ -35,14 +36,14 @@ public class FulfilmentRequestEntity extends BaseEntity {
         this.id = id;
     }
 
-    @Column(name = "tracking_guid")
+    @Column(name = "tracking_uuid")
     @Type(type = "pg-uuid")
-    public UUID getTrackingGuid() {
-        return trackingGuid;
+    public UUID getTrackingUuid() {
+        return trackingUuid;
     }
 
-    public void setTrackingGuid(UUID trackingGuid) {
-        this.trackingGuid = trackingGuid;
+    public void setTrackingUuid(UUID trackingUuid) {
+        this.trackingUuid = trackingUuid;
     }
 
     @Column(name = "payload")
@@ -53,6 +54,15 @@ public class FulfilmentRequestEntity extends BaseEntity {
 
     public void setPayload(String payload) {
         this.payload = payload;
+    }
+
+    @Column(name = "user_id")
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     @Column(name = "order_id")
@@ -67,6 +77,6 @@ public class FulfilmentRequestEntity extends BaseEntity {
     @Override
     @Transient
     public Long getShardMasterId() {
-        return orderId;
+        return userId;
     }
 }

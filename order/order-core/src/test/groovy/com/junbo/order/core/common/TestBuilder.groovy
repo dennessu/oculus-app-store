@@ -123,14 +123,14 @@ class TestBuilder {
         def request = new FulfilmentRequest()
         request.items = []
         request.orderId = order.getId().value
-        request.trackingGuid = UUID.randomUUID().toString()
+        request.trackingUuid = UUID.randomUUID().toString()
         return request
     }
 
     static FulfilmentItem buildFulfilmentItem(String itemStatus, OrderItem orderItem) {
         def item = new FulfilmentItem()
         item.fulfilmentId = generateLong()
-        item.orderItemId = orderItem.getId().value
+        item.itemReferenceId = orderItem.getId().value
         item.actions = []
         item.actions  << new FulfilmentAction()
         item.actions[0].status = itemStatus

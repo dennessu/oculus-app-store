@@ -21,7 +21,7 @@ public class FulfilmentServiceTest extends BaseTest {
         service.fulfill(request);
 
         FulfilmentRequest retrieved = service.retrieveRequest(request.getRequestId());
-        Assert.assertEquals(retrieved.getTrackingGuid(), request.getTrackingGuid(), "Tracking GUID should match.");
+        Assert.assertEquals(retrieved.getTrackingUuid(), request.getTrackingUuid(), "Tracking GUID should match.");
         Assert.assertEquals(retrieved.getItems().size(), request.getItems().size(), "Items size should match.");
     }
 
@@ -29,10 +29,10 @@ public class FulfilmentServiceTest extends BaseTest {
     public void testDuplicatedTrackingGuid() {
         FulfilmentRequest request = createRequest();
         service.fulfill(request);
-        String trackingGuid = request.getTrackingGuid();
+        String trackingGuid = request.getTrackingUuid();
 
         FulfilmentRequest request2 = createRequest();
-        request2.setTrackingGuid(trackingGuid);
+        request2.setTrackingUuid(trackingGuid);
         request2 = service.fulfill(request2);
 
         Assert.assertEquals(request2.getRequestId(), request.getRequestId(), "Request id should match.");
@@ -52,7 +52,7 @@ public class FulfilmentServiceTest extends BaseTest {
     private FulfilmentRequest createRequest() {
         FulfilmentRequest request = new FulfilmentRequest();
         request.setRequester("SYSTEM");
-        request.setTrackingGuid(generateUUID().toString());
+        request.setTrackingUuid(generateUUID().toString());
         request.setUserId(generateLong());
         request.setOrderId(generateLong());
 
@@ -61,13 +61,13 @@ public class FulfilmentServiceTest extends BaseTest {
                 setOfferId("100L");
                 setTimestamp(System.currentTimeMillis());
                 setQuantity(2);
-                setOrderItemId(10000L);
+                setItemReferenceId(10000L);
             }});
             add(new FulfilmentItem() {{
                 setOfferId("400L");
                 setTimestamp(System.currentTimeMillis());
                 setQuantity(3);
-                setOrderItemId(20000L);
+                setItemReferenceId(20000L);
             }});
         }});
 
