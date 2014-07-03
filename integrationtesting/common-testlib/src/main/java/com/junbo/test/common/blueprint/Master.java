@@ -7,18 +7,15 @@ package com.junbo.test.common.blueprint;
 
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
+import com.junbo.fulfilment.spec.model.FulfilmentRequest;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.fulfilment.spec.model.FulfilmentRequest;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.test.common.libs.IdConverter;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.billing.spec.model.Balance;
-import com.junbo.common.id.OfferRevisionId;
-import com.junbo.common.id.ItemRevisionId;
 import com.junbo.order.spec.model.Order;
 import com.junbo.cart.spec.model.Cart;
 
