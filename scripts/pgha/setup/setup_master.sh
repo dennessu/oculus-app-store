@@ -47,7 +47,7 @@ echo "[SETUP][MASTER] configure postgres.conf"
 cat >> $MASTER_DATA_PATH/postgresql.conf <<EOF
 wal_level = hot_standby
 archive_mode = on
-max_wal_senders = 3
+max_wal_senders = 10
 listen_addresses = '*'
 hot_standby = on
 max_prepared_transactions = 100

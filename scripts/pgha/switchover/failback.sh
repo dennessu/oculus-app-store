@@ -51,7 +51,7 @@ while ! echo exit | psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT 
 echo "[FAILBACK][MASTER] master promoted!"
 
 echo "[FAILBACK][MASTER] force wait beforing writing"
-sleep 5s
+sleep 10s
 
 ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
     echo "[SLAVE] configure recovery.conf for slave"

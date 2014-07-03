@@ -50,7 +50,7 @@ while ! echo exit | psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "SELECT pg
 echo "[FAILOVER][SLAVE] slave promoted!"
 
 echo "[FAILOVER][SLAVE] force wait beforing writing"
-sleep 5s
+sleep 10s
 
 ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
     echo "[FAILOVER][MASTER] configure recovery.conf for master"

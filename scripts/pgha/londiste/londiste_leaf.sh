@@ -49,7 +49,7 @@ done
 echo "[LONDISTE][REPLICA] replica promoted!"
 
 echo "[LONDISTE][REPLICA] force wait beforing writing"
-sleep 5s
+sleep 10s
 
 for db in ${REPLICA_DATABASES[@]}
 do
@@ -66,9 +66,9 @@ do
     echo "[LONDISTE][REPLICA] drop leaf node if exist"
     londiste3 $config drop-node leaf_node_${db} > /dev/null 2>&1 || echo "node [leaf_node_${db}] does not exist"
 
-    ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
     echo "[LONDISTE][MASTER] drop leaf node if exist"
-    londiste3 $SKYTOOL_CONFIG_PATH/${db}_root.ini drop-node leaf_node_\${db} > /dev/null 2>&1 || echo "node [leaf_node_\${db}] does not exist"
+    londiste3 $SKYTOOL_CONFIG_PATH/${db}_root.ini drop-node leaf_node_${db} > /dev/null 2>&1 || echo "node [leaf_node_${db}] does not exist"
 ENDSSH
 
     echo "[LONDISTE][REPLICA] create leaf node for database [$db]"
