@@ -7,9 +7,12 @@
 package com.junbo.order.core.impl.order
 import com.junbo.billing.spec.model.Balance
 import com.junbo.common.id.OfferId
+import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.identity.spec.v1.model.Address
+import com.junbo.identity.spec.v1.model.Email
 import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.clientproxy.model.OrderOfferRevision
@@ -67,6 +70,26 @@ class OrderServiceContextBuilder {
         }.syncThen {
             context.paymentInstruments = pis
             return pis
+        }
+    }
+
+    Promise<List<Address>> getBillingAddresses(OrderServiceContext context) {
+        assert (context != null && context.order != null)
+
+        if (!CollectionUtils.isEmpty(context.billingAddresses)) {
+            return Promise.pure(context.billingAddresses)
+        }
+
+        return getPaymentInstruments(context).then {
+            List<Address> addresses =[]
+            return Promise.each(context.paymentInstruments) { PaymentInstrument pi ->
+                return facadeContainer.identityFacade.getAddress(pi.billingAddressId).syncThen { Address address ->
+                    addresses << address
+                }
+            }.then {
+                context.billingAddresses = addresses
+                return Promise.pure(addresses)
+            }
         }
     }
 
@@ -231,6 +254,31 @@ class OrderServiceContextBuilder {
                 assert (currency != null)
                 context.currency = currency
                 return Promise.pure(currency)
+        }
+    }
+
+    Promise<String> getEmail(OrderServiceContext context)  {
+        assert (context != null && context.order != null)
+
+        if (context.email != null) {
+            return Promise.pure(context.email)
+        }
+
+        return getUser(context).then { User user ->
+
+            UserPersonalInfoId emailId = null
+            for (UserPersonalInfoLink link : user.emails) {
+                if (link.isDefault) {
+                    emailId = link.value
+                }
+            }
+            return facadeContainer.identityFacade.getEmail(emailId).recover { Throwable throwable ->
+                LOGGER.error("name=Order_GetEmail_Error", throwable)
+                return Promise.pure(null)
+            }.then { String email ->
+                context.email = email
+                return Promise.pure(email)
+            }
         }
     }
 }
