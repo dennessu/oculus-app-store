@@ -16,9 +16,11 @@ import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
+import org.apache.commons.collections.map.HashedMap;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by yunlongzhao on 5/14/14.
@@ -27,7 +29,7 @@ public class FulfilmentTesting extends BaseTestClass {
 
     private Country country = Country.DEFAULT;
     private Currency currency = Currency.DEFAULT;
-    /*
+
 
     @Property(
             priority = Priority.Dailies,
@@ -45,9 +47,9 @@ public class FulfilmentTesting extends BaseTestClass {
     )
     @Test
     public void testPostFulfilment() throws Exception {
-        ArrayList<String> offerList = new ArrayList<>();
-        offerList.add(offer_digital_normal1);
-        offerList.add(offer_digital_normal2);
+        Map<String, Integer> offerList = new HashedMap();
+
+        offerList.put(offer_digital_normal1, 1);
 
         String randomUid = testDataProvider.createUser();
 
@@ -78,9 +80,10 @@ public class FulfilmentTesting extends BaseTestClass {
     )
     @Test
     public void testGetFulfilmentByOrderId() throws Exception {
-        ArrayList<String> offerList = new ArrayList<>();
-        offerList.add(offer_physical_normal1);
-        offerList.add(offer_physical_normal2);
+        Map<String, Integer> offerList = new HashedMap();
+
+        offerList.put(offer_physical_normal1, 1);
+        offerList.put(offer_physical_normal2, 1);
 
         String randomUid = testDataProvider.createUser();
 
@@ -89,11 +92,12 @@ public class FulfilmentTesting extends BaseTestClass {
 
         String orderId = testDataProvider.postOrder(randomUid, country, currency, creditCardId, true, offerList);
 
-        String fulfilmentId = testDataProvider.postFulfilment(randomUid, orderId, true);
+        testDataProvider.postFulfilment(randomUid, orderId, true);
 
-        fulfilmentId = testDataProvider.getFulfilmentByOrderId(orderId);
+        String fulfilmentId = testDataProvider.getFulfilmentByOrderId(orderId);
 
         validationHelper.validateFulfilmentRequest(fulfilmentId, orderId, true);
+
     }
 
     @Property(
@@ -113,8 +117,12 @@ public class FulfilmentTesting extends BaseTestClass {
     )
     @Test
     public void testGetFulfilment() throws Exception {
-        ArrayList<String> offerList = new ArrayList<>();
-        offerList.add(offer_digital_normal1);
+        Map<String, Integer> offerList = new HashedMap();
+        Country country = Country.DEFAULT;
+        Currency currency = Currency.DEFAULT;
+
+        offerList.put(offer_digital_normal1, 1);
+        offerList.put(offer_digital_normal1, 2);
 
         String randomUid = testDataProvider.createUser();
 
@@ -132,6 +140,5 @@ public class FulfilmentTesting extends BaseTestClass {
         validationHelper.validateSingleFulfilmentItem(fulfilmentItem, orderId, false);
 
     }
-    */
 
 }

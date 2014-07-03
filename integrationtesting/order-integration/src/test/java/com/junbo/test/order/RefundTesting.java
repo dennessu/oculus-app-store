@@ -51,7 +51,7 @@ public class RefundTesting extends BaseOrderTestClass {
         Country country = Country.DEFAULT;
         Currency currency = Currency.DEFAULT;
 
-        offerList.put(offer_digital_normal1, 1);
+        offerList.put(offer_inApp_consumable1, 2);
         offerList.put(offer_digital_normal2, 1);
 
         String uid = testDataProvider.createUser();
@@ -182,8 +182,8 @@ public class RefundTesting extends BaseOrderTestClass {
         Country country = Country.DEFAULT;
         Currency currency = Currency.DEFAULT;
 
-        offerList.put(offer_digital_normal1, 3);
-        offerList.put(offer_digital_normal2, 3);
+        offerList.put(offer_inApp_consumable1, 3);
+        offerList.put(offer_inApp_consumable2, 3);
 
         String uid = testDataProvider.createUser();
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
@@ -198,8 +198,8 @@ public class RefundTesting extends BaseOrderTestClass {
                 "en_US", false, OrderStatus.COMPLETED, creditCardId, offerList);
 
         Map<String, Integer> refundOfferList = new HashedMap();
-        refundOfferList.put(offer_digital_normal1, 1);
-        refundOfferList.put(offer_digital_normal2, 2);
+        refundOfferList.put(offer_inApp_consumable1, 1);
+        refundOfferList.put(offer_inApp_consumable2, 2);
 
         testDataProvider.getRefundedOrderInfo(expectedOrderInfo, refundOfferList, null);
 
@@ -245,7 +245,7 @@ public class RefundTesting extends BaseOrderTestClass {
         Country country = Country.DEFAULT;
         Currency currency = Currency.DEFAULT;
 
-        offerList.put(offer_digital_normal1, 1);
+        offerList.put(offer_inApp_consumable1, 2);
         offerList.put(offer_digital_normal2, 1);
 
         String uid = testDataProvider.createUser();
@@ -261,7 +261,7 @@ public class RefundTesting extends BaseOrderTestClass {
                 "en_US", false, OrderStatus.COMPLETED, creditCardId, offerList);
 
         Map<String, Integer> refundOfferList = new HashedMap();
-        refundOfferList.put(offer_digital_normal1, 1);
+        refundOfferList.put(offer_inApp_consumable1, 2);
 
         testDataProvider.getRefundedOrderInfo(expectedOrderInfo, refundOfferList, null);
 
@@ -288,7 +288,7 @@ public class RefundTesting extends BaseOrderTestClass {
             features = "Put /orders/{key}",
             component = Component.Order,
             owner = "ZhaoYunlong",
-            status = Status.Disable,
+            status = Status.Manual,
             description = "Test refund pre-order offer",
             steps = {
                     "1. Post a new user",
