@@ -66,6 +66,11 @@ do
     echo "[LONDISTE][REPLICA] drop leaf node if exist"
     londiste3 $config drop-node leaf_node_${db} > /dev/null 2>&1 || echo "node [leaf_node_${db}] does not exist"
 
+    ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
+    echo "[LONDISTE][MASTER] drop leaf node if exist"
+    londiste3 $SKYTOOL_CONFIG_PATH/${db}_root.ini drop-node leaf_node_\${db} > /dev/null 2>&1 || echo "node [leaf_node_\${db}] does not exist"
+ENDSSH
+
     echo "[LONDISTE][REPLICA] create leaf node for database [$db]"
     londiste3 $config create-leaf leaf_node_${db} "dbname=$db host=$REPLICA_HOST port=$REPLICA_DB_PORT" --provider="dbname=$db host=$MASTER_HOST port=$MASTER_DB_PORT"
 
