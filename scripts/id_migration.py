@@ -22,6 +22,9 @@ def main():
 
     users_file = file(args.input)
     users = json.load(users_file)
+    size = len(users)
+    if users[size-1] == {}:
+        del users[size-1]
 
     num_worker_threads = 30
 
