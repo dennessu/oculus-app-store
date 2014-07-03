@@ -393,7 +393,9 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
         if(notify.getPspReference() == null){
             return Promise.pure(null);
         }
-        //TODO: save to DB and check redundant notification
+        //TODO: save to DB and check redundant notification. Log it first
+        LOGGER.info("receive notification from ayden:" + request);
+        //
         Long paymentId = CommonUtil.decode(notify.getMerchantReference());
         String merchantAccount = notify.getMerchantAccountCode();
         PaymentTransaction transaction = paymentRepositoryFacade.getByPaymentId(paymentId);

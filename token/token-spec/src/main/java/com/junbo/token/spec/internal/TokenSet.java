@@ -6,7 +6,8 @@
 
 package com.junbo.token.spec.internal;
 
-import java.util.List;
+import com.junbo.token.spec.model.ProductDetail;
+
 
 /**
  * token set model.
@@ -16,7 +17,7 @@ public class TokenSet {
     private String description;
     private String status;
     private String generationLength;
-    private List<Long> offerIds;
+    private ProductDetail productDetail;
     private String productType;
 
     public Long getId() {
@@ -51,12 +52,12 @@ public class TokenSet {
         this.generationLength = generationLength;
     }
 
-    public List<Long> getOfferIds() {
-        return offerIds;
+    public ProductDetail getProductDetail() {
+        return productDetail;
     }
 
-    public void setOfferIds(List<Long> offerIds) {
-        this.offerIds = offerIds;
+    public void setProductDetail(ProductDetail productDetail) {
+        this.productDetail = productDetail;
     }
 
     public String getProductType() {

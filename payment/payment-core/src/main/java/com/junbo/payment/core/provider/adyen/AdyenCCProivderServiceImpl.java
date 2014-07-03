@@ -44,6 +44,7 @@ import java.util.concurrent.Callable;
 public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
     private static final Logger LOGGER = LoggerFactory.getLogger(AdyenCCProivderServiceImpl.class);
     private static final String PROVIDER_NAME = "AdyenCreditCard";
+    private static final String CARD_BIN = "cardBin";
     @Autowired
     @Qualifier("oculus48IdGenerator")
     private IdGenerator idGenerator;
@@ -131,7 +132,17 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                     RecurringDetail recurringDetail = getRecurringReference(piId);
                     if(recurringDetail != null && recurringDetail.getCard() != null){
                         request.setExternalToken(recurringDetail.getRecurringDetailReference());
-                        request.setAccountNum(recurringDetail.getCard().getNumber());
+                        AnyType2AnyTypeMapEntry[] additionalData = result.getAdditionalData();
+                        String cardBin = "";
+                        if(additionalData != null && additionalData.length > 0){
+                            for(AnyType2AnyTypeMapEntry data : additionalData){
+                                if(data.getKey().equals(CARD_BIN)){
+                                    cardBin = data.getValue().toString();
+                                    break;
+                                }
+                            }
+                        }
+                        request.setAccountNum(cardBin + "****" +recurringDetail.getCard().getNumber());
                         request.getTypeSpecificDetails().setCreditCardType(
                                 PaymentUtil.getCreditCardType(recurringDetail.getVariant()).toString());
                         request.getTypeSpecificDetails().setExpireDate(recurringDetail.getCard().getExpiryYear()
@@ -164,6 +175,10 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
         if(CONFIRMED_STATUS.equalsIgnoreCase(resultMap.get("paymentResult.resultCode"))){
             result = new PaymentResult();
             result.setResultCode(CONFIRMED_STATUS);
+            AnyType2AnyTypeMapEntry additionalData = new AnyType2AnyTypeMapEntry();
+            additionalData.setKey("cardBin");
+            additionalData.setValue(resultMap.get("paymentResult.additionalData.cardBin"));
+            result.setAdditionalData((AnyType2AnyTypeMapEntry[])Arrays.asList(additionalData).toArray());
         }else{
             String refusedReason = "refused:";
             if(resultMap.get("paymentResult.refusalReason") != null){

@@ -16,6 +16,7 @@ import com.junbo.token.spec.enums.ItemStatus;
 import com.junbo.token.spec.enums.ProductType;
 import com.junbo.token.spec.internal.TokenSet;
 import com.junbo.token.spec.internal.TokenOrder;
+import com.junbo.token.spec.model.ProductDetail;
 import com.junbo.token.spec.model.TokenConsumption;
 import com.junbo.token.spec.model.TokenItem;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,25 +48,61 @@ public class TokenRepository {
     public TokenSet addTokenSet(TokenSet tokenSet){
         TokenSetEntity entity = tokenMapper.toTokenSetEntity(tokenSet, new MappingContext());
         Long setId = tokenSetDao.save(entity);
-        for(Long offerId : tokenSet.getOfferIds()){
-            TokenSetOfferEntity setOfferEntity = new TokenSetOfferEntity();
-            setOfferEntity.setProductId(offerId);
-            setOfferEntity.setTokenSetId(setId);
-            setOfferEntity.setProductType(TokenUtil.getEnumValue(ProductType.class, tokenSet.getProductType()));
-            tokenSetOfferDao.save(setOfferEntity);
+        ProductType productType = TokenUtil.getEnumValue(ProductType.class, tokenSet.getProductType());
+        if(productType.equals(ProductType.OFFER)){
+            addTokenSetOffer(setId, productType, tokenSet.getProductDetail().getDefaultOffer(), true);
+            if(tokenSet.getProductDetail().getOptionalOffers() != null){
+                for(String offerId : tokenSet.getProductDetail().getOptionalOffers()){
+                    addTokenSetOffer(setId, productType, offerId, false);
+                }
+            }
+        }else if(productType.equals(ProductType.PROMOTION)){
+            addTokenSetOffer(setId, productType, tokenSet.getProductDetail().getDefaultPromotion(), true);
+            if(tokenSet.getProductDetail().getOptionalPromotion() != null){
+                for(String offerId : tokenSet.getProductDetail().getOptionalPromotion()){
+                    addTokenSetOffer(setId, productType, offerId, false);
+                }
+            }
         }
+
         tokenSet.setId(setId);
         return tokenSet;
+    }
+
+    private void addTokenSetOffer(Long setId, ProductType productType, String offerId, boolean isDefault) {
+        TokenSetOfferEntity setOfferEntity = new TokenSetOfferEntity();
+        setOfferEntity.setProductId(offerId);
+        setOfferEntity.setTokenSetId(setId);
+        setOfferEntity.setProductType(productType);
+        setOfferEntity.setIsDefault(isDefault);
+        tokenSetOfferDao.save(setOfferEntity);
     }
 
     public TokenSet getTokenSet(Long tokenSetId){
         TokenSetEntity entity = tokenSetDao.get(tokenSetId);
         TokenSet tokenSet = tokenMapper.toTokenSet(entity, new MappingContext());
-        tokenSet.setOfferIds(new ArrayList<Long>());
+        //tokenSet.setOfferIds(new ArrayList<Long>());
+        ProductDetail productDetail = new ProductDetail();
+        String defaultProduct = null;
+        List<String> optionalProducts = new ArrayList<String>();
+        ProductType productType = null;
         for(TokenSetOfferEntity setOfferEntity : tokenSetOfferDao.getByTokenSetId(tokenSetId)){
-            tokenSet.getOfferIds().add(setOfferEntity.getProductId());
-            tokenSet.setProductType(setOfferEntity.getProductType().toString());
+            productType = setOfferEntity.getProductType();
+            if(setOfferEntity.getIsDefault()){
+                defaultProduct = setOfferEntity.getProductId();
+            }else{
+                optionalProducts.add(setOfferEntity.getProductId());
+            }
         }
+        if(productType.equals(ProductType.OFFER)){
+            productDetail.setDefaultOffer(defaultProduct);
+            productDetail.setOptionalOffers(optionalProducts);
+        }else if(productType.equals(ProductType.PROMOTION)){
+            productDetail.setDefaultPromotion(defaultProduct);
+            productDetail.setOptionalPromotion(optionalProducts);
+        }
+        tokenSet.setProductDetail(productDetail);
+        tokenSet.setProductType(productType.toString());
         return tokenSet;
     }
 

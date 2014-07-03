@@ -23,7 +23,7 @@ public final class ModelMapper {
         tokenSet.setProductType(request.getProductType());
         tokenSet.setDescription(request.getDescription());
         tokenSet.setGenerationLength(request.getGenerationLength());
-        tokenSet.setOfferIds(request.getOfferIds());
+        tokenSet.setProductDetail(request.getProductDetail());
         TokenOrder tokenOrder = new TokenOrder();
         tokenOrder.setActivation(request.getActivation());
         tokenOrder.setCreateMethod(request.getCreateMethod());
@@ -40,7 +40,7 @@ public final class ModelMapper {
         request.setProductType(tokenSet.getProductType());
         request.setDescription(tokenSet.getDescription());
         request.setGenerationLength(tokenSet.getGenerationLength());
-        request.setOfferIds(tokenSet.getOfferIds());
+        request.setProductDetail(tokenSet.getProductDetail());
         request.setActivation(tokenOrder.getActivation());
         request.setCreateMethod(tokenOrder.getCreateMethod());
         request.setDescription(tokenOrder.getDescription());

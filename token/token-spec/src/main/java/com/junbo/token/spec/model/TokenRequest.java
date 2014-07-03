@@ -23,8 +23,8 @@ public class TokenRequest {
     private Long id;
     private String description;
     private String generationLength;
-    private List<Long> offerIds;
     private String productType;
+    private ProductDetail productDetail;
     @FilterIn
     private String status;
     private Date expiredTime;
@@ -59,12 +59,12 @@ public class TokenRequest {
         this.generationLength = generationLength;
     }
 
-    public List<Long> getOfferIds() {
-        return offerIds;
+    public ProductDetail getProductDetail() {
+        return productDetail;
     }
 
-    public void setOfferIds(List<Long> offerIds) {
-        this.offerIds = offerIds;
+    public void setProductDetail(ProductDetail productDetail) {
+        this.productDetail = productDetail;
     }
 
     public String getProductType() {
