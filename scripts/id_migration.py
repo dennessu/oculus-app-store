@@ -7,6 +7,7 @@ import httplib
 import string
 import json
 import time
+import argparse
 from threading import Thread
 from Queue import Queue
 
@@ -14,9 +15,12 @@ def main():
     # Enforce python version
     if sys.version_info[0] != 2 or sys.version_info[1] < 7:
         error("The script only works in python 2.x where x >= 7")
-    
-    file_name = sys.argv[1]
-    users_file = file(file_name)
+    args = read_args()
+
+    comm_map = {"general" : args.general, "newRelease": args.new_release}
+    test_comm(comm_map)
+
+    users_file = file(args.input)
     users = json.load(users_file)
 
     num_worker_threads = 30
@@ -25,7 +29,7 @@ def main():
     start_time = time.time()
     q = Queue()
     write_q = Queue()
-    output = open("results.json", "w")
+    output = open(args.output, "w")
     output.write("{" + os.linesep)
 
     write_thread = Thread(target=write_worker, args=[users, write_q, results, output])
@@ -36,9 +40,21 @@ def main():
          t.daemon = True
          t.start()
     
-    chunks = [users[i:i+20] for i in xrange(0, len(users), 20)]
-
-    for input_users in chunks:
+    count = 0
+    input_users = []
+    for user in users:
+        comm_array = []
+        for comm_name,comm_id in comm_map.items():
+            comm_array.append({comm_id : True if user["optins"][comm_name] else False})
+        del user["optins"]
+        user["communications"] = comm_array
+        input_users.append(user)
+        count += 1
+        if count == 20:
+            q.put(input_users)
+            count = 0
+            input_users = []
+    if len(input_users) > 0:
         q.put(input_users)
 
     q.join()       # block until all tasks are done
@@ -49,6 +65,14 @@ def main():
     write_thread.join()
     output.write("}")
     output.close()
+
+def read_args():
+    parser = argparse.ArgumentParser(description='Id Migration Script')
+    parser.add_argument('-i', action="store", metavar='input_file', dest="input", help='the input file', required=True)
+    parser.add_argument('-o', action="store", metavar='output_file', dest="output", help='the output file, default is results.json', default='results.json')
+    parser.add_argument('-general', action="store", metavar='general_id', dest="general", help='the general communication id', required=True)
+    parser.add_argument('-new_release', action="store", metavar='new_release_id', dest="new_release", help='the newRelease communication id', required=True)
+    return parser.parse_args()
 
 def worker(q, write_q):
     while True:
@@ -82,6 +106,10 @@ def write_worker(users, write_q, results, output):
             else:
                 output.write("," + os.linesep)
             start += 1
+
+def test_comm(comm_map):
+    for name in comm_map:
+        curl('http://127.0.0.1:8080/v1/communications/%s' % comm_map[name])
 
 def curl(url, method = 'GET', body = None, headers = None, raiseOnError = True):
     if headers is None: headers = {}
