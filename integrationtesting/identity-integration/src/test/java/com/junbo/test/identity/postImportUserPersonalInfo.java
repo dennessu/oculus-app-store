@@ -259,8 +259,19 @@ public class postImportUserPersonalInfo {
     @Test(groups = "dailies")
     public void importMigrationDataUserLogin() throws Exception {
         OculusInput oculusInput = IdentityModel.DefaultOculusInput();
-        oculusInput.setPassword("1:8UFAbK26VrPLL75jE9P2:PRo4D7r23hrfv3FBxqBv:b87637b9ec5abd43db01d7a299612a49550230a813239fb3e28eec2a88c0df67");
-        OculusOutput oculusOutput1 = Identity.ImportMigrationData(oculusInput);
-        Identity.UserCredentialAttemptesPostDefault(oculusInput.getUsername(),"radiant555");
+        oculusInput.setStatus(IdentityModel.MigrateUserStatus.ACTIVE.name());
+        oculusInput.setPassword("1:lbQHMu5377aBJxK5xMDc:Ur8nE66R5Qr7S1a4b1bO:"
+                + "a9015659a978b37441d76d7839fa66b847e32311f5fd1da65130ca5051dd6ef1");
+        Identity.ImportMigrationData(oculusInput);
+        CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
+                oculusInput.getUsername(), "oculustest1234", false);
+        Validator.Validate("validate response code", 404, response.getStatusLine().getStatusCode());
+
+        oculusInput = IdentityModel.DefaultOculusInput();
+        oculusInput.setStatus(IdentityModel.MigrateUserStatus.ACTIVE.name());
+        oculusInput.setPassword("1:8UFAbK26VrPLL75jE9P2:PRo4D7r23hrfv3FBxqBv:"
+                + "b87637b9ec5abd43db01d7a299612a49550230a813239fb3e28eec2a88c0df67");
+        Identity.ImportMigrationData(oculusInput);
+        Identity.UserCredentialAttemptesPostDefault(oculusInput.getUsername(), "radiant555");
     }
 }
