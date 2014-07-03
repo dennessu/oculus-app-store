@@ -11,7 +11,7 @@ import com.junbo.fulfilment.db.entity.FulfilmentRequestEntity;
  * FulfilmentRequestDao.
  */
 public interface FulfilmentRequestDao extends BaseDao<FulfilmentRequestEntity> {
-    FulfilmentRequestEntity findByTrackingGuid(Long userId, String trackingGuid);
+    FulfilmentRequestEntity findByTrackingUuid(Long userId, String trackingUuid);
 
     FulfilmentRequestEntity findByOrderId(Long billingOrderId);
 }

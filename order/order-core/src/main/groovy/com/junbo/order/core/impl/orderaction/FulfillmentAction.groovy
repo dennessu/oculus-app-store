@@ -63,7 +63,7 @@ class  FulfillmentAction extends BaseOrderEventAwareAction {
 
             fulfilmentResult.items.each { FulfilmentItem fulfilmentItem ->
                 OrderItem orderItem = order.orderItems?.find { OrderItem item ->
-                    item.getId()?.value == fulfilmentItem.orderItemId
+                    item.getId()?.value == fulfilmentItem.itemReferenceId
                 }
                 def fulfillmentHistory = FulfillmentEventHistoryBuilder.buildFulfillmentHistory(
                         fulfilmentResult, fulfilmentItem, orderItem)

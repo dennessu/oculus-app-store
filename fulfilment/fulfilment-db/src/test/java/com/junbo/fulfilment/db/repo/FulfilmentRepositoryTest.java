@@ -21,7 +21,7 @@ public class FulfilmentRepositoryTest extends BaseTest {
     private FulfilmentItem buildFulfilmentItem() {
         FulfilmentItem item = new FulfilmentItem();
         item.setRequestId(generateLong());
-        item.setOrderItemId(100L);
+        item.setItemReferenceId(100L);
         item.setOfferId("12345L");
         item.setTimestamp(System.currentTimeMillis());
         item.setQuantity(10);

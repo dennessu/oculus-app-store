@@ -20,7 +20,7 @@ import java.util.UUID;
  */
 public class Mapper {
     private static final String[] FULFILMENT_REQUEST_FILTER =
-            new String[]{"requestId", "ordeId", "trackingGuid", "items"};
+            new String[]{"requestId", "userId", "ordeId", "trackingUuid", "items"};
 
     private static final String[] FULFILMENT_ITEM_FILTER
             = new String[]{"fulfilmentId", "status", "actions", "requestId"};
@@ -40,8 +40,9 @@ public class Mapper {
 
         FulfilmentRequest model = JSON.parseObject(entity.getPayload(), FulfilmentRequest.class);
         model.setRequestId(entity.getId());
+        model.setUserId(entity.getUserId());
         model.setOrderId(entity.getOrderId());
-        model.setTrackingGuid(entity.getTrackingGuid().toString());
+        model.setTrackingUuid(entity.getTrackingUuid().toString());
 
         return model;
     }
@@ -52,8 +53,9 @@ public class Mapper {
         }
 
         FulfilmentRequestEntity entity = new FulfilmentRequestEntity();
+        entity.setUserId(model.getUserId());
         entity.setOrderId(model.getOrderId());
-        entity.setTrackingGuid(UUID.fromString(model.getTrackingGuid()));
+        entity.setTrackingUuid(UUID.fromString(model.getTrackingUuid()));
         entity.setPayload(Utils.toJson(model, FULFILMENT_REQUEST_FILTER));
 
         return entity;

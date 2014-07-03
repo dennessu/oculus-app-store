@@ -21,8 +21,9 @@ public class FulfilmentRequestRepositoryTest extends BaseTest {
     private FulfilmentRequest buildFulfilmentRequest() {
         FulfilmentRequest request = new FulfilmentRequest();
 
-        request.setTrackingGuid(generateUUID().toString());
+        request.setTrackingUuid(generateUUID().toString());
         request.setOrderId(generateLong());
+        request.setUserId(generateLong());
 
         return request;
     }

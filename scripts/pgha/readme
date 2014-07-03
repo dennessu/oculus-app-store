@@ -68,7 +68,7 @@
 #[bastion] enlish source tree
     [devops] https://github.com/junbo/main/tree/master/scripts/pgha
 
-#[bastion] upload all PGHA scripts to master and slave servers
+#[bastion] upload all PGHA scripts to master/slave/replica servers
     [devops] ./upload_script.sh
 
 #[master] clean up master
@@ -112,7 +112,7 @@
     $DEPLOYMENT_PATH/test/test_master2slave.sh
 
 =====Master-Replica Deployment=====
-#[master/slave] create londiste config on master/slave
+#[master] create londiste config on master
     $DEPLOYMENT_PATH/londiste/londiste_config_root.sh
 
 #[master] start londiste deamon on master
