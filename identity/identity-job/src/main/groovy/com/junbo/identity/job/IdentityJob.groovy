@@ -31,11 +31,10 @@ class IdentityJob implements InitializingBean {
     void execute() {
         LOGGER.info('name=IdentityProcessJobStart')
         def start = System.currentTimeMillis()
-        def offset = 0, numSuccess = new AtomicInteger(), numFail = new AtomicInteger()
+        def count = 0, numSuccess = new AtomicInteger(), numFail = new AtomicInteger()
         List<Future> futures = [] as LinkedList<Future>
 
-        List<User> userList = new ArrayList<>()
-        userList = readUsers(limit, offset).get()
+        List<User> userList = readUsers(limit, 0).get()
 
         while (!CollectionUtils.isEmpty(userList)) {
             userList.each { User user ->
@@ -54,7 +53,10 @@ class IdentityJob implements InitializingBean {
                 appendFuture(futures, future)
             }
 
-            offset += userList.size()
+            count += userList.size()
+            // If the value is updated, it will remove from the view. So just need to read from the first index
+            // And it won't have blocking users for some user. (Just check the vat resource)
+            userList = readUsers(limit, 0).get()
         }
 
         // wait all task to finish
@@ -63,8 +65,8 @@ class IdentityJob implements InitializingBean {
         }
 
         LOGGER.info('name=IdentityProcessJobEnd, numOfUsers={}, numSuccess={}, numFail={}, latency={}ms',
-                offset, numSuccess, numFail, System.currentTimeMillis() - start)
-        assert offset == numSuccess.get() + numFail.get()
+                count, numSuccess, numFail, System.currentTimeMillis() - start)
+        assert count == numSuccess.get() + numFail.get()
     }
 
     @Override

@@ -238,6 +238,9 @@
         },
         "by_migrate_user_id": {
           "map": "function(doc) {  emit(doc.migratedUserId.toString(), doc._id) }"
+        },
+        "by_non_validate_vat": {
+          "map": "function(doc) {  if (doc.vat) { for (var key in doc.vat) { if (doc.vat.hasOwnProperty(key) && doc.vat[key]) { if (doc.vat[key].lastValidateTime == null && doc.vat[key].vatNumber) { emit(doc.vat[key].vatNumber, doc._id)} }} }}"
         }
       }
     }, 

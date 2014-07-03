@@ -9,7 +9,11 @@
     <!-- Identity Scheduler -->
     <bean id="identitySchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="schedulerName" value="identityScheduler" />
-        <property name="autoStartup" value="${identity.jobs.scheduler.start}" />
+        <property name="autoStartup" value="${identity.jobs.scheduler.start}" /><property name="triggers">
+        <list>
+            <ref bean="identityJobTrigger"/>
+        </list>
+    </property>
         <property name="applicationContextSchedulerContextKey" value="applicationContext" />
     </bean>
 
