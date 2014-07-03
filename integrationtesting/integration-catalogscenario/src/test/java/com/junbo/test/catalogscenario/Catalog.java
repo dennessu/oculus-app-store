@@ -383,6 +383,12 @@ public class Catalog extends TestClass {
         String offer2 = "testOffer_CartCheckout_Digital2";
         String offer3 = "testOffer_CartCheckout_Physical1";
         String offer4 = "testOffer_CartCheckout_Physical2";
+        String offer5 = "testOffer_CartCheckout_Stored_Value";
+        String offer6 = "testOffer_PreOrder_Digital1";
+        String offer7 = "testOffer_PreOrder_Digital1";
+        String offer8 = "testOffer_InAppConsumable1";
+        String offer9 = "testOffer_InAppConsumable2";
+        String offer10 = "test";
 
         OfferService offerServiceAPI = OfferServiceImpl.instance();
 
@@ -390,6 +396,12 @@ public class Catalog extends TestClass {
         offerServiceAPI.getOfferIdByName(offer2);
         offerServiceAPI.getOfferIdByName(offer3);
         offerServiceAPI.getOfferIdByName(offer4);
+        offerServiceAPI.getOfferIdByName(offer5);
+        offerServiceAPI.getOfferIdByName(offer6);
+        offerServiceAPI.getOfferIdByName(offer7);
+        offerServiceAPI.getOfferIdByName(offer8);
+        offerServiceAPI.getOfferIdByName(offer9);
+        offerServiceAPI.getOfferIdByName(offer10);
     }
 
 }

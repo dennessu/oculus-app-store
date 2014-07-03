@@ -114,6 +114,11 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         return postOffer(offerForPost);
     }
 
+    public Offer postDefaultOffer(OrganizationId organizationId) throws Exception {
+        Offer offerForPost = prepareOfferEntity(defaultOfferFileName, organizationId);
+        return postOffer(offerForPost);
+    }
+
     public Offer prepareOfferEntity(String fileName) throws Exception {
         return prepareOfferEntity(fileName, getOrganizationId());
     }
@@ -163,75 +168,39 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         Master.getInstance().removeOffer(strOfferId);
     }
 
-    public String getOfferIdByName(String offerName) throws  Exception {
+    public String getOfferIdByName(String offerName) throws Exception {
+        Results<Offer> offerRtn = this.searchOfferByName(offerName);
 
-        if (!offerLoaded){
-            this.loadAllOffers();
-            this.loadAllOfferRevisions();
-            this.loadAllItems();
-            this.loadAllItemRevisions();
+        if (offerRtn.getItems().size() <= 0) {
             this.postPredefinedOffer();
-            offerLoaded = true;
+            offerRtn = this.searchOfferByName(offerName);
         }
-
-        return Master.getInstance().getOfferIdByName(offerName);
+        if (offerRtn.getItems().size() <= 0) {
+            return "No such predefined offer";
+        }
+        else {
+            return offerRtn.getItems().get(0).getOfferId();
+        }
     }
 
-    private void loadAllOffers() throws Exception {
+    private Results<Offer> searchOfferByName(String offerName) throws Exception {
         HashMap<String, List<String>> paraMap = new HashMap<>();
-        List<String> listStart = new ArrayList<>();
-        listStart.add(start.toString());
-        List<String> listSize = new ArrayList<>();
-        listSize.add(defaultPagingSize.toString());
+        List<String> query = new ArrayList<>();
 
-        paraMap.put("start", listStart);
-        paraMap.put("size", listSize);
-        this.getOffers(paraMap);
+        query.add("name:" + offerName);
+        paraMap.put("q", query);
+
+        return this.getOffers(paraMap);
     }
 
-    private void loadAllOfferRevisions() throws Exception {
+    private Results<Item> searchItemByName(String itemName) throws Exception {
         HashMap<String, List<String>> paraMap = new HashMap<>();
-        List<String> listStatus = new ArrayList<>();
-        listStatus.add(CatalogEntityStatus.APPROVED.getEntityStatus());
-        List<String> listStart = new ArrayList<>();
-        listStart.add(start.toString());
-        List<String> listSize = new ArrayList<>();
-        listSize.add(defaultPagingSize.toString());
+        List<String> query = new ArrayList<>();
 
-        paraMap.put("status", listStatus);
-        paraMap.put("start", listStart);
-        paraMap.put("size", listSize);
-        OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
-        offerRevisionService.getOfferRevisions(paraMap);
-    }
+        query.add("name:" + itemName);
+        paraMap.put("q", query);
 
-    private void loadAllItems() throws Exception {
-        HashMap<String, List<String>> paraMap = new HashMap<>();
-        List<String> listStart = new ArrayList<>();
-        listStart.add(start.toString());
-        List<String> listSize = new ArrayList<>();
-        listSize.add(defaultPagingSize.toString());
-
-        paraMap.put("start", listStart);
-        paraMap.put("size", listSize);
-        itemService.getItems(paraMap);
-    }
-
-    private void loadAllItemRevisions() throws Exception {
-        HashMap<String, List<String>> paraMap = new HashMap<>();
-        List<String> listStatus = new ArrayList<>();
-        listStatus.add(CatalogEntityStatus.APPROVED.getEntityStatus());
-        List<String> listStart = new ArrayList<>();
-        listStart.add(start.toString());
-        List<String> listSize = new ArrayList<>();
-        listSize.add(defaultPagingSize.toString());
-
-        paraMap.put("status", listStatus);
-        paraMap.put("start", listStart);
-        paraMap.put("size", listSize);
-
-        ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
-        itemRevisionService.getItemRevisions(paraMap);
+        return itemService.getItems(paraMap);
     }
 
     private void postPredefinedOffer() throws Exception {
@@ -240,10 +209,12 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         BufferedReader br = new BufferedReader(new InputStreamReader(inStream));
         try {
             String sCurrentLine;
+            Results<Offer> offerRtn;
             while ((sCurrentLine = br.readLine()) != null) {
                 logger.logInfo(sCurrentLine);
                 String[] strLine = sCurrentLine.split(",");
-                if (Master.getInstance().getOfferIdByName(strLine[0]) == null) {
+                offerRtn = this.searchOfferByName(strLine[0]);
+                if (offerRtn.getItems().size() <= 0) {
                     preparePredefinedOffer(strLine[0], strLine[1], strLine[2], strLine[3]);
                 }
             }
@@ -261,7 +232,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
     private void preparePredefinedOffer(String offerName, String itemName, String userName, String offerType) throws  Exception {
 
-        String itemId = Master.getInstance().getItemIdByName(itemName);
+        Results<Item> itemRtn = this.searchItemByName(itemName);
         List<String> userIdList = userService.GetUserByUserName(userName);
         String userId;
 
@@ -275,11 +246,11 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         OrganizationId organizationId = getOrganizationId(userId);
 
         Item item;
-        if (itemId == null) {
+        if (itemRtn.getItems().size() <= 0) {
             item = prepareItem(userId, itemName, offerType);
         }
         else {
-            item = Master.getInstance().getItem(itemId);
+            item = itemRtn.getItems().get(0);
         }
 
         //Post offer

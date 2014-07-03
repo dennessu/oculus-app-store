@@ -24,11 +24,9 @@ import com.junbo.test.common.libs.LogHelper;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.test.catalog.ItemService;
 import com.junbo.test.common.property.*;
-import com.junbo.common.model.Results;
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.testng.Assert;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,16 +41,16 @@ public class ItemSearch extends BaseTestClass {
 
     private LogHelper logger = new LogHelper(ItemSearch.class);
 
-    private OrganizationId organizationId;
     private Item item1;
     private Item item2;
-    private ItemService itemService = ItemServiceImpl.instance();
-    ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
-    private final Integer MAXSIZE = 10000;
+    private OrganizationId organizationId;
     private final String defaultLocale = "en_US";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
     private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";
+
+    private ItemService itemService = ItemServiceImpl.instance();
+    private ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
 
     @BeforeClass
     private void PrepareTestData() throws Exception {
@@ -68,7 +66,6 @@ public class ItemSearch extends BaseTestClass {
 
         List<String> genres = new ArrayList<>();
         genres.add(itemAttribute1.getId());
-        item1 = itemService.getItem(item1.getItemId());
         item1.setGenres(genres);
         item1 = itemService.updateItem(item1.getItemId(), item1);
 
@@ -148,23 +145,15 @@ public class ItemSearch extends BaseTestClass {
 
         String itemId1 = item1.getItemId();
         String itemId2 = item2.getItemId();
-        String itemType2 = item2.getType();
 
         ItemRevision itemRevision = itemRevisionService.getItemRevision(item2.getCurrentRevisionId());
+        ItemRevisionLocaleProperties itemRevisionLocaleProperties = itemRevision.getLocales().get(defaultLocale);
 
         //itemId
         buildSearchQuery("itemId:" + itemId1, 1, itemId1);
 
         //default -- itemId
         buildSearchQuery(itemId1, 2, itemId1);
-
-        //type
-        buildSearchQuery("type:" + itemType2, MAXSIZE, itemId2);
-        verifyNotContains("type:" + itemType2, itemId1);
-
-        //default -- type
-        buildSearchQuery(itemType2, MAXSIZE, itemId2);
-        verifyNotContains(itemType2, itemId1);
 
         //ownerId
         buildSearchQuery("ownerId:'" + organizationId.toString() + "'", 2, itemId1, itemId2);
@@ -212,30 +201,6 @@ public class ItemSearch extends BaseTestClass {
         if (!hostItemId.isEmpty()) {
             buildSearchQuery(hostItemId.get(0), 2, itemId2);
         }
-
-        //gameMode
-        List<String> gameModes = itemRevision.getGameModes();
-        if (!gameModes.isEmpty()) {
-            buildSearchQuery("gameMode:" + gameModes.get(0), MAXSIZE, itemId2);
-        }
-
-        //default -- gameMode
-        if (!gameModes.isEmpty()) {
-            buildSearchQuery(gameModes.get(0), MAXSIZE, itemId2);
-        }
-
-        //platform
-        List<String> platform = itemRevision.getPlatforms();
-        if (!platform.isEmpty()) {
-            buildSearchQuery("platform:" + platform.get(0), MAXSIZE, itemId2);
-        }
-
-        //default -- platform
-        if (!platform.isEmpty()) {
-            buildSearchQuery(platform.get(0), MAXSIZE, itemId2);
-        }
-
-        ItemRevisionLocaleProperties itemRevisionLocaleProperties = itemRevision.getLocales().get(defaultLocale);
 
         //name
         String name = itemRevisionLocaleProperties.getName();
@@ -304,8 +269,32 @@ public class ItemSearch extends BaseTestClass {
         buildSearchQuery("itemId:" + itemId1 + "%20AND%20" + itemType1, 1, itemId1);
         buildSearchQuery("itemId:" + itemId1 + "%20AND%20" + itemType2, 0);
 
+        //gameMode
+        List<String> gameModes = itemRevision.getGameModes();
+        if (!gameModes.isEmpty()) {
+            buildSearchQuery("gameMode:" + gameModes.get(0) + "%20AND%20itemId:" + itemId2, 1, itemId2);
+        }
+
+        //default -- gameMode
+        if (!gameModes.isEmpty()) {
+            buildSearchQuery(gameModes.get(0) + "%20AND%20itemId:" + itemId2, 1, itemId2);
+        }
+
+        //platform
+        List<String> platform = itemRevision.getPlatforms();
+        if (!platform.isEmpty()) {
+            buildSearchQuery("platform:" + platform.get(0) + "%20AND%20itemId:" + itemId1, 0);
+        }
+
+        //default -- platform
+        if (!platform.isEmpty()) {
+            buildSearchQuery(platform.get(0) + "%20AND%20itemId:" + itemId1, 0);
+            buildSearchQuery(platform.get(0) + "%20AND%20itemId:" + itemId2, 1, itemId2);
+        }
+
         //test OR
         buildSearchQuery("itemId:" + itemId1 + "%20OR%20revisionId:" + item2.getCurrentRevisionId(), 2, itemId1, itemId2);
+        buildSearchQuery("itemId:" + itemId1 + "%20OR%20itemId:" + itemId2, 2, itemId1, itemId2);
         buildSearchQuery("itemId:" + itemId1 + "%20OR%20packageName:" + packageName, 2, itemId1, itemId2);
         buildSearchQuery("name:" + name + "%20OR%20revisionNotes:" + revisionNotes, 1, itemId2);
         buildSearchQuery(itemId1 + "%20OR%20name:" + name + "%20OR%20revisionNotes:" + revisionNotes, 2, itemId1, itemId2);
@@ -319,34 +308,7 @@ public class ItemSearch extends BaseTestClass {
 
         query.add(queryOption);
         paraMap.put("q", query);
-        if (expectedRtnSize == MAXSIZE) {
-            verifyContains(paraMap, itemId);
-        } else {
-            verifyGetItemsScenarios(paraMap, expectedRtnSize, itemId);
-        }
+        verifyGetItemsScenarios(paraMap, expectedRtnSize, itemId);
     }
 
-    private void verifyContains(HashMap<String, List<String>> paraMap, String... itemId) throws Exception {
-        Results<Item> itemRtn = itemService.getItems(paraMap);
-
-        for (String itemGetId : itemId) {
-            Item item = itemService.getItem(itemGetId);
-            Assert.assertTrue(isContain(itemRtn, item));
-        }
-    }
-
-    private void verifyNotContains(String queryOption, String... itemId) throws Exception {
-        HashMap<String, List<String>> paraMap = new HashMap<>();
-        List<String> query = new ArrayList<>();
-
-        query.add(queryOption);
-        paraMap.put("q", query);
-
-        Results<Item> itemRtn = itemService.getItems(paraMap);
-
-        for (String itemGetId : itemId) {
-            Item item = itemService.getItem(itemGetId);
-            Assert.assertFalse(isContain(itemRtn, item));
-        }
-    }
 }

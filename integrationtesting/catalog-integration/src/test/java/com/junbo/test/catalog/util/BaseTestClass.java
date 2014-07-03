@@ -127,4 +127,16 @@ public class BaseTestClass extends TestClass {
             Assert.assertTrue(isContain(itemRtn, item));
         }
     }
+
+    protected void verifyGetOffersScenarios(HashMap<String, List<String>> paraMap, int expectedRtnSize, String... offerId) throws Exception{
+        OfferService offerService = OfferServiceImpl.instance();
+        Results<Offer> offerRtn = offerService.getOffers(paraMap);
+
+        Assert.assertEquals(offerRtn.getItems().size(), expectedRtnSize);
+
+        for (String offerGetId : offerId) {
+            Offer offer = offerService.getOffer(offerGetId);
+            Assert.assertTrue(isContain(offerRtn, offer));
+        }
+    }
 }

@@ -279,40 +279,6 @@ public class Master {
         return this.offerRevisions.get(offerRevisionId);
     }
 
-    public String getOfferIdByName(String offerName) {
-
-        for (Map.Entry<String, Offer> entry : offers.entrySet()) {
-            String key = entry.getKey();
-            Offer offer = entry.getValue();
-            if (offer.getCurrentRevisionId() != null) {
-                String offerRevisionId = IdConverter.idToUrlString(OfferRevisionId.class, offer.getCurrentRevisionId());
-                OfferRevision offerRevision = this.offerRevisions.get(offerRevisionId);
-
-                if (offerRevision != null && offerRevision.getLocales().get("en_US").getName().equalsIgnoreCase(offerName)) {
-                    return key;
-                }
-            }
-        }
-        return null;
-    }
-
-    public String getItemIdByName(String itemName) {
-
-        for (Map.Entry<String, Item> entry : items.entrySet()) {
-            String key = entry.getKey();
-            Item item = entry.getValue();
-            if (item.getCurrentRevisionId() != null) {
-                String itemRevisionId = IdConverter.idToUrlString(ItemRevisionId.class, item.getCurrentRevisionId());
-                ItemRevision itemRevision = this.itemRevisions.get(itemRevisionId);
-
-                if (itemRevision.getLocales().get("en_US").getName().equalsIgnoreCase(itemName)) {
-                    return key;
-                }
-            }
-        }
-        return null;
-    }
-
     public Cart getCart(String cartId) {
         return this.carts.get(cartId);
     }

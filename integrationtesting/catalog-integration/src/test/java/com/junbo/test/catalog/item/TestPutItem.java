@@ -156,7 +156,6 @@ public class TestPutItem {
         item.setGenres(genresCategory);
         verifyExpectedError(item.getItemId(), item);
 
-        //todo: type should not be updated
         item = itemService.postDefaultItem(CatalogItemType.getRandom());
         if (item.getType().equalsIgnoreCase(CatalogItemType.APP.getItemType()) ) {
             item.setType(CatalogItemType.PHYSICAL.getItemType());

@@ -235,15 +235,4 @@ public class TestGetOffer extends BaseTestClass {
         verifyGetOffersScenarios(paraMap, 0);
     }
 
-    private void verifyGetOffersScenarios(HashMap<String, List<String>> paraMap, int expectedRtnSize, String... offerId) throws Exception{
-        Results<Offer> offerRtn = offerService.getOffers(paraMap);
-
-        Assert.assertEquals(offerRtn.getItems().size(), expectedRtnSize);
-
-        for (String offerGetId : offerId) {
-            Offer offer = offerService.getOffer(offerGetId);
-            Assert.assertTrue(isContain(offerRtn, offer));
-        }
-    }
-
 }
