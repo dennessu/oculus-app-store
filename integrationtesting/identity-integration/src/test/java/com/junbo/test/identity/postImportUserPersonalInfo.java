@@ -95,7 +95,7 @@ public class postImportUserPersonalInfo {
         Validator.Validate("validate company address city", oculusInput.getCompany().getCity(),
                 address.getCity());
         Validator.Validate("validate company address state", oculusInput.getCompany().getState(),
-                address.getSubCountry());
+                address.getStreet2());
         Validator.Validate("validate company address postal code", oculusInput.getCompany().getPostalCode(),
                 address.getPostalCode());
         UserPersonalInfo companyPhone = Identity.UserPersonalInfoGetByUserPersonalInfoId(
@@ -254,5 +254,13 @@ public class postImportUserPersonalInfo {
         );
         UserGroup userGroup = Identity.SearchUserGroup(group2.getId(), false);
         Validator.Validate("validate user is in correct group", oculusOutput1.getUserId(), userGroup.getUserId());
+    }
+
+    @Test(groups = "dailies")
+    public void importMigrationDataUserLogin() throws Exception {
+        OculusInput oculusInput = IdentityModel.DefaultOculusInput();
+        oculusInput.setPassword("1:8UFAbK26VrPLL75jE9P2:PRo4D7r23hrfv3FBxqBv:b87637b9ec5abd43db01d7a299612a49550230a813239fb3e28eec2a88c0df67");
+        OculusOutput oculusOutput1 = Identity.ImportMigrationData(oculusInput);
+        Identity.UserCredentialAttemptesPostDefault(oculusInput.getUsername(),"radiant555");
     }
 }
