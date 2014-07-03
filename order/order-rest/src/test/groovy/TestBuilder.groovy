@@ -1,10 +1,4 @@
-package com.junbo.order.core.common
-
-import com.junbo.billing.spec.enums.BalanceStatus
-import com.junbo.billing.spec.enums.BalanceType
-import com.junbo.billing.spec.enums.PropertyKey
-import com.junbo.billing.spec.enums.TaxAuthority
-import com.junbo.billing.spec.enums.TaxStatus
+import com.junbo.billing.spec.enums.*
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.DiscountItem
@@ -146,14 +140,14 @@ class TestBuilder {
         def request = new FulfilmentRequest()
         request.items = []
         request.orderId = order.getId().value
-        request.trackingUuid = UUID.randomUUID().toString()
+        request.trackingGuid = UUID.randomUUID().toString()
         return request
     }
 
     static FulfilmentItem buildFulfilmentItem(String itemStatus, OrderItem orderItem) {
         def item = new FulfilmentItem()
         item.fulfilmentId = generateLong()
-        item.itemReferenceId = orderItem.getId().value
+        item.orderItemId = orderItem.getId().value
         item.actions = []
         item.actions  << new FulfilmentAction()
         item.actions[0].status = itemStatus

@@ -338,6 +338,11 @@ class OrderServiceImpl implements OrderService {
 
     private void updatePaymentDescription(Order order, OfferRevision offer) {
         String locale = order.locale.value?.replace('-', '_')
+        // add fallback logic here
+        if (offer.locales == null) {
+            order.paymentDescription = null
+            return
+        }
         String description = offer.locales[locale] != null ?
                 offer.locales[locale].shortDescription : offer.locales['DEFAULT']?.shortDescription
         if (order.paymentDescription == null || order.paymentDescription == '') {

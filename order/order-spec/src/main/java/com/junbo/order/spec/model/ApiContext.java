@@ -29,7 +29,8 @@ public class ApiContext {
 
         setUserIp(JunboHttpContext.getRequestIpAddress());
 
-        if (!CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(QA_HEADER_ASYNC_CHARGE))) {
+        if (JunboHttpContext.getRequestHeaders()!= null &&
+                !CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(QA_HEADER_ASYNC_CHARGE))) {
             asyncCharge = Boolean.valueOf(JunboHttpContext.getRequestHeaders().getFirst(QA_HEADER_ASYNC_CHARGE));
         }
     }
