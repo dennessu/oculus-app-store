@@ -61,9 +61,9 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 24, required = true, value = "supported input devices",
             allowableValues = "KEYBOARD, MOUSE")
     private List<String> supportedInputDevices;
-    @ApiModelProperty(position = 25, required = true, value = "game modes",
+    @ApiModelProperty(position = 25, required = true, value = "User interaction mode",
             allowableValues = "SINGLE_USER, MULTI_USER, CO_OP")
-    private List<String> gameModes;
+    private String userInteractionMode;
     @ApiModelProperty(position = 26, required = true, value = "Download Link", allowableValues = "PC, MAC, LINUX, ANDROID")
     private Map<String, Binary> binaries;
 
@@ -159,12 +159,12 @@ public class ItemRevision extends BaseRevisionModel {
         this.supportedInputDevices = supportedInputDevices;
     }
 
-    public List<String> getGameModes() {
-        return gameModes;
+    public String getUserInteractionMode() {
+        return userInteractionMode;
     }
 
-    public void setGameModes(List<String> gameModes) {
-        this.gameModes = gameModes;
+    public void setUserInteractionMode(String userInteractionMode) {
+        this.userInteractionMode = userInteractionMode;
     }
 
     public Map<String, Binary> getBinaries() {
