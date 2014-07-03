@@ -7,6 +7,7 @@ package com.junbo.order.core.impl.internal;
 
 import com.junbo.billing.spec.model.Balance;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.order.core.impl.order.OrderServiceContext;
 import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderEvent;
 import com.junbo.order.spec.model.OrderQueryParam;
@@ -21,21 +22,19 @@ import java.util.List;
 public interface OrderInternalService {
     Promise<Order> rateOrder(Order order);
 
-    Promise<Order> getOrderByOrderId(Long orderId);
+    Promise<Order> getOrderByOrderId(Long orderId, OrderServiceContext context);
 
-    Promise<List<Order>> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam);
+    Promise<List<Order>> getOrdersByUserId(Long userId, OrderServiceContext context, OrderQueryParam orderQueryParam, PageParam pageParam);
 
     Order refreshOrderStatus(Order order, boolean updateOrder);
 
     void markSettlement(Order order);
 
-    Promise<Order> cancelOrder(Order order);
+    Promise<Order> cancelOrder(Order order, OrderServiceContext context);
 
-    Promise<Void> refundDeposit(Order order);
+    Promise<Void> refundDeposit(Order order, OrderServiceContext orderServiceContext);
 
-    Promise<Order> refundOrder(Order order);
-
-    Promise<List<Balance>> getBalancesByOrderId(Long orderId);
+    Promise<Order> refundOrder(Order order, OrderServiceContext orderServiceContext);
 
     void persistBillingHistory(Balance balance, BillingAction action, Order order);
 

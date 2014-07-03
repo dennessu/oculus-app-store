@@ -135,13 +135,19 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
         trackingUuidRepository.create(trackingUuid).get();
     }
 
-    protected PaymentInstrument getPaymentInstrument(PaymentTransaction request){
+    protected PaymentInstrument getPaymentInstrument(final PaymentTransaction request){
         if(request.getPaymentInstrumentId() == null){
             throw AppClientExceptions.INSTANCE.missingPaymentInstrumentId().exception();
         }
         PaymentInstrument pi = null;
         try{
-            pi = paymentInstrumentService.getById(request.getPaymentInstrumentId()).get();
+            AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
+            template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+            pi = template.execute(new TransactionCallback<PaymentInstrument>() {
+                public PaymentInstrument doInTransaction(TransactionStatus txnStatus) {
+                    return paymentInstrumentService.getById(request.getPaymentInstrumentId()).get();
+                }
+            });
         }catch(Exception ex){
             throw AppServerExceptions.INSTANCE.invalidPI().exception();
         }

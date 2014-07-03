@@ -9,7 +9,13 @@
         <wf:action-state id="validation">
             <wf:action ref="validateUserAction"/>
             <wf:action ref="validatePaymentInstrumentsAction"/>
-            <wf:transition on="*" to="auth"/>
+            <wf:transition on="*" to="riskReview"/>
+        </wf:action-state>
+
+        <wf:action-state id="riskReview">
+            <wf:action ref="riskReviewAction"/>
+            <wf:transition on="APPROVED" to="auth"/>
+            <wf:transition on="*" to="endState"/>
         </wf:action-state>
 
         <wf:action-state id="auth">

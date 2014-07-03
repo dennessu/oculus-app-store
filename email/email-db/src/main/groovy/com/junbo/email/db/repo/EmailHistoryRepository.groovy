@@ -18,4 +18,6 @@ interface EmailHistoryRepository {
     public Promise<Email> createEmailHistory(Email email)
 
     public Promise<Email> updateEmailHistory(Email email)
+
+    public Promise<Void> deleteEmailHistory(String id)
 }

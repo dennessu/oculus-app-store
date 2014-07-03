@@ -3,10 +3,9 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.common.cloudant.json.serializer;
+package com.junbo.common.cloudant.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.junbo.common.cloudant.json.CloudantObjectMapper;
 
 /**
  * Created by Zhanxin on 5/26/2014.

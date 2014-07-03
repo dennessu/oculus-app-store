@@ -3,7 +3,7 @@ apply plugin: 'java'
 dependencies {
     compile junboProject(':oauth-spec')
     compile junboProject(':crypto-spec')
-    compile junboProject(':crypto-spec')
+    compile junboProject(':catalog-spec')
 
     compile junboProject(":token-spec")
 	compile (libraries.rs_api)

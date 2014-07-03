@@ -6,12 +6,14 @@
 
 package com.junbo.catalog.core.service;
 
-import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.repo.AttributeRepository;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.attribute.Attribute;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.common.error.AppError;
+import com.junbo.common.error.AppErrorException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -24,6 +26,7 @@ import java.util.Map;
  * @param <T> attribute
  */
 public abstract class AttributeServiceSupport<T extends Attribute> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AttributeServiceSupport.class);
     protected abstract <E extends AttributeRepository<T>> E getRepo();
     protected abstract List<String> getTypes();
     protected abstract String getEntityType();
@@ -31,7 +34,9 @@ public abstract class AttributeServiceSupport<T extends Attribute> {
     public T getAttribute(String attributeId) {
         T attribute = getRepo().get(attributeId);
         if (attribute == null) {
-            throw AppErrors.INSTANCE.notFound(getEntityType(), Utils.encodeId(attributeId)).exception();
+            AppErrorException exception = AppErrors.INSTANCE.notFound(getEntityType(), attributeId).exception();
+            LOGGER.error("Not found " + getEntityType(), exception);
+            throw exception;
         }
         return attribute;
     }
@@ -42,14 +47,22 @@ public abstract class AttributeServiceSupport<T extends Attribute> {
     }
 
     public T update(String attributeId, T attribute) {
-        validateUpdate(attribute);
+        T oldAttribute = getRepo().get(attributeId);
+        if (oldAttribute == null) {
+            AppErrorException exception = AppErrors.INSTANCE.notFound(getEntityType(), attributeId).exception();
+            LOGGER.error("Error updating " + getEntityType(), exception);
+            throw exception;
+        }
+        validateUpdate(attribute, oldAttribute);
         return getRepo().update(attribute);
     }
 
     public void deleteAttribute(String attributeId) {
         T attribute = getRepo().get(attributeId);
         if (attribute == null) {
-            throw AppErrors.INSTANCE.notFound(getEntityType(), Utils.encodeId(attributeId)).exception();
+            AppErrorException exception = AppErrors.INSTANCE.notFound(getEntityType(), attributeId).exception();
+            LOGGER.error("Not found " + getEntityType(), exception);
+            throw exception;
         }
         getRepo().delete(attributeId);
     }
@@ -63,19 +76,23 @@ public abstract class AttributeServiceSupport<T extends Attribute> {
 
         validateCommon(attribute, errors);
         if (!errors.isEmpty()) {
-            throw AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            AppErrorException exception = AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            LOGGER.error("Error creating " + getEntityType(), exception);
+            throw exception;
         }
     }
 
-    private void validateUpdate(T attribute) {
+    private void validateUpdate(T attribute, T oldAttribute) {
         checkRequestNotNull(attribute);
         List<AppError> errors = new ArrayList<>();
-        if (attribute.getRev() == null) {
+        if (!oldAttribute.getRev().equals(attribute.getRev())) {
             errors.add(AppErrors.INSTANCE.missingField("rev"));
         }
         validateCommon(attribute, errors);
         if (!errors.isEmpty()) {
-            throw AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            AppErrorException exception = AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            LOGGER.error("Error updating " + getEntityType(), exception);
+            throw exception;
         }
     }
 
@@ -105,7 +122,9 @@ public abstract class AttributeServiceSupport<T extends Attribute> {
 
     private void checkRequestNotNull(Object entity) {
         if (entity == null) {
-            throw AppErrors.INSTANCE.invalidJson("Invalid json.").exception();
+            AppErrorException exception = AppErrors.INSTANCE.invalidJson("Invalid json.").exception();
+            LOGGER.error("Invalid json for " + getEntityType(), exception);
+            throw exception;
         }
     }
 }

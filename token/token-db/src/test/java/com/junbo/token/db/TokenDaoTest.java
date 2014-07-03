@@ -47,7 +47,7 @@ public class TokenDaoTest extends BaseTest {
     protected TokenSetOfferEntity buildTokenSetOfferRequest(TokenSetEntity set){
         TokenSetOfferEntity entity = new TokenSetOfferEntity();
         entity.setId(generateId());
-        entity.setProductId(generateId());
+        entity.setProductId(String.valueOf(generateId()));
         entity.setProductType(ProductType.OFFER);
         entity.setTokenSetId(set.getId());
         return entity;
@@ -88,7 +88,7 @@ public class TokenDaoTest extends BaseTest {
     protected TokenConsumptionEntity buildTokenItemRequest(TokenItemEntity item){
         TokenConsumptionEntity entity = new TokenConsumptionEntity();
         entity.setItemId(idGenerator.nextId());
-        entity.setProduct(123L);
+        entity.setProduct("123");
         entity.setUserId(generateId());
         return entity;
     }

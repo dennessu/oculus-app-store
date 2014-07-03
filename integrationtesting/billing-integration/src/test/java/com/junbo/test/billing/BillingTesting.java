@@ -157,37 +157,4 @@ public class BillingTesting extends BaseTestClass {
         validationHelper.validateBalance(randomUid, balanceId, orderId, false);
     }
 
-
-    @Property(
-            priority = Priority.Dailies,
-            features = "POST /user/userId/ship-to-info",
-            component = Component.Billing,
-            owner = "Yunlongzhao",
-            status = Status.Enable,
-            description = "post shipping address",
-            steps = {
-                    "1. Create a user",
-                    "2. Post shipping address to user",
-                    "3, Validation: response"
-            }
-    )
-    @Test
-    public void testPostShippingAddress() throws Exception {
-        String randomUid = testDataProvider.CreateUser();
-
-        ShippingAddressInfo shippingAddressInfo = ShippingAddressInfo.getRandomShippingAddress(Country.DEFAULT);
-        //String shippingAddressId = testDataProvider.postShippingAddressToUser(randomUid, shippingAddressInfo);
-
-        //TODO Validate response
-    }
-
-
-
-
-
-
-
-
-
-
 }

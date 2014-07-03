@@ -8,20 +8,8 @@
 
     <context:component-scan base-package="com.junbo.common.rs"/>
 
-    <bean id="asyncHttpClientConfig" class="com.ning.http.client.AsyncHttpClientConfigBean">
-        <!-- TODO: a lot of things to configure here -->
-        <property name="connectionTimeOutInMs" value="10000"/>
-        <property name="requestTimeoutInMs" value="30000"/>
-    </bean>
-
     <!-- due to https://github.com/AsyncHttpClient/async-http-client/issues/484, use the default provider: netty -->
-    <bean id="commonAsyncHttpClient" class="com.junbo.langur.core.async.JunboAsyncHttpClient">
-        <constructor-arg>
-            <bean class="com.ning.http.client.AsyncHttpClient">
-                <constructor-arg ref="asyncHttpClientConfig" />
-            </bean>
-        </constructor-arg>
-    </bean>
+    <bean id="commonAsyncHttpClient" class="com.junbo.langur.core.async.JunboAsyncHttpClient" factory-method="instance" />
 
     <bean id="commonPathParamTranscoder" class="com.junbo.common.json.IdPathParamTranscoder"/>
     <bean id="commonQueryParamTranscoder" class="com.junbo.common.json.QueryParamTranscoderImpl"/>
@@ -54,36 +42,16 @@
     <bean id="oculus40IdShuffle" class="com.junbo.common.shuffle.Oculus40Id" />
     <bean id="oculus48IdShuffle" class="com.junbo.common.shuffle.Oculus48Id" />
 
-    <bean id="cloudantIdGenerator" class="com.junbo.common.cloudant.client.CloudantIdGenerator">
-        <property name="asyncHttpClient" ref="commonAsyncHttpClient" />
-        <property name="cloudantDBUri" value="${common.cloudant.url}" />
-        <property name="cloudantUser" value="${common.cloudant.user}" />
-        <property name="cloudantPassword" value="${common.cloudant.password}" />
-    </bean>
-
     <bean id="cloudantClient" class="com.junbo.common.cloudant.CloudantClient" abstract="true">
-        <property name="asyncHttpClient" ref="commonAsyncHttpClient" />
-        <property name="marshaller" ref="cloudantDefaultMarshaller" />
-        <property name="cloudantDBUri" value="${common.cloudant.url}" />
-        <property name="cloudantUser" value="${common.cloudant.user}" />
-        <property name="cloudantPassword" value="${common.cloudant.password}" />
-        <property name="dbNamePrefix" value="${common.cloudant.dbNamePrefix}" />
-        <property name="cloudantUniqueClient" ref="cloudantUniqueClient" />
+        <property name="cloudantDbUri" value="${common.cloudant.url}" />
     </bean>
 
     <bean id="cloudantClientWithSearch" parent="cloudantClient" abstract="true">
-        <property name="cloudantDBUri" value="${common.cloudantWithSearch.url}" />
-        <property name="cloudantUser" value="${common.cloudantWithSearch.user}" />
-        <property name="cloudantPassword" value="${common.cloudantWithSearch.password}" />
-    </bean>
-
-    <bean id="cloudantUniqueClient" class="com.junbo.common.cloudant.CloudantUniqueClient" parent="cloudantClient">
-        <property name="dbName" value="unique" />
+        <property name="cloudantDbUri" value="${common.cloudantWithSearch.url}" />
     </bean>
 
     <bean id="cloudantDefaultMarshaller" class="com.junbo.common.cloudant.DefaultCloudantMarshaller" factory-method="instance" />
 
     <bean id="contextScopeListener" class="com.junbo.common.util.ContextScopeListener" />
 
-    <bean id="polymorphicCloudantMarshaller" class="com.junbo.common.cloudant.PolymorphicCloudantMarshaller" factory-method="instance" />
 </beans>

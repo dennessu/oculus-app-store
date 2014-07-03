@@ -1,10 +1,9 @@
 package com.junbo.order.core.impl.internal.impl
-
 import com.junbo.common.id.PIType
 import com.junbo.common.id.UserPersonalInfoId
+import com.junbo.identity.spec.v1.model.Currency
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
 import com.junbo.langur.core.promise.Promise
-import com.junbo.identity.spec.v1.model.Currency
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.internal.RiskReviewResult
 import com.junbo.order.core.impl.internal.RiskService
@@ -18,6 +17,7 @@ import com.junbo.payment.spec.model.PaymentInstrument
 import com.kount.ris.Inquiry
 import com.kount.ris.KountRisClient
 import com.kount.ris.Response
+import com.kount.ris.util.AuthorizationStatus
 import com.kount.ris.util.CartItem
 import com.kount.ris.util.MerchantAcknowledgment
 import com.kount.ris.util.RisException
@@ -27,10 +27,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.stereotype.Service
 
 import javax.annotation.Resource
-
 /**
  * Created by xmchen on 14-6-23.
  */
@@ -46,6 +44,9 @@ class RiskServiceImpl implements RiskService {
 
     @Autowired
     OrderRepositoryFacade orderRepository
+
+    @Resource(name = 'orderServiceContextBuilder')
+    OrderServiceContextBuilder orderServiceContextBuilder
 
     int merchantId
 
@@ -96,7 +97,7 @@ class RiskServiceImpl implements RiskService {
             }
         }
 
-        return facadeContainer.identityFacade.getCurrency(order.currency.value).then { Currency currency ->
+        return orderServiceContextBuilder.getCurrency(orderContext).then { Currency currency ->
 
             int baseUnit = Math.pow(10, currency.numberAfterDecimal).intValue();
 
@@ -107,6 +108,7 @@ class RiskServiceImpl implements RiskService {
             q.setCurrency(order.currency.value)
             q.setTotal((int)(order.totalAmount * baseUnit))
             q.setIpAddress(ip)
+            q.setAuthorizationStatus(AuthorizationStatus.APPROVED)
             q.setMerchantAcknowledgment(MerchantAcknowledgment.YES)
 
             return facadeContainer.identityFacade.getEmail(emailId).recover { Throwable throwable ->
@@ -142,14 +144,12 @@ class RiskServiceImpl implements RiskService {
                             case PIType.CREDITCARD:
                                 q.setPayment("CARD", pi.accountNum)
                                 break;
-                            case PIType.PAYPAL:
-                                q.setPayment("PYPL", "")
-                                break;
                             case PIType.STOREDVALUE:
                                 q.setPayment("GIFT", pi.id.toString())
                                 break;
+                            case PIType.PAYPAL:
                             case PIType.OTHERS:
-                                q.setPayment("NONE", "")
+                                q.setPayment("NONE", null)
                                 break
                         }
                     }

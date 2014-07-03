@@ -12,7 +12,6 @@ import com.junbo.authorization.AuthorizeService;
 import com.junbo.authorization.RightsScope;
 import com.junbo.catalog.auth.ItemAuthorizeCallbackFactory;
 import com.junbo.catalog.clientproxy.LocaleFacade;
-import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.spec.enums.LocaleAccuracy;
 import com.junbo.catalog.spec.error.AppErrors;
@@ -135,7 +134,7 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
     public Promise<Response> delete(final String revisionId) {
         ItemRevision itemRevision = itemService.getRevision(revisionId);
         if (itemRevision == null) {
-            throw AppErrors.INSTANCE.notFound("item-revision", Utils.encodeId(revisionId)).exception();
+            throw AppErrors.INSTANCE.notFound("item-revision", revisionId).exception();
         }
 
         AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(itemRevision.getItemId());

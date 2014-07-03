@@ -19,6 +19,9 @@ import com.junbo.catalog.spec.model.common.BaseRevisionModel;
 import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.common.error.AppError;
+import com.junbo.common.error.AppErrorException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -30,18 +33,13 @@ import java.util.List;
  */
 public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T extends BaseRevisionModel>
         implements BaseRevisionedService<E, T> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseRevisionedServiceImpl.class);
 
     @Override
     public E getEntity(String entityId) {
         E entity = getEntityRepo().get(entityId);
         checkEntityNotNull(entityId, entity, getEntityType());
         return entity;
-    }
-
-    @Override
-    public E createEntity(E entity) {
-        // TODO: revisions
-        return getEntityRepo().create(entity);
     }
 
     @Override
@@ -100,35 +98,27 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
         T existingRevision = getRevisionRepo().get(revisionId);
         checkEntityNotNull(revisionId, existingRevision, getRevisionType());
         if (Status.APPROVED.is(existingRevision.getStatus())) {
-            throw AppErrors.INSTANCE.validation("Cannot delete an approved revision.").exception();
+            AppErrorException exception =
+                    AppErrors.INSTANCE.validation("Cannot delete an approved revision.").exception();
+            LOGGER.error("Error updating " + getRevisionType() + " " + revisionId, exception);
+            throw exception;
         }
         getRevisionRepo().delete(revisionId);
     }
 
     protected void checkEntityNotNull(String entityId, BaseModel entity, String name) {
         if (entity == null) {
-            throw AppErrors.INSTANCE.notFound(name, entityId).exception();
-        }
-    }
-
-    protected void checkFieldNotNull(Object field, String fieldName) {
-        if (field == null) {
-            throw AppErrors.INSTANCE.missingField(fieldName).exception();
-        }
-    }
-
-    protected void validateId(String expectedId, String actualId) {
-        if (actualId == null) {
-            throw AppErrors.INSTANCE.missingField("id").exception();
-        }
-        if (!expectedId.equals(actualId)) {
-            throw AppErrors.INSTANCE.fieldNotMatch("id", actualId, expectedId).exception();
+            AppErrorException exception = AppErrors.INSTANCE.notFound(name, entityId).exception();
+            LOGGER.error("Not found.", exception);
+            throw exception;
         }
     }
 
     protected void checkRequestNotNull(BaseModel entity) {
         if (entity == null) {
-            throw AppErrors.INSTANCE.invalidJson("Invalid json.").exception();
+            AppErrorException exception = AppErrors.INSTANCE.invalidJson("Invalid json.").exception();
+            LOGGER.error("Invalid json.", exception);
+            throw exception;
         }
     }
 

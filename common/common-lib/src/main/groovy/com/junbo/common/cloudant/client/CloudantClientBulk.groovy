@@ -1,6 +1,9 @@
 package com.junbo.common.cloudant.client
 import com.junbo.common.cloudant.CloudantClientBase
 import com.junbo.common.cloudant.CloudantEntity
+import com.junbo.common.cloudant.CloudantMarshaller
+import com.junbo.common.cloudant.CloudantUniqueClient
+import com.junbo.common.cloudant.DefaultCloudantMarshaller
 import com.junbo.common.cloudant.exception.CloudantException
 import com.junbo.common.cloudant.exception.CloudantUpdateConflictException
 import com.junbo.common.cloudant.model.CloudantBulkDocs
@@ -14,49 +17,46 @@ import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpMethod
+
 /**
  * CloudantClient.
  */
 @CompileStatic
-class CloudantClientBulk<T extends CloudantEntity> implements CloudantClient<T> {
+class CloudantClientBulk implements CloudantClient {
     private static final Logger logger = LoggerFactory.getLogger(CloudantClientBulk)
 
-    static class BulkData {
+    private static CloudantClientBulk singleton = new CloudantClientBulk();
+    public static CloudantClientBulk instance() {
+        return singleton
+    }
+
+    public static interface Callback {
+        void onQueryView(CloudantQueryResult results, CloudantDbUri dbUri, String viewName, String key, String startKey, String endKey)
+        void onSearch(CloudantQueryResult results, CloudantDbUri dbUri, String searchName, String queryString)
+    }
+
+    /**
+     * Set the callback when queryView or search is called
+     * @param callback the callback to inspect the data which is not yet committed.
+     */
+    public static void setCallback(Callback callback) {
+        threadLocalCallback.set(callback)
+    }
+
+    public static class EntityWithType {
+        String entity
+        Class type
+    }
+
+    public static class BulkData {
         Map<String, String> cloudantCache = new HashMap<>()
-        Map<String, Map<String, CloudantEntity>> cloudantBulk = new HashMap<>()
+        Map<CloudantDbUri, Map<String, EntityWithType>> cloudantBulk = new HashMap<>()
     }
 
     private static final ThreadLocal<BulkData> threadLocalBulkData = new ThreadLocal<>()
     private static final ThreadLocal<Callback> threadLocalCallback = new ThreadLocal<>()
 
-    private static boolean parallelCommit = ConfigServiceManager.instance().getConfigValue("common.cloudant.bulk.parallelCommit") == "true"
-
-    public static interface Callback {
-        void onQueryView(CloudantQueryResult results, String fullDbName, String dbName, String viewName, String key, String startKey, String endKey)
-        void onSearch(CloudantQueryResult results, String fullDbName, String dbName, String searchName, String queryString)
-    }
-
-    private static String uniqueDbName
-    private static CloudantClientImpl commitImpl
-
-    private CloudantClientImpl<T> impl
-
-    CloudantClientBulk(CloudantClientImpl<T> impl) {
-        this.impl = impl
-        if (commitImpl == null) {
-            CloudantClientBulk.commitImpl = impl
-        }
-    }
-
-    void setUniqueDbName(String uniqueDbName) {
-        this.uniqueDbName = uniqueDbName
-    }
-
-    static void setCallback(Callback callback) {
-        threadLocalCallback.set(callback)
-    }
-
-    static BulkData getBulkDataReadonly() {
+    private static BulkData getBulkDataReadonly() {
         BulkData data = threadLocalBulkData.get()
         if (data == null) {
             return new BulkData()
@@ -64,44 +64,50 @@ class CloudantClientBulk<T extends CloudantEntity> implements CloudantClient<T> 
         return data
     }
 
-    static Map<String, CloudantEntity> getBulkReadonly(String fullDbName) {
+    private static boolean parallelCommit = ConfigServiceManager.instance().getConfigValue("common.cloudant.bulk.parallelCommit") == "true"
+
+    public static Map<String, EntityWithType> getBulkReadonly(CloudantDbUri dbUri) {
         BulkData data = threadLocalBulkData.get()
         if (data == null) {
             return new HashMap<>()
         }
-        Map<String, CloudantEntity> result = data.cloudantBulk.get(fullDbName)
+        Map<String, EntityWithType> result = data.cloudantBulk.get(dbUri)
         if (result == null) {
             return new HashMap<>()
         }
         return result
     }
 
-    static void clearBulkData() {
+    public static void clearBulkData() {
         threadLocalBulkData.remove()
     }
 
+    private static CloudantDbUri uniqueDbUri = CloudantUniqueClient.instance().getDbUri(null)
+    private static CloudantClientImpl impl = CloudantClientImpl.instance()
+    private static CloudantMarshaller marshaller = DefaultCloudantMarshaller.instance()
+
     @Override
-    Promise<T> cloudantPost(T entity) {
+    def <T extends CloudantEntity> Promise<T> cloudantPost(CloudantDbUri dbUri, Class<T> entityClass, T entity) {
         if (entity.id == null) {
             // must be cloudant based id, assign a string is okay
             return CloudantIdGenerator.nextId().then { String id ->
                 entity.cloudantId = id
                 return Promise.pure(null)
             }.then {
-                addCreated(entity)
+                addCreated(dbUri, entity, entityClass)
                 return Promise.pure(entity)
             }
         } else {
-            addCreated(entity)
+            addCreated(dbUri, entity, entityClass)
             return Promise.pure(entity)
         }
     }
 
     @Override
-    Promise<T> cloudantGet(String id) {
-        T result = (T)getCached(id)
+    def <T extends CloudantEntity> Promise<T> cloudantGet(CloudantDbUri dbUri, Class<T> entityClass, String id) {
+        T result = getCached(id, entityClass)
         if (result == null) {
-            return impl.cloudantGet(id).then { T resp ->
+            return impl.cloudantGet(dbUri, entityClass, id).then { T resp ->
                 addCached(resp)
                 return Promise.pure(resp)
             }
@@ -110,31 +116,34 @@ class CloudantClientBulk<T extends CloudantEntity> implements CloudantClient<T> 
     }
 
     @Override
-    Promise<T> cloudantPut(T entity) {
-        addChanged(entity)
+    def <T extends CloudantEntity> Promise<T> cloudantPut(CloudantDbUri dbUri, Class<T> entityClass, T entity) {
+        addChanged(dbUri, entity, entityClass)
         return Promise.pure(entity)
     }
 
     @Override
-    Promise<Void> cloudantDelete(T entity) {
+    def <T extends CloudantEntity> Promise<Void> cloudantDelete(CloudantDbUri dbUri, Class<T> entityClass, T entity) {
         if (entity == null) {
             return Promise.pure(null)
         }
-        delete(entity.cloudantId)
-        return impl.cloudantDelete(entity)
+        // force update cloudantId
+        entity.setCloudantId(entity.getId().toString())
+
+        delete(dbUri, entity.cloudantId)
+        return impl.cloudantDelete(dbUri, entityClass, entity)
     }
 
     @Override
-    Promise<List<T>> cloudantGetAll(Integer limit, Integer skip, boolean descending) {
-        return impl.cloudantGetAll(limit, skip, descending)
+    def <T extends CloudantEntity> Promise<List<T>> cloudantGetAll(CloudantDbUri dbUri, Class<T> entityClass, Integer limit, Integer skip, boolean descending) {
+        return impl.cloudantGetAll(dbUri, entityClass, limit, skip, descending)
     }
 
     @Override
-    Promise<CloudantQueryResult> queryView(String viewName, String key, String startKey, String endKey, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
-        return impl.queryView(viewName, key, startKey, endKey, limit, skip, descending, includeDocs).then { CloudantQueryResult results ->
+    def <T extends CloudantEntity> Promise<CloudantQueryResult> queryView(CloudantDbUri dbUri, Class<T> entityClass, String viewName, String key, String startKey, String endKey, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
+        return impl.queryView(dbUri, entityClass, viewName, key, startKey, endKey, limit, skip, descending, includeDocs).then { CloudantQueryResult results ->
             Callback callback = threadLocalCallback.get()
             if (callback != null) {
-                callback.onQueryView(results, impl.fullDbName, impl.dbName, viewName, key, startKey, endKey)
+                callback.onQueryView(results, dbUri, viewName, key, startKey, endKey)
             }
             if (includeDocs) {
                 results.rows.each { CloudantQueryResult.ResultObject item ->
@@ -146,11 +155,11 @@ class CloudantClientBulk<T extends CloudantEntity> implements CloudantClient<T> 
     }
 
     @Override
-    Promise<CloudantQueryResult> search(String searchName, String queryString, Integer limit, String bookmark, boolean includeDocs) {
-        return impl.search(searchName, queryString, limit, bookmark, includeDocs).then { CloudantQueryResult results ->
+    def <T extends CloudantEntity> Promise<CloudantQueryResult> search(CloudantDbUri dbUri, Class<T> entityClass, String searchName, String queryString, Integer limit, String bookmark, boolean includeDocs) {
+        return impl.search(dbUri, entityClass, searchName, queryString, limit, bookmark, includeDocs).then { CloudantQueryResult results ->
             Callback callback = threadLocalCallback.get()
             if (callback != null) {
-                callback.onSearch(results, impl.fullDbName, impl.dbName, searchName, queryString)
+                callback.onSearch(results, dbUri, searchName, queryString)
             }
             if (includeDocs) {
                 results.rows.each { CloudantQueryResult.ResultObject item ->
@@ -164,16 +173,19 @@ class CloudantClientBulk<T extends CloudantEntity> implements CloudantClient<T> 
     static Promise<Void> commit() {
         def cloudantBulk = getBulkDataReadonly().cloudantBulk
 
-        Closure<Promise> commitToDb = { String dbName ->
+        Closure<Promise> commitToDb = { CloudantDbUri dbUri ->
             CloudantBulkDocs bulkDocs = new CloudantBulkDocs()
-            bulkDocs.docs = (CloudantEntity[])cloudantBulk.get(dbName).values().toArray(new CloudantEntity[0])
+            def entitiesWithType = cloudantBulk.get(dbUri).values().toArray(new EntityWithType[0])
+            bulkDocs.docs = (CloudantEntity[])entitiesWithType.collect { EntityWithType entityWithType ->
+                return marshaller.unmarshall(entityWithType.entity, entityWithType.type)
+            }.toArray(new CloudantEntity[0])
 
             if (bulkDocs.docs.length > 0) {
-                logger.info("Committing {} docs to {}", bulkDocs.docs.length, dbName)
-                return commitImpl.executeRequest(HttpMethod.POST, dbName + "/_bulk_docs", null, bulkDocs, false).then { Response response ->
-                    cloudantBulk.get(dbName).clear()
+                logger.info("Committing {} docs to {}", bulkDocs.docs.length, dbUri)
+                return impl.executeRequest(dbUri, HttpMethod.POST, "/_bulk_docs", null, bulkDocs).then { Response response ->
+                    cloudantBulk.get(dbUri).clear()
                     if ((int) (response.statusCode / 100) != 2) {
-                        CloudantError cloudantError = commitImpl.unmarshall(response.responseBody, CloudantError)
+                        CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
                         throw new CloudantException("Failed to bulk commit, error: $cloudantError.error," +
                                 " reason: $cloudantError.reason")
                     }
@@ -198,9 +210,9 @@ class CloudantClientBulk<T extends CloudantEntity> implements CloudantClient<T> 
         }
 
         // commit to unique table first, then other tables
-        if (cloudantBulk.containsKey(uniqueDbName)) {
-            return commitToDb.call(uniqueDbName).syncThen {
-                cloudantBulk.remove(uniqueDbName)
+        if (cloudantBulk.containsKey(uniqueDbUri)) {
+            return commitToDb.call(uniqueDbUri).syncThen {
+                cloudantBulk.remove(uniqueDbUri)
             }.then {
                 return commitAllDbs.call()
             }
@@ -221,11 +233,11 @@ class CloudantClientBulk<T extends CloudantEntity> implements CloudantClient<T> 
         return value;
     }
 
-    private Map<String, CloudantEntity> getBulk(String dbName) {
-        Map<String, CloudantEntity> result = getBulkData().cloudantBulk.get(dbName)
+    private Map<String, EntityWithType> getOrCreateBulk(CloudantDbUri dbUri) {
+        Map<String, EntityWithType> result = getBulkData().cloudantBulk.get(dbUri)
         if (result == null) {
             result = new HashMap<>()
-            getBulkData().cloudantBulk.put(dbName, result)
+            getBulkData().cloudantBulk.put(dbUri, result)
         }
         return result
     }
@@ -234,26 +246,27 @@ class CloudantClientBulk<T extends CloudantEntity> implements CloudantClient<T> 
         return getBulkData().cloudantCache;
     }
 
-    private void addCreated(CloudantEntity entity) {
+    private void addCreated(CloudantDbUri dbUri, CloudantEntity entity, Class entityClass) {
         // update cloudantId
         entity.setCloudantId(entity.getId().toString());
 
-        def bulk = getBulk(impl.fullDbName)
+        def bulk = getOrCreateBulk(dbUri)
         if (bulk.containsKey(entity.cloudantId)) {
-            throw new CloudantUpdateConflictException("Failed to save object to CloudantDB, id conflict in ${impl.fullDbName} for ${entity.cloudantId}")
+            throw new CloudantUpdateConflictException("Failed to save object to CloudantDB, id conflict in $dbUri for ${entity.cloudantId}")
         }
 
-        def value = impl.marshall(entity)
-        bulk.put(entity.cloudantId, (T)impl.unmarshall(value, impl.entityClass))
+        def value = marshaller.marshall(entity)
+        bulk.put(entity.cloudantId, new EntityWithType(entity: value, type: entityClass))
         getCache().put(entity.cloudantId, value)
     }
 
-    private void addChanged(CloudantEntity entity) {
+    private void addChanged(CloudantDbUri dbUri, CloudantEntity entity, Class entityClass) {
         // update cloudantId
         entity.setCloudantId(entity.getId().toString());
 
-        def value = impl.marshall(entity)
-        getBulk(impl.fullDbName).put(entity.cloudantId, (T)impl.unmarshall(value, impl.entityClass))
+        def bulk = getOrCreateBulk(dbUri)
+        def value = marshaller.marshall(entity)
+        bulk.put(entity.cloudantId, new EntityWithType(entity: value, type: entityClass))
         getCache().put(entity.cloudantId, value)
     }
 
@@ -265,17 +278,17 @@ class CloudantClientBulk<T extends CloudantEntity> implements CloudantClient<T> 
         // update cloudantId
         entity.setCloudantId(entity.getId().toString());
 
-        def value = impl.marshall(entity)
+        def value = marshaller.marshall(entity)
         getCache().put(entity.cloudantId, value)
     }
 
-    private void delete(String id) {
-        getBulk(impl.fullDbName).remove(id)
+    private void delete(CloudantDbUri dbUri, String id) {
+        getOrCreateBulk(dbUri).remove(id)
         getCache().remove(id)
     }
 
-    private T getCached(String id) {
-        return (T)impl.unmarshall(getCache().get(id), impl.entityClass)
+    private <T> T getCached(String id, Class<T> entityClass) {
+        return (T)marshaller.unmarshall(getCache().get(id), entityClass)
     }
 
     private Promise<Void> onRequestFinished() {

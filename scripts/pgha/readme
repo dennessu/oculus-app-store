@@ -26,6 +26,7 @@
     [devops] sudo ln -sf /usr/lib/postgresql/9.3/bin/dropdb /usr/bin/dropdb
 
 #clean up exisitng db instance
+    [devops] sudo rm -rf /etc/init.d/postgresql
     [devops] sudo kill $(sudo fuser -n tcp 5432 2> /dev/null)
     [devops] sudo chown silkcloud:silkcloud /var/run/postgresql
     [devops] clean up all files including hidden files in /var/run/postgresql
@@ -60,7 +61,7 @@
 [Open ports]
     `5432`: postgresql database port
     `6543`: pgbouncer proxy port
-    `133`:  oident server port
+    `113`:  oident server port
 
 
 =====Deloyment Preparation=====

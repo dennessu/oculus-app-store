@@ -5,19 +5,18 @@
  */
 package com.junbo.test.catalog.impl;
 
-import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
+import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.test.catalog.enums.CatalogEntityStatus;
-import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.test.catalog.enums.EventActionType;
+import com.junbo.test.catalog.enums.EventType;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
-import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.catalog.OfferRevisionService;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.catalog.ItemRevisionService;
-import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.common.id.OfferRevisionId;
@@ -29,6 +28,7 @@ import com.junbo.test.common.libs.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Jason
@@ -149,6 +149,18 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
         }
         else {
             offerRevisionForPost = prepareOfferRevisionEntity(defaultOfferRevisionFileName, false);
+        }
+
+        if (item.getType().equalsIgnoreCase(CatalogItemType.IN_APP_CONSUMABLE.getItemType())) {
+            List<Action> purchaseActions = new ArrayList<>();
+            Map<String, List<Action>> consumableEvent = new HashMap<>();
+            Action action = new Action();
+            action.setType(EventActionType.GRANT_ENTITLEMENT.name());
+            action.setItemId(item.getItemId());
+            action.setUseCount(10);
+            purchaseActions.add(action);
+            consumableEvent.put(EventType.PURCHASE.name(), purchaseActions);
+            offerRevisionForPost.setEventActions(consumableEvent);
         }
 
         offerRevisionForPost.setOfferId(offer.getOfferId());

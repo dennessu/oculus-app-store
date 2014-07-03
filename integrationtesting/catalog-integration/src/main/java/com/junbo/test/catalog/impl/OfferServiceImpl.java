@@ -8,10 +8,7 @@ package com.junbo.test.catalog.impl;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
-import com.junbo.catalog.spec.model.offer.ItemEntry;
-import com.junbo.catalog.spec.model.offer.Offer;
-import com.junbo.catalog.spec.model.offer.OfferRevision;
-import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
+import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.common.json.JsonMessageTranscoder;
@@ -23,6 +20,8 @@ import com.junbo.test.catalog.OfferRevisionService;
 import com.junbo.test.catalog.OfferService;
 import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.test.catalog.enums.CatalogItemType;
+import com.junbo.test.catalog.enums.EventActionType;
+import com.junbo.test.catalog.enums.EventType;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
@@ -40,6 +39,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  @author Jason
@@ -306,6 +306,18 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
         OfferRevision offerRevisionForPost = new JsonMessageTranscoder().decode(
                 new TypeReference<OfferRevision>() {}, strOfferRevisionContent);
+
+        if (item.getType().equalsIgnoreCase(CatalogItemType.IN_APP_CONSUMABLE.getItemType())) {
+            List<Action> purchaseActions = new ArrayList<>();
+            Map<String, List<Action>> consumableEvent = new HashMap<>();
+            Action action = new Action();
+            action.setType(EventActionType.GRANT_ENTITLEMENT.name());
+            action.setItemId(item.getItemId());
+            action.setUseCount(10);
+            purchaseActions.add(action);
+            consumableEvent.put(EventType.PURCHASE.name(), purchaseActions);
+            offerRevisionForPost.setEventActions(consumableEvent);
+        }
 
         //set locales
         OfferRevisionLocaleProperties offerRevisionLocaleProperties = new OfferRevisionLocaleProperties();

@@ -53,6 +53,7 @@ class DefaultCloudantMarshaller implements CloudantMarshaller {
      */
     @Override
     <T> T unmarshall(String string, Class<T> clazz) throws IOException {
+        if (string == null) return null
         return objectMapper.readValue(string, clazz)
     }
 
@@ -64,7 +65,9 @@ class DefaultCloudantMarshaller implements CloudantMarshaller {
      * @return The unmashalled Object of the given generic class.
      */
     @Override
-    <T> T unmarshall(String string, Class<?> parametrized, Class<?>... parameterClass) throws IOException {
+    <T> T unmarshall(String string, Class<T> parametrized, Class<?>... parameterClass) throws IOException {
+        if (string == null) return null
+
         // Construct the JavaType with the given parametrized class and generic type.
         JavaType javaType = objectMapper.typeFactory.constructParametricType(parametrized, parameterClass)
         return objectMapper.readValue(string, javaType)

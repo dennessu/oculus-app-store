@@ -55,4 +55,8 @@ class EmailHistoryRepositorySqlImpl extends EmailBaseRepository implements Email
 
         return Promise.pure(emailMapper.toEmail(updatedEntity))
     }
+
+    public Promise<Void> deleteEmailHistory(String id) {
+        throw new Exception('not implement')
+    }
 }

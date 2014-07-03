@@ -113,7 +113,7 @@ public class TestPutOffer extends BaseTestClass {
 
         //test rev
         offer = offerService.postDefaultOffer();
-        offer.setResourceAge(0);
+        offer.setRev("0");
         verifyExpectedError(offer.getOfferId(), offer);
 
         //test ownerId is null

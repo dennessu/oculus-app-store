@@ -7,7 +7,6 @@
 
     <bean id="oauthStateRepository" class="com.junbo.common.webflow.CloudantStateRepositoryImpl" parent="cloudantClient">
         <property name="dbName" value="oauth_flow_state"/>
-        <property name="marshaller" ref="polymorphicCloudantMarshaller"/>
     </bean>
 
     <bean id="stateExecutorFactory" class="com.junbo.langur.core.webflow.executor.StateExecutorFactoryImpl"/>

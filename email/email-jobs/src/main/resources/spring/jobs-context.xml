@@ -21,5 +21,6 @@
           parent="baseListenerContainer">
         <property name="destination" ref="emailQueue"/>
         <property name="messageListener" ref="emailListener"/>
+        <property name="sessionAcknowledgeMode" value="1"/>
     </bean>
 </beans>

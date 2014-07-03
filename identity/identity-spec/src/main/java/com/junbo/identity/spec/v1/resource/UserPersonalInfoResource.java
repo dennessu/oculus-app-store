@@ -13,6 +13,7 @@ import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.langur.core.routing.RouteBy;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
@@ -31,31 +32,37 @@ import javax.ws.rs.core.MediaType;
 public interface UserPersonalInfoResource {
     @ApiOperation("Create user's personalInfo information")
     @POST
+    @RouteBy("userPii.getUserId()")
     Promise<UserPersonalInfo> create(UserPersonalInfo userPii);
 
     @ApiOperation("Get user's personalInfo information")
     @GET
     @Path("/{userPiiId}")
+    @RouteBy("userPiiId")
     Promise<UserPersonalInfo> get(@PathParam("userPiiId") UserPersonalInfoId userPiiId,
                          @BeanParam  UserPersonalInfoGetOptions getOptions);
 
     @POST
     @Path("/{userPiiId}")
+    @RouteBy("userPiiId")
     Promise<UserPersonalInfo> patch(@PathParam("userPiiId") UserPersonalInfoId userPiiId,
                              UserPersonalInfo userPersonalInfo);
 
     @ApiOperation("Update user's personalInfo information")
     @PUT
     @Path("/{userPiiId}")
+    @RouteBy("userPiiId")
     Promise<UserPersonalInfo> put(@PathParam("userPiiId") UserPersonalInfoId userPiiId,
                          UserPersonalInfo userPersonalInfo);
 
     @ApiOperation("Delete user's personalInfo information")
     @DELETE
     @Path("/{userPiiId}")
+    @RouteBy("userPiiId")
     Promise<Void> delete(@PathParam("userPiiId") UserPersonalInfoId userPiiId);
 
     @ApiOperation("Search user person information.")
     @GET
+    @RouteBy("listOptions.getUserId()")
     Promise<Results<UserPersonalInfo>> list(@BeanParam UserPersonalInfoListOptions listOptions);
 }

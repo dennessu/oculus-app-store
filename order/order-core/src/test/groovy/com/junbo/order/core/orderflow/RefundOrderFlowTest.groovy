@@ -66,7 +66,7 @@ class RefundOrderFlowTest extends BaseTest {
         def o = ActionUtils.getOrderActionContext(context).orderServiceContext.order
         assert (o != null)
 
-        def getOrder = orderService.getOrderByOrderId(o.getId().value).wrapped().get()
+        def getOrder = orderService.getOrderByOrderId(o.getId().value, true, new OrderServiceContext()).wrapped().get()
         assert (o.getId().value == getOrder.getId().value)
         assert (o.status == OrderStatus.REFUNDED.name())
     }

@@ -29,8 +29,6 @@
     <bean id="baseDAO" class="com.junbo.oauth.db.dao.couch.CouchBaseDAO" abstract="true">
         <property name="asyncHttpClient" ref="commonAsyncHttpClient"/>
         <property name="couchDBUri" value="${common.cloudant.url}"/>
-        <property name="couchDBUser" value="${common.cloudant.user}" />
-        <property name="couchDBPassword" value="${common.cloudant.password}" />
         <property name="dbNamePrefix" value="${common.cloudant.dbNamePrefix}" />
     </bean>
 

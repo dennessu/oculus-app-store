@@ -45,6 +45,8 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
     private String userName;
     private String password;
     private String signature;
+    //TODO: need setup notification service and URL
+    private String notifyURL;
     private static final String REDIRECT_CMD = "?cmd=_express-checkout";
     private static final String REDIRECT_CMD_MOBILE = "?cmd=_express-checkout-mobile";
     private static final String REDIRECT_TOKEN = "&token=";
@@ -284,7 +286,7 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
                     paymentRequest.getWebPaymentInfo().setPayerId(properties.getPayerID());
                 }
                 PaymentDetailsType paymentDetail = new PaymentDetailsType();
-                paymentDetail.setNotifyURL("http://replaceIpnUrl.com");
+                paymentDetail.setNotifyURL(notifyURL);
                 BasicAmountType orderTotal = new BasicAmountType();
                 orderTotal.setValue(paymentRequest.getChargeInfo().getAmount().toString());
                 orderTotal.setCurrencyID(CurrencyCodeType.fromValue(paymentRequest.getChargeInfo().getCurrency()));
@@ -386,6 +388,14 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
 
     public void setSignature(String signature) {
         this.signature = signature;
+    }
+
+    public String getNotifyURL() {
+        return notifyURL;
+    }
+
+    public void setNotifyURL(String notifyURL) {
+        this.notifyURL = notifyURL;
     }
 
     public String getRedirectURL() {

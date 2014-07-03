@@ -6,6 +6,7 @@
 
 package com.junbo.token.spec.model;
 
+import com.junbo.common.jackson.annotation.TokenOrderId;
 import com.junbo.token.common.FilterIn;
 import com.junbo.token.common.FilterOut;
 
@@ -19,7 +20,7 @@ public class TokenItem {
     private Long id;
     @FilterOut
     private Long hashValue;
-    @FilterOut
+    @TokenOrderId
     private Long orderId;
     private String disableReason;
     @FilterIn

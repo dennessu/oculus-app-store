@@ -52,16 +52,6 @@ class OrderValidator {
         return this
     }
 
-    Promise<OrderValidator> validCurrency(String currencyString, String fieldName) {
-        return facadeContainer.identityFacade.getCurrency(currencyString).syncThen {
-            Currency currency ->
-            if (currency == null) {
-                throw AppErrors.INSTANCE.fieldInvalid(fieldName, 'not a valid currency').exception()
-            }
-            return this
-        }
-    }
-
     OrderValidator validWebPaymentUrls(List<PaymentInstrumentId> piids,
                                        String successRedirectUrl, String cancelRedirectUrl) {
         if (piids == null || piids.isEmpty()) {

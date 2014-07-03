@@ -7,6 +7,7 @@
 package com.junbo.order.core.impl.order
 import com.junbo.billing.spec.model.Balance
 import com.junbo.common.id.OfferId
+import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.identity.spec.v1.model.Address
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
@@ -18,12 +19,12 @@ import com.junbo.order.spec.model.PaymentInfo
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
+import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
-import org.springframework.util.CollectionUtils
 /**
  * Created by chriszhu on 2/21/14.
  */
@@ -41,7 +42,7 @@ class OrderServiceContextBuilder {
 
     Promise<List<PaymentInstrument>> getPaymentInstruments(OrderServiceContext context) {
 
-        if (context == null || context.order == null) { return Promise.pure(null) }
+        assert (context != null && context.order != null)
 
         if (!CollectionUtils.isEmpty(context.paymentInstruments)) {
             return Promise.pure(context.paymentInstruments)
@@ -71,7 +72,7 @@ class OrderServiceContextBuilder {
 
     Promise<List<Balance>> getBalances(OrderServiceContext context) {
 
-        if (context == null || context.order == null) { return null }
+        assert (context != null && context.order != null)
 
         if (!CollectionUtils.isEmpty(context.balances)) {
             return Promise.pure(context.balances)
@@ -79,11 +80,20 @@ class OrderServiceContextBuilder {
         return refreshBalances(context)
     }
 
+    Promise<FulfilmentRequest> getFulfillmentRequest(OrderServiceContext context) {
+
+        assert (context != null && context.order != null)
+
+        if (!context.fulfillmentRequest) {
+            return Promise.pure(context.fulfillmentRequest)
+        }
+        return refreshFulfillmentRequest(context)
+    }
+
     Promise<List<Balance>> refreshBalances(OrderServiceContext context) {
 
-        if (context == null || context.order == null || context.order.id == null) {
-            return Promise.pure(null)
-        }
+        assert (context != null && context.order != null && context.order.getId() != null)
+
         return facadeContainer.billingFacade.getBalancesByOrderId(
                 context.order.getId().value).syncThen { List<Balance> bas ->
             context.balances = bas
@@ -91,8 +101,20 @@ class OrderServiceContextBuilder {
         }
     }
 
+    Promise<FulfilmentRequest> refreshFulfillmentRequest(OrderServiceContext context) {
+
+        assert (context != null && context.order != null && context.order.getId() != null)
+
+        return facadeContainer.fulfillmentFacade.getFulfillment(context.order.getId()).syncThen {FulfilmentRequest fr ->
+            context.fulfillmentRequest = fr
+            return fr
+        }
+    }
+
     Promise<Address> getShippingAddress(OrderServiceContext context) {
-        if (context == null || context.order == null || context.order.shippingAddress == null) {
+        assert (context != null && context.order != null)
+
+        if (context.order.shippingAddress == null) {
             return Promise.pure(null)
         }
 
@@ -104,9 +126,12 @@ class OrderServiceContextBuilder {
 
     Promise<Address> refreshShippingAddress(OrderServiceContext context) {
 
-        if (context == null || context.order == null || context.order.shippingAddress == null) {
+        assert (context != null && context.order != null)
+
+        if (context.order.shippingAddress == null) {
             return Promise.pure(null)
         }
+
         return facadeContainer.identityFacade.getAddress(context.order.shippingAddress.value).syncThen {
             Address address ->
             context.shippingAddress = address
@@ -117,9 +142,16 @@ class OrderServiceContextBuilder {
 
     Promise<User> getUser(OrderServiceContext context) {
 
-        if (context == null || context.order == null || context.order.user == null) {
+        assert (context != null && context.order != null)
+
+        if (context.order.user == null) {
             return Promise.pure(null)
         }
+
+        if (context.user != null) {
+            return Promise.pure(context.user)
+        }
+
         return facadeContainer.identityFacade.getUser(context.order.user.value).syncRecover { Throwable throwable ->
             LOGGER.error('name=User_Not_Found', throwable)
             throw AppErrors.INSTANCE.userNotFound(context.order.user.value.toString()).exception()
@@ -131,8 +163,10 @@ class OrderServiceContextBuilder {
 
     Promise<List<OrderOfferRevision>> getOffers(OrderServiceContext context) {
 
-        if (context == null || context.order == null || CollectionUtils.isEmpty(context.order.orderItems)) {
-            return Promise.pure(Collections.emptyList())
+        assert (context != null && context.order != null)
+
+        if (CollectionUtils.isEmpty(context.order.orderItems) == null) {
+            return Promise.pure(null)
         }
 
         if (context.offers != null) {
@@ -156,6 +190,8 @@ class OrderServiceContextBuilder {
     }
 
     Promise<Balance> getOrderEventBalance(OrderServiceContext context) {
+        assert (context != null && context.order != null)
+
         if (context?.orderEvent?.billingInfo?.balance == null) {
             return Promise.pure(null)
         }
@@ -164,6 +200,37 @@ class OrderServiceContextBuilder {
             return Promise.pure(balanceList.find { Balance balance ->
                 return balance.getId() == context.orderEvent.billingInfo.balance
             })
+        }
+    }
+
+    Promise<OrderOfferRevision> getOffer(OfferId offerId, OrderServiceContext context) {
+        return getOffers(context).then { List<OrderOfferRevision> offers ->
+            if (CollectionUtils.isEmpty(offers)) {
+                return Promise.pure(null)
+            }
+            def offer = offers.find { OrderOfferRevision of ->
+                of.catalogOfferRevision.offerId == offerId.value
+            }
+            return Promise.pure(offer)
+        }
+    }
+
+    Promise<com.junbo.identity.spec.v1.model.Currency> getCurrency(OrderServiceContext context) {
+        assert (context != null && context.order != null)
+
+        if (context.order.currency == null) {
+            return Promise.pure(null)
+        }
+
+        if (context.currency != null) {
+            return Promise.pure(context.currency)
+        }
+
+        return facadeContainer.identityFacade.getCurrency(context.order.currency.value).then {
+            com.junbo.identity.spec.v1.model.Currency currency ->
+                assert (currency != null)
+                context.currency = currency
+                return Promise.pure(currency)
         }
     }
 }

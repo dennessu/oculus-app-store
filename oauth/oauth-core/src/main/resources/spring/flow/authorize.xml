@@ -88,7 +88,7 @@
             <wf:on-render>
                 <wf:action ref="registerView"/>
             </wf:on-render>
-            <wf:transition on="next" to="REDIRECT_TO_PAYMENT_METHOD">
+            <wf:transition on="next" to="PAYMENT_METHOD_VIEW">
                 <wf:action ref="validateRegister"/>
                 <wf:action ref="validateCaptcha"/>
                 <wf:action ref="createUser"/>
@@ -97,7 +97,7 @@
                 <wf:action ref="createUserTosAgreement"/>
                 <wf:action ref="sendAccountVerifyEmail"/>
             </wf:transition>
-            <wf:transition on="next2" to="REDIRECT_TO_EMAIL_VERIFY_REQUIRED">
+            <wf:transition on="next2" to="EMAIL_VERIFY_REQUIRED_VIEW">
                 <wf:action ref="validateRegister"/>
                 <wf:action ref="validateCaptcha"/>
                 <wf:action ref="createUser"/>
@@ -106,6 +106,7 @@
                 <wf:action ref="createUserTosAgreement"/>
                 <wf:action ref="sendAccountVerifyEmail"/>
             </wf:transition>
+            <wf:transition on="login" to="LOGIN_VIEW" />
             <wf:transition on="cancel" to="CANCEL_VIEW"/>
         </wf:view-state>
 
@@ -166,31 +167,31 @@
             <wf:transition on="*" to="END"/>
         </wf:view-state>
 
-        <wf:view-state id="REDIRECT_TO_PAYMENT_METHOD">
+        <!--wf:view-state id="REDIRECT_TO_PAYMENT_METHOD">
             <wf:on-render>
                 <wf:action ref="redirectToPaymentMethod"/>
             </wf:on-render>
             <wf:transition on="*" to="PAYMENT_METHOD_VIEW"/>
-        </wf:view-state>
+        </wf:view-state-->
 
         <wf:view-state id="PAYMENT_METHOD_VIEW">
             <wf:on-render>
                 <wf:action ref="paymentMethodView"/>
             </wf:on-render>
-            <wf:transition on="next" to="REDIRECT_TO_EMAIL_VERIFY_REQUIRED">
+            <wf:transition on="next" to="EMAIL_VERIFY_REQUIRED_VIEW">
                 <wf:action ref="validatePaymentMethod"/>
                 <wf:action ref="createAddress"/>
                 <wf:action ref="createPaymentInstrument"/>
             </wf:transition>
-            <wf:transition on="skip" to="REDIRECT_TO_EMAIL_VERIFY_REQUIRED"/>
+            <wf:transition on="skip" to="EMAIL_VERIFY_REQUIRED_VIEW"/>
         </wf:view-state>
 
-        <wf:view-state id="REDIRECT_TO_EMAIL_VERIFY_REQUIRED">
+        <!--wf:view-state id="REDIRECT_TO_EMAIL_VERIFY_REQUIRED">
             <wf:on-render>
                 <wf:action ref="redirectToEmailVerifyRequired"/>
             </wf:on-render>
             <wf:transition on="*" to="EMAIL_VERIFY_REQUIRED_VIEW"/>
-        </wf:view-state>
+        </wf:view-state-->
 
         <wf:view-state id="EMAIL_VERIFY_REQUIRED_VIEW">
             <wf:on-render>
@@ -410,9 +411,9 @@
         <property name="userService" ref="userService"/>
     </bean>
 
-    <bean id="redirectToEmailVerifyRequired" class="com.junbo.oauth.core.view.RedirectToPageView">
+    <!--bean id="redirectToEmailVerifyRequired" class="com.junbo.oauth.core.view.RedirectToPageView">
         <property name="pageUrl" value="${oauth.core.portal.emailVerifyRequiredUri}"/>
-    </bean>
+    </bean-->
 
     <bean id="emailVerifyRequiredView" class="com.junbo.oauth.core.view.EmailVerifyRequiredView">
         <property name="debugEnabled" value="${common.conf.debugMode}"/>
@@ -427,9 +428,9 @@
 
     <bean id="emailVerifyView" class="com.junbo.oauth.core.view.EmailVerifyView"/>
 
-    <bean id="redirectToPaymentMethod" class="com.junbo.oauth.core.view.RedirectToPageView">
+    <!--bean id="redirectToPaymentMethod" class="com.junbo.oauth.core.view.RedirectToPageView">
         <property name="pageUrl" value="${oauth.core.portal.paymentMethodUri}"/>
-    </bean>
+    </bean-->
 
     <bean id="paymentMethodView" class="com.junbo.oauth.core.view.PaymentMethodView">
         <property name="btCSE" value="${payment.provider.braintree.CSE}" />

@@ -119,7 +119,7 @@ public class TestPutItem {
 
         //test rev
         item = itemService.postDefaultItem(CatalogItemType.getRandom());
-        item.setResourceAge(0);
+        item.setRev("revValue");
         verifyExpectedError(item.getItemId(), item);
 
         //test ownerId is null

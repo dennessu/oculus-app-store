@@ -37,4 +37,7 @@ public interface AppServerExceptions {
 
     @ErrorDef(httpStatusCode = 500, code = "50007", description = "The Token Set is invalid for the token")
     AppError InvalidTokenSet(String field);
+
+    @ErrorDef(httpStatusCode = 500, code = "50008", description = "get error from catalog gateway")
+    AppError catalogGatewayException();
 }

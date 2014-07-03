@@ -4,7 +4,6 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.oauth.db.data
-
 import com.junbo.langur.core.async.JunboAsyncHttpClient
 import com.junbo.oauth.common.JsonMarshaller
 import com.junbo.oauth.db.dao.ClientDAO
@@ -17,10 +16,8 @@ import com.junbo.oauth.db.repo.impl.ClientRepositoryImpl
 import com.junbo.oauth.db.repo.impl.ScopeRepositoryImpl
 import com.junbo.oauth.spec.model.Client
 import com.junbo.oauth.spec.model.Scope
-import com.ning.http.client.AsyncHttpClient
 import groovy.transform.CompileStatic
 import org.apache.commons.io.IOUtils
-
 /**
  * CouchDataLoader.
  */
@@ -41,7 +38,7 @@ class CouchDataLoader {
 
     CouchDataLoader(String dbUri) {
         this.dbUri = dbUri
-        asyncHttpClient = new JunboAsyncHttpClient(new AsyncHttpClient())
+        asyncHttpClient = JunboAsyncHttpClient.instance()
 
         ClientDAO clientDAO = new CouchClientDAOImpl()
         clientDAO.dbName = 'client'

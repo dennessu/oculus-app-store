@@ -11,7 +11,9 @@ import groovy.lang.Closure;
 import org.springframework.util.Assert;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by haomin on 14-4-9.
@@ -38,7 +40,23 @@ public class Utils {
      * @return the configuration in current dc.
      */
     public static String filterPerDataCenterConfig(String allDcValues, String configName) {
-        String result = null;
+        return parsePerDataCenterConfig(allDcValues, configName).get(DataCenters.instance().currentDataCenter());
+    }
+
+    /**
+     * The helper function to parse configuration values for current data center.
+     *
+     * The per DC configuration is in the following format:
+     *      {config0};dc0, {config1};dc1
+     * This function will return a map from dc to config value.
+     *
+     * Note that the config value part cannot contain , or ;
+     *
+     * @param allDcValues the configuration in all dcs.
+     * @return the configurations per dc.
+     */
+    public static Map<String, String> parsePerDataCenterConfig(String allDcValues, String configName) {
+        Map<String, String> result = new HashMap<>();
 
         String[] dcValues = allDcValues.split(",");
         for (String dcValue : dcValues) {
@@ -50,14 +68,13 @@ public class Utils {
             String value = dcValueComponents[0];
             String dc = dcValueComponents[1];
 
-            if (!DataCenters.instance().isLocalDataCenter(dc)) {
-                continue;
+            if (!DataCenters.instance().hasDataCenter(dc)) {
+                throw new RuntimeException("Unknown datacenter: " + dc + " in config: " + configName + " value: " + allDcValues);
             }
-            if (result == null) {
-                result = value;
-            } else {
+            if (result.containsKey(dc)) {
                 throw new RuntimeException(String.format("Duplicated %s for DC '%s': %s, %s", configName, dc, value, result));
             }
+            result.put(dc, value);
         }
         return result;
     }

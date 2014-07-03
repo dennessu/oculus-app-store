@@ -6,6 +6,9 @@
 
 package com.junbo.token.core.impl;
 
+import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.resource.OfferResource;
+import com.junbo.common.error.AppErrorException;
 import com.junbo.crypto.spec.model.CryptoMessage;
 import com.junbo.crypto.spec.resource.CryptoResource;
 import com.junbo.langur.core.promise.Promise;
@@ -43,6 +46,7 @@ public class TokenServiceImpl implements TokenService {
     @Autowired
     private TokenRepository tokenRepository;
     private CryptoResource cryptoResource;
+    private OfferResource offerClient;
 
     @Override
     public Promise<TokenSet> createTokenSet(TokenSet request) {
@@ -184,11 +188,41 @@ public class TokenServiceImpl implements TokenService {
     }
 
     private void validateTokenSet(TokenSet request){
-        if(request.getOfferIds() == null || request.getOfferIds().isEmpty()){
-            throw AppClientExceptions.INSTANCE.missingField("offers").exception();
-        }
         if(CommonUtil.isNullOrEmpty(request.getProductType())){
             throw AppClientExceptions.INSTANCE.missingField("productType").exception();
+        }
+        if(request.getProductDetail() == null){
+            throw AppClientExceptions.INSTANCE.missingField("productDetail").exception();
+        }
+        if(request.getProductType().equalsIgnoreCase(ProductType.OFFER.toString())){
+            if(CommonUtil.isNullOrEmpty(request.getProductDetail().getDefaultOffer())){
+                throw AppClientExceptions.INSTANCE.missingField("defaultOffer").exception();
+            }
+            validateOffer(request.getProductDetail().getDefaultOffer());
+        }else if(request.getProductType().equalsIgnoreCase(ProductType.PROMOTION.toString())){
+            if(CommonUtil.isNullOrEmpty(request.getProductDetail().getDefaultPromotion())){
+                throw AppClientExceptions.INSTANCE.missingField("defaultPromotion").exception();
+            }
+            //TODO: validate Promotion
+        }else{
+            throw AppClientExceptions.INSTANCE.invalidField("productType").exception();
+        }
+    }
+
+    private void validateOffer(String offerId){
+        Offer offer = null;
+        try{
+            offer = offerClient.getOffer(offerId).get();
+        }catch(Exception ex){
+            if(ex instanceof AppErrorException && ((AppErrorException) ex).getError().getHttpStatusCode() == 404){
+                throw AppClientExceptions.INSTANCE.invalidProduct(offerId).exception();
+            }else{
+                LOGGER.error("error get catalog:" + ex.toString());
+                throw AppServerExceptions.INSTANCE.catalogGatewayException().exception();
+            }
+        }
+        if(offer == null){
+            throw AppClientExceptions.INSTANCE.invalidProduct(offerId).exception();
         }
     }
 
@@ -249,8 +283,16 @@ public class TokenServiceImpl implements TokenService {
         if(order.getExpiredTime() != null && order.getExpiredTime().before(new Date())){
             throw AppClientExceptions.INSTANCE.tokenExpired().exception();
         }
-        if(!set.getOfferIds().contains(consumption.getProduct())){
-            throw AppClientExceptions.INSTANCE.invalidProduct(consumption.getProduct().toString()).exception();
+        if(set.getProductType().equalsIgnoreCase(ProductType.OFFER.toString())){
+            if(!set.getProductDetail().getDefaultOffer().equalsIgnoreCase(consumption.getProduct()) &&
+                    !set.getProductDetail().getOptionalOffers().contains(consumption.getProduct())){
+                throw AppClientExceptions.INSTANCE.invalidProduct(consumption.getProduct().toString()).exception();
+            }
+        }else if(set.getProductType().equalsIgnoreCase(ProductType.PROMOTION.toString())){
+            if(!set.getProductDetail().getDefaultPromotion().equalsIgnoreCase(consumption.getProduct()) &&
+                    !set.getProductDetail().getOptionalPromotion().contains(consumption.getProduct())){
+                throw AppClientExceptions.INSTANCE.invalidProduct(consumption.getProduct().toString()).exception();
+            }
         }
         if(!order.getUsageLimit().equalsIgnoreCase(UNLIMIT_USE)){
             Long usageLimit = TokenUtil.getUsage(order.getUsageLimit());
@@ -288,5 +330,13 @@ public class TokenServiceImpl implements TokenService {
 
     public void setCryptoResource(CryptoResource cryptoResource) {
         this.cryptoResource = cryptoResource;
+    }
+
+    public OfferResource getOfferClient() {
+        return offerClient;
+    }
+
+    public void setOfferClient(OfferResource offerClient) {
+        this.offerClient = offerClient;
     }
 }

@@ -21,6 +21,8 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.common.*
 import com.junbo.order.core.impl.internal.OrderInternalService
+import com.junbo.order.core.impl.order.OrderServiceContext
+import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
@@ -55,6 +57,9 @@ class OrderInternalServiceImpl implements OrderInternalService {
     @Qualifier('orderValidator')
     @Autowired
     OrderValidator orderValidator
+    @Resource(name = 'orderServiceContextBuilder')
+    OrderServiceContextBuilder orderServiceContextBuilder
+
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderInternalServiceImpl)
 
     @Override
@@ -107,7 +112,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
 
     @Override
     @Transactional
-    Promise<Order> getOrderByOrderId(Long orderId) {
+    Promise<Order> getOrderByOrderId(Long orderId, OrderServiceContext orderServiceContext) {
         if (orderId == null) {
             throw AppErrors.INSTANCE.fieldInvalid('orderId', 'orderId cannot be null').exception()
         }
@@ -116,12 +121,13 @@ class OrderInternalServiceImpl implements OrderInternalService {
         if (order == null) {
             throw AppErrors.INSTANCE.orderNotFound().exception()
         }
-        return completeOrder(order)
+        orderServiceContext.order = order
+        return completeOrder(order, orderServiceContext)
     }
 
     @Override
     @Transactional
-    Promise<Order> cancelOrder(Order order) {
+    Promise<Order> cancelOrder(Order order, OrderServiceContext orderServiceContext) {
 
         assert (order != null)
 
@@ -140,7 +146,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
         // TODO: cancel paypal confirm
 
         if (order.status == OrderStatus.PREORDERED.name()) {
-            return refundDeposit(order).then { Order o ->
+            return refundDeposit(order, orderServiceContext).then { Order o ->
                 return Promise.pure(o)
             }
         }
@@ -148,79 +154,84 @@ class OrderInternalServiceImpl implements OrderInternalService {
     }
 
     @Override
-    @Transactional
-    Promise<Order> refundOrder(Order order) {
+    Promise<Order> refundOrder(Order order, OrderServiceContext context) {
 
         assert (order != null)
 
-        def isRefundable = CoreUtils.checkOrderStatusRefundable(order)
+        Boolean isRefundable = CoreUtils.checkOrderStatusRefundable(order)
         if (!isRefundable) {
             LOGGER.info('name=Order_Is_Not_Refundable, orderId = {}, orderStatus={}', order.getId().value, order.status)
             throw AppErrors.INSTANCE.orderNotRefundable().exception()
         }
         LOGGER.info('name=Order_Is_Refundable, orderId = {}, orderStatus={}', order.getId().value, order.status)
 
-        return getOrderByOrderId(order.getId().value).then { Order existingOrder ->
+        // @Transactional
+        Promise promise1 = getOrderByOrderId(order.getId().value, context)
 
-            return facadeContainer.identityFacade.getCurrency(existingOrder.currency.value).then {
-                com.junbo.identity.spec.v1.model.Currency currency ->
+        Order existingOrder = null
+        Promise promise2 = promise1.then { Order o ->
+            existingOrder = o
+            return orderServiceContextBuilder.getCurrency(context)
+        }
 
-                    Order diffOrder = CoreUtils.diffRefundOrder(existingOrder, order, currency.numberAfterDecimal)
-                    return facadeContainer.billingFacade.getBalancesByOrderId(order.getId().value).syncRecover {
+        Order diffOrder = null
+        Promise promise3 = promise2.then { com.junbo.identity.spec.v1.model.Currency currency ->
+            diffOrder = CoreUtils.diffRefundOrder(existingOrder, order, currency.numberAfterDecimal)
+            return orderServiceContextBuilder.getBalances(context)
+        }
+
+        Promise promise4 = promise3.then { List<Balance> bls ->
+            List<Balance> refundableBalances = bls.findAll { Balance bl ->
+                (bl.type == BalanceType.DEBIT.name() || bl.type == BalanceType.MANUAL_CAPTURE.name()) &&
+                        (bl.status == BalanceStatus.AWAITING_PAYMENT.name() ||
+                                bl.status == BalanceStatus.COMPLETED.name())
+            }.toList()
+            // preorder: deposit+deposit
+            // physical goods: manual_capture/deposit
+            // digital: deposit
+            List<Balance> refundBalances = CoreBuilder.buildRefundBalances(refundableBalances, diffOrder)
+            if (CollectionUtils.isEmpty(refundBalances)) {
+                throw AppErrors.INSTANCE.orderNotRefundable().exception()
+            }
+            assert (refundBalances.size() <= 2)
+            return Promise.pure(refundBalances)
+        }
+
+        return promise4.then { List<Balance> refundBalances ->
+            return Promise.each(refundBalances) { Balance refundBalance ->
+                // @Transactional
+                return transactionHelper.executeInTransaction {
+                    return facadeContainer.billingFacade.createBalance(refundBalance, true).syncRecover {
                         Throwable ex ->
-                    }.then { List<Balance> bls ->
-
-                        List<Balance> refundableBalances = bls.findAll { Balance bl ->
-                            (bl.type == BalanceType.DEBIT.name() || bl.type == BalanceType.MANUAL_CAPTURE.name()) &&
-                                    (bl.status == BalanceStatus.AWAITING_PAYMENT.name() ||
-                                            bl.status == BalanceStatus.COMPLETED.name())
-                        }.toList()
-
-                        // preorder: deposit+deposit
-                        // physical goods: manual_capture/deposit
-                        // digital: deposit
-                        List<Balance> refundBalances = CoreBuilder.buildRefundBalances(refundableBalances, diffOrder)
-                        if (CollectionUtils.isEmpty(refundBalances)) {
-                            throw AppErrors.INSTANCE.orderNotRefundable().exception()
+                            LOGGER.error('name=Refund_Failed', ex)
+                            throw AppErrors.INSTANCE.
+                                    billingRefundFailed('billing returns error: ' + ex.message).exception()
+                    }.then { Balance refunded ->
+                        if (refunded == null) {
+                            throw AppErrors.INSTANCE.billingRefundFailed('billing returns null balance').exception()
                         }
-                        assert (refundBalances.size() <= 2)
-
-                        return Promise.each(refundBalances) { Balance refundBalance ->
-                            return facadeContainer.billingFacade.createBalance(refundBalance, true).syncRecover {
-                                Throwable ex ->
-                                    LOGGER.error('name=Refund_Failed', ex)
-                                    throw AppErrors.INSTANCE.
-                                            billingRefundFailed('billing returns error: ' + ex.message).exception()
-                            }.then { Balance refunded ->
-                                if (refunded == null) {
-                                    throw AppErrors.INSTANCE.billingRefundFailed('billing returns null balance').exception()
-                                }
-                                def refundedOrder = CoreUtils.calcRefundedOrder(existingOrder, refunded, diffOrder)
-                                refundedOrder.status = OrderStatus.REFUNDED.name()
-                                orderRepository.updateOrder(refundedOrder, false, true, OrderItemRevisionType.REFUND)
-                                // TODO handel multiple balances
-                                persistBillingHistory(refunded, BillingAction.REQUEST_REFUND, order)
-                                return Promise.pure(null)
-                            }
-                        }
+                        def refundedOrder = CoreUtils.calcRefundedOrder(existingOrder, refunded, diffOrder)
+                        refundedOrder.status = OrderStatus.REFUNDED.name()
+                        orderRepository.updateOrder(refundedOrder, false, true, OrderItemRevisionType.REFUND)
+                        persistBillingHistory(refunded, BillingAction.REQUEST_REFUND, order)
+                        return Promise.pure(null)
                     }
+                }
             }
         }.then {
-            return getOrderByOrderId(order.getId().value)
+            return getOrderByOrderId(order.getId().value, context)
         }
     }
 
     @Override
-    Promise<Void> refundDeposit(Order order) {
+    Promise<Void> refundDeposit(Order order, OrderServiceContext orderServiceContext) {
         if (CoreUtils.isFreeOrder(order)) {
             return Promise.pure(null)
         }
         BillingHistory bh = CoreUtils.getLatestBillingHistory(order)
         assert (bh != null)
         if (bh.billingEvent == BillingAction.DEPOSIT) {
-            return facadeContainer.billingFacade.getBalancesByOrderId(order.getId().value).syncRecover {
-                Throwable ex ->
-            }.then { List<Balance> bls ->
+            return orderServiceContextBuilder.getBalances(orderServiceContext).then { List<Balance> bls ->
                 if (CoreUtils.checkDepositOrderRefundable(order, bls)) {
                     return facadeContainer.billingFacade.createBalance(
                             CoreBuilder.buildRefundDepositBalance(bls[0]), false).syncRecover { Throwable ex ->
@@ -237,18 +248,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
 
     @Override
     @Transactional
-    Promise<List<Balance>> getBalancesByOrderId(Long orderId) {
-        return facadeContainer.billingFacade.getBalancesByOrderId(orderId).syncRecover { Throwable throwable ->
-            LOGGER.error('name=Get_Balances_Error', throwable)
-            throw facadeContainer.billingFacade.convertError(throwable).exception()
-        }.then { List<Balance> balances ->
-            return Promise.pure(balances)
-        }
-    }
-
-    @Override
-    @Transactional
-    Promise<List<Order>> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
+    Promise<List<Order>> getOrdersByUserId(Long userId, OrderServiceContext context, OrderQueryParam orderQueryParam, PageParam pageParam) {
 
         if (userId == null) {
             throw AppErrors.INSTANCE.fieldInvalid('userId', 'userId cannot be null').exception()
@@ -258,13 +258,13 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 ParamUtils.processOrderQueryParam(orderQueryParam),
                 ParamUtils.processPageParam(pageParam))
         return Promise.each(orders) { Order order ->
-            return completeOrder(order)
+            return completeOrder(order, context)
         }.then {
             return Promise.pure(orders)
         }
     }
 
-    Promise<Order> completeOrder(Order order) {
+    private Promise<Order> completeOrder(Order order, OrderServiceContext orderServiceContext) {
         // order items
         def hasFulfillment = false
         order.orderItems = orderRepository.getOrderItems(order.getId().value)
@@ -283,7 +283,10 @@ class OrderInternalServiceImpl implements OrderInternalService {
         // discount
         order.setDiscounts(orderRepository.getDiscounts(order.getId().value))
         // tax
-        return facadeContainer.billingFacade.getBalancesByOrderId(order.getId().value).then { List<Balance> balances ->
+        return orderServiceContextBuilder.refreshBalances(orderServiceContext).then { List<Balance> balances ->
+            if (CollectionUtils.isEmpty(balances)) {
+                return Promise.pure(order)
+            }
             def taxedBalances = balances.findAll { Balance balance ->
                 balance.balanceItems?.taxItems?.size() > 0
             }.toList()
@@ -305,7 +308,10 @@ class OrderInternalServiceImpl implements OrderInternalService {
                     payment.paymentAmount = balance.totalAmount
                     payment.paymentInstrument = balance.piId
                     bh.payments << payment
-
+                    bh.success = true
+                    if (balance.status == BalanceStatus.FAILED.name() || balance.status == BalanceStatus.ERROR) {
+                        bh.success = false
+                    }
                     if (balance.type == BalanceType.REFUND.name()) {
                         bh.refundedOrderItems = []
                         balance.balanceItems?.each { BalanceItem bi ->
@@ -328,7 +334,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 return Promise.pure(order)
             }
             // fill fulfillment histories
-            return facadeContainer.fulfillmentFacade.getFulfillment(order.getId()).then { FulfilmentRequest fr ->
+            return orderServiceContextBuilder.refreshFulfillmentRequest(orderServiceContext).then { FulfilmentRequest fr ->
                 if (fr == null) {
                     return Promise.pure(order)
                 }
@@ -342,10 +348,16 @@ class OrderInternalServiceImpl implements OrderInternalService {
                             fh.walletAmount = 0G
                             fh.shippingDetails = []
                             fh.entitlements = []
+                            fh.success = true
+                            if (CollectionUtils.isEmpty(fi.actions)) {
+                                fh.success = fi.actions?.any { FulfilmentAction fa ->
+                                    fa.status == FulfilmentStatus.FAILED || fa.status == FulfilmentStatus.UNKNOWN
+                                }
+                            }
                             // TODO: parse shippingDetails and coupons
                             def entitlementAction = fi.actions?.find() { FulfilmentAction fa ->
                                 fa.type == FulfilmentActionType.GRANT_ENTITLEMENT &&
-                                        fa.status != FulfilmentStatus.FAILED
+                                        fa.status != FulfilmentStatus.FAILED && fa.status != FulfilmentStatus.UNKNOWN
                             }
                             if (entitlementAction != null) {
                                 entitlementAction.result?.entitlementIds?.each { String eid ->
@@ -354,11 +366,12 @@ class OrderInternalServiceImpl implements OrderInternalService {
                             }
                             def walletAction = fi.actions?.find() { FulfilmentAction fa ->
                                 fa.type == FulfilmentActionType.CREDIT_WALLET &&
-                                        fa.status != FulfilmentStatus.FAILED
+                                        fa.status != FulfilmentStatus.FAILED && fa.status != FulfilmentStatus.UNKNOWN
                             }
                             if (walletAction != null) {
                                 fh.walletAmount = walletAction.result.amount
                             }
+
                         }
                     }
                 }
@@ -368,8 +381,8 @@ class OrderInternalServiceImpl implements OrderInternalService {
     }
 
     @Override
+    @Transactional
     Order refreshOrderStatus(Order order, boolean updateOrder) {
-        transactionHelper.executeInTransaction {
             def oldOrder = orderRepository.getOrder(order.getId().value)
             if (oldOrder == null) {
                 throw AppErrors.INSTANCE.orderNotFound().exception()
@@ -380,7 +393,6 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 oldOrder.status = order.status
                 orderRepository.updateOrder(oldOrder, true, false, null)
             }
-        }
         return order
     }
 

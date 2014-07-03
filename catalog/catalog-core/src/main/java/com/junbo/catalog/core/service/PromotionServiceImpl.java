@@ -36,7 +36,7 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
             throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
         }
         validatePromotion(promotion);
-        return super.createEntity(promotion);
+        return promotionRepo.create(promotion);
     }
 
     @Override
@@ -116,5 +116,20 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
         checkFieldNotNull(revision.getPromotionId(), "promotion");
         checkFieldNotNull(revision.getStartDate(), "startDate");
         checkFieldNotNull(revision.getEndDate(), "endDate");
+    }
+
+    private void checkFieldNotNull(Object field, String fieldName) {
+        if (field == null) {
+            throw AppErrors.INSTANCE.missingField(fieldName).exception();
+        }
+    }
+
+    private void validateId(String expectedId, String actualId) {
+        if (actualId == null) {
+            throw AppErrors.INSTANCE.missingField("id").exception();
+        }
+        if (!expectedId.equals(actualId)) {
+            throw AppErrors.INSTANCE.fieldNotMatch("id", actualId, expectedId).exception();
+        }
     }
 }

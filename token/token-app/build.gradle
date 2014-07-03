@@ -8,6 +8,7 @@ dependencies {
     runtime junboProject(':configuration-data')
 
     runtime junboProject(':crypto-rest')
+    runtime junboProject(':catalog-rest')
     runtime junboProject(':oauth-api')
 
     compile junboProject(':token-rest')

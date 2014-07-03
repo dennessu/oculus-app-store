@@ -9,8 +9,8 @@ package com.junbo.common.routing.model;
  * The policy for data access.
  */
 public enum DataAccessPolicy {
+    CLOUDANT_ROUTED,
     CLOUDANT_ONLY,
-    CLOUDANT_FIRST,
     SQL_FIRST,
     SQL_ONLY
 }

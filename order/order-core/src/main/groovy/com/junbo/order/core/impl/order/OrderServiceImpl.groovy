@@ -5,7 +5,6 @@
  */
 
 package com.junbo.order.core.impl.order
-
 import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.common.error.AppErrorException
 import com.junbo.langur.core.promise.Promise
@@ -33,10 +32,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
-
 /**
  * Created by chriszhu on 2/7/14.
  */
@@ -78,7 +75,8 @@ class OrderServiceImpl implements OrderService {
         orderValidator.validateSettleOrderRequest(order)
 
         // rate the order
-        return getOrderByOrderId(order.getId().value, true).then { Order ratedOrder ->
+        // get the existing order with new rating
+        return getOrderByOrderId(order.getId().value, true, orderServiceContext).then { Order ratedOrder ->
             orderServiceContext.order = ratedOrder
             if (ratedOrder.status == OrderStatus.PRICE_RATING_CHANGED.name()) {
                 throw AppErrors.INSTANCE.orderPriceChanged().exception()
@@ -107,7 +105,7 @@ class OrderServiceImpl implements OrderService {
                 if (error != null) {
                     throw error
                 }
-                return getOrderByOrderId(result.getId().value, false)
+                return getOrderByOrderId(result.getId().value, false, orderServiceContext)
             }
         }
     }
@@ -117,7 +115,7 @@ class OrderServiceImpl implements OrderService {
         LOGGER.info('name=Update_Tentative_Order. orderId: {}', order.getId().value)
 
         setHonoredTime(order)
-        return prepareOrder(order).then {
+        return prepareOrder(order, orderServiceContext).then {
             return flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE_TENTATIVE).then { String flowName ->
                 // Prepare Flow Request
                 Map<String, Object> requestScope = [:]
@@ -127,7 +125,7 @@ class OrderServiceImpl implements OrderService {
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
                 return executeFlow(flowName, orderServiceContext, requestScope)
             }.then {
-                return getOrderByOrderId(orderServiceContext.order.getId().value, false)
+                return getOrderByOrderId(orderServiceContext.order.getId().value, false, orderServiceContext)
             }
         }
     }
@@ -135,7 +133,7 @@ class OrderServiceImpl implements OrderService {
     @Override
     Promise<Order> updateNonTentativeOrder(Order order, OrderServiceContext orderServiceContext) {
         LOGGER.info('name=Update_Non_Tentative_Order. orderId: {}', order.getId().value)
-        return prepareOrder(order).then {
+        return prepareOrder(order , orderServiceContext).then {
             return flowSelector.select(
                     orderServiceContext, OrderServiceOperation.UPDATE_NON_TENTATIVE).then { String flowName ->
                 // Prepare Flow Request
@@ -146,7 +144,7 @@ class OrderServiceImpl implements OrderService {
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
                 return executeFlow(flowName, orderServiceContext, requestScope)
             }.then {
-                return getOrderByOrderId(orderServiceContext.order.getId().value, false)
+                return getOrderByOrderId(orderServiceContext.order.getId().value, false, orderServiceContext)
             }
         }
     }
@@ -158,7 +156,7 @@ class OrderServiceImpl implements OrderService {
         order.id = null
         setHonoredTime(order)
 
-        return prepareOrder(order).then {
+        return prepareOrder(order, orderServiceContext).then {
             return flowSelector.select(orderServiceContext, OrderServiceOperation.CREATE_TENTATIVE).then { String flowName ->
                 // Prepare Flow Request
                 assert (flowName != null)
@@ -170,15 +168,14 @@ class OrderServiceImpl implements OrderService {
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
                 return executeFlow(flowName, orderServiceContext, requestScope)
             }.then {
-                return getOrderByOrderId(orderServiceContext.order.getId().value, false)
+                return getOrderByOrderId(orderServiceContext.order.getId().value, false, orderServiceContext)
             }
         }
     }
 
     @Override
-    @Transactional
-    Promise<Order> getOrderByOrderId(Long orderId, Boolean doRate = true) {
-        return orderInternalService.getOrderByOrderId(orderId).then { Order order ->
+    Promise<Order> getOrderByOrderId(Long orderId, Boolean doRate = true, OrderServiceContext context) {
+        return orderInternalService.getOrderByOrderId(orderId, context).then { Order order ->
             if (doRate) {
                 return refreshTentativeOrderPrice(order)
             }
@@ -207,14 +204,13 @@ class OrderServiceImpl implements OrderService {
             requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
             return executeFlow(flowName, orderServiceContext, requestScope)
         }.then {
-            return getOrderByOrderId(orderServiceContext.order.getId().value, false)
+            return getOrderByOrderId(orderServiceContext.order.getId().value, false, orderServiceContext)
         }
     }
 
     @Override
-    @Transactional
-    Promise<List<Order>> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
-        return orderInternalService.getOrdersByUserId(userId, orderQueryParam, pageParam).then { List<Order> orders ->
+    Promise<List<Order>> getOrdersByUserId(Long userId, OrderServiceContext orderServiceContext, OrderQueryParam orderQueryParam, PageParam pageParam) {
+        return orderInternalService.getOrdersByUserId(userId, orderServiceContext, orderQueryParam, pageParam).then { List<Order> orders ->
             List<Order> ods = []
             return Promise.each(orders) { Order order ->
                 if (order.tentative) {
@@ -233,7 +229,6 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional
     Promise<OrderEvent> updateOrderByOrderEvent(OrderEvent event, OrderServiceContext orderServiceContext) {
 
         switch (event.action) {
@@ -254,7 +249,7 @@ class OrderServiceImpl implements OrderService {
         LOGGER.info('name=Update_Order_By_Order_Event. orderId: {}, action:{}, status{}',
                 event.order.value, event.action, event.status)
 
-        return getOrderByOrderId(event.order.value).then { Order order ->
+        return getOrderByOrderId(event.order.value, orderServiceContext).then { Order order ->
             orderServiceContext.order = order
             orderServiceContext.orderEvent = event
             if (!CoreUtils.isPendingOnEvent(order, event)) {
@@ -325,9 +320,10 @@ class OrderServiceImpl implements OrderService {
         }
     }
 
-    private Promise<Object> prepareOrder(Order order) {
+    private Promise<Object> prepareOrder(Order order, OrderServiceContext context) {
         return Promise.each(order.orderItems) { OrderItem item -> // get item type from catalog
-            return facadeContainer.catalogFacade.getOfferRevision(item.offer.value).syncThen { OrderOfferRevision offer ->
+            return orderServiceContextBuilder.getOffer(item.offer, context).syncThen {
+                OrderOfferRevision offer ->
                 if (offer == null) {
                     throw AppErrors.INSTANCE.offerNotFound(item.offer.value?.toString()).exception()
                 }
