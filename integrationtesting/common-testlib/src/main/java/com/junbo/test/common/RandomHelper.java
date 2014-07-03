@@ -47,4 +47,8 @@ public class RandomHelper {
         int result = Math.abs(rand) % values.size();
         return values.get(result);
     }
+
+    public static String randomIP() {
+        return randomNumeric(2) + "." + randomNumeric(2) + "." + randomNumeric(2) + "." + randomNumeric(2);
+    }
 }
