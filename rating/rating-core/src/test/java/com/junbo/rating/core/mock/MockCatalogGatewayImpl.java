@@ -6,6 +6,7 @@
 
 package com.junbo.rating.core.mock;
 
+import com.junbo.catalog.spec.enums.ItemType;
 import com.junbo.catalog.spec.enums.PriceType;
 import com.junbo.catalog.spec.model.domaindata.ShippingMethod;
 import com.junbo.catalog.spec.model.item.Item;
@@ -227,7 +228,7 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
     private Item genDigitalItem() {
         return new Item() {{
             setItemId("200L");
-            setType("DIGITAL");
+            setType(ItemType.APP.name());
         }};
     }
 

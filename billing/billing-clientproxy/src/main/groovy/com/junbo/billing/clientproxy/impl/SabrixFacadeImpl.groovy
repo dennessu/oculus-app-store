@@ -91,10 +91,8 @@ class SabrixFacadeImpl implements TaxFacade {
         AUTHORITY_MAP = Collections.unmodifiableMap(authorityMap)
 
         Map<String, String> productCodeMap = new HashMap<String, String>()
-        productCodeMap.put(ItemType.DIGITAL.name(), ProductCode.DOWNLOADABLE_SOFTWARE.code)
         productCodeMap.put(ItemType.APP.name(), ProductCode.DOWNLOADABLE_SOFTWARE.code)
         productCodeMap.put(ItemType.DOWNLOADED_ADDITION.name(), ProductCode.DOWNLOADABLE_SOFTWARE.code)
-        productCodeMap.put(ItemType.VIRTUAL.name(), ProductCode.DIGITAL_CONTENT.code)
         productCodeMap.put(ItemType.IN_APP_CONSUMABLE.name(), ProductCode.DIGITAL_CONTENT.code)
         productCodeMap.put(ItemType.IN_APP_UNLOCK.name(), ProductCode.DIGITAL_CONTENT.code)
         productCodeMap.put(ItemType.PHYSICAL.name(), ProductCode.PHYSICAL_GOODS.code)
