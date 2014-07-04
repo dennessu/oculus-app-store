@@ -17,7 +17,7 @@ class CloudantQueryResult<T, V> {
 
     static class ResultObject<T, V> {
         String id
-        String key
+        Object key
         T value
         V doc
     }
