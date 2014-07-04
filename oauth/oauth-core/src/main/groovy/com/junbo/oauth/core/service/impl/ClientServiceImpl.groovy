@@ -131,23 +131,23 @@ class ClientServiceImpl implements ClientService {
             throw AppExceptions.INSTANCE.updateConflict().exception()
         }
 
-        if (client.clientId != null && existingClient.clientId != client.clientId) {
+        if (client.clientId == null || existingClient.clientId != client.clientId) {
             throw AppExceptions.INSTANCE.cantUpdateFields('client_id').exception()
         }
 
-        if (client.clientSecret != null && existingClient.clientSecret != client.clientSecret) {
+        if (client.clientSecret == null || existingClient.clientSecret != client.clientSecret) {
             throw AppExceptions.INSTANCE.cantUpdateFields('client_secret').exception()
         }
 
-        if (client.ownerUserId != null && existingClient.ownerUserId != client.ownerUserId) {
+        if (client.ownerUserId == null || existingClient.ownerUserId != client.ownerUserId) {
             throw AppExceptions.INSTANCE.cantUpdateFields('owner_user_id').exception()
         }
 
-        if (client.idTokenIssuer != null && existingClient.idTokenIssuer != client.idTokenIssuer) {
+        if (client.idTokenIssuer == null || existingClient.idTokenIssuer != client.idTokenIssuer) {
             throw AppExceptions.INSTANCE.cantUpdateFields('id_token_issuer').exception()
         }
 
-        if (client.needConsent != null && existingClient.needConsent != client.needConsent) {
+        if (client.needConsent == null ||  existingClient.needConsent != client.needConsent) {
             throw AppExceptions.INSTANCE.cantUpdateFields('need_consent').exception()
         }
 

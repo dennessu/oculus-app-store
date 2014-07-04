@@ -12,7 +12,7 @@
     </bean>
 
     <bean id="organizationAuthorizeCallbackFactory"
-          class="com.junbo.identity.auth.OrganizationAuthorizeCallback"
+          class="com.junbo.identity.auth.OrganizationAuthorizeCallbackFactory"
           parent="abstractAuthorizeCallbackFactory">
     </bean>
 
