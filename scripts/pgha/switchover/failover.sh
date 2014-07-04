@@ -49,8 +49,12 @@ echo "[FAILOVER][SLAVE] waiting for slave promote"
 while ! echo exit | psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "SELECT pg_is_in_recovery();" -t | grep "f"; do sleep 1 && echo "[SLAVE] slave is promoting..."; done
 echo "[FAILOVER][SLAVE] slave promoted!"
 
-echo "[FAILOVER][SLAVE] force wait beforing writing"
-sleep 10s
+echo "[FAILOVER][SLAVE] ensure slave can be written"
+while ! echo exit | psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "insert into dummy_test values(1);" || echo "ERROR" | grep -v "ERROR";
+do
+   sleep 1 && echo "[FAILOVER][SLAVE] slave is still in read-only status...";
+done
+echo "[FAILOVER][SLAVE] slave can be written"
 
 ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
     echo "[FAILOVER][MASTER] configure recovery.conf for master"

@@ -50,8 +50,12 @@ echo "[FAILBACK][MASTER] waiting for master promote"
 while ! echo exit | psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT pg_is_in_recovery();" -t | grep "f"; do sleep 1 && echo "[MASTER] master is promoting..."; done
 echo "[FAILBACK][MASTER] master promoted!"
 
-echo "[FAILBACK][MASTER] force wait beforing writing"
-sleep 10s
+echo "[FAILBACK][MASTER] ensure master can be written"
+while ! echo exit | psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "insert into dummy_test values(1);" || echo "ERROR" | grep -v "ERROR";
+do
+   sleep 1 && echo "[FAILBACK][MASTER] master is still in read-only status...";
+done
+echo "[FAILBACK][MASTER] master can be written"
 
 ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
     echo "[SLAVE] configure recovery.conf for slave"

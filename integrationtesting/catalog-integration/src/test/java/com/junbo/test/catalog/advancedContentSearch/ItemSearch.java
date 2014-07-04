@@ -11,6 +11,7 @@ import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.test.catalog.impl.ItemAttributeServiceImpl;
 import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
+import com.junbo.catalog.spec.model.common.RevisionNotes;
 import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.test.catalog.enums.CatalogItemType;
@@ -93,12 +94,8 @@ public class ItemSearch extends BaseTestClass {
         //set packageName
         itemRevisionPrepared.setPackageName(RandomFactory.getRandomStringOfAlphabet(10));
 
-        //set gameMode
-        List<String> gameModes = new ArrayList<>();
-        gameModes.add("SINGLE_USER");
-        gameModes.add("MULTI_USER");
-        gameModes.add("CO_OP");
-        itemRevisionPrepared.setGameModes(gameModes);
+        //set userInteractionMode
+        itemRevisionPrepared.setUserInteractionMode("SINGLE_USER");
 
         //set platform
         List<String> platform = new ArrayList<>();
@@ -110,8 +107,11 @@ public class ItemSearch extends BaseTestClass {
 
         //set name, revisionNotes, long description and short description
         ItemRevisionLocaleProperties itemRevisionLocaleProperties = new ItemRevisionLocaleProperties();
+        RevisionNotes revisionNotes = new RevisionNotes();
+        revisionNotes.setShortNotes("shortRevisionNotes_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
+        revisionNotes.setLongNotes("longRevisionNotes_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
         itemRevisionLocaleProperties.setName("testItemRevision_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
-        itemRevisionLocaleProperties.setRevisionNotes("revisionNotes_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
+        itemRevisionLocaleProperties.setRevisionNotes(revisionNotes);
         itemRevisionLocaleProperties.setLongDescription("longDescription_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
         itemRevisionLocaleProperties.setShortDescription("shortDescription_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
         HashMap<String, ItemRevisionLocaleProperties> locales = new HashMap<>();
@@ -209,12 +209,19 @@ public class ItemSearch extends BaseTestClass {
         //default -- name
         buildSearchQuery(name, 1, itemId2);
 
-        //revisionNotes
-        String revisionNotes = itemRevisionLocaleProperties.getRevisionNotes();
-        buildSearchQuery("revisionNotes:" + revisionNotes, 1, itemId2);
+        //longRevisionNotes
+        String longRevisionNotes = itemRevisionLocaleProperties.getRevisionNotes().getLongNotes();
+        buildSearchQuery("longNotes:" + longRevisionNotes, 1, itemId2);
 
         //default -- revisionNotes
-        buildSearchQuery(revisionNotes, 1, itemId2);
+        buildSearchQuery(longRevisionNotes, 1, itemId2);
+
+        //shortRevisionNotes
+        String shortRevisionNotes = itemRevisionLocaleProperties.getRevisionNotes().getShortNotes();
+        buildSearchQuery("shortNotes:" + shortRevisionNotes, 1, itemId2);
+
+        //default -- revisionNotes
+        buildSearchQuery(shortRevisionNotes, 1, itemId2);
 
         //longDescription
         String longDescription = itemRevisionLocaleProperties.getLongDescription();
@@ -256,7 +263,8 @@ public class ItemSearch extends BaseTestClass {
         ItemRevisionLocaleProperties itemRevisionLocaleProperties = itemRevision.getLocales().get(defaultLocale);
         String packageName = itemRevision.getPackageName();
         String name = itemRevisionLocaleProperties.getName();
-        String revisionNotes = itemRevisionLocaleProperties.getRevisionNotes();
+        String longRevisionNotes = itemRevisionLocaleProperties.getRevisionNotes().getLongNotes();
+        String shortRevisionNotes = itemRevisionLocaleProperties.getRevisionNotes().getShortNotes();
         String longDescription = itemRevisionLocaleProperties.getLongDescription();
         String shortDescription = itemRevisionLocaleProperties.getShortDescription();
 
@@ -270,15 +278,12 @@ public class ItemSearch extends BaseTestClass {
         buildSearchQuery("itemId:" + itemId1 + "%20AND%20" + itemType2, 0);
 
         //gameMode
-        List<String> gameModes = itemRevision.getGameModes();
-        if (!gameModes.isEmpty()) {
-            buildSearchQuery("gameMode:" + gameModes.get(0) + "%20AND%20itemId:" + itemId2, 1, itemId2);
-        }
+        String userInteractionMode = itemRevision.getUserInteractionMode();
+        buildSearchQuery("userInteractionMode:" + userInteractionMode + "%20AND%20itemId:" + itemId2, 1, itemId2);
+
 
         //default -- gameMode
-        if (!gameModes.isEmpty()) {
-            buildSearchQuery(gameModes.get(0) + "%20AND%20itemId:" + itemId2, 1, itemId2);
-        }
+        buildSearchQuery(userInteractionMode + "%20AND%20itemId:" + itemId2, 1, itemId2);
 
         //platform
         List<String> platform = itemRevision.getPlatforms();
@@ -296,8 +301,8 @@ public class ItemSearch extends BaseTestClass {
         buildSearchQuery("itemId:" + itemId1 + "%20OR%20revisionId:" + item2.getCurrentRevisionId(), 2, itemId1, itemId2);
         buildSearchQuery("itemId:" + itemId1 + "%20OR%20itemId:" + itemId2, 2, itemId1, itemId2);
         buildSearchQuery("itemId:" + itemId1 + "%20OR%20packageName:" + packageName, 2, itemId1, itemId2);
-        buildSearchQuery("name:" + name + "%20OR%20revisionNotes:" + revisionNotes, 1, itemId2);
-        buildSearchQuery(itemId1 + "%20OR%20name:" + name + "%20OR%20revisionNotes:" + revisionNotes, 2, itemId1, itemId2);
+        buildSearchQuery("name:" + name + "%20OR%20longNotes:" + longRevisionNotes, 1, itemId2);
+        buildSearchQuery(itemId1 + "%20OR%20name:" + name + "%20OR%20shortNotes:" + shortRevisionNotes, 2, itemId1, itemId2);
         buildSearchQuery(longDescription + "%20AND%20" + shortDescription, 1, itemId2);
         buildSearchQuery(longDescription + "%20OR%20" + shortDescription, 1, itemId2);
     }
