@@ -54,12 +54,15 @@ class OrderEventAspect {
 
         try {
             if (getOrderActionType(jp) != null) { // only create event if action type is set
+                LOGGER.info('name=RECORD_ORDER_EVENT_' + getOrderActionType(jp))
                 def orderEvent = getOpenOrderEvent(jp)
                 if (orderEvent != null && orderEvent.order != null) {
                     transactionHelper.executeInNewTransaction {
                         repo.createOrderEvent(orderEvent)
                     }
                 }
+            } else {
+                LOGGER.info('name=NOT_RECORD_ORDER_EVENT_ACTION_NULL')
             }
             return Promise.pure(null)
         } catch (e) {

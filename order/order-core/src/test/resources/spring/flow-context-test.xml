@@ -10,6 +10,7 @@
     <bean id="mockAuthSettleAction" class="com.junbo.order.core.impl.orderaction.AuthSettleAction">
         <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
         <property name="facadeContainer" ref="mockFacadeContainer"/>
+        <property name="orderActionType" value="AUTHORIZE"/>
     </bean>
 
     <bean id="mockCreateOrderAction" class="com.junbo.order.core.impl.orderaction.SaveOrderAction">
@@ -18,6 +19,7 @@
 
     <bean id="mockFulfillmentAction" class="com.junbo.order.core.impl.orderaction.FulfillmentAction">
         <property name="facadeContainer" ref="mockFacadeContainer"/>
+        <property name="orderActionType" value="FULFILL"/>
     </bean>
 
     <bean id="mockSendEmailAction" class="com.junbo.order.core.impl.orderaction.SendEmailAction">
@@ -28,6 +30,7 @@
     <bean id="mockImmediateSettleAction" class="com.junbo.order.core.impl.orderaction.ImmediateSettleAction">
         <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
         <property name="facadeContainer" ref="mockFacadeContainer"/>
+        <property name="orderActionType" value="CHARGE"/>
     </bean>
 
     <bean id="mockRatingAction" class="com.junbo.order.core.impl.orderaction.RatingAction">
@@ -107,5 +110,14 @@
 
     <bean id="mockPaymentFacade" class="com.junbo.order.clientproxy.payment.impl.PaymentFacadeImpl">
         <property name="paymentInstrumentResource" ref="mockPaymentInstrumentResource"/>
+    </bean>
+
+    <bean id="mockChargeEventCheckAction" class="com.junbo.order.core.impl.orderaction.OrderEventStatusCheckAction">
+        <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
+        <property name="orderInternalService" ref="mockOrderInternalService"/>
+    </bean>
+
+    <bean id="mockRiskReviewAction" class="com.junbo.order.core.impl.orderaction.RiskReviewAction">
+        <property name="riskService" ref="riskService"/>
     </bean>
 </beans>

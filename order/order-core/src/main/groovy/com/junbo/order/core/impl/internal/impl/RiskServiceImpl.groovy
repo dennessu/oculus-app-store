@@ -1,11 +1,8 @@
 package com.junbo.order.core.impl.internal.impl
 import com.junbo.common.id.PIType
-import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.identity.spec.v1.model.Address
 import com.junbo.identity.spec.v1.model.Currency
-import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
 import com.junbo.langur.core.promise.Promise
-import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.internal.RiskReviewResult
 import com.junbo.order.core.impl.internal.RiskService
 import com.junbo.order.core.impl.order.OrderServiceContext
@@ -36,9 +33,6 @@ import javax.annotation.Resource
 @CompileStatic
 @TypeChecked
 class RiskServiceImpl implements RiskService {
-
-    @Resource(name = 'orderFacadeContainer')
-    FacadeContainer facadeContainer
 
     @Resource(name = 'orderServiceContextBuilder')
     OrderServiceContextBuilder builder

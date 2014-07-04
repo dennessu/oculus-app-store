@@ -25,7 +25,7 @@ class MockRatingResource extends BaseMock implements RatingResource {
         BigDecimal fifty = BigDecimal.valueOf(50.00D)
         BigDecimal sixty = BigDecimal.valueOf(60.00D)
         request.ratingSummary.discountAmount = ten
-        request.ratingSummary.finalAmount = fifty
+        request.ratingSummary.finalAmount = 0G
         request.ratingSummary.promotion = generateLong()
         request.shippingSummary = new ShippingSummary()
         request.shippingSummary.totalShippingFee = ten
@@ -35,7 +35,8 @@ class MockRatingResource extends BaseMock implements RatingResource {
             item.originalUnitPrice = sixty
             List<Long> proms = []
             proms.add(generateLong())
-            item.promotions = ((Long[])proms?.toArray()) as Set
+            item.promotions = ((String[])proms?.toArray()) as Set
+            request.ratingSummary.finalAmount += item.finalTotalAmount
         }
 
         return Promise.pure(request)
