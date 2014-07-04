@@ -116,7 +116,7 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
                     throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
                 }
 
-                if (user.isAnonymous == true) {
+                if (user.isAnonymous) {
                     throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
                 }
 
@@ -136,47 +136,32 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
                                 return hash.matches(attempt.value, userSecurityQuestion.answerHash)
                             }
 
-                            if (matched != null) {
-                                attempt.setSucceeded(true)
-                            } else {
-                                attempt.setSucceeded(false)
-                            }
+                            attempt.setSucceeded(matched != null)
 
-                            return checkMaximumRetryCount(user, attempt)
+                            return checkMaximumRetryCount(attempt)
                         }
             }
         }
     }
 
-    private Promise<Void> checkMaximumRetryCount(User user, UserSecurityQuestionVerifyAttempt attempt) {
-        if (attempt.succeeded == true) {
-            return Promise.pure(null)
-        }
-
+    private Promise<Void> checkMaximumRetryCount(UserSecurityQuestionVerifyAttempt attempt) {
         return attemptRepository.searchByUserIdAndSecurityQuestionId(attempt.userId, attempt.userSecurityQuestionId,
-                Integer.MAX_VALUE, 0).then { List<UserSecurityQuestionVerifyAttempt> attemptList ->
+                maxRetryCount, 0).then { List<UserSecurityQuestionVerifyAttempt> attemptList ->
             if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount) {
                 return Promise.pure(null)
             }
 
-            attemptList.sort(new Comparator<UserSecurityQuestionVerifyAttempt>() {
-                @Override
-                int compare(UserSecurityQuestionVerifyAttempt o1, UserSecurityQuestionVerifyAttempt o2) {
-                    return o2.createdTime <=> o1.createdTime
-                }
-            })
-
             int index = 0
             for (; index < maxRetryCount; index++) {
-                if (attemptList.get(index).succeeded == true) {
+                if (attemptList.get(index).succeeded) {
                     break
                 }
             }
 
-            // Reach maximum count, lock account
+            // If it reaches maxRetryCount, any retry will be treated as false login
             if (index == maxRetryCount) {
-                user.status = UserStatus.SUSPEND.toString()
-                return createInNewTran(user).then {
+                attempt.succeeded = false
+                return createInNewTran(attempt).then {
                     throw AppErrors.INSTANCE.fieldInvalid('userId',
                             'User reaches maximum allowed retry count').exception()
                 }
@@ -186,12 +171,12 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
         }
     }
 
-    Promise<User> createInNewTran(User user) {
+    Promise<UserSecurityQuestionVerifyAttempt> createInNewTran(UserSecurityQuestionVerifyAttempt attempt) {
         AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager)
         template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
-        return template.execute(new TransactionCallback<Promise<User>>() {
-            Promise<User> doInTransaction(TransactionStatus txnStatus) {
-                return userRepository.update(user)
+        return template.execute(new TransactionCallback<Promise<UserSecurityQuestionVerifyAttempt>>() {
+            Promise<UserSecurityQuestionVerifyAttempt> doInTransaction(TransactionStatus txnStatus) {
+                return attemptRepository.create(attempt)
             }
         })
     }

@@ -180,11 +180,11 @@ class CloudantClientImpl implements CloudantClient {
         if (limit != null) {
             query.put('limit', limit.toString())
         }
-        if (startKey != null) {
-            query.put('startkey', buildStartKey(startKey))
+        if ((startKey != null && !descending) || (endKey != null && descending)) {
+            query.put('startkey', descending ? buildEndKey(endKey, withHighKey) : buildStartKey(startKey))
         }
-        if (endKey != null) {
-            query.put('endkey', buildEndKey(endKey, withHighKey))
+        if ((endKey != null && !descending) || (startKey != null && descending)) {
+            query.put('endkey', descending ? buildStartKey(startKey) : buildEndKey(endKey, withHighKey))
         }
         if (skip != null) {
             query.put('skip', skip.toString())
@@ -244,11 +244,11 @@ class CloudantClientImpl implements CloudantClient {
     def <T extends CloudantEntity> Promise<CloudantQueryResult> queryView(CloudantDbUri dbUri, Class<T> entityClass, String viewName, String startKey,
                                                                           String endKey, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
         def query = [:]
-        if (startKey != null) {
-            query.put('startkey', "\"$startKey\"")
+        if ((startKey != null && !descending) || (endKey != null && descending)) {
+            query.put('startkey', descending ? "\"$endKey\"" : "\"$startKey\"")
         }
-        if (endKey != null) {
-            query.put('endkey', "\"$endKey\"")
+        if ((endKey != null && !descending) || (startKey != null && descending)) {
+            query.put('endkey', descending ? "\"$startKey\"" : "\"$endKey\"")
         }
         if (limit != null) {
             query.put('limit', limit.toString())

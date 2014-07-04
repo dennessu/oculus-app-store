@@ -100,7 +100,7 @@ class UserEmailValidatorImpl implements PiiValidator {
                     }
 
                     UserPersonalInfoLink link = user.emails.find { UserPersonalInfoLink userPersonalInfoLink ->
-                        return userPersonalInfoLink.isDefault == true
+                        return userPersonalInfoLink.isDefault
                     }
 
                     if (link != null) {

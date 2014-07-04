@@ -52,6 +52,7 @@
         </property>
         <property name="userPinValidator" ref="userPinValidator"/>
         <property name="userPasswordValidator" ref="userPasswordValidator"/>
+        <property name="userRepository" ref="userRepository" />
     </bean>
 
     <bean id="userCredentialVerifyAttemptValidator"

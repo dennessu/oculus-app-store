@@ -5,10 +5,13 @@ import com.junbo.identity.core.service.validator.UserCredentialValidator
 import com.junbo.identity.core.service.validator.UserPasswordValidator
 import com.junbo.identity.core.service.validator.UserPinValidator
 import com.junbo.identity.data.identifiable.CredentialType
+import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.mapper.ModelMapper
+import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserCredential
 import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions
 import com.junbo.langur.core.promise.Promise
@@ -27,6 +30,8 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
     private UserPasswordValidator userPasswordValidator
 
     private UserPinValidator userPinValidator
+
+    private UserRepository userRepository
 
     private ModelMapper modelMapper
 
@@ -67,28 +72,40 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
             throw AppErrors.INSTANCE.fieldInvalid('type', allowedTypes.join(',')).exception()
         }
 
-        if (userCredential.type == CredentialType.PASSWORD.toString()) {
-            return userPasswordValidator.validateForOldPassword(userId, userCredential.currentPassword).then {
-                UserPassword userPassword = modelMapper.credentialToPassword(userCredential, new MappingContext())
-                if (userPassword == null) {
-                    throw new IllegalArgumentException('mapping to password exception')
+        return userRepository.get(userId).then { User user ->
+            if (user == null) {
+                throw AppErrors.INSTANCE.userNotFound(userId).exception()
+            }
+
+            if (user.isAnonymous || user.status != UserStatus.ACTIVE.toString()) {
+                throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
+            }
+
+            return Promise.pure(null)
+        }.then {
+            if (userCredential.type == CredentialType.PASSWORD.toString()) {
+                return userPasswordValidator.validateForOldPassword(userId, userCredential.currentPassword).then {
+                    UserPassword userPassword = modelMapper.credentialToPassword(userCredential, new MappingContext())
+                    if (userPassword == null) {
+                        throw new IllegalArgumentException('mapping to password exception')
+                    }
+                    return userPasswordValidator.validateForCreate(userId, userPassword).then {
+                        return Promise.pure(userPassword)
+                    }
                 }
-                return userPasswordValidator.validateForCreate(userId, userPassword).then {
-                    return Promise.pure(userPassword)
+            } else if (userCredential.type == CredentialType.PIN.toString()) {
+                return userPasswordValidator.validateForOldPassword(userId, userCredential.currentPassword).then {
+                    UserPin userPin = modelMapper.credentialToPin(userCredential, new MappingContext())
+                    if (userPin == null) {
+                        throw new IllegalArgumentException('mapping to pin exception')
+                    }
+                    return userPinValidator.validateForCreate(userId, userPin).then {
+                        return Promise.pure(userPin)
+                    }
                 }
             }
-        } else if (userCredential.type == CredentialType.PIN.toString()) {
-            return userPasswordValidator.validateForOldPassword(userId, userCredential.currentPassword).then {
-                UserPin userPin = modelMapper.credentialToPin(userCredential, new MappingContext())
-                if (userPin == null) {
-                    throw new IllegalArgumentException('mapping to pin exception')
-                }
-                return userPinValidator.validateForCreate(userId, userPin).then {
-                    return Promise.pure(userPin)
-                }
-            }
+            throw new IllegalArgumentException('not defined mapping')
         }
-        throw new IllegalArgumentException('not defined mapping')
     }
 
     @Required
@@ -99,6 +116,11 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
     @Required
     void setUserPinValidator(UserPinValidator userPinValidator) {
         this.userPinValidator = userPinValidator
+    }
+
+    @Required
+    void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository
     }
 
     @Required

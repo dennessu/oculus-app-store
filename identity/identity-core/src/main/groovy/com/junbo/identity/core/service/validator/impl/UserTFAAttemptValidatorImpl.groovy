@@ -216,7 +216,6 @@ class UserTFAAttemptValidatorImpl implements UserTFAAttemptValidator {
             }
 
             if (size == maxTeleCodeAttemptNumber) {
-                user.status = UserStatus.SUSPEND.toString()
                 return createInNewTran(user).then {
                     throw AppErrors.INSTANCE.fieldInvalid('userTFAId',
                             'UserTele attempt reaches the maximum.').exception()
