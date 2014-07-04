@@ -31,7 +31,9 @@ class CloudantClientBulk implements CloudantClient {
     }
 
     public static interface Callback {
-        void onQueryView(CloudantQueryResult results, CloudantDbUri dbUri, String viewName, String key, String startKey, String endKey)
+        void onQueryView(CloudantQueryResult results, CloudantDbUri dbUri, String viewName, String key)
+        void onQueryView(CloudantQueryResult results, CloudantDbUri dbUri, String viewName, String startKey, String endKey)
+        void onQueryView(CloudantQueryResult results, CloudantDbUri dbUri, String viewName, Object[] startKey, Object[] endKey)
         void onSearch(CloudantQueryResult results, CloudantDbUri dbUri, String searchName, String queryString)
     }
 
@@ -139,11 +141,44 @@ class CloudantClientBulk implements CloudantClient {
     }
 
     @Override
-    def <T extends CloudantEntity> Promise<CloudantQueryResult> queryView(CloudantDbUri dbUri, Class<T> entityClass, String viewName, String key, String startKey, String endKey, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
-        return impl.queryView(dbUri, entityClass, viewName, key, startKey, endKey, limit, skip, descending, includeDocs).then { CloudantQueryResult results ->
+    def <T extends CloudantEntity> Promise<CloudantQueryResult> queryView(CloudantDbUri dbUri, Class<T> entityClass, String viewName, String key, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
+        return impl.queryView(dbUri, entityClass, viewName, key, limit, skip, descending, includeDocs).then { CloudantQueryResult results ->
             Callback callback = threadLocalCallback.get()
             if (callback != null) {
-                callback.onQueryView(results, dbUri, viewName, key, startKey, endKey)
+                callback.onQueryView(results, dbUri, viewName, key)
+            }
+            if (includeDocs) {
+                results.rows.each { CloudantQueryResult.ResultObject item ->
+                    addCached((CloudantEntity)item.doc)
+                }
+            }
+            return Promise.pure(results)
+        }
+    }
+
+    @Override
+    def <T extends CloudantEntity> Promise<CloudantQueryResult> queryView(CloudantDbUri dbUri, Class<T> entityClass, String viewName, String startKey, String endKey, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
+        return impl.queryView(dbUri, entityClass, viewName, startKey, endKey, limit, skip, descending, includeDocs).then { CloudantQueryResult results ->
+            Callback callback = threadLocalCallback.get()
+            if (callback != null) {
+                callback.onQueryView(results, dbUri, viewName, startKey, endKey)
+            }
+            if (includeDocs) {
+                results.rows.each { CloudantQueryResult.ResultObject item ->
+                    addCached((CloudantEntity)item.doc)
+                }
+            }
+            return Promise.pure(results)
+        }
+    }
+
+    @Override
+    def <T extends CloudantEntity> Promise<CloudantQueryResult> queryView(CloudantDbUri dbUri, Class<T> entityClass, String viewName, Object[] startKey, Object[] endKey,
+                                                                          boolean withHighKey, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
+        return impl.queryView(dbUri, entityClass, viewName, startKey, endKey, withHighKey, limit, skip, descending, includeDocs).then { CloudantQueryResult results ->
+            Callback callback = threadLocalCallback.get()
+            if (callback != null) {
+                callback.onQueryView(results, dbUri, viewName, startKey, endKey)
             }
             if (includeDocs) {
                 results.rows.each { CloudantQueryResult.ResultObject item ->

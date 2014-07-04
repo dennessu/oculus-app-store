@@ -960,7 +960,7 @@ class MigrationResourceImpl implements MigrationResource {
     private static class MigrationQueryViewCallback implements CloudantClientBulk.Callback {
         private static CloudantMarshaller marshaller = DefaultCloudantMarshaller.instance()
 
-        void onQueryView(CloudantQueryResult results, CloudantDbUri dbUri, String viewName, String key, String startKey, String endKey) {
+        void onQueryView(CloudantQueryResult results, CloudantDbUri dbUri, String viewName, String key) {
             if (dbUri.dbName == "user" && viewName == "by_migrate_user_id") {
                 def bulkCache = CloudantClientBulk.getBulkReadonly(dbUri)
                 searchUserByMigrateId(results, key, bulkCache)
@@ -978,7 +978,16 @@ class MigrationResourceImpl implements MigrationResource {
                 searchGroupByOrganizationId(results, key, bulkCache)
                 return
             }
+        }
 
+        @Override
+        void onQueryView(CloudantQueryResult results, CloudantDbUri dbUri, String viewName, String startKey, String endKey) {
+            return
+        }
+
+        @Override
+        void onQueryView(CloudantQueryResult results, CloudantDbUri dbUri, String viewName, Object[] startKey, Object... endKey) {
+            return
         }
 
         void onSearch(CloudantQueryResult results, CloudantDbUri dbUri, String searchName, String queryString) {

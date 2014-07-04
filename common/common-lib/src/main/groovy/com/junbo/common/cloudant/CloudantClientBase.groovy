@@ -137,12 +137,12 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
 
     protected Promise<CloudantQueryResult> queryView(String viewName, String key, Integer limit, Integer skip,
                                            boolean descending, boolean includeDocs) {
-        return getEffective().queryView(getDbUri(null), entityClass, viewName, key, null, null, limit, skip, descending, includeDocs)
+        return getEffective().queryView(getDbUri(null), entityClass, viewName, key, limit, skip, descending, includeDocs)
     }
 
     protected Promise<List<T>> queryView(String viewName, String key, Integer limit, Integer skip,
                                boolean descending) {
-        return getEffective().queryView(getDbUri(null), entityClass, viewName, key, null, null, limit, skip, descending, true).syncThen { CloudantQueryResult searchResult ->
+        return getEffective().queryView(getDbUri(null), entityClass, viewName, key, limit, skip, descending, true).syncThen { CloudantQueryResult searchResult ->
             if (searchResult.rows != null) {
                 return searchResult.rows.collect { CloudantQueryResult.ResultObject result ->
                     return (T) result.doc
@@ -161,9 +161,10 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         return queryView(viewName, key, null, null, false, includeDocs)
     }
 
-    protected Promise<List<T>> queryView(String viewName, String startKey, String endKey, Integer limit, Integer skip,
-                               boolean descending) {
-        return getEffective().queryView(getDbUri(null), entityClass, viewName, null, startKey, endKey, limit, skip, descending, true).syncThen { CloudantQueryResult searchResult ->
+    protected Promise<List<T>> queryView(String viewName, Object[] startKey, Object[] endKey, boolean withHighKey,
+                                         Integer limit, Integer skip, boolean descending) {
+        return getEffective().queryView(getDbUri(null), entityClass, viewName, startKey, endKey, withHighKey,
+                limit, skip, descending, true).syncThen { CloudantQueryResult searchResult ->
             if (searchResult.rows != null) {
                 return searchResult.rows.collect { CloudantQueryResult.ResultObject result ->
                     return (T) (result.doc)
@@ -173,6 +174,20 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
             return []
         }
     }
+
+    protected Promise<List<T>> queryView(String viewName, String startKey, String endKey, Integer limit, Integer skip,
+                               boolean descending) {
+        return getEffective().queryView(getDbUri(null), entityClass, viewName, startKey, endKey, limit, skip, descending, true).syncThen { CloudantQueryResult searchResult ->
+            if (searchResult.rows != null) {
+                return searchResult.rows.collect { CloudantQueryResult.ResultObject result ->
+                    return (T) (result.doc)
+                }
+            }
+
+            return []
+        }
+    }
+
 
     protected Promise<CloudantSearchResult<T>> search(String searchName, String queryString, Integer limit, String bookmark) {
         return getEffective().search(getDbUri(null), entityClass, searchName, queryString, limit, bookmark, true).syncThen { CloudantQueryResult searchResult ->
