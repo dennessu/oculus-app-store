@@ -94,7 +94,7 @@
     $DEPLOYMENT_PATH/setup/setup_master.sh
 
 #[master] run liquibase
-    $DEPLOYMENT_PATH/test/test_liquibase_master.sh (FOR DEMO ONLY)
+    $DEPLOYMENT_PATH/test/test_liquibase_master.sh (FOR SMOKE TEST)
 
 #[master] full base backup master database
     $DEPLOYMENT_PATH/util/base_backup.sh
@@ -108,7 +108,7 @@
 #[slave] start secondary PGBouncer proxy (connect to master db)
     $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
 
-#[master/slave] replication smoke test
+#[master/slave][smoketest] replication smoke test
     $DEPLOYMENT_PATH/test/test_master2slave.sh
 
 =====Master-Replica Deployment=====
@@ -147,7 +147,7 @@
 #[slave] start secondary PGBouncer proxy (connect to slave db)
     $DEPLOYMENT_PATH/pgbouncer/pgbouncer_slave.sh
 
-#[master/slave] replication smoke test
+#[master/slave][smoketest] replication smoke test
     $DEPLOYMENT_PATH/test/test_slave2master.sh
 
 #[master] slave failback to master
@@ -159,7 +159,7 @@
 #[slave] start secondary PGBouncer proxy (connect to master db)
     $DEPLOYMENT_PATH/pgbouner/pgbouncer_master.sh
 
-#[master/slave] replication smoke test
+#[master/slave][smoketest] replication smoke test
     $DEPLOYMENT_PATH/test/test_master2slave.sh
 
 
@@ -180,7 +180,7 @@
 [MASTER is broken]
 #[slave] promote slave to take traffic
 
-#[bastion] switch master/slave configuration and re-generate scripts
+#[bastion] switch master/slave configuration and refresh scripts
     original slave -> master
     original master -> slave
 

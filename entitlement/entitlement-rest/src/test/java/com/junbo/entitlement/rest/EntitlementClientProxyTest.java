@@ -5,6 +5,7 @@
  */
 package com.junbo.entitlement.rest;
 
+import com.junbo.catalog.spec.enums.ItemType;
 import com.junbo.catalog.spec.enums.Status;
 import com.junbo.catalog.spec.model.item.*;
 import com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy;
@@ -113,7 +114,7 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
         entitlement.setUserId(idGenerator.nextId());
         entitlement.setGrantTime(new Date());
         Item item = new Item();
-        item.setType("DIGITAL");
+        item.setType(ItemType.APP.name());
         item.setOwnerId(new OrganizationId(idGenerator.nextId()));
         item.setGenres(new ArrayList<String>());
         try {

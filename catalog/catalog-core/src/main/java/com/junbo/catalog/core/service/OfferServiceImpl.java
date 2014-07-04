@@ -473,7 +473,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
                         errors.add(AppErrors.INSTANCE.fieldNotCorrect("items",
                                 "Quantity should be greater than 0 for item " + itemEntry.getItemId()));
                     } else if (itemEntry.getQuantity() > 1) {
-                        if (!(ItemType.VIRTUAL.is(item.getType()) || ItemType.PHYSICAL.is(item.getType()))) {
+                        if (!(ItemType.PHYSICAL.is(item.getType()))) {
                             errors.add(AppErrors.INSTANCE.fieldNotCorrect("items",
                                     "'quantity' should be 1 for " + item.getType() + " item " + itemEntry.getItemId()));
                         }
@@ -526,13 +526,11 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         Map<String, Set<String>> definedActions = adjustActions(revision.getItems(), purchaseActions);
         for (ItemEntry itemEntry : revision.getItems()) {
             Item item = itemRepo.get(itemEntry.getItemId());
-            if ((ItemType.DIGITAL.is(item.getType())
-                    || ItemType.APP.is(item.getType())
+            if ((ItemType.APP.is(item.getType())
                     || ItemType.DOWNLOADED_ADDITION.is(item.getType())
                     || ItemType.IN_APP_UNLOCK.is(item.getType())
                     || ItemType.IN_APP_CONSUMABLE.is(item.getType())
                     || ItemType.SUBSCRIPTION.is(item.getType())
-                    || ItemType.VIRTUAL.is(item.getType())
                     ) && !definedActions.get(itemEntry.getItemId()).contains(ActionType.GRANT_ENTITLEMENT.name())) {
                 Action action = new Action();
                 action.setType(ActionType.GRANT_ENTITLEMENT.name());

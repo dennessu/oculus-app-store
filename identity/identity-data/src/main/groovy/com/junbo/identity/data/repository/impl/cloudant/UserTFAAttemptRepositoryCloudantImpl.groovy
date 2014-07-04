@@ -22,8 +22,9 @@ class UserTFAAttemptRepositoryCloudantImpl extends CloudantClient<UserTFAAttempt
     @Override
     Promise<List<UserTFAAttempt>> searchByUserIdAndUserTFAId(UserId userId, UserTFAId userTFAId,
                                                                Integer limit, Integer offset) {
-        return queryView('by_user_id_tfa_id', "${userId.toString()}:${userTFAId.toString()}", limit,
-                offset, false)
+        def startKey = [userId.toString(), userTFAId.toString()]
+        def endKey = [userId.toString(), userTFAId.toString()]
+        return queryView('by_user_id_tfa_id', startKey.toArray(new String()), endKey.toArray(new String()), false, limit, offset, false)
     }
 
     @Override

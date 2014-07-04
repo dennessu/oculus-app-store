@@ -42,6 +42,6 @@ class DeviceTypeRepositoryCloudantImpl extends CloudantClient<DeviceType> implem
 
     @Override
     Promise<Void> delete(DeviceTypeId id) {
-        return cloudantDelete(id.value.toString())
+        return cloudantDelete(id.toString())
     }
 }

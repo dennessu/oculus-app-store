@@ -59,16 +59,18 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     private final String preOrderPhysical = "testOffer_PreOrder_Physical1";
     private final String defaultOfferFileName = "defaultOffer";
     private final String defaultItemFileName = "defaultItem";
-    private final Integer defaultPagingSize = 10000;
-    private final Integer start = 0;
 
     private LogHelper logger = new LogHelper(OfferServiceImpl.class);
     private static OfferService instance;
-    private Boolean offerLoaded = false;
 
     private ItemService itemService = ItemServiceImpl.instance();
     private UserService userService = UserServiceImpl.instance();
     private OrganizationService organizationService = OrganizationServiceImpl.instance();
+
+    private final Integer defaultPagingSize = 10000;
+    private final Integer start = 0;
+    private Boolean offerLoaded = false;
+    private String catalogDB;
 
     public static synchronized OfferService instance() {
         if (instance == null) {
@@ -169,18 +171,91 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     }
 
     public String getOfferIdByName(String offerName) throws Exception {
-        Results<Offer> offerRtn = this.searchOfferByName(offerName);
+        catalogDB = ConfigHelper.getSetting("catalogDB");
 
-        if (offerRtn.getItems().size() <= 0) {
-            this.postPredefinedOffer();
-            offerRtn = this.searchOfferByName(offerName);
-        }
-        if (offerRtn.getItems().size() <= 0) {
-            return "No such predefined offer";
+        if (catalogDB.equalsIgnoreCase("cloudant")) {
+            Results<Offer> offerRtn = this.searchOfferByName(offerName);
+
+            if (offerRtn.getItems().size() <= 0) {
+                this.postPredefinedOffer();
+                offerRtn = this.searchOfferByName(offerName);
+            }
+            if (offerRtn.getItems().size() <= 0) {
+                return "No such predefined offer";
+            }
+            else {
+                return offerRtn.getItems().get(0).getOfferId();
+            }
         }
         else {
-            return offerRtn.getItems().get(0).getOfferId();
+            if (!offerLoaded){
+                this.loadAllOffers();
+                this.loadAllOfferRevisions();
+                this.loadAllItems();
+                this.loadAllItemRevisions();
+                this.postPredefinedOffer();
+                offerLoaded = true;
+            }
+
+            return Master.getInstance().getOfferIdByName(offerName);
         }
+    }
+
+    private void loadAllOffers() throws Exception {
+        HashMap<String, List<String>> paraMap = new HashMap<>();
+        List<String> listStart = new ArrayList<>();
+        listStart.add(start.toString());
+        List<String> listSize = new ArrayList<>();
+        listSize.add(defaultPagingSize.toString());
+
+        paraMap.put("start", listStart);
+        paraMap.put("size", listSize);
+        this.getOffers(paraMap);
+    }
+
+    private void loadAllOfferRevisions() throws Exception {
+        HashMap<String, List<String>> paraMap = new HashMap<>();
+        List<String> listStatus = new ArrayList<>();
+        listStatus.add(CatalogEntityStatus.APPROVED.getEntityStatus());
+        List<String> listStart = new ArrayList<>();
+        listStart.add(start.toString());
+        List<String> listSize = new ArrayList<>();
+        listSize.add(defaultPagingSize.toString());
+
+        paraMap.put("status", listStatus);
+        paraMap.put("start", listStart);
+        paraMap.put("size", listSize);
+        OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
+        offerRevisionService.getOfferRevisions(paraMap);
+    }
+
+    private void loadAllItems() throws Exception {
+        HashMap<String, List<String>> paraMap = new HashMap<>();
+        List<String> listStart = new ArrayList<>();
+        listStart.add(start.toString());
+        List<String> listSize = new ArrayList<>();
+        listSize.add(defaultPagingSize.toString());
+
+        paraMap.put("start", listStart);
+        paraMap.put("size", listSize);
+        itemService.getItems(paraMap);
+    }
+
+    private void loadAllItemRevisions() throws Exception {
+        HashMap<String, List<String>> paraMap = new HashMap<>();
+        List<String> listStatus = new ArrayList<>();
+        listStatus.add(CatalogEntityStatus.APPROVED.getEntityStatus());
+        List<String> listStart = new ArrayList<>();
+        listStart.add(start.toString());
+        List<String> listSize = new ArrayList<>();
+        listSize.add(defaultPagingSize.toString());
+
+        paraMap.put("status", listStatus);
+        paraMap.put("start", listStart);
+        paraMap.put("size", listSize);
+
+        ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
+        itemRevisionService.getItemRevisions(paraMap);
     }
 
     private Results<Offer> searchOfferByName(String offerName) throws Exception {
@@ -213,9 +288,16 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
             while ((sCurrentLine = br.readLine()) != null) {
                 logger.logInfo(sCurrentLine);
                 String[] strLine = sCurrentLine.split(",");
-                offerRtn = this.searchOfferByName(strLine[0]);
-                if (offerRtn.getItems().size() <= 0) {
-                    preparePredefinedOffer(strLine[0], strLine[1], strLine[2], strLine[3]);
+                if (catalogDB.equalsIgnoreCase("cloudant")) {
+                    offerRtn = this.searchOfferByName(strLine[0]);
+                    if (offerRtn.getItems().size() <= 0) {
+                        preparePredefinedOffer(strLine[0], strLine[1], strLine[2], strLine[3]);
+                    }
+                }
+                else {
+                    if (Master.getInstance().getOfferIdByName(strLine[0]) == null) {
+                        preparePredefinedOffer(strLine[0], strLine[1], strLine[2], strLine[3]);
+                    }
                 }
             }
         } catch (IOException e) {
@@ -232,7 +314,6 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
     private void preparePredefinedOffer(String offerName, String itemName, String userName, String offerType) throws  Exception {
 
-        Results<Item> itemRtn = this.searchItemByName(itemName);
         List<String> userIdList = userService.GetUserByUserName(userName);
         String userId;
 
@@ -246,11 +327,23 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         OrganizationId organizationId = getOrganizationId(userId);
 
         Item item;
-        if (itemRtn.getItems().size() <= 0) {
-            item = prepareItem(userId, itemName, offerType);
+        if (catalogDB.equalsIgnoreCase("cloudant")) {
+            Results<Item> itemRtn = this.searchItemByName(itemName);
+            if (itemRtn.getItems().size() <= 0) {
+                item = prepareItem(userId, itemName, offerType);
+            }
+            else {
+                item = itemRtn.getItems().get(0);
+            }
         }
         else {
-            item = itemRtn.getItems().get(0);
+            String itemId = Master.getInstance().getItemIdByName(itemName);
+            if (itemId == null) {
+                item = prepareItem(userId, itemName, offerType);
+            }
+            else {
+                item = Master.getInstance().getItem(itemId);
+            }
         }
 
         //Post offer

@@ -31,7 +31,7 @@ class CurrencyRepositoryCloudantImpl extends CloudantClient<Currency> implements
 
     @Override
     Promise<Void> delete(CurrencyId id) {
-        return cloudantDelete(id.value)
+        return cloudantDelete(id.toString())
     }
 
     @Override

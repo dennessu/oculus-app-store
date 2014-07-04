@@ -14,11 +14,42 @@
     "locales":{
         "en_US":{
             "name": "Angry Bird",
-            "revisionNotes": "fix some bugs",
+            "revisionNotes": {
+                "shortNotes": "Short Notes",
+                "longNotes": "Long notes"
+            },
             "longDescription": "long description",
             "shortDescription": "short description",
-            "minimumSystemRequirements": "minimumSystemRequirements",
-            "recommendedSystemRequirements": "recommendedSystemRequirements",
+            "minimumSystemRequirements": {
+                "PC": {
+                    "operatingSystem": "Win7",
+                    "processor": "4 CPUs",
+                    "memory": "16G",
+                    "graphics": "Intel",
+                    "directX": "Direct 11",
+                    "hardDrive": "1T",
+                    "soundCard": "soundCard",
+                    "multiplayer": "multiplayer",
+                    "other": "Other",
+                    "notice": "notice",
+                    "noticeImportant": "Notice important"
+                }
+            },
+            "recommendedSystemRequirements": {
+                "PC": {
+                    "operatingSystem": "Win7",
+                    "processor": "4 CPUs",
+                    "memory": "16G",
+                    "graphics": "Intel",
+                    "directX": "Direct 11",
+                    "hardDrive": "1T",
+                    "soundCard": "soundCard",
+                    "multiplayer": "multiplayer",
+                    "other": "Other",
+                    "notice": "notice",
+                    "noticeImportant": "Notice important"
+                }
+            },
             "legalInformation": "legalInformation",
             "credits": "credits",
             "copyright": "copyright",

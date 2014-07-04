@@ -25,8 +25,8 @@ public class Item extends BaseEntityModel {
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The id of item resource")
     private String itemId;
 
-    @ApiModelProperty(position = 2, required = true, value = "Item type",
-            allowableValues = "PHYSICAL, DIGITAL, STORED_VALUE, SUBSCRIPTION, VIRTUAL")
+    @ApiModelProperty(position = 2, required = true, value = "Item type", allowableValues =
+            "PHYSICAL, APP, DOWNLOADED_ADDITION, STORED_VALUE, SUBSCRIPTION, IN_APP_UNLOCK, IN_APP_CONSUMABLE")
     private String type;
 
     @ItemRevisionId

@@ -26,7 +26,7 @@
           "map": "function(doc) {if (doc.regions) {for (var i in doc.regions) {emit(doc.regions[i], doc._id)}}}"
         }, 
         "by_region_and_translation": {
-          "map": "function(doc) {if (doc.translations && doc.regions) {for (var i in doc.regions) {for (var j in doc.translations) {emit(doc.regions[i] + ':' + doc.translations[j], doc._id)}}}}"
+          "map": "function(doc) {if (doc.translations && doc.regions) {for (var i in doc.regions) {for (var j in doc.translations) {emit([doc.regions[i], doc.translations[j]], doc._id)}}}}"
         }, 
         "by_translation": {
           "map": "function(doc) {if (doc.translations) {for (var i in doc.translations) {emit(doc.translations[i], doc._id)}}}"
@@ -43,7 +43,7 @@
           "map": "function(doc) {emit(doc.defaultLocale, doc._id)}"
         }, 
         "by_default_locale_currency": {
-          "map": "function(doc) {emit(doc.defaultCurrency + ':' + doc.defaultLocale, doc._id)}"
+          "map": "function(doc) {emit([doc.defaultCurrency, doc.defaultLocale], doc._id)}"
         }
       }
     }, 
@@ -110,7 +110,7 @@
     "group": {
       "views": {
         "by_organization_id_and_name": {
-          "map": "function(doc) {  emit(doc.organizationId  + ':' + doc.name, doc._id)}"
+          "map": "function(doc) {  emit([doc.organizationId, doc.name], doc._id)}"
         },
         "by_organization_id": {
           "map": "function(doc) {  emit(doc.organizationId, doc._id)}"
@@ -250,19 +250,19 @@
           "map": "function(doc) {  emit(doc.externalId, doc._id)}"
         }, 
         "by_authenticator_externalId_auth_type": {
-          "map": "function(doc) { emit(doc.externalId + ':' + doc.type, doc._id)}"
+          "map": "function(doc) { emit([doc.externalId, doc.type], doc._id)}"
         }, 
         "by_user_id": {
           "map": "function(doc) {  emit(doc.userId, doc._id)}"
         }, 
         "by_user_id_auth_type": {
-          "map": "function(doc) {  emit(doc.userId + ':' + doc.type, doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.type], doc._id)}"
         }, 
         "by_user_id_auth_type_externalId": {
-          "map": "function(doc) {  emit(doc.userId + ':' + doc.type + ':' + doc.externalId, doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.type, doc.externalId], doc._id)}"
         }, 
         "by_user_id_externalId": {
-          "map": "function(doc) {  emit(doc.userId + ':' + doc.externalId, doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.externalId], doc._id)}"
         }
       }
     }, 
@@ -272,10 +272,10 @@
           "map": "function(doc) {  emit(doc.userId, doc._id)}"
         }, 
         "by_user_id_credential_type": {
-          "map": "function(doc) { emit(doc.userId + ':' + doc.type, doc._id)}"
+          "map": "function(doc) { emit([doc.userId, doc.type], doc._id)}"
         },
         "by_ip_address_credential_type": {
-          "map": "function(doc) { emit(doc.ipAddress + ':' + doc.type, doc._id)}"
+          "map": "function(doc) { emit([doc.ipAddress, doc.type], doc._id)}"
         }
       }
     }, 
@@ -305,7 +305,7 @@
           "map": "function(doc) {  emit(doc.userId, doc._id)}"
         }, 
         "by_user_id_group_id": {
-          "map": "function(doc) {  emit(doc.userId + ':' + doc.groupId, doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.groupId], doc._id)}"
         }
       }
     }, 
@@ -318,7 +318,7 @@
           "map": "function(doc) {  emit(doc.userId, doc._id)}"
         }, 
         "by_user_id_communication_id": {
-          "map": "function(doc) {  emit(doc.userId + ':' + doc.communicationId, doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.communicationId], doc._id)}"
         }
       }
     }, 
@@ -328,7 +328,7 @@
           "map": "function(doc) {  emit(doc.userId, doc._id)}"
         }, 
         "by_user_id_active_status": {
-          "map": "function(doc) {  emit(doc.userId + ':' + doc.active, doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.active], doc._id)}"
         }
       }
     }, 
@@ -348,7 +348,7 @@
           "map": "function(doc) {  emit(doc.userId, doc._id)}"
         }, 
         "by_user_id_active_status": {
-          "map": "function(doc) {  emit(doc.userId + ':' + doc.active, doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.active], doc._id)}"
         }
       }
     }, 
@@ -365,14 +365,14 @@
           "map": "function(doc) {  emit(doc.userId, doc._id)}"
         }, 
         "by_user_id_security_question_id": {
-          "map": "function(doc) {  emit(doc.userId + ':' + doc.userSecurityQuestionId, doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.userSecurityQuestionId], doc._id)}"
         }
       }
     }, 
     "user_tfa": {
       "views": {
         "by_user_id_personal_info": {
-          "map": "function(doc) {  emit(doc.userId + ':' + doc.personalInfo, doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.personalInfo], doc._id)}"
         }
       }
     }, 
@@ -382,7 +382,7 @@
           "map": "function(doc) {  emit(doc.userId, doc._id)}"
         }, 
         "by_user_id_active": {
-          "map": "function(doc) {  emit(doc.userId + ':' + doc.active.toString(), doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.active], doc._id)}"
         }
       }
     }, 
@@ -399,7 +399,7 @@
           "map": "function(doc) {  emit(doc.userId, doc._id)}"
         }, 
         "by_user_id_tfa_id": {
-          "map": "function(doc) {  emit(doc.userId + ':' + doc.userTFAId , doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.userTFAId], doc._id)}"
         }
       }
     }, 
@@ -412,7 +412,7 @@
           "map": "function(doc) {  emit(doc.userId, doc._id)}"
         }, 
         "by_user_id_tos_id": {
-          "map": "function(doc) { emit(doc.userId + ':' + doc.tosId, doc._id)}"
+          "map": "function(doc) { emit([doc.userId, doc.tosId], doc._id)}"
         }
       }
     },
@@ -564,7 +564,7 @@
     "item": {
       "indexes": {
         "search": {
-          "index": "function(doc) {index('type', doc.type);index('default', doc.type);if (doc.genres) {for (var genreIdx in doc.genres) {index('genreId', doc.genres[genreIdx]);index('default', doc.genres[genreIdx]);}}index('ownerId', doc.ownerId);index('default', doc.ownerId);index('itemId', doc._id);index('default', doc._id);if (doc.activeRevision) {index('revisionId', doc.activeRevision._id);index('default', doc.activeRevision._id);if (doc.activeRevision.sku) {index('sku', doc.activeRevision.sku);index('default', doc.activeRevision.sku);}if(doc.activeRevision.packageName) {index('packageName', doc.activeRevision.packageName);index('default', doc.activeRevision.packageName);}if (doc.activeRevision.iapHostItemIds) {for (var iapIdx in doc.activeRevision.iapHostItemIds) {index('hostItemId', doc.activeRevision.iapHostItemIds[iapIdx]);index('default', doc.activeRevision.iapHostItemIds[iapIdx]);}}if (doc.activeRevision.gameModes) {for (var modeIdx in doc.activeRevision.gameModes) {index('gameMode', doc.activeRevision.gameModes[modeIdx]);index('default', doc.activeRevision.gameModes[modeIdx]);}}if (doc.activeRevision.platforms) {for (var platformIdx in doc.activeRevision.platforms) {index('platform', doc.activeRevision.platforms[platformIdx]);index('default', doc.activeRevision.platforms[platformIdx]);}}if (doc.activeRevision.locales) {for (var localeIdx in doc.activeRevision.locales) {var locale = doc.activeRevision.locales[localeIdx];if (locale.name) {index('name', locale.name);index('default', locale.name);}if (locale.revisionNotes) {index('revisionNotes', locale.revisionNotes);index('default', locale.revisionNotes);}if (locale.longDescription) {index('longDescription', locale.longDescription);index('default', locale.longDescription);}if (locale.shortDescription) {index('shortDescription', locale.shortDescription);index('default', locale.shortDescription);}}}}}"
+          "index": "function(doc) {index('type', doc.type);index('default', doc.type);if (doc.genres) {for (var genreIdx in doc.genres) {index('genreId', doc.genres[genreIdx]);index('default', doc.genres[genreIdx]);}}index('ownerId', doc.ownerId);index('default', doc.ownerId);index('itemId', doc._id);index('default', doc._id);if (doc.activeRevision) {index('revisionId', doc.activeRevision._id);index('default', doc.activeRevision._id);if (doc.activeRevision.sku) {index('sku', doc.activeRevision.sku);index('default', doc.activeRevision.sku);}if(doc.activeRevision.packageName) {index('packageName', doc.activeRevision.packageName);index('default', doc.activeRevision.packageName);}if (doc.activeRevision.iapHostItemIds) {for (var iapIdx in doc.activeRevision.iapHostItemIds) {index('hostItemId', doc.activeRevision.iapHostItemIds[iapIdx]);index('default', doc.activeRevision.iapHostItemIds[iapIdx]);}}if (doc.activeRevision.userInteractionMode) {index('userInteractionMode', doc.activeRevision.userInteractionMode);index('default', doc.activeRevision.userInteractionMode);}if (doc.activeRevision.platforms) {for (var platformIdx in doc.activeRevision.platforms) {index('platform', doc.activeRevision.platforms[platformIdx]);index('default', doc.activeRevision.platforms[platformIdx]);}}if (doc.activeRevision.locales) {for (var localeIdx in doc.activeRevision.locales) {var locale = doc.activeRevision.locales[localeIdx];if (locale.name) {index('name', locale.name);index('default', locale.name);}if (locale.revisionNotes) {if(locale.revisionNotes.shortNotes) {index('shortNotes', locale.revisionNotes.shortNotes);index('default', locale.revisionNotes.shortNotes);}if(locale.revisionNotes.longNotes) {index('longNotes', locale.revisionNotes.longNotes);index('default', locale.revisionNotes.longNotes);}}if (locale.longDescription) {index('longDescription', locale.longDescription);index('default', locale.longDescription);}if (locale.shortDescription) {index('shortDescription', locale.shortDescription);index('default', locale.shortDescription);}}}}}"
         }
       }, 
       "views": {
@@ -604,7 +604,7 @@
     "offer": {
       "indexes": {
         "search": {
-          "index": "function(doc) {index('offerId', doc._id);index('default', doc._id);if (doc.published !== null && doc.published !== undefined) {index('published', doc.published);}if (doc.environment) {index('environment', doc.environment);index('default', doc.environment);}if (doc.categories) {for (var idx in doc.categories) {index('categoryId', doc.categories[idx]);index('default', doc.categories[idx]);}}index('ownerId', doc.ownerId);index('default', doc.ownerId);if (!doc.currentRevisionId) {index('scheduledPublish', true);}if (doc.activeRevision) {index('revisionId', doc.activeRevision._id);index('default', doc.activeRevision._id);if (doc.activeRevision.items) {for (var itemIdx in doc.activeRevision.items) {if (doc.activeRevision.items[itemIdx].itemId) {index('itemId', doc.activeRevision.items[itemIdx].itemId);}}}if (doc.activeRevision.subOffers) {for (var subOfferIdx in doc.activeRevision.subOffers) {if (doc.activeRevision.subOffers[subOfferIdx]) {index('subOfferId', doc.activeRevision.subOffers[subOfferIdx]);}}}if (doc.activeRevision.locales) {for (var localeIdx in doc.activeRevision.locales) {var locale = doc.activeRevision.locales[localeIdx];if (locale.name) {index('name', locale.name);index('default', locale.name);}if (locale.revisionNotes) {index('revisionNotes', locale.revisionNotes);index('default', locale.revisionNotes);}if (locale.longDescription) {index('longDescription', locale.longDescription);index('default', locale.longDescription);}if (locale.shortDescription) {index('shortDescription', locale.shortDescription);index('default', locale.shortDescription);}}}}}"
+          "index": "function(doc) {index('offerId', doc._id);index('default', doc._id);if (doc.published !== null && doc.published !== undefined) {index('published', doc.published);}if (doc.environment) {index('environment', doc.environment);index('default', doc.environment);}if (doc.categories) {for (var idx in doc.categories) {index('categoryId', doc.categories[idx]);index('default', doc.categories[idx]);}}index('ownerId', doc.ownerId);index('default', doc.ownerId);if (!doc.currentRevisionId) {index('scheduledPublish', true);}if (doc.activeRevision) {index('revisionId', doc.activeRevision._id);index('default', doc.activeRevision._id);if (doc.activeRevision.items) {for (var itemIdx in doc.activeRevision.items) {if (doc.activeRevision.items[itemIdx].itemId) {index('itemId', doc.activeRevision.items[itemIdx].itemId);}}}if (doc.activeRevision.subOffers) {for (var subOfferIdx in doc.activeRevision.subOffers) {if (doc.activeRevision.subOffers[subOfferIdx]) {index('subOfferId', doc.activeRevision.subOffers[subOfferIdx]);}}}if (doc.activeRevision.locales) {for (var localeIdx in doc.activeRevision.locales) {var locale = doc.activeRevision.locales[localeIdx];if (locale.name) {index('name', locale.name);index('default', locale.name);}if (locale.revisionNotes) {if(locale.revisionNotes.shortNotes) {index('shortNotes', locale.revisionNotes.shortNotes);index('default', locale.revisionNotes.shortNotes);}if(locale.revisionNotes.longNotes) {index('longNotes', locale.revisionNotes.longNotes);index('default', locale.revisionNotes.longNotes);}}if (locale.longDescription) {index('longDescription', locale.longDescription);index('default', locale.longDescription);}if (locale.shortDescription) {index('shortDescription', locale.shortDescription);index('default', locale.shortDescription);}}}}}"
         }
       }, 
       "views": {

@@ -166,7 +166,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
             revision.setEntitlementDefs(new ArrayList<EntitlementDef>());
         }
         List<EntitlementDef> entitlementDefs = revision.getEntitlementDefs();
-        if (ItemType.APP.is(itemType) || ItemType.DIGITAL.is(itemType)) {
+        if (ItemType.APP.is(itemType)) {
             addEntitlementIfNotExist(entitlementDefs, EntitlementType.DOWNLOAD, false);
             addEntitlementIfNotExist(entitlementDefs, EntitlementType.RUN, false);
         } else if (ItemType.DOWNLOADED_ADDITION.is(itemType)) {
@@ -325,14 +325,12 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
                         .fieldNotCorrect("itemId", "Cannot find item " + revision.getItemId()));
             } else {
                 if ((Status.APPROVED.is(revision.getStatus()) || Status.PENDING_REVIEW.is(revision.getStatus()))
-                        && (ItemType.DIGITAL.is(item.getType())
-                            || ItemType.APP.is(item.getType()) || ItemType.DOWNLOADED_ADDITION.is(item.getType()))) {
+                        && (ItemType.APP.is(item.getType()) || ItemType.DOWNLOADED_ADDITION.is(item.getType()))) {
                     if (CollectionUtils.isEmpty(revision.getBinaries())) {
                         errors.add(AppErrors.INSTANCE.missingField("binaries"));
                     }
                 }
-                if (!(ItemType.DIGITAL.is(item.getType())
-                        || ItemType.APP.is(item.getType()) || ItemType.DOWNLOADED_ADDITION.is(item.getType()))) {
+                if (!(ItemType.APP.is(item.getType()) || ItemType.DOWNLOADED_ADDITION.is(item.getType()))) {
                     if (!CollectionUtils.isEmpty(revision.getBinaries())) {
                         errors.add(AppErrors.INSTANCE.unnecessaryField("binaries"));
                     }

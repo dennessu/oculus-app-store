@@ -63,7 +63,7 @@ public abstract class RatingServiceSupport implements RatingService<PriceRatingC
     private boolean containsDigitalGoods(RatingOffer offer, String timestamp) {
         for (LinkedEntry entry : offer.getItems()) {
             Item item = catalogGateway.getItem(entry.getEntryId());
-            if (item.getType().equalsIgnoreCase(ItemType.DIGITAL.name())) {
+            if (ItemType.APP.is(item.getType()) || ItemType.DOWNLOADED_ADDITION.is(item.getType())) {
                 return true;
             }
         }

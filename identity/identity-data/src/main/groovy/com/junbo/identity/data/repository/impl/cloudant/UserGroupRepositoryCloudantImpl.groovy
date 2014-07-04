@@ -40,7 +40,9 @@ class UserGroupRepositoryCloudantImpl extends CloudantClient<UserGroup> implemen
 
     @Override
     Promise<List<UserGroup>> searchByUserIdAndGroupId(UserId userId, GroupId groupId, Integer limit, Integer offset) {
-        return queryView('by_user_id_group_id', "${userId.value}:${groupId.value}", limit, offset, false)
+        def startKey = [userId.toString(), groupId.toString()]
+        def endKey = [userId.toString(), groupId.toString()]
+        return queryView('by_user_id_group_id', startKey.toArray(new String()), endKey.toArray(new String()), false, limit, offset, false)
     }
 
     @Override

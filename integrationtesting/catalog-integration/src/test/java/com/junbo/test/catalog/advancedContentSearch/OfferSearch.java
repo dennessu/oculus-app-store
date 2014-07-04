@@ -9,6 +9,7 @@ import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
+import com.junbo.catalog.spec.model.common.RevisionNotes;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.test.catalog.enums.CatalogItemType;
@@ -118,8 +119,11 @@ public class OfferSearch extends BaseTestClass {
         //set name, revisionNotes, long description and short description
         Map<String, OfferRevisionLocaleProperties> locales = new HashMap<>();
         OfferRevisionLocaleProperties offerRevisionLocaleProperties = new OfferRevisionLocaleProperties();
+        RevisionNotes revisionNotes = new RevisionNotes();
+        revisionNotes.setLongNotes("longOfferRevisionNotes_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
+        revisionNotes.setShortNotes("shortOfferRevisionNotes_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
         offerRevisionLocaleProperties.setName("testOfferRevision_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
-        offerRevisionLocaleProperties.setRevisionNotes("offerRevisionNotes_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
+        offerRevisionLocaleProperties.setRevisionNotes(revisionNotes);
         offerRevisionLocaleProperties.setLongDescription("offerRevisionLongDescription_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
         offerRevisionLocaleProperties.setShortDescription("offerRevisionShortDescription_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
 
@@ -199,12 +203,19 @@ public class OfferSearch extends BaseTestClass {
         //default -- name
         buildSearchQuery(name, 1, offerId2);
 
-        //revisionNotes
-        String revisionNotes = offerRevisionLocaleProperties.getRevisionNotes();
-        buildSearchQuery("revisionNotes:" + revisionNotes, 1, offerId2);
+        //longRevisionNotes
+        String longRevisionNotes = offerRevisionLocaleProperties.getRevisionNotes().getLongNotes();
+        buildSearchQuery("longNotes:" + longRevisionNotes, 1, offerId2);
 
-        //default -- revisionNotes
-        buildSearchQuery(revisionNotes, 1, offerId2);
+        //default -- longRevisionNotes
+        buildSearchQuery(longRevisionNotes, 1, offerId2);
+
+        //shortRevisionNotes
+        String shortRevisionNotes = offerRevisionLocaleProperties.getRevisionNotes().getShortNotes();
+        buildSearchQuery("shortNotes:" + shortRevisionNotes, 1, offerId2);
+
+        //default -- shortRevisionNotes
+        buildSearchQuery(shortRevisionNotes, 1, offerId2);
 
         //longDescription
         String longDescription = offerRevisionLocaleProperties.getLongDescription();
@@ -246,7 +257,8 @@ public class OfferSearch extends BaseTestClass {
         OfferRevisionLocaleProperties offerRevisionLocaleProperties = offerRevision.getLocales().get(defaultLocale);
 
         String name = offerRevisionLocaleProperties.getName();
-        String revisionNotes = offerRevisionLocaleProperties.getRevisionNotes();
+        String longRevisionNotes = offerRevisionLocaleProperties.getRevisionNotes().getLongNotes();
+        String shortRevisionNotes = offerRevisionLocaleProperties.getRevisionNotes().getLongNotes();
         String longDescription = offerRevisionLocaleProperties.getLongDescription();
         String shortDescription = offerRevisionLocaleProperties.getShortDescription();
 
@@ -266,8 +278,8 @@ public class OfferSearch extends BaseTestClass {
         buildSearchQuery("offerId:" + offerId1 + "%20OR%20revisionId:" + offer2.getCurrentRevisionId(), 2, offerId1, offerId2);
         buildSearchQuery("offerId:" + offerId1 + "%20OR%20offerId:" + offerId2, 2, offerId1, offerId2);
         buildSearchQuery("offerId:" + offerId1 + "%20OR%20name:" + name, 2, offerId1, offerId2);
-        buildSearchQuery("name:" + name + "%20OR%20revisionNotes:" + revisionNotes, 1, offerId2);
-        buildSearchQuery(offerId1 + "%20OR%20name:" + name + "%20OR%20revisionNotes:" + revisionNotes, 2, offerId1, offerId2);
+        buildSearchQuery("name:" + name + "%20OR%20longNotes:" + longRevisionNotes, 1, offerId2);
+        buildSearchQuery(offerId1 + "%20OR%20name:" + name + "%20OR%20shortNotes:" + shortRevisionNotes, 2, offerId1, offerId2);
         buildSearchQuery(longDescription + "%20AND%20" + shortDescription, 1, offerId2);
         buildSearchQuery(longDescription + "%20OR%20" + shortDescription, 1, offerId2);
     }

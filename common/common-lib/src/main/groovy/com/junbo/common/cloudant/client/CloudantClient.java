@@ -32,8 +32,18 @@ public interface CloudantClient {
 
     <T extends CloudantEntity>
     Promise<CloudantQueryResult> queryView(CloudantDbUri dbUri, Class<T> entityClass, String viewName,
-                                           String key, String startKey, String endKey,
+                                           String key, Integer limit, Integer skip, boolean descending, boolean includeDocs);
+
+
+    <T extends CloudantEntity>
+    Promise<CloudantQueryResult> queryView(CloudantDbUri dbUri, Class<T> entityClass, String viewName, String startKey, String endKey,
                                            Integer limit, Integer skip, boolean descending, boolean includeDocs);
+
+
+    <T extends CloudantEntity>
+    Promise<CloudantQueryResult> queryView(CloudantDbUri dbUri, Class<T> entityClass, String viewName, Object[] startKey, Object[] endKey,
+                                           boolean withHighKey, Integer limit, Integer skip, boolean descending, boolean includeDocs);
+
 
     <T extends CloudantEntity>
     Promise<CloudantQueryResult> search(CloudantDbUri dbUri, Class<T> entityClass, String searchName,
