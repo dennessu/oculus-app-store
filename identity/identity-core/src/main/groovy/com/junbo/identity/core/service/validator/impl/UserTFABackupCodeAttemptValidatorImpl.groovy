@@ -198,7 +198,6 @@ class UserTFABackupCodeAttemptValidatorImpl implements UserTFABackupCodeAttemptV
             }
 
             if (index == maxRetryCount) {
-                user.status = UserStatus.SUSPEND.toString()
                 return createInNewTran(user).then {
                     throw AppErrors.INSTANCE.fieldInvalid('verifyCode', 'Attempt reaches maximum.').exception()
                 }

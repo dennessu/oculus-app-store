@@ -45,6 +45,6 @@ class UserSecurityQuestionAttemptRepositoryCloudantImpl extends CloudantClient<U
                                      UserSecurityQuestionId userSecurityQuestionId, Integer limit, Integer offset) {
         def startKey = [userId.toString(), userSecurityQuestionId.toString()]
         def endKey = [userId.toString(), userSecurityQuestionId.toString()]
-        return queryView('by_user_id_security_question_id', startKey.toArray(new String()), endKey.toArray(new String()), false, limit, offset, false)
+        return queryView('by_user_id_security_question_id_time', startKey.toArray(new String()), endKey.toArray(new String()), true, limit, offset, true)
     }
 }

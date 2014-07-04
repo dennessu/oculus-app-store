@@ -364,8 +364,8 @@
         "by_user_id": {
           "map": "function(doc) {  emit(doc.userId, doc._id)}"
         }, 
-        "by_user_id_security_question_id": {
-          "map": "function(doc) {  emit([doc.userId, doc.userSecurityQuestionId], doc._id)}"
+        "by_user_id_security_question_id_time": {
+          "map": "function(doc) {  emit([doc.userId, doc.userSecurityQuestionId, Date.parse(doc.createdTime)], doc._id)}"
         }
       }
     }, 

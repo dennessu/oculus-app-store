@@ -51,7 +51,7 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
 
-            if (user.isAnonymous == true) {
+            if (user.isAnonymous) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
 
@@ -102,30 +102,41 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
         }
 
         // Check whether this security question is used before
-        return userSecurityQuestionRepository.searchByUserId(userId, Integer.MAX_VALUE, 0).then {
-            List<UserSecurityQuestion> userSecurityQuestionList ->
-                if (!CollectionUtils.isEmpty(userSecurityQuestionList)) {
-                    boolean exists = userSecurityQuestionList.any { UserSecurityQuestion existing ->
-                        return (existing.securityQuestion == userSecurityQuestion.securityQuestion)
+        return userRepository.get(userId).then { User user ->
+            if (user == null) {
+                throw AppErrors.INSTANCE.userNotFound(userId).exception()
+            }
+
+            if (user.isAnonymous || user.status != UserStatus.ACTIVE.toString()) {
+                throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
+            }
+            return Promise.pure(null)
+        }.then {
+            return userSecurityQuestionRepository.searchByUserId(userId, Integer.MAX_VALUE, 0).then {
+                List<UserSecurityQuestion> userSecurityQuestionList ->
+                    if (!CollectionUtils.isEmpty(userSecurityQuestionList)) {
+                        boolean exists = userSecurityQuestionList.any { UserSecurityQuestion existing ->
+                            return (existing.securityQuestion == userSecurityQuestion.securityQuestion)
+                        }
+                        if (exists) {
+                            throw AppErrors.INSTANCE.fieldInvalid('securityQuestion').exception()
+                        }
                     }
-                    if (exists) {
-                        throw AppErrors.INSTANCE.fieldInvalid('securityQuestion').exception()
+                    userSecurityQuestion.setUserId(userId)
+
+                    List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
+                    CredentialHash matched = credentialHashList.find { CredentialHash hash ->
+                        return hash.handles(currentCredentialVersion)
                     }
-                }
-                userSecurityQuestion.setUserId(userId)
 
-                List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
-                CredentialHash matched = credentialHashList.find { CredentialHash hash ->
-                    return hash.handles(currentCredentialVersion)
-                }
+                    if (matched == null) {
+                        throw new IllegalStateException('No matched version: ' + currentCredentialVersion
+                                + ' for CredentialHash')
+                    }
 
-                if (matched == null) {
-                    throw new IllegalStateException('No matched version: ' + currentCredentialVersion
-                            + ' for CredentialHash')
-                }
-
-                userSecurityQuestion.setAnswerHash(matched.hash(userSecurityQuestion.answer))
-                return Promise.pure(null)
+                    userSecurityQuestion.setAnswerHash(matched.hash(userSecurityQuestion.answer))
+                    return Promise.pure(null)
+            }
         }
     }
 
