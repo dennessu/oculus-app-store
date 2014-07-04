@@ -7,18 +7,15 @@ package com.junbo.test.common.blueprint;
 
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
+import com.junbo.fulfilment.spec.model.FulfilmentRequest;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.fulfilment.spec.model.FulfilmentRequest;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.test.common.libs.IdConverter;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.billing.spec.model.Balance;
-import com.junbo.common.id.OfferRevisionId;
-import com.junbo.common.id.ItemRevisionId;
 import com.junbo.order.spec.model.Order;
 import com.junbo.cart.spec.model.Cart;
 
@@ -277,40 +274,6 @@ public class Master {
 
     public OfferRevision getOfferRevision(String offerRevisionId) {
         return this.offerRevisions.get(offerRevisionId);
-    }
-
-    public String getOfferIdByName(String offerName) {
-
-        for (Map.Entry<String, Offer> entry : offers.entrySet()) {
-            String key = entry.getKey();
-            Offer offer = entry.getValue();
-            if (offer.getCurrentRevisionId() != null) {
-                String offerRevisionId = IdConverter.idToUrlString(OfferRevisionId.class, offer.getCurrentRevisionId());
-                OfferRevision offerRevision = this.offerRevisions.get(offerRevisionId);
-
-                if (offerRevision != null && offerRevision.getLocales().get("en_US").getName().equalsIgnoreCase(offerName)) {
-                    return key;
-                }
-            }
-        }
-        return null;
-    }
-
-    public String getItemIdByName(String itemName) {
-
-        for (Map.Entry<String, Item> entry : items.entrySet()) {
-            String key = entry.getKey();
-            Item item = entry.getValue();
-            if (item.getCurrentRevisionId() != null) {
-                String itemRevisionId = IdConverter.idToUrlString(ItemRevisionId.class, item.getCurrentRevisionId());
-                ItemRevision itemRevision = this.itemRevisions.get(itemRevisionId);
-
-                if (itemRevision.getLocales().get("en_US").getName().equalsIgnoreCase(itemName)) {
-                    return key;
-                }
-            }
-        }
-        return null;
     }
 
     public Cart getCart(String cartId) {

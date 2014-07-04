@@ -221,7 +221,7 @@ public class BillingTestDataProvider extends BaseTestDataProvider {
 
     }
 
-    private String getOrderItemId(String uid, Long orderId, String offerId) throws Exception {
+    public String getOrderItemId(String uid, Long orderId, String offerId) throws Exception {
         String sqlStr = String.format(
                 "select order_item_id from shard_%s.order_item where order_id='%s' and offer_id='%s'",
                 ShardIdHelper.getShardIdByUid(uid), orderId, offerId);

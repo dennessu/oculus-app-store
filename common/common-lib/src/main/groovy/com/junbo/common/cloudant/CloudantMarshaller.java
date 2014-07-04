@@ -15,5 +15,5 @@ import java.io.IOException;
 public interface CloudantMarshaller {
     String marshall(Object object) throws JsonProcessingException;
     <T> T unmarshall(String string, Class<T> clazz) throws IOException;
-    <T> T unmarshall(String string, Class<?> parametrized, Class<?>... parameterClass) throws IOException;
+    <T> T unmarshall(String string, Class<T> parametrized, Class<?>... parameterClass) throws IOException;
 }

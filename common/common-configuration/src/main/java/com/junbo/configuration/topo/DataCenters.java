@@ -90,6 +90,10 @@ public class DataCenters {
         return getConfigService().getConfigContext().getDataCenter().equals(dcName);
     }
 
+    public String currentDataCenter() {
+        return getConfigService().getConfigContext().getDataCenter();
+    }
+
     private void reload() {
         try {
             DataCentersConfig newData = new DataCentersConfig(dataCentersConfig.get());

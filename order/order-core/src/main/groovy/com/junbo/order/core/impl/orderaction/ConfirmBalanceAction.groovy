@@ -8,6 +8,7 @@ import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.internal.OrderInternalService
+import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.enums.BillingAction
@@ -33,6 +34,9 @@ class ConfirmBalanceAction extends BaseOrderEventAwareAction {
     @Resource(name = 'orderInternalService')
     OrderInternalService orderInternalService
 
+    @Resource(name = 'orderServiceContextBuilder')
+    OrderServiceContextBuilder orderServiceContextBuilder
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfirmBalanceAction)
 
     @Override
@@ -41,7 +45,7 @@ class ConfirmBalanceAction extends BaseOrderEventAwareAction {
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def order = context.orderServiceContext.order
-        return facadeContainer.billingFacade.getBalancesByOrderId(order.getId().value).syncRecover { Throwable throwable ->
+        return orderServiceContextBuilder.getBalances(context.orderServiceContext).syncRecover { Throwable throwable ->
             LOGGER.error('name=Confirm_Balance_Get_Balances_Error', throwable)
             throw facadeContainer.billingFacade.convertError(throwable).exception()
         }.then { List<Balance> balances ->

@@ -12,6 +12,7 @@
             <list>
                 <value>id</value>
                 <value>locales</value>
+                <value>localeAccuracy</value>
                 <value>regions</value>
                 <value>translations</value>
                 <value>futureExpansion</value>
@@ -23,6 +24,7 @@
         <property name="writablePropertiesForCreate">
             <list>
                 <value>locales</value>
+                <value>localeAccuracy</value>
                 <value>regions</value>
                 <value>translations</value>
                 <value>futureExpansion</value>
@@ -32,6 +34,7 @@
             <list>
                 <value>id</value>
                 <value>locales</value>
+                <value>localeAccuracy</value>
                 <value>regions</value>
                 <value>translations</value>
                 <value>futureExpansion</value>
@@ -1030,6 +1033,7 @@
                 <value>payoutInstrument</value>
                 <value>payoutTaxProfile</value>
                 <value>annualTaxReportIds</value>
+                <value>publisherRevenueRatio</value>
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>createdTime</value>
@@ -1051,6 +1055,7 @@
                 <value>payoutInstrument</value>
                 <value>payoutTaxProfile</value>
                 <value>annualTaxReportIds</value>
+                <value>publisherRevenueRatio</value>
                 <value>futureExpansion</value>
             </list>
         </property>
@@ -1070,6 +1075,7 @@
                 <value>payoutInstrument</value>
                 <value>payoutTaxProfile</value>
                 <value>annualTaxReportIds</value>
+                <value>publisherRevenueRatio</value>
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>createdTime</value>

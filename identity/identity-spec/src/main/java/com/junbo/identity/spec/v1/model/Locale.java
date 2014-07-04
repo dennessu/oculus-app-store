@@ -15,13 +15,12 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  */
 public class Locale extends PropertyAssignedAwareResourceMeta<LocaleId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The Link to the locale resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] Link to the locale resource.")
     @JsonProperty("self")
     private LocaleId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "[Client Immutable] The locale code of the locale, " +
-            "the locale code should be \"language - Country\" to be compliance with W3C, for example \"en-US\" instead of \"en_US\". " +
-            "The Domain Object API server will implement the tolerance logic and treat \"en_US\" as \"en-US\". ")
+    @ApiModelProperty(position = 2, required = true, value = "[Client Immutable] The locale code of the locale,  use en_US as standard, " +
+            "but also accept en-US in the GET request.")
     private String localeCode;
 
     @ApiModelProperty(position = 3, required = false, value = "[Nullable]The short name of the locale.")

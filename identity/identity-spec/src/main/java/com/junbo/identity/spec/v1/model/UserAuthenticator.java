@@ -16,16 +16,16 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  */
 public class UserAuthenticator extends PropertyAssignedAwareResourceMeta<UserAuthenticatorId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "[Nullable]The Link to the Authenticator resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The Link to the Authenticator resource.")
     @JsonProperty("self")
     private UserAuthenticatorId id;
 
-    @ApiModelProperty(position = 2, required = true, value = " Link to the User resource that owns this particular Authenticator.")
+    @ApiModelProperty(position = 2, required = true, value = "Link to the User resource that owns this particular Authenticator.")
     @JsonProperty("user")
     private UserId userId;
 
     @ApiModelProperty(position = 3, required = true,
-            value = " External authenticator type, must be in [GOOGLE, FACEBOOK, TWITTER].")
+            value = "External authenticator type, must be in [GOOGLE, FACEBOOK, TWITTER].")
     private String type;
 
     @ApiModelProperty(position = 4, required = true, value = "The user ID that is used by the user to authenticate with the external authenticator.")

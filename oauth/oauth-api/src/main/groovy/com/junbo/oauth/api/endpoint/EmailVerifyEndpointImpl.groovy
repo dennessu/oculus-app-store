@@ -88,6 +88,10 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
 
     @Override
     Promise<Response> verifyEmail(String code, String locale) {
+        if (StringUtils.isEmpty(locale)) {
+            locale = 'en-US'
+        }
+
         if (!StringUtils.isEmpty(locale)) {
             if (ValidatorUtil.isValidLocale(locale)) {
                 this.failedRedirectUri = this.failedRedirectUri.replaceFirst('/locale', '/' + locale)

@@ -18,19 +18,20 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  */
 public class Group extends PropertyAssignedAwareResourceMeta<GroupId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "[Nullable]Link to this Group resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] Link to this Group resource.")
     @JsonProperty("self")
     private GroupId id;
 
     @ApiModelProperty(position = 2, required = true, value = "The name of the group resource.")
     private String name;
 
-    @ApiModelProperty(position = 3, required = false, value = "[Nullable] The status of the group; When do POST call, " +
-            "the isActive maybe null if client doesn't provide so. When do GET call, the isActive will always have a value..")
+    @ApiModelProperty(position = 3, required = false, value = " [Nullable] The status of the group; When do POST call, " +
+            "the isActive maybe null if client doesn't provide so. When do GET call, the isActive will always have a value.")
     @JsonProperty("isActive")
     private Boolean active;
 
-    @ApiModelProperty(position = 5, required = false, value = "[Client Immutable] UserGroupMembership resources in this group.")
+    @ApiModelProperty(position = 5, required = false, value = "[Client Immutable] UserGroupMembership resources in this group, " +
+            "userMemberships provides an association between users and groups, a user can have multiple groups, and a group can have multiple users.")
     @HateoasLink("/user-group-memberships?groupId={id}")
     private Link userMemberships;
 
@@ -38,7 +39,10 @@ public class Group extends PropertyAssignedAwareResourceMeta<GroupId> {
     @HateoasLink("/users?groupId={id}")
     private Link users;
 
-    @ApiModelProperty(position = 6, required = true, value = "The owner organization of this group.")
+    @ApiModelProperty(position = 6, required = true, value = "Group provides an association between the users and an organization. " +
+            "One group belongs to one organization, and one organization can have multiple groups. " +
+            "In the authorization model, Group represents a collection of users, role represents a collection of rights, " +
+            "and roles assigned to groups via roleAssignment resource.")
     @JsonProperty("organization")
     private OrganizationId organizationId;
 

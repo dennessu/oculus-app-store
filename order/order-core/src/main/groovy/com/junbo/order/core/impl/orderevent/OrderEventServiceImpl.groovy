@@ -62,7 +62,7 @@ class OrderEventServiceImpl implements OrderEventService {
     Promise<OrderEvent> recordEventHistory(OrderEvent event, OrderServiceContext orderServiceContext) {
         switch (event.action) {
             case OrderActionType.FULFILL.name():
-                return recordFulfillHistory(event)
+                return recordFulfillHistory(event, orderServiceContext)
 
             case OrderActionType.CHARGE.name():
             case OrderActionType.PARTIAL_CHARGE.name():
@@ -76,8 +76,8 @@ class OrderEventServiceImpl implements OrderEventService {
         }
     }
 
-    private Promise<OrderEvent> recordFulfillHistory(OrderEvent event) {
-        return facadeContainer.fulfillmentFacade.getFulfillment(event.order).then { FulfilmentRequest fulfillment ->
+    private Promise<OrderEvent> recordFulfillHistory(OrderEvent event, OrderServiceContext context) {
+        return builder.getFulfillmentRequest(context).then { FulfilmentRequest fulfillment ->
             if (fulfillment == null) {
                 LOGGER.error('name=Order_GetFulfillment_Error_Fulfillment_Null')
                 throw AppErrors.INSTANCE.

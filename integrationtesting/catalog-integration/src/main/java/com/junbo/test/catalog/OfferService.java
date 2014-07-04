@@ -26,6 +26,7 @@ public interface OfferService {
     Results<Offer> getOffers(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception;
 
     Offer postDefaultOffer() throws Exception;
+    Offer postDefaultOffer(OrganizationId organizationId) throws Exception;
     Offer prepareOfferEntity(String fileName) throws Exception;
     Offer prepareOfferEntity(String fileName, OrganizationId organizationId) throws Exception;
     Offer postOffer(Offer offer) throws Exception;

@@ -95,7 +95,7 @@ public class postImportUserPersonalInfo {
         Validator.Validate("validate company address city", oculusInput.getCompany().getCity(),
                 address.getCity());
         Validator.Validate("validate company address state", oculusInput.getCompany().getState(),
-                address.getSubCountry());
+                address.getStreet2());
         Validator.Validate("validate company address postal code", oculusInput.getCompany().getPostalCode(),
                 address.getPostalCode());
         UserPersonalInfo companyPhone = Identity.UserPersonalInfoGetByUserPersonalInfoId(
@@ -254,5 +254,24 @@ public class postImportUserPersonalInfo {
         );
         UserGroup userGroup = Identity.SearchUserGroup(group2.getId(), false);
         Validator.Validate("validate user is in correct group", oculusOutput1.getUserId(), userGroup.getUserId());
+    }
+
+    @Test(groups = "dailies")
+    public void importMigrationDataUserLogin() throws Exception {
+        OculusInput oculusInput = IdentityModel.DefaultOculusInput();
+        oculusInput.setStatus(IdentityModel.MigrateUserStatus.ACTIVE.name());
+        oculusInput.setPassword("1:lbQHMu5377aBJxK5xMDc:Ur8nE66R5Qr7S1a4b1bO:"
+                + "a9015659a978b37441d76d7839fa66b847e32311f5fd1da65130ca5051dd6ef1");
+        Identity.ImportMigrationData(oculusInput);
+        CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
+                oculusInput.getUsername(), "oculustest1234", false);
+        Validator.Validate("validate response code", 404, response.getStatusLine().getStatusCode());
+
+        oculusInput = IdentityModel.DefaultOculusInput();
+        oculusInput.setStatus(IdentityModel.MigrateUserStatus.ACTIVE.name());
+        oculusInput.setPassword("1:8UFAbK26VrPLL75jE9P2:PRo4D7r23hrfv3FBxqBv:"
+                + "b87637b9ec5abd43db01d7a299612a49550230a813239fb3e28eec2a88c0df67");
+        Identity.ImportMigrationData(oculusInput);
+        Identity.UserCredentialAttemptesPostDefault(oculusInput.getUsername(), "radiant555");
     }
 }

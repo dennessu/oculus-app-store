@@ -7,6 +7,7 @@ import com.junbo.token.common.exception.AppClientExceptions;
 import com.junbo.token.spec.enums.ItemStatus;
 import com.junbo.token.spec.enums.OrderStatus;
 import com.junbo.token.spec.enums.TokenLength;
+import com.junbo.token.spec.model.ProductDetail;
 import com.junbo.token.spec.model.TokenRequest;
 import com.junbo.token.spec.model.TokenConsumption;
 import com.junbo.token.spec.model.TokenItem;
@@ -25,13 +26,16 @@ public class TokenClientProxyTest extends BaseTest {
     @Test(enabled = false)
     public void createOrderAndConsumeToken() throws ExecutionException, InterruptedException {
         final UserId userId = new UserId(generateLong());
+        final ProductDetail product = new ProductDetail();
+        product.setDefaultOffer("123");
+        product.setOptionalOffers(Arrays.asList("1234", "12345"));
         TokenRequest order = new TokenRequest(){
             {
                 setActivation("yes");
                 setCreateMethod("generation");
                 setDescription("test");
                 setGenerationLength(TokenLength.LEN20.toString());
-                setOfferIds(Arrays.asList(10000L));
+                setProductDetail(product);
                 setProductType("Offer");
                 setQuantity(1L);
                 setUsageLimit("1");
@@ -48,7 +52,7 @@ public class TokenClientProxyTest extends BaseTest {
         TokenConsumption consumption= new TokenConsumption(){
             {
                 setUserId(userId.getValue());
-                setProduct(10000L);
+                setProduct("1234");
                 setTokenString(tokenString);
             }
         };
@@ -59,13 +63,16 @@ public class TokenClientProxyTest extends BaseTest {
     @Test(enabled = false)
     public void updateToken() throws ExecutionException, InterruptedException {
         final UserId userId = new UserId(generateLong());
+        final ProductDetail product = new ProductDetail();
+        product.setDefaultOffer("123");
+        product.setOptionalOffers(Arrays.asList("1234", "12345"));
         TokenRequest order = new TokenRequest(){
             {
                 setActivation("yes");
                 setCreateMethod("generation");
                 setDescription("test");
                 setGenerationLength(TokenLength.LEN20.toString());
-                setOfferIds(Arrays.asList(10000L));
+                setProductDetail(product);
                 setProductType("Offer");
                 setQuantity(1L);
                 setUsageLimit("1");
@@ -83,7 +90,7 @@ public class TokenClientProxyTest extends BaseTest {
         TokenConsumption consumption= new TokenConsumption(){
             {
                 setUserId(userId.getValue());
-                setProduct(10000L);
+                setProduct("123");
                 setTokenString(tokenString);
             }
         };

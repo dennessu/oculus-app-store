@@ -38,7 +38,7 @@ public class TestPostOffer extends BaseTestClass {
     private LogHelper logger = new LogHelper(TestPostOffer.class);
     private OfferService offerService = OfferServiceImpl.instance();
     private final String defaultOffer = "defaultOffer";
-    private final Integer initRevValue = 1;
+    private final String initRevValue = "1";
     private OrganizationId organizationId;
 
     @BeforeClass
@@ -142,7 +142,7 @@ public class TestPostOffer extends BaseTestClass {
 
         //test rev
         testOffer = offerService.prepareOfferEntity(defaultOffer, organizationId);
-        testOffer.setResourceAge(initRevValue);
+        testOffer.setRev(initRevValue);
         verifyExpectedError(testOffer);
 
         //test isPublished is true
@@ -168,7 +168,7 @@ public class TestPostOffer extends BaseTestClass {
         testOffer = offerService.prepareOfferEntity(defaultOffer, organizationId);
         testOffer.setOwnerId(null);
         testOffer.setCurrentRevisionId("0L");
-        testOffer.setResourceAge(initRevValue);
+        testOffer.setRev(initRevValue);
         testOffer.setPublished(true);
         testOffer.setCategories(genres);
         verifyExpectedError(testOffer);
@@ -180,7 +180,6 @@ public class TestPostOffer extends BaseTestClass {
     }
 
     private void checkOfferOptionalParams(Offer offerActual, Offer offerExpected) {
-        Assert.assertEquals(offerActual.getResourceAge(), initRevValue);
         Assert.assertEquals(offerActual.getAdminInfo(), offerExpected.getAdminInfo());
         Assert.assertEquals(offerActual.getFutureExpansion(), offerExpected.getFutureExpansion());
         Assert.assertEquals(offerActual.getCategories(), offerExpected.getCategories());

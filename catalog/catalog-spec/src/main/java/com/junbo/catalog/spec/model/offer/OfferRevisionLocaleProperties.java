@@ -7,6 +7,7 @@
 package com.junbo.catalog.spec.model.offer;
 
 import com.junbo.catalog.spec.model.common.Images;
+import com.junbo.catalog.spec.model.common.RevisionNotes;
 import com.junbo.catalog.spec.model.common.Video;
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -19,13 +20,13 @@ import java.util.Map;
  */
 public class OfferRevisionLocaleProperties {
     @ApiModelProperty(position = 1, required = true, value = "offer revision name")
-    String name;
+    private String name;
     @ApiModelProperty(position = 2, required = true, value = "revision notes")
-    String revisionNotes;
+    private RevisionNotes revisionNotes;
     @ApiModelProperty(position = 3, required = true, value = "long description")
-    String longDescription;
+    private String longDescription;
     @ApiModelProperty(position = 4, required = true, value = "short description")
-    String shortDescription;
+    private String shortDescription;
 
     @ApiModelProperty(position = 20, required = true, value = "Images to describe the offer revision resource")
     private Images images;
@@ -51,11 +52,11 @@ public class OfferRevisionLocaleProperties {
         this.name = name;
     }
 
-    public String getRevisionNotes() {
+    public RevisionNotes getRevisionNotes() {
         return revisionNotes;
     }
 
-    public void setRevisionNotes(String revisionNotes) {
+    public void setRevisionNotes(RevisionNotes revisionNotes) {
         this.revisionNotes = revisionNotes;
     }
 

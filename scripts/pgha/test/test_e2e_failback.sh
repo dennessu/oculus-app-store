@@ -8,7 +8,7 @@ echo "do failback"
 $DEPLOYMENT_PATH/switchover/failback.sh
 $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
 
-ssh $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
     $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
 ENDSSH
 

@@ -2,7 +2,7 @@
 
 <!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.1//EN" "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
 <module name="Checker">
-    
+
     <property name="charset" value="UTF-8"/>
 
     <module name="FileTabCharacter">
@@ -59,10 +59,10 @@
             See http://checkstyle.sourceforge.net/config_design.html
             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         -->
-        <module name="HideUtilityClassConstructor">
+        <!--module name="HideUtilityClassConstructor"-->
             <!-- Some classes in o.h.metamodel on master do this -->
-            <property name="severity" value="warning" />
-        </module>
+            <!--property name="severity" value="warning" />
+        </module-->
         <module name="MutableException" />
 
 
@@ -214,10 +214,10 @@
         <module name="FileContentsHolder"/>
 
         <!-- very liberal values for metrics, perhaps tighten some later -->
-        <module name="JavaNCSS">
+        <!--module name="JavaNCSS">
             <property name="methodMaximum" value="80"/>
             <property name="classMaximum" value="300"/>
-        </module>
+        </module-->
         <module name="ClassFanOutComplexity">
             <property name="max" value="55"/>
         </module>
@@ -252,6 +252,6 @@
     </module>
 
     <module name="FileLength"/>
-    
+
     <module name="SuppressionCommentFilter"/>
 </module>

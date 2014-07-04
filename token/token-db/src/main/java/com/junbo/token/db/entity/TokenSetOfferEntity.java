@@ -28,10 +28,13 @@ public class TokenSetOfferEntity extends GenericEntity {
     private Long tokenSetId;
 
     @Column(name = "product_id")
-    private Long productId;
+    private String productId;
 
     @Column(name = "product_type")
     private ProductType productType;
+
+    @Column(name = "is_default")
+    private boolean isDefault;
 
     public Long getId() {
         return id;
@@ -54,11 +57,11 @@ public class TokenSetOfferEntity extends GenericEntity {
         this.tokenSetId = tokenSetId;
     }
 
-    public Long getProductId() {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId(Long productId) {
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 
@@ -68,5 +71,13 @@ public class TokenSetOfferEntity extends GenericEntity {
 
     public void setProductType(ProductType productType) {
         this.productType = productType;
+    }
+
+    public boolean getIsDefault() {
+        return isDefault;
+    }
+
+    public void setIsDefault(boolean isDefault) {
+        this.isDefault = isDefault;
     }
 }

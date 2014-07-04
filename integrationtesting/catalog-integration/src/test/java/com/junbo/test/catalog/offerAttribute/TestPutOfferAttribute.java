@@ -93,7 +93,7 @@ public class TestPutOfferAttribute extends BaseTestClass {
         verifyExpectedError(attributeId, offerAttribute);
 
         //test rev
-        offerAttribute.setResourceAge(0);
+        offerAttribute.setRev("0");
         verifyExpectedError(attributeId, offerAttribute);
 
         //test type is invalid enums

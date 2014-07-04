@@ -11,7 +11,7 @@ import groovy.transform.CompileStatic
 class EmailScheduleRepositoryCloudantImpl extends CloudantClient<Email> implements EmailScheduleRepository {
 
     public Promise<Email> getEmailSchedule(String id) {
-        return cloudantGet(id)
+        return cloudantGet(id.toString())
     }
 
     public Promise<Email> saveEmailSchedule(Email email) {
@@ -35,6 +35,6 @@ class EmailScheduleRepositoryCloudantImpl extends CloudantClient<Email> implemen
     }
 
     public Promise<Void> deleteEmailSchedule(String id) {
-        return cloudantDelete(id)
+        return cloudantDelete(id.toString())
     }
 }

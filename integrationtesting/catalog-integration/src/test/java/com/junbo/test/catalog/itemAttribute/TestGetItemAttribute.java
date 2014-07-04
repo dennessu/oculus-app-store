@@ -89,27 +89,29 @@ public class TestGetItemAttribute extends BaseTestClass {
         ItemAttribute itemAttribute3 = itemAttributeService.postDefaultItemAttribute();
 
         listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute1.getId()));
-        paraMap.put("id", listItemAttributeId);
+        paraMap.put("attributeId", listItemAttributeId);
         verifyGetItemAttributes(paraMap, 1, itemAttribute1);
 
         listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute2.getId()));
-        paraMap.put("id", listItemAttributeId);
+        paraMap.put("attributeId", listItemAttributeId);
         verifyGetItemAttributes(paraMap, 2, itemAttribute1, itemAttribute2);
 
         listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute3.getId()));
-        paraMap.put("id", listItemAttributeId);
+        paraMap.put("attributeId", listItemAttributeId);
         verifyGetItemAttributes(paraMap, 3, itemAttribute1, itemAttribute2, itemAttribute3);
 
         listItemAttributeId.clear();
         listItemAttributeId.add("0000000000");
         listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute2.getId()));
         listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute3.getId()));
+        paraMap.put("attributeId", listItemAttributeId);
         verifyGetItemAttributes(paraMap, 2, itemAttribute2, itemAttribute3);
 
         listItemAttributeId.clear();
         listItemAttributeId.add("0000000000");
         listItemAttributeId.add("0000000001");
         listItemAttributeId.add("0000000001");
+        paraMap.put("attributeId", listItemAttributeId);
         verifyGetItemAttributes(paraMap, 0);
     }
 
@@ -139,16 +141,16 @@ public class TestGetItemAttribute extends BaseTestClass {
 
         listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute1.getId()));
         listType.add(CatalogItemAttributeType.GENRE.getType());
-        paraMap.put("id", listItemAttributeId);
+        paraMap.put("attributeId", listItemAttributeId);
         paraMap.put("type", listType);
         verifyGetItemAttributes(paraMap, 1, itemAttribute1);
 
         listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute2.getId()));
-        paraMap.put("id", listItemAttributeId);
+        paraMap.put("attributeId", listItemAttributeId);
         verifyGetItemAttributes(paraMap, 2, itemAttribute1, itemAttribute2);
 
         listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute3.getId()));
-        paraMap.put("id", listItemAttributeId);
+        paraMap.put("attributeId", listItemAttributeId);
         verifyGetItemAttributes(paraMap, 3, itemAttribute1, itemAttribute2, itemAttribute3);
 
         listType.clear();
@@ -162,6 +164,7 @@ public class TestGetItemAttribute extends BaseTestClass {
         listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute3.getId()));
         listType.clear();
         listType.add(CatalogItemAttributeType.GENRE.getType());
+        paraMap.put("attributeId", listItemAttributeId);
         paraMap.put("type", listType);
         verifyGetItemAttributes(paraMap, 2, itemAttribute2, itemAttribute3);
 
@@ -169,6 +172,7 @@ public class TestGetItemAttribute extends BaseTestClass {
         listItemAttributeId.add("0000000000");
         listItemAttributeId.add("0000000001");
         listItemAttributeId.add("0000000001");
+        paraMap.put("attributeId", listItemAttributeId);
         verifyGetItemAttributes(paraMap, 0);
     }
 

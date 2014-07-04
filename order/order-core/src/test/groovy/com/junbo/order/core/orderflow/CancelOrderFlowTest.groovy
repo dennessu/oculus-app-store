@@ -65,7 +65,7 @@ class CancelOrderFlowTest extends BaseTest {
         def balance = CoreBuilder.buildBalance(order)
         facadeContainer.billingFacade.createBalance(balance, false)
 
-        def getOrder = orderService.getOrderByOrderId(o.getId().value).wrapped().get()
+        def getOrder = orderService.getOrderByOrderId(o.getId().value, true, new OrderServiceContext()).wrapped().get()
         assert (o.getId().value == getOrder.getId().value)
         assert (o.status == OrderStatus.CANCELED.name())
     }

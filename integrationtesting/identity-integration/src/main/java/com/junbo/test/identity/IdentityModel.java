@@ -215,6 +215,7 @@ public class IdentityModel {
         ucva.setUsername(userName);
         ucva.setValue(password);
         ucva.setType("PASSWORD");
+        ucva.setIpAddress(RandomHelper.randomIP());
         return ucva;
     }
 

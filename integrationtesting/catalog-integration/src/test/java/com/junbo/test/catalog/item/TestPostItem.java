@@ -38,7 +38,7 @@ public class TestPostItem extends BaseTestClass {
     private ItemService itemService = ItemServiceImpl.instance();
     private final String itemRequiredPara = "itemWithRequiredPara";
     private final String defaultItem = "defaultItem";
-    private final Integer initRevValue = 1;
+    private final String initRevValue = "1";
     private OrganizationId organizationId;
 
     @BeforeClass
@@ -144,7 +144,7 @@ public class TestPostItem extends BaseTestClass {
 
         //test rev
         testItem = itemService.prepareItemEntity(defaultItem, organizationId);
-        testItem.setResourceAge(initRevValue);
+        testItem.setRev(initRevValue);
         verifyExpectedError(testItem);
 
         //test type is invalid enums
@@ -175,7 +175,7 @@ public class TestPostItem extends BaseTestClass {
         testItem = itemService.prepareItemEntity(defaultItem, organizationId);
         testItem.setOwnerId(null);
         testItem.setCurrentRevisionId("0L");
-        testItem.setResourceAge(initRevValue);
+        testItem.setRev(initRevValue);
         testItem.setType("invalid type");
         testItem.setDefaultOffer("0L");
         testItem.setGenres(genresCategory);
@@ -215,7 +215,6 @@ public class TestPostItem extends BaseTestClass {
     }
 
     private void checkItemOptionalParams(Item itemActual, Item itemExpected) {
-        Assert.assertEquals(itemActual.getResourceAge(), initRevValue);
         Assert.assertEquals(itemActual.getAdminInfo(), itemExpected.getAdminInfo());
         Assert.assertEquals(itemActual.getFutureExpansion(), itemExpected.getFutureExpansion());
         Assert.assertEquals(itemActual.getGenres(), itemExpected.getGenres());

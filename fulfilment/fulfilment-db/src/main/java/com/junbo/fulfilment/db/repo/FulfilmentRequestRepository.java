@@ -33,7 +33,7 @@ public class FulfilmentRequestRepository {
     }
 
     public Long existTrackingGuid(Long userId, String trackingGuid) {
-        FulfilmentRequestEntity entity = fulfilmentRequestDao.findByTrackingGuid(userId, trackingGuid);
+        FulfilmentRequestEntity entity = fulfilmentRequestDao.findByTrackingUuid(userId, trackingGuid);
         return entity == null ? null : entity.getId();
     }
 }

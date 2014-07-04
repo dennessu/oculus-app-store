@@ -194,7 +194,6 @@ public class OrderStatusTesting extends BaseOrderTestClass {
         String uid = testDataProvider.createUser();
 
         Map<String, Integer> offerList = new HashedMap();
-
         offerList.put(offer_digital_normal1, 1);
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
@@ -204,7 +203,7 @@ public class OrderStatusTesting extends BaseOrderTestClass {
                 uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
 
         testDataProvider.updateOfferPrice(offer_digital_normal1);
-
+        Thread.sleep(2000);
         testDataProvider.getOrdersByUserId(uid);
         expectedOrderStatus.put(orderId, OrderStatus.PRICE_RATING_CHANGED);
         validationHelper.validateOrderStatus(expectedOrderStatus);
@@ -245,11 +244,14 @@ public class OrderStatusTesting extends BaseOrderTestClass {
                     "8. Verify action ='charge', status ='open'",
                     "8. Verify action ='charge', status ='completed'",
                     "9. Verify action ='fulfil', status ='open'",
+                    "10. Post order event action ='fulfil', status ='completed'",
+                    "11. Verify order status is completed"
             }
     )
     @Test
     public void testPhysicalGoodsOrderEvents() throws Exception {
         List<OrderEventInfo> expectedEventStatus = new ArrayList<>();
+        Map<String, OrderStatus> expectedOrderStatus = new HashMap<>();
 
         String uid = testDataProvider.createUser();
 
@@ -268,13 +270,30 @@ public class OrderStatusTesting extends BaseOrderTestClass {
 
         testDataProvider.updateOrderTentative(orderId, false);
 
-        expectedEventStatus.add(new OrderEventInfo(OrderActionType.CHARGE, EventStatus.OPEN));
-        expectedEventStatus.add(new OrderEventInfo(OrderActionType.CHARGE, EventStatus.COMPLETED));
+        expectedEventStatus.add(new OrderEventInfo(OrderActionType.AUTHORIZE, EventStatus.OPEN));
+        expectedEventStatus.add(new OrderEventInfo(OrderActionType.AUTHORIZE, EventStatus.COMPLETED));
         expectedEventStatus.add(new OrderEventInfo(OrderActionType.FULFILL, EventStatus.OPEN));
-
+        expectedEventStatus.add(new OrderEventInfo(OrderActionType.FULFILL, EventStatus.PENDING));
 
         validationHelper.validateOrderEvents(orderId, expectedEventStatus);
 
+        testDataProvider.getOrder(orderId);
+        expectedOrderStatus.put(orderId,OrderStatus.PENDING_FULFILL);
+
+        validationHelper.validateOrderStatus(expectedOrderStatus);
+
+        testDataProvider.postOrderEvent(orderId, EventStatus.COMPLETED, OrderActionType.FULFILL);
+        expectedEventStatus.add(new OrderEventInfo(OrderActionType.FULFILL, EventStatus.COMPLETED));
+        expectedEventStatus.add(new OrderEventInfo(OrderActionType.CHARGE, EventStatus.OPEN));
+        expectedEventStatus.add(new OrderEventInfo(OrderActionType.CHARGE, EventStatus.COMPLETED));
+
+        validationHelper.validateOrderEvents(orderId, expectedEventStatus);
+
+        testDataProvider.getOrder(orderId);
+        expectedEventStatus.clear();
+        expectedOrderStatus.put(orderId,OrderStatus.COMPLETED);
+
+        validationHelper.validateOrderStatus(expectedOrderStatus);
     }
 
     @Property(
@@ -324,7 +343,7 @@ public class OrderStatusTesting extends BaseOrderTestClass {
             features = "Post /order-events",
             component = Component.Order,
             owner = "ZhaoYunlong",
-            status = Status.Enable,
+            status = Status.Manual,
             description = "Test order status - fulfilment failure",
             steps = {
                     "1. Post a new user",
@@ -344,7 +363,7 @@ public class OrderStatusTesting extends BaseOrderTestClass {
 
         Map<String, Integer> offerList = new HashedMap();
 
-        offerList.put(offer_digital_normal1, 1);
+        offerList.put(offer_inApp_consumable2, 1);
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);

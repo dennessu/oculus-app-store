@@ -47,9 +47,9 @@ class FacadeBuilder {
         FulfilmentRequest request = new FulfilmentRequest()
         request.userId = order.user.value
         request.orderId = order.getId().value
-        request.trackingGuid = UUID.randomUUID()
+        request.trackingUuid = UUID.randomUUID()
         request.shippingMethodId = order.shippingMethod
-        // TODO: pass shipping infos to fulfillment
+
         request.shippingAddressId = order.shippingAddress?.value
         request.shippingToNameId = order.shippingToName?.value
         request.shippingToPhoneId = order.shippingToPhone?.value
@@ -62,7 +62,7 @@ class FacadeBuilder {
 
     private static FulfilmentItem buildFulfilmentItem(OrderItem orderItem) {
         FulfilmentItem item = new FulfilmentItem()
-        item.orderItemId = orderItem.getId().value
+        item.itemReferenceId = orderItem.getId().value
         item.offerId = orderItem.offer.value
         item.timestamp = orderItem.honoredTime?.time
         item.quantity = orderItem.quantity

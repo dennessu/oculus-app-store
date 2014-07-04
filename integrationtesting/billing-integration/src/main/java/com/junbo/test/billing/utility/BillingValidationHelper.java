@@ -10,6 +10,7 @@ import com.junbo.billing.spec.model.Balance;
 import com.junbo.billing.spec.model.BalanceItem;
 import com.junbo.billing.spec.model.TaxItem;
 import com.junbo.billing.spec.model.Transaction;
+import com.junbo.common.id.OrderId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
 import com.junbo.order.spec.model.Order;
@@ -28,12 +29,13 @@ import java.math.BigDecimal;
  * Created by Yunlong on 4/9/14.
  */
 public class BillingValidationHelper extends BaseValidationHelper {
+    BillingTestDataProvider testDataProvider = new BillingTestDataProvider();
 
     public BillingValidationHelper() {
         super();
     }
 
-    public void validateBalance(String uid, String balanceId, String orderId, boolean isTentative) {
+    public void validateBalance(String uid, String balanceId, String orderId, boolean isTentative) throws Exception {
         Balance balanceResult = Master.getInstance().getBalance(balanceId);
         Order order = Master.getInstance().getOrder(orderId);
 
@@ -52,12 +54,14 @@ public class BillingValidationHelper extends BaseValidationHelper {
         verifyEqual(balanceResult.getBalanceItems().size(), order.getOrderItems().size(), "verify balance item size");
         verifyEqual(balanceResult.getType(), BalanceType.DEBIT.toString(), "verify balance type");
 
-        /*
+
         for (int i = 0; i < balanceResult.getBalanceItems().size(); i++) {
             boolean isExist = false;
             for (int j = 0; j < order.getOrderItems().size(); j++) {
-                if (balanceResult.getBalanceItems().get(i).getOrderItemId()
-                        .equals(order.getOrderItems().get(j).getOrderItemId())) {
+                String orderItemId = testDataProvider.getOrderItemId(uid, IdConverter.hexStringToId(OrderId.class,
+                        orderId), order.getOrderItems().get(j).getOffer().getValue());
+                if (balanceResult.getBalanceItems().get(i).getOrderItemId().getValue().toString()
+                        .equals(orderItemId)) {
                     isExist = true;
                     break;
                 }
@@ -67,7 +71,7 @@ public class BillingValidationHelper extends BaseValidationHelper {
                         balanceResult.getBalanceItems().get(i).getOrderItemId().getValue()));
             }
         }
-        */
+
 
         if (balanceResult.getTransactions().size() > 0) {
             Transaction transaction = balanceResult.getTransactions().get(0);

@@ -39,7 +39,7 @@ public class postCredentialAttempts {
     }
 
     @Test(groups = "dailies")
-    public void postUserCredentitalAttemptsMaxRetry() throws Exception {
+    public void postUserCredentitalAttemptsMaxRetrySameUser() throws Exception {
         User user = Identity.UserPostDefault();
         String password = RandomHelper.randomNumeric(6) + RandomHelper.randomAlphabetic(6);
         Identity.UserCredentialPostDefault(user.getId(), password);
@@ -52,6 +52,7 @@ public class postCredentialAttempts {
             String errorMessage = "User password is incorrect.";
             Validator.Validate("validate response error message", true,
                     EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+            response.close();
         }
 
         CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
@@ -60,6 +61,22 @@ public class postCredentialAttempts {
         String errorMessage = "User reaches maximum allowed retry count";
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+        response.close();
+    }
+
+    @Test(groups = "dailies")
+    public void postUserCredentitalAttemptsMaxRetrySameIP() throws Exception {
+        String ip = RandomHelper.randomIP();
+        for (int i = 0; i < 100; i++) {
+            CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
+                    RandomHelper.randomAlphabetic(15), RandomHelper.randomAlphabetic(15), ip, false);
+            Validator.Validate("validate response error code", 404, response.getStatusLine().getStatusCode());
+            response.close();
+        }
+        CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
+                RandomHelper.randomAlphabetic(15), RandomHelper.randomAlphabetic(15), ip, false);
+        Validator.Validate("validate response error code", 409, response.getStatusLine().getStatusCode());
+        response.close();
     }
 
 }

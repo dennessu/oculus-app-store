@@ -55,10 +55,9 @@ class OculusCredentialHash implements CredentialHash {
 
         String salt = hashInfo[1]
         String pepper = hashInfo[2]
-        String keyHash = hashInfo[3]
 
         String valueToValidateHash = generateCipherHash(valueToValidate, salt, pepper)
-        if (valueToValidateHash == keyHash) {
+        if (valueToValidateHash == hash) {
             return true
         }
 

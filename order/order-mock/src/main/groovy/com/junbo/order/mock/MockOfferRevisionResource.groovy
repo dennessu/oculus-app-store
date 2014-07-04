@@ -1,12 +1,9 @@
 package com.junbo.order.mock
-
 import com.junbo.catalog.spec.model.offer.ItemEntry
 import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
 import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions
-
 import com.junbo.catalog.spec.resource.OfferRevisionResource
-import com.junbo.common.id.OfferRevisionId
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
@@ -17,26 +14,24 @@ import org.springframework.stereotype.Component
 import javax.ws.rs.BeanParam
 import javax.ws.rs.PathParam
 import javax.ws.rs.core.Response
-
 /**
-* Created by LinYi on 14-2-25.
-*/
+ * Created by chriszhu on 7/3/14.
+ */
 @CompileStatic
-@Component('mockCatalogResource')
+@Component('mockOfferRevisionResource')
 @Scope('prototype')
-class MockCatalogResource extends BaseMock implements OfferRevisionResource {
-
+class MockOfferRevisionResource extends BaseMock implements OfferRevisionResource {
     @Override
     Promise<Results<OfferRevision>> getOfferRevisions(@BeanParam OfferRevisionsGetOptions options) {
         Results<OfferRevision> ors = new Results<>()
-        ors.items = [generateOfferRevision()] as LinkedList
+        ors.items = [generateOfferRevision(options.offerIds[0])] as LinkedList
         return Promise.pure(ors)
     }
 
     @Override
     Promise<OfferRevision> getOfferRevision(@PathParam('revisionId') String revisionId,
                                             @BeanParam OfferRevisionGetOptions options) {
-        return Promise.pure(generateOfferRevision())
+        return Promise.pure(generateOfferRevision(revisionId))
     }
 
     @Override
@@ -55,11 +50,11 @@ class MockCatalogResource extends BaseMock implements OfferRevisionResource {
 
     }
 
-    OfferRevision generateOfferRevision() {
+    OfferRevision generateOfferRevision(String revisionId) {
         OfferRevision offer = new OfferRevision(
                 ownerId: new OrganizationId(generateLong()),
-                revisionId: generateString(),
-                offerId: generateString(),
+                revisionId: revisionId,
+                offerId: revisionId,
                 items: [new ItemEntry(
                         itemId: generateString(),
                         quantity: 1

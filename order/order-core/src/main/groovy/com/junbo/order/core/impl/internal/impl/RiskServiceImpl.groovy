@@ -1,10 +1,10 @@
 package com.junbo.order.core.impl.internal.impl
-
 import com.junbo.common.id.PIType
 import com.junbo.common.id.UserPersonalInfoId
+import com.junbo.identity.spec.v1.model.Address
+import com.junbo.identity.spec.v1.model.Currency
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
 import com.junbo.langur.core.promise.Promise
-import com.junbo.identity.spec.v1.model.Currency
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.internal.RiskReviewResult
 import com.junbo.order.core.impl.internal.RiskService
@@ -18,6 +18,7 @@ import com.junbo.payment.spec.model.PaymentInstrument
 import com.kount.ris.Inquiry
 import com.kount.ris.KountRisClient
 import com.kount.ris.Response
+import com.kount.ris.util.AuthorizationStatus
 import com.kount.ris.util.CartItem
 import com.kount.ris.util.MerchantAcknowledgment
 import com.kount.ris.util.RisException
@@ -27,10 +28,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.stereotype.Service
 
 import javax.annotation.Resource
-
 /**
  * Created by xmchen on 14-6-23.
  */
@@ -46,6 +45,9 @@ class RiskServiceImpl implements RiskService {
 
     @Autowired
     OrderRepositoryFacade orderRepository
+
+    @Resource(name = 'orderServiceContextBuilder')
+    OrderServiceContextBuilder orderServiceContextBuilder
 
     int merchantId
 
@@ -89,94 +91,127 @@ class RiskServiceImpl implements RiskService {
             throw AppErrors.INSTANCE.orderRiskReviewError("ip address missing").exception()
         }
 
-        UserPersonalInfoId emailId = null
-        for (UserPersonalInfoLink link : user.emails) {
-            if (link.isDefault) {
-                emailId = link.value
-            }
-        }
+        Inquiry q = new Inquiry();
+        q.setMerchantId(merchantId)
+        q.setSessionId(UUID.randomUUID().toString().replaceAll('-', ''))
+        q.setOrderNumber(order.id.toString())
+        q.setIpAddress(ip)
+        q.setAuthorizationStatus(AuthorizationStatus.APPROVED)
+        q.setMerchantAcknowledgment(MerchantAcknowledgment.YES)
+        q.setWebsite("DEFAULT")
+        int baseUnit = 0
 
-        return facadeContainer.identityFacade.getCurrency(order.currency.value).then { Currency currency ->
+        return orderServiceContextBuilder.getCurrency(orderContext).then { Currency currency ->
+            baseUnit = Math.pow(10, currency.numberAfterDecimal).intValue();
 
-            int baseUnit = Math.pow(10, currency.numberAfterDecimal).intValue();
-
-            Inquiry q = new Inquiry();
-            q.setMerchantId(merchantId)
-            q.setSessionId(UUID.randomUUID().toString().replaceAll('-', ''))
-            q.setOrderNumber(order.id.toString())
             q.setCurrency(order.currency.value)
             q.setTotal((int)(order.totalAmount * baseUnit))
-            q.setIpAddress(ip)
-            q.setMerchantAcknowledgment(MerchantAcknowledgment.YES)
 
-            return facadeContainer.identityFacade.getEmail(emailId).recover { Throwable throwable ->
-                LOGGER.error("name=Error_Review_Order_Get_Email", throwable)
-                return Promise.pure(null)
-            }.then { String email ->
+            return Promise.pure(null)
+        }.then {
+            return orderServiceContextBuilder.getEmail(orderContext).then { String email ->
                 if (email == null) {
                     q.setEmail(NO_EMAIL)
                 } else {
                     q.setEmail(email)
                 }
 
-                return builder.getOffers(orderContext).then {
-                    Collection<CartItem> cart = new Vector<CartItem>()
+                return Promise.pure(null)
+            }
+        }.then {
+            return builder.getOffers(orderContext).then {
+                Collection<CartItem> cart = new Vector<CartItem>()
 
-                    order.orderItems?.each { OrderItem orderItem ->
-                        def offer = orderContext.offersMap[orderItem.offer]
-                        String type = orderItem.type
-                        String id = orderItem.offer
-                        String desc = offer.catalogOfferRevision.locales['DEFAULT']?.shortDescription
-                        if (desc !=  null && desc.length() > 256) {
-                            desc = desc.substring(0, 255)
-                        }
-                        CartItem cartItem = new CartItem(type, id, desc,
-                                orderItem.quantity, (int)(orderItem.unitPrice * baseUnit))
-                        cart.add(cartItem)
+                order.orderItems?.each { OrderItem orderItem ->
+                    def offer = orderContext.offersMap[orderItem.offer]
+                    String type = orderItem.type
+                    String id = orderItem.offer
+                    String desc = offer.catalogOfferRevision.locales['DEFAULT']?.shortDescription
+                    if (desc !=  null && desc.length() > 256) {
+                        desc = desc.substring(0, 255)
                     }
-                    q.setCart(cart)
+                    CartItem cartItem = new CartItem(type, id, desc,
+                            orderItem.quantity, (int)(orderItem.unitPrice * baseUnit))
+                    cart.add(cartItem)
+                }
+                q.setCart(cart)
 
-                    if (orderContext.paymentInstruments != null && orderContext.paymentInstruments.size() > 0) {
-                        PaymentInstrument pi = orderContext.paymentInstruments.get(0)
-                        switch (PIType.get(pi.type)) {
-                            case PIType.CREDITCARD:
-                                q.setPayment("CARD", pi.accountNum)
-                                break;
-                            case PIType.PAYPAL:
-                                q.setPayment("PYPL", "")
-                                break;
-                            case PIType.STOREDVALUE:
-                                q.setPayment("GIFT", pi.id.toString())
-                                break;
-                            case PIType.OTHERS:
-                                q.setPayment("NONE", "")
-                                break
-                        }
-                    }
-                    q.setWebsite("DEFAULT")
-
-                    InputStream stream = RiskServiceImpl.classLoader.getResourceAsStream(kountKeyFileName)
-                    KountRisClient kountRisClient = new KountRisClient(kountKeyFilePass, kountUrl, stream)
-
-                    try {
-                        LOGGER.info('name=Review_Order_Request, ' + q.getParams().toString())
-                        Response r = kountRisClient.process(q);
-                        LOGGER.info('name=Review_Order_Response, ' + r.toString())
-                        orderContext.riskTransactionId = r.getTransactionId()
-
-                        if (r.auto == 'D') {
-                            order.setStatus(OrderStatus.RISK_REJECT.name())
-                            orderRepository.updateOrder(order, true, false, null)
-
-                            return Promise.pure(RiskReviewResult.REJECT)
-                        } else {
-                            return Promise.pure(RiskReviewResult.APPROVED)
-                        }
-                    } catch (RisException re) {
-                        LOGGER.error('name=Review_Order_Exception', re)
-                        throw AppErrors.INSTANCE.orderRiskReviewError(re.getMessage()).exception()
+                return Promise.pure(null)
+            }
+        }.then {
+            return orderServiceContextBuilder.getPaymentInstruments(orderContext).then {
+                if (orderContext.paymentInstruments != null && orderContext.paymentInstruments.size() > 0) {
+                    PaymentInstrument pi = orderContext.paymentInstruments.get(0)
+                    switch (PIType.get(pi.type)) {
+                        case PIType.CREDITCARD:
+                            q.setPayment("CARD", pi.accountNum)
+                            break;
+                        case PIType.STOREDVALUE:
+                            q.setPayment("GIFT", pi.id.toString())
+                            break;
+                        case PIType.PAYPAL:
+                        case PIType.OTHERS:
+                            q.setPayment("NONE", null)
+                            break
                     }
                 }
+
+                return Promise.pure(null)
+            }
+        }.then {
+            return orderServiceContextBuilder.getBillingAddresses(orderContext).then {
+                if (orderContext.billingAddresses != null && orderContext.billingAddresses.size() > 0) {
+                    Address billingAddress = orderContext.billingAddresses.get(0);
+                    com.kount.ris.util.Address address = new com.kount.ris.util.Address(
+                            billingAddress.street1,
+                            billingAddress.street2,
+                            billingAddress.city,
+                            billingAddress.subCountry,
+                            billingAddress.postalCode,
+                            billingAddress.countryId.value
+                    )
+                    q.setBillingAddress(address)
+                }
+
+                return Promise.pure(null)
+            }
+        }.then {
+            return orderServiceContextBuilder.getShippingAddress(orderContext).then {
+                if (orderContext.shippingAddress != null) {
+                    com.kount.ris.util.Address address = new com.kount.ris.util.Address(
+                            orderContext.shippingAddress.street1,
+                            orderContext.shippingAddress.street2,
+                            orderContext.shippingAddress.city,
+                            orderContext.shippingAddress.subCountry,
+                            orderContext.shippingAddress.postalCode,
+                            orderContext.shippingAddress.countryId.value
+                    )
+                    q.setBillingAddress(address)
+                }
+
+                return Promise.pure(null)
+            }
+        }.then {
+            InputStream stream = RiskServiceImpl.classLoader.getResourceAsStream(kountKeyFileName)
+            KountRisClient kountRisClient = new KountRisClient(kountKeyFilePass, kountUrl, stream)
+
+            try {
+                LOGGER.info('name=Review_Order_Request, ' + q.getParams().toString())
+                Response r = kountRisClient.process(q);
+                LOGGER.info('name=Review_Order_Response, ' + r.toString())
+                orderContext.riskTransactionId = r.getTransactionId()
+
+                if (r.auto == 'D') {
+                    order.setStatus(OrderStatus.RISK_REJECT.name())
+                    orderRepository.updateOrder(order, true, false, null)
+
+                    return Promise.pure(RiskReviewResult.REJECT)
+                } else {
+                    return Promise.pure(RiskReviewResult.APPROVED)
+                }
+            } catch (RisException re) {
+                LOGGER.error('name=Review_Order_Exception', re)
+                throw AppErrors.INSTANCE.orderRiskReviewError(re.getMessage()).exception()
             }
         }
     }

@@ -19,6 +19,9 @@ import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.common.error.AppError;
+import com.junbo.common.error.AppErrorException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
@@ -30,6 +33,7 @@ import java.util.*;
  * Offer service implementation.
  */
 public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevision> implements OfferService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(OfferServiceImpl.class);
     private OfferRepository offerRepo;
     private OfferRevisionRepository offerRevisionRepo;
     private ItemRepository itemRepo;
@@ -69,7 +73,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     public Offer updateEntity(String offerId, Offer offer) {
         Offer oldOffer = offerRepo.get(offerId);
         if (oldOffer == null) {
-            throw AppErrors.INSTANCE.notFound("offer", Utils.encodeId(offerId)).exception();
+            AppErrorException exception = AppErrors.INSTANCE.notFound("offer", offerId).exception();
+            LOGGER.error("Error updating offer. ", exception);
+            throw exception;
         }
         validateOfferUpdate(offer, oldOffer);
 
@@ -130,8 +136,10 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     public List<OfferRevision> getRevisions(OfferRevisionsGetOptions options) {
         if (options.getTimestamp()!=null) {
             if (CollectionUtils.isEmpty(options.getOfferIds())) {
-                throw AppErrors.INSTANCE
+                AppErrorException exception = AppErrors.INSTANCE
                         .validation("offerId must be specified when timeInMillis is present.").exception();
+                LOGGER.error("Invalid request. ", exception);
+                throw exception;
             }
 
             Set<String> offerIds = new HashSet<>();
@@ -155,10 +163,15 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     public OfferRevision updateRevision(String revisionId, OfferRevision revision) {
         OfferRevision oldRevision = offerRevisionRepo.get(revisionId);
         if (oldRevision==null) {
-            throw AppErrors.INSTANCE.notFound("offer-revision", Utils.encodeId(revisionId)).exception();
+            AppErrorException exception = AppErrors.INSTANCE.notFound("offer-revision", revisionId).exception();
+            LOGGER.error("Error updating offer-revision. ", exception);
+            throw exception;
         }
         if (Status.APPROVED.is(oldRevision.getStatus())) {
-            throw AppErrors.INSTANCE.validation("Cannot update an approved revision").exception();
+            AppErrorException exception =
+                    AppErrors.INSTANCE.validation("Cannot update an approved revision").exception();
+            LOGGER.error("Error updating offer-revision. ", exception);
+            throw exception;
         }
         validateRevisionUpdate(revision, oldRevision);
         generateEventActions(revision);
@@ -309,7 +322,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         validateOfferCommon(offer, errors);
 
         if (!errors.isEmpty()) {
-            throw AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            AppErrorException exception = AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            LOGGER.error("Error creating offer. ", exception);
+            throw exception;
         }
     }
 
@@ -319,10 +334,10 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         if (!oldOffer.getOfferId().equals(offer.getOfferId())) {
             errors.add(AppErrors.INSTANCE.fieldNotMatch("self.id", offer.getOfferId(), oldOffer.getOfferId()));
         }
-        /*if (!isEqual(offer.getCurrentRevisionId(), oldOffer.getCurrentRevisionId())) {
+        if (!isEqual(offer.getCurrentRevisionId(), oldOffer.getCurrentRevisionId())) {
             errors.add(AppErrors.INSTANCE
                     .fieldNotCorrect("currentRevision", "The field can only be changed through revision approve"));
-        }*/
+        }
         if (!oldOffer.getRev().equals(offer.getRev())) {
             errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", offer.getRev(), oldOffer.getRev()));
         }
@@ -330,7 +345,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         validateOfferCommon(offer, errors);
 
         if (!errors.isEmpty()) {
-            throw AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            AppErrorException exception = AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            LOGGER.error("Error updating offer. ", exception);
+            throw exception;
         }
     }
 
@@ -346,7 +363,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
                     OfferAttribute attribute = offerAttributeRepo.get(categoryId);
                     if (attribute == null || !OfferAttributeType.CATEGORY.is(attribute.getType())) {
                         errors.add(AppErrors.INSTANCE
-                                .fieldNotCorrect("categories", "Cannot find category " + Utils.encodeId(categoryId)));
+                                .fieldNotCorrect("categories", "Cannot find category " + categoryId));
                     }
                 }
             }
@@ -366,7 +383,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         validateRevisionCommon(revision, errors);
 
         if (!errors.isEmpty()) {
-            throw AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            AppErrorException exception = AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            LOGGER.error("Error creating offer-revision. ", exception);
+            throw exception;
         }
     }
 
@@ -388,7 +407,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         validateRevisionCommon(revision, errors);
 
         if (!errors.isEmpty()) {
-            throw AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            AppErrorException exception = AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            LOGGER.error("Error updating offer-revision. ", exception);
+            throw exception;
         }
     }
 
@@ -402,7 +423,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             Offer offer = offerRepo.get(revision.getOfferId());
             if (offer == null) {
                 errors.add(AppErrors.INSTANCE
-                        .fieldNotCorrect("offerId", "Cannot find offer " + Utils.encodeId(revision.getOfferId())));
+                        .fieldNotCorrect("offerId", "Cannot find offer " + revision.getOfferId()));
             }
         }
         if (revision.getPrice() == null) {
@@ -441,7 +462,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             } else {
                 Item item = itemRepo.get(itemEntry.getItemId());
                 if (item == null) {
-                    errors.add(AppErrors.INSTANCE.notFound("item", Utils.encodeId(itemEntry.getItemId())));
+                    errors.add(AppErrors.INSTANCE.notFound("item", itemEntry.getItemId()));
                 } else {
                     if (item.getType().equals(ItemType.STORED_VALUE)) {
                         hasSVItem = true;
@@ -450,12 +471,11 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
                         itemEntry.setQuantity(1);
                     } else if (itemEntry.getQuantity() <= 0) {
                         errors.add(AppErrors.INSTANCE.fieldNotCorrect("items",
-                                "Quantity should be greater than 0 for item " + Utils.encodeId(itemEntry.getItemId())));
+                                "Quantity should be greater than 0 for item " + itemEntry.getItemId()));
                     } else if (itemEntry.getQuantity() > 1) {
                         if (!(ItemType.VIRTUAL.is(item.getType()) || ItemType.PHYSICAL.is(item.getType()))) {
                             errors.add(AppErrors.INSTANCE.fieldNotCorrect("items",
-                                    "'quantity' should be 1 for " + item.getType()
-                                            + " item " + Utils.encodeId(itemEntry.getItemId())));
+                                    "'quantity' should be 1 for " + item.getType() + " item " + itemEntry.getItemId()));
                         }
                     }
                 }
@@ -489,7 +509,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         Iterator<Action> iterator = purchaseActions.iterator();
         while(iterator.hasNext()) {
             Action action = iterator.next();
-            if (ActionType.CREDIT_WALLET.is(action.getType()) || action.getItemId() == null) {
+            if (action.getItemId() == null) {
                 continue;
             }
             if (!result.containsKey(action.getItemId())) {

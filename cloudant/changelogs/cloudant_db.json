@@ -99,14 +99,12 @@
       }
     }, 
     "email_verify_code": {}, 
-    "encrypt_user_personal_info": {
+    "encrypt_user_personal_info": { }, 
+    "hash_user_personal_info": {
       "views": {
         "by_hash_value": {
           "map": "function(doc) {  emit(doc.hashSearchInfo, doc._id)}"
-        }, 
-        "by_user_personal_info_id": {
-          "map": "function(doc) {  emit(doc.userPersonalInfoId, doc._id)}"
-        }
+        } 
       }
     }, 
     "group": {
@@ -240,6 +238,9 @@
         },
         "by_migrate_user_id": {
           "map": "function(doc) {  emit(doc.migratedUserId.toString(), doc._id) }"
+        },
+        "by_non_validate_vat": {
+          "map": "function(doc) {  if (doc.vat) { for (var key in doc.vat) { if (doc.vat.hasOwnProperty(key) && doc.vat[key]) { if (doc.vat[key].lastValidateTime == null && doc.vat[key].vatNumber) { emit(doc.vat[key].vatNumber, doc._id)} }} }}"
         }
       }
     }, 
@@ -272,6 +273,9 @@
         }, 
         "by_user_id_credential_type": {
           "map": "function(doc) { emit(doc.userId + ':' + doc.type, doc._id)}"
+        },
+        "by_ip_address_credential_type": {
+          "map": "function(doc) { emit(doc.ipAddress + ':' + doc.type, doc._id)}"
         }
       }
     }, 

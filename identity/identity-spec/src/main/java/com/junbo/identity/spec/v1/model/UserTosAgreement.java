@@ -19,19 +19,19 @@ import java.util.Date;
  */
 public class UserTosAgreement extends PropertyAssignedAwareResourceMeta<UserTosAgreementId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The Link to the user tos agreement resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] Link to the user TOS agreement resource.")
     @JsonProperty("self")
     private UserTosAgreementId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "Link to the user resource.")
+    @ApiModelProperty(position = 2, required = true, value = "User who agreed on the TOS.")
     @JsonProperty("user")
     private UserId userId;
 
-    @ApiModelProperty(position = 3, required = true, value = "Link to the tos resource.")
+    @ApiModelProperty(position = 3, required = true, value = "TOS that the user agrees to.")
     @JsonProperty("tos")
     private TosId tosId;
 
-    @ApiModelProperty(position = 4, required = false, value = "[Nullable]The tos accept time, must be ISO 8601 format.")
+    @ApiModelProperty(position = 4, required = false, value = "[Nullable]When user agrees to the TOS, must be ISO 8601.")
     private Date agreementTime;
 
     public UserTosAgreementId getId() {

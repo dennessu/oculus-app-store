@@ -1,7 +1,7 @@
 #!/bin/bash
 DIR="$( cd "$( dirname "$BASH_SOURCE[0]" )" && pwd )"
 
-ENVIRONMENT='amazon'
+ENVIRONMENT='test'
 source $DIR/../env/${ENVIRONMENT}.sh
 
 export DEVOPS_ACCOUNT='ubuntu'

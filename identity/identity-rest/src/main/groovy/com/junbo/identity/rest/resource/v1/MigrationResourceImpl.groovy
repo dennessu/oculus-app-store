@@ -7,8 +7,10 @@ import com.junbo.authorization.spec.option.list.RoleListOptions
 import com.junbo.authorization.spec.resource.RoleAssignmentResource
 import com.junbo.authorization.spec.resource.RoleResource
 import com.junbo.common.cloudant.CloudantClientBase
-import com.junbo.common.cloudant.CloudantEntity
+import com.junbo.common.cloudant.CloudantMarshaller
+import com.junbo.common.cloudant.DefaultCloudantMarshaller
 import com.junbo.common.cloudant.client.CloudantClientBulk
+import com.junbo.common.cloudant.client.CloudantDbUri
 import com.junbo.common.cloudant.model.CloudantQueryResult
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
@@ -109,19 +111,19 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     @Override
-    Promise<List<OculusOutput>> bulkMigrate(List<OculusInput> oculusInputs) {
+    Promise<Map<String, OculusOutput>> bulkMigrate(List<OculusInput> oculusInputs) {
         CloudantClientBase.useBulk = true
         CloudantClientBulk.callback = new MigrationQueryViewCallback()
 
-        List<OculusOutput> result = new ArrayList<>()
+        Map<String, OculusOutput> result = new HashMap<>()
         return Promise.each(oculusInputs) { OculusInput oculusInput ->
             return migrate(oculusInput).then { OculusOutput output ->
-                result.add(output)
+                result.put(oculusInput.currentId.toString(), output)
                 return Promise.pure(null)
             }.recover { Throwable ex ->
                 if (ex instanceof AppErrorException) {
                     OculusOutput output = new OculusOutput(error: ((AppErrorException)ex).error)
-                    result.add(output)
+                    result.put(oculusInput.currentId.toString(), output)
                     JunboHttpContext.responseStatus = 400
                     return Promise.pure(null)
                 } else {
@@ -142,12 +144,12 @@ class MigrationResourceImpl implements MigrationResource {
 
             return Promise.each(oculusInputs) { OculusInput oculusInput ->
                 return migrate(oculusInput).then { OculusOutput output ->
-                    result.add(output)
+                    result.put(oculusInput.currentId.toString(), output)
                     return Promise.pure(null)
                 }.recover { Throwable ex ->
                     if (ex instanceof AppErrorException) {
                         OculusOutput output = new OculusOutput(error: ((AppErrorException) ex).error)
-                        result.add(output)
+                        result.put(oculusInput.currentId.toString(), output)
                         JunboHttpContext.responseStatus = 400
                         return Promise.pure(null)
                     } else {
@@ -256,9 +258,12 @@ class MigrationResourceImpl implements MigrationResource {
                 return Promise.pure(createdUser)
             }
         }.then { User createdUser ->
-
+            if (oculusInput.company == null) {
+                return Promise.pure(new OculusOutput(
+                        userId: createdUser.getId()
+                ))
+            }
             return migrateOrganization(oculusInput, createdUser)
-
         }
     }
 
@@ -346,7 +351,7 @@ class MigrationResourceImpl implements MigrationResource {
     //      ii. if organization isn't null, during the migration we will ignore this case
     Promise<Void> checkOrganizationValid(OculusInput oculusInput, User user) {
         if (oculusInput.company == null) {
-            throw new IllegalArgumentException('company is null')
+            return Promise.pure(null)
         }
 
         if (oculusInput.company.name == null) {
@@ -953,34 +958,36 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     private static class MigrationQueryViewCallback implements CloudantClientBulk.Callback {
-        void onQueryView(CloudantQueryResult results, String fullDbName, String dbName, String viewName, String key, String startKey, String endKey) {
-            if (dbName == "user" && viewName == "by_migrate_user_id") {
-                Map<String, CloudantEntity> bulkCache = CloudantClientBulk.getBulkReadonly(fullDbName)
+        private static CloudantMarshaller marshaller = DefaultCloudantMarshaller.instance()
+
+        void onQueryView(CloudantQueryResult results, CloudantDbUri dbUri, String viewName, String key, String startKey, String endKey) {
+            if (dbUri.dbName == "user" && viewName == "by_migrate_user_id") {
+                def bulkCache = CloudantClientBulk.getBulkReadonly(dbUri)
                 searchUserByMigrateId(results, key, bulkCache)
                 return
-            } else if (dbName == "organization" && viewName == "by_migrate_company_id") {
-                Map<String, CloudantEntity> bulkCache = CloudantClientBulk.getBulkReadonly(fullDbName)
+            } else if (dbUri.dbName == "organization" && viewName == "by_migrate_company_id") {
+                def bulkCache = CloudantClientBulk.getBulkReadonly(dbUri)
                 searchByMigrateCompanyId(results, key, bulkCache)
                 return
-            } else if (dbName == "group" && viewName == "by_organization_id_and_name") {
-                Map<String, CloudantEntity> bulkCache = CloudantClientBulk.getBulkReadonly(fullDbName)
+            } else if (dbUri.dbName == "group" && viewName == "by_organization_id_and_name") {
+                def bulkCache = CloudantClientBulk.getBulkReadonly(dbUri)
                 searchGroupByOrganizationIdAndName(results, key, bulkCache)
                 return
-            } else if (dbName == "group" && viewName == "by_organization_id") {
-                Map<String, CloudantEntity> bulkCache = CloudantClientBulk.getBulkReadonly(fullDbName)
+            } else if (dbUri.dbName == "group" && viewName == "by_organization_id") {
+                def bulkCache = CloudantClientBulk.getBulkReadonly(dbUri)
                 searchGroupByOrganizationId(results, key, bulkCache)
                 return
             }
 
         }
 
-        void onSearch(CloudantQueryResult results, String fullDbName, String dbName, String searchName, String queryString) {
+        void onSearch(CloudantQueryResult results, CloudantDbUri dbUri, String searchName, String queryString) {
             throw new RuntimeException("Not supported.");
         }
 
-        private void searchUserByMigrateId(CloudantQueryResult results, String key, Map<String, CloudantEntity> bulkCache) {
-            for (CloudantEntity entity : bulkCache.values()) {
-                User user = (User)entity
+        private void searchUserByMigrateId(CloudantQueryResult results, String key, Map<String, CloudantClientBulk.EntityWithType> bulkCache) {
+            for (CloudantClientBulk.EntityWithType entityWithType : bulkCache.values()) {
+                User user = (User)marshaller.unmarshall(entityWithType.entity, entityWithType.type)
                 if (user.getMigratedUserId().toString() == key) {
                     results.rows.add(new CloudantQueryResult.ResultObject(
                             id: user.cloudantId,
@@ -992,9 +999,9 @@ class MigrationResourceImpl implements MigrationResource {
             }
         }
 
-        private void searchByMigrateCompanyId(CloudantQueryResult results, String key, Map<String, CloudantEntity> bulkCache) {
-            for (CloudantEntity entity : bulkCache.values()) {
-                Organization org = (Organization)entity
+        private void searchByMigrateCompanyId(CloudantQueryResult results, String key, Map<String, CloudantClientBulk.EntityWithType> bulkCache) {
+            for (CloudantClientBulk.EntityWithType entityWithType : bulkCache.values()) {
+                Organization org = (Organization)marshaller.unmarshall(entityWithType.entity, entityWithType.type)
                 if (org.getMigratedCompanyId().toString() == key) {
                     results.rows.add(new CloudantQueryResult.ResultObject(
                             id: org.cloudantId,
@@ -1006,9 +1013,9 @@ class MigrationResourceImpl implements MigrationResource {
             }
         }
 
-        private void searchGroupByOrganizationIdAndName(CloudantQueryResult results, String key, Map<String, CloudantEntity> bulkCache) {
-            for (CloudantEntity entity : bulkCache.values()) {
-                Group group = (Group)entity
+        private void searchGroupByOrganizationIdAndName(CloudantQueryResult results, String key, Map<String, CloudantClientBulk.EntityWithType> bulkCache) {
+            for (CloudantClientBulk.EntityWithType entityWithType : bulkCache.values()) {
+                Group group = (Group)marshaller.unmarshall(entityWithType.entity, entityWithType.type)
                 if ("${group.getOrganizationId().value}:${group.name}" == key) {
                     results.rows.add(new CloudantQueryResult.ResultObject(
                             id: group.cloudantId,
@@ -1020,9 +1027,9 @@ class MigrationResourceImpl implements MigrationResource {
             }
         }
 
-        private void searchGroupByOrganizationId(CloudantQueryResult results, String key, Map<String, CloudantEntity> bulkCache) {
-            for (CloudantEntity entity : bulkCache.values()) {
-                Group group = (Group)entity
+        private void searchGroupByOrganizationId(CloudantQueryResult results, String key, Map<String, CloudantClientBulk.EntityWithType> bulkCache) {
+            for (CloudantClientBulk.EntityWithType entityWithType : bulkCache.values()) {
+                Group group = (Group)marshaller.unmarshall(entityWithType.entity, entityWithType.type)
                 if ("${group.getOrganizationId().value}" == key) {
                     results.rows.add(new CloudantQueryResult.ResultObject(
                             id: group.cloudantId,

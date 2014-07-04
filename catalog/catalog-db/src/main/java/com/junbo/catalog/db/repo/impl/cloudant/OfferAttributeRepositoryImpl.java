@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Offer repository.
  */
-public class OfferAttributeRepositoryImpl  extends CloudantClient<OfferAttribute> implements OfferAttributeRepository {
+public class OfferAttributeRepositoryImpl extends CloudantClient<OfferAttribute> implements OfferAttributeRepository {
 
     public OfferAttribute create(OfferAttribute attribute) {
         return cloudantPost(attribute).get();

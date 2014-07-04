@@ -1,6 +1,6 @@
 package com.junbo.identity.data.repository.impl.cloudant
+
 import com.junbo.common.cloudant.CloudantClient
-import com.junbo.common.id.EncryptUserPersonalInfoId
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.id.UserPersonalInfoIdToUserIdLinkId
@@ -11,6 +11,7 @@ import com.junbo.identity.data.hash.PiiHash
 import com.junbo.identity.data.hash.PiiHashFactory
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.repository.EncryptUserPersonalInfoRepository
+import com.junbo.identity.data.repository.HashUserPersonalInfoRepository
 import com.junbo.identity.data.repository.UserPersonalInfoIdToUserIdLinkRepository
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.spec.v1.model.*
@@ -36,6 +37,8 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
 
     private EncryptUserPersonalInfoRepository encryptUserPersonalInfoRepository
 
+    private HashUserPersonalInfoRepository hashUserPersonalInfoRepository
+
     private CryptoResource cryptoResource
 
     private IdGenerator idGenerator
@@ -59,8 +62,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
 
     Promise<Void> decryptUserPersonalInfo(UserId userId, UserPersonalInfoId userPersonalInfoId,
                                           List<UserPersonalInfo> infoList) {
-        return encryptUserPersonalInfoRepository.searchByUserPersonalInfoId(userPersonalInfoId)
-                .then { EncryptUserPersonalInfo info ->
+        return encryptUserPersonalInfoRepository.get(userPersonalInfoId).then { EncryptUserPersonalInfo info ->
             return decryptUserPersonalInfo(userId, info.encryptUserPersonalInfo).then {
                 UserPersonalInfo userPersonalInfo ->
                     if (userPersonalInfo != null) {
@@ -98,15 +100,15 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     Promise<List<UserPersonalInfo>> searchByEmail(String email, Integer limit, Integer offset) {
         PiiHash hash = getPiiHash(UserPersonalInfoType.EMAIL.toString())
 
-        return encryptUserPersonalInfoRepository.searchByHashValue(hash.generateHash(email.toLowerCase(Locale.ENGLISH))).then {
-            List<EncryptUserPersonalInfo> userPersonalInfos ->
+        return hashUserPersonalInfoRepository.searchByHashValue(hash.generateHash(email.toLowerCase(Locale.ENGLISH))).then {
+            List<HashUserPersonalInfo> userPersonalInfos ->
                 if (CollectionUtils.isEmpty(userPersonalInfos)) {
                     return Promise.pure(null)
                 }
 
                 List<UserPersonalInfo> infos = new ArrayList<>()
-                return Promise.each(userPersonalInfos) { EncryptUserPersonalInfo personalInfo ->
-                    return get(personalInfo.userPersonalInfoId).then { UserPersonalInfo userPersonalInfo ->
+                return Promise.each(userPersonalInfos) { HashUserPersonalInfo personalInfo ->
+                    return get(personalInfo.getId()).then { UserPersonalInfo userPersonalInfo ->
                         if (userPersonalInfo == null ||
                             userPersonalInfo.type != UserPersonalInfoType.EMAIL.toString()) {
                             return Promise.pure(null)
@@ -128,15 +130,15 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     Promise<List<UserPersonalInfo>> searchByPhoneNumber(String phoneNumber, Integer limit, Integer offset) {
         PiiHash hash = getPiiHash(UserPersonalInfoType.PHONE.toString())
 
-        return encryptUserPersonalInfoRepository.searchByHashValue(hash.generateHash(phoneNumber)).then {
-            List<EncryptUserPersonalInfo> userPersonalInfos ->
+        return hashUserPersonalInfoRepository.searchByHashValue(hash.generateHash(phoneNumber)).then {
+            List<HashUserPersonalInfo> userPersonalInfos ->
                 if (CollectionUtils.isEmpty(userPersonalInfos)) {
                     return Promise.pure(null)
                 }
 
                 List<UserPersonalInfo> infos = new ArrayList<>()
-                return Promise.each(userPersonalInfos) { EncryptUserPersonalInfo personalInfo ->
-                    return get(personalInfo.userPersonalInfoId).then { UserPersonalInfo userPersonalInfo ->
+                return Promise.each(userPersonalInfos) { HashUserPersonalInfo personalInfo ->
+                    return get(personalInfo.getId()).then { UserPersonalInfo userPersonalInfo ->
                         if (userPersonalInfo == null ||
                             userPersonalInfo.type != UserPersonalInfoType.PHONE.toString()) {
                             return Promise.pure(null)
@@ -166,10 +168,13 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
 
         return cryptoResource.encrypt(cryptoMessage).then { CryptoMessage messageValue ->
             EncryptUserPersonalInfo encryptUserPersonalInfo = new EncryptUserPersonalInfo()
+            encryptUserPersonalInfo.id = (UserPersonalInfoId)model.id
             encryptUserPersonalInfo.encryptUserPersonalInfo = messageValue.value
-            encryptUserPersonalInfo.userPersonalInfoId = (UserPersonalInfoId)model.id
             PiiHash piiHash = getPiiHash(model.type)
-            encryptUserPersonalInfo.hashSearchInfo = piiHash.generateHash(model.value)
+
+            HashUserPersonalInfo hashUserPersonalInfo = new HashUserPersonalInfo()
+            hashUserPersonalInfo.id = (UserPersonalInfoId)model.id
+            hashUserPersonalInfo.hashSearchInfo = piiHash.generateHash(model.value)
 
             UserPersonalInfoIdToUserIdLink link = new UserPersonalInfoIdToUserIdLink(
                     userId: model.userId,
@@ -177,9 +182,10 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
             )
 
             return userIdLinkRepository.create(link).then {
-                return encryptUserPersonalInfoRepository.create(encryptUserPersonalInfo).then {
-                    EncryptUserPersonalInfo info ->
-                        return get(info.userPersonalInfoId)
+                return hashUserPersonalInfoRepository.create(hashUserPersonalInfo)
+            }.then {
+                return encryptUserPersonalInfoRepository.create(encryptUserPersonalInfo).then { EncryptUserPersonalInfo info ->
+                    return get(info.getId())
                 }
             }
         }
@@ -191,17 +197,17 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
         cryptoMessage.value = marshall(model)
 
         return cryptoResource.encrypt(cryptoMessage).then { CryptoMessage messageValue ->
-
-            return encryptUserPersonalInfoRepository.get(new EncryptUserPersonalInfoId(model.getId().value)).then {
-                EncryptUserPersonalInfo info ->
-
-                    PiiHash piiHash = getPiiHash(model.type)
-                    info.hashSearchInfo = piiHash.generateHash(model.value)
-                    info.encryptUserPersonalInfo = messageValue.value
-
-                    return encryptUserPersonalInfoRepository.update(info).then { EncryptUserPersonalInfo updateInfo ->
-                            return get(updateInfo.userPersonalInfoId)
+            return encryptUserPersonalInfoRepository.get(model.getId()).then { EncryptUserPersonalInfo info ->
+                info.encryptUserPersonalInfo = messageValue.value
+                return encryptUserPersonalInfoRepository.update(info).then { EncryptUserPersonalInfo updateInfo ->
+                    return hashUserPersonalInfoRepository.get(model.getId()).then { HashUserPersonalInfo hashInfo ->
+                        PiiHash piiHash = getPiiHash(model.type)
+                        hashInfo.hashSearchInfo = piiHash.generateHash(model.value)
+                        return hashUserPersonalInfoRepository.update(hashInfo)
+                    }.then {
+                        return get(updateInfo.getId())
                     }
+                }
             }
         }
     }
@@ -211,7 +217,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
         if (personalInfoId == null || personalInfoId.value == null) {
             return Promise.pure(null)
         }
-        return encryptUserPersonalInfoRepository.get(new EncryptUserPersonalInfoId(personalInfoId.value)).then {
+        return encryptUserPersonalInfoRepository.get(personalInfoId).then {
             EncryptUserPersonalInfo encryptUserPersonalInfo ->
 
                 if (encryptUserPersonalInfo == null) {
@@ -299,6 +305,11 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     @Required
     void setEncryptUserPersonalInfoRepository(EncryptUserPersonalInfoRepository encryptUserPersonalInfoRepository) {
         this.encryptUserPersonalInfoRepository = encryptUserPersonalInfoRepository
+    }
+
+    @Required
+    void setHashUserPersonalInfoRepository(HashUserPersonalInfoRepository hashUserPersonalInfoRepository) {
+        this.hashUserPersonalInfoRepository = hashUserPersonalInfoRepository
     }
 
     @Required

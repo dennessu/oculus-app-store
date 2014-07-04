@@ -6,7 +6,6 @@
 
 package com.junbo.catalog.spec.model.common;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
@@ -31,7 +30,6 @@ public class Video {
         this.service = service;
     }
 
-    @JsonIgnore
     public String getId() {
         return id;
     }

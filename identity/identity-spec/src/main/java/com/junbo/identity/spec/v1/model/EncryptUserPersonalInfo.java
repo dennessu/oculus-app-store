@@ -5,37 +5,24 @@
  */
 package com.junbo.identity.spec.v1.model;
 
-import com.junbo.common.id.EncryptUserPersonalInfoId;
 import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 
 /**
  * Created by liangfu on 5/14/14.
  */
-public class EncryptUserPersonalInfo extends PropertyAssignedAwareResourceMeta<EncryptUserPersonalInfoId> {
+public class EncryptUserPersonalInfo extends PropertyAssignedAwareResourceMeta<UserPersonalInfoId> {
 
-    private EncryptUserPersonalInfoId id;
-
-    private UserPersonalInfoId userPersonalInfoId;
+    private UserPersonalInfoId id;
 
     private String encryptUserPersonalInfo;
 
-    private String hashSearchInfo;
-
-    public EncryptUserPersonalInfoId getId() {
+    public UserPersonalInfoId getId() {
         return id;
     }
 
-    public void setId(EncryptUserPersonalInfoId id) {
+    public void setId(UserPersonalInfoId id) {
         this.id = id;
-    }
-
-    public UserPersonalInfoId getUserPersonalInfoId() {
-        return userPersonalInfoId;
-    }
-
-    public void setUserPersonalInfoId(UserPersonalInfoId userPersonalInfoId) {
-        this.userPersonalInfoId = userPersonalInfoId;
     }
 
     public String getEncryptUserPersonalInfo() {
@@ -44,13 +31,5 @@ public class EncryptUserPersonalInfo extends PropertyAssignedAwareResourceMeta<E
 
     public void setEncryptUserPersonalInfo(String encryptUserPersonalInfo) {
         this.encryptUserPersonalInfo = encryptUserPersonalInfo;
-    }
-
-    public String getHashSearchInfo() {
-        return hashSearchInfo;
-    }
-
-    public void setHashSearchInfo(String hashSearchInfo) {
-        this.hashSearchInfo = hashSearchInfo;
     }
 }

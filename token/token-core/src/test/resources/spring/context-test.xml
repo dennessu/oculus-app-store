@@ -9,9 +9,13 @@
 
     <bean id="mockTokenService" class="com.junbo.token.core.impl.TokenServiceImpl">
         <property name="cryptoResource" ref="mockTokenCryptoResource"/>
+        <property name="offerClient" ref="mockOfferClient"/>
     </bean>
 
     <bean id="mockTokenCryptoResource" class="com.junbo.token.core.service.MockCryptoServiceImpl">
+    </bean>
+
+    <bean id="mockOfferClient" class="com.junbo.token.core.service.MockOfferClient">
     </bean>
 
 </beans>

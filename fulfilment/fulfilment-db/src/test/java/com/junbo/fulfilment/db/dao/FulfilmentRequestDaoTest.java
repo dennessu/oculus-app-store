@@ -44,8 +44,8 @@ public class FulfilmentRequestDaoTest extends BaseTest {
         FulfilmentRequestEntity entity = buildFulfilmentRequest();
         dao.create(entity);
 
-        UUID trackingGuid = entity.getTrackingGuid();
-        FulfilmentRequestEntity retrieved = dao.findByTrackingGuid(entity.getOrderId(), trackingGuid.toString());
+        UUID trackingUuid = entity.getTrackingUuid();
+        FulfilmentRequestEntity retrieved = dao.findByTrackingUuid(entity.getOrderId(), trackingUuid.toString());
 
         Assert.assertEquals(retrieved.getId(), entity.getId(), "The fulfilment entity should be the same.");
     }
@@ -64,7 +64,8 @@ public class FulfilmentRequestDaoTest extends BaseTest {
     private FulfilmentRequestEntity buildFulfilmentRequest() {
         FulfilmentRequestEntity entity = new FulfilmentRequestEntity();
 
-        entity.setTrackingGuid(generateUUID());
+        entity.setTrackingUuid(generateUUID());
+        entity.setUserId(generateLong());
         entity.setOrderId(generateLong());
         entity.setPayload("{\"key\": \"test_key\"}");
 

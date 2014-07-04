@@ -247,7 +247,15 @@ public class Identity {
 
     public static CloseableHttpResponse UserCredentialAttemptesPostDefault(
             String userName, String password, Boolean validResponse) throws Exception {
+        return UserCredentialAttemptesPostDefault(userName, password, null, validResponse);
+    }
+
+    public static CloseableHttpResponse UserCredentialAttemptesPostDefault(
+            String userName, String password, String ip, Boolean validResponse) throws Exception {
         UserCredentialVerifyAttempt ucva = IdentityModel.DefaultUserCredentialAttempts(userName, password);
+        if (ip != null) {
+            ucva.setIpAddress(ip);
+        }
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(IdentityV1UserCredentialAttemptsURI,
                 JsonHelper.JsonSerializer(ucva), HttpclientHelper.HttpRequestType.post);
         if (validResponse) {

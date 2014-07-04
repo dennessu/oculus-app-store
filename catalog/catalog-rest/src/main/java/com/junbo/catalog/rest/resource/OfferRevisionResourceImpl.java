@@ -12,7 +12,6 @@ import com.junbo.authorization.AuthorizeService;
 import com.junbo.authorization.RightsScope;
 import com.junbo.catalog.auth.OfferAuthorizeCallbackFactory;
 import com.junbo.catalog.clientproxy.LocaleFacade;
-import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.OfferService;
 import com.junbo.catalog.spec.enums.LocaleAccuracy;
 import com.junbo.catalog.spec.error.AppErrors;
@@ -131,7 +130,7 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
     public Promise<Response> delete(final String revisionId) {
         final OfferRevision offerRevision = offerService.getRevision(revisionId);
         if (offerRevision == null) {
-            throw AppErrors.INSTANCE.notFound("offer-revision", Utils.encodeId(revisionId)).exception();
+            throw AppErrors.INSTANCE.notFound("offer-revision", revisionId).exception();
         }
 
         AuthorizeCallback<Offer> callback = offerAuthorizeCallbackFactory.create(offerRevision.getOfferId());

@@ -20,23 +20,22 @@ import java.util.Map;
  */
 public class Currency extends PropertyAssignedAwareResourceMeta<CurrencyId> {
 
-    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable]The Link to the currency resource.")
+    @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The Link to the currency resource.")
     @JsonProperty("self")
     private CurrencyId id;
 
-    @ApiModelProperty(position = 2, required = true, value = "[Nullable]The currency code of the currency resource; " +
-            "always the same with self.id; " +
-            "never displayed to users - use translationService(localeKeys.shortName) for that ")
+    @ApiModelProperty(position = 2, required = true, value = "[Client Immutable] The currency code of the currency resource; always the same with self.id; " +
+            "never displayed to users - use translationService(localeKeys.shortName) for that .")
     private String currencyCode;
 
-    @ApiModelProperty(position = 3, required = false, value = "[Nullable]Countries link with default currency specified")
+    @ApiModelProperty(position = 3, required = false, value = "Countries link with default currency specified.")
     @HateoasLink("/countries?defaultCurrencyId={id}")
     private Link countries;
 
     @ApiModelProperty(position = 4, required = true, value = "The symbol of the currency resource.")
     private String symbol;
 
-    @ApiModelProperty(position = 5, required = true, value = "Position to put the symbol when show currency number (BEFORE, AFTER).")
+    @ApiModelProperty(position = 5, required = true, value = "Position to put the symbol when show currency number (BEFORE, AFTER, etc).")
     private String symbolPosition;
 
     @ApiModelProperty(position = 7, required = true, value = "The number of digits after decimal.")
@@ -46,7 +45,7 @@ public class Currency extends PropertyAssignedAwareResourceMeta<CurrencyId> {
     @JsonProperty("minimalAuthorizeAmount")
     private BigDecimal minAuthAmount;
 
-    @ApiModelProperty(position = 11, required = true, value = "Localizable properties and the corresponding Key.")
+    @ApiModelProperty(position = 11, required = true, value = "Maps locale-code to a JSON object with locale-specific info about this currency.")
     private Map<String, CurrencyLocaleKey> locales;
 
     @ApiModelProperty(position = 12, required = false, value = "[Client Immutable] This is the calculated value to give how accurate the localizable attributes is. " +

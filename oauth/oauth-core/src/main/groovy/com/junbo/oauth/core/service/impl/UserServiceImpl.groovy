@@ -219,7 +219,6 @@ class UserServiceImpl implements UserService {
                 uriBuilder.path(EMAIL_VERIFY_PATH)
                 uriBuilder.queryParam(OAuthParameters.EMAIL_VERIFY_CODE, code.code)
                 uriBuilder.queryParam(OAuthParameters.LOCALE, contextWrapper.viewLocale)
-                uriBuilder.queryParam(OAuthParameters.COUNTRY, contextWrapper.viewCountry)
 
                 QueryParam queryParam = new QueryParam(
                         source: EMAIL_SOURCE,

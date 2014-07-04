@@ -39,7 +39,7 @@ public class Device extends PropertyAssignedAwareResourceMeta<DeviceId> {
             "when the device object itself is \"Camera\" the components attribute will be null.")
     private List<DeviceId> components = new ArrayList<>();
 
-    @ApiModelProperty(position = 5, required = false, value = "[Nullable]The users linked with this device.")
+    @ApiModelProperty(position = 5, required = false, value = "[Client Immutable] The users linked with this device.")
     @HateoasLink("/users?deviceId={id}")
     private Link users;
 

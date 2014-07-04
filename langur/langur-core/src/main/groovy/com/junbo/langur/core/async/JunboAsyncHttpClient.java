@@ -5,6 +5,8 @@
  */
 package com.junbo.langur.core.async;
 
+import com.junbo.configuration.ConfigService;
+import com.junbo.configuration.ConfigServiceManager;
 import com.ning.http.client.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +22,17 @@ public class JunboAsyncHttpClient implements Closeable {
 
     private final AsyncHttpClient asyncHttpClient;
 
-    public JunboAsyncHttpClient(AsyncHttpClient asyncHttpClient) {
-        this.asyncHttpClient = asyncHttpClient;
+    private static JunboAsyncHttpClient instance = new JunboAsyncHttpClient();
+    public static JunboAsyncHttpClient instance() {
+        return instance;
+    }
+
+    private JunboAsyncHttpClient() {
+        ConfigService configService = ConfigServiceManager.instance();
+        AsyncHttpClientConfigBean config = new AsyncHttpClientConfigBean();
+        config.setConnectionTimeOutInMs(Integer.parseInt(configService.getConfigValue("common.client.connectionTimeout")));
+        config.setRequestTimeoutInMs(Integer.parseInt(configService.getConfigValue("common.client.requestTimeout")));
+        this.asyncHttpClient = new AsyncHttpClient(config);
     }
 
     /**

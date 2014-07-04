@@ -85,6 +85,7 @@
     <bean id="cloudantUserPersonalInfoRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserPersonalInfoEncryptRepositoryCloudantImpl" parent="cloudantClient">
         <property name="userIdLinkRepository" ref="cloudantUserPersonalInfoIdToUserIdLinkRepository" />
         <property name="encryptUserPersonalInfoRepository" ref="cloudantEncryptUserPersonalInfoRepository" />
+        <property name="hashUserPersonalInfoRepository" ref="cloudantHashUserPersonalInfoRepository" />
         <property name="cryptoResource" ref="identityCryptoResource" />
         <property name="dbName" value="non_exists" />
         <property name="idGenerator" ref="oculus48IdGenerator" />
@@ -121,16 +122,15 @@
     </bean>
 
     <bean id="encryptUserPersonalInfocloudantClient" class="com.junbo.common.cloudant.CloudantClient" abstract="true">
-        <property name="asyncHttpClient" ref="commonAsyncHttpClient" />
-        <property name="cloudantDBUri" value="${encrypt.user.personalinfo.cloudant.url}" />
-        <property name="marshaller" ref="cloudantDefaultMarshaller" />
-        <property name="cloudantUser" value="${encrypt.user.personalinfo.cloudant.user}" />
-        <property name="cloudantPassword" value="${encrypt.user.personalinfo.cloudant.password}" />
-        <property name="dbNamePrefix" value="${common.cloudant.dbNamePrefix}" />
+        <property name="cloudantDbUri" value="${encrypt.user.personalinfo.cloudant.url}" />
     </bean>
 
     <bean id="cloudantEncryptUserPersonalInfoRepository" class="com.junbo.identity.data.repository.impl.cloudant.EncryptUserPersonalInfoRepositoryImpl" parent="encryptUserPersonalInfocloudantClient">
         <property name="dbName" value="encrypt_user_personal_info" />
+    </bean>
+
+    <bean id="cloudantHashUserPersonalInfoRepository" class="com.junbo.identity.data.repository.impl.cloudant.HashUserPersonalInfoRepositoryImpl" parent="cloudantClient">
+        <property name="dbName" value="hash_user_personal_info" />
     </bean>
 
     <bean id="cloudantUserPersonalInfoIdToUserIdLinkRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserPersonalInfoIdToUserIdLinkRepositoryImpl" parent="cloudantClient">

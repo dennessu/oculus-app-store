@@ -34,7 +34,6 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.net.URLEncoder;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.concurrent.Callable;
@@ -45,6 +44,7 @@ import java.util.concurrent.Callable;
 public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
     private static final Logger LOGGER = LoggerFactory.getLogger(AdyenCCProivderServiceImpl.class);
     private static final String PROVIDER_NAME = "AdyenCreditCard";
+    private static final String CARD_BIN = "cardBin";
     @Autowired
     @Qualifier("oculus48IdGenerator")
     private IdGenerator idGenerator;
@@ -132,7 +132,17 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                     RecurringDetail recurringDetail = getRecurringReference(piId);
                     if(recurringDetail != null && recurringDetail.getCard() != null){
                         request.setExternalToken(recurringDetail.getRecurringDetailReference());
-                        request.setAccountNum(recurringDetail.getCard().getNumber());
+                        AnyType2AnyTypeMapEntry[] additionalData = result.getAdditionalData();
+                        String cardBin = "";
+                        if(additionalData != null && additionalData.length > 0){
+                            for(AnyType2AnyTypeMapEntry data : additionalData){
+                                if(data.getKey().equals(CARD_BIN)){
+                                    cardBin = data.getValue().toString();
+                                    break;
+                                }
+                            }
+                        }
+                        request.setAccountNum(cardBin + "****" +recurringDetail.getCard().getNumber());
                         request.getTypeSpecificDetails().setCreditCardType(
                                 PaymentUtil.getCreditCardType(recurringDetail.getVariant()).toString());
                         request.getTypeSpecificDetails().setExpireDate(recurringDetail.getCard().getExpiryYear()
@@ -165,6 +175,10 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
         if(CONFIRMED_STATUS.equalsIgnoreCase(resultMap.get("paymentResult.resultCode"))){
             result = new PaymentResult();
             result.setResultCode(CONFIRMED_STATUS);
+            AnyType2AnyTypeMapEntry additionalData = new AnyType2AnyTypeMapEntry();
+            additionalData.setKey("cardBin");
+            additionalData.setValue(resultMap.get("paymentResult.additionalData.cardBin"));
+            result.setAdditionalData((AnyType2AnyTypeMapEntry[])Arrays.asList(additionalData).toArray());
         }else{
             String refusedReason = "refused:";
             if(resultMap.get("paymentResult.refusalReason") != null){
@@ -187,14 +201,14 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
             throw AppClientExceptions.INSTANCE.invalidExpireDateFormat(expireDate).exception();
         }
         try {
-            sbReq.append("&paymentRequest.card.expiryMonth=" + URLEncoder.encode(String.valueOf(tokens[1]), "UTF-8"));
-            sbReq.append("&paymentRequest.card.expiryYear=" + URLEncoder.encode(String.valueOf(tokens[0]), "UTF-8"));
-            sbReq.append("&paymentRequest.amount.currency=" + URLEncoder.encode(defaultCurrency.getValue(), "UTF-8"));
+            sbReq.append("&paymentRequest.card.expiryMonth=" + urlEncode(String.valueOf(tokens[1])));
+            sbReq.append("&paymentRequest.card.expiryYear=" + urlEncode(String.valueOf(tokens[0])));
+            sbReq.append("&paymentRequest.amount.currency=" + urlEncode(defaultCurrency.getValue()));
             sbReq.append("&paymentRequest.amount.value=" + minAuthAmount);
-            sbReq.append("&paymentRequest.merchantAccount=" + URLEncoder.encode(getMerchantAccount(), "UTF-8"));
+            sbReq.append("&paymentRequest.merchantAccount=" + urlEncode(getMerchantAccount()));
             sbReq.append("&paymentRequest.reference=" + piId.toString());
-            sbReq.append("&paymentRequest.additionalData.card.encrypted.json=" + URLEncoder.encode(request.getAccountNum(), "UTF-8"));
-            sbReq.append("&paymentRequest.shopperEmail=" + URLEncoder.encode(request.getUserInfo().getEmail(), "UTF-8"));
+            sbReq.append("&paymentRequest.additionalData.card.encrypted.json=" + urlEncode(request.getAccountNum()));
+            sbReq.append("&paymentRequest.shopperEmail=" + urlEncode(request.getUserInfo().getEmail()));
             sbReq.append("&paymentRequest.shopperReference=" + piId.toString());
             sbReq.append("&paymentRequest.recurring.contract=" + RECURRING);
             sbReq.append("&paymentRequest.shopperInteraction=ContAuth");
@@ -212,32 +226,32 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
     private String getAddressRequest(Address address) throws UnsupportedEncodingException {
         StringBuffer sbReq = new StringBuffer();
         if(!CommonUtil.isNullOrEmpty(address.getCity())){
-            sbReq.append("&paymentRequest.card.billingAddress.city=" + URLEncoder.encode(address.getCity(), "UTF-8"));
+            sbReq.append("&paymentRequest.card.billingAddress.city=" + urlEncode(address.getCity()));
         }else{
             throw AppClientExceptions.INSTANCE.invalidBillingAddressId(address.getId().toString(), "missing City").exception();
         }
         if(!CommonUtil.isNullOrEmpty(address.getAddressLine1())){
-            sbReq.append("&paymentRequest.card.billingAddress.street=" + URLEncoder.encode(address.getAddressLine1(), "UTF-8"));
+            sbReq.append("&paymentRequest.card.billingAddress.street=" + urlEncode(address.getAddressLine1()));
         }else{
             throw AppClientExceptions.INSTANCE.invalidBillingAddressId(address.getId().toString(), "missing street").exception();
         }
         if(!CommonUtil.isNullOrEmpty(address.getPostalCode())){
-            sbReq.append("&paymentRequest.card.billingAddress.postalCode=" + URLEncoder.encode(address.getPostalCode(), "UTF-8"));
+            sbReq.append("&paymentRequest.card.billingAddress.postalCode=" + urlEncode(address.getPostalCode()));
         }else{
             throw AppClientExceptions.INSTANCE.invalidBillingAddressId(address.getId().toString(), "missing postalCode").exception();
         }
         if(!CommonUtil.isNullOrEmpty(address.getState())){
-            sbReq.append("&paymentRequest.card.billingAddress.stateOrProvince=" + URLEncoder.encode(address.getState(), "UTF-8"));
+            sbReq.append("&paymentRequest.card.billingAddress.stateOrProvince=" + urlEncode(address.getState()));
         }else{
             throw AppClientExceptions.INSTANCE.invalidBillingAddressId(address.getId().toString(), "missing subCountry").exception();
         }
         if(!CommonUtil.isNullOrEmpty(address.getCountry())){
-            sbReq.append("&paymentRequest.card.billingAddress.country=" + URLEncoder.encode(address.getCountry(), "UTF-8"));
+            sbReq.append("&paymentRequest.card.billingAddress.country=" + urlEncode(address.getCountry()));
         }else{
             throw AppClientExceptions.INSTANCE.invalidBillingAddressId(address.getId().toString(), "missing Country").exception();
         }
         if(!CommonUtil.isNullOrEmpty(address.getUnitNumber())){
-            sbReq.append("&paymentRequest.card.billingAddress.houseNumberOrName=" + URLEncoder.encode(address.getUnitNumber(), "UTF-8"));
+            sbReq.append("&paymentRequest.card.billingAddress.houseNumberOrName=" + urlEncode(address.getUnitNumber()));
         }else{
             throw AppClientExceptions.INSTANCE.invalidBillingAddressId(address.getId().toString(), "missing UnitNumber").exception();
         }

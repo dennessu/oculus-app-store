@@ -31,7 +31,7 @@ public class UserSecurityQuestionVerifyAttempt extends PropertyAssignedAwareReso
             "the userAgent will be the Webkit(FireFox or Chrome, etc).")
     private String userAgent;
 
-    @ApiModelProperty(position = 4, required = false, value = "The OAuth client ID for the component where the UserTFAAttempt is initiated. " +
+    @ApiModelProperty(position = 4, required = false, value = "The OAuth client ID for the component where the UserTeleAttempt is initiated. " +
             "For example, if user do theUserTeleAttempt via a webkit from game \"Angry Bird\", " +
             "the clientId will be the clientId string for the game \"Angry Bird\". " +
             "The clientId is a string developer get from Oculus platform and embed into the game binary. " +

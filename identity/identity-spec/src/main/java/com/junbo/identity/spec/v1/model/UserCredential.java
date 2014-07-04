@@ -6,6 +6,7 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
 import com.junbo.common.id.UserCredentialId;
 import com.junbo.common.id.UserId;
@@ -27,6 +28,7 @@ public class UserCredential extends PropertyAssignedAwareResourceMeta<UserCreden
     private UserId userId;
 
     @ApiModelProperty(position = 2, required = false, value = "The current password, plain text.")
+    @JsonProperty("oldValue")
     private String currentPassword;
 
     @ApiModelProperty(position = 3, required = true, value = "The new password/pin, plain text.")

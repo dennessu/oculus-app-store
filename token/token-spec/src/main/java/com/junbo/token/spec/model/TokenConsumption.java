@@ -6,6 +6,7 @@
 
 package com.junbo.token.spec.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.UserId;
 import com.junbo.token.common.FilterOut;
 
@@ -13,13 +14,14 @@ import com.junbo.token.common.FilterOut;
  * Token Consumption model.
  */
 public class TokenConsumption {
-
     @FilterOut
     private Long id;
+    @FilterOut
     private Long itemId;
     @UserId
+    @JsonProperty("user")
     private Long userId;
-    private Long product;
+    private String product;
     private String tokenString;
 
     public Long getId() {
@@ -46,11 +48,11 @@ public class TokenConsumption {
         this.userId = userId;
     }
 
-    public Long getProduct() {
+    public String getProduct() {
         return product;
     }
 
-    public void setProduct(Long product) {
+    public void setProduct(String product) {
         this.product = product;
     }
 
