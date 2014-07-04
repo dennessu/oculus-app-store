@@ -126,57 +126,55 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             throw AppErrors.INSTANCE.fieldNotWritable('succeeded').exception()
         }
 
-        return findUser(userLoginAttempt).then { User user ->
-            if (user == null) {
-                throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.username).exception()
-            }
+        return checkMaximumSameIPAttemptCount(userLoginAttempt).then {
+            return findUser(userLoginAttempt).then { User user ->
+                if (user == null) {
+                    throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.username).exception()
+                }
 
-            if (user.status != UserStatus.ACTIVE.toString()) {
-                throw AppErrors.INSTANCE.userInInvalidStatus(userLoginAttempt.username).exception()
-            }
+                if (user.status != UserStatus.ACTIVE.toString()) {
+                    throw AppErrors.INSTANCE.userInInvalidStatus(userLoginAttempt.username).exception()
+                }
 
-            if (user.isAnonymous) {
-                throw AppErrors.INSTANCE.userInInvalidStatus(userLoginAttempt.username).exception()
-            }
+                if (user.isAnonymous) {
+                    throw AppErrors.INSTANCE.userInInvalidStatus(userLoginAttempt.username).exception()
+                }
 
-            userLoginAttempt.setUserId((UserId)user.id)
+                userLoginAttempt.setUserId((UserId)user.id)
 
-            if (userLoginAttempt.type == CredentialType.PASSWORD.toString()) {
-                return userPasswordRepository.searchByUserIdAndActiveStatus((UserId)user.id, true, Integer.MAX_VALUE,
-                        0).then { List<UserPassword> userPasswordList ->
-                    if (CollectionUtils.isEmpty(userPasswordList) || userPasswordList.size() > 1) {
-                        throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
-                    }
+                if (userLoginAttempt.type == CredentialType.PASSWORD.toString()) {
+                    return userPasswordRepository.searchByUserIdAndActiveStatus((UserId)user.id, true, Integer.MAX_VALUE,
+                            0).then { List<UserPassword> userPasswordList ->
+                        if (CollectionUtils.isEmpty(userPasswordList) || userPasswordList.size() > 1) {
+                            throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
+                        }
 
-                    List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
-                    CredentialHash matched = credentialHashList.find { CredentialHash hash ->
-                        return hash.matches(userLoginAttempt.value, userPasswordList.get(0).passwordHash)
-                    }
-                    userLoginAttempt.setSucceeded(matched != null)
-                    return checkMaximumRetryCount(user, userLoginAttempt).then {
-                        return checkMaximumSameUserAttemptCount(user, userLoginAttempt)
-                    }.then {
-                        return checkMaximumSameIPAttemptCount(userLoginAttempt)
+                        List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
+                        CredentialHash matched = credentialHashList.find { CredentialHash hash ->
+                            return hash.matches(userLoginAttempt.value, userPasswordList.get(0).passwordHash)
+                        }
+                        userLoginAttempt.setSucceeded(matched != null)
+                        return checkMaximumRetryCount(user, userLoginAttempt).then {
+                            return checkMaximumSameUserAttemptCount(user, userLoginAttempt)
+                        }
                     }
                 }
-            }
-            else {
-                return userPinRepository.searchByUserIdAndActiveStatus((UserId)user.id, true, Integer.MAX_VALUE,
-                        0).then { List<UserPin> userPinList ->
-                    if (userPinList == null || userPinList.size() > 1) {
-                        throw AppErrors.INSTANCE.userPinIncorrect().exception()
-                    }
+                else {
+                    return userPinRepository.searchByUserIdAndActiveStatus((UserId)user.id, true, Integer.MAX_VALUE,
+                            0).then { List<UserPin> userPinList ->
+                        if (userPinList == null || userPinList.size() > 1) {
+                            throw AppErrors.INSTANCE.userPinIncorrect().exception()
+                        }
 
-                    List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
-                    CredentialHash matched = credentialHashList.find { CredentialHash hash ->
-                        return hash.matches(userLoginAttempt.value, userPinList.get(0).pinHash)
-                    }
+                        List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
+                        CredentialHash matched = credentialHashList.find { CredentialHash hash ->
+                            return hash.matches(userLoginAttempt.value, userPinList.get(0).pinHash)
+                        }
 
-                    userLoginAttempt.setSucceeded(matched != null)
-                    return checkMaximumRetryCount(user, userLoginAttempt).then {
-                        return checkMaximumSameUserAttemptCount(user, userLoginAttempt)
-                    }.then {
-                        return checkMaximumSameIPAttemptCount(userLoginAttempt)
+                        userLoginAttempt.setSucceeded(matched != null)
+                        return checkMaximumRetryCount(user, userLoginAttempt).then {
+                            return checkMaximumSameUserAttemptCount(user, userLoginAttempt)
+                        }
                     }
                 }
             }
@@ -238,39 +236,20 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     }
 
     private Promise<Void> checkMaximumRetryCount(User user, UserCredentialVerifyAttempt userLoginAttempt) {
-        return userLoginAttemptRepository.searchByUserIdAndCredentialType((UserId)user.id, userLoginAttempt.type,
-                Integer.MAX_VALUE, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
-            if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount) {
-                return Promise.pure(null)
-            }
 
-            attemptList.sort(new Comparator<UserCredentialVerifyAttempt>() {
-                @Override
-                int compare(UserCredentialVerifyAttempt o1, UserCredentialVerifyAttempt o2) {
-                    return o2.createdTime <=> o1.createdTime
-                }
-            })
+        return getActiveCredentialCreatedTime(user, userLoginAttempt).then { Date passwordActiveTime ->
+            Long timeInterval = passwordActiveTime.getTime()
 
-            return getActiveCredentialCreatedTime(user, userLoginAttempt).then { Date passwordActiveTime ->
-                UserCredentialVerifyAttempt attempt = attemptList.get(maxRetryCount - 1)
-
-                if (attempt.createdTime.before(passwordActiveTime)) {
+            return userLoginAttemptRepository.searchByUserIdAndCredentialTypeAndInterval(user.getId(), userLoginAttempt.type, timeInterval, maxRetryCount, 0).then {
+                    List<UserCredentialVerifyAttempt> attemptList ->
+                if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount) {
                     return Promise.pure(null)
                 }
 
-                if (attempt.createdTime.before(getTimeFrame(retryInterval))) {
-                    return Promise.pure(null)
+                UserCredentialVerifyAttempt successAttempt = attemptList.find { UserCredentialVerifyAttempt attempt ->
+                    return attempt.succeeded
                 }
-
-                int index = maxRetryCount - 1;
-                for(; index >=0; index--) {
-                    UserCredentialVerifyAttempt tempAttempt = attemptList.get(index)
-                    if (tempAttempt.succeeded) {
-                        break
-                    }
-                }
-
-                if (index >= 0) {
+                if (successAttempt != null) {
                     return Promise.pure(null)
                 }
 
@@ -303,20 +282,10 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     }
 
     private Promise<Void> checkMaximumSameUserAttemptCount(User user, UserCredentialVerifyAttempt userLoginAttempt) {
-        return userLoginAttemptRepository.searchByUserIdAndCredentialType(user.getId(), userLoginAttempt.type,
-                Integer.MAX_VALUE, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
+        Long timeInterval = System.currentTimeMillis() - sameUserAttemptRetryInterval * 1000
+        return userLoginAttemptRepository.searchByUserIdAndCredentialTypeAndInterval(user.getId(), userLoginAttempt.type, timeInterval,
+                maxSameUserAttemptCount, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
             if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxSameUserAttemptCount) {
-                return Promise.pure(null)
-            }
-
-            attemptList.sort(new Comparator<UserCredentialVerifyAttempt>() {
-                @Override
-                int compare(UserCredentialVerifyAttempt o1, UserCredentialVerifyAttempt o2) {
-                    return o2.createdTime <=> o1.createdTime
-                }
-            })
-
-            if (attemptList.get(maxSameUserAttemptCount - 1).createdTime.before(getTimeFrame(sameUserAttemptRetryInterval))) {
                 return Promise.pure(null)
             }
 
@@ -331,20 +300,12 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         if (StringUtils.isEmpty(userLoginAttempt.ipAddress)) {
             return Promise.pure(null)
         }
-        return userLoginAttemptRepository.searchByIPAddressAndCredentialType(userLoginAttempt.ipAddress, userLoginAttempt.type,
-                Integer.MAX_VALUE, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
+
+        Long fromTimeStamp = System.currentTimeMillis() - sameIPRetryInterval * 1000
+
+        return userLoginAttemptRepository.searchByIPAddressAndCredentialTypeAndInterval(userLoginAttempt.ipAddress, userLoginAttempt.type, fromTimeStamp,
+                maxSameIPRetryCount, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
             if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxSameIPRetryCount) {
-                return Promise.pure(null)
-            }
-
-            attemptList.sort(new Comparator<UserCredentialVerifyAttempt>() {
-                @Override
-                int compare(UserCredentialVerifyAttempt o1, UserCredentialVerifyAttempt o2) {
-                    return o2.createdTime <=> o1.createdTime
-                }
-            })
-
-            if (attemptList.get(maxSameIPRetryCount - 1).createdTime.before(getTimeFrame(sameIPRetryInterval))) {
                 return Promise.pure(null)
             }
 

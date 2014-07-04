@@ -24,10 +24,10 @@ interface UserCredentialVerifyAttemptRepository
     Promise<List<UserCredentialVerifyAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset)
 
     @ReadMethod
-    Promise<List<UserCredentialVerifyAttempt>> searchByUserIdAndCredentialType(UserId userId, String type,
+    Promise<List<UserCredentialVerifyAttempt>> searchByUserIdAndCredentialTypeAndInterval(UserId userId, String type, Long fromTimeStamp,
                                                                                Integer limit, Integer offset)
 
     @ReadMethod
-    Promise<List<UserCredentialVerifyAttempt>> searchByIPAddressAndCredentialType(String ipAddress, String type,
+    Promise<List<UserCredentialVerifyAttempt>> searchByIPAddressAndCredentialTypeAndInterval(String ipAddress, String type, Long fromTimeStamp,
                                                                                   Integer limit, Integer offset)
 }
