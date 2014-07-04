@@ -1,0 +1,7 @@
+include 'csr-spec'
+include 'csr-common'
+include 'csr-db'
+include 'csr-core'
+include 'csr-rest'
+include 'csr-clientproxy'
+include 'csr-app'

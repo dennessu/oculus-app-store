@@ -1,0 +1,16 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile junboProject(':langur-core')
+    compile junboProject(':common-lib')
+
+    compile (libraries.spring_beans)
+    compile (libraries.spring_context)
+
+    compile junboProject(':csr-spec')
+    compile junboProject(':identity-spec')
+    compile junboProject(':oauth-spec')
+
+    processor junboProject(':langur-processor')
+    processor (libraries.log4j)
+}
