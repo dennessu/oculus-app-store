@@ -101,6 +101,15 @@ public class OrderItem extends ResourceMetaForDualWrite<OrderItemId> {
     @JsonIgnore
     private Long latestOrderItemRevisionId;
 
+    @JsonIgnore
+    private String offerName;
+
+    @JsonIgnore
+    private String offerDescription;
+
+    @JsonIgnore
+    private String offerOrganization;
+
     @Override
     public OrderItemId getId() {
         return id;
@@ -261,5 +270,29 @@ public class OrderItem extends ResourceMetaForDualWrite<OrderItemId> {
 
     public void setLatestOrderItemRevisionId(Long latestOrderItemRevisionId) {
         this.latestOrderItemRevisionId = latestOrderItemRevisionId;
+    }
+
+    public String getOfferName() {
+        return offerName;
+    }
+
+    public void setOfferName(String offerName) {
+        this.offerName = offerName;
+    }
+
+    public String getOfferDescription() {
+        return offerDescription;
+    }
+
+    public void setOfferDescription(String offerDescription) {
+        this.offerDescription = offerDescription;
+    }
+
+    public String getOfferOrganization() {
+        return offerOrganization;
+    }
+
+    public void setOfferOrganization(String offerOrganization) {
+        this.offerOrganization = offerOrganization;
     }
 }

@@ -121,35 +121,19 @@ class TaxServiceImpl implements TaxService {
                     }
                 }
 
-                /*return Promise.each(balance.balanceItems) { BalanceItem item ->
-                    String offerRevisionId = item.propertySet.get(PropertyKey.OFFER_ID.name())
-                    return catalogFacade.getOfferRevision(offerRevisionId).recover { Throwable throwable ->
-                        LOGGER.error('name=Error_Get_OfferRevision. offerRevision id: ' + offerRevisionId, throwable)
-                        throw AppErrors.INSTANCE.offerNotFound(offerRevisionId).exception()
-                    }.then { OfferRevision offer ->
-                        def locale = balance.propertySet.get(PropertyKey.LOCALE.name())
-                        def properties = offer.locales?.get(locale)
-                        if (properties != null) {
-                            item.propertySet.put(PropertyKey.ITEM_NAME.name(), properties.name)
-                            item.propertySet.put(PropertyKey.ITEM_DESCRIPTION.name(), properties.shortDescription)
-                        }
-
-                        def organizationId = offer.ownerId?.value
-                        if (organizationId == null) {
-                            throw AppErrors.INSTANCE.organizationNotFound('null').exception()
-                        }
-                        return identityFacade.getOrganization(organizationId).recover { Throwable throwable ->
-                            LOGGER.error('name=Error_Get_Organization. organization id: ' + organizationId, throwable)
-                            throw AppErrors.INSTANCE.organizationNotFound(organizationId.toString()).exception()
-                        }.then { Organization organization ->
-                            item.propertySet.put(PropertyKey.VENDOR_NUMBER.name(), organizationId.toString())
-                            item.propertySet.put(PropertyKey.VENDOR_NAME.name(), organization.name)
-                            return Promise.pure(null)
-                        }
+                return Promise.each(balance.balanceItems) { BalanceItem item ->
+                    def org = item.propertySet.get(PropertyKey.ORGANIZATION_ID.name())
+                    Long organizationId = org == null ? null : Long.valueOf(org)
+                    return identityFacade.getOrganization(organizationId).recover { Throwable throwable ->
+                        LOGGER.error('name=Error_Get_Organization. organization id: ' + organizationId, throwable)
+                        throw AppErrors.INSTANCE.organizationNotFound(organizationId.toString()).exception()
+                    }.then { Organization organization ->
+                        item.propertySet.put(PropertyKey.VENDOR_NAME.name(), organization?.name)
+                        return Promise.pure(null)
                     }
-                }.then {*/
+                }.then {
                     return calculateTax(balance, pi.billingAddressId)
-                //}
+                }
             }
         }
     }

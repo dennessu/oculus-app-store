@@ -133,6 +133,9 @@ class CoreBuilder {
                     balanceItem.propertySet.put(PropertyKey.ITEM_QUANTITY.name(), matched.quantity.toString())
                     balanceItem.propertySet.put(PropertyKey.OFFER_ID.name(), matched.offer.value)
                     balanceItem.propertySet.put(PropertyKey.ORDER_ITEM_ID.name(), matched.getId().value.toString())
+                    balanceItem.propertySet.put(PropertyKey.ITEM_NAME.name(), matched.offerName)
+                    balanceItem.propertySet.put(PropertyKey.ITEM_DESCRIPTION.name(), matched.offerDescription)
+                    balanceItem.propertySet.put(PropertyKey.ORGANIZATION_ID.name(), matched.offerOrganization)
                     balance.addBalanceItem(balanceItem)
                     balance.propertySet.put(PropertyKey.ORIGINAL_INVOICE_DATE.name(),
                             DATE_FORMATTER.get().format(diffOrder.purchaseTime))
@@ -153,7 +156,6 @@ class CoreBuilder {
                     totalAmount = diffItem.totalAmount - balanceItem.amount
                 } else {
                     balanceItem.amount = diffItem.totalAmount
-                    balanceItem.taxAmount = diffItem.totalTax
                     totalAmount = 0G
                 }
             }
@@ -214,6 +216,9 @@ class CoreBuilder {
         balanceItem.propertySet.put(PropertyKey.ITEM_TYPE.name(), item.type)
         balanceItem.propertySet.put(PropertyKey.ITEM_QUANTITY.name(), item.quantity.toString())
         balanceItem.propertySet.put(PropertyKey.OFFER_ID.name(), item.offer.value)
+        balanceItem.propertySet.put(PropertyKey.ITEM_NAME.name(), item.offerName)
+        balanceItem.propertySet.put(PropertyKey.ITEM_DESCRIPTION.name(), item.offerDescription)
+        balanceItem.propertySet.put(PropertyKey.ORGANIZATION_ID.name(), item.offerOrganization)
         if (item.totalDiscount > BigDecimal.ZERO) {
             DiscountItem discountItem = new DiscountItem()
             discountItem.discountAmount = item.totalDiscount
@@ -228,7 +233,6 @@ class CoreBuilder {
         }
         BalanceItem balanceItem = new BalanceItem()
         balanceItem.amount = item.amount
-        balanceItem.taxAmount = item.taxAmount
         DiscountItem discountItem = new DiscountItem()
         discountItem.discountAmount = item.discountAmount
         balanceItem.addDiscountItem(discountItem)

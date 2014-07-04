@@ -54,6 +54,7 @@ class SabrixFacadeImpl implements TaxFacade {
     static final String ELECTRONIC_SERVICES = 'ES'
     static final String CALCULATION_DIRECTION_FORWARD = 'F'
     static final String CALCULATION_DIRECTION_REVERSE = 'R'
+    static final String CALCULATION_DIRECTION_REVERSE_FROM_TOTAL = 'T'
     private static final Logger LOGGER = LoggerFactory.getLogger(SabrixFacadeImpl)
     private static final ThreadLocal<SimpleDateFormat> DATE_FORMATTER =
             new ThreadLocal<SimpleDateFormat>() {
@@ -209,7 +210,9 @@ class SabrixFacadeImpl implements TaxFacade {
             invoice.originalInvoiceNumber = balance.orderIds?.get(0)?.value
             invoice.originalInvoiceDate = balance.propertySet.get(PropertyKey.ORIGINAL_INVOICE_DATE.name())
         }
-        invoice.calculationDirection = isRefund ? CALCULATION_DIRECTION_REVERSE : CALCULATION_DIRECTION_FORWARD
+        invoice.calculationDirection = isRefund ? (isAudited ? CALCULATION_DIRECTION_REVERSE
+                : CALCULATION_DIRECTION_REVERSE_FROM_TOTAL)
+                : CALCULATION_DIRECTION_FORWARD
         invoice.invoiceDate = DATE_FORMATTER.get().format(new Date())
         invoice.currencyCode = balance.currency
         invoice.isAudited = isAudited
@@ -226,21 +229,31 @@ class SabrixFacadeImpl implements TaxFacade {
 //        invoice.billTo = billToAddress
 //        invoice.shipTo = shipToAddress
 //        invoice.shipFrom = getSabrixShipFromAddress()
-        def lines = generateLine(balance, billToAddress, shipToAddress)
+        def lines = generateLine(balance, billToAddress, shipToAddress, isAudited)
         invoice.line = lines
         setupUserElement(invoice, balance)
 
         return invoice
     }
 
-    List<Line> generateLine(Balance balance, SabrixAddress billToAddress, SabrixAddress shipToAddress) {
+    List<Line> generateLine(Balance balance, SabrixAddress billToAddress,
+                            SabrixAddress shipToAddress, boolean isAudited) {
         def lines = []
+        def isRefund = BalanceType.REFUND.name() == balance.type
         balance.balanceItems.eachWithIndex { BalanceItem item, int index ->
             Line line = new Line()
             line.id = index + 1
             line.lineNumber = line.id
-            line.grossAmount = item.amount?.toDouble()
-            line.taxAmount = item.taxAmount?.toDouble()
+            if (isAudited) {
+                line.grossAmount = item.amount?.toDouble()
+                line.taxAmount = item.taxAmount?.toDouble()
+            }
+            else if (isRefund) {
+                line.grossPlusTax = item.amount?.toDouble()
+            }
+            else {
+                line.grossAmount = item.amount?.toDouble()
+            }
             line.discountAmount = item.discountAmount?.toDouble()
             line.productCode = item.financeId
             line.transactionType = getTransactionType(item)

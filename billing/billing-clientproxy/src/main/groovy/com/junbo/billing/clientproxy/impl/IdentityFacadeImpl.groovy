@@ -69,6 +69,9 @@ class IdentityFacadeImpl implements IdentityFacade {
 
     @Override
     Promise<Organization> getOrganization(Long organizationId) {
+        if (organizationId == null) {
+            return Promise.pure(null)
+        }
         return organizationResource.get(new OrganizationId(organizationId), new OrganizationGetOptions())
     }
 }

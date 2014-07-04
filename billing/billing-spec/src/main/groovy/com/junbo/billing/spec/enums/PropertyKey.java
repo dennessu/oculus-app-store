@@ -12,7 +12,6 @@ package com.junbo.billing.spec.enums;
 public enum PropertyKey {
     BALANCE_DESCRIPTION,
     ORIGINAL_INVOICE_DATE,
-    CUSTOMER_NUMBER,
     CUSTOMER_NAME,
     IP_GEO_LOCATION,
     PAYMENT_METHOD,
@@ -33,5 +32,6 @@ public enum PropertyKey {
     VENDOR_NAME,
     OFFER_ID,
     ITEM_DESCRIPTION,
-    ORDER_ITEM_ID
+    ORDER_ITEM_ID,
+    ORGANIZATION_ID
 }

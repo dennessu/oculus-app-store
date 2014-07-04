@@ -36,6 +36,9 @@ class Line {
     @XStreamAlias('PRODUCT_CODE')
     String productCode
 
+    @XStreamAlias('GROSS_PLUS_TAX')
+    Double grossPlusTax
+
     @XStreamAlias('GROSS_AMOUNT')
     Double grossAmount
 
@@ -82,15 +85,17 @@ class Line {
                 ", shipFrom=" + shipFrom +
                 ", transactionType='" + transactionType + '\'' +
                 ", productCode='" + productCode + '\'' +
+                ", grossPlusTax=" + grossPlusTax +
                 ", grossAmount=" + grossAmount +
                 ", taxAmount=" + taxAmount +
                 ", discountAmount=" + discountAmount +
                 ", lineNumber=" + lineNumber +
                 ", registrations=" + registrations +
-                ", partNumber=" + partNumber +
+                ", partNumber='" + partNumber + '\'' +
                 ", totalTaxAmount=" + totalTaxAmount +
-                ", vendorNumber=" + vendorNumber +
-                ", vendorName=" + vendorName +
+                ", vendorNumber='" + vendorNumber + '\'' +
+                ", vendorName='" + vendorName + '\'' +
+                ", description='" + description + '\'' +
                 ", userElement=" + userElement +
                 ", tax=" + tax +
                 '}';
