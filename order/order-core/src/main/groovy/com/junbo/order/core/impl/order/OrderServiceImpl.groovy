@@ -329,22 +329,29 @@ class OrderServiceImpl implements OrderService {
                 }
                 item.type = CoreUtils.getOfferType(offer).name()
                 item.isPreorder = CoreUtils.isPreorder(offer, order.country.value)
-                updatePaymentDescription(order, offer.catalogOfferRevision)
+                updateOfferInfo(order, item, offer.catalogOfferRevision)
             }
         }.syncThen {
             return null
         }
     }
 
-    private void updatePaymentDescription(Order order, OfferRevision offer) {
+    private void updateOfferInfo(Order order, OrderItem item, OfferRevision offer) {
         String locale = order.locale.value?.replace('-', '_')
+        item.offerOrganization = offer.ownerId?.value
         // add fallback logic here
         if (offer.locales == null) {
             order.paymentDescription = null
+            item.offerName = null
+            item.offerDescription = null
             return
         }
         String description = offer.locales[locale] != null ?
                 offer.locales[locale].shortDescription : offer.locales['DEFAULT']?.shortDescription
+        String name = offer.locales[locale] != null ?
+                offer.locales[locale].shortDescription : offer.locales['DEFAULT']?.name
+        item.offerName = name
+        item.offerDescription = description
         if (order.paymentDescription == null || order.paymentDescription == '') {
             order.paymentDescription = description
         }
