@@ -42,14 +42,18 @@ echo "[LONDISTE][REPLICA] promote replcia database to cut off streaming replicat
 touch $PROMOTE_TRIGGER_FILE
 
 echo "[LONDISTE][REPLICA] waiting for replica promote"
-while ! echo exit | psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT pg_is_in_recovery();" -t | grep "f";
+while ! echo exit | psql postgres -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "SELECT pg_is_in_recovery();" -t | grep "f";
 do
    sleep 1 && echo "[LONDISTE][REPLICA] replica is promoting...";
 done
 echo "[LONDISTE][REPLICA] replica promoted!"
 
-echo "[LONDISTE][REPLICA] force wait beforing writing"
-sleep 10s
+echo "[LONDISTE][REPLICA] ensure replica can be written"
+while ! echo exit | psql postgres -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "insert into dummy_test values(1);" || echo "ERROR" | grep -v "ERROR";
+do
+   sleep 1 && echo "[LONDISTE][REPLICA] replica is still in read-only status...";
+done
+echo "[LONDISTE][REPLICA] replica can be written"
 
 for db in ${REPLICA_DATABASES[@]}
 do
@@ -57,10 +61,10 @@ do
 
     echo "[LONDISTE][REPLICA] drop root node"
     set +e
-    $PGBIN_PATH/psql $db -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "DROP SCHEMA pgq CASCADE;"
-    $PGBIN_PATH/psql $db -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "DROP SCHEMA pgq_ext CASCADE;"
-    $PGBIN_PATH/psql $db -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "DROP SCHEMA pgq_node CASCADE;"
-    $PGBIN_PATH/psql $db -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "DROP SCHEMA londiste CASCADE;"
+    psql $db -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "DROP SCHEMA pgq CASCADE;"
+    psql $db -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "DROP SCHEMA pgq_ext CASCADE;"
+    psql $db -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "DROP SCHEMA pgq_node CASCADE;"
+    psql $db -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "DROP SCHEMA londiste CASCADE;"
     set -e
 
     echo "[LONDISTE][REPLICA] drop leaf node if exist"
