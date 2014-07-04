@@ -34,7 +34,10 @@
     "locales":{
         "en_US":{
             "name": "Angry Bird",
-            "revisionNotes": "fix some bugs",
+            "revisionNotes": {
+                "shortNotes": "Short Notes",
+                "longNotes": "Long notes"
+            },
             "longDescription": "long description",
             "shortDescription": "short description",
             "images":{
