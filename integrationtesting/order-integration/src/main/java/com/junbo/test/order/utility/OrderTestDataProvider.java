@@ -278,7 +278,7 @@ public class OrderTestDataProvider {
         orderInfo.setCurrency(currency);
         orderInfo.setLocale(locale);
 
-        orderInfo.setTaxRate(new BigDecimal(0.08));
+        orderInfo.setTaxRate(new BigDecimal(0.083));
 
         BigDecimal orderTotalAmount = new BigDecimal(0);
         BigDecimal orderTotalTax = new BigDecimal(0);
@@ -297,9 +297,9 @@ public class OrderTestDataProvider {
             orderItem.setOfferId(offerId);
             orderItem.setUnitPrice(unitPrice);
             orderItem.setQuantity(quantity);
-            BigDecimal totalAmount = unitPrice.multiply(new BigDecimal(quantity)).setScale(1, RoundingMode.HALF_UP);
+            BigDecimal totalAmount = unitPrice.multiply(new BigDecimal(quantity)).setScale(2, RoundingMode.HALF_UP);
             orderItem.setTotalAmount(totalAmount);
-            BigDecimal totalTax = totalAmount.multiply(orderInfo.getTaxRate()).setScale(1, RoundingMode.HALF_UP);
+            BigDecimal totalTax = totalAmount.multiply(orderInfo.getTaxRate()).setScale(2, RoundingMode.HALF_UP);
             orderItem.setTotalTax(totalTax);
             orderTotalAmount = orderTotalAmount.add(totalAmount);
             orderTotalTax = orderTotalTax.add(totalTax);
