@@ -67,4 +67,4 @@ done
 echo "[SETUP][MASTER] master database started successfully!"
 
 echo "[SETUP][MASTER] create dummy test table in postgres database"
-psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "CREATE TABLE dummy_test (id bigint);"
+psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "CREATE TABLE dummy_test (id bigint, PRIMARY KEY(id));"

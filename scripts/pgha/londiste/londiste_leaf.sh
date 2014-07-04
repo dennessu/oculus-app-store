@@ -49,7 +49,7 @@ done
 echo "[LONDISTE][REPLICA] replica promoted!"
 
 echo "[LONDISTE][REPLICA] ensure replica can be written"
-while ! echo exit | psql postgres -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "insert into dummy_test values(1);" || echo "ERROR" | grep -v "ERROR";
+while ! echo exit | psql postgres -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "insert into dummy_test values($(($(date +%s%N)/1000000)));" || echo "ERROR" | grep -v "ERROR";
 do
    sleep 1 && echo "[LONDISTE][REPLICA] replica is still in read-only status...";
 done

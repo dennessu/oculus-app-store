@@ -50,7 +50,7 @@ while ! echo exit | psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "SELECT pg
 echo "[FAILOVER][SLAVE] slave promoted!"
 
 echo "[FAILOVER][SLAVE] ensure slave can be written"
-while ! echo exit | psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "insert into dummy_test values(1);" || echo "ERROR" | grep -v "ERROR";
+while ! echo exit | psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "insert into dummy_test values($(($(date +%s%N)/1000000)));" || echo "ERROR" | grep -v "ERROR";
 do
    sleep 1 && echo "[FAILOVER][SLAVE] slave is still in read-only status...";
 done

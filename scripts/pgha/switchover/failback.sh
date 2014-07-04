@@ -51,7 +51,7 @@ while ! echo exit | psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT 
 echo "[FAILBACK][MASTER] master promoted!"
 
 echo "[FAILBACK][MASTER] ensure master can be written"
-while ! echo exit | psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "insert into dummy_test values(1);" || echo "ERROR" | grep -v "ERROR";
+while ! echo exit | psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "insert into dummy_test values($(($(date +%s%N)/1000000)));" || echo "ERROR" | grep -v "ERROR";
 do
    sleep 1 && echo "[FAILBACK][MASTER] master is still in read-only status...";
 done
