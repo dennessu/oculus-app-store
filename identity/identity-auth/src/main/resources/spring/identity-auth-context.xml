@@ -10,4 +10,14 @@
           class="com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory"
           parent="abstractAuthorizeCallbackFactory">
     </bean>
+
+    <bean id="organizationAuthorizeCallbackFactory"
+          class="com.junbo.identity.auth.OrganizationAuthorizeCallback"
+          parent="abstractAuthorizeCallbackFactory">
+    </bean>
+
+    <bean id="groupAuthorizeCallbackFactory"
+          class="com.junbo.identity.auth.GroupAuthorizeCallbackFactory"
+          parent="abstractAuthorizeCallbackFactory">
+    </bean>
 </beans>

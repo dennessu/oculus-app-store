@@ -1,0 +1,37 @@
+{
+    "apiName": "groups",
+    "scopes": {
+        "identity": [
+            {
+                "precondition": "hasRole(\"organization\",\"admin\")",
+                "rights": [
+                    "create", "update", "read", "delete"
+                ],
+                "scriptType": "SPEL"
+            },
+            {
+                "precondition": "hasRole(\"organization\",\"developer\")",
+                "rights": [
+                    "read"
+                ],
+                "scriptType": "SPEL"
+            },
+            {
+                "precondition": "hasRole(\"organization\",\"publisher\")",
+                "rights": [
+                    "read"
+                ],
+                "scriptType": "SPEL"
+            }
+        ],
+        "identity.service": [
+            {
+                "precondition": "true",
+                "rights": [
+                    "create", "update", "read", "delete"
+                ],
+                "scriptType": "SPEL"
+            }
+        ]
+    }
+}

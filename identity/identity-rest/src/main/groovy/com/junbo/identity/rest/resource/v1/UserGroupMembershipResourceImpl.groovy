@@ -1,8 +1,12 @@
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.RightsScope
 import com.junbo.common.id.UserGroupId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
+import com.junbo.identity.auth.GroupAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserGroupFilter
 import com.junbo.identity.core.service.validator.UserGroupValidator
 import com.junbo.identity.data.repository.UserGroupRepository
@@ -15,6 +19,8 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
+
+import static com.junbo.authorization.spec.error.AppErrors.INSTANCE
 
 /**
  * Created by liangfu on 4/9/14.
@@ -32,6 +38,12 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
     @Autowired
     private UserGroupValidator userGroupValidator
 
+    @Autowired
+    private AuthorizeService authorizeService
+
+    @Autowired
+    private GroupAuthorizeCallbackFactory authorizeCallbackFactory
+
     @Override
     Promise<UserGroup> create(UserGroup userGroup) {
         if (userGroup == null) {
@@ -41,11 +53,18 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
         userGroup = userGroupFilter.filterForCreate(userGroup)
 
         return userGroupValidator.validateForCreate(userGroup).then {
-            return userGroupRepository.create(userGroup).then { UserGroup newUserGroup ->
-                Created201Marker.mark(newUserGroup.getId())
+            def callback = authorizeCallbackFactory.create(userGroup.groupId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('create')) {
+                    throw INSTANCE.forbidden().exception()
+                }
 
-                newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
-                return Promise.pure(newUserGroup)
+                return userGroupRepository.create(userGroup).then { UserGroup newUserGroup ->
+                    Created201Marker.mark(newUserGroup.getId())
+
+                    newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
+                    return Promise.pure(newUserGroup)
+                }
             }
         }
     }
@@ -57,10 +76,17 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
         }
 
         return userGroupValidator.validateForGet(userGroupId).then { UserGroup newUserGroup ->
-            newUserGroup = userGroupFilter.filterForGet(newUserGroup,
-                    getOptions.properties?.split(',') as List<String>)
+            def callback = authorizeCallbackFactory.create(newUserGroup.groupId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('read')) {
+                    throw AppErrors.INSTANCE.userGroupNotFound(userGroupId).exception()
+                }
 
-            return Promise.pure(newUserGroup)
+                newUserGroup = userGroupFilter.filterForGet(newUserGroup,
+                        getOptions.properties?.split(',') as List<String>)
+
+                return Promise.pure(newUserGroup)
+            }
         }
     }
 
@@ -79,13 +105,20 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
                 throw AppErrors.INSTANCE.userGroupNotFound(userGroupId).exception()
             }
 
-            userGroup = userGroupFilter.filterForPatch(userGroup, oldUserGroup)
+            def callback = authorizeCallbackFactory.create(oldUserGroup.groupId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('update')) {
+                    throw INSTANCE.forbidden().exception()
+                }
 
-            return userGroupValidator.validateForUpdate(userGroupId, userGroup, oldUserGroup).then {
+                userGroup = userGroupFilter.filterForPatch(userGroup, oldUserGroup)
 
-                return userGroupRepository.update(userGroup).then { UserGroup newUserGroup ->
-                    newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
-                    return Promise.pure(newUserGroup)
+                return userGroupValidator.validateForUpdate(userGroupId, userGroup, oldUserGroup).then {
+
+                    return userGroupRepository.update(userGroup).then { UserGroup newUserGroup ->
+                        newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
+                        return Promise.pure(newUserGroup)
+                    }
                 }
             }
         }
@@ -106,12 +139,19 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
                 throw AppErrors.INSTANCE.userGroupNotFound(userGroupId).exception()
             }
 
-            userGroup = userGroupFilter.filterForPut(userGroup, oldUserGroup)
+            def callback = authorizeCallbackFactory.create(oldUserGroup.groupId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('update')) {
+                    throw INSTANCE.forbidden().exception()
+                }
 
-            return userGroupValidator.validateForUpdate(userGroupId, userGroup, oldUserGroup).then {
-                return userGroupRepository.update(userGroup).then { UserGroup newUserGroup ->
-                    newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
-                    return Promise.pure(newUserGroup)
+                userGroup = userGroupFilter.filterForPut(userGroup, oldUserGroup)
+
+                return userGroupValidator.validateForUpdate(userGroupId, userGroup, oldUserGroup).then {
+                    return userGroupRepository.update(userGroup).then { UserGroup newUserGroup ->
+                        newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
+                        return Promise.pure(newUserGroup)
+                    }
                 }
             }
         }
@@ -134,18 +174,26 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
             return search(listOptions).then { List<UserGroup> userGroupList ->
                 def result = new Results<UserGroup>(items: [])
 
-                userGroupList.each { UserGroup newUserGroup ->
+                return Promise.each(userGroupList) { UserGroup newUserGroup ->
                     if (newUserGroup != null) {
                         newUserGroup = userGroupFilter.filterForGet(newUserGroup,
                                 listOptions.properties?.split(',') as List<String>)
                     }
 
                     if (newUserGroup != null) {
-                        result.items.add(newUserGroup)
+                        def callback = authorizeCallbackFactory.create(newUserGroup.groupId)
+                        return RightsScope.with(authorizeService.authorize(callback)) {
+                            if (AuthorizeContext.hasRights('read')) {
+                                result.items.add(newUserGroup)
+                            }
+                            return Promise.pure(null)
+                        }
                     }
-                }
 
-                return Promise.pure(result)
+                    return Promise.pure(null)
+                }.then {
+                    return Promise.pure(result)
+                }
             }
         }
     }

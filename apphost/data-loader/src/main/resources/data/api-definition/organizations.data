@@ -1,0 +1,44 @@
+{
+    "apiName": "organizations",
+    "scopes": {
+        "identity": [
+            {
+                "precondition": "ownedByCurrentUser",
+                "rights": [
+                    "create", "update", "read", "delete"
+                ],
+                "scriptType": "SPEL"
+            },
+            {
+                "precondition": "hasRole(\"admin\")",
+                "rights": [
+                    "create", "update", "read", "delete"
+                ],
+                "scriptType": "SPEL"
+            },
+            {
+                "precondition": "hasRole(\"developer\")",
+                "rights": [
+                    "read"
+                ],
+                "scriptType": "SPEL"
+            },
+            {
+                "precondition": "hasRole(\"publisher\")",
+                "rights": [
+                    "read"
+                ],
+                "scriptType": "SPEL"
+            }
+        ],
+        "identity.service": [
+            {
+                "precondition": "true",
+                "rights": [
+                    "create", "update", "read", "delete"
+                ],
+                "scriptType": "SPEL"
+            }
+        ]
+    }
+}

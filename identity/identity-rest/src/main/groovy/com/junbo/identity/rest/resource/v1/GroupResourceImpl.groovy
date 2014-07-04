@@ -5,9 +5,13 @@
  */
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.RightsScope
 import com.junbo.common.id.GroupId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
+import com.junbo.identity.auth.GroupAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.GroupFilter
 import com.junbo.identity.core.service.validator.GroupValidator
 import com.junbo.identity.data.repository.GroupRepository
@@ -23,7 +27,8 @@ import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.util.StringUtils
+
+import static com.junbo.authorization.spec.error.AppErrors.INSTANCE
 
 /**
  * Created by xiali_000 on 4/8/2014.
@@ -44,16 +49,29 @@ class GroupResourceImpl implements GroupResource {
     @Autowired
     private GroupValidator groupValidator
 
+    @Autowired
+    private AuthorizeService authorizeService
+
+    @Autowired
+    private GroupAuthorizeCallbackFactory authorizeCallbackFactory
+
     @Override
     Promise<Group> create(Group group) {
         group = groupFilter.filterForCreate(group)
 
         return groupValidator.validateForCreate(group).then {
-            return groupRepository.create(group).then { Group newGroup ->
-                Created201Marker.mark(newGroup.getId())
+            def callback = authorizeCallbackFactory.create(group)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('create')) {
+                    throw INSTANCE.forbidden().exception()
+                }
 
-                newGroup = groupFilter.filterForGet(newGroup, null)
-                return Promise.pure(newGroup)
+                return groupRepository.create(group).then { Group newGroup ->
+                    Created201Marker.mark(newGroup.getId())
+
+                    newGroup = groupFilter.filterForGet(newGroup, null)
+                    return Promise.pure(newGroup)
+                }
             }
         }
     }
@@ -66,12 +84,19 @@ class GroupResourceImpl implements GroupResource {
                 throw AppErrors.INSTANCE.groupNotFound(groupId).exception()
             }
 
-            group = groupFilter.filterForPut(group, oldGroup)
+            def callback = authorizeCallbackFactory.create(oldGroup)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('update')) {
+                    throw INSTANCE.forbidden().exception()
+                }
 
-            return groupValidator.validateForUpdate(groupId, group, oldGroup).then {
-                return groupRepository.update(group).then { Group newGroup ->
-                    newGroup = groupFilter.filterForGet(newGroup, null)
-                    return Promise.pure(newGroup)
+                group = groupFilter.filterForPut(group, oldGroup)
+
+                return groupValidator.validateForUpdate(groupId, group, oldGroup).then {
+                    return groupRepository.update(group).then { Group newGroup ->
+                        newGroup = groupFilter.filterForGet(newGroup, null)
+                        return Promise.pure(newGroup)
+                    }
                 }
             }
         }
@@ -85,12 +110,19 @@ class GroupResourceImpl implements GroupResource {
                 throw AppErrors.INSTANCE.groupNotFound(groupId).exception()
             }
 
-            group = groupFilter.filterForPatch(group, oldGroup)
+            def callback = authorizeCallbackFactory.create(oldGroup)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('update')) {
+                    throw INSTANCE.forbidden().exception()
+                }
 
-            return groupValidator.validateForUpdate(groupId, group, oldGroup).then {
-                return groupRepository.update(group).then { Group newGroup ->
-                    newGroup = groupFilter.filterForGet(newGroup, null)
-                    return Promise.pure(newGroup)
+                group = groupFilter.filterForPatch(group, oldGroup)
+
+                return groupValidator.validateForUpdate(groupId, group, oldGroup).then {
+                    return groupRepository.update(group).then { Group newGroup ->
+                        newGroup = groupFilter.filterForGet(newGroup, null)
+                        return Promise.pure(newGroup)
+                    }
                 }
             }
         }
@@ -108,8 +140,15 @@ class GroupResourceImpl implements GroupResource {
                     throw AppErrors.INSTANCE.groupNotFound(groupId).exception()
                 }
 
-                newGroup = groupFilter.filterForGet(newGroup, getOptions.properties?.split(',') as List<String>)
-                return Promise.pure(newGroup)
+                def callback = authorizeCallbackFactory.create(newGroup)
+                return RightsScope.with(authorizeService.authorize(callback)) {
+                    if (!AuthorizeContext.hasRights('read')) {
+                        throw AppErrors.INSTANCE.groupNotFound(groupId).exception()
+                    }
+
+                    newGroup = groupFilter.filterForGet(newGroup, getOptions.properties?.split(',') as List<String>)
+                    return Promise.pure(newGroup)
+                }
             }
         }
     }
@@ -124,12 +163,19 @@ class GroupResourceImpl implements GroupResource {
                         return Promise.pure(resultList)
                     }
 
-                    groupList.each { Group existingGroup ->
-                        Group filterGroup = groupFilter.filterForGet(existingGroup, listOptions.properties?.split(',') as List<String>)
-                        resultList.items.add(filterGroup)
-                    }
+                    return Promise.each(groupList) { Group existingGroup ->
+                        def callback = authorizeCallbackFactory.create(existingGroup)
+                        return RightsScope.with(authorizeService.authorize(callback)) {
+                            if (AuthorizeContext.hasRights('read')) {
+                                Group filterGroup = groupFilter.filterForGet(existingGroup, listOptions.properties?.split(',') as List<String>)
+                                resultList.items.add(filterGroup)
+                            }
 
-                    return Promise.pure(resultList)
+                            return Promise.pure(null)
+                        }
+                    }.then {
+                        return Promise.pure(resultList)
+                    }
                 }
             } else {
                 return userGroupRepository.searchByUserId(listOptions.userId, listOptions.limit, listOptions.offset).then { List<UserGroup> userGroupList ->
@@ -139,9 +185,15 @@ class GroupResourceImpl implements GroupResource {
 
                     return Promise.each(userGroupList) { UserGroup userGroup ->
                         return groupValidator.validateForGet(userGroup.groupId).then { Group existing ->
-                            existing = groupFilter.filterForGet(existing, listOptions.properties?.split(',') as List<String>)
-                            resultList.items.add(existing)
-                            return Promise.pure(null)
+                            def callback = authorizeCallbackFactory.create(existing)
+                            return RightsScope.with(authorizeService.authorize(callback)) {
+                                if (AuthorizeContext.hasRights('read')) {
+                                    existing = groupFilter.filterForGet(existing, listOptions.properties?.split(',') as List<String>)
+                                    resultList.items.add(existing)
+                                }
+
+                                return Promise.pure(null)
+                            }
                         }
                     }.then {
                         return Promise.pure(resultList)
@@ -169,8 +221,15 @@ class GroupResourceImpl implements GroupResource {
 
     @Override
     Promise<Void> delete(GroupId groupId) {
-        return groupValidator.validateForGet(groupId).then {
-            return groupRepository.delete(groupId)
+        return groupValidator.validateForGet(groupId).then { Group existing ->
+            def callback = authorizeCallbackFactory.create(existing)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('delete')) {
+                    throw INSTANCE.forbidden().exception()
+                }
+
+                return groupRepository.delete(groupId)
+            }
         }
     }
 }
