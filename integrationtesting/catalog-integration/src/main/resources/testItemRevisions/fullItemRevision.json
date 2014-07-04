@@ -1,7 +1,16 @@
 {
-    "item": {"href": "https://api.oculusvr.com/v1/items/6B54DDA43C9F", "id": "6B54DDA43C9F"},
-    "developer": {"href": "https://api.oculusvr.com/v1/organizations/1234", "id": "1234"},
+    "rollupPackageName": "RollupPackageName_randomString",
+    "packageName": "PackageName_randomString",
+    "sku": "Sku_randomString",
     "status": "DRAFT",
+    "iapHostItems":[
+        {
+            "href":"/v1/items/131ea78a9b0566a0118f27bb6f608107",
+            "id":"131ea78a9b0566a0118f27bb6f608107"
+        }
+    ],
+    "developer": {"href": "https://api.oculusvr.com/v1/organizations/1234", "id": "1234"},
+    "item": {"href": "https://api.oculusvr.com/v1/items/6B54DDA43C9F", "id": "6B54DDA43C9F"},
     "msrp":{
         "priceType": "CUSTOM",
         "priceTier": null,
@@ -11,6 +20,38 @@
         }
     },
     "supportedInputDevices": ["KEYBOARD", "MOUSE"],
+    "userInteractionMode": "MULTI_USER",
+    "platforms": ["PC", "MAC"],
+    "ageRatings": {
+        "US": [
+            {
+                "category": "ESRB",
+                "descriptors": ["EARLY CHILDHOOD", "EVERYONE", "Everyone 10+ (E10+)", "TEEN", "MATURE"],
+                "certificate": "certificate",
+                "online": true,
+                "provisional": false
+            },
+            {
+                "category": "PEGI",
+                "descriptors": ["Violence", "Bad Language", "Fear / Horror", "Sex", "Drugs", "Gambling", "Discrimination"],
+                "certificate": "certificate",
+                "online": true,
+                "provisional": false
+            }
+        ]
+    },
+    "supportedLocales": {
+        "en_US": {
+            "audio": true,
+            "interface": true,
+            "subtitles": true
+        },
+        "zh_CN": {
+            "audio": true,
+            "interface": true,
+            "subtitles": true
+        }
+    },
     "locales":{
         "en_US":{
             "name": "Angry Bird",
@@ -54,9 +95,10 @@
             "credits": "credits",
             "copyright": "copyright",
             "knownBugs": "knownBugs",
-            "color": "black",
-            "size": "small",
             "supportEmail": "support email",
+            "website": "website",
+            "manualDocument": "the pdf address",
+            "communityForumLink": "community forum link",
             "images":{
                 "thumbnail": {
                     "id": "id of image",
@@ -73,9 +115,15 @@
                     "y":15
                 }
             },
-            "videos":[],
-            "manualDocument": "the pdf address",
-            "communityForumLink": "community forum link"
+            "videos":[
+                {
+                    "service": "YOUTUBE",
+                    "id": "id of the video",
+                    "title": "title of the video"
+                }
+            ],
+            "color": "black",
+            "size": "small"
         }
     },
     "countries": {
@@ -83,19 +131,12 @@
             "supportPhone": "1234567890"
         }
     },
-    "binaries": {
-        "PC":{
-            "href":"http://www.google.com/downlaod/angrybird1_0.exe",
-            "size": 1024,
-            "version": "1.0"
-        },
-        "MAC":
+    "entitlementDefs": [
         {
-            "href":"http://www.google.com/download/angrybird1_1mac.dmg",
-            "size": 1024,
-            "version": "1.1"
+            "type":"ALLOW_IN_APP",
+            "isConsumable":false
         }
-    },
+    ],
     "futureExpansion":{},
     "rev": null
 }

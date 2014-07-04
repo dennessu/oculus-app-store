@@ -11,6 +11,7 @@ package com.junbo.test.catalog.enums;
  * @author Jason
  */
 public enum EntitlementType {
+    ALLOW_IN_APP("ALLOW_IN_APP"),
     DEVELOPER("DEVELOPER"),
     DOWNLOAD("DOWNLOAD"),
     RUN("RUN");
