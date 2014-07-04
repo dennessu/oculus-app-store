@@ -47,8 +47,8 @@ class CommunicationRepositoryCloudantImpl extends CloudantClient<Communication> 
 
     @Override
     Promise<List<Communication>> searchByRegionAndTranslation(CountryId region, LocaleId translation, Integer limit, Integer offset) {
-        def startKey = [region.value, translation.value]
-        def endKey = [region.value, translation.value]
+        def startKey = [region.toString(), translation.toString()]
+        def endKey = [region.toString(), translation.toString()]
         return super.queryView('by_region_and_translation', startKey.toArray(new String()), endKey.toArray(new String()), false, limit, offset, false)
     }
 

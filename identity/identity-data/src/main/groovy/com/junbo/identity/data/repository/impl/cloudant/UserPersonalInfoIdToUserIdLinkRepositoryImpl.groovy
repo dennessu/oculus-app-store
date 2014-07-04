@@ -17,12 +17,12 @@ class UserPersonalInfoIdToUserIdLinkRepositoryImpl extends CloudantClient<UserPe
 
     @Override
     Promise<List<UserPersonalInfoIdToUserIdLink>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        return queryView('by_user_id', userId.value.toString(), limit, offset, false)
+        return queryView('by_user_id', userId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<UserPersonalInfoIdToUserIdLink> searchByUserPersonalInfoId(UserPersonalInfoId userPersonalInfoId) {
-        return queryView('by_user_personal_info_id', userPersonalInfoId.value.toString()).then { List<UserPersonalInfoIdToUserIdLink> list ->
+        return queryView('by_user_personal_info_id', userPersonalInfoId.toString()).then { List<UserPersonalInfoIdToUserIdLink> list ->
             if (CollectionUtils.isEmpty(list)) {
                 return Promise.pure(null)
             }

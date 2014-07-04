@@ -23,7 +23,7 @@ class OrganizationRepositoryCloudantImpl extends CloudantClient<Organization> im
 
     @Override
     Promise<List<Organization>> searchByOwner(UserId ownerId, Integer limit, Integer offset) {
-        return queryView('by_owner_id', ownerId.value.toString(), limit, offset, false)
+        return queryView('by_owner_id', ownerId.toString(), limit, offset, false)
     }
 
     @Override

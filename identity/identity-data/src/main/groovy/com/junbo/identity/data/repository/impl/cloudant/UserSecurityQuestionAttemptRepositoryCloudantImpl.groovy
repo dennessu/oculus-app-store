@@ -43,7 +43,8 @@ class UserSecurityQuestionAttemptRepositoryCloudantImpl extends CloudantClient<U
     @Override
     Promise<List<UserSecurityQuestionVerifyAttempt>> searchByUserIdAndSecurityQuestionId(UserId userId,
                                      UserSecurityQuestionId userSecurityQuestionId, Integer limit, Integer offset) {
-        return queryView('by_user_id_security_question_id',
-                "${userId.toString()}:${userSecurityQuestionId.toString()}", limit, offset, false)
+        def startKey = [userId.toString(), userSecurityQuestionId.toString()]
+        def endKey = [userId.toString(), userSecurityQuestionId.toString()]
+        return queryView('by_user_id_security_question_id', startKey.toArray(new String()), endKey.toArray(new String()), false, limit, offset, false)
     }
 }

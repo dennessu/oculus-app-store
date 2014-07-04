@@ -37,7 +37,9 @@ class UserPasswordRepositoryCloudantImpl extends CloudantClient<UserPassword> im
     @Override
     Promise<List<UserPassword>> searchByUserIdAndActiveStatus(UserId userId, Boolean active, Integer limit,
                                                               Integer offset) {
-        return queryView('by_user_id_active_status', "${userId.toString()}:${active}", limit, offset, false)
+        def startKey = [userId.toString(), active]
+        def endKey = [userId.toString(), active]
+        return queryView('by_user_id_active_status', startKey.toArray(new String()), endKey.toArray(new String()), false, limit, offset, false)
     }
 
     @Override

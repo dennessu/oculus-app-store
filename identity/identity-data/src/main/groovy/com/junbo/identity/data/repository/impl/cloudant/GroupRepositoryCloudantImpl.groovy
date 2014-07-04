@@ -29,7 +29,9 @@ class GroupRepositoryCloudantImpl extends CloudantClient<Group> implements Group
 
     @Override
     Promise<Group> searchByOrganizationIdAndName(OrganizationId id, String name, Integer limit, Integer offset) {
-        return queryView('by_organization_id_and_name', "${id.value}:${name}", limit, offset, false).then { List<Group> list ->
+        def startKey = [id.toString(), name]
+        def endKey = [id.toString(), name]
+        return queryView('by_organization_id_and_name', startKey.toArray(new String()), endKey.toArray(new String()), false, limit, offset, false).then { List<Group> list ->
             return list.size() > 0 ? Promise.pure(list[0]) : Promise.pure(null)
         }
     }
