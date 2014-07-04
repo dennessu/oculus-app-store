@@ -33,22 +33,24 @@ class CountryRepositoryCloudantImpl extends CloudantClient<Country> implements C
 
     @Override
     Promise<Void> delete(CountryId id) {
-        return cloudantDelete(id.value)
+        return cloudantDelete(id.toString())
     }
 
     @Override
     Promise<List<Country>> searchByDefaultCurrencyId(CurrencyId currencyId, Integer limit, Integer offset) {
-        return queryView('by_default_currency', currencyId.value, limit, offset, false)
+        return queryView('by_default_currency', currencyId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<Country>> searchByDefaultLocaleId(LocaleId localeId, Integer limit, Integer offset) {
-        return queryView('by_default_locale', localeId.value, limit, offset, false)
+        return queryView('by_default_locale', localeId.toString(), limit, offset, false)
     }
 
     @Override
     Promise<List<Country>> searchByDefaultCurrencyIdAndLocaleId(CurrencyId currencyId, LocaleId localeId, Integer limit, Integer offset) {
-        return queryView('by_default_locale_currency', "${currencyId.value}:${localeId.value}", limit, offset, false)
+        def startKey = [currencyId.toString(), localeId.toString()]
+        def endKey = [currencyId.toString(), localeId.toString()]
+        return queryView('by_default_locale_currency', startKey.toArray(new String()), endKey.toArray(new String()), false, limit, offset, false)
     }
 
     @Override

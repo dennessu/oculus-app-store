@@ -12,8 +12,8 @@ import groovy.transform.CompileStatic
 class DeviceRepositoryCloudantImpl extends CloudantClient<Device> implements DeviceRepository {
 
     @Override
-    Promise<Device> get(DeviceId groupId) {
-        return cloudantGet(groupId.toString())
+    Promise<Device> get(DeviceId deviceId) {
+        return cloudantGet(deviceId.toString())
     }
 
     @Override

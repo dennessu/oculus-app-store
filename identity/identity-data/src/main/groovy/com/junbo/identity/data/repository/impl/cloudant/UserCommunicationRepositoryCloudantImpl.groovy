@@ -42,8 +42,9 @@ class UserCommunicationRepositoryCloudantImpl extends CloudantClient<UserCommuni
     @Override
     Promise<List<UserCommunication>> searchByUserIdAndCommunicationId(UserId userId, CommunicationId communicationId,
                                                                       Integer limit, Integer offset) {
-        return queryView('by_user_id_communication_id', "${userId.toString()}:${communicationId.toString()}",
-                limit, offset, false)
+        def startKey = [userId.toString(), communicationId.toString()]
+        def endKey = [userId.toString(), communicationId.toString()]
+        return queryView('by_user_id_communication_id', startKey.toArray(new String()), endKey.toArray(new String()), false, limit, offset, false)
     }
 
     @Override

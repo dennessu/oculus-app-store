@@ -30,19 +30,6 @@ class UserTosRepositoryCloudantImpl extends CloudantClient<UserTosAgreement> imp
     }
 
     @Override
-    Promise<List<UserTosAgreement>> search(UserTosAgreementListOptions getOption) {
-        return queryView('by_user_id', getOption.userId.value.toString(),
-                getOption.limit, getOption.offset, false).then { List<UserTosAgreement> list ->
-            if (getOption.tosId != null) {
-                list.retainAll { UserTosAgreement agreement ->
-                    agreement.tosId == getOption.tosId
-                }
-            }
-            return Promise.pure(list)
-        }
-    }
-
-    @Override
     Promise<List<UserTosAgreement>> searchByUserId(UserId userId, Integer limit, Integer offset) {
         return queryView('by_user_id', userId.toString(), limit, offset, false)
     }
@@ -54,7 +41,9 @@ class UserTosRepositoryCloudantImpl extends CloudantClient<UserTosAgreement> imp
 
     @Override
     Promise<List<UserTosAgreement>> searchByUserIdAndTosId(UserId userId, TosId tosId, Integer limit, Integer offset) {
-        return queryView('by_user_id_tos_id', "${userId.toString()}:${tosId.toString()}", limit, offset, false)
+        def startKey = [userId.toString(), tosId.toString()]
+        def endKey = [userId.toString(), tosId.toString()]
+        return queryView('by_user_id_tos_id', startKey.toArray(new String()), endKey.toArray(new String()), false, limit, offset, false)
     }
 
     @Override

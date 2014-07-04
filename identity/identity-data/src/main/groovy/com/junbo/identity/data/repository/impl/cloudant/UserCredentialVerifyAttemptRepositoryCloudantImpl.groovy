@@ -37,13 +37,17 @@ class UserCredentialVerifyAttemptRepositoryCloudantImpl extends CloudantClient<U
     @Override
     Promise<List<UserCredentialVerifyAttempt>> searchByUserIdAndCredentialType(UserId userId, String type,
                                                                                Integer limit, Integer offset) {
-        return queryView('by_user_id_credential_type', "${userId.toString()}:${type}", limit, offset, false)
+        def startKey = [userId.toString(), type]
+        def endKey = [userId.toString(), type]
+        return queryView('by_user_id_credential_type', startKey.toArray(new String()), endKey.toArray(new String()), false, limit, offset, false)
     }
 
     @Override
     Promise<List<UserCredentialVerifyAttempt>> searchByIPAddressAndCredentialType(String ipAddress, String type,
                                                                                   Integer limit, Integer offset) {
-        return queryView('by_ip_address_credential_type', "${ipAddress}:${type}", limit, offset, false)
+        def startKey = [ipAddress, type]
+        def endKey = [ipAddress, type]
+        return queryView('by_ip_address_credential_type', startKey.toArray(new String()), endKey.toArray(new String()), false, limit, offset, false)
     }
 
     @Override

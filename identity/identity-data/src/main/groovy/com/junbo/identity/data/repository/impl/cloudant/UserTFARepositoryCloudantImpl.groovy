@@ -16,8 +16,9 @@ class UserTFARepositoryCloudantImpl extends CloudantClient<UserTFA> implements U
     @Override
     Promise<List<UserTFA>> searchTFACodeByUserIdAndPersonalInfoId(UserId userId, UserPersonalInfoId personalInfo,
                                                                Integer limit, Integer offset) {
-        return queryView('by_user_id_personal_info',
-                "${userId.toString()}:${personalInfo.toString()}", limit, offset, false)
+        def startKey = [userId.toString(), personalInfo.toString()]
+        def endKey = [userId.toString(), personalInfo.toString()]
+        return queryView('by_user_id_personal_info', startKey.toArray(new String()), endKey.toArray(new String()), false, limit, offset, false)
     }
 
     @Override

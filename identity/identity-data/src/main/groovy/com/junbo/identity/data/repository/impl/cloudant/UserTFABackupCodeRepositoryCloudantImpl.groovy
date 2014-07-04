@@ -21,7 +21,9 @@ class UserTFABackupCodeRepositoryCloudantImpl extends CloudantClient<UserTFABack
     @Override
     Promise<List<UserTFABackupCode>> searchByUserIdAndActiveStatus(UserId userId, Boolean active, Integer limit,
                                                                     Integer offset) {
-        return queryView('by_user_id_active', "${userId.toString()}:${active}", limit, offset, false)
+        def startKey = [userId.toString(), active]
+        def endKey = [userId.toString(), active]
+        return queryView('by_user_id_active', startKey.toArray(new String()), endKey.toArray(new String()), false, limit, offset, false)
     }
 
     @Override

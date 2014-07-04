@@ -40,7 +40,9 @@ class UserAuthenticatorRepositoryCloudantImpl extends CloudantClient<UserAuthent
 
     @Override
     Promise<List<UserAuthenticator>> searchByUserIdAndType(UserId userId, String type, Integer limit, Integer offset) {
-        return queryView('by_user_id_auth_type', "${userId.toString()}:${type}", limit, offset, false)
+        def startKey = [userId.toString(), type]
+        def endKey = [userId.toString(), type]
+        return queryView('by_user_id_auth_type', startKey.toArray(new String()), endKey.toArray(new String()), false, limit, offset, false)
     }
 
     @Override
@@ -51,20 +53,25 @@ class UserAuthenticatorRepositoryCloudantImpl extends CloudantClient<UserAuthent
     @Override
     Promise<List<UserAuthenticator>> searchByUserIdAndTypeAndExternalId(UserId userId, String type, String externalId,
                                                                         Integer limit, Integer offset) {
-        return queryView('by_user_id_auth_type_externalId', "${userId.value}:${type}:${externalId}", limit,
+        def startKey = [userId.toString(), type, externalId]
+        def endKey = [userId.toString(), type, externalId]
+        return queryView('by_user_id_auth_type_externalId', startKey.toArray(new String()), endKey.toArray(new String()), false, limit,
                 offset, false)
     }
 
     @Override
     Promise<List<UserAuthenticator>> searchByUserIdAndExternalId(UserId userId, String externalId, Integer limit,
                                                                  Integer offset) {
-        return queryView('by_user_id_externalId', "${userId.toString()}:${externalId}", limit, offset, false)
+        def startKey = [userId.toString(), externalId]
+        def endKey = [userId.toString(), externalId]
+        return queryView('by_user_id_externalId', startKey.toArray(new String()), endKey.toArray(new String()), false, limit, offset, false)
     }
 
     @Override
     Promise<List<UserAuthenticator>> searchByExternalIdAndType(String externalId, String type, Integer limit,
                                                                Integer offset) {
-        return queryView('by_authenticator_externalId_auth_type', "${externalId}:${type}", limit, offset,
-                false)
+        def startKey = [externalId, type]
+        def endKey = [externalId, type]
+        return queryView('by_authenticator_externalId_auth_type', startKey.toArray(new String()), endKey.toArray(new String()), false, limit, offset, false)
     }
 }
