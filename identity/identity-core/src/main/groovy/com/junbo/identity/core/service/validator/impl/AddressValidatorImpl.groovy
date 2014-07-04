@@ -12,7 +12,6 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 
 /**
- * todo:    Need to add validation. Xumeng will follow this.
  * Created by xmchen on 14-4-15.
  */
 @CompileStatic
@@ -31,7 +30,6 @@ class AddressValidatorImpl implements PiiValidator {
         JsonHelper.jsonNodeToObj(value, Address)
 
         return Promise.pure(null)
-        // todo:    User Address
     }
 
     @Override

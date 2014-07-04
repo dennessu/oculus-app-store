@@ -324,8 +324,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         getOption.setUserId(new UserId(userId))
         getOption.setType('pin')
         List<UserCredentialVerifyAttempt> userLoginAttempts =
-                userCredentialVerifyAttemptRepository.searchByUserIdAndCredentialType(new UserId(userId), 'pin',
-                        Integer.MAX_VALUE, 0).get()
+                userCredentialVerifyAttemptRepository.searchByUserIdAndCredentialTypeAndInterval(new UserId(userId), 'pin', 0L, Integer.MAX_VALUE, 0).get()
         assert  userLoginAttempts.size() != 0
     }
 

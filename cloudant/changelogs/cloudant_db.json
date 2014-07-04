@@ -271,11 +271,11 @@
         "by_user_id": {
           "map": "function(doc) {  emit(doc.userId, doc._id)}"
         }, 
-        "by_user_id_credential_type": {
-          "map": "function(doc) { emit([doc.userId, doc.type], doc._id)}"
+        "by_user_id_credential_type_time": {
+          "map": "function(doc) { emit([doc.userId, doc.type, Date.parse(doc.createdTime)], doc._id)}"
         },
-        "by_ip_address_credential_type": {
-          "map": "function(doc) { emit([doc.ipAddress, doc.type], doc._id)}"
+        "by_ip_address_credential_type_time": {
+          "map": "function(doc) { emit([doc.ipAddress, doc.type, Date.parse(doc.createdTime)], doc._id)}"
         }
       }
     }, 

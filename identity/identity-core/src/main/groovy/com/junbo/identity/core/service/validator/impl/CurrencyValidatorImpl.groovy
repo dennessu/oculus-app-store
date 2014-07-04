@@ -220,10 +220,6 @@ class CurrencyValidatorImpl implements CurrencyValidator {
             throw AppErrors.INSTANCE.fieldRequired('locales').exception()
         }
 
-        if (currency.locales == null) {
-            throw AppErrors.INSTANCE.fieldRequired('locales').exception()
-        }
-
         currency.locales.each { Map.Entry<String, CurrencyLocaleKey> entry ->
             if (StringUtils.isEmpty(entry.key)) {
                 throw AppErrors.INSTANCE.fieldRequired('locales.key').exception()

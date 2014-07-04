@@ -148,8 +148,8 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
 
     private Promise<List<UserCredentialVerifyAttempt>> search(UserCredentialAttemptListOptions listOptions) {
         if (listOptions.userId != null && listOptions.type != null) {
-            return userCredentialVerifyAttemptRepository.searchByUserIdAndCredentialType(listOptions.userId,
-                    listOptions.type, listOptions.limit, listOptions.offset)
+            return userCredentialVerifyAttemptRepository.searchByUserIdAndCredentialTypeAndInterval(listOptions.userId,
+                    listOptions.type, 0L, listOptions.limit, listOptions.offset)
         } else if (listOptions.userId != null) {
             return userCredentialVerifyAttemptRepository.searchByUserId(listOptions.userId, listOptions.limit,
                     listOptions.offset)
