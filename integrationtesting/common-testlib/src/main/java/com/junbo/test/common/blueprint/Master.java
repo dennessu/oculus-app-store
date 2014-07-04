@@ -49,7 +49,7 @@ public class Master {
     private Map<String, Order> orders;
     private Map<String, ItemAttribute> itemAttributes;
     private Map<String, OfferAttribute> offerAttributes;
-
+    private final String defaultLocale = "en_US";
 
     private Map<String, PaymentInstrument> paymentInstruments;
     private Map<String, Entitlement> entitlements;
@@ -358,6 +358,48 @@ public class Master {
         if (this.offerRevisions.containsKey(offerRevisionId)) {
             this.offerRevisions.remove(offerRevisionId);
         }
+    }
+
+    public String getOfferIdByName(String offerName) {
+
+        for (Map.Entry<String, Offer> entry : offers.entrySet()) {
+            String key = entry.getKey();
+            Offer offer = entry.getValue();
+            if (offer.getCurrentRevisionId() != null) {
+                OfferRevision offerRevision = this.offerRevisions.get(offer.getCurrentRevisionId());
+
+                try {
+                    if (offerRevision != null && offerRevision.getLocales().get(defaultLocale).getName().equalsIgnoreCase(offerName)) {
+                        return key;
+                    }
+                }
+                catch (Exception ex) {
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+
+    public String getItemIdByName(String itemName) {
+
+        for (Map.Entry<String, Item> entry : items.entrySet()) {
+            String key = entry.getKey();
+            Item item = entry.getValue();
+            if (item.getCurrentRevisionId() != null) {
+                ItemRevision itemRevision = this.itemRevisions.get(item.getCurrentRevisionId());
+
+                try {
+                    if (itemRevision != null && itemRevision.getLocales().get(defaultLocale).getName().equalsIgnoreCase(itemName)) {
+                        return key;
+                    }
+                }
+                catch (Exception ex) {
+                    return null;
+                }
+            }
+        }
+        return null;
     }
 
 }
