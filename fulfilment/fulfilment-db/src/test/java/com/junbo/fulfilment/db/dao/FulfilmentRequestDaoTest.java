@@ -40,7 +40,7 @@ public class FulfilmentRequestDaoTest extends BaseTest {
     }
 
     @Test
-    public void testFindByTrackingGuid() {
+    public void testFindByTrackingUuid() {
         FulfilmentRequestEntity entity = buildFulfilmentRequest();
         dao.create(entity);
 

@@ -57,7 +57,7 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
     @Transactional
     public FulfilmentRequest fulfill(FulfilmentRequest request) {
         // check tracking GUID
-        Long requestId = fulfilmentRequestRepo.existTrackingGuid(request.getUserId(), request.getTrackingUuid());
+        Long requestId = fulfilmentRequestRepo.existTrackingUuid(request.getUserId(), request.getTrackingUuid());
         if (requestId != null) {
             return retrieveRequest(requestId);
         }

@@ -18,6 +18,16 @@ public class FulfilmentRequestRepositoryTest extends BaseTest {
         Assert.assertNotNull(request.getRequestId(), "Entity id should not be null.");
     }
 
+    @Test
+    public void testExistingTrackingUuid() {
+        FulfilmentRequest request = buildFulfilmentRequest();
+        repo.create(request);
+        Assert.assertNotNull(request.getRequestId(), "Entity id should not be null.");
+
+        Long retrievedRequestId = repo.existTrackingUuid(request.getUserId(), request.getTrackingUuid());
+        Assert.assertEquals(retrievedRequestId, request.getRequestId(), "Fulfilment request id should match.");
+    }
+
     private FulfilmentRequest buildFulfilmentRequest() {
         FulfilmentRequest request = new FulfilmentRequest();
 
