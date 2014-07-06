@@ -21,6 +21,8 @@ class JunboHttpContext {
 
         MultivaluedMap<String, String> requestHeaders
 
+        Class requestHandler
+
 
         Integer responseStatus
 
@@ -67,6 +69,14 @@ class JunboHttpContext {
         }
 
         return data.requestUri
+    }
+
+    static Class getRequestHandler() {
+        def data = CURRENT_DATA.get()
+        if (data == null) {
+            return null
+        }
+        return data.requestHandler
     }
 
     static MultivaluedMap<String, String> getRequestHeaders() {

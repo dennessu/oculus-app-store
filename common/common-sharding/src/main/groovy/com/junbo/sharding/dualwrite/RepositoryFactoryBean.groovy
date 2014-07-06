@@ -34,6 +34,7 @@ class RepositoryFactoryBean<T> implements FactoryBean<T>, InitializingBean {
     private PendingActionRepository cloudantPendingActionRepository
 
     private boolean sqlUseAsyncDualWrite;
+    private boolean ignoreDualWriteErrors;
 
     private PlatformTransactionManager platformTransactionManager
     private TransactionManager transactionManager
@@ -41,7 +42,6 @@ class RepositoryFactoryBean<T> implements FactoryBean<T>, InitializingBean {
     private DataAccessStrategy sqlOnlyStrategy;
     private DataAccessStrategy sqlFirstStrategy;
     private DataAccessStrategy cloudantOnlyStrategy;
-    private DataAccessStrategy cloudantFirstStrategy;
 
     @Required
     public void setRepositoryInterface(Class<T> repositoryInterface) {
@@ -66,6 +66,10 @@ class RepositoryFactoryBean<T> implements FactoryBean<T>, InitializingBean {
 
     public void setSqlUseAsyncDualWrite(boolean sqlUseAsyncDualWrite) {
         this.sqlUseAsyncDualWrite = sqlUseAsyncDualWrite
+    }
+
+    void setIgnoreDualWriteErrors(boolean ignoreDualWriteErrors) {
+        this.ignoreDualWriteErrors = ignoreDualWriteErrors
     }
 
     public void setPlatformTransactionManager(PlatformTransactionManager platformTransactionManager) {
@@ -101,7 +105,8 @@ class RepositoryFactoryBean<T> implements FactoryBean<T>, InitializingBean {
                                 sqlPendingActionRepository,
                                 platformTransactionManager
                         ),
-                        transactionManager
+                        transactionManager,
+                        ignoreDualWriteErrors
                 );
             } else {
                 sqlFirstStrategy = new AsyncDualWriteStrategy(sqlRepositoryImpl, sqlPendingActionRepository);

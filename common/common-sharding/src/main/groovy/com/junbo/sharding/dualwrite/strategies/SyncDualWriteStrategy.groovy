@@ -15,6 +15,8 @@ import com.junbo.sharding.dualwrite.data.PendingAction
 import com.junbo.sharding.dualwrite.data.PendingActionRepository
 import com.junbo.sharding.repo.BaseRepository
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.transaction.support.TransactionSynchronizationAdapter
 import org.springframework.transaction.support.TransactionSynchronizationManager
 
@@ -35,18 +37,21 @@ import java.lang.reflect.Method
  */
 @CompileStatic
 public class SyncDualWriteStrategy implements DataAccessStrategy {
+    private static final Logger logger = LoggerFactory.getLogger(SyncDualWriteStrategy.class)
 
     private BaseRepository repositoryImpl;
     private DualWriteQueue dualWriteQueue;
     private PendingActionReplayer replayer;
     private TransactionManager transactionManager;
+    private boolean ignoreDualWriteErrors;
 
     private ThreadLocal<Stack<DualWriteTransactionSynchronization>> transactionStack = new ThreadLocal<>();
 
     public SyncDualWriteStrategy(BaseRepository repositoryImpl,
                                  PendingActionRepository pendingActionRepository,
                                  PendingActionReplayer replayer,
-                                 TransactionManager transactionManager) {
+                                 TransactionManager transactionManager,
+                                 boolean ignoreDualWriteErrors) {
 
         this.repositoryImpl = repositoryImpl;
 
@@ -56,6 +61,7 @@ public class SyncDualWriteStrategy implements DataAccessStrategy {
 
         this.replayer = replayer;
         this.transactionManager = transactionManager;
+        this.ignoreDualWriteErrors = ignoreDualWriteErrors;
     }
 
     @Override
@@ -135,7 +141,13 @@ public class SyncDualWriteStrategy implements DataAccessStrategy {
             for (final PendingAction pendingAction in pendingActions) {
                 Context.get().registerPendingTask {
                     // Note: The code in this brackets are run with a new ThreadLocal
-                    return replayer.replay(pendingAction);
+                    def future = replayer.replay(pendingAction);
+                    if (ignoreDualWriteErrors) {
+                        future = future.recover { Throwable ex ->
+                            logger.error("Failed to dualwrite to cloudant. PendingAction ID: " + pendingAction.id);
+                        }
+                    }
+                    return future
                 }
             }
         }

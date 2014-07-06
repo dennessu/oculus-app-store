@@ -9,6 +9,7 @@
         <property name="sqlPendingActionRepository" ref="pendingActionSqlRepo" />
         <property name="cloudantPendingActionRepository" ref="pendingActionCloudantRepo" />
         <property name="sqlUseAsyncDualWrite" value="false" />
+        <property name="ignoreDualWriteErrors" value="${dualwrite.ignoreDualWriteErrors}" />
         <property name="platformTransactionManager" ref="transactionManager" />
         <property name="transactionManager" ref="simpleTransactionManager" />
     </bean>
