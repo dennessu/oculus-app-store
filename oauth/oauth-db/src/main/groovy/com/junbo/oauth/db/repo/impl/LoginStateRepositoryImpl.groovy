@@ -75,7 +75,7 @@ class LoginStateRepositoryImpl implements LoginStateRepository {
         }
 
         return new LoginStateEntity(
-                id: loginState.id,
+                id: loginState.getId(),
                 userId: loginState.userId,
                 expiredBy: loginState.expiredBy,
                 lastAuthDate: loginState.lastAuthDate,
