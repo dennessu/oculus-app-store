@@ -19,4 +19,14 @@ class AuthorizationCode extends ExpirableToken {
     String nonce
     String redirectUri
     Date lastAuthDate
+
+    @Override
+    String getId() {
+        return code
+    }
+
+    @Override
+    void setId(String id) {
+        this.code = id
+    }
 }

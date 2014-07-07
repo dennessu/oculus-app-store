@@ -19,4 +19,14 @@ class RememberMeToken extends ExpirableToken {
     String stolen
 
     Date lastAuthDate
+
+    @Override
+    String getId() {
+        return tokenValue
+    }
+
+    @Override
+    void setId(String id) {
+        this.tokenValue = id
+    }
 }

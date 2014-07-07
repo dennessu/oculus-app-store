@@ -45,7 +45,7 @@ class LoginStateRepositoryImpl implements LoginStateRepository {
     }
 
     @Override
-    LoginState saveOrUpdate(LoginState loginState) {
+    LoginState save(LoginState loginState) {
         if (loginState.id == null) {
             loginState.id = tokenGenerator.generateLoginStateId()
         }

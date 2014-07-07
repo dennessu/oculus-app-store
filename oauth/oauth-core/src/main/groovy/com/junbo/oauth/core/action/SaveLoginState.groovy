@@ -36,7 +36,7 @@ class SaveLoginState implements Action {
         def loginState = contextWrapper.loginState
 
         Assert.notNull(loginState, 'loginState is null')
-        loginState = loginStateRepository.saveOrUpdate(loginState)
+        loginState = loginStateRepository.save(loginState)
         contextWrapper.loginState = loginState
 
         CookieUtil.setCookie(context, OAuthParameters.COOKIE_LOGIN_STATE, loginState.id, -1)

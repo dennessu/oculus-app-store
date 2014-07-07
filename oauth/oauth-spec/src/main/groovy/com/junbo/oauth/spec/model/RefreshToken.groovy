@@ -20,4 +20,14 @@ class RefreshToken extends ExpirableToken {
     String salt
 
     boolean stolen
+
+    @Override
+    String getId() {
+        return tokenValue
+    }
+
+    @Override
+    void setId(String id) {
+        this.tokenValue = id
+    }
 }
