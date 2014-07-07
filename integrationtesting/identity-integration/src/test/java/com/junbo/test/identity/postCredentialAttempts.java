@@ -76,6 +76,9 @@ public class postCredentialAttempts {
         CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
                 RandomHelper.randomAlphabetic(15), RandomHelper.randomAlphabetic(15), ip, false);
         Validator.Validate("validate response error code", 409, response.getStatusLine().getStatusCode());
+        String errorMessage = "User reaches maximum login attempt";
+        Validator.Validate("validate response error message", true,
+                EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
         response.close();
     }
 
