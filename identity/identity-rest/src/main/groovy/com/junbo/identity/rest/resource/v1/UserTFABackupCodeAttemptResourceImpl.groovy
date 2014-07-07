@@ -69,8 +69,12 @@ class UserTFABackupCodeAttemptResourceImpl implements UserTFABackupCodeAttemptRe
 
         userTFABackupCodeAttempt = userTFABackupCodeAttemptFilter.filterForCreate(userTFABackupCodeAttempt)
 
-        return userTFABackupCodeAttemptValidator.validateForCreate(userId, userTFABackupCodeAttempt).then {
-
+        return userTFABackupCodeAttemptValidator.validateForCreate(userId, userTFABackupCodeAttempt).recover { Throwable e ->
+            userTFABackupCodeAttempt.succeeded = false
+            return createInNewTran(userTFABackupCodeAttempt).then {
+                throw e
+            }
+        }.then {
             return createInNewTran(userTFABackupCodeAttempt).then { UserTFABackupCodeAttempt attempt ->
 
                 if (attempt.succeeded) {

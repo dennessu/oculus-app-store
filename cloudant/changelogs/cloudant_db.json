@@ -389,7 +389,7 @@
     "user_tfa_back_up_code_attempt": {
       "views": {
         "by_user_id": {
-          "map": "function(doc) {  emit(doc.userId, doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, Date.parse(doc.createdTime)], doc._id)}"
         }
       }
     }, 
@@ -398,8 +398,8 @@
         "by_user_id": {
           "map": "function(doc) {  emit(doc.userId, doc._id)}"
         }, 
-        "by_user_id_tfa_id": {
-          "map": "function(doc) {  emit([doc.userId, doc.userTFAId], doc._id)}"
+        "by_user_id_tfa_id_time": {
+          "map": "function(doc) {  emit([doc.userId, doc.userTFAId, Date.parse(doc.createdTime)], doc._id)}"
         }
       }
     }, 

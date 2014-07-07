@@ -84,7 +84,6 @@
         <property name="attemptRetryInterval" value="${identity.conf.maxCredentialSameUserInterval}" />
         <property name="maxSameIPRetryCount" value="${identity.conf.maxCredentialSameIPRetryCount}" />
         <property name="sameIPRetryInterval" value="${identity.conf.maxCredentialSameIPInterval}" />
-        <property name="transactionManager" ref="transactionManager" />
     </bean>
 
     <bean id="userGroupValidator" class="com.junbo.identity.core.service.validator.impl.UserGroupValidatorImpl">
@@ -154,7 +153,6 @@
         <property name="valueMaxLength" value="255"/>
         <property name="userAgentMinLength" value="1"/>
         <property name="userAgentMaxLength" value="255"/>
-        <property name="transactionManager" ref="transactionManager" />
         <property name="maxRetryCount" value="${identity.conf.maxSecurityQuestionRetryCount}" />
     </bean>
 
@@ -529,7 +527,6 @@
         <property name="minUserAgentLength" value="1" />
         <property name="maxUserAgentLength" value="255" />
         <property name="maxTeleCodeAttemptNumber" value="${identity.conf.maxTeleCodeAttemptNumber}" />
-        <property name="transactionManager" ref="transactionManager" />
     </bean>
 
     <bean id="userTeleBackupCodeValidator" class="com.junbo.identity.core.service.validator.impl.UserTFABackupCodeValidatorImpl">
@@ -561,7 +558,6 @@
         <property name="minVerifyCodeLength" value="1" />
         <property name="maxVerifyCodeLength" value="255" />
         <property name="maxRetryCount" value="${identity.conf.maxTeleCodeAttemptNumber}" />
-        <property name="transactionManager" ref="transactionManager" />
     </bean>
 
     <bean id="organizationValidator" class="com.junbo.identity.core.service.validator.impl.OrganizationValidatorImpl">

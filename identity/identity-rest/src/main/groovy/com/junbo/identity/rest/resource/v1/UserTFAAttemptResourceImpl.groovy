@@ -69,11 +69,17 @@ class UserTFAAttemptResourceImpl implements UserTFAAttemptResource {
 
         userTeleAttempt = userTFAAttemptFilter.filterForCreate(userTeleAttempt)
 
-        return userTFAAttemptValidator.validateForCreate(userId, userTeleAttempt).then {
+        return userTFAAttemptValidator.validateForCreate(userId, userTeleAttempt).recover{ Throwable e ->
+            userTeleAttempt.succeeded = false
+            userTeleAttempt.verifyCode = null
+            return createInNewTran(userTeleAttempt).then {
+                throw e
+            }
+        }.then {
 
             return createInNewTran(userTeleAttempt).then { UserTFAAttempt attempt ->
 
-                if (attempt.succeeded == true) {
+                if (attempt.succeeded) {
                     Created201Marker.mark(attempt.getId())
 
                     attempt.verifyCode = null

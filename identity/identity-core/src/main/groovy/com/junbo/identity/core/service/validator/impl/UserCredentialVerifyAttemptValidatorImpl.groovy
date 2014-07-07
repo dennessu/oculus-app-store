@@ -18,13 +18,8 @@ import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
 import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
 import com.junbo.langur.core.promise.Promise
-import com.junbo.langur.core.transaction.AsyncTransactionTemplate
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.transaction.PlatformTransactionManager
-import org.springframework.transaction.TransactionDefinition
-import org.springframework.transaction.TransactionStatus
-import org.springframework.transaction.support.TransactionCallback
 import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
@@ -64,9 +59,6 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     private Integer sameIPRetryInterval
 
     private NormalizeService normalizeService
-
-    private PlatformTransactionManager transactionManager
-
     private CredentialHashFactory credentialHashFactory
 
     @Override
@@ -430,11 +422,6 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     @Required
     void setSameIPRetryInterval(Integer sameIPRetryInterval) {
         this.sameIPRetryInterval = sameIPRetryInterval
-    }
-
-    @Required
-    void setTransactionManager(PlatformTransactionManager transactionManager) {
-        this.transactionManager = transactionManager
     }
 
     @Required

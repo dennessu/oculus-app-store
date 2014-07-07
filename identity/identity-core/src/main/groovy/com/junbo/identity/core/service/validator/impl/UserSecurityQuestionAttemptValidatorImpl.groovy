@@ -20,13 +20,8 @@ import com.junbo.identity.spec.v1.model.UserSecurityQuestion
 import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
 import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionAttemptListOptions
 import com.junbo.langur.core.promise.Promise
-import com.junbo.langur.core.transaction.AsyncTransactionTemplate
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.transaction.PlatformTransactionManager
-import org.springframework.transaction.TransactionDefinition
-import org.springframework.transaction.TransactionStatus
-import org.springframework.transaction.support.TransactionCallback
 import org.springframework.util.CollectionUtils
 
 import java.util.regex.Pattern
@@ -54,8 +49,6 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
 
     private Integer clientIdMinLength
     private Integer clientIdMaxLength
-
-    private PlatformTransactionManager transactionManager
     private Integer maxRetryCount
 
     @Override
@@ -269,11 +262,6 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
     @Required
     void setClientIdMaxLength(Integer clientIdMaxLength) {
         this.clientIdMaxLength = clientIdMaxLength
-    }
-
-    @Required
-    void setTransactionManager(PlatformTransactionManager transactionManager) {
-        this.transactionManager = transactionManager
     }
 
     @Required

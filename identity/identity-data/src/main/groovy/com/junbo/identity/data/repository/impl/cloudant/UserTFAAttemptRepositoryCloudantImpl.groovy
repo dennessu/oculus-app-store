@@ -24,7 +24,7 @@ class UserTFAAttemptRepositoryCloudantImpl extends CloudantClient<UserTFAAttempt
                                                                Integer limit, Integer offset) {
         def startKey = [userId.toString(), userTFAId.toString()]
         def endKey = [userId.toString(), userTFAId.toString()]
-        return queryView('by_user_id_tfa_id', startKey.toArray(new String()), endKey.toArray(new String()), false, limit, offset, false)
+        return queryView('by_user_id_tfa_id_time', startKey.toArray(new String()), endKey.toArray(new String()), true, limit, offset, true)
     }
 
     @Override

@@ -46,7 +46,6 @@ class UserTFABackupCodeAttemptValidatorImpl implements UserTFABackupCodeAttemptV
     private Integer maxClientIdLength
 
     private Integer maxRetryCount
-    private PlatformTransactionManager transactionManager
 
     @Override
     Promise<UserTFABackupCodeAttempt> validateForGet(UserId userId, UserTFABackupCodeAttemptId attemptId) {
@@ -177,44 +176,21 @@ class UserTFABackupCodeAttemptValidatorImpl implements UserTFABackupCodeAttemptV
             return Promise.pure(null)
         }
 
-        return userTFABackupCodeAttemptRepository.searchByUserId((UserId)user.id, Integer.MAX_VALUE,
-                0).then { List<UserTFABackupCodeAttempt> attemptList ->
+        return userTFABackupCodeAttemptRepository.searchByUserId((UserId)user.id, maxRetryCount, 0).then { List<UserTFABackupCodeAttempt> attemptList ->
             if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxRetryCount) {
                 return Promise.pure(null)
             }
 
-            attemptList.sort(new Comparator<UserTFABackupCodeAttempt>() {
-                @Override
-                int compare(UserTFABackupCodeAttempt o1, UserTFABackupCodeAttempt o2) {
-                    return o2.createdTime <=> o1.createdTime
-                }
-            })
-
-            int index = 0
-            for ( ; index < maxRetryCount; index++) {
-                if (attemptList.get(index).succeeded) {
-                    break
-                }
+            UserTFABackupCodeAttempt userTFABackupCodeAttempt = attemptList.find { UserTFABackupCodeAttempt backupCodeAttempt ->
+                return backupCodeAttempt.succeeded
             }
 
-            if (index == maxRetryCount) {
-                return createInNewTran(user).then {
-                    throw AppErrors.INSTANCE.fieldInvalid('verifyCode', 'Attempt reaches maximum.').exception()
-                }
+            if (userTFABackupCodeAttempt == null) {
+                throw AppErrors.INSTANCE.fieldInvalid('verifyCode', 'Attempt reaches maximum.').exception()
             }
 
             return Promise.pure(null)
         }
-    }
-
-    Promise<User> createInNewTran(User user) {
-        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager)
-        template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
-        return template.execute(new TransactionCallback<Promise<User>>() {
-            Promise<User> doInTransaction(TransactionStatus txnStatus) {
-                return userRepository.update(user)
-            }
-        })
     }
 
     @Required
@@ -272,11 +248,6 @@ class UserTFABackupCodeAttemptValidatorImpl implements UserTFABackupCodeAttemptV
     @Required
     void setMaxRetryCount(Integer maxRetryCount) {
         this.maxRetryCount = maxRetryCount
-    }
-
-    @Required
-    void setTransactionManager(PlatformTransactionManager transactionManager) {
-        this.transactionManager = transactionManager
     }
 }
 

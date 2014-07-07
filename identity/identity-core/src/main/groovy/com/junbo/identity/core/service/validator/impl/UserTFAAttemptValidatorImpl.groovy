@@ -45,7 +45,6 @@ class UserTFAAttemptValidatorImpl implements UserTFAAttemptValidator {
     private Integer maxClientIdLength
 
     private Integer maxTeleCodeAttemptNumber
-    private PlatformTransactionManager transactionManager
 
     @Override
     Promise<UserTFAAttempt> validateForGet(UserId userId, UserTFAAttemptId attemptId) {
@@ -193,47 +192,21 @@ class UserTFAAttemptValidatorImpl implements UserTFAAttemptValidator {
             return Promise.pure(null)
         }
 
-        return userTFAAttemptRepository.searchByUserIdAndUserTFAId((UserId)user.id, attempt.userTFAId,
-                Integer.MAX_VALUE, 0).then { List<UserTFAAttempt> userTeleAttemptList ->
-            if (CollectionUtils.isEmpty(userTeleAttemptList)
-                    || userTeleAttemptList.size() < maxTeleCodeAttemptNumber) {
+        return userTFAAttemptRepository.searchByUserIdAndUserTFAId((UserId)user.id, attempt.userTFAId, maxTeleCodeAttemptNumber, 0).then { List<UserTFAAttempt> userTeleAttemptList ->
+            if (CollectionUtils.isEmpty(userTeleAttemptList) || userTeleAttemptList.size() < maxTeleCodeAttemptNumber) {
                 return Promise.pure(null)
             }
 
-            userTeleAttemptList.sort(new Comparator<UserTFAAttempt>() {
-                @Override
-                int compare(UserTFAAttempt o1, UserTFAAttempt o2) {
-                    return o2.createdTime <=> o1.createdTime
-                }
-            }
-            )
-
-            int size = 0;
-            for (; size < maxTeleCodeAttemptNumber; size++) {
-                if (userTeleAttemptList.get(size).succeeded) {
-                    break
-                }
+            UserTFAAttempt userTFAAttempt = userTeleAttemptList.find { UserTFAAttempt tfaAttempt ->
+                return tfaAttempt.succeeded
             }
 
-            if (size == maxTeleCodeAttemptNumber) {
-                return createInNewTran(user).then {
-                    throw AppErrors.INSTANCE.fieldInvalid('userTFAId',
-                            'UserTele attempt reaches the maximum.').exception()
-                }
+            if (userTFAAttempt == null) {
+                throw AppErrors.INSTANCE.fieldInvalid('userTFAId', 'UserTele attempt reaches the maximum.').exception()
             }
 
             return Promise.pure(null)
         }
-    }
-
-    Promise<User> createInNewTran(User user) {
-        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager)
-        template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
-        return template.execute(new TransactionCallback<Promise<User>>() {
-            Promise<User> doInTransaction(TransactionStatus txnStatus) {
-                return userRepository.update(user)
-            }
-        })
     }
 
     @Required
@@ -291,9 +264,5 @@ class UserTFAAttemptValidatorImpl implements UserTFAAttemptValidator {
     @Required
     void setMaxTeleCodeAttemptNumber(Integer maxTeleCodeAttemptNumber) {
         this.maxTeleCodeAttemptNumber = maxTeleCodeAttemptNumber
-    }
-
-    void setTransactionManager(PlatformTransactionManager transactionManager) {
-        this.transactionManager = transactionManager
     }
 }
