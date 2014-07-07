@@ -160,25 +160,12 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
 
             // If it reaches maxRetryCount, any retry will be treated as false login
             if (index == maxRetryCount) {
-                attempt.succeeded = false
-                return createInNewTran(attempt).then {
-                    throw AppErrors.INSTANCE.fieldInvalid('userId',
-                            'User reaches maximum allowed retry count').exception()
-                }
+                throw AppErrors.INSTANCE.fieldInvalid('userId',
+                        'User reaches maximum allowed retry count').exception()
             }
 
             return Promise.pure(null)
         }
-    }
-
-    Promise<UserSecurityQuestionVerifyAttempt> createInNewTran(UserSecurityQuestionVerifyAttempt attempt) {
-        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager)
-        template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
-        return template.execute(new TransactionCallback<Promise<UserSecurityQuestionVerifyAttempt>>() {
-            Promise<UserSecurityQuestionVerifyAttempt> doInTransaction(TransactionStatus txnStatus) {
-                return attemptRepository.create(attempt)
-            }
-        })
     }
 
     private Promise<Void> checkBasicUserSecurityQuestionAttemptInfo(UserSecurityQuestionVerifyAttempt attempt) {

@@ -253,10 +253,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     return Promise.pure(null)
                 }
 
-                userLoginAttempt.succeeded = false
-                return createInNewTran(userLoginAttempt).then {
-                    throw AppErrors.INSTANCE.fieldInvalid('username', 'User reaches maximum allowed retry count').exception()
-                }
+                throw AppErrors.INSTANCE.fieldInvalid('username', 'User reaches maximum allowed retry count').exception()
             }
         }
     }
@@ -288,11 +285,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxSameUserAttemptCount) {
                 return Promise.pure(null)
             }
-
-            userLoginAttempt.succeeded = false
-            return createInNewTran(userLoginAttempt).then {
-                throw AppErrors.INSTANCE.fieldInvalid('username', 'User reaches maximum login attempt').exception()
-            }
+            throw AppErrors.INSTANCE.fieldInvalid('username', 'User reaches maximum login attempt').exception()
         }
     }
 
@@ -309,21 +302,8 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                 return Promise.pure(null)
             }
 
-            userLoginAttempt.succeeded = false
-            return createInNewTran(userLoginAttempt).then {
-                throw AppErrors.INSTANCE.fieldInvalid('username', 'User reaches maximum login attempt').exception()
-            }
+            throw AppErrors.INSTANCE.fieldInvalid('username', 'User reaches maximum login attempt').exception()
         }
-    }
-
-    Promise<UserCredentialVerifyAttempt> createInNewTran(UserCredentialVerifyAttempt userLoginAttempt) {
-        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager)
-        template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
-        return template.execute(new TransactionCallback<Promise<UserCredentialVerifyAttempt>>() {
-            Promise<UserCredentialVerifyAttempt> doInTransaction(TransactionStatus txnStatus) {
-                return userLoginAttemptRepository.create(userLoginAttempt)
-            }
-        })
     }
 
     private void checkBasicUserLoginAttemptInfo(UserCredentialVerifyAttempt userLoginAttempt) {

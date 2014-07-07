@@ -71,9 +71,14 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
 
         return userSecurityQuestionAttemptValidator.validateForCreate(userId, userSecurityQuestionAttempt).then {
 
-            return createInNewTran(userSecurityQuestionAttempt).then { UserSecurityQuestionVerifyAttempt attempt ->
+            return createInNewTran(userSecurityQuestionAttempt).recover { Throwable e ->
+                userSecurityQuestionAttempt.succeeded = false
+                return createInNewTran(userSecurityQuestionAttempt).then {
+                    throw e
+                }
+            }.then { UserSecurityQuestionVerifyAttempt attempt ->
 
-                if (attempt.succeeded == true) {
+                if (attempt.succeeded) {
                     Created201Marker.mark(attempt.getId())
 
                     attempt = userSecurityQuestionAttemptFilter.filterForGet(attempt, null)
