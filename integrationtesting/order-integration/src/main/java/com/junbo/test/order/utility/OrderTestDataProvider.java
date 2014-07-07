@@ -226,14 +226,14 @@ public class OrderTestDataProvider {
             OrderItemInfo orderItem = orderInfo.getOrderItems().get(i);
             RefundOrderItemInfo refundOrderItem = new RefundOrderItemInfo();
             BigDecimal refundAmount = unitPrice.multiply(
-                    new BigDecimal(refundQuantity)).setScale(1, RoundingMode.HALF_UP);
+                    new BigDecimal(refundQuantity)).setScale(2, RoundingMode.HALF_UP);
 
             if (partialRefundAmounts != null && partialRefundAmounts.containsKey(offerName)) {
                 refundAmount = refundAmount.add(partialRefundAmounts.get(offerName));
             }
 
             BigDecimal refundTax = refundAmount.multiply(
-                    orderInfo.getTaxRate()).setScale(1, RoundingMode.HALF_UP);
+                    orderInfo.getTaxRate()).setScale(2, RoundingMode.HALF_UP);
 
             orderTotalRefundedAmount = orderTotalRefundedAmount.add(refundAmount);
             orderTotalRefundedTax = orderTotalRefundedTax.add(refundTax);
@@ -246,9 +246,9 @@ public class OrderTestDataProvider {
             refundOrderItem.setOfferId(offerId);
             refundOrderItem.setQuantity(refundQuantity);
             refundOrderItem.setRefundAmount(refundAmount.multiply(
-                    new BigDecimal(-1)).setScale(1, RoundingMode.HALF_UP));
+                    new BigDecimal(-1)).setScale(2, RoundingMode.HALF_UP));
             refundOrderItem.setRefundTax(refundTax.multiply(
-                    new BigDecimal(-1)).setScale(1, RoundingMode.HALF_UP));
+                    new BigDecimal(-1)).setScale(2, RoundingMode.HALF_UP));
 
             billingHistory.getRefundOrderItemInfos().add(refundOrderItem);
         }
@@ -256,10 +256,16 @@ public class OrderTestDataProvider {
         orderInfo.setTotalAmount(orderInfo.getTotalAmount().subtract(orderTotalRefundedAmount));
         orderInfo.setTotalTax(orderInfo.getTotalTax().subtract(orderTotalRefundedTax));
 
+
+
         BigDecimal totalRefundAmount = orderTotalRefundedAmount.add(orderTotalRefundedTax);
+        PaymentInstrumentInfo paymentInstrumentInfo = new PaymentInstrumentInfo();
+        paymentInstrumentInfo.setPaymentId(orderInfo.getPaymentInfos().get(0).getPaymentId());
+        paymentInstrumentInfo.setPaymentAmount(totalRefundAmount.multiply(new BigDecimal(-1)));
+        billingHistory.getPaymentInfos().add(paymentInstrumentInfo);
         billingHistory.setTransactionType(TransactionType.PENDING_REFUND);
         billingHistory.setTotalAmount(totalRefundAmount.multiply(
-                new BigDecimal(-1)).setScale(1, RoundingMode.HALF_UP));
+                new BigDecimal(-1)).setScale(2, RoundingMode.HALF_UP));
         orderInfo.getBillingHistories().add(billingHistory);
 
         billingHistory.setTransactionType(TransactionType.REFUND);

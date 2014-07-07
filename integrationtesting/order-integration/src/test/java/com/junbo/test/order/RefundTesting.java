@@ -68,7 +68,7 @@ public class RefundTesting extends BaseOrderTestClass {
                 "en_US", false, OrderStatus.COMPLETED, creditCardId, orderId, offerList);
 
         Map<String, Integer> refundOfferList = new HashedMap();
-        refundOfferList.put(offer_digital_normal1, 1);
+        refundOfferList.put(offer_inApp_consumable1, 2);
 
         Map<String, BigDecimal> partialRefundAmounts = new HashedMap();
         partialRefundAmounts.put(offer_digital_normal2, new BigDecimal(10));
