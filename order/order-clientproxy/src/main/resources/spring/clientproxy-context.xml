@@ -75,6 +75,12 @@
         <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
+    <bean id="order.paymentCallbackClient"
+          class="com.junbo.payment.spec.resource.proxy.PaymentCallbackResourceClientProxy"
+          parent="paymentInstrumentProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
+    </bean>
+
     <bean id="order.emailClient" class="com.junbo.email.spec.resource.proxy.EmailResourceClientProxy"
           parent="emailResourceClientProxy">
         <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>

@@ -121,7 +121,7 @@ class TaxServiceImpl implements TaxService {
                     }
                 }
 
-                return Promise.each(balance.balanceItems) { BalanceItem item ->
+                /*return Promise.each(balance.balanceItems) { BalanceItem item ->
                     def org = item.propertySet.get(PropertyKey.ORGANIZATION_ID.name())
                     Long organizationId = org == null ? null : Long.valueOf(org)
                     return identityFacade.getOrganization(organizationId).recover { Throwable throwable ->
@@ -131,9 +131,9 @@ class TaxServiceImpl implements TaxService {
                         item.propertySet.put(PropertyKey.VENDOR_NAME.name(), organization?.name)
                         return Promise.pure(null)
                     }
-                }.then {
+                }.then {*/
                     return calculateTax(balance, pi.billingAddressId)
-                }
+                //}
             }
         }
     }

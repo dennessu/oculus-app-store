@@ -8,6 +8,7 @@
     <wf:flow id="WEB_PAYMENT_SETTLE">
         <wf:end-state id="endState">
             <wf:on-entry>
+                <wf:action ref="webPaymentCallbackAction"/>
                 <wf:action ref="confirmBalanceAction"/>
                 <wf:action ref="fulfillmentAction"/>
                 <wf:action ref="sendEmailAction"/>

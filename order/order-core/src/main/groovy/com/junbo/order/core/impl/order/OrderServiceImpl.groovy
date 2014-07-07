@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
 /**
@@ -229,6 +230,7 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     Promise<OrderEvent> updateOrderByOrderEvent(OrderEvent event, OrderServiceContext orderServiceContext) {
 
         switch (event.action) {
