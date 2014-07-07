@@ -22,10 +22,10 @@ public class TokenSetOfferEntity extends GenericEntity {
 
     @Id
     @Column(name = "set_offer_id")
-    private Long id;
+    private String id;
 
     @Column(name = "set_id")
-    private Long tokenSetId;
+    private String tokenSetId;
 
     @Column(name = "product_id")
     private String productId;
@@ -34,26 +34,21 @@ public class TokenSetOfferEntity extends GenericEntity {
     private ProductType productType;
 
     @Column(name = "is_default")
-    private boolean isDefault;
+    private Boolean isDefault;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    @Override
-    public Long getShardMasterId() {
-        return null;
-    }
-
-    public Long getTokenSetId() {
+    public String getTokenSetId() {
         return tokenSetId;
     }
 
-    public void setTokenSetId(Long tokenSetId) {
+    public void setTokenSetId(String tokenSetId) {
         this.tokenSetId = tokenSetId;
     }
 
@@ -73,11 +68,11 @@ public class TokenSetOfferEntity extends GenericEntity {
         this.productType = productType;
     }
 
-    public boolean getIsDefault() {
+    public Boolean getIsDefault() {
         return isDefault;
     }
 
-    public void setIsDefault(boolean isDefault) {
+    public void setIsDefault(Boolean isDefault) {
         this.isDefault = isDefault;
     }
 }

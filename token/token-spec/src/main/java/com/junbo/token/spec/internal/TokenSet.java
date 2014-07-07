@@ -6,25 +6,26 @@
 
 package com.junbo.token.spec.internal;
 
+import com.junbo.common.model.ResourceMetaForDualWrite;
 import com.junbo.token.spec.model.ProductDetail;
 
 
 /**
  * token set model.
  */
-public class TokenSet {
-    private Long id;
+public class TokenSet extends ResourceMetaForDualWrite<String> {
+    private String id;
     private String description;
     private String status;
     private String generationLength;
     private ProductDetail productDetail;
     private String productType;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

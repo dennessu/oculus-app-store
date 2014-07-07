@@ -8,6 +8,7 @@ package com.junbo.token.spec.internal;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.TokenOrderId;
+import com.junbo.common.model.ResourceMetaForDualWrite;
 import com.junbo.token.spec.model.TokenItem;
 
 import java.util.Date;
@@ -16,12 +17,12 @@ import java.util.List;
 /**
  * token order model.
  */
-public class TokenOrder {
+public class TokenOrder extends ResourceMetaForDualWrite<String> {
     @JsonProperty("self")
     @TokenOrderId
-    private Long id;
+    private String id;
     private String description;
-    private Long tokenSetId;
+    private String tokenSetId;
     private String status;
     private Date expiredTime;
     private String usageLimit;
@@ -30,11 +31,11 @@ public class TokenOrder {
     private String activation;
     private List<TokenItem> tokenItems;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -46,11 +47,11 @@ public class TokenOrder {
         this.description = description;
     }
 
-    public Long getTokenSetId() {
+    public String getTokenSetId() {
         return tokenSetId;
     }
 
-    public void setTokenSetId(Long tokenSetId) {
+    public void setTokenSetId(String tokenSetId) {
         this.tokenSetId = tokenSetId;
     }
 

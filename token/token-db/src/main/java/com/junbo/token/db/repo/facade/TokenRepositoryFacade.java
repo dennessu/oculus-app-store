@@ -4,18 +4,16 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.token.db.repository;
+package com.junbo.token.db.repo.facade;
 
-import com.junbo.oom.core.MappingContext;
 import com.junbo.sharding.IdGenerator;
 import com.junbo.token.common.TokenUtil;
-import com.junbo.token.db.dao.*;
-import com.junbo.token.db.entity.*;
-import com.junbo.token.db.mapper.TokenMapper;
+import com.junbo.token.db.repo.*;
 import com.junbo.token.spec.enums.ItemStatus;
 import com.junbo.token.spec.enums.ProductType;
-import com.junbo.token.spec.internal.TokenSet;
 import com.junbo.token.spec.internal.TokenOrder;
+import com.junbo.token.spec.internal.TokenSet;
+import com.junbo.token.spec.internal.TokenSetOffer;
 import com.junbo.token.spec.model.ProductDetail;
 import com.junbo.token.spec.model.TokenConsumption;
 import com.junbo.token.spec.model.TokenItem;
@@ -26,28 +24,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Token Repository.
+ * Created by Administrator on 14-7-3.
  */
-public class TokenRepository {
-    @Autowired
-    private TokenSetDao tokenSetDao;
-    @Autowired
-    private TokenOrderDao tokenOrderDao;
-    @Autowired
-    private TokenItemDao tokenItemDao;
-    @Autowired
-    private TokenSetOfferDao tokenSetOfferDao;
-    @Autowired
-    private TokenConsumptionDao tokenConsumptionDao;
-    @Autowired
-    private TokenMapper tokenMapper;
+public class TokenRepositoryFacade {
+    private TokenConsumptionRepository tokenConsumptionRepository;
+    private TokenItemRepository tokenItemRepository;
+    private TokenOrderRepository tokenOrderRepository;
+    private TokenSetOfferRepository tokenSetOfferRepository;
+    private TokenSetRepository tokenSetRepository;
     @Autowired
     @Qualifier("oculus48IdGenerator")
     protected IdGenerator idGenerator;
 
     public TokenSet addTokenSet(TokenSet tokenSet){
-        TokenSetEntity entity = tokenMapper.toTokenSetEntity(tokenSet, new MappingContext());
-        Long setId = tokenSetDao.save(entity);
+        TokenSet saved = tokenSetRepository.create(tokenSet).get();
+        String setId = saved.getId();
         ProductType productType = TokenUtil.getEnumValue(ProductType.class, tokenSet.getProductType());
         if(productType.equals(ProductType.OFFER)){
             addTokenSetOffer(setId, productType, tokenSet.getProductDetail().getDefaultOffer(), true);
@@ -64,34 +55,32 @@ public class TokenRepository {
                 }
             }
         }
-
         tokenSet.setId(setId);
         return tokenSet;
     }
 
-    private void addTokenSetOffer(Long setId, ProductType productType, String offerId, boolean isDefault) {
-        TokenSetOfferEntity setOfferEntity = new TokenSetOfferEntity();
-        setOfferEntity.setProductId(offerId);
-        setOfferEntity.setTokenSetId(setId);
-        setOfferEntity.setProductType(productType);
-        setOfferEntity.setIsDefault(isDefault);
-        tokenSetOfferDao.save(setOfferEntity);
+    private void addTokenSetOffer(String setId, ProductType productType, String offerId, boolean isDefault) {
+        TokenSetOffer model = new TokenSetOffer();
+        model.setProductId(offerId);
+        model.setTokenSetId(setId);
+        model.setProductType(productType.toString());
+        model.setIsDefault(isDefault);
+        tokenSetOfferRepository.create(model).get();
     }
 
-    public TokenSet getTokenSet(Long tokenSetId){
-        TokenSetEntity entity = tokenSetDao.get(tokenSetId);
-        TokenSet tokenSet = tokenMapper.toTokenSet(entity, new MappingContext());
+    public TokenSet getTokenSet(String tokenSetId){
+        TokenSet tokenSet = tokenSetRepository.get(tokenSetId).get();
         //tokenSet.setOfferIds(new ArrayList<Long>());
         ProductDetail productDetail = new ProductDetail();
         String defaultProduct = null;
         List<String> optionalProducts = new ArrayList<String>();
         ProductType productType = null;
-        for(TokenSetOfferEntity setOfferEntity : tokenSetOfferDao.getByTokenSetId(tokenSetId)){
-            productType = setOfferEntity.getProductType();
-            if(setOfferEntity.getIsDefault()){
-                defaultProduct = setOfferEntity.getProductId();
+        for(TokenSetOffer setOffer : tokenSetOfferRepository.getByTokenSetId(tokenSetId).get()){
+            productType = ProductType.valueOf(setOffer.getProductType());
+            if(setOffer.getIsDefault()){
+                defaultProduct = setOffer.getProductId();
             }else{
-                optionalProducts.add(setOfferEntity.getProductId());
+                optionalProducts.add(setOffer.getProductId());
             }
         }
         if(productType.equals(ProductType.OFFER)){
@@ -107,29 +96,26 @@ public class TokenRepository {
     }
 
     public TokenOrder addTokenOrder(TokenOrder order){
-        TokenOrderEntity entity = tokenMapper.toTokenOrderEntity(order, new MappingContext());
-        Long orderId = tokenOrderDao.save(entity);
-        order.setId(orderId);
+        TokenOrder saved = tokenOrderRepository.create(order).get();
+        order.setId(saved.getId());
         return order;
     }
 
-    public TokenOrder getTokenOrder(Long orderId){
-        TokenOrderEntity entity = tokenOrderDao.get(orderId);
-        return tokenMapper.toTokenOrder(entity, new MappingContext());
+    public TokenOrder getTokenOrder(String orderId){
+        return tokenOrderRepository.get(orderId).get();
     }
 
     public List<TokenItem> addTokenItems(List<TokenItem> items){
         for(TokenItem item : items){
-            TokenItemEntity itemEntity = tokenMapper.toTokenItemEntity(item, new MappingContext());
             //TODO: use new generated PK first. Need to consider partitionable-id
-            itemEntity.setId(idGenerator.nextId());
-            tokenItemDao.save(itemEntity);
+            item.setId(String.valueOf(idGenerator.nextId()));
+            tokenItemRepository.create(item).get();
         }
         return items;
     }
 
     public TokenItem getTokenItem(Long hashValue){
-        TokenItem item = tokenMapper.toTokenItem(tokenItemDao.getByHashValue(hashValue), new MappingContext());
+        TokenItem item = tokenItemRepository.getByHashValue(hashValue).get();
         if(item == null){
             return null;
         }
@@ -138,27 +124,41 @@ public class TokenRepository {
     }
 
     public TokenConsumption addConsumption(TokenConsumption consumption){
-        TokenConsumptionEntity entity = tokenMapper.toTokenConsumptionEntity(
-                consumption, new MappingContext());
-        Long consumptionId = tokenConsumptionDao.save(entity);
-        consumption.setId(consumptionId);
+        TokenConsumption saved = tokenConsumptionRepository.create(consumption).get();
+        consumption.setId(saved.getId());
         return consumption;
     }
 
-    public List<TokenConsumption> getTokenConsumption(Long itemId){
-        List<TokenConsumption> consumptions = new ArrayList<TokenConsumption>();
-        for(TokenConsumptionEntity entity : tokenConsumptionDao.getByTokenItemId(itemId)){
-            if(entity != null){
-                consumptions.add(tokenMapper.toTokenConsumption(entity, new MappingContext()));
-            }
-        }
-        return consumptions;
+    public List<TokenConsumption> getTokenConsumption(String itemId){
+        return tokenConsumptionRepository.getByTokenItemId(itemId).get();
     }
 
     public void updateTokenStatus(long hashValue, ItemStatus status){
-        TokenItemEntity entity = tokenItemDao.getByHashValue(hashValue);
-        entity.setStatus(status);
-        tokenItemDao.update(entity);
+        TokenItem item = tokenItemRepository.getByHashValue(hashValue).get();
+        item.setStatus(status.toString());
+        tokenItemRepository.update(item).get();
+    }
+
+
+
+    public void setTokenSetRepository(TokenSetRepository tokenSetRepository) {
+        this.tokenSetRepository = tokenSetRepository;
+    }
+
+    public void setTokenConsumptionRepository(TokenConsumptionRepository tokenConsumptionRepository) {
+        this.tokenConsumptionRepository = tokenConsumptionRepository;
+    }
+
+    public void setTokenItemRepository(TokenItemRepository tokenItemRepository) {
+        this.tokenItemRepository = tokenItemRepository;
+    }
+
+    public void setTokenOrderRepository(TokenOrderRepository tokenOrderRepository) {
+        this.tokenOrderRepository = tokenOrderRepository;
+    }
+
+    public void setTokenSetOfferRepository(TokenSetOfferRepository tokenSetOfferRepository) {
+        this.tokenSetOfferRepository = tokenSetOfferRepository;
     }
 
 }

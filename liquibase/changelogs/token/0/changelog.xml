@@ -45,7 +45,7 @@
         <![CDATA[
             create table token_set
                 (
-                  token_set_id                    bigint           not null,
+                  token_set_id                    varchar(128)     not null,
 				  description                     varchar(128)         null,
                   token_set_status                smallint         not null,
                   generation_length               smallint             null,
@@ -104,9 +104,9 @@
         <![CDATA[
             create table token_order
                 (
-                  token_order_id                    bigint              not null,
+                  token_order_id                    varchar(128)              not null,
 				  description                       varchar(32)         not null, 
-				  token_set_id                      bigint              not null,
+				  token_set_id                      varchar(128)              not null,
 				  token_order_status                smallint            not null,
 				  expired_time                      date                    null,
 				  usage_limit                       varchar(64)             null,
@@ -154,9 +154,9 @@
         <![CDATA[
             create table token_item
                 (    
-				  item_id                       bigint              not null,
+				  item_id                       varchar(128)              not null,
                   hash_value                    bigint              not null,
-				  order_id                      bigint              not null,
+				  order_id                      varchar(128)              not null,
                   token_item_status             smallint            not null,
 				  disable_reason                varchar(512)            null,
 				  resource_age                  bigint              not null,
@@ -183,8 +183,8 @@
         <![CDATA[
             create table token_set_offer
                 (
-                  set_offer_id                  bigint              not null,
-                  set_id                        bigint              not null,
+                  set_offer_id                  varchar(128)              not null,
+                  set_id                        varchar(128)              not null,
 				  product_id                    varchar(64)         not null,
                   product_type                  varchar(16)             null,
                   is_default                    boolean                 null,
@@ -209,8 +209,8 @@
         <![CDATA[
             create table token_consumption
                 (
-                  consumption_id            bigint              not null,
-                  item_id                   bigint              not null,
+                  consumption_id            varchar(128)              not null,
+                  item_id                   varchar(128)              not null,
                   products                  varchar(1024)             null,
                   user_id                   bigint              not null,    
 				  resource_age              bigint              not null,				  

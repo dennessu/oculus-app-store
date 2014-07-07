@@ -45,7 +45,7 @@ public class TokenClientProxyTest extends BaseTest {
         Assert.assertEquals(result.getStatus(), OrderStatus.COMPLETED.toString());
         Assert.assertEquals(result.getTokenItems().size(), 1);
 
-        TokenRequest getResult = tokenClient.getOrderById(new TokenOrderId(result.getId())).get();
+        TokenRequest getResult = tokenClient.getOrderById(result.getId()).get();
         Assert.assertEquals(result.getStatus(), OrderStatus.COMPLETED.toString());
         Assert.assertEquals(result.getId(), getResult.getId());
         final String tokenString = result.getTokenItems().get(0).getEncryptedString();

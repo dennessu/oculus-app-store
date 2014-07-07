@@ -21,4 +21,14 @@
         <property name="accessTokenProvider" ref="tokenAccessTokenProvider"/>
     </bean>
 
+    <bean id="userClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
+          parent="userResourceClientProxy">
+        <property name="accessTokenProvider" ref="tokenAccessTokenProvider"/>
+    </bean>
+
+    <bean id="fulfilmentClient" class="com.junbo.fulfilment.spec.resource.proxy.FulfilmentResourceClientProxy"
+          parent="fulfilmentResourceClientProxy">
+        <property name="accessTokenProvider" ref="tokenAccessTokenProvider"/>
+    </bean>
+
 </beans>

@@ -20,7 +20,7 @@ import java.util.List;
 public class TokenRequest {
     @JsonProperty("self")
     @TokenOrderId
-    private Long id;
+    private String id;
     private String description;
     private String generationLength;
     private String productType;
@@ -35,11 +35,11 @@ public class TokenRequest {
     @InnerFilter
     private List<TokenItem> tokenItems;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

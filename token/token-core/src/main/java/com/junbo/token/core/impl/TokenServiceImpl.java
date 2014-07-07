@@ -9,8 +9,14 @@ package com.junbo.token.core.impl;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.common.error.AppErrorException;
+import com.junbo.common.id.UserId;
 import com.junbo.crypto.spec.model.CryptoMessage;
 import com.junbo.crypto.spec.resource.CryptoResource;
+import com.junbo.fulfilment.spec.model.FulfilmentRequest;
+import com.junbo.fulfilment.spec.resource.FulfilmentResource;
+import com.junbo.identity.spec.v1.model.User;
+import com.junbo.identity.spec.v1.option.model.UserGetOptions;
+import com.junbo.identity.spec.v1.resource.UserResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.token.common.CommonUtil;
 import com.junbo.token.common.exception.AppClientExceptions;
@@ -19,7 +25,7 @@ import com.junbo.token.core.TokenService;
 import com.junbo.token.core.mapper.ModelMapper;
 import com.junbo.token.core.mapper.OrderWrapper;
 import com.junbo.token.common.TokenUtil;
-import com.junbo.token.db.repository.TokenRepository;
+import com.junbo.token.db.repo.facade.TokenRepositoryFacade;
 import com.junbo.token.spec.enums.*;
 import com.junbo.token.spec.internal.TokenSet;
 import com.junbo.token.spec.model.TokenRequest;
@@ -28,7 +34,7 @@ import com.junbo.token.spec.model.TokenItem;
 import com.junbo.token.spec.internal.TokenOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,10 +49,11 @@ public class TokenServiceImpl implements TokenService {
     private static final Long MAX_QUANTITY = 100L;
     private static final String UNLIMIT_USE = "unlimited";
 
-    @Autowired
-    private TokenRepository tokenRepository;
+    private TokenRepositoryFacade tokenRepository;
     private CryptoResource cryptoResource;
     private OfferResource offerClient;
+    private UserResource userClient;
+    private FulfilmentResource fulfilmentClient;
 
     @Override
     public Promise<TokenSet> createTokenSet(TokenSet request) {
@@ -54,7 +61,7 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public Promise<TokenSet> getTokenSet(Long tokenSetId) {
+    public Promise<TokenSet> getTokenSet(String tokenSetId) {
         return Promise.pure(tokenRepository.getTokenSet(tokenSetId));
     }
 
@@ -73,12 +80,12 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public Promise<TokenOrder> getTokenOrder(Long tokenOrderId) {
+    public Promise<TokenOrder> getTokenOrder(String tokenOrderId) {
         return Promise.pure(tokenRepository.getTokenOrder(tokenOrderId));
     }
 
     @Override
-    public Promise<TokenRequest> getOrderRequest(Long tokenOrderId) {
+    public Promise<TokenRequest> getOrderRequest(String tokenOrderId) {
         TokenOrder order = tokenRepository.getTokenOrder(tokenOrderId);
         if(order == null){
             throw AppClientExceptions.INSTANCE.resourceNotFound("orderId:" + tokenOrderId).exception();
@@ -108,6 +115,10 @@ public class TokenServiceImpl implements TokenService {
         updateTokenItem(item, order);
         consumption.setItemId(item.getId());
         TokenConsumption result = tokenRepository.addConsumption(consumption);
+        //TODO: fulfillment
+        FulfilmentRequest fulfilmentRequest = new FulfilmentRequest();
+
+        fulfilmentClient.fulfill(fulfilmentRequest).get();
         return Promise.pure(result);
     }
 
@@ -136,6 +147,7 @@ public class TokenServiceImpl implements TokenService {
         if(item == null){
             throw AppClientExceptions.INSTANCE.resourceNotFound("token").exception();
         }
+        item.setEncryptedString(token);
         return Promise.pure(item);
     }
 
@@ -271,6 +283,10 @@ public class TokenServiceImpl implements TokenService {
         if(consumption.getUserId() == null){
             throw AppClientExceptions.INSTANCE.missingField("user_id").exception();
         }
+        User user = userClient.get(new UserId(consumption.getUserId()), new UserGetOptions()).get();
+        if(user == null){
+            throw AppClientExceptions.INSTANCE.invalidField("userId").exception();
+        }
         if(consumption.getProduct() == null){
             throw AppClientExceptions.INSTANCE.missingField("product").exception();
         }
@@ -324,6 +340,11 @@ public class TokenServiceImpl implements TokenService {
         return cryptoResource.decrypt(msg).get().getValue();
     }
 
+    @Required
+    public void setTokenRepository(TokenRepositoryFacade tokenRepository) {
+        this.tokenRepository = tokenRepository;
+    }
+
     public CryptoResource getCryptoResource() {
         return cryptoResource;
     }
@@ -338,5 +359,21 @@ public class TokenServiceImpl implements TokenService {
 
     public void setOfferClient(OfferResource offerClient) {
         this.offerClient = offerClient;
+    }
+
+    public UserResource getUserClient() {
+        return userClient;
+    }
+
+    public void setUserClient(UserResource userClient) {
+        this.userClient = userClient;
+    }
+
+    public FulfilmentResource getFulfilmentClient() {
+        return fulfilmentClient;
+    }
+
+    public void setFulfilmentClient(FulfilmentResource fulfilmentClient) {
+        this.fulfilmentClient = fulfilmentClient;
     }
 }

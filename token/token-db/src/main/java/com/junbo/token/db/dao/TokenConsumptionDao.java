@@ -14,12 +14,12 @@ import java.util.List;
 /**
  * Created by Administrator on 14-3-18.
  */
-public class TokenConsumptionDao extends CommonDataDAOImpl<TokenConsumptionEntity, Long> {
+public class TokenConsumptionDao extends CommonDataDAOImpl<TokenConsumptionEntity, String> {
     public TokenConsumptionDao() {
         super(TokenConsumptionEntity.class);
     }
 
-    public List<TokenConsumptionEntity> getByTokenItemId(final Long itemID) {
+    public List<TokenConsumptionEntity> getByTokenItemId(final String itemID) {
         Criteria criteria = currentSession(itemID).createCriteria(TokenConsumptionEntity.class);
         criteria.add(Restrictions.eq("itemId", itemID));
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);

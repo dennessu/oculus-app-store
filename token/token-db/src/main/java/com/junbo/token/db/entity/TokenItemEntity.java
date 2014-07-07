@@ -22,13 +22,13 @@ public class TokenItemEntity extends GenericEntity {
 
     @Id
     @Column(name = "item_id")
-    private Long id;
+    private String id;
 
     @Column(name = "hash_value")
     private Long hashValue;
 
     @Column(name = "order_id")
-    private Long orderId;
+    private String orderId;
 
     @Column(name = "token_item_status")
     private ItemStatus status;
@@ -37,18 +37,13 @@ public class TokenItemEntity extends GenericEntity {
     private String disableReason;
 
     @Override
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
     @Override
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
-    }
-
-    @Override
-    public Long getShardMasterId() {
-        return hashValue;
     }
 
     public Long getHashValue() {
@@ -59,11 +54,11 @@ public class TokenItemEntity extends GenericEntity {
         this.hashValue = hashValue;
     }
 
-    public Long getOrderId() {
+    public String getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(Long orderId) {
+    public void setOrderId(String orderId) {
         this.orderId = orderId;
     }
 
