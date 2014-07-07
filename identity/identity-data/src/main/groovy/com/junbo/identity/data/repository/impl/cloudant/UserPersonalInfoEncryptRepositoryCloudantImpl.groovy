@@ -1,9 +1,7 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
-import com.junbo.common.id.UserPersonalInfoIdToUserIdLinkId
 import com.junbo.crypto.spec.model.CryptoMessage
 import com.junbo.crypto.spec.resource.CryptoResource
 import com.junbo.identity.common.util.JsonHelper
@@ -23,7 +21,6 @@ import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
 import java.util.Locale
-
 /**
  * Created by liangfu on 5/14/14.
  */
@@ -224,21 +221,18 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
                     return Promise.pure(null)
                 }
 
-                return userIdLinkRepository.get(new UserPersonalInfoIdToUserIdLinkId(personalInfoId.value.toString())).then { UserPersonalInfoIdToUserIdLink link ->
-                    CryptoMessage cryptoMessage = new CryptoMessage(
-                            value: encryptUserPersonalInfo.encryptUserPersonalInfo
-                    )
-                    return cryptoResource.decrypt(cryptoMessage).then { CryptoMessage decrypt ->
-                        UserPersonalInfo userPersonalInfo = unmarshall(decrypt.value, UserPersonalInfo)
-                        userPersonalInfo.createdBy = encryptUserPersonalInfo.createdBy
-                        userPersonalInfo.createdTime = encryptUserPersonalInfo.createdTime
-                        userPersonalInfo.updatedBy = encryptUserPersonalInfo.updatedBy
-                        userPersonalInfo.updatedTime = encryptUserPersonalInfo.updatedTime
-                        userPersonalInfo.resourceAge = encryptUserPersonalInfo.resourceAge
-                        return Promise.pure(userPersonalInfo)
-                    }
+                CryptoMessage cryptoMessage = new CryptoMessage(
+                        value: encryptUserPersonalInfo.encryptUserPersonalInfo
+                )
+                return cryptoResource.decrypt(cryptoMessage).then { CryptoMessage decrypt ->
+                    UserPersonalInfo userPersonalInfo = unmarshall(decrypt.value, UserPersonalInfo)
+                    userPersonalInfo.createdBy = encryptUserPersonalInfo.createdBy
+                    userPersonalInfo.createdTime = encryptUserPersonalInfo.createdTime
+                    userPersonalInfo.updatedBy = encryptUserPersonalInfo.updatedBy
+                    userPersonalInfo.updatedTime = encryptUserPersonalInfo.updatedTime
+                    userPersonalInfo.resourceAge = encryptUserPersonalInfo.resourceAge
+                    return Promise.pure(userPersonalInfo)
                 }
-
         }
     }
 

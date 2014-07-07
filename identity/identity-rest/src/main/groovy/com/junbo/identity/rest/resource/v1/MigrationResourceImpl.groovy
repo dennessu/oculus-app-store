@@ -88,6 +88,7 @@ class MigrationResourceImpl implements MigrationResource {
     private NormalizeService normalizeService
 
     @Override
+    @Transactional
     Promise<OculusOutput> migrate(OculusInput oculusInput) {
         if (StringUtils.isEmpty(oculusInput.username)) {
             throw new IllegalArgumentException('username can\'t be null')
@@ -111,6 +112,7 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     @Override
+    @Transactional
     Promise<Map<String, OculusOutput>> bulkMigrate(List<OculusInput> oculusInputs) {
         CloudantClientBase.useBulk = true
         CloudantClientBulk.callback = new MigrationQueryViewCallback()

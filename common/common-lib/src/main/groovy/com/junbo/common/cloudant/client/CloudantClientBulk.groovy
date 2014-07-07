@@ -292,7 +292,7 @@ class CloudantClientBulk implements CloudantClient {
 
         def value = marshaller.marshall(entity)
         bulk.put(entity.cloudantId, new EntityWithType(entity: value, type: entityClass))
-        getCache().put(entity.cloudantId, value)
+        addCachedRaw(entity.cloudantId, entityClass, value)
     }
 
     private void addChanged(CloudantDbUri dbUri, CloudantEntity entity, Class entityClass) {
@@ -302,7 +302,7 @@ class CloudantClientBulk implements CloudantClient {
         def bulk = getOrCreateBulk(dbUri)
         def value = marshaller.marshall(entity)
         bulk.put(entity.cloudantId, new EntityWithType(entity: value, type: entityClass))
-        getCache().put(entity.cloudantId, value)
+        addCachedRaw(entity.cloudantId, entityClass, value)
     }
 
     private void addCached(CloudantEntity entity) {
@@ -314,7 +314,11 @@ class CloudantClientBulk implements CloudantClient {
         entity.setCloudantId(entity.getId().toString());
 
         def value = marshaller.marshall(entity)
-        getCache().put(entity.cloudantId, value)
+        addCachedRaw(entity.cloudantId, entity.getClass(), value)
+    }
+
+    private void addCachedRaw(String cloudantId, Class entityClass, String value) {
+        getCache().put(cloudantId + ":" + entityClass.getName(), value)
     }
 
     private void delete(CloudantDbUri dbUri, String id) {
@@ -323,7 +327,7 @@ class CloudantClientBulk implements CloudantClient {
     }
 
     private <T> T getCached(String id, Class<T> entityClass) {
-        return (T)marshaller.unmarshall(getCache().get(id), entityClass)
+        return (T)marshaller.unmarshall(getCache().get(id + ":" + entityClass.getName()), entityClass)
     }
 
     private Promise<Void> onRequestFinished() {
