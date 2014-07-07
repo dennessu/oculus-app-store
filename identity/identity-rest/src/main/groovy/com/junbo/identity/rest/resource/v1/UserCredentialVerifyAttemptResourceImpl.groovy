@@ -64,7 +64,12 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
 
         userCredentialAttempt = userCredentialVerifyAttemptFilter.filterForCreate(userCredentialAttempt)
 
-        return credentialVerifyAttemptValidator.validateForCreate(userCredentialAttempt).then {
+        return credentialVerifyAttemptValidator.validateForCreate(userCredentialAttempt).recover { Throwable e ->
+            userCredentialAttempt.succeeded = false
+            return createInNewTran(userCredentialAttempt).then{
+                throw e
+            }
+        }.then {
 
             return createInNewTran(userCredentialAttempt).then { UserCredentialVerifyAttempt attempt ->
 
