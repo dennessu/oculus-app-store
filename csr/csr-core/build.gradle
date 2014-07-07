@@ -1,8 +1,9 @@
 apply plugin: 'groovy'
 
 dependencies {
+    compile junboProject(':csr-common')
     compile junboProject(':csr-clientproxy')
     compile junboProject(':csr-db')
     compile junboProject(':csr-spec')
-    compile junboProject(':csr-common')
+    compile junboProject(':identity-spec')
 }

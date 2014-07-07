@@ -5,7 +5,6 @@
  */
 package com.junbo.oauth.api.endpoint
 
-import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.json.ObjectMapperProvider
@@ -149,13 +148,13 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
                                 lastAuthDate: new Date()
                         )
 
-                        loginStateRepository.saveOrUpdate(loginState)
+                        loginStateRepository.save(loginState)
 
 
                         Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)
                                 .location(UriBuilder.fromUri(successRedirectUri).build())
 
-                        CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_LOGIN_STATE, loginState.id, -1)
+                        CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_LOGIN_STATE, loginState.getId(), -1)
                         CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_SESSION_STATE,
                                 loginState.sessionId, -1, false)
 

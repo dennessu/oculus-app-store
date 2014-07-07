@@ -65,10 +65,10 @@ public class RefundTesting extends BaseOrderTestClass {
         testDataProvider.updateOrderTentative(orderId, false);
 
         OrderInfo expectedOrderInfo = testDataProvider.getExpectedOrderInfo(uid, country, currency,
-                "en_US", false, OrderStatus.COMPLETED, creditCardId, offerList);
+                "en_US", false, OrderStatus.COMPLETED, creditCardId, orderId, offerList);
 
         Map<String, Integer> refundOfferList = new HashedMap();
-        refundOfferList.put(offer_digital_normal1, 1);
+        refundOfferList.put(offer_inApp_consumable1, 2);
 
         Map<String, BigDecimal> partialRefundAmounts = new HashedMap();
         partialRefundAmounts.put(offer_digital_normal2, new BigDecimal(10));
@@ -130,7 +130,7 @@ public class RefundTesting extends BaseOrderTestClass {
         testDataProvider.updateOrderTentative(orderId, false);
 
         OrderInfo expectedOrderInfo = testDataProvider.getExpectedOrderInfo(uid, country, currency,
-                "en_US", false, OrderStatus.COMPLETED, creditCardId, offerList);
+                "en_US", false, OrderStatus.COMPLETED, creditCardId, orderId, offerList);
 
 
         Map<String, BigDecimal> partialRefundAmounts = new HashedMap();
@@ -195,7 +195,7 @@ public class RefundTesting extends BaseOrderTestClass {
         testDataProvider.updateOrderTentative(orderId, false);
 
         OrderInfo expectedOrderInfo = testDataProvider.getExpectedOrderInfo(uid, country, currency,
-                "en_US", false, OrderStatus.COMPLETED, creditCardId, offerList);
+                "en_US", false, OrderStatus.COMPLETED, creditCardId, orderId, offerList);
 
         Map<String, Integer> refundOfferList = new HashedMap();
         refundOfferList.put(offer_inApp_consumable1, 1);
@@ -258,7 +258,7 @@ public class RefundTesting extends BaseOrderTestClass {
         testDataProvider.updateOrderTentative(orderId, false);
 
         OrderInfo expectedOrderInfo = testDataProvider.getExpectedOrderInfo(uid, country, currency,
-                "en_US", false, OrderStatus.COMPLETED, creditCardId, offerList);
+                "en_US", false, OrderStatus.COMPLETED, creditCardId, orderId, offerList);
 
         Map<String, Integer> refundOfferList = new HashedMap();
         refundOfferList.put(offer_inApp_consumable1, 2);

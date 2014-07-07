@@ -22,7 +22,7 @@ import javax.persistence.Table;
 public class TokenSetEntity extends GenericEntity {
     @Id
     @Column(name = "token_set_id")
-    private Long id;
+    private String id;
 
     @Column(name = "description")
     private String description;
@@ -33,17 +33,12 @@ public class TokenSetEntity extends GenericEntity {
     @Column(name = "generation_length")
     private TokenLength generationLength;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
-    }
-
-    @Override
-    public Long getShardMasterId() {
-        return null;
     }
 
     public String getDescription() {

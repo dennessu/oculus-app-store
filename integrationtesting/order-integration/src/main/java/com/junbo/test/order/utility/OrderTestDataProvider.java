@@ -6,6 +6,8 @@
 
 package com.junbo.test.order.utility;
 
+import com.junbo.billing.spec.model.BalanceItem;
+import com.junbo.billing.spec.model.TaxItem;
 import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
@@ -224,14 +226,14 @@ public class OrderTestDataProvider {
             OrderItemInfo orderItem = orderInfo.getOrderItems().get(i);
             RefundOrderItemInfo refundOrderItem = new RefundOrderItemInfo();
             BigDecimal refundAmount = unitPrice.multiply(
-                    new BigDecimal(refundQuantity)).setScale(1, RoundingMode.HALF_UP);
+                    new BigDecimal(refundQuantity)).setScale(2, RoundingMode.HALF_UP);
 
             if (partialRefundAmounts != null && partialRefundAmounts.containsKey(offerName)) {
                 refundAmount = refundAmount.add(partialRefundAmounts.get(offerName));
             }
 
             BigDecimal refundTax = refundAmount.multiply(
-                    orderInfo.getTaxRate()).setScale(1, RoundingMode.HALF_UP);
+                    orderInfo.getTaxRate()).setScale(2, RoundingMode.HALF_UP);
 
             orderTotalRefundedAmount = orderTotalRefundedAmount.add(refundAmount);
             orderTotalRefundedTax = orderTotalRefundedTax.add(refundTax);
@@ -244,9 +246,9 @@ public class OrderTestDataProvider {
             refundOrderItem.setOfferId(offerId);
             refundOrderItem.setQuantity(refundQuantity);
             refundOrderItem.setRefundAmount(refundAmount.multiply(
-                    new BigDecimal(-1)).setScale(1, RoundingMode.HALF_UP));
+                    new BigDecimal(-1)).setScale(2, RoundingMode.HALF_UP));
             refundOrderItem.setRefundTax(refundTax.multiply(
-                    new BigDecimal(-1)).setScale(1, RoundingMode.HALF_UP));
+                    new BigDecimal(-1)).setScale(2, RoundingMode.HALF_UP));
 
             billingHistory.getRefundOrderItemInfos().add(refundOrderItem);
         }
@@ -254,10 +256,16 @@ public class OrderTestDataProvider {
         orderInfo.setTotalAmount(orderInfo.getTotalAmount().subtract(orderTotalRefundedAmount));
         orderInfo.setTotalTax(orderInfo.getTotalTax().subtract(orderTotalRefundedTax));
 
+
+
         BigDecimal totalRefundAmount = orderTotalRefundedAmount.add(orderTotalRefundedTax);
+        PaymentInstrumentInfo paymentInstrumentInfo = new PaymentInstrumentInfo();
+        paymentInstrumentInfo.setPaymentId(orderInfo.getPaymentInfos().get(0).getPaymentId());
+        paymentInstrumentInfo.setPaymentAmount(totalRefundAmount.multiply(new BigDecimal(-1)));
+        billingHistory.getPaymentInfos().add(paymentInstrumentInfo);
         billingHistory.setTransactionType(TransactionType.PENDING_REFUND);
         billingHistory.setTotalAmount(totalRefundAmount.multiply(
-                new BigDecimal(-1)).setScale(1, RoundingMode.HALF_UP));
+                new BigDecimal(-1)).setScale(2, RoundingMode.HALF_UP));
         orderInfo.getBillingHistories().add(billingHistory);
 
         billingHistory.setTransactionType(TransactionType.REFUND);
@@ -269,7 +277,7 @@ public class OrderTestDataProvider {
 
     public OrderInfo getExpectedOrderInfo(String userId, Country country, Currency currency,
                                           String locale, boolean isTentative, OrderStatus orderStatus, String paymentId,
-                                          Map<String, Integer> offers) throws Exception {
+                                          String orderId, Map<String, Integer> offers) throws Exception {
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setUserId(userId);
         orderInfo.setOrderStatus(orderStatus);
@@ -278,7 +286,16 @@ public class OrderTestDataProvider {
         orderInfo.setCurrency(currency);
         orderInfo.setLocale(locale);
 
-        orderInfo.setTaxRate(new BigDecimal(0.083));
+        List<String> balanceIds = getBalancesByOrderId(orderId);
+        BalanceItem balanceItem = Master.getInstance().getBalance(balanceIds.get(0)).getBalanceItems().get(0);
+        BigDecimal taxRate = new BigDecimal(0);
+
+        for(TaxItem taxItem : balanceItem.getTaxItems()){
+            taxRate = taxRate.add(taxItem.getTaxRate());
+        }
+
+
+        orderInfo.setTaxRate(taxRate);
 
         BigDecimal orderTotalAmount = new BigDecimal(0);
         BigDecimal orderTotalTax = new BigDecimal(0);

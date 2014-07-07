@@ -7,6 +7,7 @@
 package com.junbo.token.spec.model;
 
 import com.junbo.common.jackson.annotation.TokenOrderId;
+import com.junbo.common.model.ResourceMetaForDualWrite;
 import com.junbo.token.common.FilterIn;
 import com.junbo.token.common.FilterOut;
 
@@ -15,13 +16,13 @@ import java.util.List;
 /**
  * Token item model.
  */
-public class TokenItem {
+public class TokenItem extends ResourceMetaForDualWrite<String> {
     @FilterOut
-    private Long id;
+    private String id;
     @FilterOut
     private Long hashValue;
     @TokenOrderId
-    private Long orderId;
+    private String orderId;
     private String disableReason;
     @FilterIn
     private String status;
@@ -29,11 +30,11 @@ public class TokenItem {
     @FilterIn
     private List<TokenConsumption> tokenConsumptions;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -45,11 +46,11 @@ public class TokenItem {
         this.hashValue = hashValue;
     }
 
-    public Long getOrderId() {
+    public String getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(Long orderId) {
+    public void setOrderId(String orderId) {
         this.orderId = orderId;
     }
 

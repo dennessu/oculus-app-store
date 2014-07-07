@@ -146,6 +146,9 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
     private Date purchaseTime;
 
     @JsonIgnore
+    private String properties;
+
+    @JsonIgnore
     private Long latestOrderRevisionId;
 
     @JsonIgnore
@@ -373,5 +376,13 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
 
     public void setOrderRevisions(List<OrderRevision> orderRevisions) {
         this.orderRevisions = orderRevisions;
+    }
+
+    public String getProperties() {
+        return properties;
+    }
+
+    public void setProperties(String properties) {
+        this.properties = properties;
     }
 }

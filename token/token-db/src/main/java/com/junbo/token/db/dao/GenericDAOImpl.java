@@ -57,7 +57,7 @@ public class GenericDAOImpl<T extends GenericEntity, ID extends Serializable> {
 
     public ID save(T entity) {
         if(entity.getId() == null){
-            entity.setId(idGenerator.nextId());
+            entity.setId(String.valueOf(idGenerator.nextId()));
         }
         entity.setCreatedTime(new Date());
         if (entity.getCreatedBy() == null) {

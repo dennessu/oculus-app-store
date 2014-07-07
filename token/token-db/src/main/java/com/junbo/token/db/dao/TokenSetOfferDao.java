@@ -16,12 +16,12 @@ import java.util.List;
 /**
  * Token Set Offer Dao.
  */
-public class TokenSetOfferDao extends GenericDAOImpl<TokenSetOfferEntity, Long> {
+public class TokenSetOfferDao extends GenericDAOImpl<TokenSetOfferEntity, String> {
     public TokenSetOfferDao() {
         super(TokenSetOfferEntity.class);
     }
 
-    public List<TokenSetOfferEntity> getByTokenSetId(final Long tokenSetId) {
+    public List<TokenSetOfferEntity> getByTokenSetId(final String tokenSetId) {
         Criteria criteria = currentSession().createCriteria(TokenSetOfferEntity.class);
         criteria.add(Restrictions.eq("tokenSetId", tokenSetId));
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);

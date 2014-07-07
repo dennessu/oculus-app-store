@@ -60,7 +60,7 @@ class ClearLoginCookies implements Action {
 
         // Delete the login state from the database if presented.
         if (loginState != null) {
-            loginStateRepository.delete(loginState.id)
+            loginStateRepository.delete(loginState.getId())
         }
 
         // Clear the login state cookie.

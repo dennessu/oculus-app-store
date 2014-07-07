@@ -5,14 +5,25 @@
  */
 package com.junbo.oauth.spec.model
 
+import com.junbo.common.model.ResourceMeta
 import groovy.transform.CompileStatic
 
 /**
  * EmailVerifyCode.
  */
 @CompileStatic
-class EmailVerifyCode {
+class EmailVerifyCode extends ResourceMeta<String> {
     String code
     String email
     Long userId
+
+    @Override
+    String getId() {
+        return code
+    }
+
+    @Override
+    void setId(String id) {
+        this.code = id
+    }
 }

@@ -494,13 +494,7 @@
           }
       }
     },
-    "payment_transaction": {
-      "views": {
-          "by_balance_id": {
-              "map": "function(doc) {  emit(doc.balanceId, doc._id)}"
-          }
-      }
-    },
+    "payment_transaction": {},
     "payment_tracking_uuid": {
       "views": {
           "by_tracking_uuid": {
@@ -542,7 +536,31 @@
                 "map": "function(doc) {  emit(doc.trackingUuid, doc._id)}"
             }
         }
-    }
+    },
+
+      "token_consumption": {
+          "views": {
+              "by_token_item_id": {
+                  "map": "function(doc) {emit(doc.itemId, doc._id)}"
+              }
+          }
+      },
+      "token_item": {
+          "views": {
+              "by_hash_value": {
+                  "map": "function(doc) {emit(doc.hashValue, doc._id)}"
+              }
+          }
+      },
+      "token_order": {},
+      "token_set": {},
+      "token_set_offer": {
+          "views": {
+              "by_token_set_id": {
+                  "map": "function(doc) {emit(doc.tokenSetId, doc._id)}"
+              }
+          }
+      }
   }, 
   "cloudant_search": {
     "entitlement": {

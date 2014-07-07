@@ -7,11 +7,16 @@
 package com.junbo.order.clientproxy.payment;
 
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.payment.spec.model.PaymentCallbackParams;
 import com.junbo.payment.spec.model.PaymentInstrument;
+
+import javax.ws.rs.core.Response;
 
 /**
  * Created by chriszhu on 2/11/14.
  */
 public interface PaymentFacade {
     Promise<PaymentInstrument> getPaymentInstrument(Long paymentInstrumentId);
+
+    Promise<Response> postPaymentProperties(Long paymentId, PaymentCallbackParams properties);
 }

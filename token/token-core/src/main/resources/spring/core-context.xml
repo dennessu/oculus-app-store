@@ -11,6 +11,9 @@
     <bean id="tokenKeyService" class="com.junbo.token.core.impl.TokenServiceImpl">
         <property name="cryptoResource" ref="tokenCryptoResource"/>
         <property name="offerClient" ref="tokenOfferClient"/>
+        <property name="userClient" ref="userClient"/>
+        <property name="fulfilmentClient" ref="fulfilmentClient"/>
+        <property name="tokenRepository" ref="tokenRepository"/>
     </bean>
 
 </beans>

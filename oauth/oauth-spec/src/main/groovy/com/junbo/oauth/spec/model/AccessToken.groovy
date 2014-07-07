@@ -17,4 +17,14 @@ class AccessToken extends ExpirableToken {
     Set<String> scopes
     Long userId
     String refreshTokenValue
+
+    @Override
+    String getId() {
+        return tokenValue
+    }
+
+    @Override
+    void setId(String id) {
+        this.tokenValue = id
+    }
 }

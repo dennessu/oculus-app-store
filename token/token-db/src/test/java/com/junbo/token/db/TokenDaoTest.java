@@ -46,7 +46,7 @@ public class TokenDaoTest extends BaseTest {
 
     protected TokenSetOfferEntity buildTokenSetOfferRequest(TokenSetEntity set){
         TokenSetOfferEntity entity = new TokenSetOfferEntity();
-        entity.setId(generateId());
+        entity.setId(String.valueOf(generateId()));
         entity.setProductId(String.valueOf(generateId()));
         entity.setProductType(ProductType.OFFER);
         entity.setTokenSetId(set.getId());
@@ -55,7 +55,7 @@ public class TokenDaoTest extends BaseTest {
 
     protected TokenSetEntity buildTokenSetRequest(){
         TokenSetEntity entity = new TokenSetEntity();
-        entity.setId(generateId());
+        entity.setId(String.valueOf(generateId()));
         entity.setDescription("ut");
         entity.setStatus(SetStatus.ACTIVE);
         entity.setGenerationLength(TokenLength.LEN16);
@@ -64,7 +64,7 @@ public class TokenDaoTest extends BaseTest {
 
     protected TokenOrderEntity buildTokenOrderRequest(TokenSetEntity set){
         TokenOrderEntity entity = new TokenOrderEntity();
-        entity.setId(generateId());
+        entity.setId(String.valueOf(generateId()));
         entity.setDescription("ut");
         entity.setActivation("Yes");
         entity.setStatus(OrderStatus.COMPLETED);
@@ -81,13 +81,13 @@ public class TokenDaoTest extends BaseTest {
         entity.setHashValue(generateLong());
         entity.setStatus(ItemStatus.ACTIVATED);
         entity.setOrderId(order.getId());
-        entity.setId(generateId());
+        entity.setId(String.valueOf(generateId()));
         return entity;
     }
 
     protected TokenConsumptionEntity buildTokenItemRequest(TokenItemEntity item){
         TokenConsumptionEntity entity = new TokenConsumptionEntity();
-        entity.setItemId(idGenerator.nextId());
+        entity.setItemId(String.valueOf(idGenerator.nextId()));
         entity.setProduct("123");
         entity.setUserId(generateId());
         return entity;

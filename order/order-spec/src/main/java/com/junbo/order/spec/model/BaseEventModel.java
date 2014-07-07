@@ -40,7 +40,7 @@ public abstract class BaseEventModel<K> extends ResourceMetaForDualWrite<K> {
     private String status;
     @JsonIgnore
     private UUID trackingUuid;
-    @JsonIgnore
+    @ApiModelProperty(required = true, position = 120, value = "The order-event properties, json format. ")
     private String properties;
 
     public String getAction() {
