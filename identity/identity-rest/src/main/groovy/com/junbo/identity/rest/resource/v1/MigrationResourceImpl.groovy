@@ -966,30 +966,29 @@ class MigrationResourceImpl implements MigrationResource {
             if (dbUri.dbName == "user" && viewName == "by_migrate_user_id") {
                 def bulkCache = CloudantClientBulk.getBulkReadonly(dbUri)
                 searchUserByMigrateId(results, key, bulkCache)
-                return
             } else if (dbUri.dbName == "organization" && viewName == "by_migrate_company_id") {
                 def bulkCache = CloudantClientBulk.getBulkReadonly(dbUri)
                 searchByMigrateCompanyId(results, key, bulkCache)
-                return
-            } else if (dbUri.dbName == "group" && viewName == "by_organization_id_and_name") {
-                def bulkCache = CloudantClientBulk.getBulkReadonly(dbUri)
-                searchGroupByOrganizationIdAndName(results, key, bulkCache)
-                return
             } else if (dbUri.dbName == "group" && viewName == "by_organization_id") {
                 def bulkCache = CloudantClientBulk.getBulkReadonly(dbUri)
                 searchGroupByOrganizationId(results, key, bulkCache)
-                return
+            } else {
+                throw new IllegalStateException('dbName = ' + dbUri.dbName + ' viewName = ' + viewName + ' has no mapping')
             }
         }
 
         @Override
         void onQueryView(CloudantQueryResult results, CloudantDbUri dbUri, String viewName, String startKey, String endKey) {
-            return
+            throw new IllegalStateException('dbName = ' + dbUri.dbName + ' viewName = ' + viewName + ' has no mapping')
         }
 
         @Override
         void onQueryView(CloudantQueryResult results, CloudantDbUri dbUri, String viewName, Object[] startKey, Object... endKey) {
-            return
+            if (dbUri.dbName == "group" && viewName == "by_organization_id_and_name") {
+                def bulkCache = CloudantClientBulk.getBulkReadonly(dbUri)
+                searchGroupByOrganizationIdAndName(results, startKey, endKey, bulkCache)
+            }
+            throw new IllegalStateException('dbName = ' + dbUri.dbName + ' viewName = ' + viewName + ' has no mapping')
         }
 
         void onSearch(CloudantQueryResult results, CloudantDbUri dbUri, String searchName, String queryString) {
@@ -1024,18 +1023,36 @@ class MigrationResourceImpl implements MigrationResource {
             }
         }
 
-        private void searchGroupByOrganizationIdAndName(CloudantQueryResult results, String key, Map<String, CloudantClientBulk.EntityWithType> bulkCache) {
+        private void searchGroupByOrganizationIdAndName(CloudantQueryResult results, Object[] startKey, Object[] endKey, Map<String, CloudantClientBulk.EntityWithType> bulkCache) {
             for (CloudantClientBulk.EntityWithType entityWithType : bulkCache.values()) {
                 Group group = (Group)marshaller.unmarshall(entityWithType.entity, entityWithType.type)
-                if ("${group.getOrganizationId().value}:${group.name}" == key) {
+                if (isGroupInRange(startKey, endKey, group.organizationId.toString(), group.name)) {
                     results.rows.add(new CloudantQueryResult.ResultObject(
                             id: group.cloudantId,
-                            key: key,
+                            key: [group.organizationId.toString(), group.name],
                             value: group.cloudantId,
                             doc: group
                     ))
                 }
             }
+        }
+
+        // It must be as the format as startKey: [organizationId, name], endKey: [organizationId, name]
+        // Here we won't consider the scenarios for non-string comparation.
+        private boolean isGroupInRange(Object[] startKey, Object[] endKey, String organizationId, String name) {
+            assert startKey != null
+            assert startKey.size() == 2
+
+            assert endKey != null
+            assert endKey.size() == 2
+
+            String startOrganizationId = startKey[0].toString()
+            String startName = startKey[1].toString()
+
+            String endOrganizationId = endKey[0].toString()
+            String endName = endKey[1].toString()
+
+            return startOrganizationId <= organizationId && organizationId <= endOrganizationId && startName <= name && name <= endName
         }
 
         private void searchGroupByOrganizationId(CloudantQueryResult results, String key, Map<String, CloudantClientBulk.EntityWithType> bulkCache) {
