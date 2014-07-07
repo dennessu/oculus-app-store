@@ -14,5 +14,6 @@ public interface CsrUpdateValidator {
     Promise<CsrUpdate> validateForGet(CsrUpdateId csrUpdateId)
     Promise<Void> validateForSearch(CsrUpdateListOptions options)
     Promise<Void> validateForCreate(CsrUpdate csrUpdate)
-    Promise<Void> validateForUpdate(CsrUpdateId csrUpdateId, CsrUpdate csrUpdate, CsrUpdate oldcsrUpdate)
+    Promise<Void> validateForUpdate(CsrUpdateId csrUpdateId, CsrUpdate csrUpdate, CsrUpdate oldCsrUpdate)
+    Promise<CsrUpdate> validateForPatch(CsrUpdateId csrUpdateId, CsrUpdate csrUpdate, CsrUpdate oldCsrUpdate)
 }

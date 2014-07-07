@@ -6,6 +6,7 @@ import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
 import com.junbo.csr.db.repo.CsrLogRepository
 import com.junbo.csr.spec.model.CsrLog
+import com.junbo.csr.spec.option.list.CsrLogListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.sharding.dualwrite.annotations.ReadMethod
 import groovy.transform.CompileStatic
@@ -15,13 +16,9 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class CsrLogRepositoryCloudantImpl extends CloudantClient<CsrLog> implements CsrLogRepository {
-    @Override
-    Promise<Results<CsrLog>> searchByLastHours(Integer lastHours, UserId userId, String action, String countryCode, Integer limit, Integer offset) {
-        return null
-    }
 
     @Override
-    Promise<Results<CsrLog>> searchByDateRange(Date utcFrom, Date utcTo, UserId userId, String action, String countryCode, Integer limit, Integer offset) {
+    Promise<Results<CsrLog>> searchByListOptions(CsrLogListOptions listOptions) {
         return null
     }
 
@@ -43,5 +40,13 @@ class CsrLogRepositoryCloudantImpl extends CloudantClient<CsrLog> implements Csr
     @Override
     Promise<Void> delete(CsrLogId id) {
         return cloudantDelete(id.toString())
+    }
+
+    private Promise<Results<CsrLog>> searchByLastHours(Integer lastHours, UserId userId, String action, String countryCode, Integer limit, Integer offset) {
+        return null
+    }
+
+    private Promise<Results<CsrLog>> searchByDateRange(Date utcFrom, Date utcTo, UserId userId, String action, String countryCode, Integer limit, Integer offset) {
+        return null
     }
 }

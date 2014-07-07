@@ -29,22 +29,10 @@ public interface CsrLogResource {
     @POST
     Promise<CsrLog> create(CsrLog csrLog);
 
-    @PUT
-    @Path("/{csrLogId}")
-    Promise<CsrLog> put(@PathParam("csrLogId") CsrLogId csrLogId, CsrLog csrLog);
-
-    @POST
-    @Path("/{csrLogId}")
-    Promise<CsrLog> patch(@PathParam("csrLogId") CsrLogId csrLogId, CsrLog csrLog);
-
     @GET
     @Path("/{csrLogId}")
     Promise<CsrLog> get(@PathParam("csrLogId") CsrLogId csrLogId, @BeanParam CsrLogGetOptions getOptions);
 
     @GET
     Promise<Results<CsrLog>> list(@BeanParam CsrLogListOptions listOptions);
-
-    @DELETE
-    @Path("/{csrLogId}")
-    Promise<Void> delete(@PathParam("csrLogId") CsrLogId csrLogId);
 }

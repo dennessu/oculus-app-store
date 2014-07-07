@@ -8,5 +8,4 @@
 
     <alias alias="csrUpdateRepo" name="csrUpdateCloudantRepo" />
     <alias alias="csrLogRepo" name="csrLogCloudantRepo" />
-
 </beans>
