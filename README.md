@@ -336,7 +336,7 @@ After the steps, the serices are available at different ports on the development
 - Api Url: [http://localhost:8080/v1](http://localhost:8080)
 
 Note: In integration and production environment, a hardware load balancer will be put in front of these endpoints to provide a single endpoint. 
-(TODO: In onebox, use a Nginx server will be used to proxy the requests.)
+(TODO: In onebox, a Nginx server will be used to proxy the requests.)
 
 ### Run the integration test cases
 After the servers are running, you can run test cases using the following command:
