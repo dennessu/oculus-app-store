@@ -154,7 +154,7 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
                         Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)
                                 .location(UriBuilder.fromUri(successRedirectUri).build())
 
-                        CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_LOGIN_STATE, loginState.id, -1)
+                        CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_LOGIN_STATE, loginState.getId(), -1)
                         CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_SESSION_STATE,
                                 loginState.sessionId, -1, false)
 
