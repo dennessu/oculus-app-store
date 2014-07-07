@@ -6,6 +6,8 @@
 
 package com.junbo.test.order.utility;
 
+import com.junbo.billing.spec.model.BalanceItem;
+import com.junbo.billing.spec.model.TaxItem;
 import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
@@ -269,7 +271,7 @@ public class OrderTestDataProvider {
 
     public OrderInfo getExpectedOrderInfo(String userId, Country country, Currency currency,
                                           String locale, boolean isTentative, OrderStatus orderStatus, String paymentId,
-                                          Map<String, Integer> offers) throws Exception {
+                                          String orderId, Map<String, Integer> offers) throws Exception {
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setUserId(userId);
         orderInfo.setOrderStatus(orderStatus);
@@ -278,7 +280,16 @@ public class OrderTestDataProvider {
         orderInfo.setCurrency(currency);
         orderInfo.setLocale(locale);
 
-        orderInfo.setTaxRate(new BigDecimal(0.083));
+        List<String> balanceIds = getBalancesByOrderId(orderId);
+        BalanceItem balanceItem = Master.getInstance().getBalance(balanceIds.get(0)).getBalanceItems().get(0);
+        BigDecimal taxRate = new BigDecimal(0);
+
+        for(TaxItem taxItem : balanceItem.getTaxItems()){
+            taxRate = taxRate.add(taxItem.getTaxRate());
+        }
+
+
+        orderInfo.setTaxRate(taxRate);
 
         BigDecimal orderTotalAmount = new BigDecimal(0);
         BigDecimal orderTotalTax = new BigDecimal(0);
