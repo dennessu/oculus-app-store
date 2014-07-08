@@ -312,7 +312,13 @@ class MigrationResourceImpl implements MigrationResource {
         }
 
         return Promise.each(oculusInput.communications) { Map<String, Boolean> map ->
+            if (map == null || map.isEmpty()) {
+                return Promise.pure(null)
+            }
             return Promise.each(map.entrySet()) { Map.Entry<String, Boolean> entry ->
+                if (entry == null) {
+                    return Promise.pure(null)
+                }
                 return userCommunicationRepository.searchByUserIdAndCommunicationId(user.getId(), new CommunicationId(entry.key),
                         Integer.MAX_VALUE, 0).then { List<UserCommunication> userCommunicationList ->
                     if (org.springframework.util.CollectionUtils.isEmpty(userCommunicationList) && entry.value) {
@@ -323,6 +329,7 @@ class MigrationResourceImpl implements MigrationResource {
                         ))
                     } else if (org.springframework.util.CollectionUtils.isEmpty(userCommunicationList) && !entry.value) {
                         // do nothing
+                        return Promise.pure(null)
                     } else {
                         UserCommunication userCommunication = userCommunicationList.get(0)
                         if (entry.value) {
