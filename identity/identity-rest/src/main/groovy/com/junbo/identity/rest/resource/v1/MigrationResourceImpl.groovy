@@ -15,6 +15,7 @@ import com.junbo.common.cloudant.model.CloudantQueryResult
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppErrorException
+import com.junbo.common.id.CommunicationId
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.id.util.IdUtil
@@ -85,6 +86,12 @@ class MigrationResourceImpl implements MigrationResource {
     private UserRepository userRepository
 
     @Autowired
+    private CommunicationRepository communicationRepository
+
+    @Autowired
+    private UserCommunicationRepository userCommunicationRepository
+
+    @Autowired
     private NormalizeService normalizeService
 
     @Override
@@ -100,6 +107,8 @@ class MigrationResourceImpl implements MigrationResource {
         // Check current email isn't used by others
         return checkPasswordValid(oculusInput).then {
             return checkUserValid(oculusInput)
+        }.then {
+            return checkCommunicationExists(oculusInput)
         }.then {
             return checkEmailValid(oculusInput).then { User existing ->
                 return checkOrganizationValid(oculusInput, existing).then {
@@ -260,6 +269,10 @@ class MigrationResourceImpl implements MigrationResource {
                 return Promise.pure(createdUser)
             }
         }.then { User createdUser ->
+            return saveOrUpdateUserCommunication(oculusInput, createdUser).then {
+                return Promise.pure(createdUser)
+            }
+        }.then { User createdUser ->
             if (oculusInput.company == null) {
                 return Promise.pure(new OculusOutput(
                         userId: createdUser.getId()
@@ -290,6 +303,44 @@ class MigrationResourceImpl implements MigrationResource {
 
                 return userPasswordRepository.update(activePassword)
             }
+        }
+    }
+
+    Promise<Void> saveOrUpdateUserCommunication(OculusInput oculusInput, User user) {
+        if (CollectionUtils.isEmpty(oculusInput.communications)) {
+            return Promise.pure(null)
+        }
+
+        return Promise.each(oculusInput.communications) { Map<String, Boolean> map ->
+            return Promise.each(map.entrySet()) { Map.Entry<String, Boolean> entry ->
+                return userCommunicationRepository.searchByUserIdAndCommunicationId(user.getId(), new CommunicationId(entry.key),
+                        Integer.MAX_VALUE, 0).then { List<UserCommunication> userCommunicationList ->
+                    if (org.springframework.util.CollectionUtils.isEmpty(userCommunicationList) && entry.value) {
+                        // create
+                        return userCommunicationRepository.create(new UserCommunication(
+                                userId: user.getId(),
+                                communicationId: new CommunicationId(entry.key)
+                        ))
+                    } else if (org.springframework.util.CollectionUtils.isEmpty(userCommunicationList) && !entry.value) {
+                        // do nothing
+                    } else {
+                        UserCommunication userCommunication = userCommunicationList.get(0)
+                        if (entry.value) {
+                            // update
+                            userCommunication.setUserId(user.getId())
+                            userCommunication.setCommunicationId(new CommunicationId(entry.key))
+                            return userCommunicationRepository.update(userCommunication)
+                        } else {
+                            // delete
+                            return userCommunicationRepository.delete(userCommunication.getId())
+                        }
+                    }
+                }
+            }.then {
+                return Promise.pure(null)
+            }
+        }.then {
+            return Promise.pure(null)
         }
     }
 
@@ -367,6 +418,31 @@ class MigrationResourceImpl implements MigrationResource {
         checkCompanyType(oculusInput)
 
         return Promise.pure(null)
+    }
+
+    Promise<Void> checkCommunicationExists(OculusInput oculusInput) {
+        if (CollectionUtils.isEmpty(oculusInput.communications)) {
+            return Promise.pure(null)
+        }
+
+        return Promise.each(oculusInput.communications) { Map<String, Boolean> communicationIdMap ->
+            return Promise.each(communicationIdMap.entrySet()) { Map.Entry<String, Boolean> entry ->
+                if (entry.value == null) {
+                    throw AppErrors.INSTANCE.fieldInvalid('communications').exception()
+                }
+                return communicationRepository.get(new CommunicationId(entry.key)).then { Communication communication ->
+                    if (communication == null) {
+                        throw AppErrors.INSTANCE.communicationNotFound(new CommunicationId(entry.key)).exception()
+                    }
+
+                    return Promise.pure(null)
+                }
+            }.then {
+                return Promise.pure(null)
+            }
+        }.then {
+            return Promise.pure(null)
+        }
     }
 
     // The logic here should be:
@@ -972,14 +1048,11 @@ class MigrationResourceImpl implements MigrationResource {
             } else if (dbUri.dbName == "group" && viewName == "by_organization_id") {
                 def bulkCache = CloudantClientBulk.getBulkReadonly(dbUri)
                 searchGroupByOrganizationId(results, key, bulkCache)
-            } else {
-                throw new IllegalStateException('dbName = ' + dbUri.dbName + ' viewName = ' + viewName + ' has no mapping')
             }
         }
 
         @Override
         void onQueryView(CloudantQueryResult results, CloudantDbUri dbUri, String viewName, String startKey, String endKey) {
-            throw new IllegalStateException('dbName = ' + dbUri.dbName + ' viewName = ' + viewName + ' has no mapping')
         }
 
         @Override
@@ -988,7 +1061,6 @@ class MigrationResourceImpl implements MigrationResource {
                 def bulkCache = CloudantClientBulk.getBulkReadonly(dbUri)
                 searchGroupByOrganizationIdAndName(results, startKey, endKey, bulkCache)
             }
-            throw new IllegalStateException('dbName = ' + dbUri.dbName + ' viewName = ' + viewName + ' has no mapping')
         }
 
         void onSearch(CloudantQueryResult results, CloudantDbUri dbUri, String searchName, String queryString) {

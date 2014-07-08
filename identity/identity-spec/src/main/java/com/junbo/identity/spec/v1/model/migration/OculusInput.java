@@ -8,6 +8,8 @@ package com.junbo.identity.spec.v1.model.migration;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by liangfu on 6/6/14.
@@ -31,6 +33,8 @@ public class OculusInput {
     private ShareProfile profile;
     private Boolean forceResetPassword;
     private String status;
+    // the communication id that the user should have
+    private List<Map<String, Boolean>> communications;
 
     public Long getCurrentId() {
         return currentId;
@@ -166,5 +170,13 @@ public class OculusInput {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public List<Map<String, Boolean>> getCommunications() {
+        return communications;
+    }
+
+    public void setCommunications(List<Map<String, Boolean>> communications) {
+        this.communications = communications;
     }
 }
