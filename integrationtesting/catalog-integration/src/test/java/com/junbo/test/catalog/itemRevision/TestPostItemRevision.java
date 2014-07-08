@@ -5,6 +5,7 @@
  */
 package com.junbo.test.catalog.itemRevision;
 
+import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
@@ -90,7 +91,7 @@ public class TestPostItemRevision extends BaseTestClass {
 
         ItemRevision itemRevisionRtn = itemRevisionService.postItemRevision(itemRevisionPrepared);
 
-        checkItemRevisionRequiredParams(itemRevisionRtn, itemRevisionPrepared);
+        checkItemRevisionRequiredFields(itemRevisionRtn, itemRevisionPrepared);
 
         //Post an item revision with optional fields
         ItemRevision testItemRevisionFull = itemRevisionService.prepareItemRevisionEntity(fullItemRevisionFileName);
@@ -102,9 +103,12 @@ public class TestPostItemRevision extends BaseTestClass {
         testItemRevisionFull.setIapHostItemIds(hostItemIds);
 
         ItemRevision testItemRevisionRtn = itemRevisionService.postItemRevision(testItemRevisionFull);
+
+        checkItemRevisionRequiredFields(testItemRevisionRtn, testItemRevisionFull);
+        checkItemRevisionOptionalFields(testItemRevisionRtn, testItemRevisionFull);
     }
 
-    private void checkItemRevisionRequiredParams(ItemRevision itemRevisionActual, ItemRevision itemRevisionExpected) {
+    private void checkItemRevisionRequiredFields(ItemRevision itemRevisionActual, ItemRevision itemRevisionExpected) {
         Assert.assertEquals(itemRevisionActual.getItemId(), itemRevisionExpected.getItemId());
         Assert.assertEquals(itemRevisionActual.getOwnerId(), itemRevisionExpected.getOwnerId());
 
@@ -112,6 +116,22 @@ public class TestPostItemRevision extends BaseTestClass {
         ItemRevisionLocaleProperties localePropertiesExpected = itemRevisionExpected.getLocales().get(defaultLocale);
 
         Assert.assertEquals(localePropertiesActual.getName(), localePropertiesExpected.getName());
+    }
+
+    private void checkItemRevisionOptionalFields(ItemRevision itemRevisionActual, ItemRevision itemRevisionExpected) {
+        Assert.assertEquals(itemRevisionActual.getStatus(), itemRevisionExpected.getStatus());
+        Assert.assertEquals(itemRevisionActual.getRollupPackageName(), itemRevisionExpected.getRollupPackageName());
+        Assert.assertEquals(itemRevisionActual.getPackageName(), itemRevisionExpected.getPackageName());
+        Assert.assertEquals(itemRevisionActual.getSku(), itemRevisionExpected.getSku());
+
+        //Compare msrp
+        Price actual = itemRevisionActual.getMsrp();
+        Price expected = itemRevisionExpected.getMsrp();
+        Assert.assertTrue(actual.getPriceTier().equalsIgnoreCase(expected.getPriceTier()));
+        Assert.assertTrue(actual.getPriceType().equalsIgnoreCase(expected.getPriceType()));
+        Assert.assertTrue(actual.getPrices().equals(expected.getPrices()));
+
+
     }
 
 }
