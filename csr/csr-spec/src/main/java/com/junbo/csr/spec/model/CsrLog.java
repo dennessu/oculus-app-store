@@ -10,13 +10,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.CsrLogId;
 import com.junbo.common.id.UserId;
-import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
+import com.junbo.common.model.ResourceMeta;
 import com.junbo.csr.spec.def.CsrLogActionType;
 
 /**
  * Created by haomin on 14-7-4.
  */
-public class CsrLog extends PropertyAssignedAwareResourceMeta<CsrLogId> {
+public class CsrLog extends ResourceMeta<CsrLogId> {
     public CsrLogId getId() {
         return id;
     }

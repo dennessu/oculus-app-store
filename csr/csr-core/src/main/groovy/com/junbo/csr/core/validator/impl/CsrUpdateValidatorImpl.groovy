@@ -58,9 +58,7 @@ class CsrUpdateValidatorImpl implements CsrUpdateValidator {
             throw new IllegalArgumentException('csr update listOptions is null')
         }
 
-        if (options.status == null) {
-            throw AppErrors.INSTANCE.fieldRequired('status').exception()
-        }
+        return Promise.pure(null)
     }
 
     @Override

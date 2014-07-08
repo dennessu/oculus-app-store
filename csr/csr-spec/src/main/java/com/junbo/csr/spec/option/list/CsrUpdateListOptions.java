@@ -11,15 +11,14 @@ import javax.ws.rs.QueryParam;
  * Created by haomin on 14-7-4.
  */
 public class CsrUpdateListOptions extends PagingGetOptions {
-
-    public String getStatus() {
-        return status;
+    public Boolean getActive() {
+        return active;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
-    @QueryParam("status")
-    private String status;
+    @QueryParam("active")
+    private Boolean active;
 }

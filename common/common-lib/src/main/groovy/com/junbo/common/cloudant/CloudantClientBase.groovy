@@ -188,6 +188,9 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         }
     }
 
+    protected Promise<CloudantQueryResult> queryView(String viewName, Object[] startKey, Object[] endKey, boolean withHighKey, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
+        return getEffective().queryView(getDbUri(null), entityClass, viewName, startKey, endKey, withHighKey, limit, skip, descending, includeDocs)
+    }
 
     protected Promise<CloudantSearchResult<T>> search(String searchName, String queryString, Integer limit, String bookmark) {
         return getEffective().search(getDbUri(null), entityClass, searchName, queryString, limit, bookmark, true).syncThen { CloudantQueryResult searchResult ->

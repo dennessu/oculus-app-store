@@ -8,26 +8,25 @@ package com.junbo.csr.spec.option.list;
 import com.junbo.common.id.UserId;
 
 import javax.ws.rs.QueryParam;
-import java.util.Date;
 
 /**
  * Created by haomin on 14-7-4.
  */
 public class CsrLogListOptions extends PagingGetOptions {
 
-    public Date getFrom() {
+    public String getFrom() {
         return from;
     }
 
-    public void setFrom(Date from) {
+    public void setFrom(String from) {
         this.from = from;
     }
 
-    public Date getTo() {
+    public String getTo() {
         return to;
     }
 
-    public void setTo(Date to) {
+    public void setTo(String to) {
         this.to = to;
     }
 
@@ -55,24 +54,14 @@ public class CsrLogListOptions extends PagingGetOptions {
         this.action = action;
     }
 
-    public String getCountryCode() {
-        return countryCode;
-    }
-
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
-    }
-
     @QueryParam("from")
-    private Date from;
+    private String from;
     @QueryParam("to")
-    private Date to;
+    private String to;
     @QueryParam("lastHours")
     private Integer lastHours;
     @QueryParam("byAgent")
     private UserId userId;
     @QueryParam("byAction")
     private String action;
-    @QueryParam("byCountry")
-    private String countryCode;
 }

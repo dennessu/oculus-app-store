@@ -5,7 +5,7 @@ import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.csr.core.validator.CsrUpdateValidator
 import com.junbo.csr.db.repo.CsrUpdateRepository
-import com.junbo.csr.spec.model.CsrLog
+import com.junbo.csr.spec.error.AppErrors
 import com.junbo.csr.spec.model.CsrUpdate
 import com.junbo.csr.spec.option.list.CsrUpdateListOptions
 import com.junbo.csr.spec.option.model.CsrUpdateGetOptions
@@ -13,7 +13,6 @@ import com.junbo.csr.spec.resource.CsrUpdateResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by haomin on 14-7-4.
@@ -28,6 +27,10 @@ class CsrUpdateResourceImpl implements CsrUpdateResource {
 
     @Override
     Promise<CsrUpdate> create(CsrUpdate csrUpdate) {
+        if (csrUpdate == null) {
+            throw AppErrors.INSTANCE.requestBodyRequired().exception()
+        }
+
         return csrUpdateValidator.validateForCreate(csrUpdate).then {
             return csrUpdateRepository.create(csrUpdate).then { CsrUpdate newCsrUpdate ->
                 Created201Marker.mark(newCsrUpdate.getId())
@@ -38,6 +41,14 @@ class CsrUpdateResourceImpl implements CsrUpdateResource {
 
     @Override
     Promise<CsrUpdate> put(CsrUpdateId csrUpdateId, CsrUpdate csrUpdate) {
+        if (csrUpdateId == null) {
+            throw new IllegalArgumentException('csrUpdateId is null')
+        }
+
+        if (csrUpdate == null) {
+            throw AppErrors.INSTANCE.requestBodyRequired().exception()
+        }
+
         return csrUpdateValidator.validateForGet(csrUpdateId).then { CsrUpdate oldCsrUpdate ->
             return csrUpdateValidator.validateForUpdate(csrUpdateId, csrUpdate, oldCsrUpdate).then {
                 return csrUpdateRepository.update(csrUpdate).then { CsrUpdate newCsrUpdate ->
@@ -49,8 +60,16 @@ class CsrUpdateResourceImpl implements CsrUpdateResource {
 
     @Override
     Promise<CsrUpdate> patch(CsrUpdateId csrUpdateId, CsrUpdate csrUpdate) {
+        if (csrUpdateId == null) {
+            throw new IllegalArgumentException('csrUpdateId is null')
+        }
+
+        if (csrUpdate == null) {
+            throw AppErrors.INSTANCE.requestBodyRequired().exception()
+        }
+
         return csrUpdateValidator.validateForGet(csrUpdateId).then { CsrUpdate oldCsrUpdate ->
-            return csrUpdateValidator.validateForUpdate(csrUpdateId, csrUpdate, oldCsrUpdate).then {
+            return csrUpdateValidator.validateForPatch(csrUpdateId, csrUpdate, oldCsrUpdate).then {
                 return csrUpdateRepository.update(csrUpdate).then { CsrUpdate newCsrUpdate ->
                     return Promise.pure(newCsrUpdate)
                 }
@@ -60,6 +79,10 @@ class CsrUpdateResourceImpl implements CsrUpdateResource {
 
     @Override
     Promise<CsrUpdate> get(CsrUpdateId csrUpdateId, CsrUpdateGetOptions getOptions) {
+        if (csrUpdateId == null) {
+            throw new IllegalArgumentException('csrUpdateId is null')
+        }
+
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
         }
@@ -86,6 +109,10 @@ class CsrUpdateResourceImpl implements CsrUpdateResource {
 
     @Override
     Promise<Void> delete(CsrUpdateId csrUpdateId) {
+        if (csrUpdateId == null) {
+            throw new IllegalArgumentException('csrUpdateId is null')
+        }
+
         return csrUpdateValidator.validateForGet(csrUpdateId).then { CsrUpdate existing ->
             return csrUpdateRepository.delete(csrUpdateId)
         }

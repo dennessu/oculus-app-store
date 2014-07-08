@@ -560,7 +560,9 @@
                   "map": "function(doc) {emit(doc.tokenSetId, doc._id)}"
               }
           }
-      }
+      },
+      "csr_update": {},
+      "csr_log": {}
   }, 
   "cloudant_search": {
     "entitlement": {

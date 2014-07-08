@@ -1,5 +1,6 @@
 package com.junbo.csr.core.validator.impl
 
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat
 import com.junbo.common.id.CsrLogId
 import com.junbo.csr.common.ValidatorUtil
 import com.junbo.csr.core.validator.CsrLogValidator
@@ -14,6 +15,9 @@ import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.StringUtils
+
+import java.text.ParseException
 
 /**
  * Created by haomin on 14-7-4.
@@ -70,21 +74,26 @@ class CsrLogValidatorImpl implements CsrLogValidator {
             throw AppErrors.INSTANCE.invalidCsrLogSearch().exception()
         }
 
-        if (options.lastHours == null) {
-            if (options.from == null || options.to == null) {
-                throw AppErrors.INSTANCE.invalidCsrLogSearch().exception()
-            }
+        if (options.lastHours == null && (options.from == null || options.to == null)) {
+            throw AppErrors.INSTANCE.invalidCsrLogSearch().exception()
         }
 
-        if (options.from.after(options.to) || options.lastHours <= 0) {
+        if (options.lastHours != null && options.lastHours < 0) {
             throw AppErrors.INSTANCE.invalidCsrLogSearch().exception()
         }
 
         if (options.from != null) {
+            Date fromDate = checkAndParseDate(options.from)
+            Date toDate = checkAndParseDate(options.to)
+
+            if (fromDate.after(toDate)) {
+                throw AppErrors.INSTANCE.invalidCsrLogSearch().exception()
+            }
+
             Calendar calendar = Calendar.instance
-            calendar.setTime(options.from)
+            calendar.setTime(fromDate)
             calendar.add(Calendar.DATE, this.maxSearchDays)
-            if (options.to.after(calendar.time)) {
+            if (toDate.after(calendar.time)) {
                 throw AppErrors.INSTANCE.exceedCsrLogSearchRange().exception()
             }
         }
@@ -93,10 +102,6 @@ class CsrLogValidatorImpl implements CsrLogValidator {
             if (options.lastHours/24 > (this.maxSearchDays - 1)) {
                 throw AppErrors.INSTANCE.exceedCsrLogSearchRange().exception()
             }
-        }
-
-        if (options.countryCode != null && !ValidatorUtil.isValidCountryCode(options.countryCode)) {
-            throw AppErrors.INSTANCE.invalidCountryCode().exception()
         }
 
         if (options.action != null) {
@@ -118,6 +123,8 @@ class CsrLogValidatorImpl implements CsrLogValidator {
                 return Promise.pure(null)
             }
         }
+
+        return Promise.pure(null)
     }
 
     @Override
@@ -154,6 +161,17 @@ class CsrLogValidatorImpl implements CsrLogValidator {
                 }
 
                 return Promise.pure(null)
+            }
+        }
+    }
+
+    protected Date checkAndParseDate(String date) {
+        if (!StringUtils.isEmpty(date)) {
+            try {
+                ISO8601DateFormat formatter = new ISO8601DateFormat()
+                return formatter.parse(date)
+            } catch (Exception e) {
+                throw AppErrors.INSTANCE.dateFormatInvalid().exception()
             }
         }
     }

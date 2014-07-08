@@ -5,6 +5,7 @@ import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.csr.core.validator.CsrLogValidator
 import com.junbo.csr.db.repo.CsrLogRepository
+import com.junbo.csr.spec.error.AppErrors
 import com.junbo.csr.spec.model.CsrLog
 import com.junbo.csr.spec.option.list.CsrLogListOptions
 import com.junbo.csr.spec.option.model.CsrLogGetOptions
@@ -12,7 +13,6 @@ import com.junbo.csr.spec.resource.CsrLogResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by haomin on 14-7-4.
@@ -27,6 +27,10 @@ class CsrLogResourceImpl implements CsrLogResource {
 
     @Override
     Promise<CsrLog> create(CsrLog csrLog) {
+        if (csrLog == null) {
+            throw AppErrors.INSTANCE.requestBodyRequired().exception()
+        }
+
         return csrLogValidator.validateForCreate(csrLog).then {
             return csrLogRepository.create(csrLog).then { CsrLog newCsrLog ->
                 Created201Marker.mark(newCsrLog.getId())
@@ -37,6 +41,10 @@ class CsrLogResourceImpl implements CsrLogResource {
 
     @Override
     Promise<CsrLog> get(CsrLogId csrLogId, CsrLogGetOptions getOptions) {
+        if (csrLogId == null) {
+            throw new IllegalArgumentException('csrLogId is null')
+        }
+
         if (getOptions == null) {
             throw new IllegalArgumentException('getOptions is null')
         }
@@ -55,9 +63,7 @@ class CsrLogResourceImpl implements CsrLogResource {
         }
 
         return csrLogValidator.validateForSearch(listOptions).then {
-            return csrLogRepository.searchByListOptions(listOptions).then { Results<CsrLog> results ->
-                return Promise.pure(results)
-            }
+            return csrLogRepository.searchByListOptions(listOptions)
         }
     }
 }

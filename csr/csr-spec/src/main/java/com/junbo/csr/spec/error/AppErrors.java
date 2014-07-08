@@ -45,6 +45,12 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 409, code = "900010", description = "Field {0} required.", field = "{0}")
     AppError fieldRequired(String field);
 
-    @ErrorDef(httpStatusCode = 409, code = "900010", description = "Csr update {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 409, code = "900011", description = "Csr update {0} not found.", field = "{0}")
     AppError csrUpdateNotFound(CsrUpdateId csrUpdateId);
+
+    @ErrorDef(httpStatusCode = 400, code = "900012", description = "Request body is empty")
+    AppError requestBodyRequired();
+
+    @ErrorDef(httpStatusCode = 400, code = "900013", description = "Date should be in ISO8601 format.(2014-07-08T10:41:15Z)")
+    AppError dateFormatInvalid();
 }

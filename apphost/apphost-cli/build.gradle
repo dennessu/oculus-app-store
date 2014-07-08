@@ -35,6 +35,7 @@ dependencies {
     compile junboProject(':catalog-jobs')
     compile junboProject(':identity-job')
     compile junboProject(':token-rest')
+    compile junboProject(':csr-rest')
     // more to add
 }
 

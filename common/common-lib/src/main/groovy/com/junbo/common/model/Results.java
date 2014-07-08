@@ -33,7 +33,7 @@ public class Results<T> {
     @JsonProperty("next")
     private Link next;
 
-    private Integer total;
+    private Long total;
 
     @JsonIgnore
     private boolean hasNext;
@@ -70,11 +70,11 @@ public class Results<T> {
         this.hasNext = hasNext;
     }
 
-    public Integer getTotal() {
+    public Long getTotal() {
         return total;
     }
 
-    public void setTotal(Integer total) {
+    public void setTotal(Long total) {
         this.total = total;
     }
 }

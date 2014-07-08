@@ -9,12 +9,12 @@ package com.junbo.csr.spec.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.CsrUpdateId;
 import com.junbo.common.id.UserId;
-import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
+import com.junbo.common.model.ResourceMeta;
 
 /**
  * Created by haomin on 14-7-4.
  */
-public class CsrUpdate extends PropertyAssignedAwareResourceMeta<CsrUpdateId> {
+public class CsrUpdate extends ResourceMeta<CsrUpdateId> {
 
     public CsrUpdateId getId() {
         return id;

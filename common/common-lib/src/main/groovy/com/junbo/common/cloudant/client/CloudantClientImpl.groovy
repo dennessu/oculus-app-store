@@ -144,6 +144,7 @@ class CloudantClientImpl implements CloudantClient {
         if (descending) {
             query.put('descending', 'true')
         }
+        query.put('include_docs', 'true')
 
         return executeRequest(dbUri, HttpMethod.GET, '_all_docs', query, null).then ({ Response response ->
             if (response.statusCode != HttpStatus.OK.value()) {
@@ -153,20 +154,15 @@ class CloudantClientImpl implements CloudantClient {
                         " reason: $cloudantError.reason")
             }
 
-            def cloudantSearchResult = (CloudantQueryResult)marshaller.unmarshall(response.responseBody,
-                    CloudantQueryResult, CloudantQueryResult.AllResultEntity, Object.class)
+            def cloudantSearchResult = (CloudantQueryResult)marshaller.unmarshall(response.responseBody, CloudantQueryResult, CloudantQueryResult.AllResultEntity, entityClass)
 
             List<T> list = new ArrayList<>()
             return Promise.each(cloudantSearchResult.rows) { CloudantQueryResult.ResultObject result ->
                 if (result.id.startsWith(DEFAULT_DESIGN_ID_PREFIX)) {
                     return Promise.pure(null)
                 }
-                return cloudantGet(dbUri, entityClass, result.id).then { T temp ->
-                    if (temp != null) {
-                        list.add(temp)
-                    }
-                    return Promise.pure(null)
-                }
+                list.add((T)(result.doc))
+                return Promise.pure(null)
             }.then {
                 return Promise.pure(list)
             }

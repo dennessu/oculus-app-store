@@ -16,7 +16,23 @@ import groovy.transform.CompileStatic
 class CsrUpdateRepositoryCloudantImpl extends CloudantClient<CsrUpdate> implements CsrUpdateRepository {
     @Override
     Promise<Results<CsrUpdate>> searchByListOptions(CsrUpdateListOptions listOptions) {
-        return null
+        def resultList = new Results<CsrUpdate>(items: [])
+        return cloudantGetAll(null, null, false).then { List<CsrUpdate> list ->
+            if (listOptions.active != null) {
+                list.removeAll { CsrUpdate csrUpdate ->
+                    listOptions.active != csrUpdate.active
+                }
+            }
+
+            list.each { CsrUpdate item ->
+                if (item != null) {
+                    resultList.items.add(item)
+                }
+            }
+
+            resultList.total = list.size()
+            return Promise.pure(resultList)
+        }
     }
 
     @Override
@@ -37,9 +53,5 @@ class CsrUpdateRepositoryCloudantImpl extends CloudantClient<CsrUpdate> implemen
     @Override
     Promise<Void> delete(CsrUpdateId id) {
         return cloudantDelete(id.toString())
-    }
-
-    private Promise<Results<CsrUpdate>> getCsrUpdateByStatus(Boolean isActive, Integer limit, Integer offset) {
-        return null
     }
 }
