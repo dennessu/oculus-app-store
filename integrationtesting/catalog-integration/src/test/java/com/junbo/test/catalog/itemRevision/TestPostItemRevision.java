@@ -6,6 +6,7 @@
 package com.junbo.test.catalog.itemRevision;
 
 import com.junbo.catalog.spec.model.common.Price;
+import com.junbo.catalog.spec.model.item.Binary;
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
@@ -67,9 +68,9 @@ public class TestPostItemRevision extends BaseTestClass {
             status = Status.Enable,
             description = "Test Post Item Revisions",
             steps = {
-                    "1. Post test item revision only with required fields",
+                    "1. Post test item revisions only with required fields",
                     "2. Verify the returned values are the same with prepared",
-                    "3. Post test item with optional fields",
+                    "3. Post test item revisions with optional fields",
                     "4. Verify the returned values are the same with prepared"
             }
     )
@@ -108,13 +109,103 @@ public class TestPostItemRevision extends BaseTestClass {
         checkItemRevisionOptionalFields(testItemRevisionRtn, testItemRevisionFull);
     }
 
+    @Property(
+            priority = Priority.Dailies,
+            features = "Post v1/item-revisions",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Test Post Item Revisions",
+            steps = {
+                    "1. Prepare an item revision",
+                    "2. test invalid values(like null, not null and some invalid enum values)",
+                    "3. Try to post it and verify the expected error"
+            }
+    )
+    @Test
+    public void testPostItemRevisionInvalidScenarios() throws Exception {
+        //Set rev not null
+        ItemRevision testItemRevision = itemRevisionService.prepareItemRevisionEntity(fullItemRevisionFileName);
+        testItemRevision.setItemId(item1.getItemId());
+        testItemRevision.setOwnerId(organizationId);
+        testItemRevision.setRev("1");
+        verifyExpectedError(testItemRevision);
+
+        //Set status to invalid value
+        testItemRevision.setRev(null);
+        testItemRevision.setStatus("invalidValue");
+        verifyExpectedError(testItemRevision);
+
+        testItemRevision.setStatus(CatalogEntityStatus.REJECTED.name());
+        verifyExpectedError(testItemRevision);
+
+        //set OwnerId to null
+        testItemRevision.setStatus(CatalogEntityStatus.DRAFT.name());
+        testItemRevision.setOwnerId(null);
+        verifyExpectedError(testItemRevision);
+
+        //Test invalid value for itemId
+        testItemRevision.setOwnerId(organizationId);
+        //Todo:BUG 341
+        //testItemRevision.setItemId(null);
+        //verifyExpectedError(testItemRevision);
+
+        testItemRevision.setItemId("11111");
+        try {
+            itemRevisionService.postItemRevision(testItemRevision, 404);
+            Assert.fail("Post item revision should fail");
+        }
+        catch (Exception ex) {
+            logger.logInfo("Expected exception: " + ex);
+        }
+
+        //locales: name
+        testItemRevision.setItemId(item1.getItemId());
+        Map<String, ItemRevisionLocaleProperties> locales = new HashMap<>();
+        ItemRevisionLocaleProperties itemRevisionLocaleProperties = new ItemRevisionLocaleProperties();
+        itemRevisionLocaleProperties.setName(null);
+        locales.put(defaultLocale, itemRevisionLocaleProperties);
+        testItemRevision.setLocales(locales);
+        verifyExpectedError(testItemRevision);
+
+        //set binaries for not APP and DOWNLOADED_ADDITION type
+        itemRevisionLocaleProperties.setName("testItemRevision_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
+        locales.put(defaultLocale, itemRevisionLocaleProperties);
+        testItemRevision.setLocales(locales);
+
+        Item item = itemService.postDefaultItem(CatalogItemType.PHYSICAL);
+        testItemRevision.setItemId(item.getItemId());
+        Map<String, Binary> binaries = new HashMap<>();
+        Binary binary = new Binary();
+        binary.setVersion("1");
+        binary.setSize(1024L);
+        binary.setMd5("md5mmmmmmmmmm");
+        binary.setHref("http://www.google.com/downlaod/angrybird1_0.exe");
+        binaries.put("PC", binary);
+        testItemRevision.setBinaries(binaries);
+        verifyExpectedError(testItemRevision);
+
+        //duplicate packageName
+        String packageName = "packageName_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10);
+        ItemRevision tmpItemRevision = itemRevisionService.prepareItemRevisionEntity(fullItemRevisionFileName);
+        tmpItemRevision.setItemId(item2.getItemId());
+        tmpItemRevision.setOwnerId(organizationId);
+        tmpItemRevision.setPackageName(packageName);
+        ItemRevision itemRevisionRtn = itemRevisionService.postItemRevision(tmpItemRevision);
+        releaseItemRevision(itemRevisionRtn);
+
+        testItemRevision.setBinaries(null);
+        testItemRevision.setItemId(item1.getItemId());
+        testItemRevision.setPackageName(packageName);
+        verifyExpectedError(testItemRevision);
+    }
+
     private void checkItemRevisionRequiredFields(ItemRevision itemRevisionActual, ItemRevision itemRevisionExpected) {
         Assert.assertEquals(itemRevisionActual.getItemId(), itemRevisionExpected.getItemId());
         Assert.assertEquals(itemRevisionActual.getOwnerId(), itemRevisionExpected.getOwnerId());
-
+        //Compare name
         ItemRevisionLocaleProperties localePropertiesActual = itemRevisionActual.getLocales().get(defaultLocale);
         ItemRevisionLocaleProperties localePropertiesExpected = itemRevisionExpected.getLocales().get(defaultLocale);
-
         Assert.assertEquals(localePropertiesActual.getName(), localePropertiesExpected.getName());
     }
 
@@ -123,15 +214,35 @@ public class TestPostItemRevision extends BaseTestClass {
         Assert.assertEquals(itemRevisionActual.getRollupPackageName(), itemRevisionExpected.getRollupPackageName());
         Assert.assertEquals(itemRevisionActual.getPackageName(), itemRevisionExpected.getPackageName());
         Assert.assertEquals(itemRevisionActual.getSku(), itemRevisionExpected.getSku());
+        Assert.assertEquals(itemRevisionActual.getUserInteractionMode(), itemRevisionExpected.getUserInteractionMode());
 
         //Compare msrp
         Price actual = itemRevisionActual.getMsrp();
         Price expected = itemRevisionExpected.getMsrp();
-        Assert.assertTrue(actual.getPriceTier().equalsIgnoreCase(expected.getPriceTier()));
+        Assert.assertTrue((actual.getPriceTier() == null) ? expected.getPriceTier() == null : actual.getPriceTier().equalsIgnoreCase(expected.getPriceTier()));
         Assert.assertTrue(actual.getPriceType().equalsIgnoreCase(expected.getPriceType()));
         Assert.assertTrue(actual.getPrices().equals(expected.getPrices()));
 
+        //Compare supportedInputDevices
+        Assert.assertTrue((itemRevisionActual.getSupportedInputDevices() == null)? itemRevisionExpected.getSupportedInputDevices()== null :
+                itemRevisionActual.getSupportedInputDevices().equals(itemRevisionExpected.getSupportedInputDevices()));
+        //Compare platforms
+        Assert.assertTrue((itemRevisionActual.getPlatforms() == null)? itemRevisionExpected.getPlatforms()== null :
+                itemRevisionActual.getPlatforms().equals(itemRevisionExpected.getPlatforms()));
+        //Compare iapHostItems
+        Assert.assertTrue((itemRevisionActual.getIapHostItemIds() == null)? itemRevisionExpected.getIapHostItemIds()== null :
+                itemRevisionActual.getIapHostItemIds().equals(itemRevisionExpected.getIapHostItemIds()));
+    }
 
+    private void verifyExpectedError(ItemRevision itemRevision) {
+        try {
+            //Error code 400 means "Missing Input field", "Unnecessary field found" or "invalid value"
+            itemRevisionService.postItemRevision(itemRevision, 400);
+            Assert.fail("Post item revision should fail");
+        }
+        catch (Exception ex) {
+            logger.logInfo("Expected exception: " + ex);
+        }
     }
 
 }
