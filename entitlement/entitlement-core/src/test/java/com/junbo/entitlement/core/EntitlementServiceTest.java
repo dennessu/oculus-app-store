@@ -6,6 +6,9 @@
 
 package com.junbo.entitlement.core;
 
+import com.amazonaws.HttpMethod;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.junbo.authorization.AuthorizeContext;
 import com.junbo.authorization.AuthorizeService;
 import com.junbo.authorization.AuthorizeServiceImpl;
@@ -17,7 +20,6 @@ import com.junbo.entitlement.common.cache.CommonCache;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
-import com.junbo.entitlement.spec.model.EntitlementTransfer;
 import com.junbo.entitlement.spec.model.PageMetadata;
 import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.WebApplicationException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -51,6 +55,8 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
     private IdGenerator idGenerator;
     @Autowired
     private EntitlementService entitlementService;
+    @Autowired
+    private AmazonS3Client awsClient;
 
     @Test
     public void testAddEntitlement() {
@@ -126,22 +132,6 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(entitlements.size(), 5);
     }
 
-    @Test
-    public void testTransferEntitlement() {
-        Entitlement entitlement = buildAnEntitlement();
-        Entitlement addedEntitlement = entitlementService.addEntitlement(entitlement);
-        EntitlementTransfer transfer = new EntitlementTransfer();
-        transfer.setTargetUserId(idGenerator.nextId());
-        transfer.setEntitlementId(addedEntitlement.getId());
-        Entitlement newEntitlement = entitlementService.transferEntitlement(transfer);
-        try {
-            entitlementService.getEntitlement(addedEntitlement.getId());
-        } catch (WebApplicationException e) {
-            Assert.assertEquals(e.getResponse().getStatus(), 404);
-        }
-        Assert.assertEquals(newEntitlement.getUserId(), transfer.getTargetUserId());
-    }
-
     private Entitlement buildAnEntitlement() {
         Entitlement entitlement = new Entitlement();
         entitlement.setUserId(idGenerator.nextId());
@@ -168,8 +158,35 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
     @BeforeClass(alwaysRun = true, dependsOnMethods = "springTestContextBeforeTestClass")
     protected void springTestContextPrepareTestInstance() throws Exception {
         super.springTestContextPrepareTestInstance();
-        AuthorizeServiceImpl authorizeService = (AuthorizeServiceImpl)applicationContext.getBean(AuthorizeService.class);
+        AuthorizeServiceImpl authorizeService = (AuthorizeServiceImpl) applicationContext.getBean(AuthorizeService.class);
         authorizeService.setDisabled(true);
         AuthorizeContext.setAuthorizeDisabled(true);
+    }
+
+    @Test(enabled = false)
+    //make sure the url and key info are valid and just check whether the url generated is valid
+    public void testGenerateUrl() throws MalformedURLException {
+        String url = "http://static.oculusvr.com/uploads/14013776640911fhvo9od2t9-pc.zip";
+        String result = generateDownloadUrl(url);
+        System.out.println(result);
+    }
+
+    private String generateDownloadUrl(String urlString) throws MalformedURLException {
+        URL url = new URL(urlString);
+        String bucketName = url.getHost();
+        String objectKey = url.getPath().substring(1);
+
+        java.util.Date expiration = new java.util.Date();
+        long milliSeconds = expiration.getTime();
+        milliSeconds += 1000 * 30; // Add 30 seconds.
+        expiration.setTime(milliSeconds);
+
+        GeneratePresignedUrlRequest generatePresignedUrlRequest =
+                new GeneratePresignedUrlRequest(bucketName, objectKey);
+        generatePresignedUrlRequest.setMethod(HttpMethod.GET);
+        generatePresignedUrlRequest.setExpiration(expiration);
+
+        URL downloadUrl = awsClient.generatePresignedUrl(generatePresignedUrlRequest);
+        return downloadUrl.toString();
     }
 }

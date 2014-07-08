@@ -59,7 +59,7 @@ public class ItemFacadeImpl implements ItemFacade {
         List<Item> items = new LinkedList<>();
         ItemsGetOptions options = new ItemsGetOptions();
         options.setHostItemId(hostItemId);
-        options.setSize(20000);  //TODO: temp work around
+        options.setSize(20000);  //temp work around
         options.setStart(0);
         try {
             LOGGER.info("Getting items by hostItemId [{}] started.", hostItemId);

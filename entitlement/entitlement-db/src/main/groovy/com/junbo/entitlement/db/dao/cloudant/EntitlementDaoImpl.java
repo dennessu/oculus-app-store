@@ -39,7 +39,7 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
     @Override
     public EntitlementEntity get(String entitlementId) {
         EntitlementEntity result = cloudantGet(entitlementId).get();
-        return result.getIsDeleted().equals(true) ? null : result;
+        return result == null || result.getIsDeleted().equals(true) ? null : result;
     }
 
     @Override

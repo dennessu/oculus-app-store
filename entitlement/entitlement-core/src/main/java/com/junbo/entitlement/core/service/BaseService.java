@@ -17,7 +17,6 @@ import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.spec.error.AppErrors;
 import com.junbo.entitlement.spec.model.Entitlement;
-import com.junbo.entitlement.spec.model.EntitlementTransfer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,23 +109,6 @@ public class BaseService {
         validateGrantTimeBeforeExpirationTime(existingEntitlement);
     }
 
-    protected void validateTransfer(EntitlementTransfer transfer, Entitlement existingEntitlement) {
-        validateNotNull(transfer.getEntitlementId(), "entitlement");
-        if (existingEntitlement == null) {
-            throw AppErrors.INSTANCE.notFound("entitlement",
-                    transfer.getEntitlementId()).exception();
-        }
-        checkUser(existingEntitlement.getUserId());
-        checkTargetUser(transfer.getTargetUserId());
-        if (existingEntitlement.getIsBanned()) {
-            LOGGER.error("Entitlement [{}] can not be transferred.", existingEntitlement.getId());
-            throw AppErrors.INSTANCE.notTransferable(
-                    existingEntitlement.getId(),
-                    "Banned entitlement can not be transferred.")
-                    .exception();
-        }
-    }
-
     private void validateGrantTimeBeforeExpirationTime(Entitlement entitlement) {
         if (entitlement.getExpirationTime() != null) {
             if (entitlement.getGrantTime().after(entitlement.getExpirationTime())) {
@@ -183,11 +165,6 @@ public class BaseService {
 
     protected void checkUser(Long userId) {
         validateNotNull(userId, "user");
-        //TODO: check userId
-    }
-
-    protected void checkTargetUser(Long userId) {
-        validateNotNull(userId, "targetUser");
     }
 
     protected void checkOauth(final Entitlement entitlement) {
