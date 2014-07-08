@@ -7,10 +7,10 @@
 package com.junbo.rating.core.service;
 
 import com.junbo.rating.core.BaseTest;
-import com.junbo.rating.core.builder.RatingResultBuilder;
 import com.junbo.rating.core.context.PriceRatingContext;
 import com.junbo.rating.spec.model.Currency;
 import com.junbo.rating.spec.model.RatableItem;
+import com.junbo.rating.spec.model.RatingType;
 import com.junbo.rating.spec.model.priceRating.RatingRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
@@ -29,6 +29,7 @@ public class OrderRatingServiceTest extends BaseTest {
     @Test
     public void testGeneral() {
         PriceRatingContext context = new PriceRatingContext();
+        context.setRatingType(RatingType.ORDER);
         context.setUserId(generateId());
         context.setCountry("US");
         context.setCurrency(Currency.findByCode("USD"));
@@ -52,7 +53,7 @@ public class OrderRatingServiceTest extends BaseTest {
         context.getItems().add(item);
 
         orderRatingService.rate(context);
-        RatingRequest result = RatingResultBuilder.buildForOrder(context);
+        RatingRequest result = context.buildResult();
 
         Assert.assertNotNull(result);
         Assert.assertEquals(result.getLineItems().size(), 3);
@@ -66,6 +67,7 @@ public class OrderRatingServiceTest extends BaseTest {
     @Test
     public void testEntitlement() {
         PriceRatingContext context = new PriceRatingContext();
+        context.setRatingType(RatingType.ORDER);
         context.setUserId(generateId());
         context.setCountry("US");
         context.setCurrency(Currency.findByCode("USD"));
@@ -76,7 +78,7 @@ public class OrderRatingServiceTest extends BaseTest {
         context.getItems().add(item);
 
         orderRatingService.rate(context);
-        RatingRequest result = RatingResultBuilder.buildForOrder(context);
+        RatingRequest result = context.buildResult();
 
         Assert.assertNotNull(result);
         Assert.assertEquals(result.getLineItems().size(), 1);
