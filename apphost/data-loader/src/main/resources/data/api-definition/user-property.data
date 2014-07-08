@@ -8,7 +8,7 @@
         }],
         "identity.service": [{
             "precondition": "true",
-            "rights": ["read", "create", "update", "delete"],
+            "rights": ["read", "create", "update", "delete", "pii.read", "pii.write"],
             "scriptType": "SPEL"
         }],
         "identity.pii": [{
