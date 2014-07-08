@@ -140,7 +140,7 @@ public class EntitlementService {
     }
 
     public static Results<Entitlement> getEntitlements(String userId, int expectedResponseCode) throws Exception {
-        String entitlementEndpointUrl = commerceUrl + "/entitlements/" + "?userId=" + userId;
+        String entitlementEndpointUrl = commerceUrl + "/entitlements" + "?userId=" + userId;
         Request req = new RequestBuilder("GET")
                 .setUrl(entitlementEndpointUrl)
                 .addHeader(RestUrl.requestHeaderName, RestUrl.requestHeaderValue)

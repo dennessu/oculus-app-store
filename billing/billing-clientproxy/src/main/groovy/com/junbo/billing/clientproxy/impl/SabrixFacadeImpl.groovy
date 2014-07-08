@@ -413,7 +413,10 @@ class SabrixFacadeImpl implements TaxFacade {
             LOGGER.error('Error_Build_Sabrix_Request.', throwable)
             return Promise.pure(null)
         }.then { Response response ->
-            TaxCalculationResponse result = xmlConvertor.getTaxCalculationResponse(response.responseBody)
+            TaxCalculationResponse result = null
+            if (response != null && response.responseBody != null) {
+                result = xmlConvertor.getTaxCalculationResponse(response.responseBody)
+            }
             if (result == null) {
                 LOGGER.error('name=Error_Read_Sabrix_Tax_Calculation_Response.')
                 return Promise.pure(null)

@@ -9,7 +9,6 @@ package com.junbo.rating.rest.resource;
 import com.junbo.authorization.AuthorizeContext;
 import com.junbo.authorization.spec.error.AppErrors;
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.rating.core.builder.RatingResultBuilder;
 import com.junbo.rating.core.context.PriceRatingContext;
 import com.junbo.rating.core.context.SubsRatingContext;
 import com.junbo.rating.core.service.OfferRatingService;
@@ -47,8 +46,7 @@ public class RatingResourceImpl implements RatingResource {
             offerRatingService.rate(context);
         }
 
-        RatingRequest response = request.getIncludeCrossOfferPromos()?
-                RatingResultBuilder.buildForOrder(context) :  RatingResultBuilder.buildForOffers(context);
+        RatingRequest response = context.buildResult();
         return Promise.pure(response);
     }
 
@@ -60,7 +58,7 @@ public class RatingResourceImpl implements RatingResource {
 
         subsRatingService.rate(context);
 
-        SubsRatingRequest response = RatingResultBuilder.buildForSubs(context);
+        SubsRatingRequest response = context.buildResult();
         return Promise.pure(response);
     }
 

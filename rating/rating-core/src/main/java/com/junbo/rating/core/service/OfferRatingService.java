@@ -25,7 +25,7 @@ import java.util.Set;
 /**
  * Offer Rating Service.
  */
-public class OfferRatingService extends RatingServiceSupport{
+public class OfferRatingService extends RatingServiceSupport {
     private static final Logger LOGGER = LoggerFactory.getLogger(OfferRatingService.class);
 
     @Override

@@ -264,6 +264,7 @@ public class OrderTestDataProvider {
         paymentInstrumentInfo.setPaymentAmount(totalRefundAmount.multiply(new BigDecimal(-1)));
         billingHistory.getPaymentInfos().add(paymentInstrumentInfo);
         billingHistory.setTransactionType(TransactionType.PENDING_REFUND);
+        billingHistory.setSuccess(true);
         billingHistory.setTotalAmount(totalRefundAmount.multiply(
                 new BigDecimal(-1)).setScale(2, RoundingMode.HALF_UP));
         orderInfo.getBillingHistories().add(billingHistory);
@@ -334,6 +335,7 @@ public class OrderTestDataProvider {
             billingHistory.setTotalAmount(orderTotalAmount.add(orderTotalTax));
             paymentInfo.setPaymentAmount(orderTotalAmount.add(orderTotalTax));
             billingHistory.getPaymentInfos().add(paymentInfo);
+            billingHistory.setSuccess(true);
             billingHistory.setTransactionType(TransactionType.PENDING_CHARGE);
             orderInfo.getBillingHistories().add(billingHistory);
             billingHistory.setTransactionType(TransactionType.CHARGE);

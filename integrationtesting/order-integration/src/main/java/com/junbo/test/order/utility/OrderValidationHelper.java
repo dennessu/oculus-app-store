@@ -106,7 +106,8 @@ public class OrderValidationHelper extends BaseValidationHelper {
                     verifyEqual(billingHistory.getTotalAmount(), billingHistoryInfo.getTotalAmount(),
                             "verify billing history total amount");
                     verifyEqual(billingHistory.getPayments().size(), billingHistoryInfo.getPaymentInfos().size(),
-                            "verify bulling history payment size");
+                            "verify billing history payment size");
+                    verifyEqual(billingHistory.getSuccess(), billingHistoryInfo.isSuccess(), "verify success or not");
                     for (PaymentInstrumentInfo paymentInstrumentInfo : billingHistoryInfo.getPaymentInfos()) {
                         for (BillingPaymentInfo billingPaymentInfo : billingHistory.getPayments()) {
                             if (IdConverter.idToHexString(billingPaymentInfo.getPaymentInstrument()).
@@ -127,7 +128,7 @@ public class OrderValidationHelper extends BaseValidationHelper {
                                     equals(refundOrderItemInfo.getOfferId())) {
                                 verifyEqual(refundOrderItem.getQuantity(), refundOrderItemInfo.getQuantity(),
                                         "verify refund quantity");
-                                verifyEqual(refundOrderItem.getRefundedAmount(),refundOrderItemInfo.getRefundAmount(),
+                                verifyEqual(refundOrderItem.getRefundedAmount(), refundOrderItemInfo.getRefundAmount(),
                                         "verify refund amount");
                                 verifyEqual(refundOrderItem.getRefundedTax(), refundOrderItemInfo.getRefundTax(),
                                         "verify refund tax");

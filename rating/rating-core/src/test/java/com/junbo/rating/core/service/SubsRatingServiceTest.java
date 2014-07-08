@@ -27,7 +27,7 @@ public class SubsRatingServiceTest extends BaseTest {
     @Test
     public void testDefaultProcessor() {
         SubsRatingContext context = new SubsRatingContext();
-        context.setType(SubsRatingType.PURCHASE);
+        context.setSubsRatingType(SubsRatingType.PURCHASE);
         context.setOfferId("100L");
         context.setCountry("US");
         context.setCurrency(Currency.USD);
@@ -40,7 +40,7 @@ public class SubsRatingServiceTest extends BaseTest {
     @Test
     public void testCycleProcessor() {
         SubsRatingContext context = new SubsRatingContext();
-        context.setType(SubsRatingType.CYCLE);
+        context.setSubsRatingType(SubsRatingType.CYCLE);
         context.setOfferId("100L");
         context.setCountry("US");
         context.setCurrency(Currency.USD);
@@ -53,7 +53,7 @@ public class SubsRatingServiceTest extends BaseTest {
     @Test
     public void testExtendProcessor() {
         SubsRatingContext context = new SubsRatingContext();
-        context.setType(SubsRatingType.EXTEND);
+        context.setSubsRatingType(SubsRatingType.EXTEND);
         context.setOfferId("100L");
         context.setCountry("US");
         context.setCurrency(Currency.USD);
