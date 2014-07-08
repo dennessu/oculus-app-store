@@ -6,10 +6,15 @@
 
 package com.junbo.entitlement.core.service;
 
+import com.amazonaws.HttpMethod;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.junbo.authorization.AuthorizeCallback;
 import com.junbo.authorization.AuthorizeContext;
 import com.junbo.authorization.AuthorizeService;
 import com.junbo.authorization.RightsScope;
+import com.junbo.catalog.spec.enums.EntitlementType;
+import com.junbo.catalog.spec.model.item.Binary;
 import com.junbo.catalog.spec.model.item.EntitlementDef;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.common.id.ItemId;
@@ -30,9 +35,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.UUID;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
 
 import static com.junbo.authorization.spec.error.AppErrors.INSTANCE;
 
@@ -50,6 +55,9 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     @Autowired
     private EntitlementAuthorizeCallbackFactory authorizeCallbackFactory;
 
+    @Autowired
+    private AmazonS3Client awsClient;
+
     @Override
     @Transactional
     public Entitlement getEntitlement(final String entitlementId) {
@@ -66,6 +74,9 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             public Entitlement apply() {
                 if (!AuthorizeContext.hasRights("read")) {
                     throw AppErrors.INSTANCE.notFound("entitlement", entitlementId).exception();
+                }
+                if (EntitlementType.DOWNLOAD.toString().equalsIgnoreCase(entitlement.getType())) {
+                    entitlement.setBinaries(generateDownloadUrls(entitlement.getItemId()));
                 }
                 return entitlement;
             }
@@ -276,5 +287,42 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
                 return existing;
             }
         });
+    }
+
+    private Map<String, String> generateDownloadUrls(String itemId) {
+        ItemRevision itemRevision = getItem(itemId);
+        validateNotNull(itemRevision, "item");
+
+        Map<String, String> binaries = new HashMap<>();
+
+        for (Map.Entry<String, Binary> entry : itemRevision.getBinaries().entrySet()) {
+            try {
+                binaries.put(entry.getKey(), generateDownloadUrl(entry.getValue().getHref()));
+            } catch (MalformedURLException e) {
+                String msg = "Error occurred during parsing url " + entry.getValue().getHref();
+                LOGGER.error(msg, e);
+                throw AppErrors.INSTANCE.common(msg).exception();
+            }
+        }
+        return binaries;
+    }
+
+    private String generateDownloadUrl(String urlString) throws MalformedURLException {
+        URL url = new URL(urlString);
+        String bucketName = url.getHost();
+        String objectKey = url.getPath().substring(1);
+
+        java.util.Date expiration = new java.util.Date();
+        long milliSeconds = expiration.getTime();
+        milliSeconds += 1000 * 30; // Add 30 seconds.
+        expiration.setTime(milliSeconds);
+
+        GeneratePresignedUrlRequest generatePresignedUrlRequest =
+                new GeneratePresignedUrlRequest(bucketName, objectKey);
+        generatePresignedUrlRequest.setMethod(HttpMethod.GET);
+        generatePresignedUrlRequest.setExpiration(expiration);
+
+        URL downloadUrl = awsClient.generatePresignedUrl(generatePresignedUrlRequest);
+        return downloadUrl.toString();
     }
 }

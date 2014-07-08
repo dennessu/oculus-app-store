@@ -26,7 +26,7 @@ public interface EntitlementService {
     void deleteEntitlement(String entitlementId);
 
     Results<Entitlement> searchEntitlement(EntitlementSearchParam entitlementSearchParam,
-                                        PageMetadata pageMetadata);
+                                           PageMetadata pageMetadata);
 
     Entitlement transferEntitlement(EntitlementTransfer entitlementTransfer);
 
