@@ -87,8 +87,7 @@ def worker(q, write_q):
             result = json.loads(resp)
         except Exception, e:
             print e
-            resp, msg = e.args
-            result = {str(user['id']): {"error":json.loads(resp)} for user in users}
+            result = {str(user['id']): {"error":str(e)} for user in users}
         write_q.put(result)
         print 'Processing done, elapsed time: %s' % (time.time() - startTime)
         q.task_done()
@@ -122,7 +121,7 @@ def curl(url, method = 'GET', body = None, headers = None, raiseOn5xxError = Tru
     resp, status, reason = curlRaw(url, method, body, headers)
     if status >= 500:
         if raiseOn5xxError:
-            raise Exception(resp, '%s %s in %s %s\n%s' % (status, reason, method, url, resp))
+            raise Exception('%s %s in %s %s\n%s' % (status, reason, method, url, resp))
     elif status >= 400 and raiseOn4xxError:
         raise Exception('%s %s in %s %s\n%s' % (status, reason, method, url, resp))
     return resp
