@@ -562,7 +562,20 @@
           }
       },
       "csr_update": {},
-      "csr_log": {}
+      "csr_log": {
+          "by_time": {
+              "map": "function(doc) {  emit([doc.createdTime], doc._id)}"
+          },
+          "by_user_time": {
+              "map": "function(doc) {  emit([doc.userId, doc.createdTime], doc._id)}"
+          },
+          "by_action_time": {
+              "map": "function(doc) {  emit([doc.action, doc.createdTime], doc._id)}"
+          },
+          "by_user_action_time": {
+              "map": "function(doc) {  emit([doc.userId, doc.action, doc.createdTime], doc._id)}"
+          }
+      }
   }, 
   "cloudant_search": {
     "entitlement": {
