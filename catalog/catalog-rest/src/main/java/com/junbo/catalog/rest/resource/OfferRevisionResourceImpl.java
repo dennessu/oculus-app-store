@@ -96,6 +96,9 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
 
     @Override
     public Promise<OfferRevision> createOfferRevision(final OfferRevision offerRevision) {
+        if (offerRevision.getOfferId()==null) {
+            throw AppErrors.INSTANCE.missingField("offer").exception();
+        }
         AuthorizeCallback<Offer> callback = offerAuthorizeCallbackFactory.create(offerRevision.getOfferId());
         return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<OfferRevision>>() {
             @Override
@@ -112,6 +115,9 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
 
     @Override
     public Promise<OfferRevision> updateOfferRevision(final String revisionId, final OfferRevision offerRevision) {
+        if (offerRevision.getOfferId()==null) {
+            throw AppErrors.INSTANCE.missingField("offer").exception();
+        }
         AuthorizeCallback<Offer> callback = offerAuthorizeCallbackFactory.create(offerRevision.getOfferId());
         return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<OfferRevision>>() {
             @Override

@@ -100,6 +100,9 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
 
     @Override
     public Promise<ItemRevision> createItemRevision(final ItemRevision itemRevision) {
+        if (itemRevision.getItemId()==null) {
+            throw AppErrors.INSTANCE.missingField("item").exception();
+        }
         AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(itemRevision.getItemId());
         return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<ItemRevision>>() {
             @Override
@@ -116,6 +119,9 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
 
     @Override
     public Promise<ItemRevision> updateItemRevision(final String revisionId, final ItemRevision itemRevision) {
+        if (itemRevision.getItemId()==null) {
+            throw AppErrors.INSTANCE.missingField("item").exception();
+        }
         AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(itemRevision.getItemId());
         return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<ItemRevision>>() {
             @Override
