@@ -26,6 +26,16 @@ public class BillingHistoryInfo {
     private TransactionType transactionType;
     private List<RefundOrderItemInfo> refundOrderItemInfos;
 
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    private boolean success;
+
     public BigDecimal getTotalAmount() {
         return totalAmount;
     }
