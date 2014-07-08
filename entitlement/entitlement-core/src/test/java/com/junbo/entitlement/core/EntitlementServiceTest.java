@@ -20,7 +20,6 @@ import com.junbo.entitlement.common.cache.CommonCache;
 import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
-import com.junbo.entitlement.spec.model.EntitlementTransfer;
 import com.junbo.entitlement.spec.model.PageMetadata;
 import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,22 +132,6 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(entitlements.size(), 5);
     }
 
-    @Test
-    public void testTransferEntitlement() {
-        Entitlement entitlement = buildAnEntitlement();
-        Entitlement addedEntitlement = entitlementService.addEntitlement(entitlement);
-        EntitlementTransfer transfer = new EntitlementTransfer();
-        transfer.setTargetUserId(idGenerator.nextId());
-        transfer.setEntitlementId(addedEntitlement.getId());
-        Entitlement newEntitlement = entitlementService.transferEntitlement(transfer);
-        try {
-            entitlementService.getEntitlement(addedEntitlement.getId());
-        } catch (WebApplicationException e) {
-            Assert.assertEquals(e.getResponse().getStatus(), 404);
-        }
-        Assert.assertEquals(newEntitlement.getUserId(), transfer.getTargetUserId());
-    }
-
     private Entitlement buildAnEntitlement() {
         Entitlement entitlement = new Entitlement();
         entitlement.setUserId(idGenerator.nextId());
@@ -175,7 +158,7 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
     @BeforeClass(alwaysRun = true, dependsOnMethods = "springTestContextBeforeTestClass")
     protected void springTestContextPrepareTestInstance() throws Exception {
         super.springTestContextPrepareTestInstance();
-        AuthorizeServiceImpl authorizeService = (AuthorizeServiceImpl)applicationContext.getBean(AuthorizeService.class);
+        AuthorizeServiceImpl authorizeService = (AuthorizeServiceImpl) applicationContext.getBean(AuthorizeService.class);
         authorizeService.setDisabled(true);
         AuthorizeContext.setAuthorizeDisabled(true);
     }

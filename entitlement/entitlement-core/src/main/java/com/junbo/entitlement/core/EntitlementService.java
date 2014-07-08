@@ -8,7 +8,6 @@ package com.junbo.entitlement.core;
 import com.junbo.common.model.Results;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
-import com.junbo.entitlement.spec.model.EntitlementTransfer;
 import com.junbo.entitlement.spec.model.PageMetadata;
 
 import java.util.UUID;
@@ -27,8 +26,6 @@ public interface EntitlementService {
 
     Results<Entitlement> searchEntitlement(EntitlementSearchParam entitlementSearchParam,
                                            PageMetadata pageMetadata);
-
-    Entitlement transferEntitlement(EntitlementTransfer entitlementTransfer);
 
     Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid);
 }

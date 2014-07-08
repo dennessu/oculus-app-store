@@ -20,13 +20,11 @@ import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.model.Results;
 import com.junbo.entitlement.auth.EntitlementAuthorizeCallbackFactory;
-import com.junbo.entitlement.common.lib.CloneUtils;
 import com.junbo.entitlement.core.EntitlementService;
 import com.junbo.entitlement.db.repository.EntitlementRepository;
 import com.junbo.entitlement.spec.error.AppErrors;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
-import com.junbo.entitlement.spec.model.EntitlementTransfer;
 import com.junbo.entitlement.spec.model.PageMetadata;
 import com.junbo.langur.core.promise.Promise;
 import org.slf4j.Logger;
@@ -242,25 +240,6 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         checkDateFormat(entitlementSearchParam.getStartExpirationTime());
         checkDateFormat(entitlementSearchParam.getEndExpirationTime());
         checkDateFormat(entitlementSearchParam.getLastModifiedTime());
-    }
-
-    @Override
-    @Transactional
-    public Entitlement transferEntitlement(EntitlementTransfer entitlementTransfer) {
-        Entitlement existingEntitlement = getEntitlement(entitlementTransfer.getEntitlementId());
-        if (existingEntitlement == null) {
-            throw AppErrors.INSTANCE.notFound("entitlement",
-                    entitlementTransfer.getEntitlementId()).exception();
-        }
-        validateTransfer(entitlementTransfer, existingEntitlement);
-
-        Entitlement newEntitlement = CloneUtils.clone(existingEntitlement);
-        deleteEntitlement(entitlementTransfer.getEntitlementId());
-        LOGGER.info("Entitlement [{}] is deleted for transferring.", existingEntitlement.getId());
-        newEntitlement.setTrackingUuid(entitlementTransfer.getTrackingUuid());
-        newEntitlement.setId(null);
-        newEntitlement.setUserId(entitlementTransfer.getTargetUserId());
-        return entitlementRepository.insert(newEntitlement);
     }
 
     @Override

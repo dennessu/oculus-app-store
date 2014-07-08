@@ -17,7 +17,6 @@ import javax.ws.rs.ext.ExceptionMapper;
 
 /**
  * Common exception mapper. Convert exceptions to json error message.
- * TODO: enum error;
  */
 public class RestExceptionMapper implements ExceptionMapper<Exception> {
     private static final Logger LOGGER = LoggerFactory.getLogger(RestExceptionMapper.class);

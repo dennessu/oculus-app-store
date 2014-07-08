@@ -12,13 +12,11 @@ import com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy;
 import com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy;
 import com.junbo.common.error.AppErrorException;
 import com.junbo.common.id.EntitlementId;
-import com.junbo.common.id.ItemRevisionId;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.model.Results;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
-import com.junbo.entitlement.spec.model.EntitlementTransfer;
 import com.junbo.entitlement.spec.model.PageMetadata;
 import com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxy;
 import com.junbo.sharding.IdGenerator;
@@ -67,25 +65,6 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
     public void testDelete() throws ExecutionException, InterruptedException {
         Entitlement entitlement = entitlementResourceClientProxy.postEntitlement(buildAnEntitlement()).get();
         entitlementResourceClientProxy.deleteEntitlement(new EntitlementId(entitlement.getId()));
-        try {
-            entitlementResourceClientProxy.getEntitlement(new EntitlementId(entitlement.getId()));
-        } catch (AppErrorException e) {
-            Assert.assertEquals(e.getResponse().getStatus(), 404);
-        }
-    }
-
-    @Test(enabled = false)
-    public void testTransfer() throws ExecutionException, InterruptedException {
-        Long targetId = idGenerator.nextId();
-        Entitlement entitlement = entitlementResourceClientProxy.postEntitlement(buildAnEntitlement()).get();
-        EntitlementTransfer transfer = new EntitlementTransfer();
-        transfer.setEntitlementId(entitlement.getId());
-        transfer.setTargetUserId(targetId);
-        Entitlement newEntitlement = entitlementResourceClientProxy.transferEntitlement(transfer).get();
-        Assert.assertEquals(newEntitlement.getUserId(), targetId);
-        Assert.assertNotEquals(newEntitlement.getId(), entitlement.getId());
-        Assert.assertEquals(newEntitlement.getItemId(), entitlement.getItemId());
-        Assert.assertEquals(newEntitlement.getGrantTime(), entitlement.getGrantTime());
         try {
             entitlementResourceClientProxy.getEntitlement(new EntitlementId(entitlement.getId()));
         } catch (AppErrorException e) {
