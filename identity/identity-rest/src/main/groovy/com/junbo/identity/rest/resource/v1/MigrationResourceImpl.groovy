@@ -167,6 +167,10 @@ class MigrationResourceImpl implements MigrationResource {
                         throw ex;
                     }
                 }
+            }.then {
+                return CloudantClientBulk.commit()
+            }.then {
+                return Promise.pure(result)
             }
         }
     }
@@ -940,6 +944,9 @@ class MigrationResourceImpl implements MigrationResource {
         }
 
         return userPersonalInfoRepository.get(createdOrg.shippingAddress).then { UserPersonalInfo userPersonalInfo ->
+            if (userPersonalInfo == null || userPersonalInfo.value == null) {
+                return Promise.pure(false)
+            }
             Address existingAddress = (Address)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Address)
 
             if (address != existingAddress) {

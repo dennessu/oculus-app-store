@@ -22,11 +22,9 @@ class UserCryptoResourceImpl extends CommonResourceImpl implements UserCryptoRes
 
     private UserCryptoValidator userCryptoValidator
 
-    private Boolean enableEncrypt
-
     @Override
     Promise<Void> create(UserCryptoKey userCryptoKey) {
-        if (!enableEncrypt || !enableUserKeyEncrypt) {
+        if (!enableUserKeyEncrypt) {
             return Promise.pure(null)
         }
 

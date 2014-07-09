@@ -30,17 +30,12 @@ class KeyStoreServiceImpl implements KeyStoreService {
 
     private KeyStore keyStore
 
-    KeyStoreServiceImpl(String keyStorePath, String keyStorePassword, String keyAliases, String keyPasswords,
-                        Boolean enableEncrypt) {
+    KeyStoreServiceImpl(String keyStorePath, String keyStorePassword, String keyAliases, String keyPasswords) {
         assert keyStorePath != null
         assert keyStorePassword != null
         assert keyAliases != null
         assert keyPasswords != null
-        assert enableEncrypt != null
 
-        if (enableEncrypt != true) {
-            return
-        }
         initKeyAliasesAndPassword(keyAliases, keyPasswords)
         initKeyStore(keyStorePath, keyStorePassword)
     }
