@@ -6,6 +6,7 @@
 
 package com.junbo.docs.app.readers;
 
+import com.junbo.common.id.CloudantId;
 import com.junbo.common.id.Id;
 import com.junbo.common.model.Link;
 import com.wordnik.swagger.core.util.ClassWrapper;
@@ -112,6 +113,9 @@ public class ModelReader implements com.wordnik.swagger.reader.ModelReader {
             return String.class;
         }
         if (Id.class.isAssignableFrom(cls.getRawClass())) {
+            return Link.class;
+        }
+        if (CloudantId.class.isAssignableFrom(cls.getRawClass())) {
             return Link.class;
         }
 
