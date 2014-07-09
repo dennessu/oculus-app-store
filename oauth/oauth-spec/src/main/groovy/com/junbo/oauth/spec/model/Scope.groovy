@@ -16,7 +16,6 @@ class Scope extends ResourceMeta<String> {
     String name
     String description
     String logoUri
-    String revision
 
     @Override
     String getId() {

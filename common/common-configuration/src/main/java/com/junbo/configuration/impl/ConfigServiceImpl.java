@@ -39,7 +39,7 @@ import java.util.jar.JarFile;
 public class ConfigServiceImpl implements com.junbo.configuration.ConfigService {
     //region private fields
     private static final String CONFIG_PROPERTY_FILE = "configuration.properties";
-    private static final String CONFIG_PASSWORD_KEY_FILE = "configuration.key";
+    private static final String CONFIG_PASSWORD_KEY = "crypto.core.key";
     private static final String CONFIG_DIR_OPTS = "configDir";
     private static final String ACTIVE_ENV_OPTS = "environment";
     private static final String ACTIVE_DC_OPTS = "datacenter";
@@ -305,26 +305,25 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
     }
 
     private void loadConfig() {
-        String configDir = System.getProperty(CONFIG_DIR_OPTS);
+        String configDirs = System.getProperty(CONFIG_DIR_OPTS);
 
-        if (!StringUtils.isEmpty(configDir)) {
-            logger.info("Scanning configuration from configDir: " + configDir);
-
-            Path configFilePath = Paths.get(configDir, CONFIG_PROPERTY_FILE);
+        Path configFilePath = findFile(configDirs, CONFIG_PROPERTY_FILE);
+        if (configFilePath != null) {
             overrideProperties = readProperties(configFilePath);
+            configPath = configFilePath.getParent().toString();
+            logger.info("Monitored configPath set to " + configPath);
         }
 
         configContext = readConfigContext(overrideProperties);
 
-        Path keyFilePath = Paths.get(configDir, CONFIG_PASSWORD_KEY_FILE);
-        keyStr = loadAndCheckKeyFile(keyFilePath);
-
         // Read jar configuration files
         jarProperties = readJarProperties();
 
-        cipherService = new AESCipherServiceImpl(keyStr);
-
         Properties commandLineProperties = System.getProperties();
+
+        keyStr = loadPasswordKey(commandLineProperties, overrideProperties, jarProperties);
+
+        cipherService = new AESCipherServiceImpl(keyStr);
 
         finalProperties = new Properties();
         finalProperties.putAll(decryptProperties(jarProperties));
@@ -334,6 +333,26 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         configContext.complete(
                 finalProperties.getProperty(ACTIVE_DC_OPTS),
                 finalProperties.getProperty(ACTIVE_SUBNET_OPTS));
+    }
+
+    private Path findFile(String configDirs, String fileName) {
+        if (StringUtils.isEmpty(configDirs)) {
+            return null;
+        }
+
+        logger.info("Scanning configuration file {} from configDirs: {}", fileName, configDirs);
+        String[] configDirArr = configDirs.split(":");
+        for (String configDir : configDirArr) {
+            if (StringUtils.isEmpty(configDir)) continue;
+            Path path = Paths.get(configDir, fileName);
+            if (Files.exists(path)) {
+                logger.info("Found configuration file {} from configDir: {}", fileName, configDir);
+                checkPermission(path);
+                return path;
+            }
+        }
+        logger.warn("Configuration file {} is not found", fileName);
+        return null;
     }
 
     private Properties decryptProperties(Properties properties) {
@@ -360,55 +379,50 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         return newProperties;
     }
 
-    private String loadAndCheckKeyFile(Path path){
-        // check file exists
-        File file = new File(path.toUri());
-        if (!file.exists()) {
-            if (configContext.getEnvironment().equals("onebox") ||
-                configContext.getEnvironment().startsWith("onebox.") ||
-                configContext.getEnvironment().equals("int1box") ||
-                configContext.getEnvironment().startsWith("int1box.")) {
-                // return a dummy key
-                return "D58BA755FF96B35A6DABA7298F7A8CE2";
+    private String loadPasswordKey(Properties... properties){
+        for (Properties propertyBag : properties) {
+            if (propertyBag == null) continue;
+            if (propertyBag.containsKey(CONFIG_PASSWORD_KEY)) {
+                String value = propertyBag.getProperty(CONFIG_PASSWORD_KEY);
+                propertyBag.remove(CONFIG_PASSWORD_KEY);
+                return value;
             }
-            logger.warn("Key file doesn't exist: " + path.toUri().toString());
-            return null;
         }
+        // not found
+        throw new RuntimeException(CONFIG_PASSWORD_KEY + " is not specified.");
+    }
 
+    private void checkPermission(Path path) {
         // check permission, it must be owner read and write only
+        Set<PosixFilePermission> permissions = null;
         try {
-            Set<PosixFilePermission> permissions = null;
-            try {
-                permissions = Files.readAttributes(file.toPath(), PosixFileAttributes.class, LinkOption.NOFOLLOW_LINKS).permissions();
+            permissions = Files.readAttributes(path, PosixFileAttributes.class, LinkOption.NOFOLLOW_LINKS).permissions();
 
-                if (CollectionUtils.isEmpty(permissions)) {
-                    throw new IllegalAccessException("Permission check invalid.");
-                }
+            if (CollectionUtils.isEmpty(permissions)) {
+                throw new IllegalAccessException("Permission check invalid.");
+            }
 
-                // Only support OWNER_READ and OWNER_WRITE
-                if (permissions.size() > 2) {
+            // Only support OWNER_READ and OWNER_WRITE
+            if (permissions.size() > 2) {
+                throw new IllegalAccessException("Permission only valid for OWNER_READ and OWNER_WRITE.");
+            }
+
+            for (PosixFilePermission permission : permissions) {
+                if (permission != PosixFilePermission.OWNER_READ && permission != PosixFilePermission.OWNER_WRITE) {
                     throw new IllegalAccessException("Permission only valid for OWNER_READ and OWNER_WRITE.");
                 }
-
-                for (PosixFilePermission permission : permissions) {
-                    if (permission != PosixFilePermission.OWNER_READ && permission != PosixFilePermission.OWNER_WRITE) {
-                        throw new IllegalAccessException("Permission only valid for OWNER_READ and OWNER_WRITE.");
-                    }
-                }
-            } catch (UnsupportedOperationException unSupportedOperationEx) {
-                logger.warn("Skip permission check.");
             }
-
-            return readKeyFile(file);
-        } catch (Exception e) {
-            throw new RuntimeException("Load key file error: ", e);
+        } catch (UnsupportedOperationException unSupportedOperationEx) {
+            logger.warn("Skip permission check.");
+        } catch (Exception ex) {
+            logger.error("Error checking permission for file: " + path);
+            throw new RuntimeException(ex);
         }
     }
 
     private void watch(){
-        String configDir = System.getProperty(CONFIG_DIR_OPTS);
-        if(!StringUtils.isEmpty(configDir)) {
-            FileWatcher.getInstance().addListener(Paths.get(configDir), new FileWatcher.FileListener() {
+        if(!StringUtils.isEmpty(configPath)) {
+            FileWatcher.getInstance().addListener(Paths.get(configPath), new FileWatcher.FileListener() {
                 @Override
                 public void onFileChanged(Path path, WatchEvent.Kind<Path> kind) {
                     loadConfig();

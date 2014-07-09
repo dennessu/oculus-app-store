@@ -62,8 +62,6 @@ class Client extends ResourceMeta<String> {
 
     Set<String> contacts
 
-    String revision
-
     @JsonProperty('need_consent')
     Boolean needConsent
 
