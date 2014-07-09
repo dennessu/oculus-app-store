@@ -28,7 +28,7 @@ abstract class HBIPIIAdvanceFilter implements PIIAdvanceFilter {
 
     @Override
     void checkGetPermission(UserPersonalInfoId piiId) {
-        if (!AuthorizeContext.hasRights('get') && !AuthorizeContext.hasRights('pii.get') ) {
+        if (!AuthorizeContext.hasRights('read') && !AuthorizeContext.hasRights('pii.read') ) {
             throw AppErrors.INSTANCE.userPersonalInfoNotFound(piiId).exception()
         }
     }

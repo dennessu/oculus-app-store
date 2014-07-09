@@ -39,4 +39,12 @@ class CloudantEmailVerifyCodeRepositoryImpl extends CloudantClient<EmailVerifyCo
         }
         cloudantPost(emailVerifyCode).get()
     }
+
+    @Override
+    void removeByUserIdEmail(Long userId, String email) {
+        List<EmailVerifyCode> entities = queryView('by_user_id_email', "$userId:$email").get()
+        for (EmailVerifyCode code : entities) {
+            cloudantDelete(code).get()
+        }
+    }
 }

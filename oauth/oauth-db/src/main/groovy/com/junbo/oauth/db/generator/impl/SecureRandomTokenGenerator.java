@@ -20,27 +20,18 @@ import java.util.regex.Pattern;
  */
 public class SecureRandomTokenGenerator implements TokenGenerator {
 
-    private static final char[] DEFAULT_CODEC =
-            "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
-
-    private static final Pattern DEFAULT_CODEC_PATTERN = Pattern.compile("[0-9A-Za-z]+");
-
-    private static final String TOKEN_DELIMITER = ";";
+    private static final Pattern DEFAULT_CODEC_PATTERN = Pattern.compile("[0-9A-Za-z=-_]+");
 
     private final Random random = new SecureRandom();
 
     private int authorizationCodeLength;
-    private String authorizationCodePostfix;
 
     private int accessTokenLength;
-    private String accessTokenPostfix;
 
     private int refreshTokenLength;
-    private String refreshTokenPostfix;
     private int refreshTokenSeriesLength;
 
     private int rememberMeTokenLength;
-    private String rememberMeTokenPostfix;
     private int rememberMeTokenSeriesLength;
 
     private int clientIdLength;
@@ -57,28 +48,13 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
     }
 
     @Required
-    public void setAuthorizationCodePostfix(String authorizationCodePostfix) {
-        this.authorizationCodePostfix = authorizationCodePostfix;
-    }
-
-    @Required
     public void setAccessTokenLength(int accessTokenLength) {
         this.accessTokenLength = accessTokenLength;
     }
 
     @Required
-    public void setAccessTokenPostfix(String accessTokenPostfix) {
-        this.accessTokenPostfix = accessTokenPostfix;
-    }
-
-    @Required
     public void setRefreshTokenLength(int refreshTokenLength) {
         this.refreshTokenLength = refreshTokenLength;
-    }
-
-    @Required
-    public void setRefreshTokenPostfix(String refreshTokenPostfix) {
-        this.refreshTokenPostfix = refreshTokenPostfix;
     }
 
     @Required
@@ -89,11 +65,6 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
     @Required
     public void setRememberMeTokenLength(int rememberMeTokenLength) {
         this.rememberMeTokenLength = rememberMeTokenLength;
-    }
-
-    @Required
-    public void setRememberMeTokenPostfix(String rememberMeTokenPostfix) {
-        this.rememberMeTokenPostfix = rememberMeTokenPostfix;
     }
 
     @Required
@@ -130,17 +101,7 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
         byte[] bytes = new byte[length];
         random.nextBytes(bytes);
 
-        return getString(bytes);
-    }
-
-    private String getString(byte[] bytes) {
-        char[] chars = new char[bytes.length];
-
-        for (int i = 0; i < bytes.length; i++) {
-            chars[i] = DEFAULT_CODEC[((bytes[i] & 0xFF) % DEFAULT_CODEC.length)];
-        }
-
-        return new String(chars);
+        return Base64.encodeBase64URLSafeString(bytes);
     }
 
     @Override
@@ -155,19 +116,17 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
 
     @Override
     public String generateAuthorizationCode() {
-        return generate(authorizationCodeLength) + authorizationCodePostfix;
+        return generate(authorizationCodeLength);
     }
 
     @Override
     public String generateAccessToken() {
-        String tokenValue = generate(accessTokenLength) + TOKEN_DELIMITER + accessTokenPostfix;
-        return Base64.encodeBase64URLSafeString(tokenValue.getBytes());
+        return generate(accessTokenLength);
     }
 
     @Override
     public String generateRefreshToken() {
-        String tokenValue = generate(refreshTokenLength) + TOKEN_DELIMITER + refreshTokenPostfix;
-        return Base64.encodeBase64URLSafeString(tokenValue.getBytes());
+        return generate(refreshTokenLength);
     }
 
     @Override
@@ -177,8 +136,7 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
 
     @Override
     public String generateRememberMeToken() {
-        String tokenValue = generate(rememberMeTokenLength) + TOKEN_DELIMITER + rememberMeTokenPostfix;
-        return Base64.encodeBase64URLSafeString(tokenValue.getBytes());
+        return generate(rememberMeTokenLength);
     }
 
     @Override
@@ -215,75 +173,34 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
     public boolean isValidAccessToken(String tokenValue) {
         Assert.notNull(tokenValue);
 
-        try {
-            String token = new String(Base64.decodeBase64(tokenValue));
-            String[] tokens = token.split(TOKEN_DELIMITER);
-
-            if (tokens.length != 2 || !tokens[1].equals(accessTokenPostfix)) {
-                return false;
-            }
-
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        return DEFAULT_CODEC_PATTERN.matcher(tokenValue).matches();
     }
 
     @Override
     public boolean isValidRefreshToken(String tokenValue) {
         Assert.notNull(tokenValue);
 
-        try {
-            String token = new String(Base64.decodeBase64(tokenValue));
-            String[] tokens = token.split(TOKEN_DELIMITER);
-
-            if (tokens.length != 2 || !tokens[1].equals(refreshTokenPostfix)) {
-                return false;
-            }
-
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        return DEFAULT_CODEC_PATTERN.matcher(tokenValue).matches();
     }
 
     @Override
     public boolean isValidRememberMeToken(String tokenValue) {
         Assert.notNull(tokenValue);
 
-        try {
-            String token = new String(Base64.decodeBase64(tokenValue));
-            String[] tokens = token.split(TOKEN_DELIMITER);
-
-            if (tokens.length != 2 || !tokens[1].equals(rememberMeTokenPostfix)) {
-                return false;
-            }
-
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        return DEFAULT_CODEC_PATTERN.matcher(tokenValue).matches();
     }
 
     @Override
     public boolean isValidEmailVerifyCode(String codeValue) {
         Assert.notNull(codeValue);
 
-        if (codeValue.length() == emailVerifyCodeLength && DEFAULT_CODEC_PATTERN.matcher(codeValue).matches()) {
-            return true;
-        }
-
-        return false;
+        return codeValue.length() == emailVerifyCodeLength && DEFAULT_CODEC_PATTERN.matcher(codeValue).matches();
     }
 
     @Override
     public boolean isValidResetPasswordCode(String codeValue) {
         Assert.notNull(codeValue);
 
-        if (codeValue.length() == resetPasswordCodeLength && DEFAULT_CODEC_PATTERN.matcher(codeValue).matches()) {
-            return true;
-        }
-
-        return false;
+        return codeValue.length() == resetPasswordCodeLength && DEFAULT_CODEC_PATTERN.matcher(codeValue).matches();
     }
 }

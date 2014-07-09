@@ -8,12 +8,12 @@
         }],
         "identity.service": [{
             "precondition": "true",
-            "rights": ["read", "create", "update", "delete", "pii.read", "pii.write"],
+            "rights": ["read", "create", "update", "delete", "pii.read", "pii.create", "pii.update", "pii.delete"],
             "scriptType": "SPEL"
         }],
         "identity.pii": [{
             "precondition": "ownedByCurrentUser",
-            "rights": ["read", "create", "update", "delete", "pii.read", "pii.write"],
+            "rights": ["read", "create", "update", "delete", "pii.read", "pii.create", "pii.update", "pii.delete"],
             "scriptType": "SPEL"
         }]
     }

@@ -16,4 +16,6 @@ interface EmailVerifyCodeRepository {
     EmailVerifyCode getAndRemove(String code)
 
     void save(EmailVerifyCode emailVerifyCode)
+
+    void removeByUserIdEmail(Long userId, String email)
 }

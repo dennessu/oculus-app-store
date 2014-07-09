@@ -124,6 +124,8 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
             return Promise.pure(responseBuilder.build())
         }
 
+        emailVerifyCodeRepository.removeByUserIdEmail(emailVerifyCode.userId, emailVerifyCode.email)
+
         return userResource.get(new UserId(emailVerifyCode.userId), new UserGetOptions()).recover { Throwable e ->
             return handleException(e)
         }.then { User user ->
@@ -149,7 +151,6 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
                         )
 
                         loginStateRepository.save(loginState)
-
 
                         Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)
                                 .location(UriBuilder.fromUri(successRedirectUri).build())
