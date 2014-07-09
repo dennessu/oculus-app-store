@@ -14,5 +14,5 @@ import com.junbo.langur.core.promise.Promise;
  */
 public interface CurrencyServiceFacade {
     Promise<Long> getMinAuthAmount(CurrencyId currencyId);
-    Promise<Integer> getNumberAfterDecimal(String currencyCode);
+    Promise<Long> getNumberAfterDecimal(String currencyCode);
 }
