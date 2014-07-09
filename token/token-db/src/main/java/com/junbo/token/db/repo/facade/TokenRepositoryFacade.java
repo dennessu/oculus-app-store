@@ -8,6 +8,7 @@ package com.junbo.token.db.repo.facade;
 
 import com.junbo.sharding.IdGenerator;
 import com.junbo.token.common.TokenUtil;
+import com.junbo.token.common.exception.AppClientExceptions;
 import com.junbo.token.db.repo.*;
 import com.junbo.token.spec.enums.ItemStatus;
 import com.junbo.token.spec.enums.ProductType;
@@ -38,31 +39,30 @@ public class TokenRepositoryFacade {
 
     public TokenSet addTokenSet(TokenSet tokenSet){
         TokenSet saved = tokenSetRepository.create(tokenSet).get();
-        String setId = saved.getId();
+        tokenSet.setId(saved.getId());
         ProductType productType = TokenUtil.getEnumValue(ProductType.class, tokenSet.getProductType());
         if(productType.equals(ProductType.OFFER)){
-            addTokenSetOffer(setId, productType, tokenSet.getProductDetail().getDefaultOffer(), true);
+            addTokenSetOffer(tokenSet, productType, tokenSet.getProductDetail().getDefaultOffer(), true);
             if(tokenSet.getProductDetail().getOptionalOffers() != null){
                 for(String offerId : tokenSet.getProductDetail().getOptionalOffers()){
-                    addTokenSetOffer(setId, productType, offerId, false);
+                    addTokenSetOffer(tokenSet, productType, offerId, false);
                 }
             }
         }else if(productType.equals(ProductType.PROMOTION)){
-            addTokenSetOffer(setId, productType, tokenSet.getProductDetail().getDefaultPromotion(), true);
+            addTokenSetOffer(tokenSet, productType, tokenSet.getProductDetail().getDefaultPromotion(), true);
             if(tokenSet.getProductDetail().getOptionalPromotion() != null){
                 for(String offerId : tokenSet.getProductDetail().getOptionalPromotion()){
-                    addTokenSetOffer(setId, productType, offerId, false);
+                    addTokenSetOffer(tokenSet, productType, offerId, false);
                 }
             }
         }
-        tokenSet.setId(setId);
         return tokenSet;
     }
 
-    private void addTokenSetOffer(String setId, ProductType productType, String offerId, boolean isDefault) {
+    private void addTokenSetOffer(TokenSet set, ProductType productType, String offerId, boolean isDefault) {
         TokenSetOffer model = new TokenSetOffer();
         model.setProductId(offerId);
-        model.setTokenSetId(setId);
+        model.setTokenSetId(set.getId());
         model.setProductType(productType.toString());
         model.setIsDefault(isDefault);
         tokenSetOfferRepository.create(model).get();
@@ -135,6 +135,9 @@ public class TokenRepositoryFacade {
 
     public void updateTokenStatus(long hashValue, ItemStatus status){
         TokenItem item = tokenItemRepository.getByHashValue(hashValue).get();
+        if(item == null){
+            throw AppClientExceptions.INSTANCE.invalidToken().exception();
+        }
         item.setStatus(status.toString());
         tokenItemRepository.update(item).get();
     }

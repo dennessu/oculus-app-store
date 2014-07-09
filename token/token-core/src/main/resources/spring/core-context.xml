@@ -12,7 +12,7 @@
         <property name="cryptoResource" ref="tokenCryptoResource"/>
         <property name="offerClient" ref="tokenOfferClient"/>
         <property name="userClient" ref="tokenUserClient"/>
-        <property name="fulfilmentClient" ref="fulfilmentClient"/>
+        <property name="fulfilmentClient" ref="tokenFulfilmentClient"/>
         <property name="tokenRepository" ref="tokenRepository"/>
     </bean>
 

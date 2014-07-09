@@ -9,6 +9,7 @@ package com.junbo.token.spec.internal;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.TokenOrderId;
 import com.junbo.common.model.ResourceMetaForDualWrite;
+import com.junbo.token.common.FilterOut;
 import com.junbo.token.spec.model.TokenItem;
 
 import java.util.Date;
@@ -29,6 +30,8 @@ public class TokenOrder extends ResourceMetaForDualWrite<String> {
     private String createMethod;
     private Long quantity;
     private String activation;
+    @FilterOut
+    private Boolean encryptTokenString;
     private List<TokenItem> tokenItems;
 
     public String getId() {
@@ -109,6 +112,14 @@ public class TokenOrder extends ResourceMetaForDualWrite<String> {
 
     public void setTokenItems(List<TokenItem> tokenItems) {
         this.tokenItems = tokenItems;
+    }
+
+    public Boolean getEncryptTokenString() {
+        return encryptTokenString;
+    }
+
+    public void setEncryptTokenString(Boolean encryptTokenString) {
+        this.encryptTokenString = encryptTokenString;
     }
 
 }

@@ -12,12 +12,14 @@ import com.junbo.common.error.AppErrorException;
 import com.junbo.common.id.UserId;
 import com.junbo.crypto.spec.model.CryptoMessage;
 import com.junbo.crypto.spec.resource.CryptoResource;
+import com.junbo.fulfilment.spec.model.FulfilmentItem;
 import com.junbo.fulfilment.spec.model.FulfilmentRequest;
 import com.junbo.fulfilment.spec.resource.FulfilmentResource;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.identity.spec.v1.option.model.UserGetOptions;
 import com.junbo.identity.spec.v1.resource.UserResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.sharding.IdGenerator;
 import com.junbo.token.common.CommonUtil;
 import com.junbo.token.common.exception.AppClientExceptions;
 import com.junbo.token.common.exception.AppServerExceptions;
@@ -34,11 +36,11 @@ import com.junbo.token.spec.model.TokenItem;
 import com.junbo.token.spec.internal.TokenOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Required;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -54,6 +56,9 @@ public class TokenServiceImpl implements TokenService {
     private OfferResource offerClient;
     private UserResource userClient;
     private FulfilmentResource fulfilmentClient;
+    @Autowired
+    @Qualifier("oculus48IdGenerator")
+    private IdGenerator idGenerator;
 
     @Override
     public Promise<TokenSet> createTokenSet(TokenSet request) {
@@ -67,7 +72,7 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public Promise<TokenOrder> createTokenOrder(TokenOrder request) {
-        return Promise.pure(addOrder(request));
+        return Promise.pure(addOrder(null, request));
     }
 
     @Override
@@ -75,7 +80,7 @@ public class TokenServiceImpl implements TokenService {
         OrderWrapper orderWrapper = ModelMapper.getOrderModel(request);
         TokenSet tokenSet = addSet(orderWrapper.getTokenSet());
         orderWrapper.getTokenOrder().setTokenSetId(tokenSet.getId());
-        TokenOrder order = addOrder(orderWrapper.getTokenOrder());
+        TokenOrder order = addOrder(tokenSet, orderWrapper.getTokenOrder());
         return Promise.pure(ModelMapper.getOrderRequest(tokenSet, order));
     }
 
@@ -97,8 +102,9 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public Promise<TokenConsumption> consumeToken(String token, TokenConsumption consumption) {
         validateTokenConsumption(consumption);
-        String decryptedToken = decrypt(token);
-        Long hashValue = TokenUtil.computeHash(decryptedToken).getHashValue();
+        //Require token string without encrypt
+        //String decryptedToken = decrypt(token);
+        Long hashValue = TokenUtil.computeHash(token).getHashValue();
         TokenItem item = tokenRepository.getTokenItem(hashValue);
         if(item == null){
             throw AppClientExceptions.INSTANCE.invalidToken().exception();
@@ -115,9 +121,15 @@ public class TokenServiceImpl implements TokenService {
         updateTokenItem(item, order);
         consumption.setItemId(item.getId());
         TokenConsumption result = tokenRepository.addConsumption(consumption);
-        //TODO: fulfillment
         FulfilmentRequest fulfilmentRequest = new FulfilmentRequest();
-
+        fulfilmentRequest.setUserId(consumption.getUserId());
+        fulfilmentRequest.setOrderId(idGenerator.nextId(consumption.getUserId()));
+        fulfilmentRequest.setTrackingUuid(UUID.randomUUID().toString());
+        FulfilmentItem fulfilItem = new FulfilmentItem();
+        fulfilItem.setOfferId(consumption.getProduct());
+        fulfilItem.setQuantity(1);
+        fulfilItem.setItemReferenceId(item.getHashValue());
+        fulfilmentRequest.setItems(Arrays.asList(fulfilItem));
         fulfilmentClient.fulfill(fulfilmentRequest).get();
         return Promise.pure(result);
     }
@@ -127,22 +139,26 @@ public class TokenServiceImpl implements TokenService {
         if(CommonUtil.isNullOrEmpty(token.getStatus())){
            throw AppClientExceptions.INSTANCE.missingField("status").exception();
         }
+        try{
+            ItemStatus.valueOf(token.getStatus());
+        }catch(Exception ex){
+            throw AppClientExceptions.INSTANCE.invalidTokenStatus(token.getStatus()).exception();
+        }
         if(CommonUtil.isNullOrEmpty(token.getDisableReason())){
             throw AppClientExceptions.INSTANCE.missingField("disableReason").exception();
         }
-        String decryptedToken = decrypt(tokenString);
-        Long hashValue = TokenUtil.computeHash(decryptedToken).getHashValue();
-        if(!hashValue.equals(token.getHashValue())){
-            throw AppClientExceptions.INSTANCE.invalidToken().exception();
-        }
-        tokenRepository.updateTokenStatus(token.getHashValue(), ItemStatus.valueOf(token.getStatus()));
+        //Require token string without encryption
+        //String decryptedToken = decrypt(tokenString);
+        Long hashValue = TokenUtil.computeHash(tokenString).getHashValue();
+        tokenRepository.updateTokenStatus(hashValue, ItemStatus.valueOf(token.getStatus()));
         return Promise.pure(token);
     }
 
     @Override
     public Promise<TokenItem> getToken(String token) {
-        String decryptedToken = decrypt(token);
-        Long hashValue = TokenUtil.computeHash(decryptedToken).getHashValue();
+        //Require token String without encrypt
+        //String decryptedToken = decrypt(token);
+        Long hashValue = TokenUtil.computeHash(token).getHashValue();
         TokenItem item = tokenRepository.getTokenItem(hashValue);
         if(item == null){
             throw AppClientExceptions.INSTANCE.resourceNotFound("token").exception();
@@ -157,14 +173,16 @@ public class TokenServiceImpl implements TokenService {
         return tokenRepository.addTokenSet(request);
     }
 
-    private TokenOrder addOrder(TokenOrder request) {
+    private TokenOrder addOrder(TokenSet tokenSet, TokenOrder request) {
         validateTokenOrder(request);
         request.setStatus(OrderStatus.COMPLETED.toString());
         if(request.getQuantity() == null){
             request.setQuantity((long)request.getTokenItems().size());
         }
         TokenOrder result = tokenRepository.addTokenOrder(request);
-        TokenSet tokenSet = tokenRepository.getTokenSet(request.getTokenSetId());
+        if(tokenSet == null){
+            tokenSet = tokenRepository.getTokenSet(request.getTokenSetId());
+        }
         List<TokenItem> tokenItems = new ArrayList<TokenItem>();
         if(request.getCreateMethod().equalsIgnoreCase(CreateMethod.GENERATION.toString())){
             if(CommonUtil.isNullOrEmpty(tokenSet.getGenerationLength())){

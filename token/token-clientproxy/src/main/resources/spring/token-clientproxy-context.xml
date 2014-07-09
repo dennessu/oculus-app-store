@@ -26,7 +26,7 @@
         <property name="accessTokenProvider" ref="tokenAccessTokenProvider"/>
     </bean>
 
-    <bean id="fulfilmentClient" class="com.junbo.fulfilment.spec.resource.proxy.FulfilmentResourceClientProxy"
+    <bean id="tokenFulfilmentClient" class="com.junbo.fulfilment.spec.resource.proxy.FulfilmentResourceClientProxy"
           parent="fulfilmentResourceClientProxy">
         <property name="accessTokenProvider" ref="tokenAccessTokenProvider"/>
     </bean>

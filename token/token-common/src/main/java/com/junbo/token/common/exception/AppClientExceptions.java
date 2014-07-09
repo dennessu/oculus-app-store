@@ -50,6 +50,6 @@ public interface AppClientExceptions {
     @ErrorDef(httpStatusCode = 400, code = "40008", description = "exceed the token usage limitation")
     AppError exceedTokenUsageLimit();
 
-    @ErrorDef(httpStatusCode = 400, code = "40008", description = "the product {0} is invalid to consume")
+    @ErrorDef(httpStatusCode = 400, code = "40008", description = "the product {0} is invalid")
     AppError invalidProduct(String product);
 }
