@@ -56,6 +56,14 @@ public class Master {
     private Map<String, Balance> balances;
     private Map<String, FulfilmentRequest> fulfilments;
 
+    private Map<String, String> userAccessTokens;
+
+    private String identityAccessToken;
+
+
+
+    private String currentUid;
+
     public void initializeMaster() {
         this.initializeUsers();
         this.initializeCarts();
@@ -70,6 +78,7 @@ public class Master {
         this.initializePayments();
         this.initializeBalances();
         this.initializeFulfilmentItems();
+        this.initializeUserAccessTokens();
     }
 
     public void initializeUsers() {
@@ -154,6 +163,13 @@ public class Master {
             this.balances = new HashMap<>();
         }
         this.balances.clear();
+    }
+
+    public void initializeUserAccessTokens() {
+        if(this.userAccessTokens == null){
+            this.userAccessTokens = new HashMap<>();
+        }
+        this.userAccessTokens.clear();
     }
 
     public void initializeFulfilmentItems() {
@@ -256,6 +272,13 @@ public class Master {
         this.fulfilments.put(fulfilmentId, fulfilmentRequest);
     }
 
+    public void addUserAccessToken(String uid, String accessToken){
+        if(this.userAccessTokens.containsKey(uid)){
+            this.userAccessTokens.remove(uid);
+        }
+        this.userAccessTokens.put(uid,accessToken);
+    }
+
     public User getUser(String userId) {
         return this.users.get(userId);
     }
@@ -306,6 +329,10 @@ public class Master {
 
     public FulfilmentRequest getFulfilment(String fulfilmentId){
         return this.fulfilments.get(fulfilmentId);
+    }
+
+    public String getUserAccessToken(String uid){
+        return this.userAccessTokens.get(uid);
     }
 
     public Map<String, PaymentInstrument> getPaymentInstruments() {
@@ -360,6 +387,14 @@ public class Master {
         }
     }
 
+    public String getCurrentUid() {
+        return currentUid;
+    }
+
+    public void setCurrentUid(String currentUid) {
+        this.currentUid = currentUid;
+    }
+
     public String getOfferIdByName(String offerName) {
 
         for (Map.Entry<String, Offer> entry : offers.entrySet()) {
@@ -400,6 +435,14 @@ public class Master {
             }
         }
         return null;
+    }
+
+    public String getIdentityAccessToken() {
+        return identityAccessToken;
+    }
+
+    public void setIdentityAccessToken(String identityAccessToken) {
+        this.identityAccessToken = identityAccessToken;
     }
 
 }

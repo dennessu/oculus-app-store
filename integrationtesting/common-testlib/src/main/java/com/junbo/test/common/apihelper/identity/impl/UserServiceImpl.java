@@ -5,6 +5,7 @@
  */
 package com.junbo.test.common.apihelper.identity.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.id.UserId;
@@ -15,16 +16,17 @@ import com.junbo.identity.spec.v1.model.UserPersonalInfo;
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.ConfigHelper;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.apihelper.identity.UserService;
+import com.junbo.test.common.apihelper.oauth.OAuthTokenService;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthTokenServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RandomFactory;
 
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Jason
@@ -33,8 +35,10 @@ import java.util.List;
  */
 public class UserServiceImpl extends HttpClientBase implements UserService {
 
-    private final String identityServerURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/users";
+    private final String identityServerURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "users";
     private static UserService instance;
+
+    private OAuthTokenService oAuthTokenClient = OAuthTokenServiceImpl.getInstance();
 
     public static synchronized UserService instance() {
         if (instance == null) {
@@ -47,6 +51,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     }
 
     public String PostUser() throws Exception {
+        oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY);
         User userForPost = new User();
         userForPost.setIsAnonymous(false);
         userForPost.setStatus("ACTIVE");
@@ -59,6 +64,11 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
         String userId = IdConverter.idToHexString(userGet.getId());
         Master.getInstance().addUser(userId, userGet);
+        Master.getInstance().setCurrentUid(userId);
+
+        String pwd = postPassword(userId);
+
+        oAuthTokenClient.postUserAccessToken(userId, pwd);
 
         UserId userIdDefault = userGet.getId();
 
@@ -188,6 +198,16 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         String responseBody = restApiCall(HTTPMethod.POST, serverURL, userPersonalInfo, expectedResponseCode);
         return new JsonMessageTranscoder().decode(new TypeReference<UserPersonalInfo>() {
         }, responseBody);
+    }
+
+    private String postPassword(String uid) throws Exception {
+        Map params = new HashMap();
+        String pwd = RandomFactory.getRandomStringOfAlphabet(5);
+        params.put("type", "PASSWORD");
+        params.put("value", pwd);
+        String requestBody = JSONObject.toJSONString(params);
+        restApiCall(HTTPMethod.POST, identityServerURL + "/" + uid + "/" + "change-credentials", requestBody, 201);
+        return pwd;
     }
 
     public String PostUser(User user) throws Exception {
