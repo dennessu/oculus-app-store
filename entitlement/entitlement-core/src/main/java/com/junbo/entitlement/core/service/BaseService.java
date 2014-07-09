@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 /**
  * Base service.
@@ -171,13 +170,7 @@ public class BaseService {
     }
 
     protected void checkOauth(final Entitlement entitlement) {
-        ItemRevision item = (ItemRevision) CommonCache.ITEM_REVISION.get(
-                entitlement.getItemId(), new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                return itemFacade.getItem(entitlement.getItemId());
-            }
-        });
+        ItemRevision item = getItem(entitlement.getItemId());
         //TODO: check clientId
     }
 
@@ -203,13 +196,16 @@ public class BaseService {
         if (itemId == null) {
             return null;
         }
-        return (ItemRevision) CommonCache.ITEM_REVISION.get(
-                itemId, new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                return itemFacade.getItem(itemId);
-            }
-        });
+        ItemRevision existing = (ItemRevision) CommonCache.ITEM_REVISION.get(itemId);
+        if (existing != null) {
+            return existing;
+        }
+        ItemRevision item = itemFacade.getItem(itemId);
+        if (item == null) {
+            return null;
+        }
+        CommonCache.ITEM_REVISION.put(itemId, item);
+        return item;
     }
 
     protected String formatId(long id) {

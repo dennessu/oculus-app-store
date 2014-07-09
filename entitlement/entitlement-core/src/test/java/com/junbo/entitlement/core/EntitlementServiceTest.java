@@ -40,7 +40,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 /**
  * Entitlement service test.
@@ -138,19 +137,14 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         entitlement.setGrantTime(new Date(114, 0, 22));
         entitlement.setExpirationTime(new Date(114, 0, 28));
         entitlement.setItemId(String.valueOf(idGenerator.nextId()));
-        final ItemRevision item = new ItemRevision();
+        ItemRevision item = new ItemRevision();
         item.setItemId(entitlement.getItemId());
         List<EntitlementDef> defs = new ArrayList<>();
         EntitlementDef def = new EntitlementDef();
         def.setConsumable(false);
         defs.add(def);
         item.setEntitlementDefs(defs);
-        CommonCache.ITEM_REVISION.get(item.getItemId(), new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                return item;
-            }
-        });
+        CommonCache.ITEM_REVISION.put(item.getItemId(), item);
         return entitlement;
     }
 
