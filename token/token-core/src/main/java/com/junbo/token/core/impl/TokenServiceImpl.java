@@ -305,9 +305,6 @@ public class TokenServiceImpl implements TokenService {
         if(user == null){
             throw AppClientExceptions.INSTANCE.invalidField("userId").exception();
         }
-        if(consumption.getProduct() == null){
-            throw AppClientExceptions.INSTANCE.missingField("product").exception();
-        }
     }
 
     private void validateTokenItem(TokenItem item, TokenOrder order, TokenSet set, TokenConsumption consumption){
@@ -318,12 +315,16 @@ public class TokenServiceImpl implements TokenService {
             throw AppClientExceptions.INSTANCE.tokenExpired().exception();
         }
         if(set.getProductType().equalsIgnoreCase(ProductType.OFFER.toString())){
-            if(!set.getProductDetail().getDefaultOffer().equalsIgnoreCase(consumption.getProduct()) &&
+            if(CommonUtil.isNullOrEmpty(consumption.getProduct())){
+                consumption.setProduct(set.getProductDetail().getDefaultOffer());
+            }else if(!set.getProductDetail().getDefaultOffer().equalsIgnoreCase(consumption.getProduct()) &&
                     !set.getProductDetail().getOptionalOffers().contains(consumption.getProduct())){
                 throw AppClientExceptions.INSTANCE.invalidProduct(consumption.getProduct().toString()).exception();
             }
         }else if(set.getProductType().equalsIgnoreCase(ProductType.PROMOTION.toString())){
-            if(!set.getProductDetail().getDefaultPromotion().equalsIgnoreCase(consumption.getProduct()) &&
+            if(CommonUtil.isNullOrEmpty(consumption.getProduct())){
+                consumption.setProduct(set.getProductDetail().getDefaultPromotion());
+            }else if(!set.getProductDetail().getDefaultPromotion().equalsIgnoreCase(consumption.getProduct()) &&
                     !set.getProductDetail().getOptionalPromotion().contains(consumption.getProduct())){
                 throw AppClientExceptions.INSTANCE.invalidProduct(consumption.getProduct().toString()).exception();
             }

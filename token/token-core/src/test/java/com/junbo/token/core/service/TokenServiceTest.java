@@ -155,5 +155,10 @@ public class TokenServiceTest extends BaseTest {
         TokenConsumption consumedItem = tokenService.consumeToken(item.getEncryptedString(), consumption).get();
         TokenItem getItem = tokenService.getToken(item.getEncryptedString()).get();
         Assert.assertEquals(getItem.getStatus(), ItemStatus.USED.toString());
+
+        consumption.setProduct(null);
+        TokenConsumption consumedItem2 = tokenService.consumeToken(item2.getEncryptedString(), consumption).get();
+        TokenItem getItem2 = tokenService.getToken(item.getEncryptedString()).get();
+        Assert.assertEquals(getItem2.getStatus(), ItemStatus.USED.toString());
     }
 }
