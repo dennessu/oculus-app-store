@@ -98,11 +98,12 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
             if (key.endsWith(CRYPTO_SUFFIX)) {
                 // ignored
-            } else if (finalProperties.contains(key + CRYPTO_SUFFIX)) {
+            } else if (finalProperties.containsKey(key + CRYPTO_SUFFIX)) {
                 value = "*****";
+                properties.put(key, value);
+            } else {
+                properties.put(key, value);
             }
-
-            properties.put(key, value);
         }
 
         return properties;
@@ -315,10 +316,8 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
         configContext = readConfigContext(overrideProperties);
 
-        if (!StringUtils.isEmpty(configDir)) {
-            Path keyFilePath = Paths.get(configDir, CONFIG_PASSWORD_KEY_FILE);
-            keyStr = loadAndCheckKeyFile(keyFilePath);
-        }
+        Path keyFilePath = Paths.get(configDir, CONFIG_PASSWORD_KEY_FILE);
+        keyStr = loadAndCheckKeyFile(keyFilePath);
 
         // Read jar configuration files
         jarProperties = readJarProperties();
@@ -368,7 +367,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
             if (configContext.getEnvironment().equals("onebox") ||
                 configContext.getEnvironment().startsWith("onebox.")) {
                 // return a dummy key
-                return "5B62A9320B84AF50F70B076D89F5F7B8";
+                return "D58BA755FF96B35A6DABA7298F7A8CE2";
             }
             logger.warn("Key file doesn't exist: " + path.toUri().toString());
             return null;
