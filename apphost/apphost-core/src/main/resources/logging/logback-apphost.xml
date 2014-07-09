@@ -86,8 +86,7 @@
         <appender-ref ref="NEW_RELIC_ASYNC" />
     </root>
 
-    <logger name="org.glassfish.grizzly.http.server.HttpHandlerChain" level="DEBUG">
-    </logger>
+    <logger name="org.glassfish.grizzly.http.server.HttpHandlerChain" level="DEBUG" />
 
     <!-- ACCESS LOG -->
     <property name="CONSOLE_ACCESS_LOG_PATTERN" value="%m %clr([%8.8X{X-Request-Id:- }]){bold}%n"/>

@@ -79,7 +79,7 @@ class CloudantClientImpl implements CloudantClientInternal {
     @Override
     def <T extends CloudantEntity> Promise<T> cloudantGet(CloudantDbUri dbUri, Class<T> entityClass, String id) {
         CloudantId.validate(id)
-        return executeRequest(dbUri, HttpMethod.GET, id, [:], null).then({ Response response ->
+        return executeRequest(dbUri, HttpMethod.GET, urlEncode(id), [:], null).then({ Response response ->
 
             if (response.statusCode != HttpStatus.OK.value()) {
                 return Promise.pure(null)
@@ -98,7 +98,7 @@ class CloudantClientImpl implements CloudantClientInternal {
         // force update cloudantId
         entity.setCloudantId(entity.getId().toString())
         CloudantId.validate(entity.cloudantId)
-        return executeRequest(dbUri, HttpMethod.PUT, entity.cloudantId, [:], entity).then({ Response response ->
+        return executeRequest(dbUri, HttpMethod.PUT, urlEncode(entity.cloudantId), [:], entity).then({ Response response ->
             if (response.statusCode != HttpStatus.CREATED.value()) {
                 CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
 
@@ -128,7 +128,7 @@ class CloudantClientImpl implements CloudantClientInternal {
             // force update cloudantId
             entity.setCloudantId(entity.getId().toString())
             CloudantId.validate(entity.cloudantId)
-            return executeRequest(dbUri, HttpMethod.DELETE, entity.cloudantId, ['rev': entity.cloudantRev], null).then({ Response response ->
+            return executeRequest(dbUri, HttpMethod.DELETE, urlEncode(entity.cloudantId), ['rev': entity.cloudantRev], null).then({ Response response ->
                 if (response.statusCode != HttpStatus.OK.value() && response.statusCode != HttpStatus.NOT_FOUND.value()) {
                     CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
 
@@ -418,6 +418,10 @@ class CloudantClientImpl implements CloudantClientInternal {
 
     private static String marshall(Object obj) {
         return marshaller.marshall(obj)
+    }
+
+    private static String urlEncode(String id) {
+        return URLEncoder.encode(id, "UTF-8")
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
