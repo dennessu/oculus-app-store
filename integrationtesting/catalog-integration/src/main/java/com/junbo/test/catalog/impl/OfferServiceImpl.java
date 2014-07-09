@@ -63,7 +63,6 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     private LogHelper logger = new LogHelper(OfferServiceImpl.class);
     private static OfferService instance;
 
-    private ItemService itemService = ItemServiceImpl.instance();
     private UserService userService = UserServiceImpl.instance();
     private OrganizationService organizationService = OrganizationServiceImpl.instance();
 
@@ -173,7 +172,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     public String getOfferIdByName(String offerName) throws Exception {
         catalogDB = ConfigHelper.getSetting("catalogDB");
 
-        if (catalogDB.equalsIgnoreCase("cloudant")) {
+        if (catalogDB != null && catalogDB.equalsIgnoreCase("cloudant")) {
             Results<Offer> offerRtn = this.searchOfferByName(offerName);
 
             if (offerRtn.getItems().size() <= 0) {
@@ -184,6 +183,19 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
                 return "No such predefined offer";
             }
             else {
+                OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
+                ItemService itemService = ItemServiceImpl.instance();
+                ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
+
+                OfferRevision offerRevision;
+                Item item;
+
+                offerRevision = offerRevisionService.getOfferRevision(offerRtn.getItems().get(0).getCurrentRevisionId());
+                if (offerRevision != null) {
+                    item = itemService.getItem(offerRevision.getItems().get(0).getItemId());
+                    itemRevisionService.getItemRevision(item.getCurrentRevisionId());
+                }
+
                 return offerRtn.getItems().get(0).getOfferId();
             }
         }
@@ -230,6 +242,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     }
 
     private void loadAllItems() throws Exception {
+        ItemService itemService = ItemServiceImpl.instance();
         HashMap<String, List<String>> paraMap = new HashMap<>();
         List<String> listStart = new ArrayList<>();
         listStart.add(start.toString());
@@ -269,6 +282,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     }
 
     private Results<Item> searchItemByName(String itemName) throws Exception {
+        ItemService itemService = ItemServiceImpl.instance();
         HashMap<String, List<String>> paraMap = new HashMap<>();
         List<String> query = new ArrayList<>();
 
@@ -288,7 +302,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
             while ((sCurrentLine = br.readLine()) != null) {
                 logger.logInfo(sCurrentLine);
                 String[] strLine = sCurrentLine.split(",");
-                if (catalogDB.equalsIgnoreCase("cloudant")) {
+                if (catalogDB != null && catalogDB.equalsIgnoreCase("cloudant")) {
                     offerRtn = this.searchOfferByName(strLine[0]);
                     if (offerRtn.getItems().size() <= 0) {
                         preparePredefinedOffer(strLine[0], strLine[1], strLine[2], strLine[3]);
@@ -327,7 +341,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         OrganizationId organizationId = getOrganizationId(userId);
 
         Item item;
-        if (catalogDB.equalsIgnoreCase("cloudant")) {
+        if (catalogDB != null && catalogDB.equalsIgnoreCase("cloudant")) {
             Results<Item> itemRtn = this.searchItemByName(itemName);
             if (itemRtn.getItems().size() <= 0) {
                 item = prepareItem(userId, itemName, offerType);
