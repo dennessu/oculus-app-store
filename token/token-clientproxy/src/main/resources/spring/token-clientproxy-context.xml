@@ -21,6 +21,11 @@
         <property name="accessTokenProvider" ref="tokenAccessTokenProvider"/>
     </bean>
 
+    <bean id="tokenPromotionClient" class="com.junbo.catalog.spec.resource.proxy.PromotionResourceClientProxy"
+          parent="offerResourceClientProxy">
+        <property name="accessTokenProvider" ref="tokenAccessTokenProvider"/>
+    </bean>
+
     <bean id="tokenUserClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
           parent="userResourceClientProxy">
         <property name="accessTokenProvider" ref="tokenAccessTokenProvider"/>

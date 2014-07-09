@@ -7,7 +7,9 @@
 package com.junbo.token.core.impl;
 
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.resource.OfferResource;
+import com.junbo.catalog.spec.resource.PromotionResource;
 import com.junbo.common.error.AppErrorException;
 import com.junbo.common.id.UserId;
 import com.junbo.crypto.spec.model.CryptoMessage;
@@ -54,6 +56,7 @@ public class TokenServiceImpl implements TokenService {
     private TokenRepositoryFacade tokenRepository;
     private CryptoResource cryptoResource;
     private OfferResource offerClient;
+    private PromotionResource promotionResource;
     private UserResource userClient;
     private FulfilmentResource fulfilmentClient;
     @Autowired
@@ -228,31 +231,49 @@ public class TokenServiceImpl implements TokenService {
             if(CommonUtil.isNullOrEmpty(request.getProductDetail().getDefaultOffer())){
                 throw AppClientExceptions.INSTANCE.missingField("defaultOffer").exception();
             }
-            validateOffer(request.getProductDetail().getDefaultOffer());
+            validateProduct(request.getProductDetail().getDefaultOffer(), ProductType.OFFER);
+            if(request.getProductDetail().getOptionalOffers() != null){
+                for(String offer : request.getProductDetail().getOptionalOffers()){
+                    validateProduct(offer, ProductType.OFFER);
+                }
+            }
         }else if(request.getProductType().equalsIgnoreCase(ProductType.PROMOTION.toString())){
             if(CommonUtil.isNullOrEmpty(request.getProductDetail().getDefaultPromotion())){
                 throw AppClientExceptions.INSTANCE.missingField("defaultPromotion").exception();
             }
-            //TODO: validate Promotion
+            validateProduct(request.getProductDetail().getDefaultPromotion(), ProductType.PROMOTION);
+            if(request.getProductDetail().getOptionalPromotion() != null){
+                for(String offer : request.getProductDetail().getOptionalPromotion()){
+                    validateProduct(offer, ProductType.PROMOTION);
+                }
+            }
         }else{
             throw AppClientExceptions.INSTANCE.invalidField("productType").exception();
         }
     }
 
-    private void validateOffer(String offerId){
+    private void validateProduct(String productId, ProductType type){
         Offer offer = null;
+        Promotion promotion = null;
         try{
-            offer = offerClient.getOffer(offerId).get();
+            if(type.equals(ProductType.PROMOTION)){
+                promotion = promotionResource.getPromotion(productId).get();
+            }else if(type.equals(ProductType.OFFER)){
+                offer = offerClient.getOffer(productId).get();
+            }
         }catch(Exception ex){
             if(ex instanceof AppErrorException && ((AppErrorException) ex).getError().getHttpStatusCode() == 404){
-                throw AppClientExceptions.INSTANCE.invalidProduct(offerId).exception();
+                throw AppClientExceptions.INSTANCE.invalidProduct(productId).exception();
             }else{
                 LOGGER.error("error get catalog:" + ex.toString());
                 throw AppServerExceptions.INSTANCE.catalogGatewayException().exception();
             }
         }
-        if(offer == null){
-            throw AppClientExceptions.INSTANCE.invalidProduct(offerId).exception();
+        if(offer == null && type.equals(ProductType.OFFER)){
+            throw AppClientExceptions.INSTANCE.invalidProduct(productId).exception();
+        }
+        if(promotion == null && type.equals(ProductType.PROMOTION)){
+            throw AppClientExceptions.INSTANCE.invalidProduct(productId).exception();
         }
     }
 
@@ -364,32 +385,20 @@ public class TokenServiceImpl implements TokenService {
         this.tokenRepository = tokenRepository;
     }
 
-    public CryptoResource getCryptoResource() {
-        return cryptoResource;
-    }
-
     public void setCryptoResource(CryptoResource cryptoResource) {
         this.cryptoResource = cryptoResource;
-    }
-
-    public OfferResource getOfferClient() {
-        return offerClient;
     }
 
     public void setOfferClient(OfferResource offerClient) {
         this.offerClient = offerClient;
     }
 
-    public UserResource getUserClient() {
-        return userClient;
+    public void setPromotionResource(PromotionResource promotionResource) {
+        this.promotionResource = promotionResource;
     }
 
     public void setUserClient(UserResource userClient) {
         this.userClient = userClient;
-    }
-
-    public FulfilmentResource getFulfilmentClient() {
-        return fulfilmentClient;
     }
 
     public void setFulfilmentClient(FulfilmentResource fulfilmentClient) {

@@ -53,6 +53,31 @@ public class TokenServiceTest extends BaseTest {
     }
 
     @Test(enabled = true)
+    public void testGeneratePromotion() throws ExecutionException, InterruptedException {
+        final ProductDetail product = new ProductDetail();
+        product.setDefaultPromotion("123");
+        TokenRequest request = new TokenRequest(){
+            {
+                setActivation("yes");
+                setCreateMethod(CreateMethod.GENERATION.toString());
+                setDescription("ut");
+                setExpiredTime(null);
+                setGenerationLength(TokenLength.LEN16.toString());
+                setProductDetail(product);
+                setProductType(ProductType.PROMOTION.toString());
+                setQuantity(2L);
+                setUsageLimit("1");
+            }
+        };
+        TokenRequest result = tokenService.createOrderRequest(request).get();
+        Assert.assertNotNull(result.getTokenItems());
+        Assert.assertNotNull(result.getId());
+        TokenRequest getResult = tokenService.getOrderRequest(result.getId()).get();
+        Assert.assertEquals(getResult.getQuantity(), (Long)2L);
+        Assert.assertEquals(result.getProductDetail().getDefaultOffer(), getResult.getProductDetail().getDefaultOffer());
+    }
+
+    @Test(enabled = true)
     public void testGenerateNoEncrypt() throws ExecutionException, InterruptedException {
         final ProductDetail product = new ProductDetail();
         product.setDefaultOffer("123");
