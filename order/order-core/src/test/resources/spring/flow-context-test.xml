@@ -41,10 +41,6 @@
         <property name="orderServiceContextBuilder" ref="mockOrderServiceContextBuilder"/>
     </bean>
 
-    <bean id="mockCancelOrderAction" class="com.junbo.order.core.impl.orderaction.CancelOrderAction">
-        <property name="orderInternalService" ref="mockOrderInternalService"/>
-    </bean>
-
     <bean id="mockRefundOrderAction" class="com.junbo.order.core.impl.orderaction.RefundOrderAction">
         <property name="orderInternalService" ref="mockOrderInternalService"/>
     </bean>

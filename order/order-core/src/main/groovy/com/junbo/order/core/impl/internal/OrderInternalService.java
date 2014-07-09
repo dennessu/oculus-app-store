@@ -30,11 +30,7 @@ public interface OrderInternalService {
 
     void markSettlement(Order order);
 
-    Promise<Order> cancelOrder(Order order, OrderServiceContext context);
-
-    Promise<Void> refundDeposit(Order order, OrderServiceContext orderServiceContext);
-
-    Promise<Order> refundOrder(Order order, OrderServiceContext orderServiceContext);
+    Promise<Order> refundOrCancelOrder(Order order, OrderServiceContext orderServiceContext);
 
     void persistBillingHistory(Balance balance, BillingAction action, Order order);
 

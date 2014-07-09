@@ -190,7 +190,7 @@ class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    Promise<Order> refundOrder(Order request, OrderServiceContext orderServiceContext) {
+    Promise<Order> refundOrCancelOrder(Order request, OrderServiceContext orderServiceContext) {
         // order is the request
         LOGGER.info('name=Refund_Order. orderId: {}', request.getId().value)
         orderValidator.validateRefundOrderRequest(request)

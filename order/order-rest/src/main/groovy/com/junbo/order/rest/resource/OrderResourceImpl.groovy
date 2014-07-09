@@ -120,9 +120,9 @@ class OrderResourceImpl implements OrderResource {
                             throw AppCommonErrors.INSTANCE.forbidden().exception()
                         }
 
-                        LOGGER.info('name=Refund_Non_Tentative_Offer')
+                        LOGGER.info('name=Refund_Or_Cancel_Non_Tentative_Offer')
                         oldOrder.orderItems = order.orderItems
-                        return orderService.refundOrder(oldOrder, new OrderServiceContext(order, new ApiContext()))
+                        return orderService.refundOrCancelOrder(oldOrder, new OrderServiceContext(order, new ApiContext()))
                     }
                     LOGGER.info('name=Update_Non_Tentative_Offer')
                     // update shipping address after settlement

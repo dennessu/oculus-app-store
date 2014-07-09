@@ -126,44 +126,18 @@ class OrderInternalServiceImpl implements OrderInternalService {
     }
 
     @Override
-    @Transactional
-    Promise<Order> cancelOrder(Order order, OrderServiceContext orderServiceContext) {
-
-        assert (order != null)
-
-        def isCancelable = CoreUtils.checkOrderStatusCancelable(order)
-        if (!isCancelable) {
-            LOGGER.info('name=Order_Is_Not_Cancelable, orderId = {}, orderStatus={}', order.getId().value, order.status)
-            throw AppErrors.INSTANCE.orderNotCancelable().exception()
-        }
-        LOGGER.info('name=Order_Is_Cancelable, orderId = {}, orderStatus={}', order.getId().value, order.status)
-
-        order.status = OrderStatus.CANCELED.name()
-        orderRepository.updateOrder(order, false, true, OrderItemRevisionType.CANCEL)
-
-        // TODO: reverse authorize if physical goods
-
-        // TODO: cancel paypal confirm
-
-        if (order.status == OrderStatus.PREORDERED.name()) {
-            return refundDeposit(order, orderServiceContext).then { Order o ->
-                return Promise.pure(o)
-            }
-        }
-        return Promise.pure(order)
-    }
-
-    @Override
-    Promise<Order> refundOrder(Order order, OrderServiceContext context) {
+    Promise<Order> refundOrCancelOrder(Order order, OrderServiceContext context) {
 
         assert (order != null)
 
         Boolean isRefundable = CoreUtils.checkOrderStatusRefundable(order)
-        if (!isRefundable) {
-            LOGGER.info('name=Order_Is_Not_Refundable, orderId = {}, orderStatus={}', order.getId().value, order.status)
+        Boolean isCancelable = CoreUtils.checkOrderStatusCancelable(order)
+
+        if (!isRefundable && !isCancelable) {
+            LOGGER.info('name=Order_Is_Not_Refundable_Or_Cancelable, orderId = {}, orderStatus={}', order.getId().value, order.status)
             throw AppErrors.INSTANCE.orderNotRefundable().exception()
         }
-        LOGGER.info('name=Order_Is_Refundable, orderId = {}, orderStatus={}', order.getId().value, order.status)
+        LOGGER.info('name=Order_Is_Refundable_Or_Cancelable, orderId = {}, orderStatus={}', order.getId().value, order.status)
 
         // @Transactional
         Promise promise1 = getOrderByOrderId(order.getId().value, context)
@@ -184,7 +158,9 @@ class OrderInternalServiceImpl implements OrderInternalService {
             List<Balance> refundableBalances = bls.findAll { Balance bl ->
                 (bl.type == BalanceType.DEBIT.name() || bl.type == BalanceType.MANUAL_CAPTURE.name()) &&
                         (bl.status == BalanceStatus.AWAITING_PAYMENT.name() ||
-                                bl.status == BalanceStatus.COMPLETED.name())
+                                bl.status == BalanceStatus.COMPLETED.name() ||
+                                bl.status == BalanceStatus.PENDING_CAPTURE.name() ||
+                                bl.status == BalanceStatus.UNCONFIRMED.name())
             }.toList()
             // preorder: deposit+deposit
             // physical goods: manual_capture/deposit
@@ -211,38 +187,22 @@ class OrderInternalServiceImpl implements OrderInternalService {
                             throw AppErrors.INSTANCE.billingRefundFailed('billing returns null balance').exception()
                         }
                         def refundedOrder = CoreUtils.calcRefundedOrder(existingOrder, refunded, diffOrder)
-                        refundedOrder.status = OrderStatus.REFUNDED.name()
-                        orderRepository.updateOrder(refundedOrder, false, true, OrderItemRevisionType.REFUND)
-                        persistBillingHistory(refunded, BillingAction.REQUEST_REFUND, order)
+                        assert(isRefundable != isCancelable)
+                        if(isRefundable) {
+                            refundedOrder.status = OrderStatus.REFUNDED.name()
+                            orderRepository.updateOrder(refundedOrder, false, true, OrderItemRevisionType.REFUND)
+                            persistBillingHistory(refunded, BillingAction.REQUEST_REFUND, order)
+                        } else if(isCancelable) {
+                            refundedOrder.status = OrderStatus.CANCELED.name()
+                            orderRepository.updateOrder(refundedOrder, false, true, OrderItemRevisionType.CANCEL)
+                            persistBillingHistory(refunded, BillingAction.REQUEST_CANCEL, order)
+                        }
                         return Promise.pure(null)
                     }
                 }
             }
         }.then {
             return getOrderByOrderId(order.getId().value, context)
-        }
-    }
-
-    @Override
-    Promise<Void> refundDeposit(Order order, OrderServiceContext orderServiceContext) {
-        if (CoreUtils.isFreeOrder(order)) {
-            return Promise.pure(null)
-        }
-        BillingHistory bh = CoreUtils.getLatestBillingHistory(order)
-        assert (bh != null)
-        if (bh.billingEvent == BillingAction.DEPOSIT) {
-            return orderServiceContextBuilder.getBalances(orderServiceContext).then { List<Balance> bls ->
-                if (CoreUtils.checkDepositOrderRefundable(order, bls)) {
-                    return facadeContainer.billingFacade.createBalance(
-                            CoreBuilder.buildRefundDepositBalance(bls[0]), false).syncRecover { Throwable ex ->
-                    }.then { Balance refunded ->
-                        if (refunded != null) {
-                            throw AppErrors.INSTANCE.billingChargeFailed().exception()
-                        }
-                        return Promise.pure(null)
-                    }
-                }
-            }
         }
     }
 
@@ -418,6 +378,9 @@ class OrderInternalServiceImpl implements OrderInternalService {
     @Transactional
     void persistBillingHistory(Balance balance, BillingAction action, Order order) {
         def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(balance)
+        if(action != null) {
+            billingHistory.billingEvent == action.name()
+        }
         if (billingHistory.billingEvent != null) {
             def savedHistory = orderRepository.createBillingHistory(order.getId().value, billingHistory)
             if (order.billingHistories == null) {

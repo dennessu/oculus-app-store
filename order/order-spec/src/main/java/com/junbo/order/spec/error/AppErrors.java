@@ -194,7 +194,7 @@ public interface AppErrors {
     AppError orderItemIsNotFoundForRefund(String offer);
 
     @ErrorDef(httpStatusCode = 409, code = ErrorCode.ORDER_CAN_NOT_BE_REFUNDED,
-            message = "Order can not be refunded")
+            message = "Order can not be refunded or cancelled")
     AppError orderNotRefundable();
 
     @ErrorDef(httpStatusCode = 500, code = BillingErrorCode.BILLING_REFUND_FAILED,
