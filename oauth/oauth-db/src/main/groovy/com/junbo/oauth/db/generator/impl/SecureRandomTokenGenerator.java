@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
  */
 public class SecureRandomTokenGenerator implements TokenGenerator {
 
-    private static final Pattern DEFAULT_CODEC_PATTERN = Pattern.compile("[0-9A-Za-z=-_]+");
+    private static final Pattern DEFAULT_CODEC_PATTERN = Pattern.compile("[0-9A-Za-z=-~]+");
 
     private final Random random = new SecureRandom();
 
@@ -101,7 +101,7 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
         byte[] bytes = new byte[length];
         random.nextBytes(bytes);
 
-        return Base64.encodeBase64URLSafeString(bytes);
+        return Base64.encodeBase64URLSafeString(bytes).replace('_', '~');
     }
 
     @Override
