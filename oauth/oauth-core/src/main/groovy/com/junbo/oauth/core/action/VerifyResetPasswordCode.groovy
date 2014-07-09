@@ -67,6 +67,7 @@ class VerifyResetPasswordCode implements Action {
             return Promise.pure(new ActionResult('error'))
         }
 
+        resetPasswordCodeRepository.removeByUserIdEmail(resetPasswordCode.userId, resetPasswordCode.email)
 
         return userResource.get(new UserId(resetPasswordCode.userId), new UserGetOptions()).recover { Throwable e ->
             handleException(e, contextWrapper)

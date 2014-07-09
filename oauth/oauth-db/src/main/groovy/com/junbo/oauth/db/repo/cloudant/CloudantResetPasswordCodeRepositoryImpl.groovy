@@ -40,4 +40,12 @@ class CloudantResetPasswordCodeRepositoryImpl extends CloudantClient<ResetPasswo
 
         cloudantPost(resetPasswordCode).get()
     }
+
+    @Override
+    void removeByUserIdEmail(Long userId, String email) {
+        List<ResetPasswordCode> entities = queryView('by_user_id_email', "$userId:$email").get()
+        for (ResetPasswordCode code : entities) {
+            cloudantDelete(code).get()
+        }
+    }
 }
