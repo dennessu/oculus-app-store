@@ -263,7 +263,7 @@ class IAPResourceImpl implements IAPResource {
 
     Promise<List<Offer>> getInAppOffers(Item hostItem, String type) {
         def itemOption = new ItemsGetOptions(
-                hostItemId: hostItem.id,
+                hostItemId: hostItem.itemId,
                 type: type,
                 size: PAGE_SIZE,
                 start: 0
@@ -302,7 +302,7 @@ class IAPResourceImpl implements IAPResource {
 
     private Promise<Void> getOffersFromItem(Item item, ItemRevision itemRevision, Map<String, Offer> offers) {
         def offerOption = new OffersGetOptions(
-                itemId: item.id,
+                itemId: item.itemId,
                 published: true,
                 start : 0,
                 size : PAGE_SIZE
