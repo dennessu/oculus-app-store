@@ -135,7 +135,7 @@ public class BaseService {
         }
     }
 
-    private void validateEquals(Object actual, Object expected, String fieldName) {
+    protected void validateEquals(Object actual, Object expected, String fieldName) {
         if (expected == actual) {
             return;
         } else if (expected == null || actual == null) {
