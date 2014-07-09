@@ -601,14 +601,10 @@ def encryptData(key, data, mode=AESModeOfOperation.modeOfOperation["CBC"]):
         data = append_PKCS7_padding(data)
     keysize = len(key)
     assert keysize in AES.keySize.values(), 'invalid key size: %s' % keysize
-    # create a new iv using random data
     iv = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     moo = AESModeOfOperation()
     (mode, length, ciph) = moo.encrypt(data, mode, key, keysize, iv)
-    # With padding, the original length does not need to be known. It's a bad
-    # idea to store the original message length.
-    # prepend the iv.
-    #return ''.join(map(chr, iv)) + ''.join(map(chr, ciph))
+
     return (''.join( [ "%02X" % x for x in ciph ] ).strip())
 
 def decryptData(key, data, mode=AESModeOfOperation.modeOfOperation["CBC"]):
@@ -623,10 +619,7 @@ def decryptData(key, data, mode=AESModeOfOperation.modeOfOperation["CBC"]):
     key = map(ord, key.decode('hex'))
     keysize = len(key)
     assert keysize in AES.keySize.values(), 'invalid key size: %s' % keysize
-    # iv is first 16 bytes
-    iv = map(ord, data[:16])
     iv = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    #data = map(ord, data[16:])
     data = map(ord, data.decode('hex'))
     moo = AESModeOfOperation()
     decr = moo.decrypt(data, None, mode, key, keysize, iv)
@@ -637,7 +630,7 @@ def decryptData(key, data, mode=AESModeOfOperation.modeOfOperation["CBC"]):
 def generateRandomKey(keysize):
     """Generates a key from random data of length `keysize`.
     
-    The returned key is a string of bytes.
+    The returned key is a hex encoded string.
     
     """
     if keysize not in (16, 24, 32):
