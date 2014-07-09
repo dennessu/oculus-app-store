@@ -97,11 +97,12 @@ public abstract class AbstractClientProxy {
         this.__junboHttpContextScopeListeners = __junboHttpContextScopeListeners;
     }
 
-    protected JunboHttpContext.JunboHttpContextData __createJunboHttpContextData(com.ning.http.client.Request request) {
+    protected JunboHttpContext.JunboHttpContextData __createJunboHttpContextData(com.ning.http.client.Request request, Class handler) {
         JunboHttpContext.JunboHttpContextData httpContextData = new JunboHttpContext.JunboHttpContextData();
 
         httpContextData.setRequestMethod(request.getMethod());
         httpContextData.setRequestUri(request.getOriginalURI());
+        httpContextData.setRequestHandler(handler);
 
         for (Map.Entry<String, List<String>> entry : request.getHeaders()) {
             httpContextData.getRequestHeaders().addAll(entry.getKey(), entry.getValue());

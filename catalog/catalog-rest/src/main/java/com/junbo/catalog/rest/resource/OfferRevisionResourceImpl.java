@@ -14,9 +14,9 @@ import com.junbo.catalog.auth.OfferAuthorizeCallbackFactory;
 import com.junbo.catalog.clientproxy.LocaleFacade;
 import com.junbo.catalog.core.OfferService;
 import com.junbo.catalog.spec.enums.LocaleAccuracy;
-import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
@@ -97,7 +97,7 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
     @Override
     public Promise<OfferRevision> createOfferRevision(final OfferRevision offerRevision) {
         if (offerRevision.getOfferId()==null) {
-            throw AppErrors.INSTANCE.missingField("offer").exception();
+            throw AppCommonErrors.INSTANCE.fieldRequired("offer").exception();
         }
         AuthorizeCallback<Offer> callback = offerAuthorizeCallbackFactory.create(offerRevision.getOfferId());
         return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<OfferRevision>>() {
@@ -105,7 +105,7 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
             public Promise<OfferRevision> apply() {
 
                 if (!AuthorizeContext.hasRights("create")) {
-                    throw AppErrors.INSTANCE.accessDenied().exception();
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 
                 return Promise.pure(offerService.createRevision(offerRevision));
@@ -116,7 +116,7 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
     @Override
     public Promise<OfferRevision> updateOfferRevision(final String revisionId, final OfferRevision offerRevision) {
         if (offerRevision.getOfferId()==null) {
-            throw AppErrors.INSTANCE.missingField("offer").exception();
+            throw AppCommonErrors.INSTANCE.fieldRequired("offer").exception();
         }
         AuthorizeCallback<Offer> callback = offerAuthorizeCallbackFactory.create(offerRevision.getOfferId());
         return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<OfferRevision>>() {
@@ -124,7 +124,7 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
             public Promise<OfferRevision> apply() {
 
                 if (!AuthorizeContext.hasRights("update")) {
-                    throw AppErrors.INSTANCE.accessDenied().exception();
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 
                 return Promise.pure(offerService.updateRevision(revisionId, offerRevision));
@@ -136,7 +136,7 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
     public Promise<Response> delete(final String revisionId) {
         final OfferRevision offerRevision = offerService.getRevision(revisionId);
         if (offerRevision == null) {
-            throw AppErrors.INSTANCE.notFound("offer-revision", revisionId).exception();
+            throw AppCommonErrors.INSTANCE.resourceNotFound("offer-revision", revisionId).exception();
         }
 
         AuthorizeCallback<Offer> callback = offerAuthorizeCallbackFactory.create(offerRevision.getOfferId());
@@ -145,7 +145,7 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
             public Promise<Response> apply() {
 
                 if (!AuthorizeContext.hasRights("delete")) {
-                    throw AppErrors.INSTANCE.accessDenied().exception();
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 
                 offerService.deleteRevision(revisionId);

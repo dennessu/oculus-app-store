@@ -15,81 +15,33 @@ import com.junbo.common.error.ErrorProxy;
 public interface AppErrors {
     AppErrors INSTANCE = ErrorProxy.newProxyInstance(AppErrors.class);
 
-
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_EMAIL_ID,
-            description ="The email id {0} is invalid")
-    AppError invalidEmailId(String id);
-
-    @ErrorDef(httpStatusCode = 404, code = ErrorCode.USER_NOT_FOUND,
-            description ="User {0} not found", field = "user")
-    AppError invalidUserId(String userId);
-
-    @ErrorDef(httpStatusCode = 404, code = ErrorCode.USER_EMAIL_NOT_FOUND,
-            description ="User email address not found")
+    @ErrorDef(httpStatusCode = 412, code = "101", message = "User Email Address Not Found")
     AppError emptyUserEmail();
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_USER_STATUS,
-            description ="User status is invalid with id {0}")
-    AppError invalidUserStatus(String userId);
-
-    @ErrorDef(httpStatusCode = 404, code = ErrorCode.EMAIL_SCHEDULE_NOT_FOUND,
-            description ="Email schedule {0} not found", field = "id")
-    AppError emailScheduleNotFound(String id);
-
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.MISSING_FIELD_VALUE,
-            description ="Field {0} has missing value", field = "{0}")
-    AppError missingField(String field);
-
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_FIELD_VALUE,
-            description ="Field {0} is invalid", field = "{0}")
-    AppError invalidField(String field);
-
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.UNNECESSARY_FILED,
-            description ="Field {0} is unnecessary", field = "{0}")
-    AppError unnecessaryField(String field);
-
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_PARAMETER,
-            description ="Parameter {0} is invalid")
-    AppError invalidParameter(String param);
-
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.PAYLOAD_IS_NULL,
-            description ="The payload is null")
-    AppError invalidPayload();
-
-    @ErrorDef(httpStatusCode = 404, code = ErrorCode.EMAIL_TEMPLATE_NOT_FOUND,
-            description = "Template is not found")
-    AppError templateNotFound();
-
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.TEMPLATE_NAME_ALREADY_EXIST,
-            description ="Template with specified source, action and locale is already exists")
-    AppError emailTemplateAlreadyExist();
-
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_PLACEHOLDERNAMES,
-            description ="The placeholderNames filed missing subject placeholder",
-            field = "placeholderNames")
-    AppError invalidPlaceholderNames();
-
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_REPLACEMENTS,
-            description = "The {0} is invalid", field = "replacements")
-    AppError invalidReplacements(String replacement);
-
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.NO_VALIDATED_USER_EMAIL,
-            description = "There is no validated default email in this user")
+    @ErrorDef(httpStatusCode = 412, code = "102", message = "No Validated User Email")
     AppError noValidatedUserEmail();
 
-    @ErrorDef(httpStatusCode = 500, code = ErrorCode.EMAIL_SEND_ERROR,
-            description = "Fail to send email, reason: {0}")
-    AppError emailSendError(String reason);
+    @ErrorDef(httpStatusCode = 412, code = "103", message = "Email Schedule Not Found",
+            field = "id", reason = "Email Schedule {0} is not found.")
+    AppError emailScheduleNotFound(String id);
 
-    @ErrorDef(httpStatusCode = 500, code = ErrorCode.EMAIL_STATUS_INVALID,
-            description = "Status {0} is invalid")
-    AppError invalidStatus(String status);
+    @ErrorDef(httpStatusCode = 412, code = "104", message = "Email Template Not Found",
+            field = "template", reason = "Email Template {0} is not found.")
+    AppError templateNotFound(Object id);
 
-    @ErrorDef(httpStatusCode = 500, code = ErrorCode.INTERNAL_ERROR,
-            description = "Internal error, reason: {0}")
-    AppError internalError(String reason);
+    @ErrorDef(httpStatusCode = 409, code = "105", message = "Email Template Already Exists",
+            field = "name", reason = "Email Template with name {0} already exists")
+    AppError emailTemplateAlreadyExist(String name);
 
-    @ErrorDef(httpStatusCode = 500, code = ErrorCode.USER_EMAIL_FETCH_ERROR,
-            description = "Failed to fetch user email address")
-    AppError fetchUserEmailError();
+    @ErrorDef(httpStatusCode = 412, code = "106", message = "Invalid Placeholder Names",
+            field = "{0}", reason = "The field contains invalid placeholders.")
+    AppError invalidPlaceholderNames(String field);
+
+    @ErrorDef(httpStatusCode = 412, code = "107", message = "Invalid Replacements",
+            field = "cause", reason = "The email replacements don't match the template")
+    AppError invalidReplacements();
+
+    @ErrorDef(httpStatusCode = 412, code = "107", message = "Invalid Replacements",
+            field = "replacements", reason = "Invalid replacement: {0}")
+    AppError invalidReplacements(String replacement);
 }

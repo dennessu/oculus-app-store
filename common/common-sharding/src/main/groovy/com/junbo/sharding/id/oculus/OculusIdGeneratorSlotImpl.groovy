@@ -18,13 +18,15 @@ import java.util.concurrent.locks.ReentrantLock
 @CompileStatic
 class OculusIdGeneratorSlotImpl implements OculusIdGeneratorSlot {
 
+    private final int dcId
     private final int shardId
     private final OculusIdSchema idSchema
     private final OculusGlobalCounter globalCounter
     private final Lock lock
     private volatile SlotData currentSlotData
 
-    OculusIdGeneratorSlotImpl(int shardId, OculusIdSchema idSchema, OculusGlobalCounter globalCounter) {
+    OculusIdGeneratorSlotImpl(int dcId, int shardId, OculusIdSchema idSchema, OculusGlobalCounter globalCounter) {
+        this.dcId = dcId
         this.shardId = shardId
         this.idSchema = idSchema
         this.globalCounter = globalCounter
@@ -81,7 +83,7 @@ class OculusIdGeneratorSlotImpl implements OculusIdGeneratorSlot {
     }
 
     private SlotData newSlotData() {
-        int count = globalCounter.getAndIncrease(shardId, idSchema.idType) & idSchema.masksInGlobalCounter
+        int count = globalCounter.getAndIncrease(dcId, shardId, idSchema.idType) & idSchema.masksInGlobalCounter
 
         return new SlotData(count)
     }

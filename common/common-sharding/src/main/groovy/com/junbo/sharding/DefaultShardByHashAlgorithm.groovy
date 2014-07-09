@@ -44,5 +44,11 @@ class DefaultShardByHashAlgorithm implements ShardAlgorithm {
 
         throw new IllegalArgumentException('unknown key type ' + key.class)
     }
+
+    @Override
+    int dataCenterId(Object key) {
+        // In this case, it should not have datacenter concept
+        return 0
+    }
 }
 

@@ -23,11 +23,7 @@ class GoogleException extends RuntimeException {
         this.error = error
     }
 
-    com.junbo.common.error.Error commonError() {
-        return new com.junbo.common.error.Error(
-                code: '20073',
-                description: error.message,
-                field: 'googleAuth'
-        )
+    String getMessage() {
+        return error.message
     }
 }

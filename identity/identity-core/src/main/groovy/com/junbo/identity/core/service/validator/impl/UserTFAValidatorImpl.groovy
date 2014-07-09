@@ -1,5 +1,6 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.id.UserTFAId
@@ -43,11 +44,11 @@ class UserTFAValidatorImpl implements UserTFAValidator {
     @Override
     Promise<UserTFA> validateForGet(UserId userId, UserTFAId userTFAId) {
         if (userId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userTFAId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userTFAId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTFAId').exception()
         }
 
         return userRepository.get(userId).then { User existing ->
@@ -69,7 +70,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
                 }
 
                 if (existingUserTFACode.userId != userId) {
-                    throw AppErrors.INSTANCE.parameterInvalid('userTFACodeId and userId doesn\'t match.').exception()
+                    throw AppCommonErrors.INSTANCE.parameterInvalid('userTFACodeId and userId doesn\'t match.').exception()
                 }
 
                 return Promise.pure(existingUserTFACode)
@@ -84,11 +85,11 @@ class UserTFAValidatorImpl implements UserTFAValidator {
         }
 
         if (options.userId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (options.personalInfo == null) {
-            throw AppErrors.INSTANCE.parameterRequired('personalInfo').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('personalInfo').exception()
         }
 
         return Promise.pure(null)
@@ -98,22 +99,22 @@ class UserTFAValidatorImpl implements UserTFAValidator {
     Promise<Void> validateForCreate(UserId userId, UserTFA userTeleCode) {
 
         if (userTeleCode.verifyCode != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('verifyCode').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('verifyCode').exception()
         }
 
         return basicTFACheck(userId, userTeleCode).then {
             return fillCode(userId, userTeleCode)
         }.then {
                 if (userTeleCode.id != null) {
-                    throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+                    throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
                 }
 
                 if (userTeleCode.expiresBy != null) {
-                    throw AppErrors.INSTANCE.fieldNotWritable('expiresBy').exception()
+                    throw AppCommonErrors.INSTANCE.fieldMustBeNull('expiresBy').exception()
                 }
 
                 if (userTeleCode.active != null) {
-                    throw AppErrors.INSTANCE.fieldNotWritable('active').exception()
+                    throw AppCommonErrors.INSTANCE.fieldMustBeNull('active').exception()
                 }
 
                 Calendar cal = Calendar.instance
@@ -151,7 +152,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
                             cal.setTime(new Date())
                             cal.add(Calendar.HOUR, -1)
                             if (lastChangeTime.after(cal.time)) {
-                                throw AppErrors.INSTANCE.fieldInvalidException('userId',
+                                throw AppCommonErrors.INSTANCE.fieldInvalid('userId',
                                         'Reach maximum request number per hour').exception()
                             }
 
@@ -164,7 +165,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
     Promise<Void> validateForUpdate(UserId userId, UserTFAId userTFAId, UserTFA userTFA, UserTFA oldUserTFA) {
 
         if (userTFA.verifyCode != null && userTFA.verifyCode != oldUserTFA.verifyCode) {
-            throw AppErrors.INSTANCE.fieldNotWritable('verifyCode').exception()
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('verifyCode').exception()
         }
 
         return basicTFACheck(userId, userTFA).then {
@@ -177,32 +178,32 @@ class UserTFAValidatorImpl implements UserTFAValidator {
             }
         }.then {
             if (userTFA.id == null) {
-                throw AppErrors.INSTANCE.fieldRequired('id').exception()
+                throw AppCommonErrors.INSTANCE.fieldRequired('id').exception()
             }
 
             if (userTFA.expiresBy == null) {
-                throw AppErrors.INSTANCE.fieldRequired('expiresBy').exception()
+                throw AppCommonErrors.INSTANCE.fieldRequired('expiresBy').exception()
             }
 
             if (userTFA.active == null) {
-                throw AppErrors.INSTANCE.fieldRequired('active').exception()
+                throw AppCommonErrors.INSTANCE.fieldRequired('active').exception()
             }
 
             // TeleCode can't update tfa number & verifyCode & userId
             if (userTFA.personalInfo != oldUserTFA.personalInfo) {
-                throw AppErrors.INSTANCE.fieldInvalid('personalInfo').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('personalInfo').exception()
             }
 
             if (userTFA.userId != userId) {
-                throw AppErrors.INSTANCE.fieldInvalid('userId', userId.toString()).exception()
+                throw AppCommonErrors.INSTANCE.fieldNotWritable('userId', userTFA.userId, userId).exception()
             }
 
             if (userTFA.userId != oldUserTFA.userId) {
-                throw AppErrors.INSTANCE.fieldInvalid('userId', oldUserTFA.userId.toString()).exception()
+                throw AppCommonErrors.INSTANCE.fieldNotWritable('userId', userTFA.userId, oldUserTFA.userId).exception()
             }
 
             if (userTFA.verifyCode != oldUserTFA.verifyCode) {
-                throw AppErrors.INSTANCE.fieldInvalid('verifyCode', oldUserTFA.verifyCode).exception()
+                throw AppCommonErrors.INSTANCE.fieldNotWritable('verifyCode', userTFA.verifyCode, oldUserTFA.verifyCode).exception()
             }
 
             return Promise.pure(null)
@@ -244,31 +245,31 @@ class UserTFAValidatorImpl implements UserTFAValidator {
         }
 
         if (userTFA.userId != null && userTFA.userId != userId) {
-            throw AppErrors.INSTANCE.fieldInvalid('userId', userId.toString()).exception()
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('userId', userTFA.userId, userId).exception()
         }
 
         if (userTFA.template != null) {
             if (userTFA.template.length() > maxTemplateLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('template', maxTemplateLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooLong('template', maxTemplateLength).exception()
             }
             if (userTFA.template.length() < minTemplateLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('template', minTemplateLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooShort('template', minTemplateLength).exception()
             }
         }
 
         if (userTFA.verifyType == null) {
-            throw AppErrors.INSTANCE.fieldRequired('verifyType').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('verifyType').exception()
         }
 
         List<String> allowedVerifyTypes = TFAVerifyType.values().collect { TFAVerifyType verifyType ->
             verifyType.toString()
         }
         if (!(userTFA.verifyType in allowedVerifyTypes)) {
-            throw AppErrors.INSTANCE.fieldInvalid('verifyType', allowedVerifyTypes.join(',')).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalidEnum('verifyType', allowedVerifyTypes.join(',')).exception()
         }
 
         if (userTFA.personalInfo == null) {
-            throw AppErrors.INSTANCE.fieldRequired('personalInfo').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('personalInfo').exception()
         }
 
         return validatePhoneNumber(userId, userTFA.personalInfo).then {
@@ -321,12 +322,12 @@ class UserTFAValidatorImpl implements UserTFAValidator {
             }
 
             if (user.phones == null) {
-                throw AppErrors.INSTANCE.fieldInvalidException('personalInfo', 'user has no phones').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('personalInfo', 'user has no phones').exception()
             }
 
             return validateUserPhoneLinkList(user.phones.iterator(), phoneNumber).then { Boolean exists ->
                 if (!exists) {
-                    throw AppErrors.INSTANCE.fieldInvalidException('personalInfo',
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('personalInfo',
                             'personalInfo isn\'t under user.').exception()
                 }
 

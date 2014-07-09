@@ -86,6 +86,10 @@ public class TopologyConfig {
         return myShards[ThreadLocalRandom.current().nextInt(myShards.length)];
     }
 
+    public int getDCId() {
+        return myAppServer.getDcId();
+    }
+
     public int[] handledShards() {
         return myAppServer.getShards();
     }
@@ -157,13 +161,14 @@ public class TopologyConfig {
             }
 
             String dc = matcher.group("dc");
+
             logger.debug("Found appserver: {}:{} {}..{} {}", ip, port, shardsFrom, shardsTo, dc);
             if (!DataCenters.instance().isLocalDataCenter(dc)) {
                 logger.debug("Remote dc, ignored.");
                 continue;
             }
-
-            AppServer appServer = new AppServer(ip, port, shards);
+            DataCenter dataCenter = DataCenters.instance().getDataCenter(dc);
+            AppServer appServer = new AppServer(ip, port, shards, dataCenter.getId());
             if (appServerByName.containsKey(appServer.getIpPort())) {
                 // merge shards
                 int[] oldShards = appServerByName.get(appServer.getIpPort()).getShards();
@@ -177,7 +182,7 @@ public class TopologyConfig {
                 }
 
                 Arrays.sort(newShards);
-                appServer = new AppServer(ip, port, newShards);
+                appServer = new AppServer(ip, port, newShards, dataCenter.getId());
             }
             appServerByName.put(appServer.getIpPort(), appServer);
         }

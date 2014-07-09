@@ -5,8 +5,8 @@
  */
 package com.junbo.restriction.core.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.restriction.core.validator.RestrictionValidator
-import com.junbo.restriction.spec.error.AppErrors
 import com.junbo.restriction.spec.model.AgeCheck
 import groovy.transform.CompileStatic
 
@@ -17,16 +17,16 @@ import groovy.transform.CompileStatic
 class RestrictionValidatorImpl implements RestrictionValidator {
     void validate(AgeCheck ageCheck) {
         if (ageCheck == null) {
-            throw AppErrors.INSTANCE.invalidQueryParameter().exception()
+            throw AppCommonErrors.INSTANCE.parameterInvalid("ageCheck").exception()
         }
         if (ageCheck.status != null) {
-            throw AppErrors.INSTANCE.unnecessaryField(ageCheck.status.toString()).exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull("ageCheck.status").exception()
         }
         if (ageCheck.dob == null && ageCheck.userId == null) {
-            throw AppErrors.INSTANCE.missingField('dob or userId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('dob or userId').exception()
         }
         if (ageCheck.country == null) {
-            throw AppErrors.INSTANCE.missingField('country').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('country').exception()
         }
     }
 }

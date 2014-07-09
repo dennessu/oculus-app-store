@@ -9,6 +9,7 @@ package com.junbo.payment.clientproxy.impl;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.identity.spec.v1.model.Country;
+import com.junbo.identity.spec.v1.option.model.CountryGetOptions;
 import com.junbo.identity.spec.v1.resource.proxy.CountryResourceClientProxy;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.clientproxy.CountryServiceFacade;
@@ -29,15 +30,10 @@ public class CountryServiceFacadeImpl implements CountryServiceFacade{
     }
 
     public Promise<CurrencyId> getDefaultCurrency(String country){
-        if(1 == 1){
-            return Promise.pure(new CurrencyId("US"));
-        }
-        //TODO: enable country service
-
         if(CommonUtil.isNullOrEmpty(country)){
             throw AppClientExceptions.INSTANCE.invalidCountry(country).exception();
         }
-        Country count = countryResource.get(new CountryId(country), null).get();
+        Country count = countryResource.get(new CountryId(country), new CountryGetOptions()).get();
         if(count == null){
             throw AppClientExceptions.INSTANCE.invalidCountry(country).exception();
         }

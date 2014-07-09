@@ -6,6 +6,7 @@
 
 package com.junbo.entitlement.rest.resource;
 
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.util.IdUtil;
@@ -15,7 +16,6 @@ import com.junbo.common.util.IdFormatter;
 import com.junbo.entitlement.common.def.EntitlementConsts;
 import com.junbo.entitlement.common.lib.CommonUtils;
 import com.junbo.entitlement.core.EntitlementService;
-import com.junbo.entitlement.spec.error.AppErrors;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
@@ -113,7 +113,7 @@ public class EntitlementResourceImpl implements EntitlementResource {
 
     private void checkBodyNotNull(Object value) {
         if (value == null) {
-            throw AppErrors.INSTANCE.common("body should not be null").exception();
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception();
         }
     }
 }

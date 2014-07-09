@@ -8,7 +8,9 @@ package com.junbo.configuration.topo.model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,8 +27,7 @@ public class DataCentersConfig {
     // map from datacenter name to datacenter object
     private Map<String, DataCenter> datacenterByName;
 
-    public DataCentersConfig(
-            String dataCentersConfig) {;
+    public DataCentersConfig(String dataCentersConfig) {
         parseDataCenters(dataCentersConfig);
     }
 
@@ -62,7 +63,18 @@ public class DataCentersConfig {
         return datacenterByName.get(dcName);
     }
 
-    private static final String DATACENTER_REGEX_SINGLE_ENTRY = "\\s*(?<url>[^\\s;,]+)\\s*;\\s*(?<id>\\d+)\\s*;\\s*(?<name>[^\\s;,]+)\\s*(,|$|(,\\s*$))";
+    public List<Integer> getDataCenterIds() {
+        if (datacenters == null) {
+            throw new RuntimeException("Datacenter doesn't exists.");
+        }
+        List<Integer> ids = new ArrayList<>();
+        for (int index = 0; index < datacenters.length; index ++) {
+            ids.add(datacenters[index].getId());
+        }
+        return ids;
+    }
+    private static final String DATACENTER_REGEX_SINGLE_ENTRY =
+            "\\s*(?<url>[^\\s;,]+)\\s*;\\s*(?<id>\\d+)\\s*;\\s*(?<name>[^\\s;,]+)\\s*;(?<numberOfShard>\\d+)(,|$|(,\\\\s*$))";
     private static final String DATACENTER_REGEX_FULL = "^(" + DATACENTER_REGEX_SINGLE_ENTRY + ")+$";
     private static final Pattern DATACENTER_PATTERN_SINGLE_ENTRY = Pattern.compile(DATACENTER_REGEX_SINGLE_ENTRY);
     private static final Pattern DATACENTER_PATTERN_FULL = Pattern.compile(DATACENTER_REGEX_FULL);
@@ -78,10 +90,11 @@ public class DataCentersConfig {
             String url = matcher.group("url");
             int id = Integer.parseInt(matcher.group("id"));
             String name = matcher.group("name");
+            int numberOfShard = Integer.parseInt(matcher.group("numberOfShard"));
 
-            logger.debug("Found datacenter: {} {} {}", url, id, name);
+            logger.debug("Found datacenter: {} {} {} {}", url, id, name, numberOfShard);
 
-            DataCenter dc = new DataCenter(url, id, name);
+            DataCenter dc = new DataCenter(url, id, name, numberOfShard);
             if (datacenterByName.containsKey(dc.getName())) {
                 throw new RuntimeException("Duplicated datacenter name: " + dc.getName());
             }

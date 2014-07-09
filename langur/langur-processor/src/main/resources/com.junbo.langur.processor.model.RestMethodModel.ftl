@@ -7,7 +7,7 @@ ${annotation}
 public void ${methodName}([#list parameters as parameter][@includeModel model=parameter/],[/#list]
     @javax.ws.rs.container.Suspended final javax.ws.rs.container.AsyncResponse __asyncResponse) {
 
-    com.junbo.langur.core.context.JunboHttpContext.JunboHttpContextData __junboHttpContextData = __createJunboHttpContextData();
+    com.junbo.langur.core.context.JunboHttpContext.JunboHttpContextData __junboHttpContextData = __createJunboHttpContextData(${adapteeType}.class);
     final com.junbo.langur.core.context.JunboHttpContextScope __scope = new com.junbo.langur.core.context.JunboHttpContextScope(__junboHttpContextData, __junboHttpContextScopeListeners);
 
     Promise<${returnType}> future;
@@ -21,7 +21,7 @@ public void ${methodName}([#list parameters as parameter][@includeModel model=pa
                 [#list routeParamExprs as paramExpr]
                 ${paramExpr}[#if paramExpr_has_next],[/#if]
                 [/#list]
-            }, ${routeFallbackToAnyLocal?c});
+            });
             if (url != null) {
                 adaptee = __clientFactory.create(url);
             }

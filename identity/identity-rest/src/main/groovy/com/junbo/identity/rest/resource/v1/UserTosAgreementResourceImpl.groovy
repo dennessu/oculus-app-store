@@ -3,6 +3,7 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserTosAgreementId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -55,7 +56,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
             def callback = authorizeCallbackFactory.create(userTos.userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('create')) {
-                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 return userTosRepository.create(userTos).then { UserTosAgreement newUserTos ->
@@ -78,7 +79,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
             def callback = authorizeCallbackFactory.create(newUserTos.userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('read')) {
-                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 newUserTos = userTosFilter.filterForGet(newUserTos,
@@ -107,7 +108,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
             def callback = authorizeCallbackFactory.create(oldUserTos.userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('update')) {
-                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 userTos = userTosFilter.filterForPatch(userTos, oldUserTos)
@@ -141,7 +142,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
             def callback = authorizeCallbackFactory.create(oldUserTos.userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('update')) {
-                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 userTos = userTosFilter.filterForPut(userTos, oldUserTos)
@@ -162,7 +163,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
             def callback = authorizeCallbackFactory.create(userTos.userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('delete')) {
-                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 return userTosRepository.delete(userTosAgreementId)

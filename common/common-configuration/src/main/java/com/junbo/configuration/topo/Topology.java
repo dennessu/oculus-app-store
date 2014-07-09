@@ -98,6 +98,10 @@ public class Topology implements InitializingBean {
         return topologyConfig.getRandomShardId();
     }
 
+    public int getCurrentDCId() {
+        return topologyConfig.getDCId();
+    }
+
     /**
      * Shards handled by current server.
      * @return an array of shards handled by current server.

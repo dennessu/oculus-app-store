@@ -21,7 +21,7 @@ import groovy.transform.TypeChecked
 class SubledgerItemRepositoryCloudantImpl extends BaseCloudantRepositoryForDualWrite<SubledgerItem, SubledgerItemId> implements SubledgerItemRepository {
 
     @Override
-    Promise<List<SubledgerItem>> getByStatus(Object shardKey, String status, PageParam pageParam) {
+    Promise<List<SubledgerItem>> getByStatus(Integer dataCenterId, Object shardKey, String status, PageParam pageParam) {
         throw new RuntimeException("SubledgerItemRepository::getByStatus is only available in SQL mode for backend jobs.");
     }
 }

@@ -3,6 +3,7 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -54,13 +55,13 @@ class UserResourceImpl implements UserResource {
     @Override
     Promise<User> create(User user) {
         if (user == null) {
-            throw AppErrors.INSTANCE.requestBodyRequired().exception()
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         def callback = userAuthorizeCallbackFactory.create(user)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('create')) {
-                throw AppErrors.INSTANCE.invalidAccess().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             user = userFilter.filterForCreate(user)
@@ -83,7 +84,7 @@ class UserResourceImpl implements UserResource {
         }
 
         if (user == null) {
-            throw AppErrors.INSTANCE.requestBodyRequired().exception()
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
         return userRepository.get(userId).then { User oldUser ->
@@ -94,7 +95,7 @@ class UserResourceImpl implements UserResource {
             def callback = userAuthorizeCallbackFactory.create(oldUser)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('update')) {
-                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 user = userFilter.filterForPut(user, oldUser)
@@ -127,7 +128,7 @@ class UserResourceImpl implements UserResource {
             def callback = userAuthorizeCallbackFactory.create(oldUser)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('update')) {
-                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 user = userFilter.filterForPatch(user, oldUser)
@@ -180,7 +181,7 @@ class UserResourceImpl implements UserResource {
                 def callback = userAuthorizeCallbackFactory.create(user)
                 return RightsScope.with(authorizeService.authorize(callback)) {
                     if (!AuthorizeContext.hasRights('search')) {
-                        throw AppErrors.INSTANCE.invalidAccess().exception()
+                        throw AppCommonErrors.INSTANCE.forbidden().exception()
                     }
 
                     user = userFilter.filterForGet(user, listOptions.properties?.split(',') as List<String>)
@@ -227,7 +228,7 @@ class UserResourceImpl implements UserResource {
             def callback = userAuthorizeCallbackFactory.create(user)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('delete')) {
-                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 return userRepository.delete(userId)

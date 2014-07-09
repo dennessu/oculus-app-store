@@ -12,11 +12,13 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ErrorDef {
-    int httpStatusCode() default 500;
+    int httpStatusCode();
 
-    String code() default "";
+    String message() default "";
 
-    String description() default "";
+    String code();
 
     String field() default "";
+
+    String reason() default "";
 }

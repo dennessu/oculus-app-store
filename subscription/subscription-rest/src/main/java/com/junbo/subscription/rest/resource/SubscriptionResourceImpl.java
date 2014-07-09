@@ -9,7 +9,7 @@ import com.junbo.authorization.AuthorizeCallback;
 import com.junbo.authorization.AuthorizeContext;
 import com.junbo.authorization.AuthorizeService;
 import com.junbo.authorization.RightsScope;
-import com.junbo.authorization.spec.error.AppErrors;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.SubscriptionId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.subscription.auth.SubscriptionAuthorizeCallbackFactory;
@@ -55,7 +55,7 @@ public class SubscriptionResourceImpl implements SubscriptionResource {
             @Override
             public Promise<Subscription> apply() {
                 if (!AuthorizeContext.hasRights("create")) {
-                    throw AppErrors.INSTANCE.forbidden().exception();
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 
                 UUID trackingUuid = subscription.getTrackingUuid();

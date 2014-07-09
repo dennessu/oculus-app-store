@@ -1,7 +1,7 @@
 package com.junbo.common.cloudant
 import com.junbo.common.cloudant.client.CloudantDbUri
 import com.junbo.common.cloudant.client.CloudantUri
-import com.junbo.common.error.CommonErrors
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.shuffle.Oculus48Id
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
@@ -24,12 +24,12 @@ abstract class CloudantClientRouted<T extends CloudantEntity> extends CloudantCl
                     uri = cloudantGlobalUri.getUri(dc)
                     if (uri == null) {
                         logger.error("Cloudant URI not found for datacenter: $dc id: $id")
-                        throw CommonErrors.INSTANCE.invalidId(Oculus48Id.format(value)).exception()
+                        throw AppCommonErrors.INSTANCE.invalidId("id", Oculus48Id.format(value)).exception()
                     }
                 }
             } catch (NumberFormatException ex) {
                 logger.error("Error parsing id to long. id: $id")
-                throw CommonErrors.INSTANCE.invalidId(id).exception()
+                throw AppCommonErrors.INSTANCE.invalidId("id", id).exception()
             }
         }
         return new CloudantDbUri(cloudantUri: uri, dbName: dbName, fullDbName: cloudantDbUri.fullDbName)

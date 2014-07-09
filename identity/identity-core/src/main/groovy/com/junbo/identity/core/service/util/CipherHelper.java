@@ -5,9 +5,11 @@
  */
 package com.junbo.identity.core.service.util;
 
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.identity.data.identifiable.UserPasswordStrength;
 import com.junbo.identity.spec.error.AppErrors;
 import org.springframework.util.StringUtils;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,7 +40,7 @@ public class CipherHelper {
 
     public static void validatePassword(String password) {
         if(StringUtils.isEmpty(password)) {
-            throw AppErrors.INSTANCE.fieldInvalid("password").exception();
+            throw AppCommonErrors.INSTANCE.fieldInvalid("password").exception();
         }
 
         if(!isValidLength(password)) {

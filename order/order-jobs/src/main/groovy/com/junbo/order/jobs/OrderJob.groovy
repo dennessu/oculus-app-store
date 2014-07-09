@@ -6,6 +6,7 @@
 
 package com.junbo.order.jobs
 
+import com.junbo.configuration.topo.DataCenters
 import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.model.Order
@@ -90,7 +91,7 @@ class OrderJob implements InitializingBean {
         List<Order> ordersAllShard = []
         allShards.each { Integer shardKey ->
             def orders = transactionHelper.executeInTransaction {
-                orderRepository.getOrdersByStatus(shardKey, statusToProcess, true, new PageParam(
+                orderRepository.getOrdersByStatus(DataCenters.instance().currentDataCenterId(), shardKey, statusToProcess, true, new PageParam(
                         start: 0, count: pageSizePerShard
                 ))
             }

@@ -1,4 +1,6 @@
 package com.junbo.order.jobs.subledger
+
+import com.junbo.configuration.topo.DataCenters
 import com.junbo.order.core.SubledgerService
 import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.core.impl.subledger.SubledgerHelper
@@ -86,7 +88,7 @@ class SubledgerAggregator {
         def result = [] as LinkedList<SubledgerItem>
         allShards.each { Integer shard ->
             result.addAll(transactionHelper.executeInTransaction {
-                return subledgerRepository.getSubledgerItem(shard, SubledgerItemStatus.PENDING.name(),
+                return subledgerRepository.getSubledgerItem(DataCenters.instance().currentDataCenterId(), shard, SubledgerItemStatus.PENDING.name(),
                         new PageParam(count: this.pageSize, start: 0))
             })
         }

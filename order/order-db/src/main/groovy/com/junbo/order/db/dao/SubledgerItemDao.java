@@ -15,5 +15,5 @@ import java.util.List;
  * Created by linyi on 14-2-7.
  */
 public interface SubledgerItemDao extends BaseDao<SubledgerItemEntity> {
-    List<SubledgerItemEntity> getByStatus(Integer shardId, SubledgerItemStatus status, int start, int count);
+    List<SubledgerItemEntity> getByStatus(Integer dataCenterId, Integer shardId, SubledgerItemStatus status, int start, int count);
 }

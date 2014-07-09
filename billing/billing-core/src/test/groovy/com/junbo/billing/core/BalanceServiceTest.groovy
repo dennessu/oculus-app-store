@@ -26,7 +26,7 @@ class BalanceServiceTest extends BaseTest {
 
         assert balance != null
 
-        Balance returnedBalance = balanceService.getBalance(balance.getId())?.get()
+             Balance returnedBalance = balanceService.getBalance(balance.getId())?.get()
 
         assert returnedBalance != null
         assert returnedBalance.status == BalanceStatus.PENDING_CAPTURE.name()
@@ -88,7 +88,7 @@ class BalanceServiceTest extends BaseTest {
         assert balance != null
 
         Balance refundBalance = new Balance()
-        refundBalance.userId = new UserId(idGenerator.nextIdByShardId(0))
+        refundBalance.userId = new UserId(idGenerator.nextId())
         refundBalance.originalBalanceId = balance.getId()
         refundBalance.type = BalanceType.REFUND.name()
         refundBalance.trackingUuid = generateUUID()
@@ -109,7 +109,7 @@ class BalanceServiceTest extends BaseTest {
         balance.trackingUuid = generateUUID()
         balance.country = 'US'
         balance.currency = 'USD'
-        balance.userId = new UserId(idGenerator.nextIdByShardId(0))
+        balance.userId = new UserId(idGenerator.nextId())
         balance.orderIds = [ new OrderId(idGenerator.nextId(balance.userId.value)) ]
         balance.piId = new PaymentInstrumentId(idGenerator.nextId(balance.userId.value))
         balance.type = type.name()

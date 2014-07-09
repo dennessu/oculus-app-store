@@ -6,7 +6,7 @@
 
 package com.junbo.token.common;
 
-import com.junbo.token.common.exception.AppClientExceptions;
+import com.junbo.common.error.AppCommonErrors;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.security.SecureRandom;
@@ -52,7 +52,7 @@ public class TokenUtil {
         try{
             return Enum.valueOf(enumType, name.toUpperCase());
         }catch (Exception ex){
-            throw AppClientExceptions.INSTANCE.invalidType(enumType.toString()).exception();
+            throw AppCommonErrors.INSTANCE.fieldInvalid(enumType.toString()).exception();
         }
     }
 
@@ -60,7 +60,7 @@ public class TokenUtil {
         try{
             return Long.valueOf(usage);
         }catch(Exception ex){
-            throw AppClientExceptions.INSTANCE.invalidField("usageLimit").exception();
+            throw AppCommonErrors.INSTANCE.fieldInvalid("usageLimit").exception();
         }
     }
 

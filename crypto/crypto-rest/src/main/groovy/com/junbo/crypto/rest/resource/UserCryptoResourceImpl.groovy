@@ -50,9 +50,4 @@ class UserCryptoResourceImpl extends CommonResourceImpl implements UserCryptoRes
     void setUserCryptoValidator(UserCryptoValidator userCryptoValidator) {
         this.userCryptoValidator = userCryptoValidator
     }
-
-    @Required
-    void setEnableEncrypt(Boolean enableEncrypt) {
-        this.enableEncrypt = enableEncrypt
-    }
 }

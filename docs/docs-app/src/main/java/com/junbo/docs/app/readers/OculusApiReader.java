@@ -6,6 +6,8 @@
 
 package com.junbo.docs.app.readers;
 
+import com.junbo.common.enumid.EnumId;
+import com.junbo.common.id.CloudantId;
 import com.junbo.common.id.Id;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -86,6 +88,15 @@ public class OculusApiReader extends JerseyApiReader {
             return String.class;
         }
         if (Id.class.isAssignableFrom(cls.getRawClass())) {
+            return String.class;
+        }
+        if (Id.class.isAssignableFrom(cls.getRawClass())) {
+            return String.class;
+        }
+        if (CloudantId.class.isAssignableFrom(cls.getRawClass())) {
+            return String.class;
+        }
+        if (EnumId.class.isAssignableFrom(cls.getRawClass())) {
             return String.class;
         }
 

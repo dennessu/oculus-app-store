@@ -14,6 +14,7 @@ import com.junbo.common.cloudant.client.CloudantDbUri
 import com.junbo.common.cloudant.model.CloudantQueryResult
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.CommunicationId
 import com.junbo.common.id.UserId
@@ -439,7 +440,7 @@ class MigrationResourceImpl implements MigrationResource {
         return Promise.each(oculusInput.communications) { Map<String, Boolean> communicationIdMap ->
             return Promise.each(communicationIdMap.entrySet()) { Map.Entry<String, Boolean> entry ->
                 if (entry.value == null) {
-                    throw AppErrors.INSTANCE.fieldInvalid('communications').exception()
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('communications').exception()
                 }
                 return communicationRepository.get(new CommunicationId(entry.key)).then { Communication communication ->
                     if (communication == null) {
@@ -471,17 +472,17 @@ class MigrationResourceImpl implements MigrationResource {
         }
 
         if (!(oculusInput.status in allowedValues)) {
-            throw AppErrors.INSTANCE.fieldInvalid('status', allowedValues.join(',')).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalidEnum('status', allowedValues.join(',')).exception()
         }
 
         if (oculusInput.language != null) {
             if (!ValidatorUtil.isValidLocale(oculusInput.language)) {
-                throw AppErrors.INSTANCE.fieldInvalidException('language', "language format should be en_US and etc").exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('language', "language format should be en_US and etc").exception()
             }
         }
 
         if (oculusInput.currentId == null) {
-            throw AppErrors.INSTANCE.fieldInvalidException('currentId', 'Migration must have user\'s currentId').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('currentId', 'Migration must have user\'s currentId').exception()
         }
 
         return userRepository.searchUserByMigrateId(oculusInput.currentId).then { User existingUser ->
@@ -494,7 +495,7 @@ class MigrationResourceImpl implements MigrationResource {
                     return Promise.pure(null)
                 }
 
-                throw AppErrors.INSTANCE.fieldInvalidException('username', 'username is already used by others').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'username is already used by others').exception()
             }
         }
     }
@@ -512,7 +513,7 @@ class MigrationResourceImpl implements MigrationResource {
             migrateCompanyType.toString()
         }
         if (!(oculusInput.company.type in allowedValues)) {
-            throw AppErrors.INSTANCE.fieldInvalid('company.type', allowedValues.join(',')).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalidEnum('company.type', allowedValues.join(',')).exception()
         }
     }
 

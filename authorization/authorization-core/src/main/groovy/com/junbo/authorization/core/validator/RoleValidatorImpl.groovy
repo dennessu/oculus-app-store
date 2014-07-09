@@ -4,13 +4,12 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.authorization.core.validator
-
 import com.junbo.authorization.db.repository.RoleRepository
-import com.junbo.common.id.UniversalId
-import com.junbo.common.id.RoleId
-import com.junbo.authorization.spec.error.AppErrors
 import com.junbo.authorization.spec.model.Role
 import com.junbo.authorization.spec.option.list.RoleListOptions
+import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.id.RoleId
+import com.junbo.common.id.UniversalId
 import com.junbo.common.id.util.IdUtil
 import com.junbo.common.model.Link
 import com.junbo.langur.core.promise.Promise
@@ -18,7 +17,6 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.Assert
 import org.springframework.util.StringUtils
-
 /**
  * RoleValidatorImpl.
  */
@@ -37,29 +35,29 @@ class RoleValidatorImpl implements RoleValidator {
         Assert.notNull(role, 'role is null')
 
         if (StringUtils.isEmpty(role.name)) {
-            throw AppErrors.INSTANCE.fieldRequired('name').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('name').exception()
         }
 
         if (role.target == null) {
-            throw AppErrors.INSTANCE.fieldRequired('target').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('target').exception()
         }
 
         if (role.target.targetType == null) {
-            throw AppErrors.INSTANCE.fieldRequired('target.targetType').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('target.targetType').exception()
         }
 
         if (role.target.filterType == null) {
-            throw AppErrors.INSTANCE.fieldRequired('target.filterType').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('target.filterType').exception()
         }
 
         if (role.target.filterLink == null) {
-            throw AppErrors.INSTANCE.fieldRequired('target.filterLink').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('target.filterLink').exception()
         }
 
         UniversalId resourceId = IdUtil.fromLink(role.target.filterLink)
 
         if (resourceId == null) {
-            throw AppErrors.INSTANCE.fieldInvalid('target.filterLink').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('target.filterLink').exception()
         }
 
         role.target.filterLinkIdType = resourceId.class.canonicalName
@@ -68,7 +66,7 @@ class RoleValidatorImpl implements RoleValidator {
         return roleRepository.findByRoleName(role.name, role.target.targetType,
                 role.target.filterType, role.target.filterLinkIdType, role.target.filterLinkId).then { Role existing ->
             if (existing != null) {
-                throw AppErrors.INSTANCE.fieldDuplicate('name').exception()
+                throw AppCommonErrors.INSTANCE.fieldDuplicate('name').exception()
             }
             return Promise.pure(null)
         }
@@ -77,7 +75,7 @@ class RoleValidatorImpl implements RoleValidator {
     @Override
     Promise<Void> validateForGet(RoleId roleId) {
         if (roleId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('roleId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('roleId').exception()
         }
 
         return Promise.pure(null)
@@ -87,21 +85,21 @@ class RoleValidatorImpl implements RoleValidator {
     Promise<Void> validateForUpdate(Role role, Role oldRole) {
         Assert.notNull(role, 'role is null')
         if (StringUtils.isEmpty(role.name)) {
-            throw AppErrors.INSTANCE.fieldRequired('name').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('name').exception()
         }
 
         if (role.id == null || ((RoleId) role.id).value == null) {
-            throw AppErrors.INSTANCE.fieldRequired('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('id').exception()
         }
 
         if (role.id != oldRole.id) {
-            throw AppErrors.INSTANCE.fieldInvalid('roleId').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('roleId').exception()
         }
 
         UniversalId resourceId = IdUtil.fromLink(role.target.filterLink)
 
         if (resourceId == null) {
-            throw AppErrors.INSTANCE.fieldInvalid('target.filterLink').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('target.filterLink').exception()
         }
 
         role.target.filterLinkIdType = resourceId.class.canonicalName
@@ -110,7 +108,7 @@ class RoleValidatorImpl implements RoleValidator {
         return roleRepository.findByRoleName(role.name, role.target.targetType,
                 role.target.filterType, role.target.filterLinkIdType, role.target.filterLinkId).then { Role existing ->
             if (existing != null) {
-                throw AppErrors.INSTANCE.fieldDuplicate('name').exception()
+                throw AppCommonErrors.INSTANCE.fieldDuplicate('name').exception()
             }
             return Promise.pure(null)
         }
@@ -121,25 +119,25 @@ class RoleValidatorImpl implements RoleValidator {
         Assert.notNull(options)
 
         if (options.name == null) {
-            throw AppErrors.INSTANCE.fieldRequired('name').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('name').exception()
         }
 
         if (options.filterType == null) {
-            throw AppErrors.INSTANCE.fieldRequired('filterType').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('filterType').exception()
         }
 
         if (options.targetType == null) {
-            throw AppErrors.INSTANCE.fieldRequired('targetType').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('targetType').exception()
         }
 
         if (options.filterLink == null) {
-            throw AppErrors.INSTANCE.fieldRequired('filterLink').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('filterLink').exception()
         }
 
         UniversalId resourceId = IdUtil.fromLink(new Link(href: options.filterLink))
 
         if (resourceId == null) {
-            throw AppErrors.INSTANCE.fieldInvalid('filterLink').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('filterLink').exception()
         }
 
         options.filterLinkIdType = resourceId.class.canonicalName

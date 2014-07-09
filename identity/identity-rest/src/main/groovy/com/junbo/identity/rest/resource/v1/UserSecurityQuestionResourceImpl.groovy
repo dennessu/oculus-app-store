@@ -3,6 +3,7 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.common.model.Results
@@ -52,7 +53,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
         def callback = authorizeCallbackFactory.create(userSecurityQuestion.userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('create')) {
-                throw AppErrors.INSTANCE.invalidAccess().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             userSecurityQuestion = userSecurityQuestionFilter.filterForCreate(userSecurityQuestion)
@@ -108,7 +109,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
             def callback = authorizeCallbackFactory.create(userSecurityQuestion.userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('update')) {
-                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 if (oldUserSecurityQuestion == null) {
@@ -145,7 +146,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
         def callback = authorizeCallbackFactory.create(userSecurityQuestion.userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('update')) {
-                throw AppErrors.INSTANCE.invalidAccess().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             return userSecurityQuestionRepository.get(userSecurityQuestionId).then {
@@ -176,7 +177,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
             def callback = authorizeCallbackFactory.create(userSecurityQuestion.userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('delete')) {
-                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 return userSecurityQuestionRepository.delete(userSecurityQuestionId)

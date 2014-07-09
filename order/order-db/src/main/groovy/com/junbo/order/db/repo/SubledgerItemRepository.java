@@ -19,5 +19,5 @@ import java.util.List;
  */
 public interface SubledgerItemRepository extends BaseRepository<SubledgerItem, SubledgerItemId> {
     @ReadMethod
-    Promise<List<SubledgerItem>> getByStatus(Object shardKey, String status, PageParam pageParam);
+    Promise<List<SubledgerItem>> getByStatus(Integer dataCenterId, Object shardKey, String status, PageParam pageParam);
 }

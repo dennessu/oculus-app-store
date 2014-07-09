@@ -29,10 +29,11 @@ public interface IdGenerator {
      */
     long nextId(long id);
 
-    /**
-     * Generate a new ID given the shard ID.
+    /*
+     * Generate a new ID given the shard ID
+     * @param dataCenterId The expected dataCenterId.
      * @param shardId The expected shardId.
      * @return The new unqiue ID on the expected shard.
      */
-    long nextIdByShardId(int shardId);
+    long nextIdByDCIdAndShardId(int dataCenterId, int shardId);
 }

@@ -11,7 +11,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Java doc for OculusIdGeneratorSlotImpl.
+ * Java doc for Time based id generator, it should have no concept of dataCenter.
  */
 public class IdGeneratorSlotImpl implements IdGeneratorSlot {
 
@@ -30,7 +30,6 @@ public class IdGeneratorSlotImpl implements IdGeneratorSlot {
                                TimeGenerator timeGenerator, GlobalCounter globalCounter) {
 
         this.shardId = shardId;
-
         this.idSchema = idSchema;
 
         this.timeGenerator = timeGenerator;

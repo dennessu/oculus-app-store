@@ -129,6 +129,6 @@ public class PendingActionRepositorySqlImpl implements PendingActionRepository {
     }
 
     private Session currentSession(Object key) {
-        return ShardScope.with(shardAlgorithm.shardId(key)) { sessionFactory.currentSession }
+        return ShardScope.with(shardAlgorithm.dataCenterId(key), shardAlgorithm.shardId(key)) { sessionFactory.currentSession }
     }
 }

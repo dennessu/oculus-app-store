@@ -3,6 +3,7 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserCredentialVerifyAttemptId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -59,7 +60,7 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
         }
 
         if (!AuthorizeContext.hasScopes(IDENTITY_SERVICE_SCOPE)) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         userCredentialAttempt = userCredentialVerifyAttemptFilter.filterForCreate(userCredentialAttempt)
@@ -95,7 +96,7 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
             def callback = authorizeCallbackFactory.create(listOptions.userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('read')) {
-                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 return search(listOptions).then {

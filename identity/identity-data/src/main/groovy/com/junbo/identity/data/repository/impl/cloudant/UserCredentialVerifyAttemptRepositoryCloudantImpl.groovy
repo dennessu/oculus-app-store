@@ -39,7 +39,7 @@ class UserCredentialVerifyAttemptRepositoryCloudantImpl extends CloudantClient<U
                                                                                Integer limit, Integer offset) {
         def startKey = [userId.toString(), type, fromTimeStamp]
         def endKey = [userId.toString(), type]
-        return queryView('by_user_id_credential_type_time', startKey.toArray(new String()), endKey.toArray(new String()), true, limit, offset, false)
+        return queryView('by_user_id_credential_type_time', startKey.toArray(new String()), endKey.toArray(new String()), true, limit, offset, true)
     }
 
     @Override
@@ -47,7 +47,7 @@ class UserCredentialVerifyAttemptRepositoryCloudantImpl extends CloudantClient<U
                                                                                   Integer limit, Integer offset) {
         def startKey = [ipAddress, type, fromTimeStamp]
         def endKey = [ipAddress, type]
-        return queryView('by_ip_address_credential_type_time', startKey.toArray(new String()), endKey.toArray(new String()), true, limit, offset, false)
+        return queryView('by_ip_address_credential_type_time', startKey.toArray(new String()), endKey.toArray(new String()), true, limit, offset, true)
     }
 
     @Override

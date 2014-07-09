@@ -1,5 +1,6 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFABackupCodeId
 import com.junbo.identity.core.service.util.CodeGenerator
@@ -53,7 +54,7 @@ class UserTFABackupCodeValidatorImpl implements UserTFABackupCodeValidator {
                     }
 
                     if (userTFABackupCode.userId != userId) {
-                        throw AppErrors.INSTANCE.fieldInvalidException('userId',
+                        throw AppCommonErrors.INSTANCE.fieldInvalid('userId',
                                 'userId and userTFABackupCodeId doesn\'t match.').exception()
                     }
 
@@ -85,29 +86,29 @@ class UserTFABackupCodeValidatorImpl implements UserTFABackupCodeValidator {
         }
 
         if (userTFABackupCode.userId != null && userTFABackupCode.userId != userId) {
-            throw AppErrors.INSTANCE.fieldInvalid('userId', userId.toString()).exception()
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('userId', userTFABackupCode.userId, userId).exception()
         }
         userTFABackupCode.userId = userId
 
         if (userTFABackupCode.expiresBy == null) {
-            throw AppErrors.INSTANCE.fieldRequired('expiresBy').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('expiresBy').exception()
         }
         if (userTFABackupCode.expiresBy.before(new Date())) {
-            throw AppErrors.INSTANCE.fieldInvalid('expiresBy').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('expiresBy').exception()
         }
 
         if (userTFABackupCode.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
 
         if (userTFABackupCode.active != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('active').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('active').exception()
         }
 
         userTFABackupCode.active = true
 
         if (userTFABackupCode.verifyCode != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('verifyCode').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('verifyCode').exception()
         }
 
         userTFABackupCode.verifyCode = codeGenerator.generateCode()
@@ -127,35 +128,35 @@ class UserTFABackupCodeValidatorImpl implements UserTFABackupCodeValidator {
         }
 
         if (userTFABackupCode.userId != null && userTFABackupCode.userId != userId) {
-            throw AppErrors.INSTANCE.fieldInvalid('userId', userId.toString()).exception()
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('userId', userTFABackupCode.userId, userId).exception()
         }
 
         if (oldUserTFABackupCode.userId != null && oldUserTFABackupCode.userId != userId) {
-            throw AppErrors.INSTANCE.fieldInvalid('userId', userId.toString()).exception()
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('userId', userId, oldUserTFABackupCode.userId).exception()
         }
 
         if (userTFABackupCodeId != userTFABackupCode.id) {
-            throw AppErrors.INSTANCE.fieldInvalid('userTFABackupCodeId', userTFABackupCodeId.toString()).exception()
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('userTFABackupCodeId', userTFABackupCode.id, userTFABackupCodeId).exception()
         }
 
         if (userTFABackupCodeId != oldUserTFABackupCode.id) {
-            throw AppErrors.INSTANCE.fieldInvalid('oldUserTFABackupCode', userTFABackupCodeId.toString()).exception()
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('userTFABackupCodeId', userTFABackupCodeId, oldUserTFABackupCode.id).exception()
         }
 
         if (userTFABackupCode.id == null) {
-            throw AppErrors.INSTANCE.fieldRequired('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('id').exception()
         }
 
         if (userTFABackupCode.expiresBy == null) {
-            throw AppErrors.INSTANCE.fieldRequired('expiresBy').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('expiresBy').exception()
         }
         if (userTFABackupCode.active == null) {
-            throw AppErrors.INSTANCE.fieldRequired('active').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('active').exception()
         }
 
         if (userTFABackupCode.verifyCode != null
          && userTFABackupCode.verifyCode != oldUserTFABackupCode.verifyCode) {
-            throw AppErrors.INSTANCE.fieldNotWritable('verifyCode').exception()
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('verifyCode', userTFABackupCode.verifyCode, oldUserTFABackupCode.verifyCode).exception()
         }
 
         return checkBasicUserTFABackupCode(userTFABackupCode)

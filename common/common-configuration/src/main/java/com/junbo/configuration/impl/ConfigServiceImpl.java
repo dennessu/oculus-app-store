@@ -365,7 +365,9 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         File file = new File(path.toUri());
         if (!file.exists()) {
             if (configContext.getEnvironment().equals("onebox") ||
-                configContext.getEnvironment().startsWith("onebox.")) {
+                configContext.getEnvironment().startsWith("onebox.") ||
+                configContext.getEnvironment().equals("int1box") ||
+                configContext.getEnvironment().startsWith("int1box.")) {
                 // return a dummy key
                 return "D58BA755FF96B35A6DABA7298F7A8CE2";
             }

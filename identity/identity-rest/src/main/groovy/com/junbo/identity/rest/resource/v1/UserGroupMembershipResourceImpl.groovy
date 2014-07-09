@@ -3,6 +3,7 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserGroupId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -19,8 +20,6 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
-
-import static com.junbo.authorization.spec.error.AppErrors.INSTANCE
 
 /**
  * Created by liangfu on 4/9/14.
@@ -56,7 +55,7 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
             def callback = authorizeCallbackFactory.create(userGroup.groupId)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('create')) {
-                    throw INSTANCE.forbidden().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 return userGroupRepository.create(userGroup).then { UserGroup newUserGroup ->
@@ -108,7 +107,7 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
             def callback = authorizeCallbackFactory.create(oldUserGroup.groupId)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('update')) {
-                    throw INSTANCE.forbidden().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 userGroup = userGroupFilter.filterForPatch(userGroup, oldUserGroup)
@@ -142,7 +141,7 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
             def callback = authorizeCallbackFactory.create(oldUserGroup.groupId)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('update')) {
-                    throw INSTANCE.forbidden().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 userGroup = userGroupFilter.filterForPut(userGroup, oldUserGroup)

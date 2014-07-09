@@ -4,10 +4,10 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.identity.rest.resource.v1
-
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.GroupId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -27,9 +27,6 @@ import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
-
-import static com.junbo.authorization.spec.error.AppErrors.INSTANCE
-
 /**
  * Created by xiali_000 on 4/8/2014.
  */
@@ -63,7 +60,7 @@ class GroupResourceImpl implements GroupResource {
             def callback = authorizeCallbackFactory.create(group)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('create')) {
-                    throw INSTANCE.forbidden().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 return groupRepository.create(group).then { Group newGroup ->
@@ -87,7 +84,7 @@ class GroupResourceImpl implements GroupResource {
             def callback = authorizeCallbackFactory.create(oldGroup)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('update')) {
-                    throw INSTANCE.forbidden().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 group = groupFilter.filterForPut(group, oldGroup)
@@ -113,7 +110,7 @@ class GroupResourceImpl implements GroupResource {
             def callback = authorizeCallbackFactory.create(oldGroup)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('update')) {
-                    throw INSTANCE.forbidden().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 group = groupFilter.filterForPatch(group, oldGroup)
@@ -225,7 +222,7 @@ class GroupResourceImpl implements GroupResource {
             def callback = authorizeCallbackFactory.create(existing)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('delete')) {
-                    throw INSTANCE.forbidden().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 return groupRepository.delete(groupId)

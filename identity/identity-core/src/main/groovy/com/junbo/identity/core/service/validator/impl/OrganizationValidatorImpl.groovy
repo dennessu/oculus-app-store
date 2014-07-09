@@ -1,5 +1,6 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
@@ -56,11 +57,11 @@ class OrganizationValidatorImpl implements OrganizationValidator {
         }
 
         if (options.ownerId == null && StringUtils.isEmpty(options.name)) {
-            throw AppErrors.INSTANCE.parameterRequired('owner or name').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('owner or name').exception()
         }
 
         if (options.ownerId != null && !StringUtils.isEmpty(options.name)) {
-            throw AppErrors.INSTANCE.parameterInvalid('owner and name can\'t be exist at the same time').exception()
+            throw AppCommonErrors.INSTANCE.parameterInvalid('owner and name can\'t be exist at the same time').exception()
         }
 
         return Promise.pure(null)
@@ -69,7 +70,7 @@ class OrganizationValidatorImpl implements OrganizationValidator {
     @Override
     Promise<Void> validateForCreate(Organization organization) {
         if (organization.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
         return checkBasicOrganizationInfo(organization)
     }
@@ -78,13 +79,13 @@ class OrganizationValidatorImpl implements OrganizationValidator {
     Promise<Void> validateForUpdate(OrganizationId organizationId, Organization organization,
                                     Organization oldOrganization) {
         if (organization.id == null) {
-            throw AppErrors.INSTANCE.fieldRequired('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('id').exception()
         }
         if (organizationId != organization.id) {
-            throw AppErrors.INSTANCE.fieldInvalid('id', organizationId.toString()).exception()
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('id', organization.id, organizationId.toString()).exception()
         }
         if (organization.id != oldOrganization.id) {
-            throw AppErrors.INSTANCE.fieldInvalid('id', oldOrganization.id.toString()).exception()
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('id', organization.id, oldOrganization.id.toString()).exception()
         }
 
         return checkBasicOrganizationInfo(organization)
@@ -103,14 +104,14 @@ class OrganizationValidatorImpl implements OrganizationValidator {
             if (!OrganizationType.values().any { OrganizationType organizationType ->
                 return organizationType.toString() == organization.type
             }) {
-                throw AppErrors.INSTANCE.fieldInvalid('type').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('type').exception()
             }
         }
         organization.canonicalName = normalizeService.normalize(organization.name)
 
         if (organization.publisherRevenueRatio != null) {
             if (organization.publisherRevenueRatio < 0.0 || organization.publisherRevenueRatio > 1) {
-                throw AppErrors.INSTANCE.fieldInvalidException('publisherRevenueRatio', 'publisherRevenueRatio should be between 0 and 1').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('publisherRevenueRatio', 'publisherRevenueRatio should be between 0 and 1').exception()
             }
         }
 
@@ -143,7 +144,7 @@ class OrganizationValidatorImpl implements OrganizationValidator {
             }
             return checkPersonalInfoIdOwner(organization.taxId, organization.ownerId, null).then { UserPersonalInfo userPersonalInfo ->
                 if (!(userPersonalInfo.type in allowedValues)) {
-                    throw AppErrors.INSTANCE.fieldInvalid('taxId.type', allowedValues.join(',')).exception()
+                    throw AppCommonErrors.INSTANCE.fieldInvalidEnum('taxId.type', allowedValues.join(',')).exception()
                 }
 
                 return Promise.pure(null)
@@ -178,7 +179,7 @@ class OrganizationValidatorImpl implements OrganizationValidator {
             }
 
             if (!CollectionUtils.isEmpty(organizationList)) {
-                throw AppErrors.INSTANCE.fieldDuplicate('name').exception()
+                throw AppCommonErrors.INSTANCE.fieldDuplicate('name').exception()
             }
 
             return Promise.pure(null)
@@ -192,11 +193,11 @@ class OrganizationValidatorImpl implements OrganizationValidator {
             }
 
             if (!StringUtils.isEmpty(expectedType) && userPersonalInfo.type != expectedType) {
-                throw AppErrors.INSTANCE.fieldInvalidException('userPersonalInfoId', 'Type isn\'t valid, expected: ' + expectedType).exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('userPersonalInfoId', 'Type isn\'t valid, expected: ' + expectedType).exception()
             }
 
             if (userPersonalInfo.userId != ownerId) {
-                throw AppErrors.INSTANCE.fieldInvalidException('userPersonalInfoId', 'UserId isn\'t match with ownerId').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('userPersonalInfoId', 'UserId isn\'t match with ownerId').exception()
             }
 
             return Promise.pure(userPersonalInfo)

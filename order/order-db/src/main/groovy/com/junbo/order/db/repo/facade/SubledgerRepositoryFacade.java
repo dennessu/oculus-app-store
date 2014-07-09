@@ -38,7 +38,7 @@ public interface SubledgerRepositoryFacade {
 
     SubledgerItem createSubledgerItem(SubledgerItem subledgerItem);
 
-    List<SubledgerItem> getSubledgerItem(Object shardKey, String status, PageParam pageParam);
+    List<SubledgerItem> getSubledgerItem(Integer dataCenterId, Object shardKey, String status, PageParam pageParam);
 
     SubledgerItem updateSubledgerItem(SubledgerItem subledgerItem);
 }

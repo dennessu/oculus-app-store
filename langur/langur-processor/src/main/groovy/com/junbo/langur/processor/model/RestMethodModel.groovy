@@ -24,6 +24,4 @@ class RestMethodModel {
     List<String> annotations
 
     List<String> routeParamExprs
-
-    boolean routeFallbackToAnyLocal
 }

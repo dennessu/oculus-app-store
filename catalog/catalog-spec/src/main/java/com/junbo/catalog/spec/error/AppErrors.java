@@ -18,38 +18,23 @@ import com.junbo.common.error.ErrorProxy;
 public interface AppErrors {
     AppErrors INSTANCE = ErrorProxy.newProxyInstance(AppErrors.class);
 
-    @ErrorDef(httpStatusCode = 400, code = "10000", description = "Missing Input field.", field = "{0}")
-    AppError missingField(String field);
+    @ErrorDef(httpStatusCode = 412, code = "101", message = "Offer Not Found",
+            field = "{0}", reason = "Offer with ID {1} is not found")
+    AppError offerNotFound(String field, String offerId);
 
-    @ErrorDef(httpStatusCode = 400, code = "10001", description = "Unnecessary field found.", field = "{0}")
-    AppError unnecessaryField(String field);
+    @ErrorDef(httpStatusCode = 412, code = "102", message = "Item Not Found",
+            field = "{0}", reason = "Item with ID {1} is not found")
+    AppError itemNotFound(String field, String itemId);
 
-    @ErrorDef(httpStatusCode = 403, code = "10002",
-            description = "{0} does not match. actually: {1}, expected: {2}.",
-            field = "{0}")
-    AppError fieldNotMatch(String fieldName, Object actually, Object expected);
+    @ErrorDef(httpStatusCode = 412, code = "103", message = "Genre Not Found",
+            field = "{0}", reason = "Genre with ID {1} is not found")
+    AppError genreNotFound(String field, String genreId);
 
-    @ErrorDef(httpStatusCode = 404, code = "10003", description = "{0} [{1}] not found.")
-    AppError notFound(String entity, String id);
+    @ErrorDef(httpStatusCode = 412, code = "104", message = "Category Not Found",
+            field = "{0}", reason = "Category with ID {1} is not found")
+    AppError categoryNotFound(String field, String categoryId);
 
-    @ErrorDef(httpStatusCode = 400, code = "10004", description = "invalid Json: {0}")
-    AppError invalidJson(String detail);
-
-    @ErrorDef(httpStatusCode = 400, code = "10005", description = "Field is not correct. {1}", field = "{0}")
-    AppError fieldNotCorrect(String fieldName, String msg);
-
-    @ErrorDef(httpStatusCode = 400, code = "10007", description = "Validation failed. {0}")
-    AppError validation(String msg);
-
-    @ErrorDef(httpStatusCode = 400, code = "10011", description = "Validation failed.")
-    AppError validation(AppError[] errors);
-
-    @ErrorDef(httpStatusCode = 400, code = "10008", description = "{0}")
-    AppError common(String msg);
-
-    @ErrorDef(httpStatusCode = 500, code = "10009", description = "UnCaught Exception. {0}")
-    AppError unCaught(String msg);
-
-    @ErrorDef(httpStatusCode = 409, code = "10010", description = "Access Denied")
-    AppError accessDenied();
+    @ErrorDef(httpStatusCode = 409, code = "105", message = "Duplicate Package Name",
+            field = "packageName", reason = "Package name {1} already exists")
+    AppError duplicatePackageName(String packageName);
 }

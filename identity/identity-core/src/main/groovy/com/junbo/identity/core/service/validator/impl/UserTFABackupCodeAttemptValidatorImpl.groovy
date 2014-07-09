@@ -1,5 +1,6 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFABackupCodeAttemptId
 import com.junbo.identity.core.service.validator.UserTFABackupCodeAttemptValidator
@@ -76,7 +77,7 @@ class UserTFABackupCodeAttemptValidatorImpl implements UserTFABackupCodeAttemptV
                 }
 
                 if (attempt.userId != userId) {
-                    throw AppErrors.INSTANCE.fieldInvalid('attemptId', 'AttemptId and userId don\'t match.').exception()
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('attemptId', 'AttemptId and userId don\'t match.').exception()
                 }
 
                 return Promise.pure(attempt)
@@ -107,33 +108,33 @@ class UserTFABackupCodeAttemptValidatorImpl implements UserTFABackupCodeAttemptV
         }
 
         if (attempt.verifyCode == null) {
-            throw AppErrors.INSTANCE.fieldInvalid('verifyCode').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('verifyCode').exception()
         }
         if (attempt.verifyCode.length() > maxVerifyCodeLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('verifyCode', maxVerifyCodeLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooLong('verifyCode', maxVerifyCodeLength).exception()
         }
         if (attempt.verifyCode.length() < minVerifyCodeLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('verifyCode', minVerifyCodeLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooShort('verifyCode', minVerifyCodeLength).exception()
         }
 
         if (attempt.ipAddress != null) {
             if (!allowedIPPatterns.any {
                 Pattern pattern -> pattern.matcher(attempt.ipAddress).matches()
             }) {
-                throw AppErrors.INSTANCE.fieldInvalid('ipAddress').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('ipAddress').exception()
             }
         }
 
         if (attempt.userId != null && attempt.userId != userId) {
-            throw AppErrors.INSTANCE.fieldInvalid('userId', userId.toString()).exception()
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('userId', attempt.userId, userId).exception()
         }
 
         if (attempt.userAgent != null) {
             if (attempt.userAgent.length() > maxUserAgentLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('userAgent', maxUserAgentLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooLong('userAgent', maxUserAgentLength).exception()
             }
             if (attempt.userAgent.length() < minUserAgentLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('userAgent', minUserAgentLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooShort('userAgent', minUserAgentLength).exception()
             }
         }
 
@@ -186,7 +187,7 @@ class UserTFABackupCodeAttemptValidatorImpl implements UserTFABackupCodeAttemptV
             }
 
             if (userTFABackupCodeAttempt == null) {
-                throw AppErrors.INSTANCE.fieldInvalid('verifyCode', 'Attempt reaches maximum.').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('verifyCode', 'Attempt reaches maximum.').exception()
             }
 
             return Promise.pure(null)

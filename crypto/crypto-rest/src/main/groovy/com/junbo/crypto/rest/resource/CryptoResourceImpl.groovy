@@ -106,11 +106,6 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
         this.validator = validator
     }
 
-    @Required
-    void setEnableEncrypt(Boolean enableEncrypt) {
-        this.enableEncrypt = enableEncrypt
-    }
-
     // Used to encrypt and decrypt user message by masterKey
     protected Promise<String> symmetricDecryptUserMessageByMasterKey(String encryptedMessage) {
         String[] messageInfo = (String [])encryptedMessage.split(versionSeparator)

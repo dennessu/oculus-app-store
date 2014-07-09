@@ -40,9 +40,9 @@ public class OrderDaoImpl extends BaseDaoImpl<OrderEntity> implements OrderDao {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<OrderEntity> readByStatus(Integer shardId, List<OrderStatus> statusList, boolean updatedByAscending,
+    public List<OrderEntity> readByStatus(Integer dataCenterId, Integer shardId, List<OrderStatus> statusList, boolean updatedByAscending,
                                           Integer start, Integer count) {
-        Criteria criteria = this.getSessionByShardId(shardId).createCriteria(OrderEntity.class);
+        Criteria criteria = this.getSessionByShardId(dataCenterId, shardId).createCriteria(OrderEntity.class);
 
         criteria.add(Restrictions.in("orderStatusId", statusList));
         pageCriteria(criteria, start, count);

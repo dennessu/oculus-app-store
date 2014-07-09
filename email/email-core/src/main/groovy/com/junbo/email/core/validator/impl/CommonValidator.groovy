@@ -5,12 +5,12 @@
  */
 package com.junbo.email.core.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.model.ResourceMeta
 import com.junbo.email.db.repo.EmailTemplateRepository
 import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.model.EmailTemplate
-import com.junbo.email.spec.model.Model
 import groovy.transform.CompileStatic
 import org.springframework.util.StringUtils
 
@@ -36,19 +36,19 @@ abstract class CommonValidator {
 
     protected void validateScheduleTime(Email email, boolean required) {
         if (required && email.scheduleTime == null) {
-            throw AppErrors.INSTANCE.missingField('scheduleTime').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('scheduleTime').exception()
         }
         if (email.scheduleTime != null && email.scheduleTime.before(new Date())) {
-            throw AppErrors.INSTANCE.invalidField('scheduleTime').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('scheduleTime', 'scheduleTime cannot be before now').exception()
         }
     }
 
     protected void validateAuditDate(ResourceMeta model) {
         if (model.createdTime != null) {
-            throw AppErrors.INSTANCE.unnecessaryField('createTime').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('createTime').exception()
         }
         if (model.updatedTime != null) {
-            throw AppErrors.INSTANCE.unnecessaryField('updatedTime').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('updatedTime').exception()
         }
     }
 
@@ -63,13 +63,13 @@ abstract class CommonValidator {
         EmailTemplate template = emailTemplateRepository.getEmailTemplate(email.templateId.value).get()
 
         if (template == null) {
-            throw AppErrors.INSTANCE.templateNotFound().exception()
+            throw AppErrors.INSTANCE.templateNotFound(email.templateId).exception()
         }
         if (template.placeholderNames?.any() && !email.replacements?.any()) {
-            throw AppErrors.INSTANCE.invalidReplacements('replacements').exception()
+            throw AppErrors.INSTANCE.invalidReplacements().exception()
         }
         if (!template.placeholderNames?.any() && email.replacements?.any()) {
-            throw AppErrors.INSTANCE.invalidReplacements('replacements').exception()
+            throw AppErrors.INSTANCE.invalidReplacements().exception()
         }
         if (template.placeholderNames?.any()) {
             List<String> placeholderNames = template.placeholderNames.collect { String placeholderName ->

@@ -40,7 +40,7 @@ public class CommonDataDAOImpl<T extends GenericEntity, ID extends Serializable>
     }
 
     public Session currentSession(Object key) {
-        ShardScope shardScope = new ShardScope(shardAlgorithm.shardId(key));
+        ShardScope shardScope = new ShardScope(shardAlgorithm.dataCenterId(key), shardAlgorithm.shardId(key));
         try {
             return sessionFactory.getCurrentSession();
         } finally {

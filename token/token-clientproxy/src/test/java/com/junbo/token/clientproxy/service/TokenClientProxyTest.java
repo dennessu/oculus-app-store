@@ -178,7 +178,7 @@ public class TokenClientProxyTest extends BaseTest {
             TokenConsumption consumeResult = tokenClient.consumeToken(consumption).get();
         }catch (Exception ex){
             if(ex instanceof AppClientExceptions){
-                String code = ((AppClientExceptions) ex).invalidToken().getCode();
+                String code = ((AppClientExceptions) ex).invalidToken().error().getCode();
             }
         }
         item.setStatus(ItemStatus.ACTIVATED.toString());

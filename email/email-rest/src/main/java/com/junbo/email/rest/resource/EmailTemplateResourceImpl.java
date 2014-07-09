@@ -6,7 +6,7 @@
 package com.junbo.email.rest.resource;
 
 import com.junbo.authorization.AuthorizeContext;
-import com.junbo.authorization.spec.error.AppErrors;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.EmailTemplateId;
 import com.junbo.common.model.Results;
 import com.junbo.email.core.EmailTemplateService;
@@ -35,28 +35,28 @@ public class EmailTemplateResourceImpl implements EmailTemplateResource{
 
     public Promise<EmailTemplate> postEmailTemplate(EmailTemplate template) {
         if (!AuthorizeContext.hasScopes(EMAIL_ADMIN_SCOPE)) {
-            throw AppErrors.INSTANCE.insufficientScope().exception();
+            throw AppCommonErrors.INSTANCE.insufficientScope().exception();
         }
 
         return templateService.postEmailTemplate(template);
     }
     public Promise<EmailTemplate> getEmailTemplate(EmailTemplateId id) {
         if (!AuthorizeContext.hasScopes(EMAIL_ADMIN_SCOPE) && !AuthorizeContext.hasScopes(EMAIL_SERVICE_SCOPE)) {
-            throw AppErrors.INSTANCE.insufficientScope().exception();
+            throw AppCommonErrors.INSTANCE.insufficientScope().exception();
         }
 
         return templateService.getEmailTemplate(id.getValue());
     }
     public Promise<EmailTemplate> putEmailTemplate(EmailTemplateId id, EmailTemplate template) {
         if (!AuthorizeContext.hasScopes(EMAIL_ADMIN_SCOPE)) {
-            throw AppErrors.INSTANCE.insufficientScope().exception();
+            throw AppCommonErrors.INSTANCE.insufficientScope().exception();
         }
 
         return templateService.putEmailTemplate(id.getValue(), template);
     }
     public Promise<Response> deleteEmailTemplate(EmailTemplateId id) {
         if (!AuthorizeContext.hasScopes(EMAIL_ADMIN_SCOPE)) {
-            throw AppErrors.INSTANCE.insufficientScope().exception();
+            throw AppCommonErrors.INSTANCE.insufficientScope().exception();
         }
 
         return templateService.deleteEmailTemplate(id.getValue()).then(new Promise.Func<Void, Promise<Response>>() {
@@ -69,7 +69,7 @@ public class EmailTemplateResourceImpl implements EmailTemplateResource{
 
     public Promise<Results<EmailTemplate>> getEmailTemplates(QueryParam queryParam) {
         if (!AuthorizeContext.hasScopes(EMAIL_ADMIN_SCOPE) && !AuthorizeContext.hasScopes(EMAIL_SERVICE_SCOPE)) {
-            throw AppErrors.INSTANCE.insufficientScope().exception();
+            throw AppCommonErrors.INSTANCE.insufficientScope().exception();
         }
 
         return templateService.getEmailTemplates(queryParam);

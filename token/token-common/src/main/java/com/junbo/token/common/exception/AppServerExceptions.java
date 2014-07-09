@@ -17,27 +17,14 @@ public interface AppServerExceptions {
 
     AppServerExceptions INSTANCE = ErrorProxy.newProxyInstance(AppServerExceptions.class);
 
-    @ErrorDef(httpStatusCode = 500, code = "50002",
-            description = "The token status {0} is invalid to process")
-    AppError invalidTokenStatus(String status);
+    @ErrorDef(httpStatusCode = 412, code = "101", message = "Token Order Not Found",
+            field = "tokenOrder", reason = "Token Order with ID {0} is not found")
+    AppError tokenOrderNotFound(String tokenOrderId);
 
-    @ErrorDef(httpStatusCode = 500, code = "50003",
-            description = "The token set status {0} is invalid to process")
-    AppError invalidTokenSetStatus(String status);
+    @ErrorDef(httpStatusCode = 412, code = "102", message = "Token Set Not Found",
+            field = "tokenSetId", reason = "Token Set with ID {0} is not found")
+    AppError tokenSetNotFound(String tokenSetId);
 
-    @ErrorDef(httpStatusCode = 500, code = "50004",
-            description = "The token order status {0} is invalid to process")
-    AppError invalidTokenOrderStatus(String status);
-
-    @ErrorDef(httpStatusCode = 500, code = "50005", description = "The required field {0} is missing while processing")
-    AppError missingRequiredField(String field);
-
-    @ErrorDef(httpStatusCode = 500, code = "50006", description = "The order is invalid for the token")
-    AppError InvalidTokenOrder(String field);
-
-    @ErrorDef(httpStatusCode = 500, code = "50007", description = "The Token Set is invalid for the token")
-    AppError InvalidTokenSet(String field);
-
-    @ErrorDef(httpStatusCode = 500, code = "50008", description = "get error from catalog gateway")
+    @ErrorDef(httpStatusCode = 500, code = "103", message = "Catalog Gateway Error")
     AppError catalogGatewayException();
 }

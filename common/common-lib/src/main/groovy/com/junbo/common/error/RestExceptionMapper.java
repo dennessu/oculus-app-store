@@ -5,14 +5,18 @@
  */
 package com.junbo.common.error;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.junbo.configuration.ConfigService;
+import com.junbo.configuration.ConfigServiceManager;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
 import org.glassfish.jersey.server.monitoring.RequestEvent;
 import org.glassfish.jersey.server.monitoring.RequestEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -25,23 +29,33 @@ import javax.ws.rs.ext.Provider;
 @Provider
 public class RestExceptionMapper implements ExceptionMapper<Exception>, ApplicationEventListener {
 
-    @Autowired
-    private ConfigService configService;
-
+    private static ConfigService configService = ConfigServiceManager.instance();
     private static final Logger LOGGER = LoggerFactory.getLogger(RestExceptionMapper.class);
 
     @Override
-    public Response toResponse(Exception exception) {
+    public Response toResponse(Exception e) {
 
-        if (exception instanceof WebApplicationException) {
-            return ((WebApplicationException) exception).getResponse();
+        if (e instanceof WebApplicationException) {
+            return ((WebApplicationException)e).getResponse();
+        } else if (e instanceof UnrecognizedPropertyException) {    // unnecessary field exception
+            return AppCommonErrors.INSTANCE.invalidJson(
+                    ((UnrecognizedPropertyException) e).getUnrecognizedPropertyName(), "The property is unrecognized").exception().getResponse();
+        } else if (e instanceof InvalidFormatException) {           // field invalid format exception
+            return AppCommonErrors.INSTANCE.fieldInvalid(
+                    ((InvalidFormatException) e).getPathReference(), e.getMessage()).exception().getResponse();
+        } else if (e instanceof JsonParseException) {
+            return AppCommonErrors.INSTANCE.invalidJson(
+                    "request.body", e.getMessage()).exception().getResponse();
+        } else if (e instanceof JsonMappingException) {
+            return AppCommonErrors.INSTANCE.fieldInvalid(
+                    ((JsonMappingException) e).getPathReference(), e.getMessage()).exception().getResponse();
         }
 
+        // other exceptions
         if ("true".equalsIgnoreCase(configService.getConfigValue("common.conf.debugMode"))) {
-            return ERRORS.internalServerError(exception).exception().getResponse();
+            return AppCommonErrors.INSTANCE.internalServerError(e).exception().getResponse();
         }
-
-        return ERRORS.internalServerError().exception().getResponse();
+        return AppCommonErrors.INSTANCE.internalServerError().exception().getResponse();
     }
 
     @Override
@@ -58,19 +72,5 @@ public class RestExceptionMapper implements ExceptionMapper<Exception>, Applicat
                 }
             }
         };
-    }
-
-    public static final Errors ERRORS = ErrorProxy.newProxyInstance(Errors.class);
-
-    /**
-     * Created by kg on 7/4/14.
-     */
-    public interface Errors {
-
-        @ErrorDef(httpStatusCode = 500, code = "20001", description = "Internal Server Error. Exception: {0}.")
-        AppError internalServerError(Exception e);
-
-        @ErrorDef(httpStatusCode = 500, code = "20001", description = "Internal Server Error.")
-        AppError internalServerError();
     }
 }

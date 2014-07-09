@@ -51,7 +51,8 @@ class GoogleLogin implements Action {
 
         return googleApi.getAccountInfo("Bearer $googleAuth").recover { Throwable e ->
             if (e instanceof GoogleException) {
-                contextWrapper.errors.add((e as GoogleException).commonError())
+                String message = (e as GoogleException).getMessage()
+                contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingGoogle(message).error())
             } else {
                 LOGGER.error('Error calling Google api', e)
                 contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingGoogle().error())

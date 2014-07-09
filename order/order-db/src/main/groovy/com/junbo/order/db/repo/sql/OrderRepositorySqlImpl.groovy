@@ -144,9 +144,9 @@ class OrderRepositorySqlImpl implements OrderRepository {
     }
 
     @Override
-    Promise<List<Order>> getByStatus(Object shardKey, List<String> statusList,
+    Promise<List<Order>> getByStatus(Integer dataCenterId, Object shardKey, List<String> statusList,
                                      boolean updatedByAscending, PageParam pageParam) {
-        return Promise.pure(orderDao.readByStatus((Integer) shardKey,
+        return Promise.pure(orderDao.readByStatus(dataCenterId, (Integer) shardKey,
                 statusList.collect { String status -> OrderStatus.valueOf(status) },
                 updatedByAscending, pageParam?.start, pageParam?.count).collect { OrderEntity entity ->
             def result = modelMapper.toOrderModel(entity, new MappingContext())

@@ -4,7 +4,6 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.authorization.rest.resource
-
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
@@ -12,19 +11,18 @@ import com.junbo.authorization.core.authorize.callback.RoleAuthorizeCallbackFact
 import com.junbo.authorization.core.filter.RoleFilter
 import com.junbo.authorization.core.validator.RoleValidator
 import com.junbo.authorization.db.repository.RoleRepository
-import com.junbo.authorization.spec.error.AppErrors
 import com.junbo.authorization.spec.model.Role
 import com.junbo.authorization.spec.option.list.RoleListOptions
 import com.junbo.authorization.spec.resource.RoleResource
-import com.junbo.common.id.UniversalId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.RoleId
+import com.junbo.common.id.UniversalId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.transaction.annotation.Transactional
-
 /**
  * RoleResourceImpl.
  */
@@ -71,7 +69,7 @@ class RoleResourceImpl implements RoleResource {
         def callback = roleAuthorizeCallbackFactory.create(role)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('write')) {
-                throw AppErrors.INSTANCE.forbidden().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             Role filtered = roleFilter.filterForPost(role)
@@ -90,7 +88,7 @@ class RoleResourceImpl implements RoleResource {
         return roleValidator.validateForGet(roleId).then {
             return roleRepository.get(roleId).then { Role role ->
                 if (role == null) {
-                    throw AppErrors.INSTANCE.resourceNotFound('role', roleId.toString()).exception()
+                    throw AppCommonErrors.INSTANCE.resourceNotFound('role', roleId.toString()).exception()
                 }
 
                 return Promise.pure(roleFilter.filterForGet(role))
@@ -102,7 +100,7 @@ class RoleResourceImpl implements RoleResource {
     Promise<Role> patch(RoleId roleId, Role role) {
         return get(roleId).then { Role oldRole ->
             if (oldRole == null) {
-                throw AppErrors.INSTANCE.resourceNotFound('role', roleId.toString()).exception()
+                throw AppCommonErrors.INSTANCE.resourceNotFound('role', roleId.toString()).exception()
             }
 
             Role filtered = roleFilter.filterForPatch(role, oldRole)
@@ -119,7 +117,7 @@ class RoleResourceImpl implements RoleResource {
     Promise<Role> put(RoleId roleId, Role role) {
         return get(roleId).then { Role oldRole ->
             if (oldRole == null) {
-                throw AppErrors.INSTANCE.resourceNotFound('role', roleId.toString()).exception()
+                throw AppCommonErrors.INSTANCE.resourceNotFound('role', roleId.toString()).exception()
             }
 
             Role filtered = roleFilter.filterForPut(role, oldRole)

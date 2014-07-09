@@ -5,6 +5,7 @@
  */
 package com.junbo.test.common.apihelper;
 
+import com.junbo.test.common.blueprint.Master;
 import com.ning.http.client.FluentCaseInsensitiveStringsMap;
 import com.ning.http.client.providers.netty.NettyResponse;
 import com.junbo.test.common.exception.TestException;
@@ -34,6 +35,8 @@ public abstract class HttpClientBase {
 
     public static String contentType = "application/json";
 
+    protected String uid = "";
+
     /**
      * Enum for http method.
      *
@@ -60,6 +63,12 @@ public abstract class HttpClientBase {
     protected FluentCaseInsensitiveStringsMap getHeader() {
         FluentCaseInsensitiveStringsMap headers = new FluentCaseInsensitiveStringsMap();
         headers.add(Header.CONTENT_TYPE, contentType);
+        String uid = Master.getInstance().getCurrentUid();
+        if (uid != null && Master.getInstance().getUserAccessToken(uid) != null) {
+            headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getUserAccessToken(uid));
+        } else {
+            headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getIdentityAccessToken());
+        }
 
         //for further header, we can set dynamic value from properties here
         return headers;

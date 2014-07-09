@@ -44,6 +44,11 @@ class ResetPasswordCodeRepositoryImpl implements ResetPasswordCodeRepository {
         resetPasswordCodeDAO.save(unwrap(resetPasswordCode))
     }
 
+    @Override
+    void removeByUserIdEmail(Long userId, String email) {
+
+    }
+
     private static ResetPasswordCode wrap(ResetPasswordCodeEntity entity) {
         if (entity == null) {
             return null

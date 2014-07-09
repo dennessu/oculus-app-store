@@ -2,6 +2,7 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.billing.spec.model.VatIdValidationResponse
 import com.junbo.billing.spec.resource.VatResource
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.common.util.ValidatorUtil
@@ -16,17 +17,14 @@ import com.junbo.identity.data.repository.LocaleRepository
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.v1.model.Country
-import com.junbo.identity.spec.v1.model.Email
-import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserPersonalInfo
-import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
-import com.junbo.identity.spec.v1.model.UserVAT
+import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.CollectionUtils
+
+import java.util.Locale
 
 /**
  * Created by kg on 3/17/14.
@@ -57,7 +55,7 @@ class UserValidatorImpl implements UserValidator {
         }
 
         if (user.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
 
         if (user.status == null) {
@@ -71,7 +69,7 @@ class UserValidatorImpl implements UserValidator {
 
                 return userRepository.searchUserByCanonicalUsername(user.canonicalUsername).then { User existingUser ->
                     if (existingUser != null) {
-                        throw AppErrors.INSTANCE.fieldDuplicate('username').exception()
+                        throw AppCommonErrors.INSTANCE.fieldDuplicate('username').exception()
                     }
 
                     return Promise.pure(null)
@@ -97,11 +95,11 @@ class UserValidatorImpl implements UserValidator {
         }
 
         if (user.status == null) {
-            throw AppErrors.INSTANCE.fieldRequired('active').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('active').exception()
         }
 
         if (user.isAnonymous == null) {
-            throw AppErrors.INSTANCE.fieldRequired('isAnonymous').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('isAnonymous').exception()
         }
 
         return validateUserInfo(user).then {
@@ -110,7 +108,7 @@ class UserValidatorImpl implements UserValidator {
                 if (user.canonicalUsername != oldUser.canonicalUsername) {
                     return userRepository.searchUserByCanonicalUsername(user.canonicalUsername).then { User existingUser ->
                         if (existingUser != null) {
-                            throw AppErrors.INSTANCE.fieldDuplicate('username').exception()
+                            throw AppCommonErrors.INSTANCE.fieldDuplicate('username').exception()
                         }
 
                         return Promise.pure(null)
@@ -145,11 +143,11 @@ class UserValidatorImpl implements UserValidator {
         }
 
         if (options.username == null && options.groupId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('username or groupId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('username or groupId').exception()
         }
 
         if (options.username != null && options.groupId != null) {
-            throw AppErrors.INSTANCE.parameterInvalid('username and groupId can\'t search together.').exception()
+            throw AppCommonErrors.INSTANCE.parameterInvalid('username and groupId can\'t search together.').exception()
         }
 
         return Promise.pure(null)
@@ -162,7 +160,7 @@ class UserValidatorImpl implements UserValidator {
             }
 
             if (user.isAnonymous) {
-                throw AppErrors.INSTANCE.fieldInvalid('isAnonymous', "false").exception()
+                throw AppCommonErrors.INSTANCE.fieldNotWritable('isAnonymous', user.isAnonymous, "false").exception()
             }
             usernameValidator.validateUsername(user.username)
         } else {
@@ -171,27 +169,27 @@ class UserValidatorImpl implements UserValidator {
             }
 
             if (!user.isAnonymous) {
-                throw AppErrors.INSTANCE.fieldInvalid('isAnonymous', "true").exception()
+                throw AppCommonErrors.INSTANCE.fieldNotWritable('isAnonymous', user.isAnonymous, "true").exception()
             }
         }
 
         if (user.preferredTimezone != null) {
             if (!timezoneValidator.isValidTimezone(user.preferredTimezone)) {
-                throw AppErrors.INSTANCE.fieldInvalid('preferredTimezone').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('preferredTimezone').exception()
             }
         } else {
             user.preferredTimezone = timezoneValidator.defaultTimezone
         }
 
         if (user.isAnonymous == null) {
-            throw AppErrors.INSTANCE.fieldRequired('isAnonymous').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('isAnonymous').exception()
         }
 
         if (user.status != null) {
             if (!UserStatus.values().any { UserStatus userStatus ->
                 return userStatus.toString() == user.status
             }) {
-                throw AppErrors.INSTANCE.fieldInvalid('status').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('status').exception()
             }
         }
 
@@ -231,11 +229,11 @@ class UserValidatorImpl implements UserValidator {
             UserPersonalInfoLink userPersonalInfoLink = iter.next();
 
             if (userPersonalInfoLink.isDefault == null) {
-                throw AppErrors.INSTANCE.fieldRequired('isDefault').exception()
+                throw AppCommonErrors.INSTANCE.fieldRequired('isDefault').exception()
             }
 
             if (userPersonalInfoLink.value == null) {
-                throw AppErrors.INSTANCE.fieldRequired('value').exception()
+                throw AppCommonErrors.INSTANCE.fieldRequired('value').exception()
             }
 
             return userPersonalInfoRepository.get(userPersonalInfoLink.value).then { UserPersonalInfo userPersonalInfo ->
@@ -245,12 +243,12 @@ class UserValidatorImpl implements UserValidator {
 
                 if (type != null) {
                     if (userPersonalInfo.type != type) {
-                        throw AppErrors.INSTANCE.fieldInvalid(userPersonalInfoLink.value.toString()).exception()
+                        throw AppCommonErrors.INSTANCE.fieldInvalid(userPersonalInfoLink.value.toString()).exception()
                     }
                 }
 
                 if (user.id != userPersonalInfo.userId) {
-                    throw AppErrors.INSTANCE.fieldInvalid('userPersonalInfo.value').exception()
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('userPersonalInfo.value').exception()
                 }
 
                 // 2.	User’s default email is required to be globally unique - no two users can use the same email as their default email.
@@ -293,7 +291,7 @@ class UserValidatorImpl implements UserValidator {
                     if (existingUser.emails.any { UserPersonalInfoLink link ->
                         return link.isDefault && link.value == info.id
                     }) {
-                        throw AppErrors.INSTANCE.fieldInvalidException('email.info', 'Mail already used.').exception()
+                        throw AppCommonErrors.INSTANCE.fieldInvalid('email.info', 'Mail already used.').exception()
                     }
 
                     return Promise.pure(null)
@@ -306,7 +304,7 @@ class UserValidatorImpl implements UserValidator {
 
     Promise<Void> validateUserPersonalInfoLink(UserPersonalInfoLink userPersonalInfoLink, String type) {
         if (userPersonalInfoLink.value == null) {
-            throw AppErrors.INSTANCE.fieldRequired('value').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('value').exception()
         }
         return userPersonalInfoRepository.get(userPersonalInfoLink.value).
                 then { UserPersonalInfo userPersonalInfo ->
@@ -315,7 +313,7 @@ class UserValidatorImpl implements UserValidator {
                     }
 
                     if (userPersonalInfo.type != type) {
-                        throw AppErrors.INSTANCE.fieldInvalid(userPersonalInfoLink.value.toString()).exception()
+                        throw AppCommonErrors.INSTANCE.fieldInvalid(userPersonalInfoLink.value.toString()).exception()
                     }
 
                     return Promise.pure(userPersonalInfo)
@@ -326,7 +324,7 @@ class UserValidatorImpl implements UserValidator {
         if (user.preferredLocale != null) {
             return localeRepository.get(user.preferredLocale).then { com.junbo.identity.spec.v1.model.Locale locale ->
                 if (locale == null) {
-                    throw AppErrors.INSTANCE.fieldInvalid(user.preferredLocale.value).exception()
+                    throw AppCommonErrors.INSTANCE.fieldInvalid(user.preferredLocale.value).exception()
                 }
 
                 return Promise.pure(null)
@@ -342,10 +340,10 @@ class UserValidatorImpl implements UserValidator {
                 return link.isDefault
             }
             if (CollectionUtils.isEmpty(defaultLinks)) {
-                throw AppErrors.INSTANCE.fieldInvalid('isDefault', 'UserPersonalInfos must have at least one default.').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('isDefault', 'UserPersonalInfos must have at least one default.').exception()
             }
             if (!CollectionUtils.isEmpty(defaultLinks) && defaultLinks.size() > 1) {
-                throw AppErrors.INSTANCE.fieldInvalid('isDefault', 'Can only have one default.').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('isDefault', 'Can only have one default.').exception()
             }
         }
     }
@@ -471,7 +469,7 @@ class UserValidatorImpl implements UserValidator {
 
         user.vat.each { Map.Entry<String, UserVAT> entry ->
             if (!ValidatorUtil.isValidCountryCode(entry.key)) {
-                throw AppErrors.INSTANCE.fieldInvalid('vat.key').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('vat.key').exception()
             }
         }
 
@@ -481,7 +479,7 @@ class UserValidatorImpl implements UserValidator {
                 if (response.status == 'VALID') {
                     vat.lastValidateTime = new Date()
                 } else if (response.status == 'INVALID') {
-                    throw AppErrors.INSTANCE.fieldInvalid('vat.value', vat.vatNumber + ' isn\'t valid').exception()
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('vat.value', vat.vatNumber + ' isn\'t valid').exception()
                 } else if (response.status == 'SERVICE_UNAVAILABLE' || response.status == 'UNKNOWN') {
                     // do nothing here.
                 }

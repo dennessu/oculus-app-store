@@ -1,13 +1,13 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.validator.NickNameValidator
 import com.junbo.identity.core.service.validator.PiiValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
-import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserName
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -55,7 +55,7 @@ class NameValidatorImpl implements PiiValidator {
         UserName oldName = (UserName)JsonHelper.jsonNodeToObj(oldValue, UserName)
 
         if (name != oldName) {
-            throw AppErrors.INSTANCE.fieldInvalidException('value', 'value can\'t be updated.').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('value', 'value can\'t be updated.').exception()
         }
         return Promise.pure(null)
     }
@@ -63,28 +63,28 @@ class NameValidatorImpl implements PiiValidator {
     private void checkName(UserName name) {
         if (name.givenName != null) {
             if (name.givenName.length() > maxGivenNameLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('value.givenName', maxGivenNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooLong('value.givenName', maxGivenNameLength).exception()
             }
             if (name.givenName.length() < minGivenNameLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('value.givenName', minGivenNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooShort('value.givenName', minGivenNameLength).exception()
             }
         }
 
         if (name.familyName != null) {
             if (name.familyName.length() > maxFamilyNameLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('value.familyName', maxFamilyNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooLong('value.familyName', maxFamilyNameLength).exception()
             }
             if (name.familyName.length() < minFamilyNameLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('value.familyName', minFamilyNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooShort('value.familyName', minFamilyNameLength).exception()
             }
         }
 
         if (name.middleName != null) {
             if (name.middleName.length() > maxMiddleNameLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('value.middleName', maxMiddleNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooLong('value.middleName', maxMiddleNameLength).exception()
             }
             if (name.middleName.length() < minMiddleNameLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('value.middleName', minMiddleNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooShort('value.middleName', minMiddleNameLength).exception()
             }
         }
 

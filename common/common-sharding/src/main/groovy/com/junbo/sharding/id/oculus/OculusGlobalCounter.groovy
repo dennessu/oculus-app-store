@@ -14,5 +14,5 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface OculusGlobalCounter {
 
-    int getAndIncrease(int shardId, int idType)
+    int getAndIncrease(int dataCenterId, int shardId, int idType)
 }

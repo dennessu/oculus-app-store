@@ -1,5 +1,6 @@
 package com.junbo.authorization
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
 import com.junbo.common.util.IdFormatter
@@ -85,7 +86,7 @@ public class TokenInfoParserImpl implements TokenInfoParser {
             return tokenInfo
         } catch (AppErrorException ex) {
             if (ex.error.httpStatusCode / 100 == 4) {
-                throw AuthErrors.INSTANCE.invalidAccessToken().exception()
+                throw AppCommonErrors.INSTANCE.invalidAccessToken().exception()
             } else {
                 throw new RuntimeException('Failed to parse access token', ex)
             }

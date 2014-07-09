@@ -3,6 +3,7 @@ package com.junbo.order.rest.resource
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
@@ -23,8 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
-
-import static com.junbo.authorization.spec.error.AppErrors.INSTANCE
 
 //import javax.ws.rs.container.ContainerRequestContext
 //import javax.ws.rs.core.Context
@@ -73,7 +72,7 @@ class OrderResourceImpl implements OrderResource {
         def callback = authorizeCallbackFactory.create(order)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('create')) {
-                throw INSTANCE.forbidden().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             orderValidator.validateSettleOrderRequest(order)
@@ -97,7 +96,7 @@ class OrderResourceImpl implements OrderResource {
         def callback = authorizeCallbackFactory.create(order)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('update')) {
-                throw INSTANCE.forbidden().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             order.id = orderId
@@ -118,12 +117,12 @@ class OrderResourceImpl implements OrderResource {
                     // determine the refund request
                     if (isARefund(oldOrder, order)) {
                         if (!AuthorizeContext.hasRights('refund')) {
-                            throw INSTANCE.forbidden().exception()
+                            throw AppCommonErrors.INSTANCE.forbidden().exception()
                         }
 
-                        LOGGER.info('name=Refund_Non_Tentative_Offer')
+                        LOGGER.info('name=Refund_Or_Cancel_Non_Tentative_Offer')
                         oldOrder.orderItems = order.orderItems
-                        return orderService.refundOrder(oldOrder, new OrderServiceContext(order, new ApiContext()))
+                        return orderService.refundOrCancelOrder(oldOrder, new OrderServiceContext(order, new ApiContext()))
                     }
                     LOGGER.info('name=Update_Non_Tentative_Offer')
                     // update shipping address after settlement

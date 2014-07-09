@@ -5,6 +5,8 @@
  */
 package com.junbo.email.db.mapper;
 
+import com.google.common.base.Joiner;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.EmailId;
 import com.junbo.common.id.EmailTemplateId;
 import com.junbo.common.util.EnumRegistry;
@@ -12,8 +14,9 @@ import com.junbo.email.common.util.Utils;
 import com.junbo.email.db.entity.EmailHistoryEntity;
 import com.junbo.email.db.entity.EmailScheduleEntity;
 import com.junbo.email.db.entity.EmailTemplateEntity;
-import com.junbo.email.spec.error.AppErrors;
-import com.junbo.email.spec.model.*;
+import com.junbo.email.spec.model.Email;
+import com.junbo.email.spec.model.EmailStatus;
+import com.junbo.email.spec.model.EmailTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -165,7 +168,11 @@ public class EmailMapper {
                 return EmailStatus.valueOf(EmailStatus.class, emailStatus).getId();
             }
             catch (Exception e) {
-                throw AppErrors.INSTANCE.invalidStatus(emailStatus).exception();
+                List<String> validStatus = new ArrayList<>();
+                for (EmailStatus status : EmailStatus.values()) {
+                    validStatus.add(status.toString());
+                }
+                throw AppCommonErrors.INSTANCE.fieldInvalid("status", Joiner.on(", ").join(validStatus)).exception();
             }
         }
         return null;

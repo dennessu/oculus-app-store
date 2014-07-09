@@ -1,7 +1,7 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.identity.core.service.validator.NickNameValidator
-import com.junbo.identity.spec.error.AppErrors
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
@@ -31,11 +31,11 @@ class NickNameValidatorImpl implements NickNameValidator {
         }
 
         if (nickName.length() < nickNameMinLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('nickName', nickNameMinLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooShort('nickName', nickNameMinLength).exception()
         }
 
         if (nickName.length() > nickNameMaxLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('nickName', nickNameMaxLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooLong('nickName', nickNameMaxLength).exception()
         }
     }
 }

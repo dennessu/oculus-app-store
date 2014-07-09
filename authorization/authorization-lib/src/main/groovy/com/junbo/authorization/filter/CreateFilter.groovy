@@ -5,13 +5,12 @@
  */
 package com.junbo.authorization.filter
 
-import com.junbo.authorization.AuthErrors
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.json.PropertyAssignedAwareSupport
 import com.junbo.oom.core.MappingContext
 import com.junbo.oom.core.filter.PropertyMappingEvent
 import com.junbo.oom.core.filter.PropertyMappingFilter
 import groovy.transform.CompileStatic
-
 /**
  * Created by liangfu on 3/26/14.
  */
@@ -28,7 +27,7 @@ class CreateFilter implements PropertyMappingFilter {
         boolean writable = context.isPropertyWritable(event.sourcePropertyName)
         if (!writable) {
             if (PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
-                throw AuthErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
+                throw AppCommonErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
             }
         }
     }

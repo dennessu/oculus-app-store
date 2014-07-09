@@ -1,6 +1,7 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.identity.common.util.JsonHelper
@@ -8,7 +9,6 @@ import com.junbo.identity.core.service.validator.PiiValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.data.repository.UserRepository
-import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Email
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
@@ -59,7 +59,7 @@ class UserEmailValidatorImpl implements PiiValidator {
         oldEmail.info = StringUtils.isEmpty(oldEmail.info) ? oldEmail.info : oldEmail.info.toLowerCase(Locale.ENGLISH)
 
         if (email != oldEmail) {
-            throw AppErrors.INSTANCE.fieldInvalidException('value', 'value can\'t be updated').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('value', 'value can\'t be updated').exception()
         }
 
         return Promise.pure(null)
@@ -67,20 +67,20 @@ class UserEmailValidatorImpl implements PiiValidator {
 
     private void checkUserEmail(Email email) {
         if (email.info == null) {
-            throw AppErrors.INSTANCE.fieldInvalid('value.info').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('value.info').exception()
         }
 
         if (email.info.length() < minEmailLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('value.info', minEmailLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooShort('value.info', minEmailLength).exception()
         }
         if (email.info.length() > maxEmailLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('value.info', maxEmailLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooLong('value.info', maxEmailLength).exception()
         }
 
         if (!allowedEmailPatterns.any {
             Pattern pattern -> pattern.matcher(email.info.toLowerCase(Locale.ENGLISH)).matches()
         }) {
-            throw AppErrors.INSTANCE.fieldInvalid('value.info').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('value.info').exception()
         }
     }
 
@@ -108,7 +108,7 @@ class UserEmailValidatorImpl implements PiiValidator {
                             Email existingEmail = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
 
                             if (existingEmail.info.toLowerCase(Locale.ENGLISH) == email.info.toLowerCase(Locale.ENGLISH)) {
-                                throw AppErrors.INSTANCE.fieldInvalid('value.info', 'Mail is already used.').exception()
+                                throw AppCommonErrors.INSTANCE.fieldInvalid('value.info', 'Mail is already used.').exception()
                             }
 
                             return Promise.pure(null)

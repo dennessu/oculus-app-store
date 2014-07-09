@@ -3,6 +3,7 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserCommunicationId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -51,7 +52,7 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
         def callback = authorizeCallbackFactory.create(userCommunication.userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('create')) {
-                throw AppErrors.INSTANCE.invalidAccess().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             userCommunication = userCommunicationFilter.filterForCreate(userCommunication)
@@ -109,7 +110,7 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
             def callback = authorizeCallbackFactory.create(oldUserOptin.userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('update')) {
-                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 userCommunication = userCommunicationFilter.filterForPatch(userCommunication, oldUserOptin)
@@ -144,7 +145,7 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
             def callback = authorizeCallbackFactory.create(oldUserOptin.userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('update')) {
-                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 userCommunication = userCommunicationFilter.filterForPut(userCommunication, oldUserOptin)

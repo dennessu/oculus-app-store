@@ -7,7 +7,9 @@
 package com.junbo.sharding.id.oculus
 
 import com.junbo.configuration.topo.DataCenters
+import com.junbo.configuration.topo.model.DataCenter
 import groovy.transform.CompileStatic
+import org.springframework.util.CollectionUtils
 
 /**
  * Java doc for IdSchema.
@@ -17,7 +19,7 @@ class OculusIdSchema {
     // 2): Option 2: Id generator proposed by oculus rift(48 version)
     // 3): option 3: order Id generator proposed by oculus rift(40 version)
     private final int idType
-    private final int dataCenterId
+    private final int currentDataCenterId
     private final int bitsInDataCenterId
     private final int idVersion
     private final int bitsInIdVersion
@@ -26,24 +28,39 @@ class OculusIdSchema {
     private final int masksInGlobalCounter
     private final int bitsInLocalCounter
     private final int masksInLocalCounter
-    private final int numberOfShards
-
+    private final Map<Integer, Integer> numberOfShardsMap
+    private final List<Integer> dataCenterIds
+    
     OculusIdSchema(int idType, String dataCenter, int bitsInDataCenterId, int bitsInGlobalCounter,
-               int bitsInLocalCounter, int idVersion, int bitsInIdVersion, int bitsInShardParam, int numberOfShards) {
+               int bitsInLocalCounter, int idVersion, int bitsInIdVersion, int bitsInShardParam) {
         this.idType = idType
         this.bitsInGlobalCounter = bitsInGlobalCounter
         this.masksInGlobalCounter = masks(bitsInGlobalCounter)
 
         this.bitsInLocalCounter = bitsInLocalCounter
         this.masksInLocalCounter = masks(bitsInLocalCounter)
-        this.numberOfShards = numberOfShards
         this.bitsInShard = bitsInShardParam
 
-        this.dataCenterId = DataCenters.instance().getDataCenter(dataCenter).id
-        int dataCenterInShard = bits(dataCenterId)
+        this.currentDataCenterId = DataCenters.instance().getDataCenter(dataCenter).id
+        int dataCenterInShard = bits(currentDataCenterId)
         if (dataCenterInShard < 0 || dataCenterInShard > bitsInDataCenterId) {
-            throw new IllegalArgumentException('dataCenterId ' + dataCenterId + ' should be 0..' + bitsInDataCenterId)
+            throw new IllegalArgumentException('currentDataCenterId ' + currentDataCenterId + ' should be 0..' + bitsInDataCenterId)
         }
+        this.dataCenterIds = DataCenters.instance().getDataCenterIds()
+        if (CollectionUtils.isEmpty(dataCenterIds)) {
+            throw new IllegalArgumentException('No dataCenterId information exists.')
+        }
+
+        numberOfShardsMap = new HashMap<>()
+        this.dataCenterIds.each { Integer dataCenterId ->
+            DataCenter existingDC = DataCenters.instance().getDataCenter(dataCenterId)
+            if (existingDC == null) {
+                throw new IllegalArgumentException('DataCenterId ' + dataCenterId + ' doesn\'t exist.')
+            }
+
+            numberOfShardsMap.put(dataCenterId, existingDC.numberOfShard)
+        }
+
         this.bitsInDataCenterId = bitsInDataCenterId
 
         int idVersionInShard = bits(idVersion)
@@ -97,7 +114,7 @@ class OculusIdSchema {
     }
 
     int getDataCenterId() {
-        return dataCenterId
+        return currentDataCenterId
     }
 
     int getBitsInDataCenterId() {
@@ -112,16 +129,20 @@ class OculusIdSchema {
         return bitsInIdVersion
     }
 
-    int getNumberOfShards() {
-        return numberOfShards
-    }
-
     int getBitsInShard() {
         return bitsInShard
     }
 
     int getIdType() {
         return idType
+    }
+
+    Map<Integer, Integer> getNumberOfShardsMap() {
+        return numberOfShardsMap
+    }
+
+    List<Integer> getDataCenterIds() {
+        return dataCenterIds
     }
 
     private static int masks(int bits) {

@@ -22,6 +22,7 @@ import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.DiscountItem
 import com.junbo.billing.spec.model.TaxItem
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.BalanceId
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.PIType
@@ -104,20 +105,20 @@ class BalanceServiceImpl implements BalanceService {
         def callback = authorizeCallbackFactory.create(balance)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('create')) {
-                throw AppErrors.INSTANCE.accessDenied().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             Balance originalBalance = null
             if (balance.type == BalanceType.REFUND.name()) {
                 if (!AuthorizeContext.hasRights('refund')) {
-                    throw AppErrors.INSTANCE.accessDenied().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 balanceValidator.validateRefund(balance)
 
                 originalBalance = balanceRepositoryFacade.getBalance(balance.originalBalanceId.value)
                 if (originalBalance == null) {
-                    throw AppErrors.INSTANCE.balanceNotFound(balance.originalBalanceId.value.toString()).exception()
+                    throw AppErrors.INSTANCE.balanceNotFound("originalBalanceId", balance.originalBalanceId).exception()
                 }
                 balanceValidator.validateBalanceStatus(originalBalance.status,
                         [BalanceStatus.COMPLETED.name(), BalanceStatus.AWAITING_PAYMENT.name()])
@@ -195,7 +196,7 @@ class BalanceServiceImpl implements BalanceService {
             def callback = authorizeCallbackFactory.create(balance)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('quote')) {
-                    throw AppErrors.INSTANCE.accessDenied().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 return balanceValidator.validatePI(balance.piId).then {
@@ -225,7 +226,7 @@ class BalanceServiceImpl implements BalanceService {
         def callback = authorizeCallbackFactory.create(balance)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('capture')) {
-                throw AppErrors.INSTANCE.accessDenied().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             balanceValidator.validateBalanceStatus(savedBalance.status, BalanceStatus.PENDING_CAPTURE.name())
@@ -253,7 +254,7 @@ class BalanceServiceImpl implements BalanceService {
         def callback = authorizeCallbackFactory.create(balance)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('confirm')) {
-                throw AppErrors.INSTANCE.accessDenied().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             balanceValidator.validateBalanceStatus(savedBalance.status, BalanceStatus.UNCONFIRMED.name())
@@ -277,7 +278,7 @@ class BalanceServiceImpl implements BalanceService {
         def callback = authorizeCallbackFactory.create(balance)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('check')) {
-                throw AppErrors.INSTANCE.accessDenied().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             balanceValidator.validateBalanceStatus(savedBalance.status,
@@ -307,13 +308,13 @@ class BalanceServiceImpl implements BalanceService {
         def callback = authorizeCallbackFactory.create(savedBalance)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('process-async')) {
-                throw AppErrors.INSTANCE.accessDenied().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             balanceValidator.validateBalanceStatus(savedBalance.status,
                     [BalanceStatus.INIT.name(), BalanceStatus.QUEUING.name()])
             if (savedBalance.isAsyncCharge != true) {
-                throw AppErrors.INSTANCE.notAsyncChargeBalance(savedBalance.id.toString()).exception()
+                throw AppErrors.INSTANCE.notAsyncChargeBalance(savedBalance.getId()).exception()
             }
 
             Balance originalBalance = null
@@ -336,7 +337,7 @@ class BalanceServiceImpl implements BalanceService {
         def callback = authorizeCallbackFactory.create(savedBalance)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('read')) {
-                throw AppErrors.INSTANCE.accessDenied().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             return Promise.pure(savedBalance)
@@ -347,7 +348,7 @@ class BalanceServiceImpl implements BalanceService {
     @Transactional(readOnly = true)
     Promise<List<Balance>> getBalances(OrderId orderId) {
         if (orderId == null) {
-            throw AppErrors.INSTANCE.fieldMissingValue('orderId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('orderId').exception()
         }
 
         List<Balance> results = []
@@ -366,7 +367,7 @@ class BalanceServiceImpl implements BalanceService {
 
     private Balance checkTrackingUUID(UUID uuid) {
         if (uuid == null) {
-            throw AppErrors.INSTANCE.fieldMissingValue('trackingUuid').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('trackingUuid').exception()
         }
         return balanceRepositoryFacade.getBalanceByUuid(uuid)
     }
@@ -376,13 +377,13 @@ class BalanceServiceImpl implements BalanceService {
     Promise<Balance> putBalance(Balance balance) {
 
         if (balance.shippingAddressId == null) {
-            throw AppErrors.INSTANCE.fieldMissingValue('shippingAddressId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('shippingAddressId').exception()
         }
         Balance savedBalance = balanceValidator.validateBalanceId(balance.getId())
         def callback = authorizeCallbackFactory.create(savedBalance)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('put')) {
-                throw AppErrors.INSTANCE.accessDenied().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             savedBalance.setShippingAddressId(balance.shippingAddressId)

@@ -76,8 +76,8 @@ class SubledgerRepositoryFacadeImpl implements SubledgerRepositoryFacade {
     }
 
     @Override
-    List<SubledgerItem> getSubledgerItem(Object shardKey, String status, PageParam pageParam) {
-        return subledgerItemRepository.getByStatus(shardKey, status, pageParam).get();
+    List<SubledgerItem> getSubledgerItem(Integer dataCenterId, Object shardKey, String status, PageParam pageParam) {
+        return subledgerItemRepository.getByStatus(dataCenterId, shardKey, status, pageParam).get();
     }
 
     @Override

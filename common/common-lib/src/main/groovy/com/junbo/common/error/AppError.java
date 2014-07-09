@@ -5,23 +5,25 @@
  */
 package com.junbo.common.error;
 
-import java.util.List;
-
 /**
  * Interface for AppError.
  */
 public interface AppError {
+    /**
+     * Get the http response code for this error.
+     * @return The HTTP response code
+     */
     int getHttpStatusCode();
 
-    String getCode();
-
-    String getDescription();
-
-    String getField();
-
-    List<AppError> getCauses();
-
+    /**
+     * Create an AppErrorException which contains current AppError.
+     * @return The AppErrorException created.
+     */
     AppErrorException exception();
 
+    /**
+     * Get the error object representing the AppError.
+     * @return The error object.
+     */
     Error error();
 }

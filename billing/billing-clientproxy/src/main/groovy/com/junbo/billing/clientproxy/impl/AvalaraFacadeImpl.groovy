@@ -17,6 +17,7 @@ import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.TaxItem
 import com.junbo.billing.spec.model.VatIdValidationResponse
 import com.junbo.common.enumid.CountryId
+import com.junbo.common.error.ErrorDetail
 import com.junbo.identity.spec.v1.model.Address
 import com.junbo.langur.core.async.JunboAsyncHttpClient
 import com.junbo.langur.core.async.JunboAsyncHttpClient.BoundRequestBuilder
@@ -96,7 +97,7 @@ class AvalaraFacadeImpl implements TaxFacade {
             address.countryId = new CountryId(response.address.country)
         } else {
             LOGGER.error('name=Address_Validation_Response_Invalid.')
-            throw AppErrors.INSTANCE.addressValidationError('Invalid response.').exception()
+            throw AppErrors.INSTANCE.addressValidationError().exception()
         }
         return address
     }
@@ -181,7 +182,7 @@ class AvalaraFacadeImpl implements TaxFacade {
         def requestBuilder = buildRequest(validateAddressUrl, address)
         return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover { Throwable throwable ->
             LOGGER.error('Error_Build_Avalara_Request.', throwable)
-            throw AppErrors.INSTANCE.addressValidationError('Fail to build request.').exception()
+            throw AppErrors.INSTANCE.addressValidationError().exception()
         }.then { Response response ->
             ValidateAddressResponse validateAddressResponse
             try {
@@ -189,7 +190,7 @@ class AvalaraFacadeImpl implements TaxFacade {
                         ValidateAddressResponse)
             } catch (IOException ex) {
                 LOGGER.error('name=Error_Read_Avalara_Response.', ex)
-                throw AppErrors.INSTANCE.addressValidationError('Fail to read response.').exception()
+                throw AppErrors.INSTANCE.addressValidationError().exception()
             }
             if (response.statusCode / 100 == 2) {
                 return Promise.pure(validateAddressResponse)
@@ -197,15 +198,12 @@ class AvalaraFacadeImpl implements TaxFacade {
 
             LOGGER.error('name=Error_Address_Validation.')
             LOGGER.info('name=Address_Validation_Response_Status_Code, statusCode={}', response.statusCode)
-            String detail = ''
+            List<ErrorDetail> details = new ArrayList<>();
             validateAddressResponse.messages.each { ResponseMessage message ->
                 LOGGER.info('name=Address_Validation_Response_Error_Message, message={}', message.details)
-                if (message.refersTo != null) {
-                    detail += 'Field: ' + message.refersTo + '. Detail: '
-                }
-                detail += message.details
+                details.add(new ErrorDetail(message.refersTo, message.details))
             }
-            throw AppErrors.INSTANCE.addressValidationError(detail).exception()
+            throw AppErrors.INSTANCE.addressValidationError(details.toArray(new ErrorDetail[0])).exception()
         }
     }
 

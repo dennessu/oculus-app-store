@@ -31,7 +31,7 @@ public class WalletGatewayImpl implements WalletGateway {
             return walletResource.credit(request).get();
         } catch (Exception e) {
             LOGGER.error("Error occurred during calling [Wallet] component.", e);
-            throw AppErrors.INSTANCE.gatewayFailure("wallet").exception();
+            throw AppErrors.INSTANCE.gatewayFailure("Wallet").exception();
         }
     }
 }

@@ -1,15 +1,13 @@
 package com.junbo.crypto.core.service.impl
-
 import com.junbo.crypto.core.service.KeyStoreService
-import com.junbo.crypto.spec.error.AppErrors
 import groovy.transform.CompileStatic
 import org.apache.commons.io.FilenameUtils
 import org.springframework.util.StringUtils
 
-import java.security.*
+import java.security.Key
+import java.security.KeyStore
+import java.security.PublicKey
 import java.security.cert.Certificate
-import java.security.cert.CertificateException
-
 /**
  * Created by liangfu on 5/12/14.
  */
@@ -91,47 +89,27 @@ class KeyStoreServiceImpl implements KeyStoreService {
     private PublicKey getPublicKey(KeyStore keyStore, String alias) {
         assert keyStore != null
         assert alias != null
-        try {
-            Certificate cert = keyStore.getCertificate(alias)
-            if (cert == null) {
-                throw AppErrors.INSTANCE.certificateException('cert ' + alias + ' not found.').exception()
-            }
-            return cert.publicKey
-        } catch (KeyStoreException ksex) {
-            throw AppErrors.INSTANCE.keyStoreException(ksex.message).exception()
+
+        Certificate cert = keyStore.getCertificate(alias)
+        if (cert == null) {
+            throw new RuntimeException('cert ' + alias + ' not found.')
         }
+        return cert.publicKey
     }
 
     private Key getPrivateKey(KeyStore keyStore, String alias, String password) {
         assert keyStore != null
-        try {
-            return keyStore.getKey(alias, password.toCharArray())
-        } catch (KeyStoreException ksex) {
-            throw AppErrors.INSTANCE.keyStoreException(ksex.message).exception()
-        } catch (NoSuchAlgorithmException noSuchAlgorithmException) {
-            throw AppErrors.INSTANCE.noSuchAlgorithmException(noSuchAlgorithmException.message).exception()
-        } catch (UnrecoverableKeyException unrecoverableKeyEx) {
-            throw AppErrors.INSTANCE.unrecoverableKeyException(unrecoverableKeyEx.message).exception()
-        }
+
+        return keyStore.getKey(alias, password.toCharArray())
     }
 
     private void initKeyStore(String keyStorePath, String keyStorePassword) {
         assert keyStorePath != null
         assert keyStorePassword != null
 
-        try {
-            this.keyStore = KeyStore.getInstance(DEFAULT_KEY_STORE_TYPE)
-            InputStream input = new FileInputStream(getAbsoluteKeyStorePath(keyStorePath))
-            this.keyStore.load(input, keyStorePassword.toCharArray())
-        } catch (KeyStoreException ksex) {
-            throw AppErrors.INSTANCE.keyStoreException(ksex.message).exception()
-        } catch (IOException ioEx) {
-            throw AppErrors.INSTANCE.ioException(ioEx.message).exception()
-        } catch (NoSuchAlgorithmException noSuchAlgoEx) {
-            throw AppErrors.INSTANCE.noSuchAlgorithmException(noSuchAlgoEx.message).exception()
-        } catch (CertificateException certEx) {
-            throw AppErrors.INSTANCE.certificateException(certEx.message).exception()
-        }
+        this.keyStore = KeyStore.getInstance(DEFAULT_KEY_STORE_TYPE)
+        InputStream input = new FileInputStream(getAbsoluteKeyStorePath(keyStorePath))
+        this.keyStore.load(input, keyStorePassword.toCharArray())
     }
 
     private void initKeyAliasesAndPassword(String keyAliases, String keyPasswords) {

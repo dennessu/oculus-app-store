@@ -5,118 +5,7 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:component-scan base-package="com.junbo.oom.core.builtin"/>
-    <context:component-scan base-package="com.junbo.token.db"/>
     <context:annotation-config />
-
-    <!--Data source has the database information -->
-    <bean id="tokenDataSource" class="com.junbo.sharding.hibernate.ShardMultiTenantConnectionProviderFactoryBean">
-        <property name="jdbcUrls" value="${token.db.jdbcUrls}"/>
-        <property name="uniqueName" value="jdbc/token"/>
-        <property name="className" value="org.postgresql.xa.PGXADataSource"/>
-        <property name="minPoolSize" value="${token.db.minConnectionsPerPartition}"/>
-        <property name="maxPoolSize" value="${token.db.maxConnectionsPerPartition}"/>
-        <property name="driverProperties">
-            <props>
-                <prop key="user">${token.db.username}</prop>
-                <prop key="password">${token.db.password}</prop>
-            </props>
-        </property>
-    </bean>
-
-    <!-- SessonFactory for Hibernate -->
-    <bean id="tokenSessionFactory"
-          class="com.junbo.sharding.hibernate.LocalSessionFactoryWithListenerBean">
-        <property name="jtaTransactionManager" ref="transactionManager"/>
-        <property name="hibernateProperties">
-            <map>
-                <entry key="hibernate.dialect" value="${token.hibernate.dialect}"/>
-                <entry key="hibernate.max_fetch_depth" value="${token.hibernate.max_fetch_depth}"/>
-                <entry key="hibernate.jdbc.fetch_size" value="${token.hibernate.jdbc.fetch_size}"/>
-                <entry key="hibernate.jdbc.batch_size" value="${token.hibernate.jdbc.batch_size}"/>
-                <entry key="hibernate.show_sql" value="${token.hibernate.show_sql}"/>
-
-                <entry key="hibernate.multiTenancy" value="SCHEMA"/>
-                <entry key="hibernate.current_session_context_class" value="com.junbo.sharding.hibernate.MultiTenantJTASessionContext"/>
-                <entry key="hibernate.tenant_identifier_resolver" value="com.junbo.sharding.hibernate.ShardCurrentTenantIdentifierResolver"/>
-                <entry key="hibernate.multi_tenant_connection_provider" value-ref="tokenDataSource"/>
-                <entry key="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
-            </map>
-        </property>
-        <property name="packagesToScan">
-            <list>
-                <value>com.junbo.token.db</value>
-                <value>com.junbo.token.db.dao</value>
-                <value>com.junbo.token.db.entity</value>
-            </list>
-        </property>
-    </bean>
-    <!-- Transaction Manager
-    <bean id="transactionManager"
-          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory"/>
-    </bean> -->
-    <!-- Dao -->
-    <bean id="tokenGenericDao"
-          class="com.junbo.token.db.dao.GenericDAOImpl" abstract="true">
-    </bean>
-
-    <bean id="tokenSetDao"
-          class="com.junbo.token.db.dao.TokenSetDao" parent="tokenGenericDao">
-        <property name="persistentClass" value="com.junbo.token.db.entity.TokenSetEntity"/>
-    </bean>
-
-    <bean id="tokenOrderDao"
-          class="com.junbo.token.db.dao.TokenOrderDao" parent="tokenGenericDao">
-        <property name="persistentClass" value="com.junbo.token.db.entity.TokenOrderEntity"/>
-    </bean>
-
-    <bean id="tokenItemDao"
-          class="com.junbo.token.db.dao.TokenItemDao" parent="tokenGenericDao">
-        <property name="persistentClass" value="com.junbo.token.db.entity.TokenItemEntity"/>
-    </bean>
-
-    <bean id="tokenSetOfferDao"
-          class="com.junbo.token.db.dao.TokenSetOfferDao" parent="tokenGenericDao">
-        <property name="persistentClass" value="com.junbo.token.db.entity.TokenSetOfferEntity"/>
-    </bean>
-
-    <bean id="tokenConsumptionDao"
-          class="com.junbo.token.db.dao.TokenConsumptionDao" parent="tokenGenericDao">
-        <property name="persistentClass" value="com.junbo.token.db.entity.TokenConsumptionEntity"/>
-    </bean>
-
-    <bean id="tokenDomainDataRepository"
-          class="com.junbo.token.db.repository.DomainDataRepository" abstract="true">
-    </bean>
-
-    <bean class="com.junbo.token.db.mapper.CommonMapper" />
-    <bean id="tokenMapper" class="com.junbo.token.db.mapper.TokenMapperImpl" />
-    <!-- sql repositories -->
-    <bean id="sqlTokenConsumptionRepository" class="com.junbo.token.db.repo.sql.TokenConsumptionRepositorySqlImpl">
-        <property name="tokenMapper" ref="tokenMapper"/>
-        <property name="tokenConsumptionDao" ref="tokenConsumptionDao"/>
-    </bean>
-
-    <bean id="sqlTokenItemRepository" class="com.junbo.token.db.repo.sql.TokenItemRepositorySqlImpl">
-        <property name="tokenMapper" ref="tokenMapper"/>
-        <property name="tokenItemDao" ref="tokenItemDao"/>
-    </bean>
-
-    <bean id="sqlTokenOrderRepository" class="com.junbo.token.db.repo.sql.TokenOrderRepositorySqlImpl">
-        <property name="tokenMapper" ref="tokenMapper"/>
-        <property name="tokenOrderDao" ref="tokenOrderDao"/>
-    </bean>
-
-    <bean id="sqlTokenSetOfferRepository" class="com.junbo.token.db.repo.sql.TokenSetOfferRepositorySqlImpl">
-        <property name="tokenMapper" ref="tokenMapper"/>
-        <property name="tokenSetOfferDao" ref="tokenSetOfferDao"/>
-    </bean>
-
-    <bean id="sqlTokenSetRepository" class="com.junbo.token.db.repo.sql.TokenSetRepositorySqlImpl">
-        <property name="tokenMapper" ref="tokenMapper"/>
-        <property name="tokenSetDao" ref="tokenSetDao"/>
-    </bean>
 
     <!-- cloudant repositories -->
     <bean id="cloudantTokenConsumptionRepository" class="com.junbo.token.db.repo.cloudant.TokenConsumptionRepositoryCloudantImpl" parent="cloudantClient">
@@ -140,35 +29,11 @@
     </bean>
 
     <!-- repositories -->
-    <bean id="tokenConsumptionRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.token.db.repo.TokenConsumptionRepository"/>
-        <property name="sqlRepositoryImpl" ref="sqlTokenConsumptionRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantTokenConsumptionRepository" />
-    </bean>
-
-    <bean id="tokenItemRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.token.db.repo.TokenItemRepository"/>
-        <property name="sqlRepositoryImpl" ref="sqlTokenItemRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantTokenItemRepository" />
-    </bean>
-
-    <bean id="tokenOrderRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.token.db.repo.TokenOrderRepository"/>
-        <property name="sqlRepositoryImpl" ref="sqlTokenOrderRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantTokenOrderRepository" />
-    </bean>
-
-    <bean id="tokenSetOfferRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.token.db.repo.TokenSetOfferRepository"/>
-        <property name="sqlRepositoryImpl" ref="sqlTokenSetOfferRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantTokenSetOfferRepository" />
-    </bean>
-
-    <bean id="tokenSetRepository" parent="baseRepository">
-        <property name="repositoryInterface" value="com.junbo.token.db.repo.TokenSetRepository"/>
-        <property name="sqlRepositoryImpl" ref="sqlTokenSetRepository" />
-        <property name="cloudantRepositoryImpl" ref="cloudantTokenSetRepository" />
-    </bean>
+    <alias alias="tokenConsumptionRepository" name="cloudantTokenConsumptionRepository" />
+    <alias alias="tokenItemRepository" name="cloudantTokenItemRepository" />
+    <alias alias="tokenOrderRepository" name="cloudantTokenOrderRepository" />
+    <alias alias="tokenSetOfferRepository" name="cloudantTokenSetOfferRepository" />
+    <alias alias="tokenSetRepository" name="cloudantTokenSetRepository" />
 
     <bean id="tokenRepository" class="com.junbo.token.db.repo.facade.TokenRepositoryFacade">
         <property name="tokenConsumptionRepository" ref="tokenConsumptionRepository"/>

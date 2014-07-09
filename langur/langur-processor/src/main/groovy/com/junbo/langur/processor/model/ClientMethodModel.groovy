@@ -13,6 +13,8 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class ClientMethodModel {
 
+    String interfaceType
+
     String methodName
 
     String returnType

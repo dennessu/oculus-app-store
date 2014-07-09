@@ -58,7 +58,7 @@ public class PriceRatingContext extends RatingContext implements Builder<RatingR
 
         Currency currency = Currency.findByCode(request.getCurrency());
         if (currency == null) {
-            throw AppErrors.INSTANCE.currencyNotExist(request.getCurrency()).exception();
+            throw AppErrors.INSTANCE.currencyNotFound(request.getCurrency()).exception();
         }
 
         super.setCurrency(currency);

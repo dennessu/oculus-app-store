@@ -37,7 +37,7 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
             return result.getId();
         } catch (Exception e) {
             LOGGER.error("Error occurred during calling [Entitlement] component.", e);
-            throw AppErrors.INSTANCE.gatewayFailure("entitlement").exception();
+            throw AppErrors.INSTANCE.gatewayFailure("Entitlement").exception();
         }
     }
 }

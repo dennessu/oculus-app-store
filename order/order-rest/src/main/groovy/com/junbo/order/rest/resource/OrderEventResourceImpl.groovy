@@ -3,6 +3,7 @@ package com.junbo.order.rest.resource
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OrderEventId
 import com.junbo.common.id.OrderId
 import com.junbo.common.model.Results
@@ -23,7 +24,6 @@ import org.springframework.stereotype.Component
 import javax.annotation.Resource
 import javax.ws.rs.PathParam
 
-import static com.junbo.authorization.spec.error.AppErrors.INSTANCE
 /**
  * Created by chriszhu on 3/12/14.
  */
@@ -71,7 +71,7 @@ class OrderEventResourceImpl implements OrderEventResource {
         def callback = authorizeCallbackFactory.create(orderEvent.order as OrderId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('create-event')) {
-                throw INSTANCE.forbidden().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             def context = new OrderServiceContext()

@@ -121,7 +121,8 @@ class CoreUtils {
             return false
         if (order.status == OrderStatus.OPEN.name() ||
                 order.status == OrderStatus.PREORDERED.name() ||
-                order.status == OrderStatus.PENDING_CHARGE.name()) {
+                order.status == OrderStatus.PENDING_CHARGE.name() ||
+                order.status == OrderStatus.PENDING_FULFILL.name()) {
             return true
         }
         return false
@@ -224,8 +225,9 @@ class CoreUtils {
 
     static Boolean checkOrderStatusRefundable(Order order) {
 
-        if (order.tentative)
+        if (order.tentative) {
             return false
+        }
         if (order.status == OrderStatus.CHARGED.name() ||
                 order.status == OrderStatus.COMPLETED.name() ||
                 order.status == OrderStatus.PARTIAL_CHARGED.name()) {

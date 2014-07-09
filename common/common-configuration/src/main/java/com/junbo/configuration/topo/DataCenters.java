@@ -14,6 +14,8 @@ import com.junbo.configuration.topo.model.DataCentersConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 /**
  * DataCenters.
  *
@@ -58,6 +60,10 @@ public class DataCenters {
         return data.getDataCenter(dcName);
     }
 
+    public List<Integer> getDataCenterIds() {
+        return data.getDataCenterIds();
+    }
+
     public String getDataCenterUrl(String dataCenterName) {
         return data.getDataCenterUrl(dataCenterName);
     }
@@ -92,6 +98,16 @@ public class DataCenters {
 
     public String currentDataCenter() {
         return getConfigService().getConfigContext().getDataCenter();
+    }
+
+    public int currentDataCenterId() {
+        String dcName = getConfigService().getConfigContext().getDataCenter();
+        DataCenter dataCenter = this.data.getDataCenter(dcName);
+        if (dataCenter == null) {
+            throw new IllegalArgumentException("dataCenter with name: " + dcName + " doesn't exists.");
+        }
+
+        return dataCenter.getId();
     }
 
     private void reload() {

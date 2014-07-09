@@ -61,6 +61,7 @@
     </bean>
 
     <bean id="adyenCCProviderService" class="com.junbo.payment.core.provider.adyen.AdyenCCProivderServiceImpl" parent="adyenProviderService">
+        <property name="personalInfoFacade" ref="personalInfoFacade"/>
     </bean>
 
     <bean id="providerRoutingService" class="com.junbo.payment.core.provider.impl.ProviderRoutingServiceImpl">

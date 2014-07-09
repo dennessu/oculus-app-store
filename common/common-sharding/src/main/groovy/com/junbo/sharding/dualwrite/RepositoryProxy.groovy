@@ -1,10 +1,8 @@
 package com.junbo.sharding.dualwrite
-
 import com.junbo.common.routing.DataAccessPolicies
 import com.junbo.common.routing.model.DataAccessAction
 import com.junbo.common.routing.model.DataAccessPolicy
 import com.junbo.common.util.Context
-import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.sharding.dualwrite.annotations.DeleteMethod
 import com.junbo.sharding.dualwrite.annotations.ReadMethod
 import com.junbo.sharding.dualwrite.annotations.WriteMethod
@@ -16,6 +14,7 @@ import java.lang.reflect.InvocationHandler
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.Proxy
+
 /**
  * Created by minhao on 4/20/14.
  */
@@ -93,12 +92,6 @@ class RepositoryProxy implements InvocationHandler {
 
         DataAccessPolicy policy = Context.get().dataAccessPolicy;
         if (policy == null) {
-            // within an http call
-            if (JunboHttpContext.requestUri != null) {
-                logger.warn("Cannot find policy from Context in HTTP call. Action: $action, Repo: ${repositoryInterface.name}");
-                // TODO: in-proc call routing is not enabled yet
-                // throw new RuntimeException("Cannot find effective dataAccessPolicy in HTTP call! url: ${JunboHttpContext.requestUri}");
-            }
             // fallback.
             policy = DataAccessPolicies.instance().getDataAccessPolicy(action, repositoryInterface);
 

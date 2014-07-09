@@ -20,20 +20,22 @@ public class AsyncLoggedHandler extends AsyncCompletionHandlerBase {
     private long startTime = System.currentTimeMillis();
     private ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     private StringBuffer trace = new StringBuffer();
+    private boolean is5xxResponse;
 
     public AsyncLoggedHandler(String uri) {
         this.uri = uri;
     }
 
     public STATE onBodyPartReceived(final HttpResponseBodyPart content) throws Exception {
-        if (logger.isTraceEnabled()) {
+        if (logger.isTraceEnabled() || is5xxResponse) {
             bytes.write(content.getBodyPartBytes());
         }
         return super.onBodyPartReceived(content);
     }
 
     public STATE onStatusReceived(final HttpResponseStatus status) throws Exception {
-        if (logger.isDebugEnabled()) {
+        is5xxResponse = (status.getStatusCode() / 100) >= 5;
+        if (logger.isDebugEnabled() || is5xxResponse) {
             trace.setLength(0);
             bytes.reset();
             trace.append(String.format("HttpResponse: %s\n\tresponse: %s %s", uri, status.getStatusCode(), status.getStatusText()));
@@ -42,7 +44,7 @@ public class AsyncLoggedHandler extends AsyncCompletionHandlerBase {
     }
 
     public STATE onHeadersReceived(final HttpResponseHeaders headers) throws Exception {
-        if (logger.isTraceEnabled()) {
+        if (logger.isTraceEnabled() || is5xxResponse) {
             trace.append("\n\thttp response: \n\theaders:\n");
             for (String key : headers.getHeaders().keySet()) {
                 for (String value : headers.getHeaders().get(key)) {
@@ -58,13 +60,18 @@ public class AsyncLoggedHandler extends AsyncCompletionHandlerBase {
     }
 
     public Response onCompleted(Response response) throws Exception {
-        if (logger.isTraceEnabled()) {
+        if (logger.isTraceEnabled() || is5xxResponse) {
             trace.append("\n\tresponse body: ");
             trace.append(bytes.toString("UTF-8"));
         }
-        if (logger.isDebugEnabled()) {
+        if (logger.isDebugEnabled() || is5xxResponse) {
             trace.append("\n\ttime elapsed: " + (System.currentTimeMillis() - startTime));
-            logger.debug(trace.toString());
+
+            if (is5xxResponse) {
+                logger.warn(trace.toString());
+            } else {
+                logger.debug(trace.toString());
+            }
             trace.setLength(0);
         }
         return super.onCompleted(response);

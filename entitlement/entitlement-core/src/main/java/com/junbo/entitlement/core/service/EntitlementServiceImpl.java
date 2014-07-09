@@ -17,6 +17,7 @@ import com.junbo.catalog.spec.enums.EntitlementType;
 import com.junbo.catalog.spec.model.item.Binary;
 import com.junbo.catalog.spec.model.item.EntitlementDef;
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.model.Results;
 import com.junbo.entitlement.auth.EntitlementAuthorizeCallbackFactory;
@@ -36,8 +37,6 @@ import org.springframework.util.CollectionUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
-
-import static com.junbo.authorization.spec.error.AppErrors.INSTANCE;
 
 /**
  * Service of Entitlement.
@@ -62,7 +61,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         final Entitlement entitlement = entitlementRepository.get(entitlementId);
 
         if (entitlement == null) {
-            throw AppErrors.INSTANCE.notFound("entitlement", entitlementId).exception();
+            throw AppCommonErrors.INSTANCE.resourceNotFound("entitlement", entitlementId).exception();
         }
 
         AuthorizeCallback callback = authorizeCallbackFactory.create(entitlement);
@@ -71,7 +70,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             @Override
             public Entitlement apply() {
                 if (!AuthorizeContext.hasRights("read")) {
-                    throw AppErrors.INSTANCE.notFound("entitlement", entitlementId).exception();
+                    throw AppCommonErrors.INSTANCE.resourceNotFound("entitlement", entitlementId).exception();
                 }
                 if (EntitlementType.DOWNLOAD.toString().equalsIgnoreCase(entitlement.getType())) {
                     entitlement.setBinaries(generateDownloadUrls(entitlement.getItemId()));
@@ -100,7 +99,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             @Override
             public Entitlement apply() {
                 if (!AuthorizeContext.hasRights("create")) {
-                    throw INSTANCE.forbidden().exception();
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 
                 return merge(entitlement);
@@ -138,7 +137,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
         final Entitlement existingEntitlement = entitlementRepository.get(entitlementId);
         if (existingEntitlement == null) {
-            throw AppErrors.INSTANCE.notFound("entitlement", entitlementId).exception();
+            throw AppCommonErrors.INSTANCE.resourceNotFound("entitlement", entitlementId).exception();
         }
 
         AuthorizeCallback callback = authorizeCallbackFactory.create(entitlement);
@@ -147,7 +146,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             @Override
             public Entitlement apply() {
                 if (!AuthorizeContext.hasRights("update")) {
-                    throw INSTANCE.forbidden().exception();
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 
                 fillUpdate(entitlement, existingEntitlement);
@@ -162,8 +161,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     public void deleteEntitlement(final String entitlementId) {
         Entitlement existingEntitlement = entitlementRepository.get(entitlementId);
         if (existingEntitlement == null) {
-            throw AppErrors.INSTANCE.notFound("entitlement",
-                    entitlementId).exception();
+            throw AppCommonErrors.INSTANCE.resourceNotFound("entitlement", entitlementId).exception();
         }
         checkUser(existingEntitlement.getUserId());
 
@@ -173,7 +171,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             @Override
             public Void apply() {
                 if (!AuthorizeContext.hasRights("delete")) {
-                    throw INSTANCE.forbidden().exception();
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 
                 entitlementRepository.delete(entitlementId);
@@ -215,7 +213,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         }
         Set<String> itemIds = itemFacade.getItemIdsByHostItemId(entitlementSearchParam.getHostItemId().getValue());
         if (CollectionUtils.isEmpty(itemIds)) {
-            throw AppErrors.INSTANCE.fieldNotCorrect("hostItemId",
+            throw AppCommonErrors.INSTANCE.fieldInvalid("hostItemId",
                     "there is no item with hostItemId [" + entitlementSearchParam.getHostItemId() + "]").exception();
         }
         for (String itemId : itemIds) {
@@ -226,7 +224,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     private void checkIsActiveAndIsBanned(EntitlementSearchParam entitlementSearchParam) {
         if (Boolean.TRUE.equals(entitlementSearchParam.getIsBanned()) &&
                 Boolean.TRUE.equals(entitlementSearchParam.getIsActive())) {
-            throw AppErrors.INSTANCE.common("isActive and isSuspended can not be set to true at same time").exception();
+            throw AppCommonErrors.INSTANCE.fieldInvalid("isActive", "isActive and isSuspended can not be set to true at same time").exception();
         }
     }
 
@@ -235,11 +233,11 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     }
 
     private void checkSearchDateFormat(EntitlementSearchParam entitlementSearchParam) {
-        checkDateFormat(entitlementSearchParam.getStartGrantTime());
-        checkDateFormat(entitlementSearchParam.getEndGrantTime());
-        checkDateFormat(entitlementSearchParam.getStartExpirationTime());
-        checkDateFormat(entitlementSearchParam.getEndExpirationTime());
-        checkDateFormat(entitlementSearchParam.getLastModifiedTime());
+        checkDateFormat("startGrantTime", entitlementSearchParam.getStartGrantTime());
+        checkDateFormat("endGrantTime", entitlementSearchParam.getEndGrantTime());
+        checkDateFormat("startExpirationTime", entitlementSearchParam.getStartExpirationTime());
+        checkDateFormat("endExpirationTime", entitlementSearchParam.getEndExpirationTime());
+        checkDateFormat("lastModifiedTime", entitlementSearchParam.getLastModifiedTime());
     }
 
     @Override
@@ -260,7 +258,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             @Override
             public Entitlement apply() {
                 if (!AuthorizeContext.hasRights(requiredRight)) {
-                    throw INSTANCE.forbidden().exception();
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 
                 return existing;
@@ -280,7 +278,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             } catch (MalformedURLException e) {
                 String msg = "Error occurred during parsing url " + entry.getValue().getHref();
                 LOGGER.error(msg, e);
-                throw AppErrors.INSTANCE.common(msg).exception();
+                throw AppErrors.INSTANCE.errorParsingUrl(msg).exception();
             }
         }
         return binaries;

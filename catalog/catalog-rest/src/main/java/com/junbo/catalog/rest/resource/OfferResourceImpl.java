@@ -12,10 +12,10 @@ import com.junbo.authorization.AuthorizeService;
 import com.junbo.authorization.RightsScope;
 import com.junbo.catalog.auth.OfferAuthorizeCallbackFactory;
 import com.junbo.catalog.core.OfferService;
-import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OffersGetOptions;
 import com.junbo.catalog.spec.resource.OfferResource;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
@@ -66,7 +66,7 @@ public class OfferResourceImpl implements OfferResource {
             public Promise<Offer> apply() {
 
                 if (!AuthorizeContext.hasRights("create")) {
-                    throw AppErrors.INSTANCE.accessDenied().exception();
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 
                 return Promise.pure(offerService.createEntity(offer));
@@ -82,7 +82,7 @@ public class OfferResourceImpl implements OfferResource {
             public Promise<Offer> apply() {
 
                 if (!AuthorizeContext.hasRights("update")) {
-                    throw AppErrors.INSTANCE.accessDenied().exception();
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 
                 return Promise.pure(offerService.updateEntity(offerId, offer));
@@ -94,7 +94,7 @@ public class OfferResourceImpl implements OfferResource {
     public Promise<Response> delete(final String offerId) {
         final Offer offer = offerService.getEntity(offerId);
         if (offer == null) {
-            throw AppErrors.INSTANCE.notFound("Offer", offerId).exception();
+            throw AppCommonErrors.INSTANCE.resourceNotFound("Offer", offerId).exception();
         }
 
 
@@ -104,7 +104,7 @@ public class OfferResourceImpl implements OfferResource {
             public Promise<Response> apply() {
 
                 if (!AuthorizeContext.hasRights("delete")) {
-                    throw AppErrors.INSTANCE.accessDenied().exception();
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 
                 offerService.deleteEntity(offerId);

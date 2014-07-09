@@ -63,9 +63,9 @@ public class SubledgerItemDaoTest extends BaseTest {
         entity.setSubledgerId(idGenerator.nextId(SubledgerId.class));
         entity.setSubledgerItemId(idGenerator.nextId(SubledgerItemId.class, entity.getSubledgerId()));
         subledgerItemDao.create(entity);
-        Assert.assertEquals(subledgerItemDao.getByStatus(shardAlgorithm.shardId(entity.getId()),
+        Assert.assertEquals(subledgerItemDao.getByStatus(shardAlgorithm.dataCenterId(entity.getId()), shardAlgorithm.shardId(entity.getId()),
                 entity.getStatus(), 0, 1).size(), 1);
-        for (SubledgerItemEntity itemEntity : subledgerItemDao.getByStatus(shardAlgorithm.shardId(entity.getId()),
+        for (SubledgerItemEntity itemEntity : subledgerItemDao.getByStatus(shardAlgorithm.dataCenterId(entity.getId()), shardAlgorithm.shardId(entity.getId()),
                 entity.getStatus(), 0, 1)) {
             Assert.assertEquals(itemEntity.getStatus(), entity.getStatus());
         }

@@ -3,6 +3,7 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFABackupCodeId
 import com.junbo.common.model.Results
@@ -51,13 +52,13 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
         }
 
         if (userId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('create')) {
-                throw AppErrors.INSTANCE.invalidAccess().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             userTFABackupCode = userTFABackupCodeFilter.filterForCreate(userTFABackupCode)
@@ -81,7 +82,7 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
         }
 
         if (userId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
@@ -118,7 +119,7 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
         def callback = authorizeCallbackFactory.create(userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('update')) {
-                throw AppErrors.INSTANCE.invalidAccess().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             return userTFABackupCodeRepository.get(userTFABackupCodeId).then { UserTFABackupCode oldBackupCode ->
@@ -158,7 +159,7 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
         def callback = authorizeCallbackFactory.create(userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('update')) {
-                throw AppErrors.INSTANCE.invalidAccess().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             return userTFABackupCodeRepository.get(userTFABackupCodeId).then { UserTFABackupCode oldBackupCode ->
@@ -182,13 +183,13 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
     @Override
     Promise<Void> delete(UserId userId, UserTFABackupCodeId userTFABackupCodeId) {
         if (userId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('delete')) {
-                throw AppErrors.INSTANCE.invalidAccess().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             return userTFABackupCodeValidator.validateForGet(userId, userTFABackupCodeId).then {
@@ -200,7 +201,7 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
     @Override
     Promise<Results<UserTFABackupCode>> list(UserId userId, UserTFABackupCodeListOptions listOptions) {
         if (userId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)

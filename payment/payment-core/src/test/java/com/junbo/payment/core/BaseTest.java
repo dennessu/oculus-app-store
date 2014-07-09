@@ -48,7 +48,7 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
     protected ProviderRoutingService providerRoutingService;
 
     protected long generateUserId() {
-        return idGenerator.nextIdByShardId(0);
+        return idGenerator.nextId();
     }
 
     protected UUID generateUUID() {

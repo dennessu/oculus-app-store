@@ -11,11 +11,11 @@ import com.junbo.catalog.core.PromotionService;
 import com.junbo.catalog.db.repo.PromotionRepository;
 import com.junbo.catalog.db.repo.PromotionRevisionRepository;
 import com.junbo.catalog.spec.enums.Status;
-import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.model.promotion.PromotionRevision;
 import com.junbo.catalog.spec.model.promotion.PromotionRevisionsGetOptions;
 import com.junbo.catalog.spec.model.promotion.PromotionsGetOptions;
+import com.junbo.common.error.AppCommonErrors;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
     @Override
     public Promotion createEntity(Promotion promotion) {
         if (promotion.getRev() != null) {
-            throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull("rev").exception();
         }
         validatePromotion(promotion);
         return promotionRepo.create(promotion);
@@ -49,7 +49,7 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
     @Override
     public PromotionRevision createRevision(PromotionRevision revision) {
         if (revision.getRev() != null) {
-            throw AppErrors.INSTANCE.validation("rev must be null at creation.").exception();
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull("rev").exception();
         }
         validateRevision(revision);
         return promotionRevisionRepo.create(revision);
@@ -62,7 +62,7 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
 
         PromotionRevision existingRevision = promotionRevisionRepo.get(revisionId);
         if (Status.APPROVED.is(existingRevision.getStatus())) {
-            throw AppErrors.INSTANCE.validation("Cannot update a revision after it's approved.").exception();
+            throw AppCommonErrors.INSTANCE.invalidOperation("Cannot update a revision after it's approved.").exception();
         }
         checkEntityNotNull(revisionId, existingRevision, "promotion-revision");
 
@@ -120,16 +120,16 @@ public class PromotionServiceImpl extends BaseRevisionedServiceImpl<Promotion, P
 
     private void checkFieldNotNull(Object field, String fieldName) {
         if (field == null) {
-            throw AppErrors.INSTANCE.missingField(fieldName).exception();
+            throw AppCommonErrors.INSTANCE.fieldRequired(fieldName).exception();
         }
     }
 
     private void validateId(String expectedId, String actualId) {
         if (actualId == null) {
-            throw AppErrors.INSTANCE.missingField("id").exception();
+            throw AppCommonErrors.INSTANCE.fieldRequired("id").exception();
         }
         if (!expectedId.equals(actualId)) {
-            throw AppErrors.INSTANCE.fieldNotMatch("id", actualId, expectedId).exception();
+            throw AppCommonErrors.INSTANCE.fieldNotWritable("id", actualId, expectedId).exception();
         }
     }
 }

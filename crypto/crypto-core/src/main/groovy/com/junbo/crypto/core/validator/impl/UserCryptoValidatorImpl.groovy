@@ -1,5 +1,6 @@
 package com.junbo.crypto.core.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.crypto.core.generator.SecurityKeyGenerator
 import com.junbo.crypto.core.validator.UserCryptoValidator
 import com.junbo.crypto.spec.error.AppErrors
@@ -27,15 +28,15 @@ class UserCryptoValidatorImpl implements UserCryptoValidator {
         }
 
         if (userCryptoKey.id != null) {
-            throw AppErrors.INSTANCE.fieldInvalid('id is not null').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
 
         if (userCryptoKey.value != null) {
-            throw AppErrors.INSTANCE.fieldInvalid('value is not null').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('value').exception()
         }
 
         if (userCryptoKey.encryptValue != null) {
-            throw AppErrors.INSTANCE.fieldInvalid('encryptValue is not null').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('encryptValue').exception()
         }
 
         return checkBasicCryptoKey(userCryptoKey).then {
@@ -47,12 +48,12 @@ class UserCryptoValidatorImpl implements UserCryptoValidator {
 
     Promise<Void> checkBasicCryptoKey(UserCryptoKey userCryptoKey) {
         if (userCryptoKey.userId == null) {
-            throw AppErrors.INSTANCE.fieldMissing("userId").exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired("user").exception()
         }
 
         return userResource.get(userCryptoKey.userId, new UserGetOptions()).then { User user ->
             if (user == null) {
-                throw AppErrors.INSTANCE.userNotFound(userCryptoKey.userId).exception()
+                throw AppErrors.INSTANCE.userNotFound("user", userCryptoKey.userId).exception()
             }
 
             return Promise.pure(null)

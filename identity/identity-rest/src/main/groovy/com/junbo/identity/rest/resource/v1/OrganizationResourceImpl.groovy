@@ -3,6 +3,7 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -12,7 +13,6 @@ import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.OrganizationValidator
 import com.junbo.identity.data.repository.OrganizationRepository
 import com.junbo.identity.spec.error.AppErrors
-
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.option.list.OrganizationListOptions
 import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
@@ -22,8 +22,6 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.StringUtils
-
-import static com.junbo.authorization.spec.error.AppErrors.INSTANCE
 
 /**
  * Created by liangfu on 5/22/14.
@@ -58,7 +56,7 @@ class OrganizationResourceImpl implements OrganizationResource {
             def callback = authorizeCallbackFactory.create(organization)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('create')) {
-                    throw INSTANCE.forbidden().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 return organizationRepository.create(organization).then { Organization newOrganization ->
@@ -88,7 +86,7 @@ class OrganizationResourceImpl implements OrganizationResource {
             def callback = authorizeCallbackFactory.create(oldOrganization)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('update')) {
-                    throw INSTANCE.forbidden().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 organization = organizationFilter.filterForPatch(organization, oldOrganization)
@@ -178,7 +176,7 @@ class OrganizationResourceImpl implements OrganizationResource {
             def callback = authorizeCallbackFactory.create(organization)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('delete')) {
-                    throw INSTANCE.forbidden().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 return organizationRepository.delete(organizationId)
