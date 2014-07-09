@@ -31,7 +31,7 @@ public class SubsRatingContext extends RatingContext implements Builder<SubsRati
         super.setCountry(request.getCountry());
         Currency currency = Currency.findByCode(request.getCurrency());
         if (currency == null) {
-            throw AppErrors.INSTANCE.currencyNotExist(request.getCurrency()).exception();
+            throw AppErrors.INSTANCE.currencyNotFound(request.getCurrency()).exception();
         }
 
         super.setCurrency(currency);

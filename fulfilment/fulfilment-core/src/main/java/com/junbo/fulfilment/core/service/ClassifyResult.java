@@ -5,7 +5,7 @@
  */
 package com.junbo.fulfilment.core.service;
 
-import com.junbo.fulfilment.spec.error.AppErrors;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.fulfilment.spec.model.FulfilmentAction;
 
 import java.util.*;
@@ -24,7 +24,7 @@ public class ClassifyResult {
         String type = action.getType();
 
         if (action.getType() == null) {
-            throw AppErrors.INSTANCE.common("The fulfilment action actionType is not specified.").exception();
+            throw AppCommonErrors.INSTANCE.fieldRequired("fulfillmentAction.type").exception();
         }
 
         List<FulfilmentAction> actions = result.get(type);

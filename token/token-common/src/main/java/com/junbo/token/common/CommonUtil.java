@@ -10,14 +10,17 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.PropertyFilter;
 import com.alibaba.fastjson.serializer.SerializeWriter;
-import com.junbo.token.common.exception.AppClientExceptions;
+import com.junbo.common.error.AppCommonErrors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -75,10 +78,10 @@ public final class CommonUtil {
                     try{
                         value = new PropertyDescriptor(field.getName(), obj.getClass()).getReadMethod().invoke(obj);
                     }catch (Exception ex){
-                        throw AppClientExceptions.INSTANCE.fieldNotNeeded(field.getName()).exception();
+                        throw AppCommonErrors.INSTANCE.fieldMustBeNull(field.getName()).exception();
                     }
                     if(value != null){
-                        throw AppClientExceptions.INSTANCE.fieldNotNeeded(field.getName()).exception();
+                        throw AppCommonErrors.INSTANCE.fieldMustBeNull(field.getName()).exception();
                     }
                 }else if(annotation instanceof InnerFilter){
                     try{
@@ -88,7 +91,7 @@ public final class CommonUtil {
                             preValidation(sub);
                         }
                     }catch (Exception ex){
-                        throw AppClientExceptions.INSTANCE.fieldNotNeeded(field.getName()).exception();
+                        throw AppCommonErrors.INSTANCE.fieldMustBeNull(field.getName()).exception();
                     }
                 }
             }

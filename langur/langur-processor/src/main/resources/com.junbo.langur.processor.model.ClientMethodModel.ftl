@@ -59,7 +59,7 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
         com.ning.http.client.Request __request = __requestBuilder.build();
 
         com.junbo.langur.core.context.JunboHttpContext.JunboHttpContextData __httpContextData =
-            __createJunboHttpContextData(__request);
+            __createJunboHttpContextData(__request, ${interfaceType}.class);
 
         return com.junbo.langur.core.context.JunboHttpContextScope.with(__httpContextData, __junboHttpContextScopeListeners, new Promise.Func0<Promise<${returnType}>>() {
             @Override

@@ -7,7 +7,7 @@
 package com.junbo.rating.rest.resource;
 
 import com.junbo.authorization.AuthorizeContext;
-import com.junbo.authorization.spec.error.AppErrors;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.rating.core.context.PriceRatingContext;
 import com.junbo.rating.core.context.SubsRatingContext;
@@ -64,7 +64,7 @@ public class RatingResourceImpl implements RatingResource {
 
     private static void authorize() {
         if (!AuthorizeContext.hasScopes(RATING_SERVICE_SCOPE)) {
-            throw AppErrors.INSTANCE.insufficientScope().exception();
+            throw AppCommonErrors.INSTANCE.insufficientScope().exception();
         }
     }
 }

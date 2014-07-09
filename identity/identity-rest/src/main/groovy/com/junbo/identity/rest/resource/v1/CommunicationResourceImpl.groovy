@@ -3,6 +3,7 @@ package com.junbo.identity.rest.resource.v1
 import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.CommunicationId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
@@ -55,7 +56,7 @@ class CommunicationResourceImpl implements CommunicationResource {
         }
 
         if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         communication = communicationFilter.filterForCreate(communication)
@@ -81,7 +82,7 @@ class CommunicationResourceImpl implements CommunicationResource {
         }
 
         if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         return communicationRepository.get(communicationId).then { Communication oldCommunication ->
@@ -111,7 +112,7 @@ class CommunicationResourceImpl implements CommunicationResource {
         }
 
         if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         return communicationRepository.get(communicationId).then { Communication oldCommunication ->
@@ -174,7 +175,7 @@ class CommunicationResourceImpl implements CommunicationResource {
         }
 
         if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         return communicationValidator.validateForGet(communicationId).then { Communication communication ->

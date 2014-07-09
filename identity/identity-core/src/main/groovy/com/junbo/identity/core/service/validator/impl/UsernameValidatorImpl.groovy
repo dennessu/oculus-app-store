@@ -1,7 +1,7 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.identity.core.service.validator.UsernameValidator
-import com.junbo.identity.spec.error.AppErrors
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
@@ -49,19 +49,19 @@ class UsernameValidatorImpl implements UsernameValidator {
         }
 
         if (username.length() < minLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('username', minLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooShort('username', minLength).exception()
         }
 
         if (username.length() > maxLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('username', maxLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooLong('username', maxLength).exception()
         }
 
         if (disallowedPatterns.any { Pattern pattern -> pattern.matcher(username).matches() }) {
-            throw AppErrors.INSTANCE.fieldInvalid('username').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('username').exception()
         }
 
         if (!allowedPatterns.any { Pattern pattern -> pattern.matcher(username).matches() }) {
-            throw AppErrors.INSTANCE.fieldInvalid('username').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('username').exception()
         }
     }
 }

@@ -24,11 +24,12 @@ abstract class AbstractRestAdapter {
     @Context
     private Request grizzlyRequest
 
-    JunboHttpContext.JunboHttpContextData __createJunboHttpContextData() {
+    JunboHttpContext.JunboHttpContextData __createJunboHttpContextData(Class requestHandler) {
 
         def httpContextData = new JunboHttpContext.JunboHttpContextData(
                 requestMethod: httpRequestContext.method,
                 requestUri: httpRequestContext.uriInfo.absolutePath,
+                requestHandler: requestHandler
         )
 
         for (Map.Entry<String, List<String>> entry : httpRequestContext.headers.entrySet()) {

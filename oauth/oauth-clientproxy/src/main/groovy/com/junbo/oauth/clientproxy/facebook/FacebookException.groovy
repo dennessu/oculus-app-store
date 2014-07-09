@@ -23,11 +23,7 @@ class FacebookException extends RuntimeException {
         this.error = error
     }
 
-    com.junbo.common.error.Error commonError() {
-        return new com.junbo.common.error.Error(
-                code: '20071',
-                description: error.error.message,
-                field: 'facebookAuth'
-        )
+    String getMessage() {
+        return error.error.message
     }
 }

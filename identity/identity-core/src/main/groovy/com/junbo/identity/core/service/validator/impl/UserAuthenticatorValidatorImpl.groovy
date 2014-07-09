@@ -1,5 +1,6 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserAuthenticatorId
 import com.junbo.identity.core.service.validator.UserAuthenticatorValidator
 import com.junbo.identity.data.identifiable.UserStatus
@@ -60,7 +61,7 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
     @Override
     Promise<UserAuthenticator> validateForGet(UserAuthenticatorId userAuthenticatorId) {
         if (userAuthenticatorId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userAuthenticatorId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userAuthenticatorId').exception()
         }
 
         return userAuthenticatorRepository.get(userAuthenticatorId).then { UserAuthenticator userAuthenticator ->
@@ -93,7 +94,7 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
         }
 
         if (options.userId == null && options.externalId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userId or externalId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId or externalId').exception()
         }
 
         return Promise.pure(null)
@@ -103,14 +104,14 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
     Promise<Void> validateForCreate(UserAuthenticator userAuthenticator) {
         return basicCheckUserAuthenticator(userAuthenticator).then {
             if (userAuthenticator.id != null) {
-                throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+                throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
             }
 
             return userAuthenticatorRepository.searchByUserIdAndTypeAndExternalId(userAuthenticator.userId,
                     userAuthenticator.type, userAuthenticator.externalId, Integer.MAX_VALUE, 0).then {
                 List<UserAuthenticator> existing ->
                 if (!CollectionUtils.isEmpty(existing)) {
-                    throw AppErrors.INSTANCE.fieldDuplicate('externalId').exception()
+                    throw AppCommonErrors.INSTANCE.fieldDuplicate('externalId').exception()
                 }
 
                 return Promise.pure(null)
@@ -129,15 +130,15 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
             }
 
             if (authenticator.id != userAuthenticatorId) {
-                throw AppErrors.INSTANCE.fieldInvalid('id', userAuthenticatorId.value.toString()).exception()
+                throw AppCommonErrors.INSTANCE.fieldNotWritable('id', authenticator.id, userAuthenticatorId.value).exception()
             }
 
             if (authenticator.id != oldAuthenticator.id) {
-                throw AppErrors.INSTANCE.fieldInvalid('id', oldAuthenticator.id.toString()).exception()
+                throw AppCommonErrors.INSTANCE.fieldNotWritable('id', authenticator.id, oldAuthenticator.id).exception()
             }
 
             if (authenticator.userId != oldAuthenticator.userId) {
-                throw AppErrors.INSTANCE.fieldInvalid('userId', oldAuthenticator.userId.toString()).exception()
+                throw AppCommonErrors.INSTANCE.fieldNotWritable('userId', authenticator.userId, oldAuthenticator.userId).exception()
             }
 
             if (authenticator.externalId != oldAuthenticator.externalId
@@ -146,7 +147,7 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
                         authenticator.type, authenticator.externalId, Integer.MAX_VALUE, 0).then {
                     List<UserAuthenticator> existing ->
                         if (!CollectionUtils.isEmpty(existing)) {
-                            throw AppErrors.INSTANCE.fieldDuplicate('type or externalId').exception()
+                            throw AppCommonErrors.INSTANCE.fieldDuplicate('type or externalId').exception()
                         }
 
                         return Promise.pure(null)
@@ -163,7 +164,7 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
         }
 
         if (userAuthenticator.userId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
         return userRepository.get(userAuthenticator.userId).then { User user ->
@@ -172,7 +173,7 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
             }
 
             if (user.isAnonymous == null) {
-                throw AppErrors.INSTANCE.fieldRequired('isAnonymous').exception()
+                throw AppCommonErrors.INSTANCE.fieldRequired('isAnonymous').exception()
             }
 
             if (user.status != UserStatus.ACTIVE.toString()) {
@@ -180,21 +181,21 @@ class UserAuthenticatorValidatorImpl implements UserAuthenticatorValidator {
             }
 
             if (userAuthenticator.externalId == null) {
-                throw AppErrors.INSTANCE.fieldRequired('externalId').exception()
+                throw AppCommonErrors.INSTANCE.fieldRequired('externalId').exception()
             }
             if (userAuthenticator.externalId.length() < minExternalIdLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('externalId', minExternalIdLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooShort('externalId', minExternalIdLength).exception()
             }
             if (userAuthenticator.externalId.length() > maxExternalIdLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('externalId', maxExternalIdLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooLong('externalId', maxExternalIdLength).exception()
             }
 
             if (userAuthenticator.type == null) {
-                throw AppErrors.INSTANCE.fieldRequired('type').exception()
+                throw AppCommonErrors.INSTANCE.fieldRequired('type').exception()
             }
 
             if (!(userAuthenticator.type in allowedTypes)) {
-                throw AppErrors.INSTANCE.fieldInvalid('type', allowedTypes.join(',')).exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalidEnum('type', allowedTypes.join(',')).exception()
             }
 
             return Promise.pure(null)

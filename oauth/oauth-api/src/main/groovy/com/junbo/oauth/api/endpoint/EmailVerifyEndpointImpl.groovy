@@ -36,7 +36,6 @@ import org.springframework.util.StringUtils
 
 import javax.ws.rs.core.Response
 import javax.ws.rs.core.UriBuilder
-
 /**
  * EmailVerifyEndpointImpl.
  */
@@ -109,7 +108,7 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
         }
 
         if (StringUtils.isEmpty(code)) {
-            LOGGER.warn(AppExceptions.INSTANCE.missingEmailVerifyCode().description)
+            LOGGER.warn(AppExceptions.INSTANCE.missingEmailVerifyCode().toString())
             Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)
                     .location(UriBuilder.fromUri(failedRedirectUri).build())
             return Promise.pure(responseBuilder.build())
@@ -118,7 +117,7 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
         EmailVerifyCode emailVerifyCode = emailVerifyCodeRepository.getAndRemove(code)
 
         if (emailVerifyCode == null) {
-            LOGGER.warn(AppExceptions.INSTANCE.invalidEmailVerifyCode(code).description)
+            LOGGER.warn(AppExceptions.INSTANCE.invalidEmailVerifyCode(code).toString())
             Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)
                     .location(UriBuilder.fromUri(failedRedirectUri).build())
             return Promise.pure(responseBuilder.build())

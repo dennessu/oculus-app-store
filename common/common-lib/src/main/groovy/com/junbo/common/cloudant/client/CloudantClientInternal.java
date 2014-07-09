@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * CloudantClient.
  */
-public interface CloudantClient {
+public interface CloudantClientInternal {
     <T extends CloudantEntity>
     Promise<T> cloudantPost(CloudantDbUri dbUri, Class<T> entityClass, T entity);
 

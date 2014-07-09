@@ -1,6 +1,7 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.identity.common.util.ValidatorUtil
 import com.junbo.identity.core.service.validator.LocaleValidator
 import com.junbo.identity.data.repository.LocaleRepository
@@ -95,13 +96,13 @@ class LocaleValidatorImpl implements LocaleValidator {
     @Override
     Promise<Void> validateForCreate(Locale locale) {
         if (locale.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
 
         return checkBasicLocaleInfo(locale).then {
             return localeRepository.get(new LocaleId(locale.localeCode)).then { Locale existing ->
                 if (existing != null) {
-                    throw AppErrors.INSTANCE.fieldDuplicate('localeCode').exception()
+                    throw AppCommonErrors.INSTANCE.fieldDuplicate('localeCode').exception()
                 }
 
                 return Promise.pure(null)
@@ -120,16 +121,16 @@ class LocaleValidatorImpl implements LocaleValidator {
         }
 
         if (localeId.toString() != locale.id.toString()) {
-            throw AppErrors.INSTANCE.fieldInvalid('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('id').exception()
         }
 
         if (localeId.toString() != oldLocale.id.toString()) {
-            throw AppErrors.INSTANCE.fieldInvalid('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('id').exception()
         }
 
         return checkBasicLocaleInfo(locale).then {
             if (locale.localeCode != oldLocale.localeCode) {
-                throw AppErrors.INSTANCE.fieldInvalid('localeCode').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('localeCode').exception()
             }
             return Promise.pure(null)
         }
@@ -141,36 +142,36 @@ class LocaleValidatorImpl implements LocaleValidator {
         }
 
         if (locale.localeCode == null) {
-            throw AppErrors.INSTANCE.fieldRequired('localeCode').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('localeCode').exception()
         }
         if (!ValidatorUtil.isValidLocale(locale.localeCode)) {
-            throw AppErrors.INSTANCE.fieldInvalid('localeCode').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('localeCode').exception()
         }
 
         if (locale.shortName != null) {
             if (locale.shortName.length() > maxShortNameLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('shortName', maxShortNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooLong('shortName', maxShortNameLength).exception()
             }
             if (locale.shortName.length() < minShortNameLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('shortName', minShortNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooShort('shortName', minShortNameLength).exception()
             }
         }
 
         if (locale.longName != null) {
             if (locale.longName.length() > maxLongNameLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('longName', maxLongNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooLong('longName', maxLongNameLength).exception()
             }
             if (locale.longName.length() < minLongNameLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('longName', minLongNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooShort('longName', minLongNameLength).exception()
             }
         }
 
         if (locale.localeName != null) {
             if (locale.localeName.length() > maxLocaleNameLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('localeName', maxLocaleNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooLong('localeName', maxLocaleNameLength).exception()
             }
             if (locale.localeName.length() < minLocaleNameLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('localeName', minLocaleNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooShort('localeName', minLocaleNameLength).exception()
             }
         }
 
@@ -181,7 +182,7 @@ class LocaleValidatorImpl implements LocaleValidator {
                 }
 
                 if (existing.localeCode == locale.localeCode) {
-                    throw AppErrors.INSTANCE.fieldInvalidException('localeCode',
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('localeCode',
                             'Default localeCode is same as localeCode').exception()
                 }
 

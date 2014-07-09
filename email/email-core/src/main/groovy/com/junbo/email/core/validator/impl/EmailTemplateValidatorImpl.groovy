@@ -5,6 +5,7 @@
  */
 package com.junbo.email.core.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.email.common.util.PlaceholderUtils
 import com.junbo.email.core.validator.EmailTemplateValidator
 import com.junbo.email.spec.error.AppErrors
@@ -38,48 +39,48 @@ class EmailTemplateValidatorImpl extends CommonValidator implements EmailTemplat
     @Override
     void validateDelete(String id) {
         if (id == null) {
-            throw AppErrors.INSTANCE.missingField('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('id').exception()
         }
     }
 
     @Override
     void validateGet(Pagination pagination) {
         if (pagination?.page != null && pagination.page < 1) {
-            throw AppErrors.INSTANCE.invalidParameter('page').exception()
+            throw AppCommonErrors.INSTANCE.parameterInvalid('page').exception()
         }
         if (pagination?.size != null && pagination.size < 1) {
-            throw AppErrors.INSTANCE.invalidParameter('size').exception()
+            throw AppCommonErrors.INSTANCE.parameterInvalid('size').exception()
         }
     }
 
     private void validateCommonField(EmailTemplate template) {
         if (template == null) {
-            throw AppErrors.INSTANCE.invalidPayload().exception()
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
         if (template.id != null) {
-            throw AppErrors.INSTANCE.unnecessaryField('self').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('self').exception()
         }
         if (StringUtils.isEmpty(template.source)) {
-            throw AppErrors.INSTANCE.missingField('source').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('source').exception()
         }
         if (StringUtils.isEmpty(template.action)) {
-            throw AppErrors.INSTANCE.missingField('action').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('action').exception()
         }
         if (StringUtils.isEmpty(template.locale)) {
-            throw AppErrors.INSTANCE.missingField('locale').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('locale').exception()
         }
         if (template.providerName == null) {
-            throw AppErrors.INSTANCE.missingField('providerName').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('providerName').exception()
         }
         if (template.fromAddress != null && !validateEmailAddress(template.fromAddress)) {
-            throw AppErrors.INSTANCE.invalidField('fromAddress').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('fromAddress').exception()
         }
     }
 
     private void validateTemplateName(String name) {
         EmailTemplate template = emailTemplateRepository.getEmailTemplateByName(name).get()
         if (template != null) {
-            throw AppErrors.INSTANCE.emailTemplateAlreadyExist().exception()
+            throw AppErrors.INSTANCE.emailTemplateAlreadyExist(name).exception()
         }
     }
 
@@ -87,7 +88,7 @@ class EmailTemplateValidatorImpl extends CommonValidator implements EmailTemplat
         if (!StringUtils.isEmpty(template.subject)) {
             List<String> placeholders = PlaceholderUtils.retrievePlaceholders(template.subject);
             if (!PlaceholderUtils.compare(placeholders, template.placeholderNames)) {
-                throw AppErrors.INSTANCE.invalidPlaceholderNames().exception()
+                throw AppErrors.INSTANCE.invalidPlaceholderNames("subject").exception()
             }
         }
     }
@@ -95,7 +96,7 @@ class EmailTemplateValidatorImpl extends CommonValidator implements EmailTemplat
     private void validateTemplateId(String id) {
         EmailTemplate template = emailTemplateRepository.getEmailTemplate(id).get()
         if (template == null) {
-            throw AppErrors.INSTANCE.templateNotFound().exception()
+            throw AppErrors.INSTANCE.templateNotFound(id).exception()
         }
     }
 }

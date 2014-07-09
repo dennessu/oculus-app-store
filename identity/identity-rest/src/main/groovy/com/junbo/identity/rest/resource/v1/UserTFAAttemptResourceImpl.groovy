@@ -3,6 +3,7 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFAAttemptId
 import com.junbo.common.model.Results
@@ -64,7 +65,7 @@ class UserTFAAttemptResourceImpl implements UserTFAAttemptResource {
         }
 
         if (!AuthorizeContext.hasScopes(IDENTITY_SERVICE_SCOPE)) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         userTeleAttempt = userTFAAttemptFilter.filterForCreate(userTeleAttempt)
@@ -99,13 +100,13 @@ class UserTFAAttemptResourceImpl implements UserTFAAttemptResource {
         }
 
         if (userId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('read')) {
-                throw AppErrors.INSTANCE.invalidAccess().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             return userTFAAttemptValidator.validateForGet(userId, userTFAAttemptId).then { UserTFAAttempt attempt ->
@@ -119,13 +120,13 @@ class UserTFAAttemptResourceImpl implements UserTFAAttemptResource {
     @Override
     Promise<Results<UserTFAAttempt>> list(UserId userId, UserTFAAttemptListOptions listOptions) {
         if (userId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('read')) {
-                throw AppErrors.INSTANCE.invalidAccess().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             return userTFAAttemptValidator.validateForSearch(userId, listOptions).then {

@@ -5,8 +5,10 @@
  */
 package com.junbo.common.error;
 
+import com.google.common.base.Strings;
 import com.junbo.common.id.Id;
 import com.junbo.common.util.IdFormatter;
+import com.junbo.langur.core.context.JunboHttpContext;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -31,26 +33,27 @@ public class ErrorProxy implements InvocationHandler {
             return method.invoke(proxy, args);
         }
 
-        final String methodName = method.getName();
         final int httpStatusCode = errorDef.httpStatusCode();
+
+        final String componentCode = Components.instance().getComponent(JunboHttpContext.getRequestHandler());
 
         final String code;
         if (errorDef.code().isEmpty()) {
-            code = null;
+            throw new RuntimeException("Invalid ErrorDef: code is required.");
         }
         else {
-            code = errorDef.code();
+            code = componentCode + "." + errorDef.code();
         }
 
         final String message;
-        if (errorDef.description().isEmpty()) {
+        if (errorDef.message().isEmpty()) {
             message = null;
         }
         else if (args == null || args.length == 0){
-            message = errorDef.description();
+            message = errorDef.message();
         }
         else {
-            message = formatMessage(errorDef.description(), args);
+            message = formatMessage(errorDef.message(), args);
         }
 
         final String field;
@@ -64,45 +67,44 @@ public class ErrorProxy implements InvocationHandler {
             field = formatMessage(errorDef.field(), args);
         }
 
-        final List<AppError> causes;
-        if (args != null && args.length > 0 && (args[args.length - 1] instanceof AppError[])) {
-            AppError[] causesArray = (AppError[]) args[args.length - 1];
-            if (causesArray == null || causesArray.length == 0) {
-                causes = null;
-            }
-            else {
-                causes = Arrays.asList(causesArray);
-            }
+        final String reason;
+        if (errorDef.reason().isEmpty()) {
+            reason = null;
+        }
+        else if (args == null || args.length == 0) {
+            reason = errorDef.reason();
         }
         else {
-            causes = null;
+            reason = formatMessage(errorDef.reason(), args);
         }
 
+        List<ErrorDetail> errorDetails = new ArrayList<>();
+        if (!Strings.isNullOrEmpty(field) || !Strings.isNullOrEmpty(reason)) {
+            ErrorDetail detail = new ErrorDetail(field, reason);
+            errorDetails.add(detail);
+        }
+
+        if (args != null && args.length > 0 && (args[args.length - 1] instanceof ErrorDetail[])) {
+            ErrorDetail[] detailsArray = (ErrorDetail[]) args[args.length - 1];
+            if (detailsArray != null && detailsArray.length != 0) {
+                errorDetails.addAll(Arrays.asList(detailsArray));
+            }
+        }
+        if (errorDetails.size() == 0) {
+            errorDetails = null;
+        }
+
+        final List<ErrorDetail> finalErrorDetails = errorDetails;
+
         return new AppError() {
+            private Error error = new Error(
+                    message,
+                    code,
+                    finalErrorDetails);
 
             @Override
             public int getHttpStatusCode() {
                 return httpStatusCode;
-            }
-
-            @Override
-            public String getCode() {
-                return code;
-            }
-
-            @Override
-            public String getDescription() {
-                return message;
-            }
-
-            @Override
-            public String getField() {
-                return field;
-            }
-
-            @Override
-            public List<AppError> getCauses() {
-                return causes;
             }
 
             @Override
@@ -112,23 +114,12 @@ public class ErrorProxy implements InvocationHandler {
 
             @Override
             public Error error() {
-                List<Error> causeErrors = new ArrayList<Error>();
-                if (causes != null) {
-                    for (AppError cause : causes) {
-                        causeErrors.add(cause.error());
-                    }
-                }
-                return new Error(code, message, field, causeErrors);
+                return error;
             }
 
             @Override
             public String toString() {
-                return methodName +
-                        " { httpStatusCode=" + httpStatusCode +
-                        ", code=" + code +
-                        ", message=" + message +
-                        ", field=" + field +
-                        ", causes=" + causes + " }";
+                return error.toString();
             }
         };
     }
@@ -141,7 +132,7 @@ public class ErrorProxy implements InvocationHandler {
         int index = 0;
         for (Object arg : args) {
 
-            String argStr = "null";
+            String argStr = "{null}";
 
             if (arg != null) {
                 if (arg instanceof Id) {

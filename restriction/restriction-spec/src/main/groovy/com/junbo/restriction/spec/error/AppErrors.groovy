@@ -14,43 +14,19 @@ import com.junbo.common.error.ErrorProxy
 interface AppErrors {
     AppErrors INSTANCE = ErrorProxy.newProxyInstance(AppErrors)
 
-    @ErrorDef(httpStatusCode = 404, code = ErrorCode.USER_NOT_FOUND,
-            description ='User not found')
-    AppError invalidUser()
+    @ErrorDef(httpStatusCode = 412, code = "101", message = "User Not Found")
+    AppError userNotFound()
 
-    @ErrorDef(httpStatusCode = 404, code = ErrorCode.USER_PII_NOT_FOUND,
-            description ='User information not found')
-    AppError invalidUserPii()
+    @ErrorDef(httpStatusCode = 412, code = "102", message = "User Personal Info Not Found")
+    AppError userPersonalInfoNotFound()
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_USER_STATUS,
-            description ='User status is invalid')
+    @ErrorDef(httpStatusCode = 412, code = "103", message = "Invalid User Status")
     AppError invalidUserStatus()
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.UNNECESSARY_FILED,
-            description ='Field {0} is unnecessary')
-    AppError unnecessaryField(String field)
-
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_FIELD_VALUE,
-            description ='Field {0} is invalid')
-    AppError invalidField(String field)
-
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.MISSING_FIELD_VALUE,
-            description ='Field {0} is missing')
-    AppError missingField(String field)
-
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.QUERY_PARAMETER_IS_NULL,
-            description ='The query parameter is null')
-    AppError invalidQueryParameter()
-
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_DATE_FORMAT,
-            description ='The date should be in yyyy-MM-ddTHH:mm:ssZ format')
+    @ErrorDef(httpStatusCode = 400, code = "104", message = "Invalid Date Format",
+            field = "date", reason = "The date should be in yyyy-MM-ddTHH:mm:ssZ format")
     AppError invalidDateFormat()
 
-    @ErrorDef(httpStatusCode = 500, code = ErrorCode.GET_OFFER_FAILED,
-            description ='Failed to get offer info')
-    AppError fetchOfferFailed()
-
-    @ErrorDef(httpStatusCode = 500, code = ErrorCode.GET_USER_FAILED,
-            description ='Failed to get user')
-    AppError fetchUserFailed()
+    @ErrorDef(httpStatusCode = 412, code = "105", message = "Offer Not Found")
+    AppError offerNotFound()
 }

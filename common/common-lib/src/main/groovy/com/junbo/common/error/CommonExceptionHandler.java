@@ -12,9 +12,6 @@ import com.junbo.langur.core.client.TypeReference;
 import com.ning.http.client.Response;
 import org.springframework.beans.factory.annotation.Required;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * CommonExceptionHandler.
  */
@@ -53,32 +50,6 @@ public class CommonExceptionHandler implements ExceptionHandler {
             }
 
             @Override
-            public String getCode() {
-                return error.getCode();
-            }
-
-            @Override
-            public String getDescription() {
-                return error.getDescription();
-            }
-
-            @Override
-            public String getField() {
-                return error.getField();
-            }
-
-            @Override
-            public List<AppError> getCauses() {
-                List<AppError> causes = new ArrayList<>();
-                if (error.getCauses() != null) {
-                    for (Error innerError : error.getCauses()) {
-                        causes.add(getAppError(statusCode, innerError));
-                    }
-                }
-                return causes;
-            }
-
-            @Override
             public AppErrorException exception() {
                 return new AppErrorException(this);
             }
@@ -90,12 +61,7 @@ public class CommonExceptionHandler implements ExceptionHandler {
 
             @Override
             public String toString() {
-                return "ClientProxyError" +
-                        " { httpStatusCode=" + getHttpStatusCode() +
-                        ", code=" + getCode() +
-                        ", message=" + getDescription() +
-                        ", field=" + getField() +
-                        ", causes=" + getCauses() + " }";
+                return "ClientProxyError: " + error.toString();
             }
         };
     }

@@ -1,5 +1,4 @@
 package com.junbo.order.core.action
-
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.OrderId
 import com.junbo.fulfilment.spec.constant.FulfilmentStatus
@@ -12,17 +11,16 @@ import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.FulfillmentAction
 import com.junbo.order.core.impl.orderaction.context.OrderActionResult
 import com.junbo.order.core.matcher.Matcher
-import com.junbo.order.spec.model.enums.EventStatus
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.FulfillmentHistory
+import com.junbo.order.spec.model.enums.EventStatus
 import org.easymock.EasyMock
 import org.springframework.test.annotation.Rollback
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
 import javax.annotation.Resource
-
 /**
  * Created by fzhang on 14-3-10.
  */
@@ -88,7 +86,7 @@ class FulfillmentActionTest extends BaseTest{
         Boolean recovered = false
         fulfillmentAction.execute(TestBuilder.buildActionContext(order)).syncRecover { Throwable ex ->
             assert ex instanceof AppErrorException
-            assert ((AppErrorException) ex).error.code == AppErrors.INSTANCE.fulfillmentConnectionError().code
+            assert ((AppErrorException) ex).error.error().code == AppErrors.INSTANCE.fulfillmentConnectionError(null).error().code
             recovered = true
             return null
         }.syncThen {

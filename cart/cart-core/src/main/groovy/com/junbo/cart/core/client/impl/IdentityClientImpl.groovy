@@ -39,7 +39,7 @@ class IdentityClientImpl implements IdentityClient {
             LOGGER.error('name=Cart_GetUser_Error', throwable)
         }.syncThen { User user ->
             if (user == null) {
-                throw AppErrors.INSTANCE.userNotFound().exception()
+                throw AppErrors.INSTANCE.userNotFound("user", userId).exception()
             }
             return user
         }

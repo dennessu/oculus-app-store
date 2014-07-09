@@ -76,6 +76,7 @@ class ClientProxyParser implements RestResourceHandler {
 
                 def clientMethod = new ClientMethodModel()
 
+                clientMethod.interfaceType = clientProxy.interfaceType
                 clientMethod.returnType = returnType.typeArguments[0].toString()
                 clientMethod.methodName = executableElement.simpleName.toString()
 

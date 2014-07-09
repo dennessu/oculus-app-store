@@ -1,12 +1,13 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.enumid.CurrencyId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.identity.common.util.ValidatorUtil
+import com.junbo.identity.core.service.validator.CurrencyValidator
 import com.junbo.identity.data.identifiable.SymbolPosition
+import com.junbo.identity.data.repository.CurrencyRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.Currency
-import com.junbo.identity.core.service.validator.CurrencyValidator
-import com.junbo.identity.data.repository.CurrencyRepository
 import com.junbo.identity.spec.v1.model.CurrencyLocaleKey
 import com.junbo.identity.spec.v1.option.list.CurrencyListOptions
 import com.junbo.langur.core.promise.Promise
@@ -127,12 +128,12 @@ class CurrencyValidatorImpl implements CurrencyValidator {
         checkBasicCurrencyInfo(currency)
 
         if (currency.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
 
         return currencyRepository.get(new CurrencyId(currency.currencyCode)).then { Currency existing ->
             if (existing != null) {
-                throw AppErrors.INSTANCE.fieldDuplicate('currencyCode').exception()
+                throw AppCommonErrors.INSTANCE.fieldDuplicate('currencyCode').exception()
             }
 
             return Promise.pure(null)
@@ -150,17 +151,17 @@ class CurrencyValidatorImpl implements CurrencyValidator {
         }
 
         if (currencyId != currency.id) {
-            throw AppErrors.INSTANCE.fieldInvalid('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('id').exception()
         }
 
         if (currencyId != oldCurrency.id) {
-            throw AppErrors.INSTANCE.fieldInvalid('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('id').exception()
         }
 
         checkBasicCurrencyInfo(currency)
 
         if (currency.currencyCode != oldCurrency.currencyCode) {
-            throw AppErrors.INSTANCE.fieldInvalid('currencyCode').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('currencyCode').exception()
         }
 
         return Promise.pure(null)
@@ -172,86 +173,86 @@ class CurrencyValidatorImpl implements CurrencyValidator {
         }
 
         if (currency.currencyCode == null) {
-            throw AppErrors.INSTANCE.fieldRequired('currencyCode').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('currencyCode').exception()
         }
 
         if (currency.symbol == null) {
-            throw AppErrors.INSTANCE.fieldRequired('symbol').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('symbol').exception()
         }
         if (currency.symbol.length() > maxSymbolLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('symbol', maxSymbolLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooLong('symbol', maxSymbolLength).exception()
         }
         if (currency.symbol.length() < minSymbolLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('symbol', minSymbolLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooShort('symbol', minSymbolLength).exception()
         }
 
         if (currency.symbolPosition == null) {
-            throw AppErrors.INSTANCE.fieldRequired('symbolPosition').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('symbolPosition').exception()
         }
         if (!SymbolPosition.values().any { SymbolPosition position ->
             return currency.symbolPosition == position.toString()
         }) {
-            throw AppErrors.INSTANCE.fieldInvalid('symbolPosition', SymbolPosition.values().join(',')).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalidEnum('symbolPosition', SymbolPosition.values().join(',')).exception()
         }
 
         if (currency.numberAfterDecimal == null) {
-            throw AppErrors.INSTANCE.fieldRequired('numberAfterDecimal').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('numberAfterDecimal').exception()
         }
         if (currency.numberAfterDecimal > maxNumberAfterDecimalLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('numberAfterDecimal', maxNumberAfterDecimalLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooLong('numberAfterDecimal', maxNumberAfterDecimalLength).exception()
         }
         if (currency.numberAfterDecimal < minNumberAfterDecimalLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('numberAfterDecimal', minNumberAfterDecimalLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooShort('numberAfterDecimal', minNumberAfterDecimalLength).exception()
         }
 
         if (currency.minAuthAmount == null) {
-            throw AppErrors.INSTANCE.fieldRequired('minAuthAmount').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('minAuthAmount').exception()
         }
         if (currency.minAuthAmount < minMinAuthAmount) {
-            throw AppErrors.INSTANCE.fieldInvalidException('minAuthAmount',
+            throw AppCommonErrors.INSTANCE.fieldInvalid('minAuthAmount',
                     'minAuthAmount invalid, must bigger than ' + minMinAuthAmount).exception()
         }
         if (currency.minAuthAmount > maxMinAuthAmount) {
-            throw AppErrors.INSTANCE.fieldInvalidException('minAuthAmount',
+            throw AppCommonErrors.INSTANCE.fieldInvalid('minAuthAmount',
                     'minAuthAmount invalid, must less than ' + maxMinAuthAmount).exception()
         }
 
         if (currency.locales == null) {
-            throw AppErrors.INSTANCE.fieldRequired('locales').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('locales').exception()
         }
 
         currency.locales.each { Map.Entry<String, CurrencyLocaleKey> entry ->
             if (StringUtils.isEmpty(entry.key)) {
-                throw AppErrors.INSTANCE.fieldRequired('locales.key').exception()
+                throw AppCommonErrors.INSTANCE.fieldRequired('locales.key').exception()
             }
 
             CurrencyLocaleKey value = entry.value
             if (value == null) {
-                throw AppErrors.INSTANCE.fieldRequired('locales.value').exception()
+                throw AppCommonErrors.INSTANCE.fieldRequired('locales.value').exception()
             }
             if (value.shortName == null) {
-                throw AppErrors.INSTANCE.fieldRequired('locales.value.shortName').exception()
+                throw AppCommonErrors.INSTANCE.fieldRequired('locales.value.shortName').exception()
             }
             if (value.shortName.length() > maxLocaleKeyShortNameLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('locales.value.shortName', maxLocaleKeyShortNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooLong('locales.value.shortName', maxLocaleKeyShortNameLength).exception()
             }
             if (value.shortName.length() < minLocaleKeyShortNameLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('locales.value.shortName', minLocaleKeyShortNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooShort('locales.value.shortName', minLocaleKeyShortNameLength).exception()
             }
 
             if (value.longName == null) {
-                throw AppErrors.INSTANCE.fieldRequired('locales.value.longName').exception()
+                throw AppCommonErrors.INSTANCE.fieldRequired('locales.value.longName').exception()
             }
             if (value.longName.length() > maxLocaleKeyLongNameLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('locales.value.longName', maxLocaleKeyLongNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooLong('locales.value.longName', maxLocaleKeyLongNameLength).exception()
             }
             if (value.longName.length() < minLocaleKeyLongNameLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('locales.value.longName', minLocaleKeyLongNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooShort('locales.value.longName', minLocaleKeyLongNameLength).exception()
             }
         }
 
         if (!ValidatorUtil.isValidCurrencyCode(currency.currencyCode)) {
-            throw AppErrors.INSTANCE.fieldInvalid('currencyCode').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('currencyCode').exception()
         }
     }
 }

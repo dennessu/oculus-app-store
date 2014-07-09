@@ -27,7 +27,7 @@ public class MockOfferClient implements OfferResource {
         if(validOffers.contains(offerId)){
             return Promise.pure(new Offer());
         }else{
-            throw AppClientExceptions.INSTANCE.resourceNotFound("offer").exception();
+            throw AppClientExceptions.INSTANCE.offerNotFound(offerId).exception();
         }
     }
 

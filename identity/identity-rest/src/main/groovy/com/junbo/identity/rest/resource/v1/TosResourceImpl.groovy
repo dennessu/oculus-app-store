@@ -6,6 +6,7 @@
 package com.junbo.identity.rest.resource.v1
 
 import com.junbo.authorization.AuthorizeContext
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.TosId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -42,7 +43,7 @@ class TosResourceImpl implements TosResource {
     @Override
     Promise<Tos> create(Tos tos) {
         if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         tos = tosFilter.filterForCreate(tos)
@@ -109,7 +110,7 @@ class TosResourceImpl implements TosResource {
         }
 
         if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         return tosRepository.get(tosId).then { Tos oldTos ->
@@ -131,7 +132,7 @@ class TosResourceImpl implements TosResource {
     @Override
     Promise<Void> delete(TosId tosId) {
         if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         return tosValidator.validateForGet(tosId).then {

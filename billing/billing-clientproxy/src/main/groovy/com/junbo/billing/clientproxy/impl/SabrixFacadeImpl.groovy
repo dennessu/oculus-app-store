@@ -6,6 +6,9 @@
 
 package com.junbo.billing.clientproxy.impl
 
+import com.junbo.billing.clientproxy.impl.avalara.ResponseMessage
+import com.junbo.common.error.ErrorDetail
+
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
 
 import com.junbo.billing.spec.enums.BalanceType
@@ -192,7 +195,7 @@ class SabrixFacadeImpl implements TaxFacade {
         if (!CollectionUtils.isEmpty(balance.orderIds)) {
             if (balance.orderIds.size() > 1) {
                 LOGGER.error('Error_More_Than_One_Order_In_Tax_Calculation.')
-                throw AppErrors.INSTANCE.taxCalculationError('Do not support multi-order tax calculation now.').exception()
+                throw AppErrors.INSTANCE.taxCalculationError('Multi-order tax calculation is not supported.').exception()
             }
             // combination of hostSystem, callingSystemNumber and uniqueInvoiceNumber makes a audit key
             invoice.hostSystem = configuration.hostSystem
@@ -504,28 +507,27 @@ class SabrixFacadeImpl implements TaxFacade {
         def requestBuilder = buildRequest(validateAddressUrl, content)
         return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover { Throwable throwable ->
             LOGGER.error('Error_Build_Sabrix_Request.', throwable)
-            throw AppErrors.INSTANCE.addressValidationError('Fail to build request.').exception()
+            throw AppErrors.INSTANCE.addressValidationError().exception()
         }.then { Response response ->
             AddressValidationResponse addressValidationResponse =
                     xmlConvertor.getAddressValidationResponse(response.responseBody)
             if (addressValidationResponse == null) {
                 LOGGER.error('name=Error_Read_Sabrix_Response.')
-                throw AppErrors.INSTANCE.addressValidationError('Fail to read response.').exception()
+                throw AppErrors.INSTANCE.addressValidationError().exception()
             }
             if (response.statusCode / 100 == 2) {
                 LOGGER.info('name=Address_Validation_Response, response={}', addressValidationResponse.toString())
                 return Promise.pure(addressValidationResponse)
             }
+
             LOGGER.error('name=Error_Address_Validation.')
             LOGGER.info('name=Address_Validation_Response_Status_Code, statusCode={}', response.statusCode)
-            String detail = ''
-            addressValidationResponse.message.each { Message message ->
-                if (message.severity > SUCCESSFUL_PROCESSING) {
-                    LOGGER.info('name=Address_Validation_Response_Error_Message, message={}', message.messageText)
-                    detail += message.messageText
-                }
+            List<ErrorDetail> details = new ArrayList<>();
+            addressValidationResponse.message.each { ResponseMessage message ->
+                LOGGER.info('name=Address_Validation_Response_Error_Message, message={}', message.details)
+                details.add(new ErrorDetail(message.refersTo, message.details))
             }
-            throw AppErrors.INSTANCE.addressValidationError(detail).exception()
+            throw AppErrors.INSTANCE.addressValidationError(details.toArray(new ErrorDetail[0])).exception()
         }
     }
 

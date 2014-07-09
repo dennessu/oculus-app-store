@@ -8,7 +8,7 @@ package com.junbo.payment.rest.resource;
 
 
 import com.junbo.authorization.AuthorizeContext;
-import com.junbo.authorization.spec.error.AppErrors;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.PaymentId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.CommonUtil;
@@ -86,7 +86,7 @@ public class PaymentTransactionResourceImpl implements PaymentTransactionResourc
 
     private static void authorize() {
         if (!AuthorizeContext.hasScopes(PAYMENT_SERVICE_SCOPE)) {
-            throw AppErrors.INSTANCE.insufficientScope().exception();
+            throw AppCommonErrors.INSTANCE.insufficientScope().exception();
         }
     }
 }

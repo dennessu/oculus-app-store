@@ -10,6 +10,7 @@ import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.catalog.spec.resource.PromotionResource;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.error.AppErrorException;
 import com.junbo.common.id.UserId;
 import com.junbo.crypto.spec.model.CryptoMessage;
@@ -96,7 +97,7 @@ public class TokenServiceImpl implements TokenService {
     public Promise<TokenRequest> getOrderRequest(String tokenOrderId) {
         TokenOrder order = tokenRepository.getTokenOrder(tokenOrderId);
         if(order == null){
-            throw AppClientExceptions.INSTANCE.resourceNotFound("orderId:" + tokenOrderId).exception();
+            throw AppClientExceptions.INSTANCE.tokenOrderNotFound(tokenOrderId).exception();
         }
         TokenSet set = tokenRepository.getTokenSet(order.getTokenSetId());
         return Promise.pure(ModelMapper.getOrderRequest(set, order));
@@ -114,11 +115,11 @@ public class TokenServiceImpl implements TokenService {
         }
         TokenOrder order= tokenRepository.getTokenOrder(item.getOrderId());
         if(order == null){
-            throw AppServerExceptions.INSTANCE.InvalidTokenOrder(item.getOrderId().toString()).exception();
+            throw AppServerExceptions.INSTANCE.tokenOrderNotFound(item.getOrderId().toString()).exception();
         }
         TokenSet tokenSet = tokenRepository.getTokenSet(order.getTokenSetId());
         if(tokenSet == null){
-            throw AppServerExceptions.INSTANCE.InvalidTokenSet(order.getTokenSetId().toString()).exception();
+            throw AppServerExceptions.INSTANCE.tokenSetNotFound(order.getTokenSetId().toString()).exception();
         }
         validateTokenItem(item, order, tokenSet, consumption);
         updateTokenItem(item, order);
@@ -140,7 +141,7 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public Promise<TokenItem> updateToken(String tokenString, TokenItem token) {
         if(CommonUtil.isNullOrEmpty(token.getStatus())){
-           throw AppClientExceptions.INSTANCE.missingField("status").exception();
+           throw AppCommonErrors.INSTANCE.fieldRequired("status").exception();
         }
         try{
             ItemStatus.valueOf(token.getStatus());
@@ -148,7 +149,7 @@ public class TokenServiceImpl implements TokenService {
             throw AppClientExceptions.INSTANCE.invalidTokenStatus(token.getStatus()).exception();
         }
         if(CommonUtil.isNullOrEmpty(token.getDisableReason())){
-            throw AppClientExceptions.INSTANCE.missingField("disableReason").exception();
+            throw AppCommonErrors.INSTANCE.fieldRequired("disableReason").exception();
         }
         //Require token string without encryption
         //String decryptedToken = decrypt(tokenString);
@@ -164,7 +165,7 @@ public class TokenServiceImpl implements TokenService {
         Long hashValue = TokenUtil.computeHash(token).getHashValue();
         TokenItem item = tokenRepository.getTokenItem(hashValue);
         if(item == null){
-            throw AppClientExceptions.INSTANCE.resourceNotFound("token").exception();
+            throw AppClientExceptions.INSTANCE.invalidToken().exception();
         }
         item.setEncryptedString(token);
         return Promise.pure(item);
@@ -189,7 +190,7 @@ public class TokenServiceImpl implements TokenService {
         List<TokenItem> tokenItems = new ArrayList<TokenItem>();
         if(request.getCreateMethod().equalsIgnoreCase(CreateMethod.GENERATION.toString())){
             if(CommonUtil.isNullOrEmpty(tokenSet.getGenerationLength())){
-                throw AppServerExceptions.INSTANCE.InvalidTokenSet(request.getTokenSetId().toString()).exception();
+                throw AppServerExceptions.INSTANCE.tokenSetNotFound(request.getTokenSetId().toString()).exception();
             }
             int genLen = tokenSet.getGenerationLength().equalsIgnoreCase(TokenLength.LEN16.toString()) ? 16 : (
                     tokenSet.getGenerationLength().equalsIgnoreCase(TokenLength.LEN20.toString()) ? 20 : (
@@ -222,14 +223,14 @@ public class TokenServiceImpl implements TokenService {
 
     private void validateTokenSet(TokenSet request){
         if(CommonUtil.isNullOrEmpty(request.getProductType())){
-            throw AppClientExceptions.INSTANCE.missingField("productType").exception();
+            throw AppCommonErrors.INSTANCE.fieldRequired("productType").exception();
         }
         if(request.getProductDetail() == null){
-            throw AppClientExceptions.INSTANCE.missingField("productDetail").exception();
+            throw AppCommonErrors.INSTANCE.fieldRequired("productDetail").exception();
         }
         if(request.getProductType().equalsIgnoreCase(ProductType.OFFER.toString())){
             if(CommonUtil.isNullOrEmpty(request.getProductDetail().getDefaultOffer())){
-                throw AppClientExceptions.INSTANCE.missingField("defaultOffer").exception();
+                throw AppCommonErrors.INSTANCE.fieldRequired("defaultOffer").exception();
             }
             validateProduct(request.getProductDetail().getDefaultOffer(), ProductType.OFFER);
             if(request.getProductDetail().getOptionalOffers() != null){
@@ -239,7 +240,7 @@ public class TokenServiceImpl implements TokenService {
             }
         }else if(request.getProductType().equalsIgnoreCase(ProductType.PROMOTION.toString())){
             if(CommonUtil.isNullOrEmpty(request.getProductDetail().getDefaultPromotion())){
-                throw AppClientExceptions.INSTANCE.missingField("defaultPromotion").exception();
+                throw AppCommonErrors.INSTANCE.fieldRequired("defaultPromotion").exception();
             }
             validateProduct(request.getProductDetail().getDefaultPromotion(), ProductType.PROMOTION);
             if(request.getProductDetail().getOptionalPromotion() != null){
@@ -248,7 +249,7 @@ public class TokenServiceImpl implements TokenService {
                 }
             }
         }else{
-            throw AppClientExceptions.INSTANCE.invalidField("productType").exception();
+            throw AppCommonErrors.INSTANCE.fieldInvalid("productType").exception();
         }
     }
 
@@ -279,52 +280,52 @@ public class TokenServiceImpl implements TokenService {
 
     private void validateTokenOrder(TokenOrder request){
         if(CommonUtil.isNullOrEmpty(request.getActivation())){
-            throw AppClientExceptions.INSTANCE.missingField("activation").exception();
+            throw AppCommonErrors.INSTANCE.fieldRequired("activation").exception();
         }
         if(CommonUtil.isNullOrEmpty(request.getCreateMethod())){
-            throw AppClientExceptions.INSTANCE.missingField("creationMethod").exception();
+            throw AppCommonErrors.INSTANCE.fieldRequired("creationMethod").exception();
         }
         if(request.getTokenSetId() == null){
-            throw AppClientExceptions.INSTANCE.missingField("tokenSet").exception();
+            throw AppCommonErrors.INSTANCE.fieldRequired("tokenSet").exception();
         }
         if(request.getCreateMethod().equalsIgnoreCase(CreateMethod.GENERATION.toString())){
             if(request.getQuantity() == null){
-                throw AppClientExceptions.INSTANCE.missingField("quantity").exception();
+                throw AppCommonErrors.INSTANCE.fieldRequired("quantity").exception();
             }
             if(request.getQuantity() < 0 || request.getQuantity() > MAX_QUANTITY){
-                throw AppClientExceptions.INSTANCE.invalidField("quantity").exception();
+                throw AppCommonErrors.INSTANCE.fieldInvalid("quantity").exception();
             }
             if(request.getTokenItems() != null && !request.getTokenItems().isEmpty()){
-                throw AppClientExceptions.INSTANCE.fieldNotNeeded("tokenItems").exception();
+                throw AppCommonErrors.INSTANCE.fieldMustBeNull("tokenItems").exception();
             }
         }else if(request.getCreateMethod().equalsIgnoreCase(CreateMethod.UPLOAD.toString())){
             if(request.getQuantity() != null){
-                throw AppClientExceptions.INSTANCE.fieldNotNeeded("quantity").exception();
+                throw AppCommonErrors.INSTANCE.fieldMustBeNull("quantity").exception();
             }
             if(request.getTokenItems() == null || request.getTokenItems().isEmpty()){
-                throw AppClientExceptions.INSTANCE.missingField("tokenItems").exception();
+                throw AppCommonErrors.INSTANCE.fieldRequired("tokenItems").exception();
             }
         }else{
-            throw AppClientExceptions.INSTANCE.invalidField("createMethod").exception();
+            throw AppCommonErrors.INSTANCE.fieldInvalid("createMethod").exception();
         }
         if(request.getUsageLimit() == null){
-            throw AppClientExceptions.INSTANCE.missingField("usageLimit").exception();
+            throw AppCommonErrors.INSTANCE.fieldRequired("usageLimit").exception();
         }
         if(!request.getUsageLimit().equalsIgnoreCase(UNLIMIT_USE)){
             Long usage = TokenUtil.getUsage(request.getUsageLimit());
             if(usage < 0){
-                throw AppClientExceptions.INSTANCE.invalidField("usageLimit").exception();
+                throw AppCommonErrors.INSTANCE.fieldInvalid("usageLimit").exception();
             }
         }
     }
 
     private void validateTokenConsumption(TokenConsumption consumption){
         if(consumption.getUserId() == null){
-            throw AppClientExceptions.INSTANCE.missingField("user_id").exception();
+            throw AppCommonErrors.INSTANCE.fieldRequired("user_id").exception();
         }
         User user = userClient.get(new UserId(consumption.getUserId()), new UserGetOptions()).get();
         if(user == null){
-            throw AppClientExceptions.INSTANCE.invalidField("userId").exception();
+            throw AppCommonErrors.INSTANCE.fieldInvalid("userId").exception();
         }
     }
 
@@ -353,7 +354,7 @@ public class TokenServiceImpl implements TokenService {
         if(!order.getUsageLimit().equalsIgnoreCase(UNLIMIT_USE)){
             Long usageLimit = TokenUtil.getUsage(order.getUsageLimit());
             if(item.getTokenConsumptions().size() > usageLimit){
-                throw AppClientExceptions.INSTANCE.exceedTokenUsageLimit().exception();
+                throw AppClientExceptions.INSTANCE.tokenUsageLimitExceeded().exception();
             }
         }
     }

@@ -1,12 +1,12 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.validator.PiiValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
-import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserWhatsApp
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -42,7 +42,7 @@ class UserWhatsAppValidatorImpl implements PiiValidator {
         UserWhatsApp oldUserWhatsApp = (UserWhatsApp)JsonHelper.jsonNodeToObj(oldValue, UserWhatsApp)
 
         if (userWhatsApp != oldUserWhatsApp) {
-            throw AppErrors.INSTANCE.fieldInvalidException('value', 'value can\'t be updated.').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('value', 'value can\'t be updated.').exception()
         }
         return Promise.pure(null)
     }
@@ -50,10 +50,10 @@ class UserWhatsAppValidatorImpl implements PiiValidator {
     private void checkUserWhatsApp(UserWhatsApp userWhatsApp) {
         if (userWhatsApp.info != null) {
             if (userWhatsApp.info.length() > maxWhatsAppLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('value.info', maxWhatsAppLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooLong('value.info', maxWhatsAppLength).exception()
             }
             if (userWhatsApp.info.length() < minWhatsAppLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('value.info', maxWhatsAppLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooShort('value.info', maxWhatsAppLength).exception()
             }
         }
     }

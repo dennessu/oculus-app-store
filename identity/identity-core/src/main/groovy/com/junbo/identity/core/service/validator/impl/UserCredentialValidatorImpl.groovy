@@ -1,5 +1,6 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.identity.core.service.validator.UserCredentialValidator
 import com.junbo.identity.core.service.validator.UserPasswordValidator
@@ -47,11 +48,11 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
         }
 
         if (options.userId != null && options.userId != userId) {
-            throw AppErrors.INSTANCE.parameterInvalid('userId').exception()
+            throw AppCommonErrors.INSTANCE.parameterInvalid('userId').exception()
         }
 
         if (options.type == null) {
-            throw AppErrors.INSTANCE.parameterRequired('credentialType').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('credentialType').exception()
         }
         options.setUserId(userId)
 
@@ -66,10 +67,10 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
         userCredential.userId = userId
 
         if (userCredential.type == null) {
-            throw AppErrors.INSTANCE.fieldRequired('type').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('type').exception()
         }
         if (!(userCredential.type in allowedTypes)) {
-            throw AppErrors.INSTANCE.fieldInvalid('type', allowedTypes.join(',')).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalidEnum('type', allowedTypes.join(',')).exception()
         }
 
         return userRepository.get(userId).then { User user ->

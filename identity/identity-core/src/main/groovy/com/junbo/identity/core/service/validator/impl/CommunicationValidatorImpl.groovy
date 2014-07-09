@@ -3,6 +3,7 @@ package com.junbo.identity.core.service.validator.impl
 import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.CommunicationId
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.validator.CommunicationValidator
@@ -101,7 +102,7 @@ class CommunicationValidatorImpl implements CommunicationValidator {
     Promise<Void> validateForCreate(Communication communication) {
         return checkBasicCommunicationInfo(communication).then {
             if (communication.id != null) {
-                throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+                throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
             }
             return Promise.pure(null)
         }
@@ -118,11 +119,11 @@ class CommunicationValidatorImpl implements CommunicationValidator {
         }
 
         if (communicationId != communication.id) {
-            throw AppErrors.INSTANCE.fieldInvalid('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('id').exception()
         }
 
         if (communicationId != oldCommunication.id) {
-            throw AppErrors.INSTANCE.fieldInvalid('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('id').exception()
         }
 
         return checkBasicCommunicationInfo(communication).then {
@@ -137,13 +138,13 @@ class CommunicationValidatorImpl implements CommunicationValidator {
         }
 
         if (CollectionUtils.isEmpty(communication.regions)) {
-            throw AppErrors.INSTANCE.fieldRequired('regions').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('regions').exception()
         }
         if (CollectionUtils.isEmpty(communication.translations)) {
-            throw AppErrors.INSTANCE.fieldRequired('translations').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('translations').exception()
         }
         if (communication.locales == null || communication.locales.isEmpty()) {
-            throw AppErrors.INSTANCE.fieldRequired('locales').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('locales').exception()
         }
 
         return checkRegions(communication).then {
@@ -153,24 +154,24 @@ class CommunicationValidatorImpl implements CommunicationValidator {
                 CommunicationLocale locale = (CommunicationLocale)JsonHelper.jsonNodeToObj(entry.value,
                         CommunicationLocale)
                 if (locale.name == null) {
-                    throw AppErrors.INSTANCE.fieldRequired('value.name').exception()
+                    throw AppCommonErrors.INSTANCE.fieldRequired('value.name').exception()
                 }
                 if (locale.name.length() > maxCommunicationLocaleName) {
-                    throw AppErrors.INSTANCE.fieldTooLong('value.name', maxCommunicationLocaleName).exception()
+                    throw AppCommonErrors.INSTANCE.fieldTooLong('value.name', maxCommunicationLocaleName).exception()
                 }
                 if (locale.name.length() < minCommunicationLocaleName) {
-                    throw AppErrors.INSTANCE.fieldTooShort('value.name', minCommunicationLocaleName).exception()
+                    throw AppCommonErrors.INSTANCE.fieldTooShort('value.name', minCommunicationLocaleName).exception()
                 }
 
                 if (locale.description == null) {
-                    throw AppErrors.INSTANCE.fieldRequired('value.description').exception()
+                    throw AppCommonErrors.INSTANCE.fieldRequired('value.description').exception()
                 }
                 if (locale.description.length() > maxCommunicationLocaleDescription) {
-                    throw AppErrors.INSTANCE.fieldTooLong('value.description', maxCommunicationLocaleDescription).
+                    throw AppCommonErrors.INSTANCE.fieldTooLong('value.description', maxCommunicationLocaleDescription).
                             exception()
                 }
                 if (locale.description.length() < minCommunicationLocaleName) {
-                    throw AppErrors.INSTANCE.fieldTooShort('value.description', minCommunicationLocaleDescription).
+                    throw AppCommonErrors.INSTANCE.fieldTooShort('value.description', minCommunicationLocaleDescription).
                             exception()
                 }
 
@@ -191,7 +192,7 @@ class CommunicationValidatorImpl implements CommunicationValidator {
         }
 
         if (countryIdList.size() != communication.regions.size()) {
-            throw AppErrors.INSTANCE.fieldInvalid('regions').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('regions').exception()
         }
 
         Promise.each(communication.regions) { CountryId countryId ->
@@ -217,7 +218,7 @@ class CommunicationValidatorImpl implements CommunicationValidator {
         }
 
         if (localeIdList.size() != communication.translations.size()) {
-            throw AppErrors.INSTANCE.fieldInvalid('translations').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('translations').exception()
         }
 
         Promise.each(communication.translations) { LocaleId localeId ->

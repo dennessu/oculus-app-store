@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.core.view
 
+import com.junbo.common.error.ErrorDetail
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
@@ -41,7 +42,11 @@ abstract class AbstractView implements Action {
 
         @Override
         int compare(com.junbo.common.error.Error o1, com.junbo.common.error.Error o2) {
-            return ("${o1.code}${o1.field}" <=> "${o2.code}${o2.field}")
+            int detailSize1 = o1.details != null ? o1.details.size() : 0
+            int detailSize2 = o2.details != null ? o2.details.size() : 0
+            String fields1 = (detailSize1 > 0) ? o1.details.collect { ErrorDetail d -> d.field }.join(",") : ""
+            String fields2 = (detailSize2 > 0) ? o2.details.collect { ErrorDetail d -> d.field }.join(",") : ""
+            return ("${o1.code}${o1.message}${fields1}" <=> "${o2.code}${o2.message}${fields2}")
         }
     }
 

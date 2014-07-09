@@ -109,7 +109,7 @@ class BillingFacadeImpl implements BillingFacade {
     @Override
     AppError convertError(Throwable error) {
         AppError e = ErrorUtils.toAppError(error)
-        if (e != null && e.code == ErrorCode.PAYMENT_INSUFFICIENT_FUND) {
+        if (e != null && e.error().code == ErrorCode.PAYMENT_INSUFFICIENT_FUND) {
             return AppErrors.INSTANCE.billingInsufficientFund()
         }
         if (e != null) {

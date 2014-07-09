@@ -3,9 +3,9 @@ package com.junbo.token.core.service;
 import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.model.promotion.PromotionsGetOptions;
 import com.junbo.catalog.spec.resource.PromotionResource;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.token.common.exception.AppClientExceptions;
 
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.core.Response;
@@ -27,7 +27,7 @@ public class MockPromotionClient implements PromotionResource {
         if(validPromotions.contains(promotionId)){
             return Promise.pure(new Promotion());
         }else{
-            throw AppClientExceptions.INSTANCE.resourceNotFound("Promotion").exception();
+            throw AppCommonErrors.INSTANCE.resourceNotFound("Promotion", promotionId).exception();
         }
     }
 

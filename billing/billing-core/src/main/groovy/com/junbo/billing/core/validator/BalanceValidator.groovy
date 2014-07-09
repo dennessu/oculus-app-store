@@ -10,9 +10,11 @@ import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.Transaction
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.BalanceId
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.common.id.UserId
+import com.junbo.common.shuffle.Oculus48Id
 import com.junbo.identity.spec.v1.model.Country
 import com.junbo.identity.spec.v1.model.Currency;
 import com.junbo.identity.spec.v1.model.User
@@ -64,21 +66,21 @@ class BalanceValidator {
 
     Promise<User> validateUser(UserId userId) {
         if (userId == null) {
-            throw AppErrors.INSTANCE.fieldMissingValue('userId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
         Long id = userId.value
         return identityFacade.getUser(id).recover { Throwable throwable ->
             LOGGER.error('name=Error_Get_User. user id: ' + id, throwable)
-            throw AppErrors.INSTANCE.userNotFound(id.toString()).exception()
+            throw AppErrors.INSTANCE.userNotFound("user", userId).exception()
         }.then { User user ->
             if (user == null) {
                 LOGGER.error('name=Error_Get_User. Get null for the user id: {}', id)
-                throw AppErrors.INSTANCE.userNotFound(id.toString()).exception()
+                throw AppErrors.INSTANCE.userNotFound("user", userId).exception()
             }
             if (user.status == null || user.status != 'ACTIVE') {
                 LOGGER.error('name=Error_Get_User. User not active with id: {}', id)
-                throw AppErrors.INSTANCE.userStatusInvalid(id.toString()).exception()
+                throw AppErrors.INSTANCE.userStatusInvalid("status", userId, user.status).exception()
             }
             return Promise.pure(user)
         }
@@ -86,11 +88,11 @@ class BalanceValidator {
 
     Promise<PaymentInstrument> validatePI(PaymentInstrumentId piId) {
         if (piId == null) {
-            throw AppErrors.INSTANCE.fieldMissingValue('piId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('paymentInstrumentId').exception()
         }
         return paymentFacade.getPaymentInstrument(piId.value).recover { Throwable throwable ->
             LOGGER.error('name=Error_Get_PaymentInstrument. pi id: ' + piId.value, throwable)
-            throw AppErrors.INSTANCE.piNotFound(piId.value.toString()).exception()
+            throw AppErrors.INSTANCE.piNotFound("paymentInstrumentId", piId).exception()
         }.then { PaymentInstrument pi ->
             //todo: more validation for the PI
             return Promise.pure(pi)
@@ -99,7 +101,7 @@ class BalanceValidator {
 
     void validateBalanceType(String type) {
         if (type == null || type.isEmpty()) {
-            throw AppErrors.INSTANCE.fieldMissingValue('type').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('type').exception()
         }
 
         try {
@@ -112,7 +114,7 @@ class BalanceValidator {
 
     Promise<Currency> validateCurrency(String currency) {
         if (currency == null || currency.isEmpty()) {
-            throw AppErrors.INSTANCE.fieldMissingValue('currency').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('currency').exception()
         }
 
         return currencyFacade.getCurrency(currency).recover { Throwable throwable ->
@@ -126,7 +128,7 @@ class BalanceValidator {
 
     Promise<Country> validateCountry(String country) {
         if (country == null || country.isEmpty()) {
-            throw AppErrors.INSTANCE.fieldMissingValue('country').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('country').exception()
         }
         return countryFacade.getCountry(country).recover { Throwable throwable ->
             LOGGER.error('error in get country: ' + country, throwable)
@@ -138,22 +140,22 @@ class BalanceValidator {
 
     void validateBalance(Balance balance, Boolean isQuote) {
         if (!isQuote && (balance.orderIds == null || balance.orderIds.size() == 0)) {
-            throw AppErrors.INSTANCE.fieldMissingValue('orderIds').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('orderIds').exception()
         }
         if (balance.balanceItems == null || balance.balanceItems.size() == 0) {
-            throw AppErrors.INSTANCE.fieldMissingValue('balanceItems').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('balanceItems').exception()
         }
         balance.balanceItems.each { BalanceItem balanceItem ->
             if (!isQuote) {
                 if (balanceItem.orderItemId == null) {
-                    throw AppErrors.INSTANCE.fieldMissingValue('balanceItem.orderItemId').exception()
+                    throw AppCommonErrors.INSTANCE.fieldRequired('balanceItem.orderItemId').exception()
                 }
                 if (balanceItem.orderId == null) {
                     balanceItem.orderId = balance.orderIds[0]
                 }
             }
             if (balanceItem.amount == null) {
-                throw AppErrors.INSTANCE.fieldMissingValue('balanceItem.amount').exception()
+                throw AppCommonErrors.INSTANCE.fieldRequired('balanceItem.amount').exception()
             }
         }
     }
@@ -173,7 +175,7 @@ class BalanceValidator {
             if (totalRefunded + balance.totalAmount > originalBalance.totalAmount) {
                 LOGGER.error('for the original balance {}, refund total {} exceeded, original amount {}, refunded {}',
                     originalBalance.id, balance.totalAmount, originalBalance.totalAmount, totalRefunded)
-                throw AppErrors.INSTANCE.balanceRefundTotalExceeded(balance.totalAmount, originalBalance.totalAmount,
+                throw AppErrors.INSTANCE.balanceRefundTotalExceeded(originalBalance.getId(), balance.totalAmount, originalBalance.totalAmount,
                 totalRefunded).exception()
             }
             for (BalanceItem refundItem : balance.balanceItems) {
@@ -191,8 +193,9 @@ class BalanceValidator {
                     LOGGER.error('for the original balance item {}, refund amount {} exceeded, original amount {}, ' +
                             'refunded {}', refundItem.originalBalanceItemId, refundItem.amount,
                             originalItem.amount, itemRefunded)
-                    throw AppErrors.INSTANCE.balanceItemRefundTotalExceeded(refundItem.amount,
-                            originalItem.amount, itemRefunded).exception()
+                    throw AppErrors.INSTANCE.balanceItemRefundTotalExceeded(
+                            originalBalance.getId(), Oculus48Id.format(originalItem.getId()),
+                            refundItem.amount, originalItem.amount, itemRefunded).exception()
                 }
             }
         }
@@ -200,11 +203,11 @@ class BalanceValidator {
 
     Balance validateBalanceId(BalanceId balanceId) {
         if (balanceId == null) {
-            throw AppErrors.INSTANCE.fieldMissingValue('balanceId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('balanceId').exception()
         }
         Balance savedBalance = balanceRepositoryFacade.getBalance(balanceId.value)
         if (savedBalance == null) {
-            throw AppErrors.INSTANCE.balanceNotFound(balanceId.value.toString()).exception()
+            throw AppCommonErrors.INSTANCE.resourceNotFound("Balance", balanceId).exception()
         }
         return savedBalance
     }
@@ -223,22 +226,22 @@ class BalanceValidator {
 
     void validateTransactionNotEmpty(BalanceId balanceId, Collection<Transaction> transactions) {
         if (transactions == null || transactions.size() == 0) {
-            throw AppErrors.INSTANCE.transactionNotFound(balanceId.value.toString()).exception()
+            throw AppErrors.INSTANCE.transactionNotFound(balanceId).exception()
         }
     }
 
     void validateRefund(Balance balance) {
         if (balance.originalBalanceId == null) {
-            throw AppErrors.INSTANCE.fieldMissingValue('originalBalanceId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('originalBalanceId').exception()
         }
 
         if (balance.balanceItems != null) {
             for (BalanceItem item : balance.balanceItems) {
                 if (item.originalBalanceItemId == null) {
-                    throw AppErrors.INSTANCE.fieldMissingValue('balanceItems.originalBalanceItemId').exception()
+                    throw AppCommonErrors.INSTANCE.fieldRequired('balanceItems.originalBalanceItemId').exception()
                 }
                 if (item.amount == null) {
-                    throw AppErrors.INSTANCE.fieldMissingValue('balanceItems.amount').exception()
+                    throw AppCommonErrors.INSTANCE.fieldRequired('balanceItems.amount').exception()
                 }
             }
         }

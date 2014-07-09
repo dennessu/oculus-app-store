@@ -89,13 +89,6 @@ class RestAdapterParser implements RestResourceHandler {
                 def routeAnyLocal = executableElement.getAnnotation(RouteAnyLocal)
                 restMethod.routeParamExprs = Arrays.asList(routeBy?.value() ?: new String[0])
 
-                if (routeBy != null) {
-                    restMethod.routeFallbackToAnyLocal = routeBy.fallbackToAnyLocal()
-                }
-                if (routeAnyLocal != null) {
-                    restMethod.routeFallbackToAnyLocal = true
-                }
-
                 restAdapter.restMethods.add(restMethod)
         }
 

@@ -1,6 +1,6 @@
 package com.junbo.identity.core.service.validator.impl
 
-import com.junbo.common.id.UserId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserTosAgreementId
 import com.junbo.identity.core.service.validator.UserTosValidator
 import com.junbo.identity.data.identifiable.UserStatus
@@ -33,7 +33,7 @@ class UserTosValidatorImpl implements UserTosValidator {
     Promise<UserTosAgreement> validateForGet(UserTosAgreementId userTosId) {
 
         if (userTosId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userTosId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userTosId').exception()
         }
 
         return userTosRepository.get(userTosId).then { UserTosAgreement userTos ->
@@ -52,7 +52,7 @@ class UserTosValidatorImpl implements UserTosValidator {
         }
 
         if (options.userId == null && options.tosId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userId or tosId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId or tosId').exception()
         }
 
         return Promise.pure(null)
@@ -61,13 +61,13 @@ class UserTosValidatorImpl implements UserTosValidator {
     @Override
     Promise<Void> validateForCreate(UserTosAgreement userTos) {
         if (userTos.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
         return checkBasicUserTosInfo(userTos).then {
             return userTosRepository.searchByUserIdAndTosId(userTos.userId, userTos.tosId, Integer.MAX_VALUE, 0).then {
                 List<UserTosAgreement> existing ->
                 if (!CollectionUtils.isEmpty(existing)) {
-                    throw AppErrors.INSTANCE.fieldDuplicate('tosId').exception()
+                    throw AppCommonErrors.INSTANCE.fieldDuplicate('tosId').exception()
                 }
 
                 return Promise.pure(null)
@@ -85,18 +85,18 @@ class UserTosValidatorImpl implements UserTosValidator {
             }
 
             if (userTos.id != userTosId) {
-                throw AppErrors.INSTANCE.fieldInvalid('id', userTosId.value.toString()).exception()
+                throw AppCommonErrors.INSTANCE.fieldNotWritable('id', userTos.id, userTosId).exception()
             }
 
             if (userTos.id != oldUserTos.id) {
-                throw AppErrors.INSTANCE.fieldInvalid('id', oldUserTos.id.toString()).exception()
+                throw AppCommonErrors.INSTANCE.fieldNotWritable('id', userTos.id, oldUserTos.id).exception()
             }
 
             if (userTos.tosId != oldUserTos.tosId) {
                 return userTosRepository.searchByUserIdAndTosId(userTos.userId, userTos.tosId, Integer.MAX_VALUE, 0).then {
                     List<UserTosAgreement> existing ->
                     if (!CollectionUtils.isEmpty(existing)) {
-                        throw AppErrors.INSTANCE.fieldDuplicate('tosId').exception()
+                        throw AppCommonErrors.INSTANCE.fieldDuplicate('tosId').exception()
                     }
 
                     return Promise.pure(null)
@@ -113,19 +113,19 @@ class UserTosValidatorImpl implements UserTosValidator {
         }
 
         if (userTos.userId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
         if (userTos.tosId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('tosId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('tosId').exception()
         }
 
         if (userTos.agreementTime == null) {
-            throw AppErrors.INSTANCE.fieldRequired('agreementTime').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('agreementTime').exception()
         }
 
         if (userTos.agreementTime.after(new Date())) {
-            throw AppErrors.INSTANCE.fieldInvalid('agreementTime').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('agreementTime').exception()
         }
 
         return tosRepository.get(userTos.tosId).then { Tos tos ->

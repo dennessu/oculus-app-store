@@ -16,31 +16,29 @@ import com.junbo.common.error.ErrorProxy;
 public interface AppErrors {
     AppErrors INSTANCE = ErrorProxy.newProxyInstance(AppErrors.class);
 
-    @ErrorDef(httpStatusCode = 404, code = "10001",
-            description = "{0} is missing", field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "101", message = "Missing Configuration",
+            field = "{0}", reason = "{0} is not configured in offer.")
     AppError missingConfiguration(String fieldName);
 
-    @ErrorDef(httpStatusCode = 404, code = "10002", description = "Currency does not exist.")
-    AppError currencyNotExist(String currency);
+    @ErrorDef(httpStatusCode = 412, code = "102", message = "Currency Not Found",
+            field = "currency", reason = "Currency with ID {0} is not found")
+    AppError currencyNotFound(String currency);
 
-    @ErrorDef(httpStatusCode = 403, code = "10003",
-            description = "Currency is not consistent: {0} & {1}.")
-    AppError currencyNotConsistent(String currency, String other);
-
-    @ErrorDef(httpStatusCode = 500, code = "10004", description = "Error occurred during calling Catalog service.")
-    AppError catalogGatewayError();
-
-    @ErrorDef(httpStatusCode = 500, code = "10005", description = "Error occurred during calling Entitlement service.")
-    AppError entitlementGatewayError();
-
-    @ErrorDef(httpStatusCode = 404, code = "10006",
-            description = "No approved offerRevision is found for Offer: {0}")
+    @ErrorDef(httpStatusCode = 412, code = "103", message = "Offer Revision Not Found",
+            field = "offerRevision", reason = "Approved Offer Revision is not found for offer {0}")
     AppError offerRevisionNotFound(String offerId);
 
-    @ErrorDef(httpStatusCode = 400, code = "10007",
-            description = "Cannot purchase digital Offer: {0} with quantity of {1}.")
+    @ErrorDef(httpStatusCode = 412, code = "104", message = "Incorrect Quantity",
+            field = "quantity", reason = "Cannot purchase digital Offer: {0} with quantity of {1}.")
     AppError incorrectQuantity(String offerId, int quantity);
 
-    @ErrorDef(httpStatusCode = 400, code = "10008", description = "Offer {0} is not purchasable in Country {1}")
+    @ErrorDef(httpStatusCode = 412, code = "105", message = "Offer Not Purchasable",
+            field = "offer", reason = "Offer {0} is not purchasable in Country {1}")
     AppError offerNotPurchasable(String offerId, String country);
+
+    @ErrorDef(httpStatusCode = 500, code = "110", message = "Catalog Gateway Error")
+    AppError catalogGatewayError();
+
+    @ErrorDef(httpStatusCode = 500, code = "111", message = "Entitlement Gateway Error")
+    AppError entitlementGatewayError();
 }

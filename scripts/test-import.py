@@ -45,7 +45,9 @@ def worker(q):
         lines = '['
         inputLines = q.get()
         for line in inputLines:
-            lines += line + ','
+            lines += line.strip()
+            if not line.strip().endswith(','):
+                lines += ','
         lines = lines[0 : len(lines) - 1] + ']'
         startTime = time.time()
         try:

@@ -24,7 +24,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         useBulk.set(value)
     }
 
-    protected static com.junbo.common.cloudant.client.CloudantClient getEffective() {
+    protected static CloudantClientInternal getEffective() {
         Boolean flag = useBulk.get()
         if (flag == null || flag == false) {
             return impl

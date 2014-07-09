@@ -1,6 +1,7 @@
 package com.junbo.identity.core.service.filter.pii.impl
 
 import com.junbo.authorization.AuthorizeContext
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.identity.core.service.filter.pii.PIIAdvanceFilter
 import com.junbo.identity.spec.error.AppErrors
@@ -15,14 +16,14 @@ abstract class HBIPIIAdvanceFilter implements PIIAdvanceFilter {
     @Override
     void checkCreatePermission() {
         if (!AuthorizeContext.hasRights('pii.create')) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
     }
 
     @Override
     void checkUpdatePermission() {
         if (!AuthorizeContext.hasRights('pii.update')) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
     }
 
@@ -36,7 +37,7 @@ abstract class HBIPIIAdvanceFilter implements PIIAdvanceFilter {
     @Override
     void checkDeletePermission() {
         if (!AuthorizeContext.hasRights('pii.delete')) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
     }
 }

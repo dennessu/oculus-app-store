@@ -1,6 +1,7 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.enumid.CountryId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.TosId
 import com.junbo.identity.core.service.validator.TosValidator
 import com.junbo.identity.data.repository.CountryRepository
@@ -63,7 +64,7 @@ class TosValidatorImpl implements TosValidator {
     Promise<Void> validateForCreate(Tos tos) {
         return checkBasicTosInfo(tos).then {
             if (tos.id != null) {
-                throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+                throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
             }
             return Promise.pure(null)
         }
@@ -72,11 +73,11 @@ class TosValidatorImpl implements TosValidator {
     @Override
     Promise<Void> validateForUpdate(TosId tosId, Tos tos, Tos oldTos) {
         if (tos.id == null) {
-            throw AppErrors.INSTANCE.fieldRequired('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('id').exception()
         }
 
         if (tosId != tos.id) {
-            throw AppErrors.INSTANCE.fieldInvalid('id', tosId.toString()).exception()
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('id', tos.id, tosId.toString()).exception()
         }
 
         return checkBasicTosInfo(tos).then {
@@ -90,48 +91,48 @@ class TosValidatorImpl implements TosValidator {
         }
 
         if (tos.type == null) {
-            throw AppErrors.INSTANCE.fieldRequired('type').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('type').exception()
         }
         if (!(tos.type in allowedTosTypes)) {
-            throw AppErrors.INSTANCE.fieldInvalid('type', allowedTosTypes.join(',')).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalidEnum('type', allowedTosTypes.join(',')).exception()
         }
 
         if (tos.version == null) {
-            throw AppErrors.INSTANCE.fieldRequired('version').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('version').exception()
         }
         if (tos.version.length() < minVersionLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('version', minVersionLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooShort('version', minVersionLength).exception()
         }
         if (tos.version.length() > maxVersionLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('version', maxVersionLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooLong('version', maxVersionLength).exception()
         }
 
         if (tos.title == null) {
-            throw AppErrors.INSTANCE.fieldRequired('title').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('title').exception()
         }
         if (tos.title.size() > titleMaxLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('title', titleMaxLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooLong('title', titleMaxLength).exception()
         }
         if (tos.title.size() < titleMinLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('title', titleMinLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooShort('title', titleMinLength).exception()
         }
 
         if (tos.content == null) {
-            throw AppErrors.INSTANCE.fieldRequired('content').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('content').exception()
         }
         if (tos.content.size() > contentMaxLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('content', contentMaxLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooLong('content', contentMaxLength).exception()
         }
         if (tos.content.size() < contentMinLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('content', contentMinLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooShort('content', contentMinLength).exception()
         }
 
         if (tos.state != null && !(tos.state in tosStatus)) {
-            throw AppErrors.INSTANCE.fieldInvalid('state', tosStatus.join(',')).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalidEnum('state', tosStatus.join(',')).exception()
         }
 
         if (CollectionUtils.isEmpty(tos.countries)) {
-            throw AppErrors.INSTANCE.fieldRequired('countries').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('countries').exception()
         }
 
         return Promise.each(tos.countries) { CountryId countryId ->

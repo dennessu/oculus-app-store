@@ -4,7 +4,6 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.oauth.core.action
-
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
@@ -21,7 +20,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
-
 /**
  * FacebookLogin.
  */
@@ -51,7 +49,8 @@ class FacebookLogin implements Action {
 
         return facebookApi.getAccountInfo(facebookAuth).recover { Throwable e ->
             if (e instanceof FacebookException) {
-                contextWrapper.errors.add((e as FacebookException).commonError())
+                String message = (e as FacebookException).getMessage()
+                contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingFacebook(message).error());
             } else {
                 LOGGER.error('Error calling Facebook api', e)
                 contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingFacebook().error())

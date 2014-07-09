@@ -7,7 +7,7 @@
 package com.junbo.ewallet.rest.resource
 
 import com.junbo.authorization.AuthorizeContext
-import com.junbo.authorization.spec.error.AppErrors
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.WalletId
 import com.junbo.common.model.Results
@@ -17,6 +17,7 @@ import com.junbo.ewallet.spec.resource.WalletResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
+
 /**
  * WalletResource Impl.
  */
@@ -124,7 +125,7 @@ class WalletResourceImpl implements WalletResource {
 
     private static void authorize() {
         if (!AuthorizeContext.hasScopes(WALLET_SERVICE_SCOPE) && !AuthorizeContext.hasScopes(WALLET_CSR_SCOPE)) {
-            throw AppErrors.INSTANCE.insufficientScope().exception()
+            throw AppCommonErrors.INSTANCE.insufficientScope().exception()
         }
     }
 }

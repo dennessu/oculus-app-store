@@ -4,30 +4,27 @@
 * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
 */
 package com.junbo.authorization.rest.resource
-
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
-
 import com.junbo.authorization.core.authorize.callback.RoleAuthorizeCallbackFactory
 import com.junbo.authorization.core.filter.RoleAssignmentFilter
 import com.junbo.authorization.core.validator.RoleAssignmentValidator
 import com.junbo.authorization.db.repository.RoleAssignmentRepository
 import com.junbo.authorization.db.repository.RoleRepository
-import com.junbo.authorization.spec.error.AppErrors
 import com.junbo.authorization.spec.model.Role
 import com.junbo.authorization.spec.model.RoleAssignment
 import com.junbo.authorization.spec.option.list.RoleAssignmentListOptions
 import com.junbo.authorization.spec.resource.RoleAssignmentResource
-import com.junbo.common.id.UniversalId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.RoleAssignmentId
+import com.junbo.common.id.UniversalId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.transaction.annotation.Transactional
-
 /**
  * RoleAssignmentResourceImpl.
  */
@@ -84,7 +81,7 @@ class RoleAssignmentResourceImpl implements RoleAssignmentResource {
             def callback = roleAuthorizeCallbackFactory.create(role)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('write')) {
-                    throw AppErrors.INSTANCE.forbidden().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
                 return roleAssignmentRepository.create(filtered).then { RoleAssignment newRoleAssignment ->
                     Created201Marker.mark((UniversalId) (newRoleAssignment.id))
@@ -100,7 +97,7 @@ class RoleAssignmentResourceImpl implements RoleAssignmentResource {
         return roleAssignmentValidator.validateForGet(roleAssignmentId).then {
             return roleAssignmentRepository.get(roleAssignmentId).then { RoleAssignment roleAssignment ->
                 if (roleAssignment == null) {
-                    throw AppErrors.INSTANCE.resourceNotFound('role-assignment', roleAssignmentId.toString()).exception()
+                    throw AppCommonErrors.INSTANCE.resourceNotFound('role-assignment', roleAssignmentId.toString()).exception()
                 }
 
                 return Promise.pure(roleAssignmentFilter.filterForGet(roleAssignment))
@@ -112,7 +109,7 @@ class RoleAssignmentResourceImpl implements RoleAssignmentResource {
     Promise<Void> delete(RoleAssignmentId roleAssignmentId) {
         return get(roleAssignmentId).then { RoleAssignment roleAssignment ->
             if (roleAssignment == null) {
-                throw AppErrors.INSTANCE.resourceNotFound('role-assignment', roleAssignmentId.toString()).exception()
+                throw AppCommonErrors.INSTANCE.resourceNotFound('role-assignment', roleAssignmentId.toString()).exception()
             }
 
             return roleAssignmentValidator.validateForDelete(roleAssignment).then {

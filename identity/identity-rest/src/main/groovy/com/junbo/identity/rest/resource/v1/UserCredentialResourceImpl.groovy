@@ -3,6 +3,7 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -13,7 +14,6 @@ import com.junbo.identity.data.identifiable.CredentialType
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.UserPasswordRepository
 import com.junbo.identity.data.repository.UserPinRepository
-import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
 import com.junbo.identity.spec.v1.model.UserCredential
@@ -66,7 +66,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
         def callback = authorizeCallbackFactory.create(userCredential.userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('create')) {
-                throw AppErrors.INSTANCE.invalidAccess().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             userCredential = userCredentialFilter.filterForCreate(userCredential)
@@ -163,7 +163,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                     return Promise.pure(resultList)
                 }
             } else {
-                throw AppErrors.INSTANCE.parameterInvalid("credentialType").exception()
+                throw AppCommonErrors.INSTANCE.parameterInvalid("credentialType").exception()
             }
         }
     }

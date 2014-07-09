@@ -1,5 +1,6 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPasswordId
 import com.junbo.identity.core.service.credential.CredentialHash
@@ -35,11 +36,11 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
     @Override
     Promise<UserPassword> validateForGet(UserId userId, UserPasswordId userPasswordId) {
         if (userId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userPasswordId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userPasswordId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userPasswordId').exception()
         }
 
         return userRepository.get(userId).then { User user ->
@@ -53,7 +54,7 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
                 }
 
                 if (userId != userPassword.userId) {
-                    throw AppErrors.INSTANCE.parameterInvalid('userId and userPasswordId doesn\'t match.').exception()
+                    throw AppCommonErrors.INSTANCE.parameterInvalid('userId and userPasswordId doesn\'t match.').exception()
                 }
 
                 return Promise.pure(userPassword)
@@ -68,7 +69,7 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
         }
 
         if (options.userId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         return Promise.pure(null)
@@ -81,14 +82,14 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
         }
         checkBasicUserPasswordInfo(userPassword)
         if (userPassword.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
         if (userPassword.userId != null && userPassword.userId != userId) {
-            throw AppErrors.INSTANCE.fieldInvalid('userId', userPassword.userId.toString()).exception()
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('userId', userPassword.userId, userId).exception()
         }
 
         if (userPassword.active != null) {
-            throw AppErrors.INSTANCE.fieldInvalid('active').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('active').exception()
         }
 
         List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
@@ -148,14 +149,14 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
 
         if (userPassword.expiresBy != null) {
             if (userPassword.expiresBy.before(new Date())) {
-                throw AppErrors.INSTANCE.fieldInvalid(userPassword.expiresBy.toString()).exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid(userPassword.expiresBy.toString()).exception()
             }
         }
 
         if (userPassword.strength != null) {
             String strength = CipherHelper.calcPwdStrength(userPassword.value)
             if (strength != userPassword.strength) {
-                throw AppErrors.INSTANCE.fieldInvalid('strength', strength).exception()
+                throw AppCommonErrors.INSTANCE.fieldNotWritable('strength', userPassword.strength, strength).exception()
             }
         }
     }

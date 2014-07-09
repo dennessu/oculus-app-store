@@ -1,5 +1,6 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserCredentialVerifyAttemptId
 import com.junbo.common.id.UserId
 import com.junbo.identity.core.service.credential.CredentialHash
@@ -97,7 +98,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         }
 
         if (options.userId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         return Promise.pure(null)
@@ -111,25 +112,25 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         checkBasicUserLoginAttemptInfo(userLoginAttempt)
 
         if (userLoginAttempt.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
 
         if (userLoginAttempt.succeeded != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('succeeded').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('succeeded').exception()
         }
 
         return checkMaximumSameIPAttemptCount(userLoginAttempt).then {
             return findUser(userLoginAttempt).then { User user ->
                 if (user == null) {
-                    throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.username).exception()
+                    throw AppErrors.INSTANCE.userNotFoundByName(userLoginAttempt.username).exception()
                 }
 
                 if (user.status != UserStatus.ACTIVE.toString()) {
-                    throw AppErrors.INSTANCE.userInInvalidStatus(userLoginAttempt.username).exception()
+                    throw AppErrors.INSTANCE.userInInvalidStatusByName(userLoginAttempt.username).exception()
                 }
 
                 if (user.isAnonymous) {
-                    throw AppErrors.INSTANCE.userInInvalidStatus(userLoginAttempt.username).exception()
+                    throw AppErrors.INSTANCE.userInInvalidStatusByName(userLoginAttempt.username).exception()
                 }
 
                 userLoginAttempt.setUserId((UserId)user.id)
@@ -178,21 +179,21 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             return userPersonalInfoRepository.searchByEmail(userLoginAttempt.username.toLowerCase(Locale.ENGLISH), Integer.MAX_VALUE,
                     0).then { List<UserPersonalInfo> personalInfos ->
                     if (CollectionUtils.isEmpty(personalInfos)) {
-                        throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.username).exception()
+                        throw AppErrors.INSTANCE.userNotFoundByName(userLoginAttempt.username).exception()
                     }
 
                     return getDefaultEmailUser(personalInfos).then { User user ->
                         if (user == null) {
-                            throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.username).exception()
+                            throw AppErrors.INSTANCE.userNotFoundByName(userLoginAttempt.username).exception()
                         }
 
                         if (user.isAnonymous || user.status != UserStatus.ACTIVE.toString()) {
-                            throw AppErrors.INSTANCE.fieldInvalidException('value', 'User in invalid status.').
+                            throw AppCommonErrors.INSTANCE.fieldInvalid('value', 'User in invalid status.').
                                     exception()
                         }
 
                         if (CollectionUtils.isEmpty(user.emails)) {
-                            throw AppErrors.INSTANCE.userNotFound(userLoginAttempt.username).exception()
+                            throw AppErrors.INSTANCE.userNotFoundByName(userLoginAttempt.username).exception()
                         }
 
                         return Promise.pure(user)
@@ -245,7 +246,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     return Promise.pure(null)
                 }
 
-                throw AppErrors.INSTANCE.fieldInvalid('username', 'User reaches maximum allowed retry count').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'User reaches maximum allowed retry count').exception()
             }
         }
     }
@@ -254,7 +255,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         if (userLoginAttempt.type == CredentialType.PASSWORD.toString()) {
             return userPasswordRepository.searchByUserIdAndActiveStatus(user.getId(), true, 1, 0).then { List<UserPassword> userPasswordList ->
                 if (CollectionUtils.isEmpty(userPasswordList)) {
-                    throw AppErrors.INSTANCE.fieldInvalidException('username', 'No Active password exists').exception()
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'No Active password exists').exception()
                 }
 
                 return Promise.pure(userPasswordList.get(0).createdTime)
@@ -262,7 +263,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         } else {
             return userPinRepository.searchByUserIdAndActiveStatus(user.getId(), true, 1, 0).then { List<UserPin> userPinList ->
                 if (CollectionUtils.isEmpty(userPinList)) {
-                    throw AppErrors.INSTANCE.fieldInvalidException('username', 'No Active pin exists').exception()
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'No Active pin exists').exception()
                 }
 
                 return Promise.pure(userPinList.get(0).createdTime)
@@ -277,7 +278,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxSameUserAttemptCount) {
                 return Promise.pure(null)
             }
-            throw AppErrors.INSTANCE.fieldInvalid('username', 'User reaches maximum login attempt').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'User reaches maximum login attempt').exception()
         }
     }
 
@@ -294,7 +295,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                 return Promise.pure(null)
             }
 
-            throw AppErrors.INSTANCE.fieldInvalid('username', 'User reaches maximum login attempt').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'User reaches maximum login attempt').exception()
         }
     }
 
@@ -307,12 +308,12 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             if (!allowedIpAddressPatterns.any {
                         Pattern pattern -> pattern.matcher(userLoginAttempt.ipAddress).matches()
                     }) {
-                throw AppErrors.INSTANCE.fieldInvalid('ipAddress').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('ipAddress').exception()
             }
         }
 
         if (userLoginAttempt.type == null) {
-            throw AppErrors.INSTANCE.fieldRequired('type').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('type').exception()
         }
 
         List<String> allowedTypes = CredentialType.values().collect { CredentialType credentialType ->
@@ -320,21 +321,21 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         }
 
         if (!(userLoginAttempt.type in allowedTypes)) {
-            throw AppErrors.INSTANCE.fieldInvalid('type', allowedTypes.join(',')).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalidEnum('type', allowedTypes.join(',')).exception()
         }
 
         if (userLoginAttempt.userAgent != null) {
             if (userLoginAttempt.userAgent.length() > userAgentMaxLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('userAgent', userAgentMaxLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooLong('userAgent', userAgentMaxLength).exception()
             }
 
             if (userLoginAttempt.userAgent.length() < userAgentMinLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('userAgent', userAgentMinLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooShort('userAgent', userAgentMinLength).exception()
             }
         }
 
         if (userLoginAttempt.value == null) {
-            throw AppErrors.INSTANCE.fieldRequired('value').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('value').exception()
         }
     }
 

@@ -8,8 +8,13 @@ package com.junbo.catalog.common.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.junbo.common.error.AppCommonErrors;
+import com.junbo.common.error.AppError;
+import com.junbo.common.error.ErrorDetail;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Utility class.
@@ -44,5 +49,13 @@ public class Utils {
 
     public static <T> T fromJson(String string, Class<T> clazz){
         return JSON.parseObject(string, clazz);
+    }
+
+    public static AppError invalidFields(List<AppError> appErrors) {
+        List<ErrorDetail> errorDetails = new ArrayList<>();
+        for (AppError error : appErrors) {
+            errorDetails.addAll(error.error().getDetails());
+        }
+        return AppCommonErrors.INSTANCE.fieldInvalid(errorDetails.toArray(new ErrorDetail[0]));
     }
 }

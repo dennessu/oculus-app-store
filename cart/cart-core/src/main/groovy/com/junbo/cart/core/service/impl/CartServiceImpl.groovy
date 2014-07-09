@@ -4,7 +4,6 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.cart.core.service.impl
-
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
@@ -13,23 +12,16 @@ import com.junbo.cart.core.client.IdentityClient
 import com.junbo.cart.core.service.CartPersistService
 import com.junbo.cart.core.service.CartService
 import com.junbo.cart.core.validation.Validation
-import com.junbo.cart.spec.error.AppErrors
 import com.junbo.cart.spec.model.Cart
 import com.junbo.cart.spec.model.item.CartItem
 import com.junbo.cart.spec.model.item.OfferItem
-import com.junbo.common.id.CartId
-import com.junbo.common.id.CartItemId
-import com.junbo.common.id.CouponId
-import com.junbo.common.id.OfferId
-import com.junbo.common.id.UserId
+import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.id.*
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
-
-import static com.junbo.authorization.spec.error.AppErrors.INSTANCE
-
 /**
  * Created by fzhang@wan-san.com on 14-2-14.
  */
@@ -71,11 +63,11 @@ class CartServiceImpl implements CartService {
     @Override
     Promise<Cart> addCart(Cart cart, String clientId, UserId userId) {
         return identityClient.getUser(userId).then { User user ->
-            validation.validateUser(user).validateCartAdd(clientId, userId, cart)
+            validation.validateUser(userId, user).validateCartAdd(clientId, userId, cart)
             def callback = authorizeCallbackFactory.create(userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('create')) {
-                    throw INSTANCE.forbidden().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 cart.clientId = clientId
@@ -94,20 +86,16 @@ class CartServiceImpl implements CartService {
 
     private Promise<Cart> internalGetCart(UserId userId, CartId cartId, String requiredRight) {
         return identityClient.getUser(userId).then {
-            validation.validateUser((User) it)
+            validation.validateUser(userId, (User) it)
             def callback = authorizeCallbackFactory.create(userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights(requiredRight)) {
-                    if (requiredRight == 'read') {
-                        throw AppErrors.INSTANCE.cartNotFound().exception()
-                    } else {
-                        throw INSTANCE.forbidden().exception()
-                    }
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 return cartPersistService.get(cartId).then { Cart cart ->
                     if (cart == null) {
-                        throw AppErrors.INSTANCE.cartNotFound().exception()
+                        throw AppCommonErrors.INSTANCE.resourceNotFound("Cart", cartId).exception()
                     }
                     validation.validateCartOwner(cart, userId)
                     return Promise.pure(cart)
@@ -119,17 +107,17 @@ class CartServiceImpl implements CartService {
     @Override
     Promise<Cart> getCartByName(String clientId, String cartName, UserId userId) {
         if (StringUtils.isEmpty(cartName)) {
-            throw AppErrors.INSTANCE.fieldInvalid('cartName', 'value could not be empty').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('cartName').exception()
         }
         if (cartName == CART_NAME_PRIMARY) {
             return getCartPrimary(clientId, userId)
         }
         return identityClient.getUser(userId).then {
-            validation.validateUser((User) it)
+            validation.validateUser(userId, (User) it)
             def callback = authorizeCallbackFactory.create(userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('read')) {
-                    throw AppErrors.INSTANCE.cartNotFound().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 return cartPersistService.get(clientId, cartName, userId).then { Cart cart ->
@@ -147,11 +135,11 @@ class CartServiceImpl implements CartService {
     @Override
     Promise<Cart> getCartPrimary(String clientId, UserId userId) {
         return identityClient.getUser(userId).then {
-            validation.validateUser((User) it)
+            validation.validateUser(userId, (User) it)
             def callback = authorizeCallbackFactory.create(userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('read')) {
-                    throw AppErrors.INSTANCE.cartNotFound().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 return cartPersistService.get(clientId, CART_NAME_PRIMARY, userId).then { Cart cart ->
@@ -229,7 +217,7 @@ class CartServiceImpl implements CartService {
                 return ((OfferItem) it).id == offerItemId
             }
             if (o == null) {
-                throw AppErrors.INSTANCE.cartItemNotFound().exception()
+                throw AppCommonErrors.INSTANCE.resourceNotFound("CartItem", offerItemId).exception()
             }
 
             validation.validateOfferUpdate(offerItem)
@@ -247,7 +235,7 @@ class CartServiceImpl implements CartService {
         return internalGetCart(userId, cartId, 'update').then {
             Cart cart = (Cart) it
             if (lookupAndRemoveItem((List<CartItem>) cart.offers, offerItemId) == null) {
-                throw AppErrors.INSTANCE.cartItemNotFound().exception()
+                throw AppCommonErrors.INSTANCE.resourceNotFound("Cart", cartId).exception()
             }
             return cartPersistService.update(cart)
         }

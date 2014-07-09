@@ -5,6 +5,7 @@
  */
 package com.junbo.fulfilment.clientproxy.impl;
 
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.json.ObjectMapperProvider;
@@ -64,18 +65,18 @@ public class BillingGatewayImpl implements BillingGateway {
     @Override
     public ShippingAddress getShippingAddress(Long userId, Long shippingAddressId) {
         try {
-            UserPersonalInfo retrieved =
-                    userPersonalInfoResource.get(new UserPersonalInfoId(shippingAddressId), new UserPersonalInfoGetOptions()).get();
+            UserPersonalInfoId addressId = new UserPersonalInfoId(shippingAddressId);
+            UserPersonalInfo retrieved = userPersonalInfoResource.get(addressId, new UserPersonalInfoGetOptions()).get();
 
             if (retrieved == null) {
                 LOGGER.error("ShippingAddress [" + shippingAddressId + "] does not exist");
-                throw AppErrors.INSTANCE.notFound("ShippingAddress", shippingAddressId).exception();
+                throw AppErrors.INSTANCE.shippingAddressNotFound(addressId).exception();
             }
 
             return wash(retrieved);
         } catch (Exception e) {
             LOGGER.error("Error occurred during calling [Identity] component.", e);
-            throw AppErrors.INSTANCE.gatewayFailure("identity").exception();
+            throw AppErrors.INSTANCE.gatewayFailure("Identity").exception();
         }
     }
 
@@ -84,15 +85,16 @@ public class BillingGatewayImpl implements BillingGateway {
         if (!"ADDRESS".equals(source.getType())) {
             String message = "UserPersonalInfo [" + source.getId().getValue() + "] is not an address, actual type is [" + source.getType() + "]";
             LOGGER.error(message);
-            throw AppErrors.INSTANCE.validation(message).exception();
+            throw AppCommonErrors.INSTANCE.fieldInvalid("shippingAddress", message).exception();
         }
 
         Address address;
         try {
             address = ObjectMapperProvider.instance().treeToValue(source.getValue(), Address.class);
         } catch (Exception e) {
-            LOGGER.error("UserPersonalInfo [" + source.getId().getValue() + "] failed to cast to Address. Value: [" + source.getValue() + "]");
-            throw AppErrors.INSTANCE.validation("UserPersonalInfo [" + source.getId().getValue() + "] failed to cast to Address").exception();
+            String message = "UserPersonalInfo [" + source.getId().getValue() + "] failed to cast to Address.";
+            LOGGER.error(message + " Value: [" + source.getValue() + "]");
+            throw AppCommonErrors.INSTANCE.fieldInvalid("shippingAddress", message).exception();
         }
 
         /*ShippingAddress result = Utils.map(address, ShippingAddress.class);

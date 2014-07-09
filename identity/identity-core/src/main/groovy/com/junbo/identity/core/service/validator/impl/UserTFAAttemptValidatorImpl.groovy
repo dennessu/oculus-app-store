@@ -1,5 +1,6 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFAAttemptId
 import com.junbo.identity.core.service.validator.UserTFAAttemptValidator
@@ -9,8 +10,8 @@ import com.junbo.identity.data.repository.UserTFAAttemptRepository
 import com.junbo.identity.data.repository.UserTFARepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserTFAAttempt
 import com.junbo.identity.spec.v1.model.UserTFA
+import com.junbo.identity.spec.v1.model.UserTFAAttempt
 import com.junbo.identity.spec.v1.option.list.UserTFAAttemptListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate
@@ -75,7 +76,7 @@ class UserTFAAttemptValidatorImpl implements UserTFAAttemptValidator {
                 }
 
                 if (userTeleAttempt.userId != userId) {
-                    throw AppErrors.INSTANCE.fieldInvalidException('userTeleAttemptId',
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('userTeleAttemptId',
                             'userId doesn\'t match with userTeleAttempt.').exception()
                 }
 
@@ -108,40 +109,40 @@ class UserTFAAttemptValidatorImpl implements UserTFAAttemptValidator {
         }
 
         if (attempt.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
         if (attempt.userTFAId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userTFAId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userTFAId').exception()
         }
 
         if (attempt.verifyCode == null) {
-            throw AppErrors.INSTANCE.fieldRequired('verifyCode').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('verifyCode').exception()
         }
         if (attempt.verifyCode.length() > maxVerifyCodeLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('verifyCode', maxVerifyCodeLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooLong('verifyCode', maxVerifyCodeLength).exception()
         }
         if (attempt.verifyCode.length() < minVerifyCodeLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('verifyCode', minVerifyCodeLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooShort('verifyCode', minVerifyCodeLength).exception()
         }
 
         if (attempt.ipAddress != null) {
             if (!allowedIPPatterns.any {
                 Pattern pattern -> pattern.matcher(attempt.ipAddress).matches()
             }) {
-                throw AppErrors.INSTANCE.fieldInvalid('ipAddress').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('ipAddress').exception()
             }
         }
 
         if (attempt.userId != null && attempt.userId != userId) {
-            throw AppErrors.INSTANCE.fieldInvalid('userId', userId.toString()).exception()
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('userId', attempt.userId, userId).exception()
         }
 
         if (attempt.userAgent != null) {
             if (attempt.userAgent.length() > maxUserAgentLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('userAgent', maxUserAgentLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooLong('userAgent', maxUserAgentLength).exception()
             }
             if (attempt.userAgent.length() < minUserAgentLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('userAgent', minUserAgentLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooShort('userAgent', minUserAgentLength).exception()
             }
         }
 
@@ -162,16 +163,16 @@ class UserTFAAttemptValidatorImpl implements UserTFAAttemptValidator {
                 }
 
                 if (userTFA.userId != userId) {
-                    throw AppErrors.INSTANCE.fieldInvalidException('userId',
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('userId',
                             'userId isn\'t matched to userTFAId.').exception()
                 }
 
                 if (!userTFA.active) {
-                    throw AppErrors.INSTANCE.fieldInvalidException('userTFAId', 'Tele code isn\'t active.').exception()
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('userTFAId', 'Tele code isn\'t active.').exception()
                 }
 
                 if (userTFA.expiresBy.before(new Date())) {
-                    throw AppErrors.INSTANCE.fieldInvalidException('userTFAId', 'Tele code expired.').exception()
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('userTFAId', 'Tele code expired.').exception()
                 }
 
                 if (userTFA.verifyCode == attempt.verifyCode) {
@@ -202,7 +203,7 @@ class UserTFAAttemptValidatorImpl implements UserTFAAttemptValidator {
             }
 
             if (userTFAAttempt == null) {
-                throw AppErrors.INSTANCE.fieldInvalid('userTFAId', 'UserTele attempt reaches the maximum.').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('userTFAId', 'UserTele attempt reaches the maximum.').exception()
             }
 
             return Promise.pure(null)

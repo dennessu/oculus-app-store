@@ -5,6 +5,7 @@ import com.junbo.ewallet.common.util.Callback;
 import com.junbo.ewallet.db.repo.facade.WalletRepositoryFacade;
 import com.junbo.ewallet.service.WalletService;
 import com.junbo.ewallet.service.impl.TransactionSupport;
+import com.junbo.ewallet.spec.error.ErrorMessages;
 import com.junbo.ewallet.spec.model.CreditRequest;
 import com.junbo.ewallet.spec.model.DebitRequest;
 import com.junbo.ewallet.spec.model.Wallet;
@@ -65,7 +66,7 @@ public class WalletDebitTransactionTest extends AbstractTestNGSpringContextTests
                 }
             });
         } catch (AppErrorException e) {
-            Assert.assertEquals(e.getError().getCode(), "10005");
+            Assert.assertEquals(e.getError().error().getMessage(), ErrorMessages.INSUFFICIENT_FUND);
             transactionSupport.executeInNewTransaction(new Callback() {
                 @Override
                 public void apply() {

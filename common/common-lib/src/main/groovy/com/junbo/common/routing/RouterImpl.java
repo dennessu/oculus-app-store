@@ -67,8 +67,8 @@ public class RouterImpl implements Router {
     }
 
     @Override
-    public String getTargetUrl(Class<?> resourceClass, Object[] routingParams, boolean fallbackToAnyLocal) {
-        String result = getTargetUrlInternal(resourceClass, routingParams, fallbackToAnyLocal);
+    public String getTargetUrl(Class<?> resourceClass, Object[] routingParams) {
+        String result = getTargetUrlInternal(resourceClass, routingParams);
         if (result != null) {
             logger.info("Routing {} to {}", JunboHttpContext.getRequestUri(), result);
         } else {
@@ -78,7 +78,7 @@ public class RouterImpl implements Router {
         return result;
     }
 
-    private String getTargetUrlInternal(Class<?> resourceClass, Object[] routingParams, boolean fallbackToAnyLocal) {
+    private String getTargetUrlInternal(Class<?> resourceClass, Object[] routingParams) {
         boolean isFirstRoute = setRoutingPath();
 
         DataAccessPolicy policy = resolveDataAccessPolicy(resourceClass);
@@ -102,11 +102,6 @@ public class RouterImpl implements Router {
             }
         }
 
-        if (fallbackToAnyLocal) {
-            return getDefault(false);
-        }
-
-        // TODO: else throw exception? or deprecate the fallbackAnyLocal?
         return getDefault(false);
     }
 
@@ -176,6 +171,7 @@ public class RouterImpl implements Router {
     }
 
     private String doRouting(boolean inGetDefault) {
+        DataAccessPolicy policy = Context.get().getDataAccessPolicy();
         if (crossDcRoutingEnabled) {
             // route across data center
             DataCenters dcs = DataCenters.instance();
@@ -185,7 +181,7 @@ public class RouterImpl implements Router {
             }
         }
 
-        if (inDcRoutingEnabled) {
+        if (inDcRoutingEnabled && policy != DataAccessPolicy.CLOUDANT_ROUTED) {
             // route within data center
             int shardId = Context.get().getShardId();
             if (!topology.isHandledBySelf(shardId)) {

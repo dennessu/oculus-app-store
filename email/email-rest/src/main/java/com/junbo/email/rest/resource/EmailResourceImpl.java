@@ -6,7 +6,7 @@
 package com.junbo.email.rest.resource;
 
 import com.junbo.authorization.AuthorizeContext;
-import com.junbo.authorization.spec.error.AppErrors;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.EmailId;
 import com.junbo.email.core.EmailService;
 import com.junbo.email.spec.model.Email;
@@ -62,7 +62,7 @@ public class EmailResourceImpl implements EmailResource {
 
     private static void authorize() {
         if (!AuthorizeContext.hasScopes(EMAIL_SERVICE_SCOPE)) {
-            throw AppErrors.INSTANCE.insufficientScope().exception();
+            throw AppCommonErrors.INSTANCE.insufficientScope().exception();
         }
     }
 }

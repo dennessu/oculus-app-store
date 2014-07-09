@@ -5,8 +5,8 @@
  */
 package com.junbo.identity.core.service.filter
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.json.PropertyAssignedAwareSupport
-import com.junbo.identity.spec.error.AppErrors
 import com.junbo.oom.core.MappingContext
 import com.junbo.oom.core.filter.PropertyMappingEvent
 import com.junbo.oom.core.filter.PropertyMappingFilter
@@ -28,7 +28,7 @@ class CreateFilter implements PropertyMappingFilter {
         boolean writable = context.isPropertyWritable(event.sourcePropertyName)
         if (!writable) {
             if (PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
-                throw AppErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
+                throw AppCommonErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
             }
         }
     }

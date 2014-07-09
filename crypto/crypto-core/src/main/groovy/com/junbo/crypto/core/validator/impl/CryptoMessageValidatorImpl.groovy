@@ -1,5 +1,6 @@
 package com.junbo.crypto.core.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.crypto.core.validator.CryptoMessageValidator
 import com.junbo.crypto.spec.error.AppErrors
@@ -30,7 +31,7 @@ class CryptoMessageValidatorImpl implements CryptoMessageValidator {
             throw new IllegalArgumentException('rawMessage is null')
         }
         if (rawMessage.value == null) {
-            throw AppErrors.INSTANCE.fieldMissing('value').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('value').exception()
         }
 
         if (!enableUserKeyEncrypt) {
@@ -43,7 +44,7 @@ class CryptoMessageValidatorImpl implements CryptoMessageValidator {
 
         return userResource.get(userId, new UserGetOptions()).then { User user ->
             if (user == null) {
-                throw AppErrors.INSTANCE.userNotFound(userId).exception()
+                throw AppErrors.INSTANCE.userNotFound("user", userId).exception()
             }
 
             return Promise.pure(null)
@@ -57,13 +58,12 @@ class CryptoMessageValidatorImpl implements CryptoMessageValidator {
             throw new IllegalArgumentException('decryptMessage is null')
         }
         if (decryptMessage.value == null) {
-            throw AppErrors.INSTANCE.fieldMissing('value').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('value').exception()
         }
 
         String[] messageInfo = decryptMessage.value.split(versionSeparator)
         if (messageInfo == null || messageInfo.length != 2 || !(isValidInteger(messageInfo[0]))) {
-            throw AppErrors.INSTANCE.fieldInvalid('EncryptMessage must be in the format as versionNumber' +
-                    versionSeparator + 'encryptValue').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('value').exception()
         }
 
         if (!enableUserKeyEncrypt) {

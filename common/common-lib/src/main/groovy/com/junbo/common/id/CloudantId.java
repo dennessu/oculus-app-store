@@ -6,6 +6,8 @@
 
 package com.junbo.common.id;
 
+import com.junbo.common.error.AppCommonErrors;
+
 import java.util.Properties;
 
 /**
@@ -86,5 +88,17 @@ public abstract class CloudantId implements UniversalId {
             return value.equals(((CloudantId)other).value);
         }
         return ((CloudantId)other).value == null;
+    }
+
+    public static void validate(String field, String id) {
+        if (id.startsWith("_")) {
+            throw AppCommonErrors.INSTANCE.invalidId(field, id).exception();
+        }
+    }
+
+    public static void validate(String id) {
+        if (id.startsWith("_")) {
+            throw AppCommonErrors.INSTANCE.invalidId("id", id).exception();
+        }
     }
 }

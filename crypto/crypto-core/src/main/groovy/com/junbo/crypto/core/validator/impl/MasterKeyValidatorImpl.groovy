@@ -1,7 +1,7 @@
 package com.junbo.crypto.core.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.crypto.core.validator.MasterKeyValidator
-import com.junbo.crypto.spec.error.AppErrors
 import com.junbo.crypto.spec.model.MasterKey
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -19,10 +19,10 @@ class MasterKeyValidatorImpl implements MasterKeyValidator {
         }
 
         if (key.value == null) {
-            throw AppErrors.INSTANCE.fieldMissing('value').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('value').exception()
         }
         if (key.encryptValue != null) {
-            throw AppErrors.INSTANCE.fieldInvalid('encryptValue is null').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('encryptValue').exception()
         }
 
         return Promise.pure(null)

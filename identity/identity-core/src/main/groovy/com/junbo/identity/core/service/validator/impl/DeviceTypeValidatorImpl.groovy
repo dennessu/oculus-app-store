@@ -1,6 +1,7 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.enumid.DeviceTypeId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.identity.core.service.validator.DeviceTypeValidator
 import com.junbo.identity.data.repository.DeviceTypeRepository
 import com.junbo.identity.spec.error.AppErrors
@@ -98,14 +99,14 @@ class DeviceTypeValidatorImpl implements DeviceTypeValidator {
     @Override
     Promise<Void> validateForCreate(DeviceType deviceType) {
         if (deviceType.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
 
         return checkBasicDeviceType(deviceType).then {
             return deviceTypeRepository.searchByDeviceTypeCode(deviceType.typeCode, Integer.MAX_VALUE, 0).then {
                 List<DeviceType> deviceTypeList ->
                     if (!CollectionUtils.isEmpty(deviceTypeList)) {
-                        throw AppErrors.INSTANCE.fieldDuplicate('typeCode').exception()
+                        throw AppCommonErrors.INSTANCE.fieldDuplicate('typeCode').exception()
                     }
 
                     return Promise.pure(null)
@@ -124,11 +125,11 @@ class DeviceTypeValidatorImpl implements DeviceTypeValidator {
         }
 
         if (deviceTypeId != deviceType.id) {
-            throw AppErrors.INSTANCE.fieldInvalid('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('id').exception()
         }
 
         if (deviceTypeId != oldDeviceType.id) {
-            throw AppErrors.INSTANCE.fieldInvalid('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('id').exception()
         }
 
         return checkBasicDeviceType(deviceType).then {
@@ -136,7 +137,7 @@ class DeviceTypeValidatorImpl implements DeviceTypeValidator {
                 return deviceTypeRepository.searchByDeviceTypeCode(deviceType.typeCode, Integer.MAX_VALUE, 0).then {
                     List<DeviceType> deviceTypeList ->
                         if (!CollectionUtils.isEmpty(deviceTypeList)) {
-                            throw AppErrors.INSTANCE.fieldDuplicate('typeCode').exception()
+                            throw AppCommonErrors.INSTANCE.fieldDuplicate('typeCode').exception()
                         }
 
                         return Promise.pure(null)
@@ -149,52 +150,52 @@ class DeviceTypeValidatorImpl implements DeviceTypeValidator {
 
     Promise<Void> checkBasicDeviceType(DeviceType deviceType) {
         if (deviceType.typeCode == null) {
-            throw AppErrors.INSTANCE.fieldRequired('typeCode').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('typeCode').exception()
         }
         if (!(deviceType.typeCode in allowedDeviceTypeCodeList)) {
-            throw AppErrors.INSTANCE.fieldInvalid('typeCode', allowedDeviceTypeCodeList.join(',')).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalidEnum('typeCode', allowedDeviceTypeCodeList.join(',')).exception()
         }
 
         if (deviceType.availableFirmwares == null || deviceType.availableFirmwares.isEmpty()) {
-            throw AppErrors.INSTANCE.fieldRequired('availableFirmwares').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('availableFirmwares').exception()
         }
         deviceType.availableFirmwares.each { Map.Entry<String, String> pair ->
             String key = pair.key
             String value = pair.value
 
             if (StringUtils.isEmpty(key)) {
-                throw AppErrors.INSTANCE.fieldRequired('availableFirmwares.key').exception()
+                throw AppCommonErrors.INSTANCE.fieldRequired('availableFirmwares.key').exception()
             }
             if (key.length() < minAvailableFirmwaresKeyLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('availableFirmwares.key',
+                throw AppCommonErrors.INSTANCE.fieldTooShort('availableFirmwares.key',
                         minAvailableFirmwaresKeyLength).exception()
             }
             if (key.length() > maxAvailableFirmwaresKeyLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('availableFirmwares.key',
+                throw AppCommonErrors.INSTANCE.fieldTooLong('availableFirmwares.key',
                         maxAvailableFirmwaresKeyLength).exception()
             }
 
             if (StringUtils.isEmpty(value)) {
-                throw AppErrors.INSTANCE.fieldRequired('availableFirmwares.value').exception()
+                throw AppCommonErrors.INSTANCE.fieldRequired('availableFirmwares.value').exception()
             }
             if (value.length() < minAvailableFirmwaresValueLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('availableFirmwares.value',
+                throw AppCommonErrors.INSTANCE.fieldTooShort('availableFirmwares.value',
                         minAvailableFirmwaresValueLength).exception()
             }
             if (value.length() > maxAvailableFirmwaresValueLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('availableFirmwares.value',
+                throw AppCommonErrors.INSTANCE.fieldTooLong('availableFirmwares.value',
                         maxAvailableFirmwaresValueLength).exception()
             }
         }
 
         if (deviceType.instructionManual == null) {
-            throw AppErrors.INSTANCE.fieldRequired('instructionManual').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('instructionManual').exception()
         }
         if (deviceType.instructionManual.length() < minInstructionManualLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('instructionManual', minInstructionManualLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooShort('instructionManual', minInstructionManualLength).exception()
         }
         if (deviceType.instructionManual.length() > maxInstructionManualLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('instructionManual', maxInstructionManualLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooLong('instructionManual', maxInstructionManualLength).exception()
         }
 
         if (!CollectionUtils.isEmpty(deviceType.componentTypes)) {

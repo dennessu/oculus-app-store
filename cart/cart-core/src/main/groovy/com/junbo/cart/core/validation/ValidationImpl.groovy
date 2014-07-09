@@ -5,12 +5,15 @@ import com.junbo.cart.core.service.impl.CartServiceImpl
 import com.junbo.cart.spec.error.AppErrors
 import com.junbo.cart.spec.model.Cart
 import com.junbo.cart.spec.model.item.OfferItem
+import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.error.ErrorDetail
 import com.junbo.common.id.CouponId
 import com.junbo.common.id.UserId
 import com.junbo.identity.spec.v1.model.User
 import groovy.transform.CompileStatic
 import org.hibernate.validator.HibernateValidator
 
+import javax.validation.ConstraintViolation
 import javax.validation.ValidationProviderResolver
 import javax.validation.Validator
 import javax.validation.ValidatorFactory
@@ -46,12 +49,12 @@ class ValidationImpl implements Validation {
     }
 
     @Override
-    Validation validateUser(User user) {
+    Validation validateUser(UserId userId, User user) {
         if (user == null) {
-            throw AppErrors.INSTANCE.userNotFound().exception()
+            throw AppErrors.INSTANCE.userNotFound("user", userId).exception()
         }
         if ('ACTIVE' != user.status) {
-            throw AppErrors.INSTANCE.userStatusInvalid().exception()
+            throw AppErrors.INSTANCE.userStatusInvalid("user.status", userId, user.status).exception()
         }
         return this
     }
@@ -60,12 +63,10 @@ class ValidationImpl implements Validation {
     Validation validateCartAdd(String clientId, UserId userId, Cart cart) {
         validateField(cart, Group.CartCreate, Group.CartItem)
         validateCouponCodes(cart)
-        if (cart.cartName == CartServiceImpl.CART_NAME_PRIMARY) {
-            throw AppErrors.INSTANCE.fieldInvalid('cartName').exception()
-        }
         // validate if cart with the name already exist
-        if (cartPersistService.get(clientId, cart.cartName, userId).get() != null) {
-            throw AppErrors.INSTANCE.cartAlreadyExists(userId.value, cart.cartName).exception()
+        if (cart.cartName == CartServiceImpl.CART_NAME_PRIMARY ||
+            cartPersistService.get(clientId, cart.cartName, userId).get() != null) {
+            throw AppErrors.INSTANCE.cartAlreadyExists(userId, cart.cartName).exception()
         }
         return this
     }
@@ -79,7 +80,7 @@ class ValidationImpl implements Validation {
     @Override
     Validation validateCartOwner(Cart cart, UserId userId) {
         if (cart.user != userId) {
-            throw AppErrors.INSTANCE.cartNotFound().exception()
+            throw AppCommonErrors.INSTANCE.resourceNotFound("Cart", cart.getId()).exception()
         }
     }
 
@@ -101,15 +102,17 @@ class ValidationImpl implements Validation {
     private static void validateField(Object obj, Class... group) {
         def result = validator.validate(obj, group)
         if (!result.isEmpty()) {
-            def error = result.iterator().next()
-            throw AppErrors.INSTANCE.fieldInvalid(error.propertyPath.toString(), error.message).exception()
+            def errorDetails = result.collect { ConstraintViolation violation ->
+                new ErrorDetail(violation.propertyPath.toString(), violation.message)
+            }.toArray(new ErrorDetail[0])
+            throw AppCommonErrors.INSTANCE.fieldInvalid(errorDetails).exception()
         }
     }
 
     private static void validateCouponCodes(Cart cart) {
         cart.coupons?.eachWithIndex { CouponId coupon, int i ->
             if (coupon == null) {
-                throw AppErrors.INSTANCE.fieldInvalid("coupons[${i}]").exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid("coupons[${i}]").exception()
             }
         }
     }
