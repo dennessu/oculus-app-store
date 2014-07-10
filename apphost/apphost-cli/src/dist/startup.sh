@@ -6,7 +6,7 @@ if [ ! -d "./logs" ]; then
     mkdir logs
 fi
 
-export APPHOST_CLI_OPTS="-DconfigDir=/etc/silkcloud/:./conf"
+export APPHOST_CLI_OPTS="-DconfigDir=/etc/silkcloud/;./conf"
 
 # check environment
 silkcloudenv=$1

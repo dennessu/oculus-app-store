@@ -341,7 +341,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         }
 
         logger.info("Scanning configuration file {} from configDirs: {}", fileName, configDirs);
-        String[] configDirArr = configDirs.split(":");
+        String[] configDirArr = configDirs.split(";");
         for (String configDir : configDirArr) {
             if (StringUtils.isEmpty(configDir)) continue;
             Path path = Paths.get(configDir, fileName);

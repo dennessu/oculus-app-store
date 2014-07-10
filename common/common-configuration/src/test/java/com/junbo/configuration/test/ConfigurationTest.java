@@ -155,6 +155,8 @@ public class ConfigurationTest {
                 permissions.add(PosixFilePermission.OWNER_READ);
                 permissions.add(PosixFilePermission.OWNER_WRITE);
                 Files.setPosixFilePermissions(envFilePath.toPath(), permissions);
+            } catch (UnsupportedOperationException ex) {
+                // ignore, windows doesn't support posix
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
