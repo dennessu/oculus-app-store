@@ -46,7 +46,6 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
     @Override
     protected FluentCaseInsensitiveStringsMap getHeader() {
         FluentCaseInsensitiveStringsMap headers = super.getHeader();
-        headers.add(Header.CONTENT_TYPE, contentType);
         String uid = Master.getInstance().getCurrentUid();
         if (uid != null && Master.getInstance().getUserAccessToken(uid) != null) {
             headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getUserAccessToken(uid));
