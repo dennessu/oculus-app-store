@@ -20,7 +20,7 @@
         }
     },
     "supportedInputDevices": ["KEYBOARD", "MOUSE"],
-    "userInteractionMode": "MULTI_USER",
+    "userInteractionModes": ["SINGLE_USER", "MULTI_USER"],
     "platforms": ["PC", "MAC"],
     "ageRatings": {
         "US": [

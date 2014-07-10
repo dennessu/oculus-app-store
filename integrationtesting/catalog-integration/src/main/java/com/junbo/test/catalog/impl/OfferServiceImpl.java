@@ -48,7 +48,7 @@ import java.util.Map;
  */
 public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
-    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "/offers";
+    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "offers";
     private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";

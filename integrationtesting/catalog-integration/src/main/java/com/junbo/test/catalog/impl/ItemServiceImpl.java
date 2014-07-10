@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class ItemServiceImpl extends HttpClientBase implements ItemService {
 
-    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "/items";
+    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "items";
     private final String defaultItemFileName = "defaultItem";
     private static ItemService instance;
 
