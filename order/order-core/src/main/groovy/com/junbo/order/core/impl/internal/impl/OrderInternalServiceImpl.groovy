@@ -218,6 +218,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 ParamUtils.processOrderQueryParam(orderQueryParam),
                 ParamUtils.processPageParam(pageParam))
         return Promise.each(orders) { Order order ->
+            context.order = order
             return completeOrder(order, context)
         }.then {
             return Promise.pure(orders)
