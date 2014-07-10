@@ -6,7 +6,7 @@ import getpass
 import subprocess
 import re
 import ConfigParser
-import AESCipher as ciper
+import AESCipher as cipher
 from collections import OrderedDict
 
 def main():
@@ -27,36 +27,55 @@ def main():
 
 def readParams():
     def printUsage():
-        error("Usage: python ./dbcmd.py <dbName> <env> <dbVersion> [<command>] [--yes] [--key:cipherkey]\n")
-    
+        error("Usage: python ./dbcmd.py -db:<dbName> -env:<env> -ver:<dbVersion> [-cmd:<command>] [-yes] [-key:cipherkey] [-debug]\n")
+
     # Read input params
     sys.argv.pop(0)     # skip argv[0]
     if len(sys.argv) < 3:
         printUsage()
 
+    def readArg(argv, argName, currentValue, isMatch):
+        if isMatch:
+            return (currentValue, True)
+        argPrefix = "-" + argName + ":"
+        if argv.startswith(argPrefix):
+            return (argv[len(argPrefix):], True)
+        return (currentValue, False)
+
+    # Optional params
+    dbName = None
+    env = None
+    dbVersion = None
+    command = None
+    confirmed = False
+
+    global cipherKey
+    global debug
+
+    cipherKey = None
+    debug = False
+
+    while len(sys.argv) > 0:
+        argv = sys.argv.pop(0)
+
+        isMatch = False
+        (dbName, isMatch) = readArg(argv, "db", dbName, isMatch)
+        (env, isMatch) = readArg(argv, "env", env, isMatch)
+        (dbVersion, isMatch) = readArg(argv, "ver", dbVersion, isMatch)
+        (command, isMatch) = readArg(argv, "cmd", command, isMatch)
+        (cipherKey, isMatch) = readArg(argv, "key", cipherKey, isMatch)
+
+        if not isMatch:
+            if argv == "-yes":
+                confirmed = True
+            elif argv == "-debug":
+                debug = True
+            else:
+                error("Unknown argument: " + argv)
+
     # Required params
-    dbName = sys.argv.pop(0).strip()
-    env = sys.argv.pop(0).strip()
-    dbVersion = sys.argv.pop(0).strip()
-    
     if len(dbName) == 0 or len(env) == 0 or len(dbVersion) == 0:
         printUsage()
-    
-    # Optional params
-    command = None
-    if len(sys.argv) > 0:
-        command = sys.argv.pop(0)
-    
-    confirmed = False
-    while len(sys.argv) > 0:
-        arg = sys.argv.pop(0)
-
-        # Check whether the user confirmed the change
-        if arg == "--yes":
-            confirmed = True
-        if arg.startswith("--key:"):
-            global cipherKey
-            cipherKey = arg[len("--key:"):]
 
     # Validate command
     def printValidCommands():
@@ -69,26 +88,26 @@ def readParams():
             "   create                  Create the database in environment\n" +
             "   drop                    Drop the database in test environment\n")
         sys.stdout.flush()
-    
+
     if command is None:
         # Prompt for user input
         printValidCommands()
         command = readInput("Input the liquibase command: ")
-    
+
     command = command.lower()
     if command not in set(["status", "update", "updatesql", "validate", "create", "drop"]):
         printValidCommands()
         error("Invalid command: " + command)
-    
+
     if command in set(["update", "create", "drop"]) and not confirmed:
         # Ask for confirmation
         response = readInput("WARNING! Update action will make changes to database %s. Are you absolutely sure? ('yes'/'no'): " % dbName)
         if response.lower() != "yes":
             error("Aborting...")
-    
+
     if command in set(["drop"]) and env in set(["int", "prod"]):
         error("drop is not supported in env %s. Please do it manually.", env)
-    
+
     return (dbName, env, dbVersion, command)
 
 class ConfigFile:
@@ -97,7 +116,7 @@ class ConfigFile:
         self.env = None
         self.jdbcDriver = None
         self.shards = OrderedDict()
-    
+
     def getShardConfig(self, shardId):
         shardConfig = self.shards[shardId]
         if shardConfig is None:
@@ -120,9 +139,9 @@ def readConfigFile(dbName, env):
     try:
         configuration = ConfigParser.SafeConfigParser()
         configuration.readfp(open(configFilePath))
-        
+
         section = "liquibase"
-        
+
         def readOption(option):
             if configuration.has_option(section, option):
                 return safeStrip(configuration.get(section, option))
@@ -134,24 +153,24 @@ def readConfigFile(dbName, env):
             if optVal is not None:
                 if cipherKey is None:
                     cipherKey = readPassword("Input the password cipher key: ")
-                optVal = cipher.decryptData(cipherKey, optVal)
+                optVal = cipher.decryptData(cipherKey.strip(), optVal.strip())
             else:
                 optVal = readOption(option)
             if isNoneOrEmpty(optVal):
                 error("%s not found or empty in %s" % (option, configFilePath))
             return optVal
-        
+
         def readRequiredOption(option):
             result = readOption(option)
             if isNoneOrEmpty(result):
                 error("%s not found or empty in %s" % (option, configFilePath))
             return result
-        
+
         configFile = ConfigFile()
         configFile.dbName = dbName
         configFile.env = env
         configFile.jdbcDriver = readRequiredOption("jdbc_driver")
-        
+
         shardRange = readOption("shard_range")
         if isNoneOrEmpty(shardRange):
             # default to only one shard (shard 0)
@@ -161,22 +180,22 @@ def readConfigFile(dbName, env):
                 configFile.shards[key] = ShardConfig()
             if len(configFile.shards) == 0:
                 error("Invalid shard_range: %s in %s" % (shardRange, configFilePath))
-        
+
         loginUserName = readRequiredOption("login_username")
-        
+
         # Password is optional. In PostgreSQL we recommend to disable password
         # We don't allow trailing spaces in passwords
         loginPassword = readEncryptedOption("login_password")
-        
+
         for shardId, shardConfig in configFile.shards.items():
             shardConfig.shardId = shardId
             shardConfig.loginUserName = str.format(loginUserName, shardId)
             shardConfig.loginPassword = loginPassword   # only support same password
-            
+
             jdbcUrlKey = "jdbc_url"
             if shardId is not None:
                 jdbcUrlKey = "jdbc_url_%d" % shardId
-            
+
             jdbcUrl = readRequiredOption(jdbcUrlKey)
             match = re.match(r'^(?P<jdbcUrl>jdbc:[^;]+)(;(?P<schema>\S+))?$', jdbcUrl)
             if match is None:
@@ -208,7 +227,7 @@ def createDb(shardId, configFile):
     from urlparse import urlparse
     uri = urlparse(shardConfig.jdbcUrl.replace('jdbc:postgresql:', ''))
     host = uri.netloc.replace(':5432', '')
-    info("Creating %s.%s in %s %s (shard %s)..." % 
+    info("Creating %s.%s in %s %s (shard %s)..." %
         (configFile.dbName, shardConfig.schema, host, configFile.env, shardConfig.shardId));
 
     command = "bash ./scripts/createdb.sh '%s' '%s' '%s'" % (configFile.dbName, shardConfig.schema, host)
@@ -222,22 +241,25 @@ def dropDb(shardId, configFile):
     host = uri.netloc.replace(':5432', '')
 
     info("Dropping database %s in %s %s..." % (configFile.dbName, host, configFile.env));
-    
+
     # Double check to avoid dropping in prod and int
     if configFile.env in set(["prod", "int"]):
         error("drop is not supported in %s" % configFile.env)
-    
+
     executeCommand("bash ./scripts/dropdb.sh '%s' '%s'" % (configFile.dbName, host))
 
 def liquibase(command, dbVersion, shardId, configFile):
     shardConfig = configFile.getShardConfig(shardId)
-    info("Executing Liquibase in %s for %s.%s (shard %s)..." % 
+    info("Executing Liquibase in %s for %s.%s (shard %s)..." %
         (configFile.env, configFile.dbName, shardConfig.schema, shardConfig.shardId));
-    
+
     changeLogPath = "changelogs/%s/%s/changelog.xml" % (configFile.dbName, dbVersion)
-    
+
     cmd = list([os.path.abspath('.') + "/liquibase"])
-    cmd.append("--logLevel=debug")
+    # uncomment to enable debug trace
+    global debug
+    if debug:
+        cmd.append("--logLevel=debug")
     cmd.append("--driver=" + configFile.jdbcDriver)
     cmd.append("--changeLogFile=" + changeLogPath)
     cmd.append("--username=" + shardConfig.loginUserName)

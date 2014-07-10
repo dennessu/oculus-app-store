@@ -49,12 +49,6 @@ fi
 # add any JVM options here
 JAVA_OPTS=
 
-echo "CP:"
-echo $CP
-echo "JAVA_OPTS"
-echo $JAVA_OPTS
-echo "LAST"
-echo $@
 java -cp "$CP" $JAVA_OPTS liquibase.integration.commandline.Main ${1+"$@"}
 
 

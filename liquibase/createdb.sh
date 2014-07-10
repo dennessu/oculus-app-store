@@ -3,14 +3,9 @@
 
 dbVersion=0
 
-environment=$1
-if [[ "$environment" == "" ]]; then
-    environment=onebox
-fi
-
 for dbname in `ls -d changelogs/*/$dbVersion | cut -f2 -d'/'`
 do
-    if [[ ! -f "changelogs/$dbname/disabled.txt" ]]; then 
-        python ./dbcmd.py $dbname $environment $dbVersion create --yes
+    if [[ ! -f "changelogs/$dbname/disabled.txt" ]]; then
+        python ./dbcmd.py -db:$dbname -ver:$dbVersion -cmd:create -yes "$@"
     fi
 done
