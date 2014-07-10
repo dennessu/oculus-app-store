@@ -66,11 +66,11 @@
 
 =====Deloyment Preparation=====
 #[bastion] enlish source tree
-    [devops] https://github.com/junbo/main/tree/master/scripts/pgha
+    [silkcloud] https://github.com/junbo/main/tree/master/scripts/pgha
 
 #[bastion] upload all PGHA scripts to master/slave/replica servers
-    [devops] manually change environment in common.sh (will auto resolve environment in the future)
-    [devops] ./upload_script_prod.sh
+    [silkcloud] manually change environment in common.sh (will auto resolve environment in the future)
+    [silkcloud] ./upload_script_prod.sh
 
 #[master] clean up master
     [silkcloud] $DEPLOYMENT_PATH/purge/purge_master.sh
