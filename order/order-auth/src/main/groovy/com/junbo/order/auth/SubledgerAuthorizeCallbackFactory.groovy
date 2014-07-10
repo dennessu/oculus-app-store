@@ -40,6 +40,6 @@ class SubledgerAuthorizeCallbackFactory extends AbstractAuthorizeCallbackFactory
     }
 
     AuthorizeCallback<Subledger> create() {
-        return new SubledgerAuthorizeCallback(this, null)
+        return new SubledgerAuthorizeCallback(this, new Subledger())
     }
 }
