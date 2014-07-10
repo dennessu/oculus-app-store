@@ -12,11 +12,10 @@ do
         ps -aef | grep tail | grep $$ | grep -v grep | awk '{print $2}' | xargs kill
     fi
 done
-./dataloader.sh
 
 function cleanup {
     cd `git rev-parse --show-toplevel`
-    cd apphost/apphost-cli/build/install/apphost-cli/ 
+    cd apphost/apphost-cli/build/install/apphost-cli/
     ./shutdown.sh
 }
 
@@ -27,4 +26,3 @@ gradle
 
 trap - EXIT INT TERM
 cleanup
-

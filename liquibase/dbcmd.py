@@ -2,9 +2,11 @@
 
 import sys
 import os
+import getpass
 import subprocess
 import re
 import ConfigParser
+import AESCipher as ciper
 from collections import OrderedDict
 
 def main():
@@ -25,7 +27,7 @@ def main():
 
 def readParams():
     def printUsage():
-        error("Usage: python ./dbcmd.py <dbName> <env> <dbVersion> [<command>] [--yes]\n")
+        error("Usage: python ./dbcmd.py <dbName> <env> <dbVersion> [<command>] [--yes] [--key:cipherkey]\n")
     
     # Read input params
     sys.argv.pop(0)     # skip argv[0]
@@ -46,10 +48,16 @@ def readParams():
         command = sys.argv.pop(0)
     
     confirmed = False
-    if len(sys.argv) > 0:
+    while len(sys.argv) > 0:
+        arg = sys.argv.pop(0)
+
         # Check whether the user confirmed the change
-        confirmed = (sys.argv.pop(0) == "--yes")
-    
+        if arg == "--yes":
+            confirmed = True
+        if arg.startswith("--key:"):
+            global cipherKey
+            cipherKey = arg[len("--key:"):]
+
     # Validate command
     def printValidCommands():
         info("Available Commands: ")
@@ -105,7 +113,7 @@ class ShardConfig:
         self.schema = None
 
 def readConfigFile(dbName, env):
-    configFilePath = "conf/%s/%s/db.conf" % (dbName, env)
+    configFilePath = "conf/%s/%s.conf" % (env, dbName)
     if not os.path.isfile(configFilePath):
         error("Config file %s not found." % configFilePath)
 
@@ -119,6 +127,19 @@ def readConfigFile(dbName, env):
             if configuration.has_option(section, option):
                 return safeStrip(configuration.get(section, option))
             return None
+
+        def readEncryptedOption(option):
+            global cipherKey
+            optVal = readOption(option + '.encrypted')
+            if optVal is not None:
+                if cipherKey is None:
+                    cipherKey = readPassword("Input the password cipher key: ")
+                optVal = cipher.decryptData(cipherKey, optVal)
+            else:
+                optVal = readOption(option)
+            if isNoneOrEmpty(optVal):
+                error("%s not found or empty in %s" % (option, configFilePath))
+            return optVal
         
         def readRequiredOption(option):
             result = readOption(option)
@@ -145,7 +166,7 @@ def readConfigFile(dbName, env):
         
         # Password is optional. In PostgreSQL we recommend to disable password
         # We don't allow trailing spaces in passwords
-        loginPassword = readOption("login_password")
+        loginPassword = readEncryptedOption("login_password")
         
         for shardId, shardConfig in configFile.shards.items():
             shardConfig.shardId = shardId
@@ -176,7 +197,7 @@ def executeDbCommand(command, dbVersion, configFile):
             createDb(shardId, configFile)
     elif command == "drop":
         for shardId in configFile.shards.keys():
-	    dropDb(shardId, configFile)
+            dropDb(shardId, configFile)
     else:
         for shardId in configFile.shards.keys():
             liquibase(command, dbVersion, shardId, configFile)
@@ -259,6 +280,11 @@ def readInput(message):
     sys.stdout.write(message)
     sys.stdout.flush()
     return sys.stdin.readline().strip()
+
+def readPassword(message):
+    sys.stdout.write(message)
+    sys.stdout.flush()
+    return getpass.getpass()
 
 def info(message):
     print message
