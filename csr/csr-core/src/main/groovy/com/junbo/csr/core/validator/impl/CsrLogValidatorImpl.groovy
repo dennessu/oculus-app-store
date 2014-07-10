@@ -17,8 +17,6 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
-import java.text.ParseException
-
 /**
  * Created by haomin on 14-7-4.
  */
