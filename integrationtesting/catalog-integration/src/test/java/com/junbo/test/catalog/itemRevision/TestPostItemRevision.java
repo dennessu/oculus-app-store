@@ -214,7 +214,7 @@ public class TestPostItemRevision extends BaseTestClass {
         Assert.assertEquals(itemRevisionActual.getRollupPackageName(), itemRevisionExpected.getRollupPackageName());
         Assert.assertEquals(itemRevisionActual.getPackageName(), itemRevisionExpected.getPackageName());
         Assert.assertEquals(itemRevisionActual.getSku(), itemRevisionExpected.getSku());
-        Assert.assertEquals(itemRevisionActual.getUserInteractionMode(), itemRevisionExpected.getUserInteractionMode());
+
 
         //Compare msrp
         Price actual = itemRevisionActual.getMsrp();
@@ -223,6 +223,9 @@ public class TestPostItemRevision extends BaseTestClass {
         Assert.assertTrue(actual.getPriceType().equalsIgnoreCase(expected.getPriceType()));
         Assert.assertTrue(actual.getPrices().equals(expected.getPrices()));
 
+        //Compare UserInteractionModes
+        Assert.assertTrue((itemRevisionActual.getUserInteractionModes() == null)? itemRevisionExpected.getUserInteractionModes()== null :
+                itemRevisionActual.getUserInteractionModes().equals(itemRevisionExpected.getUserInteractionModes()));
         //Compare supportedInputDevices
         Assert.assertTrue((itemRevisionActual.getSupportedInputDevices() == null)? itemRevisionExpected.getSupportedInputDevices()== null :
                 itemRevisionActual.getSupportedInputDevices().equals(itemRevisionExpected.getSupportedInputDevices()));

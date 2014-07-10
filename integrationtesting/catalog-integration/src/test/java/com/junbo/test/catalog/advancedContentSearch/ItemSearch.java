@@ -95,7 +95,11 @@ public class ItemSearch extends BaseTestClass {
         itemRevisionPrepared.setPackageName(RandomFactory.getRandomStringOfAlphabet(10));
 
         //set userInteractionMode
-        itemRevisionPrepared.setUserInteractionMode("SINGLE_USER");
+        List<String> userMode = new ArrayList<>();
+        userMode.add("SINGLE_USER");
+        userMode.add("MULTI_USER");
+        userMode.add("CO_OP");
+        itemRevisionPrepared.setUserInteractionModes(userMode);
 
         //set platform
         List<String> platform = new ArrayList<>();
@@ -278,7 +282,7 @@ public class ItemSearch extends BaseTestClass {
         buildSearchQuery("itemId:" + itemId1 + "%20AND%20" + itemType2, 0);
 
         //gameMode
-        String userInteractionMode = itemRevision.getUserInteractionMode();
+        String userInteractionMode = itemRevision.getUserInteractionModes().get(0);
         buildSearchQuery("userInteractionMode:" + userInteractionMode + "%20AND%20itemId:" + itemId2, 1, itemId2);
 
 
