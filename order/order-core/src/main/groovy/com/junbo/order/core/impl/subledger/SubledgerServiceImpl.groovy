@@ -1,5 +1,6 @@
 package com.junbo.order.core.impl.subledger
 
+import com.junbo.authorization.AuthorizeCallback
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
@@ -125,7 +126,13 @@ class SubledgerServiceImpl implements SubledgerService {
         orderValidator.notNull(subledgerItem.subledgerItemAction, 'subledgerItemAction').
                 validEnumString(subledgerItem.subledgerItemAction, 'subledgerItemAction', SubledgerItemAction)
 
-        def callback = authorizeCallbackFactory.create(subledgerItem.subledger as SubledgerId)
+        AuthorizeCallback callback
+        if (subledgerItem.subledger != null) {
+            callback = authorizeCallbackFactory.create(subledgerItem.subledger as SubledgerId)
+        } else {
+            callback = authorizeCallbackFactory.create()
+        }
+
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('create-item')) {
                 throw AppCommonErrors.INSTANCE.forbidden().exception()
