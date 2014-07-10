@@ -14,8 +14,9 @@ import javax.ws.rs.NotSupportedException;
  */
 public enum SubledgerItemStatus implements Identifiable<Short> {
 
-    PENDING(0),
-    PROCESSED(1);
+    OPEN(0),
+    PENDING_PROCESS(1),
+    PROCESSED(2);
 
     private SubledgerItemStatus(int id) {
         this.id = (short) id;

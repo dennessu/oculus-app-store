@@ -55,7 +55,10 @@
     <bean id="validateTentativeOrderAction" class="com.junbo.order.core.impl.orderaction.ValidateOrderAction">
     </bean>
 
-    <bean id="createSubledgerItemAction" class="com.junbo.order.core.impl.orderaction.CreateSubledgerItemAction">
+    <bean id="subledgerCreateItemAction" class="com.junbo.order.core.impl.orderaction.SubledgerCreateItemAction">
+    </bean>
+
+    <bean id="subledgerCreateRefundItemAction" class="com.junbo.order.core.impl.orderaction.SubledgerCreateRefundItemAction">
     </bean>
 
     <bean id="webPaymentChargeAction" class="com.junbo.order.core.impl.orderaction.WebPaymentChargeAction">

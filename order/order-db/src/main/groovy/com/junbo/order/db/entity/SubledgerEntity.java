@@ -10,6 +10,7 @@ import com.junbo.order.db.ValidationMessages;
 import com.junbo.order.spec.model.enums.PayoutStatus;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -25,11 +26,13 @@ import java.util.Date;
 public class SubledgerEntity extends CommonDbEntityWithDate {
     private Long subledgerId;
     private Long sellerId;
-    private String productItemId;
+    private String offerId;
     private Long sellerTaxProfileId;
     private String currency;
     private String country;
     private BigDecimal totalAmount;
+    private BigDecimal totalPayoutAmount;
+    private Long totalQuantity;
     private PayoutStatus payoutStatus;
     private Date startTime;
     private Date endTime;
@@ -56,14 +59,15 @@ public class SubledgerEntity extends CommonDbEntityWithDate {
         this.sellerId = sellerId;
     }
 
-    @Column(name = "PRODUCT_ITEM_ID")
-    @NotNull(message = ValidationMessages.MISSING_VALUE)
-    public String getProductItemId() {
-        return productItemId;
+    @Column(name = "OFFER_ID")
+    @NotEmpty(message = ValidationMessages.MISSING_VALUE)
+    @Length(max=128, message=ValidationMessages.TOO_LONG)
+    public String getOfferId() {
+        return offerId;
     }
 
-    public void setProductItemId(String productItemId) {
-        this.productItemId = productItemId;
+    public void setOfferId(String offerId) {
+        this.offerId = offerId;
     }
 
     @Column(name = "SELLER_TAX_PROFILE_ID")
@@ -103,6 +107,26 @@ public class SubledgerEntity extends CommonDbEntityWithDate {
 
     public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    @Column(name = "TOTAL_PAYOUT_AMOUNT")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public BigDecimal getTotalPayoutAmount() {
+        return totalPayoutAmount;
+    }
+
+    public void setTotalPayoutAmount(BigDecimal totalPayoutAmount) {
+        this.totalPayoutAmount = totalPayoutAmount;
+    }
+
+    @Column(name = "TOTAL_QUANTITY")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public Long getTotalQuantity() {
+        return totalQuantity;
+    }
+
+    public void setTotalQuantity(Long totalQuantity) {
+        this.totalQuantity = totalQuantity;
     }
 
     @Column(name = "PAYOUT_STATUS_ID")

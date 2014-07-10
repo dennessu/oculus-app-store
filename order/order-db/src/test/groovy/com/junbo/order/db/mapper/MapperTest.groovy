@@ -161,7 +161,7 @@ class MapperTest extends BaseTest {
         assert subledger != null : 'Fail to map subledger entity to model.'
         assert returnedSubledgerEntity != null : 'Fail to map subledger model to entity.'
         assert subledger.totalAmount == subledgerEntity.totalAmount : 'The amount should not be different.'
-        assert subledgerEntity.productItemId == returnedSubledgerEntity.productItemId
+        assert subledgerEntity.offerId == returnedSubledgerEntity.offerId
     }
 
     @Test(enabled = true)
@@ -177,6 +177,6 @@ class MapperTest extends BaseTest {
                 'The order item id should not be different.'
         assert subledgerItem.orderItem.value == returnedSubledgerItemEntity.orderItemId :
                 'The order item id should not be different.'
-        assert subledgerItemEntity.productItemId == returnedSubledgerItemEntity.productItemId
+        assert subledgerItemEntity.offerId == returnedSubledgerItemEntity.offerId
     }
 }

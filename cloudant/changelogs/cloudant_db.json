@@ -235,7 +235,13 @@
         }
       }
     }, 
-    "subledger_item": {}, 
+    "subledger_item": {
+        "views": {
+            "by_orderitemid": {
+                "map": "function(doc) {emit(doc.orderItem, doc._id)}"
+            }
+        }
+    },
     "tos": {}, 
     "unique": {
       "views": {

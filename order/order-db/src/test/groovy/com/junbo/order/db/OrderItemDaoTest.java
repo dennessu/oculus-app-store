@@ -8,13 +8,11 @@ package com.junbo.order.db;
 
 import com.junbo.common.id.OrderId;
 import com.junbo.common.id.OrderItemId;
-import com.junbo.common.id.UserId;
 import com.junbo.order.db.common.TestHelper;
 import com.junbo.order.db.dao.OrderItemDao;
 import com.junbo.order.db.entity.OrderItemEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -38,6 +36,8 @@ public class OrderItemDaoTest extends BaseTest {
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
         Assert.assertEquals(returnedEntity.getOrderItemId(), orderItemEntity.getOrderItemId(),
                 "The order item Id should not be different.");
+        Assert.assertEquals(returnedEntity.getDeveloperRevenue(), orderItemEntity.getDeveloperRevenue(),
+                "The order developerRevenue should not be different.");
     }
 
     @Test

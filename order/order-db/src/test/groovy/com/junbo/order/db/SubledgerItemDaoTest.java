@@ -37,7 +37,7 @@ public class SubledgerItemDaoTest extends BaseTest {
         SubledgerItemEntity returnedEntity = subledgerItemDao.read(id);
 
         Assert.assertNotNull(returnedEntity, "Fail to create or read entity.");
-        Assert.assertEquals(returnedEntity.getSubledgerItemAction(), entity.getSubledgerItemAction());
+        Assert.assertEquals(returnedEntity.getStatus(), entity.getStatus());
         Assert.assertEquals(returnedEntity.getSubledgerItemId(), entity.getSubledgerItemId(),
                 "The subledger item Id should not be different.");
     }

@@ -7,11 +7,11 @@
 package com.junbo.order.db.common
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
-import com.junbo.common.id.OfferId
-import com.junbo.common.id.OrganizationId
+import com.junbo.common.id.*
 import com.junbo.order.db.entity.*
-import com.junbo.order.spec.model.enums.*
 import com.junbo.order.spec.model.Subledger
+import com.junbo.order.spec.model.SubledgerItem
+import com.junbo.order.spec.model.enums.*
 import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -107,6 +107,7 @@ class TestHelper implements ApplicationContextAware {
         entity.setTotalAmount(BigDecimal.valueOf(DEFAULT_PRICE))
         entity.setTotalDiscount(BigDecimal.valueOf(DEFAULT_PRICE))
         entity.setTotalTax(BigDecimal.valueOf(DEFAULT_PRICE))
+        entity.setDeveloperRevenue(BigDecimal.valueOf(DEFAULT_PRICE))
         entity.setHonoredTime(new Date())
         entity.setIsPreorder(false)
         return entity
@@ -195,6 +196,8 @@ class TestHelper implements ApplicationContextAware {
         entity.setSellerId(generateLong())
         entity.setCurrency(RandomStringUtils.randomAlphabetic(3))
         entity.setTotalAmount(BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)))
+        entity.setTotalPayoutAmount(BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)))
+        entity.setTotalQuantity(rand.nextInt(RAND_INT_MAX).longValue())
         entity.setCreatedTime(new Date())
         entity.setCreatedBy(123L)
         entity.setUpdatedTime(new Date())
@@ -202,7 +205,7 @@ class TestHelper implements ApplicationContextAware {
         entity.setStartTime(new Date())
         entity.setEndTime(new Date())
         entity.setPayoutStatus(PayoutStatus.PENDING)
-        entity.setProductItemId(generateId().toString())
+        entity.setOfferId(generateId().toString())
         entity.setCountry('US')
         return entity
     }
@@ -220,21 +223,37 @@ class TestHelper implements ApplicationContextAware {
         )
     }
 
+    static SubledgerItem generateSubledgerItem(OrderItemId orderItemId) {
+        return new SubledgerItem(
+                offer: new OfferId(generateStrId()),
+                subledger: new SubledgerId(generateId()),
+                originalSubledgerItem: new SubledgerItemId(generateId()),
+                totalAmount: BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)),
+                totalPayoutAmount: BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)),
+                totalQuantity: rand.nextInt(RAND_INT_MAX).longValue(),
+                orderItem: orderItemId,
+                subledgerItemAction: SubledgerItemAction.PAYOUT.name(),
+                status: SubledgerItemStatus.OPEN.name()
+        )
+    }
+
     static SubledgerItemEntity generateSubledgerItemEntity() {
         SubledgerItemEntity entity = new SubledgerItemEntity()
         def rand = new SecureRandom()
         entity.setSubledgerItemId(generateId())
         entity.setOrderItemId(generateLong())
         entity.setSubledgerId(generateLong())
+        entity.setSubledgerItemAction(SubledgerItemAction.PAYOUT)
         entity.setOriginalSubledgerItemId(generateLong())
         entity.setTotalAmount(BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)))
+        entity.setTotalPayoutAmount(BigDecimal.valueOf(rand.nextInt(RAND_INT_MAX)))
+        entity.setTotalQuantity(rand.nextInt(RAND_INT_MAX).longValue())
         entity.setCreatedTime(new Date())
         entity.setCreatedBy(123L)
         entity.setUpdatedTime(new Date())
-        entity.setSubledgerItemAction(SubledgerItemAction.CHARGE)
-        entity.setProductItemId(generateId().toString())
+        entity.setOfferId(generateId().toString())
         entity.setUpdatedBy(123L)
-        entity.setStatus(SubledgerItemStatus.PENDING)
+        entity.setStatus(SubledgerItemStatus.OPEN)
         return entity
     }
 
