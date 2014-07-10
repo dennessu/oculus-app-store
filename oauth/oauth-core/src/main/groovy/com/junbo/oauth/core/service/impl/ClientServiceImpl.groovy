@@ -4,24 +4,21 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.oauth.core.service.impl
-
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.ClientService
-import com.junbo.oauth.core.service.ScopeService
 import com.junbo.oauth.core.service.OAuthTokenService
+import com.junbo.oauth.core.service.ScopeService
 import com.junbo.oauth.core.util.UriUtil
 import com.junbo.oauth.db.exception.DBUpdateConflictException
 import com.junbo.oauth.db.generator.TokenGenerator
 import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.spec.model.Client
-import com.junbo.oauth.spec.model.TokenInfo
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
 import java.util.regex.Pattern
-
 /**
  * ClientServiceImpl.
  */
@@ -121,13 +118,13 @@ class ClientServiceImpl implements ClientService {
 
     @Override
     Client updateClient(String clientId, Client client) {
-        if (StringUtils.isEmpty(client.revision)) {
+        if (StringUtils.isEmpty(client.rev)) {
             throw AppExceptions.INSTANCE.missingRevision().exception()
         }
 
         Client existingClient = getClient(clientId)
 
-        if (client.revision != existingClient.revision) {
+        if (client.rev != existingClient.rev) {
             throw AppExceptions.INSTANCE.updateConflict().exception()
         }
 
@@ -158,7 +155,7 @@ class ClientServiceImpl implements ClientService {
         client.ownerUserId = existingClient.ownerUserId
         client.idTokenIssuer = existingClient.idTokenIssuer
         client.needConsent = existingClient.needConsent
-        client.revision = existingClient.revision
+        client.rev = existingClient.rev
 
         try {
             return clientRepository.updateClient(client)

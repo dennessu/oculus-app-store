@@ -2,6 +2,9 @@
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 source ${DIR}/util/common.sh
 
+#check running under specified account
+checkAccount $DEPLOYMENT_ACCOUNT
+
 function uploadMaster {
 ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
 rm -rf $DEPLOYMENT_PATH

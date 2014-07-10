@@ -92,7 +92,7 @@ class AccessTokenRepositoryImpl implements AccessTokenRepository {
                 scopes: accessToken.scopes,
                 expiredBy: accessToken.expiredBy,
                 refreshTokenValue: accessToken.refreshTokenValue,
-                revision: accessToken.revision
+                revision: accessToken.rev
         )
     }
 
@@ -107,7 +107,7 @@ class AccessTokenRepositoryImpl implements AccessTokenRepository {
                 scopes: entity.scopes,
                 expiredBy: entity.expiredBy,
                 refreshTokenValue: entity.refreshTokenValue,
-                revision: entity.revision
+                rev: entity.revision
         )
     }
 }

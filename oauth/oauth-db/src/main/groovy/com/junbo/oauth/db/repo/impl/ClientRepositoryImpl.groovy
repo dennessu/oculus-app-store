@@ -68,7 +68,7 @@ class ClientRepositoryImpl implements ClientRepository {
                 logoUri: client.logoUri,
                 contacts: client.contacts,
                 needConsent: client.needConsent,
-                revision: client.revision
+                revision: client.rev
         )
     }
 
@@ -94,7 +94,7 @@ class ClientRepositoryImpl implements ClientRepository {
                 logoUri: entity.logoUri,
                 contacts: entity.contacts,
                 needConsent: entity.needConsent,
-                revision: entity.revision
+                rev: entity.revision
         )
     }
 }

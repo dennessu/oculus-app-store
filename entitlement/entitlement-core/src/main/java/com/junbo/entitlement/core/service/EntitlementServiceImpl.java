@@ -14,11 +14,11 @@ import com.junbo.authorization.AuthorizeContext;
 import com.junbo.authorization.AuthorizeService;
 import com.junbo.authorization.RightsScope;
 import com.junbo.catalog.spec.enums.EntitlementType;
-import com.junbo.catalog.spec.model.item.Binary;
 import com.junbo.catalog.spec.model.item.EntitlementDef;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.ItemId;
+import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.model.Results;
 import com.junbo.entitlement.auth.EntitlementAuthorizeCallbackFactory;
 import com.junbo.entitlement.core.EntitlementService;
@@ -34,7 +34,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import javax.ws.rs.core.UriBuilder;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 
@@ -73,7 +76,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
                     throw AppCommonErrors.INSTANCE.resourceNotFound("entitlement", entitlementId).exception();
                 }
                 if (EntitlementType.DOWNLOAD.toString().equalsIgnoreCase(entitlement.getType())) {
-                    entitlement.setBinaries(generateDownloadUrls(entitlement.getItemId()));
+                    entitlement.setBinaries(generateDownloadUrls(entitlement));
                 }
                 return entitlement;
             }
@@ -202,7 +205,13 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
                 fillHostItemId(entitlementSearchParam);
                 checkSearchDateFormat(entitlementSearchParam);
                 checkIsActiveAndIsBanned(entitlementSearchParam);
-                return entitlementRepository.getBySearchParam(entitlementSearchParam, pageMetadata);
+                Results<Entitlement> results = entitlementRepository.getBySearchParam(entitlementSearchParam, pageMetadata);
+                for (Entitlement entitlement : results.getItems()) {
+                    if (EntitlementType.DOWNLOAD.toString().equalsIgnoreCase(entitlement.getType())) {
+                        entitlement.setBinaries(generateDownloadUrls(entitlement));
+                    }
+                }
+                return results;
             }
         });
     }
@@ -246,6 +255,34 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         return entitlementRepository.getByTrackingUuid(shardMasterId, trackingUuid);
     }
 
+    @Override
+    @Transactional
+    public URI getDownloadUrl(String entitlementId, String itemId, String platform) {
+        Entitlement entitlement = this.getEntitlement(entitlementId);
+        if (!itemId.equalsIgnoreCase(entitlement.getItemId())) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid("itemId", "itemId does not match the itemId in entitlement").exception();
+
+        }
+        ItemRevision itemRevision = getItem(itemId);
+        if (!itemRevision.getBinaries().keySet().contains(platform)) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid("platform", "there is no platform " +
+                    platform + " in item "
+                    + itemId + "' binaries").exception();
+        }
+        String urlString = itemRevision.getBinaries().get(platform).getHref();
+        try {
+            return generatePreSignedDownloadUrl(urlString);
+        } catch (MalformedURLException e) {
+            String msg = "Error occurred during parsing url " + urlString;
+            LOGGER.error(msg, e);
+            throw AppErrors.INSTANCE.errorParsingUrl(msg).exception();
+        } catch (URISyntaxException e) {
+            //just ignore this
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid, final String requiredRight) {
         final Entitlement existing = entitlementRepository.getByTrackingUuid(shardMasterId, trackingUuid);
         if (existing == null) {
@@ -266,25 +303,26 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         });
     }
 
-    private Map<String, String> generateDownloadUrls(String itemId) {
-        ItemRevision itemRevision = getItem(itemId);
+    private Map<String, String> generateDownloadUrls(Entitlement entitlement) {
+        ItemRevision itemRevision = getItem(entitlement.getItemId());
         validateNotNull(itemRevision, "item");
 
         Map<String, String> binaries = new HashMap<>();
 
-        for (Map.Entry<String, Binary> entry : itemRevision.getBinaries().entrySet()) {
-            try {
-                binaries.put(entry.getKey(), generateDownloadUrl(entry.getValue().getHref()));
-            } catch (MalformedURLException e) {
-                String msg = "Error occurred during parsing url " + entry.getValue().getHref();
-                LOGGER.error(msg, e);
-                throw AppErrors.INSTANCE.errorParsingUrl(msg).exception();
-            }
+        for (String platform : itemRevision.getBinaries().keySet()) {
+            binaries.put(platform, generateDownloadUrl(entitlement, platform));
         }
         return binaries;
     }
 
-    private String generateDownloadUrl(String urlString) throws MalformedURLException {
+    private String generateDownloadUrl(Entitlement entitlement, String platform) {
+        UriBuilder builder = UriBuilder.fromPath(IdUtil.getResourcePathPrefix()).path("item-binary").path(entitlement.getItemId());
+        builder.queryParam("entitlementId", entitlement.getId());
+        builder.queryParam("platform", platform);
+        return builder.toTemplate();
+    }
+
+    private URI generatePreSignedDownloadUrl(String urlString) throws MalformedURLException, URISyntaxException {
         URL url = new URL(urlString);
         String bucketName = url.getHost();
         String objectKey = url.getPath().substring(1);
@@ -300,6 +338,6 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         generatePresignedUrlRequest.setExpiration(expiration);
 
         URL downloadUrl = awsClient.generatePresignedUrl(generatePresignedUrlRequest);
-        return downloadUrl.toString();
+        return downloadUrl.toURI();
     }
 }

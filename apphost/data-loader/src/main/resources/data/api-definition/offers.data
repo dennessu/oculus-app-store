@@ -21,7 +21,7 @@
             {
                 "precondition": "true",
                 "rights": [
-                    "read", "write"
+                    "read", "create", "update", "delete"
                 ],
                 "scriptType": "SPEL"
             }

@@ -21,8 +21,12 @@ import org.testng.log4testng.Logger;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**.
  * Java doc for configuration Test.
@@ -144,6 +148,17 @@ public class ConfigurationTest {
                 envFileContent.append("test.integerConfig=1234\n");
                 envFileContent.append("test.stringConfig=testStr\n");
                 writer.write(envFileContent.toString());
+            }
+
+            try {
+                Set<PosixFilePermission> permissions = new HashSet<>();
+                permissions.add(PosixFilePermission.OWNER_READ);
+                permissions.add(PosixFilePermission.OWNER_WRITE);
+                Files.setPosixFilePermissions(envFilePath.toPath(), permissions);
+            } catch (UnsupportedOperationException ex) {
+                // ignore, windows doesn't support posix
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
             }
 /*
             URI uri = getClass().getClassLoader().getResource("conf/onebox/identity/db.properties").toURI();

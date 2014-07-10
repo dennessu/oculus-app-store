@@ -80,7 +80,7 @@ class LoginStateRepositoryImpl implements LoginStateRepository {
                 expiredBy: loginState.expiredBy,
                 lastAuthDate: loginState.lastAuthDate,
                 sessionId: loginState.sessionId,
-                revision: loginState.revision
+                revision: loginState.rev
         )
 
     }
@@ -96,7 +96,7 @@ class LoginStateRepositoryImpl implements LoginStateRepository {
                 expiredBy: entity.expiredBy,
                 lastAuthDate: entity.lastAuthDate,
                 sessionId: entity.sessionId,
-                revision: entity.revision
+                rev: entity.revision
         )
     }
 }

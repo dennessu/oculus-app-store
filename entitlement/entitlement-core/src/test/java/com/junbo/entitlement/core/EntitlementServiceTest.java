@@ -12,6 +12,7 @@ import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.junbo.authorization.AuthorizeContext;
 import com.junbo.authorization.AuthorizeService;
 import com.junbo.authorization.AuthorizeServiceImpl;
+import com.junbo.catalog.spec.model.item.Binary;
 import com.junbo.catalog.spec.model.item.EntitlementDef;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.common.error.AppErrorException;
@@ -39,8 +40,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 /**
  * Entitlement service test.
@@ -138,19 +139,15 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         entitlement.setGrantTime(new Date(114, 0, 22));
         entitlement.setExpirationTime(new Date(114, 0, 28));
         entitlement.setItemId(String.valueOf(idGenerator.nextId()));
-        final ItemRevision item = new ItemRevision();
+        ItemRevision item = new ItemRevision();
         item.setItemId(entitlement.getItemId());
         List<EntitlementDef> defs = new ArrayList<>();
         EntitlementDef def = new EntitlementDef();
         def.setConsumable(false);
         defs.add(def);
         item.setEntitlementDefs(defs);
-        CommonCache.ITEM_REVISION.get(item.getItemId(), new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                return item;
-            }
-        });
+        item.setBinaries(new HashMap<String, Binary>());
+        CommonCache.ITEM_REVISION.put(item.getItemId(), item);
         return entitlement;
     }
 

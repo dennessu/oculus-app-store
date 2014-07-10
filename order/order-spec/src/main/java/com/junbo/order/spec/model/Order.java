@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by chriszhu on 2/7/14.
@@ -146,7 +147,7 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
     private Date purchaseTime;
 
     @JsonIgnore
-    private String properties;
+    private Map<String, String> properties;
 
     @JsonIgnore
     private Long latestOrderRevisionId;
@@ -378,11 +379,11 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
         this.orderRevisions = orderRevisions;
     }
 
-    public String getProperties() {
+    public Map<String, String> getProperties() {
         return properties;
     }
 
-    public void setProperties(String properties) {
+    public void setProperties(Map<String, String> properties) {
         this.properties = properties;
     }
 }

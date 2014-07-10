@@ -5,11 +5,9 @@
  */
 package com.junbo.oauth.spec.model
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.junbo.common.model.ResourceMeta
 import groovy.transform.CompileStatic
 import org.springframework.util.Assert
-
 /**
  * Consent.
  */
@@ -18,9 +16,6 @@ class Consent extends ResourceMeta<String> {
     Long userId
     String clientId
     Set<String> scopes
-
-    @JsonIgnore
-    String revision
 
     @Override
     String getId() {

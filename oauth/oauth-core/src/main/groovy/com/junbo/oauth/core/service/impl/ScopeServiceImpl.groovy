@@ -83,7 +83,7 @@ class ScopeServiceImpl implements ScopeService {
 
     @Override
     Scope updateScope(String scopeName, Scope scope) {
-        if (StringUtils.isEmpty(scope.revision)) {
+        if (StringUtils.isEmpty(scope.rev)) {
             throw AppExceptions.INSTANCE.missingRevision().exception()
         }
 
@@ -93,7 +93,7 @@ class ScopeServiceImpl implements ScopeService {
 
         Scope existingScope = scopeRepository.getScope(scopeName)
 
-        if (scope.revision != existingScope.revision) {
+        if (scope.rev != existingScope.rev) {
             throw AppExceptions.INSTANCE.updateConflict().exception()
         }
 

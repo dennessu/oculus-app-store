@@ -47,7 +47,7 @@ class ClientDataHandler extends BaseDataHandler {
             if (alwaysOverwrite) {
                 logger.debug("Overwrite Client $client.clientId with this content.")
                 client.clientId = existing.clientId
-                client.revision = existing.revision
+                client.rev = existing.rev
                 try {
                     clientRepository.updateClient(client)
                 } catch (Exception e) {

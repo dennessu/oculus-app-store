@@ -30,6 +30,7 @@
         </wf:action-state>
 
         <wf:action-state id="fullfill">
+            <wf:action ref="riskUpdateAction"/>
             <wf:action ref="fulfillmentAction"/>
             <wf:action ref="sendEmailAction"/>
             <wf:transition on="*" to="endState"/>

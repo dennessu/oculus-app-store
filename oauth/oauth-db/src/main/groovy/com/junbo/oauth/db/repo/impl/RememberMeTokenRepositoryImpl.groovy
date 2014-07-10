@@ -77,7 +77,7 @@ class RememberMeTokenRepositoryImpl implements RememberMeTokenRepository {
                 userId: rememberMeToken.userId,
                 expiredBy: rememberMeToken.expiredBy,
                 lastAuthDate: rememberMeToken.lastAuthDate,
-                revision: rememberMeToken.revision
+                revision: rememberMeToken.rev
         )
     }
 
@@ -91,7 +91,7 @@ class RememberMeTokenRepositoryImpl implements RememberMeTokenRepository {
                 userId: entity.userId,
                 expiredBy: entity.expiredBy,
                 lastAuthDate: entity.lastAuthDate,
-                revision: entity.revision
+                rev: entity.revision
         )
     }
 }

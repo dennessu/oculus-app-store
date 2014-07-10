@@ -59,9 +59,7 @@ public class Entitlement extends ResourceMeta<String> {
     @ItemId
     @JsonProperty("item")
     private String itemId;
-    @ApiModelProperty(position = 4, required = true, value = "[Client Immutable] A mapping between platform and download url string. " +
-            "For every \"GET\" request, " +
-            "the entitlement resource need to generate the \"S3 url/urls\" on the fly and return. ")
+    @ApiModelProperty(position = 4, required = true, value = "[Client Immutable] A mapping between platform and download url string.")
     private Map<String, String> binaries;
 
     @ApiModelProperty(position = 10, required = true, value = "enumeration; values are \"DOWNLOAD\" and \"RUN\"")

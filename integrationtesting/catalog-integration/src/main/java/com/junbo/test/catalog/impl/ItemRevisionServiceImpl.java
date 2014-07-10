@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevisionService {
 
-    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "/item-revisions";
+    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "item-revisions";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
     private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";

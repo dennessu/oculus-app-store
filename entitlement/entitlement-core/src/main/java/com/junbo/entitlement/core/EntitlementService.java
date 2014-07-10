@@ -10,6 +10,7 @@ import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
 
+import java.net.URI;
 import java.util.UUID;
 
 /**
@@ -28,4 +29,6 @@ public interface EntitlementService {
                                            PageMetadata pageMetadata);
 
     Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid);
+
+    URI getDownloadUrl(String entitlementId, String itemId, String platform);
 }
