@@ -68,7 +68,7 @@ public class TestDeleteItemRevision extends BaseTestClass {
         releaseItemRevision(itemRevision);
 
         //delete released item revision should be prohibited.
-        itemRevisionService.deleteItemRevision(itemRevision.getRevisionId(), 400);
+        itemRevisionService.deleteItemRevision(itemRevision.getRevisionId(), 412);
         itemRevisionGet = itemRevisionService.getItemRevision(itemRevision.getRevisionId());
         Assert.assertNotNull(itemRevisionGet);
     }
