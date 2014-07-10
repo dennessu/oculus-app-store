@@ -46,12 +46,9 @@ class WebPaymentCallbackAction extends BaseOrderEventAwareAction {
                 Map<String, String> eventMap = objectMapper.readValue(orderEvent.properties, Map)
 
                 if (order.properties == null || order.properties.isEmpty()) {
-                    order.setProperties(orderEvent.properties)
+                    order.setProperties(eventMap)
                 } else {
-                    Map<String, String> orderMap = objectMapper.readValue(order.properties, Map)
-                    orderMap.putAll(eventMap)
-                    String orderProperties = objectMapper.writeValueAsString(orderMap)
-                    order.setProperties(orderProperties)
+                    order.properties.putAll(eventMap)
                     orderRepository.updateOrder(order, true, false, null)
                 }
 

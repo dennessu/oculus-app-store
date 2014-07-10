@@ -6,6 +6,9 @@
 
 package com.junbo.order.db.mapper;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
@@ -14,6 +17,8 @@ import com.junbo.order.spec.error.AppErrors;
 import com.junbo.order.spec.model.enums.*;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -21,6 +26,8 @@ import java.util.UUID;
  */
 @Component("orderCommonMapper")
 public class CommonMapper {
+
+    private ObjectMapper mapper = new ObjectMapper();
 
     public String fromLongToString(Long id) {
         if (id == null) {
@@ -540,5 +547,23 @@ public class CommonMapper {
             return null;
         }
         return itemType.toString();
+    }
+
+    public String explicitMethod_convertPropertySet(Map<String, String> propertySet) {
+        try {
+            return mapper.writeValueAsString(propertySet);
+        }
+        catch (JsonProcessingException ex) {
+            return null;
+        }
+    }
+
+    public Map<String, String> explicitMethod_convertPropertySet(String propertySet) {
+        try {
+            return mapper.readValue(propertySet, new TypeReference<HashMap<String,String>>(){});
+        }
+        catch (Exception ex) {
+            return null;
+        }
     }
 }

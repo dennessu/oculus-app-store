@@ -49,7 +49,6 @@ class OrderServiceContext {
     List<Balance> balances
     Address shippingAddress
     Boolean isAsyncCharge
-    String riskTransactionId
     Currency currency
     FulfilmentRequest fulfillmentRequest
 

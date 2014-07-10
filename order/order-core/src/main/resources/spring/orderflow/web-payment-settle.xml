@@ -10,6 +10,7 @@
             <wf:on-entry>
                 <wf:action ref="webPaymentCallbackAction"/>
                 <wf:action ref="confirmBalanceAction"/>
+                <wf:action ref="riskUpdateAction"/>
                 <wf:action ref="fulfillmentAction"/>
                 <wf:action ref="sendEmailAction"/>
                 <wf:action ref="updateOrderAction"/>

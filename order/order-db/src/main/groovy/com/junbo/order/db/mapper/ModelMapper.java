@@ -29,7 +29,8 @@ public interface ModelMapper {
             @Mapping(source = "shippingAddress", target = "shippingAddressId", excluded = false, bidirectional = false),
             @Mapping(source = "shippingToName", target = "shippingNameId", excluded = false, bidirectional = false),
             @Mapping(source = "shippingToPhone", target = "shippingPhoneId", excluded = false, bidirectional = false),
-            @Mapping(source = "shippingMethod", target = "shippingMethodId", excluded = false, bidirectional = false)
+            @Mapping(source = "shippingMethod", target = "shippingMethodId", excluded = false, bidirectional = false),
+            @Mapping(source = "properties", target = "properties", explicitMethod = "convertPropertySet")
     })
     OrderEntity toOrderEntity(Order order, MappingContext context);
 
@@ -40,7 +41,8 @@ public interface ModelMapper {
             @Mapping(source = "shippingAddressId", target = "shippingAddress", excluded = false, bidirectional = false),
             @Mapping(source = "shippingNameId", target = "shippingToName", excluded = false, bidirectional = false),
             @Mapping(source = "shippingPhoneId", target = "shippingToPhone", excluded = false, bidirectional = false),
-            @Mapping(source = "shippingMethodId", target = "shippingMethod", excluded = false, bidirectional = false)
+            @Mapping(source = "shippingMethodId", target = "shippingMethod", excluded = false, bidirectional = false),
+            @Mapping(source = "properties", target = "properties", explicitMethod = "convertPropertySet")
     })
     Order toOrderModel(OrderEntity orderEntity, MappingContext context);
 
