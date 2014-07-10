@@ -436,25 +436,6 @@ public class CommonMapper {
         }
     }
 
-    public String fromSubledgerItemActionToString(SubledgerItemAction action) {
-        if (action == null) {
-            return null;
-        }
-
-        return action.toString();
-    }
-
-    public SubledgerItemAction fromStringToSubledgerItemAction(String action) {
-        if (action == null) {
-            return null;
-        }
-        try {
-            return SubledgerItemAction.valueOf(action);
-        } catch (Exception e) {
-            throw AppErrors.INSTANCE.enumConversionError(action, "action").exception();
-        }
-    }
-
     public String fromSubledgerPayoutStatusToString(PayoutStatus status) {
         if (status == null) {
             return null;
@@ -539,6 +520,25 @@ public class CommonMapper {
             return OrderItemRevisionType.valueOf(itemType);
         } catch (Exception e) {
             throw AppErrors.INSTANCE.enumConversionError(itemType, "OrderItemRevisionType").exception();
+        }
+    }
+
+    public String fromSubledgerItemActionToString(SubledgerItemAction subledgerItemAction) {
+        if (subledgerItemAction == null) {
+            return null;
+        }
+        return subledgerItemAction.toString();
+    }
+
+    public SubledgerItemAction fromStringToSubledgerItemAction(String subledgerItemAction) {
+        if (subledgerItemAction == null) {
+            return null;
+        }
+
+        try {
+            return SubledgerItemAction.valueOf(subledgerItemAction);
+        } catch (Exception e) {
+            throw AppErrors.INSTANCE.enumConversionError(subledgerItemAction, "SubledgerItemAction").exception();
         }
     }
 

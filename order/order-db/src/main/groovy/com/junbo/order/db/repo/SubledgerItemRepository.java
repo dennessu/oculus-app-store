@@ -5,6 +5,7 @@
  */
 package com.junbo.order.db.repo;
 
+import com.junbo.common.id.OrderItemId;
 import com.junbo.common.id.SubledgerItemId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.order.spec.model.PageParam;
@@ -20,4 +21,7 @@ import java.util.List;
 public interface SubledgerItemRepository extends BaseRepository<SubledgerItem, SubledgerItemId> {
     @ReadMethod
     Promise<List<SubledgerItem>> getByStatus(Integer dataCenterId, Object shardKey, String status, PageParam pageParam);
+
+    @ReadMethod
+    Promise<List<SubledgerItem>> getByOrderItemId(OrderItemId orderItemId);
 }

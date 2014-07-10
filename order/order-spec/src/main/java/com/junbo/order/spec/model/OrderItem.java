@@ -70,6 +70,9 @@ public class OrderItem extends ResourceMetaForDualWrite<OrderItemId> {
     private BigDecimal totalDiscount;
 
     @JsonIgnore
+    private BigDecimal developerRevenue;
+
+    @JsonIgnore
     private Date honorUntilTime;
 
     @JsonIgnore
@@ -198,6 +201,14 @@ public class OrderItem extends ResourceMetaForDualWrite<OrderItemId> {
 
     public void setTotalDiscount(BigDecimal totalDiscount) {
         this.totalDiscount = totalDiscount;
+    }
+
+    public BigDecimal getDeveloperRevenue() {
+        return developerRevenue;
+    }
+
+    public void setDeveloperRevenue(BigDecimal developerRevenue) {
+        this.developerRevenue = developerRevenue;
     }
 
     public Date getHonorUntilTime() {

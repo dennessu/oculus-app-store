@@ -7,9 +7,7 @@ package com.junbo.order.db.repo.facade;
 
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
-import com.junbo.common.id.OfferId;
-import com.junbo.common.id.OrganizationId;
-import com.junbo.common.id.SubledgerId;
+import com.junbo.common.id.*;
 import com.junbo.order.spec.model.PageParam;
 import com.junbo.order.spec.model.Subledger;
 import com.junbo.order.spec.model.SubledgerItem;
@@ -38,7 +36,11 @@ public interface SubledgerRepositoryFacade {
 
     SubledgerItem createSubledgerItem(SubledgerItem subledgerItem);
 
+    SubledgerItem getSubledgerItem(SubledgerItemId subledgerItemId);
+
     List<SubledgerItem> getSubledgerItem(Integer dataCenterId, Object shardKey, String status, PageParam pageParam);
+
+    List<SubledgerItem> getSubledgerItemByOrderItemId(OrderItemId orderItemId);
 
     SubledgerItem updateSubledgerItem(SubledgerItem subledgerItem);
 }

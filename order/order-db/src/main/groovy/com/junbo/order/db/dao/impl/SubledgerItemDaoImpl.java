@@ -32,4 +32,12 @@ public class SubledgerItemDaoImpl extends BaseDaoImpl<SubledgerItemEntity> imple
 
         return criteria.list();
     }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<SubledgerItemEntity> getByOrderItemId(Long orderItemId) {
+        Criteria criteria = this.getSession(orderItemId).createCriteria(SubledgerItemEntity.class);
+        criteria.add(Restrictions.eq("orderItemId", orderItemId));
+        return criteria.list();
+    }
 }

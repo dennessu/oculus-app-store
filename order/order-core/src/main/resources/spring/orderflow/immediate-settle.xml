@@ -38,8 +38,8 @@
 
         <wf:action-state id="fullfill">
             <wf:action ref="riskUpdateAction"/>
+            <wf:action ref="subledgerCreateItemAction"/>
             <wf:action ref="fulfillmentAction"/>
-            <wf:action ref="createSubledgerItemAction"/>
             <wf:action ref="sendEmailAction"/>
             <wf:transition on="*" to="endState"/>
         </wf:action-state>

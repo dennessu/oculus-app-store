@@ -6,10 +6,7 @@
 package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.common.id.OfferId;
-import com.junbo.common.id.OrderItemId;
-import com.junbo.common.id.SubledgerId;
-import com.junbo.common.id.SubledgerItemId;
+import com.junbo.common.id.*;
 import com.junbo.common.model.ResourceMetaForDualWrite;
 
 import java.math.BigDecimal;
@@ -23,9 +20,11 @@ public class SubledgerItem extends ResourceMetaForDualWrite<SubledgerItemId> {
     private SubledgerId subledger;
     private SubledgerItemId originalSubledgerItem;
     private BigDecimal totalAmount;
+    private BigDecimal totalPayoutAmount;
+    private Long totalQuantity;
     private OrderItemId orderItem;
-    private OfferId offer;
     private String subledgerItemAction;
+    private OfferId offer;
     private String status;
 
     public SubledgerItemId getId() {
@@ -60,6 +59,22 @@ public class SubledgerItem extends ResourceMetaForDualWrite<SubledgerItemId> {
         this.totalAmount = totalAmount;
     }
 
+    public BigDecimal getTotalPayoutAmount() {
+        return totalPayoutAmount;
+    }
+
+    public void setTotalPayoutAmount(BigDecimal totalPayoutAmount) {
+        this.totalPayoutAmount = totalPayoutAmount;
+    }
+
+    public Long getTotalQuantity() {
+        return totalQuantity;
+    }
+
+    public void setTotalQuantity(Long totalQuantity) {
+        this.totalQuantity = totalQuantity;
+    }
+
     public OrderItemId getOrderItem() {
         return orderItem;
     }
@@ -68,20 +83,20 @@ public class SubledgerItem extends ResourceMetaForDualWrite<SubledgerItemId> {
         this.orderItem = orderItem;
     }
 
-    public OfferId getOffer() {
-        return offer;
-    }
-
-    public void setOffer(OfferId offer) {
-        this.offer = offer;
-    }
-
     public String getSubledgerItemAction() {
         return subledgerItemAction;
     }
 
     public void setSubledgerItemAction(String subledgerItemAction) {
         this.subledgerItemAction = subledgerItemAction;
+    }
+
+    public OfferId getOffer() {
+        return offer;
+    }
+
+    public void setOffer(OfferId offer) {
+        this.offer = offer;
     }
 
     public String getStatus() {

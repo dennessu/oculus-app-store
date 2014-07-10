@@ -38,4 +38,8 @@ class SubledgerAuthorizeCallbackFactory extends AbstractAuthorizeCallbackFactory
     AuthorizeCallback<Subledger> create(SubledgerId subledgerId) {
         return create(subledgerResource.getSubledger(subledgerId).get())
     }
+
+    AuthorizeCallback<Subledger> create() {
+        return new SubledgerAuthorizeCallback(this, new Subledger())
+    }
 }

@@ -5,6 +5,7 @@
  */
 package com.junbo.order.db.repo.cloudant
 
+import com.junbo.common.id.OrderItemId
 import com.junbo.common.id.SubledgerItemId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.db.repo.SubledgerItemRepository
@@ -23,5 +24,10 @@ class SubledgerItemRepositoryCloudantImpl extends BaseCloudantRepositoryForDualW
     @Override
     Promise<List<SubledgerItem>> getByStatus(Integer dataCenterId, Object shardKey, String status, PageParam pageParam) {
         throw new RuntimeException("SubledgerItemRepository::getByStatus is only available in SQL mode for backend jobs.");
+    }
+
+    @Override
+    Promise<List<SubledgerItem>> getByOrderItemId(OrderItemId orderItemId) {
+        return super.queryView('by_orderitemid', orderItemId.value.toString())
     }
 }

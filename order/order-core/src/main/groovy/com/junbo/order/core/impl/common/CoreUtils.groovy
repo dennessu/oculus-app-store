@@ -152,6 +152,7 @@ class CoreUtils {
                     diffItem.totalAmount = (diffItem.quantity * i.totalAmount / i.quantity).setScale(
                             numberAfterDecimal, BigDecimal.ROUND_HALF_EVEN)
                     requestItem.totalAmount = requestItem.totalAmount - diffItem.totalAmount
+
                 } else if (i.quantity == requestItem.quantity && i.totalAmount > requestItem.totalAmount) {
                     diffItem.quantity = 0
                     diffItem.totalAmount = i.totalAmount - requestItem.totalAmount

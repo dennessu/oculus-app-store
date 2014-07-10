@@ -1,9 +1,12 @@
 package com.junbo.order.core.impl.subledger
 
+import com.junbo.authorization.AuthorizeCallback
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
 import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.id.OrderId
+import com.junbo.common.id.OrderItemId
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.SubledgerId
 import com.junbo.order.auth.SubledgerAuthorizeCallbackFactory
@@ -57,6 +60,8 @@ class SubledgerServiceImpl implements SubledgerService {
     Subledger createSubledger(Subledger subledger) {
         subledger.payoutStatus = PayoutStatus.PENDING.name()
         subledger.totalAmount = 0
+        subledger.totalPayoutAmount = 0
+        subledger.totalQuantity = 0
         return subledgerRepository.createSubledger(subledger)
     }
 
@@ -122,16 +127,19 @@ class SubledgerServiceImpl implements SubledgerService {
         orderValidator.notNull(subledgerItem.totalAmount, 'totalAmount')
         orderValidator.notNull(subledgerItem.orderItem, 'orderItem')
         orderValidator.notNull(subledgerItem.offer, 'offer')
-        orderValidator.notNull(subledgerItem.subledgerItemAction, 'subledgerItemAction').
-                validEnumString(subledgerItem.subledgerItemAction, 'subledgerItemAction', SubledgerItemAction)
 
-        def callback = authorizeCallbackFactory.create(subledgerItem.subledger as SubledgerId)
+        AuthorizeCallback callback
+        if (subledgerItem.subledger != null) {
+            callback = authorizeCallbackFactory.create(subledgerItem.subledger as SubledgerId)
+        } else {
+            callback = authorizeCallbackFactory.create()
+        }
+
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('create-item')) {
                 throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
-            subledgerItem.status = SubledgerItemStatus.PENDING.name()
             def result = subledgerRepository.createSubledgerItem(subledgerItem)
 
             if (LOGGER.isDebugEnabled()) {
@@ -145,14 +153,23 @@ class SubledgerServiceImpl implements SubledgerService {
 
     @Override
     @Transactional
+    List<SubledgerItem> getSubledgerItemsByOrderItemId(OrderItemId orderItemId) {
+        return subledgerRepository.getSubledgerItemByOrderItemId(orderItemId)
+    }
+
+    @Override
+    @Transactional
     void aggregateSubledgerItem(SubledgerItem subledgerItem) {
         def subledger = getSubledger(subledgerItem.subledger)
 
-        if (subledgerItem.subledgerItemAction == SubledgerItemAction.CHARGE.name()) {
+        if (subledgerItem.subledgerItemAction == SubledgerItemAction.PAYOUT.name()) {
             subledger.totalAmount += subledgerItem.totalAmount
-        }
-        if (subledgerItem.subledgerItemAction == SubledgerItemAction.REFUND.name()) {
+            subledger.totalQuantity += subledgerItem.totalQuantity
+            subledger.totalPayoutAmount += subledgerItem.totalPayoutAmount
+        } else {
             subledger.totalAmount -= subledgerItem.totalAmount
+            subledger.totalQuantity -= subledgerItem.totalQuantity
+            subledger.totalPayoutAmount -= subledgerItem.totalPayoutAmount
         }
 
         subledgerItem.subledger = subledger.getId()
