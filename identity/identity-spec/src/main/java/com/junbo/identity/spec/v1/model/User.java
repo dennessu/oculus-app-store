@@ -475,6 +475,7 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> implements C
 
     public void setCountryOfResidence(CountryId countryOfResidence) {
         this.countryOfResidence = countryOfResidence;
+        support.setPropertyAssigned("cor");
         support.setPropertyAssigned("countryOfResidence");
     }
 
