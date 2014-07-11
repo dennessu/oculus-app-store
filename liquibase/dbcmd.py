@@ -223,30 +223,35 @@ def executeDbCommand(command, dbVersion, configFile):
 
 def createDb(shardId, configFile):
     shardConfig = configFile.getShardConfig(shardId)
+    os.environ["PGSQL_USER"] = shardConfig.loginUserName
+    os.environ["PGPASSWORD"] = shardConfig.loginPassword
 
     from urlparse import urlparse
     uri = urlparse(shardConfig.jdbcUrl.replace('jdbc:postgresql:', ''))
-    host = uri.netloc.replace(':5432', '')
-    info("Creating %s.%s in %s %s (shard %s)..." %
-        (configFile.dbName, shardConfig.schema, host, configFile.env, shardConfig.shardId));
+    (host, port) = uri.netloc.split(':')
+    
+    info("Creating %s.%s in %s:%s %s (shard %s)..." %
+        (configFile.dbName, shardConfig.schema, host, port, configFile.env, shardConfig.shardId));
 
-    command = "bash ./scripts/createdb.sh '%s' '%s' '%s'" % (configFile.dbName, shardConfig.schema, host)
+    command = "bash ./scripts/createdb.sh '%s' '%s' '%s' '%s'" % (configFile.dbName, shardConfig.schema, host, port)
     executeCommand(command)
 
 def dropDb(shardId, configFile):
     shardConfig = configFile.getShardConfig(shardId)
+    os.environ["PGSQL_USER"] = shardConfig.loginUserName
+    os.environ["PGPASSWORD"] = shardConfig.loginPassword
 
     from urlparse import urlparse
     uri = urlparse(shardConfig.jdbcUrl.replace('jdbc:postgresql:', ''))
-    host = uri.netloc.replace(':5432', '')
+    (host, port) = uri.netloc.split(':')
 
-    info("Dropping database %s in %s %s..." % (configFile.dbName, host, configFile.env));
+    info("Dropping database %s in %s:%s %s..." % (configFile.dbName, host, port, configFile.env));
 
     # Double check to avoid dropping in prod and int
     if configFile.env in set(["prod", "int"]):
         error("drop is not supported in %s" % configFile.env)
 
-    executeCommand("bash ./scripts/dropdb.sh '%s' '%s'" % (configFile.dbName, host))
+    executeCommand("bash ./scripts/dropdb.sh '%s' '%s' '%s'" % (configFile.dbName, host, port))
 
 def liquibase(command, dbVersion, shardId, configFile):
     shardConfig = configFile.getShardConfig(shardId)
@@ -304,9 +309,7 @@ def readInput(message):
     return sys.stdin.readline().strip()
 
 def readPassword(message):
-    sys.stdout.write(message)
-    sys.stdout.flush()
-    return getpass.getpass()
+    return getpass.getpass(message)
 
 def info(message):
     print message
