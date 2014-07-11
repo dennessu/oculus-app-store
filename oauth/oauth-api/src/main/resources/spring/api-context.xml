@@ -82,6 +82,7 @@
         <property name="userResource" ref="oauth_userResource"/>
         <property name="userPersonalInfoResource" ref="oauth_userPersonalInfoResource"/>
         <property name="loginStateRepository" ref="loginStateRepository"/>
+        <property name="userService" ref="userService"/>
         <property name="successRedirectUri" value="${oauth.core.portal.emailVerifySuccessUri}" />
         <property name="failedRedirectUri" value="${oauth.core.portal.emailVerifyFailUri}" />
     </bean>
