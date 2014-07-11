@@ -23,6 +23,13 @@ die ( ) {
     exit 1
 }
 
+export APPHOST_CLI_OPTS=""
+
+# check environment
+if ! grep '^environment=[a-zA-Z0-9_]\+' /etc/silkcloud/configuration.properties; then
+    export APPHOST_CLI_OPTS="$APPHOST_CLI_OPTS -Denvironment=onebox"
+fi
+
 # OS specific support (must be 'true' or 'false').
 cygwin=false
 msys=false
@@ -152,4 +159,10 @@ if $cygwin ; then
     esac
 fi
 
-exec "$JAVACMD" "${JVM_OPTS[@]}" -classpath "$CLASSPATH" com.junbo.data.loader.DataLoader "$@"
+# Split up the JVM_OPTS And APPHOST_CLI_OPTS values into an array, following the shell quoting and substitution rules
+function splitJvmOpts() {
+    JVM_OPTS=("$@")
+}
+eval splitJvmOpts $JAVA_OPTS $APPHOST_CLI_OPTS
+
+exec "$JAVACMD" "${JVM_OPTS[@]}" -classpath "$CLASSPATH" -Dfile.encoding=UTF-8 com.junbo.data.loader.DataLoader "$@"

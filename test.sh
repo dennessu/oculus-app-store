@@ -6,6 +6,9 @@ cd apphost/apphost-cli/build/install/apphost-cli/
 ./shutdown.sh || true
 ./startup.sh onebox
 
+# sleep 5 seconds to ensure main.log is created.
+sleep 5
+
 tail -f -n0 logs/main.log | while read LOGLINE
 do
     if [[ "${LOGLINE}" == *"Started Junbo Application Host"* ]]; then

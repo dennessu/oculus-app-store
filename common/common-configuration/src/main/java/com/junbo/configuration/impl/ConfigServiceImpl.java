@@ -41,6 +41,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
     private static final String CONFIG_PROPERTY_FILE = "configuration.properties";
     private static final String CONFIG_PASSWORD_KEY = "crypto.core.key";
     private static final String CONFIG_DIR_OPTS = "configDir";
+    private static final String CONFIG_DIR_DEFAULT = "/etc/silkcloud;./conf";
     private static final String ACTIVE_ENV_OPTS = "environment";
     private static final String ACTIVE_DC_OPTS = "datacenter";
     private static final String ACTIVE_SUBNET_OPTS = "subnet";
@@ -306,6 +307,9 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
     private void loadConfig() {
         String configDirs = System.getProperty(CONFIG_DIR_OPTS);
+        if (StringUtils.isEmpty(configDirs)) {
+            configDirs = CONFIG_DIR_DEFAULT;
+        }
 
         Path configFilePath = findFile(configDirs, CONFIG_PROPERTY_FILE);
         if (configFilePath != null) {

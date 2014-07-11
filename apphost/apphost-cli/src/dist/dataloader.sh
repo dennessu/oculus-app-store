@@ -23,10 +23,10 @@ die ( ) {
     exit 1
 }
 
-export APPHOST_CLI_OPTS="-DconfigDir=./conf"
+export APPHOST_CLI_OPTS=""
 
 # check environment
-if ! grep '^environment=[a-zA-Z0-9_]\+' ./conf/configuration.properties; then
+if ! grep '^environment=[a-zA-Z0-9_]\+' /etc/silkcloud/configuration.properties; then
     export APPHOST_CLI_OPTS="$APPHOST_CLI_OPTS -Denvironment=onebox"
 fi
 
