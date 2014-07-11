@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
  */
 public class SecureRandomTokenGenerator implements TokenGenerator {
 
-    private static final Pattern DEFAULT_CODEC_PATTERN = Pattern.compile("[0-9A-Za-z=-~]+");
+    private static final Pattern DEFAULT_CODEC_PATTERN = Pattern.compile("[0-9A-Za-z=\\-~]+");
 
     private final Random random = new SecureRandom();
 
@@ -194,13 +194,13 @@ public class SecureRandomTokenGenerator implements TokenGenerator {
     public boolean isValidEmailVerifyCode(String codeValue) {
         Assert.notNull(codeValue);
 
-        return codeValue.length() == emailVerifyCodeLength && DEFAULT_CODEC_PATTERN.matcher(codeValue).matches();
+        return DEFAULT_CODEC_PATTERN.matcher(codeValue).matches();
     }
 
     @Override
     public boolean isValidResetPasswordCode(String codeValue) {
         Assert.notNull(codeValue);
 
-        return codeValue.length() == resetPasswordCodeLength && DEFAULT_CODEC_PATTERN.matcher(codeValue).matches();
+        return DEFAULT_CODEC_PATTERN.matcher(codeValue).matches();
     }
 }
