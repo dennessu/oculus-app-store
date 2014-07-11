@@ -51,6 +51,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     }
 
     public String PostUser() throws Exception {
+        Master.getInstance().setCurrentUid(null);
         oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY);
         User userForPost = new User();
         userForPost.setIsAnonymous(false);
@@ -194,7 +195,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     }
 
     private UserPersonalInfo postUserPersonalInfo(UserPersonalInfo userPersonalInfo, int expectedResponseCode) throws Exception {
-        String serverURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/personal-info";
+        String serverURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "personal-info";
         String responseBody = restApiCall(HTTPMethod.POST, serverURL, userPersonalInfo, expectedResponseCode);
         return new JsonMessageTranscoder().decode(new TypeReference<UserPersonalInfo>() {
         }, responseBody);

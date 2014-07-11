@@ -92,7 +92,7 @@ public class OAuthTokenServiceImpl extends HttpClientBase implements OAuthTokenS
         formParams.put("client_id", "client");
         formParams.put("client_secret", "secret");
         formParams.put("grant_type", GrantType.PASSWORD.toString());
-        formParams.put("scope", "identity commerce catalog");
+        formParams.put("scope", "identity commerce catalog identity.pii");
         formParams.put("password", pwd);
         formParams.put("username", Master.getInstance().getUser(uid).getUsername());
 
