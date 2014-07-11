@@ -22,9 +22,8 @@ fi
 export DEVOPS_ACCOUNT='devops'
 export DEPLOYMENT_ACCOUNT='silkcloud'
 
-export SILKCLOUD_PATH='/var/silkcloud'
-export DEPLOYMENT_PATH=$SILKCLOUD_PATH/pgha
-export PGHA_BASE=$SILKCLOUD_PATH/pgha
+export PGHA_BASE='/var/silkcloud'
+export DEPLOYMENT_PATH=$PGHA_BASE/pgha
 
 export DATA_PATH=$PGHA_BASE/data
 export BACKUP_PATH=$PGHA_BASE/backup
@@ -71,7 +70,7 @@ export SECONDARY_PGBOUNCER_HOST=$SLAVE_HOST
 export PGBOUNCER_PORT=6543
 
 export PGBOUNCER_BIN=/usr/sbin
-export PGBOUNCER_BASE='/var/silkcloud/pgbouncer'
+export PGBOUNCER_BASE=$PGHA_BASE/pgbouncer
 export PGBOUNCER_CONF=$PGBOUNCER_BASE/pgbouncer.conf
 export PGBOUNCER_PID=$PGBOUNCER_BASE/pgbouncer.pid
 export PGBOUNCER_AUTH_FILE=~/.pgbouncer_auth

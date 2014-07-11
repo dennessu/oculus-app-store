@@ -11,17 +11,17 @@ ssh -o "StrictHostKeyChecking no" $DEVOPS_ACCOUNT@$MASTER_HOST << ENDSSH
 sudo mkdir -p /etc/silkcloud
 sudo touch /etc/silkcloud/configuration.properties
 sudo chmod 666 /etc/silkcloud/configuration.properties
-sudo echo "envrionment=$ENVIRONMENT" > /etc/silkcloud/configuration.properties
+sudo echo "environment=$ENVIRONMENT" > /etc/silkcloud/configuration.properties
 
-sudo rm -rf $SILKCLOUD_PATH
+sudo rm -rf $PGHA_BASE
 sudo mkdir -p $DEPLOYMENT_PATH
-sudo chown -R $DEVOPS_ACCOUNT:$DEVOPS_ACCOUNT $SILKCLOUD_PATH
+sudo chown -R $DEVOPS_ACCOUNT:$DEVOPS_ACCOUNT $PGHA_BASE
 ENDSSH
 
 scp -r ./ $DEVOPS_ACCOUNT@$MASTER_HOST:$DEPLOYMENT_PATH
 
 ssh -o "StrictHostKeyChecking no" $DEVOPS_ACCOUNT@$MASTER_HOST << ENDSSH
-sudo chown -R $DEPLOYMENT_ACCOUNT:$DEPLOYMENT_ACCOUNT $SILKCLOUD_PATH
+sudo chown -R $DEPLOYMENT_ACCOUNT:$DEPLOYMENT_ACCOUNT $PGHA_BASE
 ENDSSH
 }
 
@@ -30,17 +30,17 @@ ssh -o "StrictHostKeyChecking no" $DEVOPS_ACCOUNT@$SLAVE_HOST << ENDSSH
 sudo mkdir -p /etc/silkcloud
 sudo touch /etc/silkcloud/configuration.properties
 sudo chmod 666 /etc/silkcloud/configuration.properties
-sudo echo "envrionment=$ENVIRONMENT" > /etc/silkcloud/configuration.properties
+sudo echo "environment=$ENVIRONMENT" > /etc/silkcloud/configuration.properties
 
-sudo rm -rf $SILKCLOUD_PATH
+sudo rm -rf $PGHA_BASE
 sudo mkdir -p $DEPLOYMENT_PATH
-sudo chown -R $DEVOPS_ACCOUNT:$DEVOPS_ACCOUNT $SILKCLOUD_PATH
+sudo chown -R $DEVOPS_ACCOUNT:$DEVOPS_ACCOUNT $PGHA_BASE
 ENDSSH
 
 scp -r ./ $DEVOPS_ACCOUNT@$SLAVE_HOST:$DEPLOYMENT_PATH
 
 ssh -o "StrictHostKeyChecking no" $DEVOPS_ACCOUNT@$SLAVE_HOST << ENDSSH
-sudo chown -R $DEPLOYMENT_ACCOUNT:$DEPLOYMENT_ACCOUNT $SILKCLOUD_PATH
+sudo chown -R $DEPLOYMENT_ACCOUNT:$DEPLOYMENT_ACCOUNT $PGHA_BASE
 ENDSSH
 }
 
@@ -49,20 +49,20 @@ ssh -o "StrictHostKeyChecking no" $DEVOPS_ACCOUNT@$REPLICA_HOST << ENDSSH
 sudo mkdir -p /etc/silkcloud
 sudo touch /etc/silkcloud/configuration.properties
 sudo chmod 666 /etc/silkcloud/configuration.properties
-sudo echo "envrionment=$ENVIRONMENT" > /etc/silkcloud/configuration.properties
+sudo echo "environment=$ENVIRONMENT" > /etc/silkcloud/configuration.properties
 
-sudo rm -rf $SILKCLOUD_PATH
+sudo rm -rf $PGHA_BASE
 sudo mkdir -p $DEPLOYMENT_PATH
-sudo chown -R $DEVOPS_ACCOUNT:$DEVOPS_ACCOUNT $SILKCLOUD_PATH
+sudo chown -R $DEVOPS_ACCOUNT:$DEVOPS_ACCOUNT $PGHA_BASE
 ENDSSH
 
 scp -r ./ $DEVOPS_ACCOUNT@$REPLICA_HOST:$DEPLOYMENT_PATH
 
 ssh -o "StrictHostKeyChecking no" $DEVOPS_ACCOUNT@$REPLICA_HOST << ENDSSH
-sudo chown -R $DEPLOYMENT_ACCOUNT:$DEPLOYMENT_ACCOUNT $SILKCLOUD_PATH
+sudo chown -R $DEPLOYMENT_ACCOUNT:$DEPLOYMENT_ACCOUNT $PGHA_BASE
 ENDSSH
 }
 
 uploadMaster && echo "upload master done!" &
 uploadSlave && echo "upload slave done!" &
-uploadReplica && echo "upload replica done!" &
+uploadReplica && echo "upload replica done!" & 

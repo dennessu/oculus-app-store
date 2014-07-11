@@ -69,7 +69,7 @@
     [silkcloud] https://github.com/junbo/main/tree/master/scripts/pgha
 
 #[bastion] upload all PGHA scripts to master/slave/replica servers
-    [silkcloud] ./upload_script_prod.sh
+    [silkcloud] ./upload_script.sh
 
 #[master] clean up master
     [silkcloud] $DEPLOYMENT_PATH/purge/purge_master.sh
@@ -80,10 +80,11 @@
 #[replica] clean up replica
     [silkcloud] $DEPLOYMENT_PATH/purge/purge_replica.sh
 
-#[master/slave]
-    [silkcloud] create pgbouncer auth file in ~/pgbouncer_auth.txt and chmod 600
+#[master/slave/replica]
+    [silkcloud] create pgbouncer auth file in ~/.pgbouncer_auth and chmod 600
 
-#[master/slave]
+#[master/slave/replica]
+    [silkcloud] generate md5 password: "md5" + md5(password + username)
     [silkcloud] echo '"silkcloud" "PASSWORD"' > ~/.pgbouncer_auth
 
 
