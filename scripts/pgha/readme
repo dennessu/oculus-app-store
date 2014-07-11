@@ -69,7 +69,6 @@
     [silkcloud] https://github.com/junbo/main/tree/master/scripts/pgha
 
 #[bastion] upload all PGHA scripts to master/slave/replica servers
-    [silkcloud] manually change environment in common.sh (will auto resolve environment in the future)
     [silkcloud] ./upload_script_prod.sh
 
 #[master] clean up master
@@ -84,10 +83,8 @@
 #[master/slave]
     [silkcloud] create pgbouncer auth file in ~/pgbouncer_auth.txt and chmod 600
 
-#[master/slave] (FOR DEMO ONLY)
-    [silkcloud] echo "*:6543:*:silkcloud:abc123" > ~/.pgpass
-    [silkcloud] chmod 600 ~/.pgpass
-    [silkcloud] echo '"silkcloud" "abc123"' > ~/pgbouncer_auth.txt
+#[master/slave]
+    [silkcloud] echo '"silkcloud" "PASSWORD"' > ~/.pgbouncer_auth
 
 
 =====Master-Slave Deployment=====
@@ -109,8 +106,6 @@
 #[slave] start secondary PGBouncer proxy (connect to master db)
     $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
 
-#[master/slave][smoketest] replication smoke test
-    $DEPLOYMENT_PATH/test/test_master2slave.sh
 
 =====Master-Replica Deployment=====
 #[master] create londiste config on master
@@ -136,6 +131,9 @@
 
 #[replica] start londiste pgq ticker deamon
     $DEPLOYMENT_PATH/londiste/lodiste_pgqd.sh
+
+#[master/slave][smoketest] replication smoke test
+    $DEPLOYMENT_PATH/test/test_master2slave.sh
 
 
 =====Planned Failover=====

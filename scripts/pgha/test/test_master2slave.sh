@@ -11,16 +11,16 @@ do
 done
 
 # insert against primary pgbouncer proxy
-for k in $(seq 11 20)
-do
-    $PGBIN_PATH/psql postgres -h $PRIMARY_PGBOUNCER_HOST -p $PGBOUNCER_PORT -c "INSERT INTO student VALUES ($k);"
-done
+#for k in $(seq 11 20)
+#do
+#    $PGBIN_PATH/psql postgres -h $PRIMARY_PGBOUNCER_HOST -p $PGBOUNCER_PORT -c "INSERT INTO student VALUES ($k);"
+#done
 
 # insert against secondary pgbouncer proxy
-for k in $(seq 21 30)
-do
-    $PGBIN_PATH/psql postgres -h $SECONDARY_PGBOUNCER_HOST -p $PGBOUNCER_PORT -c "INSERT INTO student VALUES ($k);"
-done
+#for k in $(seq 21 30)
+#do
+#    $PGBIN_PATH/psql postgres -h $SECONDARY_PGBOUNCER_HOST -p $PGBOUNCER_PORT -c "INSERT INTO student VALUES ($k);"
+#done
 
 echo 'waiting for replication...'
 sleep 5s
