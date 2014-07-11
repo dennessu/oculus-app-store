@@ -392,6 +392,21 @@ class BalanceServiceImpl implements BalanceService {
         }
     }
 
+    @Override
+    Promise<Balance> auditBalance(Balance balance) {
+        def callback = authorizeCallbackFactory.create(balance)
+        return RightsScope.with(authorizeService.authorize(callback)) {
+            if (!AuthorizeContext.hasRights('audit')) {
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
+            }
+            return taxService.auditTax(balance).recover { Throwable throwable ->
+                throw throwable
+            }.then { Balance returnedBalance ->
+                return Promise.pure(updateAndCommitBalance(returnedBalance, EventActionType.AUDIT))
+            }
+        }
+    }
+
     protected Balance saveAndCommitBalance(final Balance balance) {
         AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager)
         template.setPropagationBehavior(3)
@@ -460,4 +475,6 @@ class BalanceServiceImpl implements BalanceService {
         amount = amount.setScale(numberAfterDecimal, BigDecimal.ROUND_HALF_EVEN)
         balance.setTotalAmount(amount)
     }
+
+
 }

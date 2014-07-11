@@ -155,6 +155,12 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
     @JsonIgnore
     private List<OrderRevision> orderRevisions = new ArrayList<>();
 
+    @JsonIgnore
+    private String ipAddress;
+
+    @JsonIgnore
+    private String ipGeoAddress;
+
     public OrderId getId() {
         return id;
     }
@@ -385,5 +391,21 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
 
     public void setProperties(Map<String, String> properties) {
         this.properties = properties;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+
+    public String getIpGeoAddress() {
+        return ipGeoAddress;
+    }
+
+    public void setIpGeoAddress(String ipGeoAddress) {
+        this.ipGeoAddress = ipGeoAddress;
     }
 }

@@ -330,4 +330,13 @@ class CoreUtils {
                 throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
         }
     }
+
+    static void readHeader(Order order, ApiContext context) {
+        if (context == null) {
+            return
+        }
+
+        order.ipAddress = context.userIp
+        order.ipGeoAddress = context.location
+    }
 }

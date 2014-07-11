@@ -22,6 +22,7 @@ public enum PropertyKey {
     PI_ADDRESS,
     TAX_STATUS,
     FUNCTIONAL_CURRENCY,
+    BILLING_ADDRESS,
 
     ITEM_NAME,
     ITEM_UNIT_PRICE,

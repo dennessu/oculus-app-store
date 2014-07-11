@@ -201,6 +201,10 @@ public interface AppErrors {
             message = "Billing refund failed: {0}")
     AppError billingRefundFailed(String reason);
 
+    @ErrorDef(httpStatusCode = 500, code = BillingErrorCode.BILLING_AUDIT_FAILED,
+            message = "Billing refund failed: {0}")
+    AppError billingAuditFailed(String reason);
+
     @ErrorDef(httpStatusCode = 400, code = UserErrorCode.CURRENCY_NOT_VALID,
             message = "Currency {0} is not valid")
     AppError currencyNotValid(String currency);

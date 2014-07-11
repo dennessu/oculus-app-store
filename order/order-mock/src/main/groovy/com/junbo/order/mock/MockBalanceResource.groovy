@@ -80,6 +80,11 @@ class MockBalanceResource extends BaseMock implements BalanceResource {
     }
 
     @Override
+    Promise<Balance> auditBalance(Balance balance) {
+        return null
+    }
+
+    @Override
     Promise<Balance> adjustItems(Balance balance) {
         return null
     }

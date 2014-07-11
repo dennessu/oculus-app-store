@@ -52,7 +52,8 @@ class CoreBuilder {
         Balance balance = buildBalance(order)
         balance.type = balanceType.toString()
         balance.propertySet.put(PropertyKey.LOCALE.name(), order.locale.value?.replace('-', '_'))
-
+        balance.propertySet.put(PropertyKey.IP_ADDRESS.name(), order.ipAddress)
+        balance.propertySet.put(PropertyKey.IP_GEO_LOCATION.name(), order.ipGeoAddress)
         order.orderItems.eachWithIndex { OrderItem item, int i ->
             def balanceItem = buildBalanceItem(item)
             if (item.id == null) {

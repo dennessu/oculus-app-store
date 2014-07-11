@@ -107,6 +107,7 @@ class TaxServiceImpl implements TaxService {
                 throw AppCommonErrors.INSTANCE.fieldRequired("paymentInstrument.billingAddress").exception()
             }
             balance.propertySet.put(PropertyKey.PAYMENT_METHOD.name(), PIType.get(pi.type).name())
+            balance.propertySet.put(PropertyKey.BILLING_ADDRESS.name(), pi.billingAddressId.toString())
             UserId userId = balance.userId
             if (userId == null || userId.value == null) {
                 throw AppCommonErrors.INSTANCE.fieldRequired("paymentInstrument.user").exception()
@@ -148,6 +149,23 @@ class TaxServiceImpl implements TaxService {
     @Override
     Promise<VatIdValidationResponse> validateVatId(String vatId) {
         return taxFacade.validateVatId(vatId)
+    }
+
+    @Override
+    Promise<Balance> auditTax(Balance balance) {
+        Long shippingAddressId = balance.shippingAddressId?.value
+        Long billingAddressId = Long.valueOf(balance.propertySet.get(PropertyKey.BILLING_ADDRESS))
+        return identityFacade.getAddress(shippingAddressId).recover { Throwable throwable ->
+            LOGGER.error('name=Error_Get_Shipping_Address. address id: ' + billingAddressId, throwable)
+            throw AppErrors.INSTANCE.addressNotFound("balance.shippingAddress", balance.shippingAddressId).exception()
+        }.then { Address shippingAddress ->
+            return identityFacade.getAddress(billingAddressId).recover { Throwable throwable ->
+                LOGGER.error('name=Error_Get_Billing_Address. address id: ' + billingAddressId, throwable)
+                throw AppErrors.INSTANCE.addressNotFound("billingAddress", new UserPersonalInfoId(billingAddressId)).exception()
+            }.then { Address billingAddress ->
+                return taxFacade.calculateTax(balance, shippingAddress, billingAddress)
+            }
+        }
     }
 
     Promise<Balance> calculateTax(Balance balance, Long billingAddressId) {

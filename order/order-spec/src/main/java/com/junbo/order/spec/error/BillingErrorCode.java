@@ -28,4 +28,6 @@ public class BillingErrorCode {
     public static final String BILLING_TAX_FAILED = "33006";
 
     public static final String BILLING_RESULT_INVALID = "33007";
+
+    public static final String BILLING_AUDIT_FAILED = "33008";
 }

@@ -58,6 +58,9 @@ class SabrixFacadeImpl implements TaxFacade {
     static final String CALCULATION_DIRECTION_FORWARD = 'F'
     static final String CALCULATION_DIRECTION_REVERSE = 'R'
     static final String CALCULATION_DIRECTION_REVERSE_FROM_TOTAL = 'T'
+    static final String REFUND_PREFIX = 'CM'
+    static final String TAX_STATUS_BUSINESS = 'business'
+    static final String TAX_STATUS_CONSUMER = 'consumer'
     private static final Logger LOGGER = LoggerFactory.getLogger(SabrixFacadeImpl)
     private static final ThreadLocal<SimpleDateFormat> DATE_FORMATTER =
             new ThreadLocal<SimpleDateFormat>() {
@@ -70,6 +73,7 @@ class SabrixFacadeImpl implements TaxFacade {
             }
     private static final Map<String, TaxAuthority> AUTHORITY_MAP
     private static final Map<String, String> PRODUCT_CODE_MAP
+
     static {
         Map<String, TaxAuthority> authorityMap = new HashMap<String, TaxAuthority>()
         authorityMap.put('Country', TaxAuthority.COUNTRY)
@@ -102,7 +106,6 @@ class SabrixFacadeImpl implements TaxFacade {
         productCodeMap.put(ItemType.PHYSICAL.name(), ProductCode.PHYSICAL_GOODS.code)
         productCodeMap.put(ItemType.STORED_VALUE.name(), ProductCode.STORE_BALANCE.code)
 
-        PRODUCT_CODE_MAP = Collections.unmodifiableMap(productCodeMap)
     }
     @Override
     Promise<Balance> calculateTaxQuote(Balance balance, Address shippingAddress, Address piAddress) {
@@ -118,7 +121,7 @@ class SabrixFacadeImpl implements TaxFacade {
         Batch batch = generateBatch(balance, shippingAddress, piAddress, true)
         LOGGER.info('name=Tax_Calculation_Quote_Batch, batch={}', batch.toString())
         return calculateTax(batch).then { TaxCalculationResponse result ->
-            return Promise.pure(updateBalance(result, balance))
+            return Promise.pure(updateAuditedBalance(result, balance))
         }
     }
 
@@ -211,9 +214,8 @@ class SabrixFacadeImpl implements TaxFacade {
             invoice.originalInvoiceNumber = balance.orderIds?.get(0)?.value
             invoice.originalInvoiceDate = balance.propertySet.get(PropertyKey.ORIGINAL_INVOICE_DATE.name())
         }
-        invoice.calculationDirection = isRefund ? (isAudited ? CALCULATION_DIRECTION_REVERSE
-                : CALCULATION_DIRECTION_REVERSE_FROM_TOTAL)
-                : CALCULATION_DIRECTION_FORWARD
+        invoice.calculationDirection = isRefund && isAudited ?
+                CALCULATION_DIRECTION_REVERSE : CALCULATION_DIRECTION_FORWARD
         invoice.invoiceDate = DATE_FORMATTER.get().format(new Date())
         invoice.currencyCode = balance.currency
         invoice.isAudited = isAudited
@@ -245,18 +247,11 @@ class SabrixFacadeImpl implements TaxFacade {
             Line line = new Line()
             line.id = index + 1
             line.lineNumber = line.id
-            if (isAudited) {
-                line.grossAmount = item.amount?.toDouble()
+            line.grossAmount = item.amount?.toDouble()
+            if (isRefund && isAudited) {
                 line.taxAmount = item.taxAmount?.toDouble()
             }
-            else if (isRefund) {
-                line.grossPlusTax = item.amount?.toDouble()
-            }
-            else {
-                line.grossAmount = item.amount?.toDouble()
-            }
             line.discountAmount = item.discountAmount?.toDouble()
-            line.productCode = item.financeId
             line.transactionType = getTransactionType(item)
             line.productCode = getProductCode(item)
             line.description = item.propertySet.get(PropertyKey.ITEM_DESCRIPTION.name())
@@ -281,6 +276,13 @@ class SabrixFacadeImpl implements TaxFacade {
     }
 
     String getUniqueInvoiceNumber(Balance balance) {
+        def seqNum = balance.propertySet.get(PropertyKey.SEQ_NUMBER.name())
+        if (seqNum == null) {
+            seqNum = '1'
+        }
+        if (BalanceType.REFUND.name() == balance.type) {
+            return REFUND_PREFIX + '_' + balance.orderIds[0]?.value + '_' + seqNum
+        }
         return balance.orderIds[0]?.value
     }
 
@@ -298,12 +300,17 @@ class SabrixFacadeImpl implements TaxFacade {
             attribute2.value = balance.propertySet.get(PropertyKey.PI_ADDRESS.name())
             invoice.userElement.add(attribute2)
         }
-        if (balance.propertySet.get(PropertyKey.TAX_STATUS.name()) != null) {
-            UserElement attribute3 = new UserElement()
-            attribute3.name = 'ATTRIBUTE3'
-            attribute3.value = balance.propertySet.get(PropertyKey.TAX_STATUS.name())
-            invoice.userElement.add(attribute3)
+
+        UserElement attribute3 = new UserElement()
+        attribute3.name = 'ATTRIBUTE3'
+        if (balance.propertySet.get(PropertyKey.VAT_ID.name()) != null) {
+            attribute3.value = TAX_STATUS_BUSINESS
         }
+        else {
+            attribute3.value = TAX_STATUS_CONSUMER
+        }
+        invoice.userElement.add(attribute3)
+
         if (balance.propertySet.get(PropertyKey.PAYMENT_METHOD.name()) != null) {
             UserElement attribute4 = new UserElement()
             attribute4.name = 'ATTRIBUTE4'
@@ -364,7 +371,7 @@ class SabrixFacadeImpl implements TaxFacade {
         }
         String type = item.propertySet.get(PropertyKey.ITEM_TYPE.name())
         switch (type) {
-            case 'PHYSICAL':
+            case ItemType.PHYSICAL.name():
                 return GOODS
             default:
                 return ELECTRONIC_SERVICES
@@ -434,7 +441,15 @@ class SabrixFacadeImpl implements TaxFacade {
         }
     }
 
-    Balance updateBalance(TaxCalculationResponse result, Balance  balance) {
+    Balance updateAuditedBalance(TaxCalculationResponse result, Balance balance) {
+        if (result != null &&
+                (result.requestStatus?.isSuccess || result.requestStatus?.isPartialSuccess)) {
+            balance.taxStatus = TaxStatus.AUDITED.name()
+        }
+        return balance
+    }
+
+    Balance updateBalance(TaxCalculationResponse result, Balance balance) {
         if (result != null &&
                 (result.requestStatus?.isSuccess || result.requestStatus?.isPartialSuccess)) {
             Invoice resultInvoice = result.invoice[0]

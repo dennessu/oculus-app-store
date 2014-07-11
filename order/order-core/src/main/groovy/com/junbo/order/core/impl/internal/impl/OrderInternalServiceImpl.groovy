@@ -7,6 +7,7 @@ package com.junbo.order.core.impl.internal.impl
 import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.enums.PropertyKey
+import com.junbo.billing.spec.enums.TaxStatus
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.common.error.AppErrorException
@@ -418,5 +419,33 @@ class OrderInternalServiceImpl implements OrderInternalService {
             // TODO
         }
         return event
+    }
+
+    @Override
+    Promise<Order> auditTax(Order order) {
+        return facadeContainer.billingFacade.getBalancesByOrderId(order.getId().value).recover { Throwable throwable ->
+            LOGGER.error('name=Tax_Audit_Fail', throwable)
+            throw AppErrors.INSTANCE.billingAuditFailed('billing returns error: ' + throwable.message).exception()
+        }.then { List<Balance> balances ->
+            def balancesToBeAudited = balances.findAll { Balance balance ->
+                BalanceStatus.COMPLETED.name() == balance.status && TaxStatus.TAXED.name() == balance.taxStatus
+            }
+            def auditedBalances = []
+            return Promise.each(balancesToBeAudited) { Balance balanceToBeAudited ->
+                return facadeContainer.billingFacade.auditBalance(balanceToBeAudited).recover {
+
+                }.then { Balance auditedBalance ->
+                    if (TaxStatus.AUDITED.name() == auditedBalance) {
+                        auditedBalances << auditedBalance
+                    }
+                }
+            }.then {
+                if (balancesToBeAudited?.size() == auditedBalances.size()) {
+                    order.status = OrderStatus.AUDITED.name()
+                    orderRepository.updateOrder(order, true, true, null)
+                }
+                return Promise.pure(order)
+            }
+        }
     }
 }

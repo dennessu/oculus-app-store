@@ -10,6 +10,7 @@ import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.BillingEventHistoryBuilder
 import com.junbo.order.core.impl.common.CoreBuilder
+import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
@@ -45,6 +46,7 @@ class WebPaymentChargeAction extends BaseOrderEventAwareAction {
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def order = context.orderServiceContext.order
+        CoreUtils.readHeader(order, context?.orderServiceContext?.apiContext)
         orderInternalService.markSettlement(order)
         if (order.payments[0].successRedirectUrl == null) {
             throw AppErrors.INSTANCE.missingParameterField('successRedirectUrl').exception()

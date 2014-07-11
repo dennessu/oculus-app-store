@@ -35,4 +35,6 @@ public interface OrderInternalService {
     void persistBillingHistory(Balance balance, BillingAction action, Order order);
 
     OrderEvent checkOrderEventStatus(Order order, OrderEvent event, List<Balance> balances);
+
+    Promise<Order> auditTax(Order order);
 }

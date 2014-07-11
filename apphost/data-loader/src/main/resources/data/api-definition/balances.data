@@ -14,7 +14,7 @@
             {
                 "precondition": "true",
                 "rights": [
-                    "create", "quote", "capture", "confirm", "check", "read", "put", "process-async", "refund"
+                    "create", "quote", "capture", "confirm", "check", "read", "put", "process-async", "refund", "audit"
                 ],
                 "scriptType": "SPEL"
             }
