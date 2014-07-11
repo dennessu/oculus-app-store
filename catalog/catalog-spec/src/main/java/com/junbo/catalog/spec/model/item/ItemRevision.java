@@ -38,6 +38,10 @@ public class ItemRevision extends BaseRevisionModel {
             value = "Used to identify the item (app), used mainly for android")
     private String packageName;
 
+    @ApiModelProperty(position = 4, required = true,
+            value = "The file name when user downloads the binary")
+    private String downloadName;
+
     @ApiModelProperty(position = 15, required = true, value = "Sku")
     private String sku;
 
@@ -231,6 +235,14 @@ public class ItemRevision extends BaseRevisionModel {
 
     public void setSupportedLocales(Map<String, SupportedLocale> supportedLocales) {
         this.supportedLocales = supportedLocales;
+    }
+
+    public String getDownloadName() {
+        return downloadName;
+    }
+
+    public void setDownloadName(String downloadName) {
+        this.downloadName = downloadName;
     }
 
     @Override
