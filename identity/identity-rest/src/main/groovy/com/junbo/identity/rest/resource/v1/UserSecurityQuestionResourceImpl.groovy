@@ -81,7 +81,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
             then { UserSecurityQuestion newUserSecurityQuestion ->
             def callback = authorizeCallbackFactory.create(newUserSecurityQuestion.userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
-                if (!AuthorizeContext.hasRights('get')) {
+                if (!AuthorizeContext.hasRights('read')) {
                     throw AppErrors.INSTANCE.userNotFound(userId).exception()
                 }
 
