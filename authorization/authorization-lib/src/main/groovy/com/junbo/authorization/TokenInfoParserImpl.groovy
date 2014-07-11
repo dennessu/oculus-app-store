@@ -85,8 +85,8 @@ public class TokenInfoParserImpl implements TokenInfoParser {
 
             return tokenInfo
         } catch (AppErrorException ex) {
-            if (ex.error.httpStatusCode / 100 == 4) {
-                throw AppCommonErrors.INSTANCE.invalidAccessToken().exception()
+            if ((int)(ex.error.httpStatusCode / 100) == 4) {
+                throw ex
             } else {
                 throw new RuntimeException('Failed to parse access token', ex)
             }

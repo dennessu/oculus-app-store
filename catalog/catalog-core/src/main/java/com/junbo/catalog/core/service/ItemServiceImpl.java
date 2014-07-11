@@ -133,7 +133,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
             if (CollectionUtils.isEmpty(options.getItemIds())) {
                 AppErrorException exception =
                         AppCommonErrors.INSTANCE.parameterInvalid("itemId must be specified when timestamp is present.").exception();
-                LOGGER.error("Error updating item-revision. ", exception);
+                LOGGER.error("Error getting item-revisions. ", exception);
                 throw exception;
             }
             return itemRevisionRepo.getRevisions(options.getItemIds(), options.getTimestamp());
