@@ -174,13 +174,13 @@ public class OrderTestDataProvider {
         return orderClient.postOrder(order);
     }
 
-    public Subledger getSubledger(String offerName) throws Exception {
+    public Results<Subledger> getSubledger(String offerName) throws Exception {
         String offerId = offerClient.getOfferIdByName(offerName);
         Offer offer = Master.getInstance().getOffer(offerId);
         String offerRevisionId = IdConverter.idToUrlString(OfferRevisionId.class, offer.getCurrentRevisionId());
         String sellerId = IdConverter.idToUrlString(OrganizationId.class,
                 Master.getInstance().getOfferRevision(offerRevisionId).getOwnerId().getValue());
-        return orderClient.getSubledger(sellerId);
+        return orderClient.getSubledgers(sellerId);
     }
 
     public void invalidateCreditCard(String uid, String paymentId) throws Exception {

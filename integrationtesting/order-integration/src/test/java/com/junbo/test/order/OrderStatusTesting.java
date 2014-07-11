@@ -59,7 +59,7 @@ public class OrderStatusTesting extends BaseOrderTestClass {
         Map<String, Integer> offerList = new HashedMap();
 
         offerList.put(offer_digital_normal1, 1);
-        offerList.put(offer_digital_normal2, 2);
+        offerList.put(offer_digital_normal2, 1);
 
         PayPalInfo payPalInfo = PayPalInfo.getPayPalInfo(Country.DEFAULT);
         String payPalId = testDataProvider.postPaymentInstrument(uid, payPalInfo);
@@ -116,7 +116,7 @@ public class OrderStatusTesting extends BaseOrderTestClass {
         Map<String, Integer> offerList = new HashedMap();
 
         offerList.put(offer_digital_normal1, 1);
-        offerList.put(offer_digital_normal2, 2);
+        offerList.put(offer_digital_normal2, 1);
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
