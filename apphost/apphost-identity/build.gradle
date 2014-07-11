@@ -14,29 +14,9 @@ dependencies {
 
     compile junboProject(':identity-rest')
     compile junboProject(':oauth-api')
-    compile junboProject(':entitlement-rest')
-    compile junboProject(':catalog-rest')
-    compile junboProject(':rating-rest')
-    compile junboProject(':ewallet-rest')
-    compile junboProject(':payment-rest')
-    compile junboProject(':billing-rest')
-    compile junboProject(':email-rest')
-    compile junboProject(':cart-rest')
-    compile junboProject(':fulfilment-rest')
-    compile junboProject(':order-rest')
-    compile junboProject(':crypto-rest')
-    compile junboProject(':iap-rest')
     compile junboProject(':authorization-rest')
-    compile junboProject(':data-loader')
 
-    compile junboProject(':billing-jobs')
-    compile junboProject(':order-jobs')
-    compile junboProject(':email-jobs')
-    compile junboProject(':catalog-jobs')
     compile junboProject(':identity-job')
-    compile junboProject(':token-rest')
-    compile junboProject(':csr-rest')
-    // more to add
 }
 
 applicationDistribution.from("../../cloudant") {

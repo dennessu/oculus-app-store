@@ -1,14 +1,29 @@
 #!/bin/bash
 DIR="$( cd "$( dirname "$BASH_SOURCE[0]" )" && pwd )"
 
-ENVIRONMENT='test'
-source $DIR/../env/${ENVIRONMENT}.sh
+# stop the execution whenever there is an error
+set -e
 
-export DEVOPS_ACCOUNT='ubuntu'
+if [[ -z "$ENVIRONMENT" ]]; then
+    CONFIG_FILE=/etc/silkcloud/configuration.properties
+    if [[ -f $CONFIG_FILE ]]; then
+        ENVIRONMENT=`cat $CONFIG_FILE | grep '^environment=' | sed 's/environment=//'`
+    fi
+    if [[ -z "$ENVIRONMENT" ]]; then
+        echo "Environment is not found in $CONFIG_FILE"
+        exit 1
+    fi
+fi
+ENVIRONMENT_FILE=$DIR/../env/${ENVIRONMENT}.sh
+if [[ -f $ENVIRONMENT_FILE ]]; then
+    source $ENVIRONMENT_FILE
+fi
+
+export DEVOPS_ACCOUNT='devops'
 export DEPLOYMENT_ACCOUNT='silkcloud'
 
-export DEPLOYMENT_PATH='/tmp/pgha'
-export PGHA_BASE='/var/pgha'
+export DEPLOYMENT_PATH='/var/silkcloud/pgha'
+export PGHA_BASE='/var/silkcloud/pgha'
 export DATA_PATH=$PGHA_BASE/data
 export BACKUP_PATH=$PGHA_BASE/backup
 export ARCHIVE_PATH=$PGHA_BASE/archive
@@ -54,17 +69,14 @@ export SECONDARY_PGBOUNCER_HOST=$SLAVE_HOST
 export PGBOUNCER_PORT=6543
 
 export PGBOUNCER_BIN=/usr/sbin
-export PGBOUNCER_BASE='/tmp/pgbouncer'
+export PGBOUNCER_BASE='/var/silkcloud/pgbouncer'
 export PGBOUNCER_CONF=$PGBOUNCER_BASE/pgbouncer.conf
 export PGBOUNCER_PID=$PGBOUNCER_BASE/pgbouncer.pid
-export PGBOUNCER_AUTH_FILE=~/pgbouncer_auth.txt
+export PGBOUNCER_AUTH_FILE=~/.pgbouncer_auth
 export PGBOUNCER_SOCKET_PATH='/tmp'
 
 export PGBOUNCER_MAX_CONNECTIONS=100
 export PGBOUNCER_DEFAULT_POOL_SIZE=100
-
-# stop the execution whenever there is an error
-set -e
 
 # kill process with specified port
 function forceKill {
