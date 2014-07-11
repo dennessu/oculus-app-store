@@ -5,7 +5,6 @@
  */
 package com.junbo.oauth.api.endpoint
 
-import com.junbo.authorization.AuthorizeContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.OAuthTokenService
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Component
 @CompileStatic
 @Scope('prototype')
 class AccessTokenResourceImpl implements AccessTokenResource {
-    private static final String TOKEN_INFO_SCOPE = 'token.info'
     private OAuthTokenService tokenService
 
     @Required
@@ -32,10 +30,6 @@ class AccessTokenResourceImpl implements AccessTokenResource {
     }
 
     Promise<AccessToken> get(String accessToken) {
-        if (!AuthorizeContext.hasScopes(TOKEN_INFO_SCOPE)) {
-            throw AppExceptions.INSTANCE.insufficientScope().exception()
-        }
-
         AccessToken token = tokenService.getAccessToken(accessToken)
 
         if (token == null) {
