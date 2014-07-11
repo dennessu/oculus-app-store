@@ -54,6 +54,17 @@
         <property name="masterKeyResource" ref="defaultMasterKeyResource" />
     </bean>
 
+    <bean id="userDataHandler" class="com.junbo.data.handler.UserDataHandler" parent="baseDataHandler">
+        <property name="userPersonalInfoResource" ref="defaultUserPersonalInfoResource"/>
+        <property name="userCredentialResource" ref="defaultUserCredentialResource"/>
+        <property name="userResource" ref="defaultUserResource"/>
+    </bean>
+
+    <bean id="organizationDataHandler" class="com.junbo.data.handler.OrganizationDataHandler" parent="baseDataHandler">
+        <property name="organizationResource" ref="defaultOrganizationResource"/>
+        <property name="userResource" ref="defaultUserResource"/>
+    </bean>
+
     <bean id="dataLoader" class="com.junbo.data.loader.DataLoader">
         <property name="handlers">
             <map>
@@ -66,6 +77,8 @@
                 <entry key="pitype" value-ref="piTypeDataHandler"/>
                 <entry key="email-template" value-ref="emailTemplateDataHandler"/>
                 <entry key="masterkey" value-ref="masterKeyDataHandler" />
+                <entry key="user" value-ref="userDataHandler" />
+                <entry key="organization" value-ref="organizationDataHandler" />
             </map>
         </property>
         <property name="dataList">
@@ -79,6 +92,8 @@
                 <value>pitype</value>
                 <value>email-template</value>
                 <value>masterkey</value>
+                <value>user</value>
+                <value>organization</value>
             </list>
         </property>
     </bean>

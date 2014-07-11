@@ -39,7 +39,7 @@ class DataLoader {
         configLog()
         LOGGER.info("loading spring context start")
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath*:/spring/*-context.xml",
-                "classpath*:/spring/validators.xml", "classpath*:/spring/transaction.xml")
+                "classpath*:/spring/validators.xml", "classpath*:/spring/transaction.xml", "classpath*:/spring/flow/*.xml")
         LOGGER.info("loading spring context end")
 
         AuthorizeServiceImpl authorizeService = applicationContext.getBean(AuthorizeServiceImpl)
