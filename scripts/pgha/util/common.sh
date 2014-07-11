@@ -22,8 +22,10 @@ fi
 export DEVOPS_ACCOUNT='devops'
 export DEPLOYMENT_ACCOUNT='silkcloud'
 
-export DEPLOYMENT_PATH='/var/silkcloud/pgha'
-export PGHA_BASE='/var/silkcloud/pgha'
+export SILKCLOUD_PATH='/var/silkcloud'
+export DEPLOYMENT_PATH=$SILKCLOUD_PATH/pgha
+export PGHA_BASE=$SILKCLOUD_PATH/pgha
+
 export DATA_PATH=$PGHA_BASE/data
 export BACKUP_PATH=$PGHA_BASE/backup
 export ARCHIVE_PATH=$PGHA_BASE/archive
