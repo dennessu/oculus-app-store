@@ -92,8 +92,7 @@
 #[master] setup master database
     $DEPLOYMENT_PATH/setup/setup_master.sh
 
-#[master] run liquibase
-    $DEPLOYMENT_PATH/test/test_liquibase_master.sh (FOR SMOKE TEST)
+#[master] run liquibase script
 
 #[master] full base backup master database
     $DEPLOYMENT_PATH/util/base_backup.sh
@@ -101,40 +100,13 @@
 #[slave] setup slave database
     $DEPLOYMENT_PATH/setup/setup_slave.sh
 
-#[master] start primary PGBouncer proxy (connect to master db)
-    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
-
-#[slave] start secondary PGBouncer proxy (connect to master db)
-    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
-
 
 =====Master-Replica Deployment=====
-#[master] create londiste config on master
-    $DEPLOYMENT_PATH/londiste/londiste_config_root.sh
-
-#[master] start londiste deamon on master
-    $DEPLOYMENT_PATH/londiste/londiste_root.sh
-
-#[master] start londiste pgq ticker deamon
-    $DEPLOYMENT_PATH/londiste/lodiste_pgqd.sh
-
 #[master] full base backup master database
     $DEPLOYMENT_PATH/util/base_backup.sh
 
 #[replica] setup replica database
     $DEPLOYMENT_PATH/setup/setup_replica.sh
-
-#[replica] create londiste config on replcia
-    $DEPLOYMENT_PATH/londiste/londiste_config_leaf.sh
-
-#[replica] start londiste deamon on replica
-    $DEPLOYMENT_PATH/londiste/londiste_leaf.sh
-
-#[replica] start londiste pgq ticker deamon
-    $DEPLOYMENT_PATH/londiste/lodiste_pgqd.sh
-
-#[replica] start replica pgbouncer proxy
-    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_replica.sh
 
 #[master][smoketest] replication smoke test
     $DEPLOYMENT_PATH/test/test_master2slave.sh

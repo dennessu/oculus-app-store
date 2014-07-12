@@ -55,3 +55,9 @@ do
     sleep 1 && echo "[SETUP][REPLICA] waiting for replica database...";
 done
 echo "[SETUP][REPLICA] replica database started successfully!"
+
+echo "[SETUP][REPLICA] setup and start londiste leaf"
+$DEPLOYMENT_PATH/londiste/londiste_leaf.sh
+
+echo "[SETUP][MASTER] start pgbouncer proxy and connect to replica server"
+$DEPLOYMENT_PATH/pgbouncer/pgbouncer_replica.sh

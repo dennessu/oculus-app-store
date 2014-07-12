@@ -66,5 +66,11 @@ done
 
 echo "[SETUP][MASTER] master database started successfully!"
 
-echo "[SETUP][MASTER] create dummy test table in postgres database"
-psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "CREATE TABLE dummy_test (id bigint, PRIMARY KEY(id));"
+echo "[SETUP][MASTER] create smoke test tables in postgres database"
+$DEPLOYMENT_PATH/test/test_smoke_table.sh
+
+echo "[SETUP][MASTER] setup and start londiste root"
+$DEPLOYMENT_PATH/londiste/londiste_root.sh
+
+echo "[SETUP][MASTER] start primary pgbouncer proxy and connect to master server"
+$DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
