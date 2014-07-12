@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="com.junbo.oom.core.builtin"/>
+    <context:component-scan base-package="com.junbo.store.spec.resource.adapter" />
+    <context:component-scan base-package="com.junbo.store.rest" />
+    <bean id="defaultIAPResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultIAPResourceClientFactory" class="com.junbo.store.spec.resource.proxy.IAPResourceClientProxyFactory"/>
+    <bean id="defaultLoginResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultLoginResourceClientFactory" class="com.junbo.store.spec.resource.proxy.LoginResourceClientProxyFactory"/>
+
+    <bean id="store.offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.catalog.url}"/>
+    </bean>
+
+    <bean id="store.offerItemClient" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.catalog.url}"/>
+    </bean>
+
+    <bean id="store.offerRevisionClient" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.catalog.url}"/>
+    </bean>
+
+    <bean id="store.offerItemRevisionClient"
+          class="com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.catalog.url}"/>
+    </bean>
+
+    <bean id="store.fulfilmentClient"
+          class="com.junbo.fulfilment.spec.resource.proxy.FulfilmentResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.fulfilment.url}"/>
+    </bean>
+
+    <bean id="store.entitlementClient"
+          class="com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.entitlement.url}"/>
+    </bean>
+
+    <bean id="store.paymentInstrumentClient"
+          class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.payment.url}"/>
+    </bean>
+
+    <bean id="store.orderClient"
+          class="com.junbo.order.spec.resource.proxy.OrderResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.order.url}"/>
+    </bean>
+
+    <bean id="store.itemCryptoClient"
+          class="com.junbo.crypto.spec.resource.proxy.ItemCryptoResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.crypto.url}"/>
+    </bean>
+
+    <bean id="store.userResourceClient"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.crypto.url}"/>
+    </bean>
+
+    <bean id="store.userCredentialResourceClient"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserCredentialResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.crypto.url}"/>
+    </bean>
+
+    <bean id="store.userCredentialVerifyAttemptResourceClient"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserCredentialVerifyAttemptResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.crypto.url}"/>
+    </bean>
+
+    <bean id="store.userPersonalInfoResourceClient"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.crypto.url}"/>
+    </bean>
+
+    <bean id="store.tokenEndpointClientProxy"
+          class="com.junbo.oauth.spec.endpoint.proxy.TokenEndpointClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.crypto.url}"/>
+    </bean>
+
+    <bean id="store.tokenInfoEndpointClientProxy"
+          class="com.junbo.oauth.spec.endpoint.proxy.TokenInfoEndpointClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.crypto.url}"/>
+    </bean>
+</beans>

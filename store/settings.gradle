@@ -1,0 +1,3 @@
+include 'store-spec'
+include 'store-db'
+include 'store-rest'
