@@ -27,9 +27,10 @@ $DEPLOYMENT_PATH/setup/setup_replica.sh
 $DEPLOYMENT_PATH/londiste/londiste_config_leaf.sh
 $DEPLOYMENT_PATH/londiste/londiste_leaf.sh
 $DEPLOYMENT_PATH/londiste/londiste_pgqd.sh
+$DEPLOYMENT_PATH/pgbouncer/pgbouncer_replica.sh
 ENDSSH
 
-echo "test master to slave repliaction"
+echo "test master->slave streaming repliaction and to master->replica londiste replication"
 $DEPLOYMENT_PATH/test/test_master2slave.sh
 
 echo "e2e setup finished!"

@@ -133,7 +133,10 @@
 #[replica] start londiste pgq ticker deamon
     $DEPLOYMENT_PATH/londiste/lodiste_pgqd.sh
 
-#[master/slave][smoketest] replication smoke test
+#[replica] start replica pgbouncer proxy
+    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_replica.sh
+
+#[master][smoketest] replication smoke test
     $DEPLOYMENT_PATH/test/test_master2slave.sh
 
 
@@ -147,7 +150,7 @@
 #[slave] start secondary PGBouncer proxy (connect to slave db)
     $DEPLOYMENT_PATH/pgbouncer/pgbouncer_slave.sh
 
-#[master/slave][smoketest] replication smoke test
+#[slave][smoketest] replication smoke test
     $DEPLOYMENT_PATH/test/test_slave2master.sh
 
 #[master] slave failback to master
@@ -159,7 +162,7 @@
 #[slave] start secondary PGBouncer proxy (connect to master db)
     $DEPLOYMENT_PATH/pgbouner/pgbouncer_master.sh
 
-#[master/slave][smoketest] replication smoke test
+#[master][smoketest] replication smoke test
     $DEPLOYMENT_PATH/test/test_master2slave.sh
 
 
@@ -174,7 +177,7 @@
 #[slave] start secondary PGBouncer proxy (connect to master db)
     $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
 
-#[master/slave] replication smoke test
+#[master] replication smoke test
     $DEPLOYMENT_PATH/test/test_master2slave.sh
 
 [MASTER is broken]

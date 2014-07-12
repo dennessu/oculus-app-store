@@ -13,7 +13,7 @@ sudo touch /etc/silkcloud/configuration.properties
 sudo chmod 666 /etc/silkcloud/configuration.properties
 sudo echo "environment=$ENVIRONMENT" > /etc/silkcloud/configuration.properties
 
-sudo rm -rf $PGHA_BASE
+sudo rm -rf $DEPLOYMENT_PATH
 sudo mkdir -p $DEPLOYMENT_PATH
 sudo chown -R $DEVOPS_ACCOUNT:$DEVOPS_ACCOUNT $PGHA_BASE
 ENDSSH
@@ -32,7 +32,7 @@ sudo touch /etc/silkcloud/configuration.properties
 sudo chmod 666 /etc/silkcloud/configuration.properties
 sudo echo "environment=$ENVIRONMENT" > /etc/silkcloud/configuration.properties
 
-sudo rm -rf $PGHA_BASE
+sudo rm -rf $DEPLOYMENT_PATH
 sudo mkdir -p $DEPLOYMENT_PATH
 sudo chown -R $DEVOPS_ACCOUNT:$DEVOPS_ACCOUNT $PGHA_BASE
 ENDSSH
@@ -51,7 +51,7 @@ sudo touch /etc/silkcloud/configuration.properties
 sudo chmod 666 /etc/silkcloud/configuration.properties
 sudo echo "environment=$ENVIRONMENT" > /etc/silkcloud/configuration.properties
 
-sudo rm -rf $PGHA_BASE
+sudo rm -rf $DEPLOYMENT_PATH
 sudo mkdir -p $DEPLOYMENT_PATH
 sudo chown -R $DEVOPS_ACCOUNT:$DEVOPS_ACCOUNT $PGHA_BASE
 ENDSSH
