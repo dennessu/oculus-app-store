@@ -167,4 +167,22 @@ public class PendingActionEntity implements CloudantEntity<Long> {
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
+
+    @Override
+    String getCreatedByClient() {
+        return null
+    }
+
+    @Override
+    void setCreatedByClient(String client) {
+    }
+
+    @Override
+    String getUpdatedByClient() {
+        return null
+    }
+
+    @Override
+    void setUpdatedByClient(String client) {
+    }
 }

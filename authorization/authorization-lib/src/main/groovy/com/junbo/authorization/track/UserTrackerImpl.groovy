@@ -24,6 +24,7 @@ class UserTrackerImpl implements Tracker {
         } else {
             entity.createdBy = AuthorizeContext.currentUserId.value
         }
+        entity.createdByClient = AuthorizeContext.currentClientId
         entity.createdTime = new Date()
         return entity
     }
@@ -37,6 +38,7 @@ class UserTrackerImpl implements Tracker {
         } else {
             entity.updatedBy = AuthorizeContext.currentUserId.value
         }
+        entity.updatedByClient = AuthorizeContext.currentClientId
         entity.createdTime = new Date()
         return entity
     }

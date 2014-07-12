@@ -39,10 +39,9 @@ public interface CloudantEntity<K> extends Identifiable<K> {
     Integer getResourceAge();
     void setResourceAge(Integer resourceAge);
 
-    // TODO: track client
-    // String getCreatedByClient()
-    // void setCreatedByClient(String client)
+    String getCreatedByClient();
+    void setCreatedByClient(String client);
 
-    // String getUpdatedByClient()
-    // void setUpdatedByClient(String client)
+    String getUpdatedByClient();
+    void setUpdatedByClient(String client);
 }
