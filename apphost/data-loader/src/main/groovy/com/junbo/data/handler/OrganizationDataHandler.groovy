@@ -79,6 +79,7 @@ class OrganizationDataHandler extends BaseDataHandler {
         if (existing == null) {
             logger.debug("Create new organization with name: $orgName")
             try {
+                organization.ownerId = orgOwnerUser.id as UserId
                 organizationResource.create(organization).get()
             } catch (Exception e) {
                 logger.error("Error creating organization $orgName.", e)
