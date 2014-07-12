@@ -33,4 +33,5 @@ dependencies {
 
     testCompile (libraries.guava)
     testCompile (libraries.spring_test)
+    testCompile junboProject(':authorization-lib')
 }

@@ -41,6 +41,7 @@ dependencies {
     compile junboProject(':crypto-spec')
 
     testCompile junboProject(':identity-clientproxy')
+    testCompile junboProject(':authorization-lib')
 }
 
 

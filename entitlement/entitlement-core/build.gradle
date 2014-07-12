@@ -7,4 +7,5 @@ dependencies {
     compile junboProject(':entitlement-clientproxy')
     compile (libraries.aws_sdk)
     testCompile (libraries.spring_test)
+    testCompile junboProject(':authorization-lib')
 }
