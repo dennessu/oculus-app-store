@@ -18,7 +18,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network :private_network, ip: "192.168.200.101"
 
   # sync source folder
-  config.vm.synced_folder ".", "/home/vagrant/src"
+  if not RUBY_PLATFORM.downcase.include?("mswin")
+    config.vm.synced_folder ".", "/home/vagrant/src", type: "nfs"
+  else
+    config.vm.synced_folder ".", "/home/vagrant/src", type: "smb"
+  end
 
   # port forwarding
   config.vm.network "forwarded_port", guest: 8079, host: 8079
@@ -29,9 +33,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provider "virtualbox" do |v|
     v.name = "sc-localdev"
-    v.memory = 2048
+    v.memory = 3072
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+    if not RUBY_PLATFORM.downcase.include?("mswin")
+      v.customize ["modifyvm", :id, "--cpus",
+        `awk "/^processor/ {++n} END {print n}" /proc/cpuinfo 2> /dev/null || sh -c 'sysctl hw.logicalcpu 2> /dev/null || echo ": 2"' | awk \'{print \$2}\' `.chomp ]
+    end
   end
 
   # system initial setup
@@ -53,6 +61,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     su - vagrant -c 'git config --global core.pager \"LESS=FRXK less\"'
     su - vagrant -c 'git config --global core.editor \"vim -c startinsert\"'
     su - vagrant -c 'git config --global alias.tree \"log --graph --decorate --pretty=format:\\\"%C(auto)%h %C(blue)%ad%C(reset)%C(auto) - %s%d %C(yellow)[%an]\\\" --abbrev-commit --date=short\"'
+    su - vagrant -c 'git config --global credential.helper cache'
+    su - vagrant -c 'git config --global credential.helper \"cache --timeout=604800\"'
 
     echo "* PROVISIONING COMPLETED:"
     echo "** type 'vagrant ssh' to connect to sc-localdev"
