@@ -1,5 +1,6 @@
 package com.junbo.common.cloudant.client
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.cloudant.CloudantEntity
 import com.junbo.common.cloudant.CloudantMarshaller
 import com.junbo.common.cloudant.DefaultCloudantMarshaller
@@ -169,14 +170,14 @@ class CloudantClientImpl implements CloudantClientInternal {
                         " reason: $cloudantError.reason")
             }
 
-            def cloudantSearchResult = (CloudantQueryResult)marshaller.unmarshall(response.responseBody, CloudantQueryResult, CloudantQueryResult.AllResultEntity, entityClass)
+            def cloudantSearchResult = (CloudantQueryResult)marshaller.unmarshall(response.responseBody, CloudantQueryResult, CloudantQueryResult.AllResultEntity, JsonNode)
 
             List<T> list = new ArrayList<>()
-            return Promise.each(cloudantSearchResult.rows) { CloudantQueryResult.ResultObject result ->
+            return Promise.each(cloudantSearchResult.rows) { CloudantQueryResult.ResultObject<CloudantQueryResult.AllResultEntity, JsonNode> result ->
                 if (result.id.startsWith(DEFAULT_DESIGN_ID_PREFIX)) {
                     return Promise.pure(null)
                 }
-                list.add((T)(result.doc))
+                list.add((T)(marshaller.unmarshall(result.doc.toString(), entityClass)))
                 return Promise.pure(null)
             }.then {
                 return Promise.pure(list)
