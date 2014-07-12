@@ -59,6 +59,8 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     @Autowired
     private AmazonS3Client awsClient;
 
+    private static String bucketName = "static.oculusvr.com";
+
     @Override
     @Transactional
     public Entitlement getEntitlement(final String entitlementId) {
@@ -325,8 +327,10 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     }
 
     private URI generatePreSignedDownloadUrl(String urlString, String filename, String version, String platform) throws MalformedURLException, URISyntaxException {
+        if (urlString.indexOf(bucketName) == -1) {
+            return new URI(urlString);
+        }
         URL url = new URL(urlString);
-        String bucketName = url.getHost();
         String objectKey = url.getPath().substring(1);
         String extension = getExtension(objectKey);
 
@@ -364,5 +368,13 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         }
 
         return lastPart;
+    }
+
+    public static String getBucketName() {
+        return bucketName;
+    }
+
+    public void setBucketName(String bucketName) {
+        EntitlementServiceImpl.bucketName = bucketName;
     }
 }
