@@ -12,9 +12,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.hostname = "sc-localdev"
 
-  # Forward keys from SSH agent rather than copypasta
-  config.ssh.forward_agent = true
-
   config.vm.network :private_network, ip: "192.168.200.101"
 
   host = RbConfig::CONFIG['host_os']
@@ -71,5 +68,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     echo "** type 'vagrant ssh' to connect to sc-localdev"
     echo "** and you can do some customization on the box now"
   EOF
+
+  if host =~ /mswin|mingw/
+    config.vm.provision "shell",
+        inline: "su - vagrant -c 'git config --global core.autocrlf true'"
+  end
 
 end
