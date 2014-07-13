@@ -5,6 +5,7 @@ import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
+import com.junbo.data.model.UserData
 import com.junbo.identity.spec.v1.model.Email
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserCredential
@@ -45,25 +46,23 @@ class UserDataHandler extends BaseDataHandler {
 
     @Override
     void handle(String content) {
-        User user
+        UserData userData
         try {
-            user = transcoder.decode(new TypeReference<User>() {}, content) as User
+            userData = transcoder.decode(new TypeReference<UserData>() {}, content) as UserData
         } catch (Exception e) {
             logger.error("Error parsing user $content", e)
             exit()
         }
 
-        String[] splits = user.username.split(':')
-        if (splits.size() != 3) {
-            logger.error("Error parsing user $content")
-            exit()
-        }
+        String username = userData.username
+        String password = userData.password
+        String email = userData.email
 
-        String username = splits[0]
-        String password = splits[1]
-        String email = splits[2]
-
+        User user = new User()
         user.username = username
+        user.status = 'ACTIVE'
+        user.isAnonymous = false
+
         logger.info("loading user $username")
 
         User existing = null

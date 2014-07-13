@@ -1,5 +1,5 @@
 {
-    "username": "admin:admin:admin@oculusvr.com",
-    "isAnonymous": false,
-    "status": "ACTIVE"
+    "username": "admin",
+    "password": "admin",
+    "email": "admin@oculusvr.com"
 }

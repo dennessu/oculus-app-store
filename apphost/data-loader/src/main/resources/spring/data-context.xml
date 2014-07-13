@@ -70,6 +70,14 @@
         <property name="groupResource" ref="defaultGroupResource"/>
     </bean>
 
+    <bean id="userGroupDataHandler" class="com.junbo.data.handler.UserGroupDataHandler" parent="baseDataHandler">
+        <property name="userGroupMembershipResource" ref="defaultUserGroupMembershipResource"/>
+        <property name="groupResource" ref="defaultGroupResource"/>
+        <property name="userResource" ref="defaultUserResource"/>
+        <property name="organizationResource" ref="defaultOrganizationResource"/>
+
+    </bean>
+
     <bean id="dataLoader" class="com.junbo.data.loader.DataLoader">
         <property name="handlers">
             <map>
@@ -85,6 +93,7 @@
                 <entry key="user" value-ref="userDataHandler" />
                 <entry key="organization" value-ref="organizationDataHandler" />
                 <entry key="group" value-ref="groupDataHandler" />
+                <entry key="user-group" value-ref="userGroupDataHandler" />
             </map>
         </property>
         <property name="dataList">
@@ -101,6 +110,7 @@
                 <value>user</value>
                 <value>organization</value>
                 <value>group</value>
+                <value>user-group</value>
             </list>
         </property>
     </bean>

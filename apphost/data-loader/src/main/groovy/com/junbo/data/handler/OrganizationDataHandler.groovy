@@ -3,6 +3,7 @@ package com.junbo.data.handler
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
+import com.junbo.data.model.OrganizationData
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.option.list.OrganizationListOptions
@@ -34,24 +35,20 @@ class OrganizationDataHandler extends BaseDataHandler {
 
     @Override
     void handle(String content) {
-        Organization organization
+        OrganizationData organizationData
         try {
-            organization = transcoder.decode(new TypeReference<Organization>() {}, content) as Organization
+            organizationData = transcoder.decode(new TypeReference<OrganizationData>() {}, content) as OrganizationData
         } catch (Exception e) {
             logger.error("Error parsing organization $content", e)
             exit()
         }
 
-        String[] splits = organization.name.split(':')
-        if (splits.size() != 2) {
-            logger.error("Error parsing organization $content")
-            exit()
-        }
+        String orgName = organizationData.organizationName
+        String ownerUsername = organizationData.organizationOwner
 
-        String orgName = splits[0]
-        String ownerUsername = splits[1]
-
+        Organization organization = new Organization()
         organization.name = orgName
+        organization.isValidated = true
         logger.info("loading organization: $orgName")
 
         Organization existing = null

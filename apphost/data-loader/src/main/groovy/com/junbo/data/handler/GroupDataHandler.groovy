@@ -3,6 +3,7 @@ package com.junbo.data.handler
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.model.Results
+import com.junbo.data.model.GroupData
 import com.junbo.identity.spec.v1.model.Group
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.option.list.GroupListOptions
@@ -34,23 +35,18 @@ class GroupDataHandler extends BaseDataHandler {
 
     @Override
     void handle(String content) {
-        Group group
+        GroupData groupData
         try {
-            group = transcoder.decode(new TypeReference<Group>() {}, content) as Group
+            groupData = transcoder.decode(new TypeReference<GroupData>() {}, content) as GroupData
         } catch (Exception e) {
             logger.error("Error parsing group $content", e)
             exit()
         }
 
-        String[] splits = group.name.split(':')
-        if (splits.size() != 2) {
-            logger.error("Error parsing group $content")
-            exit()
-        }
+        String groupName = groupData.groupName
+        String organizationName = groupData.organizationName
 
-        String groupName = splits[0]
-        String organizationName = splits[1]
-
+        Group group = new Group()
         group.name = groupName
         logger.info("loading group: $groupName")
 
