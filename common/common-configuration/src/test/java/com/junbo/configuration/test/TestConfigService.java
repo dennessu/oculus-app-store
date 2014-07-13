@@ -20,6 +20,11 @@ public class TestConfigService implements ConfigService, AutoCloseable {
     }
 
     @Override
+    public String getConfigPath() {
+        return "dummy";
+    }
+
+    @Override
     public ConfigContext getConfigContext() {
         return context;
     }

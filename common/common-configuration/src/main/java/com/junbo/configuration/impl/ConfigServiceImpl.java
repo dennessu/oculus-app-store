@@ -74,6 +74,11 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
     }
 
     @Override
+    public String getConfigPath() {
+        return configPath;
+    }
+
+    @Override
     public ConfigContext getConfigContext() {
         return configContext;
     }

@@ -3,13 +3,13 @@
 ## Preparation
 
 ### Prepare linux accounts
-  * devops: used to install software, in sudo list
-  * silkcloud: used to deploy PGHA, not included in sudo list
+  * `devops`: used to make system changes, in sudo list
+  * `silkcloud`: used to deploy applicaiton and database, not included in sudo list
 
 ### Machine List for PPE
 
 | region    | role       | ip               | comment                |
-|-----------|------------|------------------|------------------------|
+|:----------|:-----------|:-----------------|:-----------------------|
 | us-west-1 | app        | 10.24.8.50       | app server 1           |
 | us-west-1 | app        | 10.24.12.50      | app server 2           |
 | us-west-1 | db         | 10.24.16.50      | db primary             |
@@ -23,6 +23,7 @@
 External DNS names:
   * Crypto: https://internal-crypto-ppe-1961399710.us-west-1.elb.amazonaws.com
   * App: https://internal-api-jvm-ppe-464421051.us-west-1.elb.amazonaws.com
+
 Both endpoints are internal. They can be tested from Bastion.
 
 ### Copy Bits
@@ -251,6 +252,7 @@ Both endpoints are internal. They can be tested from Bastion.
 
   1. Test the HA setup. For PPE, go to the primary to test:
     * `10.24.16.50`
+
   Run the following commands:
   ```
   cd /var/silkcloud/pgha
@@ -269,7 +271,7 @@ python ./couchdbcmd.py createdbs ppe --prefix=ppe_ --yes
 
 ### Prepare Machine
 Prepare the crypto.core.key used to encrypt passwords in the configuration files. The following script assumes $CRYPTO_KEY is the key.
-Run the following command using devops account:
+Run the following commands using devops account:
 ```
 grep "$HOSTNAME" /etc/hosts || sudo bash -c 'echo 127.0.0.1 $HOSTNAME >> /etc/hosts'
 sudo mkdir /var/silkcloud
@@ -281,10 +283,16 @@ sudo chmod 600 /etc/silkcloud/configuration.properties
 sudo chown -R silkcloud:silkcloud /etc/silkcloud
 ```
 
+Run the following commands using devops account to install necessary packages:
+```
+sudo apt-get install unzip
+```
+
 ### Setup Crypto Servers
   * `10.24.32.10`
   * `10.24.36.10`
-Run the following command on bastion servers using silkcloud:
+
+Run the following commands on bastion servers using silkcloud:
 ```
 scp /home/$YOUR_USER/apphost-crypto-0.0.1-SNAPSHOT.zip 10.24.32.10:/var/silkcloud
 scp /home/$YOUR_USER/apphost-crypto-0.0.1-SNAPSHOT.zip 10.24.36.10:/var/silkcloud
@@ -292,7 +300,7 @@ scp /home/$YOUR_USER/apphost-crypto-0.0.1-SNAPSHOT.zip 10.24.36.10:/var/silkclou
 Run the following command on crypto servers:
 ```
 cd /var/silkcloud
-unzip apphost-crypto-0.0.1-SNAPSHOT.zip
+unzip -o apphost-crypto-0.0.1-SNAPSHOT.zip
 cd apphost-crypto-0.0.1-SNAPSHOT
 ./startup.sh
 ```
@@ -300,15 +308,16 @@ cd apphost-crypto-0.0.1-SNAPSHOT
 ### Setup Rest Servers
   * `10.24.8.50`
   * `10.24.12.50`
+
 Run the following command on bastion servers using silkcloud:
 ```
-scp /home/$YOUR_USER/apphost-identity-0.0.1-SNAPSHOT.zip 10.24.32.10:/var/silkcloud
-scp /home/$YOUR_USER/apphost-identity-0.0.1-SNAPSHOT.zip 10.24.36.10:/var/silkcloud
+scp /home/$YOUR_USER/apphost-identity-0.0.1-SNAPSHOT.zip 10.24.8.50:/var/silkcloud
+scp /home/$YOUR_USER/apphost-identity-0.0.1-SNAPSHOT.zip 10.24.12.50:/var/silkcloud
 ```
 Run the following command on crypto servers:
 ```
 cd /var/silkcloud
-unzip apphost-identity-0.0.1-SNAPSHOT.zip
+unzip -o apphost-identity-0.0.1-SNAPSHOT.zip
 cd apphost-identity-0.0.1-SNAPSHOT
 ./startup.sh
 ```
