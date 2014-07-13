@@ -5,9 +5,6 @@ source ${DIR}/../util/common.sh
 #check running under specified account
 checkAccount $DEPLOYMENT_ACCOUNT
 
-echo "[LONDISTE] kill skytools instance"
-forceKillPid $SKYTOOL_PID_PATH
-
 echo "[LONDISTE] generate root configuration"
 $DEPLOYMENT_PATH/londiste/londiste_config_root.sh
 

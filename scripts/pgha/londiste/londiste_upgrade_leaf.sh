@@ -8,9 +8,6 @@ checkAccount $DEPLOYMENT_ACCOUNT
 echo "[LONDISTE][REPLICA] generate leaf configuration"
 $DEPLOYMENT_PATH/londiste/londiste_config_leaf.sh
 
-echo "[LONDISTE][REPLICA] kill skytools instance"
-forceKillPid $SKYTOOL_PID_PATH
-
 for db in ${REPLICA_DATABASES[@]}
 do
     config=$SKYTOOL_CONFIG_PATH/${db}_leaf.ini
