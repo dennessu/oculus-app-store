@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 BOX_NAME = ENV['BOX_NAME'] || "sc-localdev-base"
-BOX_URI = ENV['BOX_URI'] || "http://arti.silkcloud.info/sc-localdev-base-20140711.box"
+BOX_URI = ENV['BOX_URI'] || "http://arti.silkcloud.info/sc-localdev-base-20140713.box"
 
 VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
@@ -17,11 +17,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.network :private_network, ip: "192.168.200.101"
 
+  host = RbConfig::CONFIG['host_os']
+
   # sync source folder
-  if not RUBY_PLATFORM.downcase.include?("mswin")
-    config.vm.synced_folder ".", "/home/vagrant/src", type: "nfs"
-  else
+  if host =~ /mswin|mingw/
     config.vm.synced_folder ".", "/home/vagrant/src", type: "smb"
+  else
+    config.vm.synced_folder ".", "/home/vagrant/src", type: "nfs"
   end
 
   # port forwarding
@@ -36,7 +38,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.memory = 3072
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
-    if not RUBY_PLATFORM.downcase.include?("mswin")
+    if host =~ /mswin|mingw/
+    else
       v.customize ["modifyvm", :id, "--cpus",
         `awk "/^processor/ {++n} END {print n}" /proc/cpuinfo 2> /dev/null || sh -c 'sysctl hw.logicalcpu 2> /dev/null || echo ": 2"' | awk \'{print \$2}\' `.chomp ]
     end
