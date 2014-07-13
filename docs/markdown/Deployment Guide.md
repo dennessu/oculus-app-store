@@ -332,6 +332,27 @@ cd apphost-identity-0.0.1-SNAPSHOT
 ./startup.sh
 ```
 
+### Load Initial Data
+  * `10.24.32.10`
+
+Run the following command on bastion servers using silkcloud:
+```
+scp /home/$YOUR_USER/apphost-dataloader-0.0.1-SNAPSHOT.zip 10.24.32.10:/var/silkcloud
+```
+Run the following command on crypto servers:
+```
+cd /var/silkcloud
+unzip -o apphost-dataloader-0.0.1-SNAPSHOT.zip
+cd apphost-dataloader-0.0.1-SNAPSHOT
+./dataloader.sh
+```
+
+### Sync Crypto Key in SQL
+  * 10.24.34.10
+  * 10.24.38.10
+
+TODO:
+
 # Appendix
 ## Install PostgreSQL
 Run the following commands
