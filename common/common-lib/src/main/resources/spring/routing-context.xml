@@ -34,6 +34,7 @@
         <property name="appHostUrl" value="${apphost.server.uri}"/>
         <property name="appUrlTemplateConfig" value="[common.topo.appurltemplate]"/>
         <property name="appServersConfig" value="[common.topo.appservers]"/>
+        <property name="otherServersConfig" value="[common.topo.otherservers]"/>
         <property name="configService" ref="configService" />
     </bean>
 </beans>

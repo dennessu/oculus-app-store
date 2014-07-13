@@ -31,6 +31,7 @@ Both endpoints are internal. They can be tested from Bastion.
   ```
   scp apphost/apphost-identity/build/distributions/apphost-identity-0.0.1-SNAPSHOT.zip $YOUR_USER@bsn-ue1.online.silkcloud.com:/home/$YOUR_USER
   scp apphost/apphost-crypto/build/distributions/apphost-crypto-0.0.1-SNAPSHOT.zip $YOUR_USER@bsn-ue1.online.silkcloud.com:/home/$YOUR_USER
+  scp apphost/apphost-dataloader/build/distributions/apphost-dataloader-0.0.1-SNAPSHOT.zip $YOUR_USER@bsn-ue1.online.silkcloud.com:/home/$YOUR_USER
   ```
   The first package apphost-identity contains the binary to run on app server and the files used to setup databases.
   The second package apphost-crypto contains the binary to run on crypto app server.
@@ -292,12 +293,21 @@ sudo apt-get install unzip
   * `10.24.32.10`
   * `10.24.36.10`
 
-Run the following commands on bastion servers using silkcloud:
+1. Run the following commands on bastion servers using silkcloud:
 ```
 scp /home/$YOUR_USER/apphost-crypto-0.0.1-SNAPSHOT.zip 10.24.32.10:/var/silkcloud
 scp /home/$YOUR_USER/apphost-crypto-0.0.1-SNAPSHOT.zip 10.24.36.10:/var/silkcloud
 ```
-Run the following command on crypto servers:
+
+1. Put the jks file to /etc/silkcloud and chmod 600
+```
+scp $PATH_TO_JKS 10.24.32.10:/var/silkcloud
+scp $PATH_TO_JKS 10.24.36.10:/var/silkcloud
+ssh 10.24.32.10 chmod 600 '/etc/silkcloud/*.jks'
+ssh 10.24.36.10 chmod 600 '/etc/silkcloud/*.jks'
+```
+
+1. Run the following command on crypto servers:
 ```
 cd /var/silkcloud
 unzip -o apphost-crypto-0.0.1-SNAPSHOT.zip

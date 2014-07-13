@@ -9,6 +9,7 @@ import com.junbo.configuration.ConfigService;
 import com.junbo.configuration.topo.DataCenters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -31,6 +32,9 @@ public class TopologyConfig {
     // map from server ip/port to appserver object
     private Map<String, AppServer> appServerByName;
 
+    // set of other servers, key by ip/port
+    private Set<String> otherServers;
+
     // the app server hosted in this jvm
     private AppServer myAppServer;
 
@@ -40,11 +44,13 @@ public class TopologyConfig {
             String appHostUrl,
             String appUrlTemplate,
             String appServersConfig,
+            String otherServersConfig,
             ConfigService configService) {
         this.configService = configService;
 
         setAppUrlTemplate(appUrlTemplate);
         parseAppServers(appServersConfig);
+        parseOtherServers(otherServersConfig);
 
         findMyAppServer(appHostUrl);
     }
@@ -92,6 +98,10 @@ public class TopologyConfig {
 
     public int[] handledShards() {
         return myAppServer.getShards();
+    }
+
+    public boolean isOtherServer(String server) {
+        return otherServers.contains(server);
     }
 
     private AppServer[] getAppServers(int shard) {
@@ -211,6 +221,17 @@ public class TopologyConfig {
         }
     }
 
+    private void parseOtherServers(String otherServersConfig) {
+        otherServers = new HashSet<>();
+        String[] servers = otherServersConfig.split(",");
+        for (String server : servers) {
+            String trimmedServer = server.trim();
+            if (!StringUtils.isEmpty(trimmedServer)) {
+                otherServers.add(trimmedServer);
+            }
+        }
+    }
+
     private void findMyAppServer(String appHostUrl) {
         // parse appHostPort
         int appHostPort;
@@ -231,7 +252,16 @@ public class TopologyConfig {
             myAppServer = newAppServer;
         }
         if (myAppServer == null) {
-            throw new RuntimeException("App server not found in configuration. IpAddresses: " + Arrays.toString(ipAddresses.toArray()));
+            boolean isFound = false;
+            for (String ipAddress : ipAddresses) {
+                if (otherServers.contains(ipAddress)) {
+                    isFound = true;
+                    break;
+                }
+            }
+            if (!isFound) {
+                throw new RuntimeException("App server not found in configuration. IpAddresses: " + Arrays.toString(ipAddresses.toArray()));
+            }
         }
     }
 }

@@ -1,11 +1,9 @@
 package com.junbo.sharding.hibernate
-
 import com.junbo.configuration.topo.DataCenters
 import com.junbo.configuration.topo.model.DataCenter
 import com.junbo.sharding.transaction.SimpleDataSourceProxy
 import com.zaxxer.hikari.HikariDataSource
 import groovy.transform.CompileStatic
-import org.glassfish.jersey.message.internal.DataSourceProvider
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.DisposableBean
@@ -15,7 +13,6 @@ import org.springframework.beans.factory.annotation.Required
 import javax.sql.DataSource
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-
 /**
  * Created by Shenhua on 4/1/2014.
  */
@@ -98,7 +95,7 @@ class ShardMultiTenantConnectionProviderFactoryBean
                     throw new IllegalArgumentException("jdbcUrl(url;schema;range;dc) is invalid. $url")
                 }
 
-                url = parts[0].trim()
+                url = parts[0].trim().replace('|', ',')
                 def schema = parts[1].trim()
                 def range = parseRange(parts[2].trim())
                 def dc = parts[3].trim()

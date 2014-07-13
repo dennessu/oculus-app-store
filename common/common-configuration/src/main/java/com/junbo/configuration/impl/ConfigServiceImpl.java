@@ -245,7 +245,9 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
         for (String string : resourcePathes) {
             try (InputStream fileStream = this.getClass().getClassLoader().getResourceAsStream(string)) {
-                properties.load(fileStream);
+                Properties newProperties = new Properties();
+                newProperties.load(fileStream);
+                updateProperties(properties, newProperties);
             } catch (IOException ex) {
                 throw new RuntimeException("Failed to read property file from resource: " + string, ex);
             }
@@ -293,6 +295,23 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
             catch (IOException ex) {
                 // ignored
             }
+        }
+    }
+
+    private void updateProperties(Properties props, Properties newProps) {
+        for (Map.Entry<Object, Object> entry : newProps.entrySet()) {
+            String key = entry.getKey().toString();
+            String value = entry.getValue().toString();
+
+            if (key.endsWith(CRYPTO_SUFFIX)) {
+                int endIndex = key.lastIndexOf(CRYPTO_SUFFIX);
+                String newKey = key.substring(0, endIndex);
+
+                // remove old unencrypted key
+                props.remove(newKey);
+            }
+
+            props.put(key, value);
         }
     }
 
