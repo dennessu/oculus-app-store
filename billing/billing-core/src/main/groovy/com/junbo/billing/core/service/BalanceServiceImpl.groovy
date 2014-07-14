@@ -358,8 +358,10 @@ class BalanceServiceImpl implements BalanceService {
             RightsScope.with(authorizeService.authorize(callback)) {
                 if (AuthorizeContext.hasRights('read')) {
                     results.add(balance)
+                    return Promise.pure(balance)
+                } else {
+                    return Promise.pure(null)
                 }
-                return Promise.pure(null)
             }
         }
         return Promise.pure(results)

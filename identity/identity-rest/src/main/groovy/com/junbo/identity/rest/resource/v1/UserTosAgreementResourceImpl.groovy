@@ -191,9 +191,10 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
 
                         if (newUserTos != null && AuthorizeContext.hasRights('read')) {
                             result.items.add(newUserTos)
+                            return Promise.pure(newUserTos)
+                        } else {
+                            return Promise.pure(null)
                         }
-
-                        return Promise.pure(null)
                     }
                 }.then {
                     return Promise.pure(result)

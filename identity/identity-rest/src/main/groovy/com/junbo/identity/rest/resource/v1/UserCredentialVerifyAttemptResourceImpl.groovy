@@ -5,6 +5,7 @@ import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserCredentialVerifyAttemptId
+import com.junbo.common.model.ResourceMetaBase
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
@@ -71,13 +72,13 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
                 throw e
             }
         }.then {
-
             return createInNewTran(userCredentialAttempt).then { UserCredentialVerifyAttempt attempt ->
 
                 if (attempt.succeeded) {
                     Created201Marker.mark(attempt.getId())
 
                     attempt = userCredentialVerifyAttemptFilter.filterForGet(attempt, null)
+                    attempt = RightsScope.filterForAdminInfo(attempt as ResourceMetaBase) as UserCredentialVerifyAttempt
                     return Promise.pure(attempt)
                 }
                 if (userCredentialAttempt.type == CredentialType.PASSWORD.toString()) {
@@ -109,9 +110,10 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
                                 listOptions.properties?.split(',') as List<String>)
                         if (attempt != null && AuthorizeContext.hasRights('read')) {
                             result.items.add(attempt)
+                            return Promise.pure(attempt)
+                        } else {
+                            return Promise.pure(null)
                         }
-
-                        return Promise.pure(null)
                     }.then {
                         return Promise.pure(result)
                     }

@@ -6,6 +6,7 @@ import com.junbo.authorization.RightsScope
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFABackupCodeAttemptId
+import com.junbo.common.model.ResourceMetaBase
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
@@ -82,6 +83,7 @@ class UserTFABackupCodeAttemptResourceImpl implements UserTFABackupCodeAttemptRe
                     Created201Marker.mark(attempt.getId())
 
                     attempt = userTFABackupCodeAttemptFilter.filterForGet(attempt, null)
+                    attempt = RightsScope.filterForAdminInfo(attempt as ResourceMetaBase) as UserTFABackupCodeAttempt
                     return Promise.pure(attempt)
                 }
 

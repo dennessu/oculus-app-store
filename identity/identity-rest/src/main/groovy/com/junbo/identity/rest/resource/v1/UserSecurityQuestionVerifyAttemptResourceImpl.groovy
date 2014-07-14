@@ -6,6 +6,7 @@ import com.junbo.authorization.RightsScope
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
+import com.junbo.common.model.ResourceMetaBase
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
@@ -13,6 +14,7 @@ import com.junbo.identity.core.service.filter.UserSecurityQuestionAttemptFilter
 import com.junbo.identity.core.service.validator.UserSecurityQuestionAttemptValidator
 import com.junbo.identity.data.repository.UserSecurityQuestionAttemptRepository
 import com.junbo.identity.spec.error.AppErrors
+import com.junbo.identity.spec.v1.model.UserSecurityQuestion
 import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
 import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionAttemptListOptions
 import com.junbo.identity.spec.v1.option.model.UserSecurityQuestionAttemptGetOptions
@@ -83,6 +85,7 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
                     Created201Marker.mark(attempt.getId())
 
                     attempt = userSecurityQuestionAttemptFilter.filterForGet(attempt, null)
+                    attempt = RightsScope.filterForAdminInfo(attempt as ResourceMetaBase) as UserSecurityQuestionVerifyAttempt
                     return Promise.pure(attempt)
                 }
 

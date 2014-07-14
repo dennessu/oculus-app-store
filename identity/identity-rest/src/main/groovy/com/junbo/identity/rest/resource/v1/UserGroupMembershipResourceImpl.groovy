@@ -184,8 +184,10 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
                         return RightsScope.with(authorizeService.authorize(callback)) {
                             if (AuthorizeContext.hasRights('read')) {
                                 result.items.add(newUserGroup)
+                                return Promise.pure(newUserGroup)
+                            } else {
+                                return Promise.pure(null)
                             }
-                            return Promise.pure(null)
                         }
                     }
 

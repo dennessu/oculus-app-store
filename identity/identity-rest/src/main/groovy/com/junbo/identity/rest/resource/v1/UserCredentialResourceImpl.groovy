@@ -184,8 +184,10 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                             listOptions.properties?.split(',') as List<String>)
 
                     resultList.items.add(newUserCredential)
+                    return Promise.pure(newUserCredential)
+                } else {
+                    return Promise.pure(null)
                 }
-                return Promise.pure(null)
             }
         }.then {
             return Promise.pure(resultList)

@@ -12,6 +12,7 @@ import com.junbo.common.jackson.annotation.CurrencyId;
 import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.SubscriptionId;
 import com.junbo.common.jackson.annotation.UserId;
+import com.junbo.common.model.ResourceMeta;
 
 
 import java.util.Date;
@@ -22,7 +23,7 @@ import java.util.UUID;
  * subscription.
  */
 
-public class Subscription {
+public class Subscription extends ResourceMeta<Long> {
 
     private UUID trackingUuid;
 
@@ -130,6 +131,11 @@ public class Subscription {
     @JsonIgnore
     public Long getId() {
         return subscriptionId;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.subscriptionId = id;
     }
 
     public Integer getAnniversaryDay() { return anniversaryDay; }

@@ -6,6 +6,7 @@ import com.junbo.authorization.RightsScope
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFAAttemptId
+import com.junbo.common.model.ResourceMetaBase
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
@@ -85,6 +86,7 @@ class UserTFAAttemptResourceImpl implements UserTFAAttemptResource {
 
                     attempt.verifyCode = null
                     attempt = userTFAAttemptFilter.filterForGet(attempt, null)
+                    attempt = RightsScope.filterForAdminInfo(attempt as ResourceMetaBase) as UserTFAAttempt
                     return Promise.pure(attempt)
                 }
 
