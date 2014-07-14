@@ -1,3 +1,10 @@
+* text=auto
+
 # shell/ javascript eol = lf when checkout
-*.sh text eol=lf 
-*.js text eol=lf 
+*.sh text eol=lf
+*.js text eol=lf
+
+# define binary types
+*.png     binary
+*.jepg    binary
+*.jar     binary
