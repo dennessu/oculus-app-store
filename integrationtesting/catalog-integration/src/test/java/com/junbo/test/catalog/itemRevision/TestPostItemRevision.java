@@ -90,6 +90,11 @@ public class TestPostItemRevision extends BaseTestClass {
         locales.put(defaultLocale, itemRevisionLocaleProperties);
         itemRevisionPrepared.setLocales(locales);
 
+        List<String> distributionChannels = new ArrayList<>();
+        distributionChannels.add("INAPP");
+        distributionChannels.add("STORE");
+        itemRevisionPrepared.setDistributionChannels(distributionChannels);
+
         ItemRevision itemRevisionRtn = itemRevisionService.postItemRevision(itemRevisionPrepared);
 
         checkItemRevisionRequiredFields(itemRevisionRtn, itemRevisionPrepared);
@@ -224,7 +229,7 @@ public class TestPostItemRevision extends BaseTestClass {
         Assert.assertTrue(actual.getPrices().equals(expected.getPrices()));
 
         //Compare UserInteractionModes
-        Assert.assertTrue((itemRevisionActual.getUserInteractionModes() == null)? itemRevisionExpected.getUserInteractionModes()== null :
+        Assert.assertTrue((itemRevisionActual.getUserInteractionModes() == null) ? itemRevisionExpected.getUserInteractionModes() == null :
                 itemRevisionActual.getUserInteractionModes().equals(itemRevisionExpected.getUserInteractionModes()));
         //Compare supportedInputDevices
         Assert.assertTrue((itemRevisionActual.getSupportedInputDevices() == null)? itemRevisionExpected.getSupportedInputDevices()== null :

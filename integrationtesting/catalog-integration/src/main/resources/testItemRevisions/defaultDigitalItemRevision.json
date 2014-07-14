@@ -10,11 +10,13 @@
             "JP": {"JPY": 1000}
         }
     },
+    "downloadName": "download name",
+    "distributionChannel": ["INAPP", "STORE"],
     "supportedInputDevices": ["KEYBOARD", "MOUSE"],
     "locales":{
         "en_US":{
             "name": "Angry Bird",
-            "revisionNotes": {
+            "releaseNotes": {
                 "shortNotes": "Short Notes",
                 "longNotes": "Long notes"
             },
