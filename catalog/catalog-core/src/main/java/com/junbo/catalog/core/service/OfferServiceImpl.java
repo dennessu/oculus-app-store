@@ -421,6 +421,19 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
                 errors.add(AppErrors.INSTANCE.offerNotFound("offerId", revision.getOfferId()));
             }
         }
+        if (CollectionUtils.isEmpty(revision.getDistributionChannels())) {
+            errors.add(AppCommonErrors.INSTANCE.fieldRequired("distributionChannel"));
+        } else {
+            int i;
+            for (i=0; i < revision.getDistributionChannels().size(); i++) {
+                if (!DistributionChannel.contains(revision.getDistributionChannels().get(i))) {
+                    break;
+                }
+            }
+            if (i <= revision.getDistributionChannels().size()) {
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("distributionChannel", Joiner.on(", ").join(DistributionChannel.ALL)));
+            }
+        }
         if (revision.getPrice() == null) {
             errors.add(AppCommonErrors.INSTANCE.fieldRequired("price"));
         } else {
@@ -522,8 +535,8 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             Item item = itemRepo.get(itemEntry.getItemId());
             if ((ItemType.APP.is(item.getType())
                     || ItemType.DOWNLOADED_ADDITION.is(item.getType())
-                    || ItemType.IN_APP_UNLOCK.is(item.getType())
-                    || ItemType.IN_APP_CONSUMABLE.is(item.getType())
+                    || ItemType.PERMANENT_UNLOCK.is(item.getType())
+                    || ItemType.CONSUMABLE_UNLOCK.is(item.getType())
                     || ItemType.SUBSCRIPTION.is(item.getType())
                     ) && !definedActions.get(itemEntry.getItemId()).contains(ActionType.GRANT_ENTITLEMENT.name())) {
                 Action action = new Action();

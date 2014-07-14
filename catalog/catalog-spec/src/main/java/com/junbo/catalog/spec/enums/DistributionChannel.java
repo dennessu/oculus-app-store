@@ -10,12 +10,12 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Item type.
+ * Distribution channel.
  */
-public enum ItemType {
-    PHYSICAL, APP, DOWNLOADED_ADDITION, STORED_VALUE, SUBSCRIPTION, PERMANENT_UNLOCK, CONSUMABLE_UNLOCK;
+public enum DistributionChannel {
+    INAPP, STORE;
 
-    public static final List<ItemType> ALL = Arrays.asList(ItemType.values());
+    public static final List<DistributionChannel> ALL = Arrays.asList(DistributionChannel.values());
 
     public boolean is(String type) {
         return this.name().equals(type);
@@ -23,7 +23,7 @@ public enum ItemType {
 
     public static boolean contains(String type) {
         try {
-            ItemType.valueOf(type);
+            DistributionChannel.valueOf(type);
         } catch (IllegalArgumentException e) {
             return false;
         }

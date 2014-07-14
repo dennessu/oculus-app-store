@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.spec.model.item;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.Images;
 import com.junbo.catalog.spec.model.common.RevisionNotes;
 import com.junbo.catalog.spec.model.common.Video;
@@ -20,8 +21,9 @@ import java.util.Map;
 public class ItemRevisionLocaleProperties {
     @ApiModelProperty(position = 1, required = true, value = "item revision name")
     private String name;
+    @JsonProperty("releaseNotes")
     @ApiModelProperty(position = 3, required = true, value = "revision notes")
-    private RevisionNotes revisionNotes;
+    private RevisionNotes releaseNotes;
     @ApiModelProperty(position = 4, required = true, value = "long description")
     private String longDescription;
     @ApiModelProperty(position = 5, required = true, value = "short description")
@@ -63,12 +65,12 @@ public class ItemRevisionLocaleProperties {
         this.name = name;
     }
 
-    public RevisionNotes getRevisionNotes() {
-        return revisionNotes;
+    public RevisionNotes getReleaseNotes() {
+        return releaseNotes;
     }
 
-    public void setRevisionNotes(RevisionNotes revisionNotes) {
-        this.revisionNotes = revisionNotes;
+    public void setReleaseNotes(RevisionNotes releaseNotes) {
+        this.releaseNotes = releaseNotes;
     }
 
     public String getLongDescription() {

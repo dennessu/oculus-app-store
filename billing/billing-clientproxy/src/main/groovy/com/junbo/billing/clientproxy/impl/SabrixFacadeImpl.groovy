@@ -97,8 +97,8 @@ class SabrixFacadeImpl implements TaxFacade {
         Map<String, String> productCodeMap = new HashMap<String, String>()
         productCodeMap.put(ItemType.APP.name(), ProductCode.DOWNLOADABLE_SOFTWARE.code)
         productCodeMap.put(ItemType.DOWNLOADED_ADDITION.name(), ProductCode.DOWNLOADABLE_SOFTWARE.code)
-        productCodeMap.put(ItemType.IN_APP_CONSUMABLE.name(), ProductCode.DIGITAL_CONTENT.code)
-        productCodeMap.put(ItemType.IN_APP_UNLOCK.name(), ProductCode.DIGITAL_CONTENT.code)
+        productCodeMap.put(ItemType.CONSUMABLE_UNLOCK.name(), ProductCode.DIGITAL_CONTENT.code)
+        productCodeMap.put(ItemType.PERMANENT_UNLOCK.name(), ProductCode.DIGITAL_CONTENT.code)
         productCodeMap.put(ItemType.PHYSICAL.name(), ProductCode.PHYSICAL_GOODS.code)
         productCodeMap.put(ItemType.STORED_VALUE.name(), ProductCode.STORE_BALANCE.code)
 
