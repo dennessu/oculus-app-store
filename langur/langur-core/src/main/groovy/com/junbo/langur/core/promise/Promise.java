@@ -7,11 +7,13 @@
  */
 package com.junbo.langur.core.promise;
 
-import com.google.common.util.concurrent.*;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.junbo.langur.core.promise.async.AsyncPromise;
+import com.junbo.langur.core.promise.sync.SyncPromise;
 import groovy.lang.Closure;
 
-import java.util.*;
-import java.util.concurrent.ExecutionException;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
@@ -20,7 +22,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @param <T>
  */
-public final class Promise<T> {
+public abstract class Promise<T> {
 
     public static final Object BREAK = new Object();
 
@@ -59,63 +61,36 @@ public final class Promise<T> {
         public R apply(A a);
     }
 
-    private static final Timer timer = new Timer();
-
     public static <T> Promise<T> wrap(ListenableFuture<T> future) {
-        return new Promise<T>(future);
-    }
-
-    private final ListenableFuture<T> future;
-
-    private Promise(ListenableFuture<T> future) {
-        this.future = future;
-    }
-
-    // use get() instead.
-    private ListenableFuture<T> wrapped() {
-        return future;
-    }
-
-    public T get() {
-        try {
-            return future.get();
-        } catch (ExecutionException ex) {
-            Throwable cause = ex.getCause();
-            if (cause instanceof RuntimeException) {
-                throw (RuntimeException) cause;
-            }
-
-            throw new RuntimeException(cause);
-        } catch (InterruptedException ex) {
-            throw new RuntimeException(ex);
+        if (ExecutorContext.isAsyncMode()) {
+            return AsyncPromise.wrap(future);
+        } else {
+            return SyncPromise.wrap(future);
         }
     }
 
     public static <T> Promise<T> pure(T t) {
-        return wrap(Futures.immediateFuture(t));
+        if (ExecutorContext.isAsyncMode()) {
+            return AsyncPromise.pure(t);
+        } else {
+            return SyncPromise.pure(t);
+        }
     }
 
     public static <T> Promise<T> throwing(Throwable throwable) {
-        return wrap(Futures.<T>immediateFailedFuture(throwable));
+        if (ExecutorContext.isAsyncMode()) {
+            return AsyncPromise.throwing(throwable);
+        } else {
+            return SyncPromise.throwing(throwable);
+        }
     }
 
     public static <T> Promise<T> delayed(long delay, TimeUnit unit, final Func0<T> func) {
-        final Func0<T> wrapped = Wrapper.wrap(func);
-
-        final SettableFuture<T> future = SettableFuture.create();
-
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    future.set(wrapped.apply());
-                } catch (Throwable ex) {
-                    future.setException(ex);
-                }
-            }
-        }, unit.toMillis(delay));
-
-        return wrap(future);
+        if (ExecutorContext.isAsyncMode()) {
+            return AsyncPromise.delayed(delay, unit, func);
+        } else {
+            return SyncPromise.delayed(delay, unit, func);
+        }
     }
 
     public static <T> Promise<T> delayed(long delay, TimeUnit unit, final Closure closure) {
@@ -129,49 +104,30 @@ public final class Promise<T> {
     }
 
     public static <T> Promise<List<T>> all(final Iterable<?> iterable, final Closure<Promise<? extends T>> closure) {
-        final Iterator<?> iterator = iterable.iterator();
-        List<ListenableFuture<? extends T>> futures = new ArrayList<>();
-        while (iterator.hasNext()) {
-            Object item = iterator.next();
-            try (ThreadLocalRequireNew scope = new ThreadLocalRequireNew()) {
-                futures.add(closure.call(item).wrapped());
-            }
+        if (ExecutorContext.isAsyncMode()) {
+            return AsyncPromise.all(iterable, closure);
+        } else {
+            return SyncPromise.all(iterable, closure);
         }
-        return wrap(Futures.allAsList(futures));
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> Promise each(final Iterator<T> iterator, final Closure<Promise> closure) {
+    public static <T> Promise each(final Iterator<T> iterator, final Func<? super T, Promise> func) {
+        if (ExecutorContext.isAsyncMode()) {
+            return AsyncPromise.each(iterator, func);
+        } else {
+            return SyncPromise.each(iterator, func);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Promise each(final Iterator<T> iterator, final Closure<Promise> closure) {
         return each(iterator, new Func<T, Promise>() {
             @Override
             public Promise apply(T t) {
                 return closure.call(t);
             }
         });
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> Promise each(final Iterator<T> iterator, final Func<? super T, Promise> func) {
-        final Func<Object, Promise> process = new Func<Object, Promise>() {
-            Func<Object, Promise> self = this;
-
-            @Override
-            public Promise apply(Object result) {
-                if (result == BREAK) {
-                    return Promise.pure(null);
-                }
-
-                if (iterator == null || !iterator.hasNext()) {
-                    return Promise.pure(null);
-                }
-
-                T item = iterator.next();
-
-                return func.apply(item).then(self);
-            }
-        };
-
-        return process.apply(null);
     }
 
     @SuppressWarnings("unchecked")
@@ -184,18 +140,11 @@ public final class Promise<T> {
         return each(iterable == null ? null : iterable.iterator(), func);
     }
 
-    public Promise<T> recover(final Func<Throwable, Promise<T>> func) {
-        final Func<Throwable, Promise<T>> wrapped = Wrapper.wrap(func);
+    public abstract T get();
 
-        return wrap(Futures.withFallback(future, new FutureFallback<T>() {
-            @Override
-            public ListenableFuture<T> create(Throwable t) {
-                return wrapped.apply(t).wrapped();
-            }
-        }));
-    }
+    public abstract Promise<T> recover(final Func<Throwable, Promise<T>> func);
 
-    public Promise<T> recover(final Closure closure) {
+    public final Promise<T> recover(final Closure closure) {
         return recover(new Func<Throwable, Promise<T>>() {
             @Override
             @SuppressWarnings("unchecked")
@@ -205,7 +154,7 @@ public final class Promise<T> {
         });
     }
 
-    public Promise<T> syncRecover(final Func<Throwable, T> func) {
+    public final Promise<T> syncRecover(final Func<Throwable, T> func) {
         return recover(new Func<Throwable, Promise<T>>() {
             @Override
             public Promise<T> apply(Throwable throwable) {
@@ -214,7 +163,7 @@ public final class Promise<T> {
         });
     }
 
-    public Promise<T> syncRecover(final Closure closure) {
+    public final Promise<T> syncRecover(final Closure closure) {
         return syncRecover(new Func<Throwable, T>() {
             @Override
             @SuppressWarnings("unchecked")
@@ -224,29 +173,13 @@ public final class Promise<T> {
         });
     }
 
-    public <R> Promise<R> then(final Func<? super T, Promise<R>> func) {
-        final Func<? super T, Promise<R>> wrapped = Wrapper.wrap(func);
-
-        return wrap(Futures.transform(future, new AsyncFunction<T, R>() {
-            @Override
-            public ListenableFuture<R> apply(T input) {
-                return wrapped.apply(input).wrapped();
-            }
-        }, ExecutorContext.getExecutor()));
+    public final <R> Promise<R> then(final Func<? super T, Promise<R>> func) {
+        return then(func, ExecutorContext.getExecutor());
     }
 
-    public <R> Promise<R> then(final Func<? super T, Promise<R>> func, final Executor executor) {
-        final Func<? super T, Promise<R>> wrapped = Wrapper.wrap(func);
+    public abstract <R> Promise<R> then(final Func<? super T, Promise<R>> func, final Executor executor);
 
-        return wrap(Futures.transform(future, new AsyncFunction<T, R>() {
-            @Override
-            public ListenableFuture<R> apply(T input) {
-                return wrapped.apply(input).wrapped();
-            }
-        }, executor));
-    }
-
-    public <R> Promise<R> then(final Closure closure) {
+    public final <R> Promise<R> then(final Closure closure) {
         return then(new Func<T, Promise<R>>() {
             @Override
             @SuppressWarnings("unchecked")
@@ -256,7 +189,7 @@ public final class Promise<T> {
         });
     }
 
-    public <R> Promise<R> then(final Closure closure, final Executor executor) {
+    public final <R> Promise<R> then(final Closure closure, final Executor executor) {
         return then(new Func<T, Promise<R>>() {
             @Override
             @SuppressWarnings("unchecked")
@@ -266,7 +199,7 @@ public final class Promise<T> {
         }, executor);
     }
 
-    public <R> Promise<R> syncThen(final Func<? super T, R> func) {
+    public final <R> Promise<R> syncThen(final Func<? super T, R> func) {
         return then(new Func<T, Promise<R>>() {
             @Override
             public Promise<R> apply(T t) {
@@ -275,7 +208,7 @@ public final class Promise<T> {
         });
     }
 
-    public <R> Promise<R> syncThen(final Closure closure) {
+    public final <R> Promise<R> syncThen(final Closure closure) {
         return syncThen(new Func<T, R>() {
             @Override
             @SuppressWarnings("unchecked")
@@ -287,24 +220,11 @@ public final class Promise<T> {
 
     // the sequence of the invocation is not guaranteed. Disable for now.
     @Deprecated
-    public void onSuccess(final Callback<? super T> action) {
-        final Callback<? super T> wrapped = Wrapper.wrap(action);
-
-        Futures.addCallback(future, new FutureCallback<T>() {
-            @Override
-            public void onSuccess(T result) {
-                wrapped.invoke(result);
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-            }
-        }, ExecutorContext.getExecutor());
-    }
+    public abstract void onSuccess(final Callback<? super T> action);
 
     // the sequence of the invocation is not guaranteed. Disable for now.
     @Deprecated
-    public void onSuccess(final Closure closure) {
+    public final void onSuccess(final Closure closure) {
         onSuccess(new Callback<T>() {
             @Override
             public void invoke(T t) {
@@ -315,24 +235,11 @@ public final class Promise<T> {
 
     // the sequence of the invocation is not guaranteed. Disable for now.
     @Deprecated
-    public void onFailure(final Callback<Throwable> action) {
-        final Callback<Throwable> wrapped = Wrapper.wrap(action);
-
-        Futures.addCallback(future, new FutureCallback<T>() {
-            @Override
-            public void onSuccess(T result) {
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                wrapped.invoke(t);
-            }
-        }, ExecutorContext.getExecutor());
-    }
+    public abstract void onFailure(final Callback<Throwable> action);
 
     // the sequence of the invocation is not guaranteed. Disable for now.
     @Deprecated
-    public void onFailure(final Closure closure) {
+    public final void onFailure(final Closure closure) {
         onFailure(new Callback<Throwable>() {
             @Override
             public void invoke(Throwable throwable) {

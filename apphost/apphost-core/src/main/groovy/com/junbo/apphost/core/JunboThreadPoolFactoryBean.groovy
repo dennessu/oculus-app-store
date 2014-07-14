@@ -29,6 +29,8 @@ class JunboThreadPoolFactoryBean implements FactoryBean<JunboThreadPool> {
 
     private String poolName = "JunboThreadPool"
 
+    private boolean asyncMode;
+
     void setCorePoolSize(int corePoolSize) {
         this.corePoolSize = corePoolSize
     }
@@ -49,6 +51,10 @@ class JunboThreadPoolFactoryBean implements FactoryBean<JunboThreadPool> {
         this.poolName = poolName
     }
 
+    void setAsyncMode(boolean asyncMode) {
+        this.asyncMode = asyncMode
+    }
+
     @Override
     JunboThreadPool getObject() throws Exception {
         ThreadPoolConfig threadPoolConfig = ThreadPoolConfig.defaultConfig()
@@ -59,7 +65,7 @@ class JunboThreadPoolFactoryBean implements FactoryBean<JunboThreadPool> {
         threadPoolConfig.setKeepAliveTime(keepAliveTimeMillis, TimeUnit.MILLISECONDS)
         threadPoolConfig.queueLimit = queueLimit
 
-        return new JunboThreadPool(threadPoolConfig)
+        return new JunboThreadPool(threadPoolConfig, asyncMode)
     }
 
     @Override

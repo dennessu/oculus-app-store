@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.langur.core.promise;
+package com.junbo.langur.core.promise.async;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
