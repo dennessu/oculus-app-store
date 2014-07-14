@@ -14,12 +14,17 @@ import com.junbo.common.model.SigningSupport;
  */
 public class Entitlement implements SigningSupport, SigningSetter {
     private String userId;
+    private String username;
+    private String itemId;
+    private String itemType;
     private String entitlementId;
     private Integer useCount;
-    private String sku;
     private String type;
+    private String sku;
     private Boolean isConsumable;
     private String packageName;
+    private String iapEntitlementData;
+    private String iapSignature;
 
     @CloudantIgnore
     private Long signatureTimestamp;
@@ -92,6 +97,46 @@ public class Entitlement implements SigningSupport, SigningSetter {
 
     public void setSignatureTimestamp(Long signatureTimestamp) {
         this.signatureTimestamp = signatureTimestamp;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
+    }
+
+    public String getItemType() {
+        return itemType;
+    }
+
+    public void setItemType(String itemType) {
+        this.itemType = itemType;
+    }
+
+    public String getIapEntitlementData() {
+        return iapEntitlementData;
+    }
+
+    public void setIapEntitlementData(String iapEntitlementData) {
+        this.iapEntitlementData = iapEntitlementData;
+    }
+
+    public String getIapSignature() {
+        return iapSignature;
+    }
+
+    public void setIapSignature(String iapSignature) {
+        this.iapSignature = iapSignature;
     }
 
     @Override

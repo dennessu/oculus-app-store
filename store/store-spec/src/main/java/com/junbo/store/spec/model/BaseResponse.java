@@ -15,6 +15,8 @@ public abstract class BaseResponse {
 
     private String statusDetail;
 
+    private String message;
+
     public String getStatus() {
         return status;
     }
@@ -29,5 +31,13 @@ public abstract class BaseResponse {
 
     public void setStatusDetail(String statusDetail) {
         this.statusDetail = statusDetail;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
