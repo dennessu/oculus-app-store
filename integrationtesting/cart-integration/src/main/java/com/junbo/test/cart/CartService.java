@@ -67,7 +67,7 @@ public class CartService extends HttpClientBase {
                 IdConverter.idToHexString(userId) + "/carts/" + IdConverter.idToHexString(cartId);
 
         String responseBody = restApiCall(HTTPMethod.GET, cartEndpointUrl, expectedResponseCode);
-        if (responseBody != null && !responseBody.isEmpty()) {
+        if (responseBody != null && !responseBody.isEmpty() && expectedResponseCode == 200) {
             return (new JsonMessageTranscoder().decode(new TypeReference<Cart>() {
             }, responseBody));
         }
