@@ -71,7 +71,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   if host =~ /mswin|mingw/
     config.vm.provision "shell",
-        inline: "su - vagrant -c 'git config --global core.autocrlf true'"
+        inline: "su - vagrant -c 'cd /home/vagrant/src && git config core.autocrlf true'"
   end
 
 end
