@@ -1,8 +1,8 @@
 {
   "localeCode": "el_GR",
-  "shortName": "Greek (GR)",
-  "longName": "Greek (Greece)",
-  "localeName": "Greek (GR)",
+  "shortName": "Ελληνικά (GR)",
+  "longName": "Ελληνικά (Ελλάδα)",
+  "localeName": "Ελληνικά (GR)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

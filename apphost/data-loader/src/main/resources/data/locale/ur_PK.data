@@ -1,8 +1,8 @@
 {
   "localeCode": "ur_PK",
-  "shortName": "Urdu (PK)",
-  "longName": "Urdu (Pakistan)",
-  "localeName": "Urdu (PK)",
+  "shortName": "اردو (PK)",
+  "longName": "اردو (پاكستان)",
+  "localeName": "اردو (PK)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

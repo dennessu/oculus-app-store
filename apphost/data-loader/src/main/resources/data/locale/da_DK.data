@@ -1,8 +1,8 @@
 {
   "localeCode": "da_DK",
-  "shortName": "Danish (DK)",
-  "longName": "Danish (Denmark)",
-  "localeName": "Danish (DK)",
+  "shortName": "Dansk (DK)",
+  "longName": "Dansk (Danmark)",
+  "localeName": "Dansk (DK)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

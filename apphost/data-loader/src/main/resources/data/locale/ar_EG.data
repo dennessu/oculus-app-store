@@ -1,8 +1,8 @@
 {
   "localeCode": "ar_EG",
-  "shortName": "Arabic (EG)",
-  "longName": "Arabic (Egypt)",
-  "localeName": "Arabic (EG)",
+  "shortName": "العربية (EG)",
+  "longName": "العربية (مصر)",
+  "localeName": "العربية (EG)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

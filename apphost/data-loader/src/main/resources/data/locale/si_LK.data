@@ -1,8 +1,8 @@
 {
   "localeCode": "si_LK",
-  "shortName": "Sinhala (LK)",
-  "longName": "Sinhala (Sri Lanka)",
-  "localeName": "Sinhala (LK)",
+  "shortName": "Siṁhala  (LK)",
+  "longName": "Siṁhala  (śrī laṃkāva)",
+  "localeName": "Siṁhala  (LK)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

@@ -1,8 +1,8 @@
 {
   "localeCode": "ko_KR",
-  "shortName": "Korean (KR)",
-  "longName": "Korean (Korea)",
-  "localeName": "Korean (KR)",
+  "shortName": "한국어 (KR)",
+  "longName": "한국어 (한국)",
+  "localeName": "한국어 (KR)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

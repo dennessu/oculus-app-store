@@ -1,8 +1,8 @@
 {
   "localeCode": "ru_RU",
-  "shortName": "Russian (RU)",
-  "longName": "Russian (Russia)",
-  "localeName": "Russian (RU)",
+  "shortName": "Русский (RU)",
+  "longName": "Русский (Россия)",
+  "localeName": "Русский (RU)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

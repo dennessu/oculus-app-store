@@ -1,8 +1,8 @@
 {
   "localeCode": "sr_BA",
-  "shortName": "Serbian (BA)",
-  "longName": "Serbian (Bosnia)",
-  "localeName": "Serbian (BA)",
+  "shortName": "Српски (БА)",
+  "longName": "Српски (Bosna i Hercegovina)",
+  "localeName": "Српски (БА)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

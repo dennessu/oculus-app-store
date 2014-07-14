@@ -1,8 +1,8 @@
 {
   "localeCode": "de_CH",
-  "shortName": "Germany (CH)",
-  "longName": "Germany (Switzerland)",
-  "localeName": "Germany (CH)",
+  "shortName": "Deutsch (CH)",
+  "longName": "Deutsch (Schweiz)",
+  "localeName": "Deutsch (CH)",
   "fallbackLocale": {
     "href": "/v1/locales/de_DE",
     "id": "de_DE"

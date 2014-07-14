@@ -1,8 +1,8 @@
 {
   "localeCode": "tr_TR",
-  "shortName": "Turkish (TR)",
-  "longName": "Turkish (Turkey)",
-  "localeName": "Turkish (TR)",
+  "shortName": "Türkçe (TR)",
+  "longName": "Türkçe (Türkiye)",
+  "localeName": "Türkçe (TR)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"
