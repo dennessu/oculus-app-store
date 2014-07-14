@@ -9,6 +9,7 @@ package com.junbo.configuration.impl;
 import com.junbo.configuration.ConfigContext;
 import com.junbo.configuration.crypto.CipherService;
 import com.junbo.configuration.crypto.impl.AESCipherServiceImpl;
+import com.junbo.utils.FileUtils;
 import com.junbo.utils.FileWatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +19,10 @@ import org.springframework.util.StringUtils;
 import java.io.*;
 import java.lang.ref.WeakReference;
 import java.net.URL;
-import java.nio.file.*;
-import java.nio.file.attribute.PosixFileAttributes;
-import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.WatchEvent;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.JarEntry;
@@ -375,7 +377,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
             Path path = Paths.get(configDir, fileName);
             if (Files.exists(path)) {
                 logger.info("Found configuration file {} from configDir: {}", fileName, configDir);
-                checkPermission(path);
+                FileUtils.checkPermission600(path);
                 return path;
             }
         }
@@ -418,34 +420,6 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         }
         // not found
         throw new RuntimeException(CONFIG_PASSWORD_KEY + " is not specified.");
-    }
-
-    private void checkPermission(Path path) {
-        // check permission, it must be owner read and write only
-        Set<PosixFilePermission> permissions = null;
-        try {
-            permissions = Files.readAttributes(path, PosixFileAttributes.class, LinkOption.NOFOLLOW_LINKS).permissions();
-
-            if (CollectionUtils.isEmpty(permissions)) {
-                throw new IllegalAccessException("Permission check invalid.");
-            }
-
-            // Only support OWNER_READ and OWNER_WRITE
-            if (permissions.size() > 2) {
-                throw new IllegalAccessException("Permission only valid for OWNER_READ and OWNER_WRITE.");
-            }
-
-            for (PosixFilePermission permission : permissions) {
-                if (permission != PosixFilePermission.OWNER_READ && permission != PosixFilePermission.OWNER_WRITE) {
-                    throw new IllegalAccessException("Permission only valid for OWNER_READ and OWNER_WRITE.");
-                }
-            }
-        } catch (UnsupportedOperationException unSupportedOperationEx) {
-            logger.warn("Skip permission check.");
-        } catch (Exception ex) {
-            logger.error("Error checking permission for file: " + path);
-            throw new RuntimeException(ex);
-        }
     }
 
     private void watch(){
