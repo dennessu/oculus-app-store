@@ -64,14 +64,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     su - vagrant -c 'git config --global credential.helper cache'
     su - vagrant -c 'git config --global credential.helper \"cache --timeout=604800\"'
 
+    # it is recommended to use autocrlf=input on linux, means file would be converted to LF
+    # when file is comitted to object database, or when git is compareing working directory with object database
+    # so even if on windows host, file is checked out as CRLF, it can also work in vagrant.
+    su - vagrant -c 'git config --global core.autocrlf input'
+
     echo "* PROVISIONING COMPLETED:"
     echo "** type 'vagrant ssh' to connect to sc-localdev"
     echo "** and you can do some customization on the box now"
   EOF
-
-  if host =~ /mswin|mingw/
-    config.vm.provision "shell",
-        inline: "su - vagrant -c 'cd /home/vagrant/src && git config core.autocrlf true'"
-  end
 
 end
