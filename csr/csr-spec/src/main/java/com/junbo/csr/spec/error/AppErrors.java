@@ -59,4 +59,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 400, code = "900015", message = "Get access Token failed.")
     AppError getAccessTokenFailed();
+
+    @ErrorDef(httpStatusCode = 400, code = "900016", message = "Csr group not found.")
+    AppError CsrGroupNotFound();
 }
