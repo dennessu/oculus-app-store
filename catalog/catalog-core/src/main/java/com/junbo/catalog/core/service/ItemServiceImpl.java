@@ -319,7 +319,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
                     break;
                 }
             }
-            if (i <= revision.getDistributionChannels().size()) {
+            if (i < revision.getDistributionChannels().size()) {
                 errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("distributionChannel", Joiner.on(", ").join(DistributionChannel.ALL)));
             }
         }
