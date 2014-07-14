@@ -22,19 +22,21 @@ fi
 export DEVOPS_ACCOUNT='devops'
 export DEPLOYMENT_ACCOUNT='silkcloud'
 
-export PGHA_BASE='/var/silkcloud'
-export DEPLOYMENT_PATH=$PGHA_BASE/pgha
+export SILKCLOUD_BASE='/var/silkcloud'
+
+export DEPLOYMENT_PATH=$SILKCLOUD_BASE/pgha
+export PGHA_BASE=$SILKCLOUD_BASE/postgresql
 
 export DATA_PATH=$PGHA_BASE/data
 export BACKUP_PATH=$PGHA_BASE/backup
 export ARCHIVE_PATH=$PGHA_BASE/archive
-export DB_LOG_PATH=$PGHA_BASE/log/postgresql
 export CRON_PATH=$PGHA_BASE/pgron
+export DB_LOG_PATH=$SILKCLOUD_BASE/log/postgresql
 
 export SKYTOOL_PATH=$PGHA_BASE/skytool
 export SKYTOOL_CONFIG_PATH=$SKYTOOL_PATH/config
 export SKYTOOL_PID_PATH=$SKYTOOL_PATH/pid
-export SKYTOOL_LOG_PATH=$PGHA_BASE/log/skytool
+export SKYTOOL_LOG_PATH=$SILKCLOUD_BASE/log/skytool
 
 export PGBIN_PATH='/usr/lib/postgresql/9.3/bin'
 export PGLOCK_PATH='/run/postgresql'
@@ -119,7 +121,7 @@ function checkAccount {
 # create directory
 function createDir {
     rm -rf $1
-    mkdir $1
+    mkdir -p $1
     chmod 700 $1
 }
 

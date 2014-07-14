@@ -94,6 +94,9 @@
 
 #[master] run liquibase script
 
+#[master] setup londiste root
+    $DEPLOYMENT_PATH/londiste/londiste_root.sh
+
 #[master] full base backup master database
     $DEPLOYMENT_PATH/util/base_backup.sh
 

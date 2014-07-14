@@ -5,6 +5,9 @@ source ${DIR}/../util/common.sh
 #check running under specified account
 checkAccount $DEPLOYMENT_ACCOUNT
 
+echo "[SETUP][SLAVE] create pgha base $PGHA_BASE"
+createDir $PGHA_BASE
+
 echo "[SETUP][SLAVE] create database data folder $SLAVE_DATA_PATH"
 createDir $SLAVE_DATA_PATH
 

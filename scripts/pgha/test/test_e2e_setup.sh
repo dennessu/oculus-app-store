@@ -9,6 +9,11 @@ checkAccount $DEPLOYMENT_ACCOUNT
 
 echo "setup master..."
 $DEPLOYMENT_PATH/setup/setup_master.sh
+
+echo "setup and start londiste root"
+$DEPLOYMENT_PATH/londiste/londiste_root.sh
+
+echo "do base backup"
 $DEPLOYMENT_PATH/util/base_backup.sh
 
 echo "setup slave..."
