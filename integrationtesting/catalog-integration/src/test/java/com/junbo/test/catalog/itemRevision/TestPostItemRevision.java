@@ -151,9 +151,8 @@ public class TestPostItemRevision extends BaseTestClass {
 
         //Test invalid value for itemId
         testItemRevision.setOwnerId(organizationId);
-        //Todo:BUG 341
-        //testItemRevision.setItemId(null);
-        //verifyExpectedError(testItemRevision);
+        testItemRevision.setItemId(null);
+        verifyExpectedError(testItemRevision);
 
         testItemRevision.setItemId("11111");
         try {
