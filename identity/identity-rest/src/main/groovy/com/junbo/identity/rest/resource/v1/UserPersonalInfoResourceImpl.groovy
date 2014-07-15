@@ -207,9 +207,10 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
                     if (userPersonalInfo != null && AuthorizeContext.hasRights('read')) {
                         userPersonalInfo = piiAdvanceFilter.getFilter(userPersonalInfo)
                         resultList.items.add(userPersonalInfo)
+                        return Promise.pure(userPersonalInfo)
+                    } else {
+                        return Promise.pure(null)
                     }
-
-                    return Promise.pure(null)
                 }
             }.then {
                 return Promise.pure(resultList)

@@ -146,8 +146,10 @@ class OrganizationResourceImpl implements OrganizationResource {
                         return RightsScope.with(authorizeService.authorize(callback)) {
                             if (AuthorizeContext.hasRights('read')) {
                                 resultList.items.add(newOrganization)
+                                return Promise.pure(newOrganization)
+                            } else {
+                                return Promise.pure(null)
                             }
-                            return Promise.pure(null)
                         }
                     }
 

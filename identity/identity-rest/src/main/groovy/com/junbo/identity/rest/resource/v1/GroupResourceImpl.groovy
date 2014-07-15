@@ -166,9 +166,10 @@ class GroupResourceImpl implements GroupResource {
                             if (AuthorizeContext.hasRights('read')) {
                                 Group filterGroup = groupFilter.filterForGet(existingGroup, listOptions.properties?.split(',') as List<String>)
                                 resultList.items.add(filterGroup)
+                                return Promise.pure(filterGroup)
+                            } else {
+                                return Promise.pure(null)
                             }
-
-                            return Promise.pure(null)
                         }
                     }.then {
                         return Promise.pure(resultList)
@@ -187,9 +188,10 @@ class GroupResourceImpl implements GroupResource {
                                 if (AuthorizeContext.hasRights('read')) {
                                     existing = groupFilter.filterForGet(existing, listOptions.properties?.split(',') as List<String>)
                                     resultList.items.add(existing)
+                                    return Promise.pure(existing)
+                                } else {
+                                    return Promise.pure(null)
                                 }
-
-                                return Promise.pure(null)
                             }
                         }
                     }.then {

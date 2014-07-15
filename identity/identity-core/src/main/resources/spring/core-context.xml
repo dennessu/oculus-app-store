@@ -19,6 +19,10 @@
                 <value>rev</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
         <property name="writablePropertiesForCreate">
@@ -59,6 +63,10 @@
                 <value>rev</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
         <property name="writablePropertiesForCreate">
@@ -107,6 +115,10 @@
                 <value>rev</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
         <property name="writablePropertiesForCreate">
@@ -150,6 +162,10 @@
                 <value>rev</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
         <property name="writablePropertiesForCreate">
@@ -186,6 +202,10 @@
                 <value>rev</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
         <property name="writablePropertiesForCreate">
@@ -223,6 +243,10 @@
                 <value>organizationId</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -259,6 +283,10 @@
                 <value>rev</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
         <property name="writablePropertiesForCreate">
@@ -299,6 +327,10 @@
                 <value>rev</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -341,6 +373,10 @@
                 <value>rev</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
         <property name="writablePropertiesForCreate">
@@ -375,6 +411,10 @@
                 <value>rev</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -408,6 +448,10 @@
                 <value>rev</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -440,6 +484,10 @@
                 <value>rev</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -473,6 +521,10 @@
                 <value>rev</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -513,6 +565,10 @@
                 <value>rev</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -566,6 +622,10 @@
                         <value>rev</value>
                         <value>createdTime</value>
                         <value>updatedTime</value>
+                        <value>createdBy</value>
+                        <value>updatedBy</value>
+                        <value>createdByClient</value>
+                        <value>updatedByClient</value>
                     </list>
                 </entry>
             </map>
@@ -655,6 +715,10 @@
                         <value>rev</value>
                         <value>createdTime</value>
                         <value>updatedTime</value>
+                        <value>createdBy</value>
+                        <value>updatedBy</value>
+                        <value>createdByClient</value>
+                        <value>updatedByClient</value>
                     </list>
                 </entry>
             </map>
@@ -704,6 +768,10 @@
                 <value>rev</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -744,6 +812,10 @@
                 <value>rev</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -775,6 +847,10 @@
                 <value>rev</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -811,6 +887,10 @@
                 <value>rev</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -842,6 +922,10 @@
                 <value>rev</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -877,6 +961,10 @@
                 <value>rev</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -926,6 +1014,10 @@
                 <value>rev</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -958,6 +1050,10 @@
                 <value>rev</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -997,6 +1093,10 @@
                 <value>rev</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -1038,6 +1138,10 @@
                 <value>rev</value>
                 <value>createdTime</value>
                 <value>updatedTime</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 

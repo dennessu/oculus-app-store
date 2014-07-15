@@ -188,9 +188,10 @@ class UserResourceImpl implements UserResource {
 
                     if (user != null) {
                         resultList.items.add(user)
+                        return Promise.pure(user)
+                    } else {
+                        return Promise.pure(null)
                     }
-
-                    return Promise.pure(null)
                 }
             }
 

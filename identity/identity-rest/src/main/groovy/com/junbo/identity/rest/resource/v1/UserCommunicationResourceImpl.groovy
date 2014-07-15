@@ -184,8 +184,10 @@ class UserCommunicationResourceImpl implements UserCommunicationResource {
 
                         if (newUserCommunication != null && AuthorizeContext.hasRights('read')) {
                             result.items.add(newUserCommunication)
+                            return Promise.pure(newUserCommunication)
+                        } else {
+                            return Promise.pure(null)
                         }
-                        return Promise.pure(null)
                     }
                 }.then {
                     return Promise.pure(result)
