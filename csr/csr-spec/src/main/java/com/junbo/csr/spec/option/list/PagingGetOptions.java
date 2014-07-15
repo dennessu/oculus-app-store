@@ -15,8 +15,6 @@ public class PagingGetOptions {
     private Integer limit;
     @QueryParam("cursor")
     private Integer offset;
-    @QueryParam("total")
-    private Boolean total;
 
     public Integer getLimit() {
         return limit;
@@ -32,13 +30,5 @@ public class PagingGetOptions {
 
     public void setOffset(Integer offset) {
         this.offset = offset;
-    }
-
-    public Boolean getTotal() {
-        return total;
-    }
-
-    public void setTotal(Boolean total) {
-        this.total = total;
     }
 }
