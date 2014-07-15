@@ -115,6 +115,8 @@
         <property name="usernameValidator" ref="usernameValidator" />
         <property name="countryRepository" ref="countryRepository" />
         <property name="vatResource" ref="identityVatResource" />
+        <property name="piTypeRepository" ref="piTypeRepository" />
+        <property name="paymentInstrumentResource" ref="identityPaymentInstrumentResource" />
     </bean>
 
     <bean id="userSecurityQuestionValidator"

@@ -3,6 +3,8 @@ package com.junbo.identity.core.service.validator.impl
 import com.junbo.billing.spec.model.VatIdValidationResponse
 import com.junbo.billing.spec.resource.VatResource
 import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.error.ErrorDetail
+import com.junbo.common.id.PITypeId
 import com.junbo.common.id.UserId
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.common.util.ValidatorUtil
@@ -14,12 +16,15 @@ import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.CountryRepository
 import com.junbo.identity.data.repository.LocaleRepository
+import com.junbo.identity.data.repository.PITypeRepository
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.payment.spec.model.PaymentInstrument
+import com.junbo.payment.spec.resource.PaymentInstrumentResource
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.CollectionUtils
@@ -47,6 +52,10 @@ class UserValidatorImpl implements UserValidator {
     private NormalizeService normalizeService
 
     private VatResource vatResource
+
+    private PaymentInstrumentResource paymentInstrumentResource
+
+    private PITypeRepository piTypeRepository
 
     @Override
     Promise<Void> validateForCreate(User user) {
@@ -221,6 +230,8 @@ class UserValidatorImpl implements UserValidator {
             return validateCountryOfResidence(user)
         }.then {
             return validateVat(user)
+        }.then {
+            return validateDefaultPI(user)
         }
     }
 
@@ -491,6 +502,32 @@ class UserValidatorImpl implements UserValidator {
         }
     }
 
+    Promise<Void> validateDefaultPI(User user) {
+        if (user.defaultPI == null) {
+            return Promise.pure(null)
+        }
+
+        return paymentInstrumentResource.getById(user.defaultPI).then { PaymentInstrument pi ->
+            if (pi ==  null) {
+                throw AppErrors.INSTANCE.paymentInstrumentNotFound(user.defaultPI).exception()
+            }
+
+            return piTypeRepository.get(new PITypeId(pi.getType())).then { PIType piType ->
+                if (piType == null) {
+                    throw AppErrors.INSTANCE.piTypeNotFound(new PITypeId(pi.getType())).exception()
+                }
+
+                if (piType.typeCode != com.junbo.common.id.PIType.STOREDVALUE.toString()
+                 && piType.typeCode != com.junbo.common.id.PIType.CREDITCARD.toString()) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('defaultPI', 'defaultPI can only support ' +
+                            'STOREDVALUE and CREDITCARD').exception()
+                }
+
+                return Promise.pure(null)
+            }
+        }
+    }
+
     @Required
     void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository
@@ -529,5 +566,15 @@ class UserValidatorImpl implements UserValidator {
     @Required
     void setVatResource(VatResource vatResource) {
         this.vatResource = vatResource
+    }
+
+    @Required
+    void setPaymentInstrumentResource(PaymentInstrumentResource paymentInstrumentResource) {
+        this.paymentInstrumentResource = paymentInstrumentResource
+    }
+
+    @Required
+    void setPiTypeRepository(PITypeRepository piTypeRepository) {
+        this.piTypeRepository = piTypeRepository
     }
 }

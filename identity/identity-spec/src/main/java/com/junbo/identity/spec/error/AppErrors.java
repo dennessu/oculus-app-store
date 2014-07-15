@@ -164,4 +164,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 409, code = "136", message = "Organization Name Already Exists",
             field = "organization.name", reason = "Organization name {0} is already used")
     AppError organizationAlreadyUsed(String organizationName);
+
+    @ErrorDef(httpStatusCode = 412, code = "137", message = "PaymentInstrument Not Found",
+            field = "paymentInstrument", reason = "PaymentInstrument with ID {0} is not found")
+    AppError paymentInstrumentNotFound(PaymentInstrumentId id);
 }

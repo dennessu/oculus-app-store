@@ -618,6 +618,7 @@
                         <value>isTaxExemptionClaimed</value>
                         <value>isTaxExemptionValidated</value>
                         <value>profile</value>
+                        <value>defaultPI</value>
                         <value>futureExpansion</value>
                         <value>rev</value>
                         <value>createdTime</value>
@@ -657,6 +658,7 @@
                         <value>isTaxExemptionClaimed</value>
                         <value>isTaxExemptionValidated</value>
                         <value>profile</value>
+                        <value>defaultPI</value>
                         <value>futureExpansion</value>
                     </list>
                 </entry>
@@ -690,6 +692,7 @@
                         <value>isTaxExemptionClaimed</value>
                         <value>isTaxExemptionValidated</value>
                         <value>profile</value>
+                        <value>defaultPI</value>
                         <value>futureExpansion</value>
                         <value>rev</value>
                     </list>

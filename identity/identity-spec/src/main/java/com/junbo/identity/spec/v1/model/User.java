@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.cloudant.CloudantUnique;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.LocaleId;
+import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.model.Link;
@@ -163,6 +164,11 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> implements C
     @ApiModelProperty(position = 21, required = false, value = "[Client Immutable] A Link to Entitlement-List resource to Search the entitlements of the user.")
     @HateoasLink("/entitlements?userId={id}")
     private Link entitlements;
+
+    @ApiModelProperty(position = 22, required = false, value = " A Link to Payment Instrument which will be represent to the user as default Payment Instrument, " +
+            "the Default PI should be either an Oculus eWallet or Credit Card, as these are the payment types availalbe on web, " +
+            "on Android and in VR,")
+    private PaymentInstrumentId defaultPI;
 
     @JsonIgnore
     private String canonicalUsername;
@@ -521,6 +527,15 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> implements C
 
     public void setMigratedUserId(Long migratedUserId) {
         this.migratedUserId = migratedUserId;
+    }
+
+    public PaymentInstrumentId getDefaultPI() {
+        return defaultPI;
+    }
+
+    public void setDefaultPI(PaymentInstrumentId defaultPI) {
+        this.defaultPI = defaultPI;
+        support.setPropertyAssigned("defaultPI");
     }
 
     /**
