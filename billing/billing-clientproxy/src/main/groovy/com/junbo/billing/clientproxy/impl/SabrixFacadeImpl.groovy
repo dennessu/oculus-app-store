@@ -106,6 +106,7 @@ class SabrixFacadeImpl implements TaxFacade {
         productCodeMap.put(ItemType.PHYSICAL.name(), ProductCode.PHYSICAL_GOODS.code)
         productCodeMap.put(ItemType.STORED_VALUE.name(), ProductCode.STORE_BALANCE.code)
 
+        PRODUCT_CODE_MAP = Collections.unmodifiableMap(productCodeMap)
     }
     @Override
     Promise<Balance> calculateTaxQuote(Balance balance, Address shippingAddress, Address piAddress) {
