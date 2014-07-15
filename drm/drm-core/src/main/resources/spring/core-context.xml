@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <context:component-scan base-package="com.junbo.drm.core"/>
+    <bean id="drmService" class="com.junbo.drm.core.service.impl.DrmServiceImpl">
+        <property name="defaultLicenseExpiration" value="${drm.core.defaultLicenseExpiration}"/>
+        <property name="entitlementResource" ref="drmEntitlementResource"/>
+        <property name="itemResource" ref="drmItemResource"/>
+        <property name="userResource" ref="drmUserResource"/>
+    </bean>
 
-    <bean id="drmService" class="com.junbo.drm.core.service.DrmServiceImpl"/>
+    <bean id="signatureService" class="com.junbo.drm.core.service.impl.SignatureServiceImpl">
+        <property name="algorithm" value="${drm.core.signature.algorithm}"/>
+        <property name="keyStorePath" value="${drm.core.signature.keyStorePath}"/>
+        <property name="keyStorePassword" value="${drm.core.signature.keyStorePassword}"/>
+        <property name="keyAlias" value="${drm.core.signature.keyAlias}"/>
+        <property name="keyPassword" value="${drm.core.signature.keyPassword}"/>
+    </bean>
 </beans>

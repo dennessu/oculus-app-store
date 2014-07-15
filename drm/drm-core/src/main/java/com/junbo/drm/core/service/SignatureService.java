@@ -3,9 +3,11 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.drm.core;
+package com.junbo.drm.core.service;
+
 /**
- * drm.
+ * SignatureService.
  */
-public interface DrmService {
+public interface SignatureService {
+    byte[] sign(byte[] bytes);
 }

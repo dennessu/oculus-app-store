@@ -1,6 +1,16 @@
-apply plugin: 'java'
+apply plugin: 'groovy'
 
 dependencies {
-    compile junboProject(":drm-db")
+    compile junboProject(":drm-spec")
+    compile junboProject(":drm-clientproxy")
+    compile junboProject(":catalog-spec")
+    compile junboProject(":identity-spec")
+    compile junboProject(":oauth-spec")
+    compile junboProject(":entitlement-spec")
+    compile junboProject(":authorization-lib")
+    compile junboProject(":common-lib")
+
+    compile (libraries.common_io)
+
     testCompile 'org.springframework:spring-test:4.0.0.RELEASE'
 }
