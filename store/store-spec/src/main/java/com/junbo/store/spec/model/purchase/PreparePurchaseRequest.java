@@ -9,11 +9,21 @@ package com.junbo.store.spec.model.purchase;
  * The PreparePurchaseRequest class.
  */
 public class PreparePurchaseRequest {
+    private String username;
     private String offerId;
+    private Integer quantity;
     private String country;
     private String locale;
     private String currency;
     private IAPParams iapParams;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public String getOfferId() {
         return offerId;
@@ -21,6 +31,14 @@ public class PreparePurchaseRequest {
 
     public void setOfferId(String offerId) {
         this.offerId = offerId;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
     public String getCountry() {

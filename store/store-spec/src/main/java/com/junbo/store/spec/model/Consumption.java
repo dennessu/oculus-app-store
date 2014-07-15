@@ -6,15 +6,13 @@
 
 package com.junbo.store.spec.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
 import com.junbo.common.model.ResourceMeta;
-import com.junbo.common.model.SigningSupport;
 
 /**
  * Entitlement Consumption for IAP.
  */
-public class Consumption extends ResourceMeta<String> implements SigningSupport, SigningSetter {
+public class Consumption extends ResourceMeta<String> {
 
     private String userId;
     private String entitlementId;
@@ -26,11 +24,8 @@ public class Consumption extends ResourceMeta<String> implements SigningSupport,
     @CloudantIgnore
     private Long signatureTimestamp;
 
-    @JsonIgnore
-    private String payload;
-
-    @JsonIgnore
-    private String signature;
+    private String iapConsumptionData;
+    private String iapSignature;
 
     public String getUserId() {
         return userId;
@@ -106,23 +101,19 @@ public class Consumption extends ResourceMeta<String> implements SigningSupport,
         setTrackingGuid(id);
     }
 
-    @Override
-    public String getPayload() {
-        return payload;
+    public String getIapConsumptionData() {
+        return iapConsumptionData;
     }
 
-    @Override
-    public void setPayload(String payload) {
-        this.payload = payload;
+    public void setIapConsumptionData(String iapConsumptionData) {
+        this.iapConsumptionData = iapConsumptionData;
     }
 
-    @Override
-    public String getSignature() {
-        return signature;
+    public String getIapSignature() {
+        return iapSignature;
     }
 
-    @Override
-    public void setSignature(String signature) {
-        this.signature = signature;
+    public void setIapSignature(String iapSignature) {
+        this.iapSignature = iapSignature;
     }
 }

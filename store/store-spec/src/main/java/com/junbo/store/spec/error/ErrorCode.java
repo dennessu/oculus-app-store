@@ -23,4 +23,8 @@ public class ErrorCode {
     public static final String ENTITLEMENT_NOT_ENOUGH_USECOUNT = "iap:10003";
 
     public static final String ITEM_NOT_FOUND_WITH_PACKAGE_NAME = "iap:10004";
+
+    public static final String USER_NOT_FOUND_BY_USERNAME = "10005";
+
+    public static final String INVALID_BILLING_UPDATE_OPERATION = "10006";
 }

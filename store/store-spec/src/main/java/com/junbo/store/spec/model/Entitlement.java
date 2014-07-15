@@ -5,14 +5,12 @@
  */
 package com.junbo.store.spec.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
-import com.junbo.common.model.SigningSupport;
 
 /**
  * Entitlement used for IAP.
  */
-public class Entitlement implements SigningSupport, SigningSetter {
+public class Entitlement {
     private String userId;
     private String username;
     private String itemId;
@@ -28,12 +26,6 @@ public class Entitlement implements SigningSupport, SigningSetter {
 
     @CloudantIgnore
     private Long signatureTimestamp;
-
-    @JsonIgnore
-    private String payload;
-
-    @JsonIgnore
-    private String signature;
 
     public String getUserId() {
         return userId;
@@ -139,23 +131,4 @@ public class Entitlement implements SigningSupport, SigningSetter {
         this.iapSignature = iapSignature;
     }
 
-    @Override
-    public String getPayload() {
-        return payload;
-    }
-
-    @Override
-    public void setPayload(String payload) {
-        this.payload = payload;
-    }
-
-    @Override
-    public String getSignature() {
-        return signature;
-    }
-
-    @Override
-    public void setSignature(String signature) {
-        this.signature = signature;
-    }
 }

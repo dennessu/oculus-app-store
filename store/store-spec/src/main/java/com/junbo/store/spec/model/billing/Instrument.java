@@ -5,6 +5,8 @@
  */
 package com.junbo.store.spec.model.billing;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.store.spec.model.Address;
 
 import java.math.BigDecimal;
@@ -12,34 +14,29 @@ import java.math.BigDecimal;
 /**
  * The PaymentInstrument class.
  */
-public class PaymentInstrument {
+public class Instrument {
 
-    private String paymentInstrumentId;
-
+    private String instrumentId;
     private String type;
-
     private String accountName;
-
     private String accountNum;
-
     private String expireDate;
-
     private String encryptedCvmCode;
-
+    private String creditCardType;
     private String storedValueCurrency;
-
     private BigDecimal storedValueBalance;
-
     private Address billingAddress;
-
+    private String phoneNumber;
     private String email;
+    @JsonIgnore
+    private PaymentInstrument paymentInstrument;
 
-    public String getPaymentInstrumentId() {
-        return paymentInstrumentId;
+    public String getInstrumentId() {
+        return instrumentId;
     }
 
-    public void setPaymentInstrumentId(String paymentInstrumentId) {
-        this.paymentInstrumentId = paymentInstrumentId;
+    public void setInstrumentId(String instrumentId) {
+        this.instrumentId = instrumentId;
     }
 
     public String getType() {
@@ -82,6 +79,14 @@ public class PaymentInstrument {
         this.encryptedCvmCode = encryptedCvmCode;
     }
 
+    public String getCreditCardType() {
+        return creditCardType;
+    }
+
+    public void setCreditCardType(String creditCardType) {
+        this.creditCardType = creditCardType;
+    }
+
     public String getStoredValueCurrency() {
         return storedValueCurrency;
     }
@@ -106,11 +111,27 @@ public class PaymentInstrument {
         this.billingAddress = billingAddress;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public PaymentInstrument getPaymentInstrument() {
+        return paymentInstrument;
+    }
+
+    public void setPaymentInstrument(PaymentInstrument paymentInstrument) {
+        this.paymentInstrument = paymentInstrument;
     }
 }

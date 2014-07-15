@@ -22,7 +22,7 @@ public class CommitPurchaseResponse extends BaseResponse {
 
     private AppDeliveryData appDeliveryData;
 
-    private List<Entitlement> entitlements;
+    private List<Entitlement> iapEntitlements;
 
     public Challenge getChallenge() {
         return challenge;
@@ -48,11 +48,11 @@ public class CommitPurchaseResponse extends BaseResponse {
         this.appDeliveryData = appDeliveryData;
     }
 
-    public List<Entitlement> getEntitlements() {
-        return entitlements;
+    public List<Entitlement> getIapEntitlements() {
+        return iapEntitlements;
     }
 
-    public void setEntitlements(List<Entitlement> entitlements) {
-        this.entitlements = entitlements;
+    public void setIapEntitlements(List<Entitlement> iapEntitlements) {
+        this.iapEntitlements = iapEntitlements;
     }
 }

@@ -13,6 +13,8 @@
     <bean id="defaultIAPResourceClientFactory" class="com.junbo.store.spec.resource.proxy.IAPResourceClientProxyFactory"/>
     <bean id="defaultLoginResourceRouter" parent="routingRouterBase" />
     <bean id="defaultLoginResourceClientFactory" class="com.junbo.store.spec.resource.proxy.LoginResourceClientProxyFactory"/>
+    <bean id="defaultStoreResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultStoreResourceClientFactory" class="com.junbo.store.spec.resource.proxy.StoreResourceClientProxyFactory"/>
 
     <bean id="store.offerClient" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy"
           parent="baseClientProxy">
@@ -87,5 +89,15 @@
     <bean id="store.tokenInfoEndpointClientProxy"
           class="com.junbo.oauth.spec.endpoint.proxy.TokenInfoEndpointClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.crypto.url}"/>
+    </bean>
+
+    <bean id="store.piTypeResourceClientProxy"
+          class="com.junbo.identity.spec.v1.resource.proxy.PITypeResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
+
+    <bean id="store.currencyResourceClientProxy"
+          class="com.junbo.identity.spec.v1.resource.proxy.CurrencyResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
     </bean>
 </beans>

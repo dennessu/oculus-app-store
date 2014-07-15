@@ -16,6 +16,12 @@ public class CommitPurchaseRequest {
 
     private String purchaseToken;
 
+    private String instrumentId;
+
+    private String packageName;
+
+    private String isIAP;
+
     public ChallengeSolution getChallengeSolution() {
         return challengeSolution;
     }
@@ -30,5 +36,29 @@ public class CommitPurchaseRequest {
 
     public void setPurchaseToken(String purchaseToken) {
         this.purchaseToken = purchaseToken;
+    }
+
+    public String getInstrumentId() {
+        return instrumentId;
+    }
+
+    public void setInstrumentId(String instrumentId) {
+        this.instrumentId = instrumentId;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public String getIsIAP() {
+        return isIAP;
+    }
+
+    public void setIsIAP(String isIAP) {
+        this.isIAP = isIAP;
     }
 }

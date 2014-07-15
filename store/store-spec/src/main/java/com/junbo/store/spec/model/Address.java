@@ -5,6 +5,7 @@
  */
 package com.junbo.store.spec.model;
 
+
 /**
  * The Address class.
  */
@@ -23,12 +24,6 @@ public class Address {
     private String country;
 
     private String postalCode;
-
-    private String phoneNumber;
-
-    private String firstName;
-
-    private String lastName;
 
     public String getStreet1() {
         return street1;
@@ -86,27 +81,33 @@ public class Address {
         this.postalCode = postalCode;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Address address = (Address) o;
+
+        if (city != null ? !city.equals(address.city) : address.city != null) return false;
+        if (country != null ? !country.equals(address.country) : address.country != null) return false;
+        if (postalCode != null ? !postalCode.equals(address.postalCode) : address.postalCode != null) return false;
+        if (street1 != null ? !street1.equals(address.street1) : address.street1 != null) return false;
+        if (street2 != null ? !street2.equals(address.street2) : address.street2 != null) return false;
+        if (street3 != null ? !street3.equals(address.street3) : address.street3 != null) return false;
+        if (subCountry != null ? !subCountry.equals(address.subCountry) : address.subCountry != null) return false;
+
+        return true;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    @Override
+    public int hashCode() {
+        int result = street1 != null ? street1.hashCode() : 0;
+        result = 31 * result + (street2 != null ? street2.hashCode() : 0);
+        result = 31 * result + (street3 != null ? street3.hashCode() : 0);
+        result = 31 * result + (city != null ? city.hashCode() : 0);
+        result = 31 * result + (subCountry != null ? subCountry.hashCode() : 0);
+        result = 31 * result + (country != null ? country.hashCode() : 0);
+        result = 31 * result + (postalCode != null ? postalCode.hashCode() : 0);
+        return result;
     }
 }

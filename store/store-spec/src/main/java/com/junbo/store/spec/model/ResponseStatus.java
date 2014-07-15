@@ -19,7 +19,8 @@ public enum ResponseStatus {
      */
     public enum Detail {
         USERNAME_ALREADY_USED,
-        USER_CREDENTIAL_INVALID
+        USER_CREDENTIAL_INVALID,
+        USER_NOT_FOUND
     }
 
 }

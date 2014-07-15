@@ -146,7 +146,7 @@ class IAPResourceImpl implements IAPResource {
 
             return Promise.each(results.items) { Entitlement entitlement ->
                 entitlement.setSignatureTimestamp(System.currentTimeMillis())
-                return signObject(entitlement, hostItem.itemId)
+                return Promise.pure(null) //signObject(entitlement, hostItem.itemId)
             }.then {
                 return Promise.pure(results)
             }
@@ -200,7 +200,8 @@ class IAPResourceImpl implements IAPResource {
         }.then { Results<Entitlement> results ->
             return Promise.each(results.items) { Entitlement entitlement ->
                 entitlement.signatureTimestamp = System.currentTimeMillis()
-                return signObject(entitlement, theHostItem.itemId)
+                return Promise.pure(null)
+                //return signObject(entitlement, theHostItem.itemId)
             }.then {
                 return Promise.pure(results)
             }
@@ -242,7 +243,8 @@ class IAPResourceImpl implements IAPResource {
 
         }.then { Consumption consumptionResult ->
             consumptionResult.signatureTimestamp = System.currentTimeMillis()
-            return signObject(consumptionResult, hostItem.itemId)
+            return Promise.pure(null)
+            // return signObject(consumptionResult, hostItem.itemId)
         }
     }
 

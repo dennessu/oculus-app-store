@@ -29,4 +29,10 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "104", message = "Stored Value Payment Instrument Not Found")
     AppError storeValuePINotFound();
+
+    @ErrorDef(httpStatusCode = 412, code = ErrorCode.USER_NOT_FOUND_BY_USERNAME, message = "User not found by username.")
+    AppError userNotFoundByUsername();
+
+    @ErrorDef(httpStatusCode = 412, code = ErrorCode.INVALID_BILLING_UPDATE_OPERATION, message = "Invalid billing update operation.")
+    AppError invalidBillingUpdateOperation();
 }

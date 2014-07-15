@@ -45,7 +45,8 @@ public interface StoreResource {
 
     @GET
     @Path("/entitlements")
-    Promise<EntitlementsGetResponse> getEntitlements(@BeanParam EntitlementsGetRequest entitlementsGetRequest);
+    Promise<EntitlementsGetResponse> getEntitlements(@BeanParam EntitlementsGetRequest entitlementsGetRequest,
+                                                     @BeanParam PageParam pageParam);
 
     @POST
     @Path("/purchase/free")

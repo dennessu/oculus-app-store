@@ -17,7 +17,7 @@ public class BillingProfile {
 
     private List<PaymentOption> paymentOptions;
 
-    private List<PaymentInstrument> paymentInstruments;
+    private List<Instrument> instruments;
 
     public String getDefaultInstrumentId() {
         return defaultInstrumentId;
@@ -35,11 +35,11 @@ public class BillingProfile {
         this.paymentOptions = paymentOptions;
     }
 
-    public List<PaymentInstrument> getPaymentInstruments() {
-        return paymentInstruments;
+    public List<Instrument> getInstruments() {
+        return instruments;
     }
 
-    public void setPaymentInstruments(List<PaymentInstrument> paymentInstruments) {
-        this.paymentInstruments = paymentInstruments;
+    public void setInstruments(List<Instrument> instruments) {
+        this.instruments = instruments;
     }
 }
