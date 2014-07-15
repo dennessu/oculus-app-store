@@ -4,14 +4,12 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.oauth.db.repo.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.oauth.db.generator.TokenGenerator
 import com.junbo.oauth.db.repo.AuthorizationCodeRepository
 import com.junbo.oauth.spec.model.AuthorizationCode
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-
 /**
  * CloudantAuthorizationCodeRepositoryImpl.
  */
@@ -32,13 +30,13 @@ class CloudantAuthorizationCodeRepositoryImpl extends CloudantClient<Authorizati
             code.code = tokenGenerator.generateAuthorizationCode()
         }
 
-        cloudantPost(code).get()
+        cloudantPostSync(code)
     }
 
     @Override
     AuthorizationCode getAndRemove(String code) {
-        AuthorizationCode entity = cloudantGet(code).get()
-        cloudantDelete(code)
+        AuthorizationCode entity = cloudantGetSync(code)
+        cloudantDeleteSync(code)
         return entity
     }
 }

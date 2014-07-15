@@ -27,8 +27,8 @@ class CloudantResetPasswordCodeRepositoryImpl extends CloudantClient<ResetPasswo
 
     @Override
     ResetPasswordCode getAndRemove(String code) {
-        ResetPasswordCode entity = cloudantGet(code).get()
-        cloudantDelete(code).get()
+        ResetPasswordCode entity = cloudantGetSync(code)
+        cloudantDeleteSync(code)
         return entity
     }
 
@@ -38,14 +38,14 @@ class CloudantResetPasswordCodeRepositoryImpl extends CloudantClient<ResetPasswo
             resetPasswordCode.code = tokenGenerator.generateResetPasswordCode()
         }
 
-        cloudantPost(resetPasswordCode).get()
+        cloudantPostSync(resetPasswordCode)
     }
 
     @Override
     void removeByUserIdEmail(Long userId, String email) {
-        List<ResetPasswordCode> entities = queryView('by_user_id_email', "$userId:$email").get()
+        List<ResetPasswordCode> entities = queryViewSync('by_user_id_email', "$userId:$email")
         for (ResetPasswordCode code : entities) {
-            cloudantDelete(code).get()
+            cloudantDeleteSync(code)
         }
     }
 }

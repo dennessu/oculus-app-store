@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 @Path("price-tiers")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@RestResource
+@RestResource(sync = true)
 public interface PriceTierResource {
     @CacheMaxAge(duration = 1, unit = TimeUnit.HOURS)
     @ApiOperation("Get a price tier")

@@ -38,18 +38,18 @@ class CloudantRememberMeTokenRepositoryImpl extends CloudantClient<RememberMeTok
             rememberMeToken.tokenValue = tokens[0] + '.' + tokenGenerator.generateRememberMeTokenSeries()
         }
 
-        return cloudantPost(rememberMeToken).get()
+        return cloudantPostSync(rememberMeToken)
     }
 
     @Override
     RememberMeToken get(String tokenValue) {
-        return cloudantGet(tokenValue).get()
+        return cloudantGetSync(tokenValue)
     }
 
     @Override
     RememberMeToken getAndRemove(String tokenValue) {
-        RememberMeToken entity = cloudantGet(tokenValue).get()
-        cloudantDelete(tokenValue)
+        RememberMeToken entity = cloudantGetSync(tokenValue)
+        cloudantDeleteSync(tokenValue)
         return entity
     }
 }

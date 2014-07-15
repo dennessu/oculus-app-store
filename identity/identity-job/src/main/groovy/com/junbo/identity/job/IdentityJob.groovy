@@ -34,14 +34,14 @@ class IdentityJob implements InitializingBean {
         def count = 0, numSuccess = new AtomicInteger(), numFail = new AtomicInteger()
         List<Future> futures = [] as LinkedList<Future>
 
-        List<User> userList = readUsers(limit, 0).get()
+        List<User> userList = Promise.get { readUsers(limit, 0) }
 
         while (!CollectionUtils.isEmpty(userList)) {
             userList.each { User user ->
                 def future = threadPoolTaskExecutor.submit(new Callable<Void>() {
                     @Override
                     Void call() throws Exception {
-                        def result = identityProcessor.process(user).get()
+                        def result = Promise.get { identityProcessor.process(user) }
                         if (result.success) {
                             numSuccess.andIncrement
                         } else {
@@ -56,7 +56,7 @@ class IdentityJob implements InitializingBean {
             count += userList.size()
             // If the value is updated, it will remove from the view. So just need to read from the first index
             // And it won't have blocking users for some user. (Just check the vat resource)
-            userList = readUsers(limit, 0).get()
+            userList = Promise.get { readUsers(limit, 0) }
         }
 
         // wait all task to finish

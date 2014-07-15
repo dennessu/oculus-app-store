@@ -4,7 +4,6 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.data.handler
-
 import com.junbo.authorization.spec.model.ApiDefinition
 import com.junbo.authorization.spec.resource.ApiDefinitionResource
 import com.junbo.common.error.AppErrorException
@@ -12,7 +11,6 @@ import com.junbo.langur.core.client.TypeReference
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.core.io.Resource
-
 /**
  * ApiDefinitionDataHandler.
  */
@@ -44,7 +42,7 @@ class ApiDefinitionDataHandler extends BaseDataHandler {
 
         ApiDefinition existing = null
         try {
-            existing = apiDefinitionResource.get(apiDefinition.apiName).get()
+            existing = apiDefinitionResource.get(apiDefinition.apiName).syncGet()
         } catch (AppErrorException e) {
             logger.debug('This content does not exist in current database.', e)
         }
@@ -55,7 +53,7 @@ class ApiDefinitionDataHandler extends BaseDataHandler {
                 apiDefinition.id = existing.id
                 apiDefinition.rev = existing.rev
                 try {
-                    apiDefinitionResource.update(apiDefinition.apiName, apiDefinition).get()
+                    apiDefinitionResource.update(apiDefinition.apiName, apiDefinition).syncGet()
                 } catch (Exception e) {
                     logger.error("Error updating apiDefinition $apiDefinition.apiName.", e)
                 }
@@ -65,7 +63,7 @@ class ApiDefinitionDataHandler extends BaseDataHandler {
         } else {
             logger.debug("Create new ApiDefinition $apiDefinition.apiName with this content.")
             try {
-                apiDefinitionResource.create(apiDefinition).get()
+                apiDefinitionResource.create(apiDefinition).syncGet()
             } catch (Exception e) {
                 logger.error("Error creating apiDefinition $apiDefinition.apiName.", e)
             }

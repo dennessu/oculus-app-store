@@ -30,26 +30,25 @@ public class CurrencyServiceFacadeImpl implements CurrencyServiceFacade {
     }
 
     public Promise<Long> getMinAuthAmount(CurrencyId currencyId){
-
-        if(currencyId == null){
+        if (currencyId == null) {
             throw AppClientExceptions.INSTANCE.missingCurrency().exception();
         }
-        Currency currency = currencyResource.get(currencyId, new CurrencyGetOptions()).get();
-        if(currency == null){
+        Currency currency = currencyResource.get(currencyId, new CurrencyGetOptions()).syncGet();
+        if (currency == null) {
             throw AppClientExceptions.INSTANCE.invalidCurrency(currencyId.getValue()).exception();
         }
-        Long numbers = getNumberAfterDecimal(currency.getCurrencyCode()).get();
+        Long numbers = getNumberAfterDecimal(currency.getCurrencyCode()).syncGet();
         return Promise.pure(new Long(currency.getMinAuthAmount().multiply(new BigDecimal(numbers)).longValue()));
     }
 
     public Promise<Long> getNumberAfterDecimal(String currencyCode){
-        if(CommonUtil.isNullOrEmpty(currencyCode)){
+        if (CommonUtil.isNullOrEmpty(currencyCode)) {
             throw AppClientExceptions.INSTANCE.invalidCurrency(currencyCode).exception();
         }
-        Currency currency = currencyResource.get(new CurrencyId(currencyCode), new CurrencyGetOptions()).get();
-        if(currency == null){
+        Currency currency = currencyResource.get(new CurrencyId(currencyCode), new CurrencyGetOptions()).syncGet();
+        if (currency == null) {
             throw AppClientExceptions.INSTANCE.invalidCurrency(currencyCode).exception();
         }
-        return Promise.pure(new Long((long)Math.pow(10, currency.getNumberAfterDecimal())));
+        return Promise.pure(new Long((long) Math.pow(10, currency.getNumberAfterDecimal())));
     }
 }

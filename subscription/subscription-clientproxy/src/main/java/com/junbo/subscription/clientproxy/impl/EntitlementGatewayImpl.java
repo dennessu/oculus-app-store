@@ -7,6 +7,7 @@ package com.junbo.subscription.clientproxy.impl;
 
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.resource.EntitlementResource;
+import com.junbo.langur.core.promise.SyncModeScope;
 import com.junbo.subscription.clientproxy.EntitlementGateway;
 import com.junbo.subscription.common.exception.SubscriptionExceptions;
 import org.slf4j.Logger;
@@ -28,10 +29,10 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
 
     @Override
     public String grantEntitlement(Entitlement entitlement) {
-        try {
+        try (SyncModeScope scope = new SyncModeScope()) {
             entitlement.setTrackingUuid(UUID.randomUUID());
 
-            Entitlement result = entitlementResource.postEntitlement(entitlement).get();
+            Entitlement result = entitlementResource.postEntitlement(entitlement).syncGet();
             return result.getId();
         } catch (Exception e) {
             LOGGER.error("Error occurred during calling [Entitlement] component.", e);

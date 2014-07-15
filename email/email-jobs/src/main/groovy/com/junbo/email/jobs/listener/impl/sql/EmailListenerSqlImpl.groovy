@@ -47,29 +47,31 @@ class EmailListenerSqlImpl extends EmailBaseListener implements EmailListener {
     }
 
     public void sendEmail(String emailId) {
-        def email = this.findEmail(emailId).recover {Throwable throwable ->
-            LOGGER.error('EMAIL_LISTENER_ERROR. Failed to get email:',throwable)
-        }.then { Email email ->
-            if (email == null) {
-                LOGGER.error('EMAIL_LISTENER_ERROR. Email not found with id:{}', emailId)
-                return Promise.pure(null)
-            }
-            if (email.templateId == null) {
-                LOGGER.error('EMAIL_LISTENER_ERROR. EmailTemplate id should be not null')
-                return Promise.pure(null)
-            }
-            return this.findEmailTemplate(email.templateId.value).recover {Throwable throwable ->
-                LOGGER.error('EMAIL_LISTENER_ERROR. Failed to get email template:',throwable)
-            }.then { EmailTemplate template ->
-                if (template == null) {
-                    LOGGER.error('EMAIL_LISTENER_ERROR. Email template not found')
+        def email = Promise.get {
+            this.findEmail(emailId).recover {Throwable throwable ->
+                LOGGER.error('EMAIL_LISTENER_ERROR. Failed to get email:',throwable)
+            }.then { Email email ->
+                if (email == null) {
+                    LOGGER.error('EMAIL_LISTENER_ERROR. Email not found with id:{}', emailId)
                     return Promise.pure(null)
                 }
-                return emailProvider.sendEmail(email, template).then { Email updatedEmail ->
-                    return this.updateEmail(updatedEmail)
+                if (email.templateId == null) {
+                    LOGGER.error('EMAIL_LISTENER_ERROR. EmailTemplate id should be not null')
+                    return Promise.pure(null)
+                }
+                return this.findEmailTemplate(email.templateId.value).recover {Throwable throwable ->
+                    LOGGER.error('EMAIL_LISTENER_ERROR. Failed to get email template:',throwable)
+                }.then { EmailTemplate template ->
+                    if (template == null) {
+                        LOGGER.error('EMAIL_LISTENER_ERROR. Email template not found')
+                        return Promise.pure(null)
+                    }
+                    return emailProvider.sendEmail(email, template).then { Email updatedEmail ->
+                        return this.updateEmail(updatedEmail)
+                    }
                 }
             }
-        }.get()
+        }
 
         if (email != null) {
             LOGGER.info('EMAIL_LISTENER_INFO. Email has been sent')

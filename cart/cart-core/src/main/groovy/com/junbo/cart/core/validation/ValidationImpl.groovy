@@ -10,6 +10,7 @@ import com.junbo.common.error.ErrorDetail
 import com.junbo.common.id.CouponId
 import com.junbo.common.id.UserId
 import com.junbo.identity.spec.v1.model.User
+import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.hibernate.validator.HibernateValidator
 
@@ -65,7 +66,7 @@ class ValidationImpl implements Validation {
         validateCouponCodes(cart)
         // validate if cart with the name already exist
         if (cart.cartName == CartServiceImpl.CART_NAME_PRIMARY ||
-            cartPersistService.get(clientId, cart.cartName, userId).get() != null) {
+            Promise.get { return cartPersistService.get(clientId, cart.cartName, userId) } != null) {
             throw AppErrors.INSTANCE.cartAlreadyExists(userId, cart.cartName).exception()
         }
         return this

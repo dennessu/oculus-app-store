@@ -22,7 +22,7 @@ import javax.ws.rs.core.MediaType;
 @Path("promotion-revisions")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@RestResource
+@RestResource(sync = true)
 public interface PromotionRevisionResource {
     //@ApiOperation("Get or search promotion revisions")
     @GET

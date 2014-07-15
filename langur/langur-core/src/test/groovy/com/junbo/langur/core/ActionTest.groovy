@@ -2,6 +2,7 @@ package com.junbo.langur.core
 import com.junbo.langur.core.action.*
 import com.junbo.langur.core.promise.ExecutorContext
 import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.promise.async.AsyncPromise
 import groovy.transform.CompileStatic
 import org.testng.Assert
 import org.testng.annotations.AfterTest
@@ -73,10 +74,10 @@ class ActionTest {
                 executor
         )
 
-        Promise<ActionResult> result = executor.execute(seq1, new ActionContext())
+        AsyncPromise<ActionResult> result = (AsyncPromise)executor.execute(seq1, new ActionContext())
 
         try {
-            result.get()
+            result.asyncGet()
             Assert.fail('test failure')
         }
         catch (Exception ex) {
@@ -125,8 +126,8 @@ class ActionTest {
                 , executor
         )
 
-        Promise<ActionResult> result = executor.execute(branch1, new ActionContext())
-        result.get()
+        AsyncPromise<ActionResult> result = (AsyncPromise<ActionResult>)executor.execute(branch1, new ActionContext())
+        result.asyncGet()
         assert (result)
     }
 
@@ -137,14 +138,14 @@ class ActionTest {
 
         context.set('value1')
 
-        Promise<String> promise = Promise.delayed(1, TimeUnit.SECONDS) {
+        AsyncPromise<String> promise = (AsyncPromise<String>)Promise.delayed(1, TimeUnit.SECONDS) {
             assert 'value1' == context.get()
             null
         }.then { String s ->
             return Promise.pure(s)
         }
 
-        promise.get()
+        promise.asyncGet()
         assert (promise)
     }
 }

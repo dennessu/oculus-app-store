@@ -32,7 +32,7 @@ class EmailHistoryRepoCloudantTest extends BaseCloudantTest {
 
     @Test
     void testCreate() {
-        def email = emailHistoryRepository.createEmailHistory(email).get()
+        def email = emailHistoryRepository.createEmailHistory(email).testGet()
         assert email != null, 'Email create failed'
         ids.add(email.getId().value)
     }
@@ -42,7 +42,7 @@ class EmailHistoryRepoCloudantTest extends BaseCloudantTest {
         if(ids != null && ids.size() != 0) {
             ids.each {String id ->
                 if (id != null && id !='') {
-                    emailHistoryRepository.deleteEmailHistory(id).get()
+                    emailHistoryRepository.deleteEmailHistory(id).testGet()
                 }
             }
         }

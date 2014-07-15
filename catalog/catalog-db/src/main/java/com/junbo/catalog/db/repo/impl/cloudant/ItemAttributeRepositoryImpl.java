@@ -22,21 +22,21 @@ import java.util.List;
 public class ItemAttributeRepositoryImpl extends CloudantClient<ItemAttribute> implements ItemAttributeRepository {
 
     public ItemAttribute create(ItemAttribute attribute) {
-        return cloudantPost(attribute).get();
+        return cloudantPostSync(attribute);
     }
 
     public ItemAttribute get(String attributeId) {
         if (attributeId == null) {
             return null;
         }
-        return cloudantGet(attributeId).get();
+        return cloudantGetSync(attributeId);
     }
 
     public List<ItemAttribute> getAttributes(ItemAttributesGetOptions options) {
         if (!CollectionUtils.isEmpty(options.getAttributeIds())) {
             List<ItemAttribute> attributes = new ArrayList<>();
             for (String attributeId : options.getAttributeIds()) {
-                ItemAttribute attribute = cloudantGet(attributeId).get();
+                ItemAttribute attribute = cloudantGetSync(attributeId);
                 if (attribute != null) {
                     attributes.add(attribute);
                 }
@@ -44,18 +44,18 @@ public class ItemAttributeRepositoryImpl extends CloudantClient<ItemAttribute> i
             return attributes;
         } else if (!StringUtils.isEmpty(options.getAttributeType())){
             return queryView("by_type", options.getAttributeType(),
-                    options.getValidSize(), options.getValidStart(), false).get();
+                    options.getValidSize(), options.getValidStart(), false).syncGet();
         } else {
-            return queryView("by_attributeId", null, options.getValidSize(), options.getValidStart(), false).get();
+            return queryView("by_attributeId", null, options.getValidSize(), options.getValidStart(), false).syncGet();
         }
     }
 
     public ItemAttribute update(ItemAttribute attribute) {
-        return cloudantPut(attribute).get();
+        return cloudantPutSync(attribute);
     }
 
     public void delete(String attributeId) {
-        cloudantDelete(attributeId).get();
+        cloudantDeleteSync(attributeId);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.junbo.fulfilment.core;
 
 import com.junbo.fulfilment.common.util.Callback;
+import com.junbo.langur.core.promise.ExecutorContext;
 import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,6 +16,8 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 
 import java.util.UUID;
 
@@ -38,6 +41,18 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
                 return NO_RETURN;
             }
         });
+    }
+
+    @BeforeTest
+    @SuppressWarnings("deprecation")
+    public void setup() {
+        ExecutorContext.setAsyncMode(false);
+    }
+
+    @AfterTest
+    @SuppressWarnings("deprecation")
+    public void cleanup() {
+        ExecutorContext.resetAsyncMode();
     }
 
     @Autowired

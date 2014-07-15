@@ -1,5 +1,6 @@
 package com.junbo.fulfilment.db;
 
+import com.junbo.langur.core.promise.ExecutorContext;
 import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -10,6 +11,8 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 
 import java.util.UUID;
 
@@ -21,6 +24,18 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
     @Autowired
     @Qualifier("oculus48IdGenerator")
     private IdGenerator idGenerator;
+
+    @BeforeTest
+    @SuppressWarnings("deprecation")
+    public void setup() {
+        ExecutorContext.setAsyncMode(false);
+    }
+
+    @AfterTest
+    @SuppressWarnings("deprecation")
+    public void cleanup() {
+        ExecutorContext.resetAsyncMode();
+    }
 
     @Autowired
     protected PlatformTransactionManager transactionManager;

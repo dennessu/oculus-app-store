@@ -42,7 +42,7 @@ class PITypeDataHandler extends BaseDataHandler {
 
         Results<PIType> results = null
         try {
-            results = piTypeResource.list(new PITypeListOptions(typeCode: piType.typeCode)).get()
+            results = piTypeResource.list(new PITypeListOptions(typeCode: piType.typeCode)).syncGet()
         } catch (AppErrorException e) {
             logger.debug('This content does not exist in current database', e)
         }
@@ -54,7 +54,7 @@ class PITypeDataHandler extends BaseDataHandler {
                 piType.id = (PITypeId) existing.id
                 piType.rev = existing.rev
                 try {
-                    piTypeResource.patch((PITypeId) existing.id, piType).get()
+                    piTypeResource.patch((PITypeId) existing.id, piType).syncGet()
                 } catch (Exception e) {
                     logger.error("Error updating piType $piType.typeCode", e)
                 }
@@ -64,7 +64,7 @@ class PITypeDataHandler extends BaseDataHandler {
         } else {
             logger.debug('Create new piType with this content')
             try {
-                piTypeResource.create(piType).get()
+                piTypeResource.create(piType).syncGet()
             } catch (Exception e) {
                 logger.error("Error creating piType $piType.typeCode", e)
             }

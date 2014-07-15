@@ -19,7 +19,7 @@ import javax.ws.rs.core.MediaType;
 @Path("/tokens")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@RestResource
+@RestResource(sync = true)
 public interface TokenResource {
     @POST
     @Path("/requests")

@@ -67,7 +67,7 @@ class UserDataHandler extends BaseDataHandler {
 
         User existing = null
         try {
-            Results<User> results = userResource.list(new UserListOptions(username: username)).get()
+            Results<User> results = userResource.list(new UserListOptions(username: username)).syncGet()
             if (results != null && results.items != null && results.items.size() > 0) {
                 existing = results.items.get(0)
             }
@@ -79,14 +79,14 @@ class UserDataHandler extends BaseDataHandler {
             User created = null
             logger.debug("Create new user with username: $username")
             try {
-                created = userResource.create(user).get()
+                created = userResource.create(user).syncGet()
             } catch (Exception e) {
                 logger.error("Error creating user $user.username.", e)
             }
 
             logger.debug("Create new user credential for username: $username")
             try {
-                userCredentialResource.create(created.id as UserId, new UserCredential(value: password, type: 'PASSWORD')).get()
+                userCredentialResource.create(created.id as UserId, new UserCredential(value: password, type: 'PASSWORD')).syncGet()
             } catch (Exception e) {
                 logger.error("Error creating user credential for $user.username.", e)
             }
@@ -98,13 +98,13 @@ class UserDataHandler extends BaseDataHandler {
                         type: 'EMAIL',
                         value: ObjectMapperProvider.instance().valueToTree(new Email(info: email))
                 )
-                UserPersonalInfo newEmailPii = userPersonalInfoResource.create(emailPii).get()
+                UserPersonalInfo newEmailPii = userPersonalInfoResource.create(emailPii).syncGet()
                 created.emails = [new UserPersonalInfoLink(
                         isDefault: true,
                         value: newEmailPii.id as UserPersonalInfoId
                 )]
 
-                userResource.put(created.id as UserId, created).get()
+                userResource.put(created.id as UserId, created).syncGet()
 
             } catch (Exception e) {
                 logger.error("Error creating user credential for $user.username.", e)

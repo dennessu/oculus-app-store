@@ -13,6 +13,7 @@ import com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy;
 import com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy;
 import com.junbo.common.model.Results;
 import com.junbo.entitlement.clientproxy.catalog.ItemFacade;
+import com.junbo.langur.core.promise.SyncModeScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +40,9 @@ public class ItemFacadeImpl implements ItemFacade {
         ItemRevisionsGetOptions options = new ItemRevisionsGetOptions();
         options.setItemIds(Collections.singleton(itemId));
         options.setTimestamp(now.getTime());
-        try {
+        try (SyncModeScope scope = new SyncModeScope()) {
             LOGGER.info("Getting itemRevisions for item [{}] started.", itemId);
-            Results<ItemRevision> results = itemRevisionClient.getItemRevisions(options).get();
+            Results<ItemRevision> results = itemRevisionClient.getItemRevisions(options).syncGet();
             if (results.getItems().size() == 0) {
                 LOGGER.info("There is no itemRevision for item [{}].", itemId);
                 return null;
@@ -61,9 +62,9 @@ public class ItemFacadeImpl implements ItemFacade {
         options.setHostItemId(hostItemId);
         options.setSize(20000);  //temp work around
         options.setStart(0);
-        try {
+        try (SyncModeScope scope = new SyncModeScope()) {
             LOGGER.info("Getting items by hostItemId [{}] started.", hostItemId);
-            items = itemClient.getItems(options).get().getItems();
+            items = itemClient.getItems(options).syncGet().getItems();
             LOGGER.info("Getting items by hostItemId [{}] finished.", hostItemId);
         } catch (Exception e) {
             LOGGER.error("Getting items by hostItemId [{" + hostItemId + "}] failed.", e);

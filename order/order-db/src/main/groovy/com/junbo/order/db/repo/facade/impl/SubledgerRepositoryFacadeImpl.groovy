@@ -3,6 +3,7 @@ package com.junbo.order.db.repo.facade.impl
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.*
+import com.junbo.langur.core.promise.SyncModeScope
 import com.junbo.order.db.repo.SubledgerItemRepository
 import com.junbo.order.db.repo.SubledgerRepository
 import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
@@ -37,61 +38,81 @@ class SubledgerRepositoryFacadeImpl implements SubledgerRepositoryFacade {
 
     @Override
     Subledger createSubledger(Subledger subledger) {
-        return subledgerRepository.create(subledger).get();
+        return SyncModeScope.with {
+            return subledgerRepository.create(subledger).syncGet();
+        }
     }
 
     @Override
     Subledger updateSubledger(Subledger subledger) {
-        try {
-            return subledgerRepository.update(subledger).syncRecover { Throwable ex ->
-                if (ex instanceof StaleObjectStateException) {
-                    throw AppErrors.INSTANCE.subledgerConcurrentUpdate().exception()
-                }
-                throw ex
-            }.get()
-        } catch (StaleObjectStateException ex) {
-            throw AppErrors.INSTANCE.orderConcurrentUpdate().exception()
+        return SyncModeScope.with {
+            try {
+                return subledgerRepository.update(subledger).syncRecover { Throwable ex ->
+                    if (ex instanceof StaleObjectStateException) {
+                        throw AppErrors.INSTANCE.subledgerConcurrentUpdate().exception()
+                    }
+                    throw ex
+                }.syncGet()
+            } catch (StaleObjectStateException ex) {
+                throw AppErrors.INSTANCE.orderConcurrentUpdate().exception()
+            }
         }
     }
 
     @Override
     Subledger getSubledger(SubledgerId subledgerId) {
-        return subledgerRepository.get(subledgerId).get();
+        return SyncModeScope.with {
+            return subledgerRepository.get(subledgerId).syncGet();
+        }
     }
 
     @Override
     List<Subledger> getSubledgers(SubledgerParam subledgerParam, PageParam pageParam) {
-        return subledgerRepository.list(subledgerParam, pageParam).get();
+        return SyncModeScope.with {
+            return subledgerRepository.list(subledgerParam, pageParam).syncGet();
+        }
     }
 
     @Override
     Subledger findSubledger(OrganizationId sellerId, String payoutStatus, OfferId offerId,
                             Date startTime, CurrencyId currency, CountryId country) {
-        return subledgerRepository.find(sellerId, payoutStatus, offerId, startTime, currency, country).get();
+        return SyncModeScope.with {
+            return subledgerRepository.find(sellerId, payoutStatus, offerId, startTime, currency, country).syncGet();
+        }
     }
 
     @Override
     SubledgerItem createSubledgerItem(SubledgerItem subledgerItem) {
-        return subledgerItemRepository.create(subledgerItem).get();
+        return SyncModeScope.with {
+            return subledgerItemRepository.create(subledgerItem).syncGet();
+        }
     }
 
     @Override
     SubledgerItem getSubledgerItem(SubledgerItemId subledgerItemId) {
-        return subledgerItemRepository.get(subledgerItemId).get()
+        return SyncModeScope.with {
+            return subledgerItemRepository.get(subledgerItemId).syncGet()
+        }
     }
 
     @Override
     List<SubledgerItem> getSubledgerItem(Integer dataCenterId, Object shardKey, String status, PageParam pageParam) {
-        return subledgerItemRepository.getByStatus(dataCenterId, shardKey, status, pageParam).get()
+        return SyncModeScope.with {
+            return subledgerItemRepository.getByStatus(dataCenterId, shardKey, status, pageParam).syncGet()
+        }
     }
 
     @Override
     List<SubledgerItem> getSubledgerItemByOrderItemId(OrderItemId orderItemId) {
-        return subledgerItemRepository.getByOrderItemId(orderItemId).get()
+        return SyncModeScope.with {
+            return subledgerItemRepository.getByOrderItemId(orderItemId).syncGet()
+        }
     }
 
     @Override
     SubledgerItem updateSubledgerItem(SubledgerItem subledgerItem) {
-        return subledgerItemRepository.update(subledgerItem).get();
+        return SyncModeScope.with {
+            return subledgerItemRepository.update(subledgerItem).syncGet();
+        }
     }
 }

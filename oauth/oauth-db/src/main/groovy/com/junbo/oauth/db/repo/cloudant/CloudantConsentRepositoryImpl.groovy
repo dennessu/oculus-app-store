@@ -17,21 +17,21 @@ import groovy.transform.CompileStatic
 class CloudantConsentRepositoryImpl extends CloudantClient<Consent> implements ConsentRepository {
     @Override
     Consent saveConsent(Consent consent) {
-        return cloudantPost(consent).get()
+        return cloudantPostSync(consent)
     }
 
     @Override
     Consent getConsent(Long userId, String clientId) {
-        return cloudantGet("$userId#$clientId").get()
+        return cloudantGetSync("$userId#$clientId")
     }
 
     @Override
     Consent updateConsent(Consent consent) {
-        return cloudantPut(consent).get()
+        return cloudantPutSync(consent)
     }
 
     @Override
     void deleteConsent(Consent consent) {
-        cloudantDelete(consent).get()
+        cloudantDeleteSync(consent)
     }
 }

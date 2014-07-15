@@ -22,7 +22,7 @@ import javax.ws.rs.core.Response;
 @Path("/payment-callback")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@RestResource
+@RestResource(sync = true)
 @InProcessCallable
 public interface PaymentCallbackResource {
     @POST

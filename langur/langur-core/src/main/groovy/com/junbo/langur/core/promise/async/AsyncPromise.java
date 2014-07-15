@@ -100,12 +100,11 @@ public final class AsyncPromise<T> extends Promise<T> {
         this.future = future;
     }
 
-    // use get() instead.
     private ListenableFuture<T> wrapped() {
         return future;
     }
 
-    public T get() {
+    public T asyncGet() {
         try {
             return future.get();
         } catch (ExecutionException ex) {
@@ -120,7 +119,18 @@ public final class AsyncPromise<T> extends Promise<T> {
         }
     }
 
+    public T testGet() {
+        return asyncGet();
+    }
+
+    public T syncGet() {
+        throw new RuntimeException("AsyncPromise.syncGet() is not supported.");
+    }
+
     public Promise<T> recover(final Func<Throwable, Promise<T>> func) {
+        if (!ExecutorContext.isAsyncMode()) {
+            throw new RuntimeException("AsyncPromise.recover() can't be called in sync mode!");
+        }
         final Func<Throwable, Promise<T>> wrapped = Wrapper.wrap(func);
 
         return wrap(Futures.withFallback(future, new FutureFallback<T>() {
@@ -132,6 +142,9 @@ public final class AsyncPromise<T> extends Promise<T> {
     }
 
     public <R> Promise<R> then(final Func<? super T, Promise<R>> func, final Executor executor) {
+        if (!ExecutorContext.isAsyncMode()) {
+            throw new RuntimeException("AsyncPromise.then() can't be called in sync mode!");
+        }
         final Func<? super T, Promise<R>> wrapped = Wrapper.wrap(func);
 
         return wrap(Futures.transform(future, new AsyncFunction<T, R>() {

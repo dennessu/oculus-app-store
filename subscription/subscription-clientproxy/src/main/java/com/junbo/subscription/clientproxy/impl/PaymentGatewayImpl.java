@@ -5,6 +5,7 @@
  */
 package com.junbo.subscription.clientproxy.impl;
 
+import com.junbo.langur.core.promise.SyncModeScope;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import com.junbo.payment.spec.resource.PaymentTransactionResource;
 import com.junbo.subscription.clientproxy.PaymentGateway;
@@ -25,8 +26,8 @@ public class PaymentGatewayImpl implements PaymentGateway {
     private PaymentTransactionResource paymentResource;
 
     public PaymentTransaction chargePayment(PaymentTransaction tx){
-        try{
-            PaymentTransaction response = paymentResource.postPaymentCharge(tx).get();
+        try (SyncModeScope scope = new SyncModeScope()) {
+            PaymentTransaction response = paymentResource.postPaymentCharge(tx).syncGet();
 
             return response;
         }catch (Exception e) {

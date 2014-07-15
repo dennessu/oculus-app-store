@@ -75,7 +75,7 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
         if(request.getUserId() == null){
             throw AppClientExceptions.INSTANCE.missingUserId().exception();
         }
-        UserInfo user = userInfoFacade.getUserInfo(request.getUserId()).get();
+        UserInfo user = userInfoFacade.getUserInfo(request.getUserId()).syncGet();
         if(user == null){
             throw AppClientExceptions.INSTANCE.invalidUserId(request.getUserId().toString()).exception();
         }
@@ -112,7 +112,7 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
         return template.execute(new TransactionCallback<PaymentTransaction>() {
             public PaymentTransaction doInTransaction(TransactionStatus txnStatus) {
                 TrackingUuid trackingUuid = trackingUuidRepository.getByTrackingUuid(
-                        request.getUserId(), request.getTrackingUuid()).get();
+                        request.getUserId(), request.getTrackingUuid()).syncGet();
                 if(trackingUuid != null && trackingUuid.getApi().equals(api)){
                     return CommonUtil.parseJson(trackingUuid.getResponse(), PaymentTransaction.class);
                 }
@@ -132,7 +132,7 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
         trackingUuid.setTrackingUuid(request.getTrackingUuid());
         trackingUuid.setUserId(request.getUserId());
         trackingUuid.setResponse(CommonUtil.toJson(request, null));
-        trackingUuidRepository.create(trackingUuid).get();
+        trackingUuidRepository.create(trackingUuid).syncGet();
     }
 
     protected PaymentInstrument getPaymentInstrument(final PaymentTransaction request){
@@ -145,7 +145,7 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
             template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
             pi = template.execute(new TransactionCallback<PaymentInstrument>() {
                 public PaymentInstrument doInTransaction(TransactionStatus txnStatus) {
-                    return paymentInstrumentService.getById(request.getPaymentInstrumentId()).get();
+                    return paymentInstrumentService.getById(request.getPaymentInstrumentId()).syncGet();
                 }
             });
         }catch(Exception ex){

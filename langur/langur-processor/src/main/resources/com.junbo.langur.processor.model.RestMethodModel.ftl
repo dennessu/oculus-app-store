@@ -10,10 +10,9 @@ public void ${methodName}([#list parameters as parameter][@includeModel model=pa
     com.junbo.langur.core.context.JunboHttpContext.JunboHttpContextData __junboHttpContextData = __createJunboHttpContextData(${adapteeType}.class);
     final com.junbo.langur.core.context.JunboHttpContextScope __scope = new com.junbo.langur.core.context.JunboHttpContextScope(__junboHttpContextData, __junboHttpContextScopeListeners);
 
-    Promise<${returnType}> future;
-
     try {
         ${adapteeType} adaptee = __adaptee;
+        boolean isSync = ${isSync?c};
 
         // check whether routing is needed
         if (__router != null) {
@@ -24,10 +23,15 @@ public void ${methodName}([#list parameters as parameter][@includeModel model=pa
             });
             if (url != null) {
                 adaptee = __clientFactory.create(url);
+
+                // always use async for routing
+                isSync = false;
             }
         }
 
-        future = adaptee.${methodName}(
+        com.junbo.langur.core.promise.ExecutorContext.setAsyncMode(!isSync);
+
+        Promise<${returnType}> future = adaptee.${methodName}(
             [#list parameters as parameter]
             ${parameter.paramName}[#if parameter_has_next],[/#if]
             [/#list]
@@ -42,27 +46,30 @@ public void ${methodName}([#list parameters as parameter][@includeModel model=pa
                 });
             }
         });
+
+        future.onSuccess(new Promise.Callback<${returnType}>() {
+            @Override
+            public void invoke(${returnType} result) {
+                __processResponseData();
+
+                __asyncResponse.resume(result);
+                __scope.close();
+                com.junbo.langur.core.promise.ExecutorContext.resetAsyncMode();
+            }
+        });
+
+        future.onFailure(new Promise.Callback<Throwable>() {
+            @Override
+            public void invoke(Throwable result) {
+                __asyncResponse.resume(result);
+                __scope.close();
+                com.junbo.langur.core.promise.ExecutorContext.resetAsyncMode();
+            }
+        });
     } catch (Throwable ex) {
         __asyncResponse.resume(ex);
         __scope.close();
+        com.junbo.langur.core.promise.ExecutorContext.resetAsyncMode();
         return;
     }
-
-    future.onSuccess(new Promise.Callback<${returnType}>() {
-        @Override
-        public void invoke(${returnType} result) {
-            __processResponseData();
-
-            __asyncResponse.resume(result);
-            __scope.close();
-        }
-    });
-
-    future.onFailure(new Promise.Callback<Throwable>() {
-        @Override
-        public void invoke(Throwable result) {
-            __asyncResponse.resume(result);
-            __scope.close();
-        }
-    });
 }

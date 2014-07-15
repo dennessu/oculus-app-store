@@ -9,7 +9,6 @@ import com.junbo.configuration.ConfigServiceManager
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.InitializingBean
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.Assert
 
@@ -224,7 +223,75 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         return getEffective().search(getDbUri(null), entityClass, searchName, queryString, limit, bookmark, includeDocs)
     }
 
-    //#region marshall/unmarshall
+    //region sync mode
+
+    protected T cloudantPostSync(T entity) {
+        return (T)Promise.get { cloudantPost(entity) }
+    }
+
+    protected T cloudantGetSync(String id) {
+        return (T)Promise.get { cloudantGet(id) }
+    }
+
+    protected T cloudantPutSync(T entity) {
+        return (T)Promise.get { cloudantPut(entity) }
+    }
+
+    protected void cloudantDeleteSync(String id) {
+        Promise.get { cloudantDelete(id) }
+    }
+
+    protected void cloudantDeleteSync(T entity) {
+        Promise.get { cloudantDelete(entity) }
+    }
+
+    protected List<T> cloudantGetAllSync(Integer limit, Integer skip, boolean descending) {
+        return Promise.get { cloudantGetAll(limit, skip, descending) }
+    }
+
+    protected CloudantQueryResult queryViewSync(String viewName, String key, Integer limit, Integer skip,
+                                                     boolean descending, boolean includeDocs) {
+        return Promise.get { queryView(viewName, key, limit, skip, descending, includeDocs) }
+    }
+
+    protected List<T> queryViewSync(String viewName, String key, Integer limit, Integer skip,
+                                         boolean descending) {
+        return Promise.get { queryView(viewName, key, limit, skip, descending) }
+    }
+
+    protected List<T> queryViewSync(String viewName, String key) {
+        return Promise.get { queryView(viewName, key) }
+    }
+
+    protected CloudantQueryResult queryViewSync(String viewName, String key, boolean includeDocs) {
+        return Promise.get { queryView(viewName, key, includeDocs) }
+    }
+
+    protected List<T> queryViewSync(String viewName, Object[] startKey, Object[] endKey, boolean withHighKey,
+                                         Integer limit, Integer skip, boolean descending) {
+        return Promise.get { queryView(viewName, startKey, endKey, withHighKey, limit, skip, descending) }
+    }
+
+    protected List<T> queryViewSync(String viewName, String startKey, String endKey, Integer limit, Integer skip,
+                                         boolean descending) {
+        return Promise.get { queryView(viewName, startKey, endKey, limit, skip, descending) }
+    }
+
+    protected CloudantQueryResult queryViewSync(String viewName, Object[] startKey, Object[] endKey, boolean withHighKey, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
+        return Promise.get { queryView(viewName, startKey, endKey, withHighKey, limit, skip, descending, includeDocs) }
+    }
+
+    protected CloudantSearchResult<T> searchSync(String searchName, String queryString, Integer limit, String bookmark) {
+        return Promise.get { search(searchName, queryString, limit, bookmark) }
+    }
+
+    protected CloudantQueryResult searchSync(String searchName, String queryString, Integer limit, String bookmark, boolean includeDocs) {
+        return Promise.get { search(searchName, queryString, limit, bookmark, includeDocs) }
+    }
+
+    //endregion
+
+    //region marshall/unmarshall
     public String marshall(Object object) throws JsonProcessingException {
         return marshaller.marshall(object)
     }
@@ -236,9 +303,9 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
     public <T> T unmarshall(String string, Class<T> parametrized, Class<?>... parameterClass) throws IOException {
         return marshaller.unmarshall(string, parametrized, parameterClass)
     }
-    //#endregion
+    //endregion
 
-    //#region unique methods
+    //region unique methods
     private Promise<Void> postUnique(T entity) {
         CloudantUnique unique = (CloudantUnique)entity;
         return Promise.each(Arrays.asList(unique.uniqueKeys)) { String key ->
@@ -280,5 +347,5 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
             }
         }
     }
-    //#endregion
+    //endregion
 }

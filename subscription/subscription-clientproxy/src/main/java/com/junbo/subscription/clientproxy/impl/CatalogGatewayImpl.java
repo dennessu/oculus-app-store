@@ -12,6 +12,7 @@ import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions;
 import com.junbo.catalog.spec.resource.ItemResource;
 import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
+import com.junbo.langur.core.promise.SyncModeScope;
 import com.junbo.subscription.clientproxy.CatalogGateway;
 
 import com.junbo.subscription.common.exception.ResourceNotFoundException;
@@ -57,10 +58,10 @@ public class CatalogGatewayImpl implements CatalogGateway {
     }
 
     protected Offer retrieveOffer(String offerId, Long timestamp) {
-        try {
+        try (SyncModeScope scope = new SyncModeScope()) {
             // TODO
             com.junbo.catalog.spec.model.offer.Offer offer =
-                    offerResource.getOffer(offerId).get();
+                    offerResource.getOffer(offerId).syncGet();
 
             if (offer == null) {
                 throw new ResourceNotFoundException(
@@ -74,10 +75,10 @@ public class CatalogGatewayImpl implements CatalogGateway {
     }
 
     protected OfferRevision retrieveOfferRev(String offerRevId) {
-        try {
+        try (SyncModeScope scope = new SyncModeScope()) {
             // TODO
             OfferRevision offerRev =
-                    offerRevResource.getOfferRevision(offerRevId, new OfferRevisionGetOptions()).get();
+                    offerRevResource.getOfferRevision(offerRevId, new OfferRevisionGetOptions()).syncGet();
 
             if (offerRev == null) {
                 throw new ResourceNotFoundException(
@@ -91,10 +92,10 @@ public class CatalogGatewayImpl implements CatalogGateway {
     }
 
     protected Item retrieveItem(String itemId) {
-        try {
+        try (SyncModeScope scope = new SyncModeScope()) {
             // TODO
             Item item =
-                    itemResource.getItem(itemId).get();
+                    itemResource.getItem(itemId).syncGet();
 
             if (item == null) {
                 throw new ResourceNotFoundException(

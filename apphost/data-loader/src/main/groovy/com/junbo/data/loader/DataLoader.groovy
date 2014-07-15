@@ -10,6 +10,7 @@ import ch.qos.logback.classic.util.ContextInitializer
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeServiceImpl
 import com.junbo.data.handler.DataHandler
+import com.junbo.langur.core.promise.SyncModeScope
 import groovy.transform.CompileStatic
 import org.apache.commons.io.IOUtils
 import org.slf4j.ILoggerFactory
@@ -87,7 +88,9 @@ class DataLoader {
                 for (Resource resource : resources) {
                     if (handler != null) {
                         String content = IOUtils.toString(resource.URI)
-                        handler.handle(content)
+                        SyncModeScope.with {
+                            handler.handle(content)
+                        }
                     } else {
                         LOGGER.error("no handler for $data")
                         exit()

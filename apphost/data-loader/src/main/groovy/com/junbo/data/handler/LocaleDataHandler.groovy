@@ -1,20 +1,15 @@
 package com.junbo.data.handler
-
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppErrorException
 import com.junbo.identity.spec.v1.model.Locale
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
 import com.junbo.identity.spec.v1.resource.LocaleResource
 import com.junbo.langur.core.client.TypeReference
-import org.apache.commons.io.IOUtils
 import groovy.transform.CompileStatic
-import org.apache.commons.lang3.ArrayUtils
+import org.apache.commons.io.IOUtils
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.core.io.Resource
 import org.springframework.util.StringUtils
-
-import javax.ejb.Local
-
 /**
  * Created by haomin on 14-6-3.
  */
@@ -100,7 +95,7 @@ class LocaleDataHandler extends BaseDataHandler {
 
         Locale existing = null
         try {
-            existing = localeResource.get(new LocaleId(locale.localeCode), new LocaleGetOptions()).get()
+            existing = localeResource.get(new LocaleId(locale.localeCode), new LocaleGetOptions()).syncGet()
         } catch (AppErrorException e) {
             logger.debug('This content does not exist in current database', e)
         }
@@ -111,7 +106,7 @@ class LocaleDataHandler extends BaseDataHandler {
                 locale.id = (LocaleId) existing.id
                 locale.rev = existing.rev
                 try {
-                    localeResource.patch(locale.id as LocaleId, locale).get()
+                    localeResource.patch(locale.id as LocaleId, locale).syncGet()
                 } catch (Exception e) {
                     logger.error("Error updating locale $locale.localeName", e)
                 }
@@ -121,7 +116,7 @@ class LocaleDataHandler extends BaseDataHandler {
         } else {
             logger.debug('Create new locale with this content')
             try {
-                localeResource.create(locale).get()
+                localeResource.create(locale).syncGet()
             } catch (Exception e) {
                 logger.error("Error creating locale $locale.localeName", e)
             }

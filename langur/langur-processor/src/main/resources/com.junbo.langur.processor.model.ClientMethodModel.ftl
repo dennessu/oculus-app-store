@@ -64,10 +64,12 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
         return com.junbo.langur.core.context.JunboHttpContextScope.with(__httpContextData, __junboHttpContextScopeListeners, new Promise.Func0<Promise<${returnType}>>() {
             @Override
             public Promise<${returnType}> apply() {
+                final com.junbo.langur.core.promise.SyncModeScope __syncScope = new com.junbo.langur.core.promise.SyncModeScope(${isSync?c});
                 return __service.${methodName}([#list parameters as parameter]${parameter.paramName}[#if parameter_has_next], [/#if][/#list]).then(new Promise.Func<${returnType}, Promise<${returnType}>>() {
                     @Override
                     public Promise<${returnType}> apply(${returnType} __result) {
                         LOGGER.info("(InProc) Method: ${methodName} base: " + __target + " uri: ${path} duration: " + (System.currentTimeMillis() - __startTime) + "ms " + __startDate.toString() + " machineName: " + __machineName);
+                        __syncScope.close();
                         return Promise.pure(__result);
                     }
                 });

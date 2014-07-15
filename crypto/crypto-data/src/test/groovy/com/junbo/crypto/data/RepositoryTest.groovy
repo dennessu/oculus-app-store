@@ -46,13 +46,13 @@ class RepositoryTest extends AbstractTestNGSpringContextTests {
         masterKey.setKeyVersion(Math.abs(random.nextInt()))
         masterKey.setCreatedBy(123L)
         masterKey.setCreatedTime(new Date())
-        MasterKey newMaster = masterKeyRepo.create(masterKey).get()
+        MasterKey newMaster = masterKeyRepo.create(masterKey).testGet()
 
-        masterKey = masterKeyRepo.get(newMaster.id).get()
+        masterKey = masterKeyRepo.get(newMaster.id).testGet()
 
         assert newMaster.encryptValue == masterKey.encryptValue
 
-        List<MasterKey> list = masterKeyRepo.getAllMaterKeys().get()
+        List<MasterKey> list = masterKeyRepo.getAllMaterKeys().testGet()
         assert list.size() != 0
     }
 
@@ -63,13 +63,13 @@ class RepositoryTest extends AbstractTestNGSpringContextTests {
         userCryptoKey.setEncryptValue(UUID.randomUUID().toString())
         userCryptoKey.setUserId(userId)
 
-        UserCryptoKey newUserCryptoKey = userCryptoKeyRepo.create(userCryptoKey).get()
+        UserCryptoKey newUserCryptoKey = userCryptoKeyRepo.create(userCryptoKey).testGet()
 
-        userCryptoKey = userCryptoKeyRepo.get(newUserCryptoKey.id).get()
+        userCryptoKey = userCryptoKeyRepo.get(newUserCryptoKey.id).testGet()
 
         assert userCryptoKey.encryptValue == newUserCryptoKey.encryptValue
 
-        List<UserCryptoKey> list = userCryptoKeyRepo.getAllUserCryptoKeys(userId).get()
+        List<UserCryptoKey> list = userCryptoKeyRepo.getAllUserCryptoKeys(userId).testGet()
         assert list.size() != 0
     }
 
@@ -80,13 +80,13 @@ class RepositoryTest extends AbstractTestNGSpringContextTests {
         data.setEncryptedPrivateKey(UUID.randomUUID().toString())
         data.setEncryptedPublicKey(UUID.randomUUID().toString())
 
-        ItemCryptoRepoData newDate = itemCryptoRepo.create(data).get()
+        ItemCryptoRepoData newDate = itemCryptoRepo.create(data).testGet()
 
-        data = itemCryptoRepo.get(newDate.id).get()
+        data = itemCryptoRepo.get(newDate.id).testGet()
 
         assert data.encryptedPublicKey == newDate.encryptedPublicKey
 
-        data = itemCryptoRepo.getByItemId(newDate.itemId).get()
+        data = itemCryptoRepo.getByItemId(newDate.itemId).testGet()
         assert data.encryptedPrivateKey == newDate.encryptedPrivateKey
     }
 }

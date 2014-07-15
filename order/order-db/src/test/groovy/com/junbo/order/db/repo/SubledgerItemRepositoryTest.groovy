@@ -36,9 +36,9 @@ class SubledgerItemRepositoryTest extends BaseTest  {
         for (int i = 0; i < 3; ++i) {
             SubledgerItem item = TestHelper.generateSubledgerItem(new OrderItemId(orderItemId))
             item.id = new SubledgerItemId(generateId())
-            subledgerItemRepository.create(item).get()
+            subledgerItemRepository.create(item).testGet()
         }
-        List<SubledgerItem> result = subledgerItemRepository.getByOrderItemId(new OrderItemId(orderItemId)).get()
+        List<SubledgerItem> result = subledgerItemRepository.getByOrderItemId(new OrderItemId(orderItemId)).testGet()
         assert result.size() == 3
         result.each { SubledgerItem s ->
             if (s == null) {

@@ -30,7 +30,7 @@ public class CatalogGatewayTest extends BaseTest {
         OfferRevisionsGetOptions options = new OfferRevisionsGetOptions();
         //options.setOfferIds(Arrays.asList(new OfferId(503332864L)));
         //options.setTimestamp(Utils.currentTimestamp());
-        Results<OfferRevision> revisionResults = offerRevisionResource.getOfferRevisions(options).get();
+        Results<OfferRevision> revisionResults = offerRevisionResource.getOfferRevisions(options).syncGet();
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++");
         System.out.println(revisionResults.getItems().size());
         for (OfferRevision revision : revisionResults.getItems()) {

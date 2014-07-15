@@ -9,6 +9,7 @@ import com.junbo.authorization.AbstractAuthorizeCallbackFactory
 import com.junbo.authorization.AuthorizeCallback
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.UserId
+import com.junbo.langur.core.promise.Promise
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.resource.OrderResource
 import groovy.transform.CompileStatic
@@ -36,6 +37,6 @@ class OrderAuthorizeCallbackFactory extends AbstractAuthorizeCallbackFactory<Ord
     }
 
     AuthorizeCallback<Order> create(OrderId orderId) {
-        return create(orderResource.getOrderByOrderId(orderId).get())
+        return create(Promise.get { orderResource.getOrderByOrderId(orderId) })
     }
 }

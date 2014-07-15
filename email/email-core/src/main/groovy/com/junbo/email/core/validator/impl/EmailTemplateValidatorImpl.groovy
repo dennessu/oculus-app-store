@@ -11,6 +11,7 @@ import com.junbo.email.core.validator.EmailTemplateValidator
 import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.email.spec.model.Pagination
+import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
@@ -78,7 +79,7 @@ class EmailTemplateValidatorImpl extends CommonValidator implements EmailTemplat
     }
 
     private void validateTemplateName(String name) {
-        EmailTemplate template = emailTemplateRepository.getEmailTemplateByName(name).get()
+        EmailTemplate template = Promise.get { emailTemplateRepository.getEmailTemplateByName(name) }
         if (template != null) {
             throw AppErrors.INSTANCE.emailTemplateAlreadyExist(name).exception()
         }
@@ -94,7 +95,7 @@ class EmailTemplateValidatorImpl extends CommonValidator implements EmailTemplat
     }
 
     private void validateTemplateId(String id) {
-        EmailTemplate template = emailTemplateRepository.getEmailTemplate(id).get()
+        EmailTemplate template = Promise.get { emailTemplateRepository.getEmailTemplate(id) }
         if (template == null) {
             throw AppErrors.INSTANCE.templateNotFound(id).exception()
         }

@@ -24,7 +24,7 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
 
     @Override
     public ItemRevision create(ItemRevision itemRevision) {
-        return cloudantPost(itemRevision).get();
+        return cloudantPostSync(itemRevision);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
         if (revisionId == null) {
             return null;
         }
-        return cloudantGet(revisionId).get();
+        return cloudantGetSync(revisionId);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
         List<ItemRevision> itemRevisions = new ArrayList<>();
         if (!CollectionUtils.isEmpty(options.getRevisionIds())) {
             for (String revisionId : options.getRevisionIds()) {
-                ItemRevision revision = cloudantGet(revisionId).get();
+                ItemRevision revision = cloudantGetSync(revisionId);
                 if (revision==null) {
                     continue;
                 } else if (!StringUtils.isEmpty(options.getStatus())
@@ -52,7 +52,7 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
             }
         } else if (!CollectionUtils.isEmpty(options.getItemIds())) {
             for (String itemId : options.getItemIds()) {
-                List<ItemRevision> revisions = queryView("by_itemId", itemId).get();
+                List<ItemRevision> revisions = queryView("by_itemId", itemId).syncGet();
                 if (!StringUtils.isEmpty(options.getStatus())) {
                     Iterator<ItemRevision> iterator = revisions.iterator();
                     while (iterator.hasNext()) {
@@ -66,9 +66,9 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
             }
         } else if (!StringUtils.isEmpty(options.getStatus())){
             itemRevisions = queryView("by_status", options.getStatus().toUpperCase(),
-                    options.getValidSize(), options.getValidStart(), false).get();
+                    options.getValidSize(), options.getValidStart(), false).syncGet();
         } else {
-            itemRevisions = queryView("by_itemId", null, options.getValidSize(), options.getValidStart(), false).get();
+            itemRevisions = queryView("by_itemId", null, options.getValidSize(), options.getValidStart(), false).syncGet();
         }
 
         return itemRevisions;
@@ -78,7 +78,7 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
     public List<ItemRevision> getRevisions(Collection<String> itemIds, Long timestamp) {
         List<ItemRevision> revisions = new ArrayList<>();
         for (String itemId : itemIds) {
-            List<ItemRevision> itemRevisions = queryView("by_itemId", itemId).get();
+            List<ItemRevision> itemRevisions = queryView("by_itemId", itemId).syncGet();
             ItemRevision revision = null;
             Long maxTimestamp = 0L;
             for (ItemRevision itemRevision : itemRevisions) {
@@ -100,7 +100,7 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
 
     @Override
     public List<ItemRevision> getRevisions(String hostItemId) {
-        List<ItemRevision> itemRevisions = queryView("by_hostItemId", hostItemId).get();
+        List<ItemRevision> itemRevisions = queryView("by_hostItemId", hostItemId).syncGet();
         Set<String> itemIds = new HashSet<>();
         Set<String> itemRevisionIds = new HashSet<>();
         for (ItemRevision itemRevision : itemRevisions) {
@@ -123,18 +123,18 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
     @Override
     public boolean checkPackageName(String itemId, String packageName) {
         String query = "packageName:'" + packageName.replace("'","") + "' AND -itemId:'" + itemId.replace("'","") + "'";
-        CloudantQueryResult searchResult = super.search("search", query, 1, null, false).get();
+        CloudantQueryResult searchResult = searchSync("search", query, 1, null, false);
         return searchResult.getTotalRows() == 0;
     }
 
     @Override
     public ItemRevision update(ItemRevision revision) {
-        return cloudantPut(revision).get();
+        return cloudantPutSync(revision);
     }
 
     @Override
     public void delete(String revisionId) {
-        cloudantDelete(revisionId).get();
+        cloudantDeleteSync(revisionId);
     }
 
 }

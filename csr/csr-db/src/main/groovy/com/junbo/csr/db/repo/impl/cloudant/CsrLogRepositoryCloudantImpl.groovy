@@ -85,7 +85,7 @@ class CsrLogRepositoryCloudantImpl extends CloudantClient<CsrLog> implements Csr
 
     private Promise<Results<CsrLog>> internalSearch(String view, Object[] startKey, Object[] endKey, Integer limit, Integer offset) {
         def resultList = new Results<CsrLog>(items: [])
-        CloudantQueryResult cloudantQueryResult = queryView(view, startKey, endKey, false, null, null, false, false).get()
+        CloudantQueryResult cloudantQueryResult = queryViewSync(view, startKey, endKey, false, null, null, false, false)
         if (cloudantQueryResult.rows != null) {
             resultList.total = cloudantQueryResult.rows.size()
         }

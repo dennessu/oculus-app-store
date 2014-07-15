@@ -53,14 +53,14 @@ class GroupDataHandler extends BaseDataHandler {
         Group existing = null
         Organization org = null
         try {
-            Results<Organization> results = organizationResource.list(new OrganizationListOptions(name: organizationName)).get()
+            Results<Organization> results = organizationResource.list(new OrganizationListOptions(name: organizationName)).syncGet()
             if (results != null && results.items != null && results.items.size() == 1) {
                 org = results.items.get(0)
             }
 
             Results<Group> groupResults = groupResource.list(new GroupListOptions(
                     organizationId: org.id as OrganizationId,
-                    name: groupName)).get()
+                    name: groupName)).syncGet()
 
             if (groupResults != null && groupResults.items != null && groupResults.items.size() > 0) {
                 if (groupResults.items.size() > 0) {
@@ -75,7 +75,7 @@ class GroupDataHandler extends BaseDataHandler {
             logger.debug("Create new group with name: $groupName")
             try {
                 group.organizationId = org.id as OrganizationId
-                groupResource.create(group).get()
+                groupResource.create(group).syncGet()
             } catch (Exception e) {
                 logger.error("Error creating group $groupName.", e)
             }

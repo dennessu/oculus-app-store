@@ -17,21 +17,21 @@ import groovy.transform.CompileStatic
 class CloudantScopeRepositoryImpl extends CloudantClient<Scope> implements ScopeRepository {
     @Override
     Scope getScope(String name) {
-        return cloudantGet(name).get()
+        return cloudantGetSync(name)
     }
 
     @Override
     Scope saveScope(Scope scope) {
-        return cloudantPost(scope).get()
+        return cloudantPostSync(scope)
     }
 
     @Override
     Scope updateScope(Scope scope) {
-        return cloudantPut(scope).get()
+        return cloudantPutSync(scope)
     }
 
     @Override
     void deleteScope(Scope scope) {
-        cloudantDelete(scope).get()
+        cloudantDeleteSync(scope)
     }
 }

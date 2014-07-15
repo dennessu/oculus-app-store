@@ -7,8 +7,11 @@ package com.junbo.fulfilment.common.async;
 
 import com.google.common.util.concurrent.*;
 import com.junbo.common.util.PromiseFacade;
+import com.junbo.langur.core.promise.ExecutorContext;
 import com.junbo.langur.core.promise.Promise;
 import org.testng.Assert;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.util.concurrent.Callable;
@@ -22,6 +25,18 @@ public class AsyncTest {
     private static ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(10);
     private static ListeningExecutorService LISTENING_EXECUTOR_SERVICE
             = MoreExecutors.listeningDecorator(EXECUTOR_SERVICE);
+
+    @BeforeTest
+    @SuppressWarnings("deprecation")
+    public void setup() {
+        ExecutorContext.setAsyncMode(true);
+    }
+
+    @AfterTest
+    @SuppressWarnings("deprecation")
+    public void cleanup() {
+        ExecutorContext.resetAsyncMode();
+    }
 
     @Test(enabled = false)
     public void testBVT() throws Exception {
@@ -86,7 +101,7 @@ public class AsyncTest {
 
                 return Promise.pure(null);
             }
-        }).get();
+        }).testGet();
     }
 
     @Test
@@ -125,7 +140,7 @@ public class AsyncTest {
 
                 return Promise.pure(null);
             }
-        }).get();
+        }).testGet();
     }
 
     private void logThreadInfo() {

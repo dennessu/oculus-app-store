@@ -14,6 +14,7 @@ import com.junbo.ewallet.db.repo.WalletRepository;
 import com.junbo.ewallet.spec.def.TransactionType;
 import com.junbo.ewallet.spec.def.WalletType;
 import com.junbo.ewallet.spec.model.*;
+import com.junbo.langur.core.promise.SyncModeScope;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.math.BigDecimal;
@@ -49,129 +50,153 @@ public class WalletRepositoryFacade {
     }
 
     public Wallet get(Long walletId) {
-        return walletRepository.get(walletId).get();
+        try (SyncModeScope scope = new SyncModeScope()) {
+            return walletRepository.get(walletId).syncGet();
+        }
     }
 
     public Wallet get(Long userId, String type, String currency) {
-        return walletRepository.get(userId, WalletType.valueOf(type), currency == null ? null : currency).get();
+        try (SyncModeScope scope = new SyncModeScope()) {
+            return walletRepository.get(userId, WalletType.valueOf(type), currency == null ? null : currency).syncGet();
+        }
     }
 
     public Wallet create(Wallet wallet) {
-        return walletRepository.create(wallet).get();
+        try (SyncModeScope scope = new SyncModeScope()) {
+            return walletRepository.create(wallet).syncGet();
+        }
     }
 
     public Wallet update(Wallet wallet) {
-        return walletRepository.update(wallet).get();
+        try (SyncModeScope scope = new SyncModeScope()) {
+            return walletRepository.update(wallet).syncGet();
+        }
     }
 
     public Transaction credit(Wallet wallet, CreditRequest creditRequest) {
-        wallet.setBalance(wallet.getBalance().add(creditRequest.getAmount()));
-        walletRepository.update(wallet).get();
+        try (SyncModeScope scope = new SyncModeScope()) {
+            wallet.setBalance(wallet.getBalance().add(creditRequest.getAmount()));
+            walletRepository.update(wallet).syncGet();
 
-        Transaction transaction = transactionRepository.create(buildCreditTransaction(wallet.getId(), creditRequest)).get();
-        WalletLot walletLot = walletLotRepository.create(buildWalletLot(wallet.getId(), creditRequest)).get();
-        lotTransactionRepository.create(buildCreditLotTransaction(walletLot, transaction.getId())).get();
+            Transaction transaction = transactionRepository.create(buildCreditTransaction(wallet.getId(), creditRequest)).syncGet();
+            WalletLot walletLot = walletLotRepository.create(buildWalletLot(wallet.getId(), creditRequest)).syncGet();
+            lotTransactionRepository.create(buildCreditLotTransaction(walletLot, transaction.getId())).syncGet();
 
-        return transaction;
+            return transaction;
+        }
     }
 
     public Transaction debit(Wallet wallet, DebitRequest debitRequest) {
-        wallet.setBalance(wallet.getBalance().subtract(debitRequest.getAmount()));
-        walletRepository.update(wallet).get();
+        try (SyncModeScope scope = new SyncModeScope()) {
+            wallet.setBalance(wallet.getBalance().subtract(debitRequest.getAmount()));
+            walletRepository.update(wallet).syncGet();
 
-        Transaction transaction = transactionRepository.create(buildDebitTransaction(wallet.getId(), debitRequest)).get();
+            Transaction transaction = transactionRepository.create(buildDebitTransaction(wallet.getId(), debitRequest)).syncGet();
 
-        List<WalletLot> walletLots = walletLotRepository.getValidLot(wallet.getId()).get();
-        debit(walletLots, debitRequest.getAmount(), transaction.getId());
+            List<WalletLot> walletLots = walletLotRepository.getValidLot(wallet.getId()).syncGet();
+            debit(walletLots, debitRequest.getAmount(), transaction.getId());
 
-        return transaction;
+            return transaction;
+        }
     }
 
     public void correctBalance(Long walletId){
-        BigDecimal validAmount = walletLotRepository.getValidAmount(walletId).get();
-        Wallet wallet = walletRepository.get(walletId).get();
-        wallet.setBalance(validAmount == null ? BigDecimal.ZERO : validAmount);
-        walletRepository.update(wallet);
+        try (SyncModeScope scope = new SyncModeScope()) {
+            BigDecimal validAmount = walletLotRepository.getValidAmount(walletId).syncGet();
+            Wallet wallet = walletRepository.get(walletId).syncGet();
+            wallet.setBalance(validAmount == null ? BigDecimal.ZERO : validAmount);
+            walletRepository.update(wallet);
+        }
     }
 
     public Transaction refund(Wallet wallet, Long transactionId, RefundRequest refundRequest) {
-        wallet.setBalance(wallet.getBalance().add(refundRequest.getAmount()));
-        walletRepository.update(wallet).get();
+        try (SyncModeScope scope = new SyncModeScope()) {
+            wallet.setBalance(wallet.getBalance().add(refundRequest.getAmount()));
+            walletRepository.update(wallet).syncGet();
 
-        Transaction debitTransaction = transactionRepository.get(transactionId).get();
-        debitTransaction.setUnrefundedAmount(debitTransaction.getUnrefundedAmount().subtract(refundRequest.getAmount()));
-        transactionRepository.update(debitTransaction).get();
+            Transaction debitTransaction = transactionRepository.get(transactionId).syncGet();
+            debitTransaction.setUnrefundedAmount(debitTransaction.getUnrefundedAmount().subtract(refundRequest.getAmount()));
+            transactionRepository.update(debitTransaction).syncGet();
 
-        Transaction savedTrans = transactionRepository.create(buildRefundTransaction(wallet.getId(), refundRequest)).get();
+            Transaction savedTrans = transactionRepository.create(buildRefundTransaction(wallet.getId(), refundRequest)).syncGet();
 
-        List<LotTransaction> lotTransactions = lotTransactionRepository.getByTransactionId(transactionId).get();
-        refund(lotTransactions, refundRequest.getAmount(), savedTrans.getId());
+            List<LotTransaction> lotTransactions = lotTransactionRepository.getByTransactionId(transactionId).syncGet();
+            refund(lotTransactions, refundRequest.getAmount(), savedTrans.getId());
 
-        return savedTrans;
+            return savedTrans;
+        }
     }
 
     public Wallet getByTrackingUuid(Long shardMasterId, UUID uuid) {
-        return walletRepository.getByTrackingUuid(shardMasterId, uuid).get();
+        try (SyncModeScope scope = new SyncModeScope()) {
+            return walletRepository.getByTrackingUuid(shardMasterId, uuid).syncGet();
+        }
     }
 
     public List<Wallet> getAll(long userId) {
-        return walletRepository.getAll(userId).get();
+        try (SyncModeScope scope = new SyncModeScope()) {
+            return walletRepository.getAll(userId).syncGet();
+        }
     }
 
     private void debit(final List<WalletLot> walletLots, BigDecimal sum, Long transactionId) {
-        Collections.sort(walletLots, new Comparator<WalletLot>() {
-            @Override
-            public int compare(WalletLot o1, WalletLot o2) {
-                return o1.getRemainingAmount().compareTo(o2.getRemainingAmount());
-            }
-        });
+        try (SyncModeScope scope = new SyncModeScope()) {
+            Collections.sort(walletLots, new Comparator<WalletLot>() {
+                @Override
+                public int compare(WalletLot o1, WalletLot o2) {
+                    return o1.getRemainingAmount().compareTo(o2.getRemainingAmount());
+                }
+            });
 
-        for (int i = 0; i < walletLots.size(); i++) {
-            WalletLot walletLot = walletLots.get(i);
-            BigDecimal remaining = walletLot.getRemainingAmount();
-            if (sum.compareTo(remaining) <= 0) {
-                walletLot.setRemainingAmount(remaining.subtract(sum));
-                walletLot = walletLotRepository.update(walletLot).get();
-                lotTransactionRepository.create(buildDebitLotTransaction(walletLot, sum, transactionId)).get();
-                return;
-            } else {
-                BigDecimal remainingAmount = walletLot.getRemainingAmount();
-                walletLot.setRemainingAmount(BigDecimal.ZERO);
-                walletLot = walletLotRepository.update(walletLot).get();
-                lotTransactionRepository.create(buildDebitLotTransaction(walletLot, remainingAmount, transactionId)).get();
+            for (int i = 0; i < walletLots.size(); i++) {
+                WalletLot walletLot = walletLots.get(i);
+                BigDecimal remaining = walletLot.getRemainingAmount();
+                if (sum.compareTo(remaining) <= 0) {
+                    walletLot.setRemainingAmount(remaining.subtract(sum));
+                    walletLot = walletLotRepository.update(walletLot).syncGet();
+                    lotTransactionRepository.create(buildDebitLotTransaction(walletLot, sum, transactionId)).syncGet();
+                    return;
+                } else {
+                    BigDecimal remainingAmount = walletLot.getRemainingAmount();
+                    walletLot.setRemainingAmount(BigDecimal.ZERO);
+                    walletLot = walletLotRepository.update(walletLot).syncGet();
+                    lotTransactionRepository.create(buildDebitLotTransaction(walletLot, remainingAmount, transactionId)).syncGet();
+                }
+                sum = sum.subtract(remaining);
             }
-            sum = sum.subtract(remaining);
-        }
 
-        if (sum.compareTo(BigDecimal.ZERO) > 0) {
-            throw new NotEnoughMoneyException();
+            if (sum.compareTo(BigDecimal.ZERO) > 0) {
+                throw new NotEnoughMoneyException();
+            }
         }
     }
 
     private void refund(List<LotTransaction> lotTransactions, BigDecimal amount, Long transactionId) {
-        Date now = new Date();
-        Boolean refundEnded = false;
-        for (LotTransaction lotTransaction : lotTransactions) {
-            WalletLot lot = walletLotRepository.get(lotTransaction.getWalletLotId()).get();
-            if (amount.subtract(lotTransaction.getUnrefundedAmount()).compareTo(BigDecimal.ZERO) <= 0) {
-                lot.setRemainingAmount(lot.getRemainingAmount().add(amount));
-                lotTransaction.setUnrefundedAmount(lotTransaction.getUnrefundedAmount().subtract(amount));
-                lotTransactionRepository.create(buildRefundLotTransaction(lot, amount, transactionId));
-                refundEnded = true;
-            } else {
-                lot.setRemainingAmount(lot.getRemainingAmount().add(lotTransaction.getUnrefundedAmount()));
-                lotTransactionRepository.create(buildRefundLotTransaction(lot, lotTransaction.getUnrefundedAmount(), transactionId));
-                amount = amount.subtract(lotTransaction.getUnrefundedAmount());
-                lotTransaction.setUnrefundedAmount(BigDecimal.ZERO);
-            }
+        try (SyncModeScope scope = new SyncModeScope()) {
+            Date now = new Date();
+            Boolean refundEnded = false;
+            for (LotTransaction lotTransaction : lotTransactions) {
+                WalletLot lot = walletLotRepository.get(lotTransaction.getWalletLotId()).syncGet();
+                if (amount.subtract(lotTransaction.getUnrefundedAmount()).compareTo(BigDecimal.ZERO) <= 0) {
+                    lot.setRemainingAmount(lot.getRemainingAmount().add(amount));
+                    lotTransaction.setUnrefundedAmount(lotTransaction.getUnrefundedAmount().subtract(amount));
+                    lotTransactionRepository.create(buildRefundLotTransaction(lot, amount, transactionId));
+                    refundEnded = true;
+                } else {
+                    lot.setRemainingAmount(lot.getRemainingAmount().add(lotTransaction.getUnrefundedAmount()));
+                    lotTransactionRepository.create(buildRefundLotTransaction(lot, lotTransaction.getUnrefundedAmount(), transactionId));
+                    amount = amount.subtract(lotTransaction.getUnrefundedAmount());
+                    lotTransaction.setUnrefundedAmount(BigDecimal.ZERO);
+                }
 
-            if (lot.getExpirationDate() != null && lot.getExpirationDate().before(now)) {
-                lot.setExpirationDate(WalletConst.NEVER_EXPIRE);  //enable lot
-            }
-            walletLotRepository.update(lot);
-            lotTransactionRepository.update(lotTransaction);
-            if (refundEnded) {
-                break;
+                if (lot.getExpirationDate() != null && lot.getExpirationDate().before(now)) {
+                    lot.setExpirationDate(WalletConst.NEVER_EXPIRE);  //enable lot
+                }
+                walletLotRepository.update(lot);
+                lotTransactionRepository.update(lotTransaction);
+                if (refundEnded) {
+                    break;
+                }
             }
         }
     }

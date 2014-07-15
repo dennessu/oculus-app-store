@@ -45,7 +45,7 @@ class RateOrderFlowTest extends BaseTest{
 
         def context = executor.start(
                 'MOCK_RATE_ORDER',
-                requestScope).get()
+                requestScope).testGet()
         // Check the order is same as the returned order
         def o = ActionUtils.getOrderActionContext(context).orderServiceContext.order
         assert (o != null)
@@ -57,7 +57,7 @@ class RateOrderFlowTest extends BaseTest{
         def balance = CoreBuilder.buildBalance(order)
         facadeContainer.billingFacade.createBalance(balance, false)
 
-        def getOrder = orderService.getOrderByOrderId(o.getId().value, true, new OrderServiceContext()).get()
+        def getOrder = orderService.getOrderByOrderId(o.getId().value, true, new OrderServiceContext()).testGet()
         assert (o.getId().value == getOrder.getId().value)
         assert (o.discounts.size() == getOrder.discounts.size())
         assert (o.orderItems.size() == getOrder.orderItems.size())

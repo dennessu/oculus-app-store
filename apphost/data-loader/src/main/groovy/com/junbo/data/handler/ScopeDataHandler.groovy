@@ -44,7 +44,7 @@ class ScopeDataHandler extends BaseDataHandler {
 
         Scope existing = null
         try {
-            existing = scopeEndpoint.getScope(scope.name).get()
+            existing = scopeEndpoint.getScope(scope.name).syncGet()
         } catch (AppErrorException e) {
             logger.debug('This content does not exist in current database', e)
         }
@@ -54,7 +54,7 @@ class ScopeDataHandler extends BaseDataHandler {
                 logger.debug("Overwrite Scope $existing.name with this content")
                 scope.rev = existing.rev
                 try {
-                    scopeEndpoint.putScope(scope.name, scope).get()
+                    scopeEndpoint.putScope(scope.name, scope).syncGet()
                 } catch (Exception e) {
                     logger.error("Error updating scope $scope.name", e)
                 }
@@ -64,7 +64,7 @@ class ScopeDataHandler extends BaseDataHandler {
         } else {
             logger.debug("Create new Scope $scope.name with this content")
             try {
-                scopeEndpoint.postScope(scope).get()
+                scopeEndpoint.postScope(scope).syncGet()
             } catch (Exception e) {
                 logger.error("Error creating scope $scope.name", e)
             }

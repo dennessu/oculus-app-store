@@ -3,6 +3,7 @@ package com.junbo.order.core.impl.subledger
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.OfferId
+import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.catalog.CatalogFacade
 import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
@@ -47,7 +48,7 @@ class SubledgerItemContextBuilder {
             throw AppErrors.INSTANCE.orderNotFound().exception()
         }
 
-        def offer = catalogFacade.getOfferRevision(subledgerItem.offer.value, orderItem.honoredTime).get()
+        def offer = Promise.get { catalogFacade.getOfferRevision(subledgerItem.offer.value, orderItem.honoredTime) }
         return buildContext(offer, order.country, order.currency, subledgerItem.createdTime)
     }
 }

@@ -1,7 +1,6 @@
 package com.junbo.order.core.impl.common
 import com.junbo.common.id.PIType
 import com.junbo.common.id.PaymentInstrumentId
-import com.junbo.identity.spec.v1.model.Currency;
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.spec.error.AppErrors
@@ -57,7 +56,7 @@ class OrderValidator {
         if (piids == null || piids.isEmpty()) {
             return this
         }
-        def pi = facadeContainer.paymentFacade.getPaymentInstrument(piids[0].value).get()
+        def pi = Promise.get { facadeContainer.paymentFacade.getPaymentInstrument(piids[0].value) }
         if (PIType.get(pi?.type) == PIType.PAYPAL || PIType.get(pi?.type) == PIType.OTHERS) {
             notNull(successRedirectUrl, 'successRedirectUrl')
             notNull(cancelRedirectUrl, 'cancelRedirectUrl')

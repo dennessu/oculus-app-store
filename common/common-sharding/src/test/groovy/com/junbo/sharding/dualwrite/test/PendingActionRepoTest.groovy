@@ -82,22 +82,22 @@ public class PendingActionRepoTest extends AbstractTestNGSpringContextTests {
 
         PendingAction savedEntity = createSavedEntityPendingAction();
 
-        PendingAction newPending = repo.create(savedEntity).get();
+        PendingAction newPending = repo.create(savedEntity).testGet();
         assertEquals(newPending.getChangedEntityId(), savedEntity.getChangedEntityId())
         assertEquals(newPending.getSavedEntity(), savedEntity.getSavedEntity())
 
         newPending.deletedKey = 54321L;
 
-        newPending = repo.update(newPending).get();
+        newPending = repo.update(newPending).testGet();
         assertEquals(newPending.deletedKey, 54321L)
 
-        newPending = repo.get(newPending.id).get()
+        newPending = repo.get(newPending.id).testGet()
         assertEquals(newPending.deletedKey, 54321L)
         assertEquals(newPending.getChangedEntityId(), savedEntity.getChangedEntityId())
         assertEquals((FakeEntity)newPending.getSavedEntity(), (FakeEntity)savedEntity.getSavedEntity())
 
-        repo.delete(newPending.id).get()
-        newPending = repo.get(newPending.id).get()
+        repo.delete(newPending.id).testGet()
+        newPending = repo.get(newPending.id).testGet()
         assertNull(newPending)
     }
 

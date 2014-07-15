@@ -6,6 +6,7 @@
 package com.junbo.langur.processor.handler
 
 import com.junbo.langur.core.InProcessCallable
+import com.junbo.langur.core.RestResource
 import com.junbo.langur.processor.ProcessingException
 import com.junbo.langur.processor.model.ClientMethodModel
 import com.junbo.langur.processor.model.ClientParameterModel
@@ -44,6 +45,8 @@ class ClientProxyParser implements RestResourceHandler {
 
         collectionType = elementUtils.getTypeElement(Collection.canonicalName).asType()
         collectionType = typeUtils.erasure(collectionType)
+
+        def isSync = mapperType.getAnnotation(RestResource).sync()
 
         def clientProxy = new ClientProxyModel()
         clientProxy.packageName = elementUtils.getPackageOf(mapperType).qualifiedName.toString() + '.proxy'
@@ -94,6 +97,8 @@ class ClientProxyParser implements RestResourceHandler {
                 clientMethod.accepts = getAccepts(mapperType, executableElement)
 
                 clientMethod.inProcessCallable = getInProcessCallable(mapperType, executableElement)
+
+                clientMethod.isSync = isSync
 
                 clientProxy.clientMethods.add(clientMethod)
         }

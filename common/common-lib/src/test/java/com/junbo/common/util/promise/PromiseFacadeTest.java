@@ -11,7 +11,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 
 /**
  * PromiseShellTest.
@@ -31,7 +30,7 @@ public class PromiseFacadeTest {
             public Promise<String> apply(Long chargeResult) {
                 return Promise.pure("hello:" + chargeResult);
             }
-        }).get();
+        }).testGet();
     }
 
     @Test
@@ -49,6 +48,6 @@ public class PromiseFacadeTest {
                 Assert.assertEquals(chargeResult, new Long(123L), "charge result should match.");
                 return Promise.pure("hello:" + chargeResult);
             }
-        }).get();
+        }).testGet();
     }
 }

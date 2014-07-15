@@ -54,12 +54,12 @@ class OrganizationDataHandler extends BaseDataHandler {
         Organization existing = null
         User orgOwnerUser = null
         try {
-            Results<User> results = userResource.list(new UserListOptions(username: ownerUsername)).get()
+            Results<User> results = userResource.list(new UserListOptions(username: ownerUsername)).syncGet()
             if (results != null && results.items != null && results.items.size() > 0) {
                 orgOwnerUser = results.items.get(0)
             }
 
-            Results<Organization> orgResults = organizationResource.list(new OrganizationListOptions(ownerId: orgOwnerUser.id as UserId)).get()
+            Results<Organization> orgResults = organizationResource.list(new OrganizationListOptions(ownerId: orgOwnerUser.id as UserId)).syncGet()
             if (orgResults != null && orgResults.items != null && orgResults.items.size() > 0) {
                 orgResults.items.retainAll{ Organization organization1 ->
                     organization1.name == orgName
@@ -77,7 +77,7 @@ class OrganizationDataHandler extends BaseDataHandler {
             logger.debug("Create new organization with name: $orgName")
             try {
                 organization.ownerId = orgOwnerUser.id as UserId
-                organizationResource.create(organization).get()
+                organizationResource.create(organization).syncGet()
             } catch (Exception e) {
                 logger.error("Error creating organization $orgName.", e)
             }

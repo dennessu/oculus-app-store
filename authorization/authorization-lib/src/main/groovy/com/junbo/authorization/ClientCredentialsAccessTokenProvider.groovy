@@ -1,6 +1,7 @@
 package com.junbo.authorization
 
 import com.junbo.langur.core.client.AccessTokenProvider
+import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.spec.endpoint.TokenEndpoint
 import com.junbo.oauth.spec.model.AccessTokenRequest
 import org.springframework.beans.factory.annotation.Required
@@ -52,12 +53,14 @@ class ClientCredentialsAccessTokenProvider implements AccessTokenProvider {
         if (tokenCache != null && new Date().before(tokenCache.expiresBy)) {
             return tokenCache.tokenValue
         } else {
-            def tokenResponse = tokenEndpoint.postToken(new AccessTokenRequest(
-                    grantType: 'client_credentials',
-                    clientId: clientId,
-                    clientSecret: clientSecret,
-                    scope: scope
-            )).get()
+            def tokenResponse = Promise.get {
+                return tokenEndpoint.postToken(new AccessTokenRequest(
+                        grantType: 'client_credentials',
+                        clientId: clientId,
+                        clientSecret: clientSecret,
+                        scope: scope
+                ))
+            }
 
             def newTokenCache = new TokenCache(tokenResponse.accessToken, tokenResponse.expiresIn)
             tokenCache = newTokenCache

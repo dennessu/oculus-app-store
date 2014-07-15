@@ -120,6 +120,12 @@ public abstract class Promise<T> {
         }
     }
 
+    public static <T> T get(Closure<Promise<T>> closure) {
+        try (SyncModeScope scope = new SyncModeScope()) {
+            return closure.call().syncGet();
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public static <T> Promise each(final Iterator<T> iterator, final Closure<Promise> closure) {
         return each(iterator, new Func<T, Promise>() {
@@ -140,7 +146,19 @@ public abstract class Promise<T> {
         return each(iterable == null ? null : iterable.iterator(), func);
     }
 
-    public abstract T get();
+    /**
+     * Get the result of the Promise. Can only be used in within sync mode.
+     * Throws exception if AsyncPromise is called with syncGet()
+     * @return the result of the promise.
+     */
+    public abstract T syncGet();
+
+    /**
+     * Get the result of the Promise. This is used for test purpose only.
+     * In async mode, this method will block until the result is available.
+     * @return the result of the promise.
+     */
+    public abstract T testGet();
 
     public abstract Promise<T> recover(final Func<Throwable, Promise<T>> func);
 

@@ -17,7 +17,7 @@ class IdentityFacadeTest extends BaseTest {
 
     @Test
     void testGetUserEmail() {
-        def userEmail = identityFacade.getUserEmail(123L).get()
+        def userEmail = identityFacade.getUserEmail(123L).testGet()
         assert userEmail != null
     }
 }

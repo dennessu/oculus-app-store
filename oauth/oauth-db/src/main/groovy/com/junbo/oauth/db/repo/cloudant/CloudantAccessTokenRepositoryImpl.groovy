@@ -4,14 +4,12 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.oauth.db.repo.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.oauth.db.generator.TokenGenerator
 import com.junbo.oauth.db.repo.AccessTokenRepository
 import com.junbo.oauth.spec.model.AccessToken
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-
 /**
  * CloudantAccessTokenRepositoryImpl.
  */
@@ -30,32 +28,32 @@ class CloudantAccessTokenRepositoryImpl extends CloudantClient<AccessToken> impl
             accessToken.tokenValue = tokenGenerator.generateAccessToken()
         }
 
-        return cloudantPost(accessToken).get()
+        return cloudantPostSync(accessToken)
     }
 
     @Override
     AccessToken get(String tokenValue) {
-        return cloudantGet(tokenValue).get()
+        return cloudantGetSync(tokenValue)
     }
 
     @Override
     List<AccessToken> findByRefreshToken(String refreshTokenValue) {
-        return queryView('by_refresh_token', refreshTokenValue).get()
+        return queryViewSync('by_refresh_token', refreshTokenValue)
     }
 
     @Override
     List<AccessToken> findByUserIdClientId(Long userId, String clientId) {
-        return queryView('by_user_id_client_id', "$userId:$clientId").get()
+        return queryViewSync('by_user_id_client_id', "$userId:$clientId")
     }
 
     @Override
     AccessToken update(AccessToken accessToken) {
-        return cloudantPut(accessToken).get()
+        return cloudantPutSync(accessToken)
     }
 
     @Override
     void remove(String tokenValue) {
-        cloudantDelete(tokenValue).get()
+        cloudantDeleteSync(tokenValue)
     }
 
     @Override

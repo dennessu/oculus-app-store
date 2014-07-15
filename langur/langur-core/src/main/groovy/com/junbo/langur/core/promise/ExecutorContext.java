@@ -53,10 +53,20 @@ public final class ExecutorContext {
 
     public static boolean isAsyncMode() {
         Boolean value = isAsyncMode.get();
-        return value == null ? false : value.booleanValue();
+        return value == null ? true : value.booleanValue();
     }
 
-    public static void setAsyncMode(boolean value) {
-        isAsyncMode.set(value);
+    /**
+     * Set the async mode for current thread.
+     * Set method as deprecated for restricted use.
+     */
+    @Deprecated
+    public static void setAsyncMode(boolean isAsync) {
+        isAsyncMode.set(isAsync);
+    }
+
+    @Deprecated
+    public static void resetAsyncMode() {
+        isAsyncMode.remove();
     }
 }

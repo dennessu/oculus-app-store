@@ -35,31 +35,31 @@ class EmailScheduleRepoSqlTest extends BaseTest {
 
     @Test(enabled = false)
     void testCreate() {
-        def email = emailScheduleRepository.saveEmailSchedule(email).get()
+        def email = emailScheduleRepository.saveEmailSchedule(email).testGet()
         assert email != null, 'Email schedule create failed'
     }
 
     @Test(enabled = false)
     void testGet() {
-        def email = emailScheduleRepository.saveEmailSchedule(email).get()
-        def schedule = emailScheduleRepository.getEmailSchedule(email.id.value).get()
+        def email = emailScheduleRepository.saveEmailSchedule(email).testGet()
+        def schedule = emailScheduleRepository.getEmailSchedule(email.id.value).testGet()
         assert  schedule != null, 'Email schedule should not be null'
     }
 
     @Test(enabled = false)
     void testUpdate() {
-        def email = emailScheduleRepository.saveEmailSchedule(email).get()
+        def email = emailScheduleRepository.saveEmailSchedule(email).testGet()
         email.setPriority(2)
-        def schedule = emailScheduleRepository.updateEmailSchedule(email).get()
+        def schedule = emailScheduleRepository.updateEmailSchedule(email).testGet()
         assert schedule != null, 'Email schedule should not be null'
         assert schedule.priority == 2, 'Email schedule update failed'
     }
 
     @Test(enabled = false)
     void testDelete() {
-        def email = emailScheduleRepository.saveEmailSchedule(email).get()
+        def email = emailScheduleRepository.saveEmailSchedule(email).testGet()
         emailScheduleRepository.deleteEmailSchedule(email.id.value)
-        def schedule = emailScheduleRepository.getEmailSchedule(email.id.value).get()
+        def schedule = emailScheduleRepository.getEmailSchedule(email.id.value).testGet()
         assert schedule == null, 'Email schedule delete failed'
     }
 

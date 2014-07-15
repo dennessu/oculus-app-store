@@ -31,7 +31,7 @@ public class LocaleFacadeImpl implements LocaleFacade {
     @Override
     public Map<String, String> getLocaleRelations() {
         Map<String, String> result = new HashMap<>();
-        Results<Locale> locales = localeResource.list(options).get();
+        Results<Locale> locales = localeResource.list(options).syncGet();
         for (Locale locale : locales.getItems()) {
             if (locale.getFallbackLocale() == null) {
                 continue;

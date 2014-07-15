@@ -5,6 +5,5 @@
 
     <bean id="junboThreadPool" class="com.junbo.apphost.core.JunboThreadPoolFactoryBean">
         <property name="maxPoolSize" value="${apphost.maxPoolSize}"/>
-        <property name="asyncMode" value="${apphost.asyncmode}" />
     </bean>
 </beans>

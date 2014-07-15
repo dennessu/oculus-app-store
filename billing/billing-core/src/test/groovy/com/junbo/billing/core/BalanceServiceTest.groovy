@@ -22,11 +22,11 @@ class BalanceServiceTest extends BaseTest {
     @Test
     void testManualCaptureBalance() {
         Balance balance = generateBalance(BalanceType.MANUAL_CAPTURE)
-        balance = balanceService.addBalance(balance)?.get()
+        balance = balanceService.addBalance(balance)?.testGet()
 
         assert balance != null
 
-             Balance returnedBalance = balanceService.getBalance(balance.getId())?.get()
+             Balance returnedBalance = balanceService.getBalance(balance.getId())?.testGet()
 
         assert returnedBalance != null
         assert returnedBalance.status == BalanceStatus.PENDING_CAPTURE.name()
@@ -42,11 +42,11 @@ class BalanceServiceTest extends BaseTest {
     @Test
     void testDebitBalance() {
         Balance balance = generateBalance(BalanceType.DEBIT)
-        balance = balanceService.addBalance(balance)?.get()
+        balance = balanceService.addBalance(balance)?.testGet()
 
         assert balance != null
 
-        Balance returnedBalance = balanceService.getBalance(balance.getId())?.get()
+        Balance returnedBalance = balanceService.getBalance(balance.getId())?.testGet()
 
         assert returnedBalance != null
         assert returnedBalance.status == BalanceStatus.AWAITING_PAYMENT.name()
@@ -61,13 +61,13 @@ class BalanceServiceTest extends BaseTest {
     @Test
     void testCaptureBalance() {
         Balance balance = generateBalance(BalanceType.MANUAL_CAPTURE)
-        balance = balanceService.addBalance(balance)?.get()
+        balance = balanceService.addBalance(balance)?.testGet()
 
         assert balance != null
 
         Balance captureBalance = new Balance()
         captureBalance.id = balance.getId()
-        captureBalance = balanceService.captureBalance(captureBalance)?.get()
+        captureBalance = balanceService.captureBalance(captureBalance)?.testGet()
 
         assert captureBalance != null
         assert captureBalance.status == BalanceStatus.AWAITING_PAYMENT.name()
@@ -83,7 +83,7 @@ class BalanceServiceTest extends BaseTest {
     @Test
     void testFullRefundBalance() {
         Balance balance = generateBalance(BalanceType.DEBIT)
-        balance = balanceService.addBalance(balance)?.get()
+        balance = balanceService.addBalance(balance)?.testGet()
 
         assert balance != null
 
@@ -99,7 +99,7 @@ class BalanceServiceTest extends BaseTest {
         refundBalance.createdBy = refundBalance.userId.value
         refundBalance.createdTime = new Date()
 
-        balance = balanceService.addBalance(refundBalance)?.get()
+        balance = balanceService.addBalance(refundBalance)?.testGet()
         assert balance != null
 
     }

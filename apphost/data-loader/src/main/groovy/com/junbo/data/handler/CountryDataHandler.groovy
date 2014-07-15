@@ -41,7 +41,7 @@ class CountryDataHandler extends BaseDataHandler {
 
         Country existing = null
         try {
-            existing = countryResource.get(new CountryId(country.countryCode), new CountryGetOptions()).get()
+            existing = countryResource.get(new CountryId(country.countryCode), new CountryGetOptions()).syncGet()
         } catch (AppErrorException e) {
             logger.debug('This content does not exist in current database', e)
         }
@@ -52,7 +52,7 @@ class CountryDataHandler extends BaseDataHandler {
                 country.id = (CountryId) existing.id
                 country.rev = existing.rev
                 try {
-                    countryResource.patch(new CountryId(country.countryCode), country).get()
+                    countryResource.patch(new CountryId(country.countryCode), country).syncGet()
                 } catch (Exception e) {
                     logger.error("Error updating country $country.countryCode.", e)
                 }
@@ -62,7 +62,7 @@ class CountryDataHandler extends BaseDataHandler {
         } else {
             logger.debug('Create new country with this content')
             try {
-                countryResource.create(country).get()
+                countryResource.create(country).syncGet()
             } catch (Exception e) {
                 logger.error("Error creating country $country.countryCode.", e)
             }

@@ -1,10 +1,10 @@
 package com.junbo.authorization
 
-import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
 import com.junbo.common.util.IdFormatter
 import com.junbo.langur.core.context.JunboHttpContext
+import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.spec.endpoint.TokenInfoEndpoint
 import com.junbo.oauth.spec.model.TokenInfo
 import com.junbo.oauth.spec.model.TokenType
@@ -80,7 +80,9 @@ public class TokenInfoParserImpl implements TokenInfoParser {
         }
 
         try {
-            def tokenInfo = tokenInfoEndpoint.getTokenInfo(accessToken).get()
+            def tokenInfo = Promise.get {
+                return tokenInfoEndpoint.getTokenInfo(accessToken)
+            }
             tokenInfoCache.put(new Element(accessToken, tokenInfo))
 
             return tokenInfo

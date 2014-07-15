@@ -98,7 +98,7 @@ class OrderEventServiceImpl implements OrderEventService {
     @Transactional
     Promise<OrderEvent> recordBillingHistory(OrderEvent event, OrderServiceContext orderServiceContext) {
         if (event?.billingInfo?.balance != null) {
-            def balance = builder.getOrderEventBalance(orderServiceContext).get()
+            def balance = Promise.get { builder.getOrderEventBalance(orderServiceContext) }
             if (balance == null) {
                 throw AppErrors.INSTANCE.balanceNotFound().exception()
             }

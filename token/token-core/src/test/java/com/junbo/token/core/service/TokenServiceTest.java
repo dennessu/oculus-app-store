@@ -44,10 +44,10 @@ public class TokenServiceTest extends BaseTest {
                 setUsageLimit("1");
             }
         };
-        TokenRequest result = tokenService.createOrderRequest(request).get();
+        TokenRequest result = tokenService.createOrderRequest(request).testGet();
         Assert.assertNotNull(result.getTokenItems());
         Assert.assertNotNull(result.getId());
-        TokenRequest getResult = tokenService.getOrderRequest(result.getId()).get();
+        TokenRequest getResult = tokenService.getOrderRequest(result.getId()).testGet();
         Assert.assertEquals(getResult.getQuantity(), (Long)2L);
         Assert.assertEquals(result.getProductDetail().getDefaultOffer(), getResult.getProductDetail().getDefaultOffer());
     }
@@ -69,10 +69,10 @@ public class TokenServiceTest extends BaseTest {
                 setUsageLimit("1");
             }
         };
-        TokenRequest result = tokenService.createOrderRequest(request).get();
+        TokenRequest result = tokenService.createOrderRequest(request).testGet();
         Assert.assertNotNull(result.getTokenItems());
         Assert.assertNotNull(result.getId());
-        TokenRequest getResult = tokenService.getOrderRequest(result.getId()).get();
+        TokenRequest getResult = tokenService.getOrderRequest(result.getId()).testGet();
         Assert.assertEquals(getResult.getQuantity(), (Long)2L);
         Assert.assertEquals(result.getProductDetail().getDefaultOffer(), getResult.getProductDetail().getDefaultOffer());
     }
@@ -96,10 +96,10 @@ public class TokenServiceTest extends BaseTest {
                 setUsageLimit("1");
             }
         };
-        TokenRequest result = tokenService.createOrderRequest(request).get();
+        TokenRequest result = tokenService.createOrderRequest(request).testGet();
         Assert.assertNotNull(result.getTokenItems());
         Assert.assertNotNull(result.getId());
-        TokenRequest getResult = tokenService.getOrderRequest(result.getId()).get();
+        TokenRequest getResult = tokenService.getOrderRequest(result.getId()).testGet();
         Assert.assertEquals(getResult.getQuantity(), (Long)2L);
         Assert.assertEquals(result.getProductDetail().getDefaultOffer(), getResult.getProductDetail().getDefaultOffer());
     }
@@ -132,10 +132,10 @@ public class TokenServiceTest extends BaseTest {
             }
 
         };
-        TokenRequest result = tokenService.createOrderRequest(request).get();
+        TokenRequest result = tokenService.createOrderRequest(request).testGet();
         Assert.assertNotNull(result.getTokenItems());
         Assert.assertNotNull(result.getId());
-        TokenRequest getResult = tokenService.getOrderRequest(result.getId()).get();
+        TokenRequest getResult = tokenService.getOrderRequest(result.getId()).testGet();
         Assert.assertEquals(getResult.getQuantity(), (Long)2L);
         Assert.assertEquals(result.getProductDetail().getDefaultOffer(), getResult.getProductDetail().getDefaultOffer());
     }
@@ -168,7 +168,7 @@ public class TokenServiceTest extends BaseTest {
             }
 
         };
-        TokenRequest result = tokenService.createOrderRequest(request).get();
+        TokenRequest result = tokenService.createOrderRequest(request).testGet();
         Assert.assertNotNull(result.getTokenItems());
         Assert.assertNotNull(result.getId());
         TokenConsumption consumption = new TokenConsumption(){
@@ -177,13 +177,13 @@ public class TokenServiceTest extends BaseTest {
                 setUserId(generateLong());
             }
         };
-        TokenConsumption consumedItem = tokenService.consumeToken(item.getEncryptedString(), consumption).get();
-        TokenItem getItem = tokenService.getToken(item.getEncryptedString()).get();
+        TokenConsumption consumedItem = tokenService.consumeToken(item.getEncryptedString(), consumption).testGet();
+        TokenItem getItem = tokenService.getToken(item.getEncryptedString()).testGet();
         Assert.assertEquals(getItem.getStatus(), ItemStatus.USED.toString());
 
         consumption.setProduct(null);
-        TokenConsumption consumedItem2 = tokenService.consumeToken(item2.getEncryptedString(), consumption).get();
-        TokenItem getItem2 = tokenService.getToken(item.getEncryptedString()).get();
+        TokenConsumption consumedItem2 = tokenService.consumeToken(item2.getEncryptedString(), consumption).testGet();
+        TokenItem getItem2 = tokenService.getToken(item.getEncryptedString()).testGet();
         Assert.assertEquals(getItem2.getStatus(), ItemStatus.USED.toString());
     }
 }

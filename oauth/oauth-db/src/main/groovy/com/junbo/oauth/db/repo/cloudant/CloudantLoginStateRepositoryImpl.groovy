@@ -33,7 +33,7 @@ class CloudantLoginStateRepositoryImpl extends CloudantClient<LoginState> implem
 
     @Override
     LoginState get(String id) {
-        return cloudantGet(id).get()
+        return cloudantGetSync(id)
     }
 
     @Override
@@ -50,11 +50,11 @@ class CloudantLoginStateRepositoryImpl extends CloudantClient<LoginState> implem
             loginState.expiredBy = new Date(System.currentTimeMillis() + defaultLoginStateExpiration * 1000)
         }
 
-        return cloudantPost(loginState).get()
+        return cloudantPostSync(loginState)
     }
 
     @Override
     void delete(String id) {
-        cloudantDelete(id).get()
+        cloudantDeleteSync(id)
     }
 }

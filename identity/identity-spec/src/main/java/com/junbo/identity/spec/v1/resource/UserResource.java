@@ -13,7 +13,6 @@ import com.junbo.identity.spec.v1.option.model.UserGetOptions;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.langur.core.routing.RouteAnyLocal;
 import com.junbo.langur.core.routing.RouteBy;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -34,7 +33,6 @@ public interface UserResource {
 
     @ApiOperation("Create one user")
     @POST
-    @RouteAnyLocal
     Promise<User> create(User user);
 
     @ApiOperation("Update one user")
@@ -56,7 +54,6 @@ public interface UserResource {
 
     @ApiOperation("Search users")
     @GET
-    @RouteAnyLocal
     Promise<Results<User>> list(@BeanParam UserListOptions listOptions);
 
     @ApiOperation("Delete one user")

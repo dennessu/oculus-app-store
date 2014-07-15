@@ -19,21 +19,21 @@ class CloudantClientRepositoryImpl extends CloudantClient<Client> implements Cli
     @Override
     Client getClient(String clientId) {
         Assert.notNull(clientId)
-        return cloudantGet(clientId).get()
+        return cloudantGetSync(clientId)
     }
 
     @Override
     Client saveClient(Client client) {
-        return cloudantPost(client).get()
+        return cloudantPostSync(client)
     }
 
     @Override
     Client updateClient(Client client) {
-        return cloudantPut(client).get()
+        return cloudantPutSync(client)
     }
 
     @Override
     void deleteClient(Client client) {
-        cloudantDelete(client.clientId).get()
+        cloudantDeleteSync(client.clientId)
     }
 }

@@ -30,4 +30,6 @@ class ClientMethodModel {
     List<String> accepts
 
     boolean inProcessCallable
+
+    boolean isSync
 }

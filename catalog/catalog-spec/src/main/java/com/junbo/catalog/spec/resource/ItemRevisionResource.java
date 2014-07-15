@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 @Path("item-revisions")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@RestResource
+@RestResource(sync = true)
 public interface ItemRevisionResource {
     @CacheMaxAge(duration = 5, unit = TimeUnit.MINUTES)
     @ApiOperation("Get or search item revisions")

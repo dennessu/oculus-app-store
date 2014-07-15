@@ -53,20 +53,20 @@ public class PayPalProviderServiceTest extends BaseTest {
             }
         });
 
-        PaymentTransaction result = paymentService.charge(payment).get();
+        PaymentTransaction result = paymentService.charge(payment).testGet();
         Assert.assertNotNull(result.getWebPaymentInfo().getToken());
         PaymentCallbackParams properties = new PaymentCallbackParams();
         properties.setToken(result.getWebPaymentInfo().getToken());
         properties.setPayerID("CCZA9BJT9NKTS");
         //manual step: should go to the redirectRUL and save the PAYER_ID and token
         paymentCallbackService.addPaymentProperties(result.getId(), properties);
-        PaymentTransaction newStatus = paymentService.getUpdatedTransaction(result.getId()).get();
+        PaymentTransaction newStatus = paymentService.getUpdatedTransaction(result.getId()).testGet();
         Assert.assertEquals(newStatus.getStatus(), PaymentStatus.UNCONFIRMED.toString());
         //manual step: should go to the redirectRUL and save the PAYER_ID and token
-        result = paymentService.confirm(result.getId(), payment).get();
+        result = paymentService.confirm(result.getId(), payment).testGet();
         Assert.assertNotNull(result.getExternalToken());
         Assert.assertNotNull(result.getStatus(), PaymentStatus.SETTLED.toString());
-        newStatus = paymentService.getUpdatedTransaction(result.getId()).get();
+        newStatus = paymentService.getUpdatedTransaction(result.getId()).testGet();
         Assert.assertEquals(newStatus.getStatus(), PaymentStatus.SETTLED.toString());
     }
 
@@ -100,20 +100,20 @@ public class PayPalProviderServiceTest extends BaseTest {
             }
         });
 
-        PaymentTransaction result = paymentService.charge(payment).get();
+        PaymentTransaction result = paymentService.charge(payment).testGet();
         Assert.assertNotNull(result.getWebPaymentInfo().getToken());
         PaymentCallbackParams properties = new PaymentCallbackParams();
         properties.setToken(result.getWebPaymentInfo().getToken());
         properties.setPayerID("CCZA9BJT9NKTS");
         //manual step: should go to the redirectRUL and save the PAYER_ID and token
         paymentCallbackService.addPaymentProperties(result.getId(), properties);
-        PaymentTransaction newStatus = paymentService.getUpdatedTransaction(result.getId()).get();
+        PaymentTransaction newStatus = paymentService.getUpdatedTransaction(result.getId()).testGet();
         Assert.assertEquals(newStatus.getStatus(), PaymentStatus.UNCONFIRMED.toString());
         //manual step: should go to the redirectRUL and save the PAYER_ID and token
-        result = paymentService.confirm(result.getId(), payment).get();
+        result = paymentService.confirm(result.getId(), payment).testGet();
         Assert.assertNotNull(result.getExternalToken());
         Assert.assertNotNull(result.getStatus(), PaymentStatus.SETTLED.toString());
-        newStatus = paymentService.getUpdatedTransaction(result.getId()).get();
+        newStatus = paymentService.getUpdatedTransaction(result.getId()).testGet();
         Assert.assertEquals(newStatus.getStatus(), PaymentStatus.SETTLED.toString());
     }
 
@@ -146,24 +146,24 @@ public class PayPalProviderServiceTest extends BaseTest {
             }
         });
 
-        PaymentTransaction result = paymentService.charge(payment).get();
+        PaymentTransaction result = paymentService.charge(payment).testGet();
         Assert.assertNotNull(result.getWebPaymentInfo().getToken());
         PaymentCallbackParams properties = new PaymentCallbackParams();
         properties.setToken(result.getWebPaymentInfo().getToken());
         properties.setPayerID("CCZA9BJT9NKTS");
         //manual step: should go to the redirectRUL and save the PAYER_ID and token
         paymentCallbackService.addPaymentProperties(result.getId(), properties);
-        PaymentTransaction newStatus = paymentService.getUpdatedTransaction(result.getId()).get();
+        PaymentTransaction newStatus = paymentService.getUpdatedTransaction(result.getId()).testGet();
         Assert.assertEquals(newStatus.getStatus(), PaymentStatus.UNCONFIRMED.toString());
         //manual step: should go to the redirectRUL and save the PAYER_ID and token
         payment.setTrackingUuid(generateUUID());
-        result = paymentService.confirm(result.getId(), payment).get();
+        result = paymentService.confirm(result.getId(), payment).testGet();
         Assert.assertNotNull(result.getExternalToken());
         Assert.assertNotNull(result.getStatus(), PaymentStatus.SETTLED.toString());
-        newStatus = paymentService.getUpdatedTransaction(result.getId()).get();
+        newStatus = paymentService.getUpdatedTransaction(result.getId()).testGet();
         Assert.assertEquals(newStatus.getStatus(), PaymentStatus.SETTLED.toString());
         payment.setTrackingUuid(generateUUID());
-        PaymentTransaction refundTrx = paymentService.refund(result.getId(), payment).get();
+        PaymentTransaction refundTrx = paymentService.refund(result.getId(), payment).testGet();
         Assert.assertEquals(refundTrx.getStatus(), PaymentStatus.REFUNDED.toString());
     }
 

@@ -1,5 +1,6 @@
 package com.junbo.order.jobs.tax
 
+import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.jobs.OrderProcessResult
 import com.junbo.order.jobs.OrderProcessor
@@ -22,7 +23,7 @@ class AuditTaxProcessor implements OrderProcessor {
     @Override
     OrderProcessResult process(Order order) {
         assert order.status == OrderStatus.COMPLETED.name()
-        def auditedOrder = orderInternalService.auditTax(order).get()
+        def auditedOrder = Promise.get { orderInternalService.auditTax(order) }
         return new OrderProcessResult(success: OrderStatus.AUDITED.name() == auditedOrder.status)
     }
 }

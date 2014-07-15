@@ -62,7 +62,7 @@ public final class SyncPromise<T> extends Promise<T> {
             while (iterator.hasNext()) {
                 Object item = iterator.next();
                 SyncPromise<T> promise = (SyncPromise<T>) closure.call(item);
-                result.add(promise.get());
+                result.add(promise.syncGet());
             }
         } catch (Exception ex) {
             return SyncPromise.throwing(ex);
@@ -80,7 +80,7 @@ public final class SyncPromise<T> extends Promise<T> {
             while (iterator.hasNext()) {
                 T item = iterator.next();
                 result = (SyncPromise)func.apply(item);
-                if (result.get() == BREAK) {
+                if (result.syncGet() == BREAK) {
                     break;
                 }
             }
@@ -130,7 +130,7 @@ public final class SyncPromise<T> extends Promise<T> {
         }
     }
 
-    public T get() {
+    public T syncGet() {
         if (ex != null) {
             if (ex instanceof ExecutionException) {
                 Throwable cause = ex.getCause();
@@ -149,6 +149,10 @@ public final class SyncPromise<T> extends Promise<T> {
         return result;
     }
 
+    public T testGet() {
+        return syncGet();
+    }
+
     public Promise<T> recover(final Func<Throwable, Promise<T>> func) {
         try {
             if (ex != null) {
@@ -165,8 +169,7 @@ public final class SyncPromise<T> extends Promise<T> {
         // ignore executor
         try {
             if (ex == null) {
-                SyncPromise<R> promise = (SyncPromise<R>)func.apply(result);
-                return promise;
+                return func.apply(result);
             } else {
                 return (SyncPromise<R>)this;
             }

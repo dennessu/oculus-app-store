@@ -10,6 +10,7 @@ import com.junbo.authorization.AuthorizeCallback
 import com.junbo.common.id.GroupId
 import com.junbo.identity.spec.v1.model.Group
 import com.junbo.identity.spec.v1.option.model.GroupGetOptions
+import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 
 /**
@@ -23,6 +24,6 @@ class GroupAuthorizeCallbackFactory extends AbstractAuthorizeCallbackFactory<Gro
     }
 
     AuthorizeCallback<Group> create(GroupId groupId) {
-        return create(groupResource.get(groupId, new GroupGetOptions()).get())
+        return create(Promise.get { groupResource.get(groupId, new GroupGetOptions()) })
     }
 }

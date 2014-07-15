@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 @Path("offer-attributes")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@RestResource
+@RestResource(sync = true)
 public interface OfferAttributeResource {
     @CacheMaxAge(duration = 30, unit = TimeUnit.MINUTES)
     @ApiOperation("Get an offer attribute")

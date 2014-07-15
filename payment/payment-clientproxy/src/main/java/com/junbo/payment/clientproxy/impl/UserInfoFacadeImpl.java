@@ -41,8 +41,8 @@ public class UserInfoFacadeImpl implements UserInfoFacade{
                 .then(new Promise.Func<User, Promise<UserInfo>>() {
                     @Override
                     public Promise<UserInfo> apply(final User user) {
-                        UserInfo userName = getUserName(user).get();
-                        String email = getUserEmail(user).get();
+                        UserInfo userName = getUserName(user).syncGet();
+                        String email = getUserEmail(user).syncGet();
                         userName.setEmail(email);
                         return Promise.pure(userName);
                     };

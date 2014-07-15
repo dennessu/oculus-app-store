@@ -7,22 +7,21 @@
 package com.junbo.subscription.clientproxy;
 
 
-import com.junbo.catalog.spec.enums.PriceType;
-import com.junbo.catalog.spec.model.common.Price;
-import com.junbo.catalog.spec.enums.Status;
-import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.enums.ItemType;
+import com.junbo.catalog.spec.enums.PriceType;
+import com.junbo.catalog.spec.enums.Status;
+import com.junbo.catalog.spec.model.common.Price;
+import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.catalog.spec.resource.ItemResource;
 import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
-import com.junbo.common.id.OfferRevisionId;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.subscription.common.util.Constant;
-import org.testng.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -108,7 +107,7 @@ public class CatalogGatewayTest extends AbstractTestNGSpringContextTests {
 
     public String createItem(Item item) {
         try {
-            return itemResource.create(item).get().getItemId();
+            return itemResource.create(item).testGet().getItemId();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -116,7 +115,7 @@ public class CatalogGatewayTest extends AbstractTestNGSpringContextTests {
 
     public String createOffer(Offer offer) {
         try {
-            return offerResource.create(offer).get().getOfferId();
+            return offerResource.create(offer).testGet().getOfferId();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -124,7 +123,7 @@ public class CatalogGatewayTest extends AbstractTestNGSpringContextTests {
 
     public String createOfferRevision(OfferRevision offerRevision) {
         try {
-            return offerRevisionResource.createOfferRevision(offerRevision).get().getRevisionId();
+            return offerRevisionResource.createOfferRevision(offerRevision).testGet().getRevisionId();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -132,7 +131,7 @@ public class CatalogGatewayTest extends AbstractTestNGSpringContextTests {
 
     public OfferRevision getOfferRevision(String offerRevisionId) {
         try {
-            return offerRevisionResource.getOfferRevision(offerRevisionId, new OfferRevisionGetOptions()).get();
+            return offerRevisionResource.getOfferRevision(offerRevisionId, new OfferRevisionGetOptions()).testGet();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -142,7 +141,7 @@ public class CatalogGatewayTest extends AbstractTestNGSpringContextTests {
         try {
             return offerRevisionResource.updateOfferRevision(
                     offerRevision.getRevisionId(),
-                    offerRevision).get().getRevisionId();
+                    offerRevision).testGet().getRevisionId();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }

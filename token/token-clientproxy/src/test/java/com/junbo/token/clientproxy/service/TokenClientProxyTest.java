@@ -7,8 +7,6 @@ import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
 import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
 import com.junbo.common.id.OrganizationId;
-import com.junbo.common.id.TokenOrderId;
-import com.junbo.common.id.UserId;
 import com.junbo.crypto.spec.model.CryptoMessage;
 import com.junbo.crypto.spec.resource.CryptoResource;
 import com.junbo.identity.spec.v1.model.User;
@@ -19,16 +17,17 @@ import com.junbo.token.spec.enums.ItemStatus;
 import com.junbo.token.spec.enums.OrderStatus;
 import com.junbo.token.spec.enums.TokenLength;
 import com.junbo.token.spec.model.ProductDetail;
-import com.junbo.token.spec.model.TokenRequest;
 import com.junbo.token.spec.model.TokenConsumption;
 import com.junbo.token.spec.model.TokenItem;
+import com.junbo.token.spec.model.TokenRequest;
 import com.junbo.token.spec.resource.proxy.TokenResourceClientProxy;
-import org.testng.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public class TokenClientProxyTest extends BaseTest {
@@ -47,7 +46,7 @@ public class TokenClientProxyTest extends BaseTest {
     public void createOrderAndConsumeToken() throws ExecutionException, InterruptedException {
         Offer offer = new Offer();
         offer.setOwnerId(new OrganizationId(generateLong()));
-        final Offer resultOffer = tokenOfferClient.create(offer).get();
+        final Offer resultOffer = tokenOfferClient.create(offer).testGet();
         OfferRevision revision = new OfferRevision();
         revision.setOfferId(resultOffer.getOfferId());
         revision.setStatus("DRAFT");
@@ -65,13 +64,13 @@ public class TokenClientProxyTest extends BaseTest {
         locale.setName("en_US");
         locales.put("en_US", locale);
         revision.setLocales(locales);
-        tokenOfferRevisionClient.createOfferRevision(revision).get();
+        tokenOfferRevisionClient.createOfferRevision(revision).testGet();
         User userRequest = new User(){
             {
                 setUsername("ut" + generateLong());
             }
         };
-        final User userResult = tokenUserClient.create(userRequest).get();
+        final User userResult = tokenUserClient.create(userRequest).testGet();
         final ProductDetail product = new ProductDetail();
         product.setDefaultOffer(resultOffer.getOfferId());
         TokenRequest order = new TokenRequest(){
@@ -86,17 +85,17 @@ public class TokenClientProxyTest extends BaseTest {
                 setUsageLimit("1");
             }
         };
-        TokenRequest result = tokenClient.postOrder(order).get();
+        TokenRequest result = tokenClient.postOrder(order).testGet();
         Assert.assertEquals(result.getStatus(), OrderStatus.COMPLETED.toString());
         Assert.assertEquals(result.getTokenItems().size(), 1);
 
-        TokenRequest getResult = tokenClient.getOrderById(result.getId()).get();
+        TokenRequest getResult = tokenClient.getOrderById(result.getId()).testGet();
         Assert.assertEquals(result.getStatus(), OrderStatus.COMPLETED.toString());
         Assert.assertEquals(result.getId(), getResult.getId());
         String encryptedTokenString = result.getTokenItems().get(0).getEncryptedString();
         CryptoMessage msg = new CryptoMessage();
         msg.setValue(encryptedTokenString);
-        final String tokenString = cryptoResource.decrypt(msg).get().getValue();
+        final String tokenString = cryptoResource.decrypt(msg).testGet().getValue();
 
         TokenConsumption consumption= new TokenConsumption(){
             {
@@ -105,9 +104,9 @@ public class TokenClientProxyTest extends BaseTest {
                 setTokenString(tokenString);
             }
         };
-        TokenConsumption consumeResult = tokenClient.consumeToken(consumption).get();
+        TokenConsumption consumeResult = tokenClient.consumeToken(consumption).testGet();
         Assert.assertEquals(consumeResult.getProduct(), resultOffer.getOfferId());
-        TokenItem itemResult = tokenClient.getToken(tokenString).get();
+        TokenItem itemResult = tokenClient.getToken(tokenString).testGet();
         Assert.assertEquals(itemResult.getStatus(), ItemStatus.USED.toString());
     }
 
@@ -115,7 +114,7 @@ public class TokenClientProxyTest extends BaseTest {
     public void updateToken() throws ExecutionException, InterruptedException {
         Offer offer = new Offer();
         offer.setOwnerId(new OrganizationId(generateLong()));
-        final Offer resultOffer = tokenOfferClient.create(offer).get();
+        final Offer resultOffer = tokenOfferClient.create(offer).testGet();
         OfferRevision revision = new OfferRevision();
         revision.setOfferId(resultOffer.getOfferId());
         revision.setStatus("DRAFT");
@@ -133,13 +132,13 @@ public class TokenClientProxyTest extends BaseTest {
         locale.setName("en_US");
         locales.put("en_US", locale);
         revision.setLocales(locales);
-        tokenOfferRevisionClient.createOfferRevision(revision).get();
+        tokenOfferRevisionClient.createOfferRevision(revision).testGet();
         User userRequest = new User(){
             {
                 setUsername("ut" + generateLong());
             }
         };
-        final User userResult = tokenUserClient.create(userRequest).get();
+        final User userResult = tokenUserClient.create(userRequest).testGet();
         final ProductDetail product = new ProductDetail();
         product.setDefaultOffer(resultOffer.getId());
         TokenRequest order = new TokenRequest(){
@@ -154,18 +153,18 @@ public class TokenClientProxyTest extends BaseTest {
                 setUsageLimit("1");
             }
         };
-        TokenRequest result = tokenClient.postOrder(order).get();
+        TokenRequest result = tokenClient.postOrder(order).testGet();
         String encryptedTokenString = result.getTokenItems().get(0).getEncryptedString();
         CryptoMessage msg = new CryptoMessage();
         msg.setValue(encryptedTokenString);
-        final String tokenString = cryptoResource.decrypt(msg).get().getValue();
+        final String tokenString = cryptoResource.decrypt(msg).testGet().getValue();
 
-        TokenItem item = tokenClient.getToken(tokenString).get();
+        TokenItem item = tokenClient.getToken(tokenString).testGet();
         Assert.assertEquals(item.getStatus(), ItemStatus.ACTIVATED.toString());
         item.setStatus(ItemStatus.BLACKLISTED.toString());
         item.setDisableReason("ut");
-        TokenItem updatedItem = tokenClient.updateToken(tokenString, item).get();
-        item = tokenClient.getToken(tokenString).get();
+        TokenItem updatedItem = tokenClient.updateToken(tokenString, item).testGet();
+        item = tokenClient.getToken(tokenString).testGet();
         Assert.assertEquals(item.getStatus(), ItemStatus.BLACKLISTED.toString());
         TokenConsumption consumption= new TokenConsumption(){
             {
@@ -175,7 +174,7 @@ public class TokenClientProxyTest extends BaseTest {
             }
         };
         try{
-            TokenConsumption consumeResult = tokenClient.consumeToken(consumption).get();
+            TokenConsumption consumeResult = tokenClient.consumeToken(consumption).testGet();
         }catch (Exception ex){
             if(ex instanceof AppClientExceptions){
                 String code = ((AppClientExceptions) ex).invalidToken().error().getCode();
@@ -183,11 +182,11 @@ public class TokenClientProxyTest extends BaseTest {
         }
         item.setStatus(ItemStatus.ACTIVATED.toString());
         item.setDisableReason("ut");
-        updatedItem = tokenClient.updateToken(tokenString, item).get();
-        item = tokenClient.getToken(tokenString).get();
+        updatedItem = tokenClient.updateToken(tokenString, item).testGet();
+        item = tokenClient.getToken(tokenString).testGet();
         Assert.assertEquals(item.getStatus(), ItemStatus.ACTIVATED.toString());
-        TokenConsumption consumeResult = tokenClient.consumeToken(consumption).get();
-        item = tokenClient.getToken(tokenString).get();
+        TokenConsumption consumeResult = tokenClient.consumeToken(consumption).testGet();
+        item = tokenClient.getToken(tokenString).testGet();
         Assert.assertEquals(item.getStatus(), ItemStatus.USED.toString());
     }
 }

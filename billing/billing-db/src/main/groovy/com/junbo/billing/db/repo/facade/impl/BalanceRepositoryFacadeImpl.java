@@ -14,6 +14,7 @@ import com.junbo.billing.spec.enums.EventActionType;
 import com.junbo.billing.spec.model.*;
 import com.junbo.common.id.BalanceId;
 import com.junbo.common.id.OrderId;
+import com.junbo.langur.core.promise.SyncModeScope;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.util.ArrayList;
@@ -76,229 +77,246 @@ public class BalanceRepositoryFacadeImpl implements BalanceRepositoryFacade {
 
     @Override
     public Balance saveBalance(Balance balance) {
-        Long createdBy = balance.getUserId().getValue();
+        try (SyncModeScope scope = new SyncModeScope()) {
+            Long createdBy = balance.getUserId().getValue();
 
-        // balance
-        balance.setCreatedTime(new Date());
-        balance.setCreatedBy(createdBy);
-        balance.setRequestorId("GOD");
-        Balance savedBalance = balanceRepository.create(balance).get();
-        balance.setId(savedBalance.getId());
+            // balance
+            balance.setCreatedTime(new Date());
+            balance.setCreatedBy(createdBy);
+            balance.setRequestorId("GOD");
+            Balance savedBalance = balanceRepository.create(balance).syncGet();
+            balance.setId(savedBalance.getId());
 
-        for(BalanceItem balanceItem : balance.getBalanceItems()) {
-            // balance item
-            balanceItem.setBalanceId(savedBalance.getId().getValue());
-            balanceItem.setCreatedTime(new Date());
-            balanceItem.setCreatedBy(createdBy);
-            BalanceItem savedBalanceItem = balanceItemRepository.create(balanceItem).get();
-            balanceItem.setId(savedBalanceItem.getId());
+            for (BalanceItem balanceItem : balance.getBalanceItems()) {
+                // balance item
+                balanceItem.setBalanceId(savedBalance.getId().getValue());
+                balanceItem.setCreatedTime(new Date());
+                balanceItem.setCreatedBy(createdBy);
+                BalanceItem savedBalanceItem = balanceItemRepository.create(balanceItem).syncGet();
+                balanceItem.setId(savedBalanceItem.getId());
 
-            // balance item event
-            saveBalanceItemEvent(balanceItem);
+                // balance item event
+                saveBalanceItemEvent(balanceItem);
 
-            // balance item -> tax item
-            for(TaxItem taxItem : balanceItem.getTaxItems()) {
-                taxItem.setBalanceItemId(savedBalanceItem.getId());
-                taxItem.setCreatedTime(new Date());
-                taxItem.setCreatedBy(createdBy);
-                taxItemRepository.create(taxItem).get();
+                // balance item -> tax item
+                for (TaxItem taxItem : balanceItem.getTaxItems()) {
+                    taxItem.setBalanceItemId(savedBalanceItem.getId());
+                    taxItem.setCreatedTime(new Date());
+                    taxItem.setCreatedBy(createdBy);
+                    taxItemRepository.create(taxItem).syncGet();
+                }
+
+                // balance item -> discount item
+                for (DiscountItem discountItem : balanceItem.getDiscountItems()) {
+                    discountItem.setBalanceItemId(savedBalanceItem.getId());
+                    discountItem.setCreatedTime(new Date());
+                    discountItem.setCreatedBy(createdBy);
+                    discountItemRepository.create(discountItem).syncGet();
+                }
             }
 
-            // balance item -> discount item
-            for(DiscountItem discountItem : balanceItem.getDiscountItems()) {
-                discountItem.setBalanceItemId(savedBalanceItem.getId());
-                discountItem.setCreatedTime(new Date());
-                discountItem.setCreatedBy(createdBy);
-                discountItemRepository.create(discountItem).get();
+            for (Transaction transaction : balance.getTransactions()) {
+                // transactions
+                transaction.setBalanceId(savedBalance.getId());
+                transaction.setCreatedBy(createdBy);
+                transaction.setCreatedTime(new Date());
+                transactionRepositoryFacade.saveTransaction(transaction);
             }
+
+            // persist the order balance link
+            for (OrderId orderId : balance.getOrderIds()) {
+                OrderBalanceLink orderBalanceLink = new OrderBalanceLink();
+                orderBalanceLink.setBalanceId(savedBalance.getId().getValue());
+                orderBalanceLink.setOrderId(orderId.getValue());
+                orderBalanceLink.setCreatedTime(new Date());
+                orderBalanceLink.setCreatedBy(createdBy);
+                orderBalanceLinkRepository.create(orderBalanceLink).syncGet();
+            }
+
+            // create balance event
+            saveBalanceEvent(balance);
+
+            return balance;
         }
-
-        for(Transaction transaction : balance.getTransactions()) {
-            // transactions
-            transaction.setBalanceId(savedBalance.getId());
-            transaction.setCreatedBy(createdBy);
-            transaction.setCreatedTime(new Date());
-            transactionRepositoryFacade.saveTransaction(transaction);
-        }
-
-        // persist the order balance link
-        for (OrderId orderId : balance.getOrderIds()) {
-            OrderBalanceLink orderBalanceLink = new OrderBalanceLink();
-            orderBalanceLink.setBalanceId(savedBalance.getId().getValue());
-            orderBalanceLink.setOrderId(orderId.getValue());
-            orderBalanceLink.setCreatedTime(new Date());
-            orderBalanceLink.setCreatedBy(createdBy);
-            orderBalanceLinkRepository.create(orderBalanceLink).get();
-        }
-
-        // create balance event
-        saveBalanceEvent(balance);
-
-        return balance;
     }
 
     @Override
     public Balance getBalance(Long balanceId) {
-        Balance balance = balanceRepository.get(new BalanceId(balanceId)).get();
-        if (balance == null) {
-            return null;
-        }
-
-        List<BalanceItem> itemEntities = balanceItemRepository.findByBalanceId(balanceId).get();
-        for(BalanceItem balanceItem : itemEntities) {
-            balance.addBalanceItem(balanceItem);
-
-            List<TaxItem> taxItems = taxItemRepository.findByBalanceItemId(balanceItem.getId()).get();
-            for(TaxItem taxItem : taxItems) {
-                balanceItem.addTaxItem(taxItem);
+        try (SyncModeScope scope = new SyncModeScope()) {
+            Balance balance = balanceRepository.get(new BalanceId(balanceId)).syncGet();
+            if (balance == null) {
+                return null;
             }
 
-            List<DiscountItem> discountItems = discountItemRepository.findByBalanceItemId(balanceItem.getId()).get();
-            for(DiscountItem discountItem : discountItems) {
-                balanceItem.addDiscountItem(discountItem);
-            }
-        }
-        List<Transaction> transactions = transactionRepositoryFacade.getTransactions(balanceId);
-        for(Transaction transaction : transactions) {
-            balance.addTransaction(transaction);
-        }
+            List<BalanceItem> itemEntities = balanceItemRepository.findByBalanceId(balanceId).syncGet();
+            for (BalanceItem balanceItem : itemEntities) {
+                balance.addBalanceItem(balanceItem);
 
-        List<OrderBalanceLink> orderBalanceLinks = orderBalanceLinkRepository.findByBalanceId(balanceId).get();
-        List<OrderId> orderIds = new ArrayList<>();
-        if(orderBalanceLinks != null) {
-            for(OrderBalanceLink orderBalanceLink : orderBalanceLinks) {
-                orderIds.add(new OrderId(orderBalanceLink.getOrderId()));
-            }
-        }
-        balance.setOrderIds(orderIds);
+                List<TaxItem> taxItems = taxItemRepository.findByBalanceItemId(balanceItem.getId()).syncGet();
+                for (TaxItem taxItem : taxItems) {
+                    balanceItem.addTaxItem(taxItem);
+                }
 
-        return balance;
+                List<DiscountItem> discountItems = discountItemRepository.findByBalanceItemId(balanceItem.getId()).syncGet();
+                for (DiscountItem discountItem : discountItems) {
+                    balanceItem.addDiscountItem(discountItem);
+                }
+            }
+            List<Transaction> transactions = transactionRepositoryFacade.getTransactions(balanceId);
+            for (Transaction transaction : transactions) {
+                balance.addTransaction(transaction);
+            }
+
+            List<OrderBalanceLink> orderBalanceLinks = orderBalanceLinkRepository.findByBalanceId(balanceId).syncGet();
+            List<OrderId> orderIds = new ArrayList<>();
+            if (orderBalanceLinks != null) {
+                for (OrderBalanceLink orderBalanceLink : orderBalanceLinks) {
+                    orderIds.add(new OrderId(orderBalanceLink.getOrderId()));
+                }
+            }
+            balance.setOrderIds(orderIds);
+
+            return balance;
+        }
     }
 
     @Override
     public List<Balance> getBalances(Long orderId) {
-        List<Balance> balances = new ArrayList<>();
-        List<OrderBalanceLink> orderBalanceLinks = orderBalanceLinkRepository.findByOrderId(orderId).get();
-        for(OrderBalanceLink orderBalanceLink : orderBalanceLinks) {
-            Balance balance = getBalance(orderBalanceLink.getBalanceId());
-            balances.add(balance);
-        }
+        try (SyncModeScope scope = new SyncModeScope()) {
+            List<Balance> balances = new ArrayList<>();
+            List<OrderBalanceLink> orderBalanceLinks = orderBalanceLinkRepository.findByOrderId(orderId).syncGet();
+            for (OrderBalanceLink orderBalanceLink : orderBalanceLinks) {
+                Balance balance = getBalance(orderBalanceLink.getBalanceId());
+                balances.add(balance);
+            }
 
-        return balances;
+            return balances;
+        }
     }
 
     @Override
     public Balance getBalanceByUuid(UUID uuid) {
-        List<Balance> balances = balanceRepository.getByTrackingUuid(uuid).get();
-        if(balances != null && balances.size() > 0) {
-            Long balanceId = balances.get(0).getId().getValue();
-            return getBalance(balanceId);
+        try (SyncModeScope scope = new SyncModeScope()) {
+            List<Balance> balances = balanceRepository.getByTrackingUuid(uuid).syncGet();
+            if (balances != null && balances.size() > 0) {
+                Long balanceId = balances.get(0).getId().getValue();
+                return getBalance(balanceId);
+            }
+            return null;
         }
-        return null;
     }
 
     @Override
     public Balance updateBalance(Balance balance, EventActionType eventActionType) {
-        Balance savedBalance = getBalance(balance.getId().getValue());
+        try (SyncModeScope scope = new SyncModeScope()) {
+            Balance savedBalance = getBalance(balance.getId().getValue());
 
-        savedBalance.setType(balance.getType());
-        savedBalance.setStatus(balance.getStatus());
-        savedBalance.setShippingAddressId(balance.getShippingAddressId());
-        savedBalance.setUpdatedTime(new Date());
-        savedBalance.setUpdatedBy(balance.getUserId().getValue());
-        balanceRepository.update(savedBalance).get();
+            savedBalance.setType(balance.getType());
+            savedBalance.setStatus(balance.getStatus());
+            savedBalance.setShippingAddressId(balance.getShippingAddressId());
+            savedBalance.setUpdatedTime(new Date());
+            savedBalance.setUpdatedBy(balance.getUserId().getValue());
+            balanceRepository.update(savedBalance).syncGet();
 
-        for(Transaction transaction : balance.getTransactions()) {
-            if (transaction.getId() == null) {
-                transaction.setBalanceId(balance.getId());
-                transaction.setCreatedBy(balance.getUserId().getValue());
-                transaction.setCreatedTime(new Date());
-                transactionRepositoryFacade.saveTransaction(transaction);
-                savedBalance.addTransaction(transaction);
+            for (Transaction transaction : balance.getTransactions()) {
+                if (transaction.getId() == null) {
+                    transaction.setBalanceId(balance.getId());
+                    transaction.setCreatedBy(balance.getUserId().getValue());
+                    transaction.setCreatedTime(new Date());
+                    transactionRepositoryFacade.saveTransaction(transaction);
+                    savedBalance.addTransaction(transaction);
+                } else {
+                    transactionRepositoryFacade.updateTransaction(transaction);
+                }
             }
-            else {
-                transactionRepositoryFacade.updateTransaction(transaction);
-            }
+
+            // create balance event
+            saveBalanceEvent(savedBalance);
+
+            return setBackNonPersistAttributes(savedBalance, balance);
         }
-
-        // create balance event
-        saveBalanceEvent(savedBalance);
-
-        return setBackNonPersistAttributes(savedBalance, balance);
     }
 
     @Override
     public List<BalanceId> fetchToSettleBalanceIds(Integer count) {
-        List<BalanceId> ids = new ArrayList<>();
+        try (SyncModeScope scope = new SyncModeScope()) {
+            List<BalanceId> ids = new ArrayList<>();
 
-        List<Balance> balances = balanceRepository.getInitBalances().get();
-        for (Balance balance : balances) {
-            if (count <= 0) {
-                break;
+            List<Balance> balances = balanceRepository.getInitBalances().syncGet();
+            for (Balance balance : balances) {
+                if (count <= 0) {
+                    break;
+                }
+                ids.add(balance.getId());
+                count--;
             }
-            ids.add(balance.getId());
-            count--;
-        }
 
-        balances = balanceRepository.getAwaitingPaymentBalances().get();
-        for (Balance balance : balances) {
-            if (count <= 0) {
-                break;
+            balances = balanceRepository.getAwaitingPaymentBalances().syncGet();
+            for (Balance balance : balances) {
+                if (count <= 0) {
+                    break;
+                }
+                ids.add(balance.getId());
+                count--;
             }
-            ids.add(balance.getId());
-            count--;
-        }
 
-        balances = balanceRepository.getUnconfirmedBalances().get();
-        for (Balance balance : balances) {
-            if (count <= 0) {
-                break;
+            balances = balanceRepository.getUnconfirmedBalances().syncGet();
+            for (Balance balance : balances) {
+                if (count <= 0) {
+                    break;
+                }
+                ids.add(balance.getId());
+                count--;
             }
-            ids.add(balance.getId());
-            count --;
-        }
 
-        return ids;
+            return ids;
+        }
     }
 
     @Override
     public List<Balance> getRefundBalancesByOriginalId(Long balanceId) {
-        List<Balance> balances = balanceRepository.getRefundBalancesByOriginalId(balanceId).get();
-        List<Balance> results = new ArrayList<>();
-        if (balances != null) {
-            for (Balance balance : balances) {
-                Balance b = getBalance(balance.getId().getValue());
-                if (balance != null) {
-                    results.add(b);
+        try (SyncModeScope scope = new SyncModeScope()) {
+            List<Balance> balances = balanceRepository.getRefundBalancesByOriginalId(balanceId).syncGet();
+            List<Balance> results = new ArrayList<>();
+            if (balances != null) {
+                for (Balance balance : balances) {
+                    Balance b = getBalance(balance.getId().getValue());
+                    if (balance != null) {
+                        results.add(b);
+                    }
                 }
             }
+            return results;
         }
-        return results;
     }
 
     private void saveBalanceEvent(Balance balance) {
-        // balance event
-        BalanceEvent balanceEvent = new BalanceEvent();
-        balanceEvent.setBalanceId(balance.getId().getValue());
-        balanceEvent.setActionTypeId(EventActionType.CREATE.getId());
-        balanceEvent.setStatusId(BalanceStatus.valueOf(balance.getStatus()).getId());
-        balanceEvent.setTotalAmount(balance.getTotalAmount());
-        balanceEvent.setTaxAmount(balance.getTaxAmount());
-        balanceEvent.setDiscountAmount(balance.getDiscountAmount());
-        balanceEvent.setEventDate(new Date());
-        balanceEventRepository.create(balanceEvent).get();
+        try (SyncModeScope scope = new SyncModeScope()) {
+            // balance event
+            BalanceEvent balanceEvent = new BalanceEvent();
+            balanceEvent.setBalanceId(balance.getId().getValue());
+            balanceEvent.setActionTypeId(EventActionType.CREATE.getId());
+            balanceEvent.setStatusId(BalanceStatus.valueOf(balance.getStatus()).getId());
+            balanceEvent.setTotalAmount(balance.getTotalAmount());
+            balanceEvent.setTaxAmount(balance.getTaxAmount());
+            balanceEvent.setDiscountAmount(balance.getDiscountAmount());
+            balanceEvent.setEventDate(new Date());
+            balanceEventRepository.create(balanceEvent).syncGet();
+        }
     }
 
     private void saveBalanceItemEvent(BalanceItem balanceItem) {
-        // balance item event
-        BalanceItemEvent balanceItemEvent = new BalanceItemEvent();
-        balanceItemEvent.setBalanceItemId(balanceItem.getId());
-        balanceItemEvent.setAmount(balanceItem.getAmount());
-        balanceItemEvent.setTaxAmount(balanceItem.getTaxAmount());
-        balanceItemEvent.setDiscountAmount(balanceItem.getDiscountAmount());
-        balanceItemEvent.setActionTypeId(EventActionType.CREATE.getId());
-        balanceItemEvent.setEventDate(new Date());
-        balanceItemEventRepository.create(balanceItemEvent).get();
+        try (SyncModeScope scope = new SyncModeScope()) {
+            // balance item event
+            BalanceItemEvent balanceItemEvent = new BalanceItemEvent();
+            balanceItemEvent.setBalanceItemId(balanceItem.getId());
+            balanceItemEvent.setAmount(balanceItem.getAmount());
+            balanceItemEvent.setTaxAmount(balanceItem.getTaxAmount());
+            balanceItemEvent.setDiscountAmount(balanceItem.getDiscountAmount());
+            balanceItemEvent.setActionTypeId(EventActionType.CREATE.getId());
+            balanceItemEvent.setEventDate(new Date());
+            balanceItemEventRepository.create(balanceItemEvent).syncGet();
+        }
     }
 
     private Balance setBackNonPersistAttributes(Balance saved, Balance origin) {

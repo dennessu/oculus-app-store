@@ -15,11 +15,8 @@ import java.lang.reflect.Field;
  */
 public class JunboThreadPool extends FixedThreadPool implements LocatableExecutorService {
 
-    private boolean isAsyncMode;
-
-    public JunboThreadPool(ThreadPoolConfig config, boolean isAsyncMode) {
+    public JunboThreadPool(ThreadPoolConfig config) {
         super(config);
-        this.isAsyncMode = isAsyncMode;
         ExecutorContext.setDefaultExecutorService(this);
     }
 
@@ -30,7 +27,6 @@ public class JunboThreadPool extends FixedThreadPool implements LocatableExecuto
         try {
             THREAD_LOCALS_FIELD.set(Thread.currentThread(), null);
             INHERITABLE_THREAD_LOCALS_FIELD.set(Thread.currentThread(), null);
-            ExecutorContext.setAsyncMode(isAsyncMode);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }

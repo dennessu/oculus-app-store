@@ -39,7 +39,7 @@ public class AdyenProviderServiceTest extends BaseTest {
                 setAmount(new BigDecimal("12.34"));
             }
         });
-        PaymentTransaction result = paymentService.charge(payment).get();
+        PaymentTransaction result = paymentService.charge(payment).testGet();
         Assert.assertNotNull(result.getWebPaymentInfo().getRedirectURL());
         Assert.assertEquals(result.getStatus(), PaymentStatus.UNCONFIRMED.toString());
         //manual pay through redirectURL
@@ -50,15 +50,15 @@ public class AdyenProviderServiceTest extends BaseTest {
         properties.setSkinCode("0ceFRQOp");
         String strToSign="AUTHORISEDut1234ut1110ceFRQOp";
         properties.setMerchantSig(CommonUtil.calHMCASHA1(strToSign, "1234"));
-        paymentCallbackService.addPaymentProperties(result.getId(), properties).get();
-        result = paymentService.getUpdatedTransaction(result.getId()).get();
+        paymentCallbackService.addPaymentProperties(result.getId(), properties).testGet();
+        result = paymentService.getUpdatedTransaction(result.getId()).testGet();
         Assert.assertNotNull(result.getExternalToken());
         Assert.assertNotNull(result.getStatus(), PaymentStatus.SETTLED.toString());
         //Charge the user again, this time. there should be no ReturnURL and the transaction becomes settled immediately as we use recurring
         payment.setTrackingUuid(generateUUID());
         payment.setId(null);
         payment.setPaymentEvents(null);
-        result = paymentService.charge(payment).get();
+        result = paymentService.charge(payment).testGet();
         Assert.assertNull(result.getWebPaymentInfo());
         Assert.assertEquals(result.getStatus(), PaymentStatus.SETTLED.toString());
     }
@@ -85,7 +85,7 @@ public class AdyenProviderServiceTest extends BaseTest {
             }
         });
         payment.setWebPaymentInfo(webPaymentInfo);
-        PaymentTransaction result = paymentService.charge(payment).get();
+        PaymentTransaction result = paymentService.charge(payment).testGet();
         Assert.assertNotNull(result.getWebPaymentInfo().getRedirectURL());
         Assert.assertEquals(result.getStatus(), PaymentStatus.UNCONFIRMED.toString());
         //manual pay through redirectURL
@@ -96,15 +96,15 @@ public class AdyenProviderServiceTest extends BaseTest {
         properties.setSkinCode("RbpqLL88");
         String strToSign="AUTHORISEDut1234ut111RbpqLL88";
         properties.setMerchantSig(CommonUtil.calHMCASHA1(strToSign, "1234"));
-        paymentCallbackService.addPaymentProperties(result.getId(), properties).get();
-        result = paymentService.getUpdatedTransaction(result.getId()).get();
+        paymentCallbackService.addPaymentProperties(result.getId(), properties).testGet();
+        result = paymentService.getUpdatedTransaction(result.getId()).testGet();
         Assert.assertNotNull(result.getExternalToken());
         Assert.assertNotNull(result.getStatus(), PaymentStatus.SETTLED.toString());
         //Charge the user again, this time. there should be no ReturnURL and the transaction becomes settled immediately as we use recurring
         payment.setTrackingUuid(generateUUID());
         payment.setId(null);
         payment.setPaymentEvents(null);
-        result = paymentService.charge(payment).get();
+        result = paymentService.charge(payment).testGet();
         Assert.assertNull(result.getWebPaymentInfo());
         Assert.assertEquals(result.getStatus(), PaymentStatus.SETTLED.toString());
     }
@@ -125,20 +125,20 @@ public class AdyenProviderServiceTest extends BaseTest {
                 setAmount(new BigDecimal(1500.00));
             }
         });
-        PaymentTransaction result = paymentService.charge(payment).get();
+        PaymentTransaction result = paymentService.charge(payment).testGet();
         Assert.assertNotNull(result.getWebPaymentInfo().getRedirectURL());
         Assert.assertEquals(result.getStatus(), PaymentStatus.UNCONFIRMED.toString());
         //manual pay through redirectURL
         PaymentCallbackParams properties = new PaymentCallbackParams();
         properties.setPspReference("ut1234");
         properties.setAuthResult("AUTHORISED");
-        paymentCallbackService.addPaymentProperties(result.getId(), properties).get();
-        result = paymentService.getUpdatedTransaction(result.getId()).get();
+        paymentCallbackService.addPaymentProperties(result.getId(), properties).testGet();
+        result = paymentService.getUpdatedTransaction(result.getId()).testGet();
         Assert.assertNotNull(result.getExternalToken());
         Assert.assertNotNull(result.getStatus(), PaymentStatus.SETTLED.toString());
         boolean exception = false;
         try{
-            result = paymentService.confirm(result.getId(), payment).get();
+            result = paymentService.confirm(result.getId(), payment).testGet();
         }catch (Exception ex){
             exception = true;
         }
@@ -147,11 +147,11 @@ public class AdyenProviderServiceTest extends BaseTest {
         //Charge the user again, this time. there should be no ReturnURL and the transaction becomes settled immediately as we use recurring
         payment.setTrackingUuid(generateUUID());
         payment.setId(null);
-        result = paymentService.charge(payment).get();
+        result = paymentService.charge(payment).testGet();
         Assert.assertNull(result.getWebPaymentInfo());
         Assert.assertEquals(result.getStatus(), PaymentStatus.SETTLED.toString());
         payment.setChargeInfo(null);
-        result = paymentService.reverse(result.getId(), payment).get();
+        result = paymentService.reverse(result.getId(), payment).testGet();
         Assert.assertEquals(result.getStatus(), PaymentStatus.REVERSED.toString());
     }
 
@@ -172,20 +172,20 @@ public class AdyenProviderServiceTest extends BaseTest {
                 setAmount(new BigDecimal(1500.00));
             }
         });
-        PaymentTransaction result = paymentService.charge(payment).get();
+        PaymentTransaction result = paymentService.charge(payment).testGet();
         Assert.assertNotNull(result.getWebPaymentInfo().getRedirectURL());
         Assert.assertEquals(result.getStatus(), PaymentStatus.UNCONFIRMED.toString());
         //manual pay through redirectURL
         PaymentCallbackParams properties = new PaymentCallbackParams();
         properties.setPspReference("ut1234");
         properties.setAuthResult("AUTHORISED");
-        paymentCallbackService.addPaymentProperties(result.getId(), properties).get();
-        result = paymentService.getUpdatedTransaction(result.getId()).get();
+        paymentCallbackService.addPaymentProperties(result.getId(), properties).testGet();
+        result = paymentService.getUpdatedTransaction(result.getId()).testGet();
         Assert.assertNotNull(result.getExternalToken());
         Assert.assertNotNull(result.getStatus(), PaymentStatus.SETTLED.toString());
         boolean exception = false;
         try{
-            result = paymentService.confirm(result.getId(), payment).get();
+            result = paymentService.confirm(result.getId(), payment).testGet();
         }catch (Exception ex){
             exception = true;
         }
@@ -194,10 +194,10 @@ public class AdyenProviderServiceTest extends BaseTest {
         //Charge the user again, this time. there should be no ReturnURL and the transaction becomes settled immediately as we use recurring
         payment.setTrackingUuid(generateUUID());
         payment.setId(null);
-        result = paymentService.charge(payment).get();
+        result = paymentService.charge(payment).testGet();
         Assert.assertNull(result.getWebPaymentInfo());
         Assert.assertEquals(result.getStatus(), PaymentStatus.SETTLED.toString());
-        result = paymentService.refund(result.getId(), payment).get();
+        result = paymentService.refund(result.getId(), payment).testGet();
         Assert.assertEquals(result.getStatus(), PaymentStatus.REFUNDED.toString());
     }
 }

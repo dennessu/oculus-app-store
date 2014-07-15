@@ -40,22 +40,22 @@ class CloudantRefreshTokenRepositoryImpl extends CloudantClient<RefreshToken>
             refreshToken.tokenValue = tokens[0] + DELIMITER + tokenGenerator.generateRefreshTokenSeries()
         }
 
-        return cloudantPost(refreshToken).get()
+        return cloudantPostSync(refreshToken)
     }
 
     @Override
     RefreshToken get(String tokenValue) {
-        return cloudantGet(tokenValue).get()
+        return cloudantGetSync(tokenValue)
     }
 
     @Override
     List<RefreshToken> findByUserIdClientId(Long userId, String clientId) {
-        return queryView('by_user_id_client_id', "$userId:$clientId").get()
+        return queryViewSync('by_user_id_client_id', "$userId:$clientId")
     }
 
     @Override
     RefreshToken getAndRemove(String tokenValue) {
-        RefreshToken entity = cloudantGet(tokenValue).get()
+        RefreshToken entity = cloudantGetSync(tokenValue)
         cloudantDelete(tokenValue)
         return entity
     }

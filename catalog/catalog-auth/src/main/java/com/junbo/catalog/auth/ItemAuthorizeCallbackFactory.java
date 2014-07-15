@@ -30,7 +30,7 @@ public class ItemAuthorizeCallbackFactory extends AbstractAuthorizeCallbackFacto
     }
 
     public AuthorizeCallback<Item> create(String itemId) {
-        Item item = itemResource.getItem(itemId).get();
+        Item item = itemResource.getItem(itemId).syncGet();
         return create(item);
     }
 }

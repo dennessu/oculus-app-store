@@ -114,7 +114,7 @@ class CartPersistServiceSqlImpl implements CartPersistService {
     @Override
     @Transactional()
     Promise<Cart> update(Cart cart) {
-        Cart oldCart = get(cart.getId()).get()
+        Cart oldCart = Promise.get { get(cart.getId()) }
 
         // update cart
         Date currentTime = systemOperation.currentTime()

@@ -26,6 +26,7 @@ class BillingFacadeAsyncTest extends BaseTest {
     ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(20));
 
     @BeforeMethod
+    @SuppressWarnings("deprecation")
     void setUp() {
         oldAsyncMode = ExecutorContext.isAsyncMode()
         ExecutorContext.setAsyncMode(true);
@@ -46,7 +47,7 @@ class BillingFacadeAsyncTest extends BaseTest {
 
     @AfterMethod
     void cleanUp() {
-        ExecutorContext.setAsyncMode(oldAsyncMode)
+        ExecutorContext.resetAsyncMode()
     }
 
     @Test
@@ -59,7 +60,7 @@ class BillingFacadeAsyncTest extends BaseTest {
         semaphore.release(15)
 
         for (int i = 0;i < 15; ++i) {
-            Balance result = balanceList[i].get()
+            Balance result = balanceList[i].testGet()
             if (i < 10) {
                 assert !result.isAsyncCharge
             } else {
@@ -87,7 +88,7 @@ class BillingFacadeAsyncTest extends BaseTest {
 
         for (flag = 0; flag < 15; ++flag) {
             try {
-                billingFacadeAsync.createBalance(new Balance()).get()
+                billingFacadeAsync.createBalance(new Balance()).testGet()
                 assert false
             } catch (RuntimeException) {
             }

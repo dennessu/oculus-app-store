@@ -24,19 +24,19 @@ import com.junbo.identity.spec.v1.resource.UserResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.sharding.IdGenerator;
 import com.junbo.token.common.CommonUtil;
+import com.junbo.token.common.TokenUtil;
 import com.junbo.token.common.exception.AppClientExceptions;
 import com.junbo.token.common.exception.AppServerExceptions;
 import com.junbo.token.core.TokenService;
 import com.junbo.token.core.mapper.ModelMapper;
 import com.junbo.token.core.mapper.OrderWrapper;
-import com.junbo.token.common.TokenUtil;
 import com.junbo.token.db.repo.facade.TokenRepositoryFacade;
 import com.junbo.token.spec.enums.*;
+import com.junbo.token.spec.internal.TokenOrder;
 import com.junbo.token.spec.internal.TokenSet;
-import com.junbo.token.spec.model.TokenRequest;
 import com.junbo.token.spec.model.TokenConsumption;
 import com.junbo.token.spec.model.TokenItem;
-import com.junbo.token.spec.internal.TokenOrder;
+import com.junbo.token.spec.model.TokenRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,15 +110,15 @@ public class TokenServiceImpl implements TokenService {
         //String decryptedToken = decrypt(token);
         Long hashValue = TokenUtil.computeHash(token).getHashValue();
         TokenItem item = tokenRepository.getTokenItem(hashValue);
-        if(item == null){
+        if (item == null) {
             throw AppClientExceptions.INSTANCE.invalidToken().exception();
         }
-        TokenOrder order= tokenRepository.getTokenOrder(item.getOrderId());
-        if(order == null){
+        TokenOrder order = tokenRepository.getTokenOrder(item.getOrderId());
+        if (order == null) {
             throw AppServerExceptions.INSTANCE.tokenOrderNotFound(item.getOrderId().toString()).exception();
         }
         TokenSet tokenSet = tokenRepository.getTokenSet(order.getTokenSetId());
-        if(tokenSet == null){
+        if (tokenSet == null) {
             throw AppServerExceptions.INSTANCE.tokenSetNotFound(order.getTokenSetId().toString()).exception();
         }
         validateTokenItem(item, order, tokenSet, consumption);
@@ -134,7 +134,7 @@ public class TokenServiceImpl implements TokenService {
         fulfilItem.setQuantity(1);
         fulfilItem.setItemReferenceId(item.getHashValue());
         fulfilmentRequest.setItems(Arrays.asList(fulfilItem));
-        fulfilmentClient.fulfill(fulfilmentRequest).get();
+        fulfilmentClient.fulfill(fulfilmentRequest).syncGet();
         return Promise.pure(result);
     }
 
@@ -256,24 +256,24 @@ public class TokenServiceImpl implements TokenService {
     private void validateProduct(String productId, ProductType type){
         Offer offer = null;
         Promotion promotion = null;
-        try{
-            if(type.equals(ProductType.PROMOTION)){
-                promotion = promotionResource.getPromotion(productId).get();
-            }else if(type.equals(ProductType.OFFER)){
-                offer = offerClient.getOffer(productId).get();
+        try {
+            if (type.equals(ProductType.PROMOTION)) {
+                promotion = promotionResource.getPromotion(productId).syncGet();
+            } else if (type.equals(ProductType.OFFER)) {
+                offer = offerClient.getOffer(productId).syncGet();
             }
-        }catch(Exception ex){
-            if(ex instanceof AppErrorException && ((AppErrorException) ex).getError().getHttpStatusCode() == 404){
+        } catch (Exception ex) {
+            if (ex instanceof AppErrorException && ((AppErrorException) ex).getError().getHttpStatusCode() == 404) {
                 throw AppClientExceptions.INSTANCE.invalidProduct(productId).exception();
-            }else{
+            } else {
                 LOGGER.error("error get catalog:" + ex.toString());
                 throw AppServerExceptions.INSTANCE.catalogGatewayException().exception();
             }
         }
-        if(offer == null && type.equals(ProductType.OFFER)){
+        if (offer == null && type.equals(ProductType.OFFER)) {
             throw AppClientExceptions.INSTANCE.invalidProduct(productId).exception();
         }
-        if(promotion == null && type.equals(ProductType.PROMOTION)){
+        if (promotion == null && type.equals(ProductType.PROMOTION)) {
             throw AppClientExceptions.INSTANCE.invalidProduct(productId).exception();
         }
     }
@@ -320,11 +320,11 @@ public class TokenServiceImpl implements TokenService {
     }
 
     private void validateTokenConsumption(TokenConsumption consumption){
-        if(consumption.getUserId() == null){
+        if (consumption.getUserId() == null) {
             throw AppCommonErrors.INSTANCE.fieldRequired("user_id").exception();
         }
-        User user = userClient.get(new UserId(consumption.getUserId()), new UserGetOptions()).get();
-        if(user == null){
+        User user = userClient.get(new UserId(consumption.getUserId()), new UserGetOptions()).syncGet();
+        if (user == null) {
             throw AppCommonErrors.INSTANCE.fieldInvalid("userId").exception();
         }
     }
@@ -372,13 +372,13 @@ public class TokenServiceImpl implements TokenService {
     private String encrypt(String data){
         CryptoMessage msg = new CryptoMessage();
         msg.setValue(data);
-        return cryptoResource.encrypt(msg).get().getValue();
+        return cryptoResource.encrypt(msg).syncGet().getValue();
     }
 
     private String decrypt(String data){
         CryptoMessage msg = new CryptoMessage();
         msg.setValue(data);
-        return cryptoResource.decrypt(msg).get().getValue();
+        return cryptoResource.decrypt(msg).syncGet().getValue();
     }
 
     @Required

@@ -149,7 +149,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
         StringBuffer strToSign = new StringBuffer();
         String currency = paymentRequest.getChargeInfo().getCurrency();
         long amount = paymentRequest.getChargeInfo().getAmount()
-                .multiply(new BigDecimal(currencyResource.getNumberAfterDecimal(currency).get())).longValue();
+                .multiply(new BigDecimal(currencyResource.getNumberAfterDecimal(currency).syncGet())).longValue();
         strToSign.append(amount);
         strRequest.append("paymentAmount=" + amount);
         strToSign.append(currency);
@@ -226,7 +226,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
         request.setRecurring(new Recurring(RECURRING, null));
         String currencyCode = paymentRequest.getChargeInfo().getCurrency();
         request.setAmount(new Amount(currencyCode, paymentRequest.getChargeInfo().getAmount().multiply(
-                     new BigDecimal(currencyResource.getNumberAfterDecimal(currencyCode).get())).longValue()));
+                     new BigDecimal(currencyResource.getNumberAfterDecimal(currencyCode).syncGet())).longValue()));
         request.setReference(CommonUtil.encode(paymentRequest.getId()));
         request.setShopperEmail(paymentRequest.getUserInfo().getEmail());
         request.setShopperReference(nullToEmpty(paymentRequest.getPaymentInstrumentId().toString()));
@@ -292,7 +292,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
                 String currency = request.getChargeInfo().getCurrency();
                 refundReq.setModificationAmount(new Amount(currency,
                         request.getChargeInfo().getAmount().multiply(
-                            new BigDecimal(currencyResource.getNumberAfterDecimal(currency).get())).longValue()));
+                            new BigDecimal(currencyResource.getNumberAfterDecimal(currency).syncGet())).longValue()));
                 ModificationResult refundResult = null;
                 try{
                     refundResult = service.refund(refundReq);

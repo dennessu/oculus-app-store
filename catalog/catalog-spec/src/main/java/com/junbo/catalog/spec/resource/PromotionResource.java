@@ -23,7 +23,7 @@ import javax.ws.rs.core.Response;
 @Path("promotions")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@RestResource
+@RestResource(sync = true)
 public interface PromotionResource {
 
     //@ApiOperation("Get or search promotions")
