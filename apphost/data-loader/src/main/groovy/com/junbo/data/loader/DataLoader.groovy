@@ -9,6 +9,8 @@ import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.util.ContextInitializer
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeServiceImpl
+import com.junbo.configuration.ConfigService
+import com.junbo.configuration.ConfigServiceManager
 import com.junbo.data.handler.DataHandler
 import com.junbo.langur.core.promise.SyncModeScope
 import groovy.transform.CompileStatic
@@ -24,6 +26,7 @@ import org.springframework.core.io.Resource
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.util.CollectionUtils
 import org.springframework.util.ResourceUtils
+import org.springframework.util.StringUtils
 
 /**
  * DataLoader.
@@ -33,15 +36,23 @@ class DataLoader {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataLoader)
     private static Map<String, DataHandler> handlers
     private static List<String> dataList
-    private
+    private static String env = "_default"
     static PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(this.class.classLoader)
 
     static void main(String[] args) {
         configLog()
+
         LOGGER.info("loading spring context start")
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath*:/spring/*-context.xml",
                 "classpath*:/spring/validators.xml", "classpath*:/spring/transaction.xml", "classpath*:/spring/flow/*.xml")
         LOGGER.info("loading spring context end")
+
+        ConfigService configService = ConfigServiceManager.instance()
+        String configEnv = configService.getConfigContext().getEnvironment()
+        if (!StringUtils.isEmpty(configEnv)) {
+            env = configEnv
+        }
+        LOGGER.info("current environment is $env")
 
         AuthorizeServiceImpl authorizeService = applicationContext.getBean(AuthorizeServiceImpl)
         authorizeService.setDisabled(true)
@@ -80,8 +91,13 @@ class DataLoader {
 
     static void load(List<String> dataList) {
         for (String data : dataList) {
+            Resource[] resources
             try {
-                Resource[] resources = resolver.getResources("data/$data/*.data")
+                resources = resolver.getResources("data/$data/$env/*.data")
+            } catch (FileNotFoundException e) {
+                resources = resolver.getResources("data/$data/_default/*.data")
+            }
+            try {
                 DataHandler handler = handlers[data]
                 resources = handler.resolveDependencies(resources)
 
