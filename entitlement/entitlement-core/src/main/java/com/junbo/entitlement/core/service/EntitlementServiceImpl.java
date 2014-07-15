@@ -37,7 +37,6 @@ import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.UriBuilder;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
@@ -260,7 +259,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
     @Override
     @Transactional
-    public URI getDownloadUrl(String entitlementId, String itemId, String platform) {
+    public String getDownloadUrl(String entitlementId, String itemId, String platform) {
         Entitlement entitlement = this.getEntitlement(entitlementId);
         if (!itemId.equalsIgnoreCase(entitlement.getItemId())) {
             throw AppCommonErrors.INSTANCE.fieldInvalid("itemId", "itemId does not match the itemId in entitlement").exception();
@@ -326,9 +325,9 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         return builder.toTemplate();
     }
 
-    private URI generatePreSignedDownloadUrl(String urlString, String filename, String version, String platform) throws MalformedURLException, URISyntaxException {
+    private String generatePreSignedDownloadUrl(String urlString, String filename, String version, String platform) throws MalformedURLException, URISyntaxException {
         if (urlString.indexOf(bucketName) == -1) {
-            return new URI(urlString);
+            return urlString;
         }
         URL url = new URL(urlString);
         String objectKey = url.getPath().substring(1);
@@ -353,7 +352,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         }
 
         URL downloadUrl = awsClient.generatePresignedUrl(generatePresignedUrlRequest);
-        return downloadUrl.toURI();
+        return downloadUrl.toString();
     }
 
     private String getExtension(String objectKey) {
