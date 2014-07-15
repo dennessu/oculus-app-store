@@ -158,6 +158,8 @@ class CsrUpdateValidatorImpl implements CsrUpdateValidator {
                     throw AppErrors.INSTANCE.userNotFound().exception()
                 }
 
+                csrUpdate.username = user.username
+
                 return Promise.pure(null)
             }
         }

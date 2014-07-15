@@ -32,6 +32,14 @@ public class CsrUpdate extends ResourceMeta<CsrUpdateId> {
         this.userId = userId;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getContent() {
         return content;
     }
@@ -51,6 +59,7 @@ public class CsrUpdate extends ResourceMeta<CsrUpdateId> {
     @JsonProperty("self")
     private CsrUpdateId id;
     private UserId userId;
+    private String username;
     private String content;
     private Boolean active;
 }

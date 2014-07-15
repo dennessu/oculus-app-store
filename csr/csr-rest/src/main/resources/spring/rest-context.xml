@@ -25,6 +25,7 @@
                 <value>CSR_T1</value>
                 <value>CSR_T2</value>
                 <value>CSR_T3</value>
+                <value>CSR_PENDING</value>
             </list>
         </property>
         <property name="organizationName" value="${csr.organization.name}"/>

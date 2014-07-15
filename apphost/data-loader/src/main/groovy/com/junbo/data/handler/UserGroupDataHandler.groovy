@@ -12,6 +12,7 @@ import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserGroup
 import com.junbo.identity.spec.v1.option.list.GroupListOptions
 import com.junbo.identity.spec.v1.option.list.OrganizationListOptions
+import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
 import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.identity.spec.v1.resource.GroupResource
 import com.junbo.identity.spec.v1.resource.OrganizationResource
@@ -65,7 +66,7 @@ class UserGroupDataHandler extends BaseDataHandler {
         UserGroup userGroup = new UserGroup()
         logger.info("Add user $userGroupDataData.username to group $userGroupDataData.groupName")
 
-        boolean exist = false
+        UserGroup existing = null
         User user = null
         Group group = null
         Organization organization = null
@@ -101,7 +102,6 @@ class UserGroupDataHandler extends BaseDataHandler {
                 user = results.items.get(0)
             }
 
-            /*
             Results<UserGroup> userGroupResults = userGroupMembershipResource.list(new UserGroupListOptions(
                     userId: user.id as UserId,
                     groupId: group.id as GroupId
@@ -111,6 +111,7 @@ class UserGroupDataHandler extends BaseDataHandler {
                 existing = userGroupResults.items.get(0)
             }
 
+            /*
             Results<User> results2 = userResource.list(new UserListOptions(groupId: group.id as GroupId)).get()
             if (results2 != null && results2.items != null && results2.items.size() > 0) {
                 results2.items.removeAll{ User u ->
@@ -125,7 +126,7 @@ class UserGroupDataHandler extends BaseDataHandler {
             logger.debug('error happens', e)
         }
 
-        if (!exist) {
+        if (existing == null) {
             userGroup.groupId = group.id as GroupId
             userGroup.userId = user.id as UserId
 
@@ -133,7 +134,7 @@ class UserGroupDataHandler extends BaseDataHandler {
             try {
                 userGroupMembershipResource.create(userGroup).get()
             } catch (Exception e) {
-                //logger.info("Error creating userGroup.", e)
+                logger.info("Error creating userGroup.", e)
             }
         }
     }

@@ -23,4 +23,9 @@
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.csr.url}"/>
     </bean>
+
+    <bean id="csrUserResourceClientProxy" class="com.junbo.csr.spec.resource.proxy.CsrUserResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.csr.url}"/>
+    </bean>
 </beans>
