@@ -14,19 +14,17 @@ import javax.ws.rs.NotSupportedException;
  */
 public enum OrderStatus implements Identifiable<Short> {
     OPEN(0),
-    PENDING_CHARGE(1),
-    PENDING_FULFILL(2),
-    CHARGED(3),
-    FULFILLED(4),
-    COMPLETED(5),
-    FAILED(6),
-    CANCELED(7),
-    REFUNDED(8),
-    PREORDERED(9),
-    PARTIAL_CHARGED(10),
-    PRICE_RATING_CHANGED(11),
-    RISK_REJECT(12),
-    AUDITED(13),
+    PENDING(1),
+    COMPLETED(2),
+    CANCELED(3),
+    REFUNDED(4),
+    PREORDERED(5),
+    SHIPPED(6),
+    DELIVERED(7),
+    RETURNED(8),
+    PRICE_RATING_CHANGED(100),
+    RISK_REJECT(101),
+    AUDITED(102),
     ERROR(-1);
 
     private OrderStatus(int id) {

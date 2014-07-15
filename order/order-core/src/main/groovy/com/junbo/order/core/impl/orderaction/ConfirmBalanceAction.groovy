@@ -7,7 +7,6 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
-import com.junbo.order.core.impl.common.BillingEventHistoryBuilder
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
@@ -67,7 +66,7 @@ class ConfirmBalanceAction extends BaseOrderEventAwareAction {
                     throw facadeContainer.billingFacade.convertError(throwable).exception()
                 }.then { Balance confirmedBalance ->
                     if (confirmedBalance.status == BalanceStatus.COMPLETED.name()) {
-                        orderInternalService.persistBillingHistory(confirmedBalance, BillingAction.REQUEST_CAPTURE, order)
+                        orderInternalService.persistBillingHistory(confirmedBalance, BillingAction.CAPTURE, order)
                         balanceConfirmed = true
                     }
                     return Promise.pure(null)

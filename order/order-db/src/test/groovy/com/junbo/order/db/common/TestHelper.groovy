@@ -144,7 +144,7 @@ class TestHelper implements ApplicationContextAware {
     static OrderItemFulfillmentHistoryEntity generateOrderItemFulfillmentHistoryEntity() {
         OrderItemFulfillmentHistoryEntity entity = new OrderItemFulfillmentHistoryEntity()
         entity.setHistoryId(generateId())
-        entity.setFulfillmentEventId(randEnum(FulfillmentAction))
+        entity.setFulfillmentEventId(randEnum(FulfillmentEventType))
         entity.setOrderItemId(generateLong())
         entity.setTrackingUuid(generateUUID())
         entity.setFulfillmentId(RandomStringUtils.randomAlphabetic(20))

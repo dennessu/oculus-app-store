@@ -131,8 +131,8 @@ class OrderInternalServiceImpl implements OrderInternalService {
 
         assert (order != null)
 
-        Boolean isRefundable = CoreUtils.checkOrderStatusRefundable(order)
-        Boolean isCancelable = CoreUtils.checkOrderStatusCancelable(order)
+        Boolean isRefundable = CoreUtils.isRefundable(order)
+        Boolean isCancelable = CoreUtils.isCancellable(order)
 
         if (!isRefundable && !isCancelable) {
             LOGGER.info('name=Order_Is_Not_Refundable_Or_Cancelable, orderId = {}, orderStatus={}', order.getId().value, order.status)
@@ -314,7 +314,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                             fh.shippingDetails = []
                             fh.entitlements = []
                             fh.success = true
-                            if (CollectionUtils.isEmpty(fi.actions)) {
+                            if (!CollectionUtils.isEmpty(fi.actions)) {
                                 fh.success = fi.actions?.any { FulfilmentAction fa ->
                                     fa.status == FulfilmentStatus.FAILED || fa.status == FulfilmentStatus.UNKNOWN
                                 }
@@ -340,6 +340,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                         }
                     }
                 }
+                order.status = OrderStatusBuilder.buildOrderStatus(order)
                 return Promise.pure(order)
             }
         }
@@ -352,8 +353,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
             if (oldOrder == null) {
                 throw AppErrors.INSTANCE.orderNotFound().exception()
             }
-            order.status = OrderStatusBuilder.buildOrderStatus(oldOrder,
-                    orderRepository.getOrderEvents(order.getId().value, null))
+            order.status = OrderStatusBuilder.buildOrderStatus(oldOrder)
             if (updateOrder && order.status != oldOrder.status) {
                 oldOrder.status = order.status
                 orderRepository.updateOrder(oldOrder, true, false, null)

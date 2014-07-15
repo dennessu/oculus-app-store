@@ -8,9 +8,8 @@ import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.CoreBuilder
 import com.junbo.order.core.impl.common.OrderStatusBuilder
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
-import com.junbo.order.spec.model.enums.EventStatus
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
-import com.junbo.order.spec.model.OrderEvent
+import com.junbo.order.spec.model.enums.EventStatus
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.springframework.stereotype.Component
@@ -39,8 +38,7 @@ class SaveOrderAction extends BaseOrderEventAwareAction {
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def order = context.orderServiceContext.order
-        order.status = OrderStatusBuilder.buildOrderStatus(order,
-                order.id == null ? (List<OrderEvent>)[] : repo.getOrderEvents(order.getId().value, null))
+        order.status = OrderStatusBuilder.buildOrderStatus(order)
         // Save Order
         return builder.getOffers(context.orderServiceContext).syncThen { List<OrderOfferRevision> ofs ->
             def orderWithId = newOrder ? repo.createOrder(context.orderServiceContext.order) :

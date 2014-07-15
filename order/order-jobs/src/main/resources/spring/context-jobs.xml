@@ -61,7 +61,7 @@
         <property name="orderRepository" ref="orderRepositoryFacade"/>
         <property name="statusToProcess">
             <list>
-                <value>PENDING_CHARGE</value>
+                <value>PENDING</value>
             </list>
         </property>
         <property name="numOfFuturesToTrack" value="10000"/>

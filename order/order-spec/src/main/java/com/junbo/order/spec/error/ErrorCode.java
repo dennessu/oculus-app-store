@@ -63,6 +63,8 @@ public class ErrorCode {
 
     public static final String ORDER_RISK_REVIEW_ERROR = "20020";
 
+    public static final String EVENT_NOT_EXPECTED = "20021";
+
     // subledger error starts from 20000
     public static final String SUBLEDGER_NOT_FOUND = "20200";
 

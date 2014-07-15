@@ -5,7 +5,6 @@
  */
 
 package com.junbo.order.core.impl.orderflow
-
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.PIType
 import com.junbo.langur.core.promise.Promise
@@ -15,11 +14,10 @@ import com.junbo.order.core.OrderServiceOperation
 import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
+import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.enums.EventStatus
 import com.junbo.order.spec.model.enums.OrderActionType
-import com.junbo.order.spec.model.enums.OrderStatus
-import com.junbo.order.spec.error.AppErrors
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -28,7 +26,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.util.CollectionUtils
-
 /**
  * Created by chriszhu on 2/7/14.
  */
@@ -73,33 +70,26 @@ class DefaultFlowSelector implements FlowSelector {
 
     private Promise<String> selectUpdateFlow(OrderServiceContext context) throws AppErrorException {
         def event = context?.orderEvent
-        assert (event != null)
+        def order = context?.order
+        assert (order != null && event != null)
         def action = event.action
         assert (action != null)
         switch (action) {
             case OrderActionType.FULFILL.name():
-                if (event.status == EventStatus.COMPLETED.name()
-                        && CoreUtils.hasPhysicalOffer(context.order)
-                        && context.order.status == OrderStatus.PENDING_FULFILL.name()) {
-                    LOGGER.info('name=Complete_Charge_Order. orderId: {}', event.order.value)
+                // TODO: update fulfillment history
+                throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
+            case OrderActionType.CAPTURE.name():
+                if (CoreUtils.isPendingOnCapture(order)) {
                     return Promise.pure(FlowType.COMPLETE_CHARGE.name())
                 }
-                LOGGER.error('name=Fulfillment_Event_Not_Support. action: {}, status:{}', event.action, event.status)
-                throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
-
+                LOGGER.error('name=Capture_Event_Not_Expected. action: {}, status:{}', event.action, event.status)
+                throw AppErrors.INSTANCE.eventNotExpected(event.action, event.status).exception()
             case OrderActionType.CHARGE.name():
-                return selectFlowForChargeEvent(event, context)
-
-            case OrderActionType.AUTHORIZE.name():
-                return selectFlowForAuthEvent(event, context)
-
-            case OrderActionType.CANCEL.name():
-                if (event.status == EventStatus.COMPLETED.name()
-                        && context.order.status == OrderStatus.PENDING_CHARGE.name()) {
-                    return Promise.pure(FlowType.CANCEL_ORDER.name())
+                if (CoreUtils.isPendingOnChargeConfirmation(order)) {
+                    return selectFlowForChargeEvent(event, context)
                 }
-                LOGGER.error('name=Cancel_Event_Not_Support. action: {}, status:{}', event.action, event.status)
-                throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
+                LOGGER.error('name=Charge_Event_Not_Expected. action: {}, status:{}', event.action, event.status)
+                throw AppErrors.INSTANCE.eventNotExpected(event.action, event.status).exception()
             default:
                 LOGGER.error('name=Event_Not_Support. action: {}, status:{}', event.action, event.status)
                 throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
@@ -140,6 +130,7 @@ class DefaultFlowSelector implements FlowSelector {
     }
 
     private Promise<String> selectFlowForChargeEvent(OrderEvent event, OrderServiceContext context) {
+        def order = context.order
         orderServiceContextBuilder.getPaymentInstruments(context).then { List<PaymentInstrument> pis ->
             boolean hasWebPayment = pis.any { PaymentInstrument pi ->
                 return PIType.get(pi.type) == PIType.PAYPAL || PIType.get(pi.type) == PIType.OTHERS
@@ -147,7 +138,7 @@ class DefaultFlowSelector implements FlowSelector {
 
             if (hasWebPayment) {
                 if (event.status == EventStatus.COMPLETED.name()
-                        && context.order.status == OrderStatus.PENDING_CHARGE.name()) {
+                        && CoreUtils.isPendingOnChargeConfirmation(order)) {
                     return Promise.pure(FlowType.WEB_PAYMENT_SETTLE.name())
                 }
             } else {
@@ -158,15 +149,5 @@ class DefaultFlowSelector implements FlowSelector {
                     event.action, event.status, context.order.status)
             throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
         }
-    }
-
-    private Promise<String> selectFlowForAuthEvent(OrderEvent event, OrderServiceContext context) {
-        if (context.order.status == OrderStatus.PENDING_CHARGE.name()) {
-            return Promise.pure(FlowType.AUTH_SETTLE.name())
-        }
-
-        LOGGER.error('name=Auth_Event_Not_Support. action: {}, status:{}, orderStatus:{}',
-                event.action, event.status, context.order.status)
-        throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
     }
 }

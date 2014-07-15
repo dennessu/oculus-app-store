@@ -173,6 +173,10 @@ public interface AppErrors {
             message = "Event(action:{0}, status:{1}) is not supported")
     AppError eventNotSupported(String action, String status);
 
+    @ErrorDef(httpStatusCode = 409, code = ErrorCode.EVENT_NOT_EXPECTED,
+            message = "Event(action:{0}, status:{1}) is not expected")
+    AppError eventNotExpected(String action, String status);
+
     @ErrorDef(httpStatusCode = 400, code = BillingErrorCode.BILLING_CONFIRM_BALANCE_FAILED,
             message = "Fail to confirm balance")
     AppError balanceConfirmFailed();

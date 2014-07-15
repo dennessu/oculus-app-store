@@ -62,7 +62,7 @@ class TestOrderJob extends AbstractTestNGSpringContextTests {
                 numOfFuturesToTrack: 100,
                 pageSizePerShard: 10,
                 orderProcessNumLimit: 100000,
-                statusToProcess: [OrderStatus.PENDING_CHARGE.name()],
+                statusToProcess: [OrderStatus.PENDING.name()],
         )
     }
 
@@ -73,7 +73,7 @@ class TestOrderJob extends AbstractTestNGSpringContextTests {
             EasyMock.expect(orderRepository.getOrdersByStatus(
                     EasyMock.eq(DataCenters.instance().currentDataCenterId()),
                     EasyMock.eq(shardKey),
-                    EasyMock.eq([OrderStatus.PENDING_CHARGE.name()]),
+                    EasyMock.eq([OrderStatus.PENDING.name()]),
                     EasyMock.eq(true), EasyMock.isA(PageParam))).andReturn(orders(10)).anyTimes()
         }
 

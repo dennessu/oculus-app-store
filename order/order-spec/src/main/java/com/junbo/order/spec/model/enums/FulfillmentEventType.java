@@ -12,12 +12,13 @@ import javax.ws.rs.NotSupportedException;
 /**
  * Created by chriszhu on 2/25/14.
  */
-public enum FulfillmentAction implements Identifiable<Short> {
+public enum FulfillmentEventType implements Identifiable<Short> {
     FULFILL(0),
     REVERSE_FULFILL(1),
-    PREORDER(2);
+    PREORDER(2),
+    REQUEST_FULFILL(3);
 
-    private FulfillmentAction(int id) {
+    private FulfillmentEventType(int id) {
         this.id = (short) id;
     }
 
@@ -30,7 +31,7 @@ public enum FulfillmentAction implements Identifiable<Short> {
 
     @Override
     public void setId(Short id) {
-        throw new NotSupportedException("enum FulfillmentAction not settable");
+        throw new NotSupportedException("enum FulfillmentEventType not settable");
     }
 
 }

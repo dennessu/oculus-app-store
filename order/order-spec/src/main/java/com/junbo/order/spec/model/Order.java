@@ -54,8 +54,9 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
 
     @ApiModelProperty(required = true, position = 40, value = "[Client Immutable] The Order Status. " +
             "The state diagram is here: https://www.lucidchart.com/documents/edit/4bf4b274-532a-b700-bdd9-6da00a009107",
-            allowableValues = "OPEN, PENDING_CHARGE, PENDING_FULFILL, CHARGED, FULFILLED, " +
-                    "COMPLETED, FAILED, CANCELED, REFUNDED, PREORDERED, ERROR")
+            allowableValues = "OPEN, PENDING, " +
+                    "COMPLETED, CANCELED, REFUNDED, PREORDERED, SHIPPED, DELIVERED, RETURNED, PRICE_RATING_CHANGED, " +
+                    "RISK_REJECTED, ERROR")
     private String status;
 
     @ApiModelProperty(required = true, position = 50, value = "The order purchased country.")
