@@ -74,7 +74,7 @@ def readParams():
                 error("Unknown argument: " + argv)
 
     # Required params
-    if len(dbName) == 0 or len(env) == 0 or len(dbVersion) == 0:
+    if not dbName or not env or not dbVersion:
         printUsage()
 
     # Validate command
