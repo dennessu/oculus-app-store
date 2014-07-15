@@ -19,7 +19,7 @@ import java.util.List;
 @Path("/payment-instrument-types")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@RestResource
+@RestResource(sync = true)
 */
 /**
  * payment instrument type resource interface.
