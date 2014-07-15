@@ -77,6 +77,7 @@ class CsrUserResourceImpl implements CsrUserResource {
                 }
             }.then {
                 resultList.items = resultList.items.sort {CsrUser csrUser -> csrUser.name}
+                resultList.total = resultList.items.size()
                 return Promise.pure(resultList)
             }
         }
