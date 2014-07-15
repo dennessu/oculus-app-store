@@ -75,9 +75,6 @@ public class TestPutItemRevision extends BaseTestClass {
         itemRevision.setStatus(CatalogEntityStatus.PENDING_REVIEW.name());
         itemRevision = itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
 
-        itemRevision.setStatus(CatalogEntityStatus.DELETED.name());
-        itemRevision = itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
-
         itemRevision.setStatus(CatalogEntityStatus.APPROVED.name());
         itemRevision = itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
     }

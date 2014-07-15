@@ -5,6 +5,9 @@ source ${DIR}/../util/common.sh
 #check running under specified account
 checkAccount $DEPLOYMENT_ACCOUNT
 
+echo "[SETUP][REPLICA] create pgha base $PGHA_BASE"
+createDir $PGHA_BASE
+
 echo "[SETUP][REPLICA] create database data folder $REPLICA_DATA_PATH"
 createDir $REPLICA_DATA_PATH
 
@@ -55,3 +58,9 @@ do
     sleep 1 && echo "[SETUP][REPLICA] waiting for replica database...";
 done
 echo "[SETUP][REPLICA] replica database started successfully!"
+
+echo "[SETUP][REPLICA] setup and start londiste leaf"
+$DEPLOYMENT_PATH/londiste/londiste_leaf.sh
+
+echo "[SETUP][REPLICA] start pgbouncer proxy and connect to replica server"
+$DEPLOYMENT_PATH/pgbouncer/pgbouncer_replica.sh

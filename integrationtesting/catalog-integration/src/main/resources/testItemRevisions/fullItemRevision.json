@@ -9,6 +9,7 @@
             "id":"131ea78a9b0566a0118f27bb6f608107"
         }
     ],
+    "distributionChannel": ["INAPP", "STORE"],
     "developer": {"href": "https://api.oculusvr.com/v1/organizations/1234", "id": "1234"},
     "item": {"href": "https://api.oculusvr.com/v1/items/6B54DDA43C9F", "id": "6B54DDA43C9F"},
     "msrp":{
@@ -20,7 +21,7 @@
         }
     },
     "supportedInputDevices": ["KEYBOARD", "MOUSE"],
-    "userInteractionMode": "MULTI_USER",
+    "userInteractionModes": ["SINGLE_USER", "MULTI_USER"],
     "platforms": ["PC", "MAC"],
     "ageRatings": {
         "US": [
@@ -55,7 +56,7 @@
     "locales":{
         "en_US":{
             "name": "Angry Bird",
-            "revisionNotes": {
+            "releaseNotes": {
                 "shortNotes": "Short Notes",
                 "longNotes": "Long notes"
             },

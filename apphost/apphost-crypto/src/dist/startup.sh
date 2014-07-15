@@ -2,16 +2,22 @@
 (set -o igncr) 2>/dev/null && set -o igncr; # ignore \r in windows. The comment is needed.
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
+PID_FILE=./logs/apphost-crypto.pid
+if [[ -d /var/silkcloud ]]; then
+    mkdir -p /var/silkcloud/run
+    PID_FILE=/var/silkcloud/run/apphost-crypto.pid
+fi
+
 if [ ! -d "./logs" ]; then
     mkdir logs
 fi
 
-export APPHOST_CRYPTO_OPTS="-DconfigDir=/etc/silkcloud/:./conf"
+export APPHOST_CRYPTO_OPTS=""
 
 # check environment
 silkcloudenv=$1
 if [[ "$silkcloudenv" == "" ]]; then
-    if ! grep '^environment=[a-zA-Z0-9_]\+' $DIR/conf/configuration.properties; then
+    if ! grep '^environment=[a-zA-Z0-9_]\+' /etc/silkcloud/configuration.properties; then
         echo "ERROR: environment not set!"
         exit 1
     fi
@@ -20,5 +26,4 @@ else
 fi
 
 ./bin/apphost-crypto &
-echo $! > ./logs/app.pid
-
+echo $! > $PID_FILE

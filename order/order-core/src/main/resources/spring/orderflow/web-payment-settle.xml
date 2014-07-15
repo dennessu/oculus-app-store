@@ -11,6 +11,7 @@
                 <wf:action ref="webPaymentCallbackAction"/>
                 <wf:action ref="confirmBalanceAction"/>
                 <wf:action ref="riskUpdateAction"/>
+                <wf:action ref="subledgerCreateItemAction"/>
                 <wf:action ref="fulfillmentAction"/>
                 <wf:action ref="sendEmailAction"/>
                 <wf:action ref="updateOrderAction"/>

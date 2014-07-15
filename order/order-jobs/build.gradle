@@ -3,6 +3,7 @@ apply plugin: 'groovy'
 dependencies {
     compile junboProject(":order-spec")
     compile junboProject(":order-core")
+    compile junboProject(":common-configuration")
     compile 'org.quartz-scheduler:quartz:2.2.1'
 
     testCompile (libraries.spring_test)

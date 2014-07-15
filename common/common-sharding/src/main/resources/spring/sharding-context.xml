@@ -125,7 +125,6 @@
         <constructor-arg name="idVersion" value="${sharding.oculus48.sharding.idVersion}" />
         <constructor-arg name="bitsInIdVersion" value="${sharding.oculus48.sharding.bitsInIdVersion}" />
         <constructor-arg name="bitsInShardParam" value="${sharding.oculus48.sharding.bitsInShardParam}" />
-        <constructor-arg name="numberOfShards" value="${sharding.oculus48.numberOfShards}"/>
     </bean>
 
     <!-- 3: OrderId generator propsed by oculus rift (Using 40 bits) -->
@@ -138,7 +137,6 @@
         <constructor-arg name="idVersion" value="${sharding.oculus40.sharding.idVersion}" />
         <constructor-arg name="bitsInIdVersion" value="${sharding.oculus40.sharding.bitsInIdVersion}" />
         <constructor-arg name="bitsInShardParam" value="${sharding.oculus40.sharding.bitsInShardParam}" />
-        <constructor-arg name="numberOfShards" value="${sharding.oculus40.numberOfShards}"/>
     </bean>
 
     <bean id="idGeneratorFacade" class="com.junbo.sharding.IdGeneratorFacadeImpl">

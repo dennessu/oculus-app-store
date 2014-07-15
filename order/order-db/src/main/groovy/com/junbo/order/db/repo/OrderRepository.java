@@ -25,6 +25,6 @@ public interface OrderRepository extends BaseRepository<Order, OrderId> {
     Promise<List<Order>> getByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam);
 
     @ReadMethod
-    Promise<List<Order>> getByStatus(Object shardKey, List<String> statusList,
+    Promise<List<Order>> getByStatus(Integer dataCenterId, Object shardKey, List<String> statusList,
                                      boolean updatedByAscending, PageParam pageParam);
 }

@@ -1,8 +1,8 @@
 {
   "localeCode": "th_TH",
-  "shortName": "Thai Language (TH)",
-  "longName": "Thai Lang(Thailand)",
-  "localeName": "Thai Lang(TH)",
+  "shortName": "ภาษาไทย (TH)",
+  "longName": "ภาษาไทย(ประเทศไทย)",
+  "localeName": "ภาษาไทย (TH)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

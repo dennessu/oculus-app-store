@@ -41,7 +41,7 @@ public class CommonDataDAOImpl<T extends GenericEntity, ID extends Serializable>
 
     public Session currentSession(Object key) {
         //TODO: hashValue is not a partionable-id, use partition 0 first
-        ShardScope shardScope = new ShardScope(0);
+        ShardScope shardScope = new ShardScope(0, 0);
         //ShardScope shardScope = new ShardScope(shardAlgorithm.shardId(key));
         try {
             return sessionFactory.getCurrentSession();

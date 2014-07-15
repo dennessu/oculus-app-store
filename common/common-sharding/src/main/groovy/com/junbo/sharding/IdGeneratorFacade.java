@@ -13,5 +13,4 @@ import com.junbo.common.id.Id;
 public interface IdGeneratorFacade {
     <T extends Id> long nextId(Class<T> cls);
     <T extends Id> long nextId(Class<T> cls, long id);
-    <T extends Id> long nextIdByShardId(Class<T> cls, int shardId);
     }

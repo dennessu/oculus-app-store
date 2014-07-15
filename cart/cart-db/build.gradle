@@ -29,4 +29,5 @@ dependencies {
     testCompile (libraries.easy_mock)
 
     processor junboProject(':oom-processor')
+    testCompile junboProject(':authorization-lib')
 }

@@ -5,7 +5,6 @@
  */
 package com.junbo.oauth.api.endpoint
 
-import com.junbo.authorization.AuthorizeContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.OAuthTokenService
@@ -19,7 +18,6 @@ import org.springframework.beans.factory.annotation.Required
  */
 @CompileStatic
 class RefreshTokenResourceImpl implements RefreshTokenResource {
-    private static final String TOKEN_INFO_SCOPE = 'token.info'
     private OAuthTokenService tokenService
 
     @Required
@@ -28,10 +26,6 @@ class RefreshTokenResourceImpl implements RefreshTokenResource {
     }
 
     Promise<RefreshToken> get(String refreshToken) {
-        if (!AuthorizeContext.hasScopes(TOKEN_INFO_SCOPE)) {
-            throw AppExceptions.INSTANCE.insufficientScope().exception()
-        }
-
         RefreshToken token = tokenService.getRefreshToken(refreshToken)
 
         if (token == null) {

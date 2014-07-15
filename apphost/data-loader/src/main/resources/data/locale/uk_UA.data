@@ -1,8 +1,8 @@
 {
   "localeCode": "uk_UA",
-  "shortName": "Ukrainian (UA)",
-  "longName": "Ukrainian (Ukraine)",
-  "localeName": "Ukrainian (UA)",
+  "shortName": "Український (UA)",
+  "longName": "Український (Україна)",
+  "localeName": "Український (UA)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

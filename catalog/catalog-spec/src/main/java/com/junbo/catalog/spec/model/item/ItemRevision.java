@@ -34,9 +34,17 @@ public class ItemRevision extends BaseRevisionModel {
                     "all items that are team fortress (PC, MAC, LINUX, etc)")
     private String rollupPackageName;
 
-    @ApiModelProperty(position = 3, required = true,
-            value = "Used to identify the item (app), used mainly for android")
+    @ApiModelProperty(position = 3, required = true, value = "Used to identify the item (app), used mainly for android")
     private String packageName;
+
+    @ApiModelProperty(position = 4, required = true,
+            value = " the name of the file when download from the Oculus platform, must have value when Item type is APP or DOWNLOADED_ADDITION, must be empty for other types")
+    private String downloadName;
+
+    @JsonProperty("distributionChannel")
+    @ApiModelProperty(position = 5, required = true, value = "An array of strings indicates where this item is capable of being sold",
+        allowableValues = "INAPP, STORE")
+    private List<String> distributionChannels;
 
     @ApiModelProperty(position = 15, required = true, value = "Sku")
     private String sku;
@@ -111,6 +119,22 @@ public class ItemRevision extends BaseRevisionModel {
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
+    }
+
+    public String getDownloadName() {
+        return downloadName;
+    }
+
+    public void setDownloadName(String downloadName) {
+        this.downloadName = downloadName;
+    }
+
+    public List<String> getDistributionChannels() {
+        return distributionChannels;
+    }
+
+    public void setDistributionChannels(List<String> distributionChannels) {
+        this.distributionChannels = distributionChannels;
     }
 
     public List<String> getIapHostItemIds() {

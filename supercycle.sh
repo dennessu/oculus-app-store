@@ -3,4 +3,3 @@ source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is n
 
 ./fullcycle.sh "$@"
 ./test.sh
-

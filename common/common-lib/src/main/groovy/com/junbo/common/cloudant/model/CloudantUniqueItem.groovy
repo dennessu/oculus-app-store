@@ -96,4 +96,24 @@ class CloudantUniqueItem implements CloudantEntity<String> {
     void setResourceAge(Integer resourceAge) {
 
     }
+
+    @Override
+    String getCreatedByClient() {
+        return null
+    }
+
+    @Override
+    void setCreatedByClient(String client) {
+
+    }
+
+    @Override
+    String getUpdatedByClient() {
+        return null
+    }
+
+    @Override
+    void setUpdatedByClient(String client) {
+
+    }
 }

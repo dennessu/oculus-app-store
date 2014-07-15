@@ -69,6 +69,7 @@ public class SubledgerTesting extends BaseOrderTestClass {
 
         testDataProvider.getSubledger(offer_digital_normal1);
 
+
         //TODO verify subledger
 
     }
@@ -110,7 +111,7 @@ public class SubledgerTesting extends BaseOrderTestClass {
         offerList.clear();
         offerList.put(offer_physical_normal1, 1);
         String order2 = testDataProvider.postOrder(
-                uid1, Country.DEFAULT, Currency.DEFAULT, creditCardId1, false, offerList);
+                uid1, Country.DEFAULT, Currency.DEFAULT, creditCardId1, true, offerList);
         testDataProvider.updateOrderTentative(order2, false);
 
         String uid2 = testDataProvider.createUser();
@@ -142,7 +143,7 @@ public class SubledgerTesting extends BaseOrderTestClass {
 
         testDataProvider.getSubledger(offer_digital_normal1);
 
-        //TODO verify subledger
+        testDataProvider.getSubledger(offer_physical_normal1);
 
     }
 
@@ -168,8 +169,47 @@ public class SubledgerTesting extends BaseOrderTestClass {
     )
     @Test
     public void testRefundSubledger() throws Exception {
+        Map<String, Integer> offerList = new HashedMap();
+        Country country = Country.DEFAULT;
+        Currency currency = Currency.DEFAULT;
 
-        //TODO Waitting refund online
+        offerList.put(offer_inApp_consumable1, 2);
+
+        String uid1 = testDataProvider.createUser();
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String creditCardId = testDataProvider.postPaymentInstrument(uid1, creditCardInfo);
+
+        String orderId1 = testDataProvider.postOrder(
+                uid1, country, currency, creditCardId, false, offerList);
+
+        testDataProvider.updateOrderTentative(orderId1, false);
+
+        offerList.clear();
+        offerList.put(offer_inApp_consumable1, 1);
+
+        String uid2 = testDataProvider.createUser();
+
+        CreditCardInfo creditCardInfo2 = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String creditCardId2 = testDataProvider.postPaymentInstrument(uid1, creditCardInfo2);
+
+        String orderId2 = testDataProvider.postOrder(
+                uid2, country, currency, creditCardId2, false, offerList);
+
+        testDataProvider.updateOrderTentative(orderId2, false);
+
+        Map<String, Integer> refundOfferList = new HashedMap();
+        refundOfferList.put(offer_inApp_consumable1, 2);
+
+        testDataProvider.refundOrder(orderId1, refundOfferList, null);
+
+        Map<String, BigDecimal> partialRefundAmounts = new HashedMap();
+        partialRefundAmounts.put(offer_inApp_consumable1, new BigDecimal(5));
+
+        testDataProvider.refundOrder(orderId2, null, partialRefundAmounts);
+
+        testDataProvider.getSubledger(offer_inApp_consumable1);
+
     }
 
 }

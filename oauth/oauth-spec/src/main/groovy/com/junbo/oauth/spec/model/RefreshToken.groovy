@@ -19,7 +19,7 @@ class RefreshToken extends ExpirableToken {
     AccessToken accessToken
     String salt
 
-    boolean stolen
+    Boolean stolen
 
     @Override
     String getId() {

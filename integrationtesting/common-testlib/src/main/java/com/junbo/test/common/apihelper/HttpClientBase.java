@@ -167,6 +167,7 @@ public abstract class HttpClientBase {
 
                     future = asyncClient.prepareRequest(req).execute();
                     nettyResponse = (NettyResponse) future.get();
+                    expectedResponseCode = nettyResponse.getStatusCode();
                 }
 
                 logger.LogResponse(nettyResponse);

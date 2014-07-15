@@ -1,8 +1,8 @@
 {
   "localeCode": "el_CY",
-  "shortName": "Greek (CY)",
-  "longName": "Greek (Cyprus)",
-  "localeName": "Greek (CY)",
+  "shortName": "Ελληνικά (CY)",
+  "longName": "Ελληνικά (Κύπρος)",
+  "localeName": "Ελληνικά (CY)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

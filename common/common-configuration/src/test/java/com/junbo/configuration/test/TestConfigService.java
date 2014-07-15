@@ -11,12 +11,17 @@ public class TestConfigService implements ConfigService, AutoCloseable {
     private ConfigContext context = new ConfigContext("unittest").complete("dc0", "127.0.0.1/32");
     private ConfigService.ConfigListener listener;
     private Properties properties = new Properties() {{
-        put("common.topo.datacenters", "http://localhost:8080/v1;0;dc0");
+        put("common.topo.datacenters", "http://localhost:8080/v1;0;dc0;2,http://localhost:8080/v1;1;dc1;2");
     }};
 
     public TestConfigService() {
         this.oldInstance = ConfigServiceManager.instance();
         ConfigServiceManager.setInstance(this);
+    }
+
+    @Override
+    public String getConfigPath() {
+        return "dummy";
     }
 
     @Override

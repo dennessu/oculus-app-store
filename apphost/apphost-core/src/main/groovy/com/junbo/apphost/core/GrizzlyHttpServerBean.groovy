@@ -12,6 +12,7 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpContainer
 import org.glassfish.jersey.internal.inject.Providers
 import org.glassfish.jersey.server.ApplicationHandler
 import org.glassfish.jersey.server.ResourceConfig
+import org.glassfish.jersey.server.ServerProperties
 import org.glassfish.jersey.server.spi.ContainerProvider
 import org.glassfish.jersey.server.wadl.WadlApplicationContext
 import org.slf4j.Logger
@@ -138,6 +139,9 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean,
                         to(new TypeLiteral<InjectionResolver<Autowired>>() { } )
             }
         }
+
+        resourceConfig.addProperties(Collections.singletonMap(
+                ServerProperties.WADL_FEATURE_DISABLE, (Object) true))
 
         // create handler
         ApplicationHandler applicationHandler = new ApplicationHandler(resourceConfig, customBinder)

@@ -274,8 +274,8 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     private Promise<Void> checkMaximumSameUserAttemptCount(User user, UserCredentialVerifyAttempt userLoginAttempt) {
         Long timeInterval = System.currentTimeMillis() - sameUserAttemptRetryInterval * 1000
         return userLoginAttemptRepository.searchByUserIdAndCredentialTypeAndInterval(user.getId(), userLoginAttempt.type, timeInterval,
-                maxSameUserAttemptCount, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
-            if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxSameUserAttemptCount) {
+                maxSameUserAttemptCount + 1, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
+            if (CollectionUtils.isEmpty(attemptList) || attemptList.size() <= maxSameUserAttemptCount) {
                 return Promise.pure(null)
             }
             throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'User reaches maximum login attempt').exception()
@@ -290,8 +290,8 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         Long fromTimeStamp = System.currentTimeMillis() - sameIPRetryInterval * 1000
 
         return userLoginAttemptRepository.searchByIPAddressAndCredentialTypeAndInterval(userLoginAttempt.ipAddress, userLoginAttempt.type, fromTimeStamp,
-                maxSameIPRetryCount, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
-            if (CollectionUtils.isEmpty(attemptList) || attemptList.size() < maxSameIPRetryCount) {
+                maxSameIPRetryCount + 1, 0).then { List<UserCredentialVerifyAttempt> attemptList ->
+            if (CollectionUtils.isEmpty(attemptList) || attemptList.size() <= maxSameIPRetryCount) {
                 return Promise.pure(null)
             }
 

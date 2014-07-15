@@ -1,8 +1,8 @@
 {
   "localeCode": "zh_TW",
-  "shortName": "Chinese (TW)",
-  "longName": "Chinese (Tai Wan)",
-  "localeName": "Chinese (TW)",
+  "shortName": "中国(TW)",
+  "longName": "中国（台湾）",
+  "localeName": "中国(TW)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

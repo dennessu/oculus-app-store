@@ -14,7 +14,7 @@ import javax.ws.rs.NotSupportedException;
  */
 public enum SubledgerItemAction implements Identifiable<Short> {
 
-    CHARGE(0),
+    PAYOUT(0),
     REFUND(1);
 
     private SubledgerItemAction(int id) {

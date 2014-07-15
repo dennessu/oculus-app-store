@@ -53,17 +53,17 @@ class OculusGlobalCounterInDBImpl implements OculusGlobalCounter {
     }
 
     @Override
-    int getAndIncrease(int shardId, int idType) {
+    int getAndIncrease(int dataCenterId, int shardId, int idType) {
         transactionTemplate.execute {
             while (true) {
-                Integer value = getValue(idType, shardId)
+                Integer value = getValue(dataCenterId, idType, shardId)
 
                 if (value == null) {
-                    if (saveValue(idType, shardId)) {
+                    if (saveValue(dataCenterId, idType, shardId)) {
                         return 0
                     }
                 } else {
-                    if (updateValue(idType, shardId, value)) {
+                    if (updateValue(dataCenterId, idType, shardId, value)) {
                         return value + 1
                     }
                 }
@@ -71,8 +71,8 @@ class OculusGlobalCounterInDBImpl implements OculusGlobalCounter {
         }
     }
 
-    private Integer getValue(int idType, int shardId) {
-        def currentSession = ShardScope.with(shardId) { sessionFactory.openSession() }
+    private Integer getValue(int dataCenterId, int idType, int shardId) {
+        def currentSession = ShardScope.with(dataCenterId, shardId) { sessionFactory.openSession() }
 
         def sqlQuery = currentSession.createSQLQuery("""
 SELECT global_count FROM id_global_counter
@@ -88,8 +88,8 @@ WHERE id_type = ? AND shard_id = ?""")
         return list.size() == 1 ? (Integer) list.get(0) : (Integer) null
     }
 
-    private boolean saveValue(int idType, int shardId) {
-        def currentSession = ShardScope.with(shardId) { sessionFactory.openSession() }
+    private boolean saveValue(int dataCenterId, int idType, int shardId) {
+        def currentSession = ShardScope.with(dataCenterId, shardId) { sessionFactory.openSession() }
 
         def sqlQuery = currentSession.createSQLQuery("""
 INSERT INTO id_global_counter (id_type, shard_id, global_count)
@@ -105,8 +105,8 @@ VALUES (?, ?, 0)""")
         }
     }
 
-    private boolean updateValue(int idType, int shardId, int value) {
-        def currentSession = ShardScope.with(shardId) { sessionFactory.openSession() }
+    private boolean updateValue(int dataCenterId, int idType, int shardId, int value) {
+        def currentSession = ShardScope.with(dataCenterId, shardId) { sessionFactory.openSession() }
 
         def sqlQuery = currentSession.createSQLQuery("""
 UPDATE id_global_counter

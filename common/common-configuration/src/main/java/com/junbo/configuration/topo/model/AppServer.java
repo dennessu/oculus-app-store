@@ -13,12 +13,14 @@ public class AppServer {
     private int port;
     private String ipPort;
     private int[] shards;
+    private int dcId;
 
-    public AppServer(String ipAddress, int port, int[] shards) {
+    public AppServer(String ipAddress, int port, int[] shards, int dcId) {
         this.ipAddress = ipAddress;
         this.port = port;
         this.ipPort = ipAddress + ":" + port;
         this.shards = shards;
+        this.dcId = dcId;
     }
 
     public String getIpAddress() {
@@ -35,5 +37,9 @@ public class AppServer {
 
     public int[] getShards() {
         return shards;
+    }
+
+    public int getDcId() {
+        return dcId;
     }
 }

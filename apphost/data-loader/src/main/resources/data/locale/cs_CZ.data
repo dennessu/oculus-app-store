@@ -1,8 +1,8 @@
 {
   "localeCode": "cs_CZ",
-  "shortName": "Czech (CZ)",
-  "longName": "Czech (Czech)",
-  "localeName": "Czech (CZ)",
+  "shortName": "Čeština (Česká)",
+  "longName": "Čeština (Česká republika)",
+  "localeName": "Čeština (Česká)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

@@ -3,3 +3,4 @@ source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is n
 
 ./setupdb.sh
 ./build.sh "$@"
+./dataloader.sh

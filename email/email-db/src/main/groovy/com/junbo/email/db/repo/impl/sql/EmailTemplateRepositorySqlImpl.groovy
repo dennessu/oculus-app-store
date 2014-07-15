@@ -32,7 +32,7 @@ class EmailTemplateRepositorySqlImpl extends EmailBaseRepository implements Emai
 
     public Promise<EmailTemplate> saveEmailTemplate(EmailTemplate template){
         def entity = emailMapper.toEmailTemplateEntity(template)
-        entity.setId(idGenerator.nextIdByShardId(0))
+        entity.setId(idGenerator.nextId())
         entity.setCreatedBy('internal system')
         entity.setCreatedTime(new Date())
         def savedEntity = emailTemplateDao.save(entity)

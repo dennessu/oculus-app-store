@@ -22,7 +22,7 @@ includeDir 'subscription'
 includeDir 'docs'
 includeDir 'apphost'
 includeDir 'crypto'
-includeDir 'iap'
+includeDir 'store'
 includeDir 'token'
 
 def includeDir(String dir) {

@@ -19,6 +19,8 @@ public final class ExecutorContext {
     private static final Logger logger = LoggerFactory.getLogger(ExecutorContext.class);
     private static volatile LocatableExecutorService defaultExecutorService = null;
 
+    private static final ThreadLocal<Boolean> isAsyncMode = new ThreadLocal<>();
+
     private static final Executor theExecutor = new Executor() {
         @Override
         public void execute(Runnable command) {
@@ -47,5 +49,14 @@ public final class ExecutorContext {
 
     public static Executor getExecutor() {
         return theExecutor;
+    }
+
+    public static boolean isAsyncMode() {
+        Boolean value = isAsyncMode.get();
+        return value == null ? false : value.booleanValue();
+    }
+
+    public static void setAsyncMode(boolean value) {
+        isAsyncMode.set(value);
     }
 }

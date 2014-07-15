@@ -15,7 +15,6 @@
         <property name="rsaCipherService" ref="rsaCipherService" />
         <property name="versionSeparator" value="${crypto.core.versionSeparator}" />
         <property name="validator" ref="cryptoMessageValidator" />
-        <property name="enableEncrypt" value="${crypto.core.enable}" />
         <property name="enableUserKeyEncrypt" value="${crypto.core.enableUserKeyEncrypt}" />
     </bean>
 
@@ -27,7 +26,6 @@
         <property name="rsaCipherService" ref="rsaCipherService" />
         <property name="masterKeyValidator" ref="masterKeyValidator" />
         <property name="versionSeparator" value="${crypto.core.versionSeparator}" />
-        <property name="enableEncrypt" value="${crypto.core.enable}" />
         <property name="enableUserKeyEncrypt" value="${crypto.core.enableUserKeyEncrypt}" />
     </bean>
 
@@ -39,7 +37,6 @@
         <property name="rsaCipherService" ref="rsaCipherService" />
         <property name="userCryptoValidator" ref="userCryptoValidator" />
         <property name="versionSeparator" value="${crypto.core.versionSeparator}" />
-        <property name="enableEncrypt" value="${crypto.core.enable}" />
         <property name="enableUserKeyEncrypt" value="${crypto.core.enableUserKeyEncrypt}" />
     </bean>
 

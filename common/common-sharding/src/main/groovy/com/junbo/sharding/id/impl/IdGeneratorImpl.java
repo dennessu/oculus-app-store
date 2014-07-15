@@ -57,18 +57,19 @@ public class IdGeneratorImpl implements com.junbo.sharding.IdGenerator {
     @Override
     public long nextId() {
         int shardId = random.nextInt(slots.size());
-        return nextIdByShardId(shardId);
+        return nextIdByDCIdAndShardId(shardId, 0);
     }
 
     @Override
     public long nextId(long id) {
         ObjectId objectId = idSchema.parseObjectId(id);
         int shardId = objectId.getShardId();
-        return nextIdByShardId(shardId);
+        return nextIdByDCIdAndShardId(shardId, 0);
     }
 
     @Override
-    public long nextIdByShardId(int shardId) {
+    public long nextIdByDCIdAndShardId(int dataCenterId, int shardId) {
+        // This is the ordinary time based ID generator, it won't have the concept of dataCenter
         IdGeneratorSlot slot = slots.get(shardId);
         return slot.nextId();
     }

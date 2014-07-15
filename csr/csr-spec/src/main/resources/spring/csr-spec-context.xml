@@ -13,4 +13,14 @@
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.csr.url}"/>
     </bean>
+
+    <bean id="csrActionEndpointClientProxy" class="com.junbo.csr.spec.endpoint.proxy.CsrActionEndpointClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.csr.url}"/>
+    </bean>
+
+    <bean id="csrGroupResourceClientProxy" class="com.junbo.csr.spec.resource.proxy.CsrGroupResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.csr.url}"/>
+    </bean>
 </beans>

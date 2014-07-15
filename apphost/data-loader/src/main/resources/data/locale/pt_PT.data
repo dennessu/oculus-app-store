@@ -1,8 +1,8 @@
 {
   "localeCode": "pt_PT",
-  "shortName": "Portuguese (PT)",
-  "longName": "Portuguese (Portugal)",
-  "localeName": "Portuguese (PT)",
+  "shortName": "Português (PT)",
+  "longName": "Português (Portugal)",
+  "localeName": "Português (PT)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

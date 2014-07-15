@@ -48,7 +48,7 @@ import java.util.Map;
  */
 public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
-    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "/offers";
+    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "offers";
     private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
@@ -385,7 +385,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         OfferRevision offerRevisionForPost = new JsonMessageTranscoder().decode(
                 new TypeReference<OfferRevision>() {}, strOfferRevisionContent);
 
-        if (item.getType().equalsIgnoreCase(CatalogItemType.IN_APP_CONSUMABLE.getItemType())) {
+        if (item.getType().equalsIgnoreCase(CatalogItemType.CONSUMABLE_UNLOCK.getItemType())) {
             List<Action> purchaseActions = new ArrayList<>();
             Map<String, List<Action>> consumableEvent = new HashMap<>();
             Action action = new Action();

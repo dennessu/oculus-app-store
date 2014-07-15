@@ -14,17 +14,17 @@ import java.sql.SQLException
 @CompileStatic
 @SuppressWarnings('JdbcConnectionReference')
 class ShardMultiTenantConnectionProvider implements MultiTenantConnectionProvider {
-
-    private final List<SimpleDataSourceProxy> dataSourceList
+    // tenantIdentifier will be as dataCenterId:shardId
+    private final Map<String, SimpleDataSourceProxy> dataSourceMap
 
     ShardMultiTenantConnectionProvider(
-            List<SimpleDataSourceProxy> dataSourceList) {
+            Map<String, SimpleDataSourceProxy> dataSourceMap) {
 
-        if (dataSourceList == null) {
-            throw new IllegalArgumentException('dataSourceList is null')
+        if (dataSourceMap == null) {
+            throw new IllegalArgumentException('dataSourceMap is null')
         }
 
-        this.dataSourceList = dataSourceList
+        this.dataSourceMap = dataSourceMap
     }
 
     @Override
@@ -47,13 +47,24 @@ class ShardMultiTenantConnectionProvider implements MultiTenantConnectionProvide
             throw new IllegalArgumentException('tenantIdentifier is null')
         }
 
-        int shardId = Integer.parseInt(tenantIdentifier)
-
-        if (shardId < 0 || shardId >= dataSourceList.size()) {
-            throw new IllegalArgumentException("shardId $shardId should be in [0, ${dataSourceList.size()})")
+        String[] info = tenantIdentifier.split(':')
+        if (info == null || info.length != 2) {
+            throw new IllegalArgumentException('tenantIdentifier should be as format dataCenterId:ShardId')
         }
+        int dcId = Integer.parseInt(info[0])
+        int shardId = Integer.parseInt(info[1])
 
-        return dataSourceList.get(shardId)
+        if (shardId < 0) {
+            throw new IllegalArgumentException("shardId $shardId should be larger than 0")
+        }
+        if (dcId < 0) {
+            throw new IllegalArgumentException("dataCenterId $dcId should be larger than 0")
+        }
+        SimpleDataSourceProxy simpleDataSourceProxy = dataSourceMap.get(dcId + ":" + shardId)
+        if (simpleDataSourceProxy == null) {
+            throw  new IllegalArgumentException("DataSource with shardId $shardId and dcId $dcId is not found. mapSize = " +  dataSourceMap.size().toString())
+        }
+        return simpleDataSourceProxy
     }
 
     @Override

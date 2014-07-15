@@ -60,6 +60,7 @@ public class BuyerValidationHelper extends BaseValidationHelper {
 
     public void validateOrderInfoByCartId(String uid, String orderId, String cartId, Country country, Currency currency,
                                           String paymentInstrumentId, boolean hasPhysicalGood) throws Exception {
+        testDataProvider.getOrder(orderId);
         Order order = Master.getInstance().getOrder(orderId);
         Cart cart = Master.getInstance().getCart(cartId);
         String fulfilmentId = testDataProvider.getFulfilmentsByOrderId(orderId);

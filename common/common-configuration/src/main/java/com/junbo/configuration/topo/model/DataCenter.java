@@ -12,11 +12,13 @@ public class DataCenter {
     private String url;
     private int id;
     private String name;
+    private int numberOfShard;
 
-    public DataCenter(String url, int id, String name) {
+    public DataCenter(String url, int id, String name, int numberOfShard) {
         this.url = url;
         this.id = id;
         this.name = name;
+        this.numberOfShard = numberOfShard;
     }
 
     public String getUrl() {
@@ -29,5 +31,9 @@ public class DataCenter {
 
     public String getName() {
         return name;
+    }
+
+    public int getNumberOfShard() {
+        return numberOfShard;
     }
 }

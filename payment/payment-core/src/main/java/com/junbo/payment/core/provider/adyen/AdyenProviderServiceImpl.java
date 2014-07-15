@@ -177,7 +177,6 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
         strToSign.append(format2.format(calValid.getTime()));
         strRequest.append("&sessionValidity=" + format2.format(calValid.getTime()));
         //shopperEmail
-        //TODO: get user email
         String email = paymentRequest.getUserInfo().getEmail();
         strToSign.append(email);
         strRequest.append("&shopperEmail=" + urlEncode(email));
@@ -433,7 +432,6 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
         if (authHeader != null){
             String encodedValue = authHeader.split(" ")[1];
             String decodedValue = new String(Base64.decodeBase64(encodedValue.getBytes()));
-            //TODO: encrypt&decrypt password:
             if(!decodedValue.equals(notifyUser + ":" + notifyPassword)){
                 LOGGER.error("invalid authorization to receive notification:" + authHeader);
                 throw AppServerExceptions.INSTANCE.unAuthorized(authHeader).exception();

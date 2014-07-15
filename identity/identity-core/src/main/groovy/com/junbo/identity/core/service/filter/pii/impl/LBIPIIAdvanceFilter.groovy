@@ -35,7 +35,7 @@ abstract class LBIPIIAdvanceFilter implements PIIAdvanceFilter {
 
     @Override
     void checkGetPermission(UserPersonalInfoId piiId) {
-        if (!AuthorizeContext.hasRights('get')) {
+        if (!AuthorizeContext.hasRights('read')) {
             throw AppErrors.INSTANCE.userPersonalInfoNotFound(piiId).exception()
         }
     }

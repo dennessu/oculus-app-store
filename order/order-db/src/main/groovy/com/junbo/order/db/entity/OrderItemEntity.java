@@ -40,6 +40,7 @@ public class OrderItemEntity extends CommonDbEntityDeletable {
     private BigDecimal totalDiscount;
     private BigDecimal totalShippingFee;
     private BigDecimal totalShippingFeeDiscount;
+    private BigDecimal developerRevenue;
     private Long latestOrderItemRevisionId;
     private Date honorUntilTime;
     private Date honoredTime;
@@ -155,6 +156,15 @@ public class OrderItemEntity extends CommonDbEntityDeletable {
 
     public void setTotalDiscount(BigDecimal totalDiscount) {
         this.totalDiscount = totalDiscount;
+    }
+
+    @Column(name = "DEVELOPER_REVENUE")
+    public BigDecimal getDeveloperRevenue() {
+        return developerRevenue;
+    }
+
+    public void setDeveloperRevenue(BigDecimal developerRevenue) {
+        this.developerRevenue = developerRevenue;
     }
 
     @Column(name = "TOTAL_SHIPPING_FEE")

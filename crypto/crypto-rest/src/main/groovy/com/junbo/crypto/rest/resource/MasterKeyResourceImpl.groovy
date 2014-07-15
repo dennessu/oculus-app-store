@@ -18,14 +18,8 @@ class MasterKeyResourceImpl extends CommonResourceImpl implements MasterKeyResou
 
     private MasterKeyValidator masterKeyValidator
 
-    private Boolean enableEncrypt
-
     @Override
     Promise<Void> create(MasterKey masterKey) {
-        if (!enableEncrypt) {
-            return Promise.pure(null)
-        }
-
         return authorize().then {
             return masterKeyValidator.validateMasterKeyCreate(masterKey).then {
 
@@ -49,10 +43,5 @@ class MasterKeyResourceImpl extends CommonResourceImpl implements MasterKeyResou
     @Required
     void setMasterKeyValidator(MasterKeyValidator masterKeyValidator) {
         this.masterKeyValidator = masterKeyValidator
-    }
-
-    @Required
-    void setEnableEncrypt(Boolean enableEncrypt) {
-        this.enableEncrypt = enableEncrypt
     }
 }

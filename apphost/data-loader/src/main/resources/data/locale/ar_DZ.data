@@ -1,8 +1,8 @@
 {
   "localeCode": "ar_DZ",
-  "shortName": "Arabic (DZ)",
-  "longName": "Arabic (Algeria)",
-  "localeName": "Arabic (DZ)",
+  "shortName": "العربية (DZ)",
+  "longName": "العربية (الجزائر)",
+  "localeName": "العربية (DZ)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

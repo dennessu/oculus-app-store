@@ -324,6 +324,7 @@ class CoreBuilder {
         else {
             item.totalAmount = ratingItem.finalTotalAmount
         }
+        item.developerRevenue = ratingItem.developerRevenue
         item.totalDiscount = ratingItem.totalDiscountAmount
         item.unitPrice = ratingItem.originalUnitPrice
         item.honorUntilTime = null

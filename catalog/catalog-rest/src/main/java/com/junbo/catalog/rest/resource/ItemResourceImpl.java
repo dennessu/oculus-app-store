@@ -26,7 +26,6 @@ import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,23 +45,8 @@ public class ItemResourceImpl implements ItemResource {
     public Promise<Results<Item>> getItems(ItemsGetOptions options) {
         List<Item> items = itemService.getItems(options);
 
-        final List<Item> filteredItems = new ArrayList<>();
-        for (final Item item : items) {
-            AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(item);
-            RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Void>() {
-                @Override
-                public Void apply() {
-                    if (AuthorizeContext.hasRights("read")) {
-                        filteredItems.add(item);
-                    }
-
-                    return null;
-                }
-            });
-        }
-
         Results<Item> results = new Results<>();
-        results.setItems(filteredItems);
+        results.setItems(items);
         Link nextLink = new Link();
         nextLink.setHref(buildNextUrl(options));
         results.setNext(nextLink);
@@ -103,18 +87,7 @@ public class ItemResourceImpl implements ItemResource {
             throw AppCommonErrors.INSTANCE.resourceNotFound("Item", itemId).exception();
         }
 
-        AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(item);
-        return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<Item>>() {
-            @Override
-            public Promise<Item> apply() {
-
-                if (!AuthorizeContext.hasRights("read")) {
-                    throw AppCommonErrors.INSTANCE.forbidden().exception();
-                }
-
-                return Promise.pure(item);
-            }
-        });
+        return Promise.pure(item);
     }
 
     @Override

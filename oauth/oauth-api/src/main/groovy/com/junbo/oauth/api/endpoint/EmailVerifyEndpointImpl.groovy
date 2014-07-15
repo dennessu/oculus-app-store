@@ -18,6 +18,7 @@ import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.service.UserService
 import com.junbo.oauth.core.util.CookieUtil
 import com.junbo.oauth.core.util.ValidatorUtil
 import com.junbo.oauth.db.repo.EmailVerifyCodeRepository
@@ -27,6 +28,7 @@ import com.junbo.oauth.spec.model.EmailVerifyCode
 import com.junbo.oauth.spec.model.LoginState
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
+import org.glassfish.jersey.server.ContainerRequest
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
@@ -34,6 +36,9 @@ import org.springframework.context.annotation.Scope
 import org.springframework.util.Assert
 import org.springframework.util.StringUtils
 
+import javax.ws.rs.FormParam
+import javax.ws.rs.container.ContainerRequestContext
+import javax.ws.rs.core.Context
 import javax.ws.rs.core.Response
 import javax.ws.rs.core.UriBuilder
 /**
@@ -44,10 +49,9 @@ import javax.ws.rs.core.UriBuilder
 class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailVerifyEndpointImpl)
     private EmailVerifyCodeRepository emailVerifyCodeRepository
-
     private UserResource userResource
-
     private UserPersonalInfoResource userPersonalInfoResource
+    private UserService userService
 
     private String successRedirectUri
     private String failedRedirectUri
@@ -82,6 +86,11 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
     @Required
     void setLoginStateRepository(LoginStateRepository loginStateRepository) {
         this.loginStateRepository = loginStateRepository
+    }
+
+    @Required
+    void setUserService(UserService userService) {
+        this.userService = userService
     }
 
     @Override
@@ -162,6 +171,13 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    Promise<Response> sendVerifyEmail(String locale, String country, UserId userId, ContainerRequestContext request) {
+        return userService.sendVerifyEmail(userId, locale, country, ((ContainerRequest)request).baseUri).then {
+            return Promise.pure(Response.noContent().build())
         }
     }
 

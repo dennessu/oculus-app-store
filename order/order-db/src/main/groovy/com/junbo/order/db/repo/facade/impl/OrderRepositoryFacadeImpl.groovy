@@ -146,9 +146,9 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
     }
 
     @Override
-    List<Order> getOrdersByStatus(Object shardKey, List<String> statusList,
+    List<Order> getOrdersByStatus(Integer dataCenterId, Object shardKey, List<String> statusList,
                                   boolean updatedByAscending, PageParam pageParam) {
-        return orderRepository.getByStatus(shardKey, statusList, updatedByAscending, pageParam).get();
+        return orderRepository.getByStatus(dataCenterId, shardKey, statusList, updatedByAscending, pageParam).get();
     }
 
     @Override

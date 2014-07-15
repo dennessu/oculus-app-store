@@ -1,14 +1,14 @@
 package com.junbo.langur.core
-
 import com.junbo.langur.core.action.*
+import com.junbo.langur.core.promise.ExecutorContext
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.testng.Assert
+import org.testng.annotations.AfterTest
+import org.testng.annotations.BeforeTest
 import org.testng.annotations.Test
 
-import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
-
 /**
  * Created by Shenhua on 1/6/14.
  */
@@ -16,6 +16,18 @@ import java.util.concurrent.TimeUnit
 class ActionTest {
 
     private final ActionExecutor executor = new DefaultActionExecutor()
+    private boolean asyncModeOldValue;
+
+    @BeforeTest
+    void setup() {
+        asyncModeOldValue = ExecutorContext.isAsyncMode();
+        ExecutorContext.setAsyncMode(true);
+    }
+
+    @AfterTest
+    void cleanup() {
+        ExecutorContext.setAsyncMode(asyncModeOldValue);
+    }
 
     @Test
     void testSequenceAction() {

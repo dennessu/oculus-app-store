@@ -1,5 +1,6 @@
 package com.junbo.order.db.repo.sql
 
+import com.junbo.common.id.OrderItemId
 import com.junbo.common.id.SubledgerItemId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
@@ -68,13 +69,20 @@ class SubledgerItemRepositorySqlImpl implements SubledgerItemRepository {
     }
 
     @Override
-    Promise<List<SubledgerItem>> getByStatus(Object shardKey, String status, PageParam pageParam) {
+    Promise<List<SubledgerItem>> getByStatus(Integer dataCenterId, Object shardKey, String status, PageParam pageParam) {
         List<SubledgerItem> result = []
-        subledgerItemDao.getByStatus((Integer) shardKey,
+        subledgerItemDao.getByStatus(dataCenterId, (Integer) shardKey,
                 SubledgerItemStatus.valueOf(status),
                 pageParam.start, pageParam.count).each { SubledgerItemEntity entity ->
             result << modelMapper.toSubledgerItemModel(entity, new MappingContext())
         }
         return Promise.pure(result)
+    }
+
+    @Override
+    Promise<List<SubledgerItem>> getByOrderItemId(OrderItemId orderItemId) {
+        return Promise.pure(subledgerItemDao.getByOrderItemId(orderItemId.value).collect { SubledgerItemEntity entity ->
+            return modelMapper.toSubledgerItemModel(entity, new MappingContext());
+        })
     }
 }

@@ -1,8 +1,8 @@
 {
   "localeCode": "sr_RS",
-  "shortName": "Serbian (RS)",
-  "longName": "Serbian (Serbia)",
-  "localeName": "Serbian (RS)",
+  "shortName": "Српски (RS)",
+  "longName": "Српски (Србија)",
+  "localeName": "Српски (RS)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

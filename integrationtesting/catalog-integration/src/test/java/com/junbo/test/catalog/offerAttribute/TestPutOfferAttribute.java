@@ -10,6 +10,10 @@ import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.test.catalog.OfferAttributeService;
 import com.junbo.test.catalog.impl.OfferAttributeServiceImpl;
 import com.junbo.test.catalog.util.BaseTestClass;
+import com.junbo.test.common.Entities.enums.ComponentType;
+import com.junbo.test.common.apihelper.oauth.OAuthTokenService;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthTokenServiceImpl;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.property.Component;
@@ -17,6 +21,7 @@ import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
 import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
@@ -31,6 +36,12 @@ public class TestPutOfferAttribute extends BaseTestClass {
     private LogHelper logger = new LogHelper(TestPutOfferAttribute.class);
     private OfferAttributeService offerAttributeService = OfferAttributeServiceImpl.instance();
     private final String defaultLocale = "en_US";
+
+    @BeforeClass
+    private void PrepareTestData() throws Exception {
+        OAuthTokenService oAuthTokenService = OAuthTokenServiceImpl.getInstance();
+        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOG);
+    }
 
     @Property(
             priority = Priority.Dailies,

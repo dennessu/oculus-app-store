@@ -12,5 +12,6 @@
     <import resource="classpath*:spring/threadpool-context.xml"/>
 
     <import resource="classpath*:spring-disabled/sql-context.xml"/>
+    <import resource="classpath*:spring/*-context.xml" />
 
 </beans>

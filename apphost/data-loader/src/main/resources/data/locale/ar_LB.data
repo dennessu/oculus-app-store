@@ -1,8 +1,8 @@
 {
   "localeCode": "ar_LB",
-  "shortName": "Arabic (LB)",
-  "longName": "Arabic (Lebanon)",
-  "localeName": "Arabic (LB)",
+  "shortName": "العربية (LB)",
+  "longName": "العربية (لبنان)",
+  "localeName": "العربية (LB)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

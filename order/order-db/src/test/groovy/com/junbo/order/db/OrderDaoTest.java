@@ -122,7 +122,7 @@ public class OrderDaoTest extends BaseTest {
             orderDao.create(entity);
         }
 
-        List<OrderEntity> orders = orderDao.readByStatus(shardAlgorithm.shardId(userId),
+        List<OrderEntity> orders = orderDao.readByStatus(shardAlgorithm.dataCenterId(userId), shardAlgorithm.shardId(userId),
                 Arrays.asList(orderStatus), true, 0, 1000);
         for (int i = 0;i < orders.size(); ++i) {
             Assert.assertEquals(orders.get(i).getOrderStatusId(), orderStatus);
@@ -131,7 +131,7 @@ public class OrderDaoTest extends BaseTest {
             }
         }
 
-        Assert.assertEquals(orderDao.readByStatus(shardAlgorithm.shardId(userId),
+        Assert.assertEquals(orderDao.readByStatus(shardAlgorithm.dataCenterId(userId), shardAlgorithm.shardId(userId),
                 Arrays.asList(orderStatus), true, 0, 3).size(), 3);
     }
 }

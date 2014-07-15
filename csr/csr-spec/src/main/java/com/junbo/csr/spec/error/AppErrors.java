@@ -48,9 +48,18 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 409, code = "900011", message = "Csr update {0} not found.", field = "{0}")
     AppError csrUpdateNotFound(CsrUpdateId csrUpdateId);
 
-    @ErrorDef(httpStatusCode = 400, code = "900012", message = "Request body is empty")
+    @ErrorDef(httpStatusCode = 400, code = "900012", message = "Request body is empty.")
     AppError requestBodyRequired();
 
     @ErrorDef(httpStatusCode = 400, code = "900013", message = "Date should be in ISO8601 format.(2014-07-08T10:41:15Z)")
     AppError dateFormatInvalid();
+
+    @ErrorDef(httpStatusCode = 400, code = "900014", message = "Invalid request.")
+    AppError invalidRequest();
+
+    @ErrorDef(httpStatusCode = 400, code = "900015", message = "Get access Token failed.")
+    AppError getAccessTokenFailed();
+
+    @ErrorDef(httpStatusCode = 400, code = "900016", message = "Csr group not found.")
+    AppError CsrGroupNotFound();
 }

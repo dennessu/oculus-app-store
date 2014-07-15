@@ -1,9 +1,13 @@
 package com.junbo.crypto.core.service.impl
+import com.junbo.configuration.ConfigServiceManager
 import com.junbo.crypto.core.service.KeyStoreService
+import com.junbo.utils.FileUtils
 import groovy.transform.CompileStatic
 import org.apache.commons.io.FilenameUtils
 import org.springframework.util.StringUtils
 
+import javax.xml.bind.DatatypeConverter
+import java.nio.file.Paths
 import java.security.Key
 import java.security.KeyStore
 import java.security.PublicKey
@@ -15,6 +19,8 @@ import java.security.cert.Certificate
 @SuppressWarnings('EmptyCatchBlock')
 class KeyStoreServiceImpl implements KeyStoreService {
     private static final String DEFAULT_KEY_STORE_TYPE = 'jks'
+    private static final String KEY_STORE_FROM_FILE = "file://"
+    private static final String KEY_STORE_INCLUDED = "inline://"
 
     // The aliases for keyStore to load
     // We will load all the largest version's alias to encrypt and decrypt the latest data;
@@ -28,19 +34,14 @@ class KeyStoreServiceImpl implements KeyStoreService {
 
     private KeyStore keyStore
 
-    KeyStoreServiceImpl(String keyStorePath, String keyStorePassword, String keyAliases, String keyPasswords,
-                        Boolean enableEncrypt) {
-        assert keyStorePath != null
+    KeyStoreServiceImpl(String keyStore, String keyStorePassword, String keyAliases, String keyPasswords) {
+        assert keyStore != null
         assert keyStorePassword != null
         assert keyAliases != null
         assert keyPasswords != null
-        assert enableEncrypt != null
 
-        if (enableEncrypt != true) {
-            return
-        }
         initKeyAliasesAndPassword(keyAliases, keyPasswords)
-        initKeyStore(keyStorePath, keyStorePassword)
+        initKeyStore(keyStore, keyStorePassword)
     }
 
     @Override
@@ -108,12 +109,23 @@ class KeyStoreServiceImpl implements KeyStoreService {
         return keyStore.getKey(alias, password.toCharArray())
     }
 
-    private void initKeyStore(String keyStorePath, String keyStorePassword) {
-        assert keyStorePath != null
+    private void initKeyStore(String keyStore, String keyStorePassword) {
+        assert keyStore != null
         assert keyStorePassword != null
 
         this.keyStore = KeyStore.getInstance(DEFAULT_KEY_STORE_TYPE)
-        InputStream input = new FileInputStream(getAbsoluteKeyStorePath(keyStorePath))
+
+        InputStream input = null;
+        if (keyStore.startsWith(KEY_STORE_FROM_FILE)) {
+            String keyStorePath = keyStore.substring(KEY_STORE_FROM_FILE.length());
+            String keyStoreAbsolutePath = getAbsoluteKeyStorePath(keyStorePath);
+            FileUtils.checkPermission600(Paths.get(keyStoreAbsolutePath));
+            input = new FileInputStream(keyStoreAbsolutePath)
+        } else if (keyStore.startsWith(KEY_STORE_INCLUDED)) {
+            String keyStoreHex = keyStore.substring(KEY_STORE_INCLUDED.length());
+            byte[] keyStoreBin = DatatypeConverter.parseHexBinary(keyStoreHex);
+            input = new ByteArrayInputStream(keyStoreBin);
+        }
         this.keyStore.load(input, keyStorePassword.toCharArray())
     }
 
@@ -136,8 +148,7 @@ class KeyStoreServiceImpl implements KeyStoreService {
     }
 
     private String getAbsoluteKeyStorePath(String keyStorePath) {
-        String javaHome = System.properties.getProperty('java.home')
-
-        return FilenameUtils.normalize(javaHome + '/' + keyStorePath)
+        String configDir = ConfigServiceManager.instance().getConfigPath()
+        return FilenameUtils.normalize(configDir + '/' + keyStorePath)
     }
 }

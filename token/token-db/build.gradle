@@ -31,4 +31,5 @@ dependencies {
 	compile(libraries.postgresql)
 
     testCompile(libraries.spring_test)
+    testCompile junboProject(':authorization-lib')
 }

@@ -16,7 +16,7 @@ cd `git rev-parse --show-toplevel`
 run_gradle gradle/bootstrap
 $GRADLE_CMD
 
-pushd apphost/apphost-cli
+pushd apphost
 gradle
 popd
 

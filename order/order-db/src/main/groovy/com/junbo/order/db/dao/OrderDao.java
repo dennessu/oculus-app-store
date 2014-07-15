@@ -17,6 +17,6 @@ import java.util.List;
 public interface OrderDao extends BaseDao<OrderEntity> {
     List<OrderEntity> readByUserId(final Long userId,  Boolean tentative, Integer start, Integer count);
 
-    List<OrderEntity> readByStatus(Integer shardId,  List<OrderStatus> statusList, boolean updatedByAscending,
+    List<OrderEntity> readByStatus(Integer dataCenterId, Integer shardId,  List<OrderStatus> statusList, boolean updatedByAscending,
                                    Integer start, Integer count);
 }

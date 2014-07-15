@@ -22,7 +22,7 @@ public interface OrderRepositoryFacade {
 
     List<Order> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam);
 
-    List<Order> getOrdersByStatus(Object shardKey, List<String> statusList,
+    List<Order> getOrdersByStatus(Integer dataCenterId, Object shardKey, List<String> statusList,
                                   boolean updatedByAscending, PageParam pageParam);
 
     OrderEvent createOrderEvent(OrderEvent event);

@@ -1,7 +1,7 @@
 {
   "localeCode": "is_IS",
   "shortName": "Icelandic (IS)",
-  "longName": "Icelandic (Iceland)",
+  "longName": "Icelandic (Ísland)",
   "localeName": "Icelandic (IS)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",

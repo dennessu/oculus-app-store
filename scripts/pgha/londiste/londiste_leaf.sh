@@ -5,6 +5,9 @@ source ${DIR}/../util/common.sh
 #check running under specified account
 checkAccount $DEPLOYMENT_ACCOUNT
 
+echo "[LONDISTE][REPLICA] generate leaf configuration"
+$DEPLOYMENT_PATH/londiste/londiste_config_leaf.sh
+
 ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
     source $DEPLOYMENT_PATH/util/common.sh
 
@@ -25,8 +28,8 @@ ENDSSH
 echo "[LONDISTE][REPLICA] kill skytools instance"
 forceKillPid $SKYTOOL_PID_PATH
 
-echo "[LONDISTE][REPLICA] copy unarchived log files"
-rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_DATA_PATH/pg_xlog/* $REPLICA_ARCHIVE_PATH
+#echo "[LONDISTE][REPLICA] copy unarchived log files"
+#rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_DATA_PATH/pg_xlog/* $REPLICA_ARCHIVE_PATH
 
 xlog_location=`psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT pg_current_xlog_location();" -t | tr -d ' '`
 echo "[LONDISTE][REPLICA] current xlog location is [$xlog_location]"
@@ -109,3 +112,7 @@ ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
     echo "[LONDISTE][SLAVE] start secondary pgbouncer proxy"
     $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
 ENDSSH
+
+echo "[LONDISTE][REPLICA] start pgqd deamon"
+$DEPLOYMENT_PATH/londiste/londiste_pgqd.sh
+

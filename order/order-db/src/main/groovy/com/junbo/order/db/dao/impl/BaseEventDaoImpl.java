@@ -47,7 +47,7 @@ public class BaseEventDaoImpl<T extends CommonEventEntity> implements BaseEventD
     }
 
     protected Session getSession(Object key) {
-        ShardScope shardScope = new ShardScope(shardAlgorithm.shardId(key));
+        ShardScope shardScope = new ShardScope(shardAlgorithm.dataCenterId(key), shardAlgorithm.shardId(key));
         try {
             return sessionFactory.getCurrentSession();
         } finally {

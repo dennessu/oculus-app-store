@@ -1,8 +1,8 @@
 {
   "localeCode": "tr_CY",
-  "shortName": "Turkish (CY)",
-  "longName": "Turkish (Cyprus)",
-  "localeName": "Turkish (CY)",
+  "shortName": "Türkçe (CY)",
+  "longName": "Türkçe (Kıbrıs)",
+  "localeName": "Türkçe (CY)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

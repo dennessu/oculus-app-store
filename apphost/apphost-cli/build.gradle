@@ -25,7 +25,7 @@ dependencies {
     compile junboProject(':fulfilment-rest')
     compile junboProject(':order-rest')
     compile junboProject(':crypto-rest')
-    compile junboProject(':iap-rest')
+    compile junboProject(':store-rest')
     compile junboProject(':authorization-rest')
     compile junboProject(':data-loader')
 
@@ -45,6 +45,10 @@ applicationDistribution.from("../../cloudant") {
 
 applicationDistribution.from("../../liquibase") {
     into "dbsetup/liquibase"
+}
+
+applicationDistribution.from("../../pgha") {
+    into "dbsetup/pgha"
 }
 
 applicationDistribution.eachFile { FileCopyDetails f ->

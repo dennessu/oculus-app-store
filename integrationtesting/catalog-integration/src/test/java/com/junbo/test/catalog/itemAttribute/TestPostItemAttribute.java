@@ -11,10 +11,15 @@ import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.test.catalog.impl.ItemAttributeServiceImpl;
 import com.junbo.test.catalog.ItemAttributeService;
 import com.junbo.test.catalog.util.BaseTestClass;
+import com.junbo.test.common.Entities.enums.ComponentType;
+import com.junbo.test.common.apihelper.oauth.OAuthTokenService;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthTokenServiceImpl;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.*;
 
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.Assert;
 import java.util.HashMap;
@@ -28,6 +33,12 @@ public class TestPostItemAttribute extends BaseTestClass {
 
     private LogHelper logger = new LogHelper(TestPostItemAttribute.class);
     private ItemAttributeService itemAttributeService = ItemAttributeServiceImpl.instance();
+
+    @BeforeClass
+    private void PrepareTestData() throws Exception {
+        OAuthTokenService oAuthTokenService = OAuthTokenServiceImpl.getInstance();
+        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOG);
+    }
 
     @Property(
             priority = Priority.Dailies,

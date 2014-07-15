@@ -45,7 +45,7 @@ public class BaseDao<T extends Entity> {
     private Class<T> entityType;
 
     protected Session currentSession(Object key) {
-        ShardScope shardScope = new ShardScope(shardAlgorithm.shardId(key));
+        ShardScope shardScope = new ShardScope(shardAlgorithm.dataCenterId(key), shardAlgorithm.shardId(key));
         try {
             return sessionFactory.getCurrentSession();
         } finally {

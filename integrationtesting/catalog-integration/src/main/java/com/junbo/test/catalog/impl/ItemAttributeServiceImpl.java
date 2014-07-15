@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttributeService {
 
-    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "/item-attributes";
+    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "item-attributes";
     private static ItemAttributeService instance;
 
     public static synchronized ItemAttributeService instance() {

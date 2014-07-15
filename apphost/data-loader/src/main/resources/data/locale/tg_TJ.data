@@ -1,8 +1,8 @@
 {
   "localeCode": "tg_TJ",
-  "shortName": "Tajik (TJ)",
-  "longName": "Tajik (Tajikistan)",
-  "localeName": "Tajik (TJ)",
+  "shortName": "тоҷикӣ (TJ)",
+  "longName": "тоҷикӣ (Тоҷикистон)",
+  "localeName": "тоҷикӣ (TJ)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

@@ -9,6 +9,7 @@
         }
     ],
     "subOffers": [],
+    "distributionChannel": ["INAPP"],
     "price":{
         "priceType": "CUSTOM",
         "priceTier": null,
@@ -78,10 +79,6 @@
     "locales":{
         "en_US":{
             "name": "Angry Bird",
-            "revisionNotes": {
-                "shortNotes": "Short Notes",
-                "longNotes": "Long notes"
-            },
             "longDescription": "long description",
             "shortDescription": "short description",
             "images":{

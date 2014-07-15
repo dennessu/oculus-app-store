@@ -150,7 +150,9 @@ class OrderInternalServiceImpl implements OrderInternalService {
         }
 
         Order diffOrder = null
+        com.junbo.identity.spec.v1.model.Currency orderCurrency
         Promise promise3 = promise2.then { com.junbo.identity.spec.v1.model.Currency currency ->
+            orderCurrency = currency
             diffOrder = CoreUtils.diffRefundOrder(existingOrder, order, currency.numberAfterDecimal)
             return orderServiceContextBuilder.getBalances(context)
         }
@@ -176,7 +178,6 @@ class OrderInternalServiceImpl implements OrderInternalService {
 
         return promise4.then { List<Balance> refundBalances ->
             return Promise.each(refundBalances) { Balance refundBalance ->
-                // @Transactional
                 return transactionHelper.executeInTransaction {
                     return facadeContainer.billingFacade.createBalance(refundBalance, true).syncRecover {
                         Throwable ex ->
@@ -192,6 +193,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                         if(isRefundable) {
                             refundedOrder.status = OrderStatus.REFUNDED.name()
                             orderRepository.updateOrder(refundedOrder, false, true, OrderItemRevisionType.REFUND)
+                            context.refundedOrderItems = diffOrder.orderItems // todo : need to whether it is the right way to set refundedOrderItems
                             persistBillingHistory(refunded, BillingAction.REQUEST_REFUND, order)
                         } else if(isCancelable) {
                             refundedOrder.status = OrderStatus.CANCELED.name()
@@ -219,6 +221,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 ParamUtils.processOrderQueryParam(orderQueryParam),
                 ParamUtils.processPageParam(pageParam))
         return Promise.each(orders) { Order order ->
+            context.order = order
             return completeOrder(order, context)
         }.then {
             return Promise.pure(orders)

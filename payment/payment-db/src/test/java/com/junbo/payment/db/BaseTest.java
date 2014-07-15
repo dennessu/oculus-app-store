@@ -27,7 +27,7 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
     protected PlatformTransactionManager transactionManager;
 
     protected long generateShardId() {
-        return idGenerator.nextIdByShardId(0);
+        return idGenerator.nextId() ;
     }
 
     protected long generateShardId(Long masterId) {

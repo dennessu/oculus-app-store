@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.UriBuilder;
 import java.net.MalformedURLException;
@@ -57,6 +58,8 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
     @Autowired
     private AmazonS3Client awsClient;
+
+    private static String bucketName = "static.oculusvr.com";
 
     @Override
     @Transactional
@@ -270,8 +273,9 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
                     + itemId + "' binaries").exception();
         }
         String urlString = itemRevision.getBinaries().get(platform).getHref();
+        String version = itemRevision.getBinaries().get(platform).getVersion();
         try {
-            return generatePreSignedDownloadUrl(urlString);
+            return generatePreSignedDownloadUrl(urlString, itemRevision.getDownloadName(), version, platform);
         } catch (MalformedURLException e) {
             String msg = "Error occurred during parsing url " + urlString;
             LOGGER.error(msg, e);
@@ -322,10 +326,13 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         return builder.toTemplate();
     }
 
-    private URI generatePreSignedDownloadUrl(String urlString) throws MalformedURLException, URISyntaxException {
+    private URI generatePreSignedDownloadUrl(String urlString, String filename, String version, String platform) throws MalformedURLException, URISyntaxException {
+        if (urlString.indexOf(bucketName) == -1) {
+            return new URI(urlString);
+        }
         URL url = new URL(urlString);
-        String bucketName = url.getHost();
         String objectKey = url.getPath().substring(1);
+        String extension = getExtension(objectKey);
 
         java.util.Date expiration = new java.util.Date();
         long milliSeconds = expiration.getTime();
@@ -336,8 +343,38 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
                 new GeneratePresignedUrlRequest(bucketName, objectKey);
         generatePresignedUrlRequest.setMethod(HttpMethod.GET);
         generatePresignedUrlRequest.setExpiration(expiration);
+        if (!StringUtils.isEmpty(filename)) {
+            if (!StringUtils.isEmpty(version)) {
+                filename = filename + "_" + version;
+            }
+            filename = filename + "_" + platform;
+            generatePresignedUrlRequest.addRequestParameter("response-content-disposition",
+                    "attachment;filename=" + (extension == null ? filename : filename + "." + extension));
+        }
 
         URL downloadUrl = awsClient.generatePresignedUrl(generatePresignedUrlRequest);
         return downloadUrl.toURI();
+    }
+
+    private String getExtension(String objectKey) {
+        String[] parts = objectKey.split("\\.");
+        if (parts.length == 0) {
+            return null;
+        }
+
+        String lastPart = parts[parts.length - 1];
+        if (lastPart.indexOf("/") != -1) {
+            return null;
+        }
+
+        return lastPart;
+    }
+
+    public static String getBucketName() {
+        return bucketName;
+    }
+
+    public void setBucketName(String bucketName) {
+        EntitlementServiceImpl.bucketName = bucketName;
     }
 }

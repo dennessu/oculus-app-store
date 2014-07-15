@@ -1,9 +1,8 @@
 package com.junbo.order.db.repo.facade.impl
+
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
-import com.junbo.common.id.OfferId
-import com.junbo.common.id.OrganizationId
-import com.junbo.common.id.SubledgerId
+import com.junbo.common.id.*
 import com.junbo.order.db.repo.SubledgerItemRepository
 import com.junbo.order.db.repo.SubledgerRepository
 import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
@@ -15,6 +14,7 @@ import com.junbo.order.spec.model.SubledgerParam
 import groovy.transform.CompileStatic
 import org.hibernate.StaleObjectStateException
 import org.springframework.beans.factory.annotation.Required
+
 /**
  * Created by fzhang on 4/11/2014.
  */
@@ -76,8 +76,18 @@ class SubledgerRepositoryFacadeImpl implements SubledgerRepositoryFacade {
     }
 
     @Override
-    List<SubledgerItem> getSubledgerItem(Object shardKey, String status, PageParam pageParam) {
-        return subledgerItemRepository.getByStatus(shardKey, status, pageParam).get();
+    SubledgerItem getSubledgerItem(SubledgerItemId subledgerItemId) {
+        return subledgerItemRepository.get(subledgerItemId).get()
+    }
+
+    @Override
+    List<SubledgerItem> getSubledgerItem(Integer dataCenterId, Object shardKey, String status, PageParam pageParam) {
+        return subledgerItemRepository.getByStatus(dataCenterId, shardKey, status, pageParam).get()
+    }
+
+    @Override
+    List<SubledgerItem> getSubledgerItemByOrderItemId(OrderItemId orderItemId) {
+        return subledgerItemRepository.getByOrderItemId(orderItemId).get()
     }
 
     @Override

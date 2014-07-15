@@ -30,14 +30,8 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
 
     private CryptoMessageValidator validator
 
-    private Boolean enableEncrypt
-
     @Override
     Promise<CryptoMessage> encrypt(UserId userId, CryptoMessage rawMessage) {
-        if (!enableEncrypt) {
-            return Promise.pure(rawMessage)
-        }
-
         return authorize().then {
             return validator.validateEncrypt(userId, rawMessage).then {
                 if (enableUserKeyEncrypt) {
@@ -59,10 +53,6 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
 
     @Override
     Promise<CryptoMessage> decrypt(UserId userId, CryptoMessage encryptMessage) {
-        if (!enableEncrypt) {
-            return Promise.pure(encryptMessage)
-        }
-
         return authorize().then {
             return validator.validateDecrypt(userId, encryptMessage).then {
                 if (enableUserKeyEncrypt) {
@@ -86,10 +76,6 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
 
     @Override
     Promise<CryptoMessage> encrypt(CryptoMessage rawMessage) {
-        if (!enableEncrypt) {
-            return Promise.pure(rawMessage)
-        }
-
         return authorize().then {
             return validator.validateEncrypt(null, rawMessage).then {
                 return symmetricEncryptUserMessageByMasterKey(rawMessage.value).then { String encryptMessage ->
@@ -103,10 +89,6 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
 
     @Override
     Promise<CryptoMessage> decrypt(CryptoMessage encryptMessage) {
-        if (!enableEncrypt) {
-            return Promise.pure(encryptMessage)
-        }
-
         return authorize().then {
             return validator.validateDecrypt(null, encryptMessage).then {
                 return symmetricDecryptUserMessageByMasterKey(encryptMessage.value).then { String rawMessage ->
@@ -122,11 +104,6 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
     @Required
     void setValidator(CryptoMessageValidator validator) {
         this.validator = validator
-    }
-
-    @Required
-    void setEnableEncrypt(Boolean enableEncrypt) {
-        this.enableEncrypt = enableEncrypt
     }
 
     // Used to encrypt and decrypt user message by masterKey

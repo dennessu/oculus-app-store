@@ -13,8 +13,7 @@
         <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
     </bean>
 
-    <bean id="csr_userResource" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
-          parent="userResourceClientProxy">
+    <bean id="csr_userResource" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy" parent="userResourceClientProxy">
         <property name="accessTokenProvider" ref="csrAccessTokenProvider"/>
     </bean>
 

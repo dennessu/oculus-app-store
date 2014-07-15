@@ -1,8 +1,8 @@
 {
   "localeCode": "sv_SE",
-  "shortName": "Swedish (SE)",
-  "longName": "Swedish (Sweden)",
-  "localeName": "Swedish (SE)",
+  "shortName": "Svenska (SE)",
+  "longName": "Svenska (Sverige)",
+  "localeName": "Svenska (SE)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

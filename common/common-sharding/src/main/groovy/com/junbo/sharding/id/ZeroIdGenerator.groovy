@@ -24,7 +24,7 @@ class ZeroIdGenerator implements com.junbo.sharding.IdGenerator {
     }
 
     @Override
-    long nextIdByShardId(int shardId) {
+    long nextIdByDCIdAndShardId(int dataCenterId, int shardId) {
         return 0;
     }
 }

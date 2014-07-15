@@ -6,17 +6,19 @@ cd apphost/apphost-cli/build/install/apphost-cli/
 ./shutdown.sh || true
 ./startup.sh onebox
 
+# sleep 5 seconds to ensure main.log is created.
+sleep 5
+
 tail -f -n0 logs/main.log | while read LOGLINE
 do
     if [[ "${LOGLINE}" == *"Started Junbo Application Host"* ]]; then
         ps -aef | grep tail | grep $$ | grep -v grep | awk '{print $2}' | xargs kill
     fi
 done
-./dataloader.sh
 
 function cleanup {
     cd `git rev-parse --show-toplevel`
-    cd apphost/apphost-cli/build/install/apphost-cli/ 
+    cd apphost/apphost-cli/build/install/apphost-cli/
     ./shutdown.sh
 }
 
@@ -27,4 +29,3 @@ gradle
 
 trap - EXIT INT TERM
 cleanup
-

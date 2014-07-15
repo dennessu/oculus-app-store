@@ -9,6 +9,7 @@ package com.junbo.configuration.impl;
 import com.junbo.configuration.ConfigContext;
 import com.junbo.configuration.crypto.CipherService;
 import com.junbo.configuration.crypto.impl.AESCipherServiceImpl;
+import com.junbo.utils.FileUtils;
 import com.junbo.utils.FileWatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +19,10 @@ import org.springframework.util.StringUtils;
 import java.io.*;
 import java.lang.ref.WeakReference;
 import java.net.URL;
-import java.nio.file.*;
-import java.nio.file.attribute.PosixFileAttributes;
-import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.WatchEvent;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.JarEntry;
@@ -41,6 +43,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
     private static final String CONFIG_PROPERTY_FILE = "configuration.properties";
     private static final String CONFIG_PASSWORD_KEY = "crypto.core.key";
     private static final String CONFIG_DIR_OPTS = "configDir";
+    private static final String CONFIG_DIR_DEFAULT = "/etc/silkcloud;./conf";
     private static final String ACTIVE_ENV_OPTS = "environment";
     private static final String ACTIVE_DC_OPTS = "datacenter";
     private static final String ACTIVE_SUBNET_OPTS = "subnet";
@@ -70,6 +73,11 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
     public ConfigServiceImpl() {
         this.loadConfig();
         this.watch();
+    }
+
+    @Override
+    public String getConfigPath() {
+        return configPath;
     }
 
     @Override
@@ -239,7 +247,9 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
         for (String string : resourcePathes) {
             try (InputStream fileStream = this.getClass().getClassLoader().getResourceAsStream(string)) {
-                properties.load(fileStream);
+                Properties newProperties = new Properties();
+                newProperties.load(fileStream);
+                updateProperties(properties, newProperties);
             } catch (IOException ex) {
                 throw new RuntimeException("Failed to read property file from resource: " + string, ex);
             }
@@ -290,6 +300,23 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         }
     }
 
+    private void updateProperties(Properties props, Properties newProps) {
+        for (Map.Entry<Object, Object> entry : newProps.entrySet()) {
+            String key = entry.getKey().toString();
+            String value = entry.getValue().toString();
+
+            if (key.endsWith(CRYPTO_SUFFIX)) {
+                int endIndex = key.lastIndexOf(CRYPTO_SUFFIX);
+                String newKey = key.substring(0, endIndex);
+
+                // remove old unencrypted key
+                props.remove(newKey);
+            }
+
+            props.put(key, value);
+        }
+    }
+
     private Properties readProperties(Path path) {
         logger.info("Reading override properties from: " + path);
         if (Files.exists(path)) {
@@ -306,6 +333,9 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
     private void loadConfig() {
         String configDirs = System.getProperty(CONFIG_DIR_OPTS);
+        if (StringUtils.isEmpty(configDirs)) {
+            configDirs = CONFIG_DIR_DEFAULT;
+        }
 
         Path configFilePath = findFile(configDirs, CONFIG_PROPERTY_FILE);
         if (configFilePath != null) {
@@ -341,13 +371,13 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         }
 
         logger.info("Scanning configuration file {} from configDirs: {}", fileName, configDirs);
-        String[] configDirArr = configDirs.split(":");
+        String[] configDirArr = configDirs.split(";");
         for (String configDir : configDirArr) {
             if (StringUtils.isEmpty(configDir)) continue;
             Path path = Paths.get(configDir, fileName);
             if (Files.exists(path)) {
                 logger.info("Found configuration file {} from configDir: {}", fileName, configDir);
-                checkPermission(path);
+                FileUtils.checkPermission600(path);
                 return path;
             }
         }
@@ -390,34 +420,6 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         }
         // not found
         throw new RuntimeException(CONFIG_PASSWORD_KEY + " is not specified.");
-    }
-
-    private void checkPermission(Path path) {
-        // check permission, it must be owner read and write only
-        Set<PosixFilePermission> permissions = null;
-        try {
-            permissions = Files.readAttributes(path, PosixFileAttributes.class, LinkOption.NOFOLLOW_LINKS).permissions();
-
-            if (CollectionUtils.isEmpty(permissions)) {
-                throw new IllegalAccessException("Permission check invalid.");
-            }
-
-            // Only support OWNER_READ and OWNER_WRITE
-            if (permissions.size() > 2) {
-                throw new IllegalAccessException("Permission only valid for OWNER_READ and OWNER_WRITE.");
-            }
-
-            for (PosixFilePermission permission : permissions) {
-                if (permission != PosixFilePermission.OWNER_READ && permission != PosixFilePermission.OWNER_WRITE) {
-                    throw new IllegalAccessException("Permission only valid for OWNER_READ and OWNER_WRITE.");
-                }
-            }
-        } catch (UnsupportedOperationException unSupportedOperationEx) {
-            logger.warn("Skip permission check.");
-        } catch (Exception ex) {
-            logger.error("Error checking permission for file: " + path);
-            throw new RuntimeException(ex);
-        }
     }
 
     private void watch(){

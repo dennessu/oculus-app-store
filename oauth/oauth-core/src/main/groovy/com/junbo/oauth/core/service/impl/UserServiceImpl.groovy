@@ -193,11 +193,22 @@ class UserServiceImpl implements UserService {
 
     @Override
     Promise<Void> sendVerifyEmail(UserId userId, ActionContextWrapper contextWrapper) {
+        String locale = contextWrapper.viewLocale
+        String country = contextWrapper.viewCountry
+        def request = (ContainerRequest) contextWrapper.request
+        URI baseUri = request.baseUri
+
+        return sendVerifyEmail(userId, locale, country, baseUri).then { String link ->
+            contextWrapper.emailVerifyLink = link
+            return Promise.pure(null)
+        }
+    }
+
+    @Override
+    Promise<Void> sendVerifyEmail(UserId userId, String locale, String country, URI baseUri) {
         if (userId == null || userId.value == null) {
             throw AppExceptions.INSTANCE.missingUserId().exception()
         }
-
-        def request = (ContainerRequest) contextWrapper.request
 
         return userResource.get(userId, new UserGetOptions()).then { User user ->
             if (user == null) {
@@ -215,19 +226,18 @@ class UserServiceImpl implements UserService {
 
                 emailVerifyCodeRepository.save(code)
 
-                UriBuilder uriBuilder = UriBuilder.fromUri(request.baseUri)
+                UriBuilder uriBuilder = UriBuilder.fromUri(baseUri)
                 uriBuilder.path(EMAIL_VERIFY_PATH)
                 uriBuilder.queryParam(OAuthParameters.EMAIL_VERIFY_CODE, code.code)
-                uriBuilder.queryParam(OAuthParameters.LOCALE, contextWrapper.viewLocale)
+                uriBuilder.queryParam(OAuthParameters.LOCALE, locale)
 
                 QueryParam queryParam = new QueryParam(
                         source: EMAIL_SOURCE,
                         action: VERIFY_EMAIL_ACTION,
-                        locale: contextWrapper.viewLocale
+                        locale: locale
                 )
 
                 String link = uriBuilder.build().toString()
-                contextWrapper.emailVerifyLink = link
                 return this.sendEmail(queryParam, user, email, link)
             }
         }

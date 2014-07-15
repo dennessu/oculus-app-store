@@ -13,10 +13,7 @@ import com.junbo.catalog.db.repo.ItemAttributeRepository;
 import com.junbo.catalog.db.repo.ItemRepository;
 import com.junbo.catalog.db.repo.ItemRevisionRepository;
 import com.junbo.catalog.db.repo.OfferRepository;
-import com.junbo.catalog.spec.enums.EntitlementType;
-import com.junbo.catalog.spec.enums.ItemAttributeType;
-import com.junbo.catalog.spec.enums.ItemType;
-import com.junbo.catalog.spec.enums.Status;
+import com.junbo.catalog.spec.enums.*;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.item.*;
@@ -133,7 +130,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
             if (CollectionUtils.isEmpty(options.getItemIds())) {
                 AppErrorException exception =
                         AppCommonErrors.INSTANCE.parameterInvalid("itemId must be specified when timestamp is present.").exception();
-                LOGGER.error("Error updating item-revision. ", exception);
+                LOGGER.error("Error getting item-revisions. ", exception);
                 throw exception;
             }
             return itemRevisionRepo.getRevisions(options.getItemIds(), options.getTimestamp());
@@ -173,9 +170,9 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         } else if (ItemType.DOWNLOADED_ADDITION.is(itemType)) {
             addEntitlementIfNotExist(entitlementDefs, EntitlementType.DOWNLOAD, false);
             addEntitlementIfNotExist(entitlementDefs, EntitlementType.ALLOW_IN_APP, false);
-        } else if (ItemType.IN_APP_UNLOCK.is(itemType)) {
+        } else if (ItemType.PERMANENT_UNLOCK.is(itemType)) {
             addEntitlementIfNotExist(entitlementDefs, EntitlementType.ALLOW_IN_APP, false);
-        } else if (ItemType.IN_APP_CONSUMABLE.is(itemType)) {
+        } else if (ItemType.CONSUMABLE_UNLOCK.is(itemType)) {
             addEntitlementIfNotExist(entitlementDefs, EntitlementType.ALLOW_IN_APP, true);
         }
     }
@@ -313,6 +310,19 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         if (revision.getOwnerId() == null) {
             errors.add(AppCommonErrors.INSTANCE.fieldRequired("developer"));
         }
+        if (CollectionUtils.isEmpty(revision.getDistributionChannels())) {
+            errors.add(AppCommonErrors.INSTANCE.fieldRequired("distributionChannel"));
+        } else {
+            int i;
+            for (i=0; i < revision.getDistributionChannels().size(); i++) {
+                if (!DistributionChannel.contains(revision.getDistributionChannels().get(i))) {
+                    break;
+                }
+            }
+            if (i < revision.getDistributionChannels().size()) {
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("distributionChannel", Joiner.on(", ").join(DistributionChannel.ALL)));
+            }
+        }
         if (revision.getItemId() == null) {
             errors.add(AppCommonErrors.INSTANCE.fieldRequired("itemId"));
         } else {
@@ -325,10 +335,16 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
                     if (CollectionUtils.isEmpty(revision.getBinaries())) {
                         errors.add(AppCommonErrors.INSTANCE.fieldRequired("binaries"));
                     }
+                    if (StringUtils.isEmpty(revision.getDownloadName())) {
+                        errors.add(AppCommonErrors.INSTANCE.fieldRequired("downloadName"));
+                    }
                 }
                 if (!(ItemType.APP.is(item.getType()) || ItemType.DOWNLOADED_ADDITION.is(item.getType()))) {
                     if (!CollectionUtils.isEmpty(revision.getBinaries())) {
                         errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("binaries"));
+                    }
+                    if (!StringUtils.isEmpty(revision.getDownloadName())) {
+                        errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("downloadName"));
                     }
                 }
             }

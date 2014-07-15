@@ -1,8 +1,8 @@
 {
   "localeCode": "ne_NP",
-  "shortName": "Nepali (NP)",
-  "longName": "Nepali (Nepal)",
-  "localeName": "Nepali (NP)",
+  "shortName": "नेपाली  (NP)",
+  "longName": "नेपाली (नेपाल)",
+  "localeName": "नेपाली (NP)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

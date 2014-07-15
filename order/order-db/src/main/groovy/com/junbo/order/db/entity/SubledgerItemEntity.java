@@ -11,6 +11,8 @@ import com.junbo.order.db.ValidationMessages;
 import com.junbo.order.spec.model.enums.SubledgerItemAction;
 import com.junbo.order.spec.model.enums.SubledgerItemStatus;
 import org.hibernate.annotations.Type;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -27,10 +29,13 @@ public class SubledgerItemEntity extends CommonDbEntityWithDate implements Ident
     private Long originalSubledgerItemId;
     private Long subledgerId;
     private BigDecimal totalAmount;
+    private BigDecimal totalPayoutAmount;
+    private Long totalQuantity;
+    private Long orderId;
     private Long orderItemId;
-    private String productItemId;
-    private SubledgerItemAction subledgerItemAction;
+    private String offerId;
     private SubledgerItemStatus status;
+    private SubledgerItemAction subledgerItemAction;
 
     @Id
     @Column(name = "SUBLEDGER_ITEM_ID")
@@ -71,6 +76,26 @@ public class SubledgerItemEntity extends CommonDbEntityWithDate implements Ident
         this.totalAmount = totalAmount;
     }
 
+    @Column(name = "TOTAL_PAYOUT_AMOUNT")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public BigDecimal getTotalPayoutAmount() {
+        return totalPayoutAmount;
+    }
+
+    public void setTotalPayoutAmount(BigDecimal totalPayoutAmount) {
+        this.totalPayoutAmount = totalPayoutAmount;
+    }
+
+    @Column(name = "TOTAL_QUANTITY")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public Long getTotalQuantity() {
+        return totalQuantity;
+    }
+
+    public void setTotalQuantity(Long totalQuantity) {
+        this.totalQuantity = totalQuantity;
+    }
+
     @Column(name = "ORDER_ITEM_ID")
     @NotNull(message = ValidationMessages.MISSING_VALUE)
     public Long getOrderItemId() {
@@ -81,14 +106,15 @@ public class SubledgerItemEntity extends CommonDbEntityWithDate implements Ident
         this.orderItemId = orderItemId;
     }
 
-    @Column (name = "product_item_id")
-    @NotNull (message = ValidationMessages.MISSING_VALUE)
-    public String getProductItemId() {
-        return productItemId;
+    @Column(name = "OFFER_ID")
+    @NotEmpty(message = ValidationMessages.MISSING_VALUE)
+    @Length(max=128, message=ValidationMessages.TOO_LONG)
+    public String getOfferId() {
+        return offerId;
     }
 
-    public void setProductItemId(String productItemId) {
-        this.productItemId = productItemId;
+    public void setOfferId(String offerId) {
+        this.offerId = offerId;
     }
 
     @Column (name = "subledger_item_action")

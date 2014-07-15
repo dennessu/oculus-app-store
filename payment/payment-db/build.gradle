@@ -33,4 +33,5 @@ dependencies {
     processor junboProject(':oom-processor')
 
     testCompile(libraries.spring_test)
+    testCompile junboProject(':authorization-lib')
 }

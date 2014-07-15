@@ -30,5 +30,6 @@ dependencies {
     compile junboProject(':common-lib')
     compile junboProject(':common-sharding')
     compile junboProject(':common-configuration')
+    testCompile junboProject(':authorization-lib')
 
 }

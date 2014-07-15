@@ -1,0 +1,34 @@
+import org.apache.tools.ant.filters.*
+
+apply plugin: 'groovy'
+apply plugin: 'application'
+
+mainClassName = "com.junbo.apphost.core.JunboApplication"
+applicationDefaultJvmArgs = ["-Xmx1024m", "-Xms1024m", "-XX:PermSize=512m", "-XX:MaxPermSize=512m", "-Dspring.profiles.active=utility",
+    "-Xdebug", "-Xrunjdwp:server=y,transport=dt_socket,address=9401,suspend=n"]
+
+dependencies {
+    compile junboProject(':apphost-core')
+    compile junboProject(':configuration-data')
+    compile junboProject(':data-loader')
+}
+
+applicationDistribution.from("../../cloudant") {
+    into "dbsetup/cloudant"
+}
+
+applicationDistribution.from("../../liquibase") {
+    into "dbsetup/liquibase"
+}
+
+applicationDistribution.from("../../pgha") {
+    into "dbsetup/pgha"
+}
+
+applicationDistribution.eachFile { FileCopyDetails f ->
+    if (!f.name.endsWith('.sh')) return
+    f.filter(FixCrLfFilter, eol: FixCrLfFilter.CrLf.newInstance("lf"))
+}
+
+defaultTasks 'clean', 'install', 'installApp', 'distZip'
+

@@ -1,8 +1,8 @@
 {
   "localeCode": "ar_MA",
-  "shortName": "Arabic (MA)",
-  "longName": "Arabic (Morocco)",
-  "localeName": "Arabic (MA)",
+  "shortName": "العربية (MA)",
+  "longName": "العربية (المغرب)",
+  "localeName": "العربية (MA)",
   "fallbackLocale": {
     "href": "/v1/locales/en_US",
     "id": "en_US"

@@ -1,8 +1,8 @@
 {
   "localeCode": "es_PY",
-  "shortName": "Spanish (PY)",
-  "longName": "Spanish (Paraguay)",
-  "localeName": "Spanish (PY)",
+  "shortName": "Español (PY)",
+  "longName": "Español (Paraguay)",
+  "localeName": "Español (PY)",
   "fallbackLocale": {
     "href": "/v1/locales/es_ES",
     "id": "es_ES"
