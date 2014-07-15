@@ -57,7 +57,7 @@ class CsrUserResourceImpl implements CsrUserResource {
                 return userResource.list(new UserListOptions(groupId: new GroupId(csrGroup.id))).then { Results<User> userResults ->
                     if (userResults != null && userResults.items != null && userResults.items.size() > 0) {
                         for (User user in userResults.items) {
-                            def csrUser = new CsrUser(id: user.id.getValue() ,username: user.username, countryCode: user.countryOfResidence?.toString(), tier: csrGroup.tier)
+                            def csrUser = new CsrUser(id: user.getId().getValue() ,username: user.username, countryCode: user.countryOfResidence?.toString(), tier: csrGroup.tier)
                             if (user.name != null) {
                                 UserPersonalInfo userPersonalInfo = Promise.get {
                                     userPersonalInfoResource.get(user.name.value, new UserPersonalInfoGetOptions())
@@ -76,7 +76,9 @@ class CsrUserResourceImpl implements CsrUserResource {
                     return Promise.pure(null)
                 }
             }.then {
-                resultList.items = resultList.items.sort {CsrUser csrUser -> csrUser.name}
+                resultList.items = resultList.items.sort {CsrUser csrUser ->
+                    csrUser.name == null ? csrUser.username : csrUser.name
+                }
                 resultList.total = resultList.items.size()
                 return Promise.pure(resultList)
             }
