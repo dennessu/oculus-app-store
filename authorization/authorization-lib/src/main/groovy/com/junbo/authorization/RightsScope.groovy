@@ -114,7 +114,7 @@ class RightsScope implements AutoCloseable {
             return resourceMeta
         }
 
-        if (AuthorizeContext.hasRights('read.admin')) {
+        if (AuthorizeContext.hasRights('read')) {
             AdminInfo adminInfo = new AdminInfo(
                     createdByClient: resourceMeta.createdByClient,
                     createdBy: resourceMeta.createdBy,
