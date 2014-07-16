@@ -348,7 +348,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             }
             filename = filename + "_" + platform;
             generatePresignedUrlRequest.addRequestParameter("response-content-disposition",
-                    "attachment;filename=" + (extension == null ? filename : filename + "." + extension));
+                    "attachment;filename=\"" + (extension == null ? filename : filename + "." + extension) + "\"");
         }
 
         URL downloadUrl = awsClient.generatePresignedUrl(generatePresignedUrlRequest);
