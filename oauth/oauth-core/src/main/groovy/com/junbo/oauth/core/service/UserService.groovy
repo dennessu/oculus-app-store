@@ -25,6 +25,8 @@ interface UserService {
 
     Promise<UserId> getUserIdByUserEmail(String userEmail)
 
+    Promise<UserId> getUserIdByUsername(String username)
+
     Promise<UserCredential> getUserCredential(UserId userId)
 
     Promise<String> sendVerifyEmail(UserId userId, ActionContextWrapper contextWrapper)
