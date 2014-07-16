@@ -28,6 +28,7 @@ import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
 import com.junbo.order.spec.model.enums.*
+import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.rating.spec.model.priceRating.RatingRequest
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -64,7 +65,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderInternalServiceImpl)
 
     @Override
-    Promise<Order> rateOrder(Order order) throws AppErrorException {
+    Promise<Order> rateOrder(Order order, OrderServiceContext orderServiceContext) throws AppErrorException {
         LOGGER.info('name=OrderInternalServiceImpl_Rate_Order')
         return facadeContainer.ratingFacade.rateOrder(order).then { RatingRequest ratingResult ->
             // todo handle rating violation
@@ -89,24 +90,28 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 }
                 LOGGER.error('name=Missing_paymentInstruments_To_Calculate_Tax')
                 throw AppErrors.INSTANCE.missingParameterField('paymentInstruments').exception()
-            }
-            if (CoreUtils.hasPhysicalOffer(order)) {
-                // check whether the shipping address id are there
-                if (order.shippingAddress == null) {
-                    if (order.tentative) {
-                        LOGGER.info('name=Skip_Calculate_Tax_Without_shippingAddressId')
+            } else {
+                // calculate tax
+                validatePayments(orderServiceContext).then {
+                    if (CoreUtils.hasPhysicalOffer(order)) {
+                        // check whether the shipping address id are there
+                        if (order.shippingAddress == null) {
+                            if (order.tentative) {
+                                LOGGER.info('name=Skip_Calculate_Tax_Without_shippingAddressId')
+                                return Promise.pure(order)
+                            }
+                            LOGGER.error('name=Missing_shippingAddressId_To_Calculate_Tax')
+                            throw AppErrors.INSTANCE.missingParameterField('shippingAddressId').exception()
+                        }
+                    }
+                    // calculateTax
+                    return facadeContainer.billingFacade.quoteBalance(
+                            CoreBuilder.buildBalance(order, BalanceType.DEBIT)).then { Balance balance ->
+                        assert (balance != null)
+                        CoreBuilder.fillTaxInfo(order, balance)
                         return Promise.pure(order)
                     }
-                    LOGGER.error('name=Missing_shippingAddressId_To_Calculate_Tax')
-                    throw AppErrors.INSTANCE.missingParameterField('shippingAddressId').exception()
                 }
-            }
-            // calculateTax
-            return facadeContainer.billingFacade.quoteBalance(
-                    CoreBuilder.buildBalance(order, BalanceType.DEBIT)).then { Balance balance ->
-                assert (balance != null)
-                CoreBuilder.fillTaxInfo(order, balance)
-                return Promise.pure(order)
             }
         }
     }
@@ -449,6 +454,19 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 }
                 return Promise.pure(order)
             }
+        }
+    }
+
+    Promise<List<PaymentInstrument>> validatePayments(OrderServiceContext orderServiceContext) {
+        // validate payments
+        if (CollectionUtils.isEmpty(orderServiceContext.order.payments)) {
+            return Promise.pure(null)
+        }
+        return orderServiceContextBuilder.getPaymentInstruments(
+                orderServiceContext).then { List<PaymentInstrument> pis ->
+            // TODO: need double confirm whether this is the way to validate pi
+            // TODO: validate pi after the pi status design is locked down.
+            return Promise.pure(pis)
         }
     }
 }

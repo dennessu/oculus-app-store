@@ -45,7 +45,7 @@ public interface AppErrors {
             message = "Order action {0} is not supported")
     AppError orderActionNotSupported(String action);
 
-    @ErrorDef(httpStatusCode = 404, code = ErrorCode.ORDER_ITEM_NOT_FOUND,
+    @ErrorDef(httpStatusCode = 400, code = ErrorCode.ORDER_ITEM_NOT_FOUND,
             message = "Order item not found")
     AppError orderItemNotFound();
 
@@ -69,13 +69,17 @@ public interface AppErrors {
             message = "Payment instrument {0} status invalid.")
     AppError paymentInstrumentStatusInvalid(String paymentInstrumentId);
 
-    @ErrorDef(httpStatusCode = 404, code = PaymentErrorCode.PAYMENT_INSTRUMENT_NOT_FOUND,
+    @ErrorDef(httpStatusCode = 400, code = PaymentErrorCode.PAYMENT_INSTRUMENT_NOT_FOUND,
             message = "Payment instrument {0} not found.")
     AppError paymentInstrumentNotFound(String paymentInstrumentId);
 
     @ErrorDef(httpStatusCode = 500, code = PaymentErrorCode.PAYMENT_CONNECTION_ERROR,
-            message = "Payment service connection error")
-    AppError paymentConnectionError();
+            message = "Payment service unavailable")
+    AppError paymentConnectionError(AppError[] causes);
+
+    @ErrorDef(httpStatusCode = 500, code = PaymentErrorCode.PAYMENT_CONNECTION_ERROR,
+            message = "Payment service unavailable: {0}")
+    AppError paymentConnectionError(String error);
 
     @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_FIELD,
             message = "{1}", field = "{0}")
@@ -93,7 +97,7 @@ public interface AppErrors {
             message = "Payment instrument type {0} not supported")
     AppError piTypeNotSupported(String type);
 
-    @ErrorDef(httpStatusCode = 404, code = CatalogErrorCode.OFFER_NOT_FOUND,
+    @ErrorDef(httpStatusCode = 400, code = CatalogErrorCode.OFFER_NOT_FOUND,
             message = "Offer {0} not found")
     AppError offerNotFound(String offerId);
 

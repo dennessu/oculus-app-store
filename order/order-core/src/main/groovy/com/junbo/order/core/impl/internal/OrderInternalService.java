@@ -20,7 +20,7 @@ import java.util.List;
  * Created by chriszhu on 4/1/14.
  */
 public interface OrderInternalService {
-    Promise<Order> rateOrder(Order order);
+    Promise<Order> rateOrder(Order order, OrderServiceContext context);
 
     Promise<Order> getOrderByOrderId(Long orderId, OrderServiceContext context);
 

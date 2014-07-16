@@ -178,7 +178,7 @@ class OrderServiceImpl implements OrderService {
     Promise<Order> getOrderByOrderId(Long orderId, Boolean doRate = true, OrderServiceContext context) {
         return orderInternalService.getOrderByOrderId(orderId, context).then { Order order ->
             if (doRate) {
-                return refreshTentativeOrderPrice(order)
+                return refreshTentativeOrderPrice(order, context)
             }
             return Promise.pure(order)
         }
@@ -215,7 +215,7 @@ class OrderServiceImpl implements OrderService {
             List<Order> ods = []
             return Promise.each(orders) { Order order ->
                 if (order.tentative) {
-                    return refreshTentativeOrderPrice(order).then { Order o ->
+                    return refreshTentativeOrderPrice(order,orderServiceContext).then { Order o ->
                         ods << o
                         return Promise.pure(o)
                     }
@@ -276,12 +276,12 @@ class OrderServiceImpl implements OrderService {
         }
     }
 
-    private Promise<Order> refreshTentativeOrderPrice(Order order) {
+    private Promise<Order> refreshTentativeOrderPrice(Order order, OrderServiceContext context) {
         if (order.tentative && CoreUtils.isRateExpired(order)) {
             // if the price rating result changes, return expired.
             Order oldRatingInfo = CoreUtils.copyOrderRating(order)
             order.honoredTime = new Date()
-            return orderInternalService.rateOrder(order).then { Order o ->
+            return orderInternalService.rateOrder(order, context).then { Order o ->
                 if(!CoreUtils.compareOrderRating(oldRatingInfo, o)) {
                     o.status = OrderStatus.PRICE_RATING_CHANGED
                 }

@@ -53,7 +53,7 @@ class RefundOrderFlowTest extends BaseTest {
         orderActionContext.trackingUuid = UUID.randomUUID()
         requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
 
-        def ratedOrder = orderInternalService.rateOrder(order).testGet()
+        def ratedOrder = orderInternalService.rateOrder(order, orderActionContext.orderServiceContext).testGet()
         repo.createOrder(ratedOrder)
 
         //mock balance
