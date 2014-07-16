@@ -92,7 +92,7 @@ class OrderRepositorySqlImpl implements OrderRepository {
     }
 
     @Override
-    Promise<Order> update(Order order) {       // Validations
+    Promise<Order> update(Order order, Order oldOrder) {       // Validations
         // TODO Log error and throw exception
         assert (order != null)
         assert (order.id != null)

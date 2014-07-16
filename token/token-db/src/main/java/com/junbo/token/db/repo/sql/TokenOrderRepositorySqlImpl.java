@@ -37,7 +37,7 @@ public class TokenOrderRepositorySqlImpl implements TokenOrderRepository{
     }
 
     @Override
-    public Promise<TokenOrder> update(TokenOrder model) {
+    public Promise<TokenOrder> update(TokenOrder model, TokenOrder oldModel) {
         TokenOrderEntity entity = tokenMapper.toTokenOrderEntity(model, new MappingContext());
         TokenOrderEntity updated = tokenOrderDao.update(entity);
         return get(updated.getId());

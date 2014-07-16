@@ -46,7 +46,8 @@ class SaveConsent implements Action {
             consentRepository.saveConsent(consent)
         } else {
             consent.scopes = oauthInfo.scopes
-            consentRepository.updateConsent(consent)
+            def oldConsent = consentRepository.getConsent(consent.userId, consent.clientId)
+            consentRepository.updateConsent(consent, oldConsent)
         }
 
         return Promise.pure(new ActionResult('success'))

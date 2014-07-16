@@ -21,7 +21,7 @@ public interface EntitlementDao {
 
     EntitlementEntity get(String entitlementId);
 
-    EntitlementEntity update(EntitlementEntity entitlement);
+    EntitlementEntity update(EntitlementEntity entitlement, EntitlementEntity oldEntitlement);
 
     Results<EntitlementEntity> getBySearchParam(EntitlementSearchParam entitlementSearchParam,
                                              PageMetadata pageMetadata);

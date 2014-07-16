@@ -23,11 +23,11 @@ class EncryptUserPersonalInfoRepositoryImpl extends CloudantClientRouted<Encrypt
     }
 
     @Override
-    Promise<EncryptUserPersonalInfo> update(EncryptUserPersonalInfo model) {
+    Promise<EncryptUserPersonalInfo> update(EncryptUserPersonalInfo model, EncryptUserPersonalInfo oldModel) {
         if (model.id == null) {
             throw new RuntimeException("EncryptUserPersonalInfo.id should be filled with UserPersonalInfo.id.")
         }
-        return cloudantPut(model)
+        return cloudantPut(model, oldModel)
     }
 
     @Override

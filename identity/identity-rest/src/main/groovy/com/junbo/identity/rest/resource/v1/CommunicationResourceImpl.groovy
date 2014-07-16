@@ -93,7 +93,7 @@ class CommunicationResourceImpl implements CommunicationResource {
             communication = communicationFilter.filterForPut(communication, oldCommunication)
 
             return communicationValidator.validateForUpdate(communicationId, communication, oldCommunication).then {
-                return communicationRepository.update(communication).then { Communication newCommunication ->
+                return communicationRepository.update(communication, oldCommunication).then { Communication newCommunication ->
                     newCommunication = communicationFilter.filterForGet(newCommunication, null)
                     return Promise.pure(newCommunication)
                 }
@@ -123,7 +123,7 @@ class CommunicationResourceImpl implements CommunicationResource {
             communication = communicationFilter.filterForPatch(communication, oldCommunication)
 
             return communicationValidator.validateForUpdate(communicationId, communication, oldCommunication).then {
-                return communicationRepository.update(communication).then { Communication newCommunication ->
+                return communicationRepository.update(communication, oldCommunication).then { Communication newCommunication ->
                     newCommunication = communicationFilter.filterForGet(newCommunication, null)
                     return Promise.pure(newCommunication)
                 }

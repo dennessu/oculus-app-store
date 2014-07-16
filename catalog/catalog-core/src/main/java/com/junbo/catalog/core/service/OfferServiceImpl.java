@@ -85,7 +85,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         offer.setApprovedRevisions(oldOffer.getApprovedRevisions());
         offer.setActiveRevision(oldOffer.getActiveRevision());
         fillDefaultValue(offer);
-        Offer updatedOffer = offerRepo.update(offer);
+        Offer updatedOffer = offerRepo.update(offer, oldOffer);
         updatedOffer.setCurrentRevisionId(oldOffer.getCurrentRevisionId());
         return updatedOffer;
     }
@@ -186,7 +186,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             updateOfferForApprovedRevision(revision, timestamp);
         }
 
-        return offerRevisionRepo.update(revision);
+        return offerRevisionRepo.update(revision, oldRevision);
     }
 
     private void updateOfferForApprovedRevision(OfferRevision revision, Long timestamp) {
@@ -212,7 +212,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         }
         offer.getApprovedRevisions().put(revision.getRevisionId(), getRevisionInfo(revision, timestamp));
 
-        offerRepo.update(offer);
+        offerRepo.update(offer, offer);
     }
 
     private RevisionInfo getRevisionInfo(OfferRevision revision, Long timestamp) {

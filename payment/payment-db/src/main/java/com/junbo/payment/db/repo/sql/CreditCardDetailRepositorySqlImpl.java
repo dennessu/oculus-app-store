@@ -54,7 +54,7 @@ public class CreditCardDetailRepositorySqlImpl implements CreditCardDetailReposi
     }
 
     @Override
-    public Promise<CreditCardDetail> update(CreditCardDetail model) {
+    public Promise<CreditCardDetail> update(CreditCardDetail model, CreditCardDetail oldModel) {
         CreditCardPaymentInstrumentEntity entity = paymentMapper.toCreditCardEntity(model, new MappingContext());
         CreditCardPaymentInstrumentEntity updated = creditCardPaymentInstrumentDao.update(entity);
         return get(updated.getId());

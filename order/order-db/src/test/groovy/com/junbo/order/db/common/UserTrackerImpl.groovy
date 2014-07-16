@@ -18,7 +18,10 @@ class UserTrackerImpl implements Tracker {
     }
 
     @Override
-    CloudantEntity trackUpdate(CloudantEntity entity) {
+    CloudantEntity trackUpdate(CloudantEntity entity, CloudantEntity oldEntity) {
+        entity.createdBy = oldEntity.createdBy
+        entity.createdByClient = oldEntity.createdByClient
+        entity.createdTime = oldEntity.createdTime
         entity.updatedBy = 123L
         entity.updatedTime = new Date()
         return entity

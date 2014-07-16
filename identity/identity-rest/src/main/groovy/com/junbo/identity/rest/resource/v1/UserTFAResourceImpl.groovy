@@ -133,7 +133,7 @@ class UserTFAResourceImpl implements UserTFAResource {
 
                 return userTFAValidator.validateForUpdate(userId, userTFAId, userTFA, oldUserTeleCode).then {
 
-                    return userTFARepository.update(userTFA).then { UserTFA newUserTele ->
+                    return userTFARepository.update(userTFA, oldUserTeleCode).then { UserTFA newUserTele ->
                         newUserTele = userTFAFilter.filterForGet(newUserTele, null)
                         return Promise.pure(newUserTele)
                     }
@@ -170,7 +170,7 @@ class UserTFAResourceImpl implements UserTFAResource {
                 userTFA = userTFAFilter.filterForPut(userTFA, oldUserTeleCode)
 
                 return userTFAValidator.validateForUpdate(userId, userTFAId, userTFA, oldUserTeleCode).then {
-                    return userTFARepository.update(userTFA).then { UserTFA newUserTeleCode ->
+                    return userTFARepository.update(userTFA, oldUserTeleCode).then { UserTFA newUserTeleCode ->
                         newUserTeleCode = userTFAFilter.filterForGet(newUserTeleCode, null)
                         return Promise.pure(newUserTeleCode)
                     }

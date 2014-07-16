@@ -53,7 +53,7 @@ class CloudantStateRepositoryImpl extends CloudantClient<ConversationEntity> imp
             } else {
                 ConversationEntity entity = unwrap(conversation)
                 entity.rev = existing.rev
-                cloudantPutSync(entity)
+                cloudantPutSync(entity, existing)
             }
         }
     }

@@ -56,7 +56,7 @@ public abstract class AttributeServiceSupport<T extends Attribute> {
             throw exception;
         }
         validateUpdate(attribute, oldAttribute);
-        return getRepo().update(attribute);
+        return getRepo().update(attribute, oldAttribute);
     }
 
     public void deleteAttribute(String attributeId) {

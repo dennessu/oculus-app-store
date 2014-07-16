@@ -63,7 +63,7 @@ class AccessTokenRepositoryImpl implements AccessTokenRepository {
     }
 
     @Override
-    AccessToken update(AccessToken accessToken) {
+    AccessToken update(AccessToken accessToken, AccessToken oldAccessToken) {
         return wrap(accessTokenDAO.update(unwrap(accessToken)))
     }
 

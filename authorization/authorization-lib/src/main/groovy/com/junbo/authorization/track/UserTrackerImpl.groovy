@@ -30,7 +30,7 @@ class UserTrackerImpl implements Tracker {
     }
 
     @Override
-    CloudantEntity trackUpdate(CloudantEntity entity) {
+    CloudantEntity trackUpdate(CloudantEntity entity, CloudantEntity oldEntity) {
         UserId userId = AuthorizeContext.currentUserId
         if (userId == null) {
             LOGGER.warn('Failed to get userInfo during update ' + entity.getId())
@@ -38,8 +38,11 @@ class UserTrackerImpl implements Tracker {
         } else {
             entity.updatedBy = AuthorizeContext.currentUserId.value
         }
+        entity.createdBy = oldEntity.createdBy
+        entity.createdByClient = oldEntity.createdByClient
+        entity.createdTime = oldEntity.createdTime
         entity.updatedByClient = AuthorizeContext.currentClientId
-        entity.createdTime = new Date()
+        entity.updatedTime = new Date()
         return entity
     }
 }

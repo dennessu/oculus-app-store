@@ -50,7 +50,7 @@ class SqlMasterKeyRepoImpl implements MasterKeyRepo {
     }
 
     @Override
-    Promise<MasterKey> update(MasterKey model) {
+    Promise<MasterKey> update(MasterKey model, MasterKey oldModel) {
         throw new IllegalStateException('unsupported operation')
     }
 

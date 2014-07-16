@@ -38,7 +38,7 @@ public class TokenItemRepositorySqlImpl implements TokenItemRepository{
     }
 
     @Override
-    public Promise<TokenItem> update(TokenItem model) {
+    public Promise<TokenItem> update(TokenItem model, TokenItem oldModel) {
         TokenItemEntity entity = tokenMapper.toTokenItemEntity(model, new MappingContext());
         TokenItemEntity updated = tokenItemDao.update(entity);
         return get(updated.getId());

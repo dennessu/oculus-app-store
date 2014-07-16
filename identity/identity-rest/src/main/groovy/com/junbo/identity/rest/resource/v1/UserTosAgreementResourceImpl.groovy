@@ -115,7 +115,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
 
                 return userTosValidator.validateForUpdate(userTosAgreementId, userTos, oldUserTos).then {
 
-                    return userTosRepository.update(userTos).then { UserTosAgreement newUserTos ->
+                    return userTosRepository.update(userTos, oldUserTos).then { UserTosAgreement newUserTos ->
                         newUserTos = userTosFilter.filterForGet(newUserTos, null)
                         return Promise.pure(newUserTos)
                     }
@@ -148,7 +148,7 @@ class UserTosAgreementResourceImpl implements UserTosAgreementResource {
                 userTos = userTosFilter.filterForPut(userTos, oldUserTos)
 
                 return userTosValidator.validateForUpdate(userTosAgreementId, userTos, oldUserTos).then {
-                    return userTosRepository.update(userTos).then { UserTosAgreement newUserTos ->
+                    return userTosRepository.update(userTos, oldUserTos).then { UserTosAgreement newUserTos ->
                         newUserTos = userTosFilter.filterForGet(newUserTos, null)
                         return Promise.pure(newUserTos)
                     }

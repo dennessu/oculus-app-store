@@ -89,7 +89,7 @@ public class PendingActionRepositorySqlImpl implements PendingActionRepository {
     }
 
     @Override
-    public Promise<PendingAction> update(PendingAction model) {
+    public Promise<PendingAction> update(PendingAction model, PendingAction oldModel) {
         if (model == null) {
             throw new IllegalArgumentException('model is null')
         }

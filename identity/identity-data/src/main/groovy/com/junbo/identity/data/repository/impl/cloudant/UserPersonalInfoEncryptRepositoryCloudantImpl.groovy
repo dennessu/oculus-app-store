@@ -189,18 +189,18 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     }
 
     @Override
-    Promise<UserPersonalInfo> update(UserPersonalInfo model) {
+    Promise<UserPersonalInfo> update(UserPersonalInfo model, UserPersonalInfo oldModel) {
         CryptoMessage cryptoMessage = new CryptoMessage()
         cryptoMessage.value = marshall(model)
 
         return cryptoResource.encrypt(cryptoMessage).then { CryptoMessage messageValue ->
             return encryptUserPersonalInfoRepository.get(model.getId()).then { EncryptUserPersonalInfo info ->
                 info.encryptUserPersonalInfo = messageValue.value
-                return encryptUserPersonalInfoRepository.update(info).then { EncryptUserPersonalInfo updateInfo ->
+                return encryptUserPersonalInfoRepository.update(info, info).then { EncryptUserPersonalInfo updateInfo ->
                     return hashUserPersonalInfoRepository.get(model.getId()).then { HashUserPersonalInfo hashInfo ->
                         PiiHash piiHash = getPiiHash(model.type)
                         hashInfo.hashSearchInfo = piiHash.generateHash(model.value)
-                        return hashUserPersonalInfoRepository.update(hashInfo)
+                        return hashUserPersonalInfoRepository.update(hashInfo, hashInfo)
                     }.then {
                         return get(updateInfo.getId())
                     }

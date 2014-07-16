@@ -215,7 +215,6 @@ public class TestPostItem extends BaseTestClass {
     }
 
     private void checkItemOptionalFields(Item itemActual, Item itemExpected) {
-        Assert.assertEquals(itemActual.getAdminInfo(), itemExpected.getAdminInfo());
         Assert.assertEquals(itemActual.getFutureExpansion(), itemExpected.getFutureExpansion());
         Assert.assertEquals(itemActual.getGenres(), itemExpected.getGenres());
         Assert.assertEquals(itemActual.getDefaultOffer(), itemExpected.getDefaultOffer());

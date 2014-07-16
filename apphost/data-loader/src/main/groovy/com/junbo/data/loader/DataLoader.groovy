@@ -93,9 +93,13 @@ class DataLoader {
         for (String data : dataList) {
             Resource[] resources
             try {
-                resources = resolver.getResources("data/$data/$env/*.data")
+                resources = resolver.getResources("data/$env/$data/*.data")
             } catch (FileNotFoundException e) {
-                resources = resolver.getResources("data/$data/_default/*.data")
+                try {
+                    resources = resolver.getResources("data/_default/$data/*.data")
+                } catch (Exception ex) {
+                    continue
+                }
             }
             try {
                 DataHandler handler = handlers[data]

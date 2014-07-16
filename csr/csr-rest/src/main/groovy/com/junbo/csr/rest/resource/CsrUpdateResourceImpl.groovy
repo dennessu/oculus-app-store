@@ -51,7 +51,7 @@ class CsrUpdateResourceImpl implements CsrUpdateResource {
 
         return csrUpdateValidator.validateForGet(csrUpdateId).then { CsrUpdate oldCsrUpdate ->
             return csrUpdateValidator.validateForUpdate(csrUpdateId, csrUpdate, oldCsrUpdate).then {
-                return csrUpdateRepository.update(csrUpdate).then { CsrUpdate newCsrUpdate ->
+                return csrUpdateRepository.update(csrUpdate, oldCsrUpdate).then { CsrUpdate newCsrUpdate ->
                     return Promise.pure(newCsrUpdate)
                 }
             }
@@ -70,7 +70,7 @@ class CsrUpdateResourceImpl implements CsrUpdateResource {
 
         return csrUpdateValidator.validateForGet(csrUpdateId).then { CsrUpdate oldCsrUpdate ->
             return csrUpdateValidator.validateForPatch(csrUpdateId, csrUpdate, oldCsrUpdate).then {
-                return csrUpdateRepository.update(csrUpdate).then { CsrUpdate newCsrUpdate ->
+                return csrUpdateRepository.update(csrUpdate, oldCsrUpdate).then { CsrUpdate newCsrUpdate ->
                     return Promise.pure(newCsrUpdate)
                 }
             }

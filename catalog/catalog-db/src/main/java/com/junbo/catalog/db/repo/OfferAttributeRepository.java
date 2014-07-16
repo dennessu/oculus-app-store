@@ -18,6 +18,6 @@ public interface OfferAttributeRepository extends AttributeRepository<OfferAttri
     OfferAttribute create(OfferAttribute attribute);
     OfferAttribute get(String attributeId);
     List<OfferAttribute> getAttributes(OfferAttributesGetOptions options);
-    OfferAttribute update(OfferAttribute attribute);
+    OfferAttribute update(OfferAttribute attribute, OfferAttribute oldAttribute);
     void delete(String attributeId);
 }

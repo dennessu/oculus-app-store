@@ -52,10 +52,11 @@ public class BalanceEventRepositorySqlImpl implements BalanceEventRepository {
     }
 
     @Override
-    public Promise<BalanceEvent> update(BalanceEvent model) {
+    public Promise<BalanceEvent> update(BalanceEvent model, BalanceEvent oldModel) {
         BalanceEventEntity entity = modelMapper.toBalanceEventEntity(model, new MappingContext());
+        BalanceEventEntity oldEntity = modelMapper.toBalanceEventEntity(oldModel, new MappingContext());
         entity.setEventDate(new Date());
-        balanceEventEntityDao.update(entity);
+        balanceEventEntityDao.update(entity, oldEntity);
         return get(entity.getId());
     }
 

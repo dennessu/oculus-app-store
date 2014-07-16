@@ -15,8 +15,8 @@ abstract class CloudantClient<T extends CloudantEntity> extends CloudantClientBa
     }
 
     @Override
-    Promise<T> cloudantPut(T entity) {
-        entity = tracker.trackUpdate(entity)
-        return super.cloudantPut(entity)
+    Promise<T> cloudantPut(T entity, T oldEntity) {
+        entity = tracker.trackUpdate(entity, oldEntity)
+        return super.cloudantPut(entity, oldEntity)
     }
 }

@@ -21,8 +21,8 @@ class CommunicationRepositoryCloudantImpl extends CloudantClient<Communication> 
     }
 
     @Override
-    Promise<Communication> update(Communication model) {
-        return cloudantPut(model)
+    Promise<Communication> update(Communication model, Communication oldModel) {
+        return cloudantPut(model, oldModel)
     }
 
     @Override

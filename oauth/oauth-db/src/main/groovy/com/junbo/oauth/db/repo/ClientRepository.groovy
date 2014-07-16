@@ -17,7 +17,7 @@ interface ClientRepository {
 
     Client saveClient(Client client)
 
-    Client updateClient(Client client)
+    Client updateClient(Client client, Client oldClient)
 
     void deleteClient(Client client)
 }

@@ -21,7 +21,7 @@ interface AccessTokenRepository {
 
     List<AccessToken> findByUserIdClientId(Long userId, String clientId)
 
-    AccessToken update(AccessToken accessToken)
+    AccessToken update(AccessToken accessToken, AccessToken oldAccessToken)
 
     void remove(String tokenValue)
 

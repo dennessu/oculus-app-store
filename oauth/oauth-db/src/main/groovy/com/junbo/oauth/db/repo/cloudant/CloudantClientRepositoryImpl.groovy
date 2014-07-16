@@ -28,8 +28,8 @@ class CloudantClientRepositoryImpl extends CloudantClient<Client> implements Cli
     }
 
     @Override
-    Client updateClient(Client client) {
-        return cloudantPutSync(client)
+    Client updateClient(Client client, Client oldClient) {
+        return cloudantPutSync(client, oldClient)
     }
 
     @Override

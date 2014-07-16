@@ -170,7 +170,7 @@ class CartServiceImpl implements CartService {
             cart.clientId = oldCart.clientId
             cart.userLoggedIn = oldCart.userLoggedIn
             cart.createdTime = oldCart.createdTime
-            return cartPersistService.update(cart)
+            return cartPersistService.update(cart, oldCart)
         }
     }
 
@@ -192,8 +192,8 @@ class CartServiceImpl implements CartService {
                 addCartItems(destCart, cart.offers, cart.coupons)
                 cart.offers = Collections.EMPTY_LIST
                 cart.coupons = Collections.EMPTY_LIST
-                return cartPersistService.update(cart).then {
-                    return cartPersistService.update(destCart)
+                return cartPersistService.update(cart, cart).then {
+                    return cartPersistService.update(destCart, destCart)
                 }
             }
         }
@@ -205,7 +205,7 @@ class CartServiceImpl implements CartService {
             Cart cart = (Cart) it
             validation.validateOfferAdd(offerItem)
             addCartItems(cart, [offerItem], [])
-            return cartPersistService.update(cart)
+            return cartPersistService.update(cart, cart)
         }
     }
 
@@ -226,7 +226,7 @@ class CartServiceImpl implements CartService {
             o.quantity = offerItem.quantity
             o.isSelected = offerItem.isSelected
             cart.offers = mergeOffers(cart.offers)
-            return cartPersistService.update(cart)
+            return cartPersistService.update(cart, cart)
         }
     }
 
@@ -237,7 +237,7 @@ class CartServiceImpl implements CartService {
             if (lookupAndRemoveItem((List<CartItem>) cart.offers, offerItemId) == null) {
                 throw AppCommonErrors.INSTANCE.resourceNotFound("Cart", cartId).exception()
             }
-            return cartPersistService.update(cart)
+            return cartPersistService.update(cart, cart)
         }
     }
 

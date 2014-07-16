@@ -43,7 +43,7 @@ public class WalletRepoTest extends BaseTest {
     public void testUpdate() {
         Wallet wallet = walletRepo.create(buildAWallet());
         wallet.setStatus(Status.LOCKED.toString());
-        walletRepo.update(wallet);
+        walletRepo.update(wallet, wallet);
         wallet = walletRepo.get(wallet.getId());
         Assert.assertEquals(Status.LOCKED.toString(), wallet.getStatus());
     }

@@ -20,6 +20,7 @@ import com.junbo.identity.spec.v1.model.UserCredential
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions
+import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.identity.spec.v1.option.list.UserPersonalInfoListOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
@@ -157,6 +158,17 @@ class UserServiceImpl implements UserService {
             }
 
             return Promise.pure(results.items.get(0).userId)
+        }
+    }
+
+    @Override
+    Promise<UserId> getUserIdByUsername(String username) {
+        return userResource.list(new UserListOptions(username: username)).then { Results<User> userResults ->
+            if (userResults == null || userResults.items == null || userResults.items.isEmpty()) {
+                throw AppExceptions.INSTANCE.noAccountFound().exception()
+            }
+
+            return Promise.pure(userResults.items.get(0).id as UserId)
         }
     }
 

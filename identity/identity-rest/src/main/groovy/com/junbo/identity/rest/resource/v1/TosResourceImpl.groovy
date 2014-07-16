@@ -121,7 +121,7 @@ class TosResourceImpl implements TosResource {
             tos = tosFilter.filterForPatch(tos, oldTos)
 
             return tosValidator.validateForUpdate(tosId, tos, oldTos).then {
-                return tosRepository.update(tos).then { Tos newTos ->
+                return tosRepository.update(tos, oldTos).then { Tos newTos ->
                     newTos = tosFilter.filterForGet(newTos, null)
                     return Promise.pure(newTos)
                 }

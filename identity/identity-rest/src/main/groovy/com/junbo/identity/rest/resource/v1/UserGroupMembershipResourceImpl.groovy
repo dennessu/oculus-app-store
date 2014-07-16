@@ -114,7 +114,7 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
 
                 return userGroupValidator.validateForUpdate(userGroupId, userGroup, oldUserGroup).then {
 
-                    return userGroupRepository.update(userGroup).then { UserGroup newUserGroup ->
+                    return userGroupRepository.update(userGroup, oldUserGroup).then { UserGroup newUserGroup ->
                         newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
                         return Promise.pure(newUserGroup)
                     }
@@ -147,7 +147,7 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
                 userGroup = userGroupFilter.filterForPut(userGroup, oldUserGroup)
 
                 return userGroupValidator.validateForUpdate(userGroupId, userGroup, oldUserGroup).then {
-                    return userGroupRepository.update(userGroup).then { UserGroup newUserGroup ->
+                    return userGroupRepository.update(userGroup, oldUserGroup).then { UserGroup newUserGroup ->
                         newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
                         return Promise.pure(newUserGroup)
                     }

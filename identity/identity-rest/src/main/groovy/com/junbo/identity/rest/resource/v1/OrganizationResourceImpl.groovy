@@ -92,7 +92,7 @@ class OrganizationResourceImpl implements OrganizationResource {
                 organization = organizationFilter.filterForPatch(organization, oldOrganization)
 
                 return organizationValidator.validateForUpdate(organizationId, organization, oldOrganization).then {
-                    return organizationRepository.update(organization).then { Organization newOrganization ->
+                    return organizationRepository.update(organization, oldOrganization).then { Organization newOrganization ->
                         newOrganization = organizationFilter.filterForGet(newOrganization, null)
                         return Promise.pure(newOrganization)
                     }

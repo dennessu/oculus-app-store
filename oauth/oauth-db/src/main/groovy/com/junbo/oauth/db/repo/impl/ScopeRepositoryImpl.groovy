@@ -35,7 +35,7 @@ class ScopeRepositoryImpl implements ScopeRepository {
     }
 
     @Override
-    Scope updateScope(Scope scope) {
+    Scope updateScope(Scope scope, Scope oldScope) {
         return wrap(scopeDAO.update(unwrap(scope)))
     }
 

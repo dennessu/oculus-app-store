@@ -125,8 +125,8 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
     }
 
     @Override
-    public Item update(Item item) {
-        return cloudantPutSync(item);
+    public Item update(Item item, Item oldItem) {
+        return cloudantPutSync(item, oldItem);
     }
 
     @Override

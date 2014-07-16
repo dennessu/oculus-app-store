@@ -125,9 +125,10 @@ public class BalanceRepositorySqlImpl implements BalanceRepository {
     }
 
     @Override
-    public Promise<Balance> update(Balance model) {
+    public Promise<Balance> update(Balance model, Balance oldModel) {
         BalanceEntity entity = modelMapper.toBalanceEntity(model, new MappingContext());
-        balanceEntityDao.update(entity);
+        BalanceEntity oldEntity = modelMapper.toBalanceEntity(oldModel, new MappingContext());
+        balanceEntityDao.update(entity, oldEntity);
         return get(new BalanceId(entity.getId()));
     }
 

@@ -39,8 +39,8 @@ class CsrLogRepositoryCloudantImpl extends CloudantClient<CsrLog> implements Csr
     }
 
     @Override
-    Promise<CsrLog> update(CsrLog model) {
-        return cloudantPut(model)
+    Promise<CsrLog> update(CsrLog model, CsrLog oldModel) {
+        return cloudantPut(model, oldModel)
     }
 
     @Override

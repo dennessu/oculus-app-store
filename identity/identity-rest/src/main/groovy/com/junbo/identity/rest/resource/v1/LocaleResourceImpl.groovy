@@ -83,7 +83,7 @@ class LocaleResourceImpl implements LocaleResource {
             locale = localeFilter.filterForPut(locale, oldLocale)
 
             return localeValidator.validateForUpdate(localeId, locale, oldLocale).then {
-                return localeRepository.update(locale).then { Locale newLocale ->
+                return localeRepository.update(locale, oldLocale).then { Locale newLocale ->
                     newLocale = localeFilter.filterForGet(newLocale, null)
                     return Promise.pure(newLocale)
                 }
@@ -113,7 +113,7 @@ class LocaleResourceImpl implements LocaleResource {
             locale = localeFilter.filterForPatch(locale, oldLocale)
 
             return localeValidator.validateForUpdate(localeId, locale, oldLocale).then {
-                return localeRepository.update(locale).then { Locale newLocale ->
+                return localeRepository.update(locale, oldLocale).then { Locale newLocale ->
                     newLocale = localeFilter.filterForGet(newLocale, null)
                     return Promise.pure(newLocale)
                 }

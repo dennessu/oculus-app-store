@@ -40,7 +40,7 @@ public class TokenSetOfferRepositorySqlImpl implements TokenSetOfferRepository{
     }
 
     @Override
-    public Promise<TokenSetOffer> update(TokenSetOffer model) {
+    public Promise<TokenSetOffer> update(TokenSetOffer model, TokenSetOffer oldModel) {
         TokenSetOfferEntity entity = tokenMapper.toTokenSetOfferEntity(model, new MappingContext());
         TokenSetOfferEntity updated = tokenSetOfferDao.update(entity);
         return get(updated.getId());

@@ -91,7 +91,7 @@ public class PaymentInstrumentRepositorySqlImpl implements PaymentInstrumentRepo
     }
 
     @Override
-    public Promise<PaymentInstrument> update(PaymentInstrument model) {
+    public Promise<PaymentInstrument> update(PaymentInstrument model, PaymentInstrument oldModel) {
         PaymentInstrumentEntity entity = paymentMapperExtension.toPIEntity(model);
         PaymentInstrumentEntity updated = paymentInstrumentDao.update(entity);
         return get(updated.getId());

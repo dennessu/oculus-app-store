@@ -33,8 +33,8 @@ class UserTFAAttemptRepositoryCloudantImpl extends CloudantClient<UserTFAAttempt
     }
 
     @Override
-    Promise<UserTFAAttempt> update(UserTFAAttempt entity) {
-        return cloudantPut(entity)
+    Promise<UserTFAAttempt> update(UserTFAAttempt entity, UserTFAAttempt oldEntity) {
+        return cloudantPut(entity, oldEntity)
     }
 
     @Override

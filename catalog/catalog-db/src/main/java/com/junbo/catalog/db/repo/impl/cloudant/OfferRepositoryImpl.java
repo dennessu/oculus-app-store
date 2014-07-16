@@ -103,8 +103,8 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
     }
 
     @Override
-    public Offer update(Offer offer) {
-        return cloudantPutSync(offer);
+    public Offer update(Offer offer, Offer oldOffer) {
+        return cloudantPutSync(offer, oldOffer);
     }
 
     @Override

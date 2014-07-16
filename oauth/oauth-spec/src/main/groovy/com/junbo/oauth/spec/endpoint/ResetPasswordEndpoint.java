@@ -47,7 +47,7 @@ public interface ResetPasswordEndpoint {
                                     @FormParam("event") String event,
                                     @FormParam("locale") String locale,
                                     @FormParam("country") String country,
-                                    @FormParam("userId") UserId userId,
+                                    @FormParam("username") String username,
                                     @FormParam("user_email") String userEmail,
                                     @Context ContainerRequestContext request,
                                     MultivaluedMap<String, String> formParams);

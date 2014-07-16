@@ -91,7 +91,7 @@ public class TrackingUuidRepositorySqlImpl implements TrackingUuidRepository {
     }
 
     @Override
-    public Promise<TrackingUuid> update(TrackingUuid model) {
+    public Promise<TrackingUuid> update(TrackingUuid model, TrackingUuid oldModel) {
         TrackingUuidEntity entity = paymentMapper.toTrackingUuidEntity(model, new MappingContext());
         TrackingUuidEntity updated = trackingUuidDao.update(entity);
         return get(updated.getId());

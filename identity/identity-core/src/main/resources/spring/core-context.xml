@@ -34,6 +34,10 @@
                 <value>translations</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
         <property name="writablePropertiesForUpdate">
@@ -46,6 +50,10 @@
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
     </bean>
@@ -85,6 +93,10 @@
                 <value>locales</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
         <property name="writablePropertiesForUpdate">
@@ -101,6 +113,10 @@
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
     </bean>
@@ -139,6 +155,10 @@
                 <value>localeAccuracy</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
         <property name="writablePropertiesForUpdate">
@@ -154,6 +174,10 @@
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
     </bean>
@@ -186,6 +210,10 @@
                 <value>components</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
         <property name="writablePropertiesForUpdate">
@@ -198,6 +226,10 @@
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
     </bean>
@@ -229,6 +261,10 @@
                 <value>componentTypes</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
         <property name="writablePropertiesForUpdate">
@@ -241,6 +277,10 @@
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
     </bean>
@@ -273,6 +313,10 @@
                 <value>futureExpansion</value>
                 <value>organizationId</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -284,6 +328,10 @@
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
     </bean>
@@ -317,6 +365,10 @@
                 <value>fallbackLocale</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
         <property name="writablePropertiesForUpdate">
@@ -330,6 +382,10 @@
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
     </bean>
@@ -366,6 +422,10 @@
                 <value>state</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -381,6 +441,10 @@
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
     </bean>
@@ -412,6 +476,10 @@
                 <value>isRefundable</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
         <property name="writablePropertiesForUpdate">
@@ -424,6 +492,10 @@
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
     </bean>
@@ -452,6 +524,10 @@
                 <value>type</value>
                 <value>externalId</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -464,6 +540,10 @@
                 <value>createdTime</value>
                 <value>updatedTime</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
     </bean>
@@ -492,6 +572,10 @@
                 <value>communicationId</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -502,6 +586,10 @@
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
     </bean>
@@ -534,6 +622,10 @@
                 <value>expiresBy</value>
                 <value>changeAtNextLogin</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -574,6 +666,10 @@
                 <value>userAgent</value>
                 <value>clientId</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -589,6 +685,10 @@
                 <value>clientId</value>
                 <value>rev</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
     </bean>
@@ -617,6 +717,10 @@
                 <value>groupId</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -627,6 +731,10 @@
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
     </bean>
@@ -703,6 +811,10 @@
                         <value>defaultPI</value>
                         <value>futureExpansion</value>
                         <value>adminInfo</value>
+                        <value>createdBy</value>
+                        <value>updatedBy</value>
+                        <value>createdByClient</value>
+                        <value>updatedByClient</value>
                     </list>
                 </entry>
             </map>
@@ -739,6 +851,10 @@
                         <value>futureExpansion</value>
                         <value>rev</value>
                         <value>adminInfo</value>
+                        <value>createdBy</value>
+                        <value>updatedBy</value>
+                        <value>createdByClient</value>
+                        <value>updatedByClient</value>
                     </list>
                 </entry>
             </map>
@@ -784,6 +900,10 @@
                         <value>userId</value>
                         <value>organizationId</value>
                         <value>adminInfo</value>
+                        <value>createdBy</value>
+                        <value>updatedBy</value>
+                        <value>createdByClient</value>
+                        <value>updatedByClient</value>
                     </list>
                 </entry>
             </map>
@@ -802,6 +922,10 @@
                         <value>organizationId</value>
                         <value>rev</value>
                         <value>adminInfo</value>
+                        <value>createdBy</value>
+                        <value>updatedBy</value>
+                        <value>createdByClient</value>
+                        <value>updatedByClient</value>
                     </list>
                 </entry>
             </map>
@@ -833,6 +957,10 @@
                 <value>answer</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -847,6 +975,10 @@
                 <value>createdTime</value>
                 <value>updatedTime</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
     </bean>
@@ -883,6 +1015,10 @@
                 <value>clientId</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -917,6 +1053,10 @@
                 <value>agreementTime</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -928,6 +1068,10 @@
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
     </bean>
@@ -960,6 +1104,10 @@
                 <value>value</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -997,6 +1145,10 @@
                 <value>value</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -1043,6 +1195,10 @@
                 <value>active</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -1060,6 +1216,10 @@
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
     </bean>
@@ -1097,6 +1257,10 @@
                 <value>clientId</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -1133,6 +1297,10 @@
                 <value>active</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -1145,6 +1313,10 @@
                 <value>futureExpansion</value>
                 <value>rev</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
     </bean>
@@ -1180,6 +1352,10 @@
                 <value>clientId</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -1235,6 +1411,10 @@
                 <value>publisherRevenueRatio</value>
                 <value>futureExpansion</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
 
@@ -1259,6 +1439,10 @@
                 <value>createdTime</value>
                 <value>updatedTime</value>
                 <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
             </list>
         </property>
     </bean>
