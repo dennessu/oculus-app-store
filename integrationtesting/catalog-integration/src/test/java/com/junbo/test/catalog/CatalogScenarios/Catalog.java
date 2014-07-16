@@ -3,31 +3,43 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.test.catalogscenario;
+package com.junbo.test.catalog.catalogScenarios;
 
+import com.junbo.test.common.apihelper.oauth.impl.OAuthTokenServiceImpl;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
+import com.junbo.test.common.apihelper.oauth.OAuthTokenService;
+import com.junbo.test.catalog.enums.CatalogOfferAttributeType;
+import com.junbo.test.catalog.enums.CatalogItemAttributeType;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.test.common.apihelper.identity.UserService;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.test.common.libs.RandomFactory;
+import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.Utility.TestClass;
-import com.junbo.test.common.libs.IdConverter;
 import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
+import com.junbo.common.id.OfferAttributeId;
+import com.junbo.common.id.ItemAttributeId;
 import com.junbo.test.common.property.*;
 import com.junbo.common.model.Results;
-import com.junbo.test.catalog.enums.*;
 import com.junbo.test.catalog.impl.*;
+import com.junbo.common.id.OfferId;
+import com.junbo.common.id.ItemId;
 import com.junbo.test.catalog.*;
-import com.junbo.common.id.*;
 
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import java.util.ArrayList;
 import org.testng.Assert;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -43,9 +55,15 @@ public class Catalog extends TestClass {
     private final String defaultOfferRevisionFileName = "defaultOfferRevision";
     private final String defaultItemFileName = "defaultItem";
 
+    @BeforeClass
+    private void PrepareTestData() throws Exception {
+        OAuthTokenService oAuthTokenService = OAuthTokenServiceImpl.getInstance();
+        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOG);
+    }
+
     @Property(
             priority = Priority.BVT,
-            features = "CatalogScenarios",
+            features = "catalogScenarios",
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
@@ -104,7 +122,7 @@ public class Catalog extends TestClass {
 
     @Property(
             priority = Priority.BVT,
-            features = "CatalogScenarios",
+            features = "catalogScenarios",
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
@@ -163,7 +181,7 @@ public class Catalog extends TestClass {
 
     @Property(
             priority = Priority.BVT,
-            features = "CatalogScenarios",
+            features = "catalogScenarios",
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
@@ -238,7 +256,7 @@ public class Catalog extends TestClass {
 
     @Property(
             priority = Priority.BVT,
-            features = "CatalogScenarios",
+            features = "catalogScenarios",
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
@@ -312,7 +330,7 @@ public class Catalog extends TestClass {
 
     @Property(
             priority = Priority.BVT,
-            features = "CatalogScenarios",
+            features = "catalogScenarios",
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
@@ -369,7 +387,7 @@ public class Catalog extends TestClass {
 
     @Property(
             priority = Priority.BVT,
-            features = "CatalogScenarios",
+            features = "catalogScenarios",
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Disable,
