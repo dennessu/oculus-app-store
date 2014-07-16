@@ -114,8 +114,8 @@ public class postImportUserPersonalInfo {
         oculusInput.setCurrentId(RandomHelper.randomLong());
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1ImportsURI,
                 JsonHelper.JsonSerializer(oculusInput), HttpclientHelper.HttpRequestType.post);
-        Validator.Validate("validate response error code", 409, response.getStatusLine().getStatusCode());
-        String errorMessage = "Field username invalid due to username is already used by others.";
+        Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
+        String errorMessage = "Field value is invalid. username is already used by others";
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
     }
@@ -140,8 +140,8 @@ public class postImportUserPersonalInfo {
         oculusInput.setUsername(RandomHelper.randomAlphabetic(20));
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1ImportsURI,
                 JsonHelper.JsonSerializer(oculusInput), HttpclientHelper.HttpRequestType.post);
-        Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
-        String errorMessage = String.format("User email %s already used.", oculusInput.getEmail());
+        Validator.Validate("validate response error code", 409, response.getStatusLine().getStatusCode());
+        String errorMessage = String.format("Email %s is already used", oculusInput.getEmail());
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
     }
@@ -265,7 +265,7 @@ public class postImportUserPersonalInfo {
         Identity.ImportMigrationData(oculusInput);
         CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
                 oculusInput.getUsername(), "oculustest1234", false);
-        Validator.Validate("validate response code", 404, response.getStatusLine().getStatusCode());
+        Validator.Validate("validate response code", 412, response.getStatusLine().getStatusCode());
 
         oculusInput = IdentityModel.DefaultOculusInput();
         oculusInput.setStatus(IdentityModel.MigrateUserStatus.ACTIVE.name());
