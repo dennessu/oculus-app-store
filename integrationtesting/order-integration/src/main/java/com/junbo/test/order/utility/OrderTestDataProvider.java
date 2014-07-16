@@ -18,7 +18,6 @@ import com.junbo.common.id.*;
 import com.junbo.common.model.Results;
 import com.junbo.order.spec.model.*;
 import com.junbo.order.spec.model.PaymentInfo;
-import com.junbo.test.billing.enums.TransactionType;
 import com.junbo.test.billing.utility.BillingTestDataProvider;
 import com.junbo.test.catalog.OfferRevisionService;
 import com.junbo.test.catalog.OfferService;
@@ -37,6 +36,7 @@ import com.junbo.test.order.apihelper.OrderService;
 import com.junbo.test.order.apihelper.impl.OrderEventServiceImpl;
 import com.junbo.test.order.apihelper.impl.OrderServiceImpl;
 import com.junbo.test.order.model.*;
+import com.junbo.test.order.model.enums.BillingAction;
 import com.junbo.test.order.model.enums.EventStatus;
 import com.junbo.test.order.model.enums.OrderActionType;
 import com.junbo.test.order.model.enums.OrderStatus;
@@ -263,13 +263,13 @@ public class OrderTestDataProvider {
         paymentInstrumentInfo.setPaymentId(orderInfo.getPaymentInfos().get(0).getPaymentId());
         paymentInstrumentInfo.setPaymentAmount(totalRefundAmount.multiply(new BigDecimal(-1)));
         billingHistory.getPaymentInfos().add(paymentInstrumentInfo);
-        billingHistory.setTransactionType(TransactionType.PENDING_REFUND);
+        billingHistory.setBillingAction(BillingAction.REQUEST_REFUND);
         billingHistory.setSuccess(true);
         billingHistory.setTotalAmount(totalRefundAmount.multiply(
                 new BigDecimal(-1)).setScale(2, RoundingMode.HALF_UP));
         orderInfo.getBillingHistories().add(billingHistory);
 
-        billingHistory.setTransactionType(TransactionType.REFUND);
+        billingHistory.setBillingAction(BillingAction.REFUND);
         orderInfo.getBillingHistories().add(billingHistory);
 
         orderInfo.setOrderStatus(OrderStatus.REFUNDED);
@@ -336,9 +336,7 @@ public class OrderTestDataProvider {
             paymentInfo.setPaymentAmount(orderTotalAmount.add(orderTotalTax));
             billingHistory.getPaymentInfos().add(paymentInfo);
             billingHistory.setSuccess(true);
-            billingHistory.setTransactionType(TransactionType.PENDING_CHARGE);
-            orderInfo.getBillingHistories().add(billingHistory);
-            billingHistory.setTransactionType(TransactionType.CHARGE);
+            billingHistory.setBillingAction(BillingAction.CHARGE);
             orderInfo.getBillingHistories().add(billingHistory);
 
         }
