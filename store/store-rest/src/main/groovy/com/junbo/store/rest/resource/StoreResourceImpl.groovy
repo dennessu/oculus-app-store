@@ -216,7 +216,7 @@ class StoreResourceImpl implements StoreResource {
                     type: entitlementsGetRequest.entitlementType
             )
             if (entitlementsGetRequest.isIAP) {
-                entitlementSearchParam.hostItemId = new ItemId(hostItem.id)
+                entitlementSearchParam.hostItemId = new ItemId(hostItem.getId())
             }
 
         }.then { // read entitlements from entitlement component
