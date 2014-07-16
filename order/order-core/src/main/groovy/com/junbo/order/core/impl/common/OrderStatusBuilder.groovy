@@ -25,6 +25,8 @@ class OrderStatusBuilder {
 
         if (CoreUtils.isFulfillCompleted(order)) { return OrderStatus.PENDING }
 
+        if (CoreUtils.isChargeCompleted(order)) { return OrderStatus.PENDING }
+
         if (CoreUtils.isPendingOnFulfillment(order)) { return OrderStatus.PENDING }
 
         if (CoreUtils.isPendingOnChargeConfirmation(order)) { return OrderStatus.PENDING }

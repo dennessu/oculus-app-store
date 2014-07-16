@@ -320,7 +320,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                             fh.entitlements = []
                             fh.success = true
                             if (!CollectionUtils.isEmpty(fi.actions)) {
-                                fh.success = fi.actions?.any { FulfilmentAction fa ->
+                                fh.success = !fi.actions?.any { FulfilmentAction fa ->
                                     fa.status == FulfilmentStatus.FAILED || fa.status == FulfilmentStatus.UNKNOWN
                                 }
                             }
