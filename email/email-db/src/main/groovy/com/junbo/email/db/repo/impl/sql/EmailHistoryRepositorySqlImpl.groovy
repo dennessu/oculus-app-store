@@ -41,7 +41,7 @@ class EmailHistoryRepositorySqlImpl extends EmailBaseRepository implements Email
         return Promise.pure(emailMapper.toEmail(savedEntity))
     }
 
-    public Promise<Email> updateEmailHistory(Email email) {
+    public Promise<Email> updateEmailHistory(Email email, Email oldEmail) {
         def entity = emailMapper.toEmailHistoryEntity(email)
         def savedEntity  = emailHistoryDao.get(entity.id)
         savedEntity.setStatus(entity.status)

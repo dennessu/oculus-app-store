@@ -46,8 +46,9 @@ public class EntitlementRepository {
         return entitlementMapper.toEntitlement(result);
     }
 
-    public Entitlement update(Entitlement entitlement) {
-        EntitlementEntity result = entitlementDao.update(entitlementMapper.toEntitlementEntity(entitlement));
+    public Entitlement update(Entitlement entitlement, Entitlement oldEntitlement) {
+        EntitlementEntity result = entitlementDao.update(entitlementMapper.toEntitlementEntity(entitlement),
+                entitlementMapper.toEntitlementEntity(oldEntitlement));
         entitlementHistoryDao.insert(new EntitlementHistoryEntity(UPDATE, result));
         return entitlementMapper.toEntitlement(result);
     }
@@ -62,7 +63,7 @@ public class EntitlementRepository {
         EntitlementEntity entitlementEntity = entitlementDao.get(entitlementId);
         entitlementEntity.setIsDeleted(true);
         entitlementHistoryDao.insert(new EntitlementHistoryEntity(DELETE, entitlementEntity));
-        entitlementDao.update(entitlementEntity);
+        entitlementDao.update(entitlementEntity, entitlementEntity);
     }
 
     public Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {

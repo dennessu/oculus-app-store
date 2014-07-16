@@ -16,7 +16,7 @@ import java.util.List;
 public interface TaxItemEntityDao {
     TaxItemEntity get(Long taxItemId);
     TaxItemEntity save(TaxItemEntity taxItem);
-    TaxItemEntity update(TaxItemEntity taxItem);
+    TaxItemEntity update(TaxItemEntity taxItem, TaxItemEntity oldTaxItem);
     void softDelete(Long taxItemId);
     List<TaxItemEntity> findByBalanceItemId(Long balanceItemId);
 }

@@ -122,7 +122,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
                 return userSecurityQuestionValidator.validateForUpdate(
                         userId, userSecurityQuestionId, userSecurityQuestion, oldUserSecurityQuestion).then {
 
-                    return userSecurityQuestionRepository.update(userSecurityQuestion).
+                    return userSecurityQuestionRepository.update(userSecurityQuestion, oldUserSecurityQuestion).
                             then { UserSecurityQuestion newUserSecurityQuestion ->
                         newUserSecurityQuestion = userSecurityQuestionFilter.filterForGet(newUserSecurityQuestion, null)
                         return Promise.pure(newUserSecurityQuestion)
@@ -160,7 +160,7 @@ class UserSecurityQuestionResourceImpl implements UserSecurityQuestionResource {
 
                 return userSecurityQuestionValidator.validateForUpdate(
                         userId, userSecurityQuestionId, userSecurityQuestion, oldUserSecurityQuestion).then {
-                    return userSecurityQuestionRepository.update(userSecurityQuestion).
+                    return userSecurityQuestionRepository.update(userSecurityQuestion, oldUserSecurityQuestion).
                             then { UserSecurityQuestion newUserSecurityQuestion ->
                         newUserSecurityQuestion = userSecurityQuestionFilter.filterForGet(newUserSecurityQuestion, null)
                         return Promise.pure(newUserSecurityQuestion)

@@ -99,7 +99,8 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
 
                 return userAuthenticatorValidator.validateForUpdate(
                         userAuthenticatorId, userAuthenticator, oldUserAuthenticator).then {
-                    return userAuthenticatorRepository.update(userAuthenticator).then { UserAuthenticator newUserAuthenticator ->
+                    return userAuthenticatorRepository.update(userAuthenticator, oldUserAuthenticator).then {
+                        UserAuthenticator newUserAuthenticator ->
                         newUserAuthenticator = userAuthenticatorFilter.filterForGet(newUserAuthenticator, null)
                         return Promise.pure(newUserAuthenticator)
                     }
@@ -134,7 +135,8 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
 
                 return userAuthenticatorValidator.validateForUpdate(
                         userAuthenticatorId, userAuthenticator, oldUserAuthenticator).then {
-                    return userAuthenticatorRepository.update(userAuthenticator).then { UserAuthenticator newUserAuthenticator ->
+                    return userAuthenticatorRepository.update(userAuthenticator, oldUserAuthenticator).then {
+                        UserAuthenticator newUserAuthenticator ->
                         newUserAuthenticator = userAuthenticatorFilter.filterForGet(newUserAuthenticator, null)
                         return Promise.pure(newUserAuthenticator)
                     }

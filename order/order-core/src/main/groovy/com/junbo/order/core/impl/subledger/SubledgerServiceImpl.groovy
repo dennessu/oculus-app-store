@@ -174,7 +174,8 @@ class SubledgerServiceImpl implements SubledgerService {
 
         subledgerItem.subledger = subledger.getId()
         subledgerItem.status = SubledgerItemStatus.PROCESSED
-        subledgerRepository.updateSubledgerItem(subledgerItem)
+        SubledgerItem oldSubledgerItem = subledgerRepository.getSubledgerItem(subledgerItem.getId())
+        subledgerRepository.updateSubledgerItem(subledgerItem, oldSubledgerItem)
 
         subledgerRepository.updateSubledger(subledger)
     }

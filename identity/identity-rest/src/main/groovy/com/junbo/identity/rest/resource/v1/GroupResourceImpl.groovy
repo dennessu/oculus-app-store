@@ -90,7 +90,7 @@ class GroupResourceImpl implements GroupResource {
                 group = groupFilter.filterForPut(group, oldGroup)
 
                 return groupValidator.validateForUpdate(groupId, group, oldGroup).then {
-                    return groupRepository.update(group).then { Group newGroup ->
+                    return groupRepository.update(group, oldGroup).then { Group newGroup ->
                         newGroup = groupFilter.filterForGet(newGroup, null)
                         return Promise.pure(newGroup)
                     }
@@ -116,7 +116,7 @@ class GroupResourceImpl implements GroupResource {
                 group = groupFilter.filterForPatch(group, oldGroup)
 
                 return groupValidator.validateForUpdate(groupId, group, oldGroup).then {
-                    return groupRepository.update(group).then { Group newGroup ->
+                    return groupRepository.update(group, oldGroup).then { Group newGroup ->
                         newGroup = groupFilter.filterForGet(newGroup, null)
                         return Promise.pure(newGroup)
                     }

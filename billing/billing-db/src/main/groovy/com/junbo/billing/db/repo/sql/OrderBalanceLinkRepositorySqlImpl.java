@@ -80,9 +80,10 @@ public class OrderBalanceLinkRepositorySqlImpl implements OrderBalanceLinkReposi
     }
 
     @Override
-    public Promise<OrderBalanceLink> update(OrderBalanceLink model) {
+    public Promise<OrderBalanceLink> update(OrderBalanceLink model, OrderBalanceLink oldModel) {
         OrderBalanceLinkEntity entity = modelMapper.toOrderBalanceLinkEntity(model, new MappingContext());
-        orderBalanceLinkEntityDao.update(entity);
+        OrderBalanceLinkEntity oldEntity = modelMapper.toOrderBalanceLinkEntity(oldModel, new MappingContext());
+        orderBalanceLinkEntityDao.update(entity, oldEntity);
         return get(entity.getId());
     }
 

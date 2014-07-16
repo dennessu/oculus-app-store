@@ -16,7 +16,7 @@ public interface RoleRepository {
 
     Promise<Role> create(Role model)
 
-    Promise<Role> update(Role model)
+    Promise<Role> update(Role model, Role oldModel)
 
     Promise<Void> delete(RoleId id)
 

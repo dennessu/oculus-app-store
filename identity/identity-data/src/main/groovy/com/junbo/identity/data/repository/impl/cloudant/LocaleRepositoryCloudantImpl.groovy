@@ -20,8 +20,8 @@ class LocaleRepositoryCloudantImpl extends CloudantClient<Locale> implements Loc
     }
 
     @Override
-    Promise<Locale> update(Locale model) {
-        return cloudantPut(model)
+    Promise<Locale> update(Locale model, Locale oldModel) {
+        return cloudantPut(model, oldModel)
     }
 
     @Override

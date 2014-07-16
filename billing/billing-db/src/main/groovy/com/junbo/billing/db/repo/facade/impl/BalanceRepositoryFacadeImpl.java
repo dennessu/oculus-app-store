@@ -216,7 +216,7 @@ public class BalanceRepositoryFacadeImpl implements BalanceRepositoryFacade {
             savedBalance.setShippingAddressId(balance.getShippingAddressId());
             savedBalance.setUpdatedTime(new Date());
             savedBalance.setUpdatedBy(balance.getUserId().getValue());
-            balanceRepository.update(savedBalance).syncGet();
+            balanceRepository.update(savedBalance, savedBalance).syncGet();
 
             for (Transaction transaction : balance.getTransactions()) {
                 if (transaction.getId() == null) {
@@ -226,10 +226,9 @@ public class BalanceRepositoryFacadeImpl implements BalanceRepositoryFacade {
                     transactionRepositoryFacade.saveTransaction(transaction);
                     savedBalance.addTransaction(transaction);
                 } else {
-                    transactionRepositoryFacade.updateTransaction(transaction);
+                    transactionRepositoryFacade.updateTransaction(transaction, transaction);
                 }
             }
-
             // create balance event
             saveBalanceEvent(savedBalance);
 

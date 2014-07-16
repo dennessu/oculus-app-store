@@ -106,7 +106,7 @@ class ScopeServiceImpl implements ScopeService {
         }
 
         try {
-            return scopeRepository.updateScope(scope)
+            return scopeRepository.updateScope(scope, existingScope)
         } catch (DBUpdateConflictException e) {
             throw AppExceptions.INSTANCE.updateConflict().exception()
         }

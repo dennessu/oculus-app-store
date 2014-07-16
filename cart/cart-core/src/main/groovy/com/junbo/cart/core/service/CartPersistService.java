@@ -21,5 +21,5 @@ public interface CartPersistService {
 
     Promise<Cart> create(Cart cart);
 
-    Promise<Cart> update(Cart cart);
+    Promise<Cart> update(Cart cart, Cart oldCart);
 }

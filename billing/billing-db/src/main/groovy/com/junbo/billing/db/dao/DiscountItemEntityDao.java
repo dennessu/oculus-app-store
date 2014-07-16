@@ -16,7 +16,7 @@ import java.util.List;
 public interface DiscountItemEntityDao {
     DiscountItemEntity get(Long discountItemId);
     DiscountItemEntity save(DiscountItemEntity discountItem);
-    DiscountItemEntity update(DiscountItemEntity discountItem);
+    DiscountItemEntity update(DiscountItemEntity discountItem, DiscountItemEntity oldDiscountItem);
     void softDelete(Long discountItemId);
     List<DiscountItemEntity> findByBalanceItemId(Long balanceItemId);
 }

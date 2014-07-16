@@ -26,8 +26,8 @@ class CloudantScopeRepositoryImpl extends CloudantClient<Scope> implements Scope
     }
 
     @Override
-    Scope updateScope(Scope scope) {
-        return cloudantPutSync(scope)
+    Scope updateScope(Scope scope, Scope oldScope) {
+        return cloudantPutSync(scope, oldScope)
     }
 
     @Override

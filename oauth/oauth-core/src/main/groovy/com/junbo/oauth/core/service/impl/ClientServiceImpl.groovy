@@ -158,7 +158,7 @@ class ClientServiceImpl implements ClientService {
         client.rev = existingClient.rev
 
         try {
-            return clientRepository.updateClient(client)
+            return clientRepository.updateClient(client, existingClient)
         } catch (DBUpdateConflictException e) {
             throw AppExceptions.INSTANCE.updateConflict().exception()
         }
@@ -177,7 +177,7 @@ class ClientServiceImpl implements ClientService {
 
         client.clientSecret = tokenGenerator.generateClientSecret()
 
-        clientRepository.updateClient(client)
+        clientRepository.updateClient(client, client)
         return client
     }
 

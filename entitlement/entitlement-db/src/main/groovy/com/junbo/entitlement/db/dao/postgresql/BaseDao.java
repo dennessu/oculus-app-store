@@ -71,7 +71,7 @@ public class BaseDao<T extends Entity> {
         return (result == null || result.getIsDeleted()) ? null : result;
     }
 
-    public T update(T t) {
+    public T update(T t, T old) {
         T existed = (T) currentSession(t.getShardMasterId()).load(entityType, t.getId());
         t.setCreatedTime(existed.getCreatedTime());
         t.setCreatedBy(existed.getCreatedBy());

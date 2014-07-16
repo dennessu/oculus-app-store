@@ -19,8 +19,8 @@ class UserAuthenticatorRepositoryCloudantImpl extends CloudantClient<UserAuthent
     }
 
     @Override
-    Promise<UserAuthenticator> update(UserAuthenticator authenticator) {
-        return cloudantPut(authenticator)
+    Promise<UserAuthenticator> update(UserAuthenticator authenticator, UserAuthenticator oldAuthenticator) {
+        return cloudantPut(authenticator, oldAuthenticator)
     }
 
     @Override

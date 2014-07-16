@@ -19,9 +19,9 @@ class UserPinRepositoryCloudantImpl extends CloudantClient<UserPin> implements U
     }
 
     @Override
-    Promise<UserPin> update(UserPin userPin) {
+    Promise<UserPin> update(UserPin userPin, UserPin oldUserPin) {
         userPin.value = null
-        return cloudantPut(userPin)
+        return cloudantPut(userPin, oldUserPin)
     }
 
     @Override

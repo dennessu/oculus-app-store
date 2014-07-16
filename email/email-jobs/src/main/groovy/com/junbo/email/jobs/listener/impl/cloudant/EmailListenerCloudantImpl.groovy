@@ -56,7 +56,7 @@ class EmailListenerCloudantImpl extends EmailBaseListener implements EmailListen
                         return Promise.pure(null)
                     }
                     return emailProvider.sendEmail(email, template).then {Email retEmail ->
-                        return emailHistoryRepository.updateEmailHistory(retEmail)
+                        return emailHistoryRepository.updateEmailHistory(retEmail, retEmail)
                     }
                 }.syncGet()
             }

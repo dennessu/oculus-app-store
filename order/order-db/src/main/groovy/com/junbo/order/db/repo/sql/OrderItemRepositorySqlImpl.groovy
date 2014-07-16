@@ -70,7 +70,7 @@ class OrderItemRepositorySqlImpl implements OrderItemRepository {
     }
 
     @Override
-    Promise<OrderItem> update(OrderItem orderItem) {
+    Promise<OrderItem> update(OrderItem orderItem, OrderItem oldOrderItem) {
         assert orderItem.orderId != null
         def entity = modelMapper.toOrderItemEntity(orderItem, new MappingContext())
         def oldEntity = orderItemDao.read(entity.orderItemId)

@@ -164,7 +164,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         String newSerialNumber = UUID.randomUUID().toString()
         newDevice.setSerialNumber(newSerialNumber)
-        deviceRepository.update(newDevice).testGet()
+        deviceRepository.update(newDevice, newDevice).testGet()
 
         device = deviceRepository.get((DeviceId)newDevice.id).testGet()
         assert device.serialNumber == newSerialNumber
@@ -187,7 +187,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         String newValue = 'test2 ' + UUID.randomUUID().toString()
         newGroup.setName(newValue)
-        groupRepository.update(newGroup).testGet()
+        groupRepository.update(newGroup, group).testGet()
         newGroup = groupRepository.get(group.getId()).testGet()
         Assert.assertEquals(newValue, newGroup.getName())
 
@@ -233,7 +233,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         Boolean newValue = !userPassword.getActive()
         newUserPassword.setActive(newValue)
-        userPasswordRepository.update(newUserPassword).testGet()
+        userPasswordRepository.update(newUserPassword, userPassword).testGet()
         newUserPassword = userPasswordRepository.get(newUserPassword.getId()).testGet()
         Assert.assertEquals(newValue, newUserPassword.getActive())
 
@@ -268,7 +268,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         Boolean newValue = !userPIN.getActive()
         newUserPin.setActive(newValue)
-        userPinRepository.update(newUserPin).testGet()
+        userPinRepository.update(newUserPin, userPIN).testGet()
         newUserPin = userPinRepository.get(newUserPin.getId()).testGet()
         Assert.assertEquals(newValue, newUserPin.getActive())
 
@@ -293,7 +293,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         String newValue = UUID.randomUUID().toString()
         newUserAuthenticator.setExternalId(newValue)
-        userAuthenticatorRepository.update(newUserAuthenticator).testGet()
+        userAuthenticatorRepository.update(newUserAuthenticator, authenticator).testGet()
         newUserAuthenticator = userAuthenticatorRepository.get(authenticator.getId()).testGet()
 
         Assert.assertEquals(newValue, newUserAuthenticator.externalId)
@@ -371,7 +371,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         CommunicationId newCommunicationId = new CommunicationId(idGenerator.nextId().toString())
         userOptin.setCommunicationId(newCommunicationId)
-        userCommunicationRepository.update(userOptin).testGet()
+        userCommunicationRepository.update(userOptin, userOptin).testGet()
 
         newUserOptin = userCommunicationRepository.get(userOptin.getId()).testGet()
         Assert.assertEquals(newCommunicationId, newUserOptin.getCommunicationId())
@@ -402,7 +402,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         String newPreferredTimeZone = UUID.randomUUID().toString()
         newUser.setPreferredTimezone(newPreferredTimeZone)
-        newUser = userRepository.update(newUser).testGet()
+        newUser = userRepository.update(newUser, user).testGet()
         Assert.assertEquals(newUser.getPreferredTimezone(), newPreferredTimeZone)
 
         User findUser = userRepository.searchUserByCanonicalUsername(newUser.getUsername()).testGet()
@@ -452,7 +452,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
 
         String value = UUID.randomUUID().toString()
         newUserSecurityQuestion.setAnswerHash(value)
-        userSecurityQuestionRepository.update(newUserSecurityQuestion).testGet()
+        userSecurityQuestionRepository.update(newUserSecurityQuestion, userSecurityQuestion).testGet()
 
         newUserSecurityQuestion = userSecurityQuestionRepository.get(userSecurityQuestion.getId()).testGet()
         Assert.assertEquals(newUserSecurityQuestion.getAnswerHash(), value)
@@ -475,7 +475,7 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         Assert.assertEquals(userTos.getTosId(), newUserTos.getTosId())
 
         newUserTos.setTosId(new TosId("456L"))
-        userTosRepository.update(newUserTos).testGet()
+        userTosRepository.update(newUserTos, userTos).testGet()
 
         newUserTos = userTosRepository.get(userTos.getId()).testGet()
         Assert.assertEquals(new TosId("456L"), newUserTos.getTosId())

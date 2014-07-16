@@ -80,7 +80,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                         List<UserPassword> passwordList ->
                             return Promise.each(passwordList) { UserPassword userPassword ->
                                 userPassword.active = false
-                                return userPasswordRepository.update(userPassword)
+                                return userPasswordRepository.update(userPassword, userPassword)
                             }
                     }.then {
                         return userPasswordRepository.create((UserPassword) obj).then { UserPassword userPassword ->
@@ -102,7 +102,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                         List<UserPin> pinList ->
                             return Promise.each(pinList) { UserPin userPin ->
                                 userPin.active = false
-                                return userPinRepository.update(userPin)
+                                return userPinRepository.update(userPin, userPin)
                             }
                     }.then {
                         return userPinRepository.create((UserPin) obj).then { UserPin userPin ->

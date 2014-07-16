@@ -51,7 +51,7 @@ class WalletRepositorySqlImpl implements WalletRepository {
     }
 
     @Override
-    Promise<Wallet> update(Wallet model) {
+    Promise<Wallet> update(Wallet model, Wallet oldModel) {
         WalletEntity entity = modelMapper.toWalletEntity(model, new MappingContext())
         walletDao.update(entity)
         return get(model.getId())

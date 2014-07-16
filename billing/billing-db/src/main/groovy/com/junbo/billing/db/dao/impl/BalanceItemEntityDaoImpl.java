@@ -43,7 +43,7 @@ public class BalanceItemEntityDaoImpl extends BaseDao implements BalanceItemEnti
     }
 
     @Override
-    public BalanceItemEntity update(BalanceItemEntity balanceItem) {
+    public BalanceItemEntity update(BalanceItemEntity balanceItem, BalanceItemEntity oldBalanceItem) {
         balanceItem.setUpdatedTime(new Date());
         if (balanceItem.getUpdatedBy() == null) {
             balanceItem.setUpdatedBy("0");

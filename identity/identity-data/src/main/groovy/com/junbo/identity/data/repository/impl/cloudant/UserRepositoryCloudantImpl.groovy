@@ -31,8 +31,8 @@ class UserRepositoryCloudantImpl extends CloudantClient<User> implements UserRep
     }
 
     @Override
-    Promise<User> update(User user) {
-        return cloudantPut(user)
+    Promise<User> update(User user, User oldUser) {
+        return cloudantPut(user, oldUser)
     }
 
     @Override

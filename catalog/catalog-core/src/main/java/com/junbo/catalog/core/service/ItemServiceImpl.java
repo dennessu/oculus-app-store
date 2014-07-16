@@ -80,7 +80,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         validateItemUpdate(item, oldItem);
 
         item.setActiveRevision(oldItem.getActiveRevision());
-        return itemRepo.update(item);
+        return itemRepo.update(item, oldItem);
     }
 
     @Override
@@ -119,9 +119,9 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
 
             item.setCurrentRevisionId(revisionId);
             item.setActiveRevision(revision);
-            itemRepo.update(item);
+            itemRepo.update(item, item);
         }
-        return itemRevisionRepo.update(revision);
+        return itemRevisionRepo.update(revision, oldRevision);
     }
 
     @Override

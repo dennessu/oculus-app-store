@@ -17,7 +17,7 @@ interface ConsentRepository {
 
     Consent getConsent(Long userId, String clientId)
 
-    Consent updateConsent(Consent consent)
+    Consent updateConsent(Consent consent, Consent oldConsent)
 
     void deleteConsent(Consent consent)
 }

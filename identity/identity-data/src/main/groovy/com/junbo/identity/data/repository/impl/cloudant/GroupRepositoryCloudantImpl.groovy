@@ -23,8 +23,8 @@ class GroupRepositoryCloudantImpl extends CloudantClient<Group> implements Group
     }
 
     @Override
-    Promise<Group> update(Group group) {
-        return cloudantPut(group)
+    Promise<Group> update(Group group, Group oldGroup) {
+        return cloudantPut(group, oldGroup)
     }
 
     @Override

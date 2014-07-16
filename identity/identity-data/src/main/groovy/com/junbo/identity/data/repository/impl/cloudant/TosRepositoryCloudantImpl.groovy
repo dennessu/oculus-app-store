@@ -27,8 +27,8 @@ class TosRepositoryCloudantImpl extends CloudantClient<Tos> implements TosReposi
     }
 
     @Override
-    Promise<Tos> update(Tos model) {
-        return cloudantPut(model)
+    Promise<Tos> update(Tos model, Tos oldModel) {
+        return cloudantPut(model, oldModel)
     }
 
     @Override

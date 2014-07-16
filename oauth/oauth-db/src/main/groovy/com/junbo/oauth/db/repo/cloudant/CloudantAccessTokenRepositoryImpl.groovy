@@ -47,8 +47,8 @@ class CloudantAccessTokenRepositoryImpl extends CloudantClient<AccessToken> impl
     }
 
     @Override
-    AccessToken update(AccessToken accessToken) {
-        return cloudantPutSync(accessToken)
+    AccessToken update(AccessToken accessToken, AccessToken oldAccessToken) {
+        return cloudantPutSync(accessToken, oldAccessToken)
     }
 
     @Override

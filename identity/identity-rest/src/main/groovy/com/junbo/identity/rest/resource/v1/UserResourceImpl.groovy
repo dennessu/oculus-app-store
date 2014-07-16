@@ -101,7 +101,7 @@ class UserResourceImpl implements UserResource {
                 user = userFilter.filterForPut(user, oldUser)
 
                 return userValidator.validateForUpdate(user, oldUser).then {
-                    return userRepository.update(user).then { User newUser ->
+                    return userRepository.update(user, oldUser).then { User newUser ->
                         newUser = userFilter.filterForGet(newUser, null)
                         return Promise.pure(newUser)
                     }
@@ -134,7 +134,7 @@ class UserResourceImpl implements UserResource {
                 user = userFilter.filterForPatch(user, oldUser)
 
                 return userValidator.validateForUpdate(user, oldUser).then {
-                    return userRepository.update(user).then { User newUser ->
+                    return userRepository.update(user, oldUser).then { User newUser ->
                         newUser = userFilter.filterForGet(newUser, null)
                         return Promise.pure(newUser)
                     }

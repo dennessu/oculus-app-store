@@ -17,7 +17,7 @@ import java.util.UUID;
 public interface BalanceEntityDao {
     BalanceEntity get(Long balanceId);
     BalanceEntity save(BalanceEntity balance);
-    BalanceEntity update(BalanceEntity balance);
+    BalanceEntity update(BalanceEntity balance, BalanceEntity oldBalance);
     List<BalanceEntity> getByTrackingUuid(UUID trackingUuid);
     List<BalanceEntity> getInitBalances();
     List<BalanceEntity> getAwaitingPaymentBalances();

@@ -132,7 +132,8 @@ class OAuthTokenServiceImpl implements OAuthTokenService {
 
     @Override
     AccessToken updateAccessToken(AccessToken accessToken) {
-        return accessTokenRepository.update(accessToken)
+        def oldAccessToken = accessTokenRepository.get(accessToken.getId())
+        return accessTokenRepository.update(accessToken, oldAccessToken)
     }
 
     @Override

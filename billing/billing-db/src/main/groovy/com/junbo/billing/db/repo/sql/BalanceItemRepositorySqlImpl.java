@@ -66,9 +66,10 @@ public class BalanceItemRepositorySqlImpl implements BalanceItemRepository {
     }
 
     @Override
-    public Promise<BalanceItem> update(BalanceItem model) {
+    public Promise<BalanceItem> update(BalanceItem model, BalanceItem oldModel) {
         BalanceItemEntity entity = modelMapper.toBalanceItemEntity(model, new MappingContext());
-        balanceItemEntityDao.update(entity);
+        BalanceItemEntity oldEntity = modelMapper.toBalanceItemEntity(oldModel, new MappingContext());
+        balanceItemEntityDao.update(entity, oldEntity);
         return get(entity.getId());
     }
 

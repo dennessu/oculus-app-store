@@ -128,8 +128,8 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
     }
 
     @Override
-    public ItemRevision update(ItemRevision revision) {
-        return cloudantPutSync(revision);
+    public ItemRevision update(ItemRevision revision, ItemRevision oldRevision) {
+        return cloudantPutSync(revision, oldRevision);
     }
 
     @Override

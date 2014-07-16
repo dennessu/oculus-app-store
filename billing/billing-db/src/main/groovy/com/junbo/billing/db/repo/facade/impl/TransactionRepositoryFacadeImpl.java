@@ -48,9 +48,9 @@ public class TransactionRepositoryFacadeImpl implements TransactionRepositoryFac
     }
 
     @Override
-    public Transaction updateTransaction(Transaction transaction) {
+    public Transaction updateTransaction(Transaction transaction, Transaction oldTransaction) {
         try (SyncModeScope scope = new SyncModeScope()) {
-            return transactionRepository.update(transaction).syncGet();
+            return transactionRepository.update(transaction, oldTransaction).syncGet();
         }
     }
 }

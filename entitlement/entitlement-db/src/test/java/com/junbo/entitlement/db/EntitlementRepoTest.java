@@ -56,7 +56,7 @@ public class EntitlementRepoTest extends AbstractTestNGSpringContextTests {
         Entitlement entitlement = buildAnEntitlement();
         Entitlement updatedEntitlement = entitlementRepository.insert(entitlement);
         updatedEntitlement.setIsBanned(true);
-        updatedEntitlement = entitlementRepository.update(updatedEntitlement);
+        updatedEntitlement = entitlementRepository.update(updatedEntitlement, updatedEntitlement);
         Assert.assertEquals(updatedEntitlement.getIsBanned(), Boolean.TRUE);
         Assert.assertEquals(updatedEntitlement.getIsActive(), Boolean.FALSE);
     }

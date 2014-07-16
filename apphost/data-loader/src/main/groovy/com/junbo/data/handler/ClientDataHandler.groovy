@@ -49,7 +49,7 @@ class ClientDataHandler extends BaseDataHandler {
                 client.clientId = existing.clientId
                 client.rev = existing.rev
                 try {
-                    clientRepository.updateClient(client)
+                    clientRepository.updateClient(client, existing)
                 } catch (Exception e) {
                     logger.error("Error updating client $client.clientId.", e)
                 }

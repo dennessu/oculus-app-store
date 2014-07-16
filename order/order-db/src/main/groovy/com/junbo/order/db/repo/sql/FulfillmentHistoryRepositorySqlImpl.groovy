@@ -50,7 +50,7 @@ class FulfillmentHistoryRepositorySqlImpl implements FulfillmentHistoryRepositor
     }
 
     @Override
-    Promise<FulfillmentHistory> update(FulfillmentHistory history) {
+    Promise<FulfillmentHistory> update(FulfillmentHistory history, FulfillmentHistory oldHistory) {
         def entity = modelMapper.toOrderItemFulfillmentHistoryEntity(history, new MappingContext())
         orderItemFulfillmentHistoryDao.update(entity)
         return Promise.pure(modelMapper.toFulfillmentHistoryModel(entity, new MappingContext()))

@@ -17,7 +17,7 @@ interface ScopeRepository {
 
     Scope saveScope(Scope scope)
 
-    Scope updateScope(Scope scope)
+    Scope updateScope(Scope scope, Scope oldScope)
 
     void deleteScope(Scope scope)
 }

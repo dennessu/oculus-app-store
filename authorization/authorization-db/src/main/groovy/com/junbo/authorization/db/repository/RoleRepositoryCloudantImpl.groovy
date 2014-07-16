@@ -26,8 +26,8 @@ class RoleRepositoryCloudantImpl extends CloudantClient<Role> implements RoleRep
     }
 
     @Override
-    Promise<Role> update(Role role) {
-        return cloudantPut(role)
+    Promise<Role> update(Role role, Role oldRole) {
+        return cloudantPut(role, oldRole)
     }
 
     @Override

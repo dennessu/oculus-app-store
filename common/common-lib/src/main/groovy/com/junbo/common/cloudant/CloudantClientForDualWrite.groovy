@@ -37,7 +37,7 @@ abstract class CloudantClientForDualWrite<T extends CloudantEntity> extends Clou
 
             // update
             entity.cloudantRev = cloudantDoc.cloudantRev
-            return super.cloudantPut(entity);
+            return super.cloudantPut(entity, cloudantDoc);
         }
     }
 }

@@ -46,8 +46,8 @@ class CsrUpdateRepositoryCloudantImpl extends CloudantClient<CsrUpdate> implemen
     }
 
     @Override
-    Promise<CsrUpdate> update(CsrUpdate model) {
-        return cloudantPut(model)
+    Promise<CsrUpdate> update(CsrUpdate model, CsrUpdate oldModel) {
+        return cloudantPut(model, oldModel)
     }
 
     @Override

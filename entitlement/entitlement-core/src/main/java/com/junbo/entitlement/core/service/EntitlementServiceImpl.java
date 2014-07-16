@@ -126,7 +126,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
         existing.setIsBanned(false);
         existing.setUseCount(existing.getUseCount() + entitlement.getUseCount());
-        return entitlementRepository.update(existing);
+        return entitlementRepository.update(existing, existing);
     }
 
     @Override
@@ -156,7 +156,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
                 fillUpdate(entitlement, existingEntitlement);
                 validateUpdate(entitlement, existingEntitlement);
-                return entitlementRepository.update(existingEntitlement);
+                return entitlementRepository.update(existingEntitlement, existingEntitlement);
             }
         });
     }

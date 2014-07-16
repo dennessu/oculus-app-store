@@ -26,7 +26,7 @@ class EmailTemplateRepositoryCloudantImpl extends CloudantClient<EmailTemplate> 
 
     public Promise<EmailTemplate> updateEmailTemplate(EmailTemplate template) {
         return cloudantGet(template.getId().value.toString()).then {EmailTemplate savedTemplate ->
-            return cloudantPut(template)
+            return cloudantPut(template, savedTemplate)
         }
     }
 

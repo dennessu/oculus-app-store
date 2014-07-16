@@ -29,8 +29,8 @@ public class PriceTierRepositoryImpl extends CloudantClient<PriceTier> implement
         return queryView("by_tierId", null, size, start, true).syncGet();
     }
 
-    public PriceTier update(PriceTier priceTier) {
-        return cloudantPutSync(priceTier);
+    public PriceTier update(PriceTier priceTier, PriceTier oldPriceTier) {
+        return cloudantPutSync(priceTier, oldPriceTier);
     }
 
     public void delete(String tierId) {

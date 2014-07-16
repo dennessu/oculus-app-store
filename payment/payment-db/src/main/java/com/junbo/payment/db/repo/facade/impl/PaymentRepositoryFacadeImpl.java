@@ -77,7 +77,7 @@ public class PaymentRepositoryFacadeImpl implements PaymentRepositoryFacade {
             if (externalToken != null) {
                 paymentTransaction.setExternalToken(externalToken);
             }
-            paymentTransactionRepository.update(paymentTransaction).syncGet();
+            paymentTransactionRepository.update(paymentTransaction, paymentTransaction).syncGet();
         }
     }
 

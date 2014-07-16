@@ -43,7 +43,7 @@ public class DiscountItemEntityDaoImpl extends BaseDao implements DiscountItemEn
     }
 
     @Override
-    public DiscountItemEntity update(DiscountItemEntity discountItem) {
+    public DiscountItemEntity update(DiscountItemEntity discountItem, DiscountItemEntity oldDiscountItem) {
         discountItem.setUpdatedTime(new Date());
         if (discountItem.getUpdatedBy() == null) {
             discountItem.setUpdatedBy("0");
@@ -66,6 +66,6 @@ public class DiscountItemEntityDaoImpl extends BaseDao implements DiscountItemEn
     public void softDelete(Long discountItemId) {
         DiscountItemEntity entity = this.get(discountItemId);
         entity.setIsDeleted(Boolean.TRUE);
-        this.update(entity);
+        this.update(entity, entity);
     }
 }

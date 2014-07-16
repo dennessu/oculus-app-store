@@ -132,7 +132,7 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
                 return userTFABackupCodeValidator.
                         validateForUpdate(userId, userTFABackupCodeId, userTFABackupCode, oldBackupCode).then {
 
-                    return userTFABackupCodeRepository.update(userTFABackupCode).then { UserTFABackupCode newCode ->
+                    return userTFABackupCodeRepository.update(userTFABackupCode, oldBackupCode).then { UserTFABackupCode newCode ->
                         newCode = userTFABackupCodeFilter.filterForGet(newCode, null)
                         return Promise.pure(newCode)
                     }
@@ -171,7 +171,7 @@ class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
 
                 return userTFABackupCodeValidator.
                         validateForUpdate(userId, userTFABackupCodeId, userTFABackupCode, oldBackupCode).then {
-                    return userTFABackupCodeRepository.update(userTFABackupCode).then { UserTFABackupCode newCode ->
+                    return userTFABackupCodeRepository.update(userTFABackupCode, oldBackupCode).then { UserTFABackupCode newCode ->
                         newCode = userTFABackupCodeFilter.filterForGet(newCode, null)
                         return Promise.pure(newCode)
                     }

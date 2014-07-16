@@ -92,7 +92,7 @@ class CurrencyResourceImpl implements CurrencyResource {
             currency = currencyFilter.filterForPut(currency, oldCurrency)
 
             return currencyValidator.validateForUpdate(currencyId, currency, oldCurrency).then {
-                return currencyRepository.update(currency).then { Currency newCurrency ->
+                return currencyRepository.update(currency, oldCurrency).then { Currency newCurrency ->
                     newCurrency = currencyFilter.filterForGet(newCurrency, null)
                     return Promise.pure(newCurrency)
                 }
@@ -124,7 +124,7 @@ class CurrencyResourceImpl implements CurrencyResource {
 
             return currencyValidator.validateForUpdate(
                     currencyId, currency, oldCurrency).then {
-                return currencyRepository.update(currency).then { Currency newCurrency ->
+                return currencyRepository.update(currency, oldCurrency).then { Currency newCurrency ->
                     newCurrency = currencyFilter.filterForGet(newCurrency, null)
                     return Promise.pure(newCurrency)
                 }

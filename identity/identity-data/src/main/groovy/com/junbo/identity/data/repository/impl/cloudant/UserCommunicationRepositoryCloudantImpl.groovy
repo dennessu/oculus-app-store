@@ -19,8 +19,8 @@ class UserCommunicationRepositoryCloudantImpl extends CloudantClient<UserCommuni
     }
 
     @Override
-    Promise<UserCommunication> update(UserCommunication entity) {
-        return cloudantPut(entity)
+    Promise<UserCommunication> update(UserCommunication entity, UserCommunication oldEntity) {
+        return cloudantPut(entity, oldEntity)
     }
 
     @Override

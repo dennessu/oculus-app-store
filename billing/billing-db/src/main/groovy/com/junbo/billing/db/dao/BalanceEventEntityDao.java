@@ -14,5 +14,5 @@ import com.junbo.billing.db.entity.BalanceEventEntity;
 public interface BalanceEventEntityDao {
     BalanceEventEntity get(Long balanceEventId);
     BalanceEventEntity save(BalanceEventEntity balanceEvent);
-    BalanceEventEntity update(BalanceEventEntity balanceEvent);
+    BalanceEventEntity update(BalanceEventEntity balanceEvent, BalanceEventEntity oldBalanceEvent);
 }

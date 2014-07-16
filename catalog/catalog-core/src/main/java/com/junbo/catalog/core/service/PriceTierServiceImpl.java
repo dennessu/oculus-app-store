@@ -81,7 +81,7 @@ public class PriceTierServiceImpl implements PriceTierService {
             throw exception;
         }
         validateUpdate(priceTier, oldPriceTier);
-        return priceTierRepo.update(priceTier);
+        return priceTierRepo.update(priceTier, oldPriceTier);
     }
 
     @Override

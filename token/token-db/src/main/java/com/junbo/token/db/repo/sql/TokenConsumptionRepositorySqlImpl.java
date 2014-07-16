@@ -41,7 +41,7 @@ public class TokenConsumptionRepositorySqlImpl implements TokenConsumptionReposi
     }
 
     @Override
-    public Promise<TokenConsumption> update(TokenConsumption model) {
+    public Promise<TokenConsumption> update(TokenConsumption model, TokenConsumption oldModel) {
         TokenConsumptionEntity entity = tokenMapper.toTokenConsumptionEntity(model, new MappingContext());
         TokenConsumptionEntity updated = tokenConsumptionDao.update(entity);
         return get(updated.getId());

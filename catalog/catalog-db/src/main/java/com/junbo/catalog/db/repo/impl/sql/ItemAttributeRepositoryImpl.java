@@ -43,7 +43,7 @@ public class ItemAttributeRepositoryImpl implements ItemAttributeRepository {
         return attributes;
     }
 
-    public ItemAttribute update(ItemAttribute attribute) {
+    public ItemAttribute update(ItemAttribute attribute, ItemAttribute oldAttribute) {
         ItemAttributeEntity dbEntity = attributeDao.get(attribute.getId());
         ItemAttributeMapper.fillDBEntity(attribute, dbEntity);
         return get(attributeDao.update(dbEntity));

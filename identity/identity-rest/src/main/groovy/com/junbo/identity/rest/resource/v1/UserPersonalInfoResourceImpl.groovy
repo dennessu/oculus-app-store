@@ -123,7 +123,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
                 userPersonalInfo = userPersonalInfoFilter.filterForPatch(userPersonalInfo, oldUserPersonalInfo)
 
                 return userPersonalInfoValidator.validateForUpdate(userPersonalInfo, oldUserPersonalInfo).then {
-                    return userPersonalInfoRepository.update(userPersonalInfo).then { UserPersonalInfo newUserPii ->
+                    return userPersonalInfoRepository.update(userPersonalInfo, oldUserPersonalInfo).then { UserPersonalInfo newUserPii ->
                         newUserPii.isValidated = newUserPii.lastValidateTime != null
                         newUserPii = userPersonalInfoFilter.filterForGet(newUserPii, null)
                         newUserPii = piiAdvanceFilter.getFilter(newUserPii)
@@ -159,7 +159,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
                 userPii = userPersonalInfoFilter.filterForPut(userPii, oldUserPersonalInfo)
 
                 return userPersonalInfoValidator.validateForUpdate(userPii, oldUserPersonalInfo).then {
-                    return userPersonalInfoRepository.update(userPii).then { UserPersonalInfo newUserPersonalInfo ->
+                    return userPersonalInfoRepository.update(userPii, oldUserPersonalInfo).then { UserPersonalInfo newUserPersonalInfo ->
                         newUserPersonalInfo.isValidated = newUserPersonalInfo.lastValidateTime != null
                         newUserPersonalInfo = userPersonalInfoFilter.filterForGet(newUserPersonalInfo, null)
                         newUserPersonalInfo = piiAdvanceFilter.getFilter(newUserPersonalInfo)

@@ -41,7 +41,7 @@ class IdentityVatCheckProcessor implements IdentityProcessor {
             if (!result.success) {
                 return Promise.pure(result)
             }
-            return userRepository.update(updated).recover { Throwable e ->
+            return userRepository.update(updated, user).recover { Throwable e ->
                 LOGGER.error('update user error')
                 result.success = false
             }.then {
