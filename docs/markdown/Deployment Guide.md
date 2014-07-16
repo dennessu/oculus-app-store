@@ -26,147 +26,197 @@ External DNS names:
 
 Both endpoints are internal. They can be tested from Bastion.
 
-### Copy Bits
-  After full build, copy the following files to Bastion server:
-  ```
-  scp apphost/apphost-identity/build/distributions/apphost-identity-0.0.1-SNAPSHOT.zip $YOUR_USER@bsn-ue1.online.silkcloud.com:/home/$YOUR_USER
-  scp apphost/apphost-crypto/build/distributions/apphost-crypto-0.0.1-SNAPSHOT.zip $YOUR_USER@bsn-ue1.online.silkcloud.com:/home/$YOUR_USER
-  scp apphost/apphost-dataloader/build/distributions/apphost-dataloader-0.0.1-SNAPSHOT.zip $YOUR_USER@bsn-ue1.online.silkcloud.com:/home/$YOUR_USER
-  ```
-  The first package apphost-identity contains the binary to run on app server and the files used to setup databases.
-  The second package apphost-crypto contains the binary to run on crypto app server.
-
-
-## Database Setup
-
 ### Prepare Database Servers
-  Run the following steps on all db servers including crypto-db. For PPE, the db servers are:
-    * `10.24.16.50`
-    * `10.24.20.50`
-    * `10.24.22.50`
-    * `10.24.34.10`
-    * `10.24.38.10`
+Run the following steps on all db servers including crypto-db. For PPE, the db servers are:
+  * `10.24.16.50`
+  * `10.24.20.50`
+  * `10.24.22.50`
+  * `10.24.34.10`
+  * `10.24.38.10`
 
-  1. Use devops to setup database server
-  ```
-  sudo su - devops
-  ssh $SERVER_IP
-  ```
-  The postgresql 9.3 is already installed on the server when preparing the
-  server. If it's not setup, refer to Appendix to install.
-  Check whether postgresql exists by typing psql.
+1. Use devops to setup database server
+```
+sudo su - devops
+ssh $SERVER_IP
+```
+The postgresql 9.3 is already installed on the server when preparing the
+server. If it's not setup, refer to Appendix to install.
+Check whether postgresql exists by typing psql.
 
-  1. Update the apt-get library
-  ```
-  sudo apt-get update
-  ```
-  1. Create command links
-  ```
-  sudo ln -sf /usr/lib/postgresql/9.3/bin/psql /usr/bin/psql
-  sudo ln -sf /usr/lib/postgresql/9.3/bin/pg_ctl /usr/bin/pg_ctl
-  sudo ln -sf /usr/lib/postgresql/9.3/bin/createdb /usr/bin/createdb
-  sudo ln -sf /usr/lib/postgresql/9.3/bin/dropdb /usr/bin/dropdb
-  ```
-  1. Cleanup existing DB instance
-  ```
-  sudo rm -rf /etc/init.d/postgresql
-  sudo kill $(sudo fuser -n tcp 5432 2>/dev/null)
-  sudo rm -rf /var/run/postgresql
-  sudo mkdir /var/run/postgresql
-  sudo chown silkcloud:silkcloud /var/run/postgresql
-  ```
-  1. Install PGBouncer
-  ```
-  sudo apt-get install -y pgbouncer
-  ```
-  1. Install oidentd
-  ```
-  sudo apt-get install -y oidentd
-  /etc/init.d/oidentd start
-  ```
-  1. Install Skytool Loniste
-  ```
-  sudo apt-get install -y make gcc python-all python-dev python-psycopg2 libpq-dev postgresql-server-dev-9.3
+1. Update the apt-get library
+```
+sudo apt-get update
+```
+1. Create command links
+```
+sudo ln -sf /usr/lib/postgresql/9.3/bin/psql /usr/bin/psql
+sudo ln -sf /usr/lib/postgresql/9.3/bin/pg_ctl /usr/bin/pg_ctl
+sudo ln -sf /usr/lib/postgresql/9.3/bin/createdb /usr/bin/createdb
+sudo ln -sf /usr/lib/postgresql/9.3/bin/dropdb /usr/bin/dropdb
+```
+1. Cleanup existing DB instance
+```
+sudo rm -rf /etc/init.d/postgresql
+sudo kill $(sudo fuser -n tcp 5432 2>/dev/null)
+sudo rm -rf /var/run/postgresql
+sudo mkdir /var/run/postgresql
+sudo chown silkcloud:silkcloud /var/run/postgresql
+```
+1. Install PGBouncer
+```
+sudo apt-get install -y pgbouncer
+```
+1. Install oidentd
+```
+sudo apt-get install -y oidentd
+/etc/init.d/oidentd start
+```
+1. Install Skytool Loniste
+```
+sudo apt-get install -y make gcc python-all python-dev python-psycopg2 libpq-dev postgresql-server-dev-9.3
+pushd /tmp
+wget http://pgfoundry.org/frs/download.php/3622/skytools-3.2.tar.gz
+tar zxfv skytools-3.2.tar.gz
+cd skytools-3.2
+./configure --prefix=/usr/local
+make
+sudo make install
+popd
+```
 
-  pushd /tmp
-  wget http://pgfoundry.org/frs/download.php/3622/skytools-3.2.tar.gz
-  tar zxfv skytools-3.2.tar.gz
-  cd skytools-3.2
-  ./configure --prefix=/usr/local
-  make
-  sudo make install
-  popd
-  ```
-  1. Setup SSH Key
-  Run the following command to switch to silkcloud account and check ssh key:
-  ```
-  sudo su - silkcloud
-  ls ~/.ssh
-  ```
-  If the files are not found, run the following commands to generate sshkey:
-  ```
-  # (don't create passphrase!)
-  ssh-keygen -t rsa
-  chmod 600 ~/.ssh/id_rsa*
-  ```
+1. Setup SSH Key <br/>
+Run the following command to switch to silkcloud account and check ssh key:
+```
+sudo su - silkcloud
+ls ~/.ssh
+```
+If the files are not found, run the following commands to generate sshkey:
+```
+# (don't create passphrase!)
+ssh-keygen -t rsa
+chmod 600 ~/.ssh/id_rsa*
+```
+Then run the following commands for all database servers:
+```
+ssh-copy-id silkcloud@$SERVER_IP
+ssh silkcloud@$SERVER_IP
+```
+Make sure the ssh can pass without using password.
 
-  Then run the following commands for all database servers:
-  ```
-  ssh-copy-id silkcloud@$SERVER_IP
-  ssh silkcloud@$SERVER_IP
-  ```
-  Make sure the ssh can pass without using password.
+1. Create silkcloud folders <br/>
+Run the following command using devops account:
+```
+grep "$HOSTNAME" /etc/hosts || sudo bash -c 'echo 127.0.0.1 $HOSTNAME >> /etc/hosts'
+sudo mkdir /var/silkcloud
+sudo chown -R silkcloud:silkcloud /var/silkcloud
+sudo mkdir /etc/silkcloud
+sudo chown -R silkcloud:silkcloud /etc/silkcloud
+sudo chmod 700 /etc/silkcloud
+```
 
-  Switch back to devops account:
-  ```
-  exit
-  ```
+1. Install other packages
+```
+sudo apt-get install unzip
+sudo apt-get install default-jdk
+```
+Java is used to run some tools on DB servers.
 
-  1. Create silkcloud folders
-  Prepare the crypto.core.key used to encrypt passwords in the configuration files. The following script assumes $CRYPTO_KEY is the key.
-  Run the following command using devops account:
-  ```
-  grep "$HOSTNAME" /etc/hosts || sudo bash -c 'echo 127.0.0.1 $HOSTNAME >> /etc/hosts'
-  sudo mkdir /var/silkcloud
-  sudo chown -R silkcloud:silkcloud /var/silkcloud
-  sudo mkdir /etc/silkcloud
-  sudo bash -c "echo environment=ppe > /etc/silkcloud/configuration.properties"
-  sudo bash -c "echo crypto.core.key=$CRYPTO_KEY >> /etc/silkcloud/configuration.properties"
-  sudo chmod 600 /etc/silkcloud/configuration.properties
-  sudo chown -R silkcloud:silkcloud /etc/silkcloud
-  ```
+1. Switch back to devops account:
+```
+exit
+```
+
+### Prepare App Servers
+  * `10.24.8.50`
+  * `10.24.12.50`
+  * `10.24.32.10`
+  * `10.24.36.10`
+
+1. Install Java 1.7 <br/>
+Install the latest Oracle JVM 1.7 on all machines.
+
+1. Create silklcloud folders <br/>
+Run the following command using devops account:
+```
+grep "$HOSTNAME" /etc/hosts || sudo bash -c 'echo 127.0.0.1 $HOSTNAME >> /etc/hosts'
+sudo mkdir /var/silkcloud
+sudo chown -R silkcloud:silkcloud /var/silkcloud
+sudo mkdir /etc/silkcloud
+sudo chown -R silkcloud:silkcloud /etc/silkcloud
+sudo chmod 700 /etc/silkcloud
+```
+
+1. Install other packages
+```
+sudo apt-get install unzip
+```
+
+## Deployment
+
+### Preparation
+1. Copy Bits
+After full build, copy the following files to Bastion server:
+```
+scp apphost/apphost-identity/build/distributions/apphost-identity-0.0.1-SNAPSHOT.zip $YOUR_USER@bsn-ue1.online.silkcloud.com:/home/$YOUR_USER
+scp apphost/apphost-crypto/build/distributions/apphost-crypto-0.0.1-SNAPSHOT.zip $YOUR_USER@bsn-ue1.online.silkcloud.com:/home/$YOUR_USER
+scp apphost/apphost-dataloader/build/distributions/apphost-dataloader-0.0.1-SNAPSHOT.zip $YOUR_USER@bsn-ue1.online.silkcloud.com:/home/$YOUR_USER
+```
+The first package apphost-identity contains the binary to run on app server and the files used to setup databases.
+The second package apphost-crypto contains the binary to run on crypto app server.
+
+
+1. Setup the silkcloud configuration folder for all servers
+  * `10.24.8.50`
+  * `10.24.12.50`
+  * `10.24.32.10`
+  * `10.24.36.10`
+  * `10.24.16.50`
+  * `10.24.20.50`
+  * `10.24.22.50`
+  * `10.24.34.10`
+  * `10.24.38.10`
+
+Prepare the crypto.core.key used to encrypt passwords in the configuration files. The following script assumes $CRYPTO_KEY is the key.
+```
+echo environment=ppe > /etc/silkcloud/configuration.properties
+echo crypto.core.key=$CRYPTO_KEY >> /etc/silkcloud/configuration.properties
+chmod 600 /etc/silkcloud/configuration.properties
+```
+
+1. Setup jks key store on crypto servers
+  * `10.24.32.10`
+  * `10.24.36.10`
+Prepare the jks file generated in New Environment step
+```
+scp $PATH_TO_JKS /etc/silkcloud
+chmod 600 /etc/silkcloud/*.jks
+```
 
 ### Create DB and Setup High Availability
 
-  1. Extract the DB setup binary on the db primary server from bastion
+  1. Upload all PGHA scripts to master/slave/replica servers
+  Copy the DB setup binary to the db primary server from bastion.
   ```
-  scp $YOUR_USER@bsn-ue1.online.silkcloud.com:/home/$YOUR_USER/apphost-identity-0.0.1-SNAPSHOT.zip /home/silkcloud
+  scp /home/$YOUR_USER/apphost-identity-0.0.1-SNAPSHOT.zip silkcloud@10.24.34.10:/home/silkcloud
   ```
-
-  1. Upload all PGHA scripts to master/slave/replica servers.
-  Run the following commands using silkcloud on bastion server to copy the bits to the first crypto db server
+  Then ssh to the db primary server
   ```
-  scp apphost-identity-0.0.1-SNAPSHOT.zip silkcloud@10.24.34.10:/home/silkcloud
-  ```
-
-  Then ssh to the first crypto db server and run the following command:
-  ```
-  unzip apphost-identity-0.0.1-SNAPSHOT.zip
+  unzip -o apphost-identity-0.0.1-SNAPSHOT.zip
   cd apphost-identity-0.0.1-SNAPSHOT/dbsetup/pgha
   ./upload_script.sh ppe
   ```
 
   1. Go to the master and slave servers using silkcloud account. For PPE, the servers are:
     * `10.24.16.50`
+    * `10.24.20.50`
     * `10.24.34.10`
     * `10.24.38.10`
-    * `10.24.20.50`
 
   Run the following commands to setup pgbouncer access password. The password should match `*.db.password` configured in configuration-data.jar
 
   For example, if the password plain text is `abc123` in ppe:
   ```
-  echo '"silkcloud" "abc123"' > ~/.pgbouncer_auth
+  echo '"silkcloud" "md5$DATABASE_PASSWORD_HASH"' > ~/.pgbouncer_auth
   chmod 600 ~/.pgbouncer_auth
   ```
 
@@ -179,8 +229,6 @@ Both endpoints are internal. They can be tested from Bastion.
   ```
   cd /var/silkcloud/pgha
   ./setup/setup_master.sh
-  ./test/test_liquibase_master.sh
-  ./pgbouncer/pgbouncer_master.sh
   nc -zv localhost 113 5432 6543
   ```
 
@@ -193,11 +241,6 @@ Both endpoints are internal. They can be tested from Bastion.
   Prepare the crypto.core.key used to encrypt passwords in the configuration files. The following script assumes $CRYPTO_KEY is the key.
   For PPE, the server is `10.24.34.10`
 
-  First, install default jdk in order to run liquibase
-  ```
-  sudo apt-get install default-jdk
-  ```
-
   Then run the following command:
   ```
   cd apphost-identity-0.0.1-SNAPSHOT/dbsetup/liquibase
@@ -206,12 +249,13 @@ Both endpoints are internal. They can be tested from Bastion.
   ```
   When prompted, input the password cipher key
 
-  1. Setup streaming replication on primary servers. For PPE, the servers are:
+  1. Initial backup and londiste setup on primary using silkcloud account. For PPE, the master servers are:
     * `10.24.16.50`
 
   Run the following commands:
   ```
   cd /var/silkcloud/pgha
+  ./londiste/londiste_root.sh
   ./util/base_backup.sh
   ```
 
@@ -222,7 +266,6 @@ Both endpoints are internal. They can be tested from Bastion.
   ```
   cd /var/silkcloud/pgha
   ./setup/setup_slave.sh
-  ./pgbouncer/pgbouncer_master.sh
   nc -zv localhost 113 5432 6543
   ```
 
@@ -232,9 +275,7 @@ Both endpoints are internal. They can be tested from Bastion.
   Run the following commands:
   ```
   cd /var/silkcloud/pgha
-  ./londiste/londiste_config_root.sh
   ./londiste/londiste_root.sh
-  ./londiste/londiste_pgqd.sh
   ./util/base_backup.sh
   ```
 
@@ -245,9 +286,6 @@ Both endpoints are internal. They can be tested from Bastion.
   ```
   cd /var/silkcloud/pgha
   ./setup/setup_replica.sh
-  ./londiste/londiste_config_leaf.sh
-  ./londiste/londiste_leaf.sh
-  ./londiste/londiste_pgqd.sh
   nc -zv localhost 113 5432
   ```
 
@@ -263,31 +301,13 @@ Both endpoints are internal. They can be tested from Bastion.
 ### Create Cloudant Databases
 
 Ssh to the first crypto db server and run the following command:
+  * `10.24.34.10`
 ```
 cd apphost-identity-0.0.1-SNAPSHOT/dbsetup/cloudant
 python ./couchdbcmd.py createdbs ppe --prefix=ppe_ --yes
 ```
 
 ## Setup Application
-
-### Prepare Machine
-Prepare the crypto.core.key used to encrypt passwords in the configuration files. The following script assumes $CRYPTO_KEY is the key.
-Run the following commands using devops account:
-```
-grep "$HOSTNAME" /etc/hosts || sudo bash -c 'echo 127.0.0.1 $HOSTNAME >> /etc/hosts'
-sudo mkdir /var/silkcloud
-sudo chown -R silkcloud:silkcloud /var/silkcloud
-sudo mkdir /etc/silkcloud
-sudo bash -c "echo environment=ppe > /etc/silkcloud/configuration.properties"
-sudo bash -c "echo crypto.core.key=$CRYPTO_KEY >> /etc/silkcloud/configuration.properties"
-sudo chmod 600 /etc/silkcloud/configuration.properties
-sudo chown -R silkcloud:silkcloud /etc/silkcloud
-```
-
-Run the following commands using devops account to install necessary packages:
-```
-sudo apt-get install unzip
-```
 
 ### Setup Crypto Servers
   * `10.24.32.10`
@@ -354,6 +374,12 @@ cd apphost-dataloader-0.0.1-SNAPSHOT
 TODO:
 
 # Appendix
+## Empty Bash History
+```
+history -w
+history -c
+```
+
 ## Install PostgreSQL
 Run the following commands
 ```
