@@ -31,12 +31,12 @@ export DATA_PATH=$PGHA_BASE/data
 export BACKUP_PATH=$PGHA_BASE/backup
 export ARCHIVE_PATH=$PGHA_BASE/archive
 export CRON_PATH=$PGHA_BASE/pgron
-export DB_LOG_PATH=$SILKCLOUD_BASE/log/postgresql
+export DB_LOG_PATH=$SILKCLOUD_BASE/logs/postgresql
 
 export SKYTOOL_PATH=$PGHA_BASE/skytool
 export SKYTOOL_CONFIG_PATH=$SKYTOOL_PATH/config
 export SKYTOOL_PID_PATH=$SKYTOOL_PATH/pid
-export SKYTOOL_LOG_PATH=$SILKCLOUD_BASE/log/skytool
+export SKYTOOL_LOG_PATH=$SILKCLOUD_BASE/logs/skytool
 
 export PGBIN_PATH='/usr/lib/postgresql/9.3/bin'
 export PGLOCK_PATH='/run/postgresql'

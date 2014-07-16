@@ -11,6 +11,7 @@ import com.google.common.util.concurrent.*;
 import com.junbo.langur.core.promise.ExecutorContext;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.langur.core.promise.ThreadLocalRequireNew;
+import com.junbo.langur.core.promise.sync.SyncPromise;
 import groovy.lang.Closure;
 
 import java.util.*;
@@ -27,19 +28,19 @@ public final class AsyncPromise<T> extends Promise<T> {
 
     private static final Timer timer = new Timer();
 
-    public static <T> Promise<T> wrap(ListenableFuture<T> future) {
+    public static <T> AsyncPromise<T> wrap(ListenableFuture<T> future) {
         return new AsyncPromise<T>(future);
     }
 
-    public static <T> Promise<T> pure(T t) {
+    public static <T> AsyncPromise<T> pure(T t) {
         return wrap(Futures.immediateFuture(t));
     }
 
-    public static <T> Promise<T> throwing(Throwable throwable) {
+    public static <T> AsyncPromise<T> throwing(Throwable throwable) {
         return wrap(Futures.<T>immediateFailedFuture(throwable));
     }
 
-    public static <T> Promise<T> delayed(long delay, TimeUnit unit, final Func0<T> func) {
+    public static <T> AsyncPromise<T> delayed(long delay, TimeUnit unit, final Func0<T> func) {
         final Func0<T> wrapped = Wrapper.wrap(func);
 
         final SettableFuture<T> future = SettableFuture.create();
@@ -58,13 +59,13 @@ public final class AsyncPromise<T> extends Promise<T> {
         return wrap(future);
     }
 
-    public static <T> Promise<List<T>> all(final Iterable<?> iterable, final Closure<Promise<? extends T>> closure) {
+    public static <T> AsyncPromise<List<T>> all(final Iterable<?> iterable, final Closure<Promise<? extends T>> closure) {
         final Iterator<?> iterator = iterable.iterator();
         List<ListenableFuture<? extends T>> futures = new ArrayList<>();
         while (iterator.hasNext()) {
             Object item = iterator.next();
             try (ThreadLocalRequireNew scope = new ThreadLocalRequireNew()) {
-                futures.add(((AsyncPromise)closure.call(item)).wrapped());
+                futures.add(toFuture(closure.call(item)));
             }
         }
         return wrap(Futures.allAsList(futures));
@@ -136,7 +137,7 @@ public final class AsyncPromise<T> extends Promise<T> {
         return wrap(Futures.withFallback(future, new FutureFallback<T>() {
             @Override
             public ListenableFuture<T> create(Throwable t) {
-                return ((AsyncPromise)wrapped.apply(t)).wrapped();
+                return toFuture(wrapped.apply(t));
             }
         }));
     }
@@ -150,7 +151,7 @@ public final class AsyncPromise<T> extends Promise<T> {
         return wrap(Futures.transform(future, new AsyncFunction<T, R>() {
             @Override
             public ListenableFuture<R> apply(T input) {
-                return ((AsyncPromise)wrapped.apply(input)).wrapped();
+                return toFuture(wrapped.apply(input));
             }
         }, executor));
     }
@@ -187,5 +188,14 @@ public final class AsyncPromise<T> extends Promise<T> {
                 wrapped.invoke(t);
             }
         }, ExecutorContext.getExecutor());
+    }
+
+    private static ListenableFuture toFuture(Promise promise) {
+        if (promise instanceof AsyncPromise) {
+            return ((AsyncPromise) promise).wrapped();
+        } else if (promise instanceof SyncPromise) {
+            return Futures.immediateFuture(promise.syncGet());
+        }
+        throw new RuntimeException("Unknown promise type: " + promise);
     }
 }

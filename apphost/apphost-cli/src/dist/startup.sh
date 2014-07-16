@@ -2,14 +2,13 @@
 (set -o igncr) 2>/dev/null && set -o igncr; # ignore \r in windows. The comment is needed.
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
-PID_FILE=./logs/apphost-cli.pid
-if [[ -d /var/silkcloud ]]; then
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+    mkdir -p /var/silkcloud/logs
     mkdir -p /var/silkcloud/run
     PID_FILE=/var/silkcloud/run/apphost-cli.pid
-fi
-
-if [ ! -d "./logs" ]; then
-    mkdir logs
+else
+    mkdir -p logs
+    PID_FILE=./logs/apphost-cli.pid
 fi
 
 export APPHOST_CLI_OPTS=""
