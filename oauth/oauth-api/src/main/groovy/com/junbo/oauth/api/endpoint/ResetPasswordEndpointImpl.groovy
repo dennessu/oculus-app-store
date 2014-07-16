@@ -5,6 +5,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.ConversationNotfFoundException
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.oauth.core.context.ActionContextWrapper
+import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.UserService
 import com.junbo.oauth.core.util.ResponseUtil
 import com.junbo.oauth.spec.endpoint.ResetPasswordEndpoint
@@ -120,6 +121,9 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
                         return Promise.pure(Response.noContent().build())
                     }
                 }
+            }
+            else {
+                throw AppExceptions.INSTANCE.missingUsernameOrUserEmail().exception()
             }
         }
 
