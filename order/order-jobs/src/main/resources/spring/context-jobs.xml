@@ -18,6 +18,12 @@
             </list>
         </property>
         <property name="applicationContextSchedulerContextKey" value="applicationContext" />
+        <property name="quartzProperties">
+            <map>
+                <entry key="org.quartz.scheduler.jmx.export" value="true"/>
+                <entry key="org.quartz.scheduler.jmx.objectName" value="quartz:type=QuartzScheduler,name=orderScheduler"/>
+            </map>
+        </property>
     </bean>
 
     <!-- Order Job Trigger -->
@@ -89,6 +95,15 @@
         <property name="queueCapacity" value="1000" />
         <property name="rejectedExecutionHandler">
             <bean class="java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy"/>
+        </property>
+    </bean>
+
+    <!-- Exporter -->
+    <bean id="orderMbeanExporter" class="org.springframework.jmx.export.MBeanExporter">
+        <property name="beans">
+            <map>
+                <entry key="quartz:type=QuartzJob,name=orderAuditTaxJob" value-ref="orderAuditTaxJob"/>
+            </map>
         </property>
     </bean>
 
