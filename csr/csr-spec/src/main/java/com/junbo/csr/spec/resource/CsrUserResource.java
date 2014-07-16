@@ -6,6 +6,7 @@
 package com.junbo.csr.spec.resource;
 
 import com.junbo.common.model.Results;
+import com.junbo.csr.spec.model.CsrInvitationRequest;
 import com.junbo.csr.spec.model.CsrUser;
 import com.junbo.csr.spec.option.list.CsrUserListOptions;
 import com.junbo.langur.core.RestResource;
@@ -13,6 +14,7 @@ import com.junbo.langur.core.promise.Promise;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by haomin on 14-7-14.
@@ -24,4 +26,12 @@ import javax.ws.rs.core.MediaType;
 public interface CsrUserResource {
     @GET
     Promise<Results<CsrUser>> list(@BeanParam CsrUserListOptions listOptions);
+
+    @POST
+    @Path("/invite")
+    Promise<Response> inviteCsr(CsrInvitationRequest request);
+
+    @GET
+    @Path("/confirm")
+    Promise<Response> confirmCsr(@QueryParam("code") String code);
 }
