@@ -5,12 +5,15 @@
  */
 package com.junbo.store.spec.model.login;
 
+import com.junbo.common.id.UserId;
 import com.junbo.store.spec.model.BaseResponse;
 
 /**
  * The AuthTokenResponse class.
  */
 public class AuthTokenResponse extends BaseResponse {
+
+    private UserId userId;
 
     private String username;
 
@@ -19,6 +22,14 @@ public class AuthTokenResponse extends BaseResponse {
     private Long expiresIn;
 
     private String refreshToken;
+
+    public UserId getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UserId userId) {
+        this.userId = userId;
+    }
 
     public String getUsername() {
         return username;

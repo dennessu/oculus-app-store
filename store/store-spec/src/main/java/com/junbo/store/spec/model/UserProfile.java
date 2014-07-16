@@ -5,21 +5,23 @@
  */
 package com.junbo.store.spec.model;
 
+import com.junbo.common.id.UserId;
+
 /**
  * The UserProfile class.
  */
 public class UserProfile {
 
-    private String userId;
+    private UserId userId;
     private String username;
     private String email;
     private Boolean tfaEnabled;
 
-    public String getUserId() {
+    public UserId getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(UserId userId) {
         this.userId = userId;
     }
 

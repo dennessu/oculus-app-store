@@ -1,5 +1,7 @@
 package com.junbo.store.db.repo.cloudant
 
+import com.junbo.common.id.EntitlementId
+import com.junbo.common.id.UserId
 import com.junbo.store.db.repo.ConsumptionRepository
 import com.junbo.store.spec.model.Consumption
 import org.apache.commons.lang.RandomStringUtils
@@ -25,8 +27,8 @@ class ConsumptionCloudantRepositoryTest extends AbstractTestNGSpringContextTests
     @Test
     public void testAddAndGet() {
         Consumption consumption = new Consumption(
-                userId: RandomStringUtils.randomAlphabetic(20),
-                entitlementId: RandomStringUtils.randomAlphabetic(20),
+                userId: new UserId(System.currentTimeMillis()),
+                entitlementId: new EntitlementId(RandomStringUtils.randomAlphabetic(10)),
                 useCountConsumed: rand.nextInt(),
                 sku : RandomStringUtils.randomAlphabetic(10),
                 type: RandomStringUtils.randomAlphabetic(5),

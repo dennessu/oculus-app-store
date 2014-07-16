@@ -7,6 +7,8 @@
 package com.junbo.store.spec.model;
 
 import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
+import com.junbo.common.id.EntitlementId;
+import com.junbo.common.id.UserId;
 import com.junbo.common.model.ResourceMeta;
 
 /**
@@ -14,8 +16,8 @@ import com.junbo.common.model.ResourceMeta;
  */
 public class Consumption extends ResourceMeta<String> {
 
-    private String userId;
-    private String entitlementId;
+    private UserId userId;
+    private EntitlementId entitlementId;
     private Integer useCountConsumed;
     private String sku;
     private String type;
@@ -27,19 +29,19 @@ public class Consumption extends ResourceMeta<String> {
     private String iapConsumptionData;
     private String iapSignature;
 
-    public String getUserId() {
+    public UserId getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(UserId userId) {
         this.userId = userId;
     }
 
-    public String getEntitlementId() {
+    public EntitlementId getEntitlementId() {
         return entitlementId;
     }
 
-    public void setEntitlementId(String entitlementId) {
+    public void setEntitlementId(EntitlementId entitlementId) {
         this.entitlementId = entitlementId;
     }
 

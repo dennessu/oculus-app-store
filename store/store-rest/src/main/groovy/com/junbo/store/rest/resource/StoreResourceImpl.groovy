@@ -1,18 +1,11 @@
 package com.junbo.store.rest.resource
-
 import com.junbo.catalog.spec.model.item.*
 import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
+import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties
 import com.junbo.catalog.spec.model.offer.OffersGetOptions
-import com.junbo.common.enumid.CountryId
-import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
-import com.junbo.common.id.EntitlementId
-import com.junbo.common.id.ItemId
-import com.junbo.common.id.OfferId
-import com.junbo.common.id.OrderId
-import com.junbo.common.id.PaymentInstrumentId
-import com.junbo.common.id.UserId
+import com.junbo.common.id.*
 import com.junbo.common.id.util.IdUtil
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Link
@@ -28,6 +21,7 @@ import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.PITypeListOptions
 import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.identity.spec.v1.option.model.CurrencyGetOptions
+import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.client.PathParamTranscoder
 import com.junbo.langur.core.promise.Promise
@@ -46,9 +40,11 @@ import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.*
 import com.junbo.store.spec.model.billing.*
 import com.junbo.store.spec.model.iap.IAPOfferGetRequest
+import com.junbo.store.spec.model.iap.IAPOfferGetResponse
 import com.junbo.store.spec.model.purchase.*
 import com.junbo.store.spec.resource.StoreResource
 import groovy.transform.CompileStatic
+import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Scope
@@ -102,7 +98,7 @@ class StoreResourceImpl implements StoreResource {
             if (!users.items.isEmpty()) {
                 user = users.items.iterator().next()
                 userProfile.username = user.username
-                userProfile.userId = pathParamTranscoder.encode(user.getId())
+                userProfile.userId = user.getId()
 
                 if (!CollectionUtils.isEmpty(user.emails)) {
                     UserPersonalInfoLink emailLink = user.emails.find { UserPersonalInfoLink link -> link.isDefault }
@@ -136,7 +132,7 @@ class StoreResourceImpl implements StoreResource {
     @Override
     Promise<BillingProfileGetResponse> getBillingProfile(@BeanParam BillingProfileGetRequest billingProfileGetRequest) {
         BillingProfileGetResponse response = new BillingProfileGetResponse()
-        getByUserName(billingProfileGetRequest.username).then { User user ->
+        resourceContainer.userResource.get(billingProfileGetRequest.userId, new UserGetOptions()).then { User user ->
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFoundByUsername().exception()
             }
@@ -150,7 +146,7 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<BillingProfileUpdateResponse> updateBillingProfile(BillingProfileUpdateRequest billingProfileUpdateRequest) {
-        return getByUserName(billingProfileUpdateRequest.username).then { User user ->
+        return resourceContainer.userResource.get(billingProfileUpdateRequest.userId, new UserGetOptions()).then  { User user ->
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFoundByUsername().exception()
             }
@@ -193,7 +189,7 @@ class StoreResourceImpl implements StoreResource {
         List<Entitlement> entitlements = [] as LinkedList<Entitlement>
 
         // get user
-        Promise promise = getByUserName(entitlementsGetRequest.username).syncThen { User u ->
+        Promise promise = resourceContainer.userResource.get(entitlementsGetRequest.userId, new UserGetOptions()).syncThen { User u ->
             user = u
         }
 
@@ -212,7 +208,7 @@ class StoreResourceImpl implements StoreResource {
             entitlementSearchParam = new EntitlementSearchParam(
                     userId: user.getId(),
                     itemIds: new HashSet<ItemId>(),
-                    isActive: entitlementsGetRequest.isActive,
+                    isActive: entitlementsGetRequest.isActive == null ? true : entitlementsGetRequest.isActive,
                     type: entitlementsGetRequest.entitlementType
             )
             if (entitlementsGetRequest.isIAP) {
@@ -286,35 +282,42 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<PreparePurchaseResponse> preparePurchase(PreparePurchaseRequest preparePurchaseRequest) {
-        OfferId offerId = new OfferId(preparePurchaseRequest.offerId)
-        User user
-        // get user
-        getByUserName(preparePurchaseRequest.username).syncThen { User u ->
-            user = u
-        }.then { // validate offer if inapp purchase
+        OfferId offerId = preparePurchaseRequest.offerId
+        Item hostItem
+
+        return Promise.pure(null).then { // validate offer if inapp purchase
             if (preparePurchaseRequest.iapParams != null) {
-                return getItemByPackageName(preparePurchaseRequest.iapParams.packageName).then { Item hostItem ->
+                return getItemByPackageName(preparePurchaseRequest.iapParams.packageName).then { Item item ->
+                    hostItem = item
                     return iapValidator.validateInAppOffer(offerId, hostItem)
                 }
             }
             return Promise.pure(null)
         }.then {
             Order order = new Order(
-                    user: user.getId(),
-                    country: new CountryId(preparePurchaseRequest.country),
-                    currency: new CurrencyId(preparePurchaseRequest.currency),
-                    locale: new LocaleId(preparePurchaseRequest.locale),
+                    user: preparePurchaseRequest.userId,
+                    country: preparePurchaseRequest.country,
+                    currency: preparePurchaseRequest.currency,
+                    locale: preparePurchaseRequest.locale,
                     tentative: true,
-                    orderItems: [new OrderItem(offer: new OfferId(preparePurchaseRequest.offerId), quantity: preparePurchaseRequest.quantity)]
+                    orderItems: [new OrderItem(offer: preparePurchaseRequest.offerId, quantity: preparePurchaseRequest.quantity)]
             )
+
+            if (preparePurchaseRequest.iapParams != null) {
+                order.properties = [:]
+                order.properties.put('iap.packageName', preparePurchaseRequest.iapParams.packageName)
+                order.properties.put('iap.hostItemId', hostItem.itemId)
+            }
 
             return resourceContainer.orderResource.createOrder(order).then { Order createOrder ->
                 PreparePurchaseResponse response = new PreparePurchaseResponse()
                 response.status = ResponseStatus.SUCCESS.name()
-                resourceContainer.currencyResource.get(new CurrencyId(preparePurchaseRequest.currency), new CurrencyGetOptions()).then { Currency currency ->
+                resourceContainer.currencyResource.get(preparePurchaseRequest.currency, new CurrencyGetOptions()).then { Currency currency ->
                     response.formattedTotalPrice = order.totalAmount + currency.symbol
                     response.purchaseToken = IdFormatter.encodeId(createOrder.getId())
+                    return Promise.pure(null)
                 }.syncThen {
+                    response.status = ResponseStatus.SUCCESS.name()
                     return response
                 }
             }
@@ -325,30 +328,33 @@ class StoreResourceImpl implements StoreResource {
     Promise<CommitPurchaseResponse> commitPurchase(CommitPurchaseRequest commitPurchaseRequest) {
         OrderId orderId = new OrderId(IdFormatter.decodeId(OrderId, commitPurchaseRequest.purchaseToken))
         Order order
+        String iapPackageName = null, iapItemId = null
         CommitPurchaseResponse response = new CommitPurchaseResponse()
 
         resourceContainer.orderResource.getOrderByOrderId(orderId).then { Order o ->
             order = o
+            iapPackageName = order.properties?.get('iap.packageName')
+            iapItemId = order.properties?.get('iap.hostItemId')
             o.payments = [
-                    new PaymentInfo(paymentInstrument: new PaymentInstrumentId(IdFormatter.decodeId(PaymentInstrumentId, commitPurchaseRequest.instrumentId)))
+                    new PaymentInfo(paymentInstrument: commitPurchaseRequest.instrumentId)
             ]
-            o.tentative = true
-            resourceContainer.orderResource.updateOrderByOrderId(o.getId(), o).then { Order settled ->
-                order = settled
-                response.orderId = settled.getId()
-                response.status = ResponseStatus.SUCCESS.name()
+            resourceContainer.orderResource.updateOrderByOrderId(o.getId(), o).then { Order updated ->
+                updated.tentative = false
+                resourceContainer.orderResource.updateOrderByOrderId(updated.getId(), updated).then { Order settled ->
+                    response.orderId = settled.getId()
+                    response.status = ResponseStatus.SUCCESS.name()
+                    return Promise.pure(null)
+                }
             }
-        }.then { // todo get iap entitlements
-            if (commitPurchaseRequest.isIAP) {
+        }.then { // get iap entitlements
+            if (!StringUtils.isEmpty(iapPackageName)) {
                 response.iapEntitlements = []
-                getItemByPackageName(commitPurchaseRequest.packageName).then { Item hostItem ->
-                    getEntitlementsByOrder(order, commitPurchaseRequest.packageName).then { Results<Entitlement> entitlementResults ->
-                        return Promise.each(entitlementResults.items) { Entitlement entitlement ->
-                            entitlement.signatureTimestamp = System.currentTimeMillis()
-                            return signEntitlement(entitlement, hostItem.itemId).then {
-                                response.iapEntitlements << entitlement
-                                return Promise.pure(null)
-                            }
+                getEntitlementsByOrder(order, iapPackageName).then { Results<Entitlement> entitlementResults ->
+                    return Promise.each(entitlementResults.items) { Entitlement entitlement ->
+                        entitlement.signatureTimestamp = System.currentTimeMillis()
+                        return signEntitlement(entitlement, iapItemId).then {
+                            response.iapEntitlements << entitlement
+                            return Promise.pure(null)
                         }
                     }
                 }
@@ -358,10 +364,15 @@ class StoreResourceImpl implements StoreResource {
     }
 
     @Override
-    Promise<CommitPurchaseResponse> iapGetOffers(IAPOfferGetRequest iapOfferGetRequest) {
+    Promise<IAPOfferGetResponse> iapGetOffers(IAPOfferGetRequest iapOfferGetRequest) {
         return getItemByPackageName(iapOfferGetRequest.packageName).then { Item hostItem ->
-            return getInAppOffers(hostItem, iapOfferGetRequest.type).then { List<Offer> offers ->
-                return Promise.pure(new Results<Offer>(items: offers))
+            return getInAppOffers(hostItem, iapOfferGetRequest).then { List<Offer> offers ->
+                return Promise.pure(
+                        new IAPOfferGetResponse(
+                                status: ResponseStatus.SUCCESS.name(),
+                                offers: new Results<Offer>(items: offers)
+                        )
+                )
             }
         }
     }
@@ -377,13 +388,13 @@ class StoreResourceImpl implements StoreResource {
             return getItemByPackageName(consumption.packageName).then { Item item ->
                 hostItem = item
                 // todo: validate entitlement ownership & package name
-                resourceContainer.entitlementResource.getEntitlement(new EntitlementId(consumption.entitlementId)).then { com.junbo.entitlement.spec.model.Entitlement catalogEntitlement ->
+                resourceContainer.entitlementResource.getEntitlement(consumption.entitlementId).then { com.junbo.entitlement.spec.model.Entitlement catalogEntitlement ->
                     return convertEntitlement(catalogEntitlement, consumption.packageName).then { Entitlement entitlement ->
                         if (!entitlement.isConsumable) {
-                            throw AppErrors.INSTANCE.entitlementNotConsumable(consumption.entitlementId).exception()
+                            throw AppErrors.INSTANCE.entitlementNotConsumable(IdFormatter.encodeId(consumption.entitlementId)).exception()
                         }
                         if (entitlement.useCount < consumption.useCountConsumed) {
-                            throw AppErrors.INSTANCE.entitlementNotEnoughUsecount(consumption.entitlementId).exception()
+                            throw AppErrors.INSTANCE.entitlementNotEnoughUsecount(IdFormatter.encodeId(consumption.entitlementId)).exception()
                         }
 
                         consumption.packageName = entitlement.packageName
@@ -405,7 +416,7 @@ class StoreResourceImpl implements StoreResource {
         }
     }
 
-    private Promise<BillingProfile> innerGetBillingProfile(UserId userId, String locale) {
+    private Promise<BillingProfile> innerGetBillingProfile(UserId userId, LocaleId locale) {
         BillingProfile billingProfile = new BillingProfile()
         billingProfile.instruments = []
         PageMetaData pageMetaData = new PageMetaData(start: 0, count: PAGE_SIZE)
@@ -426,8 +437,9 @@ class StoreResourceImpl implements StoreResource {
         }.then { // todo set the default pi
             billingProfile.paymentOptions = []
             loadData().then {
-                piTypes.each { PIType piType ->
-                    billingProfile.paymentOptions << dataConvertor.toPaymentOption(piType, locale)
+                piTypes.each { com.junbo.identity.spec.v1.model.PIType piType ->
+                    PaymentOption paymentOption = dataConvertor.toPaymentOption(piType, locale)
+                    billingProfile.paymentOptions << paymentOption
                 }
                 return Promise.pure(null)
             }
@@ -475,7 +487,7 @@ class StoreResourceImpl implements StoreResource {
     private String buildEntitlementNextUrl(EntitlementsGetRequest entitlementsGetRequest, PageParam pageParam) {
         UriBuilder builder = UriBuilder.fromPath(IdUtil.getResourcePathPrefix()).path("iap").path("entitlements");
         addQuery(builder, 'packageName', entitlementsGetRequest.packageName)
-        addQuery(builder, 'username', entitlementsGetRequest.username)
+        addQuery(builder, 'userId', IdFormatter.encodeId(entitlementsGetRequest.userId))
         addQuery(builder, 'itemType', entitlementsGetRequest.itemType)
         addQuery(builder, 'entitlementType', entitlementsGetRequest.entitlementType)
         addQuery(builder, 'isActive', entitlementsGetRequest.isActive)
@@ -550,13 +562,15 @@ class StoreResourceImpl implements StoreResource {
 
         boolean consumable = itemConsumable(itemRevision)
         return new Entitlement(
-                userId: pathParamTranscoder.encode(new UserId(entitlement.userId)),
-                entitlementId: entitlement.getId(),
+                userId: new UserId(entitlement.userId),
+                entitlementId: new EntitlementId(entitlement.getId()),
                 useCount: consumable ? entitlement.useCount : 1,
                 sku: itemRevision.sku,
-                type: item.type,
+                type: entitlement.type,
+                itemType: item.type,
                 packageName: packageName,
-                isConsumable: consumable
+                isConsumable: consumable,
+                itemId: new ItemId(item.getId())
         )
     }
 
@@ -593,13 +607,14 @@ class StoreResourceImpl implements StoreResource {
         }
     }
 
-    private Promise<Void> getOffersFromItem(Item item, ItemRevision itemRevision, Map<String, Offer> offers) {
+    private Promise<Void> getOffersFromItem(Item item, ItemRevision itemRevision, IAPOfferGetRequest iapOfferGetRequest, Map<String, Offer> offers) {
         def offerOption = new OffersGetOptions(
                 itemId: item.itemId,
                 published: true,
                 start : 0,
                 size : PAGE_SIZE
         )
+
         resourceContainer.offerResource.getOffers(offerOption).then { Results<com.junbo.catalog.spec.model.offer.Offer> catalogOffers ->
             if (catalogOffers.items.size() >= PAGE_SIZE) {
                 LOGGER.warn('name=IAP_TooManyOffers_Return, itemId={}, fetch first {}', item.id, PAGE_SIZE)
@@ -610,18 +625,17 @@ class StoreResourceImpl implements StoreResource {
                     return Promise.pure(null)
                 }
                 return resourceContainer.offerRevisionResource.getOfferRevision(cOffer.currentRevisionId, new OfferRevisionGetOptions()).then { OfferRevision offerRevision ->
-                    offers.put(cOffer.id, convertOffer(cOffer, offerRevision, item, itemRevision))
+                    offers.put(cOffer.id, convertOffer(cOffer, offerRevision, item, itemRevision, iapOfferGetRequest.locale.value, iapOfferGetRequest.country.value, iapOfferGetRequest.currency.value))
                     return Promise.pure(null)
                 }
             }
-
         }
     }
 
-    private Promise<List<Offer>> getInAppOffers(Item hostItem, String type) {
+    private Promise<List<Offer>> getInAppOffers(Item hostItem, IAPOfferGetRequest iapOfferGetRequest) {
         def itemOption = new ItemsGetOptions(
                 hostItemId: hostItem.itemId,
-                type: type,
+                type: iapOfferGetRequest.getType(),
                 size: PAGE_SIZE,
                 start: 0
         )
@@ -633,7 +647,7 @@ class StoreResourceImpl implements StoreResource {
                 itemOption.start += itemResults.items.size()
                 return Promise.each(itemResults.items) { Item item ->
                     return resourceContainer.itemRevisionResource.getItemRevision(item.currentRevisionId, new ItemRevisionGetOptions()).then { ItemRevision itemRevision ->
-                        return getOffersFromItem(item, itemRevision, offers).then {
+                        return getOffersFromItem(item, itemRevision, iapOfferGetRequest, offers).then {
                             return Promise.pure(hasMore)
                         }
                     }
@@ -647,15 +661,19 @@ class StoreResourceImpl implements StoreResource {
     }
 
     private static Offer convertOffer(com.junbo.catalog.spec.model.offer.Offer offer, OfferRevision offerRevision,
-                                      Item item, ItemRevision itemRevision) {
+                                      Item item, ItemRevision itemRevision, String locale, String country, String currency) {
+
         def result = new Offer(
-                offerId: offer.id,
-                price: offerRevision.price,
+                offerId: new OfferId(offer.getId()),
                 type: item.type,
                 sku: itemRevision.sku,
-                offerLocales: offerRevision.locales,
                 isConsumable: itemConsumable(itemRevision)
         )
+        OfferRevisionLocaleProperties offerRevisionLocaleProperties = offerRevision.locales.get(locale)
+
+        result.description = offerRevisionLocaleProperties?.shortDescription
+        result.title = offerRevisionLocaleProperties?.name
+        result.price = offerRevision.price?.prices?.get(country)?.get(currency)
 
         return result
     }

@@ -6,16 +6,18 @@
 package com.junbo.store.spec.model;
 
 import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
+import com.junbo.common.id.EntitlementId;
+import com.junbo.common.id.ItemId;
+import com.junbo.common.id.UserId;
 
 /**
  * Entitlement used for IAP.
  */
 public class Entitlement {
-    private String userId;
-    private String username;
-    private String itemId;
+    private UserId userId;
+    private ItemId itemId;
     private String itemType;
-    private String entitlementId;
+    private EntitlementId entitlementId;
     private Integer useCount;
     private String type;
     private String sku;
@@ -27,19 +29,27 @@ public class Entitlement {
     @CloudantIgnore
     private Long signatureTimestamp;
 
-    public String getUserId() {
+    public UserId getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(UserId userId) {
         this.userId = userId;
     }
 
-    public String getEntitlementId() {
+    public ItemId getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(ItemId itemId) {
+        this.itemId = itemId;
+    }
+
+    public EntitlementId getEntitlementId() {
         return entitlementId;
     }
 
-    public void setEntitlementId(String entitlementId) {
+    public void setEntitlementId(EntitlementId entitlementId) {
         this.entitlementId = entitlementId;
     }
 
@@ -89,22 +99,6 @@ public class Entitlement {
 
     public void setSignatureTimestamp(Long signatureTimestamp) {
         this.signatureTimestamp = signatureTimestamp;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getItemId() {
-        return itemId;
-    }
-
-    public void setItemId(String itemId) {
-        this.itemId = itemId;
     }
 
     public String getItemType() {

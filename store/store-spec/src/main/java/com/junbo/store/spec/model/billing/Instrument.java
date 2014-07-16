@@ -6,8 +6,10 @@
 package com.junbo.store.spec.model.billing;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.junbo.common.id.PaymentInstrumentId;
+import com.junbo.common.id.UserId;
+import com.junbo.identity.spec.v1.model.UserPersonalInfo;
 import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.store.spec.model.Address;
 
 import java.math.BigDecimal;
 
@@ -16,7 +18,8 @@ import java.math.BigDecimal;
  */
 public class Instrument {
 
-    private String instrumentId;
+    private PaymentInstrumentId instrumentId;
+    private UserId userId;
     private String type;
     private String accountName;
     private String accountNum;
@@ -25,18 +28,26 @@ public class Instrument {
     private String creditCardType;
     private String storedValueCurrency;
     private BigDecimal storedValueBalance;
-    private Address billingAddress;
-    private String phoneNumber;
-    private String email;
+    private UserPersonalInfo billingAddress;
+    private UserPersonalInfo phoneNumber;
+    private UserPersonalInfo email;
     @JsonIgnore
     private PaymentInstrument paymentInstrument;
 
-    public String getInstrumentId() {
+    public PaymentInstrumentId getInstrumentId() {
         return instrumentId;
     }
 
-    public void setInstrumentId(String instrumentId) {
+    public void setInstrumentId(PaymentInstrumentId instrumentId) {
         this.instrumentId = instrumentId;
+    }
+
+    public UserId getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UserId userId) {
+        this.userId = userId;
     }
 
     public String getType() {
@@ -103,27 +114,27 @@ public class Instrument {
         this.storedValueBalance = storedValueBalance;
     }
 
-    public Address getBillingAddress() {
+    public UserPersonalInfo getBillingAddress() {
         return billingAddress;
     }
 
-    public void setBillingAddress(Address billingAddress) {
+    public void setBillingAddress(UserPersonalInfo billingAddress) {
         this.billingAddress = billingAddress;
     }
 
-    public String getPhoneNumber() {
+    public UserPersonalInfo getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public void setPhoneNumber(UserPersonalInfo phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getEmail() {
+    public UserPersonalInfo getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(UserPersonalInfo email) {
         this.email = email;
     }
 

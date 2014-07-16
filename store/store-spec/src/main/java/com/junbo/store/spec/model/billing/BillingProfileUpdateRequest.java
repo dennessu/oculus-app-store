@@ -5,6 +5,9 @@
  */
 package com.junbo.store.spec.model.billing;
 
+import com.junbo.common.enumid.LocaleId;
+import com.junbo.common.id.UserId;
+
 /**
  * The BillingProfileUpdateRequest class.
  */
@@ -20,28 +23,28 @@ public class BillingProfileUpdateRequest {
         REMOVE_PI
     }
 
-    private String locale;
+    private UserId userId;
 
-    private String username;
+    private LocaleId locale;
 
     private String operation;
 
     private Instrument instrument;
 
-    public String getLocale() {
+    public LocaleId getLocale() {
         return locale;
     }
 
-    public void setLocale(String locale) {
+    public void setLocale(LocaleId locale) {
         this.locale = locale;
     }
 
-    public String getUsername() {
-        return username;
+    public UserId getUserId() {
+        return userId;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserId(UserId userId) {
+        this.userId = userId;
     }
 
     public String getOperation() {
