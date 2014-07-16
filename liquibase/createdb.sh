@@ -1,5 +1,6 @@
 #!/bin/bash
 (set -o igncr) 2>/dev/null && set -o igncr; # ignore \r in windows. The comment is needed.
+set -e
 
 if [[ "$#" -eq 0 ]]; then
     echo "usage: $0 -env:ENVIRONMENT"
