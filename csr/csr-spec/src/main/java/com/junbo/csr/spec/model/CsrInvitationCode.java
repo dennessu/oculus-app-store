@@ -5,7 +5,6 @@
  */
 package com.junbo.csr.spec.model;
 
-import com.junbo.common.id.GroupId;
 import com.junbo.common.model.ResourceMeta;
 
 /**

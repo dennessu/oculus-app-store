@@ -165,6 +165,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
                     getResourceAsStream(CONFIG_PATH + "/" + DEFAULT_FOLDER + "/" + DEFAULT_PROPERTIES_FILE);
             if(inputStream != null) {
                 properties.load(inputStream);
+                check(properties);
             }
 
             // 2) _default/**/*.properties
@@ -173,7 +174,10 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
             if (en.hasMoreElements()) {
                 URL url = en.nextElement();
-                loadJarProperties(url.getPath(), properties);
+                Properties temp = new Properties();
+                loadJarProperties(url.getPath(), temp);
+                check(temp);
+                merge(properties, temp);
             }
 
             String baseEnv = this.getConfigContext().getBaseEnvironment();
@@ -182,7 +186,10 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
                 inputStream = this.getClass().getClassLoader().
                         getResourceAsStream(CONFIG_PATH + "/" + baseEnv + "/" + DEFAULT_PROPERTIES_FILE);
                 if (inputStream != null) {
-                    properties.load(inputStream);
+                    Properties temp = new Properties();
+                    temp.load(inputStream);
+                    check(temp);
+                    merge(properties, temp);
                 }
 
                 // 4) {baseEnv}/**/*.properties
@@ -191,7 +198,10 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
                 if (en.hasMoreElements()) {
                     URL url = en.nextElement();
-                    loadJarProperties(url.getPath(), properties);
+                    Properties temp = new Properties();
+                    loadJarProperties(url.getPath(), temp);
+                    check(temp);
+                    merge(properties, temp);
                 }
             }
 
@@ -200,7 +210,10 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
             inputStream = this.getClass().getClassLoader().
                     getResourceAsStream(CONFIG_PATH + "/" + env + "/" + DEFAULT_PROPERTIES_FILE);
             if(inputStream != null) {
-                properties.load(inputStream);
+                Properties temp = new Properties();
+                temp.load(inputStream);
+                check(temp);
+                merge(properties, temp);
             }
 
             // 6) {env}/**/*.properties
@@ -209,7 +222,10 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
             if (en.hasMoreElements()) {
                 URL url = en.nextElement();
-                loadJarProperties(url.getPath(), properties);
+                Properties temp = new Properties();
+                loadJarProperties(url.getPath(), temp);
+                check(temp);
+                merge(properties, temp);
             }
         }
         catch (IOException ex) {
@@ -249,7 +265,8 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
             try (InputStream fileStream = this.getClass().getClassLoader().getResourceAsStream(string)) {
                 Properties newProperties = new Properties();
                 newProperties.load(fileStream);
-                updateProperties(properties, newProperties);
+                check(newProperties);
+                merge(properties, newProperties);
             } catch (IOException ex) {
                 throw new RuntimeException("Failed to read property file from resource: " + string, ex);
             }
@@ -262,7 +279,10 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
                 loadFolderProperties(file.getAbsolutePath(), properties);
             } else if (file.isFile()) {
                 try (InputStream fileStream = new FileInputStream(file.getAbsoluteFile())) {
-                    properties.load(fileStream);
+                    Properties temp = new Properties();
+                    temp.load(fileStream);
+                    check(temp);
+                    merge(properties, temp);
                 } catch (IOException ex) {
                     throw new RuntimeException("Failed to read file: " + file.getAbsolutePath(), ex);
                 }
@@ -300,23 +320,6 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         }
     }
 
-    private void updateProperties(Properties props, Properties newProps) {
-        for (Map.Entry<Object, Object> entry : newProps.entrySet()) {
-            String key = entry.getKey().toString();
-            String value = entry.getValue().toString();
-
-            if (key.endsWith(CRYPTO_SUFFIX)) {
-                int endIndex = key.lastIndexOf(CRYPTO_SUFFIX);
-                String newKey = key.substring(0, endIndex);
-
-                // remove old unencrypted key
-                props.remove(newKey);
-            }
-
-            props.put(key, value);
-        }
-    }
-
     private Properties readProperties(Path path) {
         logger.info("Reading override properties from: " + path);
         if (Files.exists(path)) {
@@ -340,6 +343,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         Path configFilePath = findFile(configDirs, CONFIG_PROPERTY_FILE);
         if (configFilePath != null) {
             overrideProperties = readProperties(configFilePath);
+            check(overrideProperties);
             configPath = configFilePath.getParent().toString();
             logger.info("Monitored configPath set to " + configPath);
         }
@@ -348,8 +352,10 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
         // Read jar configuration files
         jarProperties = readJarProperties();
+        check(jarProperties);
 
         Properties commandLineProperties = System.getProperties();
+        check(commandLineProperties);
 
         keyStr = loadPasswordKey(commandLineProperties, overrideProperties, jarProperties);
 
@@ -363,6 +369,58 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         configContext.complete(
                 finalProperties.getProperty(ACTIVE_DC_OPTS),
                 finalProperties.getProperty(ACTIVE_SUBNET_OPTS));
+    }
+
+    private void check(Properties properties) {
+        // Same file should not has the same properties defined multiple times
+        // such as in file conf.properties
+        // a.password.encrypt=aaaa
+        // a.password = bbbbb, This will be treated as bad case
+        if (properties == null) {
+            return;
+        }
+
+        List<String> keys = new ArrayList<>();
+        for(Map.Entry<Object, Object> entry : properties.entrySet()) {
+            String key = entry.getKey().toString();
+
+            if (key.endsWith(CRYPTO_SUFFIX)) {
+                int endIndex = key.lastIndexOf(CRYPTO_SUFFIX);
+                String newKey = key.substring(0, endIndex);
+
+                if (keys.contains(newKey)) {
+                    throw new IllegalStateException("Already exists key: " + newKey);
+                }
+                keys.add(newKey);
+            } else {
+                if (keys.contains(key)) {
+                    throw new IllegalStateException("Already exists key: " + key);
+                }
+                keys.add(key);
+            }
+        }
+    }
+
+    private Properties merge(Properties source, Properties override) {
+        if (override == null) {
+            return source;
+        }
+
+        for(Map.Entry<Object, Object> entry : override.entrySet()) {
+            String key = entry.getKey().toString();
+
+            if (key.endsWith(CRYPTO_SUFFIX)) {
+                int endIndex = key.lastIndexOf(CRYPTO_SUFFIX);
+                String newKey = key.substring(0, endIndex);
+                source.remove(newKey);
+            } else {
+                String newKey = key + CRYPTO_SUFFIX;
+                source.remove(newKey);
+            }
+            source.put(entry.getKey(), entry.getValue());
+        }
+
+        return source;
     }
 
     private Path findFile(String configDirs, String fileName) {
