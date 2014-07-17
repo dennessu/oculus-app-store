@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 cd ..
 echo ${PWD}
 bundleName=$1
