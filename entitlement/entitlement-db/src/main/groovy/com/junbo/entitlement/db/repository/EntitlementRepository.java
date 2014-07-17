@@ -29,9 +29,10 @@ public class EntitlementRepository {
     public static final String DELETE = "DELETE";
 
     @Autowired
-    @Qualifier("entitlementDao")
+    @Qualifier("entitlementCloudantDao")
     private EntitlementDao entitlementDao;
     @Autowired
+    @Qualifier("entitlementHistoryCloudantDao")
     private EntitlementHistoryDao entitlementHistoryDao;
     @Autowired
     private EntitlementMapper entitlementMapper;
