@@ -1,6 +1,7 @@
 package com.junbo.oauth.api.endpoint
 
 import com.junbo.common.id.UserId
+import com.junbo.common.util.Utils
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.ConversationNotfFoundException
 import com.junbo.langur.core.webflow.executor.FlowExecutor
@@ -107,7 +108,9 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
                             return Promise.pure(Response.ok().entity(uri).build())
                         }
 
-                        return Promise.pure(Response.noContent().build())
+                        return userService.getUserEmailByUserId(id).then { String email ->
+                            Promise.pure(Response.ok().entity(com.junbo.oauth.common.Utils.maskEmail(email)).build())
+                        }
                     }
                 }
             }
@@ -118,7 +121,7 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
                             return Promise.pure(Response.ok().entity(uri).build())
                         }
 
-                        return Promise.pure(Response.noContent().build())
+                        Promise.pure(Response.ok().entity(com.junbo.oauth.common.Utils.maskEmail(userEmail)).build())
                     }
                 }
             }

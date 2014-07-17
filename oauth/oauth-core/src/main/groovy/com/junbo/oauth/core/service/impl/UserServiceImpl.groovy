@@ -217,6 +217,27 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
+    Promise<String> getUserEmailByUserId(UserId userId) {
+        if (userId == null || userId.value == null) {
+            throw AppExceptions.INSTANCE.missingUserId().exception()
+        }
+
+        return userResource.get(userId, new UserGetOptions()).then { User user ->
+            if (user == null) {
+                throw AppExceptions.INSTANCE.errorCallingIdentity().exception()
+            }
+
+            return this.getDefaultUserEmail(user).then { String email ->
+                if (email == null) {
+                    throw AppExceptions.INSTANCE.missingDefaultUserEmail().exception()
+                }
+
+                return Promise.pure(email)
+            }
+        }
+    }
+
+    @Override
     Promise<Void> sendVerifyEmail(UserId userId, String locale, String country, URI baseUri) {
         if (userId == null || userId.value == null) {
             throw AppExceptions.INSTANCE.missingUserId().exception()
