@@ -7,7 +7,6 @@ package com.junbo.ewallet.db.repo.facade;
 
 import com.junbo.ewallet.db.repo.TransactionRepository;
 import com.junbo.ewallet.spec.model.Transaction;
-import com.junbo.langur.core.promise.SyncModeScope;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.util.List;
@@ -25,20 +24,14 @@ public class TransactionRepositoryFacade {
     }
 
     public List<Transaction> getTransactions(Long walletId) {
-        try (SyncModeScope scope = new SyncModeScope()) {
-            return transactionRepository.getByWalletId(walletId).syncGet();
-        }
+        return transactionRepository.getByWalletId(walletId).get();
     }
 
     public Transaction getByTrackingUuid(Long shardMasterId, UUID uuid) {
-        try (SyncModeScope scope = new SyncModeScope()) {
-            return transactionRepository.getByTrackingUuid(shardMasterId, uuid).syncGet();
-        }
+        return transactionRepository.getByTrackingUuid(shardMasterId, uuid).get();
     }
 
     public Transaction get(long transactionId) {
-        try (SyncModeScope scope = new SyncModeScope()) {
-            return transactionRepository.get(transactionId).syncGet();
-        }
+        return transactionRepository.get(transactionId).get();
     }
 }

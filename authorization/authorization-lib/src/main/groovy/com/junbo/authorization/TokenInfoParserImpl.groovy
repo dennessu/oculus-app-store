@@ -4,7 +4,6 @@ import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
 import com.junbo.common.util.IdFormatter
 import com.junbo.langur.core.context.JunboHttpContext
-import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.spec.endpoint.TokenInfoEndpoint
 import com.junbo.oauth.spec.model.TokenInfo
 import com.junbo.oauth.spec.model.TokenType
@@ -80,14 +79,12 @@ public class TokenInfoParserImpl implements TokenInfoParser {
         }
 
         try {
-            def tokenInfo = Promise.get {
-                return tokenInfoEndpoint.getTokenInfo(accessToken)
-            }
+            def tokenInfo = tokenInfoEndpoint.getTokenInfo(accessToken).get();
             tokenInfoCache.put(new Element(accessToken, tokenInfo))
 
             return tokenInfo
         } catch (AppErrorException ex) {
-            if ((int)(ex.error.httpStatusCode / 100) == 4) {
+            if ((int) (ex.error.httpStatusCode / 100) == 4) {
                 throw ex
             } else {
                 throw new RuntimeException('Failed to parse access token', ex)

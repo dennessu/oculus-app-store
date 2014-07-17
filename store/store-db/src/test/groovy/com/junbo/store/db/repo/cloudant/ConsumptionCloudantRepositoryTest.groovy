@@ -35,10 +35,10 @@ class ConsumptionCloudantRepositoryTest extends AbstractTestNGSpringContextTests
                 signatureTimestamp: System.currentTimeMillis(),
         )
 
-        def created = consumptionRepository.create(consumption).testGet();
+        def created = consumptionRepository.create(consumption).get();
         validate(consumption, created)
 
-        def read = consumptionRepository.get(consumption.trackingGuid).testGet();
+        def read = consumptionRepository.get(consumption.trackingGuid).get();
         validate(consumption, read)
         assert read.signatureTimestamp == null
 

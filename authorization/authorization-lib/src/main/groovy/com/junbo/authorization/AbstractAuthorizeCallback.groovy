@@ -21,7 +21,6 @@ import com.junbo.identity.spec.v1.model.Group
 import com.junbo.identity.spec.v1.model.UserGroup
 import com.junbo.identity.spec.v1.option.list.GroupListOptions
 import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
-import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import net.sf.ehcache.Element
 
@@ -163,11 +162,9 @@ abstract class AbstractAuthorizeCallback<T> implements AuthorizeCallback<T> {
             return (List<GroupId>) cachedElement.objectValue
         }
 
-        Results<UserGroup> userGroups = Promise.get {
-            return factory.userGroupMembershipResource.list(new UserGroupListOptions(
-                    userId: userId
-            ))
-        };
+        Results<UserGroup> userGroups = factory.userGroupMembershipResource.list(new UserGroupListOptions(
+                userId: userId
+        )).get();
 
         List<GroupId> groupIds = userGroups.items.empty ?
                 (List<GroupId>) Collections.emptyList() :
@@ -186,11 +183,9 @@ abstract class AbstractAuthorizeCallback<T> implements AuthorizeCallback<T> {
             return (GroupId) cachedElement.objectValue
         }
 
-        Results<Group> results = Promise.get {
-            return factory.groupResource.list(new GroupListOptions(
-                    name: groupName
-            ))
-        }
+        Results<Group> results = factory.groupResource.list(new GroupListOptions(
+                name: groupName
+        )).get();
 
         GroupId groupId = results.items.empty ? (GroupId) null : (GroupId) results.items.get(0).id
         factory.groupIdByNameCache.put(new Element(groupName, groupId))
@@ -208,14 +203,12 @@ abstract class AbstractAuthorizeCallback<T> implements AuthorizeCallback<T> {
         String targetType = IdUtil.getResourceType(entityId.class)
         String filterLink = IdUtil.toHref(entityId)
 
-        Results<Role> roles = Promise.get {
-            return factory.roleResource.list(new RoleListOptions(
-                    name: roleName,
-                    targetType: targetType,
-                    filterType: RoleFilterType.SINGLEINSTANCEFILTER,
-                    filterLink: filterLink
-            ))
-        }
+        Results<Role> roles = factory.roleResource.list(new RoleListOptions(
+                name: roleName,
+                targetType: targetType,
+                filterType: RoleFilterType.SINGLEINSTANCEFILTER,
+                filterLink: filterLink
+        )).get();
 
         RoleId roleId = roles.items.empty ? (RoleId) null : (RoleId) roles.items.get(0).id
 
@@ -237,12 +230,11 @@ abstract class AbstractAuthorizeCallback<T> implements AuthorizeCallback<T> {
             assignee.add(IdUtil.toHref(groupId))
         }
 
-        Results<RoleAssignment> roleAssignments = Promise.get {
-            return factory.roleAssignmentResource.list(new RoleAssignmentListOptions(
-                    roleId: roleId,
-                    assignee: assignee.join(',')
-            ))
-        }
+        Results<RoleAssignment> roleAssignments =
+                factory.roleAssignmentResource.list(new RoleAssignmentListOptions(
+                        roleId: roleId,
+                        assignee: assignee.join(',')
+                )).get();
 
         boolean result = !roleAssignments.items.empty
 

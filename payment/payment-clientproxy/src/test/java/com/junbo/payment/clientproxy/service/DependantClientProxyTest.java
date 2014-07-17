@@ -19,29 +19,29 @@ public class DependantClientProxyTest extends BaseTest {
 
     @Test(enabled = false)
     public void testCountryResource(){
-        String result = countryResource.getDefaultCurrency("US").testGet().getValue();
+        String result = countryResource.getDefaultCurrency("US").get().getValue();
         Assert.assertEquals(result, "USD");
-        result = countryResource.getDefaultCurrency("DE").testGet().getValue();
+        result = countryResource.getDefaultCurrency("DE").get().getValue();
         Assert.assertEquals(result, "EUR");
-        result = countryResource.getDefaultCurrency("CN").testGet().getValue();
+        result = countryResource.getDefaultCurrency("CN").get().getValue();
         Assert.assertEquals(result, "CNY");
     }
 
     @Test(enabled = false)
     public void testCurrencyResource(){
-        Long minAuthAmount = currencyResource.getMinAuthAmount(new CurrencyId("USD")).testGet();
+        Long minAuthAmount = currencyResource.getMinAuthAmount(new CurrencyId("USD")).get();
         Assert.assertEquals(minAuthAmount.longValue(), 100L);
-        Long numbers = currencyResource.getNumberAfterDecimal("USD").testGet();
+        Long numbers = currencyResource.getNumberAfterDecimal("USD").get();
         Assert.assertEquals(numbers.longValue(), 100L);
 
-        minAuthAmount = currencyResource.getMinAuthAmount(new CurrencyId("JPY")).testGet();
+        minAuthAmount = currencyResource.getMinAuthAmount(new CurrencyId("JPY")).get();
         Assert.assertEquals(minAuthAmount.longValue(), 1L);
-        numbers = currencyResource.getNumberAfterDecimal("JPY").testGet();
+        numbers = currencyResource.getNumberAfterDecimal("JPY").get();
         Assert.assertEquals(numbers.longValue(), 1L);
 
-        minAuthAmount = currencyResource.getMinAuthAmount(new CurrencyId("CNY")).testGet();
+        minAuthAmount = currencyResource.getMinAuthAmount(new CurrencyId("CNY")).get();
         Assert.assertEquals(minAuthAmount.longValue(), 100L);
-        numbers = currencyResource.getNumberAfterDecimal("CNY").testGet();
+        numbers = currencyResource.getNumberAfterDecimal("CNY").get();
         Assert.assertEquals(numbers.longValue(), 100L);
     }
 

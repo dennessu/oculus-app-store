@@ -37,10 +37,6 @@ public class ThreadLocalRequireNew implements AutoCloseable {
     private Object inheritableThreadLocals;
 
     public ThreadLocalRequireNew() {
-        if (!ExecutorContext.isAsyncMode()) {
-            return;
-        }
-
         classLoader = Thread.currentThread().getContextClassLoader();
 
         try {
@@ -62,10 +58,6 @@ public class ThreadLocalRequireNew implements AutoCloseable {
 
     @Override
     public void close() {
-        if (!ExecutorContext.isAsyncMode()) {
-            return;
-        }
-
         Thread.currentThread().setContextClassLoader(classLoader);
 
         try {

@@ -49,16 +49,16 @@ public class PaymentClientProxyTest extends BaseTest {
     public void addPIAndUpdatePI() throws ExecutionException, InterruptedException {
         PaymentInstrument pi = getPaymentInstrument();
         final UserId userId = new UserId(pi.getUserId());
-        final PaymentInstrument result = piClient.postPaymentInstrument(pi).testGet();
+        final PaymentInstrument result = piClient.postPaymentInstrument(pi).get();
         Assert.assertNotNull(result.getId());
-        final PaymentInstrument getResult = piClient.getById(new PaymentInstrumentId(result.getId())).testGet();
+        final PaymentInstrument getResult = piClient.getById(new PaymentInstrumentId(result.getId())).get();
         Assert.assertEquals(result.getUserId(), getResult.getUserId());
         Assert.assertEquals(result.getId(), getResult.getId());
         Long newPIIId = 123456L;
         getResult.setBillingAddressId(newPIIId);
         getResult.setPhoneNumber(newPIIId);
         PaymentInstrumentId piid = new PaymentInstrumentId(getResult.getId());
-        final PaymentInstrument updateResult =  piClient.update(piid,getResult).testGet();
+        final PaymentInstrument updateResult =  piClient.update(piid,getResult).get();
         Assert.assertEquals(updateResult.getBillingAddressId(), newPIIId);
         Assert.assertEquals(updateResult.getPhoneNumber(), newPIIId);
         //updated PI should be able to auth as well:
@@ -76,21 +76,21 @@ public class PaymentClientProxyTest extends BaseTest {
                 });
             }
         };
-        PaymentTransaction paymentResult = paymentClient.postPaymentAuthorization(trx).testGet();
+        PaymentTransaction paymentResult = paymentClient.postPaymentAuthorization(trx).get();
         Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.AUTHORIZED.toString());
 
-        final PaymentInstrument getUpdatedResult = piClient.getById(new PaymentInstrumentId(result.getId())).testGet();
+        final PaymentInstrument getUpdatedResult = piClient.getById(new PaymentInstrumentId(result.getId())).get();
         Assert.assertEquals(updateResult.getBillingAddressId(), newPIIId);
         Assert.assertEquals(updateResult.getPhoneNumber(), newPIIId);
-        final PaymentInstrument result2 = piClient.postPaymentInstrument(pi).testGet();
+        final PaymentInstrument result2 = piClient.postPaymentInstrument(pi).get();
         Assert.assertNotNull(result2.getId());
         PaymentInstrumentSearchParam searchParam = new PaymentInstrumentSearchParam();
         searchParam.setUserId(userId);
-        Results<PaymentInstrument> results = piClient.searchPaymentInstrument(searchParam,new PageMetaData()).testGet();
+        Results<PaymentInstrument> results = piClient.searchPaymentInstrument(searchParam,new PageMetaData()).get();
         Assert.assertTrue(results.getItems().size() > 1);
-        piClient.delete(new PaymentInstrumentId(result.getId())).testGet();
+        piClient.delete(new PaymentInstrumentId(result.getId())).get();
         searchParam.setType(PIType.CREDITCARD.toString());
-        Results<PaymentInstrument> results2 = piClient.searchPaymentInstrument(searchParam,new PageMetaData()).testGet();
+        Results<PaymentInstrument> results2 = piClient.searchPaymentInstrument(searchParam,new PageMetaData()).get();
         Assert.assertEquals(results.getItems().size(), results2.getItems().size() + 1);
     }
 
@@ -98,9 +98,9 @@ public class PaymentClientProxyTest extends BaseTest {
     public void addPIAndAuthSettle() throws ExecutionException, InterruptedException {
         PaymentInstrument pi = getPaymentInstrument();
         final UserId userId = new UserId(pi.getUserId());
-        final PaymentInstrument result = piClient.postPaymentInstrument(pi).testGet();
+        final PaymentInstrument result = piClient.postPaymentInstrument(pi).get();
         Assert.assertNotNull(result.getId());
-        final PaymentInstrument getResult = piClient.getById(new PaymentInstrumentId(result.getId())).testGet();
+        final PaymentInstrument getResult = piClient.getById(new PaymentInstrumentId(result.getId())).get();
         Assert.assertEquals(result.getUserId(), getResult.getUserId());
         Assert.assertEquals(result.getId(), getResult.getId());
         PaymentTransaction trx = new PaymentTransaction(){
@@ -117,9 +117,9 @@ public class PaymentClientProxyTest extends BaseTest {
                 });
             }
         };
-        PaymentTransaction paymentResult = paymentClient.postPaymentAuthorization(trx).testGet();
+        PaymentTransaction paymentResult = paymentClient.postPaymentAuthorization(trx).get();
         Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.AUTHORIZED.toString());
-        PaymentTransaction getAuth = paymentClient.getPayment(new PaymentId(paymentResult.getId())).testGet();
+        PaymentTransaction getAuth = paymentClient.getPayment(new PaymentId(paymentResult.getId())).get();
         Assert.assertEquals(getAuth.getPaymentInstrumentId(), paymentResult.getPaymentInstrumentId());
         Assert.assertEquals(getAuth.getStatus().toUpperCase(), PaymentStatus.AUTHORIZED.toString());
         PaymentTransaction captureTrx = new PaymentTransaction(){
@@ -129,7 +129,7 @@ public class PaymentClientProxyTest extends BaseTest {
                 setBillingRefId(BILLING_REF_ID);
             }
         };
-        PaymentTransaction captureResult = paymentClient.postPaymentCapture(new PaymentId(paymentResult.getId()), captureTrx).testGet();
+        PaymentTransaction captureResult = paymentClient.postPaymentCapture(new PaymentId(paymentResult.getId()), captureTrx).get();
         Assert.assertEquals(captureResult.getStatus().toUpperCase(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
 
     }
@@ -138,9 +138,9 @@ public class PaymentClientProxyTest extends BaseTest {
     public void chargeDifferentCurrency() throws ExecutionException, InterruptedException {
         PaymentInstrument pi = getPaymentInstrument();
         final UserId userId = new UserId(pi.getUserId());
-        final PaymentInstrument result = piClient.postPaymentInstrument(pi).testGet();
+        final PaymentInstrument result = piClient.postPaymentInstrument(pi).get();
         Assert.assertNotNull(result.getId());
-        final PaymentInstrument getResult = piClient.getById(new PaymentInstrumentId(result.getId())).testGet();
+        final PaymentInstrument getResult = piClient.getById(new PaymentInstrumentId(result.getId())).get();
         Assert.assertEquals(result.getUserId(), getResult.getUserId());
         Assert.assertEquals(result.getId(), getResult.getId());
         PaymentTransaction trx = new PaymentTransaction(){
@@ -157,9 +157,9 @@ public class PaymentClientProxyTest extends BaseTest {
                 });
             }
         };
-        PaymentTransaction paymentResult = paymentClient.postPaymentAuthorization(trx).testGet();
+        PaymentTransaction paymentResult = paymentClient.postPaymentAuthorization(trx).get();
         Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.AUTHORIZED.toString());
-        PaymentTransaction getAuth = paymentClient.getPayment(new PaymentId(paymentResult.getId())).testGet();
+        PaymentTransaction getAuth = paymentClient.getPayment(new PaymentId(paymentResult.getId())).get();
         Assert.assertEquals(getAuth.getPaymentInstrumentId(), paymentResult.getPaymentInstrumentId());
         Assert.assertEquals(getAuth.getStatus().toUpperCase(), PaymentStatus.AUTHORIZED.toString());
         PaymentTransaction captureTrx = new PaymentTransaction(){
@@ -169,7 +169,7 @@ public class PaymentClientProxyTest extends BaseTest {
                 setBillingRefId(BILLING_REF_ID);
             }
         };
-        PaymentTransaction captureResult = paymentClient.postPaymentCapture(new PaymentId(paymentResult.getId()), captureTrx).testGet();
+        PaymentTransaction captureResult = paymentClient.postPaymentCapture(new PaymentId(paymentResult.getId()), captureTrx).get();
         Assert.assertEquals(captureResult.getStatus().toUpperCase(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
 
     }
@@ -180,7 +180,7 @@ public class PaymentClientProxyTest extends BaseTest {
         final UserId userId = new UserId(pi.getUserId());
         pi.setType(PIType.STOREDVALUE.getId());
         pi.getTypeSpecificDetails().setStoredValueCurrency("usd");
-        final PaymentInstrument result = piClient.postPaymentInstrument(pi).testGet();
+        final PaymentInstrument result = piClient.postPaymentInstrument(pi).get();
         Assert.assertNotNull(result.getId());
         //credit balance
         CreditRequest cr = new CreditRequest();
@@ -188,8 +188,8 @@ public class PaymentClientProxyTest extends BaseTest {
         BigDecimal amount = new BigDecimal("1000.00");
         cr.setAmount(amount);
         cr.setCurrency("usd");
-        walletClient.credit(cr).testGet();
-        PaymentInstrument getResult =  piClient.getById(new PaymentInstrumentId(result.getId())).testGet();
+        walletClient.credit(cr).get();
+        PaymentInstrument getResult =  piClient.getById(new PaymentInstrumentId(result.getId())).get();
         Assert.assertTrue(getResult.getTypeSpecificDetails().getStoredValueBalance().equals(amount));
         PaymentTransaction trx = new PaymentTransaction(){
             {
@@ -205,23 +205,23 @@ public class PaymentClientProxyTest extends BaseTest {
                 });
             }
         };
-        PaymentTransaction paymentResult = paymentClient.postPaymentCharge(trx).testGet();
+        PaymentTransaction paymentResult = paymentClient.postPaymentCharge(trx).get();
         Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.SETTLED.toString());
         //get Balance again
-        PaymentInstrument getResult2 =  piClient.getById(new PaymentInstrumentId(result.getId())).testGet();
+        PaymentInstrument getResult2 =  piClient.getById(new PaymentInstrumentId(result.getId())).get();
         Assert.assertTrue(getResult2.getTypeSpecificDetails().getStoredValueBalance().equals(new BigDecimal("985.00")));
         //Credit Balance and get again
         trx.getChargeInfo().setAmount(new BigDecimal("1000.00"));
-        paymentResult = paymentClient.postPaymentCredit(trx).testGet();
+        paymentResult = paymentClient.postPaymentCredit(trx).get();
         Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.SETTLED.toString());
-        PaymentInstrument getResult3 =  piClient.getById(new PaymentInstrumentId(result.getId())).testGet();
+        PaymentInstrument getResult3 =  piClient.getById(new PaymentInstrumentId(result.getId())).get();
         Assert.assertTrue(getResult3.getTypeSpecificDetails().getStoredValueBalance().equals(new BigDecimal("1985.00")));
         PaymentInstrument pi2 = getPaymentInstrument();
         pi2.setUserId(pi.getUserId());
-        final PaymentInstrument result2 = piClient.postPaymentInstrument(pi2).testGet();
+        final PaymentInstrument result2 = piClient.postPaymentInstrument(pi2).get();
         PaymentInstrumentSearchParam searchParam = new PaymentInstrumentSearchParam();
         searchParam.setUserId(userId);
-        Results<PaymentInstrument> results = piClient.searchPaymentInstrument(searchParam,new PageMetaData()).testGet();
+        Results<PaymentInstrument> results = piClient.searchPaymentInstrument(searchParam,new PageMetaData()).get();
         Assert.assertEquals(results.getItems().size(), 2);
         PaymentInstrument walletPI;
         if(results.getItems().get(0).getType().equals(PIType.STOREDVALUE.getId())){
@@ -235,7 +235,7 @@ public class PaymentClientProxyTest extends BaseTest {
     private PaymentInstrument getPaymentInstrument() {
         User user = new User();
         user.setUsername("utTest" + getLongId());
-        user = userClient.create(user).testGet();
+        user = userClient.create(user).get();
         final Long userId = user.getId().getValue();
         final Email email = new Email();
         email.setInfo("uttest" + userId + "@junbo.com");
@@ -246,7 +246,7 @@ public class PaymentClientProxyTest extends BaseTest {
                 setValue(ObjectMapperProvider.instance().valueToTree(email));
             }
         };
-        UserPersonalInfo emailPerInfo = piiClient.create(emailInfo).testGet();
+        UserPersonalInfo emailPerInfo = piiClient.create(emailInfo).get();
 
         final UserName userName = new UserName();
         userName.setFamilyName("ut"+ userId);
@@ -258,7 +258,7 @@ public class PaymentClientProxyTest extends BaseTest {
                 setValue(ObjectMapperProvider.instance().valueToTree(userName));
             }
         };
-        UserPersonalInfo userNamePerInfo = piiClient.create(userNameInfo).testGet();
+        UserPersonalInfo userNamePerInfo = piiClient.create(userNameInfo).get();
         UserPersonalInfoLink nameLink = new UserPersonalInfoLink();
         nameLink.setValue(userNamePerInfo.getId());
         nameLink.setUserId(new UserId(userId));
@@ -268,13 +268,13 @@ public class PaymentClientProxyTest extends BaseTest {
         emailLink.setUserId(new UserId(userId));
         emailLink.setIsDefault(true);
         user.setEmails(Arrays.asList(emailLink));
-        userClient.put(new UserId(userId), user).testGet();
+        userClient.put(new UserId(userId), user).get();
 
         com.junbo.identity.spec.v1.model.Address address = new Address();
         address.setCountryId(new CountryId("US"));
         address.setStreet1("1st street");
         address.setPostalCode("12345");
-        final Long addressId = personalInfoFacade.createBillingAddress(userId, address).testGet().getValue();
+        final Long addressId = personalInfoFacade.createBillingAddress(userId, address).get().getValue();
         return new PaymentInstrument(){
                 {
                     setAccountName("ut");
@@ -299,7 +299,7 @@ public class PaymentClientProxyTest extends BaseTest {
     public void addPIAndAuthPartialSettle() throws ExecutionException, InterruptedException {
         PaymentInstrument pi = getPaymentInstrument();
         final UserId userId = new UserId(pi.getUserId());
-        final PaymentInstrument result = piClient.postPaymentInstrument(pi).testGet();
+        final PaymentInstrument result = piClient.postPaymentInstrument(pi).get();
         Assert.assertNotNull(result.getId());
         PaymentTransaction trx = new PaymentTransaction(){
             {
@@ -315,7 +315,7 @@ public class PaymentClientProxyTest extends BaseTest {
                 });
             }
         };
-        PaymentTransaction paymentResult = paymentClient.postPaymentAuthorization(trx).testGet();
+        PaymentTransaction paymentResult = paymentClient.postPaymentAuthorization(trx).get();
         Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.AUTHORIZED.toString());
         PaymentTransaction captureTrx = new PaymentTransaction(){
             {
@@ -330,7 +330,7 @@ public class PaymentClientProxyTest extends BaseTest {
                 });
             }
         };
-        PaymentTransaction captureResult = paymentClient.postPaymentCapture(new PaymentId(paymentResult.getId()), captureTrx).testGet();
+        PaymentTransaction captureResult = paymentClient.postPaymentCapture(new PaymentId(paymentResult.getId()), captureTrx).get();
         Assert.assertEquals(captureResult.getStatus().toUpperCase(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
     }
 
@@ -353,22 +353,22 @@ public class PaymentClientProxyTest extends BaseTest {
                 });
             }
         };
-        PaymentTransaction paymentResult = paymentClient.refundPayment(new PaymentId(trasnactionId), trx).testGet();
+        PaymentTransaction paymentResult = paymentClient.refundPayment(new PaymentId(trasnactionId), trx).get();
         Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.REFUNDED.toString());
         //Continue Partial Refund
         trx.setTrackingUuid(generateUUID());
-        paymentResult = paymentClient.refundPayment(new PaymentId(trasnactionId), trx).testGet();
+        paymentResult = paymentClient.refundPayment(new PaymentId(trasnactionId), trx).get();
         Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.REFUNDED.toString());
         //Continue Refund all the left
         trx.setChargeInfo(null);
         trx.setTrackingUuid(generateUUID());
-        paymentResult = paymentClient.refundPayment(new PaymentId(trasnactionId), trx).testGet();
-        PaymentTransaction getResult = paymentClient.getPayment(new PaymentId(paymentResult.getId())).testGet();
+        paymentResult = paymentClient.refundPayment(new PaymentId(trasnactionId), trx).get();
+        PaymentTransaction getResult = paymentClient.getPayment(new PaymentId(paymentResult.getId())).get();
         Assert.assertEquals(getResult.getStatus().toUpperCase(), PaymentStatus.REFUNDED.toString());
         boolean exception = false;
         try{
             trx.setTrackingUuid(generateUUID());
-            paymentResult = paymentClient.refundPayment(new PaymentId(trasnactionId), trx).testGet();
+            paymentResult = paymentClient.refundPayment(new PaymentId(trasnactionId), trx).get();
         }catch(Exception ex){
             //exprcted exception as all the money has been refunded
             exception = true;
@@ -382,7 +382,7 @@ public class PaymentClientProxyTest extends BaseTest {
         final UserId userId = new UserId(pi.getUserId());
         pi.setType(PIType.STOREDVALUE.getId());
         pi.getTypeSpecificDetails().setStoredValueCurrency("usd");
-        final PaymentInstrument result = piClient.postPaymentInstrument(pi).testGet();
+        final PaymentInstrument result = piClient.postPaymentInstrument(pi).get();
         Assert.assertNotNull(result.getId());
         //credit balance
         CreditRequest cr = new CreditRequest();
@@ -390,8 +390,8 @@ public class PaymentClientProxyTest extends BaseTest {
         BigDecimal amount = new BigDecimal("1000.00");
         cr.setAmount(amount);
         cr.setCurrency("usd");
-        walletClient.credit(cr).testGet();
-        PaymentInstrument getResult =  piClient.getById(new PaymentInstrumentId(result.getId())).testGet();
+        walletClient.credit(cr).get();
+        PaymentInstrument getResult =  piClient.getById(new PaymentInstrumentId(result.getId())).get();
         Assert.assertTrue(getResult.getTypeSpecificDetails().getStoredValueBalance().equals(amount));
         PaymentTransaction trx = new PaymentTransaction(){
             {
@@ -407,22 +407,22 @@ public class PaymentClientProxyTest extends BaseTest {
                 });
             }
         };
-        PaymentTransaction paymentResult = paymentClient.postPaymentCharge(trx).testGet();
+        PaymentTransaction paymentResult = paymentClient.postPaymentCharge(trx).get();
         Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.SETTLED.toString());
         //get Balance again
-        PaymentInstrument getResult2 =  piClient.getById(new PaymentInstrumentId(result.getId())).testGet();
+        PaymentInstrument getResult2 =  piClient.getById(new PaymentInstrumentId(result.getId())).get();
         Assert.assertTrue(getResult2.getTypeSpecificDetails().getStoredValueBalance().equals(new BigDecimal("985.00")));
         //Credit Balance and get again
         trx.getChargeInfo().setAmount(new BigDecimal("1000.00"));
-        PaymentTransaction creditResult = paymentClient.postPaymentCredit(trx).testGet();
+        PaymentTransaction creditResult = paymentClient.postPaymentCredit(trx).get();
         Assert.assertEquals(creditResult.getStatus().toUpperCase(), PaymentStatus.SETTLED.toString());
-        PaymentInstrument getResult3 =  piClient.getById(new PaymentInstrumentId(result.getId())).testGet();
+        PaymentInstrument getResult3 =  piClient.getById(new PaymentInstrumentId(result.getId())).get();
         Assert.assertTrue(getResult3.getTypeSpecificDetails().getStoredValueBalance().equals(new BigDecimal("1985.00")));
         trx.getChargeInfo().setAmount(new BigDecimal("15.00"));
         trx.setTrackingUuid(generateUUID());
-        PaymentTransaction refundResult = paymentClient.refundPayment(new PaymentId(paymentResult.getId()), trx).testGet();
+        PaymentTransaction refundResult = paymentClient.refundPayment(new PaymentId(paymentResult.getId()), trx).get();
         Assert.assertEquals(refundResult.getStatus().toUpperCase(), PaymentStatus.REFUNDED.toString());
-        PaymentInstrument getResult4 =  piClient.getById(new PaymentInstrumentId(result.getId())).testGet();
+        PaymentInstrument getResult4 =  piClient.getById(new PaymentInstrumentId(result.getId())).get();
         Assert.assertTrue(getResult4.getTypeSpecificDetails().getStoredValueBalance().equals(new BigDecimal("2000.00")));
     }
 
@@ -430,7 +430,7 @@ public class PaymentClientProxyTest extends BaseTest {
     public void addPIAndAuthReverse() throws ExecutionException, InterruptedException {
         PaymentInstrument pi = getPaymentInstrument();
         final UserId userId = new UserId(pi.getUserId());
-        final PaymentInstrument result = piClient.postPaymentInstrument(pi).testGet();
+        final PaymentInstrument result = piClient.postPaymentInstrument(pi).get();
         Assert.assertNotNull(result.getId());
         PaymentTransaction trx = new PaymentTransaction(){
             {
@@ -446,7 +446,7 @@ public class PaymentClientProxyTest extends BaseTest {
                 });
             }
         };
-        PaymentTransaction paymentResult = paymentClient.postPaymentAuthorization(trx).testGet();
+        PaymentTransaction paymentResult = paymentClient.postPaymentAuthorization(trx).get();
         Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.AUTHORIZED.toString());
         PaymentTransaction reverseTrx = new PaymentTransaction(){
             {
@@ -455,7 +455,7 @@ public class PaymentClientProxyTest extends BaseTest {
                 setUserId(userId.getValue());
             }
         };
-        PaymentTransaction captureResult = paymentClient.reversePayment(new PaymentId(paymentResult.getId()), reverseTrx).testGet();
+        PaymentTransaction captureResult = paymentClient.reversePayment(new PaymentId(paymentResult.getId()), reverseTrx).get();
         Assert.assertEquals(captureResult.getStatus().toUpperCase(), PaymentStatus.REVERSED.toString());
     }
 
@@ -463,7 +463,7 @@ public class PaymentClientProxyTest extends BaseTest {
     public void addPIAndChargeReverse() throws ExecutionException, InterruptedException {
         PaymentInstrument pi = getPaymentInstrument();
         final UserId userId = new UserId(pi.getUserId());
-        final PaymentInstrument result = piClient.postPaymentInstrument(pi).testGet();
+        final PaymentInstrument result = piClient.postPaymentInstrument(pi).get();
         Assert.assertNotNull(result.getId());
         PaymentTransaction trx = new PaymentTransaction(){
             {
@@ -479,7 +479,7 @@ public class PaymentClientProxyTest extends BaseTest {
                 });
             }
         };
-        PaymentTransaction paymentResult = paymentClient.postPaymentCharge(trx).testGet();
+        PaymentTransaction paymentResult = paymentClient.postPaymentCharge(trx).get();
         Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
         PaymentTransaction reverseTrx = new PaymentTransaction(){
             {
@@ -488,7 +488,7 @@ public class PaymentClientProxyTest extends BaseTest {
                 setUserId(userId.getValue());
             }
         };
-        PaymentTransaction captureResult = paymentClient.reversePayment(new PaymentId(paymentResult.getId()), reverseTrx).testGet();
+        PaymentTransaction captureResult = paymentClient.reversePayment(new PaymentId(paymentResult.getId()), reverseTrx).get();
         Assert.assertEquals(captureResult.getStatus().toUpperCase(), PaymentStatus.REVERSED.toString());
     }
 
@@ -496,7 +496,7 @@ public class PaymentClientProxyTest extends BaseTest {
     public void addPIAndAuthFailed() throws ExecutionException, InterruptedException {
         PaymentInstrument pi = getPaymentInstrument();
         final UserId userId = new UserId(pi.getUserId());
-        final PaymentInstrument result = piClient.postPaymentInstrument(pi).testGet();
+        final PaymentInstrument result = piClient.postPaymentInstrument(pi).get();
         Assert.assertNotNull(result.getId());
         PaymentTransaction trx = new PaymentTransaction(){
             {
@@ -514,7 +514,7 @@ public class PaymentClientProxyTest extends BaseTest {
         };
         PaymentTransaction paymentResult = null;
         try{
-            paymentResult = paymentClient.postPaymentAuthorization(trx).testGet();
+            paymentResult = paymentClient.postPaymentAuthorization(trx).get();
         }catch(Exception ex){
 
         }
@@ -525,7 +525,7 @@ public class PaymentClientProxyTest extends BaseTest {
     public void addPIAndAuthCaptureFailed() throws Exception {
         PaymentInstrument pi = getPaymentInstrument();
         final UserId userId = new UserId(pi.getUserId());
-        final PaymentInstrument result = piClient.postPaymentInstrument(pi).testGet();
+        final PaymentInstrument result = piClient.postPaymentInstrument(pi).get();
         Assert.assertNotNull(result.getId());
         PaymentTransaction trx = new PaymentTransaction(){
             {
@@ -541,7 +541,7 @@ public class PaymentClientProxyTest extends BaseTest {
                 });
             }
         };
-        PaymentTransaction paymentResult = paymentClient.postPaymentAuthorization(trx).testGet();
+        PaymentTransaction paymentResult = paymentClient.postPaymentAuthorization(trx).get();
         Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.AUTHORIZED.toString());
         PaymentTransaction captureTrx = new PaymentTransaction(){
             {
@@ -558,10 +558,10 @@ public class PaymentClientProxyTest extends BaseTest {
         };
         PaymentTransaction captureResult = null;
         try{
-            captureResult = paymentClient.postPaymentCapture(new PaymentId(paymentResult.getId()), captureTrx).testGet();
+            captureResult = paymentClient.postPaymentCapture(new PaymentId(paymentResult.getId()), captureTrx).get();
         }catch (Exception ex){
             Assert.assertNull(captureResult);
-            PaymentTransaction revertResult = paymentClient.getPayment(new PaymentId(paymentResult.getId())).testGet();
+            PaymentTransaction revertResult = paymentClient.getPayment(new PaymentId(paymentResult.getId())).get();
             Assert.assertEquals(revertResult.getStatus().toUpperCase(), PaymentStatus.SETTLEMENT_SUBMIT_DECLINED.toString());
             for(PaymentEvent event : revertResult.getPaymentEvents()){
                 if(event.getType().equalsIgnoreCase(PaymentEventType.SUBMIT_SETTLE.toString())
@@ -577,7 +577,7 @@ public class PaymentClientProxyTest extends BaseTest {
     public void addPIAndAuthReverseFailed() throws Exception {
         PaymentInstrument pi = getPaymentInstrument();
         final UserId userId = new UserId(pi.getUserId());
-        final PaymentInstrument result = piClient.postPaymentInstrument(pi).testGet();
+        final PaymentInstrument result = piClient.postPaymentInstrument(pi).get();
         Assert.assertNotNull(result.getId());
         PaymentTransaction trx = new PaymentTransaction(){
             {
@@ -593,7 +593,7 @@ public class PaymentClientProxyTest extends BaseTest {
                 });
             }
         };
-        PaymentTransaction paymentResult = paymentClient.postPaymentAuthorization(trx).testGet();
+        PaymentTransaction paymentResult = paymentClient.postPaymentAuthorization(trx).get();
         Assert.assertEquals(paymentResult.getStatus().toUpperCase(), PaymentStatus.AUTHORIZED.toString());
         PaymentTransaction reverseTrx = new PaymentTransaction(){
             {
@@ -604,10 +604,10 @@ public class PaymentClientProxyTest extends BaseTest {
         };
         PaymentTransaction reverseResult = null;
         try{
-            reverseResult = paymentClient.reversePayment(new PaymentId(paymentResult.getId()), reverseTrx).testGet();
+            reverseResult = paymentClient.reversePayment(new PaymentId(paymentResult.getId()), reverseTrx).get();
         }catch (Exception ex){
             Assert.assertNull(reverseResult);
-            PaymentTransaction getResult = paymentClient.getPayment(new PaymentId(paymentResult.getId())).testGet();
+            PaymentTransaction getResult = paymentClient.getPayment(new PaymentId(paymentResult.getId())).get();
             Assert.assertEquals(getResult.getStatus().toUpperCase(), PaymentStatus.REVERSE_DECLINED.toString());
             for(PaymentEvent event : getResult.getPaymentEvents()){
                 if(event.getType().equalsIgnoreCase(PaymentEventType.AUTH_REVERSE.toString())

@@ -28,7 +28,7 @@ public class OfferAuthorizeCallbackFactory extends AbstractAuthorizeCallbackFact
     }
 
     public AuthorizeCallback<Offer> create(String offerId) {
-        Offer offer = offerResource.getOffer(offerId).syncGet();
+        Offer offer = offerResource.getOffer(offerId).get();
         return create(offer);
     }
 }

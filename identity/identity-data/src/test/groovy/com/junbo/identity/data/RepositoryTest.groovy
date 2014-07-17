@@ -137,38 +137,38 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void testCountryRepository() {
-        countryRepository.delete(new CountryId('US')).testGet()
+        countryRepository.delete(new CountryId('US')).get()
 
         Country country = new Country()
         country.setId(new CountryId('US'))
         country.setCountryCode('US')
         country.setDefaultLocale(new LocaleId('en_US'))
         country.setDefaultCurrency(new CurrencyId('USD'))
-        Country newCountry = countryRepository.create(country).testGet()
+        Country newCountry = countryRepository.create(country).get()
         assert  country.countryCode == newCountry.countryCode
     }
 
     @Test
     public void testCurrencyRepository() {
-        currencyRepository.delete(new CurrencyId('USD')).testGet()
+        currencyRepository.delete(new CurrencyId('USD')).get()
 
         Currency currency = new Currency()
         currency.setId(new CurrencyId('USD'))
         currency.setCurrencyCode('USD')
 
-        Currency newCurrency = currencyRepository.create(currency).testGet()
+        Currency newCurrency = currencyRepository.create(currency).get()
         assert  currency.currencyCode == newCurrency.currencyCode
     }
 
     @Test
     public void testLocaleRepository() {
-        localeRepository.delete(new LocaleId('en_US')).testGet()
+        localeRepository.delete(new LocaleId('en_US')).get()
 
         com.junbo.identity.spec.v1.model.Locale locale = new com.junbo.identity.spec.v1.model.Locale()
         locale.setId(new LocaleId('en_US'))
         locale.setLocaleCode('en_US')
 
-        com.junbo.identity.spec.v1.model.Locale newLocale = localeRepository.create(locale).testGet()
+        com.junbo.identity.spec.v1.model.Locale newLocale = localeRepository.create(locale).get()
         assert  locale.localeCode == newLocale.localeCode
     }
 
@@ -191,9 +191,9 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         user.setAddresses(personalInfoLinkList)
         user.setEmails(personalInfoLinkList)
 
-        user = userRepository.create(user).testGet()
+        user = userRepository.create(user).get()
 
-        User newUser = userRepository.get(user.getId()).testGet()
+        User newUser = userRepository.get(user.getId()).get()
         Assert.assertEquals(user.getPreferredLocale(), newUser.getPreferredLocale())
         assert newUser.addresses != null
         assert newUser.addresses.size() == 1
@@ -202,10 +202,10 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         LocaleId newPreferredLocale = new LocaleId(UUID.randomUUID().toString())
         newUser.setPreferredLocale(newPreferredLocale)
-        newUser = userRepository.update(newUser).testGet()
+        newUser = userRepository.update(newUser).get()
         Assert.assertEquals(newUser.getPreferredLocale(), newPreferredLocale)
 
-        User findUser = userRepository.searchUserByCanonicalUsername(newUser.getUsername()).testGet()
+        User findUser = userRepository.searchUserByCanonicalUsername(newUser.getUsername()).get()
         Assert.assertNotNull(findUser)
     }
 
@@ -215,9 +215,9 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         Tos tos = new Tos()
         tos.setTitle('title')
         tos.setContent(content)
-        tos = tosRepository.create(tos).testGet()
+        tos = tosRepository.create(tos).get()
 
-        Tos newTos = tosRepository.get(tos.getId()).testGet()
+        Tos newTos = tosRepository.get(tos.getId()).get()
         Assert.assertEquals(tos.getContent(), newTos.getContent())
     }
 
@@ -228,16 +228,16 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         group.setName(UUID.randomUUID().toString())
         group.setActive(true)
         group.setCreatedTime(new Date())
-        group = groupRepository.create(group).testGet()
+        group = groupRepository.create(group).get()
 
-        Group newGroup = groupRepository.get(group.getId()).testGet()
+        Group newGroup = groupRepository.get(group.getId()).get()
         Assert.assertEquals(group.getName(), newGroup.getName())
 
         String newValue = 'test2 ' + UUID.randomUUID().toString()
         newGroup.setName(newValue)
-        newGroup = groupRepository.update(newGroup).testGet()
+        newGroup = groupRepository.update(newGroup).get()
         Assert.assertEquals(newValue, newGroup.getName())
-        Group groupSearched = groupRepository.searchByOrganizationIdAndName(new OrganizationId(789L), newValue, Integer.MAX_VALUE, 0).testGet()
+        Group groupSearched = groupRepository.searchByOrganizationIdAndName(new OrganizationId(789L), newValue, Integer.MAX_VALUE, 0).get()
         Assert.assertNotNull(groupSearched)
     }
 
@@ -254,20 +254,20 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPassword.setCreatedBy(123L)
         userPassword.setUpdatedTime(new Date())
         userPassword.setUpdatedBy(123L)
-        userPassword = userPasswordRepository.create(userPassword).testGet()
+        userPassword = userPasswordRepository.create(userPassword).get()
 
-        UserPassword newUserPassword = userPasswordRepository.get(userPassword.getId()).testGet()
+        UserPassword newUserPassword = userPasswordRepository.get(userPassword.getId()).get()
         Assert.assertEquals(userPassword.getActive(), newUserPassword.getActive())
 
         Boolean newValue = !userPassword.getActive()
         newUserPassword.setActive(newValue)
-        newUserPassword = userPasswordRepository.update(newUserPassword).testGet()
+        newUserPassword = userPasswordRepository.update(newUserPassword).get()
         Assert.assertEquals(newValue, newUserPassword.getActive())
 
         UserPasswordListOptions getOption = new UserPasswordListOptions()
         getOption.setUserId(new UserId(userId))
         List<UserPassword> userPasswordList = userPasswordRepository.searchByUserId(new UserId(userId),
-                Integer.MAX_VALUE, 0).testGet()
+                Integer.MAX_VALUE, 0).get()
         assert userPasswordList.size() != 0
     }
 
@@ -283,20 +283,20 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userPIN.setCreatedBy(123L)
         userPIN.setUpdatedTime(new Date())
         userPIN.setUpdatedBy(123L)
-        userPIN = userPinRepository.create(userPIN).testGet()
+        userPIN = userPinRepository.create(userPIN).get()
 
-        UserPin newUserPin = userPinRepository.get(userPIN.getId()).testGet()
+        UserPin newUserPin = userPinRepository.get(userPIN.getId()).get()
         Assert.assertEquals(userPIN.getActive(), newUserPin.getActive())
 
         Boolean newValue = !userPIN.getActive()
         newUserPin.setActive(newValue)
-        userPinRepository.update(newUserPin).testGet()
-        newUserPin = userPinRepository.get(newUserPin.getId()).testGet()
+        userPinRepository.update(newUserPin).get()
+        newUserPin = userPinRepository.get(newUserPin.getId()).get()
         Assert.assertEquals(newValue, newUserPin.getActive())
 
         UserPinListOptions getOption = new UserPinListOptions()
         getOption.setUserId(new UserId(userId))
-        List<UserPin> userPins = userPinRepository.searchByUserId(new UserId(userId), Integer.MAX_VALUE, 0).testGet()
+        List<UserPin> userPins = userPinRepository.searchByUserId(new UserId(userId), Integer.MAX_VALUE, 0).get()
         assert userPins.size() != 0
     }
 
@@ -308,21 +308,21 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         authenticator.setExternalId(UUID.randomUUID().toString())
         authenticator.setCreatedTime(new Date())
         authenticator.setCreatedBy(123L)
-        authenticator = userAuthenticatorRepository.create(authenticator).testGet()
+        authenticator = userAuthenticatorRepository.create(authenticator).get()
 
-        UserAuthenticator newUserAuthenticator = userAuthenticatorRepository.get(authenticator.getId()).testGet()
+        UserAuthenticator newUserAuthenticator = userAuthenticatorRepository.get(authenticator.getId()).get()
         Assert.assertEquals(authenticator.getExternalId(), newUserAuthenticator.getExternalId())
 
         String newValue = UUID.randomUUID().toString()
         newUserAuthenticator.setExternalId(newValue)
-        newUserAuthenticator = userAuthenticatorRepository.update(newUserAuthenticator).testGet()
+        newUserAuthenticator = userAuthenticatorRepository.update(newUserAuthenticator).get()
 
         Assert.assertEquals(newValue, newUserAuthenticator.getExternalId())
 
         AuthenticatorListOptions getOption = new AuthenticatorListOptions()
         getOption.setExternalId(newValue)
         List<UserAuthenticator> userAuthenticators = userAuthenticatorRepository.searchByExternalId(newValue, null,
-                null).testGet()
+                null).get()
         assert userAuthenticators.size() != 0
     }
 
@@ -333,16 +333,16 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userGroup.setGroupId(new GroupId("1493188608L"))
         userGroup.setCreatedBy(123L)
         userGroup.setCreatedTime(new Date())
-        userGroup = userGroupRepository.create(userGroup).testGet()
+        userGroup = userGroupRepository.create(userGroup).get()
 
-        UserGroup newUserGroup = userGroupRepository.get(userGroup.getId()).testGet()
+        UserGroup newUserGroup = userGroupRepository.get(userGroup.getId()).get()
         Assert.assertEquals(userGroup.getGroupId().getValue(), newUserGroup.getGroupId().getValue())
 
         UserGroupListOptions getOption = new UserGroupListOptions()
         getOption.setUserId(new UserId(userId))
         getOption.setGroupId(new GroupId("1493188608L"))
         List<UserGroup> userGroups = userGroupRepository.searchByUserIdAndGroupId(new UserId(userId),
-                new GroupId("1493188608L"), Integer.MAX_VALUE, 0).testGet()
+                new GroupId("1493188608L"), Integer.MAX_VALUE, 0).get()
 
         assert userGroups.size() != 0
     }
@@ -360,21 +360,21 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userLoginAttempt.setCreatedBy(123L)
         userLoginAttempt.setCreatedTime(new Date())
 
-        userLoginAttempt = userCredentialVerifyAttemptRepository.create(userLoginAttempt).testGet()
+        userLoginAttempt = userCredentialVerifyAttemptRepository.create(userLoginAttempt).get()
 
         UserCredentialVerifyAttempt newUserLoginAttempt =
-                userCredentialVerifyAttemptRepository.get(userLoginAttempt.getId()).testGet()
+                userCredentialVerifyAttemptRepository.get(userLoginAttempt.getId()).get()
         Assert.assertEquals(userLoginAttempt.getIpAddress(), newUserLoginAttempt.getIpAddress())
 
         String value = UUID.randomUUID().toString()
         newUserLoginAttempt.setIpAddress(value)
-        newUserLoginAttempt = userCredentialVerifyAttemptRepository.update(newUserLoginAttempt).testGet()
+        newUserLoginAttempt = userCredentialVerifyAttemptRepository.update(newUserLoginAttempt).get()
         Assert.assertEquals(newUserLoginAttempt.getIpAddress(), value)
 
         UserCredentialAttemptListOptions getOption = new UserCredentialAttemptListOptions()
         getOption.setUserId(new UserId(userId))
         List<UserCredentialVerifyAttempt> userLoginAttempts =
-                userCredentialVerifyAttemptRepository.searchByUserId(new UserId(userId), Integer.MAX_VALUE, 0).testGet()
+                userCredentialVerifyAttemptRepository.searchByUserId(new UserId(userId), Integer.MAX_VALUE, 0).get()
         assert userLoginAttempts.size() != 0
     }
 
@@ -385,20 +385,20 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userOptin.setCommunicationId(new CommunicationId(idGenerator.nextId().toString()))
         userOptin.setCreatedBy(123L)
         userOptin.setCreatedTime(new Date())
-        userOptin = userCommunicationRepository.create(userOptin).testGet()
+        userOptin = userCommunicationRepository.create(userOptin).get()
 
-        UserCommunication newUserOptin = userCommunicationRepository.get(userOptin.getId()).testGet()
+        UserCommunication newUserOptin = userCommunicationRepository.get(userOptin.getId()).get()
         Assert.assertEquals(userOptin.getCommunicationId(), newUserOptin.getCommunicationId())
 
         CommunicationId value = new CommunicationId(idGenerator.nextId().toString())
         userOptin.setCommunicationId(value)
-        newUserOptin = userCommunicationRepository.update(userOptin).testGet()
+        newUserOptin = userCommunicationRepository.update(userOptin).get()
         Assert.assertEquals(value, newUserOptin.getCommunicationId())
 
         UserOptinListOptions getOption = new UserOptinListOptions()
         getOption.setUserId(new UserId(userId))
         List<UserCommunication> userOptins = userCommunicationRepository.searchByUserId(new UserId(userId), null,
-                null).testGet()
+                null).get()
         assert userOptins.size() != 0
     }
 
@@ -411,19 +411,19 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userSecurityQuestion.setCreatedBy(123L)
         userSecurityQuestion.setCreatedTime(new Date())
 
-        userSecurityQuestion = userSecurityQuestionRepository.create(userSecurityQuestion).testGet()
+        userSecurityQuestion = userSecurityQuestionRepository.create(userSecurityQuestion).get()
 
         UserSecurityQuestion newUserSecurityQuestion =
-                userSecurityQuestionRepository.get(userSecurityQuestion.getId()).testGet()
+                userSecurityQuestionRepository.get(userSecurityQuestion.getId()).get()
         Assert.assertEquals(userSecurityQuestion.getAnswerHash(), newUserSecurityQuestion.getAnswerHash())
 
         String value = UUID.randomUUID().toString()
         newUserSecurityQuestion.setAnswerHash(value)
-        newUserSecurityQuestion = userSecurityQuestionRepository.update(newUserSecurityQuestion).testGet()
+        newUserSecurityQuestion = userSecurityQuestionRepository.update(newUserSecurityQuestion).get()
         Assert.assertEquals(newUserSecurityQuestion.getAnswerHash(), value)
 
         List<UserSecurityQuestion> securityQuestions = userSecurityQuestionRepository.
-                searchByUserId(new UserId(userId), Integer.MAX_VALUE, 0).testGet()
+                searchByUserId(new UserId(userId), Integer.MAX_VALUE, 0).get()
         assert securityQuestions.size() != 0
     }
 
@@ -434,22 +434,22 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userTos.setTosId(new TosId("123L"))
         userTos.setCreatedBy(123L)
         userTos.setCreatedTime(new Date())
-        userTos = userTosRepository.create(userTos).testGet()
+        userTos = userTosRepository.create(userTos).get()
 
-        UserTosAgreement newUserTos = userTosRepository.get(userTos.getId()).testGet()
+        UserTosAgreement newUserTos = userTosRepository.get(userTos.getId()).get()
         Assert.assertEquals(userTos.getTosId(), newUserTos.getTosId())
 
         newUserTos.setTosId(new TosId("456L"))
-        userTosRepository.update(newUserTos).testGet()
+        userTosRepository.update(newUserTos).get()
 
-        newUserTos = userTosRepository.get(userTos.getId()).testGet()
+        newUserTos = userTosRepository.get(userTos.getId()).get()
         Assert.assertEquals(new TosId("456L"), newUserTos.getTosId())
 
         UserTosAgreementListOptions userTosGetOption = new UserTosAgreementListOptions()
         userTosGetOption.setUserId(new UserId(userId))
         userTosGetOption.setTosId(new TosId("456L"))
         List<UserTosAgreement> userToses = userTosRepository.searchByUserIdAndTosId(new UserId(userId), new TosId("456L"),
-                Integer.MAX_VALUE, 0).testGet()
+                Integer.MAX_VALUE, 0).get()
         assert userToses.size() != 0
     }
 
@@ -464,10 +464,10 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         attempt.setUserSecurityQuestionId(new UserSecurityQuestionId("123L"))
         attempt.setUserAgent(UUID.randomUUID().toString())
 
-        attempt = userSecurityQuestionAttemptRepository.create(attempt).testGet()
+        attempt = userSecurityQuestionAttemptRepository.create(attempt).get()
 
         UserSecurityQuestionVerifyAttempt newAttempt =
-                userSecurityQuestionAttemptRepository.get(attempt.getId()).testGet()
+                userSecurityQuestionAttemptRepository.get(attempt.getId()).get()
         Assert.assertEquals(attempt.getIpAddress(), newAttempt.getIpAddress())
 
         UserSecurityQuestionAttemptListOptions option = new UserSecurityQuestionAttemptListOptions()
@@ -475,7 +475,7 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         option.setUserSecurityQuestionId(new UserSecurityQuestionId("123L"))
         List<UserSecurityQuestionVerifyAttempt> attempts =
                 userSecurityQuestionAttemptRepository.searchByUserIdAndSecurityQuestionId(new UserId(userId),
-                        new UserSecurityQuestionId("123L"), Integer.MAX_VALUE, 0).testGet()
+                        new UserSecurityQuestionId("123L"), Integer.MAX_VALUE, 0).get()
         assert attempts.size() != 0
     }
 
@@ -486,17 +486,17 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         device.setType(new DeviceTypeId("DK2"))
         device.setFirmwareVersion(UUID.randomUUID().toString())
 
-        Device newDevice = deviceRepository.create(device).testGet()
-        newDevice = deviceRepository.get((DeviceId)newDevice.id).testGet()
+        Device newDevice = deviceRepository.create(device).get()
+        newDevice = deviceRepository.get((DeviceId)newDevice.id).get()
 
         assert  device.serialNumber == newDevice.serialNumber
 
         String newSerialNumber = UUID.randomUUID().toString()
         newDevice.setSerialNumber(newSerialNumber)
-        device = deviceRepository.update(newDevice).testGet()
+        device = deviceRepository.update(newDevice).get()
         assert device.serialNumber == newSerialNumber
 
-        device = deviceRepository.searchBySerialNumber(device.serialNumber).testGet()
+        device = deviceRepository.searchBySerialNumber(device.serialNumber).get()
         assert device.serialNumber == newSerialNumber
     }
 
@@ -518,14 +518,14 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userTeleCode.setVerifyCode(UUID.randomUUID().toString())
         userTeleCode.setVerifyType('CALL')
 
-        UserTFA newUserTeleCode = userTFARepository.create(userTeleCode).testGet()
-        newUserTeleCode = userTFARepository.get((UserTFAId)newUserTeleCode.id).testGet()
+        UserTFA newUserTeleCode = userTFARepository.create(userTeleCode).get()
+        newUserTeleCode = userTFARepository.get((UserTFAId)newUserTeleCode.id).get()
 
         assert userTeleCode.personalInfo == newUserTeleCode.personalInfo
 
         UserPersonalInfoId newPhoneNumber = new UserPersonalInfoId(idGenerator.nextId())
         newUserTeleCode.setPersonalInfo(newPhoneNumber)
-        userTeleCode = userTFARepository.update(newUserTeleCode).testGet()
+        userTeleCode = userTFARepository.update(newUserTeleCode).get()
         assert userTeleCode.personalInfo == newPhoneNumber
     }
 
@@ -542,18 +542,18 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userTeleAttempt.setUserAgent(UUID.randomUUID().toString())
         userTeleAttempt.setUserTFAId(userTeleId)
 
-        UserTFAAttempt newUserTeleAttempt = userTFAAttemptRepository.create(userTeleAttempt).testGet()
-        newUserTeleAttempt = userTFAAttemptRepository.get((UserTFAAttemptId)newUserTeleAttempt.id).testGet()
+        UserTFAAttempt newUserTeleAttempt = userTFAAttemptRepository.create(userTeleAttempt).get()
+        newUserTeleAttempt = userTFAAttemptRepository.get((UserTFAAttemptId)newUserTeleAttempt.id).get()
 
         assert userTeleAttempt.ipAddress == newUserTeleAttempt.ipAddress
 
         String newIpAddress = UUID.randomUUID().toString()
         newUserTeleAttempt.setIpAddress(newIpAddress)
-        userTeleAttempt = userTFAAttemptRepository.update(newUserTeleAttempt).testGet()
+        userTeleAttempt = userTFAAttemptRepository.update(newUserTeleAttempt).get()
         assert userTeleAttempt.ipAddress == newIpAddress
 
         List<UserTFAAttempt> results = userTFAAttemptRepository.searchByUserIdAndUserTFAId(userId, userTeleId, 100,
-                0).testGet()
+                0).get()
         assert results.size() != 0
     }
 
@@ -570,19 +570,19 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         userTeleBackupCode.setActive(true)
         userTeleBackupCode.setExpiresBy(after30000Mins)
         UserTFABackupCode newUserTeleBackupCode =
-                userTFABackupCodeRepository.create(userTeleBackupCode).testGet()
+                userTFABackupCodeRepository.create(userTeleBackupCode).get()
         newUserTeleBackupCode =
-                userTFABackupCodeRepository.get((UserTFABackupCodeId)newUserTeleBackupCode.id).testGet()
+                userTFABackupCodeRepository.get((UserTFABackupCodeId)newUserTeleBackupCode.id).get()
 
         assert userTeleBackupCode.verifyCode == newUserTeleBackupCode.verifyCode
 
         String newVerifyCode = UUID.randomUUID().toString()
         newUserTeleBackupCode.setVerifyCode(newVerifyCode)
-        userTeleBackupCode = userTFABackupCodeRepository.update(newUserTeleBackupCode).testGet()
+        userTeleBackupCode = userTFABackupCodeRepository.update(newUserTeleBackupCode).get()
 
         assert userTeleBackupCode.verifyCode == newVerifyCode
 
-        List<UserTFABackupCode> results = userTFABackupCodeRepository.searchByUserId(userId, 100, 0).testGet()
+        List<UserTFABackupCode> results = userTFABackupCodeRepository.searchByUserId(userId, 100, 0).get()
         assert results.size() != 0
     }
 
@@ -597,18 +597,18 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         attempt.setIpAddress(UUID.randomUUID().toString())
         attempt.setSucceeded(true)
 
-        UserTFABackupCodeAttempt newAttempt = userTFABackupCodeAttemptRepository.create(attempt).testGet()
-        newAttempt = userTFABackupCodeAttemptRepository.get(newAttempt.id).testGet()
+        UserTFABackupCodeAttempt newAttempt = userTFABackupCodeAttemptRepository.create(attempt).get()
+        newAttempt = userTFABackupCodeAttemptRepository.get(newAttempt.id).get()
 
         assert newAttempt.verifyCode == attempt.verifyCode
 
         String newVerifyCode = UUID.randomUUID().toString()
         newAttempt.setVerifyCode(newVerifyCode)
-        attempt = userTFABackupCodeAttemptRepository.update(newAttempt).testGet()
+        attempt = userTFABackupCodeAttemptRepository.update(newAttempt).get()
 
         assert attempt.verifyCode == newVerifyCode
 
-        List<UserTFABackupCodeAttempt> results = userTFABackupCodeAttemptRepository.searchByUserId(userId, 100, 0).testGet()
+        List<UserTFABackupCodeAttempt> results = userTFABackupCodeAttemptRepository.searchByUserId(userId, 100, 0).get()
         assert results.size() != 0
     }
 
@@ -625,8 +625,8 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         ObjectMapper objectMapper = new ObjectMapper()
         userPersonalInfo.setValue(objectMapper.valueToTree(email))
 
-        UserPersonalInfo newUserPersonalInfo = userPersonalInfoRepository.create(userPersonalInfo).testGet()
-        newUserPersonalInfo = userPersonalInfoRepository.get(newUserPersonalInfo.id).testGet()
+        UserPersonalInfo newUserPersonalInfo = userPersonalInfoRepository.create(userPersonalInfo).get()
+        newUserPersonalInfo = userPersonalInfoRepository.get(newUserPersonalInfo.id).get()
 
         assert newUserPersonalInfo.type == userPersonalInfo.type
     }
@@ -636,13 +636,13 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         UserId ownerId = new UserId(idGenerator.nextId())
         Organization organization = new Organization()
         organization.ownerId = ownerId
-        Organization newOrganization = organizationRepository.create(organization).testGet()
+        Organization newOrganization = organizationRepository.create(organization).get()
 
-        newOrganization = organizationRepository.get(newOrganization.id).testGet()
+        newOrganization = organizationRepository.get(newOrganization.id).get()
 
         assert organization.id == newOrganization.id
 
-        List<Organization> organizationList = organizationRepository.searchByOwner(ownerId, Integer.MAX_VALUE, 0).testGet()
+        List<Organization> organizationList = organizationRepository.searchByOwner(ownerId, Integer.MAX_VALUE, 0).get()
 
         assert organizationList.size() != 0
     }

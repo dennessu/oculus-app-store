@@ -48,7 +48,7 @@ class SubledgerItemContextBuilder {
             throw AppErrors.INSTANCE.orderNotFound().exception()
         }
 
-        def offer = Promise.get { catalogFacade.getOfferRevision(subledgerItem.offer.value, orderItem.honoredTime) }
+        def offer = catalogFacade.getOfferRevision(subledgerItem.offer.value, orderItem.honoredTime).get()
         return buildContext(offer, order.country, order.currency, subledgerItem.createdTime)
     }
 }

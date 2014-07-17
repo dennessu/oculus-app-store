@@ -1,7 +1,9 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.langur.core.promise;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -46,8 +48,6 @@ public class RunnableWrapper implements Runnable {
 
     private static class RunnableOnce implements Runnable {
 
-        private final Logger logger = LoggerFactory.getLogger(RunnableWrapper.class);
-
         private final AtomicBoolean tag = new AtomicBoolean();
 
         private final Runnable runnable;
@@ -60,8 +60,6 @@ public class RunnableWrapper implements Runnable {
         public void run() {
             if (tag.compareAndSet(false, true)) {
                 runnable.run();
-            } else {
-                logger.info(runnable + " already run");
             }
         }
     }

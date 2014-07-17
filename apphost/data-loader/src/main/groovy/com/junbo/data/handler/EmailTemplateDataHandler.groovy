@@ -40,7 +40,7 @@ class EmailTemplateDataHandler extends BaseDataHandler {
         EmailTemplate existing
         try {
             def list = templateResource.getEmailTemplates(
-                    new QueryParam(source: template.source, action: template.action, locale: template.locale)).syncGet()
+                    new QueryParam(source: template.source, action: template.action, locale: template.locale)).get()
             if (list?.items?.size() != 0) {
                 existing = list.items.first() as EmailTemplate
             }
@@ -53,7 +53,7 @@ class EmailTemplateDataHandler extends BaseDataHandler {
                 logger.debug("Overwrite EmailTemplate ${existing.action} with this content.")
                 template.rev = existing.rev
                 try {
-                    templateResource.putEmailTemplate(existing.getId(), template).syncGet()
+                    templateResource.putEmailTemplate(existing.getId(), template).get()
                 } catch (Exception e) {
                     logger.error("Error updating emailTemplate $template.action", e)
                 }
@@ -63,7 +63,7 @@ class EmailTemplateDataHandler extends BaseDataHandler {
         } else {
             logger.debug('Create new EmailTemplate with this content.')
             try {
-                templateResource.postEmailTemplate(template).syncGet()
+                templateResource.postEmailTemplate(template).get()
             } catch (Exception e) {
                 logger.error("Error creating emailTemplate $template.action", e)
             }

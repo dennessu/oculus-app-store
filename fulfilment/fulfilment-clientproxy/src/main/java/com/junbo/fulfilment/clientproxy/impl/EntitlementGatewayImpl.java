@@ -33,7 +33,7 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
             Entitlement entitlement = Utils.map(input, Entitlement.class);
             entitlement.setTrackingUuid(UUID.randomUUID());
 
-            Entitlement result = entitlementResource.postEntitlement(entitlement).syncGet();
+            Entitlement result = entitlementResource.postEntitlement(entitlement).get();
             return result.getId();
         } catch (Exception e) {
             LOGGER.error("Error occurred during calling [Entitlement] component.", e);

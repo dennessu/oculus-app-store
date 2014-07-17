@@ -17,23 +17,23 @@ class EmailTemplateRepoCloudantTest extends BaseCloudantTest {
 
     @Test
     void testCreate() {
-        def template = templateRepository.saveEmailTemplate(buildEmailTemplate()).testGet()
+        def template = templateRepository.saveEmailTemplate(buildEmailTemplate()).get()
         assert template != null, 'Email template create failed'
         ids.add(template?.getId()?.value)
     }
 
     @Test
     void testGet() {
-        def template = templateRepository.saveEmailTemplate(buildEmailTemplate()).testGet()
+        def template = templateRepository.saveEmailTemplate(buildEmailTemplate()).get()
         assert template != null, 'Email template should not be null'
         ids.add(template?.getId()?.value)
-        template = templateRepository.getEmailTemplateByName(template.name).testGet()
+        template = templateRepository.getEmailTemplateByName(template.name).get()
         assert template != null, 'Email template should not be null'
         def template2 = this.buildEmailTemplate()
         template2.setLocale('zh_CN')
         template2.setName('unit.test.zh_CN')
-        templateRepository.saveEmailTemplate(template2).testGet()
-        def list = templateRepository.getEmailTemplates(null, null).testGet()
+        templateRepository.saveEmailTemplate(template2).get()
+        def list = templateRepository.getEmailTemplates(null, null).get()
         ids.add(template2?.getId()?.value)
         assert list.size() >= 2, 'Email template list get failed'
 
@@ -41,18 +41,18 @@ class EmailTemplateRepoCloudantTest extends BaseCloudantTest {
 
     @Test
     void testUpdate() {
-        def template = templateRepository.saveEmailTemplate(buildEmailTemplate()).testGet()
+        def template = templateRepository.saveEmailTemplate(buildEmailTemplate()).get()
         template.setPlaceholderNames(['unit','test'])
         ids.add(template?.getId()?.value)
-        def updated = templateRepository.updateEmailTemplate(template).testGet()
+        def updated = templateRepository.updateEmailTemplate(template).get()
         assert updated != null, 'Email template update failed'
     }
 
     @Test
     void testDelete() {
-        def template = templateRepository.saveEmailTemplate(buildEmailTemplate()).testGet()
-        templateRepository.deleteEmailTemplate(template.id.value).testGet()
-        template = templateRepository.getEmailTemplate(template.id.value).testGet()
+        def template = templateRepository.saveEmailTemplate(buildEmailTemplate()).get()
+        templateRepository.deleteEmailTemplate(template.id.value).get()
+        template = templateRepository.getEmailTemplate(template.id.value).get()
         ids.add(template?.getId()?.value)
         assert template == null, 'Email template delete failed'
     }
@@ -74,7 +74,7 @@ class EmailTemplateRepoCloudantTest extends BaseCloudantTest {
         if (ids != null && ids.size() != 0) {
             ids.each { String id ->
                 if (id != null && id !='') {
-                    templateRepository.deleteEmailTemplate(id).testGet()
+                    templateRepository.deleteEmailTemplate(id).get()
                 }
             }
         }

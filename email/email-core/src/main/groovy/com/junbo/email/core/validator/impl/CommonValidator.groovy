@@ -61,8 +61,7 @@ abstract class CommonValidator {
     }
 
     protected void validateEmailTemplate(Email email) {
-        EmailTemplate template = Promise.get { emailTemplateRepository.getEmailTemplate(email.templateId.value) }
-
+        EmailTemplate template = emailTemplateRepository.getEmailTemplate(email.templateId.value).get()
 
         if (template == null) {
             throw AppErrors.INSTANCE.templateNotFound(email.templateId).exception()

@@ -33,7 +33,7 @@ public class CountryServiceFacadeImpl implements CountryServiceFacade{
         if (CommonUtil.isNullOrEmpty(country)) {
             throw AppClientExceptions.INSTANCE.invalidCountry(country).exception();
         }
-        Country count = countryResource.get(new CountryId(country), new CountryGetOptions()).syncGet();
+        Country count = countryResource.get(new CountryId(country), new CountryGetOptions()).get();
         if (count == null) {
             throw AppClientExceptions.INSTANCE.invalidCountry(country).exception();
         }

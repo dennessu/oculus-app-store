@@ -53,7 +53,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     public Promise<PaymentInstrument> add(final PaymentInstrument request) {
         validateRequest(request);
         if(request.getTrackingUuid() != null){
-            TrackingUuid result = trackingUuidRepository.getByTrackingUuid(request.getUserId(), request.getTrackingUuid()).syncGet();
+            TrackingUuid result = trackingUuidRepository.getByTrackingUuid(request.getUserId(), request.getTrackingUuid()).get();
             if(result != null && result.getApi().equals(PaymentAPI.AddPI)){
                 return Promise.pure(CommonUtil.parseJson(result.getResponse(), PaymentInstrument.class));
             }
@@ -205,14 +205,14 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         trackingUuid.setApi(api.toString());
         trackingUuid.setUserId(request.getUserId());
         trackingUuid.setResponse(CommonUtil.toJson(request, null));
-        trackingUuidRepository.create(trackingUuid).syncGet();
+        trackingUuidRepository.create(trackingUuid).get();
     }
 
     private void validateRequest(PaymentInstrument request){
         if(request.getUserId() == null){
             throw AppClientExceptions.INSTANCE.missingUserId().exception();
         }
-        UserInfo user = userInfoFacade.getUserInfo(request.getUserId()).syncGet();
+        UserInfo user = userInfoFacade.getUserInfo(request.getUserId()).get();
         if(user == null){
             throw AppClientExceptions.INSTANCE.invalidUserId(request.getUserId().toString()).exception();
         }

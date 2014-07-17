@@ -5,10 +5,10 @@
  */
 
 package com.junbo.order.db.repo.facade.impl
+
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.OrderItemId
 import com.junbo.langur.core.promise.Promise
-import com.junbo.langur.core.promise.SyncModeScope
 import com.junbo.order.db.repo.*
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.db.repo.util.RepositoryFuncSet
@@ -24,6 +24,7 @@ import org.hibernate.StaleObjectStateException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
+
 /**
  * Created by chriszhu on 2/18/14.
  */
@@ -66,64 +67,76 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
 
     @Override
     Order createOrder(Order order) {
-        return SyncModeScope.with {
-            return ((Promise<Order>)orderRepository.create(order).then { Order savedOrder ->
-                return saveOrderItems(savedOrder.getId(), order.orderItems, false, null).then {
-                    return saveDiscounts(savedOrder.getId(), order.discounts);
-                };
-            }.then {
-                return Promise.pure(order);
-            }).syncGet();
-        }
+        return ((Promise<Order>) orderRepository.create(order).then { Order savedOrder ->
+            return saveOrderItems(savedOrder.getId(), order.orderItems, false, null).then {
+                return saveDiscounts(savedOrder.getId(), order.discounts);
+            };
+        }.then {
+            return Promise.pure(order);
+        }).get();
     }
 
     @Override
     Order updateOrder(Order order, Boolean updateOnlyOrder,
                       Boolean saveRevision, OrderItemRevisionType revisionType) {
-        return SyncModeScope.with {
-            try {
-                def existingOrder = orderRepository.get(order.getId()).syncGet()
-                if (existingOrder == null) {
-                    throw AppErrors.INSTANCE.orderNotFound().exception()
-                }
+        try {
+            def existingOrder = orderRepository.get(order.getId()).get()
+            if (existingOrder == null) {
+                throw AppErrors.INSTANCE.orderNotFound().exception()
+            }
 
-                if (!existingOrder.tentative && saveRevision) {
-                    def orderRevision = toOrderRevision(order)
-                    existingOrder.latestOrderRevisionId = orderRevision.getId()
-                    existingOrder.orderRevisions << orderRevision
-                    existingOrder.status = order.status
-                } else {
-                    existingOrder = order
-                }
+            if (!existingOrder.tentative && saveRevision) {
+                def orderRevision = toOrderRevision(order)
+                existingOrder.latestOrderRevisionId = orderRevision.getId()
+                existingOrder.orderRevisions << orderRevision
+                existingOrder.status = order.status
+            } else {
+                existingOrder = order
+            }
 
-                return ((Promise<Order>) orderRepository.update(existingOrder).then { Order savedOrder ->
-                    if (!updateOnlyOrder) {
-                        // update non-tentative order items to item revision
-                        return saveOrderItems(savedOrder.getId(), order.orderItems,
-                                saveRevision, revisionType).then {
-                            return saveDiscounts(savedOrder.getId(), order.discounts)
-                        }.then {
-                            return Promise.pure(order)
-                        }
-
-                    } else {
+            return ((Promise<Order>) orderRepository.update(existingOrder).then { Order savedOrder ->
+                if (!updateOnlyOrder) {
+                    // update non-tentative order items to item revision
+                    return saveOrderItems(savedOrder.getId(), order.orderItems,
+                            saveRevision, revisionType).then {
+                        return saveDiscounts(savedOrder.getId(), order.discounts)
+                    }.then {
                         return Promise.pure(order)
                     }
-                }).syncGet()
-            } catch (StaleObjectStateException ex) {
-                throw AppErrors.INSTANCE.orderConcurrentUpdate().exception()
-            }
+
+                } else {
+                    return Promise.pure(order)
+                }
+            }).get()
+        } catch (StaleObjectStateException ex) {
+            throw AppErrors.INSTANCE.orderConcurrentUpdate().exception()
         }
     }
 
     @Override
     Order getOrder(Long orderId) {
-        return SyncModeScope.with {
-            def order = orderRepository.get(new OrderId(orderId)).syncGet()
-            if (order == null) {
-                return (Order)null
+        def order = orderRepository.get(new OrderId(orderId)).get()
+        if (order == null) {
+            return (Order) null
+        }
+        // update order with order revision for non-tentative order
+        if (!order.tentative && !CollectionUtils.isEmpty(order.orderRevisions)) {
+            def latestRevision = order.orderRevisions.find() { OrderRevision revision ->
+                revision.id == order.latestOrderRevisionId
             }
-            // update order with order revision for non-tentative order
+            assert (latestRevision != null)
+            fillOrderWithRevision(order, latestRevision)
+        }
+        return order
+    }
+
+    @Override
+    List<Order> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
+        List<Order> orders = orderRepository.getByUserId(userId, orderQueryParam, pageParam).get()
+        if (orders == null) {
+            return []
+        }
+        orders.each { Order order ->
             if (!order.tentative && !CollectionUtils.isEmpty(order.orderRevisions)) {
                 def latestRevision = order.orderRevisions.find() { OrderRevision revision ->
                     revision.id == order.latestOrderRevisionId
@@ -131,80 +144,35 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
                 assert (latestRevision != null)
                 fillOrderWithRevision(order, latestRevision)
             }
-            return order
-        }
-    }
-
-    @Override
-    List<Order> getOrdersByUserId(Long userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
-        return SyncModeScope.with {
-            List<Order> orders = orderRepository.getByUserId(userId, orderQueryParam, pageParam).syncGet()
-            if (orders == null) {
-                return []
-            }
-            orders.each { Order order ->
-                if (!order.tentative && !CollectionUtils.isEmpty(order.orderRevisions)) {
-                    def latestRevision = order.orderRevisions.find() { OrderRevision revision ->
-                        revision.id == order.latestOrderRevisionId
-                    }
-                    assert (latestRevision != null)
-                    fillOrderWithRevision(order, latestRevision)
-                }
-            }
         }
     }
 
     @Override
     List<Order> getOrdersByStatus(Integer dataCenterId, Object shardKey, List<String> statusList,
                                   boolean updatedByAscending, PageParam pageParam) {
-        return SyncModeScope.with {
-            return orderRepository.getByStatus(dataCenterId, shardKey, statusList, updatedByAscending, pageParam).syncGet();
-        }
+        return orderRepository.getByStatus(dataCenterId, shardKey, statusList, updatedByAscending, pageParam).get();
     }
 
     @Override
     OrderEvent createOrderEvent(OrderEvent event) {
-        return SyncModeScope.with {
-            return orderEventRepository.create(event).syncGet();
-        }
+        return orderEventRepository.create(event).get();
     }
 
     @Override
     FulfillmentHistory createFulfillmentHistory(FulfillmentHistory event) {
-        return SyncModeScope.with {
-            return fulfillmentHistoryRepository.create(event).syncGet();
-        }
+        return fulfillmentHistoryRepository.create(event).get();
     }
 
     @Override
     BillingHistory createBillingHistory(Long orderId, BillingHistory history) {
-        return SyncModeScope.with {
-            history.setOrderId(orderId);
-            return billingHistoryRepository.create(history).syncGet();
-        }
+        history.setOrderId(orderId);
+        return billingHistoryRepository.create(history).get();
     }
 
     @Override
     List<OrderItem> getOrderItems(Long orderId) {
-        return SyncModeScope.with {
-            def orderItems = orderItemRepository.getByOrderId(orderId).syncGet()
-            orderItems?.collect() { OrderItem item ->
-                if (!CollectionUtils.isEmpty(item.orderItemRevisions)) {
-                    def latestItemRevision = item.orderItemRevisions.find() { OrderItemRevision itemRevision ->
-                        itemRevision.id == item.latestOrderItemRevisionId
-                    }
-                    assert (latestItemRevision != null)
-                    fillOrderItemWithRevision(item, latestItemRevision)
-                }
-            }
-            return orderItems
-        }
-    }
-
-    @Override
-    OrderItem getOrderItem(Long orderItemId) {
-        return SyncModeScope.with {
-            def item = orderItemRepository.get(new OrderItemId(orderItemId)).syncGet()
+        def orderItems = orderItemRepository.getByOrderId(orderId).get()
+        orderItems?.collect() { OrderItem item ->
             if (!CollectionUtils.isEmpty(item.orderItemRevisions)) {
                 def latestItemRevision = item.orderItemRevisions.find() { OrderItemRevision itemRevision ->
                     itemRevision.id == item.latestOrderItemRevisionId
@@ -212,111 +180,110 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
                 assert (latestItemRevision != null)
                 fillOrderItemWithRevision(item, latestItemRevision)
             }
-            return item
         }
+        return orderItems
+    }
+
+    @Override
+    OrderItem getOrderItem(Long orderItemId) {
+        def item = orderItemRepository.get(new OrderItemId(orderItemId)).get()
+        if (!CollectionUtils.isEmpty(item.orderItemRevisions)) {
+            def latestItemRevision = item.orderItemRevisions.find() { OrderItemRevision itemRevision ->
+                itemRevision.id == item.latestOrderItemRevisionId
+            }
+            assert (latestItemRevision != null)
+            fillOrderItemWithRevision(item, latestItemRevision)
+        }
+        return item
     }
 
     @Override
     List<Discount> getDiscounts(Long orderId) {
-        return SyncModeScope.with {
-            return discountRepository.getByOrderId(orderId).syncGet();
-        }
+        return discountRepository.getByOrderId(orderId).get();
     }
 
     @Override
     List<OrderEvent> getOrderEvents(Long orderId, PageParam pageParam) {
-        return SyncModeScope.with {
-            return orderEventRepository.getByOrderId(orderId, pageParam).syncGet();
-        }
+        return orderEventRepository.getByOrderId(orderId, pageParam).get();
     }
 
     @Override
     List<PreorderInfo> getPreorderInfo(Long orderItemId) {
-        return SyncModeScope.with {
-            return preorderInfoRepository.getByOrderItemId(orderItemId).syncGet();
-        }
+        return preorderInfoRepository.getByOrderItemId(orderItemId).get();
     }
 
     @Override
     List<BillingHistory> getBillingHistories(Long orderId) {
-        return SyncModeScope.with {
-            return billingHistoryRepository.getByOrderId(orderId).syncGet();
-        }
+        return billingHistoryRepository.getByOrderId(orderId).get();
     }
 
     @Override
     List<FulfillmentHistory> getFulfillmentHistories(Long orderItemId) {
-        return SyncModeScope.with {
-            return fulfillmentHistoryRepository.getByOrderItemId(orderItemId).syncGet();
-        }
+        return fulfillmentHistoryRepository.getByOrderItemId(orderItemId).get();
     }
 
     private Promise<Void> saveOrderItems(OrderId orderId, List<OrderItem> orderItems,
                                          Boolean nonTentative, OrderItemRevisionType revisionType) {
-        return SyncModeScope.with {
-            def repositoryFuncSet = new RepositoryFuncSet()
-            orderItems.each { OrderItem item ->
-                item.orderId = orderId
-            }
-            repositoryFuncSet.create = { OrderItem item ->
-                orderItemRepository.create(item).syncGet()
-            }
-            repositoryFuncSet.update = { OrderItem newItem, OrderItem oldItem ->
-                if (nonTentative) {
-                    assert (revisionType != null)
-                    def revision = toOrderItemRevision(newItem, revisionType)
-                    oldItem.latestOrderItemRevisionId = revision.getId()
-                    oldItem.orderItemRevisions.add(revision)
-                    orderItemRepository.update(oldItem).syncGet()
-                } else {
-                    newItem.id = oldItem.getId()
-                    newItem.createdBy = oldItem.createdBy
-                    newItem.createdTime = oldItem.createdTime
-                    orderItemRepository.update(newItem).syncGet()
-                }
-                return true
-            }
-            repositoryFuncSet.delete = { OrderItem item ->
-                orderItemRepository.delete(item.getId()).syncGet()
-                return true
-            }
-            def keyFunc = { OrderItem item ->
-                return item.offer
-            }
-            Utils.updateListTypeField(orderItems, getOrderItems(orderId.value), repositoryFuncSet, keyFunc, 'orderItems')
-
-            return Promise.pure(null)
+        def repositoryFuncSet = new RepositoryFuncSet()
+        orderItems.each { OrderItem item ->
+            item.orderId = orderId
         }
+        repositoryFuncSet.create = { OrderItem item ->
+            orderItemRepository.create(item).get()
+        }
+        repositoryFuncSet.update = { OrderItem newItem, OrderItem oldItem ->
+            if (nonTentative) {
+                assert (revisionType != null)
+                def revision = toOrderItemRevision(newItem, revisionType)
+                oldItem.latestOrderItemRevisionId = revision.getId()
+                oldItem.orderItemRevisions.add(revision)
+                orderItemRepository.update(oldItem).get()
+            } else {
+                newItem.id = oldItem.getId()
+                newItem.createdBy = oldItem.createdBy
+                newItem.createdTime = oldItem.createdTime
+                orderItemRepository.update(newItem).get()
+            }
+            return true
+        }
+        repositoryFuncSet.delete = { OrderItem item ->
+            orderItemRepository.delete(item.getId()).get()
+            return true
+        }
+        def keyFunc = { OrderItem item ->
+            return item.offer
+        }
+        Utils.updateListTypeField(orderItems, getOrderItems(orderId.value), repositoryFuncSet, keyFunc, 'orderItems')
+
+        return Promise.pure(null)
     }
 
     Promise<Void> saveDiscounts(OrderId orderId, List<Discount> discounts) {
-        return SyncModeScope.with {
-            def repositoryFuncSet = new RepositoryFuncSet()
-            discounts.each { Discount discount ->
-                discount.orderId = orderId
-                if (discount.ownerOrderItem != null) {
-                    discount.orderItemId = discount.ownerOrderItem.getId()
-                }
+        def repositoryFuncSet = new RepositoryFuncSet()
+        discounts.each { Discount discount ->
+            discount.orderId = orderId
+            if (discount.ownerOrderItem != null) {
+                discount.orderItemId = discount.ownerOrderItem.getId()
             }
-            repositoryFuncSet.create = { Discount discount ->
-                discountRepository.create(discount).syncGet()
-            }
-            repositoryFuncSet.update = { Discount newDiscount, Discount oldDiscount ->
-                newDiscount.id = oldDiscount.getId()
-                discountRepository.update(newDiscount).syncGet()
-                return true
-            }
-            repositoryFuncSet.delete = { Discount discount ->
-                discountRepository.delete(discount.getId()).syncGet()
-                return true
-            }
-            def keyFunc = { Discount discount ->
-                return [discount.orderId, discount.orderItemId]
-            }
-            Utils.updateListTypeField(discounts, getDiscounts(orderId.value), repositoryFuncSet, keyFunc, 'discounts')
-
-            return Promise.pure(null)
         }
+        repositoryFuncSet.create = { Discount discount ->
+            discountRepository.create(discount).get()
+        }
+        repositoryFuncSet.update = { Discount newDiscount, Discount oldDiscount ->
+            newDiscount.id = oldDiscount.getId()
+            discountRepository.update(newDiscount).get()
+            return true
+        }
+        repositoryFuncSet.delete = { Discount discount ->
+            discountRepository.delete(discount.getId()).get()
+            return true
+        }
+        def keyFunc = { Discount discount ->
+            return [discount.orderId, discount.orderItemId]
+        }
+        Utils.updateListTypeField(discounts, getDiscounts(orderId.value), repositoryFuncSet, keyFunc, 'discounts')
+
+        return Promise.pure(null)
     }
 
     private Order fillOrderWithRevision(Order order, OrderRevision revision) {

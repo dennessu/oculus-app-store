@@ -17,4 +17,5 @@ dependencies {
     compile junboProject(':email-rest')
     compile junboProject(':identity-rest')
     compile junboProject(':crypto-rest')
+    compile junboProject(':apphost-core')
 }

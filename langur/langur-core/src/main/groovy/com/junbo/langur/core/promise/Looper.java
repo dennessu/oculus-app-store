@@ -1,10 +1,14 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 package com.junbo.langur.core.promise;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -12,8 +16,6 @@ import java.util.concurrent.locks.ReentrantLock;
  * Created by Shenhua on 7/15/2014.
  */
 public class Looper {
-    private static final Logger logger = LoggerFactory.getLogger(Looper.class);
-
     private static final ThreadLocal<Looper> current = new ThreadLocal<Looper>() {
         @Override
         protected Looper initialValue() {
@@ -23,11 +25,8 @@ public class Looper {
 
     public static Looper current() {
         Looper looper = current.get();
-
-        logger.info("Looper.current(): " + looper);
         return looper;
     }
-
 
     private final ReentrantLock lock;
 
@@ -47,7 +46,6 @@ public class Looper {
         try {
             startId++;
 
-            logger.warn("Looper start: " + startId);
             return startId;
         } finally {
             lock.unlock();
@@ -64,8 +62,6 @@ public class Looper {
 
             this.startId--;
             notEmpty.signal();
-
-            logger.warn("Looper stop: " + this.startId);
         } finally {
             lock.unlock();
         }
@@ -83,11 +79,9 @@ public class Looper {
             notEmpty.signal();
 
             if (startId == 0) {
-                logger.warn("Looper offerRunnable: " + this.startId + ". false");
                 return false;
             }
 
-            logger.warn("Looper offerRunnable: " + this.startId + ". true");
             return true;
         } finally {
             lock.unlock();
@@ -100,11 +94,14 @@ public class Looper {
 
         lock.lock();
         try {
-
-            logger.warn("Looper poolRunnable: " + startId + ". this.startId: " + this.startId);
-
             while (this.startId == startId && this.runnable == null) {
-                notEmpty.awaitUninterruptibly();
+                try {
+                    if (!notEmpty.await(30, TimeUnit.SECONDS)) {
+                        throw new RuntimeException("Timeout during poolRunnable");
+                    }
+                } catch (InterruptedException ignored) {
+                    throw new RuntimeException(ignored);
+                }
             }
 
             if (this.startId > startId) {
@@ -130,7 +127,6 @@ public class Looper {
                 break;
             }
 
-            logger.info("found one runnable: " + runnable);
             runnable.run();
         }
     }

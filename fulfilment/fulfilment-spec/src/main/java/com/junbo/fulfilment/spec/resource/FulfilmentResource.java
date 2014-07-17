@@ -23,7 +23,7 @@ import javax.ws.rs.core.MediaType;
 @Path("/fulfilments")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@RestResource(sync = true)
+@RestResource
 @InProcessCallable
 public interface FulfilmentResource {
     @POST

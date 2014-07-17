@@ -1,8 +1,8 @@
 package com.junbo.order.clientproxy
+
 import com.google.common.util.concurrent.ListeningExecutorService
 import com.google.common.util.concurrent.MoreExecutors
 import com.junbo.billing.spec.model.Balance
-import com.junbo.langur.core.promise.ExecutorContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.billing.impl.BillingFacadeAsyncImpl
 import com.junbo.order.mock.MockBalanceResource
@@ -13,6 +13,7 @@ import org.testng.annotations.Test
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.Semaphore
+
 /**
  * Created by fzhang on 4/24/2014.
  */
@@ -21,15 +22,12 @@ class BillingFacadeAsyncTest extends BaseTest {
     private BillingFacadeAsyncImpl billingFacadeAsync = new BillingFacadeAsyncImpl()
 
     private Semaphore semaphore = new Semaphore(0)
-    private boolean oldAsyncMode
 
     ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(20));
 
     @BeforeMethod
     @SuppressWarnings("deprecation")
     void setUp() {
-        oldAsyncMode = ExecutorContext.isAsyncMode()
-        ExecutorContext.setAsyncMode(true);
         billingFacadeAsync.balanceResource = new MockBalanceResource() {
             @Override
             Promise<Balance> postBalance(Balance balance) {
@@ -47,7 +45,7 @@ class BillingFacadeAsyncTest extends BaseTest {
 
     @AfterMethod
     void cleanUp() {
-        ExecutorContext.resetAsyncMode()
+
     }
 
     @Test
@@ -60,7 +58,7 @@ class BillingFacadeAsyncTest extends BaseTest {
         semaphore.release(15)
 
         for (int i = 0;i < 15; ++i) {
-            Balance result = balanceList[i].testGet()
+            Balance result = balanceList[i].get()
             if (i < 10) {
                 assert !result.isAsyncCharge
             } else {
@@ -88,7 +86,7 @@ class BillingFacadeAsyncTest extends BaseTest {
 
         for (flag = 0; flag < 15; ++flag) {
             try {
-                billingFacadeAsync.createBalance(new Balance()).testGet()
+                billingFacadeAsync.createBalance(new Balance()).get()
                 assert false
             } catch (RuntimeException) {
             }

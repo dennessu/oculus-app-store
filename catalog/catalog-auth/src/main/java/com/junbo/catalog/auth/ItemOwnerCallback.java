@@ -30,7 +30,7 @@ public class ItemOwnerCallback implements OwnerCallback {
     @Override
     public OrganizationId getOrganizationOwnerId(UniversalId resourceId) {
         assert resourceId instanceof ItemId : "resourceId is not an ItemId";
-        Item item = itemResource.getItem(((ItemId) resourceId).getValue()).syncGet();
+        Item item = itemResource.getItem(((ItemId) resourceId).getValue()).get();
         return item.getOwnerId();
     }
 }

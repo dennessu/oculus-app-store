@@ -26,7 +26,7 @@ public class PriceTierRepositoryImpl extends CloudantClient<PriceTier> implement
     }
 
     public List<PriceTier> getPriceTiers(int start, int size) {
-        return queryView("by_tierId", null, size, start, true).syncGet();
+        return queryView("by_tierId", null, size, start, true).get();
     }
 
     public PriceTier update(PriceTier priceTier) {

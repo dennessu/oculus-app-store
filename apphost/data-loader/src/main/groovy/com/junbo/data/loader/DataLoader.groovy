@@ -7,19 +7,19 @@ package com.junbo.data.loader
 
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.util.ContextInitializer
+import com.junbo.apphost.core.JunboApplication
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeServiceImpl
 import com.junbo.data.handler.DataHandler
-import com.junbo.langur.core.promise.SyncModeScope
 import groovy.transform.CompileStatic
 import org.apache.commons.io.IOUtils
+import org.glassfish.grizzly.threadpool.JunboThreadPool
 import org.slf4j.ILoggerFactory
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.slf4j.impl.StaticLoggerBinder
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.context.ApplicationContext
-import org.springframework.context.support.ClassPathXmlApplicationContext
 import org.springframework.core.io.Resource
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.util.CollectionUtils
@@ -39,13 +39,23 @@ class DataLoader {
     static void main(String[] args) {
         configLog()
         LOGGER.info("loading spring context start")
-        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath*:/spring/*-context.xml",
-                "classpath*:/spring/validators.xml", "classpath*:/spring/transaction.xml", "classpath*:/spring/flow/*.xml")
+        ApplicationContext applicationContext = new JunboApplication.JunboApplicationContext(
+                ["classpath*:/spring/*-context.xml",
+                 "classpath*:/spring/validators.xml",
+                 "classpath*:/spring/transaction.xml",
+                 "classpath*:/spring/flow/*.xml"] as String[], true)
+
         LOGGER.info("loading spring context end")
 
         AuthorizeServiceImpl authorizeService = applicationContext.getBean(AuthorizeServiceImpl)
         authorizeService.setDisabled(true)
         AuthorizeContext.setAuthorizeDisabled(true)
+
+        JunboThreadPool junboThreadPool = applicationContext.getBean("junboThreadPool", JunboThreadPool)
+        // in order to eagerly initialize the thread pool
+        if (junboThreadPool == null) {
+            throw new IllegalStateException("junboThreadPool is null");
+        }
 
         if (args.length == 0 || args[0].equalsIgnoreCase("all")) {
             LOGGER.info("loading all data")
@@ -87,10 +97,9 @@ class DataLoader {
 
                 for (Resource resource : resources) {
                     if (handler != null) {
+                        LOGGER.info("handling resource: " + resource.filename)
                         String content = IOUtils.toString(resource.URI)
-                        SyncModeScope.with {
-                            handler.handle(content)
-                        }
+                        handler.handle(content)
                     } else {
                         LOGGER.error("no handler for $data")
                         exit()

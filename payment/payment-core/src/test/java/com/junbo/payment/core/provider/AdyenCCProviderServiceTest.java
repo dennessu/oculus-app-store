@@ -48,7 +48,7 @@ public class AdyenCCProviderServiceTest  extends BaseTest {
         //AccountNumber is the js encrypted value for card : 4111111111111111, 737, 2016-06request.setAccountNum("adyenjs_0_1_4$ETMz9n0SL1qOEVhAdvR5EMCqInhdy3oaz67zu1A5RAOhQU8XXbVSl7YfAUkFhJtRb8r5xL6PyFWGRYzY8y7vvqfSEuYz4N1zLykXUJJPTyB+3YSktR+gMevky2OATe1mvJFfMu3hfhSz7oMPgEW7VTDOU5E/FbYTZSNImTiZUoiHFMuIj2h1uk3L2jq6E3OBWPWynmnD1t7A8A6M/RJN/RlDT+YKzt4Bi/LQP11YmG9V+L8vSGX5Um0EnI3h2XIwYEUwI94f9yn3IDEPdM/GULefxwBsz/1mELJAt0jzelKN8FLhgnjvgZL2gZAEdbsfhaprWqLq6KhPIJ82G6Ncww==$qIS/ZEhUhtLuDgXRU6iuIul/zSdQg8mcvQiV2RkOSl2oFkqM6Rs34gbBZc1QKN8EbjNLxWqmwG9OMJfz8EaDGttEOkCGThuljE8Z+co+pqydtNaHmGBbKDHa3JkdfSHJBYMyx6G+c7JMMvNkQ2F1cG+XjwqCM1mMC13gIcg7I5Rc6tzd4x+uWgYaIFrpEnyPZyN7KWFJ0UczfO1BOQzQL7dMzPlE/y6T");
         request.setAccountNum(encrypteData);
         PaymentInstrument result = null;
-        result = mockAdyenPIService.add(request).testGet();
+        result = mockAdyenPIService.add(request).get();
         Assert.assertNotNull(result.getExternalToken());
     }
 
@@ -61,7 +61,7 @@ public class AdyenCCProviderServiceTest  extends BaseTest {
         //AccountNumber is the js encrypted value for card : 4111111111111111, 737, 2016-06
         request.setAccountNum("adyenjs_0_1_4$F7wAyg3KGFWTZx49/JEqbhJfUtHW6pGzgpQuVcXKS0imvTVY7YJMO7tRi7ABYpwCGo8b9pvRcg7139vJOpDxqDKAXtKSU4G6PdI6MPFsHzaBaslGUvOZ4X1W+jwjruHizk/9O5a1sn8kE976g4ulhrrjJbf6DKI95UMmE6zGd7Osq//NbTnZGAELlBUpiv7qHCDQUay59uiJ/Missgr9ZYZfZPOMePc1y6bIE4754rfsQwycRY1czD9nG74vgRYHVplung0pJzNnd6EnYkji4j0yc/ZPfkOHpnJ9e0IBpE3U1Ijvm8TQiF19kmjqcPqh0j+UNysKyl1rp2c3nwqNtg==$jT6Yj594M+XkdUvZa9d/2QCDI8d+KYy7uCEFdpKiGZtTO0R54dBjr8G4oHKpL3XTU6gQqv/NMNpM47etpJbtxURQ6WAgtzpLLvf06Gfl7R443uNCRKlbMsEwwwUTA+WwNWhriKLXRH/t");
         PaymentInstrument result = null;
-        result = mockAdyenPIService.add(request).testGet();
+        result = mockAdyenPIService.add(request).get();
         Assert.assertNotNull(result.getExternalToken());
 
         PaymentTransaction payment = new PaymentTransaction();
@@ -75,11 +75,11 @@ public class AdyenCCProviderServiceTest  extends BaseTest {
                 setAmount(new BigDecimal("12.34"));
             }
         });
-        PaymentTransaction autResult = mockAdyenPaymentService.authorize(payment).testGet();
+        PaymentTransaction autResult = mockAdyenPaymentService.authorize(payment).get();
         Assert.assertNotNull(autResult.getExternalToken());
         Assert.assertEquals(autResult.getStatus(), PaymentStatus.AUTHORIZED.toString());
 
-        PaymentTransaction capResult = mockAdyenPaymentService.capture(autResult.getId(), payment).testGet();
+        PaymentTransaction capResult = mockAdyenPaymentService.capture(autResult.getId(), payment).get();
         Assert.assertEquals(capResult.getStatus(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
     }
 
@@ -92,7 +92,7 @@ public class AdyenCCProviderServiceTest  extends BaseTest {
         //AccountNumber is the js encrypted value for card : 4111111111111111, 737, 2016-06
         request.setAccountNum("adyenjs_0_1_4$F7wAyg3KGFWTZx49/JEqbhJfUtHW6pGzgpQuVcXKS0imvTVY7YJMO7tRi7ABYpwCGo8b9pvRcg7139vJOpDxqDKAXtKSU4G6PdI6MPFsHzaBaslGUvOZ4X1W+jwjruHizk/9O5a1sn8kE976g4ulhrrjJbf6DKI95UMmE6zGd7Osq//NbTnZGAELlBUpiv7qHCDQUay59uiJ/Missgr9ZYZfZPOMePc1y6bIE4754rfsQwycRY1czD9nG74vgRYHVplung0pJzNnd6EnYkji4j0yc/ZPfkOHpnJ9e0IBpE3U1Ijvm8TQiF19kmjqcPqh0j+UNysKyl1rp2c3nwqNtg==$jT6Yj594M+XkdUvZa9d/2QCDI8d+KYy7uCEFdpKiGZtTO0R54dBjr8G4oHKpL3XTU6gQqv/NMNpM47etpJbtxURQ6WAgtzpLLvf06Gfl7R443uNCRKlbMsEwwwUTA+WwNWhriKLXRH/t");
         PaymentInstrument result = null;
-        result = mockAdyenPIService.add(request).testGet();
+        result = mockAdyenPIService.add(request).get();
         Assert.assertNotNull(result.getExternalToken());
 
         PaymentTransaction payment = new PaymentTransaction();
@@ -106,11 +106,11 @@ public class AdyenCCProviderServiceTest  extends BaseTest {
                 setAmount(new BigDecimal(1500.00));
             }
         });
-        PaymentTransaction autResult = mockAdyenPaymentService.charge(payment).testGet();
+        PaymentTransaction autResult = mockAdyenPaymentService.charge(payment).get();
         Assert.assertNotNull(autResult.getExternalToken());
         Assert.assertEquals(autResult.getStatus(), PaymentStatus.SETTLEMENT_SUBMITTED.toString());
         payment.setChargeInfo(null);
-        PaymentTransaction cancelResult = mockAdyenPaymentService.reverse(autResult.getId(), payment).testGet();
+        PaymentTransaction cancelResult = mockAdyenPaymentService.reverse(autResult.getId(), payment).get();
         Assert.assertEquals(cancelResult.getStatus(), PaymentStatus.REVERSED.toString());
     }
 }

@@ -49,7 +49,7 @@ public class MegaGatewayImpl implements MegaGateway {
     @Override
     public String createOffer(Offer offer) {
         try {
-            return offerResource.create(offer).testGet().getOfferId();
+            return offerResource.create(offer).get().getOfferId();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -58,7 +58,7 @@ public class MegaGatewayImpl implements MegaGateway {
     @Override
     public String createItem(Item item) {
         try {
-            return itemResource.create(item).testGet().getItemId();
+            return itemResource.create(item).get().getItemId();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -67,7 +67,7 @@ public class MegaGatewayImpl implements MegaGateway {
     @Override
     public String createOfferRevision(OfferRevision offerRevision) {
         try {
-            return offerRevisionResource.createOfferRevision(offerRevision).testGet().getRevisionId();
+            return offerRevisionResource.createOfferRevision(offerRevision).get().getRevisionId();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -76,7 +76,7 @@ public class MegaGatewayImpl implements MegaGateway {
     @Override
     public String createItemRevision(ItemRevision itemRevision) {
         try {
-            return itemRevisionResource.createItemRevision(itemRevision).testGet().getRevisionId();
+            return itemRevisionResource.createItemRevision(itemRevision).get().getRevisionId();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -85,7 +85,7 @@ public class MegaGatewayImpl implements MegaGateway {
     @Override
     public OfferRevision getOfferRevision(String offerRevisionId) {
         try {
-            return offerRevisionResource.getOfferRevision(offerRevisionId, new OfferRevisionGetOptions()).testGet();
+            return offerRevisionResource.getOfferRevision(offerRevisionId, new OfferRevisionGetOptions()).get();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -94,7 +94,7 @@ public class MegaGatewayImpl implements MegaGateway {
     @Override
     public ItemRevision getItemRevision(String itemRevisionId) {
         try {
-            return itemRevisionResource.getItemRevision(itemRevisionId, new ItemRevisionGetOptions()).testGet();
+            return itemRevisionResource.getItemRevision(itemRevisionId, new ItemRevisionGetOptions()).get();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -105,7 +105,7 @@ public class MegaGatewayImpl implements MegaGateway {
         try {
             return offerRevisionResource.updateOfferRevision(
                     offerRevision.getRevisionId(),
-                    offerRevision).testGet().getRevisionId();
+                    offerRevision).get().getRevisionId();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -116,7 +116,7 @@ public class MegaGatewayImpl implements MegaGateway {
         try {
             return itemRevisionResource.updateItemRevision(
                     itemRevision.getRevisionId(),
-                    itemRevision).testGet().getRevisionId();
+                    itemRevision).get().getRevisionId();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -125,7 +125,7 @@ public class MegaGatewayImpl implements MegaGateway {
     @Override
     public Entitlement getEntitlement(String entitlementId) {
         try {
-            return entitlementResource.getEntitlement(new EntitlementId(entitlementId)).testGet();
+            return entitlementResource.getEntitlement(new EntitlementId(entitlementId)).get();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Entitlement] component service.", e);
         }

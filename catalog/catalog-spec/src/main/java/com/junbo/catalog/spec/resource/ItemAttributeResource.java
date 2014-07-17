@@ -10,6 +10,7 @@ import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.attribute.ItemAttributesGetOptions;
 import com.junbo.common.filter.annotations.CacheMaxAge;
 import com.junbo.common.model.Results;
+import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -27,7 +28,8 @@ import java.util.concurrent.TimeUnit;
 @Path("item-attributes")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@RestResource(sync = true)
+@RestResource
+@InProcessCallable
 public interface ItemAttributeResource {
     @CacheMaxAge(duration = 30, unit = TimeUnit.MINUTES)
     @ApiOperation("Get an item attribute")

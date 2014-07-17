@@ -31,7 +31,7 @@ class EmailProviderTest extends BaseTest {
 
     @Test(enabled = false)
     void testSendEmail() {
-        def ret = emailProvider.sendEmail(email, template).testGet()
+        def ret = emailProvider.sendEmail(email, template).get()
         assert ret != null
         assert ret.status == 'FAILED'
     }

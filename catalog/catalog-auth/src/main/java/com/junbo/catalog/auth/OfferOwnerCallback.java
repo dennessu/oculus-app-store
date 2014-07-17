@@ -30,7 +30,7 @@ public class OfferOwnerCallback implements OwnerCallback {
     @Override
     public OrganizationId getOrganizationOwnerId(UniversalId resourceId) {
         assert resourceId instanceof OfferId : "resourceId is not an OfferId";
-        Offer offer = offerResource.getOffer(((OfferId) resourceId).getValue()).syncGet();
+        Offer offer = offerResource.getOffer(((OfferId) resourceId).getValue()).get();
         return offer.getOwnerId();
     }
 }

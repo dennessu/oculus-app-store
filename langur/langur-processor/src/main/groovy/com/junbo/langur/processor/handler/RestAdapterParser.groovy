@@ -43,8 +43,6 @@ class RestAdapterParser implements RestResourceHandler {
                     !annotation.startsWith('@com.wordnik.swagger.annotations')
         }.toList()
 
-        def isSync = mapperType.getAnnotation(RestResource).sync()
-
         restAdapter.restMethods = []
         ElementFilter.methodsIn(elementUtils.getAllMembers(mapperType)).each {
             ExecutableElement executableElement ->
@@ -88,7 +86,6 @@ class RestAdapterParser implements RestResourceHandler {
 
                 def routeBy = executableElement.getAnnotation(RouteBy)
                 restMethod.routeParamExprs = Arrays.asList(routeBy?.value() ?: new String[0])
-                restMethod.isSync = isSync
 
                 restAdapter.restMethods.add(restMethod)
         }

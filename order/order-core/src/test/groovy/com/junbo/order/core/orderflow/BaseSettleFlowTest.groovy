@@ -24,7 +24,7 @@ class BaseSettleFlowTest {
         }
         context.order = new Order()
         context.order.orderItems = []
-        //mockFlow(orderItems).execute(context).testGet()
+        //mockFlow(orderItems).execute(context).get()
         assert context.order.orderItems.size() == orderItems.size()
         for (int i = 0; i < orderItems.size(); ++i) {
             assert context.order.orderItems[i].is(orderItems[i])

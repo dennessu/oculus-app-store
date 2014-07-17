@@ -56,7 +56,7 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
             }
         } else if (!StringUtils.isEmpty(options.getQuery())) {
             CloudantSearchResult<Offer> searchResult =
-                    search("search", options.getQuery(), options.getValidSize(), options.getBookmark()).syncGet();
+                    search("search", options.getQuery(), options.getValidSize(), options.getBookmark()).get();
             offers = searchResult.getResults();
             options.setNextBookmark(searchResult.getBookmark());
             options.setStart(null);
@@ -78,12 +78,12 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
                 sb.append("ownerId:'").append(options.getOwnerId().getValue()).append("'");
             }
             CloudantSearchResult<Offer> searchResult =
-                    search("search", sb.toString(), options.getValidSize(), options.getBookmark()).syncGet();
+                    search("search", sb.toString(), options.getValidSize(), options.getBookmark()).get();
             offers = searchResult.getResults();
             options.setNextBookmark(searchResult.getBookmark());
             options.setStart(null);
         } else {
-            offers = queryView("by_offerId", null, options.getValidSize(), options.getValidStart(), false).syncGet();
+            offers = queryView("by_offerId", null, options.getValidSize(), options.getValidStart(), false).get();
             options.setNextBookmark(null);
         }
 

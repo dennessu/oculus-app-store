@@ -24,6 +24,6 @@ class GroupAuthorizeCallbackFactory extends AbstractAuthorizeCallbackFactory<Gro
     }
 
     AuthorizeCallback<Group> create(GroupId groupId) {
-        return create(Promise.get { groupResource.get(groupId, new GroupGetOptions()) })
+        return create(groupResource.get(groupId, new GroupGetOptions()).get())
     }
 }

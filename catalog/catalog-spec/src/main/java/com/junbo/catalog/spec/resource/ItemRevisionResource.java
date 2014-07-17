@@ -11,6 +11,7 @@ import com.junbo.catalog.spec.model.item.ItemRevisionGetOptions;
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
 import com.junbo.common.filter.annotations.CacheMaxAge;
 import com.junbo.common.model.Results;
+import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -28,7 +29,8 @@ import java.util.concurrent.TimeUnit;
 @Path("item-revisions")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@RestResource(sync = true)
+@RestResource
+@InProcessCallable
 public interface ItemRevisionResource {
     @CacheMaxAge(duration = 5, unit = TimeUnit.MINUTES)
     @ApiOperation("Get or search item revisions")

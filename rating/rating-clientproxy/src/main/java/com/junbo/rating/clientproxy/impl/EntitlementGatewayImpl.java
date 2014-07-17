@@ -12,7 +12,6 @@ import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
 import com.junbo.entitlement.spec.resource.EntitlementResource;
-import com.junbo.langur.core.promise.SyncModeScope;
 import com.junbo.rating.clientproxy.EntitlementGateway;
 import com.junbo.rating.common.util.Constants;
 import com.junbo.rating.spec.error.AppErrors;
@@ -38,42 +37,41 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
 
     @Override
     public Set<String> getEntitlements(Long userId, Set<String> itemIds) {
-        try (SyncModeScope scope = new SyncModeScope()) {
-            Set<ItemId> items = new HashSet<>();
-            for (String itemId : itemIds) {
-                items.add(new ItemId(itemId));
-            }
-            EntitlementSearchParam param = new EntitlementSearchParam();
-            param.setUserId(new UserId(userId));
-            param.setItemIds(items);
-
-            PageMetadata pagingOption = new PageMetadata();
-            pagingOption.setStart(Constants.DEFAULT_PAGE_START);
-            pagingOption.setCount(Constants.DEFAULT_PAGE_SIZE);
-
-            Set<String> result = new HashSet<>();
-            while (true) {
-                List<Entitlement> entitlements = new ArrayList<Entitlement>();
-                try {
-                    entitlements.addAll(
-                            entitlementResource.searchEntitlements(
-                                    param, pagingOption).syncGet().getItems());
-                } catch (Exception e) {
-                    LOGGER.error("Error occurred during calling [Entitlement] component.", e);
-                    throw AppErrors.INSTANCE.entitlementGatewayError().exception();
-                }
-
-                for (Entitlement entitlement : entitlements) {
-                    result.add(entitlement.getItemId());
-                }
-
-                pagingOption.setStart(pagingOption.getStart() + Constants.DEFAULT_PAGE_SIZE);
-                if (entitlements.size() < Constants.DEFAULT_PAGE_SIZE) {
-                    break;
-                }
-            }
-
-            return result;
+        Set<ItemId> items = new HashSet<>();
+        for (String itemId : itemIds) {
+            items.add(new ItemId(itemId));
         }
+        EntitlementSearchParam param = new EntitlementSearchParam();
+        param.setUserId(new UserId(userId));
+        param.setItemIds(items);
+
+        PageMetadata pagingOption = new PageMetadata();
+        pagingOption.setStart(Constants.DEFAULT_PAGE_START);
+        pagingOption.setCount(Constants.DEFAULT_PAGE_SIZE);
+
+        Set<String> result = new HashSet<>();
+        while (true) {
+            List<Entitlement> entitlements = new ArrayList<Entitlement>();
+            try {
+                entitlements.addAll(
+                        entitlementResource.searchEntitlements(
+                                param, pagingOption).get().getItems()
+                );
+            } catch (Exception e) {
+                LOGGER.error("Error occurred during calling [Entitlement] component.", e);
+                throw AppErrors.INSTANCE.entitlementGatewayError().exception();
+            }
+
+            for (Entitlement entitlement : entitlements) {
+                result.add(entitlement.getItemId());
+            }
+
+            pagingOption.setStart(pagingOption.getStart() + Constants.DEFAULT_PAGE_SIZE);
+            if (entitlements.size() < Constants.DEFAULT_PAGE_SIZE) {
+                break;
+            }
+        }
+
+        return result;
     }
 }

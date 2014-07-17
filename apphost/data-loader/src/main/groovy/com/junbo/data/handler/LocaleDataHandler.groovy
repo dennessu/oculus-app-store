@@ -95,7 +95,7 @@ class LocaleDataHandler extends BaseDataHandler {
 
         Locale existing = null
         try {
-            existing = localeResource.get(new LocaleId(locale.localeCode), new LocaleGetOptions()).syncGet()
+            existing = localeResource.get(new LocaleId(locale.localeCode), new LocaleGetOptions()).get()
         } catch (AppErrorException e) {
             logger.debug('This content does not exist in current database', e)
         }
@@ -106,7 +106,7 @@ class LocaleDataHandler extends BaseDataHandler {
                 locale.id = (LocaleId) existing.id
                 locale.rev = existing.rev
                 try {
-                    localeResource.patch(locale.id as LocaleId, locale).syncGet()
+                    localeResource.patch(locale.id as LocaleId, locale).get()
                 } catch (Exception e) {
                     logger.error("Error updating locale $locale.localeName", e)
                 }
@@ -116,7 +116,7 @@ class LocaleDataHandler extends BaseDataHandler {
         } else {
             logger.debug('Create new locale with this content')
             try {
-                localeResource.create(locale).syncGet()
+                localeResource.create(locale).get()
             } catch (Exception e) {
                 logger.error("Error creating locale $locale.localeName", e)
             }

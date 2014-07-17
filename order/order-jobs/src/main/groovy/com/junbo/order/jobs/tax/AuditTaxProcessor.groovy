@@ -23,7 +23,7 @@ class AuditTaxProcessor implements OrderProcessor {
     @Override
     OrderProcessResult process(Order order) {
         assert order.status == OrderStatus.COMPLETED.name()
-        def auditedOrder = Promise.get { orderInternalService.auditTax(order) }
+        def auditedOrder = orderInternalService.auditTax(order).get()
         return new OrderProcessResult(success: OrderStatus.AUDITED.name() == auditedOrder.status)
     }
 }

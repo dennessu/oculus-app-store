@@ -91,7 +91,7 @@ class FulfillmentActionTest extends BaseTest{
             return null
         }.syncThen {
             return null
-        }.testGet()
+        }.get()
         assert recovered
         EasyMock.verify(fulfillmentAction.facadeContainer.fulfillmentFacade, fulfillmentAction.orderRepository)
     }

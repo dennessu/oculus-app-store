@@ -11,5 +11,7 @@ dependencies {
     testCompile (libraries.spring_beans)
     testCompile (libraries.spring_context)
 
-    // testRuntime junboProject(':common-lib')
+    testRuntime (junboProject(':common-lib')) {
+        exclude group: 'com.junbo.langur', module: 'langur-core'
+    }
 }

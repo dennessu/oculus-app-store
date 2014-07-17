@@ -46,8 +46,6 @@ class ClientProxyParser implements RestResourceHandler {
         collectionType = elementUtils.getTypeElement(Collection.canonicalName).asType()
         collectionType = typeUtils.erasure(collectionType)
 
-        def isSync = mapperType.getAnnotation(RestResource).sync()
-
         def clientProxy = new ClientProxyModel()
         clientProxy.packageName = elementUtils.getPackageOf(mapperType).qualifiedName.toString() + '.proxy'
         clientProxy.className = mapperType.simpleName.toString() + 'ClientProxy'
@@ -97,8 +95,6 @@ class ClientProxyParser implements RestResourceHandler {
                 clientMethod.accepts = getAccepts(mapperType, executableElement)
 
                 clientMethod.inProcessCallable = getInProcessCallable(mapperType, executableElement)
-
-                clientMethod.isSync = isSync
 
                 clientProxy.clientMethods.add(clientMethod)
         }
@@ -180,10 +176,10 @@ class ClientProxyParser implements RestResourceHandler {
         }
 
         if (produces != null) {
-            return true
+            return !produces.disable();
         }
 
-        return false
+        return true
     }
 
     private static String parseInnerParamType(TypeMirror typeMirror) {

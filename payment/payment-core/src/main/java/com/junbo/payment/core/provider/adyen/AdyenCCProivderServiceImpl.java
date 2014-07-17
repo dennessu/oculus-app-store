@@ -63,13 +63,13 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
         return PromiseFacade.PAYMENT.decorate(new Callable<PaymentInstrument>() {
             @Override
             public PaymentInstrument call() throws Exception {
-                Address addressDetail = personalInfoFacade.getBillingAddress(request.getBillingAddressId()).syncGet();
+                Address addressDetail = personalInfoFacade.getBillingAddress(request.getBillingAddressId()).get();
                 if(addressDetail == null){
                     throw AppClientExceptions.INSTANCE.invalidBillingAddressId(request.getBillingAddressId().toString()).exception();
                 }
                 String defaultCountry = addressDetail.getCountry();
-                CurrencyId defaultCurrency = countryResource.getDefaultCurrency(defaultCountry).syncGet();
-                long minAuthAmount = currencyResource.getMinAuthAmount(defaultCurrency).syncGet();
+                CurrencyId defaultCurrency = countryResource.getDefaultCurrency(defaultCountry).get();
+                long minAuthAmount = currencyResource.getMinAuthAmount(defaultCurrency).get();
                 Long piId = null;
                 if(request.getId() == null){
                     piId = idGenerator.nextId(request.getUserId());
@@ -91,7 +91,7 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                 // Billing address
                 Address address = null;
                 if(request.getBillingAddressId() != null){
-                    address = personalInfoFacade.getBillingAddress(request.getBillingAddressId()).syncGet();
+                    address = personalInfoFacade.getBillingAddress(request.getBillingAddressId()).get();
                     address.setId(request.getBillingAddressId());
                 }
                 if(address != null){
@@ -116,7 +116,7 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                     headers.putSingle("Accept", "text/html");
                     ((AdyenApiClientProxy)adyenRestClient).setHeaders(headers);
                     StringBuffer sbReq = getRawRequest(defaultCurrency, minAuthAmount, piId, request, address);
-                    String restResponse = adyenRestClient.authorise(sbReq.toString()).syncGet();
+                    String restResponse = adyenRestClient.authorise(sbReq.toString()).get();
                     if(CommonUtil.isNullOrEmpty(restResponse)){
                         throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "no response").exception();
                     }
@@ -274,7 +274,7 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                 String currency = paymentRequest.getChargeInfo().getCurrency();
                 request.setModificationAmount(new Amount(currency,
                         paymentRequest.getChargeInfo().getAmount().multiply(
-                           new BigDecimal(currencyResource.getNumberAfterDecimal(currency).syncGet())).longValue()));
+                           new BigDecimal(currencyResource.getNumberAfterDecimal(currency).get())).longValue()));
                 request.setOriginalReference(transactionId);
                 ModificationResult result = null;
                 try {
