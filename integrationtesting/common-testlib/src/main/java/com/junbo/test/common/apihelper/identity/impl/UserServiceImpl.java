@@ -175,7 +175,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         if (emailAddress != null && !emailAddress.isEmpty()) {
             str = "{\"info\":\"" + emailAddress + "\"}";
         } else {
-            str = RandomFactory.getRandomEmailAddress();
+            str = "{\"info\":\"" + RandomFactory.getRandomEmailAddress() + "\"}";
         }
         ObjectMapper mapper = new ObjectMapper();
         JsonNode value = mapper.readTree(str);
@@ -210,7 +210,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         String requestBody = JSONObject.toJSONString(params);
         restApiCall(HTTPMethod.POST, identityServerURL + "/" + uid + "/" + "change-credentials", requestBody, 201);
 
-        return pwd;
+        return password;
     }
 
     public String PostUser(User user) throws Exception {
