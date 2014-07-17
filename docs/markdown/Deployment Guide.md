@@ -321,8 +321,8 @@ scp /home/$YOUR_USER/apphost-crypto-0.0.1-SNAPSHOT.zip 10.24.36.10:/var/silkclou
 
 1. Put the jks file to /etc/silkcloud and chmod 600
 ```
-scp $PATH_TO_JKS 10.24.32.10:/var/silkcloud
-scp $PATH_TO_JKS 10.24.36.10:/var/silkcloud
+scp $PATH_TO_JKS 10.24.32.10:/etc/silkcloud
+scp $PATH_TO_JKS 10.24.36.10:/etc/silkcloud
 ssh 10.24.32.10 chmod 600 '/etc/silkcloud/*.jks'
 ssh 10.24.36.10 chmod 600 '/etc/silkcloud/*.jks'
 ```
@@ -334,6 +334,8 @@ unzip -o apphost-crypto-0.0.1-SNAPSHOT.zip
 cd apphost-crypto-0.0.1-SNAPSHOT
 ./startup.sh
 ```
+
+TODO: Configure the service to be auto started
 
 ### Setup Rest Servers
   * `10.24.8.50`
