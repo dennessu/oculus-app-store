@@ -92,6 +92,7 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
                     existingOrder.latestOrderRevisionId = orderRevision.getId()
                     existingOrder.orderRevisions << orderRevision
                     existingOrder.status = order.status
+                    existingOrder.isAudited = order.isAudited
                 } else {
                     existingOrder = order
                 }

@@ -120,6 +120,7 @@ class CoreBuilder {
                     balanceItem.propertySet.put(PropertyKey.ITEM_NAME.name(), matched.offerName)
                     balanceItem.propertySet.put(PropertyKey.ITEM_DESCRIPTION.name(), matched.offerDescription)
                     balanceItem.propertySet.put(PropertyKey.ORGANIZATION_ID.name(), matched.offerOrganization)
+                    balanceItem.propertySet.put(PropertyKey.VENDOR_NAME.name(), matched.offerOrganizationName)
                     balance.addBalanceItem(balanceItem)
                     balance.propertySet.put(PropertyKey.ORIGINAL_INVOICE_DATE.name(),
                             DATE_FORMATTER.get().format(diffOrder.purchaseTime))
@@ -203,6 +204,7 @@ class CoreBuilder {
         balanceItem.propertySet.put(PropertyKey.ITEM_NAME.name(), item.offerName)
         balanceItem.propertySet.put(PropertyKey.ITEM_DESCRIPTION.name(), item.offerDescription)
         balanceItem.propertySet.put(PropertyKey.ORGANIZATION_ID.name(), item.offerOrganization)
+        balanceItem.propertySet.put(PropertyKey.VENDOR_NAME.name(), item.offerOrganizationName)
         if (item.totalDiscount > BigDecimal.ZERO) {
             DiscountItem discountItem = new DiscountItem()
             discountItem.discountAmount = item.totalDiscount

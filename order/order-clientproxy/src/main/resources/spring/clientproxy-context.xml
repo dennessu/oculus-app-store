@@ -38,6 +38,12 @@
         <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
+    <bean id="order.identityOrganizationClient"
+          class="com.junbo.identity.spec.v1.resource.proxy.OrganizationResourceClientProxy"
+          parent="organizationResourceClientProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
+    </bean>
+
     <bean id="order.ratingClient"
           class="com.junbo.rating.spec.resource.proxy.RatingResourceClientProxy" parent="ratingResourceClientProxy">
         <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>

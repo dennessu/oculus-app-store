@@ -395,6 +395,7 @@ class BalanceServiceImpl implements BalanceService {
     }
 
     @Override
+    @Transactional
     Promise<Balance> auditBalance(Balance balance) {
         def callback = authorizeCallbackFactory.create(balance)
         return RightsScope.with(authorizeService.authorize(callback)) {
@@ -404,7 +405,7 @@ class BalanceServiceImpl implements BalanceService {
             return taxService.auditTax(balance).recover { Throwable throwable ->
                 throw throwable
             }.then { Balance returnedBalance ->
-                return Promise.pure(updateAndCommitBalance(returnedBalance, EventActionType.AUDIT))
+                return Promise.pure(returnedBalance)
             }
         }
     }

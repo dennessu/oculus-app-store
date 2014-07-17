@@ -123,20 +123,7 @@ class TaxServiceImpl implements TaxService {
                         item.propertySet.put(PropertyKey.VAT_ID.name(), vat.vatNumber)
                     }
                 }
-
-                /*return Promise.each(balance.balanceItems) { BalanceItem item ->
-                    def org = item.propertySet.get(PropertyKey.ORGANIZATION_ID.name())
-                    Long organizationId = org == null ? null : Long.valueOf(org)
-                    return identityFacade.getOrganization(organizationId).recover { Throwable throwable ->
-                        LOGGER.error('name=Error_Get_Organization. organization id: ' + organizationId, throwable)
-                        throw AppErrors.INSTANCE.organizationNotFound("balanceItem.organizationId", new OrganizationId(organizationId)).exception()
-                    }.then { Organization organization ->
-                        item.propertySet.put(PropertyKey.VENDOR_NAME.name(), organization?.name)
-                        return Promise.pure(null)
-                    }
-                }.then {*/
-                    return calculateTax(balance, pi.billingAddressId)
-                //}
+                return calculateTax(balance, pi.billingAddressId)
             }
         }
     }
@@ -154,7 +141,7 @@ class TaxServiceImpl implements TaxService {
     @Override
     Promise<Balance> auditTax(Balance balance) {
         Long shippingAddressId = balance.shippingAddressId?.value
-        Long billingAddressId = Long.valueOf(balance.propertySet.get(PropertyKey.BILLING_ADDRESS))
+        Long billingAddressId = Long.valueOf(balance.propertySet.get(PropertyKey.BILLING_ADDRESS.name()))
         return identityFacade.getAddress(shippingAddressId).recover { Throwable throwable ->
             LOGGER.error('name=Error_Get_Shipping_Address. address id: ' + billingAddressId, throwable)
             throw AppErrors.INSTANCE.addressNotFound("balance.shippingAddress", balance.shippingAddressId).exception()

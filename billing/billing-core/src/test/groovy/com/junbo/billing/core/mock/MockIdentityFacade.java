@@ -40,14 +40,4 @@ public class MockIdentityFacade implements IdentityFacade {
 
         return Promise.pure(address);
     }
-
-    @Override
-    public Promise<Organization> getOrganization(Long organizationId) {
-        Organization organization = new Organization();
-
-        organization.setName("test organization");
-        organization.setId(new OrganizationId(123));
-
-        return Promise.pure(organization);
-    }
 }

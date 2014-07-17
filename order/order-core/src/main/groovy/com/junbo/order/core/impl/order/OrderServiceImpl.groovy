@@ -7,6 +7,7 @@
 package com.junbo.order.core.impl.order
 import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.common.error.AppErrorException
+import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.order.clientproxy.FacadeContainer
@@ -332,6 +333,15 @@ class OrderServiceImpl implements OrderService {
                 item.type = CoreUtils.getOfferType(offer).name()
                 item.isPreorder = CoreUtils.isPreorder(offer, order.country.value)
                 updateOfferInfo(order, item, offer.catalogOfferRevision)
+                Long organizationId = offer.catalogOfferRevision.ownerId?.value
+                return facadeContainer.identityFacade.getOrganization(organizationId)
+                        .recover { Throwable throwable ->
+                    LOGGER.error('name=Error_Get_Organization. organization id: ' + organizationId, throwable)
+                    return Promise.pure(null)
+                }.then { Organization organization ->
+                    item.offerOrganizationName = organization?.name
+                    return Promise.pure(null)
+                }
             }
         }.syncThen {
             return null
