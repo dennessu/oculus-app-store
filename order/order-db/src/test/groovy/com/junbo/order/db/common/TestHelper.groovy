@@ -148,6 +148,7 @@ class TestHelper implements ApplicationContextAware {
         entity.setOrderItemId(generateLong())
         entity.setTrackingUuid(generateUUID())
         entity.setFulfillmentId(RandomStringUtils.randomAlphabetic(20))
+        entity.success = true
         return entity
     }
 
@@ -158,6 +159,7 @@ class TestHelper implements ApplicationContextAware {
         entity.setOrderId(generateOrderId())
         entity.balanceId = RandomStringUtils.randomAlphabetic(20)
         entity.totalAmount = BigDecimal.TEN
+        entity.success = true
         return entity
     }
 

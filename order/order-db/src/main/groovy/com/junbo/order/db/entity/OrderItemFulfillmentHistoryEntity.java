@@ -27,6 +27,7 @@ public class OrderItemFulfillmentHistoryEntity extends CommonDbEntityWithDate {
     private UUID trackingUuid;
     private String fulfillmentId;
     private FulfillmentEventType fulfillmentEventId;
+    private Boolean success;
 
     @Id
     @Column(name = "HISTORY_ID")
@@ -85,5 +86,15 @@ public class OrderItemFulfillmentHistoryEntity extends CommonDbEntityWithDate {
     @Transient
     public Long getShardId() {
         return getHistoryId();
+    }
+
+    @Column(name = "SUCCESS")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public Boolean getSuccess() {
+        return success;
+    }
+
+    public void setSuccess(Boolean success) {
+        this.success = success;
     }
 }

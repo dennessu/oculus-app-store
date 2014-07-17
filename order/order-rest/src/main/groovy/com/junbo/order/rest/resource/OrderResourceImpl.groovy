@@ -53,7 +53,7 @@ class OrderResourceImpl implements OrderResource {
 
     @Override
     Promise<Order> getOrderByOrderId(OrderId orderId) {
-        return orderService.getOrderByOrderId(orderId.value, true, new OrderServiceContext()).then { Order order ->
+        return orderService.getOrderByOrderId(orderId.value, true, new OrderServiceContext(), false).then { Order order ->
             def callback = authorizeCallbackFactory.create(order)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('read')) {
@@ -101,7 +101,7 @@ class OrderResourceImpl implements OrderResource {
 
             order.id = orderId
 
-            return orderService.getOrderByOrderId(orderId.value, false, new OrderServiceContext()).then { Order oldOrder ->
+            return orderService.getOrderByOrderId(orderId.value, false, new OrderServiceContext(), false).then { Order oldOrder ->
                 // handle the update request per scenario
                 if (oldOrder.tentative) { // order not settled
                     if (order.tentative) {

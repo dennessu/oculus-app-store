@@ -22,7 +22,7 @@ import java.util.List;
 public interface OrderInternalService {
     Promise<Order> rateOrder(Order order, OrderServiceContext context);
 
-    Promise<Order> getOrderByOrderId(Long orderId, OrderServiceContext context);
+    Promise<Order> getOrderByOrderId(Long orderId, OrderServiceContext context, Boolean updateOrderStatus);
 
     Promise<List<Order>> getOrdersByUserId(Long userId, OrderServiceContext context, OrderQueryParam orderQueryParam, PageParam pageParam);
 

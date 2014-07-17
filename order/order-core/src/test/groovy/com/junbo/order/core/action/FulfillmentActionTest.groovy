@@ -52,12 +52,14 @@ class FulfillmentActionTest extends BaseTest{
             fulfillmentEvent = FulfillmentEventType.FULFILL.toString()
             orderItemId = fulfilmentResult.items[0].itemReferenceId
             fulfillmentId =  fulfilmentResult.items[0].fulfilmentId
+            success = true
         }
         fulfillmentHistories[1].with {
             trackingUuid = UUID.fromString(fulfilmentResult.trackingUuid)
-            fulfillmentEvent = FulfillmentEventType.FULFILL.toString()
+            fulfillmentEvent = FulfillmentEventType.REQUEST_FULFILL.toString()
             orderItemId = fulfilmentResult.items[1].itemReferenceId
             fulfillmentId =  fulfilmentResult.items[1].fulfilmentId
+            success = true
         }
 
         EasyMock.expect(fulfillmentAction.facadeContainer.fulfillmentFacade.postFulfillment(

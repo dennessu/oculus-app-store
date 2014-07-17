@@ -6,17 +6,9 @@
 package com.junbo.order.core.impl.internal.impl
 import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
-import com.junbo.billing.spec.enums.PropertyKey
 import com.junbo.billing.spec.enums.TaxStatus
 import com.junbo.billing.spec.model.Balance
-import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.common.error.AppErrorException
-import com.junbo.common.id.EntitlementId
-import com.junbo.common.id.OfferId
-import com.junbo.fulfilment.spec.constant.FulfilmentActionType
-import com.junbo.fulfilment.spec.constant.FulfilmentStatus
-import com.junbo.fulfilment.spec.model.FulfilmentAction
-import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
@@ -118,7 +110,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
 
     @Override
     @Transactional
-    Promise<Order> getOrderByOrderId(Long orderId, OrderServiceContext orderServiceContext) {
+    Promise<Order> getOrderByOrderId(Long orderId, OrderServiceContext orderServiceContext, Boolean updateOrderStatus) {
         if (orderId == null) {
             throw AppErrors.INSTANCE.fieldInvalid('orderId', 'orderId cannot be null').exception()
         }
@@ -128,7 +120,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
             throw AppErrors.INSTANCE.orderNotFound().exception()
         }
         orderServiceContext.order = order
-        return completeOrder(order, orderServiceContext)
+        completeOrder(order, orderServiceContext, updateOrderStatus)
     }
 
     @Override
@@ -146,7 +138,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
         LOGGER.info('name=Order_Is_Refundable_Or_Cancelable, orderId = {}, orderStatus={}', order.getId().value, order.status)
 
         // @Transactional
-        Promise promise1 = getOrderByOrderId(order.getId().value, context)
+        Promise promise1 = getOrderByOrderId(order.getId().value, context, false)
 
         Order existingOrder = null
         Promise promise2 = promise1.then { Order o ->
@@ -210,7 +202,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 }
             }
         }.then {
-            return getOrderByOrderId(order.getId().value, context)
+            return getOrderByOrderId(order.getId().value, context, true)
         }
     }
 
@@ -227,13 +219,14 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 ParamUtils.processPageParam(pageParam))
         return Promise.each(orders) { Order order ->
             context.order = order
-            return completeOrder(order, context)
+            return completeOrder(order, context, false)
         }.then {
             return Promise.pure(orders)
         }
     }
 
-    private Promise<Order> completeOrder(Order order, OrderServiceContext orderServiceContext) {
+    // readonly
+    private Promise<Order> completeOrder(Order order, OrderServiceContext orderServiceContext, Boolean updateOrderStatus) {
         // order items
         def hasFulfillment = false
         order.orderItems = orderRepository.getOrderItems(order.getId().value)
@@ -265,104 +258,31 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 }
             }
             order.setBillingHistories(orderRepository.getBillingHistories(order.getId().value))
-            if (!CollectionUtils.isEmpty(order.billingHistories)) {
-                // fill balance info
-                order.billingHistories.each { BillingHistory bh ->
-                    def balance = balances.find() { Balance ba ->
-                        ba.getId().value == Long.parseLong(bh.balanceId)
-                    }
-                    assert (balance != null)
-                    bh.payments = []
-                    def payment = new BillingPaymentInfo()
-                    payment.paymentAmount = balance.totalAmount
-                    payment.paymentInstrument = balance.piId
-                    bh.payments << payment
-                    bh.success = true
-                    if (balance.status == BalanceStatus.FAILED.name() || balance.status == BalanceStatus.ERROR) {
-                        bh.success = false
-                    }
-                    if (balance.type == BalanceType.REFUND.name()) {
-                        bh.refundedOrderItems = []
-                        balance.balanceItems?.each { BalanceItem bi ->
-                            def roi = new RefundOrderItem()
-                            roi.orderItemId = bi.orderItemId.value
-                            roi.refundedAmount = 0G - bi.amount
-                            roi.refundedTax = 0G - bi.taxAmount
-                            // fill quantity and offer id
-                            roi.offer = new OfferId(bi.propertySet.get(PropertyKey.OFFER_ID.name()))
-                            roi.quantity = Integer.parseInt(bi.propertySet.get(PropertyKey.ITEM_QUANTITY.name()))
-                            bh.refundedOrderItems << roi
-                        }
-                        payment.paymentAmount = 0G - balance.totalAmount
-                    }
+            CoreUtils.refreshBillingHistories(order, balances)
+            if (hasFulfillment) {
+                return orderServiceContextBuilder.getFulfillmentRequest(orderServiceContext).then {
+                    FulfilmentRequest fr ->
+                        CoreUtils.refreshFulfillmentHistories(order, fr)
+                        return Promise.pure(order)
                 }
             }
             return Promise.pure(order)
         }.then {
-            if (!hasFulfillment) {
-                return Promise.pure(order)
+            if (updateOrderStatus) {
+                return Promise.pure(refreshOrderStatus(order, true))
             }
-
-            // fill fulfillment histories
-            return orderServiceContextBuilder.refreshFulfillmentRequest(orderServiceContext).then { FulfilmentRequest fr ->
-                if (fr == null) {
-                    return Promise.pure(order)
-                }
-                fr.items?.collect() { FulfilmentItem fi ->
-                    def fulfillOrderItem = order.orderItems?.find() { OrderItem oi ->
-                        oi.getId().value == fi.itemReferenceId
-                    }
-                    if (fulfillOrderItem != null) {
-                        fulfillOrderItem.fulfillmentHistories.collect() { FulfillmentHistory fh ->
-                            fh.coupons = []
-                            fh.walletAmount = 0G
-                            fh.shippingDetails = []
-                            fh.entitlements = []
-                            fh.success = true
-                            if (!CollectionUtils.isEmpty(fi.actions)) {
-                                fh.success = !fi.actions?.any { FulfilmentAction fa ->
-                                    fa.status == FulfilmentStatus.FAILED || fa.status == FulfilmentStatus.UNKNOWN
-                                }
-                            }
-                            // TODO: parse shippingDetails and coupons
-                            def entitlementAction = fi.actions?.find() { FulfilmentAction fa ->
-                                fa.type == FulfilmentActionType.GRANT_ENTITLEMENT &&
-                                        fa.status != FulfilmentStatus.FAILED && fa.status != FulfilmentStatus.UNKNOWN
-                            }
-                            if (entitlementAction != null) {
-                                entitlementAction.result?.entitlementIds?.each { String eid ->
-                                    fh.entitlements << new EntitlementId(eid)
-                                }
-                            }
-                            def walletAction = fi.actions?.find() { FulfilmentAction fa ->
-                                fa.type == FulfilmentActionType.CREDIT_WALLET &&
-                                        fa.status != FulfilmentStatus.FAILED && fa.status != FulfilmentStatus.UNKNOWN
-                            }
-                            if (walletAction != null) {
-                                fh.walletAmount = walletAction.result.amount
-                            }
-
-                        }
-                    }
-                }
-                order.status = OrderStatusBuilder.buildOrderStatus(order)
-                return Promise.pure(order)
-            }
+            return Promise.pure(order)
         }
     }
 
     @Override
     @Transactional
     Order refreshOrderStatus(Order order, boolean updateOrder) {
-            def oldOrder = orderRepository.getOrder(order.getId().value)
-            if (oldOrder == null) {
-                throw AppErrors.INSTANCE.orderNotFound().exception()
-            }
-            order.status = OrderStatusBuilder.buildOrderStatus(oldOrder)
-            if (updateOrder && order.status != oldOrder.status) {
-                oldOrder.status = order.status
-                orderRepository.updateOrder(oldOrder, true, false, null)
-            }
+        def oldStatus = order.status
+        order.status = OrderStatusBuilder.buildOrderStatus(order)
+        if (updateOrder && order.status != oldStatus) {
+            orderRepository.updateOrder(order, true, false, null)
+        }
         return order
     }
 

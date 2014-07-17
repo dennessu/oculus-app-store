@@ -7,7 +7,6 @@
 package com.junbo.order.core.impl.order
 import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.common.error.AppErrorException
-import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.order.clientproxy.FacadeContainer
@@ -78,7 +77,7 @@ class OrderServiceImpl implements OrderService {
 
         // rate the order
         // get the existing order with new rating
-        return getOrderByOrderId(order.getId().value, true, orderServiceContext).then { Order ratedOrder ->
+        return getOrderByOrderId(order.getId().value, true, orderServiceContext, false).then { Order ratedOrder ->
             orderServiceContext.order = ratedOrder
             if (ratedOrder.status == OrderStatus.PRICE_RATING_CHANGED.name()) {
                 throw AppErrors.INSTANCE.orderPriceChanged().exception()
@@ -102,12 +101,10 @@ class OrderServiceImpl implements OrderService {
             }.syncRecover { Throwable throwable ->
                 error = throwable
             }.then {
-                def result = orderInternalService.refreshOrderStatus(orderServiceContext.order,
-                        !orderServiceContext.isAsyncCharge) // In asyncCharge case, update status via order event
                 if (error != null) {
                     throw error
                 }
-                return getOrderByOrderId(result.getId().value, false, orderServiceContext)
+                return getOrderByOrderId(orderServiceContext.order.getId().value, false, orderServiceContext, true)
             }
         }
     }
@@ -127,7 +124,7 @@ class OrderServiceImpl implements OrderService {
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
                 return executeFlow(flowName, orderServiceContext, requestScope)
             }.then {
-                return getOrderByOrderId(orderServiceContext.order.getId().value, false, orderServiceContext)
+                return getOrderByOrderId(orderServiceContext.order.getId().value, false, orderServiceContext, true)
             }
         }
     }
@@ -135,7 +132,7 @@ class OrderServiceImpl implements OrderService {
     @Override
     Promise<Order> updateNonTentativeOrder(Order order, OrderServiceContext orderServiceContext) {
         LOGGER.info('name=Update_Non_Tentative_Order. orderId: {}', order.getId().value)
-        return prepareOrder(order , orderServiceContext).then {
+        return prepareOrder(order, orderServiceContext).then {
             return flowSelector.select(
                     orderServiceContext, OrderServiceOperation.UPDATE_NON_TENTATIVE).then { String flowName ->
                 // Prepare Flow Request
@@ -146,7 +143,7 @@ class OrderServiceImpl implements OrderService {
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
                 return executeFlow(flowName, orderServiceContext, requestScope)
             }.then {
-                return getOrderByOrderId(orderServiceContext.order.getId().value, false, orderServiceContext)
+                return getOrderByOrderId(orderServiceContext.order.getId().value, false, orderServiceContext, true)
             }
         }
     }
@@ -170,24 +167,19 @@ class OrderServiceImpl implements OrderService {
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
                 return executeFlow(flowName, orderServiceContext, requestScope)
             }.then {
-                return getOrderByOrderId(orderServiceContext.order.getId().value, false, orderServiceContext)
+                return getOrderByOrderId(orderServiceContext.order.getId().value, false, orderServiceContext, true)
             }
         }
     }
 
     @Override
-    Promise<Order> getOrderByOrderId(Long orderId, Boolean doRate = true, OrderServiceContext context) {
-        return orderInternalService.getOrderByOrderId(orderId, context).then { Order order ->
+    Promise<Order> getOrderByOrderId(Long orderId, Boolean doRate = true, OrderServiceContext context, Boolean updateOrderStatus) {
+        return orderInternalService.getOrderByOrderId(orderId, context, updateOrderStatus).then { Order order ->
             if (doRate) {
                 return refreshTentativeOrderPrice(order, context)
             }
             return Promise.pure(order)
         }
-    }
-
-    @Override
-    Promise<Order> cancelOrder(Order request, OrderServiceContext orderServiceContext) {
-        return null
     }
 
     @Override
@@ -206,7 +198,7 @@ class OrderServiceImpl implements OrderService {
             requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
             return executeFlow(flowName, orderServiceContext, requestScope)
         }.then {
-            return getOrderByOrderId(orderServiceContext.order.getId().value, false, orderServiceContext)
+            return getOrderByOrderId(orderServiceContext.order.getId().value, false, orderServiceContext, true)
         }
     }
 
@@ -216,7 +208,7 @@ class OrderServiceImpl implements OrderService {
             List<Order> ods = []
             return Promise.each(orders) { Order order ->
                 if (order.tentative) {
-                    return refreshTentativeOrderPrice(order,orderServiceContext).then { Order o ->
+                    return refreshTentativeOrderPrice(order, orderServiceContext).then { Order o ->
                         ods << o
                         return Promise.pure(o)
                     }
@@ -252,7 +244,7 @@ class OrderServiceImpl implements OrderService {
         LOGGER.info('name=Update_Order_By_Order_Event. orderId: {}, action:{}, status{}',
                 event.order.value, event.action, event.status)
 
-        return getOrderByOrderId(event.order.value, orderServiceContext).then { Order order ->
+        return getOrderByOrderId(event.order.value, orderServiceContext, false).then { Order order ->
             orderServiceContext.order = order
             orderServiceContext.orderEvent = event
             if (!CoreUtils.isPendingOnEvent(order, event)) {
@@ -271,7 +263,7 @@ class OrderServiceImpl implements OrderService {
                 requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
                 return executeFlow(flowName, orderServiceContext, requestScope)
             }.then {
-                orderInternalService.refreshOrderStatus(orderServiceContext.order, true)
+                orderInternalService.refreshOrderStatus(order, true)
                 return Promise.pure(orderServiceContext.orderEvent)
             }
         }
@@ -283,7 +275,7 @@ class OrderServiceImpl implements OrderService {
             Order oldRatingInfo = CoreUtils.copyOrderRating(order)
             order.honoredTime = new Date()
             return orderInternalService.rateOrder(order, context).then { Order o ->
-                if(!CoreUtils.compareOrderRating(oldRatingInfo, o)) {
+                if (!CoreUtils.compareOrderRating(oldRatingInfo, o)) {
                     o.status = OrderStatus.PRICE_RATING_CHANGED
                 }
                 return Promise.pure(o)
@@ -304,7 +296,7 @@ class OrderServiceImpl implements OrderService {
             LOGGER.error('name=Flow_Execution_Failed. flowName: ' + flowName, throwable)
             if (throwable instanceof AppErrorException) {
                 throw throwable
-            } else if (throwable instanceof AssertionError ){
+            } else if (throwable instanceof AssertionError) {
                 throw AppErrors.INSTANCE.unexpectedError('Unexpected assertion failure').exception()
             } else {
                 throw AppErrors.INSTANCE.unexpectedError(throwable.message).exception()
@@ -323,25 +315,26 @@ class OrderServiceImpl implements OrderService {
         }
     }
 
-    private Promise<Object> prepareOrder(Order order, OrderServiceContext context) {
+    private Promise<Void> prepareOrder(Order order, OrderServiceContext context) {
         return Promise.each(order.orderItems) { OrderItem item -> // get item type from catalog
             return orderServiceContextBuilder.getOffer(item.offer, context).syncThen {
                 OrderOfferRevision offer ->
-                if (offer == null) {
-                    throw AppErrors.INSTANCE.offerNotFound(item.offer.value?.toString()).exception()
-                }
-                item.type = CoreUtils.getOfferType(offer).name()
-                item.isPreorder = CoreUtils.isPreorder(offer, order.country.value)
-                updateOfferInfo(order, item, offer.catalogOfferRevision)
-                Long organizationId = offer.catalogOfferRevision.ownerId?.value
-                return facadeContainer.identityFacade.getOrganization(organizationId)
-                        .recover { Throwable throwable ->
-                    LOGGER.error('name=Error_Get_Organization. organization id: ' + organizationId, throwable)
-                    return Promise.pure(null)
-                }.then { Organization organization ->
-                    item.offerOrganizationName = organization?.name
-                    return Promise.pure(null)
-                }
+                    if (offer == null) {
+                        throw AppErrors.INSTANCE.offerNotFound(item.offer.value?.toString()).exception()
+                    }
+                    item.type = CoreUtils.getOfferType(offer).name()
+                    item.isPreorder = CoreUtils.isPreorder(offer, order.country.value)
+                    updateOfferInfo(order, item, offer.catalogOfferRevision)
+                    Long organizationId = offer.catalogOfferRevision.ownerId?.value
+                    // TODO: move to orderServiceContextBuilder. temporary disable the code
+                    //return facadeContainer.identityFacade.getOrganization(organizationId)
+                    //        .recover { Throwable throwable ->
+                    //    LOGGER.error('name=Error_Get_Organization. organization id: ' + organizationId, throwable)
+                    //    return Promise.pure(null)
+                    //}.then { Organization organization ->
+                    //    item.offerOrganizationName = organization?.name
+                    //    return Promise.pure(null)
+                    item.offerOrganizationName = 'hardcoded'
             }
         }.syncThen {
             return null
@@ -366,8 +359,7 @@ class OrderServiceImpl implements OrderService {
         item.offerDescription = description
         if (order.paymentDescription == null || order.paymentDescription == '') {
             order.paymentDescription = description
-        }
-        else if (description != null) {
+        } else if (description != null) {
             order.paymentDescription += ' & ' + description
         }
     }

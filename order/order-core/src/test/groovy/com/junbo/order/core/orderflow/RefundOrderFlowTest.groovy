@@ -71,7 +71,7 @@ class RefundOrderFlowTest extends BaseTest {
 
         repo.createBillingHistory(order.id.value, billingHistory)
         orderActionContext.orderServiceContext.order =
-                orderService.getOrderByOrderId(order.getId().value, true, new OrderServiceContext()).get()
+        orderService.getOrderByOrderId(order.getId().value, true, new OrderServiceContext(), true).get()
 
         orderActionContext.orderServiceContext.order.orderItems = []
         def context = executor.start(
@@ -81,7 +81,7 @@ class RefundOrderFlowTest extends BaseTest {
         def o = ActionUtils.getOrderActionContext(context).orderServiceContext.order
         assert (o != null)
 
-        def getOrder = orderService.getOrderByOrderId(o.getId().value, true, new OrderServiceContext()).get()
+        def getOrder = orderService.getOrderByOrderId(o.getId().value, true, new OrderServiceContext(), true).get()
         assert (o.getId().value == getOrder.getId().value)
         assert (o.status == OrderStatus.REFUNDED.name())
     }

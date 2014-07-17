@@ -162,6 +162,7 @@
                     order_id bigint not null,
                     total_amount decimal NOT NULL,
                     balance_id varchar(128) not null,
+                    success boolean not null,
                     primary key (history_id)
                 );
                 create unique index history_order_balance_time_index on order_billing_history (history_id, order_id, balance_id, updated_time);
@@ -177,6 +178,7 @@
                     order_item_id bigint not null,
                     tracking_uuid uuid not null,
                     fulfillment_id varchar(128) not null,
+                    success boolean not null,
                     primary key (history_id)
                 );
                 create unique index fulfillment_history_order_item_time_index on order_item_fulfillment_history (history_id, order_item_id, updated_time);

@@ -84,7 +84,6 @@ class  FulfillmentAction extends BaseOrderEventAwareAction {
                     }
                 }
             }
-
             return CoreBuilder.buildActionResultForOrderEventAwareAction(context, orderEventStatus)
         }
     }

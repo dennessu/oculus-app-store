@@ -29,6 +29,17 @@ class FulfillmentEventHistoryBuilder {
         fulfillmentHistory.fulfillmentEvent = getFulfillmentEvent(fulfilmentItem, orderItem)
         fulfillmentHistory.orderItemId = fulfilmentItem.itemReferenceId
         fulfillmentHistory.fulfillmentId = fulfilmentItem.fulfilmentId
+
+        fulfillmentHistory.success = true
+        fulfillmentHistory.success = !fulfilmentItem.actions?.any { FulfilmentAction fa ->
+            fa.status == FulfilmentStatus.FAILED || fa.status == FulfilmentStatus.UNKNOWN
+        }
+        if (fulfilmentItem.actions?.any {
+            FulfilmentAction fa ->
+                fa.status == FulfilmentStatus.PENDING
+        }) {
+            fulfillmentHistory.fulfillmentEvent = FulfillmentEventType.REQUEST_FULFILL
+        }
         return fulfillmentHistory
     }
 
@@ -39,6 +50,17 @@ class FulfillmentEventHistoryBuilder {
         fulfillmentHistory.fulfillmentEvent = getFulfillmentEvent(fulfilmentItem, event)
         fulfillmentHistory.orderItemId = fulfilmentItem.itemReferenceId
         fulfillmentHistory.fulfillmentId = fulfilmentItem.fulfilmentId
+
+        fulfillmentHistory.success = true
+        fulfillmentHistory.success = !fulfilmentItem.actions?.any { FulfilmentAction fa ->
+            fa.status == FulfilmentStatus.FAILED || fa.status == FulfilmentStatus.UNKNOWN
+        }
+        if (fulfilmentItem.actions?.any {
+            FulfilmentAction fa ->
+                fa.status == FulfilmentStatus.PENDING
+        }) {
+            fulfillmentHistory.fulfillmentEvent = FulfillmentEventType.REQUEST_FULFILL
+        }
         return fulfillmentHistory
     }
 

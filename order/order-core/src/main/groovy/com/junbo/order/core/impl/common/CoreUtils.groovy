@@ -1,10 +1,17 @@
 package com.junbo.order.core.impl.common
-
 import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
+import com.junbo.billing.spec.enums.PropertyKey
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.TaxItem
+import com.junbo.common.id.EntitlementId
+import com.junbo.common.id.OfferId
+import com.junbo.fulfilment.spec.constant.FulfilmentActionType
+import com.junbo.fulfilment.spec.constant.FulfilmentStatus
+import com.junbo.fulfilment.spec.model.FulfilmentAction
+import com.junbo.fulfilment.spec.model.FulfilmentItem
+import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.order.clientproxy.model.OrderOfferItem
 import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.spec.error.AppErrors
@@ -15,7 +22,6 @@ import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
 /**
  * Created by chriszhu on 3/19/14.
  */
@@ -497,5 +503,83 @@ class CoreUtils {
             bh.billingEvent == BillingAction.CHARGE.name() && bh.success
         }
         return requested && !charged
+    }
+
+    static Order refreshBillingHistories(Order order, List<Balance> balances) {
+        if (CollectionUtils.isEmpty(balances)) {
+            return order
+        }
+        if (!CollectionUtils.isEmpty(order.billingHistories)) {
+            // fill balance info
+            order.billingHistories.each { BillingHistory bh ->
+                def balance = balances.find() { Balance ba ->
+                    ba.getId().value == Long.parseLong(bh.balanceId)
+                }
+                assert (balance != null)
+                bh.payments = []
+                def payment = new BillingPaymentInfo()
+                payment.paymentAmount = balance.totalAmount
+                payment.paymentInstrument = balance.piId
+                bh.payments << payment
+                if (balance.type == BalanceType.REFUND.name()) {
+                    bh.refundedOrderItems = []
+                    balance.balanceItems?.each { BalanceItem bi ->
+                        def roi = new RefundOrderItem()
+                        roi.orderItemId = bi.orderItemId.value
+                        roi.refundedAmount = 0G - bi.amount
+                        roi.refundedTax = 0G - bi.taxAmount
+                        // fill quantity and offer id
+                        roi.offer = new OfferId(bi.propertySet.get(PropertyKey.OFFER_ID.name()))
+                        roi.quantity = Integer.parseInt(bi.propertySet.get(PropertyKey.ITEM_QUANTITY.name()))
+                        bh.refundedOrderItems << roi
+                    }
+                    payment.paymentAmount = 0G - balance.totalAmount
+                }
+            }
+        }
+        return order
+    }
+
+    static Order refreshFulfillmentHistories(Order order, FulfilmentRequest fr) {
+        if (fr == null) {
+            return order
+        }
+        fr.items?.collect() { FulfilmentItem fi ->
+            def fulfillOrderItem = order.orderItems?.find() { OrderItem oi ->
+                oi.getId().value == fi.itemReferenceId
+            }
+            if (fulfillOrderItem != null) {
+                fulfillOrderItem.fulfillmentHistories.collect() { FulfillmentHistory fh ->
+                    fh.coupons = []
+                    fh.walletAmount = 0G
+                    fh.shippingDetails = []
+                    fh.entitlements = []
+                    // do not update the status for request_ actions
+                    if (!CollectionUtils.isEmpty(fi.actions)) {
+                        fh.success = !fi.actions?.any { FulfilmentAction fa ->
+                            fa.status == FulfilmentStatus.FAILED || fa.status == FulfilmentStatus.UNKNOWN
+                        }
+                    }
+                    // TODO: parse shippingDetails and coupons
+                    def entitlementAction = fi.actions?.find() { FulfilmentAction fa ->
+                        fa.type == FulfilmentActionType.GRANT_ENTITLEMENT &&
+                                fa.status != FulfilmentStatus.FAILED && fa.status != FulfilmentStatus.UNKNOWN
+                    }
+                    if (entitlementAction != null) {
+                        entitlementAction.result?.entitlementIds?.each { String eid ->
+                            fh.entitlements << new EntitlementId(eid)
+                        }
+                    }
+                    def walletAction = fi.actions?.find() { FulfilmentAction fa ->
+                        fa.type == FulfilmentActionType.CREDIT_WALLET &&
+                                fa.status != FulfilmentStatus.FAILED && fa.status != FulfilmentStatus.UNKNOWN
+                    }
+                    if (walletAction != null) {
+                        fh.walletAmount = walletAction.result.amount
+                    }
+                }
+            }
+        }
+        return order
     }
 }
