@@ -1,0 +1,103 @@
+{
+    "self": {
+        "href": "/v1/offer-revisions/ddaabbcceef0",
+        "id": "ddaabbcceef0"
+    },
+    "offer": {"href": "https://api.oculusvr.com/v1/offers/bbaaccddeef0", "id": "bbaaccddeef0"},
+    "status": "DRAFT",
+    "publisher": {"href": "https://api.oculusvr.com/v1/organizations/1234", "id": "1234"},
+    "items":[
+        {
+            "item": {"href": "https://api.oculusvr.com/v1/items/aabbccddeef0", "id": "aabbccddeef0"},
+            "quantity": 1
+        }
+    ],
+    "subOffers": [],
+    "distributionChannel": ["INAPP"],
+    "price":{
+        "priceType": "CUSTOM",
+        "priceTier": null,
+        "prices": {
+            "CN": {"CNY": 50.00},
+            "US": {"USD": 10.00},
+            "DE": {"EUR": 11.00},
+            "FR": {"EUR": 11.00},
+            "NL": {"EUR": 11.00},
+            "RU": {"RUB": 1.00},
+            "MX": {"MXN": 12.00},
+            "KR": {"KRW": 1100},
+            "JP": {"JPY": 1000}
+        }
+    },
+    "restrictions":{
+        "limitPerCustomer": 10,
+        "limitPerOrder": 2,
+        "preconditionItems": [{"href": "https://api.oculusvr.com/v1/items/1230", "id": "1230"}],
+        "exclusionItems": [{"href": "https://api.oculusvr.com/v1/items/120", "id": "120"}]
+    },
+    "eventActions": null,
+    "locales":{
+        "en_US":{
+            "name": "testOffer_CartCheckout_Digital1",
+            "longDescription": "long description",
+            "shortDescription": "short description",
+            "images":{
+                "thumbnail": {
+                    "id": "id of image",
+                    "href":"location of image",
+                    "size":200,
+                    "x":20,
+                    "y":10
+                },
+                "main": {}
+            },
+            "videos":[
+                {
+                    "service": "YOUTUBE",
+                    "id": "id of the video",
+                    "title": "title of the video"
+                }
+            ]
+        }
+    },
+    "regions":{
+        "CN":{
+            "isPurchasable": true,
+            "releaseDate":"2013-06-10T09:05:58Z"
+        },
+        "US":{
+            "isPurchasable": true,
+            "releaseDate":"2013-06-10T09:05:58Z"
+        },
+        "DE":{
+            "isPurchasable": true,
+            "releaseDate":"2013-06-10T09:05:58Z"
+        },
+        "FR":{
+            "isPurchasable": true,
+            "releaseDate":"2013-06-10T09:05:58Z"
+        },
+        "NL":{
+            "isPurchasable": true,
+            "releaseDate":"2013-06-10T09:05:58Z"
+        },
+        "RU":{
+            "isPurchasable": true,
+            "releaseDate":"2013-06-10T09:05:58Z"
+        },
+        "MX":{
+            "isPurchasable": true,
+            "releaseDate":"2013-06-10T09:05:58Z"
+        },
+        "KR":{
+            "isPurchasable": true,
+            "releaseDate":"2013-06-10T09:05:58Z"
+        },
+        "JP":{
+            "isPurchasable": true,
+            "releaseDate":"2013-06-10T09:05:58Z"
+        }
+    },
+    "futureExpansion":{},
+    "rev": null
+}

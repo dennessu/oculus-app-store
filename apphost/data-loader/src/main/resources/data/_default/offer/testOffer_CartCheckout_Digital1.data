@@ -1,0 +1,12 @@
+{
+	"self": {
+        "href": "/v1/offers/bbaaccddeef0",
+        "id": "bbaaccddeef0"
+    },
+    "isPublished": false,
+    "publisher": {"href": "https://api.oculusvr.com/v1/organizations/1234", "id": "1234"},
+    "currentRevision": null,
+    "environment": "DEV",
+    "categories":[],
+    "rev": null
+}

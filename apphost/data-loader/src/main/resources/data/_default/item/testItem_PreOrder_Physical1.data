@@ -1,0 +1,13 @@
+{
+	"self": {
+        "href": "/v1/items/aabbccddeef6",
+        "id": "aabbccddeef6"
+    },
+    "type": "PHYSICAL",
+    "currentRevision": null,
+    "revisions": null,
+    "developer": {"href": "https://api.oculusvr.com/v1/organizations/1234", "id": "1234"},
+    "genres":[],
+    "defaultOffer": null,
+    "rev": null
+}
