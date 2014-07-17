@@ -28,12 +28,12 @@ public class PromiseShell {
     private static ConcurrentHashMap<String, ListeningExecutorService> pool = new ConcurrentHashMap<>();
 
     public static <R> Promise<R> decorate(String poolName, final Callable<R> callable) {
-        return Promise.wrap(locate(poolName).submit(callable));
+        return Promise.wrap(locate(poolName).submit(new CallableWrapper<R>(callable)));
     }
 
     @SuppressWarnings("unchecked")
     public static Promise<Void> decorate(String poolName, final Runnable runnable) {
-        return Promise.wrap((ListenableFuture<Void>) locate(poolName).submit(runnable));
+        return Promise.wrap((ListenableFuture<Void>) locate(poolName).submit(new RunnableWrapper(runnable)));
     }
 
     private static ListeningExecutorService locate(String poolName) {
