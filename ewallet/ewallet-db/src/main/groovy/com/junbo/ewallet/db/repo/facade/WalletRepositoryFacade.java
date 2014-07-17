@@ -148,13 +148,13 @@ public class WalletRepositoryFacade {
             BigDecimal remaining = walletLot.getRemainingAmount();
             if (sum.compareTo(remaining) <= 0) {
                 walletLot.setRemainingAmount(remaining.subtract(sum));
-                walletLot = walletLotRepository.update(walletLot).get();
+                walletLot = walletLotRepository.update(walletLot, walletLot).get();
                 lotTransactionRepository.create(buildDebitLotTransaction(walletLot, sum, transactionId)).get();
                 return;
             } else {
                 BigDecimal remainingAmount = walletLot.getRemainingAmount();
                 walletLot.setRemainingAmount(BigDecimal.ZERO);
-                walletLot = walletLotRepository.update(walletLot).get();
+                walletLot = walletLotRepository.update(walletLot, walletLot).get();
                 lotTransactionRepository.create(buildDebitLotTransaction(walletLot, remainingAmount, transactionId)).get();
             }
             sum = sum.subtract(remaining);
