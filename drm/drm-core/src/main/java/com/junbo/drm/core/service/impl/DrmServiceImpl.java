@@ -67,12 +67,12 @@ public class DrmServiceImpl implements DrmService {
         Assert.notNull(userId, "userId is null");
         Assert.notNull(itemId, "itemId is null");
 
-        User user = userResource.get(userId, new UserGetOptions()).syncGet();
+        User user = userResource.get(userId, new UserGetOptions()).get();
         if (user == null) {
             throw AppErrors.INTSTANCE.userNotFound(userId).exception();
         }
 
-        Item item = itemResource.getItem(itemId.getValue()).syncGet();
+        Item item = itemResource.getItem(itemId.getValue()).get();
         if (!ItemType.APP.is(item.getType())) {
             throw AppErrors.INTSTANCE.invalidItemType(item.getType()).exception();
         }
@@ -114,7 +114,7 @@ public class DrmServiceImpl implements DrmService {
 
         List<Entitlement> entitlements = new ArrayList<>();
 
-        Results<com.junbo.entitlement.spec.model.Entitlement> results = entitlementResource.searchEntitlements(param, pageMetadata).syncGet();
+        Results<com.junbo.entitlement.spec.model.Entitlement> results = entitlementResource.searchEntitlements(param, pageMetadata).get();
         for (com.junbo.entitlement.spec.model.Entitlement entitlement : results.getItems()) {
             entitlements.add(wrapEntitlement(entitlement));
         }
@@ -122,7 +122,7 @@ public class DrmServiceImpl implements DrmService {
         while (results.hasNext()) {
             start += DEFAULT_PAGE_SIZE;
             pageMetadata.setStart(start);
-            results = entitlementResource.searchEntitlements(param, pageMetadata).syncGet();
+            results = entitlementResource.searchEntitlements(param, pageMetadata).get();
             for (com.junbo.entitlement.spec.model.Entitlement entitlement : results.getItems()) {
                 entitlements.add(wrapEntitlement(entitlement));
             }

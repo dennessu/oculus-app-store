@@ -63,9 +63,7 @@ class CsrUserResourceImpl implements CsrUserResource {
                         for (User user in userResults.items) {
                             def csrUser = new CsrUser(id: user.getId().getValue() ,username: user.username, countryCode: user.countryOfResidence?.toString(), tier: csrGroup.tier)
                             if (user.name != null) {
-                                UserPersonalInfo userPersonalInfo = Promise.get {
-                                    userPersonalInfoResource.get(user.name.value, new UserPersonalInfoGetOptions())
-                                }
+                                UserPersonalInfo userPersonalInfo = userPersonalInfoResource.get(user.name.value, new UserPersonalInfoGetOptions()).get()
 
                                 UserName name = ObjectMapperProvider.instance().treeToValue(userPersonalInfo.getValue(), UserName.class)
                                 if (name != null) {
