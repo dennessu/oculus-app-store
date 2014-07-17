@@ -249,7 +249,7 @@
 
     <!-- actions -->
     <bean id="validateClient" class="com.junbo.oauth.core.action.ValidateClient">
-        <property name="clientRepository" ref="clientRepository"/>
+        <property name="clientRepository" ref="encryptedClientRepository"/>
     </bean>
 
     <bean id="validateScope" class="com.junbo.oauth.core.action.ValidateScope"/>

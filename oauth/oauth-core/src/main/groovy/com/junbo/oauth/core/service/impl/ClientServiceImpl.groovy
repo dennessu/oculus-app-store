@@ -118,11 +118,19 @@ class ClientServiceImpl implements ClientService {
 
     @Override
     Client updateClient(String clientId, Client client) {
+        if (!AuthorizeContext.hasScopes(CLIENT_REGISTER_SCOPE)) {
+            throw AppExceptions.INSTANCE.insufficientScope().exception()
+        }
+
         if (StringUtils.isEmpty(client.rev)) {
             throw AppExceptions.INSTANCE.missingRevision().exception()
         }
 
         Client existingClient = getClient(clientId)
+
+        if (client.ownerUserId != AuthorizeContext.currentUserId) {
+            throw AppExceptions.INSTANCE.notClientOwner().exception()
+        }
 
         if (client.rev != existingClient.rev) {
             throw AppExceptions.INSTANCE.updateConflict().exception()
@@ -144,7 +152,7 @@ class ClientServiceImpl implements ClientService {
             throw AppExceptions.INSTANCE.cantUpdateFields('id_token_issuer').exception()
         }
 
-        if (client.needConsent == null ||  existingClient.needConsent != client.needConsent) {
+        if (client.needConsent == null || existingClient.needConsent != client.needConsent) {
             throw AppExceptions.INSTANCE.cantUpdateFields('need_consent').exception()
         }
 
@@ -166,17 +174,32 @@ class ClientServiceImpl implements ClientService {
 
     @Override
     void deleteClient(String clientId) {
+        if (!AuthorizeContext.hasScopes(CLIENT_REGISTER_SCOPE)) {
+            throw AppExceptions.INSTANCE.insufficientScope().exception()
+        }
+
         Client client = getClient(clientId)
+
+        if (client.ownerUserId != AuthorizeContext.currentUserId) {
+            throw AppExceptions.INSTANCE.notClientOwner().exception()
+        }
 
         clientRepository.deleteClient(client)
     }
 
     @Override
     Client resetSecret(String clientId) {
+        if (!AuthorizeContext.hasScopes(CLIENT_REGISTER_SCOPE)) {
+            throw AppExceptions.INSTANCE.insufficientScope().exception()
+        }
+
         Client client = getClient(clientId)
 
-        client.clientSecret = tokenGenerator.generateClientSecret()
+        if (client.ownerUserId != AuthorizeContext.currentUserId) {
+            throw AppExceptions.INSTANCE.notClientOwner().exception()
+        }
 
+        client.clientSecret = tokenGenerator.generateClientSecret()
         clientRepository.updateClient(client, client)
         return client
     }
@@ -214,8 +237,7 @@ class ClientServiceImpl implements ClientService {
     private static void validateRedirectUri(Client client) {
         if (client.redirectUris != null) {
             client.redirectUris.each { String uri ->
-                String escapedUri = uri.replace('*', 'a')
-                if (!UriUtil.isValidUri(escapedUri)) {
+                if (!UriUtil.isValidRedirectUri(uri)) {
                     throw AppExceptions.INSTANCE.invalidRedirectUri(uri).exception()
                 }
             }
@@ -241,8 +263,7 @@ class ClientServiceImpl implements ClientService {
     private static void validateLogoutRedirectUri(Client client) {
         if (client.logoutRedirectUris != null) {
             client.logoutRedirectUris.each { String uri ->
-                String escapedUri = uri.replace('*', 'a')
-                if (!UriUtil.isValidUri(escapedUri)) {
+                if (!UriUtil.isValidRedirectUri(uri)) {
                     throw AppExceptions.INSTANCE.invalidLogoutRedirectUri(uri).exception()
                 }
             }

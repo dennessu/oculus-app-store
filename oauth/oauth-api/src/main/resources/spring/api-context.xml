@@ -60,7 +60,7 @@
     <bean id="defaultClientEndpointRouter" parent="routingRouterBase" />
 
     <bean id="defaultRevokeEndpoint" class="com.junbo.oauth.api.endpoint.RevokeEndpointImpl">
-        <property name="clientRepository" ref="clientRepository"/>
+        <property name="clientRepository" ref="encryptedClientRepository"/>
         <property name="tokenService" ref="tokenService"/>
         <property name="consentRepository" ref="consentRepository"/>
     </bean>

@@ -74,8 +74,14 @@ class AuthorizeEndpointImpl implements AuthorizeEndpoint {
 
         // Parse the conversation id and event.
         String conversationId = uriInfo.queryParameters.getFirst(OAuthParameters.CONVERSATION_ID)
-        String event = uriInfo.queryParameters.getFirst(OAuthParameters.EVENT) ?: ''
+        String event = uriInfo.queryParameters.getFirst(OAuthParameters.EVENT)
 
+        // GET method is not allowed during flow state change, where event parameter is provided.
+        if (StringUtils.hasText(event)) {
+            throw AppExceptions.INSTANCE.methodNotAllowed().exception()
+        }
+
+        event = ''
         // if the conversation id is empty, start a new conversation in the flowExecutor.
         if (StringUtils.isEmpty(conversationId)) {
             return flowExecutor.start(authorizeFlow, requestScope).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)

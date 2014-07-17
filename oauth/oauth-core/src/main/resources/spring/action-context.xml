@@ -20,7 +20,7 @@
     <bean id="generateResponse" class="com.junbo.oauth.core.action.GenerateAccessTokenResponse"/>
 
     <bean id="authenticateClient" class="com.junbo.oauth.core.action.AuthenticateClient">
-        <property name="clientRepository" ref="clientRepository"/>
+        <property name="clientRepository" ref="encryptedClientRepository"/>
     </bean>
 
 
@@ -100,7 +100,7 @@
         <property name="loginStateRepository" ref="loginStateRepository"/>
         <property name="rememberMeTokenRepository" ref="rememberMeTokenRepository"/>
         <property name="tokenService" ref="tokenService"/>
-        <property name="clientRepository" ref="clientRepository"/>
+        <property name="clientRepository" ref="encryptedClientRepository"/>
         <property name="confirmationUri" value="${oauth.core.portal.logoutConfirmationUri}"/>
     </bean>
 

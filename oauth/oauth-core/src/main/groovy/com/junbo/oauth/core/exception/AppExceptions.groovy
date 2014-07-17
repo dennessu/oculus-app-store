@@ -365,4 +365,8 @@ interface AppExceptions {
     @ErrorDef(httpStatusCode = 400, code = '20083', message = 'Either username or user_email is required',
             field = 'username or user_email')
     AppError missingUsernameOrUserEmail()
+
+    @ErrorDef(httpStatusCode = 400, code = '20084', message = 'The GET method is not allowed during flow state change',
+            field = 'event')
+    AppError methodNotAllowed()
 }
