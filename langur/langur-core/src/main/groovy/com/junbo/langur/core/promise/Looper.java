@@ -34,7 +34,7 @@ public class Looper {
 
     private int startId;
 
-    private Runnable runnable;
+    private RunnableWrapper runnableWrapper;
 
     public Looper() {
         lock = new ReentrantLock();
@@ -68,14 +68,14 @@ public class Looper {
 
     }
 
-    public boolean offerRunnable(Runnable runnable) {
+    public boolean offerRunnable(RunnableWrapper runnableWrapper) {
         lock.lock();
         try {
-            if (this.runnable != null) {
-                throw new IllegalStateException("this.runnable != null");
+            if (this.runnableWrapper != null && !this.runnableWrapper.hasRun()) {
+                throw new IllegalStateException("this.runnable != null && !this.runnableWrapper.hasRun()");
             }
 
-            this.runnable = runnable;
+            this.runnableWrapper = runnableWrapper;
             notEmpty.signal();
 
             if (startId == 0) {
@@ -94,7 +94,7 @@ public class Looper {
 
         lock.lock();
         try {
-            while (this.startId == startId && this.runnable == null) {
+            while (this.startId == startId && this.runnableWrapper == null) {
                 try {
                     if (!notEmpty.await(30, TimeUnit.SECONDS)) {
                         throw new RuntimeException("Timeout during poolRunnable");
@@ -108,9 +108,9 @@ public class Looper {
                 throw new IllegalStateException("this.startId " + this.startId + " > startId " + startId);
             }
 
-            if (this.runnable != null) {
-                runnable = this.runnable;
-                this.runnable = null;
+            if (this.runnableWrapper != null) {
+                runnable = this.runnableWrapper.getRunnable();
+                this.runnableWrapper = null;
             }
         } finally {
             lock.unlock();
@@ -152,7 +152,7 @@ public class Looper {
 
             Object handle = wrapper.begin();
             try {
-                return Looper.current().offerRunnable(wrapper.getRunnable());
+                return Looper.current().offerRunnable(wrapper);
             } finally {
                 wrapper.end(handle);
             }
