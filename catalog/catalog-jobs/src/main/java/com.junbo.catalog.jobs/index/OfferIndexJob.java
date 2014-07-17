@@ -9,7 +9,6 @@ package com.junbo.catalog.jobs.index;
 import com.junbo.catalog.core.OfferService;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OffersGetOptions;
-import com.junbo.langur.core.promise.SyncModeScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
@@ -34,7 +33,7 @@ public class OfferIndexJob {
 
     public void execute() {
         if (running.compareAndSet(false, true)) {
-            try (SyncModeScope scope = new SyncModeScope()) {
+            try {
                 LOGGER.info("Start OfferIndexJob");
                 updateActiveRevision();
                 LOGGER.info("End OfferIndex Job");

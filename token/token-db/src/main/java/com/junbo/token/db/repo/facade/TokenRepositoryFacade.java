@@ -38,7 +38,7 @@ public class TokenRepositoryFacade {
     protected IdGenerator idGenerator;
 
     public TokenSet addTokenSet(TokenSet tokenSet){
-        TokenSet saved = tokenSetRepository.create(tokenSet).syncGet();
+        TokenSet saved = tokenSetRepository.create(tokenSet).get();
         tokenSet.setId(saved.getId());
         ProductType productType = TokenUtil.getEnumValue(ProductType.class, tokenSet.getProductType());
         if (productType.equals(ProductType.OFFER)) {
@@ -65,17 +65,17 @@ public class TokenRepositoryFacade {
         model.setTokenSetId(set.getId());
         model.setProductType(productType.toString());
         model.setIsDefault(isDefault);
-        tokenSetOfferRepository.create(model).syncGet();
+        tokenSetOfferRepository.create(model).get();
     }
 
     public TokenSet getTokenSet(String tokenSetId){
-        TokenSet tokenSet = tokenSetRepository.get(tokenSetId).syncGet();
+        TokenSet tokenSet = tokenSetRepository.get(tokenSetId).get();
         //tokenSet.setOfferIds(new ArrayList<Long>());
         ProductDetail productDetail = new ProductDetail();
         String defaultProduct = null;
         List<String> optionalProducts = new ArrayList<String>();
         ProductType productType = null;
-        for (TokenSetOffer setOffer : tokenSetOfferRepository.getByTokenSetId(tokenSetId).syncGet()) {
+        for (TokenSetOffer setOffer : tokenSetOfferRepository.getByTokenSetId(tokenSetId).get()) {
             productType = ProductType.valueOf(setOffer.getProductType());
             if (setOffer.getIsDefault()) {
                 defaultProduct = setOffer.getProductId();
@@ -96,26 +96,26 @@ public class TokenRepositoryFacade {
     }
 
     public TokenOrder addTokenOrder(TokenOrder order){
-        TokenOrder saved = tokenOrderRepository.create(order).syncGet();
+        TokenOrder saved = tokenOrderRepository.create(order).get();
         order.setId(saved.getId());
         return order;
     }
 
     public TokenOrder getTokenOrder(String orderId){
-        return tokenOrderRepository.get(orderId).syncGet();
+        return tokenOrderRepository.get(orderId).get();
     }
 
     public List<TokenItem> addTokenItems(List<TokenItem> items){
         for (TokenItem item : items) {
             //TODO: use new generated PK first. Need to consider partitionable-id
             item.setId(String.valueOf(idGenerator.nextId()));
-            tokenItemRepository.create(item).syncGet();
+            tokenItemRepository.create(item).get();
         }
         return items;
     }
 
     public TokenItem getTokenItem(Long hashValue){
-        TokenItem item = tokenItemRepository.getByHashValue(hashValue).syncGet();
+        TokenItem item = tokenItemRepository.getByHashValue(hashValue).get();
         if (item == null) {
             return null;
         }
@@ -124,22 +124,22 @@ public class TokenRepositoryFacade {
     }
 
     public TokenConsumption addConsumption(TokenConsumption consumption){
-        TokenConsumption saved = tokenConsumptionRepository.create(consumption).syncGet();
+        TokenConsumption saved = tokenConsumptionRepository.create(consumption).get();
         consumption.setId(saved.getId());
         return consumption;
     }
 
     public List<TokenConsumption> getTokenConsumption(String itemId){
-        return tokenConsumptionRepository.getByTokenItemId(itemId).syncGet();
+        return tokenConsumptionRepository.getByTokenItemId(itemId).get();
     }
 
     public void updateTokenStatus(long hashValue, ItemStatus status){
-        TokenItem item = tokenItemRepository.getByHashValue(hashValue).syncGet();
+        TokenItem item = tokenItemRepository.getByHashValue(hashValue).get();
         if (item == null) {
             throw AppClientExceptions.INSTANCE.invalidToken().exception();
         }
         item.setStatus(status.toString());
-        tokenItemRepository.update(item, item).syncGet();
+        tokenItemRepository.update(item, item).get();
     }
 
 

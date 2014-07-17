@@ -41,8 +41,8 @@ class OrderE2ETest extends BaseTest {
         order.orderItems.add(TestBuilder.buildOrderItem())
         order.user = new UserId(idGenerator.nextId(UserId))
 
-        def orderResult = orderResource.createOrder(order).testGet()
-        def orderGet = orderResource.getOrderByOrderId(orderResult.getId()).testGet()
+        def orderResult = orderResource.createOrder(order).get()
+        def orderGet = orderResource.getOrderByOrderId(orderResult.getId()).get()
 
         assert orderResult.status == OrderStatus.OPEN.name()
         assert orderResult.tentative
@@ -64,8 +64,8 @@ class OrderE2ETest extends BaseTest {
         JunboHttpContext.data = new JunboHttpContext.JunboHttpContextData(
                 requestIpAddress: '127.0.0.1'
         )
-        def orderResult = orderResource.updateOrderByOrderId(tentativeOrder.getId(), tentativeOrder).testGet()
-        def orderGet = orderResource.getOrderByOrderId(orderResult.getId()).testGet()
+        def orderResult = orderResource.updateOrderByOrderId(tentativeOrder.getId(), tentativeOrder).get()
+        def orderGet = orderResource.getOrderByOrderId(orderResult.getId()).get()
 
         assert orderResult.status == OrderStatus.COMPLETED.name()
         assert !orderResult.tentative
@@ -84,8 +84,8 @@ class OrderE2ETest extends BaseTest {
             }
         }
         order.orderItems = null
-        def orderResult = orderResource.updateOrderByOrderId(order.getId(), order).testGet()
-        def orderGet = orderResource.getOrderByOrderId(orderResult.getId()).testGet()
+        def orderResult = orderResource.updateOrderByOrderId(order.getId(), order).get()
+        def orderGet = orderResource.getOrderByOrderId(orderResult.getId()).get()
 
         assert orderResult.status == OrderStatus.REFUNDED.name()
         assert !orderResult.tentative

@@ -26,7 +26,7 @@ class AuditTaxProcessor implements OrderProcessor {
         if (order.isAudited) {
             return new OrderProcessResult(success: true)
         }
-        def auditedOrder = Promise.get { orderInternalService.auditTax(order) }
+        def auditedOrder = orderInternalService.auditTax(order).get()
         return new OrderProcessResult(success: order.isAudited)
     }
 }

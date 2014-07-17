@@ -53,7 +53,7 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
             }
         } else if (!CollectionUtils.isEmpty(options.getOfferIds())) {
             for (String offerId : options.getOfferIds()) {
-                List<OfferRevision> revisions = queryView("by_offerId", offerId.toString()).syncGet();
+                List<OfferRevision> revisions = queryView("by_offerId", offerId.toString()).get();
                 if (!StringUtils.isEmpty(options.getStatus())) {
                     Iterator<OfferRevision> iterator = revisions.iterator();
                     while (iterator.hasNext()) {
@@ -67,10 +67,10 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
             }
         } else if (!StringUtils.isEmpty(options.getStatus())){
             offerRevisions = queryView("by_status", options.getStatus().toUpperCase(),
-                    options.getValidSize(), options.getValidStart(), false).syncGet();
+                    options.getValidSize(), options.getValidStart(), false).get();
         } else {
             offerRevisions = queryView("by_offerId", null,
-                    options.getValidSize(), options.getValidStart(), false).syncGet();
+                    options.getValidSize(), options.getValidStart(), false).get();
         }
 
         return offerRevisions;
@@ -80,7 +80,7 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
     public List<OfferRevision> getRevisions(Collection<String> offerIds, Long timestamp) {
         List<OfferRevision> revisions = new ArrayList<>();
         for (String offerId : offerIds) {
-            List<OfferRevision> itemRevisions = queryView("by_offerId", offerId).syncGet();
+            List<OfferRevision> itemRevisions = queryView("by_offerId", offerId).get();
             OfferRevision revision = null;
             Long maxTimestamp = 0L;
             for (OfferRevision itemRevision : itemRevisions) {
@@ -102,12 +102,12 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
 
     @Override
     public List<OfferRevision> getRevisions(String itemId) {
-        return queryView("by_itemId", itemId).syncGet();
+        return queryView("by_itemId", itemId).get();
     }
 
     @Override
     public List<OfferRevision> getRevisionsBySubOfferId(String offerId) {
-        return queryView("by_subOfferId", offerId).syncGet();
+        return queryView("by_subOfferId", offerId).get();
     }
 
     @Override

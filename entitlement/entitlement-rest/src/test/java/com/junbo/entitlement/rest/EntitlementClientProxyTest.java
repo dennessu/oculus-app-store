@@ -48,22 +48,22 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
     @Test(enabled = false)
     public void testCreate() throws ExecutionException, InterruptedException {
         Entitlement entitlement = buildAnEntitlement();
-        entitlement = entitlementResourceClientProxy.postEntitlement(entitlement).testGet();
+        entitlement = entitlementResourceClientProxy.postEntitlement(entitlement).get();
         Assert.assertNotNull(entitlement.getId());
     }
 
     @Test(enabled = false)
     public void testUpdate() throws ExecutionException, InterruptedException {
-        Entitlement entitlement = entitlementResourceClientProxy.postEntitlement(buildAnEntitlement()).testGet();
+        Entitlement entitlement = entitlementResourceClientProxy.postEntitlement(buildAnEntitlement()).get();
         Date now = new Date();
         entitlement.setExpirationTime(now);
-        entitlement = entitlementResourceClientProxy.updateEntitlement(new EntitlementId(entitlement.getId()), entitlement).testGet();
+        entitlement = entitlementResourceClientProxy.updateEntitlement(new EntitlementId(entitlement.getId()), entitlement).get();
         Assert.assertTrue(Math.abs(entitlement.getExpirationTime().getTime() - now.getTime()) <= 1000);
     }
 
     @Test(enabled = false)
     public void testDelete() throws ExecutionException, InterruptedException {
-        Entitlement entitlement = entitlementResourceClientProxy.postEntitlement(buildAnEntitlement()).testGet();
+        Entitlement entitlement = entitlementResourceClientProxy.postEntitlement(buildAnEntitlement()).get();
         entitlementResourceClientProxy.deleteEntitlement(new EntitlementId(entitlement.getId()));
         try {
             entitlementResourceClientProxy.getEntitlement(new EntitlementId(entitlement.getId()));
@@ -77,14 +77,14 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
         Long userId = idGenerator.nextId();
         Entitlement entitlement = buildAnEntitlement();
         entitlement.setUserId(userId);
-        entitlementResourceClientProxy.postEntitlement(entitlement).testGet();
-        entitlementResourceClientProxy.postEntitlement(entitlement).testGet();
+        entitlementResourceClientProxy.postEntitlement(entitlement).get();
+        entitlementResourceClientProxy.postEntitlement(entitlement).get();
         EntitlementSearchParam searchParam = new EntitlementSearchParam.Builder(new UserId(userId)).isActive(true).lastModifiedTime("2014-01-01T00:00:00Z").build();
-        Results<Entitlement> result = entitlementResourceClientProxy.searchEntitlements(searchParam, new PageMetadata()).testGet();
+        Results<Entitlement> result = entitlementResourceClientProxy.searchEntitlements(searchParam, new PageMetadata()).get();
         Assert.assertEquals(result.getItems().size(), 2);
         searchParam.setIsBanned(true);
         searchParam.setIsActive(null);
-        result = entitlementResourceClientProxy.searchEntitlements(searchParam, new PageMetadata()).testGet();
+        result = entitlementResourceClientProxy.searchEntitlements(searchParam, new PageMetadata()).get();
         Assert.assertEquals(result.getItems().size(), 0);
     }
 
@@ -97,10 +97,10 @@ public class EntitlementClientProxyTest extends AbstractTestNGSpringContextTests
         item.setOwnerId(new OrganizationId(idGenerator.nextId()));
         item.setGenres(new ArrayList<String>());
         try {
-            item = itemResourceClientProxy.create(item).testGet();
-            ItemRevision revision = itemRevisionResourceClientProxy.createItemRevision(buildAnItemRevision(item)).testGet();
+            item = itemResourceClientProxy.create(item).get();
+            ItemRevision revision = itemRevisionResourceClientProxy.createItemRevision(buildAnItemRevision(item)).get();
             revision.setStatus(Status.APPROVED.name());
-            itemRevisionResourceClientProxy.updateItemRevision(revision.getRevisionId(), revision).testGet();
+            itemRevisionResourceClientProxy.updateItemRevision(revision.getRevisionId(), revision).get();
         } catch (Exception e) {
             e.printStackTrace();
         }

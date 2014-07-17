@@ -66,7 +66,7 @@ class ValidationImpl implements Validation {
         validateCouponCodes(cart)
         // validate if cart with the name already exist
         if (cart.cartName == CartServiceImpl.CART_NAME_PRIMARY ||
-            Promise.get { return cartPersistService.get(clientId, cart.cartName, userId) } != null) {
+                cartPersistService.get(clientId, cart.cartName, userId).get() != null) {
             throw AppErrors.INSTANCE.cartAlreadyExists(userId, cart.cartName).exception()
         }
         return this

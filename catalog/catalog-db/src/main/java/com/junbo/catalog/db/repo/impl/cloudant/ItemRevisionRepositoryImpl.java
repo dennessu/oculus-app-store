@@ -52,7 +52,7 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
             }
         } else if (!CollectionUtils.isEmpty(options.getItemIds())) {
             for (String itemId : options.getItemIds()) {
-                List<ItemRevision> revisions = queryView("by_itemId", itemId).syncGet();
+                List<ItemRevision> revisions = queryView("by_itemId", itemId).get();
                 if (!StringUtils.isEmpty(options.getStatus())) {
                     Iterator<ItemRevision> iterator = revisions.iterator();
                     while (iterator.hasNext()) {
@@ -66,9 +66,9 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
             }
         } else if (!StringUtils.isEmpty(options.getStatus())){
             itemRevisions = queryView("by_status", options.getStatus().toUpperCase(),
-                    options.getValidSize(), options.getValidStart(), false).syncGet();
+                    options.getValidSize(), options.getValidStart(), false).get();
         } else {
-            itemRevisions = queryView("by_itemId", null, options.getValidSize(), options.getValidStart(), false).syncGet();
+            itemRevisions = queryView("by_itemId", null, options.getValidSize(), options.getValidStart(), false).get();
         }
 
         return itemRevisions;
@@ -78,7 +78,7 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
     public List<ItemRevision> getRevisions(Collection<String> itemIds, Long timestamp) {
         List<ItemRevision> revisions = new ArrayList<>();
         for (String itemId : itemIds) {
-            List<ItemRevision> itemRevisions = queryView("by_itemId", itemId).syncGet();
+            List<ItemRevision> itemRevisions = queryView("by_itemId", itemId).get();
             ItemRevision revision = null;
             Long maxTimestamp = 0L;
             for (ItemRevision itemRevision : itemRevisions) {
@@ -100,7 +100,7 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
 
     @Override
     public List<ItemRevision> getRevisions(String hostItemId) {
-        List<ItemRevision> itemRevisions = queryView("by_hostItemId", hostItemId).syncGet();
+        List<ItemRevision> itemRevisions = queryView("by_hostItemId", hostItemId).get();
         Set<String> itemIds = new HashSet<>();
         Set<String> itemRevisionIds = new HashSet<>();
         for (ItemRevision itemRevision : itemRevisions) {

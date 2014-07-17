@@ -45,22 +45,22 @@ public class PaymentInstrumentRepositoryFacadeImpl implements PaymentInstrumentR
     }
 
     public void save(PaymentInstrument paymentInstrument){
-        PaymentInstrument saved = paymentInstrumentRepository.create(paymentInstrument).syncGet();
+        PaymentInstrument saved = paymentInstrumentRepository.create(paymentInstrument).get();
         if (PIType.CREDITCARD.getId().equals(paymentInstrument.getType())) {
             CreditCardDetail creditCardDetail = paymentMapperExtension.toSpecificDetail(paymentInstrument.getTypeSpecificDetails(), PIType.CREDITCARD);
             creditCardDetail.setId(saved.getId());
             creditCardDetail.setLastBillingDate(new Date());
-            creditCardDetailRepository.create(creditCardDetail).syncGet();
+            creditCardDetailRepository.create(creditCardDetail).get();
         }
         paymentInstrument.setId(saved.getId());
     }
 
     public void delete(Long paymentInstrumentId){
-        paymentInstrumentRepository.delete(paymentInstrumentId).syncGet();
+        paymentInstrumentRepository.delete(paymentInstrumentId).get();
     }
 
     public void update(PaymentInstrument request){
-        PaymentInstrument pi = paymentInstrumentRepository.get(request.getId()).syncGet();
+        PaymentInstrument pi = paymentInstrumentRepository.get(request.getId()).get();
         //setup column allowed to be updated:
         pi.setLabel(request.getLabel());
         pi.setAccountNum(request.getAccountNum());
@@ -73,19 +73,19 @@ public class PaymentInstrumentRepositoryFacadeImpl implements PaymentInstrumentR
         if (request.getIsActive() != null) {
             pi.setIsActive(request.getIsActive());
         }
-        paymentInstrumentRepository.update(pi, pi).syncGet();
+        paymentInstrumentRepository.update(pi, pi).get();
 
         if (PIType.CREDITCARD.getId().equals(request.getType())) {
             CreditCardDetail creditCardDetail = paymentMapperExtension.toSpecificDetail(request.getTypeSpecificDetails(), PIType.CREDITCARD);
-            CreditCardDetail existing = creditCardDetailRepository.get(pi.getId()).syncGet();
+            CreditCardDetail existing = creditCardDetailRepository.get(pi.getId()).get();
             // setup column allowed to be updated:
             existing.setExpireDate(creditCardDetail.getExpireDate());
-            creditCardDetailRepository.update(existing, existing).syncGet();
+            creditCardDetailRepository.update(existing, existing).get();
         }
     }
 
     public void updateExternalInfo(Long paymentInstrumentId, String externalToken, String label, String num){
-        PaymentInstrument pi = paymentInstrumentRepository.get(paymentInstrumentId).syncGet();
+        PaymentInstrument pi = paymentInstrumentRepository.get(paymentInstrumentId).get();
         if (!CommonUtil.isNullOrEmpty(externalToken)) {
             pi.setExternalToken(externalToken);
         }
@@ -95,11 +95,11 @@ public class PaymentInstrumentRepositoryFacadeImpl implements PaymentInstrumentR
         if (!CommonUtil.isNullOrEmpty(num)) {
             pi.setAccountNum(num);
         }
-        paymentInstrumentRepository.update(pi, pi).syncGet();
+        paymentInstrumentRepository.update(pi, pi).get();
     }
 
     public PaymentInstrument getByPIId(Long piId){
-        PaymentInstrument pi = paymentInstrumentRepository.get(piId).syncGet();
+        PaymentInstrument pi = paymentInstrumentRepository.get(piId).get();
         if (pi == null) {
             return null;
         }
@@ -110,7 +110,7 @@ public class PaymentInstrumentRepositoryFacadeImpl implements PaymentInstrumentR
 
     public List<PaymentInstrument> getByUserId(Long userId){
         List<PaymentInstrument> result = new ArrayList<PaymentInstrument>();
-        List<PaymentInstrument> piList = paymentInstrumentRepository.getByUserId(userId).syncGet();
+        List<PaymentInstrument> piList = paymentInstrumentRepository.getByUserId(userId).get();
         for (PaymentInstrument piItem : piList) {
             setAdditionalInfo(piItem);
             result.add(piItem);
@@ -121,7 +121,7 @@ public class PaymentInstrumentRepositoryFacadeImpl implements PaymentInstrumentR
     public List<PaymentInstrument> search(Long userId, PaymentInstrumentSearchParam searchParam, PageMetaData pageMetadata) {
         List<PaymentInstrument> result = new ArrayList<PaymentInstrument>();
         List<PaymentInstrument> piList = paymentInstrumentRepository.getByUserAndType(userId,
-                CommonUtil.isNullOrEmpty(searchParam.getType()) ? null : PIType.valueOf(searchParam.getType())).syncGet();
+                CommonUtil.isNullOrEmpty(searchParam.getType()) ? null : PIType.valueOf(searchParam.getType())).get();
         for (PaymentInstrument piItem : piList) {
             setAdditionalInfo(piItem);
             result.add(piItem);
@@ -132,7 +132,7 @@ public class PaymentInstrumentRepositoryFacadeImpl implements PaymentInstrumentR
 
     private void setAdditionalInfo(PaymentInstrument pi) {
         if (PIType.CREDITCARD.getId().equals(pi.getType())) {
-            CreditCardDetail ccDetail = creditCardDetailRepository.get(pi.getId()).syncGet();
+            CreditCardDetail ccDetail = creditCardDetailRepository.get(pi.getId()).get();
             pi.setTypeSpecificDetails(paymentMapperExtension.toTypeSpecificDetails(ccDetail));
         }
     }

@@ -37,6 +37,6 @@ class OrderAuthorizeCallbackFactory extends AbstractAuthorizeCallbackFactory<Ord
     }
 
     AuthorizeCallback<Order> create(OrderId orderId) {
-        return create(Promise.get { orderResource.getOrderByOrderId(orderId) })
+        return create(orderResource.getOrderByOrderId(orderId).get())
     }
 }

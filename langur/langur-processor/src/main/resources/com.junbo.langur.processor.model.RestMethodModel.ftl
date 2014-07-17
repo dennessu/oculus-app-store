@@ -12,7 +12,6 @@ public void ${methodName}([#list parameters as parameter][@includeModel model=pa
 
     try {
         ${adapteeType} adaptee = __adaptee;
-        boolean isSync = ${isSync?c};
 
         // check whether routing is needed
         if (__router != null) {
@@ -23,13 +22,8 @@ public void ${methodName}([#list parameters as parameter][@includeModel model=pa
             });
             if (url != null) {
                 adaptee = __clientFactory.create(url);
-
-                // always use async for routing
-                isSync = false;
-            }
+           }
         }
-
-        com.junbo.langur.core.promise.ExecutorContext.setAsyncMode(!isSync);
 
         Promise<${returnType}> future = adaptee.${methodName}(
             [#list parameters as parameter]
@@ -54,7 +48,6 @@ public void ${methodName}([#list parameters as parameter][@includeModel model=pa
 
                 __asyncResponse.resume(result);
                 __scope.close();
-                com.junbo.langur.core.promise.ExecutorContext.resetAsyncMode();
             }
         });
 
@@ -63,13 +56,11 @@ public void ${methodName}([#list parameters as parameter][@includeModel model=pa
             public void invoke(Throwable result) {
                 __asyncResponse.resume(result);
                 __scope.close();
-                com.junbo.langur.core.promise.ExecutorContext.resetAsyncMode();
             }
         });
     } catch (Throwable ex) {
         __asyncResponse.resume(ex);
         __scope.close();
-        com.junbo.langur.core.promise.ExecutorContext.resetAsyncMode();
         return;
     }
 }

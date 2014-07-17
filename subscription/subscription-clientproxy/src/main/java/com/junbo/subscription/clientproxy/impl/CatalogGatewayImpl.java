@@ -12,9 +12,7 @@ import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions;
 import com.junbo.catalog.spec.resource.ItemResource;
 import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
-import com.junbo.langur.core.promise.SyncModeScope;
 import com.junbo.subscription.clientproxy.CatalogGateway;
-
 import com.junbo.subscription.common.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -58,10 +56,10 @@ public class CatalogGatewayImpl implements CatalogGateway {
     }
 
     protected Offer retrieveOffer(String offerId, Long timestamp) {
-        try (SyncModeScope scope = new SyncModeScope()) {
+        try {
             // TODO
             com.junbo.catalog.spec.model.offer.Offer offer =
-                    offerResource.getOffer(offerId).syncGet();
+                    offerResource.getOffer(offerId).get();
 
             if (offer == null) {
                 throw new ResourceNotFoundException(
@@ -75,10 +73,10 @@ public class CatalogGatewayImpl implements CatalogGateway {
     }
 
     protected OfferRevision retrieveOfferRev(String offerRevId) {
-        try (SyncModeScope scope = new SyncModeScope()) {
+        try {
             // TODO
             OfferRevision offerRev =
-                    offerRevResource.getOfferRevision(offerRevId, new OfferRevisionGetOptions()).syncGet();
+                    offerRevResource.getOfferRevision(offerRevId, new OfferRevisionGetOptions()).get();
 
             if (offerRev == null) {
                 throw new ResourceNotFoundException(
@@ -92,10 +90,10 @@ public class CatalogGatewayImpl implements CatalogGateway {
     }
 
     protected Item retrieveItem(String itemId) {
-        try (SyncModeScope scope = new SyncModeScope()) {
+        try {
             // TODO
             Item item =
-                    itemResource.getItem(itemId).syncGet();
+                    itemResource.getItem(itemId).get();
 
             if (item == null) {
                 throw new ResourceNotFoundException(

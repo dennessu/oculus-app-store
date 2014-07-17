@@ -47,8 +47,7 @@ class EmailListenerSqlImpl extends EmailBaseListener implements EmailListener {
     }
 
     public void sendEmail(String emailId) {
-        def email = Promise.get {
-            this.findEmail(emailId).recover {Throwable throwable ->
+        def email = this.findEmail(emailId).recover {Throwable throwable ->
                 LOGGER.error('EMAIL_LISTENER_ERROR. Failed to get email:',throwable)
             }.then { Email email ->
                 if (email == null) {
@@ -70,8 +69,7 @@ class EmailListenerSqlImpl extends EmailBaseListener implements EmailListener {
                         return this.updateEmail(updatedEmail)
                     }
                 }
-            }
-        }
+            }.get()
 
         if (email != null) {
             LOGGER.info('EMAIL_LISTENER_INFO. Email has been sent')

@@ -9,6 +9,7 @@ package com.junbo.catalog.spec.resource;
 import com.junbo.catalog.spec.model.promotion.PromotionRevision;
 import com.junbo.catalog.spec.model.promotion.PromotionRevisionsGetOptions;
 import com.junbo.common.model.Results;
+import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -22,7 +23,8 @@ import javax.ws.rs.core.MediaType;
 @Path("promotion-revisions")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@RestResource(sync = true)
+@RestResource
+@InProcessCallable
 public interface PromotionRevisionResource {
     //@ApiOperation("Get or search promotion revisions")
     @GET

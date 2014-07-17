@@ -20,7 +20,7 @@ import javax.ws.rs.core.Response;
 @Path("/notification")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@RestResource(sync = true)
+@RestResource
 @InProcessCallable
 public interface PaymentNotificationResource {
     //use String other than Object, avoid interface changes from provider

@@ -61,7 +61,7 @@ class JunboApplication {
         }
     }
 
-    static class JunboApplicationContext extends ClassPathXmlApplicationContext {
+    public static class JunboApplicationContext extends ClassPathXmlApplicationContext {
 
         boolean isRefreshed = false
 

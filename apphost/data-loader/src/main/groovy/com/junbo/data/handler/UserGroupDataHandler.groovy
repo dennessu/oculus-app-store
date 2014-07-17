@@ -72,12 +72,12 @@ class UserGroupDataHandler extends BaseDataHandler {
         Organization organization = null
         User organizationOwner = null
         try {
-            Results<User> userResults = userResource.list(new UserListOptions(username: userGroupDataData.organizationOwner)).syncGet()
+            Results<User> userResults = userResource.list(new UserListOptions(username: userGroupDataData.organizationOwner)).get()
             if (userResults != null && userResults.items != null && userResults.items.size() > 0) {
                 organizationOwner = userResults.items.get(0)
             }
 
-            Results<Organization> organizationResults = organizationResource.list(new OrganizationListOptions(ownerId: organizationOwner.id as UserId)).syncGet()
+            Results<Organization> organizationResults = organizationResource.list(new OrganizationListOptions(ownerId: organizationOwner.id as UserId)).get()
             if (organizationResults != null && organizationResults.items != null && organizationResults.items.size() > 0) {
                 organizationResults.items.retainAll{ Organization organization1 ->
                     organization1.name == userGroupDataData.organizationName
@@ -89,7 +89,7 @@ class UserGroupDataHandler extends BaseDataHandler {
             }
 
             Results<Group> groupResults = groupResource.list(
-                    new GroupListOptions(organizationId: organization.id as OrganizationId, name: userGroupDataData.groupName)).syncGet()
+                    new GroupListOptions(organizationId: organization.id as OrganizationId, name: userGroupDataData.groupName)).get()
 
             if (groupResults != null && groupResults.items != null && groupResults.items.size() > 0) {
                 if (groupResults.items.size() > 0) {
@@ -97,7 +97,7 @@ class UserGroupDataHandler extends BaseDataHandler {
                 }
             }
 
-            Results<User> results = userResource.list(new UserListOptions(username: userGroupDataData.username)).syncGet()
+            Results<User> results = userResource.list(new UserListOptions(username: userGroupDataData.username)).get()
             if (results != null && results.items != null && results.items.size() > 0) {
                 user = results.items.get(0)
             }
@@ -105,14 +105,14 @@ class UserGroupDataHandler extends BaseDataHandler {
             Results<UserGroup> userGroupResults = userGroupMembershipResource.list(new UserGroupListOptions(
                     userId: user.id as UserId,
                     groupId: group.id as GroupId
-            )).syncGet()
+            )).get()
 
             if (userGroupResults != null && userGroupResults.items != null && userGroupResults.items.size() > 0) {
                 existing = userGroupResults.items.get(0)
             }
 
             /*
-            Results<User> results2 = userResource.list(new UserListOptions(groupId: group.id as GroupId)).syncGet()
+            Results<User> results2 = userResource.list(new UserListOptions(groupId: group.id as GroupId)).get()
             if (results2 != null && results2.items != null && results2.items.size() > 0) {
                 results2.items.removeAll{ User u ->
                     u.id != user.id
@@ -132,7 +132,7 @@ class UserGroupDataHandler extends BaseDataHandler {
 
             logger.debug("Create new userGroup")
             try {
-                userGroupMembershipResource.create(userGroup).syncGet()
+                userGroupMembershipResource.create(userGroup).get()
             } catch (Exception e) {
                 logger.info("Error creating userGroup.", e)
             }

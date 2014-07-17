@@ -32,21 +32,21 @@ class SubledgerRepositoryCloudantTest extends BaseTest {
         subledger.id = new SubledgerId(idGenerator.nextId())
         subledger.startTime = startTime;
 
-        def created = subledgerRepositoryCloudant.create(subledger).testGet()
+        def created = subledgerRepositoryCloudant.create(subledger).get()
         assert created.currency == subledger.currency
         def find = subledgerRepositoryCloudant.find(sellerId, PayoutStatus.COMPLETED.name(),
                 subledger.offer, startTime, subledger.currency,
-            subledger.country).testGet()
+            subledger.country).get()
         assert created.id == find.id
 
         find = subledgerRepositoryCloudant.find(sellerId, PayoutStatus.COMPLETED.name(),
                 subledger.offer, new Date(startTime.getTime() + 100000), subledger.currency,
-                subledger.country).testGet()
+                subledger.country).get()
         assert find == null
 
         find = subledgerRepositoryCloudant.find(sellerId, PayoutStatus.COMPLETED.name(),
                 subledger.offer, startTime, new CurrencyId('A'),
-                subledger.country).testGet()
+                subledger.country).get()
         assert find == null
     }
 
@@ -63,50 +63,50 @@ class SubledgerRepositoryCloudantTest extends BaseTest {
                 subledger.startTime = time
                 subledger.payoutStatus = sample.payoutStatus
                 subledger.seller = sample.seller
-                subledgerRepositoryCloudant.create(subledger).testGet()
+                subledgerRepositoryCloudant.create(subledger).get()
             }
 
         }
 
         assert subledgerRepositoryCloudant.list(new SubledgerParam(sellerId: sample.seller, payOutStatus: 'NotExist'),
-            null).testGet().isEmpty()
+            null).get().isEmpty()
 
         assert subledgerRepositoryCloudant.list(
                 new SubledgerParam(sellerId: sample.seller, payOutStatus: sample.payoutStatus),
-                null).testGet().size() == 16
+                null).get().size() == 16
 
         assert subledgerRepositoryCloudant.list(
                 new SubledgerParam(sellerId: sample.seller, payOutStatus: sample.payoutStatus),
-                new PageParam(start: 14)).testGet().size() == 2
+                new PageParam(start: 14)).get().size() == 2
 
         assert subledgerRepositoryCloudant.list(
                 new SubledgerParam(sellerId: sample.seller, payOutStatus: sample.payoutStatus),
-                new PageParam(start: 0, count: 5)).testGet().size() == 5
+                new PageParam(start: 0, count: 5)).get().size() == 5
 
         assert subledgerRepositoryCloudant.list(
                 new SubledgerParam(sellerId: sample.seller, payOutStatus: sample.payoutStatus,
                         fromDate: new Date(startTime.time + 2 * 1000)), null
-                ).testGet().size() == 12
+                ).get().size() == 12
 
         assert subledgerRepositoryCloudant.list(
                 new SubledgerParam(sellerId: sample.seller, payOutStatus: sample.payoutStatus,
                         toDate: new Date(startTime.time + 2 * 1000)), null
-        ).testGet().size() == 4
+        ).get().size() == 4
 
         assert subledgerRepositoryCloudant.list(
                 new SubledgerParam(sellerId: sample.seller, payOutStatus: sample.payoutStatus,
                       fromDate: new Date(startTime.time + 3 * 1000), toDate: new Date(startTime.time + 3 * 1000)), null
-        ).testGet().size() == 0
+        ).get().size() == 0
 
         assert subledgerRepositoryCloudant.list(
                 new SubledgerParam(sellerId: sample.seller, payOutStatus: sample.payoutStatus,
                         fromDate: new Date(startTime.time + 3 * 1000), toDate: new Date(startTime.time + 5 * 1000)), null
-        ).testGet().size() == 4
+        ).get().size() == 4
 
         subledgerRepositoryCloudant.list(
                 new SubledgerParam(sellerId: sample.seller, payOutStatus: sample.payoutStatus,
                         fromDate: new Date(startTime.time + 3 * 1000), toDate: new Date(startTime.time + 5 * 1000)), null
-        ).testGet().each { it
+        ).get().each { it
             assert (long) (it.startTime.getTime() / 1000) >=
                     (long) (new Date(startTime.time + 3 * 1000).getTime() / 1000)
             assert (long) (it.startTime.getTime() / 1000) <

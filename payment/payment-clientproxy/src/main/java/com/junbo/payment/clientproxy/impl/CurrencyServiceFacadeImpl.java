@@ -33,11 +33,11 @@ public class CurrencyServiceFacadeImpl implements CurrencyServiceFacade {
         if (currencyId == null) {
             throw AppClientExceptions.INSTANCE.missingCurrency().exception();
         }
-        Currency currency = currencyResource.get(currencyId, new CurrencyGetOptions()).syncGet();
+        Currency currency = currencyResource.get(currencyId, new CurrencyGetOptions()).get();
         if (currency == null) {
             throw AppClientExceptions.INSTANCE.invalidCurrency(currencyId.getValue()).exception();
         }
-        Long numbers = getNumberAfterDecimal(currency.getCurrencyCode()).syncGet();
+        Long numbers = getNumberAfterDecimal(currency.getCurrencyCode()).get();
         return Promise.pure(new Long(currency.getMinAuthAmount().multiply(new BigDecimal(numbers)).longValue()));
     }
 
@@ -45,7 +45,7 @@ public class CurrencyServiceFacadeImpl implements CurrencyServiceFacade {
         if (CommonUtil.isNullOrEmpty(currencyCode)) {
             throw AppClientExceptions.INSTANCE.invalidCurrency(currencyCode).exception();
         }
-        Currency currency = currencyResource.get(new CurrencyId(currencyCode), new CurrencyGetOptions()).syncGet();
+        Currency currency = currencyResource.get(new CurrencyId(currencyCode), new CurrencyGetOptions()).get();
         if (currency == null) {
             throw AppClientExceptions.INSTANCE.invalidCurrency(currencyCode).exception();
         }

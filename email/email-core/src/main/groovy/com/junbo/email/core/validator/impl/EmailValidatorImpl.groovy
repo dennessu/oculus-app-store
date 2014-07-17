@@ -52,13 +52,13 @@ class EmailValidatorImpl extends CommonValidator implements EmailValidator {
         if (id == null) {
             throw AppCommonErrors.INSTANCE.fieldRequired('id').exception()
         }
-        if (Promise.get { emailScheduleRepository.getEmailSchedule(id) } == null) {
+        if (emailScheduleRepository.getEmailSchedule(id).get() == null) {
             throw AppErrors.INSTANCE.emailScheduleNotFound(id).exception()
         }
     }
 
     private void validateEmailSchedule(Email email) {
-        Email schedule = Promise.get { emailScheduleRepository.getEmailSchedule(email.getId().value) }
+        Email schedule = emailScheduleRepository.getEmailSchedule(email.getId().value).get()
         if (schedule == null) {
             throw AppErrors.INSTANCE.emailScheduleNotFound(email.getId().getValue()).exception()
         }

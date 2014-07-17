@@ -44,9 +44,9 @@ public class ItemAttributeRepositoryImpl extends CloudantClient<ItemAttribute> i
             return attributes;
         } else if (!StringUtils.isEmpty(options.getAttributeType())){
             return queryView("by_type", options.getAttributeType(),
-                    options.getValidSize(), options.getValidStart(), false).syncGet();
+                    options.getValidSize(), options.getValidStart(), false).get();
         } else {
-            return queryView("by_attributeId", null, options.getValidSize(), options.getValidStart(), false).syncGet();
+            return queryView("by_attributeId", null, options.getValidSize(), options.getValidStart(), false).get();
         }
     }
 

@@ -79,7 +79,7 @@ class EmailTemplateValidatorImpl extends CommonValidator implements EmailTemplat
     }
 
     private void validateTemplateName(String name) {
-        EmailTemplate template = Promise.get { emailTemplateRepository.getEmailTemplateByName(name) }
+        EmailTemplate template = emailTemplateRepository.getEmailTemplateByName(name).get()
         if (template != null) {
             throw AppErrors.INSTANCE.emailTemplateAlreadyExist(name).exception()
         }
@@ -95,7 +95,7 @@ class EmailTemplateValidatorImpl extends CommonValidator implements EmailTemplat
     }
 
     private void validateTemplateId(String id) {
-        EmailTemplate template = Promise.get { emailTemplateRepository.getEmailTemplate(id) }
+        EmailTemplate template = emailTemplateRepository.getEmailTemplate(id).get()
         if (template == null) {
             throw AppErrors.INSTANCE.templateNotFound(id).exception()
         }

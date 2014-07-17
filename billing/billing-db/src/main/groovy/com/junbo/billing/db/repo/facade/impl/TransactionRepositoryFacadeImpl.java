@@ -10,7 +10,6 @@ import com.junbo.billing.db.repo.TransactionRepository;
 import com.junbo.billing.db.repo.facade.TransactionRepositoryFacade;
 import com.junbo.billing.spec.model.Transaction;
 import com.junbo.common.id.TransactionId;
-import com.junbo.langur.core.promise.SyncModeScope;
 import org.springframework.beans.factory.annotation.Required;
 
 import java.util.List;
@@ -28,29 +27,21 @@ public class TransactionRepositoryFacadeImpl implements TransactionRepositoryFac
 
     @Override
     public Transaction saveTransaction(Transaction transaction) {
-        try (SyncModeScope scope = new SyncModeScope()) {
-            return transactionRepository.create(transaction).syncGet();
-        }
+        return transactionRepository.create(transaction).get();
     }
 
     @Override
     public Transaction getTransaction(Long transactionId) {
-        try (SyncModeScope scope = new SyncModeScope()) {
-            return transactionRepository.get(new TransactionId(transactionId)).syncGet();
-        }
+        return transactionRepository.get(new TransactionId(transactionId)).get();
     }
 
     @Override
     public List<Transaction> getTransactions(Long balanceId) {
-        try (SyncModeScope scope = new SyncModeScope()) {
-            return transactionRepository.getByBalanceId(balanceId).syncGet();
-        }
+        return transactionRepository.getByBalanceId(balanceId).get();
     }
 
     @Override
     public Transaction updateTransaction(Transaction transaction, Transaction oldTransaction) {
-        try (SyncModeScope scope = new SyncModeScope()) {
-            return transactionRepository.update(transaction, oldTransaction).syncGet();
-        }
+        return transactionRepository.update(transaction, oldTransaction).get();
     }
 }

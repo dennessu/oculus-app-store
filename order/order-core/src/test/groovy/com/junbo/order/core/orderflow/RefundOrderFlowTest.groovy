@@ -53,7 +53,7 @@ class RefundOrderFlowTest extends BaseTest {
         orderActionContext.trackingUuid = UUID.randomUUID()
         requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
 
-        def ratedOrder = orderInternalService.rateOrder(order, orderActionContext.orderServiceContext).testGet()
+        def ratedOrder = orderInternalService.rateOrder(order, orderActionContext.orderServiceContext).get()
         repo.createOrder(ratedOrder)
 
         //mock balance
@@ -71,17 +71,17 @@ class RefundOrderFlowTest extends BaseTest {
 
         repo.createBillingHistory(order.id.value, billingHistory)
         orderActionContext.orderServiceContext.order =
-                orderService.getOrderByOrderId(order.getId().value, true, new OrderServiceContext()).testGet()
+                orderService.getOrderByOrderId(order.getId().value, true, new OrderServiceContext()).get()
 
         orderActionContext.orderServiceContext.order.orderItems = []
         def context = executor.start(
                 'MOCK_REFUND_ORDER',
-                requestScope).testGet()
+                requestScope).get()
         // Check the order is same as the returned order
         def o = ActionUtils.getOrderActionContext(context).orderServiceContext.order
         assert (o != null)
 
-        def getOrder = orderService.getOrderByOrderId(o.getId().value, true, new OrderServiceContext()).testGet()
+        def getOrder = orderService.getOrderByOrderId(o.getId().value, true, new OrderServiceContext()).get()
         assert (o.getId().value == getOrder.getId().value)
         assert (o.status == OrderStatus.REFUNDED.name())
     }

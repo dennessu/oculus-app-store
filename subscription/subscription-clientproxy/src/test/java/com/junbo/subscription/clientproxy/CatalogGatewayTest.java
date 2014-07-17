@@ -107,7 +107,7 @@ public class CatalogGatewayTest extends AbstractTestNGSpringContextTests {
 
     public String createItem(Item item) {
         try {
-            return itemResource.create(item).testGet().getItemId();
+            return itemResource.create(item).get().getItemId();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -115,7 +115,7 @@ public class CatalogGatewayTest extends AbstractTestNGSpringContextTests {
 
     public String createOffer(Offer offer) {
         try {
-            return offerResource.create(offer).testGet().getOfferId();
+            return offerResource.create(offer).get().getOfferId();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -123,7 +123,7 @@ public class CatalogGatewayTest extends AbstractTestNGSpringContextTests {
 
     public String createOfferRevision(OfferRevision offerRevision) {
         try {
-            return offerRevisionResource.createOfferRevision(offerRevision).testGet().getRevisionId();
+            return offerRevisionResource.createOfferRevision(offerRevision).get().getRevisionId();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -131,7 +131,7 @@ public class CatalogGatewayTest extends AbstractTestNGSpringContextTests {
 
     public OfferRevision getOfferRevision(String offerRevisionId) {
         try {
-            return offerRevisionResource.getOfferRevision(offerRevisionId, new OfferRevisionGetOptions()).testGet();
+            return offerRevisionResource.getOfferRevision(offerRevisionId, new OfferRevisionGetOptions()).get();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }
@@ -141,7 +141,7 @@ public class CatalogGatewayTest extends AbstractTestNGSpringContextTests {
         try {
             return offerRevisionResource.updateOfferRevision(
                     offerRevision.getRevisionId(),
-                    offerRevision).testGet().getRevisionId();
+                    offerRevision).get().getRevisionId();
         } catch (Exception e) {
             throw new RuntimeException("Error occurred during calling [Catalog] component service.", e);
         }

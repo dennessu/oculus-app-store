@@ -41,7 +41,7 @@ class CurrencyDataHandler extends BaseDataHandler {
 
         Currency existing = null
         try {
-            existing = currencyResource.get(new CurrencyId(currency.currencyCode), new CurrencyGetOptions()).syncGet()
+            existing = currencyResource.get(new CurrencyId(currency.currencyCode), new CurrencyGetOptions()).get()
         } catch (AppErrorException e) {
             logger.debug('This content does not exist in current database', e)
         }
@@ -52,7 +52,7 @@ class CurrencyDataHandler extends BaseDataHandler {
                 currency.id = (CurrencyId) existing.id
                 currency.rev = existing.rev
                 try {
-                    currencyResource.patch(new CurrencyId(currency.currencyCode), currency).syncGet()
+                    currencyResource.patch(new CurrencyId(currency.currencyCode), currency).get()
                 } catch (Exception e) {
                     logger.error("Error updating currency $currency.currencyCode.", e)
                 }
@@ -62,7 +62,7 @@ class CurrencyDataHandler extends BaseDataHandler {
         } else {
             logger.debug('Create new currency with this content')
             try {
-                currencyResource.create(currency).syncGet()
+                currencyResource.create(currency).get()
             } catch (Exception e) {
                 logger.error("Error creating currency $currency.currencyCode.", e)
             }

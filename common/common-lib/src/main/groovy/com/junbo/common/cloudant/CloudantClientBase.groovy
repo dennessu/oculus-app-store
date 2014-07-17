@@ -226,67 +226,67 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
     //region sync mode
 
     protected T cloudantPostSync(T entity) {
-        return (T)Promise.get { cloudantPost(entity) }
+        return (T) cloudantPost(entity).get()
     }
 
     protected T cloudantGetSync(String id) {
-        return (T)Promise.get { cloudantGet(id) }
+        return (T) cloudantGet(id).get()
     }
 
     protected T cloudantPutSync(T entity, T oldEntity) {
-        return (T)Promise.get { cloudantPut(entity, oldEntity) }
+        return (T) cloudantPut(entity, oldEntity).get()
     }
 
     protected void cloudantDeleteSync(String id) {
-        Promise.get { cloudantDelete(id) }
+        cloudantDelete(id).get()
     }
 
     protected void cloudantDeleteSync(T entity) {
-        Promise.get { cloudantDelete(entity) }
+        cloudantDelete(entity).get()
     }
 
     protected List<T> cloudantGetAllSync(Integer limit, Integer skip, boolean descending) {
-        return Promise.get { cloudantGetAll(limit, skip, descending) }
+        return cloudantGetAll(limit, skip, descending).get()
     }
 
     protected CloudantQueryResult queryViewSync(String viewName, String key, Integer limit, Integer skip,
                                                      boolean descending, boolean includeDocs) {
-        return Promise.get { queryView(viewName, key, limit, skip, descending, includeDocs) }
+        return queryView(viewName, key, limit, skip, descending, includeDocs).get()
     }
 
     protected List<T> queryViewSync(String viewName, String key, Integer limit, Integer skip,
                                          boolean descending) {
-        return Promise.get { queryView(viewName, key, limit, skip, descending) }
+        return queryView(viewName, key, limit, skip, descending).get()
     }
 
     protected List<T> queryViewSync(String viewName, String key) {
-        return Promise.get { queryView(viewName, key) }
+        return queryView(viewName, key).get()
     }
 
     protected CloudantQueryResult queryViewSync(String viewName, String key, boolean includeDocs) {
-        return Promise.get { queryView(viewName, key, includeDocs) }
+        return queryView(viewName, key, includeDocs).get()
     }
 
     protected List<T> queryViewSync(String viewName, Object[] startKey, Object[] endKey, boolean withHighKey,
                                          Integer limit, Integer skip, boolean descending) {
-        return Promise.get { queryView(viewName, startKey, endKey, withHighKey, limit, skip, descending) }
+        return queryView(viewName, startKey, endKey, withHighKey, limit, skip, descending).get()
     }
 
     protected List<T> queryViewSync(String viewName, String startKey, String endKey, Integer limit, Integer skip,
                                          boolean descending) {
-        return Promise.get { queryView(viewName, startKey, endKey, limit, skip, descending) }
+        return queryView(viewName, startKey, endKey, limit, skip, descending).get()
     }
 
     protected CloudantQueryResult queryViewSync(String viewName, Object[] startKey, Object[] endKey, boolean withHighKey, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
-        return Promise.get { queryView(viewName, startKey, endKey, withHighKey, limit, skip, descending, includeDocs) }
+        return queryView(viewName, startKey, endKey, withHighKey, limit, skip, descending, includeDocs).get()
     }
 
     protected CloudantSearchResult<T> searchSync(String searchName, String queryString, Integer limit, String bookmark) {
-        return Promise.get { search(searchName, queryString, limit, bookmark) }
+        return search(searchName, queryString, limit, bookmark).get()
     }
 
     protected CloudantQueryResult searchSync(String searchName, String queryString, Integer limit, String bookmark, boolean includeDocs) {
-        return Promise.get { search(searchName, queryString, limit, bookmark, includeDocs) }
+        return search(searchName, queryString, limit, bookmark, includeDocs).get()
     }
 
     //endregion

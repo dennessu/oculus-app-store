@@ -58,14 +58,12 @@ class ClientCredentialsAccessTokenProvider implements AccessTokenProvider {
         if (tokenCache != null && new Date().before(tokenCache.expiresBy)) {
             return tokenCache.tokenValue
         } else {
-            def tokenResponse = Promise.get {
-                tokenEndpoint.postToken(new AccessTokenRequest(
+            def tokenResponse = tokenEndpoint.postToken(new AccessTokenRequest(
                         grantType: 'client_credentials',
                         clientId: clientId,
                         clientSecret: clientSecret,
                         scope: scope
-                ))
-            }
+                )).get()
 
             def newTokenCache = new TokenCache(tokenResponse.accessToken, tokenResponse.expiresIn)
             tokenCache = newTokenCache

@@ -5,5 +5,7 @@
 
     <bean id="junboThreadPool" class="com.junbo.apphost.core.JunboThreadPoolFactoryBean">
         <property name="maxPoolSize" value="${apphost.maxPoolSize}"/>
+        <property name="queueLimit" value="${apphost.queueLimit}"/>
+        <property name="keepAliveTimeMillis" value="${apphost.keepAliveTimeMillis}"/>
     </bean>
 </beans>

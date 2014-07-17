@@ -1,7 +1,6 @@
 package com.junbo.payment.core;
 
 import com.junbo.common.id.PIType;
-import com.junbo.langur.core.promise.ExecutorContext;
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
 import com.junbo.payment.core.provider.ProviderRoutingService;
 import com.junbo.payment.spec.model.PaymentInstrument;
@@ -60,13 +59,13 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
     @BeforeTest
     @SuppressWarnings("deprecation")
     public void setup() {
-        ExecutorContext.setAsyncMode(false);
+
     }
 
     @AfterTest
     @SuppressWarnings("deprecation")
     public void cleanup() {
-        ExecutorContext.resetAsyncMode();
+
     }
 
     //commit addPI since there is standalone commit in payment transaction, so that PI is available fir them
@@ -75,7 +74,7 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
         template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
         return template.execute(new TransactionCallback<PaymentInstrument>() {
             public PaymentInstrument doInTransaction(TransactionStatus txnStatus) {
-                return piService.add(request).testGet();
+                return piService.add(request).get();
             }
         });
     }

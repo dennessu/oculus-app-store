@@ -22,7 +22,7 @@ import javax.ws.rs.core.MediaType;
 @Path("/licenses")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@RestResource(sync = true)
+@RestResource
 public interface DrmResource {
     @ApiOperation("Grant a license.")
     @POST

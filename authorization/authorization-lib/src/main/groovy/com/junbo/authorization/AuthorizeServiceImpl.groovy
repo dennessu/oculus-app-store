@@ -102,9 +102,8 @@ class AuthorizeServiceImpl implements AuthorizeService {
         }
 
         try {
-            def apiDefinition = Promise.get {
-                return apiDefinitionEndpoint.get(apiName)
-            }
+            def apiDefinition = apiDefinitionEndpoint.get(apiName).get()
+
             apiDefinitionCache.put(new Element(apiName, apiDefinition))
 
             return apiDefinition

@@ -134,7 +134,7 @@ public class TokenServiceImpl implements TokenService {
         fulfilItem.setQuantity(1);
         fulfilItem.setItemReferenceId(item.getHashValue());
         fulfilmentRequest.setItems(Arrays.asList(fulfilItem));
-        fulfilmentClient.fulfill(fulfilmentRequest).syncGet();
+        fulfilmentClient.fulfill(fulfilmentRequest).get();
         return Promise.pure(result);
     }
 
@@ -258,9 +258,9 @@ public class TokenServiceImpl implements TokenService {
         Promotion promotion = null;
         try {
             if (type.equals(ProductType.PROMOTION)) {
-                promotion = promotionResource.getPromotion(productId).syncGet();
+                promotion = promotionResource.getPromotion(productId).get();
             } else if (type.equals(ProductType.OFFER)) {
-                offer = offerClient.getOffer(productId).syncGet();
+                offer = offerClient.getOffer(productId).get();
             }
         } catch (Exception ex) {
             if (ex instanceof AppErrorException && ((AppErrorException) ex).getError().getHttpStatusCode() == 404) {
@@ -323,7 +323,7 @@ public class TokenServiceImpl implements TokenService {
         if (consumption.getUserId() == null) {
             throw AppCommonErrors.INSTANCE.fieldRequired("user_id").exception();
         }
-        User user = userClient.get(new UserId(consumption.getUserId()), new UserGetOptions()).syncGet();
+        User user = userClient.get(new UserId(consumption.getUserId()), new UserGetOptions()).get();
         if (user == null) {
             throw AppCommonErrors.INSTANCE.fieldInvalid("userId").exception();
         }
@@ -372,13 +372,13 @@ public class TokenServiceImpl implements TokenService {
     private String encrypt(String data){
         CryptoMessage msg = new CryptoMessage();
         msg.setValue(data);
-        return cryptoResource.encrypt(msg).syncGet().getValue();
+        return cryptoResource.encrypt(msg).get().getValue();
     }
 
     private String decrypt(String data){
         CryptoMessage msg = new CryptoMessage();
         msg.setValue(data);
-        return cryptoResource.decrypt(msg).syncGet().getValue();
+        return cryptoResource.decrypt(msg).get().getValue();
     }
 
     @Required

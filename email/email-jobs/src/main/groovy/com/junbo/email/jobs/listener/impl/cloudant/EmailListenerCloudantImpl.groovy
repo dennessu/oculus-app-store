@@ -10,7 +10,6 @@ import com.junbo.email.jobs.listener.impl.EmailBaseListener
 import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.langur.core.promise.Promise
-import com.junbo.langur.core.promise.SyncModeScope
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -36,7 +35,7 @@ class EmailListenerCloudantImpl extends EmailBaseListener implements EmailListen
 
     private void sendEmail(String emailId) {
         emailHistoryRepository.getEmailHistory(emailId).recover { Throwable throwable ->
-            LOGGER.error('EMAIL_LISTENER_ERROR. Failed to get email:',throwable)
+            LOGGER.error('EMAIL_LISTENER_ERROR. Failed to get email:', throwable)
         }.then { Email email ->
             if (email == null) {
                 LOGGER.error('EMAIL_LISTENER_ERROR. Email not found with id:{}', emailId)
@@ -46,8 +45,7 @@ class EmailListenerCloudantImpl extends EmailBaseListener implements EmailListen
                 LOGGER.error('EMAIL_LISTENER_ERROR. EmailTemplate id should be not null')
                 return Promise.pure(null)
             }
-            def result = SyncModeScope.with {
-                return emailTemplateRepository.getEmailTemplate(email.templateId.value).recover {
+            def result = emailTemplateRepository.getEmailTemplate(email.templateId.value).recover {
                     Throwable throwable ->
                         LOGGER.error('EMAIL_LISTENER_ERROR. Failed to get email template:',throwable)
                 }.then { EmailTemplate template ->
@@ -58,8 +56,7 @@ class EmailListenerCloudantImpl extends EmailBaseListener implements EmailListen
                     return emailProvider.sendEmail(email, template).then {Email retEmail ->
                         return emailHistoryRepository.updateEmailHistory(retEmail, retEmail)
                     }
-                }.syncGet()
-            }
+                }.get()
 
             if (result != null) {
                 LOGGER.info('EMAIL_LISTENER_INFO. Email has been sent')

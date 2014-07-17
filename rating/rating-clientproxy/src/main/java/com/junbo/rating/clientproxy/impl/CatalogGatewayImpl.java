@@ -13,7 +13,6 @@ import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
 import com.junbo.catalog.spec.model.promotion.PromotionRevision;
 import com.junbo.catalog.spec.resource.*;
-import com.junbo.langur.core.promise.SyncModeScope;
 import com.junbo.rating.clientproxy.CatalogGateway;
 import com.junbo.rating.common.util.Constants;
 import com.junbo.rating.common.util.Utils;
@@ -36,7 +35,7 @@ import java.util.*;
 /**
  * Catalog gateway.
  */
-public class CatalogGatewayImpl implements CatalogGateway{
+public class CatalogGatewayImpl implements CatalogGateway {
     private static final Logger LOGGER = LoggerFactory.getLogger(CatalogGatewayImpl.class);
 
     @Autowired
@@ -65,8 +64,8 @@ public class CatalogGatewayImpl implements CatalogGateway{
 
     @Override
     public Item getItem(String itemId) {
-        try (SyncModeScope scope = new SyncModeScope()) {
-            return itemResource.getItem(itemId).syncGet();
+        try {
+            return itemResource.getItem(itemId).get();
         } catch (Exception e) {
             LOGGER.error("Error occurring when getting Item [" + itemId + "].", e);
             throw AppErrors.INSTANCE.catalogGatewayError().exception();
@@ -93,8 +92,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
 
     @Override
     public List<PromotionRevision> getPromotions() {
-        try (SyncModeScope scope = new SyncModeScope()) {
-            List<PromotionRevision> results = new ArrayList<>();
+        List<PromotionRevision> results = new ArrayList<>();
 
             /*PromotionsGetOptions options = new PromotionsGetOptions();
             options.setStart(Constants.DEFAULT_PAGE_START);
@@ -104,7 +102,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
             while(true) {
                 List<Promotion> promotions = new ArrayList<>();
                 try {
-                    promotions.addAll(promotionResource.getPromotions(options).syncGet().getItems());
+                    promotions.addAll(promotionResource.getPromotions(options).get().getItems());
                 } catch (Exception e) {
                     LOGGER.error("Error occurring when getting promotions.", e);
                     throw AppErrors.INSTANCE.catalogGatewayError().exception();
@@ -128,14 +126,13 @@ public class CatalogGatewayImpl implements CatalogGateway{
             PromotionRevisionsGetOptions revisionOptions = new PromotionRevisionsGetOptions();
             revisionOptions.setRevisionIds(revisionIds);
             try {
-                results.addAll(promotionRevisionResource.getPromotionRevisions(revisionOptions).syncGet().getItems());
+                results.addAll(promotionRevisionResource.getPromotionRevisions(revisionOptions).get().getItems());
             } catch (Exception e) {
                 LOGGER.error("Error occurring when getting Promotion Revisions.", e);
                 throw AppErrors.INSTANCE.catalogGatewayError().exception();
             }*/
 
-            return results;
-        }
+        return results;
     }
 
     @Override
@@ -144,80 +141,72 @@ public class CatalogGatewayImpl implements CatalogGateway{
     }
 
     private Offer retrieveOffer(String offerId) {
-        try (SyncModeScope scope = new SyncModeScope()) {
-            Offer offer;
-            try {
-                offer = offerResource.getOffer(offerId).syncGet();
-            } catch (Exception e) {
-                LOGGER.error("Error occurring when getting Offer [" + offerId + "].", e);
-                throw AppErrors.INSTANCE.catalogGatewayError().exception();
-            }
-            return offer;
+        Offer offer;
+        try {
+            offer = offerResource.getOffer(offerId).get();
+        } catch (Exception e) {
+            LOGGER.error("Error occurring when getting Offer [" + offerId + "].", e);
+            throw AppErrors.INSTANCE.catalogGatewayError().exception();
         }
+        return offer;
     }
 
     private OfferRevision getCurrentRevision(String revisionId) {
-        try (SyncModeScope scope = new SyncModeScope()) {
-            OfferRevision offerRevision;
-            try {
-                offerRevision = offerRevisionResource.getOfferRevision(revisionId, new OfferRevisionGetOptions()).syncGet();
-            } catch (Exception e) {
-                LOGGER.error("Error occurring when getting Offer Revision [" + revisionId + "]", e);
-                throw AppErrors.INSTANCE.catalogGatewayError().exception();
-            }
-
-            return offerRevision;
+        OfferRevision offerRevision;
+        try {
+            offerRevision = offerRevisionResource.getOfferRevision(revisionId, new OfferRevisionGetOptions()).get();
+        } catch (Exception e) {
+            LOGGER.error("Error occurring when getting Offer Revision [" + revisionId + "]", e);
+            throw AppErrors.INSTANCE.catalogGatewayError().exception();
         }
+
+        return offerRevision;
     }
 
     private OfferRevision getOfferRevisionByTimestamp(String offerId, Long timestamp) {
-        try (SyncModeScope scope = new SyncModeScope()) {
-            List<OfferRevision> revisions = new ArrayList<>();
+        List<OfferRevision> revisions = new ArrayList<>();
 
-            OfferRevisionsGetOptions options = new OfferRevisionsGetOptions();
-            options.setOfferIds(new HashSet<>(Arrays.asList(offerId)));
-            options.setTimestamp(timestamp);
+        OfferRevisionsGetOptions options = new OfferRevisionsGetOptions();
+        options.setOfferIds(new HashSet<>(Arrays.asList(offerId)));
+        options.setTimestamp(timestamp);
 
-            try {
-                revisions.addAll(offerRevisionResource.getOfferRevisions(options).syncGet().getItems());
-            } catch (Exception e) {
-                LOGGER.error("Error occurring when getting Offer Revision " +
-                        "with offerId [" + offerId + "] and timestamp [" + timestamp + "].", e);
-                throw AppErrors.INSTANCE.catalogGatewayError().exception();
-            }
-
-            if (revisions.isEmpty()) {
-                LOGGER.error("Revision with offerId [" + offerId + "] and timestamp [" + timestamp + "] does not exist.");
-                throw AppErrors.INSTANCE.offerRevisionNotFound(offerId).exception();
-            }
-
-            return revisions.get(Constants.UNIQUE);
+        try {
+            revisions.addAll(offerRevisionResource.getOfferRevisions(options).get().getItems());
+        } catch (Exception e) {
+            LOGGER.error("Error occurring when getting Offer Revision " +
+                    "with offerId [" + offerId + "] and timestamp [" + timestamp + "].", e);
+            throw AppErrors.INSTANCE.catalogGatewayError().exception();
         }
+
+        if (revisions.isEmpty()) {
+            LOGGER.error("Revision with offerId [" + offerId + "] and timestamp [" + timestamp + "] does not exist.");
+            throw AppErrors.INSTANCE.offerRevisionNotFound(offerId).exception();
+        }
+
+        return revisions.get(Constants.UNIQUE);
     }
 
     private Price getPrice(com.junbo.catalog.spec.model.common.Price price) {
-        try (SyncModeScope scope = new SyncModeScope()) {
-            if (price == null) {
-                return null;
-            }
-            Map<String, Map<String, BigDecimal>> prices = new HashMap<>();
-            switch (PriceType.valueOf(price.getPriceType())) {
-                case CUSTOM:
-                    prices.putAll(price.getPrices());
-                    break;
-                case TIERED:
-                    PriceTier priceTier;
-                    try {
-                        priceTier = priceTierResource.getPriceTier(price.getPriceTier()).syncGet();
-                    } catch (Exception e) {
-                        throw AppErrors.INSTANCE.catalogGatewayError().exception();
-                    }
-                    prices.putAll(priceTier.getPrices());
-                    break;
-            }
-
-            return new Price(price.getPriceType(), prices);
+        if (price == null) {
+            return null;
         }
+        Map<String, Map<String, BigDecimal>> prices = new HashMap<>();
+        switch (PriceType.valueOf(price.getPriceType())) {
+            case CUSTOM:
+                prices.putAll(price.getPrices());
+                break;
+            case TIERED:
+                PriceTier priceTier;
+                try {
+                    priceTier = priceTierResource.getPriceTier(price.getPriceTier()).get();
+                } catch (Exception e) {
+                    throw AppErrors.INSTANCE.catalogGatewayError().exception();
+                }
+                prices.putAll(priceTier.getPrices());
+                break;
+        }
+
+        return new Price(price.getPriceType(), prices);
     }
 
     private RatingOffer wash(OfferRevision offerRevision) {
@@ -226,7 +215,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
         offer.setPrice(getPrice(offerRevision.getPrice()));
         offer.setPreOrderPrice(getPrice(offerRevision.getPreOrderPrice()));
 
-        for(String country : offerRevision.getCountries().keySet()) {
+        for (String country : offerRevision.getCountries().keySet()) {
             CountryProperties properties = offerRevision.getCountries().get(country);
             offer.getCountries().put(country, new Properties(properties.getIsPurchasable(), properties.getReleaseDate()));
         }
@@ -236,7 +225,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
                 LinkedEntry item = new LinkedEntry();
                 item.setEntryId(entry.getItemId());
                 item.setType(EntryType.ITEM);
-                item.setQuantity(entry.getQuantity() == null? 1 : entry.getQuantity());
+                item.setQuantity(entry.getQuantity() == null ? 1 : entry.getQuantity());
                 offer.getItems().add(item);
             }
         }
@@ -270,7 +259,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
 
     private Map<String, Object> buildActionCondition(ActionCondition condition) {
         Map<String, Object> result = new HashMap<>();
-        if (condition ==  null) {
+        if (condition == null) {
             return result;
         }
 

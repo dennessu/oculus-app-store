@@ -1,8 +1,7 @@
 package com.junbo.langur.core
+
 import com.junbo.langur.core.action.*
-import com.junbo.langur.core.promise.ExecutorContext
 import com.junbo.langur.core.promise.Promise
-import com.junbo.langur.core.promise.async.AsyncPromise
 import groovy.transform.CompileStatic
 import org.testng.Assert
 import org.testng.annotations.AfterTest
@@ -10,6 +9,7 @@ import org.testng.annotations.BeforeTest
 import org.testng.annotations.Test
 
 import java.util.concurrent.TimeUnit
+
 /**
  * Created by Shenhua on 1/6/14.
  */
@@ -17,17 +17,13 @@ import java.util.concurrent.TimeUnit
 class ActionTest {
 
     private final ActionExecutor executor = new DefaultActionExecutor()
-    private boolean asyncModeOldValue;
 
     @BeforeTest
     void setup() {
-        asyncModeOldValue = ExecutorContext.isAsyncMode();
-        ExecutorContext.setAsyncMode(true);
     }
 
     @AfterTest
     void cleanup() {
-        ExecutorContext.setAsyncMode(asyncModeOldValue);
     }
 
     @Test
@@ -74,10 +70,10 @@ class ActionTest {
                 executor
         )
 
-        AsyncPromise<ActionResult> result = (AsyncPromise)executor.execute(seq1, new ActionContext())
+        Promise<ActionResult> result = executor.execute(seq1, new ActionContext())
 
         try {
-            result.asyncGet()
+            result.get()
             Assert.fail('test failure')
         }
         catch (Exception ex) {
@@ -126,8 +122,8 @@ class ActionTest {
                 , executor
         )
 
-        AsyncPromise<ActionResult> result = (AsyncPromise<ActionResult>)executor.execute(branch1, new ActionContext())
-        result.asyncGet()
+        Promise<ActionResult> result = (Promise<ActionResult>)executor.execute(branch1, new ActionContext())
+        result.get()
         assert (result)
     }
 
@@ -138,14 +134,14 @@ class ActionTest {
 
         context.set('value1')
 
-        AsyncPromise<String> promise = (AsyncPromise<String>)Promise.delayed(1, TimeUnit.SECONDS) {
+        Promise<String> promise = (Promise<String>)Promise.delayed(1, TimeUnit.SECONDS) {
             assert 'value1' == context.get()
             null
         }.then { String s ->
             return Promise.pure(s)
         }
 
-        promise.asyncGet()
+        promise.get()
         assert (promise)
     }
 }

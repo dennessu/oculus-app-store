@@ -42,7 +42,7 @@ class ApiDefinitionDataHandler extends BaseDataHandler {
 
         ApiDefinition existing = null
         try {
-            existing = apiDefinitionResource.get(apiDefinition.apiName).syncGet()
+            existing = apiDefinitionResource.get(apiDefinition.apiName).get()
         } catch (AppErrorException e) {
             logger.debug('This content does not exist in current database.', e)
         }
@@ -53,7 +53,7 @@ class ApiDefinitionDataHandler extends BaseDataHandler {
                 apiDefinition.id = existing.id
                 apiDefinition.rev = existing.rev
                 try {
-                    apiDefinitionResource.update(apiDefinition.apiName, apiDefinition).syncGet()
+                    apiDefinitionResource.update(apiDefinition.apiName, apiDefinition).get()
                 } catch (Exception e) {
                     logger.error("Error updating apiDefinition $apiDefinition.apiName.", e)
                 }
@@ -63,7 +63,7 @@ class ApiDefinitionDataHandler extends BaseDataHandler {
         } else {
             logger.debug("Create new ApiDefinition $apiDefinition.apiName with this content.")
             try {
-                apiDefinitionResource.create(apiDefinition).syncGet()
+                apiDefinitionResource.create(apiDefinition).get()
             } catch (Exception e) {
                 logger.error("Error creating apiDefinition $apiDefinition.apiName.", e)
             }

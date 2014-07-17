@@ -5,7 +5,6 @@
  */
 package com.junbo.subscription.clientproxy.impl;
 
-import com.junbo.langur.core.promise.SyncModeScope;
 import com.junbo.rating.spec.model.subscription.SubsRatingRequest;
 import com.junbo.rating.spec.resource.RatingResource;
 import com.junbo.subscription.clientproxy.RatingGateway;
@@ -26,15 +25,14 @@ public class RatingGatewayImpl implements RatingGateway {
     private RatingResource ratingResource;
 
     public SubsRatingRequest subsRating(SubsRatingRequest request){
-        try (SyncModeScope scope = new SyncModeScope()) {
-            SubsRatingRequest response = ratingResource.subsRating(request).syncGet();
+        try {
+            SubsRatingRequest response = ratingResource.subsRating(request).get();
 
             return response;
-        }catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.error("Error occurred during calling [Rating] component.", e);
             throw SubscriptionExceptions.INSTANCE.gatewayFailure("Rating").exception();
         }
-
     }
 
 }
