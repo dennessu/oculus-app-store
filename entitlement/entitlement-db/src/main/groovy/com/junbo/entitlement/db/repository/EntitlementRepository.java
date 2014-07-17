@@ -15,8 +15,6 @@ import com.junbo.entitlement.db.mapper.EntitlementMapper;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.UUID;
 
@@ -28,14 +26,22 @@ public class EntitlementRepository {
     public static final String UPDATE = "UPDATE";
     public static final String DELETE = "DELETE";
 
-    @Autowired
-    @Qualifier("entitlementCloudantDao")
     private EntitlementDao entitlementDao;
-    @Autowired
     @Qualifier("entitlementHistoryCloudantDao")
     private EntitlementHistoryDao entitlementHistoryDao;
-    @Autowired
     private EntitlementMapper entitlementMapper;
+
+    public void setEntitlementDao(EntitlementDao entitlementDao) {
+        this.entitlementDao = entitlementDao;
+    }
+
+    public void setEntitlementHistoryDao(EntitlementHistoryDao entitlementHistoryDao) {
+        this.entitlementHistoryDao = entitlementHistoryDao;
+    }
+
+    public void setEntitlementMapper(EntitlementMapper entitlementMapper) {
+        this.entitlementMapper = entitlementMapper;
+    }
 
     public Entitlement get(String entitlementId) {
         return entitlementMapper.toEntitlement(entitlementDao.get(entitlementId));

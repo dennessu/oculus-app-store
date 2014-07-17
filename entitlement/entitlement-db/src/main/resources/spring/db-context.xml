@@ -5,8 +5,14 @@
        xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <context:component-scan base-package="com.junbo.entitlement.db.mapper"/>
+    <alias alias="entitlementDao" name="entitlementCloudantDao" />
+    <alias alias="entitlementHistoryDao" name="entitlementHistoryCloudantDao" />
 
-    <!-- repository -->
-    <bean id="entitlementRepository" class="com.junbo.entitlement.db.repository.EntitlementRepository"/>
+    <bean id="entitlementMapper" class="com.junbo.entitlement.db.mapper.EntitlementMapper" />
+
+    <bean id="entitlementRepository" class="com.junbo.entitlement.db.repository.EntitlementRepository">
+        <property name="entitlementDao" ref="entitlementDao"/>
+        <property name="entitlementHistoryDao" ref="entitlementHistoryDao"/>
+        <property name="entitlementMapper" ref="entitlementMapper" />
+    </bean>
 </beans>
