@@ -27,7 +27,6 @@ public class EntitlementRepository {
     public static final String DELETE = "DELETE";
 
     private EntitlementDao entitlementDao;
-    @Qualifier("entitlementHistoryCloudantDao")
     private EntitlementHistoryDao entitlementHistoryDao;
     private EntitlementMapper entitlementMapper;
 
