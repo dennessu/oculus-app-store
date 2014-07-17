@@ -387,6 +387,23 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
             if (i < revision.getDistributionChannels().size()) {
                 errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("distributionChannel", Joiner.on(", ").join(DistributionChannel.ALL)));
             }
+
+            if (revision.getDistributionChannels().contains(DistributionChannel.INAPP)) {
+                if (CollectionUtils.isEmpty(revision.getIapHostItemIds())) {
+                    errors.add(AppCommonErrors.INSTANCE.fieldRequired("iapHostItems"));
+                } else {
+                    for (String itemId : revision.getIapHostItemIds()) {
+                        if (itemId == null) {
+                            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("iapHostItems", "should not contain null"));
+                        } else {
+                            Item item = itemRepo.get(itemId);
+                            if (item == null) {
+                                errors.add(AppErrors.INSTANCE.itemNotFound("iapHostItems", itemId));
+                            }
+                        }
+                    }
+                }
+            }
         }
         if (revision.getItemId() == null) {
             errors.add(AppCommonErrors.INSTANCE.fieldRequired("itemId"));

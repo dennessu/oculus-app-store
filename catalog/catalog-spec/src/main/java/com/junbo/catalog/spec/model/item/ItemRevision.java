@@ -29,11 +29,11 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The id of item revision resource")
     private String revisionId;
 
-    @ApiModelProperty(position = 2, required = true,
+    /*@ApiModelProperty(position = 2, required = true,
             value = "An ID that helps to group like items. ex. TEAM_FORTRESS, this rollup ID would be applied to" +
                     "all items that are team fortress (PC, MAC, LINUX, etc)")
     private String rollupPackageName;
-
+*/
     @ApiModelProperty(position = 3, required = true, value = "Used to identify the item (app), used mainly for android")
     private String packageName;
 
@@ -103,14 +103,6 @@ public class ItemRevision extends BaseRevisionModel {
 
     public void setSku(String sku) {
         this.sku = sku;
-    }
-
-    public String getRollupPackageName() {
-        return rollupPackageName;
-    }
-
-    public void setRollupPackageName(String rollupPackageName) {
-        this.rollupPackageName = rollupPackageName;
     }
 
     public String getPackageName() {
