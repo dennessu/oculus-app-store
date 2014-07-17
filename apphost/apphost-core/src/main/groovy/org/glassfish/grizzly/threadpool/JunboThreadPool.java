@@ -42,7 +42,6 @@ public class JunboThreadPool extends FixedThreadPool implements LocatableExecuto
         try {
             THREAD_LOCALS_FIELD.set(Thread.currentThread(), null);
             INHERITABLE_THREAD_LOCALS_FIELD.set(Thread.currentThread(), null);
-            ExecutorContext.setAsyncMode(false);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
