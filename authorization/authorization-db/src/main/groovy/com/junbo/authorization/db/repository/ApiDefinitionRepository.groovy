@@ -17,7 +17,7 @@ interface ApiDefinitionRepository {
 
     ApiDefinition saveApi(ApiDefinition api)
 
-    ApiDefinition updateApi(ApiDefinition api)
+    ApiDefinition updateApi(ApiDefinition api, ApiDefinition oldApi)
 
     void deleteApi(ApiDefinition api)
 }

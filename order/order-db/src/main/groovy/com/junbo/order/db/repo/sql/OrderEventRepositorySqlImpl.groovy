@@ -66,7 +66,7 @@ class OrderEventRepositorySqlImpl implements OrderEventRepository {
     }
 
     @Override
-    Promise<OrderEvent> update(OrderEvent event) {
+    Promise<OrderEvent> update(OrderEvent event, OrderEvent oldEvent) {
         assert event != null && event.order != null
 
         def entity = modelMapper.toOrderEventEntity(event, new MappingContext())

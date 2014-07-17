@@ -36,7 +36,7 @@ class ConsentRepositoryImpl implements ConsentRepository {
     }
 
     @Override
-    Consent updateConsent(Consent consent) {
+    Consent updateConsent(Consent consent, Consent oldConsent) {
         return wrap(consentDAO.update(unwrap(consent)))
     }
 

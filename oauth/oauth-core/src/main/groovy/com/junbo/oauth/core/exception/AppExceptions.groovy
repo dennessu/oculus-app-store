@@ -361,4 +361,8 @@ interface AppExceptions {
     @ErrorDef(httpStatusCode = 400, code = '20082', message = 'The country parameter is invalid',
             field = 'country')
     AppError invalidCountryCode()
+
+    @ErrorDef(httpStatusCode = 400, code = '20083', message = 'Either username or user_email is required',
+            field = 'username or user_email')
+    AppError missingUsernameOrUserEmail()
 }

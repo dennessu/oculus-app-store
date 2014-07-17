@@ -50,8 +50,8 @@ public class ItemAttributeRepositoryImpl extends CloudantClient<ItemAttribute> i
         }
     }
 
-    public ItemAttribute update(ItemAttribute attribute) {
-        return cloudantPutSync(attribute);
+    public ItemAttribute update(ItemAttribute attribute, ItemAttribute oldAttribute) {
+        return cloudantPutSync(attribute, oldAttribute);
     }
 
     public void delete(String attributeId) {

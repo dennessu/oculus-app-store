@@ -6,6 +6,8 @@ import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 
+import javax.ws.rs.core.Response
+
 /**
  * Created by Shenhua on 5/14/2014.
  */
@@ -85,7 +87,7 @@ class RightsScope implements AutoCloseable {
     }
 
     static void processRealResult(Object realResult, RightsScope scope) {
-        if (realResult == null) {
+        if (realResult == null || realResult instanceof Response) {
             // do nothing here
         } else if (Results.isAssignableFrom(realResult.class)) {
             // In this case, it would be Results(ResourceMeta)

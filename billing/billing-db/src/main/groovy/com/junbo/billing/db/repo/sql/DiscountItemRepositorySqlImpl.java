@@ -66,9 +66,10 @@ public class DiscountItemRepositorySqlImpl implements DiscountItemRepository {
     }
 
     @Override
-    public Promise<DiscountItem> update(DiscountItem model) {
+    public Promise<DiscountItem> update(DiscountItem model, DiscountItem oldModel) {
         DiscountItemEntity entity = modelMapper.toDiscountItemEntity(model, new MappingContext());
-        discountItemEntityDao.update(entity);
+        DiscountItemEntity oldEntity = modelMapper.toDiscountItemEntity(oldModel, new MappingContext());
+        discountItemEntityDao.update(entity, oldEntity);
         return get(entity.getId());
     }
 

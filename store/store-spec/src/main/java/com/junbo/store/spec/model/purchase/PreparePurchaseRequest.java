@@ -5,45 +5,69 @@
  */
 package com.junbo.store.spec.model.purchase;
 
+import com.junbo.common.enumid.CountryId;
+import com.junbo.common.enumid.CurrencyId;
+import com.junbo.common.enumid.LocaleId;
+import com.junbo.common.id.OfferId;
+import com.junbo.common.id.UserId;
+
 /**
  * The PreparePurchaseRequest class.
  */
 public class PreparePurchaseRequest {
-    private String offerId;
-    private String country;
-    private String locale;
-    private String currency;
+    private UserId userId;
+    private OfferId offerId;
+    private Integer quantity;
+    private CountryId country;
+    private LocaleId locale;
+    private CurrencyId currency;
     private IAPParams iapParams;
 
-    public String getOfferId() {
+    public UserId getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UserId userId) {
+        this.userId = userId;
+    }
+
+    public OfferId getOfferId() {
         return offerId;
     }
 
-    public void setOfferId(String offerId) {
+    public void setOfferId(OfferId offerId) {
         this.offerId = offerId;
     }
 
-    public String getCountry() {
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public CountryId getCountry() {
         return country;
     }
 
-    public void setCountry(String country) {
+    public void setCountry(CountryId country) {
         this.country = country;
     }
 
-    public String getLocale() {
+    public LocaleId getLocale() {
         return locale;
     }
 
-    public void setLocale(String locale) {
+    public void setLocale(LocaleId locale) {
         this.locale = locale;
     }
 
-    public String getCurrency() {
+    public CurrencyId getCurrency() {
         return currency;
     }
 
-    public void setCurrency(String currency) {
+    public void setCurrency(CurrencyId currency) {
         this.currency = currency;
     }
 

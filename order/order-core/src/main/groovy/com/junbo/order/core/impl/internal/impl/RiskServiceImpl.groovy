@@ -1,6 +1,5 @@
 package com.junbo.order.core.impl.internal.impl
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.junbo.common.id.PIType
 import com.junbo.identity.spec.v1.model.Address
 import com.junbo.identity.spec.v1.model.Currency
@@ -212,7 +211,6 @@ class RiskServiceImpl implements RiskService {
                     return Promise.pure(RiskReviewResult.REJECT)
                 } else {
                     orderRepository.updateOrder(order, true, false, null)
-
                     return Promise.pure(RiskReviewResult.APPROVED)
                 }
             } catch (RisException re) {

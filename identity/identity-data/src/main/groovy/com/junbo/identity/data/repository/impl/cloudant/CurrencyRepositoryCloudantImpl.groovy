@@ -20,8 +20,8 @@ class CurrencyRepositoryCloudantImpl extends CloudantClient<Currency> implements
     }
 
     @Override
-    Promise<Currency> update(Currency model) {
-        return cloudantPut(model)
+    Promise<Currency> update(Currency model, Currency oldModel) {
+        return cloudantPut(model, oldModel)
     }
 
     @Override

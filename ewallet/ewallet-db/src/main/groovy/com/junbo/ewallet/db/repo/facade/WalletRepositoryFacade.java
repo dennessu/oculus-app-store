@@ -60,13 +60,13 @@ public class WalletRepositoryFacade {
         return walletRepository.create(wallet).get();
     }
 
-    public Wallet update(Wallet wallet) {
-        return walletRepository.update(wallet).get();
+    public Wallet update(Wallet wallet, Wallet oldWallet) {
+        return walletRepository.update(wallet, oldWallet).get();
     }
 
     public Transaction credit(Wallet wallet, CreditRequest creditRequest) {
         wallet.setBalance(wallet.getBalance().add(creditRequest.getAmount()));
-        walletRepository.update(wallet).get();
+        walletRepository.update(wallet, wallet).get();
 
         Transaction transaction = transactionRepository.create(buildCreditTransaction(wallet.getId(), creditRequest)).get();
         WalletLot walletLot = walletLotRepository.create(buildWalletLot(wallet.getId(), creditRequest)).get();
@@ -77,7 +77,7 @@ public class WalletRepositoryFacade {
 
     public Transaction debit(Wallet wallet, DebitRequest debitRequest) {
         wallet.setBalance(wallet.getBalance().subtract(debitRequest.getAmount()));
-        walletRepository.update(wallet).get();
+        walletRepository.update(wallet, wallet).get();
 
         Transaction transaction = transactionRepository.create(buildDebitTransaction(wallet.getId(), debitRequest)).get();
 
@@ -87,20 +87,20 @@ public class WalletRepositoryFacade {
         return transaction;
     }
 
-    public void correctBalance(Long walletId) {
+    public void correctBalance(Long walletId){
         BigDecimal validAmount = walletLotRepository.getValidAmount(walletId).get();
         Wallet wallet = walletRepository.get(walletId).get();
         wallet.setBalance(validAmount == null ? BigDecimal.ZERO : validAmount);
-        walletRepository.update(wallet);
+        walletRepository.update(wallet, wallet);
     }
 
     public Transaction refund(Wallet wallet, Long transactionId, RefundRequest refundRequest) {
         wallet.setBalance(wallet.getBalance().add(refundRequest.getAmount()));
-        walletRepository.update(wallet).get();
+        walletRepository.update(wallet, wallet).get();
 
         Transaction debitTransaction = transactionRepository.get(transactionId).get();
         debitTransaction.setUnrefundedAmount(debitTransaction.getUnrefundedAmount().subtract(refundRequest.getAmount()));
-        transactionRepository.update(debitTransaction).get();
+        transactionRepository.update(debitTransaction, debitTransaction).get();
 
         Transaction savedTrans = transactionRepository.create(buildRefundTransaction(wallet.getId(), refundRequest)).get();
 
@@ -125,6 +125,23 @@ public class WalletRepositoryFacade {
                 return o1.getRemainingAmount().compareTo(o2.getRemainingAmount());
             }
         });
+
+        for (int i = 0; i < walletLots.size(); i++) {
+            WalletLot walletLot = walletLots.get(i);
+            BigDecimal remaining = walletLot.getRemainingAmount();
+            if (sum.compareTo(remaining) <= 0) {
+                walletLot.setRemainingAmount(remaining.subtract(sum));
+                walletLot = walletLotRepository.update(walletLot, walletLot).get();
+                lotTransactionRepository.create(buildDebitLotTransaction(walletLot, sum, transactionId)).get();
+                return;
+            } else {
+                BigDecimal remainingAmount = walletLot.getRemainingAmount();
+                walletLot.setRemainingAmount(BigDecimal.ZERO);
+                walletLot = walletLotRepository.update(walletLot, walletLot).get();
+                lotTransactionRepository.create(buildDebitLotTransaction(walletLot, remainingAmount, transactionId)).get();
+            }
+            sum = sum.subtract(remaining);
+        }
 
         for (int i = 0; i < walletLots.size(); i++) {
             WalletLot walletLot = walletLots.get(i);
@@ -168,8 +185,8 @@ public class WalletRepositoryFacade {
             if (lot.getExpirationDate() != null && lot.getExpirationDate().before(now)) {
                 lot.setExpirationDate(WalletConst.NEVER_EXPIRE);  //enable lot
             }
-            walletLotRepository.update(lot);
-            lotTransactionRepository.update(lotTransaction);
+            walletLotRepository.update(lot, lot);
+            lotTransactionRepository.update(lotTransaction, lotTransaction);
             if (refundEnded) {
                 break;
             }

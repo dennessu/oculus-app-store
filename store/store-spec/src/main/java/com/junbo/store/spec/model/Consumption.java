@@ -6,18 +6,18 @@
 
 package com.junbo.store.spec.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
+import com.junbo.common.id.EntitlementId;
+import com.junbo.common.id.UserId;
 import com.junbo.common.model.ResourceMeta;
-import com.junbo.common.model.SigningSupport;
 
 /**
  * Entitlement Consumption for IAP.
  */
-public class Consumption extends ResourceMeta<String> implements SigningSupport, SigningSetter {
+public class Consumption extends ResourceMeta<String> {
 
-    private String userId;
-    private String entitlementId;
+    private UserId userId;
+    private EntitlementId entitlementId;
     private Integer useCountConsumed;
     private String sku;
     private String type;
@@ -26,25 +26,22 @@ public class Consumption extends ResourceMeta<String> implements SigningSupport,
     @CloudantIgnore
     private Long signatureTimestamp;
 
-    @JsonIgnore
-    private String payload;
+    private String iapConsumptionData;
+    private String iapSignature;
 
-    @JsonIgnore
-    private String signature;
-
-    public String getUserId() {
+    public UserId getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(UserId userId) {
         this.userId = userId;
     }
 
-    public String getEntitlementId() {
+    public EntitlementId getEntitlementId() {
         return entitlementId;
     }
 
-    public void setEntitlementId(String entitlementId) {
+    public void setEntitlementId(EntitlementId entitlementId) {
         this.entitlementId = entitlementId;
     }
 
@@ -106,23 +103,19 @@ public class Consumption extends ResourceMeta<String> implements SigningSupport,
         setTrackingGuid(id);
     }
 
-    @Override
-    public String getPayload() {
-        return payload;
+    public String getIapConsumptionData() {
+        return iapConsumptionData;
     }
 
-    @Override
-    public void setPayload(String payload) {
-        this.payload = payload;
+    public void setIapConsumptionData(String iapConsumptionData) {
+        this.iapConsumptionData = iapConsumptionData;
     }
 
-    @Override
-    public String getSignature() {
-        return signature;
+    public String getIapSignature() {
+        return iapSignature;
     }
 
-    @Override
-    public void setSignature(String signature) {
-        this.signature = signature;
+    public void setIapSignature(String iapSignature) {
+        this.iapSignature = iapSignature;
     }
 }

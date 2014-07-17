@@ -102,7 +102,7 @@ public class OrderValidationHelper extends BaseValidationHelper {
 
         for (BillingHistoryInfo billingHistoryInfo : expectedOrderInfo.getBillingHistories()) {
             for (BillingHistory billingHistory : order.getBillingHistories()) {
-                if (billingHistory.getBillingEvent().equals(billingHistoryInfo.getTransactionType().toString())) {
+                if (billingHistory.getBillingEvent().equals(billingHistoryInfo.getBillingAction().toString())) {
                     verifyEqual(billingHistory.getTotalAmount(), billingHistoryInfo.getTotalAmount(),
                             "verify billing history total amount");
                     verifyEqual(billingHistory.getPayments().size(), billingHistoryInfo.getPaymentInfos().size(),
@@ -119,8 +119,15 @@ public class OrderValidationHelper extends BaseValidationHelper {
                         }
                     }
 
-                    verifyEqual(billingHistory.getRefundedOrderItems().size(),
-                            billingHistoryInfo.getRefundOrderItemInfos().size(), "verify refunded items count");
+                    if (billingHistoryInfo.getRefundOrderItemInfos().size() != 0) {
+                        verifyEqual(billingHistory.getRefundedOrderItems().size(),
+                                billingHistoryInfo.getRefundOrderItemInfos().size(), "verify refunded items count");
+                    }
+                    else {
+                        if(billingHistory.getRefundedOrderItems() != null){
+                            throw new TestException("verify refunded items is null");
+                        }
+                    }
 
                     for (RefundOrderItemInfo refundOrderItemInfo : billingHistoryInfo.getRefundOrderItemInfos()) {
                         for (RefundOrderItem refundOrderItem : billingHistory.getRefundedOrderItems()) {

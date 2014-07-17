@@ -36,6 +36,7 @@ dependencies {
     compile junboProject(':identity-job')
     compile junboProject(':token-rest')
     compile junboProject(':csr-rest')
+    compile junboProject(':drm-rest')
     // more to add
 }
 
@@ -47,7 +48,7 @@ applicationDistribution.from("../../liquibase") {
     into "dbsetup/liquibase"
 }
 
-applicationDistribution.from("../../pgha") {
+applicationDistribution.from("../../scripts/pgha") {
     into "dbsetup/pgha"
 }
 

@@ -77,7 +77,7 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
             deviceType = deviceTypeFilter.filterForPut(deviceType, oldDeviceType)
 
             return deviceTypeValidator.validateForUpdate(deviceTypeId, deviceType, oldDeviceType).then {
-                return deviceTypeRepository.update(deviceType).then { DeviceType newDeviceType ->
+                return deviceTypeRepository.update(deviceType, oldDeviceType).then { DeviceType newDeviceType ->
                     newDeviceType = deviceTypeFilter.filterForGet(newDeviceType, null)
                     return Promise.pure(newDeviceType)
                 }
@@ -108,7 +108,7 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
 
             return deviceTypeValidator.validateForUpdate(
                     deviceTypeId, deviceType, oldDeviceType).then {
-                return deviceTypeRepository.update(deviceType).then { DeviceType newDeviceType ->
+                return deviceTypeRepository.update(deviceType, oldDeviceType).then { DeviceType newDeviceType ->
                     newDeviceType = deviceTypeFilter.filterForGet(newDeviceType, null)
                     return Promise.pure(newDeviceType)
                 }

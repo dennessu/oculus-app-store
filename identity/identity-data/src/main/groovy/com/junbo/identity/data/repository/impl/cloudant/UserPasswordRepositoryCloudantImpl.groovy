@@ -19,9 +19,9 @@ class UserPasswordRepositoryCloudantImpl extends CloudantClient<UserPassword> im
     }
 
     @Override
-    Promise<UserPassword> update(UserPassword userPassword) {
+    Promise<UserPassword> update(UserPassword userPassword, UserPassword oldEntity) {
         userPassword.value = null
-        return cloudantPut(userPassword)
+        return cloudantPut(userPassword, oldEntity)
     }
 
     @Override

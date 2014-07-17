@@ -7,7 +7,7 @@
 package com.junbo.order.db.entity;
 
 import com.junbo.order.db.ValidationMessages;
-import com.junbo.order.spec.model.enums.FulfillmentAction;
+import com.junbo.order.spec.model.enums.FulfillmentEventType;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -26,7 +26,7 @@ public class OrderItemFulfillmentHistoryEntity extends CommonDbEntityWithDate {
     private Long orderItemId;
     private UUID trackingUuid;
     private String fulfillmentId;
-    private FulfillmentAction fulfillmentEventId;
+    private FulfillmentEventType fulfillmentEventId;
 
     @Id
     @Column(name = "HISTORY_ID")
@@ -73,11 +73,11 @@ public class OrderItemFulfillmentHistoryEntity extends CommonDbEntityWithDate {
     @Column (name = "FULFILLMENT_EVENT_ID")
     @NotNull(message = ValidationMessages.MISSING_VALUE)
     @Type(type = "com.junbo.order.db.entity.type.FulfillmentActionType")
-    public FulfillmentAction getFulfillmentEventId() {
+    public FulfillmentEventType getFulfillmentEventId() {
         return fulfillmentEventId;
     }
 
-    public void setFulfillmentEventId(FulfillmentAction fulfillmentEventId) {
+    public void setFulfillmentEventId(FulfillmentEventType fulfillmentEventId) {
         this.fulfillmentEventId = fulfillmentEventId;
     }
 

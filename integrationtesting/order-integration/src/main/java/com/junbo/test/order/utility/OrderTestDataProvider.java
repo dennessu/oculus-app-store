@@ -18,7 +18,6 @@ import com.junbo.common.id.*;
 import com.junbo.common.model.Results;
 import com.junbo.order.spec.model.*;
 import com.junbo.order.spec.model.PaymentInfo;
-import com.junbo.test.billing.enums.TransactionType;
 import com.junbo.test.billing.utility.BillingTestDataProvider;
 import com.junbo.test.catalog.OfferRevisionService;
 import com.junbo.test.catalog.OfferService;
@@ -37,6 +36,7 @@ import com.junbo.test.order.apihelper.OrderService;
 import com.junbo.test.order.apihelper.impl.OrderEventServiceImpl;
 import com.junbo.test.order.apihelper.impl.OrderServiceImpl;
 import com.junbo.test.order.model.*;
+import com.junbo.test.order.model.enums.BillingAction;
 import com.junbo.test.order.model.enums.EventStatus;
 import com.junbo.test.order.model.enums.OrderActionType;
 import com.junbo.test.order.model.enums.OrderStatus;
@@ -119,8 +119,13 @@ public class OrderTestDataProvider {
         order.setCurrency(new CurrencyId(currency.toString()));
         List<PaymentInfo> paymentInfos = new ArrayList<>();
         PaymentInfo paymentInfo = new PaymentInfo();
-        paymentInfo.setPaymentInstrument(new PaymentInstrumentId(
-                IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId)));
+
+        if (paymentInstrumentId.equals("Invalid")) {
+            paymentInfo.setPaymentInstrument(new PaymentInstrumentId(0L));
+        } else {
+            paymentInfo.setPaymentInstrument(new PaymentInstrumentId(
+                    IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId)));
+        }
         paymentInfos.add(paymentInfo);
         order.setPayments(paymentInfos);
         order.setShippingMethod("0");
@@ -135,7 +140,12 @@ public class OrderTestDataProvider {
         for (Iterator it = key.iterator(); it.hasNext(); ) {
             OrderItem orderItem = new OrderItem();
             String offerName = (String) it.next();
-            OfferId offerId = new OfferId(offerClient.getOfferIdByName(offerName));
+            OfferId offerId;
+            if (offerName.equals("Invalid")) {
+                offerId = new OfferId("123");
+            } else {
+                offerId = new OfferId(offerClient.getOfferIdByName(offerName));
+            }
             orderItem.setQuantity(offers.get(offerName));
             orderItem.setOffer(offerId);
             orderItemList.add(orderItem);
@@ -257,19 +267,18 @@ public class OrderTestDataProvider {
         orderInfo.setTotalTax(orderInfo.getTotalTax().subtract(orderTotalRefundedTax));
 
 
-
         BigDecimal totalRefundAmount = orderTotalRefundedAmount.add(orderTotalRefundedTax);
         PaymentInstrumentInfo paymentInstrumentInfo = new PaymentInstrumentInfo();
         paymentInstrumentInfo.setPaymentId(orderInfo.getPaymentInfos().get(0).getPaymentId());
         paymentInstrumentInfo.setPaymentAmount(totalRefundAmount.multiply(new BigDecimal(-1)));
         billingHistory.getPaymentInfos().add(paymentInstrumentInfo);
-        billingHistory.setTransactionType(TransactionType.PENDING_REFUND);
+        billingHistory.setBillingAction(BillingAction.REQUEST_REFUND);
         billingHistory.setSuccess(true);
         billingHistory.setTotalAmount(totalRefundAmount.multiply(
                 new BigDecimal(-1)).setScale(2, RoundingMode.HALF_UP));
         orderInfo.getBillingHistories().add(billingHistory);
 
-        billingHistory.setTransactionType(TransactionType.REFUND);
+        billingHistory.setBillingAction(BillingAction.REFUND);
         orderInfo.getBillingHistories().add(billingHistory);
 
         orderInfo.setOrderStatus(OrderStatus.REFUNDED);
@@ -291,7 +300,7 @@ public class OrderTestDataProvider {
         BalanceItem balanceItem = Master.getInstance().getBalance(balanceIds.get(0)).getBalanceItems().get(0);
         BigDecimal taxRate = new BigDecimal(0);
 
-        for(TaxItem taxItem : balanceItem.getTaxItems()){
+        for (TaxItem taxItem : balanceItem.getTaxItems()) {
             taxRate = taxRate.add(taxItem.getTaxRate());
         }
 
@@ -336,9 +345,7 @@ public class OrderTestDataProvider {
             paymentInfo.setPaymentAmount(orderTotalAmount.add(orderTotalTax));
             billingHistory.getPaymentInfos().add(paymentInfo);
             billingHistory.setSuccess(true);
-            billingHistory.setTransactionType(TransactionType.PENDING_CHARGE);
-            orderInfo.getBillingHistories().add(billingHistory);
-            billingHistory.setTransactionType(TransactionType.CHARGE);
+            billingHistory.setBillingAction(BillingAction.CHARGE);
             orderInfo.getBillingHistories().add(billingHistory);
 
         }

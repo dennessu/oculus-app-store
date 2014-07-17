@@ -35,7 +35,8 @@ public class postCredentialAttempts {
         User user = Identity.UserPostDefault();
         String password = RandomHelper.randomNumeric(6) + RandomHelper.randomAlphabetic(6);
         Identity.UserCredentialPostDefault(user.getId(), password);
-        Identity.UserCredentialAttemptesPostDefault(user.getUsername(), password);
+        CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(user.getUsername(), password);
+        Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
     }
 
     @Test(groups = "dailies")
@@ -48,8 +49,8 @@ public class postCredentialAttempts {
         for (int i = 0; i < 3; i++) {
             CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
                     user.getUsername(), newPassword, false);
-            Validator.Validate("validate response error code", 404, response.getStatusLine().getStatusCode());
-            String errorMessage = "User password is incorrect.";
+            Validator.Validate("validate response error code", 412, response.getStatusLine().getStatusCode());
+            String errorMessage = "User Password Incorrect";
             Validator.Validate("validate response error message", true,
                     EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
             response.close();
@@ -57,7 +58,7 @@ public class postCredentialAttempts {
 
         CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
                 user.getUsername(), newPassword, false);
-        Validator.Validate("validate response error code", 409, response.getStatusLine().getStatusCode());
+        Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
         String errorMessage = "User reaches maximum allowed retry count";
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));

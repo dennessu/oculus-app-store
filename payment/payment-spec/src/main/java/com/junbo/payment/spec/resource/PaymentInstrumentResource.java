@@ -27,7 +27,7 @@ import javax.ws.rs.core.MediaType;
 @Path("/")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@RestResource
+@RestResource(sync = true)
 @InProcessCallable
 public interface PaymentInstrumentResource {
 

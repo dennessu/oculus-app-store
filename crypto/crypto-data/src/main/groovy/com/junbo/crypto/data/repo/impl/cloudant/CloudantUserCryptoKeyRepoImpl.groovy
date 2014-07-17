@@ -25,7 +25,7 @@ class CloudantUserCryptoKeyRepoImpl extends CloudantClient<UserCryptoKey> implem
     }
 
     @Override
-    Promise<UserCryptoKey> update(UserCryptoKey model) {
+    Promise<UserCryptoKey> update(UserCryptoKey model, UserCryptoKey oldModel) {
         throw new IllegalArgumentException('Not supported operation')
     }
 

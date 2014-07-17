@@ -32,16 +32,17 @@ class RedirectToPage implements Action {
     Promise<ActionResult> execute(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
 
+        String realUrl = new String(pageUrl)
         if (contextWrapper.viewCountry != null) {
-            pageUrl = pageUrl.replaceFirst('/country', '/' + contextWrapper.viewCountry)
+            realUrl = realUrl.replaceFirst('/country', '/' + contextWrapper.viewCountry)
         }
 
         if (contextWrapper.viewLocale != null) {
-            pageUrl = pageUrl.replaceFirst('/locale', '/' + contextWrapper.viewLocale)
+            realUrl = realUrl.replaceFirst('/locale', '/' + contextWrapper.viewLocale)
         }
 
         contextWrapper.responseBuilder = Response.status(Response.Status.FOUND)
-                .location(URI.create("${pageUrl}cid=${context.conversationId}"))
+                .location(URI.create("${realUrl}cid=${context.conversationId}"))
 
         return Promise.pure(null)
     }

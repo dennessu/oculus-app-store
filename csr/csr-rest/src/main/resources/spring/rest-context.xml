@@ -31,14 +31,21 @@
         <property name="organizationName" value="${csr.organization.name}"/>
         <property name="organizationOwner" value="${csr.organization.owner}"/>
     </bean>
+    <bean id="defaultCsrUserResource" class="com.junbo.csr.rest.resource.CsrUserResourceImpl" scope="prototype">
+        <property name="csrGroupResource" ref="defaultCsrGroupResource"/>
+        <property name="userPersonalInfoResource" ref="defaultUserPersonalInfoResource"/>
+        <property name="userResource" ref="defaultUserResource"/>
+    </bean>
 
     <bean id="defaultCsrUpdateResourceClientFactory" class="com.junbo.csr.spec.resource.proxy.CsrUpdateResourceClientProxyFactory"/>
     <bean id="defaultCsrLogResourceClientFactory" class="com.junbo.csr.spec.resource.proxy.CsrLogResourceClientProxyFactory" />
     <bean id="defaultCsrActionEndpointClientFactory" class="com.junbo.csr.spec.endpoint.proxy.CsrActionEndpointClientProxyFactory" />
     <bean id="defaultCsrGroupResourceClientFactory" class="com.junbo.csr.spec.resource.proxy.CsrGroupResourceClientProxyFactory" />
+    <bean id="defaultCsrUserResourceClientFactory" class="com.junbo.csr.spec.resource.proxy.CsrUserResourceClientProxyFactory" />
 
     <bean id="defaultCsrUpdateResourceRouter" parent="routingRouterBase" />
     <bean id="defaultCsrLogResourceRouter" parent="routingRouterBase" />
     <bean id="defaultCsrActionEndpointRouter" parent="routingRouterBase" />
     <bean id="defaultCsrGroupResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultCsrUserResourceRouter" parent="routingRouterBase" />
 </beans>

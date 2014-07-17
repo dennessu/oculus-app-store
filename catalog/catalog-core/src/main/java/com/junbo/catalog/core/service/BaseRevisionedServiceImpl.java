@@ -56,7 +56,7 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
             throw AppCommonErrors.INSTANCE.fieldNotWritable("rev", entity.getRev(), existingEntity.getRev()).exception();
         }
 
-        return getEntityRepo().update(entity);
+        return getEntityRepo().update(entity, existingEntity);
     }
 
     @Override
@@ -78,7 +78,8 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
         if (Status.APPROVED.is(revision.getStatus())) {
             revision.setTimestamp(Utils.currentTimestamp());
         }
-        getRevisionRepo().update(revision);
+        T oldRevision = getRevisionRepo().get(revisionId);
+        getRevisionRepo().update(revision, oldRevision);
         if (Status.APPROVED.is(revision.getStatus())) {
             E entity = getEntityRepo().get(revision.getEntityId());
             checkEntityNotNull(revision.getEntityId(), entity, getEntityType());
@@ -87,7 +88,7 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
             }
             String lastRevisionId = entity.getCurrentRevisionId();
             entity.setCurrentRevisionId(revisionId);
-            getEntityRepo().update(entity);
+            getEntityRepo().update(entity, entity);
         }
         return getRevisionRepo().get(revisionId);
     }

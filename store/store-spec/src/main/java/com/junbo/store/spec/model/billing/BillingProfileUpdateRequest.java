@@ -5,10 +5,14 @@
  */
 package com.junbo.store.spec.model.billing;
 
+import com.junbo.common.enumid.LocaleId;
+import com.junbo.common.id.UserId;
+
 /**
  * The BillingProfileUpdateRequest class.
  */
 public class BillingProfileUpdateRequest {
+
 
     /**
      * The Operation enum.
@@ -16,11 +20,46 @@ public class BillingProfileUpdateRequest {
     public enum Operation {
         ADD_PI,
         UPDATE_PI,
-        REMOVE_PI,
-        SET_DEFAULT_PI
+        REMOVE_PI
     }
 
-    private Operation operation;
+    private UserId userId;
 
-    private PaymentInstrument paymentInstrument;
+    private LocaleId locale;
+
+    private String operation;
+
+    private Instrument instrument;
+
+    public LocaleId getLocale() {
+        return locale;
+    }
+
+    public void setLocale(LocaleId locale) {
+        this.locale = locale;
+    }
+
+    public UserId getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UserId userId) {
+        this.userId = userId;
+    }
+
+    public String getOperation() {
+        return operation;
+    }
+
+    public void setOperation(String operation) {
+        this.operation = operation;
+    }
+
+    public Instrument getInstrument() {
+        return instrument;
+    }
+
+    public void setInstrument(Instrument instrument) {
+        this.instrument = instrument;
+    }
 }

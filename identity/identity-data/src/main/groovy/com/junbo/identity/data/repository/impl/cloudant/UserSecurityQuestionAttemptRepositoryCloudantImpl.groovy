@@ -26,7 +26,8 @@ class UserSecurityQuestionAttemptRepositoryCloudantImpl extends CloudantClient<U
     }
 
     @Override
-    Promise<UserSecurityQuestionVerifyAttempt> update(UserSecurityQuestionVerifyAttempt model) {
+    Promise<UserSecurityQuestionVerifyAttempt> update(UserSecurityQuestionVerifyAttempt model,
+                                                      UserSecurityQuestionVerifyAttempt oldModel) {
         throw new IllegalStateException('update user security question attempt not support')
     }
 

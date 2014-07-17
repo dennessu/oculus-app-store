@@ -13,6 +13,7 @@ import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateRequest;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
 import com.junbo.store.spec.model.iap.IAPOfferGetRequest;
+import com.junbo.store.spec.model.iap.IAPOfferGetResponse;
 import com.junbo.store.spec.model.purchase.*;
 
 import javax.ws.rs.*;
@@ -45,7 +46,8 @@ public interface StoreResource {
 
     @GET
     @Path("/entitlements")
-    Promise<EntitlementsGetResponse> getEntitlements(@BeanParam EntitlementsGetRequest entitlementsGetRequest);
+    Promise<EntitlementsGetResponse> getEntitlements(@BeanParam EntitlementsGetRequest entitlementsGetRequest,
+                                                     @BeanParam PageParam pageParam);
 
     @POST
     @Path("/purchase/free")
@@ -61,7 +63,7 @@ public interface StoreResource {
 
     @GET
     @Path("/iap/offers")
-    Promise<CommitPurchaseResponse> iapGetOffers(IAPOfferGetRequest iapOfferGetRequest);
+    Promise<IAPOfferGetResponse> iapGetOffers(@BeanParam IAPOfferGetRequest iapOfferGetRequest);
 
     @POST
     @Path("/iap/consumption")

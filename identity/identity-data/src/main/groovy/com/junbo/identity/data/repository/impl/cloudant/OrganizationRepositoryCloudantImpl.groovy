@@ -56,8 +56,8 @@ class OrganizationRepositoryCloudantImpl extends CloudantClient<Organization> im
     }
 
     @Override
-    Promise<Organization> update(Organization model) {
-        return cloudantPut(model)
+    Promise<Organization> update(Organization model, Organization oldModel) {
+        return cloudantPut(model, oldModel)
     }
 
     @Override

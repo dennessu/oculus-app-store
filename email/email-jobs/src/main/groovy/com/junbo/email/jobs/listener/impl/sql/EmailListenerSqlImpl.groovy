@@ -104,7 +104,7 @@ class EmailListenerSqlImpl extends EmailBaseListener implements EmailListener {
         transactionTemplate.execute(new TransactionCallback<Promise<Email>>() {
             @Override
             public Promise<Email> doInTransaction(TransactionStatus status) {
-                return emailHistoryRepository.updateEmailHistory(email)
+                return emailHistoryRepository.updateEmailHistory(email, email)
             }
         })
     }

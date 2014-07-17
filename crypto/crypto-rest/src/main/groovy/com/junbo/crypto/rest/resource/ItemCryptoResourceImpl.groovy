@@ -83,7 +83,7 @@ class ItemCryptoResourceImpl extends CommonResourceImpl implements ItemCryptoRes
             }.then { String str ->
                 data.encryptedPublicKey = str
 
-                return itemCryptoRepo.update(data)
+                return itemCryptoRepo.update(data, data)
             }.then { ItemCryptoRepoData cryptoRepoData ->
 
                 return decryptByMasterKey(cryptoRepoData.encryptedPrivateKey).then { String value ->

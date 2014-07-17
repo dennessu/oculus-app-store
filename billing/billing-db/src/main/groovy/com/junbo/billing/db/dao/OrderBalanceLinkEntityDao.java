@@ -16,7 +16,7 @@ import java.util.List;
 public interface OrderBalanceLinkEntityDao {
     OrderBalanceLinkEntity get(Long orderBalanceLinkId);
     OrderBalanceLinkEntity save(OrderBalanceLinkEntity orderBalanceLink);
-    OrderBalanceLinkEntity update(OrderBalanceLinkEntity orderBalanceLink);
+    OrderBalanceLinkEntity update(OrderBalanceLinkEntity orderBalanceLink, OrderBalanceLinkEntity oldOrderBalanceLink);
     List<OrderBalanceLinkEntity> findByOrderId(Long orderId);
     List<OrderBalanceLinkEntity> findByBalanceId(Long balanceId);
 }

@@ -106,7 +106,7 @@ class RoleResourceImpl implements RoleResource {
             Role filtered = roleFilter.filterForPatch(role, oldRole)
 
             return roleValidator.validateForUpdate(filtered, oldRole).then {
-                return roleRepository.update(filtered).then { Role newRole ->
+                return roleRepository.update(filtered, oldRole).then { Role newRole ->
                     return Promise.pure(roleFilter.filterForGet(newRole))
                 }
             }
@@ -123,7 +123,7 @@ class RoleResourceImpl implements RoleResource {
             Role filtered = roleFilter.filterForPut(role, oldRole)
 
             return roleValidator.validateForUpdate(filtered, oldRole).then {
-                return roleRepository.update(filtered).then { Role newRole ->
+                return roleRepository.update(filtered, oldRole).then { Role newRole ->
                     return Promise.pure(roleFilter.filterForGet(newRole))
                 }
             }

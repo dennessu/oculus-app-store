@@ -45,7 +45,7 @@ public class PromotionRepository implements BaseEntityRepository<Promotion> {
     }
 
     @Override
-    public Promotion update(Promotion promotion) {
+    public Promotion update(Promotion promotion, Promotion oldPromotion) {
         PromotionEntity dbEntity = promotionDao.get(promotion.getPromotionId());
         if (dbEntity == null) {
             throw AppCommonErrors.INSTANCE.resourceNotFound("promotion", promotion.getPromotionId()).exception();

@@ -9,13 +9,12 @@ import com.junbo.order.clientproxy.model.OrderOfferItem
 import com.junbo.order.clientproxy.model.OrderOfferRevision
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
-import com.junbo.order.spec.model.enums.BillingAction
-import com.junbo.order.spec.model.enums.ItemType
-import com.junbo.order.spec.model.enums.OrderActionType
-import com.junbo.order.spec.model.enums.OrderStatus
+import com.junbo.order.spec.model.enums.*
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  * Created by chriszhu on 3/19/14.
@@ -26,6 +25,7 @@ class CoreUtils {
 
     static final String OFFER_ITEM_TYPE_PHYSICAL = 'PHYSICAL'
     static final String OFFER_ITEM_TYPE_STORED_VALUE = 'STORED_VALUE'
+    private static final Logger LOGGER = LoggerFactory.getLogger(CoreUtils)
 
 
     static ItemType getOfferType(OrderOfferRevision offer) {
@@ -109,20 +109,6 @@ class CoreUtils {
             return true
         }
         if (order.honorUntilTime > new Date()) {
-            return true
-        }
-        return false
-    }
-
-    static Boolean checkOrderStatusCancelable(Order order) {
-
-        // TODO: check authorized
-        if (order.tentative)
-            return false
-        if (order.status == OrderStatus.OPEN.name() ||
-                order.status == OrderStatus.PREORDERED.name() ||
-                order.status == OrderStatus.PENDING_CHARGE.name() ||
-                order.status == OrderStatus.PENDING_FULFILL.name()) {
             return true
         }
         return false
@@ -224,17 +210,20 @@ class CoreUtils {
         return returnVal
     }
 
-    static Boolean checkOrderStatusRefundable(Order order) {
+    static Boolean isRefundable(Order order) {
 
         if (order.tentative) {
             return false
         }
-        if (order.status == OrderStatus.CHARGED.name() ||
-                order.status == OrderStatus.COMPLETED.name() ||
-                order.status == OrderStatus.PARTIAL_CHARGED.name()) {
+        return isChargeCompleted(order) && !isFreeOrder(order)
+    }
+
+    static Boolean isCancellable(Order order) {
+
+        if (order.tentative) {
             return true
         }
-        return false
+        return !isChargeCompleted(order)
     }
 
     static BillingHistory getLatestBillingHistory(Order order) {
@@ -254,7 +243,7 @@ class CoreUtils {
                 balance.status == BalanceStatus.ERROR.name() ||
                 balance.status == BalanceStatus.FAILED.name() ||
                 balance.status == BalanceStatus.INIT.name() ||
-                balance.status == BalanceStatus.PENDING_CAPTURE.name() ) {
+                balance.status == BalanceStatus.PENDING_CAPTURE.name()) {
             return false
         }
         return true
@@ -324,9 +313,9 @@ class CoreUtils {
     static Boolean isPendingOnEvent(Order order, OrderEvent event) {
         switch (event.action) {
             case OrderActionType.CHARGE.name():
-                return order.status == OrderStatus.PENDING_CHARGE.name()
-            case OrderActionType.FULFILL.name():
-                return order.status == OrderStatus.PENDING_FULFILL.name()
+                return order.status == OrderStatus.PENDING.name()
+            case OrderActionType.CAPTURE.name():
+                return order.status == OrderStatus.PENDING.name()
             default:
                 throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
         }
@@ -339,5 +328,174 @@ class CoreUtils {
 
         order.ipAddress = context.userIp
         order.ipGeoAddress = context.location
+
+    }
+
+    static Boolean isPendingOnFulfillment(Order order, OrderEvent event) {
+        if (!CoreUtils.isChargeCompleted(order)) {
+            LOGGER.info('name=Order_Not_Charged')
+            return false
+        }
+        if (hasPhysicalOffer(order)) {
+            switch (event.action) {
+                case OrderActionType.DELIVER.name():
+                    return order.status == OrderStatus.SHIPPED.name()
+                case OrderActionType.FULFILL.name():
+                    return order.status == OrderStatus.PENDING.name() ||
+                            order.status == OrderStatus.PREORDERED.name()
+                case OrderActionType.RETURN.name():
+                    return order.status == OrderStatus.DELIVERED.name()
+                default:
+                    LOGGER.info('name=Order_Event_Not_Supported_Physical')
+                    return false
+            }
+        } else {
+            switch (event.action) {
+                case OrderActionType.FULFILL.name():
+                    return order.status == OrderStatus.PENDING.name()
+                default:
+                    LOGGER.info('name=Order_Event_Not_Supported_Physical')
+                    return false
+            }
+        }
+    }
+
+    static Boolean isRefundedOrCanceled(Order order) {
+        return isRefunded(order) || isCanceled(order)
+    }
+
+    static Boolean isRefunded(Order order) {
+        if (CollectionUtils.isEmpty(order.billingHistories)) {
+            return false
+        }
+        return order.billingHistories.any { BillingHistory bh ->
+            (bh.billingEvent == BillingAction.REQUEST_REFUND.name() && bh.success) ||
+                    (bh.billingEvent == BillingAction.REFUND.name() && bh.success)
+        }
+    }
+
+    static Boolean isCanceled(Order order) {
+        if (CollectionUtils.isEmpty(order.billingHistories)) {
+            return false
+        }
+        return order.billingHistories.any { BillingHistory bh ->
+            (bh.billingEvent == BillingAction.CANCEL.name() && bh.success) ||
+                    (bh.billingEvent == BillingAction.REQUEST_CANCEL.name() && bh.success)
+        }
+    }
+
+    static Boolean isChargeCompleted(Order order) {
+        if (isFreeOrder(order)) {
+            return true
+        }
+
+        if (CollectionUtils.isEmpty(order.billingHistories)) {
+            return false
+        }
+        if (isRefundedOrCanceled(order)) {
+            return false
+        }
+        return order.billingHistories.any { BillingHistory bh ->
+            (bh.billingEvent == BillingAction.CAPTURE.name() && bh.success) ||
+                    (bh.billingEvent == BillingAction.CHARGE.name() && bh.success)
+        }
+    }
+
+    static Boolean isFulfillCompleted(Order order) {
+
+        def fulfillCompleted = true
+        order.orderItems.each { OrderItem oi ->
+            if (CollectionUtils.isEmpty(oi.fulfillmentHistories)) {
+                fulfillCompleted = false
+                return
+            }
+            if (!oi.fulfillmentHistories.any() { FulfillmentHistory fh ->
+                fh.fulfillmentEvent == FulfillmentEventType.FULFILL.name() && fh.success
+            }) {
+                fulfillCompleted = false
+            }
+        }
+        return fulfillCompleted
+    }
+
+    static Boolean isPendingOnFulfillment(Order order) {
+
+        if (isFulfillCompleted(order)) {
+            return false
+        }
+
+        def fulfillPending = false
+        order.orderItems.each { OrderItem oi ->
+            if (CollectionUtils.isEmpty(oi.fulfillmentHistories)) {
+                fulfillPending = false
+                return
+            }
+
+            if (oi.fulfillmentHistories.any() { FulfillmentHistory fh ->
+                fh.fulfillmentEvent == FulfillmentEventType.REQUEST_FULFILL.name() && fh.success
+            }) {
+                fulfillPending = true
+            }
+        }
+        return fulfillPending
+    }
+
+    static Boolean isPreordered(Order order) {
+
+        if (isFulfillCompleted(order)) {
+            return false
+        }
+
+        def preordered = false
+        order.orderItems.each { OrderItem oi ->
+            if (CollectionUtils.isEmpty(oi.fulfillmentHistories)) {
+                preordered = false
+                return
+            }
+
+            if (oi.fulfillmentHistories.any() { FulfillmentHistory fh ->
+                fh.fulfillmentEvent == FulfillmentEventType.PREORDER.name() && fh.success
+            }) {
+                preordered = true
+            }
+        }
+        return preordered
+    }
+
+    static Boolean isPendingOnCapture(Order order) {
+        if (hasPhysicalOffer(order)) {
+            if (CollectionUtils.isEmpty(order.billingHistories)) {
+                return false
+            }
+            if (isRefundedOrCanceled(order)) {
+                return false
+            }
+            def authorized = order.billingHistories.any { BillingHistory bh ->
+                bh.billingEvent == BillingAction.AUTHORIZE.name() && bh.success
+            }
+            def captured = order.billingHistories.any { BillingHistory bh ->
+                bh.billingEvent == BillingAction.CAPTURE.name() && bh.success
+            }
+            return authorized && !captured
+        }
+        LOGGER.info('name=Order_No_Physical')
+        return false
+    }
+
+    static Boolean isPendingOnChargeConfirmation(Order order) {
+
+        if (CollectionUtils.isEmpty(order.billingHistories)) {
+            return false
+        }
+        if (isRefundedOrCanceled(order)) {
+            return false
+        }
+        def requested = order.billingHistories.any { BillingHistory bh ->
+            bh.billingEvent == BillingAction.REQUEST_CHARGE.name() && bh.success
+        }
+        def charged = order.billingHistories.any { BillingHistory bh ->
+            bh.billingEvent == BillingAction.CHARGE.name() && bh.success
+        }
+        return requested && !charged
     }
 }

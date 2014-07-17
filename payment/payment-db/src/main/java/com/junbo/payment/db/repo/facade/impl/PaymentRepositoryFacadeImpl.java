@@ -69,7 +69,7 @@ public class PaymentRepositoryFacadeImpl implements PaymentRepositoryFacade {
         if (externalToken != null) {
             paymentTransaction.setExternalToken(externalToken);
         }
-        paymentTransactionRepository.update(paymentTransaction).get();
+        paymentTransactionRepository.update(paymentTransaction, paymentTransaction).get();
     }
 
     public List<PaymentEvent> getPaymentEventsByPaymentId(Long paymentId) {

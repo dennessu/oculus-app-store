@@ -15,4 +15,9 @@
         <property name="dbName" value="csr_log"/>
     </bean>
 
+    <bean id="csrInvitationCodeCloudantRepo" class="com.junbo.csr.db.repo.impl.cloudant.CsrInvitationCodeRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="csr_invitation_code"/>
+        <property name="tokenGenerator" ref="csrTokenGenerator"/>
+    </bean>
+
 </beans>

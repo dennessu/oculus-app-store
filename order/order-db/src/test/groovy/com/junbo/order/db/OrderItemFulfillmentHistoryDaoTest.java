@@ -10,7 +10,7 @@ import com.junbo.common.id.OrderEventId;
 import com.junbo.order.db.common.TestHelper;
 import com.junbo.order.db.dao.OrderItemFulfillmentHistoryDao;
 import com.junbo.order.db.entity.OrderItemFulfillmentHistoryEntity;
-import com.junbo.order.spec.model.enums.FulfillmentAction;
+import com.junbo.order.spec.model.enums.FulfillmentEventType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -39,7 +39,7 @@ public class OrderItemFulfillmentHistoryDaoTest extends BaseTest {
         OrderItemFulfillmentHistoryEntity entity = TestHelper.generateOrderItemFulfillmentHistoryEntity();
         entity.setHistoryId(idGenerator.nextId(OrderEventId.class));
         Long id = orderItemFulfillmentHistoryDao.create(entity);
-        entity.setFulfillmentEventId(FulfillmentAction.FULFILL);
+        entity.setFulfillmentEventId(FulfillmentEventType.FULFILL);
         orderItemFulfillmentHistoryDao.update(entity);
         OrderItemFulfillmentHistoryEntity returnedEntity = orderItemFulfillmentHistoryDao.read(id);
 

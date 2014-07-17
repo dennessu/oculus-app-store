@@ -37,7 +37,7 @@ public class TokenSetRepositorySqlImpl implements TokenSetRepository{
     }
 
     @Override
-    public Promise<TokenSet> update(TokenSet model) {
+    public Promise<TokenSet> update(TokenSet model, TokenSet oldModel) {
         TokenSetEntity entity = tokenMapper.toTokenSetEntity(model, new MappingContext());
         TokenSetEntity updated = tokenSetDao.update(entity);
         return get(updated.getId());

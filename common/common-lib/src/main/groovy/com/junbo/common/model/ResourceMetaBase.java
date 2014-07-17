@@ -49,20 +49,18 @@ public abstract class ResourceMetaBase<K> implements CloudantEntity<K> {
     @ApiModelProperty(position = 2004, required = false, value = "Feature expansion of the resource.")
     private Map<String, JsonNode> futureExpansion = new HashMap<>();
 
-    // todo:    Liangfu:    Temporary allow this field to return
-    // Will fix it later.
-    //@JsonIgnore
+    @JsonIgnore
     @UserId
     private Long createdBy;
 
-    //@JsonIgnore
+    @JsonIgnore
     @UserId
     private Long updatedBy;
 
-    //@JsonIgnore
+    @JsonIgnore
     private String createdByClient;
 
-    //@JsonIgnore
+    @JsonIgnore
     private String updatedByClient;
 
     public Date getCreatedTime() {

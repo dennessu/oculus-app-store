@@ -8,7 +8,7 @@ import com.junbo.order.spec.model.FulfillmentHistory
 import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.order.spec.model.enums.EventStatus
-import com.junbo.order.spec.model.enums.FulfillmentAction
+import com.junbo.order.spec.model.enums.FulfillmentEventType
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
@@ -46,14 +46,14 @@ class FulfillmentEventHistoryBuilder {
         if (orderItem == null) {
             return null
         }
-        return FulfillmentAction.FULFILL.name()
+        return FulfillmentEventType.FULFILL.name()
     }
 
     static String getFulfillmentEvent(FulfilmentItem fulfilmentItem, OrderEvent event) {
         if (event == null) {
             return null
         }
-        return FulfillmentAction.FULFILL.name()
+        return FulfillmentEventType.FULFILL.name()
     }
 
     static EventStatus getFulfillmentEventStatus(FulfilmentItem fulfilmentItem) {

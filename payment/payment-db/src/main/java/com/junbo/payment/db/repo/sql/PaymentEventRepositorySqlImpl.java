@@ -62,7 +62,7 @@ public class PaymentEventRepositorySqlImpl implements PaymentEventRepository {
     }
 
     @Override
-    public Promise<PaymentEvent> update(PaymentEvent model) {
+    public Promise<PaymentEvent> update(PaymentEvent model, PaymentEvent oldModel) {
         PaymentEventEntity entity = paymentMapperExtension.toPaymentEventEntity(model);
         PaymentEventEntity updated = paymentEventDao.update(entity);
         return get(updated.getId());

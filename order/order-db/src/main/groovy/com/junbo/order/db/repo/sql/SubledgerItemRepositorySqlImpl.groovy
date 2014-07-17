@@ -50,7 +50,7 @@ class SubledgerItemRepositorySqlImpl implements SubledgerItemRepository {
     }
 
     @Override
-    Promise<SubledgerItem> update(SubledgerItem subledgerItem) {
+    Promise<SubledgerItem> update(SubledgerItem subledgerItem, SubledgerItem oldSubledgerItem) {
         def oldEntity = subledgerItemDao.read(subledgerItem.getId().value)
 
         def newEntity = modelMapper.toSubledgerItemEntity(subledgerItem, new MappingContext())

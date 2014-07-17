@@ -47,7 +47,10 @@ public class Identity {
     }
 
     public static Country CountryPostDefault() throws Exception {
-        Country country = IdentityModel.DefaultCountry();
+        return CountryPostDefault(IdentityModel.DefaultCountry());
+    }
+
+    public static Country CountryPostDefault(Country country) throws Exception {
         return (Country) HttpclientHelper.SimpleJsonPost(
                 IdentityV1CountryURI,
                 JsonHelper.JsonSerializer(country),
@@ -75,7 +78,10 @@ public class Identity {
     }
 
     public static Currency CurrencyPostDefault() throws Exception {
-        Currency currency = IdentityModel.DefaultCurrency();
+        return CurrencyPostDefault(IdentityModel.DefaultCurrency());
+    }
+
+    public static Currency CurrencyPostDefault(Currency currency) throws Exception {
         return (Currency) HttpclientHelper.SimpleJsonPost(
                 IdentityV1CurrencyURI,
                 JsonHelper.JsonSerializer(currency),
@@ -93,7 +99,10 @@ public class Identity {
     }
 
     public static Locale LocalePostDefault() throws Exception {
-        Locale locale = IdentityModel.DefaultLocale();
+        return LocalePostDefault(IdentityModel.DefaultLocale());
+    }
+
+    public static Locale LocalePostDefault(Locale locale) throws Exception {
         return (Locale) HttpclientHelper.SimpleJsonPost(
                 IdentityV1LocaleURI,
                 JsonHelper.JsonSerializer(locale),
@@ -111,7 +120,10 @@ public class Identity {
     }
 
     public static User UserPostDefault() throws Exception {
-        User user = IdentityModel.DefaultUser();
+        return UserPostDefault(IdentityModel.DefaultUser());
+    }
+
+    public static User UserPostDefault(User user) throws Exception {
         return (User) HttpclientHelper.SimpleJsonPost(
                 IdentityV1UserURI,
                 JsonHelper.JsonSerializer(user),
@@ -131,22 +143,11 @@ public class Identity {
                 User.class);
     }
 
-    public static UserPersonalInfo UserPersonalInfoPostByType(UserId userId, IdentityModel.UserPersonalInfoType type)
-            throws Exception {
-        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
-        switch (type) {
-            case ADDRESS:
-                userPersonalInfo = IdentityModel.DefaultUserPersonalInfoAddress();
-                break;
-            case EMAIL:
-                userPersonalInfo = IdentityModel.DefaultUserPersonalInfoEmail();
-                break;
-            default:
-        }
-        userPersonalInfo.setUserId(userId);
+    public static UserPersonalInfo UserPersonalInfoPost(UserId userId, UserPersonalInfo upi) throws Exception {
+        upi.setUserId(userId);
         return (UserPersonalInfo) HttpclientHelper.SimpleJsonPost(
                 IdentityV1UserPersonalInfoURI,
-                JsonHelper.JsonSerializer(userPersonalInfo),
+                JsonHelper.JsonSerializer(upi),
                 UserPersonalInfo.class);
     }
 

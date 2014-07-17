@@ -14,10 +14,9 @@ import java.util.Date;
 @Entity
 @Table(name = "master_key")
 public class MasterKeyEntity {
-
     @Id
-    @Column(name = "id")
-    private Long id;
+    @Column(name = "key_version")
+    private Long keyVersion;
 
     @Column(name = "version")
     @Version
@@ -27,22 +26,11 @@ public class MasterKeyEntity {
     // It must be versionNumber:encryptValue
     private String encryptValue;
 
-    @Column(name = "key_version")
-    private Integer keyVersion;
-
     @Column(name = "created_by")
     private Long createdBy;
 
     @Column(name = "created_time")
     private Date createdTime;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Integer getResourceAge() {
         return resourceAge;
@@ -68,11 +56,11 @@ public class MasterKeyEntity {
         this.encryptValue = encryptValue;
     }
 
-    public Integer getKeyVersion() {
+    public Long getKeyVersion() {
         return keyVersion;
     }
 
-    public void setKeyVersion(Integer keyVersion) {
+    public void setKeyVersion(Long keyVersion) {
         this.keyVersion = keyVersion;
     }
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-PID_FILE=./logs/apphost-crypto.pid
-if [[ -d /var/silkcloud ]]; then
-    mkdir -p /var/silkcloud/run
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
     PID_FILE=/var/silkcloud/run/apphost-crypto.pid
+else
+    PID_FILE=./logs/apphost-crypto.pid
 fi
 
 if [[ -f $PID_FILE ]]; then

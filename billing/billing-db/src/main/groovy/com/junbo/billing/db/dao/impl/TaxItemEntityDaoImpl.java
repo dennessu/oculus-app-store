@@ -42,7 +42,7 @@ public class TaxItemEntityDaoImpl extends BaseDao implements TaxItemEntityDao {
     }
 
     @Override
-    public TaxItemEntity update(TaxItemEntity taxItem) {
+    public TaxItemEntity update(TaxItemEntity taxItem, TaxItemEntity oldTaxItem) {
         taxItem.setUpdatedTime(new Date());
         if (taxItem.getUpdatedBy() == null) {
             taxItem.setUpdatedBy("0");
@@ -66,6 +66,6 @@ public class TaxItemEntityDaoImpl extends BaseDao implements TaxItemEntityDao {
     public void softDelete(Long taxItem) {
         TaxItemEntity entity = this.get(taxItem);
         entity.setIsDeleted(Boolean.TRUE);
-        this.update(entity);
+        this.update(entity, entity);
     }
 }

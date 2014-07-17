@@ -5,29 +5,22 @@
  */
 package com.junbo.store.spec.model.purchase;
 
+import com.junbo.store.spec.model.BaseResponse;
+
 /**
  * The PreparePurchaseResponse class.
  */
-public class PreparePurchaseResponse {
+public class PreparePurchaseResponse extends BaseResponse {
 
-    private String formattedOriginalPrice;
-    private String formattedFinalPrice;
+    private String formattedTotalPrice;
     private String purchaseToken;
 
-    public String getFormattedOriginalPrice() {
-        return formattedOriginalPrice;
+    public String getFormattedTotalPrice() {
+        return formattedTotalPrice;
     }
 
-    public void setFormattedOriginalPrice(String formattedOriginalPrice) {
-        this.formattedOriginalPrice = formattedOriginalPrice;
-    }
-
-    public String getFormattedFinalPrice() {
-        return formattedFinalPrice;
-    }
-
-    public void setFormattedFinalPrice(String formattedFinalPrice) {
-        this.formattedFinalPrice = formattedFinalPrice;
+    public void setFormattedTotalPrice(String formattedTotalPrice) {
+        this.formattedTotalPrice = formattedTotalPrice;
     }
 
     public String getPurchaseToken() {

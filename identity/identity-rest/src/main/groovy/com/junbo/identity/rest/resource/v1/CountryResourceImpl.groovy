@@ -92,7 +92,7 @@ class CountryResourceImpl implements CountryResource {
             country = countryFilter.filterForPut(country, oldCountry)
 
             return countryValidator.validateForUpdate(countryId, country, oldCountry).then {
-                return countryRepository.update(country).then { Country newCountry ->
+                return countryRepository.update(country, oldCountry).then { Country newCountry ->
                     newCountry = countryFilter.filterForGet(newCountry, null)
                     return Promise.pure(newCountry)
                 }
@@ -123,7 +123,7 @@ class CountryResourceImpl implements CountryResource {
 
             return countryValidator.validateForUpdate(
                     countryId, country, oldCountry).then {
-                return countryRepository.update(country).then { Country newCountry ->
+                return countryRepository.update(country, oldCountry).then { Country newCountry ->
                     newCountry = countryFilter.filterForGet(newCountry, null)
                     return Promise.pure(newCountry)
                 }

@@ -9,17 +9,17 @@ package com.junbo.csr.spec.model;
  * Created by haomin on 14-7-14.
  */
 public class CsrUser {
-    private String id;
+    private Long id;
     private String name;
     private String username;
     private String countryCode;
     private String tier;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

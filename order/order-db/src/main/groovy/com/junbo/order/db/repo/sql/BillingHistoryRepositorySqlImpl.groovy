@@ -50,7 +50,7 @@ class BillingHistoryRepositorySqlImpl implements BillingHistoryRepository {
     }
 
     @Override
-    Promise<BillingHistory> update(BillingHistory history) {
+    Promise<BillingHistory> update(BillingHistory history, BillingHistory oldHistory) {
         def entity = modelMapper.toOrderBillingHistoryEntity(history, new MappingContext())
         orderBillingHistoryDao.update(entity)
         return Promise.pure(modelMapper.toOrderBillingHistoryModel(entity, new MappingContext()))

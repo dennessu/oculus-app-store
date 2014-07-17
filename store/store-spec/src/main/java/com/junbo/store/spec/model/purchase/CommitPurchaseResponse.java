@@ -5,6 +5,7 @@
  */
 package com.junbo.store.spec.model.purchase;
 
+import com.junbo.common.id.OrderId;
 import com.junbo.store.spec.model.BaseResponse;
 import com.junbo.store.spec.model.Challenge;
 import com.junbo.store.spec.model.Entitlement;
@@ -18,11 +19,11 @@ public class CommitPurchaseResponse extends BaseResponse {
 
     private Challenge challenge;
 
-    private String orderId;
+    private OrderId orderId;
 
     private AppDeliveryData appDeliveryData;
 
-    private List<Entitlement> entitlements;
+    private List<Entitlement> iapEntitlements;
 
     public Challenge getChallenge() {
         return challenge;
@@ -32,11 +33,11 @@ public class CommitPurchaseResponse extends BaseResponse {
         this.challenge = challenge;
     }
 
-    public String getOrderId() {
+    public OrderId getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(String orderId) {
+    public void setOrderId(OrderId orderId) {
         this.orderId = orderId;
     }
 
@@ -48,11 +49,11 @@ public class CommitPurchaseResponse extends BaseResponse {
         this.appDeliveryData = appDeliveryData;
     }
 
-    public List<Entitlement> getEntitlements() {
-        return entitlements;
+    public List<Entitlement> getIapEntitlements() {
+        return iapEntitlements;
     }
 
-    public void setEntitlements(List<Entitlement> entitlements) {
-        this.entitlements = entitlements;
+    public void setIapEntitlements(List<Entitlement> iapEntitlements) {
+        this.iapEntitlements = iapEntitlements;
     }
 }

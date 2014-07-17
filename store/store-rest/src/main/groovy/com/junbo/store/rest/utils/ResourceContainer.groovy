@@ -1,5 +1,4 @@
 package com.junbo.store.rest.utils
-
 import com.junbo.catalog.spec.resource.ItemResource
 import com.junbo.catalog.spec.resource.ItemRevisionResource
 import com.junbo.catalog.spec.resource.OfferResource
@@ -7,11 +6,7 @@ import com.junbo.catalog.spec.resource.OfferRevisionResource
 import com.junbo.crypto.spec.resource.ItemCryptoResource
 import com.junbo.entitlement.spec.resource.EntitlementResource
 import com.junbo.fulfilment.spec.resource.FulfilmentResource
-import com.junbo.identity.spec.v1.model.UserPersonalInfo
-import com.junbo.identity.spec.v1.resource.UserCredentialResource
-import com.junbo.identity.spec.v1.resource.UserCredentialVerifyAttemptResource
-import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
-import com.junbo.identity.spec.v1.resource.UserResource
+import com.junbo.identity.spec.v1.resource.*
 import com.junbo.oauth.spec.endpoint.TokenEndpoint
 import com.junbo.oauth.spec.endpoint.TokenInfoEndpoint
 import com.junbo.order.spec.resource.OrderResource
@@ -20,7 +15,6 @@ import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
-
 /**
  * Class to hold all the other sources IAP depends on.
  */
@@ -73,5 +67,9 @@ class ResourceContainer {
     @Resource(name='store.tokenInfoEndpointClientProxy')
     TokenInfoEndpoint tokenInfoEndpoint
 
+    @Resource(name='store.piTypeResourceClientProxy')
+    PITypeResource piTypeResource
 
+    @Resource(name='store.currencyResourceClientProxy')
+    CurrencyResource currencyResource
 }

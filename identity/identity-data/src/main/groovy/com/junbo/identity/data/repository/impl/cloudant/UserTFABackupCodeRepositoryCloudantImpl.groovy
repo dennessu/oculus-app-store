@@ -32,8 +32,8 @@ class UserTFABackupCodeRepositoryCloudantImpl extends CloudantClient<UserTFABack
     }
 
     @Override
-    Promise<UserTFABackupCode> update(UserTFABackupCode entity) {
-        return cloudantPut(entity)
+    Promise<UserTFABackupCode> update(UserTFABackupCode entity, UserTFABackupCode oldEntity) {
+        return cloudantPut(entity, oldEntity)
     }
 
     @Override

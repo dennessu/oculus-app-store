@@ -81,7 +81,7 @@ public class ItemRevisionRepositoryImpl implements ItemRevisionRepository {
     }
 
     @Override
-    public ItemRevision update(ItemRevision revision) {
+    public ItemRevision update(ItemRevision revision, ItemRevision oldRevision) {
         ItemRevisionEntity dbEntity = itemRevisionDao.get(revision.getRevisionId());
         ItemRevisionMapper.fillDBEntity(revision, dbEntity);
         return get(itemRevisionDao.update(dbEntity));

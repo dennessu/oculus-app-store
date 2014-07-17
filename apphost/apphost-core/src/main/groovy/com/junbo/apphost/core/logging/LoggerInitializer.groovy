@@ -47,6 +47,7 @@ class LoggerInitializer {
         SLF4JBridgeHandler.install()
 
         System.setProperty('net.spy.log.LoggerImpl', 'net.spy.memcached.compat.log.SLF4JLogger')
+        System.setProperty('logDir', getLogDir());
         if (System.getProperty('logback.configurationFile') == null) {
             ILoggerFactory factory = StaticLoggerBinder.singleton.loggerFactory
             LoggerContext context = (LoggerContext) factory
@@ -239,6 +240,17 @@ ${getClasspath().join(System.lineSeparator())}
         }
 
         return pid
+    }
+
+    static String getLogDir() {
+        if (System.getProperty("logDir") != null) {
+            return System.getProperty("logDir")
+        }
+        if (System.getProperty("os.name").contains("Linux")) {
+            return "/var/silkcloud/logs"
+        } else {
+            return "logs"
+        }
     }
 
     private LoggerInitializer() {

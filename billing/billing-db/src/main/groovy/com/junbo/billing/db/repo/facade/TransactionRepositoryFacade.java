@@ -21,5 +21,5 @@ public interface TransactionRepositoryFacade {
 
     List<Transaction> getTransactions(Long balanceId);
 
-    Transaction updateTransaction(Transaction transaction);
+    Transaction updateTransaction(Transaction transaction, Transaction oldTransaction);
 }

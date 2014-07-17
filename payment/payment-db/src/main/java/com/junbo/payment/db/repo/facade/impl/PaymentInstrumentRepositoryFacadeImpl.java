@@ -73,14 +73,14 @@ public class PaymentInstrumentRepositoryFacadeImpl implements PaymentInstrumentR
         if (request.getIsActive() != null) {
             pi.setIsActive(request.getIsActive());
         }
-        paymentInstrumentRepository.update(pi).get();
+        paymentInstrumentRepository.update(pi, pi).get();
 
         if (PIType.CREDITCARD.getId().equals(request.getType())) {
             CreditCardDetail creditCardDetail = paymentMapperExtension.toSpecificDetail(request.getTypeSpecificDetails(), PIType.CREDITCARD);
             CreditCardDetail existing = creditCardDetailRepository.get(pi.getId()).get();
             // setup column allowed to be updated:
             existing.setExpireDate(creditCardDetail.getExpireDate());
-            creditCardDetailRepository.update(existing).get();
+            creditCardDetailRepository.update(existing, existing).get();
         }
     }
 
@@ -95,7 +95,7 @@ public class PaymentInstrumentRepositoryFacadeImpl implements PaymentInstrumentR
         if (!CommonUtil.isNullOrEmpty(num)) {
             pi.setAccountNum(num);
         }
-        paymentInstrumentRepository.update(pi).get();
+        paymentInstrumentRepository.update(pi, pi).get();
     }
 
     public PaymentInstrument getByPIId(Long piId){

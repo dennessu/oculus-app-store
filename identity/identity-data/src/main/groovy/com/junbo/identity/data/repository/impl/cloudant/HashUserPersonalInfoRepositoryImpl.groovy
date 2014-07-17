@@ -28,11 +28,11 @@ class HashUserPersonalInfoRepositoryImpl extends CloudantClient<HashUserPersonal
     }
 
     @Override
-    Promise<HashUserPersonalInfo> update(HashUserPersonalInfo model) {
+    Promise<HashUserPersonalInfo> update(HashUserPersonalInfo model, HashUserPersonalInfo oldModel) {
         if (model.id == null) {
             throw new RuntimeException("HashUserPersonalInfo.id should be filled with UserPersonalInfo.id.")
         }
-        return cloudantPut(model)
+        return cloudantPut(model, oldModel)
     }
 
     @Override

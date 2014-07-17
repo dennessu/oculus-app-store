@@ -5,6 +5,7 @@ catalog-integration
 identity-integration
 oauth-integration
 payment-integration
+order-integration
 entitlement-integration
 fulfilment-integration
 integration-buyerscenario

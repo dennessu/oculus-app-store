@@ -42,7 +42,7 @@ public interface SubledgerRepositoryFacade {
 
     List<SubledgerItem> getSubledgerItemByOrderItemId(OrderItemId orderItemId);
 
-    SubledgerItem updateSubledgerItem(SubledgerItem subledgerItem);
+    SubledgerItem updateSubledgerItem(SubledgerItem subledgerItem, SubledgerItem oldSubledgerItem);
 }
 
 

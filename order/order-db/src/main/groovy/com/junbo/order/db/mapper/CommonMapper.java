@@ -313,7 +313,7 @@ public class CommonMapper {
         return subledgerId.getValue();
     }
 
-    public String fromFulfillmentActionToString(FulfillmentAction action) {
+    public String fromFulfillmentEventTypeToString(FulfillmentEventType action) {
         if (action == null) {
             return null;
         }
@@ -321,15 +321,15 @@ public class CommonMapper {
         return action.toString();
     }
 
-    public FulfillmentAction fromStringToFulfillmentAction(String action) {
+    public FulfillmentEventType fromStringToFulfillmentEventType(String action) {
         if (action == null) {
             return null;
         }
 
         try {
-            return FulfillmentAction.valueOf(action);
+            return FulfillmentEventType.valueOf(action);
         } catch (Exception e) {
-            throw AppErrors.INSTANCE.enumConversionError(action, "FulfillmentAction").exception();
+            throw AppErrors.INSTANCE.enumConversionError(action, "FulfillmentEventType").exception();
         }
     }
 

@@ -43,11 +43,11 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
     }
 
     @Override
-    public EntitlementEntity update(EntitlementEntity entitlement) {
+    public EntitlementEntity update(EntitlementEntity entitlement, EntitlementEntity oldEntitlement) {
         if (entitlement.getIsDeleted() == null) {
             entitlement.setIsDeleted(false);
         }
-        return cloudantPutSync(entitlement);
+        return cloudantPutSync(entitlement, oldEntitlement);
     }
 
     @Override

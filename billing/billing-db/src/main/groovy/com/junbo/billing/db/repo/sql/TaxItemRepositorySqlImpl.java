@@ -66,9 +66,10 @@ public class TaxItemRepositorySqlImpl implements TaxItemRepository {
     }
 
     @Override
-    public Promise<TaxItem> update(TaxItem model) {
+    public Promise<TaxItem> update(TaxItem model, TaxItem oldModel) {
         TaxItemEntity entity = modelMapper.toTaxItemEntity(model, new MappingContext());
-        taxItemEntityDao.update(entity);
+        TaxItemEntity oldEntity = modelMapper.toTaxItemEntity(oldModel, new MappingContext());
+        taxItemEntityDao.update(entity, oldEntity);
         return get(entity.getId());
     }
 

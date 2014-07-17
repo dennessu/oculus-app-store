@@ -269,7 +269,10 @@ def liquibase(command, dbVersion, shardId, configFile):
     cmd.append("--changeLogFile=" + changeLogPath)
     cmd.append("--username=" + shardConfig.loginUserName)
     if not isNoneOrEmpty(shardConfig.loginPassword):
-        cmd.append("--password=" + shardConfig.loginPassword)
+        if os.name == "posix":
+            cmd.append("--password='" + shardConfig.loginPassword + "'")
+        else:
+            cmd.append("--password=" + shardConfig.loginPassword)
     cmd.append("--url=" + shardConfig.jdbcUrl)
     if not isNoneOrEmpty(shardConfig.schema):
         cmd.append("--defaultSchemaName=" + shardConfig.schema)

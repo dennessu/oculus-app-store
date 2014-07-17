@@ -20,8 +20,8 @@ class UserTosRepositoryCloudantImpl extends CloudantClient<UserTosAgreement> imp
     }
 
     @Override
-    Promise<UserTosAgreement> update(UserTosAgreement entity) {
-        return cloudantPut(entity)
+    Promise<UserTosAgreement> update(UserTosAgreement entity, UserTosAgreement oldEntity) {
+        return cloudantPut(entity, oldEntity)
     }
 
     @Override

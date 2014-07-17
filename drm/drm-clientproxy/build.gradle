@@ -1,14 +1,11 @@
 apply plugin: 'java'
 
 dependencies {
-    compile 'javax.ws.rs:javax.ws.rs-api:2.0'
-    compile junboProject(':langur-core')
-
-    compile 'org.springframework:spring-beans:3.2.4.RELEASE'
-    compile 'org.springframework:spring-context:3.2.4.RELEASE'
-
-    processor junboProject(':langur-processor')
-    processor 'log4j:log4j:1.2.17'
+    compile junboProject(':common-lib')
+    compile junboProject(':oauth-spec')
+    compile junboProject(':identity-spec')
+    compile junboProject(':catalog-spec')
+    compile junboProject(':entitlement-spec')
 }
 
 ext {

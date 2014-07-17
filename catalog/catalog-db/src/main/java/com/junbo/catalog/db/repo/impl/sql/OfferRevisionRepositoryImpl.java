@@ -86,7 +86,7 @@ public class OfferRevisionRepositoryImpl implements OfferRevisionRepository {
     }
 
     @Override
-    public OfferRevision update(OfferRevision revision) {
+    public OfferRevision update(OfferRevision revision, OfferRevision oldRevision) {
         OfferRevisionEntity dbEntity = offerRevisionDao.get(revision.getRevisionId());
         OfferRevisionMapper.fillDBEntity(revision, dbEntity);
         return get(offerRevisionDao.update(dbEntity));

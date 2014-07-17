@@ -5,6 +5,7 @@
  */
 package com.junbo.store.spec.model.purchase;
 
+import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.store.spec.model.ChallengeSolution;
 
 /**
@@ -15,6 +16,8 @@ public class CommitPurchaseRequest {
     private ChallengeSolution challengeSolution;
 
     private String purchaseToken;
+
+    private PaymentInstrumentId instrumentId;
 
     public ChallengeSolution getChallengeSolution() {
         return challengeSolution;
@@ -30,5 +33,13 @@ public class CommitPurchaseRequest {
 
     public void setPurchaseToken(String purchaseToken) {
         this.purchaseToken = purchaseToken;
+    }
+
+    public PaymentInstrumentId getInstrumentId() {
+        return instrumentId;
+    }
+
+    public void setInstrumentId(PaymentInstrumentId instrumentId) {
+        this.instrumentId = instrumentId;
     }
 }

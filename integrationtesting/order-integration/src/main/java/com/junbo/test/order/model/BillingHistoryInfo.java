@@ -5,7 +5,7 @@
  */
 package com.junbo.test.order.model;
 
-import com.junbo.test.billing.enums.TransactionType;
+import com.junbo.test.order.model.enums.BillingAction;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -23,7 +23,8 @@ public class BillingHistoryInfo {
 
     private BigDecimal totalAmount;
     private List<PaymentInstrumentInfo> paymentInfos;
-    private TransactionType transactionType;
+
+    private BillingAction billingAction;
     private List<RefundOrderItemInfo> refundOrderItemInfos;
 
     public boolean isSuccess() {
@@ -52,12 +53,12 @@ public class BillingHistoryInfo {
         this.paymentInfos = paymentInfos;
     }
 
-    public TransactionType getTransactionType() {
-        return transactionType;
+    public BillingAction getBillingAction() {
+        return billingAction;
     }
 
-    public void setTransactionType(TransactionType transactionType) {
-        this.transactionType = transactionType;
+    public void setBillingAction(BillingAction billingAction) {
+        this.billingAction = billingAction;
     }
 
     public List<RefundOrderItemInfo> getRefundOrderItemInfos() {

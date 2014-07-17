@@ -113,7 +113,7 @@ class WalletServiceImpl implements WalletService {
         validateEquals(wallet.balance, existed.balance, 'balance')
 
         wallet.setId(walletId)
-        Wallet result = walletRepo.update(wallet)
+        Wallet result = walletRepo.update(wallet, existed)
         return result
     }
 

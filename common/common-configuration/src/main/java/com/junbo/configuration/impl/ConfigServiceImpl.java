@@ -400,7 +400,12 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
                 int endIndex = key.lastIndexOf(CRYPTO_SUFFIX);
                 String newKey = key.substring(0, endIndex);
 
-                newProperties.put(newKey, decrypt(value));
+                try {
+                    newProperties.put(newKey, decrypt(value));
+                } catch (Exception ex) {
+                    logger.error("Failed to decrypt " + key);
+                    throw ex;
+                }
             }
 
             newProperties.put(key, value);

@@ -94,20 +94,20 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
                 existingOrder = order
             }
 
-            return ((Promise<Order>) orderRepository.update(existingOrder).then { Order savedOrder ->
-                if (!updateOnlyOrder) {
-                    // update non-tentative order items to item revision
-                    return saveOrderItems(savedOrder.getId(), order.orderItems,
-                            saveRevision, revisionType).then {
-                        return saveDiscounts(savedOrder.getId(), order.discounts)
-                    }.then {
+                return ((Promise<Order>) orderRepository.update(existingOrder, existingOrder).then { Order savedOrder ->
+                    if (!updateOnlyOrder) {
+                        // update non-tentative order items to item revision
+                        return saveOrderItems(savedOrder.getId(), order.orderItems,
+                                saveRevision, revisionType).then {
+                            return saveDiscounts(savedOrder.getId(), order.discounts)
+                        }.then {
+                            return Promise.pure(order)
+                        }
+
+                    } else {
                         return Promise.pure(order)
                     }
-
-                } else {
-                    return Promise.pure(order)
-                }
-            }).get()
+                }).get()
         } catch (StaleObjectStateException ex) {
             throw AppErrors.INSTANCE.orderConcurrentUpdate().exception()
         }
@@ -237,12 +237,12 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
                 def revision = toOrderItemRevision(newItem, revisionType)
                 oldItem.latestOrderItemRevisionId = revision.getId()
                 oldItem.orderItemRevisions.add(revision)
-                orderItemRepository.update(oldItem).get()
+                orderItemRepository.update(oldItem, oldItem).get()
             } else {
                 newItem.id = oldItem.getId()
                 newItem.createdBy = oldItem.createdBy
                 newItem.createdTime = oldItem.createdTime
-                orderItemRepository.update(newItem).get()
+                orderItemRepository.update(newItem, oldItem).get()
             }
             return true
         }
@@ -266,12 +266,13 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
                 discount.orderItemId = discount.ownerOrderItem.getId()
             }
         }
+
         repositoryFuncSet.create = { Discount discount ->
             discountRepository.create(discount).get()
         }
         repositoryFuncSet.update = { Discount newDiscount, Discount oldDiscount ->
             newDiscount.id = oldDiscount.getId()
-            discountRepository.update(newDiscount).get()
+            discountRepository.update(newDiscount, oldDiscount).get()
             return true
         }
         repositoryFuncSet.delete = { Discount discount ->

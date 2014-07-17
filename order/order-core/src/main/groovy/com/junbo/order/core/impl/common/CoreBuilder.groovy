@@ -97,23 +97,6 @@ class CoreBuilder {
         return balance
     }
 
-    static Balance buildRefundDepositBalance(Balance originalBalance) {
-        assert (originalBalance != null)
-
-        Balance balance = null
-        balance = buildRefundBalance(originalBalance)
-
-        originalBalance.balanceItems.each { BalanceItem item ->
-            def balanceItem = buildRefundBalanceItem(item)
-            balanceItem.originalBalanceItemId = balanceItem.getId()
-            balanceItem.setId(null)
-            balance.addBalanceItem(balanceItem)
-
-        }
-        return balance
-    }
-
-
     static List<Balance> buildRefundBalances(List<Balance> originalBalances, Order diffOrder) {
         assert (originalBalances != null)
         if (CollectionUtils.isEmpty(diffOrder.orderItems)) {

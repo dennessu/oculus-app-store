@@ -20,8 +20,8 @@ class UserCredentialVerifyAttemptRepositoryCloudantImpl extends CloudantClient<U
     }
 
     @Override
-    Promise<UserCredentialVerifyAttempt> update(UserCredentialVerifyAttempt entity) {
-        return cloudantPut(entity)
+    Promise<UserCredentialVerifyAttempt> update(UserCredentialVerifyAttempt entity, UserCredentialVerifyAttempt oldEntity) {
+        return cloudantPut(entity, oldEntity)
     }
 
     @Override

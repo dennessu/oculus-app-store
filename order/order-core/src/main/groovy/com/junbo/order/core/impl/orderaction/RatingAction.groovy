@@ -36,7 +36,7 @@ class RatingAction implements Action {
                 oi.honoredTime = order.honoredTime
             }
         }
-        return orderInternalService.rateOrder(order).syncThen { Order o ->
+        return orderInternalService.rateOrder(order, context.orderServiceContext).syncThen { Order o ->
             if (o == null) {
                 LOGGER.error('name=Rating_Action_Error_Null')
                 throw AppErrors.INSTANCE.ratingResultInvalid('Rating Result Null').exception()

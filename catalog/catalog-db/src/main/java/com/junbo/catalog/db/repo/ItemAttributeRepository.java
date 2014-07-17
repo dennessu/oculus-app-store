@@ -18,6 +18,6 @@ public interface ItemAttributeRepository extends AttributeRepository<ItemAttribu
     ItemAttribute create(ItemAttribute attribute);
     ItemAttribute get(String attributeId);
     List<ItemAttribute> getAttributes(ItemAttributesGetOptions options);
-    ItemAttribute update(ItemAttribute attribute);
+    ItemAttribute update(ItemAttribute attribute, ItemAttribute oldAttribute);
     void delete(String attributeId);
 }

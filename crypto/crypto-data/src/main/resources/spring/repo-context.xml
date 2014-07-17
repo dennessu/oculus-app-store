@@ -44,7 +44,6 @@
     <bean id="cryptoBaseDAO" class="com.junbo.crypto.data.dao.impl.BaseDAOImpl" abstract="true">
         <property name="sessionFactory" ref="cryptoSessionFactory"/>
         <property name="shardAlgorithm" ref="userShardAlgorithm"/>
-        <property name="idGenerator" ref="oculus48IdGenerator"/>
     </bean>
 
     <bean id="masterKeyDAO" class="com.junbo.crypto.data.dao.impl.MasterKeyDAOImpl" parent="cryptoBaseDAO" />

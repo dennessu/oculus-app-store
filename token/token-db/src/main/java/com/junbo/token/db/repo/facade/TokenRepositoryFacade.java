@@ -139,7 +139,7 @@ public class TokenRepositoryFacade {
             throw AppClientExceptions.INSTANCE.invalidToken().exception();
         }
         item.setStatus(status.toString());
-        tokenItemRepository.update(item).get();
+        tokenItemRepository.update(item, item).get();
     }
 
 

@@ -20,9 +20,9 @@ class UserSecurityQuestionRepositoryCloudantImpl extends CloudantClient<UserSecu
     }
 
     @Override
-    Promise<UserSecurityQuestion> update(UserSecurityQuestion entity) {
+    Promise<UserSecurityQuestion> update(UserSecurityQuestion entity, UserSecurityQuestion oldEntity) {
         entity.answer = null
-        return cloudantPut(entity)
+        return cloudantPut(entity, oldEntity)
     }
 
     @Override

@@ -26,8 +26,8 @@ class CloudantConsentRepositoryImpl extends CloudantClient<Consent> implements C
     }
 
     @Override
-    Consent updateConsent(Consent consent) {
-        return cloudantPutSync(consent)
+    Consent updateConsent(Consent consent, Consent oldConsent) {
+        return cloudantPutSync(consent, oldConsent)
     }
 
     @Override

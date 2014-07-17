@@ -9,10 +9,9 @@
     <changeSet id="1" author='liangfuxia' context="PREDEPLOY">
         <sql><![CDATA[
 			create table master_key (
-				id bigint primary key,
-				version bigint not null,
+				key_version bigint primary key not null,
+                version bigint not null,
 				value text not null,
-                key_version bigint not null,
 
                 created_by bigint not null,
                 created_time timestamp not null

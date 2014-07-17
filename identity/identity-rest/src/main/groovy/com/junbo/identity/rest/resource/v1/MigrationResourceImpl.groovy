@@ -268,7 +268,7 @@ class MigrationResourceImpl implements MigrationResource {
                 return Promise.pure(createdUser)
             }
         }.then { User createdUser ->
-            return userRepository.update(createdUser)
+            return userRepository.update(createdUser, createdUser)
         }.then { User createdUser ->
             return saveOrUpdatePassword(oculusInput, createdUser).then {
                 return Promise.pure(createdUser)
@@ -306,7 +306,7 @@ class MigrationResourceImpl implements MigrationResource {
                 activePassword.changeAtNextLogin = oculusInput.forceResetPassword
                 activePassword.passwordHash = oculusInput.password
 
-                return userPasswordRepository.update(activePassword)
+                return userPasswordRepository.update(activePassword, activePassword)
             }
         }
     }
@@ -341,7 +341,7 @@ class MigrationResourceImpl implements MigrationResource {
                             // update
                             userCommunication.setUserId(user.getId())
                             userCommunication.setCommunicationId(new CommunicationId(entry.key))
-                            return userCommunicationRepository.update(userCommunication)
+                            return userCommunicationRepository.update(userCommunication, userCommunication)
                         } else {
                             // delete
                             return userCommunicationRepository.delete(userCommunication.getId())
@@ -384,7 +384,7 @@ class MigrationResourceImpl implements MigrationResource {
                 existing.migratedUserId = user.migratedUserId
                 existing.createdTime = user.createdTime
                 existing.updatedTime = user.updatedTime
-                return userRepository.update(existing)
+                return userRepository.update(existing, existing)
             }
         }
     }
@@ -780,7 +780,7 @@ class MigrationResourceImpl implements MigrationResource {
                 return Promise.pure(existingOrg)
             }
             existingOrg.rev = organization.rev
-            return organizationRepository.update(existingOrg)
+            return organizationRepository.update(existingOrg, organization)
         }.recover { Throwable e ->
             // retry here
             return organizationRepository.get(existingOrg.getId()).then { Organization organization ->
@@ -788,7 +788,7 @@ class MigrationResourceImpl implements MigrationResource {
                     return Promise.pure(existingOrg)
                 }
                 existingOrg.rev = organization.rev
-                return organizationRepository.update(existingOrg)
+                return organizationRepository.update(existingOrg, organization)
             }
         }.recover { Throwable e ->
             // retry here
@@ -797,7 +797,7 @@ class MigrationResourceImpl implements MigrationResource {
                     return Promise.pure(existingOrg)
                 }
                 existingOrg.rev = organization.rev
-                return organizationRepository.update(existingOrg)
+                return organizationRepository.update(existingOrg, organization)
             }
         }.recover { Throwable e ->
             // retry here
@@ -806,7 +806,7 @@ class MigrationResourceImpl implements MigrationResource {
                     return Promise.pure(existingOrg)
                 }
                 existingOrg.rev = organization.rev
-                return organizationRepository.update(existingOrg)
+                return organizationRepository.update(existingOrg, organization)
             }
         }.recover { Throwable e ->
             return Promise.pure(null)

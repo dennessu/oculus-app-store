@@ -68,8 +68,8 @@ public class PendingActionRepositoryCloudantImpl extends CloudantClient<PendingA
     }
 
     @Override
-    public Promise<PendingAction> update(PendingAction model) {
-        return this.cloudantPut(mapper.map(model)).then { PendingActionEntity entity ->
+    public Promise<PendingAction> update(PendingAction model, PendingAction oldModel) {
+        return this.cloudantPut(mapper.map(model), mapper.map(oldModel)).then { PendingActionEntity entity ->
             return Promise.pure(mapper.map(entity))
         }
     }

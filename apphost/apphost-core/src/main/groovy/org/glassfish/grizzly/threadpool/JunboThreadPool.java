@@ -33,6 +33,7 @@ public class JunboThreadPool extends FixedThreadPool implements LocatableExecuto
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     protected void beforeExecute(final Worker worker, final Thread t, final Runnable r) {
         super.beforeExecute(worker, t, r);
 
@@ -41,6 +42,7 @@ public class JunboThreadPool extends FixedThreadPool implements LocatableExecuto
         try {
             THREAD_LOCALS_FIELD.set(Thread.currentThread(), null);
             INHERITABLE_THREAD_LOCALS_FIELD.set(Thread.currentThread(), null);
+            ExecutorContext.setAsyncMode(false);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }

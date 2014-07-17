@@ -43,7 +43,7 @@ public class PriceTierRepositoryImpl implements PriceTierRepository {
         return priceTiers;
     }
 
-    public PriceTier update(PriceTier priceTier) {
+    public PriceTier update(PriceTier priceTier, PriceTier oldPriceTier) {
         PriceTierEntity dbEntity = priceTierDao.get(priceTier.getId());
         PriceTierMapper.fillDBEntity(priceTier, dbEntity);
         return get(priceTierDao.update(dbEntity));

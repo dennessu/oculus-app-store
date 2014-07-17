@@ -47,7 +47,7 @@ public class postOrganization {
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1OrganizationURI,
                 JsonHelper.JsonSerializer(org), HttpclientHelper.HttpRequestType.post);
         Validator.Validate("validate response error code", 409, response.getStatusLine().getStatusCode());
-        String errorMessage = "Field name duplicate.";
+        String errorMessage = "Field value is duplicate";
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
     }

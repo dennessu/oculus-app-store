@@ -5,19 +5,19 @@
  */
 package com.junbo.store.spec.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
-import com.junbo.common.model.SigningSupport;
+import com.junbo.common.id.EntitlementId;
+import com.junbo.common.id.ItemId;
+import com.junbo.common.id.UserId;
 
 /**
  * Entitlement used for IAP.
  */
-public class Entitlement implements SigningSupport, SigningSetter {
-    private String userId;
-    private String username;
-    private String itemId;
+public class Entitlement {
+    private UserId userId;
+    private ItemId itemId;
     private String itemType;
-    private String entitlementId;
+    private EntitlementId entitlementId;
     private Integer useCount;
     private String type;
     private String sku;
@@ -29,25 +29,27 @@ public class Entitlement implements SigningSupport, SigningSetter {
     @CloudantIgnore
     private Long signatureTimestamp;
 
-    @JsonIgnore
-    private String payload;
-
-    @JsonIgnore
-    private String signature;
-
-    public String getUserId() {
+    public UserId getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(UserId userId) {
         this.userId = userId;
     }
 
-    public String getEntitlementId() {
+    public ItemId getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(ItemId itemId) {
+        this.itemId = itemId;
+    }
+
+    public EntitlementId getEntitlementId() {
         return entitlementId;
     }
 
-    public void setEntitlementId(String entitlementId) {
+    public void setEntitlementId(EntitlementId entitlementId) {
         this.entitlementId = entitlementId;
     }
 
@@ -99,22 +101,6 @@ public class Entitlement implements SigningSupport, SigningSetter {
         this.signatureTimestamp = signatureTimestamp;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getItemId() {
-        return itemId;
-    }
-
-    public void setItemId(String itemId) {
-        this.itemId = itemId;
-    }
-
     public String getItemType() {
         return itemType;
     }
@@ -139,23 +125,4 @@ public class Entitlement implements SigningSupport, SigningSetter {
         this.iapSignature = iapSignature;
     }
 
-    @Override
-    public String getPayload() {
-        return payload;
-    }
-
-    @Override
-    public void setPayload(String payload) {
-        this.payload = payload;
-    }
-
-    @Override
-    public String getSignature() {
-        return signature;
-    }
-
-    @Override
-    public void setSignature(String signature) {
-        this.signature = signature;
-    }
 }

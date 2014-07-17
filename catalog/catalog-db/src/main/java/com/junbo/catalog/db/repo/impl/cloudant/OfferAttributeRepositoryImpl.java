@@ -50,8 +50,8 @@ public class OfferAttributeRepositoryImpl extends CloudantClient<OfferAttribute>
         }
     }
 
-    public OfferAttribute update(OfferAttribute attribute) {
-        return cloudantPutSync(attribute);
+    public OfferAttribute update(OfferAttribute attribute, OfferAttribute oldAttribute) {
+        return cloudantPutSync(attribute, oldAttribute);
     }
 
 

@@ -8,5 +8,5 @@ import com.junbo.common.cloudant.CloudantEntity
 public interface Tracker <T extends CloudantEntity> {
     T trackCreate(T entity)
 
-    T trackUpdate(T entity)
+    T trackUpdate(T entity, T oldEntity)
 }

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="drmAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
+        <property name="scope" value="identity.service catalog.service entitlement.service"/>
+        <property name="deflectionInSeconds" value="300"/>
+        <property name="clientSecret" value="${drm.clientproxy.service.clientSecret}"/>
+        <property name="clientId" value="${drm.clientproxy.service.clientId}"/>
+        <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
+    </bean>
+
+    <bean id="drmUserResource" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
+          parent="userResourceClientProxy">
+        <property name="accessTokenProvider" ref="drmAccessTokenProvider"/>
+    </bean>
+
+    <bean id="drmItemResource" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy"
+          parent="itemResourceClientProxy">
+        <property name="accessTokenProvider" ref="drmAccessTokenProvider"/>
+    </bean>
+
+    <bean id="drmEntitlementResource" class="com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxy"
+          parent="entitlementResourceClientProxy">
+        <property name="accessTokenProvider" ref="drmAccessTokenProvider"/>
+    </bean>
+</beans>

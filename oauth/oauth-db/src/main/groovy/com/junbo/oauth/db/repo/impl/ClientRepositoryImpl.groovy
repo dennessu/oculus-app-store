@@ -37,7 +37,7 @@ class ClientRepositoryImpl implements ClientRepository {
     }
 
     @Override
-    Client updateClient(Client client) {
+    Client updateClient(Client client, Client oldClient) {
         return wrap(clientDAO.update(unwrap(client)))
     }
 

@@ -201,27 +201,26 @@ public class BalanceRepositoryFacadeImpl implements BalanceRepositoryFacade {
     public Balance updateBalance(Balance balance, EventActionType eventActionType) {
         Balance savedBalance = getBalance(balance.getId().getValue());
 
-        savedBalance.setType(balance.getType());
-        savedBalance.setStatus(balance.getStatus());
-        savedBalance.setShippingAddressId(balance.getShippingAddressId());
-        savedBalance.setUpdatedTime(new Date());
-        savedBalance.setUpdatedBy(balance.getUserId().getValue());
-        balanceRepository.update(savedBalance).get();
+            savedBalance.setType(balance.getType());
+            savedBalance.setStatus(balance.getStatus());
+            savedBalance.setShippingAddressId(balance.getShippingAddressId());
+            savedBalance.setUpdatedTime(new Date());
+            savedBalance.setUpdatedBy(balance.getUserId().getValue());
+            balanceRepository.update(savedBalance, savedBalance).get();
 
-        for (Transaction transaction : balance.getTransactions()) {
-            if (transaction.getId() == null) {
-                transaction.setBalanceId(balance.getId());
-                transaction.setCreatedBy(balance.getUserId().getValue());
-                transaction.setCreatedTime(new Date());
-                transactionRepositoryFacade.saveTransaction(transaction);
-                savedBalance.addTransaction(transaction);
-            } else {
-                transactionRepositoryFacade.updateTransaction(transaction);
+            for (Transaction transaction : balance.getTransactions()) {
+                if (transaction.getId() == null) {
+                    transaction.setBalanceId(balance.getId());
+                    transaction.setCreatedBy(balance.getUserId().getValue());
+                    transaction.setCreatedTime(new Date());
+                    transactionRepositoryFacade.saveTransaction(transaction);
+                    savedBalance.addTransaction(transaction);
+                } else {
+                    transactionRepositoryFacade.updateTransaction(transaction, transaction);
+                }
             }
-        }
-
-        // create balance event
-        saveBalanceEvent(savedBalance);
+            // create balance event
+            saveBalanceEvent(savedBalance);
 
         return setBackNonPersistAttributes(savedBalance, balance);
     }

@@ -31,17 +31,19 @@ public class postCountry {
 
     @Test(groups = "bvt")
     public void postCountry() throws Exception {
-        try {
-            Identity.LocalePostDefault();
-            Identity.CurrencyPostDefault();
-            Country posted = Identity.CountryPostDefault();
-            Country stored = Identity.CountryGetByCountryId(posted.getId().getValue());
-            Validator.Validate("validate country", posted, stored);
-        } finally {
-            Identity.CountryDeleteByCountryId(IdentityModel.DefaultCountry);
-            Identity.CurrencyDeleteByCurrencyCode(IdentityModel.DefaultCurrency);
-            Identity.LocaleDeleteByLocaleId(IdentityModel.DefaultLocale);
-        }
+        Identity.CountryDeleteByCountryId(IdentityModel.DefaultCountry);
+        Country country = IdentityModel.DefaultCountry();
+        Country posted = Identity.CountryPostDefault(country);
+        Country stored = Identity.CountryGetByCountryId(posted.getId().getValue());
+        Validator.Validate("validate country code", country.getCountryCode(), stored.getCountryCode());
+        Validator.Validate("validate country default currency",
+                country.getDefaultCurrency(), stored.getDefaultCurrency());
+        Validator.Validate("validate country default locale", country.getDefaultLocale(), stored.getDefaultLocale());
+        Validator.Validate("validate country locales", country.getLocales(), stored.getLocales());
+        Validator.Validate("validate country rating boards", country.getRatingBoards(), stored.getRatingBoards());
+        Validator.Validate("validate country sub countries", country.getSubCountries(), stored.getSubCountries());
+        Validator.Validate("validate country supported locales",
+                country.getSupportedLocales(), stored.getSupportedLocales());
     }
 
     @Test(groups = "dailies")

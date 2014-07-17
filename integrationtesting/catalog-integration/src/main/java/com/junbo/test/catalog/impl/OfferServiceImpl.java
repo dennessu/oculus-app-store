@@ -55,8 +55,11 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     private final String defaultOfferRevisionFileName = "defaultOfferRevision";
     private final String defaultStoredValueOfferRevisionFileName = "defaultStoredValueOfferRevision";
     private final String defaultPreOrderOfferRevisionFileName = "defaultPreOrderOfferRevision";
+    private final String defaultFreeOfferRevisionFileName = "defaultFreeOfferRevision";
     private final String preOrderDigital = "testOffer_PreOrder_Digital1";
     private final String preOrderPhysical = "testOffer_PreOrder_Physical1";
+    private final String freeOfferDigital = "testOffer_Free_Digital";
+    private final String freeOfferPhysical = "testOffer_Free_Physical";
     private final String defaultOfferFileName = "defaultOffer";
     private final String defaultItemFileName = "defaultItem";
 
@@ -371,6 +374,11 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
                 offerName.equalsIgnoreCase(preOrderPhysical)){
             strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json",
                     defaultPreOrderOfferRevisionFileName));
+        }
+        else if (offerName.equalsIgnoreCase(freeOfferDigital) ||
+                offerName.equalsIgnoreCase(freeOfferPhysical)){
+            strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json",
+                    defaultFreeOfferRevisionFileName));
         }
         else if (offerType.equalsIgnoreCase(CatalogItemType.STORED_VALUE.getItemType())) {
             strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json",

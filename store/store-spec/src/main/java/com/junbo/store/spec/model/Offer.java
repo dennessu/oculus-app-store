@@ -5,43 +5,49 @@
  */
 package com.junbo.store.spec.model;
 
-import com.junbo.catalog.spec.model.common.Price;
-import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
-
-import java.util.Map;
+import com.junbo.common.id.OfferId;
 
 /**
  * The offer class for iap.
  */
 public class Offer {
-    private String offerId;
-    private Map<String, OfferRevisionLocaleProperties> offerLocales;
-    private Price price;
+    private OfferId offerId;
+    private String title;
+    private String description;
+    private String price;
     private Boolean isConsumable;
     private String type;
     private String sku;
 
-    public String getOfferId() {
+    public OfferId getOfferId() {
         return offerId;
     }
 
-    public void setOfferId(String offerId) {
+    public void setOfferId(OfferId offerId) {
         this.offerId = offerId;
     }
 
-    public Map<String, OfferRevisionLocaleProperties> getOfferLocales() {
-        return offerLocales;
+    public String getTitle() {
+        return title;
     }
 
-    public void setOfferLocales(Map<String, OfferRevisionLocaleProperties> offerLocales) {
-        this.offerLocales = offerLocales;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public Price getPrice() {
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(Price price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 

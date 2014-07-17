@@ -126,7 +126,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
         existing.setIsBanned(false);
         existing.setUseCount(existing.getUseCount() + entitlement.getUseCount());
-        return entitlementRepository.update(existing);
+        return entitlementRepository.update(existing, existing);
     }
 
     @Override
@@ -156,7 +156,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
                 fillUpdate(entitlement, existingEntitlement);
                 validateUpdate(entitlement, existingEntitlement);
-                return entitlementRepository.update(existingEntitlement);
+                return entitlementRepository.update(existingEntitlement, existingEntitlement);
             }
         });
     }
@@ -348,7 +348,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             }
             filename = filename + "_" + platform;
             generatePresignedUrlRequest.addRequestParameter("response-content-disposition",
-                    "attachment;filename=" + (extension == null ? filename : filename + "." + extension));
+                    "attachment;filename=\"" + (extension == null ? filename : filename + "." + extension) + "\"");
         }
 
         URL downloadUrl = awsClient.generatePresignedUrl(generatePresignedUrlRequest);

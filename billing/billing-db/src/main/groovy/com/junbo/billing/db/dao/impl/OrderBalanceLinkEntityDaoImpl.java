@@ -43,7 +43,7 @@ public class OrderBalanceLinkEntityDaoImpl extends BaseDao implements OrderBalan
     }
 
     @Override
-    public OrderBalanceLinkEntity update(OrderBalanceLinkEntity orderBalanceLink) {
+    public OrderBalanceLinkEntity update(OrderBalanceLinkEntity orderBalanceLink, OrderBalanceLinkEntity oldOrderBalanceLink) {
         orderBalanceLink.setUpdatedTime(new Date());
         if (orderBalanceLink.getUpdatedBy() == null) {
             orderBalanceLink.setUpdatedBy("0");

@@ -19,7 +19,7 @@ public interface BalanceItemEntityDao {
 
     BalanceItemEntity save(BalanceItemEntity balanceItem);
 
-    BalanceItemEntity update(BalanceItemEntity balanceItem);
+    BalanceItemEntity update(BalanceItemEntity balanceItem, BalanceItemEntity oldBalanceItem);
 
     List<BalanceItemEntity> findByBalanceId(Long balanceId);
 

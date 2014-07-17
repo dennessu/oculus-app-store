@@ -42,7 +42,7 @@ public class PromotionRevisionRepository implements BaseRevisionRepository<Promo
     }
 
     @Override
-    public PromotionRevision update(PromotionRevision revision) {
+    public PromotionRevision update(PromotionRevision revision, PromotionRevision oldRevision) {
         PromotionRevisionEntity dbEntity = promotionRevisionDao.get(revision.getRevisionId());
         if (dbEntity == null) {
             throw AppCommonErrors.INSTANCE.resourceNotFound("promotion-revision", revision.getRevisionId()).exception();

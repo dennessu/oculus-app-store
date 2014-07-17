@@ -103,7 +103,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         return getEffective().cloudantGet(getDbUri(id), entityClass, id.toString())
     }
 
-    protected Promise<T> cloudantPut(T entity) {
+    protected Promise<T> cloudantPut(T entity, T oldEntity) {
         if (entity.id != null) {
             entity.cloudantId = entity.id.toString()
         }
@@ -233,8 +233,8 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         return (T) cloudantGet(id).get()
     }
 
-    protected T cloudantPutSync(T entity) {
-        return (T) cloudantPut(entity).get()
+    protected T cloudantPutSync(T entity, T oldEntity) {
+        return (T) cloudantPut(entity, oldEntity).get()
     }
 
     protected void cloudantDeleteSync(String id) {

@@ -19,8 +19,8 @@ class UserGroupRepositoryCloudantImpl extends CloudantClient<UserGroup> implemen
     }
 
     @Override
-    Promise<UserGroup> update(UserGroup entity) {
-        return cloudantPut(entity)
+    Promise<UserGroup> update(UserGroup entity, UserGroup oldEntity) {
+        return cloudantPut(entity, oldEntity)
     }
 
     @Override

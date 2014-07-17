@@ -5,6 +5,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.ConversationNotfFoundException
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.oauth.core.context.ActionContextWrapper
+import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.service.UserService
 import com.junbo.oauth.core.util.ResponseUtil
 import com.junbo.oauth.spec.endpoint.ResetPasswordEndpoint
@@ -96,16 +97,18 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
     }
 
     @Override
-    Promise<Response> resetPassword(String conversationId, String event, String locale, String country, UserId userId, String userEmail,
+    Promise<Response> resetPassword(String conversationId, String event, String locale, String country, String username, String userEmail,
                                     ContainerRequestContext request, MultivaluedMap<String, String> formParams) {
         if (conversationId == null) {
-            if (userId != null) {
-                return userService.sendResetPassword(userId, locale, country, ((ContainerRequest)request).baseUri).then { String uri ->
-                    if (debugEnabled) {
-                        return Promise.pure(Response.ok().entity(uri).build())
-                    }
+            if (username != null) {
+                return userService.getUserIdByUsername(username).then { UserId id ->
+                    return userService.sendResetPassword(id, locale, country, ((ContainerRequest)request).baseUri).then { String uri ->
+                        if (debugEnabled) {
+                            return Promise.pure(Response.ok().entity(uri).build())
+                        }
 
-                    return Promise.pure(Response.noContent().build())
+                        return Promise.pure(Response.noContent().build())
+                    }
                 }
             }
             else if (userEmail != null) {
@@ -118,6 +121,9 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
                         return Promise.pure(Response.noContent().build())
                     }
                 }
+            }
+            else {
+                throw AppExceptions.INSTANCE.missingUsernameOrUserEmail().exception()
             }
         }
 

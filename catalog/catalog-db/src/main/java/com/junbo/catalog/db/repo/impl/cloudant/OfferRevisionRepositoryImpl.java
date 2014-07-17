@@ -111,8 +111,8 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
     }
 
     @Override
-    public OfferRevision update(OfferRevision revision) {
-        return cloudantPutSync(revision);
+    public OfferRevision update(OfferRevision revision, OfferRevision oldRevision) {
+        return cloudantPutSync(revision, oldRevision);
     }
 
     @Override

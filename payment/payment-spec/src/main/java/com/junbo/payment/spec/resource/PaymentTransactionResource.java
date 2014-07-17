@@ -22,7 +22,7 @@ import javax.ws.rs.core.MediaType;
 @Path("/payment-transactions")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@RestResource
+@RestResource(sync = true)
 @InProcessCallable
 public interface PaymentTransactionResource {
     @POST

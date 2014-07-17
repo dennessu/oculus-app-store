@@ -43,7 +43,8 @@ class SubledgerRepositoryFacadeImpl implements SubledgerRepositoryFacade {
     @Override
     Subledger updateSubledger(Subledger subledger) {
         try {
-            return subledgerRepository.update(subledger).syncRecover { Throwable ex ->
+            Subledger oldSubledger = subledgerRepository.get(subledger.getId()).get()
+            return subledgerRepository.update(subledger, oldSubledger).syncRecover { Throwable ex ->
                 if (ex instanceof StaleObjectStateException) {
                     throw AppErrors.INSTANCE.subledgerConcurrentUpdate().exception()
                 }
@@ -91,7 +92,7 @@ class SubledgerRepositoryFacadeImpl implements SubledgerRepositoryFacade {
     }
 
     @Override
-    SubledgerItem updateSubledgerItem(SubledgerItem subledgerItem) {
-        return subledgerItemRepository.update(subledgerItem).get();
+    SubledgerItem updateSubledgerItem(SubledgerItem subledgerItem, SubledgerItem oldSubledgerItem) {
+        return subledgerItemRepository.update(subledgerItem, oldSubledgerItem).get();
     }
 }

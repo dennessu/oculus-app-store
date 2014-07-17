@@ -27,8 +27,8 @@ class UserTFARepositoryCloudantImpl extends CloudantClient<UserTFA> implements U
     }
 
     @Override
-    Promise<UserTFA> update(UserTFA entity) {
-        return cloudantPut(entity)
+    Promise<UserTFA> update(UserTFA entity, UserTFA oldEntity) {
+        return cloudantPut(entity, oldEntity)
     }
 
     @Override

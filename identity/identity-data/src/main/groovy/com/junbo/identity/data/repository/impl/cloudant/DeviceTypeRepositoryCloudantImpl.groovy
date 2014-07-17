@@ -31,8 +31,8 @@ class DeviceTypeRepositoryCloudantImpl extends CloudantClient<DeviceType> implem
     }
 
     @Override
-    Promise<DeviceType> update(DeviceType deviceType) {
-        return cloudantPut(deviceType)
+    Promise<DeviceType> update(DeviceType deviceType, DeviceType oldDeviceType) {
+        return cloudantPut(deviceType, oldDeviceType)
     }
 
     @Override
