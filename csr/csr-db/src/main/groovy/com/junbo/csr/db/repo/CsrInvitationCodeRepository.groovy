@@ -7,8 +7,6 @@ import com.junbo.csr.spec.model.CsrInvitationCode
  */
 public interface CsrInvitationCodeRepository {
     CsrInvitationCode getAndRemove(String code)
-
-    void save(CsrInvitationCode emailVerifyCode)
-
+    void save(CsrInvitationCode invitationCode)
     void removeByUserIdEmail(Long userId, String email)
 }

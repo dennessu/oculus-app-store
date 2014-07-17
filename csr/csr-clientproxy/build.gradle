@@ -10,6 +10,7 @@ dependencies {
     compile junboProject(':csr-spec')
     compile junboProject(':identity-spec')
     compile junboProject(':oauth-spec')
+    compile junboProject(':email-spec')
 
     processor junboProject(':langur-processor')
     processor (libraries.log4j)

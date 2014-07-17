@@ -94,7 +94,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     }
 
     @Override
-    Promise<List<UserPersonalInfo>> searchByEmail(String email, Integer limit, Integer offset) {
+    Promise<List<UserPersonalInfo>> searchByEmail(String email, Boolean isValidated, Integer limit, Integer offset) {
         PiiHash hash = getPiiHash(UserPersonalInfoType.EMAIL.toString())
 
         return hashUserPersonalInfoRepository.searchByHashValue(hash.generateHash(email.toLowerCase(Locale.ENGLISH))).then {
@@ -111,6 +111,12 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
                             return Promise.pure(null)
                         }
 
+                        if (isValidated != null) {
+                            if (isValidated != userPersonalInfo.isValidated) {
+                                return Promise.pure(null)
+                            }
+                        }
+
                         Email emailObj = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
                         if (emailObj.info.toLowerCase(Locale.ENGLISH) == email.toLowerCase(Locale.ENGLISH)) {
                             infos.add(userPersonalInfo)
@@ -124,7 +130,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     }
 
     @Override
-    Promise<List<UserPersonalInfo>> searchByPhoneNumber(String phoneNumber, Integer limit, Integer offset) {
+    Promise<List<UserPersonalInfo>> searchByPhoneNumber(String phoneNumber, Boolean isValidated, Integer limit, Integer offset) {
         PiiHash hash = getPiiHash(UserPersonalInfoType.PHONE.toString())
 
         return hashUserPersonalInfoRepository.searchByHashValue(hash.generateHash(phoneNumber)).then {
@@ -139,6 +145,12 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
                         if (userPersonalInfo == null ||
                             userPersonalInfo.type != UserPersonalInfoType.PHONE.toString()) {
                             return Promise.pure(null)
+                        }
+
+                        if (isValidated != null) {
+                            if (isValidated != userPersonalInfo.isValidated) {
+                                return Promise.pure(null)
+                            }
                         }
 
                         PhoneNumber phoneObj = (PhoneNumber)JsonHelper.jsonNodeToObj(userPersonalInfo.value,

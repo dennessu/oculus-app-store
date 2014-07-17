@@ -15,8 +15,8 @@ public class CsrInvitationCode extends ResourceMeta<String> {
     private String code;
     private String email;
     private Long userId;
-    private GroupId pendingGroupId;
-    private GroupId inviteGroupId;
+    private String pendingGroupId;
+    private String inviteGroupId;
 
     public String getCode() {
         return code;
@@ -42,19 +42,19 @@ public class CsrInvitationCode extends ResourceMeta<String> {
         this.userId = userId;
     }
 
-    public GroupId getPendingGroupId() {
+    public String getPendingGroupId() {
         return pendingGroupId;
     }
 
-    public void setPendingGroupId(GroupId pendingGroupId) {
+    public void setPendingGroupId(String pendingGroupId) {
         this.pendingGroupId = pendingGroupId;
     }
 
-    public GroupId getInviteGroupId() {
+    public String getInviteGroupId() {
         return inviteGroupId;
     }
 
-    public void setInviteGroupId(GroupId inviteGroupId) {
+    public void setInviteGroupId(String inviteGroupId) {
         this.inviteGroupId = inviteGroupId;
     }
 

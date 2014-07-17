@@ -17,4 +17,29 @@
         <property name="accessTokenProvider" ref="csrAccessTokenProvider"/>
     </bean>
 
+    <bean id="csr_userPersonalInfoResource" class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy" parent="userPersonalInfoResourceClientProxy">
+        <property name="accessTokenProvider" ref="csrAccessTokenProvider"/>
+    </bean>
+
+    <bean id="csr_groupResource" class="com.junbo.identity.spec.v1.resource.proxy.GroupResourceClientProxy" parent="groupResourceClientProxy">
+        <property name="accessTokenProvider" ref="csrAccessTokenProvider"/>
+    </bean>
+
+    <bean id="csr_userGroupMembershipResource" class="com.junbo.identity.spec.v1.resource.proxy.UserGroupMembershipResourceClientProxy" parent="userGroupMembershipResourceClientProxy">
+        <property name="accessTokenProvider" ref="csrAccessTokenProvider"/>
+    </bean>
+
+    <bean id="csr_organizationResource" class="com.junbo.identity.spec.v1.resource.proxy.OrganizationResourceClientProxy" parent="organizationResourceClientProxy">
+        <property name="accessTokenProvider" ref="csrAccessTokenProvider"/>
+    </bean>
+
+    <bean id="csr_emailResource" class="com.junbo.email.spec.resource.proxy.EmailResourceClientProxy"
+          parent="emailResourceClientProxy">
+        <property name="accessTokenProvider" ref="csrAccessTokenProvider"/>
+    </bean>
+
+    <bean id="csr_emailTemplateResource" class="com.junbo.email.spec.resource.proxy.EmailTemplateResourceClientProxy"
+          parent="emailTemplateResourceClientProxy">
+        <property name="accessTokenProvider" ref="csrAccessTokenProvider"/>
+    </bean>
 </beans>

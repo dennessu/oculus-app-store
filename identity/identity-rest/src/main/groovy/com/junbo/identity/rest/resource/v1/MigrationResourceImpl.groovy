@@ -391,7 +391,7 @@ class MigrationResourceImpl implements MigrationResource {
 
     Promise<User> checkEmailValid(OculusInput oculusInput) {
         return userRepository.searchUserByMigrateId(oculusInput.currentId).then { User existing ->
-            return userPersonalInfoRepository.searchByEmail(oculusInput.email.toLowerCase(java.util.Locale.ENGLISH),
+            return userPersonalInfoRepository.searchByEmail(oculusInput.email.toLowerCase(java.util.Locale.ENGLISH),null,
                     Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> emails ->
                 if (CollectionUtils.isEmpty(emails)) {
                     return Promise.pure(null)

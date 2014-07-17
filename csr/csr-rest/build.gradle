@@ -24,6 +24,5 @@ dependencies {
     compile junboProject(':csr-clientproxy')
     compile junboProject(':csr-db')
     compile junboProject(':oauth-spec')
-
     processor junboProject(':oom-processor')
 }

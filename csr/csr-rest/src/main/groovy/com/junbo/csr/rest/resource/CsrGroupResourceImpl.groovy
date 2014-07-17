@@ -1,6 +1,5 @@
 package com.junbo.csr.rest.resource
 
-import com.junbo.common.id.GroupId
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
@@ -67,27 +66,27 @@ class CsrGroupResourceImpl implements CsrGroupResource {
     Promise<Results<CsrGroup>> list(CsrGroupListOptions listOptions) {
         return userResource.list(new UserListOptions(username: organizationOwner)).then { Results<User> userResults ->
             if (userResults == null || userResults.items == null || userResults.items.size() == 0) {
-                throw AppErrors.INSTANCE.CsrGroupNotFound().exception()
+                throw AppErrors.INSTANCE.csrGroupNotFound().exception()
             }
             User organizationOwner = userResults.items.get(0)
 
             return organizationResource.list(new OrganizationListOptions(ownerId: organizationOwner.id as UserId)).then { Results<Organization> organizationResults ->
                 if (organizationResults == null || organizationResults.items == null) {
-                    throw AppErrors.INSTANCE.CsrGroupNotFound().exception()
+                    throw AppErrors.INSTANCE.csrGroupNotFound().exception()
                 }
                 organizationResults.items.retainAll{ Organization org ->
                     org.name == organizationName
                 }
 
                 if (organizationResults.items.size() == 0) {
-                    throw AppErrors.INSTANCE.CsrGroupNotFound().exception()
+                    throw AppErrors.INSTANCE.csrGroupNotFound().exception()
                 }
 
                 Organization organization = organizationResults.items.get(0)
 
                 return groupResource.list(new GroupListOptions(organizationId: organization.id as OrganizationId)).then { Results<Group> groupResults ->
                     if (groupResults == null || groupResults.items == null) {
-                        throw AppErrors.INSTANCE.CsrGroupNotFound().exception()
+                        throw AppErrors.INSTANCE.csrGroupNotFound().exception()
                     }
 
                     groupResults.items.retainAll{ Group group ->
@@ -95,6 +94,13 @@ class CsrGroupResourceImpl implements CsrGroupResource {
                     }
 
                     def resultList = new Results<CsrGroup>(items: [])
+
+                    if (listOptions.groupName != null) {
+                        groupResults.items.removeAll { Group group ->
+                            group.name != listOptions.groupName
+                        }
+                    }
+
                     groupResults.items.each { Group group ->
                         def csrGroup = new CsrGroup(id: group.id.toString(), groupName: group.name)
                         String[] splits = group.name.split('_')

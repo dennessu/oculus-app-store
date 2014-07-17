@@ -13,7 +13,13 @@
         <property name="csrLogRepository" ref="csrLogRepo"/>
         <property name="userResource" ref="csr_userResource"/>
         <property name="regardingMaxLength" value="100"/>
-        <property name="maxSearchDays" value="14"/>
+        <property name="maxSearchDays" value="30"/>
+    </bean>
+
+
+    <bean id="csrIdentityService" class="com.junbo.csr.core.service.impl.IdentityServiceImpl">
+        <property name="userPersonalInfoResource" ref="csr_userPersonalInfoResource"/>
+        <property name="userResource" ref="csr_userResource"/>
     </bean>
 
 </beans>

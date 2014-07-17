@@ -6,13 +6,13 @@
 package com.junbo.csr.spec.resource;
 
 import com.junbo.common.model.Results;
-import com.junbo.csr.spec.model.CsrInvitationRequest;
 import com.junbo.csr.spec.model.CsrUser;
-import com.junbo.csr.spec.option.list.CsrUserListOptions;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
 import javax.ws.rs.*;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -21,15 +21,17 @@ import javax.ws.rs.core.Response;
  */
 @Path("/csr-users")
 @Produces({MediaType.APPLICATION_JSON})
-@Consumes({MediaType.APPLICATION_JSON})
 @RestResource
 public interface CsrUserResource {
     @GET
-    Promise<Results<CsrUser>> list(@BeanParam CsrUserListOptions listOptions);
+    Promise<Results<CsrUser>> list();
 
     @POST
     @Path("/invite")
-    Promise<Response> inviteCsr(CsrInvitationRequest request);
+    Promise<Response> inviteCsr(@FormParam("locale") String locale,
+                                @FormParam("email") String email,
+                                @FormParam("groupId") String groupId,
+                                @Context ContainerRequestContext requestContext);
 
     @GET
     @Path("/confirm")
