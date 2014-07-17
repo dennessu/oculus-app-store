@@ -1,15 +1,13 @@
 package com.junbo.crypto.data.dao.impl
 
+import com.junbo.configuration.topo.DataCenters
 import com.junbo.crypto.data.dao.MasterKeyDAO
 import com.junbo.crypto.data.entity.MasterKeyEntity
-import com.junbo.sharding.IdGenerator
+import com.junbo.sharding.hibernate.ShardScope
 import groovy.transform.CompileStatic
-import org.apache.commons.collections.CollectionUtils
 import org.hibernate.Criteria
 import org.hibernate.Session
 import org.hibernate.criterion.Order
-import org.hibernate.criterion.Restrictions
-import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by liangfu on 6/11/14.
@@ -17,11 +15,11 @@ import org.springframework.beans.factory.annotation.Required
 @CompileStatic
 class MasterKeyDAOImpl extends BaseDAOImpl implements MasterKeyDAO {
 
-    public static final Long INIT_SHARD_ID = 0
+    private static Integer DEFAULT_SHARD_ID = 0
 
     @Override
     MasterKeyEntity get(Long id) {
-        return (MasterKeyEntity) currentSession(id).get(MasterKeyEntity, id)
+        return (MasterKeyEntity) getCurrentDCSession().get(MasterKeyEntity, id)
     }
 
     @Override
@@ -29,32 +27,26 @@ class MasterKeyDAOImpl extends BaseDAOImpl implements MasterKeyDAO {
         if (masterKeyEntity == null) {
             throw new IllegalArgumentException('masterKeyEntity is null')
         }
-        if (masterKeyEntity.id == null) {
-            masterKeyEntity.id = idGenerator.nextId(INIT_SHARD_ID)
-        }
 
         // todo:    Here we need to get the createdBy and createdTime from context
         masterKeyEntity.createdBy = 123L
         masterKeyEntity.createdTime = new Date()
-        Session session = currentSession(masterKeyEntity.id)
+        Session session = getCurrentDCSession()
         session.save(masterKeyEntity)
         session.flush()
 
-        return get((Long) masterKeyEntity.id)
+        return get(masterKeyEntity.keyVersion)
     }
 
     @Override
     List<MasterKeyEntity> getAll() {
-        Criteria criteria = currentSession(INIT_SHARD_ID).createCriteria(MasterKeyEntity)
+        Criteria criteria = getCurrentDCSession().createCriteria(MasterKeyEntity)
         criteria.addOrder(Order.asc('id'))
         return criteria.list()
     }
 
-    @Override
-    MasterKeyEntity getByKeyVersion(Integer keyVersion) {
-        Criteria criteria = currentSession(INIT_SHARD_ID).createCriteria(MasterKeyEntity)
-        criteria.add(Restrictions.eq('keyVersion', keyVersion))
-        List list = criteria.list()
-        return CollectionUtils.isEmpty(list) ? null : (MasterKeyEntity)list.get(0)
+    private Session getCurrentDCSession() {
+        return ShardScope.with(DataCenters.instance().currentDataCenterId(),
+                shardAlgorithm.shardId(DEFAULT_SHARD_ID)) { sessionFactory.currentSession }
     }
 }

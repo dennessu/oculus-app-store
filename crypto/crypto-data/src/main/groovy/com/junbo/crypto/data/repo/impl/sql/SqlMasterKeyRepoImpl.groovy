@@ -1,6 +1,6 @@
 package com.junbo.crypto.data.repo.impl.sql
 
-import com.junbo.common.id.MasterKeyId
+
 import com.junbo.crypto.data.dao.MasterKeyDAO
 import com.junbo.crypto.data.entity.MasterKeyEntity
 import com.junbo.crypto.data.repo.MasterKeyRepo
@@ -31,14 +31,8 @@ class SqlMasterKeyRepoImpl implements MasterKeyRepo {
     }
 
     @Override
-    Promise<MasterKey> getMasterKeyByVersion(Integer version) {
-        MasterKeyEntity entity = masterKeyDAO.getByKeyVersion(version)
-        return Promise.pure(wrap(entity))
-    }
-
-    @Override
-    Promise<MasterKey> get(MasterKeyId id) {
-        MasterKeyEntity entity = masterKeyDAO.get(id.value)
+    Promise<MasterKey> get(Long id) {
+        MasterKeyEntity entity = masterKeyDAO.get(id)
         return Promise.pure(wrap(entity))
     }
 
@@ -46,7 +40,7 @@ class SqlMasterKeyRepoImpl implements MasterKeyRepo {
     Promise<MasterKey> create(MasterKey model) {
         MasterKeyEntity entity = unwrap(model)
         entity = masterKeyDAO.create(entity)
-        return get(new MasterKeyId((Long)entity.id))
+        return get(entity.keyVersion)
     }
 
     @Override
@@ -55,7 +49,7 @@ class SqlMasterKeyRepoImpl implements MasterKeyRepo {
     }
 
     @Override
-    Promise<Void> delete(MasterKeyId id) {
+    Promise<Void> delete(Long id) {
         throw new IllegalStateException('unsupported operation')
     }
 
@@ -70,7 +64,6 @@ class SqlMasterKeyRepoImpl implements MasterKeyRepo {
         }
 
         return new MasterKey(
-                id: entity.id == null ? null : new MasterKeyId((Long)entity.id),
                 encryptValue: entity.encryptValue,
                 keyVersion: entity.keyVersion,
                 createdBy: entity.createdBy,
@@ -84,7 +77,6 @@ class SqlMasterKeyRepoImpl implements MasterKeyRepo {
         }
 
         return new MasterKeyEntity(
-                id: masterKey.id == null ? null : ((MasterKeyId)masterKey.id).value,
                 encryptValue: masterKey.encryptValue,
                 keyVersion: masterKey.keyVersion,
                 createdBy: masterKey.createdBy,

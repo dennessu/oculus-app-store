@@ -81,7 +81,7 @@ abstract class CommonResourceImpl {
 
         Integer masterKeyVersion = Integer.parseInt(userKeyInfo[0])
         String userEncryptValue = userKeyInfo[1]
-        return masterKeyRepo.getMasterKeyByVersion(masterKeyVersion).then { MasterKey masterKey ->
+        return masterKeyRepo.get(masterKeyVersion).then { MasterKey masterKey ->
             if (masterKey == null) {
                 throw new IllegalArgumentException('master key with version: ' + masterKeyVersion + ' not found.')
             }
@@ -196,8 +196,8 @@ abstract class CommonResourceImpl {
     }
 
     // Used to get raw masterKey by version
-    protected Promise<MasterKey> getCurrentDecryptedMasterKeyByVersion(Integer keyVersion) {
-        return masterKeyRepo.getMasterKeyByVersion(keyVersion).then { MasterKey masterKey ->
+    protected Promise<MasterKey> getCurrentDecryptedMasterKeyByVersion(Long keyVersion) {
+        return masterKeyRepo.get(keyVersion).then { MasterKey masterKey ->
             if (masterKey == null) {
                 throw new IllegalArgumentException('master key with version: ' + keyVersion + ' not found.')
             }

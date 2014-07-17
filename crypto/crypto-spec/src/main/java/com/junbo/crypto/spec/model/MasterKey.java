@@ -6,32 +6,29 @@
 package com.junbo.crypto.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
-import com.junbo.common.id.MasterKeyId;
 import com.junbo.common.model.ResourceMeta;
 
 /**
  * Created by liangfu on 5/12/14.
  */
-public class MasterKey extends ResourceMeta<MasterKeyId> {
-
-    @CloudantIgnore
-    private MasterKeyId id;
+public class MasterKey extends ResourceMeta<Long> {
 
     private String value;
 
     @JsonIgnore
-    private Integer keyVersion;
+    private Long keyVersion;
 
     @JsonIgnore
     private String encryptValue;
 
-    public MasterKeyId getId() {
-        return id;
+    @Override
+    public Long getId() {
+        return keyVersion;
     }
 
-    public void setId(MasterKeyId id) {
-        this.id = id;
+    @Override
+    public void setId(Long id) {
+        this.keyVersion = id;
     }
 
     public String getValue() {
@@ -50,11 +47,11 @@ public class MasterKey extends ResourceMeta<MasterKeyId> {
         this.encryptValue = encryptValue;
     }
 
-    public Integer getKeyVersion() {
+    public Long getKeyVersion() {
         return keyVersion;
     }
 
-    public void setKeyVersion(Integer keyVersion) {
+    public void setKeyVersion(Long keyVersion) {
         this.keyVersion = keyVersion;
     }
 }

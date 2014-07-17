@@ -1,5 +1,7 @@
 package com.junbo.data.handler
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.crypto.spec.model.MasterKey
 import com.junbo.crypto.spec.resource.MasterKeyResource
 import com.junbo.langur.core.client.TypeReference

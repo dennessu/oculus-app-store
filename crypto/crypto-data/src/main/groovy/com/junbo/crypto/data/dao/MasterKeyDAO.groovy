@@ -12,5 +12,4 @@ public interface MasterKeyDAO {
     MasterKeyEntity create(MasterKeyEntity masterKeyEntity)
 
     List<MasterKeyEntity> getAll()
-    MasterKeyEntity getByKeyVersion(Integer keyVersion)
 }
