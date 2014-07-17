@@ -3,7 +3,7 @@ package com.junbo.store.db.repo.cloudant
 import com.junbo.common.id.EntitlementId
 import com.junbo.common.id.UserId
 import com.junbo.store.db.repo.ConsumptionRepository
-import com.junbo.store.spec.model.Consumption
+import com.junbo.store.spec.model.iap.Consumption
 import org.apache.commons.lang.RandomStringUtils
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests

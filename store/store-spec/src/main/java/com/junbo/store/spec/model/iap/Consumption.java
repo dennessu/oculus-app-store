@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.store.spec.model;
+package com.junbo.store.spec.model.iap;
 
 import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
 import com.junbo.common.id.EntitlementId;

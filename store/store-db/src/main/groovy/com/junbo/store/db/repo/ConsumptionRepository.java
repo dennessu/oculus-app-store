@@ -6,7 +6,7 @@
 
 package com.junbo.store.db.repo;
 
-import com.junbo.store.spec.model.Consumption;
+import com.junbo.store.spec.model.iap.Consumption;
 import com.junbo.langur.core.promise.Promise;
 
 /**

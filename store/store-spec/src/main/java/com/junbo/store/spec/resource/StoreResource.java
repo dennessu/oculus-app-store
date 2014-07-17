@@ -12,6 +12,8 @@ import com.junbo.store.spec.model.billing.BillingProfileGetRequest;
 import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateRequest;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
+import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
+import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.iap.IAPOfferGetRequest;
 import com.junbo.store.spec.model.iap.IAPOfferGetResponse;
 import com.junbo.store.spec.model.purchase.*;
@@ -50,6 +52,10 @@ public interface StoreResource {
                                                      @BeanParam PageParam pageParam);
 
     @POST
+    @Path("/purchase/select-instrument")
+    Promise<SelectInstrumentResponse> selectInstrumentForPurchase(SelectInstrumentRequest selectInstrumentRequest);
+
+    @POST
     @Path("/purchase/free")
     Promise<MakeFreePurchaseResponse> makeFreePurchase(MakeFreePurchaseRequest makeFreePurchaseRequest);
 
@@ -67,6 +73,6 @@ public interface StoreResource {
 
     @POST
     @Path("/iap/consumption")
-    Promise<Consumption> iapConsumeEntitlement(Consumption consumption);
+    Promise<IAPEntitlementConsumeResponse> iapConsumeEntitlement(IAPEntitlementConsumeRequest iapEntitlementConsumeRequest);
 
 }

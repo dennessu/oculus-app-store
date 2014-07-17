@@ -39,6 +39,9 @@ import com.junbo.store.rest.utils.ResourceContainer
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.*
 import com.junbo.store.spec.model.billing.*
+import com.junbo.store.spec.model.iap.Consumption
+import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest
+import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse
 import com.junbo.store.spec.model.iap.IAPOfferGetRequest
 import com.junbo.store.spec.model.iap.IAPOfferGetResponse
 import com.junbo.store.spec.model.purchase.*
@@ -274,6 +277,18 @@ class StoreResourceImpl implements StoreResource {
         }
     }
 
+    @Override
+    Promise<SelectInstrumentResponse> selectInstrumentForPurchase(SelectInstrumentRequest selectInstrumentRequest) {
+        OrderId orderId = new OrderId(IdFormatter.decodeId(OrderId, selectInstrumentRequest.purchaseToken))
+        resourceContainer.orderResource.getOrderByOrderId(orderId).then { Order o ->
+            o.payments = [
+                    new PaymentInfo(paymentInstrument: selectInstrumentRequest.instrumentId)
+            ]
+            resourceContainer.orderResource.updateOrderByOrderId(o.getId(), o).then { Order updated ->
+                return Promise.pure(new SelectInstrumentResponse(status: ResponseStatus.SUCCESS.name()))
+            }
+        }
+    }
 
     @Override
     Promise<MakeFreePurchaseResponse> makeFreePurchase(MakeFreePurchaseRequest makeFreePurchaseRequest) {
@@ -327,39 +342,32 @@ class StoreResourceImpl implements StoreResource {
     @Override
     Promise<CommitPurchaseResponse> commitPurchase(CommitPurchaseRequest commitPurchaseRequest) {
         OrderId orderId = new OrderId(IdFormatter.decodeId(OrderId, commitPurchaseRequest.purchaseToken))
-        Order order
         String iapPackageName = null, iapItemId = null
         CommitPurchaseResponse response = new CommitPurchaseResponse()
 
-        resourceContainer.orderResource.getOrderByOrderId(orderId).then { Order o ->
-            order = o
+        resourceContainer.orderResource.getOrderByOrderId(orderId).then { Order order ->
             iapPackageName = order.properties?.get('iap.packageName')
             iapItemId = order.properties?.get('iap.hostItemId')
-            o.payments = [
-                    new PaymentInfo(paymentInstrument: commitPurchaseRequest.instrumentId)
-            ]
-            resourceContainer.orderResource.updateOrderByOrderId(o.getId(), o).then { Order updated ->
-                updated.tentative = false
-                resourceContainer.orderResource.updateOrderByOrderId(updated.getId(), updated).then { Order settled ->
+            order.tentative = false
+            resourceContainer.orderResource.updateOrderByOrderId(order.getId(), order).then { Order settled ->
                     response.orderId = settled.getId()
                     response.status = ResponseStatus.SUCCESS.name()
                     return Promise.pure(null)
-                }
-            }
-        }.then { // get iap entitlements
-            if (!StringUtils.isEmpty(iapPackageName)) {
-                response.iapEntitlements = []
-                getEntitlementsByOrder(order, iapPackageName).then { Results<Entitlement> entitlementResults ->
-                    return Promise.each(entitlementResults.items) { Entitlement entitlement ->
-                        entitlement.signatureTimestamp = System.currentTimeMillis()
-                        return signEntitlement(entitlement, iapItemId).then {
-                            response.iapEntitlements << entitlement
-                            return Promise.pure(null)
+            }.then { // get iap entitlements
+                if (!StringUtils.isEmpty(iapPackageName)) {
+                    response.iapEntitlements = []
+                    getEntitlementsByOrder(order, iapPackageName).then { Results<Entitlement> entitlementResults ->
+                        return Promise.each(entitlementResults.items) { Entitlement entitlement ->
+                            entitlement.signatureTimestamp = System.currentTimeMillis()
+                            return signEntitlement(entitlement, iapItemId).then {
+                                response.iapEntitlements << entitlement
+                                return Promise.pure(null)
+                            }
                         }
                     }
                 }
+                return Promise.pure(response)
             }
-            return Promise.pure(response)
         }
     }
 
@@ -378,14 +386,22 @@ class StoreResourceImpl implements StoreResource {
     }
 
     @Override
-    Promise<Consumption> iapConsumeEntitlement(Consumption consumption) {
+    Promise<IAPEntitlementConsumeResponse> iapConsumeEntitlement(IAPEntitlementConsumeRequest iapEntitlementConsumeRequest) {
         Item hostItem = null
-        return consumptionRepository.get(consumption.trackingGuid).then { Consumption existed ->
+        return consumptionRepository.get(iapEntitlementConsumeRequest.trackingGuid).then { Consumption existed ->
             if (existed != null) {
-                return Promise.pure(existed)
+                return Promise.pure(new IAPEntitlementConsumeResponse(consumption: existed, status: ResponseStatus.SUCCESS.name()))
             }
 
-            return getItemByPackageName(consumption.packageName).then { Item item ->
+            Consumption consumption = new Consumption(
+                    userId: iapEntitlementConsumeRequest.userId,
+                    entitlementId : iapEntitlementConsumeRequest.entitlementId,
+                    useCountConsumed : iapEntitlementConsumeRequest.useCountConsumed,
+                    trackingGuid: iapEntitlementConsumeRequest.trackingGuid,
+                    packageName: iapEntitlementConsumeRequest.packageName
+            )
+
+            return getItemByPackageName(iapEntitlementConsumeRequest.packageName).then { Item item ->
                 hostItem = item
                 // todo: validate entitlement ownership & package name
                 resourceContainer.entitlementResource.getEntitlement(consumption.entitlementId).then { com.junbo.entitlement.spec.model.Entitlement catalogEntitlement ->
@@ -412,12 +428,14 @@ class StoreResourceImpl implements StoreResource {
 
         }.then { Consumption consumptionResult ->
             consumptionResult.signatureTimestamp = System.currentTimeMillis()
-            return signConsumption(consumptionResult, hostItem.itemId)
+            return signConsumption(consumptionResult, hostItem.itemId).then {
+                return Promise.pure(new IAPEntitlementConsumeResponse(consumption: consumptionResult, status: ResponseStatus.SUCCESS.name()))
+            }
         }
     }
 
     private Promise<BillingProfile> innerGetBillingProfile(UserId userId, LocaleId locale) {
-        BillingProfile billingProfile = new BillingProfile()
+        BillingProfile billingProfile = new BillingProfile(userId: userId)
         billingProfile.instruments = []
         PageMetaData pageMetaData = new PageMetaData(start: 0, count: PAGE_SIZE)
 

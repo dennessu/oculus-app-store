@@ -2,7 +2,7 @@ package com.junbo.store.db.repo.cloudant
 
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.store.db.repo.ConsumptionRepository
-import com.junbo.store.spec.model.Consumption
+import com.junbo.store.spec.model.iap.Consumption
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 

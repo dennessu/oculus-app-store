@@ -5,27 +5,16 @@
  */
 package com.junbo.store.spec.model.purchase;
 
+import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
-import com.junbo.store.spec.model.ChallengeSolution;
 
 /**
- * The CommitPurchaseRequest class.
+ * The SelectInstrumentRequest class.
  */
-public class CommitPurchaseRequest {
-
-    private ChallengeSolution challengeSolution;
-
+public class SelectInstrumentRequest {
     private String purchaseToken;
-
     private UserId userId;
-
-    public ChallengeSolution getChallengeSolution() {
-        return challengeSolution;
-    }
-
-    public void setChallengeSolution(ChallengeSolution challengeSolution) {
-        this.challengeSolution = challengeSolution;
-    }
+    private PaymentInstrumentId instrumentId;
 
     public String getPurchaseToken() {
         return purchaseToken;
@@ -41,5 +30,13 @@ public class CommitPurchaseRequest {
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+    }
+
+    public PaymentInstrumentId getInstrumentId() {
+        return instrumentId;
+    }
+
+    public void setInstrumentId(PaymentInstrumentId instrumentId) {
+        this.instrumentId = instrumentId;
     }
 }

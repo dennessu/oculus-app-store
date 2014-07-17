@@ -23,6 +23,7 @@ import com.junbo.store.rest.utils.IAPValidator
 import com.junbo.store.rest.utils.ResourceContainer
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.*
+import com.junbo.store.spec.model.iap.Consumption
 import com.junbo.store.spec.resource.IAPResource
 import com.junbo.langur.core.client.PathParamTranscoder
 import com.junbo.langur.core.context.JunboHttpContext
@@ -51,6 +52,7 @@ import javax.ws.rs.ext.Provider
 @Scope('prototype')
 @CompileStatic
 @Component('defaultIAPResource')
+@Deprecated
 class IAPResourceImpl implements IAPResource {
 
     public static final String ACTION_TYPE_GRANT_ENTITLEMENT = "GRANT_ENTITLEMENT";
