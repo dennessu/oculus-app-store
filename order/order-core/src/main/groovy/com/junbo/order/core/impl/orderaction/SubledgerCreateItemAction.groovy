@@ -1,6 +1,7 @@
 package com.junbo.order.core.impl.orderaction
 
 import com.junbo.common.id.OfferId
+import com.junbo.common.util.IdFormatter
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
@@ -74,6 +75,8 @@ class SubledgerCreateItemAction implements Action, InitializingBean {
 
                 subledgerService.createSubledgerItem(subledgerItem)
             }
+        }.syncRecover { Throwable ex ->
+            LOGGER.error('name=SubledgerCreateItemError, orderId={}', IdFormatter.encodeId(order.getId()), ex)
         }.syncThen {
             return null
         }
