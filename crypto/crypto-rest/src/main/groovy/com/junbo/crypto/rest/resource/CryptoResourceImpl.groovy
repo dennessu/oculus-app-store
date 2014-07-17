@@ -24,9 +24,9 @@ import java.security.Key
 @Transactional
 class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
 
-    private static HashMap<Integer, Key> cachedEncryptMasterKey = new HashMap<>()
+    private static HashMap<Long, Key> cachedEncryptMasterKey = new HashMap<>()
 
-    private static HashMap<Integer, Key> cachedDecryptMasterKey = new HashMap<>()
+    private static HashMap<Long, Key> cachedDecryptMasterKey = new HashMap<>()
 
     private CryptoMessageValidator validator
 
@@ -113,7 +113,7 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
             throw new IllegalArgumentException('message should be separated by ' + versionSeparator)
         }
 
-        Integer masterKeyVersion = Integer.parseInt(messageInfo[0])
+        Long masterKeyVersion = Long.parseLong(messageInfo[0])
 
         String messageEncryptValue = messageInfo[1]
         return getRawMasterKeyByVersion(masterKeyVersion).then { Key masterKeyLoaded ->
@@ -121,7 +121,7 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
         }
     }
 
-    private Promise<Key> getRawMasterKeyByVersion(Integer version) {
+    private Promise<Key> getRawMasterKeyByVersion(Long version) {
         if (cachedDecryptMasterKey.get(version) == null) {
             return getCurrentDecryptedMasterKeyByVersion(version).then { MasterKey masterKey ->
                 Key masterKeyLoaded = aesCipherService.stringToKey(masterKey.value)

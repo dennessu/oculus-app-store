@@ -7,8 +7,8 @@
 package com.junbo.rating.core.context;
 
 import com.junbo.rating.core.builder.Builder;
-import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.model.Currency;
+import com.junbo.rating.spec.model.CurrencyInfo;
 import com.junbo.rating.spec.model.subscription.DurationUnit;
 import com.junbo.rating.spec.model.subscription.SubsRatingRequest;
 import com.junbo.rating.spec.model.subscription.SubsRatingType;
@@ -29,11 +29,9 @@ public class SubsRatingContext extends RatingContext implements Builder<SubsRati
     @Override
     public void fromRequest(SubsRatingRequest request) {
         super.setCountry(request.getCountry());
-        Currency currency = Currency.findByCode(request.getCurrency());
-        if (currency == null) {
-            throw AppErrors.INSTANCE.currencyNotFound(request.getCurrency()).exception();
-        }
-
+        Currency currency = new Currency();
+        currency.setCurrencyCode(request.getCurrency());
+        currency.setNumberAfterDecimal(CurrencyInfo.findByCode(currency.getCurrencyCode()).getDigits());
         super.setCurrency(currency);
 
         this.offerId = request.getOfferId();
@@ -48,7 +46,7 @@ public class SubsRatingContext extends RatingContext implements Builder<SubsRati
         SubsRatingRequest result = new SubsRatingRequest();
         result.setOfferId(getOfferId());
         result.setCountry(getCountry());
-        result.setCurrency(getCurrency().getCode());
+        result.setCurrency(getCurrency().getCurrencyCode());
         result.setType(getSubsRatingType());
         result.setAmount(getAmount());
         return result;

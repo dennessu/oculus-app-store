@@ -256,6 +256,7 @@ public class TopologyConfig {
             for (String ipAddress : ipAddresses) {
                 if (otherServers.contains(ipAddress)) {
                     isFound = true;
+                    myAppServer = new AppServer(ipAddress, appHostPort, new int[0], DataCenters.instance().currentDataCenterId());
                     break;
                 }
             }

@@ -30,7 +30,10 @@ public class SubsRatingServiceTest extends BaseTest {
         context.setSubsRatingType(SubsRatingType.PURCHASE);
         context.setOfferId("100L");
         context.setCountry("US");
-        context.setCurrency(Currency.USD);
+        Currency currency = new Currency();
+        currency.setCurrencyCode("USD");
+        currency.setNumberAfterDecimal(2);
+        context.setCurrency(currency);
 
 
         subsRatingService.rate(context);
@@ -43,7 +46,10 @@ public class SubsRatingServiceTest extends BaseTest {
         context.setSubsRatingType(SubsRatingType.CYCLE);
         context.setOfferId("100L");
         context.setCountry("US");
-        context.setCurrency(Currency.USD);
+        Currency currency = new Currency();
+        currency.setCurrencyCode("USD");
+        currency.setNumberAfterDecimal(2);
+        context.setCurrency(currency);
         context.setCycleCount(1);
 
         subsRatingService.rate(context);
@@ -56,7 +62,10 @@ public class SubsRatingServiceTest extends BaseTest {
         context.setSubsRatingType(SubsRatingType.EXTEND);
         context.setOfferId("100L");
         context.setCountry("US");
-        context.setCurrency(Currency.USD);
+        Currency currency = new Currency();
+        currency.setCurrencyCode("USD");
+        currency.setNumberAfterDecimal(2);
+        context.setCurrency(currency);
         context.setExtensionNum(10);
         context.setExtensionUnit(DurationUnit.DAY);
 

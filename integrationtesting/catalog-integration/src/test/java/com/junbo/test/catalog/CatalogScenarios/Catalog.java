@@ -5,10 +5,10 @@
  */
 package com.junbo.test.catalog.catalogScenarios;
 
-import com.junbo.test.common.apihelper.oauth.impl.OAuthTokenServiceImpl;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
-import com.junbo.test.common.apihelper.oauth.OAuthTokenService;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.catalog.enums.CatalogOfferAttributeType;
 import com.junbo.test.catalog.enums.CatalogItemAttributeType;
 import com.junbo.test.common.apihelper.oauth.enums.GrantType;
@@ -57,7 +57,7 @@ public class Catalog extends TestClass {
 
     @BeforeClass
     private void PrepareTestData() throws Exception {
-        OAuthTokenService oAuthTokenService = OAuthTokenServiceImpl.getInstance();
+        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
         oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOG);
     }
 

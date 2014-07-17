@@ -41,9 +41,21 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
         return identityClient.PostUser();
     }
 
+    public String CreateUser(String userName, String pwd, String emailAddress) throws Exception {
+        return identityClient.PostUser(userName, pwd, emailAddress);
+    }
+
+    public List<String> GetUserByUserName(String userName) throws Exception{
+        return identityClient.GetUserByUserName(userName);
+    }
+
+    public void postEmailVerification(String uid, String country, String locale) throws Exception {
+        identityClient.PostEmailVerification(uid, country, locale);
+    }
+
     public void creditWallet(String uid, EwalletInfo ewalletInfo, BigDecimal creditAmount) throws Exception {
         CreditRequest creditRequest = new CreditRequest();
-        creditRequest.setCurrency("usd");
+        creditRequest.setCurrency(ewalletInfo.getCurrency().toString());
         creditRequest.setUserId(IdConverter.hexStringToId(UserId.class, uid));
         ewalletInfo.setBalance(creditAmount);
         creditRequest.setAmount(creditAmount);
@@ -93,7 +105,7 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
 
             case EWALLET:
                 EwalletInfo ewalletInfo = (EwalletInfo) paymentInfo;
-                typeSpecificDetails.setStoredValueCurrency("usd");
+                typeSpecificDetails.setStoredValueCurrency(ewalletInfo.getCurrency().toString());
                 paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
                 paymentInstrument.setAccountName(ewalletInfo.getAccountName());
                 paymentInstrument.setType(ewalletInfo.getType().getValue());

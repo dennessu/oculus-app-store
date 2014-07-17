@@ -41,7 +41,8 @@ class ApiServiceImpl implements ApiService {
 
     @Override
     ApiDefinition updateApi(String apiName, ApiDefinition apiDefinition) {
-        return apiDefinitionRepository.updateApi(apiDefinition)
+        ApiDefinition oldApiDefinition = getApi(apiName)
+        return apiDefinitionRepository.updateApi(apiDefinition, oldApiDefinition)
     }
 
     @Override

@@ -57,7 +57,7 @@ public abstract class ProcessorSupport implements Processor{
     protected BigDecimal getPrice(List<OfferAction> actions, SubsRatingContext context) {
         for (OfferAction action : actions) {
             if (action.getConditions().isEmpty()) {
-                return retrievePrice(action.getPrice(), context.getCountry(), context.getCurrency().getCode());
+                return retrievePrice(action.getPrice(), context.getCountry(), context.getCurrency().getCurrencyCode());
             }
         }
 

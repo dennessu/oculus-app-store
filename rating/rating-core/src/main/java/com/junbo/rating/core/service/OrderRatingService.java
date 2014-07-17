@@ -59,9 +59,9 @@ public class OrderRatingService extends RatingServiceSupport {
             Set<PromotionRevision> promotions = candidates.get(offerId) == null?
                     new HashSet<PromotionRevision>() : candidates.get(offerId);
 
-            BigDecimal originalPrice = getPrice(item.getOffer().getPrice(), context.getCountry(), currency.getCode());
+            BigDecimal originalPrice = getPrice(item.getOffer().getPrice(), context.getCountry(), currency.getCurrencyCode());
             if (originalPrice == Constants.PRICE_NOT_FOUND) {
-                LOGGER.error("Price of Offer [" + offerId + "] is not found for Currency [" + currency + "].");
+                LOGGER.error("Price of Offer [" + offerId + "] is not found for CurrencyInfo [" + currency + "].");
                 throw AppErrors.INSTANCE.missingConfiguration("price").exception();
             }
 
@@ -72,7 +72,7 @@ public class OrderRatingService extends RatingServiceSupport {
             entry.setQuantity(item.getQuantity());
             entry.setShippingMethodId(item.getShippingMethodId());
             entry.setDeveloperRatio(item.getOffer().getDeveloperRatio());
-            entry.setPreOrderPrice(getPreOrderPrice(item.getOffer(), context.getCountry(), currency.getCode()));
+            entry.setPreOrderPrice(getPreOrderPrice(item.getOffer(), context.getCountry(), currency.getCurrencyCode()));
             entry.setOriginalPrice(originalPrice);
             entry.setAppliedPromotion(new HashSet<String>());
             for (PromotionRevision promotion : promotions) {

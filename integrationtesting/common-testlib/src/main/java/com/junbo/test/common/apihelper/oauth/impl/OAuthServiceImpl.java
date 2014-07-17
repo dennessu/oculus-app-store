@@ -10,7 +10,7 @@ import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.Header;
 import com.junbo.test.common.apihelper.HttpClientBase;
-import com.junbo.test.common.apihelper.oauth.OAuthTokenService;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
@@ -25,15 +25,15 @@ import java.util.Set;
 /**
  * Created by weiyu_000 on 7/9/14.
  */
-public class OAuthTokenServiceImpl extends HttpClientBase implements OAuthTokenService {
+public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
 
     private static String oauthUrl = ConfigHelper.getSetting("defaultIdentityEndPointV1");
 
-    private static OAuthTokenService instance;
+    private static OAuthService instance;
 
-    public static synchronized OAuthTokenService getInstance() {
+    public static synchronized OAuthService getInstance() {
         if (instance == null) {
-            instance = new OAuthTokenServiceImpl();
+            instance = new OAuthServiceImpl();
         }
         return instance;
     }
@@ -68,7 +68,7 @@ public class OAuthTokenServiceImpl extends HttpClientBase implements OAuthTokenS
         formParams.put("scope", componentType.toString() + ".service");
 
         String responseBody = restApiCall(HTTPMethod.POST, oauthUrl + "oauth2/token",
-                convertFormtToRequestString(formParams), expectedResponseCode);
+                convertFormatToRequestString(formParams), expectedResponseCode);
 
         AccessTokenResponse accessTokenResponse = new JsonMessageTranscoder().decode(
                 new TypeReference<AccessTokenResponse>() {
@@ -97,7 +97,7 @@ public class OAuthTokenServiceImpl extends HttpClientBase implements OAuthTokenS
         formParams.put("username", Master.getInstance().getUser(uid).getUsername());
 
         String responseBody = restApiCall(HTTPMethod.POST, oauthUrl + "oauth2/token",
-                convertFormtToRequestString(formParams), expectedResponseCode);
+                convertFormatToRequestString(formParams), expectedResponseCode);
 
         AccessTokenResponse accessTokenResponse = new JsonMessageTranscoder().decode(
                 new TypeReference<AccessTokenResponse>() {
@@ -109,7 +109,25 @@ public class OAuthTokenServiceImpl extends HttpClientBase implements OAuthTokenS
         return accessTokenResponse.getAccessToken();
     }
 
-    private String convertFormtToRequestString(Map<String, String> formParams) {
+    @Override
+    public String postEmailVerification(String uid, String country, String locale) throws Exception {
+        return postEmailVerification(uid, country, locale);
+    }
+
+    @Override
+    public String postEmailVerification(String uid, String country, String locale, int expectedResponseCode) throws Exception {
+        Map<String, String> formParams = new HashMap<>();
+        formParams.put("userId", uid);
+        formParams.put("country", country);
+        formParams.put("locale", locale);
+
+        String responseBody = restApiCall(HTTPMethod.POST, oauthUrl + "oauth2/verify-email",
+                convertFormatToRequestString(formParams), expectedResponseCode);
+
+        return responseBody;
+    }
+
+    private String convertFormatToRequestString(Map<String, String> formParams) {
         String requestString = "";
         Set<String> keys = formParams.keySet();
 

@@ -119,8 +119,13 @@ public class OrderTestDataProvider {
         order.setCurrency(new CurrencyId(currency.toString()));
         List<PaymentInfo> paymentInfos = new ArrayList<>();
         PaymentInfo paymentInfo = new PaymentInfo();
-        paymentInfo.setPaymentInstrument(new PaymentInstrumentId(
-                IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId)));
+
+        if (paymentInstrumentId.equals("Invalid")) {
+            paymentInfo.setPaymentInstrument(new PaymentInstrumentId(0L));
+        } else {
+            paymentInfo.setPaymentInstrument(new PaymentInstrumentId(
+                    IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId)));
+        }
         paymentInfos.add(paymentInfo);
         order.setPayments(paymentInfos);
         order.setShippingMethod("0");
@@ -135,7 +140,12 @@ public class OrderTestDataProvider {
         for (Iterator it = key.iterator(); it.hasNext(); ) {
             OrderItem orderItem = new OrderItem();
             String offerName = (String) it.next();
-            OfferId offerId = new OfferId(offerClient.getOfferIdByName(offerName));
+            OfferId offerId;
+            if (offerName.equals("Invalid")) {
+                offerId = new OfferId("123");
+            } else {
+                offerId = new OfferId(offerClient.getOfferIdByName(offerName));
+            }
             orderItem.setQuantity(offers.get(offerName));
             orderItem.setOffer(offerId);
             orderItemList.add(orderItem);
@@ -257,7 +267,6 @@ public class OrderTestDataProvider {
         orderInfo.setTotalTax(orderInfo.getTotalTax().subtract(orderTotalRefundedTax));
 
 
-
         BigDecimal totalRefundAmount = orderTotalRefundedAmount.add(orderTotalRefundedTax);
         PaymentInstrumentInfo paymentInstrumentInfo = new PaymentInstrumentInfo();
         paymentInstrumentInfo.setPaymentId(orderInfo.getPaymentInfos().get(0).getPaymentId());
@@ -291,7 +300,7 @@ public class OrderTestDataProvider {
         BalanceItem balanceItem = Master.getInstance().getBalance(balanceIds.get(0)).getBalanceItems().get(0);
         BigDecimal taxRate = new BigDecimal(0);
 
-        for(TaxItem taxItem : balanceItem.getTaxItems()){
+        for (TaxItem taxItem : balanceItem.getTaxItems()) {
             taxRate = taxRate.add(taxItem.getTaxRate());
         }
 
