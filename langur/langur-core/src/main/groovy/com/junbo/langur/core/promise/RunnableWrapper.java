@@ -14,7 +14,7 @@ public class RunnableWrapper implements Runnable {
 
     private final Snapshot snapshot;
 
-    private final Runnable runnable;
+    private final RunnableOnce runnable;
 
     public RunnableWrapper(Runnable runnable) {
         this.runnable = new RunnableOnce(runnable);
@@ -36,6 +36,10 @@ public class RunnableWrapper implements Runnable {
         return runnable;
     }
 
+    public boolean hasRun() {
+        return runnable.hasRun();
+    }
+
     @Override
     public void run() {
         Object handle = begin();
@@ -54,6 +58,10 @@ public class RunnableWrapper implements Runnable {
 
         private RunnableOnce(Runnable runnable) {
             this.runnable = runnable;
+        }
+
+        public boolean hasRun() {
+            return tag.get();
         }
 
         @Override
