@@ -70,7 +70,7 @@ public class BuyerValidationHelper extends BaseValidationHelper {
         verifyEqual(order.getCurrency().toString(), currency.toString(), "verify currency field in order");
 
         if (hasPhysicalGood) {
-            verifyEqual(order.getStatus(), "PENDING_FULFILL", "verify order status");
+            verifyEqual(order.getStatus(), "PENDING", "verify order status");
         } else {
             verifyEqual(order.getStatus(), "COMPLETED", "verify order status");
         }

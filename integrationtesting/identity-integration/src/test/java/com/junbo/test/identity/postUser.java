@@ -29,9 +29,10 @@ public class postUser {
 
     @Test(groups = "bvt")
     public void postUser() throws Exception {
-        User posted = Identity.UserPostDefault();
+        User user = IdentityModel.DefaultUser();
+        User posted = Identity.UserPostDefault(user);
         User stored = Identity.UserGetByUserId(posted.getId());
-        Validator.Validate("validate user", posted, stored);
+        Validator.Validate("validate user name", user.getUsername(), stored.getUsername());
     }
 
 }

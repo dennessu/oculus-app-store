@@ -35,10 +35,11 @@ public class postUserPersonalInfoLink {
     @Test(groups = "bvt")
     public void postUserPersonalInfoLink() throws Exception {
         User user = Identity.UserPostDefault();
-        UserPersonalInfo posted = Identity.UserPersonalInfoPostByType(
-                user.getId(), IdentityModel.UserPersonalInfoType.EMAIL);
+        UserPersonalInfo upi = IdentityModel.DefaultUserPersonalInfoEmail();
+        UserPersonalInfo posted = Identity.UserPersonalInfoPost(user.getId(), upi);
         UserPersonalInfo stored = Identity.UserPersonalInfoGetByUserPersonalInfoId(posted.getId());
-        Validator.Validate("validate user personal info", posted, stored);
+        Validator.Validate("validate user personal info type", upi.getType(), stored.getType());
+        Validator.Validate("validate user personal info value", upi.getValue(), stored.getValue());
         List<UserPersonalInfoLink> emails = new ArrayList<>();
         UserPersonalInfoLink userPersonalInfoLink = new UserPersonalInfoLink();
         userPersonalInfoLink.setUserId(user.getId());

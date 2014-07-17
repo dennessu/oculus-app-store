@@ -5,7 +5,6 @@
  */
 package com.junbo.oauth.spec.endpoint;
 
-import com.junbo.common.id.UserId;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;

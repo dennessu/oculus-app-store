@@ -6,6 +6,11 @@
        ">
     <context:annotation-config />
 
+    <bean id="csrTokenGenerator" class="com.junbo.csr.db.generator.impl.SecureRandomTokenGenerator">
+        <property name="csrInvitationCode" value="${csr.db.invitationCodeLength}"/>
+    </bean>
+
     <alias alias="csrUpdateRepo" name="csrUpdateCloudantRepo" />
     <alias alias="csrLogRepo" name="csrLogCloudantRepo" />
+    <alias alias="csrInvitaionCodeRepo" name="csrInvitationCodeCloudantRepo" />
 </beans>

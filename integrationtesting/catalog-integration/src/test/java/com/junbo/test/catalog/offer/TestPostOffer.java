@@ -180,7 +180,6 @@ public class TestPostOffer extends BaseTestClass {
     }
 
     private void checkOfferOptionalFields(Offer offerActual, Offer offerExpected) {
-        Assert.assertEquals(offerActual.getAdminInfo(), offerExpected.getAdminInfo());
         Assert.assertEquals(offerActual.getFutureExpansion(), offerExpected.getFutureExpansion());
         Assert.assertEquals(offerActual.getCategories(), offerExpected.getCategories());
         Assert.assertEquals(offerActual.getEnvironment(), offerExpected.getEnvironment());

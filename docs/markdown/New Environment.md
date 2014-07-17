@@ -17,9 +17,9 @@ Name it CRYPTO_KEY
 ```
 Name it DATABASE_PASSWORD
 
-Get the MD5 of the database password
+Get the MD5 of the database password. This requires psql installed on the computer used to compute the hash.
 ```
-echo $DATABASE_PASSWORD | md5sum
+psql -d postgres -U postgres -qX -c "select md5('${DATABASE_PASSWORD}silkcloud');"
 ```
 Name it DATABASE_PASSWORD_HASH
 
@@ -103,6 +103,12 @@ Then encrypt the whole string using:
 ./scripts/AESCipher.py encrypt $CRYPTO_KEY $CLOUDANT_PII_URIS
 ```
 
+1. Obtain the Sabris password and encrypt it
+```
+./scripts/AESCipher.py encrypt $CRYPTO_KEY $SABRIX_PASSWORD
+```
+Name it SABRIX_PASSWORD_ENCRYPTED
+
 1. Generate the OAuth client secret for internal calls
 ```
 ./scripts/AESCipher.py genkey
@@ -164,6 +170,27 @@ Name it INTERNAL_CLIENT_SECRET_ENCRYPTED
 | subscription.db.password.encrypted               | Set to `DATABASE_PASSWORD_ENCRYPTED`
 | token.db.username                                | Set to `silkcloud`
 | token.db.password.encrypted                      | Set to `DATABASE_PASSWORD_ENCRYPTED`
+| sabrix.password.encrypted                        | Set to `SABRIX_PASSWORD_ENCRYPTED`
+| avalara.authorization.encrypted                  | Set to `AVALARA_AUTH_ENCRYPTED`
+
+TODOs
+```
+drm.core.signature.keyStorePassword.encrypted=
+drm.core.signature.keyPassword.encrypted=
+
+order.risk.kount.keyFilePass.encrypted=
+avalara.authorization.encrypted=
+sabrix.password.encrypted=
+entitlement.aws.secretAccessKey.encrypted=
+
+payment.provider.braintree.privatekey.encrypted=
+payment.provider.paypal.password.encrypted=
+payment.provider.adyen.password.encrypted=
+payment.provider.adyen.notifyPassword.encrypted=
+
+payment.clientproxy.service.clientId=service
+payment.clientproxy.service.clientSecret.encrypted=
+```
 
 ## Change DB Setup Configuration
 Add a configuration folder at `liquibase/conf/{env}`
@@ -188,9 +215,12 @@ TODO:
 
 ## Configure OAuth Clients
 1. OAuth client for internal communication
-Add a configuration at `apphost/data-loader/src/main/resources/data/client/{env}/service.data`. Copy from other environment, and change the client_secret to `INTERNAL_CLIENT_SECRET`.
+Add a configuration at `apphost/data-loader/src/main/resources/data/{env}/client/service.data`. Copy from other environment, and change the client_secret to `INTERNAL_CLIENT_SECRET`.
 
 TODO: This is clear text now. Will fix later.
 
 1. Other OAuth clients
 Onboard other OAuth clients as requested.
+
+## Configure PGHA
+Add a configuration at `scripts/pgha/{env}_{shard}.sh`

@@ -5,6 +5,7 @@ import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
 import com.junbo.csr.spec.error.AppErrors
 import com.junbo.csr.spec.model.CsrGroup
+import com.junbo.csr.spec.model.CsrInvitationRequest
 import com.junbo.csr.spec.model.CsrUser
 import com.junbo.csr.spec.option.list.CsrGroupListOptions
 import com.junbo.csr.spec.option.list.CsrUserListOptions
@@ -20,6 +21,9 @@ import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+
+import javax.ws.rs.QueryParam
+import javax.ws.rs.core.Response
 
 /**
  * Created by haomin on 14-7-14.
@@ -84,4 +88,15 @@ class CsrUserResourceImpl implements CsrUserResource {
             }
         }
     }
+
+    @Override
+    Promise<Response> inviteCsr(CsrInvitationRequest request) {
+        return null
+    }
+
+    @Override
+    Promise<Response> confirmCsr(String code) {
+        return null
+    }
+
 }

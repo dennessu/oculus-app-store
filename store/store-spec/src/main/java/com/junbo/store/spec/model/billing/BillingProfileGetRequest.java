@@ -5,6 +5,7 @@
  */
 package com.junbo.store.spec.model.billing;
 
+import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.UserId;
 
 import javax.ws.rs.QueryParam;
@@ -15,28 +16,17 @@ import javax.ws.rs.QueryParam;
 public class BillingProfileGetRequest {
 
     @QueryParam("locale")
-    private String locale;
-
-    @QueryParam("username")
-    private String username;
+    private LocaleId locale;
 
     @QueryParam("userId")
     private UserId userId;
 
-    public String getLocale() {
+    public LocaleId getLocale() {
         return locale;
     }
 
-    public void setLocale(String locale) {
+    public void setLocale(LocaleId locale) {
         this.locale = locale;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public UserId getUserId() {

@@ -9,6 +9,7 @@ package com.junbo.identity.spec.v1.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.enumid.CountryId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
+import org.apache.commons.lang3.ObjectUtils;
 
 /**
  * Created by xmchen on 14-4-15.
@@ -102,14 +103,17 @@ public class Address{
     public boolean equals(Object obj) {
         if (this == obj) return true;
 
-        Address address = (Address)obj;
-        if (this.street1 != address.street1) return false;
-        if (this.street2 != address.street2) return false;
-        if (this.street3 != address.street3) return false;
-        if (this.city != address.city) return false;
-        if (this.postalCode != address.postalCode) return false;
-        if (this.countryId != address.countryId) return false;
+        if (obj == null || obj.getClass() != getClass()) {
+            return false;
+        }
 
-        return true;
+        Address address = (Address)obj;
+        return ObjectUtils.equals(street1, address.street1) &&
+                ObjectUtils.equals(street2, address.street2) &&
+                ObjectUtils.equals(street3, address.street3) &&
+                ObjectUtils.equals(city, address.city) &&
+                ObjectUtils.equals(subCountry, address.subCountry) &&
+                ObjectUtils.equals(countryId, address.countryId) &&
+                ObjectUtils.equals(postalCode, address.postalCode);
     }
 }

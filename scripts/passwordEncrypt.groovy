@@ -7,6 +7,7 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 import java.security.Key
+import java.security.SecureRandom
 
 if (args == null || args.length == 0) {
     printUsage()
@@ -18,7 +19,6 @@ if (args[0] == 'genKey' && args.size() == 1) {
     SecretKey skey = kgen.generateKey();
     println("key=" + new String(Hex.encodeHex(skey.getEncoded(), false)))
 } else if (args[0] == 'encrypt' && args.size() == 3) {
-    byte [] IV = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     String ALGORITHM = 'AES/CBC/PKCS5Padding'
 
     Key skey = stringToKey(args[1])
@@ -32,10 +32,11 @@ if (args[0] == 'genKey' && args.size() == 1) {
 
     try {
         Cipher cipher = Cipher.getInstance(ALGORITHM)
-        IvParameterSpec ivspec = new IvParameterSpec(IV);
+        byte[] iv = generateIV(16)
+        IvParameterSpec ivspec = new IvParameterSpec(iv);
         cipher.init(Cipher.ENCRYPT_MODE, skey, ivspec);
         def value = Hex.encodeHex(cipher.doFinal(message.getBytes("UTF-8")), false)
-        println("encryptValue="+value+"\n")
+        println("encryptValue=" + Hex.encodeHex(iv) + "#" + value+"\n")
     } catch (Exception e) {
         throw new IllegalStateException('Encrypt error: ' + e.message)
     }
@@ -53,4 +54,12 @@ void printUsage() {
 SecretKey stringToKey(String keyStr) {
     byte [] bytes = Hex.decodeHex(keyStr.toCharArray())
     return new SecretKeySpec(bytes, 0, bytes.length, 'AES')
+}
+
+private byte[] generateIV(int length) {
+    SecureRandom rand = new SecureRandom()
+    byte[] bytes = new byte[length];
+    rand.nextBytes(bytes);
+
+    return bytes;
 }

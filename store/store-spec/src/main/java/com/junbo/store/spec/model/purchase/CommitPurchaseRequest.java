@@ -5,6 +5,7 @@
  */
 package com.junbo.store.spec.model.purchase;
 
+import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.store.spec.model.ChallengeSolution;
 
 /**
@@ -16,11 +17,7 @@ public class CommitPurchaseRequest {
 
     private String purchaseToken;
 
-    private String instrumentId;
-
-    private String packageName;
-
-    private String isIAP;
+    private PaymentInstrumentId instrumentId;
 
     public ChallengeSolution getChallengeSolution() {
         return challengeSolution;
@@ -38,27 +35,11 @@ public class CommitPurchaseRequest {
         this.purchaseToken = purchaseToken;
     }
 
-    public String getInstrumentId() {
+    public PaymentInstrumentId getInstrumentId() {
         return instrumentId;
     }
 
-    public void setInstrumentId(String instrumentId) {
+    public void setInstrumentId(PaymentInstrumentId instrumentId) {
         this.instrumentId = instrumentId;
-    }
-
-    public String getPackageName() {
-        return packageName;
-    }
-
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
-    }
-
-    public String getIsIAP() {
-        return isIAP;
-    }
-
-    public void setIsIAP(String isIAP) {
-        this.isIAP = isIAP;
     }
 }

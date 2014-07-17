@@ -5,6 +5,8 @@
  */
 package com.junbo.store.spec.model;
 
+import com.junbo.common.id.UserId;
+
 import javax.ws.rs.QueryParam;
 
 /**
@@ -15,8 +17,8 @@ public class EntitlementsGetRequest {
     @QueryParam("packageName")
     private String packageName;
 
-    @QueryParam("username")
-    private String username;
+    @QueryParam("userId")
+    private UserId userId;
 
     @QueryParam("itemType")
     String itemType;
@@ -38,12 +40,12 @@ public class EntitlementsGetRequest {
         this.packageName = packageName;
     }
 
-    public String getUsername() {
-        return username;
+    public UserId getUserId() {
+        return userId;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserId(UserId userId) {
+        this.userId = userId;
     }
 
     public String getEntitlementType() {

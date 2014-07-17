@@ -1,8 +1,7 @@
 package com.junbo.store.rest.utils
-
 import com.junbo.common.enumid.CountryId
+import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.PaymentInstrumentId
-import com.junbo.common.util.IdFormatter
 import com.junbo.identity.spec.v1.model.PIType
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.model.TypeSpecificDetails
@@ -22,9 +21,7 @@ class DataConverter {
     private ResourceContainer resourceContainer
 
     Instrument toInstrument(PaymentInstrument paymentInstrument, Instrument instrument) {
-        if (paymentInstrument.getId() != null) {
-            instrument.instrumentId = IdFormatter.encodeId(new PaymentInstrumentId(paymentInstrument.getId()))
-        }
+        instrument.instrumentId = paymentInstrument.getId() == null ? null : new PaymentInstrumentId(paymentInstrument.getId())
 
         instrument.type = com.junbo.common.id.PIType.get(paymentInstrument.type).name()
         instrument.accountName = paymentInstrument.accountName
@@ -41,9 +38,7 @@ class DataConverter {
     }
 
     PaymentInstrument toPaymentInstrument(Instrument instrument, PaymentInstrument paymentInstrument) {
-        if (instrument.instrumentId != null) {
-            paymentInstrument.id = IdFormatter.decodeId(PaymentInstrumentId, instrument.instrumentId)
-        }
+        paymentInstrument.id = instrument.instrumentId?.value
 
         paymentInstrument.type = com.junbo.common.id.PIType.valueOf(instrument.type).id
         paymentInstrument.accountName = instrument.accountName
@@ -60,10 +55,10 @@ class DataConverter {
         return paymentInstrument
     }
 
-    PaymentOption toPaymentOption(PIType piType, String locale) {
+    PaymentOption toPaymentOption(PIType piType, LocaleId locale) {
         PaymentOption paymentOption = new PaymentOption()
         paymentOption.type = piType.typeCode
-        paymentOption.title = piType.locales.get(locale)?.get('description')?.asText()
+        paymentOption.title = piType.locales.get(locale.value)?.get('description')?.asText()
         return paymentOption
     }
 

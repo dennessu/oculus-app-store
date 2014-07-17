@@ -5,31 +5,37 @@
  */
 package com.junbo.store.spec.model.purchase;
 
+import com.junbo.common.enumid.CountryId;
+import com.junbo.common.enumid.CurrencyId;
+import com.junbo.common.enumid.LocaleId;
+import com.junbo.common.id.OfferId;
+import com.junbo.common.id.UserId;
+
 /**
  * The PreparePurchaseRequest class.
  */
 public class PreparePurchaseRequest {
-    private String username;
-    private String offerId;
+    private UserId userId;
+    private OfferId offerId;
     private Integer quantity;
-    private String country;
-    private String locale;
-    private String currency;
+    private CountryId country;
+    private LocaleId locale;
+    private CurrencyId currency;
     private IAPParams iapParams;
 
-    public String getUsername() {
-        return username;
+    public UserId getUserId() {
+        return userId;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserId(UserId userId) {
+        this.userId = userId;
     }
 
-    public String getOfferId() {
+    public OfferId getOfferId() {
         return offerId;
     }
 
-    public void setOfferId(String offerId) {
+    public void setOfferId(OfferId offerId) {
         this.offerId = offerId;
     }
 
@@ -41,27 +47,27 @@ public class PreparePurchaseRequest {
         this.quantity = quantity;
     }
 
-    public String getCountry() {
+    public CountryId getCountry() {
         return country;
     }
 
-    public void setCountry(String country) {
+    public void setCountry(CountryId country) {
         this.country = country;
     }
 
-    public String getLocale() {
+    public LocaleId getLocale() {
         return locale;
     }
 
-    public void setLocale(String locale) {
+    public void setLocale(LocaleId locale) {
         this.locale = locale;
     }
 
-    public String getCurrency() {
+    public CurrencyId getCurrency() {
         return currency;
     }
 
-    public void setCurrency(String currency) {
+    public void setCurrency(CurrencyId currency) {
         this.currency = currency;
     }
 

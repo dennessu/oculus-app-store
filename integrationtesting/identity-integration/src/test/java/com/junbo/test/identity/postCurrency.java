@@ -29,12 +29,18 @@ public class postCurrency {
 
     @Test(groups = "bvt")
     public void postCurrency() throws Exception {
-        try {
-            Currency posted = Identity.CurrencyPostDefault();
-            Currency stored = Identity.CurrencyGetByCurrencyCode(posted.getCurrencyCode());
-            Validator.Validate("validate currency", posted, stored);
-        } finally {
-            Identity.CurrencyDeleteByCurrencyCode(IdentityModel.DefaultCurrency);
-        }
+        Identity.CurrencyDeleteByCurrencyCode(IdentityModel.DefaultCurrency);
+        Currency currency = IdentityModel.DefaultCurrency();
+        Currency posted = Identity.CurrencyPostDefault(currency);
+        Currency stored = Identity.CurrencyGetByCurrencyCode(posted.getCurrencyCode());
+        Validator.Validate("validate currency code", currency.getCurrencyCode(), stored.getCurrencyCode());
+        Validator.Validate("validate currency locales", currency.getLocales(), stored.getLocales());
+        Validator.Validate("validate currency symbol", currency.getSymbol(), stored.getSymbol());
+        Validator.Validate("validate currency min auth amount",
+                currency.getMinAuthAmount(), stored.getMinAuthAmount());
+        Validator.Validate("validate currency number after decimal",
+                currency.getNumberAfterDecimal(), stored.getNumberAfterDecimal());
+        Validator.Validate("validate currency symbol position",
+                currency.getSymbolPosition(), stored.getSymbolPosition());
     }
 }

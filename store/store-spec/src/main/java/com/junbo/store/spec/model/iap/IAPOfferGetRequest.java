@@ -5,6 +5,10 @@
  */
 package com.junbo.store.spec.model.iap;
 
+import com.junbo.common.enumid.CountryId;
+import com.junbo.common.enumid.CurrencyId;
+import com.junbo.common.enumid.LocaleId;
+
 import javax.ws.rs.QueryParam;
 
 /**
@@ -16,6 +20,15 @@ public class IAPOfferGetRequest {
 
     @QueryParam("type")
     private String type;
+
+    @QueryParam("locale")
+    private LocaleId locale;
+
+    @QueryParam("currency")
+    private CurrencyId currency;
+
+    @QueryParam("country")
+    private CountryId country;
 
     public String getPackageName() {
         return packageName;
@@ -31,5 +44,29 @@ public class IAPOfferGetRequest {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public LocaleId getLocale() {
+        return locale;
+    }
+
+    public void setLocale(LocaleId locale) {
+        this.locale = locale;
+    }
+
+    public CurrencyId getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(CurrencyId currency) {
+        this.currency = currency;
+    }
+
+    public CountryId getCountry() {
+        return country;
+    }
+
+    public void setCountry(CountryId country) {
+        this.country = country;
     }
 }

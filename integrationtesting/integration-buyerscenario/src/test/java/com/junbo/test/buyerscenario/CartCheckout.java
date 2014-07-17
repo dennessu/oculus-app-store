@@ -308,7 +308,7 @@ public class CartCheckout extends BaseTestClass {
             features = "BuyerScenarios",
             component = Component.Order,
             owner = "JasonFu",
-            status = Status.Enable,
+            status = Status.Manual,
             description = "Test physical good checkout by PayPal",
             steps = {
                     "1. Post a new user",
@@ -464,7 +464,7 @@ public class CartCheckout extends BaseTestClass {
             features = "BuyerScenarios",
             component = Component.Order,
             owner = "JasonFu",
-            status = Status.Enable,
+            status = Status.Manual,
             description = "Test digital goods checkout by Adyen",
             steps = {
                     "1. Post a new user",

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 (set -o igncr) 2>/dev/null && set -o igncr; # ignore \r in windows. The comment is needed.
 
 # Stop the execution whenever there is an error

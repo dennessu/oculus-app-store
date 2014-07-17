@@ -219,7 +219,7 @@ class IAPResourceImpl implements IAPResource {
             return getItemByPackageName(consumption.packageName).then { Item item ->
                 hostItem = item
                 // todo: validate entitlement ownership & package name
-                resourceContainer.entitlementResource.getEntitlement(new EntitlementId(consumption.entitlementId)).then { com.junbo.entitlement.spec.model.Entitlement catalogEntitlement ->
+                /*resourceContainer.entitlementResource.getEntitlement(new EntitlementId(consumption.entitlementId)).then { com.junbo.entitlement.spec.model.Entitlement catalogEntitlement ->
                     return convertEntitlement(catalogEntitlement, consumption.packageName).then { Entitlement entitlement ->
                         if (!entitlement.isConsumable) {
                             throw AppErrors.INSTANCE.entitlementNotConsumable(consumption.entitlementId).exception()
@@ -238,7 +238,7 @@ class IAPResourceImpl implements IAPResource {
                             return consumptionRepository.create(consumption)
                         }
                     }
-                }
+                }*/
             }
 
         }.then { Consumption consumptionResult ->
@@ -386,8 +386,8 @@ class IAPResourceImpl implements IAPResource {
 
         boolean consumable = itemConsumable(itemRevision)
         return new Entitlement(
-                userId: pathParamTranscoder.encode(new UserId(entitlement.userId)),
-                entitlementId: entitlement.getId(),
+               // userId: pathParamTranscoder.encode(new UserId(entitlement.userId)),
+               // entitlementId: entitlement.getId(),
                 useCount: consumable ? entitlement.useCount : 1,
                 sku: itemRevision.sku,
                 type: item.type,
@@ -399,12 +399,12 @@ class IAPResourceImpl implements IAPResource {
     private static Offer convertOffer(com.junbo.catalog.spec.model.offer.Offer offer, OfferRevision offerRevision,
                                         Item item, ItemRevision itemRevision) {
         def result = new Offer(
-                offerId: offer.id,
+                /*offerId: offer.id,
                 price: offerRevision.price,
                 type: item.type,
                 sku: itemRevision.sku,
                 offerLocales: offerRevision.locales,
-                isConsumable: itemConsumable(itemRevision)
+                isConsumable: itemConsumable(itemRevision)*/
         )
 
         return result

@@ -12,18 +12,29 @@ package com.junbo.test.order.model.enums;
  *         Created on 6/5/2014.
  */
 public enum BillingAction {
-    CHARGE("CHARGE"),
-    AUTHORIZE("AUTHORIZE"),
-    CREDIT("CREDIT"),
-    REFUND("REFUND"),
-    CAPTURE("CAPTURE"),
-    DEPOSIT("DEPOSIT"),
-    PENDING_CHARGE("PENDING_CHARGE");
+    CHARGE("CHARGE", 0),
+    AUTHORIZE("AUTHORIZE", 1),
+    CREDIT("CREDIT", 2),
+    REFUND("REFUND", 3),
+    CAPTURE("CAPTURE", 4),
+    DEPOSIT("DEPOSIT", 5),
+    CANCEL("CANCEL", 6),
+    REQUEST_CHARGE(" REQUEST_CHARGE", 100),
+    REQUEST_CREDIT("REQUEST_CREDIT", 102),
+    REQUEST_REFUND("REQUEST_REFUND", 103),
+    REQUEST_DEPOSIT("REQUEST_DEPOSIT", 105),
+    REQUEST_CANCEL("REQUEST_CANCEL", 106);
 
     private String name;
+    private int status;
 
-    private BillingAction(String name) {
+    private BillingAction(String name, int status) {
         this.name = name;
+        this.status = status;
+    }
+
+    public int getStatus() {
+        return status;
     }
 
     @Override
