@@ -3,26 +3,26 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.test.catalog.catalogScenarios;
+package com.junbo.test.catalog.abbb;
 
-import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
-import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.catalog.enums.CatalogOfferAttributeType;
 import com.junbo.test.catalog.enums.CatalogItemAttributeType;
 import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.test.common.apihelper.identity.UserService;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.test.catalog.enums.CatalogItemType;
+import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.test.common.libs.RandomFactory;
-import com.junbo.test.common.Utility.TestClass;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
@@ -48,7 +48,7 @@ import java.util.List;
   * Time: 3/14/2014
   * For testing catalog scenarios
 */
-public class Catalog extends TestClass {
+public class Catalog extends BaseTestClass {
 
     private LogHelper logger = new LogHelper(Catalog.class);
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
