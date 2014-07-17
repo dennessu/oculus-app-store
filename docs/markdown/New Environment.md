@@ -17,9 +17,9 @@ Name it CRYPTO_KEY
 ```
 Name it DATABASE_PASSWORD
 
-Get the MD5 of the database password. This requires psql installed on the computer used to compute the hash.
+Get the MD5 of the database password.
 ```
-psql -d postgres -U postgres -qX -c "select md5('${DATABASE_PASSWORD}silkcloud');"
+md5 -s "${DATABASE_PASSWORD}silkcloud"
 ```
 Name it DATABASE_PASSWORD_HASH
 
