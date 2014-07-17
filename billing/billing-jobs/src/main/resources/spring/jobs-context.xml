@@ -29,6 +29,7 @@
 
     <!-- Billing Scheduler -->
     <bean id="billingSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="taskExecutor" ref="junboThreadPool"/>
         <property name="schedulerName" value="billingScheduler" />
         <property name="autoStartup" value="${billing.jobs.scheduler.start}" />
         <property name="triggers">

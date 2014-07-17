@@ -8,6 +8,7 @@
 
     <!-- Order Scheduler -->
     <bean id="orderSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="taskExecutor" ref="junboThreadPool"/>
         <property name="schedulerName" value="orderScheduler" />
         <property name="autoStartup" value="${order.jobs.scheduler.start}" />
         <property name="triggers">
