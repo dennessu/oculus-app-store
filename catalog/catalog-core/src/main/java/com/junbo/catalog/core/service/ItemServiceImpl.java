@@ -91,8 +91,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     @Override
     public ItemRevision createRevision(ItemRevision revision) {
         validateRevisionCreation(revision);
-        Item item = itemRepo.get(revision.getItemId());
-        generateEntitlementDef(revision, item.getType());
+        revision.setStatus(Status.DRAFT.name());
         return itemRevisionRepo.create(revision);
     }
 
@@ -110,16 +109,19 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
             LOGGER.error("Error updating item-revision. ", exception);
             throw exception;
         }
-        validateRevisionUpdate(revision, oldRevision);
-        Item item = itemRepo.get(revision.getItemId());
-        generateEntitlementDef(revision, item.getType());
+        if (Status.APPROVED.is(revision.getStatus()) || Status.PENDING_REVIEW.is(revision.getStatus())) {
+            validateRevisionUpdate(revision, oldRevision);
+            Item item = itemRepo.get(revision.getItemId());
+            generateEntitlementDef(revision, item.getType());
+            if (Status.APPROVED.is(revision.getStatus())) {
+                revision.setTimestamp(Utils.currentTimestamp());
 
-        if (Status.APPROVED.is(revision.getStatus())) {
-            revision.setTimestamp(Utils.currentTimestamp());
-
-            item.setCurrentRevisionId(revisionId);
-            item.setActiveRevision(revision);
-            itemRepo.update(item, item);
+                item.setCurrentRevisionId(revisionId);
+                item.setActiveRevision(revision);
+                itemRepo.update(item, item);
+            }
+        } else {
+            validateRevisionUpdateBasic(revision, oldRevision);
         }
         return itemRevisionRepo.update(revision, oldRevision);
     }
@@ -270,12 +272,33 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         if (revision.getRev() != null) {
             errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("rev", revision.getRev(), null));
         }
-        if (!Status.DRAFT.is(revision.getStatus())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("status", revision.getStatus(), Status.DRAFT.toString()));
+        if (revision.getOwnerId() == null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldRequired("developer"));
         }
-
-        validateRevisionCommon(revision, errors);
-
+        if (revision.getItemId() == null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldRequired("itemId"));
+        } else {
+            Item item = itemRepo.get(revision.getItemId());
+            if (item == null) {
+                errors.add(AppErrors.INSTANCE.itemNotFound("itemId", revision.getItemId()));
+            }
+        }
+        if (CollectionUtils.isEmpty(revision.getLocales())) {
+            errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales"));
+        } else {
+            for (Map.Entry<String, ItemRevisionLocaleProperties> entry : revision.getLocales().entrySet()) {
+                String locale = entry.getKey();
+                ItemRevisionLocaleProperties properties = entry.getValue();
+                // TODO: check locale is a valid locale
+                if (properties == null) {
+                    errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales." + locale));
+                } else {
+                    if (StringUtils.isEmpty(properties.getName())) {
+                        errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales." + locale + ".name"));
+                    }
+                }
+            }
+        }
         if (!errors.isEmpty()) {
             AppErrorException exception = Utils.invalidFields(errors).exception();
             LOGGER.error("Error creating item-revision. ", exception);
@@ -283,6 +306,48 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         }
     }
 
+    private void validateRevisionUpdateBasic(ItemRevision revision, ItemRevision oldRevision) {
+        checkRequestNotNull(revision);
+        List<AppError> errors = new ArrayList<>();
+        if (!oldRevision.getRevisionId().equals(revision.getRevisionId())) {
+            errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("revisionId", revision.getRevisionId(), oldRevision.getRevisionId()));
+        }
+        if (!oldRevision.getRev().equals(revision.getRev())) {
+            errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("rev", revision.getRev(), oldRevision.getRev()));
+        }
+        if (revision.getStatus() != null && !Status.contains(revision.getStatus())) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("status", Joiner.on(", ").join(Status.ALL)));
+        }
+        if (revision.getItemId() == null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldRequired("itemId"));
+        } else {
+            Item item = itemRepo.get(revision.getItemId());
+            if (item == null) {
+                errors.add(AppErrors.INSTANCE.itemNotFound("itemId", revision.getItemId()));
+            }
+        }
+        if (CollectionUtils.isEmpty(revision.getLocales())) {
+            errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales"));
+        } else {
+            for (Map.Entry<String, ItemRevisionLocaleProperties> entry : revision.getLocales().entrySet()) {
+                String locale = entry.getKey();
+                ItemRevisionLocaleProperties properties = entry.getValue();
+                // TODO: check locale is a valid locale
+                if (properties == null) {
+                    errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales." + locale));
+                } else {
+                    if (StringUtils.isEmpty(properties.getName())) {
+                        errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales." + locale + ".name"));
+                    }
+                }
+            }
+        }
+        if (!errors.isEmpty()) {
+            AppErrorException exception = Utils.invalidFields(errors).exception();
+            LOGGER.error("Error updating item-revision. ", exception);
+            throw exception;
+        }
+    }
 
     private void validateRevisionUpdate(ItemRevision revision, ItemRevision oldRevision) {
         checkRequestNotNull(revision);

@@ -157,6 +157,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     public OfferRevision createRevision(OfferRevision revision) {
         validateRevisionCreation(revision);
         generateEventActions(revision);
+        revision.setStatus(Status.DRAFT.name());
         return offerRevisionRepo.create(revision);
     }
 
@@ -173,19 +174,22 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             LOGGER.error("Error updating offer-revision. ", exception);
             throw exception;
         }
-        validateRevisionUpdate(revision, oldRevision);
-        generateEventActions(revision);
+        if (Status.APPROVED.is(revision.getStatus()) || Status.PENDING_REVIEW.is(revision.getStatus())) {
+            validateRevisionUpdate(revision, oldRevision);
+            generateEventActions(revision);
 
-        if (Status.APPROVED.is(revision.getStatus())) {
-            Long timestamp = Utils.currentTimestamp();
-            revision.setTimestamp(timestamp);
-            if (revision.getStartTime() == null || revision.getCreatedTime().getTime() < timestamp) {
-                revision.setStartTime(new Date(timestamp));
+            if (Status.APPROVED.is(revision.getStatus())) {
+                Long timestamp = Utils.currentTimestamp();
+                revision.setTimestamp(timestamp);
+                if (revision.getStartTime() == null || revision.getCreatedTime().getTime() < timestamp) {
+                    revision.setStartTime(new Date(timestamp));
+                }
+
+                updateOfferForApprovedRevision(revision, timestamp);
             }
-
-            updateOfferForApprovedRevision(revision, timestamp);
+        } else {
+            validateRevisionUpdateBasic(revision, oldRevision);
         }
-
         return offerRevisionRepo.update(revision, oldRevision);
     }
 
@@ -374,15 +378,80 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         if (revision.getRev() != null) {
             errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("rev", revision.getRev(), null));
         }
-        if (!Status.DRAFT.is(revision.getStatus())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("status", revision.getStatus(), Status.DRAFT.toString()));
+        if (revision.getOwnerId() == null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldRequired("publisher"));
         }
-
-        validateRevisionCommon(revision, errors);
-
+        if (revision.getOfferId() == null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldRequired("offerId"));
+        } else {
+            Offer offer = offerRepo.get(revision.getOfferId());
+            if (offer == null) {
+                errors.add(AppErrors.INSTANCE.offerNotFound("offerId", revision.getOfferId()));
+            }
+        }
+        if (CollectionUtils.isEmpty(revision.getLocales())) {
+            errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales"));
+        } else {
+            for (Map.Entry<String, OfferRevisionLocaleProperties> entry : revision.getLocales().entrySet()) {
+                String locale = entry.getKey();
+                OfferRevisionLocaleProperties properties = entry.getValue();
+                // TODO: check locale is a valid locale
+                if (properties==null) {
+                    errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales." + locale));
+                } else {
+                    if (StringUtils.isEmpty(properties.getName())) {
+                        errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales." + locale + ".name"));
+                    }
+                }
+            }
+        }
         if (!errors.isEmpty()) {
             AppErrorException exception = Utils.invalidFields(errors).exception();
             LOGGER.error("Error creating offer-revision. ", exception);
+            throw exception;
+        }
+    }
+
+    private void validateRevisionUpdateBasic(OfferRevision revision, OfferRevision oldRevision) {
+        checkRequestNotNull(revision);
+        List<AppError> errors = new ArrayList<>();
+        if (!oldRevision.getRevisionId().equals(revision.getRevisionId())) {
+            errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("revisionId", revision.getRevisionId(), oldRevision.getRevisionId()));
+        }
+        if (!oldRevision.getRev().equals(revision.getRev())) {
+            errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("rev", revision.getRev(), oldRevision.getRev()));
+        }
+        if (revision.getStatus() != null && !Status.contains(revision.getStatus())) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("status", Joiner.on(", ").join(Status.ALL)));
+        }
+        if (revision.getOfferId() == null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldRequired("offerId"));
+        } else {
+            Offer offer = offerRepo.get(revision.getOfferId());
+            if (offer == null) {
+                errors.add(AppErrors.INSTANCE.offerNotFound("offerId", revision.getOfferId()));
+            }
+        }
+        if (CollectionUtils.isEmpty(revision.getLocales())) {
+            errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales"));
+        } else {
+            for (Map.Entry<String, OfferRevisionLocaleProperties> entry : revision.getLocales().entrySet()) {
+                String locale = entry.getKey();
+                OfferRevisionLocaleProperties properties = entry.getValue();
+                // TODO: check locale is a valid locale
+                if (properties==null) {
+                    errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales." + locale));
+                } else {
+                    if (StringUtils.isEmpty(properties.getName())) {
+                        errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales." + locale + ".name"));
+                    }
+                }
+            }
+        }
+
+        if (!errors.isEmpty()) {
+            AppErrorException exception = Utils.invalidFields(errors).exception();
+            LOGGER.error("Error updating offer-revision. ", exception);
             throw exception;
         }
     }
