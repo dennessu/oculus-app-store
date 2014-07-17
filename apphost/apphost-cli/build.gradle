@@ -5,7 +5,8 @@ apply plugin: 'application'
 
 mainClassName = "com.junbo.apphost.core.JunboApplication"
 applicationDefaultJvmArgs = ["-Xmx1024m", "-Xms1024m", "-XX:PermSize=512m", "-XX:MaxPermSize=512m", "-Dspring.profiles.active=utility",
-    "-Xdebug", "-Xrunjdwp:server=y,transport=dt_socket,address=9401,suspend=n"]
+    "-Xdebug", "-Xrunjdwp:server=y,transport=dt_socket,address=9401,suspend=n",
+    "-Dcom.sun.management.jmxremote.port=9070", "-Dcom.sun.management.jmxremote.ssl=false", "-Dcom.sun.management.jmxremote.authenticate=false"]
 
 dependencies {
     compile junboProject(':apphost-core')

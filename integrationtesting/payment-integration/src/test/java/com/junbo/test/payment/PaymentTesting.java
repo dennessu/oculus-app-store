@@ -23,6 +23,7 @@ import org.testng.annotations.Test;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Yunlong on 4/3/14.
@@ -144,7 +145,7 @@ public class PaymentTesting extends BaseTestClass {
         logHelper.LogSample("Delete a payment instrument");
         testDataProvider.deletePaymentInstruments(randomUid, creditCardInfo1.getPid());
 
-        List<PaymentInstrumentBase> paymentList =  new ArrayList<>();
+        List<PaymentInstrumentBase> paymentList = new ArrayList<>();
         paymentList.add(creditCardInfo2);
 
         validationHelper.validatePaymentInstruments(paymentList);
@@ -178,7 +179,7 @@ public class PaymentTesting extends BaseTestClass {
         logHelper.LogSample("Get payment instruments");
         testDataProvider.getPaymentInstruments(randomUid);
 
-        List<PaymentInstrumentBase> paymentList =  new ArrayList<>();
+        List<PaymentInstrumentBase> paymentList = new ArrayList<>();
         paymentList.add(creditCardInfo1);
         paymentList.add(creditCardInfo2);
 
@@ -237,5 +238,55 @@ public class PaymentTesting extends BaseTestClass {
 
         validationHelper.validatePaymentInstrument(ewalletInfo);
     }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "initial user",
+            component = Component.Payment,
+            owner = "Yunlongzhao",
+            status = Status.Disable,
+            description = "prepare onebox user data",
+            steps = {
+                    "1. Prepare 10 users",
+            }
+    )
+    @Test
+    public void prepareOneBoxUsers() throws Exception {
+        final String userPrefix = "user";
+        final String password = "1234";
+        final String emailAddress = "onebox_user#@163.com";
+        List<String> userList = new ArrayList<>();
+
+        for (int i = 1; i <= 10; i++) {
+            List<String> uidList = testDataProvider.GetUserByUserName(userPrefix + i);
+
+            if (uidList.size() != 0) {
+                userList.add(uidList.get(0));
+            } else {
+                userList.add(testDataProvider.CreateUser(
+                        userPrefix + i, password, emailAddress.replace("#", String.valueOf(i))));
+            }
+
+            testDataProvider.postEmailVerification(userList.get(i - 1), Country.DEFAULT.toString(), "en_US");
+        }
+
+        for (int i = 1; i <= 5; i++) {
+            CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
+            testDataProvider.postPaymentInstrument(userList.get(i - 1), creditCardInfo);
+        }
+
+        for (int i = 3; i <= 7; i++) {
+            EwalletInfo ewalletInfo;
+            if (i == 4) {
+                ewalletInfo = EwalletInfo.getEwalletInfo(Country.DE, Currency.EUR);
+            } else {
+                ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT, Currency.DEFAULT);
+            }
+            testDataProvider.postPaymentInstrument(userList.get(i - 1), ewalletInfo);
+            testDataProvider.creditWallet(userList.get(i - 1), ewalletInfo, new BigDecimal(100));
+        }
+
+    }
+
 
 }

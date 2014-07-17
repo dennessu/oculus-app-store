@@ -20,9 +20,9 @@ public interface AppErrors {
             field = "{0}", reason = "{0} is not configured in offer.")
     AppError missingConfiguration(String fieldName);
 
-    @ErrorDef(httpStatusCode = 412, code = "102", message = "Currency Not Found",
+    @ErrorDef(httpStatusCode = 412, code = "102", message = "CurrencyInfo Not Found",
             field = "currency", reason = "Currency with ID {0} is not found")
-    AppError currencyNotFound(String currency);
+    AppError invalidCurrencyCode(String currency);
 
     @ErrorDef(httpStatusCode = 412, code = "103", message = "Offer Revision Not Found",
             field = "offerRevision", reason = "Approved Offer Revision is not found for offer {0}")

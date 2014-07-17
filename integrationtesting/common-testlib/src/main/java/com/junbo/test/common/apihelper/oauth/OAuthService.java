@@ -12,7 +12,7 @@ import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 /**
  * Created by weiyu_000 on 7/9/14.
  */
-public interface OAuthTokenService {
+public interface OAuthService {
 
     String postAccessToken(GrantType grantType, ComponentType componentType) throws Exception;
 
@@ -20,10 +20,14 @@ public interface OAuthTokenService {
             throws Exception;
 
     String postAccessToken(String clientId, String clientSecret, GrantType grantType, ComponentType componentType,
-                               int expectedResponseCode) throws Exception;
+                           int expectedResponseCode) throws Exception;
 
     String postUserAccessToken(String uid, String pwd) throws Exception;
 
     String postUserAccessToken(String uid, String pwd, int expectedResponseCode) throws Exception;
+
+    String postEmailVerification(String uid, String country, String locale) throws Exception;
+
+    String postEmailVerification(String uid, String country, String locale, int expectedResponseCode) throws Exception;
 
 }

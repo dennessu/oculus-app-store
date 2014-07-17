@@ -39,7 +39,7 @@ public class CycleProcessor extends ProcessorSupport {
             Map<String, Object> conditions = action.getConditions();
             if ((Integer) conditions.get(Constants.FROM_CYCLE) <= context.getCycleCount()
                     && (Integer) conditions.get(Constants.TO_CYCLE) >= context.getCycleCount()) {
-                return retrievePrice(action.getPrice(), context.getCountry(), context.getCurrency().getCode());
+                return retrievePrice(action.getPrice(), context.getCountry(), context.getCurrency().getCurrencyCode());
             }
         }
 

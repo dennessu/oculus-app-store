@@ -85,14 +85,15 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
                 throw AppErrors.INSTANCE.orderNotFound().exception()
             }
 
-            if (!existingOrder.tentative && saveRevision) {
-                def orderRevision = toOrderRevision(order)
-                existingOrder.latestOrderRevisionId = orderRevision.getId()
-                existingOrder.orderRevisions << orderRevision
-                existingOrder.status = order.status
-            } else {
-                existingOrder = order
-            }
+                if (!existingOrder.tentative && saveRevision) {
+                    def orderRevision = toOrderRevision(order)
+                    existingOrder.latestOrderRevisionId = orderRevision.getId()
+                    existingOrder.orderRevisions << orderRevision
+                    existingOrder.status = order.status
+                    existingOrder.isAudited = order.isAudited
+                } else {
+                    existingOrder = order
+                }
 
                 return ((Promise<Order>) orderRepository.update(existingOrder, existingOrder).then { Order savedOrder ->
                     if (!updateOnlyOrder) {

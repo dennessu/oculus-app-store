@@ -28,6 +28,7 @@
                     honored_time timestamp not null,
                     payment_description varchar(4000) default null,
                     properties varchar(4000) default null,
+                    is_audited boolean default false,
 					resource_age bigint not null,
 					purchase_time timestamp default null,
 					latest_order_revision_id bigint default null,

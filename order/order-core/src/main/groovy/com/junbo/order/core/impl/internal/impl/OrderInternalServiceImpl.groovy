@@ -430,26 +430,34 @@ class OrderInternalServiceImpl implements OrderInternalService {
     }
 
     @Override
+    @Transactional
     Promise<Order> auditTax(Order order) {
         return facadeContainer.billingFacade.getBalancesByOrderId(order.getId().value).recover { Throwable throwable ->
             LOGGER.error('name=Tax_Audit_Fail', throwable)
             throw AppErrors.INSTANCE.billingAuditFailed('billing returns error: ' + throwable.message).exception()
         }.then { List<Balance> balances ->
             def balancesToBeAudited = balances.findAll { Balance balance ->
-                BalanceStatus.COMPLETED.name() == balance.status && TaxStatus.TAXED.name() == balance.taxStatus
+                (BalanceStatus.COMPLETED.name() == balance.status ||
+                        BalanceStatus.AWAITING_PAYMENT.name() == balance.status) &&
+                        TaxStatus.TAXED.name() == balance.taxStatus
+            }
+            if (CollectionUtils.isEmpty(balancesToBeAudited)) {
+                LOGGER.error('name=No_Balance_Can_Be_Audit.')
+                throw AppErrors.INSTANCE.billingAuditFailed('no balance can be audited.').exception()
             }
             def auditedBalances = []
             return Promise.each(balancesToBeAudited) { Balance balanceToBeAudited ->
-                return facadeContainer.billingFacade.auditBalance(balanceToBeAudited).recover {
-
+                return facadeContainer.billingFacade.auditBalance(balanceToBeAudited).recover { Throwable throwable ->
+                    LOGGER.error('name=Tax_Audit_Fail', throwable)
                 }.then { Balance auditedBalance ->
-                    if (TaxStatus.AUDITED.name() == auditedBalance) {
+                    if (TaxStatus.AUDITED.name() == auditedBalance.taxStatus) {
                         auditedBalances << auditedBalance
+                        return Promise.pure(null)
                     }
                 }
             }.then {
                 if (balancesToBeAudited?.size() == auditedBalances.size()) {
-                    order.status = OrderStatus.AUDITED.name()
+                    order.isAudited = true
                     orderRepository.updateOrder(order, true, true, null)
                 }
                 return Promise.pure(order)

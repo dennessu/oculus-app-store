@@ -111,7 +111,7 @@ class SabrixFacadeImpl implements TaxFacade {
     @Override
     Promise<Balance> calculateTaxQuote(Balance balance, Address shippingAddress, Address piAddress) {
         Batch batch = generateBatch(balance, shippingAddress, piAddress, false)
-        LOGGER.info('name=Tax_Calculation_Batch, batch={}', batch.toString())
+        LOGGER.info('name=Tax_Calculation_Quote_Batch, batch={}', batch.toString())
         return calculateTax(batch).then { TaxCalculationResponse result ->
             return Promise.pure(updateBalance(result, balance))
         }
@@ -120,7 +120,7 @@ class SabrixFacadeImpl implements TaxFacade {
     @Override
     Promise<Balance> calculateTax(Balance balance, Address shippingAddress, Address piAddress) {
         Batch batch = generateBatch(balance, shippingAddress, piAddress, true)
-        LOGGER.info('name=Tax_Calculation_Quote_Batch, batch={}', batch.toString())
+        LOGGER.info('name=Tax_Calculation_Batch, batch={}', batch.toString())
         return calculateTax(batch).then { TaxCalculationResponse result ->
             return Promise.pure(updateAuditedBalance(result, balance))
         }
@@ -262,7 +262,7 @@ class SabrixFacadeImpl implements TaxFacade {
                 registrations.buyerRole = item.propertySet.get(PropertyKey.VAT_ID.name())
                 line.registrations = registrations
             }
-            line.vendorNumber = item.propertySet.get(PropertyKey.VENDOR_NUMBER.name())
+            line.vendorNumber = item.propertySet.get(PropertyKey.ORGANIZATION_ID.name())
             line.vendorName = item.propertySet.get(PropertyKey.VENDOR_NAME.name())
             line.billTo = billToAddress
             line.shipTo = shipToAddress

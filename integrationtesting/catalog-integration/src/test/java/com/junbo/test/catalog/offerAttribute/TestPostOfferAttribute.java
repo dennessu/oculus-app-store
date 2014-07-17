@@ -12,9 +12,9 @@ import com.junbo.test.catalog.impl.OfferAttributeServiceImpl;
 import com.junbo.test.catalog.OfferAttributeService;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.test.common.Entities.enums.ComponentType;
-import com.junbo.test.common.apihelper.oauth.OAuthTokenService;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.common.apihelper.oauth.enums.GrantType;
-import com.junbo.test.common.apihelper.oauth.impl.OAuthTokenServiceImpl;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.*;
@@ -37,7 +37,7 @@ public class TestPostOfferAttribute extends BaseTestClass {
 
     @BeforeClass
     private void PrepareTestData() throws Exception {
-        OAuthTokenService oAuthTokenService = OAuthTokenServiceImpl.getInstance();
+        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
         oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOG);
     }
 

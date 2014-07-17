@@ -162,6 +162,9 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
     @JsonIgnore
     private String ipGeoAddress;
 
+    @JsonIgnore
+    private Boolean isAudited;
+
     public OrderId getId() {
         return id;
     }
@@ -408,5 +411,13 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
 
     public void setIpGeoAddress(String ipGeoAddress) {
         this.ipGeoAddress = ipGeoAddress;
+    }
+
+    public Boolean getIsAudited() {
+        return isAudited;
+    }
+
+    public void setIsAudited(Boolean isAudited) {
+        this.isAudited = isAudited;
     }
 }

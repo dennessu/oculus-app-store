@@ -19,9 +19,9 @@ import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.apihelper.identity.UserService;
-import com.junbo.test.common.apihelper.oauth.OAuthTokenService;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.common.apihelper.oauth.enums.GrantType;
-import com.junbo.test.common.apihelper.oauth.impl.OAuthTokenServiceImpl;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RandomFactory;
@@ -38,7 +38,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     private final String identityServerURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "users";
     private static UserService instance;
 
-    private OAuthTokenService oAuthTokenClient = OAuthTokenServiceImpl.getInstance();
+    private OAuthService oAuthTokenClient = OAuthServiceImpl.getInstance();
 
     public static synchronized UserService instance() {
         if (instance == null) {
@@ -50,13 +50,13 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     private UserServiceImpl() {
     }
 
-    public String PostUser() throws Exception {
+    public String PostUser(String userName, String pwd, String emailAddress) throws Exception {
         Master.getInstance().setCurrentUid(null);
         oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY);
         User userForPost = new User();
         userForPost.setIsAnonymous(false);
         userForPost.setStatus("ACTIVE");
-        userForPost.setUsername(RandomFactory.getRandomStringOfAlphabet(10));
+        userForPost.setUsername(userName);
 
         String responseBody = restApiCall(HTTPMethod.POST, identityServerURL, userForPost, 201);
         User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {
@@ -67,14 +67,14 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         Master.getInstance().addUser(userId, userGet);
         Master.getInstance().setCurrentUid(userId);
 
-        String pwd = postPassword(userId);
+        String password = postPassword(userId, pwd);
 
-        oAuthTokenClient.postUserAccessToken(userId, pwd);
+        oAuthTokenClient.postUserAccessToken(userId, password);
 
         UserId userIdDefault = userGet.getId();
 
         //attach user email and address info
-        UserPersonalInfo email = postEmail(userIdDefault);
+        UserPersonalInfo email = postEmail(userIdDefault, emailAddress);
         UserPersonalInfo address = postAddress(userIdDefault);
         UserPersonalInfo phone = postPhone(userIdDefault);
         UserPersonalInfo name = postName(userIdDefault);
@@ -114,6 +114,10 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         this.PutUser(userId, userGet);
 
         return userId;
+    }
+
+    public String PostUser() throws Exception {
+        return PostUser(RandomFactory.getRandomStringOfAlphabet(10), null, null);
     }
 
     private UserPersonalInfo postAddress(UserId userId) throws Exception {
@@ -157,18 +161,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     }
 
     private UserPersonalInfo postEmail(UserId userId) throws Exception {
-
-        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
-        userPersonalInfo.setType("EMAIL");
-        userPersonalInfo.setUserId(userId);
-        GregorianCalendar gc = new GregorianCalendar();
-        userPersonalInfo.setLastValidateTime(gc.getTime());
-        String str = "{\"info\":\"" + RandomFactory.getRandomEmailAddress() + "\"}";
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode value = mapper.readTree(str);
-        userPersonalInfo.setValue(value);
-
-        return postUserPersonalInfo(userPersonalInfo);
+        return postEmail(userId, RandomFactory.getRandomEmailAddress());
     }
 
     private UserPersonalInfo postEmail(UserId userId, String emailAddress) throws Exception {
@@ -178,9 +171,11 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         userPersonalInfo.setUserId(userId);
         GregorianCalendar gc = new GregorianCalendar();
         userPersonalInfo.setLastValidateTime(gc.getTime());
-        String str = "{\"info\":\"" + RandomFactory.getRandomEmailAddress() + "\"}";
+        String str;
         if (emailAddress != null && !emailAddress.isEmpty()) {
             str = "{\"info\":\"" + emailAddress + "\"}";
+        } else {
+            str = "{\"info\":\"" + RandomFactory.getRandomEmailAddress() + "\"}";
         }
         ObjectMapper mapper = new ObjectMapper();
         JsonNode value = mapper.readTree(str);
@@ -194,21 +189,28 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         return postUserPersonalInfo(userPersonalInfo, 201);
     }
 
-    private UserPersonalInfo postUserPersonalInfo(UserPersonalInfo userPersonalInfo, int expectedResponseCode) throws Exception {
+    private UserPersonalInfo postUserPersonalInfo(UserPersonalInfo userPersonalInfo,
+                                                  int expectedResponseCode) throws Exception {
         String serverURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "personal-info";
         String responseBody = restApiCall(HTTPMethod.POST, serverURL, userPersonalInfo, expectedResponseCode);
         return new JsonMessageTranscoder().decode(new TypeReference<UserPersonalInfo>() {
         }, responseBody);
     }
 
-    private String postPassword(String uid) throws Exception {
+    private String postPassword(String uid, String pwd) throws Exception {
         Map params = new HashMap();
-        String pwd = RandomFactory.getRandomStringOfAlphabet(5);
+        String password;
+        if (pwd != null && !pwd.isEmpty()) {
+            password = pwd;
+        } else {
+            password = RandomFactory.getRandomStringOfAlphabet(5);
+        }
         params.put("type", "PASSWORD");
-        params.put("value", pwd);
+        params.put("value", password);
         String requestBody = JSONObject.toJSONString(params);
         restApiCall(HTTPMethod.POST, identityServerURL + "/" + uid + "/" + "change-credentials", requestBody, 201);
-        return pwd;
+
+        return password;
     }
 
     public String PostUser(User user) throws Exception {
@@ -316,7 +318,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     }
 
     public List<String> GetUserByUserName(String userName, int expectedResponseCode) throws Exception {
-
+        oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY);
         HashMap<String, List<String>> paraMap = new HashMap<>();
         List<String> listUsername = new ArrayList<>();
         listUsername.add(userName);
@@ -333,6 +335,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
             Master.getInstance().addUser(IdConverter.idToHexString(user.getId()), user);
             listUserId.add(IdConverter.idToHexString(user.getId()));
         }
+
         return listUserId;
     }
 
@@ -351,6 +354,17 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         Master.getInstance().addUser(userRtnId, userPut);
 
         return userRtnId;
+    }
+
+    @Override
+    public String PostEmailVerification(String userId, String country, String locale) throws Exception {
+        return PostEmailVerification(userId, country, locale, 204);
+    }
+
+    @Override
+    public String PostEmailVerification(String userId, String country, String locale,
+                                        int expectedResponseCode) throws Exception {
+        return oAuthTokenClient.postEmailVerification(userId, country, locale, expectedResponseCode);
     }
 
 }

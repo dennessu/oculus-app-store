@@ -113,6 +113,9 @@ public class OrderItem extends ResourceMetaForDualWrite<OrderItemId> {
     @JsonIgnore
     private String offerOrganization;
 
+    @JsonIgnore
+    private String offerOrganizationName;
+
     @Override
     public OrderItemId getId() {
         return id;
@@ -305,5 +308,13 @@ public class OrderItem extends ResourceMetaForDualWrite<OrderItemId> {
 
     public void setOfferOrganization(String offerOrganization) {
         this.offerOrganization = offerOrganization;
+    }
+
+    public String getOfferOrganizationName() {
+        return offerOrganizationName;
+    }
+
+    public void setOfferOrganizationName(String offerOrganizationName) {
+        this.offerOrganizationName = offerOrganizationName;
     }
 }

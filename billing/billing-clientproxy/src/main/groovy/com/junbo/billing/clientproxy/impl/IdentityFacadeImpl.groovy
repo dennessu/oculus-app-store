@@ -38,9 +38,6 @@ class IdentityFacadeImpl implements IdentityFacade {
     @Resource(name = 'billingIdentityUserPersonalInfoClient')
     private UserPersonalInfoResource userPersonalInfoResource
 
-    @Resource(name = 'billingIdentityOrganizationClient')
-    private OrganizationResource organizationResource
-
     @Override
     Promise<User> getUser(Long userId) {
         return userResource.get(new UserId(userId), new UserGetOptions())
@@ -65,13 +62,5 @@ class IdentityFacadeImpl implements IdentityFacade {
             }
         }
 
-    }
-
-    @Override
-    Promise<Organization> getOrganization(Long organizationId) {
-        if (organizationId == null) {
-            return Promise.pure(null)
-        }
-        return organizationResource.get(new OrganizationId(organizationId), new OrganizationGetOptions())
     }
 }

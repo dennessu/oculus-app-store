@@ -32,12 +32,6 @@
         <property name="accessTokenProvider" ref="billingAccessTokenProvider"/>
     </bean>
 
-    <bean id="billingIdentityOrganizationClient"
-          class="com.junbo.identity.spec.v1.resource.proxy.OrganizationResourceClientProxy"
-          parent="organizationResourceClientProxy">
-        <property name="accessTokenProvider" ref="billingAccessTokenProvider"/>
-    </bean>
-
     <bean id="billingPaymentInstrumentClient"
           class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy"
           parent="paymentInstrumentProxy">

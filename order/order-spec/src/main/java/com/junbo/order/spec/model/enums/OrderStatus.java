@@ -24,7 +24,6 @@ public enum OrderStatus implements Identifiable<Short> {
     RETURNED(8),
     PRICE_RATING_CHANGED(100),
     RISK_REJECT(101),
-    AUDITED(102),
     ERROR(-1);
 
     private OrderStatus(int id) {

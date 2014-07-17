@@ -36,7 +36,7 @@ public class RatingRequest {
     @CountryId
     private String country;
 
-    @ApiModelProperty(position = 4, required = true, value = "Currency code.")
+    @ApiModelProperty(position = 4, required = true, value = "CurrencyInfo code.")
     @NotNull
     @CurrencyId
     private String currency;

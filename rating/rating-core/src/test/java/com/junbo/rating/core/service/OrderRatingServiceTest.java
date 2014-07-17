@@ -32,7 +32,10 @@ public class OrderRatingServiceTest extends BaseTest {
         context.setRatingType(RatingType.ORDER);
         context.setUserId(generateId());
         context.setCountry("US");
-        context.setCurrency(Currency.findByCode("USD"));
+        Currency currency = new Currency();
+        currency.setCurrencyCode("USD");
+        currency.setNumberAfterDecimal(2);
+        context.setCurrency(currency);
         RatableItem item = new RatableItem();
         item.setOfferId("100L");
         item.setQuantity(1);
@@ -70,7 +73,10 @@ public class OrderRatingServiceTest extends BaseTest {
         context.setRatingType(RatingType.ORDER);
         context.setUserId(generateId());
         context.setCountry("US");
-        context.setCurrency(Currency.findByCode("USD"));
+        Currency currency = new Currency();
+        currency.setCurrencyCode("USD");
+        currency.setNumberAfterDecimal(2);
+        context.setCurrency(currency);
         RatableItem item = new RatableItem();
         item.setOfferId("107L");
         item.setQuantity(1);
@@ -86,5 +92,40 @@ public class OrderRatingServiceTest extends BaseTest {
         Assert.assertEquals(result.getRatingSummary().getFinalAmount(), new BigDecimal("0.99"));
 
         Assert.assertEquals(result.getShippingSummary().getTotalShippingFee(), BigDecimal.ZERO);
+    }
+
+    @Test
+    public void testDefaultCurrency() {
+        PriceRatingContext context = new PriceRatingContext();
+        context.setRatingType(RatingType.ORDER);
+        context.setUserId(generateId());
+        context.setCountry("US");
+        Currency currency = new Currency();
+        currency.setCurrencyCode("XXX");
+        currency.setNumberAfterDecimal(0);
+        context.setCurrency(currency);
+        RatableItem item = new RatableItem();
+        item.setOfferId("200L");
+        item.setQuantity(1);
+        context.setItems(new HashSet<RatableItem>());
+        context.getItems().add(item);
+
+        orderRatingService.rate(context);
+        RatingRequest result = context.buildResult();
+
+        Assert.assertNotNull(result);
+        Assert.assertEquals(result.getLineItems().size(), 1);
+
+        Assert.assertEquals(result.getRatingSummary().getFinalAmount(), BigDecimal.ZERO);
+
+        item.setOfferId("107L");
+        context.setItems(new HashSet<RatableItem>());
+        context.getItems().add(item);
+        try{
+            orderRatingService.rate(context);
+            Assert.fail();
+        } catch(Exception e) {
+
+        }
     }
 }
