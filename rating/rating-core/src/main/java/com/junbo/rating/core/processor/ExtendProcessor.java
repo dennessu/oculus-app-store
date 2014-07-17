@@ -39,7 +39,7 @@ public class ExtendProcessor extends ProcessorSupport {
             Map<String, Object> conditions = action.getConditions();
             if ((Integer) conditions.get(Constants.EXTEND_DURATION) == context.getExtensionNum()
                     && context.getExtensionUnit().toString().equalsIgnoreCase((String)conditions.get(Constants.EXTEND_DURATION_UNIT))) {
-                return retrievePrice(action.getPrice(), context.getCountry(), context.getCurrency().getCode());
+                return retrievePrice(action.getPrice(), context.getCountry(), context.getCurrency().getCurrencyCode());
             }
         }
 

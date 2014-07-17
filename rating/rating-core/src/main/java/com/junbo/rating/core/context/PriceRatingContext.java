@@ -8,9 +8,9 @@ package com.junbo.rating.core.context;
 
 import com.junbo.catalog.spec.model.promotion.PromotionRevision;
 import com.junbo.catalog.spec.model.promotion.PromotionType;
+import com.junbo.rating.common.util.Constants;
 import com.junbo.rating.common.util.Utils;
 import com.junbo.rating.core.builder.Builder;
-import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.model.*;
 import com.junbo.rating.spec.model.priceRating.RatingItem;
 import com.junbo.rating.spec.model.priceRating.RatingRequest;
@@ -41,7 +41,6 @@ public class PriceRatingContext extends RatingContext implements Builder<RatingR
 
     private String defaultShippingMethod;
     private ShippingResultEntry shippingResult;
-    //TODO: violations
 
     public PriceRatingContext() {
         items = new HashSet<>();
@@ -56,12 +55,12 @@ public class PriceRatingContext extends RatingContext implements Builder<RatingR
         super.setRatingType(request.getIncludeCrossOfferPromos() ? RatingType.ORDER : RatingType.OFFER);
         super.setCountry(request.getCountry());
 
-        Currency currency = Currency.findByCode(request.getCurrency());
-        if (currency == null) {
-            throw AppErrors.INSTANCE.currencyNotFound(request.getCurrency()).exception();
-        }
-
+        Currency currency = new Currency();
+        currency.setCurrencyCode(request.getCurrency());
+        currency.setNumberAfterDecimal(Constants.DEFAULT_CURRENCY.equalsIgnoreCase(currency.getCurrencyCode())? 0
+                : CurrencyInfo.findByCode(currency.getCurrencyCode()).getDigits());
         super.setCurrency(currency);
+
 
         this.userId = request.getUserId();
         this.timestamp = request.getTime();
@@ -91,7 +90,7 @@ public class PriceRatingContext extends RatingContext implements Builder<RatingR
         RatingRequest result = new RatingRequest();
         result.setUserId(getUserId());
         result.setCountry(getCountry());
-        result.setCurrency(getCurrency().getCode());
+        result.setCurrency(getCurrency().getCurrencyCode());
         result.setTime(getTimestamp());
 
         //build offer level result
@@ -104,7 +103,7 @@ public class PriceRatingContext extends RatingContext implements Builder<RatingR
             //build order level results
             RatingSummary ratingSummary = new RatingSummary();
             ratingSummary.setDiscountAmount(Utils.rounding(getOrderResult().getDiscountAmount(),
-                    getCurrency().getDigits()));
+                    getCurrency().getNumberAfterDecimal()));
             ratingSummary.setPromotion(getOrderResult().getAppliedPromotion());
 
             BigDecimal finalTotalAmount = getOrderResult().getOriginalAmount().subtract(
@@ -135,13 +134,13 @@ public class PriceRatingContext extends RatingContext implements Builder<RatingR
         item.setOriginalTotalPrice(entry.getOriginalPrice().multiply(new BigDecimal(item.getQuantity())));
 
         BigDecimal totalDiscount = entry.getDiscountAmount().multiply(new BigDecimal(item.getQuantity()));
-        item.setTotalDiscountAmount(Utils.rounding(totalDiscount, getCurrency().getDigits()));
+        item.setTotalDiscountAmount(Utils.rounding(totalDiscount, getCurrency().getNumberAfterDecimal()));
         item.setPromotions(entry.getAppliedPromotion());
 
         item.setFinalTotalAmount(item.getOriginalTotalPrice().subtract(item.getTotalDiscountAmount()));
         if (RatingType.ORDER.equals(type)) {
             item.setDeveloperRevenue(Utils.rounding(item.getFinalTotalAmount().multiply(entry.getDeveloperRatio()),
-                    getCurrency().getDigits()));
+                    getCurrency().getNumberAfterDecimal()));
         }
 
         return item;

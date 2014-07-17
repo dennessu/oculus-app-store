@@ -32,6 +32,7 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
         put("102L", genOffer102());
         put("107L", genOffer107());
         put("109L", genOffer109());
+        put("200L", genFreeOffer());
     }};
 
     Map<String, Item> mockItems = new HashMap<String, Item>() {{
@@ -222,6 +223,19 @@ public class MockCatalogGatewayImpl implements CatalogGateway{
                     setQuantity(1);
                 }});
             }});
+        }};
+    }
+
+    private RatingOffer genFreeOffer() {
+        return new RatingOffer() {{
+            setId("200L");
+            setDeveloperRatio(BigDecimal.ZERO);
+            setPrice(new Price(PriceType.FREE.name(), new HashMap<String, Map<String, BigDecimal>>()));
+            setCountries(new HashMap<String, Properties>() {{
+                put("US", new Properties(true, Utils.maxDate()));
+            }});
+            setCategories(new ArrayList<String>());
+            setSubOffers(new ArrayList<LinkedEntry>());
         }};
     }
 

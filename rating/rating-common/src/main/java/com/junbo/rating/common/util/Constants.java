@@ -14,6 +14,7 @@ import java.math.RoundingMode;
 public class Constants {
     public static final RoundingMode ROUNDING_MODE = RoundingMode.HALF_UP;
     public static final BigDecimal PRICE_NOT_FOUND = null;
+    public static final String DEFAULT_CURRENCY = "XXX";
 
     public static final Integer DEFAULT_PAGE_START = 0;
     public static final Integer DEFAULT_PAGE_SIZE = 20;

@@ -105,7 +105,7 @@ public abstract class RatingServiceSupport implements RatingService<PriceRatingC
         discardRule(context, new Func<PromotionRevision, Boolean>() {
             @Override
             public Boolean execute(PromotionRevision promotion) {
-                return promotion.getCurrency().equalsIgnoreCase(context.getCurrency().getCode());
+                return promotion.getCurrency().equalsIgnoreCase(context.getCurrency().getCurrencyCode());
             }
         });
     }
