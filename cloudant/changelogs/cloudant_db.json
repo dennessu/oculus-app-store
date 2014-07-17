@@ -596,7 +596,8 @@
                   "map": "function(doc) {  emit([doc.userId, doc.action, doc.createdTime], doc._id)}"
               }
           }
-      }
+      },
+      "csr_invitation_code": {}
   }, 
   "cloudant_search": {
     "entitlement": {

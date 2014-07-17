@@ -47,7 +47,7 @@ import javax.ws.rs.core.UriBuilder
  */
 @CompileStatic
 class CsrUserResourceImpl implements CsrUserResource {
-    private static final String CSR_INVITATION_PATH = 'csr-users/invite'
+    private static final String CSR_INVITATION_PATH = 'csr-users/confirm'
     private static final String EMAIL_SOURCE = 'Oculus'
     private static final String CSR_INVITATION_ACTION = 'CsrInvitation'
     private static final Logger LOGGER = LoggerFactory.getLogger(CsrUserResourceImpl)
@@ -161,10 +161,11 @@ class CsrUserResourceImpl implements CsrUserResource {
 
         URI baseUri = ((ContainerRequest)requestContext).baseUri
 
-        return csrGroupResource.list(new CsrGroupListOptions(groupName: pendingGroupName)).then { CsrGroup pendingGroup ->
-            if (pendingGroup == null) {
+        return csrGroupResource.list(new CsrGroupListOptions(groupName: pendingGroupName)).then { Results<CsrGroup> csrGroupResults ->
+            if (csrGroupResults == null || csrGroupResults.items == null || csrGroupResults.items.isEmpty()) {
                 throw AppErrors.INSTANCE.pendingCsrGroupNotFound().exception()
             }
+            CsrGroup pendingGroup = csrGroupResults.items.get(0)
 
             return identityService.getUserByVerifiedEmail(email).then { User user ->
                 if (user == null) {
@@ -176,30 +177,35 @@ class CsrUserResourceImpl implements CsrUserResource {
                         throw AppErrors.INSTANCE.groupNotFound().exception()
                     }
 
-                    return userGroupMembershipResource.create(new UserGroup(userId: user.id as UserId, groupId: new GroupId(pendingGroup.id))).then {
-                        CsrInvitationCode code = new CsrInvitationCode(
-                                email: email,
-                                userId: (user.id as UserId).value,
-                                pendingGroupId: pendingGroup.id,
-                                inviteGroupId: (group.id as GroupId).value
-                        )
-
-                        csrInvitationCodeRepository.save(code)
-
-                        UriBuilder uriBuilder = UriBuilder.fromUri(baseUri)
-                        uriBuilder.path(CSR_INVITATION_PATH)
-                        uriBuilder.queryParam('code', code.code)
-                        uriBuilder.queryParam('locale', locale)
-
-                        QueryParam queryParam = new QueryParam(
-                                source: EMAIL_SOURCE,
-                                action: CSR_INVITATION_ACTION,
-                                locale: locale
-                        )
-
-                        String link = uriBuilder.build().toString()
-                        return this.sendEmail(queryParam, user, email, link)
+                    try {
+                        userGroupMembershipResource.create(new UserGroup(userId: user.id as UserId, groupId: new GroupId(pendingGroup.id))).get()
                     }
+                    catch (Exception e) {
+                        LOGGER.info('user has been added to pending group again!')
+                    }
+
+                    CsrInvitationCode code = new CsrInvitationCode(
+                            email: email,
+                            userId: (user.id as UserId).value,
+                            pendingGroupId: pendingGroup.id,
+                            inviteGroupId: (group.id as GroupId).value
+                    )
+
+                    csrInvitationCodeRepository.save(code)
+
+                    UriBuilder uriBuilder = UriBuilder.fromUri(baseUri)
+                    uriBuilder.path(CSR_INVITATION_PATH)
+                    uriBuilder.queryParam('code', code.code)
+                    uriBuilder.queryParam('locale', locale)
+
+                    QueryParam queryParam = new QueryParam(
+                            source: EMAIL_SOURCE,
+                            action: CSR_INVITATION_ACTION,
+                            locale: locale
+                    )
+
+                    String link = uriBuilder.build().toString()
+                    return this.sendEmail(queryParam, user, email, link)
                 }
             }
         }.then {

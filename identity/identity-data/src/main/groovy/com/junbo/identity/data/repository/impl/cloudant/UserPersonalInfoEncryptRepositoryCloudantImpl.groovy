@@ -112,7 +112,8 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
                         }
 
                         if (isValidated != null) {
-                            if (isValidated != userPersonalInfo.isValidated) {
+                            if ((isValidated && userPersonalInfo.lastValidateTime == null)
+                                    || (!isValidated && userPersonalInfo.lastValidateTime != null)) {
                                 return Promise.pure(null)
                             }
                         }
@@ -148,7 +149,8 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
                         }
 
                         if (isValidated != null) {
-                            if (isValidated != userPersonalInfo.isValidated) {
+                            if ((isValidated && userPersonalInfo.lastValidateTime == null)
+                                    || (!isValidated && userPersonalInfo.lastValidateTime != null)) {
                                 return Promise.pure(null)
                             }
                         }

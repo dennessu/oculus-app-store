@@ -69,7 +69,7 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
         }
 
         if (options.isValidated != null && options.userId == null) {
-            throw AppCommonErrors.INSTANCE.parameterInvalid('isValidated can be searched by userId only').exception()
+        //    throw AppCommonErrors.INSTANCE.parameterInvalid('isValidated can be searched by userId only').exception()
         }
         return Promise.pure(null)
     }
