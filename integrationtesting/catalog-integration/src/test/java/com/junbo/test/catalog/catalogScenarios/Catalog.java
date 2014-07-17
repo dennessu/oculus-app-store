@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.test.catalog.abbb;
+package com.junbo.test.catalog.catalogScenarios;
 
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
