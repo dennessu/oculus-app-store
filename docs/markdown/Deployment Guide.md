@@ -135,6 +135,13 @@ exit
 1. Install Java 1.7 <br/>
 Install the latest Oracle JVM 1.7 on all machines.
 
+1. Trust CA cert <br/>
+Run the following scripts to install CA cert for internal HTTPS calls.
+```
+sudo keytool -import -alias crypto-key -keystore `readlink -f /usr/bin/java | sed "s:/bin/java::"`/lib/security/cacerts -trustcacerts -file $CA_CERT_PATH
+```
+The default password for cacerts is `changeit`
+
 1. Create silklcloud folders <br/>
 Run the following command using devops account:
 ```
@@ -332,6 +339,7 @@ ssh 10.24.36.10 chmod 600 '/etc/silkcloud/*.jks'
 cd /var/silkcloud
 unzip -o apphost-crypto-0.0.1-SNAPSHOT.zip
 cd apphost-crypto-0.0.1-SNAPSHOT
+./shutdown.sh
 ./startup.sh
 ```
 
@@ -351,6 +359,7 @@ Run the following command on crypto servers:
 cd /var/silkcloud
 unzip -o apphost-identity-0.0.1-SNAPSHOT.zip
 cd apphost-identity-0.0.1-SNAPSHOT
+./shutdown.sh
 ./startup.sh
 ```
 
@@ -369,7 +378,14 @@ cd apphost-dataloader-0.0.1-SNAPSHOT
 ./dataloader.sh
 ```
 
-### Sync Crypto Key in SQL
+### Load Crypto Key
+  * `10.24.32.10`
+Run the following command on bastion servers using silkcloud:
+```
+curl -X POST -v -d "{\"value\": \"$MASTER_KEY\"}" "10.24.32.10:8080/v1/master-key" -H "Content-Type: application/json"
+```
+
+### Sync Crypto Keys in SQL
   * 10.24.34.10
   * 10.24.38.10
 
