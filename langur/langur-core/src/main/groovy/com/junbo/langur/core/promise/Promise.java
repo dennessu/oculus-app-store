@@ -79,7 +79,7 @@ public class Promise<T> {
     public static <T> Promise<T> delayed(long delay, TimeUnit unit, final Func0<T> func) {
         final SettableFuture<T> future = SettableFuture.create();
 
-        timer.schedule(new TimerTask() {
+        final Runnable runnable = new RunnableWrapper(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -87,6 +87,13 @@ public class Promise<T> {
                 } catch (Throwable ex) {
                     future.setException(ex);
                 }
+            }
+        });
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                runnable.run();
             }
         }, unit.toMillis(delay));
 
