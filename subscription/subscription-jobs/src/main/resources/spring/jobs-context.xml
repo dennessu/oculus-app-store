@@ -26,6 +26,7 @@
 
     <!-- schedule-->
     <bean id="subsSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="taskExecutor" ref="junboThreadPool"/>
         <property name="schedulerName" value="subscriptionScheduler"/>
         <property name="autoStartup" value="${subscription.jobs.cycle.autoStartup}"/>
         <property name="triggers">
