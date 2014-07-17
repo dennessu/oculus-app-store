@@ -190,6 +190,8 @@ payment.provider.adyen.notifyPassword.encrypted=
 
 payment.clientproxy.service.clientId=service
 payment.clientproxy.service.clientSecret.encrypted=
+
+notification.activemq.password.encrypted=
 ```
 
 ## Change DB Setup Configuration
