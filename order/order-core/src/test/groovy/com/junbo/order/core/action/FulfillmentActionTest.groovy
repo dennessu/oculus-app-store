@@ -70,7 +70,7 @@ class FulfillmentActionTest extends BaseTest{
         EasyMock.replay(fulfillmentAction.facadeContainer.fulfillmentFacade, fulfillmentAction.orderRepository)
 
         def actionResult = (OrderActionResult) fulfillmentAction.execute(TestBuilder.buildActionContext(order)).
-                testGet().data[ActionUtils.DATA_ORDER_ACTION_RESULT]
+                get().data[ActionUtils.DATA_ORDER_ACTION_RESULT]
         assert actionResult.returnedEventStatus == EventStatus.PENDING
         EasyMock.verify(fulfillmentAction.facadeContainer.fulfillmentFacade, fulfillmentAction.orderRepository)
     }
