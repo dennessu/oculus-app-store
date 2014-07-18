@@ -213,9 +213,10 @@ chmod 600 /etc/silkcloud/*.jks
   ./upload_script.sh ppe
   ```
 
-  1. Go to the master and slave servers using silkcloud account. For PPE, the servers are:
+  1. Go to all db servers using silkcloud account. For PPE, the servers are:
     * `10.24.16.50`
     * `10.24.20.50`
+    * `10.24.22.50`
     * `10.24.34.10`
     * `10.24.38.10`
 

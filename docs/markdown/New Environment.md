@@ -55,7 +55,7 @@ Get the encrypted JKS passwords
 ```
 Then generate the keystore
 ```
-keytool -keystore encryptKeyStore.jks -genkey -alias silkcloud
+keytool -keystore encryptKeyStore.jks -genkey -keyalg RSA -alias silkcloud
 ```
 Use the keys generated above as the JKS password and the key password.
 For example:
@@ -192,6 +192,32 @@ payment.clientproxy.service.clientId=service
 payment.clientproxy.service.clientSecret.encrypted=
 
 notification.activemq.password.encrypted=
+
+identity.conf.indexHashSalt=
+identity.conf.teleSign.customerId=
+identity.conf.teleSign.secretKey=
+
+oauth.core.recaptcha.public.key=
+oauth.core.recaptcha.private.key=
+
+authorization.lib.service.clientSecret=
+billing.clientproxy.service.clientSecret=
+cart.clientproxy.service.clientSecret=
+catalog.clientproxy.service.clientSecret=
+crypto.clientproxy.service.clientSecret=
+csr.clientproxy.service.clientSecret=
+csr.login.clientSecret=
+drm.clientproxy.service.clientSecret=
+email.clientproxy.service.clientSecret=
+entitlement.clientproxy.service.clientSecret=
+fulfilment.clientproxy.service.clientSecret=
+identity.clientproxy.service.clientSecret=
+oauth.clientproxy.service.clientSecret=
+order.clientproxy.service.clientSecret=
+payment.clientproxy.service.clientSecret=
+rating.clientproxy.service.clientSecret=
+subscription.clientproxy.service.clientSecret=
+token.clientproxy.service.clientSecret=
 ```
 
 ## Change DB Setup Configuration
