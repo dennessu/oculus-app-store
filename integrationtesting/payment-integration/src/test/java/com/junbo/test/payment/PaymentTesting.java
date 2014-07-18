@@ -63,6 +63,28 @@ public class PaymentTesting extends BaseTestClass {
 
     @Property(
             priority = Priority.Dailies,
+            features = "POST /users/{userId}/payment-instruments",
+            component = Component.Payment,
+            owner = "Yunlongzhao",
+            status = Status.Enable,
+            description = "post credit card",
+            steps = {
+                    "1. Create an user",
+                    "2. Post a credit card with expired date to user",
+                    "3, Validation: response",
+            }
+    )
+    @Test
+    public void testPostCreditCardWithExpiredDate() throws Exception {
+        String randomUid = testDataProvider.CreateUser();
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getExpiredCreditCardInfo(country);
+        testDataProvider.postPaymentInstrument(randomUid, creditCardInfo, 500);
+
+    }
+
+    @Property(
+            priority = Priority.Dailies,
             features = "GET /users/{userId}/payment-instruments/{paymentInstrumentId}",
             component = Component.Payment,
             owner = "Yunlongzhao",
@@ -87,6 +109,24 @@ public class PaymentTesting extends BaseTestClass {
 
         validationHelper.validatePaymentInstrument(creditCardInfo);
     }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "GET /users/{userId}/payment-instruments/{paymentInstrumentId}",
+            component = Component.Payment,
+            owner = "Yunlongzhao",
+            status = Status.Enable,
+            description = "get payment instruments by invalid payment id",
+            steps = {
+                    "1. Get the payment by invalid payment id",
+                    "2. Validation: response"
+            }
+    )
+    @Test
+    public void testGetPaymentInstrumentByInvalidId() throws Exception {
+        testDataProvider.getPaymentInstrument("0123", 404);
+    }
+
 
     @Property(
             priority = Priority.Dailies,
@@ -239,6 +279,7 @@ public class PaymentTesting extends BaseTestClass {
 
         validationHelper.validatePaymentInstrument(ewalletInfo);
     }
+
 
     @Property(
             priority = Priority.Dailies,

@@ -24,6 +24,7 @@ import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -45,7 +46,7 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
         return identityClient.PostUser(userName, pwd, emailAddress);
     }
 
-    public List<String> GetUserByUserName(String userName) throws Exception{
+    public List<String> GetUserByUserName(String userName) throws Exception {
         return identityClient.GetUserByUserName(userName);
     }
 
@@ -79,6 +80,12 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
     }
 
     public String postPaymentInstrument(String uid, PaymentInstrumentBase paymentInfo) throws Exception {
+        return postPaymentInstrument(uid,paymentInfo,200);
+    }
+
+
+    public String postPaymentInstrument(String uid, PaymentInstrumentBase paymentInfo,
+                                        int expectedResponseCode) throws Exception {
 
         PaymentInstrument paymentInstrument = new PaymentInstrument();
         ArrayList<Long> admins = new ArrayList<>();
@@ -93,6 +100,8 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 CreditCardInfo creditCardInfo = (CreditCardInfo) paymentInfo;
                 typeSpecificDetails.setExpireDate(creditCardInfo.getExpireDate());
                 typeSpecificDetails.setEncryptedCvmCode(creditCardInfo.getEncryptedCVMCode());
+                GregorianCalendar gc = new GregorianCalendar();
+                paymentInstrument.setLastValidatedTime(gc.getTime());
                 paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
                 paymentInstrument.setAccountName(creditCardInfo.getAccountName());
                 paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
@@ -164,6 +173,10 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
 
     public String getPaymentInstrument(String paymentId) throws Exception {
         return paymentClient.getPaymentInstrumentByPaymentId(paymentId);
+    }
+
+    public String getPaymentInstrument(String paymentId, int expectedResponseCode) throws Exception {
+        return paymentClient.getPaymentInstrumentByPaymentId(paymentId, expectedResponseCode);
     }
 
     public List<String> getPaymentInstruments(String uid) throws Exception {
