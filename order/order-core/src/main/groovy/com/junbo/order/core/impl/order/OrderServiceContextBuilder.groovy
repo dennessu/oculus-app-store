@@ -11,6 +11,7 @@ import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.identity.spec.v1.model.Address
 import com.junbo.identity.spec.v1.model.Email
+import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
 import com.junbo.langur.core.promise.Promise
@@ -200,6 +201,13 @@ class OrderServiceContextBuilder {
         return Promise.each(context.order.orderItems) { OrderItem oi ->
             return facadeContainer.catalogFacade.getOfferRevision(oi.offer.value).syncThen { OrderOfferRevision of ->
                 offers << of
+                Long organizationId = of.catalogOfferRevision.ownerId?.value
+                return facadeContainer.identityFacade.getOrganization(organizationId).recover { Throwable throwable ->
+                    LOGGER.error('name=Error_Get_Organization. organization id: ' + organizationId, throwable)
+                    return Promise.pure(null)
+                }.then { Organization organization ->
+                    of.organization = organization
+                }
             }
         }.syncThen {
             def offerMap = new HashMap<OfferId, OrderOfferRevision>()

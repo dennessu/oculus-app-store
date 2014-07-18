@@ -325,16 +325,7 @@ class OrderServiceImpl implements OrderService {
                     item.type = CoreUtils.getOfferType(offer).name()
                     item.isPreorder = CoreUtils.isPreorder(offer, order.country.value)
                     updateOfferInfo(order, item, offer.catalogOfferRevision)
-                    Long organizationId = offer.catalogOfferRevision.ownerId?.value
-                    // TODO: move to orderServiceContextBuilder. temporary disable the code
-                    //return facadeContainer.identityFacade.getOrganization(organizationId)
-                    //        .recover { Throwable throwable ->
-                    //    LOGGER.error('name=Error_Get_Organization. organization id: ' + organizationId, throwable)
-                    //    return Promise.pure(null)
-                    //}.then { Organization organization ->
-                    //    item.offerOrganizationName = organization?.name
-                    //    return Promise.pure(null)
-                    item.offerOrganizationName = 'hardcoded'
+                    item.offerOrganizationName = offer.organization?.name
             }
         }.syncThen {
             return null

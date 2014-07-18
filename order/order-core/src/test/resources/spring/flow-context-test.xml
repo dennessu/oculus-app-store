@@ -86,6 +86,7 @@
     <bean id="mockIdentityFacade" class="com.junbo.order.clientproxy.identity.impl.IdentityFacadeImpl">
         <property name="userResource" ref="mockIdentityResource"/>
         <property name="currencyResource" ref="mockCurrencyResource"/>
+        <property name="organizationResource" ref="mockOrganizationResource"/>
     </bean>
 
     <bean id="mockCatalogFacade" class="com.junbo.order.clientproxy.catalog.impl.CatalogFacadeImpl">
