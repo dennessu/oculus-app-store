@@ -5,10 +5,12 @@ DIR="$( cd "$( dirname "$0" )" && pwd )"
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     mkdir -p /var/silkcloud/logs
     mkdir -p /var/silkcloud/run
+    LOG_FILE=/var/silkcloud/logs/main.log
     PID_FILE=/var/silkcloud/run/apphost-cli.pid
 else
-    mkdir -p logs
-    PID_FILE=./logs/apphost-cli.pid
+    mkdir -p $DIR/logs
+    LOG_FILE=$DIR/logs/main.log
+    PID_FILE=$DIR/logs/apphost-cli.pid
 fi
 
 export APPHOST_CLI_OPTS=""
@@ -24,5 +26,23 @@ else
     export APPHOST_CLI_OPTS="$APPHOST_CLI_OPTS -Denvironment=$silkcloudenv"
 fi
 
-./bin/apphost-cli &
+$DIR/bin/apphost-cli &
 echo $! > $PID_FILE
+
+function cleanup {
+    $DIR/shutdown.sh
+}
+
+trap cleanup EXIT INT TERM
+
+# sleep 1 seconds to ensure main.log is created.
+sleep 1
+
+tail -f -n0 $LOG_FILE | while read LOGLINE
+do
+    if [[ "${LOGLINE}" == *"Started Junbo Application Host"* ]]; then
+        ps -aef | grep tail | grep $$ | grep -v grep | awk '{print $2}' | xargs kill
+    fi
+done
+
+trap - EXIT INT TERM
