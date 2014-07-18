@@ -68,6 +68,7 @@ class CsrUserResourceImpl implements CsrUserResource {
     private CsrInvitationCodeRepository csrInvitationCodeRepository
     private CsrGroupResource csrGroupResource
     private String pendingGroupName
+    private String inactiveGroupName
 
     @Required
     void setCsrGroupResource(CsrGroupResource csrGroupResource) {
@@ -119,6 +120,11 @@ class CsrUserResourceImpl implements CsrUserResource {
         this.emailResource = emailResource
     }
 
+    @Required
+    void setInactiveGroupName(String inactiveGroupName) {
+        this.inactiveGroupName = inactiveGroupName
+    }
+
     @Override
     Promise<Results<CsrUser>> list() {
         return csrGroupResource.list(new CsrGroupListOptions()).then { Results<CsrGroup> csrGroupResults ->
@@ -131,7 +137,7 @@ class CsrUserResourceImpl implements CsrUserResource {
                 return userResource.list(new UserListOptions(groupId: new GroupId(csrGroup.id))).then { Results<User> userResults ->
                     if (userResults != null && userResults.items != null && userResults.items.size() > 0) {
                         for (User user in userResults.items) {
-                            def csrUser = new CsrUser(id: user.getId().getValue() ,username: user.username, countryCode: user.countryOfResidence?.toString(), tier: csrGroup.tier)
+                            def csrUser = new CsrUser(userId: user.getId() ,username: user.username, countryCode: user.countryOfResidence?.toString(), tier: csrGroup.tier)
                             if (user.name != null) {
                                 UserPersonalInfo userPersonalInfo = userPersonalInfoResource.get(user.name.value, new UserPersonalInfoGetOptions()).get()
 
@@ -239,6 +245,12 @@ class CsrUserResourceImpl implements CsrUserResource {
 
         try {
             userGroupMembershipResource.delete(csrInvitationCode.userGroupId as UserGroupId).get()
+        }
+        catch (Exception e) {
+            LOGGER.info('')
+        }
+
+        try {
             userGroupMembershipResource.create(new UserGroup(userId: new UserId(csrInvitationCode.userId), groupId: new GroupId(csrInvitationCode.inviteGroupId))).get()
         }
         catch (Exception e) {

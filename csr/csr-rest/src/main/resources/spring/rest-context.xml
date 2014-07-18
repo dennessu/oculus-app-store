@@ -26,6 +26,7 @@
                 <value>CSR_T2</value>
                 <value>CSR_T3</value>
                 <value>CSR_PENDING</value>
+                <value>CSR_INACTIVE</value>
             </list>
         </property>
         <property name="organizationName" value="${csr.organization.name}"/>
@@ -42,6 +43,7 @@
         <property name="emailResource" ref="csr_emailResource" />
         <property name="emailTemplateResource" ref="csr_emailTemplateResource" />
         <property name="pendingGroupName" value="CSR_PENDING"/>
+        <property name="inactiveGroupName" value="CSR_INACTIVE"/>
     </bean>
 
     <bean id="defaultCsrUpdateResourceClientFactory" class="com.junbo.csr.spec.resource.proxy.CsrUpdateResourceClientProxyFactory"/>
