@@ -5,20 +5,22 @@
  */
 package com.junbo.csr.spec.model;
 
+import com.junbo.common.id.GroupId;
+
 /**
  * Created by haomin on 14-7-14.
  */
 public class CsrGroup {
-    private String id;
+    private GroupId groupId;
     private String groupName;
     private String tier;
 
-    public String getId() {
-        return id;
+    public GroupId getGroupId() {
+        return groupId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setGroupId(GroupId groupId) {
+        this.groupId = groupId;
     }
 
     public String getGroupName() {

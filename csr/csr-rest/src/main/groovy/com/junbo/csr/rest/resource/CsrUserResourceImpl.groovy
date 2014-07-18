@@ -20,15 +20,10 @@ import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.email.spec.model.QueryParam
 import com.junbo.email.spec.resource.EmailResource
 import com.junbo.email.spec.resource.EmailTemplateResource
-import com.junbo.identity.spec.v1.model.Group
-import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserGroup
-import com.junbo.identity.spec.v1.model.UserName
-import com.junbo.identity.spec.v1.model.UserPersonalInfo
+import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
 import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.identity.spec.v1.option.model.GroupGetOptions
-import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.identity.spec.v1.resource.GroupResource
 import com.junbo.identity.spec.v1.resource.UserGroupMembershipResource
@@ -134,7 +129,7 @@ class CsrUserResourceImpl implements CsrUserResource {
 
             def resultList = new Results<CsrUser>(items: [])
             return Promise.each(csrGroupResults.items) { CsrGroup csrGroup ->
-                return userResource.list(new UserListOptions(groupId: new GroupId(csrGroup.id))).then { Results<User> userResults ->
+                return userResource.list(new UserListOptions(groupId: csrGroup.groupId)).then { Results<User> userResults ->
                     if (userResults != null && userResults.items != null && userResults.items.size() > 0) {
                         for (User user in userResults.items) {
                             def csrUser = new CsrUser(userId: user.getId() ,username: user.username, countryCode: user.countryOfResidence?.toString(), tier: csrGroup.tier)
@@ -164,6 +159,42 @@ class CsrUserResourceImpl implements CsrUserResource {
     }
 
     @Override
+    Promise<Response> join(UserId userId, GroupId groupId) {
+        if (userId == null || groupId == null) {
+            throw AppErrors.INSTANCE.invalidRequest().exception()
+        }
+
+        Results<CsrGroup> csrGroupResults = csrGroupResource.list(new CsrGroupListOptions()).get()
+
+        List<GroupId> groupIds = csrGroupResults.items.empty ?
+                (List<GroupId>) Collections.emptyList() :
+                csrGroupResults.items.collect { CsrGroup csrGroup -> csrGroup.groupId }
+
+        return userGroupMembershipResource.list(new UserGroupListOptions(userId: userId)).then { Results<UserGroup> results ->
+            if (results != null && results.items != null) {
+                return Promise.each(results.items) { UserGroup userGroup ->
+                    if (userGroup.groupId != groupId && groupIds.contains(userGroup.groupId)) {
+                        return userGroupMembershipResource.delete(userGroup.id as UserGroupId)
+                    }
+                }.then {
+                    results.items.retainAll { UserGroup userGroup ->
+                        userGroup.groupId == groupId
+                    }
+
+                    if (results.items.size() == 0) {
+                        return userGroupMembershipResource.create(new UserGroup(userId: userId, groupId: groupId))
+                    }
+                }
+            }
+            else {
+                return userGroupMembershipResource.create(new UserGroup(userId: userId, groupId: groupId))
+            }
+        }.then {
+            return Promise.pure(Response.noContent().build())
+        }
+    }
+
+    @Override
     Promise<Response> inviteCsr(String locale, String email, String groupId, ContainerRequestContext requestContext) {
         if (email == null || groupId == null) {
             throw AppErrors.INSTANCE.invalidRequest().exception()
@@ -187,10 +218,10 @@ class CsrUserResourceImpl implements CsrUserResource {
                         throw AppErrors.INSTANCE.groupNotFound().exception()
                     }
 
-                    return userGroupMembershipResource.list(new UserGroupListOptions(userId: user.id as UserId, groupId: new GroupId(pendingGroup.id))).then { Results<UserGroup> results ->
+                    return userGroupMembershipResource.list(new UserGroupListOptions(userId: user.id as UserId, groupId: pendingGroup.groupId)).then { Results<UserGroup> results ->
                         UserGroup userGroup = null
                         if (results == null || results.items == null || results.items.size() == 0) {
-                            userGroup = userGroupMembershipResource.create(new UserGroup(userId: user.id as UserId, groupId: new GroupId(pendingGroup.id))).get()
+                            userGroup = userGroupMembershipResource.create(new UserGroup(userId: user.id as UserId, groupId: pendingGroup.groupId)).get()
                         }
                         else {
                             userGroup = results.items.get(0)
@@ -199,7 +230,7 @@ class CsrUserResourceImpl implements CsrUserResource {
                         CsrInvitationCode code = new CsrInvitationCode(
                                 email: email,
                                 userId: (user.id as UserId).value,
-                                pendingGroupId: pendingGroup.id,
+                                pendingGroupId: pendingGroup.groupId.value,
                                 inviteGroupId: (group.id as GroupId).value,
                                 userGroupId: userGroup.id as UserGroupId
                         )

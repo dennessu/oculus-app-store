@@ -1,5 +1,6 @@
 package com.junbo.csr.rest.resource
 
+import com.junbo.common.id.GroupId
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
@@ -102,7 +103,7 @@ class CsrGroupResourceImpl implements CsrGroupResource {
                     }
 
                     groupResults.items.each { Group group ->
-                        def csrGroup = new CsrGroup(id: group.id.toString(), groupName: group.name)
+                        def csrGroup = new CsrGroup(groupId: group.id as GroupId, groupName: group.name)
                         String[] splits = group.name.split('_')
                         if (splits.size() > 1) {
                             csrGroup.tier = splits[1]
