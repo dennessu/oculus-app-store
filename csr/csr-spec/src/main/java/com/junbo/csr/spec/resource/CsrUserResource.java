@@ -34,6 +34,6 @@ public interface CsrUserResource {
                                 @Context ContainerRequestContext requestContext);
 
     @GET
-    @Path("/confirm")
-    Promise<Response> confirmCsr(@QueryParam("code") String code);
+    @Path("/invite")
+    Promise<Response> confirmCsrInvitation(@QueryParam("code") String code);
 }

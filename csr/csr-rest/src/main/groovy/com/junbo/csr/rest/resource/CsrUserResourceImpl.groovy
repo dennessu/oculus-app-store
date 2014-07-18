@@ -2,6 +2,7 @@ package com.junbo.csr.rest.resource
 
 import com.junbo.common.id.EmailTemplateId
 import com.junbo.common.id.GroupId
+import com.junbo.common.id.UserGroupId
 import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
@@ -24,8 +25,10 @@ import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserGroup
 import com.junbo.identity.spec.v1.model.UserName
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
+import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
 import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.identity.spec.v1.option.model.GroupGetOptions
+import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.identity.spec.v1.resource.GroupResource
 import com.junbo.identity.spec.v1.resource.UserGroupMembershipResource
@@ -37,6 +40,7 @@ import org.glassfish.jersey.server.ContainerRequest
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.StringUtils
 
 import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.core.Response
@@ -47,7 +51,7 @@ import javax.ws.rs.core.UriBuilder
  */
 @CompileStatic
 class CsrUserResourceImpl implements CsrUserResource {
-    private static final String CSR_INVITATION_PATH = 'csr-users/confirm'
+    private static final String CSR_INVITATION_PATH = 'csr-users/invite'
     private static final String EMAIL_SOURCE = 'Oculus'
     private static final String CSR_INVITATION_ACTION = 'CsrInvitation'
     private static final Logger LOGGER = LoggerFactory.getLogger(CsrUserResourceImpl)
@@ -177,35 +181,39 @@ class CsrUserResourceImpl implements CsrUserResource {
                         throw AppErrors.INSTANCE.groupNotFound().exception()
                     }
 
-                    try {
-                        userGroupMembershipResource.create(new UserGroup(userId: user.id as UserId, groupId: new GroupId(pendingGroup.id))).get()
+                    return userGroupMembershipResource.list(new UserGroupListOptions(userId: user.id as UserId, groupId: new GroupId(pendingGroup.id))).then { Results<UserGroup> results ->
+                        UserGroup userGroup = null
+                        if (results == null || results.items == null || results.items.size() == 0) {
+                            userGroup = userGroupMembershipResource.create(new UserGroup(userId: user.id as UserId, groupId: new GroupId(pendingGroup.id))).get()
+                        }
+                        else {
+                            userGroup = results.items.get(0)
+                        }
+
+                        CsrInvitationCode code = new CsrInvitationCode(
+                                email: email,
+                                userId: (user.id as UserId).value,
+                                pendingGroupId: pendingGroup.id,
+                                inviteGroupId: (group.id as GroupId).value,
+                                userGroupId: userGroup.id as UserGroupId
+                        )
+
+                        csrInvitationCodeRepository.save(code)
+
+                        UriBuilder uriBuilder = UriBuilder.fromUri(baseUri)
+                        uriBuilder.path(CSR_INVITATION_PATH)
+                        uriBuilder.queryParam('code', code.code)
+                        uriBuilder.queryParam('locale', locale)
+
+                        QueryParam queryParam = new QueryParam(
+                                source: EMAIL_SOURCE,
+                                action: CSR_INVITATION_ACTION,
+                                locale: locale
+                        )
+
+                        String link = uriBuilder.build().toString()
+                        return this.sendEmail(queryParam, user, email, link)
                     }
-                    catch (Exception e) {
-                        LOGGER.info('user has been added to pending group again!')
-                    }
-
-                    CsrInvitationCode code = new CsrInvitationCode(
-                            email: email,
-                            userId: (user.id as UserId).value,
-                            pendingGroupId: pendingGroup.id,
-                            inviteGroupId: (group.id as GroupId).value
-                    )
-
-                    csrInvitationCodeRepository.save(code)
-
-                    UriBuilder uriBuilder = UriBuilder.fromUri(baseUri)
-                    uriBuilder.path(CSR_INVITATION_PATH)
-                    uriBuilder.queryParam('code', code.code)
-                    uriBuilder.queryParam('locale', locale)
-
-                    QueryParam queryParam = new QueryParam(
-                            source: EMAIL_SOURCE,
-                            action: CSR_INVITATION_ACTION,
-                            locale: locale
-                    )
-
-                    String link = uriBuilder.build().toString()
-                    return this.sendEmail(queryParam, user, email, link)
                 }
             }
         }.then {
@@ -214,8 +222,30 @@ class CsrUserResourceImpl implements CsrUserResource {
     }
 
     @Override
-    Promise<Response> confirmCsr(String code) {
-        return null
+    Promise<Response> confirmCsrInvitation(String code) {
+        if (StringUtils.isEmpty(code)) {
+            LOGGER.warn(AppErrors.INSTANCE.csrInvitationCodeMissing().toString())
+            throw AppErrors.INSTANCE.csrInvitationCodeMissing().exception()
+        }
+
+        CsrInvitationCode csrInvitationCode = csrInvitationCodeRepository.getAndRemove(code)
+
+        if (csrInvitationCode == null) {
+            LOGGER.warn(AppErrors.INSTANCE.csrInvitationCodeInvalid().toString())
+            throw AppErrors.INSTANCE.csrInvitationCodeInvalid().exception()
+        }
+
+        csrInvitationCodeRepository.removeByUserIdEmail(csrInvitationCode.userId, csrInvitationCode.email)
+
+        try {
+            userGroupMembershipResource.delete(csrInvitationCode.userGroupId as UserGroupId).get()
+            userGroupMembershipResource.create(new UserGroup(userId: new UserId(csrInvitationCode.userId), groupId: new GroupId(csrInvitationCode.inviteGroupId))).get()
+        }
+        catch (Exception e) {
+            LOGGER.info('')
+        }
+
+        return Promise.pure(Response.noContent().build())
     }
 
     private Promise<String> sendEmail(QueryParam queryParam, User user, String email, String uri) {

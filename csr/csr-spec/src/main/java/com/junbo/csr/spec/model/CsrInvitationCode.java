@@ -5,6 +5,7 @@
  */
 package com.junbo.csr.spec.model;
 
+import com.junbo.common.id.UserGroupId;
 import com.junbo.common.model.ResourceMeta;
 
 /**
@@ -16,6 +17,7 @@ public class CsrInvitationCode extends ResourceMeta<String> {
     private Long userId;
     private String pendingGroupId;
     private String inviteGroupId;
+    private UserGroupId userGroupId;
 
     public String getCode() {
         return code;
@@ -55,6 +57,14 @@ public class CsrInvitationCode extends ResourceMeta<String> {
 
     public void setInviteGroupId(String inviteGroupId) {
         this.inviteGroupId = inviteGroupId;
+    }
+
+    public UserGroupId getUserGroupId() {
+        return userGroupId;
+    }
+
+    public void setUserGroupId(UserGroupId userGroupId) {
+        this.userGroupId = userGroupId;
     }
 
     @Override
