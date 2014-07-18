@@ -76,8 +76,8 @@ class AuthorizeEndpointImpl implements AuthorizeEndpoint {
         String conversationId = uriInfo.queryParameters.getFirst(OAuthParameters.CONVERSATION_ID)
         String event = uriInfo.queryParameters.getFirst(OAuthParameters.EVENT)
 
-        // GET method is not allowed during flow state change, where event parameter is provided.
-        if (StringUtils.hasText(event)) {
+        // GET method is not allowed if sensitive data is provided. (no query parameter except event is allowed)
+        if (StringUtils.hasText(event) && uriInfo.queryParameters.size() > 1) {
             throw AppExceptions.INSTANCE.methodNotAllowed().exception()
         }
 
