@@ -111,6 +111,15 @@ class CsrGroupResourceImpl implements CsrGroupResource {
                         resultList.items.add(csrGroup)
                     }
 
+                    if (listOptions.userId != null) {
+                        Results<Group> groups = groupResource.list(new GroupListOptions(userId: listOptions.userId)).get()
+                        List<GroupId> groupIds = groups.items.empty ? (List<GroupId>) Collections.emptyList() :
+                                groups.items.collect { Group group -> group.getId() }
+                        resultList.items.retainAll { CsrGroup csrGroup ->
+                            groupIds.contains(csrGroup.groupId)
+                        }
+                    }
+
                     return Promise.pure(resultList)
                 }
             }
