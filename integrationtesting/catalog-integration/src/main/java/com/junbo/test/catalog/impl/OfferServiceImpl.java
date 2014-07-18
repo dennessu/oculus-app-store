@@ -470,6 +470,14 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         itemRevision.setItemId(itemPost.getItemId());
         itemRevision.setOwnerId(itemPost.getOwnerId());
 
+        //prepare IapHostItemIds
+        if (itemRevision.getDistributionChannels().contains("INAPP")) {
+            Item iapHostItem = ItemServiceImpl.instance().postDefaultItem(CatalogItemType.APP);
+            List<String> iapHostItemIds = new ArrayList<>();
+            iapHostItemIds.add(iapHostItem.getItemId());
+            itemRevision.setIapHostItemIds(iapHostItemIds);
+        }
+
         //set locales
         ItemRevisionLocaleProperties itemRevisionLocaleProperties = new ItemRevisionLocaleProperties();
         itemRevisionLocaleProperties.setName(fileName);

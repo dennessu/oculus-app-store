@@ -20,6 +20,7 @@ import com.junbo.common.id.ItemRevisionId;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.common.model.Results;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -110,6 +111,14 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
 
         String strItem = readFileContent(String.format("testItemRevisions/%s.json", fileName));
         ItemRevision itemRevisionForPost = new JsonMessageTranscoder().decode(new TypeReference<ItemRevision>() {},strItem);
+
+        //prepare IapHostItemIds
+        if (itemRevisionForPost.getDistributionChannels().contains("INAPP")) {
+            Item iapHostItem = ItemServiceImpl.instance().postDefaultItem(CatalogItemType.APP);
+            List<String> iapHostItemIds = new ArrayList<>();
+            iapHostItemIds.add(iapHostItem.getItemId());
+            itemRevisionForPost.setIapHostItemIds(iapHostItemIds);
+        }
 
         //set locales
         ItemRevisionLocaleProperties itemRevisionLocaleProperties = new ItemRevisionLocaleProperties();

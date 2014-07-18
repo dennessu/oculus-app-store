@@ -1,5 +1,4 @@
 {
-    "rollupPackageName": "RollupPackageName_randomString",
     "packageName": "PackageName_randomString",
     "sku": "Sku_randomString",
     "status": "DRAFT",
@@ -9,7 +8,7 @@
             "id":"131ea78a9b0566a0118f27bb6f608107"
         }
     ],
-    "distributionChannel": ["INAPP", "STORE"],
+    "distributionChannel": ["STORE"],
     "developer": {"href": "https://api.oculusvr.com/v1/organizations/1234", "id": "1234"},
     "item": {"href": "https://api.oculusvr.com/v1/items/6B54DDA43C9F", "id": "6B54DDA43C9F"},
     "msrp":{
