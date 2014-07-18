@@ -11,6 +11,7 @@ import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
@@ -271,6 +272,7 @@ public class PaymentTesting extends BaseTestClass {
         }
 
         for (int i = 1; i <= 5; i++) {
+            Master.getInstance().setCurrentUid(userList.get(i - 1));
             CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
             testDataProvider.postPaymentInstrument(userList.get(i - 1), creditCardInfo);
         }
@@ -282,6 +284,7 @@ public class PaymentTesting extends BaseTestClass {
             } else {
                 ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT, Currency.DEFAULT);
             }
+            Master.getInstance().setCurrentUid(userList.get(i - 1));
             testDataProvider.postPaymentInstrument(userList.get(i - 1), ewalletInfo);
             testDataProvider.creditWallet(userList.get(i - 1), ewalletInfo, new BigDecimal(100));
         }
