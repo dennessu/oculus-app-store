@@ -12,7 +12,7 @@ public class UserNameCheckRequest {
 
     private String username;
 
-    private String userEmail;
+    private String email;
 
     public String getUsername() {
         return username;
@@ -22,11 +22,11 @@ public class UserNameCheckRequest {
         this.username = username;
     }
 
-    public String getUserEmail() {
-        return userEmail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
