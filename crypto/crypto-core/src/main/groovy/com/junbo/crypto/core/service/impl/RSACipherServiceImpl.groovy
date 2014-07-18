@@ -1,7 +1,7 @@
 package com.junbo.crypto.core.service.impl
 import com.junbo.crypto.core.service.CipherService
 import groovy.transform.CompileStatic
-import org.apache.commons.codec.binary.Hex
+import org.apache.commons.codec.binary.Base64
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -33,7 +33,7 @@ class RSACipherServiceImpl implements CipherService {
 
         Cipher cipher = Cipher.getInstance(ALGORITHM)
         cipher.init(Cipher.ENCRYPT_MODE, key);
-        return new String(Hex.encodeHex(cipher.doFinal(message.getBytes("UTF-8"))));
+        return new String(Base64.encodeBase64(cipher.doFinal(message.getBytes("UTF-8"))));
     }
 
     @Override
@@ -49,7 +49,7 @@ class RSACipherServiceImpl implements CipherService {
 
         Cipher cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(Cipher.DECRYPT_MODE, key);
-        return new String(cipher.doFinal(Hex.decodeHex(encryptMessage.toCharArray())), "UTF-8");
+        return new String(cipher.doFinal(Base64.decodeBase64(encryptMessage)), "UTF-8");
     }
 
     @Override

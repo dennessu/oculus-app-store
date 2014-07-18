@@ -2,7 +2,7 @@ package com.junbo.crypto.core.service.impl
 
 import com.junbo.crypto.core.service.CipherService
 import groovy.transform.CompileStatic
-import org.apache.commons.codec.binary.Hex
+import org.apache.commons.codec.binary.Base64
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -41,7 +41,8 @@ class AESCipherServiceImpl implements CipherService {
         byte[] iv = generateIV(IV_LENGTH)
         IvParameterSpec ivspec = new IvParameterSpec(iv);
         cipher.init(Cipher.ENCRYPT_MODE, key, ivspec);
-        return new String(Hex.encodeHex(iv)) + IV_SEPARATOR + new String(Hex.encodeHex(cipher.doFinal(message.getBytes("UTF-8"))));
+
+        return new String(Base64.encodeBase64(iv)) + IV_SEPARATOR + new String(Base64.encodeBase64(cipher.doFinal(message.getBytes("UTF-8"))));
     }
 
     @Override
@@ -53,7 +54,7 @@ class AESCipherServiceImpl implements CipherService {
         String [] info = encryptMessage.split(IV_SEPARATOR)
         if (info.size() != 2) {
             info = new String[2]
-            info[0] = Hex.encodeHex(DEFAULT_IV)
+            info[0] = Base64.encodeBase64(DEFAULT_IV)
             info[1] = encryptMessage
         }
         if (key == null) {
@@ -62,9 +63,9 @@ class AESCipherServiceImpl implements CipherService {
         }
 
         Cipher cipher = Cipher.getInstance(ALGORITHM);
-        IvParameterSpec ivspec = new IvParameterSpec(Hex.decodeHex(info[0].toCharArray()));
+        IvParameterSpec ivspec = new IvParameterSpec(Base64.decodeBase64(info[0]));
         cipher.init(Cipher.DECRYPT_MODE, key, ivspec);
-        return new String(cipher.doFinal(Hex.decodeHex(info[1].toCharArray())), "UTF-8");
+        return new String(cipher.doFinal(Base64.decodeBase64(info[1])), "UTF-8");
     }
 
     @Override
