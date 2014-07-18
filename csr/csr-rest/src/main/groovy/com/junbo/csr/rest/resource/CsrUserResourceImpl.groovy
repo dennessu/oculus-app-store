@@ -240,12 +240,12 @@ class CsrUserResourceImpl implements CsrUserResource {
                         UriBuilder uriBuilder = UriBuilder.fromUri(baseUri)
                         uriBuilder.path(CSR_INVITATION_PATH)
                         uriBuilder.queryParam('code', code.code)
-                        uriBuilder.queryParam('locale', locale)
+                        uriBuilder.queryParam('locale', locale == null ? 'en_US' : locale)
 
                         QueryParam queryParam = new QueryParam(
                                 source: EMAIL_SOURCE,
                                 action: CSR_INVITATION_ACTION,
-                                locale: locale
+                                locale: locale == null ? 'en_US' : locale
                         )
 
                         String link = uriBuilder.build().toString()
