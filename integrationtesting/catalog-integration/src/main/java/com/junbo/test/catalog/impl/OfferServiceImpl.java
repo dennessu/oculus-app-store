@@ -347,7 +347,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         if (catalogDB != null && catalogDB.equalsIgnoreCase("cloudant")) {
             Results<Item> itemRtn = this.searchItemByName(itemName);
             if (itemRtn.getItems().size() <= 0) {
-                item = prepareItem(userId, itemName, offerType);
+                item = prepareItem(organizationId, itemName, offerType);
             }
             else {
                 item = itemRtn.getItems().get(0);
@@ -356,7 +356,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         else {
             String itemId = Master.getInstance().getItemIdByName(itemName);
             if (itemId == null) {
-                item = prepareItem(userId, itemName, offerType);
+                item = prepareItem(organizationId, itemName, offerType);
             }
             else {
                 item = Master.getInstance().getItem(itemId);
@@ -364,7 +364,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         }
 
         //Post offer
-        Offer offerForPost = prepareOfferEntity(defaultOfferFileName);
+        Offer offerForPost = prepareOfferEntity(defaultOfferFileName, organizationId);
         offerForPost.setOwnerId(organizationId);
         Offer offer = this.postOffer(offerForPost);
 
@@ -444,14 +444,14 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         return userService.PostUser();
     }
 
-    private Item prepareItem(String ownerId, String fileName, String itemType) throws Exception {
+    private Item prepareItem(OrganizationId ownerId, String fileName, String itemType) throws Exception {
 
         ItemService itemService = ItemServiceImpl.instance();
         ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
 
-        Item item = itemService.prepareItemEntity(defaultItemFileName);
+        Item item = itemService.prepareItemEntity(defaultItemFileName, ownerId);
         item.setType(itemType);
-        item.setOwnerId(getOrganizationId(ownerId));
+        item.setOwnerId(ownerId);
         Item itemPost = itemService.postItem(item);
 
         //Attach item revision to the item
@@ -472,7 +472,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
         //prepare IapHostItemIds
         if (itemRevision.getDistributionChannels().contains("INAPP")) {
-            Item iapHostItem = ItemServiceImpl.instance().postDefaultItem(CatalogItemType.APP);
+            Item iapHostItem = ItemServiceImpl.instance().postDefaultItem(CatalogItemType.APP, ownerId);
             List<String> iapHostItemIds = new ArrayList<>();
             iapHostItemIds.add(iapHostItem.getItemId());
             itemRevision.setIapHostItemIds(iapHostItemIds);

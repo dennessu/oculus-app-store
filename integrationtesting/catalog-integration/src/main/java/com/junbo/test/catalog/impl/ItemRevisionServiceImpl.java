@@ -101,6 +101,14 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
             itemRevisionForPost = prepareItemRevisionEntity(defaultPhysicalItemRevisionFileName);
         }
 
+        //prepare IapHostItemIds
+        if (itemRevisionForPost.getDistributionChannels().contains("INAPP")) {
+            Item iapHostItem = ItemServiceImpl.instance().postDefaultItem(CatalogItemType.APP, item.getOwnerId());
+            List<String> iapHostItemIds = new ArrayList<>();
+            iapHostItemIds.add(iapHostItem.getItemId());
+            itemRevisionForPost.setIapHostItemIds(iapHostItemIds);
+        }
+
         itemRevisionForPost.setItemId(item.getItemId());
         itemRevisionForPost.setOwnerId(item.getOwnerId());
 
@@ -111,14 +119,6 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
 
         String strItem = readFileContent(String.format("testItemRevisions/%s.json", fileName));
         ItemRevision itemRevisionForPost = new JsonMessageTranscoder().decode(new TypeReference<ItemRevision>() {},strItem);
-
-        //prepare IapHostItemIds
-        if (itemRevisionForPost.getDistributionChannels().contains("INAPP")) {
-            Item iapHostItem = ItemServiceImpl.instance().postDefaultItem(CatalogItemType.APP);
-            List<String> iapHostItemIds = new ArrayList<>();
-            iapHostItemIds.add(iapHostItem.getItemId());
-            itemRevisionForPost.setIapHostItemIds(iapHostItemIds);
-        }
 
         //set locales
         ItemRevisionLocaleProperties itemRevisionLocaleProperties = new ItemRevisionLocaleProperties();
