@@ -21,7 +21,7 @@ EOF
 scp /home/silkcloud/apphost-identity-0.0.1-SNAPSHOT.zip 10.24.8.50:/var/silkcloud
 scp /home/silkcloud/apphost-identity-0.0.1-SNAPSHOT.zip 10.24.12.50:/var/silkcloud
 
-./foreach-here.sh ppe-apps.txt <<
+./foreach-here.sh ppe-apps.txt << EOF
 cd /var/silkcloud
 unzip -o apphost-identity-0.0.1-SNAPSHOT.zip
 cd apphost-identity-0.0.1-SNAPSHOT

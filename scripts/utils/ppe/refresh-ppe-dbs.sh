@@ -4,8 +4,9 @@ set -e
 
 pushd $DIR
 
-echo -n CRYPTO_KEY: 
+echo -n 'CRYPTO_KEY: '
 read -s CRYPTO_KEY
+echo 
 
 YOUR_USER=shuz
 echo Copying files...
@@ -73,4 +74,6 @@ ssh 10.24.16.50 << EOF
 cd /var/silkcloud/pgha
 ./test/test_master2slave.sh
 EOF
+
+popd
 
