@@ -25,14 +25,6 @@ class RoleAssignmentFilterImpl implements RoleAssignmentFilter {
 
     @Override
     RoleAssignment filterForPatch(RoleAssignment roleAssignment, RoleAssignment oldRoleAssignment) {
-        if (!roleAssignment.isPropertyAssigned('roleId')) {
-            roleAssignment.roleId = oldRoleAssignment.roleId
-        }
-
-        if (!roleAssignment.isPropertyAssigned('assignee')) {
-            roleAssignment.assignee = oldRoleAssignment.assignee
-        }
-
         roleAssignment.adminInfo = oldRoleAssignment.adminInfo
         return roleAssignment
     }

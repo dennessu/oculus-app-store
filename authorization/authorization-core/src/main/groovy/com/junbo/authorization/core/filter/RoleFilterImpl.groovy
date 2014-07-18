@@ -25,14 +25,6 @@ class RoleFilterImpl implements RoleFilter {
 
     @Override
     Role filterForPatch(Role role, Role oldRole) {
-        if (!role.isPropertyAssigned('name')) {
-            role.name = oldRole.name
-        }
-
-        if (!role.isPropertyAssigned('target')) {
-            role.target = oldRole.target
-        }
-
         role.adminInfo = oldRole.adminInfo
 
         return role
