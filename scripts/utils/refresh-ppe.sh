@@ -12,8 +12,7 @@ cd /var/silkcloud
 unzip -o apphost-crypto-0.0.1-SNAPSHOT.zip
 cd apphost-crypto-0.0.1-SNAPSHOT
 ./shutdown.sh
-./startup.sh
-exit
+./startup.sh > /dev/null 2>&1
 EOF
 
 ssh 10.24.36.10 << EOF
@@ -21,8 +20,7 @@ cd /var/silkcloud
 unzip -o apphost-crypto-0.0.1-SNAPSHOT.zip
 cd apphost-crypto-0.0.1-SNAPSHOT
 ./shutdown.sh
-./startup.sh
-exit
+./startup.sh > /dev/null 2>&1
 EOF
 
 scp /home/silkcloud/apphost-identity-0.0.1-SNAPSHOT.zip 10.24.8.50:/var/silkcloud
@@ -33,8 +31,7 @@ cd /var/silkcloud
 unzip -o apphost-identity-0.0.1-SNAPSHOT.zip
 cd apphost-identity-0.0.1-SNAPSHOT
 ./shutdown.sh
-./startup.sh
-exit
+./startup.sh > /dev/null 2>&1
 EOF
 
 ssh 10.24.12.50 << EOF
@@ -42,8 +39,7 @@ cd /var/silkcloud
 unzip -o apphost-identity-0.0.1-SNAPSHOT.zip
 cd apphost-identity-0.0.1-SNAPSHOT
 ./shutdown.sh
-./startup.sh
-exit
+./startup.sh > /dev/null 2>&1
 EOF
 
 scp /home/silkcloud/apphost-dataloader-0.0.1-SNAPSHOT.zip 10.24.32.10:/var/silkcloud

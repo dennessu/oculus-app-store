@@ -103,7 +103,7 @@ Then encrypt the whole string using:
 ./scripts/AESCipher.py encrypt $CRYPTO_KEY $CLOUDANT_PII_URIS
 ```
 
-1. Obtain the Sabris password and encrypt it
+1. Obtain the Sabrix password and encrypt it
 ```
 ./scripts/AESCipher.py encrypt $CRYPTO_KEY $SABRIX_PASSWORD
 ```

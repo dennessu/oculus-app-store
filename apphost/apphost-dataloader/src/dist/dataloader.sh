@@ -23,7 +23,7 @@ die ( ) {
     exit 1
 }
 
-export APPHOST_CLI_OPTS=""
+export APPHOST_CLI_OPTS="-Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=9402,suspend=n"
 
 # check environment
 if ! grep '^environment=[a-zA-Z0-9_]\+' /etc/silkcloud/configuration.properties; then

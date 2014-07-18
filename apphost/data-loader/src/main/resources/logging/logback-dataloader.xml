@@ -21,8 +21,4 @@
         <appender-ref ref="CONSOLE"/>
     </logger>
 
-    <logger name="com.junbo.apphost" level="INFO">
-        <appender-ref ref="CONSOLE"/>
-    </logger>
-
 </configuration>

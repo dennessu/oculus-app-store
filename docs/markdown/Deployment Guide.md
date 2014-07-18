@@ -380,10 +380,12 @@ cd apphost-dataloader-0.0.1-SNAPSHOT
 
 ### Load Crypto Key
   * `10.24.32.10`
-Run the following command on bastion servers using silkcloud:
+Run the following command on crypto servers:
 ```
-curl -X POST -v -d "{\"value\": \"$MASTER_KEY\"}" "10.24.32.10:8080/v1/master-key" -H "Content-Type: application/json"
+cd /var/silkcloud/apphost-dataloader-0.0.1-SNAPSHOT
+./dataloader.sh imasterkey
 ```
+When prompted, paste in MASTER_KEY.
 
 ### Sync Crypto Keys in SQL
   * 10.24.34.10

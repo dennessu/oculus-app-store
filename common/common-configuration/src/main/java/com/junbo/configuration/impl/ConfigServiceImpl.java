@@ -362,9 +362,10 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         cipherService = new AESCipherServiceImpl(keyStr);
 
         finalProperties = new Properties();
-        finalProperties.putAll(decryptProperties(jarProperties));
-        finalProperties.putAll(decryptProperties(overrideProperties));
-        finalProperties.putAll(decryptProperties(commandLineProperties));
+        merge(finalProperties, jarProperties);
+        merge(finalProperties, overrideProperties);
+        merge(finalProperties, commandLineProperties);
+        finalProperties = decryptProperties(finalProperties);
 
         configContext.complete(
                 finalProperties.getProperty(ACTIVE_DC_OPTS),
