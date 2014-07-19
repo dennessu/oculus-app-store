@@ -2,11 +2,13 @@ package com.junbo.csr.core.service
 
 import com.junbo.common.id.GroupId
 import com.junbo.common.id.OrganizationId
+import com.junbo.common.id.UserGroupId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.Group
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserGroup
 import com.junbo.identity.spec.v1.model.UserName
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -27,4 +29,7 @@ public interface IdentityService {
 
     String getUserNameByUser(User user)
     List<GroupId> getGroupIdByUserId(UserId userId)
+    UserGroup getUserGroupMembership(UserId userId, GroupId groupId)
+    UserGroup saveUserGroupMembership(UserId userId, GroupId groupId)
+    UserGroup updateUserGroupMembership(UserGroupId userGroupId, UserId userId, GroupId groupId)
 }

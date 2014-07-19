@@ -23,8 +23,6 @@ import com.junbo.identity.spec.v1.resource.UserGroupMembershipResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.glassfish.jersey.server.ContainerRequest
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
@@ -40,7 +38,6 @@ class CsrUserResourceImpl implements CsrUserResource {
     private static final String CSR_INVITATION_PATH = 'csr-users/invite'
     private static final String EMAIL_SOURCE = 'Oculus'
     private static final String CSR_INVITATION_ACTION = 'CsrInvitation'
-    private static final Logger LOGGER = LoggerFactory.getLogger(CsrUserResourceImpl)
 
     private UserGroupMembershipResource userGroupMembershipResource
 
@@ -160,39 +157,32 @@ class CsrUserResourceImpl implements CsrUserResource {
 
             return identityService.getUserByVerifiedEmail(email).then { User user ->
                 return identityService.getGroupById(groupId).then { Group group ->
-                    return userGroupMembershipResource.list(new UserGroupListOptions(userId: user.id as UserId, groupId: pendingGroup.groupId)).then { Results<UserGroup> results ->
-                        UserGroup userGroup = null
-                        if (results == null || results.items == null || results.items.size() == 0) {
-                            userGroup = userGroupMembershipResource.create(new UserGroup(userId: user.id as UserId, groupId: pendingGroup.groupId)).get()
-                        }
-                        else {
-                            userGroup = results.items.get(0)
-                        }
 
-                        CsrInvitationCode code = new CsrInvitationCode(
-                                email: email,
-                                userId: user.id as UserId,
-                                pendingGroupId: pendingGroup.groupId,
-                                inviteGroupId: group.id as GroupId,
-                                userGroupId: userGroup.id as UserGroupId
-                        )
+                    UserGroup userGroup = identityService.saveUserGroupMembership(user.getId(), pendingGroup.groupId)
 
-                        csrInvitationCodeRepository.save(code)
+                    CsrInvitationCode code = new CsrInvitationCode(
+                            email: email,
+                            userId: user.id as UserId,
+                            pendingGroupId: pendingGroup.groupId,
+                            inviteGroupId: group.id as GroupId,
+                            userGroupId: userGroup.id as UserGroupId
+                    )
 
-                        UriBuilder uriBuilder = UriBuilder.fromUri(baseUri)
-                        uriBuilder.path(CSR_INVITATION_PATH)
-                        uriBuilder.queryParam('code', code.code)
-                        uriBuilder.queryParam('locale', locale == null ? 'en_US' : locale)
+                    csrInvitationCodeRepository.save(code)
 
-                        QueryParam queryParam = new QueryParam(
-                                source: EMAIL_SOURCE,
-                                action: CSR_INVITATION_ACTION,
-                                locale: locale == null ? 'en_US' : locale
-                        )
+                    UriBuilder uriBuilder = UriBuilder.fromUri(baseUri)
+                    uriBuilder.path(CSR_INVITATION_PATH)
+                    uriBuilder.queryParam('code', code.code)
+                    uriBuilder.queryParam('locale', locale == null ? 'en_US' : locale)
 
-                        String link = uriBuilder.build().toString()
-                        return emailService.sendCSRInvitationEmail(queryParam, email, user, link)
-                    }
+                    QueryParam queryParam = new QueryParam(
+                            source: EMAIL_SOURCE,
+                            action: CSR_INVITATION_ACTION,
+                            locale: locale == null ? 'en_US' : locale
+                    )
+
+                    String link = uriBuilder.build().toString()
+                    return emailService.sendCSRInvitationEmail(queryParam, email, user, link)
                 }
             }
         }.then {
@@ -203,32 +193,19 @@ class CsrUserResourceImpl implements CsrUserResource {
     @Override
     Promise<Response> confirmCsrInvitation(String code) {
         if (StringUtils.isEmpty(code)) {
-            LOGGER.warn(AppErrors.INSTANCE.csrInvitationCodeMissing().toString())
             throw AppErrors.INSTANCE.csrInvitationCodeMissing().exception()
         }
 
         CsrInvitationCode csrInvitationCode = csrInvitationCodeRepository.getAndRemove(code)
 
         if (csrInvitationCode == null) {
-            LOGGER.warn(AppErrors.INSTANCE.csrInvitationCodeInvalid().toString())
             throw AppErrors.INSTANCE.csrInvitationCodeInvalid().exception()
         }
 
         csrInvitationCodeRepository.removeByUserIdEmail(csrInvitationCode.userId.value, csrInvitationCode.email)
 
-        try {
-            userGroupMembershipResource.delete(csrInvitationCode.userGroupId as UserGroupId).get()
-        }
-        catch (Exception e) {
-            LOGGER.info('')
-        }
-
-        try {
-            userGroupMembershipResource.create(new UserGroup(userId: csrInvitationCode.userId, groupId: csrInvitationCode.inviteGroupId)).get()
-        }
-        catch (Exception e) {
-            LOGGER.info('')
-        }
+        // move user from pending group to tier group
+        identityService.updateUserGroupMembership(csrInvitationCode.userGroupId, csrInvitationCode.userId, csrInvitationCode.inviteGroupId)
 
         return Promise.pure(Response.noContent().build())
     }

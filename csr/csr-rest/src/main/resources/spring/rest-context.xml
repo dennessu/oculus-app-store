@@ -16,7 +16,7 @@
         <property name="clientSecret" value="${csr.login.clientSecret}"/>
         <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
     </bean>
-    
+
     <bean id="defaultCsrGroupResource" class="com.junbo.csr.rest.resource.CsrGroupResourceImpl" scope="prototype">
         <property name="identityService" ref="csrIdentityService" />
         <property name="groupNameList">

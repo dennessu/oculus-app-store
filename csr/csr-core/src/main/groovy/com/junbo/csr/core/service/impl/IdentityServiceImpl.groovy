@@ -2,31 +2,27 @@ package com.junbo.csr.core.service.impl
 
 import com.junbo.common.id.GroupId
 import com.junbo.common.id.OrganizationId
+import com.junbo.common.id.UserGroupId
 import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
 import com.junbo.csr.core.service.IdentityService
 import com.junbo.csr.spec.error.AppErrors
-import com.junbo.identity.spec.v1.model.Group
-import com.junbo.identity.spec.v1.model.Organization
-import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserName
-import com.junbo.identity.spec.v1.model.UserPersonalInfo
+import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.GroupListOptions
 import com.junbo.identity.spec.v1.option.list.OrganizationListOptions
+import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
 import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.identity.spec.v1.option.list.UserPersonalInfoListOptions
 import com.junbo.identity.spec.v1.option.model.GroupGetOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
-import com.junbo.identity.spec.v1.resource.GroupResource
-import com.junbo.identity.spec.v1.resource.OrganizationResource
-import com.junbo.identity.spec.v1.resource.UserGroupMembershipResource
-import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
-import com.junbo.identity.spec.v1.resource.UserResource
+import com.junbo.identity.spec.v1.resource.*
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+
+import java.util.Locale
 
 /**
  * Created by haomin on 14-7-17.
@@ -180,5 +176,27 @@ class IdentityServiceImpl implements IdentityService {
         Results<Group> groups = groupResource.list(new GroupListOptions(userId: userId)).get()
         return groups.items.empty ? (List<GroupId>) Collections.emptyList() :
                 groups.items.collect { Group group -> group.getId() }
+    }
+
+    @Override
+    UserGroup getUserGroupMembership(UserId userId, GroupId groupId) {
+        return null
+    }
+
+    @Override
+    UserGroup saveUserGroupMembership(UserId userId, GroupId groupId) {
+        Results<UserGroup> results = userGroupMembershipResource.list(new UserGroupListOptions(userId: userId, groupId: groupId)).get()
+
+        if (!results.items.empty) {
+            return results.items.get(0)
+        }
+        else {
+            return userGroupMembershipResource.create(new UserGroup(userId: userId, groupId: groupId)).get()
+        }
+    }
+
+    @Override
+    UserGroup updateUserGroupMembership(UserGroupId userGroupId, UserId userId, GroupId groupId) {
+        return userGroupMembershipResource.patch(userGroupId, new UserGroup(userId: userId, groupId: groupId)).get()
     }
 }
