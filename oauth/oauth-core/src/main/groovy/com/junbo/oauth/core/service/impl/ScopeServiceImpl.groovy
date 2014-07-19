@@ -6,9 +6,10 @@
 package com.junbo.oauth.core.service.impl
 
 import com.junbo.authorization.AuthorizeContext
-import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.core.service.ScopeService
+import com.junbo.common.error.AppCommonErrors
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
+import com.junbo.oauth.core.service.ScopeService
 import com.junbo.oauth.core.util.UriUtil
 import com.junbo.oauth.db.exception.DBUpdateConflictException
 import com.junbo.oauth.db.repo.ScopeRepository
@@ -41,17 +42,17 @@ class ScopeServiceImpl implements ScopeService {
     @Override
     Scope saveScope(Scope scope) {
         if (!AuthorizeContext.hasScopes(SCOPE_MANAGE_SCOPE)) {
-            throw AppExceptions.INSTANCE.insufficientScope().exception()
+            throw AppErrors.INSTANCE.insufficientScope().exception()
         }
 
         Scope existingScope = scopeRepository.getScope(scope.name)
 
         if (existingScope != null) {
-            throw AppExceptions.INSTANCE.duplicateEntityName('scope', scope.name).exception()
+            throw AppErrors.INSTANCE.duplicateEntityName('scope', scope.name).exception()
         }
 
         if (scope.logoUri != null && !UriUtil.isValidUri(scope.logoUri)) {
-            throw AppExceptions.INSTANCE.invalidLogoUri(scope.logoUri).exception()
+            throw AppErrors.INSTANCE.invalidLogoUri(scope.logoUri).exception()
         }
 
         return scopeRepository.saveScope(scope)
@@ -65,7 +66,7 @@ class ScopeServiceImpl implements ScopeService {
     @Override
     List<Scope> getScopes(String scopeNames) {
         if (!AuthorizeContext.hasScopes(SCOPE_INFO_SCOPE)) {
-            throw AppExceptions.INSTANCE.insufficientScope().exception()
+            throw AppErrors.INSTANCE.insufficientScope().exception()
         }
 
         String[] names = scopeNames.split(',')
@@ -84,31 +85,31 @@ class ScopeServiceImpl implements ScopeService {
     @Override
     Scope updateScope(String scopeName, Scope scope) {
         if (StringUtils.isEmpty(scope.rev)) {
-            throw AppExceptions.INSTANCE.missingRevision().exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('revision').exception()
         }
 
         if (!AuthorizeContext.hasScopes(SCOPE_MANAGE_SCOPE)) {
-            throw AppExceptions.INSTANCE.insufficientScope().exception()
+            throw AppErrors.INSTANCE.insufficientScope().exception()
         }
 
         Scope existingScope = scopeRepository.getScope(scopeName)
 
         if (scope.rev != existingScope.rev) {
-            throw AppExceptions.INSTANCE.updateConflict().exception()
+            throw AppErrors.INSTANCE.updateConflict().exception()
         }
 
         if (scope.name != existingScope.name) {
-            throw AppExceptions.INSTANCE.cantUpdateFields('scope_name').exception()
+            throw AppErrors.INSTANCE.cantUpdateFields('scope_name').exception()
         }
 
         if (scope.logoUri != null && !UriUtil.isValidUri(scope.logoUri)) {
-            throw AppExceptions.INSTANCE.invalidLogoUri(scope.logoUri).exception()
+            throw AppErrors.INSTANCE.invalidLogoUri(scope.logoUri).exception()
         }
 
         try {
             return scopeRepository.updateScope(scope, existingScope)
         } catch (DBUpdateConflictException e) {
-            throw AppExceptions.INSTANCE.updateConflict().exception()
+            throw AppErrors.INSTANCE.updateConflict().exception()
         }
     }
 }

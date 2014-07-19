@@ -1,10 +1,10 @@
 package com.junbo.order.core.impl.common
 
-import com.junbo.order.spec.model.enums.PayoutStatus
-import com.junbo.order.spec.error.AppErrors
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.order.spec.model.OrderQueryParam
 import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.model.SubledgerParam
+import com.junbo.order.spec.model.enums.PayoutStatus
 import groovy.transform.CompileStatic
 import org.springframework.util.StringUtils
 
@@ -51,7 +51,7 @@ class ParamUtils {
         }
 
         if (param.sellerId == null) {
-            throw AppErrors.INSTANCE.fieldInvalid('sellerId', 'sellerId is missing').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('sellerId').exception()
         }
 
         return param

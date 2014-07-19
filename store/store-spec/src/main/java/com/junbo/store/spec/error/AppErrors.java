@@ -16,23 +16,23 @@ import com.junbo.common.error.ErrorProxy;
 public interface AppErrors {
     AppErrors INSTANCE = ErrorProxy.newProxyInstance(AppErrors.class);
 
-    @ErrorDef(httpStatusCode = 412, code = "101", message = "Item Not Found With Package Name")
+    @ErrorDef(httpStatusCode = 412, code = "101", message = "Item Not Found With Package Name.")
     AppError itemNotFoundWithPackageName();
 
-    @ErrorDef(httpStatusCode = 412, code = "102", message = "Entitlement Not Consumable",
-            field = "entitlementId", reason = "Entitlement not consumable, entitlementId={0}")
+    @ErrorDef(httpStatusCode = 412, code = "102", message = "Entitlement Not Consumable.",
+            field = "entitlementId", reason = "Entitlement not consumable, entitlementId={0}.")
     AppError entitlementNotConsumable(String entitlementId);
 
-    @ErrorDef(httpStatusCode = 412, code = "103", message = "Entitlement Not Enough Use Count",
-            field = "entitlementId", reason = "Entitlement not enough use count, entitlementId={0}")
+    @ErrorDef(httpStatusCode = 412, code = "103", message = "Entitlement Not Enough Use Count.",
+            field = "entitlementId", reason = "Entitlement not enough use count, entitlementId={0}.")
     AppError entitlementNotEnoughUsecount(String entitlementId);
 
-    @ErrorDef(httpStatusCode = 412, code = "104", message = "Stored Value Payment Instrument Not Found")
+    @ErrorDef(httpStatusCode = 412, code = "104", message = "Stored Value Payment Instrument Not Found.")
     AppError storeValuePINotFound();
 
-    @ErrorDef(httpStatusCode = 412, code = ErrorCode.USER_NOT_FOUND_BY_USERNAME, message = "User not found by username.")
+    @ErrorDef(httpStatusCode = 412, code = "105", message = "User Not Found By Username.")
     AppError userNotFoundByUsername();
 
-    @ErrorDef(httpStatusCode = 412, code = ErrorCode.INVALID_BILLING_UPDATE_OPERATION, message = "Invalid billing update operation.")
+    @ErrorDef(httpStatusCode = 412, code = "106", message = "Invalid billing update operation.")
     AppError invalidBillingUpdateOperation();
 }

@@ -5,16 +5,14 @@
  */
 
 package com.junbo.order.clientproxy.identity.impl
+
 import com.junbo.common.enumid.CurrencyId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.json.ObjectMapperProvider
-import com.junbo.identity.spec.v1.model.Address
-import com.junbo.identity.spec.v1.model.Email
-import com.junbo.identity.spec.v1.model.Organization
-import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserPersonalInfo
+import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.model.CurrencyGetOptions
 import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
@@ -32,6 +30,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
+
 /**
  * Created by linyi on 14-2-19.
  */
@@ -94,7 +93,7 @@ class IdentityFacadeImpl implements IdentityFacade {
     @Override
     Promise<com.junbo.identity.spec.v1.model.Currency> getCurrency(String currency) {
         if (currency == null || currency.isEmpty()) {
-            throw AppErrors.INSTANCE.missingParameterField('currency').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('currency').exception()
         }
         return currencyResource.get(new CurrencyId(currency), new CurrencyGetOptions()).recover {
             Throwable throwable ->

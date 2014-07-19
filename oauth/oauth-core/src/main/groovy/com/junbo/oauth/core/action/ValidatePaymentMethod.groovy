@@ -1,6 +1,7 @@
 package com.junbo.oauth.core.action
 
 import com.junbo.common.enumid.CountryId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
 import com.junbo.identity.spec.v1.model.Country
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
@@ -10,7 +11,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.spec.param.OAuthParameters
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -69,7 +70,7 @@ class ValidatePaymentMethod implements Action {
             // todo: enable this validation when country resource setup properly, now we just disable it
             /*
             if (!country.subCountries.containsKey(subCountry)) {
-                contextWrapper.errors.add(AppExceptions.INSTANCE.invalidParameter(OAuthParameters.SUB_COUNTRY).error())
+                contextWrapper.errors.add(AppErrors.INSTANCE.invalidParameter(OAuthParameters.SUB_COUNTRY).error())
             }
             */
 
@@ -87,12 +88,12 @@ class ValidatePaymentMethod implements Action {
         String parameter = parameterMap.getFirst(parameterName)
 
         if (StringUtils.isEmpty(parameter)) {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.missingParameter(parameterName).error())
+            contextWrapper.errors.add(AppCommonErrors.INSTANCE.parameterRequired(parameterName).error())
         }
 
         if (pattern != null && parameter != null) {
             if (!pattern.matcher(parameter).find()) {
-                contextWrapper.errors.add(AppExceptions.INSTANCE.invalidParameter(parameterName).error())
+                contextWrapper.errors.add(AppCommonErrors.INSTANCE.parameterInvalid(parameterName).error())
             }
         }
     }
@@ -102,7 +103,7 @@ class ValidatePaymentMethod implements Action {
         if (throwable instanceof AppErrorException) {
             contextWrapper.errors.add(((AppErrorException) throwable).error.error())
         } else {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingIdentity().error())
+            contextWrapper.errors.add(AppErrors.INSTANCE.errorCallingIdentity().error())
         }
     }
 }

@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.util.IdFormatter
 import com.junbo.langur.core.promise.Promise
@@ -12,7 +13,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.db.repo.LoginStateRepository
@@ -79,11 +80,11 @@ class Logout implements Action {
 
             def client = clientRepository.getClient(idToken.aud)
             if (client == null) {
-                throw AppExceptions.INSTANCE.invalidIdToken().exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('id_token_hint').exception()
             }
 
             if (new Date().time / 1000 > idToken.exp) {
-                throw AppExceptions.INSTANCE.expiredIdToken().exception()
+                throw AppErrors.INSTANCE.expiredIdToken().exception()
             }
 
             String postLogoutRedirectUri = parameterMap.getFirst(OAuthParameters.POST_LOGOUT_REDIRECT_URI)
@@ -91,7 +92,7 @@ class Logout implements Action {
                 postLogoutRedirectUri = client.defaultLogoutRedirectUri
             } else {
                 if (!client.logoutRedirectUris.contains(postLogoutRedirectUri)) {
-                    throw AppExceptions.INSTANCE.invalidPostLogoutRedirectUri(postLogoutRedirectUri).exception()
+                    throw AppErrors.INSTANCE.invalidPostLogoutRedirectUri(postLogoutRedirectUri).exception()
                 }
             }
 

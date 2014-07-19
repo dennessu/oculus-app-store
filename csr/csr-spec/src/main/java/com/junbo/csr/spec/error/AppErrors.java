@@ -59,19 +59,19 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 412, code = "114", message = "Invalid Request")
     AppError invalidRequest();
 
-    @ErrorDef(httpStatusCode = 412, code = "115", message = "Get access Token failed.")
+    @ErrorDef(httpStatusCode = 412, code = "115", message = "Get access Token failed")
     AppError getAccessTokenFailed();
 
-    @ErrorDef(httpStatusCode = 412, code = "116", message = "CSR group not found.")
+    @ErrorDef(httpStatusCode = 412, code = "116", message = "CSR group not found")
     AppError csrGroupNotFound();
 
-    @ErrorDef(httpStatusCode = 412, code = "117", message = "Pending csr group not found.")
+    @ErrorDef(httpStatusCode = 412, code = "117", message = "Pending csr group not found")
     AppError pendingCsrGroupNotFound();
 
-    @ErrorDef(httpStatusCode = 412, code = "118", message = "Email template not found.")
+    @ErrorDef(httpStatusCode = 412, code = "118", message = "Email template not found")
     AppError emailTemplateNotFound();
 
-    @ErrorDef(httpStatusCode = 412, code = "119", message = "Send email failed.")
+    @ErrorDef(httpStatusCode = 412, code = "119", message = "Send email failed")
     AppError sendEmailFailed();
 
     @ErrorDef(httpStatusCode = 412, code = "120", message = "CSR Invitation Code is Missing")

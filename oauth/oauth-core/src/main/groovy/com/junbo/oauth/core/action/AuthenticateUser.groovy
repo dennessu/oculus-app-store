@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppError
 import com.junbo.common.error.AppErrorException
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
@@ -13,7 +14,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.UserService
 import com.junbo.oauth.spec.model.LoginState
 import com.junbo.oauth.spec.param.OAuthParameters
@@ -78,11 +79,11 @@ class AuthenticateUser implements Action {
         String password = parameterMap.getFirst(OAuthParameters.PASSWORD)
 
         if (!StringUtils.hasText(username)) {
-            handleAppError(contextWrapper, AppExceptions.INSTANCE.missingLoginOrUsername())
+            handleAppError(contextWrapper, AppCommonErrors.INSTANCE.fieldRequired('login or username'))
         }
 
         if (!StringUtils.hasText(password)) {
-            handleAppError(contextWrapper, AppExceptions.INSTANCE.missingPassword())
+            handleAppError(contextWrapper, AppCommonErrors.INSTANCE.parameterRequired('password'))
         }
 
         if (!contextWrapper.errors.isEmpty()) {
@@ -106,7 +107,7 @@ class AuthenticateUser implements Action {
                 // either the username does not exists, or the password is invalid.
                     case HttpStatus.NOT_FOUND.value():
                     case HttpStatus.UNAUTHORIZED.value():
-                        handleAppError(contextWrapper, AppExceptions.INSTANCE.invalidCredential())
+                        handleAppError(contextWrapper, AppErrors.INSTANCE.invalidCredential())
                         break
                 // For response of FORBIDDEN, it suggests that captcha is required for user login.
                     case HttpStatus.FORBIDDEN.value():
@@ -117,18 +118,18 @@ class AuthenticateUser implements Action {
                     case HttpStatus.INTERNAL_SERVER_ERROR.value():
                     default:
                         LOGGER.error('Error calling the identity service.', e)
-                        handleAppError(contextWrapper, AppExceptions.INSTANCE.errorCallingIdentity())
+                        handleAppError(contextWrapper, AppErrors.INSTANCE.errorCallingIdentity())
                         break
                 }
             } else {
                 LOGGER.error('Error calling the identity service.', e)
-                handleAppError(contextWrapper, AppExceptions.INSTANCE.errorCallingIdentity())
+                handleAppError(contextWrapper, AppErrors.INSTANCE.errorCallingIdentity())
             }
 
             return Promise.pure(null)
         }.then { UserCredentialVerifyAttempt loginAttempt ->
             if (loginAttempt == null || !loginAttempt.succeeded) {
-                handleAppError(contextWrapper, AppExceptions.INSTANCE.invalidCredential())
+                handleAppError(contextWrapper, AppErrors.INSTANCE.invalidCredential())
                 return Promise.pure(new ActionResult('error'))
             }
 

@@ -6,7 +6,7 @@
 package com.junbo.oauth.api.endpoint
 
 import com.junbo.langur.core.promise.Promise
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.spec.endpoint.AccessTokenResource
 import com.junbo.oauth.spec.model.AccessToken
@@ -33,7 +33,7 @@ class AccessTokenResourceImpl implements AccessTokenResource {
         AccessToken token = tokenService.getAccessToken(accessToken)
 
         if (token == null) {
-            throw AppExceptions.INSTANCE.invalidAccessToken(accessToken).exception()
+            throw AppErrors.INSTANCE.invalidAccessToken(accessToken).exception()
         }
 
         return Promise.pure(token)

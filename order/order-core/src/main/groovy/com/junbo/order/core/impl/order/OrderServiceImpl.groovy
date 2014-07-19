@@ -6,6 +6,7 @@
 
 package com.junbo.order.core.impl.order
 import com.junbo.catalog.spec.model.offer.OfferRevision
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
@@ -297,9 +298,9 @@ class OrderServiceImpl implements OrderService {
             if (throwable instanceof AppErrorException) {
                 throw throwable
             } else if (throwable instanceof AssertionError) {
-                throw AppErrors.INSTANCE.unexpectedError('Unexpected assertion failure').exception()
+                throw AppCommonErrors.INSTANCE.internalServerError(new Exception(throwable)).exception()
             } else {
-                throw AppErrors.INSTANCE.unexpectedError(throwable.message).exception()
+                throw AppCommonErrors.INSTANCE.internalServerError(new Exception(throwable)).exception()
             }
         }.syncThen {
             return context

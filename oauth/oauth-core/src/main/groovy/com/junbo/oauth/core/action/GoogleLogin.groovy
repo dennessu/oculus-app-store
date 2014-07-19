@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
@@ -13,7 +14,7 @@ import com.junbo.oauth.clientproxy.google.GoogleAccount
 import com.junbo.oauth.clientproxy.google.GoogleApi
 import com.junbo.oauth.clientproxy.google.GoogleException
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.spec.model.ThirdPartyAccount
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
@@ -45,17 +46,17 @@ class GoogleLogin implements Action {
         String googleAuth = parameterMap.getFirst(OAuthParameters.GOOGLE_AUTH)
 
         if (StringUtils.isEmpty(googleAuth)) {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.missingGoogleAuth().error())
+            contextWrapper.errors.add(AppCommonErrors.INSTANCE.fieldRequired('googleAuth').error())
             return Promise.pure(null)
         }
 
         return googleApi.getAccountInfo("Bearer $googleAuth").recover { Throwable e ->
             if (e instanceof GoogleException) {
                 String message = (e as GoogleException).getMessage()
-                contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingGoogle(message).error())
+                contextWrapper.errors.add(AppErrors.INSTANCE.errorCallingGoogle(message).error())
             } else {
                 LOGGER.error('Error calling Google api', e)
-                contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingGoogle().error())
+                contextWrapper.errors.add(AppErrors.INSTANCE.errorCallingGoogle().error())
             }
 
             return Promise.pure(null)

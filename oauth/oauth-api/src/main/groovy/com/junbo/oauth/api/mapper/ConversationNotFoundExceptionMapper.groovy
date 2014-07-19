@@ -1,7 +1,8 @@
 package com.junbo.oauth.api.mapper
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.webflow.ConversationNotfFoundException
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import groovy.transform.CompileStatic
 
 import javax.ws.rs.core.Response
@@ -17,6 +18,6 @@ class ConversationNotFoundExceptionMapper implements ExceptionMapper<Conversatio
 
     @Override
     Response toResponse(ConversationNotfFoundException exception) {
-        return AppExceptions.INSTANCE.invalidCid().exception().response
+        return AppCommonErrors.INSTANCE.fieldInvalid('cid').exception().response
     }
 }

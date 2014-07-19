@@ -5,12 +5,13 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.util.AuthorizationHeaderUtil
 import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.spec.model.Client
@@ -70,13 +71,13 @@ class AuthenticateClient implements Action {
         }
 
         if (!StringUtils.hasText(clientId)) {
-            throw AppExceptions.INSTANCE.missingClientId().exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('client_id').exception()
         }
 
         Client appClient = clientRepository.getClient(clientId)
 
         if (appClient == null) {
-            throw AppExceptions.INSTANCE.invalidClientId(clientId).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('client_id', clientId).exception()
         }
 
         if (clientSecret == null) {
@@ -84,12 +85,12 @@ class AuthenticateClient implements Action {
         }
 
         if (!StringUtils.hasText(clientSecret)) {
-            throw AppExceptions.INSTANCE.missingClientSecret().exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('client_secret').exception()
         }
 
         // Validate the client secret in the parameter with the client secret in the configuration.
         if (appClient.clientSecret != clientSecret) {
-            throw AppExceptions.INSTANCE.invalidClientSecret(clientSecret).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('client_secret', clientSecret).exception()
         }
 
         // Validation passed, save the client in the actionContext.

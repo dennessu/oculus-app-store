@@ -5,8 +5,9 @@
  */
 package com.junbo.oauth.api.endpoint
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.promise.Promise
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.core.util.AuthorizationHeaderUtil
 import com.junbo.oauth.db.repo.ClientRepository
@@ -78,12 +79,12 @@ class RevokeEndpointImpl implements RevokeEndpoint {
     Promise<Response> revoke(String authorization, String token, String tokenTypeHint) {
         // Validate the authorization, the authorization can't be empty.
         if (StringUtils.isEmpty(authorization)) {
-            throw AppExceptions.INSTANCE.missingAuthorization().exception()
+            throw AppErrors.INSTANCE.missingAuthorization().exception()
         }
 
         // Validate the token, the token can't be empty.
         if (StringUtils.isEmpty(token)) {
-            throw AppExceptions.INSTANCE.missingAccessToken().exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('access_token').exception()
         }
 
         // Parse the client id and client secret from the authorization.
@@ -93,11 +94,11 @@ class RevokeEndpointImpl implements RevokeEndpoint {
 
         // Validate the client id and client secret in the authorization.
         if (client == null) {
-            throw AppExceptions.INSTANCE.invalidClientId(clientCredential.clientId).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('client_id', clientCredential.clientId).exception()
         }
 
         if (client.clientSecret != clientCredential.clientSecret) {
-            throw AppExceptions.INSTANCE.invalidClientSecret(clientCredential.clientSecret).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('client_secret', clientCredential.clientSecret).exception()
         }
 
         // If the token is an access token, revoke it as an access token.
@@ -107,7 +108,7 @@ class RevokeEndpointImpl implements RevokeEndpoint {
         } else if (tokenService.isValidRefreshToken(token)) {
             tokenService.revokeRefreshToken(token, client)
         } else {
-            throw AppExceptions.INSTANCE.invalidTokenType().exception()
+            throw AppErrors.INSTANCE.invalidTokenType().exception()
         }
 
         // Simply return an OK response.
@@ -124,19 +125,19 @@ class RevokeEndpointImpl implements RevokeEndpoint {
     Promise<Response> revokeConsent(String authorization, String clientId) {
         // Validate the authorization, the authorization can't be empty.
         if (StringUtils.isEmpty(authorization)) {
-            throw AppExceptions.INSTANCE.missingAuthorization().exception()
+            throw AppErrors.INSTANCE.missingAuthorization().exception()
         }
 
         // Validate the clientId, the clientId can't be empty.
         if (StringUtils.isEmpty(clientId)) {
-            throw AppExceptions.INSTANCE.missingClientId().exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('client_id').exception()
         }
 
         // Retrieve the client information.
         Client client = clientRepository.getClient(clientId)
 
         if (client == null) {
-            throw AppExceptions.INSTANCE.invalidClientId(clientId).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('client_id', clientId).exception()
         }
 
         // Parse the access token from the authorization header.
@@ -144,7 +145,7 @@ class RevokeEndpointImpl implements RevokeEndpoint {
 
         // The access token must have the consent.manage scope.
         if (!accessToken.scopes.contains(CONSENT_MANAGE_SCOPE)) {
-            throw AppExceptions.INSTANCE.insufficientScope().exception()
+            throw AppErrors.INSTANCE.insufficientScope().exception()
         }
 
         // Retrieve the consent of the given user and client id.

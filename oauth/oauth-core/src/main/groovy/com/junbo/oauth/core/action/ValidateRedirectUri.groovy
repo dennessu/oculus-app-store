@@ -5,12 +5,13 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.util.UriUtil
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
@@ -34,7 +35,7 @@ class ValidateRedirectUri implements Action {
         }
 
         if (redirectUri == null) {
-            throw AppExceptions.INSTANCE.invalidRedirectUri(redirectUri).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('redirect_uri', redirectUri).exception()
         }
 
         boolean allowed = client.redirectUris.any {
@@ -42,7 +43,7 @@ class ValidateRedirectUri implements Action {
         }
 
         if (!allowed) {
-            throw AppExceptions.INSTANCE.missingRedirectUri().exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('redirect_uri').exception()
         }
 
         def oauthInfo = contextWrapper.oauthInfo

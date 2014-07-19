@@ -5,12 +5,13 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.spec.model.Display
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
@@ -40,7 +41,7 @@ class ValidateDisplay implements Action {
         Display display = defaultDisplay
         if (StringUtils.hasText(displayParam)) {
             if (!Display.isValid(displayParam)) {
-                throw AppExceptions.INSTANCE.invalidDisplay(displayParam).exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('display', displayParam).exception()
             }
 
             display = Display.valueOf(displayParam.toUpperCase())

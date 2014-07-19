@@ -7,7 +7,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.spec.param.OAuthParameters
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.model.TypeSpecificDetails
@@ -77,7 +77,7 @@ class CreatePaymentInstrument implements Action {
         if (throwable instanceof AppErrorException) {
             contextWrapper.errors.add(((AppErrorException) throwable).error.error())
         } else {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingPayment().error())
+            contextWrapper.errors.add(AppErrors.INSTANCE.errorCallingPayment().error())
         }
     }
 }
