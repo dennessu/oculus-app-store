@@ -9,11 +9,7 @@ import com.junbo.common.model.Results
 import com.junbo.csr.core.service.IdentityService
 import com.junbo.csr.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.*
-import com.junbo.identity.spec.v1.option.list.GroupListOptions
-import com.junbo.identity.spec.v1.option.list.OrganizationListOptions
-import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
-import com.junbo.identity.spec.v1.option.list.UserListOptions
-import com.junbo.identity.spec.v1.option.list.UserPersonalInfoListOptions
+import com.junbo.identity.spec.v1.option.list.*
 import com.junbo.identity.spec.v1.option.model.GroupGetOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
@@ -179,8 +175,32 @@ class IdentityServiceImpl implements IdentityService {
     }
 
     @Override
-    UserGroup getUserGroupMembership(UserId userId, GroupId groupId) {
-        return null
+    UserGroup switchUserGroupMembershipWithinGroups(UserId userId, GroupId groupId, List<GroupId> withinGroups) {
+        if (!withinGroups.contains(groupId)) {
+            throw AppErrors.INSTANCE.fieldInvalid('groupId').exception()
+        }
+
+        Results<UserGroup> results = userGroupMembershipResource.list(new UserGroupListOptions(userId: userId)).get()
+
+        // retains only within groups
+        results.items.retainAll { UserGroup userGroup ->
+            withinGroups.contains(userGroup.groupId)
+        }
+
+        if (results.items.empty) {
+            return userGroupMembershipResource.create(new UserGroup(userId: userId, groupId: groupId)).get()
+        }
+        else if (results.items.size() == 1) {
+            UserGroup updated = results.items.get(0)
+            updated.groupId = groupId
+            return userGroupMembershipResource.put(updated.id as UserGroupId, updated).get()
+        }
+        else {
+            for (UserGroup userGroup in results.items) {
+                userGroupMembershipResource.delete(userGroup.id as UserGroupId).get()
+            }
+            return userGroupMembershipResource.create(new UserGroup(userId: userId, groupId: groupId)).get()
+        }
     }
 
     @Override

@@ -34,10 +34,9 @@
 
     <bean id="defaultCsrUserResource" class="com.junbo.csr.rest.resource.CsrUserResourceImpl" scope="prototype">
         <property name="csrGroupResource" ref="defaultCsrGroupResource"/>
-        <property name="userGroupMembershipResource" ref="csr_userGroupMembershipResource" />
         <property name="identityService" ref="csrIdentityService" />
-        <property name="csrInvitationCodeRepository" ref="csrInvitaionCodeRepo" />
         <property name="emailService" ref="csrEmailService" />
+        <property name="csrInvitationCodeRepository" ref="csrInvitaionCodeRepo" />
         <property name="pendingGroupName" value="CSR_PENDING"/>
     </bean>
 

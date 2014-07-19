@@ -29,7 +29,7 @@ public interface IdentityService {
 
     String getUserNameByUser(User user)
     List<GroupId> getGroupIdByUserId(UserId userId)
-    UserGroup getUserGroupMembership(UserId userId, GroupId groupId)
+    UserGroup switchUserGroupMembershipWithinGroups(UserId userId, GroupId groupId, List<GroupId> groupIdList)
     UserGroup saveUserGroupMembership(UserId userId, GroupId groupId)
     UserGroup updateUserGroupMembership(UserGroupId userGroupId, UserId userId, GroupId groupId)
 }

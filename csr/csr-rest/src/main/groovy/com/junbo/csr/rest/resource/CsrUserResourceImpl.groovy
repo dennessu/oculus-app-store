@@ -18,8 +18,6 @@ import com.junbo.email.spec.model.QueryParam
 import com.junbo.identity.spec.v1.model.Group
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserGroup
-import com.junbo.identity.spec.v1.option.list.UserGroupListOptions
-import com.junbo.identity.spec.v1.resource.UserGroupMembershipResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.glassfish.jersey.server.ContainerRequest
@@ -39,8 +37,6 @@ class CsrUserResourceImpl implements CsrUserResource {
     private static final String EMAIL_SOURCE = 'Oculus'
     private static final String CSR_INVITATION_ACTION = 'CsrInvitation'
 
-    private UserGroupMembershipResource userGroupMembershipResource
-
     private IdentityService identityService
     private EmailService emailService
 
@@ -56,11 +52,6 @@ class CsrUserResourceImpl implements CsrUserResource {
     @Required
     void setPendingGroupName(String pendingGroupName) {
         this.pendingGroupName = pendingGroupName
-    }
-
-    @Required
-    void setUserGroupMembershipResource(UserGroupMembershipResource userGroupMembershipResource) {
-        this.userGroupMembershipResource = userGroupMembershipResource
     }
 
     @Required
@@ -117,28 +108,8 @@ class CsrUserResourceImpl implements CsrUserResource {
                 (List<GroupId>) Collections.emptyList() :
                 csrGroupResults.items.collect { CsrGroup csrGroup -> csrGroup.groupId }
 
-        return userGroupMembershipResource.list(new UserGroupListOptions(userId: userId)).then { Results<UserGroup> results ->
-            if (results != null && results.items != null) {
-                return Promise.each(results.items) { UserGroup userGroup ->
-                    if (userGroup.groupId != groupId && groupIds.contains(userGroup.groupId)) {
-                        return userGroupMembershipResource.delete(userGroup.id as UserGroupId)
-                    }
-                }.then {
-                    results.items.retainAll { UserGroup userGroup ->
-                        userGroup.groupId == groupId
-                    }
-
-                    if (results.items.size() == 0) {
-                        return userGroupMembershipResource.create(new UserGroup(userId: userId, groupId: groupId))
-                    }
-                }
-            }
-            else {
-                return userGroupMembershipResource.create(new UserGroup(userId: userId, groupId: groupId))
-            }
-        }.then {
-            return Promise.pure(Response.noContent().build())
-        }
+        identityService.switchUserGroupMembershipWithinGroups(userId, groupId, groupIds)
+        return Promise.pure(Response.noContent().build())
     }
 
     @Override
