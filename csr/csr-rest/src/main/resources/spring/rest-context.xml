@@ -17,9 +17,8 @@
         <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
     </bean>
     <bean id="defaultCsrGroupResource" class="com.junbo.csr.rest.resource.CsrGroupResourceImpl" scope="prototype">
-        <property name="organizationResource" ref="csr_organizationResource"/>
+        <property name="identityService" ref="csrIdentityService" />
         <property name="groupResource" ref="csr_groupResource"/>
-        <property name="userResource" ref="csr_userResource"/>
         <property name="groupNameList">
             <list>
                 <value>CSR_T1</value>
@@ -32,18 +31,14 @@
         <property name="organizationName" value="${csr.organization.name}"/>
         <property name="organizationOwner" value="${csr.organization.owner}"/>
     </bean>
+
     <bean id="defaultCsrUserResource" class="com.junbo.csr.rest.resource.CsrUserResourceImpl" scope="prototype">
         <property name="csrGroupResource" ref="defaultCsrGroupResource"/>
-        <property name="userPersonalInfoResource" ref="csr_userPersonalInfoResource"/>
-        <property name="userResource" ref="csr_userResource"/>
-        <property name="groupResource" ref="csr_groupResource"/>
         <property name="userGroupMembershipResource" ref="csr_userGroupMembershipResource" />
         <property name="identityService" ref="csrIdentityService" />
         <property name="csrInvitationCodeRepository" ref="csrInvitaionCodeRepo" />
-        <property name="emailResource" ref="csr_emailResource" />
-        <property name="emailTemplateResource" ref="csr_emailTemplateResource" />
+        <property name="emailService" ref="csrEmailService" />
         <property name="pendingGroupName" value="CSR_PENDING"/>
-        <property name="inactiveGroupName" value="CSR_INACTIVE"/>
     </bean>
 
     <bean id="defaultCsrUpdateResourceClientFactory" class="com.junbo.csr.spec.resource.proxy.CsrUpdateResourceClientProxyFactory"/>

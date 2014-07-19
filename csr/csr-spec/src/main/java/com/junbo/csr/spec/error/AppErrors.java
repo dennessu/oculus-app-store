@@ -10,6 +10,7 @@ import com.junbo.common.error.ErrorDef;
 import com.junbo.common.error.ErrorProxy;
 import com.junbo.common.id.CsrLogId;
 import com.junbo.common.id.CsrUpdateId;
+import com.junbo.common.id.UserId;
 
 /**
  * AppErrors.
@@ -28,9 +29,6 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "104", message = "Invalid Country Code")
     AppError invalidCountryCode();
-
-    @ErrorDef(httpStatusCode = 412, code = "105", message = "User Not Found")
-    AppError userNotFound();
 
     @ErrorDef(httpStatusCode = 412, code = "106", message = "Group Not Found")
     AppError groupNotFound();
@@ -62,21 +60,33 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 412, code = "115", message = "Get access Token failed")
     AppError getAccessTokenFailed();
 
-    @ErrorDef(httpStatusCode = 412, code = "116", message = "CSR group not found")
-    AppError csrGroupNotFound();
+    @ErrorDef(httpStatusCode = 412, code = "116", message = "CSR Group Not Loaded")
+    AppError csrGroupNotLoaded();
 
-    @ErrorDef(httpStatusCode = 412, code = "117", message = "Pending csr group not found")
+    @ErrorDef(httpStatusCode = 412, code = "117", message = "Pending CSR Group Not Found")
     AppError pendingCsrGroupNotFound();
 
     @ErrorDef(httpStatusCode = 412, code = "118", message = "Email template not found")
     AppError emailTemplateNotFound();
 
-    @ErrorDef(httpStatusCode = 412, code = "119", message = "Send email failed")
-    AppError sendEmailFailed();
+    @ErrorDef(httpStatusCode = 412, code = "119", message = "Send CSR Invitation Email Failed")
+    AppError sendCSRInvitationEmailFailed();
 
     @ErrorDef(httpStatusCode = 412, code = "120", message = "CSR Invitation Code is Missing")
     AppError csrInvitationCodeMissing();
 
-    @ErrorDef(httpStatusCode = 412, code = "120", message = "CSR Invitation Code is Invalid")
+    @ErrorDef(httpStatusCode = 412, code = "121", message = "CSR Invitation Code is Invalid")
     AppError csrInvitationCodeInvalid();
+
+    @ErrorDef(httpStatusCode = 412, code = "122", message = "User Not Found By Id", reason = "User not found with id {0}")
+    AppError userNotFoundById(UserId userId);
+
+    @ErrorDef(httpStatusCode = 412, code = "123", message = "User Not Found By Email", reason = "User not found with email {0}")
+    AppError userNotFoundByEmail(String email);
+
+    @ErrorDef(httpStatusCode = 412, code = "124", message = "User Not Found By Username", reason = "User not found with username {0}")
+    AppError userNotFoundByUsername(String username);
+
+    @ErrorDef(httpStatusCode = 412, code = "125", message = "Organization Not Found", reason = "Organization not found with ownerId {0} orgName {1}")
+    AppError organizationNotFound(UserId userId, String organizationName);
 }
