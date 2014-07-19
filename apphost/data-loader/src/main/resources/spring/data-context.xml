@@ -135,10 +135,10 @@
                 <value>organization</value>
                 <value>group</value>
                 <value>user-group</value>
-                <value>item</value>
-                <value>itemRevision</value>
-                <value>offer</value>
-                <value>offerRevision</value>
+                <!--<value>item</value>-->
+                <!--<value>itemRevision</value>-->
+                <!--<value>offer</value>-->
+                <!--<value>offerRevision</value>-->
             </list>
         </property>
     </bean>
