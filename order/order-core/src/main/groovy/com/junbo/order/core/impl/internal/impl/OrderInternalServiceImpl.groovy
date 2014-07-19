@@ -10,6 +10,7 @@ import com.junbo.billing.spec.enums.TaxStatus
 import com.junbo.billing.spec.model.Balance
 import com.junbo.common.error.AppErrorException
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.common.*
@@ -394,7 +395,39 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 orderServiceContext).then { List<PaymentInstrument> pis ->
             // TODO: need double confirm whether this is the way to validate pi
             // TODO: validate pi after the pi status design is locked down.
+            pis.each { PaymentInstrument pi ->
+                if (pi.userId != null && orderServiceContext.order.user.value != pi.userId) {
+                    throw AppErrors.INSTANCE.fieldInvalid(
+                            'payments', 'do not belong to this user').exception()
+                }
+            }
             return Promise.pure(pis)
+        }
+    }
+
+    Promise<UserPersonalInfo> validateUserPersonalInfo(OrderServiceContext context) {
+        def order = context.order
+        return facadeContainer.identityFacade.getUserPersonalInfo(order.shippingAddress)
+                .then { UserPersonalInfo shippingAddressInfo ->
+            if (shippingAddressInfo != null && order.user != shippingAddressInfo.userId) {
+                throw AppErrors.INSTANCE.fieldInvalid(
+                        'shippingAddressInfo', 'do not belong to this user').exception()
+            }
+            return facadeContainer.identityFacade.getUserPersonalInfo(order.shippingToName)
+                    .then { UserPersonalInfo shippingToNameInfo ->
+                if (shippingToNameInfo != null && order.user != shippingToNameInfo.userId) {
+                    throw AppErrors.INSTANCE.fieldInvalid(
+                            'shippingToName', 'do not belong to this user').exception()
+                }
+                return facadeContainer.identityFacade.getUserPersonalInfo(order.shippingToPhone)
+                        .then { UserPersonalInfo shippingToPhoneInfo ->
+                    if (shippingToPhoneInfo != null && order.user != shippingToPhoneInfo.userId) {
+                        throw AppErrors.INSTANCE.fieldInvalid(
+                                'shippingToPhone', 'do not belong to this user').exception()
+                    }
+                    return Promise.pure(null)
+                }
+            }
         }
     }
 }

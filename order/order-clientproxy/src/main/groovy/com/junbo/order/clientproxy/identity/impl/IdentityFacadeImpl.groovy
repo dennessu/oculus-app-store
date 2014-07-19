@@ -138,4 +138,12 @@ class IdentityFacadeImpl implements IdentityFacade {
 
         return organizationResource.get(new OrganizationId(organizationId), new OrganizationGetOptions())
     }
+
+    @Override
+    Promise<UserPersonalInfo> getUserPersonalInfo(UserPersonalInfoId id) {
+        if (id == null) {
+            return Promise.pure(null)
+        }
+        return userPersonalInfoResource.get(id, new UserPersonalInfoGetOptions())
+    }
 }
