@@ -28,6 +28,7 @@ class BillingFacadeImpl implements BillingFacade {
     BalanceResource balanceResource
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BillingFacadeImpl)
+    private static final String PAYMENT_INSUFFICIENT_FUND = '117'
 
 
     @Override
@@ -124,8 +125,7 @@ class BillingFacadeImpl implements BillingFacade {
     @Override
     AppError convertError(Throwable error) {
         AppError e = ErrorUtils.toAppError(error)
-        // todo:    czhu    Please change this code to one much more meaningful
-        if (e != null &&  e.error().code == 'PAYMENT_INSUFFICIENT_FUND') {
+        if (e != null &&  e.error().code == PAYMENT_INSUFFICIENT_FUND) {
             return AppErrors.INSTANCE.billingInsufficientFund()
         }
         if (e != null) {
