@@ -78,23 +78,31 @@
 
     </bean>
 
-    <bean id="itemDataHandler" class="com.junbo.data.handler.ItemDataHandler" parent="baseDataHandler">
+    <bean id="catalogDataHandler" class="com.junbo.data.handler.CatalogDataHandler" parent="baseDataHandler">
         <property name="organizationResource" ref="defaultOrganizationResource"/>
+        <property name="itemDataHandler" ref="itemDataHandler"/>
+        <property name="itemRevisionDataHandler" ref="itemRevisionDataHandler"/>
+        <property name="offerDataHandler" ref="offerDataHandler"/>
+        <property name="offerRevisionDataHandler" ref="offerRevisionDataHandler"/>
+    </bean>
+
+    <bean id="baseCatalogDataHandler" class="com.junbo.data.handler.catalog.BaseCatalogDataHandler" abstract="true">
+        <property name="alwaysOverwrite" value="${data.loader.alwaysOverwrite}"/>
+    </bean>
+
+    <bean id="itemDataHandler" class="com.junbo.data.handler.catalog.ItemDataHandler" parent="baseCatalogDataHandler">
         <property name="itemResource" ref="defaultItemResource"/>
     </bean>
 
-    <bean id="itemRevisionDataHandler" class="com.junbo.data.handler.ItemRevisionDataHandler" parent="baseDataHandler">
-        <property name="organizationResource" ref="defaultOrganizationResource"/>
+    <bean id="itemRevisionDataHandler" class="com.junbo.data.handler.catalog.ItemRevisionDataHandler" parent="baseCatalogDataHandler">
         <property name="itemRevisionResource" ref="defaultItemRevisionResource"/>
     </bean>
 
-    <bean id="offerDataHandler" class="com.junbo.data.handler.OfferDataHandler" parent="baseDataHandler">
-        <property name="organizationResource" ref="defaultOrganizationResource"/>
+    <bean id="offerDataHandler" class="com.junbo.data.handler.catalog.OfferDataHandler" parent="baseCatalogDataHandler">
         <property name="offerResource" ref="defaultOfferResource"/>
     </bean>
 
-    <bean id="offerRevisionDataHandler" class="com.junbo.data.handler.OfferRevisionDataHandler" parent="baseDataHandler">
-        <property name="organizationResource" ref="defaultOrganizationResource"/>
+    <bean id="offerRevisionDataHandler" class="com.junbo.data.handler.catalog.OfferRevisionDataHandler" parent="baseCatalogDataHandler">
         <property name="offerRevisionResource" ref="defaultOfferRevisionResource"/>
     </bean>
 
@@ -114,10 +122,7 @@
                 <entry key="organization" value-ref="organizationDataHandler" />
                 <entry key="group" value-ref="groupDataHandler" />
                 <entry key="user-group" value-ref="userGroupDataHandler" />
-                <entry key="item" value-ref="itemDataHandler" />
-                <entry key="itemRevision" value-ref="itemRevisionDataHandler" />
-                <entry key="offer" value-ref="offerDataHandler" />
-                <entry key="offerRevision" value-ref="offerRevisionDataHandler" />
+                <entry key="catalog" value-ref="catalogDataHandler" />
             </map>
         </property>
         <property name="dataList">
@@ -135,10 +140,7 @@
                 <value>organization</value>
                 <value>group</value>
                 <value>user-group</value>
-                <!--<value>item</value>-->
-                <!--<value>itemRevision</value>-->
-                <!--<value>offer</value>-->
-                <!--<value>offerRevision</value>-->
+                <value>catalog</value>
             </list>
         </property>
     </bean>

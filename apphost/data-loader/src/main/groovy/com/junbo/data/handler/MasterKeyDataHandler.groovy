@@ -36,7 +36,6 @@ class MasterKeyDataHandler extends BaseDataHandler {
         }
 
         logger.debug('Create new masterKey with this content')
-        logger.info("loading masterKey")
 
         try {
             masterKeyResource.create(masterKey).get()

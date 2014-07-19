@@ -35,8 +35,6 @@ class EmailTemplateDataHandler extends BaseDataHandler {
             exit()
         }
 
-        logger.info("loading emailTemplate $template.action")
-
         EmailTemplate existing
         try {
             def list = templateResource.getEmailTemplates(
