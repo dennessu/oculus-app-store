@@ -80,29 +80,9 @@
 
     <bean id="catalogDataHandler" class="com.junbo.data.handler.CatalogDataHandler" parent="baseDataHandler">
         <property name="organizationResource" ref="defaultOrganizationResource"/>
-        <property name="itemDataHandler" ref="itemDataHandler"/>
-        <property name="itemRevisionDataHandler" ref="itemRevisionDataHandler"/>
-        <property name="offerDataHandler" ref="offerDataHandler"/>
-        <property name="offerRevisionDataHandler" ref="offerRevisionDataHandler"/>
-    </bean>
-
-    <bean id="baseCatalogDataHandler" class="com.junbo.data.handler.catalog.BaseCatalogDataHandler" abstract="true">
-        <property name="alwaysOverwrite" value="${data.loader.alwaysOverwrite}"/>
-    </bean>
-
-    <bean id="itemDataHandler" class="com.junbo.data.handler.catalog.ItemDataHandler" parent="baseCatalogDataHandler">
         <property name="itemResource" ref="defaultItemResource"/>
-    </bean>
-
-    <bean id="itemRevisionDataHandler" class="com.junbo.data.handler.catalog.ItemRevisionDataHandler" parent="baseCatalogDataHandler">
         <property name="itemRevisionResource" ref="defaultItemRevisionResource"/>
-    </bean>
-
-    <bean id="offerDataHandler" class="com.junbo.data.handler.catalog.OfferDataHandler" parent="baseCatalogDataHandler">
         <property name="offerResource" ref="defaultOfferResource"/>
-    </bean>
-
-    <bean id="offerRevisionDataHandler" class="com.junbo.data.handler.catalog.OfferRevisionDataHandler" parent="baseCatalogDataHandler">
         <property name="offerRevisionResource" ref="defaultOfferRevisionResource"/>
     </bean>
 
