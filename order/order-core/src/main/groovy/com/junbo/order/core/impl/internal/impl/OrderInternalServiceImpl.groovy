@@ -398,7 +398,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
             // TODO: validate pi after the pi status design is locked down.
             pis.each { PaymentInstrument pi ->
                 if (pi.userId != null && orderServiceContext.order.user.value != pi.userId) {
-                    throw AppErrors.INSTANCE.fieldInvalid(
+                    throw AppCommonErrors.INSTANCE.fieldInvalid(
                             'payments', 'do not belong to this user').exception()
                 }
             }
@@ -411,19 +411,19 @@ class OrderInternalServiceImpl implements OrderInternalService {
         return facadeContainer.identityFacade.getUserPersonalInfo(order.shippingAddress)
                 .then { UserPersonalInfo shippingAddressInfo ->
             if (shippingAddressInfo != null && order.user != shippingAddressInfo.userId) {
-                throw AppErrors.INSTANCE.fieldInvalid(
+                throw AppCommonErrors.INSTANCE.fieldInvalid(
                         'shippingAddressInfo', 'do not belong to this user').exception()
             }
             return facadeContainer.identityFacade.getUserPersonalInfo(order.shippingToName)
                     .then { UserPersonalInfo shippingToNameInfo ->
                 if (shippingToNameInfo != null && order.user != shippingToNameInfo.userId) {
-                    throw AppErrors.INSTANCE.fieldInvalid(
+                    throw AppCommonErrors.INSTANCE.fieldInvalid(
                             'shippingToName', 'do not belong to this user').exception()
                 }
                 return facadeContainer.identityFacade.getUserPersonalInfo(order.shippingToPhone)
                         .then { UserPersonalInfo shippingToPhoneInfo ->
                     if (shippingToPhoneInfo != null && order.user != shippingToPhoneInfo.userId) {
-                        throw AppErrors.INSTANCE.fieldInvalid(
+                        throw AppCommonErrors.INSTANCE.fieldInvalid(
                                 'shippingToPhone', 'do not belong to this user').exception()
                     }
                     return Promise.pure(null)
