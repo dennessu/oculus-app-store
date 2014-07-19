@@ -27,6 +27,7 @@ import org.springframework.util.StringUtils
 import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.core.Response
 import javax.ws.rs.core.UriBuilder
+import java.util.regex.Pattern
 
 /**
  * Created by haomin on 14-7-14.
@@ -36,6 +37,8 @@ class CsrUserResourceImpl implements CsrUserResource {
     private static final String CSR_INVITATION_PATH = 'csr-users/invite'
     private static final String EMAIL_SOURCE = 'Oculus'
     private static final String CSR_INVITATION_ACTION = 'CsrInvitation'
+    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
+            Pattern.compile('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$', Pattern.CASE_INSENSITIVE);
 
     private IdentityService identityService
     private EmailService emailService
@@ -103,6 +106,11 @@ class CsrUserResourceImpl implements CsrUserResource {
             throw AppErrors.INSTANCE.invalidRequest().exception()
         }
 
+        // check userId
+        identityService.getUserById(userId).get()
+        // check groupId
+        identityService.getGroupById(groupId).get()
+
         Results<CsrGroup> csrGroupResults = csrGroupResource.list(new CsrGroupListOptions()).get()
         List<GroupId> groupIds = csrGroupResults.items.empty ?
                 (List<GroupId>) Collections.emptyList() :
@@ -114,8 +122,12 @@ class CsrUserResourceImpl implements CsrUserResource {
 
     @Override
     Promise<Response> inviteCsr(String locale, String email, GroupId groupId, ContainerRequestContext requestContext) {
-        if (email == null || groupId == null) {
+        if (email == null || groupId == null || requestContext == null) {
             throw AppErrors.INSTANCE.invalidRequest().exception()
+        }
+
+        if (!VALID_EMAIL_ADDRESS_REGEX.matcher(email).find()) {
+            throw AppErrors.INSTANCE.invalidEmail().exception()
         }
 
         URI baseUri = ((ContainerRequest)requestContext).baseUri
@@ -128,7 +140,6 @@ class CsrUserResourceImpl implements CsrUserResource {
 
             return identityService.getUserByVerifiedEmail(email).then { User user ->
                 return identityService.getGroupById(groupId).then { Group group ->
-
                     UserGroup userGroup = identityService.saveUserGroupMembership(user.getId(), pendingGroup.groupId)
 
                     CsrInvitationCode code = new CsrInvitationCode(
@@ -157,7 +168,7 @@ class CsrUserResourceImpl implements CsrUserResource {
                 }
             }
         }.then {
-            return Promise.pure(Response.noContent().build())
+            return Promise.pure(Response.ok().entity(email).build())
         }
     }
 

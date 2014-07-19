@@ -47,6 +47,11 @@ class CsrGroupResourceImpl implements CsrGroupResource {
 
     @Override
     Promise<Results<CsrGroup>> list(CsrGroupListOptions listOptions) {
+        if (listOptions != null && listOptions.userId != null) {
+            // check userId
+            identityService.getUserById(listOptions.userId).get()
+        }
+
         return identityService.getUserByUsername(organizationOwner).then { User organizationOwner ->
             return identityService.getOrganizationByOwerIdAndOrgName(organizationOwner.id as UserId, organizationName).then { Organization organization ->
                 return identityService.getGroupByOrganization(organization.id as OrganizationId).then { Results<Group> groupResults ->

@@ -133,7 +133,13 @@ class IdentityServiceImpl implements IdentityService {
 
     @Override
     Promise<Group> getGroupById(GroupId groupId) {
-        return groupResource.get(groupId, new GroupGetOptions())
+        return groupResource.get(groupId, new GroupGetOptions()).then { Group group ->
+            if (group == null) {
+                throw AppErrors.INSTANCE.groupNotFoundById(groupId).exception()
+            }
+
+            return Promise.pure(group)
+        }
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.junbo.common.error.ErrorDef;
 import com.junbo.common.error.ErrorProxy;
 import com.junbo.common.id.CsrLogId;
 import com.junbo.common.id.CsrUpdateId;
+import com.junbo.common.id.GroupId;
 import com.junbo.common.id.UserId;
 
 /**
@@ -30,8 +31,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 412, code = "104", message = "Invalid Country Code")
     AppError invalidCountryCode();
 
-    @ErrorDef(httpStatusCode = 412, code = "106", message = "Group Not Found")
-    AppError groupNotFound();
+    @ErrorDef(httpStatusCode = 412, code = "106", message = "Group Not Found By Id", reason = "Group not found with id {0}")
+    AppError groupNotFoundById(GroupId groupId);
 
     @ErrorDef(httpStatusCode = 412, code = "107", message = "Field Not Writable", field = "{0}", reason = "Field {0} is not writeable.")
     AppError fieldNotWritable(String field);
@@ -89,4 +90,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "125", message = "Organization Not Found", reason = "Organization not found with ownerId {0} orgName {1}")
     AppError organizationNotFound(UserId userId, String organizationName);
+
+    @ErrorDef(httpStatusCode = 412, code = "126", message = "Invalid Email")
+    AppError invalidEmail();
 }
