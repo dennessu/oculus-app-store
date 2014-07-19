@@ -1,16 +1,11 @@
 package com.junbo.store.rest.utils
-
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.promise.Promise
-import com.junbo.store.spec.model.login.AuthTokenRequest
-import com.junbo.store.spec.model.login.CreateUserRequest
-import com.junbo.store.spec.model.login.UserCredentialCheckRequest
-import com.junbo.store.spec.model.login.UserNameCheckRequest
-import com.junbo.store.spec.model.login.UserSignInRequest
+import com.junbo.store.spec.model.identity.UserProfileUpdateRequest
+import com.junbo.store.spec.model.login.*
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
-
 /**
  * The RequestValidator class.
  */
@@ -66,7 +61,19 @@ class RequestValidator {
         return Promise.pure(null)
     }
 
-    private static void notEmpty(Object val, String fieldName) {
+    Promise<Void> validateUserProfileUpdateRequest(UserProfileUpdateRequest userProfileUpdateRequest) {
+        notEmpty(userProfileUpdateRequest.updateValue, 'updateValue')
+        notEmpty(userProfileUpdateRequest.userId, 'userId')
+        notEmpty(userProfileUpdateRequest.action, 'action')
+        try {
+            UserProfileUpdateRequest.UpdateAction.valueOf(userProfileUpdateRequest.action)
+        } catch (IllegalArgumentException ex) {
+            throw AppCommonErrors.INSTANCE.fieldInvalidEnum('action', UserProfileUpdateRequest.allowActions).exception()
+        }
+        return Promise.pure(null)
+    }
+
+    public void notEmpty(Object val, String fieldName) {
         if (StringUtils.isEmpty(val)) {
             throw AppCommonErrors.INSTANCE.fieldRequired(fieldName).exception()
         }

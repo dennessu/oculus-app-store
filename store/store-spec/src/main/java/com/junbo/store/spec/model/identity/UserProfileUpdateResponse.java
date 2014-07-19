@@ -3,7 +3,10 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.store.spec.model;
+package com.junbo.store.spec.model.identity;
+
+import com.junbo.store.spec.model.BaseResponse;
+import com.junbo.store.spec.model.Challenge;
 
 /**
  * The UserProfileUpdateResponse class.
@@ -12,7 +15,7 @@ public class UserProfileUpdateResponse extends BaseResponse {
 
     private Challenge challenge;
 
-    private UserProfile userProfile;
+    private StoreUserProfile userProfile;
 
     public Challenge getChallenge() {
         return challenge;
@@ -22,11 +25,11 @@ public class UserProfileUpdateResponse extends BaseResponse {
         this.challenge = challenge;
     }
 
-    public UserProfile getUserProfile() {
+    public StoreUserProfile getUserProfile() {
         return userProfile;
     }
 
-    public void setUserProfile(UserProfile userProfile) {
+    public void setUserProfile(StoreUserProfile userProfile) {
         this.userProfile = userProfile;
     }
 }

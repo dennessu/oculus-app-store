@@ -3,7 +3,9 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.store.spec.model;
+package com.junbo.store.spec.model.identity;
+
+import com.junbo.common.id.UserId;
 
 import javax.ws.rs.QueryParam;
 
@@ -12,14 +14,14 @@ import javax.ws.rs.QueryParam;
  */
 public class UserProfileGetRequest {
 
-    @QueryParam("username")
-    private String username;
+    @QueryParam("userId")
+    private UserId userId;
 
-    public String getUsername() {
-        return username;
+    public UserId getUserId() {
+        return userId;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserId(UserId userId) {
+        this.userId = userId;
     }
 }

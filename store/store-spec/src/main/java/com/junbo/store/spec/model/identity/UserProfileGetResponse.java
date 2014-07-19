@@ -3,20 +3,22 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.store.spec.model;
+package com.junbo.store.spec.model.identity;
+
+import com.junbo.store.spec.model.BaseResponse;
 
 /**
  * The UserProfileGetResponse class.
  */
 public class UserProfileGetResponse extends BaseResponse {
 
-    UserProfile userProfile;
+    StoreUserProfile userProfile;
 
-    public UserProfile getUserProfile() {
+    public StoreUserProfile getUserProfile() {
         return userProfile;
     }
 
-    public void setUserProfile(UserProfile userProfile) {
+    public void setUserProfile(StoreUserProfile userProfile) {
         this.userProfile = userProfile;
     }
 }
