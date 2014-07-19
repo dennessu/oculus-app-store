@@ -5,12 +5,13 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.LoginState
@@ -45,23 +46,23 @@ class GrantTokenByRefreshToken implements Action {
         String token = parameterMap.getFirst(OAuthParameters.REFRESH_TOKEN)
 
         if (!StringUtils.hasText(token)) {
-            throw AppExceptions.INSTANCE.missingRefreshToken().exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('refresh_token').exception()
         }
 
         RefreshToken refreshToken = tokenService.getAndRemoveRefreshToken(token)
         if (refreshToken == null) {
-            throw AppExceptions.INSTANCE.invalidRefreshToken(token).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('refresh_token', token).exception()
         }
 
         if (refreshToken.isExpired()) {
-            throw AppExceptions.INSTANCE.expiredRefreshToken(token).exception()
+            throw AppErrors.INSTANCE.expiredRefreshToken(token).exception()
         }
 
         AccessToken accessToken = refreshToken.accessToken
         Assert.notNull(accessToken)
 
         if (refreshToken.clientId != client.clientId) {
-            throw AppExceptions.INSTANCE.differentClientId(refreshToken.clientId, client.clientId).exception()
+            throw AppErrors.INSTANCE.differentClientId(refreshToken.clientId, client.clientId).exception()
         }
 
         Set<String> scopesParam = oauthInfo.scopes
@@ -71,7 +72,7 @@ class GrantTokenByRefreshToken implements Action {
         }
 
         if (extraScopes.length > 0) {
-            throw AppExceptions.INSTANCE.outboundScope().exception()
+            throw AppErrors.INSTANCE.outboundScope().exception()
         }
 
         LoginState loginState = new LoginState(

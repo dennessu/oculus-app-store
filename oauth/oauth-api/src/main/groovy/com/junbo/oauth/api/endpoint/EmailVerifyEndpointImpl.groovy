@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.api.endpoint
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.json.ObjectMapperProvider
@@ -17,7 +18,7 @@ import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.UserService
 import com.junbo.oauth.core.util.CookieUtil
 import com.junbo.oauth.core.util.ValidatorUtil
@@ -36,9 +37,7 @@ import org.springframework.context.annotation.Scope
 import org.springframework.util.Assert
 import org.springframework.util.StringUtils
 
-import javax.ws.rs.FormParam
 import javax.ws.rs.container.ContainerRequestContext
-import javax.ws.rs.core.Context
 import javax.ws.rs.core.Response
 import javax.ws.rs.core.UriBuilder
 /**
@@ -117,7 +116,7 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
         }
 
         if (StringUtils.isEmpty(code)) {
-            LOGGER.warn(AppExceptions.INSTANCE.missingEmailVerifyCode().toString())
+            LOGGER.warn(AppCommonErrors.INSTANCE.fieldRequired('evc').toString())
             Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)
                     .location(UriBuilder.fromUri(failedRedirectUri).build())
             return Promise.pure(responseBuilder.build())
@@ -126,7 +125,7 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
         EmailVerifyCode emailVerifyCode = emailVerifyCodeRepository.getAndRemove(code)
 
         if (emailVerifyCode == null) {
-            LOGGER.warn(AppExceptions.INSTANCE.invalidEmailVerifyCode(code).toString())
+            LOGGER.warn(AppErrors.INSTANCE.invalidEmailVerifyCode(code).toString())
             Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)
                     .location(UriBuilder.fromUri(failedRedirectUri).build())
             return Promise.pure(responseBuilder.build())

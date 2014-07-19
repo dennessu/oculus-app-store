@@ -1,11 +1,12 @@
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.util.StringUtils
@@ -23,7 +24,7 @@ class ValidatePassword implements Action {
         String password = parameterMap.getFirst(OAuthParameters.PASSWORD)
 
         if (StringUtils.isEmpty(password)) {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.missingPassword().error())
+            contextWrapper.errors.add(AppCommonErrors.INSTANCE.parameterRequired('password').error())
             return Promise.pure(new ActionResult('error'))
         }
 

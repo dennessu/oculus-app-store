@@ -5,8 +5,9 @@
  */
 package com.junbo.oauth.api.endpoint
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.promise.Promise
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.spec.endpoint.RefreshTokenResource
 import com.junbo.oauth.spec.model.RefreshToken
@@ -29,7 +30,7 @@ class RefreshTokenResourceImpl implements RefreshTokenResource {
         RefreshToken token = tokenService.getRefreshToken(refreshToken)
 
         if (token == null) {
-            throw AppExceptions.INSTANCE.invalidRefreshToken(refreshToken).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('refresh_token', refreshToken).exception()
         }
 
         return Promise.pure(token)

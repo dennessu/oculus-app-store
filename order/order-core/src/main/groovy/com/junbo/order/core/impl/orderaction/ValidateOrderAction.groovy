@@ -1,5 +1,6 @@
 package com.junbo.order.core.impl.orderaction
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 
 import javax.annotation.Resource
+
 /**
  * Created by fzhang on 14-3-27.
  */
@@ -42,8 +44,7 @@ class ValidateOrderAction implements Action {
         def promise = builder.getCurrency(context.orderServiceContext)
         return promise.then { com.junbo.identity.spec.v1.model.Currency currency ->
             if (currency == null) {
-                throw com.junbo.order.spec.error.AppErrors.INSTANCE.fieldInvalid(
-                        'currency', 'can not get valid currency').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('currency', 'can not get valid currency').exception()
             }
             return Promise.pure(null)
         }

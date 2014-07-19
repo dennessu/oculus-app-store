@@ -5,12 +5,13 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.spec.model.ResponseType
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
@@ -40,14 +41,14 @@ class ValidateResponseType implements Action {
                     if (client.responseTypes.contains(responseType)) {
                         responseTypeSet.add(responseType)
                     } else {
-                        throw AppExceptions.INSTANCE.invalidResponseType(responseTypeParam).exception()
+                        throw AppCommonErrors.INSTANCE.fieldInvalid('response_type', responseTypeParam).exception()
                     }
                 } else {
-                    throw AppExceptions.INSTANCE.invalidResponseType(responseTypeParam).exception()
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('response_type', responseTypeParam).exception()
                 }
             }
         } else {
-            throw AppExceptions.INSTANCE.missingResponseType().exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('response_type').exception()
         }
 
         def oauthInfo = contextWrapper.oauthInfo

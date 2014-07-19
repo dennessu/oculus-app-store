@@ -5,7 +5,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.db.generator.TokenGenerator
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
@@ -29,7 +29,7 @@ class ValidateResetPasswordCode implements Action {
         String code = (String) context.requestScope[OAuthParameters.RESET_PASSWORD_CODE]
 
         if (!tokenGenerator.isValidResetPasswordCode(code)) {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.invalidVerificationCode().error())
+            contextWrapper.errors.add(AppErrors.INSTANCE.invalidVerificationCode().error())
             return Promise.pure(new ActionResult('error'))
         }
 

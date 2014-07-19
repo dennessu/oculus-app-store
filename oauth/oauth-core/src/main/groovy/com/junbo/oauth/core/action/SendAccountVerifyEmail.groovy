@@ -12,7 +12,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.UserService
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
@@ -58,7 +58,7 @@ class SendAccountVerifyEmail implements Action {
         if (throwable instanceof AppErrorException) {
             contextWrapper.errors.add(((AppErrorException) throwable).error.error())
         } else {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingEmail().error())
+            contextWrapper.errors.add(AppErrors.INSTANCE.errorCallingEmail().error())
         }
     }
 }

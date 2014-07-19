@@ -5,13 +5,14 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.spec.model.AccessToken
 import com.junbo.oauth.spec.model.TokenInfo
@@ -40,17 +41,17 @@ class GetAccessTokenInfo implements Action {
         String token = parameterMap.getFirst(OAuthParameters.ACCESS_TOKEN)
 
         if (!StringUtils.hasText(token)) {
-            throw AppExceptions.INSTANCE.missingAccessToken().exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('access_token').exception()
         }
 
         AccessToken accessToken = tokenService.getAccessToken(token)
 
         if (accessToken == null) {
-            throw AppExceptions.INSTANCE.invalidAccessToken(token).exception()
+            throw AppErrors.INSTANCE.invalidAccessToken(token).exception()
         }
 
         if (accessToken.isExpired()) {
-            throw AppExceptions.INSTANCE.expiredAccessToken(token).exception()
+            throw AppErrors.INSTANCE.expiredAccessToken(token).exception()
         }
 
         TokenInfo tokenInfo = new TokenInfo(

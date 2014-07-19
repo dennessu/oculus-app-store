@@ -8,6 +8,7 @@ import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.enums.TaxStatus
 import com.junbo.billing.spec.model.Balance
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.langur.core.promise.Promise
@@ -81,7 +82,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                     return Promise.pure(order)
                 }
                 LOGGER.error('name=Missing_paymentInstruments_To_Calculate_Tax')
-                throw AppErrors.INSTANCE.missingParameterField('paymentInstruments').exception()
+                throw AppCommonErrors.INSTANCE.parameterRequired('paymentInstruments').exception()
             } else {
                 // calculate tax
                 validatePayments(orderServiceContext).then {
@@ -93,7 +94,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                                 return Promise.pure(order)
                             }
                             LOGGER.error('name=Missing_shippingAddressId_To_Calculate_Tax')
-                            throw AppErrors.INSTANCE.missingParameterField('shippingAddressId').exception()
+                            throw AppCommonErrors.INSTANCE.parameterRequired('shippingAddressId').exception()
                         }
                     }
                     // calculateTax
@@ -112,7 +113,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
     @Transactional
     Promise<Order> getOrderByOrderId(Long orderId, OrderServiceContext orderServiceContext, Boolean updateOrderStatus) {
         if (orderId == null) {
-            throw AppErrors.INSTANCE.fieldInvalid('orderId', 'orderId cannot be null').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('orderId').exception()
         }
         // get Order by id
         def order = orderRepository.getOrder(orderId)
@@ -211,7 +212,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
     Promise<List<Order>> getOrdersByUserId(Long userId, OrderServiceContext context, OrderQueryParam orderQueryParam, PageParam pageParam) {
 
         if (userId == null) {
-            throw AppErrors.INSTANCE.fieldInvalid('userId', 'userId cannot be null').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
         // get Orders by userId
         def orders = orderRepository.getOrdersByUserId(userId,

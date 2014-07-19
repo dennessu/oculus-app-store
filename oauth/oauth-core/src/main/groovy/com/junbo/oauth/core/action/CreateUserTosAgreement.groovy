@@ -5,8 +5,8 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
-import com.junbo.common.id.Id
 import com.junbo.common.id.TosId
 import com.junbo.common.id.UniversalId
 import com.junbo.common.id.UserId
@@ -22,7 +22,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
@@ -66,7 +66,7 @@ class CreateUserTosAgreement implements Action {
 
         UniversalId tosId = IdUtil.fromLink(new Link(href: tosIdStr))
         if (tosId == null || !(tosId instanceof TosId)) {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.invalidParameter('tos').error())
+            contextWrapper.errors.add(AppCommonErrors.INSTANCE.parameterInvalid('tos').error())
             return Promise.pure(new ActionResult('error'))
         }
 
@@ -75,7 +75,7 @@ class CreateUserTosAgreement implements Action {
             return Promise.pure(null)
         }.then { Tos tos ->
             if (tos == null) {
-                contextWrapper.errors.add(AppExceptions.INSTANCE.invalidParameter('tos').error())
+                contextWrapper.errors.add(AppCommonErrors.INSTANCE.parameterInvalid('tos').error())
                 return Promise.pure(new ActionResult('error'))
             }
 
@@ -103,7 +103,7 @@ class CreateUserTosAgreement implements Action {
         if (throwable instanceof AppErrorException) {
             contextWrapper.errors.add(((AppErrorException) throwable).error.error())
         } else {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingIdentity().error())
+            contextWrapper.errors.add(AppErrors.INSTANCE.errorCallingIdentity().error())
         }
     }
 }
