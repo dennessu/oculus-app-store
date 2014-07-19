@@ -26,5 +26,5 @@ public interface IdentityService {
     Promise<Results<Group>> getGroupByOrganization(OrganizationId organizationId)
 
     String getUserNameByUser(User user)
-
+    List<GroupId> getGroupIdByUserId(UserId userId)
 }

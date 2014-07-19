@@ -174,4 +174,11 @@ class IdentityServiceImpl implements IdentityService {
             return Promise.pure(groupResults.items)
         }
     }
+
+    @Override
+    List<GroupId> getGroupIdByUserId(UserId userId) {
+        Results<Group> groups = groupResource.list(new GroupListOptions(userId: userId)).get()
+        return groups.items.empty ? (List<GroupId>) Collections.emptyList() :
+                groups.items.collect { Group group -> group.getId() }
+    }
 }

@@ -11,8 +11,6 @@ import com.junbo.csr.spec.resource.CsrGroupResource
 import com.junbo.identity.spec.v1.model.Group
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.option.list.GroupListOptions
-import com.junbo.identity.spec.v1.resource.GroupResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
@@ -23,7 +21,6 @@ import org.springframework.beans.factory.annotation.Required
 @CompileStatic
 class CsrGroupResourceImpl implements CsrGroupResource {
     private IdentityService identityService
-    private GroupResource groupResource
     private String organizationOwner
     private String organizationName
     private List<String> groupNameList
@@ -31,11 +28,6 @@ class CsrGroupResourceImpl implements CsrGroupResource {
     @Required
     void setIdentityService(IdentityService identityService) {
         this.identityService = identityService
-    }
-
-    @Required
-    void setGroupResource(GroupResource groupResource) {
-        this.groupResource = groupResource
     }
 
     @Required
@@ -83,9 +75,8 @@ class CsrGroupResourceImpl implements CsrGroupResource {
 
                     // filter with userId parameter
                     if (listOptions.userId != null) {
-                        Results<Group> groups = groupResource.list(new GroupListOptions(userId: listOptions.userId)).get()
-                        List<GroupId> groupIds = groups.items.empty ? (List<GroupId>) Collections.emptyList() :
-                                groups.items.collect { Group group -> group.getId() }
+                        List<GroupId> groupIds = identityService.getGroupIdByUserId(listOptions.userId)
+
                         resultList.items.retainAll { CsrGroup csrGroup ->
                             groupIds.contains(csrGroup.groupId)
                         }
