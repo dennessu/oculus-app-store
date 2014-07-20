@@ -6,6 +6,7 @@ dependencies {
 
     compile (libraries.jersey_server)
     compile (libraries.jersey_container_grizzly2_http)
+    compile (libraries.grizzly_http_server)
 
     compile (libraries.slf4j_api)
 

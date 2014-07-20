@@ -5,8 +5,7 @@
  */
 package com.junbo.langur.core;
 
-import org.glassfish.grizzly.http.server.
-        Request;
+import org.glassfish.grizzly.http.server.Request;
 
 import java.util.regex.Pattern;
 
