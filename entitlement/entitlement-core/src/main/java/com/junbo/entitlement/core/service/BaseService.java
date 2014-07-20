@@ -22,6 +22,7 @@ import com.junbo.entitlement.spec.model.Entitlement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.text.ParseException;
@@ -62,6 +63,7 @@ public class BaseService {
     }
 
     protected void validateCreate(Entitlement entitlement) {
+        checkUser(entitlement.getUserId());
         checkItem(entitlement.getItemId());
         checkOauth(entitlement);
         if (entitlement.getRev() != null) {
@@ -124,6 +126,11 @@ public class BaseService {
             for (EntitlementDef entitlementDef : item.getEntitlementDefs()) {
                 validTypes.add(entitlementDef.getType());
             }
+
+            if (CollectionUtils.isEmpty(validTypes)) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid("There is no entitlementDef in itemRevision " + item.getId()).exception();
+            }
+
             throw AppCommonErrors.INSTANCE.fieldInvalidEnum("type", Joiner.on(", ").join(validTypes)).exception();
         }
         if (def.getConsumable() && entitlement.getUseCount() == null) {
