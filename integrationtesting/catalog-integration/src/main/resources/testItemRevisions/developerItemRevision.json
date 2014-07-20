@@ -11,7 +11,7 @@
         }
     },
     "downloadName": "download name",
-    "distributionChannel": ["INAPP", "STORE"],
+    "distributionChannel": ["STORE"],
     "supportedInputDevices": ["KEYBOARD", "MOUSE"],
     "locales":{
         "en_US":{

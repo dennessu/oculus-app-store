@@ -7,6 +7,7 @@ import com.junbo.crypto.spec.resource.ItemCryptoResource
 import com.junbo.entitlement.spec.resource.EntitlementResource
 import com.junbo.fulfilment.spec.resource.FulfilmentResource
 import com.junbo.identity.spec.v1.resource.*
+import com.junbo.oauth.spec.endpoint.EmailVerifyEndpoint
 import com.junbo.oauth.spec.endpoint.TokenEndpoint
 import com.junbo.oauth.spec.endpoint.TokenInfoEndpoint
 import com.junbo.order.spec.resource.OrderResource
@@ -72,4 +73,7 @@ class ResourceContainer {
 
     @Resource(name='store.currencyResourceClientProxy')
     CurrencyResource currencyResource
+
+    @Resource(name='store.emailVerifyEndpointClientProxy')
+    EmailVerifyEndpoint emailVerifyEndpoint
 }

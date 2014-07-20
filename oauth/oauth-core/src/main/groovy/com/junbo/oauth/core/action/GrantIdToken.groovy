@@ -5,12 +5,13 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.core.util.OAuthInfoUtil
 import com.junbo.oauth.spec.model.IdToken
@@ -48,7 +49,7 @@ class GrantIdToken implements Action {
         String nonce = oauthInfo.nonce
 
         if (!StringUtils.hasText(nonce)) {
-            throw AppExceptions.INSTANCE.missingNonce().exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('nonce').exception()
         }
 
         Date lastAuthDate = null

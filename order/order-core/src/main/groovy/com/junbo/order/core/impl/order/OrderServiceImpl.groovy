@@ -6,6 +6,7 @@
 
 package com.junbo.order.core.impl.order
 import com.junbo.catalog.spec.model.offer.OfferRevision
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
@@ -297,9 +298,9 @@ class OrderServiceImpl implements OrderService {
             if (throwable instanceof AppErrorException) {
                 throw throwable
             } else if (throwable instanceof AssertionError) {
-                throw AppErrors.INSTANCE.unexpectedError('Unexpected assertion failure').exception()
+                throw AppCommonErrors.INSTANCE.internalServerError(new Exception(throwable)).exception()
             } else {
-                throw AppErrors.INSTANCE.unexpectedError(throwable.message).exception()
+                throw AppCommonErrors.INSTANCE.internalServerError(new Exception(throwable)).exception()
             }
         }.syncThen {
             return context
@@ -325,16 +326,7 @@ class OrderServiceImpl implements OrderService {
                     item.type = CoreUtils.getOfferType(offer).name()
                     item.isPreorder = CoreUtils.isPreorder(offer, order.country.value)
                     updateOfferInfo(order, item, offer.catalogOfferRevision)
-                    Long organizationId = offer.catalogOfferRevision.ownerId?.value
-                    // TODO: move to orderServiceContextBuilder. temporary disable the code
-                    //return facadeContainer.identityFacade.getOrganization(organizationId)
-                    //        .recover { Throwable throwable ->
-                    //    LOGGER.error('name=Error_Get_Organization. organization id: ' + organizationId, throwable)
-                    //    return Promise.pure(null)
-                    //}.then { Organization organization ->
-                    //    item.offerOrganizationName = organization?.name
-                    //    return Promise.pure(null)
-                    item.offerOrganizationName = 'hardcoded'
+                    item.offerOrganizationName = offer.organization?.name
             }
         }.syncThen {
             return null

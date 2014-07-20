@@ -7,6 +7,7 @@ package com.junbo.oauth.core.action
 
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.resource.UserResource
@@ -15,7 +16,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.util.ValidatorUtil
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
@@ -51,7 +52,7 @@ class CreateUser implements Action {
         }
 
         if (countryOfResidence != null && !ValidatorUtil.isValidCountryCode(countryOfResidence)) {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.invalidCountryCode().error())
+            contextWrapper.errors.add(AppCommonErrors.INSTANCE.parameterInvalid('cor').error())
             return Promise.pure(null)
         }
 
@@ -66,7 +67,7 @@ class CreateUser implements Action {
             if (throwable instanceof AppErrorException) {
                 contextWrapper.errors.add(((AppErrorException) throwable).error.error())
             } else {
-                contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingIdentity().error())
+                contextWrapper.errors.add(AppErrors.INSTANCE.errorCallingIdentity().error())
             }
 
             return Promise.pure(null)

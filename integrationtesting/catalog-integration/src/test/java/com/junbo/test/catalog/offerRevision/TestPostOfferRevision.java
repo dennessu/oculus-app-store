@@ -10,6 +10,7 @@ import com.junbo.catalog.spec.model.item.Binary;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
+import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
@@ -20,6 +21,7 @@ import com.junbo.test.catalog.OfferRevisionService;
 import com.junbo.test.catalog.OfferService;
 import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.test.catalog.enums.CatalogItemType;
+import com.junbo.test.catalog.enums.PriceType;
 import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
 import com.junbo.test.catalog.impl.ItemServiceImpl;
 import com.junbo.test.catalog.impl.OfferRevisionServiceImpl;
@@ -112,16 +114,28 @@ public class TestPostOfferRevision extends BaseTestClass {
         distributionChannels.add("STORE");
         offerRevisionPrepared.setDistributionChannels(distributionChannels);
 
+        //Set price
+        Price price = new Price();
+        price.setPriceType(PriceType.FREE.name());
+
+        offerRevisionPrepared.setPrice(price);
         OfferRevision offerRevisionRtn = offerRevisionService.postOfferRevision(offerRevisionPrepared);
 
         checkOfferRevisionRequiredFields(offerRevisionRtn, offerRevisionPrepared);
 
         //Post an offer revision with optional fields
-        OfferRevision testOfferRevisionFull = offerRevisionService.prepareOfferRevisionEntity(defaultOfferRevisionFileName);
+        OfferRevision testOfferRevisionFull = offerRevisionService.prepareOfferRevisionEntity(defaultOfferRevisionFileName, false);
 
         testOfferRevisionFull.setOfferId(offer1.getOfferId());
         testOfferRevisionFull.setOwnerId(organizationId);
 
+        //set item info
+        ItemEntry itemEntry = new ItemEntry();
+        List<ItemEntry> itemEntities = new ArrayList<>();
+        itemEntry.setItemId(item1.getItemId());
+        itemEntry.setQuantity(1);
+        itemEntities.add(itemEntry);
+        testOfferRevisionFull.setItems(itemEntities);
         OfferRevision testOfferRevisionRtn = offerRevisionService.postOfferRevision(testOfferRevisionFull);
 
         checkOfferRevisionRequiredFields(testOfferRevisionRtn, testOfferRevisionFull);

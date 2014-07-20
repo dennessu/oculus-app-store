@@ -5,6 +5,8 @@
  */
 package com.junbo.csr.spec.resource;
 
+import com.junbo.common.id.GroupId;
+import com.junbo.common.id.UserId;
 import com.junbo.common.model.Results;
 import com.junbo.csr.spec.model.CsrUser;
 import com.junbo.langur.core.RestResource;
@@ -27,13 +29,17 @@ public interface CsrUserResource {
     Promise<Results<CsrUser>> list();
 
     @POST
+    @Path("/join")
+    Promise<Response> join(@FormParam("userId")UserId userId, @FormParam("groupId")GroupId groupId);
+
+    @POST
     @Path("/invite")
     Promise<Response> inviteCsr(@FormParam("locale") String locale,
                                 @FormParam("email") String email,
-                                @FormParam("groupId") String groupId,
+                                @FormParam("groupId") GroupId groupId,
                                 @Context ContainerRequestContext requestContext);
 
     @GET
-    @Path("/confirm")
-    Promise<Response> confirmCsr(@QueryParam("code") String code);
+    @Path("/invite")
+    Promise<Response> confirmCsrInvitation(@QueryParam("code") String code);
 }

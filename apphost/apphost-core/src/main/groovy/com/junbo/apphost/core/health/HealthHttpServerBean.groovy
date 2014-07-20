@@ -84,7 +84,10 @@ class HealthHttpServerBean implements InitializingBean, DisposableBean,
         NetworkListener listener = new NetworkListener('health', host, port)
 
         TCPNIOTransport transport = listener.transport
-        transport.setWorkerThreadPool(executorService)
+        transport.workerThreadPool = executorService
+
+        listener.keepAlive.idleTimeoutInSeconds = 300
+        listener.keepAlive.maxRequestsCount = -1
 
         httpServer.addListener(listener)
 

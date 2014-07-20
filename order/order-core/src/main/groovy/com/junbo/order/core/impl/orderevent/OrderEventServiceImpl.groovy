@@ -1,5 +1,6 @@
 package com.junbo.order.core.impl.orderevent
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.langur.core.promise.Promise
@@ -45,7 +46,7 @@ class OrderEventServiceImpl implements OrderEventService {
     @Transactional
     Promise<List<OrderEvent>> getOrderEvents(Long orderId, PageParam pageParam) {
         if (orderId == null) {
-            throw AppErrors.INSTANCE.fieldInvalid('orderId', 'orderId cannot be null').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('orderId').exception()
         }
 
         if (orderRepository.getOrder(orderId) == null) {

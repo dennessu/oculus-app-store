@@ -597,7 +597,13 @@
               }
           }
       },
-      "csr_invitation_code": {}
+      "csr_invitation_code": {
+          "views": {
+              "by_user_id_email": {
+                  "map": "function(doc) {  emit(doc.userId + ':' + doc.email, doc._id)}"
+              }
+          }
+      }
   }, 
   "cloudant_search": {
     "entitlement": {

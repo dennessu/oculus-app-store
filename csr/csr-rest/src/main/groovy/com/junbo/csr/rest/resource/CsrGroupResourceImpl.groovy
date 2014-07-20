@@ -1,21 +1,16 @@
 package com.junbo.csr.rest.resource
 
+import com.junbo.common.id.GroupId
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
-import com.junbo.csr.spec.error.AppErrors
+import com.junbo.csr.core.service.IdentityService
 import com.junbo.csr.spec.model.CsrGroup
 import com.junbo.csr.spec.option.list.CsrGroupListOptions
 import com.junbo.csr.spec.resource.CsrGroupResource
 import com.junbo.identity.spec.v1.model.Group
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.option.list.GroupListOptions
-import com.junbo.identity.spec.v1.option.list.OrganizationListOptions
-import com.junbo.identity.spec.v1.option.list.UserListOptions
-import com.junbo.identity.spec.v1.resource.GroupResource
-import com.junbo.identity.spec.v1.resource.OrganizationResource
-import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
@@ -25,26 +20,14 @@ import org.springframework.beans.factory.annotation.Required
  */
 @CompileStatic
 class CsrGroupResourceImpl implements CsrGroupResource {
-    private UserResource userResource
-    private OrganizationResource organizationResource
-    private GroupResource groupResource
+    private IdentityService identityService
     private String organizationOwner
     private String organizationName
     private List<String> groupNameList
 
     @Required
-    void setUserResource(UserResource userResource) {
-        this.userResource = userResource
-    }
-
-    @Required
-    void setOrganizationResource(OrganizationResource organizationResource) {
-        this.organizationResource = organizationResource
-    }
-
-    @Required
-    void setGroupResource(GroupResource groupResource) {
-        this.groupResource = groupResource
+    void setIdentityService(IdentityService identityService) {
+        this.identityService = identityService
     }
 
     @Required
@@ -64,37 +47,22 @@ class CsrGroupResourceImpl implements CsrGroupResource {
 
     @Override
     Promise<Results<CsrGroup>> list(CsrGroupListOptions listOptions) {
-        return userResource.list(new UserListOptions(username: organizationOwner)).then { Results<User> userResults ->
-            if (userResults == null || userResults.items == null || userResults.items.size() == 0) {
-                throw AppErrors.INSTANCE.csrGroupNotFound().exception()
-            }
-            User organizationOwner = userResults.items.get(0)
+        if (listOptions != null && listOptions.userId != null) {
+            // check userId
+            identityService.getUserById(listOptions.userId).get()
+        }
 
-            return organizationResource.list(new OrganizationListOptions(ownerId: organizationOwner.id as UserId)).then { Results<Organization> organizationResults ->
-                if (organizationResults == null || organizationResults.items == null) {
-                    throw AppErrors.INSTANCE.csrGroupNotFound().exception()
-                }
-                organizationResults.items.retainAll{ Organization org ->
-                    org.name == organizationName
-                }
-
-                if (organizationResults.items.size() == 0) {
-                    throw AppErrors.INSTANCE.csrGroupNotFound().exception()
-                }
-
-                Organization organization = organizationResults.items.get(0)
-
-                return groupResource.list(new GroupListOptions(organizationId: organization.id as OrganizationId)).then { Results<Group> groupResults ->
-                    if (groupResults == null || groupResults.items == null) {
-                        throw AppErrors.INSTANCE.csrGroupNotFound().exception()
-                    }
-
+        return identityService.getUserByUsername(organizationOwner).then { User organizationOwner ->
+            return identityService.getOrganizationByOwerIdAndOrgName(organizationOwner.id as UserId, organizationName).then { Organization organization ->
+                return identityService.getGroupByOrganization(organization.id as OrganizationId).then { Results<Group> groupResults ->
+                    // filter with csr group name list
                     groupResults.items.retainAll{ Group group ->
                         groupNameList.contains(group.name)
                     }
 
                     def resultList = new Results<CsrGroup>(items: [])
 
+                    // filter with groupName parameter
                     if (listOptions.groupName != null) {
                         groupResults.items.removeAll { Group group ->
                             group.name != listOptions.groupName
@@ -102,12 +70,21 @@ class CsrGroupResourceImpl implements CsrGroupResource {
                     }
 
                     groupResults.items.each { Group group ->
-                        def csrGroup = new CsrGroup(id: group.id.toString(), groupName: group.name)
+                        def csrGroup = new CsrGroup(groupId: group.id as GroupId, groupName: group.name)
                         String[] splits = group.name.split('_')
                         if (splits.size() > 1) {
                             csrGroup.tier = splits[1]
                         }
                         resultList.items.add(csrGroup)
+                    }
+
+                    // filter with userId parameter
+                    if (listOptions.userId != null) {
+                        List<GroupId> groupIds = identityService.getGroupIdByUserId(listOptions.userId)
+
+                        resultList.items.retainAll { CsrGroup csrGroup ->
+                            groupIds.contains(csrGroup.groupId)
+                        }
                     }
 
                     return Promise.pure(resultList)

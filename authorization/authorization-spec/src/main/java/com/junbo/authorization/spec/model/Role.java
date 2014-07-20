@@ -7,13 +7,13 @@ package com.junbo.authorization.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.RoleId;
-import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
+import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Role.
  */
-public class Role extends PropertyAssignedAwareResourceMeta<RoleId> {
+public class Role extends ResourceMeta<RoleId> {
 
     @ApiModelProperty(position = 1, required = true, value = "[Nullable]The id of the role resource.")
     @JsonProperty("self")
@@ -32,8 +32,6 @@ public class Role extends PropertyAssignedAwareResourceMeta<RoleId> {
 
     public void setId(RoleId id) {
         this.id = id;
-        support.setPropertyAssigned("self");
-        support.setPropertyAssigned("id");
     }
 
     public String getName() {
@@ -42,7 +40,6 @@ public class Role extends PropertyAssignedAwareResourceMeta<RoleId> {
 
     public void setName(String name) {
         this.name = name;
-        support.setPropertyAssigned("name");
     }
 
     public RoleTarget getTarget() {
@@ -51,6 +48,5 @@ public class Role extends PropertyAssignedAwareResourceMeta<RoleId> {
 
     public void setTarget(RoleTarget target) {
         this.target = target;
-        support.setPropertyAssigned("target");
     }
 }

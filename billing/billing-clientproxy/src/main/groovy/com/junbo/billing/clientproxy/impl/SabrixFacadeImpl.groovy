@@ -111,7 +111,7 @@ class SabrixFacadeImpl implements TaxFacade {
     @Override
     Promise<Balance> calculateTaxQuote(Balance balance, Address shippingAddress, Address piAddress) {
         Batch batch = generateBatch(balance, shippingAddress, piAddress, false)
-        LOGGER.info('name=Tax_Calculation_Quote_Batch, batch={}', batch.toString())
+        //LOGGER.info('name=Tax_Calculation_Quote_Batch, batch={}', batch.toString())
         return calculateTax(batch).then { TaxCalculationResponse result ->
             return Promise.pure(updateBalance(result, balance))
         }
@@ -120,7 +120,7 @@ class SabrixFacadeImpl implements TaxFacade {
     @Override
     Promise<Balance> calculateTax(Balance balance, Address shippingAddress, Address piAddress) {
         Batch batch = generateBatch(balance, shippingAddress, piAddress, true)
-        LOGGER.info('name=Tax_Calculation_Batch, batch={}', batch.toString())
+        //LOGGER.info('name=Tax_Calculation_Batch, batch={}', batch.toString())
         return calculateTax(batch).then { TaxCalculationResponse result ->
             return Promise.pure(updateAuditedBalance(result, balance))
         }
@@ -129,7 +129,9 @@ class SabrixFacadeImpl implements TaxFacade {
     @Override
     Promise<Address> validateAddress(Address address) {
         SabrixAddress externalAddress = getSabrixAddress(address)
-        LOGGER.info('name=Validate_Address_Request, address={}', externalAddress.toString())
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug('name=Validate_Address_Request, address={}', externalAddress.toString())
+        }
         return validateSabrixAddress(externalAddress).then { AddressValidationResponse response ->
             return Promise.pure(updateAddress(response, address))
         }
@@ -138,7 +140,9 @@ class SabrixFacadeImpl implements TaxFacade {
     @Override
     Promise<VatIdValidationResponse> validateVatId(String vatId) {
         RegistrationValidationRequest request = generateRequest(vatId)
-        LOGGER.info('name=Registration_Validation_Request, request={}', request.toString())
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug('name=Registration_Validation_Request, request={}', request.toString())
+        }
         return validateVatId(request).then { RegistrationValidationResponse response ->
             return getVatIdValidationResponse(response)
         }
@@ -433,7 +437,9 @@ class SabrixFacadeImpl implements TaxFacade {
                 return Promise.pure(null)
             }
             if (response.statusCode / 100 == 2) {
-                LOGGER.info('name=Tax_Calculation_Response, response={}', result.toString())
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug('name=Tax_Calculation_Response, response={}', result.toString())
+                }
                 return Promise.pure(result)
             }
             LOGGER.error('name=Error_Tax_Calculation, description={}', result.requestStatus?.error?.description)
@@ -532,7 +538,9 @@ class SabrixFacadeImpl implements TaxFacade {
                 throw AppErrors.INSTANCE.addressValidationError().exception()
             }
             if (response.statusCode / 100 == 2) {
-                LOGGER.info('name=Address_Validation_Response, response={}', addressValidationResponse.toString())
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug('name=Address_Validation_Response, response={}', addressValidationResponse.toString())
+                }
                 return Promise.pure(addressValidationResponse)
             }
 
@@ -586,7 +594,9 @@ class SabrixFacadeImpl implements TaxFacade {
                 return Promise.pure(null)
             }
             if (response.statusCode / 100 == 2) {
-                LOGGER.info('name=Vat_Id_Validation_Response, response={}', vatValidationResponse.toString())
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug('name=Vat_Id_Validation_Response, response={}', vatValidationResponse.toString())
+                }
                 return Promise.pure(vatValidationResponse)
             }
             LOGGER.info('name=Tax_Calculation_Response_Status_Code, statusCode={}', response.statusCode)

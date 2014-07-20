@@ -4,7 +4,6 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.data.loader
-
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.util.ContextInitializer
 import com.junbo.apphost.core.JunboApplication
@@ -13,6 +12,7 @@ import com.junbo.authorization.AuthorizeServiceImpl
 import com.junbo.configuration.ConfigService
 import com.junbo.configuration.ConfigServiceManager
 import com.junbo.data.handler.DataHandler
+import groovy.json.StringEscapeUtils
 import groovy.transform.CompileStatic
 import org.apache.commons.io.IOUtils
 import org.glassfish.grizzly.threadpool.JunboThreadPool
@@ -27,7 +27,6 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.util.CollectionUtils
 import org.springframework.util.ResourceUtils
 import org.springframework.util.StringUtils
-
 /**
  * DataLoader.
  */
@@ -76,6 +75,22 @@ class DataLoader {
             } finally {
                 exit()
             }
+        } else if (args.length == 1 && args[0].equalsIgnoreCase("imasterkey")) {
+            String masterKey = new String(System.console().readPassword("Enter master key: "));
+            if (StringUtils.isEmpty(masterKey)) {
+                LOGGER.error("Invalid master key.")
+                exit()
+            }
+            masterKey = StringEscapeUtils.escapeJavaScript(masterKey);
+            String data = "{\"value\": \"$masterKey\"}";
+            try {
+                DataHandler handler = handlers["masterkey"];
+                handler.handle(data)
+            } catch (Exception e) {
+                LOGGER.error("Error ocuured while loading $data", e)\
+            } finally {
+                exit()
+            }
         } else {
             List<String> list = CollectionUtils.arrayToList(args)
 
@@ -117,7 +132,7 @@ class DataLoader {
 
                 for (Resource resource : resources) {
                     if (handler != null) {
-                        LOGGER.info("handling resource: " + resource.filename)
+                        LOGGER.info("handling resource: " + data + " " + resource.filename)
                         String content = IOUtils.toString(resource.URI)
                         handler.handle(content)
                     } else {

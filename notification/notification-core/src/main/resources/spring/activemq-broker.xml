@@ -10,13 +10,13 @@
         <plugins>
             <simpleAuthenticationPlugin>
                 <users>
-                    <authenticationUser username="system" password="manager" groups="users,admins"/>
+                    <authenticationUser username="${notification.activemq.userName}" password="${notification.activemq.password}" groups="users,admins"/>
                 </users>
             </simpleAuthenticationPlugin>
         </plugins>
 
         <transportConnectors>
-            <transportConnector uri="tcp://0.0.0.0:61616"/>
+            <transportConnector uri="${notification.activemq.brokerURL}"/>
         </transportConnectors>
     </broker>
 </beans>

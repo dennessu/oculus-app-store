@@ -16,8 +16,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
-import com.junbo.oauth.spec.model.LoginState
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.spec.param.OAuthParameters
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -122,7 +121,7 @@ class CreateAddress implements Action {
         if (throwable instanceof AppErrorException) {
             contextWrapper.errors.add(((AppErrorException) throwable).error.error())
         } else {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingIdentity().error())
+            contextWrapper.errors.add(AppErrors.INSTANCE.errorCallingIdentity().error())
         }
     }
 }

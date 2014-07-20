@@ -37,6 +37,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
     private final String identityServerURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "users";
     private static UserService instance;
+    private final String userPassword = "Test1234";
 
     private OAuthService oAuthTokenClient = OAuthServiceImpl.getInstance();
 
@@ -203,7 +204,8 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         if (pwd != null && !pwd.isEmpty()) {
             password = pwd;
         } else {
-            password = RandomFactory.getRandomStringOfAlphabet(5);
+            //password = RandomFactory.getRandomStringOfAlphabet(5);
+            password = userPassword;
         }
         params.put("type", "PASSWORD");
         params.put("value", password);
@@ -309,7 +311,9 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
                 responseBody);
         String userRtnId = IdConverter.idToHexString(userGet.getId());
         Master.getInstance().addUser(userRtnId, userGet);
-
+        if (Master.getInstance().getUserAccessToken(userId) == null) {
+            oAuthTokenClient.postUserAccessToken(userRtnId, userPassword);
+        }
         return userRtnId;
     }
 
@@ -333,6 +337,9 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         List<String> listUserId = new ArrayList<>();
         for (User user : userGet.getItems()) {
             Master.getInstance().addUser(IdConverter.idToHexString(user.getId()), user);
+            if (Master.getInstance().getUserAccessToken(IdConverter.idToHexString(user.getId())) == null) {
+                oAuthTokenClient.postUserAccessToken(IdConverter.idToHexString(user.getId()), userPassword);
+            }
             listUserId.add(IdConverter.idToHexString(user.getId()));
         }
 

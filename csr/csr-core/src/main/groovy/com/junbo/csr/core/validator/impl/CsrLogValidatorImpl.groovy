@@ -3,6 +3,7 @@ package com.junbo.csr.core.validator.impl
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat
 import com.junbo.common.id.CsrLogId
 import com.junbo.csr.common.ValidatorUtil
+import com.junbo.csr.core.service.IdentityService
 import com.junbo.csr.core.validator.CsrLogValidator
 import com.junbo.csr.db.repo.CsrLogRepository
 import com.junbo.csr.spec.def.CsrLogActionType
@@ -22,19 +23,19 @@ import org.springframework.util.StringUtils
  */
 @CompileStatic
 class CsrLogValidatorImpl implements CsrLogValidator {
+    private IdentityService identityService
     private CsrLogRepository csrLogRepository
-    private UserResource userResource
     private Integer maxSearchDays
     private Integer regardingMaxLength
 
     @Required
-    void setCsrLogRepository(CsrLogRepository csrLogRepository) {
-        this.csrLogRepository = csrLogRepository
+    void setIdentityService(IdentityService identityService) {
+        this.identityService = identityService
     }
 
     @Required
-    void setUserResource(UserResource userResource) {
-        this.userResource = userResource
+    void setCsrLogRepository(CsrLogRepository csrLogRepository) {
+        this.csrLogRepository = csrLogRepository
     }
 
     @Required
@@ -113,11 +114,7 @@ class CsrLogValidatorImpl implements CsrLogValidator {
         }
 
         if (options.userId != null) {
-            return userResource.get(options.userId, new UserGetOptions()).then { User user ->
-                if (user == null) {
-                    throw AppErrors.INSTANCE.userNotFound().exception()
-                }
-
+            return identityService.getUserById(options.userId).then {
                 return Promise.pure(null)
             }
         }
@@ -153,11 +150,7 @@ class CsrLogValidatorImpl implements CsrLogValidator {
             throw AppErrors.INSTANCE.fieldRequired('userId').exception()
         }
         else {
-            return userResource.get(csrLog.userId, new UserGetOptions()).then { User user ->
-                if (user == null) {
-                    throw AppErrors.INSTANCE.userNotFound().exception()
-                }
-
+            return identityService.getUserById(csrLog.userId).then {
                 return Promise.pure(null)
             }
         }

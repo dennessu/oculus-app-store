@@ -98,6 +98,9 @@ public class PriceTierServiceImpl implements PriceTierService {
     private void validateCreation(PriceTier priceTier) {
         checkRequestNotNull(priceTier);
         List<AppError> errors = new ArrayList<>();
+        if (priceTier.getId() != null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("self"));
+        }
         if (priceTier.getRev() != null) {
             errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("rev"));
         }

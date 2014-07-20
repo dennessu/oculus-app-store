@@ -12,8 +12,9 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
         LOGGER.error("No Host can be detected");
     }
     final String __machineName = __temp;
+    final java.text.DateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
-    javax.ws.rs.core.UriBuilder __uriBuilder = UriBuilder.fromUri(__target);
+    final javax.ws.rs.core.UriBuilder __uriBuilder = UriBuilder.fromUri(__target);
     __uriBuilder.path("${path}");
 
     JunboAsyncHttpClient.BoundRequestBuilder __requestBuilder = __client.prepare${httpMethodName}("http://127.0.0.1"); // the url will be overwritten later
@@ -67,7 +68,7 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
                 return __service.${methodName}([#list parameters as parameter]${parameter.paramName}[#if parameter_has_next], [/#if][/#list]).then(new Promise.Func<${returnType}, Promise<${returnType}>>() {
                     @Override
                     public Promise<${returnType}> apply(${returnType} __result) {
-                        LOGGER.info("(InProc) Method: ${methodName} base: " + __target + " uri: ${path} duration: " + (System.currentTimeMillis() - __startTime) + "ms " + __startDate.toString() + " machineName: " + __machineName);
+                        LOGGER.info("(InProc) Method: ${methodName}\t" +(System.currentTimeMillis() - __startTime) + "ms\t" + df.format(__startDate) + "\t" +  __target + "\t" + __uriBuilder.toTemplate().replace(__target, "") + "\t" + __machineName);
                         return Promise.pure(__result);
                     }
                 });
@@ -88,7 +89,7 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
     try {
         __future = Promise.wrap(asGuavaFuture(__client.executeRequest(__request)));
     } catch (java.io.IOException ex) {
-        LOGGER.error("(Remote) Method: ${methodName} base: " + __target + " uri: ${path} duration: " + (System.currentTimeMillis() - __startTime) + "ms " + __startDate.toString() + " machineName: " + __machineName);
+        LOGGER.error("(Remote) Method: ${methodName}\t" +(System.currentTimeMillis() - __startTime) + "ms\t" + df.format(__startDate) + "\t" +  __target + "\t" + __uriBuilder.toTemplate().replace(__target, "") + "\t" + __machineName);
         throw new RuntimeException(ex);
     }
 
@@ -99,7 +100,7 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
                 __responseHandler.onResponse(response);
             }
 
-        LOGGER.info("(Remote) Method: ${methodName} base: " + __target + " uri: ${path} duration: " + (System.currentTimeMillis() - __startTime) + "ms " + __startDate.toString() + " machineName: " + __machineName);
+        LOGGER.info("(Remote) Method: ${methodName}\t" +(System.currentTimeMillis() - __startTime) + "ms\t" + df.format(__startDate) + "\t" +  __target + "\t" + __uriBuilder.toTemplate().replace(__target, "") + "\t" + __machineName);
         if (response.getStatusCode() / 100 == 2) {
                 try {
                     return Promise.pure(__transcoder.<${returnType}>decode(new TypeReference<${returnType}>() {}, response.getResponseBody()));

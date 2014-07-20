@@ -56,6 +56,22 @@ public class CreditCardInfo extends PaymentInstrumentBase {
         return randomCreditCard;
     }
 
+    public static CreditCardInfo getExpiredCreditCardInfo(Country country){
+        CreditCardInfo randomCreditCard = new CreditCardInfo();
+        randomCreditCard.setAccountName(RandomFactory.getRandomStringOfAlphabet(5));
+
+        String[] creditCardArray = new String[]{"4111111111111111", "4012888888881881"};
+        randomCreditCard.setAccountNum(creditCardArray[RandomFactory.getRandomInteger(1)]);
+        //randomCreditCard.setAccountNum(CreditCardGenerator.VISA.getRandomNumber());
+        randomCreditCard.setEncryptedCVMCode(getCVMCode(CreditCardGenerator.VISA.toString(), true));
+        randomCreditCard.setExpireDate(getFormattedExpiredDate());
+        randomCreditCard.setPhone(Phone.getRandomPhone());
+        randomCreditCard.setAddress(Address.getRandomAddress(country));
+        randomCreditCard.setValidated(false);
+        randomCreditCard.setDefault(true);
+        return randomCreditCard;
+    }
+
 
     /**
      * Enum for Credit Card Type.
@@ -150,6 +166,14 @@ public class CreditCardInfo extends PaymentInstrumentBase {
         Date today = new Date();
         Date expireDate = new Date(today.getYear() + RandomFactory.getRandomInteger(2, 5), today.getMonth()
                 + RandomFactory.getRandomInteger(0, 11), today.getDay());
+        return dateFormat.format(expireDate);
+    }
+
+    public static String getFormattedExpiredDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date today = new Date();
+        Date expireDate = new Date(today.getYear() , today.getMonth()
+                - 1, today.getDay());
         return dateFormat.format(expireDate);
     }
 

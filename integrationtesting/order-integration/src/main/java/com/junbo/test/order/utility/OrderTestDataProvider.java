@@ -154,6 +154,7 @@ public class OrderTestDataProvider {
         order.setOrderItems(orderItemList);
         order.setTentative(true);
         order.setLocale(new LocaleId("en_US"));
+        Master.getInstance().setCurrentUid(uid);
         return orderClient.postOrder(order, expectedResponseCode);
     }
 

@@ -5,12 +5,13 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.db.repo.AuthorizationCodeRepository
 import com.junbo.oauth.spec.model.AccessToken
@@ -52,21 +53,21 @@ class GrantTokenByCode implements Action {
         String redirectUri = parameterMap.getFirst(OAuthParameters.REDIRECT_URI)
 
         if (!StringUtils.hasText(code)) {
-            throw AppExceptions.INSTANCE.missingCode().exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('code').exception()
         }
 
         AuthorizationCode authorizationCode = authorizationCodeRepository.getAndRemove(code)
 
         if (authorizationCode == null || authorizationCode.isExpired()) {
-            throw AppExceptions.INSTANCE.invalidCode(code).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('code', code).exception()
         }
 
         if (!StringUtils.hasText(redirectUri)) {
-            throw AppExceptions.INSTANCE.missingRedirectUri().exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('redirect_uri').exception()
         }
 
         if (authorizationCode.redirectUri != redirectUri) {
-            throw AppExceptions.INSTANCE.invalidRedirectUri(redirectUri).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('redirect_uri', redirectUri).exception()
         }
 
         AccessToken accessToken = tokenService.generateAccessToken(client,

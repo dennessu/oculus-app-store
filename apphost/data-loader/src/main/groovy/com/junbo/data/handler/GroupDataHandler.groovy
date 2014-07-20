@@ -48,7 +48,6 @@ class GroupDataHandler extends BaseDataHandler {
 
         Group group = new Group()
         group.name = groupName
-        logger.info("loading group: $groupName")
 
         Group existing = null
         Organization org = null

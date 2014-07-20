@@ -7,10 +7,7 @@
 package com.junbo.order.clientproxy.identity;
 
 import com.junbo.common.id.UserPersonalInfoId;
-import com.junbo.identity.spec.v1.model.Address;
-import com.junbo.identity.spec.v1.model.Currency;
-import com.junbo.identity.spec.v1.model.Organization;
-import com.junbo.identity.spec.v1.model.User;
+import com.junbo.identity.spec.v1.model.*;
 import com.junbo.langur.core.promise.Promise;
 
 /**
@@ -30,4 +27,6 @@ public interface IdentityFacade {
     Promise<String> getEmail(UserPersonalInfoId emailId);
 
     Promise<Organization> getOrganization(Long organizationId);
+
+    Promise<UserPersonalInfo> getUserPersonalInfo(UserPersonalInfoId id);
 }

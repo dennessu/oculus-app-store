@@ -1,6 +1,7 @@
 package com.junbo.csr.core.validator.impl
 
 import com.junbo.common.id.CsrUpdateId
+import com.junbo.csr.core.service.IdentityService
 import com.junbo.csr.core.validator.CsrUpdateValidator
 import com.junbo.csr.db.repo.CsrUpdateRepository
 import com.junbo.csr.spec.error.AppErrors
@@ -19,8 +20,8 @@ import org.springframework.beans.factory.annotation.Required
 @CompileStatic
 class CsrUpdateValidatorImpl implements CsrUpdateValidator {
     private CsrUpdateRepository csrUpdateRepository
-    private UserResource userResource
     private Integer updateMaxLength
+    private IdentityService identityService
 
     @Required
     void setCsrUpdateRepository(CsrUpdateRepository csrUpdateRepository) {
@@ -28,8 +29,8 @@ class CsrUpdateValidatorImpl implements CsrUpdateValidator {
     }
 
     @Required
-    void setUserResource(UserResource userResource) {
-        this.userResource = userResource
+    void setIdentityService(IdentityService identityService) {
+        this.identityService = identityService
     }
 
     @Required
@@ -153,13 +154,8 @@ class CsrUpdateValidatorImpl implements CsrUpdateValidator {
             throw AppErrors.INSTANCE.fieldRequired('userId').exception()
         }
         else {
-            return userResource.get(csrUpdate.userId, new UserGetOptions()).then { User user ->
-                if (user == null) {
-                    throw AppErrors.INSTANCE.userNotFound().exception()
-                }
-
+            return identityService.getUserById(csrUpdate.userId).then{ User user ->
                 csrUpdate.postedBy = user.username
-
                 return Promise.pure(null)
             }
         }

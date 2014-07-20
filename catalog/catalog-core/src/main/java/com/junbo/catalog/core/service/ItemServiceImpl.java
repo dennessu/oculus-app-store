@@ -198,6 +198,9 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     private void validateItemCreation(Item item) {
         checkRequestNotNull(item);
         List<AppError> errors = new ArrayList<>();
+        if (item.getId() != null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("self"));
+        }
         if (item.getRev() != null) {
             errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("rev"));
         }
@@ -269,6 +272,9 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     private void validateRevisionCreation(ItemRevision revision) {
         checkRequestNotNull(revision);
         List<AppError> errors = new ArrayList<>();
+        if (revision.getRevisionId() != null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("self"));
+        }
         if (revision.getRev() != null) {
             errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("rev", revision.getRev(), null));
         }

@@ -5,22 +5,24 @@
  */
 package com.junbo.csr.spec.model;
 
+import com.junbo.common.id.UserId;
+
 /**
  * Created by haomin on 14-7-14.
  */
 public class CsrUser {
-    private Long id;
+    private UserId userId;
     private String name;
     private String username;
     private String countryCode;
     private String tier;
 
-    public Long getId() {
-        return id;
+    public UserId getUserId() {
+        return userId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUserId(UserId userId) {
+        this.userId = userId;
     }
 
     public String getName() {

@@ -10,7 +10,7 @@
             "JP": {"JPY": 1000}
         }
     },
-    "distributionChannel": ["INAPP", "STORE"],
+    "distributionChannel": ["STORE"],
     "supportedInputDevices": ["KEYBOARD", "MOUSE"],
     "locales":{
         "en_US":{

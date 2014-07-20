@@ -72,6 +72,9 @@ public abstract class AttributeServiceSupport<T extends Attribute> {
     private void validateCreation(T attribute) {
         checkRequestNotNull(attribute);
         List<AppError> errors = new ArrayList<>();
+        if (attribute.getId() != null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("self"));
+        }
         if (attribute.getRev() != null) {
             errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("rev"));
         }

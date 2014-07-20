@@ -74,8 +74,6 @@ class UserDataHandler extends BaseDataHandler {
         user.isAnonymous = false
         user.countryOfResidence = cor
 
-        logger.info("loading user $username")
-
         User existing = null
         try {
             Results<User> results = userResource.list(new UserListOptions(username: username)).get()

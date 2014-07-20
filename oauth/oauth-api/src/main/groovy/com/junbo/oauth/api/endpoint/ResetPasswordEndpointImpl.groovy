@@ -1,12 +1,12 @@
 package com.junbo.oauth.api.endpoint
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
-import com.junbo.common.util.Utils
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.ConversationNotfFoundException
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.UserService
 import com.junbo.oauth.core.util.ResponseUtil
 import com.junbo.oauth.spec.endpoint.ResetPasswordEndpoint
@@ -126,7 +126,7 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
                 }
             }
             else {
-                throw AppExceptions.INSTANCE.missingUsernameOrUserEmail().exception()
+                throw AppCommonErrors.INSTANCE.fieldRequired('username or user_email').exception()
             }
         }
 

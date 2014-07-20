@@ -38,8 +38,6 @@ class PITypeDataHandler extends BaseDataHandler {
             exit()
         }
 
-        logger.info("loading piType $piType.typeCode")
-
         Results<PIType> results = null
         try {
             results = piTypeResource.list(new PITypeListOptions(typeCode: piType.typeCode)).get()

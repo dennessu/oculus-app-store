@@ -5,7 +5,7 @@
  */
 package com.junbo.oauth.core.util
 
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.spec.model.TokenType
 import groovy.transform.CompileStatic
 import org.apache.commons.codec.binary.Base64
@@ -23,7 +23,7 @@ class AuthorizationHeaderUtil {
 
         String[] tokens = authorization.split(' ')
         if (tokens.length != TOKENS_LENGTH || !tokens[0].equalsIgnoreCase('Basic')) {
-            throw AppExceptions.INSTANCE.invalidAuthorization().exception()
+            throw AppErrors.INSTANCE.invalidAuthorization().exception()
         }
 
         String decoded = new String(Base64.decodeBase64(tokens[1]))
@@ -31,7 +31,7 @@ class AuthorizationHeaderUtil {
         tokens = decoded.split(':')
 
         if (tokens.length != TOKENS_LENGTH) {
-            throw AppExceptions.INSTANCE.invalidAuthorization().exception()
+            throw AppErrors.INSTANCE.invalidAuthorization().exception()
         }
 
         return new ClientCredential(
@@ -45,7 +45,7 @@ class AuthorizationHeaderUtil {
 
         String[] tokens = authorization.split(' ')
         if (tokens.length != TOKENS_LENGTH || !tokens[0].equalsIgnoreCase(TokenType.BEARER.name())) {
-            throw AppExceptions.INSTANCE.invalidAuthorization().exception()
+            throw AppErrors.INSTANCE.invalidAuthorization().exception()
         }
 
         return tokens[1]

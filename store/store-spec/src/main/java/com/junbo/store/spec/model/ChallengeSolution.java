@@ -5,6 +5,8 @@
  */
 package com.junbo.store.spec.model;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 /**
  * The ChallengeSolution class.
  */
@@ -12,7 +14,7 @@ public class ChallengeSolution {
 
     private String type;
 
-    private String value;
+    private JsonNode value;
 
     public String getType() {
         return type;
@@ -22,11 +24,11 @@ public class ChallengeSolution {
         this.type = type;
     }
 
-    public String getValue() {
+    public JsonNode getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(JsonNode value) {
         this.value = value;
     }
 }

@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
@@ -20,7 +21,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.db.repo.EmailVerifyCodeRepository
 import com.junbo.oauth.spec.model.EmailVerifyCode
 import com.junbo.oauth.spec.param.OAuthParameters
@@ -66,7 +67,7 @@ class VerifyEmail implements Action {
         String code = parameterMap.getFirst(OAuthParameters.EMAIL_VERIFY_CODE)
 
         if (StringUtils.isEmpty(code)) {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.missingEmailVerifyCode().error())
+            contextWrapper.errors.add(AppCommonErrors.INSTANCE.fieldRequired('evc').error())
             return Promise.pure(new ActionResult('error'))
         }
 
@@ -74,7 +75,7 @@ class VerifyEmail implements Action {
         Assert.notNull(emailVerifyCode, 'emailVerifyCode is null')
 
         if (emailVerifyCode.code != code) {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.invalidEmailVerifyCode(code).error())
+            contextWrapper.errors.add(AppErrors.INSTANCE.invalidEmailVerifyCode(code).error())
             return Promise.pure(new ActionResult('error'))
         }
 
@@ -136,7 +137,7 @@ class VerifyEmail implements Action {
         if (throwable instanceof AppErrorException) {
             contextWrapper.errors.add(((AppErrorException) throwable).error.error())
         } else {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingIdentity().error())
+            contextWrapper.errors.add(AppErrors.INSTANCE.errorCallingIdentity().error())
         }
     }
 }

@@ -1,5 +1,5 @@
 package com.junbo.order.clientproxy.billing.impl
-import com.junbo.billing.spec.error.ErrorCode
+
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.resource.BalanceResource
 import com.junbo.common.error.AppError
@@ -28,6 +28,7 @@ class BillingFacadeImpl implements BillingFacade {
     BalanceResource balanceResource
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BillingFacadeImpl)
+    private static final String PAYMENT_INSUFFICIENT_FUND = '117'
 
 
     @Override
@@ -124,7 +125,7 @@ class BillingFacadeImpl implements BillingFacade {
     @Override
     AppError convertError(Throwable error) {
         AppError e = ErrorUtils.toAppError(error)
-        if (e != null && e.error().code == ErrorCode.PAYMENT_INSUFFICIENT_FUND) {
+        if (e != null &&  e.error().code == PAYMENT_INSUFFICIENT_FUND) {
             return AppErrors.INSTANCE.billingInsufficientFund()
         }
         if (e != null) {

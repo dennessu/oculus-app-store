@@ -179,7 +179,7 @@ class OrderResourceImpl implements OrderResource {
     @Override
     Promise<Results<Order>> getOrderByUserId(UserId userId, OrderQueryParam orderQueryParam, PageParam pageParam) {
         if (userId == null) {
-            throw AppErrors.INSTANCE.missingParameterField('userId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)

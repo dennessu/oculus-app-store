@@ -313,6 +313,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     private void validateOfferCreation(Offer offer) {
         checkRequestNotNull(offer);
         List<AppError> errors = new ArrayList<>();
+        if (offer.getOfferId() != null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("self"));
+        }
         if (offer.getRev() != null) {
             errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("rev"));
         }
@@ -375,6 +378,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     private void validateRevisionCreation(OfferRevision revision) {
         checkRequestNotNull(revision);
         List<AppError> errors = new ArrayList<>();
+        if (revision.getRevisionId() != null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("self"));
+        }
         if (revision.getRev() != null) {
             errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("rev", revision.getRev(), null));
         }

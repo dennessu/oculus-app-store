@@ -5,7 +5,10 @@
  */
 package com.junbo.test.common.apihelper.identity.impl;
 
+import com.junbo.authorization.spec.model.Role;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
+import com.junbo.test.common.apihelper.identity.RoleAssignmentService;
+import com.junbo.test.common.apihelper.identity.RoleService;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.identity.spec.v1.model.Organization;
@@ -23,7 +26,7 @@ import com.junbo.common.id.UserId;
  */
 public class OrganizationServiceImpl extends HttpClientBase implements OrganizationService {
 
-        private final String organizationUrl = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/organizations";
+        private final String organizationUrl = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "organizations";
         private static OrganizationService instance;
 
     public static synchronized OrganizationService instance() {
@@ -47,7 +50,17 @@ public class OrganizationServiceImpl extends HttpClientBase implements Organizat
         organization.setOwnerId(new UserId(IdConverter.hexStringToId(UserId.class, userId)));
         organization.setName(RandomFactory.getRandomStringOfAlphabet(10));
         organization.setIsValidated(true);
-        return this.postOrganization(organization);
+        Organization organizationPost = this.postOrganization(organization);
+
+        //Add role to the organization
+        RoleService roleService = RoleServiceImpl.instance();
+        Role role = roleService.postDefaultRole(IdConverter.idToHexString(organizationPost.getId()));
+
+        //Add role assignment
+        RoleAssignmentService roleAssignmentService = RoleAssignmentServiceImpl.instance();
+        roleAssignmentService.postDefaultRoleAssignment(role.getId(), userId);
+
+        return organizationPost;
     }
 
     public Organization postOrganization(Organization organization) throws Exception {

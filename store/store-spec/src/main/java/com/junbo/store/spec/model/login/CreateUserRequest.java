@@ -30,7 +30,7 @@ public class CreateUserRequest {
 
     private String preferredLocale;
 
-    private String emailAddress;
+    private String email;
 
     private Date dob;
 
@@ -110,12 +110,12 @@ public class CreateUserRequest {
         this.preferredLocale = preferredLocale;
     }
 
-    public String getEmailAddress() {
-        return emailAddress;
+    public String getEmail() {
+        return email;
     }
 
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Date getDob() {

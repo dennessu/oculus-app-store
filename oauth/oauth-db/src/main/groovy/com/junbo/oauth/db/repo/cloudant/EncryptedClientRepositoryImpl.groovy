@@ -33,14 +33,19 @@ class EncryptedClientRepositoryImpl implements ClientRepository {
     @Override
     Client getClient(String clientId) {
         Client client = clientRepository.getClient(clientId)
-        client.clientSecret = cipherService.decrypt(client.clientSecret)
+        if (client != null) {
+            assert client.clientSecret != null
+            client.clientSecret = cipherService.decrypt(client.clientSecret)
+        }
 
         return client
     }
 
     @Override
     Client saveClient(Client client) {
+        assert client != null
         String secret = client.clientSecret
+        assert secret != null
         client.clientSecret = cipherService.encrypt(client.clientSecret)
         Client saved = clientRepository.saveClient(client)
         saved.clientSecret = secret
@@ -49,7 +54,9 @@ class EncryptedClientRepositoryImpl implements ClientRepository {
 
     @Override
     Client updateClient(Client client, Client oldClient) {
+        assert client != null
         String secret = client.clientSecret
+        assert secret != null
         client.clientSecret = cipherService.encrypt(secret)
 
         Client updated = clientRepository.updateClient(client, oldClient)

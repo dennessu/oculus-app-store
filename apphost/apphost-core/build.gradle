@@ -6,6 +6,7 @@ dependencies {
     compile (libraries.spring_bridge)
 
     compile (libraries.jersey_container_grizzly2_http)
+    compile (libraries.grizzly_http_server)
 
     compile (libraries.slf4j_api)
     compile (libraries.log4j_over_slf4j)

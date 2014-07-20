@@ -34,6 +34,9 @@ class CsrInvitationCodeRepositoryCloudantImpl extends CloudantClient<CsrInvitati
 
     @Override
     void removeByUserIdEmail(Long userId, String email) {
-
+        List<CsrInvitationCode> entities = queryViewSync('by_user_id_email', "$userId:$email")
+        for (CsrInvitationCode code : entities) {
+            cloudantDeleteSync(code)
+        }
     }
 }

@@ -36,6 +36,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
     if host =~ /mswin|mingw/
+      # TODO: set cpu cores for windows host
     else
       v.customize ["modifyvm", :id, "--cpus",
         `awk "/^processor/ {++n} END {print n}" /proc/cpuinfo 2> /dev/null || sh -c 'sysctl hw.logicalcpu 2> /dev/null || echo ": 2"' | awk \'{print \$2}\' `.chomp ]
@@ -45,6 +46,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # system initial setup
   config.vm.provision "shell", inline: <<-EOF
     set -e
+
+    # setup swapfile
+    # if not then create it
+    if grep -q "swapfile" /etc/fstab; then
+      echo 'swapfile found. No changes made.'
+    else
+      echo 'swapfile not found. Adding swapfile.'
+      fallocate -l 2048M /swapfile
+      chmod 600 /swapfile
+      mkswap /swapfile
+      swapon /swapfile
+      echo '/swapfile none swap defaults 0 0' >> /etc/fstab
+    fi
 
     # tune gradle
     echo 'export GRADLE_OPTS="$GRADLE_OPTS -Xmx2048m -Xms1024m -XX:PermSize=512m -XX:MaxPermSize=1024m"' >> /home/vagrant/.bashrc

@@ -39,7 +39,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
     }
 
     @Override
-    protected FluentCaseInsensitiveStringsMap getHeader() {
+    protected FluentCaseInsensitiveStringsMap getHeader(boolean isRoleAPI) {
         FluentCaseInsensitiveStringsMap headers = new FluentCaseInsensitiveStringsMap();
         headers.add(Header.CONTENT_TYPE, "application/x-www-form-urlencoded");
 

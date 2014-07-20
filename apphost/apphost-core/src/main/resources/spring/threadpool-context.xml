@@ -4,8 +4,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="junboThreadPool" class="com.junbo.apphost.core.JunboThreadPoolFactoryBean">
-        <property name="maxPoolSize" value="${apphost.maxPoolSize}"/>
-        <property name="queueLimit" value="${apphost.queueLimit}"/>
-        <property name="keepAliveTimeMillis" value="${apphost.keepAliveTimeMillis}"/>
+        <property name="maxPoolSize" value="${apphost.threadPool.maxPoolSize}"/>
+        <property name="queueLimit" value="${apphost.threadPool.queueLimit}"/>
+        <property name="keepAliveTimeMillis" value="${apphost.threadPool.keepAliveTimeMillis}"/>
     </bean>
 </beans>

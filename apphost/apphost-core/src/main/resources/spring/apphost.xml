@@ -8,6 +8,8 @@
             <value type="java.net.URI">${apphost.server.uri}</value>
         </property>
         <property name="executorService" ref="junboThreadPool"/>
+        <property name="keepAliveMaxRequestsCount" value="${apphost.server.keepAlive.maxRequestsCount}"/>
+        <property name="keepAliveIdleTimeoutInSeconds" value="${apphost.server.keepAlive.idleTimeoutInSeconds}"/>
     </bean>
 
     <bean id="serviceLocator" factory-bean="httpServer" factory-method="getServiceLocator"

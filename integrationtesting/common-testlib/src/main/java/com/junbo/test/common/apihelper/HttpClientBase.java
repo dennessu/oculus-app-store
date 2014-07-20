@@ -60,15 +60,19 @@ public abstract class HttpClientBase {
         }
     }
 
-    protected FluentCaseInsensitiveStringsMap getHeader() {
+    protected FluentCaseInsensitiveStringsMap getHeader(boolean isRoleAPI) {
         FluentCaseInsensitiveStringsMap headers = new FluentCaseInsensitiveStringsMap();
         headers.add(Header.CONTENT_TYPE, contentType);
         String uid = Master.getInstance().getCurrentUid();
-        if (uid != null && Master.getInstance().getUserAccessToken(uid) != null) {
+        if (isRoleAPI) {
+            headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getIdentityAccessToken());
+        } else if (uid != null && Master.getInstance().getUserAccessToken(uid) != null) {
             headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getUserAccessToken(uid));
         } else {
             headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getIdentityAccessToken());
         }
+
+        //headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getIdentityAccessToken());
 
         //for further header, we can set dynamic value from properties here
         return headers;
@@ -108,12 +112,18 @@ public abstract class HttpClientBase {
 
     protected String restApiCall(HTTPMethod httpMethod, String restUrl, String requestBody,
                                  int expectedResponseCode, HashMap<String, List<String>> httpParameters) throws Exception {
+        boolean isRoleAPI = false;
+
+        if (restUrl.contains("/v1/roles") || restUrl.contains("/v1/role-assignments")) {
+            isRoleAPI = true;
+        }
+
         switch (httpMethod) {
             case PUT:
             case POST: {
                 Request req = new RequestBuilder(httpMethod.getHttpMethod())
                         .setUrl(restUrl)
-                        .setHeaders(getHeader())
+                        .setHeaders(getHeader(isRoleAPI))
                         .setBody(requestBody)
                         .build();
 
@@ -146,7 +156,7 @@ public abstract class HttpClientBase {
 
                 Request req = new RequestBuilder("GET")
                         .setUrl(restUrl)
-                        .setHeaders(getHeader())
+                        .setHeaders(getHeader(isRoleAPI))
                         .build();
 
                 logger.LogRequest(req);
@@ -160,7 +170,7 @@ public abstract class HttpClientBase {
                     String redirectUrl = nettyResponse.getHeaders().get("Location").get(0);
                     req = new RequestBuilder("GET")
                             .setUrl(redirectUrl)
-                            .setHeaders(getHeader())
+                            .setHeaders(getHeader(isRoleAPI))
                             .build();
 
                     logger.LogRequest(req);
@@ -180,7 +190,7 @@ public abstract class HttpClientBase {
             case DELETE: {
                 Request req = new RequestBuilder(httpMethod.getHttpMethod())
                         .setUrl(restUrl)
-                        .setHeaders(getHeader())
+                        .setHeaders(getHeader(isRoleAPI))
                         .build();
 
                 logger.LogRequest(req);

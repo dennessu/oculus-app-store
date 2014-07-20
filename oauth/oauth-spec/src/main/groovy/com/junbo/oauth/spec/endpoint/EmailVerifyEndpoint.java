@@ -6,6 +6,7 @@
 package com.junbo.oauth.spec.endpoint;
 
 import com.junbo.common.id.UserId;
+import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -22,6 +23,7 @@ import javax.ws.rs.core.Response;
 @Api("oauth2")
 @Path("/oauth2/verify-email")
 @RestResource
+@InProcessCallable
 @Produces(MediaType.APPLICATION_JSON)
 public interface EmailVerifyEndpoint {
     @GET

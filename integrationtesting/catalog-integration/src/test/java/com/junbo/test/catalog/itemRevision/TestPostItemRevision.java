@@ -215,7 +215,7 @@ public class TestPostItemRevision extends BaseTestClass {
 
     private void checkItemRevisionOptionalFields(ItemRevision itemRevisionActual, ItemRevision itemRevisionExpected) {
         Assert.assertEquals(itemRevisionActual.getStatus(), itemRevisionExpected.getStatus());
-        Assert.assertEquals(itemRevisionActual.getRollupPackageName(), itemRevisionExpected.getRollupPackageName());
+        // Assert.assertEquals(itemRevisionActual.getRollupPackageName(), itemRevisionExpected.getRollupPackageName());
         Assert.assertEquals(itemRevisionActual.getPackageName(), itemRevisionExpected.getPackageName());
         Assert.assertEquals(itemRevisionActual.getSku(), itemRevisionExpected.getSku());
 

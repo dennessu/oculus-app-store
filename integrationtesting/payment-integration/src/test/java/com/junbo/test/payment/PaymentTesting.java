@@ -11,6 +11,7 @@ import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
@@ -62,6 +63,28 @@ public class PaymentTesting extends BaseTestClass {
 
     @Property(
             priority = Priority.Dailies,
+            features = "POST /users/{userId}/payment-instruments",
+            component = Component.Payment,
+            owner = "Yunlongzhao",
+            status = Status.Enable,
+            description = "post credit card",
+            steps = {
+                    "1. Create an user",
+                    "2. Post a credit card with expired date to user",
+                    "3, Validation: response",
+            }
+    )
+    @Test
+    public void testPostCreditCardWithExpiredDate() throws Exception {
+        String randomUid = testDataProvider.CreateUser();
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getExpiredCreditCardInfo(country);
+        testDataProvider.postPaymentInstrument(randomUid, creditCardInfo, 500);
+
+    }
+
+    @Property(
+            priority = Priority.Dailies,
             features = "GET /users/{userId}/payment-instruments/{paymentInstrumentId}",
             component = Component.Payment,
             owner = "Yunlongzhao",
@@ -86,6 +109,24 @@ public class PaymentTesting extends BaseTestClass {
 
         validationHelper.validatePaymentInstrument(creditCardInfo);
     }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "GET /users/{userId}/payment-instruments/{paymentInstrumentId}",
+            component = Component.Payment,
+            owner = "Yunlongzhao",
+            status = Status.Enable,
+            description = "get payment instruments by invalid payment id",
+            steps = {
+                    "1. Get the payment by invalid payment id",
+                    "2. Validation: response"
+            }
+    )
+    @Test
+    public void testGetPaymentInstrumentByInvalidId() throws Exception {
+        testDataProvider.getPaymentInstrument("0123", 404);
+    }
+
 
     @Property(
             priority = Priority.Dailies,
@@ -239,6 +280,7 @@ public class PaymentTesting extends BaseTestClass {
         validationHelper.validatePaymentInstrument(ewalletInfo);
     }
 
+
     @Property(
             priority = Priority.Dailies,
             features = "initial user",
@@ -271,6 +313,7 @@ public class PaymentTesting extends BaseTestClass {
         }
 
         for (int i = 1; i <= 5; i++) {
+            Master.getInstance().setCurrentUid(userList.get(i - 1));
             CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(country);
             testDataProvider.postPaymentInstrument(userList.get(i - 1), creditCardInfo);
         }
@@ -282,6 +325,7 @@ public class PaymentTesting extends BaseTestClass {
             } else {
                 ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT, Currency.DEFAULT);
             }
+            Master.getInstance().setCurrentUid(userList.get(i - 1));
             testDataProvider.postPaymentInstrument(userList.get(i - 1), ewalletInfo);
             testDataProvider.creditWallet(userList.get(i - 1), ewalletInfo, new BigDecimal(100));
         }

@@ -37,8 +37,6 @@ class CountryDataHandler extends BaseDataHandler {
             exit()
         }
 
-        logger.info("loading country $country.countryCode")
-
         Country existing = null
         try {
             existing = countryResource.get(new CountryId(country.countryCode), new CountryGetOptions()).get()

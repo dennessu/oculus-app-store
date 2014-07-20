@@ -1,11 +1,11 @@
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.core.util.ValidatorUtil
 import com.junbo.oauth.spec.param.OAuthParameters
 import org.springframework.beans.factory.annotation.Required
@@ -37,7 +37,7 @@ class ValidateCountry implements Action {
 
         if (StringUtils.hasText(country)) {
             if (!ValidatorUtil.isValidCountryCode(country)) {
-                throw AppExceptions.INSTANCE.invalidCountryCode().exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('country', 'Invalid CountryCode.')
             }
         }
         else {

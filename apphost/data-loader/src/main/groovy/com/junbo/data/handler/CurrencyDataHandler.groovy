@@ -37,8 +37,6 @@ class CurrencyDataHandler extends BaseDataHandler {
             exit()
         }
 
-        logger.info("loading currency $currency.currencyCode")
-
         Currency existing = null
         try {
             existing = currencyResource.get(new CurrencyId(currency.currencyCode), new CurrencyGetOptions()).get()

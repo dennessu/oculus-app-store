@@ -10,13 +10,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.RoleAssignmentId;
 import com.junbo.common.id.RoleId;
 import com.junbo.common.model.Link;
-import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
+import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * RoleAssignment.
  */
-public class RoleAssignment extends PropertyAssignedAwareResourceMeta<RoleAssignmentId> {
+public class RoleAssignment extends ResourceMeta<RoleAssignmentId> {
     @ApiModelProperty(position = 1, required = true,
             value = "[Nullable]The id of the role assignment resource.")
     @JsonProperty("self")
@@ -41,8 +41,6 @@ public class RoleAssignment extends PropertyAssignedAwareResourceMeta<RoleAssign
 
     public void setId(RoleAssignmentId id) {
         this.id = id;
-        support.setPropertyAssigned("self");
-        support.setPropertyAssigned("id");
     }
 
     public RoleId getRoleId() {
@@ -51,7 +49,6 @@ public class RoleAssignment extends PropertyAssignedAwareResourceMeta<RoleAssign
 
     public void setRoleId(RoleId roleId) {
         this.roleId = roleId;
-        support.setPropertyAssigned("roleId");
     }
 
     public Link getAssignee() {

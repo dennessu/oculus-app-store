@@ -5,10 +5,11 @@
  */
 package com.junbo.oauth.core.service.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.util.IdFormatter
 import com.junbo.oauth.common.JsonMarshaller
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.core.util.AuthorizationHeaderUtil
 import com.junbo.oauth.core.util.UriUtil
@@ -115,11 +116,11 @@ class OAuthTokenServiceImpl implements OAuthTokenService {
 
         AccessToken accessToken = accessTokenRepository.get(tokenValue)
         if (accessToken == null) {
-            throw AppExceptions.INSTANCE.invalidAccessToken(tokenValue).exception()
+            throw AppErrors.INSTANCE.invalidAccessToken(tokenValue).exception()
         }
 
         if (accessToken.isExpired()) {
-            throw AppExceptions.INSTANCE.expiredAccessToken(tokenValue).exception()
+            throw AppErrors.INSTANCE.expiredAccessToken(tokenValue).exception()
         }
 
         return accessToken
@@ -254,17 +255,17 @@ class OAuthTokenServiceImpl implements OAuthTokenService {
             if (client != null) {
                 JWSVerifier verifier = new MACVerifier(client.clientSecret.bytes)
                 if (!jwsObject.verify(verifier)) {
-                    throw AppExceptions.INSTANCE.invalidIdToken().exception()
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('id_token_hint').exception()
                 }
             } else {
-                throw AppExceptions.INSTANCE.invalidClientId(idToken.aud).exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('client_id', idToken.aud).exception()
             }
 
             idToken.tokenValue = tokenValue
             return idToken
         } catch (IOException | ParseException | JOSEException e) {
             LOGGER.error('Error parsing the id token', e)
-            throw AppExceptions.INSTANCE.invalidIdToken().exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('id_token_hint').exception()
         }
     }
 
@@ -275,7 +276,7 @@ class OAuthTokenServiceImpl implements OAuthTokenService {
 
         if (accessToken != null) {
             if (accessToken.clientId != client.clientId) {
-                throw AppExceptions.INSTANCE.tokenClientNotMatch().exception()
+                throw AppErrors.INSTANCE.tokenClientNotMatch().exception()
             }
 
             accessTokenRepository.remove(accessToken.tokenValue)
@@ -293,7 +294,7 @@ class OAuthTokenServiceImpl implements OAuthTokenService {
 
         if (refreshToken != null) {
             if (refreshToken.clientId != client.clientId) {
-                throw AppExceptions.INSTANCE.tokenClientNotMatch().exception()
+                throw AppErrors.INSTANCE.tokenClientNotMatch().exception()
             }
 
             refreshTokenRepository.getAndRemove(tokenValue)

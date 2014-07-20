@@ -5,7 +5,8 @@
  */
 package com.junbo.oauth.core.service.impl
 import com.junbo.authorization.AuthorizeContext
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.common.error.AppCommonErrors
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.ClientService
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.core.service.ScopeService
@@ -58,7 +59,7 @@ class ClientServiceImpl implements ClientService {
     @Override
     Client saveClient(Client client) {
         if (!AuthorizeContext.hasScopes(CLIENT_REGISTER_SCOPE)) {
-            throw AppExceptions.INSTANCE.insufficientScope().exception()
+            throw AppErrors.INSTANCE.insufficientScope().exception()
         }
 
         validateClient(client)
@@ -80,17 +81,17 @@ class ClientServiceImpl implements ClientService {
     @Override
     Client getClient(String clientId) {
         if (!AuthorizeContext.hasScopes(CLIENT_REGISTER_SCOPE)) {
-            throw AppExceptions.INSTANCE.insufficientScope().exception()
+            throw AppErrors.INSTANCE.insufficientScope().exception()
         }
 
         Client client = clientRepository.getClient(clientId)
 
         if (client == null) {
-            throw AppExceptions.INSTANCE.notExistClient(clientId).exception()
+            throw AppErrors.INSTANCE.notExistClient(clientId).exception()
         }
 
         if (client.ownerUserId != AuthorizeContext.currentUserId) {
-            throw AppExceptions.INSTANCE.notClientOwner().exception()
+            throw AppErrors.INSTANCE.notClientOwner().exception()
         }
 
         return client
@@ -99,13 +100,13 @@ class ClientServiceImpl implements ClientService {
     @Override
     Client getClientInfo(String clientId) {
         if (!AuthorizeContext.hasScopes(CLIENT_INFO_SCOPE)) {
-            throw AppExceptions.INSTANCE.insufficientScope().exception()
+            throw AppErrors.INSTANCE.insufficientScope().exception()
         }
 
         Client client = clientRepository.getClient(clientId)
 
         if (client == null) {
-            throw AppExceptions.INSTANCE.notExistClient(clientId).exception()
+            throw AppErrors.INSTANCE.notExistClient(clientId).exception()
         }
 
         return new Client(
@@ -119,41 +120,41 @@ class ClientServiceImpl implements ClientService {
     @Override
     Client updateClient(String clientId, Client client) {
         if (!AuthorizeContext.hasScopes(CLIENT_REGISTER_SCOPE)) {
-            throw AppExceptions.INSTANCE.insufficientScope().exception()
+            throw AppErrors.INSTANCE.insufficientScope().exception()
         }
 
         if (StringUtils.isEmpty(client.rev)) {
-            throw AppExceptions.INSTANCE.missingRevision().exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('revision').exception()
         }
 
         Client existingClient = getClient(clientId)
 
         if (client.ownerUserId != AuthorizeContext.currentUserId) {
-            throw AppExceptions.INSTANCE.notClientOwner().exception()
+            throw AppErrors.INSTANCE.notClientOwner().exception()
         }
 
         if (client.rev != existingClient.rev) {
-            throw AppExceptions.INSTANCE.updateConflict().exception()
+            throw AppErrors.INSTANCE.updateConflict().exception()
         }
 
         if (client.clientId == null || existingClient.clientId != client.clientId) {
-            throw AppExceptions.INSTANCE.cantUpdateFields('client_id').exception()
+            throw AppErrors.INSTANCE.cantUpdateFields('client_id').exception()
         }
 
         if (client.clientSecret == null || existingClient.clientSecret != client.clientSecret) {
-            throw AppExceptions.INSTANCE.cantUpdateFields('client_secret').exception()
+            throw AppErrors.INSTANCE.cantUpdateFields('client_secret').exception()
         }
 
         if (client.ownerUserId == null || existingClient.ownerUserId != client.ownerUserId) {
-            throw AppExceptions.INSTANCE.cantUpdateFields('owner_user_id').exception()
+            throw AppErrors.INSTANCE.cantUpdateFields('owner_user_id').exception()
         }
 
         if (client.idTokenIssuer == null || existingClient.idTokenIssuer != client.idTokenIssuer) {
-            throw AppExceptions.INSTANCE.cantUpdateFields('id_token_issuer').exception()
+            throw AppErrors.INSTANCE.cantUpdateFields('id_token_issuer').exception()
         }
 
         if (client.needConsent == null || existingClient.needConsent != client.needConsent) {
-            throw AppExceptions.INSTANCE.cantUpdateFields('need_consent').exception()
+            throw AppErrors.INSTANCE.cantUpdateFields('need_consent').exception()
         }
 
         validateClient(client)
@@ -168,20 +169,20 @@ class ClientServiceImpl implements ClientService {
         try {
             return clientRepository.updateClient(client, existingClient)
         } catch (DBUpdateConflictException e) {
-            throw AppExceptions.INSTANCE.updateConflict().exception()
+            throw AppErrors.INSTANCE.updateConflict().exception()
         }
     }
 
     @Override
     void deleteClient(String clientId) {
         if (!AuthorizeContext.hasScopes(CLIENT_REGISTER_SCOPE)) {
-            throw AppExceptions.INSTANCE.insufficientScope().exception()
+            throw AppErrors.INSTANCE.insufficientScope().exception()
         }
 
         Client client = getClient(clientId)
 
         if (client.ownerUserId != AuthorizeContext.currentUserId) {
-            throw AppExceptions.INSTANCE.notClientOwner().exception()
+            throw AppErrors.INSTANCE.notClientOwner().exception()
         }
 
         clientRepository.deleteClient(client)
@@ -190,13 +191,13 @@ class ClientServiceImpl implements ClientService {
     @Override
     Client resetSecret(String clientId) {
         if (!AuthorizeContext.hasScopes(CLIENT_REGISTER_SCOPE)) {
-            throw AppExceptions.INSTANCE.insufficientScope().exception()
+            throw AppErrors.INSTANCE.insufficientScope().exception()
         }
 
         Client client = getClient(clientId)
 
         if (client.ownerUserId != AuthorizeContext.currentUserId) {
-            throw AppExceptions.INSTANCE.notClientOwner().exception()
+            throw AppErrors.INSTANCE.notClientOwner().exception()
         }
 
         client.clientSecret = tokenGenerator.generateClientSecret()
@@ -218,8 +219,8 @@ class ClientServiceImpl implements ClientService {
         }
 
         if (invalidScopes != null && !invalidScopes.isEmpty()) {
-            throw AppExceptions.INSTANCE.
-                    invalidScope(StringUtils.collectionToCommaDelimitedString(invalidScopes)).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('scope',
+                    StringUtils.collectionToCommaDelimitedString(invalidScopes)).exception()
         }
 
         if (client.defaultScopes != null) {
@@ -228,7 +229,7 @@ class ClientServiceImpl implements ClientService {
             }
 
             if (invalidScopes != null && !invalidScopes.isEmpty()) {
-                throw AppExceptions.INSTANCE.
+                throw AppErrors.INSTANCE.
                         invalidDefaultScope(StringUtils.collectionToCommaDelimitedString(invalidScopes)).exception()
             }
         }
@@ -238,13 +239,13 @@ class ClientServiceImpl implements ClientService {
         if (client.redirectUris != null) {
             client.redirectUris.each { String uri ->
                 if (!UriUtil.isValidRedirectUri(uri)) {
-                    throw AppExceptions.INSTANCE.invalidRedirectUri(uri).exception()
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('redirect_uri', uri).exception()
                 }
             }
 
             if (client.defaultRedirectUri != null) {
                 if (client.defaultRedirectUri.contains('*')) {
-                    throw AppExceptions.INSTANCE.invalidDefaultRedirectUri(client.defaultRedirectUri,
+                    throw AppErrors.INSTANCE.invalidDefaultRedirectUri(client.defaultRedirectUri,
                             'the default redirect uri cannot include wildcard').exception()
                 }
 
@@ -253,7 +254,7 @@ class ClientServiceImpl implements ClientService {
                 }
 
                 if (!valid) {
-                    throw AppExceptions.INSTANCE.invalidDefaultRedirectUri(client.defaultRedirectUri,
+                    throw AppErrors.INSTANCE.invalidDefaultRedirectUri(client.defaultRedirectUri,
                             'the default redirect uri must match at least one redirect uri').exception()
                 }
             }
@@ -264,13 +265,13 @@ class ClientServiceImpl implements ClientService {
         if (client.logoutRedirectUris != null) {
             client.logoutRedirectUris.each { String uri ->
                 if (!UriUtil.isValidRedirectUri(uri)) {
-                    throw AppExceptions.INSTANCE.invalidLogoutRedirectUri(uri).exception()
+                    throw AppErrors.INSTANCE.invalidLogoutRedirectUri(uri).exception()
                 }
             }
 
             if (client.defaultLogoutRedirectUri != null) {
                 if (client.defaultLogoutRedirectUri.contains('*')) {
-                    throw AppExceptions.INSTANCE.invalidDefaultLogoutRedirectUri(client.defaultLogoutRedirectUri,
+                    throw AppErrors.INSTANCE.invalidDefaultLogoutRedirectUri(client.defaultLogoutRedirectUri,
                             'the default logout redirect uri cannot include wildcard').exception()
                 }
 
@@ -279,7 +280,7 @@ class ClientServiceImpl implements ClientService {
                 }
 
                 if (!valid) {
-                    throw AppExceptions.INSTANCE.invalidDefaultLogoutRedirectUri(client.defaultLogoutRedirectUri,
+                    throw AppErrors.INSTANCE.invalidDefaultLogoutRedirectUri(client.defaultLogoutRedirectUri,
                             'the default logout redirect uri must match at least one logout redirect uri').exception()
                 }
             }
@@ -288,7 +289,7 @@ class ClientServiceImpl implements ClientService {
 
     private static void validateLogoUri(Client client) {
         if (client.logoUri != null && !UriUtil.isValidUri(client.logoUri)) {
-            throw AppExceptions.INSTANCE.invalidLogoUri(client.logoUri).exception()
+            throw AppErrors.INSTANCE.invalidLogoUri(client.logoUri).exception()
         }
     }
 
@@ -296,7 +297,7 @@ class ClientServiceImpl implements ClientService {
         if (client.contacts != null) {
             client.contacts.each { String contact ->
                 if (!EMAIL_PATTERN.matcher(contact)) {
-                    throw AppExceptions.INSTANCE.invalidContacts(contact).exception()
+                    throw AppErrors.INSTANCE.invalidContacts(contact).exception()
                 }
             }
         }
