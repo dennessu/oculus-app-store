@@ -84,7 +84,7 @@ public class Looper {
 
     }
 
-    private Runnable poolRunnable(AtomicBoolean stopHolder) {
+    private Runnable pollRunnable(AtomicBoolean stopHolder) {
         Runnable runnable = null;
 
         lock.lock();
@@ -92,7 +92,7 @@ public class Looper {
             while (!stopHolder.get() && this.runnableWrapper == null) {
                 try {
                     if (!notEmpty.await(30, TimeUnit.SECONDS)) {
-                        throw new RuntimeException("Timeout during poolRunnable");
+                        throw new RuntimeException("Timeout during pollRunnable");
                     }
                 } catch (InterruptedException ignored) {
                     throw new RuntimeException(ignored);
@@ -112,7 +112,7 @@ public class Looper {
 
     public void run(AtomicBoolean stopHolder) {
         while (true) {
-            Runnable runnable = poolRunnable(stopHolder);
+            Runnable runnable = pollRunnable(stopHolder);
 
             if (runnable == null) {
                 break;
