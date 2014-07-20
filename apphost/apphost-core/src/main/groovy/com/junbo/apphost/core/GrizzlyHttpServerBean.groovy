@@ -55,6 +55,10 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean,
 
     private String beanName
 
+    private int keepAliveIdleTimeoutInSeconds
+
+    private int keepAliveMaxRequestsCount
+
     @Required
     void setUri(URI uri) {
         this.uri = uri
@@ -79,6 +83,16 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean,
         this.beanName = name
     }
 
+    @Required
+    void setKeepAliveIdleTimeoutInSeconds(int keepAliveIdleTimeoutInSeconds) {
+        this.keepAliveIdleTimeoutInSeconds = keepAliveIdleTimeoutInSeconds
+    }
+
+    @Required
+    void setKeepAliveMaxRequestsCount(int keepAliveMaxRequestsCount) {
+        this.keepAliveMaxRequestsCount = keepAliveMaxRequestsCount
+    }
+
     @Override
     void afterPropertiesSet() throws Exception {
 
@@ -91,7 +105,10 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean,
         NetworkListener listener = new NetworkListener('grizzly', host, port)
 
         TCPNIOTransport transport = listener.transport
-        transport.setWorkerThreadPool(executorService)
+        transport.workerThreadPool = executorService
+
+        listener.keepAlive.idleTimeoutInSeconds = keepAliveIdleTimeoutInSeconds
+        listener.keepAlive.maxRequestsCount = keepAliveMaxRequestsCount
 
         httpServer.addListener(listener)
 
