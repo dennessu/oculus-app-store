@@ -203,8 +203,7 @@ class OrderServiceContextBuilder {
                 offers << of
                 Long organizationId = of.catalogOfferRevision.ownerId?.value
                 return facadeContainer.identityFacade.getOrganization(organizationId).recover { Throwable throwable ->
-                    LOGGER.error('name=Error_Get_Organization. organization id: ' + organizationId, throwable)
-                    return Promise.pure(null)
+                    LOGGER.info('name=Error_Get_Organization. organization id: ' + organizationId)
                 }.then { Organization organization ->
                     of.organization = organization
                 }
