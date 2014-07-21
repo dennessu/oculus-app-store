@@ -83,6 +83,7 @@ public class ItemSearch extends BaseTestClass {
         }
 
         itemRevisionPrepared.setItemId(item2.getItemId());
+        itemRevisionPrepared.setOwnerId(organizationId);
 
         List<String> iapHostItemId = new ArrayList<>();
         iapHostItemId.add(item1.getItemId());

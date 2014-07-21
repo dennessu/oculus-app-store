@@ -124,7 +124,8 @@ public class TestPostOfferRevision extends BaseTestClass {
         checkOfferRevisionRequiredFields(offerRevisionRtn, offerRevisionPrepared);
 
         //Post an offer revision with optional fields
-        OfferRevision testOfferRevisionFull = offerRevisionService.prepareOfferRevisionEntity(defaultOfferRevisionFileName, false);
+        OfferRevision testOfferRevisionFull = offerRevisionService.prepareOfferRevisionEntity(defaultOfferRevisionFileName,
+                organizationId, false);
 
         testOfferRevisionFull.setOfferId(offer1.getOfferId());
         testOfferRevisionFull.setOwnerId(organizationId);
@@ -158,7 +159,7 @@ public class TestPostOfferRevision extends BaseTestClass {
     @Test
     public void testPostOfferRevisionInvalidScenarios() throws Exception {
         //Set rev not null
-        OfferRevision testOfferRevision = offerRevisionService.prepareOfferRevisionEntity(defaultOfferRevisionFileName);
+        OfferRevision testOfferRevision = offerRevisionService.prepareOfferRevisionEntity(defaultOfferRevisionFileName, organizationId);
         testOfferRevision.setOfferId(offer1.getOfferId());
         testOfferRevision.setOwnerId(organizationId);
         testOfferRevision.setRev("1");

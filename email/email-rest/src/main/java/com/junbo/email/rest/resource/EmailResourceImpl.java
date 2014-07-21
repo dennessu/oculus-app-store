@@ -13,7 +13,6 @@ import com.junbo.email.spec.model.Email;
 import com.junbo.email.spec.resource.EmailResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.core.Response;

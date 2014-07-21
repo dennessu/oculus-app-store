@@ -81,10 +81,12 @@ public class OfferSearch extends BaseTestClass {
         OfferRevision offerRevisionPrepared;
 
         if (item.getType().equalsIgnoreCase(CatalogItemType.STORED_VALUE.getItemType())) {
-            offerRevisionPrepared = offerRevisionService.prepareOfferRevisionEntity(defaultStoredValueOfferRevisionFileName, false);
+            offerRevisionPrepared = offerRevisionService.prepareOfferRevisionEntity(
+                    defaultStoredValueOfferRevisionFileName, organizationId, false);
         }
         else {
-            offerRevisionPrepared = offerRevisionService.prepareOfferRevisionEntity(defaultOfferRevisionFileName, false);
+            offerRevisionPrepared = offerRevisionService.prepareOfferRevisionEntity(
+                    defaultOfferRevisionFileName, organizationId, false);
         }
 
         if (item.getType().equalsIgnoreCase(CatalogItemType.CONSUMABLE_UNLOCK.getItemType())) {
@@ -119,8 +121,10 @@ public class OfferSearch extends BaseTestClass {
         Map<String, OfferRevisionLocaleProperties> locales = new HashMap<>();
         OfferRevisionLocaleProperties offerRevisionLocaleProperties = new OfferRevisionLocaleProperties();
         offerRevisionLocaleProperties.setName("testOfferRevision_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
-        offerRevisionLocaleProperties.setLongDescription("offerRevisionLongDescription_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
-        offerRevisionLocaleProperties.setShortDescription("offerRevisionShortDescription_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
+        offerRevisionLocaleProperties.setLongDescription("offerRevisionLongDescription_" +
+                RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
+        offerRevisionLocaleProperties.setShortDescription("offerRevisionShortDescription_" +
+                RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
 
         locales.put("default", offerRevisionLocaleProperties);
         locales.put(defaultLocale, offerRevisionLocaleProperties);

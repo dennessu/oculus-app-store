@@ -5,10 +5,13 @@
  */
 package com.junbo.test.catalog.item;
 
+import com.junbo.common.id.OrganizationId;
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.catalog.impl.ItemServiceImpl;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.test.common.apihelper.identity.OrganizationService;
+import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.catalog.ItemService;
@@ -16,6 +19,7 @@ import com.junbo.test.common.property.*;
 import com.junbo.common.model.Results;
 import com.junbo.common.id.ItemId;
 
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.Assert;
 import java.util.*;
@@ -28,8 +32,14 @@ import java.util.*;
 public class TestGetItem extends BaseTestClass {
 
     private LogHelper logger = new LogHelper(TestGetItem.class);
-
     private ItemService itemService = ItemServiceImpl.instance();
+    private OrganizationId organizationId;
+
+    @BeforeClass
+    private void PrepareTestData() throws Exception {
+        OrganizationService organizationService = OrganizationServiceImpl.instance();
+        organizationId = organizationService.postDefaultOrganization().getId();
+    }
 
     @Property(
             priority = Priority.Dailies,
@@ -50,7 +60,7 @@ public class TestGetItem extends BaseTestClass {
     public void testGetAnItemById() throws Exception {
 
         //Prepare an item
-        Item item = itemService.postDefaultItem(CatalogItemType.getRandom());
+        Item item = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
         String itemId = item.getItemId();
         String invalidId = "0L";
 
@@ -92,7 +102,7 @@ public class TestGetItem extends BaseTestClass {
         Item[] items = new Item[5];
         String[] itemId = new String[5];
         for (int i = 0; i < items.length; i ++) {
-            items[i] = itemService.postDefaultItem(CatalogItemType.getByIndex(i));
+            items[i] = itemService.postDefaultItem(CatalogItemType.getByIndex(i), organizationId);
             itemId[i] = IdConverter.idToUrlString(ItemId.class, items[i].getItemId());
         }
 
@@ -180,7 +190,7 @@ public class TestGetItem extends BaseTestClass {
         Item[] items = new Item[5];
         String[] itemId = new String[5];
         for (int i = 0; i < items.length; i ++) {
-            items[i] = itemService.postDefaultItem(CatalogItemType.getByIndex(i));
+            items[i] = itemService.postDefaultItem(CatalogItemType.getByIndex(i), organizationId);
             itemId[i] = IdConverter.idToUrlString(ItemId.class, items[i].getItemId());
         }
 
