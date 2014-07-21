@@ -5,6 +5,9 @@
  */
 package com.junbo.fulfilment.core.service;
 
+import com.junbo.common.error.AppCommonErrors;
+import com.junbo.common.id.FulfilmentId;
+import com.junbo.common.id.OrderId;
 import com.junbo.fulfilment.clientproxy.CatalogGateway;
 import com.junbo.fulfilment.common.util.Callback;
 import com.junbo.fulfilment.common.util.Utils;
@@ -57,7 +60,7 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
     @Transactional
     public FulfilmentRequest fulfill(FulfilmentRequest request) {
         // check tracking GUID
-        Long requestId = fulfilmentRequestRepo.existTrackingGuid(request.getUserId(), request.getTrackingUuid());
+        Long requestId = fulfilmentRequestRepo.existTrackingUuid(request.getUserId(), request.getTrackingUuid());
         if (requestId != null) {
             return retrieveRequest(requestId);
         }
@@ -92,7 +95,7 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
         if (requestId == null) {
             String errorMessage = "Fulfilment request with BillingOrderId [" + billingOrderId + "] does not exist.";
             LOGGER.error(errorMessage);
-            throw AppErrors.INSTANCE.common(errorMessage).exception();
+            throw AppErrors.INSTANCE.fulfillmentRequestNotFound(new OrderId(billingOrderId)).exception();
         }
 
         return load(requestId);
@@ -103,7 +106,7 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
         FulfilmentItem item = fulfilmentRepo.get(fulfilmentId);
         if (item == null) {
             LOGGER.error("Fulfilment item with id [" + fulfilmentId + "] does not exist");
-            throw AppErrors.INSTANCE.notFound("Fulfilment", fulfilmentId).exception();
+            throw AppCommonErrors.INSTANCE.resourceNotFound("Fulfilment", new FulfilmentId(fulfilmentId)).exception();
         }
 
         item.setActions(fulfilmentActionRepository.findByFulfilmentId(item.getFulfilmentId()));
@@ -119,14 +122,14 @@ public class FulfilmentServiceImpl extends TransactionSupport implements Fulfilm
             String errorMessage = "Fulfilment request with orderId ["
                     + request.getOrderId() + "] has already been issued.";
             LOGGER.error(errorMessage);
-            throw AppErrors.INSTANCE.common(errorMessage).exception();
+            throw AppErrors.INSTANCE.fulfillmentRequestAlreadyExists(new OrderId(request.getOrderId())).exception();
         }
 
         // ensure fulfilment items are specified
         if (request.getItems() == null) {
             String errorMessage = "No fulfilment item specified.";
             LOGGER.error(errorMessage);
-            throw AppErrors.INSTANCE.common(errorMessage).exception();
+            throw AppCommonErrors.INSTANCE.fieldRequired("items").exception();
         }
     }
 

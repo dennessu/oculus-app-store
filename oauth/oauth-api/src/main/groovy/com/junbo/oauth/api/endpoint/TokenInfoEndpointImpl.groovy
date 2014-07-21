@@ -5,9 +5,10 @@
  */
 package com.junbo.oauth.api.endpoint
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.langur.core.promise.Promise
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.spec.endpoint.TokenInfoEndpoint
 import com.junbo.oauth.spec.model.AccessToken
@@ -46,7 +47,7 @@ class TokenInfoEndpointImpl implements TokenInfoEndpoint {
     Promise<TokenInfo> getTokenInfo(String tokenValue) {
         // Validate the tokenValue, the token value can't be empty.
         if (StringUtils.isEmpty(tokenValue)) {
-            throw AppExceptions.INSTANCE.missingAccessToken().exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('access_token').exception()
         }
 
         // Retrieve the access token with the tokenValue.
@@ -54,11 +55,11 @@ class TokenInfoEndpointImpl implements TokenInfoEndpoint {
 
         // Throw exception when the tokenValue is invalid or the access token has been expired.
         if (accessToken == null) {
-            throw AppExceptions.INSTANCE.invalidAccessToken(tokenValue).exception()
+            throw AppErrors.INSTANCE.invalidAccessToken(tokenValue).exception()
         }
 
         if (accessToken.isExpired()) {
-            throw AppExceptions.INSTANCE.expiredAccessToken(tokenValue).exception()
+            throw AppErrors.INSTANCE.expiredAccessToken(tokenValue).exception()
         }
 
         // Return the token information.

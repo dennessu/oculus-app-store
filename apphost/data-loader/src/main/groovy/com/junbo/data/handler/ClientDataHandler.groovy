@@ -39,17 +39,15 @@ class ClientDataHandler extends BaseDataHandler {
             exit()
         }
 
-        logger.info("loading client $client.clientId")
-
         Client existing = clientRepository.getClient(client.clientId)
 
         if (existing != null) {
             if (alwaysOverwrite) {
                 logger.debug("Overwrite Client $client.clientId with this content.")
                 client.clientId = existing.clientId
-                client.revision = existing.revision
+                client.rev = existing.rev
                 try {
-                    clientRepository.updateClient(client)
+                    clientRepository.updateClient(client, existing)
                 } catch (Exception e) {
                     logger.error("Error updating client $client.clientId.", e)
                 }

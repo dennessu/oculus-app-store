@@ -4,9 +4,10 @@ import com.junbo.langur.core.action.*
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.testng.Assert
+import org.testng.annotations.AfterTest
+import org.testng.annotations.BeforeTest
 import org.testng.annotations.Test
 
-import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
 
 /**
@@ -16,6 +17,14 @@ import java.util.concurrent.TimeUnit
 class ActionTest {
 
     private final ActionExecutor executor = new DefaultActionExecutor()
+
+    @BeforeTest
+    void setup() {
+    }
+
+    @AfterTest
+    void cleanup() {
+    }
 
     @Test
     void testSequenceAction() {
@@ -113,7 +122,7 @@ class ActionTest {
                 , executor
         )
 
-        Promise<ActionResult> result = executor.execute(branch1, new ActionContext())
+        Promise<ActionResult> result = (Promise<ActionResult>)executor.execute(branch1, new ActionContext())
         result.get()
         assert (result)
     }
@@ -125,7 +134,7 @@ class ActionTest {
 
         context.set('value1')
 
-        Promise<String> promise = Promise.delayed(1, TimeUnit.SECONDS) {
+        Promise<String> promise = (Promise<String>)Promise.delayed(1, TimeUnit.SECONDS) {
             assert 'value1' == context.get()
             null
         }.then { String s ->

@@ -37,8 +37,8 @@ class CloudantItemCryptoRepoImpl extends CloudantClient<ItemCryptoRepoData> impl
     }
 
     @Override
-    Promise<ItemCryptoRepoData> update(ItemCryptoRepoData model) {
-        return cloudantPut(model)
+    Promise<ItemCryptoRepoData> update(ItemCryptoRepoData model, ItemCryptoRepoData oldModel) {
+        return cloudantPut(model, oldModel)
     }
 
     @Override

@@ -18,9 +18,10 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 @ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
 @TransactionConfiguration(defaultRollback = false)
@@ -48,11 +49,23 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
     protected ProviderRoutingService providerRoutingService;
 
     protected long generateUserId() {
-        return idGenerator.nextIdByShardId(0);
+        return idGenerator.nextId();
     }
 
     protected UUID generateUUID() {
         return UUID.randomUUID();
+    }
+
+    @BeforeTest
+    @SuppressWarnings("deprecation")
+    public void setup() {
+
+    }
+
+    @AfterTest
+    @SuppressWarnings("deprecation")
+    public void cleanup() {
+
     }
 
     //commit addPI since there is standalone commit in payment transaction, so that PI is available fir them

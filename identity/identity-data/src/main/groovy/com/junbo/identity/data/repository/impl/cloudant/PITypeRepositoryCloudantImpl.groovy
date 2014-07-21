@@ -17,8 +17,8 @@ class PITypeRepositoryCloudantImpl extends CloudantClient<PIType> implements PIT
     }
 
     @Override
-    Promise<PIType> update(PIType model) {
-        return cloudantPut(model)
+    Promise<PIType> update(PIType model, PIType oldModel) {
+        return cloudantPut(model, oldModel)
     }
 
     @Override

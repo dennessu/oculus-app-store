@@ -70,37 +70,37 @@ public class PaymentInstrumentRepositoryFacadeImpl implements PaymentInstrumentR
         pi.setAccountName(request.getAccountName());
         pi.setPhoneNumber(request.getPhoneNumber());
         pi.setRelationToHolder(request.getRelationToHolder());
-        if(request.getIsActive() != null){
+        if (request.getIsActive() != null) {
             pi.setIsActive(request.getIsActive());
         }
-        paymentInstrumentRepository.update(pi).get();
+        paymentInstrumentRepository.update(pi, pi).get();
 
         if (PIType.CREDITCARD.getId().equals(request.getType())) {
             CreditCardDetail creditCardDetail = paymentMapperExtension.toSpecificDetail(request.getTypeSpecificDetails(), PIType.CREDITCARD);
             CreditCardDetail existing = creditCardDetailRepository.get(pi.getId()).get();
             // setup column allowed to be updated:
             existing.setExpireDate(creditCardDetail.getExpireDate());
-            creditCardDetailRepository.update(existing).get();
+            creditCardDetailRepository.update(existing, existing).get();
         }
     }
 
     public void updateExternalInfo(Long paymentInstrumentId, String externalToken, String label, String num){
         PaymentInstrument pi = paymentInstrumentRepository.get(paymentInstrumentId).get();
-        if(!CommonUtil.isNullOrEmpty(externalToken)){
+        if (!CommonUtil.isNullOrEmpty(externalToken)) {
             pi.setExternalToken(externalToken);
         }
-        if(!CommonUtil.isNullOrEmpty(label)){
+        if (!CommonUtil.isNullOrEmpty(label)) {
             pi.setLabel(pi.getLabel() == null ? label : pi.getLabel() + label);
         }
-        if(!CommonUtil.isNullOrEmpty(num)){
+        if (!CommonUtil.isNullOrEmpty(num)) {
             pi.setAccountNum(num);
         }
-        paymentInstrumentRepository.update(pi).get();
+        paymentInstrumentRepository.update(pi, pi).get();
     }
 
     public PaymentInstrument getByPIId(Long piId){
         PaymentInstrument pi = paymentInstrumentRepository.get(piId).get();
-        if(pi == null) {
+        if (pi == null) {
             return null;
         }
 
@@ -111,7 +111,7 @@ public class PaymentInstrumentRepositoryFacadeImpl implements PaymentInstrumentR
     public List<PaymentInstrument> getByUserId(Long userId){
         List<PaymentInstrument> result = new ArrayList<PaymentInstrument>();
         List<PaymentInstrument> piList = paymentInstrumentRepository.getByUserId(userId).get();
-        for(PaymentInstrument piItem : piList){
+        for (PaymentInstrument piItem : piList) {
             setAdditionalInfo(piItem);
             result.add(piItem);
         }
@@ -122,7 +122,7 @@ public class PaymentInstrumentRepositoryFacadeImpl implements PaymentInstrumentR
         List<PaymentInstrument> result = new ArrayList<PaymentInstrument>();
         List<PaymentInstrument> piList = paymentInstrumentRepository.getByUserAndType(userId,
                 CommonUtil.isNullOrEmpty(searchParam.getType()) ? null : PIType.valueOf(searchParam.getType())).get();
-        for(PaymentInstrument piItem : piList){
+        for (PaymentInstrument piItem : piList) {
             setAdditionalInfo(piItem);
             result.add(piItem);
         }

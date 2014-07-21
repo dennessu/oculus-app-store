@@ -1,0 +1,11 @@
+{
+  "localeCode": "sk_SK",
+  "shortName": "Slovenská (SK)",
+  "longName": "Slovenská (Slovensko)",
+  "localeName": "Slovenská (SK)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

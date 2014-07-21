@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by chriszhu on 2/7/14.
@@ -53,8 +54,9 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
 
     @ApiModelProperty(required = true, position = 40, value = "[Client Immutable] The Order Status. " +
             "The state diagram is here: https://www.lucidchart.com/documents/edit/4bf4b274-532a-b700-bdd9-6da00a009107",
-            allowableValues = "OPEN, PENDING_CHARGE, PENDING_FULFILL, CHARGED, FULFILLED, " +
-                    "COMPLETED, FAILED, CANCELED, REFUNDED, PREORDERED, ERROR")
+            allowableValues = "OPEN, PENDING, " +
+                    "COMPLETED, CANCELED, REFUNDED, PREORDERED, SHIPPED, DELIVERED, RETURNED, PRICE_RATING_CHANGED, " +
+                    "RISK_REJECTED, ERROR")
     private String status;
 
     @ApiModelProperty(required = true, position = 50, value = "The order purchased country.")
@@ -146,10 +148,22 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
     private Date purchaseTime;
 
     @JsonIgnore
+    private Map<String, String> properties;
+
+    @JsonIgnore
     private Long latestOrderRevisionId;
 
     @JsonIgnore
     private List<OrderRevision> orderRevisions = new ArrayList<>();
+
+    @JsonIgnore
+    private String ipAddress;
+
+    @JsonIgnore
+    private String ipGeoAddress;
+
+    @JsonIgnore
+    private Boolean isAudited;
 
     public OrderId getId() {
         return id;
@@ -373,5 +387,37 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
 
     public void setOrderRevisions(List<OrderRevision> orderRevisions) {
         this.orderRevisions = orderRevisions;
+    }
+
+    public Map<String, String> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Map<String, String> properties) {
+        this.properties = properties;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+
+    public String getIpGeoAddress() {
+        return ipGeoAddress;
+    }
+
+    public void setIpGeoAddress(String ipGeoAddress) {
+        this.ipGeoAddress = ipGeoAddress;
+    }
+
+    public Boolean getIsAudited() {
+        return isAudited;
+    }
+
+    public void setIsAudited(Boolean isAudited) {
+        this.isAudited = isAudited;
     }
 }

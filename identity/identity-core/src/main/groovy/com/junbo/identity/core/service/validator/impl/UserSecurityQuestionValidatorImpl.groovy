@@ -1,5 +1,6 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionId
 import com.junbo.identity.core.service.credential.CredentialHash
@@ -39,11 +40,11 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
     Promise<UserSecurityQuestion> validateForGet(UserId userId, UserSecurityQuestionId userSecurityQuestionId) {
 
         if (userId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userSecurityQuestionId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userSecurityQuestionId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userSecurityQuestionId').exception()
         }
 
         return userRepository.get(userId).then { User user ->
@@ -66,7 +67,7 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
                 }
 
                 if (userId != userSecurityQuestion.userId) {
-                    throw AppErrors.INSTANCE.
+                    throw AppCommonErrors.INSTANCE.
                             parameterInvalid('userId and userSecurityQuestionId doesn\'t match.').exception()
                 }
 
@@ -82,7 +83,7 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
         }
 
         if (options.userId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         return Promise.pure(null)
@@ -95,10 +96,10 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
         }
         checkBasicUserSecurityQuestionInfo(userSecurityQuestion)
         if (userSecurityQuestion.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
         if (userSecurityQuestion.userId != null && userSecurityQuestion.userId != userId) {
-            throw AppErrors.INSTANCE.fieldInvalid('userId', userSecurityQuestion.userId.toString()).exception()
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('userId', userSecurityQuestion.userId, userId).exception()
         }
 
         // Check whether this security question is used before
@@ -119,7 +120,7 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
                             return (existing.securityQuestion == userSecurityQuestion.securityQuestion)
                         }
                         if (exists) {
-                            throw AppErrors.INSTANCE.fieldInvalid('securityQuestion').exception()
+                            throw AppCommonErrors.INSTANCE.fieldInvalid('securityQuestion').exception()
                         }
                     }
                     userSecurityQuestion.setUserId(userId)
@@ -151,19 +152,19 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
         }
 
         if (userSecurityQuestion.id != userSecurityQuestionId) {
-            throw AppErrors.INSTANCE.fieldInvalid('userSecurityQuestionId').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('userSecurityQuestionId').exception()
         }
 
         if (userSecurityQuestion.id != oldUserSecurityQuestion.id) {
-            throw AppErrors.INSTANCE.fieldInvalid('userSecurityQuestionId').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('userSecurityQuestionId').exception()
         }
 
         if (userSecurityQuestion.userId != userId) {
-            throw AppErrors.INSTANCE.fieldInvalid('userId').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('userId').exception()
         }
 
         if (oldUserSecurityQuestion.userId != userId) {
-            throw AppErrors.INSTANCE.fieldInvalid('userId').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('userId').exception()
         }
 
         checkBasicUserSecurityQuestionInfo(userSecurityQuestion)
@@ -173,7 +174,7 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
                 throw AppErrors.INSTANCE.userSecurityQuestionNotFound(userSecurityQuestionId).exception()
             }
             if (userSecurityQuestion.userId != existingSecurityQuestion.userId) {
-                throw AppErrors.INSTANCE.fieldInvalid('userId').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('userId').exception()
             }
 
             if (userSecurityQuestion.securityQuestion != oldUserSecurityQuestion.securityQuestion) {
@@ -183,7 +184,7 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
                         return (existing.securityQuestion == userSecurityQuestion.securityQuestion)
                     }
                     if (securityQuestionExists) {
-                        throw AppErrors.INSTANCE.fieldInvalid('securityQuestion').exception()
+                        throw AppCommonErrors.INSTANCE.fieldInvalid('securityQuestion').exception()
                     }
                     return Promise.pure(null)
                 }
@@ -199,23 +200,23 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
         }
 
         if (userSecurityQuestion.answer == null) {
-            throw AppErrors.INSTANCE.fieldRequired('answer').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('answer').exception()
         }
         if (userSecurityQuestion.answer.length() > maxAnswerLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('answer', maxAnswerLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooLong('answer', maxAnswerLength).exception()
         }
         if (userSecurityQuestion.answer.length() < minAnswerLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('answer', minAnswerLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooShort('answer', minAnswerLength).exception()
         }
 
         if (userSecurityQuestion.securityQuestion == null) {
-            throw AppErrors.INSTANCE.fieldRequired('securityQuestion').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('securityQuestion').exception()
         }
         if (userSecurityQuestion.securityQuestion.length() > maxSecurityQuestionLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('securityQuestion', maxSecurityQuestionLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooLong('securityQuestion', maxSecurityQuestionLength).exception()
         }
         if (userSecurityQuestion.securityQuestion.length() < minSecurityQuestionLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('securityQuestion', minSecurityQuestionLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooShort('securityQuestion', minSecurityQuestionLength).exception()
         }
     }
 

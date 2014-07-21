@@ -52,20 +52,16 @@ class CartPersistServiceCloudantImpl extends CloudantClient<Cart> implements Car
     }
 
     @Override
-    Promise<Cart> update(Cart cart) {
+    Promise<Cart> update(Cart cart, Cart oldCart) {
         // update cart
         Date currentTime = systemOperation.currentTime()
         cart.updatedTime = currentTime
         fillMissingField(cart)
-        return cloudantPut(cart)
+        return cloudantPut(cart, oldCart)
     }
 
     private static void fillMissingField(Cart cart) {
         cart.offers = cart.offers == null ? [] as List : cart.offers
         cart.coupons = cart.coupons == null ? [] as List : cart.coupons
     }
-
-
-
-
 }

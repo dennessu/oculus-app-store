@@ -24,7 +24,7 @@ public class ConfigResource {
 
     @GET
     public SortedMap getAllConfigItems() {
-        return new TreeMap(configService.getAllConfigItems());
+        return new TreeMap(configService.getAllConfigItemsMasked());
     }
 }
 

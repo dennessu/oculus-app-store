@@ -53,7 +53,7 @@ class LotTransactionRepositorySqlImpl implements LotTransactionRepository {
     }
 
     @Override
-    Promise<LotTransaction> update(LotTransaction model) {
+    Promise<LotTransaction> update(LotTransaction model, LotTransaction oldModel) {
         LotTransactionEntity entity = modelMapper.toLotTransactionEntity(model, new MappingContext());
         lotTransactionDao.update(entity);
         return get(model.getId());

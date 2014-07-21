@@ -9,6 +9,7 @@ package com.junbo.token.spec.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.TokenOrderId;
 import com.junbo.token.common.FilterIn;
+import com.junbo.token.common.FilterOut;
 import com.junbo.token.common.InnerFilter;
 
 import java.util.Date;
@@ -20,7 +21,7 @@ import java.util.List;
 public class TokenRequest {
     @JsonProperty("self")
     @TokenOrderId
-    private Long id;
+    private String id;
     private String description;
     private String generationLength;
     private String productType;
@@ -32,14 +33,16 @@ public class TokenRequest {
     private String createMethod;
     private Long quantity;
     private String activation;
+    @FilterOut
+    private Boolean encryptTokenString = Boolean.TRUE;
     @InnerFilter
     private List<TokenItem> tokenItems;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -129,6 +132,14 @@ public class TokenRequest {
 
     public void setTokenItems(List<TokenItem> tokenItems) {
         this.tokenItems = tokenItems;
+    }
+
+    public Boolean getEncryptTokenString() {
+        return encryptTokenString;
+    }
+
+    public void setEncryptTokenString(Boolean encryptTokenString) {
+        this.encryptTokenString = encryptTokenString;
     }
 
 }

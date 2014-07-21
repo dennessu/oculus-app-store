@@ -64,7 +64,7 @@ class AuthorizationCodeRepositoryImpl implements AuthorizationCodeRepository {
                 redirectUri: code.redirectUri,
                 expiredBy: code.expiredBy,
                 lastAuthDate: code.lastAuthDate,
-                revision: code.revision
+                revision: code.rev
         )
     }
 
@@ -82,7 +82,7 @@ class AuthorizationCodeRepositoryImpl implements AuthorizationCodeRepository {
                 redirectUri: entity.redirectUri,
                 expiredBy: entity.expiredBy,
                 lastAuthDate: entity.lastAuthDate,
-                revision: entity.revision
+                rev: entity.revision
         )
 
     }

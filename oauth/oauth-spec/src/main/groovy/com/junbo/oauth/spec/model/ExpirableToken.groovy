@@ -6,17 +6,15 @@
 package com.junbo.oauth.spec.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.junbo.common.model.ResourceMeta
 import groovy.transform.CompileStatic
 
 /**
  * Javadoc.
  */
 @CompileStatic
-abstract class ExpirableToken {
+abstract class ExpirableToken extends ResourceMeta<String> {
     Date expiredBy
-
-    @JsonIgnore
-    String revision
 
     @JsonIgnore
     boolean isExpired() {

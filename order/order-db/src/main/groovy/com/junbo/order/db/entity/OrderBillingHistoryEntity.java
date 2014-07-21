@@ -26,6 +26,7 @@ public class OrderBillingHistoryEntity extends CommonDbEntityWithDate {
     private String balanceId;
     private BillingAction billingEventId;
     private BigDecimal totalAmount;
+    private Boolean success;
 
     @Id
     @Column(name = "HISTORY_ID")
@@ -82,5 +83,15 @@ public class OrderBillingHistoryEntity extends CommonDbEntityWithDate {
     @Transient
     public Long getShardId() {
         return getHistoryId();
+    }
+
+    @Column(name = "SUCCESS")
+    @NotNull(message = ValidationMessages.MISSING_VALUE)
+    public Boolean getSuccess() {
+        return success;
+    }
+
+    public void setSuccess(Boolean success) {
+        this.success = success;
     }
 }

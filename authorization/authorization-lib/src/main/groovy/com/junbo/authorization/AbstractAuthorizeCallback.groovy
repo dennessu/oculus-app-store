@@ -11,8 +11,8 @@ import com.junbo.authorization.spec.option.list.RoleAssignmentListOptions
 import com.junbo.authorization.spec.option.list.RoleListOptions
 import com.junbo.authorization.spec.option.model.RoleFilterType
 import com.junbo.common.id.GroupId
-import com.junbo.common.id.UniversalId
 import com.junbo.common.id.RoleId
+import com.junbo.common.id.UniversalId
 import com.junbo.common.id.UserId
 import com.junbo.common.id.util.IdUtil
 import com.junbo.common.model.Results
@@ -185,7 +185,7 @@ abstract class AbstractAuthorizeCallback<T> implements AuthorizeCallback<T> {
 
         Results<Group> results = factory.groupResource.list(new GroupListOptions(
                 name: groupName
-        )).get()
+        )).get();
 
         GroupId groupId = results.items.empty ? (GroupId) null : (GroupId) results.items.get(0).id
         factory.groupIdByNameCache.put(new Element(groupName, groupId))
@@ -208,7 +208,7 @@ abstract class AbstractAuthorizeCallback<T> implements AuthorizeCallback<T> {
                 targetType: targetType,
                 filterType: RoleFilterType.SINGLEINSTANCEFILTER,
                 filterLink: filterLink
-        )).get()
+        )).get();
 
         RoleId roleId = roles.items.empty ? (RoleId) null : (RoleId) roles.items.get(0).id
 
@@ -230,10 +230,11 @@ abstract class AbstractAuthorizeCallback<T> implements AuthorizeCallback<T> {
             assignee.add(IdUtil.toHref(groupId))
         }
 
-        Results<RoleAssignment> roleAssignments = factory.roleAssignmentResource.list(new RoleAssignmentListOptions(
-                roleId: roleId,
-                assignee: assignee.join(',')
-        )).get()
+        Results<RoleAssignment> roleAssignments =
+                factory.roleAssignmentResource.list(new RoleAssignmentListOptions(
+                        roleId: roleId,
+                        assignee: assignee.join(',')
+                )).get();
 
         boolean result = !roleAssignments.items.empty
 

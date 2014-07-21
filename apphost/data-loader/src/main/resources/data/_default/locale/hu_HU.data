@@ -1,0 +1,11 @@
+{
+  "localeCode": "hu_HU",
+  "shortName": "Magyar (HU)",
+  "longName": "Magyar (Magyarország)",
+  "localeName": "Magyar (HU)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

@@ -1,0 +1,11 @@
+{
+  "localeCode": "he_IL",
+  "shortName": "עברית (IL)",
+  "longName": "עברית (ישראל)",
+  "localeName": "עברית (IL)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

@@ -32,6 +32,7 @@ public final class ModelMapper {
         tokenOrder.setQuantity(request.getQuantity());
         tokenOrder.setTokenItems(request.getTokenItems());
         tokenOrder.setUsageLimit(request.getUsageLimit());
+        tokenOrder.setEncryptTokenString(request.getEncryptTokenString());
         return new OrderWrapper(tokenSet, tokenOrder);
     }
 

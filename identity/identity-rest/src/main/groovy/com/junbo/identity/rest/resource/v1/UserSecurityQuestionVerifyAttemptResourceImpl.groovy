@@ -3,8 +3,10 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
+import com.junbo.common.model.ResourceMetaBase
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
@@ -12,6 +14,7 @@ import com.junbo.identity.core.service.filter.UserSecurityQuestionAttemptFilter
 import com.junbo.identity.core.service.validator.UserSecurityQuestionAttemptValidator
 import com.junbo.identity.data.repository.UserSecurityQuestionAttemptRepository
 import com.junbo.identity.spec.error.AppErrors
+import com.junbo.identity.spec.v1.model.UserSecurityQuestion
 import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
 import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionAttemptListOptions
 import com.junbo.identity.spec.v1.option.model.UserSecurityQuestionAttemptGetOptions
@@ -64,19 +67,25 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
         }
 
         if (!AuthorizeContext.hasScopes(IDENTITY_SERVICE_SCOPE)) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         userSecurityQuestionAttempt = userSecurityQuestionAttemptFilter.filterForCreate(userSecurityQuestionAttempt)
 
         return userSecurityQuestionAttemptValidator.validateForCreate(userId, userSecurityQuestionAttempt).then {
 
-            return createInNewTran(userSecurityQuestionAttempt).then { UserSecurityQuestionVerifyAttempt attempt ->
+            return createInNewTran(userSecurityQuestionAttempt).recover { Throwable e ->
+                userSecurityQuestionAttempt.succeeded = false
+                return createInNewTran(userSecurityQuestionAttempt).then {
+                    throw e
+                }
+            }.then { UserSecurityQuestionVerifyAttempt attempt ->
 
-                if (attempt.succeeded == true) {
+                if (attempt.succeeded) {
                     Created201Marker.mark(attempt.getId())
 
                     attempt = userSecurityQuestionAttemptFilter.filterForGet(attempt, null)
+                    attempt = RightsScope.filterForAdminInfo(attempt as ResourceMetaBase) as UserSecurityQuestionVerifyAttempt
                     return Promise.pure(attempt)
                 }
 
@@ -93,13 +102,13 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
         }
 
         if (userId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('read')) {
-                throw AppErrors.INSTANCE.invalidAccess().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             listOptions.setUserId(userId)
@@ -129,13 +138,13 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
         }
 
         if (userId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('read')) {
-                throw AppErrors.INSTANCE.invalidAccess().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             return userSecurityQuestionAttemptValidator.validateForGet(userId, id).

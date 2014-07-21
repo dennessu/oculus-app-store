@@ -44,11 +44,10 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
     }
 
     @Override
-    protected FluentCaseInsensitiveStringsMap getHeader() {
-        FluentCaseInsensitiveStringsMap header = super.getHeader();
-        header.add(Header.USER_IP, RandomFactory.getRandomIp());
-
-        return header;
+    protected FluentCaseInsensitiveStringsMap getHeader(boolean isRoleAPI) {
+        FluentCaseInsensitiveStringsMap headers = super.getHeader(false);
+        headers.add(Header.USER_IP, RandomFactory.getRandomIp());
+        return headers;
     }
 
     @Override
@@ -102,20 +101,20 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
     }
 
     @Override
-    public Subledger getSubledger(String sellerId) throws Exception {
-        return getSubledger(sellerId, 200);
+    public Results<Subledger> getSubledgers(String sellerId) throws Exception {
+        return getSubledgers(sellerId, 200);
     }
 
     @Override
-    public Subledger getSubledger(String sellerId, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.GET, orderUrl + "subledgers?=" + sellerId, expectedResponseCode);
+    public Results<Subledger> getSubledgers(String sellerId, int expectedResponseCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.GET, orderUrl + "subledgers?sellerId=" + sellerId, expectedResponseCode);
 
-        Subledger subledgerResult = new JsonMessageTranscoder().decode(
-                new TypeReference<Subledger>() {
+        Results<Subledger> subledgerResults = new JsonMessageTranscoder().decode(
+                new TypeReference<Results<Subledger>>() {
                 }, responseBody
         );
 
-        return subledgerResult;
+        return subledgerResults;
     }
 
     @Override

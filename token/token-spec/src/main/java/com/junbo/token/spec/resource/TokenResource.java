@@ -6,7 +6,6 @@
 
 package com.junbo.token.spec.resource;
 
-import com.junbo.common.id.TokenOrderId;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.token.spec.model.*;
@@ -28,7 +27,7 @@ public interface TokenResource {
 
     @GET
     @Path("/requests/{tokenRequestId}")
-    Promise<TokenRequest> getOrderById(@PathParam("tokenRequestId") TokenOrderId tokenOrderId);
+    Promise<TokenRequest> getOrderById(@PathParam("tokenRequestId") String tokenOrderId);
 
     @POST
     @Path("/consumption")

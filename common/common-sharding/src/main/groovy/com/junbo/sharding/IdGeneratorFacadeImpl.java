@@ -48,18 +48,4 @@ public class IdGeneratorFacadeImpl implements IdGeneratorFacade {
         }
         return idGenerator.nextId(id);
     }
-
-    /**
-     * Generate a new ID given the shard ID.
-     * @param shardId The expected shardId.
-     * @return The new unqiue ID on the expected shard.
-     */
-    @Override
-    public long nextIdByShardId(Class cls, int shardId) {
-        IdGenerator idGenerator = map.get(cls);
-        if(idGenerator == null) {
-            idGenerator = defaultIdGenerator;
-        }
-        return idGenerator.nextIdByShardId(shardId);
-    }
 }

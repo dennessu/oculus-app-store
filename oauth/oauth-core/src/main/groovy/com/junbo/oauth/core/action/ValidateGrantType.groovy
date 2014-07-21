@@ -5,12 +5,12 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.spec.model.GrantType
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
@@ -30,17 +30,17 @@ class ValidateGrantType implements Action {
         String grantTypeParam = parameterMap.getFirst(OAuthParameters.GRANT_TYPE)
 
         if (!StringUtils.hasText(grantTypeParam)) {
-            throw AppExceptions.INSTANCE.missingGrantType().exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('grant_type').exception()
         }
 
         if (!GrantType.isValid(grantTypeParam)) {
-            throw AppExceptions.INSTANCE.invalidGrantType(grantTypeParam).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('grant_type', grantTypeParam).exception()
         }
 
         GrantType grantType = GrantType.valueOf(grantTypeParam.toUpperCase())
 
         if (!client.grantTypes.contains(grantType)) {
-            throw AppExceptions.INSTANCE.invalidGrantType(grantTypeParam).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('grant_type', grantTypeParam).exception()
         }
 
         def oauthInfo = contextWrapper.oauthInfo

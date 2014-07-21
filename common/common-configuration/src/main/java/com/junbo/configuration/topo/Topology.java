@@ -22,6 +22,7 @@ public class Topology implements InitializingBean {
     private String appHostUrl;
     private StringConfig appUrlTemplateConfig;
     private StringConfig appServersConfig;
+    private StringConfig otherServersConfig;
 
     private TopologyConfig topologyConfig;
     private ConfigService configService;
@@ -43,6 +44,10 @@ public class Topology implements InitializingBean {
         this.appServersConfig = appServersConfig;
     }
 
+    public void setOtherServersConfig(StringConfig otherServersConfig) {
+        this.otherServersConfig = otherServersConfig;
+    }
+
     @Required
     public void setConfigService(ConfigService configService) {
         this.configService = configService;
@@ -54,6 +59,7 @@ public class Topology implements InitializingBean {
                 this.appHostUrl,
                 this.appUrlTemplateConfig.get(),
                 this.appServersConfig.get(),
+                this.otherServersConfig.get(),
                 configService);
 
         ConfigService.ConfigListener configListener = new ConfigService.ConfigListener() {
@@ -98,6 +104,10 @@ public class Topology implements InitializingBean {
         return topologyConfig.getRandomShardId();
     }
 
+    public int getCurrentDCId() {
+        return topologyConfig.getDCId();
+    }
+
     /**
      * Shards handled by current server.
      * @return an array of shards handled by current server.
@@ -112,12 +122,14 @@ public class Topology implements InitializingBean {
                     this.appHostUrl,
                     this.appUrlTemplateConfig.get(),
                     this.appServersConfig.get(),
+                    this.otherServersConfig.get(),
                     configService);
             this.topologyConfig = newTopologyConfig;
         } catch (Exception ex) {
             logger.error("Failed to load new topology configuration: \n" +
                 "appUrlTemplate: " + this.appUrlTemplateConfig.get() + "\n" +
-                "appServers: " + this.appServersConfig.get(), ex);
+                "appServers: " + this.appServersConfig.get(),
+                "otherServers: " + this.otherServersConfig.get(), ex);
             // continue to use existing configuration.
         }
     }

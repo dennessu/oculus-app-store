@@ -10,6 +10,7 @@ import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OffersGetOptions;
 import com.junbo.common.filter.annotations.CacheMaxAge;
 import com.junbo.common.model.Results;
+import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -28,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
+@InProcessCallable
 public interface OfferResource {
     @CacheMaxAge(duration = 5, unit = TimeUnit.MINUTES)
     @ApiOperation("Get or search offers")

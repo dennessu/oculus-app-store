@@ -1,0 +1,30 @@
+{
+    "apiName": "items",
+    "scopes": {
+        "catalog": [
+            {
+                "precondition": "hasRole(\"owner\", \"developer\")",
+                "rights": [
+                    "create", "update", "delete"
+                ],
+                "scriptType": "SPEL"
+            },
+            {
+                "precondition": "hasRole(\"owner\", \"publisher\")",
+                "rights": [
+                    "update"
+                ],
+                "scriptType": "SPEL"
+            }
+        ],
+        "catalog.service": [
+            {
+                "precondition": "true",
+                "rights": [
+                    "create", "read", "update", "delete"
+                ],
+                "scriptType": "SPEL"
+            }
+        ]
+    }
+}

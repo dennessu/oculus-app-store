@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is needed, see common.sh for detail
 
 if [[ "$1" == "" || "$1" == "cloudant" ]]; then
@@ -14,9 +14,9 @@ fi
 if [[ "$1" == "" || "$1" == "sql" ]]; then
     # setup sql db
     pushd liquibase
-    ./dropdb.sh
-    ./createdb.sh
-    ./updatedb.sh
+    cipherKey=D58BA755FF96B35A6DABA7298F7A8CE2
+    ./dropdb.sh -env:onebox -key:$cipherKey
+    ./createdb.sh -env:onebox -key:$cipherKey
+    ./updatedb.sh -env:onebox -key:$cipherKey
     popd
 fi
-

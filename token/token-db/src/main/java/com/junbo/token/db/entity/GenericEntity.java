@@ -67,9 +67,9 @@ public abstract class GenericEntity implements Serializable {
     }
 
     @Transient
-    public abstract Long getId();
+    public abstract String getId();
 
-    public abstract void setId(Long id);
+    public abstract void setId(String id);
 
     public Integer getResourceAge() {
         return resourceAge;
@@ -78,7 +78,4 @@ public abstract class GenericEntity implements Serializable {
     public void setResourceAge(Integer resourceAge) {
         this.resourceAge = resourceAge;
     }
-
-    @Transient
-    public abstract Long getShardMasterId();
 }

@@ -1,6 +1,7 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.PITypeId
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.common.util.ValidatorUtil
@@ -70,12 +71,12 @@ class PITypeValidatorImpl implements PITypeValidator {
     Promise<Void> validateForCreate(PIType piType) {
         checkBasicPITypeInfo(piType)
         if (piType.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
 
         return piTypeRepository.searchByTypeCode(piType.typeCode, Integer.MAX_VALUE, 0).then { List<PIType> existing ->
             if (!CollectionUtils.isEmpty(existing)) {
-                throw AppErrors.INSTANCE.fieldDuplicate('typeCode').exception()
+                throw AppCommonErrors.INSTANCE.fieldDuplicate('typeCode').exception()
             }
 
             return Promise.pure(null)
@@ -92,11 +93,11 @@ class PITypeValidatorImpl implements PITypeValidator {
         }
 
         if (piTypeId != piType.id) {
-            throw AppErrors.INSTANCE.fieldInvalid('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('id').exception()
         }
 
         if (piTypeId != oldPiType.id) {
-            throw AppErrors.INSTANCE.fieldInvalid('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('id').exception()
         }
 
         checkBasicPITypeInfo(piType)
@@ -110,48 +111,48 @@ class PITypeValidatorImpl implements PITypeValidator {
         }
 
         if (piType.typeCode == null) {
-            throw AppErrors.INSTANCE.fieldRequired('typeCode').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('typeCode').exception()
         }
         try {
             Enum.valueOf(com.junbo.common.id.PIType, piType.typeCode)
         }
         catch (IllegalArgumentException e) {
-            throw AppErrors.INSTANCE.fieldInvalid('typeCode', com.junbo.common.id.PIType.allTypes()).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalidEnum('typeCode', com.junbo.common.id.PIType.allTypes()).exception()
         }
         if (CollectionUtils.isEmpty(piType.locales)) {
-            throw AppErrors.INSTANCE.fieldRequired('locales').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('locales').exception()
         }
         piType.locales.each { Map.Entry<String, JsonNode> entry ->
             String key = entry.key
             JsonNode value = entry.value
 
             if (StringUtils.isEmpty(key)) {
-                throw AppErrors.INSTANCE.fieldRequired('locales.key').exception()
+                throw AppCommonErrors.INSTANCE.fieldRequired('locales.key').exception()
             }
             if (!ValidatorUtil.isValidLocale(key)) {
-                throw AppErrors.INSTANCE.fieldInvalid('locales.key').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('locales.key').exception()
             }
 
             if (value == null) {
-                throw AppErrors.INSTANCE.fieldInvalid('locales.value').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('locales.value').exception()
             }
             LocaleName localeName = (LocaleName)JsonHelper.jsonNodeToObj(value, LocaleName)
             if (localeName.description == null) {
-                throw AppErrors.INSTANCE.fieldInvalid('locales.value').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('locales.value').exception()
             }
             if (localeName.description.length() < minLocaleNameLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('locales.value', minLocaleNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooShort('locales.value', minLocaleNameLength).exception()
             }
             if (localeName.description.length() > maxLocaleNameLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('locales.value', maxLocaleNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooLong('locales.value', maxLocaleNameLength).exception()
             }
         }
 
         if (piType.capableOfRecurring == null) {
-            throw AppErrors.INSTANCE.fieldRequired('capableOfRecurring').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('capableOfRecurring').exception()
         }
         if (piType.isRefundable == null) {
-            throw AppErrors.INSTANCE.fieldRequired('isRefundable').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('isRefundable').exception()
         }
     }
 }

@@ -14,6 +14,8 @@ import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.orderaction.ActionUtils
 import com.junbo.order.core.impl.orderaction.context.OrderActionContext
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
+import com.junbo.order.spec.model.BillingHistory
+import com.junbo.order.spec.model.enums.BillingAction
 import com.junbo.order.spec.model.enums.OrderStatus
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
@@ -49,24 +51,37 @@ class RefundOrderFlowTest extends BaseTest {
         def orderActionContext = new OrderActionContext()
         orderActionContext.orderServiceContext = new OrderServiceContext(order)
         orderActionContext.trackingUuid = UUID.randomUUID()
-        requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object)orderActionContext)
+        requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
 
-        def ratedOrder = orderInternalService.rateOrder(order).wrapped().get()
+        def ratedOrder = orderInternalService.rateOrder(order, orderActionContext.orderServiceContext).get()
         repo.createOrder(ratedOrder)
 
         //mock balance
         def balance = CoreBuilder.buildBalance(order, BalanceType.DEBIT)
         facadeContainer.billingFacade.createBalance(balance, false)
 
+        def billingHistory = new BillingHistory(
+                id: idGenerator.nextId(OrderId.class),
+                orderId: order.id.value,
+                balanceId: balance.id,
+                success: true,
+                billingEvent: BillingAction.CHARGE.name(),
+                totalAmount: 50G
+        )
+
+        repo.createBillingHistory(order.id.value, billingHistory)
+        orderActionContext.orderServiceContext.order =
+        orderService.getOrderByOrderId(order.getId().value, true, new OrderServiceContext(), true).get()
+
         orderActionContext.orderServiceContext.order.orderItems = []
         def context = executor.start(
                 'MOCK_REFUND_ORDER',
-                requestScope).wrapped().get()
+                requestScope).get()
         // Check the order is same as the returned order
         def o = ActionUtils.getOrderActionContext(context).orderServiceContext.order
         assert (o != null)
 
-        def getOrder = orderService.getOrderByOrderId(o.getId().value, true, new OrderServiceContext()).wrapped().get()
+        def getOrder = orderService.getOrderByOrderId(o.getId().value, true, new OrderServiceContext(), true).get()
         assert (o.getId().value == getOrder.getId().value)
         assert (o.status == OrderStatus.REFUNDED.name())
     }

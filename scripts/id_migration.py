@@ -83,11 +83,12 @@ def worker(q, write_q):
         startTime = time.time()
         try:
             print 'Processing %d users.' % len(users)
-            resp = curl('http://127.0.0.1:8080/v1/imports/bulk', 'POST', json.dumps(users), { 'Content-Type': 'application/json' })
+            resp = curl('http://127.0.0.1:8080/v1/imports/bulk', 'POST', json.dumps(users), { 'Content-Type': 'application/json' }, raiseOn4xxError = False)
             result = json.loads(resp)
-            write_q.put(result)
         except Exception, e:
             print e
+            result = {str(user['id']): {"error":str(e)} for user in users}
+        write_q.put(result)
         print 'Processing done, elapsed time: %s' % (time.time() - startTime)
         q.task_done()
 
@@ -114,11 +115,14 @@ def test_comm(comm_map):
     for name in comm_map:
         curl('http://127.0.0.1:8080/v1/communications/%s' % comm_map[name])
 
-def curl(url, method = 'GET', body = None, headers = None, raiseOnError = True):
+def curl(url, method = 'GET', body = None, headers = None, raiseOn5xxError = True, raiseOn4xxError = True):
     if headers is None: headers = {}
 
     resp, status, reason = curlRaw(url, method, body, headers)
-    if status >= 400 and raiseOnError:
+    if status >= 500:
+        if raiseOn5xxError:
+            raise Exception('%s %s in %s %s\n%s' % (status, reason, method, url, resp))
+    elif status >= 400 and raiseOn4xxError:
         raise Exception('%s %s in %s %s\n%s' % (status, reason, method, url, resp))
     return resp
 

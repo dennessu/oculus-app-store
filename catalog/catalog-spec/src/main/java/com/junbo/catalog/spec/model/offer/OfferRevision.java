@@ -27,6 +27,11 @@ public class OfferRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The id of offer revision resource")
     private String revisionId;
 
+    @JsonProperty("distributionChannel")
+    @ApiModelProperty(position = 5, required = true, value = "An array of strings indicates where this item is capable of being sold",
+            allowableValues = "INAPP, STORE")
+    private List<String> distributionChannels;
+
     @JsonProperty("publisher")
     @ApiModelProperty(position = 20, required = true, value = "Organization owner of the offer revision resource")
     private OrganizationId ownerId;
@@ -78,6 +83,14 @@ public class OfferRevision extends BaseRevisionModel {
 
     public void setRevisionId(String revisionId) {
         this.revisionId = revisionId;
+    }
+
+    public List<String> getDistributionChannels() {
+        return distributionChannels;
+    }
+
+    public void setDistributionChannels(List<String> distributionChannels) {
+        this.distributionChannels = distributionChannels;
     }
 
     public OrganizationId getOwnerId() {

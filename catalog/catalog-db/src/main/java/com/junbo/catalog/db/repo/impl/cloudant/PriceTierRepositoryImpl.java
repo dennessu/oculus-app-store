@@ -18,23 +18,23 @@ import java.util.List;
 public class PriceTierRepositoryImpl extends CloudantClient<PriceTier> implements PriceTierRepository {
 
     public PriceTier create(PriceTier priceTier) {
-        return cloudantPost(priceTier).get();
+        return cloudantPostSync(priceTier);
     }
 
     public PriceTier get(String tierId) {
-        return cloudantGet(tierId).get();
+        return cloudantGetSync(tierId);
     }
 
     public List<PriceTier> getPriceTiers(int start, int size) {
         return queryView("by_tierId", null, size, start, true).get();
     }
 
-    public PriceTier update(PriceTier priceTier) {
-        return cloudantPut(priceTier).get();
+    public PriceTier update(PriceTier priceTier, PriceTier oldPriceTier) {
+        return cloudantPutSync(priceTier, oldPriceTier);
     }
 
     public void delete(String tierId) {
-        cloudantDelete(tierId).get();
+        cloudantDeleteSync(tierId);
     }
 
 }

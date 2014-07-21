@@ -79,13 +79,13 @@ public class TokenInfoParserImpl implements TokenInfoParser {
         }
 
         try {
-            def tokenInfo = tokenInfoEndpoint.getTokenInfo(accessToken).get()
+            def tokenInfo = tokenInfoEndpoint.getTokenInfo(accessToken).get();
             tokenInfoCache.put(new Element(accessToken, tokenInfo))
 
             return tokenInfo
         } catch (AppErrorException ex) {
-            if (ex.error.httpStatusCode / 100 == 4) {
-                throw AuthErrors.INSTANCE.invalidAccessToken().exception()
+            if ((int) (ex.error.httpStatusCode / 100) == 4) {
+                throw ex
             } else {
                 throw new RuntimeException('Failed to parse access token', ex)
             }

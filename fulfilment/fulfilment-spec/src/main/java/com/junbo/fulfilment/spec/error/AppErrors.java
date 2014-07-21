@@ -9,36 +9,36 @@ package com.junbo.fulfilment.spec.error;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.ErrorDef;
 import com.junbo.common.error.ErrorProxy;
+import com.junbo.common.id.OrderId;
+import com.junbo.common.id.UserPersonalInfoId;
 
 /**
  * Fulfilment AppError.
  */
 
 public interface AppErrors {
-    com.junbo.fulfilment.spec.error.AppErrors INSTANCE =
-            ErrorProxy.newProxyInstance(com.junbo.fulfilment.spec.error.AppErrors.class);
+    AppErrors INSTANCE = ErrorProxy.newProxyInstance(com.junbo.fulfilment.spec.error.AppErrors.class);
 
-    @ErrorDef(httpStatusCode = 500, code = "30000", description = "{0}")
-    AppError common(String msg);
+    @ErrorDef(httpStatusCode = 412, code = "101", message = "Fulfillment Request Not Found",
+            field = "orderId", reason = "Fulfillment Request not found by order ID {0}")
+    AppError fulfillmentRequestNotFound(OrderId orderId);
 
-    @ErrorDef(httpStatusCode = 400, code = "30001", description = "Missing Input field.", field = "{0}")
-    AppError missingField(String field);
+    @ErrorDef(httpStatusCode = 409, code = "102", message = "Fulfillment Request Already Exists",
+            field = "orderId", reason = "Fulfillment Request for order ID {0} already exists")
+    AppError fulfillmentRequestAlreadyExists(OrderId orderId);
 
-    @ErrorDef(httpStatusCode = 400, code = "30002", description = "Unnecessary field found.", field = "{0}")
-    AppError unnecessaryField(String field);
+    @ErrorDef(httpStatusCode = 412, code = "103", message = "Shipping Address Not Found",
+            field = "shippingAddress", reason = "Shipping address with ID {0} is not found.")
+    AppError shippingAddressNotFound(UserPersonalInfoId addressId);
 
-    @ErrorDef(httpStatusCode = 404, code = "30003", description = "{0} [{1}] not found.")
-    AppError notFound(String entity, Long id);
+    @ErrorDef(httpStatusCode = 412, code = "104", message = "Item Not Found",
+            field = "item", reason = "Item with ID {0} is not found.")
+    AppError itemNotFound(Object itemId);
 
-    @ErrorDef(httpStatusCode = 404, code = "30003", description = "{0} [{1}] not found.")
-    AppError notFound(String entity, String id);
+    @ErrorDef(httpStatusCode = 412, code = "105", message = "Offer Not Found",
+            field = "offer", reason = "Offer with ID {0} is not found.")
+    AppError offerNotFound(Object offerId);
 
-    @ErrorDef(httpStatusCode = 400, code = "30004", description = "Validation failed. {0}")
-    AppError validation(String msg);
-
-    @ErrorDef(httpStatusCode = 500, code = "30005", description = "Exception occurred during calling [{0}] component.")
+    @ErrorDef(httpStatusCode = 500, code = "106", message = "{0} Gateway Failure")
     AppError gatewayFailure(String gateway);
-
-    @ErrorDef(httpStatusCode = 500, code = "39999", description = "UnCaught Exception. {0}")
-    AppError unCaught(String msg);
 }

@@ -1,0 +1,11 @@
+{
+  "localeCode": "ar_SY",
+  "shortName": "العربية (SY)",
+  "longName": "العربية (سوريا)",
+  "localeName": "العربية (SY)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

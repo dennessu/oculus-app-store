@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
@@ -13,7 +14,7 @@ import com.junbo.oauth.clientproxy.facebook.FacebookAccount
 import com.junbo.oauth.clientproxy.facebook.FacebookApi
 import com.junbo.oauth.clientproxy.facebook.FacebookException
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.spec.model.ThirdPartyAccount
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
@@ -21,7 +22,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
-
 /**
  * FacebookLogin.
  */
@@ -45,16 +45,17 @@ class FacebookLogin implements Action {
         String facebookAuth = parameterMap.getFirst(OAuthParameters.FACEBOOK_AUTH)
 
         if (StringUtils.isEmpty(facebookAuth)) {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.missingFacebookAuth().error())
+            contextWrapper.errors.add(AppCommonErrors.INSTANCE.fieldRequired('facebookAuth').error())
             return Promise.pure(null)
         }
 
         return facebookApi.getAccountInfo(facebookAuth).recover { Throwable e ->
             if (e instanceof FacebookException) {
-                contextWrapper.errors.add((e as FacebookException).commonError())
+                String message = (e as FacebookException).getMessage()
+                contextWrapper.errors.add(AppErrors.INSTANCE.errorCallingFacebook(message).error());
             } else {
                 LOGGER.error('Error calling Facebook api', e)
-                contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingFacebook().error())
+                contextWrapper.errors.add(AppErrors.INSTANCE.errorCallingFacebook().error())
             }
 
             return Promise.pure(null)

@@ -1,0 +1,11 @@
+{
+  "localeCode": "ar_TN",
+  "shortName": "العربية (TN)",
+  "longName": "العربية (تونس)",
+  "localeName": "العربية (TN)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

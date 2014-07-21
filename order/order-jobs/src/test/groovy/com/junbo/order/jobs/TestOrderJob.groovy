@@ -1,5 +1,6 @@
 package com.junbo.order.jobs
 import com.junbo.common.id.OrderId
+import com.junbo.configuration.topo.DataCenters
 import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
@@ -61,7 +62,7 @@ class TestOrderJob extends AbstractTestNGSpringContextTests {
                 numOfFuturesToTrack: 100,
                 pageSizePerShard: 10,
                 orderProcessNumLimit: 100000,
-                statusToProcess: [OrderStatus.PENDING_CHARGE.name()],
+                statusToProcess: [OrderStatus.PENDING.name()],
         )
     }
 
@@ -70,8 +71,9 @@ class TestOrderJob extends AbstractTestNGSpringContextTests {
         def shards = [0, 1]
         shards.each { Integer shardKey ->
             EasyMock.expect(orderRepository.getOrdersByStatus(
+                    EasyMock.eq(DataCenters.instance().currentDataCenterId()),
                     EasyMock.eq(shardKey),
-                    EasyMock.eq([OrderStatus.PENDING_CHARGE.name()]),
+                    EasyMock.eq([OrderStatus.PENDING.name()]),
                     EasyMock.eq(true), EasyMock.isA(PageParam))).andReturn(orders(10)).anyTimes()
         }
 

@@ -1,13 +1,13 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.validator.PiiValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
-import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.PhoneNumber
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.langur.core.promise.Promise
@@ -60,32 +60,32 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
         PhoneNumber oldPhoneNumber = (PhoneNumber)JsonHelper.jsonNodeToObj(oldValue, PhoneNumber)
 
         if (phoneNumber != oldPhoneNumber) {
-            throw AppErrors.INSTANCE.fieldInvalidException('value', 'value can\'t be updated.').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('value', 'value can\'t be updated.').exception()
         }
         return Promise.pure(null)
     }
 
     private void checkUserPhone(PhoneNumber phoneNumber) {
         if (phoneNumber.info == null) {
-            throw AppErrors.INSTANCE.fieldRequired('value.info').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('value.info').exception()
         }
 
         if (phoneNumber.info.length() > maxValueLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('value.info', maxValueLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooLong('value.info', maxValueLength).exception()
         }
         if (phoneNumber.info.length() < minValueLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('value.info', minValueLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooShort('value.info', minValueLength).exception()
         }
 
         if (!allowedValuePatterns.any {
             Pattern pattern -> pattern.matcher(phoneNumber.info).matches()
         }) {
-            throw AppErrors.INSTANCE.fieldInvalid('value').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('value').exception()
         }
     }
 
     private Promise<Void> checkAdvanceUserPhone(PhoneNumber phoneNumber, UserId userId) {
-        return userPersonalInfoRepository.searchByPhoneNumber(phoneNumber.info, Integer.MAX_VALUE, 0).then {
+        return userPersonalInfoRepository.searchByPhoneNumber(phoneNumber.info, null, Integer.MAX_VALUE, 0).then {
             List<UserPersonalInfo> existing ->
                 if (existing != null) {
                     // check this phone number is not used by this user
@@ -93,7 +93,7 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
                         return userPersonalInfo.userId == userId
                     }
                     ) {
-                        throw AppErrors.INSTANCE.fieldDuplicate('value').exception()
+                        throw AppCommonErrors.INSTANCE.fieldDuplicate('value').exception()
                     }
 
                     // remove all phones not belonging to this user
@@ -104,7 +104,7 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
                     }
 
                     if (existing != null && existing.size() > maxUserNumberPerPhone) {
-                        throw AppErrors.INSTANCE.fieldInvalidException('value', 'Reach maximum phoneNumber users')
+                        throw AppCommonErrors.INSTANCE.fieldInvalid('value', 'Reach maximum phoneNumber users')
                                 .exception()
                     }
                 }
@@ -137,7 +137,7 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
                         calendar.setTime(new Date())
                         calendar.add(Calendar.MONTH, -1)
                         if (lastChangedTime.after(calendar.time)) {
-                            throw AppErrors.INSTANCE.fieldInvalidException('value',
+                            throw AppCommonErrors.INSTANCE.fieldInvalid('value',
                                     "Reach maximum phoneNumber change numbers per month").exception()
                         }
                     }

@@ -5,6 +5,9 @@ source ${DIR}/../util/common.sh
 #check running under specified account
 checkAccount $DEPLOYMENT_ACCOUNT
 
+echo "[SETUP][SLAVE] create pgha base $PGHA_BASE"
+createDir $PGHA_BASE
+
 echo "[SETUP][SLAVE] create database data folder $SLAVE_DATA_PATH"
 createDir $SLAVE_DATA_PATH
 
@@ -63,3 +66,6 @@ do
     sleep 1 && echo "[SETUP][SLAVE] waiting for slave database...";
 done
 echo "[SETUP][SLAVE] slave database started successfully!"
+
+echo "[SETUP][SLAVE] start secondary pgbouncer proxy and connect to master server"
+$DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh

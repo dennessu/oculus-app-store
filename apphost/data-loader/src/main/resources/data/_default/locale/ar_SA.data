@@ -1,0 +1,11 @@
+{
+  "localeCode": "ar_SA",
+  "shortName": "العربية (SA)",
+  "longName": "العربية (المملكة العربية السعودية)",
+  "localeName": "العربية (SA)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

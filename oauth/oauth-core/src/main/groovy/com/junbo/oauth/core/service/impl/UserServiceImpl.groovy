@@ -20,6 +20,7 @@ import com.junbo.identity.spec.v1.model.UserCredential
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions
+import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.identity.spec.v1.option.list.UserPersonalInfoListOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
@@ -29,7 +30,7 @@ import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.core.service.UserService
 import com.junbo.oauth.db.generator.TokenGenerator
@@ -153,10 +154,21 @@ class UserServiceImpl implements UserService {
     Promise<UserId> getUserIdByUserEmail(String userEmail) {
         return userPersonalInfoResource.list(new UserPersonalInfoListOptions(email: userEmail)).then { Results<UserPersonalInfo> results ->
             if (results == null || results.items == null || results.items.isEmpty()) {
-                throw AppExceptions.INSTANCE.noAccountFound().exception()
+                throw AppErrors.INSTANCE.noAccountFound().exception()
             }
 
             return Promise.pure(results.items.get(0).userId)
+        }
+    }
+
+    @Override
+    Promise<UserId> getUserIdByUsername(String username) {
+        return userResource.list(new UserListOptions(username: username)).then { Results<User> userResults ->
+            if (userResults == null || userResults.items == null || userResults.items.isEmpty()) {
+                throw AppErrors.INSTANCE.noAccountFound().exception()
+            }
+
+            return Promise.pure(userResults.items.get(0).id as UserId)
         }
     }
 
@@ -175,7 +187,7 @@ class UserServiceImpl implements UserService {
     @Override
     Promise<UserInfo> getUserInfo(String authorization) {
         if (!StringUtils.hasText(authorization)) {
-            throw AppExceptions.INSTANCE.missingAuthorization().exception()
+            throw AppErrors.INSTANCE.missingAuthorization().exception()
         }
 
         AccessToken accessToken = tokenService.extractAccessToken(authorization)
@@ -193,20 +205,52 @@ class UserServiceImpl implements UserService {
 
     @Override
     Promise<Void> sendVerifyEmail(UserId userId, ActionContextWrapper contextWrapper) {
-        if (userId == null || userId.value == null) {
-            throw AppExceptions.INSTANCE.missingUserId().exception()
-        }
-
+        String locale = contextWrapper.viewLocale
+        String country = contextWrapper.viewCountry
         def request = (ContainerRequest) contextWrapper.request
+        URI baseUri = request.baseUri
+
+        return sendVerifyEmail(userId, locale, country, baseUri).then { String link ->
+            contextWrapper.emailVerifyLink = link
+            return Promise.pure(null)
+        }
+    }
+
+    @Override
+    Promise<String> getUserEmailByUserId(UserId userId) {
+        if (userId == null || userId.value == null) {
+            throw AppErrors.INSTANCE.missingUserId().exception()
+        }
 
         return userResource.get(userId, new UserGetOptions()).then { User user ->
             if (user == null) {
-                throw AppExceptions.INSTANCE.errorCallingIdentity().exception()
+                throw AppErrors.INSTANCE.errorCallingIdentity().exception()
             }
 
             return this.getDefaultUserEmail(user).then { String email ->
                 if (email == null) {
-                    throw AppExceptions.INSTANCE.missingDefaultUserEmail().exception()
+                    throw AppErrors.INSTANCE.missingDefaultUserEmail().exception()
+                }
+
+                return Promise.pure(email)
+            }
+        }
+    }
+
+    @Override
+    Promise<Void> sendVerifyEmail(UserId userId, String locale, String country, URI baseUri) {
+        if (userId == null || userId.value == null) {
+            throw AppErrors.INSTANCE.missingUserId().exception()
+        }
+
+        return userResource.get(userId, new UserGetOptions()).then { User user ->
+            if (user == null) {
+                throw AppErrors.INSTANCE.errorCallingIdentity().exception()
+            }
+
+            return this.getDefaultUserEmail(user).then { String email ->
+                if (email == null) {
+                    throw AppErrors.INSTANCE.missingDefaultUserEmail().exception()
                 }
 
                 EmailVerifyCode code = new EmailVerifyCode(
@@ -215,19 +259,18 @@ class UserServiceImpl implements UserService {
 
                 emailVerifyCodeRepository.save(code)
 
-                UriBuilder uriBuilder = UriBuilder.fromUri(request.baseUri)
+                UriBuilder uriBuilder = UriBuilder.fromUri(baseUri)
                 uriBuilder.path(EMAIL_VERIFY_PATH)
                 uriBuilder.queryParam(OAuthParameters.EMAIL_VERIFY_CODE, code.code)
-                uriBuilder.queryParam(OAuthParameters.LOCALE, contextWrapper.viewLocale)
+                uriBuilder.queryParam(OAuthParameters.LOCALE, locale)
 
                 QueryParam queryParam = new QueryParam(
                         source: EMAIL_SOURCE,
                         action: VERIFY_EMAIL_ACTION,
-                        locale: contextWrapper.viewLocale
+                        locale: locale
                 )
 
                 String link = uriBuilder.build().toString()
-                contextWrapper.emailVerifyLink = link
                 return this.sendEmail(queryParam, user, email, link)
             }
         }
@@ -236,17 +279,17 @@ class UserServiceImpl implements UserService {
     @Override
     Promise<String> sendResetPassword(UserId userId, String locale, String country, URI baseUri) {
         if (userId == null || userId.value == null) {
-            throw AppExceptions.INSTANCE.missingUserId().exception()
+            throw AppErrors.INSTANCE.missingUserId().exception()
         }
 
         return userResource.get(userId, new UserGetOptions()).then { User user ->
             if (user == null) {
-                throw AppExceptions.INSTANCE.errorCallingIdentity().exception()
+                throw AppErrors.INSTANCE.errorCallingIdentity().exception()
             }
 
             return this.getDefaultUserEmail(user).then { String email ->
                 if (email == null) {
-                    throw AppExceptions.INSTANCE.missingDefaultUserEmail().exception()
+                    throw AppErrors.INSTANCE.missingDefaultUserEmail().exception()
                 }
 
                 ResetPasswordCode code = new ResetPasswordCode(
@@ -289,7 +332,7 @@ class UserServiceImpl implements UserService {
 
     private Promise<String> getDefaultUserEmail(User user) {
         if (user == null) {
-            throw AppExceptions.INSTANCE.errorCallingIdentity().exception()
+            throw AppErrors.INSTANCE.errorCallingIdentity().exception()
         }
 
         for (int i = 0; i < user.emails.size(); i++) {
@@ -327,7 +370,7 @@ class UserServiceImpl implements UserService {
         return emailTemplateResource.getEmailTemplates(queryParam).then { Results<EmailTemplate> results ->
             if (results == null || results.items == null || results.items.isEmpty()) {
                 LOGGER.warn('Failed to get the email template, skip the email send')
-                throw AppExceptions.INSTANCE.errorCallingEmail().exception()
+                throw AppErrors.INSTANCE.errorCallingEmail().exception()
             }
 
             EmailTemplate template = results.items.get(0)
@@ -345,7 +388,7 @@ class UserServiceImpl implements UserService {
             return emailResource.postEmail(emailToSend).then { Email emailSent ->
                 if (emailSent == null) {
                     LOGGER.warn('Failed to send the email, skip the email send')
-                    throw AppExceptions.INSTANCE.errorCallingEmail().exception()
+                    throw AppErrors.INSTANCE.errorCallingEmail().exception()
                 }
 
                 // Return success no matter the email has been successfully sent.

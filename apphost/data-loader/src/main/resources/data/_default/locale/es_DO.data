@@ -1,0 +1,11 @@
+{
+  "localeCode": "es_DO",
+  "shortName": "Español (DO)",
+  "longName": "Española (República Dominicana)",
+  "localeName": "Español (DO)",
+  "fallbackLocale": {
+    "href": "/v1/locales/es_ES",
+    "id": "es_ES"
+  },
+  "futureExpansion": {}
+}

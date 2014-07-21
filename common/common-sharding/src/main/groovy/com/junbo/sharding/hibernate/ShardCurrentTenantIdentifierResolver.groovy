@@ -11,7 +11,7 @@ class ShardCurrentTenantIdentifierResolver implements CurrentTenantIdentifierRes
 
     @Override
     String resolveCurrentTenantIdentifier() {
-        return ShardScope.currentShardId()
+        return ShardScope.currentDataCenterId() + ':' + ShardScope.currentShardId()
     }
 
     @Override

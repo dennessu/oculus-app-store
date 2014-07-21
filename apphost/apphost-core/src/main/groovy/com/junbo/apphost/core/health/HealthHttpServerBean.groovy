@@ -14,6 +14,7 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpContainer
 import org.glassfish.jersey.internal.inject.Providers
 import org.glassfish.jersey.server.ApplicationHandler
 import org.glassfish.jersey.server.ResourceConfig
+import org.glassfish.jersey.server.ServerProperties
 import org.glassfish.jersey.server.spi.ContainerProvider
 import org.glassfish.jersey.server.wadl.WadlApplicationContext
 import org.slf4j.Logger
@@ -83,7 +84,10 @@ class HealthHttpServerBean implements InitializingBean, DisposableBean,
         NetworkListener listener = new NetworkListener('health', host, port)
 
         TCPNIOTransport transport = listener.transport
-        transport.setWorkerThreadPool(executorService)
+        transport.workerThreadPool = executorService
+
+        listener.keepAlive.idleTimeoutInSeconds = 300
+        listener.keepAlive.maxRequestsCount = -1
 
         httpServer.addListener(listener)
 
@@ -123,6 +127,9 @@ class HealthHttpServerBean implements InitializingBean, DisposableBean,
                         to(new TypeLiteral<InjectionResolver<Autowired>>() {})
             }
         }
+
+        resourceConfig.addProperties(Collections.singletonMap(
+                ServerProperties.WADL_FEATURE_DISABLE, (Object) true))
 
         // create handler
         ApplicationHandler applicationHandler = new ApplicationHandler(resourceConfig, customBinder)

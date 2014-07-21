@@ -1,0 +1,11 @@
+{
+  "localeCode": "be_BY",
+  "shortName": "Беларускі (BY)",
+  "longName": "Беларускі (Беларусь)",
+  "localeName": "Беларускі (BY)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

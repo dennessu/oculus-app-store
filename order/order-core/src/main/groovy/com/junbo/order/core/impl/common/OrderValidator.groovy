@@ -1,10 +1,9 @@
 package com.junbo.order.core.impl.common
+
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.PIType
 import com.junbo.common.id.PaymentInstrumentId
-import com.junbo.identity.spec.v1.model.Currency;
-import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
-import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
 import groovy.transform.CompileStatic
@@ -13,6 +12,7 @@ import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
+
 /**
  * Class to do some general validation on order
  * Created by chriszhu on 3/18/14.
@@ -28,14 +28,14 @@ class OrderValidator {
 
     OrderValidator notNull(Object val, String fieldName) {
         if (val == null) {
-            throw AppErrors.INSTANCE.fieldInvalid(fieldName, 'value could not be null').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired(fieldName).exception()
         }
         return this
     }
 
     OrderValidator notEmpty(Collection val, String fieldName) {
         if (CollectionUtils.isEmpty(val)) {
-            throw AppErrors.INSTANCE.fieldInvalid(fieldName, 'value could not be empty').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired(fieldName).exception()
         }
         return this
     }
@@ -46,7 +46,7 @@ class OrderValidator {
             try {
                 Enum.valueOf(enumClass, enumString)
             } catch (IllegalArgumentException) {
-                throw AppErrors.INSTANCE.fieldInvalid(fieldName).exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid(fieldName).exception()
             }
         }
         return this
@@ -68,7 +68,7 @@ class OrderValidator {
     OrderValidator between(Number val, Number min, Number max, String fieldName) {
         if (val != null) {
             if ((min != null && val < min) || (max != null && val > max)) {
-                throw AppErrors.INSTANCE.fieldInvalid(fieldName).exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid(fieldName).exception()
             }
         }
         return this
@@ -95,14 +95,14 @@ class OrderValidator {
     OrderValidator validateRefundOrderRequest(Order order) {
         assert (order != null)
         if (order.tentative) {
-            throw AppErrors.INSTANCE.fieldInvalid('tentative').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('tentative').exception()
         }
         order.orderItems?.each { OrderItem item ->
             if (item.quantity < 0) {
-                throw AppErrors.INSTANCE.fieldInvalid('orderItem.quantity').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('orderItem.quantity').exception()
             }
             if (item.totalAmount < BigDecimal.ZERO) {
-                throw AppErrors.INSTANCE.fieldInvalid('orderItem.totalAmount').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('orderItem.totalAmount').exception()
             }
         }
         return this

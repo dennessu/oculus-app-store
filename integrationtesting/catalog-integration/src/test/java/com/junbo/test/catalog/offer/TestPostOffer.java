@@ -68,14 +68,14 @@ public class TestPostOffer extends BaseTestClass {
         testOfferRequired.setOwnerId(organizationId);
         Offer offerRtn1 = offerService.postOffer(testOfferRequired);
 
-        checkOfferRequiredParams(offerRtn1, testOfferRequired);
+        checkOfferRequiredFields(offerRtn1, testOfferRequired);
 
         //Post test offer with optional params
         Offer testOfferFull = offerService.prepareOfferEntity(defaultOffer, organizationId);
         Offer offerRtn2 = offerService.postOffer(testOfferFull);
 
-        checkOfferRequiredParams(offerRtn2, testOfferFull);
-        checkOfferOptionalParams(offerRtn2, testOfferFull);
+        checkOfferRequiredFields(offerRtn2, testOfferFull);
+        checkOfferOptionalFields(offerRtn2, testOfferFull);
     }
 
     @Property(
@@ -175,12 +175,11 @@ public class TestPostOffer extends BaseTestClass {
 
     }
 
-    private void checkOfferRequiredParams(Offer offerActual, Offer offerExpected) {
+    private void checkOfferRequiredFields(Offer offerActual, Offer offerExpected) {
         Assert.assertEquals(offerActual.getOwnerId(), offerExpected.getOwnerId());
     }
 
-    private void checkOfferOptionalParams(Offer offerActual, Offer offerExpected) {
-        Assert.assertEquals(offerActual.getAdminInfo(), offerExpected.getAdminInfo());
+    private void checkOfferOptionalFields(Offer offerActual, Offer offerExpected) {
         Assert.assertEquals(offerActual.getFutureExpansion(), offerExpected.getFutureExpansion());
         Assert.assertEquals(offerActual.getCategories(), offerExpected.getCategories());
         Assert.assertEquals(offerActual.getEnvironment(), offerExpected.getEnvironment());

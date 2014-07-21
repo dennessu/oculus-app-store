@@ -1,0 +1,11 @@
+{
+  "localeCode": "sr_RS",
+  "shortName": "Српски (RS)",
+  "longName": "Српски (Србија)",
+  "localeName": "Српски (RS)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

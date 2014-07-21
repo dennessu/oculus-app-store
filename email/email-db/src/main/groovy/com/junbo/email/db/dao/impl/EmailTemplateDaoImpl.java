@@ -35,7 +35,7 @@ public class EmailTemplateDaoImpl implements EmailTemplateDao, BaseDao<EmailTemp
     }
 
     protected Session currentSession() {
-        ShardScope shardScope = new ShardScope(0);
+        ShardScope shardScope = new ShardScope(0, 0);
         try {
             return sessionFactory.getCurrentSession();
         } finally {

@@ -1,6 +1,7 @@
 package com.junbo.identity.rest.resource.v1
 
 import com.junbo.authorization.AuthorizeContext
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.PITypeId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -41,7 +42,7 @@ class PITypeResourceImpl implements PITypeResource {
         }
 
         if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         piType = piTypeFilter.filterForCreate(piType)
@@ -71,7 +72,7 @@ class PITypeResourceImpl implements PITypeResource {
         }
 
         if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         return piTypeRepository.get(piTypeId).then { PIType oldPIType ->
@@ -82,7 +83,7 @@ class PITypeResourceImpl implements PITypeResource {
             piType = piTypeFilter.filterForPut(piType, oldPIType)
 
             return piTypeValidator.validateForUpdate(piTypeId, piType, oldPIType).then {
-                return piTypeRepository.update(piType).then { PIType newPIType ->
+                return piTypeRepository.update(piType, oldPIType).then { PIType newPIType ->
                     newPIType = piTypeFilter.filterForGet(newPIType, null)
                     return Promise.pure(newPIType)
                 }
@@ -101,7 +102,7 @@ class PITypeResourceImpl implements PITypeResource {
         }
 
         if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         return piTypeRepository.get(piTypeId).then { PIType oldPIType ->
@@ -112,7 +113,7 @@ class PITypeResourceImpl implements PITypeResource {
             piType = piTypeFilter.filterForPatch(piType, oldPIType)
 
             return piTypeValidator.validateForUpdate(piTypeId, piType, oldPIType).then {
-                return piTypeRepository.update(piType).then { PIType newPIType ->
+                return piTypeRepository.update(piType, oldPIType).then { PIType newPIType ->
                     newPIType = piTypeFilter.filterForGet(newPIType, null)
                     return Promise.pure(newPIType)
                 }
@@ -168,7 +169,7 @@ class PITypeResourceImpl implements PITypeResource {
         }
 
         if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         return piTypeValidator.validateForGet(piTypeId).then {

@@ -1,0 +1,11 @@
+{
+  "localeCode": "ar_KW",
+  "shortName": "العربية (KW)",
+  "longName": "العربية (الكويت)",
+  "localeName": "العربية (KW)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

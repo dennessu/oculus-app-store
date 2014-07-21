@@ -8,15 +8,23 @@
 
     <!-- Order Scheduler -->
     <bean id="orderSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="taskExecutor" ref="junboThreadPool"/>
         <property name="schedulerName" value="orderScheduler" />
         <property name="autoStartup" value="${order.jobs.scheduler.start}" />
         <property name="triggers">
             <list>
                 <!-- <ref bean="orderJobTrigger"/>  no functions needs order job, disable for now-->
                 <ref bean="subledgerJobTrigger"/>
+                <!--<ref bean="orderAuditTaxJobTrigger"/>-->
             </list>
         </property>
         <property name="applicationContextSchedulerContextKey" value="applicationContext" />
+        <property name="quartzProperties">
+            <map>
+                <entry key="org.quartz.scheduler.jmx.export" value="true"/>
+                <entry key="org.quartz.scheduler.jmx.objectName" value="quartz:type=QuartzScheduler,name=orderScheduler"/>
+            </map>
+        </property>
     </bean>
 
     <!-- Order Job Trigger -->
@@ -25,9 +33,19 @@
         <property name="cronExpression" value="${order.jobs.orderjob.cronexpression}" />
     </bean>
 
+    <bean id="orderAuditTaxJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean" >
+        <property name="jobDetail" ref="orderAuditTaxJobDetail" />
+        <property name="cronExpression" value="${order.jobs.orderjob.cronexpression}" />
+    </bean>
     <!-- Order Job -->
     <bean id="orderJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject" ref="orderJob" />
+        <property name="targetMethod" value="execute" />
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <bean id="orderAuditTaxJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="orderAuditTaxJob" />
         <property name="targetMethod" value="execute" />
         <property name="concurrent" value="false"/>
     </bean>
@@ -50,7 +68,21 @@
         <property name="orderRepository" ref="orderRepositoryFacade"/>
         <property name="statusToProcess">
             <list>
-                <value>PENDING_CHARGE</value>
+                <value>PENDING</value>
+            </list>
+        </property>
+        <property name="numOfFuturesToTrack" value="10000"/>
+        <property name="pageSizePerShard" value="${order.jobs.pagesize}"/>
+        <property name="orderProcessNumLimit" value="${order.jobs.order.process.limit}"/>
+    </bean>
+
+    <bean id="orderAuditTaxJob" class="com.junbo.order.jobs.OrderJob" >
+        <property name="threadPoolTaskExecutor" ref="orderJobAsyncTaskExecutor"/>
+        <property name="orderProcessor" ref="orderAuditTaxProcessor"/>
+        <property name="orderRepository" ref="orderRepositoryFacade"/>
+        <property name="statusToProcess">
+            <list>
+                <value>COMPLETED</value>
             </list>
         </property>
         <property name="numOfFuturesToTrack" value="10000"/>
@@ -64,6 +96,15 @@
         <property name="queueCapacity" value="1000" />
         <property name="rejectedExecutionHandler">
             <bean class="java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy"/>
+        </property>
+    </bean>
+
+    <!-- Exporter -->
+    <bean id="orderMbeanExporter" class="org.springframework.jmx.export.MBeanExporter">
+        <property name="beans">
+            <map>
+                <entry key="quartz:type=QuartzJob,name=orderAuditTaxJob" value-ref="orderAuditTaxJob"/>
+            </map>
         </property>
     </bean>
 

@@ -20,6 +20,16 @@ class ShardScope implements AutoCloseable {
         return currentShardId
     }
 
+    static int currentDataCenterId() {
+        Integer currentDataCenterId = Context.get().dataCenterId
+
+        if (currentDataCenterId == null) {
+            throw new IllegalStateException(' currentDataCenterId is null')
+        }
+
+        return currentDataCenterId
+    }
+
     static <T> T withNull(Closure<T> closure) {
         def shardScope = new ShardScope()
         try {
@@ -29,8 +39,8 @@ class ShardScope implements AutoCloseable {
         }
     }
 
-    static <T> T with(Integer shardId, Closure<T> closure) {
-        def shardScope = new ShardScope(shardId)
+    static <T> T with(Integer dataCenterId, Integer shardId, Closure<T> closure) {
+        def shardScope = new ShardScope(dataCenterId, shardId)
         try {
             return closure()
         } finally {
@@ -39,18 +49,22 @@ class ShardScope implements AutoCloseable {
     }
 
     private final Integer oldShardId
+    private final Integer oldDataCenterId
 
     ShardScope() {
-        this(null)
+        this(null, null)
     }
 
-    ShardScope(Integer shardId) {
+    ShardScope(Integer dataCenterId, Integer shardId) {
         oldShardId = Context.get().shardId
+        oldDataCenterId = Context.get().dataCenterId
         Context.get().shardId = shardId
+        Context.get().dataCenterId = dataCenterId
     }
 
     @Override
     void close() {
         Context.get().shardId = oldShardId
+        Context.get().dataCenterId = oldDataCenterId
     }
 }

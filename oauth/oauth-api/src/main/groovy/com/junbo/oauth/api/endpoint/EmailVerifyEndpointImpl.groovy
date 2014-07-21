@@ -5,7 +5,7 @@
  */
 package com.junbo.oauth.api.endpoint
 
-import com.junbo.common.error.AppErrorException
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.json.ObjectMapperProvider
@@ -18,7 +18,8 @@ import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
+import com.junbo.oauth.core.service.UserService
 import com.junbo.oauth.core.util.CookieUtil
 import com.junbo.oauth.core.util.ValidatorUtil
 import com.junbo.oauth.db.repo.EmailVerifyCodeRepository
@@ -28,6 +29,7 @@ import com.junbo.oauth.spec.model.EmailVerifyCode
 import com.junbo.oauth.spec.model.LoginState
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
+import org.glassfish.jersey.server.ContainerRequest
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
@@ -35,9 +37,9 @@ import org.springframework.context.annotation.Scope
 import org.springframework.util.Assert
 import org.springframework.util.StringUtils
 
+import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.core.Response
 import javax.ws.rs.core.UriBuilder
-
 /**
  * EmailVerifyEndpointImpl.
  */
@@ -46,10 +48,9 @@ import javax.ws.rs.core.UriBuilder
 class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailVerifyEndpointImpl)
     private EmailVerifyCodeRepository emailVerifyCodeRepository
-
     private UserResource userResource
-
     private UserPersonalInfoResource userPersonalInfoResource
+    private UserService userService
 
     private String successRedirectUri
     private String failedRedirectUri
@@ -86,6 +87,11 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
         this.loginStateRepository = loginStateRepository
     }
 
+    @Required
+    void setUserService(UserService userService) {
+        this.userService = userService
+    }
+
     @Override
     Promise<Response> verifyEmail(String code, String locale) {
         if (StringUtils.isEmpty(locale)) {
@@ -110,7 +116,7 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
         }
 
         if (StringUtils.isEmpty(code)) {
-            LOGGER.warn(AppExceptions.INSTANCE.missingEmailVerifyCode().description)
+            LOGGER.warn(AppCommonErrors.INSTANCE.fieldRequired('evc').toString())
             Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)
                     .location(UriBuilder.fromUri(failedRedirectUri).build())
             return Promise.pure(responseBuilder.build())
@@ -119,11 +125,13 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
         EmailVerifyCode emailVerifyCode = emailVerifyCodeRepository.getAndRemove(code)
 
         if (emailVerifyCode == null) {
-            LOGGER.warn(AppExceptions.INSTANCE.invalidEmailVerifyCode(code).description)
+            LOGGER.warn(AppErrors.INSTANCE.invalidEmailVerifyCode(code).toString())
             Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)
                     .location(UriBuilder.fromUri(failedRedirectUri).build())
             return Promise.pure(responseBuilder.build())
         }
+
+        emailVerifyCodeRepository.removeByUserIdEmail(emailVerifyCode.userId, emailVerifyCode.email)
 
         return userResource.get(new UserId(emailVerifyCode.userId), new UserGetOptions()).recover { Throwable e ->
             return handleException(e)
@@ -149,13 +157,12 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
                                 lastAuthDate: new Date()
                         )
 
-                        loginStateRepository.saveOrUpdate(loginState)
-
+                        loginStateRepository.save(loginState)
 
                         Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)
                                 .location(UriBuilder.fromUri(successRedirectUri).build())
 
-                        CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_LOGIN_STATE, loginState.id, -1)
+                        CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_LOGIN_STATE, loginState.getId(), -1)
                         CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_SESSION_STATE,
                                 loginState.sessionId, -1, false)
 
@@ -163,6 +170,13 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    Promise<Response> sendVerifyEmail(String locale, String country, UserId userId, ContainerRequestContext request) {
+        return userService.sendVerifyEmail(userId, locale, country, ((ContainerRequest)request).baseUri).then {
+            return Promise.pure(Response.noContent().build())
         }
     }
 

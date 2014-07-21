@@ -9,5 +9,6 @@ dependencies {
     compile (libraries.spring_expression)
     compile (libraries.spring_tx)
     compile junboProject(':langur-core')
+    compile junboProject(':catalog-spec')
     compile (libraries.guava)
 }

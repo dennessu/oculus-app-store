@@ -8,9 +8,9 @@ package com.junbo.catalog.db.repo;
 import com.junbo.catalog.db.dao.PromotionRevisionDao;
 import com.junbo.catalog.db.entity.PromotionRevisionEntity;
 import com.junbo.catalog.db.mapper.PromotionRevisionMapper;
-import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.promotion.PromotionRevision;
 import com.junbo.catalog.spec.model.promotion.PromotionRevisionsGetOptions;
+import com.junbo.common.error.AppCommonErrors;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -42,10 +42,10 @@ public class PromotionRevisionRepository implements BaseRevisionRepository<Promo
     }
 
     @Override
-    public PromotionRevision update(PromotionRevision revision) {
+    public PromotionRevision update(PromotionRevision revision, PromotionRevision oldRevision) {
         PromotionRevisionEntity dbEntity = promotionRevisionDao.get(revision.getRevisionId());
         if (dbEntity == null) {
-            throw AppErrors.INSTANCE.notFound("offer-revision", revision.getRevisionId()).exception();
+            throw AppCommonErrors.INSTANCE.resourceNotFound("promotion-revision", revision.getRevisionId()).exception();
         }
         PromotionRevisionMapper.fillDBEntity(revision, dbEntity);
         return get(promotionRevisionDao.update(dbEntity));
@@ -55,7 +55,7 @@ public class PromotionRevisionRepository implements BaseRevisionRepository<Promo
     public void delete(String revisionId) {
         PromotionRevisionEntity dbEntity = promotionRevisionDao.get(revisionId);
         if (dbEntity == null) {
-            throw AppErrors.INSTANCE.notFound("offer-revision", revisionId).exception();
+            throw AppCommonErrors.INSTANCE.resourceNotFound("promotion-revision", revisionId).exception();
         }
         dbEntity.setDeleted(true);
         promotionRevisionDao.update(dbEntity);

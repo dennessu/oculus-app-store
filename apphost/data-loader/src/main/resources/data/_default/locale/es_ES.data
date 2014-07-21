@@ -1,0 +1,11 @@
+{
+  "localeCode": "es_ES",
+  "shortName": "Español (ES)",
+  "longName": "Español (España)",
+  "localeName": "Español (ES)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

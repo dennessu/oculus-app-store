@@ -48,7 +48,7 @@ class EmailHistoryRepoSqlTest extends BaseTest {
         def email = emailHistoryRepository.createEmailHistory(email).get()
         email.setStatus('SUCCEED')
         assert email.getTemplateId() != null, "email id value: ${email.id?.value}"
-        def updated = emailHistoryRepository.updateEmailHistory(email).get()
+        def updated = emailHistoryRepository.updateEmailHistory(email, email).get()
         assert updated != null, 'Email should not be null'
         assert updated.status == 'SUCCEED', 'Email update failed'
     }

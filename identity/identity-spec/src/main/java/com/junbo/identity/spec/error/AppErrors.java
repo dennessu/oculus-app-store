@@ -22,197 +22,150 @@ import com.junbo.common.id.*;
 public interface AppErrors {
     AppErrors INSTANCE = ErrorProxy.newProxyInstance(AppErrors.class);
 
-    @ErrorDef(httpStatusCode = 400, code = "10004", description = "Invalid input password. {0}")
+    @ErrorDef(httpStatusCode = 412, code = "101", message = "Invalid Password", field = "password", reason = "{0}")
     AppError invalidPassword(String errorMessage);
 
-    @ErrorDef(httpStatusCode = 403, code = "10009", description = "Encrypt password error. {0}")
-    AppError encryptPassword(String detail);
+    @ErrorDef(httpStatusCode = 412, code = "102", message = "User Not Found",
+            field = "user", reason = "User with ID {0} is not found")
+    AppError userNotFound(UserId id);
 
-    @ErrorDef(httpStatusCode = 400, code = "10021", description = "Serializer error using jackson. source = {0}.")
-    AppError serializerError(String source);
-
-    @ErrorDef(httpStatusCode = 400, code = "10022", description = "Deserializer error using jackson.")
-    AppError deSerializerError();
-
-    @ErrorDef(httpStatusCode = 409, code = "2000001", description = "Field {0} not writable.", field = "{0}")
-    AppError fieldNotWritable(String field);
-
-    @ErrorDef(httpStatusCode = 409, code = "2000002", description = "Field {0} invalid. Allowed values: {1}",
-            field = "{0}")
-    AppError fieldInvalid(String field, String allowedValues);
-
-    @ErrorDef(httpStatusCode = 409, code = "2000003", description = "Field {0} invalid.", field = "{0}")
-    AppError fieldInvalid(String field);
-
-    @ErrorDef(httpStatusCode = 409, code = "2000004", description = "Field {0} too short. Min length is {1}",
-            field = "{0}")
-    AppError fieldTooShort(String field, Integer minLength);
-
-    @ErrorDef(httpStatusCode = 409, code = "2000005", description = "Field {0} too long. Max length is {1}",
-            field = "{0}")
-    AppError fieldTooLong(String field, Integer maxLength);
-
-    @ErrorDef(httpStatusCode = 409, code = "2000006", description = "Field {0} duplicate.", field = "{0}")
-    AppError fieldDuplicate(String field);
-
-    @ErrorDef(httpStatusCode = 400, code = "2000007", description = "Field {0} required.", field = "{0}")
-    AppError fieldRequired(String field);
-
-    @ErrorDef(httpStatusCode = 404, code = "2000008", description = "User {0} not found.")
-    AppError userNotFound(UserId userId);
-
-    @ErrorDef(httpStatusCode = 404, code = "2000009", description = "Group {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "103", message = "Group Not Found",
+            field = "group", reason = "Group with ID {0} is not found")
     AppError groupNotFound(GroupId groupId);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000010", description = "Param name {0} required.", field = "{0}")
-    AppError parameterRequired(String paraName);
-
-    @ErrorDef(httpStatusCode = 409, code = "2000011", description = "Security Question {0} not found.", field = "{0}")
-    AppError securityQuestionNotFound(SecurityQuestionId securityQuestionId);
-
-    @ErrorDef(httpStatusCode = 409, code = "2000012", description = "User Authenticator {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "104", message = "User Authenticator Not Found",
+            field = "userAuthenticator", reason = "User Authenticator with ID {0} is not found")
     AppError userAuthenticatorNotFound(UserAuthenticatorId userAuthenticatorId);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000013", description = "Param invalid due to {0}.", field = "{0}")
-    AppError parameterInvalid(String message);
-
-    @ErrorDef(httpStatusCode = 409, code = "2000014", description = "User Device {0} not found.", field = "{0}")
-    AppError userDeviceNotFound(UserDeviceId userDeviceId);
-
-    @ErrorDef(httpStatusCode = 409, code = "2000015", description = "User Group {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "105", message = "User Group Not Found",
+            field = "userGroup", reason = "User Group with ID {0} is not found")
     AppError userGroupNotFound(UserGroupId userGroupId);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000016", description = "User Login Attempt {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "106", message = "User Login Attempt Not Found",
+            field = "userLoginAttempt", reason = "User Login Attempt with ID {0} is not found")
     AppError userLoginAttemptNotFound(UserCredentialVerifyAttemptId userLoginAttemptId);
 
-    @ErrorDef(httpStatusCode = 404, code = "2000017", description = "User {0} is not in valid status.", field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "107", message = "User Status Invalid",
+            field = "user.status", reason = "User with ID {0} is not in valid status")
     AppError userInInvalidStatus(UserId userId);
 
-    @ErrorDef(httpStatusCode = 404, code = "2000018", description = "Username {0} not found.")
-    AppError userNotFound(String username);
+    @ErrorDef(httpStatusCode = 412, code = "107", message = "User Status Invalid",
+            field = "user.status", reason = "User with name {0} is not in valid status")
+    AppError userInInvalidStatusByName(String userName);
 
-    @ErrorDef(httpStatusCode = 404, code = "2000019", description = "User password is incorrect.")
+    @ErrorDef(httpStatusCode = 412, code = "108", message = "User Name Not Found",
+            field = "username", reason = "User with name {0} is not found")
+    AppError userNotFoundByName(String username);
+
+    @ErrorDef(httpStatusCode = 412, code = "109", message = "User Password Incorrect")
     AppError userPasswordIncorrect();
 
-    @ErrorDef(httpStatusCode = 404, code = "2000020", description = "User pin is incorrect.")
+    @ErrorDef(httpStatusCode = 412, code = "110", message = "User Pin Incorrect")
     AppError userPinIncorrect();
 
-    @ErrorDef(httpStatusCode = 409, code = "2000021", description = "User Tos {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "111", message = "User Tos Not Found",
+            field = "userTosId", reason = "User Tos Agreement with ID {0} is not found")
     AppError userTosAgreementNotFound(UserTosAgreementId userTosId);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000022", description = "User Optin {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "112", message = "User Optin Not Found",
+            field = "userOptinId", reason = "User Optin with ID {0} is not found")
     AppError userOptinNotFound(UserCommunicationId userOptinId);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000023", description = "User Password {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "113", message = "User Password Not Found",
+            field = "userPasswordId", reason = "User Password with ID {0} is not found")
     AppError userPasswordNotFound(UserPasswordId userPasswordId);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000024", description = "User PhoneNumber {0} not found.", field = "{0}")
-    AppError userPhoneNumberNotFound(UserPhoneNumberId userPhoneNumberId);
-
-    @ErrorDef(httpStatusCode = 409, code = "2000025", description = "User Pin {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "114", message = "User Pin Not Found",
+            field = "userPinId", reason = "User Pin with ID {0} is not found")
     AppError userPinNotFound(UserPinId userPinId);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000026",
-            description = "User Security Question {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "115", message = "User Security Question Not Found",
+            field = "userSecurityQuestion", reason = "User Security Question with ID {0} is not found")
     AppError userSecurityQuestionNotFound(UserSecurityQuestionId userSecurityQuestionId);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000027", description = "Security Question {0} not found.", field = "{0}")
-    AppError securityQuestionNotActive(SecurityQuestionId securityQuestionId);
-
-    @ErrorDef(httpStatusCode = 409, code = "2000028",
-            description = "User Security Question Attempt {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "116", message = "User Security Question Attempt Not Found",
+            field = "userSecurityQuestionAttempt", reason = "User Security Question Attempt with ID {0} is not found")
     AppError userSecurityQuestionAttemptNotFound(
             UserSecurityQuestionVerifyAttemptId userSecurityQuestionVerifyAttemptId);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000029", description = "User Security Question isn't valid.")
-    AppError userSecurityQuestionNotValid();
-
-    @ErrorDef(httpStatusCode = 409, code = "2000030", description = "User Security Question not found.")
-    AppError userSecurityQuestionNotFound();
-
-    @ErrorDef(httpStatusCode = 404, code = "2000031", description = "User security question is incorrect.")
+    @ErrorDef(httpStatusCode = 412, code = "117", message = "User Security Question Incorrect")
     AppError userSecurityQuestionIncorrect();
 
-    @ErrorDef(httpStatusCode = 409, code = "2000032", description = "User Email {0} not found.", field = "{0}")
-    AppError userEmailNotFound(UserEmailId userEmailId);
-
-    @ErrorDef(httpStatusCode = 409, code = "2000033", description = "Device {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "118", message = "Device Not Found",
+            field = "device", reason = "Device with ID {0} is not found")
     AppError deviceNotFound(DeviceId deviceId);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000034", description = "Tos {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "119", message = "Tos Not Found",
+            field = "tos", reason = "Tos with ID {0} is not found")
     AppError tosNotFound(TosId tosId);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000035", description = "Role {0} not found.", field = "{0}")
-    AppError roleNotFound(RoleId roleId);
-
-    @ErrorDef(httpStatusCode = 409, code = "2000036", description = "RoleAssignment {0} not found.", field = "{0}")
-    AppError roleAssignmentNotFound(RoleAssignmentId roleAssignmentId);
-
-    @ErrorDef(httpStatusCode = 409, code = "2000037", description = "User Personal Info {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "120", message = "User Personal Info Not Found",
+            field = "userPersonalInfo", reason = "User Personal Info with ID {0} is not found")
     AppError userPersonalInfoNotFound(UserPersonalInfoId userPersonalInfoId);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000038", description = "Address {0} not found.", field = "{0}")
-    AppError addressNotFound(AddressId addressId);
-
-    @ErrorDef(httpStatusCode = 409, code = "2000039", description = "User TFA code {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "121", message = "User TFA Not Found",
+            field = "userTFA", reason = "User TFA with ID {0} is not found")
     AppError userTFANotFound(UserTFAId userTFAId);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000040", description = "Country {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "122", message = "Country Not Found",
+            field = "country", reason = "Country with ID {0} is not found")
     AppError countryNotFound(CountryId countryId);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000041", description = "Currency {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "123", message = "Currency Not Found",
+            field = "currency", reason = "Currency with ID {0} is not found")
     AppError currencyNotFound(CurrencyId countryId);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000042", description = "Locale {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "124", message = "Locale Not Found",
+            field = "locale", reason = "Locale with ID {0} is not found")
     AppError localeNotFound(LocaleId localeId);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000043", description = "Payment instrument type {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "125", message = "Payment Instrument Type Not Found",
+            field = "paymentInstrumentType", reason = "Payment Instrument Type with ID {0} is not found")
     AppError piTypeNotFound(PITypeId piTypeId);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000044", description = "Communication {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "126", message = "Communication Not Found",
+            field = "communication", reason = "Communication with ID {0} is not found")
     AppError communicationNotFound(CommunicationId id);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000045", description = "DeviceType {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "127", message = "Device Type Not Found",
+            field = "deviceType", reason = "Device Type with ID {0} is not found")
     AppError deviceTypeNotFound(DeviceTypeId id);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000046", description = "Field {0} invalid due to {1}.", field = "{0}")
-    AppError fieldInvalidException(String field, String detail);
-
-    @ErrorDef(httpStatusCode = 409, code = "2000050", description = "TeleSign provider error.")
-    AppError teleSignProviderError(String message);
-
-    @ErrorDef(httpStatusCode = 409, code = "2000051", description = "User TFA attempt {0} not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "128", message = "User TFA Attempt Not Found",
+            field = "userTFAAttempt", reason = "User TFA Attempt with ID {0} is not found")
     AppError userTFAAttemptNotFound(UserTFAAttemptId userTFAAttemptId);
 
-    @ErrorDef(httpStatusCode = 404, code = "2000052", description = "User TFA code is incorrect.")
+    @ErrorDef(httpStatusCode = 412, code = "129", message = "User TFA Code Incorrect")
     AppError userTFACodeIncorrect();
 
-    @ErrorDef(httpStatusCode = 409, code = "2000053", description = "User TFA backup code {0} not found.",
-            field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "130", message = "User TFA Backup Code Not Found",
+            field = "userTFABackupCode", reason = "User TFA Backup Code with ID {0} is not found")
     AppError userTFABackupCodeNotFound(UserTFABackupCodeId userTFABackupCodeId);
 
-    @ErrorDef(httpStatusCode = 409, code = "2000054", description = "User TFA backup code attempt {0} not found.",
-            field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "131", message = "User TFA Backup Code Attempt Not Found",
+            field = "userTFABackupCodeAttempt", reason = "User TFA Backup Code Attempt with ID {0} is not found")
     AppError userTFABackupCodeAttemptNotFound(UserTFABackupCodeAttemptId userTFABackupCodeAttemptId);
 
-    @ErrorDef(httpStatusCode = 404, code = "2000055", description = "User TFA backup code is incorrect.")
+    @ErrorDef(httpStatusCode = 412, code = "132", message = "User TFA Backup Code Incorrect")
     AppError userTFABackupCodeIncorrect();
 
-    @ErrorDef(httpStatusCode = 404, code = "2000056", description = "User {0} is not in valid status.", field = "{0}")
-    AppError userInInvalidStatus(String username);
-
-    @ErrorDef(httpStatusCode = 404, code = "2000057", description = "Organization {0} is not found.", field = "{0}")
+    @ErrorDef(httpStatusCode = 412, code = "133", message = "Organization Not Found",
+            field = "organization", reason = "Organization with ID {0} is not found")
     AppError organizationNotFound(OrganizationId organizationId);
 
-    @ErrorDef(httpStatusCode = 403, code = "10001", description = "Invalid Access")
-    AppError invalidAccess();
+    @ErrorDef(httpStatusCode = 412, code = "134", message = "TeleSign Provider Error",
+            field = "cause", reason = "{0}")
+    AppError teleSignProviderError(String message);
 
-    @ErrorDef(httpStatusCode = 400, code = "10001", description = "Request body is empty")
-    AppError requestBodyRequired();
-
-    @ErrorDef(httpStatusCode = 400, code = "2000058", description = "User email {0} already used.", field = "{0}")
+    @ErrorDef(httpStatusCode = 409, code = "135", message = "Email Already Exists",
+            field = "email", reason = "Email {0} is already used")
     AppError userEmailAlreadyUsed(String email);
 
-    @ErrorDef(httpStatusCode = 404, code = "2000059", description = "Organization {0} is already used.", field = "{0}")
+    @ErrorDef(httpStatusCode = 409, code = "136", message = "Organization Name Already Exists",
+            field = "organization.name", reason = "Organization name {0} is already used")
     AppError organizationAlreadyUsed(String organizationName);
+
+    @ErrorDef(httpStatusCode = 412, code = "137", message = "PaymentInstrument Not Found",
+            field = "paymentInstrument", reason = "PaymentInstrument with ID {0} is not found")
+    AppError paymentInstrumentNotFound(PaymentInstrumentId id);
 }

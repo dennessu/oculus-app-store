@@ -36,7 +36,7 @@ class ConsentRepositoryImpl implements ConsentRepository {
     }
 
     @Override
-    Consent updateConsent(Consent consent) {
+    Consent updateConsent(Consent consent, Consent oldConsent) {
         return wrap(consentDAO.update(unwrap(consent)))
     }
 
@@ -57,7 +57,7 @@ class ConsentRepositoryImpl implements ConsentRepository {
                 userId: consent.userId,
                 clientId: consent.clientId,
                 scopes: consent.scopes,
-                revision: consent.revision
+                revision: consent.rev
         )
     }
 
@@ -72,7 +72,7 @@ class ConsentRepositoryImpl implements ConsentRepository {
                 userId: Long.parseLong(tokens[0]),
                 clientId: tokens[1],
                 scopes: entity.scopes,
-                revision: entity.revision
+                rev: entity.revision
         )
     }
 

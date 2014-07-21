@@ -45,7 +45,7 @@ public class BaseDao<T extends Entity> {
     private Class<T> entityType;
 
     protected Session currentSession(Object key) {
-        ShardScope shardScope = new ShardScope(shardAlgorithm.shardId(key));
+        ShardScope shardScope = new ShardScope(shardAlgorithm.dataCenterId(key), shardAlgorithm.shardId(key));
         try {
             return sessionFactory.getCurrentSession();
         } finally {
@@ -57,9 +57,9 @@ public class BaseDao<T extends Entity> {
         t.setId(generateId(t.getShardMasterId()));
         Date now = EntitlementContext.current().getNow();
         t.setIsDeleted(false);
-        t.setCreatedBy(177536427572383L);  //TODO
+        t.setCreatedBy(177536427572383L);
         t.setCreatedTime(now);
-        t.setUpdatedBy(177536427572383L); //TODO
+        t.setUpdatedBy(177536427572383L);
         t.setUpdatedTime(now);
         t.setIsDeleted(false);
         t.setResourceAge(0);
@@ -71,11 +71,11 @@ public class BaseDao<T extends Entity> {
         return (result == null || result.getIsDeleted()) ? null : result;
     }
 
-    public T update(T t) {
+    public T update(T t, T old) {
         T existed = (T) currentSession(t.getShardMasterId()).load(entityType, t.getId());
         t.setCreatedTime(existed.getCreatedTime());
         t.setCreatedBy(existed.getCreatedBy());
-        t.setUpdatedBy(177536427572383L); //TODO
+        t.setUpdatedBy(177536427572383L);
         t.setUpdatedTime(EntitlementContext.current().getNow());
         if (t.getIsDeleted() == null || !t.getIsDeleted()) {
             t.setIsDeleted(false);

@@ -25,10 +25,9 @@ public class UserCredentialVerifyAttempt extends PropertyAssignedAwareResourceMe
     @JsonProperty("user")
     private UserId userId;
 
-    @ApiModelProperty(position = 3, required = true, value = "his is required during PIN/Password/Email login. If the user typed a username & password, " +
-            "this will be the (username part) actual text as typed by the end-user. If the user typed an email & password, " +
-            "this will be the (email part) actual text as typed by the end-user. In any case, " +
-            "it is not necessarily the same as the username associated with the \"user\" link.")
+    @ApiModelProperty(position = 3, required = true, value = "This is required during PIN/Password/Email login," +
+            " This must be the entire user-identification text as entered by the end-user, " +
+            "which may either be the user's username or the user's email address.")
     private String username;
 
     @ApiModelProperty(position = 4, required = true,

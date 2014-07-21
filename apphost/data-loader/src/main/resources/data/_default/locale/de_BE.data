@@ -1,0 +1,11 @@
+{
+  "localeCode": "de_BE",
+  "shortName": "German (BE)",
+  "longName": "Deutsch (Belgien)",
+  "localeName": "German (BE)",
+  "fallbackLocale": {
+    "href": "/v1/locales/de_DE",
+    "id": "de_DE"
+  },
+  "futureExpansion": {}
+}

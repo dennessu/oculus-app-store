@@ -10,7 +10,6 @@ import com.junbo.identity.spec.v1.model.migration.OculusOutput;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.langur.core.routing.RouteAnyLocal;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -30,11 +29,9 @@ import java.util.Map;
 @Consumes({MediaType.APPLICATION_JSON})
 public interface MigrationResource {
     @POST
-    @RouteAnyLocal
     Promise<OculusOutput> migrate(OculusInput oculusInput);
 
     @POST
-    @RouteAnyLocal
     @Path("/bulk")
     Promise<Map<String, OculusOutput>> bulkMigrate(List<OculusInput> oculusInputs);
 }

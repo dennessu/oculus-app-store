@@ -8,6 +8,8 @@ package com.junbo.fulfilment.clientproxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 
 /**
  * BaseTest.
@@ -16,4 +18,16 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 public abstract class BaseTest extends AbstractTestNGSpringContextTests {
     @Autowired
     protected MegaGateway megaGateway;
+
+    @BeforeTest
+    @SuppressWarnings("deprecation")
+    public void setup() {
+
+    }
+
+    @AfterTest
+    @SuppressWarnings("deprecation")
+    public void cleanup() {
+
+    }
 }

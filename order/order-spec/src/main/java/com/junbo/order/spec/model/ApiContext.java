@@ -18,12 +18,14 @@ public class ApiContext {
     public static final String HEADER_ON_BEHALF_OF_REQUESTOR = "On-Behalf-Of-Requestor-Id";
 
     public static final String QA_HEADER_ASYNC_CHARGE = "X-QA-Async-Charge";
+    public static final String HEADER_IP_GEO_LOCATION = "oculus-geoip-country-code";
 
     private String delegateUserId;
     private String requestorId;
     private String onBehalfOfRequestorId;
     private String userIp;
     private Boolean asyncCharge;
+    private String location;
 
     public ApiContext() {
 
@@ -32,6 +34,10 @@ public class ApiContext {
         if (JunboHttpContext.getRequestHeaders()!= null &&
                 !CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(QA_HEADER_ASYNC_CHARGE))) {
             asyncCharge = Boolean.valueOf(JunboHttpContext.getRequestHeaders().getFirst(QA_HEADER_ASYNC_CHARGE));
+        }
+        if (JunboHttpContext.getRequestHeaders()!= null &&
+                !CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(HEADER_IP_GEO_LOCATION))) {
+            location = JunboHttpContext.getRequestHeaders().getFirst(HEADER_IP_GEO_LOCATION);
         }
     }
 
@@ -73,5 +79,13 @@ public class ApiContext {
 
     public void setAsyncCharge(Boolean asyncCharge) {
         this.asyncCharge = asyncCharge;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

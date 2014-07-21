@@ -6,18 +6,19 @@
 
 package com.junbo.catalog.core.service;
 
+import com.google.common.base.Joiner;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.BaseRevisionedService;
 import com.junbo.catalog.db.repo.BaseEntityRepository;
 import com.junbo.catalog.db.repo.BaseRevisionRepository;
 import com.junbo.catalog.spec.enums.PriceType;
 import com.junbo.catalog.spec.enums.Status;
-import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.common.BaseEntityModel;
 import com.junbo.catalog.spec.model.common.BaseModel;
 import com.junbo.catalog.spec.model.common.BaseRevisionModel;
 import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.AppErrorException;
 import org.slf4j.Logger;
@@ -48,16 +49,14 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
         checkEntityNotNull(entityId, existingEntity, getEntityType());
 
         if (!isEqual(existingEntity.getCurrentRevisionId(), entity.getCurrentRevisionId())) {
-            throw AppErrors.INSTANCE.fieldNotCorrect("currentRevision", "The field should not be explicitly updated.")
-                    .exception();
+            throw AppCommonErrors.INSTANCE.fieldNotWritable("currentRevision", entity.getCurrentRevisionId(), existingEntity.getCurrentRevisionId()).exception();
         }
 
         if (!existingEntity.getRev().equals(entity.getRev())) {
-            throw AppErrors.INSTANCE
-                    .fieldNotMatch("rev", entity.getRev(), existingEntity.getRev()).exception();
+            throw AppCommonErrors.INSTANCE.fieldNotWritable("rev", entity.getRev(), existingEntity.getRev()).exception();
         }
 
-        return getEntityRepo().update(entity);
+        return getEntityRepo().update(entity, existingEntity);
     }
 
     @Override
@@ -79,7 +78,8 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
         if (Status.APPROVED.is(revision.getStatus())) {
             revision.setTimestamp(Utils.currentTimestamp());
         }
-        getRevisionRepo().update(revision);
+        T oldRevision = getRevisionRepo().get(revisionId);
+        getRevisionRepo().update(revision, oldRevision);
         if (Status.APPROVED.is(revision.getStatus())) {
             E entity = getEntityRepo().get(revision.getEntityId());
             checkEntityNotNull(revision.getEntityId(), entity, getEntityType());
@@ -88,7 +88,7 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
             }
             String lastRevisionId = entity.getCurrentRevisionId();
             entity.setCurrentRevisionId(revisionId);
-            getEntityRepo().update(entity);
+            getEntityRepo().update(entity, entity);
         }
         return getRevisionRepo().get(revisionId);
     }
@@ -99,7 +99,7 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
         checkEntityNotNull(revisionId, existingRevision, getRevisionType());
         if (Status.APPROVED.is(existingRevision.getStatus())) {
             AppErrorException exception =
-                    AppErrors.INSTANCE.validation("Cannot delete an approved revision.").exception();
+                    AppCommonErrors.INSTANCE.invalidOperation("Cannot delete an approved revision.").exception();
             LOGGER.error("Error updating " + getRevisionType() + " " + revisionId, exception);
             throw exception;
         }
@@ -108,7 +108,7 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
 
     protected void checkEntityNotNull(String entityId, BaseModel entity, String name) {
         if (entity == null) {
-            AppErrorException exception = AppErrors.INSTANCE.notFound(name, entityId).exception();
+            AppErrorException exception = AppCommonErrors.INSTANCE.resourceNotFound(name, entityId).exception();
             LOGGER.error("Not found.", exception);
             throw exception;
         }
@@ -116,7 +116,7 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
 
     protected void checkRequestNotNull(BaseModel entity) {
         if (entity == null) {
-            AppErrorException exception = AppErrors.INSTANCE.invalidJson("Invalid json.").exception();
+            AppErrorException exception = AppCommonErrors.INSTANCE.invalidJson("cause", "Json is null").exception();
             LOGGER.error("Invalid json.", exception);
             throw exception;
         }
@@ -124,23 +124,23 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
 
     protected void checkPrice(Price price, List<AppError> errors) {
         if (!PriceType.contains(price.getPriceType())) {
-            errors.add(AppErrors.INSTANCE.fieldNotCorrect("priceType", "Valid price types: " + PriceType.ALL));
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("priceType", Joiner.on(", ").join(PriceType.ALL)));
         }
 
         if (PriceType.TIERED.is(price.getPriceType())) {
             if (!CollectionUtils.isEmpty(price.getPrices())) {
-                errors.add(AppErrors.INSTANCE.unnecessaryField("prices"));
+                errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("prices"));
             }
         } else if (PriceType.FREE.is(price.getPriceType())) {
             if (price.getPriceTier() != null) {
-                errors.add(AppErrors.INSTANCE.unnecessaryField("priceTier"));
+                errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("priceTier"));
             }
             if (!CollectionUtils.isEmpty(price.getPrices())) {
-                errors.add(AppErrors.INSTANCE.unnecessaryField("prices"));
+                errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("prices"));
             }
         } else if (PriceType.CUSTOM.is(price.getPriceType())) {
             if (price.getPriceTier() != null) {
-                errors.add(AppErrors.INSTANCE.unnecessaryField("priceTier"));
+                errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("priceTier"));
             }
         }
     }

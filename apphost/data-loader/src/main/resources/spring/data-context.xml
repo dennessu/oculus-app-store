@@ -54,6 +54,38 @@
         <property name="masterKeyResource" ref="defaultMasterKeyResource" />
     </bean>
 
+    <bean id="userDataHandler" class="com.junbo.data.handler.UserDataHandler" parent="baseDataHandler">
+        <property name="userPersonalInfoResource" ref="defaultUserPersonalInfoResource"/>
+        <property name="userCredentialResource" ref="defaultUserCredentialResource"/>
+        <property name="userResource" ref="defaultUserResource"/>
+    </bean>
+
+    <bean id="organizationDataHandler" class="com.junbo.data.handler.OrganizationDataHandler" parent="baseDataHandler">
+        <property name="organizationResource" ref="defaultOrganizationResource"/>
+        <property name="userResource" ref="defaultUserResource"/>
+    </bean>
+
+    <bean id="groupDataHandler" class="com.junbo.data.handler.GroupDataHandler" parent="baseDataHandler">
+        <property name="organizationResource" ref="defaultOrganizationResource"/>
+        <property name="groupResource" ref="defaultGroupResource"/>
+    </bean>
+
+    <bean id="userGroupDataHandler" class="com.junbo.data.handler.UserGroupDataHandler" parent="baseDataHandler">
+        <property name="userGroupMembershipResource" ref="defaultUserGroupMembershipResource"/>
+        <property name="groupResource" ref="defaultGroupResource"/>
+        <property name="userResource" ref="defaultUserResource"/>
+        <property name="organizationResource" ref="defaultOrganizationResource"/>
+
+    </bean>
+
+    <bean id="catalogDataHandler" class="com.junbo.data.handler.CatalogDataHandler" parent="baseDataHandler">
+        <property name="organizationResource" ref="defaultOrganizationResource"/>
+        <property name="itemResource" ref="defaultItemResource"/>
+        <property name="itemRevisionResource" ref="defaultItemRevisionResource"/>
+        <property name="offerResource" ref="defaultOfferResource"/>
+        <property name="offerRevisionResource" ref="defaultOfferRevisionResource"/>
+    </bean>
+
     <bean id="dataLoader" class="com.junbo.data.loader.DataLoader">
         <property name="handlers">
             <map>
@@ -66,6 +98,11 @@
                 <entry key="pitype" value-ref="piTypeDataHandler"/>
                 <entry key="email-template" value-ref="emailTemplateDataHandler"/>
                 <entry key="masterkey" value-ref="masterKeyDataHandler" />
+                <entry key="user" value-ref="userDataHandler" />
+                <entry key="organization" value-ref="organizationDataHandler" />
+                <entry key="group" value-ref="groupDataHandler" />
+                <entry key="user-group" value-ref="userGroupDataHandler" />
+                <entry key="catalog" value-ref="catalogDataHandler" />
             </map>
         </property>
         <property name="dataList">
@@ -79,6 +116,11 @@
                 <value>pitype</value>
                 <value>email-template</value>
                 <value>masterkey</value>
+                <value>user</value>
+                <value>organization</value>
+                <value>group</value>
+                <value>user-group</value>
+                <value>catalog</value>
             </list>
         </property>
     </bean>

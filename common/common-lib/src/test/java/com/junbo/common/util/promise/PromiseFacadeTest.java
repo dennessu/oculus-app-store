@@ -11,7 +11,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 
 /**
  * PromiseShellTest.

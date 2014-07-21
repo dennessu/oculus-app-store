@@ -4,8 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.langur.processor.handler
-
-import com.junbo.langur.core.routing.RouteAnyLocal
+import com.junbo.langur.core.RestResource
 import com.junbo.langur.core.routing.RouteBy
 import com.junbo.langur.processor.ProcessingException
 import com.junbo.langur.processor.model.RestAdapterModel
@@ -40,7 +39,7 @@ class RestAdapterParser implements RestResourceHandler {
                 AnnotationMirror annotationMirror -> annotationMirror.toString()
             }.findAll {
                 String annotation ->
-                    annotation != '@com.junbo.langur.core.RestResource' &&
+                    !annotation.startsWith('@com.junbo.langur.core.RestResource') &&
                     !annotation.startsWith('@com.wordnik.swagger.annotations')
         }.toList()
 
@@ -86,15 +85,7 @@ class RestAdapterParser implements RestResourceHandler {
                 }
 
                 def routeBy = executableElement.getAnnotation(RouteBy)
-                def routeAnyLocal = executableElement.getAnnotation(RouteAnyLocal)
                 restMethod.routeParamExprs = Arrays.asList(routeBy?.value() ?: new String[0])
-
-                if (routeBy != null) {
-                    restMethod.routeFallbackToAnyLocal = routeBy.fallbackToAnyLocal()
-                }
-                if (routeAnyLocal != null) {
-                    restMethod.routeFallbackToAnyLocal = true
-                }
 
                 restAdapter.restMethods.add(restMethod)
         }

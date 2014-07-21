@@ -1,6 +1,8 @@
 package com.junbo.ewallet.service.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
+import com.junbo.common.id.WalletId
 import com.junbo.ewallet.common.util.Callback
 import com.junbo.ewallet.db.entity.def.NotEnoughMoneyException
 import com.junbo.ewallet.db.repo.facade.TransactionRepositoryFacade
@@ -48,7 +50,7 @@ class WalletServiceImpl implements WalletService {
     Wallet get(Long walletId) {
         Wallet result = walletRepo.get(walletId)
         if (result == null) {
-            throw AppErrors.INSTANCE.notFound('wallet', walletId).exception()
+            throw AppCommonErrors.INSTANCE.resourceNotFound('wallet', new WalletId(walletId)).exception()
         }
         checkUserId(result.userId)
         return result
@@ -58,26 +60,26 @@ class WalletServiceImpl implements WalletService {
     @Transactional
     Wallet add(Wallet wallet) {
         if (wallet.getId() != null) {
-            throw AppErrors.INSTANCE.unnecessaryField('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
 
         checkUserId(wallet.userId)
 
         if (wallet.status != null) {
-            throw AppErrors.INSTANCE.unnecessaryField('status').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('status').exception()
         }
         wallet.status = Status.ACTIVE.toString()
 
         if (wallet.type != null &&
                 !wallet.type.equalsIgnoreCase(WalletType.STORED_VALUE.toString())) {
-            throw AppErrors.INSTANCE.fieldNotCorrect('type', 'only STORED_VALUE supported').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('type', 'only STORED_VALUE supported').exception()
         }
         wallet.type = WalletType.STORED_VALUE.toString()
 
         if (wallet.type == null) {
-            throw AppErrors.INSTANCE.missingField('type').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('type').exception()
         } else if (wallet.type.equalsIgnoreCase(WalletType.STORED_VALUE.toString()) && wallet.currency == null) {
-            throw AppErrors.INSTANCE.missingField('currency').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('currency').exception()
         }
 
         wallet.currency = wallet.currency.toUpperCase()
@@ -85,7 +87,7 @@ class WalletServiceImpl implements WalletService {
         if (wallet.balance == null) {
             wallet.balance = BigDecimal.ZERO
         } else if (!wallet.balance == BigDecimal.ZERO) {
-            throw AppErrors.INSTANCE.fieldNotCorrect('balance', 'balance should be 0.').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('balance', 'balance should be 0.').exception()
         }
 
         Wallet existed = walletRepo.get(wallet.userId, wallet.type, wallet.currency)
@@ -111,7 +113,7 @@ class WalletServiceImpl implements WalletService {
         validateEquals(wallet.balance, existed.balance, 'balance')
 
         wallet.setId(walletId)
-        Wallet result = walletRepo.update(wallet)
+        Wallet result = walletRepo.update(wallet, existed)
         return result
     }
 
@@ -122,14 +124,14 @@ class WalletServiceImpl implements WalletService {
             creditRequest.creditType = WalletLotType.CASH.toString()
         }
         if (!creditRequest.creditType.equalsIgnoreCase(WalletLotType.CASH.toString())) {
-            throw AppErrors.INSTANCE.fieldNotCorrect('creditType', 'ony CASH supported').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('creditType', 'ony CASH supported').exception()
         }
 
         if (creditRequest.walletType == null) {
             creditRequest.walletType = WalletType.STORED_VALUE.toString()
         }
         if (!creditRequest.walletType.equalsIgnoreCase(WalletType.STORED_VALUE.toString())) {
-            throw AppErrors.INSTANCE.fieldNotCorrect('walletType', 'ony STORED_VALUE supported').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('walletType', 'ony STORED_VALUE supported').exception()
         }
 
         validateAmount(creditRequest.amount)
@@ -143,15 +145,15 @@ class WalletServiceImpl implements WalletService {
                 creditRequest.walletType != null) {
             wallet = walletRepo.get(creditRequest.userId, creditRequest.walletType, creditRequest.currency.toUpperCase())
         } else {
-            throw AppErrors.INSTANCE.common('wallet or user, currency and walletType should not be null').exception()
+            throw AppCommonErrors.INSTANCE.invalidOperation('Either wallet or (user, currency, walletType) should not specified').exception()
         }
 
         if (wallet == null) {
-            throw AppErrors.INSTANCE.common('wallet not found').exception()
+            throw AppCommonErrors.INSTANCE.resourceNotFound("wallet", creditRequest.walletId).exception()
         }
         checkUserId(wallet.userId)
         if (wallet.status.equalsIgnoreCase(Status.LOCKED.toString())) {
-            throw AppErrors.INSTANCE.locked(wallet.getId()).exception()
+            throw AppErrors.INSTANCE.locked().exception()
         }
 
         Transaction result = walletRepo.credit(wallet, creditRequest)
@@ -164,14 +166,14 @@ class WalletServiceImpl implements WalletService {
 
         Wallet wallet = ((WalletService) applicationContext.getBean("walletService")).get(walletId)
         if (wallet == null) {
-            throw AppErrors.INSTANCE.common('wallet not found').exception()
+            throw AppCommonErrors.INSTANCE.resourceNotFound("wallet", walletId).exception()
         }
         checkUserId(wallet.userId)
         if (wallet.status.equalsIgnoreCase(Status.LOCKED.toString())) {
-            throw AppErrors.INSTANCE.locked(walletId).exception()
+            throw AppErrors.INSTANCE.locked().exception()
         }
         if (wallet.balance < debitRequest.amount) {
-            throw AppErrors.INSTANCE.notEnoughMoney(walletId).exception()
+            throw AppErrors.INSTANCE.insufficientFund().exception()
         }
 
         Transaction result
@@ -194,7 +196,7 @@ class WalletServiceImpl implements WalletService {
                     walletRepo.correctBalance(wallet.getId())
                 }
             })
-            throw AppErrors.INSTANCE.notEnoughMoney(walletId).exception()
+            throw AppErrors.INSTANCE.insufficientFund().exception()
         }
 
         return result
@@ -234,26 +236,26 @@ class WalletServiceImpl implements WalletService {
 
         Transaction debitTransaction = transactionRepo.get(transactionId)
         if (debitTransaction == null) {
-            throw AppErrors.INSTANCE.fieldNotCorrect("transactionId",
+            throw AppCommonErrors.INSTANCE.fieldInvalid("transactionId",
                     "transaction [" + transactionId + "] not found").exception()
         }
         if (!debitTransaction.getType().equals("DEBIT")) {
-            throw AppErrors.INSTANCE.fieldNotCorrect("transactionId",
+            throw AppCommonErrors.INSTANCE.fieldInvalid("transactionId",
                     "transaction with type [" + debitTransaction.getType() + " ] not supported").exception()
         }
         if (debitTransaction.unrefundedAmount.compareTo(refundRequest.amount) < 0) {
-            throw AppErrors.INSTANCE.fieldNotCorrect("amount",
+            throw AppCommonErrors.INSTANCE.fieldInvalid("amount",
                     "there is not enough money to refund").exception()
         }
 
         Wallet wallet = get(debitTransaction.getWalletId())
         if (wallet == null) {
-            throw AppErrors.INSTANCE.common('wallet not found').exception()
+            throw AppCommonErrors.INSTANCE.resourceNotFound("wallet", debitTransaction.getWalletId()).exception()
         }
         checkUserId(wallet.userId)
         validateEquals(refundRequest.currency, wallet.currency, "currency")
         if (wallet.status.equalsIgnoreCase(Status.LOCKED.toString())) {
-            throw AppErrors.INSTANCE.locked(wallet.getId()).exception()
+            throw AppErrors.INSTANCE.locked().exception()
         }
 
         return walletRepo.refund(wallet, transactionId, refundRequest)
@@ -261,9 +263,9 @@ class WalletServiceImpl implements WalletService {
 
     private void validateAmount(BigDecimal amount) {
         if (amount == null) {
-            throw AppErrors.INSTANCE.missingField('amount').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('amount').exception()
         } else if (amount <= 0) {
-            throw AppErrors.INSTANCE.fieldNotCorrect('amount', 'Amount should be positive.').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('amount', 'Amount should be positive.').exception()
         }
     }
 
@@ -271,7 +273,7 @@ class WalletServiceImpl implements WalletService {
         if (expirationDate != null) {
             Date now = new Date()
             if (expirationDate.before(now)) {
-                throw AppErrors.INSTANCE.fieldNotCorrect(
+                throw AppCommonErrors.INSTANCE.fieldInvalid(
                         'expirationDate', 'expirationDate should not be before now.')
                         .exception()
             }
@@ -280,13 +282,13 @@ class WalletServiceImpl implements WalletService {
 
     private void checkUserId(Long userId) {
         if (userId == null) {
-            throw AppErrors.INSTANCE.missingField('userId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
     }
 
     private void validateNotNull(Object o, String fieldName) {
         if (o == null) {
-            throw AppErrors.INSTANCE.missingField(fieldName).exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired(fieldName).exception()
         }
     }
 
@@ -294,7 +296,7 @@ class WalletServiceImpl implements WalletService {
         if (expected == actual) {
             return
         } else if (expected == null || actual == null) {
-            throw AppErrors.INSTANCE.fieldNotMatch(fieldName, actual, expected).exception()
+            throw AppCommonErrors.INSTANCE.fieldNotWritable(fieldName, actual, expected).exception()
         }
         Boolean equals = true
         if (actual instanceof String) {
@@ -310,7 +312,7 @@ class WalletServiceImpl implements WalletService {
         }
 
         if (!equals) {
-            throw AppErrors.INSTANCE.fieldNotMatch(fieldName, actual, expected).exception()
+            throw AppCommonErrors.INSTANCE.fieldNotWritable(fieldName, actual, expected).exception()
         }
     }
 }

@@ -22,8 +22,8 @@ class CountryRepositoryCloudantImpl extends CloudantClient<Country> implements C
     }
 
     @Override
-    Promise<Country> update(Country model) {
-        return cloudantPut(model)
+    Promise<Country> update(Country model, Country oldModel) {
+        return cloudantPut(model, oldModel)
     }
 
     @Override

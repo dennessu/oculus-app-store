@@ -24,7 +24,7 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
 
     @Override
     public ItemRevision create(ItemRevision itemRevision) {
-        return cloudantPost(itemRevision).get();
+        return cloudantPostSync(itemRevision);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
         if (revisionId == null) {
             return null;
         }
-        return cloudantGet(revisionId).get();
+        return cloudantGetSync(revisionId);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
         List<ItemRevision> itemRevisions = new ArrayList<>();
         if (!CollectionUtils.isEmpty(options.getRevisionIds())) {
             for (String revisionId : options.getRevisionIds()) {
-                ItemRevision revision = cloudantGet(revisionId).get();
+                ItemRevision revision = cloudantGetSync(revisionId);
                 if (revision==null) {
                     continue;
                 } else if (!StringUtils.isEmpty(options.getStatus())
@@ -123,18 +123,18 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
     @Override
     public boolean checkPackageName(String itemId, String packageName) {
         String query = "packageName:'" + packageName.replace("'","") + "' AND -itemId:'" + itemId.replace("'","") + "'";
-        CloudantQueryResult searchResult = super.search("search", query, 1, null, false).get();
+        CloudantQueryResult searchResult = searchSync("search", query, 1, null, false);
         return searchResult.getTotalRows() == 0;
     }
 
     @Override
-    public ItemRevision update(ItemRevision revision) {
-        return cloudantPut(revision).get();
+    public ItemRevision update(ItemRevision revision, ItemRevision oldRevision) {
+        return cloudantPutSync(revision, oldRevision);
     }
 
     @Override
     public void delete(String revisionId) {
-        cloudantDelete(revisionId).get();
+        cloudantDeleteSync(revisionId);
     }
 
 }

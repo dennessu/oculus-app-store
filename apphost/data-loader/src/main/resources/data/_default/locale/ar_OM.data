@@ -1,0 +1,11 @@
+{
+  "localeCode": "ar_OM",
+  "shortName": "العربية (OM)",
+  "longName": "العربية (عمان)",
+  "localeName": "العربية (OM)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

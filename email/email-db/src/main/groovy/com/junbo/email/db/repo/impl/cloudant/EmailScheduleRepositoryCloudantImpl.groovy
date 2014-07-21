@@ -30,7 +30,7 @@ class EmailScheduleRepositoryCloudantImpl extends CloudantClient<Email> implemen
             savedEmail.setReplacements(email.replacements)
             savedEmail.setTemplateId(email.templateId)
             savedEmail.setScheduleTime(email.scheduleTime)
-            return cloudantPut(savedEmail)
+            return cloudantPut(savedEmail, savedEmail)
         }
     }
 

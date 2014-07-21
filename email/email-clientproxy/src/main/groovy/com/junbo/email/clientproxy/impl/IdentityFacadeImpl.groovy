@@ -38,10 +38,7 @@ class IdentityFacadeImpl implements IdentityFacade {
     private UserPersonalInfoResource userPersonalInfoResource
 
     Promise<String> getUserEmail(Long userId) {
-        return userResource.get(new UserId(userId), new UserGetOptions()).recover { Throwable throwable ->
-            LOGGER.error("Failed to get user:", throwable)
-            throw AppErrors.INSTANCE.fetchUserEmailError().exception()
-        }.then { User user ->
+        return userResource.get(new UserId(userId), new UserGetOptions()).then { User user ->
             if (!user?.emails?.any()) {
                 throw AppErrors.INSTANCE.emptyUserEmail().exception()
             }
@@ -52,10 +49,7 @@ class IdentityFacadeImpl implements IdentityFacade {
                 throw AppErrors.INSTANCE.emptyUserEmail().exception()
             }
             return userPersonalInfoResource.get(infoLink.value,
-                    new UserPersonalInfoGetOptions()).recover { Throwable throwable ->
-                LOGGER.error("Failed to get user info:", throwable)
-                throw AppErrors.INSTANCE.fetchUserEmailError().exception()
-            }.then { UserPersonalInfo info ->
+                    new UserPersonalInfoGetOptions()).then { UserPersonalInfo info ->
                 try {
                     if (info?.lastValidateTime == null) {
                         throw AppErrors.INSTANCE.noValidatedUserEmail().exception()

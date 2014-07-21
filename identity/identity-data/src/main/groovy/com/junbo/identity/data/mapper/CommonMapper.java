@@ -7,17 +7,13 @@
 
 package com.junbo.identity.data.mapper;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.*;
 import com.junbo.common.util.EnumRegistry;
 import com.junbo.identity.data.identifiable.UserPasswordStrength;
-import com.junbo.identity.spec.error.AppErrors;
 import org.springframework.util.StringUtils;
-
-import java.io.StringWriter;
-import java.util.List;
 
 /**
  * Common Mapper for enum to string, vice versa.
@@ -159,7 +155,7 @@ public class CommonMapper {
             return UserPasswordStrength.valueOf(UserPasswordStrength.class, passwordStrength).getId();
         }
         catch (Exception e) {
-            throw AppErrors.INSTANCE.fieldInvalid("passwordStrength").exception();
+            throw AppCommonErrors.INSTANCE.fieldInvalid("passwordStrength").exception();
         }
     }
 
@@ -272,26 +268,6 @@ public class CommonMapper {
             return null;
         }
         return new PasswordRuleId(id);
-    }
-
-    public List<String> explicitMethod_jsonToListString(String json) {
-        try {
-            return objectMapper.readValue(json, new TypeReference<List<String>>() { });
-        }
-        catch (Exception e) {
-            throw AppErrors.INSTANCE.serializerError(json).exception();
-        }
-    }
-
-    public String explicitMethod_listStringToJson(List<String> strings) {
-        try {
-            StringWriter sw = new StringWriter();
-            objectMapper.writeValue(sw, strings);
-            return sw.toString();
-        }
-        catch (Exception e) {
-            throw AppErrors.INSTANCE.deSerializerError().exception();
-        }
     }
 
     public String toDeviceId(DeviceId id) {

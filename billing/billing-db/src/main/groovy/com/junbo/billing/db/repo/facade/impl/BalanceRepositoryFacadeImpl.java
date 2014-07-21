@@ -85,7 +85,7 @@ public class BalanceRepositoryFacadeImpl implements BalanceRepositoryFacade {
         Balance savedBalance = balanceRepository.create(balance).get();
         balance.setId(savedBalance.getId());
 
-        for(BalanceItem balanceItem : balance.getBalanceItems()) {
+        for (BalanceItem balanceItem : balance.getBalanceItems()) {
             // balance item
             balanceItem.setBalanceId(savedBalance.getId().getValue());
             balanceItem.setCreatedTime(new Date());
@@ -97,7 +97,7 @@ public class BalanceRepositoryFacadeImpl implements BalanceRepositoryFacade {
             saveBalanceItemEvent(balanceItem);
 
             // balance item -> tax item
-            for(TaxItem taxItem : balanceItem.getTaxItems()) {
+            for (TaxItem taxItem : balanceItem.getTaxItems()) {
                 taxItem.setBalanceItemId(savedBalanceItem.getId());
                 taxItem.setCreatedTime(new Date());
                 taxItem.setCreatedBy(createdBy);
@@ -105,7 +105,7 @@ public class BalanceRepositoryFacadeImpl implements BalanceRepositoryFacade {
             }
 
             // balance item -> discount item
-            for(DiscountItem discountItem : balanceItem.getDiscountItems()) {
+            for (DiscountItem discountItem : balanceItem.getDiscountItems()) {
                 discountItem.setBalanceItemId(savedBalanceItem.getId());
                 discountItem.setCreatedTime(new Date());
                 discountItem.setCreatedBy(createdBy);
@@ -113,7 +113,7 @@ public class BalanceRepositoryFacadeImpl implements BalanceRepositoryFacade {
             }
         }
 
-        for(Transaction transaction : balance.getTransactions()) {
+        for (Transaction transaction : balance.getTransactions()) {
             // transactions
             transaction.setBalanceId(savedBalance.getId());
             transaction.setCreatedBy(createdBy);
@@ -145,28 +145,28 @@ public class BalanceRepositoryFacadeImpl implements BalanceRepositoryFacade {
         }
 
         List<BalanceItem> itemEntities = balanceItemRepository.findByBalanceId(balanceId).get();
-        for(BalanceItem balanceItem : itemEntities) {
+        for (BalanceItem balanceItem : itemEntities) {
             balance.addBalanceItem(balanceItem);
 
             List<TaxItem> taxItems = taxItemRepository.findByBalanceItemId(balanceItem.getId()).get();
-            for(TaxItem taxItem : taxItems) {
+            for (TaxItem taxItem : taxItems) {
                 balanceItem.addTaxItem(taxItem);
             }
 
             List<DiscountItem> discountItems = discountItemRepository.findByBalanceItemId(balanceItem.getId()).get();
-            for(DiscountItem discountItem : discountItems) {
+            for (DiscountItem discountItem : discountItems) {
                 balanceItem.addDiscountItem(discountItem);
             }
         }
         List<Transaction> transactions = transactionRepositoryFacade.getTransactions(balanceId);
-        for(Transaction transaction : transactions) {
+        for (Transaction transaction : transactions) {
             balance.addTransaction(transaction);
         }
 
         List<OrderBalanceLink> orderBalanceLinks = orderBalanceLinkRepository.findByBalanceId(balanceId).get();
         List<OrderId> orderIds = new ArrayList<>();
-        if(orderBalanceLinks != null) {
-            for(OrderBalanceLink orderBalanceLink : orderBalanceLinks) {
+        if (orderBalanceLinks != null) {
+            for (OrderBalanceLink orderBalanceLink : orderBalanceLinks) {
                 orderIds.add(new OrderId(orderBalanceLink.getOrderId()));
             }
         }
@@ -179,7 +179,7 @@ public class BalanceRepositoryFacadeImpl implements BalanceRepositoryFacade {
     public List<Balance> getBalances(Long orderId) {
         List<Balance> balances = new ArrayList<>();
         List<OrderBalanceLink> orderBalanceLinks = orderBalanceLinkRepository.findByOrderId(orderId).get();
-        for(OrderBalanceLink orderBalanceLink : orderBalanceLinks) {
+        for (OrderBalanceLink orderBalanceLink : orderBalanceLinks) {
             Balance balance = getBalance(orderBalanceLink.getBalanceId());
             balances.add(balance);
         }
@@ -190,7 +190,7 @@ public class BalanceRepositoryFacadeImpl implements BalanceRepositoryFacade {
     @Override
     public Balance getBalanceByUuid(UUID uuid) {
         List<Balance> balances = balanceRepository.getByTrackingUuid(uuid).get();
-        if(balances != null && balances.size() > 0) {
+        if (balances != null && balances.size() > 0) {
             Long balanceId = balances.get(0).getId().getValue();
             return getBalance(balanceId);
         }
@@ -201,28 +201,26 @@ public class BalanceRepositoryFacadeImpl implements BalanceRepositoryFacade {
     public Balance updateBalance(Balance balance, EventActionType eventActionType) {
         Balance savedBalance = getBalance(balance.getId().getValue());
 
-        savedBalance.setType(balance.getType());
-        savedBalance.setStatus(balance.getStatus());
-        savedBalance.setShippingAddressId(balance.getShippingAddressId());
-        savedBalance.setUpdatedTime(new Date());
-        savedBalance.setUpdatedBy(balance.getUserId().getValue());
-        balanceRepository.update(savedBalance).get();
+            savedBalance.setType(balance.getType());
+            savedBalance.setStatus(balance.getStatus());
+            savedBalance.setShippingAddressId(balance.getShippingAddressId());
+            savedBalance.setUpdatedTime(new Date());
+            savedBalance.setUpdatedBy(balance.getUserId().getValue());
+            balanceRepository.update(savedBalance, savedBalance).get();
 
-        for(Transaction transaction : balance.getTransactions()) {
-            if (transaction.getId() == null) {
-                transaction.setBalanceId(balance.getId());
-                transaction.setCreatedBy(balance.getUserId().getValue());
-                transaction.setCreatedTime(new Date());
-                transactionRepositoryFacade.saveTransaction(transaction);
-                savedBalance.addTransaction(transaction);
+            for (Transaction transaction : balance.getTransactions()) {
+                if (transaction.getId() == null) {
+                    transaction.setBalanceId(balance.getId());
+                    transaction.setCreatedBy(balance.getUserId().getValue());
+                    transaction.setCreatedTime(new Date());
+                    transactionRepositoryFacade.saveTransaction(transaction);
+                    savedBalance.addTransaction(transaction);
+                } else {
+                    transactionRepositoryFacade.updateTransaction(transaction, transaction);
+                }
             }
-            else {
-                transactionRepositoryFacade.updateTransaction(transaction);
-            }
-        }
-
-        // create balance event
-        saveBalanceEvent(savedBalance);
+            // create balance event
+            saveBalanceEvent(savedBalance);
 
         return setBackNonPersistAttributes(savedBalance, balance);
     }
@@ -255,7 +253,7 @@ public class BalanceRepositoryFacadeImpl implements BalanceRepositoryFacade {
                 break;
             }
             ids.add(balance.getId());
-            count --;
+            count--;
         }
 
         return ids;

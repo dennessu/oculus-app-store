@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.GroupId
 import com.junbo.identity.core.service.validator.GroupValidator
 import com.junbo.identity.data.repository.GroupRepository
@@ -74,14 +75,14 @@ class GroupValidatorImpl implements GroupValidator {
 
         if (options.userId != null) {
             if (options.name != null || options.organizationId != null) {
-                throw AppErrors.INSTANCE.parameterInvalid('userId can\'t be search together with organizationId or name').exception()
+                throw AppCommonErrors.INSTANCE.parameterInvalid('userId can\'t be search together with organizationId or name').exception()
             }
 
             return Promise.pure(null)
         }
 
         if (options.organizationId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('organizaionId or userId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('organizaionId or userId').exception()
         }
 
         return Promise.pure(null)
@@ -91,24 +92,24 @@ class GroupValidatorImpl implements GroupValidator {
     Promise<Void> validateForCreate(Group group) {
         basicCheckForGroup(group)
         if (group.active != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('active').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('active').exception()
         }
         if (group.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
 
         if (group.organizationId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('organization').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('organization').exception()
         }
 
         return organizationRepository.get(group.organizationId).then { Organization organization ->
             if (organization == null) {
-                throw AppErrors.INSTANCE.fieldInvalid('organization').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('organization').exception()
             }
 
             return groupRepository.searchByOrganizationIdAndName(group.organizationId, group.name, Integer.MAX_VALUE, 0).then { Group existing ->
                 if (existing != null) {
-                    throw AppErrors.INSTANCE.fieldDuplicate('name').exception()
+                    throw AppCommonErrors.INSTANCE.fieldDuplicate('name').exception()
                 }
 
                 group.setActive(true)
@@ -124,23 +125,23 @@ class GroupValidatorImpl implements GroupValidator {
             throw new IllegalArgumentException()
         }
         if (group.active == null) {
-            throw AppErrors.INSTANCE.fieldRequired('active').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('active').exception()
         }
         if (group.id == null || ((GroupId)group.id).value == null) {
-            throw AppErrors.INSTANCE.fieldRequired('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('id').exception()
         }
         if (groupId.value != ((GroupId)group.id).value) {
-            throw AppErrors.INSTANCE.fieldInvalid('groupId', group.id.toString()).exception()
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('groupId', group.id.toString(), groupId).exception()
         }
 
         if (group.organizationId != oldGroup.organizationId) {
-            throw AppErrors.INSTANCE.fieldInvalid('organizationId').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('organizationId').exception()
         }
 
         if (group.name != oldGroup.name) {
             return groupRepository.searchByOrganizationIdAndName(group.organizationId, group.name, Integer.MAX_VALUE, 0).then { Group existing ->
                 if (existing != null) {
-                    throw AppErrors.INSTANCE.fieldDuplicate('name').exception()
+                    throw AppCommonErrors.INSTANCE.fieldDuplicate('name').exception()
                 }
 
                 return Promise.pure(null)
@@ -154,13 +155,13 @@ class GroupValidatorImpl implements GroupValidator {
             throw new IllegalArgumentException()
         }
         if (StringUtils.isEmpty(group.name)) {
-            throw AppErrors.INSTANCE.fieldRequired('name').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('name').exception()
         }
         if (group.name.length() > groupValueMaxLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('name', groupValueMaxLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooLong('name', groupValueMaxLength).exception()
         }
         if (group.name.length() < groupValueMinLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('name', groupValueMinLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooShort('name', groupValueMinLength).exception()
         }
     }
 }

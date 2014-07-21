@@ -24,20 +24,14 @@ import java.security.Key
 @Transactional
 class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
 
-    private static HashMap<Integer, Key> cachedEncryptMasterKey = new HashMap<>()
+    private static HashMap<Long, Key> cachedEncryptMasterKey = new HashMap<>()
 
-    private static HashMap<Integer, Key> cachedDecryptMasterKey = new HashMap<>()
+    private static HashMap<Long, Key> cachedDecryptMasterKey = new HashMap<>()
 
     private CryptoMessageValidator validator
 
-    private Boolean enableEncrypt
-
     @Override
     Promise<CryptoMessage> encrypt(UserId userId, CryptoMessage rawMessage) {
-        if (!enableEncrypt) {
-            return Promise.pure(rawMessage)
-        }
-
         return authorize().then {
             return validator.validateEncrypt(userId, rawMessage).then {
                 if (enableUserKeyEncrypt) {
@@ -59,10 +53,6 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
 
     @Override
     Promise<CryptoMessage> decrypt(UserId userId, CryptoMessage encryptMessage) {
-        if (!enableEncrypt) {
-            return Promise.pure(encryptMessage)
-        }
-
         return authorize().then {
             return validator.validateDecrypt(userId, encryptMessage).then {
                 if (enableUserKeyEncrypt) {
@@ -86,10 +76,6 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
 
     @Override
     Promise<CryptoMessage> encrypt(CryptoMessage rawMessage) {
-        if (!enableEncrypt) {
-            return Promise.pure(rawMessage)
-        }
-
         return authorize().then {
             return validator.validateEncrypt(null, rawMessage).then {
                 return symmetricEncryptUserMessageByMasterKey(rawMessage.value).then { String encryptMessage ->
@@ -103,10 +89,6 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
 
     @Override
     Promise<CryptoMessage> decrypt(CryptoMessage encryptMessage) {
-        if (!enableEncrypt) {
-            return Promise.pure(encryptMessage)
-        }
-
         return authorize().then {
             return validator.validateDecrypt(null, encryptMessage).then {
                 return symmetricDecryptUserMessageByMasterKey(encryptMessage.value).then { String rawMessage ->
@@ -124,11 +106,6 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
         this.validator = validator
     }
 
-    @Required
-    void setEnableEncrypt(Boolean enableEncrypt) {
-        this.enableEncrypt = enableEncrypt
-    }
-
     // Used to encrypt and decrypt user message by masterKey
     protected Promise<String> symmetricDecryptUserMessageByMasterKey(String encryptedMessage) {
         String[] messageInfo = (String [])encryptedMessage.split(versionSeparator)
@@ -136,7 +113,7 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
             throw new IllegalArgumentException('message should be separated by ' + versionSeparator)
         }
 
-        Integer masterKeyVersion = Integer.parseInt(messageInfo[0])
+        Long masterKeyVersion = Long.parseLong(messageInfo[0])
 
         String messageEncryptValue = messageInfo[1]
         return getRawMasterKeyByVersion(masterKeyVersion).then { Key masterKeyLoaded ->
@@ -144,7 +121,7 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
         }
     }
 
-    private Promise<Key> getRawMasterKeyByVersion(Integer version) {
+    private Promise<Key> getRawMasterKeyByVersion(Long version) {
         if (cachedDecryptMasterKey.get(version) == null) {
             return getCurrentDecryptedMasterKeyByVersion(version).then { MasterKey masterKey ->
                 Key masterKeyLoaded = aesCipherService.stringToKey(masterKey.value)

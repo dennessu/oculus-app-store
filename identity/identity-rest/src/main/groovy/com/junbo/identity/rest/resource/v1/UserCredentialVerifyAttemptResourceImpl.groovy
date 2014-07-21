@@ -3,7 +3,9 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserCredentialVerifyAttemptId
+import com.junbo.common.model.ResourceMetaBase
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
@@ -59,19 +61,24 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
         }
 
         if (!AuthorizeContext.hasScopes(IDENTITY_SERVICE_SCOPE)) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         userCredentialAttempt = userCredentialVerifyAttemptFilter.filterForCreate(userCredentialAttempt)
 
-        return credentialVerifyAttemptValidator.validateForCreate(userCredentialAttempt).then {
-
+        return credentialVerifyAttemptValidator.validateForCreate(userCredentialAttempt).recover { Throwable e ->
+            userCredentialAttempt.succeeded = false
+            return createInNewTran(userCredentialAttempt).then{
+                throw e
+            }
+        }.then {
             return createInNewTran(userCredentialAttempt).then { UserCredentialVerifyAttempt attempt ->
 
                 if (attempt.succeeded) {
                     Created201Marker.mark(attempt.getId())
 
                     attempt = userCredentialVerifyAttemptFilter.filterForGet(attempt, null)
+                    attempt = RightsScope.filterForAdminInfo(attempt as ResourceMetaBase) as UserCredentialVerifyAttempt
                     return Promise.pure(attempt)
                 }
                 if (userCredentialAttempt.type == CredentialType.PASSWORD.toString()) {
@@ -90,7 +97,7 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
             def callback = authorizeCallbackFactory.create(listOptions.userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('read')) {
-                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 return search(listOptions).then {
@@ -103,9 +110,10 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
                                 listOptions.properties?.split(',') as List<String>)
                         if (attempt != null && AuthorizeContext.hasRights('read')) {
                             result.items.add(attempt)
+                            return Promise.pure(attempt)
+                        } else {
+                            return Promise.pure(null)
                         }
-
-                        return Promise.pure(null)
                     }.then {
                         return Promise.pure(result)
                     }

@@ -59,7 +59,7 @@ public class OrderStatusTesting extends BaseOrderTestClass {
         Map<String, Integer> offerList = new HashedMap();
 
         offerList.put(offer_digital_normal1, 1);
-        offerList.put(offer_digital_normal2, 2);
+        offerList.put(offer_digital_normal2, 1);
 
         PayPalInfo payPalInfo = PayPalInfo.getPayPalInfo(Country.DEFAULT);
         String payPalId = testDataProvider.postPaymentInstrument(uid, payPalInfo);
@@ -78,7 +78,7 @@ public class OrderStatusTesting extends BaseOrderTestClass {
         order.getPayments().get(0).setCancelRedirectUrl("http://www.abc.com/cancel/");
         orderId2 = testDataProvider.updateOrder(order);
 
-        expectedOrderStatus.put(orderId2, OrderStatus.PENDING_CHARGE);
+        expectedOrderStatus.put(orderId2, OrderStatus.PENDING);
 
         Master.getInstance().initializeOrders();
         testDataProvider.getOrdersByUserId(uid);
@@ -116,7 +116,7 @@ public class OrderStatusTesting extends BaseOrderTestClass {
         Map<String, Integer> offerList = new HashedMap();
 
         offerList.put(offer_digital_normal1, 1);
-        offerList.put(offer_digital_normal2, 2);
+        offerList.put(offer_digital_normal2, 1);
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
@@ -156,7 +156,7 @@ public class OrderStatusTesting extends BaseOrderTestClass {
         expectedOrderStatus.clear();
 
         String order_PendingFulfil = testDataProvider.updateOrderTentative(order_Insufficient, false, 200);
-        expectedOrderStatus.put(order_PendingFulfil, OrderStatus.PENDING_FULFILL);
+        expectedOrderStatus.put(order_PendingFulfil, OrderStatus.PENDING);
 
         Master.getInstance().initializeOrders();
         testDataProvider.getOrdersByUserId(uid);
@@ -278,7 +278,7 @@ public class OrderStatusTesting extends BaseOrderTestClass {
         validationHelper.validateOrderEvents(orderId, expectedEventStatus);
 
         testDataProvider.getOrder(orderId);
-        expectedOrderStatus.put(orderId,OrderStatus.PENDING_FULFILL);
+        expectedOrderStatus.put(orderId,OrderStatus.PENDING);
 
         validationHelper.validateOrderStatus(expectedOrderStatus);
 
@@ -375,7 +375,7 @@ public class OrderStatusTesting extends BaseOrderTestClass {
         testDataProvider.postOrderEvent(orderId, EventStatus.FAILED, OrderActionType.FULFILL);
 
         testDataProvider.getOrder(orderId);
-        expectedOrderStatus.put(orderId, OrderStatus.FAILED);
+        expectedOrderStatus.put(orderId, OrderStatus.OPEN);
 
         validationHelper.validateOrderStatus(expectedOrderStatus);
     }

@@ -8,6 +8,7 @@
 
     <!-- Identity Scheduler -->
     <bean id="identitySchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="taskExecutor" ref="junboThreadPool"/>
         <property name="schedulerName" value="identityScheduler" />
         <property name="autoStartup" value="${identity.jobs.scheduler.start}" /><property name="triggers">
         <list>

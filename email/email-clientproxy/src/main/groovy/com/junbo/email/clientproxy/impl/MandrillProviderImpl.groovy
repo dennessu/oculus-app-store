@@ -1,5 +1,4 @@
 package com.junbo.email.clientproxy.impl
-
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.junbo.common.id.Id
@@ -7,7 +6,6 @@ import com.junbo.common.util.IdFormatter
 import com.junbo.email.clientproxy.EmailProvider
 import com.junbo.email.clientproxy.impl.mandrill.*
 import com.junbo.email.common.util.PlaceholderUtils
-import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.model.EmailStatus
 import com.junbo.email.spec.model.EmailTemplate
@@ -21,7 +19,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.util.StringUtils
 
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
-
 /**
  * Email Provider implement by Mandrill.
  */
@@ -206,11 +203,11 @@ class MandrillProviderImpl implements EmailProvider {
     private Promise<List<MandrillResponse>> send(BoundRequestBuilder requestBuilder, List<MandrillResponse> responses) {
         return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover { Throwable throwable ->
             LOGGER.error('EMAIL_MANDRILL_ERROR. Fail to process the request.', throwable)
-            throw AppErrors.INSTANCE.emailSendError('process request failed').exception()
+            throw new RuntimeException("Send email process request failed.")
         }.then { Response response ->
             if (response == null) {
                 LOGGER.error('EMAIL_MANDRILL_ERROR. Fail to get the response')
-                throw AppErrors.INSTANCE.emailSendError('the response is null').exception()
+                throw new RuntimeException("Send email response is null.")
             }
             responses.addAll(parseResponse(response))
             return Promise.pure(responses)

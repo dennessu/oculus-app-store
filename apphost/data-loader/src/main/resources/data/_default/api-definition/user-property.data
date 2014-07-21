@@ -1,0 +1,20 @@
+{
+    "apiName": "user-property",
+    "scopes": {
+        "identity": [{
+            "precondition": "ownedByCurrentUser",
+            "rights": ["read", "create", "update", "delete"],
+            "scriptType": "SPEL"
+        }],
+        "identity.service": [{
+            "precondition": "true",
+            "rights": ["read", "create", "update", "delete", "pii.read", "pii.create", "pii.update", "pii.delete"],
+            "scriptType": "SPEL"
+        }],
+        "identity.pii": [{
+            "precondition": "ownedByCurrentUser",
+            "rights": ["read", "create", "update", "delete", "pii.read", "pii.create", "pii.update", "pii.delete"],
+            "scriptType": "SPEL"
+        }]
+    }
+}

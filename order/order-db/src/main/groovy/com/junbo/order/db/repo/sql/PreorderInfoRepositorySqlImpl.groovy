@@ -51,7 +51,7 @@ class PreorderInfoRepositorySqlImpl implements PreorderInfoRepository {
     }
 
     @Override
-    Promise<PreorderInfo> update(PreorderInfo preorderInfo) {
+    Promise<PreorderInfo> update(PreorderInfo preorderInfo, PreorderInfo oldPreorderInfo) {
         def entity = modelMapper.toOrderItemPreorderInfoEntity(preorderInfo, new MappingContext())
         preorderInfoDao.update(entity)
         return Promise.pure(modelMapper.toPreOrderInfoModel(entity, new MappingContext()))

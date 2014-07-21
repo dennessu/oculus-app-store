@@ -1,5 +1,6 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.DeviceId
 import com.junbo.identity.core.service.validator.DeviceValidator
 import com.junbo.identity.data.repository.DeviceRepository
@@ -46,7 +47,7 @@ class DeviceValidatorImpl implements DeviceValidator {
         }
 
         if (options.externalRef == null) {
-            throw AppErrors.INSTANCE.parameterRequired('externalRef').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('externalRef').exception()
         }
 
         return Promise.pure(null)
@@ -57,12 +58,12 @@ class DeviceValidatorImpl implements DeviceValidator {
         checkBasicDeviceInfo(device)
 
         if (device.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
 
         return deviceRepository.searchBySerialNumber(device.serialNumber).then { Device existing ->
             if (existing != null) {
-                throw AppErrors.INSTANCE.fieldInvalid('externalRef').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('externalRef').exception()
             }
 
             return Promise.pure(null)
@@ -80,18 +81,18 @@ class DeviceValidatorImpl implements DeviceValidator {
         }
 
         if (deviceId != device.id) {
-            throw AppErrors.INSTANCE.fieldInvalid('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('id').exception()
         }
 
         if (deviceId != oldDevice.id) {
-            throw AppErrors.INSTANCE.fieldInvalid('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('id').exception()
         }
 
         checkBasicDeviceInfo(device)
         if (device.serialNumber != oldDevice.serialNumber) {
             return deviceRepository.searchBySerialNumber(device.serialNumber).then { Device newDevice ->
                 if (newDevice != null) {
-                    throw AppErrors.INSTANCE.fieldInvalid('externalRef').exception()
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('externalRef').exception()
                 }
                 return Promise.pure(null)
             }
@@ -106,13 +107,13 @@ class DeviceValidatorImpl implements DeviceValidator {
         }
 
         if (device.serialNumber == null) {
-            throw AppErrors.INSTANCE.fieldRequired('serialNumber').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('serialNumber').exception()
         }
         if (device.serialNumber.size() > deviceExternalRefMaxLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('serialNumber', deviceExternalRefMaxLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooLong('serialNumber', deviceExternalRefMaxLength).exception()
         }
         if (device.serialNumber.size() < deviceExternalRefMinLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('serialNumber', deviceExternalRefMinLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooShort('serialNumber', deviceExternalRefMinLength).exception()
         }
     }
 

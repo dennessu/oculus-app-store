@@ -5,8 +5,12 @@
  */
 package com.junbo.order.core;
 
+import com.junbo.common.id.OrderItemId;
 import com.junbo.common.id.SubledgerId;
-import com.junbo.order.spec.model.*;
+import com.junbo.order.spec.model.PageParam;
+import com.junbo.order.spec.model.Subledger;
+import com.junbo.order.spec.model.SubledgerItem;
+import com.junbo.order.spec.model.SubledgerParam;
 
 import java.util.List;
 
@@ -24,6 +28,8 @@ public interface SubledgerService {
     List<Subledger> getSubledgers(SubledgerParam subledgerParam, PageParam pageParam);
 
     SubledgerItem createSubledgerItem(SubledgerItem subledgerItem);
+
+    List<SubledgerItem> getSubledgerItemsByOrderItemId(OrderItemId orderItemId);
 
     void aggregateSubledgerItem(SubledgerItem item);
 }

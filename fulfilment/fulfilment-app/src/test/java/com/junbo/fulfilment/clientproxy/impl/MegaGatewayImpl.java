@@ -16,8 +16,6 @@ import com.junbo.catalog.spec.resource.ItemRevisionResource;
 import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
 import com.junbo.common.id.EntitlementId;
-import com.junbo.common.id.ItemRevisionId;
-import com.junbo.common.id.OfferRevisionId;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.resource.EntitlementResource;
 import com.junbo.fulfilment.clientproxy.MegaGateway;

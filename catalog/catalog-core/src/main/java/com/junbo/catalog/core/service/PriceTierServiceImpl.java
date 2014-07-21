@@ -6,12 +6,13 @@
 
 package com.junbo.catalog.core.service;
 
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.PriceTierService;
 import com.junbo.catalog.db.repo.PriceTierRepository;
-import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
 import com.junbo.catalog.spec.model.pricetier.PriceTiersGetOptions;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.AppErrorException;
 import org.slf4j.Logger;
@@ -40,7 +41,7 @@ public class PriceTierServiceImpl implements PriceTierService {
     public PriceTier getPriceTier(String tierId) {
         PriceTier priceTier = priceTierRepo.get(tierId);
         if (priceTier==null) {
-            AppErrorException exception = AppErrors.INSTANCE.notFound("price-tiers", tierId).exception();
+            AppErrorException exception = AppCommonErrors.INSTANCE.resourceNotFound("price-tiers", tierId).exception();
             LOGGER.error("price-tier not found.", exception);
             throw exception;
         }
@@ -75,19 +76,19 @@ public class PriceTierServiceImpl implements PriceTierService {
     public PriceTier update(String tierId, PriceTier priceTier) {
         PriceTier oldPriceTier = priceTierRepo.get(tierId);
         if (oldPriceTier == null) {
-            AppErrorException exception = AppErrors.INSTANCE.notFound("price-tier", tierId).exception();
+            AppErrorException exception = AppCommonErrors.INSTANCE.resourceNotFound("price-tier", tierId).exception();
             LOGGER.error("Error updating price-tier. ", exception);
             throw exception;
         }
         validateUpdate(priceTier, oldPriceTier);
-        return priceTierRepo.update(priceTier);
+        return priceTierRepo.update(priceTier, oldPriceTier);
     }
 
     @Override
     public void delete(String tierId) {
         PriceTier priceTier = priceTierRepo.get(tierId);
         if (priceTier == null) {
-            AppErrorException exception = AppErrors.INSTANCE.notFound("price-tiers", tierId).exception();
+            AppErrorException exception = AppCommonErrors.INSTANCE.resourceNotFound("price-tiers", tierId).exception();
             LOGGER.error("price-tier not found.", exception);
             throw exception;
         }
@@ -97,13 +98,16 @@ public class PriceTierServiceImpl implements PriceTierService {
     private void validateCreation(PriceTier priceTier) {
         checkRequestNotNull(priceTier);
         List<AppError> errors = new ArrayList<>();
+        if (priceTier.getId() != null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("self"));
+        }
         if (priceTier.getRev() != null) {
-            errors.add(AppErrors.INSTANCE.unnecessaryField("rev"));
+            errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("rev"));
         }
 
         validateCommon(priceTier, errors);
         if (!errors.isEmpty()) {
-            AppErrorException exception = AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            AppErrorException exception = Utils.invalidFields(errors).exception();
             LOGGER.error("Error creating price-tier.", exception);
             throw exception;
         }
@@ -113,11 +117,11 @@ public class PriceTierServiceImpl implements PriceTierService {
         checkRequestNotNull(priceTier);
         List<AppError> errors = new ArrayList<>();
         if (!oldPriceTier.getRev().equals(priceTier.getRev())) {
-            errors.add(AppErrors.INSTANCE.fieldNotMatch("rev", priceTier.getRev(), oldPriceTier.getRev()));
+            errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("rev", priceTier.getRev(), oldPriceTier.getRev()));
         }
         validateCommon(priceTier, errors);
         if (!errors.isEmpty()) {
-            AppErrorException exception = AppErrors.INSTANCE.validation(errors.toArray(new AppError[0])).exception();
+            AppErrorException exception = Utils.invalidFields(errors).exception();
             LOGGER.error("Error updating price-tier.", exception);
             throw exception;
         }
@@ -125,34 +129,33 @@ public class PriceTierServiceImpl implements PriceTierService {
 
     private void validateCommon(PriceTier priceTier, List<AppError> errors) {
         if (CollectionUtils.isEmpty(priceTier.getPrices())) {
-            errors.add(AppErrors.INSTANCE.missingField("prices"));
+            errors.add(AppCommonErrors.INSTANCE.fieldRequired("prices"));
         } else {
             for (String country : priceTier.getPrices().keySet()) {
                 if (priceTier.getPrices().get(country) == null) {
-                    errors.add(AppErrors.INSTANCE
-                            .fieldNotCorrect("prices." + country, "Prices should be configured"));
+                    errors.add(AppCommonErrors.INSTANCE.fieldRequired("prices." + country));
                 } else {
                     for (String currency : priceTier.getPrices().get(country).keySet()) {
                         BigDecimal amount = priceTier.getPrices().get(country).get(currency);
                         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-                            errors.add(AppErrors.INSTANCE
-                                    .fieldNotCorrect("prices." + country + "." + currency,
-                                            "Price amount should greater than 0"));
+                            errors.add(AppCommonErrors.INSTANCE.fieldInvalid(
+                                    "prices." + country + "." + currency,
+                                    "Price amount should greater than 0"));
                         }
                     }
                 }
             }
         }
         if (CollectionUtils.isEmpty(priceTier.getLocales())) {
-            errors.add(AppErrors.INSTANCE.missingField("locales"));
+            errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales"));
         } else {
             for (String locale : priceTier.getLocales().keySet()) {
                 if (priceTier.getLocales().get(locale) == null) {
-                    errors.add(AppErrors.INSTANCE.missingField("locales." + locale));
+                    errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales." + locale));
                 } else {
                     SimpleLocaleProperties properties = priceTier.getLocales().get(locale);
                     if (StringUtils.isEmpty(properties.getName())) {
-                        errors.add(AppErrors.INSTANCE.missingField("locales." + locale + ".name"));
+                        errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales." + locale + ".name"));
                     }
                 }
             }
@@ -161,7 +164,7 @@ public class PriceTierServiceImpl implements PriceTierService {
 
     private void checkRequestNotNull(PriceTier priceTier) {
         if (priceTier == null) {
-            AppErrorException exception = AppErrors.INSTANCE.invalidJson("Invalid json.").exception();
+            AppErrorException exception = AppCommonErrors.INSTANCE.invalidJson("cause", "Json is null").exception();
             LOGGER.error("Invalid json.", exception);
             throw exception;
         }

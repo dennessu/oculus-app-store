@@ -57,7 +57,7 @@ class RateOrderFlowTest extends BaseTest{
         def balance = CoreBuilder.buildBalance(order)
         facadeContainer.billingFacade.createBalance(balance, false)
 
-        def getOrder = orderService.getOrderByOrderId(o.getId().value, true, new OrderServiceContext()).get()
+        def getOrder = orderService.getOrderByOrderId(o.getId().value, true, new OrderServiceContext(), true).get()
         assert (o.getId().value == getOrder.getId().value)
         assert (o.discounts.size() == getOrder.discounts.size())
         assert (o.orderItems.size() == getOrder.orderItems.size())

@@ -51,7 +51,7 @@ public abstract class BaseDaoImpl<T extends BaseEntity> implements BaseDao<T> {
     }
 
     protected Session currentSession(Object id) {
-        ShardScope shardScope = new ShardScope(shardAlgorithm.shardId(id));
+        ShardScope shardScope = new ShardScope(shardAlgorithm.dataCenterId(id), shardAlgorithm.shardId(id));
         try {
             return sessionFactory.getCurrentSession();
         } finally {

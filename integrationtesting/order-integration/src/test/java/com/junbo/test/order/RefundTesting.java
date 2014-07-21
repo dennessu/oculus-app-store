@@ -18,7 +18,6 @@ import org.apache.commons.collections.map.HashedMap;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -65,10 +64,10 @@ public class RefundTesting extends BaseOrderTestClass {
         testDataProvider.updateOrderTentative(orderId, false);
 
         OrderInfo expectedOrderInfo = testDataProvider.getExpectedOrderInfo(uid, country, currency,
-                "en_US", false, OrderStatus.COMPLETED, creditCardId, offerList);
+                "en_US", false, OrderStatus.COMPLETED, creditCardId, orderId, offerList);
 
         Map<String, Integer> refundOfferList = new HashedMap();
-        refundOfferList.put(offer_digital_normal1, 1);
+        refundOfferList.put(offer_inApp_consumable1, 2);
 
         Map<String, BigDecimal> partialRefundAmounts = new HashedMap();
         partialRefundAmounts.put(offer_digital_normal2, new BigDecimal(10));
@@ -130,7 +129,7 @@ public class RefundTesting extends BaseOrderTestClass {
         testDataProvider.updateOrderTentative(orderId, false);
 
         OrderInfo expectedOrderInfo = testDataProvider.getExpectedOrderInfo(uid, country, currency,
-                "en_US", false, OrderStatus.COMPLETED, creditCardId, offerList);
+                "en_US", false, OrderStatus.COMPLETED, creditCardId, orderId, offerList);
 
 
         Map<String, BigDecimal> partialRefundAmounts = new HashedMap();
@@ -195,7 +194,7 @@ public class RefundTesting extends BaseOrderTestClass {
         testDataProvider.updateOrderTentative(orderId, false);
 
         OrderInfo expectedOrderInfo = testDataProvider.getExpectedOrderInfo(uid, country, currency,
-                "en_US", false, OrderStatus.COMPLETED, creditCardId, offerList);
+                "en_US", false, OrderStatus.COMPLETED, creditCardId, orderId, offerList);
 
         Map<String, Integer> refundOfferList = new HashedMap();
         refundOfferList.put(offer_inApp_consumable1, 1);
@@ -258,7 +257,7 @@ public class RefundTesting extends BaseOrderTestClass {
         testDataProvider.updateOrderTentative(orderId, false);
 
         OrderInfo expectedOrderInfo = testDataProvider.getExpectedOrderInfo(uid, country, currency,
-                "en_US", false, OrderStatus.COMPLETED, creditCardId, offerList);
+                "en_US", false, OrderStatus.COMPLETED, creditCardId, orderId, offerList);
 
         Map<String, Integer> refundOfferList = new HashedMap();
         refundOfferList.put(offer_inApp_consumable1, 2);
@@ -309,6 +308,50 @@ public class RefundTesting extends BaseOrderTestClass {
     public void testRefundPreOrder() throws Exception {
         Country country = Country.DEFAULT;
         Currency currency = Currency.DEFAULT;
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "GET /Orders?userId={key}",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Manual,
+            description = "Test order refund - Price rating changed ",
+            steps = {
+                    "1. Post a new user",
+                    "2. Post new credit card to user.",
+                    "3. Post an order and set tentative to false",
+                    "4. Put offer with new offer revision(price changed)",
+                    "5. Get order by user Id",
+                    "7. Partial refund order item amount",
+                    "8. Get order by user Id",
+                    "9. Verify order response",
+            }
+    )
+    @Test
+    public void testRefundPriceRatingChanged() throws Exception {
+        String uid = testDataProvider.createUser();
+
+        Map<String, Integer> offerList = new HashedMap();
+        offerList.put(offer_digital_normal1, 1);
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
+
+        String orderId = testDataProvider.postOrder(
+                uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
+
+        testDataProvider.updateOrderTentative(orderId, false);
+
+        testDataProvider.updateOfferPrice(offer_digital_normal1);
+        Thread.sleep(2000);
+        testDataProvider.getOrdersByUserId(uid);
+
+        Map<String, BigDecimal> partialRefundAmounts = new HashedMap();
+        partialRefundAmounts.put(offer_digital_normal1, new BigDecimal(10));
+        testDataProvider.refundOrder(orderId, null, partialRefundAmounts);
+
+        testDataProvider.getOrdersByUserId(uid);
     }
 
 }

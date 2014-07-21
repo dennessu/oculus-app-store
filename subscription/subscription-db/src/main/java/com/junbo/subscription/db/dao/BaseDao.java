@@ -42,7 +42,7 @@ public class BaseDao<T extends com.junbo.subscription.db.entity.Entity> {
     private Class<T> classType;
 
     public Session currentSession(Object key) {
-        ShardScope shardScope = new ShardScope(shardAlgorithm.shardId(key));
+        ShardScope shardScope = new ShardScope(shardAlgorithm.dataCenterId(key), shardAlgorithm.shardId(key));
         try {
             return sessionFactory.getCurrentSession();
         } finally {

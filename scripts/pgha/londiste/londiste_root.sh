@@ -8,6 +8,9 @@ checkAccount $DEPLOYMENT_ACCOUNT
 echo "[LONDISTE] kill skytools instance"
 forceKillPid $SKYTOOL_PID_PATH
 
+echo "[LONDISTE] generate root configuration"
+$DEPLOYMENT_PATH/londiste/londiste_config_root.sh
+
 for db in ${REPLICA_DATABASES[@]}
 do
     config=$SKYTOOL_CONFIG_PATH/${db}_root.ini
@@ -36,3 +39,6 @@ do
 	londiste3 $config remove-table databasechangelog ||  echo "table missing"
 	londiste3 $config remove-table databasechangeloglock || echo "table missing"
 done
+
+echo "[LONDISTE] start pgqd deamon"
+$DEPLOYMENT_PATH/londiste/londiste_pgqd.sh

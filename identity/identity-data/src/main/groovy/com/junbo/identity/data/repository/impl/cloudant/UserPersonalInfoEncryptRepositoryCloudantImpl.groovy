@@ -1,9 +1,7 @@
 package com.junbo.identity.data.repository.impl.cloudant
-
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
-import com.junbo.common.id.UserPersonalInfoIdToUserIdLinkId
 import com.junbo.crypto.spec.model.CryptoMessage
 import com.junbo.crypto.spec.resource.CryptoResource
 import com.junbo.identity.common.util.JsonHelper
@@ -23,7 +21,6 @@ import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
 import java.util.Locale
-
 /**
  * Created by liangfu on 5/14/14.
  */
@@ -97,7 +94,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     }
 
     @Override
-    Promise<List<UserPersonalInfo>> searchByEmail(String email, Integer limit, Integer offset) {
+    Promise<List<UserPersonalInfo>> searchByEmail(String email, Boolean isValidated, Integer limit, Integer offset) {
         PiiHash hash = getPiiHash(UserPersonalInfoType.EMAIL.toString())
 
         return hashUserPersonalInfoRepository.searchByHashValue(hash.generateHash(email.toLowerCase(Locale.ENGLISH))).then {
@@ -114,6 +111,13 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
                             return Promise.pure(null)
                         }
 
+                        if (isValidated != null) {
+                            if ((isValidated && userPersonalInfo.lastValidateTime == null)
+                                    || (!isValidated && userPersonalInfo.lastValidateTime != null)) {
+                                return Promise.pure(null)
+                            }
+                        }
+
                         Email emailObj = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
                         if (emailObj.info.toLowerCase(Locale.ENGLISH) == email.toLowerCase(Locale.ENGLISH)) {
                             infos.add(userPersonalInfo)
@@ -127,7 +131,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     }
 
     @Override
-    Promise<List<UserPersonalInfo>> searchByPhoneNumber(String phoneNumber, Integer limit, Integer offset) {
+    Promise<List<UserPersonalInfo>> searchByPhoneNumber(String phoneNumber, Boolean isValidated, Integer limit, Integer offset) {
         PiiHash hash = getPiiHash(UserPersonalInfoType.PHONE.toString())
 
         return hashUserPersonalInfoRepository.searchByHashValue(hash.generateHash(phoneNumber)).then {
@@ -142,6 +146,13 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
                         if (userPersonalInfo == null ||
                             userPersonalInfo.type != UserPersonalInfoType.PHONE.toString()) {
                             return Promise.pure(null)
+                        }
+
+                        if (isValidated != null) {
+                            if ((isValidated && userPersonalInfo.lastValidateTime == null)
+                                    || (!isValidated && userPersonalInfo.lastValidateTime != null)) {
+                                return Promise.pure(null)
+                            }
                         }
 
                         PhoneNumber phoneObj = (PhoneNumber)JsonHelper.jsonNodeToObj(userPersonalInfo.value,
@@ -192,18 +203,18 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     }
 
     @Override
-    Promise<UserPersonalInfo> update(UserPersonalInfo model) {
+    Promise<UserPersonalInfo> update(UserPersonalInfo model, UserPersonalInfo oldModel) {
         CryptoMessage cryptoMessage = new CryptoMessage()
         cryptoMessage.value = marshall(model)
 
         return cryptoResource.encrypt(cryptoMessage).then { CryptoMessage messageValue ->
             return encryptUserPersonalInfoRepository.get(model.getId()).then { EncryptUserPersonalInfo info ->
                 info.encryptUserPersonalInfo = messageValue.value
-                return encryptUserPersonalInfoRepository.update(info).then { EncryptUserPersonalInfo updateInfo ->
+                return encryptUserPersonalInfoRepository.update(info, info).then { EncryptUserPersonalInfo updateInfo ->
                     return hashUserPersonalInfoRepository.get(model.getId()).then { HashUserPersonalInfo hashInfo ->
                         PiiHash piiHash = getPiiHash(model.type)
                         hashInfo.hashSearchInfo = piiHash.generateHash(model.value)
-                        return hashUserPersonalInfoRepository.update(hashInfo)
+                        return hashUserPersonalInfoRepository.update(hashInfo, hashInfo)
                     }.then {
                         return get(updateInfo.getId())
                     }
@@ -224,21 +235,18 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
                     return Promise.pure(null)
                 }
 
-                return userIdLinkRepository.get(new UserPersonalInfoIdToUserIdLinkId(personalInfoId.value.toString())).then { UserPersonalInfoIdToUserIdLink link ->
-                    CryptoMessage cryptoMessage = new CryptoMessage(
-                            value: encryptUserPersonalInfo.encryptUserPersonalInfo
-                    )
-                    return cryptoResource.decrypt(cryptoMessage).then { CryptoMessage decrypt ->
-                        UserPersonalInfo userPersonalInfo = unmarshall(decrypt.value, UserPersonalInfo)
-                        userPersonalInfo.createdBy = encryptUserPersonalInfo.createdBy
-                        userPersonalInfo.createdTime = encryptUserPersonalInfo.createdTime
-                        userPersonalInfo.updatedBy = encryptUserPersonalInfo.updatedBy
-                        userPersonalInfo.updatedTime = encryptUserPersonalInfo.updatedTime
-                        userPersonalInfo.resourceAge = encryptUserPersonalInfo.resourceAge
-                        return Promise.pure(userPersonalInfo)
-                    }
+                CryptoMessage cryptoMessage = new CryptoMessage(
+                        value: encryptUserPersonalInfo.encryptUserPersonalInfo
+                )
+                return cryptoResource.decrypt(cryptoMessage).then { CryptoMessage decrypt ->
+                    UserPersonalInfo userPersonalInfo = unmarshall(decrypt.value, UserPersonalInfo)
+                    userPersonalInfo.createdBy = encryptUserPersonalInfo.createdBy
+                    userPersonalInfo.createdTime = encryptUserPersonalInfo.createdTime
+                    userPersonalInfo.updatedBy = encryptUserPersonalInfo.updatedBy
+                    userPersonalInfo.updatedTime = encryptUserPersonalInfo.updatedTime
+                    userPersonalInfo.resourceAge = encryptUserPersonalInfo.resourceAge
+                    return Promise.pure(userPersonalInfo)
                 }
-
         }
     }
 

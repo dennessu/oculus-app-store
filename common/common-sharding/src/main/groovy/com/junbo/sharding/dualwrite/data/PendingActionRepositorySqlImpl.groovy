@@ -89,7 +89,7 @@ public class PendingActionRepositorySqlImpl implements PendingActionRepository {
     }
 
     @Override
-    public Promise<PendingAction> update(PendingAction model) {
+    public Promise<PendingAction> update(PendingAction model, PendingAction oldModel) {
         if (model == null) {
             throw new IllegalArgumentException('model is null')
         }
@@ -129,6 +129,6 @@ public class PendingActionRepositorySqlImpl implements PendingActionRepository {
     }
 
     private Session currentSession(Object key) {
-        return ShardScope.with(shardAlgorithm.shardId(key)) { sessionFactory.currentSession }
+        return ShardScope.with(shardAlgorithm.dataCenterId(key), shardAlgorithm.shardId(key)) { sessionFactory.currentSession }
     }
 }

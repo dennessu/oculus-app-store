@@ -41,7 +41,7 @@ public class CommonDataDAOImpl<T extends GenericEntity, ID extends Serializable>
 
     public Session currentSession(Object key) {
         //TODO: hashValue is not a partionable-id, use partition 0 first
-        ShardScope shardScope = new ShardScope(0);
+        ShardScope shardScope = new ShardScope(0, 0);
         //ShardScope shardScope = new ShardScope(shardAlgorithm.shardId(key));
         try {
             return sessionFactory.getCurrentSession();
@@ -56,7 +56,7 @@ public class CommonDataDAOImpl<T extends GenericEntity, ID extends Serializable>
     public ID save(T entity) {
         if(entity.getId() == null){
             //TODO: hashValue is not a partionable-id, so cannot calculate right partition later
-            entity.setId(idGenerator.nextId(entity.getShardMasterId()));
+            entity.setId(String.valueOf(idGenerator.nextId()));
         }
         entity.setCreatedTime(new Date());
         if (entity.getCreatedBy() == null) {
@@ -70,7 +70,7 @@ public class CommonDataDAOImpl<T extends GenericEntity, ID extends Serializable>
         if (entity.getUpdatedBy() == null) {
             entity.setUpdatedBy("0");
         }
-        T newt = (T) currentSession(entity.getShardMasterId()).merge(entity);
+        T newt = (T) currentSession(entity.getId()).merge(entity);
         return newt;
     }
 

@@ -5,14 +5,10 @@
 
     <bean id="tokenGenerator" class="com.junbo.oauth.db.generator.impl.SecureRandomTokenGenerator">
         <property name="accessTokenLength" value="${oauth.db.accessTokenLength}"/>
-        <property name="accessTokenPostfix" value="${oauth.db.accessTokenPostfix}"/>
         <property name="authorizationCodeLength" value="${oauth.db.authorizationCodeLength}"/>
-        <property name="authorizationCodePostfix" value="${oauth.db.authorizationCodePostfix}"/>
         <property name="refreshTokenLength" value="${oauth.db.refreshTokenLength}"/>
-        <property name="refreshTokenPostfix" value="${oauth.db.refreshTokenPostfix}"/>
         <property name="refreshTokenSeriesLength" value="${oauth.db.refreshTokenSeriesLength}"/>
         <property name="rememberMeTokenLength" value="${oauth.db.rememberMeTokenLength}"/>
-        <property name="rememberMeTokenPostfix" value="${oauth.db.rememberMeTokenPostfix}"/>
         <property name="rememberMeTokenSeriesLength" value="${oauth.db.rememberMeTokenSeriesLength}"/>
         <property name="clientIdLength" value="${oauth.db.clientIdLength}"/>
         <property name="clientSecretLength" value="${oauth.db.clientSecretLength}"/>
@@ -21,102 +17,60 @@
         <property name="resetPasswordCodeLength" value="${oauth.db.resetPasswordCodeLength}" />
     </bean>
 
-    <!--bean id="jedisInstance" class="redis.clients.jedis.Jedis">
-        <constructor-arg name="host" value="${oauth.db.redis.host}"/>
-        <constructor-arg name="port" value="${oauth.db.redis.port}"/>
-    </bean-->
-
-    <bean id="baseDAO" class="com.junbo.oauth.db.dao.couch.CouchBaseDAO" abstract="true">
-        <property name="asyncHttpClient" ref="commonAsyncHttpClient"/>
-        <property name="couchDBUri" value="${common.cloudant.url}"/>
-        <property name="dbNamePrefix" value="${common.cloudant.dbNamePrefix}" />
-    </bean>
-
-    <bean id="authorizationCodeDAO" class="com.junbo.oauth.db.dao.couch.CouchAuthorizationCodeDAOImpl" parent="baseDAO">
-        <property name="dbName" value="authorization_code"/>
-    </bean>
-
-    <bean id="accessTokenDAO" class="com.junbo.oauth.db.dao.couch.CouchAccessTokenDAOImpl" parent="baseDAO">
-        <property name="dbName" value="access_token"/>
-    </bean>
-
-    <bean id="refreshTokenDAO" class="com.junbo.oauth.db.dao.couch.CouchRefreshTokenDAOImpl" parent="baseDAO">
-        <property name="dbName" value="refresh_token"/>
-    </bean>
-
-    <bean id="rememberMeTokenDAO" class="com.junbo.oauth.db.dao.couch.CouchRememberMeTokenDAOImpl" parent="baseDAO">
-        <property name="dbName" value="remember_me_token"/>
-    </bean>
-
-    <bean id="clientDAO" class="com.junbo.oauth.db.dao.couch.CouchClientDAOImpl" parent="baseDAO">
+    <bean id="clientRepository" class="com.junbo.oauth.db.repo.cloudant.CloudantClientRepositoryImpl" parent="cloudantClient">
         <property name="dbName" value="client"/>
     </bean>
 
-    <bean id="loginStateDAO" class="com.junbo.oauth.db.dao.couch.CouchLoginStateDAOImpl" parent="baseDAO">
+    <bean id="oauthCipherService" class="com.junbo.configuration.crypto.impl.AESCipherServiceImpl">
+        <constructor-arg name="keyStr" value="${oauth.crypto.key}"/>
+    </bean>
+
+    <bean id="encryptedClientRepository" class="com.junbo.oauth.db.repo.cloudant.EncryptedClientRepositoryImpl">
+        <property name="clientRepository" ref="clientRepository"/>
+        <property name="cipherService" ref="oauthCipherService"/>
+    </bean>
+
+    <bean id="loginStateRepository" class="com.junbo.oauth.db.repo.cloudant.CloudantLoginStateRepositoryImpl" parent="cloudantClient">
         <property name="dbName" value="login_state"/>
-    </bean>
-
-    <bean id="scopeDAO" class="com.junbo.oauth.db.dao.couch.CouchScopeDAOImpl" parent="baseDAO">
-        <property name="dbName" value="scope"/>
-    </bean>
-
-    <bean id="consentDAO" class="com.junbo.oauth.db.dao.couch.CouchConsentDAOImpl" parent="baseDAO">
-        <property name="dbName" value="consent"/>
-    </bean>
-
-    <bean id="emailVerifyCodeDAO" class="com.junbo.oauth.db.dao.couch.CouchEmailVerifyCodeDAOImpl" parent="baseDAO">
-        <property name="dbName" value="email_verify_code"/>
-    </bean>
-
-    <bean id="resetPasswordCodeDAO" class="com.junbo.oauth.db.dao.couch.CouchResetPasswordCodeDAOImpl" parent="baseDAO">
-        <property name="dbName" value="email_verify_code"/>
-    </bean>
-
-    <bean id="clientRepository" class="com.junbo.oauth.db.repo.impl.ClientRepositoryImpl">
-        <property name="clientDAO" ref="clientDAO"/>
-    </bean>
-
-    <bean id="loginStateRepository" class="com.junbo.oauth.db.repo.impl.LoginStateRepositoryImpl">
-        <property name="loginStateDAO" ref="loginStateDAO"/>
         <property name="tokenGenerator" ref="tokenGenerator"/>
         <property name="defaultLoginStateExpiration" value="${oauth.db.loginState.default.expiration}"/>
     </bean>
 
-    <bean id="authorizationCodeRepository" class="com.junbo.oauth.db.repo.impl.AuthorizationCodeRepositoryImpl">
-        <property name="authorizationCodeDAO" ref="authorizationCodeDAO"/>
+    <bean id="authorizationCodeRepository" class="com.junbo.oauth.db.repo.cloudant.CloudantAuthorizationCodeRepositoryImpl" parent="cloudantClient">
+        <property name="dbName" value="authorization_code"/>
         <property name="tokenGenerator" ref="tokenGenerator"/>
     </bean>
 
-    <bean id="accessTokenRepository" class="com.junbo.oauth.db.repo.impl.AccessTokenRepositoryImpl">
-        <property name="accessTokenDAO" ref="accessTokenDAO"/>
+    <bean id="accessTokenRepository" class="com.junbo.oauth.db.repo.cloudant.CloudantAccessTokenRepositoryImpl" parent="cloudantClient">
+        <property name="dbName" value="access_token"/>
         <property name="tokenGenerator" ref="tokenGenerator"/>
     </bean>
 
-    <bean id="refreshTokenRepository" class="com.junbo.oauth.db.repo.impl.RefreshTokenRepositoryImpl">
-        <property name="refreshTokenDAO" ref="refreshTokenDAO"/>
+    <bean id="refreshTokenRepository" class="com.junbo.oauth.db.repo.cloudant.CloudantRefreshTokenRepositoryImpl" parent="cloudantClient">
+        <property name="dbName" value="refresh_token"/>
         <property name="tokenGenerator" ref="tokenGenerator"/>
     </bean>
 
-    <bean id="rememberMeTokenRepository" class="com.junbo.oauth.db.repo.impl.RememberMeTokenRepositoryImpl">
-        <property name="rememberMeTokenDAO" ref="rememberMeTokenDAO"/>
+    <bean id="rememberMeTokenRepository" class="com.junbo.oauth.db.repo.cloudant.CloudantRememberMeTokenRepositoryImpl" parent="cloudantClient">
+        <property name="dbName" value="remember_me_token"/>
         <property name="tokenGenerator" ref="tokenGenerator"/>
     </bean>
 
-    <bean id="scopeRepository" class="com.junbo.oauth.db.repo.impl.ScopeRepositoryImpl">
-        <property name="scopeDAO" ref="scopeDAO"/>
+    <bean id="scopeRepository" class="com.junbo.oauth.db.repo.cloudant.CloudantScopeRepositoryImpl" parent="cloudantClient">
+        <property name="dbName" value="scope"/>
     </bean>
 
-    <bean id="consentRepository" class="com.junbo.oauth.db.repo.impl.ConsentRepositoryImpl">
-        <property name="consentDAO" ref="consentDAO"/>
+    <bean id="consentRepository" class="com.junbo.oauth.db.repo.cloudant.CloudantConsentRepositoryImpl" parent="cloudantClient">
+        <property name="dbName" value="consent"/>
     </bean>
 
-    <bean id="emailVerifyCodeRepository" class="com.junbo.oauth.db.repo.impl.EmailVerifyCodeRepositoryImpl">
-        <property name="emailVerifyCodeDAO" ref="emailVerifyCodeDAO"/>
+    <bean id="emailVerifyCodeRepository" class="com.junbo.oauth.db.repo.cloudant.CloudantEmailVerifyCodeRepositoryImpl" parent="cloudantClient">
+        <property name="dbName" value="email_verify_code"/>
         <property name="tokenGenerator" ref="tokenGenerator"/>
     </bean>
 
-    <bean id="resetPasswordCodeRepository" class="com.junbo.oauth.db.repo.impl.ResetPasswordCodeRepositoryImpl">
-        <property name="resetPasswordCodeDAO" ref="resetPasswordCodeDAO" />
+    <bean id="resetPasswordCodeRepository" class="com.junbo.oauth.db.repo.cloudant.CloudantResetPasswordCodeRepositoryImpl" parent="cloudantClient">
+        <property name="dbName" value="reset_password_code"/>
         <property name="tokenGenerator" ref="tokenGenerator"/>
     </bean>
 

@@ -43,7 +43,7 @@ public class OfferAttributeRepositoryImpl implements OfferAttributeRepository {
         return attributes;
     }
 
-    public OfferAttribute update(OfferAttribute attribute) {
+    public OfferAttribute update(OfferAttribute attribute, OfferAttribute oldAttribute) {
         OfferAttributeEntity dbEntity = attributeDao.get(attribute.getId());
         OfferAttributeMapper.fillDBEntity(attribute, dbEntity);
         return get(attributeDao.update(dbEntity));

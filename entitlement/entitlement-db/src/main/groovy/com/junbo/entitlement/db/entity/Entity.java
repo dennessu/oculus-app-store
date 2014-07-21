@@ -42,6 +42,10 @@ public abstract class Entity implements CloudantEntity<String>, Shardable {
 
     @CloudantProperty("_rev")
     private String rev;
+    
+    private String createdByClient;
+
+    private String updatedByClient;
 
     @Id
     @Column(name = "id")
@@ -96,6 +100,25 @@ public abstract class Entity implements CloudantEntity<String>, Shardable {
 
     public void setUpdatedBy(Long updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    @Column(name = "created_by_client")
+    public String getCreatedByClient() {
+        return this.createdByClient;
+    }
+
+    public void setCreatedByClient(String client) {
+        this.createdByClient = client;
+    }
+
+    @Column(name = "updated_by_client")
+    public String getUpdatedByClient() {
+        return this.updatedByClient;
+    }
+
+    @Override
+    public void setUpdatedByClient(String client) {
+        this.updatedByClient = client;
     }
 
     @Version

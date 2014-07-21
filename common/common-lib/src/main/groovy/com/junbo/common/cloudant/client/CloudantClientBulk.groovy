@@ -1,14 +1,11 @@
 package com.junbo.common.cloudant.client
-import com.junbo.common.cloudant.CloudantClientBase
-import com.junbo.common.cloudant.CloudantEntity
-import com.junbo.common.cloudant.CloudantMarshaller
-import com.junbo.common.cloudant.CloudantUniqueClient
-import com.junbo.common.cloudant.DefaultCloudantMarshaller
+import com.junbo.common.cloudant.*
 import com.junbo.common.cloudant.exception.CloudantException
-import com.junbo.common.cloudant.exception.CloudantUpdateConflictException
 import com.junbo.common.cloudant.model.CloudantBulkDocs
 import com.junbo.common.cloudant.model.CloudantError
 import com.junbo.common.cloudant.model.CloudantQueryResult
+import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.id.CloudantId
 import com.junbo.common.util.Context
 import com.junbo.configuration.ConfigServiceManager
 import com.junbo.langur.core.promise.Promise
@@ -17,12 +14,11 @@ import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpMethod
-
 /**
  * CloudantClient.
  */
 @CompileStatic
-class CloudantClientBulk implements CloudantClient {
+class CloudantClientBulk implements CloudantClientInternal {
     private static final Logger logger = LoggerFactory.getLogger(CloudantClientBulk)
 
     private static CloudantClientBulk singleton = new CloudantClientBulk();
@@ -100,6 +96,10 @@ class CloudantClientBulk implements CloudantClient {
                 return Promise.pure(entity)
             }
         } else {
+            // force update cloudantId
+            entity.setCloudantId(entity.getId().toString())
+            CloudantId.validate(entity.cloudantId)
+
             addCreated(dbUri, entity, entityClass)
             return Promise.pure(entity)
         }
@@ -107,6 +107,7 @@ class CloudantClientBulk implements CloudantClient {
 
     @Override
     def <T extends CloudantEntity> Promise<T> cloudantGet(CloudantDbUri dbUri, Class<T> entityClass, String id) {
+        CloudantId.validate(id)
         T result = getCached(id, entityClass)
         if (result == null) {
             return impl.cloudantGet(dbUri, entityClass, id).then { T resp ->
@@ -119,6 +120,9 @@ class CloudantClientBulk implements CloudantClient {
 
     @Override
     def <T extends CloudantEntity> Promise<T> cloudantPut(CloudantDbUri dbUri, Class<T> entityClass, T entity) {
+        // force update cloudantId
+        entity.setCloudantId(entity.getId().toString())
+        CloudantId.validate(entity.cloudantId)
         addChanged(dbUri, entity, entityClass)
         return Promise.pure(entity)
     }
@@ -130,6 +134,7 @@ class CloudantClientBulk implements CloudantClient {
         }
         // force update cloudantId
         entity.setCloudantId(entity.getId().toString())
+        CloudantId.validate(entity.cloudantId)
 
         delete(dbUri, entity.cloudantId)
         return impl.cloudantDelete(dbUri, entityClass, entity)
@@ -287,12 +292,13 @@ class CloudantClientBulk implements CloudantClient {
 
         def bulk = getOrCreateBulk(dbUri)
         if (bulk.containsKey(entity.cloudantId)) {
-            throw new CloudantUpdateConflictException("Failed to save object to CloudantDB, id conflict in $dbUri for ${entity.cloudantId}")
+            logger.error("Failed to save object to CloudantDB, id conflict in $dbUri for ${entity.cloudantId}");
+            throw AppCommonErrors.INSTANCE.updateConflict(dbUri.dbName, entity.cloudantId, entity.cloudantRev).exception()
         }
 
         def value = marshaller.marshall(entity)
         bulk.put(entity.cloudantId, new EntityWithType(entity: value, type: entityClass))
-        getCache().put(entity.cloudantId, value)
+        addCachedRaw(entity.cloudantId, entityClass, value)
     }
 
     private void addChanged(CloudantDbUri dbUri, CloudantEntity entity, Class entityClass) {
@@ -302,7 +308,7 @@ class CloudantClientBulk implements CloudantClient {
         def bulk = getOrCreateBulk(dbUri)
         def value = marshaller.marshall(entity)
         bulk.put(entity.cloudantId, new EntityWithType(entity: value, type: entityClass))
-        getCache().put(entity.cloudantId, value)
+        addCachedRaw(entity.cloudantId, entityClass, value)
     }
 
     private void addCached(CloudantEntity entity) {
@@ -314,7 +320,11 @@ class CloudantClientBulk implements CloudantClient {
         entity.setCloudantId(entity.getId().toString());
 
         def value = marshaller.marshall(entity)
-        getCache().put(entity.cloudantId, value)
+        addCachedRaw(entity.cloudantId, entity.getClass(), value)
+    }
+
+    private void addCachedRaw(String cloudantId, Class entityClass, String value) {
+        getCache().put(cloudantId + ":" + entityClass.getName(), value)
     }
 
     private void delete(CloudantDbUri dbUri, String id) {
@@ -323,7 +333,7 @@ class CloudantClientBulk implements CloudantClient {
     }
 
     private <T> T getCached(String id, Class<T> entityClass) {
-        return (T)marshaller.unmarshall(getCache().get(id), entityClass)
+        return (T)marshaller.unmarshall(getCache().get(id + ":" + entityClass.getName()), entityClass)
     }
 
     private Promise<Void> onRequestFinished() {

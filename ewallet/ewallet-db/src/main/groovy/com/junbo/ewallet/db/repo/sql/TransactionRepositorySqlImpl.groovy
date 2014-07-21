@@ -51,7 +51,7 @@ class TransactionRepositorySqlImpl implements TransactionRepository {
     }
 
     @Override
-    Promise<Transaction> update(Transaction model) {
+    Promise<Transaction> update(Transaction model, Transaction oldModel) {
         TransactionEntity entity = modelMapper.toTransactionEntity(model, new MappingContext())
         transactionDao.update(entity)
         return get(model.getId())

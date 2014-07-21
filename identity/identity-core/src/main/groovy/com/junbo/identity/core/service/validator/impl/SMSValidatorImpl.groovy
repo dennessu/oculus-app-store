@@ -1,12 +1,12 @@
 package com.junbo.identity.core.service.validator.impl
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.validator.PiiValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
-import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserSMS
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -42,7 +42,7 @@ class SMSValidatorImpl implements PiiValidator {
         UserSMS userSMS = (UserSMS)JsonHelper.jsonNodeToObj(value, UserSMS)
         UserSMS oldUserSMS = (UserSMS)JsonHelper.jsonNodeToObj(oldValue, UserSMS)
         if (userSMS != oldUserSMS) {
-            throw AppErrors.INSTANCE.fieldInvalidException('value', 'value can\'t be updated.').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('value', 'value can\'t be updated.').exception()
         }
         return Promise.pure(null)
     }
@@ -50,10 +50,10 @@ class SMSValidatorImpl implements PiiValidator {
     private void checkUserSMS(UserSMS userSMS) {
         if (userSMS.info != null) {
             if (userSMS.info.length() > maxTextMessageLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('value.info', maxTextMessageLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooLong('value.info', maxTextMessageLength).exception()
             }
             if (userSMS.info.length() < minTextMessageLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('value.info', minTextMessageLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooShort('value.info', minTextMessageLength).exception()
             }
         }
     }

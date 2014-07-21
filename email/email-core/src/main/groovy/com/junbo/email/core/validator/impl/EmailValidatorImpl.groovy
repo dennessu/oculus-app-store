@@ -5,11 +5,12 @@
  */
 package com.junbo.email.core.validator.impl
 
-import com.junbo.email.common.util.IdUtils
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.email.core.validator.EmailValidator
 import com.junbo.email.db.repo.EmailScheduleRepository
 import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.Email
+import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
@@ -49,7 +50,7 @@ class EmailValidatorImpl extends CommonValidator implements EmailValidator {
     @Override
     void validateDelete(String id) {
         if (id == null) {
-            throw AppErrors.INSTANCE.missingField('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('id').exception()
         }
         if (emailScheduleRepository.getEmailSchedule(id).get() == null) {
             throw AppErrors.INSTANCE.emailScheduleNotFound(id).exception()
@@ -65,44 +66,44 @@ class EmailValidatorImpl extends CommonValidator implements EmailValidator {
 
     private void validateEmailId(Email email) {
         if (email.id != null) {
-            throw AppErrors.INSTANCE.unnecessaryField('self').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('self').exception()
         }
     }
 
     private void validateCommonField(Email email) {
         if (email == null) {
-            throw AppErrors.INSTANCE.invalidPayload().exception()
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
         if (email.userId == null && email.recipients == null) {
-            throw AppErrors.INSTANCE.missingField('recipients').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('recipients').exception()
         }
         if (email.recipients != null) {
             for (String recipient : email.recipients) {
                 if (!super.validateEmailAddress(recipient)) {
-                   throw AppErrors.INSTANCE.invalidField('recipients').exception()
+                   throw AppCommonErrors.INSTANCE.fieldInvalid('recipients').exception()
                 }
             }
         }
         if (email.templateId == null) {
-            throw AppErrors.INSTANCE.missingField('template').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('template').exception()
         }
     }
 
     private void validateProhibitedFields(Email email) {
         if (!StringUtils.isEmpty(email.status)) {
-            throw AppErrors.INSTANCE.unnecessaryField('status').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('status').exception()
         }
         if (!StringUtils.isEmpty(email.statusReason)) {
-            throw AppErrors.INSTANCE.unnecessaryField('statusReason').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('statusReason').exception()
         }
         if (email.sentTime != null) {
-            throw AppErrors.INSTANCE.unnecessaryField('sentTime').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('sentTime').exception()
         }
         if (email.retryCount != null) {
-            throw AppErrors.INSTANCE.unnecessaryField('retryCount').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('retryCount').exception()
         }
         if (email.isResend != null) {
-            throw AppErrors.INSTANCE.unnecessaryField('isResend').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('isResend').exception()
         }
     }
 }

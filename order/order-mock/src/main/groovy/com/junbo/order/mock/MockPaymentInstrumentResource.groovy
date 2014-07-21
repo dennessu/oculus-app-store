@@ -32,7 +32,6 @@ class MockPaymentInstrumentResource extends BaseMock implements PaymentInstrumen
     @Override
     Promise<PaymentInstrument> getById(PaymentInstrumentId paymentInstrumentId) {
         def pi = new PaymentInstrument()
-        pi.userId = generateLong()
         pi.id = paymentInstrumentId.value
         pi.isValidated = true
         pi.isActive = true

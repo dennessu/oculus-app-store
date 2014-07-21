@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * token item dao.
  */
-public class TokenItemDao extends CommonDataDAOImpl<TokenItemEntity, Long> {
+public class TokenItemDao extends CommonDataDAOImpl<TokenItemEntity, String> {
     public TokenItemDao() {
         super(TokenItemEntity.class);
     }

@@ -66,10 +66,10 @@
 
 =====Deloyment Preparation=====
 #[bastion] enlish source tree
-    [devops] https://github.com/junbo/main/tree/master/scripts/pgha
+    [silkcloud] https://github.com/junbo/main/tree/master/scripts/pgha
 
 #[bastion] upload all PGHA scripts to master/slave/replica servers
-    [devops] ./upload_script.sh
+    [silkcloud] ./upload_script.sh
 
 #[master] clean up master
     [silkcloud] $DEPLOYMENT_PATH/purge/purge_master.sh
@@ -80,21 +80,22 @@
 #[replica] clean up replica
     [silkcloud] $DEPLOYMENT_PATH/purge/purge_replica.sh
 
-#[master/slave]
-    [silkcloud] create pgbouncer auth file in ~/pgbouncer_auth.txt and chmod 600
+#[master/slave/replica]
+    [silkcloud] create pgbouncer auth file in ~/.pgbouncer_auth and chmod 600
 
-#[master/slave] (FOR DEMO ONLY)
-    [silkcloud] echo "*:6543:*:silkcloud:abc123" > ~/.pgpass
-    [silkcloud] chmod 600 ~/.pgpass
-    [silkcloud] echo '"silkcloud" "abc123"' > ~/pgbouncer_auth.txt
+#[master/slave/replica]
+    [silkcloud] generate md5 password: "md5" + md5(password + username)
+    [silkcloud] echo '"silkcloud" "PASSWORD"' > ~/.pgbouncer_auth
 
 
 =====Master-Slave Deployment=====
 #[master] setup master database
     $DEPLOYMENT_PATH/setup/setup_master.sh
 
-#[master] run liquibase
-    $DEPLOYMENT_PATH/test/test_liquibase_master.sh (FOR SMOKE TEST)
+#[master] run liquibase script
+
+#[master] setup londiste root
+    $DEPLOYMENT_PATH/londiste/londiste_root.sh
 
 #[master] full base backup master database
     $DEPLOYMENT_PATH/util/base_backup.sh
@@ -102,39 +103,16 @@
 #[slave] setup slave database
     $DEPLOYMENT_PATH/setup/setup_slave.sh
 
-#[master] start primary PGBouncer proxy (connect to master db)
-    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
-
-#[slave] start secondary PGBouncer proxy (connect to master db)
-    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
-
-#[master/slave][smoketest] replication smoke test
-    $DEPLOYMENT_PATH/test/test_master2slave.sh
 
 =====Master-Replica Deployment=====
-#[master] create londiste config on master
-    $DEPLOYMENT_PATH/londiste/londiste_config_root.sh
-
-#[master] start londiste deamon on master
-    $DEPLOYMENT_PATH/londiste/londiste_root.sh
-
-#[master] start londiste pgq ticker deamon
-    $DEPLOYMENT_PATH/londiste/lodiste_pgqd.sh
-
 #[master] full base backup master database
     $DEPLOYMENT_PATH/util/base_backup.sh
 
 #[replica] setup replica database
     $DEPLOYMENT_PATH/setup/setup_replica.sh
 
-#[replica] create londiste config on replcia
-    $DEPLOYMENT_PATH/londiste/londiste_config_leaf.sh
-
-#[replica] start londiste deamon on replica
-    $DEPLOYMENT_PATH/londiste/londiste_leaf.sh
-
-#[replica] start londiste pgq ticker deamon
-    $DEPLOYMENT_PATH/londiste/lodiste_pgqd.sh
+#[master][smoketest] replication smoke test
+    $DEPLOYMENT_PATH/test/test_master2slave.sh
 
 
 =====Planned Failover=====
@@ -147,7 +125,7 @@
 #[slave] start secondary PGBouncer proxy (connect to slave db)
     $DEPLOYMENT_PATH/pgbouncer/pgbouncer_slave.sh
 
-#[master/slave][smoketest] replication smoke test
+#[slave][smoketest] replication smoke test
     $DEPLOYMENT_PATH/test/test_slave2master.sh
 
 #[master] slave failback to master
@@ -159,7 +137,7 @@
 #[slave] start secondary PGBouncer proxy (connect to master db)
     $DEPLOYMENT_PATH/pgbouner/pgbouncer_master.sh
 
-#[master/slave][smoketest] replication smoke test
+#[master][smoketest] replication smoke test
     $DEPLOYMENT_PATH/test/test_master2slave.sh
 
 
@@ -174,7 +152,7 @@
 #[slave] start secondary PGBouncer proxy (connect to master db)
     $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
 
-#[master/slave] replication smoke test
+#[master] replication smoke test
     $DEPLOYMENT_PATH/test/test_master2slave.sh
 
 [MASTER is broken]

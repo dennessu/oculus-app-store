@@ -25,8 +25,6 @@ public class Context {
     private static final Logger logger = LoggerFactory.getLogger(Context.class);
     private static final ThreadLocal<Data> context = new ThreadLocal<>();
 
-    public static final String X_ROUTING_HOPS = "x-routing-hops";
-
     /**
      * The context of current API call.
      */
@@ -122,20 +120,14 @@ public class Context {
         }
 
         /**
-         * Drains all pending tasks. If there is any exception in the task, log errors and ignore.
+         * Drains all pending tasks.
          * @return The promise that all pending tasks are drained.
          */
         public Promise<Void> drainPendingTasks() {
             return Promise.each(pendingTasks, new Promise.Func<Promise, Promise>() {
                 @Override
                 public Promise<Void> apply(Promise promise) {
-                    return promise.recover(new Promise.Func<Throwable, Promise<Void>>() {
-                        @Override
-                        public Promise<Void> apply(Throwable ex) {
-                            logger.error("Exception in Context.drainTasks: " + ex);
-                            return Promise.pure(null);
-                        }
-                    });
+                    return promise;
                 }
             });
         }

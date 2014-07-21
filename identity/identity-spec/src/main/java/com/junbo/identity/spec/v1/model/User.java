@@ -7,8 +7,10 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.cloudant.CloudantUnique;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.LocaleId;
+import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.model.Link;
@@ -22,7 +24,7 @@ import java.util.Map;
 /**
  * Created by liangfu on 4/3/14.
  */
-public class User extends PropertyAssignedAwareResourceMeta<UserId> {
+public class User extends PropertyAssignedAwareResourceMeta<UserId> implements CloudantUnique {
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] Link to the User resource.")
     @JsonProperty("self")
     private UserId id;
@@ -162,6 +164,11 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> {
     @ApiModelProperty(position = 21, required = false, value = "[Client Immutable] A Link to Entitlement-List resource to Search the entitlements of the user.")
     @HateoasLink("/entitlements?userId={id}")
     private Link entitlements;
+
+    @ApiModelProperty(position = 22, required = false, value = " A Link to Payment Instrument which will be represent to the user as default Payment Instrument, " +
+            "the Default PI should be either an Oculus eWallet or Credit Card, as these are the payment types availalbe on web, " +
+            "on Android and in VR,")
+    private PaymentInstrumentId defaultPI;
 
     @JsonIgnore
     private String canonicalUsername;
@@ -474,6 +481,7 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> {
 
     public void setCountryOfResidence(CountryId countryOfResidence) {
         this.countryOfResidence = countryOfResidence;
+        support.setPropertyAssigned("cor");
         support.setPropertyAssigned("countryOfResidence");
     }
 
@@ -519,5 +527,36 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> {
 
     public void setMigratedUserId(Long migratedUserId) {
         this.migratedUserId = migratedUserId;
+    }
+
+    public PaymentInstrumentId getDefaultPI() {
+        return defaultPI;
+    }
+
+    public void setDefaultPI(PaymentInstrumentId defaultPI) {
+        this.defaultPI = defaultPI;
+        support.setPropertyAssigned("defaultPI");
+    }
+
+    /**
+     * Get the unique keys of the CloudantEntity.
+     * Each of the keys are globally unique.
+     * The unique keys for the same object must always be the same length. If some key is not required, place a null.
+     *
+     * @return The unique keys.
+     */
+    @Override
+    public String[] getUniqueKeys() {
+        return new String[] {
+                getMigrationUniqueKey()
+        };
+    }
+
+    private String getMigrationUniqueKey() {
+        if (migratedUserId == null) {
+            return null;
+        } else {
+            return "USER_MIGRATION_ID: " + migratedUserId.toString();
+        }
     }
 }

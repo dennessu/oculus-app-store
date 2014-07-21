@@ -6,22 +6,26 @@
 
 package com.junbo.entitlement.core.service;
 
+import com.amazonaws.HttpMethod;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.junbo.authorization.AuthorizeCallback;
 import com.junbo.authorization.AuthorizeContext;
 import com.junbo.authorization.AuthorizeService;
 import com.junbo.authorization.RightsScope;
+import com.junbo.catalog.spec.enums.EntitlementType;
 import com.junbo.catalog.spec.model.item.EntitlementDef;
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.ItemId;
+import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.model.Results;
 import com.junbo.entitlement.auth.EntitlementAuthorizeCallbackFactory;
-import com.junbo.entitlement.common.lib.CloneUtils;
 import com.junbo.entitlement.core.EntitlementService;
 import com.junbo.entitlement.db.repository.EntitlementRepository;
 import com.junbo.entitlement.spec.error.AppErrors;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
-import com.junbo.entitlement.spec.model.EntitlementTransfer;
 import com.junbo.entitlement.spec.model.PageMetadata;
 import com.junbo.langur.core.promise.Promise;
 import org.slf4j.Logger;
@@ -29,12 +33,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.UUID;
-
-import static com.junbo.authorization.spec.error.AppErrors.INSTANCE;
+import javax.ws.rs.core.UriBuilder;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.*;
 
 /**
  * Service of Entitlement.
@@ -50,13 +55,18 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     @Autowired
     private EntitlementAuthorizeCallbackFactory authorizeCallbackFactory;
 
+    @Autowired
+    private AmazonS3Client awsClient;
+
+    private static String bucketName = "static.oculusvr.com";
+
     @Override
     @Transactional
     public Entitlement getEntitlement(final String entitlementId) {
         final Entitlement entitlement = entitlementRepository.get(entitlementId);
 
         if (entitlement == null) {
-            throw AppErrors.INSTANCE.notFound("entitlement", entitlementId).exception();
+            throw AppCommonErrors.INSTANCE.resourceNotFound("entitlement", entitlementId).exception();
         }
 
         AuthorizeCallback callback = authorizeCallbackFactory.create(entitlement);
@@ -65,7 +75,10 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             @Override
             public Entitlement apply() {
                 if (!AuthorizeContext.hasRights("read")) {
-                    throw AppErrors.INSTANCE.notFound("entitlement", entitlementId).exception();
+                    throw AppCommonErrors.INSTANCE.resourceNotFound("entitlement", entitlementId).exception();
+                }
+                if (EntitlementType.DOWNLOAD.toString().equalsIgnoreCase(entitlement.getType())) {
+                    entitlement.setBinaries(generateDownloadUrls(entitlement));
                 }
                 return entitlement;
             }
@@ -91,7 +104,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             @Override
             public Entitlement apply() {
                 if (!AuthorizeContext.hasRights("create")) {
-                    throw INSTANCE.forbidden().exception();
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 
                 return merge(entitlement);
@@ -113,7 +126,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
         existing.setIsBanned(false);
         existing.setUseCount(existing.getUseCount() + entitlement.getUseCount());
-        return entitlementRepository.update(existing);
+        return entitlementRepository.update(existing, existing);
     }
 
     @Override
@@ -129,7 +142,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
         final Entitlement existingEntitlement = entitlementRepository.get(entitlementId);
         if (existingEntitlement == null) {
-            throw AppErrors.INSTANCE.notFound("entitlement", entitlementId).exception();
+            throw AppCommonErrors.INSTANCE.resourceNotFound("entitlement", entitlementId).exception();
         }
 
         AuthorizeCallback callback = authorizeCallbackFactory.create(entitlement);
@@ -138,12 +151,12 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             @Override
             public Entitlement apply() {
                 if (!AuthorizeContext.hasRights("update")) {
-                    throw INSTANCE.forbidden().exception();
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 
                 fillUpdate(entitlement, existingEntitlement);
                 validateUpdate(entitlement, existingEntitlement);
-                return entitlementRepository.update(existingEntitlement);
+                return entitlementRepository.update(existingEntitlement, existingEntitlement);
             }
         });
     }
@@ -153,8 +166,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     public void deleteEntitlement(final String entitlementId) {
         Entitlement existingEntitlement = entitlementRepository.get(entitlementId);
         if (existingEntitlement == null) {
-            throw AppErrors.INSTANCE.notFound("entitlement",
-                    entitlementId).exception();
+            throw AppCommonErrors.INSTANCE.resourceNotFound("entitlement", entitlementId).exception();
         }
         checkUser(existingEntitlement.getUserId());
 
@@ -164,7 +176,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             @Override
             public Void apply() {
                 if (!AuthorizeContext.hasRights("delete")) {
-                    throw INSTANCE.forbidden().exception();
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 
                 entitlementRepository.delete(entitlementId);
@@ -195,7 +207,13 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
                 fillHostItemId(entitlementSearchParam);
                 checkSearchDateFormat(entitlementSearchParam);
                 checkIsActiveAndIsBanned(entitlementSearchParam);
-                return entitlementRepository.getBySearchParam(entitlementSearchParam, pageMetadata);
+                Results<Entitlement> results = entitlementRepository.getBySearchParam(entitlementSearchParam, pageMetadata);
+                for (Entitlement entitlement : results.getItems()) {
+                    if (EntitlementType.DOWNLOAD.toString().equalsIgnoreCase(entitlement.getType())) {
+                        entitlement.setBinaries(generateDownloadUrls(entitlement));
+                    }
+                }
+                return results;
             }
         });
     }
@@ -206,7 +224,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         }
         Set<String> itemIds = itemFacade.getItemIdsByHostItemId(entitlementSearchParam.getHostItemId().getValue());
         if (CollectionUtils.isEmpty(itemIds)) {
-            throw AppErrors.INSTANCE.fieldNotCorrect("hostItemId",
+            throw AppCommonErrors.INSTANCE.fieldInvalid("hostItemId",
                     "there is no item with hostItemId [" + entitlementSearchParam.getHostItemId() + "]").exception();
         }
         for (String itemId : itemIds) {
@@ -217,7 +235,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     private void checkIsActiveAndIsBanned(EntitlementSearchParam entitlementSearchParam) {
         if (Boolean.TRUE.equals(entitlementSearchParam.getIsBanned()) &&
                 Boolean.TRUE.equals(entitlementSearchParam.getIsActive())) {
-            throw AppErrors.INSTANCE.common("isActive and isSuspended can not be set to true at same time").exception();
+            throw AppCommonErrors.INSTANCE.fieldInvalid("isActive", "isActive and isSuspended can not be set to true at same time").exception();
         }
     }
 
@@ -226,36 +244,46 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     }
 
     private void checkSearchDateFormat(EntitlementSearchParam entitlementSearchParam) {
-        checkDateFormat(entitlementSearchParam.getStartGrantTime());
-        checkDateFormat(entitlementSearchParam.getEndGrantTime());
-        checkDateFormat(entitlementSearchParam.getStartExpirationTime());
-        checkDateFormat(entitlementSearchParam.getEndExpirationTime());
-        checkDateFormat(entitlementSearchParam.getLastModifiedTime());
-    }
-
-    @Override
-    @Transactional
-    public Entitlement transferEntitlement(EntitlementTransfer entitlementTransfer) {
-        Entitlement existingEntitlement = getEntitlement(entitlementTransfer.getEntitlementId());
-        if (existingEntitlement == null) {
-            throw AppErrors.INSTANCE.notFound("entitlement",
-                    entitlementTransfer.getEntitlementId()).exception();
-        }
-        validateTransfer(entitlementTransfer, existingEntitlement);
-
-        Entitlement newEntitlement = CloneUtils.clone(existingEntitlement);
-        deleteEntitlement(entitlementTransfer.getEntitlementId());
-        LOGGER.info("Entitlement [{}] is deleted for transferring.", existingEntitlement.getId());
-        newEntitlement.setTrackingUuid(entitlementTransfer.getTrackingUuid());
-        newEntitlement.setId(null);
-        newEntitlement.setUserId(entitlementTransfer.getTargetUserId());
-        return entitlementRepository.insert(newEntitlement);
+        checkDateFormat("startGrantTime", entitlementSearchParam.getStartGrantTime());
+        checkDateFormat("endGrantTime", entitlementSearchParam.getEndGrantTime());
+        checkDateFormat("startExpirationTime", entitlementSearchParam.getStartExpirationTime());
+        checkDateFormat("endExpirationTime", entitlementSearchParam.getEndExpirationTime());
+        checkDateFormat("lastModifiedTime", entitlementSearchParam.getLastModifiedTime());
     }
 
     @Override
     @Transactional
     public Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
         return entitlementRepository.getByTrackingUuid(shardMasterId, trackingUuid);
+    }
+
+    @Override
+    @Transactional
+    public String getDownloadUrl(String entitlementId, String itemId, String platform) {
+        Entitlement entitlement = this.getEntitlement(entitlementId);
+        if (!itemId.equalsIgnoreCase(entitlement.getItemId())) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid("itemId", "itemId does not match the itemId in entitlement").exception();
+
+        }
+        ItemRevision itemRevision = getItem(itemId);
+        if (!itemRevision.getBinaries().keySet().contains(platform)) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid("platform", "there is no platform " +
+                    platform + " in item "
+                    + itemId + "' binaries").exception();
+        }
+        String urlString = itemRevision.getBinaries().get(platform).getHref();
+        String version = itemRevision.getBinaries().get(platform).getVersion();
+        try {
+            return generatePreSignedDownloadUrl(urlString, itemRevision.getDownloadName(), version, platform);
+        } catch (MalformedURLException e) {
+            String msg = "Error occurred during parsing url " + urlString;
+            LOGGER.error(msg, e);
+            throw AppErrors.INSTANCE.errorParsingUrl(msg).exception();
+        } catch (URISyntaxException e) {
+            //just ignore this
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid, final String requiredRight) {
@@ -270,11 +298,82 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             @Override
             public Entitlement apply() {
                 if (!AuthorizeContext.hasRights(requiredRight)) {
-                    throw INSTANCE.forbidden().exception();
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 
                 return existing;
             }
         });
+    }
+
+    private Map<String, String> generateDownloadUrls(Entitlement entitlement) {
+        ItemRevision itemRevision = getItem(entitlement.getItemId());
+        validateNotNull(itemRevision, "item");
+
+        Map<String, String> binaries = new HashMap<>();
+
+        for (String platform : itemRevision.getBinaries().keySet()) {
+            binaries.put(platform, generateDownloadUrl(entitlement, platform));
+        }
+        return binaries;
+    }
+
+    private String generateDownloadUrl(Entitlement entitlement, String platform) {
+        UriBuilder builder = UriBuilder.fromPath(IdUtil.getResourcePathPrefix()).path("item-binary").path(entitlement.getItemId());
+        builder.queryParam("entitlementId", entitlement.getId());
+        builder.queryParam("platform", platform);
+        return builder.toTemplate();
+    }
+
+    private String generatePreSignedDownloadUrl(String urlString, String filename, String version, String platform) throws MalformedURLException, URISyntaxException {
+        if (urlString.indexOf(bucketName) == -1) {
+            return urlString;
+        }
+        URL url = new URL(urlString);
+        String objectKey = url.getPath().substring(1);
+        String extension = getExtension(objectKey);
+
+        java.util.Date expiration = new java.util.Date();
+        long milliSeconds = expiration.getTime();
+        milliSeconds += 1000 * 30; // Add 30 seconds.
+        expiration.setTime(milliSeconds);
+
+        GeneratePresignedUrlRequest generatePresignedUrlRequest =
+                new GeneratePresignedUrlRequest(bucketName, objectKey);
+        generatePresignedUrlRequest.setMethod(HttpMethod.GET);
+        generatePresignedUrlRequest.setExpiration(expiration);
+        if (!StringUtils.isEmpty(filename)) {
+            if (!StringUtils.isEmpty(version)) {
+                filename = filename + "_" + version;
+            }
+            filename = filename + "_" + platform;
+            generatePresignedUrlRequest.addRequestParameter("response-content-disposition",
+                    "attachment;filename=\"" + (extension == null ? filename : filename + "." + extension) + "\"");
+        }
+
+        URL downloadUrl = awsClient.generatePresignedUrl(generatePresignedUrlRequest);
+        return downloadUrl.toString();
+    }
+
+    private String getExtension(String objectKey) {
+        String[] parts = objectKey.split("\\.");
+        if (parts.length == 0) {
+            return null;
+        }
+
+        String lastPart = parts[parts.length - 1];
+        if (lastPart.indexOf("/") != -1) {
+            return null;
+        }
+
+        return lastPart;
+    }
+
+    public static String getBucketName() {
+        return bucketName;
+    }
+
+    public void setBucketName(String bucketName) {
+        EntitlementServiceImpl.bucketName = bucketName;
     }
 }

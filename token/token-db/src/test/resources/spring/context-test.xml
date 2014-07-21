@@ -6,5 +6,4 @@
 
     <import resource="classpath*:spring/*-context.xml"/>
     <import resource="classpath*:spring/transaction.xml"/>
-
 </beans>

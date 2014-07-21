@@ -40,7 +40,7 @@ class DefaultMultimapDAO implements MultimapDAO {
             throw new IllegalArgumentException('value is null')
         }
 
-        def currentSession = ShardScope.with(shardAlgorithm.shardId(key)) { sessionFactory.currentSession }
+        def currentSession = ShardScope.with(shardAlgorithm.dataCenterId(key), shardAlgorithm.shardId(key)) { sessionFactory.currentSession }
 
         def sqlQuery = currentSession.createSQLQuery("""
 INSERT INTO ${view.name}
@@ -71,7 +71,7 @@ VALUES (?, ?, ?, ?, ?, ?, FALSE)""")
             throw new IllegalArgumentException('value is null')
         }
 
-        def currentSession = ShardScope.with(shardAlgorithm.shardId(key)) { sessionFactory.currentSession }
+        def currentSession = ShardScope.with(shardAlgorithm.dataCenterId(key), shardAlgorithm.shardId(key)) { sessionFactory.currentSession }
 
         def sqlQuery = currentSession.createSQLQuery("""UPDATE ${view.name}
 SET deleted = TRUE, modified_by = ?, modified_time = ?
@@ -96,7 +96,7 @@ WHERE key = ? AND value = ?""")
             throw new IllegalArgumentException('key is null')
         }
 
-        def currentSession = ShardScope.with(shardAlgorithm.shardId(key)) { sessionFactory.currentSession }
+        def currentSession = ShardScope.with(shardAlgorithm.dataCenterId(key), shardAlgorithm.shardId(key)) { sessionFactory.currentSession }
 
         def sqlQuery = currentSession.createSQLQuery("""SELECT value
 FROM ${view.name}

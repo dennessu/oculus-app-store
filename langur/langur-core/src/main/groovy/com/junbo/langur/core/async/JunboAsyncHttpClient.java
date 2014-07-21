@@ -21,6 +21,7 @@ public class JunboAsyncHttpClient implements Closeable {
     protected static final Logger logger = LoggerFactory.getLogger(JunboAsyncHttpClient.class);
 
     private final AsyncHttpClient asyncHttpClient;
+    private boolean isDebugMode;
 
     private static JunboAsyncHttpClient instance = new JunboAsyncHttpClient();
     public static JunboAsyncHttpClient instance() {
@@ -29,17 +30,22 @@ public class JunboAsyncHttpClient implements Closeable {
 
     private JunboAsyncHttpClient() {
         ConfigService configService = ConfigServiceManager.instance();
+
         AsyncHttpClientConfigBean config = new AsyncHttpClientConfigBean();
+
         config.setConnectionTimeOutInMs(Integer.parseInt(configService.getConfigValue("common.client.connectionTimeout")));
         config.setRequestTimeoutInMs(Integer.parseInt(configService.getConfigValue("common.client.requestTimeout")));
+        config.setMaxConnectionPerHost(Integer.parseInt(configService.getConfigValue("common.client.maxConnectionPerHost")));
+        config.setCompressionEnabled(true);
+
         this.asyncHttpClient = new AsyncHttpClient(config);
+        this.isDebugMode = "true".equalsIgnoreCase(configService.getConfigValue("common.conf.debugMode"));
     }
 
     /**
      * The BoundRequestBuilder used to build the request.
      */
     public class BoundRequestBuilder extends RequestBuilderBase<BoundRequestBuilder> {
-
         private BoundRequestBuilder(String reqType, boolean useRawUrl) {
             super(BoundRequestBuilder.class, reqType, useRawUrl);
         }
@@ -61,6 +67,15 @@ public class JunboAsyncHttpClient implements Closeable {
                 if (logger.isTraceEnabled()) {
                     sb.append("\n\theaders:");
                     for (String key : req.getHeaders().keySet()) {
+                        if (!isDebugMode) {
+                            if ("Authorization".equals(key)) {
+                                sb.append("\n\t\t");
+                                sb.append(key);
+                                sb.append(":");
+                                sb.append("**masked**");
+                                continue;
+                            }
+                        }
                         for (String value : req.getHeaders().get(key)) {
                             sb.append("\n\t\t");
                             sb.append(key);

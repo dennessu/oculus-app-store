@@ -6,9 +6,10 @@
 
 package com.junbo.entitlement.common.def;
 
+import com.junbo.catalog.spec.enums.EntitlementType;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -35,5 +36,9 @@ public class EntitlementConsts {
     public static final Integer UNCONSUMABLE_USECOUNT = Integer.MAX_VALUE;
     public static final Integer MIN_USECOUNT = Integer.MIN_VALUE;
 
-    public static final Set<String> ALLOWED_TYPE = new HashSet<>(Arrays.asList(new String[]{"DOWNLOAD", "RUN", "DEVELOPER", "ALLOW_IN_APP"}));
+    public static final Set<String> ALLOWED_TYPE = new HashSet<String>() {{
+        for (EntitlementType type : EntitlementType.values()) {
+            add(type.toString());
+        }
+    }};
 }

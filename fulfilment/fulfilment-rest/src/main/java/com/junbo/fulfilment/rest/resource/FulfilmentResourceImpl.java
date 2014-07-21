@@ -6,7 +6,7 @@
 package com.junbo.fulfilment.rest.resource;
 
 import com.junbo.authorization.AuthorizeContext;
-import com.junbo.authorization.spec.error.AppErrors;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.FulfilmentId;
 import com.junbo.common.id.OrderId;
 import com.junbo.fulfilment.core.FulfilmentService;
@@ -55,7 +55,7 @@ public class FulfilmentResourceImpl implements FulfilmentResource {
     private static void authorize() {
         if (!AuthorizeContext.hasScopes(FULFILMENT_SERVICE_SCOPE)
                 && !AuthorizeContext.hasScopes(FULFILMENT_CSR_SCOPE)) {
-            throw AppErrors.INSTANCE.insufficientScope().exception();
+            throw AppCommonErrors.INSTANCE.insufficientScope().exception();
         }
     }
 }

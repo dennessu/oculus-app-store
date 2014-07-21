@@ -52,7 +52,8 @@ class CoreBuilder {
         Balance balance = buildBalance(order)
         balance.type = balanceType.toString()
         balance.propertySet.put(PropertyKey.LOCALE.name(), order.locale.value?.replace('-', '_'))
-
+        balance.propertySet.put(PropertyKey.IP_ADDRESS.name(), order.ipAddress)
+        balance.propertySet.put(PropertyKey.IP_GEO_LOCATION.name(), order.ipGeoAddress)
         order.orderItems.eachWithIndex { OrderItem item, int i ->
             def balanceItem = buildBalanceItem(item)
             if (item.id == null) {
@@ -96,23 +97,6 @@ class CoreBuilder {
         return balance
     }
 
-    static Balance buildRefundDepositBalance(Balance originalBalance) {
-        assert (originalBalance != null)
-
-        Balance balance = null
-        balance = buildRefundBalance(originalBalance)
-
-        originalBalance.balanceItems.each { BalanceItem item ->
-            def balanceItem = buildRefundBalanceItem(item)
-            balanceItem.originalBalanceItemId = balanceItem.getId()
-            balanceItem.setId(null)
-            balance.addBalanceItem(balanceItem)
-
-        }
-        return balance
-    }
-
-
     static List<Balance> buildRefundBalances(List<Balance> originalBalances, Order diffOrder) {
         assert (originalBalances != null)
         if (CollectionUtils.isEmpty(diffOrder.orderItems)) {
@@ -136,6 +120,7 @@ class CoreBuilder {
                     balanceItem.propertySet.put(PropertyKey.ITEM_NAME.name(), matched.offerName)
                     balanceItem.propertySet.put(PropertyKey.ITEM_DESCRIPTION.name(), matched.offerDescription)
                     balanceItem.propertySet.put(PropertyKey.ORGANIZATION_ID.name(), matched.offerOrganization)
+                    balanceItem.propertySet.put(PropertyKey.VENDOR_NAME.name(), matched.offerOrganizationName)
                     balance.addBalanceItem(balanceItem)
                     balance.propertySet.put(PropertyKey.ORIGINAL_INVOICE_DATE.name(),
                             DATE_FORMATTER.get().format(diffOrder.purchaseTime))
@@ -219,6 +204,7 @@ class CoreBuilder {
         balanceItem.propertySet.put(PropertyKey.ITEM_NAME.name(), item.offerName)
         balanceItem.propertySet.put(PropertyKey.ITEM_DESCRIPTION.name(), item.offerDescription)
         balanceItem.propertySet.put(PropertyKey.ORGANIZATION_ID.name(), item.offerOrganization)
+        balanceItem.propertySet.put(PropertyKey.VENDOR_NAME.name(), item.offerOrganizationName)
         if (item.totalDiscount > BigDecimal.ZERO) {
             DiscountItem discountItem = new DiscountItem()
             discountItem.discountAmount = item.totalDiscount
@@ -323,6 +309,7 @@ class CoreBuilder {
         else {
             item.totalAmount = ratingItem.finalTotalAmount
         }
+        item.developerRevenue = ratingItem.developerRevenue
         item.totalDiscount = ratingItem.totalDiscountAmount
         item.unitPrice = ratingItem.originalUnitPrice
         item.honorUntilTime = null

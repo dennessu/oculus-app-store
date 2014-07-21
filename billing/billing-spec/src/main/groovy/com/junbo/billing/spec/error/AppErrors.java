@@ -6,7 +6,11 @@
 
 package com.junbo.billing.spec.error;
 
-import com.junbo.common.error.*;
+import com.junbo.common.error.AppError;
+import com.junbo.common.error.ErrorDef;
+import com.junbo.common.error.ErrorDetail;
+import com.junbo.common.error.ErrorProxy;
+import com.junbo.common.id.*;
 
 import java.math.BigDecimal;
 
@@ -17,106 +21,81 @@ import java.math.BigDecimal;
 public interface AppErrors {
     AppErrors INSTANCE = ErrorProxy.newProxyInstance(AppErrors.class);
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.SHIPPING_ADDRESS_NOT_FOUND,
-            description = "Shipping address with id {0} not found")
-    AppError shippingAddressNotFound(String id);
+    @ErrorDef(httpStatusCode = 412, code = "101", message = "Address Not Found",
+            field = "{0}", reason = "Address with ID {1} is not found")
+    AppError addressNotFound(String field, UserPersonalInfoId id);
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.ADDRESS_NOT_FOUND,
-            description = "Address with id {0} not found")
-    AppError addressNotFound(String id);
+    @ErrorDef(httpStatusCode = 412, code = "102", message = "User Not Found",
+            field = "{0}", reason = "User with ID {1} is not found")
+    AppError userNotFound(String field, UserId id);
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.USER_SHIPPING_ADDRESS_NOT_MATCH,
-            description = "Shipping address with id {1} not belong to the user {0}")
-    AppError userShippingAddressNotMatch(String userId, String addressId);
+    @ErrorDef(httpStatusCode = 412, code = "103", message = "User Status Invalid",
+            field = "{0}", reason = "User {1} with status {2} is invalid for the operation")
+    AppError userStatusInvalid(String field, UserId id, String status);
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.USER_NOT_FOUND,
-            description ="User with id {0} not found")
-    AppError userNotFound(String id);
-
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.USER_STATUS_INVALID,
-            description ="User with id {0} in invalid status")
-    AppError userStatusInvalid(String id);
-
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.FIELD_MISSING_VALUE,
-            description ="Field {0} has missing value")
-    AppError fieldMissingValue(String field);
-
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.CURRENCY_NOT_FOUND,
-            description ="Currency with name {0} not found")
+    @ErrorDef(httpStatusCode = 412, code = "104", message = "Currency Not Found",
+            field = "currency", reason = "Current with ID {1} is not found")
     AppError currencyNotFound(String name);
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.COUNTRY_NOT_FOUND,
-            description ="Country with name {0} not found")
+    @ErrorDef(httpStatusCode = 412, code = "105", message = "Country Not Found",
+            field = "country", reason = "Country with ID {1} is not found")
     AppError countryNotFound(String name);
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.OFFER_NOT_FOUND,
-            description ="Offer revision with name {0} not found")
-    AppError offerNotFound(String name);
+    @ErrorDef(httpStatusCode = 412, code = "106", message = "Payment Instrument Not Found",
+            field = "{0}", reason = "Payment Instrument with ID {1} is not found")
+    AppError piNotFound(String field, PaymentInstrumentId paymentInstrumentId);
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.ORGANIZATION_NOT_FOUND,
-            description ="Organization with name {0} not found")
-    AppError organizationNotFound(String name);
+    @ErrorDef(httpStatusCode = 412, code = "107", message = "Invalid Balance Type",
+            field = "type", reason = "Balance type {0} is invalid")
+    AppError invalidBalanceType(String balanceType);
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.PAYMENT_INSTRUMENT_NOT_FOUND,
-            description ="PI with id {0} not found")
-    AppError piNotFound(String id);
-
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_BALANCE_TYPE,
-            description ="Balance type {0} invalid")
-    AppError invalidBalanceType(String type);
-
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_BALANCE_TYPE,
-            description ="Balance type {0} invalid, expected types: {1}")
-    AppError invalidBalanceType(String type, String expectedTypes);
-
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_BALANCE_STATUS,
-            description ="Balance status {0} invalid, expected status: {1}")
+    @ErrorDef(httpStatusCode = 412, code = "108", message = "Invalid Balance Status",
+            field = "status", reason = "Balance status {0} is invalid, expected status: {1}")
     AppError invalidBalanceStatus(String status, String expectedStatus);
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_BALANCE_TOTAL,
-            description ="Balance total amount {0} invalid")
+    @ErrorDef(httpStatusCode = 412, code = "109", message = "Invalid Balance Total Amount",
+            field = "totalAmount", reason = "Balance total amount {0} is invalid")
     AppError invalidBalanceTotal(String total);
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.TAX_CALCULATION_ERROR,
-            description ="Fail to calculate tax, reason: {0}")
+    @ErrorDef(httpStatusCode = 412, code = "110", message = "Failed to Calculate Tax",
+            field = "cause", reason = "Fail to calculate tax, reason: {0}")
     AppError taxCalculationError(String reason);
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.ADDRESS_VALIDATION_ERROR,
-            description ="Fail to validate address, reason: {0}")
-    AppError addressValidationError(String reason);
+    @ErrorDef(httpStatusCode = 412, code = "111", message = "Address Validation Error")
+    AppError addressValidationError();
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.BALANCE_NOT_FOUND,
-            description ="Balance with id {0} not found")
-    AppError balanceNotFound(String id);
+    @ErrorDef(httpStatusCode = 412, code = "111", message = "Address Validation Error")
+    AppError addressValidationError(ErrorDetail[] errorDetails);
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.BILLING_TRANSACTION_NOT_FOUND,
-            description ="billing transaction in balance with id {0} not found")
-    AppError transactionNotFound(String id);
+    @ErrorDef(httpStatusCode = 412, code = "112", message = "Balance Not Found",
+            field = "{0}", reason = "Balance with id {1} is not found")
+    AppError balanceNotFound(String field, BalanceId balanceId);
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_PAYMENT_ID,
-            description ="Payment with id {0} invalid")
-    AppError invalidPaymentId(String id);
+    @ErrorDef(httpStatusCode = 412, code = "113", message = "Transaction Not Found",
+            field = "{0}", reason = "Balance with id {0} doesn't contain any billing transaction")
+    AppError transactionNotFound(BalanceId balanceId);
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.NOT_ASYNC_CHARGE_BALANCE,
-            description ="The balance {0} is not an async charge balance")
-    AppError notAsyncChargeBalance(String id);
+    @ErrorDef(httpStatusCode = 412, code = "114", message = "Payment Not Found",
+            field = "{0}", reason = "Payment with id {0} is not found")
+    AppError paymentNotFound(String field, PaymentId id);
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.PAYMENT_PROCESSING_FAILED,
-            description ="The payment instrument {0} processing failed")
-    AppError paymentProcessingFailed(String id);
+    @ErrorDef(httpStatusCode = 412, code = "115", message = "Balance Not Async",
+            field = "cause", reason = "The balance {0} is not an async charge balance")
+    AppError notAsyncChargeBalance(BalanceId id);
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.PAYMENT_INSUFFICIENT_FUND,
-            description ="The payment instrument {0} stored value balance insufficient")
-    AppError paymentInsufficientFund(String id);
+    @ErrorDef(httpStatusCode = 412, code = "116", message = "Payment Processing Failed",
+            field = "cause", reason = "The payment instrument {0} processing failed")
+    AppError paymentProcessingFailed(PaymentInstrumentId id);
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.BALANCE_REFUND_TOTAL_EXCEEDED,
-            description ="The refund balance total {0} exceeded, the original total {1}, refunded total {2}")
-    AppError balanceRefundTotalExceeded(BigDecimal refund, BigDecimal original, BigDecimal refunded);
+    @ErrorDef(httpStatusCode = 412, code = "117", message = "Payment Insufficient Fund",
+            field = "cause", reason = "The payment instrument {0} stored value balance insufficient")
+    AppError paymentInsufficientFund(PaymentInstrumentId id);
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.BALANCE_ITEM_REFUND_TOTAL_EXCEEDED,
-            description ="The refund balance item total {0} exceeded, the original total {1}, refunded total {2}")
-    AppError balanceItemRefundTotalExceeded(BigDecimal refund, BigDecimal original, BigDecimal refunded);
+    @ErrorDef(httpStatusCode = 412, code = "118", message = "Balance Refund Total Exceeded",
+            field = "cause", reason = "The refund balance {0} total {1} exceeded, the original total {2}, refunded total {3}")
+    AppError balanceRefundTotalExceeded(BalanceId balanceId, BigDecimal refund, BigDecimal original, BigDecimal refunded);
 
-    @ErrorDef(httpStatusCode = 403, code = ErrorCode.INVALID_ACCESS, description = "Access Denied")
-    AppError accessDenied();
+    @ErrorDef(httpStatusCode = 412, code = "119", message = "Balance Item Refund Total Exceeded",
+            field = "cause", reason = "The refund balance {0} item {1} total {2} exceeded, the original total {3}, refunded total {4}")
+    AppError balanceItemRefundTotalExceeded(BalanceId balanceId, String balanceItemId, BigDecimal refund, BigDecimal original, BigDecimal refunded);
 }

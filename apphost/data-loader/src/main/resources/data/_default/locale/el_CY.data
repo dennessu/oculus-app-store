@@ -1,0 +1,11 @@
+{
+  "localeCode": "el_CY",
+  "shortName": "Ελληνικά (CY)",
+  "longName": "Ελληνικά (Κύπρος)",
+  "localeName": "Ελληνικά (CY)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

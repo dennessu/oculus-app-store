@@ -14,9 +14,9 @@ import com.junbo.catalog.auth.ItemAuthorizeCallbackFactory;
 import com.junbo.catalog.clientproxy.LocaleFacade;
 import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.spec.enums.LocaleAccuracy;
-import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.item.*;
 import com.junbo.catalog.spec.resource.ItemRevisionResource;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
@@ -100,13 +100,16 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
 
     @Override
     public Promise<ItemRevision> createItemRevision(final ItemRevision itemRevision) {
+        if (itemRevision.getItemId()==null) {
+            throw AppCommonErrors.INSTANCE.fieldRequired("item").exception();
+        }
         AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(itemRevision.getItemId());
         return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<ItemRevision>>() {
             @Override
             public Promise<ItemRevision> apply() {
 
                 if (!AuthorizeContext.hasRights("create")) {
-                    throw AppErrors.INSTANCE.accessDenied().exception();
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 
                 return Promise.pure(itemService.createRevision(itemRevision));
@@ -116,13 +119,16 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
 
     @Override
     public Promise<ItemRevision> updateItemRevision(final String revisionId, final ItemRevision itemRevision) {
+        if (itemRevision.getItemId()==null) {
+            throw AppCommonErrors.INSTANCE.fieldRequired("item").exception();
+        }
         AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(itemRevision.getItemId());
         return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<ItemRevision>>() {
             @Override
             public Promise<ItemRevision> apply() {
 
                 if (!AuthorizeContext.hasRights("update")) {
-                    throw AppErrors.INSTANCE.accessDenied().exception();
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 
                 return Promise.pure(itemService.updateRevision(revisionId, itemRevision));
@@ -134,7 +140,7 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
     public Promise<Response> delete(final String revisionId) {
         ItemRevision itemRevision = itemService.getRevision(revisionId);
         if (itemRevision == null) {
-            throw AppErrors.INSTANCE.notFound("item-revision", revisionId).exception();
+            throw AppCommonErrors.INSTANCE.resourceNotFound("item-revision", revisionId).exception();
         }
 
         AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(itemRevision.getItemId());
@@ -143,7 +149,7 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
             public Promise<Response> apply() {
 
                 if (!AuthorizeContext.hasRights("delete")) {
-                    throw AppErrors.INSTANCE.accessDenied().exception();
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 
                 itemService.deleteRevision(revisionId);

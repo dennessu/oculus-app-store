@@ -1,11 +1,14 @@
 package com.junbo.order.jobs.subledger
+
+import com.junbo.configuration.topo.DataCenters
+import com.junbo.configuration.topo.model.DataCenter
 import com.junbo.order.core.SubledgerService
 import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.core.impl.subledger.SubledgerHelper
-import com.junbo.order.spec.model.enums.SubledgerItemStatus
 import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
 import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.model.SubledgerItem
+import com.junbo.order.spec.model.enums.SubledgerItemStatus
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -13,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
+
 /**
  * Created by fzhang on 4/8/2014.
  */
@@ -84,16 +88,13 @@ class SubledgerAggregator {
 
     private List<SubledgerItem> readItems() {
         def result = [] as LinkedList<SubledgerItem>
-        allShards.each { Integer shard ->
+        DataCenter dataCenter = DataCenters.instance().getDataCenter(DataCenters.instance().currentDataCenterId())
+        for (int shardId = 0; shardId < dataCenter.numberOfShard; ++shardId) {
             result.addAll(transactionHelper.executeInTransaction {
-                return subledgerRepository.getSubledgerItem(shard, SubledgerItemStatus.PENDING.name(),
+                return subledgerRepository.getSubledgerItem(dataCenter.id, shardId, SubledgerItemStatus.PENDING_PROCESS.name(),
                         new PageParam(count: this.pageSize, start: 0))
             })
         }
         return result
-    }
-
-    private List<Integer> getAllShards() {
-        return [0, 1]
     }
 }

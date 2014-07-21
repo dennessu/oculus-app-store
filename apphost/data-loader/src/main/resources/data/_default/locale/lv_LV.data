@@ -1,0 +1,11 @@
+{
+  "localeCode": "lv_LV",
+  "shortName": "Latviešu (LV)",
+  "longName": "Latviešu (Latvija)",
+  "localeName": "Latviešu (LV)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

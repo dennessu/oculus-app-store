@@ -99,7 +99,7 @@ ext {
 
             // asyc client
             asyncclient: 'org.apache.httpcomponents:httpcomponents-asyncclient:4.0',
-            async_http_client: 'com.ning:async-http-client:1.7.22',
+            async_http_client: 'com.ning:async-http-client:1.8.12',
 
             // free marker
             freemarker: 'org.freemarker:freemarker:2.3.20',
@@ -146,6 +146,9 @@ ext {
             javaee_api: 'javax:javaee-api:7.0',
             commons_discovery: 'commons-discovery:commons-discovery:0.2',
             wsdl4j: 'wsdl4j:wsdl4j:1.6.2',
+
+            //aws java sdk
+            aws_sdk: 'com.amazonaws:aws-java-sdk:1.8.2',
 
             //****** common test lib dependencies ******
             apache_commons_lang: 'org.apache.commons:commons-lang3:3.1',

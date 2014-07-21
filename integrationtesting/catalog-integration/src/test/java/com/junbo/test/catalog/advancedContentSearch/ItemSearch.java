@@ -95,7 +95,11 @@ public class ItemSearch extends BaseTestClass {
         itemRevisionPrepared.setPackageName(RandomFactory.getRandomStringOfAlphabet(10));
 
         //set userInteractionMode
-        itemRevisionPrepared.setUserInteractionMode("SINGLE_USER");
+        List<String> userMode = new ArrayList<>();
+        userMode.add("SINGLE_USER");
+        userMode.add("MULTI_USER");
+        userMode.add("CO_OP");
+        itemRevisionPrepared.setUserInteractionModes(userMode);
 
         //set platform
         List<String> platform = new ArrayList<>();
@@ -107,11 +111,11 @@ public class ItemSearch extends BaseTestClass {
 
         //set name, revisionNotes, long description and short description
         ItemRevisionLocaleProperties itemRevisionLocaleProperties = new ItemRevisionLocaleProperties();
-        RevisionNotes revisionNotes = new RevisionNotes();
-        revisionNotes.setShortNotes("shortRevisionNotes_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
-        revisionNotes.setLongNotes("longRevisionNotes_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
+        RevisionNotes releaseNotes = new RevisionNotes();
+        releaseNotes.setShortNotes("shortReleaseNotes_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
+        releaseNotes.setLongNotes("longReleaseNotes_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
         itemRevisionLocaleProperties.setName("testItemRevision_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
-        itemRevisionLocaleProperties.setRevisionNotes(revisionNotes);
+        itemRevisionLocaleProperties.setReleaseNotes(releaseNotes);
         itemRevisionLocaleProperties.setLongDescription("longDescription_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
         itemRevisionLocaleProperties.setShortDescription("shortDescription_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
         HashMap<String, ItemRevisionLocaleProperties> locales = new HashMap<>();
@@ -210,14 +214,14 @@ public class ItemSearch extends BaseTestClass {
         buildSearchQuery(name, 1, itemId2);
 
         //longRevisionNotes
-        String longRevisionNotes = itemRevisionLocaleProperties.getRevisionNotes().getLongNotes();
+        String longRevisionNotes = itemRevisionLocaleProperties.getReleaseNotes().getLongNotes();
         buildSearchQuery("longNotes:" + longRevisionNotes, 1, itemId2);
 
         //default -- revisionNotes
         buildSearchQuery(longRevisionNotes, 1, itemId2);
 
         //shortRevisionNotes
-        String shortRevisionNotes = itemRevisionLocaleProperties.getRevisionNotes().getShortNotes();
+        String shortRevisionNotes = itemRevisionLocaleProperties.getReleaseNotes().getShortNotes();
         buildSearchQuery("shortNotes:" + shortRevisionNotes, 1, itemId2);
 
         //default -- revisionNotes
@@ -263,8 +267,8 @@ public class ItemSearch extends BaseTestClass {
         ItemRevisionLocaleProperties itemRevisionLocaleProperties = itemRevision.getLocales().get(defaultLocale);
         String packageName = itemRevision.getPackageName();
         String name = itemRevisionLocaleProperties.getName();
-        String longRevisionNotes = itemRevisionLocaleProperties.getRevisionNotes().getLongNotes();
-        String shortRevisionNotes = itemRevisionLocaleProperties.getRevisionNotes().getShortNotes();
+        String longReleaseNotes = itemRevisionLocaleProperties.getReleaseNotes().getLongNotes();
+        String shortReleaseNotes = itemRevisionLocaleProperties.getReleaseNotes().getShortNotes();
         String longDescription = itemRevisionLocaleProperties.getLongDescription();
         String shortDescription = itemRevisionLocaleProperties.getShortDescription();
 
@@ -278,7 +282,7 @@ public class ItemSearch extends BaseTestClass {
         buildSearchQuery("itemId:" + itemId1 + "%20AND%20" + itemType2, 0);
 
         //gameMode
-        String userInteractionMode = itemRevision.getUserInteractionMode();
+        String userInteractionMode = itemRevision.getUserInteractionModes().get(0);
         buildSearchQuery("userInteractionMode:" + userInteractionMode + "%20AND%20itemId:" + itemId2, 1, itemId2);
 
 
@@ -301,8 +305,8 @@ public class ItemSearch extends BaseTestClass {
         buildSearchQuery("itemId:" + itemId1 + "%20OR%20revisionId:" + item2.getCurrentRevisionId(), 2, itemId1, itemId2);
         buildSearchQuery("itemId:" + itemId1 + "%20OR%20itemId:" + itemId2, 2, itemId1, itemId2);
         buildSearchQuery("itemId:" + itemId1 + "%20OR%20packageName:" + packageName, 2, itemId1, itemId2);
-        buildSearchQuery("name:" + name + "%20OR%20longNotes:" + longRevisionNotes, 1, itemId2);
-        buildSearchQuery(itemId1 + "%20OR%20name:" + name + "%20OR%20shortNotes:" + shortRevisionNotes, 2, itemId1, itemId2);
+        buildSearchQuery("name:" + name + "%20OR%20longNotes:" + longReleaseNotes, 1, itemId2);
+        buildSearchQuery(itemId1 + "%20OR%20name:" + name + "%20OR%20shortNotes:" + shortReleaseNotes, 2, itemId1, itemId2);
         buildSearchQuery(longDescription + "%20AND%20" + shortDescription, 1, itemId2);
         buildSearchQuery(longDescription + "%20OR%20" + shortDescription, 1, itemId2);
     }

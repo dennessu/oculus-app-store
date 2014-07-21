@@ -9,6 +9,7 @@ import com.junbo.authorization.AbstractAuthorizeCallbackFactory
 import com.junbo.authorization.AuthorizeCallback
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.SubledgerId
+import com.junbo.langur.core.promise.Promise
 import com.junbo.order.spec.model.Subledger
 import com.junbo.order.spec.resource.SubledgerResource
 import groovy.transform.CompileStatic
@@ -37,5 +38,9 @@ class SubledgerAuthorizeCallbackFactory extends AbstractAuthorizeCallbackFactory
 
     AuthorizeCallback<Subledger> create(SubledgerId subledgerId) {
         return create(subledgerResource.getSubledger(subledgerId).get())
+    }
+
+    AuthorizeCallback<Subledger> create() {
+        return new SubledgerAuthorizeCallback(this, new Subledger())
     }
 }

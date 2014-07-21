@@ -16,6 +16,6 @@ import java.util.List;
 public interface TransactionEntityDao {
     TransactionEntity get(Long transactionId);
     TransactionEntity save(TransactionEntity transaction);
-    TransactionEntity update(TransactionEntity transaction);
+    TransactionEntity update(TransactionEntity transaction, TransactionEntity oldTransaction);
     List<TransactionEntity> findByBalanceId(Long balanceId);
 }

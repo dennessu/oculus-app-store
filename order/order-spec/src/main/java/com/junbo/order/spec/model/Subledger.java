@@ -22,7 +22,7 @@ import java.util.Date;
  */
 @JsonPropertyOrder(value = {
         "id", "seller", "offer", "country", "currency",
-        "payoutStatus", "totalAmount", "startTime", "endTime", "resourceAge"
+        "payoutStatus", "totalAmount", "totalPayoutAmount" , "totalQuantity", "startTime", "endTime", "resourceAge"
 })
 public class Subledger extends ResourceMetaForDualWrite<SubledgerId> {
     @JsonProperty("self")
@@ -35,6 +35,8 @@ public class Subledger extends ResourceMetaForDualWrite<SubledgerId> {
     private CountryId country;
     private CurrencyId currency;
     private BigDecimal totalAmount;
+    private BigDecimal totalPayoutAmount;
+    private Long totalQuantity;
 
     public SubledgerId getId() {
         return id;
@@ -106,5 +108,21 @@ public class Subledger extends ResourceMetaForDualWrite<SubledgerId> {
 
     public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    public BigDecimal getTotalPayoutAmount() {
+        return totalPayoutAmount;
+    }
+
+    public void setTotalPayoutAmount(BigDecimal totalPayoutAmount) {
+        this.totalPayoutAmount = totalPayoutAmount;
+    }
+
+    public Long getTotalQuantity() {
+        return totalQuantity;
+    }
+
+    public void setTotalQuantity(Long totalQuantity) {
+        this.totalQuantity = totalQuantity;
     }
 }

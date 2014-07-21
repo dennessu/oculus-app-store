@@ -25,7 +25,7 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
 
     @Override
     public OfferRevision create(OfferRevision offerRevision) {
-        return cloudantPost(offerRevision).get();
+        return cloudantPostSync(offerRevision);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
         if (revisionId == null) {
             return null;
         }
-        return cloudantGet(revisionId).get();
+        return cloudantGetSync(revisionId);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
         List<OfferRevision> offerRevisions = new ArrayList<>();
         if (!CollectionUtils.isEmpty(options.getRevisionIds())) {
             for (String revisionId : options.getRevisionIds()) {
-                OfferRevision revision = cloudantGet(revisionId.toString()).get();
+                OfferRevision revision = cloudantGetSync(revisionId.toString());
                 if (revision==null) {
                     continue;
                 } else if (!StringUtils.isEmpty(options.getStatus())
@@ -111,13 +111,13 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
     }
 
     @Override
-    public OfferRevision update(OfferRevision revision) {
-        return cloudantPut(revision).get();
+    public OfferRevision update(OfferRevision revision, OfferRevision oldRevision) {
+        return cloudantPutSync(revision, oldRevision);
     }
 
     @Override
     public void delete(String revisionId) {
-        cloudantDelete(revisionId).get();
+        cloudantDeleteSync(revisionId);
     }
 
 }

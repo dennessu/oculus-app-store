@@ -29,6 +29,8 @@ public interface UserService {
 
     String PostUser(String userName, String emailAddress) throws Exception;
 
+    String PostUser(String userName, String pwd, String emailAddress) throws Exception;
+
     //Get the user by userId
     String GetUserByUserId(String userId) throws Exception;
 
@@ -43,4 +45,10 @@ public interface UserService {
     String PutUser(String userId, User user) throws Exception;
 
     String PutUser(String userId, User user, int expectedResponseCode) throws Exception;
+
+    String PostEmailVerification(String userId, String country, String locale) throws Exception;
+
+    String PostEmailVerification(String userId, String country, String locale, int expectedResponseCode) throws Exception;
+
+
 }

@@ -6,15 +6,16 @@
         "priceType": "CUSTOM",
         "priceTier": null,
         "prices": {
-            "US": {"USD": 10},
-            "JP": {"JPY": 1000.0}
+            "US": {"USD": 10.00},
+            "JP": {"JPY": 1000}
         }
     },
+    "distributionChannel": ["STORE"],
     "supportedInputDevices": ["KEYBOARD", "MOUSE"],
     "locales":{
         "en_US":{
             "name": "Angry Bird",
-            "revisionNotes": {
+            "releaseNotes": {
                 "shortNotes": "Short Notes",
                 "longNotes": "Long notes"
             },

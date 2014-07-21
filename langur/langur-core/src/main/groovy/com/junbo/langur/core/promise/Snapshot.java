@@ -41,40 +41,64 @@ class Snapshot {
 
 
     public Snapshot() {
-        classLoader = Thread.currentThread().getContextClassLoader();
+        Thread currentThread = Thread.currentThread();
 
-        // ensure the threadLocal is not null
-        dummyThreadLocal.set("keepme");
-        dummyInheritableThreadLocal.set("keepme");
+        classLoader = currentThread.getContextClassLoader();
 
         try {
-            threadLocals = threadLocalsField.get(Thread.currentThread());
-            inheritableThreadLocals = inheritableThreadLocalsField.get(Thread.currentThread());
+            Object threadLocals = threadLocalsField.get(currentThread);
+
+            if (threadLocals == null) {
+                dummyThreadLocal.set("keepme");
+                threadLocals = threadLocalsField.get(currentThread);
+            }
+
+            Object inheritableThreadLocals = inheritableThreadLocalsField.get(currentThread);
+
+            if (inheritableThreadLocals == null) {
+                dummyInheritableThreadLocal.set("keepme");
+                inheritableThreadLocals = inheritableThreadLocalsField.get(currentThread);
+            }
 
             assert threadLocals != null;
             assert inheritableThreadLocals != null;
+
+            this.threadLocals = threadLocals;
+            this.inheritableThreadLocals = inheritableThreadLocals;
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("ThreadLocal Snapshot: Stored threadlocal from tid {}, {} : {}", Thread.currentThread().getId(), threadLocals, inheritableThreadLocals);
+            logger.debug("ThreadLocal Snapshot: Stored threadlocal from tid {}, {} : {}", currentThread.getId(), threadLocals, inheritableThreadLocals);
         }
         // more things could be added. e.g. call stack, transaction context, etc.
     }
 
     public void resume() {
-        Thread.currentThread().setContextClassLoader(classLoader);
+        Thread currentThread = Thread.currentThread();
+
+        ClassLoader classLoader = currentThread.getContextClassLoader();
+        if (classLoader != this.classLoader) {
+            currentThread.setContextClassLoader(this.classLoader);
+        }
 
         try {
-            threadLocalsField.set(Thread.currentThread(), threadLocals);
-            inheritableThreadLocalsField.set(Thread.currentThread(), inheritableThreadLocals);
+            Object threadLocals = threadLocalsField.get(currentThread);
+            if (threadLocals != this.threadLocals) {
+                threadLocalsField.set(currentThread, this.threadLocals);
+            }
+
+            Object inheritableThreadLocals = inheritableThreadLocalsField.get(currentThread);
+            if (inheritableThreadLocals != this.inheritableThreadLocals) {
+                inheritableThreadLocalsField.set(currentThread, this.inheritableThreadLocals);
+            }
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("ThreadLocal Snapshot: Resumed threadlocal from tid {}, {} : {}", Thread.currentThread().getId(), threadLocals, inheritableThreadLocals);
+            logger.debug("ThreadLocal Snapshot: Resumed threadlocal from tid {}, {} : {}", currentThread.getId(), threadLocals, inheritableThreadLocals);
         }
         // more things could be added. e.g. call stack, transaction context, etc.
     }

@@ -41,7 +41,7 @@ public class TransactionRepositoryFacadeImpl implements TransactionRepositoryFac
     }
 
     @Override
-    public Transaction updateTransaction(Transaction transaction) {
-        return transactionRepository.update(transaction).get();
+    public Transaction updateTransaction(Transaction transaction, Transaction oldTransaction) {
+        return transactionRepository.update(transaction, oldTransaction).get();
     }
 }

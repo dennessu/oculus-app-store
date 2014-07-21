@@ -37,7 +37,7 @@ public interface SubledgerResource {
     Promise<Subledger> getSubledger(@PathParam("subledgerId")SubledgerId subledgerId);
 
     @GET
-    @RouteBy(value = "subledgerParam.getSellerId()", fallbackToAnyLocal = true)
+    @RouteBy(value = "subledgerParam.getSellerId()")
     Promise<Results<Subledger>> getSubledgers(@BeanParam SubledgerParam subledgerParam, @BeanParam PageParam pageParam);
 
 }

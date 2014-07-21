@@ -64,7 +64,7 @@ class DeviceResourceImpl implements DeviceResource {
             device = deviceFilter.filterForPut(device, oldDevice)
 
             return deviceValidator.validateForUpdate(deviceId, device, oldDevice).then {
-                return deviceRepository.update(device).then { Device newDevice ->
+                return deviceRepository.update(device, oldDevice).then { Device newDevice ->
                     newDevice = deviceFilter.filterForGet(newDevice, null)
                     return Promise.pure(newDevice)
                 }
@@ -86,7 +86,7 @@ class DeviceResourceImpl implements DeviceResource {
             device = deviceFilter.filterForPatch(device, oldDevice)
 
             return deviceValidator.validateForUpdate(deviceId, device, oldDevice).then {
-                return deviceRepository.update(device).then { Device newDevice ->
+                return deviceRepository.update(device, oldDevice).then { Device newDevice ->
                     newDevice = deviceFilter.filterForGet(newDevice, null)
                     return Promise.pure(newDevice)
                 }

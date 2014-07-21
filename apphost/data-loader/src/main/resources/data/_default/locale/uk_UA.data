@@ -1,0 +1,11 @@
+{
+  "localeCode": "uk_UA",
+  "shortName": "Український (UA)",
+  "longName": "Український (Україна)",
+  "localeName": "Український (UA)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

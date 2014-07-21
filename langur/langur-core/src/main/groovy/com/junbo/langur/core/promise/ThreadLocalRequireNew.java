@@ -31,10 +31,10 @@ public class ThreadLocalRequireNew implements AutoCloseable {
         }
     }
 
-    private final ClassLoader classLoader;
+    private ClassLoader classLoader;
 
-    private final Object threadLocals;
-    private final Object inheritableThreadLocals;
+    private Object threadLocals;
+    private Object inheritableThreadLocals;
 
     public ThreadLocalRequireNew() {
         classLoader = Thread.currentThread().getContextClassLoader();

@@ -23,11 +23,10 @@
     <bean id="rsaCipherService" class="com.junbo.crypto.core.service.impl.RSACipherServiceImpl" />
 
     <bean id="keyStoreService" class="com.junbo.crypto.core.service.impl.KeyStoreServiceImpl">
-        <constructor-arg name="keyStorePath" value="${crypto.core.keyStorePath}" />
+        <constructor-arg name="keyStore" value="${crypto.core.keyStore}" />
         <constructor-arg name="keyStorePassword" value="${crypto.core.keyStorePassword}" />
         <constructor-arg name="keyAliases" value="${crypto.core.keyAlias}" />
         <constructor-arg name="keyPasswords" value="${crypto.core.keyPassword}" />
-        <constructor-arg name="enableEncrypt" value="${crypto.core.enable}" />
     </bean>
 
     <bean id="itemCryptoValidator" class="com.junbo.crypto.core.validator.impl.ItemCryptoValidatorImpl">

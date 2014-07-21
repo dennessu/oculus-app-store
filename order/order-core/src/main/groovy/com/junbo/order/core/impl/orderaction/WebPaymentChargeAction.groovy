@@ -2,6 +2,7 @@ package com.junbo.order.core.impl.orderaction
 import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.model.Balance
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
@@ -10,6 +11,7 @@ import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.BillingEventHistoryBuilder
 import com.junbo.order.core.impl.common.CoreBuilder
+import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
@@ -45,12 +47,13 @@ class WebPaymentChargeAction extends BaseOrderEventAwareAction {
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def order = context.orderServiceContext.order
+        CoreUtils.readHeader(order, context?.orderServiceContext?.apiContext)
         orderInternalService.markSettlement(order)
         if (order.payments[0].successRedirectUrl == null) {
-            throw AppErrors.INSTANCE.missingParameterField('successRedirectUrl').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('successRedirectUrl').exception()
         }
         if (order.payments[0].cancelRedirectUrl == null) {
-            throw AppErrors.INSTANCE.missingParameterField('cancelRedirectUrl').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('cancelRedirectUrl').exception()
         }
         Promise promise =
                 facadeContainer.billingFacade.createBalance(

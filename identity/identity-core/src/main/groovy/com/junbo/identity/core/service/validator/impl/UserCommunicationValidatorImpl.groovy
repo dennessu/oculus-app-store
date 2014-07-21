@@ -1,5 +1,6 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserCommunicationId
 import com.junbo.identity.core.service.validator.UserCommunicationValidator
 import com.junbo.identity.data.identifiable.UserStatus
@@ -32,7 +33,7 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
     Promise<UserCommunication> validateForGet(UserCommunicationId userCommunicationId) {
 
         if (userCommunicationId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userCommunicationId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userCommunicationId').exception()
         }
 
         return userCommunicationRepository.get(userCommunicationId).then { UserCommunication userCommunication ->
@@ -51,7 +52,7 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
         }
 
         if (options.userId == null && options.communicationId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userId or communicationId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId or communicationId').exception()
         }
 
         return Promise.pure(null)
@@ -61,14 +62,14 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
     Promise<Void> validateForCreate(UserCommunication userCommunication) {
         return checkBasicUserCommunicationInfo(userCommunication).then {
             if (userCommunication.id != null) {
-                throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+                throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
             }
 
             return userCommunicationRepository.searchByUserIdAndCommunicationId(userCommunication.userId,
                     userCommunication.communicationId, Integer.MAX_VALUE, 0
             ).then { List<UserCommunication> existing ->
                 if (!CollectionUtils.isEmpty(existing)) {
-                    throw AppErrors.INSTANCE.fieldDuplicate('communicationId').exception()
+                    throw AppCommonErrors.INSTANCE.fieldDuplicate('communicationId').exception()
                 }
 
                 return Promise.pure(null)
@@ -82,11 +83,11 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
 
         return validateForGet(userCommunicationId).then { UserCommunication existingUserOptin ->
             if (existingUserOptin.userId != userCommunication.userId) {
-                throw AppErrors.INSTANCE.fieldInvalid('userId').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('userId').exception()
             }
 
             if (existingUserOptin.userId != oldUserCommunication.userId) {
-                throw AppErrors.INSTANCE.fieldInvalid('userId').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('userId').exception()
             }
 
             return checkBasicUserCommunicationInfo(userCommunication)
@@ -96,18 +97,18 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
             }
 
             if (userCommunication.id != userCommunicationId) {
-                throw AppErrors.INSTANCE.fieldInvalid('id', userCommunicationId.value.toString()).exception()
+                throw AppCommonErrors.INSTANCE.fieldNotWritable('id', userCommunication.id, userCommunicationId).exception()
             }
 
             if (userCommunication.id != oldUserCommunication.id) {
-                throw AppErrors.INSTANCE.fieldInvalid('id', oldUserCommunication.id.toString()).exception()
+                throw AppCommonErrors.INSTANCE.fieldNotWritable('id', userCommunication.id, oldUserCommunication.id).exception()
             }
 
             if (userCommunication.communicationId != oldUserCommunication.communicationId) {
                 return userCommunicationRepository.searchByUserIdAndCommunicationId(userCommunication.userId,
                         userCommunication.communicationId, Integer.MAX_VALUE, 0).then { List<UserCommunication> existing ->
                     if (!CollectionUtils.isEmpty(existing)) {
-                        throw AppErrors.INSTANCE.fieldDuplicate('communicationId').exception()
+                        throw AppCommonErrors.INSTANCE.fieldDuplicate('communicationId').exception()
                     }
 
                     return Promise.pure(null)
@@ -127,7 +128,7 @@ class UserCommunicationValidatorImpl implements UserCommunicationValidator {
         }
 
         if (userCommunication.userId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
         return userRepository.get(userCommunication.userId).then { User existingUser ->

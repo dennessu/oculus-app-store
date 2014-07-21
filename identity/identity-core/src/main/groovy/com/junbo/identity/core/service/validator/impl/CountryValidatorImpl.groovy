@@ -2,6 +2,7 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.identity.common.util.CountryCode
 import com.junbo.identity.common.util.ValidatorUtil
 import com.junbo.identity.core.service.validator.CountryValidator
@@ -132,13 +133,13 @@ class CountryValidatorImpl implements CountryValidator {
     @Override
     Promise<Void> validateForCreate(Country country) {
         if (country.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
 
         return checkBasicCountryInfo(country).then {
             return countryRepository.get(new CountryId(country.countryCode)).then { Country existing ->
                 if (existing != null) {
-                    throw AppErrors.INSTANCE.fieldDuplicate('countryCode').exception()
+                    throw AppCommonErrors.INSTANCE.fieldDuplicate('countryCode').exception()
                 }
 
                 return Promise.pure(null)
@@ -157,15 +158,15 @@ class CountryValidatorImpl implements CountryValidator {
         }
 
         if (countryId != country.id) {
-            throw AppErrors.INSTANCE.fieldInvalid('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('id').exception()
         }
 
         if (countryId != oldCountry.id) {
-            throw AppErrors.INSTANCE.fieldInvalid('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('id').exception()
         }
 
         if (country.countryCode != oldCountry.countryCode) {
-            throw AppErrors.INSTANCE.fieldInvalid('countryCode').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('countryCode').exception()
         }
 
         return checkBasicCountryInfo(country)
@@ -177,11 +178,11 @@ class CountryValidatorImpl implements CountryValidator {
         }
 
         if (country.countryCode == null) {
-            throw AppErrors.INSTANCE.fieldRequired('countryCode').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('countryCode').exception()
         }
 
         if (!ValidatorUtil.isValidCountryCode(country.countryCode)) {
-            throw AppErrors.INSTANCE.fieldInvalid('countryCode', CountryCode.values().join(',')).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalidEnum('countryCode', CountryCode.values().join(',')).exception()
         }
 
         return checkDefaultLocale(country).then {
@@ -199,7 +200,7 @@ class CountryValidatorImpl implements CountryValidator {
 
     private Promise<Void> checkDefaultLocale(Country country) {
         if (country.defaultLocale == null) {
-            throw AppErrors.INSTANCE.fieldRequired('defaultLocale').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('defaultLocale').exception()
         }
 
         return localeRepository.get(country.defaultLocale).then { com.junbo.identity.spec.v1.model.Locale locale ->
@@ -213,7 +214,7 @@ class CountryValidatorImpl implements CountryValidator {
 
     private Promise<Void> checkDefaultCurrency(Country country) {
         if (country.defaultCurrency == null) {
-            throw AppErrors.INSTANCE.fieldRequired('defaultCurrency').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('defaultCurrency').exception()
         }
 
         return currencyRepository.get(country.defaultCurrency).then {
@@ -237,12 +238,12 @@ class CountryValidatorImpl implements CountryValidator {
 
     private Promise<Void> checkSubCountries(Country country) {
         if (country.subCountries == null) {
-            throw AppErrors.INSTANCE.fieldRequired('subCountries').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('subCountries').exception()
         }
 
         country.subCountries.each { Map.Entry<String, SubCountryLocaleKeys> subCountryEntry ->
             if (StringUtils.isEmpty(subCountryEntry.key)) {
-                throw AppErrors.INSTANCE.fieldInvalidException('subCountries.key', 'key can\'t be null or empty').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('subCountries.key', 'key can\'t be null or empty').exception()
             }
 
             checkSubCountryLocaleKeys(subCountryEntry.value)
@@ -253,7 +254,7 @@ class CountryValidatorImpl implements CountryValidator {
 
     private Promise<Void> checkSupportedLocales(Country country) {
         if (country.supportedLocales == null) {
-            throw AppErrors.INSTANCE.fieldRequired('supportedLocales').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('supportedLocales').exception()
         }
 
         Collection<LocaleId> localeIdList = country.supportedLocales.unique { LocaleId localeId ->
@@ -261,7 +262,7 @@ class CountryValidatorImpl implements CountryValidator {
         }
 
         if (localeIdList.size() != country.supportedLocales.size()) {
-            throw AppErrors.INSTANCE.fieldInvalidException('supportedLocales', 'Duplicate localeId found.').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('supportedLocales', 'Duplicate localeId found.').exception()
         }
 
         return Promise.each(country.supportedLocales) { LocaleId localeId ->
@@ -279,36 +280,36 @@ class CountryValidatorImpl implements CountryValidator {
 
     private Promise<Void> checkCountryLocaleKeys(Country country) {
         if (country.locales == null) {
-            throw AppErrors.INSTANCE.fieldRequired('locales').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('locales').exception()
         }
 
         country.locales.locales.each { Map.Entry<String, CountryLocaleKey> entry ->
             if (StringUtils.isEmpty(entry.key)) {
-                throw AppErrors.INSTANCE.fieldInvalidException('locales.key', 'locales.key can\'t be null or empty').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('locales.key', 'locales.key can\'t be null or empty').exception()
             }
 
             CountryLocaleKey value = entry.value
             if (value == null) {
-                throw AppErrors.INSTANCE.fieldRequired('locales.value').exception()
+                throw AppCommonErrors.INSTANCE.fieldRequired('locales.value').exception()
             }
             if (value.shortName == null) {
-                throw AppErrors.INSTANCE.fieldRequired('locales.value.shortName').exception()
+                throw AppCommonErrors.INSTANCE.fieldRequired('locales.value.shortName').exception()
             }
             if (value.shortName.length() > maxCountryShortNameLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('locales.value.shortName', maxCountryShortNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooLong('locales.value.shortName', maxCountryShortNameLength).exception()
             }
             if (value.shortName.length() < minCountryShortNameLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('locales.value.shortName', minCountryShortNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooShort('locales.value.shortName', minCountryShortNameLength).exception()
             }
 
             if (value.longName == null) {
-                throw AppErrors.INSTANCE.fieldRequired('locales.value.longName').exception()
+                throw AppCommonErrors.INSTANCE.fieldRequired('locales.value.longName').exception()
             }
             if (value.longName.length() > maxCountryLongNameLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('locales.value.longName', maxCountryLongNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooLong('locales.value.longName', maxCountryLongNameLength).exception()
             }
             if (value.longName.length() < minCountryLongNameLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('locales.value.longName', minCountryLongNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooShort('locales.value.longName', minCountryLongNameLength).exception()
             }
         }
 
@@ -317,37 +318,37 @@ class CountryValidatorImpl implements CountryValidator {
 
     private void checkSubCountryLocaleKeys(SubCountryLocaleKeys locales) {
         if (locales == null) {
-            throw AppErrors.INSTANCE.fieldInvalidException('locales', 'subCountries is null').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('locales', 'subCountries is null').exception()
         }
         if (locales.locales == null || locales.locales.isEmpty()) {
-            throw AppErrors.INSTANCE.fieldInvalidException('locales', 'subCountries can\'t be empty').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('locales', 'subCountries can\'t be empty').exception()
         }
 
         locales.locales.each { Map.Entry<String, SubCountryLocaleKey> localeKeyEntry ->
             if (localeKeyEntry.value == null) {
-                throw AppErrors.INSTANCE.fieldInvalid('subCountries.locales').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('subCountries.locales').exception()
             }
 
             SubCountryLocaleKey localeKey = localeKeyEntry.value
 
             if (localeKey.shortName == null) {
-                throw AppErrors.INSTANCE.fieldRequired('subCountries.locales.shortName').exception()
+                throw AppCommonErrors.INSTANCE.fieldRequired('subCountries.locales.shortName').exception()
             }
             if (localeKey.shortName.length() > maxSubCountryShortNameLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('subCountries.locales.shortName', maxSubCountryShortNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooLong('subCountries.locales.shortName', maxSubCountryShortNameLength).exception()
             }
             if (localeKey.shortName.length() < minSubCountryShortNameLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('subCountries.locales.shortName', minSubCountryShortNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooShort('subCountries.locales.shortName', minSubCountryShortNameLength).exception()
             }
 
             if (localeKey.longName == null) {
-                throw AppErrors.INSTANCE.fieldRequired('subCountries.locales.longName').exception()
+                throw AppCommonErrors.INSTANCE.fieldRequired('subCountries.locales.longName').exception()
             }
             if (localeKey.longName.length() > maxSubCountryLongNameLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('subCountries.locales.longName', maxSubCountryLongNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooLong('subCountries.locales.longName', maxSubCountryLongNameLength).exception()
             }
             if (localeKey.longName.length() < minSubCountryLongNameLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('subCountries.locales.longName', minSubCountryLongNameLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooShort('subCountries.locales.longName', minSubCountryLongNameLength).exception()
             }
         }
     }

@@ -25,15 +25,14 @@ public class PaymentGatewayImpl implements PaymentGateway {
     private PaymentTransactionResource paymentResource;
 
     public PaymentTransaction chargePayment(PaymentTransaction tx){
-        try{
+        try {
             PaymentTransaction response = paymentResource.postPaymentCharge(tx).get();
 
             return response;
-        }catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.error("Error occurred during calling [Payment] component.", e);
             throw SubscriptionExceptions.INSTANCE.gatewayFailure("payment").exception();
         }
-
     }
 
 }

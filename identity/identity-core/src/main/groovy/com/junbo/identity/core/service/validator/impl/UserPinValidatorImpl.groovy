@@ -1,5 +1,6 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPinId
 import com.junbo.identity.core.service.credential.CredentialHash
@@ -37,11 +38,11 @@ class UserPinValidatorImpl implements UserPinValidator {
     @Override
     Promise<UserPin> validateForGet(UserId userId, UserPinId userPinId) {
         if (userId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         if (userPinId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userPinId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userPinId').exception()
         }
 
         return userRepository.get(userId).then { User user ->
@@ -55,7 +56,7 @@ class UserPinValidatorImpl implements UserPinValidator {
                 }
 
                 if (userId != userPin.userId) {
-                    throw AppErrors.INSTANCE.parameterInvalid('userId and userPinId doesn\'t match.').exception()
+                    throw AppCommonErrors.INSTANCE.parameterInvalid('userId and userPinId doesn\'t match.').exception()
                 }
 
                 return Promise.pure(userPin)
@@ -70,7 +71,7 @@ class UserPinValidatorImpl implements UserPinValidator {
         }
 
         if (options.userId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         return Promise.pure(null)
@@ -83,14 +84,14 @@ class UserPinValidatorImpl implements UserPinValidator {
         }
         checkBasicUserPinInfo(userPin)
         if (userPin.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
         if (userPin.userId != null && userPin.userId != userId) {
-            throw AppErrors.INSTANCE.fieldInvalid('userId', userPin.userId.toString()).exception()
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('userId', userPin.userId, userId).exception()
         }
 
         if (userPin.active != null) {
-            throw AppErrors.INSTANCE.fieldInvalid('active').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('active').exception()
         }
 
         List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
@@ -147,16 +148,16 @@ class UserPinValidatorImpl implements UserPinValidator {
         }
 
         if (userPin.value.size() > valueMaxLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('value', valueMaxLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooLong('value', valueMaxLength).exception()
         }
 
         if (userPin.value.size() < valueMinLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('value', valueMinLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooShort('value', valueMinLength).exception()
         }
 
         if (userPin.expiresBy != null) {
             if (userPin.expiresBy.before(new Date())) {
-                throw AppErrors.INSTANCE.fieldInvalid(userPin.expiresBy.toString()).exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid(userPin.expiresBy.toString()).exception()
             }
         }
     }

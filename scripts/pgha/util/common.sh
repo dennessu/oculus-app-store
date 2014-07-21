@@ -1,24 +1,42 @@
 #!/bin/bash
 DIR="$( cd "$( dirname "$BASH_SOURCE[0]" )" && pwd )"
 
-ENVIRONMENT='test'
-source $DIR/../env/${ENVIRONMENT}.sh
+# stop the execution whenever there is an error
+set -e
 
-export DEVOPS_ACCOUNT='ubuntu'
+if [[ -z "$ENVIRONMENT" ]]; then
+    CONFIG_FILE=/etc/silkcloud/configuration.properties
+    if [[ -f $CONFIG_FILE ]]; then
+        ENVIRONMENT=`cat $CONFIG_FILE | grep '^environment=' | sed 's/environment=//'`
+    fi
+    if [[ -z "$ENVIRONMENT" ]]; then
+        echo "Environment is not found in $CONFIG_FILE"
+        exit 1
+    fi
+fi
+ENVIRONMENT_FILE=$DIR/../env/${ENVIRONMENT}.sh
+if [[ -f $ENVIRONMENT_FILE ]]; then
+    source $ENVIRONMENT_FILE
+fi
+
+export DEVOPS_ACCOUNT='devops'
 export DEPLOYMENT_ACCOUNT='silkcloud'
 
-export DEPLOYMENT_PATH='/tmp/pgha'
-export PGHA_BASE='/var/pgha'
+export SILKCLOUD_BASE='/var/silkcloud'
+
+export DEPLOYMENT_PATH=$SILKCLOUD_BASE/pgha
+export PGHA_BASE=$SILKCLOUD_BASE/postgresql
+
 export DATA_PATH=$PGHA_BASE/data
 export BACKUP_PATH=$PGHA_BASE/backup
 export ARCHIVE_PATH=$PGHA_BASE/archive
-export DB_LOG_PATH=$PGHA_BASE/log
 export CRON_PATH=$PGHA_BASE/pgron
+export DB_LOG_PATH=$SILKCLOUD_BASE/logs/postgresql
 
 export SKYTOOL_PATH=$PGHA_BASE/skytool
 export SKYTOOL_CONFIG_PATH=$SKYTOOL_PATH/config
 export SKYTOOL_PID_PATH=$SKYTOOL_PATH/pid
-export SKYTOOL_LOG_PATH=$SKYTOOL_PATH/log
+export SKYTOOL_LOG_PATH=$SILKCLOUD_BASE/logs/skytool
 
 export PGBIN_PATH='/usr/lib/postgresql/9.3/bin'
 export PGLOCK_PATH='/run/postgresql'
@@ -54,17 +72,14 @@ export SECONDARY_PGBOUNCER_HOST=$SLAVE_HOST
 export PGBOUNCER_PORT=6543
 
 export PGBOUNCER_BIN=/usr/sbin
-export PGBOUNCER_BASE='/tmp/pgbouncer'
+export PGBOUNCER_BASE=$PGHA_BASE/pgbouncer
 export PGBOUNCER_CONF=$PGBOUNCER_BASE/pgbouncer.conf
 export PGBOUNCER_PID=$PGBOUNCER_BASE/pgbouncer.pid
-export PGBOUNCER_AUTH_FILE=~/pgbouncer_auth.txt
+export PGBOUNCER_AUTH_FILE=~/.pgbouncer_auth
 export PGBOUNCER_SOCKET_PATH='/tmp'
 
 export PGBOUNCER_MAX_CONNECTIONS=100
 export PGBOUNCER_DEFAULT_POOL_SIZE=100
-
-# stop the execution whenever there is an error
-set -e
 
 # kill process with specified port
 function forceKill {
@@ -106,7 +121,7 @@ function checkAccount {
 # create directory
 function createDir {
     rm -rf $1
-    mkdir $1
+    mkdir -p $1
     chmod 700 $1
 }
 

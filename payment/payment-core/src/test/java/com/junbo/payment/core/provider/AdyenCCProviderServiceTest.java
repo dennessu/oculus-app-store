@@ -1,11 +1,9 @@
 package com.junbo.payment.core.provider;
 
 import com.junbo.payment.core.BaseTest;
-import com.junbo.payment.core.PaymentCallbackService;
 import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.core.PaymentTransactionService;
 import com.junbo.payment.core.provider.adyen.AdyenCCProivderServiceImpl;
-import com.junbo.payment.core.provider.adyen.AdyenProviderServiceImpl;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.ChargeInfo;
 import com.junbo.payment.spec.model.PaymentInstrument;
@@ -46,7 +44,7 @@ public class AdyenCCProviderServiceTest  extends BaseTest {
         //TODO: need find a valid addressId for test AVS
         request.setBillingAddressId(null);
         request.getTypeSpecificDetails().setExpireDate("2016-06");
-        String encrypteData = "adyenjs_0_1_4$cabpBm1h/ojmzj46rkdaBkxz1JWag4xqvaiz//gVcxuXLklJXfIH04CsGWKy764A6shGAZp06Cgll3z+mx3qnLteiVaM4HDZTg6InKekQXy86ujmadk+pHyKQavWEnbdv7TNXAxJTN/eWNl/jTPua0gr7DlbszLByn7c4wZq1rapjdCKQQgDMdasiphepnsuLAW5r2VHhyHoWd/6rg+WZ8KkHp/UXpnpH8YfizFoeqp0jmQUHoUmYXuJZv0BYOtQZbEoEGHyjDVpa8qZvY7zXWBzNXp6+yye9rBJaEsJLGhHCd1HeaQZE0OXp50IzNSjzkOUHF2kaerpF4ENmUtVjA==$EP4SWYRhHKrLwjqt2DR3c1orZoQZWJ8R9Ay8A6s76qaztKmIVK64W3VM7PoSrulEZQa/HY4Ye2zz+ybh5MJmV/+CnPCaxpS/BX1mZL1TqAouk8aq0HmvMVcXtgdgVQrXNImL8Ji5UVAK";
+        String encrypteData = "adyenjs_0_1_4$ZBPLAYLuwqKn0oXkd1RjnJG85fP/Z/WAQcsI5FN9AGGx0GiYUUXAouSi/6kfZvLntO9kHUzShOIWSrXh56krjq/20n3L1DBvDsxA9UuhuIJmiuNc7xD0D0wfugLZUwaZ135G8XIRYm76/wQEU1MLpPHmKMtAyTcJcpx0G+jBQqmy2WmeLSGrgduzLg3R19P8rYbyCj0pky+6XNuZ2u0eNMC0nGd6X0zMqjDJtfAYHIBQMUEzjE5UBJLVel6NcrZB6gVZn8ZN1nY9/IOSpcJXbY5HYn8ojEVV8TdL/Rjfp0w8wFWdJHGNg72Fj6z/nvsG0IvYwmh2CY66bVaboAdtLQ==$lSkYODd0+BKndhhYbviDrQcZifLfrjRnbd5FSOb5QqB/+SEbaJPbvU3pmyki5vvGOvXwRe5Gfp4kDOB4StGMXTo8RrwQ95mYqI8ny6Ud7xt2kxv7R0SnRe5WRQLk/v6ZrCd991W5XlcV";
         //AccountNumber is the js encrypted value for card : 4111111111111111, 737, 2016-06request.setAccountNum("adyenjs_0_1_4$ETMz9n0SL1qOEVhAdvR5EMCqInhdy3oaz67zu1A5RAOhQU8XXbVSl7YfAUkFhJtRb8r5xL6PyFWGRYzY8y7vvqfSEuYz4N1zLykXUJJPTyB+3YSktR+gMevky2OATe1mvJFfMu3hfhSz7oMPgEW7VTDOU5E/FbYTZSNImTiZUoiHFMuIj2h1uk3L2jq6E3OBWPWynmnD1t7A8A6M/RJN/RlDT+YKzt4Bi/LQP11YmG9V+L8vSGX5Um0EnI3h2XIwYEUwI94f9yn3IDEPdM/GULefxwBsz/1mELJAt0jzelKN8FLhgnjvgZL2gZAEdbsfhaprWqLq6KhPIJ82G6Ncww==$qIS/ZEhUhtLuDgXRU6iuIul/zSdQg8mcvQiV2RkOSl2oFkqM6Rs34gbBZc1QKN8EbjNLxWqmwG9OMJfz8EaDGttEOkCGThuljE8Z+co+pqydtNaHmGBbKDHa3JkdfSHJBYMyx6G+c7JMMvNkQ2F1cG+XjwqCM1mMC13gIcg7I5Rc6tzd4x+uWgYaIFrpEnyPZyN7KWFJ0UczfO1BOQzQL7dMzPlE/y6T");
         request.setAccountNum(encrypteData);
         PaymentInstrument result = null;

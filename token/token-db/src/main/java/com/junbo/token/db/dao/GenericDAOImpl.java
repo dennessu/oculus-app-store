@@ -43,7 +43,7 @@ public class GenericDAOImpl<T extends GenericEntity, ID extends Serializable> {
 
     //TODO: move all the configuration data to config DB and remove the generic DAO here
     protected Session currentSession() {
-        ShardScope shardScope = new ShardScope(0);
+        ShardScope shardScope = new ShardScope(0, 0);
         try {
             return sessionFactory.getCurrentSession();
         } finally {
@@ -57,7 +57,7 @@ public class GenericDAOImpl<T extends GenericEntity, ID extends Serializable> {
 
     public ID save(T entity) {
         if(entity.getId() == null){
-            entity.setId(idGenerator.nextId());
+            entity.setId(String.valueOf(idGenerator.nextId()));
         }
         entity.setCreatedTime(new Date());
         if (entity.getCreatedBy() == null) {

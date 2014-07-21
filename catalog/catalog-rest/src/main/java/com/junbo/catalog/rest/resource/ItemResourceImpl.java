@@ -12,10 +12,10 @@ import com.junbo.authorization.AuthorizeService;
 import com.junbo.authorization.RightsScope;
 import com.junbo.catalog.auth.ItemAuthorizeCallbackFactory;
 import com.junbo.catalog.core.ItemService;
-import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemsGetOptions;
 import com.junbo.catalog.spec.resource.ItemResource;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
@@ -26,7 +26,6 @@ import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,23 +45,8 @@ public class ItemResourceImpl implements ItemResource {
     public Promise<Results<Item>> getItems(ItemsGetOptions options) {
         List<Item> items = itemService.getItems(options);
 
-        final List<Item> filteredItems = new ArrayList<>();
-        for (final Item item : items) {
-            AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(item);
-            RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Void>() {
-                @Override
-                public Void apply() {
-                    if (AuthorizeContext.hasRights("read")) {
-                        filteredItems.add(item);
-                    }
-
-                    return null;
-                }
-            });
-        }
-
         Results<Item> results = new Results<>();
-        results.setItems(filteredItems);
+        results.setItems(items);
         Link nextLink = new Link();
         nextLink.setHref(buildNextUrl(options));
         results.setNext(nextLink);
@@ -100,21 +84,10 @@ public class ItemResourceImpl implements ItemResource {
         final Item item = itemService.getEntity(itemId);
 
         if (item == null) {
-            throw AppErrors.INSTANCE.notFound("Item", itemId).exception();
+            throw AppCommonErrors.INSTANCE.resourceNotFound("Item", itemId).exception();
         }
 
-        AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(item);
-        return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<Item>>() {
-            @Override
-            public Promise<Item> apply() {
-
-                if (!AuthorizeContext.hasRights("read")) {
-                    throw AppErrors.INSTANCE.notFound("Item", itemId).exception();
-                }
-
-                return Promise.pure(item);
-            }
-        });
+        return Promise.pure(item);
     }
 
     @Override
@@ -125,7 +98,7 @@ public class ItemResourceImpl implements ItemResource {
             public Promise<Item> apply() {
 
                 if (!AuthorizeContext.hasRights("update")) {
-                    throw AppErrors.INSTANCE.accessDenied().exception();
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 
                 return Promise.pure(itemService.updateEntity(itemId, item));
@@ -141,7 +114,7 @@ public class ItemResourceImpl implements ItemResource {
             public Promise<Item> apply() {
 
                 if (!AuthorizeContext.hasRights("create")) {
-                    throw AppErrors.INSTANCE.accessDenied().exception();
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 
                 return Promise.pure(itemService.createEntity(item));
@@ -154,7 +127,7 @@ public class ItemResourceImpl implements ItemResource {
         final Item item = itemService.getEntity(itemId);
 
         if (item == null) {
-            throw AppErrors.INSTANCE.notFound("Item", itemId).exception();
+            throw AppCommonErrors.INSTANCE.resourceNotFound("Item", itemId).exception();
         }
 
         AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(item);
@@ -163,7 +136,7 @@ public class ItemResourceImpl implements ItemResource {
             public Promise<Response> apply() {
 
                 if (!AuthorizeContext.hasRights("delete")) {
-                    throw AppErrors.INSTANCE.accessDenied().exception();
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 
                 itemService.deleteEntity(itemId);

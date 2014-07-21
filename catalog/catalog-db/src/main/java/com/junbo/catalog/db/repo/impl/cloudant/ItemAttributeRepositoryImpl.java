@@ -22,21 +22,21 @@ import java.util.List;
 public class ItemAttributeRepositoryImpl extends CloudantClient<ItemAttribute> implements ItemAttributeRepository {
 
     public ItemAttribute create(ItemAttribute attribute) {
-        return cloudantPost(attribute).get();
+        return cloudantPostSync(attribute);
     }
 
     public ItemAttribute get(String attributeId) {
         if (attributeId == null) {
             return null;
         }
-        return cloudantGet(attributeId).get();
+        return cloudantGetSync(attributeId);
     }
 
     public List<ItemAttribute> getAttributes(ItemAttributesGetOptions options) {
         if (!CollectionUtils.isEmpty(options.getAttributeIds())) {
             List<ItemAttribute> attributes = new ArrayList<>();
             for (String attributeId : options.getAttributeIds()) {
-                ItemAttribute attribute = cloudantGet(attributeId).get();
+                ItemAttribute attribute = cloudantGetSync(attributeId);
                 if (attribute != null) {
                     attributes.add(attribute);
                 }
@@ -50,12 +50,12 @@ public class ItemAttributeRepositoryImpl extends CloudantClient<ItemAttribute> i
         }
     }
 
-    public ItemAttribute update(ItemAttribute attribute) {
-        return cloudantPut(attribute).get();
+    public ItemAttribute update(ItemAttribute attribute, ItemAttribute oldAttribute) {
+        return cloudantPutSync(attribute, oldAttribute);
     }
 
     public void delete(String attributeId) {
-        cloudantDelete(attributeId).get();
+        cloudantDeleteSync(attributeId);
     }
 
 }

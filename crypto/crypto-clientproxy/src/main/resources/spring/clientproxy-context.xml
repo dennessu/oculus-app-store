@@ -12,6 +12,6 @@
 
     <bean id="cryptoUserResource" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
           parent="userResourceClientProxy">
-        <property name="target" value="${clientproxy.identity.url}"/>
+        <property name="accessTokenProvider" ref="cryptoAccessTokenProvider"/>
     </bean>
 </beans>

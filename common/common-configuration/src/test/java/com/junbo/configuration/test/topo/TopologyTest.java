@@ -28,6 +28,8 @@ public class TopologyTest {
                     "  127.0.0.1:8081;8..15;dc0,\n" +
                     "  127.0.0.1:8180;0..7;dc1,\n" +
                     "  127.0.0.1:8181;8..15;dc1",
+                    "  10.0.0.10,\n" +
+                    "  10.0.0.20,\n",
                     configService
             );
 
@@ -54,6 +56,9 @@ public class TopologyTest {
                 assertFalse(topologyConfig.isHandledBy(i, "127.0.0.1", 8080));
                 assertTrue(topologyConfig.isHandledBy(i, "127.0.0.1", 8081));
             }
+
+            assertTrue(topologyConfig.isOtherServer("10.0.0.10"));
+            assertTrue(topologyConfig.isOtherServer("10.0.0.20"));
         }
     }
 
@@ -69,6 +74,7 @@ public class TopologyTest {
                     "  127.0.0.1:8082;0..3;dc0,\n" +
                     "  127.0.0.1:8180;0..7;dc1,\n" +
                     "  127.0.0.1:8181;8..15;dc1",
+                    "",
                     configService
             );
 

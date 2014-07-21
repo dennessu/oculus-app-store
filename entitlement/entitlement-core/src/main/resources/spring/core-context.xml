@@ -6,6 +6,16 @@
 
     <context:component-scan base-package="com.junbo.entitlement.core"/>
 
-    <bean id="entitlementService" class="com.junbo.entitlement.core.service.EntitlementServiceImpl"/>
+    <bean id="entitlementService" class="com.junbo.entitlement.core.service.EntitlementServiceImpl">
+        <property name="bucketName" value="${entitlement.aws.bucketName}"/>
+    </bean>
 
+    <bean id="awsCredentials" class="com.amazonaws.auth.BasicAWSCredentials">
+        <constructor-arg value="${entitlement.aws.accesskeyId}" index="0"/>
+        <constructor-arg value="${entitlement.aws.secretAccessKey}" index="1"/>
+    </bean>
+
+    <bean id="awsS3Client" class="com.amazonaws.services.s3.AmazonS3Client">
+        <constructor-arg ref="awsCredentials"/>
+    </bean>
 </beans>

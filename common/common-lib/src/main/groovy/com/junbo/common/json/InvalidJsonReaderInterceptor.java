@@ -10,9 +10,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import com.junbo.common.error.AppError;
-import com.junbo.common.error.ErrorDef;
-import com.junbo.common.error.ErrorProxy;
+import com.junbo.common.error.AppCommonErrors;
 import org.springframework.util.CollectionUtils;
 
 import javax.ws.rs.WebApplicationException;
@@ -33,27 +31,14 @@ public class InvalidJsonReaderInterceptor implements ReaderInterceptor {
         try {
             return context.proceed();
         } catch (InvalidFormatException invalidFormatException) {
-            throw ERRORS.invalidJson(invalidFormatException.getOriginalMessage(), DEFAULT_FIELD).exception();
+            throw AppCommonErrors.INSTANCE.invalidJson(DEFAULT_FIELD, invalidFormatException.getOriginalMessage()).exception();
         } catch (UnrecognizedPropertyException unrecognizedPropertyException) {
-            throw ERRORS.invalidJson("unrecognized property",
-                    unrecognizedPropertyException.getUnrecognizedPropertyName()).exception();
+            throw AppCommonErrors.INSTANCE.invalidJson(unrecognizedPropertyException.getUnrecognizedPropertyName(), "Unrecognized Property").exception();
         } catch (JsonMappingException jsonMappingException) {
-            throw ERRORS.invalidJson(jsonMappingException.getOriginalMessage(),
-                    buildField(jsonMappingException.getPath())).exception();
+            throw AppCommonErrors.INSTANCE.invalidJson(buildField(jsonMappingException.getPath()), jsonMappingException.getOriginalMessage()).exception();
         } catch (JsonParseException ex) {
-            throw ERRORS.invalidJson(ex.getOriginalMessage(), DEFAULT_FIELD).exception();
+            throw AppCommonErrors.INSTANCE.invalidJson(DEFAULT_FIELD, ex.getOriginalMessage()).exception();
         }
-    }
-
-    public static final Errors ERRORS = ErrorProxy.newProxyInstance(Errors.class);
-
-    /**
-     * Created by liangfu on 3/11/14.
-     */
-    public interface Errors {
-
-        @ErrorDef(httpStatusCode = 400, code = "10001", description = "invalid Json: {0}", field = "{1}")
-        AppError invalidJson(String detail, String field);
     }
 
     private String buildField(List<JsonMappingException.Reference> paths) {
@@ -66,7 +51,6 @@ public class InvalidJsonReaderInterceptor implements ReaderInterceptor {
             for (int i=1; i< paths.size(); i++) {
                 sb.append(".").append(paths.get(i).getFieldName());
             }
-
             return sb.toString();
         }
     }

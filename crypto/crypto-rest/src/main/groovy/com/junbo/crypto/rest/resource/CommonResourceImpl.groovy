@@ -1,12 +1,11 @@
 package com.junbo.crypto.rest.resource
-
 import com.junbo.authorization.AuthorizeContext
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.crypto.core.service.CipherService
 import com.junbo.crypto.core.service.KeyStoreService
 import com.junbo.crypto.data.repo.MasterKeyRepo
 import com.junbo.crypto.data.repo.UserCryptoKeyRepo
-import com.junbo.crypto.spec.error.AppErrors
 import com.junbo.crypto.spec.model.MasterKey
 import com.junbo.crypto.spec.model.UserCryptoKey
 import com.junbo.langur.core.promise.Promise
@@ -16,7 +15,6 @@ import org.springframework.util.CollectionUtils
 
 import java.security.Key
 import java.security.PublicKey
-
 /**
  * Created by liangfu on 5/13/14.
  */
@@ -83,7 +81,7 @@ abstract class CommonResourceImpl {
 
         Integer masterKeyVersion = Integer.parseInt(userKeyInfo[0])
         String userEncryptValue = userKeyInfo[1]
-        return masterKeyRepo.getMasterKeyByVersion(masterKeyVersion).then { MasterKey masterKey ->
+        return masterKeyRepo.get(masterKeyVersion).then { MasterKey masterKey ->
             if (masterKey == null) {
                 throw new IllegalArgumentException('master key with version: ' + masterKeyVersion + ' not found.')
             }
@@ -127,7 +125,7 @@ abstract class CommonResourceImpl {
         String decryptedValue = rsaCipherService.decrypt(encryptMessage, privateKey)
 
         if (decryptedValue == null) {
-            throw AppErrors.INSTANCE.internalError('Decrypt master key error.').exception()
+            throw new RuntimeException('Decrypt master key failed.')
         }
 
         return decryptedValue
@@ -198,8 +196,8 @@ abstract class CommonResourceImpl {
     }
 
     // Used to get raw masterKey by version
-    protected Promise<MasterKey> getCurrentDecryptedMasterKeyByVersion(Integer keyVersion) {
-        return masterKeyRepo.getMasterKeyByVersion(keyVersion).then { MasterKey masterKey ->
+    protected Promise<MasterKey> getCurrentDecryptedMasterKeyByVersion(Long keyVersion) {
+        return masterKeyRepo.get(keyVersion).then { MasterKey masterKey ->
             if (masterKey == null) {
                 throw new IllegalArgumentException('master key with version: ' + keyVersion + ' not found.')
             }
@@ -246,7 +244,7 @@ abstract class CommonResourceImpl {
 
     protected static Promise<Void> authorize() {
         if (!AuthorizeContext.hasScopes(CRYPTO_SERVICE_SCOPE)) {
-            throw AppErrors.INSTANCE.accessDenied().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         return Promise.pure(null)

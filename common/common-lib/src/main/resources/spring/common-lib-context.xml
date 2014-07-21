@@ -44,6 +44,7 @@
 
     <bean id="cloudantClient" class="com.junbo.common.cloudant.CloudantClient" abstract="true">
         <property name="cloudantDbUri" value="${common.cloudant.url}" />
+        <property name="tracker" ref="userTracker" />
     </bean>
 
     <bean id="cloudantClientWithSearch" parent="cloudantClient" abstract="true">

@@ -10,6 +10,7 @@ import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.BillingEventHistoryBuilder
 import com.junbo.order.core.impl.common.CoreBuilder
+import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.spec.model.enums.BillingAction
@@ -48,6 +49,7 @@ class ImmediateSettleAction extends BaseOrderEventAwareAction {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def order = context.orderServiceContext.order
         orderInternalService.markSettlement(order)
+        CoreUtils.readHeader(order, context?.orderServiceContext?.apiContext)
         Promise promise =
                 facadeContainer.billingFacade.createBalance(
                         CoreBuilder.buildBalance(context.orderServiceContext.order, BalanceType.DEBIT),

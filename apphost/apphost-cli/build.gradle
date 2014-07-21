@@ -5,7 +5,8 @@ apply plugin: 'application'
 
 mainClassName = "com.junbo.apphost.core.JunboApplication"
 applicationDefaultJvmArgs = ["-Xmx1024m", "-Xms1024m", "-XX:PermSize=512m", "-XX:MaxPermSize=512m", "-Dspring.profiles.active=utility",
-    "-Xdebug", "-Xrunjdwp:server=y,transport=dt_socket,address=9401,suspend=n"]
+    "-Xdebug", "-Xrunjdwp:server=y,transport=dt_socket,address=9401,suspend=n",
+    "-Dcom.sun.management.jmxremote.port=9070", "-Dcom.sun.management.jmxremote.ssl=false", "-Dcom.sun.management.jmxremote.authenticate=false"]
 
 dependencies {
     compile junboProject(':apphost-core')
@@ -25,7 +26,7 @@ dependencies {
     compile junboProject(':fulfilment-rest')
     compile junboProject(':order-rest')
     compile junboProject(':crypto-rest')
-    compile junboProject(':iap-rest')
+    compile junboProject(':store-rest')
     compile junboProject(':authorization-rest')
     compile junboProject(':data-loader')
 
@@ -35,6 +36,8 @@ dependencies {
     compile junboProject(':catalog-jobs')
     compile junboProject(':identity-job')
     compile junboProject(':token-rest')
+    compile junboProject(':csr-rest')
+    compile junboProject(':drm-rest')
     // more to add
 }
 
@@ -44,6 +47,10 @@ applicationDistribution.from("../../cloudant") {
 
 applicationDistribution.from("../../liquibase") {
     into "dbsetup/liquibase"
+}
+
+applicationDistribution.from("../../scripts/pgha") {
+    into "dbsetup/pgha"
 }
 
 applicationDistribution.eachFile { FileCopyDetails f ->

@@ -15,6 +15,8 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 
 import java.util.UUID;
 
@@ -38,6 +40,18 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
                 return NO_RETURN;
             }
         });
+    }
+
+    @BeforeTest
+    @SuppressWarnings("deprecation")
+    public void setup() {
+
+    }
+
+    @AfterTest
+    @SuppressWarnings("deprecation")
+    public void cleanup() {
+
     }
 
     @Autowired

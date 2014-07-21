@@ -1,0 +1,11 @@
+{
+  "localeCode": "km_KH",
+  "shortName": "ភាសាខ្មែរ (KH)",
+  "longName": "ភាសាខ្មែរ (កម្ពុជា)",
+  "localeName": "ភាសាខ្មែរ (KH)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

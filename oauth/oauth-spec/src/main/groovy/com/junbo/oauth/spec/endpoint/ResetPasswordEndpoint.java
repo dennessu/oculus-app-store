@@ -5,7 +5,6 @@
  */
 package com.junbo.oauth.spec.endpoint;
 
-import com.junbo.common.id.UserId;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -25,15 +24,15 @@ import javax.ws.rs.core.Response;
 @RestResource
 @Produces(MediaType.APPLICATION_JSON)
 public interface ResetPasswordEndpoint {
-    @GET
-    @Path("/forget-password")
-    Promise<Response> forgetPassword(@QueryParam("cid") String conversationId, @QueryParam("locale") String locale);
+    //@GET
+    //@Path("/forget-password")
+    //Promise<Response> forgetPassword(@QueryParam("cid") String conversationId, @QueryParam("locale") String locale);
 
-    @POST
-    @Path("/forget-password")
-    Promise<Response> forgetPassword(@FormParam("cid") String conversationId,
-                                     @FormParam("event") String event,
-                                     MultivaluedMap<String, String> formParams);
+    //@POST
+    //@Path("/forget-password")
+    //Promise<Response> forgetPassword(@FormParam("cid") String conversationId,
+    //                                 @FormParam("event") String event,
+    //                                 MultivaluedMap<String, String> formParams);
 
     @GET
     @Path("/reset-password")
@@ -47,7 +46,7 @@ public interface ResetPasswordEndpoint {
                                     @FormParam("event") String event,
                                     @FormParam("locale") String locale,
                                     @FormParam("country") String country,
-                                    @FormParam("userId") UserId userId,
+                                    @FormParam("username") String username,
                                     @FormParam("user_email") String userEmail,
                                     @Context ContainerRequestContext request,
                                     MultivaluedMap<String, String> formParams);

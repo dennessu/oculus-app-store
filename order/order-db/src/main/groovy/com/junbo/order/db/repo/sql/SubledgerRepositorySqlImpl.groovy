@@ -54,7 +54,7 @@ class SubledgerRepositorySqlImpl implements SubledgerRepository {
     }
 
     @Override
-    Promise<Subledger> update(Subledger subledger) {
+    Promise<Subledger> update(Subledger subledger, Subledger oldSubledger) {
         def oldEntity = subledgerDao.read(subledger.getId().value)
         if (oldEntity == null) {
             throw AppErrors.INSTANCE.subledgerNotFound().exception()

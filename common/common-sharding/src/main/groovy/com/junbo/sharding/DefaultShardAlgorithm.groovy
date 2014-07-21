@@ -14,14 +14,28 @@ class DefaultShardAlgorithm implements ShardAlgorithm {
 
         if (key instanceof Number) {
             int idValue = ((Number) key).intValue()
-            int dc = (idValue >> 2) & 0xf
             int shardId = (idValue >> 6) & 0xff
 
-            if (!DataCenters.instance().isLocalDataCenter(dc)) {
-                throw new RuntimeException("Cannot handle key from another datacenter: " + key)
+            return shardId
+        }
+        throw new RuntimeException("Cannot handle type: " + key.getClass())
+    }
+
+    @Override
+    int dataCenterId(Object key) {
+        if (key == null) {
+            throw new IllegalArgumentException('key is null')
+        }
+
+        if (key instanceof Number) {
+            int idValue = ((Number) key).intValue()
+            int dc = (idValue >> 2) & 0xf
+
+            if (!DataCenters.instance().hasDataCenter(dc)) {
+                throw new IllegalArgumentException('dataCenter is invalid with id = ' + dc)
             }
 
-            return shardId
+            return dc
         }
         throw new RuntimeException("Cannot handle type: " + key.getClass())
     }

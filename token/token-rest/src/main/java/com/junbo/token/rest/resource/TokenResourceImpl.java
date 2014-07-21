@@ -6,7 +6,6 @@
 
 package com.junbo.token.rest.resource;
 
-import com.junbo.common.id.TokenOrderId;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.token.common.CommonUtil;
 import com.junbo.token.core.TokenService;
@@ -36,8 +35,8 @@ public class TokenResourceImpl implements TokenResource{
     }
 
     @Override
-    public Promise<TokenRequest> getOrderById(TokenOrderId tokenOrderId) {
-        return tokenService.getOrderRequest(tokenOrderId.getValue())
+    public Promise<TokenRequest> getOrderById(String tokenOrderId) {
+        return tokenService.getOrderRequest(tokenOrderId)
                 .then(new Promise.Func<TokenRequest, Promise<TokenRequest>>() {
                     @Override
                     public Promise<TokenRequest> apply(TokenRequest tokenRequest) {

@@ -1,0 +1,11 @@
+{
+  "localeCode": "zh_HK",
+  "shortName": "中国（HK）",
+  "longName": "中国（香港）",
+  "localeName": "中国（HK）",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

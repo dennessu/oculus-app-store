@@ -25,6 +25,8 @@ public class Image {
     @JsonProperty("y")
     @ApiModelProperty(position = 5, required = false, value = "The height of the image")
     private Integer height;
+    @ApiModelProperty(position = 6, required = true, value = "Alt text")
+    private String altText;
 
     public String getId() {
         return id;
@@ -64,5 +66,13 @@ public class Image {
 
     public void setHeight(Integer height) {
         this.height = height;
+    }
+
+    public String getAltText() {
+        return altText;
+    }
+
+    public void setAltText(String altText) {
+        this.altText = altText;
     }
 }

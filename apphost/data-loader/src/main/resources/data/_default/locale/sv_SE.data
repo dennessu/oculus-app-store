@@ -1,0 +1,11 @@
+{
+  "localeCode": "sv_SE",
+  "shortName": "Svenska (SE)",
+  "longName": "Svenska (Sverige)",
+  "localeName": "Svenska (SE)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

@@ -98,7 +98,20 @@
         }
       }
     }, 
-    "email_verify_code": {}, 
+    "email_verify_code": {
+        "views": {
+            "by_user_id_email": {
+                "map": "function(doc) {  emit(doc.userId + ':' + doc.email, doc._id)}"
+            }
+        }
+    },
+    "reset_password_code": {
+        "views": {
+            "by_user_id_email": {
+                "map": "function(doc) {  emit(doc.userId + ':' + doc.email, doc._id)}"
+            }
+        }
+    },
     "encrypt_user_personal_info": { }, 
     "hash_user_personal_info": {
       "views": {
@@ -222,7 +235,13 @@
         }
       }
     }, 
-    "subledger_item": {}, 
+    "subledger_item": {
+        "views": {
+            "by_orderitemid": {
+                "map": "function(doc) {emit(doc.orderItem, doc._id)}"
+            }
+        }
+    },
     "tos": {}, 
     "unique": {
       "views": {
@@ -389,7 +408,7 @@
     "user_tfa_back_up_code_attempt": {
       "views": {
         "by_user_id": {
-          "map": "function(doc) {  emit(doc.userId, doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, Date.parse(doc.createdTime)], doc._id)}"
         }
       }
     }, 
@@ -398,8 +417,8 @@
         "by_user_id": {
           "map": "function(doc) {  emit(doc.userId, doc._id)}"
         }, 
-        "by_user_id_tfa_id": {
-          "map": "function(doc) {  emit([doc.userId, doc.userTFAId], doc._id)}"
+        "by_user_id_tfa_id_time": {
+          "map": "function(doc) {  emit([doc.userId, doc.userTFAId, Date.parse(doc.createdTime)], doc._id)}"
         }
       }
     }, 
@@ -494,13 +513,7 @@
           }
       }
     },
-    "payment_transaction": {
-      "views": {
-          "by_balance_id": {
-              "map": "function(doc) {  emit(doc.balanceId, doc._id)}"
-          }
-      }
-    },
+    "payment_transaction": {},
     "payment_tracking_uuid": {
       "views": {
           "by_tracking_uuid": {
@@ -542,7 +555,55 @@
                 "map": "function(doc) {  emit(doc.trackingUuid, doc._id)}"
             }
         }
-    }
+    },
+
+      "token_consumption": {
+          "views": {
+              "by_token_item_id": {
+                  "map": "function(doc) {emit(doc.itemId, doc._id)}"
+              }
+          }
+      },
+      "token_item": {
+          "views": {
+              "by_hash_value": {
+                  "map": "function(doc) {emit(doc.hashValue, doc._id)}"
+              }
+          }
+      },
+      "token_order": {},
+      "token_set": {},
+      "token_set_offer": {
+          "views": {
+              "by_token_set_id": {
+                  "map": "function(doc) {emit(doc.tokenSetId, doc._id)}"
+              }
+          }
+      },
+      "csr_update": {},
+      "csr_log": {
+          "views": {
+              "by_time": {
+                  "map": "function(doc) {  emit([doc.createdTime], doc._id)}"
+              },
+              "by_user_time": {
+                  "map": "function(doc) {  emit([doc.userId, doc.createdTime], doc._id)}"
+              },
+              "by_action_time": {
+                  "map": "function(doc) {  emit([doc.action, doc.createdTime], doc._id)}"
+              },
+              "by_user_action_time": {
+                  "map": "function(doc) {  emit([doc.userId, doc.action, doc.createdTime], doc._id)}"
+              }
+          }
+      },
+      "csr_invitation_code": {
+          "views": {
+              "by_user_id_email": {
+                  "map": "function(doc) {  emit(doc.userId + ':' + doc.email, doc._id)}"
+              }
+          }
+      }
   }, 
   "cloudant_search": {
     "entitlement": {
@@ -564,7 +625,7 @@
     "item": {
       "indexes": {
         "search": {
-          "index": "function(doc) {index('type', doc.type);index('default', doc.type);if (doc.genres) {for (var genreIdx in doc.genres) {index('genreId', doc.genres[genreIdx]);index('default', doc.genres[genreIdx]);}}index('ownerId', doc.ownerId);index('default', doc.ownerId);index('itemId', doc._id);index('default', doc._id);if (doc.activeRevision) {index('revisionId', doc.activeRevision._id);index('default', doc.activeRevision._id);if (doc.activeRevision.sku) {index('sku', doc.activeRevision.sku);index('default', doc.activeRevision.sku);}if(doc.activeRevision.packageName) {index('packageName', doc.activeRevision.packageName);index('default', doc.activeRevision.packageName);}if (doc.activeRevision.iapHostItemIds) {for (var iapIdx in doc.activeRevision.iapHostItemIds) {index('hostItemId', doc.activeRevision.iapHostItemIds[iapIdx]);index('default', doc.activeRevision.iapHostItemIds[iapIdx]);}}if (doc.activeRevision.userInteractionMode) {index('userInteractionMode', doc.activeRevision.userInteractionMode);index('default', doc.activeRevision.userInteractionMode);}if (doc.activeRevision.platforms) {for (var platformIdx in doc.activeRevision.platforms) {index('platform', doc.activeRevision.platforms[platformIdx]);index('default', doc.activeRevision.platforms[platformIdx]);}}if (doc.activeRevision.locales) {for (var localeIdx in doc.activeRevision.locales) {var locale = doc.activeRevision.locales[localeIdx];if (locale.name) {index('name', locale.name);index('default', locale.name);}if (locale.revisionNotes) {if(locale.revisionNotes.shortNotes) {index('shortNotes', locale.revisionNotes.shortNotes);index('default', locale.revisionNotes.shortNotes);}if(locale.revisionNotes.longNotes) {index('longNotes', locale.revisionNotes.longNotes);index('default', locale.revisionNotes.longNotes);}}if (locale.longDescription) {index('longDescription', locale.longDescription);index('default', locale.longDescription);}if (locale.shortDescription) {index('shortDescription', locale.shortDescription);index('default', locale.shortDescription);}}}}}"
+          "index": "function(doc) {index('type', doc.type);index('default', doc.type);if (doc.genres) {for (var genreIdx in doc.genres) {index('genreId', doc.genres[genreIdx]);index('default', doc.genres[genreIdx]);}}index('ownerId', doc.ownerId);index('default', doc.ownerId);index('itemId', doc._id);index('default', doc._id);if (doc.activeRevision) {index('revisionId', doc.activeRevision._id);index('default', doc.activeRevision._id);if (doc.activeRevision.sku) {index('sku', doc.activeRevision.sku);index('default', doc.activeRevision.sku);}if(doc.activeRevision.packageName) {index('packageName', doc.activeRevision.packageName);index('default', doc.activeRevision.packageName);}if (doc.activeRevision.iapHostItemIds) {for (var iapIdx in doc.activeRevision.iapHostItemIds) {index('hostItemId', doc.activeRevision.iapHostItemIds[iapIdx]);index('default', doc.activeRevision.iapHostItemIds[iapIdx]);}}if (doc.activeRevision.userInteractionModes) {for (var userInteractionMode in doc.activeRevision.userInteractionModes) {index('userInteractionMode', doc.activeRevision.userInteractionModes[userInteractionMode]);index('default', doc.activeRevision.userInteractionModes[userInteractionMode]);}}if (doc.activeRevision.platforms) {for (var platformIdx in doc.activeRevision.platforms) {index('platform', doc.activeRevision.platforms[platformIdx]);index('default', doc.activeRevision.platforms[platformIdx]);}}if (doc.activeRevision.locales) {for (var localeIdx in doc.activeRevision.locales) {var locale = doc.activeRevision.locales[localeIdx];if (locale.name) {index('name', locale.name);index('default', locale.name);}if (locale.releaseNotes) {if(locale.releaseNotes.shortNotes) {index('shortNotes', locale.releaseNotes.shortNotes);index('default', locale.releaseNotes.shortNotes);}if(locale.releaseNotes.longNotes) {index('longNotes', locale.releaseNotes.longNotes);index('default', locale.releaseNotes.longNotes);}}if (locale.longDescription) {index('longDescription', locale.longDescription);index('default', locale.longDescription);}if (locale.shortDescription) {index('shortDescription', locale.shortDescription);index('default', locale.shortDescription);}}}}}"
         }
       }, 
       "views": {
@@ -586,7 +647,7 @@
     "item_revision": {
       "indexes": {
         "search": {
-          "index": "function(doc) {index('itemId', doc.itemId);index('revisionId', doc._id);index('status', doc.status);index('timeInMillis', doc.timestamp);if(doc.packageName){index('packageName',doc.packageName);}}"
+          "index": "function(doc) {if(doc.itemId){index('itemId', doc.itemId);}index('revisionId', doc._id);index('status', doc.status);if(doc.timestamp){index('timeInMillis', doc.timestamp);}if(doc.packageName){index('packageName',doc.packageName);}}"
         }
       }, 
       "views": {
@@ -604,7 +665,7 @@
     "offer": {
       "indexes": {
         "search": {
-          "index": "function(doc) {index('offerId', doc._id);index('default', doc._id);if (doc.published !== null && doc.published !== undefined) {index('published', doc.published);}if (doc.environment) {index('environment', doc.environment);index('default', doc.environment);}if (doc.categories) {for (var idx in doc.categories) {index('categoryId', doc.categories[idx]);index('default', doc.categories[idx]);}}index('ownerId', doc.ownerId);index('default', doc.ownerId);if (!doc.currentRevisionId) {index('scheduledPublish', true);}if (doc.activeRevision) {index('revisionId', doc.activeRevision._id);index('default', doc.activeRevision._id);if (doc.activeRevision.items) {for (var itemIdx in doc.activeRevision.items) {if (doc.activeRevision.items[itemIdx].itemId) {index('itemId', doc.activeRevision.items[itemIdx].itemId);}}}if (doc.activeRevision.subOffers) {for (var subOfferIdx in doc.activeRevision.subOffers) {if (doc.activeRevision.subOffers[subOfferIdx]) {index('subOfferId', doc.activeRevision.subOffers[subOfferIdx]);}}}if (doc.activeRevision.locales) {for (var localeIdx in doc.activeRevision.locales) {var locale = doc.activeRevision.locales[localeIdx];if (locale.name) {index('name', locale.name);index('default', locale.name);}if (locale.revisionNotes) {if(locale.revisionNotes.shortNotes) {index('shortNotes', locale.revisionNotes.shortNotes);index('default', locale.revisionNotes.shortNotes);}if(locale.revisionNotes.longNotes) {index('longNotes', locale.revisionNotes.longNotes);index('default', locale.revisionNotes.longNotes);}}if (locale.longDescription) {index('longDescription', locale.longDescription);index('default', locale.longDescription);}if (locale.shortDescription) {index('shortDescription', locale.shortDescription);index('default', locale.shortDescription);}}}}}"
+          "index": "function(doc) {index('offerId', doc._id);index('default', doc._id);if (doc.published !== null && doc.published !== undefined) {index('published', doc.published);}if (doc.environment) {index('environment', doc.environment);index('default', doc.environment);}if (doc.categories) {for (var idx in doc.categories) {index('categoryId', doc.categories[idx]);index('default', doc.categories[idx]);}}index('ownerId', doc.ownerId);index('default', doc.ownerId);if (!doc.currentRevisionId) {index('scheduledPublish', true);}if (doc.activeRevision) {index('revisionId', doc.activeRevision._id);index('default', doc.activeRevision._id);if (doc.activeRevision.items) {for (var itemIdx in doc.activeRevision.items) {if (doc.activeRevision.items[itemIdx].itemId) {index('itemId', doc.activeRevision.items[itemIdx].itemId);}}}if (doc.activeRevision.subOffers) {for (var subOfferIdx in doc.activeRevision.subOffers) {if (doc.activeRevision.subOffers[subOfferIdx]) {index('subOfferId', doc.activeRevision.subOffers[subOfferIdx]);}}}if (doc.activeRevision.locales) {for (var localeIdx in doc.activeRevision.locales) {var locale = doc.activeRevision.locales[localeIdx];if (locale.name) {index('name', locale.name);index('default', locale.name);}if (locale.longDescription) {index('longDescription', locale.longDescription);index('default', locale.longDescription);}if (locale.shortDescription) {index('shortDescription', locale.shortDescription);index('default', locale.shortDescription);}}}}}"
         }
       }, 
       "views": {
@@ -626,7 +687,7 @@
     "offer_revision": {
       "indexes": {
         "search": {
-          "index": "function(doc) {index('offerId', doc.offerId);index('revisionId', doc._id);index('status', doc.status);index('timeInMillis', doc.timestamp);}"
+          "index": "function(doc) {if(doc.offerId){index('offerId', doc.offerId);}index('revisionId', doc._id);index('status', doc.status);if(doc.timestamp){index('timeInMillis', doc.timestamp);}}"
         }
       }, 
       "views": {
@@ -634,7 +695,7 @@
           "map": "function(doc) {if (doc.items) {for (var idx in doc.items) {emit(doc.items[idx].itemId, doc._id);}}}"
         }, 
         "by_offerId": {
-          "map": "function(doc) {emit(doc.offerId, doc._id);}"
+          "map": "function(doc) {if(doc.offerId){ emit(doc.offerId, doc._id); }}"
         }, 
         "by_status": {
           "map": "function(doc) {if (doc.status){ emit(doc.status, doc._id); }}"

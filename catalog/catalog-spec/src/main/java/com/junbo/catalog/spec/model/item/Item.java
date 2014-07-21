@@ -26,7 +26,7 @@ public class Item extends BaseEntityModel {
     private String itemId;
 
     @ApiModelProperty(position = 2, required = true, value = "Item type", allowableValues =
-            "PHYSICAL, APP, DOWNLOADED_ADDITION, STORED_VALUE, SUBSCRIPTION, IN_APP_UNLOCK, IN_APP_CONSUMABLE")
+            "PHYSICAL, APP, DOWNLOADED_ADDITION, STORED_VALUE, SUBSCRIPTION, PERMANENT_UNLOCK, CONSUMABLE_UNLOCK")
     private String type;
 
     @ItemRevisionId

@@ -26,6 +26,7 @@ dependencies {
 
     testCompile (libraries.guava)
     testCompile (libraries.spring_test)
+    testCompile junboProject(':authorization-lib')
 
     compile junboProject(':ewallet-spec')
     compile junboProject(':ewallet-common')

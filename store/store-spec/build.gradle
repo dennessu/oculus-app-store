@@ -1,0 +1,34 @@
+apply plugin: 'java'
+
+dependencies {
+    compile junboProject(':langur-core')
+    compile junboProject(':common-lib')
+
+    compile junboProject(':catalog-spec')
+    compile junboProject(':payment-spec')
+    compile junboProject(':identity-spec')
+
+    compile (libraries.rs_api)
+    compile (libraries.guava)
+
+    compile (libraries.spring_beans)
+    compile (libraries.spring_context)
+
+    compile (libraries.jackson_annotations)
+    compile (libraries.jackson_databind)
+
+    compile (libraries.hibernate_validator)
+
+    processor junboProject(':langur-processor')
+    processor (libraries.log4j)
+}
+
+ext {
+    processorClass = [
+            'com.junbo.langur.processor.RestAdapterProcessor',
+            'com.junbo.langur.processor.ClientProxyProcessor',
+            'com.junbo.langur.processor.ClientProxyFactoryProcessor'
+    ].join(',')
+}
+
+

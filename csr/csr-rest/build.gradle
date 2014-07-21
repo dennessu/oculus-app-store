@@ -1,0 +1,28 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile (libraries.servlet_api)
+    compile (libraries.jackson_jaxrs_json_provider)
+    compile (libraries.jackson_annotations)
+    compile (libraries.common_beanutils)
+
+    compile (libraries.spring_aop)
+    compile (libraries.spring_context)
+    compile (libraries.spring_core)
+    compile (libraries.spring_expression)
+    compile (libraries.spring_tx)
+    compile (libraries.spring_web)
+    compile junboProject(':common-lib')
+    compile junboProject(':oom-core')
+
+    compile (libraries.asyncclient)
+    compile (libraries.jersey_common)
+
+    compile junboProject(':csr-core')
+    compile junboProject(':csr-spec')
+    compile junboProject(':csr-common')
+    compile junboProject(':csr-clientproxy')
+    compile junboProject(':csr-db')
+    compile junboProject(':oauth-spec')
+    processor junboProject(':oom-processor')
+}

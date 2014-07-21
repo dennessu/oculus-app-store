@@ -29,14 +29,22 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 1, required = true, value = "[Client Immutable] The id of item revision resource")
     private String revisionId;
 
-    @ApiModelProperty(position = 2, required = true,
+    /*@ApiModelProperty(position = 2, required = true,
             value = "An ID that helps to group like items. ex. TEAM_FORTRESS, this rollup ID would be applied to" +
                     "all items that are team fortress (PC, MAC, LINUX, etc)")
     private String rollupPackageName;
-
-    @ApiModelProperty(position = 3, required = true,
-            value = "Used to identify the item (app), used mainly for android")
+*/
+    @ApiModelProperty(position = 3, required = true, value = "Used to identify the item (app), used mainly for android")
     private String packageName;
+
+    @ApiModelProperty(position = 4, required = true,
+            value = " the name of the file when download from the Oculus platform, must have value when Item type is APP or DOWNLOADED_ADDITION, must be empty for other types")
+    private String downloadName;
+
+    @JsonProperty("distributionChannel")
+    @ApiModelProperty(position = 5, required = true, value = "An array of strings indicates where this item is capable of being sold",
+        allowableValues = "INAPP, STORE")
+    private List<String> distributionChannels;
 
     @ApiModelProperty(position = 15, required = true, value = "Sku")
     private String sku;
@@ -61,9 +69,9 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 24, required = true, value = "supported input devices",
             allowableValues = "KEYBOARD, MOUSE")
     private List<String> supportedInputDevices;
-    @ApiModelProperty(position = 25, required = true, value = "User interaction mode",
+    @ApiModelProperty(position = 25, required = true, value = "User interaction modes",
             allowableValues = "SINGLE_USER, MULTI_USER, CO_OP")
-    private String userInteractionMode;
+    private List<String> userInteractionModes;
     @ApiModelProperty(position = 26, required = true, value = "Download Link", allowableValues = "PC, MAC, LINUX, ANDROID")
     private Map<String, Binary> binaries;
 
@@ -97,20 +105,28 @@ public class ItemRevision extends BaseRevisionModel {
         this.sku = sku;
     }
 
-    public String getRollupPackageName() {
-        return rollupPackageName;
-    }
-
-    public void setRollupPackageName(String rollupPackageName) {
-        this.rollupPackageName = rollupPackageName;
-    }
-
     public String getPackageName() {
         return packageName;
     }
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
+    }
+
+    public String getDownloadName() {
+        return downloadName;
+    }
+
+    public void setDownloadName(String downloadName) {
+        this.downloadName = downloadName;
+    }
+
+    public List<String> getDistributionChannels() {
+        return distributionChannels;
+    }
+
+    public void setDistributionChannels(List<String> distributionChannels) {
+        this.distributionChannels = distributionChannels;
     }
 
     public List<String> getIapHostItemIds() {
@@ -161,12 +177,12 @@ public class ItemRevision extends BaseRevisionModel {
         this.supportedInputDevices = supportedInputDevices;
     }
 
-    public String getUserInteractionMode() {
-        return userInteractionMode;
+    public List<String> getUserInteractionModes() {
+        return userInteractionModes;
     }
 
-    public void setUserInteractionMode(String userInteractionMode) {
-        this.userInteractionMode = userInteractionMode;
+    public void setUserInteractionModes(List<String> userInteractionModes) {
+        this.userInteractionModes = userInteractionModes;
     }
 
     public Map<String, Binary> getBinaries() {

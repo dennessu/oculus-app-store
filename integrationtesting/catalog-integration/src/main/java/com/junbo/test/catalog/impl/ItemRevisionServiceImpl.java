@@ -20,6 +20,7 @@ import com.junbo.common.id.ItemRevisionId;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.common.model.Results;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,7 +31,7 @@ import java.util.List;
  */
 public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevisionService {
 
-    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "/item-revisions";
+    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "item-revisions";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
     private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";
@@ -98,6 +99,14 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
             itemRevisionForPost = prepareItemRevisionEntity(defaultStoredValueItemRevisionFileName);
         } else {
             itemRevisionForPost = prepareItemRevisionEntity(defaultPhysicalItemRevisionFileName);
+        }
+
+        //prepare IapHostItemIds
+        if (itemRevisionForPost.getDistributionChannels().contains("INAPP")) {
+            Item iapHostItem = ItemServiceImpl.instance().postDefaultItem(CatalogItemType.APP, item.getOwnerId());
+            List<String> iapHostItemIds = new ArrayList<>();
+            iapHostItemIds.add(iapHostItem.getItemId());
+            itemRevisionForPost.setIapHostItemIds(iapHostItemIds);
         }
 
         itemRevisionForPost.setItemId(item.getItemId());

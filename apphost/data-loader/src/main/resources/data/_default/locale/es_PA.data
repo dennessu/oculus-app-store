@@ -1,0 +1,11 @@
+{
+  "localeCode": "es_PA",
+  "shortName": "Español (PA)",
+  "longName": "Español (Panamá)",
+  "localeName": "Español (PA)",
+  "fallbackLocale": {
+    "href": "/v1/locales/es_ES",
+    "id": "es_ES"
+  },
+  "futureExpansion": {}
+}

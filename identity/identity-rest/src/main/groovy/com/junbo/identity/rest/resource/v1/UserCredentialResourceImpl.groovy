@@ -3,6 +3,7 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -13,7 +14,6 @@ import com.junbo.identity.data.identifiable.CredentialType
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.UserPasswordRepository
 import com.junbo.identity.data.repository.UserPinRepository
-import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
 import com.junbo.identity.spec.v1.model.UserCredential
@@ -66,7 +66,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
         def callback = authorizeCallbackFactory.create(userCredential.userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('create')) {
-                throw AppErrors.INSTANCE.invalidAccess().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             userCredential = userCredentialFilter.filterForCreate(userCredential)
@@ -80,7 +80,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                         List<UserPassword> passwordList ->
                             return Promise.each(passwordList) { UserPassword userPassword ->
                                 userPassword.active = false
-                                return userPasswordRepository.update(userPassword)
+                                return userPasswordRepository.update(userPassword, userPassword)
                             }
                     }.then {
                         return userPasswordRepository.create((UserPassword) obj).then { UserPassword userPassword ->
@@ -102,7 +102,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                         List<UserPin> pinList ->
                             return Promise.each(pinList) { UserPin userPin ->
                                 userPin.active = false
-                                return userPinRepository.update(userPin)
+                                return userPinRepository.update(userPin, userPin)
                             }
                     }.then {
                         return userPinRepository.create((UserPin) obj).then { UserPin userPin ->
@@ -163,7 +163,7 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                     return Promise.pure(resultList)
                 }
             } else {
-                throw AppErrors.INSTANCE.parameterInvalid("credentialType").exception()
+                throw AppCommonErrors.INSTANCE.parameterInvalid("credentialType").exception()
             }
         }
     }
@@ -184,8 +184,10 @@ class UserCredentialResourceImpl implements UserCredentialResource {
                             listOptions.properties?.split(',') as List<String>)
 
                     resultList.items.add(newUserCredential)
+                    return Promise.pure(newUserCredential)
+                } else {
+                    return Promise.pure(null)
                 }
-                return Promise.pure(null)
             }
         }.then {
             return Promise.pure(resultList)

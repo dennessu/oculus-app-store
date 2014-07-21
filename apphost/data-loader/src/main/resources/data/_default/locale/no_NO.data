@@ -1,0 +1,11 @@
+{
+  "localeCode": "no_NO",
+  "shortName": "Norsk (NO)",
+  "longName": "Norsk (Norge)",
+  "localeName": "Norsk (NO)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

@@ -16,9 +16,11 @@ import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.VatIdValidationResponse
-import com.junbo.catalog.spec.model.offer.OfferRevision
+import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.PIType
-
+import com.junbo.common.id.UserId
+import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.identity.spec.v1.model.Address
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.model.UserVAT
@@ -99,19 +101,20 @@ class TaxServiceImpl implements TaxService {
         Long piId = balance.piId.value
         return paymentFacade.getPaymentInstrument(piId).recover { Throwable throwable ->
             LOGGER.error('name=Error_Get_PaymentInstrument. pi id: ' + balance.piId.value, throwable)
-            throw AppErrors.INSTANCE.piNotFound(piId.toString()).exception()
+            throw AppErrors.INSTANCE.piNotFound("balance.paymentInstrument", balance.piId).exception()
         }.then { PaymentInstrument pi ->
             if (pi.billingAddressId == null) {
-                throw AppErrors.INSTANCE.addressNotFound("null").exception()
+                throw AppCommonErrors.INSTANCE.fieldRequired("paymentInstrument.billingAddress").exception()
             }
             balance.propertySet.put(PropertyKey.PAYMENT_METHOD.name(), PIType.get(pi.type).name())
-            String userId = balance.userId.value.toString()
-            if (userId == null) {
-                throw AppErrors.INSTANCE.userNotFound('not nullable').exception()
+            balance.propertySet.put(PropertyKey.BILLING_ADDRESS.name(), pi.billingAddressId.toString())
+            UserId userId = balance.userId
+            if (userId == null || userId.value == null) {
+                throw AppCommonErrors.INSTANCE.fieldRequired("paymentInstrument.user").exception()
             }
-            return identityFacade.getUser(Long.valueOf(userId)).recover { Throwable throwable ->
+            return identityFacade.getUser(userId.value).recover { Throwable throwable ->
                 LOGGER.error('name=Error_Get_User. user id: ' + userId, throwable)
-                throw AppErrors.INSTANCE.userNotFound(userId).exception()
+                throw AppErrors.INSTANCE.userNotFound("balance.userId", userId).exception()
             }.then { com.junbo.identity.spec.v1.model.User user ->
                 balance.propertySet.put(PropertyKey.CUSTOMER_NAME.name(), user.username)
                 UserVAT vat = user.vat?.get(balance.country)
@@ -120,20 +123,7 @@ class TaxServiceImpl implements TaxService {
                         item.propertySet.put(PropertyKey.VAT_ID.name(), vat.vatNumber)
                     }
                 }
-
-                return Promise.each(balance.balanceItems) { BalanceItem item ->
-                    def org = item.propertySet.get(PropertyKey.ORGANIZATION_ID.name())
-                    Long organizationId = org == null ? null : Long.valueOf(org)
-                    return identityFacade.getOrganization(organizationId).recover { Throwable throwable ->
-                        LOGGER.error('name=Error_Get_Organization. organization id: ' + organizationId, throwable)
-                        throw AppErrors.INSTANCE.organizationNotFound(organizationId.toString()).exception()
-                    }.then { Organization organization ->
-                        item.propertySet.put(PropertyKey.VENDOR_NAME.name(), organization?.name)
-                        return Promise.pure(null)
-                    }
-                }.then {
-                    return calculateTax(balance, pi.billingAddressId)
-                }
+                return calculateTax(balance, pi.billingAddressId)
             }
         }
     }
@@ -148,15 +138,32 @@ class TaxServiceImpl implements TaxService {
         return taxFacade.validateVatId(vatId)
     }
 
+    @Override
+    Promise<Balance> auditTax(Balance balance) {
+        Long shippingAddressId = balance.shippingAddressId?.value
+        Long billingAddressId = Long.valueOf(balance.propertySet.get(PropertyKey.BILLING_ADDRESS.name()))
+        return identityFacade.getAddress(shippingAddressId).recover { Throwable throwable ->
+            LOGGER.error('name=Error_Get_Shipping_Address. address id: ' + billingAddressId, throwable)
+            throw AppErrors.INSTANCE.addressNotFound("balance.shippingAddress", balance.shippingAddressId).exception()
+        }.then { Address shippingAddress ->
+            return identityFacade.getAddress(billingAddressId).recover { Throwable throwable ->
+                LOGGER.error('name=Error_Get_Billing_Address. address id: ' + billingAddressId, throwable)
+                throw AppErrors.INSTANCE.addressNotFound("billingAddress", new UserPersonalInfoId(billingAddressId)).exception()
+            }.then { Address billingAddress ->
+                return taxFacade.calculateTax(balance, shippingAddress, billingAddress)
+            }
+        }
+    }
+
     Promise<Balance> calculateTax(Balance balance, Long billingAddressId) {
         Long addressId = balance.shippingAddressId?.value
         return identityFacade.getAddress(addressId).recover { Throwable throwable ->
             LOGGER.error('name=Error_Get_Shipping_Address. address id: ' + addressId, throwable)
-            throw AppErrors.INSTANCE.addressNotFound(addressId.toString()).exception()
+            throw AppErrors.INSTANCE.addressNotFound("balance.shippingAddress", balance.shippingAddressId).exception()
         }.then { Address shippingAddress ->
             return identityFacade.getAddress(billingAddressId).recover { Throwable throwable ->
                 LOGGER.error('name=Error_Get_Billing_Address. address id: ' + billingAddressId, throwable)
-                throw AppErrors.INSTANCE.addressNotFound(billingAddressId.toString()).exception()
+                throw AppErrors.INSTANCE.addressNotFound("billingAddress", new UserPersonalInfoId(billingAddressId)).exception()
             }.then { Address billingAddress ->
                 return taxFacade.calculateTaxQuote(balance, shippingAddress, billingAddress)
             }

@@ -5,6 +5,7 @@
  */
 
 package com.junbo.order.db.repo.facade.impl
+
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.OrderItemId
 import com.junbo.langur.core.promise.Promise
@@ -23,6 +24,7 @@ import org.hibernate.StaleObjectStateException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
+
 /**
  * Created by chriszhu on 2/18/14.
  */
@@ -65,7 +67,7 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
 
     @Override
     Order createOrder(Order order) {
-        return ((Promise<Order>)orderRepository.create(order).then { Order savedOrder ->
+        return ((Promise<Order>) orderRepository.create(order).then { Order savedOrder ->
             return saveOrderItems(savedOrder.getId(), order.orderItems, false, null).then {
                 return saveDiscounts(savedOrder.getId(), order.discounts);
             };
@@ -83,29 +85,30 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
                 throw AppErrors.INSTANCE.orderNotFound().exception()
             }
 
-            if (!existingOrder.tentative && saveRevision) {
-                def orderRevision = toOrderRevision(order)
-                existingOrder.latestOrderRevisionId = orderRevision.getId()
-                existingOrder.orderRevisions << orderRevision
-                existingOrder.status = order.status
-            } else {
-                existingOrder= order
-            }
+                if (!existingOrder.tentative && saveRevision) {
+                    def orderRevision = toOrderRevision(order)
+                    existingOrder.latestOrderRevisionId = orderRevision.getId()
+                    existingOrder.orderRevisions << orderRevision
+                    existingOrder.status = order.status
+                    existingOrder.isAudited = order.isAudited
+                } else {
+                    existingOrder = order
+                }
 
-            return ((Promise<Order>) orderRepository.update(existingOrder).then { Order savedOrder ->
-                if (!updateOnlyOrder) {
-                    // update non-tentative order items to item revision
-                    return saveOrderItems(savedOrder.getId(), order.orderItems,
-                            saveRevision, revisionType).then {
-                        return saveDiscounts(savedOrder.getId(), order.discounts)
-                    }.then {
+                return ((Promise<Order>) orderRepository.update(existingOrder, existingOrder).then { Order savedOrder ->
+                    if (!updateOnlyOrder) {
+                        // update non-tentative order items to item revision
+                        return saveOrderItems(savedOrder.getId(), order.orderItems,
+                                saveRevision, revisionType).then {
+                            return saveDiscounts(savedOrder.getId(), order.discounts)
+                        }.then {
+                            return Promise.pure(order)
+                        }
+
+                    } else {
                         return Promise.pure(order)
                     }
-
-                } else {
-                    return Promise.pure(order)
-                }
-            }).get()
+                }).get()
         } catch (StaleObjectStateException ex) {
             throw AppErrors.INSTANCE.orderConcurrentUpdate().exception()
         }
@@ -115,7 +118,7 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
     Order getOrder(Long orderId) {
         def order = orderRepository.get(new OrderId(orderId)).get()
         if (order == null) {
-            return null
+            return (Order) null
         }
         // update order with order revision for non-tentative order
         if (!order.tentative && !CollectionUtils.isEmpty(order.orderRevisions)) {
@@ -134,7 +137,7 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
         if (orders == null) {
             return []
         }
-        orders.each {Order order ->
+        orders.each { Order order ->
             if (!order.tentative && !CollectionUtils.isEmpty(order.orderRevisions)) {
                 def latestRevision = order.orderRevisions.find() { OrderRevision revision ->
                     revision.id == order.latestOrderRevisionId
@@ -146,9 +149,9 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
     }
 
     @Override
-    List<Order> getOrdersByStatus(Object shardKey, List<String> statusList,
+    List<Order> getOrdersByStatus(Integer dataCenterId, Object shardKey, List<String> statusList,
                                   boolean updatedByAscending, PageParam pageParam) {
-        return orderRepository.getByStatus(shardKey, statusList, updatedByAscending, pageParam).get();
+        return orderRepository.getByStatus(dataCenterId, shardKey, statusList, updatedByAscending, pageParam).get();
     }
 
     @Override
@@ -235,12 +238,12 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
                 def revision = toOrderItemRevision(newItem, revisionType)
                 oldItem.latestOrderItemRevisionId = revision.getId()
                 oldItem.orderItemRevisions.add(revision)
-                orderItemRepository.update(oldItem).get()
+                orderItemRepository.update(oldItem, oldItem).get()
             } else {
                 newItem.id = oldItem.getId()
                 newItem.createdBy = oldItem.createdBy
                 newItem.createdTime = oldItem.createdTime
-                orderItemRepository.update(newItem).get()
+                orderItemRepository.update(newItem, oldItem).get()
             }
             return true
         }
@@ -264,12 +267,13 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
                 discount.orderItemId = discount.ownerOrderItem.getId()
             }
         }
+
         repositoryFuncSet.create = { Discount discount ->
             discountRepository.create(discount).get()
         }
         repositoryFuncSet.update = { Discount newDiscount, Discount oldDiscount ->
             newDiscount.id = oldDiscount.getId()
-            discountRepository.update(newDiscount).get()
+            discountRepository.update(newDiscount, oldDiscount).get()
             return true
         }
         repositoryFuncSet.delete = { Discount discount ->

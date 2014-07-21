@@ -27,7 +27,7 @@ public interface BaseRepository<T extends CloudantEntity, K> {
     Promise<T> create(T model);
 
     @WriteMethod
-    Promise<T> update(T model);
+    Promise<T> update(T model, T oldModel);
 
     @DeleteMethod
     Promise<Void> delete(K id);

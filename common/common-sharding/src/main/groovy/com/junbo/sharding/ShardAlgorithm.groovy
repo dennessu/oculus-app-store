@@ -5,4 +5,6 @@ package com.junbo.sharding
  */
 interface ShardAlgorithm {
     int shardId(Object key)
+
+    int dataCenterId(Object key)
 }

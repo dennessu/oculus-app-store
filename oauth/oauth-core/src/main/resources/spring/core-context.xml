@@ -9,7 +9,7 @@
         <property name="defaultRefreshTokenExpiration" value="${oauth.core.refreshToken.default.expiration}"/>
         <property name="defaultIdTokenExpiration" value="${oauth.core.idToken.default.expiration}"/>
         <property name="refreshTokenRepository" ref="refreshTokenRepository"/>
-        <property name="clientRepository" ref="clientRepository"/>
+        <property name="clientRepository" ref="encryptedClientRepository"/>
         <property name="tokenGenerator" ref="tokenGenerator"/>
 
     </bean>
@@ -28,7 +28,7 @@
     </bean>
 
     <bean id="clientService" class="com.junbo.oauth.core.service.impl.ClientServiceImpl">
-        <property name="clientRepository" ref="clientRepository"/>
+        <property name="clientRepository" ref="encryptedClientRepository"/>
         <property name="tokenService" ref="tokenService"/>
         <property name="tokenGenerator" ref="tokenGenerator"/>
         <property name="scopeService" ref="scopeService"/>

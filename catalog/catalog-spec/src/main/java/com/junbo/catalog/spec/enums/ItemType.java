@@ -13,11 +13,7 @@ import java.util.List;
  * Item type.
  */
 public enum ItemType {
-    // to be deleted: DIGITAL & VIRTUAL
-    // DIGITAL --> APP & DOWNLOADED_ADDITION
-    // VIRTUAL --> IN_APP_LOCK & IN_APP_CONSUMABLE
-    DIGITAL, VIRTUAL,
-    PHYSICAL, APP, DOWNLOADED_ADDITION, STORED_VALUE, SUBSCRIPTION, IN_APP_UNLOCK, IN_APP_CONSUMABLE;
+    PHYSICAL, APP, DOWNLOADED_ADDITION, STORED_VALUE, SUBSCRIPTION, PERMANENT_UNLOCK, CONSUMABLE_UNLOCK;
 
     public static final List<ItemType> ALL = Arrays.asList(ItemType.values());
 

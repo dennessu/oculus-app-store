@@ -7,6 +7,7 @@ package com.junbo.oauth.core.context
 
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.webflow.action.ActionContext
+import com.junbo.oauth.common.Utils
 import com.junbo.oauth.spec.model.*
 import groovy.transform.CompileStatic
 import org.springframework.web.util.UriComponentsBuilder
@@ -360,7 +361,7 @@ class ActionContextWrapper {
     }
 
     String getUserDefaultEmail() {
-        return actionContext.flowScope[USER_DEFAULT_EMAIL] as String
+        return Utils.maskEmail(actionContext.flowScope[USER_DEFAULT_EMAIL] as String)
     }
 
     void setUserDefaultEmail(String userDefaultEmail) {

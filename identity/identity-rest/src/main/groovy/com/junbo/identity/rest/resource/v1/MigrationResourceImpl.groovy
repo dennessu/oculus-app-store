@@ -14,7 +14,9 @@ import com.junbo.common.cloudant.client.CloudantDbUri
 import com.junbo.common.cloudant.model.CloudantQueryResult
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
+import com.junbo.common.id.CommunicationId
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.id.util.IdUtil
@@ -85,9 +87,16 @@ class MigrationResourceImpl implements MigrationResource {
     private UserRepository userRepository
 
     @Autowired
+    private CommunicationRepository communicationRepository
+
+    @Autowired
+    private UserCommunicationRepository userCommunicationRepository
+
+    @Autowired
     private NormalizeService normalizeService
 
     @Override
+    @Transactional
     Promise<OculusOutput> migrate(OculusInput oculusInput) {
         if (StringUtils.isEmpty(oculusInput.username)) {
             throw new IllegalArgumentException('username can\'t be null')
@@ -100,6 +109,8 @@ class MigrationResourceImpl implements MigrationResource {
         return checkPasswordValid(oculusInput).then {
             return checkUserValid(oculusInput)
         }.then {
+            return checkCommunicationExists(oculusInput)
+        }.then {
             return checkEmailValid(oculusInput).then { User existing ->
                 return checkOrganizationValid(oculusInput, existing).then {
                     // If the user exists, update current user's information;
@@ -111,6 +122,7 @@ class MigrationResourceImpl implements MigrationResource {
     }
 
     @Override
+    @Transactional
     Promise<Map<String, OculusOutput>> bulkMigrate(List<OculusInput> oculusInputs) {
         CloudantClientBase.useBulk = true
         CloudantClientBulk.callback = new MigrationQueryViewCallback()
@@ -156,6 +168,10 @@ class MigrationResourceImpl implements MigrationResource {
                         throw ex;
                     }
                 }
+            }.then {
+                return CloudantClientBulk.commit()
+            }.then {
+                return Promise.pure(result)
             }
         }
     }
@@ -252,9 +268,13 @@ class MigrationResourceImpl implements MigrationResource {
                 return Promise.pure(createdUser)
             }
         }.then { User createdUser ->
-            return userRepository.update(createdUser)
+            return userRepository.update(createdUser, createdUser)
         }.then { User createdUser ->
             return saveOrUpdatePassword(oculusInput, createdUser).then {
+                return Promise.pure(createdUser)
+            }
+        }.then { User createdUser ->
+            return saveOrUpdateUserCommunication(oculusInput, createdUser).then {
                 return Promise.pure(createdUser)
             }
         }.then { User createdUser ->
@@ -286,8 +306,53 @@ class MigrationResourceImpl implements MigrationResource {
                 activePassword.changeAtNextLogin = oculusInput.forceResetPassword
                 activePassword.passwordHash = oculusInput.password
 
-                return userPasswordRepository.update(activePassword)
+                return userPasswordRepository.update(activePassword, activePassword)
             }
+        }
+    }
+
+    Promise<Void> saveOrUpdateUserCommunication(OculusInput oculusInput, User user) {
+        if (CollectionUtils.isEmpty(oculusInput.communications)) {
+            return Promise.pure(null)
+        }
+
+        return Promise.each(oculusInput.communications) { Map<String, Boolean> map ->
+            if (map == null || map.isEmpty()) {
+                return Promise.pure(null)
+            }
+            return Promise.each(map.entrySet()) { Map.Entry<String, Boolean> entry ->
+                if (entry == null) {
+                    return Promise.pure(null)
+                }
+                return userCommunicationRepository.searchByUserIdAndCommunicationId(user.getId(), new CommunicationId(entry.key),
+                        Integer.MAX_VALUE, 0).then { List<UserCommunication> userCommunicationList ->
+                    if (org.springframework.util.CollectionUtils.isEmpty(userCommunicationList) && entry.value) {
+                        // create
+                        return userCommunicationRepository.create(new UserCommunication(
+                                userId: user.getId(),
+                                communicationId: new CommunicationId(entry.key)
+                        ))
+                    } else if (org.springframework.util.CollectionUtils.isEmpty(userCommunicationList) && !entry.value) {
+                        // do nothing
+                        return Promise.pure(null)
+                    } else {
+                        UserCommunication userCommunication = userCommunicationList.get(0)
+                        if (entry.value) {
+                            // update
+                            userCommunication.setUserId(user.getId())
+                            userCommunication.setCommunicationId(new CommunicationId(entry.key))
+                            return userCommunicationRepository.update(userCommunication, userCommunication)
+                        } else {
+                            // delete
+                            return userCommunicationRepository.delete(userCommunication.getId())
+                        }
+                    }
+                }
+            }.then {
+                return Promise.pure(null)
+            }
+        }.then {
+            return Promise.pure(null)
         }
     }
 
@@ -319,14 +384,14 @@ class MigrationResourceImpl implements MigrationResource {
                 existing.migratedUserId = user.migratedUserId
                 existing.createdTime = user.createdTime
                 existing.updatedTime = user.updatedTime
-                return userRepository.update(existing)
+                return userRepository.update(existing, existing)
             }
         }
     }
 
     Promise<User> checkEmailValid(OculusInput oculusInput) {
         return userRepository.searchUserByMigrateId(oculusInput.currentId).then { User existing ->
-            return userPersonalInfoRepository.searchByEmail(oculusInput.email.toLowerCase(java.util.Locale.ENGLISH),
+            return userPersonalInfoRepository.searchByEmail(oculusInput.email.toLowerCase(java.util.Locale.ENGLISH),null,
                     Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> emails ->
                 if (CollectionUtils.isEmpty(emails)) {
                     return Promise.pure(null)
@@ -367,6 +432,31 @@ class MigrationResourceImpl implements MigrationResource {
         return Promise.pure(null)
     }
 
+    Promise<Void> checkCommunicationExists(OculusInput oculusInput) {
+        if (CollectionUtils.isEmpty(oculusInput.communications)) {
+            return Promise.pure(null)
+        }
+
+        return Promise.each(oculusInput.communications) { Map<String, Boolean> communicationIdMap ->
+            return Promise.each(communicationIdMap.entrySet()) { Map.Entry<String, Boolean> entry ->
+                if (entry.value == null) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('communications').exception()
+                }
+                return communicationRepository.get(new CommunicationId(entry.key)).then { Communication communication ->
+                    if (communication == null) {
+                        throw AppErrors.INSTANCE.communicationNotFound(new CommunicationId(entry.key)).exception()
+                    }
+
+                    return Promise.pure(null)
+                }
+            }.then {
+                return Promise.pure(null)
+            }
+        }.then {
+            return Promise.pure(null)
+        }
+    }
+
     // The logic here should be:
     // 1.   search user by migratedUserId
     //      i.  if user is null, this username is valid, create user with this username;
@@ -382,17 +472,17 @@ class MigrationResourceImpl implements MigrationResource {
         }
 
         if (!(oculusInput.status in allowedValues)) {
-            throw AppErrors.INSTANCE.fieldInvalid('status', allowedValues.join(',')).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalidEnum('status', allowedValues.join(',')).exception()
         }
 
         if (oculusInput.language != null) {
             if (!ValidatorUtil.isValidLocale(oculusInput.language)) {
-                throw AppErrors.INSTANCE.fieldInvalidException('language', "language format should be en_US and etc").exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('language', "language format should be en_US and etc").exception()
             }
         }
 
         if (oculusInput.currentId == null) {
-            throw AppErrors.INSTANCE.fieldInvalidException('currentId', 'Migration must have user\'s currentId').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('currentId', 'Migration must have user\'s currentId').exception()
         }
 
         return userRepository.searchUserByMigrateId(oculusInput.currentId).then { User existingUser ->
@@ -405,7 +495,7 @@ class MigrationResourceImpl implements MigrationResource {
                     return Promise.pure(null)
                 }
 
-                throw AppErrors.INSTANCE.fieldInvalidException('username', 'username is already used by others').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'username is already used by others').exception()
             }
         }
     }
@@ -423,7 +513,7 @@ class MigrationResourceImpl implements MigrationResource {
             migrateCompanyType.toString()
         }
         if (!(oculusInput.company.type in allowedValues)) {
-            throw AppErrors.INSTANCE.fieldInvalid('company.type', allowedValues.join(',')).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalidEnum('company.type', allowedValues.join(',')).exception()
         }
     }
 
@@ -690,7 +780,7 @@ class MigrationResourceImpl implements MigrationResource {
                 return Promise.pure(existingOrg)
             }
             existingOrg.rev = organization.rev
-            return organizationRepository.update(existingOrg)
+            return organizationRepository.update(existingOrg, organization)
         }.recover { Throwable e ->
             // retry here
             return organizationRepository.get(existingOrg.getId()).then { Organization organization ->
@@ -698,7 +788,7 @@ class MigrationResourceImpl implements MigrationResource {
                     return Promise.pure(existingOrg)
                 }
                 existingOrg.rev = organization.rev
-                return organizationRepository.update(existingOrg)
+                return organizationRepository.update(existingOrg, organization)
             }
         }.recover { Throwable e ->
             // retry here
@@ -707,7 +797,7 @@ class MigrationResourceImpl implements MigrationResource {
                     return Promise.pure(existingOrg)
                 }
                 existingOrg.rev = organization.rev
-                return organizationRepository.update(existingOrg)
+                return organizationRepository.update(existingOrg, organization)
             }
         }.recover { Throwable e ->
             // retry here
@@ -716,7 +806,7 @@ class MigrationResourceImpl implements MigrationResource {
                     return Promise.pure(existingOrg)
                 }
                 existingOrg.rev = organization.rev
-                return organizationRepository.update(existingOrg)
+                return organizationRepository.update(existingOrg, organization)
             }
         }.recover { Throwable e ->
             return Promise.pure(null)
@@ -855,6 +945,9 @@ class MigrationResourceImpl implements MigrationResource {
         }
 
         return userPersonalInfoRepository.get(createdOrg.shippingAddress).then { UserPersonalInfo userPersonalInfo ->
+            if (userPersonalInfo == null || userPersonalInfo.value == null) {
+                return Promise.pure(false)
+            }
             Address existingAddress = (Address)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Address)
 
             if (address != existingAddress) {
@@ -964,30 +1057,25 @@ class MigrationResourceImpl implements MigrationResource {
             if (dbUri.dbName == "user" && viewName == "by_migrate_user_id") {
                 def bulkCache = CloudantClientBulk.getBulkReadonly(dbUri)
                 searchUserByMigrateId(results, key, bulkCache)
-                return
             } else if (dbUri.dbName == "organization" && viewName == "by_migrate_company_id") {
                 def bulkCache = CloudantClientBulk.getBulkReadonly(dbUri)
                 searchByMigrateCompanyId(results, key, bulkCache)
-                return
-            } else if (dbUri.dbName == "group" && viewName == "by_organization_id_and_name") {
-                def bulkCache = CloudantClientBulk.getBulkReadonly(dbUri)
-                searchGroupByOrganizationIdAndName(results, key, bulkCache)
-                return
             } else if (dbUri.dbName == "group" && viewName == "by_organization_id") {
                 def bulkCache = CloudantClientBulk.getBulkReadonly(dbUri)
                 searchGroupByOrganizationId(results, key, bulkCache)
-                return
             }
         }
 
         @Override
         void onQueryView(CloudantQueryResult results, CloudantDbUri dbUri, String viewName, String startKey, String endKey) {
-            return
         }
 
         @Override
         void onQueryView(CloudantQueryResult results, CloudantDbUri dbUri, String viewName, Object[] startKey, Object... endKey) {
-            return
+            if (dbUri.dbName == "group" && viewName == "by_organization_id_and_name") {
+                def bulkCache = CloudantClientBulk.getBulkReadonly(dbUri)
+                searchGroupByOrganizationIdAndName(results, startKey, endKey, bulkCache)
+            }
         }
 
         void onSearch(CloudantQueryResult results, CloudantDbUri dbUri, String searchName, String queryString) {
@@ -1022,18 +1110,36 @@ class MigrationResourceImpl implements MigrationResource {
             }
         }
 
-        private void searchGroupByOrganizationIdAndName(CloudantQueryResult results, String key, Map<String, CloudantClientBulk.EntityWithType> bulkCache) {
+        private void searchGroupByOrganizationIdAndName(CloudantQueryResult results, Object[] startKey, Object[] endKey, Map<String, CloudantClientBulk.EntityWithType> bulkCache) {
             for (CloudantClientBulk.EntityWithType entityWithType : bulkCache.values()) {
                 Group group = (Group)marshaller.unmarshall(entityWithType.entity, entityWithType.type)
-                if ("${group.getOrganizationId().value}:${group.name}" == key) {
+                if (isGroupInRange(startKey, endKey, group.organizationId.toString(), group.name)) {
                     results.rows.add(new CloudantQueryResult.ResultObject(
                             id: group.cloudantId,
-                            key: key,
+                            key: [group.organizationId.toString(), group.name],
                             value: group.cloudantId,
                             doc: group
                     ))
                 }
             }
+        }
+
+        // It must be as the format as startKey: [organizationId, name], endKey: [organizationId, name]
+        // Here we won't consider the scenarios for non-string comparation.
+        private boolean isGroupInRange(Object[] startKey, Object[] endKey, String organizationId, String name) {
+            assert startKey != null
+            assert startKey.size() == 2
+
+            assert endKey != null
+            assert endKey.size() == 2
+
+            String startOrganizationId = startKey[0].toString()
+            String startName = startKey[1].toString()
+
+            String endOrganizationId = endKey[0].toString()
+            String endName = endKey[1].toString()
+
+            return startOrganizationId <= organizationId && organizationId <= endOrganizationId && startName <= name && name <= endName
         }
 
         private void searchGroupByOrganizationId(CloudantQueryResult results, String key, Map<String, CloudantClientBulk.EntityWithType> bulkCache) {

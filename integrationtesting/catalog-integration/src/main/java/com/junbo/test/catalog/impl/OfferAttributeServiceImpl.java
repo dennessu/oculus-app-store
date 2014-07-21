@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAttributeService {
 
-    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "/offer-attributes";
+    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "offer-attributes";
     private static OfferAttributeService instance;
 
     public static synchronized OfferAttributeService instance() {

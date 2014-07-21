@@ -76,7 +76,7 @@ public class PendingActionReplayer {
             }
             if (entity.resourceAge > savedEntity.resourceAge) {
                 entity.cloudantRev = savedEntity.cloudantRev
-                return repository.update(entity);
+                return repository.update(entity, savedEntity);
             }
             return Promise.pure(entity);
         }.then {

@@ -54,7 +54,7 @@ public class BaseDaoImpl<T extends CommonDbEntityWithDate> implements BaseDao<T>
     }
 
     protected Session getSession(Object key) {
-        ShardScope shardScope = new ShardScope(shardAlgorithm.shardId(key));
+        ShardScope shardScope = new ShardScope(shardAlgorithm.dataCenterId(key), shardAlgorithm.shardId(key));
         try {
             return sessionFactory.getCurrentSession();
         } finally {
@@ -62,8 +62,8 @@ public class BaseDaoImpl<T extends CommonDbEntityWithDate> implements BaseDao<T>
         }
     }
 
-    protected Session getSessionByShardId(int shardId) {
-        ShardScope shardScope = new ShardScope(shardId);
+    protected Session getSessionByShardId(int dataCenterId, int shardId) {
+        ShardScope shardScope = new ShardScope(dataCenterId, shardId);
         try {
             return sessionFactory.getCurrentSession();
         } finally {

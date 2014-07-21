@@ -43,7 +43,7 @@ class RepositoryTest extends AbstractTestNGSpringContextTests {
         SecureRandom random = new SecureRandom()
         MasterKey masterKey = new MasterKey()
         masterKey.setEncryptValue(UUID.randomUUID().toString())
-        masterKey.setKeyVersion(Math.abs(random.nextInt()))
+        masterKey.setKeyVersion(Math.abs(random.nextLong()))
         masterKey.setCreatedBy(123L)
         masterKey.setCreatedTime(new Date())
         MasterKey newMaster = masterKeyRepo.create(masterKey).get()

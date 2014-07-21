@@ -1,0 +1,10 @@
+# tell git to detect all text files and automatically normalize them
+* text=auto
+
+# force shell script eol = lf when checkout, crlf cannot work in some environments
+*.sh text eol=lf
+
+# define binary types
+*.png     binary
+*.jepg    binary
+*.jar     binary

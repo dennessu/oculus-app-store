@@ -74,7 +74,7 @@ public class PaymentPropertyRepositorySqlImpl implements PaymentPropertyReposito
     }
 
     @Override
-    public Promise<PaymentProperty> update(PaymentProperty model) {
+    public Promise<PaymentProperty> update(PaymentProperty model, PaymentProperty oldModel) {
         PaymentPropertyEntity entity = paymentMapper.toPaymentPropertyEntity(model, new MappingContext());
         PaymentPropertyEntity updated = paymentPropertyDao.update(entity);
         return get(updated.getId());

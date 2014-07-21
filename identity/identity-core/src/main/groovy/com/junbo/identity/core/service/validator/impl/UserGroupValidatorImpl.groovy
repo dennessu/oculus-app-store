@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserGroupId
 import com.junbo.identity.core.service.validator.UserGroupValidator
 import com.junbo.identity.data.identifiable.UserStatus
@@ -38,7 +39,7 @@ class UserGroupValidatorImpl implements UserGroupValidator {
     @Override
     Promise<UserGroup> validateForGet(UserGroupId userGroupId) {
         if (userGroupId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userGroupId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userGroupId').exception()
         }
 
         return userGroupRepository.get(userGroupId).then { UserGroup userGroup ->
@@ -57,7 +58,7 @@ class UserGroupValidatorImpl implements UserGroupValidator {
         }
 
         if (options.userId == null && options.groupId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userId or groupId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId or groupId').exception()
         }
 
         return Promise.pure(null)
@@ -68,13 +69,13 @@ class UserGroupValidatorImpl implements UserGroupValidator {
 
         return checkBasicUserGroupInfo(userGroup).then {
             if (userGroup.id != null) {
-                throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+                throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
             }
 
             return userGroupRepository.searchByUserIdAndGroupId(userGroup.userId, userGroup.groupId,
                     Integer.MAX_VALUE, 0).then { List<UserGroup> existing ->
                 if (!CollectionUtils.isEmpty(existing)) {
-                    throw AppErrors.INSTANCE.fieldDuplicate('groupId').exception()
+                    throw AppCommonErrors.INSTANCE.fieldDuplicate('groupId').exception()
                 }
 
                 return Promise.pure(null)
@@ -93,18 +94,18 @@ class UserGroupValidatorImpl implements UserGroupValidator {
             }
 
             if (userGroup.id != userGroupId) {
-                throw AppErrors.INSTANCE.fieldInvalid('id', userGroupId.value.toString()).exception()
+                throw AppCommonErrors.INSTANCE.fieldNotWritable('id', userGroup.id, userGroupId).exception()
             }
 
             if (userGroup.id != oldUserGroup.id) {
-                throw AppErrors.INSTANCE.fieldInvalid('id', oldUserGroup.id.toString()).exception()
+                throw AppCommonErrors.INSTANCE.fieldNotWritable('id', userGroup.id, oldUserGroup.id).exception()
             }
 
             if (userGroup.groupId != oldUserGroup.groupId || userGroup.userId != oldUserGroup.userId) {
                 return userGroupRepository.searchByUserIdAndGroupId(userGroup.userId, userGroup.groupId,
                         Integer.MAX_VALUE, 0).then { List<UserGroup> existing ->
                     if (!CollectionUtils.isEmpty(existing)) {
-                        throw AppErrors.INSTANCE.fieldDuplicate('groupId or userId').exception()
+                        throw AppCommonErrors.INSTANCE.fieldDuplicate('groupId or userId').exception()
                     }
 
                     return Promise.pure(null)
@@ -120,11 +121,11 @@ class UserGroupValidatorImpl implements UserGroupValidator {
         }
 
         if (userGroup.groupId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('groupId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('groupId').exception()
         }
 
         if (userGroup.userId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
         return userRepository.get(userGroup.userId).then { User existingUser ->
@@ -156,7 +157,7 @@ class UserGroupValidatorImpl implements UserGroupValidator {
                     }
 
                     if (!CollectionUtils.isEmpty(existingUserGroupList)) {
-                        throw AppErrors.INSTANCE.fieldInvalid('groupId').exception()
+                        throw AppCommonErrors.INSTANCE.fieldInvalid('groupId').exception()
                     }
 
                     return Promise.pure(null)

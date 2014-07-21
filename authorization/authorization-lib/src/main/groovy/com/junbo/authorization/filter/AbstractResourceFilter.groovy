@@ -4,9 +4,8 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.authorization.filter
-
 import com.junbo.authorization.AuthorizeContext
-import com.junbo.authorization.AuthErrors
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.oom.core.BeanMarker
 import com.junbo.oom.core.MappingContext
 import com.junbo.oom.core.filter.PropertiesToIncludeFilter
@@ -15,7 +14,6 @@ import com.junbo.oom.core.filter.ReadablePropertiesFilter
 import com.junbo.oom.core.filter.WritablePropertiesFilter
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-
 /**
  * Created by kg on 3/19/2014.
  */
@@ -110,7 +108,7 @@ abstract class AbstractResourceFilter<T> implements ResourceFilter<T> {
             context.writableProperties = new BeanMarker()
             context.writableProperties.markProperties(writableProperties)
         } else {
-            throw AuthErrors.INSTANCE.itemNotWritable().exception()
+            throw AppCommonErrors.INSTANCE.resourceNotWritable().exception()
         }
 
         def createFilter = new CreateFilter()
@@ -145,7 +143,7 @@ abstract class AbstractResourceFilter<T> implements ResourceFilter<T> {
             context.writableProperties = new BeanMarker()
             context.writableProperties.markProperties(writableProperties)
         } else {
-            throw AuthErrors.INSTANCE.itemNotWritable().exception()
+            throw AppCommonErrors.INSTANCE.resourceNotWritable().exception()
         }
 
         def putFilter = new PutFilter()
@@ -182,7 +180,7 @@ abstract class AbstractResourceFilter<T> implements ResourceFilter<T> {
             context.writableProperties = new BeanMarker()
             context.writableProperties.markProperties(writableProperties)
         } else {
-            throw AuthErrors.INSTANCE.itemNotWritable().exception()
+            throw AppCommonErrors.INSTANCE.resourceNotWritable().exception()
         }
 
         def patchFilter = new PatchFilter()

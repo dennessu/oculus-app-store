@@ -10,7 +10,6 @@ import com.junbo.common.id.EntitlementId;
 import com.junbo.common.model.Results;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
-import com.junbo.entitlement.spec.model.EntitlementTransfer;
 import com.junbo.entitlement.spec.model.PageMetadata;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
@@ -59,9 +58,4 @@ public interface EntitlementResource {
     @GET
     Promise<Results<Entitlement>> searchEntitlements(@BeanParam EntitlementSearchParam searchParam,
                                                      @BeanParam PageMetadata pageMetadata);
-
-    @POST
-    @Path("/transfer")
-    @Consumes({MediaType.APPLICATION_JSON})
-    Promise<Entitlement> transferEntitlement(@Valid EntitlementTransfer entitlementTransfer);
 }

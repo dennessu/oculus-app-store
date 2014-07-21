@@ -6,6 +6,9 @@
  */
 package com.junbo.common.error;
 
+import com.junbo.common.json.ObjectMapperProvider;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,20 +18,35 @@ public class Error {
     public Error() {
     }
 
-    public Error(String code, String description, String field, List<Error> causes) {
+    public Error(String message, String code, List<ErrorDetail> details) {
+        this.message = message;
         this.code = code;
-        this.description = description;
-        this.field = field;
-        this.causes = causes;
+        this.details = details;
     }
+
+    public Error(String message, String code, String field, String reason) {
+        this.message = message;
+        this.code = code;
+        this.details = new ArrayList<>();
+        ErrorDetail errorDetail = new ErrorDetail();
+        errorDetail.setField(field);
+        errorDetail.setReason(reason);
+        this.details.add(errorDetail);
+    }
+
+    private String message;
 
     private String code;
 
-    private String description;
+    private List<ErrorDetail> details;
 
-    private String field;
+    public String getMessage() {
+        return message;
+    }
 
-    private List<Error> causes;
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
     public String getCode() {
         return code;
@@ -38,27 +56,20 @@ public class Error {
         this.code = code;
     }
 
-    public String getDescription() {
-        return description;
+    public List<ErrorDetail> getDetails() {
+        return details;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDetails(List<ErrorDetail> details) {
+        this.details = details;
     }
 
-    public String getField() {
-        return field;
-    }
-
-    public void setField(String field) {
-        this.field = field;
-    }
-
-    public List<Error> getCauses() {
-        return causes;
-    }
-
-    public void setCauses(List<Error> causes) {
-        this.causes = causes;
+    @Override
+    public String toString() {
+        try {
+            return ObjectMapperProvider.instance().writeValueAsString(this);
+        } catch (Exception ex) {
+            return "Error: " + message + " code: " + code;
+        }
     }
 }

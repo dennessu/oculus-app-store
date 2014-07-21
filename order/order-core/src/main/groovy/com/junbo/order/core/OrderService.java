@@ -21,11 +21,9 @@ public interface OrderService {
 
     Promise<Order> createQuote(Order order, OrderServiceContext orderServiceContext);
 
-    Promise<Order> getOrderByOrderId(Long orderId, Boolean doRate, OrderServiceContext context);
+    Promise<Order> getOrderByOrderId(Long orderId, Boolean doRate, OrderServiceContext context, Boolean updateOrderStatus);
 
-    Promise<Order> cancelOrder(Order request, OrderServiceContext orderServiceContext);
-
-    Promise<Order> refundOrder(Order request, OrderServiceContext orderServiceContext);
+    Promise<Order> refundOrCancelOrder(Order request, OrderServiceContext orderServiceContext);
 
     Promise<List<Order>> getOrdersByUserId(Long userId, OrderServiceContext context, OrderQueryParam orderQueryParam, PageParam pageParam);
 

@@ -1,0 +1,11 @@
+{
+  "localeCode": "fr_LU",
+  "shortName": "Français (LU)",
+  "longName": "Français (Luxembourg)",
+  "localeName": "Français (LU)",
+  "fallbackLocale": {
+    "href": "/v1/locales/fr_FR",
+    "id": "fr_FR"
+  },
+  "futureExpansion": {}
+}

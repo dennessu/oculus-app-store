@@ -20,23 +20,20 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class PromiseShell {
     private static final Logger logger = LoggerFactory.getLogger(PromiseShell.class);
 
-    private static int corePoolSize = 2;
-    private static int maxPoolSize = 50;
-    private static long keepAliveTimeMillis = 10 * 60 * 1000;   // 10 mins
-    private static int queueLimit = -1;
+    private static final int corePoolSize = 2;
+    private static final int maxPoolSize = 50;
+    private static final long keepAliveTimeMillis = 10 * 60 * 1000;   // 10 mins
+    private static final int queueLimit = -1;
 
     private static ConcurrentHashMap<String, ListeningExecutorService> pool = new ConcurrentHashMap<>();
 
-    private PromiseShell() {
-    }
-
     public static <R> Promise<R> decorate(String poolName, final Callable<R> callable) {
-        return Promise.wrap(locate(poolName).submit(Wrapper.wrap(callable)));
+        return Promise.wrap(locate(poolName).submit(new CallableWrapper<R>(callable)));
     }
 
     @SuppressWarnings("unchecked")
     public static Promise<Void> decorate(String poolName, final Runnable runnable) {
-        return Promise.wrap((ListenableFuture<Void>) locate(poolName).submit(Wrapper.wrap(runnable)));
+        return Promise.wrap((ListenableFuture<Void>) locate(poolName).submit(new RunnableWrapper(runnable)));
     }
 
     private static ListeningExecutorService locate(String poolName) {
@@ -44,6 +41,9 @@ public class PromiseShell {
             pool.putIfAbsent(poolName, MoreExecutors.listeningDecorator(new PromiseShellThreadPool(poolName)));
         }
         return pool.get(poolName);
+    }
+
+    private PromiseShell() {
     }
 
     /**
@@ -54,7 +54,7 @@ public class PromiseShell {
             super(corePoolSize, maxPoolSize, keepAliveTimeMillis, TimeUnit.MILLISECONDS, createQueue(queueLimit), getDefaultThreadFactory(poolName));
         }
 
-        private static LinkedBlockingQueue createQueue(int queueLimit) {
+        private static LinkedBlockingQueue<Runnable> createQueue(int queueLimit) {
             if (queueLimit == -1) {
                 return new LinkedBlockingQueue<>();
             } else {

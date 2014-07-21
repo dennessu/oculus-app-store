@@ -45,7 +45,7 @@ class LoginStateRepositoryImpl implements LoginStateRepository {
     }
 
     @Override
-    LoginState saveOrUpdate(LoginState loginState) {
+    LoginState save(LoginState loginState) {
         if (loginState.id == null) {
             loginState.id = tokenGenerator.generateLoginStateId()
         }
@@ -75,12 +75,12 @@ class LoginStateRepositoryImpl implements LoginStateRepository {
         }
 
         return new LoginStateEntity(
-                id: loginState.id,
+                id: loginState.getId(),
                 userId: loginState.userId,
                 expiredBy: loginState.expiredBy,
                 lastAuthDate: loginState.lastAuthDate,
                 sessionId: loginState.sessionId,
-                revision: loginState.revision
+                revision: loginState.rev
         )
 
     }
@@ -96,7 +96,7 @@ class LoginStateRepositoryImpl implements LoginStateRepository {
                 expiredBy: entity.expiredBy,
                 lastAuthDate: entity.lastAuthDate,
                 sessionId: entity.sessionId,
-                revision: entity.revision
+                rev: entity.revision
         )
     }
 }

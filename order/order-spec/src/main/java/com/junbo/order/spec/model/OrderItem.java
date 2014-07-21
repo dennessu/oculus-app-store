@@ -70,6 +70,9 @@ public class OrderItem extends ResourceMetaForDualWrite<OrderItemId> {
     private BigDecimal totalDiscount;
 
     @JsonIgnore
+    private BigDecimal developerRevenue;
+
+    @JsonIgnore
     private Date honorUntilTime;
 
     @JsonIgnore
@@ -109,6 +112,9 @@ public class OrderItem extends ResourceMetaForDualWrite<OrderItemId> {
 
     @JsonIgnore
     private String offerOrganization;
+
+    @JsonIgnore
+    private String offerOrganizationName;
 
     @Override
     public OrderItemId getId() {
@@ -198,6 +204,14 @@ public class OrderItem extends ResourceMetaForDualWrite<OrderItemId> {
 
     public void setTotalDiscount(BigDecimal totalDiscount) {
         this.totalDiscount = totalDiscount;
+    }
+
+    public BigDecimal getDeveloperRevenue() {
+        return developerRevenue;
+    }
+
+    public void setDeveloperRevenue(BigDecimal developerRevenue) {
+        this.developerRevenue = developerRevenue;
     }
 
     public Date getHonorUntilTime() {
@@ -294,5 +308,13 @@ public class OrderItem extends ResourceMetaForDualWrite<OrderItemId> {
 
     public void setOfferOrganization(String offerOrganization) {
         this.offerOrganization = offerOrganization;
+    }
+
+    public String getOfferOrganizationName() {
+        return offerOrganizationName;
+    }
+
+    public void setOfferOrganizationName(String offerOrganizationName) {
+        this.offerOrganizationName = offerOrganizationName;
     }
 }

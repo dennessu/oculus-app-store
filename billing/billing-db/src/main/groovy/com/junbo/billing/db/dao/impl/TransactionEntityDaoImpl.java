@@ -43,7 +43,7 @@ public class TransactionEntityDaoImpl extends BaseDao implements TransactionEnti
     }
 
     @Override
-    public TransactionEntity update(TransactionEntity transaction) {
+    public TransactionEntity update(TransactionEntity transaction, TransactionEntity oldTransaction) {
         transaction.setUpdatedTime(new Date());
         if (transaction.getUpdatedBy() == null) {
             transaction.setUpdatedBy("0");

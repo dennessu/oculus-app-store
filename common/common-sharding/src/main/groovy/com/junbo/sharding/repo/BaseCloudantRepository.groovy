@@ -16,8 +16,8 @@ abstract class BaseCloudantRepository<T extends CloudantEntity, K> extends Cloud
     }
 
     @Override
-    Promise<T> update(T entity) {
-        return cloudantPut(entity)
+    Promise<T> update(T entity, T oldEntity) {
+        return cloudantPut(entity, oldEntity)
     }
 
     @Override

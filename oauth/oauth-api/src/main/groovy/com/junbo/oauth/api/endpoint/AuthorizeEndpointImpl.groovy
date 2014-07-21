@@ -5,11 +5,12 @@
  */
 package com.junbo.oauth.api.endpoint
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.util.ResponseUtil
 import com.junbo.oauth.spec.endpoint.AuthorizeEndpoint
 import com.junbo.oauth.spec.param.OAuthParameters
@@ -74,8 +75,14 @@ class AuthorizeEndpointImpl implements AuthorizeEndpoint {
 
         // Parse the conversation id and event.
         String conversationId = uriInfo.queryParameters.getFirst(OAuthParameters.CONVERSATION_ID)
-        String event = uriInfo.queryParameters.getFirst(OAuthParameters.EVENT) ?: ''
+        String event = uriInfo.queryParameters.getFirst(OAuthParameters.EVENT)
 
+        // GET method is not allowed if sensitive data is provided. (no query parameter except event is allowed)
+        if (StringUtils.hasText(event) && uriInfo.queryParameters.size() > 1) {
+            throw AppErrors.INSTANCE.methodNotAllowed().exception()
+        }
+
+        event = ''
         // if the conversation id is empty, start a new conversation in the flowExecutor.
         if (StringUtils.isEmpty(conversationId)) {
             return flowExecutor.start(authorizeFlow, requestScope).then(ResponseUtil.WRITE_RESPONSE_CLOSURE)
@@ -109,7 +116,7 @@ class AuthorizeEndpointImpl implements AuthorizeEndpoint {
 
         // The post authorize flow will always be in one on-going conversation, conversation id should not be empty.
         if (StringUtils.isEmpty(conversationId)) {
-            throw AppExceptions.INSTANCE.missingConversationId().exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('conversationId').exception()
         }
 
         // try to resume the conversation with the given conversation id and event in the flowExecutor

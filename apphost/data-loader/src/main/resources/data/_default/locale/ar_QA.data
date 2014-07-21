@@ -1,0 +1,11 @@
+{
+  "localeCode": "ar_QA",
+  "shortName": "العربية (QA)",
+  "longName": "العربية (قطر)",
+  "localeName": "العربية (QA)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

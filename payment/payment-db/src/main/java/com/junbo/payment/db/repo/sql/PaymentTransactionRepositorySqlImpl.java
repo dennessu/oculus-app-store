@@ -59,7 +59,7 @@ public class PaymentTransactionRepositorySqlImpl implements PaymentTransactionRe
     }
 
     @Override
-    public Promise<PaymentTransaction> update(PaymentTransaction model) {
+    public Promise<PaymentTransaction> update(PaymentTransaction model, PaymentTransaction oldModel) {
         PaymentTransactionEntity entity = paymentMapperExtension.toPaymentTransactionEntity(model);
         PaymentTransactionEntity updated = paymentTransactionDao.update(entity);
         return get(updated.getId());

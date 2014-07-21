@@ -1,23 +1,24 @@
 package com.junbo.order.core.impl.internal.impl
+
 import com.junbo.common.id.PIType
-import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.identity.spec.v1.model.Address
 import com.junbo.identity.spec.v1.model.Currency
-import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
 import com.junbo.langur.core.promise.Promise
-import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.internal.RiskReviewResult
 import com.junbo.order.core.impl.internal.RiskService
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
+import com.junbo.order.spec.model.BillingHistory
 import com.junbo.order.spec.model.OrderItem
+import com.junbo.order.spec.model.enums.BillingAction
 import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.kount.ris.Inquiry
 import com.kount.ris.KountRisClient
 import com.kount.ris.Response
+import com.kount.ris.Update
 import com.kount.ris.util.AuthorizationStatus
 import com.kount.ris.util.CartItem
 import com.kount.ris.util.MerchantAcknowledgment
@@ -28,6 +29,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
 /**
@@ -36,9 +38,6 @@ import javax.annotation.Resource
 @CompileStatic
 @TypeChecked
 class RiskServiceImpl implements RiskService {
-
-    @Resource(name = 'orderFacadeContainer')
-    FacadeContainer facadeContainer
 
     @Resource(name = 'orderServiceContextBuilder')
     OrderServiceContextBuilder builder
@@ -77,14 +76,16 @@ class RiskServiceImpl implements RiskService {
         this.kountKeyFilePass = kountKeyFilePass
     }
 
+    KountRisClient kountRisClient = null
+
     private final static String NO_EMAIL = "noemail@kount.com"
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RiskServiceImpl)
 
     @Override
+    @Transactional
     Promise<RiskReviewResult> reviewOrder(OrderServiceContext orderContext) {
         def order = orderContext.order
-        def user = orderContext.user
         def ip = orderContext.apiContext.userIp
 
         if (ip == null || ip.isEmpty()) {
@@ -192,21 +193,24 @@ class RiskServiceImpl implements RiskService {
                 return Promise.pure(null)
             }
         }.then {
-            InputStream stream = RiskServiceImpl.classLoader.getResourceAsStream(kountKeyFileName)
-            KountRisClient kountRisClient = new KountRisClient(kountKeyFilePass, kountUrl, stream)
 
             try {
                 LOGGER.info('name=Review_Order_Request, ' + q.getParams().toString())
-                Response r = kountRisClient.process(q);
+                Response r = getKountRisClient().process(q);
                 LOGGER.info('name=Review_Order_Response, ' + r.toString())
-                orderContext.riskTransactionId = r.getTransactionId()
 
+                if (order.properties == null) {
+                    order.setProperties(new HashMap<String, String>())
+                }
+
+                order.properties.put('riskTransactionId', r.getTransactionId())
                 if (r.auto == 'D') {
                     order.setStatus(OrderStatus.RISK_REJECT.name())
                     orderRepository.updateOrder(order, true, false, null)
 
                     return Promise.pure(RiskReviewResult.REJECT)
                 } else {
+                    orderRepository.updateOrder(order, true, false, null)
                     return Promise.pure(RiskReviewResult.APPROVED)
                 }
             } catch (RisException re) {
@@ -214,5 +218,50 @@ class RiskServiceImpl implements RiskService {
                 throw AppErrors.INSTANCE.orderRiskReviewError(re.getMessage()).exception()
             }
         }
+    }
+
+    @Override
+    Promise<Void> updateReview(OrderServiceContext orderContext) {
+        def order = orderContext.order
+
+        if (order.properties != null && order.properties.containsKey('riskTransactionId')) {
+            Update update = new Update()
+            update.setMerchantId(merchantId)
+            update.setSessionId(UUID.randomUUID().toString().replaceAll('-', ''))
+            update.setTransactionId(order.properties.get('riskTransactionId'))
+
+            if (order.properties.containsKey('payerId')) {
+                update.setPayment("PYPL", order.properties.get('payerId'))
+            }
+
+            Boolean failed = order.billingHistories.any{ BillingHistory billingHistory ->
+                (billingHistory.billingEvent == BillingAction.AUTHORIZE.name() ||
+                        billingHistory.billingEvent == BillingAction.CHARGE.name()) &&
+                        billingHistory.success == false
+            }
+            update.setMerchantAcknowledgment(MerchantAcknowledgment.YES)
+            if (failed) {
+                update.setAuthorizationStatus(AuthorizationStatus.DECLINED)
+            }
+
+            try {
+                LOGGER.info('name=Update_Review_Request, ' + update.getParams().toString())
+                Response r = getKountRisClient().process(update);
+                LOGGER.info('name=Update_Review_Response, ' + r.toString())
+            } catch (RisException re) {
+                LOGGER.error('name=Update_Review_Exception', re)
+                throw AppErrors.INSTANCE.orderRiskReviewError(re.getMessage()).exception()
+            }
+        }
+
+        return Promise.pure(null)
+    }
+
+    private KountRisClient getKountRisClient() {
+        if (kountRisClient == null) {
+            InputStream stream = RiskServiceImpl.classLoader.getResourceAsStream(kountKeyFileName)
+            kountRisClient = new KountRisClient(kountKeyFilePass, kountUrl, stream)
+        }
+        return kountRisClient
     }
 }

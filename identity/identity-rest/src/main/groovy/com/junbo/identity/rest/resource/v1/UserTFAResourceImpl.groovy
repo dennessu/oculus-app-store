@@ -3,6 +3,7 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFAId
 import com.junbo.common.model.Results
@@ -54,13 +55,13 @@ class UserTFAResourceImpl implements UserTFAResource {
         }
 
         if (userTeleCode.userId != null && userTeleCode.userId != userId) {
-            throw AppErrors.INSTANCE.fieldInvalid('userId', userId.toString()).exception()
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('userId', userTeleCode.userId, userId).exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('create')) {
-                throw AppErrors.INSTANCE.invalidAccess().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             userTeleCode = userTFAFilter.filterForCreate(userTeleCode)
@@ -85,13 +86,13 @@ class UserTFAResourceImpl implements UserTFAResource {
         }
 
         if (userId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('read')) {
-                throw AppErrors.INSTANCE.invalidAccess().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             return userTFAValidator.validateForGet(userId, userTFAId).then { UserTFA newUserTeleCode ->
@@ -120,7 +121,7 @@ class UserTFAResourceImpl implements UserTFAResource {
         def callback = authorizeCallbackFactory.create(userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('update')) {
-                throw AppErrors.INSTANCE.invalidAccess().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             return userTFARepository.get(userTFAId).then { UserTFA oldUserTeleCode ->
@@ -132,7 +133,7 @@ class UserTFAResourceImpl implements UserTFAResource {
 
                 return userTFAValidator.validateForUpdate(userId, userTFAId, userTFA, oldUserTeleCode).then {
 
-                    return userTFARepository.update(userTFA).then { UserTFA newUserTele ->
+                    return userTFARepository.update(userTFA, oldUserTeleCode).then { UserTFA newUserTele ->
                         newUserTele = userTFAFilter.filterForGet(newUserTele, null)
                         return Promise.pure(newUserTele)
                     }
@@ -158,7 +159,7 @@ class UserTFAResourceImpl implements UserTFAResource {
         def callback = authorizeCallbackFactory.create(userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('update')) {
-                throw AppErrors.INSTANCE.invalidAccess().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             return userTFARepository.get(userTFAId).then { UserTFA oldUserTeleCode ->
@@ -169,7 +170,7 @@ class UserTFAResourceImpl implements UserTFAResource {
                 userTFA = userTFAFilter.filterForPut(userTFA, oldUserTeleCode)
 
                 return userTFAValidator.validateForUpdate(userId, userTFAId, userTFA, oldUserTeleCode).then {
-                    return userTFARepository.update(userTFA).then { UserTFA newUserTeleCode ->
+                    return userTFARepository.update(userTFA, oldUserTeleCode).then { UserTFA newUserTeleCode ->
                         newUserTeleCode = userTFAFilter.filterForGet(newUserTeleCode, null)
                         return Promise.pure(newUserTeleCode)
                     }
@@ -181,13 +182,13 @@ class UserTFAResourceImpl implements UserTFAResource {
     @Override
     Promise<Void> delete(UserId userId, UserTFAId userTFAId) {
         if (userId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('delete')) {
-                throw AppErrors.INSTANCE.invalidAccess().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             return userTFAValidator.validateForGet(userId, userTFAId).then {
@@ -203,7 +204,7 @@ class UserTFAResourceImpl implements UserTFAResource {
         }
 
         if (userId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)

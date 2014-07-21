@@ -16,12 +16,13 @@ import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 /**
  * Entitlement Model.
  */
-@JsonPropertyOrder(value = {"entitlementId", "userId", "itemId", "isActive", "isBanned",
+@JsonPropertyOrder(value = {"entitlementId", "userId", "itemId", "binaries", "isActive", "isBanned",
         "grantTime", "expirationTime", "useCount", "type", "futureExpansion",
         "rev", "createdTime", "updatedTime", "adminInfo"})
 public class Entitlement extends ResourceMeta<String> {
@@ -36,21 +37,21 @@ public class Entitlement extends ResourceMeta<String> {
     @JsonProperty("user")
     private Long userId;
 
-    @ApiModelProperty(position = 4, required = true, value = "[Client Immutable] True if/only if the entitlement is active;" +
+    @ApiModelProperty(position = 5, required = true, value = "[Client Immutable] True if/only if the entitlement is active;" +
             " false when the entitlement is out of date, useCount is 0, or someone manually set isSuspended to true")
     private Boolean isActive;
 
-    @ApiModelProperty(position = 5, required = true, value = "True if/only if this entitlement is suspended, e.g., by CSR or other authorized agent")
+    @ApiModelProperty(position = 6, required = true, value = "True if/only if this entitlement is suspended, e.g., by CSR or other authorized agent")
     @JsonProperty("isSuspended")
     private Boolean isBanned;
 
-    @ApiModelProperty(position = 6, required = true, value = "the timestamp when this entitlement was granted; must be ISO 8601")
+    @ApiModelProperty(position = 7, required = true, value = "the timestamp when this entitlement was granted; must be ISO 8601")
     private Date grantTime;
 
-    @ApiModelProperty(position = 7, required = true, value = "the timestamp when this entitlement expires (must be ISO 8601), or null to mean it never expires")
+    @ApiModelProperty(position = 8, required = true, value = "the timestamp when this entitlement expires (must be ISO 8601), or null to mean it never expires")
     private Date expirationTime;
 
-    @ApiModelProperty(position = 8, required = true,
+    @ApiModelProperty(position = 9, required = true,
             value = "a non-negative number if this is a consumable entitlement; otherwise null")
     private Integer useCount;
 
@@ -58,8 +59,10 @@ public class Entitlement extends ResourceMeta<String> {
     @ItemId
     @JsonProperty("item")
     private String itemId;
+    @ApiModelProperty(position = 4, required = true, value = "[Client Immutable] A mapping between platform and download url string.")
+    private Map<String, String> binaries;
 
-    @ApiModelProperty(position = 9, required = true, value = "enumeration; values are \"DOWNLOAD\" and \"RUN\"")
+    @ApiModelProperty(position = 10, required = true, value = "enumeration; values are \"DOWNLOAD\" and \"RUN\"")
     private String type;
 
     @JsonIgnore
@@ -143,5 +146,13 @@ public class Entitlement extends ResourceMeta<String> {
 
     public void setItemId(String itemId) {
         this.itemId = itemId;
+    }
+
+    public Map<String, String> getBinaries() {
+        return binaries;
+    }
+
+    public void setBinaries(Map<String, String> binaries) {
+        this.binaries = binaries;
     }
 }

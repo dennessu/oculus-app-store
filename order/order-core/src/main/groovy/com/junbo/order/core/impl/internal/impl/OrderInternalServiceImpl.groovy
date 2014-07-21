@@ -6,17 +6,12 @@
 package com.junbo.order.core.impl.internal.impl
 import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
-import com.junbo.billing.spec.enums.PropertyKey
+import com.junbo.billing.spec.enums.TaxStatus
 import com.junbo.billing.spec.model.Balance
-import com.junbo.billing.spec.model.BalanceItem
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
-import com.junbo.common.id.EntitlementId
-import com.junbo.common.id.OfferId
-import com.junbo.fulfilment.spec.constant.FulfilmentActionType
-import com.junbo.fulfilment.spec.constant.FulfilmentStatus
-import com.junbo.fulfilment.spec.model.FulfilmentAction
-import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.impl.common.*
@@ -27,6 +22,7 @@ import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
 import com.junbo.order.spec.model.enums.*
+import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.rating.spec.model.priceRating.RatingRequest
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -63,7 +59,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderInternalServiceImpl)
 
     @Override
-    Promise<Order> rateOrder(Order order) throws AppErrorException {
+    Promise<Order> rateOrder(Order order, OrderServiceContext orderServiceContext) throws AppErrorException {
         LOGGER.info('name=OrderInternalServiceImpl_Rate_Order')
         return facadeContainer.ratingFacade.rateOrder(order).then { RatingRequest ratingResult ->
             // todo handle rating violation
@@ -87,34 +83,38 @@ class OrderInternalServiceImpl implements OrderInternalService {
                     return Promise.pure(order)
                 }
                 LOGGER.error('name=Missing_paymentInstruments_To_Calculate_Tax')
-                throw AppErrors.INSTANCE.missingParameterField('paymentInstruments').exception()
-            }
-            if (CoreUtils.hasPhysicalOffer(order)) {
-                // check whether the shipping address id are there
-                if (order.shippingAddress == null) {
-                    if (order.tentative) {
-                        LOGGER.info('name=Skip_Calculate_Tax_Without_shippingAddressId')
+                throw AppCommonErrors.INSTANCE.parameterRequired('paymentInstruments').exception()
+            } else {
+                // calculate tax
+                validatePayments(orderServiceContext).then {
+                    if (CoreUtils.hasPhysicalOffer(order)) {
+                        // check whether the shipping address id are there
+                        if (order.shippingAddress == null) {
+                            if (order.tentative) {
+                                LOGGER.info('name=Skip_Calculate_Tax_Without_shippingAddressId')
+                                return Promise.pure(order)
+                            }
+                            LOGGER.error('name=Missing_shippingAddressId_To_Calculate_Tax')
+                            throw AppCommonErrors.INSTANCE.parameterRequired('shippingAddressId').exception()
+                        }
+                    }
+                    // calculateTax
+                    return facadeContainer.billingFacade.quoteBalance(
+                            CoreBuilder.buildBalance(order, BalanceType.DEBIT)).then { Balance balance ->
+                        assert (balance != null)
+                        CoreBuilder.fillTaxInfo(order, balance)
                         return Promise.pure(order)
                     }
-                    LOGGER.error('name=Missing_shippingAddressId_To_Calculate_Tax')
-                    throw AppErrors.INSTANCE.missingParameterField('shippingAddressId').exception()
                 }
-            }
-            // calculateTax
-            return facadeContainer.billingFacade.quoteBalance(
-                    CoreBuilder.buildBalance(order, BalanceType.DEBIT)).then { Balance balance ->
-                assert (balance != null)
-                CoreBuilder.fillTaxInfo(order, balance)
-                return Promise.pure(order)
             }
         }
     }
 
     @Override
     @Transactional
-    Promise<Order> getOrderByOrderId(Long orderId, OrderServiceContext orderServiceContext) {
+    Promise<Order> getOrderByOrderId(Long orderId, OrderServiceContext orderServiceContext, Boolean updateOrderStatus) {
         if (orderId == null) {
-            throw AppErrors.INSTANCE.fieldInvalid('orderId', 'orderId cannot be null').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('orderId').exception()
         }
         // get Order by id
         def order = orderRepository.getOrder(orderId)
@@ -122,51 +122,25 @@ class OrderInternalServiceImpl implements OrderInternalService {
             throw AppErrors.INSTANCE.orderNotFound().exception()
         }
         orderServiceContext.order = order
-        return completeOrder(order, orderServiceContext)
+        completeOrder(order, orderServiceContext, updateOrderStatus)
     }
 
     @Override
-    @Transactional
-    Promise<Order> cancelOrder(Order order, OrderServiceContext orderServiceContext) {
+    Promise<Order> refundOrCancelOrder(Order order, OrderServiceContext context) {
 
         assert (order != null)
 
-        def isCancelable = CoreUtils.checkOrderStatusCancelable(order)
-        if (!isCancelable) {
-            LOGGER.info('name=Order_Is_Not_Cancelable, orderId = {}, orderStatus={}', order.getId().value, order.status)
-            throw AppErrors.INSTANCE.orderNotCancelable().exception()
-        }
-        LOGGER.info('name=Order_Is_Cancelable, orderId = {}, orderStatus={}', order.getId().value, order.status)
+        Boolean isRefundable = CoreUtils.isRefundable(order)
+        Boolean isCancelable = CoreUtils.isCancellable(order)
 
-        order.status = OrderStatus.CANCELED.name()
-        orderRepository.updateOrder(order, false, true, OrderItemRevisionType.CANCEL)
-
-        // TODO: reverse authorize if physical goods
-
-        // TODO: cancel paypal confirm
-
-        if (order.status == OrderStatus.PREORDERED.name()) {
-            return refundDeposit(order, orderServiceContext).then { Order o ->
-                return Promise.pure(o)
-            }
-        }
-        return Promise.pure(order)
-    }
-
-    @Override
-    Promise<Order> refundOrder(Order order, OrderServiceContext context) {
-
-        assert (order != null)
-
-        Boolean isRefundable = CoreUtils.checkOrderStatusRefundable(order)
-        if (!isRefundable) {
-            LOGGER.info('name=Order_Is_Not_Refundable, orderId = {}, orderStatus={}', order.getId().value, order.status)
+        if (!isRefundable && !isCancelable) {
+            LOGGER.info('name=Order_Is_Not_Refundable_Or_Cancelable, orderId = {}, orderStatus={}', order.getId().value, order.status)
             throw AppErrors.INSTANCE.orderNotRefundable().exception()
         }
-        LOGGER.info('name=Order_Is_Refundable, orderId = {}, orderStatus={}', order.getId().value, order.status)
+        LOGGER.info('name=Order_Is_Refundable_Or_Cancelable, orderId = {}, orderStatus={}', order.getId().value, order.status)
 
         // @Transactional
-        Promise promise1 = getOrderByOrderId(order.getId().value, context)
+        Promise promise1 = getOrderByOrderId(order.getId().value, context, false)
 
         Order existingOrder = null
         Promise promise2 = promise1.then { Order o ->
@@ -175,7 +149,9 @@ class OrderInternalServiceImpl implements OrderInternalService {
         }
 
         Order diffOrder = null
+        com.junbo.identity.spec.v1.model.Currency orderCurrency
         Promise promise3 = promise2.then { com.junbo.identity.spec.v1.model.Currency currency ->
+            orderCurrency = currency
             diffOrder = CoreUtils.diffRefundOrder(existingOrder, order, currency.numberAfterDecimal)
             return orderServiceContextBuilder.getBalances(context)
         }
@@ -184,7 +160,9 @@ class OrderInternalServiceImpl implements OrderInternalService {
             List<Balance> refundableBalances = bls.findAll { Balance bl ->
                 (bl.type == BalanceType.DEBIT.name() || bl.type == BalanceType.MANUAL_CAPTURE.name()) &&
                         (bl.status == BalanceStatus.AWAITING_PAYMENT.name() ||
-                                bl.status == BalanceStatus.COMPLETED.name())
+                                bl.status == BalanceStatus.COMPLETED.name() ||
+                                bl.status == BalanceStatus.PENDING_CAPTURE.name() ||
+                                bl.status == BalanceStatus.UNCONFIRMED.name())
             }.toList()
             // preorder: deposit+deposit
             // physical goods: manual_capture/deposit
@@ -199,7 +177,6 @@ class OrderInternalServiceImpl implements OrderInternalService {
 
         return promise4.then { List<Balance> refundBalances ->
             return Promise.each(refundBalances) { Balance refundBalance ->
-                // @Transactional
                 return transactionHelper.executeInTransaction {
                     return facadeContainer.billingFacade.createBalance(refundBalance, true).syncRecover {
                         Throwable ex ->
@@ -211,38 +188,23 @@ class OrderInternalServiceImpl implements OrderInternalService {
                             throw AppErrors.INSTANCE.billingRefundFailed('billing returns null balance').exception()
                         }
                         def refundedOrder = CoreUtils.calcRefundedOrder(existingOrder, refunded, diffOrder)
-                        refundedOrder.status = OrderStatus.REFUNDED.name()
-                        orderRepository.updateOrder(refundedOrder, false, true, OrderItemRevisionType.REFUND)
-                        persistBillingHistory(refunded, BillingAction.REQUEST_REFUND, order)
-                        return Promise.pure(null)
-                    }
-                }
-            }
-        }.then {
-            return getOrderByOrderId(order.getId().value, context)
-        }
-    }
-
-    @Override
-    Promise<Void> refundDeposit(Order order, OrderServiceContext orderServiceContext) {
-        if (CoreUtils.isFreeOrder(order)) {
-            return Promise.pure(null)
-        }
-        BillingHistory bh = CoreUtils.getLatestBillingHistory(order)
-        assert (bh != null)
-        if (bh.billingEvent == BillingAction.DEPOSIT) {
-            return orderServiceContextBuilder.getBalances(orderServiceContext).then { List<Balance> bls ->
-                if (CoreUtils.checkDepositOrderRefundable(order, bls)) {
-                    return facadeContainer.billingFacade.createBalance(
-                            CoreBuilder.buildRefundDepositBalance(bls[0]), false).syncRecover { Throwable ex ->
-                    }.then { Balance refunded ->
-                        if (refunded != null) {
-                            throw AppErrors.INSTANCE.billingChargeFailed().exception()
+                        assert(isRefundable != isCancelable)
+                        if(isRefundable) {
+                            refundedOrder.status = OrderStatus.REFUNDED.name()
+                            orderRepository.updateOrder(refundedOrder, false, true, OrderItemRevisionType.REFUND)
+                            context.refundedOrderItems = diffOrder.orderItems // todo : need to whether it is the right way to set refundedOrderItems
+                            persistBillingHistory(refunded, BillingAction.REQUEST_REFUND, order)
+                        } else if(isCancelable) {
+                            refundedOrder.status = OrderStatus.CANCELED.name()
+                            orderRepository.updateOrder(refundedOrder, false, true, OrderItemRevisionType.CANCEL)
+                            persistBillingHistory(refunded, BillingAction.REQUEST_CANCEL, order)
                         }
                         return Promise.pure(null)
                     }
                 }
             }
+        }.then {
+            return getOrderByOrderId(order.getId().value, context, true)
         }
     }
 
@@ -251,20 +213,22 @@ class OrderInternalServiceImpl implements OrderInternalService {
     Promise<List<Order>> getOrdersByUserId(Long userId, OrderServiceContext context, OrderQueryParam orderQueryParam, PageParam pageParam) {
 
         if (userId == null) {
-            throw AppErrors.INSTANCE.fieldInvalid('userId', 'userId cannot be null').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
         // get Orders by userId
         def orders = orderRepository.getOrdersByUserId(userId,
                 ParamUtils.processOrderQueryParam(orderQueryParam),
                 ParamUtils.processPageParam(pageParam))
         return Promise.each(orders) { Order order ->
-            return completeOrder(order, context)
+            context.order = order
+            return completeOrder(order, context, false)
         }.then {
             return Promise.pure(orders)
         }
     }
 
-    private Promise<Order> completeOrder(Order order, OrderServiceContext orderServiceContext) {
+    // readonly
+    private Promise<Order> completeOrder(Order order, OrderServiceContext orderServiceContext, Boolean updateOrderStatus) {
         // order items
         def hasFulfillment = false
         order.orderItems = orderRepository.getOrderItems(order.getId().value)
@@ -296,104 +260,31 @@ class OrderInternalServiceImpl implements OrderInternalService {
                 }
             }
             order.setBillingHistories(orderRepository.getBillingHistories(order.getId().value))
-            if (!CollectionUtils.isEmpty(order.billingHistories)) {
-                // fill balance info
-                order.billingHistories.each { BillingHistory bh ->
-                    def balance = balances.find() { Balance ba ->
-                        ba.getId().value == Long.parseLong(bh.balanceId)
-                    }
-                    assert (balance != null)
-                    bh.payments = []
-                    def payment = new BillingPaymentInfo()
-                    payment.paymentAmount = balance.totalAmount
-                    payment.paymentInstrument = balance.piId
-                    bh.payments << payment
-                    bh.success = true
-                    if (balance.status == BalanceStatus.FAILED.name() || balance.status == BalanceStatus.ERROR) {
-                        bh.success = false
-                    }
-                    if (balance.type == BalanceType.REFUND.name()) {
-                        bh.refundedOrderItems = []
-                        balance.balanceItems?.each { BalanceItem bi ->
-                            def roi = new RefundOrderItem()
-                            roi.orderItemId = bi.orderItemId.value
-                            roi.refundedAmount = 0G - bi.amount
-                            roi.refundedTax = 0G - bi.taxAmount
-                            // fill quantity and offer id
-                            roi.offer = new OfferId(bi.propertySet.get(PropertyKey.OFFER_ID.name()))
-                            roi.quantity = Integer.parseInt(bi.propertySet.get(PropertyKey.ITEM_QUANTITY.name()))
-                            bh.refundedOrderItems << roi
-                        }
-                        payment.paymentAmount = 0G - balance.totalAmount
-                    }
+            CoreUtils.refreshBillingHistories(order, balances)
+            if (hasFulfillment) {
+                return orderServiceContextBuilder.getFulfillmentRequest(orderServiceContext).then {
+                    FulfilmentRequest fr ->
+                        CoreUtils.refreshFulfillmentHistories(order, fr)
+                        return Promise.pure(order)
                 }
             }
             return Promise.pure(order)
         }.then {
-            if (!hasFulfillment) {
-                return Promise.pure(order)
+            if (updateOrderStatus) {
+                return Promise.pure(refreshOrderStatus(order, true))
             }
-
-            // fill fulfillment histories
-            return orderServiceContextBuilder.refreshFulfillmentRequest(orderServiceContext).then { FulfilmentRequest fr ->
-                if (fr == null) {
-                    return Promise.pure(order)
-                }
-                fr.items?.collect() { FulfilmentItem fi ->
-                    def fulfillOrderItem = order.orderItems?.find() { OrderItem oi ->
-                        oi.getId().value == fi.itemReferenceId
-                    }
-                    if (fulfillOrderItem != null) {
-                        fulfillOrderItem.fulfillmentHistories.collect() { FulfillmentHistory fh ->
-                            fh.coupons = []
-                            fh.walletAmount = 0G
-                            fh.shippingDetails = []
-                            fh.entitlements = []
-                            fh.success = true
-                            if (CollectionUtils.isEmpty(fi.actions)) {
-                                fh.success = fi.actions?.any { FulfilmentAction fa ->
-                                    fa.status == FulfilmentStatus.FAILED || fa.status == FulfilmentStatus.UNKNOWN
-                                }
-                            }
-                            // TODO: parse shippingDetails and coupons
-                            def entitlementAction = fi.actions?.find() { FulfilmentAction fa ->
-                                fa.type == FulfilmentActionType.GRANT_ENTITLEMENT &&
-                                        fa.status != FulfilmentStatus.FAILED && fa.status != FulfilmentStatus.UNKNOWN
-                            }
-                            if (entitlementAction != null) {
-                                entitlementAction.result?.entitlementIds?.each { String eid ->
-                                    fh.entitlements << new EntitlementId(eid)
-                                }
-                            }
-                            def walletAction = fi.actions?.find() { FulfilmentAction fa ->
-                                fa.type == FulfilmentActionType.CREDIT_WALLET &&
-                                        fa.status != FulfilmentStatus.FAILED && fa.status != FulfilmentStatus.UNKNOWN
-                            }
-                            if (walletAction != null) {
-                                fh.walletAmount = walletAction.result.amount
-                            }
-
-                        }
-                    }
-                }
-                return Promise.pure(order)
-            }
+            return Promise.pure(order)
         }
     }
 
     @Override
     @Transactional
     Order refreshOrderStatus(Order order, boolean updateOrder) {
-            def oldOrder = orderRepository.getOrder(order.getId().value)
-            if (oldOrder == null) {
-                throw AppErrors.INSTANCE.orderNotFound().exception()
-            }
-            order.status = OrderStatusBuilder.buildOrderStatus(oldOrder,
-                    orderRepository.getOrderEvents(order.getId().value, null))
-            if (updateOrder && order.status != oldOrder.status) {
-                oldOrder.status = order.status
-                orderRepository.updateOrder(oldOrder, true, false, null)
-            }
+        def oldStatus = order.status
+        order.status = OrderStatusBuilder.buildOrderStatus(order)
+        if (updateOrder && order.status != oldStatus) {
+            orderRepository.updateOrder(order, true, false, null)
+        }
         return order
     }
 
@@ -418,6 +309,9 @@ class OrderInternalServiceImpl implements OrderInternalService {
     @Transactional
     void persistBillingHistory(Balance balance, BillingAction action, Order order) {
         def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(balance)
+        if(action != null) {
+            billingHistory.billingEvent == action.name()
+        }
         if (billingHistory.billingEvent != null) {
             def savedHistory = orderRepository.createBillingHistory(order.getId().value, billingHistory)
             if (order.billingHistories == null) {
@@ -455,5 +349,86 @@ class OrderInternalServiceImpl implements OrderInternalService {
             // TODO
         }
         return event
+    }
+
+    @Override
+    @Transactional
+    Promise<Order> auditTax(Order order) {
+        return facadeContainer.billingFacade.getBalancesByOrderId(order.getId().value).recover { Throwable throwable ->
+            LOGGER.error('name=Tax_Audit_Fail', throwable)
+            throw AppErrors.INSTANCE.billingAuditFailed('billing returns error: ' + throwable.message).exception()
+        }.then { List<Balance> balances ->
+            def balancesToBeAudited = balances.findAll { Balance balance ->
+                (BalanceStatus.COMPLETED.name() == balance.status ||
+                        BalanceStatus.AWAITING_PAYMENT.name() == balance.status) &&
+                        TaxStatus.TAXED.name() == balance.taxStatus
+            }
+            if (CollectionUtils.isEmpty(balancesToBeAudited)) {
+                LOGGER.error('name=No_Balance_Can_Be_Audit.')
+                throw AppErrors.INSTANCE.billingAuditFailed('no balance can be audited.').exception()
+            }
+            def auditedBalances = []
+            return Promise.each(balancesToBeAudited) { Balance balanceToBeAudited ->
+                return facadeContainer.billingFacade.auditBalance(balanceToBeAudited).recover { Throwable throwable ->
+                    LOGGER.error('name=Tax_Audit_Fail', throwable)
+                }.then { Balance auditedBalance ->
+                    if (TaxStatus.AUDITED.name() == auditedBalance.taxStatus) {
+                        auditedBalances << auditedBalance
+                        return Promise.pure(null)
+                    }
+                }
+            }.then {
+                if (balancesToBeAudited?.size() == auditedBalances.size()) {
+                    order.isAudited = true
+                    orderRepository.updateOrder(order, true, true, null)
+                }
+                return Promise.pure(order)
+            }
+        }
+    }
+
+    Promise<List<PaymentInstrument>> validatePayments(OrderServiceContext orderServiceContext) {
+        // validate payments
+        if (CollectionUtils.isEmpty(orderServiceContext.order.payments)) {
+            return Promise.pure(null)
+        }
+        return orderServiceContextBuilder.getPaymentInstruments(
+                orderServiceContext).then { List<PaymentInstrument> pis ->
+            // TODO: need double confirm whether this is the way to validate pi
+            // TODO: validate pi after the pi status design is locked down.
+            pis.each { PaymentInstrument pi ->
+                if (pi.userId != null && orderServiceContext.order.user.value != pi.userId) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid(
+                            'payments', 'do not belong to this user').exception()
+                }
+            }
+            return Promise.pure(pis)
+        }
+    }
+
+    Promise<UserPersonalInfo> validateUserPersonalInfo(OrderServiceContext context) {
+        def order = context.order
+        return facadeContainer.identityFacade.getUserPersonalInfo(order.shippingAddress)
+                .then { UserPersonalInfo shippingAddressInfo ->
+            if (shippingAddressInfo != null && order.user != shippingAddressInfo.userId) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid(
+                        'shippingAddressInfo', 'do not belong to this user').exception()
+            }
+            return facadeContainer.identityFacade.getUserPersonalInfo(order.shippingToName)
+                    .then { UserPersonalInfo shippingToNameInfo ->
+                if (shippingToNameInfo != null && order.user != shippingToNameInfo.userId) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid(
+                            'shippingToName', 'do not belong to this user').exception()
+                }
+                return facadeContainer.identityFacade.getUserPersonalInfo(order.shippingToPhone)
+                        .then { UserPersonalInfo shippingToPhoneInfo ->
+                    if (shippingToPhoneInfo != null && order.user != shippingToPhoneInfo.userId) {
+                        throw AppCommonErrors.INSTANCE.fieldInvalid(
+                                'shippingToPhone', 'do not belong to this user').exception()
+                    }
+                    return Promise.pure(null)
+                }
+            }
+        }
     }
 }

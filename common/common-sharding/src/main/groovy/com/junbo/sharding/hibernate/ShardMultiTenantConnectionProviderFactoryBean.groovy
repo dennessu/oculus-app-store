@@ -1,10 +1,9 @@
 package com.junbo.sharding.hibernate
-
 import com.junbo.configuration.topo.DataCenters
+import com.junbo.configuration.topo.model.DataCenter
 import com.junbo.sharding.transaction.SimpleDataSourceProxy
 import com.zaxxer.hikari.HikariDataSource
 import groovy.transform.CompileStatic
-import org.glassfish.jersey.message.internal.DataSourceProvider
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.DisposableBean
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Required
 import javax.sql.DataSource
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-
 /**
  * Created by Shenhua on 4/1/2014.
  */
@@ -84,7 +82,7 @@ class ShardMultiTenantConnectionProviderFactoryBean
             dataSourceMap = new HashMap<>()
             dataSourceProxyMap = new HashMap<>()
 
-            List<SimpleDataSourceProxy> dataSourceList = []
+            Map<String, SimpleDataSourceProxy> dataSourceMap = [:]
 
             for (String url : jdbcUrls.split(',')) {
                 url = url.trim()
@@ -97,27 +95,28 @@ class ShardMultiTenantConnectionProviderFactoryBean
                     throw new IllegalArgumentException("jdbcUrl(url;schema;range;dc) is invalid. $url")
                 }
 
-                url = parts[0].trim()
+                url = parts[0].trim().replace('|', ',')
                 def schema = parts[1].trim()
                 def range = parseRange(parts[2].trim())
                 def dc = parts[3].trim()
+                DataCenter dataCenter = DataCenters.instance().getDataCenter(dc)
 
-                if (!DataCenters.instance().isLocalDataCenter(dc)) {
-                    // not in local dc
-                    continue;
+                // If not in locale DC, just do the same
+                def currentDCProxy = dataSourceMap.findAll { Map.Entry<String, SimpleDataSourceProxy> entry ->
+                    return entry != null && entry.getKey() != null && entry.getKey().startsWith(dataCenter.getId() + ":")
                 }
-
-                if (range[0] != dataSourceList.size()) {
+                if (range[0] != currentDCProxy.size()) {
                     throw new IllegalArgumentException("Range $range is not in a row")
                 }
-                int count = range[1] - range[0] + 1
-
-                for (int i = 0; i < count; i++) {
-                    dataSourceList.add(createDataSourceProxy(url, schema))
+                for (int i = range[0]; i <= range[1]; i++) {
+                    if (dataCenter == null) {
+                        throw new IllegalArgumentException("DataCenter $dataCenter does not exist.")
+                    }
+                    dataSourceMap.put(dataCenter.getId() + ':' + i ,createDataSourceProxy(url, schema))
                 }
             }
 
-            connectionProvider = new ShardMultiTenantConnectionProvider(dataSourceList)
+            connectionProvider = new ShardMultiTenantConnectionProvider(dataSourceMap)
         }
 
         return connectionProvider

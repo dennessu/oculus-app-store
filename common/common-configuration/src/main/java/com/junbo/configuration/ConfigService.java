@@ -31,6 +31,12 @@ public interface ConfigService {
     }
 
     /**
+     * The path used to load configuration.properties.
+     * @return The configuration path.
+     */
+    String getConfigPath();
+
+    /**
      * The context of current machine. The context is used in resolving the property overrides.
      * @return The configuration context.
      */

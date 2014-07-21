@@ -35,7 +35,7 @@ public class ProxyExceptionResponse {
             AppErrorException appException = ((AppErrorException)throwable);
             try {
                 status = appException.getError().getHttpStatusCode();
-                body = CommonUtil.toJson(appException.getError(), null);
+                body = appException.getError().error().getMessage();
             }catch (Exception e) {
 
             }

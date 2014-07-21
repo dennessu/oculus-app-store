@@ -57,7 +57,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public Item update(Item item) {
+    public Item update(Item item, Item oldItem) {
         ItemEntity dbEntity = itemDao.get(item.getItemId());
         ItemMapper.fillDBEntity(item, dbEntity);
         return get(itemDao.update(dbEntity));

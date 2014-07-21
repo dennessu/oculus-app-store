@@ -22,8 +22,8 @@ class DeviceRepositoryCloudantImpl extends CloudantClient<Device> implements Dev
     }
 
     @Override
-    Promise<Device> update(Device device) {
-        return cloudantPut(device)
+    Promise<Device> update(Device device, Device oldDevice) {
+        return cloudantPut(device, oldDevice)
     }
 
     @Override

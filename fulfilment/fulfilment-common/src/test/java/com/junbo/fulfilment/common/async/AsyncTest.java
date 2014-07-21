@@ -9,6 +9,8 @@ import com.google.common.util.concurrent.*;
 import com.junbo.common.util.PromiseFacade;
 import com.junbo.langur.core.promise.Promise;
 import org.testng.Assert;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.util.concurrent.Callable;
@@ -22,6 +24,16 @@ public class AsyncTest {
     private static ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(10);
     private static ListeningExecutorService LISTENING_EXECUTOR_SERVICE
             = MoreExecutors.listeningDecorator(EXECUTOR_SERVICE);
+
+    @BeforeTest
+    @SuppressWarnings("deprecation")
+    public void setup() {
+    }
+
+    @AfterTest
+    @SuppressWarnings("deprecation")
+    public void cleanup() {
+    }
 
     @Test(enabled = false)
     public void testBVT() throws Exception {

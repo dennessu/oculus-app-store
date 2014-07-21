@@ -67,14 +67,14 @@ public class TestPostItem extends BaseTestClass {
         Item testItemRequired = itemService.prepareItemEntity(itemRequiredPara, organizationId);
         Item itemRtn1 = itemService.postItem(testItemRequired);
 
-        checkItemRequiredParams(itemRtn1, testItemRequired);
+        checkItemRequiredFields(itemRtn1, testItemRequired);
 
         //Post test item with optional params
         Item testItemFull = itemService.prepareItemEntity(defaultItem, organizationId);
         Item itemRtn2 = itemService.postItem(testItemFull);
 
-        checkItemRequiredParams(itemRtn2, testItemFull);
-        checkItemOptionalParams(itemRtn2, testItemFull);
+        checkItemRequiredFields(itemRtn2, testItemFull);
+        checkItemOptionalFields(itemRtn2, testItemFull);
     }
 
     @Property(
@@ -209,13 +209,12 @@ public class TestPostItem extends BaseTestClass {
         itemRevisionService.updateItemRevision(itemRevisionPosted.getRevisionId(), itemRevisionPosted);
     }
 
-    private void checkItemRequiredParams(Item itemActual, Item itemExpected) {
+    private void checkItemRequiredFields(Item itemActual, Item itemExpected) {
         Assert.assertEquals(itemActual.getType(), itemExpected.getType());
         Assert.assertEquals(itemActual.getOwnerId(), itemExpected.getOwnerId());
     }
 
-    private void checkItemOptionalParams(Item itemActual, Item itemExpected) {
-        Assert.assertEquals(itemActual.getAdminInfo(), itemExpected.getAdminInfo());
+    private void checkItemOptionalFields(Item itemActual, Item itemExpected) {
         Assert.assertEquals(itemActual.getFutureExpansion(), itemExpected.getFutureExpansion());
         Assert.assertEquals(itemActual.getGenres(), itemExpected.getGenres());
         Assert.assertEquals(itemActual.getDefaultOffer(), itemExpected.getDefaultOffer());

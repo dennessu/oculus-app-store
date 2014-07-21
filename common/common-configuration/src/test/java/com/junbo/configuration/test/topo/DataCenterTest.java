@@ -21,8 +21,8 @@ public class DataCenterTest {
     @Test
     public void testDataCentersConfig() throws Exception {
         DataCentersConfig dataCentersConfig = new DataCentersConfig(
-            "  https://localhost:8080/v1;0;dc0,\n" +
-            "  https://localhost:8180/v1;1;dc1"
+            "  https://localhost:8080/v1;0;dc0;2,\n" +
+            "  https://localhost:8180/v1;1;dc1;2"
         );
 
         assertEquals(dataCentersConfig.getDataCenterUrl(0), "https://localhost:8080/v1");
@@ -44,8 +44,8 @@ public class DataCenterTest {
             }
         }) {
             configService.getAllConfigItems().setProperty("common.topo.datacenters",
-                    "  https://localhost:8080/v1;0;dc0,\n" +
-                            "  https://localhost:8180/v1;1;dc1"
+                    "  https://localhost:8080/v1;0;dc0;2,\n" +
+                            "https://localhost:8180/v1;1;dc1;2"
             );
 
             DataCenters dcs = new DataCenters();
@@ -59,6 +59,8 @@ public class DataCenterTest {
             assertTrue(dcs.hasDataCenter("dc0"));
             assertTrue(dcs.hasDataCenter("dc1"));
             assertFalse(dcs.hasDataCenter("dc2"));
+
+            assertTrue(dcs.getDataCenterIds().size() == 2);
 
             assertTrue(dcs.isLocalDataCenter(0));
             assertFalse(dcs.isLocalDataCenter(1));
@@ -75,9 +77,9 @@ public class DataCenterTest {
             assertFalse(dcs.isLocalDataCenter("not_exists"));
 
             configService.updateConfig("common.topo.datacenters",
-                    "  https://localhost:8080/v1;0;dc0,\n" +
-                            "  https://localhost:8180/v1;1;dc11,\n" +
-                            "  https://localhost:8280/v1;2;dc22,\n"
+                    "  https://localhost:8080/v1;0;dc0;2,\n" +
+                            "  https://localhost:8180/v1;1;dc11;2,\n" +
+                            "  https://localhost:8280/v1;2;dc22;2"
             );
 
             assertEquals(dcs.getDataCenter(0).getName(), "dc0");

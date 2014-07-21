@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <bean id="csrIdentityService" class="com.junbo.csr.core.service.impl.IdentityServiceImpl">
+        <property name="userPersonalInfoResource" ref="csr_userPersonalInfoResource"/>
+        <property name="userResource" ref="csr_userResource"/>
+        <property name="groupResource" ref="csr_groupResource"/>
+        <property name="userGroupMembershipResource" ref="csr_userGroupMembershipResource" />
+        <property name="organizationResource" ref="csr_organizationResource" />
+    </bean>
+
+    <bean id="csrEmailService" class="com.junbo.csr.core.service.impl.EmailServiceImpl">
+        <property name="emailResource" ref="csr_emailResource" />
+        <property name="emailTemplateResource" ref="csr_emailTemplateResource" />
+    </bean>
+
+    <bean id="csrUpdateValidator" class="com.junbo.csr.core.validator.impl.CsrUpdateValidatorImpl">
+        <property name="identityService" ref="csrIdentityService" />
+        <property name="csrUpdateRepository" ref="csrUpdateRepo"/>
+        <property name="updateMaxLength" value="200"/>
+    </bean>
+
+    <bean id="csrLogValidator" class="com.junbo.csr.core.validator.impl.CsrLogValidatorImpl">
+        <property name="csrLogRepository" ref="csrLogRepo"/>
+        <property name="identityService" ref="csrIdentityService" />
+        <property name="regardingMaxLength" value="100"/>
+        <property name="maxSearchDays" value="30"/>
+    </bean>
+
+</beans>

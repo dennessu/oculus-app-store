@@ -2,6 +2,7 @@ package com.junbo.identity.rest.resource.v1
 
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.DeviceTypeId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.DeviceTypeFilter
@@ -39,7 +40,7 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
         }
 
         if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         deviceType = deviceTypeFilter.filterForCreate(deviceType)
@@ -65,7 +66,7 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
         }
 
         if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         return deviceTypeRepository.get(deviceTypeId).then { DeviceType oldDeviceType ->
@@ -76,7 +77,7 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
             deviceType = deviceTypeFilter.filterForPut(deviceType, oldDeviceType)
 
             return deviceTypeValidator.validateForUpdate(deviceTypeId, deviceType, oldDeviceType).then {
-                return deviceTypeRepository.update(deviceType).then { DeviceType newDeviceType ->
+                return deviceTypeRepository.update(deviceType, oldDeviceType).then { DeviceType newDeviceType ->
                     newDeviceType = deviceTypeFilter.filterForGet(newDeviceType, null)
                     return Promise.pure(newDeviceType)
                 }
@@ -95,7 +96,7 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
         }
 
         if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         return deviceTypeRepository.get(deviceTypeId).then { DeviceType oldDeviceType ->
@@ -107,7 +108,7 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
 
             return deviceTypeValidator.validateForUpdate(
                     deviceTypeId, deviceType, oldDeviceType).then {
-                return deviceTypeRepository.update(deviceType).then { DeviceType newDeviceType ->
+                return deviceTypeRepository.update(deviceType, oldDeviceType).then { DeviceType newDeviceType ->
                     newDeviceType = deviceTypeFilter.filterForGet(newDeviceType, null)
                     return Promise.pure(newDeviceType)
                 }
@@ -163,7 +164,7 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
         }
 
         if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         return deviceTypeValidator.validateForGet(deviceTypeId).then {

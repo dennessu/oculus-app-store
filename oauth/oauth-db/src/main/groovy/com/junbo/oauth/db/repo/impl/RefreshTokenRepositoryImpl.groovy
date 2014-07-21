@@ -93,7 +93,7 @@ class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
                 accessToken: JsonMarshaller.marshall(refreshToken.accessToken),
                 expiredBy: refreshToken.expiredBy,
                 salt: refreshToken.salt,
-                revision: refreshToken.revision
+                revision: refreshToken.rev
         )
     }
 
@@ -109,7 +109,7 @@ class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
                 accessToken: JsonMarshaller.unmarshall(entity.accessToken, AccessToken),
                 expiredBy: entity.expiredBy,
                 salt: entity.salt,
-                revision: entity.revision
+                rev: entity.revision
         )
     }
 }

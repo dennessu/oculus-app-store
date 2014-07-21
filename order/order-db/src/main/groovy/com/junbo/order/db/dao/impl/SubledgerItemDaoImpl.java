@@ -22,14 +22,22 @@ import java.util.List;
 public class SubledgerItemDaoImpl extends BaseDaoImpl<SubledgerItemEntity> implements SubledgerItemDao {
     @Override
     @SuppressWarnings("unchecked")
-    public List<SubledgerItemEntity> getByStatus(Integer shardId, SubledgerItemStatus status, int start, int count) {
-        Criteria criteria = this.getSessionByShardId(shardId).createCriteria(SubledgerItemEntity.class);
+    public List<SubledgerItemEntity> getByStatus(Integer dataCenterId, Integer shardId, SubledgerItemStatus status, int start, int count) {
+        Criteria criteria = this.getSessionByShardId(dataCenterId, shardId).createCriteria(SubledgerItemEntity.class);
 
         criteria.add(Restrictions.eq("status", status));
 
         criteria.setFirstResult(start);
         criteria.setMaxResults(count);
 
+        return criteria.list();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<SubledgerItemEntity> getByOrderItemId(Long orderItemId) {
+        Criteria criteria = this.getSession(orderItemId).createCriteria(SubledgerItemEntity.class);
+        criteria.add(Restrictions.eq("orderItemId", orderItemId));
         return criteria.list();
     }
 }

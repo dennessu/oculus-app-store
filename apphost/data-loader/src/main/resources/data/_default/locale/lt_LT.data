@@ -1,0 +1,11 @@
+{
+  "localeCode": "lt_LT",
+  "shortName": "Lietuvių (LT)",
+  "longName": "Lietuvių (Lietuva)",
+  "localeName": "Lietuvių (LT)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

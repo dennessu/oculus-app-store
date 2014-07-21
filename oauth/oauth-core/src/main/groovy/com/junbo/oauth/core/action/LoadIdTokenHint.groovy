@@ -5,12 +5,13 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.spec.model.IdToken
 import com.junbo.oauth.spec.model.LoginState
@@ -62,16 +63,16 @@ class LoadIdTokenHint implements Action {
         String issuer = client.idTokenIssuer
 
         if (issuer != idToken.iss) {
-            throw AppExceptions.INSTANCE.invalidIdTokenIssuer().exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('id_token_hint').exception()
         }
 
         // todo: this isn't correct.
         if (!idToken.aud.contains(client.clientId)) {
-            throw AppExceptions.INSTANCE.invalidIdTokenAudience(client.clientId).exception()
+            throw AppErrors.INSTANCE.invalidIdTokenAudience(client.clientId).exception()
         }
 
         if (idToken.exp < System.currentTimeMillis() / MILLISECONDS_PER_SECOND) {
-            throw AppExceptions.INSTANCE.expiredIdToken().exception()
+            throw AppErrors.INSTANCE.expiredIdToken().exception()
         }
 
         LoginState loginState = new LoginState(

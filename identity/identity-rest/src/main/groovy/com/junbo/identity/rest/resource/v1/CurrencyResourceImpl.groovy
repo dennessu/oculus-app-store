@@ -3,6 +3,7 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.CurrencyFilter
@@ -54,7 +55,7 @@ class CurrencyResourceImpl implements CurrencyResource {
         }
 
         if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         currency = currencyFilter.filterForCreate(currency)
@@ -80,7 +81,7 @@ class CurrencyResourceImpl implements CurrencyResource {
         }
 
         if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         return currencyRepository.get(currencyId).then { Currency oldCurrency ->
@@ -91,7 +92,7 @@ class CurrencyResourceImpl implements CurrencyResource {
             currency = currencyFilter.filterForPut(currency, oldCurrency)
 
             return currencyValidator.validateForUpdate(currencyId, currency, oldCurrency).then {
-                return currencyRepository.update(currency).then { Currency newCurrency ->
+                return currencyRepository.update(currency, oldCurrency).then { Currency newCurrency ->
                     newCurrency = currencyFilter.filterForGet(newCurrency, null)
                     return Promise.pure(newCurrency)
                 }
@@ -110,7 +111,7 @@ class CurrencyResourceImpl implements CurrencyResource {
         }
 
         if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
 
@@ -123,7 +124,7 @@ class CurrencyResourceImpl implements CurrencyResource {
 
             return currencyValidator.validateForUpdate(
                     currencyId, currency, oldCurrency).then {
-                return currencyRepository.update(currency).then { Currency newCurrency ->
+                return currencyRepository.update(currency, oldCurrency).then { Currency newCurrency ->
                     newCurrency = currencyFilter.filterForGet(newCurrency, null)
                     return Promise.pure(newCurrency)
                 }

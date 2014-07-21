@@ -8,6 +8,7 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserAuthenticatorId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -56,7 +57,7 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
         def callback = authorizeCallbackFactory.create(userAuthenticator.userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (AuthorizeContext.hasRights('create')) {
-                throw AppErrors.INSTANCE.invalidAccess().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             userAuthenticator = userAuthenticatorFilter.filterForCreate(userAuthenticator)
@@ -91,14 +92,15 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
             def callback = authorizeCallbackFactory.create(userAuthenticator.userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (AuthorizeContext.hasRights('update')) {
-                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 userAuthenticator = userAuthenticatorFilter.filterForPut(userAuthenticator, oldUserAuthenticator)
 
                 return userAuthenticatorValidator.validateForUpdate(
                         userAuthenticatorId, userAuthenticator, oldUserAuthenticator).then {
-                    return userAuthenticatorRepository.update(userAuthenticator).then { UserAuthenticator newUserAuthenticator ->
+                    return userAuthenticatorRepository.update(userAuthenticator, oldUserAuthenticator).then {
+                        UserAuthenticator newUserAuthenticator ->
                         newUserAuthenticator = userAuthenticatorFilter.filterForGet(newUserAuthenticator, null)
                         return Promise.pure(newUserAuthenticator)
                     }
@@ -126,14 +128,15 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
             def callback = authorizeCallbackFactory.create(userAuthenticator.userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (AuthorizeContext.hasRights('update')) {
-                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 userAuthenticator = userAuthenticatorFilter.filterForPatch(userAuthenticator, oldUserAuthenticator)
 
                 return userAuthenticatorValidator.validateForUpdate(
                         userAuthenticatorId, userAuthenticator, oldUserAuthenticator).then {
-                    return userAuthenticatorRepository.update(userAuthenticator).then { UserAuthenticator newUserAuthenticator ->
+                    return userAuthenticatorRepository.update(userAuthenticator, oldUserAuthenticator).then {
+                        UserAuthenticator newUserAuthenticator ->
                         newUserAuthenticator = userAuthenticatorFilter.filterForGet(newUserAuthenticator, null)
                         return Promise.pure(newUserAuthenticator)
                     }
@@ -204,7 +207,7 @@ class AuthenticatorResourceImpl implements AuthenticatorResource {
             def callback = authorizeCallbackFactory.create(authenticator.userId)
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('delete')) {
-                    throw AppErrors.INSTANCE.invalidAccess().exception()
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
                 return userAuthenticatorRepository.delete(userAuthenticatorId)

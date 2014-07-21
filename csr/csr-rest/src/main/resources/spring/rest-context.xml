@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <context:component-scan base-package="com.junbo.csr.spec.resource.adapter" />
+    <context:component-scan base-package="com.junbo.csr.spec.endpoint.adapter"/>
+    <context:component-scan base-package="com.junbo.csr.core" />
+
+    <!-- resource implementation -->
+    <bean id="defaultCsrUpdateResource" class="com.junbo.csr.rest.resource.CsrUpdateResourceImpl" scope="prototype" />
+    <bean id="defaultCsrLogResource" class="com.junbo.csr.rest.resource.CsrLogResourceImpl" scope="prototype" />
+    <bean id="defaultCsrActionEndpoint" class="com.junbo.csr.rest.endpoint.CsrActionEndpointImpl" scope="prototype">
+        <property name="clientId" value="${csr.login.clientId}"/>
+        <property name="clientSecret" value="${csr.login.clientSecret}"/>
+        <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
+    </bean>
+
+    <bean id="defaultCsrGroupResource" class="com.junbo.csr.rest.resource.CsrGroupResourceImpl" scope="prototype">
+        <property name="identityService" ref="csrIdentityService" />
+        <property name="groupNameList">
+            <list>
+                <value>CSR_T1</value>
+                <value>CSR_T2</value>
+                <value>CSR_T3</value>
+                <value>CSR_PENDING</value>
+                <value>CSR_INACTIVE</value>
+            </list>
+        </property>
+        <property name="organizationName" value="${csr.organization.name}"/>
+        <property name="organizationOwner" value="${csr.organization.owner}"/>
+    </bean>
+
+    <bean id="defaultCsrUserResource" class="com.junbo.csr.rest.resource.CsrUserResourceImpl" scope="prototype">
+        <property name="csrGroupResource" ref="defaultCsrGroupResource"/>
+        <property name="identityService" ref="csrIdentityService" />
+        <property name="emailService" ref="csrEmailService" />
+        <property name="csrInvitationCodeRepository" ref="csrInvitaionCodeRepo" />
+        <property name="pendingGroupName" value="CSR_PENDING"/>
+    </bean>
+
+    <bean id="defaultCsrUpdateResourceClientFactory" class="com.junbo.csr.spec.resource.proxy.CsrUpdateResourceClientProxyFactory"/>
+    <bean id="defaultCsrLogResourceClientFactory" class="com.junbo.csr.spec.resource.proxy.CsrLogResourceClientProxyFactory" />
+    <bean id="defaultCsrActionEndpointClientFactory" class="com.junbo.csr.spec.endpoint.proxy.CsrActionEndpointClientProxyFactory" />
+    <bean id="defaultCsrGroupResourceClientFactory" class="com.junbo.csr.spec.resource.proxy.CsrGroupResourceClientProxyFactory" />
+    <bean id="defaultCsrUserResourceClientFactory" class="com.junbo.csr.spec.resource.proxy.CsrUserResourceClientProxyFactory" />
+
+    <bean id="defaultCsrUpdateResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultCsrLogResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultCsrActionEndpointRouter" parent="routingRouterBase" />
+    <bean id="defaultCsrGroupResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultCsrUserResourceRouter" parent="routingRouterBase" />
+</beans>

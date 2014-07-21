@@ -5,10 +5,11 @@
  */
 package com.junbo.authorization
 
-import com.junbo.common.error.AppErrorException
-import com.junbo.authorization.spec.resource.ApiDefinitionResource
 import com.junbo.authorization.spec.model.ApiDefinition
 import com.junbo.authorization.spec.model.MatrixRow
+import com.junbo.authorization.spec.resource.ApiDefinitionResource
+import com.junbo.common.error.AppErrorException
+import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import net.sf.ehcache.Ehcache
 import net.sf.ehcache.Element
@@ -102,6 +103,7 @@ class AuthorizeServiceImpl implements AuthorizeService {
 
         try {
             def apiDefinition = apiDefinitionEndpoint.get(apiName).get()
+
             apiDefinitionCache.put(new Element(apiName, apiDefinition))
 
             return apiDefinition

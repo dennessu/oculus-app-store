@@ -24,6 +24,7 @@
 
     <!-- Scheduler -->
     <bean id="offerSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="taskExecutor" ref="junboThreadPool"/>
         <property name="schedulerName" value="catalogScheduler" />
         <property name="autoStartup" value="${catalog.jobs.autoStartup}" />
         <property name="triggers">

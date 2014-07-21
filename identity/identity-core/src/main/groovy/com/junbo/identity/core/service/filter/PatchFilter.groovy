@@ -1,8 +1,8 @@
 package com.junbo.identity.core.service.filter
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.json.PropertyAssignedAwareSupport
 import com.junbo.identity.common.util.FilterUtil
-import com.junbo.identity.spec.error.AppErrors
 import com.junbo.oom.core.MappingContext
 import com.junbo.oom.core.filter.PropertyMappingEvent
 import com.junbo.oom.core.filter.PropertyMappingFilter
@@ -34,7 +34,7 @@ class PatchFilter implements PropertyMappingFilter {
             if (readable && !writable) { // readonly
                 if (PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
                     if (different) {
-                        throw AppErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
+                        throw AppCommonErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
                     }
                 } else {
                     event.sourceProperty = event.alternativeSourceProperty
@@ -43,7 +43,7 @@ class PatchFilter implements PropertyMappingFilter {
 
             if (!readable && !writable) {
                 if (PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
-                    throw AppErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
+                    throw AppCommonErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
                 } else {
                     event.sourceProperty = event.alternativeSourceProperty
                 }
@@ -67,7 +67,7 @@ class PatchFilter implements PropertyMappingFilter {
             if (readable && !writable) { // readonly
                 if (PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
                     if (different) {
-                        throw AppErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
+                        throw AppCommonErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
                     }
                 } else {
                     if (!alternativeSourcePropertyIsNull) {
@@ -78,7 +78,7 @@ class PatchFilter implements PropertyMappingFilter {
 
             if (!readable && !writable) {
                 if (PropertyAssignedAwareSupport.isPropertyAssigned(event.source, event.sourcePropertyName)) {
-                    throw AppErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
+                    throw AppCommonErrors.INSTANCE.fieldNotWritable(event.sourcePropertyName).exception()
                 } else {
                     if (!alternativeSourcePropertyIsNull) {
                         event.sourceProperty = initInstance(event.sourcePropertyType)

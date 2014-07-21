@@ -25,5 +25,10 @@ dependencies {
         exclude group: 'com.junbo.identity', module: 'identity-clientproxy'
     }
 
+    runtime (junboProject(':payment-rest')) {
+        exclude group: 'com.junbo.identity', module: 'identity-spec'
+        exclude group: 'com.junbo.identity', module: 'identity-clientproxy'
+    }
+
     compile junboProject(':identity-rest')
 }

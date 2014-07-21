@@ -15,6 +15,15 @@ import com.junbo.token.spec.enums.*;
  * common mapper for oom.
  */
 public class CommonMapper {
+
+    public Long fromStringToLong(String source) {
+        return source == null ? null : Long.parseLong(source);
+    }
+
+    public String fromLongToString(Long source) {
+        return source == null ? null : source.toString();
+    }
+
     public CreateMethod toCreateMethodEnum(String createMethod) {
         return CreateMethod.valueOf(createMethod.toUpperCase());
     }

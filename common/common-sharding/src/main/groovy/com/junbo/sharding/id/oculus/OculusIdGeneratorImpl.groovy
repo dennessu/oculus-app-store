@@ -7,6 +7,7 @@
 package com.junbo.sharding.id.oculus
 
 import com.junbo.common.util.Context
+import com.junbo.configuration.topo.DataCenters
 import groovy.transform.CompileStatic
 
 import java.security.SecureRandom
@@ -35,7 +36,7 @@ import java.security.SecureRandom
 @CompileStatic
 class OculusIdGeneratorImpl implements com.junbo.sharding.IdGenerator {
 
-    private final List<OculusIdGeneratorSlot> slots
+    private final Map<String, OculusIdGeneratorSlot> slotsMap = new HashMap<>()
 
     private final Random random
 
@@ -44,10 +45,10 @@ class OculusIdGeneratorImpl implements com.junbo.sharding.IdGenerator {
     OculusIdGeneratorImpl(OculusIdSchema idSchema, OculusGlobalCounter globalCounter) {
 
         this.idSchema = idSchema
-        slots = new ArrayList<OculusIdGeneratorSlot>()
-
-        for (int shardId = 0; shardId < idSchema.numberOfShards; shardId++) {
-            slots.add(new OculusIdGeneratorSlotImpl(shardId, idSchema, globalCounter))
+        idSchema.getNumberOfShardsMap().entrySet().each { Map.Entry<Integer, Integer> entry ->
+            for (int index = 0; index < entry.value; index ++) {
+                slotsMap.put([entry.key, index].join(','), new OculusIdGeneratorSlotImpl(entry.key, index, idSchema, globalCounter))
+            }
         }
 
         random = new SecureRandom()
@@ -56,26 +57,40 @@ class OculusIdGeneratorImpl implements com.junbo.sharding.IdGenerator {
     @Override
     long nextId() {
         int shardId;
+        int dcId;
 
         def topology = Context.get().topology;
         if (topology != null) {
+            dcId = topology.currentDCId
             shardId = topology.randomShardId
         } else {
-            shardId = random.nextInt(slots.size())
+            dcId = DataCenters.instance().currentDataCenterId()
+            Integer shardNumber = idSchema.getNumberOfShardsMap().get(dcId)
+            if (shardNumber == null) {
+                throw new IllegalArgumentException('dcId: ' + dcId + ' isn\'t configured.')
+            }
+            shardId = random.nextInt(shardNumber)
         }
-        return nextIdByShardId(shardId)
+        return nextIdByDCIdAndShardId(dcId, shardId)
     }
 
     @Override
     long nextId(long id) {
         OculusObjectId objectId = idSchema.parseObjectId(id)
         int shardId = objectId.shardId
-        return nextIdByShardId(shardId)
+        int dataCenterId = objectId.dataCenterId
+        return nextIdByDCIdAndShardId(dataCenterId, shardId)
     }
 
+    /**
+     * Generate a new ID given the shard ID.
+     * @param dataCenterId The expected dataCenterId
+     * @param shardId The expected shardId.
+     * @return The new unqiue ID on the expected shard.
+     */
     @Override
-    long nextIdByShardId(int shardId) {
-        OculusIdGeneratorSlot slot = slots.get(shardId)
+    long nextIdByDCIdAndShardId(int dataCenterId, int shardId) {
+        OculusIdGeneratorSlot slot = slotsMap.get([dataCenterId, shardId].join(','))
         return slot.nextId()
     }
 }

@@ -33,21 +33,21 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
         entitlement.setIsDeleted(false);
         entitlement.setUpdatedBy(123L);
         entitlement.setUpdatedTime(new Date());
-        return cloudantPost(entitlement).get();
+        return cloudantPostSync(entitlement);
     }
 
     @Override
     public EntitlementEntity get(String entitlementId) {
-        EntitlementEntity result = cloudantGet(entitlementId).get();
-        return result.getIsDeleted().equals(true) ? null : result;
+        EntitlementEntity result = cloudantGetSync(entitlementId);
+        return result == null || result.getIsDeleted().equals(true) ? null : result;
     }
 
     @Override
-    public EntitlementEntity update(EntitlementEntity entitlement) {
+    public EntitlementEntity update(EntitlementEntity entitlement, EntitlementEntity oldEntitlement) {
         if (entitlement.getIsDeleted() == null) {
             entitlement.setIsDeleted(false);
         }
-        return cloudantPut(entitlement).get();
+        return cloudantPutSync(entitlement, oldEntitlement);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
                 ? EntitlementConsts.DEFAULT_PAGE_SIZE : pageMetadata.getCount();
         String bookmark = pageMetadata.getBookmark();
 
-        CloudantSearchResult<EntitlementEntity> searchResult = search("search", query, size, bookmark).get();
+        CloudantSearchResult<EntitlementEntity> searchResult = searchSync("search", query, size, bookmark);
         Results<EntitlementEntity> results = new Results<>();
         results.setItems(searchResult.getResults());
         //use next to store bookmark
@@ -159,14 +159,14 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
 
     @Override
     public EntitlementEntity getByTrackingUuid(Long shardMasterId, UUID trackingUuid) {
-        List<EntitlementEntity> results = queryView("byTrackingUuid", trackingUuid.toString()).get();
+        List<EntitlementEntity> results = queryViewSync("byTrackingUuid", trackingUuid.toString());
         return results.size() == 0 ? null : results.get(0);
     }
 
     @Override
     public EntitlementEntity get(Long userId, String itemId, String type) {
         String key = userId.toString() + ":" + itemId + ":" + (type == null ? EntitlementConsts.NO_TYPE : type.toUpperCase());
-        List<EntitlementEntity> results = queryView("byUserIdAndItemIdAndType", key).get();
+        List<EntitlementEntity> results = queryViewSync("byUserIdAndItemIdAndType", key);
         return results.size() == 0 ? null : results.get(0);
     }
 

@@ -7,22 +7,21 @@
 package com.junbo.subscription.clientproxy;
 
 
-import com.junbo.catalog.spec.enums.PriceType;
-import com.junbo.catalog.spec.model.common.Price;
-import com.junbo.catalog.spec.enums.Status;
-import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.enums.ItemType;
+import com.junbo.catalog.spec.enums.PriceType;
+import com.junbo.catalog.spec.enums.Status;
+import com.junbo.catalog.spec.model.common.Price;
+import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.catalog.spec.resource.ItemResource;
 import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
-import com.junbo.common.id.OfferRevisionId;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.subscription.common.util.Constant;
-import org.testng.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;

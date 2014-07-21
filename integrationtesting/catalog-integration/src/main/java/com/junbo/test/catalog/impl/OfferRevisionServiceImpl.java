@@ -37,7 +37,7 @@ import java.util.Map;
  */
 public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRevisionService {
 
-    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "/offer-revisions";
+    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "offer-revisions";
     private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
@@ -151,7 +151,7 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
             offerRevisionForPost = prepareOfferRevisionEntity(defaultOfferRevisionFileName, false);
         }
 
-        if (item.getType().equalsIgnoreCase(CatalogItemType.IN_APP_CONSUMABLE.getItemType())) {
+        if (item.getType().equalsIgnoreCase(CatalogItemType.CONSUMABLE_UNLOCK.getItemType())) {
             List<Action> purchaseActions = new ArrayList<>();
             Map<String, List<Action>> consumableEvent = new HashMap<>();
             Action action = new Action();

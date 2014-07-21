@@ -16,7 +16,8 @@ import javax.ws.rs.NotSupportedException;
 public enum TaxStatus implements Identifiable<Short> {
     TAXED((short)0),
     NOT_TAXED((short)10),
-    FAILED((short)-1);
+    FAILED((short)-1),
+    AUDITED((short)30);
 
     private final Short id;
 

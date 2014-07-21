@@ -24,13 +24,13 @@ public class TokenOrderEntity extends GenericEntity {
 
     @Id
     @Column(name = "token_order_id")
-    private Long id;
+    private String id;
 
     @Column(name = "description")
     private String description;
 
     @Column(name = "token_set_id")
-    private Long tokenSetId;
+    private String tokenSetId;
 
     @Column(name = "token_order_status")
     private OrderStatus status;
@@ -50,17 +50,12 @@ public class TokenOrderEntity extends GenericEntity {
     @Column(name = "activation")
     private String activation;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
-    }
-
-    @Override
-    public Long getShardMasterId() {
-        return null;
     }
 
     public String getDescription() {
@@ -71,11 +66,11 @@ public class TokenOrderEntity extends GenericEntity {
         this.description = description;
     }
 
-    public Long getTokenSetId() {
+    public String getTokenSetId() {
         return tokenSetId;
     }
 
-    public void setTokenSetId(Long tokenSetId) {
+    public void setTokenSetId(String tokenSetId) {
         this.tokenSetId = tokenSetId;
     }
 

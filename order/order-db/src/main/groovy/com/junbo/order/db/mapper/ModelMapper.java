@@ -29,7 +29,8 @@ public interface ModelMapper {
             @Mapping(source = "shippingAddress", target = "shippingAddressId", excluded = false, bidirectional = false),
             @Mapping(source = "shippingToName", target = "shippingNameId", excluded = false, bidirectional = false),
             @Mapping(source = "shippingToPhone", target = "shippingPhoneId", excluded = false, bidirectional = false),
-            @Mapping(source = "shippingMethod", target = "shippingMethodId", excluded = false, bidirectional = false)
+            @Mapping(source = "shippingMethod", target = "shippingMethodId", excluded = false, bidirectional = false),
+            @Mapping(source = "properties", target = "properties", explicitMethod = "convertPropertySet")
     })
     OrderEntity toOrderEntity(Order order, MappingContext context);
 
@@ -40,7 +41,8 @@ public interface ModelMapper {
             @Mapping(source = "shippingAddressId", target = "shippingAddress", excluded = false, bidirectional = false),
             @Mapping(source = "shippingNameId", target = "shippingToName", excluded = false, bidirectional = false),
             @Mapping(source = "shippingPhoneId", target = "shippingToPhone", excluded = false, bidirectional = false),
-            @Mapping(source = "shippingMethodId", target = "shippingMethod", excluded = false, bidirectional = false)
+            @Mapping(source = "shippingMethodId", target = "shippingMethod", excluded = false, bidirectional = false),
+            @Mapping(source = "properties", target = "properties", explicitMethod = "convertPropertySet")
     })
     Order toOrderModel(OrderEntity orderEntity, MappingContext context);
 
@@ -193,14 +195,14 @@ public interface ModelMapper {
 
     @Mappings({
             @Mapping(source = "subledgerId", target = "id", excluded = false, bidirectional = false),
-            @Mapping(source = "productItemId", target = "offer", excluded = false, bidirectional = false),
+            @Mapping(source = "offerId", target = "offer", excluded = false, bidirectional = false),
             @Mapping(source = "sellerId", target = "seller", excluded = false, bidirectional = false)
     })
     Subledger toSubledgerModel(SubledgerEntity subledgerEntity, MappingContext context);
 
     @Mappings({
             @Mapping(source = "id", target = "subledgerId", excluded = false, bidirectional = false),
-            @Mapping(source = "offer", target = "productItemId", excluded = false, bidirectional = false),
+            @Mapping(source = "offer", target = "offerId", excluded = false, bidirectional = false),
             @Mapping(source = "seller", target = "sellerId", excluded = false, bidirectional = false),
 
     })
@@ -208,7 +210,7 @@ public interface ModelMapper {
 
     @Mappings({
             @Mapping(source = "subledgerItemId", target = "id", excluded = false, bidirectional = false),
-            @Mapping(source = "productItemId", target = "offer", excluded = false, bidirectional = false),
+            @Mapping(source = "offerId", target = "offer", excluded = false, bidirectional = false),
             @Mapping(source = "subledgerId", target = "subledger", excluded = false, bidirectional = false),
             @Mapping(source = "orderItemId", target = "orderItem", excluded = false, bidirectional = false),
             @Mapping(source = "originalSubledgerItemId", target = "originalSubledgerItem",
@@ -218,7 +220,7 @@ public interface ModelMapper {
 
     @Mappings({
             @Mapping(source = "id", target = "subledgerItemId", excluded = false, bidirectional = false),
-            @Mapping(source = "offer", target = "productItemId", excluded = false, bidirectional = false),
+            @Mapping(source = "offer", target = "offerId", excluded = false, bidirectional = false),
             @Mapping(source = "subledger", target = "subledgerId", excluded = false, bidirectional = false),
             @Mapping(source = "orderItem", target = "orderItemId", excluded = false, bidirectional = false),
             @Mapping(source = "originalSubledgerItem", target = "originalSubledgerItemId",

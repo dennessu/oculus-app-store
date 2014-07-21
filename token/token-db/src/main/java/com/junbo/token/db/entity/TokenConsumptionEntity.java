@@ -20,10 +20,10 @@ public class TokenConsumptionEntity extends GenericEntity {
 
     @Id
     @Column(name = "consumption_id")
-    private Long id;
+    private String id;
 
     @Column(name = "item_id")
-    private Long itemId;
+    private String itemId;
 
     @Column(name = "user_id")
     private Long userId;
@@ -31,24 +31,19 @@ public class TokenConsumptionEntity extends GenericEntity {
     @Column(name = "products")
     private String product;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    @Override
-    public Long getShardMasterId() {
+    public String getItemId() {
         return itemId;
     }
 
-    public Long getItemId() {
-        return itemId;
-    }
-
-    public void setItemId(Long itemId) {
+    public void setItemId(String itemId) {
         this.itemId = itemId;
     }
 

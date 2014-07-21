@@ -3,8 +3,10 @@ package com.junbo.identity.rest.resource.v1
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFABackupCodeAttemptId
+import com.junbo.common.model.ResourceMetaBase
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
@@ -64,19 +66,24 @@ class UserTFABackupCodeAttemptResourceImpl implements UserTFABackupCodeAttemptRe
         }
 
         if (!AuthorizeContext.hasScopes(IDENTITY_SERVICE_SCOPE)) {
-            throw AppErrors.INSTANCE.invalidAccess().exception()
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         userTFABackupCodeAttempt = userTFABackupCodeAttemptFilter.filterForCreate(userTFABackupCodeAttempt)
 
-        return userTFABackupCodeAttemptValidator.validateForCreate(userId, userTFABackupCodeAttempt).then {
-
+        return userTFABackupCodeAttemptValidator.validateForCreate(userId, userTFABackupCodeAttempt).recover { Throwable e ->
+            userTFABackupCodeAttempt.succeeded = false
+            return createInNewTran(userTFABackupCodeAttempt).then {
+                throw e
+            }
+        }.then {
             return createInNewTran(userTFABackupCodeAttempt).then { UserTFABackupCodeAttempt attempt ->
 
                 if (attempt.succeeded) {
                     Created201Marker.mark(attempt.getId())
 
                     attempt = userTFABackupCodeAttemptFilter.filterForGet(attempt, null)
+                    attempt = RightsScope.filterForAdminInfo(attempt as ResourceMetaBase) as UserTFABackupCodeAttempt
                     return Promise.pure(attempt)
                 }
 
@@ -93,13 +100,13 @@ class UserTFABackupCodeAttemptResourceImpl implements UserTFABackupCodeAttemptRe
         }
 
         if (userId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('read')) {
-                throw AppErrors.INSTANCE.invalidAccess().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             return userTFABackupCodeAttemptValidator.validateForGet(userId, userTFABackupCodeAttemptId).
@@ -115,13 +122,13 @@ class UserTFABackupCodeAttemptResourceImpl implements UserTFABackupCodeAttemptRe
     @Override
     Promise<Results<UserTFABackupCodeAttempt>> list(UserId userId, UserTFABackupCodeAttemptListOptions listOptions) {
         if (userId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
 
         def callback = authorizeCallbackFactory.create(userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('read')) {
-                throw AppErrors.INSTANCE.invalidAccess().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             return userTFABackupCodeAttemptValidator.validateForSearch(userId, listOptions).then {

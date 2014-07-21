@@ -1,0 +1,11 @@
+{
+  "localeCode": "et_EE",
+  "shortName": "Eesti (EE)",
+  "longName": "Eesti (Eesti)",
+  "localeName": "Eesti (EE)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

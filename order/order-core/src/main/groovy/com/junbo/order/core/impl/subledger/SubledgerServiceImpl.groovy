@@ -1,17 +1,18 @@
 package com.junbo.order.core.impl.subledger
 
+import com.junbo.authorization.AuthorizeCallback
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
+import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.id.OrderId
+import com.junbo.common.id.OrderItemId
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.SubledgerId
 import com.junbo.order.auth.SubledgerAuthorizeCallbackFactory
 import com.junbo.order.core.SubledgerService
 import com.junbo.order.core.impl.common.OrderValidator
 import com.junbo.order.core.impl.common.ParamUtils
-import com.junbo.order.spec.model.enums.PayoutStatus
-import com.junbo.order.spec.model.enums.SubledgerItemAction
-import com.junbo.order.spec.model.enums.SubledgerItemStatus
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
@@ -19,6 +20,9 @@ import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.model.Subledger
 import com.junbo.order.spec.model.SubledgerItem
 import com.junbo.order.spec.model.SubledgerParam
+import com.junbo.order.spec.model.enums.PayoutStatus
+import com.junbo.order.spec.model.enums.SubledgerItemAction
+import com.junbo.order.spec.model.enums.SubledgerItemStatus
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -27,8 +31,6 @@ import org.springframework.stereotype.Component
 import javax.annotation.Resource
 import javax.transaction.Transactional
 
-
-import static com.junbo.authorization.spec.error.AppErrors.INSTANCE
 /**
  * Created by fzhang on 4/2/2014.
  */
@@ -58,6 +60,8 @@ class SubledgerServiceImpl implements SubledgerService {
     Subledger createSubledger(Subledger subledger) {
         subledger.payoutStatus = PayoutStatus.PENDING.name()
         subledger.totalAmount = 0
+        subledger.totalPayoutAmount = 0
+        subledger.totalQuantity = 0
         return subledgerRepository.createSubledger(subledger)
     }
 
@@ -74,7 +78,7 @@ class SubledgerServiceImpl implements SubledgerService {
         def callback = authorizeCallbackFactory.create(persisted)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('update')) {
-                throw INSTANCE.forbidden().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             persisted.payoutStatus = subledger.payoutStatus
@@ -123,16 +127,19 @@ class SubledgerServiceImpl implements SubledgerService {
         orderValidator.notNull(subledgerItem.totalAmount, 'totalAmount')
         orderValidator.notNull(subledgerItem.orderItem, 'orderItem')
         orderValidator.notNull(subledgerItem.offer, 'offer')
-        orderValidator.notNull(subledgerItem.subledgerItemAction, 'subledgerItemAction').
-                validEnumString(subledgerItem.subledgerItemAction, 'subledgerItemAction', SubledgerItemAction)
 
-        def callback = authorizeCallbackFactory.create(subledgerItem.subledger as SubledgerId)
+        AuthorizeCallback callback
+        if (subledgerItem.subledger != null) {
+            callback = authorizeCallbackFactory.create(subledgerItem.subledger as SubledgerId)
+        } else {
+            callback = authorizeCallbackFactory.create()
+        }
+
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('create-item')) {
-                throw INSTANCE.forbidden().exception()
+                throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
-            subledgerItem.status = SubledgerItemStatus.PENDING.name()
             def result = subledgerRepository.createSubledgerItem(subledgerItem)
 
             if (LOGGER.isDebugEnabled()) {
@@ -146,19 +153,29 @@ class SubledgerServiceImpl implements SubledgerService {
 
     @Override
     @Transactional
+    List<SubledgerItem> getSubledgerItemsByOrderItemId(OrderItemId orderItemId) {
+        return subledgerRepository.getSubledgerItemByOrderItemId(orderItemId)
+    }
+
+    @Override
+    @Transactional
     void aggregateSubledgerItem(SubledgerItem subledgerItem) {
         def subledger = getSubledger(subledgerItem.subledger)
 
-        if (subledgerItem.subledgerItemAction == SubledgerItemAction.CHARGE.name()) {
+        if (subledgerItem.subledgerItemAction == SubledgerItemAction.PAYOUT.name()) {
             subledger.totalAmount += subledgerItem.totalAmount
-        }
-        if (subledgerItem.subledgerItemAction == SubledgerItemAction.REFUND.name()) {
+            subledger.totalQuantity += subledgerItem.totalQuantity
+            subledger.totalPayoutAmount += subledgerItem.totalPayoutAmount
+        } else {
             subledger.totalAmount -= subledgerItem.totalAmount
+            subledger.totalQuantity -= subledgerItem.totalQuantity
+            subledger.totalPayoutAmount -= subledgerItem.totalPayoutAmount
         }
 
         subledgerItem.subledger = subledger.getId()
         subledgerItem.status = SubledgerItemStatus.PROCESSED
-        subledgerRepository.updateSubledgerItem(subledgerItem)
+        SubledgerItem oldSubledgerItem = subledgerRepository.getSubledgerItem(subledgerItem.getId())
+        subledgerRepository.updateSubledgerItem(subledgerItem, oldSubledgerItem)
 
         subledgerRepository.updateSubledger(subledger)
     }

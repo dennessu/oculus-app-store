@@ -15,6 +15,8 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 
 /**
  * Created by baojing on 2/18/14.
@@ -34,5 +36,15 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
      */
     protected long generateId() {
         return idGenerator.nextId(0);
+    }
+
+    @BeforeTest
+    @SuppressWarnings("deprecation")
+    public void setup() {
+    }
+
+    @AfterTest
+    @SuppressWarnings("deprecation")
+    public void cleanup() {
     }
 }

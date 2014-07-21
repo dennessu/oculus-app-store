@@ -5,12 +5,12 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.spec.model.Gender
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
@@ -43,32 +43,32 @@ class ValidateRegister implements Action {
         String username = parameterMap.getFirst(OAuthParameters.USERNAME)
 
         if (StringUtils.isEmpty(username)) {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.missingUsername().error())
+            contextWrapper.errors.add(AppCommonErrors.INSTANCE.parameterRequired('login').error())
         }
 
         String password = parameterMap.getFirst(OAuthParameters.PASSWORD)
 
         if (StringUtils.isEmpty(password)) {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.missingPassword().error())
+            contextWrapper.errors.add(AppCommonErrors.INSTANCE.parameterRequired('password').error())
         }
 
         String pin = parameterMap.getFirst(OAuthParameters.PIN)
 
         if (StringUtils.isEmpty(pin)) {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.missingPin().error())
+            contextWrapper.errors.add(AppCommonErrors.INSTANCE.fieldRequired('pin').error())
         } else {
             if (!VALID_PIN_REGEX.matcher(pin).find()) {
-                contextWrapper.errors.add(AppExceptions.INSTANCE.invalidPin().error())
+                contextWrapper.errors.add(AppCommonErrors.INSTANCE.fieldInvalid('pin').error())
             }
         }
 
         String email = parameterMap.getFirst(OAuthParameters.EMAIL)
 
         if (StringUtils.isEmpty(email)) {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.missingEmail().error())
+            contextWrapper.errors.add(AppCommonErrors.INSTANCE.fieldRequired('email').error())
         } else {
             if (!VALID_EMAIL_ADDRESS_REGEX.matcher(email).find()) {
-                contextWrapper.errors.add(AppExceptions.INSTANCE.invalidEmail(email).error())
+                contextWrapper.errors.add(AppCommonErrors.INSTANCE.fieldInvalid('email', email).error())
             }
             contextWrapper.userDefaultEmail = email
         }
@@ -76,13 +76,13 @@ class ValidateRegister implements Action {
         String firstName = parameterMap.getFirst(OAuthParameters.FIRST_NAME)
 
         if (StringUtils.isEmpty(firstName)) {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.missingFirstName().error())
+            contextWrapper.errors.add(AppCommonErrors.INSTANCE.fieldRequired('first_name').error())
         }
 
         String lastName = parameterMap.getFirst(OAuthParameters.LAST_NAME)
 
         if (StringUtils.isEmpty(lastName)) {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.missingLastName().error())
+            contextWrapper.errors.add(AppCommonErrors.INSTANCE.fieldRequired('last_name').error())
         }
 
         String genderStr = parameterMap.getFirst(OAuthParameters.GENDER)
@@ -92,7 +92,7 @@ class ValidateRegister implements Action {
                 contextWrapper.gender = Gender.valueOf(genderStr.toUpperCase())
             } catch (IllegalArgumentException e) {
                 LOGGER.debug('Error parsing the gender', e)
-                contextWrapper.errors.add(AppExceptions.INSTANCE.invalidGender().error())
+                contextWrapper.errors.add(AppCommonErrors.INSTANCE.fieldInvalid('gender').error())
             }
         }
 
@@ -104,7 +104,7 @@ class ValidateRegister implements Action {
                 contextWrapper.dob = dateFormat.parse(dobStr)
             } catch (ParseException e) {
                 LOGGER.debug('Error parsing the date of birth', e)
-                contextWrapper.errors.add(AppExceptions.INSTANCE.invalidDob().error())
+                contextWrapper.errors.add(AppCommonErrors.INSTANCE.fieldInvalid('dob').error())
             }
         }
 

@@ -20,7 +20,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Entitlement gateway.
@@ -47,12 +50,13 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
         pagingOption.setCount(Constants.DEFAULT_PAGE_SIZE);
 
         Set<String> result = new HashSet<>();
-        while(true) {
+        while (true) {
             List<Entitlement> entitlements = new ArrayList<Entitlement>();
             try {
                 entitlements.addAll(
                         entitlementResource.searchEntitlements(
-                                param, pagingOption).get().getItems());
+                                param, pagingOption).get().getItems()
+                );
             } catch (Exception e) {
                 LOGGER.error("Error occurred during calling [Entitlement] component.", e);
                 throw AppErrors.INSTANCE.entitlementGatewayError().exception();

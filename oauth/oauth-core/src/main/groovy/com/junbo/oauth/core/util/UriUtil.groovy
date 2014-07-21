@@ -8,8 +8,8 @@ package com.junbo.oauth.core.util
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.util.StringUtils
 
-import java.util.regex.Pattern
 
 /**
  * UriUtil.
@@ -19,19 +19,30 @@ class UriUtil {
     private final static Logger LOGGER = LoggerFactory.getLogger(UriUtil)
 
     static boolean match(String uri, String uriTemplate) {
-
-        // todo: this doesn't work. more strict validation needed.
-        if (uriTemplate.contains('*')) {
-            String redirectUriPattern = uriTemplate.replace('.', '\\.').replace('?', '\\?')
-                    .replace('*', '.*').concat('.*')
-            if (Pattern.matches(redirectUriPattern, uri)) {
-                return true
+        try {
+            URI uri1 = URI.create(uri)
+            URI allowed = URI.create(uriTemplate)
+            if (uri1.scheme != allowed.scheme) {
+                return false
             }
-        } else if (uri.startsWith(uriTemplate)) {
-            return true
-        }
 
-        return false
+            if (uri1.authority != allowed.authority) {
+                return false
+            }
+
+            if (uri1.path != allowed.path) {
+                return false
+            }
+
+            if (StringUtils.hasText(uri1.fragment)) {
+                return false
+            }
+
+            return true
+        } catch (IllegalArgumentException e) {
+            LOGGER.debug('Invalid uri format', e)
+            return false
+        }
     }
 
     static boolean isValidUri(String uri) {
@@ -43,6 +54,19 @@ class UriUtil {
         }
 
         return true
+    }
+
+    static boolean isValidRedirectUri(String uri) {
+        try {
+            URI uri1 = URI.create(uri)
+            if (StringUtils.hasText(uri1.fragment)) {
+                return false
+            }
+            return true
+        } catch (IllegalArgumentException e) {
+            LOGGER.debug('Invalid uri format', e)
+            return false
+        }
     }
 
     static String getOrigin(String uriStr) {

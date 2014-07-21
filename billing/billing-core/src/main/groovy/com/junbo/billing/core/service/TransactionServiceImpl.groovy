@@ -12,7 +12,9 @@ import com.junbo.billing.spec.enums.*
 import com.junbo.billing.spec.error.AppErrors
 import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.Transaction
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
+import com.junbo.common.id.PaymentId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.enums.PaymentStatus
 import com.junbo.payment.spec.model.ChargeInfo
@@ -87,7 +89,7 @@ class TransactionServiceImpl implements TransactionService {
             balance.setStatus(BalanceStatus.FAILED.name())
 
             if (throwable instanceof AppErrorException) {
-                throw AppErrors.INSTANCE.paymentProcessingFailed(balance.piId.value.toString()).exception()
+                throw AppErrors.INSTANCE.paymentProcessingFailed(balance.piId).exception()
             }
             throw throwable
         }.then { PaymentTransaction pt ->
@@ -133,7 +135,7 @@ class TransactionServiceImpl implements TransactionService {
                 checkBalance.addTransaction(newTransaction)
 
                 if (throwable instanceof AppErrorException) {
-                    throw AppErrors.INSTANCE.paymentProcessingFailed(checkBalance.piId.value.toString()).exception()
+                    throw AppErrors.INSTANCE.paymentProcessingFailed(checkBalance.piId).exception()
                 }
                 throw throwable
             }.then { PaymentTransaction pt ->
@@ -169,7 +171,7 @@ class TransactionServiceImpl implements TransactionService {
             throw throwable
         }.then { PaymentTransaction checkPt ->
             if (checkPt == null) {
-                throw AppErrors.INSTANCE.invalidPaymentId(paymentId.toString()).exception()
+                throw AppErrors.INSTANCE.paymentNotFound("balance.paymentRefId", new PaymentId(paymentId)).exception()
             }
 
             LOGGER.info('name=Check_Balance_Get_Payment. payment id: {}, amount: {}, status: {}',
@@ -220,11 +222,11 @@ class TransactionServiceImpl implements TransactionService {
 
             if (throwable instanceof AppErrorException) {
                 // check whether is insufficient fund
-                def appException = ((AppErrorException)throwable)
-                if (appException.error.code == '40028') {
-                    throw AppErrors.INSTANCE.paymentInsufficientFund(balance.piId.value.toString()).exception()
+                def appException = (AppErrorException)throwable
+                if (appException.error.error().message == "Insufficient Fund") {
+                    throw AppErrors.INSTANCE.paymentInsufficientFund(balance.piId).exception()
                 }
-                throw AppErrors.INSTANCE.paymentProcessingFailed(balance.piId.value.toString()).exception()
+                throw AppErrors.INSTANCE.paymentProcessingFailed(balance.piId).exception()
             }
             throw throwable
         }.then { PaymentTransaction pt ->
@@ -260,7 +262,7 @@ class TransactionServiceImpl implements TransactionService {
             balance.setStatus(BalanceStatus.FAILED.name())
 
             if (throwable instanceof AppErrorException) {
-                throw AppErrors.INSTANCE.paymentProcessingFailed(balance.piId.value.toString()).exception()
+                throw AppErrors.INSTANCE.paymentProcessingFailed(balance.piId).exception()
             }
             throw throwable
         }.then { PaymentTransaction pt ->
@@ -294,7 +296,7 @@ class TransactionServiceImpl implements TransactionService {
             balance.setStatus(BalanceStatus.FAILED.name())
 
             if (throwable instanceof AppErrorException) {
-                throw AppErrors.INSTANCE.paymentProcessingFailed(balance.piId.value.toString()).exception()
+                throw AppErrors.INSTANCE.paymentProcessingFailed(balance.piId).exception()
             }
             throw throwable
         }.then { PaymentTransaction pt ->
@@ -347,7 +349,7 @@ class TransactionServiceImpl implements TransactionService {
         try {
             paymentId = Long.parseLong(paymentRefId)
         } catch (NumberFormatException ex) {
-            throw AppErrors.INSTANCE.invalidPaymentId(paymentRefId).exception()
+            throw AppCommonErrors.INSTANCE.invalidId("paymentRefId", refId).exception()
         }
         return paymentId
     }

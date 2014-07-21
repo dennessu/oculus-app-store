@@ -6,6 +6,12 @@ mainClassName = "com.junbo.apphost.core.JunboApplication"
 dependencies {
     runtime junboProject(':apphost-core')
     runtime junboProject(':configuration-data')
+    runtime junboProject(':identity-rest')
+    runtime junboProject(':oauth-api')
+    runtime junboProject(':catalog-rest')
+    runtime junboProject(':entitlement-rest')
+    runtime junboProject(':crypto-rest')
+    runtime junboProject(':billing-rest')
 
     compile junboProject(':drm-rest')
 }

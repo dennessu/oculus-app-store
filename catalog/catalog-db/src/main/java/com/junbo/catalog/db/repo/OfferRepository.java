@@ -20,6 +20,6 @@ public interface OfferRepository extends BaseEntityRepository<Offer> {
     Offer get(String offerId);
     List<Offer> getOffers(OffersGetOptions options);
     List<Offer> getOffers(Collection<String> offerIds);
-    Offer update(Offer offer);
+    Offer update(Offer offer, Offer oldOffer);
     void delete(String offerId);
 }

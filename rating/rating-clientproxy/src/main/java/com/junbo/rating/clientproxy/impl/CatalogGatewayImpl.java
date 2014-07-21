@@ -7,23 +7,17 @@
 package com.junbo.rating.clientproxy.impl;
 
 import com.junbo.catalog.spec.enums.PriceType;
-//import com.junbo.catalog.spec.model.common.*;
 import com.junbo.catalog.spec.model.domaindata.ShippingMethod;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
-//import com.junbo.catalog.spec.model.promotion.Promotion;
 import com.junbo.catalog.spec.model.promotion.PromotionRevision;
-//import com.junbo.catalog.spec.model.promotion.PromotionRevisionsGetOptions;
-//import com.junbo.catalog.spec.model.promotion.PromotionsGetOptions;
 import com.junbo.catalog.spec.resource.*;
-import com.junbo.common.id.*;
 import com.junbo.rating.clientproxy.CatalogGateway;
 import com.junbo.rating.common.util.Constants;
 import com.junbo.rating.common.util.Utils;
 import com.junbo.rating.spec.error.AppErrors;
 import com.junbo.rating.spec.fusion.*;
-import com.junbo.rating.spec.fusion.Price;
 import com.junbo.rating.spec.fusion.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,10 +27,15 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import java.math.BigDecimal;
 import java.util.*;
 
+//import com.junbo.catalog.spec.model.common.*;
+//import com.junbo.catalog.spec.model.promotion.Promotion;
+//import com.junbo.catalog.spec.model.promotion.PromotionRevisionsGetOptions;
+//import com.junbo.catalog.spec.model.promotion.PromotionsGetOptions;
+
 /**
  * Catalog gateway.
  */
-public class CatalogGatewayImpl implements CatalogGateway{
+public class CatalogGatewayImpl implements CatalogGateway {
     private static final Logger LOGGER = LoggerFactory.getLogger(CatalogGatewayImpl.class);
 
     @Autowired
@@ -95,43 +94,43 @@ public class CatalogGatewayImpl implements CatalogGateway{
     public List<PromotionRevision> getPromotions() {
         List<PromotionRevision> results = new ArrayList<>();
 
-        /*PromotionsGetOptions options = new PromotionsGetOptions();
-        options.setStart(Constants.DEFAULT_PAGE_START);
-        options.setSize(Constants.DEFAULT_PAGE_SIZE);
+            /*PromotionsGetOptions options = new PromotionsGetOptions();
+            options.setStart(Constants.DEFAULT_PAGE_START);
+            options.setSize(Constants.DEFAULT_PAGE_SIZE);
 
-        List<PromotionRevisionId> revisionIds = new ArrayList<>();
-        while(true) {
-            List<Promotion> promotions = new ArrayList<>();
+            List<PromotionRevisionId> revisionIds = new ArrayList<>();
+            while(true) {
+                List<Promotion> promotions = new ArrayList<>();
+                try {
+                    promotions.addAll(promotionResource.getPromotions(options).get().getItems());
+                } catch (Exception e) {
+                    LOGGER.error("Error occurring when getting promotions.", e);
+                    throw AppErrors.INSTANCE.catalogGatewayError().exception();
+                }
+
+                for (Promotion promotion : promotions) {
+                    revisionIds.add(new PromotionRevisionId(promotion.getCurrentRevisionId()));
+                }
+
+                if (promotions.size() < Constants.DEFAULT_PAGE_SIZE) {
+                    break;
+                }
+                options.setStart(options.getSize() + Constants.DEFAULT_PAGE_SIZE);
+            }
+
+            if (revisionIds.isEmpty()) {
+                LOGGER.info("No promotion exists in Catalog component.");
+                return results;
+            }
+
+            PromotionRevisionsGetOptions revisionOptions = new PromotionRevisionsGetOptions();
+            revisionOptions.setRevisionIds(revisionIds);
             try {
-                promotions.addAll(promotionResource.getPromotions(options).get().getItems());
+                results.addAll(promotionRevisionResource.getPromotionRevisions(revisionOptions).get().getItems());
             } catch (Exception e) {
-                LOGGER.error("Error occurring when getting promotions.", e);
+                LOGGER.error("Error occurring when getting Promotion Revisions.", e);
                 throw AppErrors.INSTANCE.catalogGatewayError().exception();
-            }
-
-            for (Promotion promotion : promotions) {
-                revisionIds.add(new PromotionRevisionId(promotion.getCurrentRevisionId()));
-            }
-
-            if (promotions.size() < Constants.DEFAULT_PAGE_SIZE) {
-                break;
-            }
-            options.setStart(options.getSize() + Constants.DEFAULT_PAGE_SIZE);
-        }
-
-        if (revisionIds.isEmpty()) {
-            LOGGER.info("No promotion exists in Catalog component.");
-            return results;
-        }
-
-        PromotionRevisionsGetOptions revisionOptions = new PromotionRevisionsGetOptions();
-        revisionOptions.setRevisionIds(revisionIds);
-        try {
-            results.addAll(promotionRevisionResource.getPromotionRevisions(revisionOptions).get().getItems());
-        } catch (Exception e) {
-            LOGGER.error("Error occurring when getting Promotion Revisions.", e);
-            throw AppErrors.INSTANCE.catalogGatewayError().exception();
-        }*/
+            }*/
 
         return results;
     }
@@ -192,7 +191,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
             return null;
         }
         Map<String, Map<String, BigDecimal>> prices = new HashMap<>();
-        switch(PriceType.valueOf(price.getPriceType())) {
+        switch (PriceType.valueOf(price.getPriceType())) {
             case CUSTOM:
                 prices.putAll(price.getPrices());
                 break;
@@ -216,7 +215,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
         offer.setPrice(getPrice(offerRevision.getPrice()));
         offer.setPreOrderPrice(getPrice(offerRevision.getPreOrderPrice()));
 
-        for(String country : offerRevision.getCountries().keySet()) {
+        for (String country : offerRevision.getCountries().keySet()) {
             CountryProperties properties = offerRevision.getCountries().get(country);
             offer.getCountries().put(country, new Properties(properties.getIsPurchasable(), properties.getReleaseDate()));
         }
@@ -226,7 +225,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
                 LinkedEntry item = new LinkedEntry();
                 item.setEntryId(entry.getItemId());
                 item.setType(EntryType.ITEM);
-                item.setQuantity(entry.getQuantity() == null? 1 : entry.getQuantity());
+                item.setQuantity(entry.getQuantity() == null ? 1 : entry.getQuantity());
                 offer.getItems().add(item);
             }
         }
@@ -260,7 +259,7 @@ public class CatalogGatewayImpl implements CatalogGateway{
 
     private Map<String, Object> buildActionCondition(ActionCondition condition) {
         Map<String, Object> result = new HashMap<>();
-        if (condition ==  null) {
+        if (condition == null) {
             return result;
         }
 

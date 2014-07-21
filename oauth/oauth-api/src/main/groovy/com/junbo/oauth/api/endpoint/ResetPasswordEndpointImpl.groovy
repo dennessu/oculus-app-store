@@ -1,10 +1,12 @@
 package com.junbo.oauth.api.endpoint
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.ConversationNotfFoundException
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.oauth.core.context.ActionContextWrapper
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.UserService
 import com.junbo.oauth.core.util.ResponseUtil
 import com.junbo.oauth.spec.endpoint.ResetPasswordEndpoint
@@ -96,16 +98,20 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
     }
 
     @Override
-    Promise<Response> resetPassword(String conversationId, String event, String locale, String country, UserId userId, String userEmail,
+    Promise<Response> resetPassword(String conversationId, String event, String locale, String country, String username, String userEmail,
                                     ContainerRequestContext request, MultivaluedMap<String, String> formParams) {
         if (conversationId == null) {
-            if (userId != null) {
-                return userService.sendResetPassword(userId, locale, country, ((ContainerRequest)request).baseUri).then { String uri ->
-                    if (debugEnabled) {
-                        return Promise.pure(Response.ok().entity(uri).build())
-                    }
+            if (username != null) {
+                return userService.getUserIdByUsername(username).then { UserId id ->
+                    return userService.sendResetPassword(id, locale, country, ((ContainerRequest)request).baseUri).then { String uri ->
+                        if (debugEnabled) {
+                            return Promise.pure(Response.ok().entity(uri).build())
+                        }
 
-                    return Promise.pure(Response.noContent().build())
+                        return userService.getUserEmailByUserId(id).then { String email ->
+                            Promise.pure(Response.ok().entity(com.junbo.oauth.common.Utils.maskEmail(email)).build())
+                        }
+                    }
                 }
             }
             else if (userEmail != null) {
@@ -115,9 +121,12 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
                             return Promise.pure(Response.ok().entity(uri).build())
                         }
 
-                        return Promise.pure(Response.noContent().build())
+                        Promise.pure(Response.ok().entity(com.junbo.oauth.common.Utils.maskEmail(userEmail)).build())
                     }
                 }
+            }
+            else {
+                throw AppCommonErrors.INSTANCE.fieldRequired('username or user_email').exception()
             }
         }
 

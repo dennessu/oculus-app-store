@@ -5,7 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 
 import java.util.UUID;
 
@@ -23,4 +24,15 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
     protected UUID generateUUID() {
         return UUID.randomUUID();
     }
+
+    @BeforeTest
+    @SuppressWarnings("deprecation")
+    public void setup() {
+    }
+
+    @AfterTest
+    @SuppressWarnings("deprecation")
+    public void cleanup() {
+    }
+
 }

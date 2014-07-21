@@ -15,6 +15,7 @@ import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * drm.
@@ -27,6 +28,7 @@ public class License extends ResourceMeta<String> {
 
     @ApiModelProperty(position = 2, required = true, value = "[Client Immutable] The id of user resource.")
     @UserId
+    @JsonProperty("user")
     private Long userId;
 
     @ApiModelProperty(position = 3, required = true, value = "[Client Immutable] The id of device resource.")
@@ -35,6 +37,7 @@ public class License extends ResourceMeta<String> {
 
     @ApiModelProperty(position = 4, required = true, value = "[Client Immutable] The id of item resource.")
     @ItemId
+    @JsonProperty("item")
     private String itemId;
 
     @ApiModelProperty(position = 5, required = true, value = "The license’s machine hash, calculated based on the machine the user using.")
@@ -43,11 +46,7 @@ public class License extends ResourceMeta<String> {
     @ApiModelProperty(position = 6, required = true, value = "The expiration time of the license.")
     private Date expirationTime;
 
-    @ApiModelProperty(position = 7, required = true, value = "The use countThe use count of the license, suggesting how many times the user can use this license.")
-    private Integer useCount;
-
-    @ApiModelProperty(position = 8, required = true, value = "The revision.")
-    private String rev;
+    private List<Entitlement> entitlements;
 
     public String getId() {
         return id;
@@ -97,21 +96,11 @@ public class License extends ResourceMeta<String> {
         this.expirationTime = expirationTime;
     }
 
-    public Integer getUseCount() {
-        return useCount;
+    public List<Entitlement> getEntitlements() {
+        return entitlements;
     }
 
-    public void setUseCount(Integer useCount) {
-        this.useCount = useCount;
+    public void setEntitlements(List<Entitlement> entitlements) {
+        this.entitlements = entitlements;
     }
-
-    public String getRev() {
-        return rev;
-    }
-
-    public void setRev(String rev) {
-        this.rev = rev;
-    }
-
-
 }

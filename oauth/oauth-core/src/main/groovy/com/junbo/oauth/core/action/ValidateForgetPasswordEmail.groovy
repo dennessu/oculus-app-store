@@ -1,5 +1,6 @@
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
@@ -10,7 +11,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
@@ -41,11 +42,11 @@ class ValidateForgetPasswordEmail implements Action {
         String email = parameterMap.getFirst(OAuthParameters.EMAIL)
 
         if (StringUtils.isEmpty(email)) {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.missingEmail().error())
+            contextWrapper.errors.add(AppCommonErrors.INSTANCE.fieldRequired('email').error())
         }
         else {
             if (!VALID_EMAIL_ADDRESS_REGEX.matcher(email).find()) {
-                contextWrapper.errors.add(AppExceptions.INSTANCE.invalidEmail(email).error())
+                contextWrapper.errors.add(AppCommonErrors.INSTANCE.fieldInvalid('email', email).error())
             }
         }
 
@@ -55,7 +56,7 @@ class ValidateForgetPasswordEmail implements Action {
         }.then { Results<UserPersonalInfo> results ->
 
             if (results == null || results.items == null || results.items.isEmpty()) {
-                contextWrapper.errors.add(AppExceptions.INSTANCE.noAccountFound().error())
+                contextWrapper.errors.add(AppErrors.INSTANCE.noAccountFound().error())
             }
 
             contextWrapper.forgetPasswordEmail = email
@@ -67,7 +68,7 @@ class ValidateForgetPasswordEmail implements Action {
         if (throwable instanceof AppErrorException) {
             contextWrapper.errors.add(((AppErrorException) throwable).error.error())
         } else {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingIdentity().error())
+            contextWrapper.errors.add(AppErrors.INSTANCE.errorCallingIdentity().error())
         }
     }
 }

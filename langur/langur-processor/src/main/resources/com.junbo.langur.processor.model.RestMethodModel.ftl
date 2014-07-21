@@ -7,10 +7,8 @@ ${annotation}
 public void ${methodName}([#list parameters as parameter][@includeModel model=parameter/],[/#list]
     @javax.ws.rs.container.Suspended final javax.ws.rs.container.AsyncResponse __asyncResponse) {
 
-    com.junbo.langur.core.context.JunboHttpContext.JunboHttpContextData __junboHttpContextData = __createJunboHttpContextData();
+    com.junbo.langur.core.context.JunboHttpContext.JunboHttpContextData __junboHttpContextData = __createJunboHttpContextData(${adapteeType}.class);
     final com.junbo.langur.core.context.JunboHttpContextScope __scope = new com.junbo.langur.core.context.JunboHttpContextScope(__junboHttpContextData, __junboHttpContextScopeListeners);
-
-    Promise<${returnType}> future;
 
     try {
         ${adapteeType} adaptee = __adaptee;
@@ -21,13 +19,13 @@ public void ${methodName}([#list parameters as parameter][@includeModel model=pa
                 [#list routeParamExprs as paramExpr]
                 ${paramExpr}[#if paramExpr_has_next],[/#if]
                 [/#list]
-            }, ${routeFallbackToAnyLocal?c});
+            });
             if (url != null) {
                 adaptee = __clientFactory.create(url);
-            }
+           }
         }
 
-        future = adaptee.${methodName}(
+        Promise<${returnType}> future = adaptee.${methodName}(
             [#list parameters as parameter]
             ${parameter.paramName}[#if parameter_has_next],[/#if]
             [/#list]
@@ -42,27 +40,27 @@ public void ${methodName}([#list parameters as parameter][@includeModel model=pa
                 });
             }
         });
+
+        future.onSuccess(new Promise.Callback<${returnType}>() {
+            @Override
+            public void invoke(${returnType} result) {
+                __processResponseData();
+
+                __asyncResponse.resume(result);
+                __scope.close();
+            }
+        });
+
+        future.onFailure(new Promise.Callback<Throwable>() {
+            @Override
+            public void invoke(Throwable result) {
+                __asyncResponse.resume(result);
+                __scope.close();
+            }
+        });
     } catch (Throwable ex) {
         __asyncResponse.resume(ex);
         __scope.close();
         return;
     }
-
-    future.onSuccess(new Promise.Callback<${returnType}>() {
-        @Override
-        public void invoke(${returnType} result) {
-            __processResponseData();
-
-            __asyncResponse.resume(result);
-            __scope.close();
-        }
-    });
-
-    future.onFailure(new Promise.Callback<Throwable>() {
-        @Override
-        public void invoke(Throwable result) {
-            __asyncResponse.resume(result);
-            __scope.close();
-        }
-    });
 }

@@ -6,6 +6,7 @@
 package com.junbo.langur.processor.handler
 
 import com.junbo.langur.core.InProcessCallable
+import com.junbo.langur.core.RestResource
 import com.junbo.langur.processor.ProcessingException
 import com.junbo.langur.processor.model.ClientMethodModel
 import com.junbo.langur.processor.model.ClientParameterModel
@@ -76,6 +77,7 @@ class ClientProxyParser implements RestResourceHandler {
 
                 def clientMethod = new ClientMethodModel()
 
+                clientMethod.interfaceType = clientProxy.interfaceType
                 clientMethod.returnType = returnType.typeArguments[0].toString()
                 clientMethod.methodName = executableElement.simpleName.toString()
 
@@ -174,10 +176,10 @@ class ClientProxyParser implements RestResourceHandler {
         }
 
         if (produces != null) {
-            return true
+            return !produces.disable();
         }
 
-        return false
+        return true
     }
 
     private static String parseInnerParamType(TypeMirror typeMirror) {

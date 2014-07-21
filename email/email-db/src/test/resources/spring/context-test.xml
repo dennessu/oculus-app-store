@@ -4,13 +4,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <import resource="classpath*:spring/transaction.xml"/>
-    <import resource="classpath*:spring/cloudant-context.xml"/>
-    <import resource="classpath*:spring/db-context.xml"/>
-    <import resource="classpath*:spring/sharding-context.xml"/>
-    <import resource="classpath*:spring/common-context.xml"/>
-    <import resource="classpath*:spring/common-lib-context.xml"/>
-    <import resource="classpath*:spring/threadpool-context.xml"/>
-
-    <import resource="classpath*:spring-disabled/sql-context.xml"/>
+    <import resource="classpath*:spring/*-context.xml" />
 
 </beans>

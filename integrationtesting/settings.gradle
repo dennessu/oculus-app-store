@@ -11,6 +11,5 @@ include 'fulfilment-integration'
 include 'order-integration'
 
 include 'integration-buyerscenario'
-include 'integration-catalogscenario'
 include 'integration-csrscenario'
 include 'integration-developerscenario'

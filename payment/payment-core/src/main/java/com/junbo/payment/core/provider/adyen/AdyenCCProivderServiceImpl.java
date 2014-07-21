@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Required;
 
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
@@ -51,7 +52,6 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
     @Autowired
     @Qualifier("adyenRestClient")
     private AdyenApi adyenRestClient;
-    @Autowired
     private PersonalInfoFacade personalInfoFacade;
 
     @Override
@@ -63,16 +63,13 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
         return PromiseFacade.PAYMENT.decorate(new Callable<PaymentInstrument>() {
             @Override
             public PaymentInstrument call() throws Exception {
-                /*
-                String defaultCountry = personalInfoFacade.getBillingAddress(
-                        request.getBillingAddressId()).get().getCountry();
+                Address addressDetail = personalInfoFacade.getBillingAddress(request.getBillingAddressId()).get();
+                if(addressDetail == null){
+                    throw AppClientExceptions.INSTANCE.invalidBillingAddressId(request.getBillingAddressId().toString()).exception();
+                }
+                String defaultCountry = addressDetail.getCountry();
                 CurrencyId defaultCurrency = countryResource.getDefaultCurrency(defaultCountry).get();
                 long minAuthAmount = currencyResource.getMinAuthAmount(defaultCurrency).get();
-                */
-                //TODO: need to enable the above code and delete the test code below:
-                CurrencyId defaultCurrency = new CurrencyId("USD");
-                long minAuthAmount = 100;
-                //end of TODO
                 Long piId = null;
                 if(request.getId() == null){
                     piId = idGenerator.nextId(request.getUserId());
@@ -306,5 +303,9 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                         return capture(paymentTransaction.getExternalToken(), paymentRequest);
                     }
                 });
+    }
+    @Required
+    public void setPersonalInfoFacade(PersonalInfoFacade personalInfoFacade) {
+        this.personalInfoFacade = personalInfoFacade;
     }
 }

@@ -1,10 +1,12 @@
 package com.junbo.order.clientproxy
+
 import com.google.common.util.concurrent.ListeningExecutorService
 import com.google.common.util.concurrent.MoreExecutors
 import com.junbo.billing.spec.model.Balance
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.billing.impl.BillingFacadeAsyncImpl
 import com.junbo.order.mock.MockBalanceResource
+import org.testng.annotations.AfterMethod
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 
@@ -24,6 +26,7 @@ class BillingFacadeAsyncTest extends BaseTest {
     ListeningExecutorService service = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(20));
 
     @BeforeMethod
+    @SuppressWarnings("deprecation")
     void setUp() {
         billingFacadeAsync.balanceResource = new MockBalanceResource() {
             @Override
@@ -38,6 +41,11 @@ class BillingFacadeAsyncTest extends BaseTest {
             }
         }
         billingFacadeAsync.pendingUserNumberLimit = 10
+    }
+
+    @AfterMethod
+    void cleanUp() {
+
     }
 
     @Test

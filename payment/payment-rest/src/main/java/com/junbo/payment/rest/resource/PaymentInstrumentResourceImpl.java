@@ -10,6 +10,7 @@ import com.junbo.authorization.AuthorizeCallback;
 import com.junbo.authorization.AuthorizeContext;
 import com.junbo.authorization.AuthorizeService;
 import com.junbo.authorization.RightsScope;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
@@ -27,8 +28,6 @@ import javax.ws.rs.BeanParam;
 import javax.ws.rs.GET;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.junbo.authorization.spec.error.AppErrors.INSTANCE;
 /**
  * payment instrument resource implementation.
  */
@@ -50,7 +49,7 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
             @Override
             public Promise<PaymentInstrument> apply() {
                 if (!AuthorizeContext.hasRights("create")) {
-                    throw INSTANCE.forbidden().exception();
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 
                 return piService.add(request).then(new Promise.Func<PaymentInstrument, Promise<PaymentInstrument>>() {
@@ -97,7 +96,7 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
                     @Override
                     public Promise<PaymentInstrument> apply() {
                         if (!AuthorizeContext.hasRights("delete")) {
-                            throw INSTANCE.forbidden().exception();
+                            throw AppCommonErrors.INSTANCE.forbidden().exception();
                         }
 
                         piService.delete(paymentInstrumentId.getValue());
@@ -121,7 +120,7 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
             @Override
             public Promise<PaymentInstrument> apply() {
                 if (!AuthorizeContext.hasRights("update")) {
-                    throw INSTANCE.forbidden().exception();
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 
                 piService.update(request);

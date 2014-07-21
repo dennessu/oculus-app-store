@@ -44,44 +44,44 @@ public class PaymentRepositoryFacadeImpl implements PaymentRepositoryFacade {
         this.paymentPropertyRepository = paymentPropertyRepository;
     }
 
-    public void save(PaymentTransaction request){
+    public void save(PaymentTransaction request) {
         PaymentTransaction saved = paymentTransactionRepository.create(request).get();
         request.setId(saved.getId());
         savePaymentEvent(saved.getId(), request.getPaymentEvents());
     }
 
-    public PaymentTransaction getByPaymentId(Long paymentId){
+    public PaymentTransaction getByPaymentId(Long paymentId) {
         return paymentTransactionRepository.get(paymentId).get();
     }
 
-    public void savePaymentEvent(Long paymentId, List<PaymentEvent> events){
-        for(PaymentEvent event : events){
+    public void savePaymentEvent(Long paymentId, List<PaymentEvent> events) {
+        for (PaymentEvent event : events) {
             event.setPaymentId(paymentId);
             paymentEventRepository.create(event).get();
         }
     }
 
-    public void updatePayment(Long paymentId, PaymentStatus status, String externalToken){
+    public void updatePayment(Long paymentId, PaymentStatus status, String externalToken) {
         PaymentTransaction paymentTransaction = paymentTransactionRepository.get(paymentId).get();
-        if(status != null){
+        if (status != null) {
             paymentTransaction.setStatus(status.toString());
         }
-        if(externalToken != null){
+        if (externalToken != null) {
             paymentTransaction.setExternalToken(externalToken);
         }
-        paymentTransactionRepository.update(paymentTransaction).get();
+        paymentTransactionRepository.update(paymentTransaction, paymentTransaction).get();
     }
 
-    public List<PaymentEvent> getPaymentEventsByPaymentId(Long paymentId){
+    public List<PaymentEvent> getPaymentEventsByPaymentId(Long paymentId) {
         return paymentEventRepository.getByPaymentId(paymentId).get();
     }
 
-    public void addPaymentProperties(Long paymentId, PaymentCallbackParams properties){
-        if(properties == null){
+    public void addPaymentProperties(Long paymentId, PaymentCallbackParams properties) {
+        if (properties == null) {
             return;
         }
         Map<String, String> mapProperties = CommonUtil.parseJson(CommonUtil.toJson(properties, null), HashMap.class);
-        for(final Map.Entry property : mapProperties.entrySet()){
+        for (final Map.Entry property : mapProperties.entrySet()) {
             PaymentProperty paymentProperty = new PaymentProperty();
             paymentProperty.setPaymentId(paymentId);
             paymentProperty.setPropertyName(property.getKey().toString());
@@ -90,17 +90,17 @@ public class PaymentRepositoryFacadeImpl implements PaymentRepositoryFacade {
         }
     }
 
-    public PaymentCallbackParams getPaymentProperties(Long paymentId){
+    public PaymentCallbackParams getPaymentProperties(Long paymentId) {
         PaymentTransaction paymentTransaction = paymentTransactionRepository.get(paymentId).get();
-        if(paymentTransaction == null){
+        if (paymentTransaction == null) {
             return null;
         }
         List<PaymentProperty> properties = paymentPropertyRepository.getByPaymentId(paymentId).get();
-        if(properties == null){
-            return  null;
+        if (properties == null) {
+            return null;
         }
         Map<String, String> paymentProperties = new HashMap<>();
-        for(PaymentProperty property : properties){
+        for (PaymentProperty property : properties) {
             paymentProperties.put(property.getPropertyName(), property.getPropertyValue());
         }
         return CommonUtil.parseJson(CommonUtil.toJson(paymentProperties, null), PaymentCallbackParams.class);

@@ -21,6 +21,13 @@ import java.util.Map;
 public class Utils {
     private Utils() { }
 
+    public static String safeToString(Object obj) {
+        if (obj == null) {
+            return null;
+        }
+        return obj.toString();
+    }
+
     public static <V> V with(AutoCloseable closable, Closure<V> closure) throws Exception {
         try (AutoCloseable scope = closable) {
             return closure.call();

@@ -50,6 +50,11 @@ class EmailVerifyCodeRepositoryImpl implements EmailVerifyCodeRepository {
         emailVerifyCodeDAO.save(unwrap(emailVerifyCode))
     }
 
+    @Override
+    void removeByUserIdEmail(Long userId, String email) {
+
+    }
+
     private static EmailVerifyCode wrap(EmailVerifyCodeEntity entity) {
         if (entity == null) {
             return null

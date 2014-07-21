@@ -1,20 +1,24 @@
 package com.junbo.common.cloudant.client
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.cloudant.CloudantEntity
 import com.junbo.common.cloudant.CloudantMarshaller
 import com.junbo.common.cloudant.DefaultCloudantMarshaller
 import com.junbo.common.cloudant.exception.CloudantConnectException
 import com.junbo.common.cloudant.exception.CloudantException
-import com.junbo.common.cloudant.exception.CloudantUpdateConflictException
 import com.junbo.common.cloudant.model.CloudantError
 import com.junbo.common.cloudant.model.CloudantQueryResult
 import com.junbo.common.cloudant.model.CloudantResponse
+import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.id.CloudantId
 import com.junbo.common.util.Utils
 import com.junbo.langur.core.async.JunboAsyncHttpClient
 import com.junbo.langur.core.promise.Promise
 import com.ning.http.client.Realm
 import com.ning.http.client.Response
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.util.Assert
@@ -23,12 +27,13 @@ import org.springframework.util.StringUtils
 import javax.ws.rs.core.UriBuilder
 
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
-
 /**
  * CloudantClientImpl.
  */
 @CompileStatic
-class CloudantClientImpl implements CloudantClient {
+class CloudantClientImpl implements CloudantClientInternal {
+    private static final Logger logger = LoggerFactory.getLogger(CloudantClientImpl.class)
+
     private static final String VIEW_PATH   = '/_design/views/_view/'
     private static final String SEARCH_PATH = '/_design/views/_search/'
     private static final String DEFAULT_DESIGN_ID_PREFIX = '_design/'
@@ -45,14 +50,17 @@ class CloudantClientImpl implements CloudantClient {
 
     @Override
     def <T extends CloudantEntity> Promise<T> cloudantPost(CloudantDbUri dbUri, Class<T> entityClass, T entity) {
+        if (entity.getId() != null) {
+            entity.setCloudantId(entity.getId().toString())
+            CloudantId.validate(entity.cloudantId)
+        }
         return executeRequest(dbUri, HttpMethod.POST, '', [:], entity).then({ Response response ->
             if (response.statusCode != HttpStatus.CREATED.value()) {
                 CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
 
                 if (response.statusCode == HttpStatus.CONFLICT.value()) {
-                    throw new CloudantUpdateConflictException(
-                            "Failed to save object to CloudantDB, error: $cloudantError.error," +
-                                    " reason: $cloudantError.reason")
+                    logger.error("Failed to save object to CloudantDB. db: $dbUri, error: $cloudantError.error, reason: $cloudantError.reason");
+                    throw AppCommonErrors.INSTANCE.updateConflict(dbUri.dbName, entity.cloudantId, entity.cloudantRev).exception();
                 }
 
                 throw new CloudantException("Failed to save object to CloudantDB, error: $cloudantError.error," +
@@ -71,7 +79,8 @@ class CloudantClientImpl implements CloudantClient {
 
     @Override
     def <T extends CloudantEntity> Promise<T> cloudantGet(CloudantDbUri dbUri, Class<T> entityClass, String id) {
-        return executeRequest(dbUri, HttpMethod.GET, id, [:], null).then({ Response response ->
+        CloudantId.validate(id)
+        return executeRequest(dbUri, HttpMethod.GET, urlEncode(id), [:], null).then({ Response response ->
 
             if (response.statusCode != HttpStatus.OK.value()) {
                 return Promise.pure(null)
@@ -89,14 +98,14 @@ class CloudantClientImpl implements CloudantClient {
     def <T extends CloudantEntity> Promise<T> cloudantPut(CloudantDbUri dbUri, Class<T> entityClass, T entity) {
         // force update cloudantId
         entity.setCloudantId(entity.getId().toString())
-        return executeRequest(dbUri, HttpMethod.PUT, entity.cloudantId, [:], entity).then({ Response response ->
+        CloudantId.validate(entity.cloudantId)
+        return executeRequest(dbUri, HttpMethod.PUT, urlEncode(entity.cloudantId), [:], entity).then({ Response response ->
             if (response.statusCode != HttpStatus.CREATED.value()) {
                 CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
 
                 if (response.statusCode == HttpStatus.CONFLICT.value()) {
-                    throw new CloudantUpdateConflictException(
-                            "Failed to update object to Cloudant, error: $cloudantError.error," +
-                                    " reason: $cloudantError.reason")
+                    logger.error("Failed to update object to CloudantDB. db: $dbUri, error: $cloudantError.error, reason: $cloudantError.reason");
+                    throw AppCommonErrors.INSTANCE.updateConflict(dbUri.dbName, entity.cloudantId, entity.cloudantRev).exception();
                 }
 
                 throw new CloudantException("Failed to update object to Cloudant, error: $cloudantError.error," +
@@ -119,9 +128,16 @@ class CloudantClientImpl implements CloudantClient {
         if (entity != null) {
             // force update cloudantId
             entity.setCloudantId(entity.getId().toString())
-            return executeRequest(dbUri, HttpMethod.DELETE, entity.cloudantId, ['rev': entity.cloudantRev], null).then({ Response response ->
+            CloudantId.validate(entity.cloudantId)
+            return executeRequest(dbUri, HttpMethod.DELETE, urlEncode(entity.cloudantId), ['rev': entity.cloudantRev], null).then({ Response response ->
                 if (response.statusCode != HttpStatus.OK.value() && response.statusCode != HttpStatus.NOT_FOUND.value()) {
                     CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
+
+                    if (response.statusCode == HttpStatus.CONFLICT.value()) {
+                        logger.error("Failed to delete object to CloudantDB. db: $dbUri, error: $cloudantError.error, reason: $cloudantError.reason");
+                        throw AppCommonErrors.INSTANCE.updateConflict(dbUri.dbName, entity.cloudantId, entity.cloudantRev).exception();
+                    }
+
                     throw new CloudantException("Failed to delete object from Cloudant, error: $cloudantError.error," +
                             " reason: $cloudantError.reason")
                 }
@@ -144,6 +160,7 @@ class CloudantClientImpl implements CloudantClient {
         if (descending) {
             query.put('descending', 'true')
         }
+        query.put('include_docs', 'true')
 
         return executeRequest(dbUri, HttpMethod.GET, '_all_docs', query, null).then ({ Response response ->
             if (response.statusCode != HttpStatus.OK.value()) {
@@ -153,20 +170,15 @@ class CloudantClientImpl implements CloudantClient {
                         " reason: $cloudantError.reason")
             }
 
-            def cloudantSearchResult = (CloudantQueryResult)marshaller.unmarshall(response.responseBody,
-                    CloudantQueryResult, CloudantQueryResult.AllResultEntity, Object.class)
+            def cloudantSearchResult = (CloudantQueryResult)marshaller.unmarshall(response.responseBody, CloudantQueryResult, CloudantQueryResult.AllResultEntity, JsonNode)
 
             List<T> list = new ArrayList<>()
-            return Promise.each(cloudantSearchResult.rows) { CloudantQueryResult.ResultObject result ->
+            return Promise.each(cloudantSearchResult.rows) { CloudantQueryResult.ResultObject<CloudantQueryResult.AllResultEntity, JsonNode> result ->
                 if (result.id.startsWith(DEFAULT_DESIGN_ID_PREFIX)) {
                     return Promise.pure(null)
                 }
-                return cloudantGet(dbUri, entityClass, result.id).then { T temp ->
-                    if (temp != null) {
-                        list.add(temp)
-                    }
-                    return Promise.pure(null)
-                }
+                list.add((T)(marshaller.unmarshall(result.doc.toString(), entityClass)))
+                return Promise.pure(null)
             }.then {
                 return Promise.pure(list)
             }
@@ -407,6 +419,10 @@ class CloudantClientImpl implements CloudantClient {
 
     private static String marshall(Object obj) {
         return marshaller.marshall(obj)
+    }
+
+    private static String urlEncode(String id) {
+        return URLEncoder.encode(id, "UTF-8")
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

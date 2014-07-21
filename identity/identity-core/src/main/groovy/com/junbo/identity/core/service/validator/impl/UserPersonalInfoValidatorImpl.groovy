@@ -1,5 +1,6 @@
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.identity.core.service.validator.PiiValidator
 import com.junbo.identity.core.service.validator.PiiValidatorFactory
@@ -56,19 +57,19 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
             throw new IllegalArgumentException('options is null')
         }
         if (options.userId == null && options.email == null && options.phoneNumber == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userId or email or phoneNumber').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId or email or phoneNumber').exception()
         }
 
         if (options.userId != null && (options.email != null || options.phoneNumber != null)) {
-            throw AppErrors.INSTANCE.parameterInvalid('userId can\'t be searched with email or phone.').exception()
+            throw AppCommonErrors.INSTANCE.parameterInvalid('userId can\'t be searched with email or phone.').exception()
         }
 
         if (options.email != null && options.phoneNumber != null) {
-            throw AppErrors.INSTANCE.parameterInvalid('email can\'t be searched with phone.').exception()
+            throw AppCommonErrors.INSTANCE.parameterInvalid('email can\'t be searched with phone.').exception()
         }
 
         if (options.isValidated != null && options.userId == null) {
-            throw AppErrors.INSTANCE.parameterInvalid('isValidated can be searched by userId only').exception()
+        //    throw AppCommonErrors.INSTANCE.parameterInvalid('isValidated can be searched by userId only').exception()
         }
         return Promise.pure(null)
     }
@@ -80,7 +81,7 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
         }
 
         if (userPersonalInfo.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
         return checkBasicPersonalInfo(userPersonalInfo).then {
             return checkAdvancedCreate(userPersonalInfo)
@@ -94,15 +95,15 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
         }
 
         if (userPersonalInfo.id != oldUserPersonalInfo.id) {
-            throw AppErrors.INSTANCE.fieldInvalid('id', oldUserPersonalInfo.id.toString()).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('id', oldUserPersonalInfo.id.toString()).exception()
         }
 
         if (userPersonalInfo.type != oldUserPersonalInfo.type) {
-            throw AppErrors.INSTANCE.fieldInvalidException('type', 'type can\'t be updated.').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('type', 'type can\'t be updated.').exception()
         }
 
         if (userPersonalInfo.id == null) {
-            throw AppErrors.INSTANCE.fieldRequired('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('id').exception()
         }
 
         return checkBasicPersonalInfo(userPersonalInfo).then {
@@ -115,30 +116,30 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
             throw new IllegalArgumentException('userPersonalInfo is null')
         }
         if (userPersonalInfo.userId == null && userPersonalInfo.organizationId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userId or organizationId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId or organizationId').exception()
         }
 
         if (userPersonalInfo.userId != null && userPersonalInfo.organizationId != null) {
-            throw AppErrors.INSTANCE.fieldInvalidException('userId or organizationId',
+            throw AppCommonErrors.INSTANCE.fieldInvalid('userId or organizationId',
                     'userId and organizationId can\'t appear both.').exception()
         }
 
         if (userPersonalInfo.value == null) {
-            throw AppErrors.INSTANCE.fieldRequired('value').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('value').exception()
         }
         if (userPersonalInfo.type == null) {
-            throw AppErrors.INSTANCE.fieldRequired('type').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('type').exception()
         }
         List<String> allowedValues = UserPersonalInfoType.values().collect { UserPersonalInfoType type ->
             type.toString()
         }
         if (!(userPersonalInfo.type in allowedValues)) {
-            throw AppErrors.INSTANCE.fieldInvalid('type', allowedValues.join(',')).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalidEnum('type', allowedValues.join(',')).exception()
         }
 
         if (userPersonalInfo.lastValidateTime != null) {
             if (!isValidTimeScope(userPersonalInfo.lastValidateTime)) {
-                throw AppErrors.INSTANCE.fieldInvalid('lastValidateTime').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('lastValidateTime').exception()
             }
         }
 
@@ -208,7 +209,7 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
                 return Promise.pure(null)
             }
         } else {
-            throw AppErrors.INSTANCE.fieldRequired('userId or organizationId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId or organizationId').exception()
         }
     }
 

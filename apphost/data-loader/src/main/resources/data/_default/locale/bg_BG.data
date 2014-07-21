@@ -1,0 +1,11 @@
+{
+  "localeCode": "bg_BG",
+  "shortName": "Български (BG)",
+  "longName": "Български (България)",
+  "localeName": "Български (BG)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

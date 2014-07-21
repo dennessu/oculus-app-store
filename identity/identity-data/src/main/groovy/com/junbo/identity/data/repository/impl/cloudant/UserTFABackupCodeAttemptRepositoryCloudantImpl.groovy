@@ -15,7 +15,9 @@ class UserTFABackupCodeAttemptRepositoryCloudantImpl extends CloudantClient<User
 
     @Override
     Promise<List<UserTFABackupCodeAttempt>> searchByUserId(UserId userId, Integer limit, Integer offset) {
-        return queryView('by_user_id', userId.toString(), limit, offset, false)
+        def startKey = [userId.toString()]
+        def endKey = [userId.toString()]
+        return queryView('by_user_id', startKey.toArray(new String()), endKey.toArray(new String()), true, limit, offset, true)
     }
 
     @Override
@@ -24,8 +26,8 @@ class UserTFABackupCodeAttemptRepositoryCloudantImpl extends CloudantClient<User
     }
 
     @Override
-    Promise<UserTFABackupCodeAttempt> update(UserTFABackupCodeAttempt entity) {
-        return cloudantPut(entity)
+    Promise<UserTFABackupCodeAttempt> update(UserTFABackupCodeAttempt entity, UserTFABackupCodeAttempt oldEntity) {
+        return cloudantPut(entity, oldEntity)
     }
 
     @Override

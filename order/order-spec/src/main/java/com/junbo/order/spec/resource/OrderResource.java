@@ -45,7 +45,7 @@ public interface OrderResource {
 
     @ApiOperation("Get orders by user")
     @GET
-    @RouteBy(value = "userId", fallbackToAnyLocal = true)
+    @RouteBy(value = "userId")
     Promise<Results<Order>> getOrderByUserId(@QueryParam("userId") UserId userId,
                                              @BeanParam OrderQueryParam orderQueryParam,
                                              @BeanParam PageParam pageParam);

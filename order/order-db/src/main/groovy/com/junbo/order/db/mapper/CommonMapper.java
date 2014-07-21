@@ -6,6 +6,9 @@
 
 package com.junbo.order.db.mapper;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
@@ -14,6 +17,8 @@ import com.junbo.order.spec.error.AppErrors;
 import com.junbo.order.spec.model.enums.*;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -21,6 +26,8 @@ import java.util.UUID;
  */
 @Component("orderCommonMapper")
 public class CommonMapper {
+
+    private ObjectMapper mapper = new ObjectMapper();
 
     public String fromLongToString(Long id) {
         if (id == null) {
@@ -306,7 +313,7 @@ public class CommonMapper {
         return subledgerId.getValue();
     }
 
-    public String fromFulfillmentActionToString(FulfillmentAction action) {
+    public String fromFulfillmentEventTypeToString(FulfillmentEventType action) {
         if (action == null) {
             return null;
         }
@@ -314,15 +321,15 @@ public class CommonMapper {
         return action.toString();
     }
 
-    public FulfillmentAction fromStringToFulfillmentAction(String action) {
+    public FulfillmentEventType fromStringToFulfillmentEventType(String action) {
         if (action == null) {
             return null;
         }
 
         try {
-            return FulfillmentAction.valueOf(action);
+            return FulfillmentEventType.valueOf(action);
         } catch (Exception e) {
-            throw AppErrors.INSTANCE.enumConversionError(action, "FulfillmentAction").exception();
+            throw AppErrors.INSTANCE.enumConversionError(action, "FulfillmentEventType").exception();
         }
     }
 
@@ -429,25 +436,6 @@ public class CommonMapper {
         }
     }
 
-    public String fromSubledgerItemActionToString(SubledgerItemAction action) {
-        if (action == null) {
-            return null;
-        }
-
-        return action.toString();
-    }
-
-    public SubledgerItemAction fromStringToSubledgerItemAction(String action) {
-        if (action == null) {
-            return null;
-        }
-        try {
-            return SubledgerItemAction.valueOf(action);
-        } catch (Exception e) {
-            throw AppErrors.INSTANCE.enumConversionError(action, "action").exception();
-        }
-    }
-
     public String fromSubledgerPayoutStatusToString(PayoutStatus status) {
         if (status == null) {
             return null;
@@ -535,10 +523,47 @@ public class CommonMapper {
         }
     }
 
+    public String fromSubledgerItemActionToString(SubledgerItemAction subledgerItemAction) {
+        if (subledgerItemAction == null) {
+            return null;
+        }
+        return subledgerItemAction.toString();
+    }
+
+    public SubledgerItemAction fromStringToSubledgerItemAction(String subledgerItemAction) {
+        if (subledgerItemAction == null) {
+            return null;
+        }
+
+        try {
+            return SubledgerItemAction.valueOf(subledgerItemAction);
+        } catch (Exception e) {
+            throw AppErrors.INSTANCE.enumConversionError(subledgerItemAction, "SubledgerItemAction").exception();
+        }
+    }
+
     public String fromOrderItemRevisionTypeToString(OrderItemRevisionType itemType) {
         if (itemType == null) {
             return null;
         }
         return itemType.toString();
+    }
+
+    public String explicitMethod_convertPropertySet(Map<String, String> propertySet) {
+        try {
+            return mapper.writeValueAsString(propertySet);
+        }
+        catch (JsonProcessingException ex) {
+            return null;
+        }
+    }
+
+    public Map<String, String> explicitMethod_convertPropertySet(String propertySet) {
+        try {
+            return mapper.readValue(propertySet, new TypeReference<HashMap<String,String>>(){});
+        }
+        catch (Exception ex) {
+            return null;
+        }
     }
 }

@@ -23,6 +23,7 @@ public interface BillingFacade {
     Promise<List<Balance>> getBalancesByOrderId(Long orderId);
     Promise<Balance> quoteBalance(Balance balance);
     Promise<Balance> confirmBalance(Balance balance);
+    Promise<Balance> auditBalance(Balance balance);
 
     AppError convertError(Throwable error);
 }

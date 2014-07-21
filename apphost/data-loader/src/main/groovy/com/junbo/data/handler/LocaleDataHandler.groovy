@@ -1,20 +1,15 @@
 package com.junbo.data.handler
-
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppErrorException
 import com.junbo.identity.spec.v1.model.Locale
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
 import com.junbo.identity.spec.v1.resource.LocaleResource
 import com.junbo.langur.core.client.TypeReference
-import org.apache.commons.io.IOUtils
 import groovy.transform.CompileStatic
-import org.apache.commons.lang3.ArrayUtils
+import org.apache.commons.io.IOUtils
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.core.io.Resource
 import org.springframework.util.StringUtils
-
-import javax.ejb.Local
-
 /**
  * Created by haomin on 14-6-3.
  */
@@ -95,8 +90,6 @@ class LocaleDataHandler extends BaseDataHandler {
             logger.error("Error parsing locale $content", e)
             exit()
         }
-
-        logger.info("loading locale $locale.localeCode")
 
         Locale existing = null
         try {

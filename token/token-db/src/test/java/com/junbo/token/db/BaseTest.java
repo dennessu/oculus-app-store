@@ -5,14 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 
-import javax.sql.DataSource;
 import java.util.UUID;
 
 @ContextConfiguration(locations = {"classpath:spring/context-test.xml"})
@@ -36,5 +36,17 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
 
     protected long generateLong() {
         return System.currentTimeMillis();
+    }
+
+    @BeforeTest
+    @SuppressWarnings("deprecation")
+    public void setup() {
+
+    }
+
+    @AfterTest
+    @SuppressWarnings("deprecation")
+    public void cleanup() {
+
     }
 }

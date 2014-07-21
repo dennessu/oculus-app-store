@@ -1,0 +1,11 @@
+{
+  "localeCode": "ne_NP",
+  "shortName": "नेपाली  (NP)",
+  "longName": "नेपाली (नेपाल)",
+  "localeName": "नेपाली (NP)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

@@ -6,7 +6,7 @@
 
 package com.junbo.order.db.entity.type;
 
-import com.junbo.order.spec.model.enums.FulfillmentAction;
+import com.junbo.order.spec.model.enums.FulfillmentEventType;
 
 /**
  * Created by LinYi on 14-3-7.
@@ -14,6 +14,6 @@ import com.junbo.order.spec.model.enums.FulfillmentAction;
 public class FulfillmentActionType extends IdentifiableEnumType {
     @Override
     public Class returnedClass() {
-        return FulfillmentAction.class;
+        return FulfillmentEventType.class;
     }
 }

@@ -16,212 +16,136 @@ import com.junbo.common.error.ErrorProxy;
 
 public interface AppErrors {
     AppErrors INSTANCE = ErrorProxy.newProxyInstance(AppErrors.class);
-
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_NULL_EMPTY_INPUT_PARAM,
-            description ="Invalid null/empty input parameter")
-    AppError invalidNullEmptyInputParam();
-
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_OBJECT_TYPE,
-            description = "Object type doesn't map. actually: {0}, expected: {1}.")
-    AppError invalidObjectType(Class actually, Class expected);
-
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.MISSING_PARAMETER_FIELD,
-            description = "Missing Input field. field: {0}")
-    AppError missingParameterField(String field);
-
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.UNNECESSARY_PARAMETER_FIELD,
-            description = "Unnecessary field found. field: {0}")
-    AppError unnecessaryParameterField(String field);
-
-    @ErrorDef(httpStatusCode = 404, code = ErrorCode.ORDER_NOT_FOUND,
-            description = "Order not found")
+    @ErrorDef(httpStatusCode = 404, code = "101", message = "Order Not Found.")
     AppError orderNotFound();
 
-    @ErrorDef(httpStatusCode = 500, code = ErrorCode.ORDER_TYPE_NOT_SUPPORTED,
-            description = "Order action {0} is not supported")
-    AppError orderTypeNotSupported(String type);
-
-    @ErrorDef(httpStatusCode = 500, code = ErrorCode.ORDER_ACTION_NOT_SUPPORTED,
-            description = "Order action {0} is not supported")
+    @ErrorDef(httpStatusCode = 412, code = "102", message = "Order Action Not Supported.", field = "action", reason = "Order action {0} is not supported.")
     AppError orderActionNotSupported(String action);
 
-    @ErrorDef(httpStatusCode = 404, code = ErrorCode.ORDER_ITEM_NOT_FOUND,
-            description = "Order item not found")
+    @ErrorDef(httpStatusCode = 412, code = "103", message = "Order Item Not Found.")
     AppError orderItemNotFound();
 
-    @ErrorDef(httpStatusCode = 409, code = ErrorCode.ORDER_NOT_TENTATIVE,
-            description = "Order not tentative")
-    AppError orderNotTentative();
-
-    @ErrorDef(httpStatusCode = 409, code = ErrorCode.ORDER_CONCURRENT_UPDATE,
-            description = "Concurrent update of order detected")
+    @ErrorDef(httpStatusCode = 409, code = "104", message = "Order Concurrent Update.")
     AppError orderConcurrentUpdate();
 
-    @ErrorDef(httpStatusCode = 404, code = UserErrorCode.USER_NOT_FOUND,
-            description = "User not found {0}")
+    @ErrorDef(httpStatusCode = 412, code = "105", message = "User Not Found.", field = "userId", reason = "User {0} not found.")
     AppError userNotFound(String userId);
 
-    @ErrorDef(httpStatusCode = 400, code = UserErrorCode.USER_STATUS_INVALID,
-            description = "User status invalid")
+    @ErrorDef(httpStatusCode = 412, code = "106", message = "User Status Invalid.")
     AppError userStatusInvalid();
 
-    @ErrorDef(httpStatusCode = 400, code = PaymentErrorCode.PAYMENT_INSTRUMENT_STATUS_INVALID,
-            description = "Payment instrument {0} status invalid.")
+    @ErrorDef(httpStatusCode = 412, code = "107", message = "Payment Instrument Status Invalid.", field = "paymentInstrumentId",
+            reason = "Payment instrument {0} status invalid.")
     AppError paymentInstrumentStatusInvalid(String paymentInstrumentId);
 
-    @ErrorDef(httpStatusCode = 404, code = PaymentErrorCode.PAYMENT_INSTRUMENT_NOT_FOUND,
-            description = "Payment instrument {0} not found.")
+    @ErrorDef(httpStatusCode = 412, code = "108", message = "Payment instrument {0} not found.")
     AppError paymentInstrumentNotFound(String paymentInstrumentId);
 
-    @ErrorDef(httpStatusCode = 500, code = PaymentErrorCode.PAYMENT_CONNECTION_ERROR,
-            description = "Payment service connection error")
-    AppError paymentConnectionError();
+    @ErrorDef(httpStatusCode = 500, code = "109", message = "Payment Connection Error.")
+    AppError paymentConnectionError(AppError[] causes);
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_FIELD,
-            description = "{1}", field = "{0}")
-    AppError fieldInvalid(String field, String message);
+    @ErrorDef(httpStatusCode = 500, code = "109", message = "Payment Connection Error.", reason = "Payment service unavailable: {0}.")
+    AppError paymentConnectionError(String error);
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_FIELD,
-            description = "Field value invalid", field = "{0}")
-    AppError fieldInvalid(String field);
-
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.ENUM_CONVERSION_ERROR,
-            description = "Enum value {0} not exists in type {1}")
+    @ErrorDef(httpStatusCode = 400, code = "110", message = "Enum Conversion Error.", reason = "Enum value {0} not exists in type {1}.")
     AppError enumConversionError(String enumValue, String enumType);
 
-    @ErrorDef(httpStatusCode = 400, code = PaymentErrorCode.PAYMENT_TYPE_NOT_SUPPORTED,
-            description = "Payment instrument type {0} not supported")
+    @ErrorDef(httpStatusCode = 412, code = "111", message = "PI Type Not Supported.", reason = "Payment instrument type {0} not supported.")
     AppError piTypeNotSupported(String type);
 
-    @ErrorDef(httpStatusCode = 404, code = CatalogErrorCode.OFFER_NOT_FOUND,
-            description = "Offer {0} not found")
+    @ErrorDef(httpStatusCode = 412, code = "112", message = "Offer Not Found.", field = "offerId", reason = "Offer {0} not found.")
     AppError offerNotFound(String offerId);
 
-    @ErrorDef(httpStatusCode = 500, code = CatalogErrorCode.CATALOG_CONNECTION_ERROR,
-            description = "Catalog service connection error")
+    @ErrorDef(httpStatusCode = 500, code = "113", message = "Catalog Connection Error.")
     AppError catalogConnectionError();
 
-    @ErrorDef(httpStatusCode = 500, code = ErrorCode.UNEXPECTED_ERROR,
-            description = "Order service failure: {0}")
-    AppError unexpectedError(String cause);
-
-    @ErrorDef(httpStatusCode = 400, code = RatingErrorCode.RATING_RESULT_INVALID,
-            description = "Rating result invalid: {0}")
+    @ErrorDef(httpStatusCode = 500, code = "114", message = "Rating Result Invalid.", reason = "Rating result invalid: {0}.")
     AppError ratingResultInvalid(String cause);
 
-    @ErrorDef(httpStatusCode = 500, code = RatingErrorCode.RATING_CONNECTION_ERROR,
-            description = "Order rating error")
+    @ErrorDef(httpStatusCode = 500, code = "115", message = "Rating Connection Error.")
     AppError ratingConnectionError(AppError error);
 
-    @ErrorDef(httpStatusCode = 500, code = RatingErrorCode.RATING_CONNECTION_ERROR,
-            description = "Order rating error: {0}")
+    @ErrorDef(httpStatusCode = 500, code = "115", message = "Rating Connection Error.", reason = "Order rating error: {0}.")
     AppError ratingConnectionError(String error);
 
-    @ErrorDef(httpStatusCode = 500, code = BillingErrorCode.BILLING_CONNECTION_ERROR,
-            description = "Billing service returns error")
+    @ErrorDef(httpStatusCode = 500, code = "116", message = "Billing Connection Error.")
     AppError billingConnectionError(AppError[] causes);
 
-    @ErrorDef(httpStatusCode = 500, code = BillingErrorCode.BILLING_CONNECTION_ERROR,
-            description = "Billing service returns error: {0}")
+    @ErrorDef(httpStatusCode = 500, code = "116", message = "Billing Connection Error.", reason = "Billing service returns error: {0}.")
     AppError billingConnectionError(String causes);
 
-    @ErrorDef(httpStatusCode = 500, code = BillingErrorCode.BILLING_RESULT_INVALID,
-            description = "Billing result invalid: {0}")
+    @ErrorDef(httpStatusCode = 500, code = "117", message = "Billing Result Invalid.", reason = "Billing result invalid: {0}.")
     AppError billingResultInvalid(String cause);
 
-    @ErrorDef(httpStatusCode = 500, code = BillingErrorCode.BALANCE_NOT_FOUND,
-            description = "Balance not found")
+    @ErrorDef(httpStatusCode = 412, code = "118", message = "Balance Not Found.")
     AppError balanceNotFound();
 
-    @ErrorDef(httpStatusCode = 409, code = BillingErrorCode.BILLING_CHARGE_FAILED,
-            description = "Billing charge failed")
+    @ErrorDef(httpStatusCode = 412, code = "119", message = "Billing Charge Failed.")
     AppError billingChargeFailed();
 
-    @ErrorDef(httpStatusCode = 409, code = BillingErrorCode.BILLING_INSUFFICIENT_FUND,
-            description = "Insufficient fund")
+    @ErrorDef(httpStatusCode = 412, code = "120", message = "Billing Insufficient Fund.")
     AppError billingInsufficientFund();
 
-    @ErrorDef(httpStatusCode = 404, code = ErrorCode.ORDER_EVENT_NOT_FOUND,
-            description = "Order event not found")
-    AppError orderEventNotFound();
-
-    @ErrorDef(httpStatusCode = 500, code = UserErrorCode.USER_CONNECTION_ERROR,
-            description = "User connection error")
+    @ErrorDef(httpStatusCode = 500, code = "121", message = "User Connection Error.")
     AppError userConnectionError();
 
-    @ErrorDef(httpStatusCode = 500, code = FulfillmentErrorCode.FULFILLMENT_CONNECTION_ERROR,
-            description = "Fulfilment service error: {0}")
+    @ErrorDef(httpStatusCode = 500, code = "122", message = "Fulfillment Connection Error.", reason = "Fulfilment service error: {0}.")
     AppError fulfillmentConnectionError(String cause);
 
-    @ErrorDef(httpStatusCode = 500, code = FulfillmentErrorCode.FULFILLMENT_CONNECTION_ERROR,
-            description = "Fulfilment service error")
+    @ErrorDef(httpStatusCode = 500, code = "122", message = "Fulfilment service error.")
     AppError fulfilmentConnectionError(AppError[] causes);
 
-    @ErrorDef(httpStatusCode = 404, code = ErrorCode.SUBLEDGER_NOT_FOUND,
-            description = "SubledgerNotFound")
+    @ErrorDef(httpStatusCode = 412, code = "123", message = "Subledger Not Found.")
     AppError subledgerNotFound();
 
-    @ErrorDef(httpStatusCode = 404, code = ErrorCode.SUBLEDGER_CONCURRENT_UPDATE,
-            description = "Concurrent update of subledger detected")
+    @ErrorDef(httpStatusCode = 409, code = "124", message = "Subledger Concurrent Update.")
     AppError subledgerConcurrentUpdate();
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.INVALID_SETTLED_ORDER_UPDATE,
-            description = "Invalid settled order update")
+    @ErrorDef(httpStatusCode = 412, code = "125", message = "Invalid Settled Order Update.")
     AppError invalidSettledOrderUpdate();
 
-    @ErrorDef(httpStatusCode = 412, code = ErrorCode.EVENT_NOT_SUPPORTED,
-            description = "Event(action:{0}, status:{1}) is not supported")
+    @ErrorDef(httpStatusCode = 412, code = "126", message = "Event Not Supported.", reason = "Event(action:{0}, status:{1}) is not supported.")
     AppError eventNotSupported(String action, String status);
 
-    @ErrorDef(httpStatusCode = 400, code = BillingErrorCode.BILLING_CONFIRM_BALANCE_FAILED,
-            description = "Fail to confirm balance")
+    @ErrorDef(httpStatusCode = 412, code = "126", message = "Event Not Supported.", reason = "Event(action:{0}, status:{1}) is not expected.")
+    AppError eventNotExpected(String action, String status);
+
+    @ErrorDef(httpStatusCode = 412, code = "127", message = "Balance Confirm Failed.")
     AppError balanceConfirmFailed();
 
-    @ErrorDef(httpStatusCode = 409, code = ErrorCode.ORDER_CAN_NOT_BE_CANCELED,
-            description = "Order can not be canceled")
-    AppError orderNotCancelable();
-
-    @ErrorDef(httpStatusCode = 409, code = ErrorCode.ORDER_PRICE_CHANGED,
-            description = "Order price is changed")
+    @ErrorDef(httpStatusCode = 412, code = "128", message = "Order Price Changed.")
     AppError orderPriceChanged();
 
-    @ErrorDef(httpStatusCode = 409, code = ErrorCode.ORDER_IS_REFUNDED,
-            description = "Order is refunded")
+    @ErrorDef(httpStatusCode = 412, code = "129", message = "Order Is Refunded.")
     AppError orderIsRefunded();
 
-    @ErrorDef(httpStatusCode = 409, code = ErrorCode.ORDER_ITEM_IS_NOT_FOUND_FOR_REFUNDED,
-            description = "Offer {0} is not found for refund")
+    @ErrorDef(httpStatusCode = 412, code = "130", message = "Order item Is Not Found For Refund", reason = "Offer {0} is not found for refund.")
     AppError orderItemIsNotFoundForRefund(String offer);
 
-    @ErrorDef(httpStatusCode = 409, code = ErrorCode.ORDER_CAN_NOT_BE_REFUNDED,
-            description = "Order can not be refunded")
+    @ErrorDef(httpStatusCode = 412, code = "131", message = "Order Not Refundable.")
     AppError orderNotRefundable();
 
-    @ErrorDef(httpStatusCode = 500, code = BillingErrorCode.BILLING_REFUND_FAILED,
-            description = "Billing refund failed: {0}")
+    @ErrorDef(httpStatusCode = 412, code = "132", message = "Billing Refund Failed.", reason = "Billing refund failed: {0}.")
     AppError billingRefundFailed(String reason);
 
-    @ErrorDef(httpStatusCode = 400, code = UserErrorCode.CURRENCY_NOT_VALID,
-            description = "Currency {0} is not valid")
+    @ErrorDef(httpStatusCode = 412, code = "133", message = "Billing Audit Failed.", reason = "Billing refund failed: {0}.")
+    AppError billingAuditFailed(String reason);
+
+    @ErrorDef(httpStatusCode = 412, code = "134", message = "Currency Not Valid.", reason = "Currency {0} is not valid.")
     AppError currencyNotValid(String currency);
 
-    @ErrorDef(httpStatusCode = 400, code = ErrorCode.ORDER_NO_ITEM_TO_REFUND_IN_REQUEST,
-            description = "There's no item to refund per request")
+    @ErrorDef(httpStatusCode = 412, code = "135", message = "Order No Item Refund.")
     AppError orderNoItemRefund();
 
-    @ErrorDef(httpStatusCode = 409, code = BillingErrorCode.BILLING_TAX_FAILED,
-            description = "Failed to calculate tax")
+    @ErrorDef(httpStatusCode = 412, code = "136", message = "Calculate Tax Error.")
     AppError calculateTaxError(AppError error);
 
-    @ErrorDef(httpStatusCode = 409, code = BillingErrorCode.BILLING_TAX_FAILED,
-            description = "Failed to calculate tax: {0}")
+    @ErrorDef(httpStatusCode = 412, code = "136", message = "Calculate Tax Error.", reason = "Failed to calculate tax: {0}.")
     AppError calculateTaxError(String error);
 
-    @ErrorDef(httpStatusCode = 500, code = ErrorCode.ORDER_RISK_REVIEW_ERROR,
-            description = "Failed to review risk of order: {0}")
+    @ErrorDef(httpStatusCode = 412, code = "137", message = "Order Risk Review Error.", reason = "Failed to review risk of order: {0}.")
     AppError orderRiskReviewError(String error);
 
-    @ErrorDef(httpStatusCode = 409, code = ErrorCode.ORDER_EVENT_STATUS_NOT_MATCH,
-            description = "Order event status not match")
+    @ErrorDef(httpStatusCode = 412, code = "138", message = "Order Event Status Not Match.")
     AppError orderEvenStatusNotMatch();
 }

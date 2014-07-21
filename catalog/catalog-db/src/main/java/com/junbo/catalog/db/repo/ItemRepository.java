@@ -20,6 +20,6 @@ public interface ItemRepository extends BaseEntityRepository<Item> {
     Item get(String entityId);
     List<Item> getItems(ItemsGetOptions options);
     List<Item> getItems(Collection<String> itemIds);
-    Item update(Item item);
+    Item update(Item item, Item oldItem);
     void delete(String itemId);
 }

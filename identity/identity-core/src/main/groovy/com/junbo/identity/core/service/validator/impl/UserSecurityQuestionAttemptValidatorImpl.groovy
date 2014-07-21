@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.core.service.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId
 import com.junbo.identity.core.service.credential.CredentialHash
@@ -20,13 +21,8 @@ import com.junbo.identity.spec.v1.model.UserSecurityQuestion
 import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
 import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionAttemptListOptions
 import com.junbo.langur.core.promise.Promise
-import com.junbo.langur.core.transaction.AsyncTransactionTemplate
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.transaction.PlatformTransactionManager
-import org.springframework.transaction.TransactionDefinition
-import org.springframework.transaction.TransactionStatus
-import org.springframework.transaction.support.TransactionCallback
 import org.springframework.util.CollectionUtils
 
 import java.util.regex.Pattern
@@ -54,8 +50,6 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
 
     private Integer clientIdMinLength
     private Integer clientIdMaxLength
-
-    private PlatformTransactionManager transactionManager
     private Integer maxRetryCount
 
     @Override
@@ -75,7 +69,7 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
             }
 
             if (userId != attempt.userId) {
-                throw AppErrors.INSTANCE.parameterInvalid('userId and attemptId doesn\'t match').exception()
+                throw AppCommonErrors.INSTANCE.parameterInvalid('userId and attemptId doesn\'t match').exception()
             }
 
             return Promise.pure(attempt)
@@ -89,7 +83,7 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
         }
 
         if (options.userId == null) {
-            throw AppErrors.INSTANCE.parameterRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('userId').exception()
         }
 
         return Promise.pure(null)
@@ -102,7 +96,7 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
         }
 
         if (attempt.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
 
         return checkBasicUserSecurityQuestionAttemptInfo(attempt).then {
@@ -121,14 +115,14 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
                 }
 
                 if (attempt.userId != null && attempt.userId != userId) {
-                    throw AppErrors.INSTANCE.fieldInvalid('userId', attempt.userId.toString()).exception()
+                    throw AppCommonErrors.INSTANCE.fieldNotWritable('userId', attempt.userId, userId).exception()
                 }
                 attempt.setUserId((UserId)user.id)
 
                 return userSecurityQuestionRepository.get(attempt.userSecurityQuestionId).
                         then { UserSecurityQuestion userSecurityQuestion ->
                             if (userSecurityQuestion == null) {
-                                throw AppErrors.INSTANCE.userSecurityQuestionNotFound().exception()
+                                throw AppErrors.INSTANCE.userSecurityQuestionNotFound(attempt.userSecurityQuestionId).exception()
                             }
 
                             List<CredentialHash> credentialHashList = credentialHashFactory.getAllCredentialHash()
@@ -160,25 +154,12 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
 
             // If it reaches maxRetryCount, any retry will be treated as false login
             if (index == maxRetryCount) {
-                attempt.succeeded = false
-                return createInNewTran(attempt).then {
-                    throw AppErrors.INSTANCE.fieldInvalid('userId',
-                            'User reaches maximum allowed retry count').exception()
-                }
+                throw AppCommonErrors.INSTANCE.fieldInvalid('userId',
+                        'User reaches maximum allowed retry count').exception()
             }
 
             return Promise.pure(null)
         }
-    }
-
-    Promise<UserSecurityQuestionVerifyAttempt> createInNewTran(UserSecurityQuestionVerifyAttempt attempt) {
-        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager)
-        template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
-        return template.execute(new TransactionCallback<Promise<UserSecurityQuestionVerifyAttempt>>() {
-            Promise<UserSecurityQuestionVerifyAttempt> doInTransaction(TransactionStatus txnStatus) {
-                return attemptRepository.create(attempt)
-            }
-        })
     }
 
     private Promise<Void> checkBasicUserSecurityQuestionAttemptInfo(UserSecurityQuestionVerifyAttempt attempt) {
@@ -187,34 +168,34 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
         }
 
         if (attempt.value == null) {
-            throw AppErrors.INSTANCE.fieldRequired('value').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('value').exception()
         }
         if (attempt.value.size() > valueMaxLength) {
-            throw AppErrors.INSTANCE.fieldTooLong('value', valueMaxLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooLong('value', valueMaxLength).exception()
         }
         if (attempt.value.size() < valueMinLength) {
-            throw AppErrors.INSTANCE.fieldTooShort('value', valueMinLength).exception()
+            throw AppCommonErrors.INSTANCE.fieldTooShort('value', valueMinLength).exception()
         }
 
         if (attempt.ipAddress != null) {
             if (!allowedIPPatterns.any {
                 Pattern pattern -> pattern.matcher(attempt.ipAddress).matches()
             }) {
-                throw AppErrors.INSTANCE.fieldInvalid('ipAddress').exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('ipAddress').exception()
             }
         }
 
         if (attempt.userAgent != null) {
             if (attempt.userAgent.size() > userAgentMaxLength) {
-                throw AppErrors.INSTANCE.fieldTooLong('userAgent', userAgentMaxLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooLong('userAgent', userAgentMaxLength).exception()
             }
             if (attempt.userAgent.size() < userAgentMinLength) {
-                throw AppErrors.INSTANCE.fieldTooShort('userAgent', userAgentMinLength).exception()
+                throw AppCommonErrors.INSTANCE.fieldTooShort('userAgent', userAgentMinLength).exception()
             }
         }
 
         if (attempt.userSecurityQuestionId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userSecurityQuestionId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userSecurityQuestionId').exception()
         }
 
         return userSecurityQuestionRepository.get(attempt.userSecurityQuestionId).then {
@@ -282,11 +263,6 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
     @Required
     void setClientIdMaxLength(Integer clientIdMaxLength) {
         this.clientIdMaxLength = clientIdMaxLength
-    }
-
-    @Required
-    void setTransactionManager(PlatformTransactionManager transactionManager) {
-        this.transactionManager = transactionManager
     }
 
     @Required

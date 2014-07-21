@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Created by Administrator on 14-5-20.
  */
 public class MockAdyenProviderRoutingServiceImpl implements ProviderRoutingService {
-    @Autowired
+    public void setAdyenCCProivderService(AdyenCCProivderServiceImpl adyenCCProivderService) {
+        this.adyenCCProivderService = adyenCCProivderService;
+    }
     private AdyenCCProivderServiceImpl adyenCCProivderService;
     @Autowired
     private MockWalletServiceImpl mockWalletService;

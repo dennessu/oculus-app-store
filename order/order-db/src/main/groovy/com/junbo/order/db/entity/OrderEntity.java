@@ -49,6 +49,7 @@ public class OrderEntity extends CommonDbEntityWithDate {
     // end of ratingInfo
 
     private String properties;
+    private Boolean isAudited = false;
 
     @Id
     @Column(name = "ORDER_ID")
@@ -249,6 +250,15 @@ public class OrderEntity extends CommonDbEntityWithDate {
 
     public void setLatestOrderRevisionId(Long latestOrderRevisionId) {
         this.latestOrderRevisionId = latestOrderRevisionId;
+    }
+
+    @Column(name = "IS_AUDITED")
+    public Boolean getIsAudited() {
+        return isAudited;
+    }
+
+    public void setIsAudited(Boolean isAudited) {
+        this.isAudited = isAudited;
     }
 
     @Override

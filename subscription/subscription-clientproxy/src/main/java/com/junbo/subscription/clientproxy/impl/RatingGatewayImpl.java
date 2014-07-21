@@ -25,16 +25,14 @@ public class RatingGatewayImpl implements RatingGateway {
     private RatingResource ratingResource;
 
     public SubsRatingRequest subsRating(SubsRatingRequest request){
-        try{
+        try {
             SubsRatingRequest response = ratingResource.subsRating(request).get();
 
             return response;
-        }catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.error("Error occurred during calling [Rating] component.", e);
             throw SubscriptionExceptions.INSTANCE.gatewayFailure("Rating").exception();
         }
-
     }
-
 
 }

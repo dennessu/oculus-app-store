@@ -122,7 +122,6 @@ public class FulfilmentTesting extends BaseTestClass {
         Currency currency = Currency.DEFAULT;
 
         offerList.put(offer_digital_normal1, 1);
-        offerList.put(offer_digital_normal1, 2);
 
         String randomUid = testDataProvider.createUser();
 

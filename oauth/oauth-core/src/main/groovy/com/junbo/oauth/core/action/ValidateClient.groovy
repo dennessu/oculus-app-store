@@ -5,12 +5,12 @@
  */
 package com.junbo.oauth.core.action
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
 import com.junbo.oauth.db.repo.ClientRepository
 import com.junbo.oauth.spec.model.Client
 import com.junbo.oauth.spec.param.OAuthParameters
@@ -38,16 +38,12 @@ class ValidateClient implements Action {
 
         String clientId = parameterMap.getFirst(OAuthParameters.CLIENT_ID)
         if (!StringUtils.hasText(clientId)) {
-            throw AppExceptions.INSTANCE.missingClientId().exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('client_id').exception()
         }
 
         Client client = clientRepository.getClient(clientId)
         if (client == null) {
-            throw AppExceptions.INSTANCE.invalidClientId(clientId).exception()
-        }
-
-        if (client == null) {
-            throw AppExceptions.INSTANCE.invalidClientId(clientId).exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('client_id', clientId).exception()
         }
 
         contextWrapper.client = client

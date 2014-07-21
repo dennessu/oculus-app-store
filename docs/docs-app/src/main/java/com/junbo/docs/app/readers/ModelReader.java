@@ -6,6 +6,9 @@
 
 package com.junbo.docs.app.readers;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.junbo.common.enumid.EnumId;
+import com.junbo.common.id.CloudantId;
 import com.junbo.common.id.Id;
 import com.junbo.common.model.Link;
 import com.wordnik.swagger.core.util.ClassWrapper;
@@ -113,6 +116,15 @@ public class ModelReader implements com.wordnik.swagger.reader.ModelReader {
         }
         if (Id.class.isAssignableFrom(cls.getRawClass())) {
             return Link.class;
+        }
+        if (CloudantId.class.isAssignableFrom(cls.getRawClass())) {
+            return Link.class;
+        }
+        if (EnumId.class.isAssignableFrom(cls.getRawClass())) {
+            return Link.class;
+        }
+        if (JsonNode.class.isAssignableFrom(cls.getRawClass())) {
+            return Object.class;
         }
 
         // recursion

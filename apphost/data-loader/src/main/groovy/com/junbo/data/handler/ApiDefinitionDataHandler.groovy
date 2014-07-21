@@ -4,7 +4,6 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.data.handler
-
 import com.junbo.authorization.spec.model.ApiDefinition
 import com.junbo.authorization.spec.resource.ApiDefinitionResource
 import com.junbo.common.error.AppErrorException
@@ -12,7 +11,6 @@ import com.junbo.langur.core.client.TypeReference
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.core.io.Resource
-
 /**
  * ApiDefinitionDataHandler.
  */
@@ -39,8 +37,6 @@ class ApiDefinitionDataHandler extends BaseDataHandler {
             logger.error("Error parsing apiDefinition $content", e)
             exit()
         }
-
-        logger.info("loading apiDefinition $apiDefinition.apiName")
 
         ApiDefinition existing = null
         try {

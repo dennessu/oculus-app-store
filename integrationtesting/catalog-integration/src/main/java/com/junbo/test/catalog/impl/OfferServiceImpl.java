@@ -48,22 +48,24 @@ import java.util.Map;
  */
 public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
-    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "/offers";
+    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "offers";
     private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
     private final String defaultOfferRevisionFileName = "defaultOfferRevision";
     private final String defaultStoredValueOfferRevisionFileName = "defaultStoredValueOfferRevision";
     private final String defaultPreOrderOfferRevisionFileName = "defaultPreOrderOfferRevision";
+    private final String defaultFreeOfferRevisionFileName = "defaultFreeOfferRevision";
     private final String preOrderDigital = "testOffer_PreOrder_Digital1";
     private final String preOrderPhysical = "testOffer_PreOrder_Physical1";
+    private final String freeOfferDigital = "testOffer_Free_Digital";
+    private final String freeOfferPhysical = "testOffer_Free_Physical";
     private final String defaultOfferFileName = "defaultOffer";
     private final String defaultItemFileName = "defaultItem";
 
     private LogHelper logger = new LogHelper(OfferServiceImpl.class);
     private static OfferService instance;
 
-    private ItemService itemService = ItemServiceImpl.instance();
     private UserService userService = UserServiceImpl.instance();
     private OrganizationService organizationService = OrganizationServiceImpl.instance();
 
@@ -173,7 +175,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     public String getOfferIdByName(String offerName) throws Exception {
         catalogDB = ConfigHelper.getSetting("catalogDB");
 
-        if (catalogDB.equalsIgnoreCase("cloudant")) {
+        if (catalogDB != null && catalogDB.equalsIgnoreCase("cloudant")) {
             Results<Offer> offerRtn = this.searchOfferByName(offerName);
 
             if (offerRtn.getItems().size() <= 0) {
@@ -184,6 +186,19 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
                 return "No such predefined offer";
             }
             else {
+                OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
+                ItemService itemService = ItemServiceImpl.instance();
+                ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
+
+                OfferRevision offerRevision;
+                Item item;
+
+                offerRevision = offerRevisionService.getOfferRevision(offerRtn.getItems().get(0).getCurrentRevisionId());
+                if (offerRevision != null) {
+                    item = itemService.getItem(offerRevision.getItems().get(0).getItemId());
+                    itemRevisionService.getItemRevision(item.getCurrentRevisionId());
+                }
+
                 return offerRtn.getItems().get(0).getOfferId();
             }
         }
@@ -230,6 +245,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     }
 
     private void loadAllItems() throws Exception {
+        ItemService itemService = ItemServiceImpl.instance();
         HashMap<String, List<String>> paraMap = new HashMap<>();
         List<String> listStart = new ArrayList<>();
         listStart.add(start.toString());
@@ -269,6 +285,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     }
 
     private Results<Item> searchItemByName(String itemName) throws Exception {
+        ItemService itemService = ItemServiceImpl.instance();
         HashMap<String, List<String>> paraMap = new HashMap<>();
         List<String> query = new ArrayList<>();
 
@@ -288,7 +305,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
             while ((sCurrentLine = br.readLine()) != null) {
                 logger.logInfo(sCurrentLine);
                 String[] strLine = sCurrentLine.split(",");
-                if (catalogDB.equalsIgnoreCase("cloudant")) {
+                if (catalogDB != null && catalogDB.equalsIgnoreCase("cloudant")) {
                     offerRtn = this.searchOfferByName(strLine[0]);
                     if (offerRtn.getItems().size() <= 0) {
                         preparePredefinedOffer(strLine[0], strLine[1], strLine[2], strLine[3]);
@@ -327,10 +344,10 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         OrganizationId organizationId = getOrganizationId(userId);
 
         Item item;
-        if (catalogDB.equalsIgnoreCase("cloudant")) {
+        if (catalogDB != null && catalogDB.equalsIgnoreCase("cloudant")) {
             Results<Item> itemRtn = this.searchItemByName(itemName);
             if (itemRtn.getItems().size() <= 0) {
-                item = prepareItem(userId, itemName, offerType);
+                item = prepareItem(organizationId, itemName, offerType);
             }
             else {
                 item = itemRtn.getItems().get(0);
@@ -339,7 +356,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         else {
             String itemId = Master.getInstance().getItemIdByName(itemName);
             if (itemId == null) {
-                item = prepareItem(userId, itemName, offerType);
+                item = prepareItem(organizationId, itemName, offerType);
             }
             else {
                 item = Master.getInstance().getItem(itemId);
@@ -347,7 +364,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         }
 
         //Post offer
-        Offer offerForPost = prepareOfferEntity(defaultOfferFileName);
+        Offer offerForPost = prepareOfferEntity(defaultOfferFileName, organizationId);
         offerForPost.setOwnerId(organizationId);
         Offer offer = this.postOffer(offerForPost);
 
@@ -357,6 +374,11 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
                 offerName.equalsIgnoreCase(preOrderPhysical)){
             strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json",
                     defaultPreOrderOfferRevisionFileName));
+        }
+        else if (offerName.equalsIgnoreCase(freeOfferDigital) ||
+                offerName.equalsIgnoreCase(freeOfferPhysical)){
+            strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json",
+                    defaultFreeOfferRevisionFileName));
         }
         else if (offerType.equalsIgnoreCase(CatalogItemType.STORED_VALUE.getItemType())) {
             strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json",
@@ -371,7 +393,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         OfferRevision offerRevisionForPost = new JsonMessageTranscoder().decode(
                 new TypeReference<OfferRevision>() {}, strOfferRevisionContent);
 
-        if (item.getType().equalsIgnoreCase(CatalogItemType.IN_APP_CONSUMABLE.getItemType())) {
+        if (item.getType().equalsIgnoreCase(CatalogItemType.CONSUMABLE_UNLOCK.getItemType())) {
             List<Action> purchaseActions = new ArrayList<>();
             Map<String, List<Action>> consumableEvent = new HashMap<>();
             Action action = new Action();
@@ -422,14 +444,14 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         return userService.PostUser();
     }
 
-    private Item prepareItem(String ownerId, String fileName, String itemType) throws Exception {
+    private Item prepareItem(OrganizationId ownerId, String fileName, String itemType) throws Exception {
 
         ItemService itemService = ItemServiceImpl.instance();
         ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
 
-        Item item = itemService.prepareItemEntity(defaultItemFileName);
+        Item item = itemService.prepareItemEntity(defaultItemFileName, ownerId);
         item.setType(itemType);
-        item.setOwnerId(getOrganizationId(ownerId));
+        item.setOwnerId(ownerId);
         Item itemPost = itemService.postItem(item);
 
         //Attach item revision to the item
@@ -447,6 +469,14 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
         itemRevision.setItemId(itemPost.getItemId());
         itemRevision.setOwnerId(itemPost.getOwnerId());
+
+        //prepare IapHostItemIds
+        if (itemRevision.getDistributionChannels().contains("INAPP")) {
+            Item iapHostItem = ItemServiceImpl.instance().postDefaultItem(CatalogItemType.APP, ownerId);
+            List<String> iapHostItemIds = new ArrayList<>();
+            iapHostItemIds.add(iapHostItem.getItemId());
+            itemRevision.setIapHostItemIds(iapHostItemIds);
+        }
 
         //set locales
         ItemRevisionLocaleProperties itemRevisionLocaleProperties = new ItemRevisionLocaleProperties();

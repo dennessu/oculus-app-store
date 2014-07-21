@@ -63,7 +63,7 @@ class BillingEventHistoryBuilder {
                 if (status == EventStatus.COMPLETED) {
                     return BillingAction.REFUND.name()
                 } else if (status == EventStatus.PENDING) {
-                    return BillingAction.REFUND.name()
+                    return BillingAction.REQUEST_REFUND.name()
                 }
         }
         throw new IllegalArgumentException("Balance_Type_Not_Supported, type-${balanceType}")
@@ -78,6 +78,10 @@ class BillingEventHistoryBuilder {
             billingHistory.totalAmount = 0G - balance.totalAmount
         }
         billingHistory.billingEvent = buildBillingEvent(balance)
+        billingHistory.success = true
+        if (balance.status == BalanceStatus.FAILED.name() || balance.status == BalanceStatus.ERROR) {
+            billingHistory.success = false
+        }
         return billingHistory
     }
 }

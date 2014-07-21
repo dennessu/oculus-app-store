@@ -17,6 +17,6 @@ public class EntitlementHistoryDaoImpl extends CloudantClient<EntitlementHistory
 
     @Override
     public EntitlementHistoryEntity insert(EntitlementHistoryEntity entitlementHistory) {
-        return cloudantPost(entitlementHistory).get();
+        return cloudantPostSync(entitlementHistory);
     }
 }

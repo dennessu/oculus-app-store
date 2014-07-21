@@ -8,6 +8,7 @@ package com.junbo.payment.clientproxy.impl;
 
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.identity.spec.v1.model.Currency;
+import com.junbo.identity.spec.v1.option.model.CurrencyGetOptions;
 import com.junbo.identity.spec.v1.resource.proxy.CurrencyResourceClientProxy;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.clientproxy.CurrencyServiceFacade;
@@ -29,35 +30,25 @@ public class CurrencyServiceFacadeImpl implements CurrencyServiceFacade {
     }
 
     public Promise<Long> getMinAuthAmount(CurrencyId currencyId){
-        if(1 == 1){
-            return Promise.pure(new BigDecimal("100").longValue());
-        }
-        //TODO: enable get minAuthAmount and make currency * number after Decimal();
-        if(currencyId == null){
+        if (currencyId == null) {
             throw AppClientExceptions.INSTANCE.missingCurrency().exception();
         }
-        Currency currency = currencyResource.get(currencyId, null).get();
-        if(currency == null){
+        Currency currency = currencyResource.get(currencyId, new CurrencyGetOptions()).get();
+        if (currency == null) {
             throw AppClientExceptions.INSTANCE.invalidCurrency(currencyId.getValue()).exception();
         }
-        return Promise.pure(currency.getMinAuthAmount().longValue());
-
+        Long numbers = getNumberAfterDecimal(currency.getCurrencyCode()).get();
+        return Promise.pure(new Long(currency.getMinAuthAmount().multiply(new BigDecimal(numbers)).longValue()));
     }
 
-    public Promise<Integer> getNumberAfterDecimal(String currencyCode){
-        if(1 == 1){
-            return Promise.pure(100);
-        }
-        //TODO: enable get number of decimal later;
-
-        if(CommonUtil.isNullOrEmpty(currencyCode)){
+    public Promise<Long> getNumberAfterDecimal(String currencyCode){
+        if (CommonUtil.isNullOrEmpty(currencyCode)) {
             throw AppClientExceptions.INSTANCE.invalidCurrency(currencyCode).exception();
         }
-        Currency currency = currencyResource.get(new CurrencyId(currencyCode), null).get();
-        if(currency == null){
+        Currency currency = currencyResource.get(new CurrencyId(currencyCode), new CurrencyGetOptions()).get();
+        if (currency == null) {
             throw AppClientExceptions.INSTANCE.invalidCurrency(currencyCode).exception();
         }
-        return Promise.pure(currency.getNumberAfterDecimal());
-
+        return Promise.pure(new Long((long) Math.pow(10, currency.getNumberAfterDecimal())));
     }
 }

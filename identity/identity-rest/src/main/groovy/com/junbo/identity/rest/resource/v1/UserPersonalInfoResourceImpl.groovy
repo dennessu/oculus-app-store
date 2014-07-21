@@ -123,7 +123,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
                 userPersonalInfo = userPersonalInfoFilter.filterForPatch(userPersonalInfo, oldUserPersonalInfo)
 
                 return userPersonalInfoValidator.validateForUpdate(userPersonalInfo, oldUserPersonalInfo).then {
-                    return userPersonalInfoRepository.update(userPersonalInfo).then { UserPersonalInfo newUserPii ->
+                    return userPersonalInfoRepository.update(userPersonalInfo, oldUserPersonalInfo).then { UserPersonalInfo newUserPii ->
                         newUserPii.isValidated = newUserPii.lastValidateTime != null
                         newUserPii = userPersonalInfoFilter.filterForGet(newUserPii, null)
                         newUserPii = piiAdvanceFilter.getFilter(newUserPii)
@@ -159,7 +159,7 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
                 userPii = userPersonalInfoFilter.filterForPut(userPii, oldUserPersonalInfo)
 
                 return userPersonalInfoValidator.validateForUpdate(userPii, oldUserPersonalInfo).then {
-                    return userPersonalInfoRepository.update(userPii).then { UserPersonalInfo newUserPersonalInfo ->
+                    return userPersonalInfoRepository.update(userPii, oldUserPersonalInfo).then { UserPersonalInfo newUserPersonalInfo ->
                         newUserPersonalInfo.isValidated = newUserPersonalInfo.lastValidateTime != null
                         newUserPersonalInfo = userPersonalInfoFilter.filterForGet(newUserPersonalInfo, null)
                         newUserPersonalInfo = piiAdvanceFilter.getFilter(newUserPersonalInfo)
@@ -207,9 +207,10 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
                     if (userPersonalInfo != null && AuthorizeContext.hasRights('read')) {
                         userPersonalInfo = piiAdvanceFilter.getFilter(userPersonalInfo)
                         resultList.items.add(userPersonalInfo)
+                        return Promise.pure(userPersonalInfo)
+                    } else {
+                        return Promise.pure(null)
                     }
-
-                    return Promise.pure(null)
                 }
             }.then {
                 return Promise.pure(resultList)
@@ -224,10 +225,10 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
                 return userPersonalInfoRepository.searchByUserIdAndType(listOptions.userId, listOptions.type,
                         listOptions.limit, listOptions.offset).then(filterUserPersonalInfos)
             } else if (listOptions.email != null) {
-                return userPersonalInfoRepository.searchByEmail(listOptions.email, listOptions.limit,
+                return userPersonalInfoRepository.searchByEmail(listOptions.email, listOptions.isValidated, listOptions.limit,
                         listOptions.offset).then(filterUserPersonalInfos)
             } else if (listOptions.phoneNumber != null) {
-                return userPersonalInfoRepository.searchByPhoneNumber(listOptions.phoneNumber, listOptions.limit,
+                return userPersonalInfoRepository.searchByPhoneNumber(listOptions.phoneNumber, listOptions.isValidated, listOptions.limit,
                         listOptions.offset).then(filterUserPersonalInfos)
             } else {
                 return userPersonalInfoRepository.searchByUserId(listOptions.userId, listOptions.limit,

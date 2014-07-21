@@ -6,6 +6,8 @@
 
 package com.junbo.test.order.utility;
 
+import com.junbo.billing.spec.model.BalanceItem;
+import com.junbo.billing.spec.model.TaxItem;
 import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
@@ -16,7 +18,6 @@ import com.junbo.common.id.*;
 import com.junbo.common.model.Results;
 import com.junbo.order.spec.model.*;
 import com.junbo.order.spec.model.PaymentInfo;
-import com.junbo.test.billing.enums.TransactionType;
 import com.junbo.test.billing.utility.BillingTestDataProvider;
 import com.junbo.test.catalog.OfferRevisionService;
 import com.junbo.test.catalog.OfferService;
@@ -35,6 +36,7 @@ import com.junbo.test.order.apihelper.OrderService;
 import com.junbo.test.order.apihelper.impl.OrderEventServiceImpl;
 import com.junbo.test.order.apihelper.impl.OrderServiceImpl;
 import com.junbo.test.order.model.*;
+import com.junbo.test.order.model.enums.BillingAction;
 import com.junbo.test.order.model.enums.EventStatus;
 import com.junbo.test.order.model.enums.OrderActionType;
 import com.junbo.test.order.model.enums.OrderStatus;
@@ -117,8 +119,13 @@ public class OrderTestDataProvider {
         order.setCurrency(new CurrencyId(currency.toString()));
         List<PaymentInfo> paymentInfos = new ArrayList<>();
         PaymentInfo paymentInfo = new PaymentInfo();
-        paymentInfo.setPaymentInstrument(new PaymentInstrumentId(
-                IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId)));
+
+        if (paymentInstrumentId.equals("Invalid")) {
+            paymentInfo.setPaymentInstrument(new PaymentInstrumentId(0L));
+        } else {
+            paymentInfo.setPaymentInstrument(new PaymentInstrumentId(
+                    IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId)));
+        }
         paymentInfos.add(paymentInfo);
         order.setPayments(paymentInfos);
         order.setShippingMethod("0");
@@ -133,7 +140,12 @@ public class OrderTestDataProvider {
         for (Iterator it = key.iterator(); it.hasNext(); ) {
             OrderItem orderItem = new OrderItem();
             String offerName = (String) it.next();
-            OfferId offerId = new OfferId(offerClient.getOfferIdByName(offerName));
+            OfferId offerId;
+            if (offerName.equals("Invalid")) {
+                offerId = new OfferId("123");
+            } else {
+                offerId = new OfferId(offerClient.getOfferIdByName(offerName));
+            }
             orderItem.setQuantity(offers.get(offerName));
             orderItem.setOffer(offerId);
             orderItemList.add(orderItem);
@@ -142,6 +154,7 @@ public class OrderTestDataProvider {
         order.setOrderItems(orderItemList);
         order.setTentative(true);
         order.setLocale(new LocaleId("en_US"));
+        Master.getInstance().setCurrentUid(uid);
         return orderClient.postOrder(order, expectedResponseCode);
     }
 
@@ -172,13 +185,13 @@ public class OrderTestDataProvider {
         return orderClient.postOrder(order);
     }
 
-    public Subledger getSubledger(String offerName) throws Exception {
+    public Results<Subledger> getSubledger(String offerName) throws Exception {
         String offerId = offerClient.getOfferIdByName(offerName);
         Offer offer = Master.getInstance().getOffer(offerId);
         String offerRevisionId = IdConverter.idToUrlString(OfferRevisionId.class, offer.getCurrentRevisionId());
         String sellerId = IdConverter.idToUrlString(OrganizationId.class,
                 Master.getInstance().getOfferRevision(offerRevisionId).getOwnerId().getValue());
-        return orderClient.getSubledger(sellerId);
+        return orderClient.getSubledgers(sellerId);
     }
 
     public void invalidateCreditCard(String uid, String paymentId) throws Exception {
@@ -224,14 +237,14 @@ public class OrderTestDataProvider {
             OrderItemInfo orderItem = orderInfo.getOrderItems().get(i);
             RefundOrderItemInfo refundOrderItem = new RefundOrderItemInfo();
             BigDecimal refundAmount = unitPrice.multiply(
-                    new BigDecimal(refundQuantity)).setScale(1, RoundingMode.HALF_UP);
+                    new BigDecimal(refundQuantity)).setScale(2, RoundingMode.HALF_UP);
 
             if (partialRefundAmounts != null && partialRefundAmounts.containsKey(offerName)) {
                 refundAmount = refundAmount.add(partialRefundAmounts.get(offerName));
             }
 
             BigDecimal refundTax = refundAmount.multiply(
-                    orderInfo.getTaxRate()).setScale(1, RoundingMode.HALF_UP);
+                    orderInfo.getTaxRate()).setScale(2, RoundingMode.HALF_UP);
 
             orderTotalRefundedAmount = orderTotalRefundedAmount.add(refundAmount);
             orderTotalRefundedTax = orderTotalRefundedTax.add(refundTax);
@@ -244,9 +257,9 @@ public class OrderTestDataProvider {
             refundOrderItem.setOfferId(offerId);
             refundOrderItem.setQuantity(refundQuantity);
             refundOrderItem.setRefundAmount(refundAmount.multiply(
-                    new BigDecimal(-1)).setScale(1, RoundingMode.HALF_UP));
+                    new BigDecimal(-1)).setScale(2, RoundingMode.HALF_UP));
             refundOrderItem.setRefundTax(refundTax.multiply(
-                    new BigDecimal(-1)).setScale(1, RoundingMode.HALF_UP));
+                    new BigDecimal(-1)).setScale(2, RoundingMode.HALF_UP));
 
             billingHistory.getRefundOrderItemInfos().add(refundOrderItem);
         }
@@ -254,13 +267,19 @@ public class OrderTestDataProvider {
         orderInfo.setTotalAmount(orderInfo.getTotalAmount().subtract(orderTotalRefundedAmount));
         orderInfo.setTotalTax(orderInfo.getTotalTax().subtract(orderTotalRefundedTax));
 
+
         BigDecimal totalRefundAmount = orderTotalRefundedAmount.add(orderTotalRefundedTax);
-        billingHistory.setTransactionType(TransactionType.PENDING_REFUND);
+        PaymentInstrumentInfo paymentInstrumentInfo = new PaymentInstrumentInfo();
+        paymentInstrumentInfo.setPaymentId(orderInfo.getPaymentInfos().get(0).getPaymentId());
+        paymentInstrumentInfo.setPaymentAmount(totalRefundAmount.multiply(new BigDecimal(-1)));
+        billingHistory.getPaymentInfos().add(paymentInstrumentInfo);
+        billingHistory.setBillingAction(BillingAction.REQUEST_REFUND);
+        billingHistory.setSuccess(true);
         billingHistory.setTotalAmount(totalRefundAmount.multiply(
-                new BigDecimal(-1)).setScale(1, RoundingMode.HALF_UP));
+                new BigDecimal(-1)).setScale(2, RoundingMode.HALF_UP));
         orderInfo.getBillingHistories().add(billingHistory);
 
-        billingHistory.setTransactionType(TransactionType.REFUND);
+        billingHistory.setBillingAction(BillingAction.REFUND);
         orderInfo.getBillingHistories().add(billingHistory);
 
         orderInfo.setOrderStatus(OrderStatus.REFUNDED);
@@ -269,7 +288,7 @@ public class OrderTestDataProvider {
 
     public OrderInfo getExpectedOrderInfo(String userId, Country country, Currency currency,
                                           String locale, boolean isTentative, OrderStatus orderStatus, String paymentId,
-                                          Map<String, Integer> offers) throws Exception {
+                                          String orderId, Map<String, Integer> offers) throws Exception {
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setUserId(userId);
         orderInfo.setOrderStatus(orderStatus);
@@ -278,7 +297,16 @@ public class OrderTestDataProvider {
         orderInfo.setCurrency(currency);
         orderInfo.setLocale(locale);
 
-        orderInfo.setTaxRate(new BigDecimal(0.08));
+        List<String> balanceIds = getBalancesByOrderId(orderId);
+        BalanceItem balanceItem = Master.getInstance().getBalance(balanceIds.get(0)).getBalanceItems().get(0);
+        BigDecimal taxRate = new BigDecimal(0);
+
+        for (TaxItem taxItem : balanceItem.getTaxItems()) {
+            taxRate = taxRate.add(taxItem.getTaxRate());
+        }
+
+
+        orderInfo.setTaxRate(taxRate);
 
         BigDecimal orderTotalAmount = new BigDecimal(0);
         BigDecimal orderTotalTax = new BigDecimal(0);
@@ -297,9 +325,9 @@ public class OrderTestDataProvider {
             orderItem.setOfferId(offerId);
             orderItem.setUnitPrice(unitPrice);
             orderItem.setQuantity(quantity);
-            BigDecimal totalAmount = unitPrice.multiply(new BigDecimal(quantity)).setScale(1, RoundingMode.HALF_UP);
+            BigDecimal totalAmount = unitPrice.multiply(new BigDecimal(quantity)).setScale(2, RoundingMode.HALF_UP);
             orderItem.setTotalAmount(totalAmount);
-            BigDecimal totalTax = totalAmount.multiply(orderInfo.getTaxRate()).setScale(1, RoundingMode.HALF_UP);
+            BigDecimal totalTax = totalAmount.multiply(orderInfo.getTaxRate()).setScale(2, RoundingMode.HALF_UP);
             orderItem.setTotalTax(totalTax);
             orderTotalAmount = orderTotalAmount.add(totalAmount);
             orderTotalTax = orderTotalTax.add(totalTax);
@@ -317,9 +345,8 @@ public class OrderTestDataProvider {
             billingHistory.setTotalAmount(orderTotalAmount.add(orderTotalTax));
             paymentInfo.setPaymentAmount(orderTotalAmount.add(orderTotalTax));
             billingHistory.getPaymentInfos().add(paymentInfo);
-            billingHistory.setTransactionType(TransactionType.PENDING_CHARGE);
-            orderInfo.getBillingHistories().add(billingHistory);
-            billingHistory.setTransactionType(TransactionType.CHARGE);
+            billingHistory.setSuccess(true);
+            billingHistory.setBillingAction(BillingAction.CHARGE);
             orderInfo.getBillingHistories().add(billingHistory);
 
         }

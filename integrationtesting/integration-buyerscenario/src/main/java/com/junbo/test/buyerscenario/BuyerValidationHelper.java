@@ -60,6 +60,7 @@ public class BuyerValidationHelper extends BaseValidationHelper {
 
     public void validateOrderInfoByCartId(String uid, String orderId, String cartId, Country country, Currency currency,
                                           String paymentInstrumentId, boolean hasPhysicalGood) throws Exception {
+        testDataProvider.getOrder(orderId);
         Order order = Master.getInstance().getOrder(orderId);
         Cart cart = Master.getInstance().getCart(cartId);
         String fulfilmentId = testDataProvider.getFulfilmentsByOrderId(orderId);
@@ -69,7 +70,7 @@ public class BuyerValidationHelper extends BaseValidationHelper {
         verifyEqual(order.getCurrency().toString(), currency.toString(), "verify currency field in order");
 
         if (hasPhysicalGood) {
-            verifyEqual(order.getStatus(), "PENDING_FULFILL", "verify order status");
+            verifyEqual(order.getStatus(), "PENDING", "verify order status");
         } else {
             verifyEqual(order.getStatus(), "COMPLETED", "verify order status");
         }

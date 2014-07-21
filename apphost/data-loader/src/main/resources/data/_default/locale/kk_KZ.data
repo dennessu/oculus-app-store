@@ -1,0 +1,11 @@
+{
+  "localeCode": "kk_KZ",
+  "shortName": "Qazaqşa (LV)",
+  "longName": "Qazaqşa (Қазақстан)",
+  "localeName": "Qazaqşa (LV)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

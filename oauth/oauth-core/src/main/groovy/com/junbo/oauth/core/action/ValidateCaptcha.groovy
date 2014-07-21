@@ -4,13 +4,15 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.oauth.core.action
+
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.async.JunboAsyncHttpClient
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppExceptions
+import com.junbo.oauth.core.exception.AppErrors
 import com.ning.http.client.Response
 import com.ning.http.client.extra.ListenableFutureAdapter
 import groovy.transform.CompileStatic
@@ -77,13 +79,13 @@ class ValidateCaptcha implements Action {
         String challenge = parameterMap.getFirst('recaptcha_challenge_field')
 
         if (StringUtils.isEmpty(challenge)) {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.missingRecaptchaChallengeField().error())
+            contextWrapper.errors.add(AppCommonErrors.INSTANCE.fieldRequired('recaptcha_challenge_field').error())
         }
 
         String response = parameterMap.getFirst('recaptcha_response_field')
 
         if (StringUtils.isEmpty(response)) {
-            contextWrapper.errors.add(AppExceptions.INSTANCE.missingRecaptchaResponseField().error())
+            contextWrapper.errors.add(AppCommonErrors.INSTANCE.fieldRequired('recaptcha_response_field').error())
         }
 
         if (!contextWrapper.errors.isEmpty()) {
@@ -104,16 +106,16 @@ class ValidateCaptcha implements Action {
                         contextWrapper.captchaSucceed = true
                         return Promise.pure(new ActionResult('success'))
                     }
-                    contextWrapper.errors.add(AppExceptions.INSTANCE.invalidRecaptcha(results[1]).error())
+                    contextWrapper.errors.add(AppErrors.INSTANCE.invalidRecaptcha(results[1]).error())
                     return Promise.pure(new ActionResult('error'))
                 }
 
-                contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingRecaptcha().error())
+                contextWrapper.errors.add(AppErrors.INSTANCE.errorCallingRecaptcha().error())
                 return Promise.pure(new ActionResult('error'))
             }
         } catch (IOException ex) {
             LOGGER.error('Error calling the recaptcha server', ex)
-            contextWrapper.errors.add(AppExceptions.INSTANCE.errorCallingRecaptcha().error())
+            contextWrapper.errors.add(AppErrors.INSTANCE.errorCallingRecaptcha().error())
             return Promise.pure(new ActionResult('error'))
         }
     }

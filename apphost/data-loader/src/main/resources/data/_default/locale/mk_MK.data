@@ -1,0 +1,11 @@
+{
+  "localeCode": "mk_MK",
+  "shortName": "Македонски (MK)",
+  "longName": "Македонски (Македонија)",
+  "localeName": "Македонски (MK)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

@@ -9,6 +9,7 @@ package com.junbo.configuration.impl;
 import com.junbo.configuration.ConfigContext;
 import com.junbo.configuration.crypto.CipherService;
 import com.junbo.configuration.crypto.impl.AESCipherServiceImpl;
+import com.junbo.utils.FileUtils;
 import com.junbo.utils.FileWatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +19,10 @@ import org.springframework.util.StringUtils;
 import java.io.*;
 import java.lang.ref.WeakReference;
 import java.net.URL;
-import java.nio.file.*;
-import java.nio.file.attribute.PosixFileAttributes;
-import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.WatchEvent;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.JarEntry;
@@ -39,8 +41,9 @@ import java.util.jar.JarFile;
 public class ConfigServiceImpl implements com.junbo.configuration.ConfigService {
     //region private fields
     private static final String CONFIG_PROPERTY_FILE = "configuration.properties";
-    private static final String CONFIG_PASSWORD_KEY_FILE = "configuration.key";
+    private static final String CONFIG_PASSWORD_KEY = "crypto.core.key";
     private static final String CONFIG_DIR_OPTS = "configDir";
+    private static final String CONFIG_DIR_DEFAULT = "/etc/silkcloud;./conf";
     private static final String ACTIVE_ENV_OPTS = "environment";
     private static final String ACTIVE_DC_OPTS = "datacenter";
     private static final String ACTIVE_SUBNET_OPTS = "subnet";
@@ -73,6 +76,11 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
     }
 
     @Override
+    public String getConfigPath() {
+        return configPath;
+    }
+
+    @Override
     public ConfigContext getConfigContext() {
         return configContext;
     }
@@ -98,11 +106,12 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
             if (key.endsWith(CRYPTO_SUFFIX)) {
                 // ignored
-            } else if (finalProperties.contains(key + CRYPTO_SUFFIX)) {
+            } else if (finalProperties.containsKey(key + CRYPTO_SUFFIX)) {
                 value = "*****";
+                properties.put(key, value);
+            } else {
+                properties.put(key, value);
             }
-
-            properties.put(key, value);
         }
 
         return properties;
@@ -156,6 +165,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
                     getResourceAsStream(CONFIG_PATH + "/" + DEFAULT_FOLDER + "/" + DEFAULT_PROPERTIES_FILE);
             if(inputStream != null) {
                 properties.load(inputStream);
+                check(properties);
             }
 
             // 2) _default/**/*.properties
@@ -164,7 +174,10 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
             if (en.hasMoreElements()) {
                 URL url = en.nextElement();
-                loadJarProperties(url.getPath(), properties);
+                Properties temp = new Properties();
+                loadJarProperties(url.getPath(), temp);
+                check(temp);
+                merge(properties, temp);
             }
 
             String baseEnv = this.getConfigContext().getBaseEnvironment();
@@ -173,7 +186,10 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
                 inputStream = this.getClass().getClassLoader().
                         getResourceAsStream(CONFIG_PATH + "/" + baseEnv + "/" + DEFAULT_PROPERTIES_FILE);
                 if (inputStream != null) {
-                    properties.load(inputStream);
+                    Properties temp = new Properties();
+                    temp.load(inputStream);
+                    check(temp);
+                    merge(properties, temp);
                 }
 
                 // 4) {baseEnv}/**/*.properties
@@ -182,7 +198,10 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
                 if (en.hasMoreElements()) {
                     URL url = en.nextElement();
-                    loadJarProperties(url.getPath(), properties);
+                    Properties temp = new Properties();
+                    loadJarProperties(url.getPath(), temp);
+                    check(temp);
+                    merge(properties, temp);
                 }
             }
 
@@ -191,7 +210,10 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
             inputStream = this.getClass().getClassLoader().
                     getResourceAsStream(CONFIG_PATH + "/" + env + "/" + DEFAULT_PROPERTIES_FILE);
             if(inputStream != null) {
-                properties.load(inputStream);
+                Properties temp = new Properties();
+                temp.load(inputStream);
+                check(temp);
+                merge(properties, temp);
             }
 
             // 6) {env}/**/*.properties
@@ -200,7 +222,10 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
             if (en.hasMoreElements()) {
                 URL url = en.nextElement();
-                loadJarProperties(url.getPath(), properties);
+                Properties temp = new Properties();
+                loadJarProperties(url.getPath(), temp);
+                check(temp);
+                merge(properties, temp);
             }
         }
         catch (IOException ex) {
@@ -238,7 +263,10 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
         for (String string : resourcePathes) {
             try (InputStream fileStream = this.getClass().getClassLoader().getResourceAsStream(string)) {
-                properties.load(fileStream);
+                Properties newProperties = new Properties();
+                newProperties.load(fileStream);
+                check(newProperties);
+                merge(properties, newProperties);
             } catch (IOException ex) {
                 throw new RuntimeException("Failed to read property file from resource: " + string, ex);
             }
@@ -251,7 +279,10 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
                 loadFolderProperties(file.getAbsolutePath(), properties);
             } else if (file.isFile()) {
                 try (InputStream fileStream = new FileInputStream(file.getAbsoluteFile())) {
-                    properties.load(fileStream);
+                    Properties temp = new Properties();
+                    temp.load(fileStream);
+                    check(temp);
+                    merge(properties, temp);
                 } catch (IOException ex) {
                     throw new RuntimeException("Failed to read file: " + file.getAbsolutePath(), ex);
                 }
@@ -304,37 +335,113 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
     }
 
     private void loadConfig() {
-        String configDir = System.getProperty(CONFIG_DIR_OPTS);
+        String configDirs = System.getProperty(CONFIG_DIR_OPTS);
+        if (StringUtils.isEmpty(configDirs)) {
+            configDirs = CONFIG_DIR_DEFAULT;
+        }
 
-        if (!StringUtils.isEmpty(configDir)) {
-            logger.info("Scanning configuration from configDir: " + configDir);
-
-            Path configFilePath = Paths.get(configDir, CONFIG_PROPERTY_FILE);
+        Path configFilePath = findFile(configDirs, CONFIG_PROPERTY_FILE);
+        if (configFilePath != null) {
             overrideProperties = readProperties(configFilePath);
+            check(overrideProperties);
+            configPath = configFilePath.getParent().toString();
+            logger.info("Monitored configPath set to " + configPath);
         }
 
         configContext = readConfigContext(overrideProperties);
 
-        if (!StringUtils.isEmpty(configDir)) {
-            Path keyFilePath = Paths.get(configDir, CONFIG_PASSWORD_KEY_FILE);
-            keyStr = loadAndCheckKeyFile(keyFilePath);
-        }
-
         // Read jar configuration files
         jarProperties = readJarProperties();
+        check(jarProperties);
+
+        Properties commandLineProperties = System.getProperties();
+        check(commandLineProperties);
+
+        keyStr = loadPasswordKey(commandLineProperties, overrideProperties, jarProperties);
 
         cipherService = new AESCipherServiceImpl(keyStr);
 
-        Properties commandLineProperties = System.getProperties();
-
         finalProperties = new Properties();
-        finalProperties.putAll(decryptProperties(jarProperties));
-        finalProperties.putAll(decryptProperties(overrideProperties));
-        finalProperties.putAll(decryptProperties(commandLineProperties));
+        merge(finalProperties, jarProperties);
+        merge(finalProperties, overrideProperties);
+        merge(finalProperties, commandLineProperties);
+        finalProperties = decryptProperties(finalProperties);
 
         configContext.complete(
                 finalProperties.getProperty(ACTIVE_DC_OPTS),
                 finalProperties.getProperty(ACTIVE_SUBNET_OPTS));
+    }
+
+    private void check(Properties properties) {
+        // Same file should not has the same properties defined multiple times
+        // such as in file conf.properties
+        // a.password.encrypt=aaaa
+        // a.password = bbbbb, This will be treated as bad case
+        if (properties == null) {
+            return;
+        }
+
+        List<String> keys = new ArrayList<>();
+        for(Map.Entry<Object, Object> entry : properties.entrySet()) {
+            String key = entry.getKey().toString();
+
+            if (key.endsWith(CRYPTO_SUFFIX)) {
+                int endIndex = key.lastIndexOf(CRYPTO_SUFFIX);
+                String newKey = key.substring(0, endIndex);
+
+                if (keys.contains(newKey)) {
+                    throw new IllegalStateException("Already exists key: " + newKey);
+                }
+                keys.add(newKey);
+            } else {
+                if (keys.contains(key)) {
+                    throw new IllegalStateException("Already exists key: " + key);
+                }
+                keys.add(key);
+            }
+        }
+    }
+
+    private Properties merge(Properties source, Properties override) {
+        if (override == null) {
+            return source;
+        }
+
+        for(Map.Entry<Object, Object> entry : override.entrySet()) {
+            String key = entry.getKey().toString();
+
+            if (key.endsWith(CRYPTO_SUFFIX)) {
+                int endIndex = key.lastIndexOf(CRYPTO_SUFFIX);
+                String newKey = key.substring(0, endIndex);
+                source.remove(newKey);
+            } else {
+                String newKey = key + CRYPTO_SUFFIX;
+                source.remove(newKey);
+            }
+            source.put(entry.getKey(), entry.getValue());
+        }
+
+        return source;
+    }
+
+    private Path findFile(String configDirs, String fileName) {
+        if (StringUtils.isEmpty(configDirs)) {
+            return null;
+        }
+
+        logger.info("Scanning configuration file {} from configDirs: {}", fileName, configDirs);
+        String[] configDirArr = configDirs.split(";");
+        for (String configDir : configDirArr) {
+            if (StringUtils.isEmpty(configDir)) continue;
+            Path path = Paths.get(configDir, fileName);
+            if (Files.exists(path)) {
+                logger.info("Found configuration file {} from configDir: {}", fileName, configDir);
+                FileUtils.checkPermission600(path);
+                return path;
+            }
+        }
+        logger.warn("Configuration file {} is not found", fileName);
+        return null;
     }
 
     private Properties decryptProperties(Properties properties) {
@@ -352,7 +459,12 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
                 int endIndex = key.lastIndexOf(CRYPTO_SUFFIX);
                 String newKey = key.substring(0, endIndex);
 
-                newProperties.put(newKey, decrypt(value));
+                try {
+                    newProperties.put(newKey, decrypt(value));
+                } catch (Exception ex) {
+                    logger.error("Failed to decrypt " + key);
+                    throw ex;
+                }
             }
 
             newProperties.put(key, value);
@@ -361,53 +473,22 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         return newProperties;
     }
 
-    private String loadAndCheckKeyFile(Path path){
-        // check file exists
-        File file = new File(path.toUri());
-        if (!file.exists()) {
-            if (configContext.getEnvironment().equals("onebox") ||
-                configContext.getEnvironment().startsWith("onebox.")) {
-                // return a dummy key
-                return "5B62A9320B84AF50F70B076D89F5F7B8";
+    private String loadPasswordKey(Properties... properties){
+        for (Properties propertyBag : properties) {
+            if (propertyBag == null) continue;
+            if (propertyBag.containsKey(CONFIG_PASSWORD_KEY)) {
+                String value = propertyBag.getProperty(CONFIG_PASSWORD_KEY);
+                propertyBag.remove(CONFIG_PASSWORD_KEY);
+                return value;
             }
-            logger.warn("Key file doesn't exist: " + path.toUri().toString());
-            return null;
         }
-
-        // check permission, it must be owner read and write only
-        try {
-            Set<PosixFilePermission> permissions = null;
-            try {
-                permissions = Files.readAttributes(file.toPath(), PosixFileAttributes.class, LinkOption.NOFOLLOW_LINKS).permissions();
-
-                if (CollectionUtils.isEmpty(permissions)) {
-                    throw new IllegalAccessException("Permission check invalid.");
-                }
-
-                // Only support OWNER_READ and OWNER_WRITE
-                if (permissions.size() > 2) {
-                    throw new IllegalAccessException("Permission only valid for OWNER_READ and OWNER_WRITE.");
-                }
-
-                for (PosixFilePermission permission : permissions) {
-                    if (permission != PosixFilePermission.OWNER_READ && permission != PosixFilePermission.OWNER_WRITE) {
-                        throw new IllegalAccessException("Permission only valid for OWNER_READ and OWNER_WRITE.");
-                    }
-                }
-            } catch (UnsupportedOperationException unSupportedOperationEx) {
-                logger.warn("Skip permission check.");
-            }
-
-            return readKeyFile(file);
-        } catch (Exception e) {
-            throw new RuntimeException("Load key file error: ", e);
-        }
+        // not found
+        throw new RuntimeException(CONFIG_PASSWORD_KEY + " is not specified.");
     }
 
     private void watch(){
-        String configDir = System.getProperty(CONFIG_DIR_OPTS);
-        if(!StringUtils.isEmpty(configDir)) {
-            FileWatcher.getInstance().addListener(Paths.get(configDir), new FileWatcher.FileListener() {
+        if(!StringUtils.isEmpty(configPath)) {
+            FileWatcher.getInstance().addListener(Paths.get(configPath), new FileWatcher.FileListener() {
                 @Override
                 public void onFileChanged(Path path, WatchEvent.Kind<Path> kind) {
                     loadConfig();

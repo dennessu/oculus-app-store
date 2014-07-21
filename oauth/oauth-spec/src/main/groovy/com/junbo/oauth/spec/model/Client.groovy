@@ -5,9 +5,9 @@
  */
 package com.junbo.oauth.spec.model
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.junbo.common.model.ResourceMeta
 import groovy.transform.CompileStatic
 
 /**
@@ -15,7 +15,7 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-class Client {
+class Client extends ResourceMeta<String> {
     @JsonProperty('client_id')
     String clientId
 
@@ -62,8 +62,16 @@ class Client {
 
     Set<String> contacts
 
-    String revision
-
     @JsonProperty('need_consent')
     Boolean needConsent
+
+    @Override
+    String getId() {
+        return clientId
+    }
+
+    @Override
+    void setId(String id) {
+        this.clientId = id
+    }
 }

@@ -9,9 +9,14 @@ import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.test.catalog.impl.OfferAttributeServiceImpl;
 import com.junbo.test.catalog.OfferAttributeService;
 import com.junbo.test.catalog.util.BaseTestClass;
+import com.junbo.test.common.Entities.enums.ComponentType;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.*;
 
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.Assert;
 
@@ -23,6 +28,12 @@ import org.testng.Assert;
 public class TestDeleteOfferAttribute extends BaseTestClass {
 
     private LogHelper logger = new LogHelper(TestDeleteOfferAttribute.class);
+
+    @BeforeClass
+    private void PrepareTestData() throws Exception {
+        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
+        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOG);
+    }
 
     @Property(
             priority = Priority.Dailies,

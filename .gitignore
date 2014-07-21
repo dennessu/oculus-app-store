@@ -1,6 +1,7 @@
 # Hidden files
 .*
 !.gitignore
+!.gitkeep
 
 # Build outputs
 **/build/**

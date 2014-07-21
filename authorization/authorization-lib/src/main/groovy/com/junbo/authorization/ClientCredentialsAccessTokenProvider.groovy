@@ -57,7 +57,7 @@ class ClientCredentialsAccessTokenProvider implements AccessTokenProvider {
                     clientId: clientId,
                     clientSecret: clientSecret,
                     scope: scope
-            )).get()
+            )).get();
 
             def newTokenCache = new TokenCache(tokenResponse.accessToken, tokenResponse.expiresIn)
             tokenCache = newTokenCache

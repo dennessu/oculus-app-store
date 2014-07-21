@@ -6,6 +6,9 @@
 
 package com.junbo.billing.clientproxy.impl
 
+import com.junbo.billing.clientproxy.impl.avalara.ResponseMessage
+import com.junbo.common.error.ErrorDetail
+
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
 
 import com.junbo.billing.spec.enums.BalanceType
@@ -55,6 +58,9 @@ class SabrixFacadeImpl implements TaxFacade {
     static final String CALCULATION_DIRECTION_FORWARD = 'F'
     static final String CALCULATION_DIRECTION_REVERSE = 'R'
     static final String CALCULATION_DIRECTION_REVERSE_FROM_TOTAL = 'T'
+    static final String REFUND_PREFIX = 'CM'
+    static final String TAX_STATUS_BUSINESS = 'business'
+    static final String TAX_STATUS_CONSUMER = 'consumer'
     private static final Logger LOGGER = LoggerFactory.getLogger(SabrixFacadeImpl)
     private static final ThreadLocal<SimpleDateFormat> DATE_FORMATTER =
             new ThreadLocal<SimpleDateFormat>() {
@@ -67,6 +73,7 @@ class SabrixFacadeImpl implements TaxFacade {
             }
     private static final Map<String, TaxAuthority> AUTHORITY_MAP
     private static final Map<String, String> PRODUCT_CODE_MAP
+
     static {
         Map<String, TaxAuthority> authorityMap = new HashMap<String, TaxAuthority>()
         authorityMap.put('Country', TaxAuthority.COUNTRY)
@@ -94,8 +101,8 @@ class SabrixFacadeImpl implements TaxFacade {
         Map<String, String> productCodeMap = new HashMap<String, String>()
         productCodeMap.put(ItemType.APP.name(), ProductCode.DOWNLOADABLE_SOFTWARE.code)
         productCodeMap.put(ItemType.DOWNLOADED_ADDITION.name(), ProductCode.DOWNLOADABLE_SOFTWARE.code)
-        productCodeMap.put(ItemType.IN_APP_CONSUMABLE.name(), ProductCode.DIGITAL_CONTENT.code)
-        productCodeMap.put(ItemType.IN_APP_UNLOCK.name(), ProductCode.DIGITAL_CONTENT.code)
+        productCodeMap.put(ItemType.CONSUMABLE_UNLOCK.name(), ProductCode.DIGITAL_CONTENT.code)
+        productCodeMap.put(ItemType.PERMANENT_UNLOCK.name(), ProductCode.DIGITAL_CONTENT.code)
         productCodeMap.put(ItemType.PHYSICAL.name(), ProductCode.PHYSICAL_GOODS.code)
         productCodeMap.put(ItemType.STORED_VALUE.name(), ProductCode.STORE_BALANCE.code)
 
@@ -104,7 +111,7 @@ class SabrixFacadeImpl implements TaxFacade {
     @Override
     Promise<Balance> calculateTaxQuote(Balance balance, Address shippingAddress, Address piAddress) {
         Batch batch = generateBatch(balance, shippingAddress, piAddress, false)
-        LOGGER.info('name=Tax_Calculation_Batch, batch={}', batch.toString())
+        //LOGGER.info('name=Tax_Calculation_Quote_Batch, batch={}', batch.toString())
         return calculateTax(batch).then { TaxCalculationResponse result ->
             return Promise.pure(updateBalance(result, balance))
         }
@@ -113,16 +120,18 @@ class SabrixFacadeImpl implements TaxFacade {
     @Override
     Promise<Balance> calculateTax(Balance balance, Address shippingAddress, Address piAddress) {
         Batch batch = generateBatch(balance, shippingAddress, piAddress, true)
-        LOGGER.info('name=Tax_Calculation_Quote_Batch, batch={}', batch.toString())
+        //LOGGER.info('name=Tax_Calculation_Batch, batch={}', batch.toString())
         return calculateTax(batch).then { TaxCalculationResponse result ->
-            return Promise.pure(updateBalance(result, balance))
+            return Promise.pure(updateAuditedBalance(result, balance))
         }
     }
 
     @Override
     Promise<Address> validateAddress(Address address) {
         SabrixAddress externalAddress = getSabrixAddress(address)
-        LOGGER.info('name=Validate_Address_Request, address={}', externalAddress.toString())
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug('name=Validate_Address_Request, address={}', externalAddress.toString())
+        }
         return validateSabrixAddress(externalAddress).then { AddressValidationResponse response ->
             return Promise.pure(updateAddress(response, address))
         }
@@ -131,7 +140,9 @@ class SabrixFacadeImpl implements TaxFacade {
     @Override
     Promise<VatIdValidationResponse> validateVatId(String vatId) {
         RegistrationValidationRequest request = generateRequest(vatId)
-        LOGGER.info('name=Registration_Validation_Request, request={}', request.toString())
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug('name=Registration_Validation_Request, request={}', request.toString())
+        }
         return validateVatId(request).then { RegistrationValidationResponse response ->
             return getVatIdValidationResponse(response)
         }
@@ -192,7 +203,7 @@ class SabrixFacadeImpl implements TaxFacade {
         if (!CollectionUtils.isEmpty(balance.orderIds)) {
             if (balance.orderIds.size() > 1) {
                 LOGGER.error('Error_More_Than_One_Order_In_Tax_Calculation.')
-                throw AppErrors.INSTANCE.taxCalculationError('Do not support multi-order tax calculation now.').exception()
+                throw AppErrors.INSTANCE.taxCalculationError('Multi-order tax calculation is not supported.').exception()
             }
             // combination of hostSystem, callingSystemNumber and uniqueInvoiceNumber makes a audit key
             invoice.hostSystem = configuration.hostSystem
@@ -208,9 +219,8 @@ class SabrixFacadeImpl implements TaxFacade {
             invoice.originalInvoiceNumber = balance.orderIds?.get(0)?.value
             invoice.originalInvoiceDate = balance.propertySet.get(PropertyKey.ORIGINAL_INVOICE_DATE.name())
         }
-        invoice.calculationDirection = isRefund ? (isAudited ? CALCULATION_DIRECTION_REVERSE
-                : CALCULATION_DIRECTION_REVERSE_FROM_TOTAL)
-                : CALCULATION_DIRECTION_FORWARD
+        invoice.calculationDirection = isRefund && isAudited ?
+                CALCULATION_DIRECTION_REVERSE : CALCULATION_DIRECTION_FORWARD
         invoice.invoiceDate = DATE_FORMATTER.get().format(new Date())
         invoice.currencyCode = balance.currency
         invoice.isAudited = isAudited
@@ -242,18 +252,11 @@ class SabrixFacadeImpl implements TaxFacade {
             Line line = new Line()
             line.id = index + 1
             line.lineNumber = line.id
-            if (isAudited) {
-                line.grossAmount = item.amount?.toDouble()
+            line.grossAmount = item.amount?.toDouble()
+            if (isRefund && isAudited) {
                 line.taxAmount = item.taxAmount?.toDouble()
             }
-            else if (isRefund) {
-                line.grossPlusTax = item.amount?.toDouble()
-            }
-            else {
-                line.grossAmount = item.amount?.toDouble()
-            }
             line.discountAmount = item.discountAmount?.toDouble()
-            line.productCode = item.financeId
             line.transactionType = getTransactionType(item)
             line.productCode = getProductCode(item)
             line.description = item.propertySet.get(PropertyKey.ITEM_DESCRIPTION.name())
@@ -263,7 +266,7 @@ class SabrixFacadeImpl implements TaxFacade {
                 registrations.buyerRole = item.propertySet.get(PropertyKey.VAT_ID.name())
                 line.registrations = registrations
             }
-            line.vendorNumber = item.propertySet.get(PropertyKey.VENDOR_NUMBER.name())
+            line.vendorNumber = item.propertySet.get(PropertyKey.ORGANIZATION_ID.name())
             line.vendorName = item.propertySet.get(PropertyKey.VENDOR_NAME.name())
             line.billTo = billToAddress
             line.shipTo = shipToAddress
@@ -278,6 +281,13 @@ class SabrixFacadeImpl implements TaxFacade {
     }
 
     String getUniqueInvoiceNumber(Balance balance) {
+        def seqNum = balance.propertySet.get(PropertyKey.SEQ_NUMBER.name())
+        if (seqNum == null) {
+            seqNum = '1'
+        }
+        if (BalanceType.REFUND.name() == balance.type) {
+            return REFUND_PREFIX + '_' + balance.orderIds[0]?.value + '_' + seqNum
+        }
         return balance.orderIds[0]?.value
     }
 
@@ -295,12 +305,17 @@ class SabrixFacadeImpl implements TaxFacade {
             attribute2.value = balance.propertySet.get(PropertyKey.PI_ADDRESS.name())
             invoice.userElement.add(attribute2)
         }
-        if (balance.propertySet.get(PropertyKey.TAX_STATUS.name()) != null) {
-            UserElement attribute3 = new UserElement()
-            attribute3.name = 'ATTRIBUTE3'
-            attribute3.value = balance.propertySet.get(PropertyKey.TAX_STATUS.name())
-            invoice.userElement.add(attribute3)
+
+        UserElement attribute3 = new UserElement()
+        attribute3.name = 'ATTRIBUTE3'
+        if (balance.propertySet.get(PropertyKey.VAT_ID.name()) != null) {
+            attribute3.value = TAX_STATUS_BUSINESS
         }
+        else {
+            attribute3.value = TAX_STATUS_CONSUMER
+        }
+        invoice.userElement.add(attribute3)
+
         if (balance.propertySet.get(PropertyKey.PAYMENT_METHOD.name()) != null) {
             UserElement attribute4 = new UserElement()
             attribute4.name = 'ATTRIBUTE4'
@@ -361,7 +376,7 @@ class SabrixFacadeImpl implements TaxFacade {
         }
         String type = item.propertySet.get(PropertyKey.ITEM_TYPE.name())
         switch (type) {
-            case 'PHYSICAL':
+            case ItemType.PHYSICAL.name():
                 return GOODS
             default:
                 return ELECTRONIC_SERVICES
@@ -413,13 +428,18 @@ class SabrixFacadeImpl implements TaxFacade {
             LOGGER.error('Error_Build_Sabrix_Request.', throwable)
             return Promise.pure(null)
         }.then { Response response ->
-            TaxCalculationResponse result = xmlConvertor.getTaxCalculationResponse(response.responseBody)
+            TaxCalculationResponse result = null
+            if (response != null && response.responseBody != null) {
+                result = xmlConvertor.getTaxCalculationResponse(response.responseBody)
+            }
             if (result == null) {
                 LOGGER.error('name=Error_Read_Sabrix_Tax_Calculation_Response.')
                 return Promise.pure(null)
             }
             if (response.statusCode / 100 == 2) {
-                LOGGER.info('name=Tax_Calculation_Response, response={}', result.toString())
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug('name=Tax_Calculation_Response, response={}', result.toString())
+                }
                 return Promise.pure(result)
             }
             LOGGER.error('name=Error_Tax_Calculation, description={}', result.requestStatus?.error?.description)
@@ -428,7 +448,15 @@ class SabrixFacadeImpl implements TaxFacade {
         }
     }
 
-    Balance updateBalance(TaxCalculationResponse result, Balance  balance) {
+    Balance updateAuditedBalance(TaxCalculationResponse result, Balance balance) {
+        if (result != null &&
+                (result.requestStatus?.isSuccess || result.requestStatus?.isPartialSuccess)) {
+            balance.taxStatus = TaxStatus.AUDITED.name()
+        }
+        return balance
+    }
+
+    Balance updateBalance(TaxCalculationResponse result, Balance balance) {
         if (result != null &&
                 (result.requestStatus?.isSuccess || result.requestStatus?.isPartialSuccess)) {
             Invoice resultInvoice = result.invoice[0]
@@ -501,28 +529,29 @@ class SabrixFacadeImpl implements TaxFacade {
         def requestBuilder = buildRequest(validateAddressUrl, content)
         return Promise.wrap(asGuavaFuture(requestBuilder.execute())).recover { Throwable throwable ->
             LOGGER.error('Error_Build_Sabrix_Request.', throwable)
-            throw AppErrors.INSTANCE.addressValidationError('Fail to build request.').exception()
+            throw AppErrors.INSTANCE.addressValidationError().exception()
         }.then { Response response ->
             AddressValidationResponse addressValidationResponse =
                     xmlConvertor.getAddressValidationResponse(response.responseBody)
             if (addressValidationResponse == null) {
                 LOGGER.error('name=Error_Read_Sabrix_Response.')
-                throw AppErrors.INSTANCE.addressValidationError('Fail to read response.').exception()
+                throw AppErrors.INSTANCE.addressValidationError().exception()
             }
             if (response.statusCode / 100 == 2) {
-                LOGGER.info('name=Address_Validation_Response, response={}', addressValidationResponse.toString())
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug('name=Address_Validation_Response, response={}', addressValidationResponse.toString())
+                }
                 return Promise.pure(addressValidationResponse)
             }
+
             LOGGER.error('name=Error_Address_Validation.')
             LOGGER.info('name=Address_Validation_Response_Status_Code, statusCode={}', response.statusCode)
-            String detail = ''
-            addressValidationResponse.message.each { Message message ->
-                if (message.severity > SUCCESSFUL_PROCESSING) {
-                    LOGGER.info('name=Address_Validation_Response_Error_Message, message={}', message.messageText)
-                    detail += message.messageText
-                }
+            List<ErrorDetail> details = new ArrayList<>();
+            addressValidationResponse.message.each { ResponseMessage message ->
+                LOGGER.info('name=Address_Validation_Response_Error_Message, message={}', message.details)
+                details.add(new ErrorDetail(message.refersTo, message.details))
             }
-            throw AppErrors.INSTANCE.addressValidationError(detail).exception()
+            throw AppErrors.INSTANCE.addressValidationError(details.toArray(new ErrorDetail[0])).exception()
         }
     }
 
@@ -565,7 +594,9 @@ class SabrixFacadeImpl implements TaxFacade {
                 return Promise.pure(null)
             }
             if (response.statusCode / 100 == 2) {
-                LOGGER.info('name=Vat_Id_Validation_Response, response={}', vatValidationResponse.toString())
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug('name=Vat_Id_Validation_Response, response={}', vatValidationResponse.toString())
+                }
                 return Promise.pure(vatValidationResponse)
             }
             LOGGER.info('name=Tax_Calculation_Response_Status_Code, statusCode={}', response.statusCode)

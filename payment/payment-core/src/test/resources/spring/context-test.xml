@@ -24,7 +24,9 @@
         <property name="userInfoFacade" ref="mockUserResource"/>
     </bean>
 
-    <bean id="mockAdyenProviderRoutingService" class="com.junbo.payment.core.mock.MockAdyenProviderRoutingServiceImpl"/>
+    <bean id="mockAdyenProviderRoutingService" class="com.junbo.payment.core.mock.MockAdyenProviderRoutingServiceImpl">
+        <property name="adyenCCProivderService" ref="mockAdyenCCProviderService" />
+    </bean>
     <!-- payment method serivce -->
     <bean id="mockAdyenPaymentInstrumentService" class="com.junbo.payment.core.impl.PaymentInstrumentServiceImpl">
         <property name="providerRoutingService" ref="mockAdyenProviderRoutingService"  />
@@ -34,6 +36,11 @@
         <property name="providerRoutingService" ref="mockAdyenProviderRoutingService"  />
         <property name="paymentInstrumentService" ref="mockAdyenPaymentInstrumentService"  />
         <property name="userInfoFacade" ref="mockUserResource"/>
+    </bean>
+
+    <bean id="mockPersonalInfo" class="com.junbo.payment.core.mock.MockPersonalInfo"/>
+    <bean id="mockAdyenCCProviderService" class="com.junbo.payment.core.provider.adyen.AdyenCCProivderServiceImpl" parent="adyenProviderService">
+        <property name="personalInfoFacade" ref="mockPersonalInfo"/>
     </bean>
 
 </beans>

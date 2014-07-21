@@ -1,8 +1,6 @@
 package com.junbo.crypto.rest.resource
-
 import com.junbo.crypto.core.validator.ItemCryptoValidator
 import com.junbo.crypto.data.repo.ItemCryptoRepo
-import com.junbo.crypto.spec.error.AppErrors
 import com.junbo.crypto.spec.model.CryptoMessage
 import com.junbo.crypto.spec.model.ItemCryptoMessage
 import com.junbo.crypto.spec.model.ItemCryptoRepoData
@@ -19,7 +17,6 @@ import java.security.*
 import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
 import java.util.concurrent.ConcurrentHashMap
-
 /**
  * Created by liangfu on 6/30/14.
  */
@@ -86,7 +83,7 @@ class ItemCryptoResourceImpl extends CommonResourceImpl implements ItemCryptoRes
             }.then { String str ->
                 data.encryptedPublicKey = str
 
-                return itemCryptoRepo.update(data)
+                return itemCryptoRepo.update(data, data)
             }.then { ItemCryptoRepoData cryptoRepoData ->
 
                 return decryptByMasterKey(cryptoRepoData.encryptedPrivateKey).then { String value ->
@@ -190,21 +187,15 @@ class ItemCryptoResourceImpl extends CommonResourceImpl implements ItemCryptoRes
     }
 
     private Promise<ItemCryptoMessage> signMessageByKey(PrivateKey key, String message) {
-        try {
-            Signature instance = Signature.getInstance(SIGNATURE_ALGORITHM)
-            instance.initSign(key)
-            instance.update(message.getBytes("UTF-8"))
-            String signed = new String(Base64.encodeBase64(instance.sign()))
-            ItemCryptoMessage itemCryptoMessage = new ItemCryptoMessage(
-                    message: signed
-            )
+        Signature instance = Signature.getInstance(SIGNATURE_ALGORITHM)
+        instance.initSign(key)
+        instance.update(message.getBytes("UTF-8"))
+        String signed = new String(Base64.encodeBase64(instance.sign()))
+        ItemCryptoMessage itemCryptoMessage = new ItemCryptoMessage(
+                message: signed
+        )
 
-            return Promise.pure(itemCryptoMessage)
-        } catch (InvalidKeyException e) {
-            throw AppErrors.INSTANCE.invalidKeyException(e.message).exception()
-        } catch (SignatureException ex) {
-            throw AppErrors.INSTANCE.signatureException(ex.message).exception()
-        }
+        return Promise.pure(itemCryptoMessage)
     }
 
     private Promise<Boolean> verifyMessage(PublicKey key, String signedMessage, String rawMessage) {

@@ -59,4 +59,8 @@ public interface BalanceResource {
 
     @PUT
     Promise<Balance> putBalance(Balance balance);
+
+    @POST
+    @Path("/audit")
+    Promise<Balance> auditBalance(Balance balance);
 }

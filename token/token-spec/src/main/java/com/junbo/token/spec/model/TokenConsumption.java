@@ -8,35 +8,36 @@ package com.junbo.token.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.UserId;
+import com.junbo.common.model.ResourceMetaForDualWrite;
 import com.junbo.token.common.FilterOut;
 
 /**
  * Token Consumption model.
  */
-public class TokenConsumption {
+public class TokenConsumption extends ResourceMetaForDualWrite<String> {
     @FilterOut
-    private Long id;
+    private String id;
     @FilterOut
-    private Long itemId;
+    private String itemId;
     @UserId
     @JsonProperty("user")
     private Long userId;
     private String product;
     private String tokenString;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Long getItemId() {
+    public String getItemId() {
         return itemId;
     }
 
-    public void setItemId(Long itemId) {
+    public void setItemId(String itemId) {
         this.itemId = itemId;
     }
 

@@ -1,14 +1,18 @@
 package com.junbo.identity.rest.resource.v1
 
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.authorization.AuthorizeService
+import com.junbo.authorization.RightsScope
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
+import com.junbo.identity.auth.OrganizationAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.OrganizationFilter
 import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.OrganizationValidator
 import com.junbo.identity.data.repository.OrganizationRepository
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.option.list.OrganizationListOptions
 import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
@@ -18,8 +22,6 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.StringUtils
-
-import javax.ws.rs.BeanParam
 
 /**
  * Created by liangfu on 5/22/14.
@@ -40,16 +42,29 @@ class OrganizationResourceImpl implements OrganizationResource {
     @Autowired
     private NormalizeService normalizeService
 
+    @Autowired
+    private AuthorizeService authorizeService
+
+    @Autowired
+    private OrganizationAuthorizeCallbackFactory authorizeCallbackFactory
+
     @Override
     Promise<Organization> create(Organization organization) {
         organization = organizationFilter.filterForCreate(organization)
 
         return organizationValidator.validateForCreate(organization).then {
-            return organizationRepository.create(organization).then { Organization newOrganization ->
-                Created201Marker.mark(newOrganization.getId())
+            def callback = authorizeCallbackFactory.create(organization)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('create')) {
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
+                }
 
-                newOrganization = organizationFilter.filterForGet(newOrganization, null)
-                return Promise.pure(newOrganization)
+                return organizationRepository.create(organization).then { Organization newOrganization ->
+                    Created201Marker.mark(newOrganization.getId())
+
+                    newOrganization = organizationFilter.filterForGet(newOrganization, null)
+                    return Promise.pure(newOrganization)
+                }
             }
         }
     }
@@ -68,13 +83,19 @@ class OrganizationResourceImpl implements OrganizationResource {
             if (oldOrganization == null) {
                 throw AppErrors.INSTANCE.organizationNotFound(organizationId).exception()
             }
+            def callback = authorizeCallbackFactory.create(oldOrganization)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('update')) {
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
+                }
 
-            organization = organizationFilter.filterForPatch(organization, oldOrganization)
+                organization = organizationFilter.filterForPatch(organization, oldOrganization)
 
-            return organizationValidator.validateForUpdate(organizationId, organization, oldOrganization).then {
-                return organizationRepository.update(organization).then { Organization newOrganization ->
-                    newOrganization = organizationFilter.filterForGet(newOrganization, null)
-                    return Promise.pure(newOrganization)
+                return organizationValidator.validateForUpdate(organizationId, organization, oldOrganization).then {
+                    return organizationRepository.update(organization, oldOrganization).then { Organization newOrganization ->
+                        newOrganization = organizationFilter.filterForGet(newOrganization, null)
+                        return Promise.pure(newOrganization)
+                    }
                 }
             }
         }
@@ -88,13 +109,20 @@ class OrganizationResourceImpl implements OrganizationResource {
 
         return organizationValidator.validateForGet(organizationId).then {
             return organizationRepository.get(organizationId).then { Organization newOrganization ->
-                if (newOrganization == null) {
-                    throw AppErrors.INSTANCE.organizationNotFound(organizationId).exception()
-                }
+                def callback = authorizeCallbackFactory.create(newOrganization)
+                return RightsScope.with(authorizeService.authorize(callback)) {
+                    if (!AuthorizeContext.hasRights('read')) {
+                        throw AppErrors.INSTANCE.organizationNotFound(organizationId).exception()
+                    }
 
-                newOrganization = organizationFilter.filterForGet(newOrganization,
-                        getOptions.properties?.split(',') as List<String>)
-                return Promise.pure(newOrganization)
+                    if (newOrganization == null) {
+                        throw AppErrors.INSTANCE.organizationNotFound(organizationId).exception()
+                    }
+
+                    newOrganization = organizationFilter.filterForGet(newOrganization,
+                            getOptions.properties?.split(',') as List<String>)
+                    return Promise.pure(newOrganization)
+                }
             }
         }
     }
@@ -103,21 +131,32 @@ class OrganizationResourceImpl implements OrganizationResource {
     Promise<Results<Organization>> list(OrganizationListOptions listOptions) {
         return organizationValidator.validateForSearch(listOptions).then {
             def resultList = new Results<Organization>(items: [])
-            return search(listOptions).then { List<Organization> newOrganizationes ->
-                if (newOrganizationes == null) {
+            return search(listOptions).then { List<Organization> newOrganizations ->
+                if (newOrganizations == null) {
                     return Promise.pure(resultList)
                 }
-                newOrganizationes.each { Organization newOrganization ->
+
+                return Promise.each(newOrganizations) { Organization newOrganization ->
                     if (newOrganization != null) {
                         newOrganization = organizationFilter.filterForGet(newOrganization, listOptions.properties?.split(',') as List<String>)
                     }
 
                     if (newOrganization != null) {
-                        resultList.items.add(newOrganization)
+                        def callback = authorizeCallbackFactory.create(newOrganization)
+                        return RightsScope.with(authorizeService.authorize(callback)) {
+                            if (AuthorizeContext.hasRights('read')) {
+                                resultList.items.add(newOrganization)
+                                return Promise.pure(newOrganization)
+                            } else {
+                                return Promise.pure(null)
+                            }
+                        }
                     }
-                }
 
-                return Promise.pure(resultList)
+                    return Promise.pure(null)
+                }.then {
+                    return Promise.pure(resultList)
+                }
             }
         }
     }
@@ -135,8 +174,15 @@ class OrganizationResourceImpl implements OrganizationResource {
 
     @Override
     Promise<Void> delete(OrganizationId organizationId) {
-        return organizationValidator.validateForGet(organizationId).then {
-            return organizationRepository.delete(organizationId)
+        return organizationValidator.validateForGet(organizationId).then { Organization organization ->
+            def callback = authorizeCallbackFactory.create(organization)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('delete')) {
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
+                }
+
+                return organizationRepository.delete(organizationId)
+            }
         }
     }
 }

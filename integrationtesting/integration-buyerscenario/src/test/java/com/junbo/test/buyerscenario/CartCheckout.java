@@ -1,5 +1,6 @@
 package com.junbo.test.buyerscenario;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.test.common.Entities.paymentInstruments.AdyenInfo;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.apihelper.order.impl.OrderEventServiceImpl;
@@ -24,12 +25,14 @@ import com.junbo.test.common.property.*;
 import com.junbo.common.model.Results;
 import com.junbo.common.id.UserId;
 
+import net.minidev.json.JSONUtil;
 import org.apache.commons.collections.map.HashedMap;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -305,7 +308,7 @@ public class CartCheckout extends BaseTestClass {
             features = "BuyerScenarios",
             component = Component.Order,
             owner = "JasonFu",
-            status = Status.Enable,
+            status = Status.Manual,
             description = "Test physical good checkout by PayPal",
             steps = {
                     "1. Post a new user",
@@ -396,11 +399,18 @@ public class CartCheckout extends BaseTestClass {
 
         String paymentTransactionId = "";
         //Post callback properties
-        PaymentCallbackParams paymentProperties = new PaymentCallbackParams();
-        paymentProperties.setToken(token);
-        paymentProperties.setPayerID(payerId);
-        PaymentCallbackService paymentCallbackService = PaymentCallbackServiceImpl.getInstance();
-        paymentCallbackService.postPaymentProperties(paymentTransactionId, paymentProperties);
+        //PaymentCallbackParams paymentProperties = new PaymentCallbackParams();
+        //paymentProperties.setToken(token);
+        //paymentProperties.setPayerID(payerId);
+        //PaymentCallbackService paymentCallbackService = PaymentCallbackServiceImpl.getInstance();
+        //paymentCallbackService.postPaymentProperties(paymentTransactionId, paymentProperties);
+
+        Map<String, String> properties = new HashMap<>();
+        properties.put("paymentId", paymentTransactionId);
+        properties.put("payerId", payerId);
+        properties.put("token", token);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(properties);
 
         //Post "charge completed" order event
         OrderEventService orderEventService = OrderEventServiceImpl.getInstance();
@@ -408,6 +418,7 @@ public class CartCheckout extends BaseTestClass {
         orderEvent.setOrder(order.getId());
         orderEvent.setAction("CHARGE");
         orderEvent.setStatus("COMPLETED");
+        orderEvent.setProperties(json);
 
         orderEventService.postOrderEvent(orderEvent);
     }
@@ -453,7 +464,7 @@ public class CartCheckout extends BaseTestClass {
             features = "BuyerScenarios",
             component = Component.Order,
             owner = "JasonFu",
-            status = Status.Enable,
+            status = Status.Manual,
             description = "Test digital goods checkout by Adyen",
             steps = {
                     "1. Post a new user",

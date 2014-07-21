@@ -10,7 +10,7 @@ import com.junbo.identity.spec.v1.model.User
  */
 interface Validation {
 
-    Validation validateUser(User user)
+    Validation validateUser(UserId userId, User user)
 
     Validation validateCartAdd(String clientId, UserId userId, Cart cart)
 

@@ -1,0 +1,29 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile junboProject(':common-lib')
+    compile junboProject(':langur-core')
+
+    compile junboProject(':common-sharding')
+    compile junboProject(':common-configuration')
+
+    compile (libraries.persistence_api)
+    compile (libraries.validation_api)
+
+    compile (libraries.spring_aop)
+    compile (libraries.spring_context)
+    compile (libraries.spring_core)
+    compile (libraries.spring_expression)
+    compile (libraries.spring_tx)
+    compile (libraries.spring_jdbc)
+    compile (libraries.spring_orm)
+    compile (libraries.spring_beans)
+
+    compile (libraries.rs_api)
+
+    testCompile (libraries.guava)
+    testCompile (libraries.spring_test)
+
+    compile junboProject(':csr-common')
+    compile junboProject(':csr-spec')
+}

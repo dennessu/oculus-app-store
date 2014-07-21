@@ -66,13 +66,13 @@ public class CatalogGatewayImpl implements CatalogGateway {
 
             if (revisions == null || CollectionUtils.isEmpty(revisions.getItems())) {
                 LOGGER.error("Offer [" + offerId + "] with timestamp [" + timestamp + "] does not exist");
-                throw AppErrors.INSTANCE.notFound("Offer", offerId).exception();
+                throw AppErrors.INSTANCE.offerNotFound(offerId).exception();
             }
 
             return revisions.getItems().get(Constant.UNIQUE_RESULT);
         } catch (Exception e) {
             LOGGER.error("Error occurred during calling [Catalog] component.", e);
-            throw AppErrors.INSTANCE.gatewayFailure("catalog").exception();
+            throw AppErrors.INSTANCE.gatewayFailure("Catalog").exception();
         }
     }
 
@@ -86,13 +86,13 @@ public class CatalogGatewayImpl implements CatalogGateway {
 
             if (revisions == null || CollectionUtils.isEmpty(revisions.getItems())) {
                 LOGGER.error("Item [" + itemId + "] with timestamp [" + timestamp + "] does not exist");
-                throw AppErrors.INSTANCE.notFound("Item", itemId).exception();
+                throw AppErrors.INSTANCE.itemNotFound(itemId).exception();
             }
 
             return revisions.getItems().get(Constant.UNIQUE_RESULT);
         } catch (Exception e) {
             LOGGER.error("Error occurred during calling [Catalog] component.", e);
-            throw AppErrors.INSTANCE.gatewayFailure("catalog").exception();
+            throw AppErrors.INSTANCE.gatewayFailure("Catalog").exception();
         }
     }
 

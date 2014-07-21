@@ -1,0 +1,11 @@
+{
+  "localeCode": "fr_CF",
+  "shortName": "Française (CF)",
+  "longName": "Français (République centrafricaine)",
+  "localeName": "Française (CF)",
+  "fallbackLocale": {
+    "href": "/v1/locales/fr_FR",
+    "id": "fr_FR"
+  },
+  "futureExpansion": {}
+}

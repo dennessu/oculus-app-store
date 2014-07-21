@@ -1,0 +1,11 @@
+{
+  "localeCode": "ru_RU",
+  "shortName": "Русский (RU)",
+  "longName": "Русский (Россия)",
+  "localeName": "Русский (RU)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

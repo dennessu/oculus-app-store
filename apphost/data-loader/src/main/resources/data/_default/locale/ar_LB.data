@@ -1,0 +1,11 @@
+{
+  "localeCode": "ar_LB",
+  "shortName": "العربية (LB)",
+  "longName": "العربية (لبنان)",
+  "localeName": "العربية (LB)",
+  "fallbackLocale": {
+    "href": "/v1/locales/en_US",
+    "id": "en_US"
+  },
+  "futureExpansion": {}
+}

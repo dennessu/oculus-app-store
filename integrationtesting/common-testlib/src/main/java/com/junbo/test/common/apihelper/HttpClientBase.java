@@ -5,6 +5,7 @@
  */
 package com.junbo.test.common.apihelper;
 
+import com.junbo.test.common.blueprint.Master;
 import com.ning.http.client.FluentCaseInsensitiveStringsMap;
 import com.ning.http.client.providers.netty.NettyResponse;
 import com.junbo.test.common.exception.TestException;
@@ -34,6 +35,8 @@ public abstract class HttpClientBase {
 
     public static String contentType = "application/json";
 
+    protected String uid = "";
+
     /**
      * Enum for http method.
      *
@@ -57,9 +60,19 @@ public abstract class HttpClientBase {
         }
     }
 
-    protected FluentCaseInsensitiveStringsMap getHeader() {
+    protected FluentCaseInsensitiveStringsMap getHeader(boolean isRoleAPI) {
         FluentCaseInsensitiveStringsMap headers = new FluentCaseInsensitiveStringsMap();
         headers.add(Header.CONTENT_TYPE, contentType);
+        String uid = Master.getInstance().getCurrentUid();
+        if (isRoleAPI) {
+            headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getIdentityAccessToken());
+        } else if (uid != null && Master.getInstance().getUserAccessToken(uid) != null) {
+            headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getUserAccessToken(uid));
+        } else {
+            headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getIdentityAccessToken());
+        }
+
+        //headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getIdentityAccessToken());
 
         //for further header, we can set dynamic value from properties here
         return headers;
@@ -99,12 +112,18 @@ public abstract class HttpClientBase {
 
     protected String restApiCall(HTTPMethod httpMethod, String restUrl, String requestBody,
                                  int expectedResponseCode, HashMap<String, List<String>> httpParameters) throws Exception {
+        boolean isRoleAPI = false;
+
+        if (restUrl.contains("/v1/roles") || restUrl.contains("/v1/role-assignments")) {
+            isRoleAPI = true;
+        }
+
         switch (httpMethod) {
             case PUT:
             case POST: {
                 Request req = new RequestBuilder(httpMethod.getHttpMethod())
                         .setUrl(restUrl)
-                        .setHeaders(getHeader())
+                        .setHeaders(getHeader(isRoleAPI))
                         .setBody(requestBody)
                         .build();
 
@@ -137,7 +156,7 @@ public abstract class HttpClientBase {
 
                 Request req = new RequestBuilder("GET")
                         .setUrl(restUrl)
-                        .setHeaders(getHeader())
+                        .setHeaders(getHeader(isRoleAPI))
                         .build();
 
                 logger.LogRequest(req);
@@ -151,13 +170,14 @@ public abstract class HttpClientBase {
                     String redirectUrl = nettyResponse.getHeaders().get("Location").get(0);
                     req = new RequestBuilder("GET")
                             .setUrl(redirectUrl)
-                            .setHeaders(getHeader())
+                            .setHeaders(getHeader(isRoleAPI))
                             .build();
 
                     logger.LogRequest(req);
 
                     future = asyncClient.prepareRequest(req).execute();
                     nettyResponse = (NettyResponse) future.get();
+                    expectedResponseCode = nettyResponse.getStatusCode();
                 }
 
                 logger.LogResponse(nettyResponse);
@@ -170,7 +190,7 @@ public abstract class HttpClientBase {
             case DELETE: {
                 Request req = new RequestBuilder(httpMethod.getHttpMethod())
                         .setUrl(restUrl)
-                        .setHeaders(getHeader())
+                        .setHeaders(getHeader(isRoleAPI))
                         .build();
 
                 logger.LogRequest(req);

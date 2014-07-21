@@ -17,7 +17,6 @@ abstract class BaseDAOImpl {
 
     protected SessionFactory sessionFactory
     protected ShardAlgorithm shardAlgorithm
-    protected IdGenerator idGenerator
 
     @Required
     void setSessionFactory(SessionFactory sessionFactory) {
@@ -27,14 +26,5 @@ abstract class BaseDAOImpl {
     @Required
     void setShardAlgorithm(ShardAlgorithm shardAlgorithm) {
         this.shardAlgorithm = shardAlgorithm
-    }
-
-    @Required
-    void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator
-    }
-
-    protected Session currentSession(Object key) {
-        return ShardScope.with(shardAlgorithm.shardId(key)) { sessionFactory.currentSession }
     }
 }

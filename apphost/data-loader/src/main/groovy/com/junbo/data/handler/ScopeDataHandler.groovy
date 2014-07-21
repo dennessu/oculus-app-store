@@ -40,8 +40,6 @@ class ScopeDataHandler extends BaseDataHandler {
             exit()
         }
 
-        logger.info("loading scope $scope.name")
-
         Scope existing = null
         try {
             existing = scopeEndpoint.getScope(scope.name).get()
@@ -52,7 +50,7 @@ class ScopeDataHandler extends BaseDataHandler {
         if (existing != null) {
             if (alwaysOverwrite) {
                 logger.debug("Overwrite Scope $existing.name with this content")
-                scope.revision = existing.revision
+                scope.rev = existing.rev
                 try {
                     scopeEndpoint.putScope(scope.name, scope).get()
                 } catch (Exception e) {

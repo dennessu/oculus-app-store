@@ -22,15 +22,15 @@ public interface TokenService {
     @Transactional
     Promise<TokenSet> createTokenSet(TokenSet request);
     @Transactional(readOnly = true)
-    Promise<TokenSet> getTokenSet(Long tokenSetId);
+    Promise<TokenSet> getTokenSet(String tokenSetId);
     @Transactional
     Promise<TokenOrder> createTokenOrder(TokenOrder request);
     @Transactional
     Promise<TokenRequest> createOrderRequest(TokenRequest request);
     @Transactional(readOnly = true)
-    Promise<TokenRequest> getOrderRequest(Long tokenOrderId);
+    Promise<TokenRequest> getOrderRequest(String tokenOrderId);
     @Transactional(readOnly = true)
-    Promise<TokenOrder> getTokenOrder(Long tokenOrderId);
+    Promise<TokenOrder> getTokenOrder(String tokenOrderId);
     @Transactional
     Promise<TokenConsumption> consumeToken(String token, TokenConsumption consumption);
     @Transactional

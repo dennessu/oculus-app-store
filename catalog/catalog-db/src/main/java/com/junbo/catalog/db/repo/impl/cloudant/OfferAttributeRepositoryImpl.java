@@ -22,21 +22,21 @@ import java.util.List;
 public class OfferAttributeRepositoryImpl extends CloudantClient<OfferAttribute> implements OfferAttributeRepository {
 
     public OfferAttribute create(OfferAttribute attribute) {
-        return cloudantPost(attribute).get();
+        return cloudantPostSync(attribute);
     }
 
     public OfferAttribute get(String attributeId) {
         if (attributeId == null) {
             return null;
         }
-        return cloudantGet(attributeId).get();
+        return cloudantGetSync(attributeId);
     }
 
     public List<OfferAttribute> getAttributes(OfferAttributesGetOptions options) {
         if (!CollectionUtils.isEmpty(options.getAttributeIds())) {
             List<OfferAttribute> attributes = new ArrayList<>();
             for (String attributeId : options.getAttributeIds()) {
-                OfferAttribute attribute = cloudantGet(attributeId.toString()).get();
+                OfferAttribute attribute = cloudantGetSync(attributeId.toString());
                 if (attribute != null) {
                     attributes.add(attribute);
                 }
@@ -50,13 +50,13 @@ public class OfferAttributeRepositoryImpl extends CloudantClient<OfferAttribute>
         }
     }
 
-    public OfferAttribute update(OfferAttribute attribute) {
-        return cloudantPut(attribute).get();
+    public OfferAttribute update(OfferAttribute attribute, OfferAttribute oldAttribute) {
+        return cloudantPutSync(attribute, oldAttribute);
     }
 
 
     public void delete(String attributeId) {
-        cloudantDelete(attributeId).get();
+        cloudantDeleteSync(attributeId);
     }
 
 }
