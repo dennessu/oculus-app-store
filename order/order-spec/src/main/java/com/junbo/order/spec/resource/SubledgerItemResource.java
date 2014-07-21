@@ -5,16 +5,16 @@
  */
 package com.junbo.order.spec.resource;
 
+import com.junbo.common.id.OrderItemId;
+import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.langur.core.routing.RouteBy;
 import com.junbo.order.spec.model.SubledgerItem;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * Created by chriszhu on 2/10/14.
@@ -22,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 @Path("subledger-items")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
+@InProcessCallable
 @RestResource
 public interface SubledgerItemResource {
 
@@ -29,4 +30,7 @@ public interface SubledgerItemResource {
     @RouteBy("subledgerItem.getSubledger()")
     Promise<SubledgerItem> createSubledgerItem(SubledgerItem subledgerItem);
 
+    @GET
+    @RouteBy("orderItemId")
+    Promise<List<SubledgerItem>> getSubledgerItemsByOrderItemId(@QueryParam("orderItemId") OrderItemId orderItemId);
 }

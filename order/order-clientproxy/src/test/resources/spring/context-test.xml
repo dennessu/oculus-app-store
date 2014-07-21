@@ -6,6 +6,7 @@
 
     <!-- mock -->
     <import resource="classpath*:spring/*-context.xml"/>
+    <import resource="classpath*:spring/order-spec-context.xml"/>
     <context:component-scan base-package="com.junbo.order.mock"/>
 
     <bean id="mockBillingFacade" class="com.junbo.order.clientproxy.billing.impl.BillingFacadeImpl">
