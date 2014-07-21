@@ -37,7 +37,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
     private final String identityServerURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "users";
     private static UserService instance;
-    private final String userPassword = "Test1234";
+    private String userPassword = "Test1234";
 
     private OAuthService oAuthTokenClient = OAuthServiceImpl.getInstance();
 
@@ -338,7 +338,12 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         for (User user : userGet.getItems()) {
             Master.getInstance().addUser(IdConverter.idToHexString(user.getId()), user);
             if (Master.getInstance().getUserAccessToken(IdConverter.idToHexString(user.getId())) == null) {
-                oAuthTokenClient.postUserAccessToken(IdConverter.idToHexString(user.getId()), userPassword);
+                if(Master.getInstance().getUserPassword() !=null && !Master.getInstance().getUserPassword().isEmpty())
+                oAuthTokenClient.postUserAccessToken(IdConverter.idToHexString(user.getId()),
+                        Master.getInstance().getUserPassword());
+                else {
+                    oAuthTokenClient.postUserAccessToken(IdConverter.idToHexString(user.getId()), userPassword);
+                }
             }
             listUserId.add(IdConverter.idToHexString(user.getId()));
         }
