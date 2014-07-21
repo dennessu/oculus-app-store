@@ -54,7 +54,6 @@ import javax.ws.rs.core.UriBuilder
 import javax.ws.rs.ext.Provider
 
 @Provider
-@Scope('prototype')
 @CompileStatic
 @Component('defaultStoreResource')
 class StoreResourceImpl implements StoreResource {

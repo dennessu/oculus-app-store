@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component
  */
 @CompileStatic
 @Component('mockCurrencyResource')
-@Scope('prototype')
 class MockCurrencyResource extends BaseMock implements CurrencyResource {
     @Override
     Promise<Currency> create(Currency currency) {

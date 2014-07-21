@@ -17,7 +17,6 @@ import java.util.concurrent.ConcurrentHashMap
  */
 @CompileStatic
 @Component('mockBalanceResource')
-@Scope('prototype')
 class MockBalanceResource extends BaseMock implements BalanceResource {
 
     private final Map<BalanceId, Balance> balanceMap = new ConcurrentHashMap<>()

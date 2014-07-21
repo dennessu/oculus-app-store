@@ -44,7 +44,6 @@ import javax.ws.rs.core.UriBuilder
  * EmailVerifyEndpointImpl.
  */
 @CompileStatic
-@Scope('prototype')
 class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailVerifyEndpointImpl)
     private EmailVerifyCodeRepository emailVerifyCodeRepository

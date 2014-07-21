@@ -49,7 +49,6 @@ import javax.ws.rs.ext.Provider
  * The wrapper api for IAP (In-App Purchase).
  */
 @Provider
-@Scope('prototype')
 @CompileStatic
 @Component('defaultIAPResource')
 @Deprecated
@@ -66,7 +65,7 @@ class IAPResourceImpl implements IAPResource {
     @Resource(name = 'cloudantConsumptionRepository')
     private ConsumptionRepository consumptionRepository
 
-    @Resource(name = 'iapResourceContainer')
+    @Resource(name = 'storeResourceContainer')
     private ResourceContainer resourceContainer
 
     @Resource(name = 'pathParamTranscoder')

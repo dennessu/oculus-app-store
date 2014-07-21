@@ -19,7 +19,6 @@ import javax.annotation.Resource;
 /**
  * Created by LinYi on 2014/6/16.
  */
-@Scope("prototype")
 class VatResourceImpl implements VatResource {
     @Resource
     private TaxService taxService;

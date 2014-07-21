@@ -18,7 +18,6 @@ import javax.ws.rs.core.Response
 
 @CompileStatic
 @Component('mockOfferResource')
-@Scope('prototype')
 class MockOfferResource extends BaseMock implements OfferResource {
     @Override
     Promise<Results<Offer>> getOffers(@BeanParam OffersGetOptions options) {

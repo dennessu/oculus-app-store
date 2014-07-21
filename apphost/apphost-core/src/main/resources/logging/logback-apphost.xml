@@ -14,19 +14,14 @@
         </encoder>
     </appender>
 
-    <appender name="CONSOLE_ASYNC" class="ch.qos.logback.classic.AsyncAppender">
-        <discardingThreshold>0</discardingThreshold>
-        <queueSize>512</queueSize>
+    <appender name="CONSOLE_ASYNC" class="com.junbo.apphost.core.logging.RealAsyncAppender">
         <appender-ref ref="CONSOLE"/>
     </appender>
 
     <appender name="NEW_RELIC" class="com.junbo.common.logappender.NewRelicAppender">
-
     </appender>
 
-    <appender name="NEW_RELIC_ASYNC" class="ch.qos.logback.classic.AsyncAppender">
-        <discardingThreshold>0</discardingThreshold>
-        <queueSize>512</queueSize>
+    <appender name="NEW_RELIC_ASYNC" class="com.junbo.apphost.core.logging.RealAsyncAppender">
         <appender-ref ref="NEW_RELIC"/>
     </appender>
 
@@ -46,9 +41,7 @@
         </encoder>
     </appender>
 
-    <appender name="MAIN_ASYNC" class="ch.qos.logback.classic.AsyncAppender">
-        <discardingThreshold>0</discardingThreshold>
-        <queueSize>512</queueSize>
+    <appender name="MAIN_ASYNC" class="com.junbo.apphost.core.logging.RealAsyncAppender">
         <appender-ref ref="MAIN"/>
     </appender>
 
@@ -72,9 +65,7 @@
         </encoder>
     </appender>
 
-    <appender name="ALERT_ASYNC" class="ch.qos.logback.classic.AsyncAppender">
-        <discardingThreshold>0</discardingThreshold>
-        <queueSize>512</queueSize>
+    <appender name="ALERT_ASYNC" class="com.junbo.apphost.core.logging.RealAsyncAppender">
         <appender-ref ref="ALERT"/>
     </appender>
 
@@ -97,9 +88,7 @@
         </encoder>
     </appender>
 
-    <appender name="CONSOLE_ASYNC_ACCESS_LOG" class="ch.qos.logback.classic.AsyncAppender">
-        <discardingThreshold>0</discardingThreshold>
-        <queueSize>512</queueSize>
+    <appender name="CONSOLE_ASYNC_ACCESS_LOG" class="com.junbo.apphost.core.logging.RealAsyncAppender">
         <appender-ref ref="CONSOLE_ACCESS_LOG"/>
     </appender>
 
@@ -119,9 +108,7 @@
         </encoder>
     </appender>
 
-    <appender name="FILE_ASYNC_ACCESS_LOG" class="ch.qos.logback.classic.AsyncAppender">
-        <discardingThreshold>0</discardingThreshold>
-        <queueSize>512</queueSize>
+    <appender name="FILE_ASYNC_ACCESS_LOG" class="com.junbo.apphost.core.logging.RealAsyncAppender">
         <appender-ref ref="FILE_ACCESS_LOG"/>
     </appender>
 

@@ -32,7 +32,6 @@ import org.springframework.stereotype.Component
  */
 @CompileStatic
 @TypeChecked
-@Scope('prototype')
 @Component('defaultOrderResource')
 class OrderResourceImpl implements OrderResource {
 

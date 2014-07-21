@@ -7,12 +7,12 @@
     <context:component-scan base-package="com.junbo.payment.rest.resource"/>
     <context:component-scan base-package="com.junbo.payment.spec.resource.adapter"/>
 
-    <bean id="defaultPaymentInstrumentResource" class="com.junbo.payment.rest.resource.PaymentInstrumentResourceImpl" scope="prototype"/>
-    <bean id="defaultPaymentTransactionResource" class="com.junbo.payment.rest.resource.PaymentTransactionResourceImpl" scope="prototype"/>
-    <bean id="defaultBrainTreeResource" class="com.junbo.payment.rest.resource.BrainTreeResourceImpl" scope="prototype"/>
-    <!--bean id="defaultPaymentInstrumentTypeResource" class="com.junbo.payment.rest.resource.PaymentInstrumentTypeResourceImpl" scope="prototype"/-->
-    <bean id="defaultPaymentCallbackResource" class="com.junbo.payment.rest.resource.PaymentCallbackResourceImpl" scope="prototype"/>
-    <bean id="defaultPaymentNotificationResource" class="com.junbo.payment.rest.resource.PaymentNotificationResourceImpl" scope="prototype"/>
+    <bean id="defaultPaymentInstrumentResource" class="com.junbo.payment.rest.resource.PaymentInstrumentResourceImpl"/>
+    <bean id="defaultPaymentTransactionResource" class="com.junbo.payment.rest.resource.PaymentTransactionResourceImpl"/>
+    <bean id="defaultBrainTreeResource" class="com.junbo.payment.rest.resource.BrainTreeResourceImpl"/>
+    <!--bean id="defaultPaymentInstrumentTypeResource" class="com.junbo.payment.rest.resource.PaymentInstrumentTypeResourceImpl"/-->
+    <bean id="defaultPaymentCallbackResource" class="com.junbo.payment.rest.resource.PaymentCallbackResourceImpl"/>
+    <bean id="defaultPaymentNotificationResource" class="com.junbo.payment.rest.resource.PaymentNotificationResourceImpl"/>
 
     <bean id="defaultPaymentInstrumentResourceClientFactory" class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxyFactory"/>
     <bean id="defaultPaymentTransactionResourceClientFactory" class="com.junbo.payment.spec.resource.proxy.PaymentTransactionResourceClientProxyFactory"/>

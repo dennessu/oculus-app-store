@@ -29,7 +29,6 @@ import javax.ws.rs.core.UriInfo
  * @see com.junbo.oauth.spec.endpoint.EndSessionEndpoint
  */
 @CompileStatic
-@Scope('prototype')
 class EndSessionEndpointImpl implements EndSessionEndpoint {
 
     /**

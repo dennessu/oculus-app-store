@@ -6,7 +6,7 @@
 
     <context:component-scan base-package="com.junbo.subscription.spec.resource.adapter"/>
 
-    <bean id="defaultSubscriptionResource" class="com.junbo.subscription.rest.resource.SubscriptionResourceImpl" scope="prototype"/>
+    <bean id="defaultSubscriptionResource" class="com.junbo.subscription.rest.resource.SubscriptionResourceImpl"/>
 
     <bean id="defaultSubscriptionResourceClientFactory" class="com.junbo.subscription.spec.resource.proxy.SubscriptionResourceClientProxyFactory"/>
 

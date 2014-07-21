@@ -21,7 +21,6 @@ import javax.ws.rs.core.Response
  * @see com.junbo.oauth.spec.endpoint.ClientEndpoint
  */
 @CompileStatic
-@Scope('prototype')
 class ClientEndpointImpl implements ClientEndpoint {
     /**
      * The ClientService to do the actual work.

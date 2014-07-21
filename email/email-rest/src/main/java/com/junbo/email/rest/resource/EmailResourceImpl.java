@@ -24,7 +24,6 @@ import javax.ws.rs.ext.Provider;
  */
 @Provider
 @Component
-@Scope("prototype")
 public class EmailResourceImpl implements EmailResource {
     private static final String EMAIL_SERVICE_SCOPE = "email.service";
 

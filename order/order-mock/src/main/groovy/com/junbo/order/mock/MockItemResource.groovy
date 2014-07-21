@@ -15,7 +15,6 @@ import javax.ws.rs.core.Response
  */
 @CompileStatic
 @Component('mockCatalogItemResource')
-@Scope('prototype')
 class MockItemResource implements ItemResource {
 
     @Override

@@ -6,11 +6,9 @@
 
     <context:component-scan base-package="com.junbo.entitlement.spec.resource.adapter"/>
 
-    <bean id="defaultEntitlementResource" class="com.junbo.entitlement.rest.resource.EntitlementResourceImpl"
-          scope="prototype"/>
+    <bean id="defaultEntitlementResource" class="com.junbo.entitlement.rest.resource.EntitlementResourceImpl"/>
 
-    <bean id="defaultDownloadUrlResource" class="com.junbo.entitlement.rest.resource.DownloadUrlResourceImpl"
-          scope="prototype"/>
+    <bean id="defaultDownloadUrlResource" class="com.junbo.entitlement.rest.resource.DownloadUrlResourceImpl"/>
 
     <bean id="defaultEntitlementResourceClientFactory"
           class="com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxyFactory"/>

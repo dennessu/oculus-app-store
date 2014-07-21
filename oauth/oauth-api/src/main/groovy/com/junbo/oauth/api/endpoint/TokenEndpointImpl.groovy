@@ -29,7 +29,6 @@ import javax.ws.rs.core.MultivaluedMap
  */
 @Component
 @CompileStatic
-@Scope('prototype')
 class TokenEndpointImpl implements TokenEndpoint {
     /**
      * The flowExecutor to execute the token flow

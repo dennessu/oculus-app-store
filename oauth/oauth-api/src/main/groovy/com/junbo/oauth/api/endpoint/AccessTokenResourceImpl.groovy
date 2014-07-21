@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component
  */
 @Component
 @CompileStatic
-@Scope('prototype')
 class AccessTokenResourceImpl implements AccessTokenResource {
     private OAuthTokenService tokenService
 

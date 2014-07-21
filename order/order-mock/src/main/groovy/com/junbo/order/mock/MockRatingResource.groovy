@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component
  */
 @CompileStatic
 @TypeChecked
-@Scope('prototype')
 @Component('mockRatingResource')
 class MockRatingResource extends BaseMock implements RatingResource {
 

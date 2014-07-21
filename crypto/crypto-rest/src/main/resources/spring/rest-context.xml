@@ -7,7 +7,7 @@
     <context:component-scan base-package="com.junbo.crypto.spec.resource.adapter" />
     <context:component-scan base-package="com.junbo.crypto.core.service" />
 
-    <bean id="defaultCryptoResource" class="com.junbo.crypto.rest.resource.CryptoResourceImpl" scope="prototype">
+    <bean id="defaultCryptoResource" class="com.junbo.crypto.rest.resource.CryptoResourceImpl">
         <property name="aesCipherService" ref="aesCipherService" />
         <property name="keyStoreService" ref="keyStoreService" />
         <property name="masterKeyRepo" ref="masterkeyRepository" />
@@ -18,7 +18,7 @@
         <property name="enableUserKeyEncrypt" value="${crypto.core.enableUserKeyEncrypt}" />
     </bean>
 
-    <bean id="defaultMasterKeyResource" class="com.junbo.crypto.rest.resource.MasterKeyResourceImpl" scope="prototype">
+    <bean id="defaultMasterKeyResource" class="com.junbo.crypto.rest.resource.MasterKeyResourceImpl">
         <property name="aesCipherService" ref="aesCipherService" />
         <property name="keyStoreService" ref="keyStoreService" />
         <property name="masterKeyRepo" ref="masterkeyRepository" />
@@ -29,7 +29,7 @@
         <property name="enableUserKeyEncrypt" value="${crypto.core.enableUserKeyEncrypt}" />
     </bean>
 
-    <bean id="defaultUserCryptoResource" class="com.junbo.crypto.rest.resource.UserCryptoResourceImpl" scope="prototype">
+    <bean id="defaultUserCryptoResource" class="com.junbo.crypto.rest.resource.UserCryptoResourceImpl">
         <property name="aesCipherService" ref="aesCipherService" />
         <property name="keyStoreService" ref="keyStoreService" />
         <property name="masterKeyRepo" ref="masterkeyRepository" />
@@ -40,7 +40,7 @@
         <property name="enableUserKeyEncrypt" value="${crypto.core.enableUserKeyEncrypt}" />
     </bean>
 
-    <bean id="defaultItemCryptoResource" class="com.junbo.crypto.rest.resource.ItemCryptoResourceImpl" scope="prototype">
+    <bean id="defaultItemCryptoResource" class="com.junbo.crypto.rest.resource.ItemCryptoResourceImpl">
         <property name="aesCipherService" ref="aesCipherService" /><property name="keyStoreService" ref="keyStoreService" />
         <property name="masterKeyRepo" ref="masterkeyRepository" />
         <property name="userCryptoKeyRepo" ref="userCryptoKeyRepo" />

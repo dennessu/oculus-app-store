@@ -21,7 +21,6 @@ import org.springframework.stereotype.Component
  */
 @Component
 @CompileStatic
-@Scope('prototype')
 class UserInfoEndpointImpl implements UserInfoEndpoint {
     /**
      * The UserService to handle the user related logic.

@@ -9,15 +9,15 @@
     <context:component-scan base-package="com.junbo.csr.core" />
 
     <!-- resource implementation -->
-    <bean id="defaultCsrUpdateResource" class="com.junbo.csr.rest.resource.CsrUpdateResourceImpl" scope="prototype" />
-    <bean id="defaultCsrLogResource" class="com.junbo.csr.rest.resource.CsrLogResourceImpl" scope="prototype" />
-    <bean id="defaultCsrActionEndpoint" class="com.junbo.csr.rest.endpoint.CsrActionEndpointImpl" scope="prototype">
+    <bean id="defaultCsrUpdateResource" class="com.junbo.csr.rest.resource.CsrUpdateResourceImpl" />
+    <bean id="defaultCsrLogResource" class="com.junbo.csr.rest.resource.CsrLogResourceImpl" />
+    <bean id="defaultCsrActionEndpoint" class="com.junbo.csr.rest.endpoint.CsrActionEndpointImpl">
         <property name="clientId" value="${csr.login.clientId}"/>
         <property name="clientSecret" value="${csr.login.clientSecret}"/>
         <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
     </bean>
 
-    <bean id="defaultCsrGroupResource" class="com.junbo.csr.rest.resource.CsrGroupResourceImpl" scope="prototype">
+    <bean id="defaultCsrGroupResource" class="com.junbo.csr.rest.resource.CsrGroupResourceImpl">
         <property name="identityService" ref="csrIdentityService" />
         <property name="groupNameList">
             <list>
@@ -32,7 +32,7 @@
         <property name="organizationOwner" value="${csr.organization.owner}"/>
     </bean>
 
-    <bean id="defaultCsrUserResource" class="com.junbo.csr.rest.resource.CsrUserResourceImpl" scope="prototype">
+    <bean id="defaultCsrUserResource" class="com.junbo.csr.rest.resource.CsrUserResourceImpl">
         <property name="csrGroupResource" ref="defaultCsrGroupResource"/>
         <property name="identityService" ref="csrIdentityService" />
         <property name="emailService" ref="csrEmailService" />

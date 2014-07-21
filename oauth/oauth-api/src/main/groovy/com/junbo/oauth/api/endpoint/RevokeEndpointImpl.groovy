@@ -31,7 +31,6 @@ import javax.ws.rs.core.Response
  * @see com.junbo.oauth.spec.endpoint.RevokeEndpoint
  */
 @CompileStatic
-@Scope('prototype')
 class RevokeEndpointImpl implements RevokeEndpoint {
     /**
      * The static field for the scope 'consent.manage'.
