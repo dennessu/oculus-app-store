@@ -169,7 +169,7 @@ class IdentityServiceImpl implements IdentityService {
                 throw AppErrors.INSTANCE.csrGroupNotLoaded().exception()
             }
 
-            return Promise.pure(groupResults.items)
+            return Promise.pure(groupResults)
         }
     }
 
