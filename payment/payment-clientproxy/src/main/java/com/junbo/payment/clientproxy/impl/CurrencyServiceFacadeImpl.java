@@ -7,7 +7,6 @@
 package com.junbo.payment.clientproxy.impl;
 
 import com.junbo.common.enumid.CurrencyId;
-import com.junbo.common.error.AppCommonErrors;
 import com.junbo.identity.spec.v1.model.Currency;
 import com.junbo.identity.spec.v1.option.model.CurrencyGetOptions;
 import com.junbo.identity.spec.v1.resource.proxy.CurrencyResourceClientProxy;
@@ -32,11 +31,11 @@ public class CurrencyServiceFacadeImpl implements CurrencyServiceFacade {
 
     public Promise<Long> getMinAuthAmount(CurrencyId currencyId){
         if (currencyId == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired("currency").exception();
+            throw AppClientExceptions.INSTANCE.missingCurrency().exception();
         }
         Currency currency = currencyResource.get(currencyId, new CurrencyGetOptions()).get();
         if (currency == null) {
-            throw AppClientExceptions.INSTANCE.currencyNotFound(currencyId.toString()).exception();
+            throw AppClientExceptions.INSTANCE.invalidCurrency(currencyId.getValue()).exception();
         }
         Long numbers = getNumberAfterDecimal(currency.getCurrencyCode()).get();
         return Promise.pure(new Long(currency.getMinAuthAmount().multiply(new BigDecimal(numbers)).longValue()));
@@ -44,11 +43,11 @@ public class CurrencyServiceFacadeImpl implements CurrencyServiceFacade {
 
     public Promise<Long> getNumberAfterDecimal(String currencyCode){
         if (CommonUtil.isNullOrEmpty(currencyCode)) {
-            throw AppCommonErrors.INSTANCE.fieldRequired("currencyCode").exception();
+            throw AppClientExceptions.INSTANCE.invalidCurrency(currencyCode).exception();
         }
         Currency currency = currencyResource.get(new CurrencyId(currencyCode), new CurrencyGetOptions()).get();
         if (currency == null) {
-            throw AppClientExceptions.INSTANCE.currencyNotFound(currencyCode).exception();
+            throw AppClientExceptions.INSTANCE.invalidCurrency(currencyCode).exception();
         }
         return Promise.pure(new Long((long) Math.pow(10, currency.getNumberAfterDecimal())));
     }

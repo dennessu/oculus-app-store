@@ -12,7 +12,7 @@ import com.junbo.crypto.spec.resource.CryptoResource;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.identity.spec.v1.resource.UserResource;
 import com.junbo.token.clientproxy.BaseTest;
-import com.junbo.token.common.exception.AppErrors;
+import com.junbo.token.common.exception.AppClientExceptions;
 import com.junbo.token.spec.enums.ItemStatus;
 import com.junbo.token.spec.enums.OrderStatus;
 import com.junbo.token.spec.enums.TokenLength;
@@ -176,8 +176,8 @@ public class TokenClientProxyTest extends BaseTest {
         try{
             TokenConsumption consumeResult = tokenClient.consumeToken(consumption).get();
         }catch (Exception ex){
-            if(ex instanceof AppErrors){
-                String code = ((AppErrors) ex).invalidToken().error().getCode();
+            if(ex instanceof AppClientExceptions){
+                String code = ((AppClientExceptions) ex).invalidToken().error().getCode();
             }
         }
         item.setStatus(ItemStatus.ACTIVATED.toString());

@@ -8,7 +8,7 @@ package com.junbo.subscription.clientproxy.impl;
 import com.junbo.rating.spec.model.subscription.SubsRatingRequest;
 import com.junbo.rating.spec.resource.RatingResource;
 import com.junbo.subscription.clientproxy.RatingGateway;
-import com.junbo.subscription.common.exception.AppErrors;
+import com.junbo.subscription.common.exception.SubscriptionExceptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class RatingGatewayImpl implements RatingGateway {
             return response;
         } catch (Exception e) {
             LOGGER.error("Error occurred during calling [Rating] component.", e);
-            throw AppErrors.INSTANCE.gatewayFailure("Rating").exception();
+            throw SubscriptionExceptions.INSTANCE.gatewayFailure("Rating").exception();
         }
     }
 

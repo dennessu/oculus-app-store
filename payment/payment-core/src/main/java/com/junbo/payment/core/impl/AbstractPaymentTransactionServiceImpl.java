@@ -6,7 +6,6 @@
 
 package com.junbo.payment.core.impl;
 
-import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.PIType;
 import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
 import com.junbo.payment.clientproxy.UserInfoFacade;
@@ -18,14 +17,18 @@ import com.junbo.payment.core.PaymentTransactionService;
 import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.provider.ProviderRoutingService;
 import com.junbo.payment.core.util.PaymentUtil;
-import com.junbo.payment.db.repo.TrackingUuidRepository;
-import com.junbo.payment.db.repo.facade.PaymentRepositoryFacade;
+import com.junbo.payment.spec.model.TrackingUuid;
 import com.junbo.payment.db.repository.MerchantAccountRepository;
 import com.junbo.payment.db.repository.PaymentProviderRepository;
+import com.junbo.payment.db.repo.facade.PaymentRepositoryFacade;
+import com.junbo.payment.db.repo.TrackingUuidRepository;
 import com.junbo.payment.spec.enums.PaymentAPI;
 import com.junbo.payment.spec.enums.PaymentEventType;
 import com.junbo.payment.spec.enums.PaymentStatus;
-import com.junbo.payment.spec.model.*;
+import com.junbo.payment.spec.model.PaymentEvent;
+import com.junbo.payment.spec.model.PaymentInstrument;
+import com.junbo.payment.spec.model.PaymentTransaction;
+import com.junbo.payment.spec.model.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,39 +73,39 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
 
     protected void validateRequest(PaymentTransaction request, boolean needChargeInfo, boolean supportChargeInfo){
         if(request.getUserId() == null){
-            throw AppCommonErrors.INSTANCE.fieldRequired("user_id").exception();
+            throw AppClientExceptions.INSTANCE.missingUserId().exception();
         }
         UserInfo user = userInfoFacade.getUserInfo(request.getUserId()).get();
         if(user == null){
-            throw AppClientExceptions.INSTANCE.userNotFound(request.getUserId().toString()).exception();
+            throw AppClientExceptions.INSTANCE.invalidUserId(request.getUserId().toString()).exception();
         }
         request.setUserInfo(user);
         if(request.getTrackingUuid() == null){
-            throw AppCommonErrors.INSTANCE.fieldRequired("tracking_uuid").exception();
+            throw AppClientExceptions.INSTANCE.missingTrackingUuid().exception();
         }
         if(CommonUtil.isNullOrEmpty(request.getBillingRefId())){
-            throw AppCommonErrors.INSTANCE.fieldRequired("billingRefId").exception();
+            throw AppClientExceptions.INSTANCE.missingBillingRefId().exception();
         }
         if(needChargeInfo){
             if(request.getChargeInfo() == null){
-                throw AppCommonErrors.INSTANCE.fieldRequired("amount").exception();
+                throw AppClientExceptions.INSTANCE.missingAmount().exception();
             }
             if(request.getChargeInfo().getAmount() == null){
-                throw AppCommonErrors.INSTANCE.fieldRequired("amount").exception();
+                throw AppClientExceptions.INSTANCE.missingAmount().exception();
             }
             if(CommonUtil.isNullOrEmpty(request.getChargeInfo().getCurrency())){
-                throw AppCommonErrors.INSTANCE.fieldRequired("currency").exception();
+                throw AppClientExceptions.INSTANCE.missingCurrency().exception();
             }
         }
         if(!supportChargeInfo && request.getChargeInfo() != null){
-            throw AppCommonErrors.INSTANCE.fieldNotWritable("chargeInfo").exception();
+            throw AppClientExceptions.INSTANCE.fieldNotNeeded("chargeInfo").exception();
         }
     }
 
     //use new transaction for business data to avoid hibernate cache in the service level transaction
     protected PaymentTransaction getResultByTrackingUuid(final PaymentTransaction request, final PaymentAPI api) {
         if(request.getTrackingUuid() == null){
-            throw AppCommonErrors.INSTANCE.fieldRequired("tracking_uuid").exception();
+            throw AppClientExceptions.INSTANCE.missingTrackingUuid().exception();
         }
         AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
         template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
@@ -121,7 +124,7 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
     protected void saveTrackingUuid(PaymentTransaction request, PaymentAPI api){
         if(request.getId() == null){
             LOGGER.error("payment transaction id should not be empty when store tracking uuid.");
-            throw AppCommonErrors.INSTANCE.fieldRequired("id").exception();
+            throw AppServerExceptions.INSTANCE.missingRequiredField("payment transaction id").exception();
         }
         TrackingUuid trackingUuid = new TrackingUuid();
         trackingUuid.setPaymentId(request.getId());
@@ -134,7 +137,7 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
 
     protected PaymentInstrument getPaymentInstrument(final PaymentTransaction request){
         if(request.getPaymentInstrumentId() == null){
-            throw AppCommonErrors.INSTANCE.fieldRequired("payment_instrument_id").exception();
+            throw AppClientExceptions.INSTANCE.missingPaymentInstrumentId().exception();
         }
         PaymentInstrument pi = null;
         try{
@@ -180,7 +183,7 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
                 PaymentTransaction existedTransaction = paymentRepositoryFacade.getByPaymentId(paymentId);
                 if(existedTransaction == null){
                     LOGGER.error("the payment id is invalid for the event.");
-                    throw AppClientExceptions.INSTANCE.paymentInstrumentNotFound(paymentId.toString()).exception();
+                    throw AppClientExceptions.INSTANCE.invalidPaymentId(paymentId.toString()).exception();
                 }
                 return existedTransaction;
             }
@@ -194,7 +197,7 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
             public PaymentTransaction doInTransaction(TransactionStatus txnStatus) {
                 final PaymentTransaction result = paymentRepositoryFacade.getByPaymentId(paymentId);
                 if(result == null){
-                    throw AppClientExceptions.INSTANCE.paymentInstrumentNotFound(paymentId.toString()).exception();
+                    throw AppClientExceptions.INSTANCE.resourceNotFound("payment_transaction").exception();
                 }
                 final List<PaymentEvent> events = paymentRepositoryFacade.getPaymentEventsByPaymentId(paymentId);
                 result.setPaymentEvents(events);

@@ -10,15 +10,16 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.PropertyFilter;
 import com.alibaba.fastjson.serializer.SerializeWriter;
-import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.shuffle.Oculus48Id;
+import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
-import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.apache.commons.codec.binary.Base64;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -113,10 +114,10 @@ public final class CommonUtil {
                     try{
                         value = new PropertyDescriptor(field.getName(), obj.getClass()).getReadMethod().invoke(obj);
                     }catch (Exception ex){
-                        throw AppCommonErrors.INSTANCE.fieldNotWritable(field.getName()).exception();
+                        throw AppClientExceptions.INSTANCE.fieldNotNeeded(field.getName()).exception();
                     }
                     if(value != null){
-                        throw AppCommonErrors.INSTANCE.fieldNotWritable(field.getName()).exception();
+                        throw AppClientExceptions.INSTANCE.fieldNotNeeded(field.getName()).exception();
                     }
                 }else if(annotation instanceof InnerFilter){
                     try{
@@ -126,7 +127,7 @@ public final class CommonUtil {
                             preValidation(sub);
                         }
                     }catch (Exception ex){
-                        throw AppCommonErrors.INSTANCE.fieldNotWritable(field.getName()).exception();
+                        throw AppClientExceptions.INSTANCE.fieldNotNeeded(field.getName()).exception();
                     }
                 }
             }

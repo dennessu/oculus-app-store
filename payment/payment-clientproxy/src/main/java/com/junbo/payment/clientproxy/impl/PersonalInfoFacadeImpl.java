@@ -56,7 +56,8 @@ public class PersonalInfoFacadeImpl implements PersonalInfoFacade {
                     @Override
                     public Promise<com.junbo.payment.spec.model.Address> apply(UserPersonalInfo userPersonalInfo) {
                         if (userPersonalInfo == null) {
-                            throw AppClientExceptions.INSTANCE.billingAddressNotFound(billingAddressId.toString()).exception();
+                            throw AppClientExceptions.INSTANCE.invalidBillingAddressId(
+                                    billingAddressId.toString()).exception();
                         }
                         try {
                             Address address = ObjectMapperProvider.instance().treeToValue(
@@ -64,7 +65,8 @@ public class PersonalInfoFacadeImpl implements PersonalInfoFacade {
                             return Promise.pure(mapAddress(address));
                         } catch (JsonProcessingException e) {
                             LOGGER.error("error parse json for address:" + billingAddressId);
-                            throw AppClientExceptions.INSTANCE.billingAddressNotFound(billingAddressId.toString()).exception();
+                            throw AppClientExceptions.INSTANCE.invalidBillingAddressId(
+                                    billingAddressId.toString()).exception();
                         }
                     }
                 });

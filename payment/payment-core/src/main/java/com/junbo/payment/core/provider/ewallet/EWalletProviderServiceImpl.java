@@ -6,7 +6,6 @@
 
 package com.junbo.payment.core.provider.ewallet;
 
-import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.WalletId;
 import com.junbo.ewallet.spec.def.WalletType;
 import com.junbo.ewallet.spec.model.*;
@@ -221,7 +220,7 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
     @Override
     public Promise<PaymentTransaction> refund(String transactionId, final PaymentTransaction request) {
         if(request.getChargeInfo() == null || request.getChargeInfo().getAmount() == null){
-            throw AppCommonErrors.INSTANCE.fieldRequired("amount").exception();
+            throw AppClientExceptions.INSTANCE.missingAmount().exception();
         }
         RefundRequest refundRequest = new RefundRequest();
         refundRequest.setTrackingUuid(UUID.randomUUID());
@@ -272,13 +271,13 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
 
     private void validateWallet(PaymentInstrument request){
         if(request.getTypeSpecificDetails() == null){
-            throw AppCommonErrors.INSTANCE.fieldRequired("currency").exception();
+            throw AppClientExceptions.INSTANCE.missingCurrency().exception();
         }
         if(CommonUtil.isNullOrEmpty(request.getTypeSpecificDetails().getStoredValueCurrency())){
-            throw AppCommonErrors.INSTANCE.fieldRequired("currency").exception();
+            throw AppClientExceptions.INSTANCE.missingCurrency().exception();
         }
         if(CommonUtil.isNullOrEmpty(request.getTypeSpecificDetails().getStoredValueCurrency())){
-            throw AppCommonErrors.INSTANCE.fieldRequired("wallet_type").exception();
+            throw AppClientExceptions.INSTANCE.missingWalletType().exception();
         }
     }
 }

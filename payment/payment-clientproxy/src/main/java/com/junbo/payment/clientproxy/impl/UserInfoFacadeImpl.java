@@ -7,7 +7,6 @@
 package com.junbo.payment.clientproxy.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.UserId;
 import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.identity.spec.v1.model.Email;
@@ -36,7 +35,7 @@ public class UserInfoFacadeImpl implements UserInfoFacade{
     @Override
     public Promise<UserInfo> getUserInfo(final Long userId) {
         if(userId == null){
-            throw AppCommonErrors.INSTANCE.fieldRequired("user_id").exception();
+            throw AppClientExceptions.INSTANCE.missingUserId().exception();
         }
         return userResource.get(new UserId(userId), new UserGetOptions())
                 .then(new Promise.Func<User, Promise<UserInfo>>() {
@@ -52,7 +51,7 @@ public class UserInfoFacadeImpl implements UserInfoFacade{
 
     private Promise<UserInfo> getUserName(final User user){
         if(user == null || user.getId() == null){
-            throw AppCommonErrors.INSTANCE.fieldRequired("user_id").exception();
+            throw AppClientExceptions.INSTANCE.missingUserId().exception();
         }
         final Long userId = user.getId().getValue();
         final UserInfo result = new UserInfo();
@@ -65,7 +64,7 @@ public class UserInfoFacadeImpl implements UserInfoFacade{
                     @Override
                     public Promise<UserInfo> apply(UserPersonalInfo userPersonalInfo) {
                         if (userPersonalInfo == null) {
-                            throw AppClientExceptions.INSTANCE.userNameNotFound(user.getName().getValue().toString()).exception();
+                            throw AppClientExceptions.INSTANCE.invalidUserId(userId.toString()).exception();
                         }
                         try {
                             UserName userName = ObjectMapperProvider.instance().treeToValue(
@@ -78,7 +77,7 @@ public class UserInfoFacadeImpl implements UserInfoFacade{
                             return Promise.pure(result);
                         } catch (JsonProcessingException e) {
                             LOGGER.error("error parse json for user:" + userId);
-                            throw AppClientExceptions.INSTANCE.userNameNotFound(user.getName().getValue().toString()).exception();
+                            throw AppClientExceptions.INSTANCE.invalidUserId(userId.toString()).exception();
                         }
                     }
                 });
@@ -86,7 +85,7 @@ public class UserInfoFacadeImpl implements UserInfoFacade{
 
     private Promise<String> getUserEmail(final User user){
         if(user == null || user.getId() == null){
-            throw AppCommonErrors.INSTANCE.fieldRequired("user_id").exception();
+            throw AppClientExceptions.INSTANCE.missingUserId().exception();
         }
         final Long userId = user.getId().getValue();
         if(user.getEmails() == null || user.getEmails().isEmpty()){
@@ -97,7 +96,7 @@ public class UserInfoFacadeImpl implements UserInfoFacade{
                     @Override
                     public Promise<String> apply(UserPersonalInfo userPersonalInfo) {
                         if (userPersonalInfo == null) {
-                            throw AppCommonErrors.INSTANCE.fieldInvalid("user_id").exception();
+                            throw AppClientExceptions.INSTANCE.invalidUserId(userId.toString()).exception();
                         }
                         try {
                             Email email = ObjectMapperProvider.instance().treeToValue(
@@ -108,7 +107,8 @@ public class UserInfoFacadeImpl implements UserInfoFacade{
                             return Promise.pure(null);
                         } catch (JsonProcessingException e) {
                             LOGGER.error("error parse json for user:" + userId);
-                            throw AppCommonErrors.INSTANCE.fieldInvalid("user_id").exception();
+                            throw AppClientExceptions.INSTANCE.invalidUserId(
+                                    userId.toString()).exception();
                         }
                     }
                 });

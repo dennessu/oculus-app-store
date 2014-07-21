@@ -25,7 +25,7 @@ import com.junbo.langur.core.promise.Promise;
 import com.junbo.sharding.IdGenerator;
 import com.junbo.token.common.CommonUtil;
 import com.junbo.token.common.TokenUtil;
-import com.junbo.token.common.exception.AppErrors;
+import com.junbo.token.common.exception.AppClientExceptions;
 import com.junbo.token.common.exception.AppServerExceptions;
 import com.junbo.token.core.TokenService;
 import com.junbo.token.core.mapper.ModelMapper;
@@ -97,7 +97,7 @@ public class TokenServiceImpl implements TokenService {
     public Promise<TokenRequest> getOrderRequest(String tokenOrderId) {
         TokenOrder order = tokenRepository.getTokenOrder(tokenOrderId);
         if(order == null){
-            throw AppErrors.INSTANCE.tokenOrderNotFound(tokenOrderId).exception();
+            throw AppClientExceptions.INSTANCE.tokenOrderNotFound(tokenOrderId).exception();
         }
         TokenSet set = tokenRepository.getTokenSet(order.getTokenSetId());
         return Promise.pure(ModelMapper.getOrderRequest(set, order));
@@ -111,7 +111,7 @@ public class TokenServiceImpl implements TokenService {
         Long hashValue = TokenUtil.computeHash(token).getHashValue();
         TokenItem item = tokenRepository.getTokenItem(hashValue);
         if (item == null) {
-            throw AppErrors.INSTANCE.invalidToken().exception();
+            throw AppClientExceptions.INSTANCE.invalidToken().exception();
         }
         TokenOrder order = tokenRepository.getTokenOrder(item.getOrderId());
         if (order == null) {
@@ -146,7 +146,7 @@ public class TokenServiceImpl implements TokenService {
         try{
             ItemStatus.valueOf(token.getStatus());
         }catch(Exception ex){
-            throw AppErrors.INSTANCE.invalidTokenStatus(token.getStatus()).exception();
+            throw AppClientExceptions.INSTANCE.invalidTokenStatus(token.getStatus()).exception();
         }
         if(CommonUtil.isNullOrEmpty(token.getDisableReason())){
             throw AppCommonErrors.INSTANCE.fieldRequired("disableReason").exception();
@@ -165,7 +165,7 @@ public class TokenServiceImpl implements TokenService {
         Long hashValue = TokenUtil.computeHash(token).getHashValue();
         TokenItem item = tokenRepository.getTokenItem(hashValue);
         if(item == null){
-            throw AppErrors.INSTANCE.invalidToken().exception();
+            throw AppClientExceptions.INSTANCE.invalidToken().exception();
         }
         item.setEncryptedString(token);
         return Promise.pure(item);
@@ -264,17 +264,17 @@ public class TokenServiceImpl implements TokenService {
             }
         } catch (Exception ex) {
             if (ex instanceof AppErrorException && ((AppErrorException) ex).getError().getHttpStatusCode() == 404) {
-                throw AppErrors.INSTANCE.invalidProduct(productId).exception();
+                throw AppClientExceptions.INSTANCE.invalidProduct(productId).exception();
             } else {
                 LOGGER.error("error get catalog:" + ex.toString());
                 throw AppServerExceptions.INSTANCE.catalogGatewayException().exception();
             }
         }
         if (offer == null && type.equals(ProductType.OFFER)) {
-            throw AppErrors.INSTANCE.invalidProduct(productId).exception();
+            throw AppClientExceptions.INSTANCE.invalidProduct(productId).exception();
         }
         if (promotion == null && type.equals(ProductType.PROMOTION)) {
-            throw AppErrors.INSTANCE.invalidProduct(productId).exception();
+            throw AppClientExceptions.INSTANCE.invalidProduct(productId).exception();
         }
     }
 
@@ -331,30 +331,30 @@ public class TokenServiceImpl implements TokenService {
 
     private void validateTokenItem(TokenItem item, TokenOrder order, TokenSet set, TokenConsumption consumption){
         if(!item.getStatus().equalsIgnoreCase(ItemStatus.ACTIVATED.toString())){
-            throw AppErrors.INSTANCE.invalidTokenStatus(item.getStatus()).exception();
+            throw AppClientExceptions.INSTANCE.invalidTokenStatus(item.getStatus()).exception();
         }
         if(order.getExpiredTime() != null && order.getExpiredTime().before(new Date())){
-            throw AppErrors.INSTANCE.tokenExpired().exception();
+            throw AppClientExceptions.INSTANCE.tokenExpired().exception();
         }
         if(set.getProductType().equalsIgnoreCase(ProductType.OFFER.toString())){
             if(CommonUtil.isNullOrEmpty(consumption.getProduct())){
                 consumption.setProduct(set.getProductDetail().getDefaultOffer());
             }else if(!set.getProductDetail().getDefaultOffer().equalsIgnoreCase(consumption.getProduct()) &&
                     !set.getProductDetail().getOptionalOffers().contains(consumption.getProduct())){
-                throw AppErrors.INSTANCE.invalidProduct(consumption.getProduct().toString()).exception();
+                throw AppClientExceptions.INSTANCE.invalidProduct(consumption.getProduct().toString()).exception();
             }
         }else if(set.getProductType().equalsIgnoreCase(ProductType.PROMOTION.toString())){
             if(CommonUtil.isNullOrEmpty(consumption.getProduct())){
                 consumption.setProduct(set.getProductDetail().getDefaultPromotion());
             }else if(!set.getProductDetail().getDefaultPromotion().equalsIgnoreCase(consumption.getProduct()) &&
                     !set.getProductDetail().getOptionalPromotion().contains(consumption.getProduct())){
-                throw AppErrors.INSTANCE.invalidProduct(consumption.getProduct().toString()).exception();
+                throw AppClientExceptions.INSTANCE.invalidProduct(consumption.getProduct().toString()).exception();
             }
         }
         if(!order.getUsageLimit().equalsIgnoreCase(UNLIMIT_USE)){
             Long usageLimit = TokenUtil.getUsage(order.getUsageLimit());
             if(item.getTokenConsumptions().size() > usageLimit){
-                throw AppErrors.INSTANCE.tokenUsageLimitExceeded().exception();
+                throw AppClientExceptions.INSTANCE.tokenUsageLimitExceeded().exception();
             }
         }
     }
