@@ -17,14 +17,14 @@ public interface AppServerExceptions {
 
     AppServerExceptions INSTANCE = ErrorProxy.newProxyInstance(AppServerExceptions.class);
 
-    @ErrorDef(httpStatusCode = 412, code = "101", message = "Token Order Not Found",
+    @ErrorDef(httpStatusCode = 412, code = "501", message = "Token Order Not Found",
             field = "tokenOrder", reason = "Token Order with ID {0} is not found")
     AppError tokenOrderNotFound(String tokenOrderId);
 
-    @ErrorDef(httpStatusCode = 412, code = "102", message = "Token Set Not Found",
+    @ErrorDef(httpStatusCode = 412, code = "502", message = "Token Set Not Found",
             field = "tokenSetId", reason = "Token Set with ID {0} is not found")
     AppError tokenSetNotFound(String tokenSetId);
 
-    @ErrorDef(httpStatusCode = 500, code = "103", message = "Catalog Gateway Error")
+    @ErrorDef(httpStatusCode = 500, code = "503", message = "Catalog Gateway Error")
     AppError catalogGatewayException();
 }

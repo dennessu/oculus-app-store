@@ -17,7 +17,7 @@ public interface AppErrors {
 
     AppErrors INSTANCE = ErrorProxy.newProxyInstance(AppErrors.class);
 
-    @ErrorDef(httpStatusCode = 500, code = "101", message = "Getway Failure", reason = "Exception occurred during calling [{0}] component.")
+    @ErrorDef(httpStatusCode = 500, code = "101", message = "Gateway Failure", reason = "Exception occurred during calling [{0}] component.")
     AppError gatewayFailure(String gateway);
 
 }
