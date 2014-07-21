@@ -20,6 +20,7 @@ import com.junbo.store.spec.resource.LoginResource
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
@@ -35,9 +36,11 @@ class LoginResourceImpl implements  LoginResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginResourceImpl)
 
-    String clientId = "client"
+    @Value('${store.oauth.clientId}')
+    private String clientId
 
-    String clientSecret = "secret"
+    @Value('${store.oauth.clientSecret}')
+    private String clientSecret
 
     @Resource(name = 'storeResourceContainer')
     private ResourceContainer resourceContainer

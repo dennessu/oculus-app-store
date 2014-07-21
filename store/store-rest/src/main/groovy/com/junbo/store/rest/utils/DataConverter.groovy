@@ -3,11 +3,14 @@ import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.PaymentInstrumentId
 import com.junbo.identity.spec.v1.model.PIType
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
+import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.model.TypeSpecificDetails
 import com.junbo.store.spec.model.Address
 import com.junbo.store.spec.model.billing.Instrument
 import com.junbo.store.spec.model.billing.PaymentOption
+import com.junbo.store.spec.model.identity.PersonalInfo
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 
@@ -88,4 +91,11 @@ class DataConverter {
         return identityAddress
     }
 
+    PersonalInfo toStorePersonalInfo(UserPersonalInfo userPersonalInfo, UserPersonalInfoLink link) {
+        return new PersonalInfo(
+                userPersonalInfoId: userPersonalInfo.getId(),
+                value: userPersonalInfo.value,
+                isDefault: link.isDefault
+        )
+    }
 }

@@ -391,6 +391,7 @@ When prompted, paste in MASTER_KEY.
 ### Sync Crypto Keys in SQL
   * 10.24.34.10
   * 10.24.38.10
+
 Run the following command to check master keys:
 ```
 CRYPTO_SERVER_1=10.24.34.10

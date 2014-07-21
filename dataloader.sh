@@ -3,5 +3,5 @@ source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is n
 
 cd `git rev-parse --show-toplevel`
 pushd apphost/apphost-cli/build/install/apphost-cli/
-./dataloader.sh
+./dataloader.sh "$@"
 popd

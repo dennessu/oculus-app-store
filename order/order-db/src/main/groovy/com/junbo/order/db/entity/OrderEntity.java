@@ -49,7 +49,7 @@ public class OrderEntity extends CommonDbEntityWithDate {
     // end of ratingInfo
 
     private String properties;
-    private Boolean isAudited;
+    private Boolean isAudited = false;
 
     @Id
     @Column(name = "ORDER_ID")

@@ -39,8 +39,6 @@ class ClientDataHandler extends BaseDataHandler {
             exit()
         }
 
-        logger.info("loading client $client.clientId")
-
         Client existing = clientRepository.getClient(client.clientId)
 
         if (existing != null) {

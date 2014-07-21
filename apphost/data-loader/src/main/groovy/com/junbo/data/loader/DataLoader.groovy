@@ -132,7 +132,7 @@ class DataLoader {
 
                 for (Resource resource : resources) {
                     if (handler != null) {
-                        LOGGER.info("handling resource: " + resource.filename)
+                        LOGGER.info("handling resource: " + data + " " + resource.filename)
                         String content = IOUtils.toString(resource.URI)
                         handler.handle(content)
                     } else {

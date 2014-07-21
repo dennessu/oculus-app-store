@@ -36,7 +36,7 @@ public interface CsrUserResource {
     @Path("/invite")
     Promise<Response> inviteCsr(@FormParam("locale") String locale,
                                 @FormParam("email") String email,
-                                @FormParam("groupId") String groupId,
+                                @FormParam("groupId") GroupId groupId,
                                 @Context ContainerRequestContext requestContext);
 
     @GET

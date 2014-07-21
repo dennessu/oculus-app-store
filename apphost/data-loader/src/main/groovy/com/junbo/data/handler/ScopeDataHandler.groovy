@@ -40,8 +40,6 @@ class ScopeDataHandler extends BaseDataHandler {
             exit()
         }
 
-        logger.info("loading scope $scope.name")
-
         Scope existing = null
         try {
             existing = scopeEndpoint.getScope(scope.name).get()

@@ -5,7 +5,9 @@
  */
 package com.junbo.csr.spec.model;
 
+import com.junbo.common.id.GroupId;
 import com.junbo.common.id.UserGroupId;
+import com.junbo.common.id.UserId;
 import com.junbo.common.model.ResourceMeta;
 
 /**
@@ -14,9 +16,9 @@ import com.junbo.common.model.ResourceMeta;
 public class CsrInvitationCode extends ResourceMeta<String> {
     private String code;
     private String email;
-    private Long userId;
-    private String pendingGroupId;
-    private String inviteGroupId;
+    private UserId userId;
+    private GroupId pendingGroupId;
+    private GroupId inviteGroupId;
     private UserGroupId userGroupId;
 
     public String getCode() {
@@ -35,27 +37,27 @@ public class CsrInvitationCode extends ResourceMeta<String> {
         this.email = email;
     }
 
-    public Long getUserId() {
+    public UserId getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(UserId userId) {
         this.userId = userId;
     }
 
-    public String getPendingGroupId() {
+    public GroupId getPendingGroupId() {
         return pendingGroupId;
     }
 
-    public void setPendingGroupId(String pendingGroupId) {
+    public void setPendingGroupId(GroupId pendingGroupId) {
         this.pendingGroupId = pendingGroupId;
     }
 
-    public String getInviteGroupId() {
+    public GroupId getInviteGroupId() {
         return inviteGroupId;
     }
 
-    public void setInviteGroupId(String inviteGroupId) {
+    public void setInviteGroupId(GroupId inviteGroupId) {
         this.inviteGroupId = inviteGroupId;
     }
 

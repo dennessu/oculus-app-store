@@ -1,0 +1,295 @@
+{
+    "offerRevision": {
+        "status": "DRAFT", 
+        "publisher": {
+            "href": "https://api.oculusvr.com/v1/organizations/1234", 
+            "id": "1234"
+        }, 
+        "distributionChannel": [
+            "INAPP"
+        ], 
+        "offer": {
+            "href": "https://api.oculusvr.com/v1/offers/bbaaccddeef7", 
+            "id": "bbaaccddeef7"
+        }, 
+        "items": [
+            {
+                "item": {
+                    "href": "https://api.oculusvr.com/v1/items/aabbccddeef7", 
+                    "id": "aabbccddeef7"
+                }, 
+                "quantity": 1
+            }
+        ], 
+        "self": {
+            "href": "/v1/offer-revisions/ddaabbcceef7", 
+            "id": "ddaabbcceef7"
+        }, 
+        "restrictions": {
+            "preconditionItems": [
+                {
+                    "href": "https://api.oculusvr.com/v1/items/1230", 
+                    "id": "1230"
+                }
+            ], 
+            "limitPerOrder": 2, 
+            "exclusionItems": [
+                {
+                    "href": "https://api.oculusvr.com/v1/items/120", 
+                    "id": "120"
+                }
+            ], 
+            "limitPerCustomer": 10
+        }, 
+        "rev": null, 
+        "eventActions": {
+            "PURCHASE": [
+                {
+                    "itemId": {
+                        "href": "https://api.oculusvr.com/v1/items/aabbccddeef7", 
+                        "id": "aabbccddeef7"
+                    }, 
+                    "type": "GRANT_ENTITLEMENT", 
+                    "useCount": 10
+                }
+            ]
+        }, 
+        "subOffers": [], 
+        "regions": {
+            "RU": {
+                "releaseDate": "2013-06-10T09:05:58Z", 
+                "isPurchasable": true
+            }, 
+            "FR": {
+                "releaseDate": "2013-06-10T09:05:58Z", 
+                "isPurchasable": true
+            }, 
+            "NL": {
+                "releaseDate": "2013-06-10T09:05:58Z", 
+                "isPurchasable": true
+            }, 
+            "CN": {
+                "releaseDate": "2013-06-10T09:05:58Z", 
+                "isPurchasable": true
+            }, 
+            "DE": {
+                "releaseDate": "2013-06-10T09:05:58Z", 
+                "isPurchasable": true
+            }, 
+            "JP": {
+                "releaseDate": "2013-06-10T09:05:58Z", 
+                "isPurchasable": true
+            }, 
+            "US": {
+                "releaseDate": "2013-06-10T09:05:58Z", 
+                "isPurchasable": true
+            }, 
+            "KR": {
+                "releaseDate": "2013-06-10T09:05:58Z", 
+                "isPurchasable": true
+            }, 
+            "MX": {
+                "releaseDate": "2013-06-10T09:05:58Z", 
+                "isPurchasable": true
+            }
+        }, 
+        "futureExpansion": {}, 
+        "price": {
+            "prices": {
+                "RU": {
+                    "RUB": 1.0
+                }, 
+                "FR": {
+                    "EUR": 11.0
+                }, 
+                "NL": {
+                    "EUR": 11.0
+                }, 
+                "CN": {
+                    "CNY": 50.0
+                }, 
+                "DE": {
+                    "EUR": 11.0
+                }, 
+                "JP": {
+                    "JPY": 1000
+                }, 
+                "US": {
+                    "USD": 10.0
+                }, 
+                "KR": {
+                    "KRW": 1100
+                }, 
+                "MX": {
+                    "MXN": 12.0
+                }
+            }, 
+            "priceTier": null, 
+            "priceType": "CUSTOM"
+        }, 
+        "locales": {
+            "en_US": {
+                "images": {
+                    "main": {}, 
+                    "thumbnail": {
+                        "y": 10, 
+                        "x": 20, 
+                        "href": "location of image", 
+                        "id": "id of image", 
+                        "size": 200
+                    }
+                }, 
+                "shortDescription": "short description", 
+                "name": "testOffer_CartCheckout_Stored_Value", 
+                "videos": [
+                    {
+                        "id": "id of the video", 
+                        "service": "YOUTUBE", 
+                        "title": "title of the video"
+                    }
+                ], 
+                "longDescription": "long description"
+            }
+        }
+    }, 
+    "item": {
+        "genres": [], 
+        "defaultOffer": null, 
+        "self": {
+            "href": "/v1/items/aabbccddeef7", 
+            "id": "aabbccddeef7"
+        }, 
+        "rev": null, 
+        "currentRevision": null, 
+        "revisions": null, 
+        "type": "CONSUMABLE_UNLOCK", 
+        "developer": {
+            "href": "https://api.oculusvr.com/v1/organizations/1234", 
+            "id": "1234"
+        }
+    }, 
+    "itemRevision": {
+        "status": "DRAFT", 
+        "distributionChannel": [
+            "INAPP", 
+            "STORE"
+        ], 
+        "countries": {
+            "US": {
+                "supportPhone": "1234567890"
+            }
+        }, 
+        "self": {
+            "href": "/v1/item-revisions/ccaabbddeef7", 
+            "id": "ccaabbddeef7"
+        }, 
+        "rev": null, 
+        "item": {
+            "href": "https://api.oculusvr.com/v1/items/aabbccddeef7", 
+            "id": "aabbccddeef7"
+        }, 
+        "locales": {
+            "en_US": {
+                "minimumSystemRequirements": {
+                    "PC": {
+                        "notice": "notice", 
+                        "multiplayer": "multiplayer", 
+                        "memory": "16G", 
+                        "hardDrive": "1T", 
+                        "processor": "4 CPUs", 
+                        "noticeImportant": "Notice important", 
+                        "other": "Other", 
+                        "graphics": "Intel", 
+                        "soundCard": "soundCard", 
+                        "operatingSystem": "Win7", 
+                        "directX": "Direct 11"
+                    }
+                }, 
+                "legalInformation": "legalInformation", 
+                "name": "testItem_InAppConsumable1", 
+                "copyright": "copyright", 
+                "knownBugs": "knownBugs", 
+                "color": "black", 
+                "releaseNotes": {
+                    "longNotes": "Long notes", 
+                    "shortNotes": "Short Notes"
+                }, 
+                "communityForumLink": "community forum link", 
+                "longDescription": "long description", 
+                "credits": "credits", 
+                "supportEmail": "support email", 
+                "videos": [], 
+                "images": {
+                    "main": {
+                        "y": 15, 
+                        "x": 20, 
+                        "href": "location of image", 
+                        "id": "id of image", 
+                        "size": 300
+                    }, 
+                    "thumbnail": {
+                        "y": 10, 
+                        "x": 20, 
+                        "href": "location of image", 
+                        "id": "id of image", 
+                        "size": 200
+                    }
+                }, 
+                "recommendedSystemRequirements": {
+                    "PC": {
+                        "notice": "notice", 
+                        "multiplayer": "multiplayer", 
+                        "memory": "16G", 
+                        "hardDrive": "1T", 
+                        "processor": "4 CPUs", 
+                        "noticeImportant": "Notice important", 
+                        "other": "Other", 
+                        "graphics": "Intel", 
+                        "soundCard": "soundCard", 
+                        "operatingSystem": "Win7", 
+                        "directX": "Direct 11"
+                    }
+                }, 
+                "shortDescription": "short description", 
+                "manualDocument": "the pdf address", 
+                "size": "small"
+            }
+        }, 
+        "futureExpansion": {}, 
+        "supportedInputDevices": [
+            "KEYBOARD", 
+            "MOUSE"
+        ], 
+        "msrp": {
+            "prices": {
+                "JP": {
+                    "JPY": 1000
+                }, 
+                "US": {
+                    "USD": 10.0
+                }
+            }, 
+            "priceTier": null, 
+            "priceType": "CUSTOM"
+        }, 
+        "developer": {
+            "href": "https://api.oculusvr.com/v1/organizations/1234", 
+            "id": "1234"
+        }
+    }, 
+    "offer": {
+        "publisher": {
+            "href": "https://api.oculusvr.com/v1/organizations/1234", 
+            "id": "1234"
+        }, 
+        "self": {
+            "href": "/v1/offers/bbaaccddeef7", 
+            "id": "bbaaccddeef7"
+        }, 
+        "rev": null, 
+        "isPublished": false, 
+        "environment": "DEV", 
+        "currentRevision": null, 
+        "categories": []
+    }
+}

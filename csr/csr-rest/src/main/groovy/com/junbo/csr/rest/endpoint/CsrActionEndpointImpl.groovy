@@ -49,30 +49,14 @@ class CsrActionEndpointImpl implements CsrActionEndpoint {
             throw AppErrors.INSTANCE.invalidRequest().exception()
         }
 
-        return tokenEndpoint.postToken(new AccessTokenRequest(
+        return this.postToken(new AccessTokenRequest(
                 clientId: clientId,
                 clientSecret: clientSecret,
                 grantType: 'PASSWORD',
                 scope: 'offline',
                 username: username,
                 password: password
-        )).recover { Throwable throwable ->
-            if (throwable instanceof AppErrorException) {
-                AppErrorException appError = (AppErrorException) throwable
-                throw appError
-            }
-            else {
-                throw AppErrors.INSTANCE.getAccessTokenFailed().exception()
-            }
-        }.then { AccessTokenResponse tokenResponse ->
-            def csrToken = new CsrToken(
-                    accessToken: tokenResponse.accessToken,
-                    refreshToken: tokenResponse.refreshToken,
-                    expiresIn: tokenResponse.expiresIn
-            )
-
-            return Promise.pure(csrToken)
-        }
+        ))
     }
 
     @Override
@@ -81,13 +65,17 @@ class CsrActionEndpointImpl implements CsrActionEndpoint {
             throw AppErrors.INSTANCE.invalidRequest().exception()
         }
 
-        return tokenEndpoint.postToken(new AccessTokenRequest(
+        return this.postToken(new AccessTokenRequest(
                 clientId: clientId,
                 clientSecret: clientSecret,
                 grantType: 'REFRESH_TOKEN',
                 scope: 'offline',
                 refreshToken: refreshToken
-        )).recover { Throwable throwable ->
+        ))
+    }
+
+    private Promise<CsrToken> postToken(AccessTokenRequest request) {
+        return tokenEndpoint.postToken(request).recover { Throwable throwable ->
             if (throwable instanceof AppErrorException) {
                 AppErrorException appError = (AppErrorException) throwable
                 throw appError
@@ -96,6 +84,10 @@ class CsrActionEndpointImpl implements CsrActionEndpoint {
                 throw AppErrors.INSTANCE.getAccessTokenFailed().exception()
             }
         }.then { AccessTokenResponse tokenResponse ->
+            if (tokenResponse == null || tokenResponse.accessToken == null || tokenResponse.refreshToken == null || tokenResponse.expiresIn == null) {
+                throw AppErrors.INSTANCE.getAccessTokenFailed().exception()
+            }
+
             def csrToken = new CsrToken(
                     accessToken: tokenResponse.accessToken,
                     refreshToken: tokenResponse.refreshToken,

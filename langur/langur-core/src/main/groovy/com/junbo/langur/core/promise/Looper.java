@@ -9,6 +9,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -24,15 +25,14 @@ public class Looper {
     };
 
     public static Looper current() {
-        Looper looper = current.get();
-        return looper;
+        return current.get();
     }
 
     private final ReentrantLock lock;
 
     private final Condition notEmpty;
 
-    private int startId;
+    private int nestedLevel;
 
     private RunnableWrapper runnableWrapper;
 
@@ -41,31 +41,26 @@ public class Looper {
         notEmpty = lock.newCondition();
     }
 
-    public int start() {
+    public AtomicBoolean start() {
         lock.lock();
         try {
-            startId++;
-
-            return startId;
+            nestedLevel++;
+            return new AtomicBoolean(false);
         } finally {
             lock.unlock();
         }
-
     }
 
-    public void stop(final int startId) {
+    public void stop(AtomicBoolean completionHolder) {
         lock.lock();
         try {
-            if (this.startId != startId) {
-                throw new IllegalStateException("this.startId " + this.startId + " != startId " + startId);
-            }
+            this.nestedLevel--;
+            completionHolder.set(true);
 
-            this.startId--;
             notEmpty.signal();
         } finally {
             lock.unlock();
         }
-
     }
 
     public boolean offerRunnable(RunnableWrapper runnableWrapper) {
@@ -78,7 +73,7 @@ public class Looper {
             this.runnableWrapper = runnableWrapper;
             notEmpty.signal();
 
-            if (startId == 0) {
+            if (nestedLevel <= 0) {
                 return false;
             }
 
@@ -89,23 +84,19 @@ public class Looper {
 
     }
 
-    private Runnable poolRunnable(final int startId) {
+    private Runnable pollRunnable(AtomicBoolean stopHolder) {
         Runnable runnable = null;
 
         lock.lock();
         try {
-            while (this.startId == startId && this.runnableWrapper == null) {
+            while (!stopHolder.get() && this.runnableWrapper == null) {
                 try {
                     if (!notEmpty.await(30, TimeUnit.SECONDS)) {
-                        throw new RuntimeException("Timeout during poolRunnable");
+                        throw new RuntimeException("Timeout during pollRunnable");
                     }
                 } catch (InterruptedException ignored) {
                     throw new RuntimeException(ignored);
                 }
-            }
-
-            if (this.startId > startId) {
-                throw new IllegalStateException("this.startId " + this.startId + " > startId " + startId);
             }
 
             if (this.runnableWrapper != null) {
@@ -119,9 +110,9 @@ public class Looper {
         return runnable;
     }
 
-    public void run(int startId) {
+    public void run(AtomicBoolean stopHolder) {
         while (true) {
-            Runnable runnable = poolRunnable(startId);
+            Runnable runnable = pollRunnable(stopHolder);
 
             if (runnable == null) {
                 break;
@@ -134,15 +125,16 @@ public class Looper {
     public static void tryToWait(ListenableFuture future) {
         if (!future.isDone()) {
             final Looper looper = Looper.current();
-            final int startId = looper.start();
+            final AtomicBoolean stopHolder = looper.start();
+
             future.addListener(new Runnable() {
                 @Override
                 public void run() {
-                    looper.stop(startId);
+                    looper.stop(stopHolder);
                 }
             }, MoreExecutors.sameThreadExecutor());
 
-            looper.run(startId);
+            looper.run(stopHolder);
         }
     }
 

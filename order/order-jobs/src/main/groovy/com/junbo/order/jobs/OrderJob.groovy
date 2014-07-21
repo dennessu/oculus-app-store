@@ -21,6 +21,7 @@ import javax.annotation.Resource
 import java.util.concurrent.Callable
 import java.util.concurrent.Future
 import java.util.concurrent.atomic.AtomicInteger
+
 /**
  * Created by xmchen on 14-4-2.
  */
@@ -45,6 +46,34 @@ class OrderJob implements InitializingBean {
 
     @Resource(name ='orderTransactionHelper')
     TransactionHelper transactionHelper
+
+    void processOrder(String orderIdListStr) {
+        // export to JMX for debugging
+        LOGGER.info('name=OrderProcessJobStart')
+        def orderIdList = orderIdListStr.split(',').collect { String idStr ->
+            Long.valueOf(idStr.trim())
+        }
+        List<Future> futures = [] as LinkedList<Future>
+        orderIdList.each { Long orderId ->
+            Order order = transactionHelper.executeInTransaction {
+                orderRepository.getOrder(orderId)
+            }
+            def future = threadPoolTaskExecutor.submit(new Callable<Void>() {
+                @Override
+                Void call() throws Exception {
+                    def result = orderProcessor.process(order)
+                    return null
+                }
+            } )
+            appendFuture(futures, future)
+        }
+
+        futures.each { Future future ->
+            future.get()
+        }
+
+        LOGGER.info('name=OrderProcessJobEnd')
+    }
 
     void execute() {
         LOGGER.info('name=OrderProcessJobStart')
