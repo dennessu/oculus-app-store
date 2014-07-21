@@ -16,8 +16,7 @@ dependencies {
 ext {
     processorClass = [
             'com.junbo.langur.processor.RestAdapterProcessor',
-            'com.junbo.langur.processor.ClientProxyProcessor',
-            'com.junbo.langur.processor.ClientProxyFactoryProcessor'
+            'com.junbo.langur.processor.ClientProxyProcessor'
     ].join(',')
 }
 

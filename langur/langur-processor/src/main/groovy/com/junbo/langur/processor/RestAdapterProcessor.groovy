@@ -13,7 +13,6 @@ import groovy.transform.CompileStatic
 import javax.annotation.processing.SupportedAnnotationTypes
 import javax.annotation.processing.SupportedSourceVersion
 import javax.lang.model.SourceVersion
-
 /**
  * Created by kevingu on 11/28/13.
  */

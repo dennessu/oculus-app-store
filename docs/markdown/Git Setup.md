@@ -11,6 +11,7 @@ Make sure the git version is `1.9.x` or above. If your git version is incorrect,
   ```
   brew install git
   ```
+
   Note: this may install git 2.0 for you. It should work but I haven't tried.
 
 Make sure git is in your `PATH`.
@@ -99,11 +100,13 @@ Or, we have a simplified instruction:
   ```
   c:\silkcloudcode\main> arc list
   ```
+
   You would get the error, saying that you don't have the phabricator certificate, now let's install the cert.
   Execute the following command, follow the instruction to input the token you got from the website
   ```
   c:\silkcloudcode\main> arc install-certificate
   ```
+
   Type `arc list` to confirm. If there is no error, you should be all set.
 
 **Warning**: If you have `php.exe` previously in your `%PATH%`, please remove it or make sure `c:\arc\arcanist\bin` is ahead of other `php.exe` path. Otherwise, you will get some cert error.
@@ -132,7 +135,7 @@ arc list
 1. You would get the error, saying that you don't have a phabricator certificate, now let's install the cert
 1. Execute the following command, follow the instruction to input the token you got from the web site
 ```
-install-certificate
+arc install-certificate
 ```
 1. Type `arc list` to confirm. If there is no error, you should be all set.
 
@@ -255,10 +258,12 @@ If you have any pending changes, stash them first.
 ```
 git stash
 ```
+
 Then pull the latest changes by:
 ```
 git pull
 ```
+
 If you have any pending changes stashed, pop them.
 ```
 git stash pop
@@ -285,16 +290,19 @@ Make sure you stashed or committed your pending changes before switch.
   git reset origin/master
   git stash
   ```
+
   * Use arc feature to create the new branch and pop the code from stash
   ```
   arc feature my_fix
   git stash pop
   ```
+
   * Commit the change again
   ```
   git add -A :/
   git commit
   ```
+
 ## How to add all files and commit?
 ```
 git add -A :/
@@ -326,29 +334,34 @@ git reset HEAD --hard
 ```
 git checkout origin/master -- <file>
 ```
+
 ## How do I revert a single file to HEAD (last committed version)?
 **WARNING**: Your change to the file will be lost.
 ```
 git checkout -- <file>
 ```
+
 ## <a name='howtos-conflict'></a> What if there is a conflict in `git pull`?
 If your code contains conflicting change with the new changes pull from `origin/master`, you will be prompted by something like:
-  ```
-  error: could not apply fa39187... something to add to patch A
+```
+error: could not apply fa39187... something to add to patch A
 
-  When you have resolved this problem, run "git rebase --continue".
-  If you prefer to skip this patch, run "git rebase --skip" instead.
-  To check out the original branch and stop rebasing, run "git rebase --abort".
-  Could not apply fa39187f3c3dfd2ab5faa38ac01cf3de7ce2e841... Change fake file
-  ```
+When you have resolved this problem, run "git rebase --continue".
+If you prefer to skip this patch, run "git rebase --skip" instead.
+To check out the original branch and stop rebasing, run "git rebase --abort".
+Could not apply fa39187f3c3dfd2ab5faa38ac01cf3de7ce2e841... Change fake file
+```
+
 And your current git branch will be in some unnamed branch. If your bash shows the branch name, it will be something like:
 ```
 main git:(fa39187)
 ```
+
 Assume you have kdiff3 installed, you can use the following command to resolve conflicts:
 ```
 git mergetool
 ```
+
 The command starts the conflict resolution.
   * It will show kdiff3 and you can resolve conflicts then save the file.
   * If there are pending conflicts, kdiff3 won't allow you to save.
@@ -359,6 +372,7 @@ When it goes back to bash prompt, it means the conflict resolution is done. Type
 ```
 git rebase --continue
 ```
+
 If there is another conflict with something fetched from origin, it will show the error message again. Otherwise it will bring you back to your branch. Then check the diff and verify your change is still okay after the merge.
 
 For example:
@@ -372,6 +386,7 @@ Normal merge conflict for 'newfile.txt':
   {local}: modified file
   {remote}: modified file
 ```
+
 Now merge the file in kdiff3. When you close the kdiff3 (in OS X, you need to quit by pressing `CMD+Q`.)
 ```
 ➜  testGit git:(d31caf0) ✗ git rebase --continue
@@ -385,6 +400,7 @@ If you did something wrong in the rebase, you can abort and retry using:
 git rebase --abort
 git pull
 ```
+
 Note that any change you applied during your merge will be **lost**. You can backup the merge result before running the commands.
 
 The merge can also be done without kdiff3. For more information, refer to [this article](https://help.github.com/articles/resolving-a-merge-conflict-from-the-command-line).
@@ -395,10 +411,12 @@ In case if you want to use your version or their version of some file instead of
   ```
   git checkout --ours -- <file>
   ```
+
   * Accept theirs
   ```
   git checkout --theirs -- <file>
   ```
+
 If you have other files to merge after accepting yours or theirs for the file, you can use `git mergetool` to continue the merge process until all files are merged.
 
 ## What if `arc land` failed and stopped at a rebase branch?
@@ -435,6 +453,7 @@ To check out the original branch and stop rebasing, run "git rebase --abort".
 Usage Exception: 'git rebase master' failed. You can abort with 'git rebase --abort', or resolve conflicts and use 'git rebase --continue' to continue forward. After resolving the rebase, run 'arc land' again.
 ➜  testGit git:(d31caf0) ✗
 ```
+
 In this case, follow "[What if there is a conflict in git pull](#howtos-conflict)" to resolve the conflict.
 
 When the conflict is resolved, you will be in your feature branch. Try `arc land` again to push your changes.
@@ -461,6 +480,7 @@ Normal merge conflict for 'newfile.txt':
   {remote}: modified file
 ➜  testGit git:(feature1)
 ```
+
 For more details on how to resolve conflicts, refer to "[What if there is a conflict in git pull](#howtos-conflict)".
 
 ## What if `arc land` didn't lead to a conflict, but failed due to other issues and the current branch is now `master`?
@@ -470,17 +490,20 @@ Sometimes it happens due to network issue. In this case, check the following to 
   ```
   git reset origin/master --hard
   ```
+
   * Try `arc land` again
 1. If the feature branch is already deleted, and master contains your changes, try to push your changes:
-```
-git push
-```
-If it is rejected due to some other commits pushed before yours, try pull and push again.
-```
-git pull
-git push
-```
-Be careful if you suspect other people's change might conflict with your change and break the build/test. In that case, refer to [What if I committed something to master before `arc feature`?](#howtos-forgot-arc-feature) to move your change to a feature branch again.
+  ```
+  git push
+  ```
+
+  If it is rejected due to some other commits pushed before yours, try pull and push again.
+  ```
+  git pull
+  git push
+  ```
+
+Be careful if you have concern that other people's change might conflict with your change and break the build/test. In that case, refer to [What if I committed something to master before `arc feature`?](#howtos-forgot-arc-feature) to move your change to a feature branch again.
 
 ## What if I'm confused with what happened in my branch?
 If all above **HOWTO**s didn't help and you are confused with your branch status, turn to colleges who are more familiar with git for help. For example, you can ask [Kevin Gu](kg@silkcloud.com), [Tianxiang Chen](txchen@silkcloud.com) or [Shu Zhang](shuz@silkcloud.com) for help.
