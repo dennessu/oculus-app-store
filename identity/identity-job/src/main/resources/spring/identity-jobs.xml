@@ -27,7 +27,6 @@
     <!-- Identity Job -->
     <bean id="identityJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject" ref="identityJob" />
-        <property name="targetClass" value="com.junbo.identity.job.IdentityJob"/>
         <property name="targetMethod" value="execute" />
         <property name="concurrent" value="false"/>
     </bean>

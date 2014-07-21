@@ -9,7 +9,6 @@ import org.springframework.beans.BeansException
 import org.springframework.beans.factory.BeanFactory
 import org.springframework.beans.factory.support.DefaultListableBeanFactory
 import org.springframework.beans.factory.support.RootBeanDefinition
-import org.springframework.beans.factory.xml.XmlBeanDefinitionReader
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.support.ClassPathXmlApplicationContext
 import org.springframework.util.StopWatch
@@ -92,13 +91,6 @@ class JunboApplication {
         @Override
         protected DefaultListableBeanFactory createBeanFactory() {
             return new JunboBeanFactory(internalParentBeanFactory)
-        }
-
-        @Override
-        protected void initBeanDefinitionReader(XmlBeanDefinitionReader reader) {
-            super.initBeanDefinitionReader(reader)
-
-            reader.documentReaderClass = JunboBeanDefinitionDocumentReader
         }
     }
 
