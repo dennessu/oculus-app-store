@@ -230,6 +230,8 @@ class UserPersonalInfoResourceImpl implements UserPersonalInfoResource {
             } else if (listOptions.phoneNumber != null) {
                 return userPersonalInfoRepository.searchByPhoneNumber(listOptions.phoneNumber, listOptions.isValidated, listOptions.limit,
                         listOptions.offset).then(filterUserPersonalInfos)
+            } else if (listOptions.name != null) {
+                return userPersonalInfoRepository.searchByName(listOptions.name, listOptions.limit, listOptions.offset).then {filterUserPersonalInfos}
             } else {
                 return userPersonalInfoRepository.searchByUserId(listOptions.userId, listOptions.limit,
                         listOptions.offset).then(filterUserPersonalInfos)
