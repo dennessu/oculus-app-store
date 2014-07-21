@@ -21,6 +21,8 @@ public class BaseOrderTestClass {
     protected String offer_physical_preOrder;
     protected String offer_inApp_consumable1;
     protected String offer_inApp_consumable2;
+    protected String offer_digital_free;
+    protected String offer_physical_free;
 
     public BaseOrderTestClass() {
         super();
@@ -36,6 +38,8 @@ public class BaseOrderTestClass {
         offer_physical_preOrder = ConfigHelper.getSetting("testdata.offer.preorder.physical.normal");
         offer_inApp_consumable1 = ConfigHelper.getSetting("testdata.offer.inApp.consumable.normal1");
         offer_inApp_consumable2 = ConfigHelper.getSetting("testdata.offer.inApp.consumable.normal2");
+        offer_digital_free = ConfigHelper.getSetting("testdata.offer.digital.free");
+        offer_physical_free = ConfigHelper.getSetting("testdata.offer.physical.free");
     }
 
     OrderTestDataProvider testDataProvider = new OrderTestDataProvider();

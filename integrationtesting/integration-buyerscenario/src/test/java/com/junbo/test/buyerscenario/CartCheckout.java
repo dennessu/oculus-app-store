@@ -25,13 +25,11 @@ import com.junbo.test.common.property.*;
 import com.junbo.common.model.Results;
 import com.junbo.common.id.UserId;
 
-import net.minidev.json.JSONUtil;
 import org.apache.commons.collections.map.HashedMap;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -325,6 +323,103 @@ public class CartCheckout extends BaseTestClass {
         testCheckoutByPalPal(CatalogItemType.PHYSICAL);
     }
 
+    @Property(
+            priority = Priority.BVT,
+            features = "BuyerScenarios",
+            component = Component.Order,
+            owner = "JasonFu",
+            status = Status.Manual,
+            description = "Test digital goods checkout by Adyen",
+            steps = {
+                    "1. Post a new user",
+                    "2. Post new Adyen to the user above",
+                    "3. Post order to checkout",
+
+            }
+    )
+    @Test
+    public void testDigitalGoodCheckoutByAdyen() throws Exception {
+        String uid = testDataProvider.createUser();
+
+        Country country = Country.DE;
+        Currency currency = Currency.EUR;
+
+        Map<String, Integer> offerList = new HashedMap();
+
+        offerList.put(offer_digital_normal1, 1);
+        offerList.put(offer_digital_normal2, 2);
+
+        AdyenInfo adyenInfo = AdyenInfo.getAdyenInfo(country);
+        String adyenId = testDataProvider.postPaymentInstrument(uid, adyenInfo);
+
+        String orderId = testDataProvider.postOrder(uid, country, currency, adyenId, false, offerList);
+
+        Order order = Master.getInstance().getOrder(orderId);
+        order.setTentative(false);
+        order.getPayments().get(0).setSuccessRedirectUrl("http://www.baidu.com/");
+        order.getPayments().get(0).setCancelRedirectUrl("http://www.baidu.com/cancel/");
+        orderId = testDataProvider.updateOrder(order);
+        order = Master.getInstance().getOrder(orderId);
+        String providerConfirmUrl = order.getPayments().get(0).getProviderConfirmUrl();
+
+        String[] params = providerConfirmUrl.split("&");
+        String urlEncoded = new String();
+
+        for (int i = 0; i < params.length; i++) {
+            if (params[i].contains("merchantSig")) {
+                String sig = params[i].substring(12);
+                String sigEncoded = URLEncoder.encode(sig, "utf-8");
+                params[i] = "merchantSig=" + sigEncoded;
+            }
+            if (params[i].contains("shopperEmail")) {
+                String email = params[i].substring(13);
+                String emailEncoded = URLEncoder.encode(email, "utf-8");
+                params[i] = "shopperEmail=" + emailEncoded;
+            }
+            urlEncoded += params[i] + "&";
+        }
+        urlEncoded = urlEncoded.substring(0, urlEncoded.length() - 1);
+
+        emulateAdyenCheckout(order);
+
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "BuyerScenarios",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test checkout",
+            steps = {
+                    "1. Post a new user",
+                    "3. Post new credit card to new user.",
+                    "4. Post another user",
+                    "5. Post order with the first credit card ",
+                    "6. Update order tentative to false",
+                    "7. Verify restriction"
+            }
+    )
+    @Test
+    public void testCheckoutWithAnotherCreditCard() throws Exception {
+        String uid1 = testDataProvider.createUser();
+
+        Map<String, Integer> offerList = new HashedMap();
+
+        offerList.put(offer_digital_normal1, 1);
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String creditCardId = testDataProvider.postPaymentInstrument(uid1, creditCardInfo);
+
+        String uid2 = testDataProvider.createUser();
+
+        testDataProvider.postOrder(
+                uid2, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList, 400);
+
+
+    }
+
+
     private void testCheckoutByPalPal(CatalogItemType itemType) throws Exception {
         String uid = testDataProvider.createUser();
 
@@ -394,6 +489,7 @@ public class CartCheckout extends BaseTestClass {
         }
     }
 
+
     private void emulatePayPalCheckout(Order order, String token, CatalogItemType itemType) throws Exception {
         //Long paymentTransactionId = getTransactionId(order.getUser().getValue());
 
@@ -457,68 +553,6 @@ public class CartCheckout extends BaseTestClass {
 
         String paymentId = dbHelper.executeScalar(sqlStr, DBHelper.DBName.PAYMENT);
         return Long.parseLong(paymentId);
-    }
-
-    @Property(
-            priority = Priority.BVT,
-            features = "BuyerScenarios",
-            component = Component.Order,
-            owner = "JasonFu",
-            status = Status.Manual,
-            description = "Test digital goods checkout by Adyen",
-            steps = {
-                    "1. Post a new user",
-                    "2. Post new Adyen to the user above",
-                    "3. Post order to checkout",
-
-            }
-    )
-    @Test
-    public void testDigitalGoodCheckoutByAdyen() throws Exception {
-        String uid = testDataProvider.createUser();
-
-        Country country = Country.DE;
-        Currency currency = Currency.EUR;
-
-        Map<String, Integer> offerList = new HashedMap();
-
-        offerList.put(offer_digital_normal1, 1);
-        offerList.put(offer_digital_normal2, 2);
-
-        AdyenInfo adyenInfo = AdyenInfo.getAdyenInfo(country);
-        String adyenId = testDataProvider.postPaymentInstrument(uid, adyenInfo);
-
-        String orderId = testDataProvider.postOrder(uid, country, currency, adyenId, false, offerList);
-
-        Order order = Master.getInstance().getOrder(orderId);
-        order.setTentative(false);
-        order.getPayments().get(0).setSuccessRedirectUrl("http://www.baidu.com/");
-        order.getPayments().get(0).setCancelRedirectUrl("http://www.baidu.com/cancel/");
-        orderId = testDataProvider.updateOrder(order);
-        order = Master.getInstance().getOrder(orderId);
-        String providerConfirmUrl = order.getPayments().get(0).getProviderConfirmUrl();
-
-        String[] params = providerConfirmUrl.split("&");
-        String urlEncoded = new String();
-
-        for (int i = 0; i < params.length; i++) {
-            if (params[i].contains("merchantSig")) {
-                String sig = params[i].substring(12);
-                String sigEncoded = URLEncoder.encode(sig, "utf-8");
-                params[i] = "merchantSig=" + sigEncoded;
-            }
-            if (params[i].contains("shopperEmail")) {
-                String email = params[i].substring(13);
-                String emailEncoded = URLEncoder.encode(email, "utf-8");
-                params[i] = "shopperEmail=" + emailEncoded;
-            }
-            urlEncoded += params[i] + "&";
-        }
-        urlEncoded = urlEncoded.substring(0, urlEncoded.length() - 1);
-
-        emulateAdyenCheckout(order);
-
-
     }
 
 

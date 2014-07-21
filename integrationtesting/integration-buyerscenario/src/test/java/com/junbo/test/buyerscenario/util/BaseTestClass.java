@@ -24,7 +24,8 @@ public class BaseTestClass extends TestClass {
     protected String offer_physical_normal1;
     protected String offer_physical_normal2;
     protected String offer_storedValue_normal;
-
+    protected String offer_digital_free;
+    protected String offer_physical_free;
 
     public BaseTestClass() {
         loadOffers();
@@ -36,6 +37,8 @@ public class BaseTestClass extends TestClass {
         offer_physical_normal1 = ConfigHelper.getSetting("testdata.offer.physical.normal1");
         offer_physical_normal2 = ConfigHelper.getSetting("testdata.offer.physical.normal2");
         offer_storedValue_normal = ConfigHelper.getSetting("testdata.offer.storedvalue.normal");
+        offer_digital_free = ConfigHelper.getSetting("testdata.offer.digital.free");
+        offer_physical_free = ConfigHelper.getSetting("testdata.offer.physical.free");
     }
 
 }
