@@ -5,35 +5,49 @@
  */
 package com.junbo.store.spec.model.purchase;
 
+import com.junbo.common.enumid.CountryId;
+import com.junbo.common.enumid.LocaleId;
+import com.junbo.common.id.OfferId;
+import com.junbo.common.id.UserId;
+
 /**
  * The MakeFreePurchaseRequest class.
  */
 public class MakeFreePurchaseRequest {
-    private String offerId;
-    private String country;
-    private String locale;
+    private UserId userId;
+    private OfferId offerId;
+    private CountryId country;
+    private LocaleId locale;
 
-    public String getOfferId() {
+    public UserId getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UserId userId) {
+        this.userId = userId;
+    }
+
+    public OfferId getOfferId() {
         return offerId;
     }
 
-    public void setOfferId(String offerId) {
+    public void setOfferId(OfferId offerId) {
         this.offerId = offerId;
     }
 
-    public String getCountry() {
+    public CountryId getCountry() {
         return country;
     }
 
-    public void setCountry(String country) {
+    public void setCountry(CountryId country) {
         this.country = country;
     }
 
-    public String getLocale() {
+    public LocaleId getLocale() {
         return locale;
     }
 
-    public void setLocale(String locale) {
+    public void setLocale(LocaleId locale) {
         this.locale = locale;
     }
 }

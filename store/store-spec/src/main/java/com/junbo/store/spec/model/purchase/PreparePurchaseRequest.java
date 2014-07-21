@@ -17,7 +17,6 @@ import com.junbo.common.id.UserId;
 public class PreparePurchaseRequest {
     private UserId userId;
     private OfferId offerId;
-    private Integer quantity;
     private CountryId country;
     private LocaleId locale;
     private CurrencyId currency;
@@ -37,14 +36,6 @@ public class PreparePurchaseRequest {
 
     public void setOfferId(OfferId offerId) {
         this.offerId = offerId;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
     }
 
     public CountryId getCountry() {

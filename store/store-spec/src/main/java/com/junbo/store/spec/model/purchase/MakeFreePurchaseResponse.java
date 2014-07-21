@@ -5,6 +5,7 @@
  */
 package com.junbo.store.spec.model.purchase;
 
+import com.junbo.common.id.OrderId;
 import com.junbo.store.spec.model.BaseResponse;
 
 /**
@@ -12,15 +13,15 @@ import com.junbo.store.spec.model.BaseResponse;
  */
 public class MakeFreePurchaseResponse extends BaseResponse {
 
-    private String orderId;
+    private OrderId orderId;
 
     private AppDeliveryData appDeliveryData;
 
-    public String getOrderId() {
+    public OrderId getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(String orderId) {
+    public void setOrderId(OrderId orderId) {
         this.orderId = orderId;
     }
 

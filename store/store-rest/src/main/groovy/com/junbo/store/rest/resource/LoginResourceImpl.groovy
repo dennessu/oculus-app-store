@@ -266,6 +266,9 @@ class LoginResourceImpl implements  LoginResource {
     private Promise<Void> rollBackUser(User user) {
         String originalName = user.username
         user.username = "storerb${IdFormatter.encodeId(user.getId())}"
+        user.emails = []
+        user.phones = []
+        user.addresses = []
         resourceContainer.userResource.put(user.getId(), user).syncThen {
             LOGGER.info('name=Rollback_Created_User, userId={}, name={}, rollback_name={}', IdFormatter.encodeId(user.getId()), originalName, user?.username)
         }
