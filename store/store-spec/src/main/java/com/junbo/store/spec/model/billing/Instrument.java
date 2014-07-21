@@ -8,8 +8,8 @@ package com.junbo.store.spec.model.billing;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
-import com.junbo.identity.spec.v1.model.UserPersonalInfo;
 import com.junbo.payment.spec.model.PaymentInstrument;
+import com.junbo.store.spec.model.identity.PersonalInfo;
 
 import java.math.BigDecimal;
 
@@ -28,9 +28,9 @@ public class Instrument {
     private String creditCardType;
     private String storedValueCurrency;
     private BigDecimal storedValueBalance;
-    private UserPersonalInfo billingAddress;
-    private UserPersonalInfo phoneNumber;
-    private UserPersonalInfo email;
+    private PersonalInfo billingAddress;
+    private PersonalInfo phoneNumber;
+    private PersonalInfo email;
     @JsonIgnore
     private PaymentInstrument paymentInstrument;
 
@@ -114,27 +114,27 @@ public class Instrument {
         this.storedValueBalance = storedValueBalance;
     }
 
-    public UserPersonalInfo getBillingAddress() {
+    public PersonalInfo getBillingAddress() {
         return billingAddress;
     }
 
-    public void setBillingAddress(UserPersonalInfo billingAddress) {
+    public void setBillingAddress(PersonalInfo billingAddress) {
         this.billingAddress = billingAddress;
     }
 
-    public UserPersonalInfo getPhoneNumber() {
+    public PersonalInfo getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(UserPersonalInfo phoneNumber) {
+    public void setPhoneNumber(PersonalInfo phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
-    public UserPersonalInfo getEmail() {
+    public PersonalInfo getEmail() {
         return email;
     }
 
-    public void setEmail(UserPersonalInfo email) {
+    public void setEmail(PersonalInfo email) {
         this.email = email;
     }
 

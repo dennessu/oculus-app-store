@@ -143,6 +143,20 @@ class RequestValidator {
         validatePurchaseToken(request.purchaseToken, 'purchaseToken')
     }
 
+    Promise validateUserCredentialChangeRequest(UserCredentialChangeRequest request) {
+        notEmpty(request.username, 'username')
+        notEmpty(request.newCredential, 'newCredential')
+        notEmpty(request.newCredential.type, 'newCredential.type')
+        notEmpty(request.newCredential.value, 'newCredential.value')
+        notEmpty(request.oldCredential, 'oldCredential')
+        notEmpty(request.oldCredential.type, 'oldCredential.type')
+        notEmpty(request.oldCredential.value, 'oldCredential.value')
+        if (request.oldCredential.type != request.newCredential.type) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('oldCredential.type', 'should be same as newCredential.type').exception()
+        }
+        return Promise.pure(null)
+    }
+
     void notEmpty(Object val, String fieldName) {
         if (StringUtils.isEmpty(val)) {
             throw AppCommonErrors.INSTANCE.fieldRequired(fieldName).exception()

@@ -95,7 +95,8 @@ class DataConverter {
         return new PersonalInfo(
                 userPersonalInfoId: userPersonalInfo.getId(),
                 value: userPersonalInfo.value,
-                isDefault: link.isDefault
+                isDefault: link == null ? false : link.isDefault,
+                type: userPersonalInfo.type
         )
     }
 }

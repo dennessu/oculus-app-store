@@ -329,7 +329,7 @@ class StoreResourceImpl implements StoreResource {
                     country: makeFreePurchaseRequest.country,
                     currency: new CurrencyId(FREE_PURCHASE_CURRENCY),
                     locale: makeFreePurchaseRequest.locale,
-                    tentative: false,
+                    tentative: true,
                     orderItems: [new OrderItem(offer: makeFreePurchaseRequest.offerId, quantity: 1)]
             )
 
