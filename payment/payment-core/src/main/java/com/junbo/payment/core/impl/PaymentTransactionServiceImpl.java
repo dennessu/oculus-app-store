@@ -15,13 +15,17 @@ import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.provider.impl.PaymentProviderRegistry;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.core.util.ProxyExceptionResponse;
-import com.junbo.payment.spec.enums.*;
+import com.junbo.payment.spec.enums.PaymentAPI;
+import com.junbo.payment.spec.enums.PaymentEventType;
+import com.junbo.payment.spec.enums.PaymentStatus;
+import com.junbo.payment.spec.enums.PaymentType;
+import com.junbo.payment.spec.model.PaymentCallbackParams;
 import com.junbo.payment.spec.model.PaymentEvent;
 import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.payment.spec.model.PaymentCallbackParams;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -363,7 +367,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
     public Promise<PaymentTransaction> reportPaymentEvent(PaymentEvent event, PaymentCallbackParams paymentCallbackParams) {
         if(event.getPaymentId() == null){
             LOGGER.error("the payment id is missing for the event.");
-            throw AppClientExceptions.INSTANCE.invalidPaymentId("null paymentId").exception();
+            throw AppClientExceptions.INSTANCE.paymentInstrumentNotFound("null paymentId").exception();
         }
         PaymentTransaction payment = getPaymentById(event.getPaymentId());
         LOGGER.info("report event for payment:" + event.getPaymentId());
@@ -458,7 +462,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
     private void validateTransactionRequest(Long paymentId, PaymentTransaction request, PaymentTransaction existed){
         if(existed == null){
             LOGGER.error("the payment id is invalid for the event." + paymentId);
-            throw AppClientExceptions.INSTANCE.invalidPaymentId(paymentId.toString()).exception();
+            throw AppClientExceptions.INSTANCE.paymentInstrumentNotFound(paymentId.toString()).exception();
         }
         if(!existed.getBillingRefId().equalsIgnoreCase(request.getBillingRefId())){
             LOGGER.error("the billing ref id is different with the one before for payment: " + paymentId);
@@ -474,7 +478,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
     private void validateReverse(Long paymentId, PaymentTransaction request, PaymentTransaction existedTransaction){
         if(existedTransaction == null){
             LOGGER.error("the payment id is invalid for the event." + paymentId);
-            throw AppClientExceptions.INSTANCE.invalidPaymentId(paymentId.toString()).exception();
+            throw AppClientExceptions.INSTANCE.paymentInstrumentNotFound(paymentId.toString()).exception();
         }
         if(!existedTransaction.getBillingRefId().equalsIgnoreCase(request.getBillingRefId())){
             LOGGER.error("the billing ref id is different with the one before for payment: " + paymentId);

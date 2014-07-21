@@ -10,6 +10,7 @@ import com.adyen.services.common.Amount;
 import com.adyen.services.payment.*;
 import com.adyen.services.recurring.RecurringDetail;
 import com.junbo.common.enumid.CurrencyId;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.util.PromiseFacade;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.clientproxy.PersonalInfoFacade;
@@ -36,7 +37,9 @@ import javax.ws.rs.core.MultivaluedMap;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.rmi.RemoteException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 /**
@@ -65,7 +68,7 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
             public PaymentInstrument call() throws Exception {
                 Address addressDetail = personalInfoFacade.getBillingAddress(request.getBillingAddressId()).get();
                 if(addressDetail == null){
-                    throw AppClientExceptions.INSTANCE.invalidBillingAddressId(request.getBillingAddressId().toString()).exception();
+                    throw AppClientExceptions.INSTANCE.billingAddressNotFound(request.getBillingAddressId().toString()).exception();
                 }
                 String defaultCountry = addressDetail.getCountry();
                 CurrencyId defaultCurrency = countryResource.getDefaultCurrency(defaultCountry).get();
@@ -195,7 +198,8 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
         String expireDate = request.getTypeSpecificDetails().getExpireDate();
         String[] tokens = expireDate.split("-");
         if (tokens == null || tokens.length < 2) {
-            throw AppClientExceptions.INSTANCE.invalidExpireDateFormat(expireDate).exception();
+            throw AppCommonErrors.INSTANCE.fieldInvalid("expire_date",
+                    "only accept format: yyyy-MM or yyyy-MM-dd").exception();
         }
         try {
             sbReq.append("&paymentRequest.card.expiryMonth=" + urlEncode(String.valueOf(tokens[1])));

@@ -35,7 +35,7 @@ public class PaymentCallbackServiceImpl implements PaymentCallbackService{
         PaymentTransaction existedTransaction = paymentRepositoryFacade.getByPaymentId(paymentId);
         if(existedTransaction == null){
             LOGGER.error("the payment id is invalid.");
-            throw AppClientExceptions.INSTANCE.invalidPaymentId(paymentId.toString()).exception();
+            throw AppClientExceptions.INSTANCE.paymentInstrumentNotFound(paymentId.toString()).exception();
         }
         paymentRepositoryFacade.addPaymentProperties(paymentId, properties);
         //report a payment notify event to notify corresponding partner
