@@ -27,18 +27,8 @@ class MasterKeyDataHandler extends BaseDataHandler {
 
     @Override
     void handle(String content) {
-        MasterKey masterKey
         try {
-            masterKey = transcoder.decode(new TypeReference<MasterKey>() {}, content) as MasterKey
-        } catch (Exception e) {
-            logger.error("Error parsing masterKey $content", e)
-            exit()
-        }
-
-        logger.debug('Create new masterKey with this content')
-
-        try {
-            masterKeyResource.create(masterKey).get()
+            masterKeyResource.create().get()
         } catch (Exception e) {
             logger.error("Error creating masterKey", e)
         }

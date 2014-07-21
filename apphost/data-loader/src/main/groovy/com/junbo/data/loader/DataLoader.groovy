@@ -75,19 +75,12 @@ class DataLoader {
             } finally {
                 exit()
             }
-        } else if (args.length == 1 && args[0].equalsIgnoreCase("imasterkey")) {
-            String masterKey = new String(System.console().readPassword("Enter master key: "));
-            if (StringUtils.isEmpty(masterKey)) {
-                LOGGER.error("Invalid master key.")
-                exit()
-            }
-            masterKey = StringEscapeUtils.escapeJavaScript(masterKey);
-            String data = "{\"value\": \"$masterKey\"}";
+        } else if (args.length == 1 && args[0].equalsIgnoreCase("masterkey")) {
             try {
                 DataHandler handler = handlers["masterkey"];
-                handler.handle(data)
+                handler.handle(null)
             } catch (Exception e) {
-                LOGGER.error("Error ocuured while loading $data", e)\
+                LOGGER.error("Error occured while generating masterkey", e)\
             } finally {
                 exit()
             }
