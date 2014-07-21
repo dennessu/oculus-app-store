@@ -64,7 +64,6 @@ class UserGroupDataHandler extends BaseDataHandler {
         }
 
         UserGroup userGroup = new UserGroup()
-        logger.info("Add user $userGroupDataData.username to group $userGroupDataData.groupName")
 
         UserGroup existing = null
         User user = null

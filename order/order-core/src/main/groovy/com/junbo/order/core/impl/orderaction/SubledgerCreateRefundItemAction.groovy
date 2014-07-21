@@ -1,5 +1,6 @@
 package com.junbo.order.core.impl.orderaction
 
+import com.google.common.math.DoubleMath
 import com.junbo.common.util.IdFormatter
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
@@ -28,6 +29,8 @@ class SubledgerCreateRefundItemAction implements Action {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(SubledgerCreateRefundItemAction)
 
+    private final static double TOLERANCE = 0.00001
+
     @Resource(name = 'orderSubledgerHelper')
     SubledgerHelper subledgerHelper
 
@@ -39,6 +42,8 @@ class SubledgerCreateRefundItemAction implements Action {
 
     @Resource(name = 'orderFacadeContainer')
     FacadeContainer facadeContainer
+
+
 
     @Override
     @Transactional
@@ -71,24 +76,19 @@ class SubledgerCreateRefundItemAction implements Action {
                         originalSubledgerItem: payoutSubledgerItem.getId()
                 )
 
-                long lastRefundedQuantity = 0
+                BigDecimal totalAmountRemain = payoutSubledgerItem.totalAmount
+                BigDecimal totalPayoutAmountRemain = payoutSubledgerItem.totalPayoutAmount
                 refundSubledgerItems.each { SubledgerItem subledgerItem ->
-                    lastRefundedQuantity += subledgerItem.totalQuantity
+                    totalAmountRemain -= subledgerItem.totalAmount
+                    totalPayoutAmountRemain -= subledgerItem.totalPayoutAmount
                 }
 
-                if (lastRefundedQuantity + orderItem.quantity >= payoutSubledgerItem.totalQuantity) {
-                    BigDecimal refundedAmount = 0, refundedPayoutAmout = 0
-                    refundSubledgerItems.each { SubledgerItem subledgerItem ->
-                        refundedAmount += subledgerItem.totalAmount
-                        refundedPayoutAmout += subledgerItem.totalPayoutAmount
-                    }
-                    refundedSubledgerItem.totalAmount = payoutSubledgerItem.totalAmount - refundedAmount
-                    refundedSubledgerItem.totalPayoutAmount = payoutSubledgerItem.totalPayoutAmount - refundedPayoutAmout
+                if (DoubleMath.fuzzyEquals(totalAmountRemain.doubleValue(), orderItem.totalAmount.doubleValue(), TOLERANCE)) {  // amount fully refunded
+                    refundedSubledgerItem.totalAmount = totalAmountRemain
+                    refundedSubledgerItem.totalPayoutAmount = totalPayoutAmountRemain
                 } else {
-                    refundedSubledgerItem.totalAmount = (payoutSubledgerItem.totalAmount * refundedSubledgerItem.totalQuantity / payoutSubledgerItem.totalQuantity).
-                            setScale(currency.numberAfterDecimal, BigDecimal.ROUND_HALF_EVEN)
-                    refundedSubledgerItem.totalPayoutAmount = (payoutSubledgerItem.totalPayoutAmount * refundedSubledgerItem.totalQuantity / payoutSubledgerItem.totalQuantity).
-                            setScale(currency.numberAfterDecimal, BigDecimal.ROUND_HALF_EVEN)
+                    refundedSubledgerItem.totalAmount = orderItem.totalAmount
+                    refundedSubledgerItem.totalPayoutAmount = orderItem.totalAmount * payoutSubledgerItem.totalPayoutAmount / payoutSubledgerItem.totalAmount
                 }
 
                 subledgerService.createSubledgerItem(refundedSubledgerItem)

@@ -38,8 +38,6 @@ class ApiDefinitionDataHandler extends BaseDataHandler {
             exit()
         }
 
-        logger.info("loading apiDefinition $apiDefinition.apiName")
-
         ApiDefinition existing = null
         try {
             existing = apiDefinitionResource.get(apiDefinition.apiName).get()

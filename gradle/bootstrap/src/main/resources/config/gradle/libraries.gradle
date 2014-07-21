@@ -99,7 +99,7 @@ ext {
 
             // asyc client
             asyncclient: 'org.apache.httpcomponents:httpcomponents-asyncclient:4.0',
-            async_http_client: 'com.ning:async-http-client:1.7.22',
+            async_http_client: 'com.ning:async-http-client:1.8.12',
 
             // free marker
             freemarker: 'org.freemarker:freemarker:2.3.20',

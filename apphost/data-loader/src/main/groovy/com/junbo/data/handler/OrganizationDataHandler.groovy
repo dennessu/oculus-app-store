@@ -49,7 +49,6 @@ class OrganizationDataHandler extends BaseDataHandler {
         Organization organization = new Organization()
         organization.name = orgName
         organization.isValidated = true
-        logger.info("loading organization: $orgName")
 
         Organization existing = null
         User orgOwnerUser = null

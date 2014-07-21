@@ -91,8 +91,6 @@ class LocaleDataHandler extends BaseDataHandler {
             exit()
         }
 
-        logger.info("loading locale $locale.localeCode")
-
         Locale existing = null
         try {
             existing = localeResource.get(new LocaleId(locale.localeCode), new LocaleGetOptions()).get()

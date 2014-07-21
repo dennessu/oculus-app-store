@@ -30,9 +30,14 @@ public class JunboAsyncHttpClient implements Closeable {
 
     private JunboAsyncHttpClient() {
         ConfigService configService = ConfigServiceManager.instance();
+
         AsyncHttpClientConfigBean config = new AsyncHttpClientConfigBean();
+
         config.setConnectionTimeOutInMs(Integer.parseInt(configService.getConfigValue("common.client.connectionTimeout")));
         config.setRequestTimeoutInMs(Integer.parseInt(configService.getConfigValue("common.client.requestTimeout")));
+        config.setMaxConnectionPerHost(Integer.parseInt(configService.getConfigValue("common.client.maxConnectionPerHost")));
+        config.setCompressionEnabled(true);
+
         this.asyncHttpClient = new AsyncHttpClient(config);
         this.isDebugMode = "true".equalsIgnoreCase(configService.getConfigValue("common.conf.debugMode"));
     }

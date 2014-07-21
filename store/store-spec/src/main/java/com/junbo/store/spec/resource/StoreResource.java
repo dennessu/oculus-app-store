@@ -16,6 +16,10 @@ import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.iap.IAPOfferGetRequest;
 import com.junbo.store.spec.model.iap.IAPOfferGetResponse;
+import com.junbo.store.spec.model.identity.UserProfileGetRequest;
+import com.junbo.store.spec.model.identity.UserProfileGetResponse;
+import com.junbo.store.spec.model.identity.UserProfileUpdateRequest;
+import com.junbo.store.spec.model.identity.UserProfileUpdateResponse;
 import com.junbo.store.spec.model.purchase.*;
 
 import javax.ws.rs.*;
@@ -34,15 +38,15 @@ public interface StoreResource {
     @Path("/userprofile")
     Promise<UserProfileGetResponse> getUserProfile(@BeanParam UserProfileGetRequest userProfileGetRequest);
 
-    @PUT
+    @POST
     @Path("/userprofile")
-    Promise<UserProfileUpdateResponse> updateUserProfile(@BeanParam UserProfileUpdateRequest userProfileUpdateRequest);
+    Promise<UserProfileUpdateResponse> updateUserProfile(UserProfileUpdateRequest userProfileUpdateRequest);
 
     @GET
     @Path("/billingprofile")
     Promise<BillingProfileGetResponse> getBillingProfile(@BeanParam BillingProfileGetRequest billingProfileGetRequest);
 
-    @PUT
+    @POST
     @Path("/billingprofile")
     Promise<BillingProfileUpdateResponse> updateBillingProfile(BillingProfileUpdateRequest billingProfileUpdateRequest);
 

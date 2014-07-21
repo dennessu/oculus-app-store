@@ -27,8 +27,13 @@ abstract class Created201Marker {
 
         // process response header
         if (JunboHttpContext.requestUri != null) {
-            def location = JunboHttpContext.requestUri.toString() +
-                    ((resourceId instanceof Id) ? IdFormatter.encodeId((Id) resourceId) : resourceId.toString())
+            def location = JunboHttpContext.requestUri.toString()
+
+            if (!location.endsWith('/')) {
+                location += '/'
+            }
+
+            location += ((resourceId instanceof Id) ? IdFormatter.encodeId((Id) resourceId) : resourceId.toString())
 
             JunboHttpContext.responseStatus = 201
             JunboHttpContext.responseHeaders.add('Location', location)

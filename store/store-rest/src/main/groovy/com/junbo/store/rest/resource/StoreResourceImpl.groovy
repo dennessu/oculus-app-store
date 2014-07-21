@@ -1,4 +1,5 @@
 package com.junbo.store.rest.resource
+
 import com.junbo.catalog.spec.model.item.*
 import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
@@ -32,18 +33,12 @@ import com.junbo.payment.spec.model.PageMetaData
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam
 import com.junbo.store.db.repo.ConsumptionRepository
-import com.junbo.store.rest.utils.DataConverter
-import com.junbo.store.rest.utils.IAPValidator
-import com.junbo.store.rest.utils.InstrumentUtils
-import com.junbo.store.rest.utils.ResourceContainer
+import com.junbo.store.rest.utils.*
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.*
 import com.junbo.store.spec.model.billing.*
-import com.junbo.store.spec.model.iap.Consumption
-import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest
-import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse
-import com.junbo.store.spec.model.iap.IAPOfferGetRequest
-import com.junbo.store.spec.model.iap.IAPOfferGetResponse
+import com.junbo.store.spec.model.iap.*
+import com.junbo.store.spec.model.identity.*
 import com.junbo.store.spec.model.purchase.*
 import com.junbo.store.spec.resource.StoreResource
 import groovy.transform.CompileStatic
@@ -52,7 +47,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
-import org.springframework.util.CollectionUtils
 
 import javax.annotation.Resource
 import javax.ws.rs.BeanParam
@@ -91,45 +85,78 @@ class StoreResourceImpl implements StoreResource {
     @Resource(name = 'cloudantConsumptionRepository')
     private ConsumptionRepository consumptionRepository
 
+    @Resource(name = 'storeRequestValidator')
+    private RequestValidator requestValidator
+
+    @Resource(name = 'storeIdentityUtils')
+    private IdentityUtils identityUtils
+
     private List<PIType> piTypes
 
     @Override
     Promise<UserProfileGetResponse> getUserProfile(@BeanParam UserProfileGetRequest userProfileGetRequest) {
-        User user = null;
-        com.junbo.store.spec.model.UserProfile userProfile = new com.junbo.store.spec.model.UserProfile()
-        return resourceContainer.userResource.list(new UserListOptions(username: userProfileGetRequest.username)).syncThen { Results<User> users ->
-            if (!users.items.isEmpty()) {
-                user = users.items.iterator().next()
-                userProfile.username = user.username
-                userProfile.userId = user.getId()
-
-                if (!CollectionUtils.isEmpty(user.emails)) {
-                    UserPersonalInfoLink emailLink = user.emails.find { UserPersonalInfoLink link -> link.isDefault }
-                    if (emailLink == null) {
-                        emailLink = user.emails.iterator().next()
-                    }
-                    return resourceContainer.userPersonalInfoResource.get(emailLink.value, new UserPersonalInfoGetOptions(properties: 'value')).syncThen { UserPersonalInfo userPersonalInfo ->
-                        userProfile.email = ObjectMapperProvider.instance().treeToValue(userPersonalInfo.value, Email).info
-                    }
-                } else {
-                    return Promise.pure(null)
-                }
-            } else {
-                return Promise.pure(null);
-            }
-        }.syncThen {
-            // todo get tfa setting
-            if (user == null) {
-                return new UserProfileGetResponse(status: ResponseStatus.FAIL.name(), statusDetail: ResponseStatus.Detail.USER_NOT_FOUND.name())
-            } else {
-                return new UserProfileGetResponse(status: ResponseStatus.SUCCESS.name(), userProfile: userProfile)
-            }
+        return innerGetUserProfile(userProfileGetRequest.userId).syncThen { StoreUserProfile userProfile ->
+            return new UserProfileGetResponse(status: ResponseStatus.SUCCESS.name(), userProfile: userProfile)
         }
     }
 
     @Override
-    Promise<UserProfileUpdateResponse> updateUserProfile(@BeanParam UserProfileUpdateRequest userProfileUpdateRequest) {
-        return Promise.pure(null)
+    Promise<UserProfileUpdateResponse> updateUserProfile(UserProfileUpdateRequest userProfileUpdateRequest) {
+        User user = null
+        Promise.pure(null).then {
+            requestValidator.validateUserProfileUpdateRequest(userProfileUpdateRequest).then {
+                resourceContainer.userResource.get(userProfileUpdateRequest.userId, new UserGetOptions()).syncThen { User u ->
+                    user = u
+                    user.emails = user.emails == null ? new ArrayList<UserPersonalInfoLink>() : user.emails
+                    user.phones = user.phones == null ? new ArrayList<UserPersonalInfoLink>() : user.phones
+                    user.addresses = user.addresses == null ? new ArrayList<UserPersonalInfoLink>() : user.addresses
+                }
+            }
+        }.then {
+            PersonalInfo updateValue = ObjectMapperProvider.instance().treeToValue(userProfileUpdateRequest.updateValue, PersonalInfo)
+            updateValue.isDefault = updateValue.isDefault == null ? false : updateValue.isDefault
+            def action = UserProfileUpdateRequest.UpdateAction.valueOf(userProfileUpdateRequest.action)
+            if (action.requirePersonalInfoId) {
+                requestValidator.notEmpty(updateValue.userPersonalInfoId, 'updateValue.userPersonalInfoId')
+            }
+            switch (action) {
+                case UserProfileUpdateRequest.UpdateAction.REMOVE_EMAIL:
+                    identityUtils.removeFromUserPersonalInfoLinkList(user.emails, updateValue.userPersonalInfoId, true)
+                    return Promise.pure(null)
+
+                case UserProfileUpdateRequest.UpdateAction.ADD_EMAIL:
+                    return identityUtils.addPersonalInfo(user.getId(), Constants.PersonalInfoType.EMAIL, updateValue, user.emails)
+
+                case UserProfileUpdateRequest.UpdateAction.UPDATE_DEFAULT_EMAIL:
+                    identityUtils.setDefaultUserPersonalInfo(user.emails, updateValue.userPersonalInfoId)
+                    return Promise.pure(null)
+
+                case UserProfileUpdateRequest.UpdateAction.REMOVE_PHONE:
+                    identityUtils.removeFromUserPersonalInfoLinkList(user.phones, updateValue.userPersonalInfoId, true)
+                    return Promise.pure(null)
+
+                case UserProfileUpdateRequest.UpdateAction.ADD_PHONE:
+                    return identityUtils.addPersonalInfo(user.getId(), Constants.PersonalInfoType.PHONE, updateValue, user.phones)
+
+                case UserProfileUpdateRequest.UpdateAction.UPDATE_DEFAULT_PHONE:
+                    identityUtils.setDefaultUserPersonalInfo(user.phones, updateValue.userPersonalInfoId)
+                    return Promise.pure(null)
+
+                case UserProfileUpdateRequest.UpdateAction.UPDATE_NAME:
+                    return resourceContainer.userPersonalInfoResource.create(new UserPersonalInfo(
+                            userId: user.getId(), type: Constants.PersonalInfoType.NAME, value: updateValue.value
+                    )).then { UserPersonalInfo added ->
+                        user.name = new UserPersonalInfoLink(value: added.getId())
+                        return Promise.pure(null)
+                    }
+            }
+        }.then {
+            resourceContainer.userResource.put(user.getId(), user);
+        }.then {
+            return innerGetUserProfile(user.getId()).syncThen { StoreUserProfile userProfile ->
+               return new UserProfileUpdateResponse(status: ResponseStatus.SUCCESS.name(), userProfile: userProfile)
+            }
+        }
     }
 
     @Override
@@ -647,6 +674,38 @@ class StoreResourceImpl implements StoreResource {
                     return Promise.pure(null)
                 }
             }
+        }
+    }
+
+    Promise<StoreUserProfile> innerGetUserProfile(UserId userId) {
+        User user
+        StoreUserProfile userProfile = new StoreUserProfile()
+        resourceContainer.userResource.get(userId, new UserGetOptions()).syncThen { User u ->
+            user = u;
+        }.syncThen {
+            userProfile.username = user.username
+            userProfile.idUserProfile = user.profile
+            userProfile.userId = userId
+        }.then {
+            identityUtils.expandPersonalInfo(user.emails).syncThen { List<PersonalInfo> personalInfos ->
+                userProfile.emails = personalInfos
+            }
+        }.then {
+            identityUtils.expandPersonalInfo(user.phones).syncThen { List<PersonalInfo> personalInfos ->
+                userProfile.phones = personalInfos
+            }
+        }.then {
+            identityUtils.expandPersonalInfo(user.addresses).syncThen { List<PersonalInfo> personalInfos ->
+                userProfile.addresses = personalInfos
+            }
+        }.then {
+            if (user.name != null) {
+                return resourceContainer.userPersonalInfoResource.get(user.name.value, new UserPersonalInfoGetOptions()).syncThen { UserPersonalInfo info ->
+                    userProfile.name = dataConvertor.toStorePersonalInfo(info, user.name)
+                }
+            }
+        }.syncThen {
+            return userProfile
         }
     }
 
