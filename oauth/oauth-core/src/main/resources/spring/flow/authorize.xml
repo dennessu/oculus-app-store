@@ -19,6 +19,7 @@
             <wf:action ref="validateLocale" />
             <wf:action ref="validateCountry" />
             <wf:action ref="validateExtraParameters" />
+            <wf:action ref="validateIpAddress"/>
             <wf:transition on="*" to="CHECK_LOGIN"/>
         </wf:action-state>
 

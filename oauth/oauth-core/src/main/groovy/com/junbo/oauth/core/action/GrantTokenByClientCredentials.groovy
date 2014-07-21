@@ -12,6 +12,7 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.service.OAuthTokenService
 import com.junbo.oauth.spec.model.AccessToken
+import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.Assert
@@ -35,11 +36,15 @@ class GrantTokenByClientCredentials implements Action {
 
         def oauthInfo = contextWrapper.oauthInfo
         def client = contextWrapper.client
+        def parameterMap = contextWrapper.parameterMap
 
         Assert.notNull(oauthInfo, 'oauthInfo is null')
         Assert.notNull(client, 'client is null')
 
-        AccessToken accessToken = tokenService.generateAccessToken(client, 0L, oauthInfo.scopes)
+        String ipRestriction = parameterMap.getFirst(OAuthParameters.IP_RESTRICTION)
+        Boolean ipRestrictionRequired = Boolean.parseBoolean(ipRestriction);
+
+        AccessToken accessToken = tokenService.generateAccessToken(client, 0L, oauthInfo.scopes, ipRestrictionRequired)
 
         contextWrapper.accessToken = accessToken
 

@@ -65,6 +65,9 @@ class Client extends ResourceMeta<String> {
     @JsonProperty('need_consent')
     Boolean needConsent
 
+    @JsonProperty('ip_whitelist')
+    Set<String> ipWhitelist
+
     @Override
     String getId() {
         return clientId

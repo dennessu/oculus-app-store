@@ -70,6 +70,9 @@ public interface AppCommonErrors {
     @ErrorDef(httpStatusCode = 403, code = "003", message = "Forbidden")
     AppError forbidden();
 
+    @ErrorDef(httpStatusCode = 403, code = "003", message = "Forbidden", reason = "{0}")
+    AppError forbiddenWithMessage(String message);
+
     @ErrorDef(httpStatusCode = 403, code = "003", message = "Forbidden", field = "access_token", reason = "The access token is invalid")
     AppError invalidAccessToken();
 

@@ -8,6 +8,7 @@
     <wf:flow id="grantTokenFlow">
         <wf:action-state id="validation">
             <wf:action ref="authenticateClient"/>
+            <wf:action ref="validateIpAddress"/>
             <wf:action ref="validateGrantType"/>
             <wf:transition on="AUTHORIZATION_CODE" to="authorizationCodeBranch"/>
             <wf:transition on="PASSWORD" to="passwordBranch"/>

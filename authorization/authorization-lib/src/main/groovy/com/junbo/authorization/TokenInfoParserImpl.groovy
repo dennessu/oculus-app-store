@@ -1,5 +1,6 @@
 package com.junbo.authorization
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
 import com.junbo.common.util.IdFormatter
@@ -13,6 +14,7 @@ import net.sf.ehcache.Ehcache
 import net.sf.ehcache.Element
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.Assert
+import org.springframework.util.StringUtils
 
 /**
  * Created by Shenhua on 5/14/2014.
@@ -80,6 +82,12 @@ public class TokenInfoParserImpl implements TokenInfoParser {
 
         try {
             def tokenInfo = tokenInfoEndpoint.getTokenInfo(accessToken).get();
+
+            if (StringUtils.hasText(tokenInfo.ipAddress) && JunboHttpContext.requestIpAddress != tokenInfo.ipAddress) {
+                throw AppCommonErrors.INSTANCE.forbiddenWithMessage('The request user\'s ip address is ' +
+                        'different from the access token\'s ip address').exception()
+            }
+
             tokenInfoCache.put(new Element(accessToken, tokenInfo))
 
             return tokenInfo

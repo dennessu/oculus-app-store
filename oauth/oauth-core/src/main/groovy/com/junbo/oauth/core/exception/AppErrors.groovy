@@ -180,4 +180,8 @@ interface AppErrors {
     @ErrorDef(httpStatusCode = 400, code = '137', message = 'Method Not Allowed', reason = 'The GET method is not allowed during flow state change',
             field = 'event')
     AppError methodNotAllowed()
+
+    @ErrorDef(httpStatusCode = 403, code = '138', message = 'Ip not in whitelist',
+            reason = 'The request IP {0} is not in the client\'s ip whitelist', field = 'ip_address')
+    AppError notIpWhitelist(String ip)
 }

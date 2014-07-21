@@ -44,6 +44,9 @@ public class AccessTokenRequest {
     @FormParam("nonce")
     private String nonce;
 
+    @FormParam("ip_restriction")
+    private String ipRestriction;
+
     public String getClientId() {
         return clientId;
     }
@@ -122,5 +125,13 @@ public class AccessTokenRequest {
 
     public void setNonce(String nonce) {
         this.nonce = nonce;
+    }
+
+    public String getIpRestriction() {
+        return ipRestriction;
+    }
+
+    public void setIpRestriction(String ipRestriction) {
+        this.ipRestriction = ipRestriction;
     }
 }

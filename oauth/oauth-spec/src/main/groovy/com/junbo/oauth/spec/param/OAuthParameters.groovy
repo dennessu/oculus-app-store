@@ -46,6 +46,7 @@ class OAuthParameters {
     public static final String EXTRA_PREFIX = 'extra_'
     public static final String EMAIL_VERIFY_CODE = 'evc'
     public static final String RESET_PASSWORD_CODE = 'rpc'
+    public static final String IP_RESTRICTION = "ip_restriction"
 
     public static final String ERROR = 'error'
     public static final String NICK_NAME = 'nickname'
