@@ -30,10 +30,7 @@
 
     <bean id="identityPaymentInstrumentResource" class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy"
             parent="paymentInstrumentProxy">
-        <property name="accessTokenProvider" ref="identityAccessTokenProvider" />
     </bean>
-
-
 
     <bean id="identityRoleResource" class="com.junbo.authorization.spec.resource.proxy.RoleResourceClientProxy" parent="roleResourceClientProxy">
         <property name="accessTokenProvider" ref="identityAccessTokenProvider"/>

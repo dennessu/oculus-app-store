@@ -18,13 +18,11 @@
 
     <bean id="order.identityUserClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
           parent="userResourceClientProxy">
-        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
     <bean id="order.identityUserPersonalInfoClient"
           class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy"
           parent="userPersonalInfoResourceClientProxy">
-        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
     <bean id="order.billingBalanceClient"
@@ -35,7 +33,6 @@
     <bean id="order.identityCurrencyClient"
           class="com.junbo.identity.spec.v1.resource.proxy.CurrencyResourceClientProxy"
           parent="currencyResourceClientProxy">
-        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
     <bean id="order.identityOrganizationClient"
@@ -78,7 +75,6 @@
     <bean id="order.paymentInstrumentClient"
           class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy"
           parent="paymentInstrumentProxy">
-        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
     <bean id="order.paymentCallbackClient"

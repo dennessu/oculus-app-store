@@ -5,8 +5,8 @@
  */
 package com.junbo.langur.processor.handler
 
+import com.junbo.langur.core.AuthorizationNotRequired
 import com.junbo.langur.core.InProcessCallable
-import com.junbo.langur.core.RestResource
 import com.junbo.langur.processor.ProcessingException
 import com.junbo.langur.processor.model.ClientMethodModel
 import com.junbo.langur.processor.model.ClientParameterModel
@@ -96,6 +96,8 @@ class ClientProxyParser implements RestResourceHandler {
 
                 clientMethod.inProcessCallable = getInProcessCallable(mapperType, executableElement)
 
+                clientMethod.authorizationNotRequired = getAuthorizationNotRequired(mapperType, executableElement)
+
                 clientProxy.clientMethods.add(clientMethod)
         }
 
@@ -180,6 +182,19 @@ class ClientProxyParser implements RestResourceHandler {
         }
 
         return true
+    }
+
+    private static boolean getAuthorizationNotRequired(TypeElement mapperType, ExecutableElement methodElement) {
+        def authorizationNotRequired = methodElement.getAnnotation(AuthorizationNotRequired)
+        if (authorizationNotRequired == null) {
+            authorizationNotRequired = mapperType.getAnnotation(AuthorizationNotRequired)
+        }
+
+        if (authorizationNotRequired != null) {
+            return true
+        }
+
+        return false
     }
 
     private static String parseInnerParamType(TypeMirror typeMirror) {

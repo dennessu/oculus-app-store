@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.spec.endpoint;
 
+import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.oauth.spec.model.RefreshToken;
@@ -22,6 +23,7 @@ import javax.ws.rs.core.MediaType;
 @Api("oauth2")
 @Path("/oauth2/refresh-token")
 @RestResource
+@AuthorizationNotRequired
 @Produces(MediaType.APPLICATION_JSON)
 public interface RefreshTokenResource {
     @GET

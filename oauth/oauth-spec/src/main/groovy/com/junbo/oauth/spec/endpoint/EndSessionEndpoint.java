@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.spec.endpoint;
 
+import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -24,6 +25,7 @@ import javax.ws.rs.core.UriInfo;
 @Api("oauth2")
 @Path("/oauth2/end-session")
 @RestResource
+@AuthorizationNotRequired
 public interface EndSessionEndpoint {
 
     @ApiOperation("Logout the user from web flow")
