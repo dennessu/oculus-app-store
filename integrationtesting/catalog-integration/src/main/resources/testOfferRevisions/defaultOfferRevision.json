@@ -9,7 +9,7 @@
         }
     ],
     "subOffers": [],
-    "distributionChannel": ["INAPP"],
+    "distributionChannel": ["STORE"],
     "price":{
         "priceType": "CUSTOM",
         "priceTier": null,

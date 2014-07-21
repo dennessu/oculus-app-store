@@ -1,124 +1,8 @@
 {
-    "offerRevision": {
-        "status": "DRAFT", 
-        "publisher": {
-            "href": "https://api.oculusvr.com/v1/organizations/1234", 
-            "id": "1234"
-        }, 
-        "distributionChannel": [
-            "INAPP"
-        ], 
-        "offer": {
-            "href": "https://api.oculusvr.com/v1/offers/bbaaccddeefa", 
-            "id": "bbaaccddeefa"
-        }, 
-        "items": [
-            {
-                "item": {
-                    "href": "https://api.oculusvr.com/v1/items/aabbccddeefa", 
-                    "id": "aabbccddeefa"
-                }, 
-                "quantity": 1
-            }
-        ], 
-        "self": {
-            "href": "/v1/offer-revisions/ddaabbcceef6", 
-            "id": "ddaabbcceef6"
-        }, 
-        "restrictions": {
-            "preconditionItems": [
-                {
-                    "href": "https://api.oculusvr.com/v1/items/1230", 
-                    "id": "1230"
-                }
-            ], 
-            "limitPerOrder": 2, 
-            "exclusionItems": [
-                {
-                    "href": "https://api.oculusvr.com/v1/items/120", 
-                    "id": "120"
-                }
-            ], 
-            "limitPerCustomer": 10
-        }, 
-        "rev": null, 
-        "eventActions": null, 
-        "subOffers": [], 
-        "regions": {
-            "RU": {
-                "releaseDate": "2013-06-10T09:05:58Z", 
-                "isPurchasable": true
-            }, 
-            "FR": {
-                "releaseDate": "2013-06-10T09:05:58Z", 
-                "isPurchasable": true
-            }, 
-            "NL": {
-                "releaseDate": "2013-06-10T09:05:58Z", 
-                "isPurchasable": true
-            }, 
-            "CN": {
-                "releaseDate": "2013-06-10T09:05:58Z", 
-                "isPurchasable": true
-            }, 
-            "DE": {
-                "releaseDate": "2013-06-10T09:05:58Z", 
-                "isPurchasable": true
-            }, 
-            "JP": {
-                "releaseDate": "2013-06-10T09:05:58Z", 
-                "isPurchasable": true
-            }, 
-            "US": {
-                "releaseDate": "2013-06-10T09:05:58Z", 
-                "isPurchasable": true
-            }, 
-            "KR": {
-                "releaseDate": "2013-06-10T09:05:58Z", 
-                "isPurchasable": true
-            }, 
-            "MX": {
-                "releaseDate": "2013-06-10T09:05:58Z", 
-                "isPurchasable": true
-            }
-        }, 
-        "futureExpansion": {}, 
-        "price": {
-            "priceType": "FREE"
-        }, 
-        "locales": {
-            "en_US": {
-                "images": {
-                    "main": {}, 
-                    "thumbnail": {
-                        "y": 10, 
-                        "x": 20, 
-                        "href": "location of image", 
-                        "id": "id of image", 
-                        "size": 200
-                    }
-                }, 
-                "shortDescription": "short description", 
-                "name": "testOffer_Free_Physical", 
-                "videos": [
-                    {
-                        "id": "id of the video", 
-                        "service": "YOUTUBE", 
-                        "title": "title of the video"
-                    }
-                ], 
-                "longDescription": "long description"
-            }
-        }
-    }, 
     "item": {
         "genres": [], 
         "defaultOffer": null, 
-        "self": {
-            "href": "/v1/items/aabbccddeefa", 
-            "id": "aabbccddeefa"
-        }, 
-        "rev": null, 
+        "rev": null,
         "currentRevision": null, 
         "revisions": null, 
         "type": "PHYSICAL", 
@@ -130,7 +14,6 @@
     "itemRevision": {
         "status": "DRAFT", 
         "distributionChannel": [
-            "INAPP", 
             "STORE"
         ], 
         "countries": {
@@ -138,11 +21,7 @@
                 "supportPhone": "1234567890"
             }
         }, 
-        "self": {
-            "href": "/v1/item-revisions/ccaabbddeef6", 
-            "id": "ccaabbddeef6"
-        }, 
-        "rev": null, 
+        "rev": null,
         "item": {
             "href": "https://api.oculusvr.com/v1/items/aabbccddeefa", 
             "id": "aabbccddeefa"
@@ -241,14 +120,118 @@
             "href": "https://api.oculusvr.com/v1/organizations/1234", 
             "id": "1234"
         }, 
-        "self": {
-            "href": "/v1/offers/bbaaccddeefa", 
-            "id": "bbaaccddeefa"
-        }, 
-        "rev": null, 
+        "rev": null,
         "isPublished": false, 
         "environment": "DEV", 
         "currentRevision": null, 
         "categories": []
-    }
+    },
+    "offerRevision": {
+            "status": "DRAFT",
+            "publisher": {
+                "href": "https://api.oculusvr.com/v1/organizations/1234",
+                "id": "1234"
+            },
+            "distributionChannel": [
+                "STORE"
+            ],
+            "offer": {
+                "href": "https://api.oculusvr.com/v1/offers/bbaaccddeefa",
+                "id": "bbaaccddeefa"
+            },
+            "items": [
+                {
+                    "item": {
+                        "href": "https://api.oculusvr.com/v1/items/aabbccddeefa",
+                        "id": "aabbccddeefa"
+                    },
+                    "quantity": 1
+                }
+            ],
+            "restrictions": {
+                "preconditionItems": [
+                    {
+                        "href": "https://api.oculusvr.com/v1/items/1230",
+                        "id": "1230"
+                    }
+                ],
+                "limitPerOrder": 2,
+                "exclusionItems": [
+                    {
+                        "href": "https://api.oculusvr.com/v1/items/120",
+                        "id": "120"
+                    }
+                ],
+                "limitPerCustomer": 10
+            },
+            "rev": null,
+            "eventActions": null,
+            "subOffers": [],
+            "regions": {
+                "RU": {
+                    "releaseDate": "2013-06-10T09:05:58Z",
+                    "isPurchasable": true
+                },
+                "FR": {
+                    "releaseDate": "2013-06-10T09:05:58Z",
+                    "isPurchasable": true
+                },
+                "NL": {
+                    "releaseDate": "2013-06-10T09:05:58Z",
+                    "isPurchasable": true
+                },
+                "CN": {
+                    "releaseDate": "2013-06-10T09:05:58Z",
+                    "isPurchasable": true
+                },
+                "DE": {
+                    "releaseDate": "2013-06-10T09:05:58Z",
+                    "isPurchasable": true
+                },
+                "JP": {
+                    "releaseDate": "2013-06-10T09:05:58Z",
+                    "isPurchasable": true
+                },
+                "US": {
+                    "releaseDate": "2013-06-10T09:05:58Z",
+                    "isPurchasable": true
+                },
+                "KR": {
+                    "releaseDate": "2013-06-10T09:05:58Z",
+                    "isPurchasable": true
+                },
+                "MX": {
+                    "releaseDate": "2013-06-10T09:05:58Z",
+                    "isPurchasable": true
+                }
+            },
+            "futureExpansion": {},
+            "price": {
+                "priceType": "FREE"
+            },
+            "locales": {
+                "en_US": {
+                    "images": {
+                        "main": {},
+                        "thumbnail": {
+                            "y": 10,
+                            "x": 20,
+                            "href": "location of image",
+                            "id": "id of image",
+                            "size": 200
+                        }
+                    },
+                    "shortDescription": "short description",
+                    "name": "testOffer_Free_Physical",
+                    "videos": [
+                        {
+                            "id": "id of the video",
+                            "service": "YOUTUBE",
+                            "title": "title of the video"
+                        }
+                    ],
+                    "longDescription": "long description"
+                }
+            }
+        }
 }
