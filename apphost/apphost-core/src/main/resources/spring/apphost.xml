@@ -12,43 +12,10 @@
         <property name="keepAliveIdleTimeoutInSeconds" value="${apphost.server.keepAlive.idleTimeoutInSeconds}"/>
     </bean>
 
-    <bean id="serviceLocator" factory-bean="httpServer" factory-method="getServiceLocator"
-          destroy-method="shutdown"/>
-
-    <bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
-        <property name="scopes">
-            <map>
-                <entry key="hk2">
-                    <bean class="org.jvnet.hk2.spring.bridge.api.SpringScopeImpl">
-                        <property name="serviceLocator" ref="serviceLocator"/>
-                    </bean>
-                </entry>
-            </map>
-        </property>
-    </bean>
-
     <bean id="healthHttpServer" class="com.junbo.apphost.core.health.HealthHttpServerBean">
         <property name="uri">
             <value type="java.net.URI">${apphost.server.health.uri}</value>
         </property>
         <property name="executorService" ref="junboThreadPool"/>
     </bean>
-
-    <!-- These are deprecated. Do not use them. -->
-    <bean id="javax.ws.rs.core.UriInfo"
-          class="javax.ws.rs.core.UriInfo" scope="hk2"/>
-
-    <bean id="javax.ws.rs.core.HttpHeaders"
-          class="javax.ws.rs.core.HttpHeaders" scope="hk2"/>
-
-    <bean id="javax.ws.rs.core.Request"
-          class="javax.ws.rs.core.Request" scope="hk2"/>
-
-    <bean id="javax.ws.rs.container.ContainerRequestContext"
-          class="javax.ws.rs.container.ContainerRequestContext" scope="hk2"/>
-
-    <bean id="org.glassfish.jersey.server.internal.process.RespondingContext"
-          class="org.glassfish.jersey.server.internal.process.RespondingContext" scope="hk2"/>
-
-    <bean id="org.glassfish.grizzly.http.server.Request" class="org.glassfish.grizzly.http.server.Request" scope="hk2"/>
 </beans>

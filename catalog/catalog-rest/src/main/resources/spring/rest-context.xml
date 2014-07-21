@@ -6,15 +6,15 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <!-- REST resources -->
-    <bean id="defaultItemResource" class="com.junbo.catalog.rest.resource.ItemResourceImpl" scope="prototype"/>
-    <bean id="defaultItemRevisionResource" class="com.junbo.catalog.rest.resource.ItemRevisionResourceImpl" scope="prototype"/>
-    <bean id="defaultOfferResource" class="com.junbo.catalog.rest.resource.OfferResourceImpl" scope="prototype"/>
-    <bean id="defaultOfferRevisionResource" class="com.junbo.catalog.rest.resource.OfferRevisionResourceImpl" scope="prototype"/>
-    <bean id="defaultPromotionResource" class="com.junbo.catalog.rest.resource.PromotionResourceImpl" scope="prototype"/>
-    <bean id="defaultPromotionRevisionResource" class="com.junbo.catalog.rest.resource.PromotionRevisionResourceImpl" scope="prototype"/>
-    <bean id="defaultItemAttributeResource" class="com.junbo.catalog.rest.resource.ItemAttributeResourceImpl" scope="prototype"/>
-    <bean id="defaultOfferAttributeResource" class="com.junbo.catalog.rest.resource.OfferAttributeResourceImpl" scope="prototype"/>
-    <bean id="defaultPriceTierResource" class="com.junbo.catalog.rest.resource.PriceTierResourceImpl" scope="prototype"/>
+    <bean id="defaultItemResource" class="com.junbo.catalog.rest.resource.ItemResourceImpl"/>
+    <bean id="defaultItemRevisionResource" class="com.junbo.catalog.rest.resource.ItemRevisionResourceImpl"/>
+    <bean id="defaultOfferResource" class="com.junbo.catalog.rest.resource.OfferResourceImpl"/>
+    <bean id="defaultOfferRevisionResource" class="com.junbo.catalog.rest.resource.OfferRevisionResourceImpl"/>
+    <bean id="defaultPromotionResource" class="com.junbo.catalog.rest.resource.PromotionResourceImpl"/>
+    <bean id="defaultPromotionRevisionResource" class="com.junbo.catalog.rest.resource.PromotionRevisionResourceImpl"/>
+    <bean id="defaultItemAttributeResource" class="com.junbo.catalog.rest.resource.ItemAttributeResourceImpl"/>
+    <bean id="defaultOfferAttributeResource" class="com.junbo.catalog.rest.resource.OfferAttributeResourceImpl"/>
+    <bean id="defaultPriceTierResource" class="com.junbo.catalog.rest.resource.PriceTierResourceImpl"/>
 
     <bean id="defaultItemResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxyFactory"/>
     <bean id="defaultItemRevisionResourceClientFactory" class="com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxyFactory"/>

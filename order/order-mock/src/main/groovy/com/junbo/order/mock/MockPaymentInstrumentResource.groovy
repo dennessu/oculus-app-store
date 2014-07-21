@@ -20,7 +20,6 @@ import javax.ws.rs.core.Response
  */
 @CompileStatic
 @TypeChecked
-@Scope('prototype')
 @Component('mockPaymentInstrumentResource')
 class MockPaymentInstrumentResource extends BaseMock implements PaymentInstrumentResource {
 

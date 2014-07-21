@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component
 @Component('mockOrganizationResource')
 @CompileStatic
 @TypeChecked
-@Scope('prototype')
 class MockOrganizationResource extends BaseMock implements OrganizationResource {
     @Override
     Promise<Organization> create(Organization organization) {

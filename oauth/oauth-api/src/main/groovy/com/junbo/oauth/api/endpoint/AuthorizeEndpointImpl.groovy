@@ -33,7 +33,6 @@ import javax.ws.rs.core.UriInfo
  */
 @Component
 @CompileStatic
-@Scope('prototype')
 class AuthorizeEndpointImpl implements AuthorizeEndpoint {
 
     /**

@@ -9,31 +9,31 @@
     <context:component-scan base-package="com.junbo.identity.core.service" />
 
     <!-- resource implementation -->
-    <bean id="defaultAuthenticatorResource" class="com.junbo.identity.rest.resource.v1.AuthenticatorResourceImpl" scope="prototype" />
-    <bean id="defaultUserCommunicationResource" class="com.junbo.identity.rest.resource.v1.UserCommunicationResourceImpl" scope="prototype" />
-    <bean id="defaultUserCredentialResource" class="com.junbo.identity.rest.resource.v1.UserCredentialResourceImpl" scope="prototype" />
-    <bean id="defaultUserCredentialVerifyAttemptResource" class="com.junbo.identity.rest.resource.v1.UserCredentialVerifyAttemptResourceImpl" scope="prototype" />
-    <bean id="defaultGroupResource" class="com.junbo.identity.rest.resource.v1.GroupResourceImpl" scope="prototype" />
-    <bean id="defaultUserResource" class="com.junbo.identity.rest.resource.v1.UserResourceImpl" scope="prototype" />
-    <bean id="defaultUserPersonalInfoResource" class="com.junbo.identity.rest.resource.v1.UserPersonalInfoResourceImpl" scope="prototype" />
-    <bean id="defaultDeviceResource" class="com.junbo.identity.rest.resource.v1.DeviceResourceImpl" scope="prototype" />
-    <bean id="defaultTosResource" class="com.junbo.identity.rest.resource.v1.TosResourceImpl" scope="prototype" />
-    <bean id="defaultUserGroupMembershipResource" class="com.junbo.identity.rest.resource.v1.UserGroupMembershipResourceImpl" scope="prototype"/>
-    <bean id="defaultUserSecurityQuestionResource" class="com.junbo.identity.rest.resource.v1.UserSecurityQuestionResourceImpl" scope="prototype" />
-    <bean id="defaultUserSecurityQuestionVerifyAttemptResource" class="com.junbo.identity.rest.resource.v1.UserSecurityQuestionVerifyAttemptResourceImpl" scope="prototype" />
-    <bean id="defaultUserTosAgreementResource" class="com.junbo.identity.rest.resource.v1.UserTosAgreementResourceImpl" scope="prototype" />
-    <bean id="defaultCountryResource" class="com.junbo.identity.rest.resource.v1.CountryResourceImpl" scope="prototype" />
-    <bean id="defaultCurrencyResource" class="com.junbo.identity.rest.resource.v1.CurrencyResourceImpl" scope="prototype" />
-    <bean id="defaultLocaleResource" class="com.junbo.identity.rest.resource.v1.LocaleResourceImpl" scope="prototype" />
-    <bean id="defaultPITypeResource" class="com.junbo.identity.rest.resource.v1.PITypeResourceImpl" scope="prototype" />
-    <bean id="defaultDeviceTypeResource" class="com.junbo.identity.rest.resource.v1.DeviceTypeResourceImpl" scope="prototype" />
-    <bean id="defaultCommunicationResource" class="com.junbo.identity.rest.resource.v1.CommunicationResourceImpl" scope="prototype" />
-    <bean id="defaultUserTFAResource" class="com.junbo.identity.rest.resource.v1.UserTFAResourceImpl" scope="prototype" />
-    <bean id="defaultUserTFAAttemptResource" class="com.junbo.identity.rest.resource.v1.UserTFAAttemptResourceImpl" scope="prototype" />
-    <bean id="defaultUserTFABackupCodeResource" class="com.junbo.identity.rest.resource.v1.UserTFABackupCodeResourceImpl" scope="prototype" />
-    <bean id="defaultUserTFABackupCodeAttemptResource" class="com.junbo.identity.rest.resource.v1.UserTFABackupCodeAttemptResourceImpl" scope="prototype" />
-    <bean id="defaultOrganizationResource" class="com.junbo.identity.rest.resource.v1.OrganizationResourceImpl" scope="prototype" />
-    <bean id="defaultMigrationResource" class="com.junbo.identity.rest.resource.v1.MigrationResourceImpl" scope="prototype" />
+    <bean id="defaultAuthenticatorResource" class="com.junbo.identity.rest.resource.v1.AuthenticatorResourceImpl" />
+    <bean id="defaultUserCommunicationResource" class="com.junbo.identity.rest.resource.v1.UserCommunicationResourceImpl" />
+    <bean id="defaultUserCredentialResource" class="com.junbo.identity.rest.resource.v1.UserCredentialResourceImpl" />
+    <bean id="defaultUserCredentialVerifyAttemptResource" class="com.junbo.identity.rest.resource.v1.UserCredentialVerifyAttemptResourceImpl" />
+    <bean id="defaultGroupResource" class="com.junbo.identity.rest.resource.v1.GroupResourceImpl" />
+    <bean id="defaultUserResource" class="com.junbo.identity.rest.resource.v1.UserResourceImpl" />
+    <bean id="defaultUserPersonalInfoResource" class="com.junbo.identity.rest.resource.v1.UserPersonalInfoResourceImpl" />
+    <bean id="defaultDeviceResource" class="com.junbo.identity.rest.resource.v1.DeviceResourceImpl" />
+    <bean id="defaultTosResource" class="com.junbo.identity.rest.resource.v1.TosResourceImpl" />
+    <bean id="defaultUserGroupMembershipResource" class="com.junbo.identity.rest.resource.v1.UserGroupMembershipResourceImpl"/>
+    <bean id="defaultUserSecurityQuestionResource" class="com.junbo.identity.rest.resource.v1.UserSecurityQuestionResourceImpl" />
+    <bean id="defaultUserSecurityQuestionVerifyAttemptResource" class="com.junbo.identity.rest.resource.v1.UserSecurityQuestionVerifyAttemptResourceImpl" />
+    <bean id="defaultUserTosAgreementResource" class="com.junbo.identity.rest.resource.v1.UserTosAgreementResourceImpl" />
+    <bean id="defaultCountryResource" class="com.junbo.identity.rest.resource.v1.CountryResourceImpl" />
+    <bean id="defaultCurrencyResource" class="com.junbo.identity.rest.resource.v1.CurrencyResourceImpl" />
+    <bean id="defaultLocaleResource" class="com.junbo.identity.rest.resource.v1.LocaleResourceImpl" />
+    <bean id="defaultPITypeResource" class="com.junbo.identity.rest.resource.v1.PITypeResourceImpl" />
+    <bean id="defaultDeviceTypeResource" class="com.junbo.identity.rest.resource.v1.DeviceTypeResourceImpl" />
+    <bean id="defaultCommunicationResource" class="com.junbo.identity.rest.resource.v1.CommunicationResourceImpl" />
+    <bean id="defaultUserTFAResource" class="com.junbo.identity.rest.resource.v1.UserTFAResourceImpl" />
+    <bean id="defaultUserTFAAttemptResource" class="com.junbo.identity.rest.resource.v1.UserTFAAttemptResourceImpl" />
+    <bean id="defaultUserTFABackupCodeResource" class="com.junbo.identity.rest.resource.v1.UserTFABackupCodeResourceImpl" />
+    <bean id="defaultUserTFABackupCodeAttemptResource" class="com.junbo.identity.rest.resource.v1.UserTFABackupCodeAttemptResourceImpl" />
+    <bean id="defaultOrganizationResource" class="com.junbo.identity.rest.resource.v1.OrganizationResourceImpl" />
+    <bean id="defaultMigrationResource" class="com.junbo.identity.rest.resource.v1.MigrationResourceImpl" />
 
     <bean id="defaultAuthenticatorResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.AuthenticatorResourceClientProxyFactory"/>
     <bean id="defaultUserCommunicationResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserCommunicationResourceClientProxyFactory"/>

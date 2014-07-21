@@ -21,7 +21,6 @@ import java.util.List;
 /**
  * Created by xmchen on 14-1-26.
  */
-@Scope("prototype")
 public class BalanceResourceImpl implements BalanceResource {
 
     @Autowired

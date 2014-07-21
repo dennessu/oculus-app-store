@@ -26,7 +26,6 @@ import org.springframework.util.StringUtils
  */
 @Component
 @CompileStatic
-@Scope('prototype')
 class TokenInfoEndpointImpl implements TokenInfoEndpoint {
     /**
      * The OAuthTokenService to handle the token related logic.

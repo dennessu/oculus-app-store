@@ -16,7 +16,6 @@ import javax.annotation.Resource
  */
 @CompileStatic
 @TypeChecked
-@Scope('prototype')
 @Component('defaultSubledgerItemResource')
 class SubledgerItemResourceImpl implements SubledgerItemResource {
 

@@ -9,7 +9,7 @@
     <!--<context:component-scan base-package="com.junbo.catalog.rest.mapper"/>-->
     <context:component-scan base-package="com.junbo.cart.spec.resource.adapter" />
 
-    <bean id="defaultCartResource" class="com.junbo.cart.rest.resource.CartResourceImpl" scope="prototype">
+    <bean id="defaultCartResource" class="com.junbo.cart.rest.resource.CartResourceImpl">
         <property name="cartService" ref="cartService"/>
         <property name="pathParamTranscoder" ref="pathParamTranscoder"/>
     </bean>

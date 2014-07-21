@@ -25,7 +25,6 @@ import org.springframework.stereotype.Component
  * Created by chriszhu on 2/21/14.
  */
 @Component('orderServiceContext')
-@Scope('prototype')
 @CompileStatic
 @TypeChecked
 class OrderServiceContext {

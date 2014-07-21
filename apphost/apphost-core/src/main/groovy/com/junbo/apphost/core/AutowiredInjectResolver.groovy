@@ -11,6 +11,8 @@ import org.springframework.context.ApplicationContext
 import java.lang.reflect.AnnotatedElement
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentMap
 
 /**
  * Created by kg on 4/21/2014.
@@ -21,8 +23,11 @@ class AutowiredInjectResolver implements InjectionResolver<Autowired> {
 
     private final ApplicationContext ctx
 
+    private final ConcurrentMap<String, Object> beanCache;
+
     AutowiredInjectResolver(ApplicationContext ctx) {
         this.ctx = ctx
+        this.beanCache = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -44,7 +49,18 @@ class AutowiredInjectResolver implements InjectionResolver<Autowired> {
             }
         }
 
-        return getBeanFromSpringContext(beanName, injectee.requiredType)
+        return getBeanFromSpringContextWithCache(beanName, injectee.requiredType)
+    }
+
+    private Object getBeanFromSpringContextWithCache(String beanName, Type beanType) {
+        def key = beanType.toString() + ":" + beanName
+        def obj = beanCache.get(key)
+        if (obj == null) {
+            obj = getBeanFromSpringContext(beanName, beanType)
+            beanCache.putIfAbsent(key, obj)
+        }
+
+        return obj
     }
 
     private Object getBeanFromSpringContext(String beanName, Type beanType) {

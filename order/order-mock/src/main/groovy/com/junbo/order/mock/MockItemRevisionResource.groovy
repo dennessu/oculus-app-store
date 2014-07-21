@@ -22,7 +22,6 @@ import javax.ws.rs.core.Response
  */
 @CompileStatic
 @Component('mockItemRevisionResource')
-@Scope('prototype')
 class MockItemRevisionResource extends BaseMock implements ItemRevisionResource {
     @Override
     Promise<Results<ItemRevision>> getItemRevisions(@BeanParam ItemRevisionsGetOptions options) {

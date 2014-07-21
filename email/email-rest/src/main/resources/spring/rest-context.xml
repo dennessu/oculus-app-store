@@ -8,8 +8,8 @@
     <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
 
     <!-- resource implementation -->
-    <bean id="defaultEmailResource" class="com.junbo.email.rest.resource.EmailResourceImpl" scope="prototype" />
-    <bean id="defaultEmailTemplateResource" class="com.junbo.email.rest.resource.EmailTemplateResourceImpl" scope="prototype"/>
+    <bean id="defaultEmailResource" class="com.junbo.email.rest.resource.EmailResourceImpl" />
+    <bean id="defaultEmailTemplateResource" class="com.junbo.email.rest.resource.EmailTemplateResourceImpl"/>
 
     <bean id="defaultEmailResourceClientFactory" class="com.junbo.email.spec.resource.proxy.EmailResourceClientProxyFactory"/>
     <bean id="defaultEmailTemplateResourceClientFactory" class="com.junbo.email.spec.resource.proxy.EmailTemplateResourceClientProxyFactory"/>

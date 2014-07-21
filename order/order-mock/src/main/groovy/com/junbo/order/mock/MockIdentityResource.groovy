@@ -20,7 +20,6 @@ import javax.ws.rs.PathParam
 @Component('mockIdentityResource')
 @CompileStatic
 @TypeChecked
-@Scope('prototype')
 class MockIdentityResource implements UserResource {
 
     static Promise<User> generateUser() {

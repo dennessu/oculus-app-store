@@ -24,7 +24,6 @@ import javax.ws.rs.core.Response
  * Created by minhao on 5/1/14.
  */
 @CompileStatic
-@Scope('prototype')
 class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
     private FlowExecutor flowExecutor
     private String resetPasswordFlow

@@ -29,7 +29,6 @@ import javax.ws.rs.PathParam
  */
 @CompileStatic
 @TypeChecked
-@Scope('prototype')
 @Component('defaultOrderEventResource')
 class OrderEventResourceImpl implements OrderEventResource {
     @Resource

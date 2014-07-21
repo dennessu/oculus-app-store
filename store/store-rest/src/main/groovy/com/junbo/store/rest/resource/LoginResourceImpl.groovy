@@ -29,7 +29,6 @@ import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.ext.Provider
 
 @Provider
-@Scope('prototype')
 @CompileStatic
 @Component('defaultLoginResource')
 class LoginResourceImpl implements  LoginResource {

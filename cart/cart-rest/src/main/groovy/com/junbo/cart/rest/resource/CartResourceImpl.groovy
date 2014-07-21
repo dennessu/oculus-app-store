@@ -26,7 +26,6 @@ import javax.ws.rs.ext.Provider
  */
 @Provider
 @Component
-@Scope('prototype')
 @CompileStatic
 class CartResourceImpl implements CartResource {
 
