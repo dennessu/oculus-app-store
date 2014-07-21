@@ -5,6 +5,7 @@
  */
 package com.junbo.test.catalog.item;
 
+import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.catalog.impl.OfferAttributeServiceImpl;
@@ -36,7 +37,7 @@ import java.util.List;
  * Time: 4/10/2014
  * For testing catalog put item(s) API
  */
-public class TestPutItem {
+public class TestPutItem extends BaseTestClass {
 
     private LogHelper logger = new LogHelper(TestGetItem.class);
     private ItemService itemService = ItemServiceImpl.instance();
@@ -64,11 +65,11 @@ public class TestPutItem {
     @Test
     public void testPutItem() throws Exception {
         //Prepare an item
-        Item item = itemService.postDefaultItem(CatalogItemType.getRandom());
+        Item item = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
 
         //put item
         OfferService offerService = OfferServiceImpl.instance();
-        Offer offer = offerService.postDefaultOffer();
+        Offer offer = offerService.postDefaultOffer(organizationId);
 
         ItemAttributeService itemAttributeService = ItemAttributeServiceImpl.instance();
         ItemAttribute itemAttribute1 = itemAttributeService.postDefaultItemAttribute();
@@ -79,14 +80,12 @@ public class TestPutItem {
 
         item.setGenres(genres);
         item.setDefaultOffer(offer.getOfferId());
-        item.setOwnerId(organizationId);
 
         Item itemPut = itemService.updateItem(item.getItemId(), item);
 
         //Verification
         Assert.assertEquals(itemPut.getGenres(), genres);
         Assert.assertEquals(itemPut.getDefaultOffer(), offer.getOfferId());
-        Assert.assertEquals(itemPut.getOwnerId(), organizationId);
     }
 
     @Property(
@@ -120,11 +119,6 @@ public class TestPutItem {
         //test rev
         item = itemService.postDefaultItem(CatalogItemType.getRandom());
         item.setRev("revValue");
-        verifyExpectedError(item.getItemId(), item);
-
-        //test ownerId is null
-        item = itemService.postDefaultItem(CatalogItemType.getRandom());
-        item.setOwnerId(null);
         verifyExpectedError(item.getItemId(), item);
 
         //can't update current revision id

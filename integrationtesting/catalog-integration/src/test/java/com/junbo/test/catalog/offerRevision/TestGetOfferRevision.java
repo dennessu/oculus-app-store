@@ -45,11 +45,13 @@ public class TestGetOfferRevision extends BaseTestClass {
     private OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
     private OfferService offerService = OfferServiceImpl.instance();
     private OrganizationId organizationId;
+    Offer testoffer;
 
     @BeforeClass
     private void PrepareTestData() throws Exception {
         OrganizationService organizationService = OrganizationServiceImpl.instance();
         organizationId = organizationService.postDefaultOrganization().getId();
+        testoffer = offerService.postDefaultOffer(organizationId);
     }
 
     @Property(
@@ -71,7 +73,7 @@ public class TestGetOfferRevision extends BaseTestClass {
     public void testGetAnOfferRevisionById() throws Exception {
 
         //Prepare an offer revision
-        OfferRevision offerRevision = offerRevisionService.postDefaultOfferRevision();
+        OfferRevision offerRevision = offerRevisionService.postDefaultOfferRevision(testoffer);
 
         //get the offer revision by Id, assert not null
         OfferRevision offerRevisionRtn = offerRevisionService.getOfferRevision(offerRevision.getRevisionId());

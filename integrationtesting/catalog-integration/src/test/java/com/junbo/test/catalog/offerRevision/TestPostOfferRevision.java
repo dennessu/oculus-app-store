@@ -180,9 +180,8 @@ public class TestPostOfferRevision extends BaseTestClass {
 
         //Test invalid value for offerId
         testOfferRevision.setOwnerId(organizationId);
-        //Todo:BUG 341
-        //testOfferRevision.setOfferId(null);
-        //verifyExpectedError(testOfferRevision);
+        testOfferRevision.setOfferId(null);
+        verifyExpectedError(testOfferRevision);
 
         testOfferRevision.setOfferId("11111");
         try {

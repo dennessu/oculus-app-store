@@ -61,7 +61,7 @@ public class TestPutOffer extends BaseTestClass {
     @Test
     public void testPutOffer() throws Exception {
         //Prepare an offer
-        Offer offer = offerService.postDefaultOffer();
+        Offer offer = offerService.postDefaultOffer(organizationId);
 
         //put offer attribute
         OfferAttributeService offerAttributeService = OfferAttributeServiceImpl.instance();
@@ -73,14 +73,12 @@ public class TestPutOffer extends BaseTestClass {
 
         offer.setCategories(category);
         offer.setEnvironment("PROD");
-        offer.setOwnerId(organizationId);
 
         Offer offerPut = offerService.updateOffer(offer.getOfferId(), offer);
 
         //Verification
         Assert.assertEquals(offerPut.getCategories(), category);
         Assert.assertEquals(offerPut.getEnvironment(), "PROD");
-        Assert.assertEquals(offerPut.getOwnerId(), organizationId);
     }
 
     @Property(
@@ -114,11 +112,6 @@ public class TestPutOffer extends BaseTestClass {
         //test rev
         offer = offerService.postDefaultOffer();
         offer.setRev("0");
-        verifyExpectedError(offer.getOfferId(), offer);
-
-        //test ownerId is null
-        offer = offerService.postDefaultOffer();
-        offer.setOwnerId(null);
         verifyExpectedError(offer.getOfferId(), offer);
 
         //can't update current revision id
