@@ -1,10 +1,12 @@
 package com.junbo.csr.rest.endpoint
 
 import com.junbo.common.error.AppErrorException
+import com.junbo.common.model.Results
 import com.junbo.csr.spec.endpoint.CsrActionEndpoint
 import com.junbo.csr.spec.error.AppErrors
 import com.junbo.csr.spec.model.CsrCredential
 import com.junbo.csr.spec.model.CsrToken
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.spec.endpoint.TokenEndpoint
 import com.junbo.oauth.spec.model.AccessTokenRequest
@@ -72,6 +74,11 @@ class CsrActionEndpointImpl implements CsrActionEndpoint {
                 scope: 'offline',
                 refreshToken: refreshToken
         ))
+    }
+
+    @Override
+    Promise<Results<User>> search(String search) {
+        return null
     }
 
     private Promise<CsrToken> postToken(AccessTokenRequest request) {

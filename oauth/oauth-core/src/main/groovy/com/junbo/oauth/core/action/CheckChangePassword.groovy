@@ -10,6 +10,7 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.UserService
+import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
@@ -18,6 +19,7 @@ import org.springframework.util.Assert
 /**
  * Created by haomin on 14-6-13.
  */
+@CompileStatic
 class CheckChangePassword implements Action {
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckChangePassword)
 

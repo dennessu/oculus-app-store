@@ -4,11 +4,13 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.spec.model.ViewModel
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by Zhanxin on 5/21/2014.
  */
+@CompileStatic
 class PaymentMethodView extends AbstractView {
     private String btCSE
     private int parentControlAge

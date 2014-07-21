@@ -137,8 +137,8 @@ interface AppErrors {
     AppError invalidRecaptcha(String message)
 
     @ErrorDef(httpStatusCode = 412, code = '128', message = 'Invalid Email Verify Code',
-            reason = 'Invalid email verify code: {0}', field = 'code')
-    AppError invalidEmailVerifyCode(String code)
+            reason = 'Invalid email verify code', field = 'code')
+    AppError invalidEmailVerifyCode()
 
     @ErrorDef(httpStatusCode = 500, code = '129', message = 'Error Calling Email',
             reason = 'Error happened when calling email server', field = 'email')
@@ -163,8 +163,8 @@ interface AppErrors {
     @ErrorDef(httpStatusCode = 400, code = '132', message = 'Missing User Id')
     AppError missingUserId()
 
-    @ErrorDef(httpStatusCode = 412, code = '133', message = 'Invalid verification code')
-    AppError invalidVerificationCode()
+    @ErrorDef(httpStatusCode = 412, code = '133', message = 'Invalid reset password code')
+    AppError invalidResetPasswordCode()
 
     @ErrorDef(httpStatusCode = 412, code = '134', message = 'No Account Found',
             reason = 'No account found with that email address.', field = 'email')
