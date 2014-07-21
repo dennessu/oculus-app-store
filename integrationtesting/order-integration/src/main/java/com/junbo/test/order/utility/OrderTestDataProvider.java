@@ -298,6 +298,7 @@ public class OrderTestDataProvider {
         orderInfo.setLocale(locale);
 
         List<String> balanceIds = getBalancesByOrderId(orderId);
+
         BalanceItem balanceItem = Master.getInstance().getBalance(balanceIds.get(0)).getBalanceItems().get(0);
         BigDecimal taxRate = new BigDecimal(0);
 

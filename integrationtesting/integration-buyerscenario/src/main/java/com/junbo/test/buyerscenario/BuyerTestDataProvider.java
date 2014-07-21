@@ -129,7 +129,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         }
 
         primaryCart.setOffers(offerItemList);
-
+        Master.getInstance().setCurrentUid(uid);
         Master.getInstance().addCart(primaryCartId, primaryCart);
         return cartClient.updateCart(uid, primaryCartId, primaryCart);
     }

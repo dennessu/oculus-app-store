@@ -416,11 +416,10 @@ public class CartCheckout extends BaseTestClass {
         String uid2 = testDataProvider.createUser();
 
         testDataProvider.postOrder(
-                uid2, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList, 400);
+                uid2, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
 
 
     }
-
 
     @Property(
             priority = Priority.BVT,
@@ -428,6 +427,99 @@ public class CartCheckout extends BaseTestClass {
             component = Component.Order,
             owner = "ZhaoYunlong",
             status = Status.Enable,
+            description = "Test checkout free offer",
+            steps = {
+                    "1. Post a new user",
+                    "2. Add free digital offer to user's primary cart",
+                    "3. Post new credit card to new user.",
+                    "4. Post order to checkout",
+                    "5. Verify the order response info",
+                    "6. Empty the primary cart",
+                    "7. Update order tentative to false",
+                    "8. Get the entitlements by uid",
+                    "9. Verify the entitlements are active",
+            }
+    )
+    @Test
+    public void testCheckoutFreeDigital() throws Exception {
+        String uid = testDataProvider.createUser();
+
+        Map<String, Integer> offerList = new HashedMap();
+
+        offerList.put(offer_digital_free, 1);
+
+        String cartId = testDataProvider.postOffersToPrimaryCart(uid, offerList);
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
+
+        String orderId = testDataProvider.postOrderByCartId(
+                uid, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, null);
+
+        orderId = testDataProvider.updateOrderTentative(orderId, false);
+
+        validationHelper.validateOrderInfoByCartId(
+                uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, false);
+        Results<Entitlement> entitlementResults = testDataProvider.getEntitlementByUserId(uid);
+
+        validationHelper.validateEntitlements(entitlementResults, offerList.size());
+
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "BuyerScenarios",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test checkout free offer",
+            steps = {
+                    "1. Post a new user",
+                    "2. Add free physical offer to user's primary cart",
+                    "3. Post new credit card to new user.",
+                    "4. Post order to checkout",
+                    "5. Verify the order response info",
+                    "6. Empty the primary cart",
+                    "7. Update order tentative to false",
+                    "8. Get the entitlements by uid",
+                    "9. Verify the entitlements are active",
+            }
+    )
+    @Test
+    public void testCheckoutFreePhysical() throws Exception {
+        String uid = testDataProvider.createUser();
+
+        Map<String, Integer> offerList = new HashedMap();
+
+        offerList.put(offer_physical_free, 1);
+
+        String cartId = testDataProvider.postOffersToPrimaryCart(uid, offerList);
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
+
+        String orderId = testDataProvider.postOrderByCartId(
+                uid, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, true);
+
+        orderId = testDataProvider.updateOrderTentative(orderId, false);
+
+        validationHelper.validateOrderInfoByCartId(
+                uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, true);
+        Results<Entitlement> entitlementResults = testDataProvider.getEntitlementByUserId(uid);
+
+        validationHelper.validateEntitlements(entitlementResults, offerList.size());
+
+    }
+
+
+
+
+    @Property(
+            priority = Priority.BVT,
+            features = "BuyerScenarios",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Disable,
             description = "Prepare orders for CSR",
             steps = {
                     "1. Post a new user",
