@@ -157,7 +157,6 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     public OfferRevision createRevision(OfferRevision revision) {
         validateRevisionCreation(revision);
         generateEventActions(revision);
-        revision.setStatus(Status.DRAFT.name());
         return offerRevisionRepo.create(revision);
     }
 
@@ -386,6 +385,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         }
         if (revision.getOwnerId() == null) {
             errors.add(AppCommonErrors.INSTANCE.fieldRequired("publisher"));
+        }
+        if (!Status.DRAFT.is(revision.getStatus())) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("status", "should be 'DRAFT'"));
         }
         if (revision.getOfferId() == null) {
             errors.add(AppCommonErrors.INSTANCE.fieldRequired("offerId"));

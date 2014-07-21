@@ -23,6 +23,10 @@ public class BaseTestClass extends TestClass {
     protected String offer_digital_normal2;
     protected String offer_physical_normal1;
     protected String offer_physical_normal2;
+    protected String offer_digital_preOrder;
+    protected String offer_physical_preOrder;
+    protected String offer_inApp_consumable1;
+    protected String offer_inApp_consumable2;
     protected String offer_storedValue_normal;
     protected String offer_digital_free;
     protected String offer_physical_free;
@@ -36,6 +40,12 @@ public class BaseTestClass extends TestClass {
         offer_digital_normal2 = ConfigHelper.getSetting("testdata.offer.digital.normal2");
         offer_physical_normal1 = ConfigHelper.getSetting("testdata.offer.physical.normal1");
         offer_physical_normal2 = ConfigHelper.getSetting("testdata.offer.physical.normal2");
+        offer_digital_preOrder = ConfigHelper.getSetting("testdata.offer.preorder.digital.normal");
+        offer_physical_preOrder = ConfigHelper.getSetting("testdata.offer.preorder.physical.normal");
+        offer_inApp_consumable1 = ConfigHelper.getSetting("testdata.offer.inApp.consumable.normal1");
+        offer_inApp_consumable2 = ConfigHelper.getSetting("testdata.offer.inApp.consumable.normal2");
+        offer_digital_free = ConfigHelper.getSetting("testdata.offer.digital.free");
+        offer_physical_free = ConfigHelper.getSetting("testdata.offer.physical.free");
         offer_storedValue_normal = ConfigHelper.getSetting("testdata.offer.storedvalue.normal");
         offer_digital_free = ConfigHelper.getSetting("testdata.offer.digital.free");
         offer_physical_free = ConfigHelper.getSetting("testdata.offer.physical.free");

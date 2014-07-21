@@ -31,7 +31,9 @@ import org.testng.annotations.Test;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Yunlong on 3/20/14.
@@ -417,6 +419,55 @@ public class CartCheckout extends BaseTestClass {
                 uid2, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList, 400);
 
 
+    }
+
+
+    @Property(
+            priority = Priority.BVT,
+            features = "BuyerScenarios",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Prepare orders for CSR",
+            steps = {
+                    "1. Post a new user",
+                    "2. Post a credit card to user",
+                    "3. Post order with all kinds of offers",
+
+            }
+    )
+    @Test
+    public void prepareCSRData() throws Exception {
+        Master.getInstance().setUserPassword(String.format("csradmin"));
+        String uid = testDataProvider.getUserByUserName(String.format("csradmin"));
+
+        Map<String, Integer> offerList = new HashedMap();
+
+        offerList.put(offer_digital_normal1, 1);
+        offerList.put(offer_digital_normal2, 1);
+        offerList.put(offer_physical_normal1, 1);
+        offerList.put(offer_physical_normal2, 1);
+        offerList.put(offer_storedValue_normal, 1);
+        offerList.put(offer_inApp_consumable1, 2);
+        offerList.put(offer_inApp_consumable2, 2);
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
+
+        EwalletInfo ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT, Currency.DEFAULT);
+        testDataProvider.postPaymentInstrument(uid, ewalletInfo);
+
+        Set<String> offerNames = offerList.keySet();
+
+        for (Iterator it = offerNames.iterator(); it.hasNext(); ) {
+            String offerName = (String) it.next();
+            Map<String, Integer> offers = new HashMap<>();
+            offers.put(offerName, offerList.get(offerName));
+            boolean hasPhysical = offerName.toLowerCase().contains("physical");
+            String orderId = testDataProvider.postOrder(
+                    uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, hasPhysical, offers);
+            testDataProvider.updateOrderTentative(orderId, false);
+        }
     }
 
 
