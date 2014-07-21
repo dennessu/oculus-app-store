@@ -36,6 +36,11 @@
         <property name="accessTokenProvider" ref="paymentAccessTokenProvider"/>
     </bean>
 
+    <bean id="paymentWalletProxy" class="com.junbo.ewallet.spec.resource.proxy.WalletResourceClientProxy"
+          parent="walletProxy">
+        <property name="accessTokenProvider" ref="paymentAccessTokenProvider"/>
+    </bean>
+
     <bean id="personalInfoFacade" class="com.junbo.payment.clientproxy.impl.PersonalInfoFacadeImpl">
         <property name="piiClient" ref="piiClient"></property>
     </bean>
