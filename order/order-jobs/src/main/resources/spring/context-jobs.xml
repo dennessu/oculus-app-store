@@ -58,6 +58,7 @@
 
     <bean id="subledgerJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject" ref="subledgerAggregator" />
+        <property name="targetClass" value="com.junbo.order.jobs.subledger.SubledgerAggregator"/>
         <property name="targetMethod" value="aggregateSubledger" />
         <property name="concurrent" value="false"/>
     </bean>

@@ -18,4 +18,12 @@
         </property>
         <property name="executorService" ref="junboThreadPool"/>
     </bean>
+
+    <bean class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+        <property name="customTargetSourceCreators">
+            <list>
+                <bean class="com.junbo.apphost.core.JunboLazyInitTargetSourceCreator"/>
+            </list>
+        </property>
+    </bean>
 </beans>
