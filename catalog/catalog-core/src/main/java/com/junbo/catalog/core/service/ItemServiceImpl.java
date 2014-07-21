@@ -91,7 +91,6 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     @Override
     public ItemRevision createRevision(ItemRevision revision) {
         validateRevisionCreation(revision);
-        revision.setStatus(Status.DRAFT.name());
         return itemRevisionRepo.create(revision);
     }
 
@@ -280,6 +279,9 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         }
         if (revision.getOwnerId() == null) {
             errors.add(AppCommonErrors.INSTANCE.fieldRequired("developer"));
+        }
+        if (!Status.DRAFT.is(revision.getStatus())) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("status", "should be 'DRAFT'"));
         }
         if (revision.getItemId() == null) {
             errors.add(AppCommonErrors.INSTANCE.fieldRequired("itemId"));
