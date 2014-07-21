@@ -175,12 +175,7 @@ class UserTFAAttemptValidatorImpl implements UserTFAAttemptValidator {
                     throw AppCommonErrors.INSTANCE.fieldInvalid('userTFAId', 'Tele code expired.').exception()
                 }
 
-                if (userTFA.verifyCode == attempt.verifyCode) {
-                    attempt.succeeded = true
-                } else {
-                    attempt.succeeded = false
-                }
-
+                attempt.succeeded = (userTFA.verifyCode == attempt.verifyCode)
                 attempt.userId = userId
 
                 return checkMaximumRetryCount(user, attempt)
@@ -189,11 +184,7 @@ class UserTFAAttemptValidatorImpl implements UserTFAAttemptValidator {
     }
 
     private Promise<Void> checkMaximumRetryCount(User user, UserTFAAttempt attempt) {
-        if (attempt.succeeded) {
-            return Promise.pure(null)
-        }
-
-        return userTFAAttemptRepository.searchByUserIdAndUserTFAId((UserId)user.id, attempt.userTFAId, maxTeleCodeAttemptNumber, 0).then { List<UserTFAAttempt> userTeleAttemptList ->
+         return userTFAAttemptRepository.searchByUserIdAndUserTFAId((UserId)user.id, attempt.userTFAId, maxTeleCodeAttemptNumber, 0).then { List<UserTFAAttempt> userTeleAttemptList ->
             if (CollectionUtils.isEmpty(userTeleAttemptList) || userTeleAttemptList.size() < maxTeleCodeAttemptNumber) {
                 return Promise.pure(null)
             }
