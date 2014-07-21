@@ -15,8 +15,8 @@ import com.junbo.common.error.ErrorProxy;
  * Application Client Exceptions.
  */
 
-public interface AppClientExceptions {
-    AppClientExceptions INSTANCE = ErrorProxy.newProxyInstance(AppClientExceptions.class);
+public interface AppErrors {
+    AppErrors INSTANCE = ErrorProxy.newProxyInstance(AppErrors.class);
 
     @ErrorDef(httpStatusCode = 400, code = "101", message = "Invalid Token")
     AppError invalidToken();

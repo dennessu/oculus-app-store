@@ -7,23 +7,27 @@
 package com.junbo.subscription.core.service;
 
 import com.junbo.catalog.spec.enums.PriceType;
+import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
-import com.junbo.catalog.spec.model.common.Price;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.subscription.clientproxy.CatalogGateway;
-import com.junbo.subscription.common.exception.SubscriptionExceptions;
 import com.junbo.subscription.core.SubscriptionService;
 import com.junbo.subscription.core.event.SubscriptionCreateEvent;
-//import com.junbo.subscription.db.entity.SubscriptionStatus;
 import com.junbo.subscription.db.entity.SubscriptionStatus;
-import com.junbo.subscription.spec.model.Subscription;
 import com.junbo.subscription.db.repository.SubscriptionRepository;
+import com.junbo.subscription.spec.model.Subscription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
+//import com.junbo.subscription.db.entity.SubscriptionStatus;
 
 /**
  * subscription service implement.
@@ -76,7 +80,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Override
     public Subscription getSubsByTrackingUuid(Long userId, UUID trackingUuid) {
         if(trackingUuid == null){
-            throw SubscriptionExceptions.INSTANCE.missingTrackingUuid().exception();
+            throw AppCommonErrors.INSTANCE.fieldRequired("tracking_uuid").exception();
         }
         return null;
         //return subscriptionRepository.getByTrackingUuid(userId, trackingUuid);
@@ -84,7 +88,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     private void validateOffer(Subscription subs, String offerId){
         if (offerId == null){
-            throw SubscriptionExceptions.INSTANCE.missingOfferId().exception();
+            throw AppCommonErrors.INSTANCE.fieldRequired("offer_id").exception();
         }
 
         Offer subsOffer = catalogGateway.getOffer(offerId);
@@ -93,12 +97,12 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         Item subsItem = catalogGateway.getItem(itemEntryList.get(0).getItemId());
 
         if (subsItem.getType() != SUBSCRIPTION) {
-            throw SubscriptionExceptions.INSTANCE.subscriptionTypeError().exception();
+            throw AppCommonErrors.INSTANCE.fieldInvalid("offer_id", "This is not a subscription offer.").exception();
         }
 
         //check if free subs? if not, throw exception now and will call billing later.
         if (!isFreeSubscrption(subsOfferRev)){
-            throw SubscriptionExceptions.INSTANCE.subscriptionTypeError().exception();
+            throw AppCommonErrors.INSTANCE.fieldInvalid("offer_id", "This is not a free subscription offer.").exception();
         }
 
         //TODO: need get subs length from offer.

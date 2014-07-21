@@ -7,6 +7,7 @@
 package com.junbo.payment.core.util;
 
 
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.PIType;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
@@ -41,7 +42,16 @@ public final class PaymentUtil {
         try{
             return CreditCardType.valueOf(ccType.toUpperCase());
         }catch (Exception ex){
-            throw AppServerExceptions.INSTANCE.invalidCreditCardType(ccType).exception();
+            String sb = "";
+            CreditCardType[] cardTypes = CreditCardType.values();
+            for (int index = 0; index < cardTypes.length; index++) {
+                if (index != cardTypes.length -1) {
+                    sb += (cardTypes[index].toString() + ", ");
+                } else {
+                    sb += cardTypes[index];
+                }
+            }
+            throw AppCommonErrors.INSTANCE.fieldInvalidEnum("credit_card_type", sb).exception();
         }
     }
 

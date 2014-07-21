@@ -8,7 +8,7 @@ package com.junbo.subscription.clientproxy.impl;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.resource.EntitlementResource;
 import com.junbo.subscription.clientproxy.EntitlementGateway;
-import com.junbo.subscription.common.exception.SubscriptionExceptions;
+import com.junbo.subscription.common.exception.AppErrors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ public class EntitlementGatewayImpl implements EntitlementGateway {
             return result.getId();
         } catch (Exception e) {
             LOGGER.error("Error occurred during calling [Entitlement] component.", e);
-            throw SubscriptionExceptions.INSTANCE.gatewayFailure("entitlement").exception();
+            throw AppErrors.INSTANCE.gatewayFailure("entitlement").exception();
         }
 
     }

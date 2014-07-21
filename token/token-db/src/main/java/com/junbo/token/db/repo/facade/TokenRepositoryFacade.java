@@ -8,7 +8,7 @@ package com.junbo.token.db.repo.facade;
 
 import com.junbo.sharding.IdGenerator;
 import com.junbo.token.common.TokenUtil;
-import com.junbo.token.common.exception.AppClientExceptions;
+import com.junbo.token.common.exception.AppErrors;
 import com.junbo.token.db.repo.*;
 import com.junbo.token.spec.enums.ItemStatus;
 import com.junbo.token.spec.enums.ProductType;
@@ -136,7 +136,7 @@ public class TokenRepositoryFacade {
     public void updateTokenStatus(long hashValue, ItemStatus status){
         TokenItem item = tokenItemRepository.getByHashValue(hashValue).get();
         if (item == null) {
-            throw AppClientExceptions.INSTANCE.invalidToken().exception();
+            throw AppErrors.INSTANCE.invalidToken().exception();
         }
         item.setStatus(status.toString());
         tokenItemRepository.update(item, item).get();
