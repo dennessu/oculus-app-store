@@ -81,6 +81,9 @@ git config --global --unset core.eol
 git config --global core.autocrlf input
 ```
 
+### Install SourceTree
+Install the [SourceTree App](http://www.sourcetreeapp.com). This tool is very useful and reveals more details than the github app. This application requires registration after trial period, but it is free now.
+
 ## Setup Arcanist
 
 ### Setup Arcanist on Windows
@@ -242,20 +245,251 @@ $ arc land --onto release
   * (again) **NEVER NEVER NEVER** run `git push --force` !!! You are doing something wrong! STOP!
   * Never introduce merge commit (in dev branches). After you set the git config as above, `git pull` will do the work.
   * Write good commit messages. Title should be one line and descriptive. It should be no more than 67 characters and must be less than 80. Write as much information as possible in 'summary'. `arc diff` would populate the template which contains a couple fields. Please read this article: [Write Sensible Commit Messages](https://secure.phabricator.com/book/phabflavor/article/writing_reviewable_code/#write-sensible-commit-me)
-  * Remember in every topic branch, introduce at most 1 commit. Use `git commit --amend` wisely.
+  * Remember in every topic branch, introduce at most 1 commit. Use `git commit --amend` wisely.<br/>
     **NOTE**: Luckily, 'arc land' would help you to squash your commits in your topic branch before push, but it is still recommended that you keep your own stuffs clean and tidy.
   * Don't rely on IDE to do git operations. We might introduce git hooks in the future. Usually IDEs don't honor local git hooks. Try to learn git CLI.
 
 # HOWTOs
-1. How to sync my working branch to the latest status?
+## How to sync my working branch to the latest status?
+If you have any pending changes, stash them first.
+```
+git stash
+```
+Then pull the latest changes by:
 ```
 git pull
 ```
-1.
+If you have any pending changes stashed, pop them.
+```
+git stash pop
+```
 
+If the pull bring you to the conflict resolution state, refer to "[What if there is a conflict in git pull](#howtos-conflict)".
+
+## How to know how many branches I have locally?
+```
+git branche -vv
+```
+
+## How to switch to another feature branch?
+You can work on multiple features at the same time. Use the following command to switch:
+```
+git checkout -b <branch_name>
+```
+Make sure you stashed or committed your pending changes before switch.
+
+## <a name='howtos-forgot-arc-feature'></a> What if I committed something to master before `arc feature`?
+  If you are not confident, please backup the branch before doing the steps.
+  * Reset to `origin/master` and stash the changes
+  ```
+  git reset origin/master
+  git stash
+  ```
+  * Use arc feature to create the new branch and pop the code from stash
+  ```
+  arc feature my_fix
+  git stash pop
+  ```
+  * Commit the change again
+  ```
+  git add -A :/
+  git commit
+  ```
+## How to add all files and commit?
+```
+git add -A :/
+git commit
+```
+The first command will add everything pending to stage.
+
+## How to reset the whole working branch to `origin/master`? <br/>
+There are two ways to do it. The first way resets to `origin/master` and keeps your local changes. You can review your local changes in `git status` or the GUI tool.
+```
+git reset origin/master
+```
+If you are sure that you don't need your local changes and just want to reset to the remote master, run the following:
+```
+git reset origin/master --hard
+```
+
+## How to reset the whole working branch to HEAD (last committed version)?
+```
+git reset HEAD
+```
+If you are sure that you don't need your local changes and just want to reset to the remote master, run the following:
+```
+git reset HEAD --hard
+```
+
+## How do I revert a single file to be the same as `origin/master`?
+**WARNING**: Your change to the file will be lost.
+```
+git checkout origin/master -- <file>
+```
+## How do I revert a single file to HEAD (last committed version)?
+**WARNING**: Your change to the file will be lost.
+```
+git checkout -- <file>
+```
+## <a name='howtos-conflict'></a> What if there is a conflict in `git pull`?
+If your code contains conflicting change with the new changes pull from `origin/master`, you will be prompted by something like:
+  ```
+  error: could not apply fa39187... something to add to patch A
+
+  When you have resolved this problem, run "git rebase --continue".
+  If you prefer to skip this patch, run "git rebase --skip" instead.
+  To check out the original branch and stop rebasing, run "git rebase --abort".
+  Could not apply fa39187f3c3dfd2ab5faa38ac01cf3de7ce2e841... Change fake file
+  ```
+And your current git branch will be in some unnamed branch. If your bash shows the branch name, it will be something like:
+```
+main git:(fa39187)
+```
+Assume you have kdiff3 installed, you can use the following command to resolve conflicts:
+```
+git mergetool
+```
+The command starts the conflict resolution.
+  * It will show kdiff3 and you can resolve conflicts then save the file.
+  * If there are pending conflicts, kdiff3 won't allow you to save.
+  * Sometimes kdiff3 can resolve the conflict by itself. In this case it prompts for next file directly.
+  * After a file conflict is resolved, git will prompt for next conflicting file, or goes back to the bash prompt.
+  * Sometimes one file is deleted on your or remote branch while the other side modified it. In this case, you can follow the prompt to delete or keep the file.
+When it goes back to bash prompt, it means the conflict resolution is done. Type the following command to continue:
+```
+git rebase --continue
+```
+If there is another conflict with something fetched from origin, it will show the error message again. Otherwise it will bring you back to your branch. Then check the diff and verify your change is still okay after the merge.
+
+For example:
+```
+-continue' to continue forward. After resolving the rebase, run 'arc land' again.
+➜  testGit git:(d31caf0) ✗ git mergetool
+Merging:
+newfile.txt
+
+Normal merge conflict for 'newfile.txt':
+  {local}: modified file
+  {remote}: modified file
+```
+Now merge the file in kdiff3. When you close the kdiff3 (in OS X, you need to quit by pressing `CMD+Q`.)
+```
+➜  testGit git:(d31caf0) ✗ git rebase --continue
+Applying: Fix Bug 12345
+Recorded resolution for 'newfile.txt'.
+➜  testGit git:(my_feature)
+```
+
+If you did something wrong in the rebase, you can abort and retry using:
+```
+git rebase --abort
+git pull
+```
+Note that any change you applied during your merge will be **lost**. You can backup the merge result before running the commands.
+
+The merge can also be done without kdiff3. For more information, refer to [this article](https://help.github.com/articles/resolving-a-merge-conflict-from-the-command-line).
+
+**NOTE**:
+In case if you want to use your version or their version of some file instead of merging, you can quit the merge tool and press `CTRL+C` to abort the merge process. The files you already saved for merge will not be lost. Then you can use the following commands:
+  * Accept yours
+  ```
+  git checkout --ours -- <file>
+  ```
+  * Accept theirs
+  ```
+  git checkout --theirs -- <file>
+  ```
+If you have other files to merge after accepting yours or theirs for the file, you can use `git mergetool` to continue the merge process until all files are merged.
+
+## What if `arc land` failed and stopped at a rebase branch?
+When this happens, the branch will be in the rebase conflict resolution state. A sample output is like:
+```
+➜  testGit git:(my_feature) arc land
+Landing current branch 'my_feature'.
+Switched to branch master. Updating branch...
+The following commit(s) will be landed:
+
+c26fcbc Fix Bug 12345
+
+Switched to branch my_feature. Identifying and merging...
+
+Landing revision 'D588: Fix Bug 12345'...
+Rebasing my_feature onto master
+First, rewinding head to replay your work on top of it...
+Applying: Fix Bug 12345
+Using index info to reconstruct a base tree...
+M       newfile.txt
+Falling back to patching base and 3-way merge...
+Auto-merging newfile.txt
+CONFLICT (content): Merge conflict in newfile.txt
+Recorded preimage for 'newfile.txt'
+Failed to merge in the changes.
+Patch failed at 0001 Force conflict!
+The copy of the patch that failed is found in:
+   /home/sk/testGit/.git/rebase-apply/patch
+
+When you have resolved this problem, run "git rebase --continue".
+If you prefer to skip this patch, run "git rebase --skip" instead.
+To check out the original branch and stop rebasing, run "git rebase --abort".
+
+Usage Exception: 'git rebase master' failed. You can abort with 'git rebase --abort', or resolve conflicts and use 'git rebase --continue' to continue forward. After resolving the rebase, run 'arc land' again.
+➜  testGit git:(d31caf0) ✗
+```
+In this case, follow "[What if there is a conflict in git pull](#howtos-conflict)" to resolve the conflict.
+
+When the conflict is resolved, you will be in your feature branch. Try `arc land` again to push your changes.
+
+## What if `git stash pop` prompts for confliction?
+When `git stash pop` find conflicts, it doesn't bring you to a temporarily branch with hash. Instead it will stay in the same branch. However you can still deal the conflict the same way as other conflicts.
+  * Usually you will use `git mergetool` to merge conflicts.
+  * After all conflicts are resolved, you can simply continue your work.
+  * There is no need to use `git rebase --continue` in this situation.
+
+Here is an example:
+
+```
+➜  testGit git:(feature1) git stash pop
+Auto-merging newfile.txt
+CONFLICT (content): Merge conflict in newfile.txt
+Recorded preimage for 'newfile.txt'
+➜  testGit git:(feature1) ✗ git mergetool
+Merging:
+newfile.txt
+
+Normal merge conflict for 'newfile.txt':
+  {local}: modified file
+  {remote}: modified file
+➜  testGit git:(feature1)
+```
+For more details on how to resolve conflicts, refer to "[What if there is a conflict in git pull](#howtos-conflict)".
+
+## What if `arc land` didn't lead to a conflict, but failed due to other issues and the current branch is now `master`?
+Sometimes it happens due to network issue. In this case, check the following to figure out how to fix the situation.
+1. Check whether your feature branch still exists. If it exists, try the following steps:
+  * Reset `master` to `origin/master`
+  ```
+  git reset origin/master --hard
+  ```
+  * Try `arc land` again
+1. If the feature branch is already deleted, and master contains your changes, try to push your changes:
+```
+git push
+```
+If it is rejected due to some other commits pushed before yours, try pull and push again.
+```
+git pull
+git push
+```
+Be careful if you suspect other people's change might conflict with your change and break the build/test. In that case, refer to [What if I committed something to master before `arc feature`?](#howtos-forgot-arc-feature) to move your change to a feature branch again.
+
+## What if I'm confused with what happened in my branch?
+If all above **HOWTO**s didn't help and you are confused with your branch status, turn to colleges who are more familiar with git for help. For example, you can ask [Kevin Gu](kg@silkcloud.com), [Tianxiang Chen](txchen@silkcloud.com) or [Shu Zhang](shuz@silkcloud.com) for help.
 
 # References
   * [Git Config Guide](https://silkcloud.atlassian.net/wiki/display/IN/Git+config+guide)
   * [Git Setup Guide](https://code.silkcloud.info/w/git_setup_guide/)
   * [Arcanist Setup Guide](https://code.silkcloud.info/w/arcanist_setup_guide/)
   * [Arcanist Dev Workflow](https://code.silkcloud.info/w/dev_workflow/)
+  * [Git Branching - Rebasing](http://git-scm.com/book/en/Git-Branching-Rebasing)
+  * [Resolving Merge Conflicts after a Git Rebase](https://help.github.com/articles/resolving-merge-conflicts-after-a-git-rebase)
+  * [Resolving a Merge Conflict from the Command Line](https://help.github.com/articles/resolving-a-merge-conflict-from-the-command-line)
