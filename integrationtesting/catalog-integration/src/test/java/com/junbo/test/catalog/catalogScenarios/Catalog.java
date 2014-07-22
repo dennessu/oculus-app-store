@@ -313,7 +313,8 @@ public class Catalog extends BaseTestClass {
         Assert.assertNotNull(offerResult);
 
         //Attach offer revision to the offer
-        OfferRevision offerRevision = offerRevisionServiceAPI.prepareOfferRevisionEntity(defaultOfferRevisionFileName);
+        OfferRevision offerRevision = offerRevisionServiceAPI.prepareOfferRevisionEntity(defaultOfferRevisionFileName,
+                offerGet.getOwnerId());
         offerRevision.setOfferId(offerGet.getOfferId());
         offerRevision.setOwnerId(offerGet.getOwnerId());
         OfferRevision offerRevisionRtn = offerRevisionServiceAPI.postOfferRevision(offerRevision);
@@ -390,7 +391,7 @@ public class Catalog extends BaseTestClass {
             features = "catalogScenarios",
             component = Component.Catalog,
             owner = "JasonFu",
-            status = Status.Disable,
+            status = Status.Enable,
             description = "Test predefined offers",
             steps = {
             }

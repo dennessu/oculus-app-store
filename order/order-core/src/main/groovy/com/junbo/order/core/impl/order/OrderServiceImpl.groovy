@@ -74,8 +74,6 @@ class OrderServiceImpl implements OrderService {
         // order is the request
 
         LOGGER.info('name=Settle_Tentative_Order. userId: {}', order.user.value)
-        orderValidator.validateSettleOrderRequest(order)
-
         // rate the order
         // get the existing order with new rating
         return getOrderByOrderId(order.getId().value, true, orderServiceContext, false).then { Order ratedOrder ->
@@ -83,11 +81,8 @@ class OrderServiceImpl implements OrderService {
             if (ratedOrder.status == OrderStatus.PRICE_RATING_CHANGED.name()) {
                 throw AppErrors.INSTANCE.orderPriceChanged().exception()
             }
-
             // TODO: compare the reqeust and the order persisted
             orderValidator.validateSettleOrderRequest(ratedOrder)
-            ratedOrder.payments[0].successRedirectUrl = order.payments[0].successRedirectUrl
-            ratedOrder.payments[0].cancelRedirectUrl = order.payments[0].cancelRedirectUrl
             ratedOrder.purchaseTime = ratedOrder.honoredTime
 
             Throwable error

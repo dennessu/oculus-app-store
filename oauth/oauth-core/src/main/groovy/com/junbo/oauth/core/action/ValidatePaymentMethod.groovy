@@ -13,6 +13,7 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.spec.param.OAuthParameters
+import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
@@ -23,6 +24,7 @@ import java.util.regex.Pattern
 /**
  * Created by Zhanxin on 5/21/2014.
  */
+@CompileStatic
 class ValidatePaymentMethod implements Action {
     private static final Logger LOGGER = LoggerFactory.getLogger(ValidatePaymentMethod)
 

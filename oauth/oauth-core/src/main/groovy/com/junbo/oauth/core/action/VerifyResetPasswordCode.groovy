@@ -1,6 +1,5 @@
 package com.junbo.oauth.core.action
 
-import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
 import com.junbo.common.json.ObjectMapperProvider
@@ -17,13 +16,11 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppErrors
-import com.junbo.oauth.db.repo.ResetPasswordCodeRepository
 import com.junbo.oauth.spec.model.ResetPasswordCode
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.util.StringUtils
 
 /**
  * Created by minhao on 5/2/14.
@@ -31,15 +28,8 @@ import org.springframework.util.StringUtils
 @CompileStatic
 class VerifyResetPasswordCode implements Action {
     private static final Logger LOGGER = LoggerFactory.getLogger(VerifyResetPasswordCode)
-
-    private ResetPasswordCodeRepository resetPasswordCodeRepository
     private UserResource userResource
     private UserPersonalInfoResource userPersonalInfoResource
-
-    @Required
-    void setResetPasswordCodeRepository(ResetPasswordCodeRepository resetPasswordCodeRepository) {
-        this.resetPasswordCodeRepository = resetPasswordCodeRepository
-    }
 
     @Required
     void setUserResource(UserResource userResource) {
@@ -54,21 +44,12 @@ class VerifyResetPasswordCode implements Action {
     @Override
     Promise<ActionResult> execute(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
-        String code = contextWrapper.resetPasswordCode
 
-        if (StringUtils.isEmpty(code)) {
-            contextWrapper.errors.add(AppCommonErrors.INSTANCE.fieldRequired('rpc').error())
-            return Promise.pure(new ActionResult('error'))
-        }
-
-        ResetPasswordCode resetPasswordCode = resetPasswordCodeRepository.getAndRemove(code)
-
+        ResetPasswordCode resetPasswordCode = contextWrapper.resetPasswordCode
         if (resetPasswordCode == null) {
-            contextWrapper.errors.add(AppErrors.INSTANCE.invalidVerificationCode().error())
+            contextWrapper.errors.add(AppErrors.INSTANCE.invalidResetPasswordCode().error())
             return Promise.pure(new ActionResult('error'))
         }
-
-        resetPasswordCodeRepository.removeByUserIdEmail(resetPasswordCode.userId, resetPasswordCode.email)
 
         return userResource.get(new UserId(resetPasswordCode.userId), new UserGetOptions()).recover { Throwable e ->
             handleException(e, contextWrapper)

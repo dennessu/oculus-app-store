@@ -92,6 +92,14 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         return identityClient.GetUserByUserId(userId);
     }
 
+    public String getUserByUserName(String userName) throws Exception{
+        return identityClient.GetUserByUserName(userName).get(0);
+    }
+
+    public String getUserByUserName(String userName, String pwd) throws Exception{
+        return identityClient.GetUserByUserName(userName).get(0);
+    }
+
     public String postDefaultItem() throws Exception {
         Item item = itemClient.postDefaultItem(CatalogItemType.PHYSICAL);
         return IdConverter.idToUrlString(ItemId.class, item.getItemId());
@@ -121,7 +129,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         }
 
         primaryCart.setOffers(offerItemList);
-
+        Master.getInstance().setCurrentUid(uid);
         Master.getInstance().addCart(primaryCartId, primaryCart);
         return cartClient.updateCart(uid, primaryCartId, primaryCart);
     }

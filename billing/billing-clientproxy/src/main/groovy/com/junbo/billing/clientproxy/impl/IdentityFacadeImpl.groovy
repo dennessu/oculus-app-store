@@ -6,22 +6,18 @@
 
 package com.junbo.billing.clientproxy.impl
 
-import com.junbo.common.id.OrganizationId
+import com.junbo.billing.clientproxy.IdentityFacade
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.spec.v1.model.Address
-import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
-import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
-import com.junbo.identity.spec.v1.resource.OrganizationResource
 import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
-import com.junbo.billing.clientproxy.IdentityFacade
 import groovy.transform.CompileStatic
 
 import javax.annotation.Resource

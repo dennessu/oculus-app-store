@@ -15,6 +15,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network :private_network, ip: "192.168.200.101"
 
   host = RbConfig::CONFIG['host_os']
+  cores = '1'
+  if host =~ /mswin|mingw/
+    # TODO: set cpu cores
+  else
+    cores = `awk "/^processor/ {++n} END {print n}" /proc/cpuinfo 2> /dev/null || sh -c 'sysctl hw.logicalcpu 2> /dev/null || echo ": 2"' | awk \'{print \$2}\' `.chomp
+  end
 
   # sync source folder
   if host =~ /mswin|mingw/
@@ -29,17 +35,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network "forwarded_port", guest: 8081, host: 8081
   config.vm.network "forwarded_port", guest: 5984, host: 5984
   config.vm.network "forwarded_port", guest: 5432, host: 5432
+  config.vm.network "forwarded_port", guest: 9401, host: 9401
 
   config.vm.provider "virtualbox" do |v|
     v.name = "sc-localdev"
     v.memory = 3072
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
-    if host =~ /mswin|mingw/
-      # TODO: set cpu cores for windows host
-    else
-      v.customize ["modifyvm", :id, "--cpus",
-        `awk "/^processor/ {++n} END {print n}" /proc/cpuinfo 2> /dev/null || sh -c 'sysctl hw.logicalcpu 2> /dev/null || echo ": 2"' | awk \'{print \$2}\' `.chomp ]
+    v.customize ["modifyvm", :id, "--cpus", cores ]
+
+    # enable ioapic when more than 1 CPU
+    if cores.to_i > 1
+      v.customize ["modifyvm", :id, "--ioapic", "on"]
     end
   end
 
@@ -53,7 +60,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       echo 'swapfile found. No changes made.'
     else
       echo 'swapfile not found. Adding swapfile.'
-      fallocate -l 2048M /swapfile
+      fallocate -l 3072M /swapfile
       chmod 600 /swapfile
       mkswap /swapfile
       swapon /swapfile
@@ -61,7 +68,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     fi
 
     # tune gradle
-    echo 'export GRADLE_OPTS="$GRADLE_OPTS -Xmx2048m -Xms1024m -XX:PermSize=512m -XX:MaxPermSize=1024m"' >> /home/vagrant/.bashrc
+    echo 'export GRADLE_OPTS="$GRADLE_OPTS -Xmx2048m -XX:MaxPermSize=512m"' >> /home/vagrant/.bashrc
 
     # Auto cd to source code dir
     echo "cd /home/vagrant/src" >> /home/vagrant/.bashrc

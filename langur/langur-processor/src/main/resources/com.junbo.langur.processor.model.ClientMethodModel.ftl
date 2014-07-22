@@ -40,10 +40,17 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
     [/#if]
 
 
+    [#if !authorizationNotRequired]
     if (__accessTokenProvider != null) {
         String __accessToken = __accessTokenProvider.getAccessToken();
         __requestBuilder.addHeader("Authorization", "Bearer " + __accessToken);
+    } else {
+        String __accessToken = com.junbo.langur.core.context.JunboHttpContext.getRequestHeaders().getFirst("Authorization");
+        if (org.springframework.util.StringUtils.hasText(__accessToken)) {
+            __requestBuilder.addHeader("Authorization", __accessToken);
+        }
     }
+    [/#if]
 
 [#if inProcessCallable]
     if (__inProcessCallable && __checkService() != null) {

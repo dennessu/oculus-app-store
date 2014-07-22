@@ -18,7 +18,6 @@
     <!-- proxy -->
     <bean id="billingIdentityUserClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
           parent="userResourceClientProxy">
-        <property name="accessTokenProvider" ref="billingAccessTokenProvider"/>
     </bean>
 
     <bean id="billingOfferRevisionClient" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy"
@@ -35,7 +34,6 @@
     <bean id="billingPaymentInstrumentClient"
           class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy"
           parent="paymentInstrumentProxy">
-        <property name="accessTokenProvider" ref="billingAccessTokenProvider"/>
     </bean>
 
     <bean id="billingPaymentTransactionClient"
@@ -46,12 +44,10 @@
 
     <bean id="billingCurrencyClient" class="com.junbo.identity.spec.v1.resource.proxy.CurrencyResourceClientProxy"
           parent="currencyResourceClientProxy">
-        <property name="accessTokenProvider" ref="billingAccessTokenProvider"/>
     </bean>
 
     <bean id="billingCountryClient" class="com.junbo.identity.spec.v1.resource.proxy.CountryResourceClientProxy"
           parent="countryResourceClientProxy">
-        <property name="accessTokenProvider" ref="billingAccessTokenProvider"/>
     </bean>
 
     <!-- facade -->

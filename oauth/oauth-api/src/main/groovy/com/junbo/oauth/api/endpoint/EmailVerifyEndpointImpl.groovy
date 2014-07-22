@@ -124,7 +124,7 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
         EmailVerifyCode emailVerifyCode = emailVerifyCodeRepository.getAndRemove(code)
 
         if (emailVerifyCode == null) {
-            LOGGER.warn(AppErrors.INSTANCE.invalidEmailVerifyCode(code).toString())
+            LOGGER.warn(AppErrors.INSTANCE.invalidEmailVerifyCode().toString())
             Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)
                     .location(UriBuilder.fromUri(failedRedirectUri).build())
             return Promise.pure(responseBuilder.build())

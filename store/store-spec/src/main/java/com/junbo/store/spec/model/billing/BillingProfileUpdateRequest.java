@@ -17,7 +17,7 @@ public class BillingProfileUpdateRequest {
     /**
      * The Operation enum.
      */
-    public enum Operation {
+    public enum UpdateAction {
         ADD_PI,
         UPDATE_PI,
         REMOVE_PI
@@ -27,7 +27,7 @@ public class BillingProfileUpdateRequest {
 
     private LocaleId locale;
 
-    private String operation;
+    private String action;
 
     private Instrument instrument;
 
@@ -47,12 +47,12 @@ public class BillingProfileUpdateRequest {
         this.userId = userId;
     }
 
-    public String getOperation() {
-        return operation;
+    public String getAction() {
+        return action;
     }
 
-    public void setOperation(String operation) {
-        this.operation = operation;
+    public void setAction(String action) {
+        this.action = action;
     }
 
     public Instrument getInstrument() {

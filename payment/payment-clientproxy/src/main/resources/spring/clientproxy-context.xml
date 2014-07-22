@@ -18,21 +18,22 @@
 
     <bean id="currencyClient" class="com.junbo.identity.spec.v1.resource.proxy.CurrencyResourceClientProxy"
           parent="currencyResourceClientProxy">
-        <property name="accessTokenProvider" ref="paymentAccessTokenProvider"/>
     </bean>
 
     <bean id="countryClient" class="com.junbo.identity.spec.v1.resource.proxy.CountryResourceClientProxy"
           parent="countryResourceClientProxy">
-        <property name="accessTokenProvider" ref="paymentAccessTokenProvider"/>
     </bean>
 
     <bean id="piiClient" class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy"
           parent="userPersonalInfoResourceClientProxy">
-        <property name="accessTokenProvider" ref="paymentAccessTokenProvider"/>
     </bean>
 
     <bean id="userClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
           parent="userResourceClientProxy">
+    </bean>
+
+    <bean id="paymentWalletProxy" class="com.junbo.ewallet.spec.resource.proxy.WalletResourceClientProxy"
+          parent="walletProxy">
         <property name="accessTokenProvider" ref="paymentAccessTokenProvider"/>
     </bean>
 

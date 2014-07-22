@@ -8,17 +8,19 @@ package com.junbo.payment.core.provider.braintree;
 
 import com.braintreegateway.*;
 import com.braintreegateway.exceptions.DownForMaintenanceException;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.util.PromiseFacade;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.clientproxy.PersonalInfoFacade;
 import com.junbo.payment.common.CommonUtil;
-import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.spec.enums.PaymentStatus;
-import com.junbo.payment.spec.model.*;
 import com.junbo.payment.spec.model.Address;
+import com.junbo.payment.spec.model.PaymentInstrument;
+import com.junbo.payment.spec.model.PaymentTransaction;
+import com.junbo.payment.spec.model.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -52,7 +54,16 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
             env = Environment.valueOf(environment);
         }catch(Exception ex){
             LOGGER.error("not able to get the right environment:" + environment);
-            throw AppServerExceptions.INSTANCE.invalidProviderRequest(PROVIDER_NAME).exception();
+            String sb = "";
+            Environment[] environments = Environment.values();
+            for (int index = 0; index < environments.length; index++) {
+                if (index == environments.length - 1) {
+                    sb += environments[index].toString();
+                } else {
+                    sb += (environments[index].toString() + ", ");
+                }
+            }
+            throw AppCommonErrors.INSTANCE.fieldInvalid(PROVIDER_NAME, sb).exception();
         }
         gateway = new BraintreeGateway(env, merchantId, publicKey, privateKey);
     }
@@ -94,7 +105,8 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
                         String expireDate = request.getTypeSpecificDetails().getExpireDate();
                         String[] tokens = expireDate.split("-");
                         if (tokens == null || tokens.length < 2) {
-                            throw AppClientExceptions.INSTANCE.invalidExpireDateFormat(expireDate).exception();
+                            throw AppCommonErrors.INSTANCE.fieldInvalid("expire_date",
+                                    "only accept format: yyyy-MM or yyyy-MM-dd").exception();
                         }
                         CreditCardRequest ccRequest = new CreditCardRequest()
                                 .customerId(getOrCreateCustomerId(request.getUserInfo()))
@@ -442,7 +454,7 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
         }else{
             handleProviderError(dummyCustomer);
         }
-        throw AppServerExceptions.INSTANCE.missingRequiredField("customer_id").exception();
+        throw AppCommonErrors.INSTANCE.fieldRequired("customer_id").exception();
     }
 
     public String getEnvironment() {

@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.core.service
 
+import com.junbo.common.id.UserId
 import com.junbo.oauth.spec.model.*
 import groovy.transform.CompileStatic
 
@@ -14,6 +15,8 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface OAuthTokenService {
     AccessToken generateAccessToken(Client appClient, Long userId, Set<String> scopes)
+
+    AccessToken generateAccessToken(Client appClient, Long userId, Set<String> scopes, Boolean ipRestriction)
 
     AccessToken getAccessToken(String tokenValue)
 
@@ -41,6 +44,8 @@ interface OAuthTokenService {
     void revokeAccessToken(String tokenValue, Client client)
 
     void revokeRefreshToken(String tokenValue, Client client)
+
+    void revokeAccessTokenByUserId(Long userId, Client client)
 
     boolean isValidAccessToken(String tokenValue)
 

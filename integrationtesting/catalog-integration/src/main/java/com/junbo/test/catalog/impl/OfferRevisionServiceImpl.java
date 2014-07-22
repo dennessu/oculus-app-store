@@ -6,6 +6,7 @@
 package com.junbo.test.catalog.impl;
 
 import com.junbo.catalog.spec.model.offer.*;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.test.catalog.enums.EventActionType;
@@ -129,7 +130,7 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
     }
 
     public OfferRevision postDefaultOfferRevision(Offer offer) throws Exception {
-        Item item = prepareItem(CatalogItemType.getRandom());
+        Item item = prepareItem(CatalogItemType.getRandom(), offer.getOwnerId());
         return postDefaultOfferRevision(offer, item);
     }
 
@@ -145,10 +146,10 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
         OfferRevision offerRevisionForPost;
 
         if (item.getType().equalsIgnoreCase(CatalogItemType.STORED_VALUE.getItemType())) {
-            offerRevisionForPost = prepareOfferRevisionEntity(defaultStoredValueOfferRevisionFileName, false);
+            offerRevisionForPost = prepareOfferRevisionEntity(defaultStoredValueOfferRevisionFileName, offer.getOwnerId(), false);
         }
         else {
-            offerRevisionForPost = prepareOfferRevisionEntity(defaultOfferRevisionFileName, false);
+            offerRevisionForPost = prepareOfferRevisionEntity(defaultOfferRevisionFileName, offer.getOwnerId(), false);
         }
 
         if (item.getType().equalsIgnoreCase(CatalogItemType.CONSUMABLE_UNLOCK.getItemType())) {
@@ -177,11 +178,12 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
         return postOfferRevision(offerRevisionForPost);
     }
 
-    public OfferRevision prepareOfferRevisionEntity(String fileName) throws Exception {
-        return prepareOfferRevisionEntity(fileName, true);
+    public OfferRevision prepareOfferRevisionEntity(String fileName, OrganizationId organizationId) throws Exception {
+        return prepareOfferRevisionEntity(fileName, organizationId, true);
     }
 
-    public OfferRevision prepareOfferRevisionEntity(String fileName, Boolean addItemInfo) throws Exception {
+    public OfferRevision prepareOfferRevisionEntity(String fileName, OrganizationId organizationId, Boolean addItemInfo)
+            throws Exception {
         String strOfferRevisionContent = readFileContent(String.format("testOfferRevisions/%s.json", fileName));
         OfferRevision offerRevisionForPost = new JsonMessageTranscoder().decode(
                 new TypeReference<OfferRevision>() {}, strOfferRevisionContent);
@@ -195,7 +197,7 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
 
         //Add item related info
         if (addItemInfo) {
-            Item itemPrepared = prepareItem(CatalogItemType.getRandom());
+            Item itemPrepared = prepareItem(CatalogItemType.getRandom(), organizationId);
             ItemEntry itemEntry = new ItemEntry();
             List<ItemEntry> itemEntities = new ArrayList<>();
             itemEntry.setItemId(itemPrepared.getItemId());
@@ -219,16 +221,16 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
     }
 
     private OfferRevision postDefaultOfferRevision(Offer offer, CatalogItemType itemType) throws Exception {
-        Item item = prepareItem(itemType);
+        Item item = prepareItem(itemType, offer.getOwnerId());
         return postDefaultOfferRevision(offer, item);
     }
 
-    private Item prepareItem(CatalogItemType itemType) throws Exception {
+    private Item prepareItem(CatalogItemType itemType, OrganizationId organizationId) throws Exception {
 
         ItemService itemService = ItemServiceImpl.instance();
         ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
 
-        Item item  = itemService.postDefaultItem(itemType);
+        Item item  = itemService.postDefaultItem(itemType, organizationId);
 
         //Attach item revision to the item
         ItemRevision itemRevision;

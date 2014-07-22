@@ -5,9 +5,12 @@
  */
 package com.junbo.test.catalog.offer;
 
+import com.junbo.common.id.OrganizationId;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.test.common.apihelper.identity.OrganizationService;
+import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.catalog.OfferService;
@@ -15,6 +18,7 @@ import com.junbo.test.common.property.*;
 import com.junbo.common.model.Results;
 import com.junbo.common.id.OfferId;
 
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.Assert;
 
@@ -30,8 +34,14 @@ import java.util.List;
 public class TestGetOffer extends BaseTestClass {
 
     private LogHelper logger = new LogHelper(TestGetOffer.class);
-
     private OfferService offerService = OfferServiceImpl.instance();
+    private OrganizationId organizationId;
+
+    @BeforeClass
+    private void PrepareTestData() throws Exception {
+        OrganizationService organizationService = OrganizationServiceImpl.instance();
+        organizationId = organizationService.postDefaultOrganization().getId();
+    }
 
     @Property(
             priority = Priority.Dailies,
@@ -52,7 +62,7 @@ public class TestGetOffer extends BaseTestClass {
     public void testGetAnOfferById() throws Exception {
 
         //Prepare an offer
-        Offer offer = offerService.postDefaultOffer();
+        Offer offer = offerService.postDefaultOffer(organizationId);
         String offerId = offer.getOfferId();
         String invalidId = "0L";
 
@@ -91,9 +101,9 @@ public class TestGetOffer extends BaseTestClass {
     public void testGetOffersByIds() throws Exception {
 
         //prepare 3 offers for later use
-        Offer offer1 = offerService.postDefaultOffer();
-        Offer offer2 = offerService.postDefaultOffer();
-        Offer offer3 = offerService.postDefaultOffer();
+        Offer offer1 = offerService.postDefaultOffer(organizationId);
+        Offer offer2 = offerService.postDefaultOffer(organizationId);
+        Offer offer3 = offerService.postDefaultOffer(organizationId);
         String offerId1 = IdConverter.idToUrlString(OfferId.class, offer1.getOfferId());
         String offerId2 = IdConverter.idToUrlString(OfferId.class, offer2.getOfferId());
         String offerId3 = IdConverter.idToUrlString(OfferId.class, offer3.getOfferId());
@@ -169,9 +179,9 @@ public class TestGetOffer extends BaseTestClass {
     public void testGetOffersByIdPublished() throws Exception {
 
         //prepare 3 offers for later use
-        Offer offer1 = offerService.postDefaultOffer();
-        Offer offer2 = offerService.postDefaultOffer();
-        Offer offer3 = offerService.postDefaultOffer();
+        Offer offer1 = offerService.postDefaultOffer(organizationId);
+        Offer offer2 = offerService.postDefaultOffer(organizationId);
+        Offer offer3 = offerService.postDefaultOffer(organizationId);
 
         performVerification(offer1, offer2, offer3, false);
 

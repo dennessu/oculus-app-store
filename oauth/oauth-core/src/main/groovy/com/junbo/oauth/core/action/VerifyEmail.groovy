@@ -75,7 +75,7 @@ class VerifyEmail implements Action {
         Assert.notNull(emailVerifyCode, 'emailVerifyCode is null')
 
         if (emailVerifyCode.code != code) {
-            contextWrapper.errors.add(AppErrors.INSTANCE.invalidEmailVerifyCode(code).error())
+            contextWrapper.errors.add(AppErrors.INSTANCE.invalidEmailVerifyCode().error())
             return Promise.pure(new ActionResult('error'))
         }
 

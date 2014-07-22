@@ -9,6 +9,7 @@ import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.ItemRevisionId;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.common.model.Results;
 import com.junbo.test.catalog.ItemRevisionService;
 import com.junbo.test.catalog.ItemService;
@@ -17,6 +18,8 @@ import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
 import com.junbo.test.catalog.impl.ItemServiceImpl;
 import com.junbo.test.catalog.util.BaseTestClass;
+import com.junbo.test.common.apihelper.identity.OrganizationService;
+import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.Component;
@@ -24,6 +27,7 @@ import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
 import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -41,6 +45,15 @@ public class TestGetItemRevision extends BaseTestClass {
     private LogHelper logger = new LogHelper(TestGetItemRevision.class);
     private ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
     private ItemService itemService = ItemServiceImpl.instance();
+    private OrganizationId organizationId;
+    private Item testItem;
+
+    @BeforeClass
+    private void PrepareTestData() throws Exception {
+        OrganizationService organizationService = OrganizationServiceImpl.instance();
+        organizationId = organizationService.postDefaultOrganization().getId();
+        testItem = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
+    }
 
     @Property(
             priority = Priority.Dailies,
@@ -61,7 +74,7 @@ public class TestGetItemRevision extends BaseTestClass {
     public void testGetAnItemRevisionById() throws Exception {
 
         //Prepare an item revision
-        ItemRevision itemRevision = itemRevisionService.postDefaultItemRevision();
+        ItemRevision itemRevision = itemRevisionService.postDefaultItemRevision(testItem);
 
         //get the item revision by Id, assert not null
         ItemRevision itemRevisionRtn = itemRevisionService.getItemRevision(itemRevision.getRevisionId());
@@ -101,10 +114,10 @@ public class TestGetItemRevision extends BaseTestClass {
         List<String> revisionIds = new ArrayList<>();
 
         //Prepare two items
-        Item item1 = itemService.postDefaultItem(CatalogItemType.getRandom());
-        Item item2 = itemService.postDefaultItem(CatalogItemType.getRandom());
-        String itemId1 = IdConverter.idToUrlString(ItemId.class, item1.getItemId());
-        String itemId2 = IdConverter.idToUrlString(ItemId.class, item2.getItemId());
+        Item item1 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
+        Item item2 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
+        String itemId1 = item1.getItemId();
+        String itemId2 = item2.getItemId();
 
         //Prepare some item revisions
         ItemRevision itemRevision1 = itemRevisionService.postDefaultItemRevision(item1);
@@ -177,8 +190,8 @@ public class TestGetItemRevision extends BaseTestClass {
         List<String> revisionIds = new ArrayList<>();
 
         //Prepare two items
-        Item item1 = itemService.postDefaultItem(CatalogItemType.getRandom());
-        Item item2 = itemService.postDefaultItem(CatalogItemType.getRandom());
+        Item item1 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
+        Item item2 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
 
         //Prepare some item revisions
         ItemRevision itemRevision1 = itemRevisionService.postDefaultItemRevision(item1);
@@ -232,8 +245,8 @@ public class TestGetItemRevision extends BaseTestClass {
         List<String> revisionIds = new ArrayList<>();
 
         //Prepare two items
-        Item item1 = itemService.postDefaultItem(CatalogItemType.getRandom());
-        Item item2 = itemService.postDefaultItem(CatalogItemType.getRandom());
+        Item item1 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
+        Item item2 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
         String itemId1 = IdConverter.idToUrlString(ItemId.class, item1.getItemId());
         String itemId2 = IdConverter.idToUrlString(ItemId.class, item2.getItemId());
         //Prepare some item revisions

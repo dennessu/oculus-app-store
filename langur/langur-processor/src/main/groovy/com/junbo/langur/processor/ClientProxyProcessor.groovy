@@ -5,9 +5,13 @@
  */
 package com.junbo.langur.processor
 
+import com.junbo.langur.processor.handler.ClientProxyFactoryGenerator
+import com.junbo.langur.processor.handler.ClientProxyFactoryParser
 import com.junbo.langur.processor.handler.ClientProxyGenerator
 import com.junbo.langur.processor.handler.ClientProxyParser
 import com.junbo.langur.processor.handler.RestResourceHandler
+import com.junbo.langur.processor.handler.SyncWrapperGenerator
+import com.junbo.langur.processor.handler.SyncWrapperParser
 import groovy.transform.CompileStatic
 
 import javax.annotation.processing.SupportedAnnotationTypes
@@ -24,6 +28,8 @@ class ClientProxyProcessor extends AbstractRestResourceProcessor {
 
     @Override
     protected List<RestResourceHandler> findRestResourceHandlers() {
-        return [new ClientProxyParser(), new ClientProxyGenerator()]
+        return [new ClientProxyParser(), new ClientProxyGenerator(),
+                new ClientProxyFactoryParser(), new ClientProxyFactoryGenerator(),
+                new SyncWrapperParser(), new SyncWrapperGenerator()]
     }
 }

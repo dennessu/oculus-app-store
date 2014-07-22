@@ -8,25 +8,11 @@ package com.junbo.store.spec.model.identity;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.UserId;
 import com.junbo.store.spec.model.ChallengeSolution;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The UserProfileUpdateRequest class.
  */
 public class UserProfileUpdateRequest {
-
-    public static final  String allowActions;
-
-    static {
-        List<String> allowValues = new ArrayList<>();
-        for(UpdateAction updateAction: UpdateAction.values()) {
-            allowValues.add(updateAction.name());
-        }
-        allowActions = "[" + StringUtils.join(allowValues, ",") + "]";
-    }
 
     private ChallengeSolution challengeSolution;
 

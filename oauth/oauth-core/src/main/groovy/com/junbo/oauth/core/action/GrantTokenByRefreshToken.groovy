@@ -81,7 +81,11 @@ class GrantTokenByRefreshToken implements Action {
         )
         contextWrapper.loginState = loginState
 
-        def newAccessToken = tokenService.generateAccessToken(client, refreshToken.userId, scopesParam)
+        String ipRestriction = parameterMap.getFirst(OAuthParameters.IP_RESTRICTION)
+        Boolean ipRestrictionRequired = Boolean.parseBoolean(ipRestriction);
+
+        def newAccessToken = tokenService.generateAccessToken(client, refreshToken.userId,
+                scopesParam, ipRestrictionRequired)
         contextWrapper.accessToken = newAccessToken
 
         def newRefreshToken = tokenService.generateRefreshToken(client, newAccessToken, refreshToken)

@@ -1,5 +1,4 @@
 package com.junbo.order.core.impl.orderaction
-
 import com.junbo.common.id.OfferId
 import com.junbo.common.util.IdFormatter
 import com.junbo.langur.core.promise.Promise
@@ -7,15 +6,16 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.model.OrderOfferRevision
-import com.junbo.order.core.SubledgerService
+import com.junbo.order.core.impl.common.TransactionHelper
+import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.core.impl.subledger.SubledgerHelper
-
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.order.spec.model.SubledgerItem
 import com.junbo.order.spec.model.enums.SubledgerItemAction
 import com.junbo.order.spec.model.enums.SubledgerItemStatus
+import com.junbo.order.spec.resource.SubledgerItemResource
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -23,7 +23,6 @@ import org.springframework.beans.factory.InitializingBean
 import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.Resource
-
 /**
  * Created by fzhang on 4/10/2014.
  */
@@ -35,11 +34,14 @@ class SubledgerCreateItemAction implements Action, InitializingBean {
     @Resource(name = 'orderSubledgerHelper')
     SubledgerHelper subledgerHelper
 
-    @Resource(name = 'orderSubledgerService')
-    SubledgerService subledgerService
+    @Resource(name = 'order.subledgerItemClient')
+    SubledgerItemResource subledgerItemResource
 
     @Resource(name = 'orderServiceContextBuilder')
     OrderServiceContextBuilder builder
+
+    @Resource(name = 'orderTransactionHelper')
+    TransactionHelper transactionHelper
 
     SubledgerItemStatus initialStatus
 
@@ -48,15 +50,24 @@ class SubledgerCreateItemAction implements Action, InitializingBean {
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def serviceContext = context.orderServiceContext
-        def order = serviceContext.order
+        transactionHelper.executeInNewTransaction {
+            innerExecute(serviceContext)
+        }.syncRecover { Throwable ex ->
+            LOGGER.error('name=SubledgerCreateItemError, orderId={}', IdFormatter.encodeId(serviceContext.order.getId()), ex)
+        }.syncThen {
+            return null
+        }
+    }
 
+    private Promise innerExecute(OrderServiceContext serviceContext) {
+        def order = serviceContext.order
         return builder.getOffers(serviceContext).syncThen {
-            serviceContext.order.orderItems?.each { OrderItem orderItem ->
+            Promise.each(serviceContext.order.orderItems) { OrderItem orderItem ->
                 if (orderItem.developerRevenue == null || orderItem.developerRevenue == BigDecimal.ZERO) {
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug('skip orderItem for null/0 developerRevenue, orderItemId={} ', orderItem.id)
                     }
-                    return
+                    return Promise.pure(null)
                 }
 
                 def offer = serviceContext.offersMap[orderItem.offer]
@@ -73,10 +84,8 @@ class SubledgerCreateItemAction implements Action, InitializingBean {
                     LOGGER.debug('name=Subledger_For_SubledgerItem_Not_Found, orderItemId={}', orderItem.id)
                 }
 
-                subledgerService.createSubledgerItem(subledgerItem)
+                subledgerItemResource.createSubledgerItem(subledgerItem)
             }
-        }.syncRecover { Throwable ex ->
-            LOGGER.error('name=SubledgerCreateItemError, orderId={}', IdFormatter.encodeId(order.getId()), ex)
         }.syncThen {
             return null
         }

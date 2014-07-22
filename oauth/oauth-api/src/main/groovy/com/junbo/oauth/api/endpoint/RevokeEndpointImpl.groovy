@@ -6,6 +6,10 @@
 package com.junbo.oauth.api.endpoint
 
 import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.id.UniversalId
+import com.junbo.common.id.UserId
+import com.junbo.common.id.util.IdUtil
+import com.junbo.common.model.Link
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
@@ -19,7 +23,6 @@ import com.junbo.oauth.spec.model.Consent
 import com.junbo.oauth.spec.model.RefreshToken
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.context.annotation.Scope
 import org.springframework.util.StringUtils
 
 import javax.ws.rs.core.Response
@@ -75,15 +78,15 @@ class RevokeEndpointImpl implements RevokeEndpoint {
      * @return The raw javax.ws.rs Response.
      */
     @Override
-    Promise<Response> revoke(String authorization, String token, String tokenTypeHint) {
+    Promise<Response> revoke(String authorization, String token, String tokenTypeHint, String userHref) {
         // Validate the authorization, the authorization can't be empty.
         if (StringUtils.isEmpty(authorization)) {
             throw AppErrors.INSTANCE.missingAuthorization().exception()
         }
 
         // Validate the token, the token can't be empty.
-        if (StringUtils.isEmpty(token)) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('access_token').exception()
+        if (StringUtils.isEmpty(token) && StringUtils.isEmpty(userHref)) {
+            throw AppCommonErrors.INSTANCE.parameterRequired('access_token or user').exception()
         }
 
         // Parse the client id and client secret from the authorization.
@@ -100,14 +103,25 @@ class RevokeEndpointImpl implements RevokeEndpoint {
             throw AppCommonErrors.INSTANCE.fieldInvalid('client_secret', clientCredential.clientSecret).exception()
         }
 
-        // If the token is an access token, revoke it as an access token.
-        if (tokenService.isValidAccessToken(token)) {
-            tokenService.revokeAccessToken(token, client)
-            // If the token is a refresh token, revoke it as an refresh token.
-        } else if (tokenService.isValidRefreshToken(token)) {
-            tokenService.revokeRefreshToken(token, client)
-        } else {
-            throw AppErrors.INSTANCE.invalidTokenType().exception()
+        if (!StringUtils.isEmpty(token)) {
+            // If the token is an access token, revoke it as an access token.
+            if (tokenService.isValidAccessToken(token)) {
+                tokenService.revokeAccessToken(token, client)
+                // If the token is a refresh token, revoke it as an refresh token.
+            } else if (tokenService.isValidRefreshToken(token)) {
+                tokenService.revokeRefreshToken(token, client)
+            } else {
+                throw AppErrors.INSTANCE.invalidTokenType().exception()
+            }
+        }
+
+        if (!StringUtils.isEmpty(userHref)) {
+            UniversalId userId = IdUtil.fromLink(new Link(href: userHref))
+            if (userId == null || !userId instanceof UserId) {
+                throw AppCommonErrors.INSTANCE.invalidId('userId', userHref).exception()
+            }
+
+            tokenService.revokeAccessTokenByUserId((userId as UserId).value, client)
         }
 
         // Simply return an OK response.

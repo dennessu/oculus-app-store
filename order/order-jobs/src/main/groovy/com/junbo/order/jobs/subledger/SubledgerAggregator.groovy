@@ -1,14 +1,14 @@
 package com.junbo.order.jobs.subledger
-
 import com.junbo.configuration.topo.DataCenters
 import com.junbo.configuration.topo.model.DataCenter
-import com.junbo.order.core.SubledgerService
 import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.core.impl.subledger.SubledgerHelper
 import com.junbo.order.db.repo.facade.SubledgerRepositoryFacade
 import com.junbo.order.spec.model.PageParam
 import com.junbo.order.spec.model.SubledgerItem
 import com.junbo.order.spec.model.enums.SubledgerItemStatus
+import com.junbo.order.spec.resource.SubledgerItemResource
+import com.junbo.order.spec.resource.SubledgerResource
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
-
 /**
  * Created by fzhang on 4/8/2014.
  */
@@ -29,8 +28,11 @@ class SubledgerAggregator {
     @Resource(name = 'orderSubledgerHelper')
     SubledgerHelper subledgerHelper
 
-    @Resource(name = 'orderSubledgerService')
-    SubledgerService subledgerService
+    @Resource(name = 'order.subledgerClient')
+    SubledgerResource subledgerResource
+
+    @Resource(name = 'order.subledgerItemClient')
+    SubledgerItemResource subledgerItemResource
 
     @Resource(name ='orderTransactionHelper')
     TransactionHelper transactionHelper
@@ -69,13 +71,13 @@ class SubledgerAggregator {
 
                         if (subledger == null) {
                             subledger = subledgerHelper.subledgerForSubledgerItemContext(subledgerItemContext)
-                            subledger = subledgerService.createSubledger(subledger)
+                            subledger = subledgerResource.createSubledger(subledger).get()
                         }
 
                         subledgerItem.subledger = subledger.getId()
                         numItemMatchOperation++
                     }
-                    subledgerService.aggregateSubledgerItem(subledgerItem)
+                    subledgerItemResource.aggregateSubledgerItem(subledgerItem).get()
                 }
             }
 

@@ -70,8 +70,11 @@ class GrantTokenByCode implements Action {
             throw AppCommonErrors.INSTANCE.fieldInvalid('redirect_uri', redirectUri).exception()
         }
 
+        String ipRestriction = parameterMap.getFirst(OAuthParameters.IP_RESTRICTION)
+        Boolean ipRestrictionRequired = Boolean.parseBoolean(ipRestriction);
+
         AccessToken accessToken = tokenService.generateAccessToken(client,
-                authorizationCode.userId, authorizationCode.scopes)
+                authorizationCode.userId, authorizationCode.scopes, ipRestrictionRequired)
 
         LoginState loginState = new LoginState(
                 userId: authorizationCode.userId,

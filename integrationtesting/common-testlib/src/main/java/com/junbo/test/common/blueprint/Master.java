@@ -58,6 +58,16 @@ public class Master {
 
     private Map<String, String> userAccessTokens;
 
+    public String getUserPassword() {
+        return userPassword;
+    }
+
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
+    }
+
+    private String userPassword;
+
     private String identityAccessToken;
 
 

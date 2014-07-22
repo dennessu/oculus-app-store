@@ -5,7 +5,7 @@ import com.junbo.catalog.spec.model.offer.OffersGetOptions;
 import com.junbo.catalog.spec.resource.OfferResource;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.token.common.exception.AppClientExceptions;
+import com.junbo.token.common.exception.AppErrors;
 
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.core.Response;
@@ -27,7 +27,7 @@ public class MockOfferClient implements OfferResource {
         if(validOffers.contains(offerId)){
             return Promise.pure(new Offer());
         }else{
-            throw AppClientExceptions.INSTANCE.offerNotFound(offerId).exception();
+            throw AppErrors.INSTANCE.offerNotFound(offerId).exception();
         }
     }
 

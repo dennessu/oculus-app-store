@@ -1,11 +1,11 @@
 #!/bin/bash
 source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is needed, see common.sh for detail
 
-if [[ "$1" == "" || "$1" == "cloudant" ]]; then
+if [[ "$1" == "" || "$1" == "couch" ]]; then
     # setup cloudant db
     dbPrefixFile=common/configuration-data/src/main/resources/junbo/conf/onebox/common/personal.properties
     dbPrefix=`cat $dbPrefixFile | grep '^common.cloudant.dbNamePrefix=' | sed 's/common.cloudant.dbNamePrefix=//'`
-    pushd cloudant
+    pushd couchdb
     python ./couchdbcmd.py dropdbs --prefix=$dbPrefix --yes
     python ./couchdbcmd.py createdbs --prefix=$dbPrefix --yes
     popd
@@ -20,3 +20,4 @@ if [[ "$1" == "" || "$1" == "sql" ]]; then
     ./updatedb.sh -env:onebox -key:$cipherKey
     popd
 fi
+

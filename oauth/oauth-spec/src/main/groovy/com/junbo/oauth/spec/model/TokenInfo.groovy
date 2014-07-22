@@ -23,4 +23,7 @@ class TokenInfo {
 
     @JsonProperty('client_id')
     String clientId
+
+    @JsonProperty('ip_address')
+    String ipAddress
 }

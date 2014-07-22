@@ -19,7 +19,8 @@ class MasterKeyResourceImpl extends CommonResourceImpl implements MasterKeyResou
     private MasterKeyValidator masterKeyValidator
 
     @Override
-    Promise<Void> create(MasterKey masterKey) {
+    Promise<Void> create() {
+        MasterKey masterKey = new MasterKey()
         return authorize().then {
             return masterKeyValidator.validateMasterKeyCreate(masterKey).then {
 

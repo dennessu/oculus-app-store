@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.spec.endpoint;
 
+import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -20,6 +21,7 @@ import javax.ws.rs.core.*;
 @Api("oauth2")
 @Path("/oauth2/authorize")
 @RestResource
+@AuthorizationNotRequired
 @Produces(MediaType.APPLICATION_JSON)
 public interface AuthorizeEndpoint {
 

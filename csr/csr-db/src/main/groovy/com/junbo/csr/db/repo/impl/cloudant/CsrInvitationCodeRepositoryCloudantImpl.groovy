@@ -4,11 +4,13 @@ import com.junbo.common.cloudant.CloudantClient
 import com.junbo.csr.db.generator.TokenGenerator
 import com.junbo.csr.db.repo.CsrInvitationCodeRepository
 import com.junbo.csr.spec.model.CsrInvitationCode
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by haomin on 7/16/14.
  */
+@CompileStatic
 class CsrInvitationCodeRepositoryCloudantImpl extends CloudantClient<CsrInvitationCode> implements CsrInvitationCodeRepository {
     private TokenGenerator tokenGenerator
 

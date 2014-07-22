@@ -14,6 +14,7 @@ import com.junbo.oauth.spec.model.AccessTokenResponse
 import com.junbo.oauth.spec.model.TokenInfo
 import com.junbo.store.rest.utils.RequestValidator
 import com.junbo.store.rest.utils.ResourceContainer
+import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.ResponseStatus
 import com.junbo.store.spec.model.login.*
 import com.junbo.store.spec.resource.LoginResource
@@ -25,6 +26,8 @@ import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
+import javax.ws.rs.POST
+import javax.ws.rs.Path
 import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.ext.Provider
 
@@ -75,6 +78,29 @@ class LoginResourceImpl implements  LoginResource {
                         strength: "STRONG"
                 )
         )
+    }
+
+    @Override
+    Promise<UserCredentialChangeResponse> changeUserCredential(UserCredentialChangeRequest userCredentialChangeRequest) {
+        Promise.pure(null).then {
+            requestValidator.validateUserCredentialChangeRequest(userCredentialChangeRequest)
+        }.then {
+            resourceContainer.userCredentialVerifyAttemptResource.create(
+                    new UserCredentialVerifyAttempt(
+                            username: userCredentialChangeRequest.username,
+                            type: userCredentialChangeRequest.oldCredential.type,
+                            value: userCredentialChangeRequest.oldCredential.value
+                    )
+            )
+        }.then { UserCredentialVerifyAttempt attempt ->
+            resourceContainer.userCredentialResource.create(attempt.userId, new com.junbo.identity.spec.v1.model.UserCredential(
+                    userId: attempt.userId,
+                    type: userCredentialChangeRequest.newCredential.type,
+                    value: userCredentialChangeRequest.newCredential.value
+            ))
+        }.syncThen {
+            return new UserCredentialChangeResponse(status: ResponseStatus.SUCCESS.name())
+        }
     }
 
     @Override
@@ -234,7 +260,7 @@ class LoginResourceImpl implements  LoginResource {
     }
 
     private Promise<AuthTokenResponse>  innerSignIn(String username, String password) {
-        return resourceContainer.tokenEndpoint.postToken(
+        return resourceContainer.tokenEndpoint.postToken( // todo : may need call credential verification first since post token does not return meaningful error when user credential is invalid
                     new AccessTokenRequest(
                             username: username,
                             password: password,
@@ -266,6 +292,9 @@ class LoginResourceImpl implements  LoginResource {
     private Promise<Void> rollBackUser(User user) {
         String originalName = user.username
         user.username = "storerb${IdFormatter.encodeId(user.getId())}"
+        user.emails = []
+        user.phones = []
+        user.addresses = []
         resourceContainer.userResource.put(user.getId(), user).syncThen {
             LOGGER.info('name=Rollback_Created_User, userId={}, name={}, rollback_name={}', IdFormatter.encodeId(user.getId()), originalName, user?.username)
         }

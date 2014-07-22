@@ -311,6 +311,162 @@ public class RefundTesting extends BaseOrderTestClass {
     }
 
     @Property(
+            priority = Priority.BVT,
+            features = "Put /orders/{key}",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            release = Release.June2014,
+            description = "Test order refund - full refund",
+            steps = {
+                    "1. Post a new user",
+                    "2. Post new credit card to user",
+                    "3. Post an order and complete it",
+                    "4. Refund order 1 quantity and refund order 2 total amount",
+                    "5. Get balance by order Id",
+                    "6. Verify transactions contain expected refund info",
+                    "7. Get order by order Id",
+                    "8. Verify order response"
+            }
+    )
+    @Test
+    public void testRefundPhysical() throws Exception {
+        Map<String, Integer> offerList = new HashedMap();
+        Country country = Country.DEFAULT;
+        Currency currency = Currency.DEFAULT;
+
+        offerList.put(offer_physical_normal1, 2);
+        offerList.put(offer_physical_normal2, 1);
+
+        String uid = testDataProvider.createUser();
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
+
+        String orderId = testDataProvider.postOrder(
+                uid, country, currency, creditCardId, true, offerList);
+
+        testDataProvider.updateOrderTentative(orderId, false);
+
+        OrderInfo expectedOrderInfo = testDataProvider.getExpectedOrderInfo(uid, country, currency,
+                "en_US", true, OrderStatus.COMPLETED, creditCardId, orderId, offerList);
+
+        Map<String, Integer> refundOfferList = new HashedMap();
+        refundOfferList.put(offer_physical_normal1, 1);
+
+        Map<String, BigDecimal> partialRefundAmounts = new HashedMap();
+        partialRefundAmounts.put(offer_physical_normal2, new BigDecimal(2));
+
+        testDataProvider.getRefundedOrderInfo(expectedOrderInfo, refundOfferList, partialRefundAmounts);
+
+        testDataProvider.refundOrder(orderId, refundOfferList, partialRefundAmounts);
+
+        validationHelper.validateOrderInfo(orderId, expectedOrderInfo);
+
+        String balanceId = testDataProvider.getBalancesByOrderId(orderId).get(1);
+
+        TransactionInfo transactionInfo = new TransactionInfo();
+        transactionInfo.setPaymentInstrumentId(creditCardId);
+        transactionInfo.setAmount(expectedOrderInfo.getTotalAmount().add(expectedOrderInfo.getTotalTax()));
+        transactionInfo.setCurrency(Currency.DEFAULT);
+        transactionInfo.setTransactionStatus(TransactionStatus.SUCCESS);
+        transactionInfo.setTransactionType(TransactionType.REFUND);
+
+        validationHelper.validateSingleTransaction(balanceId, transactionInfo);
+
+    }
+
+
+    @Property(
+            priority = Priority.BVT,
+            features = "Put /orders/{key}",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            release = Release.June2014,
+            description = "Test order refund - full refund",
+            steps = {
+                    "1. Post a new user",
+                    "2. Post new credit card to user",
+                    "3. Post an order and complete it",
+                    "4. Refund free digital",
+                    "5. Get balance by order Id",
+                    "6. Verify transactions contain expected refund info",
+                    "7. Get order by order Id",
+                    "8. Verify order response"
+            }
+    )
+    @Test
+    public void testRefundFreeDigital() throws Exception {
+        Map<String, Integer> offerList = new HashedMap();
+        Country country = Country.DEFAULT;
+        Currency currency = Currency.DEFAULT;
+
+        offerList.put(offer_digital_free, 1);
+
+        String uid = testDataProvider.createUser();
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
+
+        String orderId = testDataProvider.postOrder(
+                uid, country, currency, creditCardId, false, offerList);
+
+        testDataProvider.updateOrderTentative(orderId, false);
+
+        Map<String, Integer> refundOfferList = new HashedMap();
+        refundOfferList.put(offer_digital_free, 1);
+
+        testDataProvider.refundOrder(orderId, refundOfferList, null);
+
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "Put /orders/{key}",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            release = Release.June2014,
+            description = "Test order refund - full refund",
+            steps = {
+                    "1. Post a new user",
+                    "2. Post new credit card to user",
+                    "3. Post an order and complete it",
+                    "4. Refund free phycisal",
+                    "5. Get balance by order Id",
+                    "6. Verify transactions contain expected refund info",
+                    "7. Get order by order Id",
+                    "8. Verify order response"
+            }
+    )
+    @Test
+    public void testRefundFreePhysical() throws Exception {
+        Map<String, Integer> offerList = new HashedMap();
+        Country country = Country.DEFAULT;
+        Currency currency = Currency.DEFAULT;
+
+        offerList.put(offer_physical_free, 1);
+
+        String uid = testDataProvider.createUser();
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
+
+        String orderId = testDataProvider.postOrder(
+                uid, country, currency, creditCardId, true, offerList);
+
+        testDataProvider.updateOrderTentative(orderId, false);
+
+        Map<String, BigDecimal> partialRefundAmounts = new HashedMap();
+        partialRefundAmounts.put(offer_physical_free, new BigDecimal(0));
+
+        testDataProvider.refundOrder(orderId, null, partialRefundAmounts);
+
+    }
+
+
+    @Property(
             priority = Priority.Dailies,
             features = "GET /Orders?userId={key}",
             component = Component.Order,

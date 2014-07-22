@@ -37,7 +37,6 @@
 
     <bean id="cartUserResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
           parent="userResourceClientProxy">
-        <property name="accessTokenProvider" ref="cartAccessTokenProvider"/>
     </bean>
 
     <bean id="mockUserClient" class="com.junbo.cart.core.client.impl.MockUserClientImpl">

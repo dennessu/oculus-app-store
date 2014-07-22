@@ -17,6 +17,8 @@ public class PersonalInfo {
 
     private JsonNode value;
 
+    private String type;
+
     private Boolean isDefault;
 
     public UserPersonalInfoId getUserPersonalInfoId() {
@@ -33,6 +35,14 @@ public class PersonalInfo {
 
     public void setValue(JsonNode value) {
         this.value = value;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Boolean getIsDefault() {

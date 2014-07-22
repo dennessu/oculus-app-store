@@ -8,12 +8,14 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.util.ValidatorUtil
 import com.junbo.oauth.spec.param.OAuthParameters
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
 /**
  * Created by minhao on 6/26/14.
  */
+@CompileStatic
 class ValidateCountry implements Action {
     private String defaultCountry
 
@@ -37,7 +39,7 @@ class ValidateCountry implements Action {
 
         if (StringUtils.hasText(country)) {
             if (!ValidatorUtil.isValidCountryCode(country)) {
-                throw AppCommonErrors.INSTANCE.fieldInvalid('country', 'Invalid CountryCode.')
+                throw AppCommonErrors.INSTANCE.fieldInvalid('country', 'Invalid CountryCode.').exception()
             }
         }
         else {

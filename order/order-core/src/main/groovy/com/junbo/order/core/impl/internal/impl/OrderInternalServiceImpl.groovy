@@ -10,6 +10,7 @@ import com.junbo.billing.spec.enums.TaxStatus
 import com.junbo.billing.spec.model.Balance
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
+import com.junbo.common.id.PIType
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.langur.core.promise.Promise
@@ -401,6 +402,15 @@ class OrderInternalServiceImpl implements OrderInternalService {
                     throw AppCommonErrors.INSTANCE.fieldInvalid(
                             'payments', 'do not belong to this user').exception()
                 }
+                if (PIType.get(pi.type) == PIType.CREDITCARD) {
+                    Date expireDate = CoreBuilder.DATE_FORMATTER.get().parse(pi.typeSpecificDetails.expireDate)
+                    Date now = new Date()
+                    if (expireDate.before(now)) {
+                        throw AppCommonErrors.INSTANCE.fieldInvalid(
+                                'payments', 'PI expired').exception()
+                    }
+                }
+
             }
             return Promise.pure(pis)
         }

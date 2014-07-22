@@ -182,7 +182,7 @@ public abstract class HttpClientBase {
 
                 logger.LogResponse(nettyResponse);
                 if (expectedResponseCode != 0) {
-                    Assert.assertEquals(expectedResponseCode, nettyResponse.getStatusCode());
+                    Assert.assertEquals(nettyResponse.getStatusCode(), expectedResponseCode);
                 }
 
                 return nettyResponse.getResponseBody();

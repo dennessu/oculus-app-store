@@ -130,13 +130,8 @@ public class TestPostOffer extends BaseTestClass {
         categoryInvalid.add("0L");
         categoryInvalid.add("1L");
 
-        //test ownerId is null
-        Offer testOffer = offerService.prepareOfferEntity(defaultOffer, organizationId);
-        testOffer.setOwnerId(null);
-        verifyExpectedError(testOffer);
-
         //test currentRevision is not null
-        testOffer = offerService.prepareOfferEntity(defaultOffer, organizationId);
+        Offer testOffer = offerService.prepareOfferEntity(defaultOffer, organizationId);
         testOffer.setCurrentRevisionId("0L");
         verifyExpectedError(testOffer);
 
@@ -166,7 +161,6 @@ public class TestPostOffer extends BaseTestClass {
 
         //put all invalid scenarios together
         testOffer = offerService.prepareOfferEntity(defaultOffer, organizationId);
-        testOffer.setOwnerId(null);
         testOffer.setCurrentRevisionId("0L");
         testOffer.setRev(initRevValue);
         testOffer.setPublished(true);

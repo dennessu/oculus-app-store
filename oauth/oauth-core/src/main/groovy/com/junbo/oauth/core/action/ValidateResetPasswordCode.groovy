@@ -7,6 +7,8 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.db.generator.TokenGenerator
+import com.junbo.oauth.db.repo.ResetPasswordCodeRepository
+import com.junbo.oauth.spec.model.ResetPasswordCode
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
@@ -17,10 +19,16 @@ import org.springframework.beans.factory.annotation.Required
 @CompileStatic
 class ValidateResetPasswordCode implements Action {
     private TokenGenerator tokenGenerator
+    private ResetPasswordCodeRepository resetPasswordCodeRepository
 
     @Required
     void setTokenGenerator(TokenGenerator tokenGenerator) {
         this.tokenGenerator = tokenGenerator
+    }
+
+    @Required
+    void setResetPasswordCodeRepository(ResetPasswordCodeRepository resetPasswordCodeRepository) {
+        this.resetPasswordCodeRepository = resetPasswordCodeRepository
     }
 
     @Override
@@ -29,11 +37,18 @@ class ValidateResetPasswordCode implements Action {
         String code = (String) context.requestScope[OAuthParameters.RESET_PASSWORD_CODE]
 
         if (!tokenGenerator.isValidResetPasswordCode(code)) {
-            contextWrapper.errors.add(AppErrors.INSTANCE.invalidVerificationCode().error())
+            contextWrapper.errors.add(AppErrors.INSTANCE.invalidResetPasswordCode().error())
             return Promise.pure(new ActionResult('error'))
         }
 
-        contextWrapper.resetPasswordCode = code
+        ResetPasswordCode resetPasswordCode = resetPasswordCodeRepository.getAndRemove(code)
+        if (resetPasswordCode == null) {
+            contextWrapper.errors.add(AppErrors.INSTANCE.invalidResetPasswordCode().error())
+            return Promise.pure(new ActionResult('error'))
+        }
+
+        resetPasswordCodeRepository.removeByUserIdEmail(resetPasswordCode.userId, resetPasswordCode.email)
+        contextWrapper.resetPasswordCode = resetPasswordCode
 
         return Promise.pure(new ActionResult('success'))
     }

@@ -8,6 +8,7 @@ package com.junbo.oauth.core.service.impl
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.util.IdFormatter
+import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.oauth.common.JsonMarshaller
 import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.core.service.OAuthTokenService
@@ -90,6 +91,11 @@ class OAuthTokenServiceImpl implements OAuthTokenService {
 
     @Override
     AccessToken generateAccessToken(Client client, Long userId, Set<String> scopes) {
+        return generateAccessToken(client, userId, scopes, false)
+    }
+
+    @Override
+    AccessToken generateAccessToken(Client client, Long userId, Set<String> scopes, Boolean ipRestriction) {
         Assert.notNull(client, 'client is null')
         Assert.notNull(client.clientId, 'client.clientId is null')
         Assert.notNull(userId, 'userId is null')
@@ -102,8 +108,13 @@ class OAuthTokenServiceImpl implements OAuthTokenService {
                 expiredBy: new Date(System.currentTimeMillis() + defaultAccessTokenExpiration * MILLISECONDS_PER_SECOND)
         )
 
+        if (ipRestriction) {
+            accessToken.ipAddress = JunboHttpContext.requestIpAddress
+        }
+
         return accessTokenRepository.save(accessToken)
     }
+
 
     @Override
     AccessToken getAccessToken(String tokenValue) {
@@ -303,6 +314,16 @@ class OAuthTokenServiceImpl implements OAuthTokenService {
         def accessTokens = accessTokenRepository.findByRefreshToken(tokenValue)
         accessTokens.each { AccessToken token ->
             accessTokenRepository.remove(token.tokenValue)
+        }
+    }
+
+    @Override
+    void revokeAccessTokenByUserId(Long userId, Client client) {
+        Assert.notNull(userId, 'userId is null')
+        Assert.notNull(client, 'client is null')
+        def accessTokens = accessTokenRepository.findByUserIdClientId(userId, client.clientId)
+        accessTokens.each { AccessToken token ->
+            revokeAccessToken(token.tokenValue, client)
         }
     }
 

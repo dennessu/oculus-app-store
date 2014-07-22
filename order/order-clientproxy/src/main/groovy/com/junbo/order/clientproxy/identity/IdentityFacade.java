@@ -22,8 +22,6 @@ public interface IdentityFacade {
 
     Promise<Address> getAddress(Long addressId);
 
-    Promise<Currency> getCurrency(String currency);
-
     Promise<String> getEmail(UserPersonalInfoId emailId);
 
     Promise<Organization> getOrganization(Long organizationId);

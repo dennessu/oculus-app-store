@@ -74,6 +74,7 @@ class TokenEndpointImpl implements TokenEndpoint {
         formParams.putSingle(OAuthParameters.PASSWORD, request.password)
         formParams.putSingle(OAuthParameters.REFRESH_TOKEN, request.refreshToken)
         formParams.putSingle(OAuthParameters.NONCE, request.nonce)
+        formParams.putSingle(OAuthParameters.IP_RESTRICTION, request.ipRestriction)
 
         requestScope[ActionContextWrapper.PARAMETER_MAP] = formParams
 

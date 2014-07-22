@@ -1,10 +1,10 @@
 package com.junbo.store.rest.resource
-
 import com.junbo.catalog.spec.model.item.*
 import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
 import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties
 import com.junbo.catalog.spec.model.offer.OffersGetOptions
+import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.*
 import com.junbo.common.id.util.IdUtil
@@ -45,7 +45,6 @@ import groovy.transform.CompileStatic
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
@@ -58,9 +57,11 @@ import javax.ws.rs.ext.Provider
 @Component('defaultStoreResource')
 class StoreResourceImpl implements StoreResource {
 
-    public static final String ACTION_TYPE_GRANT_ENTITLEMENT = "GRANT_ENTITLEMENT";
+    public static final String ACTION_TYPE_GRANT_ENTITLEMENT = "GRANT_ENTITLEMENT"
 
-    public static final String ACTION_STATUS_SUCCESS = "SUCCEED";
+    public static final String ACTION_STATUS_SUCCESS = "SUCCEED"
+
+    public static final String FREE_PURCHASE_CURRENCY = "XXX"
 
     private static final int PAGE_SIZE = 100
 
@@ -161,42 +162,41 @@ class StoreResourceImpl implements StoreResource {
     @Override
     Promise<BillingProfileGetResponse> getBillingProfile(@BeanParam BillingProfileGetRequest billingProfileGetRequest) {
         BillingProfileGetResponse response = new BillingProfileGetResponse()
-        resourceContainer.userResource.get(billingProfileGetRequest.userId, new UserGetOptions()).then { User user ->
-            if (user == null) {
-                throw AppErrors.INSTANCE.userNotFoundByUsername().exception()
-            }
-            return innerGetBillingProfile(user.getId(), billingProfileGetRequest.locale).syncThen { BillingProfile billingProfile ->
-                response.billingProfile = billingProfile
-                response.status = ResponseStatus.SUCCESS.name()
-                return response
+        Promise.pure(null).then {
+            requestValidator.validateBillingProfileGetRequest(billingProfileGetRequest)
+        }.then {
+            resourceContainer.userResource.get(billingProfileGetRequest.userId, new UserGetOptions()).then { User user ->
+                if (user == null) {
+                    throw AppErrors.INSTANCE.userNotFoundByUsername().exception()
+                }
+                return innerGetBillingProfile(user.getId(), billingProfileGetRequest.locale).syncThen { BillingProfile billingProfile ->
+                    response.billingProfile = billingProfile
+                    response.status = ResponseStatus.SUCCESS.name()
+                    return response
+                }
             }
         }
     }
 
     @Override
     Promise<BillingProfileUpdateResponse> updateBillingProfile(BillingProfileUpdateRequest billingProfileUpdateRequest) {
-        return resourceContainer.userResource.get(billingProfileUpdateRequest.userId, new UserGetOptions()).then  { User user ->
-            if (user == null) {
-                throw AppErrors.INSTANCE.userNotFoundByUsername().exception()
+        User user
+        Promise.pure(null).then {
+            requestValidator.validateBillingProfileUpdateRequest(billingProfileUpdateRequest)
+        }.then {
+            resourceContainer.userResource.get(billingProfileUpdateRequest.userId, new UserGetOptions()).syncThen { User u ->
+                user = u
             }
-
-            Promise promise
-            switch (billingProfileUpdateRequest.operation) {
-                case BillingProfileUpdateRequest.Operation.ADD_PI.name():
-                    promise = instrumentUtils.addInstrument(billingProfileUpdateRequest, user.getId())
-                    break;
-                case BillingProfileUpdateRequest.Operation.UPDATE_PI.name():
-                    promise = instrumentUtils.updateInstrument(billingProfileUpdateRequest, user.getId())
-                    break;
-                case BillingProfileUpdateRequest.Operation.REMOVE_PI.name():
-                    promise = instrumentUtils.removeInstrument(billingProfileUpdateRequest)
-                    break;
-                default:
-                    throw AppErrors.INSTANCE.invalidBillingUpdateOperation().exception()
-                    break
-            }
-
-            return promise.then {
+        }.then {
+                switch (billingProfileUpdateRequest.action) {
+                    case BillingProfileUpdateRequest.UpdateAction.ADD_PI.name():
+                        return instrumentUtils.addInstrument(billingProfileUpdateRequest, user.getId())
+                    case BillingProfileUpdateRequest.UpdateAction.UPDATE_PI.name():
+                        return instrumentUtils.updateInstrument(billingProfileUpdateRequest, user.getId())
+                    case BillingProfileUpdateRequest.UpdateAction.REMOVE_PI.name():
+                        return instrumentUtils.removeInstrument(billingProfileUpdateRequest)
+                }
+        }.then {
                 innerGetBillingProfile(user.getId(), billingProfileUpdateRequest.locale).then { BillingProfile billingProfile ->
                     BillingProfileUpdateResponse response = new BillingProfileUpdateResponse(
                             billingProfile: billingProfile,
@@ -204,7 +204,6 @@ class StoreResourceImpl implements StoreResource {
                     )
                     return Promise.pure(response)
                 }
-            }
         }
     }
 
@@ -305,20 +304,47 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<SelectInstrumentResponse> selectInstrumentForPurchase(SelectInstrumentRequest selectInstrumentRequest) {
-        OrderId orderId = new OrderId(IdFormatter.decodeId(OrderId, selectInstrumentRequest.purchaseToken))
-        resourceContainer.orderResource.getOrderByOrderId(orderId).then { Order o ->
-            o.payments = [
-                    new PaymentInfo(paymentInstrument: selectInstrumentRequest.instrumentId)
-            ]
-            resourceContainer.orderResource.updateOrderByOrderId(o.getId(), o).then { Order updated ->
-                return Promise.pure(new SelectInstrumentResponse(status: ResponseStatus.SUCCESS.name()))
+        Promise.pure(null).then {
+            requestValidator.validateSelectInstrumentRequest(selectInstrumentRequest)
+        }.then {
+            OrderId orderId = new OrderId(IdFormatter.decodeId(OrderId, selectInstrumentRequest.purchaseToken))
+            resourceContainer.orderResource.getOrderByOrderId(orderId).then { Order o ->
+                o.payments = [
+                        new PaymentInfo(paymentInstrument: selectInstrumentRequest.instrumentId)
+                ]
+                resourceContainer.orderResource.updateOrderByOrderId(o.getId(), o).then { Order updated ->
+                    return Promise.pure(new SelectInstrumentResponse(status: ResponseStatus.SUCCESS.name()))
+                }
             }
         }
     }
 
     @Override
     Promise<MakeFreePurchaseResponse> makeFreePurchase(MakeFreePurchaseRequest makeFreePurchaseRequest) {
-        return Promise.pure(null)
+        Promise.pure(null).then {
+            requestValidator.validateMakeFreePurchaseRequest(makeFreePurchaseRequest)
+        }.then {
+            Order order = new Order(
+                    user: makeFreePurchaseRequest.userId,
+                    country: makeFreePurchaseRequest.country,
+                    currency: new CurrencyId(FREE_PURCHASE_CURRENCY),
+                    locale: makeFreePurchaseRequest.locale,
+                    tentative: true,
+                    orderItems: [new OrderItem(offer: makeFreePurchaseRequest.offerId, quantity: 1)]
+            )
+
+            return resourceContainer.orderResource.createOrder(order).syncThen { Order o ->
+                order = o
+            }.then {
+                order.tentative = false
+                resourceContainer.orderResource.updateOrderByOrderId(order.getId(), order).then {
+                    MakeFreePurchaseResponse response = new MakeFreePurchaseResponse()
+                    response.status = ResponseStatus.SUCCESS.name()
+                    response.orderId = order.getId()
+                    return Promise.pure(response)
+                }
+            }
+        }
     }
 
     @Override
@@ -326,7 +352,10 @@ class StoreResourceImpl implements StoreResource {
         OfferId offerId = preparePurchaseRequest.offerId
         Item hostItem
 
-        return Promise.pure(null).then { // validate offer if inapp purchase
+        return Promise.pure(null).then {
+            requestValidator.validatePreparePurchaseRequest(preparePurchaseRequest)
+        }
+        .then { // validate offer if inapp purchase
             if (preparePurchaseRequest.iapParams != null) {
                 return getItemByPackageName(preparePurchaseRequest.iapParams.packageName).then { Item item ->
                     hostItem = item
@@ -341,7 +370,7 @@ class StoreResourceImpl implements StoreResource {
                     currency: preparePurchaseRequest.currency,
                     locale: preparePurchaseRequest.locale,
                     tentative: true,
-                    orderItems: [new OrderItem(offer: preparePurchaseRequest.offerId, quantity: preparePurchaseRequest.quantity)]
+                    orderItems: [new OrderItem(offer: preparePurchaseRequest.offerId, quantity: 1)]
             )
 
             if (preparePurchaseRequest.iapParams != null) {
@@ -367,32 +396,36 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<CommitPurchaseResponse> commitPurchase(CommitPurchaseRequest commitPurchaseRequest) {
-        OrderId orderId = new OrderId(IdFormatter.decodeId(OrderId, commitPurchaseRequest.purchaseToken))
-        String iapPackageName = null, iapItemId = null
-        CommitPurchaseResponse response = new CommitPurchaseResponse()
+        Promise.pure(null).then {
+            requestValidator.validateCommitPurchaseRequest(commitPurchaseRequest)
+        }.then {
+            OrderId orderId = new OrderId(IdFormatter.decodeId(OrderId, commitPurchaseRequest.purchaseToken))
+            String iapPackageName = null, iapItemId = null
+            CommitPurchaseResponse response = new CommitPurchaseResponse()
 
-        resourceContainer.orderResource.getOrderByOrderId(orderId).then { Order order ->
-            iapPackageName = order.properties?.get('iap.packageName')
-            iapItemId = order.properties?.get('iap.hostItemId')
-            order.tentative = false
-            resourceContainer.orderResource.updateOrderByOrderId(order.getId(), order).then { Order settled ->
+            resourceContainer.orderResource.getOrderByOrderId(orderId).then { Order order ->
+                iapPackageName = order.properties?.get('iap.packageName')
+                iapItemId = order.properties?.get('iap.hostItemId')
+                order.tentative = false
+                resourceContainer.orderResource.updateOrderByOrderId(order.getId(), order).then { Order settled ->
                     response.orderId = settled.getId()
                     response.status = ResponseStatus.SUCCESS.name()
                     return Promise.pure(null)
-            }.then { // get iap entitlements
-                if (!StringUtils.isEmpty(iapPackageName)) {
-                    response.iapEntitlements = []
-                    getEntitlementsByOrder(order, iapPackageName).then { Results<Entitlement> entitlementResults ->
-                        return Promise.each(entitlementResults.items) { Entitlement entitlement ->
-                            entitlement.signatureTimestamp = System.currentTimeMillis()
-                            return signEntitlement(entitlement, iapItemId).then {
-                                response.iapEntitlements << entitlement
-                                return Promise.pure(null)
+                }.then { // get iap entitlements
+                    if (!StringUtils.isEmpty(iapPackageName)) {
+                        response.iapEntitlements = []
+                        getEntitlementsByOrder(order, iapPackageName).then { Results<Entitlement> entitlementResults ->
+                            return Promise.each(entitlementResults.items) { Entitlement entitlement ->
+                                entitlement.signatureTimestamp = System.currentTimeMillis()
+                                return signEntitlement(entitlement, iapItemId).then {
+                                    response.iapEntitlements << entitlement
+                                    return Promise.pure(null)
+                                }
                             }
                         }
                     }
+                    return Promise.pure(response)
                 }
-                return Promise.pure(response)
             }
         }
     }

@@ -6,21 +6,21 @@
 
 package com.junbo.payment.core.impl;
 
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.PIType;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.clientproxy.UserInfoFacade;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
+import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.provider.ProviderRoutingService;
-import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.core.util.ProxyExceptionResponse;
-import com.junbo.payment.db.repository.PITypeRepository;
-import com.junbo.payment.spec.model.TrackingUuid;
-import com.junbo.payment.db.repo.facade.PaymentInstrumentRepositoryFacade;
 import com.junbo.payment.db.repo.TrackingUuidRepository;
+import com.junbo.payment.db.repo.facade.PaymentInstrumentRepositoryFacade;
+import com.junbo.payment.db.repository.PITypeRepository;
 import com.junbo.payment.spec.enums.PaymentAPI;
 import com.junbo.payment.spec.model.*;
 import org.slf4j.Logger;
@@ -145,7 +145,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     public List<PaymentInstrument> getByUserId(Long userId) {
         List<PaymentInstrument> results = paymentInstrumentRepositoryFacade.getByUserId(userId);
         if(results == null || results.isEmpty()){
-            throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
+            throw AppClientExceptions.INSTANCE.paymentInstrumentNotFound("userId : " + userId.toString()).exception();
         }
         return results;
     }
@@ -153,7 +153,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     @Override
     public Promise<List<PaymentInstrument>> searchPi(Long userId, PaymentInstrumentSearchParam searchParam, PageMetaData page) {
         if(userId == null) {
-            throw AppClientExceptions.INSTANCE.missingUserId().exception();
+            throw AppCommonErrors.INSTANCE.fieldRequired("user_id").exception();
         }
         if(!CommonUtil.isNullOrEmpty(searchParam.getType())) {
             PaymentUtil.getPIType(searchParam.getType());
@@ -182,11 +182,11 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     @Override
     public PaymentInstrumentType getPIType(String piType) {
         if(CommonUtil.isNullOrEmpty(piType)){
-            throw AppClientExceptions.INSTANCE.invalidPIType(piType).exception();
+            throw AppCommonErrors.INSTANCE.fieldRequired("piType").exception();
         }
         PaymentInstrumentType result = piTypeRepository.getPITypeByName(piType);
         if(result == null){
-            throw AppClientExceptions.INSTANCE.resourceNotFound(piType).exception();
+            throw AppClientExceptions.INSTANCE.invalidPIType(piType).exception();
         }
         return result;
     }
@@ -197,7 +197,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         }
         if(request.getId() == null){
             LOGGER.error("payment id should not be empty when store tracking uuid.");
-            throw AppServerExceptions.INSTANCE.missingRequiredField("payment_instrument_id").exception();
+            throw AppCommonErrors.INSTANCE.fieldRequired("id").exception();
         }
         TrackingUuid trackingUuid = new TrackingUuid();
         trackingUuid.setTrackingUuid(request.getTrackingUuid());
@@ -210,15 +210,15 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
 
     private void validateRequest(PaymentInstrument request){
         if(request.getUserId() == null){
-            throw AppClientExceptions.INSTANCE.missingUserId().exception();
+            throw AppCommonErrors.INSTANCE.fieldRequired("user_id").exception();
         }
         UserInfo user = userInfoFacade.getUserInfo(request.getUserId()).get();
         if(user == null){
-            throw AppClientExceptions.INSTANCE.invalidUserId(request.getUserId().toString()).exception();
+            throw AppClientExceptions.INSTANCE.userNotFound(request.getUserId().toString()).exception();
         }
         request.setUserInfo(user);
         if(request.getType() == null){
-            throw AppClientExceptions.INSTANCE.missingPIType().exception();
+            throw AppCommonErrors.INSTANCE.fieldRequired("payment_instrument_type").exception();
         }
         PaymentUtil.getPIType(request.getType());
         validateCreditCard(request);
@@ -227,21 +227,22 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     private void validateCreditCard(PaymentInstrument request){
         if(PaymentUtil.getPIType(request.getType()).equals(PIType.CREDITCARD)){
             if(CommonUtil.isNullOrEmpty(request.getAccountName())){
-                throw AppClientExceptions.INSTANCE.missingAccountName().exception();
+                throw AppCommonErrors.INSTANCE.fieldRequired("account_name").exception();
             }
             if(CommonUtil.isNullOrEmpty(request.getAccountNum())){
-                throw AppClientExceptions.INSTANCE.missingAccountNum().exception();
+                throw AppCommonErrors.INSTANCE.fieldRequired("account_number").exception();
             }
             if(request.getTypeSpecificDetails() == null){
-                throw AppClientExceptions.INSTANCE.missingExpireDate().exception();
+                throw AppCommonErrors.INSTANCE.fieldRequired("expire_date").exception();
             }
             String expireDate = request.getTypeSpecificDetails().getExpireDate();
             if(CommonUtil.isNullOrEmpty(expireDate)){
-                throw AppClientExceptions.INSTANCE.missingExpireDate().exception();
+                throw AppCommonErrors.INSTANCE.fieldRequired("expire_date").exception();
             }
             if (!expireDate.matches("\\d{4}-\\d{2}-\\d{2}")
                     && !expireDate.matches("\\d{4}-\\d{2}")) {
-                throw AppClientExceptions.INSTANCE.invalidExpireDateFormat(expireDate).exception();
+                throw AppCommonErrors.INSTANCE.fieldInvalid("expire_date",
+                        "only accept format: yyyy-MM or yyyy-MM-dd").exception();
             }
         }
     }
@@ -249,7 +250,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     private PaymentInstrument getPaymentInstrument(Long paymentInstrumentId){
         PaymentInstrument result = paymentInstrumentRepositoryFacade.getByPIId(paymentInstrumentId);
         if(result == null){
-            throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
+            throw AppClientExceptions.INSTANCE.paymentInstrumentNotFound(paymentInstrumentId.toString()).exception();
         }
         return result;
     }

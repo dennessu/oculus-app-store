@@ -1,16 +1,14 @@
 package com.junbo.order.rest.resource
-
+import com.junbo.common.id.OrderItemId
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.SubledgerService
 import com.junbo.order.spec.model.SubledgerItem
 import com.junbo.order.spec.resource.SubledgerItemResource
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
-import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
-
 /**
  * Created by fzhang on 4/2/2014.
  */
@@ -25,5 +23,16 @@ class SubledgerItemResourceImpl implements SubledgerItemResource {
     @Override
     Promise<SubledgerItem> createSubledgerItem(SubledgerItem subledgerItem) {
         return Promise.pure(subledgerService.createSubledgerItem(subledgerItem))
+    }
+
+    @Override
+    Promise<List<SubledgerItem>> getSubledgerItemsByOrderItemId(OrderItemId orderItemId) {
+        return Promise.pure(subledgerService.getSubledgerItemsByOrderItemId(orderItemId))
+    }
+
+    @Override
+    Promise<SubledgerItem> aggregateSubledgerItem(SubledgerItem item) {
+        subledgerService.aggregateSubledgerItem(item)
+        return Promise.pure(item)
     }
 }

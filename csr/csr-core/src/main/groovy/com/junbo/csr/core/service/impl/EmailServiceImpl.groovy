@@ -12,11 +12,13 @@ import com.junbo.email.spec.resource.EmailResource
 import com.junbo.email.spec.resource.EmailTemplateResource
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 
 /**
  * Created by haomin on 7/19/14.
  */
+@CompileStatic
 class EmailServiceImpl implements EmailService{
     private EmailTemplateResource emailTemplateResource
     private EmailResource emailResource

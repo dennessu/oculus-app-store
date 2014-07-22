@@ -203,8 +203,7 @@ class OrderServiceContextBuilder {
                 offers << of
                 Long organizationId = of.catalogOfferRevision.ownerId?.value
                 return facadeContainer.identityFacade.getOrganization(organizationId).recover { Throwable throwable ->
-                    LOGGER.error('name=Error_Get_Organization. organization id: ' + organizationId, throwable)
-                    return Promise.pure(null)
+                    LOGGER.info('name=Error_Get_Organization. organization id: ' + organizationId)
                 }.then { Organization organization ->
                     of.organization = organization
                 }
@@ -257,7 +256,7 @@ class OrderServiceContextBuilder {
             return Promise.pure(context.currency)
         }
 
-        return facadeContainer.identityFacade.getCurrency(context.order.currency.value).then {
+        return facadeContainer.currencyFacade.getCurrency(context.order.currency.value).then {
             com.junbo.identity.spec.v1.model.Currency currency ->
                 assert (currency != null)
                 context.currency = currency

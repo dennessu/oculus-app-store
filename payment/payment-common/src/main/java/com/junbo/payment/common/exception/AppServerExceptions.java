@@ -17,50 +17,41 @@ public interface AppServerExceptions {
 
     AppServerExceptions INSTANCE = ErrorProxy.newProxyInstance(AppServerExceptions.class);
 
-    @ErrorDef(httpStatusCode = 504, code = "50001", message = "The provider {0} is timeout")
+    @ErrorDef(httpStatusCode = 504, code = "501", message = "Provider Gateway Timeout", reason = "The provider {0} is timeout")
     AppError providerGatewayTimeout(String provider);
 
-    @ErrorDef(httpStatusCode = 500, code = "50002", message = "The provider {0} process with error code: {1}")
+    @ErrorDef(httpStatusCode = 500, code = "502", message = "Provider Process Error", reason = "The provider {0} process with error code: {1}")
     AppError providerProcessError(String provider, String internalError);
 
-    @ErrorDef(httpStatusCode = 500, code = "50003",
-            message = "The payment instrument is invalid")
+    @ErrorDef(httpStatusCode = 500, code = "503", message = "Invalid PI",
+            reason = "The payment instrument is invalid")
     AppError invalidPI();
 
-    @ErrorDef(httpStatusCode = 500, code = "50004",
-            message = "The payment transaction status {0} is invalid to process")
+    @ErrorDef(httpStatusCode = 500, code = "504", message = "Invalid Payment Status",
+            reason = "The payment transaction status {0} is invalid to process")
     AppError invalidPaymentStatus(String status);
 
-    @ErrorDef(httpStatusCode = 500, code = "50005", message = "The required field {0} is missing while processing")
-    AppError missingRequiredField(String field);
-
-    @ErrorDef(httpStatusCode = 500, code = "50006", message = "The credit card type {0} is not recognized")
-    AppError invalidCreditCardType(String ccType);
-
-    @ErrorDef(httpStatusCode = 500, code = "50006", message = "The provider {0} request is not correct")
-    AppError invalidProviderRequest(String providerName);
-
-    @ErrorDef(httpStatusCode = 500, code = "50007", message = "merchantRef not available for currency:{0}")
+    @ErrorDef(httpStatusCode = 500, code = "505", message = "MerchantRef Not Available", reason = "merchantRef not available for currency:{0}")
     AppError merchantRefNotAvailable(String currency);
 
-    @ErrorDef(httpStatusCode = 500, code = "50008", message = "No provider found for criteria: {0}")
+    @ErrorDef(httpStatusCode = 500, code = "506", message = "Provider Not Found", reason = "No provider found for criteria: {0}")
     AppError providerNotFound(String criteria);
 
-    @ErrorDef(httpStatusCode = 500, code = "50009", message = "Service {0} is not Implemented")
+    @ErrorDef(httpStatusCode = 500, code = "507", message = "Service Not Implemented", reason = "Service {0} is not Implemented")
     AppError serviceNotImplemented(String serviceName);
 
-    @ErrorDef(httpStatusCode = 500, code = "50010", message = "payment {0} has no external token")
+    @ErrorDef(httpStatusCode = 500, code = "509", message = "No External Token Found For Payment", reason = "payment {0} has no external token")
     AppError noExternalTokenFoundForPayment(String paymentId);
 
-    @ErrorDef(httpStatusCode = 500, code = "50011", message = "error happens when encode the id")
+    @ErrorDef(httpStatusCode = 500, code = "510", message = "Invalid Id To Encode", reason = "error happens when encode the id")
     AppError invalidIdToEncode(String paymentId);
 
-    @ErrorDef(httpStatusCode = 500, code = "50012", message = "error happens when calculation the HMCA")
+    @ErrorDef(httpStatusCode = 500, code = "511", message = "Error Calculate HMCA", reason = "error happens when calculation the HMCA")
     AppError errorCalculateHMCA();
 
-    @ErrorDef(httpStatusCode = 401, code = "50014", message = "{0} is un-authorized for calling API")
+    @ErrorDef(httpStatusCode = 401, code = "512", message = "UnAuthorized", reason = "{0} is un-authorized for calling API")
     AppError unAuthorized(String authCode);
 
-    @ErrorDef(httpStatusCode = 401, code = "50015", message = "Platform {platform} is invalid")
+    @ErrorDef(httpStatusCode = 401, code = "513", message = "Invalid Platform", reason = "Platform {platform} is invalid")
     AppError invalidPlatform(String platform);
 }

@@ -12,7 +12,10 @@
         <property name="userKeyLength" value="${crypto.core.userKeyLength}" />
     </bean>
 
-    <bean id="masterKeyValidator" class="com.junbo.crypto.core.validator.impl.MasterKeyValidatorImpl" />
+    <bean id="masterKeyValidator" class="com.junbo.crypto.core.validator.impl.MasterKeyValidatorImpl">
+        <property name="masterKeyBitLength" value="${crypto.core.masterKeyBits}" />
+    </bean>
+
     <bean id="cryptoMessageValidator" class="com.junbo.crypto.core.validator.impl.CryptoMessageValidatorImpl">
         <property name="userResource" ref="cryptoUserResource" />
         <property name="versionSeparator" value="${crypto.core.versionSeparator}" />

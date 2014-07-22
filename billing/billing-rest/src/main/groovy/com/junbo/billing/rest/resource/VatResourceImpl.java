@@ -12,7 +12,6 @@ import com.junbo.billing.spec.model.VatIdValidationResponse;
 import com.junbo.billing.spec.resource.VatResource;
 import com.junbo.common.error.AppCommonErrors;
 import com.junbo.langur.core.promise.Promise;
-import org.springframework.context.annotation.Scope;
 
 import javax.annotation.Resource;
 

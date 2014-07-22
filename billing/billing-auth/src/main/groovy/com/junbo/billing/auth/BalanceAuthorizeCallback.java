@@ -7,6 +7,7 @@ package com.junbo.billing.auth;
 
 import com.junbo.authorization.AbstractAuthorizeCallback;
 import com.junbo.billing.spec.model.Balance;
+import com.junbo.common.id.UserId;
 
 /**
  * BalanceAuthorizeCallback.
@@ -19,5 +20,15 @@ public class BalanceAuthorizeCallback extends AbstractAuthorizeCallback<Balance>
     @Override
     public String getApiName() {
         return "balances";
+    }
+
+    @Override
+    protected UserId getUserOwnerId() {
+        Balance balance = getEntity();
+        if (balance != null) {
+            return balance.getUserId();
+        }
+
+        return null;
     }
 }

@@ -34,7 +34,7 @@ import java.text.SimpleDateFormat
 class CoreBuilder {
     private static final Logger LOGGER = LoggerFactory.getLogger(CoreBuilder)
 
-    private static final ThreadLocal<SimpleDateFormat> DATE_FORMATTER =
+    public static final ThreadLocal<SimpleDateFormat> DATE_FORMATTER =
             new ThreadLocal<SimpleDateFormat>() {
                 @Override
                 protected SimpleDateFormat initialValue() {

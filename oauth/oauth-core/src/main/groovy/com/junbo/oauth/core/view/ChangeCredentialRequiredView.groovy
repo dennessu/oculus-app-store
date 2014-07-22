@@ -4,10 +4,12 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.spec.model.ViewModel
+import groovy.transform.CompileStatic
 
 /**
  * Created by haomin on 14-6-13.
  */
+@CompileStatic
 class ChangeCredentialRequiredView extends AbstractView {
     @Override
     protected Promise<ViewModel> buildViewModel(ActionContext context) {

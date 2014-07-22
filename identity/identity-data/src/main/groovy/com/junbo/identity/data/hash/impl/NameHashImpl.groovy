@@ -1,6 +1,7 @@
 package com.junbo.identity.data.hash.impl
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.identity.common.util.HashHelper
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.data.hash.PiiHash
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
@@ -16,6 +17,8 @@ class NameHashImpl implements PiiHash {
 
     private String salt
 
+    private String algorithm
+
     @Override
     boolean handles(String piiType) {
         if (piiType == UserPersonalInfoType.NAME.toString()) {
@@ -29,16 +32,21 @@ class NameHashImpl implements PiiHash {
         UserName name = (UserName)JsonHelper.jsonNodeToObj(jsonNode, UserName)
         assert name != null
 
-        return null
+        return generateHash("$name.givenName $name.familyName")
     }
 
     @Override
     String generateHash(String key) {
-        return null
+        return HashHelper.shaHash(key, salt, algorithm)
     }
 
     @Required
     void setSalt(String salt) {
         this.salt = salt
+    }
+
+    @Required
+    void setAlgorithm(String algorithm) {
+        this.algorithm = algorithm
     }
 }

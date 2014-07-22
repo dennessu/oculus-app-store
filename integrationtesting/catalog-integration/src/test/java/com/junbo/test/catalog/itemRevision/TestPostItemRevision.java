@@ -177,7 +177,7 @@ public class TestPostItemRevision extends BaseTestClass {
         locales.put(defaultLocale, itemRevisionLocaleProperties);
         testItemRevision.setLocales(locales);
 
-        Item item = itemService.postDefaultItem(CatalogItemType.PHYSICAL);
+        Item item = itemService.postDefaultItem(CatalogItemType.PHYSICAL, organizationId);
         testItemRevision.setItemId(item.getItemId());
         Map<String, Binary> binaries = new HashMap<>();
         Binary binary = new Binary();
@@ -187,7 +187,9 @@ public class TestPostItemRevision extends BaseTestClass {
         binary.setHref("http://www.google.com/downlaod/angrybird1_0.exe");
         binaries.put("PC", binary);
         testItemRevision.setBinaries(binaries);
-        verifyExpectedError(testItemRevision);
+
+        //could post successfully due to bug fix 389
+        itemRevisionService.postItemRevision(testItemRevision);
 
         //duplicate packageName
         String packageName = "packageName_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10);
@@ -201,7 +203,10 @@ public class TestPostItemRevision extends BaseTestClass {
         testItemRevision.setBinaries(null);
         testItemRevision.setItemId(item1.getItemId());
         testItemRevision.setPackageName(packageName);
-        verifyExpectedError(testItemRevision);
+
+        //could post successfully due to bug fix 389
+        itemRevisionService.postItemRevision(testItemRevision);
+
     }
 
     private void checkItemRevisionRequiredFields(ItemRevision itemRevisionActual, ItemRevision itemRevisionExpected) {
@@ -218,7 +223,6 @@ public class TestPostItemRevision extends BaseTestClass {
         // Assert.assertEquals(itemRevisionActual.getRollupPackageName(), itemRevisionExpected.getRollupPackageName());
         Assert.assertEquals(itemRevisionActual.getPackageName(), itemRevisionExpected.getPackageName());
         Assert.assertEquals(itemRevisionActual.getSku(), itemRevisionExpected.getSku());
-
 
         //Compare msrp
         Price actual = itemRevisionActual.getMsrp();

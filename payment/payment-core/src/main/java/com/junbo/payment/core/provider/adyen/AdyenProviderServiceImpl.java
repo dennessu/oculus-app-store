@@ -8,21 +8,23 @@ package com.junbo.payment.core.provider.adyen;
 
 import com.adyen.services.common.Amount;
 import com.adyen.services.payment.*;
-import com.adyen.services.payment.Recurring;
-import com.adyen.services.recurring.*;
+import com.adyen.services.recurring.RecurringDetail;
+import com.adyen.services.recurring.RecurringDetailsRequest;
+import com.adyen.services.recurring.RecurringDetailsResult;
+import com.adyen.services.recurring.RecurringLocator;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
+import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.util.PromiseFacade;
 import com.junbo.langur.core.context.JunboHttpContext;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.CommonUtil;
-import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.PaymentProvider;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.enums.Platform;
-import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentCallbackParams;
+import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
 import com.junbo.payment.spec.model.WebPaymentInfo;
 import org.apache.commons.codec.binary.Base64;
@@ -284,7 +286,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
             @Override
             public PaymentTransaction call() throws Exception {
                 if(request.getChargeInfo() == null || request.getChargeInfo().getAmount() == null){
-                    throw AppClientExceptions.INSTANCE.missingAmount().exception();
+                    throw AppCommonErrors.INSTANCE.fieldRequired("amount").exception();
                 }
                 ModificationRequest refundReq = new ModificationRequest();
                 refundReq.setMerchantAccount(merchantAccount);
@@ -438,7 +440,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
             }
         }else{
             LOGGER.error("missing authorize header");
-            throw AppServerExceptions.INSTANCE.missingRequiredField("authorize header").exception();
+            throw AppCommonErrors.INSTANCE.headerRequired("authorization").exception();
         }
     }
 }

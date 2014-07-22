@@ -66,7 +66,8 @@ class TokenInfoEndpointImpl implements TokenInfoEndpoint {
                 clientId: accessToken.clientId,
                 sub: new UserId(accessToken.userId),
                 scopes: StringUtils.collectionToDelimitedString(accessToken.scopes, ' '),
-                expiresIn: (Long) (accessToken.expiredBy.time - System.currentTimeMillis()) / 1000
+                expiresIn: (Long) (accessToken.expiredBy.time - System.currentTimeMillis()) / 1000,
+                ipAddress: accessToken.ipAddress
         )
 
         return Promise.pure(tokenInfo)

@@ -4,6 +4,8 @@ import com.junbo.order.clientproxy.billing.BillingFacade
 import com.junbo.order.clientproxy.catalog.CatalogFacade
 import com.junbo.order.clientproxy.email.EmailFacade
 import com.junbo.order.clientproxy.fulfillment.FulfillmentFacade
+import com.junbo.order.clientproxy.identity.CountryFacade
+import com.junbo.order.clientproxy.identity.CurrencyFacade
 import com.junbo.order.clientproxy.identity.IdentityFacade
 import com.junbo.order.clientproxy.payment.PaymentFacade
 import com.junbo.order.clientproxy.rating.RatingFacade
@@ -41,4 +43,10 @@ class FacadeContainer {
     @Autowired
     @Qualifier('cachedCatalogFacade')
     CatalogFacade catalogFacade
+    @Autowired
+    @Qualifier('cachedCountryFacade')
+    CountryFacade countryFacade
+    @Autowired
+    @Qualifier('cachedCurrencyFacade')
+    CurrencyFacade currencyFacade
 }

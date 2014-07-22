@@ -333,12 +333,12 @@ class ActionContextWrapper {
         actionContext.flowScope[EMAIL_VERIFY_CODE] = code
     }
 
-    String getResetPasswordCode() {
-        return (String) actionContext.flowScope[RESET_PASSWORD_CODE]
+    ResetPasswordCode getResetPasswordCode() {
+        return (ResetPasswordCode) actionContext.flowScope[RESET_PASSWORD_CODE]
     }
 
-    void setResetPasswordCode(String code) {
-        actionContext.flowScope[RESET_PASSWORD_CODE] = code
+    void setResetPasswordCode(ResetPasswordCode resetPasswordCode) {
+        actionContext.flowScope[RESET_PASSWORD_CODE] = resetPasswordCode
     }
 
     Map<String, String> getExtraParameterMap() {

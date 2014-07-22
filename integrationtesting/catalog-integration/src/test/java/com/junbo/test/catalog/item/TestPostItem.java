@@ -94,7 +94,7 @@ public class TestPostItem extends BaseTestClass {
     public void testPostItemWithExistedValues() throws Exception {
 
         OfferService offerService = OfferServiceImpl.instance();
-        Offer offer = offerService.postDefaultOffer();
+        Offer offer = offerService.postDefaultOffer(organizationId);
 
         ItemAttributeService itemAttributeService = ItemAttributeServiceImpl.instance();
         ItemAttribute itemAttribute1 = itemAttributeService.postDefaultItemAttribute();
@@ -132,13 +132,8 @@ public class TestPostItem extends BaseTestClass {
         genresInvalid.add("0L");
         genresInvalid.add("1L");
 
-        //test ownerId is null
-        Item testItem = itemService.prepareItemEntity(defaultItem, organizationId);
-        testItem.setOwnerId(null);
-        verifyExpectedError(testItem);
-
         //test currentRevision is not null
-        testItem = itemService.prepareItemEntity(defaultItem, organizationId);
+        Item testItem = itemService.prepareItemEntity(defaultItem, organizationId);
         testItem.setCurrentRevisionId("0L");
         verifyExpectedError(testItem);
 
@@ -173,7 +168,6 @@ public class TestPostItem extends BaseTestClass {
 
         //put all invalid scenarios together
         testItem = itemService.prepareItemEntity(defaultItem, organizationId);
-        testItem.setOwnerId(null);
         testItem.setCurrentRevisionId("0L");
         testItem.setRev(initRevValue);
         testItem.setType("invalid type");

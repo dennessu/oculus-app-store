@@ -93,4 +93,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "126", message = "Invalid Email")
     AppError invalidEmail();
+
+    @ErrorDef(httpStatusCode = 412, code = "127", message = "User Already In CSR Group", reason = "User {0} already in CSR group")
+    AppError userAlreadyInCsrGroup(String user);
 }

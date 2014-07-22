@@ -23,8 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired
  */
 @CompileStatic
 class WalletResourceImpl implements WalletResource {
-    private static final String WALLET_SERVICE_SCOPE = 'wallet.service'
-    private static final String WALLET_CSR_SCOPE = 'wallet.csr'
+    private static final String WALLET_SERVICE_SCOPE = 'ewallet.service'
+    private static final String WALLET_CSR_SCOPE = 'ewallet.csr'
 
     @Autowired
     private WalletService walletService

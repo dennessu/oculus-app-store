@@ -6,6 +6,7 @@
 package com.junbo.test.catalog;
 
 import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.item.Item;
@@ -27,8 +28,8 @@ public interface OfferRevisionService {
     Results<OfferRevision> getOfferRevisions(HashMap<String, List<String>> httpPara) throws Exception;
     Results<OfferRevision> getOfferRevisions(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception;
 
-    OfferRevision prepareOfferRevisionEntity(String fileName) throws Exception;
-    OfferRevision prepareOfferRevisionEntity(String fileName, Boolean addItemInfo) throws Exception;
+    OfferRevision prepareOfferRevisionEntity(String fileName, OrganizationId organizationId) throws Exception;
+    OfferRevision prepareOfferRevisionEntity(String fileName, OrganizationId organizationId, Boolean addItemInfo) throws Exception;
 
     OfferRevision postDefaultOfferRevision() throws Exception;
     OfferRevision postDefaultOfferRevision(CatalogItemType itemType) throws Exception;

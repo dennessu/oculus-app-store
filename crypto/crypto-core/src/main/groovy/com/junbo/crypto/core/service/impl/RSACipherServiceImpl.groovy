@@ -54,7 +54,7 @@ class RSACipherServiceImpl implements CipherService {
 
     @Override
     Key stringToKey(String keyStr) {
-        byte [] bytes = keyStr.getBytes()
+        byte [] bytes = keyStr.getBytes('UTF-8')
         return new SecretKeySpec(bytes, 0, bytes.length, ALGORITHM)
     }
 }

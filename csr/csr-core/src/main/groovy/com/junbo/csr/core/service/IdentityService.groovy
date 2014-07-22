@@ -9,7 +9,6 @@ import com.junbo.identity.spec.v1.model.Group
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserGroup
-import com.junbo.identity.spec.v1.model.UserName
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 
@@ -26,9 +25,10 @@ public interface IdentityService {
     Promise<Group> getGroupById(GroupId groupId)
     Promise<Organization> getOrganizationByOwerIdAndOrgName(UserId organizationOwner, String organizationName)
     Promise<Results<Group>> getGroupByOrganization(OrganizationId organizationId)
-
+    
     String getUserNameByUser(User user)
     List<GroupId> getGroupIdByUserId(UserId userId)
+
     UserGroup switchUserGroupMembershipWithinGroups(UserId userId, GroupId groupId, List<GroupId> groupIdList)
     UserGroup saveUserGroupMembership(UserId userId, GroupId groupId)
     UserGroup updateUserGroupMembership(UserGroupId userGroupId, UserId userId, GroupId groupId)

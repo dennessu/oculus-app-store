@@ -48,6 +48,10 @@ public interface LoginResource {
     Promise<UserCredentialCheckResponse> checkUserCredential(UserCredentialCheckRequest userCredentialCheckRequest);
 
     @POST
+    @Path("/changecredential")
+    Promise<UserCredentialChangeResponse> changeUserCredential(UserCredentialChangeRequest userCredentialChangeRequest);
+
+    @POST
     @Path("/token")
     Promise<AuthTokenResponse> getAuthToken(AuthTokenRequest tokenRequest);
 }

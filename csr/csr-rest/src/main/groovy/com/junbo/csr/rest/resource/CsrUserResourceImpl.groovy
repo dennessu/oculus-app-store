@@ -131,7 +131,6 @@ class CsrUserResourceImpl implements CsrUserResource {
         }
 
         URI baseUri = ((ContainerRequest)requestContext).baseUri
-
         return csrGroupResource.list(new CsrGroupListOptions(groupName: pendingGroupName)).then { Results<CsrGroup> csrGroupResults ->
             if (csrGroupResults.items.isEmpty()) {
                 throw AppErrors.INSTANCE.pendingCsrGroupNotFound().exception()
@@ -139,6 +138,12 @@ class CsrUserResourceImpl implements CsrUserResource {
             CsrGroup pendingGroup = csrGroupResults.items.get(0)
 
             return identityService.getUserByVerifiedEmail(email).then { User user ->
+                // check the user already in csr groups or not
+                Results<CsrGroup> groups = csrGroupResource.list(new CsrGroupListOptions(userId: user.getId())).get()
+                if (!groups.items.empty) {
+                    throw AppErrors.INSTANCE.userAlreadyInCsrGroup(email).exception()
+                }
+
                 return identityService.getGroupById(groupId).then { Group group ->
                     UserGroup userGroup = identityService.saveUserGroupMembership(user.getId(), pendingGroup.groupId)
 

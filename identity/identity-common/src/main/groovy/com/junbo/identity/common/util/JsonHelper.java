@@ -55,7 +55,7 @@ public class JsonHelper {
      */
     public interface Errors {
 
-        @ErrorDef(httpStatusCode = 400, code = "10001", message = "invalid Json: {0}", field = "{1}")
+        @ErrorDef(httpStatusCode = 400, code = "501", message = "invalid Json: {0}", field = "{1}")
         AppError invalidJson(String detail, String field);
     }
 

@@ -15,7 +15,6 @@ import com.junbo.email.spec.model.QueryParam;
 import com.junbo.email.spec.resource.EmailTemplateResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.core.Response;

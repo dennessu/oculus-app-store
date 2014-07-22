@@ -33,7 +33,7 @@
     </bean>
 
     <bean id="walletProviderService" class="com.junbo.payment.core.provider.ewallet.EWalletProviderServiceImpl">
-        <property name="walletClient" ref="walletProxy"/>
+        <property name="walletClient" ref="paymentWalletProxy"/>
     </bean>
 
     <bean id="paypalProviderService" class="com.junbo.payment.core.provider.paypal.PayPalProviderServiceImpl">

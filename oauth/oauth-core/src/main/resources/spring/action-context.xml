@@ -105,4 +105,6 @@
     </bean>
 
     <bean id="redirect" class="com.junbo.oauth.core.action.Redirect"/>
+
+    <bean id="validateIpAddress" class="com.junbo.oauth.core.action.ValidateIpAddress"/>
 </beans>

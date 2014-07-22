@@ -75,7 +75,7 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
                     @Override
                     public Promise<PaymentInstrument> apply() {
                         if (!AuthorizeContext.hasRights("read")) {
-                            throw AppClientExceptions.INSTANCE.resourceNotFound("payment_instrument").exception();
+                            throw AppClientExceptions.INSTANCE.paymentInstrumentNotFound(paymentInstrumentId.toString()).exception();
                         }
 
                         return Promise.pure(paymentInstrument);
@@ -136,7 +136,7 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
     public Promise<Results<PaymentInstrument>> searchPaymentInstrument(
             @BeanParam final PaymentInstrumentSearchParam searchParam, @BeanParam final PageMetaData pageMetadata) {
         if(searchParam.getUserId() == null){
-            throw AppClientExceptions.INSTANCE.missingUserId().exception();
+            throw AppCommonErrors.INSTANCE.fieldRequired("user_id").exception();
         }
 
         AuthorizeCallback callback = authorizeCallbackFactory.create(searchParam.getUserId().getValue());

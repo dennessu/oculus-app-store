@@ -169,6 +169,36 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     }
 
     @Override
+    Promise<List<UserPersonalInfo>> searchByName(String name, Integer limit, Integer offset) {
+        PiiHash hash = getPiiHash(UserPersonalInfoType.NAME.toString())
+
+        return hashUserPersonalInfoRepository.searchByHashValue(hash.generateHash(name)).then {
+            List<HashUserPersonalInfo> userPersonalInfos ->
+            if (CollectionUtils.isEmpty(userPersonalInfos)) {
+                return Promise.pure(null)
+            }
+
+            List<UserPersonalInfo> infos = new ArrayList<>()
+            return Promise.each(userPersonalInfos) { HashUserPersonalInfo personalInfo ->
+                return get(personalInfo.getId()).then { UserPersonalInfo userPersonalInfo ->
+                    if (userPersonalInfo == null ||
+                            userPersonalInfo.type != UserPersonalInfoType.NAME.toString()) {
+                        return Promise.pure(null)
+                    }
+
+                    UserName nameObj = (UserName) JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserName)
+                    if (name.contains(nameObj.givenName) || name.contains(nameObj.familyName)) {
+                        infos.add(userPersonalInfo)
+                    }
+                    return Promise.pure(null)
+                }
+            }.then {
+                return Promise.pure(infos)
+            }
+        }
+    }
+
+    @Override
     Promise<UserPersonalInfo> create(UserPersonalInfo model) {
         if (model.id == null) {
             model.id = new UserPersonalInfoId(idGenerator.nextId(model.userId == null ? model.organizationId.value : model.userId.value))

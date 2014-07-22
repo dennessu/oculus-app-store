@@ -7,12 +7,15 @@ package com.junbo.data.handler
 
 import com.junbo.catalog.spec.model.item.Item
 import com.junbo.catalog.spec.model.item.ItemRevision
+import com.junbo.catalog.spec.model.item.ItemsGetOptions
 import com.junbo.catalog.spec.model.offer.Offer
 import com.junbo.catalog.spec.model.offer.OfferRevision
+import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.catalog.spec.resource.ItemResource
 import com.junbo.catalog.spec.resource.ItemRevisionResource
 import com.junbo.catalog.spec.resource.OfferResource
 import com.junbo.catalog.spec.resource.OfferRevisionResource
+import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.model.Results
 import com.junbo.data.model.CatalogData
@@ -65,6 +68,7 @@ class CatalogDataHandler extends BaseDataHandler {
 
     @Override
     void handle(String content) {
+        String defaultLocale = "en_US"
         CatalogData catalogData = null
         try {
             catalogData = transcoder.decode(new TypeReference<CatalogData>() {}, content) as CatalogData
@@ -79,32 +83,76 @@ class CatalogDataHandler extends BaseDataHandler {
             exit()
         }
 
-        logger.info("----loading item")
+        //loading item and its revision
         Item item = catalogData.item
+        ItemRevision itemRevision = catalogData.itemRevision
+
         item.id = null
         item.ownerId = ownerId
-        String itemId = handle(item)
 
-        logger.info("----loading itemRevision")
-        ItemRevision itemRevision = catalogData.itemRevision
         itemRevision.id = null
         itemRevision.ownerId = ownerId
-        itemRevision.itemId = itemId
-        handle(itemRevision)
+        String itemRevisionName = itemRevision.getLocales().get(defaultLocale).name
 
-        logger.info("----loading offer")
+        //Judge if item and its revision have been loaded
+        Item itemExisting = null
+        String itemId
+        try {
+            Results<Item> itemResults = itemResource.getItems(new ItemsGetOptions(query: "name:$itemRevisionName")).get()
+            if (itemResults != null && itemResults.items != null && itemResults.items.size() > 0) {
+                itemExisting = itemResults.items.get(0)
+            }
+        } catch (AppErrorException e) {
+            logger.debug('error happens', e)
+        }
+
+        if (itemExisting == null) {
+            logger.info("----loading item $itemRevisionName and its revision")
+            itemId = handle(item)
+
+            itemRevision.itemId = itemId
+            handle(itemRevision)
+        } else {
+            logger.info("----The item $itemRevisionName and its revision have been loaded, skip")
+        }
+
+        //loading offer and its revision
         Offer offer = catalogData.offer
+        OfferRevision offerRevision = catalogData.offerRevision
+
         offer.id = null
         offer.ownerId = ownerId
-        String offerId = handle(offer)
 
-        logger.info("----loading offerRevision")
-        OfferRevision offerRevision = catalogData.offerRevision
         offerRevision.id = null
         offerRevision.ownerId = ownerId
         offerRevision.items.get(0).itemId = itemId
-        offerRevision.offerId = offerId
-        handle(offerRevision)
+
+        if (offerRevision.eventActions != null && offerRevision.getEventActions().size() > 0) {
+            offerRevision.eventActions.get("PURCHASE").get(0).itemId = itemId
+        }
+
+        String offerRevisionName = offerRevision.getLocales().get(defaultLocale).name
+
+        //Judge if offer and its revision have been loaded
+        Offer offerExisting = null
+        String offerId
+        try {
+            Results<Offer> offerResults = offerResource.getOffers(new OffersGetOptions(query: "name:$offerRevisionName")).get()
+            if (offerResults != null && offerResults.items != null && offerResults.items.size() > 0) {
+                offerExisting = offerResults.items.get(0)
+            }
+        } catch (AppErrorException e) {
+            logger.debug('error happens', e)
+        }
+
+        if (offerExisting == null) {
+            logger.info("----loading offer $offerRevisionName and its revision")
+            offerId = handle(offer)
+            offerRevision.offerId = offerId
+            handle(offerRevision)
+        } else {
+            logger.info("----The offer $offerRevisionName and its revision have been loaded, skip")
+        }
 
     }
 
@@ -137,7 +185,6 @@ class CatalogDataHandler extends BaseDataHandler {
         }
     }
 
-
     void handle(ItemRevision itemRevision) {
         logger.debug('Create new item revision with this content')
         try {
@@ -151,7 +198,6 @@ class CatalogDataHandler extends BaseDataHandler {
         }
     }
 
-
     String handle(Offer offer) {
         logger.debug('Create new offer with this content')
         try {
@@ -163,7 +209,6 @@ class CatalogDataHandler extends BaseDataHandler {
         }
 
     }
-
 
     void handle(OfferRevision offerRevision) {
         logger.debug('Create new offer revision with this content')

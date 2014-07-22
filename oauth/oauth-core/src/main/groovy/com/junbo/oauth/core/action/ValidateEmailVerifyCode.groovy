@@ -28,7 +28,7 @@ class ValidateEmailVerifyCode implements Action {
         def contextWrapper = new ActionContextWrapper(context)
         String code = (String) context.requestScope[OAuthParameters.EMAIL_VERIFY_CODE]
         if (!tokenGenerator.isValidEmailVerifyCode(code)) {
-            throw AppErrors.INSTANCE.invalidVerificationCode().exception()
+            throw AppErrors.INSTANCE.invalidEmailVerifyCode().exception()
         }
 
         return Promise.pure(null)

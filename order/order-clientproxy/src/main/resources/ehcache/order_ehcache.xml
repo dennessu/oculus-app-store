@@ -13,6 +13,24 @@
            timeToLiveSeconds="1800"
            timeToIdleSeconds="180"/>
 
+    <cache name="CURRENCY"
+           maxElementsInMemory="5000"
+           maxElementsOnDisk="0"
+           overflowToDisk="false"
+           memoryStoreEvictionPolicy="LRU"
+           eternal="false"
+           timeToLiveSeconds="1800"
+           timeToIdleSeconds="180"/>
+
+    <cache name="COUNTRY"
+           maxElementsInMemory="5000"
+           maxElementsOnDisk="0"
+           overflowToDisk="false"
+           memoryStoreEvictionPolicy="LRU"
+           eternal="false"
+           timeToLiveSeconds="1800"
+           timeToIdleSeconds="180"/>
+
     <defaultCache
             maxElementsInMemory="5000"
             maxElementsOnDisk="0"

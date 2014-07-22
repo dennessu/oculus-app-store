@@ -3,6 +3,7 @@ apply plugin: 'groovy'
 dependencies {
     compile junboProject(':langur-core')
     compile junboProject(':common-lib')
+    compile junboProject(':identity-spec')
 
     compile (libraries.rs_api)
     compile (libraries.guava)
@@ -20,7 +21,6 @@ dependencies {
 ext {
     processorClass = [
             'com.junbo.langur.processor.RestAdapterProcessor',
-            'com.junbo.langur.processor.ClientProxyProcessor',
-            'com.junbo.langur.processor.ClientProxyFactoryProcessor'
+            'com.junbo.langur.processor.ClientProxyProcessor'
     ].join(',')
 }

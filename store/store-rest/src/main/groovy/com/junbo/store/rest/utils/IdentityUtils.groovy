@@ -1,20 +1,17 @@
 package com.junbo.store.rest.utils
 
-import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.Email
 import com.junbo.identity.spec.v1.model.PhoneNumber
-import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
 import com.junbo.identity.spec.v1.option.list.UserPersonalInfoListOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.spec.model.identity.PersonalInfo
-import com.junbo.store.spec.model.login.UserCredential
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.springframework.stereotype.Component
@@ -34,7 +31,7 @@ class IdentityUtils {
     @Resource(name = "storeDataConverter")
     private DataConverter dataConverter
 
-    Promise<UserPersonalInfo> createEmailInfoIfNotExist(UserId userId, UserPersonalInfo emailInfo) {
+    Promise<PersonalInfo> createEmailInfoIfNotExist(UserId userId, PersonalInfo emailInfo) {
         Email updateEmail = ObjectMapperProvider.instance().treeToValue(emailInfo.value, Email)
         return resourceContainer.userPersonalInfoResource.list(new UserPersonalInfoListOptions(type: 'EMAIL', email: updateEmail.info)).then { Results<UserPersonalInfo> results ->
             UserPersonalInfo result = results.items.find {UserPersonalInfo e -> e.userId == userId}
@@ -45,10 +42,12 @@ class IdentityUtils {
             } else {
                 return Promise.pure(result)
             }
+        }.syncThen { UserPersonalInfo userPersonalInfo ->
+            return dataConverter.toStorePersonalInfo(userPersonalInfo, null)
         }
     }
 
-    Promise<UserPersonalInfo> createPhoneInfoIfNotExist(UserId userId, UserPersonalInfo phoneInfo) {
+    Promise<UserPersonalInfo> createPhoneInfoIfNotExist(UserId userId, PersonalInfo phoneInfo) {
         PhoneNumber updatePhone = ObjectMapperProvider.instance().treeToValue(phoneInfo.value, PhoneNumber)
         return resourceContainer.userPersonalInfoResource.list(new UserPersonalInfoListOptions(type: 'PHONE', phoneNumber: updatePhone.info)).then { Results<UserPersonalInfo> results ->
             UserPersonalInfo result = results.items.find {UserPersonalInfo e -> e.userId == userId}
@@ -59,6 +58,8 @@ class IdentityUtils {
             } else {
                 return Promise.pure(result)
             }
+        }.syncThen { UserPersonalInfo userPersonalInfo ->
+            return dataConverter.toStorePersonalInfo(userPersonalInfo, null)
         }
     }
 
@@ -100,15 +101,6 @@ class IdentityUtils {
             list[0].isDefault = true
         }
         return list
-    }
-
-    public Promise checkUserCredential(String username, UserCredential userCredential) {
-        resourceContainer.userCredentialVerifyAttemptResource.create(
-                new UserCredentialVerifyAttempt(
-                        username: username,
-                        type: userCredential.type,
-                        value: userCredential.value
-                ))
     }
 
     Promise<List<PersonalInfo>> expandPersonalInfo(List<UserPersonalInfoLink> userPersonalInfoLinkList) {

@@ -146,8 +146,7 @@ public abstract class MapperTestBase {
 
         task.setProcessors(Arrays.asList(
                 new RestAdapterProcessor(),
-                new ClientProxyProcessor(),
-                new ClientProxyFactoryProcessor()
+                new ClientProxyProcessor()
         ));
 
         return task.call();

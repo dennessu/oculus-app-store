@@ -39,6 +39,7 @@
 
     <bean id="nameHash" class="com.junbo.identity.data.hash.impl.NameHashImpl">
         <property name="salt" value="${identity.conf.indexHashSalt}" />
+        <property name="algorithm" value="${identity.conf.indexHashAlgorithm}" />
     </bean>
 
     <bean id="passportHash" class="com.junbo.identity.data.hash.impl.PassportHashImpl">

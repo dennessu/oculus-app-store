@@ -26,7 +26,8 @@ public interface RevokeEndpoint {
     @ApiOperation("Revoke an access token")
     @POST
     Promise<Response> revoke(@HeaderParam("Authorization") String authorization, @FormParam("token") String token,
-                             @FormParam("token_type_hint") String tokenTypeHint);
+                             @FormParam("token_type_hint") String tokenTypeHint,
+                             @FormParam("user") String userHref);
 
     @ApiOperation("Revoke the consent to a client")
     @POST

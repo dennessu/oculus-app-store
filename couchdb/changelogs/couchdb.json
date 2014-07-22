@@ -1,5 +1,5 @@
 {
-  "cloudant": {
+  "couchdb": {
     "access_token": {
       "views": {
         "by_refresh_token": {
@@ -605,7 +605,7 @@
           }
       }
   }, 
-  "cloudant_search": {
+  "cloudant": {
     "entitlement": {
       "indexes": {
         "search": {
