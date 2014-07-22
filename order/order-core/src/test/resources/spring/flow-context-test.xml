@@ -64,6 +64,8 @@
         <property name="fulfillmentFacade" ref="mockFulfillmentFacade"/>
         <property name="identityFacade" ref="mockIdentityFacade"/>
         <property name="paymentFacade" ref="mockPaymentFacade"/>
+        <property name="countryFacade" ref="mockCountryFacade"/>
+        <property name="currencyFacade" ref="mockCurrencyFacade"/>
     </bean>
 
     <bean id="mockOrderInternalService" class="com.junbo.order.core.impl.internal.impl.OrderInternalServiceImpl">
@@ -85,7 +87,6 @@
 
     <bean id="mockIdentityFacade" class="com.junbo.order.clientproxy.identity.impl.IdentityFacadeImpl">
         <property name="userResource" ref="mockIdentityResource"/>
-        <property name="currencyResource" ref="mockCurrencyResource"/>
         <property name="organizationResource" ref="mockOrganizationResource"/>
     </bean>
 
@@ -94,6 +95,14 @@
         <property name="itemRevisionResource" ref="mockItemRevisionResource"/>
         <property name="itemResource" ref="mockCatalogItemResource"/>
         <property name="offerResource" ref="mockOfferResource"/>
+    </bean>
+
+    <bean id="mockCountryFacade" class="com.junbo.order.clientproxy.identity.impl.CountryFacadeImpl">
+        <property name="countryResource" ref="mockCountryResource"/>
+    </bean>
+
+    <bean id="mockCurrencyFacade" class="com.junbo.order.clientproxy.identity.impl.CurrencyFacadeImpl">
+        <property name="currencyResource" ref="mockCurrencyResource"/>
     </bean>
 
     <bean id="mockCachedCatalogFacade" class="com.junbo.order.clientproxy.catalog.impl.CachedCatalogFacadeImpl">

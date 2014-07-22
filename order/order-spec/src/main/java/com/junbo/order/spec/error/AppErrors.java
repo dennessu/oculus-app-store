@@ -148,4 +148,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "138", message = "Order Event Status Not Match.")
     AppError orderEvenStatusNotMatch();
+
+    @ErrorDef(httpStatusCode = 412, code = "134", message = "Country Not Valid.", reason = "Country {0} is not valid.")
+    AppError countryNotValid(String country);
 }

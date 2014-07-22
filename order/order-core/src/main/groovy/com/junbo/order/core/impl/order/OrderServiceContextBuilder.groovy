@@ -256,7 +256,7 @@ class OrderServiceContextBuilder {
             return Promise.pure(context.currency)
         }
 
-        return facadeContainer.identityFacade.getCurrency(context.order.currency.value).then {
+        return facadeContainer.currencyFacade.getCurrency(context.order.currency.value).then {
             com.junbo.identity.spec.v1.model.Currency currency ->
                 assert (currency != null)
                 context.currency = currency

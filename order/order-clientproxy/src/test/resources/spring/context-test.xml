@@ -19,7 +19,6 @@
 
     <bean id="mockIdentityFacade" class="com.junbo.order.clientproxy.identity.impl.IdentityFacadeImpl">
         <property name="userResource" ref="mockIdentityResource"/>
-        <property name="currencyResource" ref="mockCurrencyResource"/>
         <property name="organizationResource" ref="mockOrganizationResource"/>
     </bean>
 
@@ -27,6 +26,14 @@
         <property name="offerRevisionResource" ref="mockOfferRevisionResource"/>
         <property name="itemRevisionResource" ref="mockItemRevisionResource"/>
         <property name="itemResource" ref="mockCatalogItemResource"/>
+    </bean>
+
+    <bean id="mockCountryFacade" class="com.junbo.order.clientproxy.identity.impl.CountryFacadeImpl">
+        <property name="countryResource" ref="mockCountryResource"/>
+    </bean>
+
+    <bean id="mockCurrencyFacade" class="com.junbo.order.clientproxy.identity.impl.CurrencyFacadeImpl">
+        <property name="currencyResource" ref="mockCurrencyResource"/>
     </bean>
 
 </beans>
