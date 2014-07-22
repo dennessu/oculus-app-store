@@ -7,6 +7,7 @@ package com.junbo.store.spec.resource;
 
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.langur.core.routing.RouteBy;
 import com.junbo.store.spec.model.*;
 import com.junbo.store.spec.model.billing.BillingProfileGetRequest;
 import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
@@ -36,38 +37,47 @@ public interface StoreResource {
 
     @GET
     @Path("/userprofile")
+    @RouteBy("userProfileGetRequest.getUserId()")
     Promise<UserProfileGetResponse> getUserProfile(@BeanParam UserProfileGetRequest userProfileGetRequest);
 
     @POST
     @Path("/userprofile")
+    @RouteBy("userProfileUpdateRequest.getUserId()")
     Promise<UserProfileUpdateResponse> updateUserProfile(UserProfileUpdateRequest userProfileUpdateRequest);
 
     @GET
     @Path("/billingprofile")
+    @RouteBy("billingProfileGetRequest.getUserId()")
     Promise<BillingProfileGetResponse> getBillingProfile(@BeanParam BillingProfileGetRequest billingProfileGetRequest);
 
     @POST
+    @RouteBy("billingProfileUpdateRequest.getUserId()")
     @Path("/billingprofile")
     Promise<BillingProfileUpdateResponse> updateBillingProfile(BillingProfileUpdateRequest billingProfileUpdateRequest);
 
     @GET
+    @RouteBy("entitlementsGetRequest.getUserId()")
     @Path("/entitlements")
     Promise<EntitlementsGetResponse> getEntitlements(@BeanParam EntitlementsGetRequest entitlementsGetRequest,
                                                      @BeanParam PageParam pageParam);
 
     @POST
+    @RouteBy("selectInstrumentRequest.getUserId()")
     @Path("/purchase/select-instrument")
     Promise<SelectInstrumentResponse> selectInstrumentForPurchase(SelectInstrumentRequest selectInstrumentRequest);
 
     @POST
+    @RouteBy("makeFreePurchaseRequest.getUserId()")
     @Path("/purchase/free")
     Promise<MakeFreePurchaseResponse> makeFreePurchase(MakeFreePurchaseRequest makeFreePurchaseRequest);
 
     @POST
+    @RouteBy("preparePurchaseRequest.getUserId()")
     @Path("/purchase/prepare")
     Promise<PreparePurchaseResponse> preparePurchase(PreparePurchaseRequest preparePurchaseRequest);
 
     @POST
+    @RouteBy("commitPurchaseRequest.getUserId()")
     @Path("/purchase/commit")
     Promise<CommitPurchaseResponse> commitPurchase(CommitPurchaseRequest commitPurchaseRequest);
 
@@ -76,6 +86,7 @@ public interface StoreResource {
     Promise<IAPOfferGetResponse> iapGetOffers(@BeanParam IAPOfferGetRequest iapOfferGetRequest);
 
     @POST
+    @RouteBy("iapEntitlementConsumeRequest.getUserId()")
     @Path("/iap/consumption")
     Promise<IAPEntitlementConsumeResponse> iapConsumeEntitlement(IAPEntitlementConsumeRequest iapEntitlementConsumeRequest);
 

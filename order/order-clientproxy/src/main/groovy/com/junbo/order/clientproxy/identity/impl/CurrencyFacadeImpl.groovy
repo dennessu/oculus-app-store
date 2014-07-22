@@ -33,7 +33,7 @@ class CurrencyFacadeImpl implements CurrencyFacade {
         if (currency == null || currency.isEmpty()) {
             throw AppCommonErrors.INSTANCE.parameterRequired('currency').exception()
         }
-        return currencyResource.get(new CurrencyId(currency), new CurrencyGetOptions()).recover {
+            return currencyResource.get(new CurrencyId(currency), new CurrencyGetOptions()).recover {
             Throwable throwable ->
                 LOGGER.error('name=error_in_get_currency: ' + currency, throwable)
                 throw AppErrors.INSTANCE.currencyNotValid(currency).exception()

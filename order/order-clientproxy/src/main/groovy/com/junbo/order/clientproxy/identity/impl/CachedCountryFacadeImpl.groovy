@@ -1,8 +1,6 @@
 package com.junbo.order.clientproxy.identity.impl
-
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.identity.CountryFacade
-import com.junbo.order.clientproxy.identity.IdentityFacade
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import net.sf.ehcache.Cache
@@ -14,7 +12,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.cache.ehcache.EhCacheCacheManager
 
 import javax.annotation.Resource
-
 /**
  * Implementation of Country Facade with EH Cache.
  */
@@ -39,11 +36,13 @@ class CachedCountryFacadeImpl implements CountryFacade {
         Cache cache = null
         if (cacheManager.status != Status.STATUS_ALIVE) {
             LOGGER.error('name=Cache_Manager_Invalid. country: {}', country)
+            return Promise.pure(null)
         }
         else {
             cache = cacheManager.getCache('COUNTRY')
             if (cache == null) {
                 LOGGER.error('name=Country_Cache_Manager_Not_Found')
+                return Promise.pure(null)
             }
             else {
                 Element element = cache.get(country)
@@ -54,6 +53,7 @@ class CachedCountryFacadeImpl implements CountryFacade {
                         Element newElement = new Element(country, newCountry)
                         cache.put(newElement)
                         LOGGER.info('name=Country_Cached. country: {}', country)
+                        return Promise.pure(newCountry)
                     }
                 }
                 else {

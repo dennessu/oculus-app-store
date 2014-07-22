@@ -61,8 +61,9 @@ class SendEmailAction implements Action {
                         .then { List<PaymentInstrument> pis ->
                     // select email type per pi & per item
                     String emailType = null
+                    PIType piType = CollectionUtils.isEmpty(pis) ? null : PIType.get(pis[0].type)
                     if (!CoreUtils.hasPhysicalOffer(order)) {
-                        switch (PIType.get(pis[0].type)) {
+                        switch (piType) {
                             case PIType.CREDITCARD:
                             case PIType.STOREDVALUE:
                             case PIType.PAYPAL:

@@ -1,8 +1,6 @@
 package com.junbo.order.clientproxy.identity.impl
-
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.identity.CurrencyFacade
-import com.junbo.order.clientproxy.identity.IdentityFacade
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import net.sf.ehcache.Cache
@@ -14,7 +12,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.cache.ehcache.EhCacheCacheManager
 
 import javax.annotation.Resource
-
 /**
  * Implementation of Currency Facade with EH Cache.
  */
@@ -39,11 +36,13 @@ class CachedCurrencyFacadeImpl implements CurrencyFacade {
         Cache cache = null
         if (cacheManager.status != Status.STATUS_ALIVE) {
             LOGGER.error('name=Cache_Manager_Invalid. currency: {}', currency)
+            return Promise.pure(null)
         }
         else {
             cache = cacheManager.getCache('CURRENCY')
             if (cache == null) {
                 LOGGER.error('name=Currency_Cache_Manager_Not_Found')
+                return Promise.pure(null)
             }
             else {
                 Element element = cache.get(currency)
@@ -54,6 +53,7 @@ class CachedCurrencyFacadeImpl implements CurrencyFacade {
                         Element newElement = new Element(currency, newCurrency)
                         cache.put(newElement)
                         LOGGER.info('name=Currency_Cached. currency: {}', currency)
+                        return Promise.pure(newCurrency)
                     }
                 }
                 else {

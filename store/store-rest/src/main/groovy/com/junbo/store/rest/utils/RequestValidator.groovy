@@ -101,6 +101,11 @@ class RequestValidator {
         } catch (IllegalArgumentException ex) {
             throw AppCommonErrors.INSTANCE.fieldInvalidEnum('action', CommonUtils.allowedEnumValues(BillingProfileUpdateRequest.UpdateAction)).exception()
         }
+
+        BillingProfileUpdateRequest.UpdateAction action = BillingProfileUpdateRequest.UpdateAction.valueOf(request.action)
+        if (action == BillingProfileUpdateRequest.UpdateAction.REMOVE_PI || action == BillingProfileUpdateRequest.UpdateAction.UPDATE_PI) {
+            notEmpty(request.instrument?.instrumentId, 'instrument.instrumentId')
+        }
         return Promise.pure(null)
     }
 

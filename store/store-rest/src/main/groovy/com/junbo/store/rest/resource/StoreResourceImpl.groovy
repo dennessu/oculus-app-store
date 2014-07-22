@@ -61,7 +61,7 @@ class StoreResourceImpl implements StoreResource {
 
     public static final String ACTION_STATUS_SUCCESS = "SUCCEED"
 
-    public static final String FREE_PURCHASE_CURRENCY = "XXX"
+    public static final String FREE_PURCHASE_CURRENCY = "USD"
 
     private static final int PAGE_SIZE = 100
 
@@ -115,7 +115,7 @@ class StoreResourceImpl implements StoreResource {
         }.then {
             PersonalInfo updateValue = ObjectMapperProvider.instance().treeToValue(userProfileUpdateRequest.updateValue, PersonalInfo)
             updateValue.isDefault = updateValue.isDefault == null ? false : updateValue.isDefault
-            def action = UserProfileUpdateRequest.UpdateAction.valueOf(userProfileUpdateRequest.action)
+            UserProfileUpdateRequest.UpdateAction action = UserProfileUpdateRequest.UpdateAction.valueOf(userProfileUpdateRequest.action)
             if (action.requirePersonalInfoId) {
                 requestValidator.notEmpty(updateValue.userPersonalInfoId, 'updateValue.userPersonalInfoId')
             }
@@ -165,11 +165,8 @@ class StoreResourceImpl implements StoreResource {
         Promise.pure(null).then {
             requestValidator.validateBillingProfileGetRequest(billingProfileGetRequest)
         }.then {
-            resourceContainer.userResource.get(billingProfileGetRequest.userId, new UserGetOptions()).then { User user ->
-                if (user == null) {
-                    throw AppErrors.INSTANCE.userNotFoundByUsername().exception()
-                }
-                return innerGetBillingProfile(user.getId(), billingProfileGetRequest.locale).syncThen { BillingProfile billingProfile ->
+            resourceContainer.userResource.get(billingProfileGetRequest.userId, new UserGetOptions()).then {
+                return innerGetBillingProfile(billingProfileGetRequest.userId, billingProfileGetRequest.locale).syncThen { BillingProfile billingProfile ->
                     response.billingProfile = billingProfile
                     response.status = ResponseStatus.SUCCESS.name()
                     return response
@@ -423,7 +420,10 @@ class StoreResourceImpl implements StoreResource {
                                 }
                             }
                         }
+                    } else {
+                        return Promise.pure(null)
                     }
+                }.then {
                     return Promise.pure(response)
                 }
             }
@@ -585,7 +585,7 @@ class StoreResourceImpl implements StoreResource {
         Set<String> entitlementIds = [] as HashSet
 
         // get the entitlement ids
-        def promise = resourceContainer.fulfilmentResource.getByOrderId(order.getId()).then { FulfilmentRequest fulfilmentRequest ->
+        Promise promise = resourceContainer.fulfilmentResource.getByOrderId(order.getId()).then { FulfilmentRequest fulfilmentRequest ->
             if (fulfilmentRequest.items != null) {
                 fulfilmentRequest.items.each { FulfilmentItem fulfilmentItem ->
                     if (fulfilmentItem.actions == null) {
@@ -652,7 +652,7 @@ class StoreResourceImpl implements StoreResource {
     }
 
     private Promise<Item> getItemByPackageName(String packageName) {
-        def option = new ItemsGetOptions(packageName: packageName)
+        ItemsGetOptions option = new ItemsGetOptions(packageName: packageName)
         return resourceContainer.itemResource.getItems(option).then { Results<Item> itemResults ->
             if (itemResults.items.isEmpty()) {
                 throw AppErrors.INSTANCE.itemNotFoundWithPackageName().exception()
@@ -685,7 +685,7 @@ class StoreResourceImpl implements StoreResource {
     }
 
     private Promise<Void> getOffersFromItem(Item item, ItemRevision itemRevision, IAPOfferGetRequest iapOfferGetRequest, Map<String, Offer> offers) {
-        def offerOption = new OffersGetOptions(
+        OffersGetOptions offerOption = new OffersGetOptions(
                 itemId: item.itemId,
                 published: true,
                 start : 0,
@@ -742,7 +742,7 @@ class StoreResourceImpl implements StoreResource {
     }
 
     private Promise<List<Offer>> getInAppOffers(Item hostItem, IAPOfferGetRequest iapOfferGetRequest) {
-        def itemOption = new ItemsGetOptions(
+        ItemsGetOptions itemOption = new ItemsGetOptions(
                 hostItemId: hostItem.itemId,
                 type: iapOfferGetRequest.getType(),
                 size: PAGE_SIZE,
@@ -772,7 +772,7 @@ class StoreResourceImpl implements StoreResource {
     private static Offer convertOffer(com.junbo.catalog.spec.model.offer.Offer offer, OfferRevision offerRevision,
                                       Item item, ItemRevision itemRevision, String locale, String country, String currency) {
 
-        def result = new Offer(
+        Offer result = new Offer(
                 offerId: new OfferId(offer.getId()),
                 type: item.type,
                 sku: itemRevision.sku,
