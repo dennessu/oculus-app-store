@@ -428,6 +428,19 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
                         && (ItemType.APP.is(item.getType()) || ItemType.DOWNLOADED_ADDITION.is(item.getType()))) {
                     if (CollectionUtils.isEmpty(revision.getBinaries())) {
                         errors.add(AppCommonErrors.INSTANCE.fieldRequired("binaries"));
+                    } else {
+                        for (String key : revision.getBinaries().keySet()) {
+                            if (!Platforms.contains(key)) {
+                                errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("binaries", Joiner.on(',').join(Platforms.values())));
+                            }
+                            Binary binary = revision.getBinaries().get(key);
+                            if (!UrlValidator.getInstance().isValid(binary.getHref())) {
+                                errors.add(AppCommonErrors.INSTANCE.fieldInvalid("binaries", "invalid href for " + key));
+                            }
+                            if (!StringUtils.isEmpty(binary.getMd5()) && !Utils.isValidMd5(binary.getMd5())) {
+                                errors.add(AppCommonErrors.INSTANCE.fieldInvalid("binaries", "invalid md5 for " + key));
+                            }
+                        }
                     }
                     if (StringUtils.isEmpty(revision.getDownloadName())) {
                         errors.add(AppCommonErrors.INSTANCE.fieldRequired("downloadName"));
@@ -451,6 +464,22 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         }
         if (revision.getMsrp() != null) {
             checkPrice(revision.getMsrp(), errors);
+        }
+        if (!CollectionUtils.isEmpty(revision.getPlatforms())) {
+            for (String platform : revision.getPlatforms()) {
+                if (!Platforms.contains(platform)) {
+                    errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("platforms", Joiner.on(',').join(Platforms.values())));
+                    break;
+                }
+            }
+        }
+        if (!CollectionUtils.isEmpty(revision.getUserInteractionModes())) {
+            for (String mode : revision.getUserInteractionModes()) {
+                if (!InteractionModes.contains(mode)) {
+                    errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("userInteractionModes", Joiner.on(',').join(InteractionModes.values())));
+                    break;
+                }
+            }
         }
         if (CollectionUtils.isEmpty(revision.getLocales())) {
             errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales"));
@@ -483,7 +512,6 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         if (!CollectionUtils.isEmpty(revision.getFutureExpansion())) {
             errors.add(AppCommonErrors.INSTANCE.fieldInvalid("futureExpansion", "you should leave this property empty"));
         }
-        // TODO: check other properties
     }
 
 }

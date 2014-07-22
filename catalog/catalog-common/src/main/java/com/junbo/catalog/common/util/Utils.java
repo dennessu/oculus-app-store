@@ -12,6 +12,7 @@ import com.junbo.common.cloudant.model.CloudantQueryResult;
 import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.ErrorDetail;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -69,5 +70,12 @@ public class Utils {
         }
 
         return results;
+    }
+
+    public static boolean isValidMd5(String value) {
+        if (StringUtils.isEmpty(value)) {
+            return false;
+        }
+        return value.matches("[a-fA-F0-9]{32}");
     }
 }
