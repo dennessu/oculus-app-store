@@ -43,7 +43,7 @@ public class DataCenterTest {
                 super.addListener(configKey, listener);
             }
         }) {
-            configService.getAllConfigItems().setProperty("common.topo.datacenters",
+            configService.getAllConfigItems().put("common.topo.datacenters",
                     "  https://localhost:8080/v1;0;dc0;2,\n" +
                             "https://localhost:8180/v1;1;dc1;2"
             );

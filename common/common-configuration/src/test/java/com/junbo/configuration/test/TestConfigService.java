@@ -4,13 +4,15 @@ import com.junbo.configuration.ConfigContext;
 import com.junbo.configuration.ConfigService;
 import com.junbo.configuration.ConfigServiceManager;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 public class TestConfigService implements ConfigService, AutoCloseable {
     private ConfigService oldInstance;
     private ConfigContext context = new ConfigContext("unittest").complete("dc0", "127.0.0.1/32");
     private ConfigService.ConfigListener listener;
-    private Properties properties = new Properties() {{
+    private Map<String, String> properties = new HashMap<String, String>() {{
         put("common.topo.datacenters", "http://localhost:8080/v1;0;dc0;2,http://localhost:8080/v1;1;dc1;2");
     }};
 
@@ -31,16 +33,16 @@ public class TestConfigService implements ConfigService, AutoCloseable {
 
     @Override
     public String getConfigValue(String configKey) {
-        return properties.getProperty(configKey);
+        return properties.get(configKey);
     }
 
     @Override
-    public Properties getAllConfigItems() {
+    public Map<String, String> getAllConfigItems() {
         return properties;
     }
 
     @Override
-    public Properties getAllConfigItemsMasked() {
+    public Map<String, String> getAllConfigItemsMasked() {
         return properties;
     }
 
@@ -54,7 +56,7 @@ public class TestConfigService implements ConfigService, AutoCloseable {
     }
 
     public void updateConfig(String configKey, String newValue) {
-        properties.setProperty(configKey, newValue);
+        properties.put(configKey, newValue);
         this.listener.onConfigChanged(configKey, newValue);
     }
 

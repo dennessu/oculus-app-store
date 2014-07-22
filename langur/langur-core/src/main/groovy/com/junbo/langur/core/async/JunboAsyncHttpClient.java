@@ -38,7 +38,8 @@ public class JunboAsyncHttpClient implements Closeable {
         config.setMaxConnectionPerHost(Integer.parseInt(configService.getConfigValue("common.client.maxConnectionPerHost")));
         config.setCompressionEnabled(true);
 
-        this.asyncHttpClient = new AsyncHttpClient(config);
+
+        this.asyncHttpClient = new AsyncHttpClient(new UTF8NettyAsyncHttpProvider(config), config);
         this.isDebugMode = "true".equalsIgnoreCase(configService.getConfigValue("common.conf.debugMode"));
     }
 
