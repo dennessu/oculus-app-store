@@ -39,6 +39,10 @@ public class CloudantBeanSerializer extends BeanSerializerBase {
         super(source, toIgnore);
     }
 
+    private CloudantBeanSerializer(BeanSerializerBase src, ObjectIdWriter objectIdWriter, Object filterId) {
+        super(src, objectIdWriter, filterId);
+    }
+
     @Override
     public JsonSerializer<Object> unwrappingSerializer(NameTransformer unwrapper) {
         return new UnwrappingBeanSerializer(this, unwrapper);
@@ -48,6 +52,12 @@ public class CloudantBeanSerializer extends BeanSerializerBase {
     public BeanSerializerBase withObjectIdWriter(
             ObjectIdWriter objectIdWriter) {
         return new CloudantBeanSerializer(this, objectIdWriter);
+    }
+
+
+    @Override
+    protected BeanSerializerBase withFilterId(Object filterId) {
+        return new CloudantBeanSerializer(this, _objectIdWriter, filterId);
     }
 
     @Override

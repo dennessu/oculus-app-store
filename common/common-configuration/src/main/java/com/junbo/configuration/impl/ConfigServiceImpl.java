@@ -63,7 +63,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
     private Properties jarProperties = new Properties();
     private Properties overrideProperties = new Properties();
-    private Properties finalProperties = new Properties();
+    private Map<String, String> finalProperties = new HashMap<>();
 
     private ConfigChangeListenerMap listeners = new ConfigChangeListenerMap();
     private CipherService cipherService;
@@ -87,18 +87,18 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
     @Override
     public String getConfigValue(String configKey) {
-        return finalProperties.getProperty(configKey);
+        return finalProperties.get(configKey);
     }
 
     @Override
-    public Properties getAllConfigItems() {
-        return finalProperties;
+    public Map<String, String> getAllConfigItems() {
+        return Collections.unmodifiableMap(finalProperties);
     }
 
     @Override
-    public Properties getAllConfigItemsMasked() {
+    public Map<String, String> getAllConfigItemsMasked() {
 
-        Properties properties = new Properties();
+        Map<String, String> properties = new HashMap<>();
 
         for (Map.Entry entry : finalProperties.entrySet()) {
             String key = entry.getKey().toString();
@@ -361,7 +361,7 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
         cipherService = new AESCipherServiceImpl(keyStr);
 
-        finalProperties = new Properties();
+        Properties finalProperties = new Properties();
         merge(finalProperties, jarProperties);
         merge(finalProperties, overrideProperties);
         merge(finalProperties, commandLineProperties);
@@ -370,6 +370,11 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
         configContext.complete(
                 finalProperties.getProperty(ACTIVE_DC_OPTS),
                 finalProperties.getProperty(ACTIVE_SUBNET_OPTS));
+
+        this.finalProperties = new HashMap<>();
+        for (String key : finalProperties.stringPropertyNames()) {
+            this.finalProperties.put(key, finalProperties.getProperty(key));
+        }
     }
 
     private void check(Properties properties) {

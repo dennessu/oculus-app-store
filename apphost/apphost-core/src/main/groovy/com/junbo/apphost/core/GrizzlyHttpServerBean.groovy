@@ -119,7 +119,8 @@ class GrizzlyHttpServerBean implements InitializingBean, DisposableBean,
         HttpHandler jerseyHandler = buildJerseyHandler()
 
         // handle static resources
-        def staticHandler = new CLStaticHttpHandler(ClassUtils.defaultClassLoader, ['static/'] as String[]) {
+        def staticResourceLoader = new CachedResourceClassLoader(ClassUtils.defaultClassLoader, 'static/')
+        def staticHandler = new CLStaticHttpHandler(staticResourceLoader, []) {
             @Override
             protected void onMissingResource(Request request, Response response) throws Exception {
                 jerseyHandler.service(request, response)

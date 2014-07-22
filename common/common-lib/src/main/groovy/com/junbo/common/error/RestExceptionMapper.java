@@ -27,7 +27,7 @@ import javax.ws.rs.ext.Provider;
  * Javadoc.
  */
 @Provider
-public class RestExceptionMapper implements ExceptionMapper<Exception>, ApplicationEventListener {
+public class RestExceptionMapper implements ExceptionMapper<Exception>, ApplicationEventListener, RequestEventListener {
 
     private static ConfigService configService = ConfigServiceManager.instance();
     private static final Logger LOGGER = LoggerFactory.getLogger(RestExceptionMapper.class);
@@ -63,14 +63,14 @@ public class RestExceptionMapper implements ExceptionMapper<Exception>, Applicat
     }
 
     @Override
+    public void onEvent(RequestEvent event) {
+        if (event.getType() == RequestEvent.Type.ON_EXCEPTION) {
+            LOGGER.error("Log unhandled exception: ", event.getException());
+        }
+    }
+
+    @Override
     public RequestEventListener onRequest(RequestEvent requestEvent) {
-        return new RequestEventListener() {
-            @Override
-            public void onEvent(RequestEvent event) {
-                if (event.getType() == RequestEvent.Type.ON_EXCEPTION) {
-                    LOGGER.error("Log unhandled exception: ", event.getException());
-                }
-            }
-        };
+        return this;
     }
 }

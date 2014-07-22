@@ -60,6 +60,11 @@ public class CustomBeanSerializer extends BeanSerializerBase {
         parseHateoasLinkFields();
     }
 
+    private CustomBeanSerializer(BeanSerializerBase src, ObjectIdWriter objectIdWriter, Object filterId) {
+        super(src, objectIdWriter, filterId);
+        parseHateoasLinkFields();
+    }
+
     @Override
     public JsonSerializer<Object> unwrappingSerializer(NameTransformer unwrapper) {
         return new UnwrappingBeanSerializer(this, unwrapper);
@@ -69,6 +74,11 @@ public class CustomBeanSerializer extends BeanSerializerBase {
     public BeanSerializerBase withObjectIdWriter(
             ObjectIdWriter objectIdWriter) {
         return new CustomBeanSerializer(this, objectIdWriter);
+    }
+
+    @Override
+    protected BeanSerializerBase withFilterId(Object filterId) {
+        return new CustomBeanSerializer(this, _objectIdWriter, filterId);
     }
 
     @Override
