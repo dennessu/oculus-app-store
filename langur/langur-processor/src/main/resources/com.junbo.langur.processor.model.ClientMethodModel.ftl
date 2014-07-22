@@ -4,14 +4,14 @@ public Promise<${returnType}> ${methodName}([#list parameters as parameter]final
     final long __startTime = System.currentTimeMillis();
     final Date __startDate = new Date();
 
-    String __temp = "";
-    try {
-        java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
-        __temp = localMachine.getHostName();
-    } catch (java.net.UnknownHostException unknownHostEx) {
-        LOGGER.error("No Host can be detected");
+    if (org.springframework.util.StringUtils.isEmpty(__machineName)) {
+        try {
+            java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+            __machineName = localMachine.getHostName();
+        } catch (java.net.UnknownHostException unknownHostEx) {
+            LOGGER.error("No Host can be detected");
+        }
     }
-    final String __machineName = __temp;
     final java.text.DateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
     final javax.ws.rs.core.UriBuilder __uriBuilder = UriBuilder.fromUri(__target);

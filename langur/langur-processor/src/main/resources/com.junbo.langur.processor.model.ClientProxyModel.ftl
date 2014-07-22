@@ -22,6 +22,7 @@ import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture;
 public class ${className} extends AbstractClientProxy implements ${interfaceType},
     org.springframework.context.ApplicationContextAware {
     private static final Logger LOGGER = LoggerFactory.getLogger(${className}.class);
+    private static String __machineName;
 
     private org.springframework.context.ApplicationContext __applicationContext;
 
