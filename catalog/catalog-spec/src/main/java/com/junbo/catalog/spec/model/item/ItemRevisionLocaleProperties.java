@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.catalog.spec.model.common.Images;
 import com.junbo.catalog.spec.model.common.RevisionNotes;
 import com.junbo.catalog.spec.model.common.Video;
+import com.junbo.common.jackson.annotation.XSSFreeRichText;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
@@ -19,41 +21,54 @@ import java.util.Map;
  * Locale properties for item revision.
  */
 public class ItemRevisionLocaleProperties {
+    @XSSFreeString
     @ApiModelProperty(position = 1, required = true, value = "item revision name")
     private String name;
     @JsonProperty("releaseNotes")
     @ApiModelProperty(position = 3, required = true, value = "revision notes")
     private RevisionNotes releaseNotes;
+    @XSSFreeRichText
     @ApiModelProperty(position = 4, required = true, value = "long description")
     private String longDescription;
+    @XSSFreeRichText
     @ApiModelProperty(position = 5, required = true, value = "short description")
     private String shortDescription;
     @ApiModelProperty(position = 6, required = true, value = "minimum system requirements")
     private Map<String, SystemRequirement> minimumSystemRequirements;
     @ApiModelProperty(position = 7, required = true, value = "recommended system requirements")
     private Map<String, SystemRequirement> recommendedSystemRequirements;
+    @XSSFreeString
     @ApiModelProperty(position = 8, required = true, value = "legal information")
     private String legalInformation;
+    @XSSFreeString
     @ApiModelProperty(position = 11, required = true, value = "credits")
     private String credits;
+    @XSSFreeString
     @ApiModelProperty(position = 12, required = true, value = "copyright")
     private String copyright;
+    @XSSFreeString
     @ApiModelProperty(position = 13, required = true, value = "known bugs")
     private String knownBugs;
+    @XSSFreeString
     @ApiModelProperty(position = 27, required = false, value = "Support email")
     private String supportEmail;
+    @XSSFreeString
     @ApiModelProperty(position = 28, required = false, value = "Website for the item revision resource")
     private String website;
+    @XSSFreeString
     @ApiModelProperty(position = 31, required = false, value = "Manual document for the item revision resource")
     private String manualDocument;
+    @XSSFreeString
     @ApiModelProperty(position = 32, required = false, value = "Community forum link of the item revision resource")
     private String communityForumLink;
     @ApiModelProperty(position = 29, required = false, value = "Images to describe the item revision resource")
     private Images images;
     @ApiModelProperty(position = 30, required = false, value = "Videos to describe the item revision resource")
     private List<Video> videos;
+    @XSSFreeString
     @ApiModelProperty(position = 14, required = true, value = "color")
     private String color;
+    @XSSFreeString
     @ApiModelProperty(position = 15, required = true, value = "size")
     private String size;
 

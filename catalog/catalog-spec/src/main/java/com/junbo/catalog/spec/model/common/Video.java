@@ -6,12 +6,14 @@
 
 package com.junbo.catalog.spec.model.common;
 
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Video.
  */
 public class Video {
+    @XSSFreeString
     @ApiModelProperty(position = 1, required = true, value = "Service provider",
             allowableValues = "YOUTUBE, VIMEO, OCULUS")
     private String service;
@@ -19,6 +21,7 @@ public class Video {
     @ApiModelProperty(position = 2, required = true, value = "The id of the video")
     private String id;
 
+    @XSSFreeString
     @ApiModelProperty(position = 3, required = true, value = "The title of the video")
     private String title;
 

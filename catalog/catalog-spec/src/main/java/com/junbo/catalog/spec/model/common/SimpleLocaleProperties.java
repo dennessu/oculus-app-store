@@ -6,15 +6,19 @@
 
 package com.junbo.catalog.spec.model.common;
 
+import com.junbo.common.jackson.annotation.XSSFreeRichText;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Attribute locales.
  */
 public class SimpleLocaleProperties {
+    @XSSFreeString
     @ApiModelProperty(position = 1, required = true, value = "attribute name")
     String name;
 
+    @XSSFreeRichText
     @ApiModelProperty(position = 2, required = true, value = "description")
     String description;
 

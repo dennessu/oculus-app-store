@@ -6,14 +6,17 @@
 
 package com.junbo.catalog.spec.model.common;
 
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Revision notes.
  */
 public class RevisionNotes {
+    @XSSFreeString
     @ApiModelProperty(position = 1, required = true, value = "Short notes")
     private String shortNotes;
+    @XSSFreeString
     @ApiModelProperty(position = 2, required = true, value = "Long notes")
     private String longNotes;
 

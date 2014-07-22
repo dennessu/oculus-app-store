@@ -38,5 +38,7 @@ dependencies {
     compile (libraries.grizzly_websockets)
     compile (libraries.apache_commons_lang)
 
+    compile (libraries.jsoup)
+
     testRuntime junboProject(':configuration-data')
 }

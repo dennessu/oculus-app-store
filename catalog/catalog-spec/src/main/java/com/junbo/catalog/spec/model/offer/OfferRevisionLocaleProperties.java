@@ -9,6 +9,8 @@ package com.junbo.catalog.spec.model.offer;
 import com.junbo.catalog.spec.model.common.Images;
 import com.junbo.catalog.spec.model.common.Video;
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
+import com.junbo.common.jackson.annotation.XSSFreeRichText;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
@@ -18,10 +20,13 @@ import java.util.Map;
  * Locale properties for offer revision.
  */
 public class OfferRevisionLocaleProperties {
+    @XSSFreeString
     @ApiModelProperty(position = 1, required = true, value = "offer revision name")
     private String name;
+    @XSSFreeRichText
     @ApiModelProperty(position = 3, required = true, value = "long description")
     private String longDescription;
+    @XSSFreeRichText
     @ApiModelProperty(position = 4, required = true, value = "short description")
     private String shortDescription;
 

@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.spec.model.common;
 
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
@@ -14,10 +15,13 @@ import java.util.List;
  * Age rating.
  */
 public class AgeRating {
+    @XSSFreeString
     @ApiModelProperty(position = 1, required = true)
     private String category;
+    @XSSFreeString
     @ApiModelProperty(position = 2, required = true)
     private List<String> descriptors;
+    @XSSFreeString
     @ApiModelProperty(position = 3, required = true)
     private String certificate;
     @ApiModelProperty(position = 4, required = true)

@@ -7,6 +7,7 @@
 package com.junbo.catalog.spec.model.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
@@ -15,6 +16,7 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 public class Image {
     @ApiModelProperty(position = 1, required = true, value = "The ID of the image")
     private String id;
+    @XSSFreeString
     @ApiModelProperty(position = 2, required = true, value = "The location of the image")
     private String href;
     @ApiModelProperty(position = 3, required = true, value = "Size in bytes")
@@ -25,6 +27,7 @@ public class Image {
     @JsonProperty("y")
     @ApiModelProperty(position = 5, required = false, value = "The height of the image")
     private Integer height;
+    @XSSFreeString
     @ApiModelProperty(position = 6, required = true, value = "Alt text")
     private String altText;
 

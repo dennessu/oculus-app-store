@@ -14,6 +14,7 @@ import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.common.jackson.annotation.ItemId;
 import com.junbo.common.jackson.annotation.ItemRevisionId;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
@@ -34,13 +35,16 @@ public class ItemRevision extends BaseRevisionModel {
                     "all items that are team fortress (PC, MAC, LINUX, etc)")
     private String rollupPackageName;
 */
+    @XSSFreeString
     @ApiModelProperty(position = 3, required = true, value = "Used to identify the item (app), used mainly for android")
     private String packageName;
 
+    @XSSFreeString
     @ApiModelProperty(position = 4, required = true,
             value = " the name of the file when download from the Oculus platform, must have value when Item type is APP or DOWNLOADED_ADDITION, must be empty for other types")
     private String downloadName;
 
+    @XSSFreeString
     @JsonProperty("distributionChannel")
     @ApiModelProperty(position = 5, required = true, value = "An array of strings indicates where this item is capable of being sold",
         allowableValues = "INAPP, STORE")
@@ -66,15 +70,18 @@ public class ItemRevision extends BaseRevisionModel {
     @ApiModelProperty(position = 22, required = true, value = "Manufacturer's suggested retail price")
     private Price msrp;
 
+    @XSSFreeString
     @ApiModelProperty(position = 24, required = true, value = "supported input devices",
             allowableValues = "KEYBOARD, MOUSE")
     private List<String> supportedInputDevices;
+    @XSSFreeString
     @ApiModelProperty(position = 25, required = true, value = "User interaction modes",
             allowableValues = "SINGLE_USER, MULTI_USER, CO_OP")
     private List<String> userInteractionModes;
     @ApiModelProperty(position = 26, required = true, value = "Download Link", allowableValues = "PC, MAC, LINUX, ANDROID")
     private Map<String, Binary> binaries;
 
+    @XSSFreeString
     @ApiModelProperty(position = 27, required = true, value = "The platform name, for digital goods only",
             allowableValues = "PC, MAC, LINUX, ANDROID")
     private List<String> platforms;
