@@ -161,6 +161,9 @@ public class PriceTierServiceImpl implements PriceTierService {
                 }
             }
         }
+        if (!CollectionUtils.isEmpty(priceTier.getFutureExpansion())) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("futureExpansion", "you should leave this property empty"));
+        }
     }
 
     private void checkRequestNotNull(PriceTier priceTier) {

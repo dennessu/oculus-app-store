@@ -129,6 +129,9 @@ public abstract class AttributeServiceSupport<T extends Attribute> {
                 }
             }
         }
+        if (!CollectionUtils.isEmpty(attribute.getFutureExpansion())) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("futureExpansion", "you should leave this property empty"));
+        }
     }
 
     private void checkRequestNotNull(Object entity) {

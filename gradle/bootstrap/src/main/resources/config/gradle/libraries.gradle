@@ -147,6 +147,9 @@ ext {
             commons_discovery: 'commons-discovery:commons-discovery:0.2',
             wsdl4j: 'wsdl4j:wsdl4j:1.6.2',
 
+            //commons validator
+            commons_validator: "commons-validator:commons-validator:1.4.0",
+
             //aws java sdk
             aws_sdk: 'com.amazonaws:aws-java-sdk:1.8.2',
 

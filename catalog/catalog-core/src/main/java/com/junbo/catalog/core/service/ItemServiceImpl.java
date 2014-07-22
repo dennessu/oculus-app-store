@@ -21,6 +21,8 @@ import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.AppErrorException;
+import org.apache.commons.validator.routines.EmailValidator;
+import org.apache.commons.validator.routines.UrlValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
@@ -463,8 +465,23 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
                     if (StringUtils.isEmpty(properties.getName())) {
                         errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales." + locale + ".name"));
                     }
+                    if (!StringUtils.isEmpty(properties.getSupportEmail()) && !EmailValidator.getInstance().isValid(properties.getSupportEmail())) {
+                        errors.add(AppCommonErrors.INSTANCE.fieldInvalid("supportEmail", "invalid email format"));
+                    }
+                    if (!StringUtils.isEmpty(properties.getCommunityForumLink()) && !UrlValidator.getInstance().isValid(properties.getCommunityForumLink())) {
+                        errors.add(AppCommonErrors.INSTANCE.fieldInvalid("communityForumLink", "invalid link"));
+                    }
+                    if (!StringUtils.isEmpty(properties.getWebsite()) && !UrlValidator.getInstance().isValid(properties.getWebsite())) {
+                        errors.add(AppCommonErrors.INSTANCE.fieldInvalid("website", "invalid link"));
+                    }
+                    if (!StringUtils.isEmpty(properties.getManualDocument()) && !UrlValidator.getInstance().isValid(properties.getManualDocument())) {
+                        errors.add(AppCommonErrors.INSTANCE.fieldInvalid("mannualDocument", "invalid link"));
+                    }
                 }
             }
+        }
+        if (!CollectionUtils.isEmpty(revision.getFutureExpansion())) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("futureExpansion", "you should leave this property empty"));
         }
         // TODO: check other properties
     }

@@ -537,6 +537,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         if (!CollectionUtils.isEmpty(revision.getItems())) {
             validateItems(revision.getItems(), errors);
         }
+        if (!CollectionUtils.isEmpty(revision.getFutureExpansion())) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("futureExpansion", "you should leave this property empty"));
+        }
         // TODO: check other properties
     }
 

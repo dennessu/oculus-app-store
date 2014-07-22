@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.spec.model.attribute;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 
 import java.util.Map;
@@ -23,4 +24,5 @@ public interface Attribute {
     void setParentId(String parentId);
     Map<String, SimpleLocaleProperties> getLocales();
     void setLocales(Map<String, SimpleLocaleProperties> locales);
+    Map<String, JsonNode> getFutureExpansion();
 }
