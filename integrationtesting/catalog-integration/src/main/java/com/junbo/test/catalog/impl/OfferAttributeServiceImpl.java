@@ -15,14 +15,9 @@ import com.junbo.test.catalog.OfferAttributeService;
 import com.junbo.test.catalog.enums.CatalogOfferAttributeType;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
-import com.junbo.test.catalog.OfferAttributeService;
-import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.libs.IdConverter;
-import com.junbo.common.id.OfferAttributeId;
-import com.junbo.test.common.ConfigHelper;
-import com.junbo.common.model.Results;
+
 
 import java.util.HashMap;
 import java.util.List;
