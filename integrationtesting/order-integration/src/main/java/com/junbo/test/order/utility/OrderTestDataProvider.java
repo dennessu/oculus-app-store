@@ -385,7 +385,7 @@ public class OrderTestDataProvider {
             }
         }
 
-        orderClient.updateOrder(order);
+        orderClient.refundOrder(order);
     }
 
     public BigDecimal refundTotalAmount(String orderId) throws Exception {

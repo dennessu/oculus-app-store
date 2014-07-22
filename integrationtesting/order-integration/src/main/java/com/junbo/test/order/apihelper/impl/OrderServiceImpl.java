@@ -13,8 +13,12 @@ import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderEvent;
 import com.junbo.order.spec.model.Subledger;
 import com.junbo.test.common.ConfigHelper;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.Header;
 import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
@@ -31,8 +35,9 @@ import java.util.List;
 public class OrderServiceImpl extends HttpClientBase implements OrderService {
 
     private static String orderUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1");
-
     private LogHelper logger = new LogHelper(OrderServiceImpl.class);
+
+    private OAuthService oAuthTokenClient = OAuthServiceImpl.getInstance();
 
     private static OrderService instance;
 
@@ -43,9 +48,13 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
         return instance;
     }
 
+    private OrderServiceImpl() {
+        componentType = ComponentType.ORDER;
+    }
+
     @Override
-    protected FluentCaseInsensitiveStringsMap getHeader(boolean isRoleAPI) {
-        FluentCaseInsensitiveStringsMap headers = super.getHeader(false);
+    protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope) {
+        FluentCaseInsensitiveStringsMap headers = super.getHeader(isServiceScope);
         headers.add(Header.USER_IP, RandomFactory.getRandomIp());
         return headers;
     }
@@ -195,6 +204,33 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
         String orderId = IdConverter.idToHexString(order.getId());
 
         String responseBody = restApiCall(HTTPMethod.PUT, orderUrl + "orders/" + orderId, order, expectedResponseCode);
+
+        if (expectedResponseCode == 200) {
+            Order orderResult = new JsonMessageTranscoder().decode(
+                    new TypeReference<Order>() {
+                    }, responseBody
+            );
+
+            String responseOrderId = IdConverter.idToHexString(orderResult.getId());
+            Master.getInstance().addOrder(orderId, orderResult);
+
+            return responseOrderId;
+        }
+        return null;
+    }
+
+    @Override
+    public String refundOrder(Order order) throws Exception {
+        return refundOrder(order, 200);
+    }
+
+    @Override
+    public String refundOrder(Order order, int expectedResponseCode) throws Exception {
+        oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType);
+        String orderId = IdConverter.idToHexString(order.getId());
+
+        String responseBody = restApiCall(HTTPMethod.PUT, orderUrl + "orders/" + orderId, order,
+                expectedResponseCode, true);
 
         if (expectedResponseCode == 200) {
             Order orderResult = new JsonMessageTranscoder().decode(

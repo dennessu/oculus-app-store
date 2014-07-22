@@ -5,9 +5,15 @@
  */
 package com.junbo.test.catalog.impl;
 
-import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
-import com.junbo.test.catalog.enums.CatalogOfferAttributeType;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
+import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
+import com.junbo.common.id.OfferAttributeId;
+import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.common.model.Results;
+import com.junbo.langur.core.client.TypeReference;
+import com.junbo.test.catalog.OfferAttributeService;
+import com.junbo.test.catalog.enums.CatalogOfferAttributeType;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.catalog.OfferAttributeService;
 import com.junbo.common.json.JsonMessageTranscoder;

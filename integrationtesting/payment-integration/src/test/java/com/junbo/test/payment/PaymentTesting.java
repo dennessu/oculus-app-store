@@ -38,7 +38,7 @@ public class PaymentTesting extends BaseTestClass {
 
 
     @Property(
-            priority = Priority.Dailies,
+            priority = Priority.BVT,
             features = "POST /users/{userId}/payment-instruments",
             component = Component.Payment,
             owner = "Yunlongzhao",
@@ -84,7 +84,7 @@ public class PaymentTesting extends BaseTestClass {
     }
 
     @Property(
-            priority = Priority.Dailies,
+            priority = Priority.BVT,
             features = "GET /users/{userId}/payment-instruments/{paymentInstrumentId}",
             component = Component.Payment,
             owner = "Yunlongzhao",
@@ -159,7 +159,7 @@ public class PaymentTesting extends BaseTestClass {
 
 
     @Property(
-            priority = Priority.Dailies,
+            priority = Priority.BVT,
             features = "DELETE /users/{userId}/payment-instruments/{paymentInstrumentId}",
             component = Component.Payment,
             owner = "Yunlongzhao",
@@ -194,7 +194,7 @@ public class PaymentTesting extends BaseTestClass {
 
 
     @Property(
-            priority = Priority.Dailies,
+            priority = Priority.BVT,
             features = "GET /payment-instruments?userId={userId}",
             component = Component.Payment,
             owner = "Yunlongzhao",
@@ -228,7 +228,7 @@ public class PaymentTesting extends BaseTestClass {
     }
 
     @Property(
-            priority = Priority.Dailies,
+            priority = Priority.BVT,
             features = "POST /users/{userId}/payment-instruments",
             component = Component.Payment,
             owner = "Yunlongzhao",

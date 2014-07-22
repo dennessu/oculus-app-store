@@ -13,18 +13,20 @@ import com.junbo.common.model.Results;
 
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.ConfigHelper;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.apihelper.identity.RoleService;
 
 /**
  * @author Jason
- * time 4/29/2014
- * Role related API helper, including get/post/put/delete role.
+ *         time 4/29/2014
+ *         Role related API helper, including get/post/put/delete role.
  */
 public class RoleServiceImpl extends HttpClientBase implements RoleService {
 
     private final String roleURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "roles";
     private static RoleService instance;
+    private boolean isServiceScope = true;
 
     public static synchronized RoleService instance() {
         if (instance == null) {
@@ -34,6 +36,7 @@ public class RoleServiceImpl extends HttpClientBase implements RoleService {
     }
 
     private RoleServiceImpl() {
+        componentType = ComponentType.IDENTITY;
     }
 
     public Role postDefaultRole(String organizationId) throws Exception {
@@ -58,8 +61,9 @@ public class RoleServiceImpl extends HttpClientBase implements RoleService {
     }
 
     public Role postRole(Role role, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, roleURL, role, expectedResponseCode);
-        return new JsonMessageTranscoder().decode(new TypeReference<Role>() {}, responseBody);
+        String responseBody = restApiCall(HTTPMethod.POST, roleURL, role, expectedResponseCode, isServiceScope);
+        return new JsonMessageTranscoder().decode(new TypeReference<Role>() {
+        }, responseBody);
     }
 
     public Results<Role> getRoles() throws Exception {
@@ -67,8 +71,9 @@ public class RoleServiceImpl extends HttpClientBase implements RoleService {
     }
 
     public Results<Role> getRoles(int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.GET, roleURL, expectedResponseCode);
-        return new JsonMessageTranscoder().decode(new TypeReference<Results<Role>>() {}, responseBody);
+        String responseBody = restApiCall(HTTPMethod.GET, roleURL, expectedResponseCode, isServiceScope);
+        return new JsonMessageTranscoder().decode(new TypeReference<Results<Role>>() {
+        }, responseBody);
     }
 
     public Role getRole(String roleId) throws Exception {
@@ -77,8 +82,9 @@ public class RoleServiceImpl extends HttpClientBase implements RoleService {
 
     public Role getRole(String roleId, int expectedResponseCode) throws Exception {
         String url = roleURL + "/" + roleId;
-        String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
-        return new JsonMessageTranscoder().decode(new TypeReference<Role>() {}, responseBody);
+        String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode, isServiceScope);
+        return new JsonMessageTranscoder().decode(new TypeReference<Role>() {
+        }, responseBody);
     }
 
     public Role updateRole(Role role) throws Exception {
@@ -87,8 +93,9 @@ public class RoleServiceImpl extends HttpClientBase implements RoleService {
 
     public Role updateRole(Role role, int expectedResponseCode) throws Exception {
         String putUrl = roleURL + "/" + role.getId().toString();
-        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, role, expectedResponseCode);
-        return new JsonMessageTranscoder().decode(new TypeReference<Role>() {}, responseBody);
+        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, role, expectedResponseCode, isServiceScope);
+        return new JsonMessageTranscoder().decode(new TypeReference<Role>() {
+        }, responseBody);
     }
 
     public void deleteRole(String roleId) throws Exception {
@@ -97,7 +104,7 @@ public class RoleServiceImpl extends HttpClientBase implements RoleService {
 
     public void deleteRole(String roleId, int expectedResponseCode) throws Exception {
         String url = roleURL + "/" + roleId;
-        restApiCall(HTTPMethod.DELETE, url, expectedResponseCode);
+        restApiCall(HTTPMethod.DELETE, url, expectedResponseCode, isServiceScope);
     }
 
 }

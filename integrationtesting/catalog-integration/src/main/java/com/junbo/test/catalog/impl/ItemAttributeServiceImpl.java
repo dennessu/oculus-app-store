@@ -8,6 +8,8 @@ package com.junbo.test.catalog.impl;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.test.catalog.enums.CatalogItemAttributeType;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
+import com.junbo.test.common.ConfigHelper;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.catalog.ItemAttributeService;
 import com.junbo.common.json.JsonMessageTranscoder;
@@ -15,7 +17,6 @@ import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.common.id.ItemAttributeId;
-import com.junbo.test.common.ConfigHelper;
 import com.junbo.common.model.Results;
 
 import java.util.HashMap;
@@ -39,6 +40,7 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
     }
 
     private ItemAttributeServiceImpl() {
+        componentType = ComponentType.CATALOG;
     }
 
     public ItemAttribute getItemAttribute(String attributeId) throws Exception {

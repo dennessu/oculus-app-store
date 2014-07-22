@@ -18,6 +18,7 @@ import com.junbo.identity.spec.v1.model.User;
 import com.junbo.billing.spec.model.Balance;
 import com.junbo.order.spec.model.Order;
 import com.junbo.cart.spec.model.Cart;
+import com.junbo.test.common.Entities.enums.ComponentType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,6 +58,7 @@ public class Master {
     private Map<String, FulfilmentRequest> fulfilments;
 
     private Map<String, String> userAccessTokens;
+    private Map<ComponentType, String> serviceAccessTokens;
 
     public String getUserPassword() {
         return userPassword;
@@ -68,7 +70,7 @@ public class Master {
 
     private String userPassword;
 
-    private String identityAccessToken;
+
 
 
 
@@ -89,6 +91,7 @@ public class Master {
         this.initializeBalances();
         this.initializeFulfilmentItems();
         this.initializeUserAccessTokens();
+        this.initializeServiceAccessTokens();
     }
 
     public void initializeUsers() {
@@ -180,6 +183,13 @@ public class Master {
             this.userAccessTokens = new HashMap<>();
         }
         this.userAccessTokens.clear();
+    }
+
+    public void initializeServiceAccessTokens() {
+        if(this.serviceAccessTokens == null){
+            this.serviceAccessTokens = new HashMap<>();
+        }
+        this.serviceAccessTokens.clear();
     }
 
     public void initializeFulfilmentItems() {
@@ -289,6 +299,13 @@ public class Master {
         this.userAccessTokens.put(uid,accessToken);
     }
 
+    public void addServiceAccessToken(ComponentType componentType, String accessToken){
+        if(this.serviceAccessTokens.containsKey(componentType)){
+            this.serviceAccessTokens.remove(componentType);
+        }
+        this.serviceAccessTokens.put(componentType,accessToken);
+    }
+
     public User getUser(String userId) {
         return this.users.get(userId);
     }
@@ -343,6 +360,10 @@ public class Master {
 
     public String getUserAccessToken(String uid){
         return this.userAccessTokens.get(uid);
+    }
+
+    public String getServiceAccessToken(ComponentType componentType){
+        return this.serviceAccessTokens.get(componentType);
     }
 
     public Map<String, PaymentInstrument> getPaymentInstruments() {
@@ -445,14 +466,6 @@ public class Master {
             }
         }
         return null;
-    }
-
-    public String getIdentityAccessToken() {
-        return identityAccessToken;
-    }
-
-    public void setIdentityAccessToken(String identityAccessToken) {
-        this.identityAccessToken = identityAccessToken;
     }
 
 }

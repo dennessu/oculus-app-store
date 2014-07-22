@@ -7,6 +7,7 @@ package com.junbo.test.catalog.impl;
 
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.common.json.JsonMessageTranscoder;
@@ -45,6 +46,7 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
     }
 
     private ItemRevisionServiceImpl() {
+        componentType = ComponentType.CATALOG;
     }
 
     public ItemRevision getItemRevision(String revisionId) throws Exception {

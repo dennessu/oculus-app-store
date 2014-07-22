@@ -5,6 +5,7 @@
  */
 package com.junbo.test.catalog.impl;
 
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.common.apihelper.HttpClientBase;
@@ -42,6 +43,7 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
     }
 
     private ItemServiceImpl() {
+        componentType = ComponentType.CATALOG;
     }
 
     public Item getItem(String itemId) throws Exception {

@@ -11,6 +11,7 @@ import com.junbo.langur.core.client.TypeReference;
 import com.junbo.order.spec.model.OrderEvent;
 import com.junbo.test.common.ConfigHelper;
 
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.order.apihelper.OrderEventService;
@@ -36,6 +37,7 @@ public class OrderEventServiceImpl extends HttpClientBase implements OrderEventS
     }
 
     private OrderEventServiceImpl() {
+        componentType = ComponentType.ORDER;
     }
 
     public OrderEvent postOrderEvent(OrderEvent orderEvent) throws Exception {

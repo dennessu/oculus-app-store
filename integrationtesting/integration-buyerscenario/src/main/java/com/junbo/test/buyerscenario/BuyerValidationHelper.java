@@ -119,7 +119,7 @@ public class BuyerValidationHelper extends BaseValidationHelper {
                     expectedTotalTaxAmount = expectedTotalTaxAmount.add(orderItem.getTotalTax());
                     expectedTotalAmount = expectedTotalAmount.add(expectedOrderItemAmount);
 
-                    validateFulfilmentHistory(orderItem, getFulfilmentItemByOfferId(fulfilmentId, offerId));
+                   // validateFulfilmentHistory(orderItem, getFulfilmentItemByOfferId(fulfilmentId, offerId));
                     break;
                 }
             }

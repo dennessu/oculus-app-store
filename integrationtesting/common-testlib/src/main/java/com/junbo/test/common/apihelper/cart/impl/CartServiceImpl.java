@@ -10,6 +10,7 @@ import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.model.Results;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.ConfigHelper;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.apihelper.cart.CartService;
 import com.junbo.test.common.blueprint.Master;
@@ -42,6 +43,7 @@ public class CartServiceImpl extends HttpClientBase implements CartService {
     }
 
     private CartServiceImpl() {
+        componentType = ComponentType.CATALOG;
         asyncClient = new AsyncHttpClient(new AsyncHttpClientConfig.Builder().build());
     }
 

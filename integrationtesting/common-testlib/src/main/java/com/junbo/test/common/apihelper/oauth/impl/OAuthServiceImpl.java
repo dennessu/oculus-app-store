@@ -38,6 +38,10 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         return instance;
     }
 
+    private OAuthServiceImpl() {
+        componentType = ComponentType.IDENTITY;
+    }
+
     @Override
     protected FluentCaseInsensitiveStringsMap getHeader(boolean isRoleAPI) {
         FluentCaseInsensitiveStringsMap headers = new FluentCaseInsensitiveStringsMap();
@@ -75,10 +79,9 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
                 }, responseBody
         );
 
-        Master.getInstance().setIdentityAccessToken(accessTokenResponse.getAccessToken());
+        Master.getInstance().addServiceAccessToken(componentType, accessTokenResponse.getAccessToken());
 
         return accessTokenResponse.getAccessToken();
-
     }
 
     @Override

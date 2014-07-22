@@ -5,6 +5,7 @@
  */
 package com.junbo.test.common.apihelper;
 
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.blueprint.Master;
 import com.ning.http.client.FluentCaseInsensitiveStringsMap;
 import com.ning.http.client.providers.netty.NettyResponse;
@@ -35,6 +36,8 @@ public abstract class HttpClientBase {
 
     public static String contentType = "application/json";
 
+    protected ComponentType componentType;
+
     protected String uid = "";
 
     /**
@@ -60,19 +63,15 @@ public abstract class HttpClientBase {
         }
     }
 
-    protected FluentCaseInsensitiveStringsMap getHeader(boolean isRoleAPI) {
+    protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope) {
         FluentCaseInsensitiveStringsMap headers = new FluentCaseInsensitiveStringsMap();
         headers.add(Header.CONTENT_TYPE, contentType);
         String uid = Master.getInstance().getCurrentUid();
-        if (isRoleAPI) {
-            headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getIdentityAccessToken());
+        if (isServiceScope) {
+            headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getServiceAccessToken(componentType));
         } else if (uid != null && Master.getInstance().getUserAccessToken(uid) != null) {
             headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getUserAccessToken(uid));
-        } else {
-            headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getIdentityAccessToken());
         }
-
-        //headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getIdentityAccessToken());
 
         //for further header, we can set dynamic value from properties here
         return headers;
@@ -82,15 +81,28 @@ public abstract class HttpClientBase {
         byte[] bytes = new JsonMessageTranscoder().encode(t);
         String requestBody = new String(bytes);
 
-        return restApiCall(httpMethod, restUrl, requestBody);
+        return restApiCall(httpMethod, restUrl, requestBody, false);
+    }
+
+    protected <T> String restApiCall(HTTPMethod httpMethod, String restUrl, T t, boolean isServiceScope)
+            throws Exception {
+        byte[] bytes = new JsonMessageTranscoder().encode(t);
+        String requestBody = new String(bytes);
+
+        return restApiCall(httpMethod, restUrl, requestBody, isServiceScope);
     }
 
     protected <T> String restApiCall(HTTPMethod httpMethod, String restUrl, T t,
                                      int expectedResponseCode) throws Exception {
+        return restApiCall(httpMethod, restUrl, t, expectedResponseCode, false);
+    }
+
+    protected <T> String restApiCall(HTTPMethod httpMethod, String restUrl, T t,
+                                     int expectedResponseCode, boolean isServiceScope) throws Exception {
         byte[] bytes = new JsonMessageTranscoder().encode(t);
         String requestBody = new String(bytes);
 
-        return restApiCall(httpMethod, restUrl, requestBody, expectedResponseCode);
+        return restApiCall(httpMethod, restUrl, requestBody, expectedResponseCode, isServiceScope);
     }
 
     protected String restApiCall(HTTPMethod httpMethod, String restUrl) throws Exception {
@@ -98,12 +110,22 @@ public abstract class HttpClientBase {
     }
 
     protected String restApiCall(HTTPMethod httpMethod, String restUrl, String requestBody) throws Exception {
-        return restApiCall(httpMethod, restUrl, requestBody, 200);
+        return restApiCall(httpMethod, restUrl, requestBody, 200, false);
+    }
+
+    protected String restApiCall(HTTPMethod httpMethod, String restUrl, String requestBody,
+                                 boolean isServiceScope) throws Exception {
+        return restApiCall(httpMethod, restUrl, requestBody, 200, isServiceScope);
     }
 
     protected String restApiCall(HTTPMethod httpMethod, String restUrl, String requestBody,
                                  int expectedResponseCode) throws Exception {
-        return restApiCall(httpMethod, restUrl, requestBody, expectedResponseCode, null);
+        return restApiCall(httpMethod, restUrl, requestBody, expectedResponseCode, null, false);
+    }
+
+    protected String restApiCall(HTTPMethod httpMethod, String restUrl, String requestBody,
+                                 int expectedResponseCode, boolean isServiceScope) throws Exception {
+        return restApiCall(httpMethod, restUrl, requestBody, expectedResponseCode, null, isServiceScope);
     }
 
     protected String restApiCall(HTTPMethod httpMethod, String restUrl, int expectedResponseCode) throws Exception {
@@ -111,19 +133,14 @@ public abstract class HttpClientBase {
     }
 
     protected String restApiCall(HTTPMethod httpMethod, String restUrl, String requestBody,
-                                 int expectedResponseCode, HashMap<String, List<String>> httpParameters) throws Exception {
-        boolean isRoleAPI = false;
-
-        if (restUrl.contains("/v1/roles") || restUrl.contains("/v1/role-assignments")) {
-            isRoleAPI = true;
-        }
-
+                                 int expectedResponseCode, HashMap<String, List<String>> httpParameters,
+                                 boolean isServiceScope) throws Exception {
         switch (httpMethod) {
             case PUT:
             case POST: {
                 Request req = new RequestBuilder(httpMethod.getHttpMethod())
                         .setUrl(restUrl)
-                        .setHeaders(getHeader(isRoleAPI))
+                        .setHeaders(getHeader(isServiceScope))
                         .setBody(requestBody)
                         .build();
 
@@ -156,7 +173,7 @@ public abstract class HttpClientBase {
 
                 Request req = new RequestBuilder("GET")
                         .setUrl(restUrl)
-                        .setHeaders(getHeader(isRoleAPI))
+                        .setHeaders(getHeader(isServiceScope))
                         .build();
 
                 logger.LogRequest(req);
@@ -170,7 +187,7 @@ public abstract class HttpClientBase {
                     String redirectUrl = nettyResponse.getHeaders().get("Location").get(0);
                     req = new RequestBuilder("GET")
                             .setUrl(redirectUrl)
-                            .setHeaders(getHeader(isRoleAPI))
+                            .setHeaders(getHeader(isServiceScope))
                             .build();
 
                     logger.LogRequest(req);
@@ -190,7 +207,7 @@ public abstract class HttpClientBase {
             case DELETE: {
                 Request req = new RequestBuilder(httpMethod.getHttpMethod())
                         .setUrl(restUrl)
-                        .setHeaders(getHeader(isRoleAPI))
+                        .setHeaders(getHeader(isServiceScope))
                         .build();
 
                 logger.LogRequest(req);
@@ -210,6 +227,14 @@ public abstract class HttpClientBase {
             default:
                 throw new TestException(String.format("Unsupported http method found: %s", httpMethod.getHttpMethod()));
         }
+
+    }
+
+
+    protected String restApiCall(HTTPMethod httpMethod, String restUrl, String requestBody,
+                                 int expectedResponseCode, HashMap<String, List<String>> httpParameters)
+            throws Exception {
+        return restApiCall(httpMethod, restUrl, requestBody, expectedResponseCode, httpParameters, false);
     }
 
     protected String readFileContent(String resourceLocation) throws Exception {

@@ -305,7 +305,7 @@ public class RefundTesting extends BaseOrderTestClass {
             }
     )
     @Test
-    public void testRefundPreOrder() throws Exception {
+    public void testRefundDigitalPreOrder() throws Exception {
         Country country = Country.DEFAULT;
         Currency currency = Currency.DEFAULT;
     }

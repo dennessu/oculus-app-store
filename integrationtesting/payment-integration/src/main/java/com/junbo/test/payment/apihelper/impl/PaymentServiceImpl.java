@@ -12,7 +12,11 @@ import com.junbo.ewallet.spec.model.CreditRequest;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.test.common.ConfigHelper;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
@@ -27,8 +31,9 @@ import java.util.List;
 public class PaymentServiceImpl extends HttpClientBase implements PaymentService {
 
     private static String paymentInstrumentUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1");
-
     private LogHelper logger = new LogHelper(PaymentServiceImpl.class);
+
+    private OAuthService oAuthTokenClient = OAuthServiceImpl.getInstance();
 
     private static PaymentService instance;
 
@@ -97,8 +102,10 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
 
     @Override
     public void creditWallet(CreditRequest creditRequest) throws Exception {
+        componentType = ComponentType.EWALLET;
+        oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType);
         String responseBody = restApiCall(HTTPMethod.POST, paymentInstrumentUrl +
-                "wallets/credit", creditRequest, 200);
+                "wallets/credit", creditRequest, 200, true);
     }
 
     @Override

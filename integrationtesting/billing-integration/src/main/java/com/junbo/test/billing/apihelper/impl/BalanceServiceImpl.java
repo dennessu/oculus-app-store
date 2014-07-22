@@ -9,7 +9,11 @@ import com.junbo.billing.spec.model.Balance;
 import com.junbo.common.model.Results;
 import com.junbo.test.billing.apihelper.BalanceService;
 import com.junbo.test.common.ConfigHelper;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.common.json.JsonMessageTranscoder;
@@ -26,6 +30,8 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
     private static String balanceUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1");
     private static BalanceService instance;
     private String userId;
+    private OAuthService oAuthTokenClient = OAuthServiceImpl.getInstance();
+
 
     public void setUserId(String userId) {
         this.userId = userId;
@@ -45,6 +51,10 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
             instance = new BalanceServiceImpl();
         }
         return instance;
+    }
+
+    private BalanceServiceImpl() {
+        componentType = ComponentType.BILLING;
     }
 
     /*
@@ -69,7 +79,8 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
     @Override
     public String postBalance(String uid, Balance balance, int expectedResponseCode) throws Exception {
         setUserId(uid);
-        String responseBody = restApiCall(HTTPMethod.POST, balanceUrl + "balances", balance);
+        oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType.BILLING);
+        String responseBody = restApiCall(HTTPMethod.POST, balanceUrl + "balances", balance, true);
 
         Balance balanceResult =
                 new JsonMessageTranscoder().decode(
@@ -90,8 +101,9 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
     @Override
     public String getBalanceByBalanceId(String uid, String balanceId, int expectedResponseCode) throws Exception {
         setUserId(uid);
+        oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType.BILLING);
         String responseBody = restApiCall(HTTPMethod.GET, balanceUrl +
-                "balances/" + balanceId, expectedResponseCode);
+                "balances/" + balanceId, expectedResponseCode, true);
 
         Balance balanceResult =
                 new JsonMessageTranscoder().decode(
@@ -112,6 +124,7 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
     @Override
     public String quoteBalance(String uid, Balance balance, int expectedResponseCode) throws Exception {
         this.setUserId(uid);
+        oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType.BILLING);
         String responseBody = restApiCall(HTTPMethod.POST, balanceUrl + "balances/quote", balance);
 
         responseBody = responseBody.replace("\"self\" : null", fakeBalanceId);
@@ -135,6 +148,7 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
     @Override
     public List<String> getBalancesByOrderId(String orderId, int expectedResponseCode) throws Exception {
         //setUserId(uid);
+        oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType.BILLING);
         String responseBody = restApiCall(HTTPMethod.GET, balanceUrl +
                 "balances?orderId=" + orderId, expectedResponseCode);
 

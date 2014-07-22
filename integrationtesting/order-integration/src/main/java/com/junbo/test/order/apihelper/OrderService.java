@@ -42,6 +42,10 @@ public interface OrderService {
 
     String updateOrder(Order order, int expectedResponseCode) throws Exception;
 
+    String refundOrder(Order order) throws Exception;
+
+    String refundOrder(Order order, int expectedResponseCode) throws Exception;
+
     String updateOrderBillingStatus(OrderEvent orderEvent) throws Exception;
 
     String updateOrderBillingStatus(OrderEvent orderEvent, int expectedResponseCode) throws Exception;

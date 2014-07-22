@@ -17,7 +17,19 @@ package com.junbo.test.common.Entities.enums;
 public enum ComponentType {
     IDENTITY("identity"),
     CATALOG("catalog"),
-    COMMERCE("commerce");
+    COMMERCE("commerce"),
+    BILLING("billing"),
+    CART("cart"),
+    EMAIL("email"),
+    ENTITLEMENT("entitlement"),
+    EWALLET("ewallet"),
+    FULFILMENT("fulfilment"),
+    RATING("rating"),
+    TOKEN("token"),
+    OAUTH("oauth"),
+    PAYMENT("payment"),
+    ORDER("order"),
+    SUBSCRIPTION("subscription");
 
     private String name;
 

@@ -49,6 +49,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     }
 
     private UserServiceImpl() {
+        componentType = ComponentType.IDENTITY;
     }
 
     public String PostUser(String userName, String pwd, String emailAddress) throws Exception {
@@ -59,7 +60,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         userForPost.setStatus("ACTIVE");
         userForPost.setUsername(userName);
 
-        String responseBody = restApiCall(HTTPMethod.POST, identityServerURL, userForPost, 201);
+        String responseBody = restApiCall(HTTPMethod.POST, identityServerURL, userForPost, 201, true);
         User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {
         },
                 responseBody);
@@ -210,7 +211,8 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         params.put("type", "PASSWORD");
         params.put("value", password);
         String requestBody = JSONObject.toJSONString(params);
-        restApiCall(HTTPMethod.POST, identityServerURL + "/" + uid + "/" + "change-credentials", requestBody, 201);
+        restApiCall(HTTPMethod.POST, identityServerURL + "/" + uid + "/" + "change-credentials",
+                requestBody, 201, true);
 
         return password;
     }
@@ -338,9 +340,9 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         for (User user : userGet.getItems()) {
             Master.getInstance().addUser(IdConverter.idToHexString(user.getId()), user);
             if (Master.getInstance().getUserAccessToken(IdConverter.idToHexString(user.getId())) == null) {
-                if(Master.getInstance().getUserPassword() !=null && !Master.getInstance().getUserPassword().isEmpty())
-                oAuthTokenClient.postUserAccessToken(IdConverter.idToHexString(user.getId()),
-                        Master.getInstance().getUserPassword());
+                if (Master.getInstance().getUserPassword() != null && !Master.getInstance().getUserPassword().isEmpty())
+                    oAuthTokenClient.postUserAccessToken(IdConverter.idToHexString(user.getId()),
+                            Master.getInstance().getUserPassword());
                 else {
                     oAuthTokenClient.postUserAccessToken(IdConverter.idToHexString(user.getId()), userPassword);
                 }

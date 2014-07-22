@@ -21,13 +21,13 @@ import com.junbo.common.id.UserId;
 
 /**
  * @author Jason
- * time 6/10/2014
- * Organization related API helper, including get/post/put/delete organization.
+ *         time 6/10/2014
+ *         Organization related API helper, including get/post/put/delete organization.
  */
 public class OrganizationServiceImpl extends HttpClientBase implements OrganizationService {
 
-        private final String organizationUrl = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "organizations";
-        private static OrganizationService instance;
+    private final String organizationUrl = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "organizations";
+    private static OrganizationService instance;
 
     public static synchronized OrganizationService instance() {
         if (instance == null) {
@@ -69,7 +69,8 @@ public class OrganizationServiceImpl extends HttpClientBase implements Organizat
 
     public Organization postOrganization(Organization organization, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, organizationUrl, organization, expectedResponseCode);
-        return new JsonMessageTranscoder().decode(new TypeReference<Organization>() {}, responseBody);
+        return new JsonMessageTranscoder().decode(new TypeReference<Organization>() {
+        }, responseBody);
     }
 
 }

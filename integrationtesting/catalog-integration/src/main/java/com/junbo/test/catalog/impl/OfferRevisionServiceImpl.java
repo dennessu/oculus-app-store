@@ -12,6 +12,7 @@ import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.test.catalog.enums.EventActionType;
 import com.junbo.test.catalog.enums.EventType;
 import com.junbo.test.common.ConfigHelper;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.catalog.OfferRevisionService;
@@ -56,6 +57,7 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
     }
 
     private OfferRevisionServiceImpl() {
+        componentType = ComponentType.CATALOG;
     }
 
     public OfferRevision getOfferRevision(String offerRevisionId) throws Exception {

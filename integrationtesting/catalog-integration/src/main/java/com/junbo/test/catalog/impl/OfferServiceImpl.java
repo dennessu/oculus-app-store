@@ -23,6 +23,7 @@ import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.catalog.enums.EventActionType;
 import com.junbo.test.catalog.enums.EventType;
 import com.junbo.test.common.ConfigHelper;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.common.apihelper.identity.UserService;
@@ -82,6 +83,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     }
 
     private OfferServiceImpl() {
+        componentType = ComponentType.CATALOG;
     }
 
     public Offer getOffer(String offerId) throws Exception {
