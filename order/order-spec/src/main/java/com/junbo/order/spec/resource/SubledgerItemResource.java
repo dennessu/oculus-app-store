@@ -27,10 +27,15 @@ import java.util.List;
 public interface SubledgerItemResource {
 
     @POST
-    @RouteBy("subledgerItem.getSubledger()")
+    @RouteBy("subledgerItem.getOrderItem()")
     Promise<SubledgerItem> createSubledgerItem(SubledgerItem subledgerItem);
 
     @GET
     @RouteBy("orderItemId")
     Promise<List<SubledgerItem>> getSubledgerItemsByOrderItemId(@QueryParam("orderItemId") OrderItemId orderItemId);
+
+    @POST
+    @Path("/aggregate")
+    @RouteBy("subledgerItem.getOrderItem()")
+    Promise<SubledgerItem> aggregateSubledgerItem(SubledgerItem subledgerItem);
 }

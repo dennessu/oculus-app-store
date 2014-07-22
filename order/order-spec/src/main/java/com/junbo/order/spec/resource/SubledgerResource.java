@@ -28,6 +28,10 @@ import javax.ws.rs.core.MediaType;
 @RestResource
 public interface SubledgerResource {
 
+    @POST
+    @RouteBy("subledger.getSeller()")
+    Promise<Subledger> createSubledger(Subledger subledger);
+
     @PUT
     @Path("/{subledgerId}")
     @RouteBy("subledgerId")

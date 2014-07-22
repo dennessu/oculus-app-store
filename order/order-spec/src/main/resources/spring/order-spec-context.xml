@@ -7,4 +7,9 @@
           parent="baseClientProxy" abstract="true">
         <property name="target" value="${clientproxy.subledger.url}"/>
     </bean>
+
+    <bean id="subledgerResourceClientProxy" class="com.junbo.order.spec.resource.proxy.SubledgerResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.subledger.url}"/>
+    </bean>
 </beans>

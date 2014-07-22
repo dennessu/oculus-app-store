@@ -6,6 +6,8 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
+import com.junbo.order.core.impl.common.TransactionHelper
+import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.core.impl.subledger.SubledgerHelper
 import com.junbo.order.spec.model.OrderItem
@@ -42,12 +44,25 @@ class SubledgerCreateRefundItemAction implements Action {
     @Resource(name = 'orderFacadeContainer')
     FacadeContainer facadeContainer
 
+    @Resource(name = 'orderTransactionHelper')
+    TransactionHelper transactionHelper
+
     @Override
     @Transactional
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def serviceContext = context.orderServiceContext
 
+        transactionHelper.executeInNewTransaction {
+            innerExecute(serviceContext)
+        }.syncRecover { Throwable ex ->
+            LOGGER.error('name=SubledgerCreateRefundItemError, orderId={}', IdFormatter.encodeId(serviceContext.order.getId()), ex)
+        }.syncThen {
+            return null
+        }
+    }
+
+    private Promise innerExecute(OrderServiceContext serviceContext) {
         return builder.getCurrency(serviceContext).then { com.junbo.identity.spec.v1.model.Currency currency ->
             Promise.each(serviceContext.refundedOrderItems) { OrderItem orderItem ->
                 subledgerItemResource.getSubledgerItemsByOrderItemId(orderItem.getId()).then { List<SubledgerItem> subledgerItems ->
@@ -93,8 +108,6 @@ class SubledgerCreateRefundItemAction implements Action {
                     }
                 }
             }
-        }.syncRecover { Throwable ex ->
-            LOGGER.error('name=SubledgerCreateItemError, orderId={}', IdFormatter.encodeId(serviceContext.order.getId()), ex)
         }.syncThen {
             return null
         }

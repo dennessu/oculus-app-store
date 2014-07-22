@@ -103,6 +103,11 @@
         <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 
+    <bean id="order.subledgerClient" class="com.junbo.order.spec.resource.proxy.SubledgerResourceClientProxy"
+          parent="subledgerResourceClientProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
+    </bean>
+
     <!-- cache -->
     <bean id="orderCacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
         <property name="configLocation">

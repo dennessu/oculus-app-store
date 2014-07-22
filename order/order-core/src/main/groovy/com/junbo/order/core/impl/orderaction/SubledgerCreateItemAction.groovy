@@ -6,6 +6,8 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.model.OrderOfferRevision
+import com.junbo.order.core.impl.common.TransactionHelper
+import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.core.impl.subledger.SubledgerHelper
 import com.junbo.order.spec.model.Order
@@ -38,6 +40,9 @@ class SubledgerCreateItemAction implements Action, InitializingBean {
     @Resource(name = 'orderServiceContextBuilder')
     OrderServiceContextBuilder builder
 
+    @Resource(name = 'orderTransactionHelper')
+    TransactionHelper transactionHelper
+
     SubledgerItemStatus initialStatus
 
     @Override
@@ -45,8 +50,17 @@ class SubledgerCreateItemAction implements Action, InitializingBean {
     Promise<ActionResult> execute(ActionContext actionContext) {
         def context = ActionUtils.getOrderActionContext(actionContext)
         def serviceContext = context.orderServiceContext
-        def order = serviceContext.order
+        transactionHelper.executeInNewTransaction {
+            innerExecute(serviceContext)
+        }.syncRecover { Throwable ex ->
+            LOGGER.error('name=SubledgerCreateItemError, orderId={}', IdFormatter.encodeId(serviceContext.order.getId()), ex)
+        }.syncThen {
+            return null
+        }
+    }
 
+    private Promise innerExecute(OrderServiceContext serviceContext) {
+        def order = serviceContext.order
         return builder.getOffers(serviceContext).syncThen {
             Promise.each(serviceContext.order.orderItems) { OrderItem orderItem ->
                 if (orderItem.developerRevenue == null || orderItem.developerRevenue == BigDecimal.ZERO) {
@@ -72,8 +86,6 @@ class SubledgerCreateItemAction implements Action, InitializingBean {
 
                 subledgerItemResource.createSubledgerItem(subledgerItem)
             }
-        }.syncRecover { Throwable ex ->
-            LOGGER.error('name=SubledgerCreateItemError, orderId={}', IdFormatter.encodeId(order.getId()), ex)
         }.syncThen {
             return null
         }

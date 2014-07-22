@@ -9,7 +9,6 @@ import com.junbo.order.spec.model.Subledger
 import com.junbo.order.spec.model.SubledgerParam
 import com.junbo.order.spec.resource.SubledgerResource
 import groovy.transform.CompileStatic
-import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
@@ -22,6 +21,12 @@ class SubledgerResourceImpl implements SubledgerResource {
 
     @Resource(name = 'orderSubledgerService')
     SubledgerService subledgerService
+
+    @Override
+    Promise<Subledger> createSubledger(Subledger subledger) {
+        Subledger created = subledgerService.createSubledger(subledger)
+        return Promise.pure(created)
+    }
 
     @Override
     Promise<Subledger> putSubledger(SubledgerId subledgerId, Subledger subledger) {
