@@ -590,48 +590,54 @@ class AESModeOfOperation(object):
 
 def encryptData(key, data, mode=AESModeOfOperation.modeOfOperation["CBC"]):
     """encrypt `data` using `key`
-
     `key` should be a hex encoded string.
-
-    returned cipher is a hex encoded string
-
+    returned cipher is a hex encoded string, format:
+      IV#ENCRYPTEDTEXT
     """
     key = map(ord, key.decode('hex'))
     if mode == AESModeOfOperation.modeOfOperation["CBC"]:
         data = append_PKCS7_padding(data)
     keysize = len(key)
     assert keysize in AES.keySize.values(), 'invalid key size: %s' % keysize
-    iv = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    # create a new iv using random data
+    iv = [ord(i) for i in os.urandom(16)]
     moo = AESModeOfOperation()
     (mode, length, ciph) = moo.encrypt(data, mode, key, keysize, iv)
 
-    return (''.join( [ "%02X" % x for x in ciph ] ).strip())
+    return ''.join( [ "%02X" % x for x in iv ] ) + "#" + ''.join( [ "%02X" % x for x in ciph ] )
 
 def decryptData(key, data, mode=AESModeOfOperation.modeOfOperation["CBC"]):
     """decrypt `data` using `key`
-
     `key` should be a hex encoded string.
-
-    `data` should be a hex encoded string
-
+    `data` should be a hex encoded string, format:
+      #1. ENCRYPTEDTEXT
+      #2. IV#ENCRYPTEDTEXT
     """
-
     key = map(ord, key.decode('hex'))
     keysize = len(key)
     assert keysize in AES.keySize.values(), 'invalid key size: %s' % keysize
-    iv = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    data = map(ord, data.decode('hex'))
+
+    tokens = data.split('#')
+    if len(tokens) == 1:
+        iv = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        encryptedText = map(ord, tokens[0].decode('hex'))
+    elif len(tokens) == 2:
+        iv = map(ord, tokens[0].decode('hex'))
+        encryptedText = map(ord, tokens[1].decode('hex'))
+    else:
+        print("invalid encryptedtext format. Must be 'encryptedText' or 'iv#encryptedTest'")
+        exit(2)
     moo = AESModeOfOperation()
-    decr = moo.decrypt(data, None, mode, key, keysize, iv)
+    decr = moo.decrypt(encryptedText, None, mode, key, keysize, iv)
     if mode == AESModeOfOperation.modeOfOperation["CBC"]:
         decr = strip_PKCS7_padding(decr)
     return decr
 
 def generateRandomKey(keysize):
     """Generates a key from random data of length `keysize`.
-    
+
     The returned key is a hex encoded string.
-    
+
     """
     if keysize not in (16, 24, 32):
         emsg = 'Invalid keysize, %s. Should be one of (16, 24, 32).'
@@ -646,9 +652,13 @@ def usage():
     print("Examples:")
     print("  AESCipher.py encrypt D58BA755FF96B35A6DABA7298F7A8CE2 '#Bugsfor$'")
     print("  AESCipher.py decrypt D58BA755FF96B35A6DABA7298F7A8CE2 14D4B2F001010E812696EA78F634437D")
+    print("  AESCipher.py decrypt D58BA755FF96B35A6DABA7298F7A8CE2 DE6B1BE077CA45DD7DD160877B7C4F06#164AEE612E21BC8AB5A2D36C62EF201A")
     print("Notes:")
     print("  key is hex encoded string, string length can be 32, 48, or 64")
-    print("  encrypted value is also hex encoded string")
+    print("  encrypted value is also hex encoded string, it has two formats:")
+    print("    #1. ENCRYPTEDTEXT")
+    print("    #2. IV#ENCRYPTEDTEXT")
+    print("  decrypt support both, encrypt would only generate #2 format")
     exit(1)
 
 if __name__ == "__main__":
