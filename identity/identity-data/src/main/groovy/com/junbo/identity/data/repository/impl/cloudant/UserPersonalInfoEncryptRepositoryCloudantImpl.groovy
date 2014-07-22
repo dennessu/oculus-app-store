@@ -174,27 +174,27 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
 
         return hashUserPersonalInfoRepository.searchByHashValue(hash.generateHash(name)).then {
             List<HashUserPersonalInfo> userPersonalInfos ->
-            if (CollectionUtils.isEmpty(userPersonalInfos)) {
-                return Promise.pure(null)
-            }
-
-            List<UserPersonalInfo> infos = new ArrayList<>()
-            return Promise.each(userPersonalInfos) { HashUserPersonalInfo personalInfo ->
-                return get(personalInfo.getId()).then { UserPersonalInfo userPersonalInfo ->
-                    if (userPersonalInfo == null ||
-                            userPersonalInfo.type != UserPersonalInfoType.NAME.toString()) {
-                        return Promise.pure(null)
-                    }
-
-                    UserName nameObj = (UserName) JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserName)
-                    if (name.contains(nameObj.givenName) || name.contains(nameObj.familyName)) {
-                        infos.add(userPersonalInfo)
-                    }
+                if (CollectionUtils.isEmpty(userPersonalInfos)) {
                     return Promise.pure(null)
                 }
-            }.then {
-                return Promise.pure(infos)
-            }
+
+                List<UserPersonalInfo> infos = new ArrayList<>()
+                return Promise.each(userPersonalInfos) { HashUserPersonalInfo personalInfo ->
+                    return get(personalInfo.getId()).then { UserPersonalInfo userPersonalInfo ->
+                        if (userPersonalInfo == null ||
+                                userPersonalInfo.type != UserPersonalInfoType.NAME.toString()) {
+                            return Promise.pure(null)
+                        }
+
+                        UserName nameObj = (UserName) JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserName)
+                        if (name.contains(nameObj.givenName) || name.contains(nameObj.familyName)) {
+                            infos.add(userPersonalInfo)
+                        }
+                        return Promise.pure(null)
+                    }
+                }.then {
+                    return Promise.pure(infos)
+                }
         }
     }
 
