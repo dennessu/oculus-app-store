@@ -92,8 +92,8 @@ def readConfig(env):
     return envConf
 
 def readDbs():
-    filename = 'changelogs/cloudant_db.json'
-    verbose("Reading cloudant master configuration: " + filename)
+    filename = 'changelogs/couchdb.json'
+    verbose("Reading couchdb master configuration: " + filename)
     return readJsonFile(filename)
 
 def executeDbCommand(command, env, dbPrefix):

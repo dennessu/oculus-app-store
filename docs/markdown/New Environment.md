@@ -29,12 +29,6 @@ Get the encrypted database password
 ```
 Name it DATABASE_PASSWORD_ENCRYPTED
 
-1. Generate master key
-```
-./scripts/keygen.sh
-```
-Name it MASTER_KEY
-
 1. Generate JKS used to encrypt the master key
 ```
 echo generate key for jks
@@ -199,6 +193,7 @@ identity.conf.teleSign.secretKey=
 
 oauth.core.recaptcha.public.key=
 oauth.core.recaptcha.private.key=
+oauth.crypto.key=
 
 authorization.lib.service.clientSecret=
 billing.clientproxy.service.clientSecret=

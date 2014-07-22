@@ -2,7 +2,7 @@
   "scopes" : [ "identity", "identity.pii", "scope.manage", "catalog", "developer", "api.manage", "openid", "scope.info",
    "client.info", "commerce", "offline", "consent.manage", "api.info" ],
   "client_id" : "client",
-  "client_secret" : "secret",
+  "client_secret" : "32F093ECCCBCA2170D9C959D339EBFBE#2BE2B193EB80DB5342E61BC6F472DE30",
   "client_name" : "client",
   "redirect_uris" : [ "http://*", "http://localhost/login", "https://*" ],
   "default_redirect_uri" : "http://localhost/login",

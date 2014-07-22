@@ -20,7 +20,7 @@
     "rating.service",
     "subscription.service" ],
   "client_id" : "service",
-  "client_secret" : "43D6B08A543C06582C6021295F4A9C56",
+  "client_secret" : "33E387D39EBC73D19118471BD5CB9FE6#8D92DD3D9FAA680F112A471D08693BD9C77F33D31887DAF03D331061FE8EE9592E898E3077EEDA913A2B78D13EF0DD90",
   "client_name" : "service",
   "default_scopes" : [ "identity.service", "catalog.service", "commerce.service", "scope.manage", "api.manage", "client.register", "identity.admin" ],
   "response_types" : [ "ID_TOKEN", "CODE", "TOKEN" ],

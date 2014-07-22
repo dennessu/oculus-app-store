@@ -183,10 +183,11 @@ The second package apphost-crypto contains the binary to run on crypto app serve
   * `10.24.34.10`
   * `10.24.38.10`
 
-Prepare the crypto.core.key used to encrypt passwords in the configuration files. The following script assumes $CRYPTO_KEY is the key.
+Prepare the crypto.core.key used to encrypt passwords in the configuration files. The following script assumes $CRYPTO_KEY is the key and $OAUTH_CRYPTO_KEY is the key for encrypting OAuth client secret.
 ```
 echo environment=ppe > /etc/silkcloud/configuration.properties
 echo crypto.core.key=$CRYPTO_KEY >> /etc/silkcloud/configuration.properties
+echo oauth.crypto.key=$OAUTH_CRYPTO_KEY >> /etc/silkcloud/configuration.properties
 chmod 600 /etc/silkcloud/configuration.properties
 ```
 
@@ -364,31 +365,15 @@ cd apphost-identity-0.0.1-SNAPSHOT
 ./startup.sh
 ```
 
-### Load Initial Data
-  * `10.24.32.10`
-
-Run the following command on bastion servers using silkcloud:
-```
-scp /home/$YOUR_USER/apphost-dataloader-0.0.1-SNAPSHOT.zip 10.24.32.10:/var/silkcloud
-```
-Run the following command on crypto servers:
-```
-cd /var/silkcloud
-unzip -o apphost-dataloader-0.0.1-SNAPSHOT.zip
-cd apphost-dataloader-0.0.1-SNAPSHOT
-./dataloader.sh
-```
-
-### Load Crypto Key
+### Generate Master Key
   * `10.24.32.10`
 Run the following command on crypto servers:
 ```
 cd /var/silkcloud/apphost-dataloader-0.0.1-SNAPSHOT
-./dataloader.sh imasterkey
+./dataloader.sh masterkey
 ```
-When prompted, paste in MASTER_KEY.
 
-### Sync Crypto Keys in SQL
+### Sync Master Keys in SQL
   * 10.24.34.10
   * 10.24.38.10
 
@@ -422,9 +407,25 @@ Now compare two servers:
 ```
 diff <(ssh $CRYPTO_SERVER_1 pg_dump crypto ) <(ssh $CRYPTO_SERVER_2 pg_dump crypto )
 ```
-If the diff didn't show any output, remove the backup file:
+If the diff didn't show any output, the sync is completed successfully. Backup the `backup1.sql.gz` and put it in a secure place to recover master key when needed. Then remove the file from the server:
 ```
-rm backup.sql.gz
+rm backup1.sql.gz
+rm backup2.sql.gz
+```
+
+### Load Initial Data
+  * `10.24.32.10`
+
+Run the following command on bastion servers using silkcloud:
+```
+scp /home/$YOUR_USER/apphost-dataloader-0.0.1-SNAPSHOT.zip 10.24.32.10:/var/silkcloud
+```
+Run the following command on crypto servers:
+```
+cd /var/silkcloud
+unzip -o apphost-dataloader-0.0.1-SNAPSHOT.zip
+cd apphost-dataloader-0.0.1-SNAPSHOT
+./dataloader.sh
 ```
 
 # Appendix
