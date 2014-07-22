@@ -8,6 +8,7 @@ package com.junbo.catalog.common.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.junbo.common.cloudant.model.CloudantQueryResult;
 import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.ErrorDetail;
@@ -57,5 +58,16 @@ public class Utils {
             errorDetails.addAll(error.error().getDetails());
         }
         return AppCommonErrors.INSTANCE.fieldInvalid(errorDetails.toArray(new ErrorDetail[0]));
+    }
+
+    public static <T>  List<T> getDocs(List<CloudantQueryResult.ResultObject> resultObjects) {
+        List<T> results = new ArrayList<>();
+        if (resultObjects != null) {
+            for (CloudantQueryResult.ResultObject object : resultObjects) {
+                results.add((T)object.getDoc());
+            }
+        }
+
+        return results;
     }
 }

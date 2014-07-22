@@ -134,7 +134,9 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
                 LOGGER.error("Error getting item-revisions. ", exception);
                 throw exception;
             }
-            return itemRevisionRepo.getRevisions(options.getItemIds(), options.getTimestamp());
+            List<ItemRevision> revisions = itemRevisionRepo.getRevisions(options.getItemIds(), options.getTimestamp());
+            options.setTotal(Long.valueOf(revisions.size()));
+            return revisions;
         } else {
             return itemRevisionRepo.getRevisions(options);
         }

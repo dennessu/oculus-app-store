@@ -7,7 +7,6 @@
 package com.junbo.catalog.spec.model.common;
 
 import com.junbo.catalog.common.util.Constants;
-import org.springframework.util.StringUtils;
 
 import javax.ws.rs.QueryParam;
 
@@ -15,24 +14,14 @@ import javax.ws.rs.QueryParam;
  * PageableGetOptions.
  */
 public class PageableGetOptions {
-    @QueryParam("start")
-    private Integer start;
+    @QueryParam("cursor")
+    private String cursor;
 
-    @QueryParam("size")
+    @QueryParam("count")
     private Integer size;
 
-    @QueryParam("bookmark")
-    private String bookmark;
-
-    private String nextBookmark;
-
-    public Integer getStart() {
-        return start;
-    }
-
-    public void setStart(Integer start) {
-        this.start = start;
-    }
+    private String nextCursor;
+    private Long total;
 
     public Integer getSize() {
         return size;
@@ -42,12 +31,20 @@ public class PageableGetOptions {
         this.size = size;
     }
 
-    public String getBookmark() {
-        return bookmark;
+    public String getCursor() {
+        return cursor;
     }
 
-    public void setBookmark(String bookmark) {
-        this.bookmark = bookmark;
+    public void setCursor(String cursor) {
+        this.cursor = cursor;
+    }
+
+    public String getNextCursor() {
+        return nextCursor;
+    }
+
+    public void setNextCursor(String nextCursor) {
+        this.nextCursor = nextCursor;
     }
 
     public Integer getValidSize() {
@@ -58,27 +55,27 @@ public class PageableGetOptions {
     }
 
     public Integer getValidStart() {
-        if (start == null || start < 0) {
+        try{
+            Integer start = Integer.valueOf(cursor);
+            if (start == null || start < 0) {
+                return Constants.DEFAULT_PAGING_START;
+            }
+            return start;
+        } catch (NumberFormatException e) {
             return Constants.DEFAULT_PAGING_START;
         }
-        return start;
+
     }
 
     public Integer nextStart() {
         return getValidStart() + getValidSize();
     }
 
-    public String getNextBookmark() {
-        return nextBookmark;
+    public Long getTotal() {
+        return total;
     }
 
-    public void setNextBookmark(String nextBookmark) {
-        this.nextBookmark = nextBookmark;
-    }
-
-    public void nextPage() {
-        if (!StringUtils.isEmpty(nextBookmark)) {
-            setBookmark(nextBookmark);
-        }
+    public void setTotal(Long total) {
+        this.total = total;
     }
 }

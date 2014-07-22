@@ -6,10 +6,12 @@
 
 package com.junbo.catalog.db.repo.impl.cloudant;
 
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.repo.OfferRepository;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OffersGetOptions;
 import com.junbo.common.cloudant.CloudantClient;
+import com.junbo.common.cloudant.model.CloudantQueryResult;
 import com.junbo.common.cloudant.model.CloudantSearchResult;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -54,12 +56,13 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
                     offers.add(offer);
                 }
             }
+            options.setTotal(Long.valueOf(offers.size()));
         } else if (!StringUtils.isEmpty(options.getQuery())) {
             CloudantSearchResult<Offer> searchResult =
-                    search("search", options.getQuery(), options.getValidSize(), options.getBookmark()).get();
+                    search("search", options.getQuery(), options.getValidSize(), options.getCursor()).get();
             offers = searchResult.getResults();
-            options.setNextBookmark(searchResult.getBookmark());
-            options.setStart(null);
+            options.setNextCursor(searchResult.getBookmark());
+            options.setTotal(searchResult.getTotal());
         } else if (options.getCategory() != null || options.getPublished() != null || options.getOwnerId() != null) {
             StringBuilder sb = new StringBuilder();
             if (options.getCategory() != null) {
@@ -78,13 +81,15 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
                 sb.append("ownerId:'").append(options.getOwnerId().getValue()).append("'");
             }
             CloudantSearchResult<Offer> searchResult =
-                    search("search", sb.toString(), options.getValidSize(), options.getBookmark()).get();
+                    search("search", sb.toString(), options.getValidSize(), options.getCursor()).get();
             offers = searchResult.getResults();
-            options.setNextBookmark(searchResult.getBookmark());
-            options.setStart(null);
+            options.setNextCursor(searchResult.getBookmark());
+            options.setTotal(searchResult.getTotal());
         } else {
-            offers = queryView("by_offerId", null, options.getValidSize(), options.getValidStart(), false).get();
-            options.setNextBookmark(null);
+            CloudantQueryResult queryResult = queryViewSync("by_offerId", null, options.getValidSize(), options.getValidStart(), false, true);
+            offers = Utils.getDocs(queryResult.getRows());
+            options.setNextCursor(null);
+            options.setTotal(queryResult.getTotalRows());
         }
 
         return offers;

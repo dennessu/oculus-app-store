@@ -103,6 +103,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         List<Offer> offers;
         if (options.getItemId() != null) {
             offers = getOffersByItemId(options.getItemId());
+            options.setTotal(Long.valueOf(offers.size()));
         } else {
             offers = offerRepo.getOffers(options);
         }

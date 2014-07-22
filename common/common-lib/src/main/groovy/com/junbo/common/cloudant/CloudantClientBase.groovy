@@ -208,12 +208,14 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
                         }.collect { CloudantQueryResult.ResultObject result ->
                             return result.doc
                         },
-                        bookmark: searchResult.bookmark
+                        bookmark: searchResult.bookmark,
+                        total: searchResult.totalRows
                 )
             }
 
             return new CloudantSearchResult<T>(
-                    results: []
+                    results: [],
+                    total: 0L
             )
         }
     }

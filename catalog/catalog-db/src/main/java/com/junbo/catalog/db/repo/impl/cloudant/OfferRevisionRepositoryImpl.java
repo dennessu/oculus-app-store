@@ -51,6 +51,7 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
                     offerRevisions.add(revision);
                 }
             }
+            options.setTotal(Long.valueOf(offerRevisions.size()));
         } else if (!CollectionUtils.isEmpty(options.getOfferIds())) {
             for (String offerId : options.getOfferIds()) {
                 List<OfferRevision> revisions = queryView("by_offerId", offerId.toString()).get();
@@ -65,6 +66,7 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
                 }
                 offerRevisions.addAll(revisions);
             }
+            options.setTotal(Long.valueOf(offerRevisions.size()));
         } else if (!StringUtils.isEmpty(options.getStatus())){
             offerRevisions = queryView("by_status", options.getStatus().toUpperCase(),
                     options.getValidSize(), options.getValidStart(), false).get();

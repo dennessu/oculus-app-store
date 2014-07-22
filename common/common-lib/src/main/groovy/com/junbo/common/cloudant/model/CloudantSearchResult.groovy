@@ -11,4 +11,5 @@ package com.junbo.common.cloudant.model
 class CloudantSearchResult<T> {
     String bookmark
     List<T> results
+    Long total
 }

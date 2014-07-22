@@ -75,7 +75,7 @@ public class OfferIndexJob {
 
             }
 
-            options.nextPage();
+            options.setCursor(options.getNextCursor());
             offers = offerService.getOffers(options);
         }
     }

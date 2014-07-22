@@ -72,11 +72,11 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
         if (options.getStatus() != null) {
             builder.queryParam("status", options.getStatus().toUpperCase());
         }
-        builder.queryParam("size", options.getValidSize());
-        if (!StringUtils.isEmpty(options.getNextBookmark())) {
-            builder.queryParam("bookmark", options.getNextBookmark());
+        builder.queryParam("count", options.getValidSize());
+        if (!StringUtils.isEmpty(options.getNextCursor())) {
+            builder.queryParam("cursor", options.getNextCursor());
         } else {
-            builder.queryParam("start", options.nextStart());
+            builder.queryParam("cursor", options.nextStart());
         }
 
         return builder.toTemplate();

@@ -50,6 +50,7 @@ public class ItemResourceImpl implements ItemResource {
         Link nextLink = new Link();
         nextLink.setHref(buildNextUrl(options));
         results.setNext(nextLink);
+        results.setTotal(options.getTotal());
 
         return Promise.pure(results);
     }
@@ -69,11 +70,11 @@ public class ItemResourceImpl implements ItemResource {
         if (!StringUtils.isEmpty(options.getOwnerId())) {
             builder.queryParam("developerId", options.getOwnerId());
         }
-        builder.queryParam("size", options.getValidSize());
-        if (!StringUtils.isEmpty(options.getNextBookmark())) {
-            builder.queryParam("bookmark", options.getNextBookmark());
+        builder.queryParam("count", options.getValidSize());
+        if (!StringUtils.isEmpty(options.getNextCursor())) {
+            builder.queryParam("cursor", options.getNextCursor());
         } else {
-            builder.queryParam("start", options.nextStart());
+            builder.queryParam("cursor", options.nextStart());
         }
 
         return builder.toTemplate();

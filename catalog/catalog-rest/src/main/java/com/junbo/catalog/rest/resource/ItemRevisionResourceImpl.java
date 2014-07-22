@@ -64,6 +64,7 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
         Link nextLink = new Link();
         nextLink.setHref(buildNextUrl(options));
         results.setNext(nextLink);
+        results.setTotal(options.getTotal());
         return Promise.pure(results);
     }
 
@@ -77,10 +78,10 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
             builder.queryParam("status", options.getStatus().toUpperCase());
         }
         builder.queryParam("size", options.getValidSize());
-        if (!StringUtils.isEmpty(options.getNextBookmark())) {
-            builder.queryParam("bookmark", options.getNextBookmark());
+        if (!StringUtils.isEmpty(options.getNextCursor())) {
+            builder.queryParam("cursor", options.getNextCursor());
         } else {
-            builder.queryParam("start", options.nextStart());
+            builder.queryParam("cursor", options.nextStart());
         }
 
         return builder.toTemplate();

@@ -6,10 +6,12 @@
 
 package com.junbo.catalog.db.repo.impl.cloudant;
 
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.repo.ItemRepository;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemsGetOptions;
 import com.junbo.common.cloudant.CloudantClient;
+import com.junbo.common.cloudant.model.CloudantQueryResult;
 import com.junbo.common.cloudant.model.CloudantSearchResult;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -56,12 +58,13 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
                     items.add(item);
                 }
             }
+            options.setTotal(Long.valueOf(items.size()));
         } else if (!StringUtils.isEmpty(options.getQuery())) {
             CloudantSearchResult<Item> searchResult =
-                    searchSync("search", options.getQuery(), options.getValidSize(), options.getBookmark());
+                    searchSync("search", options.getQuery(), options.getValidSize(), options.getCursor());
             items = searchResult.getResults();
-            options.setNextBookmark(searchResult.getBookmark());
-            options.setStart(null);
+            options.setNextCursor(searchResult.getBookmark());
+            options.setTotal(searchResult.getTotal());
         } else if (options.getGenre() != null
                 || !StringUtils.isEmpty(options.getType())
                 || options.getOwnerId() != null
@@ -96,13 +99,15 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
                 sb.append("hostItemId:'").append(options.getHostItemId().replace("'", "")).append("'");
             }
             CloudantSearchResult<Item> searchResult =
-                    searchSync("search", sb.toString(), options.getValidSize(), options.getBookmark());
+                    searchSync("search", sb.toString(), options.getValidSize(), options.getCursor());
             items = searchResult.getResults();
-            options.setNextBookmark(searchResult.getBookmark());
-            options.setStart(null);
+            options.setNextCursor(searchResult.getBookmark());
+            options.setTotal(searchResult.getTotal());
         } else {
-            items = queryViewSync("by_itemId", null, options.getValidSize(), options.getValidStart(), false);
-            options.setNextBookmark(null);
+            CloudantQueryResult queryResult = queryViewSync("by_itemId", null, options.getValidSize(), options.getValidStart(), false, true);
+            items = Utils.getDocs(queryResult.getRows());
+            options.setNextCursor(null);
+            options.setTotal(queryResult.getTotalRows());
         }
 
         return items;

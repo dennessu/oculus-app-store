@@ -52,11 +52,11 @@ public class PriceTierResourceImpl implements PriceTierResource {
         }
 
         UriBuilder builder = UriBuilder.fromPath(IdUtil.getResourcePathPrefix()).path("price-tiers");
-        builder.queryParam("size", options.getValidSize());
-        if (!StringUtils.isEmpty(options.getNextBookmark())) {
-            builder.queryParam("bookmark", options.getNextBookmark());
+        builder.queryParam("count", options.getValidSize());
+        if (!StringUtils.isEmpty(options.getNextCursor())) {
+            builder.queryParam("cursor", options.getNextCursor());
         } else {
-            builder.queryParam("start", options.nextStart());
+            builder.queryParam("cursor", options.nextStart());
         }
 
         return builder.toTemplate();

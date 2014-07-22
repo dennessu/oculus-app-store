@@ -50,6 +50,7 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
                     itemRevisions.add(revision);
                 }
             }
+            options.setTotal(Long.valueOf(itemRevisions.size()));
         } else if (!CollectionUtils.isEmpty(options.getItemIds())) {
             for (String itemId : options.getItemIds()) {
                 List<ItemRevision> revisions = queryView("by_itemId", itemId).get();
@@ -62,13 +63,17 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
                         }
                     }
                 }
+                options.setTotal(Long.valueOf(revisions.size()));
                 itemRevisions.addAll(revisions);
             }
         } else if (!StringUtils.isEmpty(options.getStatus())){
-            itemRevisions = queryView("by_status", options.getStatus().toUpperCase(),
-                    options.getValidSize(), options.getValidStart(), false).get();
+            CloudantQueryResult queryResult = queryViewSync("by_status", options.getStatus().toUpperCase(), options.getValidSize(), options.getValidStart(), false, true);
+            itemRevisions = Utils.getDocs(queryResult.getRows());
+            options.setTotal(queryResult.getTotalRows());
         } else {
-            itemRevisions = queryView("by_itemId", null, options.getValidSize(), options.getValidStart(), false).get();
+            CloudantQueryResult queryResult = queryViewSync("by_itemId", null, options.getValidSize(), options.getValidStart(), false, true);
+            itemRevisions = Utils.getDocs(queryResult.getRows());
+            options.setTotal(queryResult.getTotalRows());
         }
 
         return itemRevisions;

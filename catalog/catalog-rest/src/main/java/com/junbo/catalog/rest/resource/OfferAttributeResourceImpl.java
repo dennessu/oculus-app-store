@@ -55,11 +55,11 @@ public class OfferAttributeResourceImpl implements OfferAttributeResource {
         if (options.getAttributeType() != null) {
             builder.queryParam("type", options.getAttributeType());
         }
-        builder.queryParam("size", options.getValidSize());
-        if (!StringUtils.isEmpty(options.getNextBookmark())) {
-            builder.queryParam("bookmark", options.getNextBookmark());
+        builder.queryParam("count", options.getValidSize());
+        if (!StringUtils.isEmpty(options.getNextCursor())) {
+            builder.queryParam("cursor", options.getNextCursor());
         } else {
-            builder.queryParam("start", options.nextStart());
+            builder.queryParam("cursor", options.nextStart());
         }
 
         return builder.toTemplate();
