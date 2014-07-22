@@ -63,7 +63,7 @@ class UserDataHandler extends BaseDataHandler {
         String username = userData.username
         String password = userData.password
         String email = userData.email
-        String phone = userData.phone
+        //String phone = userData.phone
         CountryId cor = userData.cor
         UserAddressData userAddressData = userData.address
         UserNameData userNameData = userData.name
@@ -110,12 +110,14 @@ class UserDataHandler extends BaseDataHandler {
                 UserPersonalInfo newEmailPii = userPersonalInfoResource.create(emailPii).get()
 
                 //Phone Pii
+                /*
                 UserPersonalInfo phonePii = new UserPersonalInfo(
                         userId: created.id as UserId,
                         type: 'PHONE',
                         value: ObjectMapperProvider.instance().valueToTree(new PhoneNumber(info: phone))
                 )
                 UserPersonalInfo newPhonePii = userPersonalInfoResource.create(phonePii).get()
+                */
 
                 //Address Pii
                 UserPersonalInfo addressPii = new UserPersonalInfo(
@@ -139,9 +141,9 @@ class UserDataHandler extends BaseDataHandler {
                         type: 'NAME',
                         value: ObjectMapperProvider.instance().valueToTree(new UserName(
                                 givenName: userNameData.givenName,
-                                middleName: userNameData.middleName,
+                                //middleName: userNameData.middleName,
                                 familyName: userNameData.familyName,
-                                nickName: userNameData.nickName
+                                //nickName: userNameData.nickName
                         ))
                 )
                 UserPersonalInfo newNamePii = userPersonalInfoResource.create(namePii).get()
@@ -151,10 +153,12 @@ class UserDataHandler extends BaseDataHandler {
                         value: newEmailPii.id as UserPersonalInfoId
                 )]
 
+                /*
                 created.phones = [new UserPersonalInfoLink(
                         isDefault: true,
                         value: newPhonePii.id as UserPersonalInfoId
                 )]
+                */
 
                 created.addresses = [new UserPersonalInfoLink(
                         isDefault: true,

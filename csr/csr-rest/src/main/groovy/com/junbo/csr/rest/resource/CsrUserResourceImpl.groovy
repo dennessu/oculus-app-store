@@ -196,6 +196,6 @@ class CsrUserResourceImpl implements CsrUserResource {
         // move user from pending group to tier group
         identityService.updateUserGroupMembership(csrInvitationCode.userGroupId, csrInvitationCode.userId, csrInvitationCode.inviteGroupId)
 
-        return Promise.pure(Response.noContent().build())
+        return Promise.pure(Response.ok().entity('You have joined OculusVR CSR group').build())
     }
 }
