@@ -107,6 +107,11 @@
         <property name="persistentClass" value="com.junbo.payment.db.entity.payment.TrackingUuidEntity"/>
     </bean>
 
+    <bean id="settlementDetailDao"
+          class="com.junbo.payment.db.dao.payment.SettlementDetailDao" parent="paymentGenericDao">
+        <property name="persistentClass" value="com.junbo.payment.db.entity.payment.SettlementDetailEntity"/>
+    </bean>
+
     <!-- sql repositories -->
     <bean id="sqlCreditCardDetailRepository" class="com.junbo.payment.db.repo.sql.CreditCardDetailRepositorySqlImpl">
         <property name="creditCardPaymentInstrumentDao" ref="ccPaymentInstrumentDao"/>
@@ -219,6 +224,11 @@
 
     <bean id="paymentPiTypeRepository" class="com.junbo.payment.db.repository.PITypeRepository" parent="paymentDomainDataRepository">
         <property name="dao" ref="paymentInstrumentTypeDao"/>
+    </bean>
+
+    <bean id="settlementDetailRepository" class="com.junbo.payment.db.repository.SettlementDetailRepository">
+        <property name="paymentMapper" ref="com.junbo.payment.db.mapper.PaymentMapperImpl"/>
+        <property name="settlementDetailDao" ref="settlementDetailDao"/>
     </bean>
 
     <!-- repository facade -->

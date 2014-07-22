@@ -28,9 +28,9 @@
 				  external_token                    varchar(64)             null,
 				  resource_age                      bigint              not null,
                   created_time                      timestamp           not null,
-                  created_by                        varchar(50)             null,
+                  created_by                        varchar(64)             null,
                   updated_time                      timestamp               null,
-                  updated_by                        varchar(50)             null,
+                  updated_by                        varchar(64)             null,
 
                   constraint payment_instrument_id_pk primary key (payment_instrument_id)
                 );
@@ -47,9 +47,9 @@
 				  issue_country                     varchar(16)             null,
 				  resource_age                      bigint              not null,
                   created_time                      timestamp           not null,
-                  created_by                        varchar(50)             null,
+                  created_by                        varchar(64)             null,
                   updated_time                      timestamp               null,
-                  updated_by                        varchar(50)             null,
+                  updated_by                        varchar(64)             null,
 
                   constraint cc_payment_instrument_id_pk primary key (payment_instrument_id)
                 );
@@ -62,7 +62,7 @@
                   currency_code                   char(3)          not null,
                   net_amount                      numeric          not null,
                   country_code                    char(3)              null,
-				  business_descriptor             varchar(50)          null,
+				  business_descriptor             varchar(64)          null,
                   payment_instrument_id           bigint           not null,
                   payment_provider_id             int              not null,
                   merchant_account_id             int                  null,
@@ -71,9 +71,9 @@
 				  billing_ref_id                  varchar(128)     not null,
 				  resource_age                    bigint           not null,
                   created_time                    timestamp        not null,
-                  created_by                      varchar(50)          null,
+                  created_by                      varchar(64)          null,
                   updated_time                    timestamp            null,
-                  updated_by                      varchar(50)          null,
+                  updated_by                      varchar(64)          null,
 
                   constraint payment_id_pk primary key (payment_id)
                 );
@@ -90,9 +90,9 @@
 				  response                   json             not null,
 				  resource_age               bigint           not null,
                   created_time               timestamp        not null,
-                  created_by                 varchar(50)          null,
+                  created_by                 varchar(64)          null,
                   updated_time               timestamp            null,
-                  updated_by                 varchar(50)          null,
+                  updated_by                 varchar(64)          null,
 
                   constraint payment_event_id_pk primary key (payment_event_id)
                 );
@@ -107,9 +107,9 @@
                    response                        json                   NULL,
                    resource_age                    bigint             not null,
                    created_time                    timestamp          not null,
-                   created_by                      varchar(50)            null,
+                   created_by                      varchar(64)            null,
                    updated_time                    timestamp              null,
-                   updated_by                      varchar(50)            null,
+                   updated_by                      varchar(64)            null,
 
                    constraint tracking_uuid_id primary key (tracking_uuid_id)
             );
@@ -122,9 +122,9 @@
                   property_value             varchar(64)      not null,
                   resource_age               bigint           not null,
                   created_time               timestamp        not null,
-                  created_by                 varchar(50)          null,
+                  created_by                 varchar(64)          null,
                   updated_time               timestamp            null,
-                  updated_by                 varchar(50)          null,
+                  updated_by                 varchar(64)          null,
 
                   constraint payment_property_id_pk primary key (payment_property_id)
                 );
@@ -132,14 +132,14 @@
             create table merchant_account
                 (
                   merchant_account_id            int                not null,
-				  merchant_account_ref           varchar(50)        not null,
+				  merchant_account_ref           varchar(64)        not null,
 				  tenant_id                      int                    null,
                   payment_provider_id            smallint           not null,
                   payment_instrument_type_id     smallint               null,
                   country_code                   char(3)                null,
                   currency_code                  char(3)            not null,
                   created_time                   date               not null,
-                  created_by                     varchar(50)            null,
+                  created_by                     varchar(64)            null,
 
                   constraint merchant_account_id_pk primary key (merchant_account_id)
                 );
@@ -147,12 +147,12 @@
             create table payment_provider
                 (
                   payment_provider_id           smallint            not null,
-                  payment_provider_name         varchar(50)         not null,
+                  payment_provider_name         varchar(64)         not null,
                   payment_instrument_type_id    smallint            not null,
                   country_code                  char(3)                 null,
                   currency_code                 char(3)                 null,
                   created_time                  date                not null,
-                  created_by                    varchar(50)         not null,
+                  created_by                    varchar(64)         not null,
 
                   constraint payment_provider_id_pk primary key (payment_provider_id)
                 );
@@ -166,10 +166,45 @@
 				  authorizable                      varchar(16)             null,
 				  defaultable                       varchar(16)             null,
                   created_time                      date                not null,
-                  created_by                        varchar(50)         not null,
+                  created_by                        varchar(64)         not null,
 
                   constraint payment_instrument_type_id_pk primary key (payment_instrument_type_id)
                 );
+
+                create table settlement_batch_file
+                (
+                  batch_index                       bigint              not null,
+				  company_account                   varchar(32)             null,
+				  merchant_account                  varchar(32)             null,
+				  psp_reference                     varchar(32)             null,
+				  merchant_reference                varchar(32)             null,
+				  payment_method                    varchar(16)             null,
+                  creation_date                     date                    null,
+                  time_zone                         varchar(32)             null,
+                  type                              varchar(64)             null,
+                  modification_reference            varchar(64)         not null,
+                  gross_currency                    varchar(64)             null,
+                  gross_debit                       varchar(64)             null,
+                  gross_credit                      varchar(64)             null,
+                  exchange_rate                     varchar(64)             null,
+                  net_currency                      varchar(64)             null,
+                  net_debit                         varchar(64)             null,
+                  net_credit                        varchar(64)             null,
+                  commission                        varchar(64)             null,
+                  markup                            varchar(64)             null,
+                  scheme_fees                       varchar(64)             null,
+                  interchange                       varchar(64)             null,
+                  payment_method_variant            varchar(64)             null,
+                  acquirer                          varchar(64)             null,
+                  modification_merchant_reference   varchar(64)             null,
+                  split_settlement                  varchar(64)             null,
+                  status                            varchar(16)             null,
+
+                  constraint settlement_batch_file_pk primary key (psp_reference)
+                );
+
+                CREATE INDEX idx_batch_index ON settlement_batch_file(batch_index);
+
         ]]>
         </sql>
     </changeSet>

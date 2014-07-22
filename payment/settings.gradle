@@ -9,3 +9,4 @@ include 'payment-rest'
 include 'payment-clientproxy'
 
 include 'payment-app'
+include 'payment-jobs'

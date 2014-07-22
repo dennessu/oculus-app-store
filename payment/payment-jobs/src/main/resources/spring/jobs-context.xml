@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="com.junbo.payment.db.*"/>
+
+    <!-- Payment Batch File Scheduler -->
+    <bean id="paymentBatchSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="schedulerName" value="paymentBatchScheduler" />
+        <property name="autoStartup" value="${payment.jobs.batch.scheduler.start}" />
+        <property name="triggers">
+            <list>
+                <ref bean="paymentBatchJobTrigger"/>
+            </list>
+        </property>
+        <property name="applicationContextSchedulerContextKey" value="applicationContext" />
+    </bean>
+
+    <!--Job Trigger -->
+    <bean id="paymentBatchJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean" >
+        <property name="jobDetail" ref="paymentBatchFileProcessing" />
+        <property name="cronExpression" value="${payment.jobs.batch.cronexpression}" />
+    </bean>
+
+    <!-- File Process Job -->
+    <bean id="paymentBatchFileProcessing" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="fileProcessingJob" />
+        <property name="targetMethod" value="execute" />
+    </bean>
+
+    <bean id="fileProcessingJob" class="com.junbo.payment.jobs.file.FileProcessingJob">
+        <property name="fileProcessor" ref="fileProcessor"/>
+    </bean>
+
+    <bean id="fileProcessor" class="com.junbo.payment.jobs.file.FileProcessor">
+        <property name="concurrentCount" value="${payment.jobs.batch.concurrentCount}" />
+        <property name="batchSize" value="${payment.jobs.batch.batchSize}" />
+        <property name="timeLimitMinutes" value="${payment.jobs.batch.timeLimitMinutes}" />
+        <property name="batchDirectory" value="${payment.jobs.batch.batchDirectory}"/>
+        <property name="transactionManager" ref="transactionManager" />
+        <property name="settlementDetailRepo" ref="settlementDetailRepository"/>
+    </bean>
+
+    <!-- Payment Reconcile Job Scheduler -->
+    <bean id="paymentReconcileSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="schedulerName" value="paymentReconcileScheduler" />
+        <property name="autoStartup" value="${payment.jobs.reconcile.scheduler.start}" />
+        <property name="triggers">
+            <list>
+                <ref bean="paymentReconcileJobTrigger"/>
+            </list>
+        </property>
+        <property name="applicationContextSchedulerContextKey" value="applicationContext" />
+    </bean>
+
+    <!--Job Trigger -->
+    <bean id="paymentReconcileJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean" >
+        <property name="jobDetail" ref="paymentReconcileProcessor" />
+        <property name="cronExpression" value="${payment.jobs.reconcile.cronexpression}" />
+    </bean>
+
+    <!-- reconcile Job -->
+    <bean id="paymentReconcileProcessor" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="reconcileJob" />
+        <property name="targetMethod" value="execute" />
+    </bean>
+
+    <bean id="reconcileJob" class="com.junbo.payment.jobs.reconcile.ReconcileJob">
+        <property name="reconcileProcessor" ref="reconcileProcessor"/>
+    </bean>
+
+    <bean id="reconcileProcessor" class="com.junbo.payment.jobs.reconcile.ReconcileProcessor">
+        <property name="concurrentCount" value="${payment.jobs.reconcile.concurrentCount}" />
+        <property name="processCount" value="${payment.jobs.reconcile.processCount}" />
+        <property name="timeLimitMinutes" value="${payment.jobs.reconcile.timeLimitMinutes}" />
+        <property name="transactionManager" ref="transactionManager" />
+        <property name="settlementDetailRepo" ref="settlementDetailRepository"/>
+        <property name="paymentTransactionService" ref="paymentService"/>
+    </bean>
+
+</beans>

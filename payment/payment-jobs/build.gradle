@@ -1,0 +1,10 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile 'org.quartz-scheduler:quartz:2.2.1'
+    compile 'org.apache.poi:poi:3.10-FINAL'
+    compile junboProject(':payment-spec')
+    compile junboProject(':payment-db')
+    compile junboProject(':payment-common')
+    compile junboProject(':payment-core')
+}

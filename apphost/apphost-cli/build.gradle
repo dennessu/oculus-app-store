@@ -38,6 +38,7 @@ dependencies {
     compile junboProject(':token-rest')
     compile junboProject(':csr-rest')
     compile junboProject(':drm-rest')
+    compile junboProject(':payment-jobs')
     // more to add
 }
 

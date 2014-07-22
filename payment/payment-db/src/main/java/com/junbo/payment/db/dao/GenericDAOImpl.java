@@ -36,7 +36,7 @@ public class GenericDAOImpl<T, ID extends Serializable> {
     }
 
     //TODO: move all the configuration data to config DB and remove the generic DAO here
-    private Session currentSession() {
+    public Session currentSession() {
         ShardScope shardScope = new ShardScope(0, 0);
         try {
             return sessionFactory.getCurrentSession();

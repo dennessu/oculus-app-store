@@ -10,13 +10,11 @@ import com.junbo.oom.core.Mapper;
 import com.junbo.oom.core.Mapping;
 import com.junbo.oom.core.MappingContext;
 import com.junbo.oom.core.Mappings;
-import com.junbo.payment.db.entity.payment.PaymentEventEntity;
-import com.junbo.payment.db.entity.payment.PaymentPropertyEntity;
-import com.junbo.payment.db.entity.payment.PaymentTransactionEntity;
-import com.junbo.payment.db.entity.payment.TrackingUuidEntity;
+import com.junbo.payment.db.entity.payment.*;
 import com.junbo.payment.db.entity.paymentinstrument.CreditCardPaymentInstrumentEntity;
 import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentEntity;
 import com.junbo.payment.db.entity.paymentinstrument.PaymentInstrumentTypeEntity;
+import com.junbo.payment.spec.internal.SettlementDetail;
 import com.junbo.payment.spec.model.*;
 
 /**
@@ -89,4 +87,8 @@ public interface PaymentMapper {
     PaymentInstrumentTypeEntity toPITypeEntity(PaymentInstrumentType piType, MappingContext context);
 
     PaymentInstrumentType toPIType(PaymentInstrumentTypeEntity entity, MappingContext context);
+
+    SettlementDetailEntity toSettlementDetailEntity(SettlementDetail settlementDetail, MappingContext context);
+
+    SettlementDetail toSettlementDetail(SettlementDetailEntity entity, MappingContext context);
 }

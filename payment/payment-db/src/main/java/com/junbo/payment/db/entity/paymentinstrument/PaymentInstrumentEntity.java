@@ -60,7 +60,7 @@ public class PaymentInstrumentEntity extends GenericEntity {
     @Column(name = "active")
     private Boolean isActive;
 
-    @Column(name = "deleted")
+    @Column(name = "deleted", updatable = false)
     private Boolean isDeleted;
 
     @Column(name = "last_validated_time")

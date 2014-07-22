@@ -9,7 +9,9 @@ dependencies {
     runtime junboProject(':oauth-api')
     runtime junboProject(':crypto-rest')
 
-    runtime junboProject(':payment-rest')
+    compile junboProject(':payment-rest')
+    compile junboProject(':payment-jobs')
+
     runtime junboProject(':ewallet-rest')
     runtime junboProject(':identity-rest')
 }
