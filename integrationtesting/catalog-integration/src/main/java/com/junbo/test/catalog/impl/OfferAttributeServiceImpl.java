@@ -5,19 +5,18 @@
  */
 package com.junbo.test.catalog.impl;
 
-import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
-import com.junbo.common.id.OfferAttributeId;
-import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.common.model.Results;
-import com.junbo.langur.core.client.TypeReference;
-import com.junbo.test.catalog.OfferAttributeService;
 import com.junbo.test.catalog.enums.CatalogOfferAttributeType;
-import com.junbo.test.common.ConfigHelper;
+import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.test.common.apihelper.HttpClientBase;
-import com.junbo.test.common.blueprint.Master;
-import com.junbo.test.common.libs.IdConverter;
+import com.junbo.test.catalog.OfferAttributeService;
+import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.libs.RandomFactory;
+import com.junbo.test.common.libs.IdConverter;
+import com.junbo.common.id.OfferAttributeId;
+import com.junbo.test.common.ConfigHelper;
+import com.junbo.common.model.Results;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +24,7 @@ import java.util.List;
 /**
  @author Jason
   * Time: 3/14/2014
-  * The implementation for Attribute related APIs
+  * The implementation for offer attribute related APIs
  */
 public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAttributeService {
 
@@ -49,27 +48,17 @@ public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAt
     public OfferAttribute getOfferAttribute(String attributeId, int expectedResponseCode) throws Exception {
         String url = catalogServerURL + "/" + IdConverter.idToUrlString(OfferAttributeId.class, attributeId);
         String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
-        OfferAttribute attributeGet = new JsonMessageTranscoder().decode(new TypeReference<OfferAttribute>() {},
-                responseBody);
-        String attributeRtnId = IdConverter.idToUrlString(OfferAttributeId.class, attributeGet.getId());
-        Master.getInstance().addOfferAttribute(attributeRtnId, attributeGet);
-        return attributeGet;
+        return new JsonMessageTranscoder().decode(new TypeReference<OfferAttribute>() {}, responseBody);
     }
 
     public Results<OfferAttribute> getOfferAttributes(HashMap<String, List<String>> httpPara) throws Exception {
         return getOfferAttributes(httpPara, 200);
     }
 
-    public Results<OfferAttribute> getOfferAttributes(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception {
+    public Results<OfferAttribute> getOfferAttributes(HashMap<String, List<String>> httpPara, int expectedResponseCode)
+            throws Exception {
         String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara);
-        Results<OfferAttribute> attributeGet = new JsonMessageTranscoder().decode(new TypeReference<Results<OfferAttribute>>() {},
-                responseBody);
-        for (OfferAttribute offerAttribute : attributeGet.getItems()){
-            String attributeRtnId = IdConverter.idToUrlString(OfferAttributeId.class, offerAttribute.getId());
-            Master.getInstance().addOfferAttribute(attributeRtnId, offerAttribute);
-        }
-
-        return attributeGet;
+        return new JsonMessageTranscoder().decode(new TypeReference<Results<OfferAttribute>>() {}, responseBody);
     }
 
     public OfferAttribute postDefaultOfferAttribute() throws Exception {
@@ -92,27 +81,19 @@ public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAt
 
     public OfferAttribute postOfferAttribute(OfferAttribute attribute, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, attribute, expectedResponseCode);
-        OfferAttribute attributePost = new JsonMessageTranscoder().decode(new TypeReference<OfferAttribute>() {},
-                responseBody);
-        String attributeRtnId = IdConverter.idToUrlString(OfferAttributeId.class, attributePost.getId());
-        Master.getInstance().addOfferAttribute(attributeRtnId, attributePost);
-        return attributePost;
+        return new JsonMessageTranscoder().decode(new TypeReference<OfferAttribute>() {}, responseBody);
     }
 
     public OfferAttribute updateOfferAttribute(String offerAttributeId, OfferAttribute attribute) throws Exception {
         return updateOfferAttribute(offerAttributeId, attribute, 200);
     }
 
-    public OfferAttribute updateOfferAttribute(String offerAttributeId, OfferAttribute attribute, int expectedResponseCode) throws Exception {
+    public OfferAttribute updateOfferAttribute(String offerAttributeId, OfferAttribute attribute,
+                                               int expectedResponseCode) throws Exception {
         String putUrl = catalogServerURL + "/" + IdConverter.idToUrlString(OfferAttributeId.class,
                 offerAttributeId);
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, attribute, expectedResponseCode);
-        OfferAttribute offerAttributePut = new JsonMessageTranscoder().decode(new TypeReference<OfferAttribute>() {},
-                responseBody);
-        String offerAttributeRtnId = IdConverter.idToUrlString(OfferAttributeId.class,
-                offerAttributePut.getId());
-        Master.getInstance().addOfferAttribute(offerAttributeRtnId, offerAttributePut);
-        return offerAttributePut;
+        return new JsonMessageTranscoder().decode(new TypeReference<OfferAttribute>() {}, responseBody);
     }
 
     public void deleteOfferAttribute(String offerAttributeId) throws Exception {
@@ -123,6 +104,5 @@ public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAt
         String strOfferAttributeId = IdConverter.idToUrlString(OfferAttributeId.class, offerAttributeId);
         String url = catalogServerURL + "/" + strOfferAttributeId;
         restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
-        Master.getInstance().removeOfferAttribute(strOfferAttributeId);
     }
 }

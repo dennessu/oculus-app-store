@@ -109,7 +109,7 @@ public class TestPutItem extends BaseTestClass {
         genresInvalid.add("1L");
 
         //Prepare an item
-        Item item = itemService.postDefaultItem(CatalogItemType.getRandom());
+        Item item = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
 
         //update itself id
         String itemId = item.getItemId();
@@ -117,27 +117,27 @@ public class TestPutItem extends BaseTestClass {
         verifyExpectedError(itemId, item);
 
         //test rev
-        item = itemService.postDefaultItem(CatalogItemType.getRandom());
+        item = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
         item.setRev("revValue");
         verifyExpectedError(item.getItemId(), item);
 
         //can't update current revision id
-        item = itemService.postDefaultItem(CatalogItemType.getRandom());
+        item = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
         item.setCurrentRevisionId("0L");
         verifyExpectedError(item.getItemId(), item);
 
         //test type is invalid enums
-        item = itemService.postDefaultItem(CatalogItemType.getRandom());
+        item = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
         item.setType("invalid type");
         verifyExpectedError(item.getItemId(), item);
 
         //test defaultOffer is not existed
-        item = itemService.postDefaultItem(CatalogItemType.getRandom());
+        item = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
         item.setDefaultOffer("0L");
         verifyExpectedError(item.getItemId(), item);
 
         //test genres is not existed
-        item = itemService.postDefaultItem(CatalogItemType.getRandom());
+        item = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
         item.setGenres(genresInvalid);
         verifyExpectedError(item.getItemId(), item);
 
@@ -146,12 +146,12 @@ public class TestPutItem extends BaseTestClass {
         OfferAttribute offerAttribute = offerAttributeService.postDefaultOfferAttribute();
         genresCategory.add(offerAttribute.getId());
 
-        item = itemService.postDefaultItem(CatalogItemType.getRandom());
+        item = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
         item.setGenres(genresCategory);
         verifyExpectedError(item.getItemId(), item);
 
-        item = itemService.postDefaultItem(CatalogItemType.getRandom());
-        if (item.getType().equalsIgnoreCase(CatalogItemType.APP.getItemType()) ) {
+        item = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
+        if (item.getType().equalsIgnoreCase(CatalogItemType.APP.getItemType())) {
             item.setType(CatalogItemType.PHYSICAL.getItemType());
             verifyExpectedError(item.getItemId(), item);
         }

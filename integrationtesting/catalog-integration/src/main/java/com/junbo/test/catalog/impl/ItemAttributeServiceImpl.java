@@ -8,15 +8,14 @@ package com.junbo.test.catalog.impl;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.test.catalog.enums.CatalogItemAttributeType;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
-import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.catalog.ItemAttributeService;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.libs.RandomFactory;
-import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.common.id.ItemAttributeId;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.common.model.Results;
 
 import java.util.HashMap;
@@ -24,8 +23,8 @@ import java.util.List;
 
 /**
  * @author Jason
- *         Time: 3/14/2014
- *         The implementation for Attribute related APIs
+ * Time: 3/14/2014
+ * The implementation for item attribute related APIs
  */
 public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttributeService {
 
@@ -49,30 +48,17 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
     public ItemAttribute getItemAttribute(String attributeId, int expectedResponseCode) throws Exception {
         String url = catalogServerURL + "/" + IdConverter.idToUrlString(ItemAttributeId.class, attributeId);
         String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
-        ItemAttribute attributeGet = new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {
-        },
-                responseBody);
-        String attributeRtnId = IdConverter.idToUrlString(ItemAttributeId.class, attributeGet.getId());
-        Master.getInstance().addItemAttribute(attributeRtnId, attributeGet);
-        return attributeGet;
+        return new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {}, responseBody);
     }
 
     public Results<ItemAttribute> getItemAttributes(HashMap<String, List<String>> httpPara) throws Exception {
         return getItemAttributes(httpPara, 200);
     }
 
-    public Results<ItemAttribute> getItemAttributes(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception {
+    public Results<ItemAttribute> getItemAttributes(HashMap<String, List<String>> httpPara, int expectedResponseCode)
+            throws Exception {
         String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara);
-        Results<ItemAttribute> itemAttributeResults = new JsonMessageTranscoder().decode(
-                new TypeReference<Results<ItemAttribute>>() {
-                }, responseBody);
-
-        for (ItemAttribute itemAttribute : itemAttributeResults.getItems()) {
-            String attributeRtnId = IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute.getId());
-            Master.getInstance().addItemAttribute(attributeRtnId, itemAttribute);
-        }
-
-        return itemAttributeResults;
+        return new JsonMessageTranscoder().decode(new TypeReference<Results<ItemAttribute>>() {}, responseBody);
     }
 
     public ItemAttribute postDefaultItemAttribute() throws Exception {
@@ -96,30 +82,19 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
 
     public ItemAttribute postItemAttribute(ItemAttribute attribute, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, attribute, expectedResponseCode);
-        ItemAttribute attributePost = new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {
-        },
-                responseBody);
-        String attributeRtnId = IdConverter.idToUrlString(ItemAttributeId.class, attributePost.getId());
-        Master.getInstance().addItemAttribute(attributeRtnId, attributePost);
-        return attributePost;
+        return new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {}, responseBody);
     }
 
     public ItemAttribute updateItemAttribute(String itemAttributeId, ItemAttribute attribute) throws Exception {
         return updateItemAttribute(itemAttributeId, attribute, 200);
     }
 
-    public ItemAttribute updateItemAttribute(String itemAttributeId, ItemAttribute attribute, int expectedResponseCode) throws Exception {
+    public ItemAttribute updateItemAttribute(String itemAttributeId, ItemAttribute attribute, int expectedResponseCode)
+            throws Exception {
         String putUrl = catalogServerURL + "/" + IdConverter.idToUrlString(ItemAttributeId.class,
                 itemAttributeId);
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, attribute, expectedResponseCode);
-        ItemAttribute itemAttributePut = new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {
-        },
-                responseBody);
-        String itemAttributeRtnId = IdConverter.idToUrlString(ItemAttributeId.class,
-                itemAttributePut.getId());
-        Master.getInstance().addItemAttribute(itemAttributeRtnId, itemAttributePut);
-
-        return itemAttributePut;
+        return new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {}, responseBody);
     }
 
     public void deleteItemAttribute(String itemAttributeId) throws Exception {
@@ -130,7 +105,6 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
         String strItemAttributeId = IdConverter.idToUrlString(ItemAttributeId.class, itemAttributeId);
         String url = catalogServerURL + "/" + strItemAttributeId;
         restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
-        Master.getInstance().removeItemAttribute(strItemAttributeId);
     }
 
 }

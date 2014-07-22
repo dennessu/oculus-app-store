@@ -102,7 +102,7 @@ public class TestPutOffer extends BaseTestClass {
         categoryInvalid.add("1L");
 
         //Prepare an offer
-        Offer offer = offerService.postDefaultOffer();
+        Offer offer = offerService.postDefaultOffer(organizationId);
         String offerId = offer.getOfferId();
 
         //update itself id
@@ -110,17 +110,17 @@ public class TestPutOffer extends BaseTestClass {
         verifyExpectedError(offerId, offer);
 
         //test rev
-        offer = offerService.postDefaultOffer();
+        offer = offerService.postDefaultOffer(organizationId);
         offer.setRev("0");
         verifyExpectedError(offer.getOfferId(), offer);
 
         //can't update current revision id
-        offer = offerService.postDefaultOffer();
+        offer = offerService.postDefaultOffer(organizationId);
         offer.setCurrentRevisionId("0L");
         verifyExpectedError(offer.getOfferId(), offer);
 
         //test category is not existed
-        offer = offerService.postDefaultOffer();
+        offer = offerService.postDefaultOffer(organizationId);
         offer.setCategories(categoryInvalid);
         verifyExpectedError(offer.getOfferId(), offer);
 
@@ -129,7 +129,7 @@ public class TestPutOffer extends BaseTestClass {
         ItemAttribute itemAttribute = itemAttributeService.postDefaultItemAttribute();
         category.add(itemAttribute.getId());
 
-        offer = offerService.postDefaultOffer();
+        offer = offerService.postDefaultOffer(organizationId);
         offer.setCategories(category);
         verifyExpectedError(offer.getOfferId(), offer);
 

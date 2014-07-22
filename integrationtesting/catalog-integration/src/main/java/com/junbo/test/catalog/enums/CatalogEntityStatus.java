@@ -14,7 +14,6 @@ public enum CatalogEntityStatus {
     DRAFT("DRAFT"),
     PENDING_REVIEW("PENDING_REVIEW"),
     REJECTED("REJECTED"),
-    DELETED("DELETED"),
     APPROVED("APPROVED");
 
     private String entityStatus;
