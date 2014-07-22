@@ -7,6 +7,7 @@
 package com.junbo.catalog.db.repo;
 
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
+import com.junbo.catalog.spec.model.pricetier.PriceTiersGetOptions;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ import java.util.List;
 public interface PriceTierRepository {
     PriceTier create(PriceTier priceTier);
     PriceTier get(String id);
-    List<PriceTier> getPriceTiers(int start, int size);
+    List<PriceTier> getPriceTiers(PriceTiersGetOptions options);
     PriceTier update(PriceTier priceTier, PriceTier oldPriceTier);
     void delete(String tierId);
 }

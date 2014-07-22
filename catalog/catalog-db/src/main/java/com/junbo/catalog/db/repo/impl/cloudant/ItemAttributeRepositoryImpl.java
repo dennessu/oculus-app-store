@@ -6,10 +6,12 @@
 
 package com.junbo.catalog.db.repo.impl.cloudant;
 
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.repo.ItemAttributeRepository;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.attribute.ItemAttributesGetOptions;
 import com.junbo.common.cloudant.CloudantClient;
+import com.junbo.common.cloudant.model.CloudantQueryResult;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -41,12 +43,16 @@ public class ItemAttributeRepositoryImpl extends CloudantClient<ItemAttribute> i
                     attributes.add(attribute);
                 }
             }
+            options.setTotal(Long.valueOf(attributes.size()));
             return attributes;
         } else if (!StringUtils.isEmpty(options.getAttributeType())){
-            return queryView("by_type", options.getAttributeType(),
-                    options.getValidSize(), options.getValidStart(), false).get();
+            CloudantQueryResult queryResult = queryViewSync("by_type", options.getAttributeType(), options.getValidSize(), options.getValidStart(), false, true);
+            options.setTotal(queryResult.getTotalRows());
+            return Utils.getDocs(queryResult.getRows());
         } else {
-            return queryView("by_attributeId", null, options.getValidSize(), options.getValidStart(), false).get();
+            CloudantQueryResult queryResult = queryViewSync("by_attributeId", null, options.getValidSize(), options.getValidStart(), false, true);
+            options.setTotal(queryResult.getTotalRows());
+            return Utils.getDocs(queryResult.getRows());
         }
     }
 

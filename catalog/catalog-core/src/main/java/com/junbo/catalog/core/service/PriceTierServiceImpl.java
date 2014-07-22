@@ -60,9 +60,10 @@ public class PriceTierServiceImpl implements PriceTierService {
                     priceTiers.add(priceTier);
                 }
             }
+            options.setTotal(Long.valueOf(priceTiers.size()));
             return priceTiers;
         } else {
-            return priceTierRepo.getPriceTiers(options.getValidStart(), options.getValidSize());
+            return priceTierRepo.getPriceTiers(options);
         }
     }
 

@@ -11,6 +11,7 @@ import com.junbo.catalog.db.entity.PriceTierEntity;
 import com.junbo.catalog.db.mapper.PriceTierMapper;
 import com.junbo.catalog.db.repo.PriceTierRepository;
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
+import com.junbo.catalog.spec.model.pricetier.PriceTiersGetOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -31,6 +32,11 @@ public class PriceTierRepositoryImpl implements PriceTierRepository {
     public PriceTier get(String id) {
         PriceTierEntity dbEntity = priceTierDao.get(id);
         return PriceTierMapper.toModel(dbEntity);
+    }
+
+    @Override
+    public List<PriceTier> getPriceTiers(PriceTiersGetOptions options) {
+        return null;
     }
 
     public List<PriceTier> getPriceTiers(int start, int size) {

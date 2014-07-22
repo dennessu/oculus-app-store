@@ -6,9 +6,12 @@
 
 package com.junbo.catalog.db.repo.impl.cloudant;
 
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.repo.PriceTierRepository;
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
+import com.junbo.catalog.spec.model.pricetier.PriceTiersGetOptions;
 import com.junbo.common.cloudant.CloudantClient;
+import com.junbo.common.cloudant.model.CloudantQueryResult;
 
 import java.util.List;
 
@@ -25,8 +28,11 @@ public class PriceTierRepositoryImpl extends CloudantClient<PriceTier> implement
         return cloudantGetSync(tierId);
     }
 
-    public List<PriceTier> getPriceTiers(int start, int size) {
-        return queryView("by_tierId", null, size, start, true).get();
+    @Override
+    public List<PriceTier> getPriceTiers(PriceTiersGetOptions options) {
+        CloudantQueryResult queryResult = queryViewSync("by_tierId", null, options.getValidSize(), options.getValidStart(), true, true);
+        options.setTotal(queryResult.getTotalRows());
+        return Utils.getDocs(queryResult.getRows());
     }
 
     public PriceTier update(PriceTier priceTier, PriceTier oldPriceTier) {
