@@ -52,19 +52,19 @@ public class ResponseFilter implements ContainerResponseFilter {
                        ContainerResponseContext responseContext) throws IOException {
         final MultivaluedMap<String, Object> headers = responseContext.getHeaders();
 
-        if (!StringUtils.isNotBlank(allowOrigin)) {
+        if (StringUtils.isNotBlank(allowOrigin)) {
             headers.putSingle("Access-Control-Allow-Origin", allowOrigin);
         }
 
-        if (!StringUtils.isNotBlank(allowHeader)) {
+        if (StringUtils.isNotBlank(allowHeader)) {
             headers.putSingle("Access-Control-Allow-Headers", allowHeader);
         }
 
-        if (!StringUtils.isNotBlank(exposeHeaders)) {
+        if (StringUtils.isNotBlank(exposeHeaders)) {
             headers.putSingle("Access-Control-Expose-Headers", exposeHeaders);
         }
 
-        if (!StringUtils.isNotBlank(allowMethods)) {
+        if (StringUtils.isNotBlank(allowMethods)) {
             headers.putSingle("Access-Control-Allow-Methods", allowMethods);
         }
 

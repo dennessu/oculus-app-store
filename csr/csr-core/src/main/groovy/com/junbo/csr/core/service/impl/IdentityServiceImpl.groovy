@@ -226,7 +226,7 @@ class IdentityServiceImpl implements IdentityService {
 
     @Override
     UserGroup updateUserGroupMembership(UserGroupId userGroupId, UserId userId, GroupId groupId) {
-        return userGroupMembershipResource.patch(userGroupId, new UserGroup(userId: userId, groupId: groupId)).get()
+        return userGroupMembershipResource.patch(userGroupId, new UserGroup(id:userGroupId, userId: userId, groupId: groupId)).get()
     }
 
     private Promise<Results<User>> getUsers(Results<UserPersonalInfo> results) {

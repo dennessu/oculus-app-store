@@ -141,7 +141,9 @@ class CsrUserResourceImpl implements CsrUserResource {
                 // check the user already in csr groups or not
                 Results<CsrGroup> groups = csrGroupResource.list(new CsrGroupListOptions(userId: user.getId())).get()
                 if (!groups.items.empty) {
-                    throw AppErrors.INSTANCE.userAlreadyInCsrGroup(email).exception()
+                    if (groups.items.size() != 1 || (groups.items.size() == 1 && groups.items.get(0).groupId != pendingGroup.groupId)) {
+                        throw AppErrors.INSTANCE.userAlreadyInCsrGroup(email).exception()
+                    }
                 }
 
                 return identityService.getGroupById(groupId).then { Group group ->

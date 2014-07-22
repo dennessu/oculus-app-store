@@ -113,7 +113,6 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
                 userGroup = userGroupFilter.filterForPatch(userGroup, oldUserGroup)
 
                 return userGroupValidator.validateForUpdate(userGroupId, userGroup, oldUserGroup).then {
-
                     return userGroupRepository.update(userGroup, oldUserGroup).then { UserGroup newUserGroup ->
                         newUserGroup = userGroupFilter.filterForGet(newUserGroup, null)
                         return Promise.pure(newUserGroup)
