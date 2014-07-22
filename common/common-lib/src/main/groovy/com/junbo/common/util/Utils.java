@@ -67,10 +67,10 @@ public class Utils {
 
         String[] dcValues = allDcValues.split(",");
         for (String dcValue : dcValues) {
-            dcValue = dcValue.trim();
-            String[] dcValueComponents = dcValue.split(";");
+            String mDcValue = dcValue.trim();
+            String[] dcValueComponents = mDcValue.split(";");
             if (dcValueComponents.length != 2) {
-                throw new RuntimeException(String.format("Invalid %s: %s item: %s", configName, allDcValues, dcValue));
+                throw new RuntimeException(String.format("Invalid %s: %s item: %s", configName, allDcValues, mDcValue));
             }
             String value = dcValueComponents[0];
             String dc = dcValueComponents[1];

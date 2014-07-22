@@ -8,6 +8,7 @@ package com.junbo.csr.spec.endpoint;
 import com.junbo.common.model.Results;
 import com.junbo.csr.spec.model.CsrCredential;
 import com.junbo.csr.spec.model.CsrToken;
+import com.junbo.csr.spec.model.SearchForm;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -31,7 +32,7 @@ public interface CsrActionEndpoint {
     @Path("/refresh")
     Promise<CsrToken> refresh(@QueryParam("refreshToken")String refreshToken);
 
-    @GET
+    @POST
     @Path("/search")
-    Promise<Results<User>> search(@QueryParam("qs")String search);
+    Promise<Results<User>> searchUsers(SearchForm searchForm);
 }

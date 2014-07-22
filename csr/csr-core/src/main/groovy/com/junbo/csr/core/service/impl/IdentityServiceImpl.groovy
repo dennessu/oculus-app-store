@@ -57,23 +57,26 @@ class IdentityServiceImpl implements IdentityService {
     }
 
     @Override
-    Promise<List<User>> getUserByUserEmail(String userEmail) {
-        return userPersonalInfoResource.list(new UserPersonalInfoListOptions(email: userEmail.toLowerCase(Locale.ENGLISH))).then { Results<UserPersonalInfo> results ->
-            if (results == null || results.items == null || results.items.isEmpty()) {
-                throw AppErrors.INSTANCE.userNotFoundByEmail(userEmail).exception()
-            }
+    Promise<Results<User>> getUserByUserEmail(String userEmail) {
+        return userPersonalInfoResource.list(new UserPersonalInfoListOptions(email: userEmail.toLowerCase(Locale.ENGLISH))).then {
+            Results<UserPersonalInfo> results ->
+            return getUsers(results)
+        }
+    }
 
-            List<User> users = new ArrayList<>()
-            return Promise.each(results.items) { UserPersonalInfo userPersonalInfo ->
-                return userResource.get(userPersonalInfo.userId as UserId, new UserGetOptions()).then { User user ->
-                    if (user != null) {
-                        users.add(user)
-                    }
-                    return Promise.pure(null)
-                }
-            }.then {
-                return Promise.pure(users)
-            }
+    @Override
+    Promise<Results<User>> getUserByUserFullName(String fullName) {
+        return userPersonalInfoResource.list(new UserPersonalInfoListOptions(name: fullName)).then {
+            Results<UserPersonalInfo> results ->
+            return getUsers(results)
+        }
+    }
+
+    @Override
+    Promise<Results<User>> getUserByPhoneNumber(String phoneNumber) {
+        return userPersonalInfoResource.list(new UserPersonalInfoListOptions(phoneNumber: phoneNumber)).then {
+            Results<UserPersonalInfo> results ->
+            return getUsers(results)
         }
     }
 
@@ -224,5 +227,19 @@ class IdentityServiceImpl implements IdentityService {
     @Override
     UserGroup updateUserGroupMembership(UserGroupId userGroupId, UserId userId, GroupId groupId) {
         return userGroupMembershipResource.patch(userGroupId, new UserGroup(userId: userId, groupId: groupId)).get()
+    }
+
+    private Promise<Results<User>> getUsers(Results<UserPersonalInfo> results) {
+        Results<User> users = new Results<User>(items: [])
+        return Promise.each(results.items) { UserPersonalInfo userPersonalInfo ->
+            return userResource.get(userPersonalInfo.userId as UserId, new UserGetOptions()).then { User user ->
+                if (user != null) {
+                    users.items.add(user)
+                }
+                return Promise.pure(null)
+            }
+        }.then {
+            return Promise.pure(users)
+        }
     }
 }

@@ -17,10 +17,13 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 public interface IdentityService {
-    Promise<List<User>> getUserByUserEmail(String userEmail)
+    Promise<Results<User>> getUserByUserEmail(String userEmail)
+    Promise<Results<User>> getUserByUserFullName(String fullName)
+    Promise<Results<User>> getUserByPhoneNumber(String phoneNumber)
     Promise<User> getUserByUsername(String username)
-    Promise<User> getUserByVerifiedEmail(String userEmail)
     Promise<User> getUserById(UserId id)
+
+    Promise<User> getUserByVerifiedEmail(String userEmail)
     Promise<Results<User>> getUserByGroupId(GroupId groupId)
     Promise<Group> getGroupById(GroupId groupId)
     Promise<Organization> getOrganizationByOwerIdAndOrgName(UserId organizationOwner, String organizationName)

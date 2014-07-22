@@ -31,7 +31,7 @@ class NameHashImpl implements PiiHash {
     String generateHash(JsonNode jsonNode) {
         UserName name = (UserName)JsonHelper.jsonNodeToObj(jsonNode, UserName)
         assert name != null
-
+        // name hash info based on "FirstName LastName"
         return generateHash("$name.givenName $name.familyName")
     }
 

@@ -1,11 +1,16 @@
 package com.junbo.csr.rest.endpoint
 
 import com.junbo.common.error.AppErrorException
+import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
+import com.junbo.common.util.IdFormatter
+import com.junbo.csr.core.service.IdentityService
 import com.junbo.csr.spec.endpoint.CsrActionEndpoint
 import com.junbo.csr.spec.error.AppErrors
 import com.junbo.csr.spec.model.CsrCredential
 import com.junbo.csr.spec.model.CsrToken
+import com.junbo.csr.spec.model.SearchForm
+import com.junbo.csr.spec.def.SearchType
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.spec.endpoint.TokenEndpoint
@@ -19,6 +24,7 @@ import org.springframework.beans.factory.annotation.Required
  */
 @CompileStatic
 class CsrActionEndpointImpl implements CsrActionEndpoint {
+    private IdentityService identityService
     private TokenEndpoint tokenEndpoint
     private String clientId
     private String clientSecret
@@ -36,6 +42,11 @@ class CsrActionEndpointImpl implements CsrActionEndpoint {
     @Required
     void setClientSecret(String clientSecret) {
         this.clientSecret = clientSecret
+    }
+
+    @Required
+    void setIdentityService(IdentityService identityService) {
+        this.identityService = identityService
     }
 
     @Override
@@ -77,8 +88,33 @@ class CsrActionEndpointImpl implements CsrActionEndpoint {
     }
 
     @Override
-    Promise<Results<User>> search(String search) {
-        return null
+    Promise<Results<User>> searchUsers(SearchForm searchForm) {
+        if (searchForm == null || searchForm.type == null || searchForm.value == null) {
+            throw AppErrors.INSTANCE.invalidRequest().exception()
+        }
+
+        def results = new Results<User>(items: [])
+        User user = null
+        switch (searchForm.type) {
+            case SearchType.USERNAME:
+                user = identityService.getUserByUsername(searchForm.value).get()
+                break
+            case SearchType.USERID:
+                Long userId = IdFormatter.decodeId(UserId, searchForm.value)
+                user = identityService.getUserById(new UserId(userId)).get()
+                break
+            case SearchType.FULLNAME:
+                return identityService.getUserByUserFullName(searchForm.value)
+            case SearchType.EMAIL:
+                return identityService.getUserByUserEmail(searchForm.value)
+            case SearchType.PHONENUMBER:
+                return identityService.getUserByPhoneNumber(searchForm.value)
+        }
+
+        if (user != null) {
+            results.items.add(user)
+        }
+        return Promise.pure(results)
     }
 
     private Promise<CsrToken> postToken(AccessTokenRequest request) {

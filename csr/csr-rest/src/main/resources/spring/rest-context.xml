@@ -14,6 +14,7 @@
     <bean id="defaultCsrActionEndpoint" class="com.junbo.csr.rest.endpoint.CsrActionEndpointImpl">
         <property name="clientId" value="${csr.login.clientId}"/>
         <property name="clientSecret" value="${csr.login.clientSecret}"/>
+        <property name="identityService" ref="csrIdentityService" />
         <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
     </bean>
 

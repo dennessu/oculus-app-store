@@ -6,7 +6,6 @@
 package com.junbo.common.json;
 
 import com.fasterxml.jackson.databind.introspect.Annotated;
-import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 
 /**

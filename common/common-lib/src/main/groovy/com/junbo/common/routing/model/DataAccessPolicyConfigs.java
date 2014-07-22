@@ -28,7 +28,7 @@ public class DataAccessPolicyConfigs {
 
     private ConcurrentMap<String, Object> resolvedPolicies;
 
-    public DataAccessPolicyConfigs(String dataAccessConfigs, String httpMethodMappingConfigs) {;
+    public DataAccessPolicyConfigs(String dataAccessConfigs, String httpMethodMappingConfigs) {
         parseDataAccessConfigs(dataAccessConfigs);
         parseHttpMethodMapping(httpMethodMappingConfigs);
         resolvedPolicies = new ConcurrentHashMap<>();
@@ -117,6 +117,8 @@ public class DataAccessPolicyConfigs {
                 case "DELETE":
                 case "PATCH":
                     action = DataAccessAction.WRITE;
+                    break;
+                default:
                     break;
             }
 
