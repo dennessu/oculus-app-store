@@ -97,6 +97,7 @@
         <property name="forgetPasswordFlow" value="forgetPasswordFlow"/>
         <property name="flowExecutor" ref="oauthFlowExecutor"/>
         <property name="userService" ref="userService"/>
+        <property name="csrLogResource" ref="oauth_csrLogResource" />
         <property name="debugEnabled" value="${common.conf.debugMode}"/>
     </bean>
 

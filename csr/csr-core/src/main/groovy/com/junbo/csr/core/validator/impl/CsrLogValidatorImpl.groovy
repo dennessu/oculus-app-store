@@ -125,15 +125,9 @@ class CsrLogValidatorImpl implements CsrLogValidator {
         if (csrLog.id != null) {
             throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
         }
-
-        else if (!ValidatorUtil.isValidCountryCode(csrLog.countryCode)) {
-            throw AppErrors.INSTANCE.invalidCountryCode().exception()
-        }
-
         if (csrLog.action == null) {
             throw AppErrors.INSTANCE.fieldRequired('action').exception()
         }
-
         if (csrLog.regarding == null) {
             throw AppErrors.INSTANCE.fieldRequired('regarding').exception()
         }
@@ -146,7 +140,10 @@ class CsrLogValidatorImpl implements CsrLogValidator {
         }
         else {
             return identityService.getUserById(csrLog.userId).then { User user ->
-                csrLog.countryCode = user.countryOfResidence?.value
+                if (csrLog.countryCode == null) {
+                    csrLog.countryCode = user.countryOfResidence?.value
+                }
+                csrLog.username = user.username
                 return Promise.pure(null)
             }
         }

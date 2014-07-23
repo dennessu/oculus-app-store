@@ -184,7 +184,7 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
     Promise<Response> sendVerifyEmail(String locale, String country, UserId userId, ContainerRequestContext request) {
         return userService.sendVerifyEmail(userId, locale, country, ((ContainerRequest)request).baseUri).then {
             // audit csr action on success
-            csrActionAudit()
+            csrActionAudit(userId)
             return Promise.pure(Response.noContent().build())
         }
     }
@@ -196,9 +196,10 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
         return Promise.pure(responseBuilder.build())
     }
 
-    private void csrActionAudit() {
-        if (!AuthorizeContext.hasScopes('csr')) {
-            csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.VerificationEmailSent)).get()
+    private void csrActionAudit(UserId userId) {
+        if (AuthorizeContext.hasScopes('csr')) {
+            String email = userService.getUserEmailByUserId(userId).get()
+            csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.VerificationEmailSent, property: email)).get()
         }
     }
 }

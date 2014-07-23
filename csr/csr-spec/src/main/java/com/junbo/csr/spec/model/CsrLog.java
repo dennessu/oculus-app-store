@@ -7,7 +7,6 @@
 package com.junbo.csr.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.CsrLogId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.model.ResourceMeta;
@@ -31,6 +30,14 @@ public class CsrLog extends ResourceMeta<CsrLogId> {
 
     public void setUserId(UserId userId) {
         this.userId = userId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getCountryCode() {
@@ -57,19 +64,20 @@ public class CsrLog extends ResourceMeta<CsrLogId> {
         this.action = action;
     }
 
-    public JsonNode getProperty() {
+    public String getProperty() {
         return property;
     }
 
-    public void setProperty(JsonNode property) {
+    public void setProperty(String property) {
         this.property = property;
     }
 
     @JsonProperty("self")
     private CsrLogId id;
     private UserId userId;
+    private String username;
     private String countryCode;
     private String regarding;
     private CsrLogActionType action;
-    private JsonNode property;
+    private String property;
 }

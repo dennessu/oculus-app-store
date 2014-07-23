@@ -188,7 +188,6 @@ class CsrUserResourceImpl implements CsrUserResource {
 
     @Override
     Promise<Response> confirmCsrInvitation(String code) {
-        authorize()
         if (StringUtils.isEmpty(code)) {
             throw AppErrors.INSTANCE.csrInvitationCodeMissing().exception()
         }
