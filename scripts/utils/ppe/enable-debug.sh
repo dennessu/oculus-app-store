@@ -6,9 +6,9 @@ set -e
 
 ./foreach-here.sh ppe.txt << EOF
 if ! grep '^common.conf.debugMode=' /etc/silkcloud/configuration.properties; then
-    echo common.conf.debugMode=false >> /etc/silkcloud/configuration.properties
+    echo common.conf.debugMode=true >> /etc/silkcloud/configuration.properties
 fi
-sed -e 's/common\.conf\.debugMode=true/common.conf.debugMode=false/g' -i /etc/silkcloud/configuration.properties
+sed -e 's/common\.conf\.debugMode=false/common.conf.debugMode=true/g' -i /etc/silkcloud/configuration.properties
 echo Updated to \`grep '^common.conf.debugMode=' /etc/silkcloud/configuration.properties\`
 EOF
 
