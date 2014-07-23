@@ -688,7 +688,7 @@ class StoreResourceImpl implements StoreResource {
         OffersGetOptions offerOption = new OffersGetOptions(
                 itemId: item.itemId,
                 published: true,
-                start : 0,
+                cursor : String.valueOf(0),
                 size : PAGE_SIZE
         )
 
@@ -746,14 +746,14 @@ class StoreResourceImpl implements StoreResource {
                 hostItemId: hostItem.itemId,
                 type: iapOfferGetRequest.getType(),
                 size: PAGE_SIZE,
-                start: 0
+                cursor: String.valueOf(0)
         )
 
         Map<String, Offer> offers = new HashMap<>()
         return iteratePageRead {
             return resourceContainer.itemResource.getItems(itemOption).then { Results<Item> itemResults ->
                 boolean hasMore = itemResults.items.size() >= itemOption.size
-                itemOption.start += itemResults.items.size()
+                itemOption.cursor = String.valueOf(Integer.valueOf(itemOption.cursor) + itemResults.items.size())
                 return Promise.each(itemResults.items) { Item item ->
                     return resourceContainer.itemRevisionResource.getItemRevision(item.currentRevisionId, new ItemRevisionGetOptions()).then { ItemRevision itemRevision ->
                         return getOffersFromItem(item, itemRevision, iapOfferGetRequest, offers).then {

@@ -18,13 +18,6 @@ import com.junbo.entitlement.spec.model.PageMetadata
 import com.junbo.fulfilment.spec.model.FulfilmentAction
 import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
-import com.junbo.store.db.repo.ConsumptionRepository
-import com.junbo.store.rest.utils.IAPValidator
-import com.junbo.store.rest.utils.ResourceContainer
-import com.junbo.store.spec.error.AppErrors
-import com.junbo.store.spec.model.*
-import com.junbo.store.spec.model.iap.Consumption
-import com.junbo.store.spec.resource.IAPResource
 import com.junbo.langur.core.client.PathParamTranscoder
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
@@ -34,10 +27,16 @@ import com.junbo.order.spec.model.PaymentInfo
 import com.junbo.payment.spec.model.PageMetaData
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam
+import com.junbo.store.db.repo.ConsumptionRepository
+import com.junbo.store.rest.utils.IAPValidator
+import com.junbo.store.rest.utils.ResourceContainer
+import com.junbo.store.spec.error.AppErrors
+import com.junbo.store.spec.model.*
+import com.junbo.store.spec.model.iap.Consumption
+import com.junbo.store.spec.resource.IAPResource
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
@@ -269,14 +268,14 @@ class IAPResourceImpl implements IAPResource {
                 hostItemId: hostItem.itemId,
                 type: type,
                 size: PAGE_SIZE,
-                start: 0
+           //     start: 0
         )
 
         Map<String, Offer> offers = new HashMap<>()
         return iteratePageRead {
             return resourceContainer.itemResource.getItems(itemOption).then { Results<Item> itemResults ->
                 boolean hasMore = itemResults.items.size() >= itemOption.size
-                itemOption.start += itemResults.items.size()
+                itemOption.cursor += (Integer.valueOf(itemOption.cursor) + itemResults.items.size())
                 return Promise.each(itemResults.items) { Item item ->
                     return resourceContainer.itemRevisionResource.getItemRevision(item.currentRevisionId, new ItemRevisionGetOptions()).then { ItemRevision itemRevision ->
                         return getOffersFromItem(item, itemRevision, offers).then {
@@ -307,7 +306,7 @@ class IAPResourceImpl implements IAPResource {
         def offerOption = new OffersGetOptions(
                 itemId: item.itemId,
                 published: true,
-                start : 0,
+            //    start : 0,
                 size : PAGE_SIZE
         )
         resourceContainer.offerResource.getOffers(offerOption).then { Results<com.junbo.catalog.spec.model.offer.Offer> catalogOffers ->
