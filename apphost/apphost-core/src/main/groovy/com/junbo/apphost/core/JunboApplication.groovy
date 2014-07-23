@@ -9,9 +9,15 @@ import org.springframework.beans.BeansException
 import org.springframework.beans.factory.BeanFactory
 import org.springframework.beans.factory.support.DefaultListableBeanFactory
 import org.springframework.beans.factory.support.RootBeanDefinition
+import org.springframework.beans.factory.xml.XmlBeanDefinitionReader
+import org.springframework.context.ApplicationEvent
+import org.springframework.context.ApplicationListener
 import org.springframework.context.ConfigurableApplicationContext
+import org.springframework.context.event.ContextClosedEvent
 import org.springframework.context.support.ClassPathXmlApplicationContext
 import org.springframework.util.StopWatch
+
+import java.util.concurrent.CountDownLatch
 
 /**
  * Created by kg on 4/21/2014.
@@ -36,6 +42,7 @@ class JunboApplication {
         ConfigurableApplicationContext ctx = null
 
         try {
+
             ctx = new JunboApplicationContext(['classpath*:/spring/**/*.xml'] as String[], false)
 
             ctx.registerShutdownHook()
@@ -43,6 +50,19 @@ class JunboApplication {
 
             stopWatch.stop()
             LoggerInitializer.logStarted(LOGGER, stopWatch)
+
+            def running = new CountDownLatch(1)
+            ctx.addApplicationListener(new ApplicationListener<ContextClosedEvent>() {
+                @Override
+                void onApplicationEvent(ContextClosedEvent event) {
+                    running.countDown()
+                }
+            })
+            running.await()
+
+            LoggerInitializer.logClosed(LOGGER)
+
+            LoggerInitializer.stop()
 
         } catch (Exception ex) {
             LOGGER.error('Application failed with exception:', ex)
@@ -71,9 +91,6 @@ class JunboApplication {
 
         @Override
         protected void onClose() {
-            LoggerInitializer.logClosed(LOGGER)
-
-            LoggerInitializer.stop()
         }
 
         @Override
@@ -91,6 +108,13 @@ class JunboApplication {
         @Override
         protected DefaultListableBeanFactory createBeanFactory() {
             return new JunboBeanFactory(internalParentBeanFactory)
+        }
+
+        @Override
+        protected void initBeanDefinitionReader(XmlBeanDefinitionReader reader) {
+            super.initBeanDefinitionReader(reader)
+
+            reader.documentReaderClass = JunboBeanDefinitionDocumentReader
         }
     }
 

@@ -4,7 +4,7 @@ dependencies {
     compile junboProject(":order-spec")
     compile junboProject(":order-core")
     compile junboProject(":common-configuration")
-    compile 'org.quartz-scheduler:quartz:2.2.1'
+    compile (libraries.quartz_scheduler)
 
     testCompile (libraries.spring_test)
     testCompile (libraries.common_lang)

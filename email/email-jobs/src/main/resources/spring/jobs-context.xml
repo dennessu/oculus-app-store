@@ -20,7 +20,13 @@
     <bean id="emailListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer"
           parent="baseListenerContainer">
         <property name="destination" ref="emailQueue"/>
-        <property name="messageListener" ref="emailListener"/>
+        <property name="messageListener">
+            <bean class="com.junbo.apphost.core.LazyInitProxyFactoryBean">
+                <property name="targetBeanName">
+                    <idref bean="emailListener"/>
+                </property>
+            </bean>
+        </property>
         <property name="sessionAcknowledgeMode" value="1"/>
     </bean>
 </beans>
