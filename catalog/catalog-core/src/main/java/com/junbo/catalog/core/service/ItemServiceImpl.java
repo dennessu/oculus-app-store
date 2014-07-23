@@ -424,6 +424,9 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
             if (item == null) {
                 errors.add(AppErrors.INSTANCE.itemNotFound("itemId", revision.getItemId()));
             } else {
+                if (revision.getOwnerId() != null && !revision.getOwnerId().equals(item.getOwnerId())) {
+                    errors.add(AppCommonErrors.INSTANCE.fieldInvalid("itemId", "item should have same owner as item-revision"));
+                }
                 if ((Status.APPROVED.is(revision.getStatus()) || Status.PENDING_REVIEW.is(revision.getStatus()))
                         && (ItemType.APP.is(item.getType()) || ItemType.DOWNLOADED_ADDITION.is(item.getType()))) {
                     if (CollectionUtils.isEmpty(revision.getBinaries())) {

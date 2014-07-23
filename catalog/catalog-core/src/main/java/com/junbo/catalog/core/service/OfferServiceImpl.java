@@ -22,6 +22,7 @@ import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.AppErrorException;
+import com.junbo.common.id.OrganizationId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -497,6 +498,8 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             Offer offer = offerRepo.get(revision.getOfferId());
             if (offer == null) {
                 errors.add(AppErrors.INSTANCE.offerNotFound("offerId", revision.getOfferId()));
+            } else if (revision.getOwnerId() != null && !revision.getOwnerId().equals(offer.getOwnerId())) {
+                errors.add(AppCommonErrors.INSTANCE.fieldInvalid("offerId", "offer should have same owner as offer-revision"));
             }
         }
         if (CollectionUtils.isEmpty(revision.getDistributionChannels())) {
@@ -534,8 +537,23 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             }
         }
 
+        if (!CollectionUtils.isEmpty(revision.getSubOffers())) {
+            for (String subOfferId : revision.getSubOffers()) {
+                Offer subOffer = offerRepo.get(subOfferId);
+                if (subOffer == null) {
+                    errors.add(AppCommonErrors.INSTANCE.resourceNotFound("offer", subOfferId));
+                } else {
+                    if (revision.getOwnerId() != null && !revision.getOwnerId().equals(subOffer.getOwnerId())) {
+                        errors.add(AppCommonErrors.INSTANCE.fieldInvalid("subOffers", "offer should only contains sub-offers of same owner"));
+                    }
+                    if (!Boolean.TRUE.equals(subOffer.getPublished())) {
+                        errors.add(AppCommonErrors.INSTANCE.fieldInvalid("subOffers", "sub-offers should be published"));
+                    }
+                }
+            }
+        }
         if (!CollectionUtils.isEmpty(revision.getItems())) {
-            validateItems(revision.getItems(), errors);
+            validateItems(revision.getItems(), revision.getOwnerId(), errors);
         }
         if (!CollectionUtils.isEmpty(revision.getFutureExpansion())) {
             errors.add(AppCommonErrors.INSTANCE.fieldInvalid("futureExpansion", "you should leave this property empty"));
@@ -543,7 +561,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         // TODO: check other properties
     }
 
-    private void validateItems(List<ItemEntry> items, List<AppError> errors) {
+    private void validateItems(List<ItemEntry> items, OrganizationId ownerId, List<AppError> errors) {
         boolean hasSVItem = false;
         for (ItemEntry itemEntry : items) {
             if (itemEntry.getItemId() == null) {
@@ -553,6 +571,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
                 if (item == null) {
                     errors.add(AppCommonErrors.INSTANCE.resourceNotFound("item", itemEntry.getItemId()));
                 } else {
+                    if (ownerId != null && !ownerId.equals(item.getOwnerId())) {
+                        errors.add(AppCommonErrors.INSTANCE.fieldInvalid("items", "offer should only contains items of same owner"));
+                    }
                     if (item.getType().equals(ItemType.STORED_VALUE)) {
                         hasSVItem = true;
                     }
