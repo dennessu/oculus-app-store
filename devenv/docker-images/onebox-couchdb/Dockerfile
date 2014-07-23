@@ -13,7 +13,9 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN mkdir /etc/service/couchdb
 ADD runcouchdb.sh /etc/service/couchdb/run
+RUN chmod +x /etc/service/couchdb/run
 ADD finish.sh /etc/service/couchdb/finish
+RUN chmod +x /etc/service/couchdb/finish
 
 # Define mountable directories.
 VOLUME ["/var/log/couchdb", "/var/lib/couchdb", "/etc/couchdb"]
