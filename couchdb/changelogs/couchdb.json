@@ -250,6 +250,7 @@
         }
       }
     },
+    "error_info": {},
     "user": {
       "views": {
         "by_canonical_username": {

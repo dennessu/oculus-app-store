@@ -137,4 +137,8 @@
     <bean id="cloudantUserPersonalInfoIdToUserIdLinkRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserPersonalInfoIdToUserIdLinkRepositoryImpl" parent="cloudantClient">
         <property name="dbName" value="user_personal_info_id_to_user_id" />
     </bean>
+
+    <bean id="cloudantErrorInfoRepository" class="com.junbo.identity.data.repository.impl.cloudant.ErrorInfoRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="error_info" />
+    </bean>
 </beans>

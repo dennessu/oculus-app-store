@@ -1446,4 +1446,50 @@
             </list>
         </property>
     </bean>
+
+    <bean id="errorInfoFilter" class="com.junbo.identity.core.service.filter.ErrorInfoFilter">
+        <property name="readableProperties">
+            <list>
+                <value>id</value>
+                <value>errorIdentifier</value>
+                <value>locales</value>
+                <value>localeAccuracy</value>
+                <value>futureExpansion</value>
+                <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForCreate">
+            <list>
+                <value>errorIdentifier</value>
+                <value>locales</value>
+                <value>localeAccuracy</value>
+                <value>futureExpansion</value>
+                <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
+            </list>
+        </property>
+
+        <property name="writablePropertiesForUpdate">
+            <list>
+                <value>id</value>
+                <value>errorIdentifier</value>
+                <value>locales</value>
+                <value>localeAccuracy</value>
+                <value>futureExpansion</value>
+                <value>adminInfo</value>
+                <value>createdBy</value>
+                <value>updatedBy</value>
+                <value>createdByClient</value>
+                <value>updatedByClient</value>
+            </list>
+        </property>
+    </bean>
 </beans>

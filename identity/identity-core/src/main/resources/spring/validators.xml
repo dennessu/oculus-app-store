@@ -569,6 +569,10 @@
         <property name="normalizeService" ref="normalizeService" />
     </bean>
 
+    <bean id="errorInfoValidator" class="com.junbo.identity.core.service.validator.impl.ErrorInfoValidatorImpl">
+        <property name="errorInfoRepository" ref="errorInfoRepository" />
+    </bean>
+
     <bean id="bcryptCredentialHash" class="com.junbo.identity.core.service.credential.impl.BcryptCredentialHash">
         <property name="generator" ref="bCryptSaltGenerator" />
     </bean>
@@ -603,4 +607,5 @@
     <bean id="bCryptSaltGenerator" class="com.junbo.identity.core.service.util.impl.BCryptSaltGeneratorImpl">
         <property name="logRound" value="${identity.conf.bcryptLogRound}" />
     </bean>
+
 </beans>

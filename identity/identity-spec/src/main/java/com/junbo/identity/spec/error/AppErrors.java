@@ -168,4 +168,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 412, code = "137", message = "PaymentInstrument Not Found",
             field = "paymentInstrument", reason = "PaymentInstrument with ID {0} is not found")
     AppError paymentInstrumentNotFound(PaymentInstrumentId id);
+
+    @ErrorDef(httpStatusCode = 412, code = "138", message = "ErrorInfo Not Found",
+            field = "errorIdentifier", reason = "ErrorInfo with ID {0} is not found")
+    AppError errorInfoNotFound(ErrorIdentifier errorIdentifier);
 }

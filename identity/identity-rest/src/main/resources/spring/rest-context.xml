@@ -33,6 +33,7 @@
     <bean id="defaultUserTFABackupCodeResource" class="com.junbo.identity.rest.resource.v1.UserTFABackupCodeResourceImpl" />
     <bean id="defaultUserTFABackupCodeAttemptResource" class="com.junbo.identity.rest.resource.v1.UserTFABackupCodeAttemptResourceImpl" />
     <bean id="defaultOrganizationResource" class="com.junbo.identity.rest.resource.v1.OrganizationResourceImpl" />
+    <bean id="defaultErrorInfoResource" class="com.junbo.identity.rest.resource.v1.ErrorInfoResourceImpl" />
     <bean id="defaultMigrationResource" class="com.junbo.identity.rest.resource.v1.MigrationResourceImpl" />
 
     <bean id="defaultAuthenticatorResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.AuthenticatorResourceClientProxyFactory"/>
@@ -59,6 +60,7 @@
     <bean id="defaultUserTFABackupCodeResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserTFABackupCodeResourceClientProxyFactory"/>
     <bean id="defaultUserTFABackupCodeAttemptResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.UserTFABackupCodeAttemptResourceClientProxyFactory"/>
     <bean id="defaultOrganizationResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.OrganizationResourceClientProxyFactory" />
+    <bean id="defaultErrorInfoResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.ErrorInfoResourceClientProxyFactory" />
     <bean id="defaultMigrationResourceClientFactory" class="com.junbo.identity.spec.v1.resource.proxy.MigrationResourceClientProxyFactory" />
 
     <bean id="defaultAuthenticatorResourceRouter" parent="routingRouterBase" />
@@ -85,6 +87,7 @@
     <bean id="defaultUserTFABackupCodeResourceRouter" parent="routingRouterBase" />
     <bean id="defaultUserTFABackupCodeAttemptResourceRouter" parent="routingRouterBase" />
     <bean id="defaultOrganizationResourceRouter" parent="routingRouterBase" />
+    <bean id="defaultErrorInfoResourceRouter" parent="routingRouterBase" />
     <bean id="defaultMigrationResourceRouter" parent="routingRouterBase" />
 
 

@@ -32,4 +32,5 @@
     <alias alias="encryptUserPersonalInfoRepository" name="cloudantEncryptUserPersonalInfoRepository" />
     <alias alias="userPersonalInfoIdToUserIdLinkRepository" name="cloudantUserPersonalInfoIdToUserIdLinkRepository" />
     <alias alias="organizationRepository" name="cloudantOrganizationRepository" />
+    <alias alias="errorInfoRepository" name="cloudantErrorInfoRepository" />
 </beans>

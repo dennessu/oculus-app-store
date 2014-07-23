@@ -104,4 +104,7 @@ public interface SelfMapper {
 
     Organization filterOrganization(Organization organization, MappingContext context);
     Organization mergeOrganization(Organization source, Organization base, MappingContext context);
+
+    ErrorInfo filterErrorInfo(ErrorInfo errorInfo, MappingContext context);
+    ErrorInfo mergeErrorInfo(ErrorInfo source, ErrorInfo base, MappingContext context);
 }

@@ -5,6 +5,8 @@
  */
 package com.junbo.common.cloudant;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * The interface used together with CloudantEntity.
  * Any CloudantEntity which also implement CloudantUnique will use table unique to ensure the key uniqueness.
@@ -17,5 +19,6 @@ public interface CloudantUnique {
      * The unique keys for the same object must always be the same length. If some key is not required, place a null.
      * @return The unique keys.
      */
+    @JsonIgnore
     String[] getUniqueKeys();
 }
