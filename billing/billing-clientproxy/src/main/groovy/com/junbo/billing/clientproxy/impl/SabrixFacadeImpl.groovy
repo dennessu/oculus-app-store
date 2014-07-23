@@ -225,10 +225,12 @@ class SabrixFacadeImpl implements TaxFacade {
                 throw AppErrors.INSTANCE.taxCalculationError('Multi-order tax calculation is not supported.').exception()
             }
             // combination of hostSystem, callingSystemNumber and uniqueInvoiceNumber makes a audit key
-            invoice.hostSystem = configuration.hostSystem
-            invoice.callingSystemNumber = configuration.callingSystemNumber
-            invoice.uniqueInvoiceNumber = getUniqueInvoiceNumber(balance)
-            invoice.invoiceNumber = balance.orderIds?.get(0)?.value
+            if (balance.orderIds[0] != null) {
+                invoice.hostSystem = configuration.hostSystem
+                invoice.callingSystemNumber = configuration.callingSystemNumber
+                invoice.uniqueInvoiceNumber = getUniqueInvoiceNumber(balance)
+                invoice.invoiceNumber = balance.orderIds?.get(0)?.value
+            }
         }
         invoice.deliveryTerm = DeliveryTerm.DDP.name()
         invoice.companyRole = configuration.companyRole
