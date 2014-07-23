@@ -57,7 +57,7 @@
             "knownBugs": "knownBugs",
             "color": "black",
             "size": "small",
-            "supportEmail": "support email",
+            "supportEmail": "jasonfu@silkcloud.com",
             "images":{
                 "thumbnail": {
                     "id": "id of image",
@@ -75,8 +75,8 @@
                 }
             },
             "videos":[],
-            "manualDocument": "the pdf address",
-            "communityForumLink": "community forum link"
+            "manualDocument": "http://www.google.com/manual.pdf",
+            "communityForumLink": "http://www.google.com"
         }
     },
     "countries": {

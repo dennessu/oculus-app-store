@@ -52,10 +52,10 @@
                     "longNotes": "Long notes", 
                     "shortNotes": "Short Notes"
                 }, 
-                "communityForumLink": "community forum link", 
+                "communityForumLink": "http://www.google.com",
                 "longDescription": "long description", 
                 "credits": "credits", 
-                "supportEmail": "support email", 
+                "supportEmail": "jasonfu@silkcloud.com",
                 "videos": [], 
                 "images": {
                     "main": {
@@ -89,7 +89,7 @@
                     }
                 }, 
                 "shortDescription": "short description", 
-                "manualDocument": "the pdf address", 
+                "manualDocument": "http://www.google.com/manual.pdf",
                 "size": "small"
             }
         }, 

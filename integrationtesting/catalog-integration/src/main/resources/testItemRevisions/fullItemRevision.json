@@ -95,10 +95,10 @@
             "credits": "credits",
             "copyright": "copyright",
             "knownBugs": "knownBugs",
-            "supportEmail": "support email",
-            "website": "website",
-            "manualDocument": "the pdf address",
-            "communityForumLink": "community forum link",
+            "supportEmail": "jasonfu@silkcloud.com",
+            "website": "http://www.google.com",
+            "manualDocument": "http://www.google.com/manual.pdf",
+            "communityForumLink": "http://www.google.com",
             "images":{
                 "thumbnail": {
                     "id": "id of image",
