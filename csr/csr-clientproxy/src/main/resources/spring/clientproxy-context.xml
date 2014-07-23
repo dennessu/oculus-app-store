@@ -6,7 +6,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <bean id="csrAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
-        <property name="scope" value="identity.service"/>
+        <property name="scope" value="identity.service email.service "/>
         <property name="deflectionInSeconds" value="300"/>
         <property name="clientSecret" value="${csr.clientproxy.service.clientSecret}"/>
         <property name="clientId" value="${csr.clientproxy.service.clientId}"/>
