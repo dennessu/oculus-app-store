@@ -11,18 +11,18 @@ package com.junbo.billing.spec.enums;
  */
 public enum PropertyKey {
     BALANCE_DESCRIPTION,
-    ORIGINAL_INVOICE_DATE,
     CUSTOMER_NAME,
     IP_GEO_LOCATION,
     PAYMENT_METHOD,
     IP_ADDRESS,
-    SEQ_NUMBER,
     EXCHANGE_RATE,
     LOCALE,
     PI_ADDRESS,
     TAX_STATUS,
-    FUNCTIONAL_CURRENCY,
+    BIN_NUMBER,
+    BIN_COUNTRY,
     BILLING_ADDRESS,
+    INVOICE_DATE,
 
     ITEM_NAME,
     ITEM_UNIT_PRICE,

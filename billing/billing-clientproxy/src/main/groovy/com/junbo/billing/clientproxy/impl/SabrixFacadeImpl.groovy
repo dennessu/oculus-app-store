@@ -73,6 +73,7 @@ class SabrixFacadeImpl implements TaxFacade {
             }
     private static final Map<String, TaxAuthority> AUTHORITY_MAP
     private static final Map<String, String> PRODUCT_CODE_MAP
+    private static final Map<String, String> EXCHANGE_RATE_MAP
 
     static {
         Map<String, TaxAuthority> authorityMap = new HashMap<String, TaxAuthority>()
@@ -107,6 +108,24 @@ class SabrixFacadeImpl implements TaxFacade {
         productCodeMap.put(ItemType.STORED_VALUE.name(), ProductCode.STORE_BALANCE.code)
 
         PRODUCT_CODE_MAP = Collections.unmodifiableMap(productCodeMap)
+
+        Map<String, String> exchangeRateMap = new HashMap<String, String>()
+        exchangeRateMap.put('AUD', '0.94')
+        exchangeRateMap.put('EUR', '1.35')
+        exchangeRateMap.put('BGN', '0.69')
+        exchangeRateMap.put('CAD', '0.93')
+        exchangeRateMap.put('HRK', '0.18')
+        exchangeRateMap.put('CZK', '0.049')
+        exchangeRateMap.put('DKK', '0.18')
+        exchangeRateMap.put('HUF', '0.0044')
+        exchangeRateMap.put('LVL', '1.93')
+        exchangeRateMap.put('LTL', '0.39')
+        exchangeRateMap.put('PLN', '0.33')
+        exchangeRateMap.put('RON', '0.30')
+        exchangeRateMap.put('SEK', '0.15')
+        exchangeRateMap.put('GBP', '1.71')
+
+        EXCHANGE_RATE_MAP = Collections.unmodifiableMap(exchangeRateMap)
     }
     @Override
     Promise<Balance> calculateTaxQuote(Balance balance, Address shippingAddress, Address piAddress) {
@@ -213,15 +232,22 @@ class SabrixFacadeImpl implements TaxFacade {
         }
         invoice.deliveryTerm = DeliveryTerm.DDP.name()
         invoice.companyRole = configuration.companyRole
-        invoice.externalCompanyId = getEntity(piAddress).externalCompanyId
+        invoice.externalCompanyId = configuration.externalCompanyId
         boolean isRefund = BalanceType.REFUND.name() == balance.type
         if (isRefund && isAudited) {
             invoice.originalInvoiceNumber = balance.orderIds?.get(0)?.value
-            invoice.originalInvoiceDate = balance.propertySet.get(PropertyKey.ORIGINAL_INVOICE_DATE.name())
+            invoice.originalInvoiceDate = balance.propertySet.get(PropertyKey.INVOICE_DATE.name())
         }
         invoice.calculationDirection = isRefund && isAudited ?
                 CALCULATION_DIRECTION_REVERSE : CALCULATION_DIRECTION_FORWARD
-        invoice.invoiceDate = DATE_FORMATTER.get().format(new Date())
+        if (isAudited) {
+            invoice.invoiceDate = balance.propertySet.get(PropertyKey.INVOICE_DATE.name())
+        }
+        else {
+            String invoiceDate = DATE_FORMATTER.get().format(new Date())
+            invoice.invoiceDate = invoiceDate
+            balance.propertySet.put(PropertyKey.INVOICE_DATE.name(), invoiceDate)
+        }
         invoice.currencyCode = balance.currency
         invoice.isAudited = isAudited
         invoice.customerName = balance.propertySet.get(PropertyKey.CUSTOMER_NAME.name())
@@ -234,6 +260,11 @@ class SabrixFacadeImpl implements TaxFacade {
         else {
             shipToAddress = billToAddress
         }
+        invoice.sellerPrimary = new SabrixAddress()
+        invoice.sellerPrimary.country = configuration.VATRegistrationCountries.contains(billToAddress.country) ?
+                billToAddress.country : 'US'
+        invoice.buyerPrimary = new SabrixAddress()
+        invoice.buyerPrimary.country = billToAddress.country
 //        invoice.billTo = billToAddress
 //        invoice.shipTo = shipToAddress
 //        invoice.shipFrom = getSabrixShipFromAddress()
@@ -281,14 +312,14 @@ class SabrixFacadeImpl implements TaxFacade {
     }
 
     String getUniqueInvoiceNumber(Balance balance) {
-        def seqNum = balance.propertySet.get(PropertyKey.SEQ_NUMBER.name())
-        if (seqNum == null) {
-            seqNum = '1'
+        String uniqueInvoiceNumber = balance.orderIds[0]?.value.toString()
+        if (balance.id != null) {
+            uniqueInvoiceNumber += balance.getId().value.toString()
         }
         if (BalanceType.REFUND.name() == balance.type) {
-            return REFUND_PREFIX + '_' + balance.orderIds[0]?.value + '_' + seqNum
+            return REFUND_PREFIX + '_' + uniqueInvoiceNumber
         }
-        return balance.orderIds[0]?.value
+        return uniqueInvoiceNumber
     }
 
     void setupUserElement(Invoice invoice, Balance balance) {
@@ -322,10 +353,10 @@ class SabrixFacadeImpl implements TaxFacade {
             attribute4.value = balance.propertySet.get(PropertyKey.PAYMENT_METHOD.name())
             invoice.userElement.add(attribute4)
         }
-        if (balance.propertySet.get(PropertyKey.EXCHANGE_RATE.name()) != null) {
+        if (EXCHANGE_RATE_MAP.get(balance.currency) != null) {
             UserElement attribute5 = new UserElement()
             attribute5.name = 'ATTRIBUTE5'
-            attribute5.value = balance.propertySet.get(PropertyKey.EXCHANGE_RATE.name())
+            attribute5.value = EXCHANGE_RATE_MAP.get(balance.currency)
             invoice.userElement.add(attribute5)
         }
         if (balance.propertySet.get(PropertyKey.IP_ADDRESS.name()) != null) {
@@ -334,11 +365,17 @@ class SabrixFacadeImpl implements TaxFacade {
             attribute6.value = balance.propertySet.get(PropertyKey.IP_ADDRESS.name())
             invoice.userElement.add(attribute6)
         }
-        if (balance.propertySet.get(PropertyKey.FUNCTIONAL_CURRENCY.name()) != null) {
+        if (balance.propertySet.get(PropertyKey.BIN_NUMBER.name()) != null) {
             UserElement attribute7 = new UserElement()
             attribute7.name = 'ATTRIBUTE7'
-            attribute7.value = balance.propertySet.get(PropertyKey.FUNCTIONAL_CURRENCY.name())
+            attribute7.value = balance.propertySet.get(PropertyKey.BIN_NUMBER.name())
             invoice.userElement.add(attribute7)
+        }
+        if (balance.propertySet.get(PropertyKey.BIN_COUNTRY.name()) != null) {
+            UserElement attribute8 = new UserElement()
+            attribute8.name = 'ATTRIBUTE8'
+            attribute8.value = balance.propertySet.get(PropertyKey.BIN_COUNTRY.name())
+            invoice.userElement.add(attribute8)
         }
     }
 

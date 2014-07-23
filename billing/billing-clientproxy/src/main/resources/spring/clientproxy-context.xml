@@ -77,6 +77,8 @@
         <property name="hostSystem" value="${sabrix.host.system}"/>
         <property name="callingSystemNumber" value="${sabrix.calling.system.number}"/>
         <property name="companyRole" value="${sabrix.company.role}"/>
+        <property name="externalCompanyId" value="${sabrix.external.company.id}"/>
+        <property name="VATRegistrationCountries" value="${sabrix.vat.registration.countries}"/>
         <property name="username" value="${sabrix.username}"/>
         <property name="password" value="${sabrix.password}"/>
         <property name="version" value="${sabrix.version}"/>

@@ -62,6 +62,12 @@ class Invoice {
     @XStreamAlias('ORIGINAL_INVOICE_NUMBER')
     String originalInvoiceNumber
 
+    @XStreamAlias('SELLER_PRIMARY')
+    SabrixAddress sellerPrimary
+
+    @XStreamAlias('BUYER_PRIMARY')
+    SabrixAddress buyerPrimary
+
     @XStreamAlias('BILL_TO')
     SabrixAddress billTo
 

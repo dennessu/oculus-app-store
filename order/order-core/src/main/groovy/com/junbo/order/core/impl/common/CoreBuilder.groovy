@@ -122,9 +122,9 @@ class CoreBuilder {
                     balanceItem.propertySet.put(PropertyKey.ORGANIZATION_ID.name(), matched.offerOrganization)
                     balanceItem.propertySet.put(PropertyKey.VENDOR_NAME.name(), matched.offerOrganizationName)
                     balance.addBalanceItem(balanceItem)
-                    balance.propertySet.put(PropertyKey.ORIGINAL_INVOICE_DATE.name(),
-                            DATE_FORMATTER.get().format(diffOrder.purchaseTime))
                 }
+                balance.propertySet.put(PropertyKey.INVOICE_DATE.name(),
+                        b.propertySet.get(PropertyKey.INVOICE_DATE.name()))
             }
             returnBalances << balance
         }

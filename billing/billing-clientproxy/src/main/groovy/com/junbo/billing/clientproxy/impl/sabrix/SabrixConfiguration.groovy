@@ -16,6 +16,8 @@ class SabrixConfiguration {
     String hostSystem
     String callingSystemNumber
     String companyRole
+    String externalCompanyId
+    String VATRegistrationCountries
     String username
     String password
     String version
