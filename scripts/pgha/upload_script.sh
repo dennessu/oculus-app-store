@@ -49,6 +49,26 @@ ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
 ENDSSH
 }
 
+function uploadBCP {
+
+if [[ -z "$BCP_HOST" ]]; then
+    echo BCP Slave not set for master $MASTER_HOST, skip upload
+    return
+fi
+
+echo Uploading to slave $DEPLOYMENT_ACCOUNT@$BCP_HOST
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$BCP_HOST << ENDSSH
+    rm -rf $DEPLOYMENT_PATH
+    mkdir $DEPLOYMENT_PATH
+ENDSSH
+
+scp -r ./ $DEPLOYMENT_ACCOUNT@$BCP_HOST:$DEPLOYMENT_PATH
+
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$BCP_HOST << ENDSSH
+    chown $DEPLOYMENT_ACCOUNT:$DEPLOYMENT_ACCOUNT $DEPLOYMENT_PATH/*
+ENDSSH
+}
+
 function uploadReplica {
 
 if [[ -z "$REPLICA_HOST" ]]; then
@@ -79,6 +99,7 @@ do
 
     uploadMaster && echo "upload master done!"
     uploadSlave && echo "upload slave done!"
+    uploadBCP && echo "upload bcp done!"
     uploadReplica && echo "upload replica done!"
 done
 

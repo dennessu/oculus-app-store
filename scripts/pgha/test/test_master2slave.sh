@@ -18,6 +18,10 @@ echo 'check streaming replication data on SLAVE...'
 $PGBIN_PATH/psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "SELECT max(id) FROM tly"
 $PGBIN_PATH/psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "SELECT count('x') FROM tly"
 
+echo 'check streaming replication data on BCP...'
+$PGBIN_PATH/psql postgres -h $BCP_HOST -p $SLAVE_DB_PORT -c "SELECT max(id) FROM tly"
+$PGBIN_PATH/psql postgres -h $BCP_HOST -p $SLAVE_DB_PORT -c "SELECT count('x') FROM tly"
+
 echo 'check londiste replication data on REPLICA...'
 $PGBIN_PATH/psql postgres -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "SELECT max(id) FROM tly"
 $PGBIN_PATH/psql postgres -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "SELECT count('x') FROM tly"

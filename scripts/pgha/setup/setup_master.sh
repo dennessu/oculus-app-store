@@ -36,6 +36,7 @@ local   all             ${PGUSER}                                       ident
 host    all             ${PGUSER}       127.0.0.1/32                    ident
 host    all             ${PGUSER}       ${MASTER_HOST}/32               ident
 host    all             ${PGUSER}       ${SLAVE_HOST:-127.0.0.1}/32     ident
+host    all             ${PGUSER}       ${BCP_HOST:-127.0.0.1}/32       ident
 host    all             ${PGUSER}       ${REPLICA_HOST:-127.0.0.1}/32   ident
 # IPv6 local connections:
 host    all             ${PGUSER}       ::1/128                         ident
@@ -43,6 +44,7 @@ host    all             ${PGUSER}       ::1/128                         ident
 # replication privilege.
 host    replication     ${PGUSER}       ${MASTER_HOST}/32               ident
 host    replication     ${PGUSER}       ${SLAVE_HOST:-127.0.0.1}/32     ident
+host    replication     ${PGUSER}       ${BCP_HOST:-127.0.0.1}/32       ident
 host    replication     ${PGUSER}       ${REPLICA_HOST:-127.0.0.1}/32   ident
 EOF
 

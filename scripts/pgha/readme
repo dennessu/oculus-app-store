@@ -11,8 +11,8 @@
         [silkcloud] auto created by PGHA script
 
 #create PGHA base direcotry
-    [devops] sudo mkdir -p /var/pgha
-    [devops] sudo chown silkcloud:silkcloud /var/pgha
+    [devops] sudo mkdir -p /var/silkcloud
+    [devops] sudo chown silkcloud:silkcloud /var/silkcloud
 
 [Postgres Installation]
 #install postgresql
@@ -77,13 +77,16 @@
 #[slave] clean up slave
     [silkcloud] $DEPLOYMENT_PATH/purge/purge_slave.sh
 
+#[bcp] clean up bcp
+    [silkcloud] $DEPLOYMENT_PATH/purge/purge_slave.sh
+
 #[replica] clean up replica
     [silkcloud] $DEPLOYMENT_PATH/purge/purge_replica.sh
 
-#[master/slave/replica]
+#[master/slave/replica/bcp]
     [silkcloud] create pgbouncer auth file in ~/.pgbouncer_auth and chmod 600
 
-#[master/slave/replica]
+#[master/slave/replica/bcp]
     [silkcloud] generate md5 password: "md5" + md5(password + username)
     [silkcloud] echo '"silkcloud" "PASSWORD"' > ~/.pgbouncer_auth
 
@@ -100,7 +103,7 @@
 #[master] full base backup master database
     $DEPLOYMENT_PATH/util/base_backup.sh
 
-#[slave] setup slave database
+#[slave/bcp] setup slave database
     $DEPLOYMENT_PATH/setup/setup_slave.sh
 
 

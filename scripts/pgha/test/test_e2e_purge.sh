@@ -9,6 +9,11 @@ ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
 $DEPLOYMENT_PATH/purge/purge_slave.sh
 ENDSSH
 
+echo "purge bcp..."
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$BCP_HOST << ENDSSH
+$DEPLOYMENT_PATH/purge/purge_slave.sh
+ENDSSH
+
 echo "purge replica..."
 ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
 $DEPLOYMENT_PATH/purge/purge_replica.sh
