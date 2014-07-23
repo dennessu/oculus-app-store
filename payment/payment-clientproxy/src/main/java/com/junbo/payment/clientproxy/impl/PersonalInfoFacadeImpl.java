@@ -82,6 +82,7 @@ public class PersonalInfoFacadeImpl implements PersonalInfoFacade {
         myAddress.setPostalCode(address.getPostalCode());
         myAddress.setCity(address.getCity());
         myAddress.setState(address.getSubCountry());
+        myAddress.setUnitNumber(address.getStreet1());
         return myAddress;
     }
 

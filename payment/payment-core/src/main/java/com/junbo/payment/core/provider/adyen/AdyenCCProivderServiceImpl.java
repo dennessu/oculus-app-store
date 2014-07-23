@@ -209,6 +209,9 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
             sbReq.append("&paymentRequest.merchantAccount=" + urlEncode(getMerchantAccount()));
             sbReq.append("&paymentRequest.reference=" + piId.toString());
             sbReq.append("&paymentRequest.additionalData.card.encrypted.json=" + urlEncode(request.getAccountNum()));
+            if(CommonUtil.isNullOrEmpty(request.getUserInfo().getEmail())){
+                throw AppClientExceptions.INSTANCE.missingEmail().exception();
+            }
             sbReq.append("&paymentRequest.shopperEmail=" + urlEncode(request.getUserInfo().getEmail()));
             sbReq.append("&paymentRequest.shopperReference=" + piId.toString());
             sbReq.append("&paymentRequest.recurring.contract=" + RECURRING);

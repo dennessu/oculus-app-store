@@ -61,4 +61,8 @@ public interface AppClientExceptions {
             reason = "The billing address id {0} is invalid due to {1}")
     AppError invalidBillingAddressId(String billingAddressId, String reason);
 
+    @ErrorDef(httpStatusCode = 412, code = "112", message = "missing email info",
+            reason = "the email info is missing")
+    AppError missingEmail();
+
 }
