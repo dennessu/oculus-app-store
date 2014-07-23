@@ -71,7 +71,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
                 formParams.put("scope", "identity.service payment.service order.service");
                 break;
             case BILLING:
-                formParams.put("scope", "identity.service billing.service");
+                formParams.put("scope", "identity.service payment.service billing.service");
                 break;
             default:
                 formParams.put("scope", componentType.toString() + ".service");

@@ -107,11 +107,16 @@ public class RefundTesting extends BaseOrderTestClass {
                     "5. Get balance by order Id",
                     "6. Verify transactions contain expected refund info,",
                     "7. Get order by order Id",
-                    "8. Verify order response info"
+                    "8. Verify order response info",
+                    "9. Put order with partial amount",
+                    "10. Get balance by order Id",
+                    "11. Verify transactions contain expected refund info,",
+                    "12. Get order by order Id",
+                    "13. Verify order response info"
             }
     )
     @Test
-    public void testOrderPartialAmountRefund() throws Exception {
+    public void testRepeatedOrderPartialAmountRefund() throws Exception {
         Map<String, Integer> offerList = new HashedMap();
         Country country = Country.DEFAULT;
         Currency currency = Currency.DEFAULT;
@@ -133,8 +138,8 @@ public class RefundTesting extends BaseOrderTestClass {
 
 
         Map<String, BigDecimal> partialRefundAmounts = new HashedMap();
-        partialRefundAmounts.put(offer_digital_normal1, new BigDecimal(9));
-        partialRefundAmounts.put(offer_digital_normal2, new BigDecimal(1));
+        partialRefundAmounts.put(offer_digital_normal1, new BigDecimal(5));
+        partialRefundAmounts.put(offer_digital_normal2, new BigDecimal(5));
 
         testDataProvider.getRefundedOrderInfo(expectedOrderInfo, null, partialRefundAmounts);
 
@@ -153,8 +158,16 @@ public class RefundTesting extends BaseOrderTestClass {
 
         validationHelper.validateSingleTransaction(balanceId, transactionInfo);
 
-    }
+        testDataProvider.getRefundedOrderInfo(expectedOrderInfo, null, partialRefundAmounts);
 
+        testDataProvider.refundOrder(orderId, null, partialRefundAmounts);
+
+        validationHelper.validateOrderInfo(orderId, expectedOrderInfo);
+
+        balanceId = testDataProvider.getBalancesByOrderId(orderId).get(2);
+
+        validationHelper.validateSingleTransaction(balanceId, transactionInfo);
+    }
 
     @Property(
             priority = Priority.Dailies,

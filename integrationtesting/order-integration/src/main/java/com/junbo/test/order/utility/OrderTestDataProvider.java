@@ -181,6 +181,10 @@ public class OrderTestDataProvider {
         return orderClient.getOrderByOrderId(orderId);
     }
 
+    public String getOrder(String orderId, int expectedResponseCode) throws Exception {
+        return orderClient.getOrderByOrderId(orderId, expectedResponseCode);
+    }
+
     public String postOrder(Order order) throws Exception {
         return orderClient.postOrder(order);
     }
