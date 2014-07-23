@@ -394,7 +394,8 @@ fi
 ```
 If it doesn't print the error, continue with the following statements to sync keys:
 ```
-ssh $CRYPTO_SERVER_2 pg_dump crypto | gzip > backup.sql.gz
+ssh $CRYPTO_SERVER_1 pg_dump crypto | gzip > backup1.sql.gz
+ssh $CRYPTO_SERVER_2 pg_dump crypto | gzip > backup2.sql.gz
 ssh $CRYPTO_SERVER_2 psql -d postgres << EOF
 UPDATE pg_database SET datallowconn = 'false' WHERE datname = 'crypto';
 SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'crypto';
