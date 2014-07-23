@@ -33,14 +33,12 @@ import com.junbo.oauth.spec.model.LoginState
 import com.junbo.oauth.spec.param.OAuthParameters
 import com.junbo.csr.spec.def.CsrLogActionType
 import groovy.transform.CompileStatic
-import org.glassfish.jersey.server.ContainerRequest
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.Assert
 import org.springframework.util.StringUtils
 
-import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.core.Response
 import javax.ws.rs.core.UriBuilder
 /**
@@ -181,8 +179,8 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
     }
 
     @Override
-    Promise<Response> sendVerifyEmail(String locale, String country, UserId userId, ContainerRequestContext request) {
-        return userService.sendVerifyEmail(userId, locale, country, ((ContainerRequest)request).baseUri).then {
+    Promise<Response> sendVerifyEmail(String locale, String country, UserId userId) {
+        return userService.sendVerifyEmail(userId, locale, country).then {
             // audit csr action on success
             csrActionAudit(userId)
             return Promise.pure(Response.noContent().build())

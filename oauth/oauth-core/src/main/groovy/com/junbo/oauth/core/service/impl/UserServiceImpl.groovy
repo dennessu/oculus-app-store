@@ -42,7 +42,6 @@ import com.junbo.oauth.spec.model.ResetPasswordCode
 import com.junbo.oauth.spec.model.UserInfo
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
-import org.glassfish.jersey.server.ContainerRequest
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
@@ -82,6 +81,8 @@ class UserServiceImpl implements UserService {
     private ResetPasswordCodeRepository resetPasswordCodeRepository
 
     private EmailVerifyCodeRepository emailVerifyCodeRepository
+
+    private URI emailLinkBaseUri
 
     @Required
     void setTokenService(OAuthTokenService tokenService) {
@@ -132,6 +133,11 @@ class UserServiceImpl implements UserService {
     @Required
     void setEmailVerifyCodeRepository(EmailVerifyCodeRepository emailVerifyCodeRepository) {
         this.emailVerifyCodeRepository = emailVerifyCodeRepository
+    }
+
+    @Required
+    void setEmailLinkBaseUri(String emailLinkBaseUri) {
+        this.emailLinkBaseUri = new URI(emailLinkBaseUri)
     }
 
     @Override
@@ -207,10 +213,8 @@ class UserServiceImpl implements UserService {
     Promise<String> sendVerifyEmail(UserId userId, ActionContextWrapper contextWrapper) {
         String locale = contextWrapper.viewLocale
         String country = contextWrapper.viewCountry
-        def request = (ContainerRequest) contextWrapper.request
-        URI baseUri = request.baseUri
 
-        return sendVerifyEmail(userId, locale, country, baseUri).then { String link ->
+        return sendVerifyEmail(userId, locale, country).then { String link ->
             contextWrapper.emailVerifyLink = link
             return Promise.pure(link)
         }
@@ -238,7 +242,7 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    Promise<String> sendVerifyEmail(UserId userId, String locale, String country, URI baseUri) {
+    Promise<String> sendVerifyEmail(UserId userId, String locale, String country) {
         if (userId == null || userId.value == null) {
             throw AppErrors.INSTANCE.missingUserId().exception()
         }
@@ -259,7 +263,7 @@ class UserServiceImpl implements UserService {
 
                 emailVerifyCodeRepository.save(code)
 
-                UriBuilder uriBuilder = UriBuilder.fromUri(baseUri)
+                UriBuilder uriBuilder = UriBuilder.fromUri(emailLinkBaseUri)
                 uriBuilder.path(EMAIL_VERIFY_PATH)
                 uriBuilder.queryParam(OAuthParameters.EMAIL_VERIFY_CODE, code.code)
                 uriBuilder.queryParam(OAuthParameters.LOCALE, locale)
@@ -277,7 +281,7 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    Promise<String> sendResetPassword(UserId userId, String locale, String country, URI baseUri) {
+    Promise<String> sendResetPassword(UserId userId, String locale, String country) {
         if (userId == null || userId.value == null) {
             throw AppErrors.INSTANCE.missingUserId().exception()
         }
@@ -299,7 +303,7 @@ class UserServiceImpl implements UserService {
 
                 resetPasswordCodeRepository.save(code)
 
-                UriBuilder uriBuilder = UriBuilder.fromUri(baseUri)
+                UriBuilder uriBuilder = UriBuilder.fromUri(emailLinkBaseUri)
                 uriBuilder.path(EMAIL_RESET_PASSWORD_PATH)
                 uriBuilder.queryParam(OAuthParameters.RESET_PASSWORD_CODE, code.code)
                 if (!StringUtils.isEmpty(locale)) {
@@ -324,10 +328,8 @@ class UserServiceImpl implements UserService {
     Promise<String> sendResetPassword(UserId userId, ActionContextWrapper contextWrapper) {
         String locale = contextWrapper.viewLocale
         String country = contextWrapper.viewCountry
-        def request = (ContainerRequest) contextWrapper.request
-        URI baseUri = request.baseUri
 
-        return sendResetPassword(userId, locale, country, baseUri)
+        return sendResetPassword(userId, locale, country)
     }
 
     private Promise<String> getDefaultUserEmail(User user) {

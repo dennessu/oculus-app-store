@@ -8,16 +8,15 @@ import com.junbo.csr.spec.resource.CsrLogResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.ConversationNotfFoundException
 import com.junbo.langur.core.webflow.executor.FlowExecutor
+import com.junbo.oauth.common.Utils
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.service.UserService
 import com.junbo.oauth.core.util.ResponseUtil
 import com.junbo.oauth.spec.endpoint.ResetPasswordEndpoint
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
-import org.glassfish.jersey.server.ContainerRequest
 import org.springframework.beans.factory.annotation.Required
 
-import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.core.MultivaluedMap
 import javax.ws.rs.core.Response
 
@@ -104,32 +103,32 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
     }
 
     @Override
-    Promise<Response> resetPassword(String conversationId, String event, String locale, String country, String username, String userEmail,
-                                    ContainerRequestContext request, MultivaluedMap<String, String> formParams) {
+    Promise<Response> resetPassword(String conversationId, String event, String locale, String country,
+                                    String username, String userEmail, MultivaluedMap<String, String> formParams) {
         if (conversationId == null) {
             if (username != null) {
                 return userService.getUserIdByUsername(username).then { UserId id ->
-                    return userService.sendResetPassword(id, locale, country, ((ContainerRequest)request).baseUri).then { String uri ->
+                    return userService.sendResetPassword(id, locale, country).then { String uri ->
                         csrActionAudit(id)
                         if (debugEnabled) {
                             return Promise.pure(Response.ok().entity(uri).build())
                         }
 
                         return userService.getUserEmailByUserId(id).then { String email ->
-                            Promise.pure(Response.ok().entity(com.junbo.oauth.common.Utils.maskEmail(email)).build())
+                            Promise.pure(Response.ok().entity(Utils.maskEmail(email)).build())
                         }
                     }
                 }
             }
             else if (userEmail != null) {
                 return userService.getUserIdByUserEmail(userEmail).then { UserId id ->
-                    return userService.sendResetPassword(id, locale, country, ((ContainerRequest)request).baseUri).then { String uri ->
+                    return userService.sendResetPassword(id, locale, country).then { String uri ->
                         csrActionAudit(id)
                         if (debugEnabled) {
                             return Promise.pure(Response.ok().entity(uri).build())
                         }
 
-                        Promise.pure(Response.ok().entity(com.junbo.oauth.common.Utils.maskEmail(userEmail)).build())
+                        Promise.pure(Response.ok().entity(Utils.maskEmail(userEmail)).build())
                     }
                 }
             }

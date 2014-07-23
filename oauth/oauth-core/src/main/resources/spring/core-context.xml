@@ -25,6 +25,7 @@
         <property name="resetPasswordCodeRepository" ref="resetPasswordCodeRepository" />
         <property name="emailVerifyCodeRepository" ref="emailVerifyCodeRepository"/>
         <property name="userCredentialResource" ref="oauth_userCredentialResource" />
+        <property name="emailLinkBaseUri" value="${oauth.core.email.linkBaseUri}"/>
     </bean>
 
     <bean id="clientService" class="com.junbo.oauth.core.service.impl.ClientServiceImpl">
