@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * Created by weiyu_000 on 7/17/14.
  */
-public class OrderTesting extends BaseOrderTestClass{
+public class OrderTesting extends BaseOrderTestClass {
     @Property(
             priority = Priority.BVT,
             features = "Post /orders",
@@ -79,7 +79,7 @@ public class OrderTesting extends BaseOrderTestClass{
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
 
         testDataProvider.postOrder(
-                uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
+                uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList, 400);
 
         //TODO verfiy response
     }
@@ -106,7 +106,7 @@ public class OrderTesting extends BaseOrderTestClass{
         offerList.put(offer_digital_normal1, 1);
 
         testDataProvider.postOrder(
-                uid, Country.DEFAULT, Currency.DEFAULT, "Invalid", false, offerList);
+                uid, Country.DEFAULT, Currency.DEFAULT, "Invalid", false, offerList, 412);
 
         //TODO verfiy response
     }
@@ -131,13 +131,15 @@ public class OrderTesting extends BaseOrderTestClass{
 
         Map<String, Integer> offerList = new HashedMap();
 
-        offerList.put(offer_digital_normal1, 1);
+        offerList.put(offer_physical_normal1, 1);
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
 
-        testDataProvider.postOrder(
+        String orderId = testDataProvider.postOrder(
                 uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
+
+        testDataProvider.updateOrderTentative(orderId, false);
 
         //TODO verify response
     }
@@ -151,25 +153,14 @@ public class OrderTesting extends BaseOrderTestClass{
             description = "Test get order by invalid order id",
             steps = {
                     "1. Post a new user",
-                    "2. Post new credit card to user",
+                    "2. Get order by invalid order Id",
                     "3. Post physical order without shipping address",
                     "6. Verify orders response"
             }
     )
     @Test
     public void testGetOrderByInvalidOrderId0() throws Exception {
-        String uid = testDataProvider.createUser();
-
-        Map<String, Integer> offerList = new HashedMap();
-
-        offerList.put(offer_digital_normal1, 1);
-
-        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
-        String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
-
-        testDataProvider.postOrder(
-                uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
-
+        testDataProvider.getOrder("0", 404);
         //TODO verify response
     }
 

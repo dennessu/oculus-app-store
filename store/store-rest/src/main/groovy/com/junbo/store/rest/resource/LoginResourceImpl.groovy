@@ -193,7 +193,7 @@ class LoginResourceImpl implements  LoginResource {
                 throw ex
             }
         }.then {
-            resourceContainer.emailVerifyEndpoint.sendVerifyEmail(createUserRequest.preferredLocale, createUserRequest.cor, user.getId(), context)
+            resourceContainer.emailVerifyEndpoint.sendVerifyEmail(createUserRequest.preferredLocale, createUserRequest.cor, user.getId())
         }.then {
             // get the auth token
             innerSignIn(user.username, createUserRequest.password)

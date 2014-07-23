@@ -32,11 +32,8 @@ cd apphost-identity-0.0.1-SNAPSHOT
 EOF
 
 scp /home/silkcloud/apphost-dataloader-0.0.1-SNAPSHOT.zip 10.24.32.10:/var/silkcloud
-#ssh 10.24.32.10 << EOF
-#cd /var/silkcloud
-#unzip -o apphost-dataloader-0.0.1-SNAPSHOT.zip
-#cd apphost-dataloader-0.0.1-SNAPSHOT
-#./dataloader.sh masterkey
-#./dataloader.sh
-#EOF
+ssh 10.24.32.10 << EOF
+cd /var/silkcloud
+unzip -o apphost-dataloader-0.0.1-SNAPSHOT.zip
+EOF
 

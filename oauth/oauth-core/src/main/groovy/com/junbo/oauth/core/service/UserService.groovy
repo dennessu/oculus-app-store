@@ -33,10 +33,10 @@ interface UserService {
 
     Promise<String> sendVerifyEmail(UserId userId, ActionContextWrapper contextWrapper)
 
-    Promise<String> sendVerifyEmail(UserId userId, String locale, String country, URI baseUri)
+    Promise<String> sendVerifyEmail(UserId userId, String locale, String country)
 
     Promise<String> sendResetPassword(UserId userId, ActionContextWrapper contextWrapper)
 
-    Promise<String> sendResetPassword(UserId userId, String locale, String country, URI baseUri)
+    Promise<String> sendResetPassword(UserId userId, String locale, String country)
 
 }

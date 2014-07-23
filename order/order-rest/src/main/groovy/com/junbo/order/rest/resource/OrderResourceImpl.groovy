@@ -7,6 +7,8 @@ import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
+import com.junbo.csr.spec.model.CsrLog
+import com.junbo.csr.spec.resource.CsrLogResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.auth.OrderAuthorizeCallbackFactory
 import com.junbo.order.core.OrderService
@@ -15,6 +17,7 @@ import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
 import com.junbo.order.spec.resource.OrderResource
+import com.junbo.csr.spec.def.CsrLogActionType
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 import org.apache.commons.collections.CollectionUtils
@@ -37,6 +40,10 @@ class OrderResourceImpl implements OrderResource {
 
     @Autowired
     OrderService orderService
+
+    @Qualifier('order.csrLogClient')
+    @Autowired
+    CsrLogResource csrLogResource
 
     @Qualifier('orderValidator')
     @Autowired
@@ -121,7 +128,11 @@ class OrderResourceImpl implements OrderResource {
 
                         LOGGER.info('name=Refund_Or_Cancel_Non_Tentative_Offer')
                         oldOrder.orderItems = order.orderItems
-                        return orderService.refundOrCancelOrder(oldOrder, new OrderServiceContext(order, new ApiContext()))
+                        return orderService.refundOrCancelOrder(oldOrder, new OrderServiceContext(order, new ApiContext())).then { Order refundedOrder ->
+                            //todo
+                            csrActionAudit('USD 10')
+                            return Promise.pure(refundedOrder)
+                        }
                     }
                     LOGGER.info('name=Update_Non_Tentative_Offer')
                     // update shipping address after settlement
@@ -193,6 +204,12 @@ class OrderResourceImpl implements OrderResource {
                 results.setItems(orders)
                 return results
             }
+        }
+    }
+
+    private void csrActionAudit(String info) {
+        if (AuthorizeContext.hasScopes('csr')) {
+            csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.RefundIssued, property: info)).get()
         }
     }
 }

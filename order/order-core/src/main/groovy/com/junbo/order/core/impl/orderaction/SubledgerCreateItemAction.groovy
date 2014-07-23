@@ -61,7 +61,7 @@ class SubledgerCreateItemAction implements Action, InitializingBean {
 
     private Promise innerExecute(OrderServiceContext serviceContext) {
         def order = serviceContext.order
-        return builder.getOffers(serviceContext).syncThen {
+        return builder.getOffers(serviceContext).then {
             Promise.each(serviceContext.order.orderItems) { OrderItem orderItem ->
                 if (orderItem.developerRevenue == null || orderItem.developerRevenue == BigDecimal.ZERO) {
                     if (LOGGER.isDebugEnabled()) {

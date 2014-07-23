@@ -9,7 +9,7 @@
     <context:component-scan base-package="com.junbo.order.clientproxy"/>
 
     <bean id="orderAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
-        <property name="scope" value="identity.service email.service billing.service catalog.service fulfilment.service rating.service payment.service subledger.service"/>
+        <property name="scope" value="identity.service email.service billing.service catalog.service fulfilment.service rating.service payment.service subledger.service csr.service"/>
         <property name="deflectionInSeconds" value="300"/>
         <property name="clientSecret" value="${order.clientproxy.service.clientSecret}"/>
         <property name="clientId" value="${order.clientproxy.service.clientId}"/>
@@ -95,6 +95,11 @@
 
     <bean id="order.emailTemplateClient" class="com.junbo.email.spec.resource.proxy.EmailTemplateResourceClientProxy"
           parent="emailTemplateResourceClientProxy">
+        <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
+    </bean>
+
+    <bean id="order.csrLogClient" class="com.junbo.csr.spec.resource.proxy.CsrLogResourceClientProxy"
+          parent="csrLogResourceClientProxy">
         <property name="accessTokenProvider" ref="orderAccessTokenProvider"/>
     </bean>
 

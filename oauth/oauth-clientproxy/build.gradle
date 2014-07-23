@@ -11,6 +11,7 @@ dependencies {
     compile junboProject(':identity-spec')
     compile junboProject(':email-spec')
     compile junboProject(':payment-spec')
+    compile junboProject(':csr-spec')
 
     processor junboProject(':langur-processor')
     processor (libraries.log4j)

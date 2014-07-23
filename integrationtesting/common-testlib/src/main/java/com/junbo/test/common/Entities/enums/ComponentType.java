@@ -29,6 +29,7 @@ public enum ComponentType {
     OAUTH("oauth"),
     PAYMENT("payment"),
     ORDER("order"),
+    CSR("csr"),
     SUBSCRIPTION("subscription");
 
     private String name;

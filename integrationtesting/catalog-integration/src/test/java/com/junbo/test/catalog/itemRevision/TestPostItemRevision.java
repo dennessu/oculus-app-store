@@ -183,7 +183,7 @@ public class TestPostItemRevision extends BaseTestClass {
         Binary binary = new Binary();
         binary.setVersion("1");
         binary.setSize(1024L);
-        binary.setMd5("md5mmmmmmmmmm");
+        binary.setMd5("md5mabcdmd5mabcdmd5mabcdmd5mabcd");
         binary.setHref("http://www.google.com/downlaod/angrybird1_0.exe");
         binaries.put("PC", binary);
         testItemRevision.setBinaries(binaries);
@@ -198,6 +198,12 @@ public class TestPostItemRevision extends BaseTestClass {
         tmpItemRevision.setOwnerId(organizationId);
         tmpItemRevision.setPackageName(packageName);
         ItemRevision itemRevisionRtn = itemRevisionService.postItemRevision(tmpItemRevision);
+
+        if (item2.getType().equalsIgnoreCase(CatalogItemType.APP.name()) ||
+                item2.getType().equalsIgnoreCase(CatalogItemType.DOWNLOADED_ADDITION.name())) {
+            itemRevisionRtn.setDownloadName("download name");
+            itemRevisionRtn.setBinaries(binaries);
+        }
         releaseItemRevision(itemRevisionRtn);
 
         testItemRevision.setBinaries(null);
@@ -206,7 +212,6 @@ public class TestPostItemRevision extends BaseTestClass {
 
         //could post successfully due to bug fix 389
         itemRevisionService.postItemRevision(testItemRevision);
-
     }
 
     private void checkItemRevisionRequiredFields(ItemRevision itemRevisionActual, ItemRevision itemRevisionExpected) {

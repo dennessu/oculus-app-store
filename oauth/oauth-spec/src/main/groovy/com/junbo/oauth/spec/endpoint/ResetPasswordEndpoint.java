@@ -11,8 +11,6 @@ import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
 
 import javax.ws.rs.*;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -50,6 +48,5 @@ public interface ResetPasswordEndpoint {
                                     @FormParam("country") String country,
                                     @FormParam("username") String username,
                                     @FormParam("user_email") String userEmail,
-                                    @Context ContainerRequestContext request,
                                     MultivaluedMap<String, String> formParams);
 }

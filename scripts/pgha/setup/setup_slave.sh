@@ -32,26 +32,6 @@ primary_conninfo = 'user=$PGUSER host=$MASTER_HOST port=$MASTER_DB_PORT sslmode=
 trigger_file = '$PROMOTE_TRIGGER_FILE'
 EOF
 
-echo "[SETUP][SLAVE] configure pg_hba.conf"
-cat > $MASTER_DATA_PATH/pg_hba.conf <<EOF
-# TYPE  DATABASE        USER            ADDRESS                 METHOD
-
-# "local" is for Unix domain socket connections only
-local   all             ${PGUSER}                               ident
-# IPv4 local connections:
-host    all             ${PGUSER}       127.0.0.1/32            ident
-host    all             ${PGUSER}       ${MASTER_HOST}/32       ident
-host    all             ${PGUSER}       ${SLAVE_HOST}/32        ident
-host    all             ${PGUSER}       ${REPLICA_HOST}/32      ident
-# IPv6 local connections:
-host    all             ${PGUSER}       ::1/128                 ident
-# Allow replication connections from localhost, by a user with the
-# replication privilege.
-host    replication     ${PGUSER}       ${MASTER_HOST}/32       ident
-host    replication     ${PGUSER}       ${SLAVE_HOST}/32        ident
-host    replication     ${PGUSER}       ${REPLICA_HOST}/32      ident
-EOF
-
 echo "[SETUP][SLAVE] configure postgres.conf"
 cat >> $SLAVE_DATA_PATH/postgresql.conf <<EOF
 archive_command = 'cp %p $SLAVE_ARCHIVE_PATH/%f'

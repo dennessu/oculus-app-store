@@ -11,8 +11,6 @@ import com.junbo.csr.spec.error.AppErrors
 import com.junbo.csr.spec.model.CsrLog
 import com.junbo.csr.spec.option.list.CsrLogListOptions
 import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.option.model.UserGetOptions
-import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
@@ -127,18 +125,9 @@ class CsrLogValidatorImpl implements CsrLogValidator {
         if (csrLog.id != null) {
             throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
         }
-
-        if (csrLog.countryCode == null) {
-            throw AppErrors.INSTANCE.fieldRequired('countryCode').exception()
-        }
-        else if (!ValidatorUtil.isValidCountryCode(csrLog.countryCode)) {
-            throw AppErrors.INSTANCE.invalidCountryCode().exception()
-        }
-
         if (csrLog.action == null) {
             throw AppErrors.INSTANCE.fieldRequired('action').exception()
         }
-
         if (csrLog.regarding == null) {
             throw AppErrors.INSTANCE.fieldRequired('regarding').exception()
         }
@@ -150,7 +139,11 @@ class CsrLogValidatorImpl implements CsrLogValidator {
             throw AppErrors.INSTANCE.fieldRequired('userId').exception()
         }
         else {
-            return identityService.getUserById(csrLog.userId).then {
+            return identityService.getUserById(csrLog.userId).then { User user ->
+                if (csrLog.countryCode == null) {
+                    csrLog.countryCode = user.countryOfResidence?.value
+                }
+                csrLog.username = user.username
                 return Promise.pure(null)
             }
         }

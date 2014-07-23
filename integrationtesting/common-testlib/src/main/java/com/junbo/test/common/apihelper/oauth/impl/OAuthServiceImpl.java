@@ -66,10 +66,20 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
     public String postAccessToken(String clientId, String clientSecret, GrantType grantType,
                                   ComponentType componentType, int expectedResponseCode) throws Exception {
         Map<String, String> formParams = new HashMap<>();
+        switch (componentType) {
+            case ORDER:
+                formParams.put("scope", "identity.service payment.service order.service");
+                break;
+            case BILLING:
+                formParams.put("scope", "identity.service payment.service billing.service");
+                break;
+            default:
+                formParams.put("scope", componentType.toString() + ".service");
+        }
         formParams.put("client_id", clientId);
         formParams.put("client_secret", clientSecret);
         formParams.put("grant_type", grantType.toString());
-        formParams.put("scope", componentType.toString() + ".service");
+
 
         String responseBody = restApiCall(HTTPMethod.POST, oauthUrl + "oauth2/token",
                 convertFormatToRequestString(formParams), expectedResponseCode);

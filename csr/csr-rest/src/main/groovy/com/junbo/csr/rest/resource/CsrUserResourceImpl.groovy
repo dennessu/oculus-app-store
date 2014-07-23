@@ -1,5 +1,7 @@
 package com.junbo.csr.rest.resource
 
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.GroupId
 import com.junbo.common.id.UserGroupId
 import com.junbo.common.id.UserId
@@ -37,6 +39,8 @@ class CsrUserResourceImpl implements CsrUserResource {
     private static final String CSR_INVITATION_PATH = 'csr-users/invite'
     private static final String EMAIL_SOURCE = 'Oculus'
     private static final String CSR_INVITATION_ACTION = 'CsrInvitation'
+    private static final String CSR_SCOPE = "csr";
+
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$', Pattern.CASE_INSENSITIVE);
 
@@ -74,6 +78,7 @@ class CsrUserResourceImpl implements CsrUserResource {
 
     @Override
     Promise<Results<CsrUser>> list() {
+        authorize()
         return csrGroupResource.list(new CsrGroupListOptions()).then { Results<CsrGroup> csrGroupResults ->
             def resultList = new Results<CsrUser>(items: [])
 
@@ -102,6 +107,7 @@ class CsrUserResourceImpl implements CsrUserResource {
 
     @Override
     Promise<Response> join(UserId userId, GroupId groupId) {
+        authorize()
         if (userId == null || groupId == null) {
             throw AppErrors.INSTANCE.invalidRequest().exception()
         }
@@ -122,6 +128,7 @@ class CsrUserResourceImpl implements CsrUserResource {
 
     @Override
     Promise<Response> inviteCsr(String locale, String email, GroupId groupId, ContainerRequestContext requestContext) {
+        authorize()
         if (email == null || groupId == null || requestContext == null) {
             throw AppErrors.INSTANCE.invalidRequest().exception()
         }
@@ -197,5 +204,11 @@ class CsrUserResourceImpl implements CsrUserResource {
         identityService.updateUserGroupMembership(csrInvitationCode.userGroupId, csrInvitationCode.userId, csrInvitationCode.inviteGroupId)
 
         return Promise.pure(Response.ok().entity('You have joined OculusVR CSR group').build())
+    }
+
+    private static void authorize() {
+        if (!AuthorizeContext.hasScopes(CSR_SCOPE)) {
+            throw AppCommonErrors.INSTANCE.insufficientScope().exception();
+        }
     }
 }

@@ -63,6 +63,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     private final String freeOfferPhysical = "testOffer_Free_Physical";
     private final String defaultOfferFileName = "defaultOffer";
     private final String defaultItemFileName = "defaultItem";
+    private final String defaultLocale = "en_US";
 
     private LogHelper logger = new LogHelper(OfferServiceImpl.class);
     private static OfferService instance;
@@ -408,10 +409,15 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         }
 
         //set locales
-        OfferRevisionLocaleProperties offerRevisionLocaleProperties = new OfferRevisionLocaleProperties();
+        OfferRevisionLocaleProperties offerRevisionLocaleProperties = offerRevisionForPost.getLocales().get(defaultLocale);
+        if (offerRevisionLocaleProperties == null) {
+            offerRevisionLocaleProperties = new OfferRevisionLocaleProperties();
+        }
+
         offerRevisionLocaleProperties.setName(offerName);
+
         HashMap<String, OfferRevisionLocaleProperties> locales = new HashMap<>();
-        locales.put("en_US", offerRevisionLocaleProperties);
+        locales.put(defaultLocale, offerRevisionLocaleProperties);
         offerRevisionForPost.setLocales(locales);
 
         //Add item related info
@@ -481,10 +487,15 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         }
 
         //set locales
-        ItemRevisionLocaleProperties itemRevisionLocaleProperties = new ItemRevisionLocaleProperties();
+        ItemRevisionLocaleProperties itemRevisionLocaleProperties = itemRevision.getLocales().get(defaultLocale);
+        if (itemRevisionLocaleProperties == null) {
+            itemRevisionLocaleProperties = new ItemRevisionLocaleProperties();
+        }
+
         itemRevisionLocaleProperties.setName(fileName);
+
         HashMap<String, ItemRevisionLocaleProperties> locales = new HashMap<>();
-        locales.put("en_US", itemRevisionLocaleProperties);
+        locales.put(defaultLocale, itemRevisionLocaleProperties);
         itemRevision.setLocales(locales);
 
         //Post and then approve the item revision

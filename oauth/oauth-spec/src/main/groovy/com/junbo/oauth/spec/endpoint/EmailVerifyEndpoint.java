@@ -13,8 +13,6 @@ import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
 
 import javax.ws.rs.*;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -35,6 +33,5 @@ public interface EmailVerifyEndpoint {
     @POST
     Promise<Response> sendVerifyEmail(@FormParam("locale") String locale,
                                       @FormParam("country") String country,
-                                      @FormParam("userId") UserId userId,
-                                      @Context ContainerRequestContext request);
+                                      @FormParam("userId") UserId userId);
 }

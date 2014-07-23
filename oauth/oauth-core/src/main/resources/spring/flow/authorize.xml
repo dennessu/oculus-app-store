@@ -297,7 +297,9 @@
         <property name="rethrowException" value="false"/>
     </bean>
 
-    <bean id="redirectToAuth" class="com.junbo.oauth.core.view.RedirectToAuthView"/>
+    <bean id="redirectToAuth" class="com.junbo.oauth.core.view.RedirectToAuthView">
+        <property name="baseUri" value="${oauth.core.auth.linkBaseUri}" />
+    </bean>
 
     <bean id="saveLoginState" class="com.junbo.oauth.core.action.SaveLoginState">
         <property name="loginStateRepository" ref="loginStateRepository"/>

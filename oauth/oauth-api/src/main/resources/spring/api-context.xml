@@ -83,6 +83,7 @@
         <property name="userPersonalInfoResource" ref="oauth_userPersonalInfoResource"/>
         <property name="loginStateRepository" ref="loginStateRepository"/>
         <property name="userService" ref="userService"/>
+        <property name="csrLogResource" ref="oauth_csrLogResource" />
         <property name="successRedirectUri" value="${oauth.core.portal.emailVerifySuccessUri}" />
         <property name="failedRedirectUri" value="${oauth.core.portal.emailVerifyFailUri}" />
     </bean>
@@ -96,6 +97,7 @@
         <property name="forgetPasswordFlow" value="forgetPasswordFlow"/>
         <property name="flowExecutor" ref="oauthFlowExecutor"/>
         <property name="userService" ref="userService"/>
+        <property name="csrLogResource" ref="oauth_csrLogResource" />
         <property name="debugEnabled" value="${common.conf.debugMode}"/>
     </bean>
 
