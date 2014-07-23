@@ -8,8 +8,6 @@ import com.junbo.csr.spec.error.AppErrors
 import com.junbo.csr.spec.model.CsrUpdate
 import com.junbo.csr.spec.option.list.CsrUpdateListOptions
 import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.option.model.UserGetOptions
-import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required

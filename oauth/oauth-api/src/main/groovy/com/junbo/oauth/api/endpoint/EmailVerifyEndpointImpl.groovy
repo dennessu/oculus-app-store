@@ -5,10 +5,13 @@
  */
 package com.junbo.oauth.api.endpoint
 
+import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.json.ObjectMapperProvider
+import com.junbo.csr.spec.model.CsrLog
+import com.junbo.csr.spec.resource.CsrLogResource
 import com.junbo.identity.spec.v1.model.Email
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
@@ -28,12 +31,12 @@ import com.junbo.oauth.spec.endpoint.EmailVerifyEndpoint
 import com.junbo.oauth.spec.model.EmailVerifyCode
 import com.junbo.oauth.spec.model.LoginState
 import com.junbo.oauth.spec.param.OAuthParameters
+import com.junbo.csr.spec.def.CsrLogActionType
 import groovy.transform.CompileStatic
 import org.glassfish.jersey.server.ContainerRequest
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.context.annotation.Scope
 import org.springframework.util.Assert
 import org.springframework.util.StringUtils
 
@@ -50,10 +53,10 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
     private UserResource userResource
     private UserPersonalInfoResource userPersonalInfoResource
     private UserService userService
+    private CsrLogResource csrLogResource
 
     private String successRedirectUri
     private String failedRedirectUri
-
     private LoginStateRepository loginStateRepository
 
     @Required
@@ -69,6 +72,11 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
     @Required
     void setUserPersonalInfoResource(UserPersonalInfoResource userPersonalInfoResource) {
         this.userPersonalInfoResource = userPersonalInfoResource
+    }
+
+    @Required
+    void setCsrLogResource(CsrLogResource csrLogResource) {
+        this.csrLogResource = csrLogResource
     }
 
     @Required
@@ -175,6 +183,8 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
     @Override
     Promise<Response> sendVerifyEmail(String locale, String country, UserId userId, ContainerRequestContext request) {
         return userService.sendVerifyEmail(userId, locale, country, ((ContainerRequest)request).baseUri).then {
+            // audit csr action on success
+            csrActionAudit()
             return Promise.pure(Response.noContent().build())
         }
     }
@@ -184,5 +194,11 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
         Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)
                 .location(UriBuilder.fromUri(failedRedirectUri).build())
         return Promise.pure(responseBuilder.build())
+    }
+
+    private void csrActionAudit() {
+        if (!AuthorizeContext.hasScopes('csr')) {
+            csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.VerificationEmailSent)).get()
+        }
     }
 }

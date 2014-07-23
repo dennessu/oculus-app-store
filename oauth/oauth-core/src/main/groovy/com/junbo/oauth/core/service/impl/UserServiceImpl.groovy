@@ -204,7 +204,7 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    Promise<Void> sendVerifyEmail(UserId userId, ActionContextWrapper contextWrapper) {
+    Promise<String> sendVerifyEmail(UserId userId, ActionContextWrapper contextWrapper) {
         String locale = contextWrapper.viewLocale
         String country = contextWrapper.viewCountry
         def request = (ContainerRequest) contextWrapper.request
@@ -212,7 +212,7 @@ class UserServiceImpl implements UserService {
 
         return sendVerifyEmail(userId, locale, country, baseUri).then { String link ->
             contextWrapper.emailVerifyLink = link
-            return Promise.pure(null)
+            return Promise.pure(link)
         }
     }
 
@@ -238,7 +238,7 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    Promise<Void> sendVerifyEmail(UserId userId, String locale, String country, URI baseUri) {
+    Promise<String> sendVerifyEmail(UserId userId, String locale, String country, URI baseUri) {
         if (userId == null || userId.value == null) {
             throw AppErrors.INSTANCE.missingUserId().exception()
         }

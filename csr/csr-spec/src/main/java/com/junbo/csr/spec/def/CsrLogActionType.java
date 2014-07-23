@@ -16,8 +16,8 @@ public enum CsrLogActionType implements Identifiable<Integer> {
     TroubleshootResolved(0),
     RefundIssued(1),
     ResetPasswordEmailSent(2),
-    VerficationEmailSent(3),
-    ExemptionApproved(4),
+    VerificationEmailSent(3),
+    CountryUpdated(4),
 
 
     UnknowAction(-1);

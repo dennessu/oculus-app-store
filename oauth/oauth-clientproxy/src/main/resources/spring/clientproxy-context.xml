@@ -3,7 +3,7 @@
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     <bean id="oauthAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
-        <property name="scope" value="identity.service email.service payment.service"/>
+        <property name="scope" value="identity.service email.service payment.service csr.service"/>
         <property name="deflectionInSeconds" value="300"/>
         <property name="clientSecret" value="${oauth.clientproxy.service.clientSecret}"/>
         <property name="clientId" value="${oauth.clientproxy.service.clientId}"/>
@@ -68,6 +68,12 @@
     <bean id="oauth_paymentInstrumentResource"
           class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy"
           parent="paymentInstrumentProxy">
+        <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
+    </bean>
+
+    <bean id="oauth_csrLogResource"
+          class="com.junbo.csr.spec.resource.proxy.CsrLogResourceClientProxy"
+          parent="csrLogResourceClientProxy">
         <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
     </bean>
 
