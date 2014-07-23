@@ -188,6 +188,7 @@ Prepare the crypto.core.key used to encrypt passwords in the configuration files
 echo environment=ppe > /etc/silkcloud/configuration.properties
 echo crypto.core.key=$CRYPTO_KEY >> /etc/silkcloud/configuration.properties
 echo oauth.crypto.key=$OAUTH_CRYPTO_KEY >> /etc/silkcloud/configuration.properties
+echo common.conf.debugMode=false >> /etc/silkcloud/configuration.properties
 chmod 600 /etc/silkcloud/configuration.properties
 ```
 

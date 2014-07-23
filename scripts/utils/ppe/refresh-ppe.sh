@@ -2,6 +2,8 @@
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 pushd $DIR
 
+set -e
+
 YOUR_USER=shuz
 cp /home/$YOUR_USER/main/apphost/apphost-identity/build/distributions/apphost-identity-0.0.1-SNAPSHOT.zip /home/silkcloud
 cp /home/$YOUR_USER/main/apphost/apphost-crypto/build/distributions/apphost-crypto-0.0.1-SNAPSHOT.zip /home/silkcloud
