@@ -14,8 +14,10 @@ dependencies {
     compile junboProject(':identity-rest')
     compile junboProject(':oauth-api')
     compile junboProject(':authorization-rest')
+    compile junboProject(':email-rest')
 
     compile junboProject(':identity-job')
+    compile junboProject(':email-jobs')
 }
 
 applicationDistribution.from("../../cloudant") {
