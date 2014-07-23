@@ -161,10 +161,11 @@ class WalletServiceImpl implements WalletService {
     }
 
     @Override
+    @Transactional
     Transaction debit(Long walletId, DebitRequest debitRequest) {
         validateAmount(debitRequest.amount)
 
-        Wallet wallet = ((WalletService) applicationContext.getBean("walletService")).get(walletId)
+        Wallet wallet = get(walletId)
         if (wallet == null) {
             throw AppCommonErrors.INSTANCE.resourceNotFound("wallet", walletId).exception()
         }
