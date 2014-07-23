@@ -11,7 +11,13 @@
 
     <!-- Offer Job -->
     <bean id="offerIndexJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="offerIndexJob" />
+        <property name="targetObject">
+            <bean class="com.junbo.apphost.core.LazyInitProxyFactoryBean">
+                <property name="targetBeanName">
+                    <idref bean="offerIndexJob"/>
+                </property>
+            </bean>
+        </property>
         <property name="targetMethod" value="execute" />
         <property name="concurrent" value="false"/>
     </bean>
@@ -23,8 +29,8 @@
     </bean>
 
     <!-- Scheduler -->
-    <bean id="offerSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-        <property name="taskExecutor" ref="junboThreadPool"/>
+    <bean id="offerSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
+          parent="baseJobScheduler">
         <property name="schedulerName" value="catalogScheduler" />
         <property name="autoStartup" value="${catalog.jobs.autoStartup}" />
         <property name="triggers">
@@ -32,6 +38,5 @@
                 <ref bean="offerIndexJobTrigger"/>
             </list>
         </property>
-        <property name="applicationContextSchedulerContextKey" value="applicationContext" />
     </bean>
 </beans>

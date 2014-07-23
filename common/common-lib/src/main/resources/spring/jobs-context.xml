@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="baseJobScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
+          abstract="true">
+        <property name="autoStartup" value="true"/>
+        <property name="startupDelay" value="30"/>
+        <property name="applicationContextSchedulerContextKey" value="applicationContext"/>
+        <property name="taskExecutor" ref="junboThreadPool"/>
+    </bean>
+</beans>

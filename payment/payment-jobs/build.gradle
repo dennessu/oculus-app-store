@@ -1,7 +1,7 @@
 apply plugin: 'groovy'
 
 dependencies {
-    compile 'org.quartz-scheduler:quartz:2.2.1'
+    compile (libraries.quartz_scheduler)
 
     compile junboProject(':payment-db')
     compile junboProject(':payment-spec')

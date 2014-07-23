@@ -37,6 +37,8 @@ class FlowBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
     }
 
     protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
+        builder.lazyInit = true
+
         builder.addPropertyValue('id', element.getAttribute('id'))
 
         ManagedList<RuntimeBeanReference> states = []
@@ -178,6 +180,7 @@ class FlowBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
     }
 
     private static RuntimeBeanReference beanReference(BeanDefinitionBuilder builder, ParserContext parserContext) {
+        builder.lazyInit = true
 
         def beanDefinition = builder.beanDefinition
         def generatedName = BeanDefinitionReaderUtils.generateBeanName(

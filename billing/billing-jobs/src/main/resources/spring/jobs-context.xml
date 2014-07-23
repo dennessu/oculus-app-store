@@ -24,12 +24,18 @@
 
     <bean id="billingListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer" parent="baseListenerContainer">
         <property name="destination" ref="billingAsyncChargeQueue" />
-        <property name="messageListener" ref="asyncChargeListener" />
+        <property name="messageListener">
+            <bean class="com.junbo.apphost.core.LazyInitProxyFactoryBean">
+                <property name="targetBeanName">
+                    <idref bean="asyncChargeListener"/>
+                </property>
+            </bean>
+        </property>
     </bean>
 
     <!-- Billing Scheduler -->
-    <bean id="billingSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-        <property name="taskExecutor" ref="junboThreadPool"/>
+    <bean id="billingSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
+          parent="baseJobScheduler">
         <property name="schedulerName" value="billingScheduler" />
         <property name="autoStartup" value="${billing.jobs.scheduler.start}" />
         <property name="triggers">
@@ -37,7 +43,6 @@
                 <ref bean="billingSettlementJobTrigger"/>
             </list>
         </property>
-        <property name="applicationContextSchedulerContextKey" value="applicationContext" />
     </bean>
 
     <!-- Billing Balance Process Job Trigger -->
@@ -48,7 +53,13 @@
 
     <!-- Billing Balance Process Job -->
     <bean id="billingSettlementJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="billingSettlementJob" />
+        <property name="targetObject">
+            <bean class="com.junbo.apphost.core.LazyInitProxyFactoryBean">
+                <property name="targetBeanName">
+                    <idref bean="billingSettlementJob"/>
+                </property>
+            </bean>
+        </property>
         <property name="targetMethod" value="execute" />
     </bean>
 

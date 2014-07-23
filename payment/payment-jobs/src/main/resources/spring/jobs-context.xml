@@ -7,7 +7,8 @@
     <context:component-scan base-package="com.junbo.payment.db.*"/>
 
     <!-- Payment Batch File Scheduler -->
-    <bean id="paymentBatchSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+    <bean id="paymentBatchSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
+          parent="baseJobScheduler">
         <property name="schedulerName" value="paymentBatchScheduler" />
         <property name="autoStartup" value="${payment.jobs.batch.scheduler.start}" />
         <property name="triggers">
@@ -15,7 +16,6 @@
                 <ref bean="paymentBatchJobTrigger"/>
             </list>
         </property>
-        <property name="applicationContextSchedulerContextKey" value="applicationContext" />
     </bean>
 
     <!--Job Trigger -->
@@ -26,7 +26,13 @@
 
     <!-- File Process Job -->
     <bean id="paymentBatchFileProcessing" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="fileProcessingJob" />
+        <property name="targetObject">
+            <bean class="com.junbo.apphost.core.LazyInitProxyFactoryBean">
+                <property name="targetBeanName">
+                    <idref bean="fileProcessingJob"/>
+                </property>
+            </bean>
+        </property>
         <property name="targetMethod" value="execute" />
     </bean>
 
@@ -44,7 +50,8 @@
     </bean>
 
     <!-- Payment Reconcile Job Scheduler -->
-    <bean id="paymentReconcileSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+    <bean id="paymentReconcileSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
+          parent="baseJobScheduler">
         <property name="schedulerName" value="paymentReconcileScheduler" />
         <property name="autoStartup" value="${payment.jobs.reconcile.scheduler.start}" />
         <property name="triggers">
@@ -52,7 +59,6 @@
                 <ref bean="paymentReconcileJobTrigger"/>
             </list>
         </property>
-        <property name="applicationContextSchedulerContextKey" value="applicationContext" />
     </bean>
 
     <!--Job Trigger -->
@@ -63,7 +69,13 @@
 
     <!-- reconcile Job -->
     <bean id="paymentReconcileProcessor" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="reconcileJob" />
+        <property name="targetObject">
+            <bean class="com.junbo.apphost.core.LazyInitProxyFactoryBean">
+                <property name="targetBeanName">
+                    <idref bean="reconcileJob"/>
+                </property>
+            </bean>
+        </property>
         <property name="targetMethod" value="execute" />
     </bean>
 

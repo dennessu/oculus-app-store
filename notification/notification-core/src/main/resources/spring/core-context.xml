@@ -48,7 +48,13 @@
     -->
     <bean id="baseListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer"
           abstract="true">
-        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="connectionFactory">
+            <bean class="com.junbo.apphost.core.LazyInitProxyFactoryBean">
+                <property name="targetBeanName">
+                    <idref bean="connectionFactory"/>
+                </property>
+            </bean>
+        </property>
         <property name="sessionAcknowledgeMode" value="1"/>
         <property name="taskExecutor" ref="junboThreadPool"/>
     </bean>

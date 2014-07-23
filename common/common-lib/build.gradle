@@ -40,5 +40,7 @@ dependencies {
 
     compile (libraries.jsoup)
 
+    compile (libraries.quartz_scheduler)
+
     testRuntime junboProject(':configuration-data')
 }
