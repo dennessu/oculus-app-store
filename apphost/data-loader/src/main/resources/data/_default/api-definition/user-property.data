@@ -15,6 +15,11 @@
             "precondition": "ownedByCurrentUser",
             "rights": ["read", "create", "update", "delete", "pii.read", "pii.create", "pii.update", "pii.delete"],
             "scriptType": "SPEL"
+        }],
+        "csr": [{
+            "precondition": "true",
+            "rights": ["read", "create", "update", "delete", "pii.read", "pii.create", "pii.update", "pii.delete"],
+            "scriptType": "SPEL"
         }]
     }
 }

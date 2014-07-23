@@ -19,7 +19,7 @@
                 "scriptType": "SPEL"
             }
         ],
-        "order.csr": [
+        "csr": [
             {
                 "precondition": "true",
                 "rights": [

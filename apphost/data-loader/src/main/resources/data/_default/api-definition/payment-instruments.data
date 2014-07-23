@@ -11,7 +11,7 @@
             "rights": ["read", "create", "update", "delete"],
             "scriptType": "SPEL"
         }],
-        "payment.csr": [{
+        "csr": [{
             "precondition": "true",
             "rights": ["read", "create", "update", "delete"],
             "scriptType": "SPEL"

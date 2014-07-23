@@ -10,6 +10,11 @@
             "precondition": "true",
             "rights": ["read", "create", "update", "search", "delete"],
             "scriptType": "SPEL"
+        }],
+        "csr": [{
+            "precondition": "true",
+            "rights": ["read", "update", "search"],
+            "scriptType": "SPEL"
         }]
     }
 }

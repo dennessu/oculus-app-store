@@ -19,7 +19,7 @@
                 "scriptType": "SPEL"
             }
         ],
-        "cart.csr": [
+        "csr": [
             {
                 "precondition": "true",
                 "rights": [

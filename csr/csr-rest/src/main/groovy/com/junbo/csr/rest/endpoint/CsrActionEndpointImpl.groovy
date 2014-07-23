@@ -28,6 +28,7 @@ class CsrActionEndpointImpl implements CsrActionEndpoint {
     private TokenEndpoint tokenEndpoint
     private String clientId
     private String clientSecret
+    private String tokenScope
 
     @Required
     void setTokenEndpoint(TokenEndpoint tokenEndpoint) {
@@ -49,6 +50,11 @@ class CsrActionEndpointImpl implements CsrActionEndpoint {
         this.identityService = identityService
     }
 
+    @Required
+    void setTokenScope(String tokenScope) {
+        this.tokenScope = tokenScope
+    }
+
     @Override
     Promise<CsrToken> login(CsrCredential csrCredential) {
         if (csrCredential == null) {
@@ -66,7 +72,7 @@ class CsrActionEndpointImpl implements CsrActionEndpoint {
                 clientId: clientId,
                 clientSecret: clientSecret,
                 grantType: 'PASSWORD',
-                scope: 'offline',
+                scope: 'offline csr',
                 username: username,
                 password: password
         ))
@@ -82,7 +88,7 @@ class CsrActionEndpointImpl implements CsrActionEndpoint {
                 clientId: clientId,
                 clientSecret: clientSecret,
                 grantType: 'REFRESH_TOKEN',
-                scope: 'offline',
+                scope: 'offline csr',
                 refreshToken: refreshToken
         ))
     }

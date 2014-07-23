@@ -11,10 +11,10 @@
             "rights": ["read", "create"],
             "scriptType": "SPEL"
         }],
-        "subscription.csr": [{
+        "csr": [{
             "precondition": "true",
             "rights": ["read", "create"],
             "scriptType": "SPEL"
-         }]
+        }]
     }
 }

@@ -19,7 +19,7 @@
                 "scriptType": "SPEL"
             }
         ],
-        "billing.csr": [
+        "csr": [
             {
                 "precondition": "true",
                 "rights": [
