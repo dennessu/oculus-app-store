@@ -55,9 +55,9 @@ public class CloudantBeanDeserializer extends BeanDeserializer {
     }
 
     @Override
-    public Object deserialize(JsonParser jp, DeserializationContext ctxt)
+    public Object deserializeFromObject(JsonParser jp, DeserializationContext ctxt)
             throws IOException, JsonProcessingException {
-        Object bean = super.deserialize(jp, ctxt);
+        Object bean = super.deserializeFromObject(jp, ctxt);
         if (bean instanceof CloudantEntity) {
             CloudantEntity entity = (CloudantEntity)bean;
 

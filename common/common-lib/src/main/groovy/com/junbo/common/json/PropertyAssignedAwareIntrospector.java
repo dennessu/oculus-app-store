@@ -5,7 +5,7 @@
  */
 package com.junbo.common.json;
 
-import com.fasterxml.jackson.databind.introspect.Annotated;
+import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 
 /**
@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 public class PropertyAssignedAwareIntrospector extends JacksonAnnotationIntrospector {
 
     @Override
-    public Object findFilterId(Annotated a) {
+    public Object findFilterId(AnnotatedClass a) {
         if (PropertyAssignedAware.class.isAssignableFrom(a.getRawType())) {
             return PropertyAssignedAwareFilter.class.getName();
         }
