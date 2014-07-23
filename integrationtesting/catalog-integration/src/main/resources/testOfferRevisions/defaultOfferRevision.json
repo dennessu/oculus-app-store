@@ -92,6 +92,22 @@
         "JP":{
             "isPurchasable": true,
             "releaseDate":"2013-06-10T09:05:58Z"
+        },
+        "IE":{
+            "isPurchasable": true,
+            "releaseDate":"2013-06-10T09:05:58Z"
+        },
+        "GB":{
+            "isPurchasable": true,
+            "releaseDate":"2013-06-10T09:05:58Z"
+        },
+        "ES":{
+            "isPurchasable": true,
+            "releaseDate":"2013-06-10T09:05:58Z"
+        },
+        "CA":{
+            "isPurchasable": true,
+            "releaseDate":"2013-06-10T09:05:58Z"
         }
     },
     "futureExpansion":{},

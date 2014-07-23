@@ -45,6 +45,7 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
     private final String defaultOfferRevisionFileName = "defaultOfferRevision";
     private final String defaultStoredValueOfferRevisionFileName = "defaultStoredValueOfferRevision";
+    private final String defaultLocale = "en_US";
 
     private LogHelper logger = new LogHelper(OfferRevisionServiceImpl.class);
     private static OfferRevisionService instance;
@@ -191,10 +192,15 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
                 new TypeReference<OfferRevision>() {}, strOfferRevisionContent);
 
         //set locales
-        OfferRevisionLocaleProperties offerRevisionLocaleProperties = new OfferRevisionLocaleProperties();
+        OfferRevisionLocaleProperties offerRevisionLocaleProperties = offerRevisionForPost.getLocales().get(defaultLocale);
+        if (offerRevisionLocaleProperties == null) {
+            offerRevisionLocaleProperties = new OfferRevisionLocaleProperties();
+        }
+
         offerRevisionLocaleProperties.setName("testOfferRevision_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
+
         HashMap<String, OfferRevisionLocaleProperties> locales = new HashMap<>();
-        locales.put("en_US", offerRevisionLocaleProperties);
+        locales.put(defaultLocale, offerRevisionLocaleProperties);
         offerRevisionForPost.setLocales(locales);
 
         //Add item related info
@@ -207,6 +213,9 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
             itemEntities.add(itemEntry);
             offerRevisionForPost.setItems(itemEntities);
         }
+
+        //Set owner
+        offerRevisionForPost.setOwnerId(organizationId);
 
         return offerRevisionForPost;
     }

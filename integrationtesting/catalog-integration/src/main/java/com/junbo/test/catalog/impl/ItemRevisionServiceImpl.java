@@ -37,6 +37,7 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
     private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";
     private static ItemRevisionService instance;
+    private final String defaultLocale = "en_US";
 
     public static synchronized ItemRevisionService instance() {
         if (instance == null) {
@@ -123,10 +124,15 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
         ItemRevision itemRevisionForPost = new JsonMessageTranscoder().decode(new TypeReference<ItemRevision>() {},strItem);
 
         //set locales
-        ItemRevisionLocaleProperties itemRevisionLocaleProperties = new ItemRevisionLocaleProperties();
+        ItemRevisionLocaleProperties itemRevisionLocaleProperties = itemRevisionForPost.getLocales().get(defaultLocale);
+        if (itemRevisionLocaleProperties == null) {
+            itemRevisionLocaleProperties = new ItemRevisionLocaleProperties();
+        }
+
         itemRevisionLocaleProperties.setName("testItemRevision_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
+
         HashMap<String, ItemRevisionLocaleProperties> locales = new HashMap<>();
-        locales.put("en_US", itemRevisionLocaleProperties);
+        locales.put(defaultLocale, itemRevisionLocaleProperties);
         itemRevisionForPost.setLocales(locales);
 
         return itemRevisionForPost;

@@ -5,11 +5,14 @@
  */
 package com.junbo.test.catalog.catalogScenarios;
 
+import com.junbo.catalog.spec.model.common.Price;
+import com.junbo.common.id.*;
+import com.junbo.test.catalog.enums.*;
+import com.junbo.test.common.apihelper.identity.OrganizationService;
+import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
-import com.junbo.test.catalog.enums.CatalogOfferAttributeType;
-import com.junbo.test.catalog.enums.CatalogItemAttributeType;
 import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
@@ -17,31 +20,27 @@ import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
-import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
-import com.junbo.common.id.OfferAttributeId;
-import com.junbo.common.id.ItemAttributeId;
 import com.junbo.test.common.property.*;
 import com.junbo.common.model.Results;
 import com.junbo.test.catalog.impl.*;
-import com.junbo.common.id.OfferId;
-import com.junbo.common.id.ItemId;
 import com.junbo.test.catalog.*;
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.Assert;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
   * @author Jason
@@ -421,6 +420,85 @@ public class Catalog extends BaseTestClass {
         offerServiceAPI.getOfferIdByName(offer8);
         offerServiceAPI.getOfferIdByName(offer9);
         offerServiceAPI.getOfferIdByName(offer10);
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "catalogScenarios",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Disable,
+            description = "Test predefined offers",
+            steps = {
+                    "1. Prepare item",
+                    "2. Prepare item revision",
+                    "3. Prepare offer",
+                    "4. Prepare offerRevision"
+            }
+    )
+    @Test
+    public void testOffersForFB() throws Exception {
+        prepareOffersForFB();
+    }
+
+    public String prepareOffersForFB() throws Exception {
+        ItemService itemService = ItemServiceImpl.instance();
+        OfferService offerService = OfferServiceImpl.instance();
+        OrganizationService organizationService = OrganizationServiceImpl.instance();
+        ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
+        OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
+
+        OrganizationId organizationId = organizationService.postDefaultOrganization().getId();
+
+        Item item = itemService.postDefaultItem(CatalogItemType.APP, organizationId);
+        ItemRevision itemRevision = itemRevisionService.postDefaultItemRevision(item);
+        releaseItemRevision(itemRevision);
+
+        Offer offer = offerService.postDefaultOffer(organizationId);
+        OfferRevision offerRevision = offerRevisionService.postDefaultOfferRevision(offer, item);
+        Price price = new Price();
+        Map<String, Map<String, BigDecimal>> offerPrice = new HashMap<>();
+        Map<String, BigDecimal> price1 = new HashMap<>();
+        Map<String, BigDecimal> price2 = new HashMap<>();
+        Map<String, BigDecimal> price3 = new HashMap<>();
+        Map<String, BigDecimal> price4 = new HashMap<>();
+
+        price1.put("USD", new BigDecimal(1000.00));
+        price2.put("AUD", new BigDecimal(1000.00));
+        price3.put("EUR", new BigDecimal(1000.00));
+        price4.put("GBP", new BigDecimal(1000.00));
+
+        offerPrice.put("US", price1);
+        offerPrice.put("CA", price1);
+        offerPrice.put("MX", price1);
+
+        offerPrice.put("AU", price2);
+
+        offerPrice.put("IE", price3);
+        offerPrice.put("CY", price3);
+        offerPrice.put("DE", price3);
+        offerPrice.put("RU", price3);
+
+        offerPrice.put("AT", price3);
+        offerPrice.put("BE", price3);
+        offerPrice.put("CZ", price3);
+        offerPrice.put("DK", price3);
+        offerPrice.put("FI", price3);
+        offerPrice.put("FR", price3);
+        offerPrice.put("IT", price3);
+        offerPrice.put("NL", price3);
+        offerPrice.put("PL", price3);
+        offerPrice.put("ES", price3);
+        offerPrice.put("SE", price3);
+
+        offerPrice.put("GB", price4);
+
+        price.setPriceType(PriceType.CUSTOM.name());
+        price.setPrices(offerPrice);
+        offerRevision.setPrice(price);
+
+        releaseOfferRevision(offerRevision);
+        return offer.getOfferId();
     }
 
 }
