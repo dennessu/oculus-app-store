@@ -100,6 +100,7 @@ def curlRaw(method, baseUrl, url = None, query= None, headers = None, body = Non
     if headers is None: headers = {}
 
     conn = None
+    start_time = time.time()
     try:
         urlRegex = r'^(?P<protocol>http[s]?://)?((?P<userpass>([^/@:]*):([^/@:]*))@)?(?P<host>[^/:]+)(:(?P<port>\d+))?(?P<path>(/|\?).*)$'
         m = re.match(urlRegex, url)
@@ -163,6 +164,8 @@ def curlRaw(method, baseUrl, url = None, query= None, headers = None, body = Non
     finally:
         if conn:
             conn.close()
+        elapsed_time = time.time() - start_time
+        verbose("[resp][elapsed] %dms" % (elapsed_time * 1000))
 
 class HttpRequest:
     """
