@@ -13,3 +13,5 @@ include 'order-integration'
 include 'integration-buyerscenario'
 include 'integration-csrscenario'
 include 'integration-developerscenario'
+
+include 'token-integration'
