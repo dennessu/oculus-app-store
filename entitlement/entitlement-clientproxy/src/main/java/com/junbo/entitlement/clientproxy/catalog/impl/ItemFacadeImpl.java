@@ -60,7 +60,6 @@ public class ItemFacadeImpl implements ItemFacade {
         ItemsGetOptions options = new ItemsGetOptions();
         options.setHostItemId(hostItemId);
         options.setSize(20000);  //temp work around
-        options.setStart(0);
         try {
             LOGGER.info("Getting items by hostItemId [{}] started.", hostItemId);
             items = itemClient.getItems(options).get().getItems();
