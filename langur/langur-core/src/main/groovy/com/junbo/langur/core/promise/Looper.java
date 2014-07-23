@@ -32,9 +32,9 @@ public class Looper {
 
     private final Condition notEmpty;
 
-    private int nestedLevel;
+    private volatile int nestedLevel;
 
-    private RunnableWrapper runnableWrapper;
+    private volatile RunnableWrapper runnableWrapper;
 
     public Looper() {
         lock = new ReentrantLock();

@@ -199,12 +199,12 @@ class OrderServiceContextBuilder {
 
         List<OrderOfferRevision> offers = []
         return Promise.each(context.order.orderItems) { OrderItem oi ->
-            return facadeContainer.catalogFacade.getOfferRevision(oi.offer.value).syncThen { OrderOfferRevision of ->
+            return facadeContainer.catalogFacade.getOfferRevision(oi.offer.value).then { OrderOfferRevision of ->
                 offers << of
                 Long organizationId = of.catalogOfferRevision.ownerId?.value
                 return facadeContainer.identityFacade.getOrganization(organizationId).recover { Throwable throwable ->
                     LOGGER.info('name=Error_Get_Organization. organization id: ' + organizationId)
-                }.then { Organization organization ->
+                }.syncThen { Organization organization ->
                     of.organization = organization
                 }
             }

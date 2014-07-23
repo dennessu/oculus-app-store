@@ -257,7 +257,12 @@ public class Promise<T> {
         return recover(new Func<Throwable, Promise<T>>() {
             @Override
             public Promise<T> apply(Throwable throwable) {
-                return Promise.pure(func.apply(throwable));
+                T result = func.apply(throwable);
+
+                if (result instanceof Promise) {
+                    throw new IllegalStateException("syncRecover should return a non Promise result.");
+                }
+                return Promise.pure(result);
             }
         });
     }
@@ -300,7 +305,13 @@ public class Promise<T> {
         return then(new Func<T, Promise<R>>() {
             @Override
             public Promise<R> apply(T t) {
-                return Promise.pure(func.apply(t));
+
+                R result = func.apply(t);
+                if (result instanceof Promise) {
+                    throw new IllegalStateException("syncThen should return a non Promise result.");
+                }
+
+                return Promise.pure(result);
             }
         });
     }
