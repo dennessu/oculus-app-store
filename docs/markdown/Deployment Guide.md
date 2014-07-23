@@ -477,5 +477,5 @@ can be used to purge the server.
 ## Run Unit Tests on PPE
 ```
 cd scripts/utils/ppe
-./ut_oauth.py -uri 'https://internal-api-jvm-ppe-464421051.us-west-1.elb.amazonaws.com' -secret '43D6B08A543C06582C6021295F4A9C56'
+./ut_oauth.py -uri 'https://internal-api-jvm-ppe-464421051.us-west-1.elb.amazonaws.com'
 ```
