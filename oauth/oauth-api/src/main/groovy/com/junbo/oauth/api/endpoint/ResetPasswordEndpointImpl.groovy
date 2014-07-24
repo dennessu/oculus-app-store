@@ -144,7 +144,7 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
     }
 
     private void csrActionAudit(UserId userId) {
-        if (AuthorizeContext.hasScopes('csr')) {
+        if (AuthorizeContext.hasScopes('csr') && AuthorizeContext.currentUserId != null) {
             String email = userService.getUserEmailByUserId(userId).get()
             csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: com.junbo.csr.spec.def.CsrLogActionType.ResetPasswordEmailSent, property: email)).get()
         }

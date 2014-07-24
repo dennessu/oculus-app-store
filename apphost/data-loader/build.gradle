@@ -19,4 +19,5 @@ dependencies {
     compile junboProject(':crypto-rest')
     compile junboProject(':apphost-core')
     compile junboProject(':catalog-rest')
+    compile junboProject(':csr-rest')
 }

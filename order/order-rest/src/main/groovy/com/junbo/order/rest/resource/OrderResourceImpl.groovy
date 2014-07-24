@@ -210,7 +210,7 @@ class OrderResourceImpl implements OrderResource {
     }
 
     private void csrActionAudit(Order order) {
-        if (AuthorizeContext.hasScopes('csr')) {
+        if (AuthorizeContext.hasScopes('csr') && AuthorizeContext.currentUserId != null) {
             String info = ''
             if (order.billingHistories != null && order.billingHistories.last() != null) {
                 BillingHistory billingHistory = order.billingHistories.last()

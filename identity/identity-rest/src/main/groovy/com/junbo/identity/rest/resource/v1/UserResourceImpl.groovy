@@ -106,7 +106,7 @@ class UserResourceImpl implements UserResource {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
-                if (AuthorizeContext.hasScopes('csr')) {
+                if (AuthorizeContext.hasScopes('csr') && AuthorizeContext.currentUserId != null) {
                     csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.CountryUpdated, property: oldUser.username)).get()
                 }
 
