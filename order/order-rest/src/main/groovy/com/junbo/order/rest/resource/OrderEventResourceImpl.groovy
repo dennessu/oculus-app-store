@@ -14,6 +14,7 @@ import com.junbo.order.core.impl.common.OrderValidator
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.PageParam
+import com.junbo.order.spec.model.enums.EventStatus
 import com.junbo.order.spec.model.enums.OrderActionType
 import com.junbo.order.spec.resource.OrderEventResource
 import groovy.transform.CompileStatic
@@ -69,7 +70,8 @@ class OrderEventResourceImpl implements OrderEventResource {
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('create-event') &&
                     !(orderEvent.action == OrderActionType.CHARGE.name() &&
-                            (orderEvent.status.isEmpty() || orderEvent.status == null))) {
+                            (orderEvent.status == EventStatus.COMPLETED.name() ||
+                                    orderEvent.status == EventStatus.FAILED.name()))) {
                 throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
