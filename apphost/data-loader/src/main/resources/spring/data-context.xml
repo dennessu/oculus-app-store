@@ -86,7 +86,7 @@
         <property name="offerRevisionResource" ref="defaultOfferRevisionResource"/>
     </bean>
 
-    <bean id="dataLoader" class="com.junbo.data.loader.DataLoader" lazy-init="false">
+    <bean id="dataLoader" class="com.junbo.data.loader.DataLoader">
         <property name="handlers">
             <map>
                 <entry key="client" value-ref="clientDataHandler"/>
