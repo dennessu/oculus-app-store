@@ -263,8 +263,7 @@ class SabrixFacadeImpl implements TaxFacade {
             shipToAddress = billToAddress
         }
         invoice.sellerPrimary = new SabrixAddress()
-        invoice.sellerPrimary.country = configuration.VATRegistrationCountries.contains(billToAddress.country) ?
-                billToAddress.country : 'US'
+        invoice.sellerPrimary.country = getSellerPrimaryCountry(balance, billToAddress, shipToAddress)
         invoice.buyerPrimary = new SabrixAddress()
         invoice.buyerPrimary.country = billToAddress.country
 //        invoice.billTo = billToAddress
@@ -311,6 +310,36 @@ class SabrixFacadeImpl implements TaxFacade {
         }
 
         return lines
+    }
+
+    String getSellerPrimaryCountry(Balance balance, SabrixAddress billToAddress, SabrixAddress shipToAddress) {
+        boolean hasPhysical = balance.balanceItems.any { BalanceItem item ->
+            getTransactionType(item) == GOODS
+        }
+        if (hasPhysical && shipToAddress != null) {
+            if (configuration.VATRegistrationCountries.contains(shipToAddress.country)) {
+                return shipToAddress.country
+            } else {
+                Warehouse warehouse = getWarehouse(shipToAddress.country)
+                if (warehouse.isEUCountry) {
+                    return warehouse.location
+                }
+                else {
+                    return 'US'
+                }
+            }
+        }
+        else {
+            configuration.VATRegistrationCountries.contains(billToAddress.country) ?
+                    billToAddress.country : 'US'
+        }
+    }
+
+    Warehouse getWarehouse(String country) {
+        Warehouse w = EnumSet.allOf(Warehouse).find { Warehouse warehouse ->
+            warehouse.shipCountryList.contains(country)
+        }
+        return w != null ? w : Warehouse.WAREHOUSE_US
     }
 
     String getUniqueInvoiceNumber(Balance balance) {
