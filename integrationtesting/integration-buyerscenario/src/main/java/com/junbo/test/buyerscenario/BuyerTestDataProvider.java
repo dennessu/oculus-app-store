@@ -79,6 +79,10 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         return identityClient.PostUser();
     }
 
+    public String createUser(String vat) throws Exception {
+        return identityClient.PostUser(vat);
+    }
+
     public String createUser(String userName, String emailAddress) throws Exception {
         List<String> userList = identityClient.GetUserByUserName(userName);
         if (userList.size() > 0) {
@@ -92,11 +96,11 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         return identityClient.GetUserByUserId(userId);
     }
 
-    public String getUserByUserName(String userName) throws Exception{
+    public String getUserByUserName(String userName) throws Exception {
         return identityClient.GetUserByUserName(userName).get(0);
     }
 
-    public String getUserByUserName(String userName, String pwd) throws Exception{
+    public String getUserByUserName(String userName, String pwd) throws Exception {
         return identityClient.GetUserByUserName(userName).get(0);
     }
 

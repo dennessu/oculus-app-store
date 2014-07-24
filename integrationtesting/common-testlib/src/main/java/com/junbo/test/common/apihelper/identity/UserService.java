@@ -5,6 +5,7 @@
  */
 package com.junbo.test.common.apihelper.identity;
 
+import com.junbo.identity.spec.v1.model.Address;
 import com.junbo.identity.spec.v1.model.User;
 
 import java.util.List;
@@ -23,13 +24,13 @@ public interface UserService {
 
     String PostUser(User user, int expectedResponseCode) throws Exception;
 
-    String PostUser(String payload) throws Exception;
-
-    String PostUser(String payload, int expectedResponseCode) throws Exception;
-
     String PostUser(String userName, String emailAddress) throws Exception;
 
     String PostUser(String userName, String pwd, String emailAddress) throws Exception;
+
+    String PostUser(String vat, Address address) throws Exception;
+
+    String PostUser(String vat) throws Exception;
 
     //Get the user by userId
     String GetUserByUserId(String userId) throws Exception;
