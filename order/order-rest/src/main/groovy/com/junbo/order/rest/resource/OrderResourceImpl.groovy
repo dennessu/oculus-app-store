@@ -218,10 +218,10 @@ class OrderResourceImpl implements OrderResource {
                 csrRefundInfo.currency = order.currency.value
                 csrRefundInfo.success = billingHistory.success
                 csrRefundInfo.amount = billingHistory.totalAmount
-                info = JsonMarshaller.marshall(billingHistory)
+                info = JsonMarshaller.marshall(csrRefundInfo)
             }
 
-            csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.RefundIssued, property: info)).get()
+            csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Refund', action: CsrLogActionType.RefundIssued, property: info)).get()
         }
     }
 }

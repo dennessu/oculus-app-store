@@ -7,6 +7,8 @@ import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
+import com.junbo.csr.spec.model.CsrLog
+import com.junbo.csr.spec.resource.CsrLogResource
 import com.junbo.identity.auth.UserAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserFilter
 import com.junbo.identity.core.service.normalize.NormalizeService
@@ -20,8 +22,10 @@ import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
+import com.junbo.csr.spec.def.CsrLogActionType
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -51,6 +55,10 @@ class UserResourceImpl implements UserResource {
 
     @Autowired
     private UserAuthorizeCallbackFactory userAuthorizeCallbackFactory
+
+    @Autowired
+    @Qualifier('identityCsrLogResource')
+    private CsrLogResource csrLogResource
 
     @Override
     Promise<User> create(User user) {
@@ -96,6 +104,10 @@ class UserResourceImpl implements UserResource {
             return RightsScope.with(authorizeService.authorize(callback)) {
                 if (!AuthorizeContext.hasRights('update')) {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
+                }
+
+                if (AuthorizeContext.hasScopes('csr')) {
+                    csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.CountryUpdated, property: oldUser.username)).get()
                 }
 
                 user = userFilter.filterForPut(user, oldUser)

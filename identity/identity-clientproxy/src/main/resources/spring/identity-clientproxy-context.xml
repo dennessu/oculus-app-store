@@ -11,7 +11,7 @@
     </bean>
 
     <bean id="identityAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
-        <property name="scope" value="crypto.service billing.service payment.service"/>
+        <property name="scope" value="crypto.service billing.service payment.service csr.service"/>
         <property name="deflectionInSeconds" value="300"/>
         <property name="clientSecret" value="${identity.clientproxy.service.clientSecret}"/>
         <property name="clientId" value="${identity.clientproxy.service.clientId}"/>
@@ -37,6 +37,10 @@
     </bean>
 
     <bean id="identityRoleAssignmentResource" class="com.junbo.authorization.spec.resource.proxy.RoleAssignmentResourceClientProxy" parent="roleAssignmentResourceClientProxy">
+        <property name="accessTokenProvider" ref="identityAccessTokenProvider"/>
+    </bean>
+
+    <bean id="identityCsrLogResource" class="com.junbo.csr.spec.resource.proxy.CsrLogResourceClientProxy" parent="csrLogResourceClientProxy">
         <property name="accessTokenProvider" ref="identityAccessTokenProvider"/>
     </bean>
 </beans>
