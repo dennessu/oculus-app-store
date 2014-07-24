@@ -1,4 +1,5 @@
 import com.junbo.common.id.UserId
+import com.junbo.csr.spec.resource.CsrLogResource
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.FlowSelector
@@ -21,12 +22,15 @@ class OrderE2ETest extends BaseTest {
     OrderResourceImpl orderResource
     @Resource(name = 'mockOrderService')
     OrderServiceImpl orderServiceImpl
+    @Resource(name = 'mockCsrLogResource')
+    CsrLogResource csrLogResource
 
     @BeforeMethod
     void setUp() {
         //orderServiceImpl.facadeContainer.billingFacade = EasyMock.createMock(BillingFacade.class)
         //orderServiceImpl.facadeContainer.ratingFacade = EasyMock.createMock(RatingFacade.class)
         orderResource.orderService = orderServiceImpl
+        orderResource.csrLogResource = csrLogResource
     }
 
     @Test(enabled = true)

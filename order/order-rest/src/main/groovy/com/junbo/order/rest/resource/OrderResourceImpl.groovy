@@ -7,11 +7,14 @@ import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
+import com.junbo.common.util.Utils
 import com.junbo.csr.spec.model.CsrLog
+import com.junbo.csr.spec.model.CsrRefundInfo
 import com.junbo.csr.spec.resource.CsrLogResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.auth.OrderAuthorizeCallbackFactory
 import com.junbo.order.core.OrderService
+import com.junbo.order.core.common.JsonMarshaller
 import com.junbo.order.core.impl.common.OrderValidator
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.spec.error.AppErrors
@@ -129,8 +132,7 @@ class OrderResourceImpl implements OrderResource {
                         LOGGER.info('name=Refund_Or_Cancel_Non_Tentative_Offer')
                         oldOrder.orderItems = order.orderItems
                         return orderService.refundOrCancelOrder(oldOrder, new OrderServiceContext(order, new ApiContext())).then { Order refundedOrder ->
-                            //todo
-                            csrActionAudit('USD 10')
+                            csrActionAudit(refundedOrder)
                             return Promise.pure(refundedOrder)
                         }
                     }
@@ -207,8 +209,18 @@ class OrderResourceImpl implements OrderResource {
         }
     }
 
-    private void csrActionAudit(String info) {
+    private void csrActionAudit(Order order) {
         if (AuthorizeContext.hasScopes('csr')) {
+            String info = ''
+            if (order.billingHistories != null && order.billingHistories.last() != null) {
+                BillingHistory billingHistory = order.billingHistories.last()
+                CsrRefundInfo csrRefundInfo = new CsrRefundInfo()
+                csrRefundInfo.currency = order.currency.value
+                csrRefundInfo.success = billingHistory.success
+                csrRefundInfo.amount = billingHistory.totalAmount
+                info = JsonMarshaller.marshall(billingHistory)
+            }
+
             csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.RefundIssued, property: info)).get()
         }
     }
