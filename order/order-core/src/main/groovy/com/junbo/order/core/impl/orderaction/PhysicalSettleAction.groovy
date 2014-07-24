@@ -88,7 +88,7 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
                             throw AppErrors.INSTANCE.billingConnectionError().exception()
                         }
                         context.orderServiceContext.isAsyncCharge = resultBalance.isAsyncCharge
-                        orderInternalService.persistBillingHistory(balance, BillingAction.REQUEST_CHARGE, order)
+                        orderInternalService.persistBillingHistory(balance, BillingAction.CHARGE, order)
                         return orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
                             return CoreBuilder.buildActionResultForOrderEventAwareAction(context,
                                     BillingEventHistoryBuilder.buildEventStatusFromBalance(resultBalance))
@@ -116,7 +116,7 @@ class PhysicalSettleAction extends BaseOrderEventAwareAction {
                         billingConnectionError().exception()
             }
             context.orderServiceContext.isAsyncCharge = resultBalance.isAsyncCharge
-            orderInternalService.persistBillingHistory(balance, BillingAction.REQUEST_DEPOSIT, order)
+            orderInternalService.persistBillingHistory(balance, BillingAction.DEPOSIT, order)
             return orderServiceContextBuilder.refreshBalances(context.orderServiceContext).syncThen {
                 return CoreBuilder.buildActionResultForOrderEventAwareAction(context,
                         BillingEventHistoryBuilder.buildEventStatusFromBalance(resultBalance))

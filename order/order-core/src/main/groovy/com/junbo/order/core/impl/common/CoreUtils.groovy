@@ -397,7 +397,7 @@ class CoreUtils {
         if (CollectionUtils.isEmpty(order.billingHistories)) {
             return false
         }
-        if (isRefundedOrCanceled(order)) {
+        if (isCanceled(order)) {
             return false
         }
         return order.billingHistories.any { BillingHistory bh ->

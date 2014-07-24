@@ -311,7 +311,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
     void persistBillingHistory(Balance balance, BillingAction action, Order order) {
         def billingHistory = BillingEventHistoryBuilder.buildBillingHistory(balance)
         if(action != null) {
-            billingHistory.billingEvent == action.name()
+            billingHistory.billingEvent = action.name()
         }
         if (billingHistory.billingEvent != null) {
             def savedHistory = orderRepository.createBillingHistory(order.getId().value, billingHistory)
