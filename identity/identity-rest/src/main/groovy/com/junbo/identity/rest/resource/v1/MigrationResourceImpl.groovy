@@ -1,4 +1,6 @@
 package com.junbo.identity.rest.resource.v1
+
+import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.spec.model.Role
 import com.junbo.authorization.spec.model.RoleAssignment
 import com.junbo.authorization.spec.model.RoleTarget
@@ -98,6 +100,10 @@ class MigrationResourceImpl implements MigrationResource {
     @Override
     @Transactional
     Promise<OculusOutput> migrate(OculusInput oculusInput) {
+        if (!AuthorizeContext.hasScopes('identity.admin')) {
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
+        }
+
         if (StringUtils.isEmpty(oculusInput.username)) {
             throw new IllegalArgumentException('username can\'t be null')
         }
@@ -129,6 +135,10 @@ class MigrationResourceImpl implements MigrationResource {
     @Override
     @Transactional
     Promise<Map<String, OculusOutput>> bulkMigrate(List<OculusInput> oculusInputs) {
+        if (!AuthorizeContext.hasScopes('identity.admin')) {
+            throw AppCommonErrors.INSTANCE.forbidden().exception()
+        }
+
         CloudantClientBase.useBulk = true
         CloudantClientBulk.callback = new MigrationQueryViewCallback()
 
