@@ -36,3 +36,4 @@ Finally, log out the vagrant box, execute `vagrant package`, you will get a new 
 ### Version History
 * 2014-07-11, first version. Uploaded to `http://arti.silkcloud.info/sc-localdev-base-20140711.box` Image size = 577MB
 * 2014-07-13, add cifs-utils for smb mount, remove chef and puppet, change box name. Uploaded to `http://arti.silkcloud.info/sc-localdev-base-20140713.box` Image size = 590MB
+* 2014-07-23, add docker and docker-tools, Uploaded to `http://arti.silkcloud.info/sc-localdev-base-20140724.box` Image size = 579MB

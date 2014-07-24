@@ -29,29 +29,30 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     set -e
 
     # System packages
+    locale-gen en_US.UTF-8 && echo 'LANG="en_US.UTF-8"' > /etc/default/locale
     echo "Installing Base Packages"
     export DEBIAN_FRONTEND=noninteractive
-    sudo apt-get update -qq
-    sudo apt-get remove -qqy puppet chef
-    sudo apt-get upgrade -y --force-yes
-    sudo apt-get install -qqy --force-yes git tmux lsof vim htop iftop nload p7zip-full ack-grep httpie python-software-properties php5-curl php5-cli cifs-utils
+    apt-get update -qq
+    apt-get remove -qqy puppet chef
+    apt-get upgrade -y --force-yes
+    apt-get install -qqy --force-yes git tmux lsof vim htop iftop nload p7zip-full ack-grep httpie python-software-properties php5-curl php5-cli cifs-utils
 
     # Install jdk7
-    sudo add-apt-repository -y ppa:webupd8team/java
-    sudo apt-get update -qq
-    echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
-    echo debconf shared/accepted-oracle-license-v1-1 seen true | sudo debconf-set-selections
+    add-apt-repository -y ppa:webupd8team/java
+    apt-get update -qq
+    echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
+    echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
     echo "Installing JDK, this may take a while, please be patient"
-    sudo apt-get install -qqy --force-yes oracle-java7-installer
-    sudo rm -f /var/cache/oracle-jdk7-installer/*.tar.gz
+    apt-get install -qqy --force-yes oracle-java7-installer
+    rm -f /var/cache/oracle-jdk7-installer/*.tar.gz
 
     # Install gradle 2.0
     echo "Installing Gradle, downloading zip from official site"
-    sudo wget -q -O /opt/gradle-2.0-bin.zip https://services.gradle.org/distributions/gradle-2.0-bin.zip
-    sudo 7z x -y -o/opt /opt/gradle-2.0-bin.zip
-    sudo chmod 755 /opt/gradle-2.0
+    wget -q -O /tmp/gradle-2.0-bin.zip https://services.gradle.org/distributions/gradle-2.0-bin.zip
+    7z x -y -o/opt /tmp/gradle-2.0-bin.zip
+    chmod 755 /opt/gradle-2.0
     echo 'export PATH=$PATH:/opt/gradle-2.0/bin' >> /home/vagrant/.bashrc
-    sudo rm -f /opt/gradle-2.0-bin.zip
+    rm -f /opt/gradle-2.0-bin.zip
 
     # Install arcanist
     echo "Installing arcanist"
@@ -59,9 +60,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     git clone -q https://github.com/phacility/arcanist.git /home/vagrant/arc/arcanist
     echo 'export PATH=$PATH:/home/vagrant/arc/arcanist/bin' >> /home/vagrant/.bashrc
 
+    # Install docker and docker-tools
+    curl -s https://get.docker.io/ubuntu/ | sudo sh
+    wget -q -O /tmp/dockertools.tar.gz https://github.com/phusion/baseimage-docker/archive/master.tar.gz
+    tar xzf /tmp/dockertools.tar.gz -C /tmp
+    /tmp/baseimage-docker-master/install-tools.sh
+
     # cleanup
-    sudo apt-get autoclean -y --force-yes
-    sudo apt-get autoremove -y
+    apt-get autoclean -y --force-yes
+    apt-get autoremove -y
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
     echo * PROVISIONING COMPLETED:
     echo "** type 'vagrant ssh' to connect to sc-localdev"
