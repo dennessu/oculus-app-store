@@ -64,7 +64,7 @@
         <property name="personalInfoFacade" ref="personalInfoFacade"/>
     </bean>
 
-    <bean id="providerRoutingService" class="com.junbo.payment.core.provider.impl.ProviderRoutingServiceImpl">
+    <bean id="providerRoutingService" class="com.junbo.payment.core.provider.impl.ProviderRoutingServiceImpl" depends-on="paymentHandlerRegistry">
         <property name="paymentProviderRepository" ref="paymentProviderRepository" />
     </bean>
 

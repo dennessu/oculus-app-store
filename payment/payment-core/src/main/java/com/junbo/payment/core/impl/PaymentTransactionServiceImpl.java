@@ -12,7 +12,6 @@ import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.PaymentProvider;
 import com.junbo.payment.core.provider.PaymentProviderService;
-import com.junbo.payment.core.provider.impl.PaymentProviderRegistry;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.core.util.ProxyExceptionResponse;
 import com.junbo.payment.spec.enums.PaymentAPI;
@@ -383,7 +382,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
 
     @Override
     public Promise<PaymentTransaction> processNotification(PaymentProvider provider, String request) {
-        PaymentProviderService providerService = PaymentProviderRegistry.getPaymentProviderService(provider);
+        PaymentProviderService providerService = providerRoutingService.getProviderByName(provider.name());
         return providerService.processNotify(request)
                 .then(new Promise.Func<PaymentTransaction, Promise<PaymentTransaction>>() {
             @Override
