@@ -1,5 +1,4 @@
 package com.junbo.order.rest.resource
-
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
@@ -15,15 +14,14 @@ import com.junbo.order.core.impl.common.OrderValidator
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.PageParam
+import com.junbo.order.spec.model.enums.OrderActionType
 import com.junbo.order.spec.resource.OrderEventResource
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
-import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
 import javax.ws.rs.PathParam
-
 /**
  * Created by chriszhu on 3/12/14.
  */
@@ -69,7 +67,9 @@ class OrderEventResourceImpl implements OrderEventResource {
 
         def callback = authorizeCallbackFactory.create(orderEvent.order as OrderId)
         return RightsScope.with(authorizeService.authorize(callback)) {
-            if (!AuthorizeContext.hasRights('create-event')) {
+            if (!AuthorizeContext.hasRights('create-event') &&
+                    !(orderEvent.action == OrderActionType.CHARGE.name() &&
+                            (orderEvent.status.isEmpty() || orderEvent.status == null))) {
                 throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
