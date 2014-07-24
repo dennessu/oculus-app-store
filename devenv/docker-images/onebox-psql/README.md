@@ -5,11 +5,12 @@ Docker image to run a local dev postgresql server
 * Listen at 0.0.0.0, allow network connections from anywhere
 * Use default user "postgres"
 * Support changing password, by specify ENV 'PSQL_PASS'
+* /data as data folder
 
 ## Volumes
 * /etc/postgresql
 * /var/log/postgresql
-* /var/lib/postgresql
+* /data
 
 ## Usage
 To run the image and bind to port 5432:

@@ -45,7 +45,7 @@ start(){
   PSQL=$(sudo docker run \
     -d \
     -p 5432:5432 \
-    -v $DATADIR/psql/data:/var/lib/postgresql \
+    -v $DATADIR/psql/data:/data \
     -v $DATADIR/psql/logs:/var/log/postgresql \
     --name=psql \
     -e PSQL_PASS='#Bugsfor$' \

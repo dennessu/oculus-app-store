@@ -13,6 +13,8 @@ RUN /etc/init.d/postgresql stop
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+# Change data directory location
+RUN sed -i -e"s/^data_directory =.*$/data_directory = '\/data'/" /etc/postgresql/9.3/main/postgresql.conf
 # Allow connections from anywhere.
 RUN sed -i -e"s/^#listen_addresses =.*$/listen_addresses = '*'/" /etc/postgresql/9.3/main/postgresql.conf
 RUN echo "host    all    all    0.0.0.0/0    md5" >> /etc/postgresql/9.3/main/pg_hba.conf
@@ -28,7 +30,7 @@ RUN chmod +x /etc/service/postgresql/run
 EXPOSE 5432
 
 # Expose config, log and data directories.
-VOLUME ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
+VOLUME ["/etc/postgresql", "/var/log/postgresql", "/data"]
 
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
