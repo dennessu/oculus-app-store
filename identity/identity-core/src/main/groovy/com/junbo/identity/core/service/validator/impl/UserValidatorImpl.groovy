@@ -3,7 +3,6 @@ package com.junbo.identity.core.service.validator.impl
 import com.junbo.billing.spec.model.VatIdValidationResponse
 import com.junbo.billing.spec.resource.VatResource
 import com.junbo.common.error.AppCommonErrors
-import com.junbo.common.error.ErrorDetail
 import com.junbo.common.id.PITypeId
 import com.junbo.common.id.UserId
 import com.junbo.identity.common.util.JsonHelper
@@ -14,11 +13,7 @@ import com.junbo.identity.core.service.validator.UserValidator
 import com.junbo.identity.core.service.validator.UsernameValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.identifiable.UserStatus
-import com.junbo.identity.data.repository.CountryRepository
-import com.junbo.identity.data.repository.LocaleRepository
-import com.junbo.identity.data.repository.PITypeRepository
-import com.junbo.identity.data.repository.UserPersonalInfoRepository
-import com.junbo.identity.data.repository.UserRepository
+import com.junbo.identity.data.repository.*
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.UserListOptions
@@ -56,6 +51,8 @@ class UserValidatorImpl implements UserValidator {
     private PaymentInstrumentResource paymentInstrumentResource
 
     private PITypeRepository piTypeRepository
+
+    private Boolean enableVatValidation
 
     @Override
     Promise<Void> validateForCreate(User user) {
@@ -474,7 +471,7 @@ class UserValidatorImpl implements UserValidator {
     }
 
     Promise<Void> validateVat(User user) {
-        if (user.vat == null || user.vat.isEmpty()) {
+        if (user.vat == null || user.vat.isEmpty() || !enableVatValidation) {
             return Promise.pure(null)
         }
 
@@ -576,5 +573,10 @@ class UserValidatorImpl implements UserValidator {
     @Required
     void setPiTypeRepository(PITypeRepository piTypeRepository) {
         this.piTypeRepository = piTypeRepository
+    }
+
+    @Required
+    void setEnableVatValidation(Boolean enableVatValidation) {
+        this.enableVatValidation = enableVatValidation
     }
 }

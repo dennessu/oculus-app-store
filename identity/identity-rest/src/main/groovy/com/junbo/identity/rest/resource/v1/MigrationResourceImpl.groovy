@@ -635,10 +635,13 @@ class MigrationResourceImpl implements MigrationResource {
         return organizationRepository.searchByMigrateCompanyId(oculusInput.company.companyId).then { Organization organization ->
             if (organization == null) {
                 // create organization, create role, create group
-                return createNewOrg(oculusInput, createdUser)
+                return createOrReturnOrgRole(oculusInput, organization, createdUser)
             } else {
-                // user is not the first found of the organization
-                return updateNewOrg(oculusInput, createdUser, organization)
+                // In case organization is created, but the role and roleAssignment isn't properly assigned
+                return createOrReturnOrgRole(oculusInput, organization, createdUser).then {
+                    // user is not the first found of the organization
+                    return updateNewOrg(oculusInput, createdUser, organization)
+                }
             }
         }
     }
@@ -649,32 +652,32 @@ class MigrationResourceImpl implements MigrationResource {
         }
     }
 
-    private Promise<Organization> createNewOrg(OculusInput oculusInput, User createdUser) {
+    private Promise<Organization> createOrReturnOrgRole(OculusInput oculusInput, Organization createdOrganization, User createdUser) {
         // create organization, create role, create group
         Role createdRole = null
         Group createdGroup = null
-        return saveOrUpdateOrg(oculusInput, null).then { Organization organization ->
-            return saveOrUpdateRole(organization, ADMIN_ROLE).then { Role role ->
+        return saveOrUpdateOrg(oculusInput, createdOrganization).then { Organization organization ->
+            return createOrReturnRole(organization, ADMIN_ROLE).then { Role role ->
                 createdRole = oculusInput.company.isAdmin ? role : createdRole
-                return saveOrUpdateRole(organization, DEVELOPER_ROLE).then { Role developerRole ->
+                return createOrReturnRole(organization, DEVELOPER_ROLE).then { Role developerRole ->
                     createdRole = !oculusInput.company.isAdmin ? developerRole : createdRole
                     return Promise.pure(organization)
                 }
             }
         }.then { Organization organization ->
-            return saveOrUpdateGroup(organization, ADMIN_ROLE).then { Group group ->
+            return saveOrReturnGroup(organization, ADMIN_ROLE).then { Group group ->
                 createdGroup = oculusInput.company.isAdmin ? group : createdGroup
-                return saveOrUpdateGroup(organization, DEVELOPER_ROLE).then { Group developerGroup ->
+                return saveOrReturnGroup(organization, DEVELOPER_ROLE).then { Group developerGroup ->
                     createdGroup = !oculusInput.company.isAdmin ? developerGroup : createdGroup
                     return Promise.pure(organization)
                 }
             }
         }.then { Organization organization ->
-            return saveOrUpdateUserGroup(createdUser, createdGroup).then {
+            return saveOrReturnUserGroup(createdUser, createdGroup).then {
                 return Promise.pure(organization)
             }
         }.then { Organization organization ->
-            return saveOrUpdateRoleAssignment(createdRole, createdGroup).then {
+            return saveOrReturnRoleAssignment(createdRole, createdGroup).then {
                 return Promise.pure(organization)
             }
         }
@@ -687,13 +690,13 @@ class MigrationResourceImpl implements MigrationResource {
             return removeUserGroupMemberShip(oculusInput, createdUser, existingOrganization, DEVELOPER_ROLE).then {
                 return groupRepository.searchByOrganizationIdAndName(existingOrganization.getId(), ADMIN_ROLE, Integer.MAX_VALUE, null).then { Group group ->
                     if (group == null) {
-                        return saveOrUpdateGroup(existingOrganization, ADMIN_ROLE).then { Group newGroup ->
-                            return saveOrUpdateUserGroup(createdUser, newGroup).then {
+                        return saveOrReturnGroup(existingOrganization, ADMIN_ROLE).then { Group newGroup ->
+                            return saveOrReturnUserGroup(createdUser, newGroup).then {
                                 return Promise.pure(existingOrganization)
                             }
                         }
                     }
-                    return saveOrUpdateUserGroup(createdUser, group).then {
+                    return saveOrReturnUserGroup(createdUser, group).then {
                         return Promise.pure(existingOrganization)
                     }
                 }
@@ -703,14 +706,14 @@ class MigrationResourceImpl implements MigrationResource {
             return removeUserGroupMemberShip(oculusInput, createdUser, existingOrganization, ADMIN_ROLE).then {
                 return groupRepository.searchByOrganizationIdAndName(existingOrganization.getId(), DEVELOPER_ROLE, Integer.MAX_VALUE, null).then { Group group ->
                     if (group == null) {
-                        return saveOrUpdateGroup(existingOrganization, DEVELOPER_ROLE).then { Group newGroup ->
-                            return saveOrUpdateUserGroup(createdUser, newGroup).then {
+                        return saveOrReturnGroup(existingOrganization, DEVELOPER_ROLE).then { Group newGroup ->
+                            return saveOrReturnUserGroup(createdUser, newGroup).then {
                                 return Promise.pure(existingOrganization)
                             }
                         }
                     }
 
-                    return saveOrUpdateUserGroup(createdUser, group).then {
+                    return saveOrReturnUserGroup(createdUser, group).then {
                         return Promise.pure(existingOrganization)
                     }
                 }
@@ -830,7 +833,7 @@ class MigrationResourceImpl implements MigrationResource {
         }
     }
 
-    private Promise<Role> saveOrUpdateRole(Organization organization, String roleType) {
+    private Promise<Role> createOrReturnRole(Organization organization, String roleType) {
         return roleResource.list(new RoleListOptions(
             name: roleType,
             targetType: ORGANIZATION_TARGET_TYPE,
@@ -859,7 +862,7 @@ class MigrationResourceImpl implements MigrationResource {
         }
     }
 
-    private Promise<Group> saveOrUpdateGroup(Organization org, String roleName) {
+    private Promise<Group> saveOrReturnGroup(Organization org, String roleName) {
         return groupRepository.searchByOrganizationId(org.getId(), Integer.MAX_VALUE, 0).then { List<Group> groupList ->
             if (CollectionUtils.isEmpty(groupList)) {
                 Group newGroup = new Group(
@@ -887,7 +890,7 @@ class MigrationResourceImpl implements MigrationResource {
         }
     }
 
-    private Promise<UserGroup> saveOrUpdateUserGroup(User user, Group group) {
+    private Promise<UserGroup> saveOrReturnUserGroup(User user, Group group) {
         return userGroupRepository.searchByUserIdAndGroupId(user.getId(), group.getId(), Integer.MAX_VALUE, 0).then { List<UserGroup> userGroupList ->
             if (CollectionUtils.isEmpty(userGroupList)) {
                 UserGroup userGroup = new UserGroup(
@@ -902,7 +905,7 @@ class MigrationResourceImpl implements MigrationResource {
         }
     }
 
-    private Promise<RoleAssignment> saveOrUpdateRoleAssignment(Role role, Group group) {
+    private Promise<RoleAssignment> saveOrReturnRoleAssignment(Role role, Group group) {
         return roleAssignmentResource.list(new RoleAssignmentListOptions(
                 roleId: role.getId(),
                 assignee: IdUtil.toHref(group.getId())

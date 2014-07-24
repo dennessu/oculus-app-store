@@ -11,7 +11,7 @@
     </bean>
 
     <bean id="identityAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
-        <property name="scope" value="crypto.service billing.service payment.service csr.service"/>
+        <property name="scope" value="crypto.service billing.service payment.service csr.service identity.service"/>
         <property name="deflectionInSeconds" value="300"/>
         <property name="clientSecret" value="${identity.clientproxy.service.clientSecret}"/>
         <property name="clientId" value="${identity.clientproxy.service.clientId}"/>

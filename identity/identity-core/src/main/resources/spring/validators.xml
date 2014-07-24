@@ -117,6 +117,7 @@
         <property name="vatResource" ref="identityVatResource" />
         <property name="piTypeRepository" ref="piTypeRepository" />
         <property name="paymentInstrumentResource" ref="identityPaymentInstrumentResource" />
+        <property name="enableVatValidation" value="${identity.conf.enableVatValidation}" />
     </bean>
 
     <bean id="userSecurityQuestionValidator"
