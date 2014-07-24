@@ -99,6 +99,20 @@ public class HttpclientHelper {
         }
     }
 
+    public static <T> T SimpleHttpGet(HttpGet httpGet, Class<T> cls) throws Exception {
+        CloseableHttpResponse response = httpclient.execute(httpGet);
+
+        try {
+            System.out.println(response.getStatusLine());
+            HttpEntity entity = response.getEntity();
+            T type = JsonHelper.JsonDeserializer(new InputStreamReader(entity.getContent()), cls);
+            EntityUtils.consume(entity);
+            return type;
+        } finally {
+            response.close();
+        }
+    }
+
     public static CloseableHttpResponse SimplePost(String requestURI, List<NameValuePair> nvps) throws Exception {
         return SimplePost(requestURI, nvps, true);
     }
@@ -162,10 +176,38 @@ public class HttpclientHelper {
         }
     }
 
+    public static <T> T SimpleHttpPost(HttpPost httpPost, Class<T> cls) throws Exception {
+        CloseableHttpResponse response = httpclient.execute(httpPost);
+
+        try {
+            System.out.println(response.getStatusLine());
+            HttpEntity responseEntity = response.getEntity();
+            T type = JsonHelper.JsonDeserializer(new InputStreamReader(responseEntity.getContent()), cls);
+            EntityUtils.consume(responseEntity);
+            return type;
+        } finally {
+            response.close();
+        }
+    }
+
     public static <T> T SimpleJsonPut(String requestURI, String objJson, Class<T> cls) throws Exception {
         HttpPut httpPut = new HttpPut(requestURI);
         httpPut.addHeader("Content-Type", "application/json");
         httpPut.setEntity(new StringEntity(objJson));
+        CloseableHttpResponse response = httpclient.execute(httpPut);
+
+        try {
+            System.out.println(response.getStatusLine());
+            HttpEntity responseEntity = response.getEntity();
+            T type = JsonHelper.JsonDeserializer(new InputStreamReader(responseEntity.getContent()), cls);
+            EntityUtils.consume(responseEntity);
+            return type;
+        } finally {
+            response.close();
+        }
+    }
+
+    public static <T> T SimpleHttpPut(HttpPut httpPut, Class<T> cls) throws Exception {
         CloseableHttpResponse response = httpclient.execute(httpPut);
 
         try {
@@ -184,7 +226,22 @@ public class HttpclientHelper {
         httpDelete.addHeader("Content-Type", "application/json");
         CloseableHttpResponse response = httpclient.execute(httpDelete);
         try {
-            Assert.assertEquals(response.getStatusLine().getStatusCode(), 200, "validate HttpDelete response is 200");
+            Assert.assertEquals(
+                    true,
+                    (response.getStatusLine().getStatusCode() == 200 || response.getStatusLine().getStatusCode() == 412),
+                    "validate HttpDelete response is 200 or 412 (when item not found)");
+        } finally {
+            response.close();
+        }
+    }
+
+    public static void SimpleHttpDelete(HttpDelete httpDelete) throws Exception {
+        CloseableHttpResponse response = httpclient.execute(httpDelete);
+        try {
+            Assert.assertEquals(
+                    true,
+                    (response.getStatusLine().getStatusCode() == 200 || response.getStatusLine().getStatusCode() == 412),
+                    "validate HttpDelete response is 200 or 412 (when item not found)");
         } finally {
             response.close();
         }
@@ -192,24 +249,50 @@ public class HttpclientHelper {
 
     public static CloseableHttpResponse PureHttpResponse(String requestURI, String objJson, HttpRequestType type)
             throws Exception {
+        return PureHttpResponse(requestURI, objJson, type, null);
+    }
+
+    public static CloseableHttpResponse PureHttpResponse(
+            String requestURI, String objJson, HttpRequestType type, List<NameValuePair> additionalHeaders)
+            throws Exception {
         switch (type) {
             case get:
                 HttpGet httpGet = new HttpGet(requestURI);
                 httpGet.addHeader("Content-Type", "application/json");
+                if (additionalHeaders != null && !additionalHeaders.isEmpty()) {
+                    for (NameValuePair nvp : additionalHeaders) {
+                        httpGet.addHeader(nvp.getName(), nvp.getValue());
+                    }
+                }
                 return httpclient.execute(httpGet);
             case post:
                 HttpPost httpPost = new HttpPost(requestURI);
                 httpPost.addHeader("Content-Type", "application/json");
+                if (additionalHeaders != null && !additionalHeaders.isEmpty()) {
+                    for (NameValuePair nvp : additionalHeaders) {
+                        httpPost.addHeader(nvp.getName(), nvp.getValue());
+                    }
+                }
                 httpPost.setEntity(new StringEntity(objJson));
                 return httpclient.execute(httpPost);
             case put:
                 HttpPut httpPut = new HttpPut(requestURI);
                 httpPut.addHeader("Content-Type", "application/json");
+                if (additionalHeaders != null && !additionalHeaders.isEmpty()) {
+                    for (NameValuePair nvp : additionalHeaders) {
+                        httpPut.addHeader(nvp.getName(), nvp.getValue());
+                    }
+                }
                 httpPut.setEntity(new StringEntity(objJson));
                 return httpclient.execute(httpPut);
             case delete:
                 HttpDelete httpDelete = new HttpDelete(requestURI);
                 httpDelete.addHeader("Content-Type", "application/json");
+                if (additionalHeaders != null && !additionalHeaders.isEmpty()) {
+                    for (NameValuePair nvp : additionalHeaders) {
+                        httpDelete.addHeader(nvp.getName(), nvp.getValue());
+                    }
+                }
                 return httpclient.execute(httpDelete);
             default:
                 throw new Exception("unexpected httpRequest: " + type);

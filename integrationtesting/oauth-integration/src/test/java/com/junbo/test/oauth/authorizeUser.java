@@ -13,6 +13,7 @@ import com.junbo.test.common.RandomHelper;
 import com.junbo.test.identity.Identity;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 import static org.testng.AssertJUnit.assertEquals;
@@ -21,6 +22,13 @@ import static org.testng.AssertJUnit.assertEquals;
  * @author dw
  */
 public class authorizeUser {
+
+    @BeforeSuite
+    public void run() throws Exception {
+        HttpclientHelper.CreateHttpClient();
+        Identity.GetHttpAuthorizationHeader();
+        HttpclientHelper.CloseHttpClient();
+    }
 
     @BeforeMethod
     public void setup() {
@@ -160,7 +168,8 @@ public class authorizeUser {
         HttpclientHelper.ResetHttpClient();
         String newPassword = "ASDFqwer1234";
         UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
-        String resetPasswordLink = Oauth.PostResetPassword(Identity.GetHexUserId(upi.getUserId().getValue()), null);
+        String resetPasswordLink = Oauth.PostResetPassword(
+                Identity.GetHexUserId(upi.getUserId().getValue()), userName, null);
         String resetPasswordCid = Oauth.GetResetPasswordCid(resetPasswordLink);
         Oauth.GetResetPasswordView(resetPasswordCid);
         Oauth.PostResetPasswordWithNewPassword(resetPasswordCid, newPassword);

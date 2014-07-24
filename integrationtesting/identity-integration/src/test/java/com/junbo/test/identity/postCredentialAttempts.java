@@ -13,6 +13,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 /**
@@ -20,8 +21,15 @@ import org.testng.annotations.Test;
  */
 public class postCredentialAttempts {
 
+    @BeforeSuite
+    public void run() throws Exception {
+        HttpclientHelper.CreateHttpClient();
+        Identity.GetHttpAuthorizationHeader();
+        HttpclientHelper.CloseHttpClient();
+    }
+
     @BeforeMethod
-    public void setup() {
+    public void setup() throws Exception {
         HttpclientHelper.CreateHttpClient();
     }
 
@@ -68,15 +76,15 @@ public class postCredentialAttempts {
     @Test(groups = "dailies")
     public void postUserCredentitalAttemptsMaxRetrySameIP() throws Exception {
         String ip = RandomHelper.randomIP();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 101; i++) {
             CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
                     RandomHelper.randomAlphabetic(15), RandomHelper.randomAlphabetic(15), ip, false);
-            Validator.Validate("validate response error code", 404, response.getStatusLine().getStatusCode());
+            Validator.Validate("validate response error code", 412, response.getStatusLine().getStatusCode());
             response.close();
         }
         CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
                 RandomHelper.randomAlphabetic(15), RandomHelper.randomAlphabetic(15), ip, false);
-        Validator.Validate("validate response error code", 409, response.getStatusLine().getStatusCode());
+        Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
         String errorMessage = "User reaches maximum login attempt";
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));

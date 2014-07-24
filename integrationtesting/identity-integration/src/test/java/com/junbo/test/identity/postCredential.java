@@ -12,6 +12,7 @@ import com.junbo.test.common.Validator;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 /**
@@ -19,8 +20,15 @@ import org.testng.annotations.Test;
  */
 public class postCredential {
 
+    @BeforeSuite
+    public void run() throws Exception {
+        HttpclientHelper.CreateHttpClient();
+        Identity.GetHttpAuthorizationHeader();
+        HttpclientHelper.CloseHttpClient();
+    }
+
     @BeforeMethod
-    public void setup() {
+    public void setup() throws Exception {
         HttpclientHelper.CreateHttpClient();
     }
 

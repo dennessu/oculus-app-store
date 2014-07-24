@@ -13,20 +13,32 @@ import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.JsonHelper;
 import com.junbo.test.common.RandomHelper;
 import com.junbo.test.common.Validator;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author dw
  */
 public class postImportUserPersonalInfo {
+
+    @BeforeSuite
+    public void run() throws Exception {
+        HttpclientHelper.CreateHttpClient();
+        Identity.GetHttpAuthorizationHeader();
+        HttpclientHelper.CloseHttpClient();
+    }
+
     @BeforeMethod
-    public void setup() {
+    public void setup() throws Exception {
         HttpclientHelper.CreateHttpClient();
     }
 
@@ -112,8 +124,10 @@ public class postImportUserPersonalInfo {
         OculusInput oculusInput = IdentityModel.DefaultOculusInput();
         Identity.ImportMigrationData(oculusInput);
         oculusInput.setCurrentId(RandomHelper.randomLong());
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("Authorization", Identity.HttpAuthorizationHeader));
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1ImportsURI,
-                JsonHelper.JsonSerializer(oculusInput), HttpclientHelper.HttpRequestType.post);
+                JsonHelper.JsonSerializer(oculusInput), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
         String errorMessage = "Field value is invalid. username is already used by others";
         Validator.Validate("validate response error message", true,
@@ -138,8 +152,10 @@ public class postImportUserPersonalInfo {
         Identity.ImportMigrationData(oculusInput);
         oculusInput.setCurrentId(RandomHelper.randomLong());
         oculusInput.setUsername(RandomHelper.randomAlphabetic(20));
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("Authorization", Identity.HttpAuthorizationHeader));
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1ImportsURI,
-                JsonHelper.JsonSerializer(oculusInput), HttpclientHelper.HttpRequestType.post);
+                JsonHelper.JsonSerializer(oculusInput), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response error code", 409, response.getStatusLine().getStatusCode());
         String errorMessage = String.format("Email %s is already used", oculusInput.getEmail());
         Validator.Validate("validate response error message", true,
@@ -184,9 +200,11 @@ public class postImportUserPersonalInfo {
     public void importMigrationDataWithRandomPassword() throws Exception {
         OculusInput oculusInput = IdentityModel.DefaultOculusInput();
         oculusInput.setPassword(RandomHelper.randomAlphabetic(80));
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("Authorization", Identity.HttpAuthorizationHeader));
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
                 Identity.IdentityV1ImportsURI, JsonHelper.JsonSerializer(oculusInput),
-                HttpclientHelper.HttpRequestType.post);
+                HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response error code", 500, response.getStatusLine().getStatusCode());
         String errorMessage = "password only accept version 1";
         Validator.Validate("validate response error message", true,

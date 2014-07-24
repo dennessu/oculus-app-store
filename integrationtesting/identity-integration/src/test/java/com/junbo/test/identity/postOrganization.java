@@ -10,19 +10,32 @@ import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.JsonHelper;
 import com.junbo.test.common.RandomHelper;
 import com.junbo.test.common.Validator;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author dw
  */
 public class postOrganization {
 
+    @BeforeSuite
+    public void run() throws Exception {
+        HttpclientHelper.CreateHttpClient();
+        Identity.GetHttpAuthorizationHeader();
+        HttpclientHelper.CloseHttpClient();
+    }
+
     @BeforeMethod
-    public void setup() {
+    public void setup() throws Exception {
         HttpclientHelper.CreateHttpClient();
     }
 
@@ -44,8 +57,10 @@ public class postOrganization {
         Organization org = IdentityModel.DefaultOrganization();
         Identity.OrganizationPostDefault(org);
         org.setIsValidated(RandomHelper.randomBoolean());
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("Authorization", Identity.HttpAuthorizationHeader));
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1OrganizationURI,
-                JsonHelper.JsonSerializer(org), HttpclientHelper.HttpRequestType.post);
+                JsonHelper.JsonSerializer(org), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response error code", 409, response.getStatusLine().getStatusCode());
         String errorMessage = "Field value is duplicate";
         Validator.Validate("validate response error message", true,

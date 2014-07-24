@@ -8,9 +8,7 @@ package com.junbo.test.identity;
 import com.junbo.identity.spec.v1.model.Country;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.Validator;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.util.List;
 
@@ -19,8 +17,15 @@ import java.util.List;
  */
 public class postCountry {
 
+    @BeforeSuite
+    public void run() throws Exception {
+        HttpclientHelper.CreateHttpClient();
+        Identity.GetHttpAuthorizationHeader();
+        HttpclientHelper.CloseHttpClient();
+    }
+
     @BeforeMethod
-    public void setup() {
+    public void setup() throws Exception {
         HttpclientHelper.CreateHttpClient();
     }
 
