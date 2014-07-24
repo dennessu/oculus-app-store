@@ -362,7 +362,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         listUsername.add(userName);
 
         paraMap.put("username", listUsername);
-        String responseBody = restApiCall(HTTPMethod.GET, identityServerURL, null, expectedResponseCode, paraMap);
+        String responseBody = restApiCall(HTTPMethod.GET, identityServerURL, null, expectedResponseCode, paraMap, true);
 
         Results<User> userGet = new JsonMessageTranscoder().decode(
                 new TypeReference<Results<User>>() {
@@ -381,6 +381,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
             }
             listUserId.add(IdConverter.idToHexString(user.getId()));
         }
+        Master.getInstance().setCurrentUid(listUserId.get(0));
 
         return listUserId;
     }

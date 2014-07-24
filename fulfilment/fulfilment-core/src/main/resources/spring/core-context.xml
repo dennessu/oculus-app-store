@@ -4,7 +4,7 @@
        xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     <!-- fulfilment serivce -->
-    <bean id="fulfilmentService" class="com.junbo.fulfilment.core.service.FulfilmentServiceImpl"/>
+    <bean id="fulfilmentService" class="com.junbo.fulfilment.core.service.FulfilmentServiceImpl" depends-on="handlerRegistry"/>
 
     <!-- fulfilment handlers -->
     <bean id="entitlementHandler" class="com.junbo.fulfilment.core.handler.EntitlementHandler"/>
