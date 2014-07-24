@@ -3,6 +3,7 @@
 
 BOX_NAME = ENV['BOX_NAME'] || "sc-localdev-base"
 BOX_URI = ENV['BOX_URI'] || "http://arti.silkcloud.info/sc-localdev-base-20140713.box"
+BOX_MEM = ENV['BOX_MEM'] || 2048
 
 VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
@@ -39,7 +40,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provider "virtualbox" do |v|
     v.name = "sc-localdev"
-    v.memory = 3072
+    v.memory = BOX_MEM
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
     v.customize ["modifyvm", :id, "--cpus", cores ]
@@ -60,7 +61,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       echo 'swapfile found. No changes made.'
     else
       echo 'swapfile not found. Adding swapfile.'
-      fallocate -l 3072M /swapfile
+      fallocate -l 4096M /swapfile
       chmod 600 /swapfile
       mkswap /swapfile
       swapon /swapfile
