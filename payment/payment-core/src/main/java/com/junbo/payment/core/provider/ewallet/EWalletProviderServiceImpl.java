@@ -101,7 +101,7 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
     }
 
     @Override
-    public Promise<PaymentInstrument> getByInstrumentToken(String token) {
+    public Promise<PaymentInstrument> getByInstrumentToken(final String token) {
         if(CommonUtil.isNullOrEmpty(token)){
             LOGGER.error("invalid external token: " + token);
             throw AppServerExceptions.INSTANCE.invalidPI().exception();
@@ -126,6 +126,7 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
             @Override
             public Promise<PaymentInstrument> apply(Wallet wallet) {
                 if (wallet == null) {
+                    LOGGER.error("no such wallet:" + token);
                     throw AppServerExceptions.INSTANCE.providerProcessError(
                             PROVIDER_NAME, "No such wallet").exception();
                 }
@@ -161,6 +162,7 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
             @Override
             public Promise<PaymentTransaction> apply(Transaction transaction) {
                 if (transaction == null || transaction.getId() == null) {
+                    LOGGER.error("No credit wallet transaction for user:" + pi.getUserId());
                     throw AppServerExceptions.INSTANCE.providerProcessError(
                             PROVIDER_NAME, "No transaction happens").exception();
                 }
@@ -181,7 +183,7 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
     }
 
     @Override
-    public Promise<PaymentTransaction> charge(PaymentInstrument pi, final PaymentTransaction paymentRequest) {
+    public Promise<PaymentTransaction> charge(final PaymentInstrument pi, final PaymentTransaction paymentRequest) {
         DebitRequest debitRequest = new DebitRequest();
         debitRequest.setTrackingUuid(UUID.randomUUID());
         debitRequest.setAmount(paymentRequest.getChargeInfo().getAmount());
@@ -203,6 +205,7 @@ public class EWalletProviderServiceImpl extends AbstractPaymentProviderService {
             @Override
             public Promise<PaymentTransaction> apply(Transaction transaction) {
                 if (transaction == null || transaction.getId() == null) {
+                    LOGGER.error("No debit wallet transaction:" + pi.getExternalToken());
                     throw AppServerExceptions.INSTANCE.providerProcessError(
                             PROVIDER_NAME, "No transaction happens").exception();
                 }

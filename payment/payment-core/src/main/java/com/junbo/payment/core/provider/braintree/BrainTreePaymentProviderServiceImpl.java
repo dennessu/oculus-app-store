@@ -101,7 +101,7 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
                 request.setAddress(address);
                 return PromiseFacade.PAYMENT.decorate(new Callable<PaymentInstrument>() {
                     @Override
-                    public PaymentInstrument call() throws Exception {
+                    public PaymentInstrument call() {
                         String expireDate = request.getTypeSpecificDetails().getExpireDate();
                         String[] tokens = expireDate.split("-");
                         if (tokens == null || tokens.length < 2) {

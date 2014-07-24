@@ -65,4 +65,8 @@ public interface AppClientExceptions {
             reason = "the email info is missing")
     AppError missingEmail();
 
+    @ErrorDef(httpStatusCode = 412, code = "113", message = "invalid BIlling Ref",
+            reason = "the billing reference id is invalid: {0}")
+    AppError invalidBIllingRef(String billingRef);
+
 }

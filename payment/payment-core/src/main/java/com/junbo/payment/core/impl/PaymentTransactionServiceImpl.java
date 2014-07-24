@@ -169,6 +169,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         }
         final PaymentTransaction existedTransaction = getPaymentById(paymentId);
         if(existedTransaction.getStatus().equalsIgnoreCase(PaymentStatus.SETTLED.toString())){
+            LOGGER.error("the trasnaction has already been settled:" + paymentId);
             throw AppServerExceptions.INSTANCE.invalidPaymentStatus(PaymentStatus.SETTLED.toString()).exception();
         }
         CloneRequest(request, existedTransaction);
@@ -481,6 +482,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         }
         if(!existedTransaction.getBillingRefId().equalsIgnoreCase(request.getBillingRefId())){
             LOGGER.error("the billing ref id is different with the one before for payment: " + paymentId);
+            throw AppClientExceptions.INSTANCE.invalidBIllingRef(request.getBillingRefId()).exception();
         }
     }
 

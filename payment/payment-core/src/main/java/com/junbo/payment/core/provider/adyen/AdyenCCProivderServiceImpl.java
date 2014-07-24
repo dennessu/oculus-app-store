@@ -121,6 +121,7 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                     StringBuffer sbReq = getRawRequest(defaultCurrency, minAuthAmount, piId, request, address);
                     String restResponse = adyenRestClient.authorise(sbReq.toString()).get();
                     if(CommonUtil.isNullOrEmpty(restResponse)){
+                        LOGGER.error("empty response from Adyen.");
                         throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "no response").exception();
                     }
                     result = getPaymentResult(restResponse);
@@ -148,10 +149,12 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                         request.getTypeSpecificDetails().setExpireDate(recurringDetail.getCard().getExpiryYear()
                                 + "-" + recurringDetail.getCard().getExpiryMonth());
                     }else{
+                        LOGGER.error("no recurring info available for PI:" + piId);
                         throw AppServerExceptions.INSTANCE.providerProcessError(
                                 PROVIDER_NAME, "Invalid Card to add").exception();
                     }
                 }else{
+                    LOGGER.error("error response from Adyen.");
                     throw AppServerExceptions.INSTANCE.providerProcessError(
                         PROVIDER_NAME, result == null ? "No Result" : result.getRefusalReason()).exception();
                 }
@@ -287,6 +290,7 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                 try {
                     result = service.capture(request);
                 } catch (RemoteException e) {
+                    LOGGER.error("error call adyen capture.");
                     throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, e.toString()).exception();
                 }
                 if(result != null && result.getResponse().equals(CAPTURE_STATE)){

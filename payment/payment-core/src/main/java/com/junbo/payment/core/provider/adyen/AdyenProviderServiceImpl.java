@@ -47,11 +47,16 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
     private static final Logger LOGGER = LoggerFactory.getLogger(AdyenProviderServiceImpl.class);
 
     @Override
-    public void afterPropertiesSet() throws Exception {
-        service = new PaymentLocator().getPaymentHttpPort(
+    public void afterPropertiesSet(){
+        try{
+            service = new PaymentLocator().getPaymentHttpPort(
                 new java.net.URL(paymentURL));
-        recurService = new RecurringLocator().getRecurringHttpPort(
+            recurService = new RecurringLocator().getRecurringHttpPort(
                 new java.net.URL(recurringURL));
+        }catch (Exception ex){
+            LOGGER.error("error set up adyen service");
+            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "setup service").exception();
+        }
         //Basic HTTP Authentication:
         ((Stub)service)._setProperty(AUTH_USER,authUser);
         ((Stub)service)._setProperty(AUTH_PWD,authPassword);
@@ -107,7 +112,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
     public Promise<PaymentTransaction> charge(final PaymentInstrument pi, final PaymentTransaction paymentRequest) {
         return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
             @Override
-            public PaymentTransaction call() throws Exception {
+            public PaymentTransaction call(){
                 if(CommonUtil.isNullOrEmpty(pi.getExternalToken())){
                     String strRequest = getRedirectInfo(pi, paymentRequest);
                     paymentRequest.setWebPaymentInfo(new WebPaymentInfo());
@@ -238,11 +243,13 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
         try {
             result = service.authorise(request);
         } catch (RemoteException e) {
+            LOGGER.error("error call Adyen authorise API.");
             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, e.toString()).exception();
         }
         if(result != null && result.getResultCode().equals("Authorised")){
             return result;
         }
+        LOGGER.error("error get the Adyen authorise response.");
         throw AppServerExceptions.INSTANCE.providerProcessError(
                 PROVIDER_NAME, result == null ? "No Result" : result.getRefusalReason()).exception();
     }
@@ -256,7 +263,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
     public Promise<PaymentTransaction> reverse(final String transactionId, final PaymentTransaction paymentRequest) {
         return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
             @Override
-            public PaymentTransaction call() throws Exception {
+            public PaymentTransaction call() {
                 ModificationRequest refundReq = new ModificationRequest();
                 refundReq.setMerchantAccount(merchantAccount);
                 refundReq.setOriginalReference(transactionId);
@@ -264,6 +271,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
                 try{
                     cancelResult = service.cancel(refundReq);
                 } catch (RemoteException e) {
+                    LOGGER.error("error call adyen cancel API.");
                     throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, e.toString()).exception();
                 }
                 if(cancelResult != null){
@@ -273,6 +281,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
                     }
                     paymentRequest.setStatus(PaymentStatus.REVERSED.toString());
                 }else{
+                    LOGGER.error("error get adyen cancel response.");
                     throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "No Response").exception();
                 }
                 return paymentRequest;
@@ -299,6 +308,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
                 try{
                     refundResult = service.refund(refundReq);
                 } catch (RemoteException e) {
+                    LOGGER.error("error call adyen refund API.");
                     throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, e.toString()).exception();
                 }
                 if(refundResult != null){
@@ -308,6 +318,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
                     }
                     request.setStatus(PaymentStatus.REFUNDED.toString());
                 }else{
+                    LOGGER.error("error get adyen refund response.");
                     throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "No Response").exception();
                 }
                 return request;
@@ -325,6 +336,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
                 throw AppServerExceptions.INSTANCE.errorCalculateHMCA().exception();
             }
         }else{
+            LOGGER.error("invalid callback: Info is empty or not enough.");
             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "invalid callback").exception();
         }
         //validate signature: authResult + pspReference + merchantReference + skinCode + merchantReturnData

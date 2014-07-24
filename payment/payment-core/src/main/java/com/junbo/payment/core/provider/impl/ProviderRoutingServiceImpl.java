@@ -33,6 +33,7 @@ public class ProviderRoutingServiceImpl implements ProviderRoutingService{
     @Override
     public PaymentProviderService getProviderByName(String provider) {
         if(CommonUtil.isNullOrEmpty(provider)){
+            LOGGER.error("provider is empty");
             throw AppServerExceptions.INSTANCE.providerNotFound(provider).exception();
         }
         PaymentProvider paymentProvider = null;

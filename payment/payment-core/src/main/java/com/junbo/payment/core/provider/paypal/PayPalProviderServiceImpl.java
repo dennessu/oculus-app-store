@@ -52,7 +52,7 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
     private static final String REDIRECT_TOKEN = "&token=";
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         Map<String, String> sdkConfig = new HashMap<String, String>();
         sdkConfig.put("mode", mode);
         sdkConfig.put("acct1.UserName", userName);
@@ -190,7 +190,7 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
     public Promise<PaymentTransaction> refund(final String transactionId, final PaymentTransaction request) {
         return PromiseFacade.PAYMENT.decorate(new Callable<PaymentTransaction>() {
             @Override
-            public PaymentTransaction call() throws Exception {
+            public PaymentTransaction call() {
                 RefundTransactionReq refundReq = new RefundTransactionReq();
                 RefundTransactionRequestType requestType = new RefundTransactionRequestType();
                 requestType.setTransactionID(transactionId);

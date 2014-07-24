@@ -146,13 +146,16 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
                 }
             });
         }catch(Exception ex){
+            LOGGER.error("error get payment instrument:" + ex.toString());
             throw AppServerExceptions.INSTANCE.invalidPI().exception();
         }
         if(pi == null){
+            LOGGER.error("PI does not exist:" + request.getPaymentInstrumentId());
             throw AppClientExceptions.INSTANCE.invalidPaymentInstrumentId(
                     request.getPaymentInstrumentId().toString()).exception();
         }
         if(!pi.getIsActive()){
+            LOGGER.error("PI is not active:" + request.getPaymentInstrumentId());
             throw AppServerExceptions.INSTANCE.invalidPI().exception();
         }
         return pi;
@@ -163,6 +166,7 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
             String merchantRef = merchantAccountRepository.getMerchantAccountRef(
                     paymentProviderRepository.getProviderId(providerName), request.getChargeInfo().getCurrency());
             if(CommonUtil.isNullOrEmpty(merchantRef)){
+                LOGGER.error("merchant reference is not available for provider:" + providerName);
                 throw AppServerExceptions.INSTANCE.merchantRefNotAvailable(
                         request.getChargeInfo().getCurrency()).exception();
             }
@@ -194,6 +198,7 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
             public PaymentTransaction doInTransaction(TransactionStatus txnStatus) {
                 final PaymentTransaction result = paymentRepositoryFacade.getByPaymentId(paymentId);
                 if(result == null){
+                    LOGGER.error("the payment is not available:" + paymentId);
                     throw AppClientExceptions.INSTANCE.paymentInstrumentNotFound(paymentId.toString()).exception();
                 }
                 final List<PaymentEvent> events = paymentRepositoryFacade.getPaymentEventsByPaymentId(paymentId);
@@ -250,6 +255,7 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
         PaymentProviderService provider = providerRoutingService.getPaymentProvider(
                 PaymentUtil.getPIType(pi.getType()));
         if(provider == null){
+            LOGGER.error("provider is not available for pi type:" + pi.getType());
             throw AppServerExceptions.INSTANCE.providerNotFound(
                     PaymentUtil.getPIType(pi.getType()).toString()).exception();
         }
@@ -259,6 +265,7 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
     protected PaymentProviderService getProviderByName(String provider){
         PaymentProviderService service = providerRoutingService.getProviderByName(provider);
         if(service == null){
+            LOGGER.error("provider service is not available for provider:" + provider);
             throw AppServerExceptions.INSTANCE.providerNotFound(provider).exception();
         }
         return service;

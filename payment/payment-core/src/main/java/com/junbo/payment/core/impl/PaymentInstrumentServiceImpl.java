@@ -17,7 +17,6 @@ import com.junbo.payment.core.PaymentInstrumentService;
 import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.core.provider.ProviderRoutingService;
 import com.junbo.payment.core.util.PaymentUtil;
-import com.junbo.payment.core.util.ProxyExceptionResponse;
 import com.junbo.payment.db.repo.TrackingUuidRepository;
 import com.junbo.payment.db.repo.facade.PaymentInstrumentRepositoryFacade;
 import com.junbo.payment.db.repository.PITypeRepository;
@@ -63,12 +62,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         if(provider == null){
             throw AppServerExceptions.INSTANCE.providerNotFound(PIType.get(request.getType()).toString()).exception();
         }
-        return provider.add(request).recover(new Promise.Func<Throwable, Promise<PaymentInstrument>>() {
-            @Override
-            public Promise<PaymentInstrument> apply(Throwable throwable) {
-                return logException(PaymentAPI.AddPI, provider.getProviderName(), throwable);
-            }
-        }).then(new Promise.Func<PaymentInstrument, Promise<PaymentInstrument>>() {
+        return provider.add(request).then(new Promise.Func<PaymentInstrument, Promise<PaymentInstrument>>() {
             @Override
             public Promise<PaymentInstrument> apply(PaymentInstrument paymentInstrument) {
                 provider.clonePIResult(paymentInstrument, request);
@@ -81,13 +75,6 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
                 return Promise.pure(request);
             }
         });
-    }
-
-    private Promise<PaymentInstrument> logException(PaymentAPI api, String provider, Throwable throwable){
-        ProxyExceptionResponse proxyResponse = new ProxyExceptionResponse(throwable);
-        LOGGER.error(api.toString() + " with error for provider: " + provider +
-                ".detail: " + proxyResponse.getBody());
-        throw AppServerExceptions.INSTANCE.providerProcessError(provider, proxyResponse.getBody()).exception();
     }
 
     private void saveAndCommitPI(final PaymentInstrument request) {
@@ -127,6 +114,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         final PaymentProviderService provider = providerRoutingService.getPaymentProvider(
                 PIType.get(result.getType()));
         if(provider == null){
+            LOGGER.error("the provider is not available for pi type:" + result.getType());
             throw AppServerExceptions.INSTANCE.providerNotFound(PIType.get(result.getType()).toString()).exception();
         }
         return provider.getByInstrumentToken(result.getExternalToken())

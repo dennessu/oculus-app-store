@@ -34,7 +34,7 @@ public class PaymentCallbackServiceImpl implements PaymentCallbackService{
     public Promise<Void> addPaymentProperties(Long paymentId, PaymentCallbackParams properties) {
         PaymentTransaction existedTransaction = paymentRepositoryFacade.getByPaymentId(paymentId);
         if(existedTransaction == null){
-            LOGGER.error("the payment id is invalid.");
+            LOGGER.error("the payment id is invalid:" + paymentId);
             throw AppClientExceptions.INSTANCE.paymentInstrumentNotFound(paymentId.toString()).exception();
         }
         paymentRepositoryFacade.addPaymentProperties(paymentId, properties);
