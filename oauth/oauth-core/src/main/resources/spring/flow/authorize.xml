@@ -140,16 +140,9 @@
 
         <wf:action-state id="CHECK_CONSENT">
             <wf:action ref="validateConsent"/>
-            <wf:transition on="consentRequired" to="REDIRECT_TO_CONSENT"/>
+            <wf:transition on="consentRequired" to="CONSENT_VIEW"/>
             <wf:transition on="*" to="END"/>
         </wf:action-state>
-
-        <wf:view-state id="REDIRECT_TO_CONSENT">
-            <wf:on-render>
-                <wf:action ref="redirectToConsent"/>
-            </wf:on-render>
-            <wf:transition on="*" to="CONSENT_VIEW"/>
-        </wf:view-state>
 
         <wf:view-state id="CONSENT_VIEW">
             <wf:on-render>

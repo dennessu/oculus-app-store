@@ -60,7 +60,7 @@ class IdentityVatCheckProcessor implements IdentityProcessor {
 
         return Promise.each(user.vat.entrySet()) { Map.Entry<String, UserVAT> entry ->
             UserVAT vat = entry.value
-            return vatResource.validateVatId(vat.vatNumber).recover { Throwable e ->
+            return vatResource.validateVatId(vat.vatNumber, user.countryOfResidence.value).recover { Throwable e ->
                 LOGGER.error('vatResource call error')
                 vatToRemove.clear()
                 vatToUpdate.clear()

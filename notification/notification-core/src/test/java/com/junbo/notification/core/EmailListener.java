@@ -8,7 +8,7 @@ package com.junbo.notification.core;
 /**
  * EmailListener.
  */
-public final class EmailListener extends BaseListener {
+public class EmailListener extends BaseListener {
     @Override
     protected void onMessage(String eventId, String message) {
         System.out.println("You've got a message [" + message + "].");
