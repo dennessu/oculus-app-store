@@ -12,7 +12,6 @@ import com.junbo.authorization.AuthorizeServiceImpl
 import com.junbo.configuration.ConfigService
 import com.junbo.configuration.ConfigServiceManager
 import com.junbo.data.handler.DataHandler
-import groovy.json.StringEscapeUtils
 import groovy.transform.CompileStatic
 import org.apache.commons.io.IOUtils
 import org.glassfish.grizzly.threadpool.JunboThreadPool
@@ -47,7 +46,6 @@ class DataLoader {
                  "classpath*:/spring/validators.xml",
                  "classpath*:/spring/transaction.xml",
                  "classpath*:/spring/flow/*.xml"] as String[], true)
-
         LOGGER.info("loading spring context end")
 
         ConfigService configService = ConfigServiceManager.instance()
@@ -64,7 +62,7 @@ class DataLoader {
         JunboThreadPool junboThreadPool = applicationContext.getBean("junboThreadPool", JunboThreadPool)
         // in order to eagerly initialize the thread pool
         if (junboThreadPool == null) {
-            throw new IllegalStateException("junboThreadPool is null");
+            throw new IllegalStateException("junboThreadPool is null")
         }
 
         if (args.length == 0 || args[0].equalsIgnoreCase("all")) {
