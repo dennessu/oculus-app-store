@@ -24,10 +24,9 @@ import com.junbo.test.order.apihelper.OrderEventService;
 public class OrderEventServiceImpl extends HttpClientBase implements OrderEventService {
 
     private static String orderEventUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "order-events";
-
     private LogHelper logger = new LogHelper(OrderEventServiceImpl.class);
-
     private static OrderEventService instance;
+    private boolean isServiceScope = true;
 
     public static synchronized OrderEventService getInstance() {
         if (instance == null) {
@@ -45,7 +44,7 @@ public class OrderEventServiceImpl extends HttpClientBase implements OrderEventS
     }
 
     public OrderEvent postOrderEvent(OrderEvent orderEvent, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, orderEventUrl, orderEvent, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, orderEventUrl, orderEvent, expectedResponseCode, isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<OrderEvent>() {
         }, responseBody);
     }
@@ -57,7 +56,7 @@ public class OrderEventServiceImpl extends HttpClientBase implements OrderEventS
 
     @Override
     public Results<OrderEvent> getOrderEventsByOrderId(String orderId, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.GET, orderEventUrl + "?orderId=" + orderId, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.GET, orderEventUrl + "?orderId=" + orderId, expectedResponseCode, isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<Results<OrderEvent>>() {
         }, responseBody);
     }
@@ -69,7 +68,7 @@ public class OrderEventServiceImpl extends HttpClientBase implements OrderEventS
 
     @Override
     public OrderEvent getOrderEvent(String orderEventId, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.GET, orderEventUrl + "/" + orderEventId, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.GET, orderEventUrl + "/" + orderEventId, expectedResponseCode, isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<OrderEvent>() {
         }, responseBody);
     }

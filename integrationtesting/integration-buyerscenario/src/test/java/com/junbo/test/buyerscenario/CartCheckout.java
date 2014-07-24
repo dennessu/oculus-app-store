@@ -1,20 +1,20 @@
 package com.junbo.test.buyerscenario;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.junbo.test.common.Entities.paymentInstruments.AdyenInfo;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
-import com.junbo.test.common.apihelper.order.impl.OrderEventServiceImpl;
 import com.junbo.test.payment.apihelper.impl.PaymentCallbackServiceImpl;
 import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
-import com.junbo.test.common.apihelper.order.OrderEventService;
+import com.junbo.test.common.Entities.paymentInstruments.AdyenInfo;
+import com.junbo.test.order.apihelper.impl.OrderEventServiceImpl;
 import com.junbo.test.payment.apihelper.PaymentCallbackService;
 import com.junbo.payment.spec.model.PaymentCallbackParams;
+import com.junbo.test.order.apihelper.OrderEventService;
 import com.junbo.test.buyerscenario.util.BaseTestClass;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.entitlement.spec.model.Entitlement;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.test.common.libs.ShardIdHelper;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
@@ -512,8 +512,6 @@ public class CartCheckout extends BaseTestClass {
     }
 
 
-
-
     @Property(
             priority = Priority.BVT,
             features = "BuyerScenarios",
@@ -602,11 +600,15 @@ public class CartCheckout extends BaseTestClass {
         }
 
         Order order = Master.getInstance().getOrder(orderId);
-        order.setTentative(false);
         order.getPayments().get(0).setSuccessRedirectUrl("http://www.abc.com/");
         order.getPayments().get(0).setCancelRedirectUrl("http://www.abc.com/cancel/");
         orderId = testDataProvider.updateOrder(order);
+
         order = Master.getInstance().getOrder(orderId);
+        order.setTentative(false);
+        orderId = testDataProvider.updateOrder(order);
+        order = Master.getInstance().getOrder(orderId);
+
         String providerConfirmUrl = order.getPayments().get(0).getProviderConfirmUrl();
         int tokenIndex = providerConfirmUrl.indexOf("token=");
         String token = providerConfirmUrl.substring(tokenIndex + 6);
