@@ -24,6 +24,9 @@ test {
 
 dependencies {
     compile junboProject(':common-testlib')
+    compile junboProject(':token-spec')
+    compile junboProject(':catalog-integration')
+
     compile(libraries.asyncclient)
 
     testCompile(libraries.junit)

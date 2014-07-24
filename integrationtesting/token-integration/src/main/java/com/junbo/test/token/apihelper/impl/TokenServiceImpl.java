@@ -1,0 +1,95 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
+package com.junbo.test.token.apihelper.impl;
+
+import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.langur.core.client.TypeReference;
+import com.junbo.test.common.ConfigHelper;
+import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.test.token.apihelper.TokenService;
+import com.junbo.token.spec.model.TokenConsumption;
+import com.junbo.token.spec.model.TokenItem;
+import com.junbo.token.spec.model.TokenRequest;
+
+/**
+ * Created by weiyu_000 on 7/24/14.
+ */
+public class TokenServiceImpl extends HttpClientBase implements TokenService {
+
+    private static String tokenUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "tokens/";
+
+    private static TokenService instance;
+
+    public static synchronized TokenService getInstance() {
+        if (instance == null) {
+            instance = new TokenServiceImpl();
+        }
+        return instance;
+    }
+
+    @Override
+    public TokenRequest postTokenRequest(TokenRequest tokenRequest) throws Exception {
+        return postTokenRequest(tokenRequest, 200);
+    }
+
+    @Override
+    public TokenRequest postTokenRequest(TokenRequest tokenRequest, int expectedResponseCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, tokenUrl + "requests", tokenRequest, expectedResponseCode);
+
+        if (expectedResponseCode == 200) {
+            return new JsonMessageTranscoder().decode(new TypeReference<TokenRequest>() {
+            }, responseBody);
+        }
+        return null;
+
+    }
+
+    @Override
+    public TokenRequest getTokenByTokenId(String tokenId) throws Exception {
+        return getTokenByTokenId(tokenId, 200);
+    }
+
+    @Override
+    public TokenRequest getTokenByTokenId(String tokenId, int expectedResponseCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.GET, tokenUrl + "requests/" + tokenId, expectedResponseCode);
+        if (expectedResponseCode == 200) {
+            return new JsonMessageTranscoder().decode(new TypeReference<TokenRequest>() {
+            }, responseBody);
+        }
+        return null;
+    }
+
+    @Override
+    public TokenConsumption postTokenConsumption(TokenConsumption tokenConsumption) throws Exception {
+        return null;
+    }
+
+    @Override
+    public TokenConsumption postTokenConsumption(TokenConsumption tokenConsumption, int expectedResponseCode)
+            throws Exception {
+        return null;
+    }
+
+    @Override
+    public TokenItem updateTokenItem(TokenItem tokenItem) throws Exception {
+        return null;
+    }
+
+    @Override
+    public TokenItem updateTokenItem(TokenItem tokenItem, int expectedResponseCode) throws Exception {
+        return null;
+    }
+
+    @Override
+    public TokenItem getTokenItem(String tokenItemId) throws Exception {
+        return null;
+    }
+
+    @Override
+    public TokenItem getTokenItem(String tokenItemId, int expectedResponseCode) throws Exception {
+        return null;
+    }
+}
