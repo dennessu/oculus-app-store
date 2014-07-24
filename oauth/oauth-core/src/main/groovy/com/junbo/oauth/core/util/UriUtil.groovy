@@ -10,6 +10,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.util.StringUtils
 
+import java.util.regex.Pattern
+
 
 /**
  * UriUtil.
@@ -22,15 +24,15 @@ class UriUtil {
         try {
             URI uri1 = URI.create(uri)
             URI allowed = URI.create(uriTemplate)
-            if (uri1.scheme != allowed.scheme) {
+            if (!uriPartMatches(uri1.scheme, allowed.scheme)) {
                 return false
             }
 
-            if (uri1.authority != allowed.authority) {
+            if (!uriPartMatches(uri1.authority, allowed.authority)) {
                 return false
             }
 
-            if (uri1.path != allowed.path) {
+            if (!uriPartMatches(uri1.path, allowed.path)) {
                 return false
             }
 
@@ -43,6 +45,21 @@ class UriUtil {
             LOGGER.debug('Invalid uri format', e)
             return false
         }
+    }
+
+    private static boolean uriPartMatches(String part, String partTemplate) {
+        if (StringUtils.isEmpty(partTemplate)) {
+            return true
+        }
+
+        if (partTemplate.contains('*')) {
+            String redirectUriPattern =
+                    '^' + partTemplate.replace('.', '\\.').replace('?', '\\?').replace('*', '.*') + '$'
+
+            return Pattern.matches(redirectUriPattern, part)
+        }
+
+        return part == partTemplate
     }
 
     static boolean isValidUri(String uri) {
