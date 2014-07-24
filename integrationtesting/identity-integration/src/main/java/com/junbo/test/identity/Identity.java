@@ -46,7 +46,7 @@ public class Identity {
     public static final String IdentityV1UserGroupMemberURI = IdentityEndPointV1 + "/user-group-memberships";
     public static final String IdentityV1UserPersonalInfoURI = IdentityEndPointV1 + "/personal-info";
 
-    public static String HttpAuthorizationHeader = "";
+    public static String httpAuthorizationHeader = "";
 
     private Identity() {
 
@@ -55,7 +55,7 @@ public class Identity {
     public static <T> T IdentityPost(String requestURI, String objJson, Class<T> cls) throws Exception {
         HttpPost httpPost = new HttpPost(requestURI);
         httpPost.addHeader("Content-Type", "application/json");
-        httpPost.addHeader("Authorization", HttpAuthorizationHeader);
+        httpPost.addHeader("Authorization", httpAuthorizationHeader);
         httpPost.setEntity(new StringEntity(objJson));
         return HttpclientHelper.SimpleHttpPost(httpPost, cls);
     }
@@ -63,7 +63,7 @@ public class Identity {
     public static <T> T IdentityPut(String requestURI, String objJson, Class<T> cls) throws Exception {
         HttpPut httpPut = new HttpPut(requestURI);
         httpPut.addHeader("Content-Type", "application/json");
-        httpPut.addHeader("Authorization", HttpAuthorizationHeader);
+        httpPut.addHeader("Authorization", httpAuthorizationHeader);
         httpPut.setEntity(new StringEntity(objJson));
         return HttpclientHelper.SimpleHttpPut(httpPut, cls);
     }
@@ -71,14 +71,14 @@ public class Identity {
     public static <T> T IdentityGet(String requestURI, Class<T> cls) throws Exception {
         HttpGet httpGet = new HttpGet(requestURI);
         httpGet.addHeader("Content-Type", "application/json");
-        httpGet.addHeader("Authorization", HttpAuthorizationHeader);
+        httpGet.addHeader("Authorization", httpAuthorizationHeader);
         return HttpclientHelper.SimpleHttpGet(httpGet, cls);
     }
 
     public static void IdentityDelete(String requestURI) throws Exception {
         HttpDelete httpDelete = new HttpDelete(requestURI);
         httpDelete.addHeader("Content-Type", "application/json");
-        httpDelete.addHeader("Authorization", HttpAuthorizationHeader);
+        httpDelete.addHeader("Authorization", httpAuthorizationHeader);
         HttpclientHelper.SimpleHttpDelete(httpDelete);
     }
 
@@ -92,7 +92,7 @@ public class Identity {
         String[] results = EntityUtils.toString(response.getEntity(), "UTF-8").split(",");
         for (String s : results) {
             if (s.contains("access_token")) {
-                HttpAuthorizationHeader = "Bearer" + s.split(":")[1].replace("\"", "");
+                httpAuthorizationHeader = "Bearer" + s.split(":")[1].replace("\"", "");
                 break;
             }
         }
@@ -258,7 +258,7 @@ public class Identity {
             UserId userId, String password, Boolean validResponse) throws Exception {
         UserCredential uc = IdentityModel.DefaultUserCredential(userId, password);
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-        nvps.add(new BasicNameValuePair("Authorization", HttpAuthorizationHeader));
+        nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
                 IdentityV1UserURI + "/" + GetHexUserId(userId.getValue()) + "/change-credentials",
                 JsonHelper.JsonSerializer(uc), HttpclientHelper.HttpRequestType.post, nvps);
@@ -285,7 +285,7 @@ public class Identity {
             ucva.setIpAddress(ip);
         }
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-        nvps.add(new BasicNameValuePair("Authorization", HttpAuthorizationHeader));
+        nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(IdentityV1UserCredentialAttemptsURI,
                 JsonHelper.JsonSerializer(ucva), HttpclientHelper.HttpRequestType.post, nvps);
         if (validResponse) {

@@ -58,7 +58,7 @@ public class postOrganization {
         Identity.OrganizationPostDefault(org);
         org.setIsValidated(RandomHelper.randomBoolean());
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-        nvps.add(new BasicNameValuePair("Authorization", Identity.HttpAuthorizationHeader));
+        nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1OrganizationURI,
                 JsonHelper.JsonSerializer(org), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response error code", 409, response.getStatusLine().getStatusCode());

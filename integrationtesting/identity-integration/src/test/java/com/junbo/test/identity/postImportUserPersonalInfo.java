@@ -125,7 +125,7 @@ public class postImportUserPersonalInfo {
         Identity.ImportMigrationData(oculusInput);
         oculusInput.setCurrentId(RandomHelper.randomLong());
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-        nvps.add(new BasicNameValuePair("Authorization", Identity.HttpAuthorizationHeader));
+        nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1ImportsURI,
                 JsonHelper.JsonSerializer(oculusInput), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
@@ -153,7 +153,7 @@ public class postImportUserPersonalInfo {
         oculusInput.setCurrentId(RandomHelper.randomLong());
         oculusInput.setUsername(RandomHelper.randomAlphabetic(20));
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-        nvps.add(new BasicNameValuePair("Authorization", Identity.HttpAuthorizationHeader));
+        nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1ImportsURI,
                 JsonHelper.JsonSerializer(oculusInput), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response error code", 409, response.getStatusLine().getStatusCode());
@@ -201,7 +201,7 @@ public class postImportUserPersonalInfo {
         OculusInput oculusInput = IdentityModel.DefaultOculusInput();
         oculusInput.setPassword(RandomHelper.randomAlphabetic(80));
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-        nvps.add(new BasicNameValuePair("Authorization", Identity.HttpAuthorizationHeader));
+        nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
                 Identity.IdentityV1ImportsURI, JsonHelper.JsonSerializer(oculusInput),
                 HttpclientHelper.HttpRequestType.post, nvps);
