@@ -225,7 +225,7 @@ class IAPResourceImpl implements IAPResource {
                             throw AppErrors.INSTANCE.entitlementNotConsumable(consumption.entitlementId).exception()
                         }
                         if (entitlement.useCount < consumption.useCountConsumed) {
-                            throw AppErrors.INSTANCE.entitlementNotEnoughUsecount(consumption.entitlementId).exception()
+                            throw AppErrors.INSTANCE.entitlementNotEnoughUseCount(consumption.entitlementId).exception()
                         }
 
                         consumption.packageName = entitlement.packageName

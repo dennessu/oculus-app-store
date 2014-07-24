@@ -39,6 +39,6 @@ public interface AppErrors {
             field = "offer", reason = "Offer with ID {0} is not found.")
     AppError offerNotFound(Object offerId);
 
-    @ErrorDef(httpStatusCode = 500, code = "106", message = "{0} Gateway Failure")
+    @ErrorDef(httpStatusCode = 500, code = "106", message = "Gateway Failure", reason = "{0} Gateway Failure")
     AppError gatewayFailure(String gateway);
 }

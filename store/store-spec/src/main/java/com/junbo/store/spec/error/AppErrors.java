@@ -25,7 +25,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "103", message = "Entitlement Not Enough Use Count.",
             field = "entitlementId", reason = "Entitlement not enough use count, entitlementId={0}.")
-    AppError entitlementNotEnoughUsecount(String entitlementId);
+    AppError entitlementNotEnoughUseCount(String entitlementId);
 
     @ErrorDef(httpStatusCode = 412, code = "104", message = "Stored Value Payment Instrument Not Found.")
     AppError storeValuePINotFound();

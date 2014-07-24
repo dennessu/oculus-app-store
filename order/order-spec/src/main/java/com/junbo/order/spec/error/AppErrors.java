@@ -38,7 +38,7 @@ public interface AppErrors {
             reason = "Payment instrument {0} status invalid.")
     AppError paymentInstrumentStatusInvalid(String paymentInstrumentId);
 
-    @ErrorDef(httpStatusCode = 412, code = "108", message = "Payment instrument {0} not found.")
+    @ErrorDef(httpStatusCode = 412, code = "108", message = "Payment Instrument Not Found.", reason = "Payment instrument {0} not found.")
     AppError paymentInstrumentNotFound(String paymentInstrumentId);
 
     @ErrorDef(httpStatusCode = 500, code = "109", message = "Payment Connection Error.")
@@ -92,7 +92,7 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 500, code = "122", message = "Fulfillment Connection Error.", reason = "Fulfilment service error: {0}.")
     AppError fulfillmentConnectionError(String cause);
 
-    @ErrorDef(httpStatusCode = 500, code = "122", message = "Fulfilment service error.")
+    @ErrorDef(httpStatusCode = 500, code = "122", message = "Fulfilment Connection error.")
     AppError fulfilmentConnectionError(AppError[] causes);
 
     @ErrorDef(httpStatusCode = 412, code = "123", message = "Subledger Not Found.")
@@ -149,6 +149,6 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 412, code = "138", message = "Order Event Status Not Match.")
     AppError orderEvenStatusNotMatch();
 
-    @ErrorDef(httpStatusCode = 412, code = "134", message = "Country Not Valid.", reason = "Country {0} is not valid.")
+    @ErrorDef(httpStatusCode = 412, code = "139", message = "Country Not Valid.", reason = "Country {0} is not valid.")
     AppError countryNotValid(String country);
 }

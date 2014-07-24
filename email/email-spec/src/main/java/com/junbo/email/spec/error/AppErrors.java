@@ -15,7 +15,7 @@ import com.junbo.common.error.ErrorProxy;
 public interface AppErrors {
     AppErrors INSTANCE = ErrorProxy.newProxyInstance(AppErrors.class);
 
-    @ErrorDef(httpStatusCode = 412, code = "101", message = "User Email Address Not Found")
+    @ErrorDef(httpStatusCode = 412, code = "101", message = "Empty User Email")
     AppError emptyUserEmail();
 
     @ErrorDef(httpStatusCode = 412, code = "102", message = "No Validated User Email")
@@ -27,9 +27,9 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "104", message = "Email Template Not Found",
             field = "template", reason = "Email Template {0} is not found.")
-    AppError templateNotFound(Object id);
+    AppError emailTemplateNotFound(Object id);
 
-    @ErrorDef(httpStatusCode = 409, code = "105", message = "Email Template Already Exists",
+    @ErrorDef(httpStatusCode = 409, code = "105", message = "Email Template Already Exist",
             field = "name", reason = "Email Template with name {0} already exists")
     AppError emailTemplateAlreadyExist(String name);
 

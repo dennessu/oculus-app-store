@@ -278,7 +278,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         } catch (MalformedURLException e) {
             String msg = "Error occurred during parsing url " + urlString;
             LOGGER.error(msg, e);
-            throw AppErrors.INSTANCE.errorParsingUrl(msg).exception();
+            throw AppErrors.INSTANCE.errorParsingDownloadUrl(msg).exception();
         } catch (URISyntaxException e) {
             //just ignore this
             e.printStackTrace();

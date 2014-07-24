@@ -469,7 +469,7 @@ class StoreResourceImpl implements StoreResource {
                             throw AppErrors.INSTANCE.entitlementNotConsumable(IdFormatter.encodeId(consumption.entitlementId)).exception()
                         }
                         if (entitlement.useCount < consumption.useCountConsumed) {
-                            throw AppErrors.INSTANCE.entitlementNotEnoughUsecount(IdFormatter.encodeId(consumption.entitlementId)).exception()
+                            throw AppErrors.INSTANCE.entitlementNotEnoughUseCount(IdFormatter.encodeId(consumption.entitlementId)).exception()
                         }
 
                         consumption.packageName = entitlement.packageName

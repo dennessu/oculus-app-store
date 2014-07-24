@@ -11,7 +11,6 @@ import com.junbo.email.db.repo.EmailTemplateRepository
 import com.junbo.email.spec.error.AppErrors
 import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.model.EmailTemplate
-import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.util.StringUtils
 
@@ -64,7 +63,7 @@ abstract class CommonValidator {
         EmailTemplate template = emailTemplateRepository.getEmailTemplate(email.templateId.value).get()
 
         if (template == null) {
-            throw AppErrors.INSTANCE.templateNotFound(email.templateId).exception()
+            throw AppErrors.INSTANCE.emailTemplateNotFound(email.templateId).exception()
         }
         if (template.placeholderNames?.any() && !email.replacements?.any()) {
             throw AppErrors.INSTANCE.invalidReplacements().exception()

@@ -22,7 +22,7 @@ public interface AppErrors {
             field = "{0}", reason = "User with ID {1} is not found")
     AppError userNotFound(String field, UserId id);
 
-    @ErrorDef(httpStatusCode = 412, code = "102", message = "Item: {0} has no key.")
+    @ErrorDef(httpStatusCode = 412, code = "102", message = "Item Key Not Found", reason = "Item: {0} has no key.")
     AppError itemKeyNotFound(String itemId);
 
 }

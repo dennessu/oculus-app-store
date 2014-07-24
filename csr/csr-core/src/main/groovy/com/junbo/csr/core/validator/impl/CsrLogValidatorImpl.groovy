@@ -1,8 +1,8 @@
 package com.junbo.csr.core.validator.impl
 
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.CsrLogId
-import com.junbo.csr.common.ValidatorUtil
 import com.junbo.csr.core.service.IdentityService
 import com.junbo.csr.core.validator.CsrLogValidator
 import com.junbo.csr.db.repo.CsrLogRepository
@@ -107,7 +107,7 @@ class CsrLogValidatorImpl implements CsrLogValidator {
             }
 
             if (!(options.action in allowedActionType)) {
-                throw AppErrors.INSTANCE.fieldInvalid('action', allowedActionType.join(',')).exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('action', allowedActionType.join(',')).exception()
             }
         }
 
@@ -123,20 +123,20 @@ class CsrLogValidatorImpl implements CsrLogValidator {
     @Override
     Promise<Void> validateForCreate(CsrLog csrLog) {
         if (csrLog.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('id').exception()
         }
         if (csrLog.action == null) {
-            throw AppErrors.INSTANCE.fieldRequired('action').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('action').exception()
         }
         if (csrLog.regarding == null) {
-            throw AppErrors.INSTANCE.fieldRequired('regarding').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('regarding').exception()
         }
         else if (csrLog.regarding.length() > this.regardingMaxLength) {
-            throw AppErrors.INSTANCE.fieldInvalid('regarding').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('regarding').exception()
         }
 
         if (csrLog.userId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
         else {
             return identityService.getUserById(csrLog.userId).then { User user ->

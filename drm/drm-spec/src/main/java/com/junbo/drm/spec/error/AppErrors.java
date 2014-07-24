@@ -17,7 +17,7 @@ import com.junbo.common.id.UserId;
 public interface AppErrors {
     AppErrors INTSTANCE = ErrorProxy.newProxyInstance(AppErrors.class);
 
-    @ErrorDef(httpStatusCode = 412, code = "101", message = "Invalid item type",
+    @ErrorDef(httpStatusCode = 412, code = "101", message = "Invalid Item Type",
             field = "itemType", reason = "The itemType {0} is invalid")
     AppError invalidItemType(String itemType);
 
@@ -25,11 +25,11 @@ public interface AppErrors {
             field = "userId", reason = "User with ID {1} is not found")
     AppError userNotFound(UserId userId);
 
-    @ErrorDef(httpStatusCode = 403, code = "103", message = "User does not have DOWNLOAD entitlement",
+    @ErrorDef(httpStatusCode = 403, code = "103", message = "No Download Entitlement",
             reason = "User with ID {0} does not have DOWNLOAD entitlement for ItemId {1}")
     AppError noDownloadEntitlement(UserId userId, ItemId itemId);
 
-    @ErrorDef(httpStatusCode = 500, code = "104", message = "Signature error",
+    @ErrorDef(httpStatusCode = 500, code = "104", message = "Signature Error",
             reason = "Exception happens during signing the response.")
     AppError signatureError();
 }

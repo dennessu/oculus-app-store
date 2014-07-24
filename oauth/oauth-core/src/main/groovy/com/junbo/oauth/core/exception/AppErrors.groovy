@@ -128,10 +128,6 @@ interface AppErrors {
     @ErrorDef(httpStatusCode = 500, code = '126', message = 'Error Calling Identity', reason = 'Error happened while calling the identity')
     AppError errorCallingIdentity()
 
-    @ErrorDef(httpStatusCode = 500, code = '126', message = 'Error Calling Recaptcha',
-            reason = 'Error happened when calling recaptcha server', field = 'recaptcha')
-    AppError errorCallingRecaptcha()
-
     @ErrorDef(httpStatusCode = 412, code = '127', message = 'Invalid Recaptcha',
             reason = 'Invalid recaptcha, error message: {0}', field = 'recaptcha')
     AppError invalidRecaptcha(String message)
@@ -163,7 +159,7 @@ interface AppErrors {
     @ErrorDef(httpStatusCode = 400, code = '132', message = 'Missing User Id')
     AppError missingUserId()
 
-    @ErrorDef(httpStatusCode = 412, code = '133', message = 'Invalid reset password code')
+    @ErrorDef(httpStatusCode = 412, code = '133', message = 'Invalid Reset Password Code')
     AppError invalidResetPasswordCode()
 
     @ErrorDef(httpStatusCode = 412, code = '134', message = 'No Account Found',
@@ -181,7 +177,11 @@ interface AppErrors {
             field = 'event')
     AppError methodNotAllowed()
 
-    @ErrorDef(httpStatusCode = 403, code = '138', message = 'Ip not in whitelist',
+    @ErrorDef(httpStatusCode = 403, code = '138', message = 'Ip Not In Whitelist',
             reason = 'The request IP {0} is not in the client\'s ip whitelist', field = 'ip_address')
     AppError notIpWhitelist(String ip)
+
+    @ErrorDef(httpStatusCode = 500, code = '139', message = 'Error Calling Recaptcha',
+            reason = 'Error happened when calling recaptcha server', field = 'recaptcha')
+    AppError errorCallingRecaptcha()
 }

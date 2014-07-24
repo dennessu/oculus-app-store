@@ -1,5 +1,6 @@
 package com.junbo.csr.core.validator.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.CsrUpdateId
 import com.junbo.csr.core.service.IdentityService
 import com.junbo.csr.core.validator.CsrUpdateValidator
@@ -67,7 +68,7 @@ class CsrUpdateValidatorImpl implements CsrUpdateValidator {
         }
 
         if (csrUpdate.id != null) {
-            throw AppErrors.INSTANCE.fieldNotWritable('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('id').exception()
         }
 
         return this.checkBasicInfo(csrUpdate).then {
@@ -86,11 +87,11 @@ class CsrUpdateValidatorImpl implements CsrUpdateValidator {
         }
 
         if (csrUpdateId != csrUpdate.id) {
-            throw AppErrors.INSTANCE.fieldInvalid('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('id').exception()
         }
 
         if (csrUpdateId != oldCsrUpdate.id) {
-            throw AppErrors.INSTANCE.fieldInvalid('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('id').exception()
         }
 
         return this.checkBasicInfo(csrUpdate).then {
@@ -109,11 +110,11 @@ class CsrUpdateValidatorImpl implements CsrUpdateValidator {
         }
 
         if (csrUpdateId != csrUpdate.id) {
-            throw AppErrors.INSTANCE.fieldInvalid('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('id').exception()
         }
 
         if (csrUpdateId != oldCsrUpdate.id) {
-            throw AppErrors.INSTANCE.fieldInvalid('id').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('id').exception()
         }
 
         CsrUpdate newCsrUpdate = oldCsrUpdate
@@ -138,18 +139,18 @@ class CsrUpdateValidatorImpl implements CsrUpdateValidator {
         }
 
         if (csrUpdate.content == null) {
-            throw AppErrors.INSTANCE.fieldRequired('content').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('content').exception()
         }
         else if (csrUpdate.content.length() > this.updateMaxLength) {
-            throw AppErrors.INSTANCE.fieldInvalid('content').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('content').exception()
         }
 
         if (csrUpdate.active == null) {
-            throw AppErrors.INSTANCE.fieldRequired('active').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('active').exception()
         }
 
         if (csrUpdate.userId == null) {
-            throw AppErrors.INSTANCE.fieldRequired('userId').exception()
+            throw AppCommonErrors.INSTANCE.fieldRequired('userId').exception()
         }
         else {
             return identityService.getUserById(csrUpdate.userId).then{ User user ->

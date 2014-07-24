@@ -55,9 +55,9 @@ public interface AppServerExceptions {
     @ErrorDef(httpStatusCode = 401, code = "513", message = "Invalid Platform", reason = "Platform {platform} is invalid")
     AppError invalidPlatform(String platform);
 
-    @ErrorDef(httpStatusCode = 500, code = "514", message = "invalid batch", reason = "invalid batch file: {0}")
+    @ErrorDef(httpStatusCode = 500, code = "514", message = "Invalid Batch", reason = "invalid batch file: {0}")
     AppError invalidBatchFile(String filePath);
 
-    @ErrorDef(httpStatusCode = 500, code = "515", message = "error parse batch", reason = "error parse batch file: {0}")
+    @ErrorDef(httpStatusCode = 500, code = "515", message = "Error Parse Batch", reason = "error parse batch file: {0}")
     AppError errorParseBatchFile(String filePath);
 }

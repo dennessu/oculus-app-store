@@ -1,5 +1,6 @@
 package com.junbo.csr.core.service.impl
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.GroupId
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserGroupId
@@ -186,7 +187,7 @@ class IdentityServiceImpl implements IdentityService {
     @Override
     UserGroup switchUserGroupMembershipWithinGroups(UserId userId, GroupId groupId, List<GroupId> withinGroups) {
         if (!withinGroups.contains(groupId)) {
-            throw AppErrors.INSTANCE.fieldInvalid('groupId').exception()
+            throw AppCommonErrors.INSTANCE.fieldInvalid('groupId').exception()
         }
 
         Results<UserGroup> results = userGroupMembershipResource.list(new UserGroupListOptions(userId: userId)).get()

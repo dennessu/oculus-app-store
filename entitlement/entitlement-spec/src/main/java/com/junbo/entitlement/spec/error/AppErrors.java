@@ -30,9 +30,9 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "103", message = "Entitlement Not Transferable",
             field = "cause", reason = "Entitlement {0} cannot be transferred. {1}")
-    AppError notTransferable(Object id, String msg);
+    AppError entitlementNotTransferable(Object id, String msg);
 
     @ErrorDef(httpStatusCode = 500, code = "104", message = "Error Parsing Download URL",
             field = "cause", reason = "{0}")
-    AppError errorParsingUrl(String msg);
+    AppError errorParsingDownloadUrl(String msg);
 }
