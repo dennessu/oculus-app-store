@@ -29,6 +29,9 @@ RUN chmod +x /etc/service/postgresql/run
 
 EXPOSE 5432
 
+# Enable insecure key so that docker-ssh can work, it is ok in dev env
+RUN /usr/sbin/enable_insecure_key
+
 # Expose config, log and data directories.
 VOLUME ["/etc/postgresql", "/var/log/postgresql", "/data"]
 
