@@ -23,6 +23,9 @@ import com.junbo.test.common.property.*;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Jason
  * Time: 7/4/2014
@@ -79,4 +82,57 @@ public class TestPutItemRevision extends BaseTestClass {
         itemRevision = itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
     }
 
+    @Property(
+            priority = Priority.Dailies,
+            features = "Post v1/item-revisions",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Test the validation for IapHostItem when posting item revisions",
+            steps = {
+                    "1. Post test item revisions only with required fields",
+                    "2. Verify the returned values are the same with prepared",
+                    "3. Post test item revisions with optional fields",
+                    "4. Verify the returned values are the same with prepared"
+            }
+    )
+    @Test
+    public void testPutIapHostItem() throws Exception {
+
+        ItemRevision itemRevision = itemRevisionService.postDefaultItemRevision(item1);
+
+        //Set Distribution Channel to include INAPP only:
+        List<String> distributionChannels = new ArrayList<>();
+        distributionChannels.add("INAPP");
+        distributionChannels.add("STORE");
+
+        itemRevision.setDistributionChannels(distributionChannels);
+
+        //Set IapHostItemIds
+        List<String> iapHostItemIds = new ArrayList<>();
+        iapHostItemIds.add("invalidItemId");
+
+        itemRevision.setIapHostItemIds(iapHostItemIds);
+
+        //should be successful if status is draft, rejected
+        itemRevision = itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
+
+        itemRevision.setStatus(CatalogEntityStatus.REJECTED.name());
+        itemRevision = itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
+
+        //should throw an exception if status is Pending_review or Approved.
+        try {
+            itemRevision.setStatus(CatalogEntityStatus.PENDING_REVIEW.name());
+            itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision, 400);
+        } catch (Exception ex) {
+            logger.logInfo("Expected exception");
+        }
+
+        try {
+            itemRevision.setStatus(CatalogEntityStatus.APPROVED.name());
+            itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision, 400);
+        } catch (Exception ex) {
+            logger.logInfo("Expected exception");
+        }
+    }
 }
