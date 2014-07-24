@@ -12,24 +12,26 @@ DATADIR=${DOCKERDATADIR:-$HOME/dockerdata}
 
 killz(){
   echo "Killing all docker containers:"
-  docker ps
-  ids=`docker ps | tail -n +2 |cut -d ' ' -f 1`
-  echo $ids | xargs -r docker kill
-  echo $ids | xargs -r docker rm
+  sudo docker ps
+  ids=`sudo docker ps | tail -n +2 |cut -d ' ' -f 1`
+  echo $ids | xargs -r sudo docker kill
+  echo $ids | xargs -r sudo docker rm
 }
 
 stop(){
   echo "Stopping all docker containers:"
-  docker ps
-  ids=`docker ps | tail -n +2 |cut -d ' ' -f 1`
-  echo $ids | xargs -r docker stop
-  echo $ids | xargs -r docker rm
+  sudo docker ps
+  ids=`sudo docker ps | tail -n +2 |cut -d ' ' -f 1`
+  echo $ids | xargs -r sudo docker stop
+  echo $ids | xargs -r sudo docker rm
 }
 
 start(){
   mkdir -p $DATADIR/couchdb/data
   mkdir -p $DATADIR/couchdb/logs
   sudo docker rm couchdb > /dev/null 2>&1 || true
+  echo "Pulling latest image - silkcloud/onebox-couchdb ..."
+  sudo docker pull silkcloud/onebox-couchdb > /dev/null
   COUCHDB=$(sudo docker run \
     -d \
     -p 5984:5984 \
@@ -42,6 +44,8 @@ start(){
   mkdir -p $DATADIR/psql/data
   mkdir -p $DATADIR/psql/logs
   docker rm PSQL_PASS > /dev/null 2>&1 || true
+  echo "Pulling latest image - silkcloud/onebox-psql ..."
+  sudo docker pull silkcloud/onebox-psql > /dev/null
   PSQL=$(sudo docker run \
     -d \
     -p 5432:5432 \
@@ -52,6 +56,7 @@ start(){
     silkcloud/onebox-psql)
   echo "Started PSQL in container $PSQL"
 
+  sudo docker ps
 }
 
 case "$1" in
@@ -68,7 +73,10 @@ case "$1" in
   kill)
     killz
     ;;
+  status)
+    sudo docker ps
+    ;;
   *)
-    echo $"Usage: $0 {start|stop|kill|restart}"
+    echo $"Usage: $0 {start|stop|kill|restart|status}"
     RETVAL=1
 esac
