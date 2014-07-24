@@ -79,7 +79,7 @@ class AvalaraFacadeImpl implements TaxFacade {
     }
 
     @Override
-    Promise<VatIdValidationResponse> validateVatId(String vatId) {
+    Promise<VatIdValidationResponse> validateVatId(String vatId, String country) {
         def response = new VatIdValidationResponse()
         response.status = 'FAILED'
         response.message = 'Avalara DO NOT support VAT ID validation.'

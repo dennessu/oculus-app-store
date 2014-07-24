@@ -20,7 +20,7 @@ public interface TaxService {
 
     Promise<Address> validateAddress(Address address);
 
-    Promise<VatIdValidationResponse> validateVatId(String vatId);
+    Promise<VatIdValidationResponse> validateVatId(String vatId, String country);
 
     Promise<Balance> auditTax(Balance balance);
 }

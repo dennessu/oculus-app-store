@@ -137,8 +137,8 @@ class TaxServiceImpl implements TaxService {
     }
 
     @Override
-    Promise<VatIdValidationResponse> validateVatId(String vatId) {
-        return taxFacade.validateVatId(vatId)
+    Promise<VatIdValidationResponse> validateVatId(String vatId, String country) {
+        return taxFacade.validateVatId(vatId, country)
     }
 
     @Override

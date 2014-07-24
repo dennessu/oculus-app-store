@@ -46,7 +46,7 @@ public class MockTaxFacade implements TaxFacade {
     }
 
     @Override
-    public Promise<VatIdValidationResponse> validateVatId(String vatId) {
+    public Promise<VatIdValidationResponse> validateVatId(String vatId, String country) {
         VatIdValidationResponse response = new VatIdValidationResponse();
         response.setStatus("VALID");
         return Promise.pure(response);

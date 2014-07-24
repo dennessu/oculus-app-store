@@ -23,10 +23,10 @@ class VatResourceImpl implements VatResource {
     private TaxService taxService;
 
     @Override
-    public Promise<VatIdValidationResponse> validateVatId(String vatId) {
+    public Promise<VatIdValidationResponse> validateVatId(String vatId, String country) {
         if (!AuthorizeContext.hasScopes("billing.service")) {
             throw AppCommonErrors.INSTANCE.insufficientScope().exception();
         }
-        return taxService.validateVatId(vatId);
+        return taxService.validateVatId(vatId, country);
     }
 }

@@ -11,10 +11,7 @@ import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -26,7 +23,7 @@ import javax.ws.rs.core.MediaType;
 @InProcessCallable
 public interface VatResource {
     @GET
-    @Path("/{vatId}")
-    Promise<VatIdValidationResponse> validateVatId(@PathParam("vatId") String vatId);
+    Promise<VatIdValidationResponse> validateVatId(@QueryParam("vatId") String vatId,
+                                                   @QueryParam("country") String country);
 }
 

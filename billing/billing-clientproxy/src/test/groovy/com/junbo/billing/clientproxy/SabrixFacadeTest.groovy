@@ -44,11 +44,12 @@ class SabrixFacadeTest extends BaseTest{
     @Test(enabled = false)
     void testVatIdValidation() {
         def id = 'IE6388047V'
-        VatIdValidationResponse response = sabrixFacade.validateVatId(id).get()
+        def country = 'IE'
+        VatIdValidationResponse response = sabrixFacade.validateVatId(id, country).get()
         Assert.assertEquals(response.status, 'VALID', 'Fail to validate valid VAT ID.')
 
         def invalidId = '12345'
-        VatIdValidationResponse errorResponse = sabrixFacade.validateVatId(invalidId).get()
+        VatIdValidationResponse errorResponse = sabrixFacade.validateVatId(invalidId, country).get()
         Assert.assertEquals(errorResponse.status, 'INVALID', 'Fail to validate invalid VAT ID.')
     }
 
