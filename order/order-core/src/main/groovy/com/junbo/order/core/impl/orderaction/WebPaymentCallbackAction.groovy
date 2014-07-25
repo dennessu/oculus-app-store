@@ -7,6 +7,7 @@ import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
+import com.junbo.payment.common.CommonUtil
 import com.junbo.payment.spec.model.PaymentCallbackParams
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -53,44 +54,39 @@ class WebPaymentCallbackAction extends BaseOrderEventAwareAction {
                 }
 
                 if (eventMap.containsKey('paymentId')) {
-                    try {
-                        Long paymentId = Long.parseLong(eventMap.get('paymentId'))
+                    Long paymentId = CommonUtil.decode(eventMap.get('paymentId'));
 
-                        PaymentCallbackParams params = new PaymentCallbackParams()
-                        if (eventMap.containsKey('token')) {
-                            params.setToken(eventMap.get('token'))
-                        }
-                        if (eventMap.containsKey('payerId')) {
-                            params.setPayerID(eventMap.get('payerId'))
-                        }
-                        if (eventMap.containsKey('authResult')) {
-                            params.setAuthResult(eventMap.get('authResult'))
-                        }
-                        if (eventMap.containsKey('pspReference')) {
-                            params.setPspReference(eventMap.get('pspReference'))
-                        }
-                        if (eventMap.containsKey('merchantReference')) {
-                            params.setMerchantReference(eventMap.get('merchantReference'))
-                        }
-                        if (eventMap.containsKey('skinCode')) {
-                            params.setSkinCode(eventMap.get('skinCode'))
-                        }
-                        if (eventMap.containsKey('merchantSig')) {
-                            params.setMerchantSig(eventMap.get('merchantSig'))
-                        }
+                    PaymentCallbackParams params = new PaymentCallbackParams()
+                    if (eventMap.containsKey('token')) {
+                        params.setToken(eventMap.get('token'))
+                    }
+                    if (eventMap.containsKey('payerId')) {
+                        params.setPayerID(eventMap.get('payerId'))
+                    }
+                    if (eventMap.containsKey('authResult')) {
+                        params.setAuthResult(eventMap.get('authResult'))
+                    }
+                    if (eventMap.containsKey('pspReference')) {
+                        params.setPspReference(eventMap.get('pspReference'))
+                    }
+                    if (eventMap.containsKey('merchantReference')) {
+                        params.setMerchantReference(eventMap.get('merchantReference'))
+                    }
+                    if (eventMap.containsKey('skinCode')) {
+                        params.setSkinCode(eventMap.get('skinCode'))
+                    }
+                    if (eventMap.containsKey('merchantSig')) {
+                        params.setMerchantSig(eventMap.get('merchantSig'))
+                    }
 
-                        return facadeContainer.paymentFacade.postPaymentProperties(paymentId, params).recover {
-                            Throwable throwable ->
-                                LOGGER.error('name=Post_Payment_Callback_Error', throwable)
-                                throw AppErrors.INSTANCE.paymentConnectionError().exception()
-                        }.then {
-                            LOGGER.info('name=Post_Payment_Callback, paymentId=' + paymentId +
-                                    ', order event map=' + eventMap)
-                            return Promise.pure(null)
-                        }
-
-                    } catch (NumberFormatException ex) {
-                        LOGGER.error('name=WebPaymentCallback_ParsePaymentId_Error', ex)
+                    return facadeContainer.paymentFacade.postPaymentProperties(paymentId, params).recover {
+                        Throwable throwable ->
+                            LOGGER.error('name=Post_Payment_Callback_Error', throwable)
+                            throw AppErrors.INSTANCE.paymentConnectionError().exception()
+                    }.then {
+                        LOGGER.info('name=Post_Payment_Callback, paymentId=' + paymentId +
+                                ', order event map=' + eventMap)
+                        return Promise.pure(null)
                     }
                 }
             } catch (IOException ex) {
