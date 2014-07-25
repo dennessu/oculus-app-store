@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+         updateCheck="true" monitoring="autodetect" dynamicConfig="true" name="cryptoCacheManager">
+
+<diskStore path="java.io.tmpdir"/>
+
+    <cache name="PUBLIC_KEY"
+           maxElementsInMemory="5000"
+           maxElementsOnDisk="0"
+           overflowToDisk="false"
+           memoryStoreEvictionPolicy="LRU"
+           eternal="false"
+           timeToLiveSeconds="1800"
+           timeToIdleSeconds="180"/>
+
+    <cache name="PRIVATE_KEY"
+           maxElementsInMemory="5000"
+           maxElementsOnDisk="0"
+           overflowToDisk="false"
+           memoryStoreEvictionPolicy="LRU"
+           eternal="false"
+           timeToLiveSeconds="1800"
+           timeToIdleSeconds="180"/>
+
+</ehcache>

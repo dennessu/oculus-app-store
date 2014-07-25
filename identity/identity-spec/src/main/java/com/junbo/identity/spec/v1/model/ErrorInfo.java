@@ -23,7 +23,7 @@ public class ErrorInfo extends PropertyAssignedAwareResourceMeta<ErrorIdentifier
     @JsonProperty("self")
     private ErrorIdentifier id;
 
-    @ApiModelProperty(position = 2, required = true, value = "The error identifier, it must be as the format as componentId:errorCode.")
+    @ApiModelProperty(position = 2, required = true, value = "The error identifier, it must be as the format as componentId.errorCode.")
     private String errorIdentifier;
 
     @ApiModelProperty(position = 3, required = true, value = "The localization of the error message.")

@@ -49,6 +49,7 @@ ext {
             spring_test: "org.springframework:spring-test:${springVersion}",
             spring_web: "org.springframework:spring-web:${springVersion}",
             spring_security: "org.springframework.security:spring-security-core:${springSecurityVersion}",
+            spring_context_support: "org.springframework:spring-context-support:4.0.2.RELEASE",
 
             common_beanutils: 'commons-beanutils:commons-beanutils:1.8.3',
 
@@ -119,6 +120,9 @@ ext {
             //json lib
             jsonlib: 'net.sf.json-lib:json-lib:2.4',
 
+            //ecache lib
+            ehcache: 'net.sf.ehcache:ehcache-core:2.6.6',
+
             //aspectj
             aspectjrt: 'org.aspectj:aspectjrt:1.7.4',
             aspectjweaver: 'org.aspectj:aspectjweaver:1.7.4',
@@ -152,6 +156,8 @@ ext {
 
             //aws java sdk
             aws_sdk: 'com.amazonaws:aws-java-sdk:1.8.2',
+
+            javax_jta:  'javax.transaction:jta:1.1',
 
             jsoup: 'org.jsoup:jsoup:1.7.3',
 

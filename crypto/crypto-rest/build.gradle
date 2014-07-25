@@ -8,6 +8,8 @@ dependencies {
     compile junboProject(':crypto-common')
     compile junboProject(':crypto-data')
 
+    compile (libraries.ehcache)
+
     compile junboProject(':common-lib')
     compile junboProject(':authorization-lib')
 }

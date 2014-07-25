@@ -50,6 +50,16 @@
         <property name="itemCryptoRepo" ref="itemCryptoRepo" />
         <property name="validator" ref="itemCryptoValidator" />
         <property name="versionSeparator" value="${crypto.core.versionSeparator}" />
+        <property name="cacheManager" ref="cryptoCacheManager" />
+    </bean>
+
+    <bean id="cryptoCacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+        <property name="configLocation">
+            <value>ehcache/crypto_ehcache.xml</value>
+        </property>
+    </bean>
+    <bean id="cryptoCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+        <property name="cacheManager" ref="cryptoCacheManagerFactory"/>
     </bean>
 
     <bean id="defaultCryptoResourceClientFactory" class="com.junbo.crypto.spec.resource.proxy.CryptoResourceClientProxyFactory" />

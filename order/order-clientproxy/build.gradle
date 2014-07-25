@@ -18,9 +18,9 @@ dependencies {
     compile junboProject(':email-spec')
     compile junboProject(':oauth-spec')
     compile junboProject(':csr-spec')
-    compile 'net.sf.ehcache:ehcache-core:2.6.6'
-    compile 'org.springframework:spring-context-support:4.0.2.RELEASE'
-    compile 'javax.transaction:jta:1.1'
+    compile (libraries.ehcache)
+    compile (libraries.spring_context_support)
+    compile (libraries.javax_jta)
 
     testCompile (libraries.spring_test)
 
