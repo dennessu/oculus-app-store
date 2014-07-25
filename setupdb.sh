@@ -4,7 +4,8 @@ source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is n
 if [[ "$1" == "" || "$1" == "couch" ]]; then
     # setup cloudant db
     dbPrefixFile=common/configuration-data/src/main/resources/junbo/conf/onebox/common/personal.properties
-    dbPrefix=`cat $dbPrefixFile | grep '^common.cloudant.dbNamePrefix=' | sed 's/common.cloudant.dbNamePrefix=//'`
+    dbPrefix=`cat $dbPrefixFile | grep '^common.cloudant.dbNamePrefix=' | awk -F= '{gsub(/^[ \t]+/, "", $2); print $2}'`
+    echo "dbPrefix is $dbPrefix"
     pushd couchdb
     python ./couchdbcmd.py dropdbs --prefix=$dbPrefix --yes
     python ./couchdbcmd.py createdbs --prefix=$dbPrefix --yes

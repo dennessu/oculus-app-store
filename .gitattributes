@@ -3,6 +3,7 @@
 
 # force shell script eol = lf when checkout, crlf cannot work in some environments
 *.sh text eol=lf
+liquibase text eol=lf
 
 # define binary types
 *.png     binary

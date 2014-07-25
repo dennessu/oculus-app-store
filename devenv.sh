@@ -59,7 +59,7 @@ start(){
 
   mkdir -p $DATADIR/psql/data
   mkdir -p $DATADIR/psql/logs
-  docker rm PSQL_PASS > /dev/null 2>&1 || true
+  sudo docker rm psql > /dev/null 2>&1 || true
   echo "Pulling latest image - silkcloud/onebox-psql ..."
   sudo docker pull silkcloud/onebox-psql > /dev/null
   PSQL=$(sudo docker run \
