@@ -18,14 +18,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   host = RbConfig::CONFIG['host_os']
   cores = '1'
   if host =~ /mswin|mingw/
-    # TODO: set cpu cores
+    cores = `wmic cpu get /format:list`.lines.detect { |line| line =~ /\ANumberOfLogicalProcessors=\d+\Z/ }.split('=').last.strip!
   else
     cores = `awk "/^processor/ {++n} END {print n}" /proc/cpuinfo 2> /dev/null || sh -c 'sysctl hw.logicalcpu 2> /dev/null || echo ": 2"' | awk \'{print \$2}\' `.chomp
   end
 
   # sync source folder
   if host =~ /mswin|mingw/
-    config.vm.synced_folder ".", "/home/vagrant/src", type: "smb"
+    config.vm.synced_folder ".", "/home/vagrant/src"
   else
     config.vm.synced_folder ".", "/home/vagrant/src", type: "nfs"
   end
