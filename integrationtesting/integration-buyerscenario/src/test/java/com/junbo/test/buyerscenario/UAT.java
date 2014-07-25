@@ -20,6 +20,7 @@ import com.junbo.test.payment.apihelper.impl.PaymentCallbackServiceImpl;
 import org.apache.commons.collections.map.HashedMap;
 import org.testng.annotations.Test;
 
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +50,7 @@ public class UAT extends BaseTestClass {
 
         Map<String, Integer> offerList = new HashedMap();
 
-        offerList.put(offer_digital_normal1, 1);
+        offerList.put(offer_digital_uat, 1);
 
         AdyenInfo adyenInfo = AdyenInfo.getAdyenInfo(country);
         String adyenId = testDataProvider.postPaymentInstrument(uid, adyenInfo);
@@ -100,6 +101,7 @@ public class UAT extends BaseTestClass {
         String authResult = "AUTHORISED";
         String pspReference = "";
         String skinCode = "";
+        String merchantSig = "";
         String[] params = successRedirectUrl.split("&");
         for (String param : params) {
             String value = param.substring(param.indexOf('=') + 1);
@@ -107,8 +109,11 @@ public class UAT extends BaseTestClass {
                 paymentTransactionId = value;
             } else if (param.contains("skinCode")) {
                 skinCode = value;
-            }else if(param.contains("psp")){
+            } else if (param.contains("psp")) {
                 pspReference = value;
+            } else if (param.contains("merchantSig")) {
+                //merchantSig = URLEncoder.encode(value, "utf-8");
+                merchantSig = URLDecoder.decode(value, "utf-8");
             }
         }
 
@@ -118,6 +123,8 @@ public class UAT extends BaseTestClass {
         properties.put("pspReference", pspReference);
         properties.put("authResult", authResult);
         properties.put("skinCode", skinCode);
+        properties.put("merchantSig", merchantSig);
+        properties.put("merchantReference", paymentTransactionId);
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(properties);
 
