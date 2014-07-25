@@ -7,13 +7,13 @@ echo "[FAILBACK][MASTER] stop traffic for failback"
 echo "[FAILBACK][MASTER] stop primary pgbouncer proxy"
 forceKill $PGBOUNCER_PORT
 
-ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$BCP_HOST << ENDSSH
     source $DEPLOYMENT_PATH/util/common.sh
 
-    echo "[FAILBACK][SLAVE] stop secondary pgbouncer proxy"
+    echo "[FAILBACK][BCP] stop secondary pgbouncer proxy"
     forceKill $PGBOUNCER_PORT
 
-    echo "[FAILBACK][SLAVE] kill skytools instances"
+    echo "[FAILBACK][BCP] kill skytools instances"
     forceKillPid $SKYTOOL_PID_PATH
 ENDSSH
 
@@ -24,23 +24,23 @@ ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
     forceKillPid $SKYTOOL_PID_PATH
 ENDSSH
 
-xlog_location=`psql postgres -h $SLAVE_HOST -p $SLAVE_DB_PORT -c "SELECT pg_current_xlog_location();" -t | tr -d ' '`
-echo "[FAILBACK][SLAVE] current xlog location is [$xlog_location]"
+xlog_location=`psql postgres -h $BCP_HOST -p $SLAVE_DB_PORT -c "SELECT pg_current_xlog_location();" -t | tr -d ' '`
+echo "[FAILBACK][MASTER] current xlog location is [$xlog_location]"
 
-ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
-    echo "[FAILBACK][SLAVE] gracefully shutdown slave database"
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$BCP_HOST << ENDSSH
+    echo "[FAILBACK][BCP] gracefully shutdown bcp database"
     $PGBIN_PATH/pg_ctl stop -m fast -D $SLAVE_DATA_PATH
 ENDSSH
 
 echo "[FAILBACK][MASTER] copy unarchived log files"
-rsync -azhv $DEPLOYMENT_ACCOUNT@$SLAVE_HOST:$SLAVE_DATA_PATH/pg_xlog/* $MASTER_ARCHIVE_PATH
+rsync -azhv $DEPLOYMENT_ACCOUNT@$BCP_HOST:$SLAVE_DATA_PATH/pg_xlog/* $MASTER_ARCHIVE_PATH
 
-echo "[FAILBACK][MASTER] waiting for master catching up with slave"
+echo "[FAILBACK][MASTER] waiting for master catching up with bcp"
 while [ `psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT pg_xlog_location_diff(pg_last_xlog_replay_location(), '$xlog_location');" -t | tr -d ' '` -lt 0 ]
 do
-    sleep 1 && echo "[FAILBACK][MASTER] slave is catching up..."; 
+    sleep 1 && echo "[FAILBACK][MASTER] bcp is catching up..."; 
 done
-echo "[FAILBACK][MASTER] master catch up with slave!"
+echo "[FAILBACK][MASTER] master catch up with bcp!"
 
 
 echo "[FAILBACK][MASTER] promote master database to take traffic"
@@ -57,8 +57,8 @@ do
 done
 echo "[FAILBACK][MASTER] master can be written"
 
-ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
-    echo "[SLAVE] configure recovery.conf for slave"
+ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$BCP_HOST << ENDSSH
+    echo "[BCP] configure recovery.conf for bcp"
     cat > $SLAVE_DATA_PATH/recovery.conf <<EOF
 recovery_target_timeline = 'latest'
 restore_command = 'cp $SLAVE_ARCHIVE_PATH/%f %p'
@@ -67,14 +67,14 @@ primary_conninfo = 'user=$PGUSER host=$MASTER_HOST port=$MASTER_DB_PORT sslmode=
 trigger_file = '$PROMOTE_TRIGGER_FILE'
 EOF
 
-    echo "[FAILBACK][SLAVE] start slave database"
+    echo "[FAILBACK][BCP] start bcp database"
     $PGBIN_PATH/pg_ctl -D $SLAVE_DATA_PATH -l "${SLAVE_LOG_PATH}/postgresql-$(date +%Y.%m.%d.%S.%N).log" start > /dev/null 2>&1 &
 
-    while ! echo exit | nc $SLAVE_HOST $SLAVE_DB_PORT;
+    while ! echo exit | nc $BCP_HOST $SLAVE_DB_PORT;
     do
-        sleep 1 && echo "[SLAVE] waiting for slave database start up...";
+        sleep 1 && echo "[BCP] waiting for bcp database start up...";
     done
-    echo "[FAILBACK][SLAVE] slave database started successfully!"
+    echo "[FAILBACK][BCP] bcp database started successfully!"
 ENDSSH
 
 echo "[FAILBACK][MASTER] generate londiste root configuration"
