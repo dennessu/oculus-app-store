@@ -44,7 +44,12 @@ public class OrderEventServiceImpl extends HttpClientBase implements OrderEventS
     }
 
     public OrderEvent postOrderEvent(OrderEvent orderEvent, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, orderEventUrl, orderEvent, expectedResponseCode, isServiceScope);
+        String responseBody;
+        if (orderEvent.getAction().toLowerCase().contains("charge")) {
+            responseBody = restApiCall(HTTPMethod.POST, orderEventUrl, orderEvent, expectedResponseCode);
+        } else {
+            responseBody = restApiCall(HTTPMethod.POST, orderEventUrl, orderEvent, expectedResponseCode, true);
+        }
         return new JsonMessageTranscoder().decode(new TypeReference<OrderEvent>() {
         }, responseBody);
     }
@@ -56,7 +61,8 @@ public class OrderEventServiceImpl extends HttpClientBase implements OrderEventS
 
     @Override
     public Results<OrderEvent> getOrderEventsByOrderId(String orderId, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.GET, orderEventUrl + "?orderId=" + orderId, expectedResponseCode, isServiceScope);
+        String responseBody = restApiCall(HTTPMethod.GET, orderEventUrl + "?orderId=" + orderId, expectedResponseCode,
+                isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<Results<OrderEvent>>() {
         }, responseBody);
     }

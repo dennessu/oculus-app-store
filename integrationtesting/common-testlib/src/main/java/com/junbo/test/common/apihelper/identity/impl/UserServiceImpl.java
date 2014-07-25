@@ -381,7 +381,9 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
             }
             listUserId.add(IdConverter.idToHexString(user.getId()));
         }
-        Master.getInstance().setCurrentUid(listUserId.get(0));
+        if (listUserId.size() > 0) {
+            Master.getInstance().setCurrentUid(listUserId.get(0));
+        }
 
         return listUserId;
     }

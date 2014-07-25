@@ -1,5 +1,6 @@
 package com.junbo.test.buyerscenario;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderEvent;
 import com.junbo.payment.spec.model.PaymentCallbackParams;
@@ -20,6 +21,7 @@ import org.apache.commons.collections.map.HashedMap;
 import org.testng.annotations.Test;
 
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -42,8 +44,8 @@ public class UAT extends BaseTestClass {
         String vatId = "AU132456";
         String uid = testDataProvider.createUser();
 
-        Country country = Country.DE;
-        Currency currency = Currency.EUR;
+        Country country = Country.US;
+        Currency currency = Currency.USD;
 
         Map<String, Integer> offerList = new HashedMap();
 
@@ -62,6 +64,7 @@ public class UAT extends BaseTestClass {
         order = Master.getInstance().getOrder(orderId);
         String providerConfirmUrl = order.getPayments().get(0).getProviderConfirmUrl();
 
+        /*
         String[] params = providerConfirmUrl.split("&");
         String urlEncoded = new String();
 
@@ -80,31 +83,52 @@ public class UAT extends BaseTestClass {
         }
 
         urlEncoded = urlEncoded.substring(0, urlEncoded.length() - 1);
+        */
 
         emulateAdyenCheckout(order);
+
+        //MasterCard
+        //5555 4444 3333 1111
+        //CVC  737  Exp
 
     }
 
     private void emulateAdyenCheckout(Order order) throws Exception {
         //Long paymentTransactionId = getTransactionId(order.getUser().getValue());
+        String successRedirectUrl = "";
         String paymentTransactionId = "";
         String authResult = "AUTHORISED";
         String pspReference = "";
+        String skinCode = "";
+        String[] params = successRedirectUrl.split("&");
+        for (String param : params) {
+            String value = param.substring(param.indexOf('=') + 1);
+            if (param.contains("merchantReference")) {
+                paymentTransactionId = value;
+            } else if (param.contains("skinCode")) {
+                skinCode = value;
+            }else if(param.contains("psp")){
+                pspReference = value;
+            }
+        }
 
 
-        PaymentCallbackParams paymentProperties = new PaymentCallbackParams();
-        paymentProperties.setAuthResult(authResult);
-        paymentProperties.setPspReference(pspReference);
-        PaymentCallbackService paymentCallbackService = PaymentCallbackServiceImpl.getInstance();
-        paymentCallbackService.postPaymentProperties(paymentTransactionId, paymentProperties);
-
+        Map<String, String> properties = new HashMap<>();
+        properties.put("paymentId", paymentTransactionId);
+        properties.put("pspReference", pspReference);
+        properties.put("authResult", authResult);
+        properties.put("skinCode", skinCode);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(properties);
 
         //Post "charge completed" order event
-        OrderEventService orderEventService = OrderEventServiceImpl.getInstance();
+        com.junbo.test.order.apihelper.OrderEventService orderEventService =
+                com.junbo.test.order.apihelper.impl.OrderEventServiceImpl.getInstance();
         OrderEvent orderEvent = new OrderEvent();
         orderEvent.setOrder(order.getId());
         orderEvent.setAction("CHARGE");
         orderEvent.setStatus("COMPLETED");
+        orderEvent.setProperties(json);
 
         orderEventService.postOrderEvent(orderEvent);
     }
