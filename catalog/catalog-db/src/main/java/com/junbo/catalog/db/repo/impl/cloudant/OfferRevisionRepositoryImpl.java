@@ -6,9 +6,13 @@
 
 package com.junbo.catalog.db.repo.impl.cloudant;
 
+import com.junbo.catalog.common.cache.CacheFacade;
+import com.junbo.catalog.common.util.Callable;
+import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.repo.OfferRevisionRepository;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
+import com.junbo.catalog.spec.model.offer.RevisionInfo;
 import com.junbo.common.cloudant.CloudantClient;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -25,15 +29,22 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
 
     @Override
     public OfferRevision create(OfferRevision offerRevision) {
-        return cloudantPostSync(offerRevision);
+        OfferRevision createdRevision = cloudantPostSync(offerRevision);
+        CacheFacade.OFFER_REVISION.put(createdRevision.getRevisionId(), createdRevision);
+        return createdRevision;
     }
 
     @Override
-    public OfferRevision get(String revisionId) {
+    public OfferRevision get(final String revisionId) {
         if (revisionId == null) {
             return null;
         }
-        return cloudantGetSync(revisionId);
+        return CacheFacade.OFFER_REVISION.get(revisionId, new Callable<OfferRevision>() {
+            @Override
+            public OfferRevision execute() {
+                return cloudantGetSync(revisionId);
+            }
+        });
     }
 
     @Override
@@ -41,7 +52,7 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
         List<OfferRevision> offerRevisions = new ArrayList<>();
         if (!CollectionUtils.isEmpty(options.getRevisionIds())) {
             for (String revisionId : options.getRevisionIds()) {
-                OfferRevision revision = cloudantGetSync(revisionId.toString());
+                OfferRevision revision = get(revisionId);
                 if (revision==null) {
                     continue;
                 } else if (!StringUtils.isEmpty(options.getStatus())
@@ -81,19 +92,40 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
     @Override
     public List<OfferRevision> getRevisions(Collection<String> offerIds, Long timestamp) {
         List<OfferRevision> revisions = new ArrayList<>();
-        for (String offerId : offerIds) {
-            List<OfferRevision> itemRevisions = queryView("by_offerId", offerId).get();
-            OfferRevision revision = null;
-            Long maxTimestamp = 0L;
-            for (OfferRevision itemRevision : itemRevisions) {
-                if (itemRevision.getTimestamp() == null) {
-                    continue;
+        for (final String offerId : offerIds) {
+            List<RevisionInfo> revisionInfoList = CacheFacade.OFFER_CONTROL.get(offerId, new Callable<List<RevisionInfo>>() {
+                @Override
+                public List<RevisionInfo> execute() {
+                    List<RevisionInfo> result = new ArrayList<>();
+                    List<OfferRevision> itemRevisions = queryView("by_offerId", offerId).get();
+                    for (OfferRevision revision : itemRevisions) {
+                        if (revision.getTimestamp() == null) {
+                            continue;
+                        }
+                        RevisionInfo revisionInfo = new RevisionInfo();
+                        revisionInfo.setRevisionId(revision.getRevisionId());
+                        revisionInfo.setStartTime(revision.getStartTime().getTime());
+                        if (revision.getEndTime() == null) {
+                            revisionInfo.setEndTime(Utils.maxDate().getTime());
+                        } else {
+                            revisionInfo.setEndTime(revision.getEndTime().getTime());
+                        }
+                        revisionInfo.setApprovedTime(revision.getTimestamp());
+                        result.add(revisionInfo);
+                    }
+                    return result;
                 }
-                if (itemRevision.getTimestamp() <= timestamp && itemRevision.getTimestamp() > maxTimestamp) {
-                    maxTimestamp = itemRevision.getTimestamp();
-                    revision = itemRevision;
+            });
+
+            String revisionId = null;
+            Long maxTimestamp = 0L;
+            for (RevisionInfo revisionInfo : revisionInfoList) {
+                if (revisionInfo.getApprovedTime() > maxTimestamp && (timestamp>=revisionInfo.getStartTime() && timestamp<revisionInfo.getEndTime())) {
+                    maxTimestamp = revisionInfo.getApprovedTime();
+                    revisionId = revisionInfo.getRevisionId();
                 }
             }
+            OfferRevision revision = get(revisionId);
             if (revision != null) {
                 revisions.add(revision);
             }
@@ -114,12 +146,15 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
 
     @Override
     public OfferRevision update(OfferRevision revision, OfferRevision oldRevision) {
-        return cloudantPutSync(revision, oldRevision);
+        OfferRevision updatedRevision = cloudantPutSync(revision, oldRevision);
+        CacheFacade.OFFER_REVISION.put(updatedRevision.getRevisionId(), updatedRevision);
+        return updatedRevision;
     }
 
     @Override
     public void delete(String revisionId) {
         cloudantDeleteSync(revisionId);
+        CacheFacade.OFFER_REVISION.evict(revisionId);
     }
 
 }

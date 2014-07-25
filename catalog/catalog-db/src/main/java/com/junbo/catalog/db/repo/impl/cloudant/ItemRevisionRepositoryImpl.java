@@ -96,7 +96,7 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
             List<ItemRevisionInfo> revisionInfoList = CacheFacade.ITEM_CONTROL.get(itemId, new Callable<List<ItemRevisionInfo>>() {
                 @Override
                 public List<ItemRevisionInfo> execute() {
-                    List<ItemRevisionInfo> revisionInfos = new ArrayList<>();
+                    List<ItemRevisionInfo> result = new ArrayList<>();
                     List<ItemRevision> itemRevisions = queryViewSync("by_itemId", itemId);
                     for (ItemRevision itemRevision : itemRevisions) {
                         if (itemRevision.getTimestamp() == null) {
@@ -105,10 +105,10 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
                         ItemRevisionInfo revisionInfo = new ItemRevisionInfo();
                         revisionInfo.setRevisionId(itemRevision.getRevisionId());
                         revisionInfo.setTimestamp(itemRevision.getTimestamp());
-                        revisionInfos.add(revisionInfo);
+                        result.add(revisionInfo);
                     }
 
-                    return revisionInfos;
+                    return result;
                 }
             });
 

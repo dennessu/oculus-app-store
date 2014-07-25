@@ -6,6 +6,8 @@
 
 package com.junbo.catalog.db.repo.impl.cloudant;
 
+import com.junbo.catalog.common.cache.CacheFacade;
+import com.junbo.catalog.common.util.Callable;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.repo.OfferRepository;
 import com.junbo.catalog.spec.model.offer.Offer;
@@ -26,21 +28,28 @@ import java.util.List;
 public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferRepository {
 
     public Offer create(Offer offer) {
-        return cloudantPostSync(offer);
+        Offer createdOffer = cloudantPostSync(offer);
+        CacheFacade.OFFER.put(createdOffer.getOfferId(), createdOffer);
+        return createdOffer;
     }
 
-    public Offer get(String offerId) {
+    public Offer get(final String offerId) {
         if (offerId == null) {
             return null;
         }
-        return cloudantGetSync(offerId);
+        return CacheFacade.OFFER.get(offerId, new Callable<Offer>() {
+            @Override
+            public Offer execute() {
+                return cloudantGetSync(offerId);
+            }
+        });
     }
 
     public List<Offer> getOffers(OffersGetOptions options) {
         List<Offer> offers = new ArrayList<>();
         if (!CollectionUtils.isEmpty(options.getOfferIds())) {
             for (String offerId : options.getOfferIds()) {
-                Offer offer = cloudantGetSync(offerId.toString());
+                Offer offer = get(offerId);
                 if (offer == null) {
                     continue;
                 }else if (options.getCategory() != null
@@ -98,7 +107,7 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
     public List<Offer> getOffers(Collection<String> offerIds) {
         List<Offer> offers = new ArrayList<>();
         for (String offerId : offerIds) {
-            Offer offer = cloudantGetSync(offerId);
+            Offer offer = get(offerId);
             if (offer != null) {
                 offers.add(offer);
             }
@@ -109,12 +118,14 @@ public class OfferRepositoryImpl extends CloudantClient<Offer> implements OfferR
 
     @Override
     public Offer update(Offer offer, Offer oldOffer) {
-        return cloudantPutSync(offer, oldOffer);
+        Offer updatedOffer = cloudantPutSync(offer, oldOffer);
+        CacheFacade.OFFER.put(updatedOffer.getOfferId(), updatedOffer);
+        return updatedOffer;
     }
 
     @Override
     public void delete(String offerId) {
         cloudantDeleteSync(offerId);
+        CacheFacade.OFFER.evict(offerId);
     }
-
 }

@@ -158,7 +158,6 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     @Override
     public OfferRevision createRevision(OfferRevision revision) {
         validateRevisionCreation(revision);
-        generateEventActions(revision);
         return offerRevisionRepo.create(revision);
     }
 
