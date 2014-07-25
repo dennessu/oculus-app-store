@@ -6,6 +6,8 @@
 
 package com.junbo.catalog.db.repo.impl.cloudant;
 
+import com.junbo.catalog.common.cache.CacheFacade;
+import com.junbo.catalog.common.util.Callable;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.repo.ItemRepository;
 import com.junbo.catalog.spec.model.item.Item;
@@ -28,22 +30,29 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
 
     @Override
     public Item create(Item item) {
-        return cloudantPostSync(item);
+        Item createdItem = cloudantPostSync(item);
+        CacheFacade.ITEM.put(createdItem.getItemId(), createdItem);
+        return createdItem;
     }
 
     @Override
-    public Item get(String itemId) {
+    public Item get(final String itemId) {
         if (itemId == null) {
             return null;
         }
-        return cloudantGetSync(itemId);
+        return CacheFacade.ITEM.get(itemId, new Callable<Item>() {
+            @Override
+            public Item execute() {
+                return cloudantGetSync(itemId);
+            }
+        });
     }
 
     public List<Item> getItems(ItemsGetOptions options) {
         List<Item> items = new ArrayList<>();
         if (!CollectionUtils.isEmpty(options.getItemIds())) {
             for (String itemId : options.getItemIds()) {
-                Item item = cloudantGetSync(itemId);
+                Item item = get(itemId);
                 if (item == null) {
                     continue;
                 }else if (!StringUtils.isEmpty(options.getType()) && !options.getType().equals(item.getType())) {
@@ -131,12 +140,16 @@ public class ItemRepositoryImpl extends CloudantClient<Item> implements ItemRepo
 
     @Override
     public Item update(Item item, Item oldItem) {
-        return cloudantPutSync(item, oldItem);
+        Item updatedItem = cloudantPutSync(item, oldItem);
+        CacheFacade.ITEM.put(item.getItemId(), updatedItem);
+
+        return updatedItem;
     }
 
     @Override
     public void delete(String itemId) {
         cloudantDeleteSync(itemId);
+        CacheFacade.ITEM.evict(itemId);
     }
 
 }

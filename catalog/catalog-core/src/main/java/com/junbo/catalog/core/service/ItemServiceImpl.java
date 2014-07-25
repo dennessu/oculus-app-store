@@ -400,7 +400,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
                 errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("distributionChannel", Joiner.on(", ").join(DistributionChannel.ALL)));
             }
 
-            if (revision.getDistributionChannels().contains(DistributionChannel.INAPP)) {
+            if (revision.getDistributionChannels().contains(DistributionChannel.INAPP.name())) {
                 if (CollectionUtils.isEmpty(revision.getIapHostItemIds())) {
                     errors.add(AppCommonErrors.INSTANCE.fieldRequired("iapHostItems"));
                 } else {
