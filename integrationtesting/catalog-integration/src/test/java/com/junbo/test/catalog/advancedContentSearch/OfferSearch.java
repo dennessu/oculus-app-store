@@ -104,7 +104,8 @@ public class OfferSearch extends BaseTestClass {
         offerRevisionPrepared.setOfferId(offer2.getOfferId());
         offerRevisionPrepared.setOwnerId(organizationId);
 
-        //set sub offer
+        //set sub offer - release offer3 firstly as suboffers must be published.
+        offer3 = releaseOffer(offer3);
         List<String> subOffers = new ArrayList<>();
         subOffers.add(offer3.getOfferId());
         offerRevisionPrepared.setSubOffers(subOffers);
@@ -251,7 +252,8 @@ public class OfferSearch extends BaseTestClass {
 
         //test AND
         //%20: space
-        buildSearchQuery("offerId:" + offer3.getOfferId() + "%20AND%20published:" + "false", 1, offer3.getOfferId());
+        buildSearchQuery("offerId:" + offer3.getOfferId() + "%20AND%20published:" + "false", 0);
+        buildSearchQuery("offerId:" + offer3.getOfferId() + "%20AND%20published:" + "true", 1, offer3.getOfferId());
         buildSearchQuery("offerId:" + offerId1 + "%20AND%20" + offer1.getCategories().get(0), 1, offerId1);
         buildSearchQuery(offerId1 + "%20AND%20" + offer1.getCategories().get(0), 1, offerId1);
         buildSearchQuery(offerId1 + "%20AND%20" + offer2.getCurrentRevisionId(), 0);

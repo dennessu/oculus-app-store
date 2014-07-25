@@ -101,7 +101,7 @@ public class TestPutItemRevision extends BaseTestClass {
 
         ItemRevision itemRevision = itemRevisionService.postDefaultItemRevision(item1);
 
-        //Set Distribution Channel to include INAPP only:
+        //Set Distribution Channel to include INAPP:
         List<String> distributionChannels = new ArrayList<>();
         distributionChannels.add("INAPP");
         distributionChannels.add("STORE");

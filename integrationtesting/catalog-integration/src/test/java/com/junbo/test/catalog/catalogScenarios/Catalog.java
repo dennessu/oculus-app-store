@@ -6,6 +6,8 @@
 package com.junbo.test.catalog.catalogScenarios;
 
 import com.junbo.catalog.spec.model.common.Price;
+import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
+import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
 import com.junbo.common.id.*;
 import com.junbo.test.catalog.enums.*;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
@@ -53,6 +55,7 @@ public class Catalog extends BaseTestClass {
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
     private final String defaultOfferRevisionFileName = "defaultOfferRevision";
     private final String defaultItemFileName = "defaultItem";
+    private final String defaultLocale = "en_US";
 
     @BeforeClass
     private void PrepareTestData() throws Exception {
@@ -86,7 +89,7 @@ public class Catalog extends BaseTestClass {
         SimpleLocaleProperties attributeProperties = new SimpleLocaleProperties();
         attributeProperties.setName("testItemAttribute_" + RandomFactory.getRandomStringOfAlphabet(10));
         attributeProperties.setDescription(RandomFactory.getRandomStringOfAlphabetOrNumeric(30));
-        locales.put("en_US", attributeProperties);
+        locales.put(defaultLocale, attributeProperties);
         itemAttribute.setLocales(locales);
         itemAttribute.setType(CatalogItemAttributeType.getRandom());
 
@@ -145,7 +148,7 @@ public class Catalog extends BaseTestClass {
         SimpleLocaleProperties attributeProperties = new SimpleLocaleProperties();
         attributeProperties.setName("testOfferAttribute_" + RandomFactory.getRandomStringOfAlphabet(10));
         attributeProperties.setDescription(RandomFactory.getRandomStringOfAlphabetOrNumeric(30));
-        locales.put("en_US", attributeProperties);
+        locales.put(defaultLocale, attributeProperties);
         offerAttribute.setLocales(locales);
         offerAttribute.setType(CatalogOfferAttributeType.getRandom());
 
@@ -406,20 +409,54 @@ public class Catalog extends BaseTestClass {
         String offer7 = "testOffer_PreOrder_Digital1";
         String offer8 = "testOffer_InAppConsumable1";
         String offer9 = "testOffer_InAppConsumable2";
-        String offer10 = "test";
+        String offer10 = "testOffer_Free_Digital";
+        String offer11 = "testOffer_Free_Physical";
+        String offer12 = "testOfferForFB";
+        String offer100 = "test";
 
         OfferService offerServiceAPI = OfferServiceImpl.instance();
 
-        offerServiceAPI.getOfferIdByName(offer1);
-        offerServiceAPI.getOfferIdByName(offer2);
-        offerServiceAPI.getOfferIdByName(offer3);
-        offerServiceAPI.getOfferIdByName(offer4);
-        offerServiceAPI.getOfferIdByName(offer5);
-        offerServiceAPI.getOfferIdByName(offer6);
-        offerServiceAPI.getOfferIdByName(offer7);
-        offerServiceAPI.getOfferIdByName(offer8);
-        offerServiceAPI.getOfferIdByName(offer9);
-        offerServiceAPI.getOfferIdByName(offer10);
+        String offerId1 = offerServiceAPI.getOfferIdByName(offer1);
+        Assert.assertNotNull(offerId1);
+        Assert.assertFalse(offerId1.equalsIgnoreCase("No such predefined offer"));
+        String offerId2 = offerServiceAPI.getOfferIdByName(offer2);
+        Assert.assertNotNull(offerId2);
+        Assert.assertFalse(offerId2.equalsIgnoreCase("No such predefined offer"));
+        String offerId3 = offerServiceAPI.getOfferIdByName(offer3);
+        Assert.assertNotNull(offerId3);
+        Assert.assertFalse(offerId3.equalsIgnoreCase("No such predefined offer"));
+        String offerId4 = offerServiceAPI.getOfferIdByName(offer4);
+        Assert.assertNotNull(offerId4);
+        Assert.assertFalse(offerId4.equalsIgnoreCase("No such predefined offer"));
+        String offerId5 = offerServiceAPI.getOfferIdByName(offer5);
+        Assert.assertNotNull(offerId5);
+        Assert.assertFalse(offerId5.equalsIgnoreCase("No such predefined offer"));
+        String offerId6 = offerServiceAPI.getOfferIdByName(offer6);
+        Assert.assertNotNull(offerId6);
+        Assert.assertFalse(offerId6.equalsIgnoreCase("No such predefined offer"));
+        String offerId7 = offerServiceAPI.getOfferIdByName(offer7);
+        Assert.assertNotNull(offerId7);
+        Assert.assertFalse(offerId7.equalsIgnoreCase("No such predefined offer"));
+        String offerId8 = offerServiceAPI.getOfferIdByName(offer8);
+        Assert.assertNotNull(offerId8);
+        Assert.assertFalse(offerId8.equalsIgnoreCase("No such predefined offer"));
+        String offerId9 = offerServiceAPI.getOfferIdByName(offer9);
+        Assert.assertNotNull(offerId9);
+        Assert.assertFalse(offerId9.equalsIgnoreCase("No such predefined offer"));
+        String offerId10 = offerServiceAPI.getOfferIdByName(offer10);
+        Assert.assertNotNull(offerId10);
+        Assert.assertFalse(offerId10.equalsIgnoreCase("No such predefined offer"));
+        String offerId11 = offerServiceAPI.getOfferIdByName(offer11);
+        Assert.assertNotNull(offerId11);
+        Assert.assertFalse(offerId11.equalsIgnoreCase("No such predefined offer"));
+        String offerId12 = offerServiceAPI.getOfferIdByName(offer12);
+        Assert.assertNotNull(offerId12);
+        Assert.assertFalse(offerId12.equalsIgnoreCase("No such predefined offer"));
+
+        String offerId100 = offerServiceAPI.getOfferIdByName(offer100);
+        if (offerId100 != null) {
+            Assert.assertTrue(offerId1.equalsIgnoreCase("No such predefined offer"));
+        }
     }
 
     @Property(
@@ -452,6 +489,19 @@ public class Catalog extends BaseTestClass {
 
         Item item = itemService.postDefaultItem(CatalogItemType.APP, organizationId);
         ItemRevision itemRevision = itemRevisionService.postDefaultItemRevision(item);
+
+        //update itemName for this offer
+        ItemRevisionLocaleProperties itemRevisionLocaleProperties = itemRevision.getLocales().get(defaultLocale);
+        if (itemRevisionLocaleProperties == null) {
+            itemRevisionLocaleProperties = new ItemRevisionLocaleProperties();
+        }
+
+        itemRevisionLocaleProperties.setName("testItemForFB");
+
+        HashMap<String, ItemRevisionLocaleProperties> itemLocales = new HashMap<>();
+        itemLocales.put(defaultLocale, itemRevisionLocaleProperties);
+        itemRevision.setLocales(itemLocales);
+
         releaseItemRevision(itemRevision);
 
         Offer offer = offerService.postDefaultOffer(organizationId);
@@ -496,6 +546,18 @@ public class Catalog extends BaseTestClass {
         price.setPriceType(PriceType.CUSTOM.name());
         price.setPrices(offerPrice);
         offerRevision.setPrice(price);
+
+        //update offerName for this offer
+        OfferRevisionLocaleProperties offerRevisionLocaleProperties = offerRevision.getLocales().get(defaultLocale);
+        if (offerRevisionLocaleProperties == null) {
+            offerRevisionLocaleProperties = new OfferRevisionLocaleProperties();
+        }
+
+        offerRevisionLocaleProperties.setName("testOfferForFB");
+
+        HashMap<String, OfferRevisionLocaleProperties> offerLocales = new HashMap<>();
+        offerLocales.put(defaultLocale, offerRevisionLocaleProperties);
+        offerRevision.setLocales(offerLocales);
 
         releaseOfferRevision(offerRevision);
         return offer.getOfferId();
