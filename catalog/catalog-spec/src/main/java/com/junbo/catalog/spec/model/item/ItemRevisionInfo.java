@@ -7,7 +7,7 @@
 package com.junbo.catalog.spec.model.item;
 
 /**
- * ItemRevisionInfo
+ * ItemRevisionInfo.
  */
 public class ItemRevisionInfo {
     private String revisionId;
