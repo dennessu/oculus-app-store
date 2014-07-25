@@ -19,6 +19,10 @@ def main():
 
     comm_map = {"general" : args.general, "newRelease": args.new_release}
     test_comm(comm_map)
+    
+    global g_access_token
+    g_access_token = args.access_token
+    test_access_token(args.access_token)
 
     users_file = file(args.input)
     users = json.load(users_file)
@@ -83,6 +87,7 @@ def read_args():
     parser.add_argument('-o', action="store", metavar='output_file', dest="output", help='the output file, default is results.json', default='results.json')
     parser.add_argument('-general', action="store", metavar='general_id', dest="general", help='the general communication id', required=True)
     parser.add_argument('-new_release', action="store", metavar='new_release_id', dest="new_release", help='the newRelease communication id', required=True)
+    parser.add_argument('-access_token', action="store", metavar='access_token', dest="access_token", help='the accessToken to do the migration', required=True)
     parser.add_argument('-mask_user', action="store", metavar='mask_user_true_or_false', dest="mask_user", help="whether we need to mask user name and mail", required=False)
     parser.add_argument('-white_list_user', action="store", metavar="white_list_user_config_file", dest="white_list_user", help="The username list to be white list", required=False)
     return parser.parse_args()
@@ -93,7 +98,8 @@ def worker(q, write_q):
         startTime = time.time()
         try:
             print 'Processing %d users.' % len(users)
-            resp = curl('http://127.0.0.1:8080/v1/imports/bulk', 'POST', json.dumps(users), { 'Content-Type': 'application/json' }, raiseOn4xxError = False)
+            global g_access_token
+            resp = curl('http://127.0.0.1:8080/v1/imports/bulk', 'POST', json.dumps(users), { 'Content-Type': 'application/json', 'Authorization': 'Bearer %s' % g_access_token }, raiseOn4xxError = False)
             result = json.loads(resp)
         except Exception, e:
             print e
@@ -124,6 +130,9 @@ def write_worker(users, write_q, results, output):
 def test_comm(comm_map):
     for name in comm_map:
         curl('http://127.0.0.1:8080/v1/communications/%s' % comm_map[name])
+    
+def test_access_token(access_token):
+    curl('http://127.0.0.1:8080/v1/oauth2/access-token/%s' % access_token)
 
 def curl(url, method = 'GET', body = None, headers = None, raiseOn5xxError = True, raiseOn4xxError = True):
     if headers is None: headers = {}
