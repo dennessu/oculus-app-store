@@ -26,7 +26,7 @@ scp /home/silkcloud/$APP_NAME.zip $COUCH_SETUP_SERVER:/var/silkcloud
 ssh $COUCH_SETUP_SERVER << EOF
 cd /var/silkcloud
 unzip -o $APP_NAME.zip
-ln -sf $APP_NAME apphost
+ln -sfn $APP_NAME apphost
 
 cd /var/silkcloud/apphost/dbsetup/couchdb
 python ./couchdbcmd.py dropdbs ppe --prefix=ppe_ --yes

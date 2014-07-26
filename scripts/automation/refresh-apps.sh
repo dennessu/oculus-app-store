@@ -22,8 +22,8 @@ done
 
 ./foreach-here.sh $ENV/crypto-apps.txt $ENV/apps.txt << EOF
 cd /var/silkcloud
-(sudo initctl status node-App | grep start) && sudo stop silkcloud-apphost
+(sudo initctl status silkcloud-apphost | grep start) && sudo stop silkcloud-apphost
 unzip -o $APP_NAME.zip
-ln -sf $APP_NAME apphost
+ln -sfn $APP_NAME apphost
 sudo start silkcloud-apphost
 EOF

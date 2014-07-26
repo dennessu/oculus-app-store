@@ -8,6 +8,6 @@ export ENV=${ENV:-$1}
 export ENV=${ENV:-ppe}
 
 ./foreach-here.sh $ENV/crypto-apps.txt $ENV/apps.txt << EOF
-(sudo initctl status node-App | grep start) && sudo stop silkcloud-apphost
+(sudo initctl status silkcloud-apphost | grep start) && sudo stop silkcloud-apphost
 sudo start silkcloud-apphost
 EOF
