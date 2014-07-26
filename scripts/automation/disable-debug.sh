@@ -4,7 +4,10 @@ pushd $DIR
 
 set -e
 
-./foreach-here.sh ppe.txt << EOF
+export ENV=${ENV:-$1}
+export ENV=${ENV:-ppe}
+
+./foreach-here.sh $ENV/_all.txt << EOF
 if ! grep '^common.conf.debugMode=' /etc/silkcloud/configuration.properties; then
     echo common.conf.debugMode=false >> /etc/silkcloud/configuration.properties
 fi
@@ -13,5 +16,4 @@ echo Updated to \`grep '^common.conf.debugMode=' /etc/silkcloud/configuration.pr
 EOF
 
 echo Recycle all servers
-./recycle-all.sh
-
+./recycle-all.sh $ENV

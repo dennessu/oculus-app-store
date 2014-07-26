@@ -3,8 +3,11 @@ DIR="$( cd "$( dirname "$0" )" && pwd )"
 pushd $DIR
 set -e
 
-CRYPTO_SERVER_1=10.24.34.10
-CRYPTO_SERVER_2=10.24.38.10
+export ENV=${ENV:-$1}
+export ENV=${ENV:-ppe}
+
+CRYPTO_SERVER_1=`cat $ENV/crypto-apps.txt | sed -n 1p`
+CRYPTO_SERVER_2=`cat $ENV/crypto-apps.txt | sed -n 2p`
 
 ROWCOUNT1=`ssh $CRYPTO_SERVER_1 'psql -d crypto -c "select count(*) from master_key;"' | egrep '^[[:blank:]]*[[:digit:]]+[[:blank:]]*$' | sed 's/[ \t]*//'`
 ROWCOUNT2=`ssh $CRYPTO_SERVER_2 'psql -d crypto -c "select count(*) from master_key;"' | egrep '^[[:blank:]]*[[:digit:]]+[[:blank:]]*$' | sed 's/[ \t]*//'`
@@ -29,4 +32,3 @@ ssh $CRYPTO_SERVER_1 pg_dump crypto | ssh $CRYPTO_SERVER_2 psql -d crypto
 
 diff <(ssh $CRYPTO_SERVER_1 pg_dump crypto ) <(ssh $CRYPTO_SERVER_2 pg_dump crypto )
 rm backup2.sql.gz
-

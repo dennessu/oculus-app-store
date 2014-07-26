@@ -114,17 +114,15 @@ sudo chown -R silkcloud:silkcloud /etc/silkcloud
 sudo chmod 700 /etc/silkcloud
 ```
 
+1. Configure upstart scripts
+TODO: upstart scripts for DB servers
+
 1. Install other packages
 ```
 sudo apt-get install unzip
 sudo apt-get install default-jdk
 ```
 Java is used to run some tools on DB servers.
-
-1. Switch back to devops account:
-```
-exit
-```
 
 ### Prepare App Servers
   * `10.24.8.50`
@@ -153,6 +151,36 @@ sudo chown -R silkcloud:silkcloud /etc/silkcloud
 sudo chmod 700 /etc/silkcloud
 ```
 
+1. Configure upstart script <br />
+Run the following commands to create startup script.
+```
+sudo bash -c 'cat << EOF > /etc/init/silkcloud-apphost.conf
+description "silkcloud app host"
+
+start on runlevel [2345]
+stop on runlevel [^2345]
+
+console none
+chdir /var/silkcloud/apphost
+setuid silkcloud
+setgid silkcloud
+
+respawn
+respawn limit 10 600
+
+kill timeout 30
+
+exec ./startup.sh
+
+EOF
+'
+```
+
+Allow silkcloud to start/stop the service by:
+```
+sudo bash -c 'echo "silkcloud ALL = (devops) NOPASSWD: /sbin/start silkcloud-apphost, /sbin/stop silkcloud-apphost, /sbin/initctl status silkcloud-apphost" >> /etc/sudoers'
+```
+
 1. Install other packages
 ```
 sudo apt-get install unzip
@@ -164,12 +192,9 @@ sudo apt-get install unzip
 1. Copy Bits
 After full build, copy the following files to Bastion server:
 ```
-scp apphost/apphost-identity/build/distributions/apphost-identity-0.0.1-SNAPSHOT.zip $YOUR_USER@bsn-ue1.online.silkcloud.com:/home/$YOUR_USER
-scp apphost/apphost-crypto/build/distributions/apphost-crypto-0.0.1-SNAPSHOT.zip $YOUR_USER@bsn-ue1.online.silkcloud.com:/home/$YOUR_USER
-scp apphost/apphost-dataloader/build/distributions/apphost-dataloader-0.0.1-SNAPSHOT.zip $YOUR_USER@bsn-ue1.online.silkcloud.com:/home/$YOUR_USER
+scp apphost/apphost-cli/build/distributions/apphost-cli-0.0.1-SNAPSHOT.zip $YOUR_USER@bsn-ue1.online.silkcloud.com:/home/$YOUR_USER
 ```
-The first package apphost-identity contains the binary to run on app server and the files used to setup databases.
-The second package apphost-crypto contains the binary to run on crypto app server.
+The package apphost-cli contains the binary to run on app server and the files used to setup databases.
 
 
 1. Setup the silkcloud configuration folder for all servers
@@ -185,11 +210,29 @@ The second package apphost-crypto contains the binary to run on crypto app serve
 
 Prepare the crypto.core.key used to encrypt passwords in the configuration files. The following script assumes $CRYPTO_KEY is the key and $OAUTH_CRYPTO_KEY is the key for encrypting OAuth client secret.
 ```
-echo environment=ppe > /etc/silkcloud/configuration.properties
-echo crypto.core.key=$CRYPTO_KEY >> /etc/silkcloud/configuration.properties
-echo oauth.crypto.key=$OAUTH_CRYPTO_KEY >> /etc/silkcloud/configuration.properties
-echo common.conf.debugMode=false >> /etc/silkcloud/configuration.properties
+cat << EOF > /etc/silkcloud/configuration.properties
+environment=ppe
+crypto.core.key=$CRYPTO_KEY
+oauth.crypto.key=$OAUTH_CRYPTO_KEY
+common.conf.debugMode=false
+EOF
 chmod 600 /etc/silkcloud/configuration.properties
+```
+
+1. Setup profile to app servers
+  * `10.24.8.50`
+  * `10.24.12.50`
+Run the following commands:
+```
+echo profile=apphost-identity >> /etc/silkcloud/configuration.properties
+```
+
+1. Setup profile to crypto app servers
+* `10.24.32.10`
+* `10.24.36.10`
+Run the following commands:
+```
+echo profile=apphost-crypto >> /etc/silkcloud/configuration.properties
 ```
 
 1. Setup jks key store on crypto servers
@@ -206,12 +249,12 @@ chmod 600 /etc/silkcloud/*.jks
   1. Upload all PGHA scripts to master/slave/replica servers
   Copy the DB setup binary to the db primary server from bastion.
   ```
-  scp /home/$YOUR_USER/apphost-identity-0.0.1-SNAPSHOT.zip silkcloud@10.24.34.10:/home/silkcloud
+  scp /home/$YOUR_USER/apphost-cli-0.0.1-SNAPSHOT.zip silkcloud@10.24.34.10:/home/silkcloud
   ```
   Then ssh to the db primary server
   ```
-  unzip -o apphost-identity-0.0.1-SNAPSHOT.zip
-  cd apphost-identity-0.0.1-SNAPSHOT/dbsetup/pgha
+  unzip -o apphost-cli-0.0.1-SNAPSHOT.zip
+  cd apphost-cli-0.0.1-SNAPSHOT/dbsetup/pgha
   ./upload_script.sh ppe
   ```
 
@@ -253,7 +296,7 @@ chmod 600 /etc/silkcloud/*.jks
 
   Then run the following command:
   ```
-  cd apphost-identity-0.0.1-SNAPSHOT/dbsetup/liquibase
+  cd apphost-cli-0.0.1-SNAPSHOT/dbsetup/liquibase
   ./createdb.sh -env:ppe -key:$CRYPTO_KEY
   ./updatedb.sh -env:ppe -key:$CRYPTO_KEY
   ```
@@ -313,7 +356,7 @@ chmod 600 /etc/silkcloud/*.jks
 Ssh to the first crypto db server and run the following command:
   * `10.24.34.10`
 ```
-cd apphost-identity-0.0.1-SNAPSHOT/dbsetup/cloudant
+cd apphost-cli-0.0.1-SNAPSHOT/dbsetup/couchdb
 python ./couchdbcmd.py createdbs ppe --prefix=ppe_ --yes
 ```
 
@@ -325,8 +368,8 @@ python ./couchdbcmd.py createdbs ppe --prefix=ppe_ --yes
 
 1. Run the following commands on bastion servers using silkcloud:
 ```
-scp /home/$YOUR_USER/apphost-crypto-0.0.1-SNAPSHOT.zip 10.24.32.10:/var/silkcloud
-scp /home/$YOUR_USER/apphost-crypto-0.0.1-SNAPSHOT.zip 10.24.36.10:/var/silkcloud
+scp /home/$YOUR_USER/apphost-cli-0.0.1-SNAPSHOT.zip 10.24.32.10:/var/silkcloud
+scp /home/$YOUR_USER/apphost-cli-0.0.1-SNAPSHOT.zip 10.24.36.10:/var/silkcloud
 ```
 
 1. Put the jks file to /etc/silkcloud and chmod 600
@@ -340,13 +383,11 @@ ssh 10.24.36.10 chmod 600 '/etc/silkcloud/*.jks'
 1. Run the following command on crypto servers:
 ```
 cd /var/silkcloud
-unzip -o apphost-crypto-0.0.1-SNAPSHOT.zip
-cd apphost-crypto-0.0.1-SNAPSHOT
-./shutdown.sh
-./startup.sh
+(sudo initctl status node-App | grep start) && sudo stop silkcloud-apphost
+unzip -o apphost-cli-0.0.1-SNAPSHOT.zip
+ln -sf apphost-cli-0.0.1-SNAPSHOT apphost
+sudo start silkcloud-apphost
 ```
-
-TODO: Configure the service to be auto started
 
 ### Setup Rest Servers
   * `10.24.8.50`
@@ -354,23 +395,23 @@ TODO: Configure the service to be auto started
 
 Run the following command on bastion servers using silkcloud:
 ```
-scp /home/$YOUR_USER/apphost-identity-0.0.1-SNAPSHOT.zip 10.24.8.50:/var/silkcloud
-scp /home/$YOUR_USER/apphost-identity-0.0.1-SNAPSHOT.zip 10.24.12.50:/var/silkcloud
+scp /home/$YOUR_USER/apphost-cli-0.0.1-SNAPSHOT.zip 10.24.8.50:/var/silkcloud
+scp /home/$YOUR_USER/apphost-cli-0.0.1-SNAPSHOT.zip 10.24.12.50:/var/silkcloud
 ```
 Run the following command on crypto servers:
 ```
 cd /var/silkcloud
-unzip -o apphost-identity-0.0.1-SNAPSHOT.zip
-cd apphost-identity-0.0.1-SNAPSHOT
-./shutdown.sh
-./startup.sh
+(sudo initctl status node-App | grep start) && sudo stop silkcloud-apphost
+unzip -o apphost-cli-0.0.1-SNAPSHOT.zip
+ln -sf apphost-cli-0.0.1-SNAPSHOT apphost
+sudo start silkcloud-apphost
 ```
 
 ### Generate Master Key
   * `10.24.32.10`
 Run the following command on crypto servers:
 ```
-cd /var/silkcloud/apphost-dataloader-0.0.1-SNAPSHOT
+cd /var/silkcloud/apphost-cli-0.0.1-SNAPSHOT
 ./dataloader.sh masterkey
 ```
 
@@ -420,13 +461,13 @@ rm backup2.sql.gz
 
 Run the following command on bastion servers using silkcloud:
 ```
-scp /home/$YOUR_USER/apphost-dataloader-0.0.1-SNAPSHOT.zip 10.24.32.10:/var/silkcloud
+scp /home/$YOUR_USER/apphost-cli-0.0.1-SNAPSHOT.zip 10.24.32.10:/var/silkcloud
 ```
 Run the following command on crypto servers:
 ```
 cd /var/silkcloud
-unzip -o apphost-dataloader-0.0.1-SNAPSHOT.zip
-cd apphost-dataloader-0.0.1-SNAPSHOT
+unzip -o apphost-cli-0.0.1-SNAPSHOT.zip
+cd apphost-cli-0.0.1-SNAPSHOT
 ./dataloader.sh
 ```
 
