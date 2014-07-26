@@ -23,6 +23,12 @@ cp /home/$YOUR_USER/main/apphost/apphost-cli/build/distributions/$APP_NAME.zip /
 echo copying apphost to $LIQUIBASE_SETUP_SERVER
 scp /home/silkcloud/$APP_NAME.zip $LIQUIBASE_SETUP_SERVER:/var/silkcloud
 
+ssh $LIQUIBASE_SETUP_SERVER << EOF
+cd /var/silkcloud
+unzip -o $APP_NAME.zip
+ln -sf $APP_NAME apphost
+EOF
+
 function pause() {
 #read -p "Press any key to continue..."
 echo pause

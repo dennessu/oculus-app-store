@@ -23,7 +23,11 @@ cp /home/$YOUR_USER/main/apphost/apphost-cli/build/distributions/$APP_NAME.zip /
 echo copying apphost to $COUCH_SETUP_SERVER
 scp /home/silkcloud/$APP_NAME.zip $COUCH_SETUP_SERVER:/var/silkcloud
 
-ssh `head -n 1 $ENV/crypto-apps.txt` << EOF
+ssh $COUCH_SETUP_SERVER << EOF
+cd /var/silkcloud
+unzip -o $APP_NAME.zip
+ln -sf $APP_NAME apphost
+
 cd /var/silkcloud/apphost/dbsetup/couchdb
 python ./couchdbcmd.py dropdbs ppe --prefix=ppe_ --yes
 python ./couchdbcmd.py createdbs ppe --prefix=ppe_ --yes
