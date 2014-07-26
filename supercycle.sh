@@ -6,5 +6,5 @@ t0=`date +%s`
 ./test.sh
 
 t1=`date +%s`
-echo Total Elapsed: $[$t1-$t0] seconds
+echo Supercycle Total Elapsed: $[$t1-$t0] seconds
 

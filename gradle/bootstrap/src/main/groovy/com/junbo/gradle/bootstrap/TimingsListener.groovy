@@ -31,16 +31,14 @@ class TimingsListener implements TaskExecutionListener, BuildListener {
 
     @Override
     void buildFinished(BuildResult result) {
-        if (result.failure == null) {
-            println "Task timings (Top 10):"
+        println "Task timings (Top 10):"
 
-            def count = 0
-            for (timing in timings.sort { -it[0] }) {
-                printf "%7sms  %s\n", timing
+        def count = 0
+        for (timing in timings.sort { -it[0] }) {
+            printf "%7sms  %s\n", timing
 
-                count++
-                if (count >= 10) break;
-            }
+            count++
+            if (count >= 10) break;
         }
     }
 
