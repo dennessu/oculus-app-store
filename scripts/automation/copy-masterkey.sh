@@ -6,8 +6,8 @@ set -e
 export ENV=${ENV:-$1}
 export ENV=${ENV:-ppe}
 
-CRYPTO_SERVER_1=`cat $ENV/crypto-apps.txt | sed -n 1p`
-CRYPTO_SERVER_2=`cat $ENV/crypto-apps.txt | sed -n 2p`
+CRYPTO_SERVER_1=`cat $ENV/crypto-dbs.txt | sed -n 1p`
+CRYPTO_SERVER_2=`cat $ENV/crypto-dbs.txt | sed -n 2p`
 
 ROWCOUNT1=`ssh $CRYPTO_SERVER_1 'psql -d crypto -c "select count(*) from master_key;"' | egrep '^[[:blank:]]*[[:digit:]]+[[:blank:]]*$' | sed 's/[ \t]*//'`
 ROWCOUNT2=`ssh $CRYPTO_SERVER_2 'psql -d crypto -c "select count(*) from master_key;"' | egrep '^[[:blank:]]*[[:digit:]]+[[:blank:]]*$' | sed 's/[ \t]*//'`

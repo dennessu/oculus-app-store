@@ -178,7 +178,7 @@ EOF
 
 Allow silkcloud to start/stop the service by:
 ```
-sudo bash -c 'echo "silkcloud ALL = (devops) NOPASSWD: /sbin/start silkcloud-apphost, /sbin/stop silkcloud-apphost, /sbin/initctl status silkcloud-apphost" >> /etc/sudoers'
+sudo bash -c 'echo "silkcloud ALL = NOPASSWD: /sbin/start silkcloud-apphost, /sbin/stop silkcloud-apphost, /sbin/initctl status silkcloud-apphost" >> /etc/sudoers'
 ```
 
 1. Install other packages
