@@ -12,5 +12,5 @@ buildscript {
     }
 }
 
-defaultTasks 'clean', 'install', 'installApp', 'distZip'
+defaultTasks 'clean', 'install', 'silkcloud'
 

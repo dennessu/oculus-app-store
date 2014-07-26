@@ -479,3 +479,37 @@ can be used to purge the server.
 cd scripts/utils/ppe
 ./ut_oauth.py -uri 'https://internal-api-jvm-ppe-464421051.us-west-1.elb.amazonaws.com'
 ```
+
+## Overriding Properties
+Add the properties you want to override in `/etc/silkcloud/configuration.properties` and restart the service.
+
+## Overriding the Trace on the fly
+Use the loggers endpoint in 8081 port to tune the trace levels on the fly.
+
+`GET localhost:8081/loggers`
+This will show all loggers with trace level set.
+
+`GET localhost:8081/logger?showall=true`
+This will show all available loggers.
+
+`GET localhost:8081/loggers/override?name={name}&level={level}`
+
+This can be used to override the log levels. Available levels are:
+  * OFF
+  * ERROR
+  * WARN
+  * INFO
+  * DEBUG
+  * TRACE
+  * ALL
+To change the default for all loggers, you can override ROOT logger.
+
+`GET localhost:8081/loggers/reset`
+Reset the logger levels to default (default to the log back configuration file).
+
+Here is an example, this will turn on the logger for AsyncHttpClient.
+`http://localhost:8081/loggers/override?name=com.junbo.langur.core.async.JunboAsyncHttpClient&level=TRACE`
+
+## Overriding the Trace using config file
+Put a override logback config file in `/etc/silkcloud/logback-override.xml`, and modify the startup script to add the following:
+`-Dlogback.configurationFile=/etc/silkcloud/logback-override.xml`

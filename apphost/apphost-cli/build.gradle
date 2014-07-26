@@ -4,60 +4,36 @@ apply plugin: 'groovy'
 apply plugin: 'application'
 
 mainClassName = "com.junbo.apphost.core.JunboApplication"
-applicationDefaultJvmArgs = ["-Xmx1024m", "-Xms1024m", "-XX:PermSize=512m", "-XX:MaxPermSize=512m", "-Dspring.profiles.active=utility",
+applicationDefaultJvmArgs = ["-Xmx2048m", "-XX:MaxPermSize=512m", "-Dspring.profiles.active=utility",
     "-Xdebug", "-Xrunjdwp:server=y,transport=dt_socket,address=9401,suspend=n",
     "-Dcom.sun.management.jmxremote.port=9070", "-Dcom.sun.management.jmxremote.ssl=false", "-Dcom.sun.management.jmxremote.authenticate=false"]
 
+configurations {
+    startScripts
+}
+
 dependencies {
-    compile junboProject(':apphost-core')
-    compile junboProject(':configuration-data')
-    compile junboProject(':data-loader')
-
-    compile junboProject(':identity-rest')
-    compile junboProject(':oauth-api')
-    compile junboProject(':entitlement-rest')
-    compile junboProject(':catalog-rest')
-    compile junboProject(':rating-rest')
-    compile junboProject(':ewallet-rest')
-    compile junboProject(':payment-rest')
-    compile junboProject(':billing-rest')
-    compile junboProject(':email-rest')
-    compile junboProject(':cart-rest')
-    compile junboProject(':fulfilment-rest')
-    compile junboProject(':order-rest')
-    compile junboProject(':crypto-rest')
-    compile junboProject(':store-rest')
-    compile junboProject(':authorization-rest')
-    compile junboProject(':data-loader')
-
-    compile junboProject(':billing-jobs')
-    compile junboProject(':order-jobs')
-    compile junboProject(':email-jobs')
-    compile junboProject(':catalog-jobs')
-    compile junboProject(':identity-job')
-    compile junboProject(':token-rest')
-    compile junboProject(':csr-rest')
-    compile junboProject(':drm-rest')
-    compile junboProject(':payment-jobs')
-    // more to add
+    // add sub apps, so we can bundle everything in one zip
+    compile junboProject(':apphost-rest')
+    compile junboProject(':apphost-crypto')
+    compile junboProject(':apphost-jobs')
+    compile junboProject(':apphost-dataloader')
+    compile junboProject(':apphost-identity')
 }
 
-applicationDistribution.from("../../cloudant") {
-    into "dbsetup/cloudant"
-}
+applicationDistribution.from("../../couchdb") { into "dbsetup/couchdb" }
+applicationDistribution.from("../../liquibase") { into "dbsetup/liquibase" }
+applicationDistribution.from("../../scripts/pgha") { into "dbsetup/pgha" }
 
-applicationDistribution.from("../../liquibase") {
-    into "dbsetup/liquibase"
-}
-
-applicationDistribution.from("../../scripts/pgha") {
-    into "dbsetup/pgha"
-}
+applicationDistribution.from("../apphost-rest/build/scripts") { into "bin" }
+applicationDistribution.from("../apphost-crypto/build/scripts") { into "bin" }
+applicationDistribution.from("../apphost-jobs/build/scripts") { into "bin" }
+applicationDistribution.from("../apphost-dataloader/build/scripts") { into "bin" }
+applicationDistribution.from("../apphost-identity/build/scripts") { into "bin" }
 
 applicationDistribution.eachFile { FileCopyDetails f ->
     if (!f.name.endsWith('.sh')) return
     f.filter(FixCrLfFilter, eol: FixCrLfFilter.CrLf.newInstance("lf"))
 }
 
-defaultTasks 'clean', 'install', 'installApp', 'distZip'
-
+task('silkcloud', dependsOn: [ 'installApp', 'distZip'])

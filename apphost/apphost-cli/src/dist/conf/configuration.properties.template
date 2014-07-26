@@ -1,4 +1,0 @@
-# This is a template file. Rename to configuration.properties and put to /etc/silkcloud to take effect.
-# You can override any value in configuration-data jar
-
-environment=onebox

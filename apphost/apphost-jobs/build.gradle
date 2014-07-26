@@ -1,5 +1,3 @@
-import org.apache.tools.ant.filters.*
-
 apply plugin: 'groovy'
 apply plugin: 'application'
 
@@ -10,13 +8,15 @@ dependencies {
     compile junboProject(':apphost-core')
     compile junboProject(':configuration-data')
 
-    compile junboProject(':identity-rest')
-    compile junboProject(':oauth-api')
-    compile junboProject(':authorization-rest')
-    compile junboProject(':email-rest')
-
-    compile junboProject(':identity-job')
+    compile junboProject(':billing-jobs')
+    compile junboProject(':order-jobs')
     compile junboProject(':email-jobs')
+    compile junboProject(':catalog-jobs')
+    compile junboProject(':identity-job')
+    compile junboProject(':token-rest')
+    compile junboProject(':csr-rest')
+    compile junboProject(':drm-rest')
+    compile junboProject(':payment-jobs')
 }
 
 tasks.jar.dependsOn 'startScripts'

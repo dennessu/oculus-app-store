@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<configuration>
-    <!-- override here if needed -->
-    <!-- use -Dlogback.configurationFile=/etc/silkcloud/logback-override.xml -->
-</configuration>

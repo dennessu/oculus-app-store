@@ -286,7 +286,9 @@ Make sure you stashed or committed your pending changes before switch.
 ## <a name='howtos-forgot-arc-feature'></a> What if I committed something to master before `arc feature`?
   If you are not confident, please backup the branch before doing the steps.
   * Reset to `origin/master` and stash the changes
+  In this step, git pull will make sure your change is at top.
   ```
+  git pull
   git reset origin/master
   git stash
   ```

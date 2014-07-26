@@ -2,7 +2,7 @@ apply plugin: 'groovy'
 apply plugin: 'application'
 
 mainClassName = "com.junbo.apphost.core.JunboApplication"
-applicationDefaultJvmArgs = ["-Xmx1024m", "-Xms1024m", "-XX:PermSize=512m", "-XX:MaxPermSize=512m", "-Dspring.profiles.active=utility"]
+applicationDefaultJvmArgs = ["-Xmx2048m", "-XX:MaxPermSize=512m", "-Dspring.profiles.active=utility"]
 
 dependencies {
     compile junboProject(':apphost-core')
@@ -20,8 +20,8 @@ dependencies {
     compile junboProject(':cart-rest')
     compile junboProject(':fulfilment-rest')
     compile junboProject(':order-rest')
+    compile junboProject(':store-rest')
     compile junboProject(':authorization-rest')
 }
 
-defaultTasks 'clean', 'install', 'installApp', 'distZip'
-
+tasks.jar.dependsOn 'startScripts'

@@ -2,47 +2,77 @@
 (set -o igncr) 2>/dev/null && set -o igncr; # ignore \r in windows. The comment is needed.
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
-if [[ "$OSTYPE" == "linux-gnu" ]]; then
-    mkdir -p /var/silkcloud/logs
-    mkdir -p /var/silkcloud/run
-    LOG_FILE=/var/silkcloud/logs/main.log
-    PID_FILE=/var/silkcloud/run/apphost-cli.pid
-else
-    mkdir -p $DIR/logs
-    LOG_FILE=$DIR/logs/main.log
-    PID_FILE=$DIR/logs/apphost-cli.pid
-fi
+usage() { echo "Usage: $0 [-p <apphost-cli|apphost-rest|apphost-crypto|apphost-jobs|apphost-identity>] [<environment>]" 1>&2; exit 1; }
 
-export APPHOST_CLI_OPTS=""
+while getopts ":p:" o; do
+    case "$o" in
+        p)
+            profile=${OPTARG}
+            case "${OPTARG}" in
+                apphost-cli|apphost-rest|apphost-crypto|apphost-jobs|apphost-identity)
+                    ;;
+                *)
+                    usage
+                    exit 1
+                    ;;
+            esac
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+
+environment=$1
+
+config_file=/etc/silkcloud/configuration.properties
 
 # check environment
-silkcloudenv=$1
-if [[ "$silkcloudenv" == "" ]]; then
-    if ! grep '^environment=[a-zA-Z0-9_]\+' /etc/silkcloud/configuration.properties; then
-        echo "ERROR: environment not set!"
+if [[ -z "$environment" ]]; then
+    if ! grep '^environment=[a-zA-Z0-9_\-]\+' $config_file > /dev/null 2>&1; then
+        echo "ERROR: environment is not set!" 1>&2
+        usage
         exit 1
+    else
+        environment_from_config=`grep '^environment=[a-zA-Z0-9_\-]\+' $config_file | sed 's/^environment=//'`
     fi
-else
-    export APPHOST_CLI_OPTS="$APPHOST_CLI_OPTS -Denvironment=$silkcloudenv"
 fi
 
-$DIR/bin/apphost-cli &
-echo $! > $PID_FILE
+# check profile
+# default to apphost-cli on onebox
+effective_environment=${environment:-$environment_from_config}
+if [[ "$effective_environment" == "onebox" || "effective_environment" == "int1box" ]]; then
+    profile=${profile:-apphost-cli}
+fi
 
-function cleanup {
-    $DIR/shutdown.sh
-}
-
-trap cleanup EXIT INT TERM
-
-# sleep 1 seconds to ensure main.log is created.
-sleep 1
-
-tail -f -n0 $LOG_FILE | while read LOGLINE
-do
-    if [[ "${LOGLINE}" == *"Started Junbo Application Host"* ]]; then
-        ps -aef | grep tail | grep $$ | grep -v grep | awk '{print $2}' | xargs kill
+# otherwise check startup profile from configuration.properties
+if [[ -z "$profile" ]]; then
+    if ! grep '^profile=[a-zA-Z0-9_\-]\+' $config_file > /dev/null 2>&1; then
+        echo "ERROR: profile is not set!" 1>&2
+        usage
+        exit 1
+    else
+        profile=`grep '^profile=[a-zA-Z0-9_\-]\+' $config_file | sed 's/^profile=//'`
     fi
-done
+fi
+echo Set startup profile to $profile
 
-trap - EXIT INT TERM
+export APPHOST_OPTS=""
+
+# if environment was read from command line parameter, add parameters
+if [[ -n "$environment" ]]; then
+    export APPHOST_OPTS="$APPHOST_OPTS -Denvironment=$environment"
+fi
+
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+    mkdir -p /var/silkcloud/logs
+else
+    mkdir -p $DIR/logs
+fi
+
+apphost_opts_var=`echo ${profile}_OPTS | tr '[:lower:]-' '[:upper:]_'`
+
+# customize APPHOST_*_OPTS here
+export $apphost_opts_var="$APPHOST_OPTS"
+exec $DIR/bin/$profile

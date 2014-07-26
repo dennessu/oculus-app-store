@@ -11,3 +11,6 @@ buildscript {
         classpath 'com.junbo.gradle:bootstrap:1.0'
     }
 }
+
+defaultTasks 'clean', 'install', 'silkcloud'
+
