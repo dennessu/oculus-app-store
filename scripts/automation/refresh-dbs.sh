@@ -63,8 +63,8 @@ nc -zv localhost 113 5432 6543
 EOF
 
 echo Running liquibase
-ssh `head -n 1 $ENV/liquibase.txt` << EOF
-cd apphost/dbsetup/liquibase
+ssh $LIQUIBASE_SETUP_SERVER << EOF
+cd /var/silkcloud/apphost/dbsetup/liquibase
 ./createdb.sh -env:ppe -key:$CRYPTO_KEY
 ./updatedb.sh -env:ppe -key:$CRYPTO_KEY
 EOF
