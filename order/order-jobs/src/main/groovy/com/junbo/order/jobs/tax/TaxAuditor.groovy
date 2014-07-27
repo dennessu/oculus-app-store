@@ -4,18 +4,19 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.order.jobs
+package com.junbo.order.jobs.tax
 
 import com.junbo.configuration.topo.DataCenters
 import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
+import com.junbo.order.jobs.OrderProcessor
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.PageParam
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.InitializingBean
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
+import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
 import java.util.concurrent.Callable
@@ -23,12 +24,13 @@ import java.util.concurrent.Future
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
- * Created by xmchen on 14-4-2.
+ * Backend job to audit tax.
  */
 @CompileStatic
-class OrderJob implements InitializingBean {
+@Component('orderTaxAuditor')
+class TaxAuditor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OrderJob)
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaxAuditor)
 
     OrderRepositoryFacade orderRepository
 
@@ -40,18 +42,31 @@ class OrderJob implements InitializingBean {
 
     List<String> statusToProcess
 
-    ThreadPoolTaskExecutor  threadPoolTaskExecutor
+    ThreadPoolTaskExecutor threadPoolTaskExecutor
 
+    @Resource(name = 'orderAuditTaxProcessor')
     OrderProcessor orderProcessor
 
     @Resource(name ='orderTransactionHelper')
     TransactionHelper transactionHelper
 
+    void processOrder(String orderIdListStr) {
+        // export to JMX for debugging
+        def orderIdList = orderIdListStr.split(',').collect { String idStr ->
+            Long.valueOf(idStr.trim())
+        }
+        orderIdList.each { Long orderId ->
+            Order order = transactionHelper.executeInTransaction {
+                orderRepository.getOrder(orderId)
+            }
+            orderProcessor.process(order)
+        }
+    }
+
     void execute() {
         LOGGER.info('name=OrderProcessJobStart')
         def start = System.currentTimeMillis()
         def numProcessed = 0, numSuccess = new AtomicInteger(), numFail = new AtomicInteger()
-        List<Future> futures = [] as LinkedList<Future>
 
         while (numProcessed < orderProcessNumLimit) {
             def orders = readOrdersForProcess()
@@ -60,31 +75,18 @@ class OrderJob implements InitializingBean {
             }
 
             orders.each { Order order ->
-                def future = threadPoolTaskExecutor.submit(new Callable<Void>() {
-                    @Override
-                    Void call() throws Exception {
-                        def result = orderProcessor.process(order)
-                        if (result.success) {
-                            numSuccess.andIncrement
-                        } else {
-                            numFail.andIncrement
-                        }
-                        return null
-                    }
-                } )
-                appendFuture(futures, future)
+                def result = orderProcessor.process(order)
+                if (result.success) {
+                    numSuccess.andIncrement
+                } else {
+                    numFail.andIncrement
+                }
             }
 
             numProcessed += orders.size()
         }
-
-        // wait all task to finish
-        futures.each { Future future ->
-            future.get()
-        }
-
         LOGGER.info('name=OrderProcessJobEnd, numOfOrder={}, numSuccess={}, numFail={}, latency={}ms',
-            numProcessed, numSuccess, numFail, System.currentTimeMillis() - start)
+                numProcessed, numSuccess, numFail, System.currentTimeMillis() - start)
         assert numProcessed == numSuccess.get() + numFail.get()
     }
 
@@ -96,7 +98,10 @@ class OrderJob implements InitializingBean {
                         start: 0, count: pageSizePerShard
                 ))
             }
-            ordersAllShard.addAll(orders)
+            def ordersToAudit = orders.findAll { Order order ->
+                !order.isAudited
+            }
+            ordersAllShard.addAll(ordersToAudit)
         }
         return shuffle(ordersAllShard)
     }
@@ -112,22 +117,5 @@ class OrderJob implements InitializingBean {
 
     private List<Integer> getAllShards() {
         return [0, 1]
-    }
-
-    private void appendFuture(List<Future> futures, Future future) {
-        futures.add(future)
-        if (futures.size() >= numOfFuturesToTrack) {
-            def numOfFutureToRemove = numOfFuturesToTrack / 2
-            Iterator<Future> iterator = futures.iterator()
-            for (int i = 0; i < numOfFutureToRemove; ++i) {
-                iterator.next().get()
-                iterator.remove()
-            }
-        }
-    }
-
-    @Override
-    void afterPropertiesSet() throws Exception {
-        assert orderProcessor != null, 'orderProcessor should not be null'
     }
 }

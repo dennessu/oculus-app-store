@@ -93,13 +93,13 @@
         <property name="orderProcessNumLimit" value="${order.jobs.order.process.limit}"/>
     </bean>
 
-    <bean id="orderAuditTaxJob" class="com.junbo.order.jobs.OrderJob" >
+    <bean id="orderAuditTaxJob" class="com.junbo.order.jobs.tax.TaxAuditor" >
         <property name="threadPoolTaskExecutor" ref="orderJobAsyncTaskExecutor"/>
-        <property name="orderProcessor" ref="orderAuditTaxProcessor"/>
         <property name="orderRepository" ref="orderRepositoryFacade"/>
         <property name="statusToProcess">
             <list>
                 <value>COMPLETED</value>
+                <value>REFUNDED</value>
             </list>
         </property>
         <property name="numOfFuturesToTrack" value="10000"/>
