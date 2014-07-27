@@ -25,6 +25,7 @@ scp /home/silkcloud/$APP_NAME.zip $LIQUIBASE_SETUP_SERVER:/var/silkcloud
 
 ssh $LIQUIBASE_SETUP_SERVER << EOF
 cd /var/silkcloud
+rm -rf $APP_NAME
 unzip -o $APP_NAME.zip
 ln -sfn $APP_NAME apphost
 EOF
@@ -35,6 +36,7 @@ echo pause
 }
 
 cd /home/silkcloud
+rm -rf $APP_NAME
 unzip -o $APP_NAME.zip
 ln -sfn $APP_NAME apphost
 cd apphost/dbsetup/pgha

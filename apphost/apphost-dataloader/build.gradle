@@ -11,5 +11,3 @@ dependencies {
     compile junboProject(':configuration-data')
     compile junboProject(':data-loader')
 }
-
-tasks.jar.dependsOn 'startScripts'

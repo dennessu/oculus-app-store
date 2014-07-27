@@ -11,5 +11,3 @@ dependencies {
     compile junboProject(':identity-rest')
 
 }
-
-tasks.jar.dependsOn 'startScripts'

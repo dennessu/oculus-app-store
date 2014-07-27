@@ -25,6 +25,7 @@ scp /home/silkcloud/$APP_NAME.zip $COUCH_SETUP_SERVER:/var/silkcloud
 
 ssh $COUCH_SETUP_SERVER << EOF
 cd /var/silkcloud
+rm -rf $APP_NAME
 unzip -o $APP_NAME.zip
 ln -sfn $APP_NAME apphost
 

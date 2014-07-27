@@ -18,5 +18,3 @@ dependencies {
     compile junboProject(':drm-rest')
     compile junboProject(':payment-jobs')
 }
-
-tasks.jar.dependsOn 'startScripts'

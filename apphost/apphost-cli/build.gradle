@@ -8,10 +8,6 @@ applicationDefaultJvmArgs = ["-Xmx2048m", "-XX:MaxPermSize=512m", "-Dspring.prof
     "-Xdebug", "-Xrunjdwp:server=y,transport=dt_socket,address=9401,suspend=n",
     "-Dcom.sun.management.jmxremote.port=9070", "-Dcom.sun.management.jmxremote.ssl=false", "-Dcom.sun.management.jmxremote.authenticate=false"]
 
-configurations {
-    startScripts
-}
-
 dependencies {
     // add sub apps, so we can bundle everything in one zip
     compile junboProject(':apphost-rest')
@@ -21,19 +17,34 @@ dependencies {
     compile junboProject(':apphost-identity')
 }
 
-applicationDistribution.from("../../couchdb") { into "dbsetup/couchdb" }
-applicationDistribution.from("../../liquibase") { into "dbsetup/liquibase" }
-applicationDistribution.from("../../scripts/pgha") { into "dbsetup/pgha" }
-
-applicationDistribution.from("../apphost-rest/build/scripts") { into "bin" }
-applicationDistribution.from("../apphost-crypto/build/scripts") { into "bin" }
-applicationDistribution.from("../apphost-jobs/build/scripts") { into "bin" }
-applicationDistribution.from("../apphost-dataloader/build/scripts") { into "bin" }
-applicationDistribution.from("../apphost-identity/build/scripts") { into "bin" }
-
-applicationDistribution.eachFile { FileCopyDetails f ->
-    if (!f.name.endsWith('.sh')) return
-    f.filter(FixCrLfFilter, eol: FixCrLfFilter.CrLf.newInstance("lf"))
+configurations.compile.dependencies.each { dep ->
+    if (dep.name == "groovy-all") return
+    tasks.installApp.dependsOn ":${dep.name}:installApp"
 }
 
-task('silkcloud', dependsOn: [ 'installApp', 'distZip'])
+applicationDistribution.with {
+
+    configurations.compile.dependencies.each { dep ->
+        if (dep.name == "groovy-all") return
+
+        into("bin") {
+            from("../${dep.name}/build/scripts")
+        }
+        into("lib") {
+            from("../${dep.name}/build/install/${dep.name}/lib")
+        }
+    }
+
+    into("dbsetup") {
+        into("couchdb")     { from("../../couchdb") }
+        into("liquibase")   { from("../../liquibase") }
+        into("pgha")        { from("../../scripts/pgha") }
+    }
+
+    eachFile { FileCopyDetails f ->
+        if (!f.name.endsWith('.sh')) return
+        f.filter(FixCrLfFilter, eol: FixCrLfFilter.CrLf.newInstance("lf"))
+    }
+}
+
+task('silkcloud', dependsOn: [ 'installApp', 'distZip' ])

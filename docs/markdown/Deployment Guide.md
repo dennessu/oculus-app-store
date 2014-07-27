@@ -253,6 +253,7 @@ chmod 600 /etc/silkcloud/*.jks
   ```
   Then ssh to the db primary server
   ```
+  rm -rf apphost-cli-0.0.1-SNAPSHOT
   unzip -o apphost-cli-0.0.1-SNAPSHOT.zip
   cd apphost-cli-0.0.1-SNAPSHOT/dbsetup/pgha
   ./upload_script.sh ppe
@@ -384,6 +385,7 @@ ssh 10.24.36.10 chmod 600 '/etc/silkcloud/*.jks'
 ```
 cd /var/silkcloud
 (sudo initctl status node-App | grep start) && sudo stop silkcloud-apphost
+rm -rf apphost-cli-0.0.1-SNAPSHOT
 unzip -o apphost-cli-0.0.1-SNAPSHOT.zip
 ln -sf apphost-cli-0.0.1-SNAPSHOT apphost
 sudo start silkcloud-apphost
@@ -402,6 +404,7 @@ Run the following command on crypto servers:
 ```
 cd /var/silkcloud
 (sudo initctl status node-App | grep start) && sudo stop silkcloud-apphost
+rm -rf apphost-cli-0.0.1-SNAPSHOT
 unzip -o apphost-cli-0.0.1-SNAPSHOT.zip
 ln -sf apphost-cli-0.0.1-SNAPSHOT apphost
 sudo start silkcloud-apphost
@@ -466,6 +469,7 @@ scp /home/$YOUR_USER/apphost-cli-0.0.1-SNAPSHOT.zip 10.24.32.10:/var/silkcloud
 Run the following command on crypto servers:
 ```
 cd /var/silkcloud
+rm -rf apphost-cli-0.0.1-SNAPSHOT
 unzip -o apphost-cli-0.0.1-SNAPSHOT.zip
 cd apphost-cli-0.0.1-SNAPSHOT
 ./dataloader.sh

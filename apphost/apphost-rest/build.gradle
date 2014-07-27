@@ -23,5 +23,3 @@ dependencies {
     compile junboProject(':store-rest')
     compile junboProject(':authorization-rest')
 }
-
-tasks.jar.dependsOn 'startScripts'

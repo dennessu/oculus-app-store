@@ -18,5 +18,3 @@ dependencies {
     compile junboProject(':identity-job')
     compile junboProject(':email-jobs')
 }
-
-tasks.jar.dependsOn 'startScripts'
