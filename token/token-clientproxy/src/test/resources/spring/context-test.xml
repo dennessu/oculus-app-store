@@ -8,6 +8,7 @@
 
     <bean id="tokenClient" class="com.junbo.token.spec.resource.proxy.TokenResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="http://localhost:8080/v1"/>
+        <property name="accessTokenProvider" ref="tokenAccessTokenProvider"/>
     </bean>
 
     <bean id="tokenOfferRevisionClient" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy"

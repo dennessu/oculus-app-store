@@ -6,10 +6,10 @@
 
 package com.junbo.token.spec.model;
 
-import com.junbo.common.jackson.annotation.TokenOrderId;
 import com.junbo.common.model.ResourceMetaForDualWrite;
 import com.junbo.token.common.FilterIn;
 import com.junbo.token.common.FilterOut;
+import com.junbo.token.common.InnerFilter;
 
 import java.util.List;
 
@@ -21,14 +21,14 @@ public class TokenItem extends ResourceMetaForDualWrite<String> {
     private String id;
     @FilterOut
     private Long hashValue;
-    @TokenOrderId
-    private String orderId;
     private String disableReason;
     @FilterIn
     private String status;
     private String encryptedString;
     @FilterIn
     private List<TokenConsumption> tokenConsumptions;
+    @InnerFilter
+    private TokenRequest tokenRequest;
 
     public String getId() {
         return id;
@@ -44,14 +44,6 @@ public class TokenItem extends ResourceMetaForDualWrite<String> {
 
     public void setHashValue(Long hashValue) {
         this.hashValue = hashValue;
-    }
-
-    public String getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
     }
 
     public String getDisableReason() {
@@ -84,5 +76,13 @@ public class TokenItem extends ResourceMetaForDualWrite<String> {
 
     public void setTokenConsumptions(List<TokenConsumption> tokenConsumptions) {
         this.tokenConsumptions = tokenConsumptions;
+    }
+
+    public TokenRequest getTokenRequest() {
+        return tokenRequest;
+    }
+
+    public void setTokenRequest(TokenRequest tokenRequest) {
+        this.tokenRequest = tokenRequest;
     }
 }

@@ -56,15 +56,15 @@ public class CommonMapper {
         return status.toString();
     }
 
-    public TokenLength toTokenLengthEnum(String piType){
-        if(CommonUtil.isNullOrEmpty(piType)){
+    public TokenLength toTokenLengthEnum(String length){
+        if(CommonUtil.isNullOrEmpty(length)){
             return null;
         }
-        return TokenLength.valueOf(piType.toUpperCase());
+        return TokenLength.valueOf(length.toUpperCase());
     }
 
-    public String toTokenLength(TokenLength piType){
-        return piType == null ? null : piType.toString();
+    public String toTokenLength(TokenLength length){
+        return length == null ? null : length.toString();
     }
 
     public ProductType toProductTYpeEnum(String productType){

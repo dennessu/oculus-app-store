@@ -9,6 +9,7 @@ package com.junbo.token.db.repo.facade;
 import com.junbo.sharding.IdGenerator;
 import com.junbo.token.common.TokenUtil;
 import com.junbo.token.common.exception.AppErrors;
+import com.junbo.token.db.mapper.ModelMapper;
 import com.junbo.token.db.repo.*;
 import com.junbo.token.spec.enums.ItemStatus;
 import com.junbo.token.spec.enums.ProductType;
@@ -119,6 +120,15 @@ public class TokenRepositoryFacade {
         if (item == null) {
             return null;
         }
+        TokenOrder order = tokenOrderRepository.get(item.getTokenRequest().getId()).get();
+        if(order == null){
+            throw AppErrors.INSTANCE.invalidToken().exception();
+        }
+        TokenSet set = tokenSetRepository.get(order.getTokenSetId()).get();
+        if(set == null){
+            throw AppErrors.INSTANCE.invalidToken().exception();
+        }
+        item.setTokenRequest(ModelMapper.getOrderRequest(set, order));
         item.setTokenConsumptions(getTokenConsumption(item.getId()));
         return item;
     }

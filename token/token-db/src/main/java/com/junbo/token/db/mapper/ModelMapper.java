@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.token.core.mapper;
+package com.junbo.token.db.mapper;
 
 import com.junbo.token.spec.internal.TokenOrder;
 import com.junbo.token.spec.internal.TokenSet;

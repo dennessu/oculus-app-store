@@ -28,8 +28,8 @@ import com.junbo.token.common.TokenUtil;
 import com.junbo.token.common.exception.AppErrors;
 import com.junbo.token.common.exception.AppServerExceptions;
 import com.junbo.token.core.TokenService;
-import com.junbo.token.core.mapper.ModelMapper;
-import com.junbo.token.core.mapper.OrderWrapper;
+import com.junbo.token.db.mapper.ModelMapper;
+import com.junbo.token.db.mapper.OrderWrapper;
 import com.junbo.token.db.repo.facade.TokenRepositoryFacade;
 import com.junbo.token.spec.enums.*;
 import com.junbo.token.spec.internal.TokenOrder;
@@ -113,9 +113,9 @@ public class TokenServiceImpl implements TokenService {
         if (item == null) {
             throw AppErrors.INSTANCE.invalidToken().exception();
         }
-        TokenOrder order = tokenRepository.getTokenOrder(item.getOrderId());
+        TokenOrder order = tokenRepository.getTokenOrder(item.getTokenRequest().getId());
         if (order == null) {
-            throw AppServerExceptions.INSTANCE.tokenOrderNotFound(item.getOrderId().toString()).exception();
+            throw AppServerExceptions.INSTANCE.tokenOrderNotFound(item.getTokenRequest().getId().toString()).exception();
         }
         TokenSet tokenSet = tokenRepository.getTokenSet(order.getTokenSetId());
         if (tokenSet == null) {
@@ -198,7 +198,9 @@ public class TokenServiceImpl implements TokenService {
                     );
             for(String item : TokenUtil.generateToken(genLen, request.getQuantity())){
                 TokenItem tokenItem = new TokenItem();
-                tokenItem.setOrderId(result.getId());
+                TokenRequest tokenRequest = new TokenRequest();
+                tokenRequest.setId(result.getId());
+                tokenItem.setTokenRequest(tokenRequest);
                 tokenItem.setStatus(CommonUtil.toBool(request.getActivation())
                         ? ItemStatus.ACTIVATED.toString() : ItemStatus.DEACTIVATED.toString());
                 tokenItem.setHashValue(TokenUtil.computeHash(item).getHashValue());
@@ -208,7 +210,9 @@ public class TokenServiceImpl implements TokenService {
         }else if(request.getCreateMethod().equalsIgnoreCase(CreateMethod.UPLOAD.toString())){
             for(TokenItem item : request.getTokenItems()){
                 TokenItem tokenItem = new TokenItem();
-                tokenItem.setOrderId(result.getId());
+                TokenRequest tokenRequest = new TokenRequest();
+                tokenRequest.setId(result.getId());
+                tokenItem.setTokenRequest(tokenRequest);
                 tokenItem.setStatus(CommonUtil.toBool(request.getActivation())
                         ? ItemStatus.ACTIVATED.toString() : ItemStatus.DEACTIVATED.toString());
                 String itemString = item.getEncryptedString();

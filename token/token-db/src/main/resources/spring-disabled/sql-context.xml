@@ -91,7 +91,7 @@
     </bean>
 
     <bean class="com.junbo.token.db.mapper.CommonMapper" />
-    <bean id="tokenMapper" class="com.junbo.token.db.mapper.TokenMapperImpl" />
+    <bean id="tokenMapper" class="com.junbo.token.db.mapper.TokenMapperExt" />
     <!-- sql repositories -->
     <bean id="sqlTokenConsumptionRepository" class="com.junbo.token.db.repo.sql.TokenConsumptionRepositorySqlImpl">
         <property name="tokenMapper" ref="tokenMapper"/>
