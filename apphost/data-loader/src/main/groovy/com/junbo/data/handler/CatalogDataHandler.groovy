@@ -5,7 +5,6 @@
  */
 package com.junbo.data.handler
 
-import com.junbo.catalog.common.cache.CacheFacade
 import com.junbo.catalog.spec.model.item.Item
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemsGetOptions
@@ -191,8 +190,6 @@ class CatalogDataHandler extends BaseDataHandler {
         try {
             ItemRevision itemRevisionCreated = itemRevisionResource.createItemRevision(itemRevision).get()
 
-            CacheFacade.ITEM_REVISION.evict(itemRevisionCreated.revisionId)
-
             logger.debug('put the item revision to APPROVED')
             itemRevisionCreated.setStatus("APPROVED")
             itemRevisionResource.updateItemRevision(itemRevisionCreated.revisionId, itemRevisionCreated).get()
@@ -217,8 +214,6 @@ class CatalogDataHandler extends BaseDataHandler {
         logger.debug('Create new offer revision with this content')
         try {
             OfferRevision offerRevisionCreated = offerRevisionResource.createOfferRevision(offerRevision).get()
-
-            CacheFacade.OFFER_REVISION.evict(offerRevisionCreated.revisionId)
 
             logger.debug('put the offer revision to APPROVED')
             offerRevisionCreated.setStatus("APPROVED")

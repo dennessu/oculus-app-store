@@ -7,6 +7,7 @@
 package com.junbo.catalog.common.cache;
 
 import com.junbo.catalog.common.util.Callable;
+import com.junbo.catalog.common.util.CloneUtils;
 import com.junbo.configuration.ConfigServiceManager;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
@@ -34,7 +35,7 @@ public enum CacheFacade implements Cache {
         if (!cacheEnabled)
             return;
 
-        internal.put(new Element(normalize(key), value));
+        internal.put(new Element(normalize(key), CloneUtils.clone(value)));
     }
 
     @Override
@@ -43,7 +44,7 @@ public enum CacheFacade implements Cache {
             return null;
 
         Element element = internal.get(normalize(key));
-        return element == null ? null : (V) element.getObjectValue();
+        return element == null ? null : CloneUtils.clone((V) element.getObjectValue());
     }
 
     @Override
@@ -57,9 +58,9 @@ public enum CacheFacade implements Cache {
         // reference: http://ehcache.org/documentation/recipes/cachenull
         if (element == null) {
             value = call.execute();
-            put(key, value);
+            put(key, CloneUtils.clone(value));
         } else {
-            value = (V)element.getObjectValue();
+            value = CloneUtils.clone((V)element.getObjectValue());
         }
 
         return value;

@@ -123,6 +123,9 @@ ext {
             //ecache lib
             ehcache: 'net.sf.ehcache:ehcache-core:2.6.6',
 
+            // kryo lib
+            kryo: 'com.esotericsoftware.kryo:kryo:2.24.0',
+
             //aspectj
             aspectjrt: 'org.aspectj:aspectjrt:1.7.4',
             aspectjweaver: 'org.aspectj:aspectjweaver:1.7.4',
