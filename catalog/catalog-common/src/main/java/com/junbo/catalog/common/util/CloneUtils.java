@@ -1,5 +1,10 @@
-package com.junbo.catalog.common.util;
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
+ */
 
+package com.junbo.catalog.common.util;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.serializers.CollectionSerializer;
@@ -8,6 +13,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+/**
+ * CloneUtils.
+ */
 public final class CloneUtils {
     private static ThreadLocal<Kryo> kryo = new ThreadLocal<Kryo>();
 
@@ -48,7 +56,10 @@ public final class CloneUtils {
         return localKryo;
     }
 
-    static public class ArraysAsListSerializer extends CollectionSerializer {
+    /**
+     * ArraysAsListSerializer.
+     */
+    public static class ArraysAsListSerializer extends CollectionSerializer {
         @Override
         public Collection copy(Kryo kryo, Collection original) {
             return super.copy(kryo, new ArrayList(original));
