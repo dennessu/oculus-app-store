@@ -1,4 +1,5 @@
 common-testlib
+crypto-integration
 billing-integration
 cart-integration
 catalog-integration
