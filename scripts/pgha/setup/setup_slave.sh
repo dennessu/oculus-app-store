@@ -20,6 +20,9 @@ createDir $SLAVE_ARCHIVE_PATH
 echo "[SETUP][SLAVE] create database archive folder $SLAVE_LOG_PATH"
 createDir $SLAVE_LOG_PATH
 
+echo "[SETUP][SLAVE] configure SLAVE role"
+echo "SLAVE" > $PGHA_BASE/role.conf
+
 echo "[SETUP][SLAVE] copy backup file from remote master"
 rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_BACKUP_PATH/* $SLAVE_DATA_PATH
 

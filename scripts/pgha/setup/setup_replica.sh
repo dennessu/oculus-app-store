@@ -17,6 +17,9 @@ createDir $REPLICA_ARCHIVE_PATH
 echo "[SETUP][REPLICA] create database archive folder $REPLICA_LOG_PATH"
 createDir $REPLICA_LOG_PATH
 
+echo "[SETUP][REPLCIA] configure REPLCIA role"
+echo "REPLCIA" > $PGHA_BASE/role.conf
+
 echo "[SETUP][REPLICA] copy backup file from remote master"
 rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_BACKUP_PATH/* $REPLICA_DATA_PATH
 

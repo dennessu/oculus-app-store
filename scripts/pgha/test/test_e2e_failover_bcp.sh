@@ -4,7 +4,7 @@ source ${DIR}/../util/common.sh
 
 #run this test E2E script on master server
 
-echo "do failover bcp"
+echo "do bcp failover"
 ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$BCP_HOST << ENDSSH
     $DEPLOYMENT_PATH/switchover/failover_bcp.sh
     $DEPLOYMENT_PATH/pgbouncer/pgbouncer_bcp.sh
@@ -14,7 +14,7 @@ ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
     $DEPLOYMENT_PATH/pgbouncer/pgbouncer_bcp.sh
 ENDSSH
 
-echo "test failover"
+echo "test bcp failover"
 $DEPLOYMENT_PATH/test/test_bcp2master.sh
 
-echo "e2e failover bcp finished!"
+echo "e2e bcp failover finished!"

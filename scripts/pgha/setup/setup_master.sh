@@ -23,6 +23,9 @@ createDir $MASTER_ARCHIVE_PATH
 echo "[SETUP][MASTER] create database log folder $MASTER_LOG_PATH"
 createDir $MASTER_LOG_PATH
 
+echo "[SETUP][MASTER] configure MASTER role"
+echo "MASTER" > $PGHA_BASE/role.conf
+
 echo "[SETUP][MASTER] initialize master database"
 $PGBIN_PATH/pg_ctl -D $MASTER_DATA_PATH initdb
 
@@ -76,3 +79,4 @@ $DEPLOYMENT_PATH/test/test_smoke_table.sh
 
 echo "[SETUP][MASTER] start primary pgbouncer proxy and connect to master server"
 $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
+
