@@ -7,8 +7,6 @@ package com.junbo.test.entitlement.impl;
 
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.HttpClientBase;
-import com.junbo.test.common.apihelper.oauth.OAuthService;
-import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.entitlement.EntitlementService;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.common.json.JsonMessageTranscoder;

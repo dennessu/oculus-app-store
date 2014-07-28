@@ -5,8 +5,8 @@
  */
 package com.junbo.test.entitlement;
 
-import com.junbo.common.model.Results;
 import com.junbo.entitlement.spec.model.Entitlement;
+import com.junbo.common.model.Results;
 
 /**
  * Created by jiefeng on 14-3-25.

@@ -39,6 +39,7 @@ import com.junbo.test.common.property.*;
 import com.junbo.test.drm.impl.DrmServiceImpl;
 import com.junbo.test.entitlement.EntitlementService;
 import com.junbo.test.entitlement.impl.EntitlementServiceImpl;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Date;
@@ -80,7 +81,7 @@ public class DrmTesting extends TestClass {
 
         DrmService drmService = DrmServiceImpl.instance();
         SignedLicense signedLicense = drmService.postLicense(request);
-
+        Assert.assertNotNull(signedLicense.getSignature());
     }
 
     private void prepareTestData() throws Exception {

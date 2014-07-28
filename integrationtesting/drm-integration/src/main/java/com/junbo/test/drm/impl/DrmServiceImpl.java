@@ -37,7 +37,7 @@ public class DrmServiceImpl extends HttpClientBase implements DrmService {
     }
 
     public SignedLicense postLicense(License request) throws Exception {
-        return postLicense(request, 201);
+        return postLicense(request, 200);
     }
 
     @Override
