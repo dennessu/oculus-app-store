@@ -80,7 +80,7 @@ public class PendingActionRepositoryCloudantImpl extends CloudantClient<PendingA
     }
 
     @Override
-    public Promise<List<PendingAction>> list(Integer dc, Integer shardId, int maxSize) {
-        return null;
+    Promise<List<PendingAction>> list(Integer dc, Integer shardId, Integer limit, Integer offset) {
+        return super.cloudantGetAll(limit, offset, false)
     }
 }

@@ -55,10 +55,7 @@ public class PendingActionReplayer {
                     return pendingActionRepository.delete(action.id)
                 }
                 return Promise.pure(null);
-            };
-        }.recover { Throwable ex ->
-            logger.error("Failed to replay: [${action.id}]", ex);
-            return Promise.pure(null);
+            }
         }
     }
 

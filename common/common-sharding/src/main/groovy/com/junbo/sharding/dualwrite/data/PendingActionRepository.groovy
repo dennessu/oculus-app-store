@@ -14,5 +14,6 @@ import groovy.transform.CompileStatic
 @CompileStatic
 public interface PendingActionRepository extends BaseRepository<PendingAction, Long> {
 
-    Promise<List<PendingAction>> list(Integer dc, Integer shardId, int maxSize);
+    Promise<List<PendingAction>> list(Integer dc, Integer shardId, Integer limit, Integer offset);
+
 }

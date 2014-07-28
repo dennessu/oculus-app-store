@@ -119,13 +119,24 @@ public class PendingActionRepositorySqlImpl implements PendingActionRepository {
     }
 
     @Override
-    public Promise<List<PendingAction>> list(Integer dc, Integer shardId, int maxSize) {
-        // TODO: respect DC, make shardId optional
-        Criteria criteria = currentSession(shardId).createCriteria(PendingActionEntity);
-        criteria.add(Restrictions.ne("deleted", Boolean.TRUE));
-        criteria.setMaxResults(maxSize);
+    public Promise<List<PendingAction>> list(Integer dc, Integer shardId, Integer limit, Integer offset) {
 
-        return Promise.pure(criteria.list());
+        Session session = ShardScope.with(dc, shardId) { sessionFactory.currentSession}
+
+        Criteria criteria = session.createCriteria(PendingActionEntity);
+        criteria.add(Restrictions.ne("deleted", Boolean.TRUE));
+        criteria.setFirstResult(offset)
+        criteria.setMaxResults(limit)
+
+        List entities = criteria.list()
+        List<PendingAction> result = new ArrayList<>()
+        entities.each { PendingActionEntity entity ->
+            if (entity != null) {
+                result.add(mapper.map(entity))
+            }
+        }
+
+        return Promise.pure(result)
     }
 
     private Session currentSession(Object key) {

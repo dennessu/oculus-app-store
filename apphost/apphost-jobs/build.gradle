@@ -17,4 +17,5 @@ dependencies {
     compile junboProject(':csr-rest')
     compile junboProject(':drm-rest')
     compile junboProject(':payment-jobs')
+    compile junboProject(':common-job')
 }
