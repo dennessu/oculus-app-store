@@ -51,11 +51,11 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
                 if (!AuthorizeContext.hasRights("create")) {
                     throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
-
                 return piService.add(request).then(new Promise.Func<PaymentInstrument, Promise<PaymentInstrument>>() {
                     @Override
                     public Promise<PaymentInstrument> apply(PaymentInstrument paymentInstrument) {
                         CommonUtil.postFilter(paymentInstrument);
+                        filterSensitiveData(paymentInstrument);
                         return Promise.pure(paymentInstrument);
                     }
                 });
@@ -77,7 +77,7 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
                         if (!AuthorizeContext.hasRights("read")) {
                             throw AppClientExceptions.INSTANCE.paymentInstrumentNotFound(paymentInstrumentId.toString()).exception();
                         }
-
+                        filterSensitiveData(paymentInstrument);
                         return Promise.pure(paymentInstrument);
                     }
                 });
@@ -124,6 +124,7 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
                 }
 
                 piService.update(request);
+                filterSensitiveData(request);
                 return Promise.pure(request);
             }
         });
@@ -156,6 +157,11 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
                                 Results<PaymentInstrument> result = new Results<PaymentInstrument>();
                                 result.setItems(paymentInstruments);
                                 //result.setNext(CommonUtils.buildNextUrl(uriInfo));
+                                if(paymentInstruments != null){
+                                    for(PaymentInstrument pi : paymentInstruments){
+                                        filterSensitiveData(pi);
+                                    }
+                                }
                                 return Promise.pure(result);
                             }
                         });
@@ -166,5 +172,18 @@ public class PaymentInstrumentResourceImpl implements PaymentInstrumentResource 
     @GET
     public String ping() {
         return "hello payment";
+    }
+
+    private void filterSensitiveData(PaymentInstrument paymentInstrument) {
+        if(!AuthorizeContext.hasRights("bin.read")){
+            if(paymentInstrument.getTypeSpecificDetails() != null){
+                paymentInstrument.getTypeSpecificDetails().setBin(null);
+            }
+        }
+        if(!AuthorizeContext.hasRights("expireDate.read")){
+            if(paymentInstrument.getTypeSpecificDetails() != null){
+                paymentInstrument.getTypeSpecificDetails().setExpireDate(null);
+            }
+        }
     }
 }

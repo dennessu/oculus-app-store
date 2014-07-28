@@ -40,6 +40,7 @@
                   payment_instrument_id             bigint              not null,
                   credit_card_type_id               smallint            not null,
                   expire_time                       varchar(16)         not null,
+                  bin                               varchar(16)             null,
                   last_billing_time                 date                not null,
 				  prepaid                           boolean                 null,
 				  debit                             boolean                 null,

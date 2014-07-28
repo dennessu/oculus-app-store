@@ -143,7 +143,8 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                                 }
                             }
                         }
-                        request.setAccountNum(cardBin + "****" +recurringDetail.getCard().getNumber());
+                        request.setAccountNum(recurringDetail.getCard().getNumber());
+                        request.getTypeSpecificDetails().setBin(cardBin);
                         request.getTypeSpecificDetails().setCreditCardType(
                                 PaymentUtil.getCreditCardType(recurringDetail.getVariant()).toString());
                         request.getTypeSpecificDetails().setExpireDate(recurringDetail.getCard().getExpiryYear()
@@ -179,7 +180,7 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
             result = new PaymentResult();
             result.setResultCode(CONFIRMED_STATUS);
             AnyType2AnyTypeMapEntry additionalData = new AnyType2AnyTypeMapEntry();
-            additionalData.setKey("cardBin");
+            additionalData.setKey(CARD_BIN);
             additionalData.setValue(resultMap.get("paymentResult.additionalData.cardBin"));
             result.setAdditionalData((AnyType2AnyTypeMapEntry[])Arrays.asList(additionalData).toArray());
         }else{

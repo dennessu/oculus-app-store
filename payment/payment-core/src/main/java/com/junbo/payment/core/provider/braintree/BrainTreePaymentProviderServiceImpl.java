@@ -137,8 +137,10 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
                             handleProviderException(ex, "Add", "User", request.getUserId().toString());
                         }
                         if (result.isSuccess()) {
-                            request.setAccountNum(result.getTarget().getMaskedNumber());
+                            request.setAccountNum(result.getTarget().getLast4());
                             request.setExternalToken(result.getTarget().getToken());
+                            request.getTypeSpecificDetails().setExpireDate(result.getTarget().getExpirationDate());
+                            request.getTypeSpecificDetails().setBin(result.getTarget().getBin());
                             request.getTypeSpecificDetails().setCreditCardType(
                                     PaymentUtil.getCreditCardType(result.getTarget().getCardType()).toString());
                             request.getTypeSpecificDetails().setCommercial(

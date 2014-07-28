@@ -23,30 +23,33 @@ public class TypeSpecificDetails {
     private Long id;
     @ApiModelProperty(position = 1, required = true, value = "The expire date of the PI.")
     private String expireDate;
-    @ApiModelProperty(position = 2, required = true, value = "POST-Request-Only, the CVM code for credit card")
+    @ApiModelProperty(position = 2, required = true, value = "the bin data of the PI.")
+    @FilterIn
+    private String bin;
+    @ApiModelProperty(position = 3, required = true, value = "POST-Request-Only, the CVM code for credit card")
     @FilterOut
     private String encryptedCvmCode;
     //response only
-    @ApiModelProperty(position = 3, required = true, value = "[Client Immutable] Last billing date for the PI.")
+    @ApiModelProperty(position = 4, required = true, value = "[Client Immutable] Last billing date for the PI.")
     @FilterIn
     private Date lastBillingDate;
-    @ApiModelProperty(position = 4, required = true,
+    @ApiModelProperty(position = 5, required = true,
             value = "[Client Immutable] The sub-type for the PI, like VISA, MASTER-CARD,JCB etc.")
     @FilterIn
     private String creditCardType;
-    @ApiModelProperty(position = 5, required = true,
+    @ApiModelProperty(position = 6, required = true,
             value = "[Client Immutable] Whether the PI is prepaid.")
     @FilterIn
     private Boolean prepaid;
-    @ApiModelProperty(position = 6, required = true,
+    @ApiModelProperty(position = 7, required = true,
             value = "[Client Immutable] Whether the PI is a debit card.")
     @FilterIn
     private Boolean debit;
-    @ApiModelProperty(position = 7, required = true,
+    @ApiModelProperty(position = 8, required = true,
             value = "[Client Immutable] Whether the PI is commercial card.")
     @FilterIn
     private Boolean commercial;
-    @ApiModelProperty(position = 8, required = true,
+    @ApiModelProperty(position = 9, required = true,
             value = "[Client Immutable] The country resource where the PI issued.")
     @FilterIn
     @CountryId
@@ -85,6 +88,14 @@ public class TypeSpecificDetails {
 
     public void setExpireDate(String expireDate) {
         this.expireDate = expireDate;
+    }
+
+    public String getBin() {
+        return bin;
+    }
+
+    public void setBin(String bin) {
+        this.bin = bin;
     }
 
     public String getEncryptedCvmCode() {

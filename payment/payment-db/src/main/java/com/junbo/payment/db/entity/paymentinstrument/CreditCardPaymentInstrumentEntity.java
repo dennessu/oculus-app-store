@@ -33,6 +33,9 @@ public class CreditCardPaymentInstrumentEntity extends GenericEntity {
     @Column(name = "expire_time")
     private String expireDate;
 
+    @Column(name = "bin", updatable = false)
+    private String bin;
+
     @Column(name = "last_billing_time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastBillingDate;
@@ -76,6 +79,14 @@ public class CreditCardPaymentInstrumentEntity extends GenericEntity {
 
     public void setExpireDate(String expireDate) {
         this.expireDate = expireDate;
+    }
+
+    public String getBin() {
+        return bin;
+    }
+
+    public void setBin(String bin) {
+        this.bin = bin;
     }
 
     public Date getLastBillingDate() {

@@ -8,12 +8,12 @@
         }],
         "payment.service": [{
             "precondition": "true",
-            "rights": ["read", "create", "update", "delete"],
+            "rights": ["read", "create", "update", "delete","bin.read","expireDate.read"],
             "scriptType": "SPEL"
         }],
         "csr": [{
             "precondition": "true",
-            "rights": ["read", "create", "update", "delete"],
+            "rights": ["read", "create", "update", "delete","bin.read","expireDate.read"],
             "scriptType": "SPEL"
         }]
     }
