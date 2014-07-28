@@ -21,6 +21,7 @@ public class TokenServiceImpl extends HttpClientBase implements TokenService {
 
     private static String tokenUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "tokens/";
 
+
     private static TokenService instance;
 
     public static synchronized TokenService getInstance() {
@@ -64,32 +65,64 @@ public class TokenServiceImpl extends HttpClientBase implements TokenService {
 
     @Override
     public TokenConsumption postTokenConsumption(TokenConsumption tokenConsumption) throws Exception {
-        return null;
+        return postTokenConsumption(tokenConsumption, 200);
     }
 
     @Override
     public TokenConsumption postTokenConsumption(TokenConsumption tokenConsumption, int expectedResponseCode)
             throws Exception {
-        return null;
+        String responseBody = restApiCall(HTTPMethod.POST, tokenUrl + "consumption", tokenConsumption, 200);
+
+        TokenConsumption tokenConsumptionResult = new JsonMessageTranscoder().decode(
+                new TypeReference<TokenConsumption>() {
+                }, responseBody);
+
+        if (expectedResponseCode == 200) {
+            return tokenConsumptionResult;
+        } else {
+            return null;
+        }
     }
 
     @Override
     public TokenItem updateTokenItem(TokenItem tokenItem) throws Exception {
-        return null;
+        return updateTokenItem(tokenItem, 200);
     }
 
     @Override
     public TokenItem updateTokenItem(TokenItem tokenItem, int expectedResponseCode) throws Exception {
-        return null;
+        String responseBody = restApiCall(HTTPMethod.PUT, tokenUrl + tokenItem.getId(),
+                tokenItem, expectedResponseCode);
+
+        TokenItem tokenItemResult = new JsonMessageTranscoder().decode(
+                new TypeReference<TokenItem>() {
+                }, responseBody);
+
+        if (expectedResponseCode == 200) {
+            return tokenItemResult;
+        } else {
+            return null;
+        }
     }
 
     @Override
     public TokenItem getTokenItem(String tokenItemId) throws Exception {
-        return null;
+        return getTokenItem(tokenItemId, 200);
     }
 
     @Override
     public TokenItem getTokenItem(String tokenItemId, int expectedResponseCode) throws Exception {
-        return null;
+        String responseBody = restApiCall(HTTPMethod.GET, tokenUrl + tokenItemId, expectedResponseCode);
+
+        TokenItem tokenItem = new JsonMessageTranscoder().decode(
+                new TypeReference<TokenItem>() {
+                }, responseBody);
+
+        if (expectedResponseCode == 200) {
+            return tokenItem;
+        } else {
+            return null;
+        }
+
     }
 }

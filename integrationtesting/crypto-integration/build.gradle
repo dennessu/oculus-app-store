@@ -25,6 +25,7 @@ test {
 dependencies {
     compile junboProject(':common-testlib')
     compile(libraries.asyncclient)
+    compile junboProject(':crypto-spec')
 
     testCompile(libraries.junit)
     testCompile(libraries.slf4j_api)

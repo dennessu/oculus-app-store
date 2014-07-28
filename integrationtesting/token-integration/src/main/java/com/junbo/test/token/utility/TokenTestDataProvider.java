@@ -5,12 +5,20 @@
  */
 package com.junbo.test.token.utility;
 
+import com.junbo.common.id.UserId;
 import com.junbo.test.catalog.OfferService;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
+import com.junbo.test.common.apihelper.identity.UserService;
+import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.test.common.libs.IdConverter;
+import com.junbo.test.crypto.apihelper.CryptoService;
+import com.junbo.test.crypto.apihelper.impl.CryptoServiceImpl;
 import com.junbo.test.token.apihelper.TokenService;
 import com.junbo.test.token.apihelper.impl.TokenServiceImpl;
 import com.junbo.token.spec.model.ProductDetail;
+import com.junbo.token.spec.model.TokenConsumption;
+import com.junbo.token.spec.model.TokenItem;
 import com.junbo.token.spec.model.TokenRequest;
 
 /**
@@ -18,7 +26,13 @@ import com.junbo.token.spec.model.TokenRequest;
  */
 public class TokenTestDataProvider extends BaseTestDataProvider {
     private TokenService tokenClient = TokenServiceImpl.getInstance();
-    protected OfferService offerClient = OfferServiceImpl.instance();
+    private OfferService offerClient = OfferServiceImpl.instance();
+    private CryptoService cryptoClient = CryptoServiceImpl.getInstance();
+    private UserService identityClient = UserServiceImpl.instance();
+
+    public String CreateUser() throws Exception {
+        return identityClient.PostUser();
+    }
 
     public TokenRequest PostTokenRquest(String offerName) throws Exception{
         TokenRequest tokenRequest = new TokenRequest();
@@ -37,6 +51,20 @@ public class TokenTestDataProvider extends BaseTestDataProvider {
 
     public TokenRequest GetTokenRequest(String tokenRequestId) throws Exception{
         return tokenClient.getTokenByTokenId(tokenRequestId);
+    }
+
+    public TokenConsumption postTokenConsumption(String uid, String offerName, String tokenStr) throws Exception{
+        TokenConsumption tokenConsumption = new TokenConsumption();
+        tokenConsumption.setTokenString(cryptoClient.decryptCryptoMessage(tokenStr));
+        tokenConsumption.setProduct(offerClient.getOfferIdByName(offerName));
+        tokenConsumption.setUserId(IdConverter.hexStringToId(UserId.class,uid));
+        return tokenClient.postTokenConsumption(tokenConsumption);
+
+    }
+
+    public TokenItem getTokenItem(String tokenString) throws Exception{
+        String tokenStr = cryptoClient.decryptCryptoMessage(tokenString);
+        return tokenClient.getTokenItem(tokenStr);
     }
 
 }

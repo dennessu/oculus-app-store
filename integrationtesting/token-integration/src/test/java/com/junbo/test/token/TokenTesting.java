@@ -58,4 +58,48 @@ public class TokenTesting extends BaseTokenTestClass {
         //TODO verify token response
     }
 
+
+    @Property(
+            priority = Priority.BVT,
+            features = "Post /tokens/consumption",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test post token consumption",
+            steps = {
+                    "1. Post token consumption",
+                    "2. Verify token response"
+            }
+    )
+    @Test
+    public void testPostTokenConsumption() throws Exception {
+        String uid = testDataProvider.CreateUser();
+        TokenRequest tokenRequestResult = testDataProvider.PostTokenRquest(offer_digital_normal1);
+        testDataProvider.postTokenConsumption(uid, offer_digital_normal1,
+                tokenRequestResult.getTokenItems().get(0).getEncryptedString());
+
+        //TODO verify token response
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "Get /tokens/{key}",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test get token item",
+            steps = {
+                    "1. Post token request",
+                    "2. Get token item by id",
+                    "3  Verify token item response",
+            }
+    )
+    @Test
+    public void testGetTokenItem() throws Exception {
+        TokenRequest tokenRequestResult = testDataProvider.PostTokenRquest(offer_digital_normal1);
+
+        testDataProvider.getTokenItem(tokenRequestResult.getTokenItems().get(0).getEncryptedString());
+
+        //TODO verify token response
+    }
 }

@@ -31,6 +31,7 @@ public enum ComponentType {
     ORDER("order"),
     CSR("csr"),
     DRM("drm"),
+    CRYPTO("crypto"),
     SUBSCRIPTION("subscription");
 
     private String name;

@@ -26,6 +26,7 @@ dependencies {
     compile junboProject(':common-testlib')
     compile junboProject(':token-spec')
     compile junboProject(':catalog-integration')
+    compile junboProject(':crypto-integration')
 
     compile(libraries.asyncclient)
 
