@@ -6,4 +6,4 @@ dependencies {
     compile junboProject(':docs-app')
 }
 
-defaultTasks 'clean', 'install', 'installApp', 'distZip'
+task('silkcloud', dependsOn: [ 'installApp', 'distZip' ])
