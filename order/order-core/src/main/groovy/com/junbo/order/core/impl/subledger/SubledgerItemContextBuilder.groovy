@@ -1,11 +1,9 @@
 package com.junbo.order.core.impl.subledger
-
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.id.OfferId
-import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.catalog.CatalogFacade
-import com.junbo.order.clientproxy.model.OrderOfferRevision
+import com.junbo.order.clientproxy.model.Offer
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.SubledgerItem
@@ -13,7 +11,6 @@ import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
-
 /**
  * Created by fzhang on 4/10/2014.
  */
@@ -27,10 +24,10 @@ class SubledgerItemContextBuilder {
     @Resource(name = 'cachedCatalogFacade')
     CatalogFacade catalogFacade
 
-    SubledgerItemContext buildContext(OrderOfferRevision offer, CountryId country, CurrencyId currency, Date createdTime) {
+    SubledgerItemContext buildContext(Offer offer, CountryId country, CurrencyId currency, Date createdTime) {
         return new SubledgerItemContext(
-            seller : offer.catalogOfferRevision.ownerId,
-            offer : new OfferId(offer.catalogOfferRevision.offerId),
+            seller : offer.owner.getId(),
+            offer : new OfferId(offer.id),
             currency : currency,
             country : country,
             createdTime : createdTime

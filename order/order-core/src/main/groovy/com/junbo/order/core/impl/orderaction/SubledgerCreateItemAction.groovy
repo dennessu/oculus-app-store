@@ -5,7 +5,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
-import com.junbo.order.clientproxy.model.OrderOfferRevision
+import com.junbo.order.clientproxy.model.Offer
 import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.core.impl.order.OrderServiceContext
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
@@ -91,14 +91,14 @@ class SubledgerCreateItemAction implements Action, InitializingBean {
         }
     }
 
-    private SubledgerItem buildSubledgerItem(Order order, OrderItem orderItem, OrderOfferRevision offer) {
+    private SubledgerItem buildSubledgerItem(Order order, OrderItem orderItem, Offer offer) {
         def subledgerItem = new SubledgerItem(
                 subledgerItemAction: SubledgerItemAction.PAYOUT.name(),
                 totalAmount: order.isTaxInclusive ? orderItem.totalAmount - orderItem.totalTax : orderItem.totalAmount,
                 totalPayoutAmount: orderItem.developerRevenue == null ? BigDecimal.ZERO : orderItem.developerRevenue,
                 totalQuantity: orderItem.quantity.longValue(),
                 orderItem: orderItem.getId(),
-                offer: new OfferId(offer.catalogOfferRevision.offerId)
+                offer: new OfferId(offer.id)
         )
         return subledgerItem
     }

@@ -1,7 +1,7 @@
 package com.junbo.order.clientproxy.catalog.impl
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.catalog.CatalogFacade
-import com.junbo.order.clientproxy.model.OrderOfferRevision
+import com.junbo.order.clientproxy.model.Offer
 import com.junbo.order.spec.error.AppErrors
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -35,7 +35,7 @@ class CachedCatalogFacadeImpl implements CatalogFacade {
     }
 
     @Override
-    Promise<OrderOfferRevision> getOfferRevision(String offerId) {
+    Promise<Offer> getOfferRevision(String offerId) {
 
         assert (offerId != null)
 
@@ -51,10 +51,9 @@ class CachedCatalogFacadeImpl implements CatalogFacade {
                 if (element == null) {
                     LOGGER.info('name=Offer_Missing_In_Cache. offerId: {}', offerId)
                 } else {
-                    def or = (OrderOfferRevision) element.objectValue
-                    LOGGER.info('name=Offer_Load_From_Cache. offerId: {}, revisionId: {}',
-                            offerId, or.catalogOfferRevision.revisionId)
-                    return Promise.pure(or)
+                    def offer = (Offer) element.objectValue
+                    LOGGER.info('name=Offer_Load_From_Cache. offerId: {}', offer.id)
+                    return Promise.pure(offer)
                 }
             }
         }
@@ -64,15 +63,14 @@ class CachedCatalogFacadeImpl implements CatalogFacade {
         return offerPromise.syncRecover { Throwable throwable ->
             LOGGER.error('name=Offer_Not_Found. offerId: {}', offerId, throwable)
             throw AppErrors.INSTANCE.offerNotFound(offerId.toString()).exception()
-        }.syncThen { OrderOfferRevision or ->
+        }.syncThen { Offer or ->
             if (or == null) {
                 LOGGER.error('name=Offer_Null. offerId: {}', offerId)
                 throw AppErrors.INSTANCE.offerNotFound(offerId.toString()).exception()
             }
             Element newElement = new Element(offerId.toString(), or)
             if (cache != null) {
-                LOGGER.info('name=Offer_Cached. offerId: {}, revisionId: {}',
-                        offerId, or.catalogOfferRevision.revisionId)
+                LOGGER.info('name=Offer_Cached. offerId: {}', offerId)
                 cache.put(newElement)
             }
             return or
@@ -80,7 +78,7 @@ class CachedCatalogFacadeImpl implements CatalogFacade {
     }
 
     @Override
-    Promise<OrderOfferRevision> getOfferRevision(String offerId, Date honoredTime) {
+    Promise<Offer> getOfferRevision(String offerId, Date honoredTime) {
         return catalogFacade.getOfferRevision(offerId, honoredTime)
     }
 }

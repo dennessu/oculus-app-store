@@ -10,13 +10,11 @@ import com.junbo.common.id.OfferId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.identity.spec.v1.model.Address
-import com.junbo.identity.spec.v1.model.Email
-import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
-import com.junbo.order.clientproxy.model.OrderOfferRevision
+import com.junbo.order.clientproxy.model.Offer
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.order.spec.model.PaymentInfo
@@ -185,7 +183,7 @@ class OrderServiceContextBuilder {
         }
     }
 
-    Promise<List<OrderOfferRevision>> getOffers(OrderServiceContext context) {
+    Promise<List<Offer>> getOffers(OrderServiceContext context) {
 
         assert (context != null && context.order != null)
 
@@ -197,21 +195,16 @@ class OrderServiceContextBuilder {
             return Promise.pure(context.offers)
         }
 
-        List<OrderOfferRevision> offers = []
+        List<Offer> offers = []
         return Promise.each(context.order.orderItems) { OrderItem oi ->
-            return facadeContainer.catalogFacade.getOfferRevision(oi.offer.value).then { OrderOfferRevision of ->
+            return facadeContainer.catalogFacade.getOfferRevision(oi.offer.value).then { Offer of ->
                 offers << of
-                Long organizationId = of.catalogOfferRevision.ownerId?.value
-                return facadeContainer.identityFacade.getOrganization(organizationId).recover { Throwable throwable ->
-                    LOGGER.info('name=Error_Get_Organization. organization id: ' + organizationId)
-                }.syncThen { Organization organization ->
-                    of.organization = organization
-                }
+                return Promise.pure(null)
             }
         }.syncThen {
-            def offerMap = new HashMap<OfferId, OrderOfferRevision>()
-            offers?.each { OrderOfferRevision offer ->
-                offerMap.put(new OfferId(offer.catalogOfferRevision.offerId), offer)
+            def offerMap = new HashMap<OfferId, Offer>()
+            offers?.each { Offer offer ->
+                offerMap.put(new OfferId(offer.id), offer)
             }
             context.offersMap = offerMap
             context.offers = offers
@@ -233,13 +226,13 @@ class OrderServiceContextBuilder {
         }
     }
 
-    Promise<OrderOfferRevision> getOffer(OfferId offerId, OrderServiceContext context) {
-        return getOffers(context).then { List<OrderOfferRevision> offers ->
+    Promise<Offer> getOffer(OfferId offerId, OrderServiceContext context) {
+        return getOffers(context).then { List<Offer> offers ->
             if (CollectionUtils.isEmpty(offers)) {
                 return Promise.pure(null)
             }
-            def offer = offers.find { OrderOfferRevision of ->
-                of.catalogOfferRevision.offerId == offerId.value
+            def offer = offers.find { Offer of ->
+                of.id == offerId.value
             }
             return Promise.pure(offer)
         }

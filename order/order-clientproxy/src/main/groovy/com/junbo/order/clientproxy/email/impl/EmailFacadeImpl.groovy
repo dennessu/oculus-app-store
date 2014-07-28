@@ -11,6 +11,7 @@ import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.common.FacadeBuilder
 import com.junbo.order.clientproxy.email.EmailFacade
+import com.junbo.order.clientproxy.model.Offer
 import com.junbo.order.spec.model.Order
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -37,7 +38,7 @@ class EmailFacadeImpl implements EmailFacade {
     private final static Logger LOGGER = LoggerFactory.getLogger(EmailFacadeImpl)
 
     @Override
-    Promise<Email> sendOrderConfirmationEMail(Order order, User user, List<OfferRevision> offers) {
+    Promise<Email> sendOrderConfirmationEMail(Order order, User user, List<Offer> offers) {
         if (order == null || user == null || CollectionUtils.isEmpty(offers)) {
             LOGGER.info('name=Email_Info_Not_Sufficient')
             return Promise.pure(null)

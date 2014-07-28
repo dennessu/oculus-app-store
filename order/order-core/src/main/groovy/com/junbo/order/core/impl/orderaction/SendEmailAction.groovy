@@ -1,5 +1,4 @@
 package com.junbo.order.core.impl.orderaction
-
 import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.common.id.PIType
 import com.junbo.email.spec.model.Email
@@ -9,7 +8,7 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.order.clientproxy.FacadeContainer
-import com.junbo.order.clientproxy.model.OrderOfferRevision
+import com.junbo.order.clientproxy.model.Offer
 import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.spec.model.Order
@@ -23,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 
 import javax.annotation.Resource
-
 /**
  * Action of Email Sending.
  */
@@ -48,10 +46,9 @@ class SendEmailAction implements Action {
         return orderServiceContextBuilder.getOffers(context.orderServiceContext).recover { Throwable ex ->
             LOGGER.error('name=SendEmail_Action_Fail_On_Fetch_Offer', ex)
             return Promise.pure(null)
-        }.then { List<OrderOfferRevision> ofs ->
+        }.then { List<Offer> ofs ->
             if (!CollectionUtils.isEmpty(ofs)) {
-                ofs.each { OrderOfferRevision offer -> catalogOffers.add(offer.catalogOfferRevision)
-                }
+                ofs.each { Offer offer -> catalogOffers.add(offer) }
             }
             return orderServiceContextBuilder.getUser(context.orderServiceContext).recover { Throwable ex ->
                 LOGGER.error('name=SendEmail_Action_Fail_On_Fetch_User', ex)
@@ -80,7 +77,7 @@ class SendEmailAction implements Action {
         }
     }
 
-    Promise<ActionResult> sendEmail(String emailType, Order order, User u, List<OfferRevision> catalogOffers) {
+    Promise<ActionResult> sendEmail(String emailType, Order order, User u, List<Offer> catalogOffers) {
         if (emailType == null) {
             return Promise.pure(null)
         }

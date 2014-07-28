@@ -12,8 +12,7 @@ import com.junbo.fulfilment.spec.constant.FulfilmentStatus
 import com.junbo.fulfilment.spec.model.FulfilmentAction
 import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
-import com.junbo.order.clientproxy.model.OrderOfferItem
-import com.junbo.order.clientproxy.model.OrderOfferRevision
+import com.junbo.order.clientproxy.model.Offer
 import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.*
 import com.junbo.order.spec.model.enums.*
@@ -29,31 +28,7 @@ import org.slf4j.LoggerFactory
 @TypeChecked
 class CoreUtils {
 
-    static final String OFFER_ITEM_TYPE_PHYSICAL = 'PHYSICAL'
-    static final String OFFER_ITEM_TYPE_STORED_VALUE = 'STORED_VALUE'
     private static final Logger LOGGER = LoggerFactory.getLogger(CoreUtils)
-
-
-    static ItemType getOfferType(OrderOfferRevision offer) {
-        // TODO support bundle type
-        Boolean hasPhysical = offer.orderOfferItems?.any { OrderOfferItem item ->
-            item.item.type == OFFER_ITEM_TYPE_PHYSICAL
-        }
-
-        if (hasPhysical) {
-            return ItemType.PHYSICAL
-        }
-
-        Boolean hasStoredValue = offer.orderOfferItems?.any { OrderOfferItem item ->
-            item.item.type == OFFER_ITEM_TYPE_STORED_VALUE
-        }
-
-        if (hasStoredValue) {
-            return ItemType.STORED_VALUE
-        }
-
-        return ItemType.DIGITAL
-    }
 
     static Boolean isFreeOrder(Order order) {
         return order.totalAmount == BigDecimal.ZERO
@@ -294,11 +269,11 @@ class CoreUtils {
         return newOrder
     }
 
-    static Boolean isPreorder(OrderOfferRevision offer, String country) {
-        if (offer.catalogOfferRevision.countries == null || offer.catalogOfferRevision.countries.get(country) == null) {
+    static Boolean isPreorder(Offer offer, String country) {
+        if (offer.countryReleaseDates == null || offer.countryReleaseDates.get(country) == null) {
             return false
         }
-        def releaseDate = offer.catalogOfferRevision.countries.get(country).releaseDate
+        def releaseDate = offer.countryReleaseDates.get(country)
         def now = new Date()
         return releaseDate != null && releaseDate.after(now)
     }

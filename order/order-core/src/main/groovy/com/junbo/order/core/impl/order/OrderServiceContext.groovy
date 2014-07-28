@@ -11,7 +11,7 @@ import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.identity.spec.v1.model.Address
 import com.junbo.identity.spec.v1.model.Currency
 import com.junbo.identity.spec.v1.model.User
-import com.junbo.order.clientproxy.model.OrderOfferRevision
+import com.junbo.order.clientproxy.model.Offer
 import com.junbo.order.spec.model.ApiContext
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderEvent
@@ -19,7 +19,6 @@ import com.junbo.order.spec.model.OrderItem
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
-import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 /**
  * Created by chriszhu on 2/21/14.
@@ -53,11 +52,11 @@ class OrderServiceContext {
     /**
      * Offers in order in map structure
      */
-    Map<OfferId, OrderOfferRevision> offersMap
+    Map<OfferId, Offer> offersMap
     /**
      * Offers in order in list structure with the same sequence of order items
      */
-    List<OrderOfferRevision> offers
+    List<Offer> offers
     OrderEvent orderEvent
 
     OrderServiceContext(Order o) {

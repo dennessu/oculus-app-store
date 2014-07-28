@@ -127,7 +127,7 @@ class RiskServiceImpl implements RiskService {
                     def offer = orderContext.offersMap[orderItem.offer]
                     String type = orderItem.type
                     String id = orderItem.offer
-                    String desc = offer.catalogOfferRevision.locales['DEFAULT']?.shortDescription
+                    String desc = offer.locales['DEFAULT']?.shortDescription
                     if (desc !=  null && desc.length() > 256) {
                         desc = desc.substring(0, 255)
                     }

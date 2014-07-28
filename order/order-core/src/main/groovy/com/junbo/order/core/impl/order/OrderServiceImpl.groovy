@@ -5,13 +5,13 @@
  */
 
 package com.junbo.order.core.impl.order
-import com.junbo.catalog.spec.model.offer.OfferRevision
+
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.executor.FlowExecutor
 import com.junbo.order.clientproxy.FacadeContainer
-import com.junbo.order.clientproxy.model.OrderOfferRevision
+import com.junbo.order.clientproxy.model.Offer
 import com.junbo.order.core.FlowSelector
 import com.junbo.order.core.OrderService
 import com.junbo.order.core.OrderServiceOperation
@@ -315,24 +315,24 @@ class OrderServiceImpl implements OrderService {
 
     private Promise<Void> prepareOrder(Order order, OrderServiceContext context) {
         return Promise.each(order.orderItems) { OrderItem item -> // get item type from catalog
-            return orderServiceContextBuilder.getOffer(item.offer, context).syncThen {
-                OrderOfferRevision offer ->
-                    if (offer == null) {
-                        throw AppErrors.INSTANCE.offerNotFound(item.offer.value?.toString()).exception()
-                    }
-                    item.type = CoreUtils.getOfferType(offer).name()
-                    item.isPreorder = CoreUtils.isPreorder(offer, order.country.value)
-                    updateOfferInfo(order, item, offer.catalogOfferRevision)
-                    item.offerOrganizationName = offer.organization?.name
+            return orderServiceContextBuilder.getOffer(item.offer, context).syncThen { Offer offer ->
+                if (offer == null) {
+                    throw AppErrors.INSTANCE.offerNotFound(item.offer.value?.toString()).exception()
+                }
+                item.type = offer.type.name()
+                item.isPreorder = CoreUtils.isPreorder(offer, order.country.value)
+                updateOfferInfo(order, item, offer)
+                item.offerOrganizationName = offer.owner?.name
             }
         }.syncThen {
             return null
         }
     }
 
-    private void updateOfferInfo(Order order, OrderItem item, OfferRevision offer) {
+    private void updateOfferInfo(Order order, OrderItem item, Offer offer) {
         String locale = order.locale.value?.replace('-', '_')
-        item.offerOrganization = offer.ownerId?.value
+        item.offerOrganization = offer.owner?.getId()?.value
+
         // add fallback logic here
         if (offer.locales == null) {
             order.paymentDescription = null
@@ -343,7 +343,7 @@ class OrderServiceImpl implements OrderService {
         String description = offer.locales[locale] != null ?
                 offer.locales[locale].shortDescription : offer.locales['DEFAULT']?.shortDescription
         String name = offer.locales[locale] != null ?
-                offer.locales[locale].shortDescription : offer.locales['DEFAULT']?.name
+                offer.locales[locale].name : offer.locales['DEFAULT']?.name
         item.offerName = name
         item.offerDescription = description
         if (order.paymentDescription == null || order.paymentDescription == '') {

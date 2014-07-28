@@ -1,11 +1,12 @@
 package com.junbo.order.clientproxy.common
-import com.junbo.catalog.spec.model.offer.OfferRevision
+
 import com.junbo.common.id.UserId
 import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.fulfilment.spec.model.FulfilmentItem
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.identity.spec.v1.model.User
+import com.junbo.order.clientproxy.model.Offer
 import com.junbo.order.spec.model.Discount
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
@@ -96,7 +97,7 @@ class FacadeBuilder {
         return request
     }
 
-    static Email buildOrderConfirmationEmail(Order order, User user, List<OfferRevision> offers, EmailTemplate template) {
+    static Email buildOrderConfirmationEmail(Order order, User user, List<Offer> offers, EmailTemplate template) {
         Email email = new Email()
         email.userId = (UserId)(user.id)
         email.templateId = template.getId()
@@ -114,13 +115,13 @@ class FacadeBuilder {
             properties.put(TAX, order.totalTax.toString())
         }
         properties.put(GRAND_TOTAL, grandTotal.toString())
-        offers.eachWithIndex { OfferRevision offer, int index ->
+        offers.eachWithIndex { Offer offer, int index ->
             // TODO update the l10n logic per catalog change
             String offerName = offer.locales[template.locale] != null ? offer.locales[template.locale].name :
                     (offer.locales['DEFAULT'] != null ? offer.locales['DEFAULT'].name : '')
             properties.put(OFFER_NAME + index, offerName)
             order.orderItems.each { OrderItem item ->
-                if (item.offer.value == offer.offerId) {
+                if (item.offer.value == offer.id) {
                     properties.put(QUANTITY + index, item.quantity.toString())
                     properties.put(PRICE + index, (item.quantity * item.unitPrice).toString())
                 }

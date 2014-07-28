@@ -26,6 +26,7 @@
         <property name="offerRevisionResource" ref="mockOfferRevisionResource"/>
         <property name="itemRevisionResource" ref="mockItemRevisionResource"/>
         <property name="itemResource" ref="mockCatalogItemResource"/>
+        <property name="identityFacade" ref="mockIdentityFacade"/>
     </bean>
 
     <bean id="mockCountryFacade" class="com.junbo.order.clientproxy.identity.impl.CountryFacadeImpl">
