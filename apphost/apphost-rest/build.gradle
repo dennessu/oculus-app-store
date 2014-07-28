@@ -20,6 +20,5 @@ dependencies {
     compile junboProject(':cart-rest')
     compile junboProject(':fulfilment-rest')
     compile junboProject(':order-rest')
-    compile junboProject(':store-rest')
     compile junboProject(':authorization-rest')
 }
