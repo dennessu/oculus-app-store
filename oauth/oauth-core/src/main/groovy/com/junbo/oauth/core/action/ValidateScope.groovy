@@ -11,7 +11,6 @@ import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
-import com.junbo.oauth.core.exception.AppErrors
 import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.util.StringUtils
@@ -39,7 +38,8 @@ class ValidateScope implements Action {
             }
 
             if (invalidScopes.length > 0) {
-                throw AppCommonErrors.INSTANCE.fieldInvalid('scope', StringUtils.arrayToCommaDelimitedString(invalidScopes)).exception()
+                throw AppCommonErrors.INSTANCE.fieldInvalid('scope',
+                        StringUtils.arrayToCommaDelimitedString(invalidScopes)).exception()
             }
 
             scopes.addAll(scopeTokens)

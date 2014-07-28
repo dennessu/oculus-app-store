@@ -1,0 +1,5 @@
+{
+    "name": "entitlement.service",
+    "description": "Scope for the service account to call the entitlement service.",
+    "tfaRequired": false
+}

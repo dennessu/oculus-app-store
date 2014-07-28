@@ -14,7 +14,7 @@ class UserTFAAttemptFilter extends ResourceFilterImpl<UserTFAAttempt> {
     @Override
     protected UserTFAAttempt filter(UserTFAAttempt userTeleAttempt, MappingContext context) {
         UserTFAAttempt result = selfMapper.filterUserTFAAttempt(userTeleAttempt, context)
-        if (userTeleAttempt.userId != null) {
+        if (userTeleAttempt.userId != null && result.id != null) {
             ((UserTFAAttemptId)(result.id)).resourcePathPlaceHolder.put('userId', userTeleAttempt.userId)
         }
         return result

@@ -9,7 +9,6 @@
     "crypto.service",
     "billing.service",
     "cart.service",
-    "crypto.service",
     "email.service",
     "entitlement.service",
     "ewallet.service",

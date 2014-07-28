@@ -1,0 +1,5 @@
+{
+    "name": "cart.service",
+    "description": "Scope for the service account to call the cart service.",
+    "tfaRequired": false
+}

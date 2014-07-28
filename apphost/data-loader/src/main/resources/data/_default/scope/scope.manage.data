@@ -1,0 +1,8 @@
+{
+    "name": "scope.manage",
+    "description": "Scope to manage the scope information.",
+    "tfaRequired": false,
+    "allowedUserGroups": [
+        "OculusVR.IdentityAdmin"
+    ]
+}

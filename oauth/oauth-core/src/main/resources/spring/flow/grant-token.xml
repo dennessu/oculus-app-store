@@ -25,6 +25,7 @@
         <wf:action-state id="passwordBranch">
             <wf:action ref="validateScope"/>
             <wf:action ref="authenticateUserToken"/>
+            <wf:action ref="validateScopeAfterLoginToken"/>
             <wf:action ref="grantTokenByPassword"/>
             <wf:transition on="grantRefreshToken" to="grantRefreshToken"/>
         </wf:action-state>
@@ -56,6 +57,14 @@
     <bean id="authenticateUserToken" class="com.junbo.oauth.core.action.AuthenticateUser">
         <property name="userService" ref="userService"/>
         <property name="rethrowException" value="true"/>
+    </bean>
+
+    <bean id="validateScopeAfterLoginToken" class="com.junbo.oauth.core.action.ValidateScopeAfterLogin">
+        <property name="groupResource" ref="oauth_groupResource"/>
+        <property name="organizationResource" ref="oauth_organizationResource"/>
+        <property name="scopeRepository" ref="scopeRepository"/>
+        <property name="userGroupMembershipResource" ref="oauth_userGroupResource"/>
+        <property name="isAuthorizeFlow" value="false"/>
     </bean>
 
 </beans>

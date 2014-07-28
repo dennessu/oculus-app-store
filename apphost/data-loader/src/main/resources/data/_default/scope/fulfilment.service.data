@@ -1,0 +1,5 @@
+{
+    "name": "fulfilment.service",
+    "description": "Scope for the service account to call the fulfilment service.",
+    "tfaRequired": false
+}

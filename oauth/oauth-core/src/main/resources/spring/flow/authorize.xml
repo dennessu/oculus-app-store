@@ -31,7 +31,7 @@
             <wf:transition on="loginRequired" to="REDIRECT_TO_LOGIN"/>
             <wf:transition on="loginRequiredError" to="LOGIN_REQUIRED"/>
             <wf:transition on="register" to="REDIRECT_TO_REGISTER" />
-            <wf:transition on="*" to="CHECK_CONSENT"/>
+            <wf:transition on="*" to="CHECK_SCOPE_AFTER_LOGIN"/>
         </wf:action-state>
 
         <wf:view-state id="REDIRECT_TO_LOGIN">
@@ -71,9 +71,35 @@
             <wf:action ref="checkChangePassword" />
             <wf:transition on="emailVerifyRequired" to="EMAIL_VERIFY_REQUIRED_VIEW" />
             <wf:transition on="changePasswordRequired"  to="CHANGE_CREDENTIAL_REQUIRED_VIEW" />
-            <wf:transition on="success" to="LOGIN_SUCCESS" />
+            <wf:transition on="success" to="CHECK_SCOPE_AFTER_LOGIN"/>
             <wf:transition on="*" to="LOGIN_REQUIRED" />
         </wf:action-state>
+        
+        <wf:action-state id="CHECK_SCOPE_AFTER_LOGIN">
+            <wf:action ref="validateScopeAfterLogin"/>
+            <wf:transition on="tfaRequired" to="REDIRECT_TO_TFA_REQUIRED_VIEW"/>
+            <wf:transition on="forbidden" to="ACCESS_DENIED"/>
+            <wf:transition on="success" to="LOGIN_SUCCESS"/>
+        </wf:action-state>
+
+        <wf:view-state id="REDIRECT_TO_TFA_REQUIRED_VIEW">
+            <wf:on-render>
+                <wf:action ref="redirectToTFARequired"/>
+            </wf:on-render>
+            <wf:transition on="*" to="TFA_REQUIRED_VIEW"/>
+        </wf:view-state>
+
+        <wf:view-state id="TFA_REQUIRED_VIEW">
+            <wf:on-render>
+                <wf:action ref="tfaRequiredView"/>
+            </wf:on-render>
+            <wf:transition on="sendSMS" to="TFA_REQUIRED_VIEW">
+                <wf:action ref="sendTFA"/>
+            </wf:transition>
+            <wf:transition on="verifySMS" to="LOGIN_SUCCESS">
+                <wf:action ref="verifyTFA"/>
+            </wf:transition>
+        </wf:view-state>
 
         <wf:view-state id="LOGIN_SUCCESS">
             <wf:on-render>
@@ -140,9 +166,16 @@
 
         <wf:action-state id="CHECK_CONSENT">
             <wf:action ref="validateConsent"/>
-            <wf:transition on="consentRequired" to="CONSENT_VIEW"/>
+            <wf:transition on="consentRequired" to="REDIRECT_TO_CONSENT"/>
             <wf:transition on="*" to="END"/>
         </wf:action-state>
+
+        <wf:view-state id="REDIRECT_TO_CONSENT">
+            <wf:on-render>
+                <wf:action ref="redirectToConsent"/>
+            </wf:on-render>
+            <wf:transition on="*" to="CONSENT_VIEW"/>
+        </wf:view-state>
 
         <wf:view-state id="CONSENT_VIEW">
             <wf:on-render>
@@ -191,9 +224,7 @@
             <wf:on-render>
                 <wf:action ref="emailVerifyRequiredView"/>
             </wf:on-render>
-            <wf:transition on="next" to="LOGIN_SUCCESS">
-                <wf:action ref="checkEmailVerified"/>
-            </wf:transition>
+            <wf:transition on="next" to="PRE_LOGIN_SUCCESS"/>
             <wf:transition on="resend" to="EMAIL_VERIFY_REQUIRED_VIEW">
                 <wf:action ref="sendAccountVerifyEmail"/>
             </wf:transition>
@@ -450,4 +481,27 @@
         <property name="tosResource" ref="oauth_tosResource"/>
         <property name="userTosAgreementResource" ref="oauth_userTosAgreementResource"/>
     </bean>
+
+    <bean id="redirectToTFARequired" class="com.junbo.oauth.core.view.RedirectToPage">
+        <property name="pageUrl" value="${oauth.core.portal.loginUri}"/>
+    </bean>
+
+    <bean id="validateScopeAfterLogin" class="com.junbo.oauth.core.action.ValidateScopeAfterLogin">
+        <property name="groupResource" ref="oauth_groupResource"/>
+        <property name="organizationResource" ref="oauth_organizationResource"/>
+        <property name="scopeRepository" ref="scopeRepository"/>
+        <property name="userGroupMembershipResource" ref="oauth_userGroupResource"/>
+        <property name="isAuthorizeFlow" value="true"/>
+    </bean>
+
+    <bean id="sendTFA" class="com.junbo.oauth.core.action.SendTFA">
+        <property name="userResource" ref="oauth_userResource"/>
+        <property name="userTFAResource" ref="oauth_userTFAResource"/>
+    </bean>
+
+    <bean id="verifyTFA" class="com.junbo.oauth.core.action.VerifyTFA">
+        <property name="userTFAAttemptResource" ref="oauth_userTFAAttemptResource"/>
+    </bean>
+
+    <bean id="tfaRequiredView" class="com.junbo.oauth.core.view.TFARequiredView"/>
 </beans>

@@ -71,6 +71,8 @@ class OAuthParameters {
     public static final String EXPIRATION_DATE = 'expiration_date'
     public static final String CVV = 'cvv'
 
+    public static final String TFA_CODE = 'tfa'
+
     public static final String COOKIE_LOGIN_STATE = 'ls'
     public static final String COOKIE_SESSION_STATE = 'ss'
     public static final String COOKIE_REMEMBER_ME = 'me'

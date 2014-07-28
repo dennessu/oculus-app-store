@@ -65,6 +65,36 @@
         <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
     </bean>
 
+    <bean id="oauth_groupResource"
+          class="com.junbo.identity.spec.v1.resource.proxy.GroupResourceClientProxy"
+          parent="groupResourceClientProxy">
+        <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
+    </bean>
+
+    <bean id="oauth_userGroupResource"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserGroupMembershipResourceClientProxy"
+          parent="userGroupMembershipResourceClientProxy">
+        <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
+    </bean>
+
+    <bean id="oauth_organizationResource"
+          class="com.junbo.identity.spec.v1.resource.proxy.OrganizationResourceClientProxy"
+          parent="organizationResourceClientProxy">
+        <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
+    </bean>
+
+    <bean id="oauth_userTFAResource"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserTFAResourceClientProxy"
+          parent="userTFAResourceClientProxy">
+        <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
+    </bean>
+
+    <bean id="oauth_userTFAAttemptResource"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserTFAAttemptResourceClientProxy"
+          parent="userTFAAttemptResourceClientProxy">
+        <property name="accessTokenProvider" ref="oauthAccessTokenProvider"/>
+    </bean>
+
     <bean id="oauth_paymentInstrumentResource"
           class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy"
           parent="paymentInstrumentProxy">

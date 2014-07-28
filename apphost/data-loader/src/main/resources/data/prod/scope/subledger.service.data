@@ -1,0 +1,5 @@
+{
+    "name": "subledger.service",
+    "description": "Scope for the service account to call the subledger service.",
+    "tfaRequired": false
+}

@@ -68,4 +68,14 @@
           parent="baseClientProxy" abstract="true">
         <property name="target" value="${clientproxy.identity.url}"/>
     </bean>
+
+    <bean id="userTFAResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.UserTFAResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
+
+    <bean id="userTFAAttemptResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.UserTFAAttemptResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.identity.url}"/>
+    </bean>
 </beans>

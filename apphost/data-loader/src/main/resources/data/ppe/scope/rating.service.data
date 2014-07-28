@@ -1,0 +1,5 @@
+{
+    "name": "rating.service",
+    "description": "Scope for the service account to call the rating service.",
+    "tfaRequired": false
+}

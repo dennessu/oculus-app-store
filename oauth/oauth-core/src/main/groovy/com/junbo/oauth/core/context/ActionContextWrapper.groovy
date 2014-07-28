@@ -6,6 +6,7 @@
 package com.junbo.oauth.core.context
 
 import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserTFA
 import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.oauth.common.Utils
 import com.junbo.oauth.spec.model.*
@@ -41,7 +42,7 @@ class ActionContextWrapper {
     public static final String CONSENT = 'consent'
     public static final String ERRORS = 'errors'
     public static final String USER = 'user'
-    public static final String USER_CREDENTIAL = 'user_credential'
+    public static final String USER_TFA = 'user_tfa'
     public static final String DOB = 'dob'
     public static final String GENDER = 'gender'
     public static final String FORGET_PASSWORD_EMAIL = 'forget_password_email'
@@ -382,5 +383,13 @@ class ActionContextWrapper {
 
     void setEmailVerifyLink(String emailVerifyLink) {
         actionContext.flowScope[EMAIL_VERIFY_LINK] = emailVerifyLink
+    }
+
+    UserTFA getUserTFA() {
+        return actionContext.flowScope[USER_TFA] as UserTFA
+    }
+
+    void setUserTFA(UserTFA tfa) {
+        actionContext.flowScope[USER_TFA] = tfa
     }
 }

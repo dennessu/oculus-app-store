@@ -1,0 +1,5 @@
+{
+    "name": "billing.service",
+    "description": "Scope for the service account to call the billing service.",
+    "tfaRequired": false
+}
