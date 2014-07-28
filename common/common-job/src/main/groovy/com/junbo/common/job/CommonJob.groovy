@@ -8,6 +8,7 @@ import com.junbo.sharding.dualwrite.data.PendingAction
 import com.junbo.sharding.dualwrite.data.PendingActionRepository
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
+import org.quartz.DisallowConcurrentExecution
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.InitializingBean
@@ -26,6 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger
  * Created by liangfu on 7/2/14.
  */
 @CompileStatic
+@DisallowConcurrentExecution
 class CommonJob implements InitializingBean {
     private static final Logger LOGGER = LoggerFactory.getLogger(CommonJob)
 
