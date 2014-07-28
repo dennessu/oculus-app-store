@@ -109,7 +109,7 @@ class SabrixFacadeImpl implements TaxFacade {
         productCodeMap.put(ItemType.CONSUMABLE_UNLOCK.name(), ProductCode.DIGITAL_CONTENT.code)
         productCodeMap.put(ItemType.PERMANENT_UNLOCK.name(), ProductCode.DIGITAL_CONTENT.code)
         productCodeMap.put(ItemType.PHYSICAL.name(), ProductCode.PHYSICAL_GOODS.code)
-        productCodeMap.put(ItemType.STORED_VALUE.name(), ProductCode.STORE_BALANCE.code)
+        productCodeMap.put(ItemType.STORED_VALUE.name(), ProductCode.GIFT_CARD.code)
 
         PRODUCT_CODE_MAP = Collections.unmodifiableMap(productCodeMap)
 
