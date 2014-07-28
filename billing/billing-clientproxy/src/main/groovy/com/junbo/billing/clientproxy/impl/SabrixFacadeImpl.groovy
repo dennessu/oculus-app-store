@@ -383,7 +383,7 @@ class SabrixFacadeImpl implements TaxFacade {
     String getUniqueInvoiceNumber(Balance balance) {
         String uniqueInvoiceNumber = balance.orderIds[0]?.value.toString()
         if (balance.id != null) {
-            uniqueInvoiceNumber += balance.getId().value.toString()
+            uniqueInvoiceNumber += '_' + balance.getId().value.toString()
         }
         if (BalanceType.REFUND.name() == balance.type) {
             return REFUND_PREFIX + '_' + uniqueInvoiceNumber

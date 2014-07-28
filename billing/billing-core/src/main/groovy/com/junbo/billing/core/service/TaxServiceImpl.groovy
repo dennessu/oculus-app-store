@@ -109,7 +109,7 @@ class TaxServiceImpl implements TaxService {
             balance.propertySet.put(PropertyKey.PAYMENT_METHOD.name(), PIType.get(pi.type).name())
             balance.propertySet.put(PropertyKey.BILLING_ADDRESS.name(), pi.billingAddressId.toString())
             if (PIType.get(pi.type) == PIType.CREDITCARD) {
-                balance.propertySet.put(PropertyKey.BIN_NUMBER.name(), pi.accountNum?.substring(0, 5))
+                balance.propertySet.put(PropertyKey.BIN_NUMBER.name(), pi.accountNum?.substring(0, 6))
             }
             UserId userId = balance.userId
             if (userId == null || userId.value == null) {

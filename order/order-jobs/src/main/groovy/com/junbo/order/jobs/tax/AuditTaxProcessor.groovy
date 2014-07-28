@@ -22,7 +22,7 @@ class AuditTaxProcessor implements OrderProcessor {
 
     @Override
     OrderProcessResult process(Order order) {
-        assert order.status == OrderStatus.COMPLETED.name()
+        assert order.status == OrderStatus.COMPLETED.name() || order.status == OrderStatus.REFUNDED.name()
         if (order.isAudited) {
             return new OrderProcessResult(success: true)
         }

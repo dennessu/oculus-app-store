@@ -192,6 +192,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                         assert(isRefundable != isCancelable)
                         if(isRefundable) {
                             refundedOrder.status = OrderStatus.REFUNDED.name()
+                            refundedOrder.isAudited = false
                             orderRepository.updateOrder(refundedOrder, false, true, OrderItemRevisionType.REFUND)
                             context.refundedOrderItems = diffOrder.orderItems // todo : need to whether it is the right way to set refundedOrderItems
                             persistBillingHistory(refunded, BillingAction.REQUEST_REFUND, order)
@@ -365,8 +366,17 @@ class OrderInternalServiceImpl implements OrderInternalService {
                         TaxStatus.TAXED.name() == balance.taxStatus
             }
             if (CollectionUtils.isEmpty(balancesToBeAudited)) {
-                LOGGER.error('name=No_Balance_Can_Be_Audit.')
+                LOGGER.error('name=No_Balance_Can_Be_Audit, orderId = {}', order.getId().value)
                 throw AppErrors.INSTANCE.billingAuditFailed('no balance can be audited.').exception()
+            }
+            if (order.status == OrderStatus.REFUNDED.name()) {
+                def hasRefundedBalance = balancesToBeAudited.any { Balance b ->
+                    b.type == BalanceType.REFUND.name()
+                }
+                if (!hasRefundedBalance) {
+                    LOGGER.error('name=No_Refund_Balance_Can_Be_Audit, orderId={}', order.getId().value)
+                    throw AppErrors.INSTANCE.billingAuditFailed('no refund balance can be audited.').exception()
+                }
             }
             def auditedBalances = []
             return Promise.each(balancesToBeAudited) { Balance balanceToBeAudited ->

@@ -201,6 +201,7 @@ class CoreBuilder {
         balanceItem.propertySet.put(PropertyKey.ITEM_TYPE.name(), item.type)
         balanceItem.propertySet.put(PropertyKey.ITEM_QUANTITY.name(), item.quantity.toString())
         balanceItem.propertySet.put(PropertyKey.OFFER_ID.name(), item.offer.value)
+        balanceItem.propertySet.put(PropertyKey.ORDER_ITEM_ID.name(), item.getId().value.toString())
         balanceItem.propertySet.put(PropertyKey.ITEM_NAME.name(), item.offerName)
         balanceItem.propertySet.put(PropertyKey.ITEM_DESCRIPTION.name(), item.offerDescription)
         balanceItem.propertySet.put(PropertyKey.ORGANIZATION_ID.name(), item.offerOrganization)
