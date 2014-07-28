@@ -17,6 +17,7 @@ import com.junbo.common.id.OfferId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.model.Results;
 import com.junbo.entitlement.spec.model.Entitlement;
+import com.junbo.identity.spec.v1.model.Address;
 import com.junbo.order.spec.model.OrderItem;
 import com.junbo.order.spec.model.PaymentInfo;
 import com.junbo.test.billing.utility.BillingTestDataProvider;
@@ -90,6 +91,10 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         }
 
         return identityClient.PostUser(userName, emailAddress);
+    }
+
+    public String createUser(String vatId, Address address) throws Exception {
+        return identityClient.PostUser(vatId, address);
     }
 
     public String getUserByUid(String userId) throws Exception {

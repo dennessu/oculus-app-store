@@ -1,6 +1,10 @@
 package com.junbo.test.buyerscenario;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.junbo.common.enumid.CountryId;
+import com.junbo.common.model.Results;
+import com.junbo.entitlement.spec.model.Entitlement;
+import com.junbo.identity.spec.v1.model.Address;
 import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderEvent;
 import com.junbo.payment.spec.model.PaymentCallbackParams;
@@ -8,6 +12,7 @@ import com.junbo.test.buyerscenario.util.BaseTestClass;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.Entities.paymentInstruments.AdyenInfo;
+import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.apihelper.order.OrderEventService;
 import com.junbo.test.common.apihelper.order.impl.OrderEventServiceImpl;
 import com.junbo.test.common.blueprint.Master;
@@ -30,7 +35,7 @@ import java.util.Map;
  */
 public class UAT extends BaseTestClass {
     @Property(
-            priority = Priority.BVT,
+            priority = Priority.Dailies,
             features = "BuyerScenarios",
             component = Component.Order,
             owner = "ZhaoYunlong",
@@ -41,7 +46,7 @@ public class UAT extends BaseTestClass {
             }
     )
     @Test
-    public void testDigitalGoodCheckoutByCreditCard() throws Exception {
+    public void testUATByAdyen() throws Exception {
         String vatId = "AU132456";
         String uid = testDataProvider.createUser();
 
@@ -94,6 +99,45 @@ public class UAT extends BaseTestClass {
 
     }
 
+    @Property(
+            priority = Priority.Dailies,
+            features = "BuyerScenarios",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test digital good checkout",
+            steps = {
+                    "1. UAT Scenarios",
+            }
+    )
+    @Test
+    public void testUATByCreditCard() throws Exception {
+
+        Address address = new Address();
+        UserAddress userAddress = addressCA1;
+        address.setStreet1(userAddress.Street1);
+        address.setCity(userAddress.City);
+        address.setCountryId(new CountryId(Country.DEFAULT.toString()));
+        address.setSubCountry(userAddress.SubCountry);
+        address.setPostalCode(userAddress.PostalCode);
+
+
+        String uid = testDataProvider.createUser(null, address);
+
+        Map<String, Integer> offerList = new HashedMap();
+
+        offerList.put(offer_digital_uat, 1);
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
+
+        String orderId = testDataProvider.postOrder(uid,
+                Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
+
+        orderId = testDataProvider.updateOrderTentative(orderId, false);
+
+    }
+
     private void emulateAdyenCheckout(Order order) throws Exception {
         //Long paymentTransactionId = getTransactionId(order.getUser().getValue());
         String successRedirectUrl = "";
@@ -139,5 +183,36 @@ public class UAT extends BaseTestClass {
 
         orderEventService.postOrderEvent(orderEvent);
     }
+
+    class UserAddress {
+        String Street1;
+        String City;
+        String SubCountry;
+        String PostalCode;
+        String PhoneNum;
+        String CountryId;
+
+        public UserAddress(String street1, String city, String subCountry, String postalCode,
+                           String phoneNum, String countryId) {
+            Street1 = street1;
+            City = city;
+            SubCountry = subCountry;
+            PostalCode = postalCode;
+            PhoneNum = phoneNum;
+            CountryId = countryId;
+        }
+    }
+
+    UserAddress addressCA1 = new UserAddress("150 S 1st St #135", "San Jose", "CA", "95113", "408-293-9945", "US");
+    UserAddress addressTX = new UserAddress("910 Louisiana Street #135", "Houston", "TX",
+            "77002", "713-224-5800", "US");
+    UserAddress addressNC = new UserAddress("500 Fayetteville Street", "Raleigh", "NC", "27601", "919-334-9894", "US");
+    UserAddress addressMD = new UserAddress("16 Church Circle", "Annapolis", "MD", "21401", "410-263-2641", "US");
+    UserAddress addressMN = new UserAddress("Country Road B West", "Roseville", "MN", "55113", "651-482-0198", "US");
+    UserAddress addressCA2 = new UserAddress("643-693 Santa Cruz Avenus", "Menlo Park", "CA",
+            "94027", "650-323-5118", "US");
+    UserAddress addressWA = new UserAddress("550 Capital Way South, Space C", "Olympia", "WA",
+            "98501", "360-753-7771", "US");
+    UserAddress addressNV = new UserAddress("400 West 5th Street #101", "Reno", "NV", "89503", "775-348-7800", "US");
 
 }
