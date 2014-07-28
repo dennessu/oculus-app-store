@@ -113,6 +113,7 @@ class CatalogDataHandler extends BaseDataHandler {
             itemRevision.itemId = itemId
             handle(itemRevision)
         } else {
+            itemId = itemExisting.itemId
             logger.info("----The item $itemRevisionName and its revision have been loaded, skip")
         }
 

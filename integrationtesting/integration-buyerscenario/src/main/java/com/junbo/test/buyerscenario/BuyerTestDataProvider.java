@@ -40,6 +40,7 @@ import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.entitlement.EntitlementService;
+import com.junbo.test.entitlement.impl.EntitlementServiceImpl;
 import com.junbo.test.fulfilment.utility.FulfilmentTestDataProvider;
 import com.junbo.test.order.utility.OrderTestDataProvider;
 import com.junbo.test.payment.apihelper.PaymentService;
@@ -265,7 +266,8 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
     }
 
     public Results<Entitlement> getEntitlementByUserId(String uid) throws Exception {
-        return EntitlementService.getEntitlements(uid);
+        EntitlementService entitlementService = EntitlementServiceImpl.instance();
+        return entitlementService.getEntitlements(uid);
     }
 
     public String getFulfilmentsByOrderId(String orderId) throws Exception {

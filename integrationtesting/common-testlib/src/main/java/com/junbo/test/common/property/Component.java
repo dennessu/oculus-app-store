@@ -15,6 +15,7 @@ public enum Component {
     Billing,
     Cart,
     Catalog,
+    Drm,
     Email,
     Entitlement,
     Fulfilment,

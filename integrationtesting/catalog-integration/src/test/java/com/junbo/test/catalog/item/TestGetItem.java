@@ -16,7 +16,6 @@ import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.catalog.ItemService;
 import com.junbo.test.common.property.*;
-import com.junbo.common.model.Results;
 import com.junbo.common.id.ItemId;
 
 import org.testng.annotations.BeforeClass;

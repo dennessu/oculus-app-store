@@ -5,53 +5,65 @@
  */
 package com.junbo.test.entitlement;
 
-import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.common.id.EntitlementId;
-import com.junbo.common.id.OfferRevisionId;
-import com.junbo.common.model.Results;
-import com.junbo.entitlement.spec.model.Entitlement;
-import com.junbo.identity.spec.v1.model.User;
-import com.junbo.test.catalog.ItemRevisionService;
-import com.junbo.test.catalog.ItemService;
-import com.junbo.test.catalog.OfferService;
-import com.junbo.test.catalog.enums.CatalogEntityStatus;
-import com.junbo.test.catalog.enums.EntitlementType;
+import com.junbo.test.common.Entities.enums.ComponentType;
+import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
+import com.junbo.test.entitlement.impl.EntitlementServiceImpl;
+import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
-import com.junbo.test.catalog.impl.ItemServiceImpl;
+import com.junbo.test.catalog.enums.CatalogEntityStatus;
+import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.entitlement.spec.model.Entitlement;
+import com.junbo.test.catalog.enums.EntitlementType;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
-import com.junbo.test.common.HttpclientHelper;
+import com.junbo.test.catalog.impl.ItemServiceImpl;
+import com.junbo.test.catalog.ItemRevisionService;
 import com.junbo.test.common.Utility.TestClass;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
+import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.identity.spec.v1.model.User;
 import com.junbo.test.common.libs.LogHelper;
-import com.junbo.test.common.property.Component;
-import com.junbo.test.common.property.Priority;
-import com.junbo.test.common.property.Property;
-import com.junbo.test.common.property.Status;
-import com.junbo.test.identity.Identity;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import com.junbo.common.id.OfferRevisionId;
+import com.junbo.test.catalog.OfferService;
+import com.junbo.test.catalog.ItemService;
+import com.junbo.common.id.EntitlementId;
+import com.junbo.test.common.property.*;
+import com.junbo.common.model.Results;
 
+import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 import static org.testng.AssertJUnit.*;
 
 /**
- * Created by jiefeng on 14-4-1.
+ * @author jifeng
+ * Time: 4/1/2014
+ * For testing entitlement API
  */
 public class EntitlementTesting extends TestClass {
-    @BeforeMethod
-    public void setup() {
-        HttpclientHelper.CreateHttpClient();
-    }
-
-    @AfterMethod
-    public void dispose() throws Exception {
-        HttpclientHelper.CloseHttpClient();
-    }
 
     private LogHelper logger = new LogHelper(EntitlementTesting.class);
     private String developerItemId = "-1";
+    String defaultUserId;
+    String developerUserId;
+    User defaultUser;
+    User developerUser;
+
+    @BeforeClass
+    private void PrepareTestData() throws Exception {
+        UserService userService = UserServiceImpl.instance();
+        defaultUserId = userService.PostUser();
+        developerUserId = userService.PostUser();
+
+        defaultUser = Master.getInstance().getUser(defaultUserId);
+        developerUser = Master.getInstance().getUser(developerUserId);
+
+        OAuthService oAuthService = OAuthServiceImpl.getInstance();
+        oAuthService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.ENTITLEMENT);
+    }
 
     @Property(
             priority = Priority.Dailies,
@@ -69,10 +81,8 @@ public class EntitlementTesting extends TestClass {
     )
     @Test
     public void testPostEntitlement() throws Exception {
-        User us = Identity.UserPostDefault();
-        User dp = this.createDeveloper();
         logger.LogSample("post a DOWNLOAD type entitlement");
-        Entitlement etCreated = this.CreateEntitlement(us, dp, EntitlementType.DOWNLOAD.getType());
+        Entitlement etCreated = this.CreateEntitlement(defaultUser, EntitlementType.DOWNLOAD.getType());
         assertNotNull("return entitlement should not be null", etCreated);
         assertTrue(etCreated.getIsActive());
     }
@@ -94,12 +104,11 @@ public class EntitlementTesting extends TestClass {
     )
     @Test
     public void testGetEntitlementById() throws Exception {
-        User us = Identity.UserPostDefault();
-        User dp = this.createDeveloper();
-        Entitlement etCreated = this.CreateEntitlement(us, dp, EntitlementType.DOWNLOAD.getType());
+        Entitlement etCreated = this.CreateEntitlement(defaultUser, EntitlementType.DOWNLOAD.getType());
         logger.LogSample("get entitlement by entitlementId");
-        //Entitlement etGet = EntitlementService.getEntitlement(IdConverter.idToHexString(new EntitlementId(etCreated.getEntitlementId())));
-        Entitlement etGet = EntitlementService.getEntitlement(IdConverter.idToHexString(new EntitlementId(etCreated.getId())));
+        EntitlementService entitlementService = EntitlementServiceImpl.instance();
+        Master.getInstance().setCurrentUid(defaultUserId);
+        Entitlement etGet = entitlementService.getEntitlement(IdConverter.idToHexString(new EntitlementId(etCreated.getId())));
         assertEquals("validate userId in entitlement is correct",
                 etCreated.getUserId(), etGet.getUserId());
         // assertEquals("validate userId in entitlement definition is correct",
@@ -121,15 +130,15 @@ public class EntitlementTesting extends TestClass {
     )
     @Test
     public void testUpdateEntitlementStatus() throws Exception {
-        User us = Identity.UserPostDefault();
-        User dp = this.createDeveloper();
-        Entitlement etCreated = this.CreateEntitlement(us, dp, EntitlementType.DOWNLOAD.getType());
+        Entitlement etCreated = this.CreateEntitlement(defaultUser, EntitlementType.DOWNLOAD.getType());
         String entitlementId = IdConverter.idToHexString(new EntitlementId(etCreated.getId()));
-        Entitlement etGet = EntitlementService.getEntitlement(entitlementId);
+        EntitlementService entitlementService = EntitlementServiceImpl.instance();
+        Master.getInstance().setCurrentUid(defaultUserId);
+        Entitlement etGet = entitlementService.getEntitlement(entitlementId);
         assertTrue(!etGet.getIsBanned());
         etGet.setIsBanned(true);
         logger.LogSample("update Entitlement's banned status from false to true");
-        Entitlement etupdated = EntitlementService.updateEntitlement(entitlementId, etGet);
+        Entitlement etupdated = entitlementService.updateEntitlement(entitlementId, etGet);
         assertTrue(etupdated.getIsBanned());
     }
 
@@ -148,19 +157,23 @@ public class EntitlementTesting extends TestClass {
     )
     @Test
     public void testDeleteEntitlement() throws Exception {
-        User us = Identity.UserPostDefault();
-        User dp = this.createDeveloper();
-        Entitlement etCreated = this.CreateEntitlement(us, dp, EntitlementType.DOWNLOAD.getType());
+        Entitlement etCreated = this.CreateEntitlement(defaultUser, EntitlementType.DOWNLOAD.getType());
         String entitlementId = IdConverter.idToHexString(new EntitlementId(etCreated.getId()));
         logger.LogSample("delete an entitlement");
-        EntitlementService.deleteEntitlement(entitlementId);
+        EntitlementService entitlementService = EntitlementServiceImpl.instance();
+        entitlementService.deleteEntitlement(entitlementId);
         //verify entitlement not found returned after deletion
         logger.LogSample("get an non-existing entitlement");
-        Entitlement etGet = EntitlementService.getEntitlement(entitlementId, 404);
-        assertNull(etGet);
+        try {
+            Entitlement etGet = entitlementService.getEntitlement(entitlementId, 404);
+            Assert.fail("Shouldn't get items with wrong id");
+        } catch (Exception ex) {
+            logger.logInfo("Expected exception - could not find the deleted entitlement");
+        }
+
         //delete again, ENTITLEMENT_NOT_FOUND should be returned
-        logger.LogSample("delete an non-existing entitlement");
-        EntitlementService.deleteEntitlement(entitlementId, 404);
+        logger.LogSample("delete a non-existing entitlement");
+        entitlementService.deleteEntitlement(entitlementId, 404);
     }
 
     @Property(
@@ -178,45 +191,52 @@ public class EntitlementTesting extends TestClass {
     )
     @Test
     public void testGetEntitlementByUserId() throws Exception {
-        User us = Identity.UserPostDefault();
-        User dp1 = this.createDeveloper();
-        User dp2 = this.createDeveloper();
-        this.CreateEntitlement(us, dp1, EntitlementType.DOWNLOAD.getType());
-        this.CreateEntitlement(us, dp2, EntitlementType.DOWNLOAD.getType());
-        String userId = IdConverter.idToHexString(us.getId());
+        UserService userService = UserServiceImpl.instance();
+        String developerId2 = userService.PostUser();
+        User developer2 = Master.getInstance().getUser(developerId2);
+
+        this.createDeveloperEntitlement(developerUser);
+        this.createDeveloperEntitlement(developer2);
+
+        this.CreateEntitlement(defaultUser, EntitlementType.DOWNLOAD.getType());
+        this.CreateEntitlement(defaultUser, EntitlementType.DOWNLOAD.getType());
+        String userId = IdConverter.idToHexString(defaultUser.getId());
         logger.LogSample("Get entitlement by userId");
-        Results<Entitlement> etGets = EntitlementService.getEntitlements(userId);
-        assertEquals("Two entitlements should be returned", 2, etGets.getItems().size());
+        EntitlementService entitlementService = EntitlementServiceImpl.instance();
+        Master.getInstance().setCurrentUid(developerId2);
+        Results<Entitlement> etGets = entitlementService.getEntitlements(developerId2);
+        assertEquals("One entitlement should be returned", 1, etGets.getItems().size());
     }
 
     //help function
-    private User createDeveloper() throws Exception {
-        User developerUser = Identity.UserPostDefault(); // create an developer
+    private void createDeveloperEntitlement(User user) throws Exception {
         Entitlement developerEntitlement = new Entitlement();
-        developerEntitlement.setUserId(developerUser.getId().getValue());
+        developerEntitlement.setUserId(user.getId().getValue());
         if (this.developerItemId.equals("-1")) {
             postDeveloperItem();
         }
         developerEntitlement.setItemId(developerItemId);
         developerEntitlement.setType(EntitlementType.DEVELOPER.getType());
-        EntitlementService.grantEntitlement(developerEntitlement);
-        return developerUser;
+
+        EntitlementService entitlementService = EntitlementServiceImpl.instance();
+        entitlementService.grantEntitlement(developerEntitlement);
     }
 
-    private Entitlement CreateEntitlement(User user, User developer, String entitlementType) throws Exception {
+    private Entitlement CreateEntitlement(User user, String entitlementType) throws Exception {
         Entitlement entitlement = new Entitlement();
         entitlement.setUserId(user.getId().getValue());
         entitlement.setType(entitlementType);
-        if (entitlementType == EntitlementType.DOWNLOAD.getType()) ;
+        if (entitlementType.equalsIgnoreCase(EntitlementType.DOWNLOAD.getType()))
         {
             OfferService offerClient = OfferServiceImpl.instance();
-            String offerId=offerClient.getOfferIdByName("testOffer_CartCheckout_digital1");
+            String offerId = offerClient.getOfferIdByName("testOffer_CartCheckout_digital1");
             String orId = IdConverter.idToUrlString(
                     OfferRevisionId.class, Master.getInstance().getOffer(offerId).getCurrentRevisionId());
             String itemId = Master.getInstance().getOfferRevision(orId).getItems().get(0).getItemId();
             entitlement.setItemId(itemId);
         }
-        return EntitlementService.grantEntitlement(entitlement);
+        EntitlementService entitlementService = EntitlementServiceImpl.instance();
+        return entitlementService.grantEntitlement(entitlement);
     }
 
     private void postDeveloperItem() throws Exception {
@@ -227,6 +247,7 @@ public class EntitlementTesting extends TestClass {
         ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
         ItemRevision itemRevision = itemRevisionService.prepareItemRevisionEntity("developerItemRevision");
         itemRevision.setItemId(itemPosted.getItemId());
+        itemRevision.setOwnerId(itemPosted.getOwnerId());
         ItemRevision itemRevisionPosted = itemRevisionService.postItemRevision(itemRevision);
 
         //Approve the item revision

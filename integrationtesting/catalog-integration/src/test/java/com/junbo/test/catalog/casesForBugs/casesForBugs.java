@@ -13,9 +13,9 @@ import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
-import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.test.catalog.*;
+import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.test.catalog.enums.CatalogItemAttributeType;
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.catalog.enums.CatalogOfferAttributeType;
@@ -25,31 +25,37 @@ import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
-import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
   * @author Jason
   * Time: 4/1/2014
-  * For testing catalog get item(s) API
+  * test cases for bugs
 */
-public class TestImmutableFields extends BaseTestClass {
+public class casesForBugs extends BaseTestClass {
 
-    private LogHelper logger = new LogHelper(TestImmutableFields.class);
+    private LogHelper logger = new LogHelper(casesForBugs.class);
+
+    private ItemService itemService = ItemServiceImpl.instance();
+    private ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
+
+    private OfferService offerService = OfferServiceImpl.instance();
+    private OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
+
+    private OrganizationService organizationService = OrganizationServiceImpl.instance();
+
+    private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
+    private final String defaultOfferRevisionFileName = "defaultOfferRevision";
 
     @Property(
             priority = Priority.Dailies,
@@ -70,23 +76,15 @@ public class TestImmutableFields extends BaseTestClass {
     )
     @Test
     public void testImmutableSelfField() throws Exception {
-        ItemService itemService = ItemServiceImpl.instance();
-        ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
         ItemAttributeService itemAttributeService = ItemAttributeServiceImpl.instance();
-
-        OfferService offerService = OfferServiceImpl.instance();
-        OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
         OfferAttributeService offerAttributeService = OfferAttributeServiceImpl.instance();
-
         PriceTierService priceTierService = PriceTierServiceImpl.instance();
-        OrganizationService organizationService = OrganizationServiceImpl.instance();
 
         OrganizationId organizationId = organizationService.postDefaultOrganization().getId();
 
         String defaultItemFileName = "defaultItem";
         String defaultOfferFileName = "defaultOffer";
         String defaultOfferRevisionFileName = "defaultOfferRevision";
-        String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
         String specifiedId = "AAAAAAAAAAAAAA";
         String defaultLocale = "en_US";
 
@@ -205,6 +203,59 @@ public class TestImmutableFields extends BaseTestClass {
             logger.logInfo("Expected exception");
         }
 
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Bug 402",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Verify posting should fail if ownerIDs are different for item, item revision, offer, offer revision",
+            steps = {
+                    "1. Prepare two organization ids",
+                    "2. Post an item with one organization Id",
+                    "3. Post an item revision with the other organization Id, verify the failure",
+                    "4. Do same with offer and offer revision"
+            }
+    )
+    @Test
+    public void testSameOwnerId() throws Exception {
+
+        //item and item revision
+        OrganizationId organizationId1 = organizationService.postDefaultOrganization().getId();
+        OrganizationId organizationId2 = organizationService.postDefaultOrganization().getId();
+
+        Item item = itemService.postDefaultItem(CatalogItemType.APP, organizationId2);
+        ItemRevision itemRevisionPrepared = itemRevisionService.prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
+
+        itemRevisionPrepared.setItemId(item.getItemId());
+        itemRevisionPrepared.setOwnerId(organizationId1);
+
+        ItemRevision itemRevision = itemRevisionService.postItemRevision(itemRevisionPrepared);
+
+        itemRevision.setStatus(CatalogEntityStatus.APPROVED.name());
+
+        try {
+            itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision, 400);
+        } catch (Exception ex) {
+            logger.logInfo("Expected exception");
+        }
+
+        //offer and offer revision
+        Offer offer = offerService.postDefaultOffer(organizationId2);
+        OfferRevision offerRevisionPrepared = offerRevisionService.prepareOfferRevisionEntity(defaultOfferRevisionFileName, organizationId1, false);
+        offerRevisionPrepared.setOfferId(offer.getOfferId());
+
+        OfferRevision offerRevision = offerRevisionService.postOfferRevision(offerRevisionPrepared);
+
+        offerRevision.setStatus(CatalogEntityStatus.PENDING_REVIEW.name());
+
+        try {
+            offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision, 400);
+        } catch (Exception ex) {
+            logger.logInfo("Expected exception");
+        }
     }
 
 }

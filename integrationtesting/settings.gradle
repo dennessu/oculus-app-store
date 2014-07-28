@@ -9,10 +9,9 @@ include 'oauth-integration'
 include 'payment-integration'
 include 'fulfilment-integration'
 include 'order-integration'
+include 'token-integration'
+include 'crypto-integration'
+include 'drm-integration'
 
 include 'integration-buyerscenario'
 include 'integration-csrscenario'
-include 'integration-developerscenario'
-
-include 'token-integration'
-include 'crypto-integration'

@@ -1,7 +1,12 @@
 apply plugin: 'java'
+apply plugin: 'groovy'
 
 sourceCompatibility = '1.7'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+if (!hasProperty('mainClass')) {
+    ext.mainClass = ''
+}
 
 test {
     useTestNG()
@@ -12,22 +17,20 @@ test {
     testLogging {
         events "passed", "skipped", "failed"
     }
+
     // show standard out and standard error of the test JVM(s) on the console
     testLogging.showStandardStreams = true
 }
 
-/*
-repositories {
-mavenLocal()
-mavenCentral()
-}
- */
-
 dependencies {
-    compile junboProject(':entitlement-spec')
+    compile(libraries.asyncclient)
+
+    compile junboProject(':drm-spec')
     compile junboProject(':common-testlib')
     compile junboProject(':catalog-integration')
+    compile junboProject(':entitlement-integration')
 
-    testCompile(libraries.junit)
+    testCompile(libraries.asyncclient)
+    testCompile(libraries.slf4j_api)
     testCompile(libraries.testng)
 }

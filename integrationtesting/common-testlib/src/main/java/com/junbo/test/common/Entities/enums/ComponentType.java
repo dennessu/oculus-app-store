@@ -30,6 +30,7 @@ public enum ComponentType {
     PAYMENT("payment"),
     ORDER("order"),
     CSR("csr"),
+    DRM("drm"),
     SUBSCRIPTION("subscription");
 
     private String name;
