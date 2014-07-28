@@ -224,8 +224,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         }
         Set<String> itemIds = itemFacade.getItemIdsByHostItemId(entitlementSearchParam.getHostItemId().getValue());
         if (CollectionUtils.isEmpty(itemIds)) {
-            throw AppCommonErrors.INSTANCE.fieldInvalid("hostItemId",
-                    "there is no item with hostItemId [" + entitlementSearchParam.getHostItemId() + "]").exception();
+            return;
         }
         for (String itemId : itemIds) {
             entitlementSearchParam.getItemIds().add(new ItemId(itemId));
