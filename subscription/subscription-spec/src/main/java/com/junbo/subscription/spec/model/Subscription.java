@@ -13,7 +13,7 @@ import com.junbo.common.jackson.annotation.OfferId;
 import com.junbo.common.jackson.annotation.SubscriptionId;
 import com.junbo.common.jackson.annotation.UserId;
 import com.junbo.common.model.ResourceMeta;
-
+import com.junbo.common.jackson.annotation.XSSFreeString;
 
 import java.util.Date;
 import java.util.UUID;
@@ -35,8 +35,10 @@ public class Subscription extends ResourceMeta<Long> {
     private Long userId;
 
     @OfferId
+    @XSSFreeString
     private String offerId;
 
+    @XSSFreeString
     private String status;
 
     private Date subsStartDate;
@@ -45,14 +47,17 @@ public class Subscription extends ResourceMeta<Long> {
 
     private Long paymentMethodId;
 
+    @XSSFreeString
     private String source;
 
     private Integer anniversaryDay;
 
     @CountryId
+    @XSSFreeString
     private String country;
 
     @CurrencyId
+    @XSSFreeString
     private String currency;
 
     public Subscription() {
