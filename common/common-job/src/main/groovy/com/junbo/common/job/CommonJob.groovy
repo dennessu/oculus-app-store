@@ -32,6 +32,7 @@ class CommonJob implements InitializingBean {
     private static final Logger LOGGER = LoggerFactory.getLogger(CommonJob)
 
     private Integer limit
+    private Integer timeOffsetMillionSec
     private Integer maxThreadPoolSize
     private ThreadPoolTaskExecutor  threadPoolTaskExecutor
 
@@ -102,7 +103,7 @@ class CommonJob implements InitializingBean {
         template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
         return template.execute(new TransactionCallback<Promise<List<PendingAction>>>() {
             Promise<List<PendingAction>> doInTransaction(TransactionStatus txnStatus) {
-                return pendingActionRepository.list(dc, shardId, limit, offset)
+                return pendingActionRepository.list(dc, shardId, limit, offset, timeOffsetMillionSec)
             }
         })
     }
@@ -150,6 +151,11 @@ class CommonJob implements InitializingBean {
     @Required
     void setDualWriteProcessor(CommonProcessor dualWriteProcessor) {
         this.dualWriteProcessor = dualWriteProcessor
+    }
+
+    @Required
+    void setTimeOffsetMillionSec(Integer timeOffsetMillionSec) {
+        this.timeOffsetMillionSec = timeOffsetMillionSec
     }
 
     @Required

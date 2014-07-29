@@ -80,7 +80,11 @@ public class PendingActionRepositoryCloudantImpl extends CloudantClient<PendingA
     }
 
     @Override
-    Promise<List<PendingAction>> list(Integer dc, Integer shardId, Integer limit, Integer offset) {
+    Promise<List<PendingAction>> list(Integer dc, Integer shardId, Integer limit, Integer offset, Integer timeOffset) {
+        if (timeOffset != null) {
+            throw new IllegalStateException('Unsupported operation')
+        }
+
         return super.cloudantGetAll(limit, offset, false)
     }
 }

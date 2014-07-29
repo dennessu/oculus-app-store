@@ -126,13 +126,14 @@ public class PendingActionRepositorySqlImpl implements PendingActionRepository {
     }
 
     @Override
-    public Promise<List<PendingAction>> list(Integer dc, Integer shardId, Integer limit, Integer offset) {
+    public Promise<List<PendingAction>> list(Integer dc, Integer shardId, Integer limit, Integer offset, Integer timeOffset) {
 
         Session session = ShardScope.with(dc, shardId) { sessionFactory.currentSession}
 
         Criteria criteria = session.createCriteria(PendingActionEntity);
         criteria.add(Restrictions.ne("deleted", Boolean.TRUE));
         criteria.add(Restrictions.le("retryCount", maxRetryCount));
+        criteria.add(Restrictions.le("createdTime", calcEndTime(timeOffset)))
         criteria.setFirstResult(offset)
         criteria.setMaxResults(limit)
 
@@ -149,5 +150,11 @@ public class PendingActionRepositorySqlImpl implements PendingActionRepository {
 
     private Session currentSession(Object key) {
         return ShardScope.with(shardAlgorithm.dataCenterId(key), shardAlgorithm.shardId(key)) { sessionFactory.currentSession }
+    }
+
+    static Date calcEndTime(int millionSec) {
+        Calendar calendar = Calendar.getInstance()
+        calendar.add(Calendar.MILLISECOND, millionSec)
+        return calendar.getTime()
     }
 }

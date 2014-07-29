@@ -44,6 +44,7 @@
         <property name="dualWriteProcessor" ref="dualWriteProcessor" />
         <property name="pendingActionRepository" ref="pendingActionSqlRepo" />
         <property name="transactionManager" ref="transactionManager" />
+        <property name="timeOffsetMillionSec" value="${common.sharding.pendingAction.timeOffsetMillionSec}" />
     </bean>
 
     <bean id="dualWriteProcessor" class="com.junbo.common.job.DualWriteProcessor">
