@@ -23,6 +23,7 @@ import javax.ws.rs.core.MediaType;
 @InProcessCallable
 public interface VatResource {
     @GET
+    // This won't touch any DB, so it doesn't need to do route.
     Promise<VatIdValidationResponse> validateVatId(@QueryParam("vatId") String vatId,
                                                    @QueryParam("country") String country);
 }

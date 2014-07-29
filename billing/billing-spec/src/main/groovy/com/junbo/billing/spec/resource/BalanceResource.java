@@ -14,6 +14,7 @@ import com.junbo.common.model.Results;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.langur.core.routing.RouteBy;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -28,39 +29,49 @@ import javax.ws.rs.core.MediaType;
 @InProcessCallable
 public interface BalanceResource {
     @POST
+    @RouteBy("balance.getUserId()")
     Promise<Balance> postBalance(Balance balance);
 
     @POST
     @Path("/quote")
+    @RouteBy("balance.getUserId()")
     Promise<Balance> quoteBalance(Balance balance);
 
     @POST
     @Path("/capture")
+    @RouteBy("balance.getUserId()")
     Promise<Balance> captureBalance(Balance balance);
 
     @POST
     @Path("/confirm")
+    @RouteBy("balance.getUserId()")
     Promise<Balance> confirmBalance(Balance balance);
 
     @POST
     @Path("/check")
+    @RouteBy("balance.getUserId()")
     Promise<Balance> checkBalance(Balance balance);
 
     @POST
     @Path("/process-async")
+    @RouteBy("balance.getUserId()")
     Promise<Balance> processAsyncBalance(Balance balance);
 
     @GET
     @Path("/{balanceId}")
+    @RouteBy("balanceId")
     Promise<Balance> getBalance(@PathParam("balanceId") BalanceId balanceId);
 
     @GET
+    @RouteBy("orderId")
     Promise<Results<Balance>> getBalances(@QueryParam("orderId") OrderId orderId);
 
     @PUT
+    @RouteBy("balance.getUserId()")
     Promise<Balance> putBalance(Balance balance);
 
     @POST
     @Path("/audit")
+    @RouteBy("balance.getUserId()")
     Promise<Balance> auditBalance(Balance balance);
 }

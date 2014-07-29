@@ -8,9 +8,10 @@ package com.junbo.payment.spec.resource;
 
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.model.Results;
+import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.langur.core.InProcessCallable;
+import com.junbo.langur.core.routing.RouteBy;
 import com.junbo.payment.spec.model.PageMetaData;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam;
@@ -34,27 +35,32 @@ public interface PaymentInstrumentResource {
     @ApiOperation("Create a payment instrument")
     @POST
     @Path("payment-instruments")
+    @RouteBy("request.getUserId()")
     Promise<PaymentInstrument> postPaymentInstrument(PaymentInstrument request);
 
     @ApiOperation("Get a payment instrument")
     @GET
     @Path("payment-instruments/{paymentInstrumentId}")
+    @RouteBy("paymentInstrumentId")
     Promise<PaymentInstrument> getById(@PathParam("paymentInstrumentId") PaymentInstrumentId paymentInstrumentId);
 
     @ApiOperation("Delete a payment instrument")
     @DELETE
     @Path("payment-instruments/{paymentInstrumentId}")
+    @RouteBy("paymentInstrumentId")
     Promise<Void> delete(@PathParam("paymentInstrumentId") PaymentInstrumentId paymentInstrumentId);
 
     @ApiOperation("Put a payment instrument")
     @PUT
     @Path("payment-instruments/{paymentInstrumentId}")
+    @RouteBy("paymentInstrumentId")
     Promise<PaymentInstrument> update(@PathParam("paymentInstrumentId") PaymentInstrumentId paymentInstrumentId,
                                              PaymentInstrument request);
 
     @ApiOperation("Search a payment instrument")
     @GET
     @Path("payment-instruments")
+    @RouteBy("searchParam.getUserId()")
     Promise<Results<PaymentInstrument>> searchPaymentInstrument(
             @BeanParam PaymentInstrumentSearchParam searchParam,
             @BeanParam PageMetaData pageMetadata);

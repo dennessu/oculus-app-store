@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response;
 @InProcessCallable
 public interface PaymentNotificationResource {
     //use String other than Object, avoid interface changes from provider
+    //Won't enable api level route, in sql level, it will do route
     @POST
     @Path("/adyen")
     Promise<Response> receiveAdyenNotification(String request);

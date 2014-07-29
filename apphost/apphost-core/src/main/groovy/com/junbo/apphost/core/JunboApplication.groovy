@@ -8,9 +8,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.BeanFactory
 import org.springframework.beans.factory.support.DefaultListableBeanFactory
-import org.springframework.beans.factory.support.RootBeanDefinition
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader
-import org.springframework.context.ApplicationEvent
 import org.springframework.context.ApplicationListener
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.event.ContextClosedEvent
