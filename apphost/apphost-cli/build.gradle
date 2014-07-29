@@ -23,6 +23,7 @@ configurations.compile.dependencies.each { dep ->
 }
 
 applicationDistribution.with {
+    duplicatesStrategy 'exclude'
 
     configurations.compile.dependencies.each { dep ->
         if (dep.name == "groovy-all") return
@@ -41,7 +42,10 @@ applicationDistribution.with {
         into("pgha")        { from("../../scripts/pgha") }
     }
 
+    from("${project.buildDir}/generated-res") { include("git.properties") }
+
     eachFile { FileCopyDetails f ->
+        println f.name
         if (!f.name.endsWith('.sh')) return
         f.filter(FixCrLfFilter, eol: FixCrLfFilter.CrLf.newInstance("lf"))
     }
