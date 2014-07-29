@@ -25,6 +25,9 @@ public interface OrderRepositoryFacade {
     List<Order> getOrdersByStatus(Integer dataCenterId, Object shardKey, List<String> statusList,
                                   boolean updatedByAscending, PageParam pageParam);
 
+    List<Order> getOrdersByTaxStatus(Integer dataCenterId, Object shardKey, List<String> statusList, boolean isAudited,
+                                      boolean updatedByAscending, PageParam pageParam);
+
     OrderEvent createOrderEvent(OrderEvent event);
 
     FulfillmentHistory createFulfillmentHistory(FulfillmentHistory history);

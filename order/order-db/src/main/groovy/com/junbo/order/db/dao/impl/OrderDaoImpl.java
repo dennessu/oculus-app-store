@@ -55,6 +55,24 @@ public class OrderDaoImpl extends BaseDaoImpl<OrderEntity> implements OrderDao {
         return criteria.list();
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<OrderEntity> readByTaxStatus(Integer dataCenterId, Integer shardId, List<OrderStatus> statusList,
+                                             boolean isAudited, boolean updatedByAscending, Integer start, Integer count) {
+        Criteria criteria = this.getSessionByShardId(dataCenterId, shardId).createCriteria(OrderEntity.class);
+
+        criteria.add(Restrictions.in("orderStatusId", statusList));
+        criteria.add(Restrictions.eq("isAudited", isAudited));
+        pageCriteria(criteria, start, count);
+
+        if (updatedByAscending) {
+            criteria.addOrder(Order.asc("updatedTime"));
+        } else {
+            criteria.addOrder(Order.desc("updatedTime"));
+        }
+        return criteria.list();
+    }
+
     private void pageCriteria(Criteria criteria, Integer start, Integer count) {
         if (start != null) {
             criteria.setFirstResult(start);

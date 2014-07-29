@@ -1,6 +1,5 @@
 package com.junbo.order.jobs.tax
 
-import com.junbo.langur.core.promise.Promise
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.jobs.OrderProcessResult
 import com.junbo.order.jobs.OrderProcessor

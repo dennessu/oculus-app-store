@@ -17,12 +17,11 @@ import com.junbo.billing.spec.model.Balance
 import com.junbo.billing.spec.model.BalanceItem
 import com.junbo.billing.spec.model.VatIdValidationResponse
 import com.junbo.common.error.AppCommonErrors
-import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.PIType
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.identity.spec.v1.model.Address
-import com.junbo.identity.spec.v1.model.Organization
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserVAT
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.model.PaymentInstrument
@@ -118,15 +117,9 @@ class TaxServiceImpl implements TaxService {
             return identityFacade.getUser(userId.value).recover { Throwable throwable ->
                 LOGGER.error('name=Error_Get_User. user id: ' + userId, throwable)
                 throw AppErrors.INSTANCE.userNotFound("balance.userId", userId).exception()
-            }.then { com.junbo.identity.spec.v1.model.User user ->
+            }.then { User user ->
                 balance.propertySet.put(PropertyKey.CUSTOMER_NAME.name(), user.username)
-                UserVAT vat = user.vat?.get(balance.country)
-                if (vat != null) {
-                    balance.balanceItems.each { BalanceItem item ->
-                        item.propertySet.put(PropertyKey.VAT_ID.name(), vat.vatNumber)
-                    }
-                }
-                return calculateTax(balance, pi.billingAddressId)
+                return calculateTax(balance, pi.billingAddressId, user)
             }
         }
     }
@@ -158,7 +151,7 @@ class TaxServiceImpl implements TaxService {
         }
     }
 
-    Promise<Balance> calculateTax(Balance balance, Long billingAddressId) {
+    Promise<Balance> calculateTax(Balance balance, Long billingAddressId, User user) {
         Long addressId = balance.shippingAddressId?.value
         return identityFacade.getAddress(addressId).recover { Throwable throwable ->
             LOGGER.error('name=Error_Get_Shipping_Address. address id: ' + addressId, throwable)
@@ -168,6 +161,12 @@ class TaxServiceImpl implements TaxService {
                 LOGGER.error('name=Error_Get_Billing_Address. address id: ' + billingAddressId, throwable)
                 throw AppErrors.INSTANCE.addressNotFound("billingAddress", new UserPersonalInfoId(billingAddressId)).exception()
             }.then { Address billingAddress ->
+                UserVAT vat = user.vat?.get(billingAddress.countryId.value)
+                if (vat != null) {
+                    balance.balanceItems.each { BalanceItem item ->
+                        item.propertySet.put(PropertyKey.VAT_ID.name(), vat.vatNumber)
+                    }
+                }
                 return taxFacade.calculateTaxQuote(balance, shippingAddress, billingAddress)
             }
         }

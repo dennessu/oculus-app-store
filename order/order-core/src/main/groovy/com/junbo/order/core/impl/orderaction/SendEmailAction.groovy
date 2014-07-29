@@ -1,5 +1,5 @@
 package com.junbo.order.core.impl.orderaction
-import com.junbo.catalog.spec.model.offer.OfferRevision
+
 import com.junbo.common.id.PIType
 import com.junbo.email.spec.model.Email
 import com.junbo.identity.spec.v1.model.User
@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 
 import javax.annotation.Resource
+
 /**
  * Action of Email Sending.
  */

@@ -27,4 +27,8 @@ public interface OrderRepository extends BaseRepository<Order, OrderId> {
     @ReadMethod
     Promise<List<Order>> getByStatus(Integer dataCenterId, Object shardKey, List<String> statusList,
                                      boolean updatedByAscending, PageParam pageParam);
+
+    @ReadMethod
+    Promise<List<Order>> getByTaxStatus(Integer dataCenterId, Object shardKey, List<String> statusList,
+                                        boolean isAudited, boolean updatedByAscending, PageParam pageParam);
 }

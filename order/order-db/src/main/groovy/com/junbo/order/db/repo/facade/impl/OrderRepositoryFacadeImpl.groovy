@@ -155,6 +155,13 @@ class OrderRepositoryFacadeImpl implements OrderRepositoryFacade {
     }
 
     @Override
+    List<Order> getOrdersByTaxStatus(Integer dataCenterId, Object shardKey, List<String> statusList, boolean isAudited,
+                                  boolean updatedByAscending, PageParam pageParam) {
+        return orderRepository.getByTaxStatus(dataCenterId, shardKey,
+                statusList, isAudited, updatedByAscending, pageParam).get();
+    }
+
+    @Override
     OrderEvent createOrderEvent(OrderEvent event) {
         return orderEventRepository.create(event).get();
     }

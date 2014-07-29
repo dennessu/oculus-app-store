@@ -156,6 +156,18 @@ class OrderRepositorySqlImpl implements OrderRepository {
         })
     }
 
+    @Override
+    Promise<List<Order>> getByTaxStatus(Integer dataCenterId, Object shardKey, List<String> statusList, boolean isAudited, boolean updatedByAscending, PageParam pageParam) {
+        return Promise.pure(orderDao.readByTaxStatus(dataCenterId, (Integer) shardKey,
+                statusList.collect { String status -> OrderStatus.valueOf(status) }, isAudited,
+                updatedByAscending, pageParam?.start, pageParam?.count).collect { OrderEntity entity ->
+            def result = modelMapper.toOrderModel(entity, new MappingContext())
+            result.setPayments(getPayments(result.getId().value))
+            result.setOrderRevisions(getOrderRevisions(result.getId().value))
+            return result
+        })
+    }
+
     private List<PaymentInfo> getPayments(Long orderId) {
         List<PaymentInfo> paymentInfos = []
         orderPaymentInfoDao.readByOrderId(orderId)?.each { OrderPaymentInfoEntity paymentInfoEntity ->

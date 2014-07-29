@@ -151,4 +151,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "139", message = "Country Not Valid.", reason = "Country {0} is not valid.")
     AppError countryNotValid(String country);
+
+    @ErrorDef(httpStatusCode = 412, code = "140", message = "Offer item type not valid.")
+    AppError offerItemTypeNotValid();
 }

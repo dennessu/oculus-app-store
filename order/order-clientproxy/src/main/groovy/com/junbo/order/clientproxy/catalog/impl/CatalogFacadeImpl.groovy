@@ -126,14 +126,31 @@ class CatalogFacadeImpl implements CatalogFacade {
 
     private ItemType getType(List<Item> items) {
         if (items.any { Item item ->
-            item.type == ItemType.PHYSICAL.name()
+            item.type == com.junbo.catalog.spec.enums.ItemType.PHYSICAL.name()
         }) {
-            return ItemType.PHYSICAL
-        } else if (items.any {
-            items.type == ItemType.STORED_VALUE.name()
+            return ItemType.PHYSICAL_GOODS
+        } else if (items.any { Item item ->
+            items.type == com.junbo.catalog.spec.enums.ItemType.STORED_VALUE.name()
         }) {
-            return ItemType.STORED_VALUE
+            return ItemType.GIFT_CARD
         } else {
+            def isDownloadable = items.any { Item item ->
+                item.type == com.junbo.catalog.spec.enums.ItemType.APP.name() ||
+                        item.type == com.junbo.catalog.spec.enums.ItemType.DOWNLOADED_ADDITION.name()
+            }
+            def isDigitalContent = items.any { Item item ->
+                item.type == com.junbo.catalog.spec.enums.ItemType.PERMANENT_UNLOCK.name() ||
+                        item.type == com.junbo.catalog.spec.enums.ItemType.CONSUMABLE_UNLOCK.name()
+            }
+            if (isDownloadable && isDigitalContent) {
+                throw AppErrors.INSTANCE.offerItemTypeNotValid().exception()
+            }
+            if (isDownloadable) {
+                return ItemType.DOWNLOADABLE_SOFTWARE
+            }
+            if (isDigitalContent) {
+                return ItemType.DIGITAL_CONTENT
+            }
             return ItemType.DIGITAL
         }
     }

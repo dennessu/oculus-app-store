@@ -34,4 +34,9 @@ class OrderRepositoryCloudantImpl extends BaseCloudantRepositoryForDualWrite<Ord
     Promise<List<Order>> getByStatus(Integer dataCenterId, Object shardKey, List<String> statusList, boolean updatedByAscending, PageParam pageParam) {
         throw new RuntimeException("OrderRepository::getByStatus is only available in SQL mode for backend jobs.");
     }
+
+    @Override
+    Promise<List<Order>> getByTaxStatus(Integer dataCenterId, Object shardKey, List<String> statusList, boolean isAudited, boolean updatedByAscending, PageParam pageParam) {
+        throw new RuntimeException("OrderRepository::getByTaxStatus is only available in SQL mode for backend jobs.");
+    }
 }

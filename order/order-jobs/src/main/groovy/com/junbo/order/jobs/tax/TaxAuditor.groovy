@@ -56,15 +56,15 @@ class TaxAuditor {
             Long.valueOf(idStr.trim())
         }
         orderIdList.each { Long orderId ->
-            Order order = transactionHelper.executeInTransaction {
-                orderRepository.getOrder(orderId)
+            transactionHelper.executeInTransaction {
+                Order order = orderRepository.getOrder(orderId)
+                orderProcessor.process(order)
             }
-            orderProcessor.process(order)
         }
     }
 
     void execute() {
-        LOGGER.info('name=OrderProcessJobStart')
+        LOGGER.info('name=OrderAuditTaxJobStart')
         def start = System.currentTimeMillis()
         def numProcessed = 0, numSuccess = new AtomicInteger(), numFail = new AtomicInteger()
 
@@ -75,17 +75,19 @@ class TaxAuditor {
             }
 
             orders.each { Order order ->
-                def result = orderProcessor.process(order)
-                if (result.success) {
-                    numSuccess.andIncrement
-                } else {
-                    numFail.andIncrement
+                transactionHelper.executeInTransaction {
+                    def result = orderProcessor.process(order)
+                    if (result.success) {
+                        numSuccess.andIncrement
+                    } else {
+                        numFail.andIncrement
+                    }
                 }
             }
 
             numProcessed += orders.size()
         }
-        LOGGER.info('name=OrderProcessJobEnd, numOfOrder={}, numSuccess={}, numFail={}, latency={}ms',
+        LOGGER.info('name=OrderAuditTaxJobEnd, numOfOrder={}, numSuccess={}, numFail={}, latency={}ms',
                 numProcessed, numSuccess, numFail, System.currentTimeMillis() - start)
         assert numProcessed == numSuccess.get() + numFail.get()
     }
@@ -94,14 +96,12 @@ class TaxAuditor {
         List<Order> ordersAllShard = []
         allShards.each { Integer shardKey ->
             def orders = transactionHelper.executeInTransaction {
-                orderRepository.getOrdersByStatus(DataCenters.instance().currentDataCenterId(), shardKey, statusToProcess, true, new PageParam(
+                orderRepository.getOrdersByTaxStatus(DataCenters.instance().currentDataCenterId(), shardKey,
+                        statusToProcess, false, true, new PageParam(
                         start: 0, count: pageSizePerShard
                 ))
             }
-            def ordersToAudit = orders.findAll { Order order ->
-                !order.isAudited
-            }
-            ordersAllShard.addAll(ordersToAudit)
+            ordersAllShard.addAll(orders)
         }
         return shuffle(ordersAllShard)
     }

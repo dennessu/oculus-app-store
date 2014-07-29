@@ -39,7 +39,7 @@ class CoreUtils {
             return false
         }
         if (order.orderItems.any { OrderItem oi ->
-            oi.type == ItemType.PHYSICAL.name()
+            oi.type == ItemType.PHYSICAL_GOODS.name()
         }) {
             return true
         }
@@ -51,7 +51,7 @@ class CoreUtils {
             return false
         }
         if (order.orderItems.any { OrderItem oi ->
-            oi.type == ItemType.STORED_VALUE.name()
+            oi.type == ItemType.GIFT_CARD.name()
         }) {
             return true
         }

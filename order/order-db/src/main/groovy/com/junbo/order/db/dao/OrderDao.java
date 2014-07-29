@@ -19,4 +19,7 @@ public interface OrderDao extends BaseDao<OrderEntity> {
 
     List<OrderEntity> readByStatus(Integer dataCenterId, Integer shardId,  List<OrderStatus> statusList, boolean updatedByAscending,
                                    Integer start, Integer count);
+
+    List<OrderEntity> readByTaxStatus(Integer dataCenterId, Integer shardId,  List<OrderStatus> statusList,
+                                      boolean isAudited, boolean updatedByAscending, Integer start, Integer count);
 }

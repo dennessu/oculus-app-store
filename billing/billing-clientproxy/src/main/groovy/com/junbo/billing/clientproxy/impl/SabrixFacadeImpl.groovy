@@ -75,7 +75,6 @@ class SabrixFacadeImpl implements TaxFacade {
                 }
             }
     private static final Map<String, TaxAuthority> AUTHORITY_MAP
-    private static final Map<String, String> PRODUCT_CODE_MAP
     private static final Map<String, String> EXCHANGE_RATE_MAP
     private static final Map<String, String> VAT_FORMAT_MAP
 
@@ -102,16 +101,6 @@ class SabrixFacadeImpl implements TaxFacade {
         authorityMap.put('VAT', TaxAuthority.VAT)
 
         AUTHORITY_MAP = Collections.unmodifiableMap(authorityMap)
-
-        Map<String, String> productCodeMap = new HashMap<String, String>()
-        productCodeMap.put(ItemType.APP.name(), ProductCode.DOWNLOADABLE_SOFTWARE.code)
-        productCodeMap.put(ItemType.DOWNLOADED_ADDITION.name(), ProductCode.DOWNLOADABLE_SOFTWARE.code)
-        productCodeMap.put(ItemType.CONSUMABLE_UNLOCK.name(), ProductCode.DIGITAL_CONTENT.code)
-        productCodeMap.put(ItemType.PERMANENT_UNLOCK.name(), ProductCode.DIGITAL_CONTENT.code)
-        productCodeMap.put(ItemType.PHYSICAL.name(), ProductCode.PHYSICAL_GOODS.code)
-        productCodeMap.put(ItemType.STORED_VALUE.name(), ProductCode.GIFT_CARD.code)
-
-        PRODUCT_CODE_MAP = Collections.unmodifiableMap(productCodeMap)
 
         Map<String, String> exchangeRateMap = new HashMap<String, String>()
         exchangeRateMap.put('AUD', '0.94')
@@ -328,7 +317,7 @@ class SabrixFacadeImpl implements TaxFacade {
             }
             line.discountAmount = item.discountAmount?.toDouble()
             line.transactionType = getTransactionType(item)
-            line.productCode = getProductCode(item)
+            line.productCode = item.propertySet.get(PropertyKey.ITEM_TYPE.name()).replace('_', ' ')
             line.description = item.propertySet.get(PropertyKey.ITEM_DESCRIPTION.name())
             line.partNumber = item.propertySet.get(PropertyKey.ORDER_ITEM_ID.name())
             if (item.propertySet.get(PropertyKey.VAT_ID.name()) != null) {
@@ -487,15 +476,6 @@ class SabrixFacadeImpl implements TaxFacade {
             default:
                 return ELECTRONIC_SERVICES
         }
-    }
-
-    String getProductCode(BalanceItem item) {
-        String type = item.propertySet.get(PropertyKey.ITEM_TYPE.name())
-        if (type == null) {
-            return null
-        }
-
-        return PRODUCT_CODE_MAP.get(type)
     }
 
     SabrixAddress toSabrixAddress(Address address) {
