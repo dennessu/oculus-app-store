@@ -475,10 +475,27 @@ public class Catalog extends BaseTestClass {
     )
     @Test
     public void testOffersForFB() throws Exception {
-        prepareOffersForFB();
+        /* type mapping
+        productCodeMap.put(ItemType.APP.name(), ProductCode.DOWNLOADABLE_SOFTWARE.code)
+        productCodeMap.put(ItemType.DOWNLOADED_ADDITION.name(), ProductCode.DOWNLOADABLE_SOFTWARE.code)
+        productCodeMap.put(ItemType.CONSUMABLE_UNLOCK.name(), ProductCode.DIGITAL_CONTENT.code)
+        productCodeMap.put(ItemType.PERMANENT_UNLOCK.name(), ProductCode.DIGITAL_CONTENT.code)
+        productCodeMap.put(ItemType.PHYSICAL.name(), ProductCode.PHYSICAL_GOODS.code)
+        productCodeMap.put(ItemType.STORED_VALUE.name(), ProductCode.STORE_BALANCE.code)
+        */
+
+        // prepare DOWNLOADABLE_SOFTWARE
+        prepareOffersForFB(CatalogItemType.APP, "testItemDownloadableSoftwareForFB", "testOfferDownloadableSoftwareForFB");
+
+        //prepare DIGITAL_CONTENT
+        prepareOffersForFB(CatalogItemType.CONSUMABLE_UNLOCK, "testItemDigitalContentForFB", "testOfferDigitalContentForFB");
+
+        //prepare PHYSICAL_GOODS
+        prepareOffersForFB(CatalogItemType.PHYSICAL, "testItemPhysicalGoodsForFB", "testOfferPhysicalGoodsForFB");
+
     }
 
-    public String prepareOffersForFB() throws Exception {
+    public String prepareOffersForFB(CatalogItemType itemType, String itemName, String offerName) throws Exception {
         ItemService itemService = ItemServiceImpl.instance();
         OfferService offerService = OfferServiceImpl.instance();
         OrganizationService organizationService = OrganizationServiceImpl.instance();
@@ -487,7 +504,7 @@ public class Catalog extends BaseTestClass {
 
         OrganizationId organizationId = organizationService.postDefaultOrganization().getId();
 
-        Item item = itemService.postDefaultItem(CatalogItemType.APP, organizationId);
+        Item item = itemService.postDefaultItem(itemType, organizationId);
         ItemRevision itemRevision = itemRevisionService.postDefaultItemRevision(item);
 
         //update itemName for this offer
@@ -496,7 +513,7 @@ public class Catalog extends BaseTestClass {
             itemRevisionLocaleProperties = new ItemRevisionLocaleProperties();
         }
 
-        itemRevisionLocaleProperties.setName("testItemForFB");
+        itemRevisionLocaleProperties.setName(itemName);
 
         HashMap<String, ItemRevisionLocaleProperties> itemLocales = new HashMap<>();
         itemLocales.put(defaultLocale, itemRevisionLocaleProperties);
@@ -553,7 +570,7 @@ public class Catalog extends BaseTestClass {
             offerRevisionLocaleProperties = new OfferRevisionLocaleProperties();
         }
 
-        offerRevisionLocaleProperties.setName("testOfferForFB");
+        offerRevisionLocaleProperties.setName(offerName);
 
         HashMap<String, OfferRevisionLocaleProperties> offerLocales = new HashMap<>();
         offerLocales.put(defaultLocale, offerRevisionLocaleProperties);
