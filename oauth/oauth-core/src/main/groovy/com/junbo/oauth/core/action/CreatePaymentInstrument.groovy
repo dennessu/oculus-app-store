@@ -48,7 +48,7 @@ class CreatePaymentInstrument implements Action {
 
         PaymentInstrument paymentInstrument = new PaymentInstrument(
                 accountName: nameOnCard,
-                accountNum: cardNumber,
+                accountNumber: cardNumber,
                 isValidated: false,
                 type: 0L,
                 trackingUuid: UUID.randomUUID(),

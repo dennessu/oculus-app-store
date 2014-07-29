@@ -30,11 +30,11 @@ public class CreditCardPaymentInstrumentEntity extends GenericEntity {
     @Column(name = "credit_card_type_id")
     private Short ccTypeId;
 
-    @Column(name = "expire_time")
+    @Column(name = "expire_time", updatable = false)
     private String expireDate;
 
     @Column(name = "bin", updatable = false)
-    private String bin;
+    private String issuerIdentificationNumber;
 
     @Column(name = "last_billing_time")
     @Temporal(TemporalType.TIMESTAMP)
@@ -81,12 +81,12 @@ public class CreditCardPaymentInstrumentEntity extends GenericEntity {
         this.expireDate = expireDate;
     }
 
-    public String getBin() {
-        return bin;
+    public String getIssuerIdentificationNumber() {
+        return issuerIdentificationNumber;
     }
 
-    public void setBin(String bin) {
-        this.bin = bin;
+    public void setIssuerIdentificationNumber(String issuerIdentificationNumber) {
+        this.issuerIdentificationNumber = issuerIdentificationNumber;
     }
 
     public Date getLastBillingDate() {

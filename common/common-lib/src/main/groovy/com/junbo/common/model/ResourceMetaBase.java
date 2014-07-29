@@ -14,7 +14,6 @@ import com.junbo.common.cloudant.json.annotations.CloudantProperty;
 import com.junbo.common.enumid.EnumId;
 import com.junbo.common.id.CloudantId;
 import com.junbo.common.id.Id;
-import com.junbo.common.jackson.annotation.UserId;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.lang.reflect.ParameterizedType;
@@ -50,11 +49,9 @@ public abstract class ResourceMetaBase<K> implements CloudantEntity<K> {
     private Map<String, JsonNode> futureExpansion = new HashMap<>();
 
     @JsonIgnore
-    @UserId
     private Long createdBy;
 
     @JsonIgnore
-    @UserId
     private Long updatedBy;
 
     @JsonIgnore

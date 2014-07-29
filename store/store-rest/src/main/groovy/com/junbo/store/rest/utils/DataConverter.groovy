@@ -28,7 +28,7 @@ class DataConverter {
 
         instrument.type = com.junbo.common.id.PIType.get(paymentInstrument.type).name()
         instrument.accountName = paymentInstrument.accountName
-        instrument.accountNum = paymentInstrument.accountNum
+        instrument.accountNum = paymentInstrument.accountNumber
 
         instrument.creditCardType = paymentInstrument.typeSpecificDetails?.creditCardType
         instrument.expireDate = paymentInstrument.typeSpecificDetails?.expireDate
@@ -45,7 +45,7 @@ class DataConverter {
 
         paymentInstrument.type = com.junbo.common.id.PIType.valueOf(instrument.type).id
         paymentInstrument.accountName = instrument.accountName
-        paymentInstrument.accountNum = instrument.accountNum
+        paymentInstrument.accountNumber = instrument.accountNum
 
         if (paymentInstrument.typeSpecificDetails == null) {
             paymentInstrument.typeSpecificDetails = new TypeSpecificDetails()

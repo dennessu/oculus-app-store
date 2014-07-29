@@ -40,7 +40,7 @@ public class PaymentInstrumentEntity extends GenericEntity {
     private String encryptedAccountNO;
 
     @Column(name = "account_number")
-    private String accountNum;
+    private String accountNumber;
 
     @Column(name = "address_id")
     private Long billingAddressId;
@@ -115,12 +115,12 @@ public class PaymentInstrumentEntity extends GenericEntity {
         this.encryptedAccountNO = encryptedAccountNO;
     }
 
-    public String getAccountNum() {
-        return accountNum;
+    public String getAccountNumber() {
+        return accountNumber;
     }
 
-    public void setAccountNum(String accountNum) {
-        this.accountNum = accountNum;
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
 
     public Long getBillingAddressId() {

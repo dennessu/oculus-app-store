@@ -95,7 +95,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         //Validate the info:
         if(!piTarget.getUserId().equals(request.getUserId())
                 || !piTarget.getType().equals(request.getType())
-                || !piTarget.getAccountNum().equals(request.getAccountNum())){
+                || !piTarget.getAccountNumber().equals(request.getAccountNumber())){
             throw AppClientExceptions.INSTANCE.invalidPaymentInstrumentId(request.getId().toString()).exception();
         }
         if(PIType.get(request.getType()).equals(PIType.CREDITCARD)){
@@ -217,7 +217,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
             if(CommonUtil.isNullOrEmpty(request.getAccountName())){
                 throw AppCommonErrors.INSTANCE.fieldRequired("account_name").exception();
             }
-            if(CommonUtil.isNullOrEmpty(request.getAccountNum())){
+            if(CommonUtil.isNullOrEmpty(request.getAccountNumber())){
                 throw AppCommonErrors.INSTANCE.fieldRequired("account_number").exception();
             }
             if(request.getTypeSpecificDetails() == null){

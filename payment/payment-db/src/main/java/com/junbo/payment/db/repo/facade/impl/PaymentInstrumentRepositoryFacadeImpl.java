@@ -63,7 +63,7 @@ public class PaymentInstrumentRepositoryFacadeImpl implements PaymentInstrumentR
         PaymentInstrument pi = paymentInstrumentRepository.get(request.getId()).get();
         //setup column allowed to be updated:
         pi.setLabel(request.getLabel());
-        pi.setAccountNum(request.getAccountNum());
+        //pi.setAccountNumber(request.getAccountNumber());
         pi.setUserId(request.getUserId());
         pi.setBillingAddressId(request.getBillingAddressId());
         pi.setEmail(request.getEmail());
@@ -79,7 +79,8 @@ public class PaymentInstrumentRepositoryFacadeImpl implements PaymentInstrumentR
             CreditCardDetail creditCardDetail = paymentMapperExtension.toSpecificDetail(request.getTypeSpecificDetails(), PIType.CREDITCARD);
             CreditCardDetail existing = creditCardDetailRepository.get(pi.getId()).get();
             // setup column allowed to be updated:
-            existing.setExpireDate(creditCardDetail.getExpireDate());
+            //expire date is immutable and update it actually need to post a new PI.
+            // existing.setExpireDate(creditCardDetail.getExpireDate());
             creditCardDetailRepository.update(existing, existing).get();
         }
     }
@@ -93,7 +94,7 @@ public class PaymentInstrumentRepositoryFacadeImpl implements PaymentInstrumentR
             pi.setLabel(pi.getLabel() == null ? label : pi.getLabel() + label);
         }
         if (!CommonUtil.isNullOrEmpty(num)) {
-            pi.setAccountNum(num);
+            pi.setAccountNumber(num);
         }
         paymentInstrumentRepository.update(pi, pi).get();
     }

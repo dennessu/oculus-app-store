@@ -7,10 +7,7 @@ package com.junbo.payment.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.common.jackson.annotation.PaymentInstrumentId;
-import com.junbo.common.jackson.annotation.PaymentInstrumentTypeId;
-import com.junbo.common.jackson.annotation.PersonalInfoId;
-import com.junbo.common.jackson.annotation.UserId;
+import com.junbo.common.jackson.annotation.*;
 import com.junbo.common.model.ResourceMetaForDualWrite;
 import com.junbo.payment.common.FilterIn;
 import com.junbo.payment.common.InnerFilter;
@@ -51,10 +48,12 @@ public class PaymentInstrument extends ResourceMetaForDualWrite<Long> {
     @InnerFilter
     private TypeSpecificDetails typeSpecificDetails;
     @ApiModelProperty(position = 7, required = true, value = "The account name of the payment instrument.")
+    @XSSFreeString
     private String accountName;
     @ApiModelProperty(position = 8, required = true, value = "The account of the payment instrument.")
-    private String accountNum;
+    private String accountNumber;
     @ApiModelProperty(position = 9, required = true, value = "The label of the PI.")
+    @XSSFreeString
     private String label;
     @JsonIgnore
     private Address address;
@@ -147,12 +146,12 @@ public class PaymentInstrument extends ResourceMetaForDualWrite<Long> {
         this.accountName = accountName;
     }
 
-    public String getAccountNum() {
-        return accountNum;
+    public String getAccountNumber() {
+        return accountNumber;
     }
 
-    public void setAccountNum(String accountNum) {
-        this.accountNum = accountNum;
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
 
     public String getLabel() {

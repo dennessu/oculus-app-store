@@ -145,7 +145,7 @@ class RiskServiceImpl implements RiskService {
                     PaymentInstrument pi = orderContext.paymentInstruments.get(0)
                     switch (PIType.get(pi.type)) {
                         case PIType.CREDITCARD:
-                            q.setPayment("CARD", pi.accountNum)
+                            q.setPayment("CARD", pi.accountNumber)
                             break;
                         case PIType.STOREDVALUE:
                             q.setPayment("GIFT", pi.id.toString())

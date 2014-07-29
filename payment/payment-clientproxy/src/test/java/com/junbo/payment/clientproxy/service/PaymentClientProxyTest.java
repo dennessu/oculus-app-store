@@ -278,7 +278,7 @@ public class PaymentClientProxyTest extends BaseTest {
         return new PaymentInstrument(){
                 {
                     setAccountName("ut");
-                    setAccountNum("4111111111111111");
+                    setAccountNumber("4111111111111111");
                     setIsValidated(false);
                     setType(0L);
                     setTrackingUuid(generateUUID());

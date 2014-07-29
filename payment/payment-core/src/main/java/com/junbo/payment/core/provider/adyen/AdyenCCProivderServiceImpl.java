@@ -89,7 +89,7 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                 AnyType2AnyTypeMapEntry encryptedInfo = new AnyType2AnyTypeMapEntry();
                 encryptedInfo.setKey("card.encrypted.json");
                 //encrypted account number
-                encryptedInfo.setValue(request.getAccountNum());
+                encryptedInfo.setValue(request.getAccountNumber());
                 adyenRequest.setAdditionalData((AnyType2AnyTypeMapEntry[]) Arrays.asList(encryptedInfo).toArray());
                 // Billing address
                 Address address = null;
@@ -143,8 +143,8 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                                 }
                             }
                         }
-                        request.setAccountNum(recurringDetail.getCard().getNumber());
-                        request.getTypeSpecificDetails().setBin(cardBin);
+                        request.setAccountNumber(recurringDetail.getCard().getNumber());
+                        request.getTypeSpecificDetails().setIssuerIdentificationNumber(cardBin);
                         request.getTypeSpecificDetails().setCreditCardType(
                                 PaymentUtil.getCreditCardType(recurringDetail.getVariant()).toString());
                         request.getTypeSpecificDetails().setExpireDate(recurringDetail.getCard().getExpiryYear()
@@ -212,7 +212,7 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
             sbReq.append("&paymentRequest.amount.value=" + minAuthAmount);
             sbReq.append("&paymentRequest.merchantAccount=" + urlEncode(getMerchantAccount()));
             sbReq.append("&paymentRequest.reference=" + piId.toString());
-            sbReq.append("&paymentRequest.additionalData.card.encrypted.json=" + urlEncode(request.getAccountNum()));
+            sbReq.append("&paymentRequest.additionalData.card.encrypted.json=" + urlEncode(request.getAccountNumber()));
             if(CommonUtil.isNullOrEmpty(request.getUserInfo().getEmail())){
                 throw AppClientExceptions.INSTANCE.missingEmail().exception();
             }

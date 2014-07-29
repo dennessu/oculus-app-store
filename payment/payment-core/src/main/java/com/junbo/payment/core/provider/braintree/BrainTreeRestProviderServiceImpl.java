@@ -30,7 +30,7 @@ public class BrainTreeRestProviderServiceImpl extends AbstractPaymentProviderSer
 
     @Override
     public void clonePIResult(PaymentInstrument source, PaymentInstrument target) {
-        target.setAccountNum(source.getAccountNum());
+        target.setAccountNumber(source.getAccountNumber());
         target.setExternalToken(source.getExternalToken());
         target.getTypeSpecificDetails().setCreditCardType(source.getTypeSpecificDetails().getCreditCardType());
         target.getTypeSpecificDetails().setCommercial(source.getTypeSpecificDetails().getCommercial());

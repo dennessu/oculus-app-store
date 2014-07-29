@@ -145,7 +145,7 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
                 requestDetails.setCancelURL(paymentRequest.getWebPaymentInfo().getCancelURL());
 
                 requestDetails.setPaymentDetails(paymentDetailsList);
-                requestDetails.setBuyerEmail(pi.getAccountNum());
+                requestDetails.setBuyerEmail(pi.getAccountNumber());
                 SetExpressCheckoutRequestType setRequest = new SetExpressCheckoutRequestType(requestDetails);
                 setRequest.setVersion(apiVersion);
 

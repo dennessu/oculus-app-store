@@ -27,7 +27,7 @@ public class MockPaymentProviderServiceImpl extends AbstractPaymentProviderServi
 
     @Override
     public void clonePIResult(PaymentInstrument source, PaymentInstrument target) {
-        target.setAccountNum(source.getAccountNum());
+        target.setAccountNumber(source.getAccountNumber());
         target.setExternalToken(source.getExternalToken());
         target.getTypeSpecificDetails().setCreditCardType(source.getTypeSpecificDetails().getCreditCardType());
         target.getTypeSpecificDetails().setCommercial(source.getTypeSpecificDetails().getCommercial());
@@ -46,7 +46,7 @@ public class MockPaymentProviderServiceImpl extends AbstractPaymentProviderServi
 
     @Override
     public Promise<PaymentInstrument> add(PaymentInstrument request) {
-        request.setAccountNum("1111");
+        request.setAccountNumber("1111");
         request.setIsActive(true);
         request.setExternalToken(piExternalToken);
         request.getTypeSpecificDetails().setCreditCardType(CreditCardType.VISA.toString());

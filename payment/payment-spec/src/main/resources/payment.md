@@ -16,7 +16,7 @@ add a new payment method for the user
             	}
             ],
             “accountName”: “David”, 
-            “accountNum”: “kgvqKnMcgIUn7rl1vkFXF0g4SodEd3dxAJo/mVN6ef211B1MZelg7OyjEHf4ZXwlCdtOFebIdlnK”,     // encrypted
+            “accountNumber”: “kgvqKnMcgIUn7rl1vkFXF0g4SodEd3dxAJo/mVN6ef211B1MZelg7OyjEHf4ZXwlCdtOFebIdlnK”,     // encrypted
             // "lastValidated": "",    // must be omitted on POST; this it generated/snythesized by server
             "isValidated": true,       // use true to force validation now, use false for lazy-validation
             “type”: {
@@ -61,7 +61,7 @@ add a new payment method for the user
                 “id”: “creditCard”
     		},
             ““accountName””: “David”, 
-            ““accountNum””: “4111********1111”,        
+            ““accountNumber””: “4111********1111”,
             "status": “ACTIVE”, 
             “creditCard”: {
                 "type": "VISA",
@@ -116,7 +116,7 @@ update an existing payment method. validation could be done via this by setting
                 “id”: “creditCard”
     		},
             ““accountName””: “David”, 
-            ““accountNum””: “4111********1111”,        
+            ““accountNumber””: “4111********1111”,
             "status": “ACTIVE”, 
             “creditCard”: {
                 "type": "VISA",
@@ -159,7 +159,7 @@ update an existing payment method. validation could be done via this by setting
                 “id”: “creditCard”
     		},
             ““accountName””: “David”, 
-            ““accountNum””: “4111********1111”,        
+            ““accountNumber””: “4111********1111”,
             "status": “ACTIVE”, 
             “creditCard”: {
                 "type": "VISA",
@@ -207,7 +207,7 @@ GET an existing payment method through the payment method id
                 “id”: “creditCard”
     		},
             ““accountName””: “David”, 
-            ““accountNum””: “4111********1111”,        
+            ““accountNumber””: “4111********1111”,
             "status": “ACTIVE”, 
             “creditCard”: {
                 "type": "VISA",
@@ -257,7 +257,7 @@ GET all the existing payment methods for the specific user
                         “id”: “creditCard”
     		        },
                     “accountName””: “David”, 
-                    “accountNum”: “4111********1111”,        
+                    “accountNumber”: “4111********1111”,
                     "status": “ACTIVE”, 
                     “creditCard”: {
                          "type": "VISA",
@@ -295,7 +295,7 @@ GET all the existing payment methods for the specific user
                         “id”: “creditCard”
     		        },
                     “accountName””: “David”, 
-                    “accountNum”: “4111********1111”,        
+                    “accountNumber”: “4111********1111”,
                     "status": “ACTIVE”, 
                     “creditCard”: {
                          "type": "VISA",

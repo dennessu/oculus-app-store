@@ -134,7 +134,7 @@ public class PaymentServiceTest extends BaseTest {
 
     private PaymentInstrument buildWalletPIRequest() {
         PaymentInstrument request = buildBasePIRequest();
-        request.setAccountNum(null);
+        request.setAccountNumber(null);
         request.setType(PIType.STOREDVALUE.getId());
         request.setTypeSpecificDetails(new TypeSpecificDetails() {
             {

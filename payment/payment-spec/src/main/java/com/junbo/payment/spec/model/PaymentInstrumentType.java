@@ -8,6 +8,7 @@ package com.junbo.payment.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.PaymentInstrumentTypeId;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
@@ -19,8 +20,10 @@ public class PaymentInstrumentType {
     @PaymentInstrumentTypeId
     private Long id;
     @ApiModelProperty(position = 2, required = true, value = "The type code of payment instrument resource.")
+    @XSSFreeString
     private String typeCode;
     @ApiModelProperty(position = 3, required = true, value = "The description of payment instrument resource with different locales.")
+    @XSSFreeString
     private String locales;
     @ApiModelProperty(position = 4, required = true, value = "whether the PI is recurring-able or not.")
     private Boolean capableOfRecurring;

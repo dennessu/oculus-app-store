@@ -20,7 +20,7 @@ public class PaymentRepoTest extends BaseTest {
         piRepo.save(pi);
         PaymentInstrument result = piRepo.getByPIId(pi.getId());
         Assert.assertEquals(pi.getAccountName(), result.getAccountName());
-        Assert.assertEquals(pi.getAccountNum(), result.getAccountNum());
+        Assert.assertEquals(pi.getAccountNumber(), result.getAccountNumber());
     }
 
     private PaymentInstrument buildPIRequest(){
@@ -29,7 +29,7 @@ public class PaymentRepoTest extends BaseTest {
         pi.setUserId(userId);
         pi.setType(PIType.CREDITCARD.getId());
         pi.setAccountName("David");
-        pi.setAccountNum("1111");
+        pi.setAccountNumber("1111");
         pi.setIsActive(true);
         pi.setBillingAddressId(generateShardId(userId));
         pi.setPhoneNumber(12345676L);

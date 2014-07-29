@@ -2,7 +2,6 @@ package com.junbo.payment.core.mock;
 
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
-import com.junbo.payment.core.provider.PaymentProviderService;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
@@ -24,7 +23,7 @@ public class MockWalletServiceImpl extends AbstractPaymentProviderService {
 
     @Override
     public void clonePIResult(PaymentInstrument source, PaymentInstrument target) {
-        target.setAccountNum(source.getAccountNum());
+        target.setAccountNumber(source.getAccountNumber());
     }
 
     @Override
@@ -35,7 +34,7 @@ public class MockWalletServiceImpl extends AbstractPaymentProviderService {
 
     @Override
     public Promise<PaymentInstrument> add(PaymentInstrument request) {
-        request.setAccountNum(WALLET_ACCT);
+        request.setAccountNumber(WALLET_ACCT);
         return Promise.pure(request);
     }
 

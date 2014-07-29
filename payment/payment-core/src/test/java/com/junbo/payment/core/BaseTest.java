@@ -97,7 +97,7 @@ public abstract class BaseTest extends AbstractTestNGSpringContextTests {
         request.setTrackingUuid(generateUUID());
         request.setAccountName("ut");
         request.setIsValidated(true);
-        request.setAccountNum("4111111111111111");
+        request.setAccountNumber("4111111111111111");
         request.setBillingAddressId(123L);
         request.setPhoneNumber(12344555L);
         return request;

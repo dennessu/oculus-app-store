@@ -170,7 +170,7 @@ public class PayPalProviderServiceTest extends BaseTest {
     private PaymentInstrument buildPayPalRequest(){
         PaymentInstrument request = buildBasePIRequest();
         request.setType(PIType.PAYPAL.getId());
-        request.setAccountNum("zwh@123.com");
+        request.setAccountNumber("zwh@123.com");
         return request;
     }
 }
