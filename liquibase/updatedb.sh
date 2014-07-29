@@ -13,6 +13,15 @@ dbVersion=0
 for dbname in `ls -d changelogs/*/$dbVersion | cut -f2 -d'/'`
 do
     if [[ ! -f "changelogs/$dbname/disabled.txt" ]]; then
-        python ./dbcmd.py -db:$dbname -ver:$dbVersion -cmd:update -yes "$@"
+        python ./dbcmd.py -db:$dbname -ver:$dbVersion -cmd:update -yes "$@" &
     fi
 done
+
+FAILED=0
+for job in `jobs -p`; do
+    wait $job || let "FAILED+=1"
+done
+
+if [ "$FAILED" != "0" ]; then
+    exit 1
+fi
