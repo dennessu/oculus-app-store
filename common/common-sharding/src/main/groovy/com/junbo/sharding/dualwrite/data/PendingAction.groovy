@@ -17,6 +17,7 @@ public class PendingAction extends ResourceMeta<Long> {
     private CloudantEntity savedEntity;
     private Long deletedKey;
     private Long changedEntityId;
+    private Integer retryCount;
 
     public Long getId() {
         return id;
@@ -56,5 +57,13 @@ public class PendingAction extends ResourceMeta<Long> {
 
     public boolean isDeleteAction() {
         return this.deletedKey != null;
+    }
+
+    Integer getRetryCount() {
+        return retryCount
+    }
+
+    void setRetryCount(Integer retryCount) {
+        this.retryCount = retryCount
     }
 }

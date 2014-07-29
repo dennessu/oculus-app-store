@@ -27,14 +27,11 @@ public class PendingActionReplayer {
 
     private BaseRepository repository;
     private PendingActionRepository pendingActionRepository;
-    private PlatformTransactionManager transactionManager;
     private AsyncTransactionTemplate transactionTemplate;
 
     public PendingActionReplayer(BaseRepository repository, PendingActionRepository pendingActionRepository, PlatformTransactionManager transactionManager) {
         this.repository = repository;
         this.pendingActionRepository = pendingActionRepository;
-        this.transactionManager = transactionManager;
-
         this.transactionTemplate = new AsyncTransactionTemplate(transactionManager);
         this.transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
     }

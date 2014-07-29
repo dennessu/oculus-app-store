@@ -24,6 +24,7 @@
         <property name="hardDelete" value="false" />
         <property name="mapper" ref="pendingActionMapper" />
         <property name="idGenerator" ref="oculus48IdGenerator" />
+        <property name="maxRetryCount" value="${common.sharding.pendingAction.maxRetryCount}" />
     </bean>
 
     <bean id="pendingActionCloudantRepo" class="com.junbo.sharding.dualwrite.data.PendingActionRepositoryCloudantImpl" parent="cloudantClient">

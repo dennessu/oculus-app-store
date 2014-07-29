@@ -16,6 +16,7 @@
                 saved_entity_type VARCHAR(255) NULL,
                 saved_entity JSON NULL,
                 deleted_key BIGINT NULL,
+                retry_count INT NOT NULL,
 
                 created_time TIMESTAMP NOT NULL,
                 created_by VARCHAR(64) NOT NULL,

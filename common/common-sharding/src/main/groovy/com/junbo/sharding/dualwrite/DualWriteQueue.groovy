@@ -28,6 +28,7 @@ public class DualWriteQueue {
         PendingAction pendingAction = new PendingAction()
         pendingAction.setSavedEntity(obj)
         pendingAction.setChangedEntityId(Utils.keyToLong(((Identifiable)obj).id))
+        pendingAction.setRetryCount(0)
 
         return repository.create(pendingAction);
     }

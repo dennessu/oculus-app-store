@@ -42,6 +42,7 @@ public class PendingActionMapper {
 
         result.setDeletedKey(pendingAction.getDeletedKey());
         result.setChangedEntityId(pendingAction.getChangedEntityId());
+        result.setRetryCount(pendingAction.getRetryCount());
         result.setResourceAge(pendingAction.getResourceAge());
         result.setCloudantRev(pendingAction.getCloudantRev());
         result.setCreatedTime(pendingAction.getCreatedTime());
@@ -78,6 +79,7 @@ public class PendingActionMapper {
 
         result.setDeletedKey(pendingAction.getDeletedKey());
         result.setChangedEntityId(pendingAction.getChangedEntityId());
+        result.setRetryCount(pendingAction.getRetryCount());
         result.setResourceAge(pendingAction.getResourceAge());
         result.setCloudantRev(pendingAction.getCloudantRev());
         result.setCreatedTime(pendingAction.getCreatedTime());

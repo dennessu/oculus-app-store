@@ -103,6 +103,7 @@ public class PendingActionRepoTest extends AbstractTestNGSpringContextTests {
     private PendingAction createSavedEntityPendingAction() {
         PendingAction pendingAction = new PendingAction();
         pendingAction.setId(null);
+        pendingAction.setRetryCount(0);
         pendingAction.setChangedEntityId(idGenerator.nextId());
         pendingAction.setSavedEntity(createFakeEntity());
         pendingAction.setDeletedKey(778899L);

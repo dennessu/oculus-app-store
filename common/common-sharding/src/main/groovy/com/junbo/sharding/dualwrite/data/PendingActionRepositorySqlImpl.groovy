@@ -24,6 +24,7 @@ public class PendingActionRepositorySqlImpl implements PendingActionRepository {
     private SessionFactory sessionFactory
     private ShardAlgorithm shardAlgorithm
     private boolean hardDelete;
+    private Integer maxRetryCount;
 
     private PendingActionMapper mapper;
     private IdGenerator idGenerator;
@@ -40,6 +41,11 @@ public class PendingActionRepositorySqlImpl implements PendingActionRepository {
 
     void setHardDelete(boolean hardDelete) {
         this.hardDelete = hardDelete
+    }
+
+    @Required
+    void setMaxRetryCount(Integer maxRetryCount) {
+        this.maxRetryCount = maxRetryCount
     }
 
     @Required
@@ -77,6 +83,7 @@ public class PendingActionRepositorySqlImpl implements PendingActionRepository {
         if (model.id == null) {
             model.id = idGenerator.nextId(model.getChangedEntityId());
         }
+        model.retryCount = 0
         model.createdBy = 123L      // TODO
         model.createdTime = new Date()
 
@@ -125,6 +132,7 @@ public class PendingActionRepositorySqlImpl implements PendingActionRepository {
 
         Criteria criteria = session.createCriteria(PendingActionEntity);
         criteria.add(Restrictions.ne("deleted", Boolean.TRUE));
+        criteria.add(Restrictions.le("retryCount", maxRetryCount));
         criteria.setFirstResult(offset)
         criteria.setMaxResults(limit)
 

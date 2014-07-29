@@ -39,6 +39,9 @@ public class PendingActionEntity implements CloudantEntity<Long> {
     @Column(name = "changed_entity_id")
     private Long changedEntityId;
 
+    @Column(name = "retry_count")
+    private Integer retryCount;
+
     @Column(name = "version")
     @Version
     private Integer resourceAge;
@@ -126,6 +129,14 @@ public class PendingActionEntity implements CloudantEntity<Long> {
 
     public void setResourceAge(Integer resourceAge) {
         this.resourceAge = resourceAge;
+    }
+
+    Integer getRetryCount() {
+        return retryCount
+    }
+
+    void setRetryCount(Integer retryCount) {
+        this.retryCount = retryCount
     }
 
     public Date getCreatedTime() {
