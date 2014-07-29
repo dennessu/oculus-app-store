@@ -47,6 +47,7 @@ class LoggerInitializer {
         SLF4JBridgeHandler.install()
 
         System.setProperty('net.spy.log.LoggerImpl', 'net.spy.memcached.compat.log.SLF4JLogger')
+        System.setProperty('org.jboss.logging.provider', 'slf4j')
         System.setProperty('logDir', getLogDir());
         if (System.getProperty('logback.configurationFile') == null) {
             ILoggerFactory factory = StaticLoggerBinder.singleton.loggerFactory

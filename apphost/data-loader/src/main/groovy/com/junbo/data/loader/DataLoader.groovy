@@ -141,6 +141,7 @@ class DataLoader {
 
     static void configLog() {
         System.setProperty('net.spy.log.LoggerImpl', 'net.spy.memcached.compat.log.SLF4JLogger')
+        System.setProperty('org.jboss.logging.provider', 'slf4j')
         ILoggerFactory factory = StaticLoggerBinder.singleton.loggerFactory
         LoggerContext context = (LoggerContext) factory
         context.stop()
