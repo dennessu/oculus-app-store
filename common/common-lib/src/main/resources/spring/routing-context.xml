@@ -16,6 +16,7 @@
             <list>
                 <value>X-Request-Id</value>
                 <value>Content-Length</value>
+                <value>Cache-Control</value>
             </list>
         </property>
     </bean>

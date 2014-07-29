@@ -28,6 +28,8 @@ public class RouterImpl implements Router {
     private static final String X_ROUTING_PATH = "X-Routing-Path";
     private static final String X_ROUTING_DC_SHARD = "X-Routing-DC-Shard";
     private static final String X_DATAACCESS_MODE = "X-DataAccess-Mode";
+    private static final String CACHE_CONTROL = "Cache-Control";
+    private static final String CACHE_CONTROL_NO_CACHE = "no-cache";
 
     private Topology topology;
     private boolean crossDcRoutingEnabled;
@@ -155,6 +157,15 @@ public class RouterImpl implements Router {
         if (policy == null) {
             policy = DataAccessPolicies.instance().getHttpDataAccessPolicy(JunboHttpContext.getRequestMethod(), resourceClass);
         }
+
+        if (policy == DataAccessPolicy.CLOUDANT_FIRST && "GET".equalsIgnoreCase(JunboHttpContext.getRequestMethod())) {
+            String cacheControl = requestHeaders.getFirst(CACHE_CONTROL);
+            // if the header is passed and it is Get method, will read sql first
+            if (!StringUtils.isEmpty(cacheControl) && cacheControl.equalsIgnoreCase(CACHE_CONTROL_NO_CACHE)) {
+                policy = DataAccessPolicy.SQL_FIRST;
+            }
+        }
+
         if (policy == null) {
             policy = defaultPolicy;
         }

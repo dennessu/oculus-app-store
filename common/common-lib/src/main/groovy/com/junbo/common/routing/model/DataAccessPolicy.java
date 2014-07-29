@@ -10,6 +10,7 @@ package com.junbo.common.routing.model;
  */
 public enum DataAccessPolicy {
     CLOUDANT_ROUTED,
+    CLOUDANT_FIRST,     // fallback to SQL_ONLY when Cache-Control: no-cache is specified.
     CLOUDANT_ONLY,
     SQL_FIRST,
     SQL_ONLY

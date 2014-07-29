@@ -103,6 +103,7 @@ class RepositoryProxy implements InvocationHandler {
         DataAccessStrategy result;
         switch (policy) {
             case DataAccessPolicy.CLOUDANT_ONLY:
+            case DataAccessPolicy.CLOUDANT_FIRST:
                 result = cloudantOnlyStrategy;
                 break;
             case DataAccessPolicy.SQL_FIRST:
