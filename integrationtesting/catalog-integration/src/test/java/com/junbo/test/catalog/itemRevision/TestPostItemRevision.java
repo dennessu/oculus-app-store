@@ -57,7 +57,7 @@ public class TestPostItemRevision extends BaseTestClass {
         organizationId = organizationService.postDefaultOrganization().getId();
 
         item1 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
-        item2 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
+        item2 = itemService.postDefaultItem(CatalogItemType.DOWNLOADED_ADDITION, organizationId);
     }
 
     @Property(
@@ -183,7 +183,7 @@ public class TestPostItemRevision extends BaseTestClass {
         Binary binary = new Binary();
         binary.setVersion("1");
         binary.setSize(1024L);
-        binary.setMd5("md5mabcdmd5mabcdmd5mabcdmd5mabcd");
+        binary.setMd5("abcdabcdabcdabcdabcdabcdabcdabcd");
         binary.setHref("http://www.google.com/downlaod/angrybird1_0.exe");
         binaries.put("PC", binary);
         testItemRevision.setBinaries(binaries);
@@ -192,11 +192,16 @@ public class TestPostItemRevision extends BaseTestClass {
         itemRevisionService.postItemRevision(testItemRevision);
 
         //duplicate packageName
+        Item item3 = itemService.postDefaultItem(CatalogItemType.APP, organizationId);
+
         String packageName = "packageName_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10);
         ItemRevision tmpItemRevision = itemRevisionService.prepareItemRevisionEntity(fullItemRevisionFileName);
         tmpItemRevision.setItemId(item2.getItemId());
         tmpItemRevision.setOwnerId(organizationId);
         tmpItemRevision.setPackageName(packageName);
+        List<String> hostItem = new ArrayList<>();
+        hostItem.add(item3.getItemId());
+        tmpItemRevision.setIapHostItemIds(hostItem);
         ItemRevision itemRevisionRtn = itemRevisionService.postItemRevision(tmpItemRevision);
 
         if (item2.getType().equalsIgnoreCase(CatalogItemType.APP.name()) ||
@@ -206,7 +211,16 @@ public class TestPostItemRevision extends BaseTestClass {
         }
         releaseItemRevision(itemRevisionRtn);
 
-        testItemRevision.setBinaries(null);
+        if (item1.getType().equalsIgnoreCase(CatalogItemType.APP.name()) ||
+                item1.getType().equalsIgnoreCase(CatalogItemType.DOWNLOADED_ADDITION.name())) {
+            testItemRevision.setDownloadName("download name");
+            testItemRevision.setBinaries(binaries);
+        }
+        else {
+            testItemRevision.setDownloadName(null);
+            testItemRevision.setBinaries(null);
+        }
+
         testItemRevision.setItemId(item1.getItemId());
         testItemRevision.setPackageName(packageName);
 

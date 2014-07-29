@@ -5,24 +5,20 @@
  */
 package com.junbo.test.catalog.catalogScenarios;
 
-import com.junbo.catalog.spec.model.common.Price;
-import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
-import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
-import com.junbo.common.id.*;
-import com.junbo.test.catalog.enums.*;
-import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
-import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
+import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
+import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
-import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.test.common.libs.RandomFactory;
@@ -31,8 +27,10 @@ import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.*;
 import com.junbo.common.model.Results;
+import com.junbo.test.catalog.enums.*;
 import com.junbo.test.catalog.impl.*;
 import com.junbo.test.catalog.*;
+import com.junbo.common.id.*;
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -349,14 +347,13 @@ public class Catalog extends BaseTestClass {
     )
     @Test
     public void testUploadingOfferToStore() throws Exception {
-        UserService userService = UserServiceImpl.instance();
         ItemService itemService = ItemServiceImpl.instance();
         ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
         OfferService offerService = OfferServiceImpl.instance();
         OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
+        OrganizationService organizationService = OrganizationServiceImpl.instance();
 
-        //Prepare a super user
-        String superUserId = userService.PostUser();
+        OrganizationId organizationId = organizationService.postDefaultOrganization().getId();
 
         //Show all previously submitted offers
         HashMap<String, List<String>> paraMap = new HashMap<>();
@@ -364,7 +361,7 @@ public class Catalog extends BaseTestClass {
 
         //Simulate app submission process
         //1. Post an Item
-        Item item = itemService.postDefaultItem(CatalogItemType.APP);
+        Item item = itemService.postDefaultItem(CatalogItemType.APP, organizationId);
 
         //2. Post an item revision
         ItemRevision itemRevision = itemRevisionService.postDefaultItemRevision(item);
@@ -374,7 +371,7 @@ public class Catalog extends BaseTestClass {
         itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
 
         //4. Post an offer
-        Offer offer = offerService.postDefaultOffer();
+        Offer offer = offerService.postDefaultOffer(organizationId);
 
         //5. Post an offer revision
         OfferRevision offerRevision = offerRevisionService.postDefaultOfferRevision(offer, item);
@@ -455,7 +452,7 @@ public class Catalog extends BaseTestClass {
 
         String offerId100 = offerServiceAPI.getOfferIdByName(offer100);
         if (offerId100 != null) {
-            Assert.assertTrue(offerId1.equalsIgnoreCase("No such predefined offer"));
+            Assert.assertTrue(offerId100.equalsIgnoreCase("No such predefined offer"));
         }
     }
 

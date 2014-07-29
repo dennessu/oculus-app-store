@@ -10,10 +10,12 @@ import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
 import com.junbo.common.id.OrganizationId;
+import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.test.catalog.*;
 import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.test.catalog.enums.CatalogItemAttributeType;
@@ -25,6 +27,8 @@ import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
+import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.property.Component;
@@ -34,7 +38,9 @@ import com.junbo.test.common.property.Status;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -223,8 +229,10 @@ public class casesForBugs extends BaseTestClass {
     public void testSameOwnerId() throws Exception {
 
         //item and item revision
-        OrganizationId organizationId1 = organizationService.postDefaultOrganization().getId();
-        OrganizationId organizationId2 = organizationService.postDefaultOrganization().getId();
+        Organization organization1 = organizationService.postDefaultOrganization();
+        Organization organization2 = organizationService.postDefaultOrganization();
+        OrganizationId organizationId1 = organization1.getId();
+        OrganizationId organizationId2 = organization2.getId();
 
         Item item = itemService.postDefaultItem(CatalogItemType.APP, organizationId2);
         ItemRevision itemRevisionPrepared = itemRevisionService.prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
@@ -245,12 +253,35 @@ public class casesForBugs extends BaseTestClass {
         //offer and offer revision
         Offer offer = offerService.postDefaultOffer(organizationId2);
         OfferRevision offerRevisionPrepared = offerRevisionService.prepareOfferRevisionEntity(defaultOfferRevisionFileName, organizationId1, false);
+
         offerRevisionPrepared.setOfferId(offer.getOfferId());
+
+        //Add item info
+        ItemEntry itemEntry = new ItemEntry();
+        List<ItemEntry> itemEntities = new ArrayList<>();
+        itemEntry.setItemId(item.getItemId());
+        itemEntry.setQuantity(1);
+        itemEntities.add(itemEntry);
+        offerRevisionPrepared.setItems(itemEntities);
 
         OfferRevision offerRevision = offerRevisionService.postOfferRevision(offerRevisionPrepared);
 
         offerRevision.setStatus(CatalogEntityStatus.PENDING_REVIEW.name());
 
+        try {
+            offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision, 400);
+        } catch (Exception ex) {
+            logger.logInfo("Expected exception");
+        }
+
+        //offer and subOffer
+        Master.getInstance().setCurrentUid(IdConverter.idToHexString(organization1.getOwnerId()));
+        Offer subOffer = offerService.postDefaultOffer(organizationId1);
+        releaseOffer(subOffer);
+
+        offerRevision.setOwnerId(organizationId2);
+
+        Master.getInstance().setCurrentUid(IdConverter.idToHexString(organization2.getOwnerId()));
         try {
             offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision, 400);
         } catch (Exception ex) {
