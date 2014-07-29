@@ -25,7 +25,7 @@ def silkcloud_utmain():
         error(e + "\nUnable to change current directory to : " + currentDir + ". Aborting...")
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-uri", nargs = '?', help = "The URI to the silkcloud service.", default = 'http://localhost:8080/')
+    parser.add_argument("-uri", nargs = '?', help = "The URI to the silkcloud service.", default = 'http://127.0.0.1:8080/')
     parser.add_argument("-client", nargs = '?', help = "The client ID used in test cases.", default = 'client')
     parser.add_argument("-secret", nargs = '?', help = "The client secret used in the test cases.", default = 'secret')
     parser.add_argument("-sleep", nargs = '?', help = "The sleep between API calls.")
