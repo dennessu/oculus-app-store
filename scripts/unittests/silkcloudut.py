@@ -25,7 +25,7 @@ def silkcloud_utmain():
         error(e + "\nUnable to change current directory to : " + currentDir + ". Aborting...")
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-uri", nargs = '?', help = "The URI to the silkcloud service.", default = 'http://127.0.0.1:8080/')
+    parser.add_argument("-uri", nargs = '?', help = "The URI to the silkcloud service.", default = 'http://localhost:8080/')
     parser.add_argument("-client", nargs = '?', help = "The client ID used in test cases.", default = 'client')
     parser.add_argument("-secret", nargs = '?', help = "The client secret used in the test cases.", default = 'secret')
     parser.add_argument("-sleep", nargs = '?', help = "The sleep between API calls.")
@@ -93,6 +93,7 @@ def curl(method, baseUrl, url = None, query= None, headers = None, body = None, 
     body, resp = curlRaw(method, baseUrl, url, query, headers, body, raiseOnError)
     return body
 
+connCache = {}
 def curlRaw(method, baseUrl, url = None, query= None, headers = None, body = None, raiseOnError = True):
     global cookies
 
@@ -114,18 +115,20 @@ def curlRaw(method, baseUrl, url = None, query= None, headers = None, body = Non
 
         userpass = m.group('userpass')
 
-        verbose("[req] " + method + " " + url)
-        for k, v in headers.items():
-            verbose("[req][header] %s: %s" % (k, v))
-        if body: verbose("[req][body] " + body)
-
         if port:
             port = int(port)
-        if protocol == "https://":
-            conn = httplib.HTTPSConnection(host, port)
+
+        global connCache
+        cacheKey = protocol + host + ":" + str(port)
+        if connCache.has_key(cacheKey):
+            conn = connCache[cacheKey]
         else:
-            conn = httplib.HTTPConnection(host, port)
- 
+            if protocol == "https://":
+                conn = httplib.HTTPSConnection(host, port)
+            else:
+                conn = httplib.HTTPConnection(host, port)
+            connCache[cacheKey] = conn
+
         if userpass:
             import base64
             base64String = base64.encodestring(userpass).strip()
@@ -136,6 +139,12 @@ def curlRaw(method, baseUrl, url = None, query= None, headers = None, body = Non
         request = HttpRequest(protocol, host, port, path, headers)
         cookies.add_cookie_header(request)
         headers = request.get_headers()
+
+        verbose("[req] " + method + " " + url)
+        for k, v in headers.items():
+            verbose("[req][header] %s: %s" % (k, v))
+        if body: verbose("[req][body] " + body)
+
 
         # uncomment to turn on trace
         # conn.set_debuglevel(1)      # turn on trace

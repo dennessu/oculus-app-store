@@ -45,7 +45,6 @@ applicationDistribution.with {
     from("${project.buildDir}/generated-res") { include("git.properties") }
 
     eachFile { FileCopyDetails f ->
-        println f.name
         if (!f.name.endsWith('.sh')) return
         f.filter(FixCrLfFilter, eol: FixCrLfFilter.CrLf.newInstance("lf"))
     }
