@@ -24,6 +24,7 @@ import com.junbo.entitlement.auth.EntitlementAuthorizeCallbackFactory;
 import com.junbo.entitlement.core.EntitlementService;
 import com.junbo.entitlement.db.repository.EntitlementRepository;
 import com.junbo.entitlement.spec.error.AppErrors;
+import com.junbo.entitlement.spec.model.DownloadUrlGetOptions;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
@@ -46,6 +47,9 @@ import java.util.*;
  */
 public class EntitlementServiceImpl extends BaseService implements EntitlementService {
     private static final Logger LOGGER = LoggerFactory.getLogger(EntitlementService.class);
+    private static final String ENTITLEMENT_SERVICE_SCOPE = "entitlement.service";
+    private static final String ITEM_BINARIES_MANAGE_SCOPE = "item-binaries.manage";
+
     @Autowired
     private EntitlementRepository entitlementRepository;
 
@@ -258,13 +262,30 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
     @Override
     @Transactional
-    public String getDownloadUrl(String entitlementId, String itemId, String platform) {
-        Entitlement entitlement = this.getEntitlement(entitlementId);
-        if (!itemId.equalsIgnoreCase(entitlement.getItemId())) {
-            throw AppCommonErrors.INSTANCE.fieldInvalid("itemId", "itemId does not match the itemId in entitlement").exception();
-
+    public String getDownloadUrl(String itemId, DownloadUrlGetOptions options) {
+        String platform = options.getPlatform();
+        if (StringUtils.isEmpty(platform)) {
+            throw AppCommonErrors.INSTANCE.fieldRequired("platform").exception();
         }
-        ItemRevision itemRevision = getItem(itemId);
+
+        ItemRevision itemRevision = null;
+        if(options.getEntitlementId() != null){
+            Entitlement entitlement = this.getEntitlement(options.getEntitlementId().getValue());
+            if (!itemId.equalsIgnoreCase(entitlement.getItemId())) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid("itemId", "itemId does not match the itemId in entitlement").exception();
+            }
+            itemRevision = getItem(itemId);
+        } else {
+            if(options.getItemRevisionId() == null){
+                throw AppCommonErrors.INSTANCE.fieldRequired("itemRevisionId").exception();
+            }
+            authorizeDownloadUrl();
+            itemRevision = itemFacade.getItemRevision(options.getItemRevisionId());
+        }
+        if(itemRevision == null){
+            throw AppCommonErrors.INSTANCE.fieldInvalid(null, "there is no matched itemRevision").exception();
+        }
+
         if (!itemRevision.getBinaries().keySet().contains(platform)) {
             throw AppCommonErrors.INSTANCE.fieldInvalid("platform", "there is no platform " +
                     platform + " in item "
@@ -366,6 +387,12 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         }
 
         return lastPart;
+    }
+
+    private static void authorizeDownloadUrl() {
+        if (!AuthorizeContext.hasScopes(ENTITLEMENT_SERVICE_SCOPE) && !AuthorizeContext.hasScopes(ITEM_BINARIES_MANAGE_SCOPE)) {
+            throw AppCommonErrors.INSTANCE.insufficientScope().exception();
+        }
     }
 
     public static String getBucketName() {

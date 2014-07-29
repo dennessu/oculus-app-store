@@ -1,8 +1,8 @@
 {
-    "name": "api.manage",
-    "description": "Scope to manage the api information.",
-    "tfaRequired": false,
-    "allowedUserGroups": [
-        "OculusVR.IdentityAdmin"
-    ]
-}
+     "name": "api.manage",
+     "description": "Scope to manage the api information.",
+     "tfaRequired": false,
+     "allowedUserGroups": [
+         "OculusVR.IdentityAdmin"
+     ]
+ }

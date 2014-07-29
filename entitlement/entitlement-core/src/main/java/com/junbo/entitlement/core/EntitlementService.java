@@ -6,6 +6,7 @@
 package com.junbo.entitlement.core;
 
 import com.junbo.common.model.Results;
+import com.junbo.entitlement.spec.model.DownloadUrlGetOptions;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
@@ -29,5 +30,5 @@ public interface EntitlementService {
 
     Entitlement getByTrackingUuid(Long shardMasterId, UUID trackingUuid);
 
-    String getDownloadUrl(String entitlementId, String itemId, String platform);
+    String getDownloadUrl(String itemId, DownloadUrlGetOptions options);
 }

@@ -5,8 +5,8 @@
  */
 package com.junbo.entitlement.spec.resource;
 
-import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.ItemId;
+import com.junbo.entitlement.spec.model.DownloadUrlGetOptions;
 import com.junbo.entitlement.spec.model.DownloadUrlResponse;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -27,7 +27,5 @@ public interface DownloadUrlResource {
     @ApiOperation("Get preSigned downloadUrl for an item")
     @GET
     @Path("/{itemId}")
-    Promise<DownloadUrlResponse> getDownloadUrl(@QueryParam("entitlementId") EntitlementId entitlementId,
-                                                @PathParam("itemId") ItemId itemId,
-                                                @QueryParam("platform") String platform);
+    Promise<DownloadUrlResponse> getDownloadUrl(@PathParam("itemId") ItemId itemId, @BeanParam DownloadUrlGetOptions options);
 }

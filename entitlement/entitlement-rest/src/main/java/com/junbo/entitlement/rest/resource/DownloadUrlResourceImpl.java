@@ -5,15 +5,13 @@
  */
 package com.junbo.entitlement.rest.resource;
 
-import com.junbo.common.error.AppCommonErrors;
-import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.ItemId;
 import com.junbo.entitlement.core.EntitlementService;
+import com.junbo.entitlement.spec.model.DownloadUrlGetOptions;
 import com.junbo.entitlement.spec.model.DownloadUrlResponse;
 import com.junbo.entitlement.spec.resource.DownloadUrlResource;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 
 /**
  * impl of DownloadUrlResource.
@@ -23,14 +21,8 @@ public class DownloadUrlResourceImpl implements DownloadUrlResource {
     private EntitlementService entitlementService;
 
     @Override
-    public Promise<DownloadUrlResponse> getDownloadUrl(EntitlementId entitlementId, ItemId itemId, String platform) {
-        if (entitlementId == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired("entitlementId").exception();
-        }
-        if (StringUtils.isEmpty(platform)) {
-            throw AppCommonErrors.INSTANCE.fieldRequired("platform").exception();
-        }
-        String url = entitlementService.getDownloadUrl(entitlementId.getValue(), itemId.getValue(), platform);
+    public Promise<DownloadUrlResponse> getDownloadUrl(ItemId itemId, DownloadUrlGetOptions options) {
+        String url = entitlementService.getDownloadUrl(itemId.getValue(), options);
         DownloadUrlResponse response = new DownloadUrlResponse();
         response.setRedirectUrl(url);
         return Promise.pure(response);

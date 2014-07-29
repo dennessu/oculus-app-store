@@ -5,10 +5,7 @@
  */
 package com.junbo.entitlement.clientproxy.catalog.impl;
 
-import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
-import com.junbo.catalog.spec.model.item.ItemsGetOptions;
+import com.junbo.catalog.spec.model.item.*;
 import com.junbo.catalog.spec.resource.proxy.ItemResourceClientProxy;
 import com.junbo.catalog.spec.resource.proxy.ItemRevisionResourceClientProxy;
 import com.junbo.common.model.Results;
@@ -31,6 +28,19 @@ public class ItemFacadeImpl implements ItemFacade {
     @Autowired
     @Qualifier("entitlementItemRevisionClient")
     private ItemRevisionResourceClientProxy itemRevisionClient;
+
+    @Override
+    public ItemRevision getItemRevision(String itemRevisionId) {
+        ItemRevision itemRevision = null;
+        try {
+            LOGGER.info("Getting itemRevision [{}] started.", itemRevisionId);
+            itemRevision = itemRevisionClient.getItemRevision(itemRevisionId, new ItemRevisionGetOptions()).get();
+            LOGGER.info("Getting itemRevision [{}] finished.", itemRevisionId);
+        } catch (Exception e) {
+            LOGGER.error("Getting itemRevision [{" + itemRevisionId + "}] failed.", e);
+        }
+        return itemRevision;
+    }
 
     @Override
     public ItemRevision getItem(String itemId) {

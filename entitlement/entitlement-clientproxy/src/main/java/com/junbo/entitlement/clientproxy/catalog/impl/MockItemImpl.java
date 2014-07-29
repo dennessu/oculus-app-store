@@ -16,6 +16,11 @@ import java.util.Set;
  */
 public class MockItemImpl implements ItemFacade {
     @Override
+    public ItemRevision getItemRevision(String itemRevisionId) {
+        return new ItemRevision();
+    }
+
+    @Override
     public ItemRevision getItem(String itemId) {
         return new ItemRevision();
     }

@@ -1,0 +1,5 @@
+{
+    "name": "item-binaries.manage",
+    "description": "Scope to manage the item-binaries.",
+    "tfaRequired": false
+}
