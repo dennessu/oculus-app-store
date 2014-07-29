@@ -11,9 +11,9 @@ echo "server is [$role]"
 host=${role}_HOST
 port=${role}_DB_PORT
 
-psql postgres -h ${!host} -p ${!port} -c "SELECT pg_is_in_recovery();" -t > /dev/null
+psql postgres -h ${!host} -p ${!port} -c "SELECT pg_is_in_recovery();" -t | grep "f"
 
-if [[ $? = "f" ]] ; then
+if [[ $? -eq 0 ]] ; then
     echo "server is taking live traffic"
 else
     echo "server is in hot standby mode"

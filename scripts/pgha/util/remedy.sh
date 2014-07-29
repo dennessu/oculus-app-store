@@ -31,9 +31,12 @@ else
     echo "[REMEDY][$role] postgresql instance is running"
 fi
 
-psql postgres -h ${!host} -p ${!port} -c "SELECT pg_is_in_recovery();" -t > /dev/null
+psql postgres -h ${!host} -p ${!port} -c "SELECT pg_is_in_recovery();" -t | grep "f"
 
-if [[ ($? = "f") && ($role != "REPLICA") ]] ; then
+in_recovery=$?
+
+# londiste root
+if [[ ($in_recovery -eq 0) && ($role != "REPLICA") ]] ; then
     echo "[REMEDY][$role] server is taking live traffic"
 
     echo "[REMEDY][$role] kill skytools instance"
@@ -56,6 +59,7 @@ else
     echo "the server is standby or replica"
 fi
 
+# londiste leaf
 if [[ $role = "REPLICA" ]] ; then
     echo "[REMEDY][$role] kill skytools instance"
     forceKillPid $SKYTOOL_PID_PATH
@@ -73,4 +77,25 @@ if [[ $role = "REPLICA" ]] ; then
 
     echo "[REMEDY][$role] start pgqd deamon"
     $DEPLOYMENT_PATH/londiste/londiste_pgqd.sh
+fi
+
+# pgbouncer
+if [[ ($in_recovery -eq 0) && ($role = "MASTER") ]] ; then
+    echo "[REMEDY][$role] pgbouncer -> master"
+    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
+fi
+
+if [[ ($in_recovery -ne 0) && ($role = "MASTER") ]] ; then
+    echo "[REMEDY][$role] pgbouncer -> slave"
+    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_slave.sh
+fi
+
+if [[ ($in_recovery -eq 0) && ($role = "SLAVE") ]] ; then
+    echo "[REMEDY][$role] pgbouncer -> slave"
+    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_slave.sh
+fi
+
+if [[ ($in_recovery -ne 0) && ($role = "SLAVE") ]] ; then
+    echo "[REMEDY][$role] pgbouncer -> master"
+    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_master.sh
 fi
