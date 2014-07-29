@@ -21,4 +21,5 @@ dependencies {
     compile junboProject(':fulfilment-rest')
     compile junboProject(':order-rest')
     compile junboProject(':authorization-rest')
+    compile junboProject(':store-rest')
 }
