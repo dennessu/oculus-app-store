@@ -84,7 +84,7 @@ public class BillingTestDataProvider extends BaseTestDataProvider {
                 typeSpecificDetails.setEncryptedCvmCode(creditCardInfo.getEncryptedCVMCode());
                 paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
                 paymentInstrument.setAccountName(creditCardInfo.getAccountName());
-                paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
+                paymentInstrument.setAccountNumber(creditCardInfo.getAccountNum());
                 paymentInstrument.setIsValidated(creditCardInfo.isValidated());
                 paymentInstrument.setType(creditCardInfo.getType().getValue());
                 paymentInstrument.setBillingAddressId(creditCardInfo.getBillingAddressId());

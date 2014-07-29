@@ -104,7 +104,7 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 paymentInstrument.setLastValidatedTime(gc.getTime());
                 paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
                 paymentInstrument.setAccountName(creditCardInfo.getAccountName());
-                paymentInstrument.setAccountNum(creditCardInfo.getAccountNum());
+                paymentInstrument.setAccountNumber(creditCardInfo.getAccountNum());
                 paymentInstrument.setIsValidated(creditCardInfo.isValidated());
                 paymentInstrument.setType(creditCardInfo.getType().getValue());
                 paymentInstrument.setBillingAddressId(creditCardInfo.getBillingAddressId());
@@ -128,7 +128,7 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
             case PAYPAL:
                 PayPalInfo payPalInfo = (PayPalInfo) paymentInfo;
                 paymentInstrument.setAccountName(payPalInfo.getAccountName());
-                paymentInstrument.setAccountNum(payPalInfo.getAccountNum());
+                paymentInstrument.setAccountNumber(payPalInfo.getAccountNum());
                 paymentInstrument.setIsValidated(payPalInfo.isValidated());
                 paymentInstrument.setType(payPalInfo.getType().getValue());
                 paymentInstrument.setBillingAddressId(payPalInfo.getBillingAddressId());
@@ -139,7 +139,7 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
             case OTHERS:
                 AdyenInfo adyenInfo = (AdyenInfo) paymentInfo;
                 paymentInstrument.setAccountName(adyenInfo.getAccountName());
-                paymentInstrument.setAccountNum(adyenInfo.getAccountNum());
+                paymentInstrument.setAccountNumber(adyenInfo.getAccountNum());
                 paymentInstrument.setIsValidated(adyenInfo.isValidated());
                 paymentInstrument.setType(adyenInfo.getType().getValue());
                 paymentInstrument.setBillingAddressId(adyenInfo.getBillingAddressId());

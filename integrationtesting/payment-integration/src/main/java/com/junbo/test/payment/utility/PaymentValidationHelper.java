@@ -46,7 +46,7 @@ public class PaymentValidationHelper extends BaseValidationHelper {
                 String maskedCCNum = expectedCreditCard.getAccountNum().substring(0, 6) + "******" +
                         expectedCreditCard.getAccountNum().substring(12);
                 //verify basic credit card info
-                verifyEqual(actualPI.getAccountNum(), maskedCCNum, "verify credit card number");
+                verifyEqual(actualPI.getAccountNumber(), maskedCCNum, "verify credit card number");
 
                 verifyEqual(typeSpecificDetails.getExpireDate(), expectedCreditCard.getExpireDate(),
                         "verify expire date");
