@@ -216,6 +216,7 @@ def curl(url, method = 'GET', body = None, headers = None, raiseOnError = True):
         raise Exception('%s %s in %s %s\n%s' % (status, reason, method, url, resp))
     return resp
 
+connCache = {}
 def curlRaw(url, method = 'GET', body = None, headers = None):
     if headers is None: headers = {}
 
@@ -238,10 +239,17 @@ def curlRaw(url, method = 'GET', body = None, headers = None):
 
         if port:
             port = int(port)
-        if protocol == "https://":
-            conn = httplib.HTTPSConnection(host, port)
+
+        global connCache
+        cacheKey = protocol + host + ":" + str(port)
+        if connCache.has_key(cacheKey):
+            conn = connCache[cacheKey]
         else:
-            conn = httplib.HTTPConnection(host, port)
+            if protocol == "https://":
+                conn = httplib.HTTPSConnection(host, port)
+            else:
+                conn = httplib.HTTPConnection(host, port)
+            connCache[cacheKey] = conn
  
         if userpass:
             import base64
