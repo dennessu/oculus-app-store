@@ -56,6 +56,22 @@ public class CreditCardInfo extends PaymentInstrumentBase {
         return randomCreditCard;
     }
 
+    public static CreditCardInfo getRandomCreditCardInfo(Address address){
+        CreditCardInfo randomCreditCard = new CreditCardInfo();
+        randomCreditCard.setAccountName(RandomFactory.getRandomStringOfAlphabet(5));
+
+        String[] creditCardArray = new String[]{"4111111111111111", "4012888888881881"};
+        randomCreditCard.setAccountNum(creditCardArray[RandomFactory.getRandomInteger(1)]);
+        //randomCreditCard.setAccountNum(CreditCardGenerator.VISA.getRandomNumber());
+        randomCreditCard.setEncryptedCVMCode(getCVMCode(CreditCardGenerator.VISA.toString(), true));
+        randomCreditCard.setExpireDate(getFormattedExpireDate());
+        randomCreditCard.setPhone(Phone.getRandomPhone());
+        randomCreditCard.setAddress(address);
+        randomCreditCard.setValidated(false);
+        randomCreditCard.setDefault(true);
+        return randomCreditCard;
+    }
+
     public static CreditCardInfo getExpiredCreditCardInfo(Country country){
         CreditCardInfo randomCreditCard = new CreditCardInfo();
         randomCreditCard.setAccountName(RandomFactory.getRandomStringOfAlphabet(5));

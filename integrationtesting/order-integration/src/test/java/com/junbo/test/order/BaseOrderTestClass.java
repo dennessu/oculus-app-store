@@ -23,6 +23,9 @@ public class BaseOrderTestClass {
     protected String offer_inApp_consumable2;
     protected String offer_digital_free;
     protected String offer_physical_free;
+    protected String offer_digital_uat;
+    protected String offer_download_uat;
+    protected String offer_physical_uat;
 
     public BaseOrderTestClass() {
         super();
@@ -40,6 +43,9 @@ public class BaseOrderTestClass {
         offer_inApp_consumable2 = ConfigHelper.getSetting("testdata.offer.inApp.consumable.normal2");
         offer_digital_free = ConfigHelper.getSetting("testdata.offer.digital.free");
         offer_physical_free = ConfigHelper.getSetting("testdata.offer.physical.free");
+        offer_digital_uat = ConfigHelper.getSetting("testdata.offer.digital.uat");
+        offer_download_uat = ConfigHelper.getSetting("testdata.offer.download.uat");
+        offer_physical_uat = ConfigHelper.getSetting("testdate.offer.physical.uat");
     }
 
     OrderTestDataProvider testDataProvider = new OrderTestDataProvider();

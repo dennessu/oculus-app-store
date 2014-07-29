@@ -31,6 +31,8 @@ public class BaseTestClass extends TestClass {
     protected String offer_digital_free;
     protected String offer_physical_free;
     protected String offer_digital_uat;
+    protected String offer_download_uat;
+    protected String offer_physical_uat;
 
     public BaseTestClass() {
         loadOffers();
@@ -51,6 +53,8 @@ public class BaseTestClass extends TestClass {
         offer_digital_free = ConfigHelper.getSetting("testdata.offer.digital.free");
         offer_physical_free = ConfigHelper.getSetting("testdata.offer.physical.free");
         offer_digital_uat = ConfigHelper.getSetting("testdata.offer.digital.uat");
+        offer_download_uat = ConfigHelper.getSetting("testdata.offer.download.uat");
+        offer_physical_uat = ConfigHelper.getSetting("testdate.offer.physical.uat");
     }
 
 }

@@ -2,32 +2,27 @@ package com.junbo.test.buyerscenario;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.enumid.CountryId;
-import com.junbo.common.model.Results;
-import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.identity.spec.v1.model.Address;
 import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderEvent;
-import com.junbo.payment.spec.model.PaymentCallbackParams;
 import com.junbo.test.buyerscenario.util.BaseTestClass;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.Entities.paymentInstruments.AdyenInfo;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
-import com.junbo.test.common.apihelper.order.OrderEventService;
-import com.junbo.test.common.apihelper.order.impl.OrderEventServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
-import com.junbo.test.payment.apihelper.PaymentCallbackService;
-import com.junbo.test.payment.apihelper.impl.PaymentCallbackServiceImpl;
 import org.apache.commons.collections.map.HashedMap;
 import org.testng.annotations.Test;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -111,30 +106,137 @@ public class UAT extends BaseTestClass {
             }
     )
     @Test
-    public void testUATByCreditCard() throws Exception {
+    public void testUATDigitalByCreditCard() throws Exception {
 
-        Address address = new Address();
-        UserAddress userAddress = addressCA1;
-        address.setStreet1(userAddress.Street1);
-        address.setCity(userAddress.City);
-        address.setCountryId(new CountryId(Country.DEFAULT.toString()));
-        address.setSubCountry(userAddress.SubCountry);
-        address.setPostalCode(userAddress.PostalCode);
+        List<UserAddress> userAddressList = new ArrayList<>();
+        userAddressList.add(addressCA1);
+        userAddressList.add(addressNC);
+        userAddressList.add(addressON);
+
+        for (UserAddress userAddress : userAddressList) {
+
+            Address address = new Address();
+            address.setStreet1(userAddress.Street1);
+            address.setCity(userAddress.City);
+            address.setCountryId(new CountryId(Country.DEFAULT.toString()));
+            address.setSubCountry(userAddress.SubCountry);
+            address.setPostalCode(userAddress.PostalCode);
+
+            String uid = testDataProvider.createUser(userAddress.VATId, address);
+
+            Map<String, Integer> offerList = new HashedMap();
+
+            offerList.put(offer_digital_uat, 1);
+
+            CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+            String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
+
+            String orderId = testDataProvider.postOrder(uid,
+                    userAddress.Country, userAddress.Currency, creditCardId, false, offerList);
+
+            orderId = testDataProvider.updateOrderTentative(orderId, false);
+        }
+
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "BuyerScenarios",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test digital good checkout",
+            steps = {
+                    "1. UAT Scenarios",
+            }
+    )
+    @Test
+    public void testUATDownloadByCreditCard() throws Exception {
+
+        List<UserAddress> userAddressList = new ArrayList<>();
+        userAddressList.add(addressCA1);
+        userAddressList.add(addressMN);
+        userAddressList.add(addressNV);
+        userAddressList.add(addressON);
 
 
-        String uid = testDataProvider.createUser(null, address);
+        for (UserAddress userAddress : userAddressList) {
 
-        Map<String, Integer> offerList = new HashedMap();
+            Address address = new Address();
+            address.setStreet1(userAddress.Street1);
+            address.setCity(userAddress.City);
+            address.setCountryId(new CountryId(Country.DEFAULT.toString()));
+            address.setSubCountry(userAddress.SubCountry);
+            address.setPostalCode(userAddress.PostalCode);
 
-        offerList.put(offer_digital_uat, 1);
+            String uid = testDataProvider.createUser(userAddress.VATId, address);
 
-        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
-        String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
+            Map<String, Integer> offerList = new HashedMap();
 
-        String orderId = testDataProvider.postOrder(uid,
-                Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
+            offerList.put(offer_download_uat, 1);
 
-        orderId = testDataProvider.updateOrderTentative(orderId, false);
+            CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+            String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
+
+            String orderId = testDataProvider.postOrder(uid,
+                    userAddress.Country, Currency.DEFAULT, creditCardId, false, offerList);
+
+            orderId = testDataProvider.updateOrderTentative(orderId, false);
+        }
+
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "BuyerScenarios",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test digital good checkout",
+            steps = {
+                    "1. UAT Scenarios",
+            }
+    )
+    @Test
+    public void testUATPhysicalByCreditCard() throws Exception {
+
+        List<UserAddress> userAddressList = new ArrayList<>();
+        userAddressList.add(addressCA1);
+        userAddressList.add(addressTX);
+        userAddressList.add(addressNC);
+        userAddressList.add(addressMD);
+        userAddressList.add(addressMN);
+        userAddressList.add(addressWA);
+        userAddressList.add(addressCA2);
+        userAddressList.add(addressON);
+        userAddressList.add(addressBC);
+        userAddressList.add(addressPE);
+        userAddressList.add(addressQC);
+        userAddressList.add(addressYT);
+        userAddressList.add(addressMX);
+
+        for (UserAddress userAddress : userAddressList) {
+
+            Address address = new Address();
+            address.setStreet1(userAddress.Street1);
+            address.setCity(userAddress.City);
+            address.setCountryId(new CountryId(Country.DEFAULT.toString()));
+            address.setSubCountry(userAddress.SubCountry);
+            address.setPostalCode(userAddress.PostalCode);
+
+            String uid = testDataProvider.createUser(userAddress.VATId, address);
+
+            Map<String, Integer> offerList = new HashedMap();
+            offerList.put(offer_physical_uat, 1);
+
+            CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+            String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
+
+            String orderId = testDataProvider.postOrder(uid,
+                    userAddress.Country, Currency.DEFAULT, creditCardId, true, offerList);
+
+            orderId = testDataProvider.updateOrderTentative(orderId, false);
+        }
 
     }
 
@@ -189,30 +291,47 @@ public class UAT extends BaseTestClass {
         String City;
         String SubCountry;
         String PostalCode;
-        String PhoneNum;
-        String CountryId;
+        String VATId;
+        Country Country;
+        Currency Currency;
 
         public UserAddress(String street1, String city, String subCountry, String postalCode,
-                           String phoneNum, String countryId) {
+                           String vatId, Country country, Currency currency) {
             Street1 = street1;
             City = city;
             SubCountry = subCountry;
             PostalCode = postalCode;
-            PhoneNum = phoneNum;
-            CountryId = countryId;
+            VATId = vatId;
+            Country = country;
+            Currency = currency;
         }
     }
 
-    UserAddress addressCA1 = new UserAddress("150 S 1st St #135", "San Jose", "CA", "95113", "408-293-9945", "US");
+    UserAddress addressCA1 = new UserAddress("150 S 1st St #135", "San Jose", "CA", "95113", null, Country.US, Currency.USD);
     UserAddress addressTX = new UserAddress("910 Louisiana Street #135", "Houston", "TX",
-            "77002", "713-224-5800", "US");
-    UserAddress addressNC = new UserAddress("500 Fayetteville Street", "Raleigh", "NC", "27601", "919-334-9894", "US");
-    UserAddress addressMD = new UserAddress("16 Church Circle", "Annapolis", "MD", "21401", "410-263-2641", "US");
-    UserAddress addressMN = new UserAddress("Country Road B West", "Roseville", "MN", "55113", "651-482-0198", "US");
+            "77002", "713-224-5800", Country.US, Currency.USD);
+    UserAddress addressNC = new UserAddress("500 Fayetteville Street", "Raleigh", "NC", "27601", null, Country.US, Currency.USD);
+    UserAddress addressMD = new UserAddress("16 Church Circle", "Annapolis", "MD", "21401", null, Country.US, Currency.USD);
+    UserAddress addressMN = new UserAddress("Country Road B West", "Roseville", "MN", "55113", null, Country.US, Currency.USD);
     UserAddress addressCA2 = new UserAddress("643-693 Santa Cruz Avenus", "Menlo Park", "CA",
-            "94027", "650-323-5118", "US");
+            "94027", null, Country.US, Currency.USD);
     UserAddress addressWA = new UserAddress("550 Capital Way South, Space C", "Olympia", "WA",
-            "98501", "360-753-7771", "US");
-    UserAddress addressNV = new UserAddress("400 West 5th Street #101", "Reno", "NV", "89503", "775-348-7800", "US");
+            "98501", null, Country.US, Currency.USD);
+    UserAddress addressNV = new UserAddress("400 West 5th Street #101", "Reno", "NV", "89503", null, Country.US, Currency.USD);
+
+    UserAddress addressIE1 = new UserAddress("Kilmartin N6 Centre, Dublin Rd", null, null, null, "CY88788", Country.IE, Currency.EUR);
+    UserAddress addressIE2 = new UserAddress("Kilmartin N6 Centre, Dublin Rd", null, null, null, "IE909096", Country.IE, Currency.EUR);
+    UserAddress addressIE3 = new UserAddress("Kilmartin N6 Centre, Dublin Rd", null, null, null, "DE132456", Country.IE, Currency.EUR);
+    UserAddress addressIE4 = new UserAddress("Kilmartin N6 Centre, Dublin Rd", null, null, null, null, Country.IE, Currency.EUR);
+
+    UserAddress addressBC = new UserAddress("Suite D-5519 Gitselasu Rd", null, "BC", "V8G 0A9", null, Country.CA, Currency.USD);
+    UserAddress addressPE = new UserAddress("University Ave, Charlottetown", null, "C1A 8R8", "PE", null, Country.CA, Currency.USD);
+    UserAddress addressQC = new UserAddress("Accueil Sud Km 33 Rte 167", null, "G8J 1Y4", "QC", null, Country.CA, Currency.USD);
+    UserAddress addressON = new UserAddress("Ogoki", "Ogoki", "ON", "P0T2L0", null, Country.CA, Currency.USD);
+    UserAddress addressONVat = new UserAddress("Ogoki", "Ogoki", "ON", "P0T2L0", "CA232132132", Country.CA, Currency.USD);
+    UserAddress addressYT = new UserAddress("Mayo Yukon College", null, "Y0B 1M0", "QC", null, Country.CA, Currency.USD);
+
+    UserAddress addressMX = new UserAddress("16 de Septiembre 79, Centro", null, "06000", null, null, Country.MX, Currency.USD);
+
 
 }
