@@ -24,16 +24,16 @@ ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
     forceKillPid $SKYTOOL_PID_PATH
 ENDSSH
 
-xlog_location=`psql postgres -h $BCP_HOST -p $SLAVE_DB_PORT -c "SELECT pg_current_xlog_location();" -t | tr -d ' '`
+xlog_location=`psql postgres -h $BCP_HOST -p $BCP_DB_PORT -c "SELECT pg_current_xlog_location();" -t | tr -d ' '`
 echo "[FAILBACK][MASTER] current xlog location is [$xlog_location]"
 
 ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$BCP_HOST << ENDSSH
     echo "[FAILBACK][BCP] gracefully shutdown bcp database"
-    $PGBIN_PATH/pg_ctl stop -m fast -D $SLAVE_DATA_PATH
+    $PGBIN_PATH/pg_ctl stop -m fast -D $BCP_DATA_PATH
 ENDSSH
 
 echo "[FAILBACK][MASTER] copy unarchived log files"
-rsync -azhv $DEPLOYMENT_ACCOUNT@$BCP_HOST:$SLAVE_DATA_PATH/pg_xlog/* $MASTER_ARCHIVE_PATH
+rsync -azhv $DEPLOYMENT_ACCOUNT@$BCP_HOST:$BCP_DATA_PATH/pg_xlog/* $MASTER_ARCHIVE_PATH
 
 echo "[FAILBACK][MASTER] waiting for master catching up with bcp"
 while [ `psql postgres -h $MASTER_HOST -p $MASTER_DB_PORT -c "SELECT pg_xlog_location_diff(pg_last_xlog_replay_location(), '$xlog_location');" -t | tr -d ' '` -lt 0 ]
@@ -59,18 +59,18 @@ echo "[FAILBACK][MASTER] master can be written"
 
 ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$BCP_HOST << ENDSSH
     echo "[BCP] configure recovery.conf for bcp"
-    cat > $SLAVE_DATA_PATH/recovery.conf <<EOF
+    cat > $BCP_DATA_PATH/recovery.conf <<EOF
 recovery_target_timeline = 'latest'
-restore_command = 'cp $SLAVE_ARCHIVE_PATH/%f %p'
+restore_command = 'cp $BCP_ARCHIVE_PATH/%f %p'
 standby_mode = 'on'
 primary_conninfo = 'user=$PGUSER host=$MASTER_HOST port=$MASTER_DB_PORT sslmode=prefer sslcompression=1 krbsrvname=$PGUSER'
 trigger_file = '$PROMOTE_TRIGGER_FILE'
 EOF
 
     echo "[FAILBACK][BCP] start bcp database"
-    $PGBIN_PATH/pg_ctl -D $SLAVE_DATA_PATH -l "${SLAVE_LOG_PATH}/postgresql-$(date +%Y.%m.%d.%S.%N).log" start > /dev/null 2>&1 &
+    $PGBIN_PATH/pg_ctl -D $BCP_DATA_PATH -l "${BCP_LOG_PATH}/postgresql-$(date +%Y.%m.%d.%S.%N).log" start > /dev/null 2>&1 &
 
-    while ! echo exit | nc $BCP_HOST $SLAVE_DB_PORT;
+    while ! echo exit | nc $BCP_HOST $BCP_DB_PORT;
     do
         sleep 1 && echo "[BCP] waiting for bcp database start up...";
     done

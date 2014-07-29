@@ -33,10 +33,10 @@ ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
 ENDSSH
 
 echo "[FAILOVER][BCP] copy unarchived log files"
-rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_DATA_PATH/pg_xlog/* $SLAVE_ARCHIVE_PATH
+rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_DATA_PATH/pg_xlog/* $BCP_ARCHIVE_PATH
 
 echo "[FAILOVER][BCP] waiting for bcp catching up with master"
-while [ `psql postgres -h $BCP_HOST -p $SLAVE_DB_PORT -c "SELECT pg_xlog_location_diff(pg_last_xlog_replay_location(), '$xlog_location');" -t | tr -d ' '` -lt 0 ]
+while [ `psql postgres -h $BCP_HOST -p $BCP_DB_PORT -c "SELECT pg_xlog_location_diff(pg_last_xlog_replay_location(), '$xlog_location');" -t | tr -d ' '` -lt 0 ]
 do
     sleep 1 && echo "[BCP] bcp is catching up..."; 
 done
@@ -46,11 +46,11 @@ echo "[FAILOVER][BCP] promote bcp database to take traffic"
 touch $PROMOTE_TRIGGER_FILE
 
 echo "[FAILOVER][BCP] waiting for bcp promote"
-while ! echo exit | psql postgres -h $BCP_HOST -p $SLAVE_DB_PORT -c "SELECT pg_is_in_recovery();" -t | grep "f"; do sleep 1 && echo "[BCP] bcp is promoting..."; done
+while ! echo exit | psql postgres -h $BCP_HOST -p $BCP_DB_PORT -c "SELECT pg_is_in_recovery();" -t | grep "f"; do sleep 1 && echo "[BCP] bcp is promoting..."; done
 echo "[FAILOVER][BCP] bcp promoted!"
 
 echo "[FAILOVER][BCP] ensure bcp can be written"
-while ! echo exit | psql postgres -h $BCP_HOST -p $SLAVE_DB_PORT -c "insert into dummy_test values($(($(date +%s%N)/1000000)));" || echo "ERROR" | grep -v "ERROR";
+while ! echo exit | psql postgres -h $BCP_HOST -p $BCP_DB_PORT -c "insert into dummy_test values($(($(date +%s%N)/1000000)));" || echo "ERROR" | grep -v "ERROR";
 do
    sleep 1 && echo "[FAILOVER][BCP] bcp is still in read-only status...";
 done
@@ -62,7 +62,7 @@ ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$MASTER_HOST << ENDSSH
 recovery_target_timeline = 'latest'
 restore_command = 'cp $MASTER_ARCHIVE_PATH/%f %p'
 standby_mode = 'on'
-primary_conninfo = 'user=$PGUSER host=$BCP_HOST port=$SLAVE_DB_PORT sslmode=prefer sslcompression=1 krbsrvname=$PGUSER'
+primary_conninfo = 'user=$PGUSER host=$BCP_HOST port=$BCP_DB_PORT sslmode=prefer sslcompression=1 krbsrvname=$PGUSER'
 trigger_file = '$PROMOTE_TRIGGER_FILE'
 EOF
 
@@ -84,7 +84,7 @@ do
     config=$SKYTOOL_CONFIG_PATH/${db}_root.ini
 
     echo "[FAILOVER][BCP] update root node location"
-    psql ${db} -h $BCP_HOST -p $SLAVE_DB_PORT -c "update pgq_node.node_location set node_location = 'dbname=${db} host=$BCP_HOST port=$SLAVE_DB_PORT' where queue_name = 'queue_${db}' and node_name = 'root_node_${db}';"
+    psql ${db} -h $BCP_HOST -p $BCP_DB_PORT -c "update pgq_node.node_location set node_location = 'dbname=${db} host=$BCP_HOST port=$BCP_DB_PORT' where queue_name = 'queue_${db}' and node_name = 'root_node_${db}';"
 
     echo "[FAILOVER][BCP] start londiste worker for database [$db]"
     londiste3 -d $config worker > /dev/null 2>&1 &
@@ -99,7 +99,7 @@ ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$REPLICA_HOST << ENDSSH
         config=$SKYTOOL_CONFIG_PATH/\${db}_leaf.ini
 
         echo "[FAILOVER][REPLICA] update root node location"
-        psql \${db} -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "update pgq_node.node_location set node_location = 'dbname=\${db} host=$BCP_HOST port=$SLAVE_DB_PORT' where queue_name = 'queue_\${db}' and node_name = 'root_node_\${db}';"
+        psql \${db} -h $REPLICA_HOST -p $REPLICA_DB_PORT -c "update pgq_node.node_location set node_location = 'dbname=\${db} host=$BCP_HOST port=$BCP_DB_PORT' where queue_name = 'queue_\${db}' and node_name = 'root_node_\${db}';"
 
         echo "[FAILOVER][REPLICA] start worker for database [\$db]"
         londiste3 -d \$config worker > /dev/null 2>&1 &

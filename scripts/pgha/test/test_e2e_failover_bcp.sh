@@ -7,9 +7,12 @@ source ${DIR}/../util/common.sh
 echo "do bcp failover"
 ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$BCP_HOST << ENDSSH
     $DEPLOYMENT_PATH/switchover/failover_bcp.sh
-    $DEPLOYMENT_PATH/pgbouncer/pgbouncer_bcp.sh
 ENDSSH
 
+#primary pgbouncer
+$DEPLOYMENT_PATH/pgbouncer/pgbouncer_bcp.sh
+
+#secondary pgbouncer
 ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$SLAVE_HOST << ENDSSH
     $DEPLOYMENT_PATH/pgbouncer/pgbouncer_bcp.sh
 ENDSSH
