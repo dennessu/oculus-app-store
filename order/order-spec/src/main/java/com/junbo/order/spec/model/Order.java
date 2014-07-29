@@ -18,6 +18,7 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.jackson.annotation.ShippingMethodId;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.ResourceMetaForDualWrite;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -52,6 +53,7 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
     @ApiModelProperty(required = true, position = 30, value = "Whether it's a tentative order.")
     private Boolean tentative;
 
+    @XSSFreeString
     @ApiModelProperty(required = true, position = 40, value = "[Client Immutable] The Order Status. " +
             "The state diagram is here: https://www.lucidchart.com/documents/edit/4bf4b274-532a-b700-bdd9-6da00a009107",
             allowableValues = "OPEN, PENDING, " +

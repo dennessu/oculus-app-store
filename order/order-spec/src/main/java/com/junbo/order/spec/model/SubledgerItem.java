@@ -7,6 +7,7 @@ package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.*;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.junbo.common.model.ResourceMetaForDualWrite;
 
 import java.math.BigDecimal;
@@ -23,8 +24,10 @@ public class SubledgerItem extends ResourceMetaForDualWrite<SubledgerItemId> {
     private BigDecimal totalPayoutAmount;
     private Long totalQuantity;
     private OrderItemId orderItem;
+    @XSSFreeString
     private String subledgerItemAction;
     private OfferId offer;
+    @XSSFreeString
     private String status;
 
     public SubledgerItemId getId() {

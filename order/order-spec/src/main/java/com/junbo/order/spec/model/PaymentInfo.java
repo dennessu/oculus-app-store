@@ -6,6 +6,7 @@
 package com.junbo.order.spec.model;
 
 import com.junbo.common.id.PaymentInstrumentId;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
@@ -23,10 +24,13 @@ public class PaymentInfo {
     private BigDecimal paymentAmount;
 
     // urls for web payment
+    @XSSFreeString
     @ApiModelProperty(required = true, position = 30, value = "[Client Immutable] The redirect url on success. ")
     private String successRedirectUrl;
+    @XSSFreeString
     @ApiModelProperty(required = true, position = 40, value = "[Client Immutable] The redirect url on cancellation. ")
     private String cancelRedirectUrl;
+    @XSSFreeString
     @ApiModelProperty(required = true, position = 50, value = "[Client Immutable] The redirect url on confirmation. ")
     private String providerConfirmUrl;
     // end of urls

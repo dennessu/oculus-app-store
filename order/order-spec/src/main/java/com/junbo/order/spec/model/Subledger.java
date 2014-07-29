@@ -12,6 +12,7 @@ import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.common.id.SubledgerId;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.junbo.common.model.ResourceMetaForDualWrite;
 
 import java.math.BigDecimal;
@@ -29,6 +30,7 @@ public class Subledger extends ResourceMetaForDualWrite<SubledgerId> {
     private SubledgerId id;
     private OrganizationId seller;
     private OfferId offer;
+    @XSSFreeString
     private String payoutStatus;
     private Date startTime;
     private Date endTime;

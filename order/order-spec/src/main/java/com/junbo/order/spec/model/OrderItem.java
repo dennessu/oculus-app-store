@@ -15,6 +15,7 @@ import com.junbo.common.id.OrderId;
 import com.junbo.common.id.OrderItemId;
 import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.jackson.annotation.ShippingMethodId;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.junbo.common.model.ResourceMetaForDualWrite;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -83,6 +84,7 @@ public class OrderItem extends ResourceMetaForDualWrite<OrderItemId> {
     @CloudantIgnore
     private PreorderInfo preorderInfo;
 
+    @XSSFreeString
     @JsonProperty("futureExpansion")
     private String properties;
 

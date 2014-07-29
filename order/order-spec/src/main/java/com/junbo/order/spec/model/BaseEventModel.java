@@ -6,6 +6,7 @@
 package com.junbo.order.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.junbo.common.model.ResourceMetaForDualWrite;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -15,6 +16,7 @@ import java.util.UUID;
  * Created by chriszhu on 2/26/14.
  */
 public abstract class BaseEventModel<K> extends ResourceMetaForDualWrite<K> {
+    @XSSFreeString
     @ApiModelProperty(required = true, position = 100, value = "The order-event action. " +
             "RATE: rate the order, " +
             "CHARGE: charge the order, " +
@@ -29,6 +31,7 @@ public abstract class BaseEventModel<K> extends ResourceMetaForDualWrite<K> {
             allowableValues = "RATE, CHARGE, FULFILL, AUTHORIZE, REFUND, " +
                     "CANCEL, PREORDER, PARTIAL_REFUND, CAPTURE, PARTIAL_CHARGE")
     private String action;
+    @XSSFreeString
     @ApiModelProperty(required = true, position = 110, value = "The order-event status. " +
             "OPEN: init status. " +
             "PROCESSING: being processed at server side, " +
@@ -40,6 +43,7 @@ public abstract class BaseEventModel<K> extends ResourceMetaForDualWrite<K> {
     private String status;
     @JsonIgnore
     private UUID trackingUuid;
+    @XSSFreeString
     @ApiModelProperty(required = true, position = 120, value = "The order-event properties, json format. ")
     private String properties;
 

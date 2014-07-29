@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.OrderId;
 import com.junbo.common.id.OrderItemId;
 import com.junbo.common.id.PromotionId;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.junbo.common.model.ResourceMetaForDualWrite;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -28,6 +29,7 @@ public class Discount extends ResourceMetaForDualWrite<Long> {
     @JsonIgnore
     private OrderItemId orderItemId;
 
+    @XSSFreeString
     @ApiModelProperty(required = true, position = 20, value = "[Client Immutable] The discount type. ",
             allowableValues = "OFFER_DISCOUNT, ORDER_DISCOUNT, SHIPPING_FEE_DISCOUNT. ")
     private String type;
@@ -42,6 +44,7 @@ public class Discount extends ResourceMetaForDualWrite<Long> {
     @ApiModelProperty(required = true, position = 50, value = "[Client Immutable] The discount linked promotion.")
     private PromotionId promotion;
 
+    @XSSFreeString
     @ApiModelProperty(required = false, position = 10, value = "The coupon linked discount.")
     private String coupon;
 
