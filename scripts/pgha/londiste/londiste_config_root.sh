@@ -14,7 +14,7 @@ createDir $SKYTOOL_CONFIG_PATH
 createDir $SKYTOOL_PID_PATH
 createDir $SKYTOOL_LOG_PATH
 
-role=`cat $PGHA_BASE/role.conf`
+role=`getServerRole`
 host=${role}_HOST
 port=${role}_DB_PORT
 

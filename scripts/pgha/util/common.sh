@@ -124,6 +124,12 @@ function createDir {
     chmod 700 $1
 }
 
+# get current date time
 function now {
     return $(date +"%Y.%m.%d.%S.%N")
+}
+
+# get server role
+function getServerRole {
+    echo `cat $PGHA_BASE/role.conf`
 }
