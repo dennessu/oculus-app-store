@@ -51,3 +51,5 @@ applicationDistribution.with {
 }
 
 task('silkcloud', dependsOn: [ 'installApp', 'distZip' ])
+
+defaultTasks 'silkcloud'

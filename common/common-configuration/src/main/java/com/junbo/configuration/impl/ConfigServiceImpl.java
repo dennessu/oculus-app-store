@@ -110,6 +110,8 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
                 value = "*****";
                 properties.put(key, value);
             } else {
+                // replace all URL passwords included in the URL
+                value = value.replaceAll("://(?<username>[^/@:]+):(?<password>[^/@]*)@", "://$1:*****@");
                 properties.put(key, value);
             }
         }
@@ -247,6 +249,11 @@ public class ConfigServiceImpl implements com.junbo.configuration.ConfigService 
 
         String jarFilePath = jarInfo[0].substring(jarInfo[0].indexOf("/"));
         String packagePath = jarInfo[1].substring(1);
+
+        // make sure the path ends with /
+        if (!packagePath.endsWith("/")) {
+            packagePath = packagePath + "/";
+        }
         try {
             JarFile jarFile = new JarFile(jarFilePath);
             Enumeration<JarEntry> entries = jarFile.entries();
