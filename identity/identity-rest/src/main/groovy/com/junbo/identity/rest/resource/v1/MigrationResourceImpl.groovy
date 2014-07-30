@@ -111,11 +111,6 @@ class MigrationResourceImpl implements MigrationResource {
             throw new IllegalArgumentException('email can\'t be null')
         }
 
-        if (oculusInput.maskNameAndMail) {
-            oculusInput.username = UUID.randomUUID().toString()
-            oculusInput.email = UUID.randomUUID().toString() + '@oculusTest.com'
-        }
-
         // Check current email isn't used by others
         return checkPasswordValid(oculusInput).then {
             return checkUserValid(oculusInput)

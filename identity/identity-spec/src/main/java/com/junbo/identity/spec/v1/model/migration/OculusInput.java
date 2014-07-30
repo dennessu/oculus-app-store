@@ -36,8 +36,6 @@ public class OculusInput {
     // the communication id that the user should have
     private List<Map<String, Boolean>> communications;
 
-    private Boolean maskNameAndMail;
-
     public Long getCurrentId() {
         return currentId;
     }
@@ -180,13 +178,5 @@ public class OculusInput {
 
     public void setCommunications(List<Map<String, Boolean>> communications) {
         this.communications = communications;
-    }
-
-    public Boolean getMaskNameAndMail() {
-        return maskNameAndMail;
-    }
-
-    public void setMaskNameAndMail(Boolean maskNameAndMail) {
-        this.maskNameAndMail = maskNameAndMail;
     }
 }

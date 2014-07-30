@@ -8,6 +8,7 @@ import string
 import json
 import time
 import argparse
+import random
 from threading import Thread
 from Queue import Queue
 
@@ -62,7 +63,8 @@ def main():
         del user["optins"]
         user["communications"] = comm_array
         if args.mask_user == "true" and user["username"] not in white_list_user_names:
-            user["maskNameAndMail"] = True
+            user["username"] = randomword(20)
+            user["email"] = randomword(20) + '@oculusTest.com'
         input_users.append(user)
         count += 1
         if count == 20:
@@ -133,6 +135,10 @@ def test_comm(comm_map):
     
 def test_access_token(access_token):
     curl('http://127.0.0.1:8080/v1/oauth2/access-token/%s' % access_token)
+
+    
+def randomword(length):
+   return ''.join(random.choice(string.lowercase) for i in range(length)) 
 
 def curl(url, method = 'GET', body = None, headers = None, raiseOn5xxError = True, raiseOn4xxError = True):
     if headers is None: headers = {}
