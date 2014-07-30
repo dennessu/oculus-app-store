@@ -42,6 +42,8 @@ import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.entitlement.EntitlementService;
 import com.junbo.test.entitlement.impl.EntitlementServiceImpl;
 import com.junbo.test.fulfilment.utility.FulfilmentTestDataProvider;
+import com.junbo.test.order.model.enums.EventStatus;
+import com.junbo.test.order.model.enums.OrderActionType;
 import com.junbo.test.order.utility.OrderTestDataProvider;
 import com.junbo.test.payment.apihelper.PaymentService;
 import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
@@ -276,5 +278,10 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
 
     public List<String> getBalancesByOrderId(String orderId) throws Exception {
         return billingProvider.getBalancesByOrderId(orderId);
+    }
+
+    public void postOrderEvent(String orderId, EventStatus eventStatus, OrderActionType orderActionType)
+            throws Exception {
+        orderProvider.postOrderEvent(orderId, eventStatus,orderActionType);
     }
 }

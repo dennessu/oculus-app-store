@@ -20,10 +20,14 @@ import com.junbo.test.common.libs.DBHelper;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.ShardIdHelper;
 import com.junbo.test.payment.apihelper.PaymentService;
+import com.junbo.test.payment.apihelper.clientencryption.Card;
+import com.junbo.test.payment.apihelper.clientencryption.Encrypter;
+import com.junbo.test.payment.apihelper.clientencryption.EncrypterException;
 import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -98,13 +102,11 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
         switch (paymentInfo.getType()) {
             case CREDITCARD:
                 CreditCardInfo creditCardInfo = (CreditCardInfo) paymentInfo;
-                typeSpecificDetails.setExpireDate(creditCardInfo.getExpireDate());
-                typeSpecificDetails.setEncryptedCvmCode(creditCardInfo.getEncryptedCVMCode());
                 GregorianCalendar gc = new GregorianCalendar();
                 paymentInstrument.setLastValidatedTime(gc.getTime());
                 paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
                 paymentInstrument.setAccountName(creditCardInfo.getAccountName());
-                paymentInstrument.setAccountNumber(creditCardInfo.getAccountNum());
+                paymentInstrument.setAccountNumber(encryptCreditCardInfo(creditCardInfo));
                 paymentInstrument.setIsValidated(creditCardInfo.isValidated());
                 paymentInstrument.setType(creditCardInfo.getType().getValue());
                 paymentInstrument.setBillingAddressId(creditCardInfo.getBillingAddressId());
@@ -194,5 +196,30 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 ShardIdHelper.getShardIdByUid(uid), paymentId);
         dbHelper.executeUpdate(sqlStr, DBHelper.DBName.PAYMENT);
     }
+
+    public String encryptCreditCardInfo(CreditCardInfo creditCardInfo) throws EncrypterException{
+        Encrypter e = new Encrypter(pubKey);
+
+        Card card = new Card.Builder(new Date())
+                .number(creditCardInfo.getAccountNum())
+                .cvc(creditCardInfo.getEncryptedCVMCode())
+                .expiryMonth("06")
+                .expiryYear("2020")
+                .holderName(creditCardInfo.getAccountNum())
+                .build();
+
+        return e.encrypt(card.toString());
+
+    }
+
+    String pubKey = "10001|80C7821C961865FB4AD23F172E220F819A5CC7B9956BC3458E2788"
+            + "F9D725B07536E297B89243081916AAF29E26B7624453FC84CB10FC7DF386"
+            + "31B3FA0C2C01765D884B0DA90145FCE217335BCDCE4771E30E6E5630E797"
+            + "EE289D3A712F93C676994D2746CBCD0BEDD6D29618AF45FA6230C1D41FE1"
+            + "DB0193B8FA6613F1BD145EA339DAC449603096A40DC4BF8FACD84A5D2CA5"
+            + "ECFC59B90B928F31715A7034E7B674E221F1EB1D696CC8B734DF7DE2E309"
+            + "E6E8CF94156686558522629E8AF59620CBDE58327E9D84F29965E4CD0FAF"
+            + "A38C632B244287EA1F7F70DAA445D81C216D3286B09205F6650262CAB415"
+            + "5F024B3294A933F4DC514DE0B5686F6C2A6A2D";
 
 }

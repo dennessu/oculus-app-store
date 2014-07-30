@@ -13,6 +13,9 @@ import com.junbo.test.common.ConfigHelper;
 
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.order.apihelper.OrderEventService;
 
@@ -24,6 +27,7 @@ import com.junbo.test.order.apihelper.OrderEventService;
 public class OrderEventServiceImpl extends HttpClientBase implements OrderEventService {
 
     private static String orderEventUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "order-events";
+    private OAuthService oAuthTokenClient = OAuthServiceImpl.getInstance();
     private LogHelper logger = new LogHelper(OrderEventServiceImpl.class);
     private static OrderEventService instance;
     private boolean isServiceScope = true;
@@ -48,6 +52,7 @@ public class OrderEventServiceImpl extends HttpClientBase implements OrderEventS
         if (orderEvent.getAction().toLowerCase().contains("charge")) {
             responseBody = restApiCall(HTTPMethod.POST, orderEventUrl, orderEvent, expectedResponseCode);
         } else {
+            oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.ORDER);
             responseBody = restApiCall(HTTPMethod.POST, orderEventUrl, orderEvent, expectedResponseCode, true);
         }
         return new JsonMessageTranscoder().decode(new TypeReference<OrderEvent>() {

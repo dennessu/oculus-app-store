@@ -1,6 +1,8 @@
 package com.junbo.test.buyerscenario;
 
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
+import com.junbo.test.order.model.enums.EventStatus;
+import com.junbo.test.order.model.enums.OrderActionType;
 import com.junbo.test.payment.apihelper.impl.PaymentCallbackServiceImpl;
 import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
@@ -183,6 +185,8 @@ public class CartCheckout extends BaseTestClass {
                 uid, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, true);
 
         orderId = testDataProvider.updateOrderTentative(orderId, false);
+
+        testDataProvider.postOrderEvent(orderId, EventStatus.COMPLETED, OrderActionType.FULFILL);
 
         validationHelper.validateOrderInfoByCartId(
                 uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, true);
@@ -503,8 +507,8 @@ public class CartCheckout extends BaseTestClass {
 
         orderId = testDataProvider.updateOrderTentative(orderId, false);
 
-       // validationHelper.validateOrderInfoByCartId(
-       //         uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, true);
+        // validationHelper.validateOrderInfoByCartId(
+        //         uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, true);
         Results<Entitlement> entitlementResults = testDataProvider.getEntitlementByUserId(uid);
 
         validationHelper.validateEntitlements(entitlementResults, offerList.size());
