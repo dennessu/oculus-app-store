@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-       ">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="__builtinMapper" class="com.junbo.oom.core.builtin.BuiltinMapper" />
     <bean id="__commonMapper" class="com.junbo.identity.data.mapper.CommonMapper" />
@@ -98,18 +96,22 @@
 
     <bean id="cloudantCountryRepository" class="com.junbo.identity.data.repository.impl.cloudant.CountryRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="country"/>
+        <property name="cacheManager" ref="identityCacheManager" />
     </bean>
 
     <bean id="cloudantCurrencyRepository" class="com.junbo.identity.data.repository.impl.cloudant.CurrencyRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="currency"/>
+        <property name="cacheManager" ref="identityCacheManager" />
     </bean>
 
     <bean id="cloudantLocaleRepository" class="com.junbo.identity.data.repository.impl.cloudant.LocaleRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="locale"/>
+        <property name="cacheManager" ref="identityCacheManager" />
     </bean>
 
     <bean id="cloudantPITypeRepository" class="com.junbo.identity.data.repository.impl.cloudant.PITypeRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="pitype"/>
+        <property name="cacheManager" ref="identityCacheManager" />
     </bean>
 
     <bean id="cloudantDeviceTypeRepository" class="com.junbo.identity.data.repository.impl.cloudant.DeviceTypeRepositoryCloudantImpl" parent="cloudantClient">
@@ -140,5 +142,14 @@
 
     <bean id="cloudantErrorInfoRepository" class="com.junbo.identity.data.repository.impl.cloudant.ErrorInfoRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="error_info" />
+    </bean>
+
+    <bean id="identityCacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+        <property name="configLocation">
+            <value>ehcache/identity_domain_data_ehcache.xml</value>
+        </property>
+    </bean>
+    <bean id="identityCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+        <property name="cacheManager" ref="identityCacheManagerFactory"/>
     </bean>
 </beans>

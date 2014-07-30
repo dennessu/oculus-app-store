@@ -28,6 +28,8 @@ dependencies {
 
     compile (libraries.querydsl_jpa)
     compile (libraries.querydsl_collections)
+    compile (libraries.ehcache)
+    compile (libraries.spring_context_support)
 
     processor (libraries.querydsl_apt)
     processor (libraries.persistence_api)

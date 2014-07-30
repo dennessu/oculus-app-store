@@ -119,7 +119,7 @@ class PITypeResourceImpl implements PITypeResource {
                     throw AppErrors.INSTANCE.piTypeNotFound(piTypeId).exception()
                 }
 
-                newPIType = piTypeFilter.filterForGet(newPIType, null)
+                newPIType = piTypeFilter.filterForGet(newPIType, getOptions.properties?.split(',') as List<String>)
                 return Promise.pure(newPIType)
             }
         }

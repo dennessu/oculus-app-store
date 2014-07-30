@@ -131,7 +131,7 @@ class LocaleResourceImpl implements LocaleResource {
                         throw AppErrors.INSTANCE.localeNotFound(localeId).exception()
                     }
 
-                    newLocale = localeFilter.filterForGet(newLocale, null)
+                    newLocale = localeFilter.filterForGet(newLocale, getOptions.properties?.split(',') as List<String>)
                     return Promise.pure(newLocale)
                 }
             }

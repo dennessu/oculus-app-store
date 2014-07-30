@@ -129,7 +129,7 @@ class CountryResourceImpl implements CountryResource {
                 }
 
                 return filterCountry(newCountry, getOptions).then { Country filterCountry ->
-                    filterCountry = countryFilter.filterForGet(filterCountry, null)
+                    filterCountry = countryFilter.filterForGet(filterCountry, getOptions.properties?.split(',') as List<String>)
                     return Promise.pure(filterCountry)
                 }
             }

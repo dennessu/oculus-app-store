@@ -128,7 +128,7 @@ class CurrencyResourceImpl implements CurrencyResource {
                     throw AppErrors.INSTANCE.currencyNotFound(currencyId).exception()
                 }
                 return filterCurrency(newCurrency, getOptions).then { Currency filterCurrency ->
-                    filterCurrency = currencyFilter.filterForGet(filterCurrency, null)
+                    filterCurrency = currencyFilter.filterForGet(filterCurrency, getOptions.properties?.split(',') as List<String>)
                     return Promise.pure(filterCurrency)
                 }
             }
