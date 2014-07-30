@@ -1,22 +1,21 @@
 {
     "username": "csradmin",
-    "password": "csradmin",
-    "email": "csradmin@oculusvr.com",
+    "password": "Welcome123",
+    "email": "hao.min@oculusvr.com",
     "cor":	{
         "id" : "US"
     },
     "address": {
-        "street1": "800 West Campbell Road",
-        "city": "Richardson",
-        "postalCode": "75080",
+        "street1": "19800 MacArthur Blvd Suite",
+        "city": "Irvine",
+        "subCountry": "CA",
+        "postalCode": "92612",
         "countryId": {
             "id" : "US"
         }
     },
     "name": {
-        "givenName": "csradmin",
-        "middleName": "csradmin",
-        "familyName": "csradmin",
-        "nickName": "csradmin"
+        "givenName": "Hao",
+        "familyName": "Min"
     }
 }

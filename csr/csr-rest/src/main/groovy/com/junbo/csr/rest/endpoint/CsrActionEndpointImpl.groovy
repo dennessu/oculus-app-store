@@ -17,6 +17,8 @@ import com.junbo.oauth.spec.endpoint.TokenEndpoint
 import com.junbo.oauth.spec.model.AccessTokenRequest
 import com.junbo.oauth.spec.model.AccessTokenResponse
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
 
 /**
@@ -29,6 +31,7 @@ class CsrActionEndpointImpl implements CsrActionEndpoint {
     private String clientId
     private String clientSecret
     private String tokenScope
+    private final Logger LOGGER = LoggerFactory.getLogger(CsrActionEndpointImpl)
 
     @Required
     void setTokenEndpoint(TokenEndpoint tokenEndpoint) {
@@ -130,10 +133,12 @@ class CsrActionEndpointImpl implements CsrActionEndpoint {
                 throw appError
             }
             else {
+                LOGGER.error('post token failed', throwable)
                 throw AppErrors.INSTANCE.getAccessTokenFailed().exception()
             }
         }.then { AccessTokenResponse tokenResponse ->
             if (tokenResponse == null || tokenResponse.accessToken == null || tokenResponse.refreshToken == null || tokenResponse.expiresIn == null) {
+                LOGGER.error('post token returns empty access token')
                 throw AppErrors.INSTANCE.getAccessTokenFailed().exception()
             }
 
