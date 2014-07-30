@@ -5,6 +5,7 @@
  */
 package com.junbo.store.spec.model.login;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
 import com.junbo.store.spec.model.BaseResponse;
 
@@ -13,6 +14,7 @@ import com.junbo.store.spec.model.BaseResponse;
  */
 public class AuthTokenResponse extends BaseResponse {
 
+    @JsonProperty("user")
     private UserId userId;
 
     private String username;

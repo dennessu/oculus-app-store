@@ -17,7 +17,7 @@
     <bean id="defaultStoreResourceClientFactory" class="com.junbo.store.spec.resource.proxy.StoreResourceClientProxyFactory"/>
 
     <bean id="storeAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
-        <property name="scope" value="identity.service email.service payment.service"/>
+        <property name="scope" value="identity.service email.service payment.service order.service"/>
         <property name="deflectionInSeconds" value="300"/>
         <property name="clientSecret" value="${store.clientproxy.service.clientSecret}"/>
         <property name="clientId" value="${store.clientproxy.service.clientId}"/>

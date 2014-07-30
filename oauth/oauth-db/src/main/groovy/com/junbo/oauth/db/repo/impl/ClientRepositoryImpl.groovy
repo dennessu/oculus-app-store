@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.db.repo.impl
 
+import com.junbo.common.id.UserId
 import com.junbo.oauth.db.dao.ClientDAO
 import com.junbo.oauth.db.entity.ClientEntity
 import com.junbo.oauth.db.repo.ClientRepository
@@ -55,7 +56,7 @@ class ClientRepositoryImpl implements ClientRepository {
                 id: client.clientId,
                 clientSecret: client.clientSecret,
                 clientName: client.clientName,
-                ownerUserId: client.ownerUserId,
+                ownerUserId: client.ownerUserId.value,
                 defaultRedirectUri: client.defaultRedirectUri,
                 redirectUris: client.redirectUris,
                 scopes: client.scopes,
@@ -81,7 +82,7 @@ class ClientRepositoryImpl implements ClientRepository {
                 clientId: entity.id,
                 clientSecret: entity.clientSecret,
                 clientName: entity.clientName,
-                ownerUserId: entity.ownerUserId,
+                ownerUserId: new UserId(entity.ownerUserId),
                 defaultRedirectUri: entity.defaultRedirectUri,
                 redirectUris: entity.redirectUris,
                 scopes: entity.scopes,

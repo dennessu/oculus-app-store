@@ -7,6 +7,7 @@ package com.junbo.oauth.spec.model
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.junbo.common.id.UserId
 import com.junbo.common.model.ResourceMeta
 import groovy.transform.CompileStatic
 
@@ -25,8 +26,8 @@ class Client extends ResourceMeta<String> {
     @JsonProperty('client_name')
     String clientName
 
-    @JsonProperty('owner_user_id')
-    Long ownerUserId
+    @JsonProperty('owner')
+    UserId ownerUserId
 
     @JsonProperty('redirect_uris')
     Set<String> redirectUris

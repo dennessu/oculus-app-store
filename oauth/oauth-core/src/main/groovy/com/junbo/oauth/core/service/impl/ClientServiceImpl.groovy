@@ -29,7 +29,7 @@ class ClientServiceImpl implements ClientService {
     private static final String CLIENT_INFO_SCOPE = 'client.info'
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile('[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\\.' +
-            '[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@\n(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?')
+            '[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?')
 
     private ClientRepository clientRepository
     private OAuthTokenService tokenService
@@ -64,7 +64,7 @@ class ClientServiceImpl implements ClientService {
 
         validateClient(client)
 
-        client.ownerUserId = AuthorizeContext.currentUserId.value
+        client.ownerUserId = AuthorizeContext.currentUserId
         String clientId = tokenGenerator.generateClientId()
         while (clientRepository.getClient(clientId) != null) {
             clientId = tokenGenerator.generateClientId()

@@ -115,7 +115,7 @@ class CatalogFacadeImpl implements CatalogFacade {
             }.then {
                 offer.type = getType(items)
                 return identityFacade.getOrganization(or.ownerId?.value).recover {
-                    return Promise.pure(offer)
+                    return Promise.pure(null)
                 }.then { Organization org ->
                     offer.owner = org
                     return Promise.pure(offer)

@@ -5,6 +5,7 @@
  */
 package com.junbo.store.spec.model.purchase;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.OrderId;
 import com.junbo.store.spec.model.BaseResponse;
 
@@ -13,6 +14,7 @@ import com.junbo.store.spec.model.BaseResponse;
  */
 public class MakeFreePurchaseResponse extends BaseResponse {
 
+    @JsonProperty("order")
     private OrderId orderId;
 
     private AppDeliveryData appDeliveryData;
