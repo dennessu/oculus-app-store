@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.junbo.com/schema/webflow http://www.junbo.com/schema/webflow-config/webflow.xsd">
 
-    <wf:flow id="PHYSICAL_SETTLE">
+    <wf:flow id="PREORDER_SETTLE">
         <wf:action-state id="validation">
             <wf:action ref="validateUserAction"/>
             <wf:action ref="validatePaymentInstrumentsAction"/>
@@ -19,7 +19,7 @@
         </wf:action-state>
 
         <wf:action-state id="auth">
-            <wf:action ref="physicalSettleAction"/>
+            <wf:action ref="depositAction"/>
             <wf:transition on="*" to="checkasynccharge"/>
         </wf:action-state>
 

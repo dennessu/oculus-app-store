@@ -106,7 +106,7 @@ class OrderServiceContextBuilder {
 
         assert (context != null && context.order != null)
 
-        if (!context.fulfillmentRequest) {
+        if (context.fulfillmentRequest != null) {
             return Promise.pure(context.fulfillmentRequest)
         }
         return refreshFulfillmentRequest(context)

@@ -53,8 +53,17 @@ class BillingFacadeImpl implements BillingFacade {
     }
 
     @Override
-    Promise<Balance> captureBalance(Long balanceId) {
-        return null
+    Promise<Balance> captureBalance(Balance balance) {
+        return balanceResource.captureBalance(balance).recover { Throwable ex ->
+            LOGGER.error('name=BillingFacadeImpl_Capture_Balance_Error', ex)
+            throw convertError(ex).exception()
+        }.then { Balance b ->
+            if (b == null) {
+                LOGGER.error('name=BillingFacadeImpl_Capture_Balance_Null')
+                throw AppErrors.INSTANCE.billingResultInvalid('Capture balance response is null').exception()
+            }
+            return Promise.pure(b)
+        }
     }
 
     @Override
@@ -99,8 +108,8 @@ class BillingFacadeImpl implements BillingFacade {
             throw convertError(ex).exception()
         }.then { Balance b ->
             if (b == null) {
-                LOGGER.error('name=BillingFacadeImpl_Create_Balance_Null')
-                throw AppErrors.INSTANCE.billingResultInvalid('Create balance response is null').exception()
+                LOGGER.error('name=BillingFacadeImpl_Confirm_Balance_Null')
+                throw AppErrors.INSTANCE.billingResultInvalid('Confirm balance response is null').exception()
             }
             LOGGER.info('name=BillingFacadeImpl_Confirm_Balance_Success')
             return Promise.pure(b)

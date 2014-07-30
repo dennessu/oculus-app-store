@@ -5,11 +5,10 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.junbo.com/schema/webflow http://www.junbo.com/schema/webflow-config/webflow.xsd">
 
-    <wf:flow id="COMPLETE_CHARGE">
+    <wf:flow id="CAPTURE_ORDER">
         <wf:end-state id="endState">
             <wf:on-entry>
-                <wf:action ref="completeCharge_physicalSettleAction"/>
-                <wf:action ref="sendEmailAction"/>
+                <wf:action ref="captureOrderAction"/>
                 <wf:action ref="updateOrderAction"/>
             </wf:on-entry>
         </wf:end-state>

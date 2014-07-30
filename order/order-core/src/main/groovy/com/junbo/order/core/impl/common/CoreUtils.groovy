@@ -294,7 +294,7 @@ class CoreUtils {
         switch (event.action) {
             case OrderActionType.CHARGE.name():
                 return order.status == OrderStatus.PENDING.name()
-            case OrderActionType.CAPTURE.name():
+            case OrderActionType.FULFILL.name():
                 return order.status == OrderStatus.PENDING.name()
             default:
                 throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
@@ -512,6 +512,11 @@ class CoreUtils {
             }
         }
         return order
+    }
+
+    static Boolean isBalanceSettled(Balance balance) {
+        return balance.status == BalanceStatus.COMPLETED.name() ||
+                balance.status == BalanceStatus.AWAITING_PAYMENT.name()
     }
 
     static Order refreshFulfillmentHistories(Order order, FulfilmentRequest fr) {

@@ -211,6 +211,29 @@ class OrderInternalServiceImpl implements OrderInternalService {
     }
 
     @Override
+    Promise<Order> captureOrder(Order order, OrderServiceContext orderServiceContext) {
+        assert (order != null)
+        return facadeContainer.billingFacade.getBalancesByOrderId(order.getId().value).then { List<Balance> balances ->
+            Balance pendingBalance = balances.find { Balance balance ->
+                balance.type == BalanceType.MANUAL_CAPTURE.name() &&
+                        balance.status == BalanceStatus.PENDING_CAPTURE.name()
+            }
+            if (pendingBalance == null) {
+                LOGGER.error('name=Capture_Failed_No_Balance_To_Capture.')
+                throw AppErrors.INSTANCE.orderNotCapturable().exception()
+            }
+            return facadeContainer.billingFacade.captureBalance(pendingBalance)
+                    .then { Balance capturedBalance ->
+                if (CoreUtils.isBalanceSettled(capturedBalance)) {
+                    persistBillingHistory(capturedBalance, BillingAction.CAPTURE, order)
+                    orderRepository.updateOrder(order, true, true, null)
+                }
+                return getOrderByOrderId(order.getId().value, orderServiceContext, true)
+            }
+        }
+    }
+
+    @Override
     @Transactional
     Promise<List<Order>> getOrdersByUserId(Long userId, OrderServiceContext context, OrderQueryParam orderQueryParam, PageParam pageParam) {
 

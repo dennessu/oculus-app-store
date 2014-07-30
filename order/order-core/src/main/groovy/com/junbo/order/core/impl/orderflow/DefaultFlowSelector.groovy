@@ -18,6 +18,7 @@ import com.junbo.order.spec.error.AppErrors
 import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.enums.EventStatus
 import com.junbo.order.spec.model.enums.OrderActionType
+import com.junbo.order.spec.model.enums.OrderStatus
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -76,11 +77,11 @@ class DefaultFlowSelector implements FlowSelector {
         assert (action != null)
         switch (action) {
             case OrderActionType.FULFILL.name():
-                // TODO: update fulfillment history
-                throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
-            case OrderActionType.CAPTURE.name():
+                if (CoreUtils.isPreorder(order) && CoreUtils.isPendingOnFulfillment(order, event)) {
+                    return Promise.pure(FlowType.COMPLETE_PREORDER.name())
+                }
                 if (CoreUtils.isPendingOnCapture(order)) {
-                    return Promise.pure(FlowType.COMPLETE_CHARGE.name())
+                    return Promise.pure(FlowType.CAPTURE_ORDER.name())
                 }
                 LOGGER.error('name=Capture_Event_Not_Expected. action: {}, status:{}', event.action, event.status)
                 throw AppErrors.INSTANCE.eventNotExpected(event.action, event.status).exception()
@@ -112,7 +113,7 @@ class DefaultFlowSelector implements FlowSelector {
                 case PIType.CREDITCARD:
                     // TODO: do not support mixed order containing both physical item & digital item now
                     if (CoreUtils.isPreorder(context.order)) {
-                        return Promise.pure(FlowType.PHYSICAL_SETTLE.name())
+                        return Promise.pure(FlowType.PREORDER_SETTLE.name())
                     }
                     return CoreUtils.hasPhysicalOffer(context.order) ? Promise.pure(FlowType.AUTH_SETTLE.name()) :
                             Promise.pure(FlowType.IMMEDIATE_SETTLE.name())

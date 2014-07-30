@@ -21,14 +21,12 @@
         <property name="orderActionType" value="AUTHORIZE"/>
     </bean>
 
-    <bean id="physicalSettleAction" class="com.junbo.order.core.impl.orderaction.PhysicalSettleAction">
+    <bean id="depositAction" class="com.junbo.order.core.impl.orderaction.DepositAction">
         <property name="orderActionType" value="PARTIAL_CHARGE"/>
-        <property name="completeCharge" value="false"/>
     </bean>
 
-    <bean id="completeCharge_physicalSettleAction" class="com.junbo.order.core.impl.orderaction.PhysicalSettleAction">
+    <bean id="completePreorderAction" class="com.junbo.order.core.impl.orderaction.CompletePreorderAction">
         <property name="orderActionType" value="CHARGE"/>
-        <property name="completeCharge" value="true"/>
     </bean>
 
     <bean id="fulfillmentAction" class="com.junbo.order.core.impl.orderaction.FulfillmentAction">
@@ -80,5 +78,9 @@
 
     <bean id="authEventCheckAction" class="com.junbo.order.core.impl.orderaction.OrderEventStatusCheckAction">
         <property name="orderActionType" value="AUTHORIZE"/>
+    </bean>
+
+    <bean id="captureOrderAction" class="com.junbo.order.core.impl.orderaction.CaptureOrderAction">
+        <property name="orderActionType" value="CAPTURE"/>
     </bean>
 </beans>

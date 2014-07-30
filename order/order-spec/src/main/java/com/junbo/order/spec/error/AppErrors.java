@@ -110,8 +110,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 412, code = "126", message = "Event Not Supported.", reason = "Event(action:{0}, status:{1}) is not expected.")
     AppError eventNotExpected(String action, String status);
 
-    @ErrorDef(httpStatusCode = 412, code = "127", message = "Balance Confirm Failed.")
-    AppError balanceConfirmFailed();
+    @ErrorDef(httpStatusCode = 412, code = "127", message = "Billing Web Payment Charge Failed.")
+    AppError billingWebpaymentChargeFailed();
 
     @ErrorDef(httpStatusCode = 412, code = "128", message = "Order Price Changed.")
     AppError orderPriceChanged();
@@ -154,4 +154,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "140", message = "Offer item type not valid.")
     AppError offerItemTypeNotValid();
+    
+    @ErrorDef(httpStatusCode = 412, code = "141", message = "Order Not capturable.")
+    AppError orderNotCapturable();
 }

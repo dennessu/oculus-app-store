@@ -68,6 +68,9 @@ class FulfillmentEventHistoryBuilder {
         if (orderItem == null) {
             return null
         }
+        if (orderItem.isPreorder) {
+            return FulfillmentEventType.PREORDER.name()
+        }
         return FulfillmentEventType.FULFILL.name()
     }
 

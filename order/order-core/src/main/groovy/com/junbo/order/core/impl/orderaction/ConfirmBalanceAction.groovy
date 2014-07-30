@@ -8,6 +8,7 @@ import com.junbo.order.clientproxy.FacadeContainer
 import com.junbo.order.core.annotation.OrderEventAwareAfter
 import com.junbo.order.core.annotation.OrderEventAwareBefore
 import com.junbo.order.core.impl.common.CoreBuilder
+import com.junbo.order.core.impl.common.CoreUtils
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContextBuilder
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
@@ -56,7 +57,7 @@ class ConfirmBalanceAction extends BaseOrderEventAwareAction {
             }
             if (unconfirmedBalances == null || CollectionUtils.isEmpty(unconfirmedBalances)) {
                 LOGGER.error('name=Confirm_Balance_No_Unconfirmed_Balance')
-                throw AppErrors.INSTANCE.balanceConfirmFailed().exception()
+                throw AppErrors.INSTANCE.billingWebpaymentChargeFailed().exception()
             }
             def balanceConfirmed = false
             return Promise.each(unconfirmedBalances) { Balance unconfirmedBalance ->
@@ -65,10 +66,12 @@ class ConfirmBalanceAction extends BaseOrderEventAwareAction {
                     LOGGER.error('name=Confirm_Balance_Error', throwable)
                     throw facadeContainer.billingFacade.convertError(throwable).exception()
                 }.then { Balance confirmedBalance ->
-                    if (confirmedBalance.status == BalanceStatus.COMPLETED.name()) {
+                    if (CoreUtils.isBalanceSettled(confirmedBalance)) {
                         orderInternalService.persistBillingHistory(confirmedBalance, BillingAction.CAPTURE, order)
                         balanceConfirmed = true
                     }
+                    LOGGER.error('name=Confirm_Balance_Error_Balance_Not_Settled, orderId = {}, balanceStatus={}',
+                        order.getId().value, confirmedBalance.status)
                     return Promise.pure(null)
                 }
             }.syncThen {
@@ -76,7 +79,7 @@ class ConfirmBalanceAction extends BaseOrderEventAwareAction {
                     return CoreBuilder.buildActionResultForOrderEventAwareAction(context, EventStatus.COMPLETED)
                 }
                 LOGGER.error('name=Confirm_Balance_No_Confirmed_Balance')
-                throw AppErrors.INSTANCE.balanceConfirmFailed().exception()
+                throw AppErrors.INSTANCE.billingWebpaymentChargeFailed().exception()
             }
         }
 

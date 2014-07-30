@@ -34,6 +34,8 @@ public interface OrderInternalService {
 
     Promise<Order> refundOrCancelOrder(Order order, OrderServiceContext orderServiceContext);
 
+    Promise<Order> captureOrder(Order order, OrderServiceContext orderServiceContext);
+
     void persistBillingHistory(Balance balance, BillingAction action, Order order);
 
     OrderEvent checkOrderEventStatus(Order order, OrderEvent event, List<Balance> balances);

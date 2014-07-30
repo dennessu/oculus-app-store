@@ -69,13 +69,17 @@ class OrderEventResourceImpl implements OrderEventResource {
         def callback = authorizeCallbackFactory.create(orderEvent.order as OrderId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('create-event') &&
-                    !(orderEvent.action == OrderActionType.CHARGE.name() &&
+                    !((orderEvent.action == OrderActionType.CHARGE.name() ||
+                        orderEvent.action == OrderActionType.FULFILL.name()) &&
                             (orderEvent.status == EventStatus.COMPLETED.name() ||
                                     orderEvent.status == EventStatus.FAILED.name()))) {
                 throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
             def context = new OrderServiceContext()
+            if (orderEvent.status == EventStatus.FAILED.name()) {
+                return orderEventService.recordEventHistory(orderEvent, context)
+            }
             return orderService.updateOrderByOrderEvent(orderEvent, context).then { OrderEvent event ->
                 return orderEventService.recordEventHistory(event, context)
             }
