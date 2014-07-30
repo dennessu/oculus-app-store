@@ -69,7 +69,7 @@ class ScopeServiceImpl implements ScopeService {
             throw AppErrors.INSTANCE.insufficientScope().exception()
         }
 
-        String[] names = scopeNames.split(',')
+        String[] names = scopeNames == null ? [] : scopeNames.split(',')
 
         List<Scope> scopes = []
         names.each { String name ->
