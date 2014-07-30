@@ -47,7 +47,7 @@ import java.util.concurrent.Callable;
  */
 public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
     private static final Logger LOGGER = LoggerFactory.getLogger(AdyenCCProivderServiceImpl.class);
-    private static final String PROVIDER_NAME = "AdyenCreditCard";
+    private static final String PROVIDER_NAME = "AdyenCC";
     private static final String CARD_BIN = "cardBin";
     @Autowired
     @Qualifier("oculus48IdGenerator")
