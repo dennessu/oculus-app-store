@@ -5,6 +5,7 @@
  */
 package com.junbo.test.catalog.offerRevision;
 
+import com.junbo.catalog.spec.enums.DistributionChannel;
 import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.offer.*;
@@ -28,10 +29,12 @@ import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.property.*;
 
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -188,89 +191,134 @@ public class TestPutOfferRevision extends BaseTestClass {
     public void testPutOfferRevisionInvalidScenarios() throws Exception {
 
         OfferRevision offerRevision = offerRevisionService.postDefaultOfferRevision(offer1);
+        OfferRevision offerRevisionTmp = offerRevisionService.postDefaultOfferRevision(offer1);
+        String offerRevisionId = offerRevision.getRevisionId();
+        String offerRevisionRev = offerRevision.getRev();
 
-        //update status
-        offerRevision.setStatus(CatalogEntityStatus.REJECTED.name());
-        offerRevision = offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
+        //not existed id
+        String invalidRevisionId = "AAAA";
+        verifyExpectedFailure(invalidRevisionId, offerRevision, 404);
 
-        offerRevision.setStatus(CatalogEntityStatus.PENDING_REVIEW.name());
-        offerRevision = offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
+        //existed but not its revision id
+        verifyExpectedFailure(offerRevisionTmp.getRevisionId(), offerRevision);
+
+        //update revision id
+        offerRevision.setRevisionId(invalidRevisionId);
+        verifyExpectedFailure(offerRevisionId, offerRevision);
+
+        offerRevision.setRevisionId(offerRevisionTmp.getRevisionId());
+        verifyExpectedFailure(offerRevisionId, offerRevision);
+
+        offerRevision.setRevisionId(offerRevisionId);
+
+        //update rev
+        offerRevision.setRev(RandomFactory.getRandomStringOfAlphabet(10));
+        verifyExpectedFailure(offerRevisionId, offerRevision);
+
+        offerRevision.setRev(offerRevisionRev);
+
+        //set status to null or invalid string(not enum value)
+        offerRevision.setStatus(null);
+        verifyExpectedFailure(offerRevisionId, offerRevision);
+
+        offerRevision.setStatus("invalidEnumValue");
+        verifyExpectedFailure(offerRevisionId, offerRevision);
+
+        offerRevision.setStatus(CatalogEntityStatus.DRAFT.name());
+
+        //OfferId to null or not existed value or to another offer
+        offerRevision.setOfferId(null);
+        verifyExpectedFailure(offerRevisionId, offerRevision);
+
+        offerRevision.setOfferId(invalidRevisionId);
+        verifyExpectedFailure(offerRevisionId, offerRevision, 404);
+
+        offerRevision.setOfferId(offer2.getOfferId());
+        offerRevision = offerRevisionService.updateOfferRevision(offerRevisionId, offerRevision);
+
+        //update locale's name to null
+        offerRevision.getLocales().get(defaultLocale).setName(null);
+        verifyExpectedFailure(offerRevisionId, offerRevision);
+
+        offerRevision.getLocales().get(defaultLocale).setName(RandomFactory.getRandomStringOfAlphabet(10));
+
+        //set publisher to null
+        offerRevision.setOwnerId(null);
+
+        offerRevision = offerRevisionService.updateOfferRevision(offerRevisionId, offerRevision);
 
         offerRevision.setStatus(CatalogEntityStatus.APPROVED.name());
-        offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
+        verifyExpectedFailure(offerRevisionId, offerRevision);
 
-        //update distribution channel
-        offerRevision = offerRevisionService.postDefaultOfferRevision(offer2);
-        List<String> distributionChannel = new ArrayList<>();
-        distributionChannel.add("INAPP");
-        distributionChannel.add("STORE");
+        offerRevision.setOwnerId(organizationId);
 
-        offerRevision.setDistributionChannels(distributionChannel);
-        offerRevision = offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
+        //check distribution channel
+        offerRevision.setDistributionChannels(null);
 
-        //update Price
-        Price price = new Price();
+        offerRevision.setStatus(CatalogEntityStatus.DRAFT.name());
+        offerRevision = offerRevisionService.updateOfferRevision(offerRevisionId, offerRevision);
 
-        PriceTierService priceTierService = PriceTierServiceImpl.instance();
-        PriceTier priceTier = priceTierService.postDefaultPriceTier();
+        offerRevision.setStatus(CatalogEntityStatus.PENDING_REVIEW.name());
+        verifyExpectedFailure(offerRevisionId, offerRevision);
 
-        price.setPriceType(PriceType.TIERED.name());
-        price.setPriceTier(priceTier.getId());
+        List<String> channels = new ArrayList<>();
+        channels.add("INAPP");
+        channels.add("STORE");
+        channels.add("INVALIDCHANNEL");
 
-        offerRevision.setPrice(price);
-        offerRevision = offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
+        offerRevision.setDistributionChannels(channels);
 
-        //update restrictions
-        Restriction restriction = new Restriction();
-        List<String> exclusionItems = new ArrayList<>();
-        List<String> preconditionItems  = new ArrayList<>();
-        restriction.setLimitPerOrder(10);
-        restriction.setLimitPerCustomer(10);
+        offerRevision.setStatus(CatalogEntityStatus.REJECTED.name());
+        offerRevision = offerRevisionService.updateOfferRevision(offerRevisionId, offerRevision);
 
-        exclusionItems.add(item1.getItemId());
-        preconditionItems.add(item2.getItemId());
+        offerRevision.setStatus(CatalogEntityStatus.APPROVED.name());
+        verifyExpectedFailure(offerRevisionId, offerRevision);
 
-        restriction.setExclusionItems(exclusionItems);
-        restriction.setPreconditionItems(preconditionItems);
+        channels.clear();
+        channels.add("INAPP");
+        channels.add("STORE");
+        offerRevision.setDistributionChannels(channels);
 
-        offerRevision.setRestrictions(restriction);
-        offerRevision = offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
+        //check price
+        Price originalPrice = offerRevision.getPrice();
 
-        //update subOffers
-        List<String> subOffers = new ArrayList<>();
-        subOffers.add(offer1.getOfferId());
+        offerRevision.setPrice(null);
 
-        offerRevision.setSubOffers(subOffers);
-        offerRevision = offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
+        offerRevision.setStatus(CatalogEntityStatus.DRAFT.name());
+        offerRevision = offerRevisionService.updateOfferRevision(offerRevisionId, offerRevision);
 
-        //Update items
-        List<ItemEntry> items = offerRevision.getItems();
+        offerRevision.setStatus(CatalogEntityStatus.PENDING_REVIEW.name());
+        verifyExpectedFailure(offerRevisionId, offerRevision);
 
-        if (items == null) {
-            items = new ArrayList<>();
+        Price price = originalPrice;
+        price.setPriceType("invalid type");
+
+        offerRevision.setStatus(CatalogEntityStatus.REJECTED.name());
+        offerRevision = offerRevisionService.updateOfferRevision(offerRevisionId, offerRevision);
+
+        offerRevision.setStatus(CatalogEntityStatus.APPROVED.name());
+        verifyExpectedFailure(offerRevisionId, offerRevision);
+
+        price.setPriceType(PriceType.CUSTOM.name());
+
+        //check item
+
+        //check futureExpansion
+
+    }
+
+    private void verifyExpectedFailure(String offerRevisionId, OfferRevision offerRevision) throws Exception {
+        verifyExpectedFailure(offerRevisionId, offerRevision, 400);
+    }
+
+    private void verifyExpectedFailure(String offerRevisionId, OfferRevision offerRevision, int expectedResponseCode) throws Exception {
+        try {
+            offerRevisionService.updateOfferRevision(offerRevisionId, offerRevision, expectedResponseCode);
+            Assert.fail("should return expected exception");
         }
-
-        offerRevision.setItems(null);
-        offerRevision = offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
-
-        ItemEntry itemEntry = new ItemEntry();
-        itemEntry.setItemId(item3.getItemId());
-        itemEntry.setQuantity(1);
-        items.add(itemEntry);
-
-        offerRevision.setItems(items);
-        offerRevision = offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
-
-        //update locales
-        Map<String, OfferRevisionLocaleProperties> locales = offerRevision.getLocales();
-        OfferRevisionLocaleProperties offerRevisionLocaleProperties = new OfferRevisionLocaleProperties();
-
-        offerRevisionLocaleProperties.setName("testOfferRevision" + RandomFactory.getRandomStringOfAlphabet(20));
-
-        locales.put(defaultLocale, offerRevisionLocaleProperties);
-
-        offerRevision.setLocales(locales);
-        offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
+        catch (Exception ex) {
+            logger.logInfo("Expected exception: " + ex);
+        }
     }
 
 }

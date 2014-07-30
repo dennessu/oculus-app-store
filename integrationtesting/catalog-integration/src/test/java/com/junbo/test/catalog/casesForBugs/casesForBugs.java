@@ -242,32 +242,47 @@ public class casesForBugs extends BaseTestClass {
 
         ItemRevision itemRevision = itemRevisionService.postItemRevision(itemRevisionPrepared);
 
-        itemRevision.setStatus(CatalogEntityStatus.APPROVED.name());
+        itemRevision.setStatus(CatalogEntityStatus.REJECTED.name());
+        itemRevision = itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
 
+        //there's check for Approved and Pending review status
+        itemRevision.setStatus(CatalogEntityStatus.APPROVED.name());
         try {
             itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision, 400);
         } catch (Exception ex) {
             logger.logInfo("Expected exception");
         }
+        //release the revision for later use
+        itemRevision.setOwnerId(organizationId2);
+        itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
 
         //offer and offer revision
         Offer offer = offerService.postDefaultOffer(organizationId2);
         OfferRevision offerRevisionPrepared = offerRevisionService.prepareOfferRevisionEntity(defaultOfferRevisionFileName, organizationId1, false);
-
         offerRevisionPrepared.setOfferId(offer.getOfferId());
-
-        //Add item info
-        ItemEntry itemEntry = new ItemEntry();
-        List<ItemEntry> itemEntities = new ArrayList<>();
-        itemEntry.setItemId(item.getItemId());
-        itemEntry.setQuantity(1);
-        itemEntities.add(itemEntry);
-        offerRevisionPrepared.setItems(itemEntities);
-
+        offerRevisionPrepared.setItems(null);
         OfferRevision offerRevision = offerRevisionService.postOfferRevision(offerRevisionPrepared);
 
         offerRevision.setStatus(CatalogEntityStatus.PENDING_REVIEW.name());
+        try {
+            offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision, 400);
+        } catch (Exception ex) {
+            logger.logInfo("Expected exception");
+        }
 
+        //Offer and item
+        Master.getInstance().setCurrentUid(IdConverter.idToHexString(organization1.getOwnerId()));
+        Item itemForOffer = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId1);
+        releaseItem(itemForOffer);
+        ItemEntry itemEntry = new ItemEntry();
+        List<ItemEntry> itemEntities = new ArrayList<>();
+        itemEntry.setItemId(itemForOffer.getItemId());
+        itemEntry.setQuantity(1);
+        itemEntities.add(itemEntry);
+
+        offerRevision.setItems(itemEntities);
+        offerRevision.setOwnerId(organizationId2);
+        Master.getInstance().setCurrentUid(IdConverter.idToHexString(organization2.getOwnerId()));
         try {
             offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision, 400);
         } catch (Exception ex) {
@@ -279,7 +294,11 @@ public class casesForBugs extends BaseTestClass {
         Offer subOffer = offerService.postDefaultOffer(organizationId1);
         releaseOffer(subOffer);
 
+        List<String> subOffers = new ArrayList<>();
+        subOffers.add(subOffer.getOfferId());
+
         offerRevision.setOwnerId(organizationId2);
+        offerRevision.setSubOffers(subOffers);
 
         Master.getInstance().setCurrentUid(IdConverter.idToHexString(organization2.getOwnerId()));
         try {

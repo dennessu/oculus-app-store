@@ -327,7 +327,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         if (!oldRevision.getRev().equals(revision.getRev())) {
             errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("rev", revision.getRev(), oldRevision.getRev()));
         }
-        if (revision.getStatus() != null && !Status.contains(revision.getStatus())) {
+        if (revision.getStatus() == null || !Status.contains(revision.getStatus())) {
             errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("status", Joiner.on(", ").join(Status.ALL)));
         }
         if (revision.getItemId() == null) {

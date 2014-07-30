@@ -30,7 +30,7 @@ import java.util.List;
 /**
  @author Jason
   * Time: 4/9/2014
-  * Base test class for catalog-integration, holds some common functions
+  * Base test class for catalog-integration, with some common functions
  */
 public class BaseTestClass extends TestClass {
 
@@ -78,6 +78,31 @@ public class BaseTestClass extends TestClass {
         return offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
     }
 
+    protected void verifyGetItemsScenarios(HashMap<String, List<String>> paraMap, int expectedRtnSize, String... itemId) throws Exception {
+
+        ItemService itemService = ItemServiceImpl.instance();
+        Results<Item> itemRtn = itemService.getItems(paraMap);
+
+        Assert.assertEquals(itemRtn.getItems().size(), expectedRtnSize);
+
+        for (String itemGetId : itemId) {
+            Item item = itemService.getItem(itemGetId);
+            Assert.assertTrue(isContain(itemRtn, item));
+        }
+    }
+
+    protected void verifyGetOffersScenarios(HashMap<String, List<String>> paraMap, int expectedRtnSize, String... offerId) throws Exception{
+        OfferService offerService = OfferServiceImpl.instance();
+        Results<Offer> offerRtn = offerService.getOffers(paraMap);
+
+        Assert.assertEquals(offerRtn.getItems().size(), expectedRtnSize);
+
+        for (String offerGetId : offerId) {
+            Offer offer = offerService.getOffer(offerGetId);
+            Assert.assertTrue(isContain(offerRtn, offer));
+        }
+    }
+
     protected <T> boolean isContain (Results<T> results, T entity) {
         boolean contain = false;
         for (T t : results.getItems()){
@@ -115,28 +140,4 @@ public class BaseTestClass extends TestClass {
         return contain;
     }
 
-    protected void verifyGetItemsScenarios(HashMap<String, List<String>> paraMap, int expectedRtnSize, String... itemId) throws Exception {
-
-        ItemService itemService = ItemServiceImpl.instance();
-        Results<Item> itemRtn = itemService.getItems(paraMap);
-
-        Assert.assertEquals(itemRtn.getItems().size(), expectedRtnSize);
-
-        for (String itemGetId : itemId) {
-            Item item = itemService.getItem(itemGetId);
-            Assert.assertTrue(isContain(itemRtn, item));
-        }
-    }
-
-    protected void verifyGetOffersScenarios(HashMap<String, List<String>> paraMap, int expectedRtnSize, String... offerId) throws Exception{
-        OfferService offerService = OfferServiceImpl.instance();
-        Results<Offer> offerRtn = offerService.getOffers(paraMap);
-
-        Assert.assertEquals(offerRtn.getItems().size(), expectedRtnSize);
-
-        for (String offerGetId : offerId) {
-            Offer offer = offerService.getOffer(offerGetId);
-            Assert.assertTrue(isContain(offerRtn, offer));
-        }
-    }
 }
