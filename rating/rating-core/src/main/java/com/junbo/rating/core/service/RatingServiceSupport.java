@@ -50,17 +50,17 @@ public abstract class RatingServiceSupport implements RatingService<PriceRatingC
             }
 
             if (Boolean.FALSE.equals(countries.get(context.getCountry()).isPurchasable())) {
-                throw AppErrors.INSTANCE.offerNotPurchasable(item.getOfferId().toString(),
+                throw AppErrors.INSTANCE.offerNotPurchasable(item.getOfferId(),
                         context.getCountry()).exception();
             }
 
-            if (item.getQuantity() > 1 && containsDigitalGoods(item.getOffer(), context.getTimestamp())){
-                throw AppErrors.INSTANCE.incorrectQuantity(item.getOfferId().toString(), item.getQuantity()).exception();
+            if (item.getQuantity() > 1 && containsSpecificTypeGoods(item.getOffer(), context.getTimestamp(),                    ItemType.APP, ItemType.DOWNLOADED_ADDITION)){
+                throw AppErrors.INSTANCE.incorrectQuantity(item.getOfferId(), item.getQuantity()).exception();
             }
         }
     }
 
-    private boolean containsDigitalGoods(RatingOffer offer, String timestamp) {
+    protected boolean containsSpecificTypeGoods(RatingOffer offer, String timestamp, ItemType... types) {
         for (LinkedEntry entry : offer.getItems()) {
             Item item = catalogGateway.getItem(entry.getEntryId());
             if (ItemType.APP.is(item.getType()) || ItemType.DOWNLOADED_ADDITION.is(item.getType())) {
@@ -69,7 +69,7 @@ public abstract class RatingServiceSupport implements RatingService<PriceRatingC
         }
         for (LinkedEntry entry : offer.getSubOffers()) {
             RatingOffer subOffer = catalogGateway.getOffer(entry.getEntryId(), timestamp);
-            if (containsDigitalGoods(subOffer, timestamp)) {
+            if (containsSpecificTypeGoods(subOffer, timestamp, types)) {
                 return true;
             }
         }

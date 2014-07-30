@@ -6,21 +6,17 @@
 
 package com.junbo.rating.core.service;
 
-import com.junbo.catalog.spec.model.domaindata.ShippingMethod;
-import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.catalog.spec.enums.ItemType;
 import com.junbo.catalog.spec.model.promotion.PromotionRevision;
 import com.junbo.catalog.spec.model.promotion.PromotionType;
 import com.junbo.rating.common.util.Constants;
 import com.junbo.rating.core.context.PriceRatingContext;
 import com.junbo.rating.spec.error.AppErrors;
-import com.junbo.rating.spec.fusion.LinkedEntry;
-import com.junbo.rating.spec.fusion.RatingOffer;
 import com.junbo.rating.spec.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -126,18 +122,16 @@ public class OrderRatingService extends RatingServiceSupport {
                 result.setAppliedPromotion(promotion.getRevisionId());
             }
         }
-        //bestBenefit.rounding(context.getCurrency().getDigits());
         result.setDiscountAmount(bestBenefit);
         context.setOrderResult(result);
     }
 
     private void calculateShippingFee(PriceRatingContext context) {
-        BigDecimal shippingFee = BigDecimal.ZERO;
-        Map<String, Integer> shippingDetail = new HashMap<>();
+        ShippingResultEntry result = new ShippingResultEntry();
+        result.setShippingFee(BigDecimal.ZERO);
 
         for (RatableItem item : context.getItems()) {
-            int quantity = getQuantity(item.getOffer(), context.getTimestamp()) * item.getQuantity();
-            if (quantity == 0) {
+            if (!containsSpecificTypeGoods(item.getOffer(), context.getTimestamp(), ItemType.PHYSICAL)) {
                 continue;
             }
 
@@ -148,47 +142,10 @@ public class OrderRatingService extends RatingServiceSupport {
                 continue;
             }
 
-            if (!shippingDetail.containsKey(shippingMethodId)) {
-                shippingDetail.put(shippingMethodId, 0);
-            }
-            shippingDetail.put(shippingMethodId, shippingDetail.get(shippingMethodId) + quantity);
+            //todo
+            result.setShippingFee(BigDecimal.TEN);
         }
 
-        for (String shippingMethodId : shippingDetail.keySet()) {
-            int quantity = shippingDetail.get(shippingMethodId);
-            ShippingMethod shippingMethod = catalogGateway.getShippingMethod(shippingMethodId);
-            if (shippingMethod != null) {
-                shippingFee = shippingFee.add(shippingMethod.getBasePrice());
-                if (quantity > shippingMethod.getBaseUnit()) {
-                    int additionalUnit = quantity > shippingMethod.getCapUnit() ?
-                            shippingMethod.getCapUnit() - shippingMethod.getBaseUnit()
-                            : quantity - shippingMethod.getBaseUnit();
-                    shippingFee = shippingFee.add(
-                            shippingMethod.getAdditionalPrice().multiply(new BigDecimal(additionalUnit)));
-                }
-            }
-        }
-
-        ShippingResultEntry result = new ShippingResultEntry();
-        result.setShippingFee(shippingFee);
         context.setShippingResult(result);
-    }
-
-    private int getQuantity(RatingOffer ratingOffer, String timestamp) {
-        int result = 0;
-
-        for (LinkedEntry entry : ratingOffer.getItems()) {
-            Item item = catalogGateway.getItem(entry.getEntryId());
-            if ("Physical".equalsIgnoreCase(item.getType())) {
-                result += entry.getQuantity();
-            }
-        }
-
-        for (LinkedEntry entry : ratingOffer.getSubOffers()) {
-            RatingOffer offer = catalogGateway.getOffer(entry.getEntryId(), timestamp);
-            result += getQuantity(offer, timestamp);
-        }
-
-        return result;
     }
 }

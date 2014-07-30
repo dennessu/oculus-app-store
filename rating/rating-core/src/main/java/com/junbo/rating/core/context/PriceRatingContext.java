@@ -114,7 +114,8 @@ public class PriceRatingContext extends RatingContext implements Builder<RatingR
 
             //build shipping fee calculation results
             ShippingSummary shippingSummary = new ShippingSummary();
-            shippingSummary.setTotalShippingFee(getShippingResult().getShippingFee());
+            shippingSummary.setTotalShippingFee(Utils.rounding(getShippingResult().getShippingFee(),
+                    getCurrency().getNumberAfterDecimal()));
             shippingSummary.setPromotion(getShippingResult().getAppliedPromotion());
             result.setShippingMethodId(getDefaultShippingMethod());
             result.setShippingSummary(shippingSummary);

@@ -64,7 +64,7 @@ public class OrderRatingServiceTest extends BaseTest {
         Assert.assertEquals(result.getRatingSummary().getDiscountAmount(), new BigDecimal("5.00"));
         Assert.assertEquals(result.getRatingSummary().getFinalAmount(), new BigDecimal("16.97"));
 
-        Assert.assertEquals(result.getShippingSummary().getTotalShippingFee(), new BigDecimal("13.60"));
+        Assert.assertEquals(result.getShippingSummary().getTotalShippingFee(), new BigDecimal("10.00"));
     }
 
     @Test
@@ -91,7 +91,7 @@ public class OrderRatingServiceTest extends BaseTest {
 
         Assert.assertEquals(result.getRatingSummary().getFinalAmount(), new BigDecimal("0.99"));
 
-        Assert.assertEquals(result.getShippingSummary().getTotalShippingFee(), BigDecimal.ZERO);
+        Assert.assertEquals(result.getShippingSummary().getTotalShippingFee(), new BigDecimal("0.00"));
     }
 
     @Test
