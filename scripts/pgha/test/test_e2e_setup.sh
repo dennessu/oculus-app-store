@@ -23,7 +23,7 @@ ENDSSH
 
 echo "setup bcp..."
 ssh -o "StrictHostKeyChecking no" $DEPLOYMENT_ACCOUNT@$BCP_HOST << ENDSSH
-$DEPLOYMENT_PATH/setup/setup_slave.sh
+$DEPLOYMENT_PATH/setup/setup_bcp.sh
 ENDSSH
 
 echo "setup replica..."

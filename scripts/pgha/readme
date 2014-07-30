@@ -78,7 +78,7 @@
     [silkcloud] $DEPLOYMENT_PATH/purge/purge_slave.sh
 
 #[bcp] clean up bcp
-    [silkcloud] $DEPLOYMENT_PATH/purge/purge_slave.sh
+    [silkcloud] $DEPLOYMENT_PATH/purge/purge_bcp.sh
 
 #[replica] clean up replica
     [silkcloud] $DEPLOYMENT_PATH/purge/purge_replica.sh
@@ -91,7 +91,7 @@
     [silkcloud] echo '"silkcloud" "PASSWORD"' > ~/.pgbouncer_auth
 
 
-=====Master-Slave Deployment=====
+=====Master-Slave/BCP Deployment=====
 #[master] setup master database
     $DEPLOYMENT_PATH/setup/setup_master.sh
 
@@ -103,9 +103,11 @@
 #[master] full base backup master database
     $DEPLOYMENT_PATH/util/base_backup.sh
 
-#[slave/bcp] setup slave database
+#[slave] setup slave database
     $DEPLOYMENT_PATH/setup/setup_slave.sh
 
+#[bcp] setup bcp database
+    $DEPLOYMENT_PATH/setup/setup_bcp.sh
 
 =====Master-Replica Deployment=====
 #[master] full base backup master database
