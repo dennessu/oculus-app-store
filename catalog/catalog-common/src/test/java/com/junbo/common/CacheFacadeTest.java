@@ -11,7 +11,7 @@ import java.util.List;
  * Created by baojing on 7/24/14.
  */
 public class CacheFacadeTest {
-    @Test
+    @Test(enabled = false)
     public void testBVT() {
         String key1 = "id12345", key2 = "hello";
         String value1 = "wo le ge qu", value2 = "world";
