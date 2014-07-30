@@ -1,0 +1,4 @@
+{
+  "couchdb": "http://127.0.0.1:5984",
+  "cloudant": "https://silkcloudtest1:#Bugsfor$@silkcloudtest1.cloudant.com"
+}
