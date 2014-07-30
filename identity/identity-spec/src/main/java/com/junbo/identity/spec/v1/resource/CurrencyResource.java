@@ -10,6 +10,7 @@ import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Currency;
 import com.junbo.identity.spec.v1.option.list.CurrencyListOptions;
 import com.junbo.identity.spec.v1.option.model.CurrencyGetOptions;
+import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -46,10 +47,12 @@ public interface CurrencyResource {
     @ApiOperation("Get one currency info")
     @GET
     @Path("/{currencyId}")
+    @AuthorizationNotRequired
     Promise<Currency> get(@PathParam("currencyId") CurrencyId currencyId, @BeanParam CurrencyGetOptions getOptions);
 
     @ApiOperation("Get all currencies")
     @GET
+    @AuthorizationNotRequired
     Promise<Results<Currency>> list(@BeanParam CurrencyListOptions listOptions);
 
     @ApiOperation("Delete a currency")

@@ -34,8 +34,6 @@ import org.springframework.transaction.support.TransactionCallback
 @Transactional
 @CompileStatic
 class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAttemptResource {
-    private static final String IDENTITY_SERVICE_SCOPE = 'identity.service'
-
     @Autowired
     private UserCredentialVerifyAttemptRepository userCredentialVerifyAttemptRepository
 
@@ -58,10 +56,6 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
     Promise<UserCredentialVerifyAttempt> create(UserCredentialVerifyAttempt userCredentialAttempt) {
         if (userCredentialAttempt == null) {
             throw new IllegalArgumentException('userLoginAttempt is null')
-        }
-
-        if (!AuthorizeContext.hasScopes(IDENTITY_SERVICE_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         userCredentialAttempt = userCredentialVerifyAttemptFilter.filterForCreate(userCredentialAttempt)

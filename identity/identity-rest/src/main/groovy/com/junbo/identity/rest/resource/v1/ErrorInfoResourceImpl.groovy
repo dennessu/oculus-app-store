@@ -1,10 +1,7 @@
 package com.junbo.identity.rest.resource.v1
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.LocaleId
-import com.junbo.common.error.AppCommonErrors
-import com.junbo.common.error.ErrorDef
 import com.junbo.common.id.ErrorIdentifier
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
@@ -35,7 +32,6 @@ import java.lang.reflect.Field
 @Transactional
 @CompileStatic
 class ErrorInfoResourceImpl implements ErrorInfoResource {
-    private static final String IDENTITY_ADMIN_SCOPE = 'identity.admin'
     private static Map<String, Field> fieldMap = new HashMap<String, Field>()
 
     @Autowired
@@ -54,10 +50,6 @@ class ErrorInfoResourceImpl implements ErrorInfoResource {
     Promise<ErrorInfo> create(ErrorInfo errorInfo) {
         if (errorInfo == null) {
             throw new IllegalArgumentException('errorInfo is null')
-        }
-
-        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         errorInfo = errorInfoFilter.filterForCreate(errorInfo)
@@ -80,10 +72,6 @@ class ErrorInfoResourceImpl implements ErrorInfoResource {
 
         if (errorInfo == null) {
             throw new IllegalArgumentException('errorInfo is null')
-        }
-
-        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         return errorInfoRepository.get(errorIdentifier).then { ErrorInfo oldErrorInfo ->
@@ -110,10 +98,6 @@ class ErrorInfoResourceImpl implements ErrorInfoResource {
 
         if (errorInfo == null) {
             throw new IllegalArgumentException('errorInfo is null')
-        }
-
-        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         return errorInfoRepository.get(errorIdentifier).then { ErrorInfo oldErrorInfo ->
@@ -169,7 +153,7 @@ class ErrorInfoResourceImpl implements ErrorInfoResource {
         ErrorDetail errorDetail = null
         JsonNode jsonNode = errorInfo.locales.get(getOptions.locale)
         if (jsonNode != null) {
-            errorDetail = (ErrorDetail)JsonHelper.jsonNodeToObj(jsonNode, ErrorDetail)
+            errorDetail = (ErrorDetail) JsonHelper.jsonNodeToObj(jsonNode, ErrorDetail)
         }
         return fillErrorInfo(errorInfo, getOptions.locale).then { Map<String, ErrorDetail> map ->
             errorInfo.locales = unwrap(map)
@@ -211,7 +195,7 @@ class ErrorInfoResourceImpl implements ErrorInfoResource {
         }
         JsonNode jsonNode = errorInfo.locales.get(initLocale)
         if (jsonNode != null) {
-            ErrorDetail localeKey = (ErrorDetail)JsonHelper.jsonNodeToObj(jsonNode, ErrorDetail)
+            ErrorDetail localeKey = (ErrorDetail) JsonHelper.jsonNodeToObj(jsonNode, ErrorDetail)
 
             Object obj = getAndCacheField(ErrorDetail.class, fieldName).get(localeKey)
             if (obj != null) {
@@ -247,24 +231,24 @@ class ErrorInfoResourceImpl implements ErrorInfoResource {
         }
 
         if (source == null &&
-            (target.supportLink == null && target.errorTitle == null && target.errorSummary == null && target.errorInformation == null)) {
+                (target.supportLink == null && target.errorTitle == null && target.errorSummary == null && target.errorInformation == null)) {
             return LocaleAccuracy.HIGH.toString()
         } else if (source == null) {
             return LocaleAccuracy.LOW.toString()
         }
 
         if (target == null &&
-            (source.supportLink == null && source.errorTitle == null && source.errorSummary == null && source.errorInformation == null)) {
+                (source.supportLink == null && source.errorTitle == null && source.errorSummary == null && source.errorInformation == null)) {
             return LocaleAccuracy.HIGH.toString()
         } else if (target == null) {
             return LocaleAccuracy.LOW.toString()
         }
 
         if (source.supportLink == target.supportLink && source.errorTitle == target.errorTitle && source.errorSummary == target.errorSummary
-          && source.errorInformation == target.errorInformation) {
+                && source.errorInformation == target.errorInformation) {
             return LocaleAccuracy.HIGH.toString()
         } else if (source.supportLink == target.supportLink || source.errorTitle == target.errorTitle || source.errorSummary == target.errorSummary
-          || source.errorInformation == target.errorInformation) {
+                || source.errorInformation == target.errorInformation) {
             return LocaleAccuracy.MEDIUM.toString()
         } else {
             return LocaleAccuracy.LOW.toString()

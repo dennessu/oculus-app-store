@@ -6,11 +6,9 @@
 
 package com.junbo.billing.rest.resource;
 
-import com.junbo.authorization.AuthorizeContext;
 import com.junbo.billing.core.service.TaxService;
 import com.junbo.billing.spec.model.VatIdValidationResponse;
 import com.junbo.billing.spec.resource.VatResource;
-import com.junbo.common.error.AppCommonErrors;
 import com.junbo.langur.core.promise.Promise;
 
 import javax.annotation.Resource;
@@ -24,9 +22,6 @@ class VatResourceImpl implements VatResource {
 
     @Override
     public Promise<VatIdValidationResponse> validateVatId(String vatId, String country) {
-        if (!AuthorizeContext.hasScopes("billing.service")) {
-            throw AppCommonErrors.INSTANCE.insufficientScope().exception();
-        }
         return taxService.validateVatId(vatId, country);
     }
 }

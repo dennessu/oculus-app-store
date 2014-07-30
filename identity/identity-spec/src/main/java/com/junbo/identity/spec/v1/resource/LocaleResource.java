@@ -10,6 +10,7 @@ import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Locale;
 import com.junbo.identity.spec.v1.option.list.LocaleListOptions;
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions;
+import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -45,10 +46,12 @@ public interface LocaleResource {
     @ApiOperation("Get a locale info")
     @GET
     @Path("/{LocaleId}")
+    @AuthorizationNotRequired
     Promise<Locale> get(@PathParam("LocaleId") LocaleId localeId, @BeanParam LocaleGetOptions getOptions);
 
     @ApiOperation("Get all locales")
     @GET
+    @AuthorizationNotRequired
     Promise<Results<Locale>> list(@BeanParam LocaleListOptions listOptions);
 
     @ApiOperation("Delete a locale")

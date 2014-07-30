@@ -6,6 +6,7 @@
 
 package com.junbo.payment.spec.resource;
 
+import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -22,6 +23,7 @@ import javax.ws.rs.core.Response;
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
 @InProcessCallable
+@AuthorizationNotRequired
 public interface PaymentNotificationResource {
     //use String other than Object, avoid interface changes from provider
     //Won't enable api level route, in sql level, it will do route

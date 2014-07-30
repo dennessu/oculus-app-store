@@ -9,6 +9,7 @@ import com.junbo.common.id.GroupId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.model.Results;
 import com.junbo.csr.spec.model.CsrUser;
+import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 
@@ -41,5 +42,6 @@ public interface CsrUserResource {
 
     @GET
     @Path("/invite")
+    @AuthorizationNotRequired
     Promise<Response> confirmCsrInvitation(@QueryParam("code") String code);
 }

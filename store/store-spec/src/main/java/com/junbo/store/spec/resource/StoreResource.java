@@ -5,6 +5,7 @@
  */
 package com.junbo.store.spec.resource;
 
+import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.langur.core.routing.RouteBy;
@@ -33,6 +34,8 @@ import javax.ws.rs.core.MediaType;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
+// This is temporal, remove it after the authorization for this component is done
+@AuthorizationNotRequired
 public interface StoreResource {
 
     @GET

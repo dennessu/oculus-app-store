@@ -28,22 +28,21 @@ class UserCryptoResourceImpl extends CommonResourceImpl implements UserCryptoRes
             return Promise.pure(null)
         }
 
-        return authorize().then {
-            return userCryptoValidator.validateUserCryptoKeyCreate(userCryptoKey).then {
+        return userCryptoValidator.validateUserCryptoKeyCreate(userCryptoKey).then {
 
-                return getCurrentUserCryptoKey(userCryptoKey.userId).then { Integer keyVersion ->
-                    return symmetricEncryptUserKey(userCryptoKey.value).then { String encryptValue ->
-                        userCryptoKey.encryptValue = encryptValue
-                        userCryptoKey.value = null
-                        userCryptoKey.keyVersion = keyVersion + 1
+            return getCurrentUserCryptoKey(userCryptoKey.userId).then { Integer keyVersion ->
+                return symmetricEncryptUserKey(userCryptoKey.value).then { String encryptValue ->
+                    userCryptoKey.encryptValue = encryptValue
+                    userCryptoKey.value = null
+                    userCryptoKey.keyVersion = keyVersion + 1
 
-                        return userCryptoKeyRepo.create(userCryptoKey).then {
-                            return Promise.pure(null)
-                        }
+                    return userCryptoKeyRepo.create(userCryptoKey).then {
+                        return Promise.pure(null)
                     }
                 }
             }
         }
+
     }
 
     @Required

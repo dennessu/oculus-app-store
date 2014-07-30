@@ -32,52 +32,14 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
 
     @Override
     Promise<CryptoMessage> encrypt(UserId userId, CryptoMessage rawMessage) {
-        return authorize().then {
-            return validator.validateEncrypt(userId, rawMessage).then {
-                if (enableUserKeyEncrypt) {
-                    return symmetricEncryptUserMessageByUserKey(userId, rawMessage.value).then { String encryptMessage ->
-                        CryptoMessage result = new CryptoMessage()
-                        result.value = encryptMessage
-                        return Promise.pure(result)
-                    }
-                } else {
-                    return symmetricEncryptUserMessageByMasterKey(rawMessage.value).then { String encryptMessage ->
-                        CryptoMessage result = new CryptoMessage()
-                        result.value = encryptMessage
-                        return Promise.pure(result)
-                    }
+        return validator.validateEncrypt(userId, rawMessage).then {
+            if (enableUserKeyEncrypt) {
+                return symmetricEncryptUserMessageByUserKey(userId, rawMessage.value).then { String encryptMessage ->
+                    CryptoMessage result = new CryptoMessage()
+                    result.value = encryptMessage
+                    return Promise.pure(result)
                 }
-            }
-        }
-    }
-
-    @Override
-    Promise<CryptoMessage> decrypt(UserId userId, CryptoMessage encryptMessage) {
-        return authorize().then {
-            return validator.validateDecrypt(userId, encryptMessage).then {
-                if (enableUserKeyEncrypt) {
-                    return symmetricDecryptUserMessageByUserKey(userId, encryptMessage.value).then { String rawMessage ->
-                        CryptoMessage result = new CryptoMessage()
-                        result.value = rawMessage
-
-                        return Promise.pure(result)
-                    }
-                } else {
-                    return symmetricDecryptUserMessageByMasterKey(encryptMessage.value).then { String rawMessage ->
-                        CryptoMessage result = new CryptoMessage()
-                        result.value = rawMessage
-
-                        return Promise.pure(result)
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
-    Promise<CryptoMessage> encrypt(CryptoMessage rawMessage) {
-        return authorize().then {
-            return validator.validateEncrypt(null, rawMessage).then {
+            } else {
                 return symmetricEncryptUserMessageByMasterKey(rawMessage.value).then { String encryptMessage ->
                     CryptoMessage result = new CryptoMessage()
                     result.value = encryptMessage
@@ -85,12 +47,20 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
                 }
             }
         }
+
     }
 
     @Override
-    Promise<CryptoMessage> decrypt(CryptoMessage encryptMessage) {
-        return authorize().then {
-            return validator.validateDecrypt(null, encryptMessage).then {
+    Promise<CryptoMessage> decrypt(UserId userId, CryptoMessage encryptMessage) {
+        return validator.validateDecrypt(userId, encryptMessage).then {
+            if (enableUserKeyEncrypt) {
+                return symmetricDecryptUserMessageByUserKey(userId, encryptMessage.value).then { String rawMessage ->
+                    CryptoMessage result = new CryptoMessage()
+                    result.value = rawMessage
+
+                    return Promise.pure(result)
+                }
+            } else {
                 return symmetricDecryptUserMessageByMasterKey(encryptMessage.value).then { String rawMessage ->
                     CryptoMessage result = new CryptoMessage()
                     result.value = rawMessage
@@ -99,6 +69,32 @@ class CryptoResourceImpl extends CommonResourceImpl implements CryptoResource {
                 }
             }
         }
+
+    }
+
+    @Override
+    Promise<CryptoMessage> encrypt(CryptoMessage rawMessage) {
+        return validator.validateEncrypt(null, rawMessage).then {
+            return symmetricEncryptUserMessageByMasterKey(rawMessage.value).then { String encryptMessage ->
+                CryptoMessage result = new CryptoMessage()
+                result.value = encryptMessage
+                return Promise.pure(result)
+            }
+        }
+
+    }
+
+    @Override
+    Promise<CryptoMessage> decrypt(CryptoMessage encryptMessage) {
+        return validator.validateDecrypt(null, encryptMessage).then {
+            return symmetricDecryptUserMessageByMasterKey(encryptMessage.value).then { String rawMessage ->
+                CryptoMessage result = new CryptoMessage()
+                result.value = rawMessage
+
+                return Promise.pure(result)
+            }
+        }
+
     }
 
     @Required

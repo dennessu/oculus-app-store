@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.spec.endpoint;
 
+import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
@@ -21,6 +22,7 @@ import javax.ws.rs.core.Response;
 @Path("/oauth2/revoke")
 @RestResource
 @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+@AuthorizationNotRequired
 public interface RevokeEndpoint {
 
     @ApiOperation("Revoke an access token")

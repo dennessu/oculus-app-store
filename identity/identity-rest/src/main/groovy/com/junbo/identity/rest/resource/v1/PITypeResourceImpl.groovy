@@ -24,8 +24,6 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 @CompileStatic
 class PITypeResourceImpl implements PITypeResource {
-    private static final String IDENTITY_ADMIN_SCOPE = 'identity.admin'
-
     @Autowired
     private PITypeRepository piTypeRepository
 
@@ -39,10 +37,6 @@ class PITypeResourceImpl implements PITypeResource {
     Promise<PIType> create(PIType piType) {
         if (piType == null) {
             throw new IllegalArgumentException('piType is null')
-        }
-
-        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         piType = piTypeFilter.filterForCreate(piType)
@@ -71,10 +65,6 @@ class PITypeResourceImpl implements PITypeResource {
             throw new IllegalArgumentException('piType is null')
         }
 
-        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.forbidden().exception()
-        }
-
         return piTypeRepository.get(piTypeId).then { PIType oldPIType ->
             if (oldPIType == null) {
                 throw AppErrors.INSTANCE.piTypeNotFound(piTypeId).exception()
@@ -99,10 +89,6 @@ class PITypeResourceImpl implements PITypeResource {
 
         if (piType == null) {
             throw new IllegalArgumentException('piType is null')
-        }
-
-        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         return piTypeRepository.get(piTypeId).then { PIType oldPIType ->
@@ -166,10 +152,6 @@ class PITypeResourceImpl implements PITypeResource {
     Promise<Void> delete(PITypeId piTypeId) {
         if (piTypeId != null) {
             throw new IllegalArgumentException('piTypeId is null')
-        }
-
-        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         return piTypeValidator.validateForGet(piTypeId).then {

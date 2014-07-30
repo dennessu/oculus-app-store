@@ -25,9 +25,6 @@ import java.util.regex.Pattern
  */
 @CompileStatic
 class ClientServiceImpl implements ClientService {
-    private static final String CLIENT_REGISTER_SCOPE = 'client.register'
-    private static final String CLIENT_INFO_SCOPE = 'client.info'
-
     private static final Pattern EMAIL_PATTERN = Pattern.compile('[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\\.' +
             '[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?')
 
@@ -58,10 +55,6 @@ class ClientServiceImpl implements ClientService {
 
     @Override
     Client saveClient(Client client) {
-        if (!AuthorizeContext.hasScopes(CLIENT_REGISTER_SCOPE)) {
-            throw AppErrors.INSTANCE.insufficientScope().exception()
-        }
-
         validateClient(client)
 
         client.ownerUserId = AuthorizeContext.currentUserId
@@ -80,10 +73,6 @@ class ClientServiceImpl implements ClientService {
 
     @Override
     Client getClient(String clientId) {
-        if (!AuthorizeContext.hasScopes(CLIENT_REGISTER_SCOPE)) {
-            throw AppErrors.INSTANCE.insufficientScope().exception()
-        }
-
         Client client = clientRepository.getClient(clientId)
 
         if (client == null) {
@@ -99,10 +88,6 @@ class ClientServiceImpl implements ClientService {
 
     @Override
     Client getClientInfo(String clientId) {
-        if (!AuthorizeContext.hasScopes(CLIENT_INFO_SCOPE)) {
-            throw AppErrors.INSTANCE.insufficientScope().exception()
-        }
-
         Client client = clientRepository.getClient(clientId)
 
         if (client == null) {
@@ -119,10 +104,6 @@ class ClientServiceImpl implements ClientService {
 
     @Override
     Client updateClient(String clientId, Client client) {
-        if (!AuthorizeContext.hasScopes(CLIENT_REGISTER_SCOPE)) {
-            throw AppErrors.INSTANCE.insufficientScope().exception()
-        }
-
         if (StringUtils.isEmpty(client.rev)) {
             throw AppCommonErrors.INSTANCE.fieldRequired('revision').exception()
         }
@@ -175,10 +156,6 @@ class ClientServiceImpl implements ClientService {
 
     @Override
     void deleteClient(String clientId) {
-        if (!AuthorizeContext.hasScopes(CLIENT_REGISTER_SCOPE)) {
-            throw AppErrors.INSTANCE.insufficientScope().exception()
-        }
-
         Client client = getClient(clientId)
 
         if (client.ownerUserId != AuthorizeContext.currentUserId) {
@@ -190,10 +167,6 @@ class ClientServiceImpl implements ClientService {
 
     @Override
     Client resetSecret(String clientId) {
-        if (!AuthorizeContext.hasScopes(CLIENT_REGISTER_SCOPE)) {
-            throw AppErrors.INSTANCE.insufficientScope().exception()
-        }
-
         Client client = getClient(clientId)
 
         if (client.ownerUserId != AuthorizeContext.currentUserId) {

@@ -26,6 +26,8 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.util.CollectionUtils
 import org.springframework.util.ResourceUtils
 import org.springframework.util.StringUtils
+import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J
+
 /**
  * DataLoader.
  */
@@ -153,6 +155,8 @@ class DataLoader {
         } catch (Exception ex) {
             throw new IllegalStateException("Could not initialize logging from $location", ex)
         }
+
+        SysOutOverSLF4J.sendSystemOutAndErrToSLF4J()
     }
 
     @Required

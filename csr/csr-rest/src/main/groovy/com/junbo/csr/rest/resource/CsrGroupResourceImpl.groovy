@@ -1,7 +1,5 @@
 package com.junbo.csr.rest.resource
 
-import com.junbo.authorization.AuthorizeContext
-import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.GroupId
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
@@ -22,7 +20,6 @@ import org.springframework.beans.factory.annotation.Required
  */
 @CompileStatic
 class CsrGroupResourceImpl implements CsrGroupResource {
-    private static final String CSR_SCOPE = "csr";
 
     private IdentityService identityService
     private String organizationOwner
@@ -51,10 +48,6 @@ class CsrGroupResourceImpl implements CsrGroupResource {
 
     @Override
     Promise<Results<CsrGroup>> list(CsrGroupListOptions listOptions) {
-        if (!AuthorizeContext.hasScopes(CSR_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.insufficientScope().exception();
-        }
-
         if (listOptions != null && listOptions.userId != null) {
             // check userId
             identityService.getUserById(listOptions.userId).get()

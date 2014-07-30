@@ -10,6 +10,7 @@ import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Communication;
 import com.junbo.identity.spec.v1.option.list.CommunicationListOptions;
 import com.junbo.identity.spec.v1.option.model.CommunicationGetOptions;
+import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -49,11 +50,13 @@ public interface CommunicationResource {
     @ApiOperation("Get one communication info")
     @GET
     @Path("/{communicationId}")
+    @AuthorizationNotRequired
     Promise<Communication> get(@PathParam("communicationId") CommunicationId communicationId,
                                @BeanParam CommunicationGetOptions getOptions);
 
     @ApiOperation("Search communication info")
     @GET
+    @AuthorizationNotRequired
     Promise<Results<Communication>> list(@BeanParam CommunicationListOptions listOptions);
 
     @ApiOperation("Delete communication info")

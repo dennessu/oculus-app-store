@@ -1,9 +1,7 @@
 package com.junbo.identity.rest.resource.v1
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.LocaleId
-import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.CommunicationId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
@@ -34,7 +32,6 @@ import java.lang.reflect.Field
 @Transactional
 @CompileStatic
 class CommunicationResourceImpl implements CommunicationResource {
-    private static final String IDENTITY_ADMIN_SCOPE = 'identity.admin'
     private static Map<String, Field> fieldMap = new HashMap<String, Field>()
 
     @Autowired
@@ -53,10 +50,6 @@ class CommunicationResourceImpl implements CommunicationResource {
     Promise<Communication> create(Communication communication) {
         if (communication == null) {
             throw new IllegalArgumentException('communication is null')
-        }
-
-        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         communication = communicationFilter.filterForCreate(communication)
@@ -79,10 +72,6 @@ class CommunicationResourceImpl implements CommunicationResource {
 
         if (communication == null) {
             throw new IllegalArgumentException('communication is null')
-        }
-
-        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         return communicationRepository.get(communicationId).then { Communication oldCommunication ->
@@ -109,10 +98,6 @@ class CommunicationResourceImpl implements CommunicationResource {
 
         if (communication == null) {
             throw new IllegalArgumentException('communication is null')
-        }
-
-        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         return communicationRepository.get(communicationId).then { Communication oldCommunication ->
@@ -174,10 +159,6 @@ class CommunicationResourceImpl implements CommunicationResource {
             throw new IllegalArgumentException('communicationId is null')
         }
 
-        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.forbidden().exception()
-        }
-
         return communicationValidator.validateForGet(communicationId).then { Communication communication ->
             return communicationRepository.delete(communicationId)
         }
@@ -205,7 +186,7 @@ class CommunicationResourceImpl implements CommunicationResource {
             JsonNode node = communication.locales.get(options.locale)
             CommunicationLocale communicationLocale = null
             if (node != null) {
-                communicationLocale = (CommunicationLocale)JsonHelper.jsonNodeToObj(node, CommunicationLocale)
+                communicationLocale = (CommunicationLocale) JsonHelper.jsonNodeToObj(node, CommunicationLocale)
             }
             communication.locales = unwrap(map)
             communication.localeAccuracy = calcCommunicationLocaleAccuracy(communicationLocale, map.get(options.locale))
@@ -279,7 +260,7 @@ class CommunicationResourceImpl implements CommunicationResource {
 
         Map<String, CommunicationLocale> localeMap = new HashMap<>()
         jsonNodeMap.entrySet().each { Map.Entry<String, JsonNode> entry ->
-            localeMap.put(entry.key, (CommunicationLocale)JsonHelper.jsonNodeToObj(entry.value, CommunicationLocale))
+            localeMap.put(entry.key, (CommunicationLocale) JsonHelper.jsonNodeToObj(entry.value, CommunicationLocale))
         }
 
         return localeMap
@@ -303,7 +284,7 @@ class CommunicationResourceImpl implements CommunicationResource {
             return LocaleAccuracy.HIGH.toString()
         }
 
-        if (source == null && (target.name == null && target.description== null)) {
+        if (source == null && (target.name == null && target.description == null)) {
             return LocaleAccuracy.HIGH.toString()
         } else if (source == null) {
             return LocaleAccuracy.LOW.toString()

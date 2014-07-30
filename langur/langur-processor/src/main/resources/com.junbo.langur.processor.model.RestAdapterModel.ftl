@@ -35,6 +35,11 @@ public class ${className} extends com.junbo.langur.core.adapter.AbstractRestAdap
     @org.springframework.beans.factory.annotation.Autowired(required = false)
     protected List<JunboHttpContextScopeListener> __junboHttpContextScopeListeners;
 
+    [#if !authorizationNotRequired]
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    private com.junbo.langur.core.rest.ResourceScopeValidator __resourceScopeValidator;
+    [/#if]
+
     public ${adapteeType} getAdaptee() {
         return __adaptee;
     }

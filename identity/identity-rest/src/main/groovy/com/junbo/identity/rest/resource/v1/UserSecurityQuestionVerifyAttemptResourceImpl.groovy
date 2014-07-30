@@ -14,7 +14,6 @@ import com.junbo.identity.core.service.filter.UserSecurityQuestionAttemptFilter
 import com.junbo.identity.core.service.validator.UserSecurityQuestionAttemptValidator
 import com.junbo.identity.data.repository.UserSecurityQuestionAttemptRepository
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.v1.model.UserSecurityQuestion
 import com.junbo.identity.spec.v1.model.UserSecurityQuestionVerifyAttempt
 import com.junbo.identity.spec.v1.option.list.UserSecurityQuestionAttemptListOptions
 import com.junbo.identity.spec.v1.option.model.UserSecurityQuestionAttemptGetOptions
@@ -35,7 +34,6 @@ import org.springframework.transaction.support.TransactionCallback
 @Transactional
 @CompileStatic
 class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuestionVerifyAttemptResource {
-    private static final String IDENTITY_SERVICE_SCOPE = 'identity.service'
 
     @Autowired
     private UserSecurityQuestionAttemptRepository userSecurityQuestionAttemptRepository
@@ -64,10 +62,6 @@ class UserSecurityQuestionVerifyAttemptResourceImpl implements UserSecurityQuest
 
         if (userSecurityQuestionAttempt == null) {
             throw new IllegalArgumentException('userSecurityQuestionAttempt')
-        }
-
-        if (!AuthorizeContext.hasScopes(IDENTITY_SERVICE_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         userSecurityQuestionAttempt = userSecurityQuestionAttemptFilter.filterForCreate(userSecurityQuestionAttempt)

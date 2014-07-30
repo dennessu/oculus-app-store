@@ -4,7 +4,8 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.langur.processor.handler
-import com.junbo.langur.core.RestResource
+
+import com.junbo.langur.core.AuthorizationNotRequired
 import com.junbo.langur.core.routing.RouteBy
 import com.junbo.langur.processor.ProcessingException
 import com.junbo.langur.processor.model.RestAdapterModel
@@ -65,6 +66,7 @@ class RestAdapterParser implements RestResourceHandler {
 
                 def restMethod = new RestMethodModel()
 
+                restMethod.adapteeName = restAdapter.adapteeName
                 restMethod.adapteeType = restAdapter.adapteeType
                 restMethod.returnType = returnType.typeArguments[0].toString()
                 restMethod.methodName = executableElement.simpleName.toString()
@@ -87,9 +89,28 @@ class RestAdapterParser implements RestResourceHandler {
                 def routeBy = executableElement.getAnnotation(RouteBy)
                 restMethod.routeParamExprs = Arrays.asList(routeBy?.value() ?: new String[0])
 
+                restMethod.authorizationNotRequired = getAuthorizationNotRequired(mapperType, executableElement)
+
+                if (!restMethod.authorizationNotRequired) {
+                    restAdapter.authorizationNotRequired = false
+                }
+
                 restAdapter.restMethods.add(restMethod)
         }
 
         handlerContext.restAdapter = restAdapter
+    }
+
+    private static boolean getAuthorizationNotRequired(TypeElement mapperType, ExecutableElement methodElement) {
+        def authorizationNotRequired = methodElement.getAnnotation(AuthorizationNotRequired)
+        if (authorizationNotRequired == null) {
+            authorizationNotRequired = mapperType.getAnnotation(AuthorizationNotRequired)
+        }
+
+        if (authorizationNotRequired != null) {
+            return true
+        }
+
+        return false
     }
 }

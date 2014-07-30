@@ -1,8 +1,6 @@
 package com.junbo.identity.rest.resource.v1
 
-import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.LocaleId
-import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.LocaleFilter
@@ -26,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 @CompileStatic
 class LocaleResourceImpl implements LocaleResource {
-    private static final String IDENTITY_ADMIN_SCOPE = 'identity.admin'
 
     @Autowired
     private LocaleRepository localeRepository
@@ -44,10 +41,6 @@ class LocaleResourceImpl implements LocaleResource {
     Promise<Locale> create(Locale locale) {
         if (locale == null) {
             throw new IllegalArgumentException('locale is null')
-        }
-
-        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         locale = localeFilter.filterForCreate(locale)
@@ -69,10 +62,6 @@ class LocaleResourceImpl implements LocaleResource {
 
         if (locale == null) {
             throw new IllegalArgumentException('locale is null')
-        }
-
-        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         return localeRepository.get(localeId).then { Locale oldLocale ->
@@ -99,10 +88,6 @@ class LocaleResourceImpl implements LocaleResource {
 
         if (locale == null) {
             throw new IllegalArgumentException('locale is null')
-        }
-
-        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         return localeRepository.get(localeId).then { Locale oldLocale ->
@@ -180,10 +165,6 @@ class LocaleResourceImpl implements LocaleResource {
     Promise<Void> delete(LocaleId localeId) {
         if (localeId == null) {
             throw new IllegalArgumentException('localeId is null')
-        }
-
-        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         return localeValidator.validateForGet(localeId).then {

@@ -1,6 +1,5 @@
 package com.junbo.crypto.rest.resource
-import com.junbo.authorization.AuthorizeContext
-import com.junbo.common.error.AppCommonErrors
+
 import com.junbo.common.id.UserId
 import com.junbo.crypto.core.service.CipherService
 import com.junbo.crypto.core.service.KeyStoreService
@@ -21,8 +20,6 @@ import java.security.PublicKey
 @CompileStatic
 @SuppressWarnings('UnnecessaryGetter')
 abstract class CommonResourceImpl {
-    protected static final String CRYPTO_SERVICE_SCOPE = 'crypto.service'
-
     protected String versionSeparator
 
     protected MasterKeyRepo masterKeyRepo
@@ -240,13 +237,5 @@ abstract class CommonResourceImpl {
 
             return Promise.pure(key)
         }
-    }
-
-    protected static Promise<Void> authorize() {
-        if (!AuthorizeContext.hasScopes(CRYPTO_SERVICE_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.forbidden().exception()
-        }
-
-        return Promise.pure(null)
     }
 }

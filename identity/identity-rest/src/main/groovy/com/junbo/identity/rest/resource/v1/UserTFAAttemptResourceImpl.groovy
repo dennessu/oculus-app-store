@@ -35,8 +35,6 @@ import javax.transaction.Transactional
 @CompileStatic
 @Transactional
 class UserTFAAttemptResourceImpl implements UserTFAAttemptResource {
-    private static final String IDENTITY_SERVICE_SCOPE = 'identity.service'
-
     @Autowired
     private UserTFAAttemptRepository userTFAAttemptRepository
 
@@ -63,10 +61,6 @@ class UserTFAAttemptResourceImpl implements UserTFAAttemptResource {
 
         if (userTeleAttempt == null) {
             throw new IllegalArgumentException('userTeleAttempt is null')
-        }
-
-        if (!AuthorizeContext.hasScopes(IDENTITY_SERVICE_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         userTeleAttempt = userTFAAttemptFilter.filterForCreate(userTeleAttempt)

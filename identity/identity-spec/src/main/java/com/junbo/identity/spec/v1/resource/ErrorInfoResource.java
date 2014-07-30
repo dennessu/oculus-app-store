@@ -10,6 +10,7 @@ import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.ErrorInfo;
 import com.junbo.identity.spec.v1.option.list.ErrorInfoListOptions;
 import com.junbo.identity.spec.v1.option.model.ErrorInfoGetOptions;
+import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -45,10 +46,12 @@ public interface ErrorInfoResource {
     @ApiOperation("Get one error info")
     @GET
     @Path("/{errorInfoId}")
+    @AuthorizationNotRequired
     Promise<ErrorInfo> get(@PathParam("errorInfoId") ErrorIdentifier errorIdentifier, @BeanParam ErrorInfoGetOptions getOptions);
 
     @ApiOperation("Search error info")
     @GET
+    @AuthorizationNotRequired
     Promise<Results<ErrorInfo>> list(@BeanParam ErrorInfoListOptions listOptions);
 
     @ApiOperation("Delete one error info")

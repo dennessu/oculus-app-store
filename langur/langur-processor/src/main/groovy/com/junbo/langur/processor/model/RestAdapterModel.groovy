@@ -24,4 +24,6 @@ class RestAdapterModel {
     List<String> annotations
 
     List<RestMethodModel> restMethods
+
+    boolean authorizationNotRequired
 }

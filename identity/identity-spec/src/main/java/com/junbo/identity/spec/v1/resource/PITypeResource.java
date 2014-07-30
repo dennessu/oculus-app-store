@@ -10,6 +10,7 @@ import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.PIType;
 import com.junbo.identity.spec.v1.option.list.PITypeListOptions;
 import com.junbo.identity.spec.v1.option.model.PITypeGetOptions;
+import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -45,10 +46,12 @@ public interface PITypeResource {
     @ApiOperation("Get a payment instrument type")
     @GET
     @Path("/{piTypeId}")
+    @AuthorizationNotRequired
     Promise<PIType> get(@PathParam("piTypeId") PITypeId piTypeId, @BeanParam PITypeGetOptions getOptions);
 
     @ApiOperation("Get all payment instrument type")
     @GET
+    @AuthorizationNotRequired
     Promise<Results<PIType>> list(@BeanParam PITypeListOptions listOptions);
 
     @ApiOperation("Delete a payment instrument type")

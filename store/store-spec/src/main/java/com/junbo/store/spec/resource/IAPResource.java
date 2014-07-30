@@ -7,6 +7,7 @@ package com.junbo.store.spec.resource;
 
 import com.junbo.common.id.UserId;
 import com.junbo.common.model.Results;
+import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.store.spec.model.*;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -21,6 +22,8 @@ import javax.ws.rs.core.MediaType;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
+// This is temporal, remove it after the authorization for this component is done
+@AuthorizationNotRequired
 public interface IAPResource {
 
     @GET

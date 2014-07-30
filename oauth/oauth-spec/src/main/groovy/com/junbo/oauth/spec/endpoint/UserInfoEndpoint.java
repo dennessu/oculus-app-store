@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.spec.endpoint;
 
+import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.oauth.spec.model.UserInfo;
@@ -24,6 +25,7 @@ import javax.ws.rs.core.MediaType;
 @Path("/oauth2/userinfo")
 @RestResource
 @Produces(MediaType.APPLICATION_JSON)
+@AuthorizationNotRequired
 public interface UserInfoEndpoint {
 
     @ApiOperation("Get the user info associated with the token")

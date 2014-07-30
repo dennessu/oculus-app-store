@@ -12,6 +12,7 @@ import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.junbo.authorization.AuthorizeContext;
 import com.junbo.authorization.AuthorizeService;
 import com.junbo.authorization.AuthorizeServiceImpl;
+import com.junbo.authorization.ResourceScopeValidatorImpl;
 import com.junbo.catalog.spec.model.item.Binary;
 import com.junbo.catalog.spec.model.item.EntitlementDef;
 import com.junbo.catalog.spec.model.item.ItemRevision;
@@ -22,6 +23,7 @@ import com.junbo.entitlement.common.lib.EntitlementContext;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
+import com.junbo.langur.core.rest.ResourceScopeValidator;
 import com.junbo.sharding.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -158,6 +160,8 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         AuthorizeServiceImpl authorizeService = (AuthorizeServiceImpl) applicationContext.getBean(AuthorizeService.class);
         authorizeService.setDisabled(true);
         AuthorizeContext.setAuthorizeDisabled(true);
+        ResourceScopeValidatorImpl resourceScopeValidator = (ResourceScopeValidatorImpl) applicationContext.getBean(ResourceScopeValidator.class);
+        resourceScopeValidator.setDisabled(true);
     }
 
     @Test(enabled = false)

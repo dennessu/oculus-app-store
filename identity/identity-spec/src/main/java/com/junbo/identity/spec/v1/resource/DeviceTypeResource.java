@@ -10,6 +10,7 @@ import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.DeviceType;
 import com.junbo.identity.spec.v1.option.list.DeviceTypeListOptions;
 import com.junbo.identity.spec.v1.option.model.DeviceTypeGetOptions;
+import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -46,10 +47,12 @@ public interface DeviceTypeResource {
     @ApiOperation("Get one deviceType info")
     @GET
     @Path("/{deviceTypeId}")
+    @AuthorizationNotRequired
     Promise<DeviceType> get(@PathParam("deviceTypeId") DeviceTypeId deviceTypeId, @BeanParam DeviceTypeGetOptions getOptions);
 
     @ApiOperation("Search deviceType info")
     @GET
+    @AuthorizationNotRequired
     Promise<Results<DeviceType>> list(@BeanParam DeviceTypeListOptions listOptions);
 
     @ApiOperation("Delete a device type")

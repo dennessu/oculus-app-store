@@ -90,6 +90,7 @@ ext {
             log4j_over_slf4j: "org.slf4j:log4j-over-slf4j:${slf4jVersion}",
             jul_to_slf4j: "org.slf4j:jul-to-slf4j:${slf4jVersion}",
             jcl_over_slf4j: "org.slf4j:jcl-over-slf4j:${slf4jVersion}",
+            sysout_over_slf4j: "uk.org.lidalia:sysout-over-slf4j:1.0.2",
 
             // logback
             logback_classic: "ch.qos.logback:logback-classic:${logbackVersion}",

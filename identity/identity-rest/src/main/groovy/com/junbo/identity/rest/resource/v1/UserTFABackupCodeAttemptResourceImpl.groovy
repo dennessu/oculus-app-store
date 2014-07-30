@@ -35,8 +35,6 @@ import javax.transaction.Transactional
 @CompileStatic
 @Transactional
 class UserTFABackupCodeAttemptResourceImpl implements UserTFABackupCodeAttemptResource {
-    private static final String IDENTITY_SERVICE_SCOPE = 'identity.service'
-
     @Autowired
     private UserTFABackupCodeAttemptRepository userTFABackupCodeAttemptRepository
 
@@ -63,10 +61,6 @@ class UserTFABackupCodeAttemptResourceImpl implements UserTFABackupCodeAttemptRe
 
         if (userTFABackupCodeAttempt == null) {
             throw new IllegalArgumentException('userTFABackupCodeAttempt is null')
-        }
-
-        if (!AuthorizeContext.hasScopes(IDENTITY_SERVICE_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         userTFABackupCodeAttempt = userTFABackupCodeAttemptFilter.filterForCreate(userTFABackupCodeAttempt)

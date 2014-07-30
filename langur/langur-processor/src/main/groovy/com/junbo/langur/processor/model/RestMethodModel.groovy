@@ -12,6 +12,7 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class RestMethodModel {
+    String adapteeName
 
     String adapteeType
 
@@ -24,4 +25,6 @@ class RestMethodModel {
     List<String> annotations
 
     List<String> routeParamExprs
+
+    boolean authorizationNotRequired
 }

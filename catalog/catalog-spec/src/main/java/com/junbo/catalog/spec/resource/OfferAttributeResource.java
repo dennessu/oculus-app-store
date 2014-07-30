@@ -10,6 +10,7 @@ import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions;
 import com.junbo.common.filter.annotations.CacheMaxAge;
 import com.junbo.common.model.Results;
+import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -35,12 +36,14 @@ public interface OfferAttributeResource {
     @ApiOperation("Get an offer attribute")
     @GET
     @Path("/{attributeId}")
+    @AuthorizationNotRequired
     Promise<OfferAttribute> getAttribute(@PathParam("attributeId") String attributeId);
 
     @CacheMaxAge(duration = 30, unit = TimeUnit.MINUTES)
     @ApiOperation("Get all offer attributes")
     @GET
     @Path("/")
+    @AuthorizationNotRequired
     Promise<Results<OfferAttribute>> getAttributes(@BeanParam OfferAttributesGetOptions options);
 
     @ApiOperation("Create an offer attribute")

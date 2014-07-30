@@ -1,8 +1,6 @@
 package com.junbo.identity.rest.resource.v1
 
-import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.enumid.DeviceTypeId
-import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.core.service.filter.DeviceTypeFilter
@@ -22,8 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired
  */
 @CompileStatic
 class DeviceTypeResourceImpl implements DeviceTypeResource {
-    private static final String IDENTITY_ADMIN_SCOPE = 'identity.admin'
-
     @Autowired
     private DeviceTypeRepository deviceTypeRepository
 
@@ -37,10 +33,6 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
     Promise<DeviceType> create(DeviceType deviceType) {
         if (deviceType == null) {
             throw new IllegalArgumentException('deviceType is null')
-        }
-
-        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         deviceType = deviceTypeFilter.filterForCreate(deviceType)
@@ -63,10 +55,6 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
 
         if (deviceType == null) {
             throw new IllegalArgumentException('country is null')
-        }
-
-        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         return deviceTypeRepository.get(deviceTypeId).then { DeviceType oldDeviceType ->
@@ -93,10 +81,6 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
 
         if (deviceType == null) {
             throw new IllegalArgumentException('deviceType is null')
-        }
-
-        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         return deviceTypeRepository.get(deviceTypeId).then { DeviceType oldDeviceType ->
@@ -161,10 +145,6 @@ class DeviceTypeResourceImpl implements DeviceTypeResource {
     Promise<Void> delete(DeviceTypeId deviceTypeId) {
         if (deviceTypeId == null) {
             throw new IllegalArgumentException('countryId is null')
-        }
-
-        if (!AuthorizeContext.hasScopes(IDENTITY_ADMIN_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.forbidden().exception()
         }
 
         return deviceTypeValidator.validateForGet(deviceTypeId).then {

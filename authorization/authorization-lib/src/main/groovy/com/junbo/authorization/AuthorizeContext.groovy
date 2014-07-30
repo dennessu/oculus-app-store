@@ -74,12 +74,41 @@ class AuthorizeContext {
         }
 
         for (String scope : scopes) {
-            if (!currentScopes.contains(scope)) {
+            if (!currentScopes.contains(scope) && scope != '*') {
                 return false
             }
         }
 
         return true
+    }
+
+    static boolean hasAnyScope(String[] scopes) {
+        if (authorizeDisabled) {
+            return true;
+        }
+
+        if (scopes == null || scopes.length == 0) {
+            throw new IllegalArgumentException('scopes is null or empty')
+        }
+
+        TokenInfo tokenInfo = CURRENT_TOKEN_INFO.get()
+        if (tokenInfo == null || tokenInfo.scopes == null) {
+            return false
+        }
+
+        def currentScopes = tokenInfo.scopes.split(' ') as Set
+
+        if (currentScopes.contains(SUPER_SCOPE)) {
+            return true
+        }
+
+        for (String scope : scopes) {
+            if (currentScopes.contains(scope) || scope == '*') {
+                return true
+            }
+        }
+
+        return false
     }
 
     static void setCurrentRights(Set<String> rights) {

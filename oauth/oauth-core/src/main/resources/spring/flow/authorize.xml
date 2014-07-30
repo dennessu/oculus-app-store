@@ -71,15 +71,25 @@
             <wf:action ref="checkChangePassword" />
             <wf:transition on="emailVerifyRequired" to="EMAIL_VERIFY_REQUIRED_VIEW" />
             <wf:transition on="changePasswordRequired"  to="CHANGE_CREDENTIAL_REQUIRED_VIEW" />
-            <wf:transition on="success" to="CHECK_SCOPE_AFTER_LOGIN"/>
+            <wf:transition on="success" to="LOGIN_SUCCESS"/>
             <wf:transition on="*" to="LOGIN_REQUIRED" />
         </wf:action-state>
-        
+
+        <wf:view-state id="LOGIN_SUCCESS">
+            <wf:on-render>
+                <wf:action ref="redirectToAuth"/>
+            </wf:on-render>
+            <wf:transition on="*" to="CHECK_SCOPE_AFTER_LOGIN">
+                <wf:action ref="saveLoginState"/>
+                <wf:action ref="grantRememberMeToken"/>
+            </wf:transition>
+        </wf:view-state>
+
         <wf:action-state id="CHECK_SCOPE_AFTER_LOGIN">
             <wf:action ref="validateScopeAfterLogin"/>
             <wf:transition on="tfaRequired" to="REDIRECT_TO_TFA_REQUIRED_VIEW"/>
             <wf:transition on="forbidden" to="ACCESS_DENIED"/>
-            <wf:transition on="success" to="LOGIN_SUCCESS"/>
+            <wf:transition on="success" to="CHECK_CONSENT"/>
         </wf:action-state>
 
         <wf:view-state id="REDIRECT_TO_TFA_REQUIRED_VIEW">
@@ -96,18 +106,8 @@
             <wf:transition on="sendSMS" to="TFA_REQUIRED_VIEW">
                 <wf:action ref="sendTFA"/>
             </wf:transition>
-            <wf:transition on="verifySMS" to="LOGIN_SUCCESS">
+            <wf:transition on="verifySMS" to="CHECK_CONSENT">
                 <wf:action ref="verifyTFA"/>
-            </wf:transition>
-        </wf:view-state>
-
-        <wf:view-state id="LOGIN_SUCCESS">
-            <wf:on-render>
-                <wf:action ref="redirectToAuth"/>
-            </wf:on-render>
-            <wf:transition on="*" to="CHECK_CONSENT">
-                <wf:action ref="saveLoginState"/>
-                <wf:action ref="grantRememberMeToken"/>
             </wf:transition>
         </wf:view-state>
 

@@ -79,6 +79,10 @@ public interface AppCommonErrors {
     @ErrorDef(httpStatusCode = 403, code = "003", message = "Forbidden", field = "access_token", reason = "The access token does not have sufficient scope to make the request")
     AppError insufficientScope();
 
+    @ErrorDef(httpStatusCode = 403, code = "003", message = "Forbidden", field = "access_token",
+            reason = "The access token does not have sufficient scope to make the request to {0}")
+    AppError insufficientScope(String resourceName);
+
     @ErrorDef(httpStatusCode = 404, code = "004", message = "Resource Not Found", field = "id", reason = "{0} {1} is not found")
     AppError resourceNotFound(String resourceName, Object id);
 

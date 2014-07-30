@@ -10,6 +10,7 @@ import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Tos;
 import com.junbo.identity.spec.v1.option.list.TosListOptions;
 import com.junbo.identity.spec.v1.option.model.TosGetOptions;
+import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -42,10 +43,12 @@ public interface TosResource {
     @ApiOperation("Get a tos info")
     @GET
     @Path("/{tosId}")
+    @AuthorizationNotRequired
     Promise<Tos> get(@PathParam("tosId") TosId tosId, @BeanParam TosGetOptions getOptions);
 
     @ApiOperation("Search tos info")
     @GET
+    @AuthorizationNotRequired
     Promise<Results<Tos>> list(@BeanParam TosListOptions listOptions);
 
     @ApiOperation("Delete a tos")

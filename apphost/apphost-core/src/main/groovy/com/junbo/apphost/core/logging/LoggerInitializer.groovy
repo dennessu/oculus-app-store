@@ -13,6 +13,7 @@ import org.slf4j.impl.StaticLoggerBinder
 import org.springframework.util.ResourceUtils
 import org.springframework.util.StopWatch
 import org.springframework.util.StringUtils
+import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J
 
 import java.lang.management.ManagementFactory
 import java.lang.management.RuntimeMXBean
@@ -62,6 +63,7 @@ class LoggerInitializer {
                 throw new IllegalStateException("Could not initialize logging from $location", ex)
             }
         }
+        SysOutOverSLF4J.sendSystemOutAndErrToSLF4J()
     }
 
     static void logStarting(Logger logger) {

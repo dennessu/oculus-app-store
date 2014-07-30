@@ -1,7 +1,5 @@
 package com.junbo.csr.rest.resource
 
-import com.junbo.authorization.AuthorizeContext
-import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.CsrUpdateId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -21,8 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired
  */
 @CompileStatic
 class CsrUpdateResourceImpl implements CsrUpdateResource {
-    private static final String CSR_SCOPE = "csr";
-
     @Autowired
     private CsrUpdateRepository csrUpdateRepository
 
@@ -31,7 +27,6 @@ class CsrUpdateResourceImpl implements CsrUpdateResource {
 
     @Override
     Promise<CsrUpdate> create(CsrUpdate csrUpdate) {
-        authorize()
         if (csrUpdate == null) {
             throw AppErrors.INSTANCE.requestBodyRequired().exception()
         }
@@ -46,7 +41,6 @@ class CsrUpdateResourceImpl implements CsrUpdateResource {
 
     @Override
     Promise<CsrUpdate> put(CsrUpdateId csrUpdateId, CsrUpdate csrUpdate) {
-        authorize()
         if (csrUpdateId == null) {
             throw new IllegalArgumentException('csrUpdateId is null')
         }
@@ -66,7 +60,6 @@ class CsrUpdateResourceImpl implements CsrUpdateResource {
 
     @Override
     Promise<CsrUpdate> patch(CsrUpdateId csrUpdateId, CsrUpdate csrUpdate) {
-        authorize()
         if (csrUpdateId == null) {
             throw new IllegalArgumentException('csrUpdateId is null')
         }
@@ -86,7 +79,6 @@ class CsrUpdateResourceImpl implements CsrUpdateResource {
 
     @Override
     Promise<CsrUpdate> get(CsrUpdateId csrUpdateId, CsrUpdateGetOptions getOptions) {
-        authorize()
         if (csrUpdateId == null) {
             throw new IllegalArgumentException('csrUpdateId is null')
         }
@@ -104,7 +96,6 @@ class CsrUpdateResourceImpl implements CsrUpdateResource {
 
     @Override
     Promise<Results<CsrUpdate>> list(CsrUpdateListOptions listOptions) {
-        authorize()
         if (listOptions == null) {
             throw new IllegalArgumentException('listOptions is null')
         }
@@ -118,19 +109,12 @@ class CsrUpdateResourceImpl implements CsrUpdateResource {
 
     @Override
     Promise<Void> delete(CsrUpdateId csrUpdateId) {
-        authorize()
         if (csrUpdateId == null) {
             throw new IllegalArgumentException('csrUpdateId is null')
         }
 
         return csrUpdateValidator.validateForGet(csrUpdateId).then { CsrUpdate existing ->
             return csrUpdateRepository.delete(csrUpdateId)
-        }
-    }
-
-    private static void authorize() {
-        if (!AuthorizeContext.hasScopes(CSR_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.insufficientScope().exception();
         }
     }
 }

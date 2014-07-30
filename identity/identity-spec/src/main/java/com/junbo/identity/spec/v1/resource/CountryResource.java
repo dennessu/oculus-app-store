@@ -10,6 +10,7 @@ import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Country;
 import com.junbo.identity.spec.v1.option.list.CountryListOptions;
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions;
+import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -46,10 +47,12 @@ public interface CountryResource {
     @ApiOperation("Get a country info")
     @GET
     @Path("/{countryId}")
+    @AuthorizationNotRequired
     Promise<Country> get(@PathParam("countryId") CountryId countryId, @BeanParam CountryGetOptions getOptions);
 
     @ApiOperation("Get all countries")
     @GET
+    @AuthorizationNotRequired
     Promise<Results<Country>> list(@BeanParam CountryListOptions listOptions);
 
     @ApiOperation("Delete a country")

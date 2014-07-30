@@ -10,6 +10,7 @@ import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.attribute.ItemAttributesGetOptions;
 import com.junbo.common.filter.annotations.CacheMaxAge;
 import com.junbo.common.model.Results;
+import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -35,12 +36,14 @@ public interface ItemAttributeResource {
     @ApiOperation("Get an item attribute")
     @GET
     @Path("/{attributeId}")
+    @AuthorizationNotRequired
     Promise<ItemAttribute> getAttribute(@PathParam("attributeId") String attributeId);
 
     @CacheMaxAge(duration = 30, unit = TimeUnit.MINUTES)
     @ApiOperation("Get all item attributes")
     @GET
     @Path("/")
+    @AuthorizationNotRequired
     Promise<Results<ItemAttribute>> getAttributes(@BeanParam ItemAttributesGetOptions options);
 
     @ApiOperation("Create an item attribute")

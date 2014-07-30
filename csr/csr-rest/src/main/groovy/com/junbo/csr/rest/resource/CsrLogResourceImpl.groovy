@@ -1,7 +1,5 @@
 package com.junbo.csr.rest.resource
 
-import com.junbo.authorization.AuthorizeContext
-import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.CsrLogId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
@@ -21,8 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired
  */
 @CompileStatic
 class CsrLogResourceImpl implements CsrLogResource {
-    private static final String CSR_SCOPE = "csr";
-    private static final String CSR_SERVICE_SCOPE = "csr.service";
 
     @Autowired
     private CsrLogRepository csrLogRepository
@@ -31,10 +27,6 @@ class CsrLogResourceImpl implements CsrLogResource {
 
     @Override
     Promise<CsrLog> create(CsrLog csrLog) {
-        if (!AuthorizeContext.hasScopes(CSR_SERVICE_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.insufficientScope().exception();
-        }
-
         if (csrLog == null) {
             throw AppErrors.INSTANCE.requestBodyRequired().exception()
         }
@@ -49,10 +41,6 @@ class CsrLogResourceImpl implements CsrLogResource {
 
     @Override
     Promise<CsrLog> get(CsrLogId csrLogId, CsrLogGetOptions getOptions) {
-        if (!AuthorizeContext.hasScopes(CSR_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.insufficientScope().exception();
-        }
-
         if (csrLogId == null) {
             throw new IllegalArgumentException('csrLogId is null')
         }
@@ -70,10 +58,6 @@ class CsrLogResourceImpl implements CsrLogResource {
 
     @Override
     Promise<Results<CsrLog>> list(CsrLogListOptions listOptions) {
-        if (!AuthorizeContext.hasScopes(CSR_SCOPE)) {
-            throw AppCommonErrors.INSTANCE.insufficientScope().exception();
-        }
-
         if (listOptions == null) {
             throw new IllegalArgumentException('listOptions is null')
         }

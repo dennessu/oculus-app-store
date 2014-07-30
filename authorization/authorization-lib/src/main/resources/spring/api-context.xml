@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="resourceScopeValidator" class="com.junbo.authorization.ResourceScopeValidatorImpl">
+        <property name="disabled" value="${authorization.lib.service.disabled}"/>
+        <property name="apiScopeMapping">
+            <map>
+                <!-- authorization -->
+                <entry key="ApiDefinitionResource.get" value="api.manage api.info"/>
+                <entry key="ApiDefinitionResource" value="api.manage"/>
+                <entry key="RoleAssignmentResource" value="identity identity.service"/>
+                <entry key="RoleResource" value="identity identity.service"/>
+                <!-- billing -->
+                <entry key="BalanceResource" value="commerce billing.service csr"/>
+                <entry key="VatResource" value="billing.service"/>
+                <!-- cart -->
+                <entry key="CartResource" value="commerce cart.service csr"/>
+                <!-- catalog -->
+                <entry key="ItemAttributeResource" value="catalog.admin"/>
+                <entry key="ItemResource" value="catalog catalog.service csr"/>
+                <entry key="ItemRevisionResource" value="catalog catalog.service csr"/>
+                <entry key="OfferAttributeResource" value="catalog.admin"/>
+                <entry key="OfferResource" value="catalog catalog.service csr"/>
+                <entry key="OfferRevisionResource" value="catalog catalog.service csr"/>
+                <entry key="PriceTierResource" value="catalog.admin"/>
+                <!-- crypto -->
+                <entry key="CryptoResource" value="crypto.service"/>
+                <entry key="ItemCryptoResource" value="crypto.service"/>
+                <entry key="MasterKeyResource" value="crypto.service"/>
+                <entry key="UserCryptoResource" value="crypto.service"/>
+                <!-- csr -->
+                <entry key="CsrGroupResource" value="csr"/>
+                <entry key="CsrLogResource.create" value="csr.service"/>
+                <entry key="CsrLogResource" value="csr"/>
+                <entry key="CsrUpdateResource" value="csr"/>
+                <entry key="CsrUserResource" value="csr"/>
+                <!-- drm -->
+                <entry key="DrmResource" value="drm"/>
+                <!-- email -->
+                <entry key="EmailResource" value="email.service"/>
+                <entry key="EmailTemplateResource.getEmailTemplates" value="email.service email.admin"/>
+                <entry key="EmailTemplateResource.postEmailTemplate" value="email.admin"/>
+                <entry key="EmailTemplateResource.getEmailTemplate" value="email.service email.admin"/>
+                <entry key="EmailTemplateResource.putEmailTemplate" value="email.admin"/>
+                <entry key="EmailTemplateResource.deleteEmailTemplate" value="email.admin"/>
+                <!-- entitlement -->
+                <entry key="EntitlementResource" value="commerce entitlement.service csr"/>
+                <entry key="DownloadUrlResource" value="commerce entitlement.service csr"/>
+                <!-- ewallet -->
+                <entry key="WalletResource" value="ewallet.service ewallet.admin"/>
+                <!-- fulfilment -->
+                <entry key="FulfilmentResource" value="fulfilment.service"/>
+                <!-- identity -->
+                <entry key="AuthenticatorResource" value="identity identity.service identity.pii csr"/>
+                <entry key="CommunicationResource" value="identity.admin"/>
+                <entry key="CountryResource" value="identity.admin"/>
+                <entry key="CurrencyResource" value="identity.admin"/>
+                <entry key="DeviceTypeResource" value="identity.admin"/>
+                <entry key="ErrorInfoResource" value="identity.admin"/>
+                <entry key="GroupResource" value="identity identity.service csr"/>
+                <entry key="LocaleResource" value="identity.admin"/>
+                <entry key="MigrationResource" value="identity.admin"/>
+                <entry key="OrganizationResource" value="identity identity.service csr"/>
+                <entry key="PITypeResource" value="identity.admin"/>
+                <entry key="TosResource" value="identity.admin"/>
+                <entry key="UserCommunicationResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserCredentialResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserCredentialVerifyAttemptResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserCredentialVerifyAttemptResource.create" value="identity.service"/>
+                <entry key="UserGroupMembershipResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserPersonalInfoResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserSecurityQuestionResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserSecurityQuestionVerifyAttemptResource.create" value="identity.service"/>
+                <entry key="UserSecurityQuestionVerifyAttemptResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserTFAAttemptResource.create" value="identity.service"/>
+                <entry key="UserTFAAttemptResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserTFABackupCodeAttemptResource.create" value="identity.service"/>
+                <entry key="UserTFABackupCodeAttemptResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserTFABackupCodeResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserTFAResource" value="identity identity.service identity.pii csr"/>
+                <entry key="UserTosAgreementResource" value="identity identity.service identity.pii csr"/>
+                <!-- oauth -->
+                <entry key="ClientEndpoint" value="client.register"/>
+                <entry key="ClientEndpoint.getInfoByClientId" value="client.info"/>
+                <entry key="ScopeEndpoint" value="scope.manage"/>
+                <entry key="ScopeEndpoint.getScope" value="scope.info"/>
+                <entry key="ScopeEndpoint.getByScopeNames" value="scope.info"/>
+                <!-- order -->
+                <entry key="OrderEventResource" value="commerce order.service csr"/>
+                <entry key="OrderResource" value="commerce order.service csr"/>
+                <entry key="SubledgerItemResource" value="subledger subledger.service"/>
+                <entry key="SubledgerResource" value="subledger subledger.service"/>
+                <!-- payment -->
+                <entry key="PaymentInstrumentResource" value="commerce payment.service csr"/>
+                <entry key="PaymentCallbackResource" value="commerce payment.service csr"/>
+                <entry key="PaymentTransactionResource" value="payment.service"/>
+                <!-- rating -->
+                <entry key="RatingResource" value="rating.service"/>
+                <!-- subscription -->
+                <entry key="SubscriptionResource" value="commerce subscription.service csr"/>
+                <!-- token -->
+                <entry key="TokenResource" value="token token.service"/>
+            </map>
+        </property>
+    </bean>
+</beans>

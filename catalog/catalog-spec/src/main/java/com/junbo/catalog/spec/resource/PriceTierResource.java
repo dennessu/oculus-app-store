@@ -10,6 +10,7 @@ import com.junbo.catalog.spec.model.pricetier.PriceTier;
 import com.junbo.catalog.spec.model.pricetier.PriceTiersGetOptions;
 import com.junbo.common.filter.annotations.CacheMaxAge;
 import com.junbo.common.model.Results;
+import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -35,12 +36,14 @@ public interface PriceTierResource {
     @ApiOperation("Get a price tier")
     @GET
     @Path("/{tierId}")
+    @AuthorizationNotRequired
     Promise<PriceTier> getPriceTier(@PathParam("tierId") String tierId);
 
     @CacheMaxAge(duration = 1, unit = TimeUnit.HOURS)
     @ApiOperation("Get all price tiers")
     @GET
     @Path("/")
+    @AuthorizationNotRequired
     Promise<Results<PriceTier>> getPriceTiers(@BeanParam PriceTiersGetOptions options);
 
     @ApiOperation("Create a price tier")

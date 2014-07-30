@@ -10,6 +10,10 @@ public void ${methodName}([#list parameters as parameter][@includeModel model=pa
     com.junbo.langur.core.context.JunboHttpContext.JunboHttpContextData __junboHttpContextData = __createJunboHttpContextData(${adapteeType}.class);
     final com.junbo.langur.core.context.JunboHttpContextScope __scope = new com.junbo.langur.core.context.JunboHttpContextScope(__junboHttpContextData, __junboHttpContextScopeListeners);
 
+    [#if !authorizationNotRequired]
+    __resourceScopeValidator.validateScope("${adapteeName}.${methodName}");
+    [/#if]
+
     try {
         ${adapteeType} adaptee = __adaptee;
 
