@@ -26,9 +26,7 @@ import com.junbo.test.payment.apihelper.clientencryption.EncrypterException;
 import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -84,7 +82,7 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
     }
 
     public String postPaymentInstrument(String uid, PaymentInstrumentBase paymentInfo) throws Exception {
-        return postPaymentInstrument(uid,paymentInfo,200);
+        return postPaymentInstrument(uid, paymentInfo, 200);
     }
 
 
@@ -92,9 +90,9 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                                         int expectedResponseCode) throws Exception {
 
         PaymentInstrument paymentInstrument = new PaymentInstrument();
-        ArrayList<Long> admins = new ArrayList<>();
-        admins.add(IdConverter.hexStringToId(UserId.class, uid));
-        paymentInstrument.setAdmins(admins);
+        //ArrayList<Long> admins = new ArrayList<>();
+        //admins.add(IdConverter.hexStringToId(UserId.class, uid));
+        //paymentInstrument.setAdmins(admins);
         paymentInstrument.setLabel("4");
         TypeSpecificDetails typeSpecificDetails = new TypeSpecificDetails();
         Long billingAddressId = Master.getInstance().getUser(uid).getAddresses().get(0).getValue().getValue();
@@ -102,14 +100,15 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
         switch (paymentInfo.getType()) {
             case CREDITCARD:
                 CreditCardInfo creditCardInfo = (CreditCardInfo) paymentInfo;
-                GregorianCalendar gc = new GregorianCalendar();
-                paymentInstrument.setLastValidatedTime(gc.getTime());
-                paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
+                //GregorianCalendar gc = new GregorianCalendar();
+                // paymentInstrument.setLastValidatedTime(gc.getTime());
+                // paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
                 paymentInstrument.setAccountName(creditCardInfo.getAccountName());
-                paymentInstrument.setAccountNumber(encryptCreditCardInfo(creditCardInfo));
+                paymentInstrument.setAccountNumber(accountNum);
                 paymentInstrument.setIsValidated(creditCardInfo.isValidated());
                 paymentInstrument.setType(creditCardInfo.getType().getValue());
                 paymentInstrument.setBillingAddressId(creditCardInfo.getBillingAddressId());
+                paymentInstrument.setUserId(IdConverter.hexStringToId(UserId.class, uid));
 
                 paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument));
                 return paymentInfo.getPid();
@@ -197,7 +196,7 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
         dbHelper.executeUpdate(sqlStr, DBHelper.DBName.PAYMENT);
     }
 
-    public String encryptCreditCardInfo(CreditCardInfo creditCardInfo) throws EncrypterException{
+    public String encryptCreditCardInfo(CreditCardInfo creditCardInfo) throws EncrypterException {
         Encrypter e = new Encrypter(pubKey);
 
         Card card = new Card.Builder(new Date())
@@ -221,5 +220,12 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
             + "E6E8CF94156686558522629E8AF59620CBDE58327E9D84F29965E4CD0FAF"
             + "A38C632B244287EA1F7F70DAA445D81C216D3286B09205F6650262CAB415"
             + "5F024B3294A933F4DC514DE0B5686F6C2A6A2D";
+
+    String accountNum = "adyenjs_0_1_4$O2eavEUHb6lQeQPkEOHQGfOIe22JTUkuCj+iwuR07OJtjlV7ZFwV5dhEVVVHOt60JMncweUsDOn"
+            + "N5UkkH6vFneVvFZ31T0TaLH6VixXnexTwFqr/qVZu4N3lPNgkGM8KmL/PMOsUnV8kDAbu3ilh4P+6y3MsWjB5is4X/n63zfnIO4R"
+            + "eiOEVaAAio1UGj7nh1o3q50oRXBjg/zE4/vWylTabsW+S6SoqYvQQCO8NtUSeSXQDp2bMxUu89bzjvaGJKNPzZLjGxFz68m20nXu"
+            + "6RQlEsfSpaqXQB3/rC3O/ycCNrpZZc1PM6wqp8WbgHDcSdYpc3SaN8zYCKU1QBM5giA==$rictoeF32VwhKudtbw81i/xci/5cGL" +
+            "8DcQqap7mvXxZxVC8EBXuzjLeIEQvWREM+Uk65/OARub1dqdGemzbiSo6+9nGZ5OCUdZ2nAE6Et4eav30/ZFgpRfJwiP+mr7cwMtNQ" +
+            "843CFqaChoTcV1n6gcFXNopUkiWc/V4cvWJCjL/BUSKf/57W3CcvZJvS+y68";
 
 }

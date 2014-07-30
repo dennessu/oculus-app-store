@@ -175,7 +175,8 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
         userPersonalInfo.setType("ADDRESS");
         userPersonalInfo.setUserId(userId);
-        String str = "{\"street1\":\"800 West Campbell Road\",\"city\":\"Richardson\",\"postalCode\":\"75080\"," +
+        String str = "{\"subCountry\":\"TX\",\"street1\":\"800 West Campbell Road\"," +
+                "\"city\":\"Richardson\",\"postalCode\":\"75080\"," +
                 "\"country\":{\"id\":\"US\"}}";
         ObjectMapper mapper = new ObjectMapper();
         JsonNode value = mapper.readTree(str);
