@@ -40,12 +40,6 @@ def main():
     output = open(args.output, "w")
     output.write("{" + os.linesep)
 
-    white_list_user_names = []
-    if args.white_list_user is not None:
-        user_name_file = open(str(args.white_list_user), "r")
-        white_list_user_names = user_name_file.readlines()
-        user_name_file.close()
-
     write_thread = Thread(target=write_worker, args=[users, write_q, results, output])
     write_thread.start()
 
@@ -62,9 +56,6 @@ def main():
             comm_array.append({comm_id : True if user["optins"][comm_name] else False})
         del user["optins"]
         user["communications"] = comm_array
-        if args.mask_user == "true" and user["username"] not in white_list_user_names:
-            user["username"] = randomword(20)
-            user["email"] = randomword(20) + '@oculusTest.com'
         input_users.append(user)
         count += 1
         if count == 20:
@@ -90,8 +81,6 @@ def read_args():
     parser.add_argument('-general', action="store", metavar='general_id', dest="general", help='the general communication id', required=True)
     parser.add_argument('-new_release', action="store", metavar='new_release_id', dest="new_release", help='the newRelease communication id', required=True)
     parser.add_argument('-access_token', action="store", metavar='access_token', dest="access_token", help='the accessToken to do the migration', required=True)
-    parser.add_argument('-mask_user', action="store", metavar='mask_user_true_or_false', dest="mask_user", help="whether we need to mask user name and mail", required=False)
-    parser.add_argument('-white_list_user', action="store", metavar="white_list_user_config_file", dest="white_list_user", help="The username list to be white list", required=False)
     return parser.parse_args()
 
 def worker(q, write_q):
