@@ -37,6 +37,14 @@ import com.junbo.store.rest.utils.*
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.*
 import com.junbo.store.spec.model.billing.*
+import com.junbo.store.spec.model.browse.GetDetailsRequest
+import com.junbo.store.spec.model.browse.GetDetailsResponse
+import com.junbo.store.spec.model.browse.GetListRequest
+import com.junbo.store.spec.model.browse.GetListResponse
+import com.junbo.store.spec.model.browse.GetSectionRequest
+import com.junbo.store.spec.model.browse.GetSectionResponse
+import com.junbo.store.spec.model.browse.GetTocRequest
+import com.junbo.store.spec.model.browse.GetTocResponse
 import com.junbo.store.spec.model.iap.*
 import com.junbo.store.spec.model.identity.*
 import com.junbo.store.spec.model.purchase.*
@@ -491,6 +499,26 @@ class StoreResourceImpl implements StoreResource {
                 return Promise.pure(new IAPEntitlementConsumeResponse(consumption: consumptionResult, status: ResponseStatus.SUCCESS.name()))
             }
         }
+    }
+
+    @Override
+    Promise<GetTocResponse> getToc(GetTocRequest getTocRequest) {
+        return null
+    }
+
+    @Override
+    Promise<GetSectionResponse> getSection(@BeanParam GetSectionRequest getSectionRequest) {
+        return null
+    }
+
+    @Override
+    Promise<GetListResponse> getList(@BeanParam GetListRequest getListRequest) {
+        return null
+    }
+
+    @Override
+    Promise<GetDetailsResponse> getDetails(@BeanParam GetDetailsRequest getDetailsRequest) {
+        return null
     }
 
     private Promise<BillingProfile> innerGetBillingProfile(UserId userId, LocaleId locale) {

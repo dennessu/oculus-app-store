@@ -11,10 +11,13 @@ import com.junbo.common.id.OfferId;
  * The offer class for iap.
  */
 public class Offer {
+
     private OfferId offerId;
     private String title;
     private String description;
     private String price;
+    private String originalPrice;
+    private String currencyCode;
     private Boolean isConsumable;
     private String type;
     private String sku;

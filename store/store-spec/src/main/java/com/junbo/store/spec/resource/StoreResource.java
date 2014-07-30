@@ -9,11 +9,14 @@ import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.langur.core.routing.RouteBy;
-import com.junbo.store.spec.model.*;
+import com.junbo.store.spec.model.EntitlementsGetRequest;
+import com.junbo.store.spec.model.EntitlementsGetResponse;
+import com.junbo.store.spec.model.PageParam;
 import com.junbo.store.spec.model.billing.BillingProfileGetRequest;
 import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateRequest;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
+import com.junbo.store.spec.model.browse.*;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.iap.IAPOfferGetRequest;
@@ -93,4 +96,19 @@ public interface StoreResource {
     @Path("/iap/consumption")
     Promise<IAPEntitlementConsumeResponse> iapConsumeEntitlement(IAPEntitlementConsumeRequest iapEntitlementConsumeRequest);
 
+    @GET
+    @Path("/toc")
+    Promise<GetTocResponse> getToc(GetTocRequest getTocRequest);
+
+    @GET
+    @Path("/section")
+    Promise<GetSectionResponse> getSection(@BeanParam GetSectionRequest getSectionRequest);
+
+    @GET
+    @Path("/list")
+    Promise<GetListResponse> getList(@BeanParam GetListRequest getListRequest);
+
+    @GET
+    @Path("/list")
+    Promise<GetDetailsResponse> getDetails(@BeanParam GetDetailsRequest getDetailsRequest);
 }
