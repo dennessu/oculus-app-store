@@ -15,7 +15,7 @@ import java.util.List;
 
 
 public class MockPaymentProviderServiceImpl extends AbstractPaymentProviderService {
-    private static final String providerName = "BrainTree";
+    private static final String providerName = "AdyenCC";
     public static final String piExternalToken = "123";
     public static final String authExternalToken = "1234";
     public static final String chargeExternalToken = "12345";

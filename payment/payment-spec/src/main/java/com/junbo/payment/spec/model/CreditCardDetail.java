@@ -21,7 +21,7 @@ public class CreditCardDetail extends ResourceMetaForDualWrite<Long> {
     private Long id;
     private String expireDate;
     @FilterIn
-    private String bin;
+    private String issuerIdentificationNumber;
     @FilterOut
     private String encryptedCvmCode;
     //response only
@@ -54,12 +54,12 @@ public class CreditCardDetail extends ResourceMetaForDualWrite<Long> {
         this.expireDate = expireDate;
     }
 
-    public String getBin() {
-        return bin;
+    public String getIssuerIdentificationNumber() {
+        return issuerIdentificationNumber;
     }
 
-    public void setBin(String bin) {
-        this.bin = bin;
+    public void setIssuerIdentificationNumber(String issuerIdentificationNumber) {
+        this.issuerIdentificationNumber = issuerIdentificationNumber;
     }
 
     public String getEncryptedCvmCode() {

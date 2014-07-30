@@ -217,7 +217,7 @@
     <changeSet id="2" author='WenhongZhu' context="PREDEPLOY">
         <sql>
             <![CDATA[
-            insert into payment_provider values (0, 'BrainTree', 0, null, 'USD', '2014-02-10','wenhongzhu')
+            insert into payment_provider values (0, 'AdyenCC', 0, null, 'USD', '2014-02-10','wenhongzhu')
                                                ,(1, 'Wallet', 2, null, 'WLT', '2014-02-10', 'wenhongzhu')
                                                ,(2, 'PayPal', 3, null, 'USD', '2014-02-10', 'wenhongzhu')
                                                ,(3, 'Adyen', 4, null, 'USD', '2014-02-10', 'wenhongzhu');

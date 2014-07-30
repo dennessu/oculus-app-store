@@ -101,7 +101,7 @@ public class PaymentMapperExtension {
             CreditCardDetail generalDetail = (CreditCardDetail)specificDetail;
             result.setId(generalDetail.getId());
             result.setExpireDate(generalDetail.getExpireDate());
-            result.setIssuerIdentificationNumber(generalDetail.getBin());
+            result.setIssuerIdentificationNumber(generalDetail.getIssuerIdentificationNumber());
             result.setCreditCardType(generalDetail.getType().toString());
             result.setEncryptedCvmCode(generalDetail.getEncryptedCvmCode());
             result.setLastBillingDate(generalDetail.getLastBillingDate());
@@ -126,7 +126,7 @@ public class PaymentMapperExtension {
                     {
                         setId(generalDetail.getId());
                         setExpireDate(generalDetail.getExpireDate());
-                        setBin(generalDetail.getIssuerIdentificationNumber());
+                        setIssuerIdentificationNumber(generalDetail.getIssuerIdentificationNumber());
                         setType(generalDetail.getCreditCardType());
                         setEncryptedCvmCode(generalDetail.getEncryptedCvmCode());
                         setLastBillingDate(generalDetail.getLastBillingDate());

@@ -47,7 +47,7 @@ public class MockProviderRoutingServiceImpl implements ProviderRoutingService {
         }else if(provider.equalsIgnoreCase(PaymentProvider.Adyen.toString())){
             return adyenProviderService;
         }else if(provider.equalsIgnoreCase(PaymentProvider.AdyenCC.toString())){
-            return adyenCCProviderService;
+            return mockPaymentProviderService;
         }
         return null;
     }

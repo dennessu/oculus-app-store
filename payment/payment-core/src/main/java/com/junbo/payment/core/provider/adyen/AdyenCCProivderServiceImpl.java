@@ -10,7 +10,6 @@ import com.adyen.services.common.Amount;
 import com.adyen.services.payment.*;
 import com.adyen.services.recurring.RecurringDetail;
 import com.junbo.common.enumid.CurrencyId;
-import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.util.PromiseFacade;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.clientproxy.PersonalInfoFacade;
@@ -24,6 +23,7 @@ import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.Address;
 import com.junbo.payment.spec.model.PaymentInstrument;
 import com.junbo.payment.spec.model.PaymentTransaction;
+import com.junbo.payment.spec.model.TypeSpecificDetails;
 import com.junbo.sharding.IdGenerator;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
@@ -144,6 +144,13 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                             }
                         }
                         request.setAccountNumber(recurringDetail.getCard().getNumber());
+                        String cardHolder = recurringDetail.getCard().getHolderName();
+                        if(CommonUtil.isNullOrEmpty(cardHolder)){
+                            request.setAccountName(cardHolder);
+                        }
+                        if(request.getTypeSpecificDetails() == null){
+                            request.setTypeSpecificDetails(new TypeSpecificDetails());
+                        }
                         request.getTypeSpecificDetails().setIssuerIdentificationNumber(cardBin);
                         request.getTypeSpecificDetails().setCreditCardType(
                                 PaymentUtil.getCreditCardType(recurringDetail.getVariant()).toString());
@@ -199,15 +206,7 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
         StringBuffer sbReq = new StringBuffer();
         sbReq.append("action=Payment.authorise");
         sbReq.append("&paymentRequest.card.holderName=" + request.getAccountName());
-        String expireDate = request.getTypeSpecificDetails().getExpireDate();
-        String[] tokens = expireDate.split("-");
-        if (tokens == null || tokens.length < 2) {
-            throw AppCommonErrors.INSTANCE.fieldInvalid("expire_date",
-                    "only accept format: yyyy-MM or yyyy-MM-dd").exception();
-        }
         try {
-            sbReq.append("&paymentRequest.card.expiryMonth=" + urlEncode(String.valueOf(tokens[1])));
-            sbReq.append("&paymentRequest.card.expiryYear=" + urlEncode(String.valueOf(tokens[0])));
             sbReq.append("&paymentRequest.amount.currency=" + urlEncode(defaultCurrency.getValue()));
             sbReq.append("&paymentRequest.amount.value=" + minAuthAmount);
             sbReq.append("&paymentRequest.merchantAccount=" + urlEncode(getMerchantAccount()));

@@ -444,7 +444,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         LOGGER.error(api.toString() + " declined by " + provider.getProviderName() +
                 "; error detail: " + throwable.toString());
         request.setStatus(status.toString());
-        PaymentEvent authDeclined = createPaymentEvent(request, event, status, proxyResponse.getBody());
+        PaymentEvent authDeclined = createPaymentEvent(request, event, status, CommonUtil.toJson(proxyResponse.getBody(), null));
         addPaymentEvent(request, authDeclined);
         updatePaymentAndSaveEvent(request, Arrays.asList(authDeclined), api, status, false);
         throw AppServerExceptions.INSTANCE.providerProcessError(

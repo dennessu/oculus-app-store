@@ -69,4 +69,8 @@ public interface AppClientExceptions {
             reason = "the billing reference id is invalid: {0}")
     AppError invalidBIllingRef(String billingRef);
 
+    @ErrorDef(httpStatusCode = 412, code = "114", message = "invalid field to update",
+            reason = "{0} is not allow to be updated")
+    AppError updateNotAllowed(String fieldName);
+
 }

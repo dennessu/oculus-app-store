@@ -91,15 +91,46 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
     public void update(PaymentInstrument request) {
         validateRequest(request);
 
-        PaymentInstrument piTarget = getPaymentInstrument(request.getId());
+        PaymentInstrument piExisting = getPaymentInstrument(request.getId());
         //Validate the info:
-        if(!piTarget.getUserId().equals(request.getUserId())
-                || !piTarget.getType().equals(request.getType())
-                || !piTarget.getAccountNumber().equals(request.getAccountNumber())){
+        if(!piExisting.getUserId().equals(request.getUserId())){
             throw AppClientExceptions.INSTANCE.invalidPaymentInstrumentId(request.getId().toString()).exception();
         }
+        if(!request.getAccountNumber().equalsIgnoreCase(piExisting.getAccountNumber())){
+            throw AppClientExceptions.INSTANCE.updateNotAllowed("accountNumber").exception();
+        }
+        if(!request.getType().equals(piExisting.getType())){
+            throw AppClientExceptions.INSTANCE.updateNotAllowed("type").exception();
+        }
         if(PIType.get(request.getType()).equals(PIType.CREDITCARD)){
+            if(request.getTypeSpecificDetails() == null){
+                throw AppClientExceptions.INSTANCE.invalidPaymentInstrumentId(request.getId().toString()).exception();
+            }
             request.getTypeSpecificDetails().setId(request.getId());
+            if(request.getTypeSpecificDetails().getExpireDate() == null){
+                if(piExisting.getTypeSpecificDetails().getExpireDate() != null){
+                    throw AppClientExceptions.INSTANCE.updateNotAllowed("expireDate").exception();
+                }
+            }else if(!request.getTypeSpecificDetails().getExpireDate().equalsIgnoreCase(
+                    piExisting.getTypeSpecificDetails().getExpireDate())){
+                throw AppClientExceptions.INSTANCE.updateNotAllowed("expireDate").exception();
+            }
+            if(request.getTypeSpecificDetails().getIssuerIdentificationNumber() == null){
+                if(piExisting.getTypeSpecificDetails().getIssuerIdentificationNumber() != null){
+                    throw AppClientExceptions.INSTANCE.updateNotAllowed("issuerIdentificationNumber").exception();
+                }
+            }else if(!request.getTypeSpecificDetails().getIssuerIdentificationNumber().equalsIgnoreCase(
+                    piExisting.getTypeSpecificDetails().getIssuerIdentificationNumber())){
+                throw AppClientExceptions.INSTANCE.updateNotAllowed("issuerIdentificationNumber").exception();
+            }
+            if(request.getTypeSpecificDetails().getCreditCardType() == null){
+                if(piExisting.getTypeSpecificDetails().getCreditCardType() != null){
+                    throw AppClientExceptions.INSTANCE.updateNotAllowed("creditCardType").exception();
+                }
+            }else if(!request.getTypeSpecificDetails().getCreditCardType().equalsIgnoreCase(
+                    piExisting.getTypeSpecificDetails().getCreditCardType())){
+                throw AppClientExceptions.INSTANCE.updateNotAllowed("creditCardType").exception();
+            }
         }
         //TODO: need re-validate the PI according to the lastValidatedTime
         paymentInstrumentRepositoryFacade.update(request);
@@ -220,6 +251,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
             if(CommonUtil.isNullOrEmpty(request.getAccountNumber())){
                 throw AppCommonErrors.INSTANCE.fieldRequired("account_number").exception();
             }
+            /* expire date is now client-immutable. Expected to be encrypted and pass to providers
             if(request.getTypeSpecificDetails() == null){
                 throw AppCommonErrors.INSTANCE.fieldRequired("expire_date").exception();
             }
@@ -231,7 +263,7 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
                     && !expireDate.matches("\\d{4}-\\d{2}")) {
                 throw AppCommonErrors.INSTANCE.fieldInvalid("expire_date",
                         "only accept format: yyyy-MM or yyyy-MM-dd").exception();
-            }
+            }*/
         }
     }
 

@@ -5,6 +5,7 @@ import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
 import com.junbo.payment.core.BaseTest;
 import com.junbo.payment.core.mock.MockPaymentProviderServiceImpl;
 import com.junbo.payment.core.provider.PaymentProviderService;
+import com.junbo.payment.core.provider.adyen.AdyenCCProivderServiceImpl;
 import com.junbo.payment.core.provider.adyen.AdyenProviderServiceImpl;
 import com.junbo.payment.core.provider.braintree.BrainTreePaymentProviderServiceImpl;
 import com.junbo.payment.core.provider.ewallet.EWalletProviderServiceImpl;
@@ -123,7 +124,7 @@ public class PaymentServiceTest extends BaseTest {
     @Test
     public void testRoutingService() throws ExecutionException, InterruptedException {
         PaymentProviderService service = providerRoutingService.getPaymentProvider(PIType.CREDITCARD);
-        Assert.assertEquals(true, service instanceof BrainTreePaymentProviderServiceImpl);
+        Assert.assertEquals(true, service instanceof AdyenCCProivderServiceImpl);
         service = providerRoutingService.getPaymentProvider(PIType.PAYPAL);
         Assert.assertEquals(true, service instanceof PayPalProviderServiceImpl);
         service = providerRoutingService.getPaymentProvider(PIType.STOREDVALUE);

@@ -17,10 +17,8 @@ import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.spec.enums.PaymentStatus;
+import com.junbo.payment.spec.model.*;
 import com.junbo.payment.spec.model.Address;
-import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.payment.spec.model.PaymentTransaction;
-import com.junbo.payment.spec.model.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -102,7 +100,13 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
                 return PromiseFacade.PAYMENT.decorate(new Callable<PaymentInstrument>() {
                     @Override
                     public PaymentInstrument call() {
+                        if(request.getTypeSpecificDetails() == null){
+                            throw AppCommonErrors.INSTANCE.fieldRequired("expire_date").exception();
+                        }
                         String expireDate = request.getTypeSpecificDetails().getExpireDate();
+                        if(CommonUtil.isNullOrEmpty(expireDate)){
+                            throw AppCommonErrors.INSTANCE.fieldRequired("expire_date").exception();
+                        }
                         String[] tokens = expireDate.split("-");
                         if (tokens == null || tokens.length < 2) {
                             throw AppCommonErrors.INSTANCE.fieldInvalid("expire_date",
@@ -138,7 +142,14 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
                         }
                         if (result.isSuccess()) {
                             request.setAccountNumber(result.getTarget().getLast4());
+                            String cardHolder = result.getTarget().getCardholderName();
+                            if(CommonUtil.isNullOrEmpty(cardHolder)){
+                                request.setAccountName(cardHolder);
+                            }
                             request.setExternalToken(result.getTarget().getToken());
+                            if(request.getTypeSpecificDetails() == null){
+                                request.setTypeSpecificDetails(new TypeSpecificDetails());
+                            }
                             request.getTypeSpecificDetails().setExpireDate(result.getTarget().getExpirationDate());
                             request.getTypeSpecificDetails().setIssuerIdentificationNumber(result.getTarget().getBin());
                             request.getTypeSpecificDetails().setCreditCardType(
