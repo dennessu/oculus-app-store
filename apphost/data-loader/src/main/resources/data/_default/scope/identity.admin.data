@@ -2,7 +2,5 @@
     "name": "identity.admin",
     "description": "Scope to manage the identity system",
     "tfaRequired": false,
-    "allowedUserGroups": [
-        "OculusVR.IdentityAdmin"
-    ]
+    "validationCondition": "hasGroups(\"OculusVR.IdentityAdmin\")"
 }

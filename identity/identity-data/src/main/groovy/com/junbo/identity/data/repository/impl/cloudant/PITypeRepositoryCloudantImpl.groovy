@@ -52,6 +52,10 @@ class PITypeRepositoryCloudantImpl extends CloudantClient<PIType> implements PIT
             return Promise.pure((PIType)element.objectValue)
         }
         return cloudantGet(id.toString()).then { PIType piType ->
+            if (piType == null) {
+                return Promise.pure(null)
+            }
+
             element = new Element(piType.getId().value, piType)
             getPITypeCache().put(element)
             return Promise.pure(piType)

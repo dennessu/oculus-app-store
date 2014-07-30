@@ -57,6 +57,10 @@ class CountryRepositoryCloudantImpl extends CloudantClient<Country> implements C
         }
 
         return cloudantGet(id.toString()).then { Country country ->
+            if (country == null) {
+                return Promise.pure(null)
+            }
+
             element = new Element(country.getId().value, country)
             getCountryCache().put(element)
             return Promise.pure(country)

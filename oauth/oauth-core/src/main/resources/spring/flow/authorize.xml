@@ -487,10 +487,9 @@
     </bean>
 
     <bean id="validateScopeAfterLogin" class="com.junbo.oauth.core.action.ValidateScopeAfterLogin">
-        <property name="groupResource" ref="oauth_groupResource"/>
-        <property name="organizationResource" ref="oauth_organizationResource"/>
         <property name="scopeRepository" ref="scopeRepository"/>
-        <property name="userGroupMembershipResource" ref="oauth_userGroupResource"/>
+        <property name="scopePreconditionFactory" ref="scopePreconditionFactory"/>
+        <property name="conditionEvaluator" ref="spelConditionEvaluator"/>
         <property name="isAuthorizeFlow" value="true"/>
     </bean>
 

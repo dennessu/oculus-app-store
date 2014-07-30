@@ -53,6 +53,10 @@ class CurrencyRepositoryCloudantImpl extends CloudantClient<Currency> implements
             return Promise.pure((Currency)element.objectValue)
         }
         return cloudantGet(id.toString()).then { Currency currency ->
+            if (currency == null) {
+                return Promise.pure(null)
+            }
+
             element = new Element(currency.getId().value, currency)
             getCurrencyCache().put(element)
             return Promise.pure(currency)

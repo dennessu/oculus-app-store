@@ -17,7 +17,7 @@ class Scope extends ResourceMeta<String> {
     String description
     String logoUri
     Boolean tfaRequired
-    Set<String> allowedUserGroups
+    String validationCondition
 
     @Override
     String getId() {

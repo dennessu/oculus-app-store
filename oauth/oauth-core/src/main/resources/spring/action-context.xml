@@ -107,4 +107,11 @@
     <bean id="redirect" class="com.junbo.oauth.core.action.Redirect"/>
 
     <bean id="validateIpAddress" class="com.junbo.oauth.core.action.ValidateIpAddress"/>
+
+    <bean id="scopePreconditionFactory" class="com.junbo.oauth.core.action.ScopePreconditionFactory">
+        <property name="groupResource" ref="oauth_groupResource"/>
+        <property name="organizationResource" ref="oauth_organizationResource"/>
+        <property name="userGroupMembershipResource" ref="oauth_userGroupResource"/>
+    </bean>
+
 </beans>

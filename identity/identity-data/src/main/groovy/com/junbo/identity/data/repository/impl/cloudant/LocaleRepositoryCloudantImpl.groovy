@@ -57,6 +57,10 @@ class LocaleRepositoryCloudantImpl extends CloudantClient<Locale> implements Loc
         }
 
         return cloudantGet(id.toString()).then { Locale locale ->
+            if (locale == null) {
+                return Promise.pure(null)
+            }
+
             element = new Element(locale.getId().value, locale)
             getLocaleCache().put(element)
             return Promise.pure(locale)
