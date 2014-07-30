@@ -38,7 +38,7 @@ class CoreBuilder {
             new ThreadLocal<SimpleDateFormat>() {
                 @Override
                 protected SimpleDateFormat initialValue() {
-                    def ret = new SimpleDateFormat('yyyy-MM-dd', Locale.US)
+                    def ret = new SimpleDateFormat('MM/yyyy', Locale.US)
                     ret.timeZone = TimeZone.getTimeZone('UTC')
                     return ret
                 }

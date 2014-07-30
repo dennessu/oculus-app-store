@@ -2,6 +2,7 @@ package com.junbo.test.buyerscenario;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.enumid.CountryId;
+import com.junbo.common.id.OrderId;
 import com.junbo.identity.spec.v1.model.Address;
 import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderEvent;
@@ -11,10 +12,13 @@ import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.Entities.paymentInstruments.AdyenInfo;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
+import com.junbo.test.order.apihelper.OrderEventService;
+import com.junbo.test.order.apihelper.impl.OrderEventServiceImpl;
 import org.apache.commons.collections.map.HashedMap;
 import org.testng.annotations.Test;
 
@@ -109,7 +113,6 @@ public class UAT extends BaseTestClass {
     public void testUATDigitalByCreditCard() throws Exception {
 
         List<UserAddress> userAddressList = new ArrayList<>();
-        userAddressList.add(addressCA1);
         userAddressList.add(addressNC);
         userAddressList.add(addressON);
 
@@ -118,7 +121,7 @@ public class UAT extends BaseTestClass {
             Address address = new Address();
             address.setStreet1(userAddress.Street1);
             address.setCity(userAddress.City);
-            address.setCountryId(new CountryId(Country.DEFAULT.toString()));
+            address.setCountryId(new CountryId(userAddress.Country.toString()));
             address.setSubCountry(userAddress.SubCountry);
             address.setPostalCode(userAddress.PostalCode);
 
@@ -157,15 +160,13 @@ public class UAT extends BaseTestClass {
         userAddressList.add(addressCA1);
         userAddressList.add(addressMN);
         userAddressList.add(addressNV);
-        userAddressList.add(addressON);
-
 
         for (UserAddress userAddress : userAddressList) {
 
             Address address = new Address();
             address.setStreet1(userAddress.Street1);
             address.setCity(userAddress.City);
-            address.setCountryId(new CountryId(Country.DEFAULT.toString()));
+            address.setCountryId(new CountryId(userAddress.Country.toString()));
             address.setSubCountry(userAddress.SubCountry);
             address.setPostalCode(userAddress.PostalCode);
 
@@ -179,7 +180,7 @@ public class UAT extends BaseTestClass {
             String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
 
             String orderId = testDataProvider.postOrder(uid,
-                    userAddress.Country, Currency.DEFAULT, creditCardId, false, offerList);
+                    userAddress.Country, userAddress.Currency, creditCardId, false, offerList);
 
             orderId = testDataProvider.updateOrderTentative(orderId, false);
         }
@@ -220,7 +221,7 @@ public class UAT extends BaseTestClass {
             Address address = new Address();
             address.setStreet1(userAddress.Street1);
             address.setCity(userAddress.City);
-            address.setCountryId(new CountryId(Country.DEFAULT.toString()));
+            address.setCountryId(new CountryId(userAddress.Country.toString()));
             address.setSubCountry(userAddress.SubCountry);
             address.setPostalCode(userAddress.PostalCode);
 
@@ -236,6 +237,14 @@ public class UAT extends BaseTestClass {
                     userAddress.Country, Currency.DEFAULT, creditCardId, true, offerList);
 
             orderId = testDataProvider.updateOrderTentative(orderId, false);
+
+//            OrderEventService orderEventService = OrderEventServiceImpl.getInstance();
+//            OrderEvent orderEvent = new OrderEvent();
+//            orderEvent.setOrder(Master.getInstance().getOrder(orderId).getId());
+//            orderEvent.setAction("FULFILMENT");
+//            orderEvent.setStatus("COMPLETED");
+//
+//            orderEventService.postOrderEvent(orderEvent);
         }
 
     }
@@ -325,11 +334,11 @@ public class UAT extends BaseTestClass {
     UserAddress addressIE4 = new UserAddress("Kilmartin N6 Centre, Dublin Rd", null, null, null, null, Country.IE, Currency.EUR);
 
     UserAddress addressBC = new UserAddress("Suite D-5519 Gitselasu Rd", null, "BC", "V8G 0A9", null, Country.CA, Currency.USD);
-    UserAddress addressPE = new UserAddress("University Ave, Charlottetown", null, "C1A 8R8", "PE", null, Country.CA, Currency.USD);
-    UserAddress addressQC = new UserAddress("Accueil Sud Km 33 Rte 167", null, "G8J 1Y4", "QC", null, Country.CA, Currency.USD);
+    UserAddress addressPE = new UserAddress("University Ave, Charlottetown", null, "PE", "C1A 8R8", null, Country.CA, Currency.USD);
+    UserAddress addressQC = new UserAddress("Accueil Sud Km 33 Rte 167", null, "QC", "G8J 1Y4", null, Country.CA, Currency.USD);
     UserAddress addressON = new UserAddress("Ogoki", "Ogoki", "ON", "P0T2L0", null, Country.CA, Currency.USD);
     UserAddress addressONVat = new UserAddress("Ogoki", "Ogoki", "ON", "P0T2L0", "CA232132132", Country.CA, Currency.USD);
-    UserAddress addressYT = new UserAddress("Mayo Yukon College", null, "Y0B 1M0", "QC", null, Country.CA, Currency.USD);
+    UserAddress addressYT = new UserAddress("Mayo Yukon College", null, "QC", "Y0B 1M0", null, Country.CA, Currency.USD);
 
     UserAddress addressMX = new UserAddress("16 de Septiembre 79, Centro", null, "06000", null, null, Country.MX, Currency.USD);
 

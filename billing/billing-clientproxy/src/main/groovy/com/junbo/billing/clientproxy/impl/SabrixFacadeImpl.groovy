@@ -15,7 +15,6 @@ import java.util.regex.Pattern
 import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture
 
 import com.junbo.billing.spec.enums.BalanceType
-import com.junbo.catalog.spec.enums.ItemType
 import com.junbo.billing.clientproxy.TaxFacade
 import com.junbo.billing.clientproxy.impl.common.XmlConvertor
 import com.junbo.billing.clientproxy.impl.sabrix.*
@@ -259,7 +258,7 @@ class SabrixFacadeImpl implements TaxFacade {
                 invoice.invoiceNumber = balance.orderIds?.get(0)?.value
             }
         }
-        invoice.deliveryTerm = DeliveryTerm.DDP.name()
+        invoice.deliveryTerms = DeliveryTerm.DDP.name()
         invoice.companyRole = configuration.companyRole
         invoice.externalCompanyId = configuration.externalCompanyId
         boolean isRefund = BalanceType.REFUND.name() == balance.type
@@ -317,7 +316,7 @@ class SabrixFacadeImpl implements TaxFacade {
             }
             line.discountAmount = item.discountAmount?.toDouble()
             line.transactionType = getTransactionType(item)
-            line.productCode = item.propertySet.get(PropertyKey.ITEM_TYPE.name()).replace('_', ' ')
+            line.productCode = item.propertySet.get(PropertyKey.ITEM_TYPE.name())?.replace('_', ' ')
             line.description = item.propertySet.get(PropertyKey.ITEM_DESCRIPTION.name())
             line.partNumber = item.propertySet.get(PropertyKey.ORDER_ITEM_ID.name())
             if (item.propertySet.get(PropertyKey.VAT_ID.name()) != null) {
@@ -397,7 +396,9 @@ class SabrixFacadeImpl implements TaxFacade {
 
         UserElement attribute3 = new UserElement()
         attribute3.name = 'ATTRIBUTE3'
-        if (balance.propertySet.get(PropertyKey.VAT_ID.name()) != null) {
+        if (balance.balanceItems.any { BalanceItem balanceItem ->
+            balanceItem.propertySet.get(PropertyKey.VAT_ID.name()) != null
+        }) {
             attribute3.value = TAX_STATUS_BUSINESS
         }
         else {
@@ -471,7 +472,7 @@ class SabrixFacadeImpl implements TaxFacade {
         }
         String type = item.propertySet.get(PropertyKey.ITEM_TYPE.name())
         switch (type) {
-            case ItemType.PHYSICAL.name():
+            case 'PHYSICAL_GOODS':
                 return GOODS
             default:
                 return ELECTRONIC_SERVICES

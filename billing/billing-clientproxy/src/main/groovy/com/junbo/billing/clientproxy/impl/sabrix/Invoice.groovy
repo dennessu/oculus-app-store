@@ -29,8 +29,8 @@ class Invoice {
     @XStreamAlias('UNIQUE_INVOICE_NUMBER')
     String uniqueInvoiceNumber
 
-    @XStreamAlias('DELIVERY_TERM')
-    String deliveryTerm
+    @XStreamAlias('DELIVERY_TERMS')
+    String deliveryTerms
 
     @XStreamAlias('EXTERNAL_COMPANY_ID')
     String externalCompanyId
@@ -103,7 +103,7 @@ class Invoice {
                 ", hostSystem='" + hostSystem + '\'' +
                 ", callingSystemNumber='" + callingSystemNumber + '\'' +
                 ", uniqueInvoiceNumber='" + uniqueInvoiceNumber + '\'' +
-                ", deliveryTerm='" + deliveryTerm + '\'' +
+                ", deliveryTerms='" + deliveryTerms + '\'' +
                 ", externalCompanyId='" + externalCompanyId + '\'' +
                 ", invoiceNumber='" + invoiceNumber + '\'' +
                 ", calculationDirection='" + calculationDirection + '\'' +

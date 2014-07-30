@@ -413,6 +413,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
                             'payments', 'do not belong to this user').exception()
                 }
                 if (PIType.get(pi.type) == PIType.CREDITCARD) {
+                    assert (pi.typeSpecificDetails.expireDate != null)
                     Date expireDate = CoreBuilder.DATE_FORMATTER.get().parse(pi.typeSpecificDetails.expireDate)
                     Date now = new Date()
                     if (expireDate.before(now)) {
