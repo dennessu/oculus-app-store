@@ -23,5 +23,7 @@ public enum Component {
     Order,
     Payment,
     Rating,
+    Token,
+    Crypto,
     Subscription
 }

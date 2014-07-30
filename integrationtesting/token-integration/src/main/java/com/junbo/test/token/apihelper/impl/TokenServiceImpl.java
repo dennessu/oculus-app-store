@@ -85,13 +85,13 @@ public class TokenServiceImpl extends HttpClientBase implements TokenService {
     }
 
     @Override
-    public TokenItem updateTokenItem(TokenItem tokenItem) throws Exception {
-        return updateTokenItem(tokenItem, 200);
+    public TokenItem updateTokenItem(String tokenId, TokenItem tokenItem) throws Exception {
+        return updateTokenItem(tokenId, tokenItem, 200);
     }
 
     @Override
-    public TokenItem updateTokenItem(TokenItem tokenItem, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.PUT, tokenUrl + tokenItem.getId(),
+    public TokenItem updateTokenItem(String tokenId, TokenItem tokenItem, int expectedResponseCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.PUT, tokenUrl + tokenId,
                 tokenItem, expectedResponseCode);
 
         TokenItem tokenItemResult = new JsonMessageTranscoder().decode(

@@ -9,6 +9,8 @@ import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
+import com.junbo.token.spec.enums.ItemStatus;
+import com.junbo.token.spec.model.TokenItem;
 import com.junbo.token.spec.model.TokenRequest;
 import org.testng.annotations.Test;
 
@@ -102,4 +104,34 @@ public class TokenTesting extends BaseTokenTestClass {
 
         //TODO verify token response
     }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "Get /tokens/{key}",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test get token item",
+            steps = {
+                    "1. Post token request",
+                    "2. Get token item by id",
+                    "3  Verify token item response",
+            }
+    )
+    @Test
+    public void testUpdateTokenItem() throws Exception {
+        TokenRequest tokenRequestResult = testDataProvider.PostTokenRquest(offer_digital_normal1);
+
+        TokenItem tokenItem = testDataProvider.getTokenItem(tokenRequestResult.getTokenItems()
+                .get(0).getEncryptedString());
+
+        tokenItem.setStatus(ItemStatus.BLACKLISTED.toString());
+        tokenItem.setDisableReason("ut");
+
+        testDataProvider.updateTokenItem(tokenItem);
+
+        //TODO verify token response
+    }
+
+
 }

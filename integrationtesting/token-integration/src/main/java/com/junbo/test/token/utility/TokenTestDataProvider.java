@@ -34,7 +34,7 @@ public class TokenTestDataProvider extends BaseTestDataProvider {
         return identityClient.PostUser();
     }
 
-    public TokenRequest PostTokenRquest(String offerName) throws Exception{
+    public TokenRequest PostTokenRquest(String offerName) throws Exception {
         TokenRequest tokenRequest = new TokenRequest();
         tokenRequest.setActivation("yes");
         tokenRequest.setCreateMethod("GENERATION");
@@ -49,22 +49,26 @@ public class TokenTestDataProvider extends BaseTestDataProvider {
         return tokenClient.postTokenRequest(tokenRequest);
     }
 
-    public TokenRequest GetTokenRequest(String tokenRequestId) throws Exception{
+    public TokenRequest GetTokenRequest(String tokenRequestId) throws Exception {
         return tokenClient.getTokenByTokenId(tokenRequestId);
     }
 
-    public TokenConsumption postTokenConsumption(String uid, String offerName, String tokenStr) throws Exception{
+    public TokenConsumption postTokenConsumption(String uid, String offerName, String tokenStr) throws Exception {
         TokenConsumption tokenConsumption = new TokenConsumption();
         tokenConsumption.setTokenString(cryptoClient.decryptCryptoMessage(tokenStr));
         tokenConsumption.setProduct(offerClient.getOfferIdByName(offerName));
-        tokenConsumption.setUserId(IdConverter.hexStringToId(UserId.class,uid));
+        tokenConsumption.setUserId(IdConverter.hexStringToId(UserId.class, uid));
         return tokenClient.postTokenConsumption(tokenConsumption);
 
     }
 
-    public TokenItem getTokenItem(String tokenString) throws Exception{
+    public TokenItem getTokenItem(String tokenString) throws Exception {
         String tokenStr = cryptoClient.decryptCryptoMessage(tokenString);
         return tokenClient.getTokenItem(tokenStr);
+    }
+
+    public TokenItem updateTokenItem(TokenItem tokenItem) throws Exception {
+        return tokenClient.updateTokenItem(tokenItem.getEncryptedString(), tokenItem);
     }
 
 }

@@ -26,9 +26,9 @@ public interface TokenService {
 
     TokenConsumption postTokenConsumption(TokenConsumption tokenConsumption, int expectedResponseCode) throws Exception;
 
-    TokenItem updateTokenItem(TokenItem tokenItem) throws Exception;
+    TokenItem updateTokenItem(String tokenId, TokenItem tokenItem) throws Exception;
 
-    TokenItem updateTokenItem(TokenItem tokenItem, int expectedResponseCode) throws Exception;
+    TokenItem updateTokenItem(String tokenId,  TokenItem tokenItem, int expectedResponseCode) throws Exception;
 
     TokenItem getTokenItem(String tokenItemId) throws Exception;
 
