@@ -44,6 +44,16 @@ class CoreBuilder {
                 }
             }
 
+    public static final ThreadLocal<SimpleDateFormat> DATE_FORMATTER2 =
+            new ThreadLocal<SimpleDateFormat>() {
+                @Override
+                protected SimpleDateFormat initialValue() {
+                    def ret = new SimpleDateFormat('yyyy-MM', Locale.US)
+                    ret.timeZone = TimeZone.getTimeZone('UTC')
+                    return ret
+                }
+            }
+
     static Balance buildBalance(Order order, BalanceType balanceType) {
         if (order == null) {
             return null
@@ -418,5 +428,14 @@ class CoreBuilder {
         data.put(ActionUtils.DATA_ORDER_ACTION_RESULT, (Object) orderActionResult)
         def actionResult = new ActionResult('success', data)
         return actionResult
+    }
+
+    static Date buildDate(String date) {
+        if (date.contains('/')) {
+            return DATE_FORMATTER.get().parse(date)
+        }
+        else {
+            return DATE_FORMATTER2.get().parse(date)
+        }
     }
 }
