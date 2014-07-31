@@ -93,6 +93,7 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
         //ArrayList<Long> admins = new ArrayList<>();
         //admins.add(IdConverter.hexStringToId(UserId.class, uid));
         //paymentInstrument.setAdmins(admins);
+        paymentInstrument.setUserId(IdConverter.hexStringToId(UserId.class, uid));
         paymentInstrument.setLabel("4");
         TypeSpecificDetails typeSpecificDetails = new TypeSpecificDetails();
         Long billingAddressId = Master.getInstance().getUser(uid).getAddresses().get(0).getValue().getValue();
@@ -108,8 +109,6 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 paymentInstrument.setIsValidated(creditCardInfo.isValidated());
                 paymentInstrument.setType(creditCardInfo.getType().getValue());
                 paymentInstrument.setBillingAddressId(creditCardInfo.getBillingAddressId());
-                paymentInstrument.setUserId(IdConverter.hexStringToId(UserId.class, uid));
-
                 paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument));
                 return paymentInfo.getPid();
 
