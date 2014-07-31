@@ -561,4 +561,16 @@ class CoreUtils {
         }
         return order
     }
+
+    static Boolean bypassEvent(Order order, OrderEvent event) {
+        if (isFreeOrder(order) && event.action == OrderActionType.FULFILL.name()) {
+            return true
+        }
+        if (event.action == OrderActionType.REFUND.name()) {
+            return true
+        }
+        if (event.action == OrderActionType.FULFILL.name() && event.status == EventStatus.FAILED) {
+            return true
+        }
+    }
 }

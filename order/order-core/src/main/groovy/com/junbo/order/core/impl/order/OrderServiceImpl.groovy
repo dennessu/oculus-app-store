@@ -252,6 +252,9 @@ class OrderServiceImpl implements OrderService {
             if (!CoreUtils.isPendingOnEvent(order, event)) {
                 throw AppErrors.INSTANCE.orderEvenStatusNotMatch().exception()
             }
+            if (CoreUtils.bypassEvent(order, event)) {
+                return Promise.pure(event)
+            }
             return flowSelector.select(orderServiceContext, OrderServiceOperation.UPDATE).then { String flowName ->
                 // Prepare Flow Request
                 assert (flowName != null)

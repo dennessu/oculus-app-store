@@ -77,9 +77,6 @@ class OrderEventResourceImpl implements OrderEventResource {
             }
 
             def context = new OrderServiceContext()
-            if (orderEvent.status == EventStatus.FAILED.name()) {
-                return orderEventService.recordEventHistory(orderEvent, context)
-            }
             return orderService.updateOrderByOrderEvent(orderEvent, context).then { OrderEvent event ->
                 return orderEventService.recordEventHistory(event, context)
             }
