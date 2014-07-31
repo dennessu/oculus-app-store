@@ -1,0 +1,5 @@
+{
+    "name": "token.service",
+    "description": "Scope to call the token service",
+    "tfaRequired": false
+}
