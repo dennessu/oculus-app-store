@@ -11,6 +11,7 @@ import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions;
 import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
 import com.junbo.common.filter.annotations.CacheMaxAge;
 import com.junbo.common.model.Results;
+import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -36,12 +37,14 @@ public interface OfferRevisionResource {
     @ApiOperation("Get or search offer revisions")
     @GET
     @Path("/")
+    @AuthorizationNotRequired
     Promise<Results<OfferRevision>> getOfferRevisions(@BeanParam OfferRevisionsGetOptions options);
 
     @CacheMaxAge(duration = 5, unit = TimeUnit.MINUTES)
     @ApiOperation("Get an offer revision")
     @GET
     @Path("/{revisionId}")
+    @AuthorizationNotRequired
     Promise<OfferRevision> getOfferRevision(@PathParam("revisionId") String revisionId,
                                             @BeanParam OfferRevisionGetOptions options);
 
