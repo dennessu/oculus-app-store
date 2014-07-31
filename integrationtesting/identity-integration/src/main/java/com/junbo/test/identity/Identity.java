@@ -6,10 +6,7 @@
 package com.junbo.test.identity;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.junbo.common.id.GroupId;
-import com.junbo.common.id.OrganizationId;
-import com.junbo.common.id.UserId;
-import com.junbo.common.id.UserPersonalInfoId;
+import com.junbo.common.id.*;
 import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.identity.spec.v1.model.*;
@@ -292,6 +289,25 @@ public class Identity {
             Validator.Validate("validate response code", 201, response.getStatusLine().getStatusCode());
         }
         return response;
+    }
+
+    public static UserSecurityQuestion UserSecurityQuestionPostDefault(UserId userId) throws Exception {
+        return UserSecurityQuestionPost(userId, IdentityModel.DefaultUserSecurityQuestion());
+    }
+
+    public static UserSecurityQuestion UserSecurityQuestionPost(UserId userId, UserSecurityQuestion usq)
+            throws Exception {
+        return (UserSecurityQuestion) IdentityPost(
+                IdentityEndPointV1 + "/users/" + GetHexUserId(userId.getValue()) + "/security-questions",
+                JsonHelper.JsonSerializer(usq),
+                UserSecurityQuestion.class);
+    }
+
+    public static UserSecurityQuestion UserSecurityQuestionGetById(UserId userId, UserSecurityQuestionId usqId)
+            throws Exception {
+        return (UserSecurityQuestion) IdentityGet(
+                IdentityEndPointV1 + "/users/" + GetHexUserId(userId.getValue()) +
+                        "/security-questions/" + usqId.getValue(), UserSecurityQuestion.class);
     }
 
     public static String GetHexUserId(Long userId) throws Exception {

@@ -219,6 +219,13 @@ public class IdentityModel {
         return ucva;
     }
 
+    public static UserSecurityQuestion DefaultUserSecurityQuestion() throws Exception {
+        UserSecurityQuestion usq = new UserSecurityQuestion();
+        usq.setSecurityQuestion(RandomHelper.randomAlphabetic(100));
+        usq.setAnswer(RandomHelper.randomAlphabetic(100));
+        return usq;
+    }
+
     public static String RandomGender() {
         List<Object> array = new ArrayList<>();
         array.add("male");
