@@ -13,6 +13,7 @@ import com.junbo.billing.clientproxy.impl.sabrix.RegistrationValidationResponse
 import com.junbo.billing.clientproxy.impl.sabrix.SabrixAddress
 import com.junbo.billing.clientproxy.impl.sabrix.TaxCalculationResponse
 import com.thoughtworks.xstream.XStream
+import com.thoughtworks.xstream.io.HierarchicalStreamDriver
 import com.thoughtworks.xstream.io.xml.DomDriver
 import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder
 import com.thoughtworks.xstream.mapper.MapperWrapper
@@ -29,22 +30,28 @@ import org.springframework.stereotype.Component
 class XmlConvertor {
     private final XStream xstream
 
-    XmlConvertor() {
-        xstream = new XStream(new DomDriver("UTF-8", new XmlFriendlyNameCoder("_-", "_"))) {
-            /* ignore the extra field */
-            @Override
-            protected MapperWrapper wrapMapper(MapperWrapper next) {
-                return new MapperWrapper(next) {
-                    @Override
-                    public boolean shouldSerializeMember(Class definedIn, String fieldName) {
-                        if (definedIn == Object.class) {
-                            return false
-                        }
-                        return super.shouldSerializeMember(definedIn, fieldName)
+    private static class CustomizedXStream extends XStream {
+        public CustomizedXStream(HierarchicalStreamDriver hierarchicalStreamDriver) {
+            super(hierarchicalStreamDriver)
+        }
+
+        /* ignore the extra field */
+        @Override
+        protected MapperWrapper wrapMapper(MapperWrapper next) {
+            return new MapperWrapper(next) {
+                @Override
+                public boolean shouldSerializeMember(Class definedIn, String fieldName) {
+                    if (definedIn == Object.class) {
+                        return false
                     }
+                    return super.shouldSerializeMember(definedIn, fieldName)
                 }
             }
         }
+    }
+
+    XmlConvertor() {
+        xstream = new CustomizedXStream(new DomDriver("UTF-8", new XmlFriendlyNameCoder("_-", "_")))
         xstream.processAnnotations(Batch)
         xstream.processAnnotations(SabrixAddress)
         xstream.processAnnotations(RegistrationValidationRequest)
