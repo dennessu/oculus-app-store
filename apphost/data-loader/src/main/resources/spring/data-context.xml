@@ -123,5 +123,10 @@
                 <value>catalog</value>
             </list>
         </property>
+        <property name="serialDataList">
+            <set>
+                <value>locale</value>
+            </set>
+        </property>
     </bean>
 </beans>
