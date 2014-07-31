@@ -41,12 +41,12 @@ class FacadeContainer {
     @Qualifier('orderEmailFacade')
     EmailFacade emailFacade
     @Autowired
-    @Qualifier('cachedCatalogFacade')
+    @Qualifier('orderCatalogFacade')
     CatalogFacade catalogFacade
     @Autowired
-    @Qualifier('cachedCountryFacade')
+    @Qualifier('orderCountryFacade')
     CountryFacade countryFacade
     @Autowired
-    @Qualifier('cachedCurrencyFacade')
+    @Qualifier('orderCurrencyFacade')
     CurrencyFacade currencyFacade
 }

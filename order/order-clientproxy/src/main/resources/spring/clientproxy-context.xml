@@ -114,24 +114,24 @@
     </bean>
 
     <!-- cache -->
-    <bean id="orderCacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-        <property name="configLocation">
-            <value>ehcache/order_ehcache.xml</value>
-        </property>
-    </bean>
-    <bean id="orderCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
-        <property name="cacheManager" ref="orderCacheManagerFactory"/>
-    </bean>
-    <bean id="cachedCatalogFacade" class="com.junbo.order.clientproxy.catalog.impl.CachedCatalogFacadeImpl">
-        <constructor-arg name="ehCacheCacheManager" ref="orderCacheManager"/>
-    </bean>
+    <!--<bean id="orderCacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">-->
+        <!--<property name="configLocation">-->
+            <!--<value>ehcache/order_ehcache.xml</value>-->
+        <!--</property>-->
+    <!--</bean>-->
+    <!--<bean id="orderCacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">-->
+        <!--<property name="cacheManager" ref="orderCacheManagerFactory"/>-->
+    <!--</bean>-->
+    <!--<bean id="cachedCatalogFacade" class="com.junbo.order.clientproxy.catalog.impl.CachedCatalogFacadeImpl">-->
+        <!--<constructor-arg name="ehCacheCacheManager" ref="orderCacheManager"/>-->
+    <!--</bean>-->
 
-    <bean id="cachedCurrencyFacade" class="com.junbo.order.clientproxy.identity.impl.CachedCurrencyFacadeImpl">
-        <constructor-arg name="ehCacheCacheManager" ref="orderCacheManager"/>
-    </bean>
+    <!--<bean id="cachedCurrencyFacade" class="com.junbo.order.clientproxy.identity.impl.CachedCurrencyFacadeImpl">-->
+        <!--<constructor-arg name="ehCacheCacheManager" ref="orderCacheManager"/>-->
+    <!--</bean>-->
 
-    <bean id="cachedCountryFacade" class="com.junbo.order.clientproxy.identity.impl.CachedCountryFacadeImpl">
-        <constructor-arg name="ehCacheCacheManager" ref="orderCacheManager"/>
-    </bean>
+    <!--<bean id="cachedCountryFacade" class="com.junbo.order.clientproxy.identity.impl.CachedCountryFacadeImpl">-->
+        <!--<constructor-arg name="ehCacheCacheManager" ref="orderCacheManager"/>-->
+    <!--</bean>-->
 
 </beans>

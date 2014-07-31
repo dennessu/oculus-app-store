@@ -21,7 +21,7 @@ class SubledgerItemContextBuilder {
     @Resource(name = 'orderRepositoryFacade')
     OrderRepositoryFacade orderRepository
 
-    @Resource(name = 'cachedCatalogFacade')
+    @Resource(name = 'orderCatalogFacade')
     CatalogFacade catalogFacade
 
     SubledgerItemContext buildContext(Offer offer, CountryId country, CurrencyId currency, Date createdTime) {

@@ -60,7 +60,7 @@
     <bean id="mockFacadeContainer" class="com.junbo.order.clientproxy.FacadeContainer">
         <property name="ratingFacade" ref="mockRatingFacade"/>
         <property name="billingFacade" ref="mockBillingFacade"/>
-        <property name="catalogFacade" ref="mockCachedCatalogFacade"/>
+        <property name="catalogFacade" ref="mockCatalogFacade"/>
         <property name="fulfillmentFacade" ref="mockFulfillmentFacade"/>
         <property name="identityFacade" ref="mockIdentityFacade"/>
         <property name="paymentFacade" ref="mockPaymentFacade"/>
@@ -106,10 +106,10 @@
         <property name="identityFacade" ref="mockIdentityFacade"/>
     </bean>
 
-    <bean id="mockCachedCatalogFacade" class="com.junbo.order.clientproxy.catalog.impl.CachedCatalogFacadeImpl">
-        <property name="catalogFacade" ref="mockCatalogFacade"/>
-        <constructor-arg name="ehCacheCacheManager" ref="orderCacheManager"/>
-    </bean>
+    <!--<bean id="mockCachedCatalogFacade" class="com.junbo.order.clientproxy.catalog.impl.CachedCatalogFacadeImpl">-->
+        <!--<property name="catalogFacade" ref="mockCatalogFacade"/>-->
+        <!--<constructor-arg name="ehCacheCacheManager" ref="orderCacheManager"/>-->
+    <!--</bean>-->
 
     <bean id="mockFulfillmentFacade" class="com.junbo.order.clientproxy.fulfillment.impl.FulfillmentFacadeImpl">
         <property name="fulfilmentResource" ref="mockFulfillmentResource"/>

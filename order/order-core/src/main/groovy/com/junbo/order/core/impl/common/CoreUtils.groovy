@@ -572,5 +572,6 @@ class CoreUtils {
         if (event.action == OrderActionType.FULFILL.name() && event.status == EventStatus.FAILED) {
             return true
         }
+        return false
     }
 }
