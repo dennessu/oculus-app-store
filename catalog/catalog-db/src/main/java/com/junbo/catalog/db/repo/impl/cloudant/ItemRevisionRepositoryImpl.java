@@ -10,6 +10,7 @@ import com.junbo.catalog.common.cache.CacheFacade;
 import com.junbo.catalog.common.util.Callable;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.repo.ItemRevisionRepository;
+import com.junbo.catalog.spec.enums.Status;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.item.ItemRevisionInfo;
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
@@ -162,6 +163,9 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
     public ItemRevision update(ItemRevision revision, ItemRevision oldRevision) {
         ItemRevision updatedRevision = cloudantPutSync(revision, oldRevision);
         CacheFacade.ITEM_REVISION.put(updatedRevision.getRevisionId(), updatedRevision);
+        if (Status.APPROVED.is(revision.getStatus())) {
+            CacheFacade.ITEM_CONTROL.evict(updatedRevision.getItemId());
+        }
         return updatedRevision;
     }
 

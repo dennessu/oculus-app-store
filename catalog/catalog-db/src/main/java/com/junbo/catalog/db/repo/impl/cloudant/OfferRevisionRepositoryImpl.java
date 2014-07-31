@@ -10,6 +10,7 @@ import com.junbo.catalog.common.cache.CacheFacade;
 import com.junbo.catalog.common.util.Callable;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.repo.OfferRevisionRepository;
+import com.junbo.catalog.spec.enums.Status;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
 import com.junbo.catalog.spec.model.offer.RevisionInfo;
@@ -148,6 +149,9 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
     public OfferRevision update(OfferRevision revision, OfferRevision oldRevision) {
         OfferRevision updatedRevision = cloudantPutSync(revision, oldRevision);
         CacheFacade.OFFER_REVISION.put(updatedRevision.getRevisionId(), updatedRevision);
+        if (Status.APPROVED.is(revision.getStatus())) {
+            CacheFacade.OFFER_CONTROL.evict(updatedRevision.getOfferId());
+        }
         return updatedRevision;
     }
 

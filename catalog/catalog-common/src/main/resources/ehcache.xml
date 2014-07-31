@@ -34,7 +34,7 @@
            overflowToDisk="false"
            diskPersistent="false"
            timeToIdleSeconds="0"
-           timeToLiveSeconds="604800"
+           timeToLiveSeconds="300"
            memoryStoreEvictionPolicy="LRU"/>
 
     <cache name="OFFER"
@@ -61,7 +61,7 @@
            overflowToDisk="false"
            diskPersistent="false"
            timeToIdleSeconds="0"
-           timeToLiveSeconds="604800"
+           timeToLiveSeconds="300"
            memoryStoreEvictionPolicy="LRU"/>
 
 
