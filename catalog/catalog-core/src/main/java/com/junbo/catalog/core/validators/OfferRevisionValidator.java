@@ -9,9 +9,7 @@ package com.junbo.catalog.core.validators;
 import com.google.common.base.Joiner;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.repo.ItemRepository;
-import com.junbo.catalog.db.repo.OfferAttributeRepository;
 import com.junbo.catalog.db.repo.OfferRepository;
-import com.junbo.catalog.db.repo.OfferRevisionRepository;
 import com.junbo.catalog.spec.enums.DistributionChannel;
 import com.junbo.catalog.spec.enums.ItemType;
 import com.junbo.catalog.spec.enums.Status;
@@ -39,9 +37,7 @@ import java.util.Map;
 public class OfferRevisionValidator extends ValidationSupport {
     private static final Logger LOGGER = LoggerFactory.getLogger(ValidationSupport.class);
     private OfferRepository offerRepo;
-    private OfferRevisionRepository offerRevisionRepo;
     private ItemRepository itemRepo;
-    private OfferAttributeRepository offerAttributeRepo;
     private static final Map<String, String> PRODUCT_CODE_MAP = new HashMap<>();
     static {
         PRODUCT_CODE_MAP.put(ItemType.PHYSICAL.name(), "PHYSICAL_GOODS");
@@ -59,18 +55,8 @@ public class OfferRevisionValidator extends ValidationSupport {
     }
 
     @Required
-    public void setOfferRevisionRepo(OfferRevisionRepository offerRevisionRepo) {
-        this.offerRevisionRepo = offerRevisionRepo;
-    }
-
-    @Required
     public void setItemRepo(ItemRepository itemRepo) {
         this.itemRepo = itemRepo;
-    }
-
-    @Required
-    public void setOfferAttributeRepo(OfferAttributeRepository offerAttributeRepo) {
-        this.offerAttributeRepo = offerAttributeRepo;
     }
 
     public void validateFull(OfferRevision revision, OfferRevision oldRevision) {
@@ -103,6 +89,8 @@ public class OfferRevisionValidator extends ValidationSupport {
         validateFieldNull("self", revision.getRevisionId(), errors);
         validateFieldNull("rev", revision.getRev(), errors);
         validateFieldNotNull("publisher", revision.getOwnerId(), errors);
+        validateFieldNull("createdTime", revision.getCreatedTime(), errors);
+        validateFieldNull("updatedTime", revision.getUpdatedTime(), errors);
         validateFieldMatch("status", revision.getStatus(), Status.DRAFT.name(), errors);
         validateOffer(revision, errors);
         validateLocales(revision.getLocales(), errors);
@@ -158,7 +146,7 @@ public class OfferRevisionValidator extends ValidationSupport {
     }
 
 
-    public boolean validateDistributedChannels(List<String> distributedChannels, List<AppError> errors) {
+    private boolean validateDistributedChannels(List<String> distributedChannels, List<AppError> errors) {
         if (distributedChannels != null) {
             for (String channel : distributedChannels) {
                 if (channel==null || !DistributionChannel.contains(channel)) {

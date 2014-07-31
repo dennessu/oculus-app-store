@@ -34,6 +34,15 @@
 
     <!--cloudant beans-->
     <!---->
+    <bean id="itemRevisionValidator" class="com.junbo.catalog.core.validators.ItemRevisionValidator">
+        <property name="itemRepo" ref="itemCloudantRepo"/>
+        <property name="itemRevisionRepo" ref="itemRevisionCloudantRepo"/>
+    </bean>
+    <bean id="offerRevisionValidator" class="com.junbo.catalog.core.validators.OfferRevisionValidator">
+        <property name="itemRepo" ref="itemCloudantRepo"/>
+        <property name="offerRepo" ref="offerCloudantRepo"/>
+    </bean>
+
     <bean id="itemAttributeService" class="com.junbo.catalog.core.service.ItemAttributeServiceImpl">
         <property name="attributeRepo" ref="itemAttributeCloudantRepo"/>
     </bean>
@@ -45,12 +54,14 @@
         <property name="offerRepo" ref="offerCloudantRepo"/>
         <property name="itemAttributeRepo" ref="itemAttributeCloudantRepo"/>
         <property name="itemRevisionRepo" ref="itemRevisionCloudantRepo"/>
+        <property name="revisionValidator" ref="itemRevisionValidator"/>
     </bean>
     <bean id="offerService" class="com.junbo.catalog.core.service.OfferServiceImpl">
         <property name="itemRepo" ref="itemCloudantRepo"/>
         <property name="offerRepo" ref="offerCloudantRepo"/>
         <property name="offerRevisionRepo" ref="offerRevisionCloudantRepo"/>
         <property name="offerAttributeRepo" ref="offerAttributeCloudantRepo"/>
+        <property name="revisionValidator" ref="offerRevisionValidator"/>
     </bean>
     <bean id="priceTierService" class="com.junbo.catalog.core.service.PriceTierServiceImpl">
         <property name="priceTierRepo" ref="priceTierCloudantRepo"/>

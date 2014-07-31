@@ -9,11 +9,15 @@ package com.junbo.catalog.core.service;
 import com.google.common.base.Joiner;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.ItemService;
+import com.junbo.catalog.core.validators.ItemRevisionValidator;
 import com.junbo.catalog.db.repo.ItemAttributeRepository;
 import com.junbo.catalog.db.repo.ItemRepository;
 import com.junbo.catalog.db.repo.ItemRevisionRepository;
 import com.junbo.catalog.db.repo.OfferRepository;
-import com.junbo.catalog.spec.enums.*;
+import com.junbo.catalog.spec.enums.EntitlementType;
+import com.junbo.catalog.spec.enums.ItemAttributeType;
+import com.junbo.catalog.spec.enums.ItemType;
+import com.junbo.catalog.spec.enums.Status;
 import com.junbo.catalog.spec.error.AppErrors;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.catalog.spec.model.item.*;
@@ -21,17 +25,13 @@ import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.AppErrorException;
-import org.apache.commons.validator.routines.EmailValidator;
-import org.apache.commons.validator.routines.UrlValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Item service implementation.
@@ -43,6 +43,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     private ItemRevisionRepository itemRevisionRepo;
     private ItemAttributeRepository itemAttributeRepo;
     private OfferRepository offerRepo;
+    private ItemRevisionValidator revisionValidator;
 
     @Required
     public void setItemRevisionRepo(ItemRevisionRepository itemRevisionRepo) {
@@ -62,6 +63,11 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     @Required
     public void setOfferRepo(OfferRepository offerRepo) {
         this.offerRepo = offerRepo;
+    }
+
+    @Required
+    public void setRevisionValidator(ItemRevisionValidator revisionValidator) {
+        this.revisionValidator = revisionValidator;
     }
 
     @Override
@@ -92,7 +98,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
 
     @Override
     public ItemRevision createRevision(ItemRevision revision) {
-        validateRevisionCreation(revision);
+        revisionValidator.validateCreationBasic(revision);
         return itemRevisionRepo.create(revision);
     }
 
@@ -111,7 +117,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
             throw exception;
         }
         if (Status.APPROVED.is(revision.getStatus()) || Status.PENDING_REVIEW.is(revision.getStatus())) {
-            validateRevisionUpdate(revision, oldRevision);
+            revisionValidator.validateFull(revision, oldRevision);
             Item item = itemRepo.get(revision.getItemId());
             generateEntitlementDef(revision, item.getType());
             if (Status.APPROVED.is(revision.getStatus())) {
@@ -122,7 +128,7 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
                 itemRepo.update(item, item);
             }
         } else {
-            validateRevisionUpdateBasic(revision, oldRevision);
+            revisionValidator.validateUpdateBasic(revision, oldRevision);
         }
         return itemRevisionRepo.update(revision, oldRevision);
     }
@@ -271,250 +277,4 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
             }
         }
     }
-
-    private void validateRevisionCreation(ItemRevision revision) {
-        checkRequestNotNull(revision);
-        List<AppError> errors = new ArrayList<>();
-        if (revision.getRevisionId() != null) {
-            errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("self"));
-        }
-        if (revision.getRev() != null) {
-            errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("rev", revision.getRev(), null));
-        }
-        if (revision.getOwnerId() == null) {
-            errors.add(AppCommonErrors.INSTANCE.fieldRequired("developer"));
-        }
-        if (!Status.DRAFT.is(revision.getStatus())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("status", "should be 'DRAFT'"));
-        }
-        if (revision.getItemId() == null) {
-            errors.add(AppCommonErrors.INSTANCE.fieldRequired("itemId"));
-        } else {
-            Item item = itemRepo.get(revision.getItemId());
-            if (item == null) {
-                errors.add(AppErrors.INSTANCE.itemNotFound("itemId", revision.getItemId()));
-            }
-        }
-        if (CollectionUtils.isEmpty(revision.getLocales())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales"));
-        } else {
-            for (Map.Entry<String, ItemRevisionLocaleProperties> entry : revision.getLocales().entrySet()) {
-                String locale = entry.getKey();
-                ItemRevisionLocaleProperties properties = entry.getValue();
-                // TODO: check locale is a valid locale
-                if (properties == null) {
-                    errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales." + locale));
-                } else {
-                    if (StringUtils.isEmpty(properties.getName())) {
-                        errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales." + locale + ".name"));
-                    }
-                }
-            }
-        }
-        if (!errors.isEmpty()) {
-            AppErrorException exception = Utils.invalidFields(errors).exception();
-            LOGGER.error("Error creating item-revision. ", exception);
-            throw exception;
-        }
-    }
-
-    private void validateRevisionUpdateBasic(ItemRevision revision, ItemRevision oldRevision) {
-        checkRequestNotNull(revision);
-        List<AppError> errors = new ArrayList<>();
-        if (!oldRevision.getRevisionId().equals(revision.getRevisionId())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("revisionId", revision.getRevisionId(), oldRevision.getRevisionId()));
-        }
-        if (!oldRevision.getRev().equals(revision.getRev())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("rev", revision.getRev(), oldRevision.getRev()));
-        }
-        if (revision.getStatus() == null || !Status.contains(revision.getStatus())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("status", Joiner.on(", ").join(Status.ALL)));
-        }
-        if (revision.getItemId() == null) {
-            errors.add(AppCommonErrors.INSTANCE.fieldRequired("itemId"));
-        } else {
-            Item item = itemRepo.get(revision.getItemId());
-            if (item == null) {
-                errors.add(AppErrors.INSTANCE.itemNotFound("itemId", revision.getItemId()));
-            }
-        }
-        if (CollectionUtils.isEmpty(revision.getLocales())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales"));
-        } else {
-            for (Map.Entry<String, ItemRevisionLocaleProperties> entry : revision.getLocales().entrySet()) {
-                String locale = entry.getKey();
-                ItemRevisionLocaleProperties properties = entry.getValue();
-                // TODO: check locale is a valid locale
-                if (properties == null) {
-                    errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales." + locale));
-                } else {
-                    if (StringUtils.isEmpty(properties.getName())) {
-                        errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales." + locale + ".name"));
-                    }
-                }
-            }
-        }
-        if (!errors.isEmpty()) {
-            AppErrorException exception = Utils.invalidFields(errors).exception();
-            LOGGER.error("Error updating item-revision. ", exception);
-            throw exception;
-        }
-    }
-
-    private void validateRevisionUpdate(ItemRevision revision, ItemRevision oldRevision) {
-        checkRequestNotNull(revision);
-        List<AppError> errors = new ArrayList<>();
-        if (!oldRevision.getRevisionId().equals(revision.getRevisionId())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("revisionId", revision.getRevisionId(), oldRevision.getRevisionId()));
-        }
-        if (!oldRevision.getRev().equals(revision.getRev())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("rev", revision.getRev(), oldRevision.getRev()));
-        }
-        if (revision.getStatus() == null || !Status.contains(revision.getStatus())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("status", Joiner.on(", ").join(Status.ALL)));
-        }
-
-        validateRevisionCommon(revision, errors);
-
-        if (!errors.isEmpty()) {
-            AppErrorException exception = Utils.invalidFields(errors).exception();
-            LOGGER.error("Error updating item-revision. ", exception);
-            throw exception;
-        }
-    }
-
-    private void validateRevisionCommon(ItemRevision revision, List<AppError> errors) {
-        if (revision.getOwnerId() == null) {
-            errors.add(AppCommonErrors.INSTANCE.fieldRequired("developer"));
-        }
-        if (CollectionUtils.isEmpty(revision.getDistributionChannels())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldRequired("distributionChannel"));
-        } else {
-            int i;
-            for (i=0; i < revision.getDistributionChannels().size(); i++) {
-                if (!DistributionChannel.contains(revision.getDistributionChannels().get(i))) {
-                    break;
-                }
-            }
-            if (i < revision.getDistributionChannels().size()) {
-                errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("distributionChannel", Joiner.on(", ").join(DistributionChannel.ALL)));
-            }
-
-            if (revision.getDistributionChannels().contains(DistributionChannel.INAPP.name())) {
-                if (CollectionUtils.isEmpty(revision.getIapHostItemIds())) {
-                    errors.add(AppCommonErrors.INSTANCE.fieldRequired("iapHostItems"));
-                } else {
-                    for (String itemId : revision.getIapHostItemIds()) {
-                        if (itemId == null) {
-                            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("iapHostItems", "should not contain null"));
-                        } else {
-                            Item item = itemRepo.get(itemId);
-                            if (item == null) {
-                                errors.add(AppErrors.INSTANCE.itemNotFound("iapHostItems", itemId));
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        if (revision.getItemId() == null) {
-            errors.add(AppCommonErrors.INSTANCE.fieldRequired("itemId"));
-        } else {
-            Item item = itemRepo.get(revision.getItemId());
-            if (item == null) {
-                errors.add(AppErrors.INSTANCE.itemNotFound("itemId", revision.getItemId()));
-            } else {
-                if (revision.getOwnerId() != null && !revision.getOwnerId().equals(item.getOwnerId())) {
-                    errors.add(AppCommonErrors.INSTANCE.fieldInvalid("itemId", "item should have same owner as item-revision"));
-                }
-                if ((Status.APPROVED.is(revision.getStatus()) || Status.PENDING_REVIEW.is(revision.getStatus()))
-                        && (ItemType.APP.is(item.getType()) || ItemType.DOWNLOADED_ADDITION.is(item.getType()))) {
-                    if (CollectionUtils.isEmpty(revision.getBinaries())) {
-                        errors.add(AppCommonErrors.INSTANCE.fieldRequired("binaries"));
-                    } else {
-                        for (String key : revision.getBinaries().keySet()) {
-                            if (!Platforms.contains(key)) {
-                                errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("binaries", Joiner.on(',').join(Platforms.values())));
-                            }
-                            Binary binary = revision.getBinaries().get(key);
-                            if (!UrlValidator.getInstance().isValid(binary.getHref())) {
-                                errors.add(AppCommonErrors.INSTANCE.fieldInvalid("binaries", "invalid href for " + key));
-                            }
-                            if (!StringUtils.isEmpty(binary.getMd5()) && !Utils.isValidMd5(binary.getMd5())) {
-                                errors.add(AppCommonErrors.INSTANCE.fieldInvalid("binaries", "invalid md5 for " + key));
-                            }
-                        }
-                    }
-                    if (StringUtils.isEmpty(revision.getDownloadName())) {
-                        errors.add(AppCommonErrors.INSTANCE.fieldRequired("downloadName"));
-                    }
-                }
-                if (!(ItemType.APP.is(item.getType()) || ItemType.DOWNLOADED_ADDITION.is(item.getType()))) {
-                    if (!CollectionUtils.isEmpty(revision.getBinaries())) {
-                        errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("binaries"));
-                    }
-                    if (!StringUtils.isEmpty(revision.getDownloadName())) {
-                        errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("downloadName"));
-                    }
-                }
-            }
-            if (revision.getPackageName() != null) {
-                boolean valid = itemRevisionRepo.checkPackageName(revision.getItemId(), revision.getPackageName());
-                if (!valid) {
-                    errors.add(AppErrors.INSTANCE.duplicatePackageName(revision.getPackageName()));
-                }
-            }
-        }
-        if (revision.getMsrp() != null) {
-            checkPrice(revision.getMsrp(), errors);
-        }
-        if (!CollectionUtils.isEmpty(revision.getPlatforms())) {
-            for (String platform : revision.getPlatforms()) {
-                if (!Platforms.contains(platform)) {
-                    errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("platforms", Joiner.on(',').join(Platforms.values())));
-                    break;
-                }
-            }
-        }
-        if (!CollectionUtils.isEmpty(revision.getUserInteractionModes())) {
-            for (String mode : revision.getUserInteractionModes()) {
-                if (!InteractionModes.contains(mode)) {
-                    errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("userInteractionModes", Joiner.on(',').join(InteractionModes.values())));
-                    break;
-                }
-            }
-        }
-        if (CollectionUtils.isEmpty(revision.getLocales())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales"));
-        } else {
-            for (Map.Entry<String, ItemRevisionLocaleProperties> entry : revision.getLocales().entrySet()) {
-                String locale = entry.getKey();
-                ItemRevisionLocaleProperties properties = entry.getValue();
-                // TODO: check locale is a valid locale
-                if (properties == null) {
-                    errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales." + locale));
-                } else {
-                    if (StringUtils.isEmpty(properties.getName())) {
-                        errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales." + locale + ".name"));
-                    }
-                    if (!StringUtils.isEmpty(properties.getSupportEmail()) && !EmailValidator.getInstance().isValid(properties.getSupportEmail())) {
-                        errors.add(AppCommonErrors.INSTANCE.fieldInvalid("supportEmail", "invalid email format"));
-                    }
-                    if (!StringUtils.isEmpty(properties.getCommunityForumLink()) && !UrlValidator.getInstance().isValid(properties.getCommunityForumLink())) {
-                        errors.add(AppCommonErrors.INSTANCE.fieldInvalid("communityForumLink", "invalid link"));
-                    }
-                    if (!StringUtils.isEmpty(properties.getWebsite()) && !UrlValidator.getInstance().isValid(properties.getWebsite())) {
-                        errors.add(AppCommonErrors.INSTANCE.fieldInvalid("website", "invalid link"));
-                    }
-                    if (!StringUtils.isEmpty(properties.getManualDocument()) && !UrlValidator.getInstance().isValid(properties.getManualDocument())) {
-                        errors.add(AppCommonErrors.INSTANCE.fieldInvalid("mannualDocument", "invalid link"));
-                    }
-                }
-            }
-        }
-        if (!CollectionUtils.isEmpty(revision.getFutureExpansion())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("futureExpansion", "you should leave this property empty"));
-        }
-    }
-
 }

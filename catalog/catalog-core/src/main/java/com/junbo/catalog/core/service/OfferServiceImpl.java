@@ -6,10 +6,10 @@
 
 package com.junbo.catalog.core.service;
 
-import com.google.common.base.Joiner;
 import com.junbo.catalog.common.util.Configuration;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.OfferService;
+import com.junbo.catalog.core.validators.OfferRevisionValidator;
 import com.junbo.catalog.db.repo.ItemRepository;
 import com.junbo.catalog.db.repo.OfferAttributeRepository;
 import com.junbo.catalog.db.repo.OfferRepository;
@@ -22,13 +22,11 @@ import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.AppErrorException;
-import com.junbo.common.id.OrganizationId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -41,6 +39,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     private OfferRevisionRepository offerRevisionRepo;
     private ItemRepository itemRepo;
     private OfferAttributeRepository offerAttributeRepo;
+    private OfferRevisionValidator revisionValidator;
 
     @Autowired
     private Configuration config;
@@ -63,6 +62,11 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     @Required
     public void setOfferAttributeRepo(OfferAttributeRepository offerAttributeRepo) {
         this.offerAttributeRepo = offerAttributeRepo;
+    }
+
+    @Required
+    public void setRevisionValidator(OfferRevisionValidator revisionValidator) {
+        this.revisionValidator = revisionValidator;
     }
 
     @Override
@@ -157,7 +161,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
 
     @Override
     public OfferRevision createRevision(OfferRevision revision) {
-        validateRevisionCreation(revision);
+        revisionValidator.validateCreationBasic(revision);
         return offerRevisionRepo.create(revision);
     }
 
@@ -175,7 +179,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             throw exception;
         }
         if (Status.APPROVED.is(revision.getStatus()) || Status.PENDING_REVIEW.is(revision.getStatus())) {
-            validateRevisionUpdate(revision, oldRevision);
+            revisionValidator.validateFull(revision, oldRevision);
             generateEventActions(revision);
 
             if (Status.APPROVED.is(revision.getStatus())) {
@@ -188,7 +192,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
                 updateOfferForApprovedRevision(revision, timestamp);
             }
         } else {
-            validateRevisionUpdateBasic(revision, oldRevision);
+            revisionValidator.validateUpdateBasic(revision, oldRevision);
         }
         return offerRevisionRepo.update(revision, oldRevision);
     }
@@ -372,226 +376,6 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
                     }
                 }
             }
-        }
-    }
-
-    private void validateRevisionCreation(OfferRevision revision) {
-        checkRequestNotNull(revision);
-        List<AppError> errors = new ArrayList<>();
-        if (revision.getRevisionId() != null) {
-            errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("self"));
-        }
-        if (revision.getRev() != null) {
-            errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("rev", revision.getRev(), null));
-        }
-        if (revision.getOwnerId() == null) {
-            errors.add(AppCommonErrors.INSTANCE.fieldRequired("publisher"));
-        }
-        if (!Status.DRAFT.is(revision.getStatus())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("status", "should be 'DRAFT'"));
-        }
-        if (revision.getOfferId() == null) {
-            errors.add(AppCommonErrors.INSTANCE.fieldRequired("offerId"));
-        } else {
-            Offer offer = offerRepo.get(revision.getOfferId());
-            if (offer == null) {
-                errors.add(AppErrors.INSTANCE.offerNotFound("offerId", revision.getOfferId()));
-            }
-        }
-        if (CollectionUtils.isEmpty(revision.getLocales())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales"));
-        } else {
-            for (Map.Entry<String, OfferRevisionLocaleProperties> entry : revision.getLocales().entrySet()) {
-                String locale = entry.getKey();
-                OfferRevisionLocaleProperties properties = entry.getValue();
-                // TODO: check locale is a valid locale
-                if (properties==null) {
-                    errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales." + locale));
-                } else {
-                    if (StringUtils.isEmpty(properties.getName())) {
-                        errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales." + locale + ".name"));
-                    }
-                }
-            }
-        }
-        if (!errors.isEmpty()) {
-            AppErrorException exception = Utils.invalidFields(errors).exception();
-            LOGGER.error("Error creating offer-revision. ", exception);
-            throw exception;
-        }
-    }
-
-    private void validateRevisionUpdateBasic(OfferRevision revision, OfferRevision oldRevision) {
-        checkRequestNotNull(revision);
-        List<AppError> errors = new ArrayList<>();
-        if (!oldRevision.getRevisionId().equals(revision.getRevisionId())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("revisionId", revision.getRevisionId(), oldRevision.getRevisionId()));
-        }
-        if (!oldRevision.getRev().equals(revision.getRev())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("rev", revision.getRev(), oldRevision.getRev()));
-        }
-        if (revision.getStatus() == null || !Status.contains(revision.getStatus())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("status", Joiner.on(", ").join(Status.ALL)));
-        }
-        if (revision.getOfferId() == null) {
-            errors.add(AppCommonErrors.INSTANCE.fieldRequired("offerId"));
-        } else {
-            Offer offer = offerRepo.get(revision.getOfferId());
-            if (offer == null) {
-                errors.add(AppErrors.INSTANCE.offerNotFound("offerId", revision.getOfferId()));
-            }
-        }
-        if (CollectionUtils.isEmpty(revision.getLocales())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales"));
-        } else {
-            for (Map.Entry<String, OfferRevisionLocaleProperties> entry : revision.getLocales().entrySet()) {
-                String locale = entry.getKey();
-                OfferRevisionLocaleProperties properties = entry.getValue();
-                // TODO: check locale is a valid locale
-                if (properties==null) {
-                    errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales." + locale));
-                } else {
-                    if (StringUtils.isEmpty(properties.getName())) {
-                        errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales." + locale + ".name"));
-                    }
-                }
-            }
-        }
-
-        if (!errors.isEmpty()) {
-            AppErrorException exception = Utils.invalidFields(errors).exception();
-            LOGGER.error("Error updating offer-revision. ", exception);
-            throw exception;
-        }
-    }
-
-    private void validateRevisionUpdate(OfferRevision revision, OfferRevision oldRevision) {
-        checkRequestNotNull(revision);
-        List<AppError> errors = new ArrayList<>();
-        if (!oldRevision.getRevisionId().equals(revision.getRevisionId())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("revisionId", revision.getRevisionId(), oldRevision.getRevisionId()));
-        }
-        if (!oldRevision.getRev().equals(revision.getRev())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("rev", revision.getRev(), oldRevision.getRev()));
-        }
-        if (revision.getStatus()==null || !Status.contains(revision.getStatus())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("status", Joiner.on(", ").join(Status.ALL)));
-        }
-
-        validateRevisionCommon(revision, errors);
-
-        if (!errors.isEmpty()) {
-            AppErrorException exception = Utils.invalidFields(errors).exception();
-            LOGGER.error("Error updating offer-revision. ", exception);
-            throw exception;
-        }
-    }
-
-    private void validateRevisionCommon(OfferRevision revision, List<AppError> errors) {
-        if (revision.getOwnerId() == null) {
-            errors.add(AppCommonErrors.INSTANCE.fieldRequired("publisher"));
-        }
-        if (revision.getOfferId() == null) {
-            errors.add(AppCommonErrors.INSTANCE.fieldRequired("offerId"));
-        } else {
-            Offer offer = offerRepo.get(revision.getOfferId());
-            if (offer == null) {
-                errors.add(AppErrors.INSTANCE.offerNotFound("offerId", revision.getOfferId()));
-            } else if (revision.getOwnerId() != null && !revision.getOwnerId().equals(offer.getOwnerId())) {
-                errors.add(AppCommonErrors.INSTANCE.fieldInvalid("offerId", "offer should have same owner as offer-revision"));
-            }
-        }
-        if (CollectionUtils.isEmpty(revision.getDistributionChannels())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldRequired("distributionChannel"));
-        } else {
-            int i;
-            for (i=0; i < revision.getDistributionChannels().size(); i++) {
-                if (!DistributionChannel.contains(revision.getDistributionChannels().get(i))) {
-                    break;
-                }
-            }
-            if (i < revision.getDistributionChannels().size()) {
-                errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("distributionChannel", Joiner.on(", ").join(DistributionChannel.ALL)));
-            }
-        }
-        if (revision.getPrice() == null) {
-            errors.add(AppCommonErrors.INSTANCE.fieldRequired("price"));
-        } else {
-            checkPrice(revision.getPrice(), errors);
-        }
-        if (CollectionUtils.isEmpty(revision.getLocales())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales"));
-        } else {
-            for (Map.Entry<String, OfferRevisionLocaleProperties> entry : revision.getLocales().entrySet()) {
-                String locale = entry.getKey();
-                OfferRevisionLocaleProperties properties = entry.getValue();
-                // TODO: check locale is a valid locale
-                if (properties==null) {
-                    errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales." + locale));
-                } else {
-                    if (StringUtils.isEmpty(properties.getName())) {
-                        errors.add(AppCommonErrors.INSTANCE.fieldRequired("locales." + locale + ".name"));
-                    }
-                }
-            }
-        }
-
-        if (!CollectionUtils.isEmpty(revision.getSubOffers())) {
-            for (String subOfferId : revision.getSubOffers()) {
-                Offer subOffer = offerRepo.get(subOfferId);
-                if (subOffer == null) {
-                    errors.add(AppCommonErrors.INSTANCE.resourceNotFound("offer", subOfferId));
-                } else {
-                    if (revision.getOwnerId() != null && !revision.getOwnerId().equals(subOffer.getOwnerId())) {
-                        errors.add(AppCommonErrors.INSTANCE.fieldInvalid("subOffers", "offer should only contains sub-offers of same owner"));
-                    }
-                    if (!Boolean.TRUE.equals(subOffer.getPublished())) {
-                        errors.add(AppCommonErrors.INSTANCE.fieldInvalid("subOffers", "sub-offers should be published"));
-                    }
-                }
-            }
-        }
-        if (!CollectionUtils.isEmpty(revision.getItems())) {
-            validateItems(revision.getItems(), revision.getOwnerId(), errors);
-        }
-        if (!CollectionUtils.isEmpty(revision.getFutureExpansion())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("futureExpansion", "you should leave this property empty"));
-        }
-        // TODO: check other properties
-    }
-
-    private void validateItems(List<ItemEntry> items, OrganizationId ownerId, List<AppError> errors) {
-        boolean hasSVItem = false;
-        for (ItemEntry itemEntry : items) {
-            if (itemEntry.getItemId() == null) {
-                errors.add(AppCommonErrors.INSTANCE.fieldRequired("items.item.id"));
-            } else {
-                Item item = itemRepo.get(itemEntry.getItemId());
-                if (item == null) {
-                    errors.add(AppCommonErrors.INSTANCE.resourceNotFound("item", itemEntry.getItemId()));
-                } else {
-                    if (ownerId != null && !ownerId.equals(item.getOwnerId())) {
-                        errors.add(AppCommonErrors.INSTANCE.fieldInvalid("items", "offer should only contains items of same owner"));
-                    }
-                    if (item.getType().equals(ItemType.STORED_VALUE)) {
-                        hasSVItem = true;
-                    }
-                    if (itemEntry.getQuantity() == null) {
-                        itemEntry.setQuantity(1);
-                    } else if (itemEntry.getQuantity() <= 0) {
-                        errors.add(AppCommonErrors.INSTANCE.fieldInvalid("items",
-                                "Quantity should be greater than 0 for item " + itemEntry.getItemId()));
-                    } else if (itemEntry.getQuantity() > 1) {
-                        if (!(ItemType.PHYSICAL.is(item.getType()))) {
-                            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("items",
-                                    "'quantity' should be 1 for " + item.getType() + " item " + itemEntry.getItemId()));
-                        }
-                    }
-                }
-            }
-        }
-        if (hasSVItem && items.size() > 1) {
-            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("items", "STORED_VALUE item is mutually exclusive with other items in an offer"));
         }
     }
 

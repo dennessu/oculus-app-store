@@ -81,6 +81,8 @@ public class ItemRevisionValidator extends ValidationSupport {
         List<AppError> errors = new ArrayList<>();
         validateFieldNull("self", revision.getRevisionId(), errors);
         validateFieldNull("rev", revision.getRev(), errors);
+        validateFieldNull("createdTime", revision.getCreatedTime(), errors);
+        validateFieldNull("updatedTime", revision.getUpdatedTime(), errors);
         validateFieldNotNull("developer", revision.getOwnerId(), errors);
         validateFieldMatch("status", revision.getStatus(), Status.DRAFT.name(), errors);
         validateItem(revision, errors);
@@ -152,10 +154,10 @@ public class ItemRevisionValidator extends ValidationSupport {
     }
 
     private void validateChannelsAndHostItems(List<String> distributedChannels, List<String> hostItemIds, List<AppError> errors) {
-        if (distributedChannels != null) {
+        if (!CollectionUtils.isEmpty(distributedChannels)) {
             for (String channel : distributedChannels) {
                 if (channel==null || !DistributionChannel.contains(channel)) {
-                    errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("distributedChannel", Joiner.on(',').join(distributedChannels)));
+                    errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("distributedChannel", Joiner.on(',').join(DistributionChannel.values())));
                 }
             }
             if (distributedChannels.contains(DistributionChannel.INAPP.name())) {
@@ -241,19 +243,19 @@ public class ItemRevisionValidator extends ValidationSupport {
             validateOptionalUrl("images.background.href", images.getBackground().getHref(), errors);
         }
         if (images.getFeatured() != null) {
-            validateOptionalUrl("images.featured.href", images.getBackground().getHref(), errors);
+            validateOptionalUrl("images.featured.href", images.getFeatured().getHref(), errors);
         }
         if (images.getHalfMain() != null) {
-            validateOptionalUrl("images.halfMain.href", images.getBackground().getHref(), errors);
+            validateOptionalUrl("images.halfMain.href", images.getHalfMain().getHref(), errors);
         }
         if (images.getMain() != null) {
-            validateOptionalUrl("images.main.href", images.getBackground().getHref(), errors);
+            validateOptionalUrl("images.main.href", images.getMain().getHref(), errors);
         }
         if (images.getThumbnail() != null) {
-            validateOptionalUrl("images.thumbnail.href", images.getBackground().getHref(), errors);
+            validateOptionalUrl("images.thumbnail.href", images.getThumbnail().getHref(), errors);
         }
         if (images.getHalfThumbnail() != null) {
-            validateOptionalUrl("images.halfThumbnail.href", images.getBackground().getHref(), errors);
+            validateOptionalUrl("images.halfThumbnail.href", images.getHalfThumbnail().getHref(), errors);
         }
         if (images.getGallery() != null) {
             for (ImageGalleryEntry galleryEntry : images.getGallery()) {
