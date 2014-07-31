@@ -8,7 +8,7 @@
 
     <!-- Order Scheduler -->
     <bean id="orderSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
-          parent="baseJobScheduler" depends-on="orderMbeanExporter">
+          parent="baseJobScheduler">
         <property name="schedulerName" value="orderScheduler" />
         <property name="autoStartup" value="${order.jobs.scheduler.start}" />
         <property name="triggers">
@@ -117,10 +117,12 @@
     </bean>
 
     <!-- Exporter -->
-    <bean id="orderMbeanExporter" class="org.springframework.jmx.export.MBeanExporter">
+    <bean id="orderMbeanExporter" class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
         <property name="beans">
             <map>
-                <entry key="quartz:type=QuartzJob,name=orderAuditTaxJob" value-ref="orderAuditTaxJob"/>
+                <entry key="quartz:type=QuartzJob,name=orderAuditTaxJob">
+                    <idref bean="orderAuditTaxJob"/>
+                </entry>
             </map>
         </property>
     </bean>
