@@ -16,7 +16,7 @@
            overflowToDisk="false"
            diskPersistent="false"
            timeToIdleSeconds="0"
-           timeToLiveSeconds="604800"
+           timeToLiveSeconds="300"
            memoryStoreEvictionPolicy="LRU"/>
 
     <cache name="ITEM_REVISION"
@@ -43,7 +43,7 @@
            overflowToDisk="false"
            diskPersistent="false"
            timeToIdleSeconds="0"
-           timeToLiveSeconds="604800"
+           timeToLiveSeconds="300"
            memoryStoreEvictionPolicy="LRU"/>
 
     <cache name="OFFER_REVISION"
