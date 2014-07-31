@@ -22,10 +22,7 @@ import com.junbo.test.drm.DrmService;
 public class DrmServiceImpl extends HttpClientBase implements DrmService {
 
     private final String drmURL = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "licenses";
-
     private static DrmService instance;
-
-    private boolean isServiceScope = true;
 
     public static synchronized DrmService instance() {
         if (instance == null) {
@@ -44,7 +41,7 @@ public class DrmServiceImpl extends HttpClientBase implements DrmService {
 
     @Override
     public SignedLicense postLicense(License request, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, drmURL, request, expectedResponseCode, isServiceScope);
+        String responseBody = restApiCall(HTTPMethod.POST, drmURL, request, expectedResponseCode, true);
         return new JsonMessageTranscoder().decode(new TypeReference<SignedLicense>() {}, responseBody);
     }
 }

@@ -87,8 +87,9 @@ public class DrmTesting extends TestClass {
     private void prepareTestData() throws Exception {
         UserService userService = UserServiceImpl.instance();
         ItemService itemService = ItemServiceImpl.instance();
-        OrganizationService organizationService = OrganizationServiceImpl.instance();
         OAuthService oAuthService = OAuthServiceImpl.getInstance();
+        EntitlementService entitlementService = EntitlementServiceImpl.instance();
+        OrganizationService organizationService = OrganizationServiceImpl.instance();
 
         //prepare user and organization
         String userId = userService.PostUser();
@@ -107,11 +108,8 @@ public class DrmTesting extends TestClass {
         entitlement.setType(EntitlementType.DOWNLOAD.name());
         entitlement.setItemId(itemId);
 
-
         oAuthService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.DRM);
         oAuthService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.ENTITLEMENT);
-
-        EntitlementService entitlementService = EntitlementServiceImpl.instance();
         entitlementService.grantEntitlement(entitlement);
 
     }
