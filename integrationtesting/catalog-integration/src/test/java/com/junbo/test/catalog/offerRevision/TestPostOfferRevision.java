@@ -201,11 +201,6 @@ public class TestPostOfferRevision extends BaseTestClass {
         testOfferRevision.setLocales(locales);
         verifyExpectedError(testOfferRevision);
 
-        //set binaries for not APP and DOWNLOADED_ADDITION type
-        offerRevisionLocaleProperties.setName("testOfferRevision_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
-        locales.put(defaultLocale, offerRevisionLocaleProperties);
-        testOfferRevision.setLocales(locales);
-
     }
 
     private void checkOfferRevisionRequiredFields(OfferRevision offerRevisionActual, OfferRevision offerRevisionExpected) {

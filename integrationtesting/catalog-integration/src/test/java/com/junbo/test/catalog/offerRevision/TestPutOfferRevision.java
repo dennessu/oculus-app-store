@@ -5,34 +5,42 @@
  */
 package com.junbo.test.catalog.offerRevision;
 
-import com.junbo.catalog.spec.enums.DistributionChannel;
-import com.junbo.catalog.spec.model.common.Price;
-import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.catalog.spec.model.offer.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
+import com.junbo.test.common.apihelper.identity.OrganizationService;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
+import com.junbo.test.catalog.impl.OfferRevisionServiceImpl;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
+import com.junbo.test.catalog.enums.CatalogEntityStatus;
+import com.junbo.test.catalog.impl.PriceTierServiceImpl;
+import com.junbo.test.common.Entities.enums.Currency;
+import com.junbo.test.common.Entities.enums.Country;
+import com.junbo.test.catalog.enums.CatalogItemType;
+import com.junbo.test.catalog.impl.OfferServiceImpl;
+import com.junbo.test.catalog.OfferRevisionService;
+import com.junbo.test.catalog.impl.ItemServiceImpl;
+import com.junbo.catalog.spec.model.common.Price;
+import com.junbo.test.catalog.util.BaseTestClass;
+import com.junbo.test.common.libs.RandomFactory;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.junbo.test.catalog.PriceTierService;
+import com.junbo.test.catalog.enums.PriceType;
+import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.test.common.libs.LogHelper;
+import com.junbo.catalog.spec.model.offer.*;
+import com.junbo.test.catalog.OfferService;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.test.catalog.ItemService;
-import com.junbo.test.catalog.OfferRevisionService;
-import com.junbo.test.catalog.OfferService;
-import com.junbo.test.catalog.PriceTierService;
-import com.junbo.test.catalog.enums.CatalogEntityStatus;
-import com.junbo.test.catalog.enums.CatalogItemType;
-import com.junbo.test.catalog.enums.PriceType;
-import com.junbo.test.catalog.impl.ItemServiceImpl;
-import com.junbo.test.catalog.impl.OfferRevisionServiceImpl;
-import com.junbo.test.catalog.impl.OfferServiceImpl;
-import com.junbo.test.catalog.impl.PriceTierServiceImpl;
-import com.junbo.test.catalog.util.BaseTestClass;
-import com.junbo.test.common.apihelper.identity.OrganizationService;
-import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
-import com.junbo.test.common.libs.LogHelper;
-import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.property.*;
 
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.Assert;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -189,6 +197,7 @@ public class TestPutOfferRevision extends BaseTestClass {
     )
     @Test
     public void testPutOfferRevisionInvalidScenarios() throws Exception {
+        ItemService itemService = ItemServiceImpl.instance();
 
         OfferRevision offerRevision = offerRevisionService.postDefaultOfferRevision(offer1);
         OfferRevision offerRevisionTmp = offerRevisionService.postDefaultOfferRevision(offer1);
@@ -279,7 +288,112 @@ public class TestPutOfferRevision extends BaseTestClass {
         channels.add("STORE");
         offerRevision.setDistributionChannels(channels);
 
-        //check price
+        //check item
+        Item item1 = itemService.postDefaultItem(CatalogItemType.DOWNLOADED_ADDITION, organizationId);
+        Item item2 = itemService.postDefaultItem(CatalogItemType.DOWNLOADED_ADDITION, organizationId);
+        Item item3 = itemService.postDefaultItem(CatalogItemType.PHYSICAL, organizationId);
+
+        List<ItemEntry> items = new ArrayList<>();
+        ItemEntry itemEntry1 = new ItemEntry();
+        ItemEntry itemEntry2 = new ItemEntry();
+        ItemEntry itemEntry3 = new ItemEntry();
+
+        itemEntry1.setItemId(null);
+        itemEntry1.setQuantity(-2);
+
+        items.add(itemEntry1);
+        offerRevision.setItems(items);
+
+        offerRevision.setStatus(CatalogEntityStatus.DRAFT.name());
+        offerRevision = offerRevisionService.updateOfferRevision(offerRevisionId, offerRevision);
+
+        offerRevision.setStatus(CatalogEntityStatus.APPROVED.name());
+        verifyExpectedFailure(offerRevisionId, offerRevision);
+
+        itemEntry1.setItemId(item1.getItemId());
+        itemEntry1.setQuantity(0);
+
+        itemEntry2.setItemId(item2.getItemId());
+        itemEntry2.setQuantity(2);
+
+        itemEntry3.setItemId(item3.getItemId());
+        itemEntry3.setQuantity(5);
+
+        items.clear();
+        items.add(itemEntry1);
+        items.add(itemEntry2);
+        items.add(itemEntry3);
+        offerRevision.setItems(items);
+
+        offerRevision.setStatus(CatalogEntityStatus.REJECTED.name());
+        offerRevision = offerRevisionService.updateOfferRevision(offerRevisionId, offerRevision);
+
+        offerRevision.setStatus(CatalogEntityStatus.PENDING_REVIEW.name());
+        verifyExpectedFailure(offerRevisionId, offerRevision);
+
+        items.clear();
+        items.add(itemEntry1);
+        offerRevision.setItems(items);
+
+        //check futureExpansion
+        Map<String, JsonNode> futureExpansion = new HashMap<>();
+
+        String str = "{\"subCountry\":\"TX\",\"street1\":\"800 West Campbell Road\"," +
+                "\"city\":\"Richardson\",\"postalCode\":\"75080\"," +
+                "\"country\":{\"id\":\"US\"}}";
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode value = mapper.readTree(str);
+
+        futureExpansion.put("Address", value);
+        offerRevision.setFutureExpansion(futureExpansion);
+
+        offerRevision.setStatus(CatalogEntityStatus.DRAFT.name());
+        offerRevision = offerRevisionService.updateOfferRevision(offerRevisionId, offerRevision);
+
+        offerRevision.setStatus(CatalogEntityStatus.APPROVED.name());
+        verifyExpectedFailure(offerRevisionId, offerRevision);
+
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Put v1/offer-revisions/{offerRevisionId}",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Test put offer revision successfully",
+            steps = {
+                    "1. Prepare a default offer revision",
+                    "2. test invalid values for price",
+                    "3. Verify the expected error"
+            }
+    )
+    @Test
+    public void testPutOfferRevisionWithWrongPrice() throws Exception {
+
+        //Data preparation
+        OAuthService oAuthService = OAuthServiceImpl.getInstance();
+        PriceTierService priceTierService = PriceTierServiceImpl.instance();
+
+        oAuthService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
+        PriceTier priceTier = priceTierService.postDefaultPriceTier();
+
+        Map<String, Map<String, BigDecimal>> prices = new HashMap<>();
+        Map<String, BigDecimal> price1 = new HashMap<>();
+        Map<String, BigDecimal> price2 = new HashMap<>();
+
+        price1.put(Currency.USD.name(), new BigDecimal(9.83));
+        price1.put(Currency.JPY.name(), new BigDecimal(660));
+
+        price2.put(Currency.CNY.name(), new BigDecimal(50.00));
+        price2.put(Currency.USD.name(), new BigDecimal(9.55));
+
+        prices.put(Country.US.toString(), price1);
+        prices.put(Country.CN.toString(), price2);
+
+        OfferRevision offerRevision = offerRevisionService.postDefaultOfferRevision(offer1);
+        String offerRevisionId = offerRevision.getRevisionId();
+
         Price originalPrice = offerRevision.getPrice();
 
         offerRevision.setPrice(null);
@@ -292,6 +406,7 @@ public class TestPutOfferRevision extends BaseTestClass {
 
         Price price = originalPrice;
         price.setPriceType("invalid type");
+        offerRevision.setPrice(price);
 
         offerRevision.setStatus(CatalogEntityStatus.REJECTED.name());
         offerRevision = offerRevisionService.updateOfferRevision(offerRevisionId, offerRevision);
@@ -300,11 +415,37 @@ public class TestPutOfferRevision extends BaseTestClass {
         verifyExpectedFailure(offerRevisionId, offerRevision);
 
         price.setPriceType(PriceType.CUSTOM.name());
+        price.setPrices(null);
+        price.setPriceTier(priceTier.getId());
+        offerRevision.setPrice(price);
 
-        //check item
+        offerRevision.setStatus(CatalogEntityStatus.DRAFT.name());
+        offerRevision = offerRevisionService.updateOfferRevision(offerRevisionId, offerRevision);
 
-        //check futureExpansion
+        offerRevision.setStatus(CatalogEntityStatus.PENDING_REVIEW.name());
+        verifyExpectedFailure(offerRevisionId, offerRevision);
 
+        price.setPriceType(PriceType.FREE.name());
+        price.setPrices(prices);
+        price.setPriceTier(priceTier.getId());
+        offerRevision.setPrice(price);
+
+        offerRevision.setStatus(CatalogEntityStatus.REJECTED.name());
+        offerRevision = offerRevisionService.updateOfferRevision(offerRevisionId, offerRevision);
+
+        offerRevision.setStatus(CatalogEntityStatus.APPROVED.name());
+        verifyExpectedFailure(offerRevisionId, offerRevision);
+
+        price.setPriceType(PriceType.TIERED.name());
+        price.setPrices(prices);
+        price.setPriceTier(null);
+        offerRevision.setPrice(price);
+
+        offerRevision.setStatus(CatalogEntityStatus.DRAFT.name());
+        offerRevision = offerRevisionService.updateOfferRevision(offerRevisionId, offerRevision);
+
+        offerRevision.setStatus(CatalogEntityStatus.PENDING_REVIEW.name());
+        verifyExpectedFailure(offerRevisionId, offerRevision);
     }
 
     private void verifyExpectedFailure(String offerRevisionId, OfferRevision offerRevision) throws Exception {

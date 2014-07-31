@@ -5,15 +5,11 @@
  */
 package com.junbo.test.catalog.impl;
 
-import com.junbo.catalog.spec.model.offer.*;
-import com.junbo.common.id.OrganizationId;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.catalog.enums.CatalogEntityStatus;
+import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.test.catalog.enums.EventActionType;
-import com.junbo.test.catalog.enums.EventType;
-import com.junbo.test.common.ConfigHelper;
-import com.junbo.test.common.Entities.enums.ComponentType;
-import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.catalog.OfferRevisionService;
 import com.junbo.common.json.JsonMessageTranscoder;
@@ -21,10 +17,13 @@ import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.catalog.ItemRevisionService;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.test.catalog.enums.EventType;
+import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.common.id.OfferRevisionId;
 import com.junbo.test.catalog.ItemService;
+import com.junbo.common.id.OrganizationId;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.common.model.Results;
-
 import com.junbo.test.common.libs.*;
 
 import java.util.ArrayList;
@@ -127,11 +126,6 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
         return postDefaultOfferRevision(offer);
     }
 
-    public OfferRevision postDefaultOfferRevision(CatalogItemType itemType) throws Exception {
-        Offer offer = OfferServiceImpl.instance().postDefaultOffer();
-        return postDefaultOfferRevision(offer, itemType);
-    }
-
     public OfferRevision postDefaultOfferRevision(Offer offer) throws Exception {
         Item item = prepareItem(CatalogItemType.getRandom(), offer.getOwnerId());
         return postDefaultOfferRevision(offer, item);
@@ -229,11 +223,6 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
         String url = catalogServerURL + "/" + strOfferRevisionId;
         restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
         Master.getInstance().removeOfferRevision(strOfferRevisionId);
-    }
-
-    private OfferRevision postDefaultOfferRevision(Offer offer, CatalogItemType itemType) throws Exception {
-        Item item = prepareItem(itemType, offer.getOwnerId());
-        return postDefaultOfferRevision(offer, item);
     }
 
     private Item prepareItem(CatalogItemType itemType, OrganizationId organizationId) throws Exception {
