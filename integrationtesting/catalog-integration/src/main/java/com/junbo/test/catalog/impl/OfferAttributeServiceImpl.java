@@ -14,6 +14,7 @@ import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.catalog.OfferAttributeService;
 import com.junbo.test.catalog.enums.CatalogOfferAttributeType;
 import com.junbo.test.common.ConfigHelper;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.libs.IdConverter;
@@ -31,6 +32,7 @@ public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAt
 
     private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "offer-attributes";
     private static OfferAttributeService instance;
+    private boolean isServiceScope = true;
 
     public static synchronized OfferAttributeService instance() {
         if (instance == null) {
@@ -40,6 +42,7 @@ public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAt
     }
 
     private OfferAttributeServiceImpl() {
+        componentType = ComponentType.CATALOGADMIN;
     }
 
     public OfferAttribute getOfferAttribute(String attributeId) throws Exception {
@@ -48,7 +51,7 @@ public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAt
 
     public OfferAttribute getOfferAttribute(String attributeId, int expectedResponseCode) throws Exception {
         String url = catalogServerURL + "/" + IdConverter.idToUrlString(OfferAttributeId.class, attributeId);
-        String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode, isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<OfferAttribute>() {}, responseBody);
     }
 
@@ -58,7 +61,7 @@ public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAt
 
     public Results<OfferAttribute> getOfferAttributes(HashMap<String, List<String>> httpPara, int expectedResponseCode)
             throws Exception {
-        String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara);
+        String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara, isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<Results<OfferAttribute>>() {}, responseBody);
     }
 
@@ -81,7 +84,7 @@ public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAt
     }
 
     public OfferAttribute postOfferAttribute(OfferAttribute attribute, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, attribute, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, attribute, expectedResponseCode, isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<OfferAttribute>() {}, responseBody);
     }
 
@@ -93,7 +96,7 @@ public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAt
                                                int expectedResponseCode) throws Exception {
         String putUrl = catalogServerURL + "/" + IdConverter.idToUrlString(OfferAttributeId.class,
                 offerAttributeId);
-        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, attribute, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, attribute, expectedResponseCode, isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<OfferAttribute>() {}, responseBody);
     }
 
@@ -104,6 +107,6 @@ public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAt
     public void deleteOfferAttribute(String offerAttributeId, int expectedResponseCode) throws Exception {
         String strOfferAttributeId = IdConverter.idToUrlString(OfferAttributeId.class, offerAttributeId);
         String url = catalogServerURL + "/" + strOfferAttributeId;
-        restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
+        restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode, isServiceScope);
     }
 }

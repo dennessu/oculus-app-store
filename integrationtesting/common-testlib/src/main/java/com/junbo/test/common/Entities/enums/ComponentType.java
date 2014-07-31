@@ -17,6 +17,7 @@ package com.junbo.test.common.Entities.enums;
 public enum ComponentType {
     IDENTITY("identity"),
     CATALOG("catalog"),
+    CATALOGADMIN("catalog.admin"),
     COMMERCE("commerce"),
     BILLING("billing"),
     CART("cart"),

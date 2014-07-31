@@ -31,6 +31,7 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
 
     private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "item-attributes";
     private static ItemAttributeService instance;
+    private boolean isServiceScope = true;
 
     public static synchronized ItemAttributeService instance() {
         if (instance == null) {
@@ -40,7 +41,7 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
     }
 
     private ItemAttributeServiceImpl() {
-        componentType = ComponentType.CATALOG;
+        componentType = ComponentType.CATALOGADMIN;
     }
 
     public ItemAttribute getItemAttribute(String attributeId) throws Exception {
@@ -49,7 +50,7 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
 
     public ItemAttribute getItemAttribute(String attributeId, int expectedResponseCode) throws Exception {
         String url = catalogServerURL + "/" + IdConverter.idToUrlString(ItemAttributeId.class, attributeId);
-        String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode, isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {}, responseBody);
     }
 
@@ -59,7 +60,7 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
 
     public Results<ItemAttribute> getItemAttributes(HashMap<String, List<String>> httpPara, int expectedResponseCode)
             throws Exception {
-        String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara);
+        String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara, isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<Results<ItemAttribute>>() {}, responseBody);
     }
 
@@ -83,7 +84,7 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
     }
 
     public ItemAttribute postItemAttribute(ItemAttribute attribute, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, attribute, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, attribute, expectedResponseCode, isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {}, responseBody);
     }
 
@@ -95,7 +96,7 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
             throws Exception {
         String putUrl = catalogServerURL + "/" + IdConverter.idToUrlString(ItemAttributeId.class,
                 itemAttributeId);
-        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, attribute, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, attribute, expectedResponseCode, isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {}, responseBody);
     }
 
@@ -106,7 +107,7 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
     public void deleteItemAttribute(String itemAttributeId, int expectedResponseCode) throws Exception {
         String strItemAttributeId = IdConverter.idToUrlString(ItemAttributeId.class, itemAttributeId);
         String url = catalogServerURL + "/" + strItemAttributeId;
-        restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
+        restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode, isServiceScope);
     }
 
 }

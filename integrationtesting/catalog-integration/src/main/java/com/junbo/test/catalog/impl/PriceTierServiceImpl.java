@@ -12,6 +12,7 @@ import com.junbo.common.model.Results;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.catalog.PriceTierService;
 import com.junbo.test.common.ConfigHelper;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.apihelper.HttpClientBase;
@@ -31,6 +32,7 @@ public class PriceTierServiceImpl extends HttpClientBase implements PriceTierSer
 
     private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "price-tiers";
     private static PriceTierService instance;
+    private boolean isServiceScope = true;
 
     public static synchronized PriceTierService instance() {
         if (instance == null) {
@@ -40,6 +42,7 @@ public class PriceTierServiceImpl extends HttpClientBase implements PriceTierSer
     }
 
     private PriceTierServiceImpl() {
+        componentType = ComponentType.CATALOGADMIN;
     }
 
     public PriceTier getPriceTier(String priceTierId) throws Exception {
@@ -48,7 +51,7 @@ public class PriceTierServiceImpl extends HttpClientBase implements PriceTierSer
 
     public PriceTier getPriceTier(String priceTierId, int expectedResponseCode) throws Exception {
         String url = catalogServerURL + "/" + priceTierId;
-        String responseBody = restApiCall(HTTPMethod.GET, url, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode, isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<PriceTier>() {}, responseBody);
     }
 
@@ -57,7 +60,7 @@ public class PriceTierServiceImpl extends HttpClientBase implements PriceTierSer
     }
 
     public Results<PriceTier> getPriceTiers(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara);
+        String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara, isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<Results<PriceTier>>() {}, responseBody);
     }
 
@@ -95,7 +98,7 @@ public class PriceTierServiceImpl extends HttpClientBase implements PriceTierSer
     }
 
     public PriceTier postPriceTier(PriceTier priceTier, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, priceTier, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, priceTier, expectedResponseCode, isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<PriceTier>() {}, responseBody);
     }
 
@@ -105,7 +108,7 @@ public class PriceTierServiceImpl extends HttpClientBase implements PriceTierSer
 
     public PriceTier updatePriceTier(String priceTierId, PriceTier priceTier, int expectedResponseCode) throws Exception {
         String putUrl = catalogServerURL + "/" + priceTierId;
-        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, priceTier, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, priceTier, expectedResponseCode, isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<PriceTier>() {}, responseBody);
     }
 
@@ -115,7 +118,7 @@ public class PriceTierServiceImpl extends HttpClientBase implements PriceTierSer
 
     public void deletePriceTier(String priceTierId, int expectedResponseCode) throws Exception {
         String url = catalogServerURL + "/" + priceTierId;
-        restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
+        restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode, isServiceScope);
     }
 
 }

@@ -25,6 +25,8 @@ public class DrmServiceImpl extends HttpClientBase implements DrmService {
 
     private static DrmService instance;
 
+    private boolean isServiceScope = true;
+
     public static synchronized DrmService instance() {
         if (instance == null) {
             instance = new DrmServiceImpl();
@@ -42,7 +44,7 @@ public class DrmServiceImpl extends HttpClientBase implements DrmService {
 
     @Override
     public SignedLicense postLicense(License request, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, drmURL, request, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, drmURL, request, expectedResponseCode, isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<SignedLicense>() {}, responseBody);
     }
 }
