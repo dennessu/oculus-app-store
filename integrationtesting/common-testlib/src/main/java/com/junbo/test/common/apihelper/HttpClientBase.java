@@ -262,4 +262,11 @@ public abstract class HttpClientBase {
         return strItem.toString();
     }
 
+    protected boolean isServiceTokenExist(ComponentType componentType) {
+        return Master.getInstance().getServiceAccessToken(componentType) != null;
+    }
+
+    protected boolean isServiceTokenExist() {
+        return Master.getInstance().getServiceAccessToken(componentType) != null;
+    }
 }

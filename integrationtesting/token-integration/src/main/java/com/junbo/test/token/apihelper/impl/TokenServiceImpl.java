@@ -8,7 +8,11 @@ package com.junbo.test.token.apihelper.impl;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.ConfigHelper;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.token.apihelper.TokenService;
 import com.junbo.token.spec.model.TokenConsumption;
 import com.junbo.token.spec.model.TokenItem;
@@ -20,8 +24,7 @@ import com.junbo.token.spec.model.TokenRequest;
 public class TokenServiceImpl extends HttpClientBase implements TokenService {
 
     private static String tokenUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "tokens/";
-
-
+    private OAuthService oAuthTokenClient = OAuthServiceImpl.getInstance();
     private static TokenService instance;
 
     public static synchronized TokenService getInstance() {
@@ -31,6 +34,10 @@ public class TokenServiceImpl extends HttpClientBase implements TokenService {
         return instance;
     }
 
+    private TokenServiceImpl() {
+        componentType = ComponentType.TOKEN;
+    }
+
     @Override
     public TokenRequest postTokenRequest(TokenRequest tokenRequest) throws Exception {
         return postTokenRequest(tokenRequest, 200);
@@ -38,7 +45,11 @@ public class TokenServiceImpl extends HttpClientBase implements TokenService {
 
     @Override
     public TokenRequest postTokenRequest(TokenRequest tokenRequest, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, tokenUrl + "requests", tokenRequest, expectedResponseCode);
+        if (!isServiceTokenExist()) {
+            oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType);
+        }
+        String responseBody = restApiCall(HTTPMethod.POST, tokenUrl + "requests", tokenRequest,
+                expectedResponseCode, true);
 
         if (expectedResponseCode == 200) {
             return new JsonMessageTranscoder().decode(new TypeReference<TokenRequest>() {
@@ -55,7 +66,10 @@ public class TokenServiceImpl extends HttpClientBase implements TokenService {
 
     @Override
     public TokenRequest getTokenByTokenId(String tokenId, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.GET, tokenUrl + "requests/" + tokenId, expectedResponseCode);
+        if (!isServiceTokenExist()) {
+            oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType);
+        }
+        String responseBody = restApiCall(HTTPMethod.GET, tokenUrl + "requests/" + tokenId, expectedResponseCode, true);
         if (expectedResponseCode == 200) {
             return new JsonMessageTranscoder().decode(new TypeReference<TokenRequest>() {
             }, responseBody);
@@ -71,7 +85,10 @@ public class TokenServiceImpl extends HttpClientBase implements TokenService {
     @Override
     public TokenConsumption postTokenConsumption(TokenConsumption tokenConsumption, int expectedResponseCode)
             throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, tokenUrl + "consumption", tokenConsumption, 200);
+        if (!isServiceTokenExist()) {
+            oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType);
+        }
+        String responseBody = restApiCall(HTTPMethod.POST, tokenUrl + "consumption", tokenConsumption, 200, true);
 
         TokenConsumption tokenConsumptionResult = new JsonMessageTranscoder().decode(
                 new TypeReference<TokenConsumption>() {
@@ -91,8 +108,11 @@ public class TokenServiceImpl extends HttpClientBase implements TokenService {
 
     @Override
     public TokenItem updateTokenItem(String tokenId, TokenItem tokenItem, int expectedResponseCode) throws Exception {
+        if (!isServiceTokenExist()) {
+            oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType);
+        }
         String responseBody = restApiCall(HTTPMethod.PUT, tokenUrl + tokenId,
-                tokenItem, expectedResponseCode);
+                tokenItem, expectedResponseCode, true);
 
         TokenItem tokenItemResult = new JsonMessageTranscoder().decode(
                 new TypeReference<TokenItem>() {
@@ -112,7 +132,10 @@ public class TokenServiceImpl extends HttpClientBase implements TokenService {
 
     @Override
     public TokenItem getTokenItem(String tokenItemId, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.GET, tokenUrl + tokenItemId, expectedResponseCode);
+        if (!isServiceTokenExist()) {
+            oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType);
+        }
+        String responseBody = restApiCall(HTTPMethod.GET, tokenUrl + tokenItemId, expectedResponseCode, true);
 
         TokenItem tokenItem = new JsonMessageTranscoder().decode(
                 new TypeReference<TokenItem>() {
@@ -125,4 +148,5 @@ public class TokenServiceImpl extends HttpClientBase implements TokenService {
         }
 
     }
+
 }
