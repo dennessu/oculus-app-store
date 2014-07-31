@@ -12,7 +12,7 @@ import groovy.transform.CompileStatic
  * Created by liangfu on 4/23/14.
  */
 @CompileStatic
-interface UserTFABackupCodeRepository extends BaseRepository<UserTFABackupCode, UserTFABackupCodeId> {
+interface UserTFAPhoneBackupCodeRepository extends BaseRepository<UserTFABackupCode, UserTFABackupCodeId> {
     @ReadMethod
     Promise<List<UserTFABackupCode>> searchByUserId(UserId userId, Integer limit, Integer offset)
 

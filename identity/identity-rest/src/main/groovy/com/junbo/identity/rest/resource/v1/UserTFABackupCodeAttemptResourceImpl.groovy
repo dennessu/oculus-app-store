@@ -12,7 +12,7 @@ import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserTFABackupCodeAttemptFilter
 import com.junbo.identity.core.service.validator.UserTFABackupCodeAttemptValidator
-import com.junbo.identity.data.repository.UserTFABackupCodeAttemptRepository
+import com.junbo.identity.data.repository.UserTFAPhoneBackupCodeAttemptRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserTFABackupCodeAttempt
 import com.junbo.identity.spec.v1.option.list.UserTFABackupCodeAttemptListOptions
@@ -36,7 +36,7 @@ import javax.transaction.Transactional
 @Transactional
 class UserTFABackupCodeAttemptResourceImpl implements UserTFABackupCodeAttemptResource {
     @Autowired
-    private UserTFABackupCodeAttemptRepository userTFABackupCodeAttemptRepository
+    private UserTFAPhoneBackupCodeAttemptRepository userTFABackupCodeAttemptRepository
 
     @Autowired
     private UserTFABackupCodeAttemptFilter userTFABackupCodeAttemptFilter

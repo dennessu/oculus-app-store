@@ -10,11 +10,15 @@ import com.junbo.sharding.repo.BaseRepository
 import groovy.transform.CompileStatic
 
 /**
- * Created by liangfu on 4/23/14.
+ * Created by liangfu on 7/31/2014.
  */
 @CompileStatic
-interface UserTFARepository extends BaseRepository<UserTFA, UserTFAId> {
+interface UserTFAMailRepository extends BaseRepository<UserTFA, UserTFAId> {
     @ReadMethod
     Promise<List<UserTFA>> searchTFACodeByUserIdAndPersonalInfoId(UserId userId, UserPersonalInfoId personalInfoId,
-                                                               Integer limit, Integer offset)
+                                                                  Integer limit, Integer offset)
+
+    @ReadMethod
+    Promise<List<UserTFA>> searchTFACodeByUserIdAndPIIAfterTime(UserId userId, UserPersonalInfoId personalInfoId,
+                                                                Integer limit, Integer offset, Long startTimeOffset)
 }

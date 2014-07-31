@@ -497,7 +497,8 @@
     <bean id="userTFAValidator" class="com.junbo.identity.core.service.validator.impl.UserTFAValidatorImpl">
         <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
         <property name="userRepository" ref="userRepository" />
-        <property name="userTFARepository" ref="userTFARepository" />
+        <property name="userTFAPhoneRepository" ref="userTFAPhoneRepository" />
+        <property name="userTFAMailRepository" ref="userTFAMailRepository" />
         <property name="localeRepository" ref="localeRepository" />
         <property name="maxSMSRequestsPerHour" value="${identity.conf.maxSMSRequestsPerHour}" />
         <property name="maxTFACodeExpireTime" value="${identity.conf.maxTeleCodeExpireTime}" />
@@ -509,7 +510,6 @@
 
     <bean id="userTFAAttemptValidator" class="com.junbo.identity.core.service.validator.impl.UserTFAAttemptValidatorImpl">
         <property name="userRepository" ref="userRepository" />
-        <property name="userTFARepository" ref="userTFARepository" />
         <property name="userTFAAttemptRepository" ref="userTFAAttemptRepository" />
         <property name="minVerifyCodeLength" value="1" />
         <property name="maxVerifyCodeLength" value="255" />
@@ -529,6 +529,8 @@
         <property name="maxClientIdLength" value="255" />
         <property name="minUserAgentLength" value="1" />
         <property name="maxUserAgentLength" value="255" />
+        <property name="userTFAMailRepository" ref="userTFAMailRepository" />
+        <property name="userTFAPhoneRepository" ref="userTFAPhoneRepository" />
         <property name="maxTeleCodeAttemptNumber" value="${identity.conf.maxTeleCodeAttemptNumber}" />
     </bean>
 

@@ -14,7 +14,7 @@ class UserTFABackupCodeFilter extends ResourceFilterImpl<UserTFABackupCode> {
     @Override
     protected UserTFABackupCode filter(UserTFABackupCode userTFABackupCode, MappingContext context) {
         UserTFABackupCode result = selfMapper.filterUserTFABackupCode(userTFABackupCode, context)
-        if (userTFABackupCode.userId != null) {
+        if (userTFABackupCode.userId != null && result.id != null) {
             ((UserTFABackupCodeId)(result.id)).resourcePathPlaceHolder.put('userId', userTFABackupCode.userId)
         }
         return result

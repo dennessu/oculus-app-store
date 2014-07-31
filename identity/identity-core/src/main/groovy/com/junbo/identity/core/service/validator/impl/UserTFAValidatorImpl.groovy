@@ -4,29 +4,28 @@ import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.id.UserTFAId
+import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.util.CodeGenerator
 import com.junbo.identity.core.service.validator.UserTFAValidator
+import com.junbo.identity.data.identifiable.TFASearchType
 import com.junbo.identity.data.identifiable.TFAVerifyType
 import com.junbo.identity.data.identifiable.UserStatus
-import com.junbo.identity.data.repository.LocaleRepository
-import com.junbo.identity.data.repository.UserPersonalInfoRepository
-import com.junbo.identity.data.repository.UserRepository
-import com.junbo.identity.data.repository.UserTFARepository
+import com.junbo.identity.data.repository.*
 import com.junbo.identity.spec.error.AppErrors
-import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
-import com.junbo.identity.spec.v1.model.UserTFA
+import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.UserTFAListOptions
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.CollectionUtils
+import org.springframework.util.StringUtils
 
 /**
  * Created by liangfu on 4/24/14.
  */
 @CompileStatic
 class UserTFAValidatorImpl implements UserTFAValidator {
+    private static final Integer SECONDS_PER_HOUR = 3600
     private Integer maxTFACodeExpireTime
     private Integer maxSMSRequestsPerHour
     private Integer maxReuseSeconds
@@ -34,7 +33,8 @@ class UserTFAValidatorImpl implements UserTFAValidator {
     private CodeGenerator codeGenerator
 
     private UserRepository userRepository
-    private UserTFARepository userTFARepository
+    private UserTFAPhoneRepository userTFAPhoneRepository
+    private UserTFAMailRepository userTFAMailRepository
     private UserPersonalInfoRepository userPersonalInfoRepository
     private LocaleRepository localeRepository
 
@@ -64,7 +64,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
 
-            return userTFARepository.get(userTFAId).then { UserTFA existingUserTFACode ->
+            return userTFAPhoneRepository.get(userTFAId).then { UserTFA existingUserTFACode ->
                 if (existingUserTFACode == null) {
                     throw AppErrors.INSTANCE.userTFANotFound(userTFAId).exception()
                 }
@@ -92,73 +92,52 @@ class UserTFAValidatorImpl implements UserTFAValidator {
             throw AppCommonErrors.INSTANCE.parameterRequired('personalInfo').exception()
         }
 
+        if (options.type == null) {
+            throw AppCommonErrors.INSTANCE.parameterInvalid('type').exception()
+        }
+
+        List<String> allowedSearchTypes = TFASearchType.values().collect { TFASearchType searchType ->
+            searchType.toString()
+        }
+        if (!(options.type in allowedSearchTypes)) {
+            throw AppCommonErrors.INSTANCE.fieldInvalidEnum('verifyType', allowedSearchTypes.join(',')).exception()
+        }
+
         return Promise.pure(null)
     }
 
     @Override
-    Promise<Void> validateForCreate(UserId userId, UserTFA userTeleCode) {
+    Promise<Void> validateForCreate(UserId userId, UserTFA userTFA) {
 
-        if (userTeleCode.verifyCode != null) {
+        if (userTFA.verifyCode != null) {
             throw AppCommonErrors.INSTANCE.fieldMustBeNull('verifyCode').exception()
         }
 
-        return basicTFACheck(userId, userTeleCode).then {
-            return fillCode(userId, userTeleCode)
+        return basicTFACheck(userId, userTFA).then {
+            return fillCode(userId, userTFA)
         }.then {
-                if (userTeleCode.id != null) {
-                    throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
-                }
-
-                if (userTeleCode.expiresBy != null) {
-                    throw AppCommonErrors.INSTANCE.fieldMustBeNull('expiresBy').exception()
-                }
-
-                if (userTeleCode.active != null) {
-                    throw AppCommonErrors.INSTANCE.fieldMustBeNull('active').exception()
-                }
-
-                Calendar cal = Calendar.instance
-                cal.setTime(new Date())
-                cal.add(Calendar.SECOND, maxTFACodeExpireTime)
-                userTeleCode.expiresBy = cal.time
-
-                userTeleCode.active = true
-                userTeleCode.userId = userId
-
-                return Promise.pure(null)
-            }.then {
-                return userTFARepository.searchTFACodeByUserIdAndPersonalInfoId(userId, userTeleCode.personalInfo,
-                        Integer.MAX_VALUE, 0).then { List<UserTFA> userTeleCodeList ->
-                            if (CollectionUtils.isEmpty(userTeleCodeList)
-                                    || userTeleCodeList.size() <= maxSMSRequestsPerHour) {
-                                return Promise.pure(null)
-                            }
-
-                            userTeleCodeList.sort(new Comparator<UserTFA> () {
-                                @Override
-                                int compare(UserTFA o1, UserTFA o2) {
-                                    Date o1LastChangedTime = o1.updatedTime == null ? o1.createdTime : o1.updatedTime
-                                    Date o2LastChangedTime = o2.updatedTime == null ? o2.createdTime : o2.updatedTime
-
-                                    return o2LastChangedTime <=> o1LastChangedTime
-                                }
-                            }
-                            )
-
-                            UserTFA teleCode = userTeleCodeList.get(maxSMSRequestsPerHour - 1)
-                            Date lastChangeTime = teleCode.updatedTime == null ? teleCode.createdTime : teleCode.updatedTime
-
-                            Calendar cal = Calendar.instance
-                            cal.setTime(new Date())
-                            cal.add(Calendar.HOUR, -1)
-                            if (lastChangeTime.after(cal.time)) {
-                                throw AppCommonErrors.INSTANCE.fieldInvalid('userId',
-                                        'Reach maximum request number per hour').exception()
-                            }
-
-                            return Promise.pure(null)
-                        }
+            if (userTFA.id != null) {
+                throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
             }
+
+            if (userTFA.expiresBy != null) {
+                throw AppCommonErrors.INSTANCE.fieldMustBeNull('expiresBy').exception()
+            }
+
+            if (userTFA.active != null) {
+                throw AppCommonErrors.INSTANCE.fieldMustBeNull('active').exception()
+            }
+
+            Calendar cal = Calendar.instance
+            cal.setTime(new Date())
+            cal.add(Calendar.SECOND, maxTFACodeExpireTime)
+            userTFA.expiresBy = cal.time
+
+            userTFA.active = true
+            userTFA.userId = userId
+
+            return tfaAdvanceCheck(userTFA)
+        }
     }
 
     @Override
@@ -169,7 +148,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
         }
 
         return basicTFACheck(userId, userTFA).then {
-            return userTFARepository.get(userTFAId).then { UserTFA tfa ->
+            return userTFAPhoneRepository.get(userTFAId).then { UserTFA tfa ->
                 if (tfa == null) {
                     throw AppErrors.INSTANCE.userTFANotFound(userTFAId).exception()
                 }
@@ -210,29 +189,77 @@ class UserTFAValidatorImpl implements UserTFAValidator {
         }
     }
 
+    // todo:    Liangfu:    Later if we have another tfa type, we can split them and use singleton
+
+    private Promise<Void> tfaAdvanceCheck(UserTFA userTFA) {
+        if (userTFA.verifyType == TFAVerifyType.MAIL.toString()) {
+            return tfaMailAdvanceCheck(userTFA)
+        } else {
+            return tfaPhoneAdvanceCheck(userTFA)
+        }
+    }
+
+    private Promise<Void> tfaMailAdvanceCheck(UserTFA userTFA) {
+        return userTFAMailRepository.searchTFACodeByUserIdAndPIIAfterTime(userTFA.userId, userTFA.personalInfo,
+                Integer.MAX_VALUE, 0, getTimeStartOffset(SECONDS_PER_HOUR)).then { List<UserTFA> userTFAList ->
+            if (CollectionUtils.isEmpty(userTFAList) || userTFAList.size() <= maxSMSRequestsPerHour) {
+                return Promise.pure(null)
+            }
+
+            throw AppCommonErrors.INSTANCE.fieldInvalid('userId', 'Reach maximum request number per hour').exception()
+        }
+    }
+
+    private Promise<Void> tfaPhoneAdvanceCheck(UserTFA userTFA) {
+        return userTFAPhoneRepository.searchTFACodeByUserIdAndPIIAfterTime(userTFA.userId, userTFA.personalInfo,
+                Integer.MAX_VALUE, 0, getTimeStartOffset(SECONDS_PER_HOUR)).then { List<UserTFA> userTeleCodeList ->
+            if (CollectionUtils.isEmpty(userTeleCodeList) || userTeleCodeList.size() <= maxSMSRequestsPerHour) {
+                return Promise.pure(null)
+            }
+
+            throw AppCommonErrors.INSTANCE.fieldInvalid('userId', 'Reach maximum request number per hour').exception()
+        }
+    }
+
     private Promise<Void> fillCode(UserId userId, UserTFA userTFA) {
-        return userTFARepository.searchTFACodeByUserIdAndPersonalInfoId(userId, userTFA.personalInfo,
-                Integer.MAX_VALUE, 0).then { List<UserTFA> codeList ->
+        if (userTFA.verifyType == TFAVerifyType.MAIL.toString()) {
+            return fillEmailCode(userId, userTFA)
+        } else {
+            return fillPhoneCode(userId, userTFA)
+        }
+    }
+
+    private Promise<Void> fillEmailCode(UserId userId, UserTFA userTFA) {
+        return userTFAMailRepository.searchTFACodeByUserIdAndPIIAfterTime(userId, userTFA.personalInfo,
+            Integer.MAX_VALUE, 0, getTimeStartOffset(maxReuseSeconds)).then { List<UserTFA> codeList ->
             if (CollectionUtils.isEmpty(codeList)) {
                 userTFA.verifyCode = codeGenerator.generateCode()
-            }
-
-            UserTFA tfa = codeList.find { UserTFA code ->
-                Calendar calendar = Calendar.instance
-                calendar.setTime(new Date())
-                calendar.add(Calendar.SECOND, -maxReuseSeconds)
-                Date date = code.updatedTime != null ? code.updatedTime : code.createdTime
-                return date.after(calendar.time)
-            }
-
-            if (tfa != null) {
-                userTFA.verifyCode = tfa.verifyCode
             } else {
-                userTFA.verifyCode = codeGenerator.generateCode()
+                userTFA.verifyCode = codeList.get(0).verifyCode
             }
 
             return Promise.pure(null)
         }
+    }
+
+    private Promise<Void> fillPhoneCode(UserId userId, UserTFA userTFA) {
+        return userTFAPhoneRepository.searchTFACodeByUserIdAndPIIAfterTime(userId, userTFA.personalInfo,
+                Integer.MAX_VALUE, 0, getTimeStartOffset(maxReuseSeconds)).then { List<UserTFA> codeList ->
+            if (CollectionUtils.isEmpty(codeList)) {
+                userTFA.verifyCode = codeGenerator.generateCode()
+            } else {
+                userTFA.verifyCode = codeList.get(0).verifyCode
+            }
+
+            return Promise.pure(null)
+        }
+    }
+
+    private Long getTimeStartOffset(Integer offset) {
+        Calendar calendar = Calendar.instance
+        calendar.setTime(new Date())
+        calendar.add(Calendar.SECOND, -offset)
+        return calendar.getTime().getTime()
     }
 
     private Promise<Void> basicTFACheck(UserId userId, UserTFA userTFA) {
@@ -246,15 +273,6 @@ class UserTFAValidatorImpl implements UserTFAValidator {
 
         if (userTFA.userId != null && userTFA.userId != userId) {
             throw AppCommonErrors.INSTANCE.fieldNotWritable('userId', userTFA.userId, userId).exception()
-        }
-
-        if (userTFA.template != null) {
-            if (userTFA.template.length() > maxTemplateLength) {
-                throw AppCommonErrors.INSTANCE.fieldTooLong('template', maxTemplateLength).exception()
-            }
-            if (userTFA.template.length() < minTemplateLength) {
-                throw AppCommonErrors.INSTANCE.fieldTooShort('template', minTemplateLength).exception()
-            }
         }
 
         if (userTFA.verifyType == null) {
@@ -272,24 +290,23 @@ class UserTFAValidatorImpl implements UserTFAValidator {
             throw AppCommonErrors.INSTANCE.fieldRequired('personalInfo').exception()
         }
 
-        return validatePhoneNumber(userId, userTFA.personalInfo).then {
-            return validateLocale(userTFA).then {
-                return userRepository.get(userId).then { User existing ->
-                    if (existing == null) {
-                        throw AppErrors.INSTANCE.userNotFound(userId).exception()
-                    }
-
-                    if (existing.status != UserStatus.ACTIVE.toString()) {
-                        throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
-                    }
-
-                    if (existing.isAnonymous) {
-                        throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
-                    }
-
-                    return Promise.pure(null)
+        if (userTFA.verifyType == TFAVerifyType.MAIL.toString()) {
+            if (!StringUtils.isEmpty(userTFA.template)) {
+                throw AppCommonErrors.INSTANCE.fieldNotWritable('template').exception()
+            }
+        } else {
+            if (userTFA.template != null) {
+                if (userTFA.template.length() > maxTemplateLength) {
+                    throw AppCommonErrors.INSTANCE.fieldTooLong('template', maxTemplateLength).exception()
+                }
+                if (userTFA.template.length() < minTemplateLength) {
+                    throw AppCommonErrors.INSTANCE.fieldTooShort('template', minTemplateLength).exception()
                 }
             }
+        }
+
+        return validatePersonalInfo(userId, userTFA.personalInfo, userTFA.verifyType, userTFA).then {
+            return validateLocale(userTFA)
         }
     }
 
@@ -307,17 +324,79 @@ class UserTFAValidatorImpl implements UserTFAValidator {
         }
     }
 
-    private Promise<Void> validatePhoneNumber(UserId userId, UserPersonalInfoId phoneNumber) {
+    private Promise<Void> validatePersonalInfo(UserId userId, UserPersonalInfoId personalInfoId, String verifyType, UserTFA userTFA) {
+        if (verifyType == TFAVerifyType.MAIL.toString()) {
+            return validateEmail(userId, personalInfoId, userTFA).then {
+                return userPersonalInfoRepository.get(personalInfoId).then { UserPersonalInfo personalInfo ->
+                    Email email = (Email)JsonHelper.jsonNodeToObj(personalInfo.value, Email)
+                    userTFA.email = email.info
+
+                    return Promise.pure(null)
+                }
+            }
+        } else {
+            return validatePhoneNumber(userId, personalInfoId, userTFA)
+        }
+    }
+
+    private Promise<Void> validateEmail(UserId userId, UserPersonalInfoId mail, UserTFA userTFA) {
         return userRepository.get(userId).then { User user ->
             if (user == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
 
+            userTFA.username = user.username
+
             if (user.status != UserStatus.ACTIVE.toString()) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
 
-            if (user.isAnonymous == true) {
+            if (user.isAnonymous) {
+                throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
+            }
+
+            if (user.emails == null) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid('personalInfo', 'user has no mails').exception()
+            }
+
+            return validateUserMailList(user.emails.iterator(), mail).then { Boolean exists ->
+                if (!exists) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('personalInfo', 'personalInfo isn\'t user user.').exception()
+                }
+
+                return Promise.pure(null)
+            }
+        }
+    }
+
+    private Promise<Boolean> validateUserMailList(Iterator<UserPersonalInfoLink> iterator,
+                                                  UserPersonalInfoId mail) {
+        if (iterator.hasNext()) {
+            UserPersonalInfoLink link = (UserPersonalInfoLink)iterator.next()
+
+            if (link.value == mail) {
+                return Promise.pure(true)
+            } else {
+                return validateUserMailList(iterator, mail)
+            }
+        }
+
+        return Promise.pure(false)
+    }
+
+    private Promise<Void> validatePhoneNumber(UserId userId, UserPersonalInfoId phoneNumber, UserTFA userTFA) {
+        return userRepository.get(userId).then { User user ->
+            if (user == null) {
+                throw AppErrors.INSTANCE.userNotFound(userId).exception()
+            }
+
+            userTFA.username = user.username
+
+            if (user.status != UserStatus.ACTIVE.toString()) {
+                throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
+            }
+
+            if (user.isAnonymous) {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
 
@@ -367,8 +446,13 @@ class UserTFAValidatorImpl implements UserTFAValidator {
     }
 
     @Required
-    void setUserTFARepository(UserTFARepository userTFARepository) {
-        this.userTFARepository = userTFARepository
+    void setUserTFAPhoneRepository(UserTFAPhoneRepository userTFAPhoneRepository) {
+        this.userTFAPhoneRepository = userTFAPhoneRepository
+    }
+
+    @Required
+    void setUserTFAMailRepository(UserTFAMailRepository userTFAMailRepository) {
+        this.userTFAMailRepository = userTFAMailRepository
     }
 
     @Required

@@ -25,6 +25,9 @@ public class UserTFAListOptions extends PagingGetOptions {
     @QueryParam("personalInfo")
     private UserPersonalInfoId personalInfo;
 
+    @QueryParam("type")
+    private String type;
+
     public String getProperties() {
         return properties;
     }
@@ -47,5 +50,13 @@ public class UserTFAListOptions extends PagingGetOptions {
 
     public void setPersonalInfo(UserPersonalInfoId personalInfo) {
         this.personalInfo = personalInfo;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

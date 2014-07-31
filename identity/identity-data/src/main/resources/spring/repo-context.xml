@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
        xmlns="http://www.springframework.org/schema/beans"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-       ">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <alias alias="deviceRepository" name="cloudantDeviceRepository" />
     <alias alias="groupRepository" name="cloudantGroupRepository" />
@@ -18,10 +16,11 @@
     <alias alias="userSecurityQuestionRepository" name="cloudantUserSecurityQuestionRepository" />
     <alias alias="userTosRepository" name="cloudantUserTosRepository" />
     <alias alias="tosRepository" name="cloudantTosRepository" />
-    <alias alias="userTFARepository" name="cloudantUserTFARepository" />
+    <alias alias="userTFAPhoneRepository" name="cloudantUserTFAPhoneRepository" />
+    <alias alias="userTFAMailRepository" name="cloudantUserTFAMailRepository" />
     <alias alias="userTFAAttemptRepository" name="cloudantUserTFAAttemptRepository" />
-    <alias alias="userTFABackupCodeRepository" name="cloudantUserTFABackupCodeRepository" />
-    <alias alias="userTFABackupCodeAttemptRepository" name="cloudantUserTFABackupCodeAttemptRepository" />
+    <alias alias="userTFAPhoneBackupCodeRepository" name="cloudantUserTFAPhoneBackupCodeRepository" />
+    <alias alias="userTFAPhoneBackupCodeAttemptRepository" name="cloudantUserTFAPhoneBackupCodeAttemptRepository" />
     <alias alias="countryRepository" name="cloudantCountryRepository" />
     <alias alias="currencyRepository" name="cloudantCurrencyRepository" />
     <alias alias="localeRepository" name="cloudantLocaleRepository" />

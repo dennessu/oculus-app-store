@@ -64,20 +64,24 @@
         <property name="dbName" value="user_tos"/>
     </bean>
 
-    <bean id="cloudantUserTFARepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTFARepositoryCloudantImpl" parent="cloudantClient">
-        <property name="dbName" value="user_tfa" />
+    <bean id="cloudantUserTFAPhoneRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTFAPhoneRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_tfa_phone" />
+    </bean>
+
+    <bean id="cloudantUserTFAMailRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTFAMailRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_tfa_mail" />
     </bean>
 
     <bean id="cloudantUserTFAAttemptRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTFAAttemptRepositoryCloudantImpl" parent="cloudantClient">
         <property name="dbName" value="user_tfa_code_attempt" />
     </bean>
 
-    <bean id="cloudantUserTFABackupCodeRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTFABackupCodeRepositoryCloudantImpl" parent="cloudantClient">
-        <property name="dbName" value="user_tfa_back_up_code" />
+    <bean id="cloudantUserTFAPhoneBackupCodeRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTFAPhoneBackupCodeRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_tfa_phone_back_up_code" />
     </bean>
 
-    <bean id="cloudantUserTFABackupCodeAttemptRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTFABackupCodeAttemptRepositoryCloudantImpl" parent="cloudantClient">
-        <property name="dbName" value="user_tfa_back_up_code_attempt" />
+    <bean id="cloudantUserTFAPhoneBackupCodeAttemptRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserTFAPhoneBackupCodeAttemptRepositoryCloudantImpl" parent="cloudantClient">
+        <property name="dbName" value="user_tfa_phone_back_up_code_attempt" />
     </bean>
 
     <bean id="cloudantUserPersonalInfoRepository" class="com.junbo.identity.data.repository.impl.cloudant.UserPersonalInfoEncryptRepositoryCloudantImpl" parent="cloudantClient">

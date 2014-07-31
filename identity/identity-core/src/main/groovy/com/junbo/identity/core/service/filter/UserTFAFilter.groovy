@@ -14,7 +14,7 @@ class UserTFAFilter extends ResourceFilterImpl<UserTFA> {
     @Override
     protected UserTFA filter(UserTFA userTFA, MappingContext context) {
         UserTFA result = selfMapper.filterUserTFACode(userTFA, context)
-        if (userTFA.userId != null) {
+        if (userTFA.userId != null && result.id != null) {
             ((UserTFAId)(result.id)).resourcePathPlaceHolder.put('userId', userTFA.userId)
         }
         return result

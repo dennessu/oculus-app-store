@@ -14,7 +14,7 @@ class UserTFABackupCodeAttemptFilter extends ResourceFilterImpl<UserTFABackupCod
     @Override
     protected UserTFABackupCodeAttempt filter(UserTFABackupCodeAttempt userTFABackupCode, MappingContext context) {
         UserTFABackupCodeAttempt result = selfMapper.filterUserTFABackupCodeAttempt(userTFABackupCode, context)
-        if (userTFABackupCode.userId != null) {
+        if (userTFABackupCode.userId != null && result.id != null) {
             ((UserTFABackupCodeAttemptId)(result.id)).resourcePathPlaceHolder.put('userId', userTFABackupCode.userId)
         }
         return result

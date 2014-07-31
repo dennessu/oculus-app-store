@@ -6,21 +6,16 @@ import com.junbo.common.id.UserTFABackupCodeAttemptId
 import com.junbo.identity.core.service.validator.UserTFABackupCodeAttemptValidator
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.UserRepository
-import com.junbo.identity.data.repository.UserTFABackupCodeAttemptRepository
-import com.junbo.identity.data.repository.UserTFABackupCodeRepository
+import com.junbo.identity.data.repository.UserTFAPhoneBackupCodeAttemptRepository
+import com.junbo.identity.data.repository.UserTFAPhoneBackupCodeRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserTFABackupCode
 import com.junbo.identity.spec.v1.model.UserTFABackupCodeAttempt
 import com.junbo.identity.spec.v1.option.list.UserTFABackupCodeAttemptListOptions
 import com.junbo.langur.core.promise.Promise
-import com.junbo.langur.core.transaction.AsyncTransactionTemplate
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.transaction.PlatformTransactionManager
-import org.springframework.transaction.TransactionDefinition
-import org.springframework.transaction.TransactionStatus
-import org.springframework.transaction.support.TransactionCallback
 import org.springframework.util.CollectionUtils
 
 import java.util.regex.Pattern
@@ -32,8 +27,8 @@ import java.util.regex.Pattern
 class UserTFABackupCodeAttemptValidatorImpl implements UserTFABackupCodeAttemptValidator {
 
     private UserRepository userRepository
-    private UserTFABackupCodeRepository userTFABackupCodeRepository
-    private UserTFABackupCodeAttemptRepository userTFABackupCodeAttemptRepository
+    private UserTFAPhoneBackupCodeRepository userTFABackupCodeRepository
+    private UserTFAPhoneBackupCodeAttemptRepository userTFABackupCodeAttemptRepository
 
     private Integer minVerifyCodeLength
     private Integer maxVerifyCodeLength
@@ -200,12 +195,12 @@ class UserTFABackupCodeAttemptValidatorImpl implements UserTFABackupCodeAttemptV
     }
 
     @Required
-    void setUserTFABackupCodeRepository(UserTFABackupCodeRepository userTFABackupCodeRepository) {
+    void setUserTFABackupCodeRepository(UserTFAPhoneBackupCodeRepository userTFABackupCodeRepository) {
         this.userTFABackupCodeRepository = userTFABackupCodeRepository
     }
 
     @Required
-    void setUserTFABackupCodeAttemptRepository(UserTFABackupCodeAttemptRepository userTFABackupCodeAttemptRepository) {
+    void setUserTFABackupCodeAttemptRepository(UserTFAPhoneBackupCodeAttemptRepository userTFABackupCodeAttemptRepository) {
         this.userTFABackupCodeAttemptRepository = userTFABackupCodeAttemptRepository
     }
 

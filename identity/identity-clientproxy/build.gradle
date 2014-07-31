@@ -10,6 +10,7 @@ dependencies {
     compile junboProject(':billing-spec')
     compile junboProject(':payment-spec')
     compile junboProject(':csr-spec')
+    compile junboProject(':email-spec')
     compile (junboProject(':authorization-lib')) {
         exclude group: 'com.junbo.identity', module: 'identity-spec'
     }

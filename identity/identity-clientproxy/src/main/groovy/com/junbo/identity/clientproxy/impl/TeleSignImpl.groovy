@@ -13,6 +13,8 @@ import com.junbo.langur.core.promise.Promise
 import com.telesign.verify.Verify
 import com.telesign.verify.response.VerifyResponse
 import groovy.transform.CompileStatic
+import org.apache.commons.lang3.ArrayUtils
+import org.springframework.util.CollectionUtils
 
 /**
  * Created by liangfu on 5/4/14.
@@ -48,11 +50,17 @@ class TeleSignImpl implements TeleSign {
                 VerifyResponse response = null
                 try {
                     response = verify.sms(phoneNumber.info, language, userTeleCode.verifyCode, userTeleCode.template)
+
+                    if (ArrayUtils.isEmpty(response.errors)) {
+                        return Promise.pure(response)
+                    } else {
+                        throw AppErrors.INSTANCE.teleSignProviderError("Invalid parameter to send sms").exception()
+                    }
+
+                    return Promise.pure(response)
                 } catch (Exception e) {
                     throw AppErrors.INSTANCE.teleSignProviderError(e.message).exception()
                 }
-
-                return Promise.pure(response)
             }
         }
 
@@ -63,7 +71,8 @@ class TeleSignImpl implements TeleSign {
             return Promise.pure(null)
         }
         return localeRepository.get(userTeleCode.sentLocale).then { com.junbo.identity.spec.v1.model.Locale locale ->
-            return Promise.pure(locale.localeCode)
+            String localeCode = locale.localeCode.replace('_', '-')
+            return Promise.pure(localeCode)
         }
     }
 
@@ -75,11 +84,15 @@ class TeleSignImpl implements TeleSign {
                 VerifyResponse response = null
                 try {
                     response = verify.call(phoneNumber.info, language)
+
+                    if (ArrayUtils.isEmpty(response.errors)) {
+                        return Promise.pure(response)
+                    } else {
+                        throw AppErrors.INSTANCE.teleSignProviderError("Invalid parameter to call").exception()
+                    }
                 } catch (Exception e) {
                     throw AppErrors.INSTANCE.teleSignProviderError(e.message).exception()
                 }
-
-                return Promise.pure(response)
             }
         }
     }

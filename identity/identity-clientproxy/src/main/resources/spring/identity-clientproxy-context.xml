@@ -11,7 +11,7 @@
     </bean>
 
     <bean id="identityAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
-        <property name="scope" value="crypto.service billing.service payment.service csr.service identity.service"/>
+        <property name="scope" value="crypto.service billing.service payment.service csr.service identity.service email.service"/>
         <property name="deflectionInSeconds" value="300"/>
         <property name="clientSecret" value="${identity.clientproxy.service.clientSecret}"/>
         <property name="clientId" value="${identity.clientproxy.service.clientId}"/>
@@ -26,6 +26,16 @@
     <bean id="identityVatResource" class="com.junbo.billing.spec.resource.proxy.VatResourceClientProxy"
           parent="vatResourceClientProxy">
         <property name="accessTokenProvider" ref="identityAccessTokenProvider"/>
+    </bean>
+
+    <bean id="identityEmailResource" class="com.junbo.email.spec.resource.proxy.EmailResourceClientProxy"
+          parent="emailResourceClientProxy">
+        <property name="accessTokenProvider" ref="identityAccessTokenProvider"/>
+    </bean>
+
+    <bean id="identityEmailTemplateResource" class="com.junbo.email.spec.resource.proxy.EmailTemplateResourceClientProxy"
+          parent="emailTemplateResourceClientProxy">
+        <property name="accessTokenProvider" ref="identityAccessTokenProvider" />
     </bean>
 
     <bean id="identityPaymentInstrumentResource" class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxy"

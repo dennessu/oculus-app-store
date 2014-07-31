@@ -23,6 +23,7 @@ dependencies {
 
     compile junboProject(':oauth-spec')
     compile junboProject(':authorization-spec')
+    compile junboProject(':email-spec')
 
     compile junboProject(':identity-core')
     compile junboProject(':identity-spec')

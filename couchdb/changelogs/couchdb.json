@@ -389,14 +389,21 @@
         }
       }
     }, 
-    "user_tfa": {
+    "user_tfa_phone": {
       "views": {
         "by_user_id_personal_info": {
-          "map": "function(doc) {  emit([doc.userId, doc.personalInfo], doc._id)}"
+          "map": "function(doc) {  emit([doc.userId, doc.personalInfo, Date.parse(doc.createdTime)], doc._id)}"
         }
       }
-    }, 
-    "user_tfa_back_up_code": {
+    },
+    "user_tfa_mail": {
+      "views": {
+        "by_user_id_personal_info": {
+          "map": "function(doc) {  emit([doc.userId, doc.personalInfo, Date.parse(doc.createdTime)], doc._id)}"
+        }
+      }
+    },
+    "user_tfa_phone_back_up_code": {
       "views": {
         "by_user_id": {
           "map": "function(doc) {  emit(doc.userId, doc._id)}"
@@ -406,7 +413,7 @@
         }
       }
     }, 
-    "user_tfa_back_up_code_attempt": {
+    "user_tfa_phone_back_up_code_attempt": {
       "views": {
         "by_user_id": {
           "map": "function(doc) {  emit([doc.userId, Date.parse(doc.createdTime)], doc._id)}"
@@ -422,7 +429,7 @@
           "map": "function(doc) {  emit([doc.userId, doc.userTFAId, Date.parse(doc.createdTime)], doc._id)}"
         }
       }
-    }, 
+    },
     "user_tos": {
       "views": {
         "by_tos_id": {

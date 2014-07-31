@@ -2,7 +2,7 @@ package com.junbo.identity.data.repository.impl.cloudant
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFABackupCodeId
-import com.junbo.identity.data.repository.UserTFABackupCodeRepository
+import com.junbo.identity.data.repository.UserTFAPhoneBackupCodeRepository
 import com.junbo.identity.spec.v1.model.UserTFABackupCode
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
@@ -10,8 +10,8 @@ import groovy.transform.CompileStatic
  * Created by liangfu on 4/23/14.
  */
 @CompileStatic
-class UserTFABackupCodeRepositoryCloudantImpl extends CloudantClient<UserTFABackupCode>
-        implements UserTFABackupCodeRepository  {
+class UserTFAPhoneBackupCodeRepositoryCloudantImpl extends CloudantClient<UserTFABackupCode>
+        implements UserTFAPhoneBackupCodeRepository  {
 
     @Override
     Promise<List<UserTFABackupCode>> searchByUserId(UserId userId, Integer limit, Integer offset) {

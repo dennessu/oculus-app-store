@@ -96,20 +96,20 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     private DeviceRepository deviceRepository
 
     @Autowired
-    @Qualifier('userTFARepository')
-    private UserTFARepository userTFARepository
+    @Qualifier('userTFAPhoneRepository')
+    private UserTFAPhoneRepository userTFARepository
 
     @Autowired
     @Qualifier('userTFAAttemptRepository')
     private UserTFAAttemptRepository userTFAAttemptRepository
 
     @Autowired
-    @Qualifier('userTFABackupCodeRepository')
-    private UserTFABackupCodeRepository userTFABackupCodeRepository
+    @Qualifier('userTFAPhoneBackupCodeRepository')
+    private UserTFAPhoneBackupCodeRepository userTFABackupCodeRepository
 
     @Autowired
-    @Qualifier('userTFABackupCodeAttemptRepository')
-    private UserTFABackupCodeAttemptRepository userTFABackupCodeAttemptRepository
+    @Qualifier('userTFAPhoneBackupCodeAttemptRepository')
+    private UserTFAPhoneBackupCodeAttemptRepository userTFABackupCodeAttemptRepository
 
     @Autowired
     @Qualifier('userPersonalInfoRepository')

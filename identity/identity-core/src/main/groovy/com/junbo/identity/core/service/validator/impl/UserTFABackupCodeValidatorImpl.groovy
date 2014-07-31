@@ -7,7 +7,7 @@ import com.junbo.identity.core.service.util.CodeGenerator
 import com.junbo.identity.core.service.validator.UserTFABackupCodeValidator
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.UserRepository
-import com.junbo.identity.data.repository.UserTFABackupCodeRepository
+import com.junbo.identity.data.repository.UserTFAPhoneBackupCodeRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserTFABackupCode
@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Required
 @CompileStatic
 class UserTFABackupCodeValidatorImpl implements UserTFABackupCodeValidator {
 
-    private UserTFABackupCodeRepository userTFABackupCodeRepository
+    private UserTFAPhoneBackupCodeRepository userTFABackupCodeRepository
     private UserRepository userRepository
     private CodeGenerator codeGenerator
 
@@ -181,7 +181,7 @@ class UserTFABackupCodeValidatorImpl implements UserTFABackupCodeValidator {
     }
 
     @Required
-    void setUserTFABackupCodeRepository(UserTFABackupCodeRepository userTFABackupCodeRepository) {
+    void setUserTFABackupCodeRepository(UserTFAPhoneBackupCodeRepository userTFABackupCodeRepository) {
         this.userTFABackupCodeRepository = userTFABackupCodeRepository
     }
 

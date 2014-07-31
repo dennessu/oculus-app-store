@@ -7,6 +7,7 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
@@ -29,8 +30,7 @@ public class UserTFA extends PropertyAssignedAwareResourceMeta<UserTFAId> {
     @JsonProperty("user")
     private UserId userId;
 
-    @ApiModelProperty(position = 3, required = true, value = "User Phone number used to complete the TFA verification.")
-    @JsonProperty("phoneNumber")
+    @ApiModelProperty(position = 3, required = true, value = "User Phone number/Email used to complete the TFA verification.")
     private UserPersonalInfoId personalInfo;
 
     @ApiModelProperty(position = 4, required = false, value = "What Locale does the verification info sent to the user.")
@@ -39,10 +39,10 @@ public class UserTFA extends PropertyAssignedAwareResourceMeta<UserTFAId> {
     @JsonIgnore
     private String verifyCode;
 
-    @ApiModelProperty(position = 6, required = false, value = "In which template the TFA code is sent to the user.")
+    @ApiModelProperty(position = 6, required = false, value = "In which template the TFA code is sent to the user, it must be used in [CALL, SMS].")
     private String template;
 
-    @ApiModelProperty(position = 7, required = true, value = "The verify type, it must be in [CALL, SMS].")
+    @ApiModelProperty(position = 7, required = true, value = "The verify type, it must be in [CALL, SMS, MAIL].")
     private String verifyType;
 
     @ApiModelProperty(position = 8, required = false, value = "[Client Immutable]The expiration time for the verify Code, must be ISO 8601.")
@@ -50,6 +50,14 @@ public class UserTFA extends PropertyAssignedAwareResourceMeta<UserTFAId> {
 
     @ApiModelProperty(position = 9, required = false, value = "[Client Immutable]Whether TFA request is still active.")
     private Boolean active;
+
+    @JsonIgnore
+    @CloudantIgnore
+    private String username;
+
+    @JsonIgnore
+    @CloudantIgnore
+    private String email;
 
     public void setId(UserTFAId id) {
         this.id = id;
@@ -132,5 +140,21 @@ public class UserTFA extends PropertyAssignedAwareResourceMeta<UserTFAId> {
     public void setSentLocale(LocaleId sentLocale) {
         this.sentLocale = sentLocale;
         support.setPropertyAssigned("sentLocale");
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

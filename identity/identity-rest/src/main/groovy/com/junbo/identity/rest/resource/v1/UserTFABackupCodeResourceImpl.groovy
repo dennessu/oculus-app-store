@@ -11,7 +11,7 @@ import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserTFABackupCodeFilter
 import com.junbo.identity.core.service.validator.UserTFABackupCodeValidator
-import com.junbo.identity.data.repository.UserTFABackupCodeRepository
+import com.junbo.identity.data.repository.UserTFAPhoneBackupCodeRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.UserTFABackupCode
 import com.junbo.identity.spec.v1.option.list.UserTFABackupCodeListOptions
@@ -31,7 +31,7 @@ import javax.transaction.Transactional
 class UserTFABackupCodeResourceImpl implements UserTFABackupCodeResource {
 
     @Autowired
-    private UserTFABackupCodeRepository userTFABackupCodeRepository
+    private UserTFAPhoneBackupCodeRepository userTFABackupCodeRepository
 
     @Autowired
     private UserTFABackupCodeFilter userTFABackupCodeFilter

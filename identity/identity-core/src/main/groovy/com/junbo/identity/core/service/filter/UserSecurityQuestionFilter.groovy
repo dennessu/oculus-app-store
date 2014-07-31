@@ -14,7 +14,7 @@ class UserSecurityQuestionFilter extends ResourceFilterImpl<UserSecurityQuestion
     @Override
     protected UserSecurityQuestion filter(UserSecurityQuestion user, MappingContext context) {
         UserSecurityQuestion result = selfMapper.filterUserSecurityQuestion(user, context)
-        if (user.userId != null) {
+        if (user.userId != null && result.id != null) {
             ((UserSecurityQuestionId)(result.id)).resourcePathPlaceHolder.put('userId', user.userId)
         }
         return result

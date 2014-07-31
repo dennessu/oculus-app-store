@@ -3,24 +3,21 @@ package com.junbo.identity.core.service.validator.impl
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFAAttemptId
+import com.junbo.common.id.UserTFAId
 import com.junbo.identity.core.service.validator.UserTFAAttemptValidator
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.data.repository.UserTFAAttemptRepository
-import com.junbo.identity.data.repository.UserTFARepository
+import com.junbo.identity.data.repository.UserTFAMailRepository
+import com.junbo.identity.data.repository.UserTFAPhoneRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserTFA
 import com.junbo.identity.spec.v1.model.UserTFAAttempt
 import com.junbo.identity.spec.v1.option.list.UserTFAAttemptListOptions
 import com.junbo.langur.core.promise.Promise
-import com.junbo.langur.core.transaction.AsyncTransactionTemplate
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
-import org.springframework.transaction.PlatformTransactionManager
-import org.springframework.transaction.TransactionDefinition
-import org.springframework.transaction.TransactionStatus
-import org.springframework.transaction.support.TransactionCallback
 import org.springframework.util.CollectionUtils
 
 import java.util.regex.Pattern
@@ -31,8 +28,10 @@ import java.util.regex.Pattern
 @CompileStatic
 class UserTFAAttemptValidatorImpl implements UserTFAAttemptValidator {
     private UserRepository userRepository
-    private UserTFARepository userTFARepository
+    private UserTFAPhoneRepository userTFAPhoneRepository
     private UserTFAAttemptRepository userTFAAttemptRepository
+
+    private UserTFAMailRepository userTFAMailRepository
 
     private Integer minVerifyCodeLength
     private Integer maxVerifyCodeLength
@@ -157,7 +156,7 @@ class UserTFAAttemptValidatorImpl implements UserTFAAttemptValidator {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
 
-            return userTFARepository.get(attempt.userTFAId).then { UserTFA userTFA ->
+            return getUserTFA(attempt.userTFAId).then { UserTFA userTFA ->
                 if (userTFA == null) {
                     throw AppErrors.INSTANCE.userTFANotFound(attempt.userTFAId).exception()
                 }
@@ -179,6 +178,16 @@ class UserTFAAttemptValidatorImpl implements UserTFAAttemptValidator {
                 attempt.userId = userId
 
                 return checkMaximumRetryCount(user, attempt)
+            }
+        }
+    }
+
+    private Promise<UserTFA> getUserTFA(UserTFAId userTFAId) {
+        return userTFAPhoneRepository.get(userTFAId).then { UserTFA userTFA ->
+            if (userTFA == null) {
+                return userTFAMailRepository.get(userTFAId)
+            } else {
+                return Promise.pure(userTFA)
             }
         }
     }
@@ -207,13 +216,18 @@ class UserTFAAttemptValidatorImpl implements UserTFAAttemptValidator {
     }
 
     @Required
-    void setUserTFARepository(UserTFARepository userTFARepository) {
-        this.userTFARepository = userTFARepository
+    void setUserTFAPhoneRepository(UserTFAPhoneRepository userTFAPhoneRepository) {
+        this.userTFAPhoneRepository = userTFAPhoneRepository
     }
 
     @Required
     void setUserTFAAttemptRepository(UserTFAAttemptRepository userTFAAttemptRepository) {
         this.userTFAAttemptRepository = userTFAAttemptRepository
+    }
+
+    @Required
+    void setUserTFAMailRepository(UserTFAMailRepository userTFAMailRepository) {
+        this.userTFAMailRepository = userTFAMailRepository
     }
 
     @Required
