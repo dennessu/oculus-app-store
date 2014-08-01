@@ -1,0 +1,13 @@
+{
+  "scopes" : [ "identity", "identity.pii", "identity.admin" ],
+  "client_id" : "migration",
+  "client_secret" : "224112E90935C8FA4E3F66B96FACE79B",
+  "client_name" : "migration",
+  "redirect_uris" : [],
+  "default_scopes" : [ "identity", "identity.pii", "identity.admin" ],
+  "response_types" : [],
+  "grant_types" : [ "CLIENT_CREDENTIALS" ],
+  "logout_redirect_uris" : [],
+  "need_consent" : false,
+  "access_token_expiration" : 86400
+}

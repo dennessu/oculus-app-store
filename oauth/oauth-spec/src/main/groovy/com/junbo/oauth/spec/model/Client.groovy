@@ -69,6 +69,9 @@ class Client extends ResourceMeta<String> {
     @JsonProperty('ip_whitelist')
     Set<String> ipWhitelist
 
+    @JsonProperty('access_token_expiration')
+    Long accessTokenExpiration
+
     @Override
     String getId() {
         return clientId

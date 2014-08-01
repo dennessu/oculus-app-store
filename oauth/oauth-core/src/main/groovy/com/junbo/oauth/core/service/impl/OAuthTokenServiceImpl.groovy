@@ -101,11 +101,16 @@ class OAuthTokenServiceImpl implements OAuthTokenService {
         Assert.notNull(userId, 'userId is null')
         Assert.notNull(scopes, 'scopes is null')
 
+        Long expiration = client.accessTokenExpiration
+        if (expiration == null) {
+            expiration = defaultAccessTokenExpiration
+        }
+
         AccessToken accessToken = new AccessToken(
                 clientId: client.clientId,
                 userId: userId,
                 scopes: scopes,
-                expiredBy: new Date(System.currentTimeMillis() + defaultAccessTokenExpiration * MILLISECONDS_PER_SECOND)
+                expiredBy: new Date(System.currentTimeMillis() + expiration * MILLISECONDS_PER_SECOND)
         )
 
         if (ipRestriction) {
