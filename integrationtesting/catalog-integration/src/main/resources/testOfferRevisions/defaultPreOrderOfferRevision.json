@@ -40,7 +40,7 @@
             "images":{
                 "thumbnail": {
                     "id": "id of image",
-                    "href":"location of image",
+                    "href":"http://www.google.com",
                     "size":200,
                     "x":20,
                     "y":10
