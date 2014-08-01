@@ -248,6 +248,9 @@ def randomstr(length, charset = None):
         charset = string.ascii_lowercase + string.digits
     return ''.join(random.choice(charset) for _ in range(length))
 
+def randompwd():
+    return randomstr(4, string.ascii_uppercase) + randomstr(4, string.ascii_lowercase) + randomstr(4, string.digits)
+
 def combineUrl(baseUrl, relativeUrl, queryParams):
     url = baseUrl
     if relativeUrl is not None:

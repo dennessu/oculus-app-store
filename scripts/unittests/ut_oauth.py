@@ -234,7 +234,7 @@ class OAuthTests(unittest.TestCase):
         view = curlJson('GET', ut.test_uri, '/v1/oauth2/reset-password', query = { 'cid': cid })
         assert view["view"] == 'reset_password'
 
-        user.password = randomstr(10)
+        user.password = randompwd()
         view = curlForm('POST', ut.test_uri, '/v1/oauth2/reset-password', data = {
             'cid': cid,
             'event': 'next',
@@ -248,7 +248,7 @@ class OAuthTests(unittest.TestCase):
         user = Object()
         
         user.username = randomstr(1, string.ascii_lowercase) + randomstr(10)
-        user.password = randomstr(16, string.ascii_letters + string.digits)
+        user.password = randompwd()
         user.email = randomstr(1, string.ascii_letters) + randomstr(10) + '@silkcloud.com'
         user.nickname = randomstr(1, string.ascii_letters) + randomstr(10)
         user.first_name = randomstr(10)
