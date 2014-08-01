@@ -22,6 +22,7 @@ class SabrixConfiguration {
     String password
     String version
     String baseUrl
+    String taxExclusiveCountries
 
     String shipFromCity
     String shipFromState

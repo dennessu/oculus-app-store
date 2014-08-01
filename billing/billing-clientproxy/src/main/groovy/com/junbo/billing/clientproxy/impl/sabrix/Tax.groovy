@@ -33,6 +33,9 @@ class Tax {
     @XStreamAlias('TAX_AMOUNT')
     TaxAmount taxAmount
 
+    @XStreamAlias('INCLUSIVE_TAX')
+    String inclusiveTax
+
 
     @Override
     public String toString() {
@@ -43,6 +46,7 @@ class Tax {
                 ", taxType='" + taxType + '\'' +
                 ", taxRate=" + taxRate +
                 ", taxAmount=" + taxAmount +
+                ", inclusiveTax=" + inclusiveTax +
                 '}';
     }
 }

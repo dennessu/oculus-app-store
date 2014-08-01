@@ -314,6 +314,11 @@ class SabrixFacadeImpl implements TaxFacade {
             if (isRefund && isAudited) {
                 line.taxAmount = item.taxAmount?.toDouble()
             }
+            if (!configuration.taxExclusiveCountries.contains(shipToAddress.country)) {
+                line.inclusiveTaxIndicator = new InclusiveTaxIndicator(
+                        fullyInclusive: true
+                )
+            }
             line.discountAmount = item.discountAmount?.toDouble()
             line.transactionType = getTransactionType(item)
             line.productCode = item.propertySet.get(PropertyKey.ITEM_TYPE.name())?.replace('_', ' ')
@@ -472,7 +477,7 @@ class SabrixFacadeImpl implements TaxFacade {
         }
         String type = item.propertySet.get(PropertyKey.ITEM_TYPE.name())
         switch (type) {
-            case 'PHYSICAL_GOODS':
+            case 'PHYSICAL GOODS':
                 return GOODS
             default:
                 return ELECTRONIC_SERVICES
@@ -485,11 +490,11 @@ class SabrixFacadeImpl implements TaxFacade {
         }
         SabrixAddress sabrixAddress = new SabrixAddress()
         sabrixAddress.country = address.countryId.value
+        sabrixAddress.city = address.city
+        sabrixAddress.postcode = address.postalCode
         switch (sabrixAddress.country) {
             case 'US':
                 sabrixAddress.state = address.subCountry
-                sabrixAddress.city = address.city
-                sabrixAddress.postcode = address.postalCode
                 break
             case 'CA':
                 sabrixAddress.province = address.subCountry

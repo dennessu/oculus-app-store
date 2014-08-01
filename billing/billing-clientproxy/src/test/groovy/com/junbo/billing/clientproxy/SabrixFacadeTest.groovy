@@ -8,6 +8,7 @@ import com.junbo.billing.spec.model.VatIdValidationResponse
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.id.BalanceId
 import com.junbo.common.id.OrderId
+import com.junbo.common.id.UserId
 import com.junbo.identity.spec.v1.model.Address
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
@@ -67,6 +68,7 @@ class SabrixFacadeTest extends BaseTest{
         def balance = new Balance()
         balance.id = new BalanceId(123L)
         balance.orderIds = [new OrderId(321L)]
+        balance.userId = new UserId(123L)
         balance.currency = 'USD'
         balance.addBalanceItem(buildBalanceItem(physical))
 
@@ -78,10 +80,10 @@ class SabrixFacadeTest extends BaseTest{
         item.financeId = '123'
         item.amount = BigDecimal.valueOf(1000)
         if (physical) {
-            item.propertySet.put(PropertyKey.ITEM_TYPE.name(), 'PHYSICAL')
+            item.propertySet.put(PropertyKey.ITEM_TYPE.name(), 'PHYSICAL GOODS')
         }
         else {
-            item.propertySet.put(PropertyKey.ITEM_TYPE.name(), 'DIGITAL')
+            item.propertySet.put(PropertyKey.ITEM_TYPE.name(), 'DIGITAL CONTENT')
         }
 
         return item

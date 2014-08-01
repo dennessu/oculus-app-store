@@ -87,5 +87,6 @@
         <property name="shipFromPostalCode" value="${shipFrom.address.postal.code}"/>
         <property name="shipFromCountry" value="${shipFrom.address.country}"/>
         <property name="baseUrl" value="${sabrix.baseUrl}"/>
+        <property name="taxExclusiveCountries" value="${sabrix.tax.exclusive.countries}"/>
     </bean>
 </beans>

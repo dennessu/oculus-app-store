@@ -75,6 +75,8 @@ class Line {
     @XStreamImplicit(itemFieldName='TAX')
     List<Tax> tax
 
+    @XStreamAlias('INCLUSIVE_TAX_INDICATORS')
+    InclusiveTaxIndicator inclusiveTaxIndicator
 
     @Override
     public String toString() {
@@ -98,6 +100,7 @@ class Line {
                 ", description='" + description + '\'' +
                 ", userElement=" + userElement +
                 ", tax=" + tax +
+                ", inclusiveTaxIndicator=" + inclusiveTaxIndicator +
                 '}';
     }
 }
