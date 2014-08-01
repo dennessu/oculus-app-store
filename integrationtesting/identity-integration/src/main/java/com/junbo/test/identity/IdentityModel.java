@@ -11,7 +11,6 @@ import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.enumid.RatingBoardId;
 import com.junbo.common.id.UserId;
-import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.identity.spec.v1.model.Currency;
 import com.junbo.identity.spec.v1.model.Locale;
@@ -242,8 +241,8 @@ public class IdentityModel {
 
     public static UserTFA DefaultUserTFA() throws Exception {
         UserTFA userTFA = new UserTFA();
-        userTFA.setVerifyType(RandomTFAVerifyType());
-        //userTFA.setVerifyType(TFAVerifyType.CALL.name());
+        //userTFA.setVerifyType(RandomTFAVerifyType());
+        userTFA.setVerifyType(TFAVerifyType.CALL.name());
         if (!userTFA.getVerifyType().equals(TFAVerifyType.MAIL.name())) {
             userTFA.setTemplate(RandomHelper.randomAlphabetic(100));
         }
@@ -328,6 +327,9 @@ public class IdentityModel {
         INDIVIDUAL
     }
 
+    /**
+     * TFA only support 3 types as below
+     */
     public static enum TFAVerifyType {
         CALL,
         MAIL,
