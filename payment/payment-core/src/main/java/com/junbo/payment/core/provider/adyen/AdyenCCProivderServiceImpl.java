@@ -18,7 +18,6 @@ import com.junbo.payment.clientproxy.adyen.proxy.AdyenApiClientProxy;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppClientExceptions;
 import com.junbo.payment.common.exception.AppServerExceptions;
-import com.junbo.payment.core.util.PaymentUtil;
 import com.junbo.payment.spec.enums.PaymentStatus;
 import com.junbo.payment.spec.model.Address;
 import com.junbo.payment.spec.model.PaymentInstrument;
@@ -152,8 +151,7 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                             request.setTypeSpecificDetails(new TypeSpecificDetails());
                         }
                         request.getTypeSpecificDetails().setIssuerIdentificationNumber(cardBin);
-                        request.getTypeSpecificDetails().setCreditCardType(
-                                PaymentUtil.getCreditCardType(recurringDetail.getVariant()).toString());
+                        request.getTypeSpecificDetails().setCreditCardType(recurringDetail.getVariant());
                         request.getTypeSpecificDetails().setExpireDate(recurringDetail.getCard().getExpiryYear()
                                 + "-" + recurringDetail.getCard().getExpiryMonth());
                     }else{

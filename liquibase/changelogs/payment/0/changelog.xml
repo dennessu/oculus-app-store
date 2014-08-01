@@ -607,7 +607,13 @@
     </changeSet>
     -->
 
-
-
+    <changeSet id="3" author='WenhongZhu' context="PREDEPLOY">
+        <sql>
+            <![CDATA[
+                        alter table credit_card_payment_instrument alter column credit_card_type_id type varchar(64) using credit_card_type_id;
+                        ALTER TABLE credit_card_payment_instrument ALTER COLUMN credit_card_type_id DROP NOT NULL;
+                    ]]>
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>

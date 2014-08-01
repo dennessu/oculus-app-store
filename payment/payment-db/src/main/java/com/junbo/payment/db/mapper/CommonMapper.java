@@ -33,19 +33,6 @@ public class CommonMapper {
         return source == null ? null : source.toString();
     }
 
-    public Short explicitMethod_convertCreditCardType(String type) {
-        if(!StringUtils.isEmpty(type)) {
-            CreditCardType creditCardType = CreditCardType.valueOf(type);
-            return creditCardType.getId();
-        }
-        return null;
-    }
-
-    public String explicitMethod_convertCreditCardType(Short typeId) {
-        CreditCardType creditCardType = EnumRegistry.resolve(typeId, CreditCardType.class);
-        return creditCardType.toString();
-    }
-
     public UUID toUUID(UUID uuid) {
         return uuid;
     }

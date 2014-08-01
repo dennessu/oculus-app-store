@@ -25,13 +25,8 @@ import com.junbo.payment.spec.model.*;
 })
 public interface PaymentMapper {
 
-    @Mappings({
-            @Mapping(source = "type", target = "ccTypeId", explicitMethod = "convertCreditCardType"),
-    })
     CreditCardPaymentInstrumentEntity toCreditCardEntity(CreditCardDetail ccRequest, MappingContext context);
-    @Mappings({
-            @Mapping(source = "ccTypeId", target = "type", explicitMethod = "convertCreditCardType"),
-    })
+
     CreditCardDetail toCreditCardDetail(CreditCardPaymentInstrumentEntity ccEntity, MappingContext context);
 
     @Mappings({

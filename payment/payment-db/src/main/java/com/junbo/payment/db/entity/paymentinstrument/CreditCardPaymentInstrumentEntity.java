@@ -28,7 +28,7 @@ public class CreditCardPaymentInstrumentEntity extends GenericEntity {
     private Long id;
 
     @Column(name = "credit_card_type_id")
-    private Short ccTypeId;
+    private String type;
 
     @Column(name = "expire_time", updatable = false)
     private String expireDate;
@@ -65,12 +65,12 @@ public class CreditCardPaymentInstrumentEntity extends GenericEntity {
         return id;
     }
 
-    public Short getCcTypeId() {
-        return ccTypeId;
+    public String getType() {
+        return type;
     }
 
-    public void setCcTypeId(Short ccTypeId) {
-        this.ccTypeId = ccTypeId;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getExpireDate() {

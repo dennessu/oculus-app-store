@@ -2,7 +2,6 @@ package com.junbo.payment.db;
 
 import com.junbo.common.id.PIType;
 import com.junbo.payment.db.repo.facade.PaymentInstrumentRepositoryFacade;
-import com.junbo.payment.spec.enums.CreditCardType;
 import com.junbo.payment.spec.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
@@ -36,7 +35,7 @@ public class PaymentRepoTest extends BaseTest {
         pi.setTypeSpecificDetails(new TypeSpecificDetails() {
             {
                 setExpireDate("2025-10-12");
-                setCreditCardType(CreditCardType.VISA.toString());
+                setCreditCardType("VISA");
                 setLastBillingDate(new Date());
             }
         });

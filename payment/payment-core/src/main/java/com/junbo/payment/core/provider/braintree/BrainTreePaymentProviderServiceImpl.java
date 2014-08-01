@@ -152,8 +152,7 @@ public class BrainTreePaymentProviderServiceImpl extends AbstractPaymentProvider
                             }
                             request.getTypeSpecificDetails().setExpireDate(result.getTarget().getExpirationDate());
                             request.getTypeSpecificDetails().setIssuerIdentificationNumber(result.getTarget().getBin());
-                            request.getTypeSpecificDetails().setCreditCardType(
-                                    PaymentUtil.getCreditCardType(result.getTarget().getCardType()).toString());
+                            request.getTypeSpecificDetails().setCreditCardType(result.getTarget().getCardType());
                             request.getTypeSpecificDetails().setCommercial(
                                     CommonUtil.toBool(result.getTarget().getCommercial().toString()));
                             request.getTypeSpecificDetails().setDebit(
