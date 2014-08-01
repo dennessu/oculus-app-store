@@ -19,6 +19,8 @@ import com.junbo.identity.data.repository.UserPasswordRepository
 import com.junbo.identity.data.repository.UserPinRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
+import com.junbo.identity.spec.model.users.UserPassword
+import com.junbo.identity.spec.model.users.UserPin
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserGroup
 import com.junbo.identity.spec.v1.option.list.UserListOptions
@@ -29,6 +31,7 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.util.CollectionUtils
 
 /**
  * Created by liangfu on 4/10/14.
@@ -266,9 +269,6 @@ class UserResourceImpl implements UserResource {
     }
 
     Promise<Void> updateCredential(UserId userId, String oldCanonicalUsername, String newCanonicalUsername) {
-        //todo: Liangfu:    pending on Carlos' decision whether we need to reset all credentials after username change
-        return Promise.pure(null)
-        /*
         if (oldCanonicalUsername == newCanonicalUsername) {
             return Promise.pure(null)
         } else {
@@ -301,6 +301,5 @@ class UserResourceImpl implements UserResource {
                 }
             }
         }
-        */
     }
 }
