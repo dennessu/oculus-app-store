@@ -109,6 +109,6 @@ public interface StoreResource {
     Promise<GetListResponse> getList(@BeanParam GetListRequest getListRequest);
 
     @GET
-    @Path("/list")
+    @Path("/details")
     Promise<GetDetailsResponse> getDetails(@BeanParam GetDetailsRequest getDetailsRequest);
 }
