@@ -14,6 +14,9 @@ import com.junbo.catalog.spec.resource.ItemResource
 import com.junbo.catalog.spec.resource.ItemRevisionResource
 import com.junbo.catalog.spec.resource.OfferResource
 import com.junbo.catalog.spec.resource.OfferRevisionResource
+import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.error.AppError
+import com.junbo.common.error.AppErrorException
 import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.langur.core.promise.Promise
@@ -68,8 +71,9 @@ class CatalogFacadeImpl implements CatalogFacade {
                 timestamp: honoredTime.time,
                 offerIds: [offerId] as Set
         )
-        return offerRevisionResource.getOfferRevisions(entityGetOption).syncRecover {
-            // TODO add logger and exception
+        return offerRevisionResource.getOfferRevisions(entityGetOption).syncRecover { Throwable throwable ->
+            LOGGER.error('CatalogFacadeImpl_Get_Offer_Revision_Error, offerId: {}', offerId, throwable)
+            throw convertError(throwable).exception()
         }.then { Results<OfferRevision> result ->
             List<OfferRevision> ors = result?.items
             if (CollectionUtils.isEmpty(ors)) {
@@ -103,22 +107,23 @@ class CatalogFacadeImpl implements CatalogFacade {
             }
             def items = []
             return Promise.each(or.items) { ItemEntry ie ->
-                return itemResource.getItem(ie.itemId).syncRecover { Throwable ex ->
-                    LOGGER.error('name=Failed_To_Get_Offer_Item. itemId: {}, timestamp: {}',
-                            ie.itemId, honoredTime, ex)
-                    throw AppErrors.INSTANCE.catalogConnectionError().exception()
-                    // TODO add logger and exception
+                return itemResource.getItem(ie.itemId).syncRecover { Throwable throwable ->
+                    LOGGER.error('name=CatalogFacadeImpl_Get_Offer_Item_Error. itemId: {}, timestamp: {}',
+                            ie.itemId, honoredTime, throwable)
+                    throw convertError(throwable).exception()
                 }.syncThen { Item item ->
                     assert item != null
                     items << item
                 }
             }.then {
                 offer.type = getType(items)
-                return identityFacade.getOrganization(or.ownerId?.value).recover {
-                    return Promise.pure(null)
-                }.then { Organization org ->
+                return identityFacade.getOrganization(or.ownerId?.value).syncRecover {
+                    /* organization is not required, return offer directly if the organization is unavailable.*/
+                    LOGGER.error('CatalogFacadeImpl_Get_Organization_Error, offerId: {}', offerId)
+                    return offer
+                }.syncThen { Organization org ->
                     offer.owner = org
-                    return Promise.pure(offer)
+                    return offer
                 }
             }
         }
@@ -158,5 +163,13 @@ class CatalogFacadeImpl implements CatalogFacade {
     @Override
     Promise<Offer> getOfferRevision(String offerId) {
         return getOfferRevision(offerId, new Date())
+    }
+
+    private AppError convertError(Throwable throwable) {
+        if (throwable instanceof AppErrorException) {
+            return AppErrors.INSTANCE.catalogConnectionError()
+        } else {
+            return AppCommonErrors.INSTANCE.internalServerError(new Exception(throwable))
+        }
     }
 }

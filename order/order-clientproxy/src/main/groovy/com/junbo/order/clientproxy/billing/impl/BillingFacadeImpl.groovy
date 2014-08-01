@@ -90,7 +90,7 @@ class BillingFacadeImpl implements BillingFacade {
     Promise<Balance> quoteBalance(Balance balance) {
         return balanceResource.quoteBalance(balance).recover { Throwable ex ->
             LOGGER.error('name=BillingFacadeImpl_Order_Quote_Error', ex)
-            throw convertToCalcuulateTaxError(ex).exception()
+            throw convertToCalculateTaxError(ex).exception()
         }.then { Balance b ->
             if (b == null) {
                 LOGGER.error('name=BillingFacadeImpl_Order_Quote_Null')
@@ -143,7 +143,7 @@ class BillingFacadeImpl implements BillingFacade {
         return AppErrors.INSTANCE.billingConnectionError(error.message)
     }
 
-    private AppError convertToCalcuulateTaxError(Throwable error) {
+    private AppError convertToCalculateTaxError(Throwable error) {
         AppError e = ErrorUtils.toAppError(error)
         if (e != null) {
             return AppErrors.INSTANCE.calculateTaxError(e)

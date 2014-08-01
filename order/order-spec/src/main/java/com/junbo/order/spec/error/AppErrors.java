@@ -157,4 +157,10 @@ public interface AppErrors {
     
     @ErrorDef(httpStatusCode = 412, code = "141", message = "Order Not capturable.")
     AppError orderNotCapturable();
+
+    @ErrorDef(httpStatusCode = 500, code = "142", message = "Identity Connection Error.")
+    AppError identityConnectionError();
+
+    @ErrorDef(httpStatusCode = 500, code = "143", message = "Identity Result Invalid.", reason = "Identity result invalid: {0}.")
+    AppError identityResultInvalid(String cause);
 }
