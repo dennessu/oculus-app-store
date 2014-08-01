@@ -39,7 +39,7 @@ public class OfferAttributeRepositoryImpl extends CloudantClient<OfferAttribute>
             List<OfferAttribute> attributes = new ArrayList<>();
             for (String attributeId : options.getAttributeIds()) {
                 OfferAttribute attribute = cloudantGetSync(attributeId.toString());
-                if (attribute != null) {
+                if (attribute != null && (StringUtils.isEmpty(options.getAttributeType()) || options.getAttributeType().equals(attribute.getType()))) {
                     attributes.add(attribute);
                 }
             }

@@ -39,7 +39,7 @@ public class ItemAttributeRepositoryImpl extends CloudantClient<ItemAttribute> i
             List<ItemAttribute> attributes = new ArrayList<>();
             for (String attributeId : options.getAttributeIds()) {
                 ItemAttribute attribute = cloudantGetSync(attributeId);
-                if (attribute != null) {
+                if (attribute != null && (StringUtils.isEmpty(options.getAttributeType()) || options.getAttributeType().equals(attribute.getType()))) {
                     attributes.add(attribute);
                 }
             }

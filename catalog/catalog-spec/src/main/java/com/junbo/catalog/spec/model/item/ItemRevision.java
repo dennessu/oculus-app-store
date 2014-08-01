@@ -50,6 +50,7 @@ public class ItemRevision extends BaseRevisionModel {
         allowableValues = "INAPP, STORE")
     private List<String> distributionChannels;
 
+    @XSSFreeString
     @ApiModelProperty(position = 15, required = true, value = "Sku")
     private String sku;
 

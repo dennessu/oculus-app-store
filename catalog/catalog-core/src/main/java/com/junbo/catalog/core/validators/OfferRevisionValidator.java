@@ -10,14 +10,9 @@ import com.google.common.base.Joiner;
 import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.db.repo.ItemRepository;
 import com.junbo.catalog.db.repo.OfferRepository;
-import com.junbo.catalog.spec.enums.DistributionChannel;
-import com.junbo.catalog.spec.enums.ItemType;
-import com.junbo.catalog.spec.enums.Status;
+import com.junbo.catalog.spec.enums.*;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.catalog.spec.model.offer.ItemEntry;
-import com.junbo.catalog.spec.model.offer.Offer;
-import com.junbo.catalog.spec.model.offer.OfferRevision;
-import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
+import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.AppErrorException;
@@ -26,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.CollectionUtils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -181,7 +177,7 @@ public class OfferRevisionValidator extends ValidationSupport {
         if (CollectionUtils.isEmpty(revision.getItems())) {
             return;
         }
-        boolean hasSVItem = false;
+        String svItemId = null;
         for (ItemEntry itemEntry : revision.getItems()) {
             if (validateFieldNotNull("items.item.id", itemEntry.getItemId(), errors)) {
                 Item item = itemRepo.get(itemEntry.getItemId());
@@ -190,7 +186,7 @@ public class OfferRevisionValidator extends ValidationSupport {
                         errors.add(AppCommonErrors.INSTANCE.fieldInvalid("items", "offer should only contains items of same owner"));
                     }
                     if (ItemType.STORED_VALUE.is(item.getType())) {
-                        hasSVItem = true;
+                        svItemId = item.getItemId();
                     }
                     if (itemEntry.getQuantity() == null) {
                         itemEntry.setQuantity(1);
@@ -205,9 +201,33 @@ public class OfferRevisionValidator extends ValidationSupport {
                     }
                 }
             }
-            if (hasSVItem && revision.getItems().size() > 1) {
+            if (svItemId != null && revision.getItems().size() > 1) {
                 errors.add(AppCommonErrors.INSTANCE.fieldInvalid("items", "STORED_VALUE item is mutually exclusive with other items in an offer"));
             }
+            validateWalletAction(svItemId, revision.getEventActions(), errors);
+        }
+    }
+
+    private void validateWalletAction(String svItemId, Map<String, List<Action>> eventActions, List<AppError> errors) {
+        if (svItemId == null) {
+            return;
+        }
+        if (!validateMapNotEmpty("eventActions", eventActions, errors)) {
+            return;
+        }
+        List<Action> purchaseActions = eventActions.get(EventType.PURCHASE.name());
+        if (validateCollectionNotEmpty("eventActions.PURCHASE", purchaseActions, errors)) {
+            for (Action action : purchaseActions) {
+                if (ActionType.CREDIT_WALLET.is(action.getType())) {
+                    validateFieldMatch("eventActions.PURCHASE.itemId.id", action.getItemId(), svItemId, errors);
+                    validateStringNotEmpty("eventActions.PURCHASE.storedValueCurrency", action.getStoredValueCurrency(), errors);
+                    if (action.getStoredValueAmount()==null || action.getStoredValueAmount().compareTo(BigDecimal.ZERO) <= 0) {
+                        errors.add(AppCommonErrors.INSTANCE.fieldInvalid("eventActions.PURCHASE.storedValueAmount", "should be a positive value"));
+                    }
+                    return;
+                }
+            }
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("eventActions.PURCHASE", "CREDIT_WALLET action should be configured"));
         }
     }
 }

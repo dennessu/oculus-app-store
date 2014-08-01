@@ -131,7 +131,9 @@ public class ItemRevisionValidator extends ValidationSupport {
                 if (revision.getOwnerId() != null && !revision.getOwnerId().equals(item.getOwnerId())) {
                     errors.add(AppCommonErrors.INSTANCE.fieldInvalid("item", "item should have same owner as item-revision"));
                 }
-                validateBinariesAndDownloadName(revision.getBinaries(), revision.getDownloadName(), item.getType(), errors);
+                if (Status.PENDING_REVIEW.is(revision.getStatus()) || Status.APPROVED.is(revision.getStatus())) {
+                    validateBinariesAndDownloadName(revision.getBinaries(), revision.getDownloadName(), item.getType(), errors);
+                }
             }
         }
     }
