@@ -149,7 +149,7 @@ Welcome, if you are from windows VMWare, you have made a great choice!
 
 Firstly, let install docker and docker tools
 ```
-https://gist.githubusercontent.com/jubot/4dd5ea0d8789ddc0eaa5/raw/f4b979c342f69ebc93c5835a7680241e4bebcd86/installdocker.sh | sudo sh
+curl -s https://gist.githubusercontent.com/jubot/4dd5ea0d8789ddc0eaa5/raw/f4b979c342f69ebc93c5835a7680241e4bebcd86/installdocker.sh | sudo sh
 ```
 
 Please notice that this script only support ubuntu, if you are using other disto, go to `https://docs.docker.com/` to get the instruction.
