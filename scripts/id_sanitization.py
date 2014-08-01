@@ -27,14 +27,18 @@ def main():
     white_list_user_names = []
     if args.white_list_user is not None:
         user_name_file = open(str(args.white_list_user), "r")
-        white_list_user_names = user_name_file.readlines()
+        for line in user_name_file.readlines():
+            line = line.rstrip()
+            white_list_user_names.append(line.lower())
         user_name_file.close()
 
     input_users = []
     for user in users:
-        if args.mask_user == "true" and user["username"] not in white_list_user_names:
+        if args.mask_user == "true" and user["username"].lower() not in white_list_user_names:
             user["username"] = randomword(20)
             user["email"] = randomword(20) + '@oculusTest.com'
+            user["firstName"] = randomword(30)
+            user["lastName"] = randomword(30)
         input_users.append(user)
 
     with open(args.output, 'w') as outfile:
