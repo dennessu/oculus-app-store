@@ -19,6 +19,7 @@ import com.junbo.langur.core.webflow.action.ActionContext
 import com.junbo.langur.core.webflow.action.ActionResult
 import com.junbo.oauth.core.context.ActionContextWrapper
 import com.junbo.oauth.core.util.ExceptionUtil
+import com.junbo.oauth.spec.param.OAuthParameters
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.Assert
@@ -47,7 +48,12 @@ class SendTFA implements Action {
         def contextWrapper = new ActionContextWrapper(context)
         def loginState = contextWrapper.loginState
         def locale = contextWrapper.viewLocale?:'en_US'
+        def parameterMap = contextWrapper.parameterMap
         Assert.notNull(loginState, 'loginState is null')
+
+        String event = parameterMap.getFirst(OAuthParameters.EVENT)
+        Assert.isTrue(event.startsWith('send'))
+        String verifyType = event.substring(4)
 
         return userResource.get(new UserId(loginState.userId), new UserGetOptions()).recover { Throwable e ->
             ExceptionUtil.handleIdentityException(e, contextWrapper, false)
@@ -67,7 +73,7 @@ class SendTFA implements Action {
             UserTFA tfa = new UserTFA(
                     personalInfo: primaryPhone.value,
                     sentLocale: new LocaleId(locale.replace('-', '_')),
-                    verifyType: 'SMS'
+                    verifyType: verifyType
             )
 
             return userTFAResource.create(user.getId(), tfa).recover { Throwable e ->

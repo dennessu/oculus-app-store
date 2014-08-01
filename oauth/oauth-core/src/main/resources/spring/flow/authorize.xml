@@ -106,7 +106,13 @@
             <wf:transition on="sendSMS" to="TFA_REQUIRED_VIEW">
                 <wf:action ref="sendTFA"/>
             </wf:transition>
+            <wf:transition on="sendEMAIL" to="TFA_REQUIRED_VIEW">
+                <wf:action ref="sendTFA"/>
+            </wf:transition>
             <wf:transition on="verifySMS" to="CHECK_CONSENT">
+                <wf:action ref="verifyTFA"/>
+            </wf:transition>
+            <wf:transition on="verifyEMAIL" to="CHECK_CONSENT">
                 <wf:action ref="verifyTFA"/>
             </wf:transition>
         </wf:view-state>
