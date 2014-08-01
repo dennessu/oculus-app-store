@@ -176,6 +176,13 @@ Docker has quite a few concept, you can check their fantastic doc site: https://
 
 Our `devenv.sh` can simplify your work with docker, just run it without any argument to see what it supports.
 
+Our docker images are based on phusionbase, it supports both ssh and nsenter. To enter the running container, you can:
+```
+$ sudo docker-bash <container id or name>
+or
+$ sudo docker-ssh <container id or name>
+```
+
 ## About our docker images
 
 We have a docker registry account: https://registry.hub.docker.com/repos/silkcloud/
