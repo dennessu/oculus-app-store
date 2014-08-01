@@ -61,14 +61,14 @@
                     "main": {
                         "y": 15, 
                         "x": 20, 
-                        "href": "location of image", 
+                        "href": "http://www.google.com", 
                         "id": "id of image", 
                         "size": 300
                     }, 
                     "thumbnail": {
                         "y": 10, 
                         "x": 20, 
-                        "href": "location of image", 
+                        "href": "http://www.google.com", 
                         "id": "id of image", 
                         "size": 200
                     }
@@ -216,7 +216,7 @@
                         "thumbnail": {
                             "y": 10,
                             "x": 20,
-                            "href": "location of image",
+                            "href": "http://www.google.com",
                             "id": "id of image",
                             "size": 200
                         }
