@@ -11,6 +11,7 @@ import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.enumid.RatingBoardId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.identity.spec.v1.model.Currency;
 import com.junbo.identity.spec.v1.model.Locale;
@@ -113,6 +114,12 @@ public class IdentityModel {
         return email;
     }
 
+    public static PhoneNumber DefaultPhoneNumber() throws Exception {
+        PhoneNumber phoneNumber = new PhoneNumber();
+        phoneNumber.setInfo("8618616028497");
+        return phoneNumber;
+    }
+
     public static Locale DefaultLocale() throws Exception {
         Locale locale = new Locale();
         locale.setLocaleCode(DefaultLocale);
@@ -193,6 +200,13 @@ public class IdentityModel {
         return userPersonalInfo;
     }
 
+    public static UserPersonalInfo DefaultUserPersonalInfoPhone() throws Exception {
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+        userPersonalInfo.setType(UserPersonalInfoType.PHONE.name());
+        userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(DefaultPhoneNumber()));
+        return userPersonalInfo;
+    }
+
     public static Organization DefaultOrganization() throws Exception {
         Organization org = new Organization();
         org.setName(RandomHelper.randomAlphabetic(20));
@@ -226,11 +240,21 @@ public class IdentityModel {
         return usq;
     }
 
+    public static UserTFA DefaultUserTFA() throws Exception {
+        UserTFA userTFA = new UserTFA();
+        userTFA.setVerifyType(RandomTFAVerifyType());
+        //userTFA.setVerifyType(TFAVerifyType.CALL.name());
+        if (!userTFA.getVerifyType().equals(TFAVerifyType.MAIL.name())) {
+            userTFA.setTemplate(RandomHelper.randomAlphabetic(100));
+        }
+        return userTFA;
+    }
+
     public static String RandomGender() {
         List<Object> array = new ArrayList<>();
         array.add("male");
         array.add("female");
-        return RandomHelper.randomValueFromList(RandomHelper.randomInt(), array).toString();
+        return RandomHelper.randomValueFromList(array).toString();
     }
 
     public static String RandomMigrteUserStatus() {
@@ -240,14 +264,22 @@ public class IdentityModel {
         array.add(MigrateUserStatus.PENDING.name());
         array.add(MigrateUserStatus.PENDING_EMAIL_VERIFICATION.name());
         array.add(MigrateUserStatus.VERIFIED.name());
-        return RandomHelper.randomValueFromList(RandomHelper.randomInt(), array).toString();
+        return RandomHelper.randomValueFromList(array).toString();
     }
 
     public static String RandomMigrateCompanyType() {
         List<Object> array = new ArrayList<>();
         array.add(MigrateCompanyType.CORPORATE.name());
         array.add(MigrateCompanyType.INDIVIDUAL.name());
-        return RandomHelper.randomValueFromList(RandomHelper.randomInt(), array).toString();
+        return RandomHelper.randomValueFromList(array).toString();
+    }
+
+    public static String RandomTFAVerifyType() {
+        List<Object> array = new ArrayList<>();
+        array.add(TFAVerifyType.CALL.name());
+        array.add(TFAVerifyType.MAIL.name());
+        array.add(TFAVerifyType.SMS.name());
+        return RandomHelper.randomValueFromList(array).toString();
     }
 
     /**
@@ -294,5 +326,11 @@ public class IdentityModel {
     public static enum MigrateCompanyType {
         CORPORATE,
         INDIVIDUAL
+    }
+
+    public static enum TFAVerifyType {
+        CALL,
+        MAIL,
+        SMS
     }
 }

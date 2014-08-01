@@ -201,6 +201,12 @@ public class Identity {
         return (UserPersonalInfo) JsonHelper.JsonNodeToObject(jsonNode, UserPersonalInfo.class);
     }
 
+    public static UserTFA UserTFAPost(UserId userId, UserTFA userTFA) throws Exception {
+        return (UserTFA) IdentityPost(IdentityV1UserURI + "/" + GetHexUserId(userId.getValue()) + "/tfa",
+                JsonHelper.JsonSerializer(userTFA),
+                UserTFA.class);
+    }
+
     public static Organization OrganizationGetByOrganizationId(OrganizationId organizationId) throws Exception {
         return (Organization) IdentityGet(
                 IdentityV1OrganizationURI + "/" + IdFormatter.encodeId(organizationId),

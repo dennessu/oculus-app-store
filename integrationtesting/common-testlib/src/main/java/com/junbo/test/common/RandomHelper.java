@@ -40,10 +40,11 @@ public class RandomHelper {
         List<Object> array = new ArrayList<>();
         array.add(true);
         array.add(false);
-        return Boolean.parseBoolean(randomValueFromList(randomInt(), array).toString());
+        return Boolean.parseBoolean(randomValueFromList(array).toString());
     }
 
-    public static Object randomValueFromList(int rand, List<Object> values) {
+    public static Object randomValueFromList(List<Object> values) {
+        int rand = randomInt();
         int result = Math.abs(rand) % values.size();
         return values.get(result);
     }
