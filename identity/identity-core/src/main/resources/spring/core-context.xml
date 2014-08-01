@@ -1167,6 +1167,7 @@
                 <value>userId</value>
                 <value>personalInfo</value>
                 <value>sentLocale</value>
+                <value>verifyCode</value>
                 <value>template</value>
                 <value>verifyType</value>
                 <value>expiresBy</value>

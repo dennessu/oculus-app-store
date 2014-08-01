@@ -204,6 +204,7 @@
         <property name="maxGivenNameLength" value="255" />
         <property name="minMiddleNameLength" value="1" />
         <property name="maxMiddleNameLength" value="255" />
+        <property name="userRepository" ref="userRepository" />
     </bean>
 
     <bean id="passportValidator" class="com.junbo.identity.core.service.validator.impl.PassportValidatorImpl">

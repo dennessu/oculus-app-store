@@ -147,6 +147,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
             throw AppCommonErrors.INSTANCE.fieldNotWritable('verifyCode').exception()
         }
 
+        userTFA.verifyCode = oldUserTFA.verifyCode
         return basicTFACheck(userId, userTFA).then {
             return userTFAPhoneRepository.get(userTFAId).then { UserTFA tfa ->
                 if (tfa == null) {

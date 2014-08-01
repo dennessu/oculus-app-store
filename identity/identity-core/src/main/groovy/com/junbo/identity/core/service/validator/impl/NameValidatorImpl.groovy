@@ -8,10 +8,14 @@ import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.validator.NickNameValidator
 import com.junbo.identity.core.service.validator.PiiValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
+import com.junbo.identity.data.repository.UserRepository
+import com.junbo.identity.spec.error.AppErrors
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserName
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.StringUtils
 
 /**
  * Check minimum and maximum givenName length
@@ -32,6 +36,7 @@ class NameValidatorImpl implements PiiValidator {
     private Integer maxGivenNameLength
 
     private NickNameValidator nickNameValidator
+    private UserRepository userRepository
 
     @Override
     boolean handles(String type) {
@@ -44,9 +49,22 @@ class NameValidatorImpl implements PiiValidator {
     @Override
     Promise<Void> validateCreate(JsonNode value, UserId userId, OrganizationId organizationId) {
         UserName name = (UserName)JsonHelper.jsonNodeToObj(value, UserName)
-
         checkName(name)
-        return Promise.pure(null)
+        if (userId != null && !StringUtils.isEmpty(name.nickName)) {
+            return userRepository.get(userId).then { User user ->
+                if (user == null) {
+                    throw AppErrors.INSTANCE.userNotFound(userId).exception()
+                }
+
+                if (user.username.equalsIgnoreCase(name.nickName)) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('nickName', 'nickName can\'t be the same as username').exception()
+                }
+
+                return Promise.pure(null)
+            }
+        } else {
+            return Promise.pure(null)
+        }
     }
 
     @Override
@@ -126,5 +144,10 @@ class NameValidatorImpl implements PiiValidator {
     @Required
     void setNickNameValidator(NickNameValidator nickNameValidator) {
         this.nickNameValidator = nickNameValidator
+    }
+
+    @Required
+    void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository
     }
 }

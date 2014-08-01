@@ -6,6 +6,7 @@
 package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
 import com.junbo.common.enumid.LocaleId;
@@ -36,7 +37,7 @@ public class UserTFA extends PropertyAssignedAwareResourceMeta<UserTFAId> {
     @ApiModelProperty(position = 4, required = false, value = "What Locale does the verification info sent to the user.")
     private LocaleId sentLocale;
 
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String verifyCode;
 
     @ApiModelProperty(position = 6, required = false, value = "In which template the TFA code is sent to the user, it must be used in [CALL, SMS].")

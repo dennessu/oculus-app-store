@@ -82,14 +82,19 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
                 throw AppErrors.INSTANCE.userInInvalidStatus(userId).exception()
             }
 
-            return Promise.pure(null)
-        }.then {
+            return Promise.pure(user)
+        }.then { User user ->
             if (userCredential.type == CredentialType.PASSWORD.toString()) {
                 return userPasswordValidator.validateForOldPassword(userId, userCredential.currentPassword).then {
                     UserPassword userPassword = modelMapper.credentialToPassword(userCredential, new MappingContext())
                     if (userPassword == null) {
                         throw new IllegalArgumentException('mapping to password exception')
                     }
+
+                    if (userCredential.value.toLowerCase().contains(user.username.toLowerCase())) {
+                        throw AppCommonErrors.INSTANCE.fieldInvalid('value', 'password can\'t contain username').exception()
+                    }
+
                     return userPasswordValidator.validateForCreate(userId, userPassword).then {
                         return Promise.pure(userPassword)
                     }

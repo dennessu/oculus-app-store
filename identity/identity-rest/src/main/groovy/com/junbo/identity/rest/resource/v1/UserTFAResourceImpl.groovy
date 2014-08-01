@@ -8,6 +8,7 @@ import com.junbo.common.id.UserId
 import com.junbo.common.id.UserTFAId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
+import com.junbo.configuration.ConfigServiceManager
 import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.email.spec.model.QueryParam
@@ -31,6 +32,7 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.util.StringUtils
 
 /**
  * Created by liangfu on 4/24/14.
@@ -81,6 +83,7 @@ class UserTFAResourceImpl implements UserTFAResource {
             throw AppCommonErrors.INSTANCE.fieldNotWritable('userId', userTFA.userId, userId).exception()
         }
 
+        userTFA.verifyCode = null
         def callback = authorizeCallbackFactory.create(userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('create')) {
@@ -95,6 +98,10 @@ class UserTFAResourceImpl implements UserTFAResource {
                         Created201Marker.mark(newUserTeleCode.getId())
 
                         newUserTeleCode = userTFAFilter.filterForGet(newUserTeleCode, null)
+                        if (!StringUtils.isEmpty(newUserTeleCode.verifyCode)
+                         && !Boolean.parseBoolean(ConfigServiceManager.instance().getConfigValue('common.conf.debugMode'))) {
+                            newUserTeleCode.verifyCode = null
+                        }
                         return Promise.pure(newUserTeleCode)
                     }
                 }
@@ -122,6 +129,10 @@ class UserTFAResourceImpl implements UserTFAResource {
                 newUserTeleCode = userTFAFilter.filterForGet(newUserTeleCode,
                         getOptions.properties?.split(',') as List<String>)
 
+                if (!StringUtils.isEmpty(newUserTeleCode.verifyCode)
+                  && !Boolean.parseBoolean(ConfigServiceManager.instance().getConfigValue('common.conf.debugMode'))) {
+                    newUserTeleCode.verifyCode = null
+                }
                 return Promise.pure(newUserTeleCode)
             }
         }
@@ -141,6 +152,8 @@ class UserTFAResourceImpl implements UserTFAResource {
             throw new IllegalArgumentException('userTFA is null')
         }
 
+        userTFA.verifyCode = null
+
         def callback = authorizeCallbackFactory.create(userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('update')) {
@@ -158,6 +171,10 @@ class UserTFAResourceImpl implements UserTFAResource {
 
                     return userTFAPhoneRepository.update(userTFA, oldUserTeleCode).then { UserTFA newUserTele ->
                         newUserTele = userTFAFilter.filterForGet(newUserTele, null)
+                        if (!StringUtils.isEmpty(newUserTele.verifyCode)
+                                && !Boolean.parseBoolean(ConfigServiceManager.instance().getConfigValue('common.conf.debugMode'))) {
+                            newUserTele.verifyCode = null
+                        }
                         return Promise.pure(newUserTele)
                     }
                 }
@@ -179,6 +196,8 @@ class UserTFAResourceImpl implements UserTFAResource {
             throw new IllegalArgumentException('userTFA is null')
         }
 
+        userTFA.verifyCode = null
+
         def callback = authorizeCallbackFactory.create(userId)
         return RightsScope.with(authorizeService.authorize(callback)) {
             if (!AuthorizeContext.hasRights('update')) {
@@ -195,6 +214,10 @@ class UserTFAResourceImpl implements UserTFAResource {
                 return userTFAValidator.validateForUpdate(userId, userTFAId, userTFA, oldUserTeleCode).then {
                     return userTFAPhoneRepository.update(userTFA, oldUserTeleCode).then { UserTFA newUserTeleCode ->
                         newUserTeleCode = userTFAFilter.filterForGet(newUserTeleCode, null)
+                        if (!StringUtils.isEmpty(newUserTeleCode.verifyCode)
+                         && !Boolean.parseBoolean(ConfigServiceManager.instance().getConfigValue('common.conf.debugMode'))) {
+                            newUserTeleCode.verifyCode = null
+                        }
                         return Promise.pure(newUserTeleCode)
                     }
                 }
@@ -245,6 +268,11 @@ class UserTFAResourceImpl implements UserTFAResource {
                         if (newUserTeleCode != null) {
                             newUserTeleCode = userTFAFilter.filterForGet(newUserTeleCode,
                                     listOptions.properties?.split(',') as List<String>)
+
+                            if (!StringUtils.isEmpty(newUserTeleCode.verifyCode)
+                                    && !Boolean.parseBoolean(ConfigServiceManager.instance().getConfigValue('common.conf.debugMode'))) {
+                                newUserTeleCode.verifyCode = null
+                            }
 
                             result.items.add(newUserTeleCode)
                         }
