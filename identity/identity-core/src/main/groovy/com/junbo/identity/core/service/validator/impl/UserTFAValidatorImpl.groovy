@@ -247,7 +247,15 @@ class UserTFAValidatorImpl implements UserTFAValidator {
         return userTFAPhoneRepository.searchTFACodeByUserIdAndPIIAfterTime(userId, userTFA.personalInfo,
                 Integer.MAX_VALUE, 0, getTimeStartOffset(maxReuseSeconds)).then { List<UserTFA> codeList ->
             if (CollectionUtils.isEmpty(codeList)) {
-                userTFA.verifyCode = codeGenerator.generateCode()
+                String code = codeGenerator.generateCode()
+                if (userTFA.verifyType == TFAVerifyType.CALL.toString()) {
+                    if (code.length() > 5) {
+                        // TFA CALL will have the limit to 100 - 99999 limitation
+                        userTFA.verifyCode = code.substring(0, 5)
+                    }
+                } else {
+                    userTFA.verifyCode = code
+                }
             } else {
                 userTFA.verifyCode = codeList.get(0).verifyCode
             }

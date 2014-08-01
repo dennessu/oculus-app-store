@@ -83,7 +83,7 @@ class TeleSignImpl implements TeleSign {
             return getLocaleText(userTeleCode).then { String language ->
                 VerifyResponse response = null
                 try {
-                    response = verify.call(phoneNumber.info, language)
+                    response = verify.call(phoneNumber.info, language, userTeleCode.verifyCode, null, 0, null, true)
 
                     if (ArrayUtils.isEmpty(response.errors)) {
                         return Promise.pure(response)
