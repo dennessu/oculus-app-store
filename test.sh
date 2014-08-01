@@ -21,7 +21,7 @@ trap cleanup EXIT INT TERM
 ./startup.sh
 
 cd ./scripts/unittests/
-./ut_oauth.py
+python ./ut_oauth.py
 
 trap - EXIT INT TERM
 cleanup

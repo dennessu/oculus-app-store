@@ -144,7 +144,7 @@ class DataLoader {
                     resources.each { Resource resource ->
                         if (handler != null) {
                             LOGGER.info("handling resource: " + data + " " + resource.filename)
-                            String content = IOUtils.toString(resource.URI)
+                            String content = IOUtils.toString(resource.URI, "UTF-8")
                             handler.handle(content)
                         } else {
                             LOGGER.error("no handler for $data")
@@ -158,7 +158,7 @@ class DataLoader {
                             void run() {
                                 if (handler != null) {
                                     LOGGER.info("handling resource: " + data + " " + resource.filename)
-                                    String content = IOUtils.toString(resource.URI)
+                                    String content = IOUtils.toString(resource.URI, "UTF-8")
                                     handler.handle(content)
                                 } else {
                                     LOGGER.error("no handler for $data")

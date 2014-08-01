@@ -28,7 +28,7 @@ class LocaleDataHandler extends BaseDataHandler {
         Map<String, Locale> localeMap = new HashMap<>()
 
         resources.each { Resource resource ->
-            String content = IOUtils.toString(resource.URI)
+            String content = IOUtils.toString(resource.URI, "UTF-8")
             try {
                 Locale locale = transcoder.decode(new TypeReference<Locale>() {}, content) as Locale
                 localeMap.put(locale.localeCode, locale)
