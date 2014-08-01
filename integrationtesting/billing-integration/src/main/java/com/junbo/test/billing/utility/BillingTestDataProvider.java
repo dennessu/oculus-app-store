@@ -7,7 +7,6 @@ package com.junbo.test.billing.utility;
 
 import com.junbo.billing.spec.model.Balance;
 import com.junbo.billing.spec.model.BalanceItem;
-//import com.junbo.billing.spec.model.ShippingAddress;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
@@ -15,17 +14,11 @@ import com.junbo.common.id.*;
 import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderItem;
 import com.junbo.order.spec.model.PaymentInfo;
-import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.payment.spec.model.TypeSpecificDetails;
 import com.junbo.test.billing.apihelper.BalanceService;
-//import com.junbo.test.billing.apihelper.ShippingAddressService;
 import com.junbo.test.billing.apihelper.impl.BalanceServiceImpl;
 import com.junbo.test.billing.enums.BalanceType;
-//import com.junbo.test.common.Entities.ShippingAddressInfo;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
-import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
-import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PaymentInstrumentBase;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
 import com.junbo.test.catalog.OfferService;
@@ -35,12 +28,10 @@ import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.apihelper.order.OrderService;
 import com.junbo.test.common.apihelper.order.impl.OrderServiceImpl;
 import com.junbo.test.common.blueprint.Master;
-import com.junbo.test.common.exception.TestException;
 import com.junbo.test.common.libs.DBHelper;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.ShardIdHelper;
-import com.junbo.test.payment.apihelper.PaymentService;
-import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
+import com.junbo.test.payment.utility.PaymentTestDataProvider;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -52,7 +43,7 @@ import java.util.UUID;
  */
 public class BillingTestDataProvider extends BaseTestDataProvider {
     private UserService identityClient = UserServiceImpl.instance();
-    private PaymentService paymentClient = PaymentServiceImpl.getInstance();
+    private PaymentTestDataProvider paymentProvider = new PaymentTestDataProvider();
     private OfferService offerClient = OfferServiceImpl.instance();
     private OrderService orderClient = OrderServiceImpl.getInstance();
     private BalanceService balanceClient = BalanceServiceImpl.getInstance();
@@ -69,45 +60,7 @@ public class BillingTestDataProvider extends BaseTestDataProvider {
     }
 
     public String postPaymentInstrument(String uid, PaymentInstrumentBase paymentInfo) throws Exception {
-        PaymentInstrument paymentInstrument = new PaymentInstrument();
-        ArrayList<Long> admins = new ArrayList<>();
-        admins.add(IdConverter.hexStringToId(UserId.class, uid));
-        paymentInstrument.setAdmins(admins);
-        paymentInstrument.setLabel("4");
-        TypeSpecificDetails typeSpecificDetails = new TypeSpecificDetails();
-        Long billingAddressId = Master.getInstance().getUser(uid).getAddresses().get(0).getValue().getValue();
-        paymentInfo.setBillingAddressId(billingAddressId);
-        switch (paymentInfo.getType()) {
-            case CREDITCARD:
-                CreditCardInfo creditCardInfo = (CreditCardInfo) paymentInfo;
-                typeSpecificDetails.setExpireDate(creditCardInfo.getExpireDate());
-                typeSpecificDetails.setEncryptedCvmCode(creditCardInfo.getEncryptedCVMCode());
-                paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
-                paymentInstrument.setAccountName(creditCardInfo.getAccountName());
-                paymentInstrument.setAccountNumber(creditCardInfo.getAccountNum());
-                paymentInstrument.setIsValidated(creditCardInfo.isValidated());
-                paymentInstrument.setType(creditCardInfo.getType().getValue());
-                paymentInstrument.setBillingAddressId(creditCardInfo.getBillingAddressId());
-
-                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument));
-                return paymentInfo.getPid();
-
-            case EWALLET:
-                EwalletInfo ewalletInfo = (EwalletInfo) paymentInfo;
-                typeSpecificDetails.setStoredValueCurrency("usd");
-                paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
-                paymentInstrument.setAccountName(ewalletInfo.getAccountName());
-                paymentInstrument.setType(ewalletInfo.getType().getValue());
-                paymentInstrument.setIsValidated(ewalletInfo.isValidated());
-                paymentInstrument.setBillingAddressId(billingAddressId);
-                paymentInstrument.setBillingAddressId(ewalletInfo.getBillingAddressId());
-
-                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument));
-                return paymentInfo.getPid();
-
-            default:
-                throw new TestException(String.format("%s is not supported", paymentInfo.getType().toString()));
-        }
+        return paymentProvider.postPaymentInstrument(uid, paymentInfo);
     }
 
 
@@ -148,19 +101,6 @@ public class BillingTestDataProvider extends BaseTestDataProvider {
         order.setLocale(new LocaleId("en_US"));
         return orderClient.postOrder(order);
     }
-
-   /* public String postShippingAddressToUser(String uid, ShippingAddressInfo shippingAddressInfo) throws Exception {
-        ShippingAddress shippingAddress = new ShippingAddress();
-        shippingAddress.setStreet(shippingAddressInfo.getStreet());
-        shippingAddress.setCity(shippingAddressInfo.getCity());
-        shippingAddress.setState(shippingAddressInfo.getState());
-        shippingAddress.setPostalCode(shippingAddressInfo.getPostalCode());
-        shippingAddress.setCountry(shippingAddressInfo.getCountry());
-        shippingAddress.setFirstName(shippingAddressInfo.getFirstName());
-        shippingAddress.setLastName(shippingAddressInfo.getLastName());
-        shippingAddress.setPhoneNumber(shippingAddressInfo.getPhoneNumber());
-        return shippingClient.postShippingAddressToUser(uid, shippingAddress);
-    }*/
 
     public String quoteBalance(String uid, String pid) throws Exception {
         Balance balance = new Balance();

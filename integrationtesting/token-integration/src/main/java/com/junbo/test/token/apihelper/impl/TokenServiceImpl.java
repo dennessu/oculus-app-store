@@ -85,10 +85,7 @@ public class TokenServiceImpl extends HttpClientBase implements TokenService {
     @Override
     public TokenConsumption postTokenConsumption(TokenConsumption tokenConsumption, int expectedResponseCode)
             throws Exception {
-        if (!isServiceTokenExist()) {
-            oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType);
-        }
-        String responseBody = restApiCall(HTTPMethod.POST, tokenUrl + "consumption", tokenConsumption, 200, true);
+        String responseBody = restApiCall(HTTPMethod.POST, tokenUrl + "consumption", tokenConsumption, 200, false);
 
         TokenConsumption tokenConsumptionResult = new JsonMessageTranscoder().decode(
                 new TypeReference<TokenConsumption>() {

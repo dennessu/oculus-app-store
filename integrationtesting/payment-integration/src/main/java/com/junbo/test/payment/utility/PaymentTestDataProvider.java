@@ -20,13 +20,13 @@ import com.junbo.test.common.libs.DBHelper;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.ShardIdHelper;
 import com.junbo.test.payment.apihelper.PaymentService;
-import com.junbo.test.payment.apihelper.clientencryption.Card;
-import com.junbo.test.payment.apihelper.clientencryption.Encrypter;
-import com.junbo.test.payment.apihelper.clientencryption.EncrypterException;
 import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
 
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -105,7 +105,7 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 // paymentInstrument.setLastValidatedTime(gc.getTime());
                 // paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
                 paymentInstrument.setAccountName(creditCardInfo.getAccountName());
-                paymentInstrument.setAccountNumber(accountNum);
+                paymentInstrument.setAccountNumber(encryptCreditCardInfo(creditCardInfo));
                 paymentInstrument.setIsValidated(creditCardInfo.isValidated());
                 paymentInstrument.setType(creditCardInfo.getType().getValue());
                 paymentInstrument.setBillingAddressId(creditCardInfo.getBillingAddressId());
@@ -195,19 +195,24 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
         dbHelper.executeUpdate(sqlStr, DBHelper.DBName.PAYMENT);
     }
 
-    public String encryptCreditCardInfo(CreditCardInfo creditCardInfo) throws EncrypterException {
-        Encrypter e = new Encrypter(pubKey);
+    public String encryptCreditCardInfo(CreditCardInfo creditCardInfo) {
 
-        Card card = new Card.Builder(new Date())
-                .number(creditCardInfo.getAccountNum())
-                .cvc(creditCardInfo.getEncryptedCVMCode())
-                .expiryMonth("06")
-                .expiryYear("2020")
-                .holderName(creditCardInfo.getAccountNum())
-                .build();
+        ScriptEngineManager manager = new ScriptEngineManager();
+        ScriptEngine engine = manager.getEngineByName("javascript");
 
-        return e.encrypt(card.toString());
+        String jsFileName = "AdyenEncryptScript";
 
+        try {
+            String script = readFileContent(jsFileName);
+            engine.eval(script);
+            if (engine instanceof Invocable) {
+                Invocable invoke = (Invocable) engine;
+                Double c = (Double) invoke.invokeFunction("merge", 2, 3);
+            }
+        } catch (Exception e) {
+        }
+
+        return null;
     }
 
     String pubKey = "10001|80C7821C961865FB4AD23F172E220F819A5CC7B9956BC3458E2788"
