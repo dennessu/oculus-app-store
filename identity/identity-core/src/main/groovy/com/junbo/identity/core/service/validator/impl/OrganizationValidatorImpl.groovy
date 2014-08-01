@@ -72,7 +72,14 @@ class OrganizationValidatorImpl implements OrganizationValidator {
         if (organization.id != null) {
             throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
-        return checkBasicOrganizationInfo(organization)
+
+        return checkBasicOrganizationInfo(organization).then{
+            if (organization.isValidated) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid('isValidated', 'Can\'t create validated organization').exception()
+            }
+
+            return Promise.pure(null)
+        }
     }
 
     @Override
