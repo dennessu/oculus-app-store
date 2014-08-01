@@ -7,13 +7,19 @@
 package com.junbo.payment.db.entity.payment;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * Created by Administrator on 14-7-18.
+ * Settlement Detail Entity.
  */
+@Entity
+@Table(name = "settlement_batch_file")
 public class SettlementDetailEntity {
+    @Column(name = "batch_index")
     private Long batchIndex;
     @Column(name = "company_account")
     private String companyAccount;
@@ -31,6 +37,7 @@ public class SettlementDetailEntity {
     private String timeZone;
     @Column(name = "type")
     private String type;
+    @Id
     @Column(name = "modification_reference")
     private String modificationReference;
     @Column(name = "gross_currency")
@@ -39,7 +46,7 @@ public class SettlementDetailEntity {
     private BigDecimal grossDebit;
     @Column(name = "gross_credit")
     private BigDecimal grossCredit;
-    @Column(name = "user_id")
+    @Column(name = "exchange_rate")
     private BigDecimal exchangeRate;
     @Column(name = "net_currency")
     private String netCurrency;

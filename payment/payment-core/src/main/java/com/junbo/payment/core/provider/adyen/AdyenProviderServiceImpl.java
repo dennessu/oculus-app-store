@@ -328,21 +328,21 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
 
     @Override
     public Promise<PaymentTransaction> confirmNotify(PaymentTransaction payment, PaymentCallbackParams properties){
+        //validate signature: authResult + pspReference + merchantReference + skinCode + merchantReturnData
         if(!CommonUtil.isNullOrEmpty(properties.getPspReference()) && !CommonUtil.isNullOrEmpty(properties.getAuthResult())){
             String strToSign = properties.getAuthResult() + properties.getPspReference() +
                     properties.getMerchantReference() + properties.getSkinCode();
             if(!CommonUtil.calHMCASHA1(strToSign, skinSecret).equals(properties.getMerchantSig())){
-                LOGGER.error("Signature is not matched for:" + properties.getMerchantSig());
+                LOGGER.error("Signature is not matched for:" + strToSign);
                 throw AppServerExceptions.INSTANCE.errorCalculateHMCA().exception();
             }
         }else{
             LOGGER.error("invalid callback: Info is empty or not enough.");
             throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "invalid callback").exception();
         }
-        //validate signature: authResult + pspReference + merchantReference + skinCode + merchantReturnData
         if(properties.getAuthResult().equalsIgnoreCase(CONFIRMED_STATUS)){
-            updatePayment(payment,PaymentUtil.getPaymentStatus(PaymentStatus.SETTLED.toString()), properties.getPspReference());
-            payment.setStatus(PaymentStatus.SETTLED.toString());
+            updatePayment(payment,PaymentUtil.getPaymentStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString()), properties.getPspReference());
+            payment.setStatus(PaymentStatus.SETTLEMENT_SUBMITTED.toString());
             payment.setExternalToken(properties.getPspReference());
             //get the recurring info and save it back as pi external token:
             RecurringDetail recurringReference = getRecurringReference(payment.getPaymentInstrumentId());
@@ -422,7 +422,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
                 //Ignore of Credit Card Auth as CC use API call directly
                 if(!transaction.getPaymentProvider().equalsIgnoreCase(PaymentProvider.AdyenCC.toString())){
                     paymentRepositoryFacade.updatePayment(paymentId, PaymentUtil.getPaymentStatus(
-                            PaymentStatus.SETTLED.toString()), null);
+                            PaymentStatus.SETTLEMENT_SUBMITTED.toString()), null);
                 }
             }else if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.CANCELLATION.name())){
                 paymentRepositoryFacade.updatePayment(paymentId, PaymentUtil.getPaymentStatus(

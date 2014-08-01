@@ -48,7 +48,7 @@ public class ProxyExceptionResponse {
             }
         }else{
             status = 500;
-            body = String.format(ERROR_CODE, throwable.getMessage());
+            body = String.format(ERROR_CODE, throwable.toString());
         }
     }
 }

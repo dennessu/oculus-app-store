@@ -22,7 +22,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -109,7 +110,7 @@ public class FileProcessor {
     private void processBalance(Long batchId) {
         LOGGER.info("Sending check balance request for batch id: " + batchId);
         try {
-            loadFiles(batchDirectory + filePrefix + batchId + fileFormat);
+            loadFiles(new File(batchDirectory, filePrefix + batchId + fileFormat).getAbsolutePath());
         } catch (IOException e) {
             LOGGER.error("Sending check balance request for batch id: " + batchId);
             throw AppServerExceptions.INSTANCE.errorParseBatchFile(batchId.toString()).exception();
@@ -156,12 +157,12 @@ public class FileProcessor {
                 throw AppServerExceptions.INSTANCE.invalidBatchFile(filePath).exception();
             }
             Long fileIndex = getBatchIndex(filePath);
-            settlementDetailRepo.clearIfExists(fileIndex);
+            clearIfExists(fileIndex);
             CsvReader reader = new CsvReader(filePath);
             reader.readHeaders();
             int lineNumber = 0;
             List<SettlementDetail> details = new ArrayList<SettlementDetail>();
-            while (reader.readLine()){
+            while (!reader.readLine()){
                 lineNumber++;
                 SettlementDetail settlementDetail = new SettlementDetail();
                 settlementDetail.setBatchIndex(fileIndex);
@@ -170,20 +171,26 @@ public class FileProcessor {
                 settlementDetail.setPspReference(reader.getFieldValue("Psp Reference"));
                 settlementDetail.setMerchantReference(reader.getFieldValue("Merchant Reference"));
                 settlementDetail.setPaymentMethod(reader.getFieldValue("Payment Method"));
-                settlementDetail.setCreationDate(Date.valueOf(reader.getFieldValue("Creation Date")));
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                try {
+                    settlementDetail.setCreationDate(df.parse(reader.getFieldValue("Creation Date")));
+                } catch (ParseException e) {
+                    LOGGER.error("error parse create date file:" + filePath);
+                    throw AppServerExceptions.INSTANCE.invalidBatchFile(filePath).exception();
+                }
                 settlementDetail.setTimeZone(reader.getFieldValue("TimeZone"));
                 settlementDetail.setType(reader.getFieldValue("Type"));
                 settlementDetail.setModificationReference(reader.getFieldValue("Modification Reference"));
                 settlementDetail.setGrossCurrency(reader.getFieldValue("Gross Currency"));
-                settlementDetail.setGrossDebit(new BigDecimal(reader.getFieldValue("Gross Debit (GC)")));
-                settlementDetail.setGrossCredit(new BigDecimal(reader.getFieldValue("Gross Credit (GC)")));
-                settlementDetail.setExchangeRate(new BigDecimal(reader.getFieldValue("Exchange Rate")));
+                settlementDetail.setGrossDebit(getDecimal(reader.getFieldValue("Gross Debit (GC)")));
+                settlementDetail.setGrossCredit(getDecimal(reader.getFieldValue("Gross Credit (GC)")));
+                settlementDetail.setExchangeRate(getDecimal(reader.getFieldValue("Exchange Rate")));
                 settlementDetail.setNetCurrency(reader.getFieldValue("Net Currency"));
-                settlementDetail.setNetDebit(new BigDecimal(reader.getFieldValue("Net Debit (GC)")));
-                settlementDetail.setNetCredit(new BigDecimal(reader.getFieldValue("Net Credit (GC)")));
+                settlementDetail.setNetDebit(getDecimal(reader.getFieldValue("Net Debit (NC)")));
+                settlementDetail.setNetCredit(getDecimal(reader.getFieldValue("Net Credit (NC)")));
                 settlementDetail.setCommission(reader.getFieldValue("Commission (NC)"));
                 settlementDetail.setMarkup(reader.getFieldValue("Markup (NC)"));
-                settlementDetail.setSchemeFees(new BigDecimal(reader.getFieldValue("Scheme Fees (NC)")));
+                settlementDetail.setSchemeFees(getDecimal(reader.getFieldValue("Scheme Fees (NC)")));
                 settlementDetail.setInterchange(reader.getFieldValue("Interchange (NC)"));
                 settlementDetail.setPaymentMethodVariant(reader.getFieldValue("Payment Method Variant"));
                 settlementDetail.setAcquirer(reader.getFieldValue("Acquirer"));
@@ -197,6 +204,10 @@ public class FileProcessor {
                     details.clear();
                     lineNumber = 0;
                 }
+            }
+            if(lineNumber > 0){
+                //load to Database for the rest:
+                saveToDB(details);
             }
             reader.close();
             new File(filePath).delete();
@@ -213,7 +224,7 @@ public class FileProcessor {
         String[] fileNames = filePath.split("_");
         Long fileIndex = null;
         try{
-            fileIndex = Long.parseLong(fileNames[fileNames.length - 1]);
+            fileIndex = Long.parseLong(fileNames[fileNames.length - 1].replace(fileFormat, ""));
         }catch (Exception ex){
             LOGGER.error("error parse file name:" + filePath);
             throw AppServerExceptions.INSTANCE.invalidBatchFile(filePath).exception();
@@ -231,4 +242,22 @@ public class FileProcessor {
         });
     }
 
+    private void clearIfExists(final Long fileIndex) {
+        TransactionTemplate template = new TransactionTemplate(transactionManager);
+        template.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                settlementDetailRepo.clearIfExists(fileIndex);
+            }
+        });
+
+    }
+
+    private BigDecimal getDecimal(String value){
+        if(CommonUtil.isNullOrEmpty(value)){
+            return null;
+        }else{
+            return new BigDecimal(value);
+        }
+    }
 }

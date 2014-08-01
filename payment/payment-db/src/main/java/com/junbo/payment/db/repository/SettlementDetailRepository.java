@@ -34,7 +34,9 @@ public class SettlementDetailRepository {
     public void saveDetails(List<SettlementDetail> details){
         if(details != null){
             for(SettlementDetail detail : details){
-                settlementDetailDao.save(paymentMapper.toSettlementDetailEntity(detail, new MappingContext()));
+                SettlementDetailEntity entity = paymentMapper.toSettlementDetailEntity(detail, new MappingContext());
+                entity.setStatus("Open");
+                settlementDetailDao.save(entity);
             }
         }
     }
@@ -56,9 +58,9 @@ public class SettlementDetailRepository {
         return settlementDetailList;
     }
 
-    public void closeSettlement(SettlementDetail settlementDetail){
-        SettlementDetailEntity detail = settlementDetailDao.get(Long.parseLong(settlementDetail.getMerchantReference()));
-        detail.setStatus("Closed");
+    public void closeSettlement(SettlementDetail settlementDetail, String status){
+        SettlementDetailEntity detail = settlementDetailDao.get(settlementDetail.getModificationReference());
+        detail.setStatus(status);
         settlementDetailDao.update(detail);
     }
 }

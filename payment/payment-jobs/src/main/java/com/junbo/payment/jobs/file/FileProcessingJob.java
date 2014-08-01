@@ -30,4 +30,5 @@ public class FileProcessingJob {
     public void setFileProcessor(FileProcessor fileProcessor) {
         this.fileProcessor = fileProcessor;
     }
+
 }

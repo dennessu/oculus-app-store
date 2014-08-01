@@ -8,4 +8,6 @@ dependencies {
 
     compile junboProject(':payment-common')
     compile junboProject(':payment-core')
+
+    testCompile (libraries.spring_test)
 }

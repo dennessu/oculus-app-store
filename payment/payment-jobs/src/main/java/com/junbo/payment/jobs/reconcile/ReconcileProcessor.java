@@ -6,7 +6,6 @@
 
 package com.junbo.payment.jobs.reconcile;
 
-import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.core.PaymentTransactionService;
 import com.junbo.payment.db.repository.SettlementDetailRepository;
@@ -108,6 +107,38 @@ public class ReconcileProcessor {
 
     }
 
+    private void processPayment(final SettlementDetail settlementDetail) {
+
+        LOGGER.info("Sending check payment request for payment id: " + settlementDetail.getMerchantReference());
+        PaymentTransaction payment = new PaymentTransaction();
+        payment.setId(CommonUtil.decode(settlementDetail.getMerchantReference()));
+        PaymentEvent event = new PaymentEvent();
+        event.setPaymentId(payment.getId());
+        event.setType(PaymentEventType.REPORT_EVENT.toString());
+        event.setStatus(PaymentStatus.SETTLED.toString());
+        event.setRequest(CommonUtil.toJson(settlementDetail, null));
+        event.setResponse(SUCCESS_EVENT_RESPONSE);
+        String closeStatus = "Closed";
+        try{
+            paymentTransactionService.reportPaymentEvent(event, null).get();
+        }catch (Exception ex){
+            LOGGER.error("Error in reconcile batch:" + settlementDetail.getModificationMerchantReference() + " due to: " + ex.toString());
+            closeStatus = "ClosedWithError";
+        }
+        updateSettlementDetail(settlementDetail, closeStatus);
+    }
+
+    private void updateSettlementDetail(final SettlementDetail settlementDetail, final String closeStatus) {
+        TransactionTemplate template = new TransactionTemplate(transactionManager);
+        template.setReadOnly(true);
+        template.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                settlementDetailRepo.closeSettlement(settlementDetail, closeStatus);
+            }
+        });
+    }
+
     private void fetchToSettlePaymentIds(final BlockingQueue<SettlementDetail> ids) {
         TransactionTemplate template = new TransactionTemplate(transactionManager);
         template.setReadOnly(true);
@@ -118,45 +149,6 @@ public class ReconcileProcessor {
                 ids.addAll(paymentIdList);
             }
         });
-    }
-
-    private void updateSettlementDetail(final SettlementDetail settlementDetail) {
-        TransactionTemplate template = new TransactionTemplate(transactionManager);
-        template.setReadOnly(true);
-        template.execute(new TransactionCallbackWithoutResult() {
-            @Override
-            protected void doInTransactionWithoutResult(TransactionStatus status) {
-                settlementDetailRepo.closeSettlement(settlementDetail);
-            }
-        });
-    }
-
-    private void processPayment(final SettlementDetail settlementDetail) {
-
-        LOGGER.info("Sending check payment request for payment id: " + settlementDetail.getMerchantReference());
-        PaymentTransaction payment = new PaymentTransaction();
-        payment.setId(Long.parseLong(settlementDetail.getMerchantReference()));
-        PaymentEvent event = new PaymentEvent();
-        event.setPaymentId(payment.getId());
-        event.setType(PaymentEventType.REPORT_EVENT.toString());
-        event.setStatus(PaymentStatus.SETTLED.toString());
-        event.setRequest(CommonUtil.toJson(settlementDetail, null));
-        event.setResponse(SUCCESS_EVENT_RESPONSE);
-        paymentTransactionService.reportPaymentEvent(event, null)
-                .recover(new Promise.Func<Throwable, Promise<PaymentTransaction>>() {
-                    @Override
-                    public Promise<PaymentTransaction> apply(Throwable throwable) {
-                        LOGGER.error("Error in reconcile payment", throwable);
-                        return null;
-                    }
-                })
-                .then(new Promise.Func<PaymentTransaction, Promise<PaymentTransaction>>() {
-                    @Override
-                    public Promise<PaymentTransaction> apply(PaymentTransaction paymentTransaction) {
-                        updateSettlementDetail(settlementDetail);
-                        return null;
-                    }
-                });
     }
 
     private class PaymentProcessor implements Runnable {

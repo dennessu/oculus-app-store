@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Settlement Detail Dao.
  */
-public class SettlementDetailDao extends GenericDAOImpl<SettlementDetailEntity, Long> {
+public class SettlementDetailDao extends GenericDAOImpl<SettlementDetailEntity, String> {
     public SettlementDetailDao() {
         super(SettlementDetailEntity.class);
     }

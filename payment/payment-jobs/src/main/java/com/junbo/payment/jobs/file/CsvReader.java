@@ -11,8 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Csv Reader.
@@ -23,7 +22,7 @@ public class CsvReader {
     private BufferedReader reader;
     private String line;
     private Map<String, Integer> fieldIndex= new HashMap<String, Integer>();
-    public CsvReader(String filePath) throws FileNotFoundException {
+    public CsvReader(String filePath) throws IOException {
         this.filePath = filePath;
         reader = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
     }
@@ -39,7 +38,7 @@ public class CsvReader {
 
     public void readHeaders() throws IOException {
         boolean eof = readLine();
-        if(eof){
+        if(!eof){
             Integer index = 0;
             String[] fields = line.split(",");
             for(String field : fields){
@@ -49,8 +48,13 @@ public class CsvReader {
     }
 
     public String getFieldValue(String fieldName){
-        if(line != null){
+         if(line != null){
             String[] fields = line.split(",");
+            if(line.endsWith(",")){
+                ArrayList<String> arrays = new ArrayList<String>(Arrays.asList(fields));
+                arrays.add("");
+                fields = arrays.toArray(fields);
+            }
             Integer index = fieldIndex.get(fieldName);
             if(index == null){
                 LOGGER.error("get index error for file: "+ filePath + " with field:" + fieldName);
