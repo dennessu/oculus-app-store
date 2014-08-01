@@ -7,6 +7,7 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.enumid.LocaleId;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -23,12 +24,15 @@ public class Locale extends PropertyAssignedAwareResourceMeta<LocaleId> {
             "but also accept en-US in the GET request.")
     private String localeCode;
 
+    @XSSFreeString
     @ApiModelProperty(position = 3, required = false, value = "[Nullable]The short name of the locale.")
     private String shortName;
 
+    @XSSFreeString
     @ApiModelProperty(position = 4, required = false, value = "[Nullable]The long name of the locale.")
     private String longName;
 
+    @XSSFreeString
     @ApiModelProperty(position = 5, required = false, value = "[Nullable]The locale name of the locale.")
     private String localeName;
 

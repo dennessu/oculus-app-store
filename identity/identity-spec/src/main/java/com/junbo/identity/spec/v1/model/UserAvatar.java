@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
@@ -12,6 +13,7 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  */
 public class UserAvatar {
 
+    @XSSFreeString
     @ApiModelProperty(position = 1, required = false, value = "The avatar url.")
     private String href;
 

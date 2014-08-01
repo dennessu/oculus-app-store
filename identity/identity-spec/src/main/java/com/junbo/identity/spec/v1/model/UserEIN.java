@@ -5,13 +5,14 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 6/16/14.
  */
 public class UserEIN {
-
+    @XSSFreeString
     @ApiModelProperty(position = 1, required = true, value = "The user EIN information.")
     private String info;
 

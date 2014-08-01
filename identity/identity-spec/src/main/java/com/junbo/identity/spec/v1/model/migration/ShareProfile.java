@@ -5,14 +5,21 @@
  */
 package com.junbo.identity.spec.v1.model.migration;
 
+import com.junbo.common.jackson.annotation.XSSFreeRichText;
+import com.junbo.common.jackson.annotation.XSSFreeString;
+
 /**
  * Created by liangfu on 6/6/14.
  */
 public class ShareProfile {
+
+    @XSSFreeString
     private String headline;
 
+    @XSSFreeRichText
     private String summary;
 
+    @XSSFreeString
     private String url;
 
     private ShareProfileAvatar avatar;

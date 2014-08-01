@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.GroupId;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.common.jackson.annotation.HateoasLink;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -22,6 +23,7 @@ public class Group extends PropertyAssignedAwareResourceMeta<GroupId> {
     @JsonProperty("self")
     private GroupId id;
 
+    @XSSFreeString
     @ApiModelProperty(position = 2, required = true, value = "The name of the group resource.")
     private String name;
 

@@ -8,6 +8,7 @@ package com.junbo.identity.spec.v1.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.jackson.annotation.HateoasLink;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -24,6 +25,7 @@ public class Currency extends PropertyAssignedAwareResourceMeta<CurrencyId> {
     @JsonProperty("self")
     private CurrencyId id;
 
+    @XSSFreeString
     @ApiModelProperty(position = 2, required = true, value = "[Client Immutable] The currency code of the currency resource; always the same with self.id; " +
             "never displayed to users - use translationService(localeKeys.shortName) for that .")
     private String currencyCode;
@@ -32,9 +34,11 @@ public class Currency extends PropertyAssignedAwareResourceMeta<CurrencyId> {
     @HateoasLink("/countries?defaultCurrencyId={id}")
     private Link countries;
 
+    @XSSFreeString
     @ApiModelProperty(position = 4, required = true, value = "The symbol of the currency resource.")
     private String symbol;
 
+    @XSSFreeString
     @ApiModelProperty(position = 5, required = true, value = "Position to put the symbol when show currency number (BEFORE, AFTER, etc).")
     private String symbolPosition;
 

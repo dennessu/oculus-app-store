@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.Date;
  * Created by liangfu on 6/16/14.
  */
 public class UserVAT {
+    @XSSFreeString
     @ApiModelProperty(position = 1, required = true, value = "vatNumber")
     private String vatNumber;
 

@@ -5,21 +5,26 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 7/22/14.
  */
 public class ErrorDetail {
+    @XSSFreeString
     @ApiModelProperty(position = 1, required = false, value = "Error title.")
     private String errorTitle;
 
+    @XSSFreeString
     @ApiModelProperty(position = 2, required = false, value = "Error summary.")
     private String errorSummary;
 
+    @XSSFreeString
     @ApiModelProperty(position = 3, required = false, value = "Error information.")
     private String errorInformation;
 
+    @XSSFreeString
     @ApiModelProperty(position = 4, required = false, value = "Error support link.")
     private String supportLink;
 

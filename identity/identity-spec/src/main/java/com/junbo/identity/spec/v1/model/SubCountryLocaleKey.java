@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
@@ -12,9 +13,11 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  */
 public class SubCountryLocaleKey {
 
+    @XSSFreeString
     @ApiModelProperty(position = 1, required = true, value = "Short name.")
     private String shortName;
 
+    @XSSFreeString
     @ApiModelProperty(position = 2, required = true, value = "Long name.")
     private String longName;
 

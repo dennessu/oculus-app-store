@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserSecurityQuestionId;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -22,9 +23,11 @@ public class UserSecurityQuestion extends PropertyAssignedAwareResourceMeta<User
     @JsonProperty("self")
     private UserSecurityQuestionId id;
 
+    @XSSFreeString
     @ApiModelProperty(position = 2, required = true, value = "The text for the security question.")
     private String securityQuestion;
 
+    @XSSFreeString
     @ApiModelProperty(position = 3, required = true, value = "The security question answer, this is write only field.")
     private String answer;
 

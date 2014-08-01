@@ -5,21 +5,26 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 4/26/14.
  */
 public class UserName {
+    @XSSFreeString
     @ApiModelProperty(position = 2, required = false, value = "[Nullable] Null or the given name.")
     private String givenName;
 
+    @XSSFreeString
     @ApiModelProperty(position = 3, required = false, value = "[Nullable] Null or the middle name or perhaps the first letter of the middle name (middle initial).")
     private String middleName;
 
+    @XSSFreeString
     @ApiModelProperty(position = 4, required = false, value = "[Nullable] Null or the family name.")
     private String familyName;
 
+    @XSSFreeString
     @ApiModelProperty(position = 5, required = false, value = "[Nullable] Null or the preferred-name / nick-name.")
     private String nickName;
 

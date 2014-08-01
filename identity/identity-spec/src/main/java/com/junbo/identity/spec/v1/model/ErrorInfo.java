@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.cloudant.CloudantUnique;
 import com.junbo.common.id.ErrorIdentifier;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -23,6 +24,7 @@ public class ErrorInfo extends PropertyAssignedAwareResourceMeta<ErrorIdentifier
     @JsonProperty("self")
     private ErrorIdentifier id;
 
+    @XSSFreeString
     @ApiModelProperty(position = 2, required = true, value = "The error identifier, it must be as the format as componentId.errorCode.")
     private String errorIdentifier;
 

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.cloudant.CloudantUnique;
 import com.junbo.common.id.*;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -27,6 +28,7 @@ public class Organization extends PropertyAssignedAwareResourceMeta<Organization
     @JsonProperty("owner")
     private UserId ownerId;
 
+    @XSSFreeString
     @ApiModelProperty(position = 3, required = true, value = "The name of the organization.")
     private String name;
 

@@ -40,7 +40,7 @@ public class UserTFA extends PropertyAssignedAwareResourceMeta<UserTFAId> {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String verifyCode;
 
-    @ApiModelProperty(position = 6, required = false, value = "In which template the TFA code is sent to the user, it must be used in [CALL, SMS].")
+    @JsonIgnore
     private String template;
 
     @ApiModelProperty(position = 7, required = true, value = "The verify type, it must be in [CALL, SMS, MAIL].")

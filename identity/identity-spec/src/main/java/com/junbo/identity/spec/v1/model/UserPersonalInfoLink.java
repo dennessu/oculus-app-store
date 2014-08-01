@@ -8,6 +8,7 @@ package com.junbo.identity.spec.v1.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserPersonalInfoId;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
@@ -18,6 +19,7 @@ public class UserPersonalInfoLink {
     @ApiModelProperty(position = 1, required = true, value = "Whether this link is default.")
     private Boolean isDefault;
 
+    @XSSFreeString
     @ApiModelProperty(position = 2, required = false, value = "Label of this link.")
     private String label;
 

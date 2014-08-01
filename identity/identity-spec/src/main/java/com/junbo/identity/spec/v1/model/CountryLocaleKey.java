@@ -5,6 +5,7 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
@@ -12,12 +13,15 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
  */
 public class CountryLocaleKey {
 
+    @XSSFreeString
     @ApiModelProperty(position = 1, required = true, value = "Short name.")
     private String shortName;
 
+    @XSSFreeString
     @ApiModelProperty(position = 2, required = true, value = "Long name.")
     private String longName;
 
+    @XSSFreeString
     @ApiModelProperty(position = 3, required = false, value = " [Nullable] Name of the postal code in this specific country, as per our research," +
             " postal code is interperated differently in different countries. For example, in US, it's called \"ZIP code\" in en_US stays as \"ZIP code\" " +
             "in different locales;" +

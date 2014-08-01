@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.enumid.DeviceTypeId;
 import com.junbo.common.id.DeviceId;
 import com.junbo.common.jackson.annotation.HateoasLink;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
@@ -28,9 +29,11 @@ public class Device extends PropertyAssignedAwareResourceMeta<DeviceId> {
     @ApiModelProperty(position = 2, required = true, value = "The Link to the DeviceType of this device.")
     private DeviceTypeId type;
 
+    @XSSFreeString
     @ApiModelProperty(position = 3, required = true, value = "The serial number of this Device.")
     private String serialNumber;
 
+    @XSSFreeString
     @ApiModelProperty(position = 4, required = true, value = "The firmware version on this Device.")
     private String firmwareVersion;
 

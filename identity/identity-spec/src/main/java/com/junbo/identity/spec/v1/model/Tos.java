@@ -8,6 +8,8 @@ package com.junbo.identity.spec.v1.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.id.TosId;
+import com.junbo.common.jackson.annotation.XSSFreeRichText;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -29,12 +31,15 @@ public class Tos extends PropertyAssignedAwareResourceMeta<TosId> {
     @ApiModelProperty(position = 3, required = true, value = "Array of links to Country resource, represents which countries this TOS is good in.")
     private List<CountryId> countries = new ArrayList<>();
 
+    @XSSFreeString
     @ApiModelProperty(position = 4, required = true, value = "Version number of the TOS.")
     private String version;
 
+    @XSSFreeString
     @ApiModelProperty(position = 5, required = true, value = "The title of the TOS.")
     private String title;
 
+    @XSSFreeRichText
     @ApiModelProperty(position = 6, required = true, value = "The content of the TOS resource.")
     private String content;
 

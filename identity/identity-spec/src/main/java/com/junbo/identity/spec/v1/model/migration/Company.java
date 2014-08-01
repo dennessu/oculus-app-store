@@ -6,6 +6,7 @@
 package com.junbo.identity.spec.v1.model.migration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 
 /**
  * Created by liangfu on 6/18/14.
@@ -13,13 +14,28 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Company {
     @JsonProperty("id")
     private Long companyId;
+    @XSSFreeString
     private String name;
+
+    @XSSFreeString
     private String address;
+
+    @XSSFreeString
     private String city;
+
+    @XSSFreeString
     private String state;
+
+    @XSSFreeString
     private String postalCode;
+
+    @XSSFreeString
     private String country;
+
+    @XSSFreeString
     private String phone;
+
+    @XSSFreeString
     private String type;
     private Boolean isAdmin;
 

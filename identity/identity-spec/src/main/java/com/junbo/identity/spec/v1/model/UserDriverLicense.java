@@ -5,12 +5,14 @@
  */
 package com.junbo.identity.spec.v1.model;
 
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 4/26/14.
  */
 public class UserDriverLicense {
+    @XSSFreeString
     @ApiModelProperty(position = 1, required = false, value = "The user's driver license number.")
     private String info;
 

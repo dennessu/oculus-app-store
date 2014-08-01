@@ -6,6 +6,7 @@
 package com.junbo.identity.spec.v1.model.migration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 
 import java.util.Date;
 import java.util.List;
@@ -17,13 +18,24 @@ import java.util.Map;
 public class OculusInput {
     @JsonProperty("id")
     private Long currentId;
+    @XSSFreeString
     private String firstName;
+
+    @XSSFreeString
     private String lastName;
+
+    @XSSFreeString
     private String email;
+
+    @XSSFreeString
     private String username;
     private String password;
+
+    @XSSFreeString
     private String gender;
     private Date dob;
+
+    @XSSFreeString
     private String nickname;
     private Number timezone;
     private String language;

@@ -8,6 +8,7 @@ package com.junbo.identity.spec.v1.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserAuthenticatorId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -28,6 +29,7 @@ public class UserAuthenticator extends PropertyAssignedAwareResourceMeta<UserAut
             value = "External authenticator type, must be in [GOOGLE, FACEBOOK, TWITTER].")
     private String type;
 
+    @XSSFreeString
     @ApiModelProperty(position = 4, required = true, value = "The user ID that is used by the user to authenticate with the external authenticator.")
     @JsonProperty("externalUserId")
     private String externalId;

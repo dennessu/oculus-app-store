@@ -5,10 +5,13 @@
  */
 package com.junbo.identity.spec.v1.model.migration;
 
+import com.junbo.common.jackson.annotation.XSSFreeString;
+
 /**
  * Created by liangfu on 6/19/14.
  */
 public class ShareProfileAvatar {
+    @XSSFreeString
     private String href;
 
     public String getHref() {

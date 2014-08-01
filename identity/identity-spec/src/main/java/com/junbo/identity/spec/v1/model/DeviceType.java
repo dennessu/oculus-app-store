@@ -7,6 +7,7 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.enumid.DeviceTypeId;
+import com.junbo.common.jackson.annotation.XSSFreeRichText;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -31,6 +32,7 @@ public class DeviceType extends PropertyAssignedAwareResourceMeta<DeviceTypeId> 
     @ApiModelProperty(position = 3, required = true, value = "Map from available firmware version to firmware URL for this DeviceType.")
     private Map<String, String> availableFirmwares = new HashMap<>();
 
+    @XSSFreeRichText
     @ApiModelProperty(position = 4, required = true, value = "[Nullable] The static URL for Instruction Manual.")
     private String instructionManual;
 

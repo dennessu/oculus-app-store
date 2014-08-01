@@ -8,6 +8,7 @@ package com.junbo.identity.spec.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.enumid.CountryId;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.ObjectUtils;
 
@@ -15,18 +16,23 @@ import org.apache.commons.lang3.ObjectUtils;
  * Created by xmchen on 14-4-15.
  */
 public class Address{
+    @XSSFreeString
     @ApiModelProperty(position = 1, required = true, value = "First address line")
     private String street1;
 
+    @XSSFreeString
     @ApiModelProperty(position = 2, required = false, value = "[Nullable] Second address line.")
     private String street2;
 
+    @XSSFreeString
     @ApiModelProperty(position = 3, required = false, value = "[Nullable] Third address line.")
     private String street3;
 
+    @XSSFreeString
     @ApiModelProperty(position = 4, required = true, value = "Name of the city.")
     private String city;
 
+    @XSSFreeString
     @ApiModelProperty(position = 5, required = false, value = "[Nullable] Non-null name of the state/province in countries that have these subcountries, " +
             "otherwise null.")
     private String subCountry;
@@ -35,6 +41,7 @@ public class Address{
     @JsonProperty("country")
     private CountryId countryId;
 
+    @XSSFreeString
     @ApiModelProperty(position = 7, required = false, value = "[Nullable] The address's postal/zip code, or null.")
     private String postalCode;
 

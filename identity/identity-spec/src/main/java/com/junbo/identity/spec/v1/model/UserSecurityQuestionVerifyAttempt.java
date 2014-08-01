@@ -10,6 +10,7 @@ import com.junbo.common.id.ClientId;
 import com.junbo.common.id.UserId;
 import com.junbo.common.id.UserSecurityQuestionId;
 import com.junbo.common.id.UserSecurityQuestionVerifyAttemptId;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -26,6 +27,7 @@ public class UserSecurityQuestionVerifyAttempt extends PropertyAssignedAwareReso
     @ApiModelProperty(position = 2, required = false, value = "[Nullable]The ip address where the security question attempt is initiated.")
     private String ipAddress;
 
+    @XSSFreeString
     @ApiModelProperty(position = 3, required = false, value = "[Nullable]The agent where the UserSecurityQuestionVerifyAttempt is passed through. " +
             "For example, if user do UserSecurityQuestionVerifyAttempt via a webkit from game \"Angry Bird\", " +
             "the userAgent will be the Webkit(FireFox or Chrome, etc).")
@@ -42,6 +44,7 @@ public class UserSecurityQuestionVerifyAttempt extends PropertyAssignedAwareReso
     @JsonProperty("wasSuccessful")
     private Boolean succeeded;
 
+    @XSSFreeString
     @ApiModelProperty(position = 6, required = true, value = "User security question answer.")
     private String value;
 
