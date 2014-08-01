@@ -141,6 +141,7 @@ public class TestPostItemRevision extends BaseTestClass {
         testItemRevision.setStatus("invalidValue");
         verifyExpectedError(testItemRevision);
 
+        //set status to not allowed Enum value
         testItemRevision.setStatus(CatalogEntityStatus.REJECTED.name());
         verifyExpectedError(testItemRevision);
 
@@ -163,8 +164,9 @@ public class TestPostItemRevision extends BaseTestClass {
             logger.logInfo("Expected exception: " + ex);
         }
 
-        //locales: name
         testItemRevision.setItemId(item1.getItemId());
+
+        //locales: name
         Map<String, ItemRevisionLocaleProperties> locales = new HashMap<>();
         ItemRevisionLocaleProperties itemRevisionLocaleProperties = new ItemRevisionLocaleProperties();
         itemRevisionLocaleProperties.setName(null);
@@ -172,11 +174,11 @@ public class TestPostItemRevision extends BaseTestClass {
         testItemRevision.setLocales(locales);
         verifyExpectedError(testItemRevision);
 
-        //set binaries for not APP and DOWNLOADED_ADDITION type
         itemRevisionLocaleProperties.setName("testItemRevision_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
         locales.put(defaultLocale, itemRevisionLocaleProperties);
         testItemRevision.setLocales(locales);
 
+        //set binaries for not APP and DOWNLOADED_ADDITION type
         Item item = itemService.postDefaultItem(CatalogItemType.PHYSICAL, organizationId);
         testItemRevision.setItemId(item.getItemId());
         Map<String, Binary> binaries = new HashMap<>();
@@ -188,8 +190,7 @@ public class TestPostItemRevision extends BaseTestClass {
         binaries.put("PC", binary);
         testItemRevision.setBinaries(binaries);
 
-        //could post successfully due to bug fix 389
-        itemRevisionService.postItemRevision(testItemRevision);
+        testItemRevision = itemRevisionService.postItemRevision(testItemRevision);
 
         //duplicate packageName
         Item item3 = itemService.postDefaultItem(CatalogItemType.APP, organizationId);
@@ -202,13 +203,13 @@ public class TestPostItemRevision extends BaseTestClass {
         List<String> hostItem = new ArrayList<>();
         hostItem.add(item3.getItemId());
         tmpItemRevision.setIapHostItemIds(hostItem);
-        ItemRevision itemRevisionRtn = itemRevisionService.postItemRevision(tmpItemRevision);
-
         if (item2.getType().equalsIgnoreCase(CatalogItemType.APP.name()) ||
                 item2.getType().equalsIgnoreCase(CatalogItemType.DOWNLOADED_ADDITION.name())) {
-            itemRevisionRtn.setDownloadName("download name");
-            itemRevisionRtn.setBinaries(binaries);
+            tmpItemRevision.setDownloadName("download name");
+            tmpItemRevision.setBinaries(binaries);
         }
+
+        ItemRevision itemRevisionRtn = itemRevisionService.postItemRevision(tmpItemRevision);
         releaseItemRevision(itemRevisionRtn);
 
         if (item1.getType().equalsIgnoreCase(CatalogItemType.APP.name()) ||
@@ -224,8 +225,7 @@ public class TestPostItemRevision extends BaseTestClass {
         testItemRevision.setItemId(item1.getItemId());
         testItemRevision.setPackageName(packageName);
 
-        //could post successfully due to bug fix 389
-        itemRevisionService.postItemRevision(testItemRevision);
+        verifyExpectedError(testItemRevision);
     }
 
     private void checkItemRevisionRequiredFields(ItemRevision itemRevisionActual, ItemRevision itemRevisionExpected) {

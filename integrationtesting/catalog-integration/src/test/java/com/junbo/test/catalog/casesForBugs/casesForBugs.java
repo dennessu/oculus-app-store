@@ -235,15 +235,16 @@ public class casesForBugs extends BaseTestClass {
         OrganizationId organizationId2 = organization2.getId();
 
         Item item = itemService.postDefaultItem(CatalogItemType.APP, organizationId2);
-        ItemRevision itemRevisionPrepared = itemRevisionService.prepareItemRevisionEntity(defaultDigitalItemRevisionFileName);
+        ItemRevision itemRevision = itemRevisionService.postDefaultItemRevision(item);
 
-        itemRevisionPrepared.setItemId(item.getItemId());
-        itemRevisionPrepared.setOwnerId(organizationId1);
-
-        ItemRevision itemRevision = itemRevisionService.postItemRevision(itemRevisionPrepared);
+        itemRevision.setOwnerId(organizationId1);
 
         itemRevision.setStatus(CatalogEntityStatus.REJECTED.name());
-        itemRevision = itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
+        try {
+            itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision, 400);
+        } catch (Exception ex) {
+            logger.logInfo("Expected exception");
+        }
 
         //there's check for Approved and Pending review status
         itemRevision.setStatus(CatalogEntityStatus.APPROVED.name());
@@ -258,10 +259,12 @@ public class casesForBugs extends BaseTestClass {
 
         //offer and offer revision
         Offer offer = offerService.postDefaultOffer(organizationId2);
-        OfferRevision offerRevisionPrepared = offerRevisionService.prepareOfferRevisionEntity(defaultOfferRevisionFileName, organizationId1, false);
+        OfferRevision offerRevisionPrepared = offerRevisionService.prepareOfferRevisionEntity(defaultOfferRevisionFileName, organizationId2, false);
         offerRevisionPrepared.setOfferId(offer.getOfferId());
         offerRevisionPrepared.setItems(null);
         OfferRevision offerRevision = offerRevisionService.postOfferRevision(offerRevisionPrepared);
+
+        offerRevision.setOwnerId(organizationId1);
 
         offerRevision.setStatus(CatalogEntityStatus.PENDING_REVIEW.name());
         try {
@@ -288,6 +291,11 @@ public class casesForBugs extends BaseTestClass {
         } catch (Exception ex) {
             logger.logInfo("Expected exception");
         }
+
+        itemEntry.setItemId(item.getItemId());
+        itemEntities.clear();
+        itemEntities.add(itemEntry);
+        offerRevision.setItems(itemEntities);
 
         //offer and subOffer
         Master.getInstance().setCurrentUid(IdConverter.idToHexString(organization1.getOwnerId()));

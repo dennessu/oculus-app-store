@@ -253,10 +253,6 @@ public class TestPutOfferRevision extends BaseTestClass {
 
         //set publisher to null
         offerRevision.setOwnerId(null);
-
-        offerRevision = offerRevisionService.updateOfferRevision(offerRevisionId, offerRevision);
-
-        offerRevision.setStatus(CatalogEntityStatus.APPROVED.name());
         verifyExpectedFailure(offerRevisionId, offerRevision);
 
         offerRevision.setOwnerId(organizationId);
@@ -348,9 +344,6 @@ public class TestPutOfferRevision extends BaseTestClass {
         offerRevision.setFutureExpansion(futureExpansion);
 
         offerRevision.setStatus(CatalogEntityStatus.DRAFT.name());
-        offerRevision = offerRevisionService.updateOfferRevision(offerRevisionId, offerRevision);
-
-        offerRevision.setStatus(CatalogEntityStatus.APPROVED.name());
         verifyExpectedFailure(offerRevisionId, offerRevision);
 
     }
