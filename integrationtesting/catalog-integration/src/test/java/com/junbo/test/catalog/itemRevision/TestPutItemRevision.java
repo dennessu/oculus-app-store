@@ -5,34 +5,32 @@
  */
 package com.junbo.test.catalog.itemRevision;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.junbo.catalog.spec.model.item.Binary;
-import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
-import com.junbo.catalog.spec.model.offer.ItemEntry;
-import com.junbo.catalog.spec.model.offer.OfferRevision;
-import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
+import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
 import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.test.catalog.enums.CatalogItemType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.test.catalog.impl.ItemServiceImpl;
 import com.junbo.test.catalog.ItemRevisionService;
 import com.junbo.test.catalog.util.BaseTestClass;
+import com.junbo.catalog.spec.model.item.Binary;
+import com.junbo.test.common.libs.RandomFactory;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.test.catalog.ItemService;
-import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.property.*;
 
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.Assert;
 
 import java.util.ArrayList;
 import java.util.HashMap;
