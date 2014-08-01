@@ -1,5 +1,8 @@
 # Environment Setup Guide
 
+**You don't have to install postgresql and couchdb, check out the docker solution**
+[Use docker to run dev environment](docs/devdocs/DockerAsDevEnv.md)
+
 ## Install Base Software
 ### Setup Environment for Windows
 The following guide is for setting up windows as the development and testing environment.
