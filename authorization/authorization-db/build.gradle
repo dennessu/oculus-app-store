@@ -3,4 +3,5 @@ apply plugin: 'groovy'
 dependencies {
     compile junboProject(':authorization-common')
     compile junboProject(':authorization-spec')
+    compile (libraries.common_io)
 }

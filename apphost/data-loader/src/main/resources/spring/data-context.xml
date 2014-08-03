@@ -20,11 +20,6 @@
         <property name="clientRepository" ref="clientRepository"/>
     </bean>
 
-    <bean id="apiDefinitionDataHandler" class="com.junbo.data.handler.ApiDefinitionDataHandler"
-          parent="baseDataHandler">
-        <property name="apiDefinitionResource" ref="defaultApiDefinitionResource"/>
-    </bean>
-
     <bean id="scopeDataHandler" class="com.junbo.data.handler.ScopeDataHandler" parent="baseDataHandler">
         <property name="scopeEndpoint" ref="defaultScopeEndpoint"/>
     </bean>
@@ -90,7 +85,6 @@
         <property name="handlers">
             <map>
                 <entry key="client" value-ref="clientDataHandler"/>
-                <entry key="api-definition" value-ref="apiDefinitionDataHandler"/>
                 <entry key="scope" value-ref="scopeDataHandler"/>
                 <entry key="country" value-ref="countryDataHandler"/>
                 <entry key="currency" value-ref="currencyDataHandler"/>
@@ -108,7 +102,6 @@
         <property name="dataList">
             <list>
                 <value>client</value>
-                <value>api-definition</value>
                 <value>scope</value>
                 <value>locale</value>
                 <value>currency</value>

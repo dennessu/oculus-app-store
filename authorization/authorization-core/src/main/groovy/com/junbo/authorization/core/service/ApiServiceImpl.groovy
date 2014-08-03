@@ -5,7 +5,6 @@
  */
 package com.junbo.authorization.core.service
 import com.junbo.authorization.db.repository.ApiDefinitionRepository
-import com.junbo.authorization.spec.error.AppErrors
 import com.junbo.authorization.spec.model.ApiDefinition
 import com.junbo.common.error.AppCommonErrors
 import groovy.transform.CompileStatic
@@ -30,37 +29,5 @@ class ApiServiceImpl implements ApiService {
             throw AppCommonErrors.INSTANCE.resourceNotFound('api-definition', apiName).exception()
         }
         return api
-    }
-
-    @Override
-    ApiDefinition saveApi(ApiDefinition apiDefinition) {
-
-        ApiDefinition existingApi = apiDefinitionRepository.getApi(apiDefinition.apiName)
-
-        if (existingApi != null) {
-            throw AppErrors.INSTANCE.duplicateApiName(apiDefinition.apiName).exception()
-        }
-
-        return apiDefinitionRepository.saveApi(apiDefinition)
-    }
-
-    @Override
-    ApiDefinition updateApi(String apiName, ApiDefinition apiDefinition) {
-        ApiDefinition existingApi = apiDefinitionRepository.getApi(apiDefinition.apiName)
-        if (existingApi == null) {
-            throw AppCommonErrors.INSTANCE.resourceNotFound('api-definition', apiName).exception()
-        }
-
-        return apiDefinitionRepository.updateApi(apiDefinition, existingApi)
-    }
-
-    @Override
-    void deleteApi(String apiName) {
-
-        ApiDefinition existingApi = apiDefinitionRepository.getApi(apiName)
-
-        if (existingApi != null) {
-            apiDefinitionRepository.deleteApi(existingApi)
-        }
     }
 }

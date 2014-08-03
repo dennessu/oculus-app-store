@@ -28,15 +28,4 @@ public interface ApiDefinitionResource {
     @GET
     @Path("/{apiName}")
     Promise<ApiDefinition> get(@PathParam("apiName") String apiName);
-
-    @POST
-    Promise<ApiDefinition> create(ApiDefinition apiDefinition);
-
-    @PUT
-    @Path("/{apiName}")
-    Promise<ApiDefinition> update(@PathParam("apiName") String apiName, ApiDefinition apiDefinition);
-
-    @DELETE
-    @Path("/{apiName}")
-    Promise<Void> delete(@PathParam("apiName") String apiName);
 }

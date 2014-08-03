@@ -44,21 +44,4 @@ class ApiDefinitionResourceImpl implements ApiDefinitionResource {
 
         return Promise.pure(apiDefinition)
     }
-
-    @Override
-    Promise<ApiDefinition> create(ApiDefinition apiDefinition) {
-        return Promise.pure(apiService.saveApi(apiDefinition))
-    }
-
-    @Override
-    Promise<ApiDefinition> update(String apiName, ApiDefinition apiDefinition) {
-        return Promise.pure(apiService.updateApi(apiName, apiDefinition))
-    }
-
-    @Override
-    Promise<Void> delete(String apiName) {
-        apiService.deleteApi(apiName)
-
-        return Promise.pure(null)
-    }
 }

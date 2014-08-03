@@ -18,19 +18,4 @@ class ApiDefinitionRepositoryCloudantImpl extends CloudantClient<ApiDefinition> 
     ApiDefinition getApi(String apiName) {
         return cloudantGetSync(apiName)
     }
-
-    @Override
-    ApiDefinition saveApi(ApiDefinition api) {
-        return cloudantPostSync(api)
-    }
-
-    @Override
-    ApiDefinition updateApi(ApiDefinition api, ApiDefinition oldApi) {
-        return cloudantPutSync(api, oldApi)
-    }
-
-    @Override
-    void deleteApi(ApiDefinition api) {
-        cloudantDeleteSync(api)
-    }
 }

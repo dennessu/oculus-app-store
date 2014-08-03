@@ -14,10 +14,4 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface ApiService {
     ApiDefinition getApi(String apiName)
-
-    ApiDefinition saveApi(ApiDefinition apiDefinition)
-
-    ApiDefinition updateApi(String apiName, ApiDefinition apiDefinition)
-
-    void deleteApi(String apiName)
 }
