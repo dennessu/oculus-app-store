@@ -1,5 +1,6 @@
 package com.junbo.common.cloudant.client
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.cloudant.CloudantEntity
 import com.junbo.common.cloudant.CloudantMarshaller
 import com.junbo.common.cloudant.DefaultCloudantMarshaller
@@ -35,6 +36,7 @@ class CloudantClientImpl implements CloudantClientInternal {
 
     private static final String VIEW_PATH   = '/_design/views/_view/'
     private static final String SEARCH_PATH = '/_design/views/_search/'
+    private static final String DEFAULT_DESIGN_ID_PREFIX = '_design/'
     private static final String HIGH_KEY_POSTFIX = '\ufff0'
 
     private static CloudantClientImpl singleton = new CloudantClientImpl()
@@ -162,7 +164,7 @@ class CloudantClientImpl implements CloudantClientInternal {
             query.put('include_docs', includeDocs.toString())
         }
 
-        return executeRequest(dbUri, HttpMethod.GET, '_all_docs', query, null).then ({ Response response ->
+        return executeRequest(dbUri, HttpMethod.GET, '_all_docs', query, null).then { Response response ->
             if (response.statusCode != HttpStatus.OK.value()) {
                 CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
 
@@ -170,8 +172,28 @@ class CloudantClientImpl implements CloudantClientInternal {
                         " reason: $cloudantError.reason")
             }
 
-            return (CloudantQueryResult)marshaller.unmarshall(response.responseBody, CloudantQueryResult, String, entityClass)
-        })
+            def result = (CloudantQueryResult)marshaller.unmarshall(response.responseBody, CloudantQueryResult, CloudantQueryResult.AllResultEntity, JsonNode)
+
+            def list = new ArrayList<>()
+            return Promise.each(result.rows) { CloudantQueryResult.ResultObject row ->
+                if (row.id.startsWith(DEFAULT_DESIGN_ID_PREFIX)) {
+                    return Promise.pure(null)
+                }
+                // tricky: effectively converting ResultObject<String, JsonNode> to ResultObject<String, T>
+                if (includeDocs && row.doc != null) {
+                    row.doc = marshaller.unmarshall(row.doc.toString(), entityClass)
+                }
+                list.add(row)
+                return Promise.pure(null)
+            }.then {
+                result.rows = list
+                if (result.totalRows != null) {
+                    // exclude the _design row
+                    result.totalRows = result.totalRows - 1
+                }
+                return Promise.pure(result)
+            }
+        }
     }
 
     @Override

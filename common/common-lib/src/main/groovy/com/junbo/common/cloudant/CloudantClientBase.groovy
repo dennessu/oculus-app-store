@@ -160,13 +160,18 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
     }
 
     protected Promise<List<T>> cloudantGetAll(Integer limit, Integer skip, boolean descending) {
-        return getEffective().cloudantGetAll(getDbUri(null), entityClass, limit, skip, descending, true).syncThen { CloudantQueryResult searchResult ->
-            if (searchResult.rows != null) {
-                return searchResult.rows.collect { CloudantQueryResult.ResultObject result ->
-                    return (T) result.doc
+        def future = getEffective().cloudantGetAll(getDbUri(null), entityClass, limit, skip, descending, this.includeDocs)
+        if (!this.includeDocs) {
+            future = future.then { CloudantQueryResult result ->
+                return fetchDocs(result)
+            }
+        }
+        return future.syncThen { CloudantQueryResult result ->
+            if (result.rows != null) {
+                return result.rows.collect { CloudantQueryResult.ResultObject row ->
+                    return (T) row.doc
                 }
             }
-
             return []
         }
     }
@@ -278,7 +283,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
     private Promise<CloudantQueryResult> fetchDocs(CloudantQueryResult result) {
         if (result.rows != null) {
             return Promise.each(result.rows) { CloudantQueryResult.ResultObject row ->
-                row.doc = cloudantGet(row.id).get()
+                    row.doc = cloudantGet(row.id).get()
                 return Promise.pure(null)
             }.then {
                 return Promise.pure(result)

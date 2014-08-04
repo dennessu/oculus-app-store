@@ -244,6 +244,9 @@ class OAuthTests(unittest.TestCase):
         assert view["model"]["reset_password_success"] == "true"
         pass
 
+    def testGetCountries(self):
+        return curlJson('GET', ut.test_uri, '/v1/countries')
+
     def genUserInfo(self):
         user = Object()
         
