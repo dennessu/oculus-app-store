@@ -12,6 +12,7 @@ import com.junbo.cart.spec.model.item.OfferItem;
 import com.junbo.common.id.CartId;
 import com.junbo.common.id.CouponId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.junbo.common.model.ResourceMeta;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -49,6 +50,7 @@ public class Cart extends ResourceMeta<CartId> {
     @NotNull(groups = Group.CartCreate.class)
     @NotEmpty(groups = Group.CartCreate.class)
     @Size(min=1, max=80, groups = Group.CartCreate.class)
+    @XSSFreeString
     private String cartName;
 
     @ApiModelProperty(required = true, position = 4, value = "The shopping cart items.")
