@@ -10,12 +10,7 @@ package com.junbo.test.payment.apihelper.clientencryption;
  */
 
 import java.math.BigInteger;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.security.SecureRandom;
+import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
 
@@ -28,6 +23,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
 import org.apache.commons.codec.binary.Base64;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 
 /**
@@ -47,6 +43,7 @@ public class Encrypter {
 
     public Encrypter(String publicKeyString) throws EncrypterException {
 
+        Security.addProvider(new BouncyCastleProvider());
         srandom = new SecureRandom();
         String[] keyComponents = publicKeyString.split("\\|");
 

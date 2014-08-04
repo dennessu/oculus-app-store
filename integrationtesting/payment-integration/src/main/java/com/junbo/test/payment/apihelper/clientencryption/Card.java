@@ -90,12 +90,12 @@ public class Card {
 
         JSONObject obj = new JSONObject();
         try {
-            obj.put("generationtime", df.format(generationtime));
-            obj.put("number", number);
-            obj.put("holderName", holderName);
             obj.put("cvc", cvc);
-            obj.put("expiryMonth", expiryMonth);
-            obj.put("expiryYear", expiryYear);
+            obj.put("expiryMonth", "06");
+            obj.put("expiryYear", "2016");
+            obj.put("generationtime", df.format(generationtime));
+            obj.put("holderName", "test");
+            obj.put("number", "4111111111111111");
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

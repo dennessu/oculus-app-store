@@ -20,14 +20,13 @@ import com.junbo.test.common.libs.DBHelper;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.ShardIdHelper;
 import com.junbo.test.payment.apihelper.PaymentService;
+import com.junbo.test.payment.apihelper.clientencryption.Card;
+import com.junbo.test.payment.apihelper.clientencryption.Encrypter;
+import com.junbo.test.payment.apihelper.clientencryption.EncrypterException;
 import com.junbo.test.payment.apihelper.impl.PaymentServiceImpl;
 
-import javax.script.Invocable;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Yunlong on 4/4/14.
@@ -90,9 +89,6 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                                         int expectedResponseCode) throws Exception {
 
         PaymentInstrument paymentInstrument = new PaymentInstrument();
-        //ArrayList<Long> admins = new ArrayList<>();
-        //admins.add(IdConverter.hexStringToId(UserId.class, uid));
-        //paymentInstrument.setAdmins(admins);
         paymentInstrument.setUserId(IdConverter.hexStringToId(UserId.class, uid));
         paymentInstrument.setLabel("4");
         TypeSpecificDetails typeSpecificDetails = new TypeSpecificDetails();
@@ -101,9 +97,6 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
         switch (paymentInfo.getType()) {
             case CREDITCARD:
                 CreditCardInfo creditCardInfo = (CreditCardInfo) paymentInfo;
-                //GregorianCalendar gc = new GregorianCalendar();
-                // paymentInstrument.setLastValidatedTime(gc.getTime());
-                // paymentInstrument.setTypeSpecificDetails(typeSpecificDetails);
                 paymentInstrument.setAccountName(creditCardInfo.getAccountName());
                 paymentInstrument.setAccountNumber(encryptCreditCardInfo(creditCardInfo));
                 paymentInstrument.setIsValidated(creditCardInfo.isValidated());
@@ -195,10 +188,24 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
         dbHelper.executeUpdate(sqlStr, DBHelper.DBName.PAYMENT);
     }
 
+    /*
     public String encryptCreditCardInfo(CreditCardInfo creditCardInfo) {
 
         ScriptEngineManager manager = new ScriptEngineManager();
         ScriptEngine engine = manager.getEngineByName("javascript");
+
+        Map params = new HashMap();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        String dateFormatted = simpleDateFormat.format(new Date());
+
+        params.put("generationtime", dateFormatted);
+        params.put("expiryYear", "2016");
+        params.put("expiryMonth", "06");
+        params.put("cvc", "737");
+        params.put("holderName", "John");
+        params.put("number", "5555444433331111");
+
+        String json = JSONObject.toJSONString(params);
 
         String jsFileName = "AdyenEncryptScript";
 
@@ -207,29 +214,40 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
             engine.eval(script);
             if (engine instanceof Invocable) {
                 Invocable invoke = (Invocable) engine;
-                Double c = (Double) invoke.invokeFunction("merge", 2, 3);
+                Double c = (Double) invoke.invokeFunction("encrypt", json);
             }
         } catch (Exception e) {
+            e.toString();
         }
 
         return null;
     }
+    */
 
-    String pubKey = "10001|80C7821C961865FB4AD23F172E220F819A5CC7B9956BC3458E2788"
-            + "F9D725B07536E297B89243081916AAF29E26B7624453FC84CB10FC7DF386"
-            + "31B3FA0C2C01765D884B0DA90145FCE217335BCDCE4771E30E6E5630E797"
-            + "EE289D3A712F93C676994D2746CBCD0BEDD6D29618AF45FA6230C1D41FE1"
-            + "DB0193B8FA6613F1BD145EA339DAC449603096A40DC4BF8FACD84A5D2CA5"
-            + "ECFC59B90B928F31715A7034E7B674E221F1EB1D696CC8B734DF7DE2E309"
-            + "E6E8CF94156686558522629E8AF59620CBDE58327E9D84F29965E4CD0FAF"
-            + "A38C632B244287EA1F7F70DAA445D81C216D3286B09205F6650262CAB415"
-            + "5F024B3294A933F4DC514DE0B5686F6C2A6A2D";
+    public String encryptCreditCardInfo(CreditCardInfo creditCardInfo) throws EncrypterException {
+        Encrypter e = new Encrypter(pubKey);
 
-    String accountNum = "adyenjs_0_1_4$O2eavEUHb6lQeQPkEOHQGfOIe22JTUkuCj+iwuR07OJtjlV7ZFwV5dhEVVVHOt60JMncweUsDOn"
-            + "N5UkkH6vFneVvFZ31T0TaLH6VixXnexTwFqr/qVZu4N3lPNgkGM8KmL/PMOsUnV8kDAbu3ilh4P+6y3MsWjB5is4X/n63zfnIO4R"
-            + "eiOEVaAAio1UGj7nh1o3q50oRXBjg/zE4/vWylTabsW+S6SoqYvQQCO8NtUSeSXQDp2bMxUu89bzjvaGJKNPzZLjGxFz68m20nXu"
-            + "6RQlEsfSpaqXQB3/rC3O/ycCNrpZZc1PM6wqp8WbgHDcSdYpc3SaN8zYCKU1QBM5giA==$rictoeF32VwhKudtbw81i/xci/5cGL" +
-            "8DcQqap7mvXxZxVC8EBXuzjLeIEQvWREM+Uk65/OARub1dqdGemzbiSo6+9nGZ5OCUdZ2nAE6Et4eav30/ZFgpRfJwiP+mr7cwMtNQ" +
-            "843CFqaChoTcV1n6gcFXNopUkiWc/V4cvWJCjL/BUSKf/57W3CcvZJvS+y68";
+        Card card = new Card.Builder(new Date())
+                .number(creditCardInfo.getAccountNum())
+                .cvc(creditCardInfo.getEncryptedCVMCode())
+                .expiryMonth("06")
+                .expiryYear("2020")
+                .holderName(creditCardInfo.getAccountNum())
+                .build();
+
+        return e.encrypt(card.toString());
+
+    }
+
+    String pubKey = "10001|9699D59B070DBA71B53A696C67B8FB8538C5C9B73D2BF485104858"
+            + "DD12BC7D706A096DE6D8508175311A5B15EABE829C51DF269228EC75C8B3"
+            + "35938C91A9E0B624A59734EBC77F97E22A3BA2A16FE9B185D9824EFC9597"
+            + "AC3BE7E6D198E2A64D35FB2685EBA3B148C8CDD49B27BDF50AD7B65B4F20"
+            + "43E459BB18748E91E942D3FCD6DFA6AD9E4E0F35289C77E5CE15621FBA2E"
+            + "759F47AE7DBE1B86355BA828F97F23D736CF7FBB582A1DABA75528C58D83"
+            + "413848AE07DAEBB98EF714B2749A64E6F2B30F47E8731E9F6AB0618D65F0"
+            + "014098FAE42F7E475BD6A7E23D33DC6F0D363DEBCA613007EE06C6B3371B"
+            + "03E5FEB0745F31F5BBFD95D6E4ADC403E161BF";
+
 
 }
