@@ -51,7 +51,6 @@ public class TestPutItemRevision extends BaseTestClass {
     private Organization organization;
     private OrganizationId organizationId;
     private final String defaultLocale = "en_US";
-    private final String fullItemRevisionFileName = "fullItemRevision";
 
     private ItemService itemService = ItemServiceImpl.instance();
     private ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
@@ -179,6 +178,7 @@ public class TestPutItemRevision extends BaseTestClass {
     )
     @Test
     public void testPutItemRevisionInvalidScenarios() throws Exception {
+        Master.getInstance().setCurrentUid(IdConverter.idToHexString(organization.getOwnerId()));
         ItemRevision itemRevision = itemRevisionService.postDefaultItemRevision(item1);
         ItemRevision itemRevisionTmp = itemRevisionService.postDefaultItemRevision(item1);
 
@@ -229,6 +229,7 @@ public class TestPutItemRevision extends BaseTestClass {
         itemRevision.setItemId(invalidRevisionId);
         verifyExpectedFailure(itemRevisionId, itemRevision, 404);
 
+        item2 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
         itemRevision.setItemId(item2.getItemId());
         if (item2.getType().equalsIgnoreCase(CatalogItemType.APP.name()) ||
                 item2.getType().equalsIgnoreCase(CatalogItemType.DOWNLOADED_ADDITION.name())) {
@@ -282,6 +283,7 @@ public class TestPutItemRevision extends BaseTestClass {
     @Test
     public void testPutIapHostItem() throws Exception {
 
+        Master.getInstance().setCurrentUid(IdConverter.idToHexString(organization.getOwnerId()));
         ItemRevision itemRevision = itemRevisionService.postDefaultItemRevision(item1);
 
         //Set Distribution Channel to include INAPP:

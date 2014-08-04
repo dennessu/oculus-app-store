@@ -104,6 +104,7 @@ public class TestPostItemRevision extends BaseTestClass {
 
         testItemRevisionFull.setItemId(item1.getItemId());
         testItemRevisionFull.setOwnerId(organizationId);
+        testItemRevisionFull.setPackageName("packageName_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
         List<String> hostItemIds = new ArrayList<>();
         hostItemIds.add(item2.getItemId());
         testItemRevisionFull.setIapHostItemIds(hostItemIds);
@@ -131,6 +132,7 @@ public class TestPostItemRevision extends BaseTestClass {
     public void testPostItemRevisionInvalidScenarios() throws Exception {
         //Set rev not null
         ItemRevision testItemRevision = itemRevisionService.prepareItemRevisionEntity(fullItemRevisionFileName);
+        testItemRevision.setPackageName("packageName_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
         testItemRevision.setItemId(item1.getItemId());
         testItemRevision.setOwnerId(organizationId);
         testItemRevision.setRev("1");
