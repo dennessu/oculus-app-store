@@ -118,10 +118,15 @@ class CoreUtils {
                     diffItem.totalAmount = (diffItem.quantity * i.totalAmount / i.quantity).setScale(
                             numberAfterDecimal, BigDecimal.ROUND_HALF_EVEN)
                     requestItem.totalAmount = requestItem.totalAmount - diffItem.totalAmount
-
+                    if (requestItem.quantity == i.quantity) {
+                        diffItem.totalTax = i.totalTax
+                    }
                 } else if (i.quantity == requestItem.quantity && i.totalAmount > requestItem.totalAmount) {
                     diffItem.quantity = 0
                     diffItem.totalAmount = i.totalAmount - requestItem.totalAmount
+                    if (requestItem.totalAmount == 0) {
+                        diffItem.totalTax = i.totalTax
+                    }
                 } else {
                     // no change
                     return
@@ -166,13 +171,18 @@ class CoreUtils {
                 oi.totalAmount -= balanceItem.amount
                 oi.totalTax -= balanceItem.taxAmount
                 oi.totalDiscount -= balanceItem.discountAmount
-                oi.taxes?.each() { OrderTaxItem oti ->
-                    def taxItem = balanceItem.taxItems?.find() { TaxItem bti ->
-                        // TODO: check taxType
-                        bti.taxAuthority == oti.taxType
-                    }
-                    if (taxItem != null) {
-                        oti.taxAmount -= taxItem.taxAmount
+                if (balance.skipTaxCalculation) {
+                    // for full refund, no tax item will be returned
+                    oi.taxes = []
+                } else {
+                    oi.taxes?.each() { OrderTaxItem oti ->
+                        def taxItem = balanceItem.taxItems?.find() { TaxItem bti ->
+                            // TODO: check taxType
+                            bti.taxAuthority == oti.taxType
+                        }
+                        if (taxItem != null) {
+                            oti.taxAmount -= taxItem.taxAmount
+                        }
                     }
                 }
             }

@@ -131,10 +131,17 @@ class CoreBuilder {
                     balanceItem.propertySet.put(PropertyKey.ITEM_DESCRIPTION.name(), matched.offerDescription)
                     balanceItem.propertySet.put(PropertyKey.ORGANIZATION_ID.name(), matched.offerOrganization)
                     balanceItem.propertySet.put(PropertyKey.VENDOR_NAME.name(), matched.offerOrganizationName)
+                    balanceItem.taxAmount = matched.totalTax
                     balance.addBalanceItem(balanceItem)
                 }
                 balance.propertySet.put(PropertyKey.INVOICE_DATE.name(),
                         b.propertySet.get(PropertyKey.INVOICE_DATE.name()))
+            }
+            if (balance.balanceItems?.every { BalanceItem balanceItem ->
+                balanceItem.taxAmount != null
+            }) {
+                // use tax amount directly for fully refund
+                balance.skipTaxCalculation = true
             }
             returnBalances << balance
         }

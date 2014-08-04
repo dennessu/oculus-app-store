@@ -444,9 +444,14 @@ class BalanceServiceImpl implements BalanceService {
             BigDecimal discount = BigDecimal.ZERO
             BigDecimal tax = BigDecimal.ZERO
 
-            item.taxItems.each { TaxItem taxItem ->
-                if (taxItem.taxAmount != null) {
-                    tax = tax + taxItem.taxAmount
+            if (balance.skipTaxCalculation && item.taxAmount != null) {
+                tax = item.taxAmount
+            }
+            else {
+                item.taxItems.each { TaxItem taxItem ->
+                    if (taxItem.taxAmount != null) {
+                        tax = tax + taxItem.taxAmount
+                    }
                 }
             }
             item.discountItems.each { DiscountItem discountItem ->

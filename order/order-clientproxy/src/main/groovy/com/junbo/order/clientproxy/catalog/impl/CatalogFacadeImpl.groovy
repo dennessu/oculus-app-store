@@ -78,12 +78,12 @@ class CatalogFacadeImpl implements CatalogFacade {
             List<OfferRevision> ors = result?.items
             if (CollectionUtils.isEmpty(ors)) {
                 LOGGER.info('name=Can_Not_Get_OfferRevision. offerId: {}, timestamp: {}', offerId, honoredTime)
-                return Promise.pure(null)
+                throw AppErrors.INSTANCE.offerNotFound(offerId).exception()
             }
             if (ors.size() != 1) {
                 LOGGER.error('name=Too_Many_OfferRevision_Returned. offerId: {}, timestamp: {}, revisionCount: {}',
                         offerId, honoredTime, ors.size())
-                return Promise.pure(null)
+                throw AppErrors.INSTANCE.catalogResultInvalid('Too many offer revision returned').exception()
             }
 
             // only one offerRevision is returned here

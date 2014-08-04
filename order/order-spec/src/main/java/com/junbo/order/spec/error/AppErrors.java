@@ -163,4 +163,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 500, code = "143", message = "Identity Result Invalid.", reason = "Identity result invalid: {0}.")
     AppError identityResultInvalid(String cause);
+
+    @ErrorDef(httpStatusCode = 500, code = "144", message = "Catalog Result Invalid.", reason = "Catalog result invalid: {0}.")
+    AppError catalogResultInvalid(String cause);
 }

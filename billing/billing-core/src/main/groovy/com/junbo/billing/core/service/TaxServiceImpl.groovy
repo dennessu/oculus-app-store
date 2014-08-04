@@ -79,15 +79,10 @@ class TaxServiceImpl implements TaxService {
 
     @Override
     Promise<Balance> calculateTax(Balance balance) {
-        if (balance.balanceItems?.any { BalanceItem item ->
-            item.taxItems != null && item.taxItems?.size() > 0
-        }) {
-            // tax already calculated
-            balance.taxStatus = TaxStatus.TAXED.name()
-            return Promise.pure(balance)
-        }
         if (balance.skipTaxCalculation) {
-            balance.taxStatus = TaxStatus.NOT_TAXED.name()
+            if (balance.taxStatus == null) {
+                balance.taxStatus = TaxStatus.TAXED.name()
+            }
             return Promise.pure(balance)
         }
 
