@@ -1,5 +1,5 @@
 {
-  "scopes" : [ "identity", "identity.pii", "scope.manage", "catalog", "developer", "api.manage", "openid", "scope.info",
+  "scopes" : [ "identity", "identity.pii", "scope.manage", "catalog", "developer", "openid", "scope.info",
    "client.info", "commerce", "offline", "consent.manage", "api.info" ],
   "client_id" : "client",
   "client_secret" : "32F093ECCCBCA2170D9C959D339EBFBE#2BE2B193EB80DB5342E61BC6F472DE30",

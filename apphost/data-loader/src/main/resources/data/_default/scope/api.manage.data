@@ -1,6 +1,0 @@
-{
-     "name": "api.manage",
-     "description": "Scope to manage the api information.",
-     "tfaRequired": false,
-     "validationCondition": "hasGroups(\"OculusVR.IdentityAdmin\")"
- }

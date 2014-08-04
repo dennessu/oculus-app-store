@@ -7,8 +7,7 @@
         <property name="apiScopeMapping">
             <map>
                 <!-- authorization -->
-                <entry key="ApiDefinitionResource.get" value="api.manage api.info"/>
-                <entry key="ApiDefinitionResource" value="api.manage"/>
+                <entry key="ApiDefinitionResource" value="api.info"/>
                 <entry key="RoleAssignmentResource" value="identity identity.service"/>
                 <entry key="RoleResource" value="identity identity.service"/>
                 <!-- billing -->
