@@ -5,40 +5,39 @@
  */
 package com.junbo.test.catalog.impl;
 
-import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
-import com.junbo.catalog.spec.model.offer.*;
-import com.junbo.common.id.OfferId;
-import com.junbo.common.id.OrganizationId;
-import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.common.model.Results;
-import com.junbo.langur.core.client.TypeReference;
-import com.junbo.test.catalog.ItemRevisionService;
-import com.junbo.test.catalog.ItemService;
-import com.junbo.test.catalog.OfferRevisionService;
-import com.junbo.test.catalog.OfferService;
-import com.junbo.test.catalog.enums.CatalogEntityStatus;
-import com.junbo.test.catalog.enums.CatalogItemType;
-import com.junbo.test.catalog.enums.EventActionType;
-import com.junbo.test.catalog.enums.EventType;
-import com.junbo.test.common.ConfigHelper;
-import com.junbo.test.common.Entities.enums.ComponentType;
-import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.common.apihelper.identity.UserService;
-import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
-import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.test.common.Entities.enums.ComponentType;
+import com.junbo.test.catalog.enums.CatalogEntityStatus;
+import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.test.catalog.enums.CatalogItemType;
+import com.junbo.test.catalog.enums.EventActionType;
+import com.junbo.test.catalog.OfferRevisionService;
+import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.langur.core.client.TypeReference;
+import com.junbo.test.catalog.ItemRevisionService;
+import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.test.catalog.enums.EventType;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
-import org.springframework.util.CollectionUtils;
+import com.junbo.catalog.spec.model.offer.*;
+import com.junbo.test.catalog.OfferService;
+import com.junbo.common.id.OrganizationId;
+import com.junbo.test.common.ConfigHelper;
+import com.junbo.test.catalog.ItemService;
+import com.junbo.common.model.Results;
+import com.junbo.common.id.OfferId;
 
+import java.io.InputStreamReader;
 import java.io.BufferedReader;
+import java.util.ArrayList;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -398,17 +397,8 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
                 new TypeReference<OfferRevision>() {}, strOfferRevisionContent);
 
         if (item.getType().equalsIgnoreCase(CatalogItemType.STORED_VALUE.getItemType())) {
-            List<Action> purchaseActions = offerRevisionForPost.getEventActions().get(EventType.PURCHASE.name());
-            if (!CollectionUtils.isEmpty(purchaseActions)) {
-                for (Action action : purchaseActions) {
-                    if (EventActionType.CREDIT_WALLET.name().equalsIgnoreCase(action.getType())) {
-                        action.setItemId(item.getItemId());
-                    }
-                }
-            }
-        }
-
-        if (item.getType().equalsIgnoreCase(CatalogItemType.CONSUMABLE_UNLOCK.getItemType())) {
+            offerRevisionForPost.getEventActions().get(EventType.PURCHASE.name()).get(0).setItemId(item.getItemId());
+        } else if (item.getType().equalsIgnoreCase(CatalogItemType.CONSUMABLE_UNLOCK.getItemType())) {
             List<Action> purchaseActions = new ArrayList<>();
             Map<String, List<Action>> consumableEvent = new HashMap<>();
             Action action = new Action();
