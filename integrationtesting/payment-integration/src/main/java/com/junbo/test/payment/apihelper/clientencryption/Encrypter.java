@@ -23,8 +23,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
 import org.apache.commons.codec.binary.Base64;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
 
 /**
  * Created by weiyu_000 on 7/30/14.
@@ -43,7 +41,6 @@ public class Encrypter {
 
     public Encrypter(String publicKeyString) throws EncrypterException {
 
-        Security.addProvider(new BouncyCastleProvider());
         srandom = new SecureRandom();
         String[] keyComponents = publicKeyString.split("\\|");
 
