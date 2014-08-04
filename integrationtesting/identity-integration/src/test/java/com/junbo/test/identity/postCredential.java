@@ -41,7 +41,9 @@ public class postCredential {
     public void postUserCredentital() throws Exception {
         User user = Identity.UserPostDefault();
         CloseableHttpResponse response = Identity.UserCredentialPostDefault(user.getId(),
-                RandomHelper.randomAlphabetic(12));
+                RandomHelper.randomAlphabetic(4).toUpperCase() +
+                        Math.abs(RandomHelper.randomInt()) % 1000 +
+                        RandomHelper.randomAlphabetic(4));
         Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
     }
 }
