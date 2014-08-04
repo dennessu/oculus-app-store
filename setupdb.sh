@@ -3,6 +3,14 @@ source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is n
 
 t0=`date +%s`
 
+if [[ "$1" == "" || "$1" == "memcache" ]]; then
+    # setup cloudant db
+    pushd memcache
+    python ./flush-all.py
+    popd
+fi
+
+
 if [[ "$1" == "" || "$1" == "couch" ]]; then
     # setup cloudant db
     dbPrefixFile=common/configuration-data/src/main/resources/junbo/conf/onebox/common/personal.properties

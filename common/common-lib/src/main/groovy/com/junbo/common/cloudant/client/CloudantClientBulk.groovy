@@ -141,8 +141,8 @@ class CloudantClientBulk implements CloudantClientInternal {
     }
 
     @Override
-    def <T extends CloudantEntity> Promise<List<T>> cloudantGetAll(CloudantDbUri dbUri, Class<T> entityClass, Integer limit, Integer skip, boolean descending) {
-        return impl.cloudantGetAll(dbUri, entityClass, limit, skip, descending)
+    def <T extends CloudantEntity> Promise<CloudantQueryResult> cloudantGetAll(CloudantDbUri dbUri, Class<T> entityClass, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
+        return impl.cloudantGetAll(dbUri, entityClass, limit, skip, descending, includeDocs)
     }
 
     @Override

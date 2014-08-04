@@ -45,71 +45,67 @@ class DataLoader {
     static PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(this.class.classLoader)
 
     static void main(String[] args) {
-        configLog()
+        try {
+            configLog()
 
-        LOGGER.info("loading spring context start")
-        ApplicationContext applicationContext = new JunboApplication.JunboApplicationContext(
-                ["classpath*:/spring/*-context.xml",
-                        "classpath*:/spring/validators.xml",
-                        "classpath*:/spring/transaction.xml",
-                        "classpath*:/spring/flow/*.xml"] as String[], true)
-        applicationContext.getBean("dataLoader", DataLoader)
-        LOGGER.info("loading spring context end")
+            LOGGER.info("loading spring context start")
+            ApplicationContext applicationContext = new JunboApplication.JunboApplicationContext(
+                    ["classpath*:/spring/*-context.xml",
+                            "classpath*:/spring/validators.xml",
+                            "classpath*:/spring/transaction.xml",
+                            "classpath*:/spring/flow/*.xml"] as String[], true)
+            applicationContext.getBean("dataLoader", DataLoader)
+            LOGGER.info("loading spring context end")
 
-        ConfigService configService = ConfigServiceManager.instance()
-        String configEnv = configService.getConfigContext().getEnvironment()
-        if (!StringUtils.isEmpty(configEnv)) {
-            env = configEnv
-        }
-        LOGGER.info("current environment is $env")
+            ConfigService configService = ConfigServiceManager.instance()
+            String configEnv = configService.getConfigContext().getEnvironment()
+            if (!StringUtils.isEmpty(configEnv)) {
+                env = configEnv
+            }
+            LOGGER.info("current environment is $env")
 
-        AuthorizeServiceImpl authorizeService = applicationContext.getBean(AuthorizeServiceImpl)
-        authorizeService.setDisabled(true)
-        AuthorizeContext.setAuthorizeDisabled(true)
+            AuthorizeServiceImpl authorizeService = applicationContext.getBean(AuthorizeServiceImpl)
+            authorizeService.setDisabled(true)
+            AuthorizeContext.setAuthorizeDisabled(true)
 
-        JunboThreadPool junboThreadPool = applicationContext.getBean("junboThreadPool", JunboThreadPool)
-        // in order to eagerly initialize the thread pool
-        if (junboThreadPool == null) {
-            throw new IllegalStateException("junboThreadPool is null")
-        }
+            JunboThreadPool junboThreadPool = applicationContext.getBean("junboThreadPool", JunboThreadPool)
+            // in order to eagerly initialize the thread pool
+            if (junboThreadPool == null) {
+                throw new IllegalStateException("junboThreadPool is null")
+            }
 
-        if (args.length == 0 || args[0].equalsIgnoreCase("all")) {
-            LOGGER.info("loading all data")
-            try {
+            if (args.length == 0 || args[0].equalsIgnoreCase("all")) {
+                LOGGER.info("loading all data")
                 load(dataList, junboThreadPool)
-
                 LOGGER.info("loading data end")
-            } finally {
-                exit()
-            }
-        } else if (args.length == 1 && args[0].equalsIgnoreCase("masterkey")) {
-            try {
-                DataHandler handler = handlers["masterkey"];
-                handler.handle(null)
-            } catch (Exception e) {
-                LOGGER.error("Error occured while generating masterkey", e)
-            } finally {
-                exit()
-            }
-        } else {
-            List<String> list = CollectionUtils.arrayToList(args)
+            } else if (args.length == 1 && args[0].equalsIgnoreCase("masterkey")) {
+                try {
+                    DataHandler handler = handlers["masterkey"];
+                    handler.handle(null)
+                } catch (Exception e) {
+                    LOGGER.error("Error occured while generating masterkey", e)
+                    fail()
+                }
+            } else {
+                List<String> list = CollectionUtils.arrayToList(args)
 
-            checkData(list)
+                checkData(list)
 
-            try {
                 load(list, junboThreadPool)
                 LOGGER.info("loading data end")
-            } finally {
-                exit()
             }
+        } catch (Exception ex) {
+            LOGGER.error("Error in dataloader.", ex)
+            fail()
         }
+        exit()
     }
 
     static void checkData(List<String> list) {
         list.each { data ->
             if (!dataList.contains(data)) {
                 LOGGER.error("$data not found in directory")
-                exit()
+                fail()
             }
         }
     }
@@ -148,7 +144,7 @@ class DataLoader {
                             handler.handle(content)
                         } else {
                             LOGGER.error("no handler for $data")
-                            exit()
+                            fail()
                         }
                     }
                 } else {
@@ -156,13 +152,17 @@ class DataLoader {
                         pool.submit(new Runnable() {
                             @Override
                             void run() {
-                                if (handler != null) {
-                                    LOGGER.info("handling resource: " + data + " " + resource.filename)
-                                    String content = IOUtils.toString(resource.URI, "UTF-8")
-                                    handler.handle(content)
-                                } else {
-                                    LOGGER.error("no handler for $data")
-                                    exit()
+                                try {
+                                    if (handler != null) {
+                                        LOGGER.info("handling resource: " + data + " " + resource.filename)
+                                        String content = IOUtils.toString(resource.URI, "UTF-8")
+                                        handler.handle(content)
+                                    } else {
+                                        LOGGER.error("no handler for $data")
+                                        fail()
+                                    }
+                                } catch (Exception ex) {
+                                    LOGGER.error("error handling resource: " + data + " " + resource.filename, ex)
                                 }
                                 latch.countDown()
                             }
@@ -171,7 +171,7 @@ class DataLoader {
                 }
             } catch (Exception e) {
                 LOGGER.error("Error ocuured while loading $data", e)
-                exit()
+                fail()
             }
 
             if (!isSerial) {
@@ -215,5 +215,9 @@ class DataLoader {
 
     private static void exit() {
         System.exit(0)
+    }
+
+    private static void fail() {
+        System.exit(1)
     }
 }

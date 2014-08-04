@@ -44,11 +44,15 @@
 
     <bean id="cloudantClient" class="com.junbo.common.cloudant.CloudantClient" abstract="true">
         <property name="cloudantDbUri" value="${common.cloudant.url}" />
+        <property name="enableCache" value="${common.cloudant.cache.enabled}" />
+        <property name="includeDocs" value="${common.cloudant.cache.includeDocs}" />
         <property name="tracker" ref="userTracker" />
     </bean>
 
     <bean id="cloudantClientWithSearch" parent="cloudantClient" abstract="true">
         <property name="cloudantDbUri" value="${common.cloudantWithSearch.url}" />
+        <property name="enableCache" value="${common.cloudant.cache.enabled}" />
+        <property name="includeDocs" value="${common.cloudant.cache.includeDocs}" />
     </bean>
 
     <bean id="cloudantDefaultMarshaller" class="com.junbo.common.cloudant.DefaultCloudantMarshaller" factory-method="instance" />

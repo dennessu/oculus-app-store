@@ -25,10 +25,14 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         useBulk.set(value)
     }
 
-    protected static CloudantClientInternal getEffective() {
+    protected CloudantClientInternal getEffective() {
+        // There are two layer of overriding:
+        // 1. Use per instance setting to specify whether cache is used or not.
+        // 2. Use the thread static setUseBulk to specify whether bulk is used or not.
+        // When bulk is used, it will ignore cache setting. Now bulk is only used in migration.
         Boolean flag = useBulk.get()
         if (flag == null || flag == false) {
-            return impl
+            return internal
         }
         return bulk
     }
@@ -36,14 +40,18 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
     protected static String dbNamePrefix = ConfigServiceManager.instance().getConfigValue("common.cloudant.dbNamePrefix")
     protected static CloudantMarshaller marshaller = DefaultCloudantMarshaller.instance()
     protected static CloudantUniqueClient cloudantUniqueClient = CloudantUniqueClient.instance()
-    protected static CloudantClientImpl impl = CloudantClientImpl.instance()
     protected static CloudantClientBulk bulk = CloudantClientBulk.instance()
+
+    protected CloudantClientInternal internal
 
     protected CloudantGlobalUri cloudantGlobalUri
     protected CloudantDbUri cloudantDbUri
     protected Class<T> entityClass
     protected String dbName
     protected Tracker tracker
+
+    protected boolean enableCache
+    protected boolean includeDocs
 
     protected CloudantClientBase() {
         entityClass = (Class<T>) ((ParameterizedType) getClass().genericSuperclass).actualTypeArguments[0]
@@ -64,6 +72,14 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         this.tracker = tracker
     }
 
+    void setEnableCache(boolean enableCache) {
+        this.enableCache = enableCache
+    }
+
+    void setIncludeDocs(boolean includeDocs) {
+        this.includeDocs = includeDocs
+    }
+
     @Override
     void afterPropertiesSet() throws Exception {
         Assert.isTrue(dbNamePrefix != null)
@@ -72,6 +88,11 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
             dbName: dbName,
             fullDbName: dbNamePrefix + dbName
         )
+        if (enableCache) {
+            internal = CloudantClientCached.instance()
+        } else {
+            internal = CloudantClientImpl.instance()
+        }
     }
 
     public CloudantDbUri getDbUri(String id) {
@@ -139,11 +160,26 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
     }
 
     protected Promise<List<T>> cloudantGetAll(Integer limit, Integer skip, boolean descending) {
-        return getEffective().cloudantGetAll(getDbUri(null), entityClass, limit, skip, descending)
+        return getEffective().cloudantGetAll(getDbUri(null), entityClass, limit, skip, descending, true).syncThen { CloudantQueryResult searchResult ->
+            if (searchResult.rows != null) {
+                return searchResult.rows.collect { CloudantQueryResult.ResultObject result ->
+                    return (T) result.doc
+                }
+            }
+
+            return []
+        }
     }
 
     protected Promise<CloudantQueryResult> queryView(String viewName, String key, Integer limit, Integer skip,
                                            boolean descending, boolean includeDocs) {
+        if (includeDocs && !this.includeDocs) {
+            // pass false to implementation method and try to fetch results one by one.
+            // this means to allow higher cache hit rate
+            return getEffective().queryView(getDbUri(null), entityClass, viewName, key, limit, skip, descending, false).then { CloudantQueryResult result ->
+                return fetchDocs(result)
+            }
+        }
         return getEffective().queryView(getDbUri(null), entityClass, viewName, key, limit, skip, descending, includeDocs)
     }
 
@@ -196,6 +232,13 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
     }
 
     protected Promise<CloudantQueryResult> queryView(String viewName, Object[] startKey, Object[] endKey, boolean withHighKey, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
+        if (includeDocs && !this.includeDocs) {
+            // pass false to implementation method and try to fetch results one by one.
+            // this means to allow higher cache hit rate
+            return getEffective().queryView(getDbUri(null), entityClass, viewName, startKey, endKey, withHighKey, limit, skip, descending, false).then { CloudantQueryResult result ->
+                return fetchDocs(result)
+            }
+        }
         return getEffective().queryView(getDbUri(null), entityClass, viewName, startKey, endKey, withHighKey, limit, skip, descending, includeDocs)
     }
 
@@ -222,7 +265,27 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
 
     protected Promise<CloudantQueryResult> search(String searchName, String queryString, Integer limit, String bookmark,
                                                   boolean includeDocs) {
+        if (includeDocs && !this.includeDocs) {
+            // pass false to implementation method and try to fetch results one by one.
+            // this means to allow higher cache hit rate
+            return getEffective().search(getDbUri(null), entityClass, searchName, queryString, limit, bookmark, false).then { CloudantQueryResult result ->
+                return fetchDocs(result)
+            }
+        }
         return getEffective().search(getDbUri(null), entityClass, searchName, queryString, limit, bookmark, includeDocs)
+    }
+
+    private Promise<CloudantQueryResult> fetchDocs(CloudantQueryResult result) {
+        if (result.rows != null) {
+            return Promise.each(result.rows) { CloudantQueryResult.ResultObject row ->
+                row.doc = cloudantGet(row.id).get()
+                return Promise.pure(null)
+            }.then {
+                return Promise.pure(result)
+            }
+        } else {
+            return Promise.pure(result)
+        }
     }
 
     //region sync mode

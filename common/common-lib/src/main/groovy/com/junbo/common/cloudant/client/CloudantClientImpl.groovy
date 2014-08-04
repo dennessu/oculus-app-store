@@ -1,6 +1,5 @@
 package com.junbo.common.cloudant.client
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.common.cloudant.CloudantEntity
 import com.junbo.common.cloudant.CloudantMarshaller
 import com.junbo.common.cloudant.DefaultCloudantMarshaller
@@ -36,7 +35,6 @@ class CloudantClientImpl implements CloudantClientInternal {
 
     private static final String VIEW_PATH   = '/_design/views/_view/'
     private static final String SEARCH_PATH = '/_design/views/_search/'
-    private static final String DEFAULT_DESIGN_ID_PREFIX = '_design/'
     private static final String HIGH_KEY_POSTFIX = '\ufff0'
 
     private static CloudantClientImpl singleton = new CloudantClientImpl()
@@ -148,7 +146,7 @@ class CloudantClientImpl implements CloudantClientInternal {
     }
 
     @Override
-    def <T extends CloudantEntity> Promise<List<T>> cloudantGetAll(CloudantDbUri dbUri, Class<T> entityClass, Integer limit, Integer skip, boolean descending) {
+    def <T extends CloudantEntity> Promise<CloudantQueryResult> cloudantGetAll(CloudantDbUri dbUri, Class<T> entityClass, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
         def query = [:]
 
         if (limit != null) {
@@ -160,7 +158,9 @@ class CloudantClientImpl implements CloudantClientInternal {
         if (descending) {
             query.put('descending', 'true')
         }
-        query.put('include_docs', 'true')
+        if (includeDocs) {
+            query.put('include_docs', includeDocs.toString())
+        }
 
         return executeRequest(dbUri, HttpMethod.GET, '_all_docs', query, null).then ({ Response response ->
             if (response.statusCode != HttpStatus.OK.value()) {
@@ -170,18 +170,7 @@ class CloudantClientImpl implements CloudantClientInternal {
                         " reason: $cloudantError.reason")
             }
 
-            def cloudantSearchResult = (CloudantQueryResult)marshaller.unmarshall(response.responseBody, CloudantQueryResult, CloudantQueryResult.AllResultEntity, JsonNode)
-
-            List<T> list = new ArrayList<>()
-            return Promise.each(cloudantSearchResult.rows) { CloudantQueryResult.ResultObject<CloudantQueryResult.AllResultEntity, JsonNode> result ->
-                if (result.id.startsWith(DEFAULT_DESIGN_ID_PREFIX)) {
-                    return Promise.pure(null)
-                }
-                list.add((T)(marshaller.unmarshall(result.doc.toString(), entityClass)))
-                return Promise.pure(null)
-            }.then {
-                return Promise.pure(list)
-            }
+            return (CloudantQueryResult)marshaller.unmarshall(response.responseBody, CloudantQueryResult, String, entityClass)
         })
     }
 
