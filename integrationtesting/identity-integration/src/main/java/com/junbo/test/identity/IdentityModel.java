@@ -328,7 +328,7 @@ public class IdentityModel {
     }
 
     /**
-     * TFA only support 3 types as below
+     * TFA only support 3 types as below.
      */
     public static enum TFAVerifyType {
         CALL,

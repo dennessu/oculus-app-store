@@ -5,9 +5,8 @@
  */
 package com.junbo.test.common.apihelper.identity.impl;
 
-import com.junbo.authorization.spec.model.Role;
-import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.common.apihelper.identity.RoleAssignmentService;
+import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.common.apihelper.identity.RoleService;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.HttpClientBase;
@@ -15,6 +14,7 @@ import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.libs.RandomFactory;
+import com.junbo.authorization.spec.model.Role;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.common.id.UserId;
@@ -49,7 +49,7 @@ public class OrganizationServiceImpl extends HttpClientBase implements Organizat
         Organization organization = new Organization();
         organization.setOwnerId(new UserId(IdConverter.hexStringToId(UserId.class, userId)));
         organization.setName(RandomFactory.getRandomStringOfAlphabet(10));
-        organization.setIsValidated(true);
+        organization.setIsValidated(false);
         Organization organizationPost = this.postOrganization(organization);
 
         //Add role to the organization
