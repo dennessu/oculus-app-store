@@ -121,7 +121,7 @@ public abstract class ValidationSupport {
 
     protected boolean validateFieldMatch(String fieldName, String actual, String expected, List<AppError> errors) {
         if (!expected.equals(actual)) {
-            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("status", "should be " + expected));
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalid(fieldName, "should be " + expected));
             return false;
         }
         return true;

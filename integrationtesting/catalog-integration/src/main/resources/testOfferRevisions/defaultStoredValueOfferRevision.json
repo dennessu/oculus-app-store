@@ -34,6 +34,10 @@
     "eventActions" : {
         "PURCHASE": [{
             "type": "CREDIT_WALLET",
+            "itemId" : {
+                "href" : "/v1/items/4b4523a908edb8459740fc2e720780cd",
+                "id" : "4b4523a908edb8459740fc2e720780cd"
+            },
             "storedValueCurrency": {"href": "https://api.oculusvr.com/v1/currencies/USD", "id": "USD"},
             "storedValueAmount": 1000
         }]

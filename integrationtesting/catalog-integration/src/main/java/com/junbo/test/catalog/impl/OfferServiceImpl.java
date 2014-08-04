@@ -32,6 +32,7 @@ import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
+import org.springframework.util.CollectionUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -395,6 +396,17 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
         OfferRevision offerRevisionForPost = new JsonMessageTranscoder().decode(
                 new TypeReference<OfferRevision>() {}, strOfferRevisionContent);
+
+        if (item.getType().equalsIgnoreCase(CatalogItemType.STORED_VALUE.getItemType())) {
+            List<Action> purchaseActions = offerRevisionForPost.getEventActions().get(EventType.PURCHASE.name());
+            if (!CollectionUtils.isEmpty(purchaseActions)) {
+                for (Action action : purchaseActions) {
+                    if (EventActionType.CREDIT_WALLET.name().equalsIgnoreCase(action.getType())) {
+                        action.setItemId(item.getItemId());
+                    }
+                }
+            }
+        }
 
         if (item.getType().equalsIgnoreCase(CatalogItemType.CONSUMABLE_UNLOCK.getItemType())) {
             List<Action> purchaseActions = new ArrayList<>();

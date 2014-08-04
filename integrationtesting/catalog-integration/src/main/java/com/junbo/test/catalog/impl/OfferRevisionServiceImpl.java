@@ -5,6 +5,7 @@
  */
 package com.junbo.test.catalog.impl;
 
+import com.junbo.catalog.spec.enums.ActionType;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.test.common.apihelper.HttpClientBase;
@@ -25,6 +26,7 @@ import com.junbo.common.id.OrganizationId;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.common.model.Results;
 import com.junbo.test.common.libs.*;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -144,6 +146,15 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
 
         if (item.getType().equalsIgnoreCase(CatalogItemType.STORED_VALUE.getItemType())) {
             offerRevisionForPost = prepareOfferRevisionEntity(defaultStoredValueOfferRevisionFileName, offer.getOwnerId(), false);
+
+            List<Action> purchaseActions = offerRevisionForPost.getEventActions().get(EventType.PURCHASE.name());
+            if (!CollectionUtils.isEmpty(purchaseActions)) {
+                for (Action action : purchaseActions) {
+                    if (EventActionType.CREDIT_WALLET.name().equalsIgnoreCase(action.getType())) {
+                        action.setItemId(item.getItemId());
+                    }
+                }
+            }
         }
         else {
             offerRevisionForPost = prepareOfferRevisionEntity(defaultOfferRevisionFileName, offer.getOwnerId(), false);
