@@ -313,20 +313,16 @@ public class Catalog extends BaseTestClass {
         Assert.assertNotNull(offerResult);
 
         //Attach offer revision to the offer
-        OfferRevision offerRevision = offerRevisionServiceAPI.prepareOfferRevisionEntity(defaultOfferRevisionFileName,
-                offerGet.getOwnerId());
-        offerRevision.setOfferId(offerGet.getOfferId());
-        offerRevision.setOwnerId(offerGet.getOwnerId());
-        OfferRevision offerRevisionRtn = offerRevisionServiceAPI.postOfferRevision(offerRevision);
+        OfferRevision offerRevision = offerRevisionServiceAPI.postDefaultOfferRevision(offerGet);
 
         //Approve the offer revision
-        offerRevisionRtn.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
-        offerRevisionServiceAPI.updateOfferRevision(offerRevisionRtn.getRevisionId(), offerRevisionRtn);
+        offerRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
+        offerRevisionServiceAPI.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
 
         //verify the offer published status and currentOfferRevisionId
         offerGet = offerServiceAPI.getOffer(offer.getOfferId());
         Assert.assertEquals(offerGet.getPublished(), Boolean.TRUE);
-        Assert.assertEquals(offerGet.getCurrentRevisionId(), offerRevisionRtn.getRevisionId());
+        Assert.assertEquals(offerGet.getCurrentRevisionId(), offerRevision.getRevisionId());
     }
 
     @Property(
