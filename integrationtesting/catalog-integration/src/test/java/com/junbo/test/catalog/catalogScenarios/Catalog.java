@@ -522,6 +522,7 @@ public class Catalog extends BaseTestClass {
         price2.put("AUD", new BigDecimal(1000.00));
         price3.put("EUR", new BigDecimal(1000.00));
         price4.put("GBP", new BigDecimal(1000.00));
+        price4.put("EUR", new BigDecimal(1000.00));
 
         offerPrice.put("US", price1);
         offerPrice.put("CA", price1);
