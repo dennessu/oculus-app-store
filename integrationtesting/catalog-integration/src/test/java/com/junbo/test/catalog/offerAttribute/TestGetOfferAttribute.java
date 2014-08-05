@@ -5,22 +5,21 @@
  */
 package com.junbo.test.catalog.offerAttribute;
 
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.catalog.enums.CatalogOfferAttributeType;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.test.catalog.impl.OfferAttributeServiceImpl;
-import com.junbo.test.catalog.OfferAttributeService;
-import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
-import com.junbo.test.common.apihelper.oauth.enums.GrantType;
-import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
+import com.junbo.test.catalog.OfferAttributeService;
+import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.common.id.OfferAttributeId;
 import com.junbo.test.common.property.*;
 import com.junbo.common.model.Results;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.Assert;
 
@@ -38,8 +37,7 @@ public class TestGetOfferAttribute extends BaseTestClass {
     private LogHelper logger = new LogHelper(TestGetOfferAttribute.class);
     private OfferAttributeService offerAttributeService = OfferAttributeServiceImpl.instance();
 
-    @BeforeClass
-    private void PrepareTestData() throws Exception {
+    private void prepareTestData() throws Exception {
         OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
         oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
     }
@@ -59,6 +57,7 @@ public class TestGetOfferAttribute extends BaseTestClass {
     )
     @Test
     public void testGetAnOfferAttributeById() throws Exception {
+        this.prepareTestData();
 
         //Prepare an offer attribute
         OfferAttribute offerAttribute = offerAttributeService.postDefaultOfferAttribute();
@@ -90,6 +89,7 @@ public class TestGetOfferAttribute extends BaseTestClass {
     )
     @Test
     public void testGetOfferAttributesByIds() throws Exception {
+        this.prepareTestData();
 
         HashMap<String, List<String>> paraMap = new HashMap<>();
         List<String> listOfferAttributeId = new ArrayList<>();
@@ -140,6 +140,7 @@ public class TestGetOfferAttribute extends BaseTestClass {
     )
     @Test
     public void testGetOfferAttributesByIdType() throws Exception {
+        this.prepareTestData();
 
         HashMap<String, List<String>> paraMap = new HashMap<>();
         List<String> listOfferAttributeId = new ArrayList<>();

@@ -5,17 +5,18 @@
  */
 package com.junbo.test.catalog.offerRevision;
 
+import com.junbo.test.catalog.impl.OfferRevisionServiceImpl;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.test.catalog.OfferRevisionService;
-import com.junbo.test.catalog.impl.OfferRevisionServiceImpl;
 import com.junbo.test.catalog.util.BaseTestClass;
-import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
-import org.testng.Assert;
+import com.junbo.test.common.libs.LogHelper;
+
 import org.testng.annotations.Test;
+import org.testng.Assert;
 
 /**
  * @author Jason
@@ -42,7 +43,7 @@ public class TestDeleteOfferRevision extends BaseTestClass {
             }
     )
     @Test
-    public void testDeleteofferRevision() throws Exception {
+    public void testDeleteOfferRevision() throws Exception {
         OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
 
         //Prepare an offer revision

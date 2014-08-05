@@ -5,17 +5,18 @@
  */
 package com.junbo.test.catalog.itemRevision;
 
+import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.test.catalog.ItemRevisionService;
-import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
 import com.junbo.test.catalog.util.BaseTestClass;
-import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
-import org.testng.Assert;
+import com.junbo.test.common.libs.LogHelper;
+
 import org.testng.annotations.Test;
+import org.testng.Assert;
 
 /**
  * @author Jason

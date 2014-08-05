@@ -5,6 +5,7 @@
  */
 package com.junbo.test.catalog.offer;
 
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
@@ -16,12 +17,14 @@ import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.test.catalog.ItemAttributeService;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.catalog.OfferService;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.test.common.property.*;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.Assert;
 
@@ -39,14 +42,13 @@ public class TestPutOffer extends BaseTestClass {
     private OfferService offerService = OfferServiceImpl.instance();
     private OrganizationId organizationId;
 
-    @BeforeClass
-    private void PrepareTestData() throws Exception {
+    private void prepareTestData() throws Exception {
         OrganizationService organizationService = OrganizationServiceImpl.instance();
         organizationId = organizationService.postDefaultOrganization().getId();
     }
 
     @Property(
-            priority = Priority.Dailies,
+            priority = Priority.BVT,
             features = "Put v1/offers/{offerId}",
             component = Component.Catalog,
             owner = "JasonFu",
@@ -60,8 +62,13 @@ public class TestPutOffer extends BaseTestClass {
     )
     @Test
     public void testPutOffer() throws Exception {
+        this.prepareTestData();
+
         //Prepare an offer
         Offer offer = offerService.postDefaultOffer(organizationId);
+
+        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
+        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
 
         //put offer attribute
         OfferAttributeService offerAttributeService = OfferAttributeServiceImpl.instance();
@@ -96,6 +103,8 @@ public class TestPutOffer extends BaseTestClass {
     )
     @Test
     public void testPutOfferInvalidScenarios() throws Exception {
+        this.prepareTestData();
+
         List<String> category = new ArrayList<>();
         List<String> categoryInvalid = new ArrayList<>();
         categoryInvalid.add("0L");
@@ -124,7 +133,10 @@ public class TestPutOffer extends BaseTestClass {
         offer.setCategories(categoryInvalid);
         verifyExpectedError(offer.getOfferId(), offer);
 
-        //test genres type is category
+        //test category type is genre
+        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
+        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
+
         ItemAttributeService itemAttributeService = ItemAttributeServiceImpl.instance();
         ItemAttribute itemAttribute = itemAttributeService.postDefaultItemAttribute();
         category.add(itemAttribute.getId());

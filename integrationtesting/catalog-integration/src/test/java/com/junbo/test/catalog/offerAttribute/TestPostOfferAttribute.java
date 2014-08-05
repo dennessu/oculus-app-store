@@ -5,21 +5,20 @@
  */
 package com.junbo.test.catalog.offerAttribute;
 
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.test.catalog.enums.CatalogOfferAttributeType;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.test.catalog.impl.OfferAttributeServiceImpl;
-import com.junbo.test.catalog.OfferAttributeService;
-import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
-import com.junbo.test.common.apihelper.oauth.enums.GrantType;
-import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
+import com.junbo.test.catalog.OfferAttributeService;
+import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.*;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.Assert;
 
@@ -35,8 +34,7 @@ public class TestPostOfferAttribute extends BaseTestClass {
     private LogHelper logger = new LogHelper(TestPostOfferAttribute.class);
     private OfferAttributeService offerAttributeService = OfferAttributeServiceImpl.instance();
 
-    @BeforeClass
-    private void PrepareTestData() throws Exception {
+    private void prepareTestData() throws Exception {
         OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
         oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
     }
@@ -55,6 +53,8 @@ public class TestPostOfferAttribute extends BaseTestClass {
     )
     @Test
     public void testPostOfferAttribute() throws Exception {
+        this.prepareTestData();
+
         OfferAttribute offerAttribute = new OfferAttribute();
         HashMap<String, SimpleLocaleProperties> locales = new HashMap<>();
 
@@ -84,6 +84,7 @@ public class TestPostOfferAttribute extends BaseTestClass {
     )
     @Test
     public void testPostOfferAttributeInvalidScenarios() throws Exception {
+        this.prepareTestData();
 
         OfferAttribute offerAttribute = new OfferAttribute();
         HashMap<String, SimpleLocaleProperties> locales = new HashMap<>();

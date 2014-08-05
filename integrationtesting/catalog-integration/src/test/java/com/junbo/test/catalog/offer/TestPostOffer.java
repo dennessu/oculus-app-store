@@ -7,10 +7,14 @@ package com.junbo.test.catalog.offer;
 
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.test.catalog.impl.OfferAttributeServiceImpl;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.test.catalog.impl.ItemAttributeServiceImpl;
+import com.junbo.test.common.Entities.enums.ComponentType;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.test.catalog.OfferAttributeService;
 import com.junbo.test.catalog.ItemAttributeService;
@@ -21,7 +25,6 @@ import com.junbo.test.catalog.OfferService;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.test.common.property.*;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.Assert;
 
@@ -41,14 +44,13 @@ public class TestPostOffer extends BaseTestClass {
     private final String initRevValue = "1";
     private OrganizationId organizationId;
 
-    @BeforeClass
-    private void PrepareTestData() throws Exception {
+    private void prepareTestData() throws Exception {
         OrganizationService organizationService = OrganizationServiceImpl.instance();
         organizationId = organizationService.postDefaultOrganization().getId();
     }
 
     @Property(
-            priority = Priority.Dailies,
+            priority = Priority.BVT,
             features = "Post v1/offers",
             component = Component.Catalog,
             owner = "JasonFu",
@@ -63,6 +65,8 @@ public class TestPostOffer extends BaseTestClass {
     )
     @Test
     public void testPostOffer() throws Exception {
+        this.prepareTestData();
+
         //Post test offers only with required parameters
         Offer testOfferRequired = new Offer();
         testOfferRequired.setOwnerId(organizationId);
@@ -93,9 +97,12 @@ public class TestPostOffer extends BaseTestClass {
     )
     @Test
     public void testPostOfferWithExistedValues() throws Exception {
+        this.prepareTestData();
 
         OfferService offerService = OfferServiceImpl.instance();
         Offer offer = offerService.prepareOfferEntity(defaultOffer, organizationId);
+        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
+        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
 
         OfferAttributeService offerAttributeService = OfferAttributeServiceImpl.instance();
         OfferAttribute offerAttribute1 = offerAttributeService.postDefaultOfferAttribute();
@@ -125,6 +132,8 @@ public class TestPostOffer extends BaseTestClass {
     )
     @Test
     public void testPostOfferInvalidScenarios() throws Exception {
+        this.prepareTestData();
+
         List<String> genres = new ArrayList<>();
         List<String> categoryInvalid = new ArrayList<>();
         categoryInvalid.add("0L");

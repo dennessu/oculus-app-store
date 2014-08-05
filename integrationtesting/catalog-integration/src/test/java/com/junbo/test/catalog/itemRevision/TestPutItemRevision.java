@@ -28,7 +28,6 @@ import com.junbo.common.id.OrganizationId;
 import com.junbo.test.catalog.ItemService;
 import com.junbo.test.common.property.*;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.Assert;
 
@@ -55,8 +54,7 @@ public class TestPutItemRevision extends BaseTestClass {
     private ItemService itemService = ItemServiceImpl.instance();
     private ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
 
-    @BeforeClass
-    private void PrepareTestData() throws Exception {
+    private void prepareTestData() throws Exception {
         OrganizationService organizationService = OrganizationServiceImpl.instance();
         organization = organizationService.postDefaultOrganization();
         organizationId = organization.getId();
@@ -66,7 +64,7 @@ public class TestPutItemRevision extends BaseTestClass {
     }
 
     @Property(
-            priority = Priority.Dailies,
+            priority = Priority.BVT,
             features = "Put v1/item-revisions/{itemRevisionId}",
             component = Component.Catalog,
             owner = "JasonFu",
@@ -80,6 +78,8 @@ public class TestPutItemRevision extends BaseTestClass {
     )
     @Test
     public void testPutItemRevision() throws Exception {
+        this.prepareTestData();
+
         OrganizationService organizationService = OrganizationServiceImpl.instance();
         Organization organizationTmp = organizationService.postDefaultOrganization();
         OrganizationId organizationIdTmp = organizationTmp.getId();
@@ -178,6 +178,8 @@ public class TestPutItemRevision extends BaseTestClass {
     )
     @Test
     public void testPutItemRevisionInvalidScenarios() throws Exception {
+        this.prepareTestData();
+
         Master.getInstance().setCurrentUid(IdConverter.idToHexString(organization.getOwnerId()));
         ItemRevision itemRevision = itemRevisionService.postDefaultItemRevision(item1);
         ItemRevision itemRevisionTmp = itemRevisionService.postDefaultItemRevision(item1);
@@ -282,6 +284,7 @@ public class TestPutItemRevision extends BaseTestClass {
     )
     @Test
     public void testPutIapHostItem() throws Exception {
+        this.prepareTestData();
 
         Master.getInstance().setCurrentUid(IdConverter.idToHexString(organization.getOwnerId()));
         ItemRevision itemRevision = itemRevisionService.postDefaultItemRevision(item1);

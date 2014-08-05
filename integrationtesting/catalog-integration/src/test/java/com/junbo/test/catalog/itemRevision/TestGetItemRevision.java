@@ -5,30 +5,27 @@
  */
 package com.junbo.test.catalog.itemRevision;
 
-import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.common.id.ItemId;
-import com.junbo.common.id.ItemRevisionId;
-import com.junbo.common.id.OrganizationId;
-import com.junbo.common.model.Results;
-import com.junbo.test.catalog.ItemRevisionService;
-import com.junbo.test.catalog.ItemService;
-import com.junbo.test.catalog.enums.CatalogEntityStatus;
-import com.junbo.test.catalog.enums.CatalogItemType;
-import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
-import com.junbo.test.catalog.impl.ItemServiceImpl;
-import com.junbo.test.catalog.util.BaseTestClass;
-import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
+import com.junbo.test.common.apihelper.identity.OrganizationService;
+import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
+import com.junbo.test.catalog.enums.CatalogEntityStatus;
+import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.test.catalog.enums.CatalogItemType;
+import com.junbo.test.catalog.impl.ItemServiceImpl;
+import com.junbo.test.catalog.ItemRevisionService;
+import com.junbo.test.catalog.util.BaseTestClass;
+import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
-import com.junbo.test.common.property.Component;
-import com.junbo.test.common.property.Priority;
-import com.junbo.test.common.property.Property;
-import com.junbo.test.common.property.Status;
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
+import com.junbo.test.catalog.ItemService;
+import com.junbo.common.id.ItemRevisionId;
+import com.junbo.common.id.OrganizationId;
+import com.junbo.test.common.property.*;
+import com.junbo.common.model.Results;
+import com.junbo.common.id.ItemId;
+
 import org.testng.annotations.Test;
+import org.testng.Assert;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -48,8 +45,7 @@ public class TestGetItemRevision extends BaseTestClass {
     private OrganizationId organizationId;
     private Item testItem;
 
-    @BeforeClass
-    private void PrepareTestData() throws Exception {
+    private void prepareTestData() throws Exception {
         OrganizationService organizationService = OrganizationServiceImpl.instance();
         organizationId = organizationService.postDefaultOrganization().getId();
         testItem = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
@@ -72,6 +68,7 @@ public class TestGetItemRevision extends BaseTestClass {
     )
     @Test
     public void testGetAnItemRevisionById() throws Exception {
+        this.prepareTestData();
 
         //Prepare an item revision
         ItemRevision itemRevision = itemRevisionService.postDefaultItemRevision(testItem);
@@ -109,6 +106,8 @@ public class TestGetItemRevision extends BaseTestClass {
     )
     @Test
     public void testGetItemRevisionsByItemIdRevisionId() throws Exception {
+        this.prepareTestData();
+
         HashMap<String, List<String>> getOptions = new HashMap<>();
         List<String> itemIds = new ArrayList<>();
         List<String> revisionIds = new ArrayList<>();
@@ -186,6 +185,8 @@ public class TestGetItemRevision extends BaseTestClass {
     )
     @Test
     public void testGetItemRevisionsByRevisionStatus() throws Exception {
+        this.prepareTestData();
+
         HashMap<String, List<String>> getOptions = new HashMap<>();
         List<String> revisionIds = new ArrayList<>();
 
@@ -238,6 +239,7 @@ public class TestGetItemRevision extends BaseTestClass {
     )
     @Test
     public void testGetItemRevisionsByItemIdTimestamp() throws Exception {
+        this.prepareTestData();
 
         HashMap<String, List<String>> getOptions = new HashMap<>();
         List<String> itemIds = new ArrayList<>();

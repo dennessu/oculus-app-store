@@ -23,10 +23,14 @@ import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.catalog.enums.CatalogOfferAttributeType;
 import com.junbo.test.catalog.impl.*;
 import com.junbo.test.catalog.util.BaseTestClass;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
@@ -85,6 +89,9 @@ public class casesForBugs extends BaseTestClass {
         ItemAttributeService itemAttributeService = ItemAttributeServiceImpl.instance();
         OfferAttributeService offerAttributeService = OfferAttributeServiceImpl.instance();
         PriceTierService priceTierService = PriceTierServiceImpl.instance();
+        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
+
+        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
 
         OrganizationId organizationId = organizationService.postDefaultOrganization().getId();
 

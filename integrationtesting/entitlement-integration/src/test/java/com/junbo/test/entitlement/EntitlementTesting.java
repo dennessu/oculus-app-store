@@ -5,14 +5,14 @@
  */
 package com.junbo.test.entitlement;
 
-import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
-import com.junbo.test.common.apihelper.oauth.OAuthService;
-import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.entitlement.impl.EntitlementServiceImpl;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.entitlement.spec.model.Entitlement;
@@ -33,10 +33,9 @@ import com.junbo.common.id.EntitlementId;
 import com.junbo.test.common.property.*;
 import com.junbo.common.model.Results;
 
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 import static org.testng.AssertJUnit.*;
+import org.testng.annotations.Test;
+import org.testng.Assert;
 
 /**
  * @author jifeng
@@ -52,8 +51,7 @@ public class EntitlementTesting extends TestClass {
     User defaultUser;
     User developerUser;
 
-    @BeforeClass
-    private void PrepareTestData() throws Exception {
+    private void prepareTestData() throws Exception {
         UserService userService = UserServiceImpl.instance();
         defaultUserId = userService.PostUser();
         developerUserId = userService.PostUser();
@@ -81,6 +79,7 @@ public class EntitlementTesting extends TestClass {
     )
     @Test
     public void testPostEntitlement() throws Exception {
+        this.prepareTestData();
         logger.LogSample("post a DOWNLOAD type entitlement");
         Entitlement etCreated = this.CreateEntitlement(defaultUser, EntitlementType.DOWNLOAD.getType());
         assertNotNull("return entitlement should not be null", etCreated);
@@ -104,6 +103,7 @@ public class EntitlementTesting extends TestClass {
     )
     @Test
     public void testGetEntitlementById() throws Exception {
+        this.prepareTestData();
         Entitlement etCreated = this.CreateEntitlement(defaultUser, EntitlementType.DOWNLOAD.getType());
         logger.LogSample("get entitlement by entitlementId");
         EntitlementService entitlementService = EntitlementServiceImpl.instance();
@@ -130,6 +130,7 @@ public class EntitlementTesting extends TestClass {
     )
     @Test
     public void testUpdateEntitlementStatus() throws Exception {
+        this.prepareTestData();
         Entitlement etCreated = this.CreateEntitlement(defaultUser, EntitlementType.DOWNLOAD.getType());
         String entitlementId = IdConverter.idToHexString(new EntitlementId(etCreated.getId()));
         EntitlementService entitlementService = EntitlementServiceImpl.instance();
@@ -157,6 +158,7 @@ public class EntitlementTesting extends TestClass {
     )
     @Test
     public void testDeleteEntitlement() throws Exception {
+        this.prepareTestData();
         Entitlement etCreated = this.CreateEntitlement(defaultUser, EntitlementType.DOWNLOAD.getType());
         String entitlementId = IdConverter.idToHexString(new EntitlementId(etCreated.getId()));
         logger.LogSample("delete an entitlement");
@@ -191,6 +193,8 @@ public class EntitlementTesting extends TestClass {
     )
     @Test
     public void testGetEntitlementByUserId() throws Exception {
+        this.prepareTestData();
+
         UserService userService = UserServiceImpl.instance();
         String developerId2 = userService.PostUser();
         User developer2 = Master.getInstance().getUser(developerId2);

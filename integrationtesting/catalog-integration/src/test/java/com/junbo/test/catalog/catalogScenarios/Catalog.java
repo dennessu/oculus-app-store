@@ -51,15 +51,8 @@ public class Catalog extends BaseTestClass {
 
     private LogHelper logger = new LogHelper(Catalog.class);
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";
-    private final String defaultOfferRevisionFileName = "defaultOfferRevision";
     private final String defaultItemFileName = "defaultItem";
     private final String defaultLocale = "en_US";
-
-    @BeforeClass
-    private void PrepareTestData() throws Exception {
-        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
-        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
-    }
 
     @Property(
             priority = Priority.BVT,
@@ -77,6 +70,7 @@ public class Catalog extends BaseTestClass {
     )
     @Test
     public void testItemAttributeManagement() throws Exception {
+        this.PrepareOauthToken();
 
         HashMap<String, List<String>> paraMap = new HashMap<>();
         HashMap<String, SimpleLocaleProperties> locales = new HashMap<>();
@@ -136,6 +130,7 @@ public class Catalog extends BaseTestClass {
     )
     @Test
     public void testOfferAttributeManagement() throws Exception {
+        this.PrepareOauthToken();
 
         HashMap<String, List<String>> paraMap = new HashMap<>();
         HashMap<String, SimpleLocaleProperties> locales = new HashMap<>();
@@ -488,7 +483,7 @@ public class Catalog extends BaseTestClass {
 
     }
 
-    public String prepareOffersForFB(CatalogItemType itemType, String itemName, String offerName) throws Exception {
+    private String prepareOffersForFB(CatalogItemType itemType, String itemName, String offerName) throws Exception {
         ItemService itemService = ItemServiceImpl.instance();
         OfferService offerService = OfferServiceImpl.instance();
         OrganizationService organizationService = OrganizationServiceImpl.instance();
@@ -573,4 +568,8 @@ public class Catalog extends BaseTestClass {
         return offer.getOfferId();
     }
 
+    private void PrepareOauthToken() throws Exception {
+        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
+        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
+    }
 }

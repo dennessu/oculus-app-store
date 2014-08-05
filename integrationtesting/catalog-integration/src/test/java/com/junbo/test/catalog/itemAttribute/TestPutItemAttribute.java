@@ -18,9 +18,9 @@ import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.*;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.Assert;
+
 import java.util.HashMap;
 
 /**
@@ -34,8 +34,7 @@ public class TestPutItemAttribute extends BaseTestClass {
     private ItemAttributeService itemAttributeService = ItemAttributeServiceImpl.instance();
     private final String defaultLocale = "en_US";
 
-    @BeforeClass
-    private void PrepareTestData() throws Exception {
+    private void prepareTestData() throws Exception {
         OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
         oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
     }
@@ -55,6 +54,8 @@ public class TestPutItemAttribute extends BaseTestClass {
     )
     @Test
     public void testPutItemAttribute() throws Exception {
+        this.prepareTestData();
+
         HashMap<String, SimpleLocaleProperties> locales = new HashMap<>();
 
         //Prepare an item attribute
@@ -91,6 +92,7 @@ public class TestPutItemAttribute extends BaseTestClass {
     )
     @Test
     public void testPutItemAttributeInvalidScenarios() throws Exception {
+        this.prepareTestData();
 
         //Prepare an item attribute
         ItemAttribute itemAttribute = itemAttributeService.postDefaultItemAttribute();

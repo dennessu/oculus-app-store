@@ -5,39 +5,31 @@
  */
 package com.junbo.test.catalog.offerRevision;
 
-import com.junbo.catalog.spec.model.common.Price;
-import com.junbo.catalog.spec.model.item.Binary;
-import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.catalog.spec.model.item.ItemRevision;
-import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
-import com.junbo.catalog.spec.model.offer.ItemEntry;
-import com.junbo.catalog.spec.model.offer.Offer;
-import com.junbo.catalog.spec.model.offer.OfferRevision;
-import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
-import com.junbo.common.id.OrganizationId;
-import com.junbo.test.catalog.ItemRevisionService;
-import com.junbo.test.catalog.ItemService;
-import com.junbo.test.catalog.OfferRevisionService;
-import com.junbo.test.catalog.OfferService;
-import com.junbo.test.catalog.enums.CatalogEntityStatus;
-import com.junbo.test.catalog.enums.CatalogItemType;
-import com.junbo.test.catalog.enums.PriceType;
-import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
-import com.junbo.test.catalog.impl.ItemServiceImpl;
-import com.junbo.test.catalog.impl.OfferRevisionServiceImpl;
-import com.junbo.test.catalog.impl.OfferServiceImpl;
-import com.junbo.test.catalog.util.BaseTestClass;
-import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
-import com.junbo.test.common.libs.LogHelper;
+import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
+import com.junbo.test.common.apihelper.identity.OrganizationService;
+import com.junbo.test.catalog.impl.OfferRevisionServiceImpl;
+import com.junbo.test.catalog.enums.CatalogEntityStatus;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.catalog.spec.model.offer.ItemEntry;
+import com.junbo.test.catalog.enums.CatalogItemType;
+import com.junbo.test.catalog.impl.OfferServiceImpl;
+import com.junbo.test.catalog.impl.ItemServiceImpl;
+import com.junbo.test.catalog.OfferRevisionService;
+import com.junbo.test.catalog.util.BaseTestClass;
+import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.test.common.libs.RandomFactory;
-import com.junbo.test.common.property.Component;
-import com.junbo.test.common.property.Priority;
-import com.junbo.test.common.property.Property;
-import com.junbo.test.common.property.Status;
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
+import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.test.catalog.enums.PriceType;
+import com.junbo.test.common.libs.LogHelper;
+import com.junbo.test.catalog.OfferService;
+import com.junbo.common.id.OrganizationId;
+import com.junbo.test.catalog.ItemService;
+import com.junbo.test.common.property.*;
+
 import org.testng.annotations.Test;
+import org.testng.Assert;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,34 +45,26 @@ public class TestPostOfferRevision extends BaseTestClass {
 
     private LogHelper logger = new LogHelper(TestPostOfferRevision.class);
 
-    private Item item1;
-    private Item item2;
-    private Offer offer1;
-    private Offer offer2;
+    private Item item;
+    private Offer offer;
     private OrganizationId organizationId;
     private final String defaultLocale = "en_US";
     private final String defaultOfferRevisionFileName = "defaultOfferRevision";
 
     private ItemService itemService = ItemServiceImpl.instance();
-    private ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
-
     private OfferService offerService = OfferServiceImpl.instance();
     private OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
 
-    @BeforeClass
-    private void PrepareTestData() throws Exception {
+    private void prepareTestData() throws Exception {
         OrganizationService organizationService = OrganizationServiceImpl.instance();
         organizationId = organizationService.postDefaultOrganization().getId();
 
-        item1 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
-        item2 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
-
-        offer1 = offerService.postDefaultOffer(organizationId);
-        offer2 = offerService.postDefaultOffer(organizationId);
+        item = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
+        offer = offerService.postDefaultOffer(organizationId);
     }
 
     @Property(
-            priority = Priority.Dailies,
+            priority = Priority.BVT,
             features = "Post v1/offer-revisions",
             component = Component.Catalog,
             owner = "JasonFu",
@@ -95,13 +79,14 @@ public class TestPostOfferRevision extends BaseTestClass {
     )
     @Test
     public void testPostOfferRevision() throws Exception {
+        this.prepareTestData();
 
         //Post an offer revision only with required fields
         OfferRevision offerRevisionPrepared = new OfferRevision();
         Map<String, OfferRevisionLocaleProperties> locales = new HashMap<>();
         OfferRevisionLocaleProperties offerRevisionLocaleProperties = new OfferRevisionLocaleProperties();
 
-        offerRevisionPrepared.setOfferId(offer1.getOfferId());
+        offerRevisionPrepared.setOfferId(offer.getOfferId());
         offerRevisionPrepared.setOwnerId(organizationId);
         offerRevisionPrepared.setStatus(CatalogEntityStatus.DRAFT.name());
 
@@ -127,13 +112,13 @@ public class TestPostOfferRevision extends BaseTestClass {
         OfferRevision testOfferRevisionFull = offerRevisionService.prepareOfferRevisionEntity(defaultOfferRevisionFileName,
                 organizationId, false);
 
-        testOfferRevisionFull.setOfferId(offer1.getOfferId());
+        testOfferRevisionFull.setOfferId(offer.getOfferId());
         testOfferRevisionFull.setOwnerId(organizationId);
 
         //set item info
         ItemEntry itemEntry = new ItemEntry();
         List<ItemEntry> itemEntities = new ArrayList<>();
-        itemEntry.setItemId(item1.getItemId());
+        itemEntry.setItemId(item.getItemId());
         itemEntry.setQuantity(1);
         itemEntities.add(itemEntry);
         testOfferRevisionFull.setItems(itemEntities);
@@ -158,9 +143,11 @@ public class TestPostOfferRevision extends BaseTestClass {
     )
     @Test
     public void testPostOfferRevisionInvalidScenarios() throws Exception {
+        this.prepareTestData();
+
         //Set rev not null
         OfferRevision testOfferRevision = offerRevisionService.prepareOfferRevisionEntity(defaultOfferRevisionFileName, organizationId);
-        testOfferRevision.setOfferId(offer1.getOfferId());
+        testOfferRevision.setOfferId(offer.getOfferId());
         testOfferRevision.setOwnerId(organizationId);
         testOfferRevision.setRev("1");
         verifyExpectedError(testOfferRevision);
@@ -193,7 +180,7 @@ public class TestPostOfferRevision extends BaseTestClass {
         }
 
         //locales: name
-        testOfferRevision.setOfferId(offer1.getOfferId());
+        testOfferRevision.setOfferId(offer.getOfferId());
         Map<String, OfferRevisionLocaleProperties> locales = new HashMap<>();
         OfferRevisionLocaleProperties offerRevisionLocaleProperties = new OfferRevisionLocaleProperties();
         offerRevisionLocaleProperties.setName(null);

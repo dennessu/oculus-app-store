@@ -5,29 +5,29 @@
  */
 package com.junbo.test.catalog.offerRevision;
 
-import com.junbo.catalog.spec.model.offer.Offer;
-import com.junbo.catalog.spec.model.offer.OfferRevision;
-import com.junbo.common.id.OfferId;
-import com.junbo.common.id.OfferRevisionId;
-import com.junbo.common.id.OrganizationId;
-import com.junbo.common.model.Results;
-import com.junbo.test.catalog.OfferRevisionService;
-import com.junbo.test.catalog.OfferService;
-import com.junbo.test.catalog.enums.CatalogEntityStatus;
-import com.junbo.test.catalog.impl.OfferRevisionServiceImpl;
-import com.junbo.test.catalog.impl.OfferServiceImpl;
-import com.junbo.test.catalog.util.BaseTestClass;
-import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
-import com.junbo.test.common.libs.IdConverter;
-import com.junbo.test.common.libs.LogHelper;
+import com.junbo.test.common.apihelper.identity.OrganizationService;
+import com.junbo.test.catalog.impl.OfferRevisionServiceImpl;
+import com.junbo.test.catalog.enums.CatalogEntityStatus;
+import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.test.catalog.impl.OfferServiceImpl;
+import com.junbo.test.catalog.OfferRevisionService;
+import com.junbo.test.catalog.util.BaseTestClass;
+import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
+import com.junbo.test.common.libs.IdConverter;
+import com.junbo.test.common.libs.LogHelper;
+import com.junbo.test.catalog.OfferService;
+import com.junbo.common.id.OfferRevisionId;
+import com.junbo.common.id.OrganizationId;
+import com.junbo.common.model.Results;
+import com.junbo.common.id.OfferId;
+
 import org.testng.annotations.Test;
+import org.testng.Assert;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -47,8 +47,7 @@ public class TestGetOfferRevision extends BaseTestClass {
     private OrganizationId organizationId;
     private Offer testOffer;
 
-    @BeforeClass
-    private void PrepareTestData() throws Exception {
+    private void prepareTestData() throws Exception {
         OrganizationService organizationService = OrganizationServiceImpl.instance();
         organizationId = organizationService.postDefaultOrganization().getId();
         testOffer = offerService.postDefaultOffer(organizationId);
@@ -71,6 +70,7 @@ public class TestGetOfferRevision extends BaseTestClass {
     )
     @Test
     public void testGetAnOfferRevisionById() throws Exception {
+        this.prepareTestData();
 
         //Prepare an offer revision
         OfferRevision offerRevision = offerRevisionService.postDefaultOfferRevision(testOffer);
@@ -108,6 +108,8 @@ public class TestGetOfferRevision extends BaseTestClass {
     )
     @Test
     public void testGetOfferRevisionsByOfferIdRevisionId() throws Exception {
+        this.prepareTestData();
+
         HashMap<String, List<String>> getOptions = new HashMap<>();
         List<String> offerIds = new ArrayList<>();
         List<String> revisionIds = new ArrayList<>();
@@ -185,6 +187,8 @@ public class TestGetOfferRevision extends BaseTestClass {
     )
     @Test
     public void testGetOfferRevisionsByRevisionStatus() throws Exception {
+        this.prepareTestData();
+
         HashMap<String, List<String>> getOptions = new HashMap<>();
         List<String> revisionIds = new ArrayList<>();
 
@@ -237,6 +241,7 @@ public class TestGetOfferRevision extends BaseTestClass {
     )
     @Test
     public void testGetOfferRevisionsByOfferIdTimestamp() throws Exception {
+        this.prepareTestData();
 
         HashMap<String, List<String>> getOptions = new HashMap<>();
         List<String> offerIds = new ArrayList<>();

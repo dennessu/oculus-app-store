@@ -7,8 +7,12 @@ package com.junbo.test.catalog.item;
 
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.test.catalog.util.BaseTestClass;
@@ -20,7 +24,6 @@ import com.junbo.test.common.property.*;
 import com.junbo.test.catalog.impl.*;
 import com.junbo.test.catalog.*;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.Assert;
 
@@ -41,14 +44,13 @@ public class TestPostItem extends BaseTestClass {
     private final String initRevValue = "1";
     private OrganizationId organizationId;
 
-    @BeforeClass
-    private void PrepareTestData() throws Exception {
+    private void prepareTestData() throws Exception {
         OrganizationService organizationService = OrganizationServiceImpl.instance();
         organizationId = organizationService.postDefaultOrganization().getId();
     }
 
     @Property(
-            priority = Priority.Dailies,
+            priority = Priority.BVT,
             features = "Post v1/items",
             component = Component.Catalog,
             owner = "JasonFu",
@@ -63,6 +65,8 @@ public class TestPostItem extends BaseTestClass {
     )
     @Test
     public void testPostItem() throws Exception {
+        this.prepareTestData();
+
         //Post test items only with required parameters
         Item testItemRequired = itemService.prepareItemEntity(itemRequiredPara, organizationId);
         Item itemRtn1 = itemService.postItem(testItemRequired);
@@ -92,9 +96,13 @@ public class TestPostItem extends BaseTestClass {
     )
     @Test
     public void testPostItemWithExistedValues() throws Exception {
+        this.prepareTestData();
 
         OfferService offerService = OfferServiceImpl.instance();
         Offer offer = offerService.postDefaultOffer(organizationId);
+
+        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
+        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
 
         ItemAttributeService itemAttributeService = ItemAttributeServiceImpl.instance();
         ItemAttribute itemAttribute1 = itemAttributeService.postDefaultItemAttribute();
@@ -127,6 +135,8 @@ public class TestPostItem extends BaseTestClass {
     )
     @Test
     public void testPostItemInvalidScenarios() throws Exception {
+        this.prepareTestData();
+
         List<String> genresCategory = new ArrayList<>();
         List<String> genresInvalid = new ArrayList<>();
         genresInvalid.add("0L");
@@ -158,6 +168,9 @@ public class TestPostItem extends BaseTestClass {
         verifyExpectedError(testItem);
 
         //test genres type is category
+        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
+        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
+
         OfferAttributeService offerAttributeService = OfferAttributeServiceImpl.instance();
         OfferAttribute offerAttribute = offerAttributeService.postDefaultOfferAttribute();
         genresCategory.add(offerAttribute.getId());

@@ -5,20 +5,18 @@
  */
 package com.junbo.test.catalog.offer;
 
-import com.junbo.common.id.OrganizationId;
+import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
+import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.offer.Offer;
-import com.junbo.test.common.apihelper.identity.OrganizationService;
-import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.catalog.OfferService;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.test.common.property.*;
-import com.junbo.common.model.Results;
 import com.junbo.common.id.OfferId;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.Assert;
 
@@ -37,8 +35,7 @@ public class TestGetOffer extends BaseTestClass {
     private OfferService offerService = OfferServiceImpl.instance();
     private OrganizationId organizationId;
 
-    @BeforeClass
-    private void PrepareTestData() throws Exception {
+    private void prepareTestData() throws Exception {
         OrganizationService organizationService = OrganizationServiceImpl.instance();
         organizationId = organizationService.postDefaultOrganization().getId();
     }
@@ -60,6 +57,7 @@ public class TestGetOffer extends BaseTestClass {
     )
     @Test
     public void testGetAnOfferById() throws Exception {
+        this.prepareTestData();
 
         //Prepare an offer
         Offer offer = offerService.postDefaultOffer(organizationId);
@@ -99,6 +97,7 @@ public class TestGetOffer extends BaseTestClass {
     )
     @Test
     public void testGetOffersByIds() throws Exception {
+        this.prepareTestData();
 
         //prepare 3 offers for later use
         Offer offer1 = offerService.postDefaultOffer(organizationId);
@@ -177,6 +176,7 @@ public class TestGetOffer extends BaseTestClass {
     )
     @Test
     public void testGetOffersByIdPublished() throws Exception {
+        this.prepareTestData();
 
         //prepare 3 offers for later use
         Offer offer1 = offerService.postDefaultOffer(organizationId);

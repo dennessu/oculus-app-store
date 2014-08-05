@@ -5,22 +5,21 @@
  */
 package com.junbo.test.catalog.itemAttribute;
 
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.test.catalog.enums.CatalogItemAttributeType;
 import com.junbo.test.catalog.impl.ItemAttributeServiceImpl;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
-import com.junbo.test.catalog.ItemAttributeService;
-import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
-import com.junbo.test.common.apihelper.oauth.enums.GrantType;
-import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
+import com.junbo.test.catalog.ItemAttributeService;
+import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.common.id.ItemAttributeId;
 import com.junbo.test.common.property.*;
 import com.junbo.common.model.Results;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.Assert;
 
@@ -38,8 +37,7 @@ public class TestGetItemAttribute extends BaseTestClass {
     private LogHelper logger = new LogHelper(TestGetItemAttribute.class);
     private ItemAttributeService itemAttributeService = ItemAttributeServiceImpl.instance();
 
-    @BeforeClass
-    private void PrepareTestData() throws Exception {
+    private void prepareTestData() throws Exception {
         OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
         oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
     }
@@ -59,6 +57,7 @@ public class TestGetItemAttribute extends BaseTestClass {
     )
     @Test
     public void testGetAnItemAttributeById() throws Exception {
+        this.prepareTestData();
 
         //Prepare an item attribute
         ItemAttribute itemAttribute = itemAttributeService.postDefaultItemAttribute();
@@ -90,6 +89,7 @@ public class TestGetItemAttribute extends BaseTestClass {
     )
     @Test
     public void testGetItemAttributesByIds() throws Exception {
+        this.prepareTestData();
 
         HashMap<String, List<String>> paraMap = new HashMap<>();
         List<String> listItemAttributeId = new ArrayList<>();
@@ -140,6 +140,7 @@ public class TestGetItemAttribute extends BaseTestClass {
     )
     @Test
     public void testGetItemAttributesByIdType() throws Exception {
+        this.prepareTestData();
 
         HashMap<String, List<String>> paraMap = new HashMap<>();
         List<String> listItemAttributeId = new ArrayList<>();

@@ -5,18 +5,17 @@
  */
 package com.junbo.test.catalog.itemAttribute;
 
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.test.catalog.impl.ItemAttributeServiceImpl;
-import com.junbo.test.catalog.ItemAttributeService;
-import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
-import com.junbo.test.common.apihelper.oauth.enums.GrantType;
-import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
+import com.junbo.test.catalog.ItemAttributeService;
+import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.*;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.Assert;
 
@@ -28,12 +27,6 @@ import org.testng.Assert;
 public class TestDeleteItemAttribute extends BaseTestClass {
 
     private LogHelper logger = new LogHelper(TestDeleteItemAttribute.class);
-
-    @BeforeClass
-    private void PrepareTestData() throws Exception {
-        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
-        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
-    }
 
     @Property(
             priority = Priority.Dailies,
@@ -49,7 +42,10 @@ public class TestDeleteItemAttribute extends BaseTestClass {
     )
     @Test
     public void testDeleteItemAttribute() throws Exception {
+        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
         ItemAttributeService itemAttributeService = ItemAttributeServiceImpl.instance();
+
+        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
 
         //Prepare an item and delete it
         ItemAttribute itemAttribute = itemAttributeService.postDefaultItemAttribute();

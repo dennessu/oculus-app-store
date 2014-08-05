@@ -5,13 +5,16 @@
  */
 package com.junbo.test.catalog.advancedContentSearch;
 
-import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.test.catalog.impl.ItemAttributeServiceImpl;
 import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
+import com.junbo.test.common.Entities.enums.ComponentType;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.catalog.spec.model.common.RevisionNotes;
 import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.catalog.spec.model.item.ItemRevision;
@@ -20,9 +23,6 @@ import com.junbo.test.catalog.ItemAttributeService;
 import com.junbo.test.catalog.impl.ItemServiceImpl;
 import com.junbo.test.catalog.ItemRevisionService;
 import com.junbo.test.catalog.util.BaseTestClass;
-import com.junbo.test.common.apihelper.oauth.OAuthService;
-import com.junbo.test.common.apihelper.oauth.enums.GrantType;
-import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.libs.LogHelper;
@@ -30,7 +30,6 @@ import com.junbo.common.id.OrganizationId;
 import com.junbo.test.catalog.ItemService;
 import com.junbo.test.common.property.*;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -57,13 +56,12 @@ public class ItemSearch extends BaseTestClass {
     private ItemService itemService = ItemServiceImpl.instance();
     private ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
 
-    @BeforeClass
-    private void PrepareTestData() throws Exception {
+    private void prepareTestData() throws Exception {
         OrganizationService organizationService = OrganizationServiceImpl.instance();
         organizationId = organizationService.postDefaultOrganization().getId();
 
-        item1 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
-        item2 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
+        item1 = itemService.postDefaultItem(CatalogItemType.APP, organizationId);
+        item2 = itemService.postDefaultItem(CatalogItemType.CONSUMABLE_UNLOCK, organizationId);
 
         //put item to add genre
         OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
@@ -154,6 +152,7 @@ public class ItemSearch extends BaseTestClass {
     )
     @Test
     public void testGetItemsByOnlyOneOption() throws Exception {
+        this.prepareTestData();
 
         String itemId1 = item1.getItemId();
         String itemId2 = item2.getItemId();
@@ -267,6 +266,8 @@ public class ItemSearch extends BaseTestClass {
     )
     @Test
     public void testGetItemsByCombinedOption() throws Exception {
+        this.prepareTestData();
+
         String itemId1 = item1.getItemId();
         String itemType1 = item1.getType();
         String itemId2 = item2.getItemId();

@@ -9,7 +9,12 @@ if (!hasProperty('mainClass')) {
 }
 
 test {
-    useTestNG()
+    useTestNG() {
+        if (System.properties['groups'] != null) {
+            includeGroups System.properties['groups']
+        }
+    }
+    systemProperty 'profile', System.properties['profile']
     options {
         listeners << 'org.testng.reporters.XMLReporter'
         listeners << 'com.junbo.test.common.property.PropertyTransformer'

@@ -5,22 +5,22 @@
  */
 package com.junbo.test.catalog.item;
 
-import com.junbo.common.id.OrganizationId;
+import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
+import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.catalog.impl.ItemServiceImpl;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.test.common.apihelper.identity.OrganizationService;
-import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.catalog.ItemService;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.test.common.property.*;
 import com.junbo.common.id.ItemId;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.Assert;
+
 import java.util.*;
 
 /**
@@ -34,8 +34,7 @@ public class TestGetItem extends BaseTestClass {
     private ItemService itemService = ItemServiceImpl.instance();
     private OrganizationId organizationId;
 
-    @BeforeClass
-    private void PrepareTestData() throws Exception {
+    private void prepareTestData() throws Exception {
         OrganizationService organizationService = OrganizationServiceImpl.instance();
         organizationId = organizationService.postDefaultOrganization().getId();
     }
@@ -57,6 +56,7 @@ public class TestGetItem extends BaseTestClass {
     )
     @Test
     public void testGetAnItemById() throws Exception {
+        this.prepareTestData();
 
         //Prepare an item
         Item item = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
@@ -96,6 +96,7 @@ public class TestGetItem extends BaseTestClass {
     )
     @Test
     public void testGetItemsByIds() throws Exception {
+        this.prepareTestData();
 
         //prepare 5 items for later use
         Item[] items = new Item[5];
@@ -184,6 +185,7 @@ public class TestGetItem extends BaseTestClass {
     )
     @Test
     public void testGetItemsByIdType() throws Exception {
+        this.prepareTestData();
 
         //prepare 5 items for later use
         Item[] items = new Item[5];

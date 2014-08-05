@@ -5,24 +5,24 @@
  */
 package com.junbo.test.catalog.offerAttribute;
 
-import com.junbo.catalog.spec.model.attribute.OfferAttribute;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
-import com.junbo.test.catalog.OfferAttributeService;
+import com.junbo.catalog.spec.model.attribute.OfferAttribute;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.test.catalog.impl.OfferAttributeServiceImpl;
-import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
-import com.junbo.test.common.apihelper.oauth.enums.GrantType;
-import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
-import com.junbo.test.common.libs.LogHelper;
+import com.junbo.test.catalog.OfferAttributeService;
+import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
+import com.junbo.test.common.libs.LogHelper;
+
 import org.testng.annotations.Test;
+import org.testng.Assert;
 
 import java.util.HashMap;
 
@@ -37,8 +37,7 @@ public class TestPutOfferAttribute extends BaseTestClass {
     private OfferAttributeService offerAttributeService = OfferAttributeServiceImpl.instance();
     private final String defaultLocale = "en_US";
 
-    @BeforeClass
-    private void PrepareTestData() throws Exception {
+    private void prepareTestData() throws Exception {
         OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
         oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
     }
@@ -58,6 +57,8 @@ public class TestPutOfferAttribute extends BaseTestClass {
     )
     @Test
     public void testPutOfferAttribute() throws Exception {
+        this.prepareTestData();
+
         HashMap<String, SimpleLocaleProperties> locales = new HashMap<>();
 
         //Prepare an offer attribute
@@ -94,6 +95,7 @@ public class TestPutOfferAttribute extends BaseTestClass {
     )
     @Test
     public void testPutOfferAttributeInvalidScenarios() throws Exception {
+        this.prepareTestData();
 
         //Prepare an offer attribute
         OfferAttribute offerAttribute = offerAttributeService.postDefaultOfferAttribute();

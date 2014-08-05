@@ -5,7 +5,6 @@
  */
 package com.junbo.test.catalog.offerRevision;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
@@ -22,6 +21,7 @@ import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.test.catalog.OfferRevisionService;
 import com.junbo.test.catalog.impl.ItemServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.test.common.libs.RandomFactory;
@@ -36,7 +36,6 @@ import com.junbo.common.id.OrganizationId;
 import com.junbo.test.catalog.ItemService;
 import com.junbo.test.common.property.*;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.Assert;
 
@@ -66,8 +65,7 @@ public class TestPutOfferRevision extends BaseTestClass {
     private OfferService offerService = OfferServiceImpl.instance();
     private OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
 
-    @BeforeClass
-    private void PrepareTestData() throws Exception {
+    private void prepareTestData() throws Exception {
         OrganizationService organizationService = OrganizationServiceImpl.instance();
         ItemService itemService = ItemServiceImpl.instance();
         organizationId = organizationService.postDefaultOrganization().getId();
@@ -81,7 +79,7 @@ public class TestPutOfferRevision extends BaseTestClass {
     }
 
     @Property(
-            priority = Priority.Dailies,
+            priority = Priority.BVT,
             features = "Put v1/offer-revisions/{offerRevisionId}",
             component = Component.Catalog,
             owner = "JasonFu",
@@ -95,6 +93,7 @@ public class TestPutOfferRevision extends BaseTestClass {
     )
     @Test
     public void testPutOfferRevision() throws Exception {
+        this.prepareTestData();
 
         OfferRevision offerRevision = offerRevisionService.postDefaultOfferRevision(offer1);
 
@@ -197,6 +196,8 @@ public class TestPutOfferRevision extends BaseTestClass {
     )
     @Test
     public void testPutOfferRevisionInvalidScenarios() throws Exception {
+        this.prepareTestData();
+
         ItemService itemService = ItemServiceImpl.instance();
 
         OfferRevision offerRevision = offerRevisionService.postDefaultOfferRevision(offer1);
@@ -363,6 +364,7 @@ public class TestPutOfferRevision extends BaseTestClass {
     )
     @Test
     public void testPutOfferRevisionWithWrongPrice() throws Exception {
+        this.prepareTestData();
 
         //Data preparation
         OAuthService oAuthService = OAuthServiceImpl.getInstance();

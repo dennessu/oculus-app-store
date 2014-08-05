@@ -14,9 +14,13 @@ import java.lang.reflect.Method;
 /**
  * @author Jason
  *         time 3/26/2014
- *         process property annotations: if test status is DefaultEnable or Enable, set enabled=true
- *         and testNG will run this test; else if test status is Manual, Disabled, Incomplete, set
- *         enabled=false and testNG will ignore this test.
+ *         update by Jason at 8/5/2014 to support running a specific group tests
+ *         process property annotations:
+ *         1. if test status is DefaultEnable or Enable, set enabled=true
+ *            and testNG will run this test; else if test status is Manual, Disabled, Incomplete, set
+ *            enabled=false and testNG will ignore this test.
+ *         2. support running a specific group tests
+ *
  */
 public class PropertyTransformer implements IAnnotationTransformer {
 
@@ -29,6 +33,31 @@ public class PropertyTransformer implements IAnnotationTransformer {
             } else {
                 annotation.setEnabled(false);
             }
+
+            if (caseProperty.priority().equals(Priority.BVT)) {
+                String[] groups = new String[3];
+                groups[0] = Priority.BVT.name();
+                groups[1] = Priority.BVT.name().toLowerCase();
+                groups[2] = Priority.BVT.name().toUpperCase();
+                annotation.setGroups(groups);
+            } else if (caseProperty.priority().equals(Priority.Dailies)) {
+                String[] groups = new String[3];
+                groups[0] = Priority.Dailies.name();
+                groups[1] = Priority.Dailies.name().toLowerCase();
+                groups[2] = Priority.Dailies.name().toUpperCase();
+                annotation.setGroups(groups);
+            } else if (caseProperty.priority().equals(Priority.Comprehensive)) {
+                String[] groups = new String[3];
+                groups[0] = Priority.Comprehensive.name();
+                groups[1] = Priority.Comprehensive.name().toLowerCase();
+                groups[2] = Priority.Comprehensive.name().toUpperCase();
+                annotation.setGroups(groups);
+            } else {
+                String[] groups = new String[1];
+                groups[0] = Priority.Default.name();
+                annotation.setGroups(groups);
+            }
+
         } catch (NullPointerException e) {
             return;
         }

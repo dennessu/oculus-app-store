@@ -5,11 +5,14 @@
  */
 package com.junbo.test.catalog.advancedContentSearch;
 
-import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.offer.ItemEntry;
 import com.junbo.test.catalog.enums.CatalogItemType;
@@ -17,20 +20,15 @@ import com.junbo.test.catalog.enums.EventActionType;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.offer.Action;
 import com.junbo.catalog.spec.model.offer.Offer;
-import com.junbo.test.common.apihelper.oauth.OAuthService;
-import com.junbo.test.common.apihelper.oauth.enums.GrantType;
-import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.catalog.enums.EventType;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.common.id.OrganizationId;
-
 import com.junbo.test.common.property.*;
 import com.junbo.test.catalog.impl.*;
 import com.junbo.test.catalog.*;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -57,8 +55,7 @@ public class OfferSearch extends BaseTestClass {
     private OfferService offerService = OfferServiceImpl.instance();
     private OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
 
-    @BeforeClass
-    private void PrepareTestData() throws Exception {
+    private void prepareTestData() throws Exception {
         final String defaultOfferRevisionFileName = "defaultOfferRevision";
         final String defaultStoredValueOfferRevisionFileName = "defaultStoredValueOfferRevision";
 
@@ -90,6 +87,7 @@ public class OfferSearch extends BaseTestClass {
         if (item.getType().equalsIgnoreCase(CatalogItemType.STORED_VALUE.getItemType())) {
             offerRevisionPrepared = offerRevisionService.prepareOfferRevisionEntity(
                     defaultStoredValueOfferRevisionFileName, organizationId, false);
+            offerRevisionPrepared.getEventActions().get(EventType.PURCHASE.name()).get(0).setItemId(item.getItemId());
         }
         else {
             offerRevisionPrepared = offerRevisionService.prepareOfferRevisionEntity(
@@ -162,6 +160,7 @@ public class OfferSearch extends BaseTestClass {
     )
     @Test
     public void testGetOffersByOnlyOneOption() throws Exception {
+        this.prepareTestData();
 
         String offerId1 = offer1.getOfferId();
         String offerId2 = offer2.getOfferId();
@@ -242,6 +241,8 @@ public class OfferSearch extends BaseTestClass {
     )
     @Test
     public void testGetOffersByCombinedOption() throws Exception {
+        this.prepareTestData();
+
         final String defaultEnvironment = "DEV";
         String offerId1 = offer1.getOfferId();
         String offerId2 = offer2.getOfferId();

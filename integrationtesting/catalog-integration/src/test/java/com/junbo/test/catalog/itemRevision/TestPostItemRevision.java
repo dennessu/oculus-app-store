@@ -5,8 +5,6 @@
  */
 package com.junbo.test.catalog.itemRevision;
 
-import com.junbo.catalog.spec.model.common.Price;
-import com.junbo.catalog.spec.model.item.Binary;
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
@@ -17,6 +15,8 @@ import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.catalog.impl.ItemServiceImpl;
 import com.junbo.test.catalog.ItemRevisionService;
 import com.junbo.test.catalog.util.BaseTestClass;
+import com.junbo.catalog.spec.model.common.Price;
+import com.junbo.catalog.spec.model.item.Binary;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.libs.LogHelper;
@@ -24,7 +24,6 @@ import com.junbo.common.id.OrganizationId;
 import com.junbo.test.catalog.ItemService;
 import com.junbo.test.common.property.*;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.Assert;
 
@@ -51,17 +50,8 @@ public class TestPostItemRevision extends BaseTestClass {
     private ItemService itemService = ItemServiceImpl.instance();
     private ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
 
-    @BeforeClass
-    private void PrepareTestData() throws Exception {
-        OrganizationService organizationService = OrganizationServiceImpl.instance();
-        organizationId = organizationService.postDefaultOrganization().getId();
-
-        item1 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
-        item2 = itemService.postDefaultItem(CatalogItemType.DOWNLOADED_ADDITION, organizationId);
-    }
-
     @Property(
-            priority = Priority.Dailies,
+            priority = Priority.BVT,
             features = "Post v1/item-revisions",
             component = Component.Catalog,
             owner = "JasonFu",
@@ -76,6 +66,7 @@ public class TestPostItemRevision extends BaseTestClass {
     )
     @Test
     public void testPostItemRevision() throws Exception {
+        this.prepareTestData();
 
         //Post an item revision only with required fields
         ItemRevision itemRevisionPrepared = new ItemRevision();
@@ -130,6 +121,8 @@ public class TestPostItemRevision extends BaseTestClass {
     )
     @Test
     public void testPostItemRevisionInvalidScenarios() throws Exception {
+        this.prepareTestData();
+
         //Set rev not null
         ItemRevision testItemRevision = itemRevisionService.prepareItemRevisionEntity(fullItemRevisionFileName);
         testItemRevision.setPackageName("packageName_" + RandomFactory.getRandomStringOfAlphabetOrNumeric(10));
@@ -228,6 +221,14 @@ public class TestPostItemRevision extends BaseTestClass {
         testItemRevision.setPackageName(packageName);
 
         verifyExpectedError(testItemRevision);
+    }
+
+    private void prepareTestData() throws Exception {
+        OrganizationService organizationService = OrganizationServiceImpl.instance();
+        organizationId = organizationService.postDefaultOrganization().getId();
+
+        item1 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
+        item2 = itemService.postDefaultItem(CatalogItemType.DOWNLOADED_ADDITION, organizationId);
     }
 
     private void checkItemRevisionRequiredFields(ItemRevision itemRevisionActual, ItemRevision itemRevisionExpected) {
