@@ -35,9 +35,13 @@ public interface OrganizationResource {
     Promise<Organization> create(Organization organization);
 
     @ApiOperation("Update an organization")
-    @POST
+    @PUT
     @Path("/{organizationId}")
     Promise<Organization> put(@PathParam("organizationId") OrganizationId organizationId, Organization organization);
+
+    @POST
+    @Path("/{organizationId}")
+    Promise<Organization> patch(@PathParam("organizationId") OrganizationId organizationId, Organization organization);
 
     @ApiOperation("Get a organization info")
     @GET

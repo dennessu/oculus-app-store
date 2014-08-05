@@ -89,6 +89,38 @@ class OrganizationResourceImpl implements OrganizationResource {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
+                organization = organizationFilter.filterForPut(organization, oldOrganization)
+
+                return organizationValidator.validateForUpdate(organizationId, organization, oldOrganization).then {
+                    return organizationRepository.update(organization, oldOrganization).then { Organization newOrganization ->
+                        newOrganization = organizationFilter.filterForGet(newOrganization, null)
+                        return Promise.pure(newOrganization)
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    Promise<Organization> patch(OrganizationId organizationId, Organization organization) {
+        if (organizationId == null) {
+            throw new IllegalArgumentException('organizationId is null')
+        }
+
+        if (organization == null) {
+            throw new IllegalArgumentException('organization is null')
+        }
+
+        return organizationRepository.get(organizationId).then { Organization oldOrganization ->
+            if (oldOrganization == null) {
+                throw AppErrors.INSTANCE.organizationNotFound(organizationId).exception()
+            }
+            def callback = authorizeCallbackFactory.create(oldOrganization)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('update')) {
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
+                }
+
                 organization = organizationFilter.filterForPatch(organization, oldOrganization)
 
                 return organizationValidator.validateForUpdate(organizationId, organization, oldOrganization).then {
