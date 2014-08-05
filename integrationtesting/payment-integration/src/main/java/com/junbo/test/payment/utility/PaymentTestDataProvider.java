@@ -84,15 +84,21 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
         return postPaymentInstrument(uid, paymentInfo, 200);
     }
 
+    public String postPaymentInstrument(String uid, PaymentInstrumentBase paymentInfo,
+                                        long billingAddressId) throws Exception {
+        return postPaymentInstrument(uid, paymentInfo, billingAddressId, 200);
+    }
 
     public String postPaymentInstrument(String uid, PaymentInstrumentBase paymentInfo,
-                                        int expectedResponseCode) throws Exception {
+                                        long billingAddressId, int expectedResponseCode) throws Exception {
 
         PaymentInstrument paymentInstrument = new PaymentInstrument();
         paymentInstrument.setUserId(IdConverter.hexStringToId(UserId.class, uid));
         paymentInstrument.setLabel("4");
         TypeSpecificDetails typeSpecificDetails = new TypeSpecificDetails();
-        Long billingAddressId = Master.getInstance().getUser(uid).getAddresses().get(0).getValue().getValue();
+        if (billingAddressId <= 0) {
+            billingAddressId = Master.getInstance().getUser(uid).getAddresses().get(0).getValue().getValue();
+        }
         paymentInfo.setBillingAddressId(billingAddressId);
         switch (paymentInfo.getType()) {
             case CREDITCARD:
@@ -137,13 +143,19 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
                 paymentInstrument.setType(adyenInfo.getType().getValue());
                 paymentInstrument.setBillingAddressId(adyenInfo.getBillingAddressId());
 
-                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument));
+                paymentInfo.setPid(paymentClient.postPaymentInstrument(paymentInstrument, expectedResponseCode));
                 return paymentInfo.getPid();
 
             default:
                 throw new TestException(String.format("%s is not supported", paymentInfo.getType().toString()));
         }
 
+    }
+
+
+    public String postPaymentInstrument(String uid, PaymentInstrumentBase paymentInfo,
+                                        int expectedResponseCode) throws Exception {
+        return postPaymentInstrument(uid, paymentInfo, 0L, expectedResponseCode);
     }
 
 

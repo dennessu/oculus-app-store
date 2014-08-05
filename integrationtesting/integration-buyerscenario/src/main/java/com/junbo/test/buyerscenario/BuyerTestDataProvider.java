@@ -97,6 +97,12 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
     }
 
     public String createUser(String vatId, Address address) throws Exception {
+        List<Address> addresses = new ArrayList<>();
+        addresses.add(address);
+        return identityClient.PostUser(vatId, addresses);
+    }
+
+    public String createUser(String vatId, List<Address> address) throws Exception {
         return identityClient.PostUser(vatId, address);
     }
 
@@ -151,6 +157,10 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         return paymentProvider.postPaymentInstrument(uid, paymentInfo);
     }
 
+    public String postPaymentInstrument(String uid, PaymentInstrumentBase paymentInfo, long billAddressId) throws Exception {
+        return paymentProvider.postPaymentInstrument(uid, paymentInfo, billAddressId);
+    }
+
     public void creditWallet(String uid) throws Exception {
         paymentProvider.creditWallet(uid);
     }
@@ -182,6 +192,14 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
                             boolean hasPhysicalGood, Map<String, Integer> offers) throws Exception {
 
         return this.postOrder(uid, country, currency, paymentInstrumentId, hasPhysicalGood, offers, 200);
+    }
+
+    public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
+                            boolean hasPhysicalGood, long shippingAddressId, Map<String, Integer> offers)
+            throws Exception {
+
+        return orderProvider.postOrder(uid, country, currency, paymentInstrumentId, hasPhysicalGood,
+                shippingAddressId, offers, 200);
     }
 
     public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
@@ -282,6 +300,6 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
 
     public void postOrderEvent(String orderId, EventStatus eventStatus, OrderActionType orderActionType)
             throws Exception {
-        orderProvider.postOrderEvent(orderId, eventStatus,orderActionType);
+        orderProvider.postOrderEvent(orderId, eventStatus, orderActionType);
     }
 }

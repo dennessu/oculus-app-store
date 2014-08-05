@@ -158,6 +158,59 @@ public class OrderTestDataProvider {
         return orderClient.postOrder(order, expectedResponseCode);
     }
 
+    public String postOrder(String uid, Country country, Currency currency, String paymentInstrumentId,
+                            boolean hasPhysicalGood, long shippingAddressId, Map<String, Integer> offers,
+                            int expectedResponseCode) throws Exception {
+        Order order = new Order();
+        order.setUser(new UserId(IdConverter.hexStringToId(UserId.class, uid)));
+        order.setCountry(new CountryId(country.toString()));
+        order.setCurrency(new CurrencyId(currency.toString()));
+        List<PaymentInfo> paymentInfos = new ArrayList<>();
+        PaymentInfo paymentInfo = new PaymentInfo();
+
+        if (paymentInstrumentId.equals("Invalid")) {
+            paymentInfo.setPaymentInstrument(new PaymentInstrumentId(0L));
+        } else {
+            paymentInfo.setPaymentInstrument(new PaymentInstrumentId(
+                    IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId)));
+        }
+        paymentInfos.add(paymentInfo);
+        order.setPayments(paymentInfos);
+        order.setShippingMethod("0");
+
+        if (hasPhysicalGood) {
+            order.setShippingMethod("0");
+            if (shippingAddressId <= 0) {
+                order.setShippingAddress(Master.getInstance().getUser(uid).getAddresses().get(0).getValue());
+            } else {
+                order.setShippingAddress(new UserPersonalInfoId(shippingAddressId));
+            }
+        }
+
+        List<OrderItem> orderItemList = new ArrayList<>();
+        Set<String> key = offers.keySet();
+        for (Iterator it = key.iterator(); it.hasNext(); ) {
+            OrderItem orderItem = new OrderItem();
+            String offerName = (String) it.next();
+            OfferId offerId;
+            if (offerName.equals("Invalid")) {
+                offerId = new OfferId("123");
+            } else {
+                offerId = new OfferId(offerClient.getOfferIdByName(offerName));
+            }
+            orderItem.setQuantity(offers.get(offerName));
+            orderItem.setOffer(offerId);
+            orderItemList.add(orderItem);
+
+        }
+        order.setOrderItems(orderItemList);
+        order.setTentative(true);
+        order.setLocale(new LocaleId("en_US"));
+        Master.getInstance().setCurrentUid(uid);
+        return orderClient.postOrder(order, expectedResponseCode);
+    }
+
+
     public String updateOrderTentative(String orderId, boolean isTentative, int expectedResponseCode) throws Exception {
         Order order = Master.getInstance().getOrder(orderClient.getOrderByOrderId(orderId));
         order.setTentative(isTentative);

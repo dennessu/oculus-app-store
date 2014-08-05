@@ -55,8 +55,8 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         return PostUser(userName, pwd, emailAddress, null, null);
     }
 
-    private String PostUser(String userName, String pwd, String emailAddress, String vat, Address billingAddress)
-            throws Exception {
+    private String PostUser(String userName, String pwd, String emailAddress, String vat,
+                            List<Address> billingAddresses) throws Exception {
         Master.getInstance().setCurrentUid(null);
         oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY);
         User userForPost = new User();
@@ -93,15 +93,33 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
         oAuthTokenClient.postUserAccessToken(userId, password);
 
+        List<UserPersonalInfoLink> addresses = new ArrayList<>();
+        List<UserPersonalInfoLink> emails = new ArrayList<>();
+        List<UserPersonalInfoLink> phones = new ArrayList<>();
+
         UserId userIdDefault = userGet.getId();
 
         //attach user email and address info
         UserPersonalInfo email = postEmail(userIdDefault, emailAddress);
         UserPersonalInfo address;
-        if (billingAddress != null) {
-            address = postBillingAddress(userIdDefault, billingAddress);
+        boolean isDefault = true;
+        if (billingAddresses != null) {
+            for (Address userAddress : billingAddresses) {
+                address = postBillingAddress(userIdDefault, userAddress);
+                UserPersonalInfoLink piAddress = new UserPersonalInfoLink();
+                piAddress.setIsDefault(isDefault);
+                isDefault = false;
+                piAddress.setUserId(userIdDefault);
+                piAddress.setValue(address.getId());
+                addresses.add(piAddress);
+            }
         } else {
             address = postAddress(userIdDefault);
+            UserPersonalInfoLink piAddress = new UserPersonalInfoLink();
+            piAddress.setIsDefault(Boolean.TRUE);
+            piAddress.setUserId(userIdDefault);
+            piAddress.setValue(address.getId());
+            addresses.add(piAddress);
         }
         UserPersonalInfo phone = postPhone(userIdDefault);
         UserPersonalInfo name = postName(userIdDefault);
@@ -110,11 +128,6 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         piEmail.setIsDefault(Boolean.TRUE);
         piEmail.setUserId(userIdDefault);
         piEmail.setValue(email.getId());
-
-        UserPersonalInfoLink piAddress = new UserPersonalInfoLink();
-        piAddress.setIsDefault(Boolean.TRUE);
-        piAddress.setUserId(userIdDefault);
-        piAddress.setValue(address.getId());
 
         UserPersonalInfoLink piPhone = new UserPersonalInfoLink();
         piPhone.setIsDefault(true);
@@ -126,10 +139,6 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         piName.setUserId(userIdDefault);
         piName.setValue(name.getId());
 
-        List<UserPersonalInfoLink> addresses = new ArrayList<>();
-        List<UserPersonalInfoLink> emails = new ArrayList<>();
-        List<UserPersonalInfoLink> phones = new ArrayList<>();
-        addresses.add(piAddress);
         emails.add(piEmail);
         phones.add(piPhone);
 
@@ -145,8 +154,8 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     }
 
     @Override
-    public String PostUser(String vat, Address address) throws Exception {
-        return PostUser(null, null, null, vat, address);
+    public String PostUser(String vat, List<Address> addresses) throws Exception {
+        return PostUser(null, null, null, vat, addresses);
     }
 
     @Override

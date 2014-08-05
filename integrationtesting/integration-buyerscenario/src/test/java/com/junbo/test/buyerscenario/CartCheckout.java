@@ -218,7 +218,6 @@ public class CartCheckout extends BaseTestClass {
         String uid = testDataProvider.createUser();
         Map<String, Integer> offerList = new HashedMap();
 
-
         offerList.put(offer_storedValue_normal, 1);
 
         CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);

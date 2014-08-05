@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.id.OrderId;
 import com.junbo.identity.spec.v1.model.Address;
+import com.junbo.identity.spec.v1.model.UserPersonalInfo;
+import com.junbo.identity.spec.v1.model.UserPersonalInfoLink;
 import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderEvent;
 import com.junbo.test.buyerscenario.util.BaseTestClass;
@@ -200,43 +202,51 @@ public class UAT extends BaseTestClass {
     )
     @Test
     public void testUATPhysicalByCreditCard() throws Exception {
-
         List<UserAddress> userAddressList = new ArrayList<>();
-        userAddressList.add(addressCA1);
-        userAddressList.add(addressTX);
-        userAddressList.add(addressNC);
-        userAddressList.add(addressMD);
-        userAddressList.add(addressMN);
-        userAddressList.add(addressWA);
-        userAddressList.add(addressCA2);
-        userAddressList.add(addressON);
-        userAddressList.add(addressBC);
-        userAddressList.add(addressPE);
-        userAddressList.add(addressQC);
-        userAddressList.add(addressYT);
-        userAddressList.add(addressMX);
+        UserAddress userBillingAddress = addressCA1;  //first one is always default
+        UserAddress userShippingAddress = addressCA2;
+
+        userAddressList.add(userBillingAddress);
+        userAddressList.add(userShippingAddress);
+
+        Long billingAddressId = 0l;
+        Long shippingAddressId = 0l;
+
+        List<Address> addressList = new ArrayList<>();
 
         for (UserAddress userAddress : userAddressList) {
-
             Address address = new Address();
             address.setStreet1(userAddress.Street1);
             address.setCity(userAddress.City);
             address.setCountryId(new CountryId(userAddress.Country.toString()));
             address.setSubCountry(userAddress.SubCountry);
             address.setPostalCode(userAddress.PostalCode);
+            addressList.add(address);
+        }
 
-            String uid = testDataProvider.createUser(userAddress.VATId, address);
+        String uid = testDataProvider.createUser(new String("VATId"), addressList);
 
-            Map<String, Integer> offerList = new HashedMap();
-            offerList.put(offer_physical_uat, 1);
+        List<UserPersonalInfoLink> userPersonalInfos = Master.getInstance().getUser(uid).getAddresses();
 
-            CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
-            String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
+        for (UserPersonalInfoLink userPersonalInfoLink : userPersonalInfos) {
+            if (userPersonalInfoLink.getIsDefault()) {
+                billingAddressId = userPersonalInfoLink.getValue().getValue();
+            } else {
+                shippingAddressId = userPersonalInfoLink.getValue().getValue();
+            }
+        }
 
-            String orderId = testDataProvider.postOrder(uid,
-                    userAddress.Country, Currency.DEFAULT, creditCardId, true, offerList);
 
-            orderId = testDataProvider.updateOrderTentative(orderId, false);
+        Map<String, Integer> offerList = new HashedMap();
+        offerList.put(offer_physical_uat, 1);
+
+        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
+        String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo, billingAddressId);
+
+        String orderId = testDataProvider.postOrder(uid,
+                userBillingAddress.Country, userBillingAddress.Currency, creditCardId, true, shippingAddressId, offerList);
+
+        orderId = testDataProvider.updateOrderTentative(orderId, false);
 
 //            OrderEventService orderEventService = OrderEventServiceImpl.getInstance();
 //            OrderEvent orderEvent = new OrderEvent();
@@ -245,7 +255,6 @@ public class UAT extends BaseTestClass {
 //            orderEvent.setStatus("COMPLETED");
 //
 //            orderEventService.postOrderEvent(orderEvent);
-        }
 
     }
 

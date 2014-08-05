@@ -28,7 +28,7 @@ public interface UserService {
 
     String PostUser(String userName, String pwd, String emailAddress) throws Exception;
 
-    String PostUser(String vat, Address address) throws Exception;
+    String PostUser(String vat, List<Address> address) throws Exception;
 
     String PostUser(String vat) throws Exception;
 
