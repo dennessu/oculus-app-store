@@ -31,4 +31,10 @@ dependencies {
     compile junboProject(':crypto-spec')
     compile junboProject(':identity-spec')
     compile junboProject(':oauth-spec')
+
+    testCompile (libraries.spring_test)
+    testCompile (libraries.common_lang)
+    testCompile (libraries.easy_mock)
+    testCompile junboProject(':authorization-lib')
+
 }

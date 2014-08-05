@@ -104,7 +104,7 @@ class LoginResourceImpl implements  LoginResource {
     }
 
     @Override
-    Promise<AuthTokenResponse> createUser(CreateUserRequest createUserRequest, ContainerRequestContext context) {
+    Promise<AuthTokenResponse> createUser(CreateUserRequest createUserRequest) {
         User user
         Promise.pure(null).then { // create user
             requestValidator.validateCreateUserRequest(createUserRequest).then {
