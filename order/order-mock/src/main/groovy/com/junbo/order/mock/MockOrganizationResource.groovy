@@ -9,7 +9,6 @@ import com.junbo.identity.spec.v1.resource.OrganizationResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
-import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
 /**
@@ -46,6 +45,12 @@ class MockOrganizationResource extends BaseMock implements OrganizationResource 
 
     @Override
     Promise<Void> delete(OrganizationId organizationIdId) {
+        return null
+    }
+
+
+    @Override
+    Promise<Organization> patch(OrganizationId organizationId, Organization organization) {
         return null
     }
 }
