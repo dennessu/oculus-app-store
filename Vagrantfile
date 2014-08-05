@@ -37,6 +37,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network "forwarded_port", guest: 5984, host: 5984
   config.vm.network "forwarded_port", guest: 5432, host: 5432
   config.vm.network "forwarded_port", guest: 9401, host: 9401
+  config.vm.network "forwarded_port", guest: 11211, host: 11211
 
   config.vm.provider "virtualbox" do |v|
     v.name = "sc-localdev"
@@ -90,6 +91,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # when file is comitted to object database, or when git is compareing working directory with object database
     # so even if on windows host, file is checked out as CRLF, it can also work in vagrant.
     su - vagrant -c 'git config --global core.autocrlf input'
+
+    # make silkcloud dirs
+    mkdir -p /var/silkcloud; chown -R vagrant:vagrant /var/silkcloud
+    mkdir -p /etc/silkcloud; chown -R vagrant:vagrant /etc/silkcloud
+
+    # work around to install memcached
+    apt-get update; apt-get install memcached -y
 
     echo "* PROVISIONING COMPLETED:"
     echo "** type 'vagrant ssh' to connect to sc-localdev"

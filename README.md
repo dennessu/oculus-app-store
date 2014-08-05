@@ -20,7 +20,7 @@ The following guide is for setting up windows as the development and testing env
     It should show the `java.exe` from the JDK folder rather than `%SystemRoot%\system32`.
 
 #### Install PostgreSQL
-1. Download and install [PostgreSQL 9.3](http://www.enterprisedb.com/products-services-training/pgdownload). 
+1. Download and install [PostgreSQL 9.3](http://www.enterprisedb.com/products-services-training/pgdownload).
 1. During the installation, please keep the superuser name as `postgres` if asked.
 1. After installation, add the path of `psql.exe` (for example, `C:\Program Files\PostgreSQL\9.3\bin`) to the system `PATH`.
 1. Open pgAdmin3, try to connect localhost and check "Store Password".
@@ -34,12 +34,6 @@ The following guide is for setting up windows as the development and testing env
 
 1. Change the `postgresql.conf` to increase the max connections and transactions for unit tests.
     - Open `data\postgresql.conf` from the PostgreSQL installation path (for example, `C:\Program Files\PostgreSQL\9.3\data\postgresql.conf`).
-    - Find `max_prepared_transactions`, uncomment the line and change the value to 100. 
-
-        ```
-        max_prepared_transactions = 100
-        ```
-
     - Find `max_connections`, uncomment if commented and change the value to 100.
 
         ```
@@ -66,10 +60,21 @@ The following guide is for setting up windows as the development and testing env
         net stop postgresql-x64-9.3
         net start postgresql-x64-9.3
         ```
-        
+
 #### Install CouchDB
 1. Download and install [CouchDB 1.5.1 with Erlang R14B04](http://www.apache.org/dyn/closer.cgi?path=/couchdb/binary/win/1.5.1/setup-couchdb-1.5.1_R14B04.exe).
 1. Verify CouchDB is running by accessing [http://localhost:5984/\_utils](http://localhost:5984/_utils). It should show the "Apache CouchDB - Futon" page.
+
+#### Install Memcached
+1. Download and install [Memcached from Northscale](http://downloads.northscale.com/memcached-win32-1.4.4-14.zip).
+1. Unzip the archive memcached-win32-1.4.4-14.zip
+1. [Open command prompt with Administrator privilege](http://technet.microsoft.com/en-us/library/cc947813.aspx) in this location and run the following commands:
+    ```
+    memcached.exe -d install
+    net start memcached
+    sc config memcached start= auto
+    ```
+    Note there can NOT be a space before = and MUST be a space after =.
 
 #### Install Cygwin
 1. Download and install [Cygwin](http://cygwin.com/)
@@ -119,7 +124,7 @@ The following guide is for setting up windows as the development and testing env
     ```
 
     It should show the gradle version.
-        
+
 #### Install IntelliJ IDEA (Optional)
 This step is optional. IntelliJ IDEA is the recommended IDE for developing Java and Groovy code. Download and install [IntelliJ IDEA 13 Community Edition](http://www.jetbrains.com/idea/download/).
 
@@ -177,19 +182,13 @@ Note: If you don't want to change the coreutils preference, you can create anoth
     It should show `java version "1.7.0_xx` where xx is the revision of the JVM you installed.
 
 #### Install PostgreSQL
-1. Download and install [PostgreSQL 9.3](http://www.enterprisedb.com/products-services-training/pgdownload). 
+1. Download and install [PostgreSQL 9.3](http://www.enterprisedb.com/products-services-training/pgdownload).
 1. During the installation, please keep the superuser name as `postgres` if asked.
 1. Change the `postgresql.conf` to increase the max connections and transactions for unit tests.
     - Open `data\postgresql.conf` from the PostgreSQL installation path.
 
         ```bash
         sudo -u postgres vim /Library/PostgreSQL/9.3/data/postgresql.conf
-        ```
-        
-    - Find `max_prepared_transactions`, uncomment the line and change the value to 100. 
-
-        ```
-        max_prepared_transactions = 100
         ```
 
     - Find `max_connections`, uncomment if commented and change the value to 100.
@@ -238,6 +237,15 @@ Note: If you don't want to change the coreutils preference, you can create anoth
 
 1. Verify CouchDB is running by accessing [http://localhost:5984/\_utils](http://localhost:5984/_utils). It should show the "Apache CouchDB - Futon" page.
 
+#### Install Memcached
+
+Open Terminal and run the following commands:
+
+```bash
+brew install memcached
+ln -sfv /usr/local/opt/memcached/*.plist ~/Library/LaunchAgents
+launchctl load ~/Library/LaunchAgents/homebrew.mxcl.memcached.plist
+```
 
 #### Install IntelliJ IDEA (Optional)
 IntelliJ IDEA is the recommended IDE for developing Java and Groovy code. Download and install [IntelliJ IDEA 13 Community Edition](http://www.jetbrains.com/idea/download/).
@@ -257,7 +265,7 @@ To fix this, you should add the following to your ~/.bash_profile:
 ```bash
 export GRADLE_OPTS="$GRADLE_OPTS -Xmx2048m -Xms1024m -XX:PermSize=512m -XX:MaxPermSize=1024m"
 ```
-    
+
 ## Build and Run
 
 ### Clone Source Code
@@ -339,7 +347,7 @@ After the steps, the serices are available at different ports on the development
 - Docs Url: [http://localhost:8079](http://localhost:8079)
 - Api Url: [http://localhost:8080/v1](http://localhost:8080)
 
-Note: In integration and production environment, a hardware load balancer will be put in front of these endpoints to provide a single endpoint. 
+Note: In integration and production environment, a hardware load balancer will be put in front of these endpoints to provide a single endpoint.
 (TODO: In onebox, a Nginx server will be used to proxy the requests.)
 
 ### Run the integration test cases
@@ -349,6 +357,3 @@ After the servers are running, you can run test cases using the following comman
 cd ~/owp-main/integrationtesting
 gradle build
 ```
-
-
-

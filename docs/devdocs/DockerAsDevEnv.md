@@ -62,7 +62,7 @@ vagrant destroy VMID
 You are now inside the VM, run this to start postgres and couchdb:
 ```
 # devenv.sh is in the root of source repo, so you can find it in ~/src
-$ ./denenv.sh start
+$ ./devenv.sh start
 ```
 
 The script would pull down our docker images and run them as containers, it would take several minutes depends on the network speed. The images would be cached locally, so next time it would be lightning fast.
@@ -131,7 +131,7 @@ vagrant destroy VMID
 You are now inside the VM, run this to start postgres and couchdb:
 ```
 # devenv.sh is in the root of source repo, so you can find it in ~/src
-$ ./denenv.sh start
+$ ./devenv.sh start
 ```
 
 The script would pull down our docker images and run them as containers, it would take several minutes depends on the network speed. The images would be cached locally, so next time it would be lightning fast.
