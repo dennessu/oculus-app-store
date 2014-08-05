@@ -537,14 +537,14 @@
 
     <bean id="userTeleBackupCodeValidator" class="com.junbo.identity.core.service.validator.impl.UserTFABackupCodeValidatorImpl">
         <property name="userRepository" ref="userRepository" />
-        <property name="userTFABackupCodeRepository" ref="userTFABackupCodeRepository" />
+        <property name="userTFABackupCodeRepository" ref="userTFAPhoneBackupCodeRepository" />
         <property name="codeGenerator" ref="teleBackupCodeGenerator" />
     </bean>
 
     <bean id="userTeleBackupCodeAttemptValidator" class="com.junbo.identity.core.service.validator.impl.UserTFABackupCodeAttemptValidatorImpl">
         <property name="userRepository" ref="userRepository" />
-        <property name="userTFABackupCodeRepository" ref="userTFABackupCodeRepository" />
-        <property name="userTFABackupCodeAttemptRepository" ref="userTFABackupCodeAttemptRepository" />
+        <property name="userTFABackupCodeRepository" ref="userTFAPhoneBackupCodeRepository" />
+        <property name="userTFABackupCodeAttemptRepository" ref="userTFAPhoneBackupCodeAttemptRepository" />
         <property name="allowedIPPatterns">
             <list>
                 <!-- IPv4Pattern -->
