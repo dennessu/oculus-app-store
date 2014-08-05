@@ -22,7 +22,6 @@ import com.junbo.test.common.property.Component;
 import com.junbo.test.common.property.Priority;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
-import com.junbo.test.identity.Identity;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -357,6 +356,72 @@ public class CartTesting extends TestClass {
         long invalidCartId = 12345l;
         logger.LogSample("Get user's cart with an invalid cart id");
         CartService.getInstance().getCart(user.getId(), new CartId(Long.toString(invalidCartId)), 404);
+    }
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "POST /users/{key}/carts",
+            component = Component.Cart,
+            owner = "JieFeng",
+            status = Status.Enable,
+            description = "post a cart with duplciate name should return proper error",
+            steps = {
+                    "1. Create an user" +
+                            "/n 2. post a named cart for user" +
+                            "/n 3. post another cart with same name" +
+                            "/n 4. Validation"
+            }
+    )
+    @Test
+    public void testPostCartWithDuplicateName() throws Exception {
+        //create a user
+        String uid = UserServiceImpl.instance().PostUser();
+        User user = Master.getInstance().getUser(uid);
+
+        Cart cart = new Cart();
+        String cartName = "Automation Testing";
+        cart.setCartName(cartName);
+        addOrRemoveOfferInCart(cart, testOffer1, 2, true);
+        addOrRemoveOfferInCart(cart, testOffer2, 1, true);
+        addCouponInCart(cart, testCoupon1);
+
+        //post a cart
+        CartService.getInstance().addCart(user.getId(), cart);
+
+        Cart cart2 = new Cart();
+        cart2.setCartName(cart.getCartName());
+        addOrRemoveOfferInCart(cart, testOffer1, 1, true);
+        addOrRemoveOfferInCart(cart, testOffer2, 1, true);
+        CartService.getInstance().addCart(user.getId(), cart2, 409);
+    }
+
+    @Property(
+            priority = Priority.Comprehensive,
+            features = "POST /users/{key}/carts",
+            component = Component.Cart,
+            owner = "JieFeng",
+            status = Status.Enable,
+            description = "post a cart with cart name exceed length(80)",
+            steps = {
+                    "1. Create an user" +
+                            "/n 2. post a named cart for user with cartName's length exceed 80" +
+                            "/n 3. Validation"
+            }
+    )
+    @Test
+    public void testPostCartWithNameExceedLength() throws Exception {
+        //create a user
+        String uid = UserServiceImpl.instance().PostUser();
+        User user = Master.getInstance().getUser(uid);
+
+        Cart cart = new Cart();
+        String cartName = "Cart Name too long here Cart Name too long here Cart Name too long here Cart Name too long";
+        cart.setCartName(cartName);
+        addOrRemoveOfferInCart(cart, testOffer1, 2, true);
+        addOrRemoveOfferInCart(cart, testOffer2, 1, true);
+        addCouponInCart(cart, testCoupon1);
+        //post a cart
+        CartService.getInstance().addCart(user.getId(), cart, 400);
     }
 
     //helper functions:
