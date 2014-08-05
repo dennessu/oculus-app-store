@@ -17,6 +17,8 @@ public enum Country {
     CA("CA", "Canada", true, Currency.CAD),
     CH("CH", "Switzerland", false, Currency.CHF),
     CN("CN", "China", false, Currency.TWD),
+    CY("CY", "Cyprus", false, Currency.EUR),
+    CZ("CZ", "Czech Republic", false, Currency.EUR),
     DE("DE", "Germany", false, Currency.EUR),
     DK("DK", "Denmark", false, Currency.EUR),
     GR("GR", "Greece", false, Currency.EUR),

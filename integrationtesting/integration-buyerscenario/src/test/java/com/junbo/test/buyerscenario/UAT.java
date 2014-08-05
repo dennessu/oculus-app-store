@@ -351,5 +351,22 @@ public class UAT extends BaseTestClass {
 
     UserAddress addressMX = new UserAddress("16 de Septiembre 79, Centro", null, "06000", null, null, Country.MX, Currency.USD);
 
+    UserAddress addressAT = new UserAddress("Schottenring 11", "Wien", null, "1010", null, Country.AT, Currency.EUR);
+    UserAddress addressAU = new UserAddress("428 George St", "Sydney", null, "2000", null, Country.AU, Currency.AUD);
+    UserAddress addressBE = new UserAddress("Galerie du roi 5", "Brussels", null, "1000", null, Country.BE, Currency.EUR);
+    UserAddress addressCY = new UserAddress("Franklin Roosevelt 285", "Limassol", null, null, null, Country.CY, Currency.EUR);
+    UserAddress addressCZ = new UserAddress("Olivova 2096/4", "Prague", null, "110 00", null, Country.CZ, Currency.EUR);
+    UserAddress addressDE = new UserAddress("Frankfurter Allee 111", "Berlin", null, "10247", null, Country.DE, Currency.EUR);
+    UserAddress addressDK = new UserAddress("H. C. Andersens Boulevard 27", "Copenhagen", null, "1553", null, Country.DK, Currency.EUR);
+    UserAddress addressES = new UserAddress("Calle de Atocha", "Madrid", null, "28012", null, Country.ES, Currency.EUR);
+    UserAddress addressFI = new UserAddress("Elielinaukio 5", "Helsinki", null, "00100", null, Country.FI, Currency.EUR);
+    UserAddress addressFR = new UserAddress("36 Rue de la Verrerie", "Paris", null, "75004", null, Country.FR, Currency.EUR);
+    UserAddress addressGB = new UserAddress("16-18 Whitehall, London", "London", null, "123317", null, Country.GB, Currency.EUR);
+    UserAddress addressIT = new UserAddress("Via Cristoforo Colombo", "Roma", null, "00144", null, Country.IT, Currency.EUR);
+    UserAddress addressNL = new UserAddress("Nieuwezijds Voorburgwal 182", "Amsterdam", null, "1012SJ", null, Country.NL, Currency.EUR);
+    UserAddress addressPL = new UserAddress("Grzybowska 63", "Warsaw", null, "00-844", null, Country.PL, Currency.EUR);
+    UserAddress addressRU = new UserAddress("ulitsa Novyy Arbat,7", "Moscow", null, "123317", null, Country.RU, Currency.EUR);
+    UserAddress addressSE = new UserAddress("Hamngatan 37", "Stockholm", null, "11153", null, Country.SE, Currency.EUR);
+
 
 }
