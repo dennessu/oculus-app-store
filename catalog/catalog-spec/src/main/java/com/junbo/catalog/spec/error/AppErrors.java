@@ -35,6 +35,6 @@ public interface AppErrors {
     AppError categoryNotFound(String field, String categoryId);
 
     @ErrorDef(httpStatusCode = 409, code = "105", message = "Duplicate Package Name",
-            field = "packageName", reason = "Package name {1} already exists")
+            field = "packageName", reason = "Package name {0} already exists")
     AppError duplicatePackageName(String packageName);
 }

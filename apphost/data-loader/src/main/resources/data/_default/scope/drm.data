@@ -1,0 +1,5 @@
+{
+    "name": "drm",
+    "description": "Scope to call DRM related APIs",
+    "tfaRequired": false
+}

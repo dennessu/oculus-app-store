@@ -63,7 +63,10 @@ class ValidateScopeAfterLogin implements Action {
 
         List<Scope> scopes = []
         oauthInfo.scopes.each { String scopeString ->
-            scopes.add(scopeRepository.getScope(scopeString))
+            Scope scope = scopeRepository.getScope(scopeString)
+            if (scope != null) {
+                scopes.add(scope)
+            }
         }
 
         boolean tfaRequired = false

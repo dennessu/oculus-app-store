@@ -2,8 +2,9 @@
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
     <bean id="drmAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
-        <property name="scope" value="identity.service catalog.service entitlement.service"/>
+        <property name="scope" value="identity.service catalog.service entitlement.service crypto.service"/>
         <property name="deflectionInSeconds" value="300"/>
         <property name="clientSecret" value="${drm.clientproxy.service.clientSecret}"/>
         <property name="clientId" value="${drm.clientproxy.service.clientId}"/>
@@ -22,6 +23,12 @@
 
     <bean id="drmEntitlementResource" class="com.junbo.entitlement.spec.resource.proxy.EntitlementResourceClientProxy"
           parent="entitlementResourceClientProxy">
+        <property name="accessTokenProvider" ref="drmAccessTokenProvider"/>
+    </bean>
+
+    <bean id="drmItemCryptoResource"
+          class="com.junbo.crypto.spec.resource.proxy.ItemCryptoResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.crypto.url}"/>
         <property name="accessTokenProvider" ref="drmAccessTokenProvider"/>
     </bean>
 </beans>

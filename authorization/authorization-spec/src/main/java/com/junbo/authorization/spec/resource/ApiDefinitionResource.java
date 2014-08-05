@@ -10,6 +10,7 @@ import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -25,6 +26,7 @@ import javax.ws.rs.core.MediaType;
 @Consumes({MediaType.APPLICATION_JSON})
 public interface ApiDefinitionResource {
 
+    @ApiOperation("Get an Api Definition by name")
     @GET
     @Path("/{apiName}")
     Promise<ApiDefinition> get(@PathParam("apiName") String apiName);

@@ -9,15 +9,27 @@ package com.junbo.drm.spec.model;
  * SignedLicense.
  */
 public class SignedLicense {
-    private License license;
+
+    private String reasonCode;
+
+    private String payload;
+
     private String signature;
 
-    public License getLicense() {
-        return license;
+    public String getReasonCode() {
+        return reasonCode;
     }
 
-    public void setLicense(License license) {
-        this.license = license;
+    public void setReasonCode(String reasonCode) {
+        this.reasonCode = reasonCode;
+    }
+
+    public String getPayload() {
+        return payload;
+    }
+
+    public void setPayload(String payload) {
+        this.payload = payload;
     }
 
     public String getSignature() {
