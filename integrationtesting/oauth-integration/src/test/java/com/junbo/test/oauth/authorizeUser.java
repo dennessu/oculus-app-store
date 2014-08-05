@@ -169,7 +169,7 @@ public class authorizeUser {
         String newPassword = "ASDFqwer1234";
         UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
         String resetPasswordLink = Oauth.PostResetPassword(
-                Identity.GetHexUserId(upi.getUserId().getValue()), userName, null);
+                Identity.GetHexLongId(upi.getUserId().getValue()), userName, null);
         String resetPasswordCid = Oauth.GetResetPasswordCid(resetPasswordLink);
         Oauth.GetResetPasswordView(resetPasswordCid);
         Oauth.PostResetPasswordWithNewPassword(resetPasswordCid, newPassword);

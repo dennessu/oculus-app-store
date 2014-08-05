@@ -55,7 +55,9 @@ public class postOrganization {
     @Test(groups = "dailies")
     public void postOrganizationDuplicateNameIsValidatedTrue() throws Exception {
         Organization org = IdentityModel.DefaultOrganization();
-        Identity.OrganizationPostDefault(org);
+        Organization posted = Identity.OrganizationPostDefault(org);
+        posted.setIsValidated(true);
+        Identity.OrganizationPut(posted);
         org.setIsValidated(RandomHelper.randomBoolean());
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));

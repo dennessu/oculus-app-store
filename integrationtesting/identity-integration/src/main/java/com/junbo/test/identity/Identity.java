@@ -202,7 +202,7 @@ public class Identity {
     }
 
     public static UserTFA UserTFAPost(UserId userId, UserTFA userTFA) throws Exception {
-        return (UserTFA) IdentityPost(IdentityV1UserURI + "/" + GetHexUserId(userId.getValue()) + "/tfa",
+        return (UserTFA) IdentityPost(IdentityV1UserURI + "/" + GetHexLongId(userId.getValue()) + "/tfa",
                 JsonHelper.JsonSerializer(userTFA),
                 UserTFA.class);
     }
@@ -253,6 +253,12 @@ public class Identity {
                 JsonHelper.JsonSerializer(org), Organization.class);
     }
 
+    public static Organization OrganizationPut(Organization organization) throws Exception {
+        return (Organization) IdentityPut(
+                IdentityV1OrganizationURI + "/" + GetHexLongId(organization.getId().getValue()),
+                JsonHelper.JsonSerializer(organization), Organization.class);
+    }
+
     public static CloseableHttpResponse UserCredentialPostDefault(UserId userId, String password) throws Exception {
         return UserCredentialPostDefault(userId, password, true);
     }
@@ -263,7 +269,7 @@ public class Identity {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
-                IdentityV1UserURI + "/" + GetHexUserId(userId.getValue()) + "/change-credentials",
+                IdentityV1UserURI + "/" + GetHexLongId(userId.getValue()) + "/change-credentials",
                 JsonHelper.JsonSerializer(uc), HttpclientHelper.HttpRequestType.post, nvps);
         if (validResponse) {
             Validator.Validate("validate response code", 201, response.getStatusLine().getStatusCode());
@@ -304,7 +310,7 @@ public class Identity {
     public static UserSecurityQuestion UserSecurityQuestionPost(UserId userId, UserSecurityQuestion usq)
             throws Exception {
         return (UserSecurityQuestion) IdentityPost(
-                IdentityEndPointV1 + "/users/" + GetHexUserId(userId.getValue()) + "/security-questions",
+                IdentityEndPointV1 + "/users/" + GetHexLongId(userId.getValue()) + "/security-questions",
                 JsonHelper.JsonSerializer(usq),
                 UserSecurityQuestion.class);
     }
@@ -312,11 +318,11 @@ public class Identity {
     public static UserSecurityQuestion UserSecurityQuestionGetById(UserId userId, UserSecurityQuestionId usqId)
             throws Exception {
         return (UserSecurityQuestion) IdentityGet(
-                IdentityEndPointV1 + "/users/" + GetHexUserId(userId.getValue()) +
+                IdentityEndPointV1 + "/users/" + GetHexLongId(userId.getValue()) +
                         "/security-questions/" + usqId.getValue(), UserSecurityQuestion.class);
     }
 
-    public static String GetHexUserId(Long userId) throws Exception {
+    public static String GetHexLongId(Long userId) throws Exception {
         return IdConverter.idToUrlString(UserId.class, userId);
     }
 

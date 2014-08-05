@@ -209,7 +209,7 @@ public class IdentityModel {
     public static Organization DefaultOrganization() throws Exception {
         Organization org = new Organization();
         org.setName(RandomHelper.randomAlphabetic(20));
-        org.setIsValidated(true);
+        org.setIsValidated(false);
         return org;
     }
 
