@@ -12,6 +12,7 @@ dependencies {
     runtime junboProject(':entitlement-rest')
     runtime junboProject(':crypto-rest')
     runtime junboProject(':billing-rest')
+    runtime junboProject(':authorization-rest')
 
     compile junboProject(':drm-rest')
 }

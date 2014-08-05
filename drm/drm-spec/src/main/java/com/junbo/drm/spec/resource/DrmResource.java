@@ -5,14 +5,17 @@
  */
 package com.junbo.drm.spec.resource;
 
-import com.junbo.drm.spec.model.License;
+import com.junbo.drm.spec.model.LicenseRequest;
 import com.junbo.drm.spec.model.SignedLicense;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -24,8 +27,9 @@ import javax.ws.rs.core.MediaType;
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
 public interface DrmResource {
+
     @ApiOperation("Grant a license.")
     @POST
     @Path("/")
-    Promise<SignedLicense> postLicense(License request);
+    Promise<SignedLicense> postLicense(LicenseRequest request);
 }

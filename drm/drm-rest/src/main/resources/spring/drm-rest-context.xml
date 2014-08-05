@@ -5,8 +5,6 @@
 
     <bean id="defaultDrmResource" class="com.junbo.drm.rest.DrmResourceImpl">
         <property name="drmService" ref="drmService"/>
-        <property name="signatureService" ref="signatureService"/>
-        <property name="messageTranscoder" ref="commonTranscoder"/>
     </bean>
 
     <bean id="defaultDrmResourceClientFactory" class="com.junbo.drm.spec.resource.proxy.DrmResourceClientProxyFactory"/>

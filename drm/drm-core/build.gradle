@@ -7,6 +7,7 @@ dependencies {
     compile junboProject(":identity-spec")
     compile junboProject(":oauth-spec")
     compile junboProject(":entitlement-spec")
+    compile junboProject(":crypto-spec")
     compile junboProject(":authorization-lib")
     compile junboProject(":common-lib")
 

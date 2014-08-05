@@ -38,20 +38,27 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
     // thread safe
     private static ObjectMapper objectMapper = createObjectMapper();
 
-    private static ObjectMapper objectMapperNoSigningSupport = createObjectMapper(false);
+    private static ObjectMapper objectMapperNoSigningSupport = createObjectMapper(false, true);
+
+    private static ObjectMapper objectMapperNoIndent = createObjectMapper(true, false);
 
     private static ObjectMapper createObjectMapper() {
-        return createObjectMapper(true);
+        return createObjectMapper(true, true);
     }
 
-    private static ObjectMapper createObjectMapper(boolean supportSign) {
+    private static ObjectMapper createObjectMapper(
+            boolean supportSign,
+            boolean indent) {
         ObjectMapper objectMapper = new ObjectMapper(null,
                 new CustomSerializerProvider(),
                 new CustomDeserializationContext());
 
         objectMapper.setDateFormat(new ISO8601DateFormat());
 
-        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        if (indent) {
+            objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        }
+
         objectMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
 
@@ -97,6 +104,10 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
 
     public static ObjectMapper instanceNoSigningSupport() {
         return objectMapperNoSigningSupport;
+    }
+
+    public static ObjectMapper instanceNoIdent() {
+        return objectMapperNoIndent;
     }
 
     public static void setInstance(ObjectMapper objectMapper) {
