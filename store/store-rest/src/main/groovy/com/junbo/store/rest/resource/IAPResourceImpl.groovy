@@ -8,11 +8,9 @@ import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.*
 import com.junbo.common.id.util.IdUtil
-import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Link
 import com.junbo.common.model.Results
 import com.junbo.common.util.IdFormatter
-import com.junbo.crypto.spec.model.ItemCryptoMessage
 import com.junbo.entitlement.spec.model.EntitlementSearchParam
 import com.junbo.entitlement.spec.model.PageMetadata
 import com.junbo.fulfilment.spec.model.FulfilmentAction
@@ -445,11 +443,6 @@ class IAPResourceImpl implements IAPResource {
     }
 
     private Promise<SigningSetter> signObject(SigningSetter object, String itemId) {
-        String jsonText = ObjectMapperProvider.instanceNoSigningSupport().writeValueAsString(object)
-        object.setPayload(jsonText)
-        return resourceContainer.itemCryptoResource.sign(itemId, new ItemCryptoMessage(message: jsonText)).then { ItemCryptoMessage itemCryptoMessage ->
-            object.setSignature(itemCryptoMessage.message)
-            return Promise.pure(object)
-        }
+
     }
 }

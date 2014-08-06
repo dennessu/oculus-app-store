@@ -19,12 +19,10 @@ import com.junbo.common.jackson.common.CustomSerializerModifier;
 import com.junbo.common.jackson.common.CustomSerializerProvider;
 import com.junbo.common.jackson.deserializer.CloudantIdDeserializer;
 import com.junbo.common.jackson.deserializer.EnumIdDeserizlizer;
+import com.junbo.common.jackson.deserializer.IdDeserializer;
 import com.junbo.common.jackson.serializer.CloudantIdSerializer;
 import com.junbo.common.jackson.serializer.EnumIdSerializer;
 import com.junbo.common.jackson.serializer.IdSerializer;
-import com.junbo.common.jackson.deserializer.IdDeserializer;
-import com.junbo.common.jackson.serializer.SigningSupportSerializer;
-import com.junbo.common.model.SigningSupport;
 
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
@@ -38,16 +36,13 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
     // thread safe
     private static ObjectMapper objectMapper = createObjectMapper();
 
-    private static ObjectMapper objectMapperNoSigningSupport = createObjectMapper(false, true);
-
-    private static ObjectMapper objectMapperNoIndent = createObjectMapper(true, false);
+    private static ObjectMapper objectMapperNoIndent = createObjectMapper(false);
 
     private static ObjectMapper createObjectMapper() {
-        return createObjectMapper(true, true);
+        return createObjectMapper(true);
     }
 
     private static ObjectMapper createObjectMapper(
-            boolean supportSign,
             boolean indent) {
         ObjectMapper objectMapper = new ObjectMapper(null,
                 new CustomSerializerProvider(),
@@ -84,10 +79,6 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
             module.addDeserializer(cls, new EnumIdDeserizlizer(cls));
         }
 
-        if (supportSign) {
-            module.addSerializer(SigningSupport.class, new SigningSupportSerializer());
-        }
-
         objectMapper.registerModule(module);
 
         SimpleFilterProvider filterProvider = new SimpleFilterProvider();
@@ -100,10 +91,6 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
 
     public static ObjectMapper instance() {
         return objectMapper;
-    }
-
-    public static ObjectMapper instanceNoSigningSupport() {
-        return objectMapperNoSigningSupport;
     }
 
     public static ObjectMapper instanceNoIdent() {

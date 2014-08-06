@@ -11,7 +11,6 @@ package com.junbo.store.spec.model.purchase;
 public class AppDeliveryData {
 
     private String downloadUrl;
-    private Long downloadSize;
 
     public String getDownloadUrl() {
         return downloadUrl;
@@ -19,13 +18,5 @@ public class AppDeliveryData {
 
     public void setDownloadUrl(String downloadUrl) {
         this.downloadUrl = downloadUrl;
-    }
-
-    public Long getDownloadSize() {
-        return downloadSize;
-    }
-
-    public void setDownloadSize(Long downloadSize) {
-        this.downloadSize = downloadSize;
     }
 }

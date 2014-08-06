@@ -69,7 +69,6 @@ class RequestValidator {
     }
 
     Promise validateAuthTokenRequest(AuthTokenRequest request) {
-        notEmpty(request.username, 'username')
         notEmpty(request.refreshToken, 'refreshToken')
         return Promise.pure(null)
     }

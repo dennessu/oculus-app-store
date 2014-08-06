@@ -21,9 +21,7 @@ public class CommitPurchaseResponse extends BaseResponse {
 
     private OrderId orderId;
 
-    private AppDeliveryData appDeliveryData;
-
-    private List<Entitlement> iapEntitlements;
+    private List<Entitlement> entitlements;
 
     public Challenge getChallenge() {
         return challenge;
@@ -41,19 +39,11 @@ public class CommitPurchaseResponse extends BaseResponse {
         this.orderId = orderId;
     }
 
-    public AppDeliveryData getAppDeliveryData() {
-        return appDeliveryData;
+    public List<Entitlement> getEntitlements() {
+        return entitlements;
     }
 
-    public void setAppDeliveryData(AppDeliveryData appDeliveryData) {
-        this.appDeliveryData = appDeliveryData;
-    }
-
-    public List<Entitlement> getIapEntitlements() {
-        return iapEntitlements;
-    }
-
-    public void setIapEntitlements(List<Entitlement> iapEntitlements) {
-        this.iapEntitlements = iapEntitlements;
+    public void setEntitlements(List<Entitlement> entitlements) {
+        this.entitlements = entitlements;
     }
 }

@@ -9,6 +9,7 @@ import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.UserId;
+import com.junbo.store.spec.model.purchase.AppDeliveryData;
 
 /**
  * Entitlement used for IAP.
@@ -18,6 +19,7 @@ public class Entitlement {
     private ItemId itemId;
     private String itemType;
     private EntitlementId entitlementId;
+    private AppDeliveryData appDeliveryData;
     private Integer useCount;
     private String type;
     private String sku;
@@ -51,6 +53,14 @@ public class Entitlement {
 
     public void setEntitlementId(EntitlementId entitlementId) {
         this.entitlementId = entitlementId;
+    }
+
+    public AppDeliveryData getAppDeliveryData() {
+        return appDeliveryData;
+    }
+
+    public void setAppDeliveryData(AppDeliveryData appDeliveryData) {
+        this.appDeliveryData = appDeliveryData;
     }
 
     public Integer getUseCount() {

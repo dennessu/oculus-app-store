@@ -250,7 +250,7 @@ class LoginResourceImpl implements  LoginResource {
                 resourceContainer.tokenInfoEndpoint.getTokenInfo(accessTokenResponse.accessToken).then { TokenInfo tokenInfo ->
                     resourceContainer.userResource.get(tokenInfo.sub, new UserGetOptions(properties : 'username')).then { User user ->
                         response.username = user.username
-                        response.userId = user.getId()
+                        response.userId = tokenInfo.sub
                         response.status = ResponseStatus.SUCCESS
                         return Promise.pure(response)
                     }

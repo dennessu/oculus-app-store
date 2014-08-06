@@ -10,21 +10,11 @@ package com.junbo.store.spec.model.login;
  */
 public class AuthTokenRequest {
 
-    private String username;
-
     private String packageName;
 
     private String packageSignature;
 
     private String refreshToken;
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
     public String getPackageName() {
         return packageName;

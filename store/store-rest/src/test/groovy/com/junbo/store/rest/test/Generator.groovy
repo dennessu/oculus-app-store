@@ -13,7 +13,7 @@ class Generator {
     }
 
     static String genPassword() {
-        return RandomStringUtils.randomAlphabetic(20)
+        return RandomStringUtils.randomAlphabetic(10).toLowerCase() + RandomStringUtils.randomAlphabetic(2).toUpperCase() + RandomStringUtils.randomNumeric(1) + '$'
     }
 
     static String genEmail() {

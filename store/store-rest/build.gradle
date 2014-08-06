@@ -37,4 +37,7 @@ dependencies {
     testCompile (libraries.easy_mock)
     testCompile junboProject(':authorization-lib')
 
+    test {
+        exclude '**/bvt/*'
+    }
 }
