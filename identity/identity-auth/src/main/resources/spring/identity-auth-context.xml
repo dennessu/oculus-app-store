@@ -20,4 +20,8 @@
           class="com.junbo.identity.auth.GroupAuthorizeCallbackFactory"
           parent="abstractAuthorizeCallbackFactory">
     </bean>
+
+    <bean id="organizationOwnerCallback" class="com.junbo.identity.auth.OrganizationOwnerCallback">
+        <property name="organizationResource" ref="identityOrganizationResource"/>
+    </bean>
 </beans>

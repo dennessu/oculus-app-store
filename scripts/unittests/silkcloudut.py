@@ -12,6 +12,38 @@ import unittest
 from cookielib import CookieJar
 from urllib import urlencode
 
+opts = None
+def setUpModule():
+    global opts
+    global test_uri
+    global test_client_id
+    global test_client_secret
+    global test_service_client_id
+    global test_service_client_secret
+    global test_redirect_uri
+    global test_sleep
+    global cookies
+
+    if opts is not None:
+        test_uri = opts.uri
+        test_client_id = opts.client
+        test_client_secret = opts.secret
+        test_service_client_id = opts.sclient
+        test_service_client_secret = opts.ssecret
+        test_redirect_uri = 'http://localhost'
+        test_sleep = opts.sleep
+    else:
+        test_uri = 'http://localhost:8080/'
+        test_client_id = 'client'
+        test_client_secret = 'secret'
+        test_service_client_id = 'service'
+        test_service_client_secret = 'secret'
+        test_redirect_uri = 'http://localhost'
+        test_sleep = None
+
+    cookies = CookieJar()
+    setVerbose(True)
+
 def silkcloud_utmain():
     # Enforce python version
     if sys.version_info[0] != 2 or sys.version_info[1] < 7:
@@ -28,27 +60,13 @@ def silkcloud_utmain():
     parser.add_argument("-uri", nargs = '?', help = "The URI to the silkcloud service.", default = 'http://localhost:8080/')
     parser.add_argument("-client", nargs = '?', help = "The client ID used in test cases.", default = 'client')
     parser.add_argument("-secret", nargs = '?', help = "The client secret used in the test cases.", default = 'secret')
+    parser.add_argument("-sclient", nargs = '?', help = "The service client ID used in test cases.", default = 'service')
+    parser.add_argument("-ssecret", nargs = '?', help = "The service client secret used in the test cases.", default = 'secret')
     parser.add_argument("-sleep", nargs = '?', help = "The sleep between API calls.")
     parser.add_argument('tests', metavar='test', nargs='*', help='The test cases to run.')
 
+    global opts
     opts = parser.parse_args()
-
-    global test_uri
-    global test_client_id
-    global test_client_secret
-    global test_redirect_uri
-    global test_sleep
-    global cookies
-
-    test_uri = opts.uri
-    test_client_id = opts.client
-    test_client_secret = opts.secret
-    test_redirect_uri = 'http://localhost'
-    test_sleep = opts.sleep
-
-    cookies = CookieJar()
-
-    setVerbose(True)
 
     unittest.main(argv = [ sys.argv[0] ] + opts.tests)
 
@@ -80,6 +98,8 @@ def curlJson(method, baseUrl, url = None, query= None, headers = None, data = No
         headers = {
             'Content-Type': 'application/json'
         }
+    elif not headers.has_key('Content-Type'):
+        headers['Content-Type'] = 'application/json'
 
     body = None
     if data is not None:

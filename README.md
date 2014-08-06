@@ -81,19 +81,13 @@ The following guide is for setting up windows as the development and testing env
 1. When setup cygwin, select the following packages:
     - `curl`
     - `wget`
-    - `git`
     - `openssh`
 
     If you forgot to install any package above, you can run `setup-x86.exe` or `setup-x86_64.exe` again to add them.
     Note: Do *NOT* install the following packages:
     - ~~postgresql~~
     - ~~python~~
-
-1. Set the eol mode for cygwin by running the following command in cygwin terminal
-
-    ```bash
-    git config --global core.eol native
-    ```
+    - ~~git~~
 
 1. Add `JAVA_HOME` environment varilable to `~/.bashrc`.
 
@@ -109,9 +103,17 @@ The following guide is for setting up windows as the development and testing env
     ls $JAVA_HOME
     ```
 
+#### Install Git
+Download and install the latest git from [msysGit](https://github.com/msysgit/msysgit/releases/download/Git-1.9.4-preview20140611/Git-1.9.4-preview20140611.exe)
+
 #### Install Python
 1. Download and install [Python 2.7](https://www.python.org/download/).
-1. Add the path of python (for example, `C:\Python27`) to system `PATH`.
+1. Add the path of python and the scripts folder (for example, `C:\Python27` and `C:\Python27\Scripts`) to system `PATH`.
+1. Install PIP by running the following commands
+    ```
+    curl https://bootstrap.pypa.io/get-pip.py | python
+    ```
+    Note: if your python is installed in other folder, plase change the path in the second command.
 1. Install [PyCharm Community Edition](http://www.jetbrains.com/pycharm/features/editions_comparison_matrix.html) (Optional)
 
 #### Install Gradle
@@ -245,6 +247,14 @@ Open Terminal and run the following commands:
 brew install memcached
 ln -sfv /usr/local/opt/memcached/*.plist ~/Library/LaunchAgents
 launchctl load ~/Library/LaunchAgents/homebrew.mxcl.memcached.plist
+```
+
+#### Install PIP for Managing Python Packages
+
+Open Terminal and run the following commands:
+
+```bash
+curl https://bootstrap.pypa.io/get-pip.py | sudo python
 ```
 
 #### Install IntelliJ IDEA (Optional)

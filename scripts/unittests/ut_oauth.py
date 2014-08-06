@@ -3,12 +3,12 @@ import silkcloudut as ut
 from silkcloudut import *
 
 class OAuthTests(unittest.TestCase):
-    def testRegister(self):
+    def testRegister(self, scope = 'identity'):
         ut.cookies.clear()
         location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {
             'client_id': ut.test_client_id,
             'response_type': 'code',
-            'scope': 'identity',
+            'scope': scope,
             'redirect_uri': ut.test_redirect_uri
         })
         cid = getqueryparam(location, 'cid')
@@ -50,7 +50,16 @@ class OAuthTests(unittest.TestCase):
         link = view["model"]["location"]
 
         location = curlRedirect('GET', link)
+        cid = getqueryparam(location, 'cid')
+        if cid:
+            # the TFA flow
+            # TODO:
+            view = curlJson('GET', ut.test_uri, '/v1/oauth2/authorize', query = { 'cid': cid })
+            self.assertEqual(view["view"], 'TFARequiredView')
+            pass
+
         auth_code = getqueryparam(location, 'code')
+        assert auth_code is not None
 
         response = curlForm('POST', ut.test_uri, '/v1/oauth2/token', data = {
             'code': auth_code,
@@ -70,6 +79,8 @@ class OAuthTests(unittest.TestCase):
 
         # add additional information to user
         user.id = token_info['sub']['id']
+        user.href = user_href
+        user.json = user_info
         user.access_token = access_token
         user.refresh_token = refresh_token
         return user
@@ -85,6 +96,7 @@ class OAuthTests(unittest.TestCase):
             'redirect_uri': ut.test_redirect_uri
         })
         auth_code = getqueryparam(location, 'code')
+        assert auth_code is not None
 
         response = curlForm('POST', ut.test_uri, '/v1/oauth2/token', data = {
             'code': auth_code,
@@ -247,6 +259,10 @@ class OAuthTests(unittest.TestCase):
     def testGetCountries(self):
         return curlJson('GET', ut.test_uri, '/v1/countries')
 
+    def testTfa(self):
+        # TODO: test modify user PII and sign-up using TFA flow
+        pass
+
     def genUserInfo(self):
         user = Object()
         
@@ -261,6 +277,15 @@ class OAuthTests(unittest.TestCase):
         user.pin = '123456'
 
         return user
+
+    def getServiceAccessToken(self, scope = 'identity.service'):
+        token = curlForm('POST', ut.test_uri, '/v1/oauth2/token', data = {
+            'client_id': ut.test_service_client_id,
+            'client_secret': ut.test_service_client_secret,
+            'scope': scope,
+            'grant_type': 'client_credentials'
+        })
+        return token['access_token']
 
 if __name__ == '__main__':
     silkcloud_utmain()

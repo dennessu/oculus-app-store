@@ -6,6 +6,7 @@ dependencies {
 
     compile junboProject(':authorization-lib')
     runtime junboProject(':catalog-auth')
+    runtime junboProject(':identity-auth')
 
     processor junboProject(':oom-processor')
 }

@@ -23,6 +23,7 @@ public class RoleAssignment extends ResourceMeta<RoleAssignmentId> {
     private RoleAssignmentId id;
 
     @ApiModelProperty(position = 2, required = true, value = "The role resource.")
+    @JsonProperty("role")
     private RoleId roleId;
 
     @ApiModelProperty(position = 3, required = true, value = "The assignee. User or group.")

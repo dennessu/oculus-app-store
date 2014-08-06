@@ -53,4 +53,8 @@
     <bean id="identityCsrLogResource" class="com.junbo.csr.spec.resource.proxy.CsrLogResourceClientProxy" parent="csrLogResourceClientProxy">
         <property name="accessTokenProvider" ref="identityAccessTokenProvider"/>
     </bean>
+
+    <bean id="identityOrganizationResource" class="com.junbo.identity.spec.v1.resource.proxy.OrganizationResourceClientProxy" parent="organizationResourceClientProxy">
+        <property name="accessTokenProvider" ref="identityAccessTokenProvider"/>
+    </bean>
 </beans>

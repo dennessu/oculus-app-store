@@ -23,6 +23,7 @@
             <map>
                 <entry key="com.junbo.common.id.ItemId" value-ref="itemOwnerCallback"/>
                 <entry key="com.junbo.common.id.OfferId" value-ref="offerOwnerCallback"/>
+                <entry key="com.junbo.common.id.OrganizationId" value-ref="organizationOwnerCallback"/>
             </map>
         </property>
     </bean>

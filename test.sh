@@ -16,13 +16,26 @@ function cleanup {
     echo Test Total Elapsed: $[$t1-$t0] seconds
 }
 
+function cleanupTrap {
+    cleanup
+    echo !!!!!!!!!!!!!!!!
+    echo Test has ERRORs!
+    echo !!!!!!!!!!!!!!!!
+}
+
 trap cleanup EXIT INT TERM
 
 ./startup.sh
 
 cd ./scripts/unittests/
-python ./ut_oauth.py
+mkdir -p logs
+python ./ut_oauth.py | tee logs/ut_oauth.log
+python ./ut_checkout.py | tee logs/ut_checkout.log
 
 trap - EXIT INT TERM
 cleanup
+
+echo -------------------
+echo Test is Successful!
+echo -------------------
 
