@@ -23,10 +23,10 @@ import javax.ws.rs.core.Response;
 @Path("/oauth2/verify-email")
 @RestResource
 @InProcessCallable
-@AuthorizationNotRequired
 @Produces(MediaType.APPLICATION_JSON)
 public interface EmailVerifyEndpoint {
     @GET
+    @AuthorizationNotRequired
     Promise<Response> verifyEmail(@QueryParam("evc") String evc,
                                   @QueryParam("locale") String locale);
 

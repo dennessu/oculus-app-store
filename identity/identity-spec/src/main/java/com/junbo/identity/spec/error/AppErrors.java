@@ -53,7 +53,7 @@ public interface AppErrors {
             field = "user.status", reason = "User with name {0} is not in valid status")
     AppError userInInvalidStatusByName(String userName);
 
-    @ErrorDef(httpStatusCode = 412, code = "108", message = "User Name Not Found",
+    @ErrorDef(httpStatusCode = 404, code = "108", message = "User Name Not Found",
             field = "username", reason = "User with name {0} is not found")
     AppError userNotFoundByName(String username);
 
