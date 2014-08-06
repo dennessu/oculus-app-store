@@ -14,6 +14,8 @@ import com.junbo.common.jackson.aware.AnnotationsAware;
 import com.junbo.common.jackson.aware.ResourceCollectionAware;
 import com.junbo.common.json.ObjectMapperProvider;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document.OutputSettings;
+import org.jsoup.nodes.Entities.EscapeMode;
 import org.jsoup.safety.Whitelist;
 import org.springframework.util.Assert;
 
@@ -24,7 +26,7 @@ import java.util.*;
  * XSSFreeStringDeserializer.
  */
 public class XSSFreeStringDeserializer extends JsonDeserializer<Object> implements ResourceCollectionAware, AnnotationsAware {
-
+    private static final OutputSettings ESCAPE_SETTINGS = new OutputSettings().prettyPrint(false).escapeMode(EscapeMode.xhtml).charset("UTF-8");
     protected ObjectMapper mapper = ObjectMapperProvider.instance();
 
     protected Class<? extends Collection> collectionType;
@@ -58,7 +60,7 @@ public class XSSFreeStringDeserializer extends JsonDeserializer<Object> implemen
     }
 
     protected Object process(String value) {
-        return Jsoup.clean(value, getWhitelist());
+        return Jsoup.clean(value, "", getWhitelist(), ESCAPE_SETTINGS);
     }
 
     private Object handleSingle(JsonParser jsonParser) throws IOException {
