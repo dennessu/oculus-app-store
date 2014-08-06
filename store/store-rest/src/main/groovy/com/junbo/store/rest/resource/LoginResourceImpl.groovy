@@ -2,10 +2,20 @@ package com.junbo.store.rest.resource
 
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
+import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.error.AppError
+import com.junbo.common.error.AppErrorException
+import com.junbo.common.error.ErrorDetail
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
 import com.junbo.common.util.IdFormatter
-import com.junbo.identity.spec.v1.model.*
+import com.junbo.identity.spec.v1.model.Email
+import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
+import com.junbo.identity.spec.v1.model.UserDOB
+import com.junbo.identity.spec.v1.model.UserName
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
+import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
 import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.langur.core.promise.Promise
@@ -98,6 +108,8 @@ class LoginResourceImpl implements  LoginResource {
                     type: userCredentialChangeRequest.newCredential.type,
                     value: userCredentialChangeRequest.newCredential.value
             ))
+        }.recover { Throwable ex ->
+            handleError(null, ex)
         }.syncThen {
             return new UserCredentialChangeResponse(status: ResponseStatus.SUCCESS.name())
         }
@@ -106,6 +118,7 @@ class LoginResourceImpl implements  LoginResource {
     @Override
     Promise<AuthTokenResponse> createUser(CreateUserRequest createUserRequest) {
         User user
+        String fieldName = null
         Promise.pure(null).then { // create user
             requestValidator.validateCreateUserRequest(createUserRequest).then {
                 user = new User(
@@ -117,18 +130,21 @@ class LoginResourceImpl implements  LoginResource {
                     user = u
                     return Promise.pure(null)
                 }.then {
+                    fieldName = 'password'
                     resourceContainer.userCredentialResource.create(
                             user.getId(),
-                            new UserCredential(type: 'PASSWORD', value: createUserRequest.password)
+                            new com.junbo.identity.spec.v1.model.UserCredential(type: 'PASSWORD', value: createUserRequest.password)
                     )
                 }.then {
+                    fieldName = 'pinCode'
                     resourceContainer.userCredentialResource.create(
                             user.getId(),
-                            new UserCredential(type: 'PIN', value: createUserRequest.pinCode)
+                            new com.junbo.identity.spec.v1.model.UserCredential(type: 'PIN', value: createUserRequest.pinCode)
                     )
                 }
             }
         }.then { // create email info
+            fieldName = 'email'
             resourceContainer.userPersonalInfoResource.create(
                     new UserPersonalInfo(
                             type: 'EMAIL',
@@ -148,6 +164,7 @@ class LoginResourceImpl implements  LoginResource {
                 }
             }
         }.then { // create dob info
+            fieldName = 'dob'
             resourceContainer.userPersonalInfoResource.create(
                     new UserPersonalInfo(
                             userId: user.getId(),
@@ -162,6 +179,7 @@ class LoginResourceImpl implements  LoginResource {
                 }
             }
         }.then { // create name info
+            fieldName = 'name'
             resourceContainer.userPersonalInfoResource.create(
                     new UserPersonalInfo(
                             userId: user.getId(),
@@ -190,7 +208,7 @@ class LoginResourceImpl implements  LoginResource {
                 }
                 return Promise.pure(null)
             }.then {
-                throw ex
+                handleError(fieldName, ex)
             }
         }.then {
             resourceContainer.emailVerifyEndpoint.sendVerifyEmail(createUserRequest.preferredLocale, createUserRequest.cor, user.getId())
@@ -298,5 +316,30 @@ class LoginResourceImpl implements  LoginResource {
         resourceContainer.userResource.put(user.getId(), user).syncThen {
             LOGGER.info('name=Rollback_Created_User, userId={}, name={}, rollback_name={}', IdFormatter.encodeId(user.getId()), originalName, user?.username)
         }
+    }
+
+    private void handleError(String field, Throwable ex) {
+        if (!(ex instanceof AppErrorException)) {
+            throw ex
+        }
+        AppError appError = ((AppErrorException) ex).error
+        String []codes = appError.error().code.split('\\.')
+        if (codes.length == 2) {
+            if (codes[1] == '001') {
+                LOGGER.error('name=Invalid_Field_Error', ex)
+                AppError resultAppError
+                if (field != null) {
+                    resultAppError = AppCommonErrors.INSTANCE.fieldInvalid(
+                            appError.error().details.collect {ErrorDetail errorDetail -> return new ErrorDetail(field, errorDetail.reason)}.toArray(new ErrorDetail[0])
+                    )
+                } else {
+                    resultAppError = AppCommonErrors.INSTANCE.fieldInvalid(appError.error().details.toArray(new ErrorDetail[0]))
+                }
+                throw resultAppError.exception()
+            }
+        } else {
+            LOGGER.error('name=Invalid_Error_Code_Format, code={}', appError.error().code)
+        }
+        throw ex
     }
 }

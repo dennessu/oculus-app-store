@@ -30,9 +30,6 @@ class RequestValidator {
         if (StringUtils.isEmpty(request.username)) {
             throw AppCommonErrors.INSTANCE.fieldRequired('username').exception()
         }
-        if (StringUtils.isEmpty(request.email)) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('email').exception()
-        }
         return Promise.pure(null)
     }
 
