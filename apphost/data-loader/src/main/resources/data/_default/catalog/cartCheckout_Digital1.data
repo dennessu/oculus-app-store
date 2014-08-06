@@ -108,6 +108,11 @@
                 "href": "http://www.google.com/download/angrybird1_1mac.dmg", 
                 "version": "1.1", 
                 "size": 1024
+            },
+            "ANDROID": {
+                "href": "http://www.google.com/download/angrybird1_1android.apk",
+                "version": "1.1",
+                "size": 1024
             }
         }, 
         "downloadName": "download name", 

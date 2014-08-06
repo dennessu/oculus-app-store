@@ -6,6 +6,9 @@
     <import resource="classpath*:spring/common-lib-context.xml"/>
     <import resource="classpath*:spring/common-context.xml"/>
 
+    <bean id="storeRestTestUtils" class="com.junbo.store.rest.test.TestUtils">
+    </bean>
+
     <bean id="storeResourceClientProxy" class="com.junbo.store.spec.resource.proxy.StoreResourceClientProxy"
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.store.url}"/>
@@ -15,4 +18,15 @@
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.store.url}"/>
     </bean>
+
+    <bean id="offerResourceClientProxy" class="com.junbo.catalog.spec.resource.proxy.OfferResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.catalog.url}"/>
+    </bean>
+
+    <bean id="offerRevisionResourceClientProxy" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.catalog.url}"/>
+    </bean>
+
 </beans>

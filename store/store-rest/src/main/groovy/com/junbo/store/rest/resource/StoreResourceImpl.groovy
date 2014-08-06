@@ -407,9 +407,9 @@ class StoreResourceImpl implements StoreResource {
             CommitPurchaseResponse response = new CommitPurchaseResponse()
             boolean inappPurchase
             resourceContainer.orderResource.getOrderByOrderId(orderId).then { Order order ->
-                inappPurchase = !StringUtils.isEmpty(iapPackageName)
                 iapPackageName = order.properties?.get('iap.packageName')
                 iapItemId = order.properties?.get('iap.hostItemId')
+                inappPurchase = !StringUtils.isEmpty(iapPackageName)
                 order.tentative = false
                 resourceContainer.orderResource.updateOrderByOrderId(order.getId(), order).then { Order settled ->
                     response.orderId = settled.getId()
@@ -418,12 +418,15 @@ class StoreResourceImpl implements StoreResource {
                 }.then { // get entitlements
                     getEntitlementsByOrder(order, iapPackageName).then { List<Entitlement> entitlements ->
                         response.entitlements = entitlements
+                        return Promise.pure(null)
                     }
                 }.then { // sign the inapp entitlements
                     if (!inappPurchase) {
                         return Promise.pure(null)
                     }
+                    Long signatureTimestamp = System.currentTimeMillis()
                     return Promise.each(response.entitlements) { Entitlement entitlement ->
+                        entitlement.signatureTimestamp = signatureTimestamp
                         signEntitlement(entitlement, iapItemId)
                     }
                 }
@@ -672,12 +675,7 @@ class StoreResourceImpl implements StoreResource {
         )
 
         if (entitlement.type == EntitlementType.DOWNLOAD.name()) {
-            result.appDeliveryData = new AppDeliveryData()
-            String platform = getPlatformName()
-            result.appDeliveryData.downloadUrl = entitlement.binaries[platform]
-            if (StringUtils.isEmpty(result.appDeliveryData.downloadUrl)) {
-                LOGGER.warn('name=Store_DownloadUrl_Empty, entitlementId={}, platform={}', entitlement.getId(), platform)
-            }
+            result.appDeliveryData = buildAppDeliveryData(entitlement, itemRevision)
         }
         return result
     }
@@ -696,8 +694,17 @@ class StoreResourceImpl implements StoreResource {
     }
 
     private Promise<Entitlement> signEntitlement(Entitlement entitlement, String itemId) {
-        String jsonText = ObjectMapperProvider.instance().writeValueAsString(entitlement)
-        // todo filter out field not needed for iap
+        Map<String, Object> valuesMap = new HashMap<>()
+        valuesMap.put('userId', IdFormatter.encodeId(entitlement.userId))
+        valuesMap.put('entitlementId', IdFormatter.encodeId(entitlement.getEntitlementId()))
+        valuesMap.put('useCount', entitlement.useCount)
+        valuesMap.put('sku', entitlement.sku)
+        valuesMap.put('type', entitlement.type)
+        valuesMap.put('isConsumable', entitlement.isConsumable)
+        valuesMap.put('packageName', entitlement.packageName)
+
+        String jsonText = ObjectMapperProvider.instance().writeValueAsString(valuesMap)
+
         entitlement.setIapEntitlementData(jsonText)
         return resourceContainer.itemCryptoResource.sign(itemId, new ItemCryptoMessage(message: jsonText)).then { ItemCryptoMessage itemCryptoMessage ->
             entitlement.iapSignature = itemCryptoMessage.message
@@ -706,8 +713,16 @@ class StoreResourceImpl implements StoreResource {
     }
 
     private Promise<Consumption> signConsumption(Consumption consumption, String itemId) {
-        String jsonText = ObjectMapperProvider.instance().writeValueAsString(consumption)
-        // todo filter out field not needed for iap
+        Map<String, Object> valuesMap = new HashMap<>()
+        valuesMap.put('userId', IdFormatter.encodeId(consumption.userId))
+        valuesMap.put('entitlementId', IdFormatter.encodeId(consumption.getEntitlementId()))
+        valuesMap.put('useCountConsumed', consumption.useCountConsumed)
+        valuesMap.put('sku', consumption.sku)
+        valuesMap.put('type', consumption.type)
+        valuesMap.put('trackingGuid', consumption.trackingGuid)
+        valuesMap.put('packageName', consumption.packageName)
+        String jsonText = ObjectMapperProvider.instance().writeValueAsString(valuesMap)
+
         consumption.iapConsumptionData =jsonText
         return resourceContainer.itemCryptoResource.sign(itemId, new ItemCryptoMessage(message: jsonText)).then { ItemCryptoMessage itemCryptoMessage ->
             consumption.iapSignature = itemCryptoMessage.message
@@ -767,6 +782,7 @@ class StoreResourceImpl implements StoreResource {
                     userProfile.name = dataConvertor.toStorePersonalInfo(info, user.name)
                 }
             }
+            return Promise.pure(null)
         }.syncThen {
             return userProfile
         }
@@ -815,6 +831,26 @@ class StoreResourceImpl implements StoreResource {
         result.title = offerRevisionLocaleProperties?.name
         result.price = offerRevision.price?.prices?.get(country)?.get(currency)
 
+        return result
+    }
+
+    private AppDeliveryData buildAppDeliveryData(com.junbo.entitlement.spec.model.Entitlement entitlement, ItemRevision itemRevision) {
+        AppDeliveryData result = new AppDeliveryData()
+        String platform = getPlatformName()
+        result.downloadUrl = entitlement.binaries[platform]
+
+        if (StringUtils.isEmpty(result.downloadUrl)) {
+            LOGGER.warn('name=Store_DownloadUrl_Empty, entitlementId={}, platform={}', entitlement.getId(), platform)
+        }
+
+        Binary binary = itemRevision.binaries[platform]
+        if (binary == null) {
+            LOGGER.warn('name=Store_Binary_Not_Found, entitlementId={}, platform={}', entitlement.getId(), platform)
+        }
+
+        result.downloadSize = binary?.size
+        result.md5 = binary?.md5
+        result.version = binary?.version
         return result
     }
 
