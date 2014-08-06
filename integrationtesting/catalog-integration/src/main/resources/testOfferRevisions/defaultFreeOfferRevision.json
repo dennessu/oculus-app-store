@@ -96,6 +96,42 @@
         "CA":{
             "isPurchasable": true,
             "releaseDate":"2013-06-10T09:05:58Z"
+        },
+        "AT":{
+            "isPurchasable": true,
+            "releaseDate":"2013-06-10T09:05:58Z"
+        },
+        "BE":{
+            "isPurchasable": true,
+            "releaseDate":"2013-06-10T09:05:58Z"
+        },
+        "CZ":{
+            "isPurchasable": true,
+            "releaseDate":"2013-06-10T09:05:58Z"
+        },
+        "DK":{
+            "isPurchasable": true,
+            "releaseDate":"2013-06-10T09:05:58Z"
+        },
+        "FI":{
+            "isPurchasable": true,
+            "releaseDate":"2013-06-10T09:05:58Z"
+        },
+        "IT":{
+            "isPurchasable": true,
+            "releaseDate":"2013-06-10T09:05:58Z"
+        },
+        "PL":{
+            "isPurchasable": true,
+            "releaseDate":"2013-06-10T09:05:58Z"
+        },
+        "SE":{
+            "isPurchasable": true,
+            "releaseDate":"2013-06-10T09:05:58Z"
+        },
+        "CY":{
+            "isPurchasable": true,
+            "releaseDate":"2013-06-10T09:05:58Z"
         }
     },
     "futureExpansion":{},
