@@ -393,6 +393,18 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
     public Promise<PaymentTransaction> processNotify(String request){
         // Check user and password
         checkAuthorization();
+        //TODO: save to DB and check redundant notification. Log it first
+        LOGGER.info("receive notification from ayden:" + request);
+        //
+        try{
+            process(request);
+        }catch (Exception ex){
+            LOGGER.error("process adyen notification error:" + ex.toString());
+        }
+        return Promise.pure(null);
+    }
+
+    private void process(String request) {
         //get results
         Map<String, String> notifies = new HashMap<>();
         String[] requests = request.split("&");
@@ -404,16 +416,16 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
         }
         AdyenNotifyRequest notify = CommonUtil.parseJson(CommonUtil.toJson(notifies, null), AdyenNotifyRequest.class);
         if(notify.getPspReference() == null){
-            return Promise.pure(null);
+            LOGGER.warn("no psp reference available");
+            return ;
         }
-        //TODO: save to DB and check redundant notification. Log it first
-        LOGGER.info("receive notification from ayden:" + request);
-        //
         Long paymentId = CommonUtil.decode(notify.getMerchantReference());
         String merchantAccount = notify.getMerchantAccountCode();
         PaymentTransaction transaction = paymentRepositoryFacade.getByPaymentId(paymentId);
         if(transaction == null){
-            return Promise.pure(null);
+            //Credit Card Auth use PIID as reference so no transaction would be found:
+            LOGGER.warn("cannot find payment transaction:" + paymentId);
+            return ;
         }
         String externalToken = notify.getPspReference();
         if(notify.getSuccess().equalsIgnoreCase("true") && merchantAccount.equalsIgnoreCase(this.merchantAccount)
@@ -438,7 +450,6 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
                         PaymentStatus.REFUND_DECLINED.toString()), null);
             }
         }
-        return Promise.pure(null);
     }
 
     private void checkAuthorization() {

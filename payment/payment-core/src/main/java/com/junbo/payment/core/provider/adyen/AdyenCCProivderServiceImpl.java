@@ -81,7 +81,8 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
                 adyenRequest.setMerchantAccount(getMerchantAccount());
                 adyenRequest.setRecurring(new Recurring(RECURRING, null));
                 adyenRequest.setAmount(new Amount(defaultCurrency.getValue(), minAuthAmount));
-                adyenRequest.setReference(piId.toString());
+                //no payment transaction when Add PI so just use the PIID
+                adyenRequest.setReference(CommonUtil.encode(piId));
                 adyenRequest.setShopperEmail(request.getUserInfo().getEmail());
                 adyenRequest.setShopperReference(piId.toString());
                 adyenRequest.setShopperInteraction("ContAuth");
