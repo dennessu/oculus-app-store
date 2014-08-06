@@ -7,6 +7,7 @@
 package com.junbo.catalog.spec.model.offer;
 
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
+import com.junbo.common.id.OrganizationId;
 
 import javax.ws.rs.QueryParam;
 import java.util.Set;
@@ -25,6 +26,8 @@ public class OfferRevisionsGetOptions extends PageableGetOptions {
     private Long timestamp;
     @QueryParam("locale")
     private String locale;
+    @QueryParam("publisherId")
+    private OrganizationId publisherId;
 
     public Set<String> getOfferIds() {
         return offerIds;
@@ -64,5 +67,13 @@ public class OfferRevisionsGetOptions extends PageableGetOptions {
 
     public void setLocale(String locale) {
         this.locale = locale;
+    }
+
+    public OrganizationId getPublisherId() {
+        return publisherId;
+    }
+
+    public void setPublisherId(OrganizationId publisherId) {
+        this.publisherId = publisherId;
     }
 }

@@ -7,6 +7,7 @@
 package com.junbo.catalog.spec.model.item;
 
 import com.junbo.catalog.spec.model.common.PageableGetOptions;
+import com.junbo.common.id.OrganizationId;
 
 import javax.ws.rs.QueryParam;
 import java.util.Set;
@@ -25,6 +26,8 @@ public class ItemRevisionsGetOptions extends PageableGetOptions {
     private Long timestamp;
     @QueryParam("locale")
     private String locale;
+    @QueryParam("developerId")
+    private OrganizationId developerId;
 
     public Set<String> getItemIds() {
         return itemIds;
@@ -64,5 +67,13 @@ public class ItemRevisionsGetOptions extends PageableGetOptions {
 
     public void setLocale(String locale) {
         this.locale = locale;
+    }
+
+    public OrganizationId getDeveloperId() {
+        return developerId;
+    }
+
+    public void setDeveloperId(OrganizationId developerId) {
+        this.developerId = developerId;
     }
 }

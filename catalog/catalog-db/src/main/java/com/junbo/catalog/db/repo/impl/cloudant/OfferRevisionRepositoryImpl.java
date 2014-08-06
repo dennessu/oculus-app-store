@@ -15,6 +15,8 @@ import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.offer.OfferRevisionsGetOptions;
 import com.junbo.catalog.spec.model.offer.RevisionInfo;
 import com.junbo.common.cloudant.CloudantClient;
+import com.junbo.common.cloudant.model.CloudantQueryResult;
+import com.junbo.common.cloudant.model.CloudantSearchResult;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -54,10 +56,9 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
         if (!CollectionUtils.isEmpty(options.getRevisionIds())) {
             for (String revisionId : options.getRevisionIds()) {
                 OfferRevision revision = get(revisionId);
-                if (revision==null) {
-                    continue;
-                } else if (!StringUtils.isEmpty(options.getStatus())
-                        && !options.getStatus().equalsIgnoreCase(revision.getStatus())) {
+                if (revision==null
+                        || !StringUtils.isEmpty(options.getStatus()) && !options.getStatus().equalsIgnoreCase(revision.getStatus())
+                        || options.getPublisherId() != null && !options.getPublisherId().equals(revision.getOwnerId())) {
                     continue;
                 } else {
                     offerRevisions.add(revision);
@@ -67,11 +68,12 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
         } else if (!CollectionUtils.isEmpty(options.getOfferIds())) {
             for (String offerId : options.getOfferIds()) {
                 List<OfferRevision> revisions = queryView("by_offerId", offerId.toString()).get();
-                if (!StringUtils.isEmpty(options.getStatus())) {
+                if (!StringUtils.isEmpty(options.getStatus()) || options.getPublisherId() != null) {
                     Iterator<OfferRevision> iterator = revisions.iterator();
                     while (iterator.hasNext()) {
                         OfferRevision revision = iterator.next();
-                        if (!options.getStatus().equalsIgnoreCase(revision.getStatus())) {
+                        if (!StringUtils.isEmpty(options.getStatus()) && !options.getStatus().equalsIgnoreCase(revision.getStatus())
+                                || options.getPublisherId() != null && !options.getPublisherId().equals(revision.getOwnerId())) {
                             iterator.remove();
                         }
                     }
@@ -79,12 +81,25 @@ public class OfferRevisionRepositoryImpl extends CloudantClient<OfferRevision> i
                 offerRevisions.addAll(revisions);
             }
             options.setTotal(Long.valueOf(offerRevisions.size()));
-        } else if (!StringUtils.isEmpty(options.getStatus())){
-            offerRevisions = queryView("by_status", options.getStatus().toUpperCase(),
-                    options.getValidSize(), options.getValidStart(), false).get();
+        } else if (options.getPublisherId() != null || !StringUtils.isEmpty(options.getStatus())) {
+            StringBuilder sb = new StringBuilder();
+            if (options.getPublisherId() != null) {
+                sb.append("ownerId:'").append(options.getPublisherId().getValue()).append("'");
+            }
+            if (!StringUtils.isEmpty(options.getStatus())) {
+                if (sb.length() > 0) {
+                    sb.append(" AND ");
+                }
+                sb.append("status:'").append(options.getStatus()).append("'");
+            }
+            CloudantSearchResult<OfferRevision> searchResult = searchSync("search", sb.toString(), options.getValidSize(), options.getCursor());
+            offerRevisions = searchResult.getResults();
+            options.setNextCursor(searchResult.getBookmark());
+            options.setTotal(searchResult.getTotal());
         } else {
-            offerRevisions = queryView("by_offerId", null,
-                    options.getValidSize(), options.getValidStart(), false).get();
+            CloudantQueryResult queryResult = queryViewSync("by_offerId", null, options.getValidSize(), options.getValidStart(), false, true);
+            offerRevisions = Utils.getDocs(queryResult.getRows());
+            options.setTotal(queryResult.getTotalRows());
         }
 
         return offerRevisions;

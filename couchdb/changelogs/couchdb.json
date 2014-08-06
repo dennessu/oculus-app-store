@@ -655,7 +655,7 @@
     "item_revision": {
       "indexes": {
         "search": {
-          "index": "function(doc) {if(doc.itemId){index('itemId', doc.itemId);}index('revisionId', doc._id);index('status', doc.status);if(doc.timestamp){index('timeInMillis', doc.timestamp);}if(doc.packageName){index('packageName',doc.packageName);}}"
+          "index": "function(doc) {if(doc.itemId){index('itemId', doc.itemId);}if(doc.ownerId){index('ownerId', doc.ownerId);}index('revisionId', doc._id);index('status', doc.status);if(doc.timestamp){index('timeInMillis', doc.timestamp);}if(doc.packageName){index('packageName',doc.packageName);}}"
         }
       }, 
       "views": {
@@ -695,7 +695,7 @@
     "offer_revision": {
       "indexes": {
         "search": {
-          "index": "function(doc) {if(doc.offerId){index('offerId', doc.offerId);}index('revisionId', doc._id);index('status', doc.status);if(doc.timestamp){index('timeInMillis', doc.timestamp);}}"
+          "index": "function(doc) {if(doc.offerId){index('offerId', doc.offerId);}if(doc.ownerId){index('ownerId', doc.ownerId);}index('revisionId', doc._id);index('status', doc.status);if(doc.timestamp){index('timeInMillis', doc.timestamp);}}"
         }
       }, 
       "views": {

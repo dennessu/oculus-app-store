@@ -16,6 +16,7 @@ import com.junbo.catalog.spec.model.item.ItemRevisionInfo;
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
 import com.junbo.common.cloudant.CloudantClient;
 import com.junbo.common.cloudant.model.CloudantQueryResult;
+import com.junbo.common.cloudant.model.CloudantSearchResult;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -52,10 +53,9 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
         if (!CollectionUtils.isEmpty(options.getRevisionIds())) {
             for (String revisionId : options.getRevisionIds()) {
                 ItemRevision revision = get(revisionId);
-                if (revision==null) {
-                    continue;
-                } else if (!StringUtils.isEmpty(options.getStatus())
-                        && !options.getStatus().equalsIgnoreCase(revision.getStatus())) {
+                if (revision==null
+                        || !StringUtils.isEmpty(options.getStatus()) && !options.getStatus().equalsIgnoreCase(revision.getStatus())
+                        || options.getDeveloperId() != null && !options.getDeveloperId().equals(revision.getOwnerId())) {
                     continue;
                 } else {
                     itemRevisions.add(revision);
@@ -65,11 +65,12 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
         } else if (!CollectionUtils.isEmpty(options.getItemIds())) {
             for (String itemId : options.getItemIds()) {
                 List<ItemRevision> revisions = queryViewSync("by_itemId", itemId);
-                if (!StringUtils.isEmpty(options.getStatus())) {
+                if (!StringUtils.isEmpty(options.getStatus()) || options.getDeveloperId() != null) {
                     Iterator<ItemRevision> iterator = revisions.iterator();
                     while (iterator.hasNext()) {
                         ItemRevision revision = iterator.next();
-                        if (!options.getStatus().equalsIgnoreCase(revision.getStatus())) {
+                        if (!StringUtils.isEmpty(options.getStatus()) && !options.getStatus().equalsIgnoreCase(revision.getStatus())
+                                || options.getDeveloperId() != null && !options.getDeveloperId().equals(revision.getOwnerId())) {
                             iterator.remove();
                         }
                     }
@@ -77,10 +78,21 @@ public class ItemRevisionRepositoryImpl extends CloudantClient<ItemRevision> imp
                 options.setTotal(Long.valueOf(revisions.size()));
                 itemRevisions.addAll(revisions);
             }
-        } else if (!StringUtils.isEmpty(options.getStatus())){
-            CloudantQueryResult queryResult = queryViewSync("by_status", options.getStatus().toUpperCase(), options.getValidSize(), options.getValidStart(), false, true);
-            itemRevisions = Utils.getDocs(queryResult.getRows());
-            options.setTotal(queryResult.getTotalRows());
+        } else if (options.getDeveloperId() != null || !StringUtils.isEmpty(options.getStatus())) {
+            StringBuilder sb = new StringBuilder();
+            if (options.getDeveloperId() != null) {
+                sb.append("ownerId:'").append(options.getDeveloperId().getValue()).append("'");
+            }
+            if (!StringUtils.isEmpty(options.getStatus())) {
+                if (sb.length() > 0) {
+                    sb.append(" AND ");
+                }
+                sb.append("status:'").append(options.getStatus()).append("'");
+            }
+            CloudantSearchResult<ItemRevision> searchResult = searchSync("search", sb.toString(), options.getValidSize(), options.getCursor());
+            itemRevisions = searchResult.getResults();
+            options.setNextCursor(searchResult.getBookmark());
+            options.setTotal(searchResult.getTotal());
         } else {
             CloudantQueryResult queryResult = queryViewSync("by_itemId", null, options.getValidSize(), options.getValidStart(), false, true);
             itemRevisions = Utils.getDocs(queryResult.getRows());
