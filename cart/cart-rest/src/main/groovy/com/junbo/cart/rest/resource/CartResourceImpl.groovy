@@ -8,6 +8,7 @@ package com.junbo.cart.rest.resource
 import com.junbo.cart.core.service.CartService
 import com.junbo.cart.spec.model.Cart
 import com.junbo.cart.spec.resource.CartResource
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.CartId
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
@@ -35,17 +36,28 @@ class CartResourceImpl implements CartResource {
 
     private PathParamTranscoder pathParamTranscoder
 
+    private String redirectUrlPrefix
+
     @Required
     void setCartService(CartService cartService) {
         this.cartService = cartService
     }
 
+    @Required
     void setPathParamTranscoder(PathParamTranscoder pathParamTranscoder) {
         this.pathParamTranscoder = pathParamTranscoder
     }
 
+    @Required
+    void setRedirectUrlPrefix(String redirectUrlPrefix) {
+        this.redirectUrlPrefix = redirectUrlPrefix
+    }
+
     @Override
     Promise<Cart> addCart(UserId userId, Cart cart) {
+        if (cart == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
+        }
         return cartService.addCart(cart, clientId, userId)
     }
 
@@ -59,8 +71,7 @@ class CartResourceImpl implements CartResource {
         return cartService.getCartPrimary(clientId, userId).then {
             Cart cart = (Cart) it
 
-            String location = JunboHttpContext.requestUri.toString().replaceFirst(
-                    '/primary$', '/' + pathParamTranscoder.encode(cart.id))
+            String location = "${redirectUrlPrefix}/users/${pathParamTranscoder.encode(userId)}/carts/${pathParamTranscoder.encode(cart.id)}"
 
             JunboHttpContext.responseStatus = 302
             JunboHttpContext.responseHeaders.add('Location', location)
@@ -83,6 +94,9 @@ class CartResourceImpl implements CartResource {
 
     @Override
     Promise<Cart> updateCart(UserId userId, CartId cartId, Cart fromCart) {
+        if (fromCart == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
+        }
         return cartService.updateCart(userId, cartId, fromCart)
     }
 
