@@ -12,6 +12,8 @@ import com.junbo.common.cloudant.model.CloudantQueryResult;
 import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.ErrorDetail;
+import com.junbo.common.id.Id;
+import com.junbo.common.util.IdFormatter;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -77,5 +79,12 @@ public class Utils {
             return false;
         }
         return value.matches("[a-fA-F0-9]{32}");
+    }
+
+    public static String encodeId(Id value) {
+        if (value == null) {
+            return null;
+        }
+        return IdFormatter.encodeId(value);
     }
 }

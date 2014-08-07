@@ -329,6 +329,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         if (offer.getCurrentRevisionId() != null) {
             errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("currentRevision"));
         }
+        if (offer.getOwnerId()==null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldRequired("publisher"));
+        }
 
         validateOfferCommon(offer, errors);
 
@@ -351,6 +354,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         if (!oldOffer.getRev().equals(offer.getRev())) {
             errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("rev", offer.getRev(), oldOffer.getRev()));
         }
+        if (!oldOffer.getOwnerId().equals(offer.getOwnerId())) {
+            errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("publisher", Utils.encodeId(offer.getOwnerId()), Utils.encodeId(oldOffer.getOwnerId())));
+        }
 
         validateOfferCommon(offer, errors);
 
@@ -362,9 +368,6 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     }
 
     private void validateOfferCommon(Offer offer, List<AppError> errors) {
-        if (offer.getOwnerId()==null) {
-            errors.add(AppCommonErrors.INSTANCE.fieldRequired("publisher"));
-        }
         if (!CollectionUtils.isEmpty(offer.getCategories())) {
             for (String categoryId : offer.getCategories()) {
                 if (categoryId == null) {

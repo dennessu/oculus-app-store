@@ -216,6 +216,9 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         if (item.getCurrentRevisionId() != null) {
             errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("currentRevision"));
         }
+        if (item.getOwnerId() == null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldRequired("developer"));
+        }
 
         validateItemCommon(item, errors);
 
@@ -241,6 +244,9 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
         if (!oldItem.getType().equals(item.getType())) {
             errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("type", item.getType(), oldItem.getType()));
         }
+        if (!oldItem.getOwnerId().equals(item.getOwnerId())) {
+            errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("developer", Utils.encodeId(item.getOwnerId()), Utils.encodeId(oldItem.getOwnerId())));
+        }
 
         validateItemCommon(item, errors);
 
@@ -252,9 +258,6 @@ public class ItemServiceImpl extends BaseRevisionedServiceImpl<Item, ItemRevisio
     }
 
     private void validateItemCommon(Item item, List<AppError> errors) {
-        if (item.getOwnerId() == null) {
-            errors.add(AppCommonErrors.INSTANCE.fieldRequired("developer"));
-        }
         if (item.getType() == null || !ItemType.contains(item.getType())) {
             errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("type", Joiner.on(", ").join(ItemType.values())));
         }

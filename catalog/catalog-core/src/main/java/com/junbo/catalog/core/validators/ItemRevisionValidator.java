@@ -56,7 +56,7 @@ public class ItemRevisionValidator extends ValidationSupport {
         validateNotWritable("self", revision.getRevisionId(), oldRevision.getRevisionId(), errors);
         validateNotWritable("rev", revision.getRev(), oldRevision.getRev(), errors);
         validateStatus(revision.getStatus(), errors);
-        validateFieldNotNull("developer", revision.getOwnerId(), errors);
+        validateNotWritable("developer", Utils.encodeId(revision.getOwnerId()), Utils.encodeId(oldRevision.getOwnerId()), errors);
         validateItem(revision, errors);
         validateChannelsAndHostItems(revision.getDistributionChannels(), revision.getIapHostItemIds(), errors);
         if(validateFieldNotNull("msrp", revision.getMsrp(), errors)) {
@@ -107,7 +107,7 @@ public class ItemRevisionValidator extends ValidationSupport {
         validateNotWritable("self", revision.getRevisionId(), oldRevision.getRevisionId(), errors);
         validateNotWritable("rev", revision.getRev(), oldRevision.getRev(), errors);
         validateStatus(revision.getStatus(), errors);
-        validateFieldNotNull("publisher", revision.getOwnerId(), errors);
+        validateNotWritable("developer", Utils.encodeId(revision.getOwnerId()), Utils.encodeId(oldRevision.getOwnerId()), errors);
         validateItem(revision, errors);
 
         validatePlatforms(revision.getPlatforms(), errors);

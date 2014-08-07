@@ -61,7 +61,7 @@ public class OfferRevisionValidator extends ValidationSupport {
         validateNotWritable("self", revision.getRevisionId(), oldRevision.getRevisionId(), errors);
         validateNotWritable("rev", revision.getRev(), oldRevision.getRev(), errors);
         validateStatus(revision.getStatus(), errors);
-        validateFieldNotNull("publisher", revision.getOwnerId(), errors);
+        validateNotWritable("publisher", Utils.encodeId(revision.getOwnerId()), Utils.encodeId(oldRevision.getOwnerId()), errors);
         validateOffer(revision, errors);
         validateDistributedChannels(revision.getDistributionChannels(), errors);
         if(validateFieldNotNull("price", revision.getPrice(), errors)) {
@@ -104,7 +104,7 @@ public class OfferRevisionValidator extends ValidationSupport {
         validateNotWritable("self", revision.getRevisionId(), oldRevision.getRevisionId(), errors);
         validateNotWritable("rev", revision.getRev(), oldRevision.getRev(), errors);
         validateStatus(revision.getStatus(), errors);
-        validateFieldNotNull("publisher", revision.getOwnerId(), errors);
+        validateNotWritable("publisher", Utils.encodeId(revision.getOwnerId()), Utils.encodeId(oldRevision.getOwnerId()), errors);
         validateOffer(revision, errors);
         validateLocales(revision.getLocales(), errors);
 
