@@ -24,7 +24,7 @@ import com.junbo.test.common.apihelper.identity.RoleService;
  */
 public class RoleServiceImpl extends HttpClientBase implements RoleService {
 
-    private final String roleURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "roles";
+    private final String roleURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/roles";
     private static RoleService instance;
     private boolean isServiceScope = true;
 

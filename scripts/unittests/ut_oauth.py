@@ -2,7 +2,7 @@
 import silkcloudut as ut
 from silkcloudut import *
 
-class OAuthTests(unittest.TestCase):
+class OAuthTests(ut.TestBase):
     def testRegister(self, scope = 'identity'):
         ut.cookies.clear()
         location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = {

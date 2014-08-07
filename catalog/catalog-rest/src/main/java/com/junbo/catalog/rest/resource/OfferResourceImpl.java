@@ -19,6 +19,7 @@ import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
+import com.junbo.common.util.IdFormatter;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -127,7 +128,7 @@ public class OfferResourceImpl implements OfferResource {
             builder.queryParam("published", options.getPublished());
         }
         if (options.getOwnerId() != null) {
-            builder.queryParam("publisherId", options.getOwnerId());
+            builder.queryParam("publisherId", IdFormatter.encodeId(options.getOwnerId()));
         }
         builder.queryParam("count", options.getValidSize());
         if (!StringUtils.isEmpty(options.getNextCursor())) {

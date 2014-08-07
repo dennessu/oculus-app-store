@@ -5,7 +5,7 @@
  */
 package com.junbo.test.drm;
 
-import com.junbo.drm.spec.model.License;
+import com.junbo.drm.spec.model.LicenseRequest;
 import com.junbo.drm.spec.model.SignedLicense;
 
 /**
@@ -15,7 +15,7 @@ import com.junbo.drm.spec.model.SignedLicense;
  */
 public interface DrmService {
 
-    SignedLicense postLicense(License request) throws Exception;
-    SignedLicense postLicense(License request, int expectedResponseCode) throws Exception;
+    SignedLicense postLicense(LicenseRequest request) throws Exception;
+    SignedLicense postLicense(LicenseRequest request, int expectedResponseCode) throws Exception;
 
 }

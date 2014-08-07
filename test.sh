@@ -29,8 +29,7 @@ trap cleanup EXIT INT TERM
 
 cd ./scripts/unittests/
 mkdir -p logs
-python ./ut_oauth.py | tee logs/ut_oauth.log
-python ./ut_checkout.py | tee logs/ut_checkout.log
+python ./supercycle_suite.py | tee logs/supercycle_suite.log
 
 trap - EXIT INT TERM
 cleanup

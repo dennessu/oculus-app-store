@@ -19,6 +19,7 @@ import com.junbo.catalog.spec.resource.OfferRevisionResource;
 import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.model.Results;
+import com.junbo.common.util.IdFormatter;
 import com.junbo.langur.core.promise.Promise;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +74,9 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
             builder.queryParam("status", options.getStatus().toUpperCase());
         }
         builder.queryParam("count", options.getValidSize());
+        if (options.getPublisherId() != null) {
+            builder.queryParam("publisherId", IdFormatter.encodeId(options.getPublisherId()));
+        }
         if (!StringUtils.isEmpty(options.getNextCursor())) {
             builder.queryParam("cursor", options.getNextCursor());
         } else {

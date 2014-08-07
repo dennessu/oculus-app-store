@@ -19,6 +19,7 @@ import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
+import com.junbo.common.util.IdFormatter;
 import com.junbo.langur.core.promise.Promise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -67,8 +68,8 @@ public class ItemResourceImpl implements ItemResource {
         if (!StringUtils.isEmpty(options.getType())) {
             builder.queryParam("type", options.getType());
         }
-        if (!StringUtils.isEmpty(options.getOwnerId())) {
-            builder.queryParam("developerId", options.getOwnerId());
+        if (options.getOwnerId() != null) {
+            builder.queryParam("developerId", IdFormatter.encodeId(options.getOwnerId()));
         }
         builder.queryParam("count", options.getValidSize());
         if (!StringUtils.isEmpty(options.getNextCursor())) {

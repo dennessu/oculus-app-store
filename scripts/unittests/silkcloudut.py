@@ -13,6 +13,24 @@ from cookielib import CookieJar
 from urllib import urlencode
 
 opts = None
+
+class TestBase(unittest.TestCase):
+    def setUp(self):
+        print ""
+        print "==================================================================="
+        print "START: " + self._testMethodName
+        print "-------------------------------------------------------------------"
+        print ""
+        self.current_case_start_time = time.time()
+
+    def tearDown(self):
+        print ""
+        print "-------------------------------------------------------------------"
+        print "FINISH: " + self._testMethodName
+        print "Elapsed: %dms" % ((time.time() - self.current_case_start_time) * 1000)
+        print "==================================================================="
+        print ""
+
 def setUpModule():
     global opts
     global test_uri
@@ -44,7 +62,7 @@ def setUpModule():
     cookies = CookieJar()
     setVerbose(True)
 
-def silkcloud_utmain():
+def silkcloud_utmain(suite = None):
     # Enforce python version
     if sys.version_info[0] != 2 or sys.version_info[1] < 7:
         error("The script only works in python 2.x where x >= 7")
@@ -68,7 +86,11 @@ def silkcloud_utmain():
     global opts
     opts = parser.parse_args()
 
-    unittest.main(argv = [ sys.argv[0] ] + opts.tests)
+    if suite is None:
+        unittest.main(argv = [ sys.argv[0] ] + opts.tests)
+    else:
+        testRunner = unittest.TextTestRunner()
+        testRunner.run(suite)
 
 def curlRedirect(method, baseUrl, url = None, query = None, headers = None, body = None, raiseOnError = True):
     body, resp = curlRaw(method, baseUrl, url, query, headers, body, raiseOnError)

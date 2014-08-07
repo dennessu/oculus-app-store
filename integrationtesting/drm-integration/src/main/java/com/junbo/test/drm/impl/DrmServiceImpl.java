@@ -9,9 +9,9 @@ import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
+import com.junbo.drm.spec.model.LicenseRequest;
 import com.junbo.drm.spec.model.SignedLicense;
 import com.junbo.test.common.ConfigHelper;
-import com.junbo.drm.spec.model.License;
 import com.junbo.test.drm.DrmService;
 
 /**
@@ -35,13 +35,13 @@ public class DrmServiceImpl extends HttpClientBase implements DrmService {
         componentType = ComponentType.DRM;
     }
 
-    public SignedLicense postLicense(License request) throws Exception {
+    public SignedLicense postLicense(LicenseRequest request) throws Exception {
         return postLicense(request, 200);
     }
 
     @Override
-    public SignedLicense postLicense(License request, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, drmURL, request, expectedResponseCode, true);
+    public SignedLicense postLicense(LicenseRequest request, int expectedResponseCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, drmURL, request, expectedResponseCode, false);
         return new JsonMessageTranscoder().decode(new TypeReference<SignedLicense>() {}, responseBody);
     }
 }

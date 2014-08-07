@@ -4,7 +4,7 @@ import ut_oauth
 from silkcloudut import *
 
 oauth = ut_oauth.OAuthTests('testRegister')
-class CheckoutTests(unittest.TestCase):
+class CheckoutTests(ut.TestBase):
 
     def testDeveloper(self):
         user = oauth.testRegister('identity catalog')

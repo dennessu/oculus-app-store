@@ -12,6 +12,7 @@
     <bean id="defaultCartResource" class="com.junbo.cart.rest.resource.CartResourceImpl">
         <property name="cartService" ref="cartService"/>
         <property name="pathParamTranscoder" ref="pathParamTranscoder"/>
+        <property name="redirectUrlPrefix" value="${cart.redirectUrl.base}"/>
     </bean>
 
     <bean id="defaultCartResourceClientFactory" class="com.junbo.cart.spec.resource.proxy.CartResourceClientProxyFactory"/>
