@@ -152,34 +152,34 @@ sudo chmod 700 /etc/silkcloud
 ```
 
 1. Configure upstart script <br />
-Run the following commands to create startup script.
-```
-sudo bash -c 'cat << EOF > /etc/init/silkcloud-apphost.conf
-description "silkcloud app host"
+  Run the following commands to create startup script.
+  ```
+  sudo bash -c 'cat << EOF > /etc/init/silkcloud-apphost.conf
+  description "silkcloud app host"
 
-start on runlevel [2345]
-stop on runlevel [^2345]
+  start on runlevel [2345]
+  stop on runlevel [^2345]
 
-console none
-chdir /var/silkcloud/apphost
-setuid silkcloud
-setgid silkcloud
+  console none
+  chdir /var/silkcloud/apphost
+  setuid silkcloud
+  setgid silkcloud
 
-respawn
-respawn limit 10 600
+  respawn
+  respawn limit 10 600
 
-kill timeout 30
+  kill timeout 30
 
-exec ./startup.sh
+  exec ./startup.sh
 
-EOF
-'
-```
+  EOF
+  '
+  ```
 
-Allow silkcloud to start/stop the service by:
-```
-sudo bash -c 'echo "silkcloud ALL = NOPASSWD: /sbin/start silkcloud-apphost, /sbin/stop silkcloud-apphost, /sbin/initctl status silkcloud-apphost" >> /etc/sudoers'
-```
+  Allow silkcloud to start/stop the service by:
+  ```
+  sudo bash -c 'echo "silkcloud ALL = NOPASSWD: /sbin/start silkcloud-apphost, /sbin/stop silkcloud-apphost, /sbin/initctl status silkcloud-apphost" >> /etc/sudoers'
+  ```
 
 1. Install other packages
 ```
