@@ -7,6 +7,7 @@ package com.junbo.test.store.apihelper;
 
 import com.junbo.store.spec.model.billing.BillingProfileUpdateRequest;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
+import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.purchase.*;
 
@@ -31,8 +32,8 @@ public interface StoreService {
 
     CommitPurchaseResponse commitPurchase(CommitPurchaseRequest commitPurchaseRequest, int expectedResponseCode) throws Exception;
 
-    IAPEntitlementConsumeResponse iapConsumeEntitlement(IAPEntitlementConsumeResponse iapEntitlementConsumeResponse) throws Exception;
+    IAPEntitlementConsumeResponse iapConsumeEntitlement(IAPEntitlementConsumeRequest iapEntitlementConsumeRequest) throws Exception;
 
-    IAPEntitlementConsumeResponse iapConsumeEntitlement(IAPEntitlementConsumeResponse iapEntitlementConsumeResponse, int expectedResponseCode) throws Exception;
+    IAPEntitlementConsumeResponse iapConsumeEntitlement(IAPEntitlementConsumeRequest iapEntitlementConsumeRequest, int expectedResponseCode) throws Exception;
 
 }

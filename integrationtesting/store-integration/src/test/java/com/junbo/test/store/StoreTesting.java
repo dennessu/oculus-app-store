@@ -6,8 +6,10 @@
 package com.junbo.test.store;
 
 
+import com.junbo.common.id.EntitlementId;
 import com.junbo.store.spec.model.billing.BillingProfileGetRequest;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
+import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.store.spec.model.purchase.CommitPurchaseResponse;
 import com.junbo.store.spec.model.purchase.PreparePurchaseResponse;
@@ -35,7 +37,6 @@ public class StoreTesting extends BaseTestClass {
             steps = {
                     "1. Create user",
                     "2. Add credit card into billing profile",
-                    "3. Verify payment instrument added correctly",
                     "3. Post prepare purchase",
                     "4. Verify price response",
                     "5. Select payment instrument for purchase",
@@ -57,13 +58,21 @@ public class StoreTesting extends BaseTestClass {
 
         Long paymentId = billingProfileUpdateResponse.getBillingProfile().getInstruments().get(0).getInstrumentId().getValue();
 
-        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(uid, offer_digital_normal1);
+        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(uid, offer_iap_normal);
+        //TODO validation
 
         String purchaseToken = preparePurchaseResponse.getPurchaseToken();
 
         SelectInstrumentResponse selectInstrumentResponse = testDataProvider.selectInstrument(uid, purchaseToken, paymentId);
 
         CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken);
+        //TODO validation
+
+        EntitlementId entitlementId = commitPurchaseResponse.getEntitlements().get(0).getEntitlementId();
+
+        IAPEntitlementConsumeResponse iapEntitlementConsumeResponse = testDataProvider.iapConsumeEntitlement(uid, entitlementId);
+
+        //TODO validation
 
     }
 }

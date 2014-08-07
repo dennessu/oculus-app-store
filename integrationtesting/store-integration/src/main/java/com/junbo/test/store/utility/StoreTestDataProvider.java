@@ -10,12 +10,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
+import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.OfferId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateRequest;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
 import com.junbo.store.spec.model.billing.Instrument;
+import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
+import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.identity.PersonalInfo;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.store.spec.model.login.CreateUserRequest;
@@ -108,6 +111,14 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         commitPurchaseRequest.setUserId(new UserId(IdConverter.hexStringToId(UserId.class, uid)));
         //commitPurchaseRequest.setChallengeSolution();
         return storeClient.commitPurchase(commitPurchaseRequest);
+    }
+
+    public IAPEntitlementConsumeResponse iapConsumeEntitlement(String uid, EntitlementId entitlementId) throws Exception{
+        IAPEntitlementConsumeRequest request = new IAPEntitlementConsumeRequest();
+        request.setUserId(new UserId(IdConverter.hexStringToId(UserId.class, uid)));
+        request.setEntitlementId(entitlementId);
+        request.setUseCountConsumed(1);
+        return storeClient.iapConsumeEntitlement(request);
     }
 
     private PersonalInfo getBillingAddress() throws Exception {

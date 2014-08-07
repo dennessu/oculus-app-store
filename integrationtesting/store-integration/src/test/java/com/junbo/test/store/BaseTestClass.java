@@ -18,6 +18,7 @@ public abstract class BaseTestClass {
     protected String offer_inApp_consumable2;
     protected String offer_digital_free;
     protected String offer_physical_free;
+    protected String offer_iap_normal;
 
     public BaseTestClass () {
         super();
@@ -35,6 +36,7 @@ public abstract class BaseTestClass {
         offer_inApp_consumable2 = ConfigHelper.getSetting("testdata.offer.inApp.consumable.normal2");
         offer_digital_free = ConfigHelper.getSetting("testdata.offer.digital.free");
         offer_physical_free = ConfigHelper.getSetting("testdata.offer.physical.free");
+        offer_iap_normal = ConfigHelper.getSetting("testdata.offer.iap.normal");
     }
 
     StoreTestDataProvider testDataProvider = new StoreTestDataProvider();

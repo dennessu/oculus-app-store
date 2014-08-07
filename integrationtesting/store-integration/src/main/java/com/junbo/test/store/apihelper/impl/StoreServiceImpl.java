@@ -9,6 +9,7 @@ import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateRequest;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
+import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.purchase.*;
 import com.junbo.test.common.ConfigHelper;
@@ -66,14 +67,14 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public SelectInstrumentResponse selectInstrumentForPurchase(SelectInstrumentRequest selectInstrumentRequest) throws Exception {
-        return selectInstrumentForPurchase(selectInstrumentRequest,200);
+        return selectInstrumentForPurchase(selectInstrumentRequest, 200);
     }
 
     @Override
     public SelectInstrumentResponse selectInstrumentForPurchase(SelectInstrumentRequest selectInstrumentRequest, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, storeUrl + "purchase/select-instrument", selectInstrumentRequest, expectedResponseCode);
         if (expectedResponseCode == 200) {
-            SelectInstrumentResponse selectInstrumentResponse= new JsonMessageTranscoder().decode(new TypeReference<SelectInstrumentResponse>() {
+            SelectInstrumentResponse selectInstrumentResponse = new JsonMessageTranscoder().decode(new TypeReference<SelectInstrumentResponse>() {
             }, responseBody);
 
             return selectInstrumentResponse;
@@ -99,12 +100,19 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
     }
 
     @Override
-    public IAPEntitlementConsumeResponse iapConsumeEntitlement(IAPEntitlementConsumeResponse iapEntitlementConsumeResponse) throws Exception {
-        return null;
+    public IAPEntitlementConsumeResponse iapConsumeEntitlement(IAPEntitlementConsumeRequest request) throws Exception {
+        return iapConsumeEntitlement(request, 200);
     }
 
     @Override
-    public IAPEntitlementConsumeResponse iapConsumeEntitlement(IAPEntitlementConsumeResponse iapEntitlementConsumeResponse, int expectedResponseCode) throws Exception {
+    public IAPEntitlementConsumeResponse iapConsumeEntitlement(IAPEntitlementConsumeRequest request, int expectedResponseCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, storeUrl + "iap/consumption", request, expectedResponseCode);
+        if (expectedResponseCode == 200) {
+            IAPEntitlementConsumeResponse response = new JsonMessageTranscoder().decode(new TypeReference<IAPEntitlementConsumeResponse>() {
+            }, responseBody);
+
+            return response;
+        }
         return null;
     }
 }
