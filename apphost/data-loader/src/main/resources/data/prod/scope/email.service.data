@@ -1,5 +1,0 @@
-{
-    "name": "email.service",
-    "description": "Scope for the service account to call the email service.",
-    "tfaRequired": false
-}

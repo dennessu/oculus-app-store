@@ -1,5 +1,0 @@
-{
-    "name": "payment.service",
-    "description": "Scope for the service account to call the payment service.",
-    "tfaRequired": false
-}

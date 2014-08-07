@@ -1,5 +1,0 @@
-{
-    "name": "catalog",
-    "description": "Scope to get the catalog information.",
-    "tfaRequired": false
-}

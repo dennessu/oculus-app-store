@@ -12,6 +12,7 @@ import groovy.transform.CompileStatic
 import net.sf.ehcache.Cache
 import net.sf.ehcache.Ehcache
 import net.sf.ehcache.Element
+import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.Assert
 import org.springframework.util.StringUtils
@@ -20,9 +21,13 @@ import org.springframework.util.StringUtils
  * Created by Shenhua on 5/14/2014.
  */
 @CompileStatic
-public class TokenInfoParserImpl implements TokenInfoParser {
+public class TokenInfoParserImpl implements TokenInfoParser, InitializingBean {
 
     private static final String AUTHORIZATION_HEADER = 'Authorization'
+
+    private static final DEFAULT_TOKEN = '00000000000000000000'
+
+    private static final String DEFAULT_CLIENT = 'anonymous'
 
     private static final int TOKENS_LENGTH = 2
 
@@ -31,6 +36,12 @@ public class TokenInfoParserImpl implements TokenInfoParser {
     private Boolean allowTestAccessToken
 
     private Ehcache tokenInfoCache
+
+    private String defaultScopes
+
+    private TokenInfo defaultToken
+
+    private Long defaultAccessTokenExpiration
 
     @Required
     void setTokenInfoEndpoint(TokenInfoEndpoint tokenInfoEndpoint) {
@@ -45,6 +56,16 @@ public class TokenInfoParserImpl implements TokenInfoParser {
     @Required
     void setTokenInfoCache(Cache tokenInfoCache) {
         this.tokenInfoCache = tokenInfoCache
+    }
+
+    @Required
+    void setDefaultScopes(String defaultScopes) {
+        this.defaultScopes = defaultScopes
+    }
+
+    @Required
+    void setDefaultAccessTokenExpiration(Long defaultAccessTokenExpiration) {
+        this.defaultAccessTokenExpiration = defaultAccessTokenExpiration
     }
 
     TokenInfo parse() {
@@ -73,6 +94,10 @@ public class TokenInfoParserImpl implements TokenInfoParser {
 
                 return tokenInfo
             }
+        }
+
+        if (accessToken == DEFAULT_TOKEN) {
+            return defaultToken
         }
 
         Element cachedElement = tokenInfoCache.get(accessToken)
@@ -121,5 +146,15 @@ public class TokenInfoParserImpl implements TokenInfoParser {
         }
 
         return tokens[1]
+    }
+
+    @Override
+    void afterPropertiesSet() throws Exception {
+        defaultToken = new TokenInfo(
+                sub: new UserId(0),
+                clientId: DEFAULT_CLIENT,
+                scopes: defaultScopes,
+                expiresIn: defaultAccessTokenExpiration
+        )
     }
 }

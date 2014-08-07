@@ -1,5 +1,0 @@
-{
-    "name": "api.info",
-    "description": "Scope to get the api information.",
-    "tfaRequired": false
-}

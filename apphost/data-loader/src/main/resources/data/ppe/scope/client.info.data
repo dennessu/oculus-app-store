@@ -1,5 +1,0 @@
-{
-    "name": "client.info",
-    "description": "Scope to get the client information.",
-    "tfaRequired": false
-}

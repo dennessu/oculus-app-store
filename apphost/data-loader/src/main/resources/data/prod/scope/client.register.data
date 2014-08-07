@@ -1,5 +1,0 @@
-{
-    "name": "client.register",
-    "description": "Scope to register/manage the oauth client.",
-    "tfaRequired": false
-}

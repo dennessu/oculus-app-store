@@ -1,5 +1,0 @@
-{
-    "name": "commerce.service",
-    "description": "Scope for the service account to get/create/update the commerce information.",
-    "tfaRequired": false
-}

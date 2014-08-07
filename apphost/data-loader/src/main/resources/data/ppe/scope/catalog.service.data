@@ -1,5 +1,0 @@
-{
-    "name": "catalog.service",
-    "description": "Scope for the service account to get/create/update the catalog information.",
-    "tfaRequired": false
-}

@@ -1,5 +1,0 @@
-{
-    "name": "offline",
-    "description": "Scope to allow offline access of the service. If offline scope is presented, a refresh token will be issued",
-    "tfaRequired": false
-}

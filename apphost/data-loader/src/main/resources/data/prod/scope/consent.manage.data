@@ -1,5 +1,0 @@
-{
-    "name": "consent.manage",
-    "description": "Scope to manage the consent information.",
-    "tfaRequired": false
-}

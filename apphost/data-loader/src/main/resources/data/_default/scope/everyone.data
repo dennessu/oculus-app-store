@@ -1,0 +1,5 @@
+{
+    "name": "everyone",
+    "description": "Scope for everyone, stands for the actions that everyone can do",
+    "tfaRequired": false
+}

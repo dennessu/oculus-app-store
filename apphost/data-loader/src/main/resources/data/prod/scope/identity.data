@@ -1,5 +1,0 @@
-{
-    "name": "identity",
-    "description": "Scope to get the identity information.",
-    "tfaRequired": false
-}

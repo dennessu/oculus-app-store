@@ -1,5 +1,0 @@
-{
-    "name": "openid",
-    "description": "Scope to represent the OpenID connect",
-    "tfaRequired": false
-}
