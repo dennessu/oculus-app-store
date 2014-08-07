@@ -8,8 +8,8 @@
             <map>
                 <!-- authorization -->
                 <entry key="ApiDefinitionResource" value="api.info"/>
-                <entry key="RoleAssignmentResource" value="identity identity.service"/>
-                <entry key="RoleResource" value="identity identity.service"/>
+                <entry key="RoleAssignmentResource" value="identity identity.service role.readonly.service"/>
+                <entry key="RoleResource" value="identity identity.service role.readonly.service"/>
                 <!-- billing -->
                 <entry key="BalanceResource" value="commerce billing.service csr"/>
                 <entry key="VatResource" value="billing.service"/>
@@ -57,9 +57,9 @@
                 <entry key="CurrencyResource" value="identity.admin"/>
                 <entry key="DeviceTypeResource" value="identity.admin"/>
                 <entry key="ErrorInfoResource" value="identity.admin"/>
-                <entry key="GroupResource" value="identity identity.service csr"/>
+                <entry key="GroupResource" value="identity identity.service csr group.readonly.service"/>
                 <entry key="LocaleResource" value="identity.admin"/>
-                <entry key="MigrationResource" value="identity.admin"/>
+                <entry key="MigrationResource" value="identity.migration"/>
                 <entry key="OrganizationResource" value="identity identity.service csr"/>
                 <entry key="PITypeResource" value="identity.admin"/>
                 <entry key="TosResource" value="identity.admin"/>

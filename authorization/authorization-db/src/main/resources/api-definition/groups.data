@@ -32,6 +32,15 @@
                 ],
                 "scriptType": "SPEL"
             }
+        ],
+        "group.readonly.service": [
+             {
+                 "precondition": "true",
+                 "rights": [
+                     "read"
+                 ],
+                 "scriptType": "SPEL"
+             }
         ]
     }
 }
