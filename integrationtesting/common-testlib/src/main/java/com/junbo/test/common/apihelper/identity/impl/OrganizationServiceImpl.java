@@ -26,7 +26,7 @@ import com.junbo.common.id.UserId;
  */
 public class OrganizationServiceImpl extends HttpClientBase implements OrganizationService {
 
-    private final String organizationUrl = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "organizations";
+    private final String organizationUrl = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/organizations";
     private static OrganizationService instance;
 
     public static synchronized OrganizationService instance() {

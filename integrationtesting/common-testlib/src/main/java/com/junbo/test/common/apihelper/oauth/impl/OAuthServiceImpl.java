@@ -88,7 +88,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         formParams.put("grant_type", grantType.toString());
 
 
-        String responseBody = restApiCall(HTTPMethod.POST, oauthUrl + "oauth2/token",
+        String responseBody = restApiCall(HTTPMethod.POST, oauthUrl + "/oauth2/token",
                 convertFormatToRequestString(formParams), expectedResponseCode);
 
         AccessTokenResponse accessTokenResponse = new JsonMessageTranscoder().decode(
@@ -116,7 +116,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         formParams.put("password", pwd);
         formParams.put("username", Master.getInstance().getUser(uid).getUsername());
 
-        String responseBody = restApiCall(HTTPMethod.POST, oauthUrl + "oauth2/token",
+        String responseBody = restApiCall(HTTPMethod.POST, oauthUrl + "/oauth2/token",
                 convertFormatToRequestString(formParams), expectedResponseCode);
 
         AccessTokenResponse accessTokenResponse = new JsonMessageTranscoder().decode(
@@ -141,7 +141,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         formParams.put("country", country);
         formParams.put("locale", locale);
 
-        String responseBody = restApiCall(HTTPMethod.POST, oauthUrl + "oauth2/verify-email",
+        String responseBody = restApiCall(HTTPMethod.POST, oauthUrl + "/oauth2/verify-email",
                 convertFormatToRequestString(formParams), expectedResponseCode);
 
         return responseBody;

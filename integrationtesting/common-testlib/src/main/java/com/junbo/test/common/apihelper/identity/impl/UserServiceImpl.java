@@ -33,7 +33,7 @@ import java.util.*;
  */
 public class UserServiceImpl extends HttpClientBase implements UserService {
 
-    private final String identityServerURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "users";
+    private final String identityServerURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/users";
     private static UserService instance;
     private String userPassword = "Test1234";
 
@@ -251,7 +251,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
     private UserPersonalInfo postUserPersonalInfo(UserPersonalInfo userPersonalInfo,
                                                   int expectedResponseCode) throws Exception {
-        String serverURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "personal-info";
+        String serverURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/personal-info";
         String responseBody = restApiCall(HTTPMethod.POST, serverURL, userPersonalInfo, expectedResponseCode);
         return new JsonMessageTranscoder().decode(new TypeReference<UserPersonalInfo>() {
         }, responseBody);
