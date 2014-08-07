@@ -206,15 +206,15 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
         sbReq.append("action=Payment.authorise");
         sbReq.append("&paymentRequest.card.holderName=" + request.getAccountName());
         try {
-            sbReq.append("&paymentRequest.amount.currency=" + urlEncode(defaultCurrency.getValue()));
+            sbReq.append("&paymentRequest.amount.currency=" + CommonUtil.urlEncode(defaultCurrency.getValue()));
             sbReq.append("&paymentRequest.amount.value=" + minAuthAmount);
-            sbReq.append("&paymentRequest.merchantAccount=" + urlEncode(getMerchantAccount()));
+            sbReq.append("&paymentRequest.merchantAccount=" + CommonUtil.urlEncode(getMerchantAccount()));
             sbReq.append("&paymentRequest.reference=" + piId.toString());
-            sbReq.append("&paymentRequest.additionalData.card.encrypted.json=" + urlEncode(request.getAccountNumber()));
+            sbReq.append("&paymentRequest.additionalData.card.encrypted.json=" + CommonUtil.urlEncode(request.getAccountNumber()));
             if(CommonUtil.isNullOrEmpty(request.getUserInfo().getEmail())){
                 throw AppClientExceptions.INSTANCE.missingEmail().exception();
             }
-            sbReq.append("&paymentRequest.shopperEmail=" + urlEncode(request.getUserInfo().getEmail()));
+            sbReq.append("&paymentRequest.shopperEmail=" + CommonUtil.urlEncode(request.getUserInfo().getEmail()));
             sbReq.append("&paymentRequest.shopperReference=" + piId.toString());
             sbReq.append("&paymentRequest.recurring.contract=" + RECURRING);
             sbReq.append("&paymentRequest.shopperInteraction=ContAuth");
@@ -232,32 +232,32 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
     private String getAddressRequest(Address address) throws UnsupportedEncodingException {
         StringBuffer sbReq = new StringBuffer();
         if(!CommonUtil.isNullOrEmpty(address.getCity())){
-            sbReq.append("&paymentRequest.card.billingAddress.city=" + urlEncode(address.getCity()));
+            sbReq.append("&paymentRequest.card.billingAddress.city=" + CommonUtil.urlEncode(address.getCity()));
         }else{
             throw AppClientExceptions.INSTANCE.invalidBillingAddressId(address.getId().toString(), "missing City").exception();
         }
         if(!CommonUtil.isNullOrEmpty(address.getAddressLine1())){
-            sbReq.append("&paymentRequest.card.billingAddress.street=" + urlEncode(address.getAddressLine1()));
+            sbReq.append("&paymentRequest.card.billingAddress.street=" + CommonUtil.urlEncode(address.getAddressLine1()));
         }else{
             throw AppClientExceptions.INSTANCE.invalidBillingAddressId(address.getId().toString(), "missing street").exception();
         }
         if(!CommonUtil.isNullOrEmpty(address.getPostalCode())){
-            sbReq.append("&paymentRequest.card.billingAddress.postalCode=" + urlEncode(address.getPostalCode()));
+            sbReq.append("&paymentRequest.card.billingAddress.postalCode=" + CommonUtil.urlEncode(address.getPostalCode()));
         }else{
             throw AppClientExceptions.INSTANCE.invalidBillingAddressId(address.getId().toString(), "missing postalCode").exception();
         }
         if(!CommonUtil.isNullOrEmpty(address.getState())){
-            sbReq.append("&paymentRequest.card.billingAddress.stateOrProvince=" + urlEncode(address.getState()));
+            sbReq.append("&paymentRequest.card.billingAddress.stateOrProvince=" + CommonUtil.urlEncode(address.getState()));
         }else{
             throw AppClientExceptions.INSTANCE.invalidBillingAddressId(address.getId().toString(), "missing subCountry").exception();
         }
         if(!CommonUtil.isNullOrEmpty(address.getCountry())){
-            sbReq.append("&paymentRequest.card.billingAddress.country=" + urlEncode(address.getCountry()));
+            sbReq.append("&paymentRequest.card.billingAddress.country=" + CommonUtil.urlEncode(address.getCountry()));
         }else{
             throw AppClientExceptions.INSTANCE.invalidBillingAddressId(address.getId().toString(), "missing Country").exception();
         }
         if(!CommonUtil.isNullOrEmpty(address.getUnitNumber())){
-            sbReq.append("&paymentRequest.card.billingAddress.houseNumberOrName=" + urlEncode(address.getUnitNumber()));
+            sbReq.append("&paymentRequest.card.billingAddress.houseNumberOrName=" + CommonUtil.urlEncode(address.getUnitNumber()));
         }else{
             throw AppClientExceptions.INSTANCE.invalidBillingAddressId(address.getId().toString(), "missing UnitNumber").exception();
         }

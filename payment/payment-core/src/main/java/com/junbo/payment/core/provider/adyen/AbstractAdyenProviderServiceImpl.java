@@ -12,7 +12,6 @@ import com.junbo.langur.core.transaction.AsyncTransactionTemplate;
 import com.junbo.payment.clientproxy.CountryServiceFacade;
 import com.junbo.payment.clientproxy.CurrencyServiceFacade;
 import com.junbo.payment.clientproxy.PersonalInfoFacade;
-import com.junbo.payment.common.exception.AppServerExceptions;
 import com.junbo.payment.core.provider.AbstractPaymentProviderService;
 import com.junbo.payment.db.repo.facade.PaymentInstrumentRepositoryFacade;
 import com.junbo.payment.db.repo.facade.PaymentRepositoryFacade;
@@ -26,8 +25,6 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 /**
  * Abstract Adyen ProviderService Impl.
@@ -73,15 +70,6 @@ public abstract class AbstractAdyenProviderServiceImpl extends AbstractPaymentPr
     protected PersonalInfoFacade personalInfoFacade;
     @Autowired
     protected PlatformTransactionManager transactionManager;
-
-    protected String urlEncode(String param){
-        try{
-            return URLEncoder.encode(param, "UTF-8");
-        }catch (UnsupportedEncodingException e) {
-            LOGGER.error("error encode the URL parameter:" + param);
-            throw AppServerExceptions.INSTANCE.providerProcessError(PROVIDER_NAME, "error encode").exception();
-        }
-    }
 
     protected PaymentTransaction updatePayment(final PaymentTransaction payment,final PaymentStatus status, final String token){
         AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);

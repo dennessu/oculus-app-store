@@ -20,8 +20,11 @@ import org.slf4j.LoggerFactory;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.beans.PropertyDescriptor;
+import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.*;
 
 
@@ -177,6 +180,30 @@ public final class CommonUtil {
         }catch (Exception ex){
             LOGGER.error(ex.toString());
             throw AppServerExceptions.INSTANCE.errorCalculateHMCA().exception();
+        }
+    }
+
+    public static String urlEncode(String param){
+        if(isNullOrEmpty(param)){
+            return param;
+        }
+        try{
+            return URLEncoder.encode(param, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            LOGGER.error("error encode the URL parameter:" + param);
+            throw AppServerExceptions.INSTANCE.errorEncode(param).exception();
+        }
+    }
+
+    public static String urlDecode(String param){
+        if(isNullOrEmpty(param)){
+            return param;
+        }
+        try{
+            return URLDecoder.decode(param, "UTF-8");
+        }catch (UnsupportedEncodingException e) {
+            LOGGER.error("error decode the URL parameter:" + param);
+            throw AppServerExceptions.INSTANCE.errorDecode(param).exception();
         }
     }
 }

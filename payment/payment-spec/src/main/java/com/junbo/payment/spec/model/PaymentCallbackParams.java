@@ -6,6 +6,8 @@
 
 package com.junbo.payment.spec.model;
 
+import com.junbo.payment.common.CommonUtil;
+
 /**
  * payment call back property.
  */
@@ -75,4 +77,15 @@ public class PaymentCallbackParams {
     public void setMerchantSig(String merchantSig) {
         this.merchantSig = merchantSig;
     }
+
+    public void urlDecode(){
+        token = CommonUtil.urlDecode(token);
+        payerID = CommonUtil.urlDecode(payerID);
+        authResult = CommonUtil.urlDecode(authResult);
+        pspReference = CommonUtil.urlDecode(pspReference);
+        merchantReference = CommonUtil.urlDecode(merchantReference);
+        skinCode = CommonUtil.urlDecode(skinCode);
+        merchantSig = CommonUtil.urlDecode(merchantSig);
+    }
+
 }

@@ -60,4 +60,10 @@ public interface AppServerExceptions {
 
     @ErrorDef(httpStatusCode = 500, code = "515", message = "Error Parse Batch", reason = "error parse batch file: {0}")
     AppError errorParseBatchFile(String filePath);
+
+    @ErrorDef(httpStatusCode = 500, code = "516", message = "Error encode parameter", reason = "error encode: {0}")
+    AppError errorEncode(String para);
+
+    @ErrorDef(httpStatusCode = 500, code = "517", message = "Error decode parameter", reason = "error decode: {0}")
+    AppError errorDecode(String para);
 }
