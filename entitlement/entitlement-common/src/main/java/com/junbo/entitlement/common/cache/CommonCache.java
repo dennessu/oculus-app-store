@@ -21,7 +21,7 @@ public enum CommonCache {
     ITEM_REVISION;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CommonCache.class);
-    private com.google.common.cache.Cache cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(1, TimeUnit.HOURS).build();
+    private com.google.common.cache.Cache cache = CacheBuilder.newBuilder().expireAfterWrite(30, TimeUnit.SECONDS).build();
 
     public Object get(Object key) {
         return cache.getIfPresent(key);
