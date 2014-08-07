@@ -10,7 +10,34 @@ if (!hasProperty('mainClass')) {
 
 test {
     useTestNG() {
-        if (System.properties['groups'] != null) {
+
+        if (System.properties['environment'] != null) {
+            String testEnvironment = System.properties['environment']
+            if (System.properties['groups'] != null) {
+                String testGroups = System.properties['groups']
+                if (testGroups.contains(',')) {
+                    String[] splitGroups = testGroups.split(',')
+                    project.ext.set("finalGroups", "")
+                    for (int i=0;i<splitGroups.length; i++)
+                    {
+                        if (finalGroups == '') {
+                            project.ext.set("finalGroups", testEnvironment + splitGroups[i].trim())
+
+                        } else {
+                            project.ext.set("finalGroups",  project.finalGroups + ',' + testEnvironment + splitGroups[i].trim())
+                            //finalGroups = finalGroups + ',' + testEnvironment + splitGroups[i].trim()
+                        }
+                    }
+                } else {
+                    project.ext.set("finalGroups", testEnvironment + testGroups)
+                    //finalGroups = testEnvironment + testGroups
+                }
+                print project.finalGroups
+                includeGroups project.finalGroups
+            } else {
+                includeGroups System.properties['environment']
+            }
+        } else if (System.properties['groups'] != null) {
             includeGroups System.properties['groups']
         }
     }

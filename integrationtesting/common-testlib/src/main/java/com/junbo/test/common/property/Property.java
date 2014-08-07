@@ -22,5 +22,6 @@ public @interface Property {
     String description() default "";
     String[] steps() default {};
     String bugNum() default "";
+    String environment() default "";
     Release release() default Release.Default;
 }

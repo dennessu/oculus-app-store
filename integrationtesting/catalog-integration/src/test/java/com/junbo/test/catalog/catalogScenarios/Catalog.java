@@ -61,6 +61,7 @@ public class Catalog extends BaseTestClass {
             owner = "JasonFu",
             status = Status.Enable,
             description = "Test Item Attribute Post/Get",
+            environment = "onebox, integration",
             steps = {
                     "1. Post an attribute",
                     "2. Get the attribute by attribute ID",
@@ -68,7 +69,7 @@ public class Catalog extends BaseTestClass {
                     "4. Get all attributes without any search condition"
             }
     )
-    @Test
+    @Test()
     public void testItemAttributeManagement() throws Exception {
         this.PrepareOauthToken();
 
@@ -383,6 +384,7 @@ public class Catalog extends BaseTestClass {
             owner = "JasonFu",
             status = Status.Enable,
             description = "Test predefined offers",
+            environment = "onebox",
             steps = {
             }
     )

@@ -34,27 +34,41 @@ public class PropertyTransformer implements IAnnotationTransformer {
                 annotation.setEnabled(false);
             }
 
-            if (caseProperty.priority().equals(Priority.BVT)) {
-                String[] groups = new String[3];
-                groups[0] = Priority.BVT.name();
-                groups[1] = Priority.BVT.name().toLowerCase();
-                groups[2] = Priority.BVT.name().toUpperCase();
+            String environment = caseProperty.environment();
+            if (environment != null && environment.length() > 0) {
+                String[] environments = environment.split(",");
+                int length = environments.length;
+
+                String[] groups = new String[length * 2 + 1];
+                groups[0] = caseProperty.priority().name().toLowerCase();
+
+                for (int i=0;i<environments.length;i++) {
+                    groups[i * 2 + 1] = environments[i].trim();
+                    if (caseProperty.priority().name().equalsIgnoreCase(Priority.BVT.name())) {
+                        groups[i * 2 + 2] = environments[i].trim() + "bvt";
+                    } else if (caseProperty.priority().name().equalsIgnoreCase(Priority.Dailies.name())) {
+                        groups[i * 2 + 2] = environments[i].trim() + "dailies";
+                    } else if (caseProperty.priority().name().equalsIgnoreCase(Priority.Comprehensive.name())) {
+                        groups[i * 2 + 2] = environments[i].trim() + "comprehensive";
+                    }
+                }
                 annotation.setGroups(groups);
-            } else if (caseProperty.priority().equals(Priority.Dailies)) {
+            }
+            else {
                 String[] groups = new String[3];
-                groups[0] = Priority.Dailies.name();
-                groups[1] = Priority.Dailies.name().toLowerCase();
-                groups[2] = Priority.Dailies.name().toUpperCase();
-                annotation.setGroups(groups);
-            } else if (caseProperty.priority().equals(Priority.Comprehensive)) {
-                String[] groups = new String[3];
-                groups[0] = Priority.Comprehensive.name();
-                groups[1] = Priority.Comprehensive.name().toLowerCase();
-                groups[2] = Priority.Comprehensive.name().toUpperCase();
-                annotation.setGroups(groups);
-            } else {
-                String[] groups = new String[1];
-                groups[0] = Priority.Default.name();
+                if (caseProperty.priority().name().equalsIgnoreCase(Priority.BVT.name())) {
+                    groups[0] = Priority.BVT.name();
+                    groups[1] = Priority.BVT.name().toLowerCase();
+                    groups[2] = Priority.BVT.name().toUpperCase();
+                } else if (caseProperty.priority().name().equalsIgnoreCase(Priority.Dailies.name())) {
+                    groups[0] = Priority.Dailies.name();
+                    groups[1] = Priority.Dailies.name().toLowerCase();
+                    groups[2] = Priority.Dailies.name().toUpperCase();
+                } else if (caseProperty.priority().name().equalsIgnoreCase(Priority.Comprehensive.name())) {
+                    groups[0] = Priority.Comprehensive.name();
+                    groups[1] = Priority.Comprehensive.name().toLowerCase();
+                    groups[2] = Priority.Comprehensive.name().toUpperCase();
+                }
                 annotation.setGroups(groups);
             }
 
