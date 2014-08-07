@@ -6,6 +6,7 @@
 
 package com.junbo.payment.core.provider.paypal;
 
+import com.junbo.common.util.PromiseFacade;
 import com.junbo.langur.core.promise.Promise;
 import com.junbo.payment.common.CommonUtil;
 import com.junbo.payment.common.exception.AppServerExceptions;
@@ -28,8 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
-
-import com.junbo.common.util.PromiseFacade;
 
 /**
  * PayPal .
@@ -146,6 +145,8 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
 
                 requestDetails.setPaymentDetails(paymentDetailsList);
                 requestDetails.setBuyerEmail(pi.getAccountNumber());
+                requestDetails.setInvoiceID(CommonUtil.encode(paymentRequest.getId()));
+
                 SetExpressCheckoutRequestType setRequest = new SetExpressCheckoutRequestType(requestDetails);
                 setRequest.setVersion(apiVersion);
 
@@ -194,6 +195,7 @@ public class PayPalProviderServiceImpl extends AbstractPaymentProviderService im
                 RefundTransactionReq refundReq = new RefundTransactionReq();
                 RefundTransactionRequestType requestType = new RefundTransactionRequestType();
                 requestType.setTransactionID(transactionId);
+                requestType.setInvoiceID(CommonUtil.encode(request.getId()));
                 if(request.getChargeInfo() == null || request.getChargeInfo().getAmount() == null){
                     requestType.setRefundType(RefundType.FULL);
                 }else{

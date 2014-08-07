@@ -268,6 +268,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
                 refundReq.setMerchantAccount(merchantAccount);
                 refundReq.setOriginalReference(transactionId);
                 ModificationResult cancelResult = null;
+                refundReq.setReference(CommonUtil.encode(paymentRequest.getId()));
                 try{
                     cancelResult = service.cancel(refundReq);
                 } catch (RemoteException e) {
@@ -305,6 +306,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
                         request.getChargeInfo().getAmount().multiply(
                             new BigDecimal(currencyResource.getNumberAfterDecimal(currency).get())).longValue()));
                 ModificationResult refundResult = null;
+                refundReq.setReference(CommonUtil.encode(request.getId()));
                 try{
                     refundResult = service.refund(refundReq);
                 } catch (RemoteException e) {
