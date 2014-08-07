@@ -19,8 +19,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
-import java.util.concurrent.Callable
-import java.util.concurrent.Future
 import java.util.concurrent.atomic.AtomicInteger
 
 /**

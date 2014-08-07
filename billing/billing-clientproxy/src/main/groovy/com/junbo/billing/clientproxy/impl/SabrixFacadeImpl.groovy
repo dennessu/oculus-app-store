@@ -477,7 +477,7 @@ class SabrixFacadeImpl implements TaxFacade {
         }
         String type = item.propertySet.get(PropertyKey.ITEM_TYPE.name())
         switch (type) {
-            case 'PHYSICAL GOODS':
+            case 'PHYSICAL_GOODS':
                 return GOODS
             default:
                 return ELECTRONIC_SERVICES
@@ -491,13 +491,14 @@ class SabrixFacadeImpl implements TaxFacade {
         SabrixAddress sabrixAddress = new SabrixAddress()
         sabrixAddress.country = address.countryId.value
         sabrixAddress.city = address.city
-        sabrixAddress.postcode = address.postalCode
         switch (sabrixAddress.country) {
             case 'US':
                 sabrixAddress.state = address.subCountry
+                sabrixAddress.postcode = address.postalCode
                 break
             case 'CA':
                 sabrixAddress.province = address.subCountry
+                sabrixAddress.postcode = address.postalCode
                 break
             default:
                 break

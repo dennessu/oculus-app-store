@@ -115,7 +115,7 @@ public class UAT extends BaseTestClass {
     public void testUATDigitalByCreditCard() throws Exception {
 
         List<UserAddress> userAddressList = new ArrayList<>();
-        userAddressList.add(addressNC);
+//        userAddressList.add(addressNC);
         userAddressList.add(addressON);
 
         for (UserAddress userAddress : userAddressList) {
@@ -159,9 +159,9 @@ public class UAT extends BaseTestClass {
     public void testUATDownloadByCreditCard() throws Exception {
 
         List<UserAddress> userAddressList = new ArrayList<>();
-        userAddressList.add(addressCA1);
-        userAddressList.add(addressMN);
-        userAddressList.add(addressNV);
+//        userAddressList.add(addressCA1);
+//        userAddressList.add(addressMN);
+        userAddressList.add(addressCY);
 
         for (UserAddress userAddress : userAddressList) {
 
@@ -172,7 +172,7 @@ public class UAT extends BaseTestClass {
             address.setSubCountry(userAddress.SubCountry);
             address.setPostalCode(userAddress.PostalCode);
 
-            String uid = testDataProvider.createUser(userAddress.VATId, address);
+            String uid = testDataProvider.createUser("CY12345678A", address);
 
             Map<String, Integer> offerList = new HashedMap();
 
@@ -203,8 +203,8 @@ public class UAT extends BaseTestClass {
     @Test
     public void testUATPhysicalByCreditCard() throws Exception {
         List<UserAddress> userAddressList = new ArrayList<>();
-        UserAddress userBillingAddress = addressCA1;  //first one is always default
-        UserAddress userShippingAddress = addressCA2;
+        UserAddress userBillingAddress = addressDE;  //first one is always default
+        UserAddress userShippingAddress = addressIE4;
 
         userAddressList.add(userBillingAddress);
         userAddressList.add(userShippingAddress);
@@ -224,7 +224,7 @@ public class UAT extends BaseTestClass {
             addressList.add(address);
         }
 
-        String uid = testDataProvider.createUser(new String("VATId"), addressList);
+        String uid = testDataProvider.createUser("CY12345678A", addressList);
 
         List<UserPersonalInfoLink> userPersonalInfos = Master.getInstance().getUser(uid).getAddresses();
 
@@ -234,6 +234,10 @@ public class UAT extends BaseTestClass {
             } else {
                 shippingAddressId = userPersonalInfoLink.getValue().getValue();
             }
+        }
+
+        if(userPersonalInfos.size() == 1){
+            shippingAddressId = billingAddressId;
         }
 
 
@@ -340,32 +344,32 @@ public class UAT extends BaseTestClass {
     UserAddress addressIE1 = new UserAddress("Kilmartin N6 Centre, Dublin Rd", null, null, null, "CY88788", Country.IE, Currency.EUR);
     UserAddress addressIE2 = new UserAddress("Kilmartin N6 Centre, Dublin Rd", null, null, null, "IE909096", Country.IE, Currency.EUR);
     UserAddress addressIE3 = new UserAddress("Kilmartin N6 Centre, Dublin Rd", null, null, null, "DE132456", Country.IE, Currency.EUR);
-    UserAddress addressIE4 = new UserAddress("Kilmartin N6 Centre, Dublin Rd", null, null, null, null, Country.IE, Currency.EUR);
+    UserAddress addressIE4 = new UserAddress("Kilmartin N6 Centre, Dublin Rd", "Dublin", "Dublin", "0", null, Country.IE, Currency.EUR);
 
-    UserAddress addressBC = new UserAddress("Suite D-5519 Gitselasu Rd", null, "BC", "V8G 0A9", null, Country.CA, Currency.USD);
-    UserAddress addressPE = new UserAddress("University Ave, Charlottetown", null, "PE", "C1A 8R8", null, Country.CA, Currency.USD);
-    UserAddress addressQC = new UserAddress("Accueil Sud Km 33 Rte 167", null, "QC", "G8J 1Y4", null, Country.CA, Currency.USD);
+    UserAddress addressBC = new UserAddress("Suite D-5519 Gitselasu Rd", "Terrace", "BC", "V8G 0A9", "0", Country.CA, Currency.USD);
+    UserAddress addressPE = new UserAddress("University Ave, Charlottetown", "Charlottetown", "PE", "C1A 8R8", null, Country.CA, Currency.USD);
+    UserAddress addressQC = new UserAddress("Accueil Sud Km 33 Rte 167", "La Dore", "QC", "G8J 1Y4", null, Country.CA, Currency.USD);
     UserAddress addressON = new UserAddress("Ogoki", "Ogoki", "ON", "P0T2L0", null, Country.CA, Currency.USD);
     UserAddress addressONVat = new UserAddress("Ogoki", "Ogoki", "ON", "P0T2L0", "CA232132132", Country.CA, Currency.USD);
-    UserAddress addressYT = new UserAddress("Mayo Yukon College", null, "QC", "Y0B 1M0", null, Country.CA, Currency.USD);
+    UserAddress addressYT = new UserAddress("Mayo Yukon College", "Mayo", "YT", "Y0B 1M0", null, Country.CA, Currency.USD);
 
-    UserAddress addressMX = new UserAddress("16 de Septiembre 79, Centro", null, "06000", null, null, Country.MX, Currency.USD);
+    UserAddress addressMX = new UserAddress("16 de Septiembre 79, Centro", "Mexico City", "06000", "Mexico City", null, Country.MX, Currency.USD);
 
     UserAddress addressAT = new UserAddress("Schottenring 11", "Wien", null, "1010", null, Country.AT, Currency.EUR);
-    UserAddress addressAU = new UserAddress("428 George St", "Sydney", null, "2000", null, Country.AU, Currency.AUD);
+    UserAddress addressAU = new UserAddress("428 George St", "Sydney", "Sydney", "2000", null, Country.AU, Currency.AUD);
     UserAddress addressBE = new UserAddress("Galerie du roi 5", "Brussels", null, "1000", null, Country.BE, Currency.EUR);
-    UserAddress addressCY = new UserAddress("Franklin Roosevelt 285", "Limassol", null, null, null, Country.CY, Currency.EUR);
+    UserAddress addressCY = new UserAddress("Franklin Roosevelt 285", "Limassol", "Limassol", "0", null, Country.CY, Currency.EUR);
     UserAddress addressCZ = new UserAddress("Olivova 2096/4", "Prague", null, "110 00", null, Country.CZ, Currency.EUR);
-    UserAddress addressDE = new UserAddress("Frankfurter Allee 111", "Berlin", null, "10247", null, Country.DE, Currency.EUR);
+    UserAddress addressDE = new UserAddress("Frankfurter Allee 111", "Berlin", "Berlin", "10247", null, Country.DE, Currency.EUR);
     UserAddress addressDK = new UserAddress("H. C. Andersens Boulevard 27", "Copenhagen", null, "1553", null, Country.DK, Currency.EUR);
     UserAddress addressES = new UserAddress("Calle de Atocha", "Madrid", null, "28012", null, Country.ES, Currency.EUR);
     UserAddress addressFI = new UserAddress("Elielinaukio 5", "Helsinki", null, "00100", null, Country.FI, Currency.EUR);
     UserAddress addressFR = new UserAddress("36 Rue de la Verrerie", "Paris", null, "75004", null, Country.FR, Currency.EUR);
-    UserAddress addressGB = new UserAddress("16-18 Whitehall, London", "London", null, "123317", null, Country.GB, Currency.EUR);
+    UserAddress addressGB = new UserAddress("16-18 Whitehall, London", "London", "London", "123317", null, Country.GB, Currency.EUR);
     UserAddress addressIT = new UserAddress("Via Cristoforo Colombo", "Roma", null, "00144", null, Country.IT, Currency.EUR);
     UserAddress addressNL = new UserAddress("Nieuwezijds Voorburgwal 182", "Amsterdam", null, "1012SJ", null, Country.NL, Currency.EUR);
     UserAddress addressPL = new UserAddress("Grzybowska 63", "Warsaw", null, "00-844", null, Country.PL, Currency.EUR);
-    UserAddress addressRU = new UserAddress("ulitsa Novyy Arbat,7", "Moscow", null, "123317", null, Country.RU, Currency.EUR);
+    UserAddress addressRU = new UserAddress("ulitsa Novyy Arbat,7", "Moscow", "Moscow", "123317", null, Country.RU, Currency.EUR);
     UserAddress addressSE = new UserAddress("Hamngatan 37", "Stockholm", null, "11153", null, Country.SE, Currency.EUR);
 
 
