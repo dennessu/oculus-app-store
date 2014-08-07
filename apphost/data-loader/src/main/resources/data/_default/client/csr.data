@@ -1,15 +1,15 @@
 {
-  "scopes" : [ "csr", "offline", "identity", "openid"],
+  "scopes" : [ "csr", "offline"],
   "client_id" : "csr",
   "client_secret" : "224112E90935C8FA4E3F66B96FACE79B",
   "client_name" : "csr",
   "redirect_uris" : [ "http://localhost" ],
   "default_redirect_uri" : "http://localhost",
-  "default_scopes" : [ "identity", "openid" ],
+  "default_scopes" : [],
   "response_types" : [],
-  "grant_types" : [ "PASSWORD", "REFRESH_TOKEN" ],
+  "grant_types" : [ "PASSWORD", "REFRESH_TOKEN"],
   "id_token_issuer" : "www.junbo.com",
-  "logout_redirect_uris" : [ "http://localhost" ],
+  "logout_redirect_uris" : [ "http://localhost"],
   "default_logout_redirect_uri" : "http://localhost",
   "need_consent" : false
 }
