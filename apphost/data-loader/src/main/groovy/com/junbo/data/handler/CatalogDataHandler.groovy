@@ -5,6 +5,8 @@
  */
 package com.junbo.data.handler
 
+import com.junbo.catalog.common.util.CloneUtils
+import com.junbo.catalog.spec.enums.ItemType
 import com.junbo.catalog.spec.model.item.Item
 import com.junbo.catalog.spec.model.item.ItemRevision
 import com.junbo.catalog.spec.model.item.ItemsGetOptions
@@ -108,10 +110,34 @@ class CatalogDataHandler extends BaseDataHandler {
 
         if (itemExisting == null) {
             logger.info("----loading item $itemRevisionName and its revision")
-            itemId = handle(item)
+            if (itemRevisionName == "testItem_IAP") {
+                //Post an IAP host item firstly
+                Item hostItem = CloneUtils.clone(item)
+                ItemRevision hotsItemRevision = CloneUtils.clone(itemRevision)
 
-            itemRevision.itemId = itemId
-            handle(itemRevision)
+                hostItem.type = ItemType.APP
+                String hostItemId = handle(hostItem)
+
+                hotsItemRevision.locales.get("en_US").name = "testItem_HostItem"
+                hotsItemRevision.itemId = hostItemId
+                hotsItemRevision.downloadName = "download name"
+                hotsItemRevision.distributionChannels = ["STORE"]
+                handle(hotsItemRevision)
+
+                //Post the IAP item
+                itemId = handle(item)
+
+                itemRevision.itemId = itemId
+                itemRevision.binaries = null
+                itemRevision.iapHostItemIds = []
+                itemRevision.iapHostItemIds.add(hostItemId)
+                handle(itemRevision)
+
+            } else {
+                itemId = handle(item)
+                itemRevision.itemId = itemId
+                handle(itemRevision)
+            }
         } else {
             itemId = itemExisting.itemId
             logger.info("----The item $itemRevisionName and its revision have been loaded, skip")
