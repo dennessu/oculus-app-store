@@ -98,10 +98,10 @@ class DrmServiceImpl implements DrmService {
             }
 
             getItemByPackageName(packageName).then { Item item ->
-                hasEntitlements(user.getId(), new ItemId(item.id)).then { Boolean hasEntitlements ->
+                hasEntitlements(user.getId(), new ItemId(item.getId())).then { Boolean hasEntitlements ->
 
                     if (hasEntitlements) {
-                        return sign(item.id, new LicenseData(
+                        return sign(item.getId(), new LicenseData(
                                 reasonCode: LicenseData.LICENSED,
                                 nonce: nonce,
                                 packageName: packageName,
@@ -113,7 +113,7 @@ class DrmServiceImpl implements DrmService {
                         ));
                     }
 
-                    return sign(item.id, new LicenseData(
+                    return sign(item.getId(), new LicenseData(
                             reasonCode: LicenseData.NOT_LICENSED,
                             nonce: nonce,
                             packageName: packageName,
