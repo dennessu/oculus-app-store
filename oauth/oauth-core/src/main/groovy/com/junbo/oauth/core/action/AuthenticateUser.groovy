@@ -103,18 +103,25 @@ class AuthenticateUser implements Action {
                 AppErrorException appError = (AppErrorException) e
                 // Exception happened while calling the identity service.
                 switch (appError.error.httpStatusCode) {
-                // For response of NOT_FOUND or UNAUTHORIZED, it suggests that
-                // either the username does not exists, or the password is invalid.
+                    // For response of NOT_FOUND or UNAUTHORIZED, it suggests that
+                    // either the username does not exists, or the password is invalid.
                     case HttpStatus.NOT_FOUND.value():
+                    case HttpStatus.BAD_REQUEST.value():
                     case HttpStatus.UNAUTHORIZED.value():
-                        handleAppError(contextWrapper, AppErrors.INSTANCE.invalidCredential())
+                    case HttpStatus.PRECONDITION_FAILED.value():
+                        String reason = appError.error.error().message
+                        if (appError.error.error().details != null && appError.error.error().details.isEmpty()) {
+                            reason = appError.error.error().details[0].reason
+                        }
+
+                        handleAppError(contextWrapper, AppErrors.INSTANCE.invalidCredential(reason))
                         break
-                // For response of FORBIDDEN, it suggests that captcha is required for user login.
+                    // For response of FORBIDDEN, it suggests that captcha is required for user login.
                     case HttpStatus.FORBIDDEN.value():
                         // TODO: wait for identity response of captcha required
                         break
-                // For response of INTERNAL_SERVER_ERROR, it suggests that server error happened within the identity
-                // service, throw internal server error exception to the user.
+                    // For response of INTERNAL_SERVER_ERROR, it suggests that server error happened within the identity
+                    // service, throw internal server error exception to the user.
                     case HttpStatus.INTERNAL_SERVER_ERROR.value():
                     default:
                         LOGGER.error('Error calling the identity service.', e)
@@ -129,7 +136,7 @@ class AuthenticateUser implements Action {
             return Promise.pure(null)
         }.then { UserCredentialVerifyAttempt loginAttempt ->
             if (loginAttempt == null || !loginAttempt.succeeded) {
-                handleAppError(contextWrapper, AppErrors.INSTANCE.invalidCredential())
+                handleAppError(contextWrapper, AppErrors.INSTANCE.invalidCredential('Login attempt failed'))
                 return Promise.pure(new ActionResult('error'))
             }
 
