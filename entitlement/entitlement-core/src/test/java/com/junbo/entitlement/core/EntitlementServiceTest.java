@@ -7,6 +7,7 @@
 package com.junbo.entitlement.core;
 
 import com.amazonaws.HttpMethod;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.junbo.authorization.AuthorizeContext;
@@ -33,12 +34,14 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.WebApplicationException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,6 +63,8 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
     private EntitlementService entitlementService;
     @Autowired
     private AmazonS3Client awsClient;
+    @Autowired
+    private BasicAWSCredentials awsCredentials;
 
     @Test
     public void testAddEntitlement() {
@@ -166,28 +171,72 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
 
     @Test(enabled = false)
     //make sure the url and key info are valid and just check whether the url generated is valid
-    public void testGenerateUrl() throws MalformedURLException {
+    public void testGenerateUrl() throws MalformedURLException, URISyntaxException {
         String url = "http://static.oculusvr.com/uploads/14013776640911fhvo9od2t9-pc.zip";
-        String result = generateDownloadUrl(url);
+//        String url = "http://d1aifagf6hhneo.cloudfront.net/binaries/sr51r1VTfeqZFaFF0ZXy_SpotifyInstaller.zip";
+        String result = generatePreSignedDownloadUrl(url, "xx", "1.0", "PC");
         System.out.println(result);
     }
 
-    private String generateDownloadUrl(String urlString) throws MalformedURLException {
+    private String generatePreSignedDownloadUrl(String urlString, String filename, String version, String platform) throws MalformedURLException, URISyntaxException {
         URL url = new URL(urlString);
-        String bucketName = url.getHost();
+        String domainName = url.getHost();
         String objectKey = url.getPath().substring(1);
+        String extension = getExtension(objectKey);
 
         java.util.Date expiration = new java.util.Date();
         long milliSeconds = expiration.getTime();
         milliSeconds += 1000 * 30; // Add 30 seconds.
         expiration.setTime(milliSeconds);
 
+        String finalFilename = null;
+        if (!StringUtils.isEmpty(filename)) {
+            if (!StringUtils.isEmpty(version)) {
+                filename = filename + "_" + version;
+            }
+            filename = filename + "_" + platform;
+            finalFilename = extension == null ? filename : filename + "." + extension;
+        }
+
+        if (domainName.equalsIgnoreCase("static.oculusvr.com")) {
+            return generateS3Url(domainName, objectKey, finalFilename, expiration);
+        }
+
+        if (domainName.equalsIgnoreCase("d1aifagf6hhneo.cloudfront.net")){
+            return generateCloudantFrontUrl(urlString, domainName, objectKey, finalFilename, expiration);
+        }
+
+        return urlString;
+    }
+
+    private String generateCloudantFrontUrl(String urlString, String domainName, String objectKey, String filename, Date expiration) {
+        return null;
+    }
+
+    private String generateS3Url(String bucketName, String objectKey, String filename, Date expiration) {
         GeneratePresignedUrlRequest generatePresignedUrlRequest =
                 new GeneratePresignedUrlRequest(bucketName, objectKey);
         generatePresignedUrlRequest.setMethod(HttpMethod.GET);
         generatePresignedUrlRequest.setExpiration(expiration);
-
+        if (!StringUtils.isEmpty(filename)) {
+            generatePresignedUrlRequest.addRequestParameter("response-content-disposition",
+                    "attachment;filename=\"" + filename + "\"");
+        }
         URL downloadUrl = awsClient.generatePresignedUrl(generatePresignedUrlRequest);
         return downloadUrl.toString();
+    }
+
+    private String getExtension(String objectKey) {
+        String[] parts = objectKey.split("\\.");
+        if (parts.length == 0) {
+            return null;
+        }
+
+        String lastPart = parts[parts.length - 1];
+        if (lastPart.indexOf("/") != -1) {
+            return null;
+        }
+
+        return lastPart;
     }
 }

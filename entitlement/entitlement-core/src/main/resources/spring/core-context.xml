@@ -7,7 +7,8 @@
     <context:component-scan base-package="com.junbo.entitlement.core"/>
 
     <bean id="entitlementService" class="com.junbo.entitlement.core.service.EntitlementServiceImpl">
-        <property name="bucketName" value="${entitlement.aws.bucketName}"/>
+        <property name="bucketNames" value="${entitlement.aws.bucketNames}"/>
+        <property name="cloudFrontDomains" value="${entitlement.aws.cloudFrontDomains}"/>
     </bean>
 
     <bean id="awsCredentials" class="com.amazonaws.auth.BasicAWSCredentials">

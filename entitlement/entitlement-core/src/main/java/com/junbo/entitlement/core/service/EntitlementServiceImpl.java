@@ -7,6 +7,8 @@
 package com.junbo.entitlement.core.service;
 
 import com.amazonaws.HttpMethod;
+import com.amazonaws.auth.PEM;
+import com.amazonaws.services.cloudfront.CloudFrontUrlSigner;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.junbo.authorization.AuthorizeCallback;
@@ -37,9 +39,15 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.UriBuilder;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.PrivateKey;
+import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 
 /**
@@ -62,7 +70,8 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     @Autowired
     private AmazonS3Client awsClient;
 
-    private static String bucketName = "static.oculusvr.com";
+    private static Set<String> bucketNames;
+    private static Set<String> cloudFrontDomains;
 
     @Override
     @Transactional
@@ -269,20 +278,20 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         }
 
         ItemRevision itemRevision = null;
-        if(options.getEntitlementId() != null){
+        if (options.getEntitlementId() != null) {
             Entitlement entitlement = this.getEntitlement(options.getEntitlementId().getValue());
             if (!itemId.equalsIgnoreCase(entitlement.getItemId())) {
                 throw AppCommonErrors.INSTANCE.fieldInvalid("itemId", "itemId does not match the itemId in entitlement").exception();
             }
             itemRevision = getItem(itemId);
         } else {
-            if(options.getItemRevisionId() == null){
+            if (options.getItemRevisionId() == null) {
                 throw AppCommonErrors.INSTANCE.fieldRequired("itemRevisionId").exception();
             }
             authorizeDownloadUrl();
             itemRevision = itemFacade.getItemRevision(options.getItemRevisionId());
         }
-        if(itemRevision == null){
+        if (itemRevision == null) {
             throw AppCommonErrors.INSTANCE.fieldInvalid(null, "there is no matched itemRevision").exception();
         }
 
@@ -346,10 +355,11 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     }
 
     private String generatePreSignedDownloadUrl(String urlString, String filename, String version, String platform) throws MalformedURLException, URISyntaxException {
-        if (urlString.indexOf(bucketName) == -1) {
+        URL url = new URL(urlString);
+        String domainName = url.getHost();
+        if (!bucketNames.contains(domainName) && !cloudFrontDomains.contains(domainName)) {
             return urlString;
         }
-        URL url = new URL(urlString);
         String objectKey = url.getPath().substring(1);
         String extension = getExtension(objectKey);
 
@@ -358,19 +368,50 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         milliSeconds += 1000 * 30; // Add 30 seconds.
         expiration.setTime(milliSeconds);
 
-        GeneratePresignedUrlRequest generatePresignedUrlRequest =
-                new GeneratePresignedUrlRequest(bucketName, objectKey);
-        generatePresignedUrlRequest.setMethod(HttpMethod.GET);
-        generatePresignedUrlRequest.setExpiration(expiration);
+        String finalFilename = null;
         if (!StringUtils.isEmpty(filename)) {
             if (!StringUtils.isEmpty(version)) {
                 filename = filename + "_" + version;
             }
             filename = filename + "_" + platform;
-            generatePresignedUrlRequest.addRequestParameter("response-content-disposition",
-                    "attachment;filename=\"" + (extension == null ? filename : filename + "." + extension) + "\"");
+            finalFilename = extension == null ? filename : filename + "." + extension;
         }
 
+        if (bucketNames.contains(domainName.toLowerCase())) {
+            return generateS3Url(domainName, objectKey, finalFilename, expiration);
+        }
+
+        if (cloudFrontDomains.contains(domainName.toLowerCase())) {
+            return generateCloudantFrontUrl(urlString, finalFilename, expiration);
+        }
+
+        return urlString;
+    }
+
+    private String generateCloudantFrontUrl(String urlString, String filename, Date expiration) {
+        PrivateKey privateKey = null;
+        try {
+            InputStream is = new FileInputStream(new File("xxx"));  //TODO: not provided yet
+            privateKey = PEM.readPrivateKey(is);
+        } catch (InvalidKeySpecException | IOException e) {
+            e.printStackTrace();
+        }
+        assert privateKey != null;
+
+        return CloudFrontUrlSigner.getSignedURLWithCannedPolicy(
+                urlString + "?" + "response-content-disposition=attachment;filename=\"" + filename + "\"",
+                null, privateKey, expiration);    //TODO: null should be the keyPairId which is not provided yet
+    }
+
+    private String generateS3Url(String bucketName, String objectKey, String filename, Date expiration) {
+        GeneratePresignedUrlRequest generatePresignedUrlRequest =
+                new GeneratePresignedUrlRequest(bucketName, objectKey);
+        generatePresignedUrlRequest.setMethod(HttpMethod.GET);
+        generatePresignedUrlRequest.setExpiration(expiration);
+        if (!StringUtils.isEmpty(filename)) {
+            generatePresignedUrlRequest.addRequestParameter("response-content-disposition",
+                    "attachment;filename=\"" + filename + "\"");
+        }
         URL downloadUrl = awsClient.generatePresignedUrl(generatePresignedUrlRequest);
         return downloadUrl.toString();
     }
@@ -395,11 +436,25 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         }
     }
 
-    public static String getBucketName() {
-        return bucketName;
+    public static Set<String> getBucketNames() {
+        return bucketNames;
     }
 
-    public void setBucketName(String bucketName) {
-        EntitlementServiceImpl.bucketName = bucketName;
+    public void setBucketNames(String bucketNames) {
+        if (!CollectionUtils.isEmpty(EntitlementServiceImpl.bucketNames)){
+            return;
+        }
+        EntitlementServiceImpl.bucketNames = new HashSet<>(Arrays.asList(bucketNames.split(",")));
+    }
+
+    public static Set<String> getCloudFrontDomains() {
+        return cloudFrontDomains;
+    }
+
+    public void setCloudFrontDomains(String cloudFrontDomains) {
+        if (!CollectionUtils.isEmpty(EntitlementServiceImpl.cloudFrontDomains)){
+            return;
+        }
+        EntitlementServiceImpl.cloudFrontDomains = new HashSet<>(Arrays.asList(cloudFrontDomains.split(",")));
     }
 }
