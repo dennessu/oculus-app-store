@@ -6,10 +6,10 @@ Generate secure information and record them securely.
 Note: using environment variable may have security issues. The commands are stored in bash_history, do remember to clean up.
 
 1. Generate `crypto.core.key`
-```
-./scripts/AESCipher.py genkey
-```
-Name it CRYPTO_KEY
+  ```
+  ./scripts/AESCipher.py genkey
+  ```
+  Name it CRYPTO_KEY
 
 1. Generate database password
 ```

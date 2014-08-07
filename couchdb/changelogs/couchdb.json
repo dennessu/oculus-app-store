@@ -112,7 +112,6 @@
             }
         }
     },
-    "encrypt_user_personal_info": { }, 
     "hash_user_personal_info": {
       "views": {
         "by_hash_value": {
@@ -720,6 +719,9 @@
         }
       }
     }
+  },
+  "pii": {
+    "encrypt_user_personal_info": { }
   }
 }
 

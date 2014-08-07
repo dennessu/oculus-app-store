@@ -67,10 +67,10 @@
 
     <!-- 1: Time based id generator (Using 64 bits) -->
     <!-- All those configurations will be replaced in future configurationData -->
+    <!-- Deleted, not used by Oculus
     <bean id="idSchema" class="com.junbo.sharding.id.impl.IdSchema">
         <constructor-arg name="optionMode" value="1" />
         <constructor-arg name="bitsInTime" value="${sharding.sharding.bitsInTime}"/>
-        <!-- This value is calculated as: (int) (new Date(2014, 01, 01).getTime() / 1000)  -->
         <constructor-arg name="timeSecOffset" value="${sharding.sharding.timeSecOffset}"/>
         <constructor-arg name="bitsInGlobalCounter" value="${sharding.sharding.bitsInGlobalCounter}"/>
         <constructor-arg name="bitsInLocalCounter" value="${sharding.sharding.bitsInLocalCounter}"/>
@@ -88,15 +88,16 @@
     </bean>
 
     <bean id="globalCounterInMemory" class="com.junbo.sharding.id.impl.GlobalCounterInMemoryImpl" />
-    <!--<bean id="globalCounterMemcached" class="com.junbo.sharding.id.impl.GlobalCounterMemcachedImpl">-->
-        <!--<constructor-arg ref="idGeneratorClient" />-->
-        <!--<constructor-arg value="${sharding.memcached.secondsToTrack}" />-->
-    <!--</bean>-->
+    <bean id="globalCounterMemcached" class="com.junbo.sharding.id.impl.GlobalCounterMemcachedImpl">
+        <constructor-arg ref="idGeneratorClient" />
+        <constructor-arg value="${sharding.memcached.secondsToTrack}" />
+    </bean>
     <bean id="idGenerator" class="com.junbo.sharding.id.impl.IdGeneratorImpl">
         <constructor-arg ref="idSchema" />
         <constructor-arg ref="timeGenerator" />
         <constructor-arg ref="${sharding.memcached.globalCounter}" />
     </bean>
+    -->
 
     <!-- The below is the Oculus requirement -->
     <bean id="oculus48IdGenerator" class="com.junbo.sharding.id.oculus.OculusIdGeneratorImpl">

@@ -1,4 +1,9 @@
 {
     "couchdb": "https://silkcloudtest-mh:#Bugsfor$@silkcloudtest-mh.cloudant.com",
+    "pii": [
+        "https://silkcloudtest-useast:#Bugsfor$@silkcloudtest-mh.cloudant.com",
+        "https://silkcloudtest-uswest:#Bugsfor$@silkcloudtest-mh.cloudant.com",
+        "https://silkcloudtest-eu:#Bugsfor$@silkcloudtest-mh.cloudant.com"
+    ],
     "cloudant": "https://silkcloudtest-mh:#Bugsfor$@silkcloudtest-mh.cloudant.com"
 }

@@ -20,7 +20,7 @@ for var in $ENV/apps.txt $ENV/crypto-apps.txt; do
     done
 done
 
-./foreach-here.sh $ENV/crypto-apps.txt $ENV/apps.txt << EOF
+./foreach-here.sh $ENV/crypto-apps.txt $ENV/apps.txt $ENV/utils.txt << EOF
 cd /var/silkcloud
 (sudo initctl status silkcloud-apphost | grep start) && sudo stop silkcloud-apphost
 rm -rf $APP_NAME

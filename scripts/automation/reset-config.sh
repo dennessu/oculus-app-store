@@ -34,7 +34,18 @@ EOF
 
 ./foreach-here.sh $ENV/apps.txt << EOF
 cat << EOFINNER > /etc/silkcloud/configuration.properties
-profile=apphost-identity
+profile=apphost-rest
+environment=ppe
+crypto.core.key=$CRYPTO_KEY
+oauth.crypto.key=$OAUTH_CRYPTO_KEY
+common.conf.debugMode=false
+EOFINNER
+chmod 600 /etc/silkcloud/configuration.properties
+EOF
+
+./foreach-here.sh $ENV/utils.txt << EOF
+cat << EOFINNER > /etc/silkcloud/configuration.properties
+profile=apphost-jobs
 environment=ppe
 crypto.core.key=$CRYPTO_KEY
 oauth.crypto.key=$OAUTH_CRYPTO_KEY

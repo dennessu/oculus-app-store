@@ -2,6 +2,7 @@
 source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is needed, see common.sh for detail
 
 t0=`date +%s`
+cipherKey=D58BA755FF96B35A6DABA7298F7A8CE2
 
 if [[ "$1" == "" || "$1" == "memcache" ]]; then
     # setup cloudant db
@@ -17,15 +18,14 @@ if [[ "$1" == "" || "$1" == "couch" ]]; then
     dbPrefix=`cat $dbPrefixFile | grep '^common.cloudant.dbNamePrefix=' | awk -F= '{gsub(/^[ \t]+/, "", $2); print $2}'`
     echo "dbPrefix is $dbPrefix"
     pushd couchdb
-    python ./couchdbcmd.py dropdbs --prefix=$dbPrefix --yes
-    python ./couchdbcmd.py createdbs --prefix=$dbPrefix --yes
+    python ./couchdbcmd.py dropdbs --prefix=$dbPrefix --key=$cipherKey --yes
+    python ./couchdbcmd.py createdbs --prefix=$dbPrefix --key=$cipherKey --yes
     popd
 fi
 
 if [[ "$1" == "" || "$1" == "sql" ]]; then
     # setup sql db
     pushd liquibase
-    cipherKey=D58BA755FF96B35A6DABA7298F7A8CE2
     ./dropdb.sh -env:onebox -key:$cipherKey
     ./createdb.sh -env:onebox -key:$cipherKey
     ./updatedb.sh -env:onebox -key:$cipherKey

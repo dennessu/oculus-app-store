@@ -2,12 +2,13 @@
 
 import sys
 import os
+import getpass
 import subprocess
 import re
 import httplib
 import json
 import string
-
+import AESCipher as cipher
 
 def main():
     # Enforce python version
@@ -36,14 +37,17 @@ def readParams():
         sys.stdout.flush()
     
     def printUsage():
-        error("Usage: python ./couchdbcmd.py <command> [<env>] [--yes] [--verbose] [--prefix={prefix}]\n")
+        error("Usage: python ./couchdbcmd.py <command> [<env>] [--yes] [--verbose] [--prefix={prefix}] [--key={key}]\n")
     
     # Read input params
     sys.argv.pop(0)     # skip argv[0]
     
     # Read flags
+    global cipherKey
+
     confirmed = False
     dbPrefix = None
+    cipherKey = None
 
     cleanArgv = []
     while len(sys.argv) > 0:
@@ -54,6 +58,8 @@ def readParams():
             setVerbose(True)
         elif arg.startswith("--prefix="):
             dbPrefix = arg[len("--prefix="):]
+        elif arg.startswith("--key="):
+            cipherKey = arg[len("--key="):]
         else:
             cleanArgv.append(arg)
     sys.argv = cleanArgv
@@ -72,7 +78,7 @@ def readParams():
 
     # Validate params
     command = command.lower()
-    if command not in set(["listdbs", "dumpdbs", "createdbs", "dropdbs"]):
+    if command not in set(["listdbs", "dumpdbs", "createdbs", "dropdbs", "diffdbs", "updatedbs"]):
         printValidCommands()
         error("Invalid command: " + command)
     
@@ -82,6 +88,10 @@ def readParams():
         if response.lower() != "yes":
             error("Aborting...")
 
+    if command == "dropdbs" and env in set(["onebox.owpint", "ppe", "prod"]):
+        # Don't allow dropdbs in these environments
+        error("The command dropdbs is now allowed in env " + env)
+
     verbose("Read parameters: (command, env, dbPrefix) = (%s, %s, %s)" % (command, env, dbPrefix))
 
     return (command, env, dbPrefix)
@@ -89,7 +99,28 @@ def readParams():
 def readConfig(env):
     verbose("Reading configurations for " + env)
     envConf = readJsonFile("conf/%s.json" % env)
-    return envConf
+    finalEnvConf = {}
+
+    encryptedSuffix = ".encrypted"
+    for k, v in envConf.items():
+        if isinstance(v, basestring):
+            v = [ v ]
+
+        if k.endswith(encryptedSuffix):
+            key = k[0:len(k) - len(encryptedSuffix)]
+            isEncrypted = True
+        else:
+            key = k
+            isEncrypted = False
+
+        finalEnvConf[key] = []
+        for item in v:
+            if isEncrypted:
+                finalEnvConf[key].append(decrypt(item))
+            else:
+                finalEnvConf[key].append(item)
+
+    return finalEnvConf
 
 def readDbs():
     filename = 'changelogs/couchdb.json'
@@ -115,8 +146,9 @@ def listdbs(envConf, dbPrefix):
         dbPattern = dbPrefix
 
     result = []
-    for key, url in envConf.items():
-        result.extend([db for db in curlJson(url + "/_all_dbs") if re.match(dbPattern, db) and not db.startswith("_")])
+    for key, list in envConf.items():
+        for url in list:
+            result.extend([db for db in curlJson(url + "/_all_dbs") if re.match(dbPattern, db) and not db.startswith("_")])
 
     print string.join(sorted(result), "\r\n")
 
@@ -125,41 +157,44 @@ def dumpdbs(envConf, dbPrefix):
     dbs = readDbs()
 
     result = {}
-    for key, url in envConf.items():
-        if not key in dbs:
-            continue
-        result[key] = {}
-        for db in dbs[key]:
-            fullDbName = dbPrefix + db
-            data = curlJson(url + "/" + fullDbName + "/_design/views", raiseOnError = False)
-            result[key][db] = {}
+    for key, list in envConf.items():
+        for url in list:
+            if not key in dbs:
+                continue
+            result[key] = {}
+            for db in dbs[key]:
+                fullDbName = dbPrefix + db
+                data = curlJson(url + "/" + fullDbName + "/_design/views", raiseOnError = False)
+                result[key][db] = {}
 
-            if "views" in data and any(data["views"]):
-                result[key][db]["views"] = data["views"]
-            if "indexes" in data and any(data["indexes"]):
-                result[key][db]["indexes"] = data["indexes"]
-    
+                if "views" in data and any(data["views"]):
+                    result[key][db]["views"] = data["views"]
+                if "indexes" in data and any(data["indexes"]):
+                    result[key][db]["indexes"] = data["indexes"]
+
     print json.dumps(result, indent = 2, sort_keys = True)
 
 def createdbs(envConf, dbPrefix):
     if not dbPrefix: dbPrefix = ''
     dbs = readDbs()
 
-    result = {}
-    for key, url in envConf.items():
-        if not key in dbs:
-            continue
+    for key, list in envConf.items():
+        index = -1
+        for url in list:
+            index += 1
+            if not key in dbs:
+                continue
 
-        existingDbs = [db for db in curlJson(url + "/_all_dbs") if not db.startswith("_")]
-        for db, dbDef in dbs[key].items():
-            fullDbName = dbPrefix + db
-            if not fullDbName in existingDbs:
-                info("Creating DB: " + fullDbName)
-                curl(url + "/" + fullDbName, "PUT")
+            existingDbs = [db for db in curlJson(url + "/_all_dbs") if not db.startswith("_")]
+            for db, dbDef in dbs[key].items():
+                fullDbName = dbPrefix + db
+                if not fullDbName in existingDbs:
+                    info("Creating DB '%s' in '%s[%d]'" % (fullDbName, key, index))
+                    curl(url + "/" + fullDbName, "PUT")
 
-            createviews(envConf, dbDef, url, fullDbName)
+                createviews(dbDef, url, fullDbName)
 
-def createviews(envConf, dbDef, url, fullDbName):
+def createviews(dbDef, url, fullDbName):
     viewsResp, status, reason = curlRaw(url + "/" + fullDbName + "/_design/views")
     viewsRequest = {}
     if status == 200:
@@ -184,19 +219,21 @@ def dropdbs(envConf, dbPrefix):
     if not dbPrefix: dbPrefix = ''
     dbs = readDbs()
 
-    result = {}
-    for key, url in envConf.items():
-        if not key in dbs:
-            continue
+    for key, list in envConf.items():
+        index = -1
+        for url in list:
+            index += 1
+            if not key in dbs:
+                continue
 
-        existingDbs = [db for db in curlJson(url + "/_all_dbs") if not db.startswith("_")]
-        for db in dbs[key]:
-            fullDbName = dbPrefix + db
+            existingDbs = [db for db in curlJson(url + "/_all_dbs") if not db.startswith("_")]
+            for db in dbs[key]:
+                fullDbName = dbPrefix + db
 
-            if fullDbName in existingDbs:
-                info("Dropping database %s in %s..." % (fullDbName, url));
-                curl(url + "/" + fullDbName, "DELETE")
-            
+                if fullDbName in existingDbs:
+                    info("Dropping database '%s' from '%s[%d]'" % (fullDbName, key, index));
+                    curl(url + "/" + fullDbName, "DELETE")
+
 def curlJson(url, method = 'GET', body = None, headers = None, raiseOnError = True):
     if headers is None:
         headers = {
@@ -279,6 +316,12 @@ def executeCommand(command):
     except OSError as e:
         error("Error executing command: " + command)
 
+def decrypt(value):
+    global cipherKey
+    if cipherKey is None:
+        cipherKey = readPassword("Input the password cipher key: ")
+    return cipher.decryptData(cipherKey.strip(), value.strip())
+
 def safeStrip(value):
     if value is not None:
         return value.strip()
@@ -300,6 +343,8 @@ def readInput(message):
     sys.stdout.flush()
     return sys.stdin.readline().strip()
 
+def readPassword(message):
+    return getpass.getpass(message)
 
 def readJsonFile(filename):
     if not os.path.isfile(filename):

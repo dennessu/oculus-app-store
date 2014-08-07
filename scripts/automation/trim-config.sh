@@ -7,7 +7,7 @@ set -e
 export ENV=${ENV:-$1}
 export ENV=${ENV:-ppe}
 
-./foreach-here.sh $ENV/crypto-apps.txt $ENV/apps.txt << EOF
+./foreach-here.sh $ENV/crypto-apps.txt $ENV/apps.txt $ENV/utils.txt << EOF
 TRIMMED_CONFIG=`head -n 4 /etc/silkcloud/configuration.properties`
 echo $TRIMMED_CONFIG > /etc/silkcloud/configuration.properties
 cat << EOFINNER > /etc/silkcloud/configuration.properties
