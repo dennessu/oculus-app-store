@@ -20,6 +20,7 @@ import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
+import com.junbo.common.util.IdFormatter;
 import com.junbo.langur.core.promise.Promise;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +78,10 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
         if (options.getStatus() != null) {
             builder.queryParam("status", options.getStatus().toUpperCase());
         }
-        builder.queryParam("size", options.getValidSize());
+        if (options.getDeveloperId() != null) {
+            builder.queryParam("developerId", IdFormatter.encodeId(options.getDeveloperId()));
+        }
+        builder.queryParam("count", options.getValidSize());
         if (!StringUtils.isEmpty(options.getNextCursor())) {
             builder.queryParam("cursor", options.getNextCursor());
         } else {
