@@ -1,0 +1,5 @@
+{
+    "name": "identity.migration",
+    "description": "Scope for the service account to import user information.",
+    "tfaRequired": false
+}
