@@ -5,41 +5,27 @@
  */
 package com.junbo.store.spec.model.purchase;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.OfferId;
-import com.junbo.common.id.UserId;
 
 /**
  * The MakeFreePurchaseRequest class.
  */
 public class MakeFreePurchaseRequest {
 
-    @JsonProperty("user")
-    private UserId userId;
-
-    @JsonProperty("offer")
-    private OfferId offerId;
+    private OfferId offer;
 
     private CountryId country;
 
     private LocaleId locale;
 
-    public UserId getUserId() {
-        return userId;
+    public OfferId getOffer() {
+        return offer;
     }
 
-    public void setUserId(UserId userId) {
-        this.userId = userId;
-    }
-
-    public OfferId getOfferId() {
-        return offerId;
-    }
-
-    public void setOfferId(OfferId offerId) {
-        this.offerId = offerId;
+    public void setOffer(OfferId offer) {
+        this.offer = offer;
     }
 
     public CountryId getCountry() {

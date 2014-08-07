@@ -6,15 +6,14 @@
 package com.junbo.store.spec.model.iap;
 
 import com.junbo.common.model.Results;
-import com.junbo.store.spec.model.*;
 import com.junbo.store.spec.model.Offer;
 
 /**
  * The IAPOfferGetResponse class.
  */
-public class IAPOfferGetResponse extends BaseResponse {
+public class IAPOfferGetResponse {
 
-    Results<com.junbo.store.spec.model.Offer> offers;
+    Results<Offer> offers;
 
     public Results<Offer> getOffers() {
         return offers;

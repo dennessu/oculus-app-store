@@ -10,7 +10,7 @@ import com.junbo.common.model.Results;
 /**
  * The EntitlementsGetResponse class.
  */
-public class EntitlementsGetResponse extends BaseResponse {
+public class EntitlementsGetResponse {
 
     Results<Entitlement> entitlements;
 

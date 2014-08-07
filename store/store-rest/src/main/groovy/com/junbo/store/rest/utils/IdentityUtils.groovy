@@ -1,16 +1,20 @@
 package com.junbo.store.rest.utils
 
+import com.junbo.authorization.AuthorizeContext
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.Email
 import com.junbo.identity.spec.v1.model.PhoneNumber
+import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
 import com.junbo.identity.spec.v1.option.list.UserPersonalInfoListOptions
+import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.identity.PersonalInfo
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
@@ -64,10 +68,11 @@ class IdentityUtils {
     }
 
     public Promise addPersonalInfo(UserId userId, String type, PersonalInfo personalInfo, List<UserPersonalInfoLink> linkToAdd) {
+        boolean isDefault = personalInfo.isDefault != null ? personalInfo.isDefault : false
         return resourceContainer.userPersonalInfoResource.create(new UserPersonalInfo(
                 userId: userId, type: type, value: personalInfo.value
         )).then { UserPersonalInfo added ->
-            linkToAdd << new UserPersonalInfoLink(value: added.getId(), isDefault: personalInfo.isDefault)
+            linkToAdd << new UserPersonalInfoLink(value: added.getId(), isDefault: isDefault)
             boolean hasDefault = linkToAdd.any { UserPersonalInfoLink link -> link.isDefault }
             if (personalInfo.isDefault || !hasDefault) {
                 setDefaultUserPersonalInfo(linkToAdd, added.getId())
@@ -76,18 +81,35 @@ class IdentityUtils {
         }
     }
 
-    public void setDefaultUserPersonalInfo(List<UserPersonalInfoLink> list, UserPersonalInfoId id) {
+    public Promise<User> getUserFromToken() {
+        // todo validate user status
+        UserId userId = AuthorizeContext.currentUserId
+        resourceContainer.userResource.get(userId, new UserGetOptions())
+    }
+
+    public void setDefaultUserPersonalInfo(User user, UserPersonalInfoId id) {
+        assert user.addresses != null && user.emails != null && user.phones != null
+        List<UserPersonalInfoLink> list = findLinksByPersonalInfoId(user, id)
+        if (list == null) {
+            return
+        }
+        setDefaultUserPersonalInfo(list, id)
+    }
+
+    public void setDefaultUserPersonalInfo(List<UserPersonalInfoLink> list , UserPersonalInfoId id) {
         list.each { UserPersonalInfoLink link ->
             link.isDefault = link.value == id
         }
     }
 
-    public List<UserPersonalInfoLink> removeFromUserPersonalInfoLinkList(List<UserPersonalInfoLink> list, UserPersonalInfoId id, boolean setDefault) {
-        if (CollectionUtils.isEmpty(list)) {
-            return list
+    public void removeFromUserPersonalInfoLinkList(User user, UserPersonalInfoId id, boolean setDefault) {
+        assert user.addresses != null && user.emails != null && user.phones != null
+        List<UserPersonalInfoLink> list = findLinksByPersonalInfoId(user, id)
+        if (list == null) {
+            return
         }
-        ensureUnique(list)
 
+        ensureUnique(list)
         boolean isDefault = false
         list.removeAll { UserPersonalInfoLink link ->
             if (link.value == id) {
@@ -100,7 +122,15 @@ class IdentityUtils {
         if (isDefault && setDefault && !list.isEmpty()) {
             list[0].isDefault = true
         }
-        return list
+    }
+
+    private List<UserPersonalInfoLink> findLinksByPersonalInfoId(User user, UserPersonalInfoId personalInfoId) {
+        List<List<UserPersonalInfoLink>> links = [user.addresses, user.emails, user.phones]
+        return links.find { List<UserPersonalInfoLink> it ->
+            return it?.find { UserPersonalInfoLink link ->
+                return link.value == personalInfoId
+            } != null
+        }
     }
 
     Promise<List<PersonalInfo>> expandPersonalInfo(List<UserPersonalInfoLink> userPersonalInfoLinkList) {

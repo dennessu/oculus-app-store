@@ -5,6 +5,7 @@
  */
 package com.junbo.store.spec.model.identity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.UserPersonalInfoId;
 
@@ -13,20 +14,23 @@ import com.junbo.common.id.UserPersonalInfoId;
  */
 public class PersonalInfo {
 
-    private UserPersonalInfoId userPersonalInfoId;
+    private UserPersonalInfoId self;
 
     private JsonNode value;
 
+    @JsonIgnore
     private String type;
 
     private Boolean isDefault;
 
-    public UserPersonalInfoId getUserPersonalInfoId() {
-        return userPersonalInfoId;
+    private String lable;
+
+    public UserPersonalInfoId getSelf() {
+        return self;
     }
 
-    public void setUserPersonalInfoId(UserPersonalInfoId userPersonalInfoId) {
-        this.userPersonalInfoId = userPersonalInfoId;
+    public void setSelf(UserPersonalInfoId self) {
+        this.self = self;
     }
 
     public JsonNode getValue() {

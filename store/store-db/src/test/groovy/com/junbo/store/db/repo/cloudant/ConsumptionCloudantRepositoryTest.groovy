@@ -27,11 +27,10 @@ class ConsumptionCloudantRepositoryTest extends AbstractTestNGSpringContextTests
     @Test
     public void testAddAndGet() {
         Consumption consumption = new Consumption(
-                userId: new UserId(System.currentTimeMillis()),
-                entitlementId: new EntitlementId(RandomStringUtils.randomAlphabetic(10)),
+                user: new UserId(System.currentTimeMillis()),
+                entitlement: new EntitlementId(RandomStringUtils.randomAlphabetic(10)),
                 useCountConsumed: rand.nextInt(),
                 sku : RandomStringUtils.randomAlphabetic(10),
-                type: RandomStringUtils.randomAlphabetic(5),
                 trackingGuid: UUID.randomUUID().toString(),
                 packageName: RandomStringUtils.randomAlphabetic(10),
                 signatureTimestamp: System.currentTimeMillis(),
@@ -48,7 +47,7 @@ class ConsumptionCloudantRepositoryTest extends AbstractTestNGSpringContextTests
 
     private static void validate(Consumption c1, Consumption c2) {
         assert c1.trackingGuid == c2.trackingGuid
-        assert c1.entitlementId == c2.entitlementId
+        assert c1.entitlement == c2.entitlement
         assert c1.packageName == c2.packageName
         assert c1.useCountConsumed == c2.useCountConsumed
     }

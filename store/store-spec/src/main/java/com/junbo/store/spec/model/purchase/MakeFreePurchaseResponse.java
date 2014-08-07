@@ -5,9 +5,7 @@
  */
 package com.junbo.store.spec.model.purchase;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.OrderId;
-import com.junbo.store.spec.model.BaseResponse;
 import com.junbo.store.spec.model.Entitlement;
 
 import java.util.List;
@@ -15,19 +13,18 @@ import java.util.List;
 /**
  * The MakeFreePurchaseResponse class.
  */
-public class MakeFreePurchaseResponse extends BaseResponse {
+public class MakeFreePurchaseResponse {
 
-    @JsonProperty("order")
-    private OrderId orderId;
+    private OrderId order;
 
     private List<Entitlement> entitlements;
 
-    public OrderId getOrderId() {
-        return orderId;
+    public OrderId getOrder() {
+        return order;
     }
 
-    public void setOrderId(OrderId orderId) {
-        this.orderId = orderId;
+    public void setOrder(OrderId order) {
+        this.order = order;
     }
 
     public List<Entitlement> getEntitlements() {

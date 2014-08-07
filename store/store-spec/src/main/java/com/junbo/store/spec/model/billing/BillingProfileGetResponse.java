@@ -5,12 +5,10 @@
  */
 package com.junbo.store.spec.model.billing;
 
-import com.junbo.store.spec.model.BaseResponse;
-
 /**
  * The BillingProfileGetResponse class.
  */
-public class BillingProfileGetResponse extends BaseResponse {
+public class BillingProfileGetResponse {
 
     private BillingProfile billingProfile;
 

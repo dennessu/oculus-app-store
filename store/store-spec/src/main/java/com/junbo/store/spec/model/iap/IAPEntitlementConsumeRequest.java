@@ -6,34 +6,30 @@
 package com.junbo.store.spec.model.iap;
 
 import com.junbo.common.id.EntitlementId;
-import com.junbo.common.id.UserId;
 
 /**
  * The IAPEntitlementConsumeRequest class.
  */
 public class IAPEntitlementConsumeRequest {
 
-    private UserId userId;
-    private EntitlementId entitlementId;
+    private EntitlementId entitlement;
+
     private Integer useCountConsumed;
+
     private String trackingGuid;
+
     private String packageName;
 
+    private String packageVersion;
 
-    public UserId getUserId() {
-        return userId;
+    private String packageSignatureHash;
+
+    public EntitlementId getEntitlement() {
+        return entitlement;
     }
 
-    public void setUserId(UserId userId) {
-        this.userId = userId;
-    }
-
-    public EntitlementId getEntitlementId() {
-        return entitlementId;
-    }
-
-    public void setEntitlementId(EntitlementId entitlementId) {
-        this.entitlementId = entitlementId;
+    public void setEntitlement(EntitlementId entitlement) {
+        this.entitlement = entitlement;
     }
 
     public Integer getUseCountConsumed() {
@@ -58,5 +54,21 @@ public class IAPEntitlementConsumeRequest {
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
+    }
+
+    public String getPackageVersion() {
+        return packageVersion;
+    }
+
+    public void setPackageVersion(String packageVersion) {
+        this.packageVersion = packageVersion;
+    }
+
+    public String getPackageSignatureHash() {
+        return packageSignatureHash;
+    }
+
+    public void setPackageSignatureHash(String packageSignatureHash) {
+        this.packageSignatureHash = packageSignatureHash;
     }
 }

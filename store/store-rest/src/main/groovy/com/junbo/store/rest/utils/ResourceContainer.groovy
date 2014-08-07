@@ -3,6 +3,7 @@ import com.junbo.catalog.spec.resource.ItemResource
 import com.junbo.catalog.spec.resource.ItemRevisionResource
 import com.junbo.catalog.spec.resource.OfferResource
 import com.junbo.catalog.spec.resource.OfferRevisionResource
+import com.junbo.crypto.spec.resource.CryptoResource
 import com.junbo.crypto.spec.resource.ItemCryptoResource
 import com.junbo.entitlement.spec.resource.EntitlementResource
 import com.junbo.fulfilment.spec.resource.FulfilmentResource
@@ -50,6 +51,9 @@ class ResourceContainer {
     @Resource(name='store.itemCryptoClient')
     ItemCryptoResource itemCryptoResource
 
+    @Resource(name='store.cryptoClient')
+    CryptoResource cryptoResource
+
     @Resource(name='store.userResourceClient')
     UserResource userResource
 
@@ -76,4 +80,10 @@ class ResourceContainer {
 
     @Resource(name='store.emailVerifyEndpointClientProxy')
     EmailVerifyEndpoint emailVerifyEndpoint
+
+    @Resource(name='store.countryClientProxy')
+    CountryResource countryResource
+
+    @Resource(name='store.localeClientProxy')
+    LocaleResource localeResource
 }

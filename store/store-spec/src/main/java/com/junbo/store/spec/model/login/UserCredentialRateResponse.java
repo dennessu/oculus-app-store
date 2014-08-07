@@ -5,14 +5,12 @@
  */
 package com.junbo.store.spec.model.login;
 
-import com.junbo.store.spec.model.BaseResponse;
-
 /**
  * The UserCredentialRateResponse class.
  */
-public class UserCredentialRateResponse extends BaseResponse {
+public class UserCredentialRateResponse {
 
-    private String strength;
+    private String strength; // INVALID, WEAK, STRONG
 
     public String getStrength() {
         return strength;

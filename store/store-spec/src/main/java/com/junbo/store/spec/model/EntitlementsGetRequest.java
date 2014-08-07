@@ -5,8 +5,6 @@
  */
 package com.junbo.store.spec.model;
 
-import com.junbo.common.id.UserId;
-
 import javax.ws.rs.QueryParam;
 
 /**
@@ -17,17 +15,17 @@ public class EntitlementsGetRequest {
     @QueryParam("packageName")
     private String packageName;
 
-    @QueryParam("userId")
-    private UserId userId;
+    @QueryParam("packageVersion")
+    private String packageVersion;
+
+    @QueryParam("packageSignatureHash")
+    private String packageSignatureHash;
 
     @QueryParam("itemType")
     String itemType;
 
     @QueryParam("entitlementType")
     String entitlementType;
-
-    @QueryParam("isIAP")
-    private Boolean isIAP;
 
     @QueryParam("isActive")
     private Boolean isActive;
@@ -38,14 +36,6 @@ public class EntitlementsGetRequest {
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
-    }
-
-    public UserId getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UserId userId) {
-        this.userId = userId;
     }
 
     public String getEntitlementType() {
@@ -62,14 +52,6 @@ public class EntitlementsGetRequest {
 
     public void setItemType(String itemType) {
         this.itemType = itemType;
-    }
-
-    public Boolean getIsIAP() {
-        return isIAP;
-    }
-
-    public void setIsIAP(Boolean isIAP) {
-        this.isIAP = isIAP;
     }
 
     public Boolean getIsActive() {

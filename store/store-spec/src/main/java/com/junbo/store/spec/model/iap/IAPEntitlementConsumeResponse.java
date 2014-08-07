@@ -5,22 +5,28 @@
  */
 package com.junbo.store.spec.model.iap;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import com.junbo.store.spec.model.BaseResponse;
-
 /**
  * The IAPEntitlementConsumeResponse class.
  */
-public class IAPEntitlementConsumeResponse extends BaseResponse {
+public class IAPEntitlementConsumeResponse {
 
-    @JsonUnwrapped
-    private Consumption consumption;
+    private String payload;
 
-    public Consumption getConsumption() {
-        return consumption;
+    private String signature;
+
+    public String getPayload() {
+        return payload;
     }
 
-    public void setConsumption(Consumption consumption) {
-        this.consumption = consumption;
+    public void setPayload(String payload) {
+        this.payload = payload;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 }

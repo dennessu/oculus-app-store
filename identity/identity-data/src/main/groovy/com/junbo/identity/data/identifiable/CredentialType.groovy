@@ -11,7 +11,8 @@ import javax.transaction.NotSupportedException
 @CompileStatic
 enum CredentialType implements Identifiable<Short> {
     PASSWORD((short)1),
-    PIN((short)2)
+    PIN((short)2),
+    CHECK_NAME((short)3)
 
     private final Short id
 

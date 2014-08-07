@@ -5,14 +5,26 @@
  */
 package com.junbo.store.spec.model.login;
 
+import com.junbo.store.spec.model.ChallengeAnswer;
+
 /**
  * The UserSignInRequest class.
  */
 public class UserSignInRequest {
 
+    private ChallengeAnswer challengeAnswer;
+
     private String username;
 
     private UserCredential userCredential;
+
+    public ChallengeAnswer getChallengeAnswer() {
+        return challengeAnswer;
+    }
+
+    public void setChallengeAnswer(ChallengeAnswer challengeAnswer) {
+        this.challengeAnswer = challengeAnswer;
+    }
 
     public String getUsername() {
         return username;

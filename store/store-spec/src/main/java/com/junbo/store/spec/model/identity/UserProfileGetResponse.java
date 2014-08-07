@@ -5,12 +5,10 @@
  */
 package com.junbo.store.spec.model.identity;
 
-import com.junbo.store.spec.model.BaseResponse;
-
 /**
  * The UserProfileGetResponse class.
  */
-public class UserProfileGetResponse extends BaseResponse {
+public class UserProfileGetResponse {
 
     StoreUserProfile userProfile;
 

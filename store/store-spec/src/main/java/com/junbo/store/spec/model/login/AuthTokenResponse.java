@@ -7,12 +7,14 @@ package com.junbo.store.spec.model.login;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
-import com.junbo.store.spec.model.BaseResponse;
+import com.junbo.store.spec.model.Challenge;
 
 /**
  * The AuthTokenResponse class.
  */
-public class AuthTokenResponse extends BaseResponse {
+public class AuthTokenResponse {
+
+    private Challenge challenge;
 
     @JsonProperty("user")
     private UserId userId;
@@ -24,6 +26,14 @@ public class AuthTokenResponse extends BaseResponse {
     private Long expiresIn;
 
     private String refreshToken;
+
+    public Challenge getChallenge() {
+        return challenge;
+    }
+
+    public void setChallenge(Challenge challenge) {
+        this.challenge = challenge;
+    }
 
     public UserId getUserId() {
         return userId;

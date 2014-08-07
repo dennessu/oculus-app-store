@@ -5,12 +5,16 @@
  */
 package com.junbo.store.spec.model.login;
 
+import com.junbo.store.spec.model.ChallengeAnswer;
+
 import java.util.Date;
 
 /**
  * The CreateUserRequest class.
  */
 public class CreateUserRequest {
+
+    private ChallengeAnswer challengeAnswer;
 
     private String username;
 
@@ -37,6 +41,14 @@ public class CreateUserRequest {
     private Boolean tosAgreed;
 
     private Boolean newsPromotionsAgreed;
+
+    public ChallengeAnswer getChallengeAnswer() {
+        return challengeAnswer;
+    }
+
+    public void setChallengeAnswer(ChallengeAnswer challengeAnswer) {
+        this.challengeAnswer = challengeAnswer;
+    }
 
     public String getUsername() {
         return username;
