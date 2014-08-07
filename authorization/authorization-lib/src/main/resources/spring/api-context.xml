@@ -46,7 +46,7 @@
                 <entry key="EmailTemplateResource.deleteEmailTemplate" value="email.admin"/>
                 <!-- entitlement -->
                 <entry key="EntitlementResource" value="commerce entitlement.service csr"/>
-                <entry key="DownloadUrlResource" value="commerce entitlement.service csr"/>
+                <entry key="DownloadUrlResource" value="commerce entitlement.service item-binaries.manage csr"/>
                 <!-- ewallet -->
                 <entry key="WalletResource" value="ewallet.service ewallet.admin csr"/>
                 <!-- fulfilment -->
