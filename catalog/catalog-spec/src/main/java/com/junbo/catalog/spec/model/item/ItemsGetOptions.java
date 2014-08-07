@@ -24,7 +24,7 @@ public class ItemsGetOptions extends PageableGetOptions {
     private String genre;
     @QueryParam("hostItemId")
     private String hostItemId;
-    @QueryParam("ownerId")
+    @QueryParam("developerId")
     private OrganizationId ownerId;
     @QueryParam("packageName")
     private String packageName;
