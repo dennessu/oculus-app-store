@@ -5,12 +5,18 @@
  */
 package com.junbo.test.catalog.util;
 
+import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.test.catalog.impl.OfferRevisionServiceImpl;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
+import com.junbo.test.common.Entities.enums.ComponentType;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.catalog.spec.model.pricetier.PriceTier;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.test.catalog.impl.ItemServiceImpl;
@@ -22,10 +28,13 @@ import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.catalog.OfferService;
 import com.junbo.test.catalog.ItemService;
 import com.junbo.common.model.Results;
+
 import org.testng.Assert;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  @author Jason
@@ -136,8 +145,41 @@ public class BaseTestClass extends TestClass {
                     contain = true;
                 }
             }
+            else if (t instanceof PriceTier) {
+                if(((PriceTier) t).getId().equals(((PriceTier) entity).getId())) {
+                    contain = true;
+                }
+            }
         }
         return contain;
+    }
+
+    protected void prepareCatalogAdminToken() throws Exception {
+        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
+        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
+    }
+
+    protected void verifyPriceTierEquality(PriceTier priceTierExpected, PriceTier priceTierActual) {
+        //compare locales
+        Assert.assertEquals(priceTierActual.getLocales().size(), priceTierExpected.getLocales().size());
+        for (String keyset : priceTierActual.getLocales().keySet()) {
+            Assert.assertTrue(priceTierExpected.getLocales().containsKey(keyset));
+            SimpleLocaleProperties valueExpected = priceTierExpected.getLocales().get(keyset);
+            SimpleLocaleProperties valueActual = priceTierActual.getLocales().get(keyset);
+            Assert.assertEquals(valueActual.getName(), valueExpected.getName());
+            Assert.assertEquals(valueActual.getDescription(), valueExpected.getDescription());
+        }
+
+        //compare prices
+        Assert.assertEquals(priceTierActual.getPrices().size(), priceTierExpected.getPrices().size());
+        for (String keyset : priceTierActual.getPrices().keySet()) {
+            Assert.assertTrue(priceTierExpected.getPrices().containsKey(keyset));
+            Map<String, BigDecimal> valueExpected = priceTierExpected.getPrices().get(keyset);
+            Map<String, BigDecimal> valueActual = priceTierActual.getPrices().get(keyset);
+            for (String keyset2 : valueExpected.keySet()) {
+                Assert.assertEquals(valueActual.get(keyset2), valueExpected.get(keyset2));
+            }
+        }
     }
 
 }

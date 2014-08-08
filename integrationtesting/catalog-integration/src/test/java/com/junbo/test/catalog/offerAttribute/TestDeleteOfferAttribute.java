@@ -42,9 +42,8 @@ public class TestDeleteOfferAttribute extends BaseTestClass {
     )
     @Test
     public void testDeleteOfferAttribute() throws Exception {
-        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
         OfferAttributeService offerAttributeService = OfferAttributeServiceImpl.instance();
-        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
+        prepareCatalogAdminToken();
 
         //Prepare an offer and delete it
         OfferAttribute offerAttribute = offerAttributeService.postDefaultOfferAttribute();
@@ -57,6 +56,7 @@ public class TestDeleteOfferAttribute extends BaseTestClass {
         }
         catch (Exception ex)
         {
+            logger.logInfo("expected exception" + ex);
         }
 
         //delete non-existing offer

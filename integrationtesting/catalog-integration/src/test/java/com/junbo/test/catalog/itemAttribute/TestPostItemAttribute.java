@@ -5,14 +5,10 @@
  */
 package com.junbo.test.catalog.itemAttribute;
 
-import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
-import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.test.catalog.enums.CatalogItemAttributeType;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.test.catalog.impl.ItemAttributeServiceImpl;
-import com.junbo.test.common.Entities.enums.ComponentType;
-import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.catalog.ItemAttributeService;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.test.common.libs.RandomFactory;
@@ -34,11 +30,6 @@ public class TestPostItemAttribute extends BaseTestClass {
     private LogHelper logger = new LogHelper(TestPostItemAttribute.class);
     private ItemAttributeService itemAttributeService = ItemAttributeServiceImpl.instance();
 
-    private void prepareTestData() throws Exception {
-        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
-        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
-    }
-
     @Property(
             priority = Priority.Dailies,
             features = "Post v1/item-attributes",
@@ -53,7 +44,7 @@ public class TestPostItemAttribute extends BaseTestClass {
     )
     @Test
     public void testPostItemAttribute() throws Exception {
-        this.prepareTestData();
+        prepareCatalogAdminToken();
 
         ItemAttribute itemAttribute = new ItemAttribute();
         HashMap<String, SimpleLocaleProperties> locales = new HashMap<>();
@@ -84,7 +75,7 @@ public class TestPostItemAttribute extends BaseTestClass {
     )
     @Test
     public void testPostItemAttributeInvalidScenarios() throws Exception {
-        this.prepareTestData();
+        prepareCatalogAdminToken();
 
         ItemAttribute itemAttribute = new ItemAttribute();
         HashMap<String, SimpleLocaleProperties> locales = new HashMap<>();
@@ -122,6 +113,7 @@ public class TestPostItemAttribute extends BaseTestClass {
             Assert.fail("Post item attribute should fail");
         }
         catch (Exception ex) {
+            logger.logInfo("expected exception" + ex);
         }
     }
 

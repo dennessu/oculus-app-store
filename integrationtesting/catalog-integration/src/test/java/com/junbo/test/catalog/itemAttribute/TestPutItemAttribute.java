@@ -10,10 +10,6 @@ import com.junbo.test.catalog.impl.ItemAttributeServiceImpl;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.test.catalog.ItemAttributeService;
 import com.junbo.test.catalog.util.BaseTestClass;
-import com.junbo.test.common.Entities.enums.ComponentType;
-import com.junbo.test.common.apihelper.oauth.OAuthService;
-import com.junbo.test.common.apihelper.oauth.enums.GrantType;
-import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.common.property.*;
@@ -34,11 +30,6 @@ public class TestPutItemAttribute extends BaseTestClass {
     private ItemAttributeService itemAttributeService = ItemAttributeServiceImpl.instance();
     private final String defaultLocale = "en_US";
 
-    private void prepareTestData() throws Exception {
-        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
-        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
-    }
-
     @Property(
             priority = Priority.Dailies,
             features = "Put v1/item-attributes/{itemAttributeId}",
@@ -54,7 +45,7 @@ public class TestPutItemAttribute extends BaseTestClass {
     )
     @Test
     public void testPutItemAttribute() throws Exception {
-        this.prepareTestData();
+        prepareCatalogAdminToken();
 
         HashMap<String, SimpleLocaleProperties> locales = new HashMap<>();
 
@@ -92,7 +83,7 @@ public class TestPutItemAttribute extends BaseTestClass {
     )
     @Test
     public void testPutItemAttributeInvalidScenarios() throws Exception {
-        this.prepareTestData();
+        prepareCatalogAdminToken();
 
         //Prepare an item attribute
         ItemAttribute itemAttribute = itemAttributeService.postDefaultItemAttribute();
@@ -128,6 +119,7 @@ public class TestPutItemAttribute extends BaseTestClass {
             Assert.fail("Put item should fail");
         }
         catch (Exception ex) {
+            logger.logInfo("expected exception" + ex);
         }
     }
 

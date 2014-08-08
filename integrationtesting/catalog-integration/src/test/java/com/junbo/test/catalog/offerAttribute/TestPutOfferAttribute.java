@@ -5,13 +5,9 @@
  */
 package com.junbo.test.catalog.offerAttribute;
 
-import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
-import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.test.catalog.impl.OfferAttributeServiceImpl;
-import com.junbo.test.common.Entities.enums.ComponentType;
-import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.catalog.OfferAttributeService;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.test.common.libs.RandomFactory;
@@ -37,11 +33,6 @@ public class TestPutOfferAttribute extends BaseTestClass {
     private OfferAttributeService offerAttributeService = OfferAttributeServiceImpl.instance();
     private final String defaultLocale = "en_US";
 
-    private void prepareTestData() throws Exception {
-        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
-        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
-    }
-
     @Property(
             priority = Priority.Dailies,
             features = "Put v1/offer-attributes/{offerAttributeId}",
@@ -57,7 +48,7 @@ public class TestPutOfferAttribute extends BaseTestClass {
     )
     @Test
     public void testPutOfferAttribute() throws Exception {
-        this.prepareTestData();
+        prepareCatalogAdminToken();
 
         HashMap<String, SimpleLocaleProperties> locales = new HashMap<>();
 
@@ -95,7 +86,7 @@ public class TestPutOfferAttribute extends BaseTestClass {
     )
     @Test
     public void testPutOfferAttributeInvalidScenarios() throws Exception {
-        this.prepareTestData();
+        prepareCatalogAdminToken();
 
         //Prepare an offer attribute
         OfferAttribute offerAttribute = offerAttributeService.postDefaultOfferAttribute();
@@ -128,9 +119,10 @@ public class TestPutOfferAttribute extends BaseTestClass {
         try {
             //Error code 400 means "Missing Input field", "Unnecessary field found" or "invalid value"
             offerAttributeService.updateOfferAttribute(attributeId, offerAttribute, 400);
-            Assert.fail("Put offer should fail");
+            Assert.fail("Put offer attribute should fail");
         }
         catch (Exception ex) {
+            logger.logInfo("expected exception" + ex);
         }
     }
 

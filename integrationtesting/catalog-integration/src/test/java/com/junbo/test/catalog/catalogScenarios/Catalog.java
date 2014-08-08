@@ -9,13 +9,9 @@ import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
-import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
-import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
-import com.junbo.test.common.apihelper.oauth.OAuthService;
-import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.catalog.spec.model.common.Price;
@@ -32,7 +28,6 @@ import com.junbo.test.catalog.impl.*;
 import com.junbo.test.catalog.*;
 import com.junbo.common.id.*;
 
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.Assert;
 
@@ -71,7 +66,7 @@ public class Catalog extends BaseTestClass {
     )
     @Test()
     public void testItemAttributeManagement() throws Exception {
-        this.PrepareOauthToken();
+        prepareCatalogAdminToken();
 
         HashMap<String, List<String>> paraMap = new HashMap<>();
         HashMap<String, SimpleLocaleProperties> locales = new HashMap<>();
@@ -131,7 +126,7 @@ public class Catalog extends BaseTestClass {
     )
     @Test
     public void testOfferAttributeManagement() throws Exception {
-        this.PrepareOauthToken();
+        prepareCatalogAdminToken();
 
         HashMap<String, List<String>> paraMap = new HashMap<>();
         HashMap<String, SimpleLocaleProperties> locales = new HashMap<>();
@@ -571,8 +566,4 @@ public class Catalog extends BaseTestClass {
         return offer.getOfferId();
     }
 
-    private void PrepareOauthToken() throws Exception {
-        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
-        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
-    }
 }

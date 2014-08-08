@@ -5,13 +5,9 @@
  */
 package com.junbo.test.catalog.itemAttribute;
 
-import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
-import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.test.catalog.enums.CatalogItemAttributeType;
 import com.junbo.test.catalog.impl.ItemAttributeServiceImpl;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
-import com.junbo.test.common.Entities.enums.ComponentType;
-import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.catalog.ItemAttributeService;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.test.common.libs.IdConverter;
@@ -37,11 +33,6 @@ public class TestGetItemAttribute extends BaseTestClass {
     private LogHelper logger = new LogHelper(TestGetItemAttribute.class);
     private ItemAttributeService itemAttributeService = ItemAttributeServiceImpl.instance();
 
-    private void prepareTestData() throws Exception {
-        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
-        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
-    }
-
     @Property(
             priority = Priority.Dailies,
             features = "Get v1/item-attributes/{itemAttributeId}",
@@ -57,7 +48,7 @@ public class TestGetItemAttribute extends BaseTestClass {
     )
     @Test
     public void testGetAnItemAttributeById() throws Exception {
-        this.prepareTestData();
+        prepareCatalogAdminToken();
 
         //Prepare an item attribute
         ItemAttribute itemAttribute = itemAttributeService.postDefaultItemAttribute();
@@ -89,7 +80,7 @@ public class TestGetItemAttribute extends BaseTestClass {
     )
     @Test
     public void testGetItemAttributesByIds() throws Exception {
-        this.prepareTestData();
+        prepareCatalogAdminToken();
 
         HashMap<String, List<String>> paraMap = new HashMap<>();
         List<String> listItemAttributeId = new ArrayList<>();
@@ -140,7 +131,7 @@ public class TestGetItemAttribute extends BaseTestClass {
     )
     @Test
     public void testGetItemAttributesByIdType() throws Exception {
-        this.prepareTestData();
+        prepareCatalogAdminToken();
 
         HashMap<String, List<String>> paraMap = new HashMap<>();
         List<String> listItemAttributeId = new ArrayList<>();

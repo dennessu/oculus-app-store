@@ -5,13 +5,9 @@
  */
 package com.junbo.test.catalog.offerAttribute;
 
-import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.catalog.enums.CatalogOfferAttributeType;
-import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.test.catalog.impl.OfferAttributeServiceImpl;
-import com.junbo.test.common.Entities.enums.ComponentType;
-import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.catalog.OfferAttributeService;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.test.common.libs.IdConverter;
@@ -37,11 +33,6 @@ public class TestGetOfferAttribute extends BaseTestClass {
     private LogHelper logger = new LogHelper(TestGetOfferAttribute.class);
     private OfferAttributeService offerAttributeService = OfferAttributeServiceImpl.instance();
 
-    private void prepareTestData() throws Exception {
-        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
-        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
-    }
-
     @Property(
             priority = Priority.Dailies,
             features = "Get v1/offer-attributes/{offerAttributeId}",
@@ -57,7 +48,7 @@ public class TestGetOfferAttribute extends BaseTestClass {
     )
     @Test
     public void testGetAnOfferAttributeById() throws Exception {
-        this.prepareTestData();
+        prepareCatalogAdminToken();
 
         //Prepare an offer attribute
         OfferAttribute offerAttribute = offerAttributeService.postDefaultOfferAttribute();
@@ -89,7 +80,7 @@ public class TestGetOfferAttribute extends BaseTestClass {
     )
     @Test
     public void testGetOfferAttributesByIds() throws Exception {
-        this.prepareTestData();
+        prepareCatalogAdminToken();
 
         HashMap<String, List<String>> paraMap = new HashMap<>();
         List<String> listOfferAttributeId = new ArrayList<>();
@@ -140,7 +131,7 @@ public class TestGetOfferAttribute extends BaseTestClass {
     )
     @Test
     public void testGetOfferAttributesByIdType() throws Exception {
-        this.prepareTestData();
+        prepareCatalogAdminToken();
 
         HashMap<String, List<String>> paraMap = new HashMap<>();
         List<String> listOfferAttributeId = new ArrayList<>();

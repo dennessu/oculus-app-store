@@ -5,12 +5,8 @@
  */
 package com.junbo.test.catalog.itemAttribute;
 
-import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
-import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.test.catalog.impl.ItemAttributeServiceImpl;
-import com.junbo.test.common.Entities.enums.ComponentType;
-import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.catalog.ItemAttributeService;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.test.common.libs.LogHelper;
@@ -42,10 +38,9 @@ public class TestDeleteItemAttribute extends BaseTestClass {
     )
     @Test
     public void testDeleteItemAttribute() throws Exception {
-        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
         ItemAttributeService itemAttributeService = ItemAttributeServiceImpl.instance();
 
-        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
+        prepareCatalogAdminToken();
 
         //Prepare an item and delete it
         ItemAttribute itemAttribute = itemAttributeService.postDefaultItemAttribute();
@@ -58,6 +53,7 @@ public class TestDeleteItemAttribute extends BaseTestClass {
         }
         catch (Exception ex)
         {
+            logger.logInfo("expected exception" + ex);
         }
 
         //delete non-existing item
