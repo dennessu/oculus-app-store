@@ -20,6 +20,7 @@ import com.junbo.test.catalog.OfferRevisionService;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.catalog.ItemRevisionService;
+import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.catalog.enums.EventType;
 import com.junbo.test.common.blueprint.Master;
@@ -476,6 +477,9 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         else {
             itemRevision = itemRevisionService.prepareItemRevisionEntity(defaultPhysicalItemRevisionFileName);
         }
+
+        //set packagename
+        itemRevision.setPackageName("PackageName_" + RandomFactory.getRandomStringOfAlphabet(10));
 
         itemRevision.setItemId(itemPost.getItemId());
         itemRevision.setOwnerId(itemPost.getOwnerId());

@@ -41,7 +41,7 @@ public class DrmServiceImpl extends HttpClientBase implements DrmService {
 
     @Override
     public SignedLicense postLicense(LicenseRequest request, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, drmURL, request, expectedResponseCode, false);
+        String responseBody = restApiCall(HTTPMethod.POST, drmURL, request, expectedResponseCode, true);
         return new JsonMessageTranscoder().decode(new TypeReference<SignedLicense>() {}, responseBody);
     }
 }

@@ -69,7 +69,9 @@ public class DrmTesting extends TestClass {
 
         LicenseRequest request = new LicenseRequest();
 
-        request.setPackageName(RandomFactory.getRandomStringOfAlphabet(10));
+        ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
+        ItemRevision itemRevision = itemRevisionService.getItemRevision(item.getCurrentRevisionId());
+        request.setPackageName(itemRevision.getPackageName());
         request.setVersionCode(RandomFactory.getRandomStringOfNumeric(3));
 
         request.setNonce(RandomFactory.getRandomStringOfAlphabet(10));
@@ -95,7 +97,7 @@ public class DrmTesting extends TestClass {
         //prepare item
         item = itemService.postDefaultItem(CatalogItemType.APP, organizationId);
 
-        releaseItem(item);
+        item = releaseItem(item);
 
         //prepare entitlement
         Entitlement entitlement = new Entitlement();
