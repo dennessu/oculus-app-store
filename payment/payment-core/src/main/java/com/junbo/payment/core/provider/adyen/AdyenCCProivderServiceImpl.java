@@ -209,7 +209,7 @@ public class AdyenCCProivderServiceImpl extends AdyenProviderServiceImpl{
             sbReq.append("&paymentRequest.amount.currency=" + CommonUtil.urlEncode(defaultCurrency.getValue()));
             sbReq.append("&paymentRequest.amount.value=" + minAuthAmount);
             sbReq.append("&paymentRequest.merchantAccount=" + CommonUtil.urlEncode(getMerchantAccount()));
-            sbReq.append("&paymentRequest.reference=" + piId.toString());
+            sbReq.append("&paymentRequest.reference=" + CommonUtil.encode(piId));
             sbReq.append("&paymentRequest.additionalData.card.encrypted.json=" + CommonUtil.urlEncode(request.getAccountNumber()));
             if(CommonUtil.isNullOrEmpty(request.getUserInfo().getEmail())){
                 throw AppClientExceptions.INSTANCE.missingEmail().exception();
