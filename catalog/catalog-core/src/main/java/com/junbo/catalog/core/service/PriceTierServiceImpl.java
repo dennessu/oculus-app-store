@@ -120,6 +120,9 @@ public class PriceTierServiceImpl implements PriceTierService {
         if (!oldPriceTier.getRev().equals(priceTier.getRev())) {
             errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("rev", priceTier.getRev(), oldPriceTier.getRev()));
         }
+        if (!oldPriceTier.getId().equals(priceTier.getId())) {
+            errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("self.id", priceTier.getId(), oldPriceTier.getId()));
+        }
         validateCommon(priceTier, errors);
         if (!errors.isEmpty()) {
             AppErrorException exception = Utils.invalidFields(errors).exception();
