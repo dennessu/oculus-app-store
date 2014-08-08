@@ -16,7 +16,6 @@ import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.entitlement.spec.model.Entitlement;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.test.common.libs.ShardIdHelper;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
@@ -359,34 +358,9 @@ public class CartCheckout extends BaseTestClass {
 
         String orderId = testDataProvider.postOrder(uid, country, currency, adyenId, false, offerList);
 
-        Order order = Master.getInstance().getOrder(orderId);
-        order.setTentative(false);
-        order.getPayments().get(0).setSuccessRedirectUrl("http://www.baidu.com/");
-        order.getPayments().get(0).setCancelRedirectUrl("http://www.baidu.com/cancel/");
-        orderId = testDataProvider.updateOrder(order);
-        order = Master.getInstance().getOrder(orderId);
-        String providerConfirmUrl = order.getPayments().get(0).getProviderConfirmUrl();
+        testDataProvider.orderProvider.getProviderConfirmUrl(orderId);
 
-        String[] params = providerConfirmUrl.split("&");
-        String urlEncoded = new String();
-
-        for (int i = 0; i < params.length; i++) {
-            if (params[i].contains("merchantSig")) {
-                String sig = params[i].substring(12);
-                String sigEncoded = URLEncoder.encode(sig, "utf-8");
-                params[i] = "merchantSig=" + sigEncoded;
-            }
-            if (params[i].contains("shopperEmail")) {
-                String email = params[i].substring(13);
-                String emailEncoded = URLEncoder.encode(email, "utf-8");
-                params[i] = "shopperEmail=" + emailEncoded;
-            }
-            urlEncoded += params[i] + "&";
-        }
-        urlEncoded = urlEncoded.substring(0, urlEncoded.length() - 1);
-
-        emulateAdyenCheckout(order);
-
+        testDataProvider.orderProvider.emulateAdyenCallBack(orderId);
     }
 
     @Property(
@@ -602,21 +576,9 @@ public class CartCheckout extends BaseTestClass {
                 break;
         }
 
-        Order order = Master.getInstance().getOrder(orderId);
-        order.getPayments().get(0).setSuccessRedirectUrl("http://www.abc.com/");
-        order.getPayments().get(0).setCancelRedirectUrl("http://www.abc.com/cancel/");
-        orderId = testDataProvider.updateOrder(order);
+        String token = testDataProvider.orderProvider.getPaypalToken(orderId);
 
-        order = Master.getInstance().getOrder(orderId);
-        order.setTentative(false);
-        orderId = testDataProvider.updateOrder(order);
-        order = Master.getInstance().getOrder(orderId);
-
-        String providerConfirmUrl = order.getPayments().get(0).getProviderConfirmUrl();
-        int tokenIndex = providerConfirmUrl.indexOf("token=");
-        String token = providerConfirmUrl.substring(tokenIndex + 6);
-
-        emulatePayPalCheckout(order, token, itemType);
+        testDataProvider.orderProvider.emulatePaypalCallback(orderId, token);
 
         //get the order and do verification
         testDataProvider.getOrder(orderId);
@@ -635,60 +597,6 @@ public class CartCheckout extends BaseTestClass {
                         uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, payPalId, false);
                 break;
         }
-    }
-
-
-    private void emulatePayPalCheckout(Order order, String token, CatalogItemType itemType) throws Exception {
-        //Long paymentTransactionId = getTransactionId(order.getUser().getValue());
-
-        String paymentTransactionId = "";
-        //Post callback properties
-        //PaymentCallbackParams paymentProperties = new PaymentCallbackParams();
-        //paymentProperties.setToken(token);
-        //paymentProperties.setPayerID(payerId);
-        //PaymentCallbackService paymentCallbackService = PaymentCallbackServiceImpl.getInstance();
-        //paymentCallbackService.postPaymentProperties(paymentTransactionId, paymentProperties);
-
-        Map<String, String> properties = new HashMap<>();
-        properties.put("paymentId", paymentTransactionId);
-        properties.put("payerId", payerId);
-        properties.put("token", token);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(properties);
-
-        //Post "charge completed" order event
-        OrderEventService orderEventService = OrderEventServiceImpl.getInstance();
-        OrderEvent orderEvent = new OrderEvent();
-        orderEvent.setOrder(order.getId());
-        orderEvent.setAction("CHARGE");
-        orderEvent.setStatus("COMPLETED");
-        orderEvent.setProperties(json);
-
-        orderEventService.postOrderEvent(orderEvent);
-    }
-
-    private void emulateAdyenCheckout(Order order) throws Exception {
-        //Long paymentTransactionId = getTransactionId(order.getUser().getValue());
-        String paymentTransactionId = "";
-        String authResult = "AUTHORISED";
-        String pspReference = "";
-
-
-        PaymentCallbackParams paymentProperties = new PaymentCallbackParams();
-        paymentProperties.setAuthResult(authResult);
-        paymentProperties.setPspReference(pspReference);
-        PaymentCallbackService paymentCallbackService = PaymentCallbackServiceImpl.getInstance();
-        paymentCallbackService.postPaymentProperties(paymentTransactionId, paymentProperties);
-
-
-        //Post "charge completed" order event
-        OrderEventService orderEventService = OrderEventServiceImpl.getInstance();
-        OrderEvent orderEvent = new OrderEvent();
-        orderEvent.setOrder(order.getId());
-        orderEvent.setAction("CHARGE");
-        orderEvent.setStatus("COMPLETED");
-
-        orderEventService.postOrderEvent(orderEvent);
     }
 
     private Long getTransactionId(Long uid) throws Exception {

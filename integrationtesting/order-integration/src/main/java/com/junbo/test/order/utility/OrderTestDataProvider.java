@@ -6,6 +6,7 @@
 
 package com.junbo.test.order.utility;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.billing.spec.model.BalanceItem;
 import com.junbo.billing.spec.model.TaxItem;
 import com.junbo.catalog.spec.model.common.Price;
@@ -44,6 +45,7 @@ import com.junbo.test.payment.utility.PaymentTestDataProvider;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URLDecoder;
 import java.util.*;
 
 /**
@@ -57,6 +59,8 @@ public class OrderTestDataProvider {
     protected UserService identityClient = UserServiceImpl.instance();
     protected PaymentTestDataProvider paymentProvider = new PaymentTestDataProvider();
     protected BillingTestDataProvider billingProvider = new BillingTestDataProvider();
+
+    private final String payerId = "CCZA9BJT9NKTS";
 
 
     public String createUser() throws Exception {
@@ -536,4 +540,96 @@ public class OrderTestDataProvider {
         return billingProvider.getBalancesByOrderId(orderId);
     }
 
+    public String getPaypalToken(String orderId) throws Exception {
+        Order order = Master.getInstance().getOrder(orderId);
+        order.getPayments().get(0).setSuccessRedirectUrl("http://www.abc.com/");
+        order.getPayments().get(0).setCancelRedirectUrl("http://www.abc.com/cancel/");
+        orderId = updateOrder(order);
+
+        order = Master.getInstance().getOrder(orderId);
+        order.setTentative(false);
+        orderId = updateOrder(order);
+        order = Master.getInstance().getOrder(orderId);
+
+        String providerConfirmUrl = order.getPayments().get(0).getProviderConfirmUrl();
+        int tokenIndex = providerConfirmUrl.indexOf("token=");
+        return providerConfirmUrl.substring(tokenIndex + 6);
+    }
+
+    public String getProviderConfirmUrl(String orderId) throws Exception{
+        Order order = Master.getInstance().getOrder(orderId);
+        order.getPayments().get(0).setSuccessRedirectUrl("http://www.abc.com/");
+        order.getPayments().get(0).setCancelRedirectUrl("http://www.abc.com/cancel/");
+        orderId = updateOrder(order);
+
+        order = Master.getInstance().getOrder(orderId);
+        order.setTentative(false);
+        orderId = updateOrder(order);
+        order = Master.getInstance().getOrder(orderId);
+
+        return order.getPayments().get(0).getProviderConfirmUrl();
+    }
+
+    public void emulatePaypalCallback(String orderId, String token) throws Exception {
+        String paymentTransactionId = "";
+        Map<String, String> properties = new HashMap<>();
+        properties.put("paymentId", paymentTransactionId);
+        properties.put("payerId", payerId);
+        properties.put("token", token);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(properties);
+
+        OrderEvent orderEvent = new OrderEvent();
+        orderEvent.setOrder(new OrderId(IdConverter.hexStringToId(OrderId.class, orderId)));
+        orderEvent.setAction("CHARGE");
+        orderEvent.setStatus("COMPLETED");
+        orderEvent.setProperties(json);
+        orderEventClient.postOrderEvent(orderEvent);
+    }
+
+    public void  emulateAdyenCallBack(String orderId) throws Exception{
+        String successRedirectUrl = "";
+        String paymentTransactionId = "";
+        String authResult = "AUTHORISED";
+        String pspReference = "";
+        String skinCode = "";
+        String merchantSig = "";
+        String[] params = successRedirectUrl.split("&");
+        for (String param : params) {
+            String value = param.substring(param.indexOf('=') + 1);
+            if (param.contains("merchantReference")) {
+                paymentTransactionId = value;
+            } else if (param.contains("skinCode")) {
+                skinCode = value;
+            } else if (param.contains("psp")) {
+                pspReference = value;
+            } else if (param.contains("merchantSig")) {
+                //merchantSig = URLEncoder.encode(value, "utf-8");
+                merchantSig = URLDecoder.decode(value, "utf-8");
+            }
+        }
+
+        Map<String, String> properties = new HashMap<>();
+        properties.put("paymentId", paymentTransactionId);
+        properties.put("pspReference", pspReference);
+        properties.put("authResult", authResult);
+        properties.put("skinCode", skinCode);
+        properties.put("merchantSig", merchantSig);
+        properties.put("merchantReference", paymentTransactionId);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(properties);
+
+
+        OrderEvent orderEvent = new OrderEvent();
+        orderEvent.setOrder(new OrderId(IdConverter.hexStringToId(OrderId.class, orderId)));
+        orderEvent.setAction("CHARGE");
+        orderEvent.setStatus("COMPLETED");
+        orderEvent.setProperties(json);
+
+        orderEventClient.postOrderEvent(orderEvent);
+    }
+
 }
+
+
+
