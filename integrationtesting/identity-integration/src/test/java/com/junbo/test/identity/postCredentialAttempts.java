@@ -50,13 +50,20 @@ public class postCredentialAttempts {
     @Test(groups = "dailies")
     public void postUserCredentitalAttemptsMaxRetrySameUser() throws Exception {
         User user = Identity.UserPostDefault();
-        String password = RandomHelper.randomNumeric(6) + RandomHelper.randomAlphabetic(6);
-        Identity.UserCredentialPostDefault(user.getId(), password);
+        String password = RandomHelper.randomAlphabetic(4).toLowerCase() +
+                RandomHelper.randomNumeric(6) +
+                RandomHelper.randomAlphabetic(4).toUpperCase();
+        CloseableHttpResponse response = Identity.UserCredentialPostDefault(user.getId(), password);
+        response.close();
 
-        String newPassword = RandomHelper.randomNumeric(6) + RandomHelper.randomAlphabetic(6);
-        for (int i = 0; i < 3; i++) {
-            CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
-                    user.getUsername(), newPassword, false);
+        String wrongPassword = RandomHelper.randomAlphabetic(4).toLowerCase() +
+                RandomHelper.randomNumeric(6) +
+                RandomHelper.randomAlphabetic(4).toUpperCase();
+        response = Identity.UserCredentialPostDefault(user.getId(), password);
+        response.close();
+        for (int i = 0; i < 1; i++) {
+            response = Identity.UserCredentialAttemptesPostDefault(
+                    user.getUsername(), wrongPassword, false);
             Validator.Validate("validate response error code", 412, response.getStatusLine().getStatusCode());
             String errorMessage = "User Password Incorrect";
             Validator.Validate("validate response error message", true,
@@ -64,8 +71,8 @@ public class postCredentialAttempts {
             response.close();
         }
 
-        CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
-                user.getUsername(), newPassword, false);
+        response = Identity.UserCredentialAttemptesPostDefault(
+                user.getUsername(), wrongPassword, false);
         Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
         String errorMessage = "User reaches maximum allowed retry count";
         Validator.Validate("validate response error message", true,
@@ -79,7 +86,9 @@ public class postCredentialAttempts {
         for (int i = 0; i < 101; i++) {
             CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
                     RandomHelper.randomAlphabetic(15), RandomHelper.randomAlphabetic(15), ip, false);
-            Validator.Validate("validate response error code", 412, response.getStatusLine().getStatusCode());
+            if (i < 100) {
+                Validator.Validate("validate response error code", 412, response.getStatusLine().getStatusCode());
+            }
             response.close();
         }
         CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(

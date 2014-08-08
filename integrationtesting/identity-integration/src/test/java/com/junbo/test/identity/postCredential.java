@@ -43,7 +43,7 @@ public class postCredential {
         CloseableHttpResponse response = Identity.UserCredentialPostDefault(user.getId(),
                 RandomHelper.randomAlphabetic(4).toUpperCase() +
                         Math.abs(RandomHelper.randomInt()) % 1000 +
-                        RandomHelper.randomAlphabetic(4));
+                        RandomHelper.randomAlphabetic(4).toLowerCase());
         Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
     }
 }
