@@ -18,6 +18,7 @@ public class TokenSet extends ResourceMetaForDualWrite<String> {
     private String description;
     private String status;
     private String generationLength;
+    private Long organizationId;
     private ProductDetail productDetail;
     private String productType;
 
@@ -51,6 +52,14 @@ public class TokenSet extends ResourceMetaForDualWrite<String> {
 
     public void setGenerationLength(String generationLength) {
         this.generationLength = generationLength;
+    }
+
+    public Long getOrganizationId() {
+        return organizationId;
+    }
+
+    public void setOrganizationId(Long organizationId) {
+        this.organizationId = organizationId;
     }
 
     public ProductDetail getProductDetail() {

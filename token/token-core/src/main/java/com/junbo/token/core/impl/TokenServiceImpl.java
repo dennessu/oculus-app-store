@@ -232,24 +232,27 @@ public class TokenServiceImpl implements TokenService {
         if(request.getProductDetail() == null){
             throw AppCommonErrors.INSTANCE.fieldRequired("productDetail").exception();
         }
+        if(request.getOrganizationId() == null){
+            throw AppCommonErrors.INSTANCE.fieldRequired("organizationId").exception();
+        }
         if(request.getProductType().equalsIgnoreCase(ProductType.OFFER.toString())){
             if(CommonUtil.isNullOrEmpty(request.getProductDetail().getDefaultOffer())){
                 throw AppCommonErrors.INSTANCE.fieldRequired("defaultOffer").exception();
             }
-            validateProduct(request.getProductDetail().getDefaultOffer(), ProductType.OFFER);
+            validateProduct(request.getProductDetail().getDefaultOffer(), ProductType.OFFER, request.getOrganizationId());
             if(request.getProductDetail().getOptionalOffers() != null){
                 for(String offer : request.getProductDetail().getOptionalOffers()){
-                    validateProduct(offer, ProductType.OFFER);
+                    validateProduct(offer, ProductType.OFFER, request.getOrganizationId());
                 }
             }
         }else if(request.getProductType().equalsIgnoreCase(ProductType.PROMOTION.toString())){
             if(CommonUtil.isNullOrEmpty(request.getProductDetail().getDefaultPromotion())){
                 throw AppCommonErrors.INSTANCE.fieldRequired("defaultPromotion").exception();
             }
-            validateProduct(request.getProductDetail().getDefaultPromotion(), ProductType.PROMOTION);
+            validateProduct(request.getProductDetail().getDefaultPromotion(), ProductType.PROMOTION, request.getOrganizationId());
             if(request.getProductDetail().getOptionalPromotion() != null){
                 for(String offer : request.getProductDetail().getOptionalPromotion()){
-                    validateProduct(offer, ProductType.PROMOTION);
+                    validateProduct(offer, ProductType.PROMOTION, request.getOrganizationId());
                 }
             }
         }else{
@@ -257,7 +260,7 @@ public class TokenServiceImpl implements TokenService {
         }
     }
 
-    private void validateProduct(String productId, ProductType type){
+    private void validateProduct(String productId, ProductType type, Long organizationId){
         Offer offer = null;
         Promotion promotion = null;
         try {
@@ -280,6 +283,10 @@ public class TokenServiceImpl implements TokenService {
         if (promotion == null && type.equals(ProductType.PROMOTION)) {
             throw AppErrors.INSTANCE.invalidProduct(productId).exception();
         }
+        if(offer != null && !offer.getOwnerId().getValue().equals(organizationId)){
+            throw AppErrors.INSTANCE.invalidOrganization(organizationId.toString()).exception();
+        }
+        //TODO: add promotion owner check when promotion ready
     }
 
     private void validateTokenOrder(TokenOrder request){

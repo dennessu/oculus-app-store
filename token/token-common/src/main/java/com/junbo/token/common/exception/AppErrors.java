@@ -42,4 +42,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 412, code = "107", message = "Invalid Product",
             field = "product", reason = "The product {0} is invalid")
     AppError invalidProduct(String product);
+
+    @ErrorDef(httpStatusCode = 412, code = "108", message = "Invalid Organization",
+            field = "organization", reason = "The organization {0} is invalid")
+    AppError invalidOrganization(String organization);
 }

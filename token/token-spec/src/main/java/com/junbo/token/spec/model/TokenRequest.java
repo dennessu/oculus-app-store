@@ -7,6 +7,7 @@
 package com.junbo.token.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.jackson.annotation.OrganizationId;
 import com.junbo.common.jackson.annotation.TokenOrderId;
 import com.junbo.token.common.FilterIn;
 import com.junbo.token.common.FilterOut;
@@ -24,6 +25,9 @@ public class TokenRequest {
     private String id;
     private String description;
     private String generationLength;
+    @JsonProperty("organization")
+    @OrganizationId
+    private Long organizationId;
     private String productType;
     private ProductDetail productDetail;
     @FilterIn
@@ -60,6 +64,14 @@ public class TokenRequest {
 
     public void setGenerationLength(String generationLength) {
         this.generationLength = generationLength;
+    }
+
+    public Long getOrganizationId() {
+        return organizationId;
+    }
+
+    public void setOrganizationId(Long organizationId) {
+        this.organizationId = organizationId;
     }
 
     public ProductDetail getProductDetail() {

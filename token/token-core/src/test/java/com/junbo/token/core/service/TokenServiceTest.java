@@ -37,6 +37,7 @@ public class TokenServiceTest extends BaseTest {
                 setCreateMethod(CreateMethod.GENERATION.toString());
                 setDescription("ut");
                 setExpiredTime(null);
+                setOrganizationId(MockOfferClient.mock_owner);
                 setGenerationLength(TokenLength.LEN16.toString());
                 setProductDetail(product);
                 setProductType(ProductType.OFFER.toString());
@@ -62,6 +63,7 @@ public class TokenServiceTest extends BaseTest {
                 setCreateMethod(CreateMethod.GENERATION.toString());
                 setDescription("ut");
                 setExpiredTime(null);
+                setOrganizationId(MockOfferClient.mock_owner);
                 setGenerationLength(TokenLength.LEN16.toString());
                 setProductDetail(product);
                 setProductType(ProductType.PROMOTION.toString());
@@ -88,6 +90,7 @@ public class TokenServiceTest extends BaseTest {
                 setCreateMethod(CreateMethod.GENERATION.toString());
                 setDescription("ut");
                 setExpiredTime(null);
+                setOrganizationId(MockOfferClient.mock_owner);
                 setGenerationLength(TokenLength.LEN16.toString());
                 setProductDetail(product);
                 setProductType(ProductType.OFFER.toString());
@@ -125,6 +128,7 @@ public class TokenServiceTest extends BaseTest {
                 setCreateMethod(CreateMethod.UPLOAD.toString());
                 setDescription("ut");
                 setExpiredTime(null);
+                setOrganizationId(MockOfferClient.mock_owner);
                 setProductDetail(product);
                 setProductType(ProductType.OFFER.toString());
                 setUsageLimit("1");
@@ -161,6 +165,7 @@ public class TokenServiceTest extends BaseTest {
                 setCreateMethod(CreateMethod.UPLOAD.toString());
                 setDescription("ut");
                 setExpiredTime(null);
+                setOrganizationId(MockOfferClient.mock_owner);
                 setProductDetail(product);
                 setProductType(ProductType.OFFER.toString());
                 setUsageLimit("1");

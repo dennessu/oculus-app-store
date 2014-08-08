@@ -228,6 +228,14 @@
         </sql>
     </changeSet>
 
+    <changeSet id="11" author='WenhongZhu' context="PREDEPLOY">
+        <sql>
+            <![CDATA[
+            ALTER TABLE token_set ADD COLUMN organization_id bigint;
+        ]]>
+        </sql>
+    </changeSet>
+
 
     <changeSet id="31" author='WenhongZhu' context="PREDEPLOY">
         <sql>
