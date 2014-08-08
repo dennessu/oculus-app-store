@@ -200,6 +200,13 @@ public class PaymentTestDataProvider extends BaseTestDataProvider {
         dbHelper.executeUpdate(sqlStr, DBHelper.DBName.PAYMENT);
     }
 
+    public String getEwalletBalanceFromDB(String uid) throws Exception {
+        String sqlStr = String.format(
+                "select balance from shard_%s.ewallet where user_id = '%s'",
+                ShardIdHelper.getShardIdByUid(uid), IdConverter.hexStringToId(UserId.class, uid));
+        return dbHelper.executeScalar(sqlStr, DBHelper.DBName.EWALLET);
+    }
+
     /*
     public String encryptCreditCardInfo(CreditCardInfo creditCardInfo) {
 

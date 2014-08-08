@@ -11,6 +11,7 @@ import com.junbo.test.billing.enums.TransactionType;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
+import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
 import com.junbo.test.common.property.*;
 import com.junbo.test.order.model.OrderInfo;
 import com.junbo.test.order.model.enums.OrderStatus;
@@ -302,6 +303,149 @@ public class RefundTesting extends BaseOrderTestClass {
         validationHelper.validateSingleTransaction(balanceId, transactionInfo);
 
     }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "Put /orders/{key}",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            release = Release.June2014,
+            description = "Test order refund - full refund",
+            steps = {
+                    "1. Post a new user",
+                    "2. Post new ewallet to user",
+                    "3. Charge enough stored value balance",
+                    "4. Post an order and complete it",
+                    "5. Refund order 1 quantity and refund order 2 total amount",
+                    "6. Get balance by order Id",
+                    "7. Verify transactions contain expected refund info",
+                    "8. Get order by order Id",
+                    "9. Verify order response",
+                    "10. Verify ewallet balance"
+            }
+    )
+    @Test
+    public void testOrderFullRefundByEwallet() throws Exception {
+        Map<String, Integer> offerList = new HashedMap();
+        Country country = Country.DEFAULT;
+        Currency currency = Currency.DEFAULT;
+
+        offerList.put(offer_inApp_consumable1, 1);
+        offerList.put(offer_digital_normal2, 1);
+
+        String uid = testDataProvider.createUser();
+
+        EwalletInfo ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT,Currency.DEFAULT);
+        String paymentId = testDataProvider.postPaymentInstrument(uid, ewalletInfo);
+        testDataProvider.creditWallet(uid, new BigDecimal(50));
+
+        String orderId = testDataProvider.postOrder(
+                uid, country, currency, paymentId, false, offerList);
+
+        testDataProvider.updateOrderTentative(orderId, false);
+
+        OrderInfo expectedOrderInfo = testDataProvider.getExpectedOrderInfo(uid, country, currency,
+                "en_US", false, OrderStatus.COMPLETED,  paymentId, orderId, offerList);
+
+        Map<String, Integer> refundOfferList = new HashedMap();
+        refundOfferList.put(offer_inApp_consumable1, 1);
+
+        Map<String, BigDecimal> partialRefundAmounts = new HashedMap();
+        partialRefundAmounts.put(offer_digital_normal2, new BigDecimal(10));
+
+        testDataProvider.getRefundedOrderInfo(expectedOrderInfo, refundOfferList, partialRefundAmounts);
+
+        testDataProvider.refundOrder(orderId, refundOfferList, partialRefundAmounts);
+
+        validationHelper.validateEwalletBalance(uid, new BigDecimal(50));
+
+        validationHelper.validateOrderInfo(orderId, expectedOrderInfo);
+
+        String balanceId = testDataProvider.getBalancesByOrderId(orderId).get(1);
+
+        TransactionInfo transactionInfo = new TransactionInfo();
+        transactionInfo.setPaymentInstrumentId(paymentId);
+        transactionInfo.setAmount(expectedOrderInfo.getTotalAmount().add(expectedOrderInfo.getTotalTax()));
+        transactionInfo.setCurrency(Currency.DEFAULT);
+        transactionInfo.setTransactionStatus(TransactionStatus.SUCCESS);
+        transactionInfo.setTransactionType(TransactionType.REFUND);
+
+        validationHelper.validateSingleTransaction(balanceId, transactionInfo);
+
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Put /orders/{key}",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Manual,
+            release = Release.June2014,
+            description = "Test order refund - partial quantity refund ",
+            steps = {
+                    "1. Post a new user",
+                    "2. Post new ewallet to user",
+                    "3. Credit enough stored valve balance",
+                    "4. Post an order and complete it",
+                    "5. Put order with partial item quantity",
+                    "6. Get balance by order Id",
+                    "7. Verify transactions contain expected refund info,",
+                    "8. Get order by order Id",
+                    "9. Verify order response info",
+                    "10. Verify ewallet balance"
+            }
+    )
+    @Test
+    public void testOrderPartialQuantityRefundByEwallet() throws Exception {
+        Map<String, Integer> offerList = new HashedMap();
+        Country country = Country.DEFAULT;
+        Currency currency = Currency.DEFAULT;
+
+        offerList.put(offer_inApp_consumable1, 3);
+        offerList.put(offer_inApp_consumable2, 3);
+
+        String uid = testDataProvider.createUser();
+        EwalletInfo ewalletInfo = EwalletInfo.getEwalletInfo(Country.DEFAULT, Currency.DEFAULT);
+        String paymentId = testDataProvider.postPaymentInstrument(uid, ewalletInfo);
+        testDataProvider.creditWallet(uid, new BigDecimal(80));
+
+        String orderId = testDataProvider.postOrder(
+                uid, Country.DEFAULT, Currency.DEFAULT, paymentId, false, offerList);
+
+        testDataProvider.updateOrderTentative(orderId, false);
+
+        OrderInfo expectedOrderInfo = testDataProvider.getExpectedOrderInfo(uid, country, currency,
+                "en_US", false, OrderStatus.COMPLETED, paymentId, orderId, offerList); 
+        BigDecimal totalAmount = expectedOrderInfo.getTotalAmount().add(expectedOrderInfo.getTotalTax());
+
+        Map<String, Integer> refundOfferList = new HashedMap();
+        refundOfferList.put(offer_inApp_consumable1, 1);
+        refundOfferList.put(offer_inApp_consumable2, 2);
+
+        testDataProvider.getRefundedOrderInfo(expectedOrderInfo, refundOfferList, null);
+
+        BigDecimal totalAmountRefunded = expectedOrderInfo.getTotalAmount().add(expectedOrderInfo.getTotalTax());
+
+        testDataProvider.refundOrder(orderId, refundOfferList, null);
+
+        validationHelper.validateEwalletBalance(uid, new BigDecimal(80).subtract(totalAmount.subtract(totalAmountRefunded)));
+
+        validationHelper.validateOrderInfo(orderId, expectedOrderInfo);
+
+        String balanceId = testDataProvider.getBalancesByOrderId(orderId).get(1);
+
+        TransactionInfo transactionInfo = new TransactionInfo();
+        transactionInfo.setPaymentInstrumentId(paymentId);
+        transactionInfo.setAmount(expectedOrderInfo.getTotalAmount().add(expectedOrderInfo.getTotalTax()));
+        transactionInfo.setCurrency(Currency.DEFAULT);
+        transactionInfo.setTransactionStatus(TransactionStatus.SUCCESS);
+        transactionInfo.setTransactionType(TransactionType.REFUND);
+
+        validationHelper.validateSingleTransaction(balanceId, transactionInfo);
+
+    }
+
 
     @Property(
             priority = Priority.Dailies,

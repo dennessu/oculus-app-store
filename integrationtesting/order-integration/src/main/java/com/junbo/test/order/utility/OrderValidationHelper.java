@@ -18,6 +18,7 @@ import com.junbo.test.order.model.enums.OrderStatus;
 import com.junbo.test.common.Utility.BaseValidationHelper;
 import com.junbo.test.common.blueprint.Master;
 
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,10 @@ public class OrderValidationHelper extends BaseValidationHelper {
             Order order = Master.getInstance().getOrder(orderId);
             verifyEqual(order.getStatus(), expectedOrderStatus.get(orderId).toString(), "verify orderStatus");
         }
+    }
+
+    public void validateEwalletBalance(String uid, BigDecimal expectedBalance) throws Exception{
+        verifyEqual(testDataProvider.paymentProvider.getEwalletBalanceFromDB(uid), expectedBalance.setScale(2).toString(), "verify ewallet balance");
     }
 
     public void validateOrderEvents(String orderId, List<OrderEventInfo> expectedOrderEvents)
