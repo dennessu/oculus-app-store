@@ -8,6 +8,7 @@ package com.junbo.entitlement.core;
 
 import com.amazonaws.HttpMethod;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.cloudfront.CloudFrontUrlSigner;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.junbo.authorization.AuthorizeContext;
@@ -21,6 +22,7 @@ import com.junbo.common.error.AppErrorException;
 import com.junbo.common.id.UserId;
 import com.junbo.entitlement.common.cache.CommonCache;
 import com.junbo.entitlement.common.lib.EntitlementContext;
+import com.junbo.entitlement.core.service.EntitlementServiceImpl;
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.entitlement.spec.model.PageMetadata;
@@ -40,9 +42,10 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import javax.ws.rs.WebApplicationException;
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -171,14 +174,14 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
 
     @Test(enabled = false)
     //make sure the url and key info are valid and just check whether the url generated is valid
-    public void testGenerateUrl() throws MalformedURLException, URISyntaxException {
-        String url = "http://static.oculusvr.com/uploads/14013776640911fhvo9od2t9-pc.zip";
-//        String url = "http://d1aifagf6hhneo.cloudfront.net/binaries/sr51r1VTfeqZFaFF0ZXy_SpotifyInstaller.zip";
+    public void testGenerateUrl() throws IOException, URISyntaxException, InvalidKeySpecException {
+        //   String url = "http://static.oculusvr.com/uploads/14013776640911fhvo9od2t9-pc.zip";
+        String url = "https://d1aifagf6hhneo.cloudfront.net/binaries/sr51r1VTfeqZFaFF0ZXy_SpotifyInstaller.zip";
         String result = generatePreSignedDownloadUrl(url, "xx", "1.0", "PC");
         System.out.println(result);
     }
 
-    private String generatePreSignedDownloadUrl(String urlString, String filename, String version, String platform) throws MalformedURLException, URISyntaxException {
+    private String generatePreSignedDownloadUrl(String urlString, String filename, String version, String platform) throws IOException, URISyntaxException, InvalidKeySpecException {
         URL url = new URL(urlString);
         String domainName = url.getHost();
         String objectKey = url.getPath().substring(1);
@@ -202,15 +205,22 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
             return generateS3Url(domainName, objectKey, finalFilename, expiration);
         }
 
-        if (domainName.equalsIgnoreCase("d1aifagf6hhneo.cloudfront.net")){
-            return generateCloudantFrontUrl(urlString, domainName, objectKey, finalFilename, expiration);
+        if (domainName.equalsIgnoreCase("d1aifagf6hhneo.cloudfront.net")) {
+//            String bucketName = "ovr_ink_uploader";
+            return generateCloudantFrontUrl(urlString, finalFilename, expiration);
+//            return generateS3Url(bucketName, objectKey, finalFilename, expiration);
         }
 
         return urlString;
     }
 
-    private String generateCloudantFrontUrl(String urlString, String domainName, String objectKey, String filename, Date expiration) {
-        return null;
+    private String generateCloudantFrontUrl(String urlString, String filename, Date expiration) throws InvalidKeySpecException, IOException {
+        //return CloudFrontUrlSigner.getSignedURLWithCannedPolicy(CloudFrontUrlSigner.Protocol.http, "d1aifagf6hhneo.cloudfront.net", new File("E:\\junbo\\pk-APKAJ3QVRQMSFBXFINKA.pem"), "binaries/sr51r1VTfeqZFaFF0ZXy_SpotifyInstaller.zip", "APKAJ3QVRQMSFBXFINKA", expiration);
+
+        return CloudFrontUrlSigner.getSignedURLWithCannedPolicy(
+//                urlString,
+                urlString + (filename == null ? "" : ("?" + "response-content-disposition=attachment;filename=\"" + filename + "\"")),
+                EntitlementServiceImpl.getPrivateKeyId(), EntitlementServiceImpl.getPrivateKey(), expiration);   
     }
 
     private String generateS3Url(String bucketName, String objectKey, String filename, Date expiration) {

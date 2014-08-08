@@ -9,6 +9,9 @@
     <bean id="entitlementService" class="com.junbo.entitlement.core.service.EntitlementServiceImpl">
         <property name="bucketNames" value="${entitlement.aws.bucketNames}"/>
         <property name="cloudFrontDomains" value="${entitlement.aws.cloudFrontDomains}"/>
+        <property name="expirationTime" value="${entitlement.aws.url.expirationTime}"/>
+        <property name="privateKey" value="${entitlement.aws.privateKeyPath}"/>
+        <property name="privateKeyId" value="${entitlement.aws.privateKeyPairId}"/>
     </bean>
 
     <bean id="awsCredentials" class="com.amazonaws.auth.BasicAWSCredentials">

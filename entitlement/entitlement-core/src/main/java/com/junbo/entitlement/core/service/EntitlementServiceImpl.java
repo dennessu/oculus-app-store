@@ -34,13 +34,13 @@ import com.junbo.langur.core.promise.Promise;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.UriBuilder;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -57,6 +57,11 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     private static final Logger LOGGER = LoggerFactory.getLogger(EntitlementService.class);
     private static final String ENTITLEMENT_SERVICE_SCOPE = "entitlement.service";
     private static final String ITEM_BINARIES_MANAGE_SCOPE = "item-binaries.manage";
+    //work around for cloudfront
+    private static final Map<String, String> bucketMap = new HashMap<String, String>() {{
+        put("d1aifagf6hhneo.cloudfront.net", "ovr_ink_uploader");
+        put("d39nlaid7cu5vo.cloudfront.net", "static.oculusvr.com");
+    }};
 
     @Autowired
     private EntitlementRepository entitlementRepository;
@@ -72,6 +77,9 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
     private static Set<String> bucketNames;
     private static Set<String> cloudFrontDomains;
+    private static Integer expirationTime;
+    private static PrivateKey privateKey;
+    private static String privateKeyId;
 
     @Override
     @Transactional
@@ -357,7 +365,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     private String generatePreSignedDownloadUrl(String urlString, String filename, String version, String platform) throws MalformedURLException, URISyntaxException {
         URL url = new URL(urlString);
         String domainName = url.getHost();
-        if (!bucketNames.contains(domainName) && !cloudFrontDomains.contains(domainName)) {
+        if (!isS3(domainName) && !isCloudFront(domainName)) {
             return urlString;
         }
         String objectKey = url.getPath().substring(1);
@@ -365,7 +373,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
         java.util.Date expiration = new java.util.Date();
         long milliSeconds = expiration.getTime();
-        milliSeconds += 1000 * 30; // Add 30 seconds.
+        milliSeconds += 1000 * expirationTime;
         expiration.setTime(milliSeconds);
 
         String finalFilename = null;
@@ -377,30 +385,24 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
             finalFilename = extension == null ? filename : filename + "." + extension;
         }
 
-        if (bucketNames.contains(domainName.toLowerCase())) {
+        if (isS3(domainName)) {
             return generateS3Url(domainName, objectKey, finalFilename, expiration);
         }
 
-        if (cloudFrontDomains.contains(domainName.toLowerCase())) {
-            return generateCloudantFrontUrl(urlString, finalFilename, expiration);
+        //TODO: work around for cloudfront
+        if (isCloudFront(domainName)) {
+            String bucketName = bucketMap.get(domainName);
+            return generateS3Url(bucketName, objectKey, finalFilename, expiration);
+            //return generateCloudantFrontUrl(urlString, finalFilename, expiration);
         }
 
         return urlString;
     }
 
     private String generateCloudantFrontUrl(String urlString, String filename, Date expiration) {
-        PrivateKey privateKey = null;
-        try {
-            InputStream is = new FileInputStream(new File("xxx"));  //TODO: not provided yet
-            privateKey = PEM.readPrivateKey(is);
-        } catch (InvalidKeySpecException | IOException e) {
-            e.printStackTrace();
-        }
-        assert privateKey != null;
-
         return CloudFrontUrlSigner.getSignedURLWithCannedPolicy(
                 urlString + "?" + "response-content-disposition=attachment;filename=\"" + filename + "\"",
-                null, privateKey, expiration);    //TODO: null should be the keyPairId which is not provided yet
+                privateKeyId, privateKey, expiration);    //TODO: null should be the keyPairId which is not provided yet
     }
 
     private String generateS3Url(String bucketName, String objectKey, String filename, Date expiration) {
@@ -430,6 +432,14 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
         return lastPart;
     }
 
+    private Boolean isS3(String domainName) {
+        return bucketNames.contains(domainName.toLowerCase());
+    }
+
+    private Boolean isCloudFront(String domainName) {
+        return cloudFrontDomains.contains(domainName.toLowerCase());
+    }
+
     private static void authorizeDownloadUrl() {
         if (!AuthorizeContext.hasScopes(ENTITLEMENT_SERVICE_SCOPE) && !AuthorizeContext.hasScopes(ITEM_BINARIES_MANAGE_SCOPE)) {
             throw AppCommonErrors.INSTANCE.insufficientScope().exception();
@@ -441,10 +451,9 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     }
 
     public void setBucketNames(String bucketNames) {
-        if (!CollectionUtils.isEmpty(EntitlementServiceImpl.bucketNames)){
-            return;
+        if (CollectionUtils.isEmpty(EntitlementServiceImpl.bucketNames)) {
+            EntitlementServiceImpl.bucketNames = new HashSet<>(Arrays.asList(bucketNames.split(",")));
         }
-        EntitlementServiceImpl.bucketNames = new HashSet<>(Arrays.asList(bucketNames.split(",")));
     }
 
     public static Set<String> getCloudFrontDomains() {
@@ -452,9 +461,53 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     }
 
     public void setCloudFrontDomains(String cloudFrontDomains) {
-        if (!CollectionUtils.isEmpty(EntitlementServiceImpl.cloudFrontDomains)){
-            return;
+        if (CollectionUtils.isEmpty(EntitlementServiceImpl.cloudFrontDomains)) {
+            EntitlementServiceImpl.cloudFrontDomains = new HashSet<>(Arrays.asList(cloudFrontDomains.split(",")));
         }
-        EntitlementServiceImpl.cloudFrontDomains = new HashSet<>(Arrays.asList(cloudFrontDomains.split(",")));
+    }
+
+    public static Integer getExpirationTime() {
+        return expirationTime;
+    }
+
+    public void setExpirationTime(Integer expirationTime) {
+        if (EntitlementServiceImpl.expirationTime == null) {
+            EntitlementServiceImpl.expirationTime = expirationTime;
+        }
+    }
+
+    public static PrivateKey getPrivateKey() {
+        return privateKey;
+    }
+
+    public void setPrivateKey(String privateKeyFilePath) {
+        if (EntitlementServiceImpl.privateKey == null) {
+            Resource resource = null;
+            PathMatchingResourcePatternResolver patternResolver = new PathMatchingResourcePatternResolver();
+            try {
+                resource = patternResolver.getResources(privateKeyFilePath)[0];
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            PrivateKey privateKey = null;
+            try {
+                InputStream is = resource.getInputStream();  //TODO: not provided yet
+                privateKey = PEM.readPrivateKey(is);
+            } catch (InvalidKeySpecException | IOException e) {
+                e.printStackTrace();
+            }
+            assert privateKey != null;
+            EntitlementServiceImpl.privateKey = privateKey;
+        }
+    }
+
+    public static String getPrivateKeyId() {
+        return privateKeyId;
+    }
+
+    public void setPrivateKeyId(String privateKeyId) {
+        if (StringUtils.isEmpty(EntitlementServiceImpl.privateKeyId)) {
+            EntitlementServiceImpl.privateKeyId = privateKeyId;
+        }
     }
 }
