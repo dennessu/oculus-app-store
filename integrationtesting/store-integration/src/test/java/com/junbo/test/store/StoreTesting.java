@@ -50,26 +50,28 @@ public class StoreTesting extends BaseTestClass {
     @Test
     public void testIAPCheckoutByCreditCard() throws Exception {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser();
-
         String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
-        Master.getInstance().setCurrentUid(uid); //required
-
+        //add new credit card to user
+        
         BillingProfileUpdateResponse billingProfileUpdateResponse = testDataProvider.CreateCreditCard(uid);
-
+        //verify decrypted credit card info
+        validationHelper.verifyAddNewCreditCard(uid, billingProfileUpdateResponse);
+        //get payment id in billing profile
         Long paymentId = billingProfileUpdateResponse.getBillingProfile().getInstruments().get(0).getInstrumentId().getValue();
 
-        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(uid, offer_iap_normal);
-        //TODO validation
+        String offerId = testDataProvider.getOfferIdByName(offer_iap_normal);
+        //post order without set payment instrument
+        PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(uid, offerId);
+        //verify formatted price
+        validationHelper.verifyPreparePurchase(preparePurchaseResponse);
 
-        String purchaseToken = preparePurchaseResponse.getPurchaseToken();
-
+        String purchaseToken = preparePurchaseResponse.getPurchaseToken(); //get order id
         SelectInstrumentResponse selectInstrumentResponse = testDataProvider.selectInstrument(uid, purchaseToken, paymentId);
 
         CommitPurchaseResponse commitPurchaseResponse = testDataProvider.commitPurchase(uid, purchaseToken);
-        //TODO validation
+        validationHelper.verifyCommitPurchase(commitPurchaseResponse, offerId);
 
         EntitlementId entitlementId = commitPurchaseResponse.getEntitlements().get(0).getEntitlementId();
-
         IAPEntitlementConsumeResponse iapEntitlementConsumeResponse = testDataProvider.iapConsumeEntitlement(uid, entitlementId);
 
         //TODO validation

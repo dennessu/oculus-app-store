@@ -42,10 +42,13 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
         if (expectedResponseCode == 200) {
             AuthTokenResponse authTokenResponse = new JsonMessageTranscoder().decode(new TypeReference<AuthTokenResponse>() {
             }, responseBody);
-            Master.getInstance().addUserAccessToken(IdConverter.idToHexString(authTokenResponse.getUserId()), authTokenResponse.getAccessToken());
+            String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
+            Master.getInstance().addUserAccessToken(uid, authTokenResponse.getAccessToken());
+            Master.getInstance().setCurrentUid(uid);
             return authTokenResponse;
         }
         return null;
 
     }
+
 }

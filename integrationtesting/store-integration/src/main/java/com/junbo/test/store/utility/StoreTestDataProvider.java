@@ -86,15 +86,19 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.updateBillingProfile(billingProfileUpdateRequest);
     }
 
-    public PreparePurchaseResponse preparePurchase(String uid, String offerName) throws Exception {
+    public PreparePurchaseResponse preparePurchase(String uid, String offerId) throws Exception {
         PreparePurchaseRequest request = new PreparePurchaseRequest();
         request.setLocale(new LocaleId("en_US"));
         request.setCountry(new CountryId(Country.DEFAULT.toString()));
         request.setUserId(new UserId(IdConverter.hexStringToId(UserId.class, uid)));
         request.setCurrency(new CurrencyId(Currency.DEFAULT.toString()));
-        request.setOfferId(new OfferId(offerClient.getOfferIdByName(offerName)));
+        request.setOfferId(new OfferId(offerId));
         //request.setIapParams();
         return storeClient.preparePurchase(request);
+    }
+
+    public String getOfferIdByName(String offerName)throws Exception{
+        return offerClient.getOfferIdByName(offerName);
     }
 
     public SelectInstrumentResponse selectInstrument(String uid, String purchaseToken, long paymentId) throws Exception{
