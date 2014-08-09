@@ -11,6 +11,6 @@
     </bean>
 
     <bean id="testBean" class="com.junbo.configuration.test.TestBean">
-        <property name="jdbcDriver" value="${identity.db.driverClassName}" />
+        <property name="jdbcDriver" value="${billing.db.driverClassName}" />
     </bean>
 </beans>
