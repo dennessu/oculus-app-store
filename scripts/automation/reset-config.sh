@@ -18,13 +18,12 @@ if [[ -z "$OAUTH_CRYPTO_KEY" ]]; then
   echo
 fi
 
-export ENV=${ENV:-$1}
-export ENV=${ENV:-ppe}
+: ${ENV?"Need to set ENV"}
 
 ./foreach-here.sh $ENV/crypto-apps.txt << EOF
 cat << EOFINNER > /etc/silkcloud/configuration.properties
 profile=apphost-crypto
-environment=ppe
+environment=$ENV
 crypto.core.key=$CRYPTO_KEY
 oauth.crypto.key=$OAUTH_CRYPTO_KEY
 common.conf.debugMode=false
@@ -35,7 +34,7 @@ EOF
 ./foreach-here.sh $ENV/apps.txt << EOF
 cat << EOFINNER > /etc/silkcloud/configuration.properties
 profile=apphost-rest
-environment=ppe
+environment=$ENV
 crypto.core.key=$CRYPTO_KEY
 oauth.crypto.key=$OAUTH_CRYPTO_KEY
 common.conf.debugMode=false
@@ -46,7 +45,7 @@ EOF
 ./foreach-here.sh $ENV/utils.txt << EOF
 cat << EOFINNER > /etc/silkcloud/configuration.properties
 profile=apphost-jobs
-environment=ppe
+environment=$ENV
 crypto.core.key=$CRYPTO_KEY
 oauth.crypto.key=$OAUTH_CRYPTO_KEY
 common.conf.debugMode=false
@@ -56,7 +55,7 @@ EOF
 
 ./foreach-here.sh $ENV/crypto-dbs.txt $ENV/masters.txt $ENV/secondaries.txt $ENV/replicas.txt << EOF
 cat << EOFINNER > /etc/silkcloud/configuration.properties
-environment=ppe
+environment=$ENV
 crypto.core.key=$CRYPTO_KEY
 oauth.crypto.key=$OAUTH_CRYPTO_KEY
 common.conf.debugMode=false

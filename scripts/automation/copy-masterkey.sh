@@ -3,8 +3,7 @@ DIR="$( cd "$( dirname "$0" )" && pwd )"
 pushd $DIR
 set -e
 
-export ENV=${ENV:-$1}
-export ENV=${ENV:-ppe}
+: ${ENV?"Need to set ENV"}
 
 CRYPTO_SERVER_1=`cat $ENV/crypto-dbs.txt | sed -n 1p`
 CRYPTO_SERVER_2=`cat $ENV/crypto-dbs.txt | sed -n 2p`

@@ -4,7 +4,7 @@ pushd $DIR
 
 set -e
 
-export ENV=${ENV:-ppe}
+: ${ENV?"Need to set ENV"}
 
 ARGS=${1:-all}
 

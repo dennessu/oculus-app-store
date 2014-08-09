@@ -5,9 +5,8 @@ pushd $DIR
 set -e
 
 APP_NAME=apphost-cli-0.0.1-SNAPSHOT
-export SOURCETREE_HOME=${SOURCETREE_HOME:-/home/shuz/silkcloud}
-export ENV=${ENV:-$1}
-export ENV=${ENV:-ppe}
+: ${ENV?"Need to set ENV"}
+: ${SOURCETREE_HOME?"Need to set SOURCETREE_HOME"}
 
 echo Copying files...
 cp $SOURCETREE_HOME/apphost/apphost-cli/build/distributions/$APP_NAME.zip /home/silkcloud

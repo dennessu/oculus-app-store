@@ -4,8 +4,7 @@ pushd $DIR
 
 set -e
 
-export ENV=${ENV:-$1}
-export ENV=${ENV:-ppe}
+: ${ENV?"Need to set ENV"}
 
 ./foreach-here.sh $ENV/crypto-apps.txt $ENV/apps.txt $ENV/utils.txt << EOF
 TRIMMED_CONFIG=`head -n 4 /etc/silkcloud/configuration.properties`

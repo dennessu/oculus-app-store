@@ -4,8 +4,7 @@ pushd $DIR
 
 set -e
 
-export ENV=${ENV:-$1}
-export ENV=${ENV:-ppe}
+: ${ENV?"Need to set ENV"}
 
 ./foreach-here.sh $ENV/_all.txt << EOF
 if ! grep '^common.conf.debugMode=' /etc/silkcloud/configuration.properties; then

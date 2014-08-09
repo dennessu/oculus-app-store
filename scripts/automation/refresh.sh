@@ -40,6 +40,13 @@ if [[ -z "$ENV_PREFIX" ]]; then
   echo
 fi
 
+if [[ -z "SOURCETREE_HOME" ]]; then
+  echo -n 'SOURCETREE_HOME: '
+  read SOURCETREE_HOME
+  export SOURCETREE_HOME
+  echo
+fi
+
 ./reset-config.sh
 ./refresh-couch.sh
 ./refresh-dbs.sh

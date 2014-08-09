@@ -12,7 +12,7 @@ if [[ -z "$CRYPTO_KEY" ]]; then
 fi
 
 APP_NAME=apphost-cli-0.0.1-SNAPSHOT
-export SOURCETREE_HOME=${SOURCETREE_HOME:-/home/shuz/silkcloud}
+: ${SOURCETREE_HOME?"Need to set SOURCETREE_HOME"}
 : ${ENV?"Need to set ENV"}
 
 echo Copying files...

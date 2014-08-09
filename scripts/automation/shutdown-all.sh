@@ -4,8 +4,7 @@ pushd $DIR
 
 set -e
 
-export ENV=${ENV:-$1}
-export ENV=${ENV:-ppe}
+: ${ENV?"Need to set ENV"}
 
 ./foreach-here.sh $ENV/crypto-apps.txt $ENV/apps.txt << EOF
 (sudo initctl status silkcloud-apphost | grep start) && sudo stop silkcloud-apphost
