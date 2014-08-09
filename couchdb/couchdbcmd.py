@@ -259,7 +259,7 @@ def curlRaw(url, method = 'GET', body = None, headers = None):
 
     conn = None
     try:
-        urlRegex = r'^(?P<protocol>http[s]?://)?((?P<userpass>([^/@:]*):([^/@:]*))@)?(?P<host>[^/:]+)(:(?P<port>\d+))?(?P<path>(/|\?).*)$'
+        urlRegex = r'^(?P<protocol>http[s]?://)?((?P<userpass>(?P<user>[^/@:]*):([^/@:]*))@)?(?P<host>[^/:]+)(:(?P<port>\d+))?(?P<path>(/|\?).*)$'
         m = re.match(urlRegex, url)
         if m is None:
             raise Exception('Invalid url: ' + url)
@@ -270,6 +270,7 @@ def curlRaw(url, method = 'GET', body = None, headers = None):
         path = m.group('path')
 
         userpass = m.group('userpass')
+        user = m.group('user')
 
         verbose(method + " " + url)
         if body: verbose(body)
@@ -293,6 +294,9 @@ def curlRaw(url, method = 'GET', body = None, headers = None):
             base64String = base64.encodestring(userpass).strip()
             authheader = "Basic %s" % base64String
             headers['Authorization'] = authheader
+
+            # add the user header to pick user for cloudant
+            headers['X-Cloudant-User'] = user
 
         # uncomment to turn on trace
         # conn.set_debuglevel(1)      # turn on trace

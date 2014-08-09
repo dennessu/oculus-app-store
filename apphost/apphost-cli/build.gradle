@@ -39,6 +39,7 @@ applicationDistribution.with {
     into("dbsetup") {
         into("couchdb")     { from("../../couchdb") }
         into("liquibase")   { from("../../liquibase") }
+        into("memcache")    { from("../../memcache") }
         into("pgha")        { from("../../scripts/pgha") }
     }
 
