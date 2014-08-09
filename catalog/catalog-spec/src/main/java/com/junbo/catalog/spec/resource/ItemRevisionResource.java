@@ -11,7 +11,6 @@ import com.junbo.catalog.spec.model.item.ItemRevisionGetOptions;
 import com.junbo.catalog.spec.model.item.ItemRevisionsGetOptions;
 import com.junbo.common.filter.annotations.CacheMaxAge;
 import com.junbo.common.model.Results;
-import com.junbo.langur.core.AuthorizationNotRequired;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
@@ -37,14 +36,12 @@ public interface ItemRevisionResource {
     @ApiOperation("Get or search item revisions")
     @GET
     @Path("/")
-    @AuthorizationNotRequired
     Promise<Results<ItemRevision>> getItemRevisions(@BeanParam ItemRevisionsGetOptions options);
 
     @CacheMaxAge(duration = 5, unit = TimeUnit.MINUTES)
     @ApiOperation("Get an item revision")
     @GET
     @Path("/{revisionId}")
-    @AuthorizationNotRequired
     Promise<ItemRevision> getItemRevision(@PathParam("revisionId") String revisionId, @BeanParam ItemRevisionGetOptions options);
 
     @ApiOperation("Create an item revision")

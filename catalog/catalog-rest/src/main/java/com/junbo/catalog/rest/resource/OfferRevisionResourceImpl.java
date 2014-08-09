@@ -14,10 +14,12 @@ import com.junbo.catalog.auth.OfferAuthorizeCallbackFactory;
 import com.junbo.catalog.clientproxy.LocaleFacade;
 import com.junbo.catalog.core.OfferService;
 import com.junbo.catalog.spec.enums.LocaleAccuracy;
+import com.junbo.catalog.spec.enums.Status;
 import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.catalog.spec.resource.OfferRevisionResource;
 import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.id.util.IdUtil;
+import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.langur.core.promise.Promise;
@@ -50,6 +52,51 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
 
     @Override
     public Promise<Results<OfferRevision>> getOfferRevisions(final OfferRevisionsGetOptions options) {
+        boolean isDeveloper = isDeveloper();
+        if (!isDeveloper || options.getPublisherId() == null) {
+            // If the status is not provided, use default APPROVED filter
+            if (options.getStatus() == null) {
+                options.setStatus(Status.APPROVED.name());
+            } else if (!Status.APPROVED.is(options.getStatus())) {
+                // If a developer try to get non-APPROVED offer revision, the publisherId is required
+                // (falling into this branch means the options.getPublisherId() is null)
+                if (isDeveloper) {
+                    throw AppCommonErrors.INSTANCE.fieldRequired("publisherId").exception();
+                    // if a non-developer try to get non-APPROVED offer revision, throw forbidden exception.
+                } else {
+                    throw AppCommonErrors.INSTANCE.forbiddenWithMessage("User is not allowed to" +
+                            " get offer revisions that have not been approved").exception();
+                }
+            }
+        // This is a developer and the publisherId is provided
+        // Do the authorization check.
+        } else  {
+            AuthorizeCallback<Offer> callback = offerAuthorizeCallbackFactory.create(options.getPublisherId());
+            RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<OfferRevision>>() {
+                @Override
+                public Promise<OfferRevision> apply() {
+
+                    // The user should have draft.read right to view the DRAFT/REJECTED offer revisions,
+                    // which means the user is one member of the offer revision's organization.
+                    // Usually a publisher A wants to search publisher B's offer revisions will reach this code block.
+                    if (!AuthorizeContext.hasRights("draft.read")) {
+                        // If the user doesn't provide status, use default APPROVED status filter.
+                        if (StringUtils.isEmpty(options.getStatus())) {
+                            options.setStatus(Status.APPROVED.name());
+                        }
+                        // If the status is provided (DRAFT/REJECTED) the publisher A wants to search
+                        // publisher B's DRAFT offer revision, throw FORBIDDEN exception.
+                        if (!Status.APPROVED.is(options.getStatus())) {
+                            throw AppCommonErrors.INSTANCE.forbiddenWithMessage("User is not allowed to" +
+                                    " get offer revisions that have not been approved").exception();
+                        }
+                    }
+
+                    return Promise.pure(null);
+                }
+            });
+        }
+
         List<OfferRevision> revisions = offerService.getRevisions(options);
         if (!StringUtils.isEmpty(options.getLocale())) {
             for (final OfferRevision revision : revisions) {
@@ -61,6 +108,10 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
         }
         Results<OfferRevision> results = new Results<>();
         results.setItems(revisions);
+        results.setTotal(options.getTotal());
+        Link nextLink = new Link();
+        nextLink.setHref(buildNextUrl(options));
+        results.setNext(nextLink);
         return Promise.pure(results);
     }
 
@@ -87,15 +138,35 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
     }
 
     @Override
-    public Promise<OfferRevision> getOfferRevision(String revisionId, final OfferRevisionGetOptions options) {
+    public Promise<OfferRevision> getOfferRevision(final String revisionId, final OfferRevisionGetOptions options) {
         final OfferRevision revision = offerService.getRevision(revisionId);
+
         if (!StringUtils.isEmpty(options.getLocale())) {
             revision.setLocaleAccuracy(getLocaleAccuracy(revision.getLocales().get(options.getLocale())));
             revision.setLocales(new HashMap<String, OfferRevisionLocaleProperties>(){{
                 put(options.getLocale(), getLocaleProperties(revision, options.getLocale()));
             }});
         }
-        return Promise.pure(revision);
+
+        boolean isDeveloper = isDeveloper();
+        if (!Status.APPROVED.is(revision.getStatus()) && !isDeveloper) {
+            throw AppCommonErrors.INSTANCE.resourceNotFound("offer-revision", revisionId).exception();
+        } else if (Status.APPROVED.is(revision.getStatus())) {
+            return Promise.pure(revision);
+        } else {
+            AuthorizeCallback<Offer> callback = offerAuthorizeCallbackFactory.create(revision.getOfferId());
+            return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<OfferRevision>>() {
+                @Override
+                public Promise<OfferRevision> apply() {
+
+                    if (!AuthorizeContext.hasRights("draft.read")) {
+                        throw AppCommonErrors.INSTANCE.resourceNotFound("offer-revision", revisionId).exception();
+                    }
+
+                    return Promise.pure(revision);
+                }
+            });
+        }
     }
 
     @Override
@@ -128,6 +199,14 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
             public Promise<OfferRevision> apply() {
 
                 if (!AuthorizeContext.hasRights("update")) {
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
+                }
+
+                if (Status.APPROVED.is(offerRevision.getStatus()) && !AuthorizeContext.hasRights("approve")) {
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
+                }
+
+                if (Status.REJECTED.is(offerRevision.getStatus()) && !AuthorizeContext.hasRights("reject")) {
                     throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 
@@ -240,5 +319,9 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
         } else {
             return LocaleAccuracy.HIGH.name();
         }
+    }
+
+    private boolean isDeveloper() {
+        return AuthorizeContext.hasAnyScope(new String[] {"catalog.developer", "catalog.admin", "catalog.service"});
     }
 }

@@ -9,7 +9,7 @@ oauth = ut_oauth.OAuthTests('testRegister')
 class CheckoutTests(ut.TestBase):
 
     def testDeveloper(self):
-        user = oauth.testRegister('identity catalog')
+        user = oauth.testRegister('identity catalog catalog.developer')
 
         # create the organization
         organization = curlJson('POST', ut.test_uri, '/v1/organizations', headers = {
@@ -69,7 +69,7 @@ class CheckoutTests(ut.TestBase):
         adminToken = oauth.getServiceAccessToken('catalog.admin')
         itemRev = curlJson('PUT', ut.test_uri, itemRev['self']['href'], headers = {
             # TODO: "Authorization": "Bearer " + adminToken
-            "Authorization": "Bearer " + user.access_token
+            "Authorization": "Bearer " + adminToken
         }, data = itemRev)
 
         # verify the item is now available to public
@@ -98,7 +98,7 @@ class CheckoutTests(ut.TestBase):
         offerRev['status'] = 'APPROVED'
         offerRev = curlJson('PUT', ut.test_uri, offerRev['self']['href'], headers = {
             # TODO: "Authorization": "Bearer " + adminToken
-            "Authorization": "Bearer " + user.access_token
+            "Authorization": "Bearer " + adminToken
         }, data = offerRev)
 
         # verify the item is now available to public

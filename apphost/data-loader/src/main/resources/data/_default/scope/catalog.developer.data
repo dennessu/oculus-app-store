@@ -1,0 +1,5 @@
+{
+    "name": "catalog.developer",
+    "description": "Scope for developer/publisher to manage the catalog information.",
+    "tfaRequired": false
+}

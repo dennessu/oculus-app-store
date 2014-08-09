@@ -17,11 +17,19 @@
                 <entry key="CartResource" value="commerce cart.service csr"/>
                 <!-- catalog -->
                 <entry key="ItemAttributeResource" value="catalog.admin"/>
-                <entry key="ItemResource" value="catalog catalog.service csr"/>
-                <entry key="ItemRevisionResource" value="catalog catalog.service csr"/>
+                <entry key="ItemResource" value="catalog catalog.developer catalog.service csr catalog.admin"/>
+                <entry key="ItemResource.getItems" value="*"/>
+                <entry key="ItemResource.getItem" value="*"/>
+                <entry key="ItemRevisionResource" value="catalog catalog.developer catalog.service csr catalog.admin"/>
+                <entry key="ItemRevisionResource.getItemRevisions" value="*"/>
+                <entry key="ItemRevisionResource.getItemRevision" value="*"/>
                 <entry key="OfferAttributeResource" value="catalog.admin"/>
-                <entry key="OfferResource" value="catalog catalog.service csr"/>
-                <entry key="OfferRevisionResource" value="catalog catalog.service csr"/>
+                <entry key="OfferResource" value="catalog catalog.developer catalog.service csr catalog.admin"/>
+                <entry key="OfferResource.getOffers" value="*"/>
+                <entry key="OfferResource.getOffer" value="*"/>
+                <entry key="OfferRevisionResource" value="catalog catalog.developer catalog.service csr catalog.admin"/>
+                <entry key="OfferRevisionResource.getOfferRevisions" value="*"/>
+                <entry key="OfferRevisionResource.getOfferRevision" value="*"/>
                 <entry key="PriceTierResource" value="catalog.admin"/>
                 <!-- crypto -->
                 <entry key="CryptoResource" value="crypto.service"/>

@@ -91,6 +91,12 @@ class AuthorizeContext {
             throw new IllegalArgumentException('scopes is null or empty')
         }
 
+        for (String scope : scopes) {
+            if (scope == '*') {
+                return true
+            }
+        }
+
         TokenInfo tokenInfo = CURRENT_TOKEN_INFO.get()
         if (tokenInfo == null || tokenInfo.scopes == null) {
             return false

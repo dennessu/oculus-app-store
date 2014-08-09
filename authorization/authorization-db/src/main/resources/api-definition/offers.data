@@ -1,18 +1,18 @@
 {
     "apiName": "offers",
     "scopes": {
-        "catalog": [
+        "catalog.developer": [
             {
                 "precondition": "hasRole(\"owner\", \"developer\")",
                 "rights": [
-                    "create", "update", "delete"
+                    "draft.read", "create", "update", "delete"
                 ],
                 "scriptType": "SPEL"
             },
             {
                 "precondition": "hasRole(\"owner\", \"publisher\")",
                 "rights": [
-                    "create", "update", "delete"
+                    "draft.read", "create", "update", "delete"
                 ],
                 "scriptType": "SPEL"
             }
@@ -21,7 +21,16 @@
             {
                 "precondition": "true",
                 "rights": [
-                    "read", "create", "update", "delete"
+                    "draft.read", "read", "create", "update", "delete"
+                ],
+                "scriptType": "SPEL"
+            }
+        ],
+        "catalog.admin": [
+            {
+                "precondition": "true",
+                "rights": [
+                    "draft.read", "create", "read", "update", "delete", "approve", "reject"
                 ],
                 "scriptType": "SPEL"
             }

@@ -9,6 +9,7 @@ import com.junbo.authorization.AbstractAuthorizeCallbackFactory;
 import com.junbo.authorization.AuthorizeCallback;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.resource.OfferResource;
+import com.junbo.common.id.OrganizationId;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
@@ -29,6 +30,12 @@ public class OfferAuthorizeCallbackFactory extends AbstractAuthorizeCallbackFact
 
     public AuthorizeCallback<Offer> create(String offerId) {
         Offer offer = offerResource.getOffer(offerId).get();
+        return create(offer);
+    }
+
+    public AuthorizeCallback<Offer> create(OrganizationId ownerId) {
+        Offer offer = new Offer();
+        offer.setOwnerId(ownerId);
         return create(offer);
     }
 }

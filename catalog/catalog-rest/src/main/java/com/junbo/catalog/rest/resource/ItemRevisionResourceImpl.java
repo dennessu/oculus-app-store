@@ -14,6 +14,7 @@ import com.junbo.catalog.auth.ItemAuthorizeCallbackFactory;
 import com.junbo.catalog.clientproxy.LocaleFacade;
 import com.junbo.catalog.core.ItemService;
 import com.junbo.catalog.spec.enums.LocaleAccuracy;
+import com.junbo.catalog.spec.enums.Status;
 import com.junbo.catalog.spec.model.item.*;
 import com.junbo.catalog.spec.resource.ItemRevisionResource;
 import com.junbo.common.error.AppCommonErrors;
@@ -51,6 +52,51 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
 
     @Override
     public Promise<Results<ItemRevision>> getItemRevisions(final ItemRevisionsGetOptions options) {
+        boolean isDeveloper = isDeveloper();
+        if (!isDeveloper || options.getDeveloperId() == null) {
+            // If the status is not provided, use default APPROVED filter
+            if (options.getStatus() == null) {
+                options.setStatus(Status.APPROVED.name());
+            } else if (!Status.APPROVED.is(options.getStatus())) {
+                // If a developer try to get non-APPROVED item revision, the developerId is required
+                // (falling into this branch means the options.getDeveloperId() is null)
+                if (isDeveloper) {
+                    throw AppCommonErrors.INSTANCE.fieldRequired("developerId").exception();
+                // if a non-developer try to get non-APPROVED item revision, throw forbidden exception.
+                } else {
+                    throw AppCommonErrors.INSTANCE.forbiddenWithMessage("User is not allowed to" +
+                            " get item revisions that have not been approved").exception();
+                }
+            }
+        // This is a developer and the developerId is provided
+        // Do the authorization check.
+        } else {
+            AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(options.getDeveloperId());
+            RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<ItemRevision>>() {
+                @Override
+                public Promise<ItemRevision> apply() {
+
+                    // The user should have draft.read right to view the DRAFT/REJECTED item revisions,
+                    // which means the user is one member of the item revision's organization.
+                    // Usually a developer A wants to search developer B's item revisions will reach this code block.
+                    if (!AuthorizeContext.hasRights("draft.read")) {
+                        // If the user doesn't provide status, use default APPROVED status filter.
+                        if (StringUtils.isEmpty(options.getStatus())) {
+                            options.setStatus(Status.APPROVED.name());
+                        }
+                        // If the status is provided (DRAFT/REJECTED) the developer A wants to search
+                        // developer B's DRAFT item revision, throw FORBIDDEN exception.
+                        if (!Status.APPROVED.is(options.getStatus())) {
+                            throw AppCommonErrors.INSTANCE.forbiddenWithMessage("User is not allowed to" +
+                                    " get item revisions that have not been approved").exception();
+                        }
+                    }
+
+                    return Promise.pure(null);
+                }
+            });
+        }
+
         List<ItemRevision> revisions = itemService.getRevisions(options);
         if (!StringUtils.isEmpty(options.getLocale())) {
             for (final ItemRevision revision : revisions) {
@@ -92,15 +138,35 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
     }
 
     @Override
-    public Promise<ItemRevision> getItemRevision(String revisionId, final ItemRevisionGetOptions options) {
+    public Promise<ItemRevision> getItemRevision(final String revisionId, final ItemRevisionGetOptions options) {
         final ItemRevision itemRevision = itemService.getRevision(revisionId);
+
         if (!StringUtils.isEmpty(options.getLocale())) {
             itemRevision.setLocaleAccuracy(getLocaleAccuracy(itemRevision.getLocales().get(options.getLocale())));
             itemRevision.setLocales(new HashMap<String, ItemRevisionLocaleProperties>(){{
                 put(options.getLocale(), getLocaleProperties(itemRevision, options.getLocale()));
             }});
         }
-        return Promise.pure(itemRevision);
+
+        boolean isDeveloper = isDeveloper();
+        if (!Status.APPROVED.is(itemRevision.getStatus()) && !isDeveloper) {
+            throw AppCommonErrors.INSTANCE.resourceNotFound("item-revision", revisionId).exception();
+        } else if (Status.APPROVED.is(itemRevision.getStatus())) {
+            return Promise.pure(itemRevision);
+        } else {
+            AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(itemRevision.getItemId());
+            return RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<ItemRevision>>() {
+                @Override
+                public Promise<ItemRevision> apply() {
+
+                    if (!AuthorizeContext.hasRights("draft.read")) {
+                        throw AppCommonErrors.INSTANCE.resourceNotFound("item-revision", revisionId).exception();
+                    }
+
+                    return Promise.pure(itemRevision);
+                }
+            });
+        }
     }
 
     @Override
@@ -133,6 +199,14 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
             public Promise<ItemRevision> apply() {
 
                 if (!AuthorizeContext.hasRights("update")) {
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
+                }
+
+                if (Status.APPROVED.is(itemRevision.getStatus()) && !AuthorizeContext.hasRights("approve")) {
+                    throw AppCommonErrors.INSTANCE.forbidden().exception();
+                }
+
+                if (Status.REJECTED.is(itemRevision.getStatus()) && !AuthorizeContext.hasRights("reject")) {
                     throw AppCommonErrors.INSTANCE.forbidden().exception();
                 }
 
@@ -243,5 +317,9 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
         } else {
             return LocaleAccuracy.HIGH.name();
         }
+    }
+
+    private boolean isDeveloper() {
+        return AuthorizeContext.hasAnyScope(new String[] {"catalog.developer", "catalog.admin", "catalog.service"});
     }
 }

@@ -9,6 +9,7 @@ import com.junbo.authorization.AbstractAuthorizeCallbackFactory;
 import com.junbo.authorization.AuthorizeCallback;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.resource.ItemResource;
+import com.junbo.common.id.OrganizationId;
 import groovy.transform.CompileStatic;
 import org.springframework.beans.factory.annotation.Required;
 
@@ -31,6 +32,12 @@ public class ItemAuthorizeCallbackFactory extends AbstractAuthorizeCallbackFacto
 
     public AuthorizeCallback<Item> create(String itemId) {
         Item item = itemResource.getItem(itemId).get();
+        return create(item);
+    }
+
+    public AuthorizeCallback<Item> create(OrganizationId ownerId) {
+        Item item = new Item();
+        item.setOwnerId(ownerId);
         return create(item);
     }
 }
