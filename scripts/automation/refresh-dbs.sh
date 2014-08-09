@@ -13,10 +13,7 @@ fi
 
 APP_NAME=apphost-cli-0.0.1-SNAPSHOT
 export SOURCETREE_HOME=${SOURCETREE_HOME:-/home/shuz/silkcloud}
-if [[ -z "$ENV" ]]; then
-  echo "ENV not set!"
-  exit 1
-fi
+: ${ENV?"Need to set ENV"}
 
 echo Copying files...
 LIQUIBASE_SETUP_SERVER=`head -n 1 $ENV/liquibase.txt`
