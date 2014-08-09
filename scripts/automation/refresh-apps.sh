@@ -4,13 +4,13 @@ pushd $DIR
 
 set -e
 
-YOUR_USER=shuz
 APP_NAME=apphost-cli-0.0.1-SNAPSHOT
+export SOURCETREE_HOME=${SOURCETREE_HOME:-/home/shuz/silkcloud}
 export ENV=${ENV:-$1}
 export ENV=${ENV:-ppe}
 
 echo Copying files...
-cp /home/$YOUR_USER/main/apphost/apphost-cli/build/distributions/$APP_NAME.zip /home/silkcloud
+cp $SOURCETREE_HOME/apphost/apphost-cli/build/distributions/$APP_NAME.zip /home/silkcloud
 for var in $ENV/apps.txt $ENV/crypto-apps.txt; do
     for p in `cat $var`; do
         if [[ ! -z "$p" && ! $p == \#* ]]; then

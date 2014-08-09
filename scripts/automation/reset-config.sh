@@ -29,7 +29,7 @@ crypto.core.key=$CRYPTO_KEY
 oauth.crypto.key=$OAUTH_CRYPTO_KEY
 common.conf.debugMode=false
 EOFINNER
-chmod 600 /etc/silkcloud/configuration.properties
+chmod 600 /etc/silkcloud/*
 EOF
 
 ./foreach-here.sh $ENV/apps.txt << EOF
@@ -40,7 +40,7 @@ crypto.core.key=$CRYPTO_KEY
 oauth.crypto.key=$OAUTH_CRYPTO_KEY
 common.conf.debugMode=false
 EOFINNER
-chmod 600 /etc/silkcloud/configuration.properties
+chmod 600 /etc/silkcloud/*
 EOF
 
 ./foreach-here.sh $ENV/utils.txt << EOF
@@ -51,7 +51,7 @@ crypto.core.key=$CRYPTO_KEY
 oauth.crypto.key=$OAUTH_CRYPTO_KEY
 common.conf.debugMode=false
 EOFINNER
-chmod 600 /etc/silkcloud/configuration.properties
+chmod 600 /etc/silkcloud/*
 EOF
 
 ./foreach-here.sh $ENV/crypto-dbs.txt $ENV/masters.txt $ENV/secondaries.txt $ENV/replicas.txt << EOF
@@ -61,5 +61,5 @@ crypto.core.key=$CRYPTO_KEY
 oauth.crypto.key=$OAUTH_CRYPTO_KEY
 common.conf.debugMode=false
 EOFINNER
-chmod 600 /etc/silkcloud/configuration.properties
+chmod 600 /etc/silkcloud/*
 EOF

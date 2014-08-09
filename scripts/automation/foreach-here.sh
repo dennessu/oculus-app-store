@@ -2,10 +2,10 @@
 ssh_script=`cat`
 for var in "$@"
 do
-    for p in `cat $var`; do
-        if [[ ! -z "$p" && ! $p == \#* ]]; then
+    for p in `cat $var | sed '/^#/ d'`; do
+        if [[ -n "$p" ]]; then
             echo running on $p
-            ssh -n $p "$ssh_script"
+            ssh -o "StrictHostKeyChecking no" -n $p "$ssh_script"
         fi
     done
 done

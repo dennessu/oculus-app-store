@@ -88,7 +88,7 @@ def readParams():
         if response.lower() != "yes":
             error("Aborting...")
 
-    if command == "dropdbs" and env in set(["onebox.owpint", "ppe", "prod"]):
+    if command == "dropdbs" and env in set(["onebox.owpint", "staging", "prod"]):
         # Don't allow dropdbs in these environments
         error("The command dropdbs is now allowed in env " + env)
 

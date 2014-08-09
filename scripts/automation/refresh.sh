@@ -19,7 +19,26 @@ if [[ -z "$OAUTH_CRYPTO_KEY" ]]; then
 fi
 
 export ENV=${ENV:-$1}
-export ENV=${ENV:-ppe}
+if [[ -z "$ENV" ]]; then
+  echo -n 'ENV: '
+  read ENV
+  export ENV
+  echo
+fi
+
+if [[ -z "$ENV_BASE" ]]; then
+  echo -n 'ENV_BASE: '
+  read ENV_BASE
+  export ENV_BASE
+  echo
+fi
+
+if [[ -z "$ENV_PREFIX" ]]; then
+  echo -n 'ENV_PREFIX: '
+  read ENV_PREFIX
+  export ENV_PREFIX
+  echo
+fi
 
 ./reset-config.sh
 ./refresh-couch.sh

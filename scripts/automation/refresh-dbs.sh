@@ -11,14 +11,16 @@ if [[ -z "$CRYPTO_KEY" ]]; then
   echo
 fi
 
-YOUR_USER=shuz
 APP_NAME=apphost-cli-0.0.1-SNAPSHOT
-export ENV=${ENV:-$1}
-export ENV=${ENV:-ppe}
+export SOURCETREE_HOME=${SOURCETREE_HOME:-/home/shuz/silkcloud}
+if [[ -z "$ENV" ]]; then
+  echo "ENV not set!"
+  exit 1
+fi
 
 echo Copying files...
 LIQUIBASE_SETUP_SERVER=`head -n 1 $ENV/liquibase.txt`
-cp /home/$YOUR_USER/main/apphost/apphost-cli/build/distributions/$APP_NAME.zip /home/silkcloud
+cp $SOURCETREE_HOME/apphost/apphost-cli/build/distributions/$APP_NAME.zip /home/silkcloud
 
 echo copying apphost to $LIQUIBASE_SETUP_SERVER
 scp /home/silkcloud/$APP_NAME.zip $LIQUIBASE_SETUP_SERVER:/var/silkcloud
@@ -40,7 +42,7 @@ rm -rf $APP_NAME
 unzip -o $APP_NAME.zip
 ln -sfn $APP_NAME apphost
 cd apphost/dbsetup/pgha
-./upload_script.sh ppe
+./upload_script.sh $ENV
 cd $DIR
 
 ./foreach-here.sh $ENV/masters.txt $ENV/crypto-dbs.txt << EOF
@@ -67,8 +69,8 @@ EOF
 echo Running liquibase
 ssh $LIQUIBASE_SETUP_SERVER << EOF
 cd /var/silkcloud/apphost/dbsetup/liquibase
-./createdb.sh -env:ppe -key:$CRYPTO_KEY
-./updatedb.sh -env:ppe -key:$CRYPTO_KEY
+./createdb.sh -env:$ENV -key:$CRYPTO_KEY
+./updatedb.sh -env:$ENV -key:$CRYPTO_KEY
 EOF
 
 ./foreach-here.sh $ENV/masters.txt << EOF
