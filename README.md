@@ -76,6 +76,13 @@ The following guide is for setting up windows as the development and testing env
     ```
     Note there can NOT be a space before = and MUST be a space after =.
 
+#### Install Node.js
+1. Download and install [Node.js for Windows](http://nodejs.org/download/)
+1. Open command prompt and make sure command `node` exists
+  ```
+  node --version
+  ```
+
 #### Install Cygwin
 1. Download and install [Cygwin](http://cygwin.com/)
 1. When setup cygwin, select the following packages:
@@ -247,6 +254,14 @@ Open Terminal and run the following commands:
 brew install memcached
 ln -sfv /usr/local/opt/memcached/*.plist ~/Library/LaunchAgents
 launchctl load ~/Library/LaunchAgents/homebrew.mxcl.memcached.plist
+```
+
+#### Install Node.js
+
+Open Terminal and run the following commands:
+
+```bash
+brew install node.js
 ```
 
 #### Install PIP for Managing Python Packages

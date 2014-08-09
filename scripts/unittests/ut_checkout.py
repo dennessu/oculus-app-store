@@ -2,6 +2,8 @@
 import silkcloudut as ut
 import ut_oauth
 from silkcloudut import *
+from subprocess import Popen, PIPE
+from datetime import datetime
 
 oauth = ut_oauth.OAuthTests('testRegister')
 class CheckoutTests(ut.TestBase):
@@ -184,13 +186,13 @@ class CheckoutTests(ut.TestBase):
         piTypes = curlJson('GET', ut.test_uri, '/v1/payment-instrument-types')
         ccPiType = [ piType for piType in piTypes['results'] if piType['typeCode'] == 'CREDITCARD' ][0]
 
+        cardInfo = self.getEncryptedCardInfo()
         pi = curlJson('POST', ut.test_uri, '/v1/payment-instruments', headers = {
             "Authorization": "Bearer " + user.access_token
         }, data = {
             "type": ccPiType['self'],
-            # TODO: change to encrypted adyen card info
-            "accountName": "KOKDF",
-            "accountNumber": "adyenan0_1_1$O/hs9p3D1duVvhbE0ANxZcl+QnMp2jrKFvOZ+OeHoHpwTDGzpqda7OCxhzdK39g682hvUSzl7tMvUN3BaeO6OZP3lFGzwMrGXUdP+eB85gWmuH8FIiJAPJDzQsXShsU6MTG9Hey6+c2Yut8QEzZXOGUz+yeqn3nVA3ABmqDK4+prEkRuOtO9p0IGHrg8HLQWYKklR1WUeyeXb1IHmj8b3HTBIMdUhaDvQ4/A7F7dtaYIalrnjpQ/kp2RzK6KZaE1hIKEKbU6XVAE9KBwApnNfkGeX41HmcaV05c/fn/GJmS9NEUa4ee+xUK1u+lCaMtPF8R1yvyKlNPOPpmFs6KjwA==$unyZCepLBv38REuwkaYO3ZvJgqJgoSWhJNIpaCQIqj1RecabL0qGoOb6mI9e9ixjXInHzVEHAAUODg40p3uP1MRemg1Fr8jFVYQ2ETL3Kr0f1EmfMoNrAq/U6YGq2NANLB4k7xVSsgAHKDhocAPXYg37laadHsOsgs1tNn0I9+P8RngUD438xc3mXcHK+79f53RDPmYlZGrPBzBTPOdm7tuvMZs=",
+            "accountName": cardInfo['holderName'],
+            "accountNumber": cardInfo['encryptedCardInfo'],
             "label": "my credit card",
             "user": user.json['self'],
             "billingAddress": address['self'],
@@ -446,6 +448,30 @@ class CheckoutTests(ut.TestBase):
                 }
             }
         }
+
+    def getDefaultCardInfo(self):
+        return {
+            "number": "5555444433331111",
+            "holderName": "John Doe",
+            "cvc": "737",
+            "expiryMonth": "06",
+            "expiryYear": str(datetime.utcnow().year + 2),
+            "generationtime": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.000Z")
+        }
+
+    def getEncryptedCardInfo(self, cardInfo = None):
+        if cardInfo is None:
+            cardInfo = self.getDefaultCardInfo()
+        cardInfoStr = json.dumps(cardInfo)
+
+        process = Popen(['node', 'adyen-cse.js'], stdin = PIPE, stdout = PIPE, stderr = PIPE)
+        stdout, stderr = process.communicate(cardInfoStr)
+        returnCode = process.returncode
+
+        self.assertEqual(returnCode, 0, "Failed to call 'node adyen-cse.js', is node.js installed?")
+
+        cardInfo['encryptedCardInfo'] = stdout
+        return cardInfo
 
 if __name__ == '__main__':
     silkcloud_utmain()

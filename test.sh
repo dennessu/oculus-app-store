@@ -23,9 +23,12 @@ function cleanupTrap {
     echo !!!!!!!!!!!!!!!!
 }
 
-trap cleanup EXIT INT TERM
+trap cleanupTrap EXIT INT TERM
 
 ./startup.sh
+
+# make sure the error code of python will be returned
+set -o pipefail
 
 cd ./scripts/unittests/
 mkdir -p logs

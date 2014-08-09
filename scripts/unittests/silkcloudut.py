@@ -90,7 +90,9 @@ def silkcloud_utmain(suite = None):
         unittest.main(argv = [ sys.argv[0] ] + opts.tests)
     else:
         testRunner = unittest.TextTestRunner()
-        testRunner.run(suite)
+        result = testRunner.run(suite)
+        if not result.wasSuccessful():
+            error("Errors found in test result.")
 
 def curlRedirect(method, baseUrl, url = None, query = None, headers = None, body = None, raiseOnError = True):
     body, resp = curlRaw(method, baseUrl, url, query, headers, body, raiseOnError)
