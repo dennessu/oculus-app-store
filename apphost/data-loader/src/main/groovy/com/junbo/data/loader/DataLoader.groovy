@@ -111,14 +111,30 @@ class DataLoader {
     }
 
     static void load(List<String> dataList, ExecutorService pool) {
+        def baseEnv = env.split('\\.')[0]
 
         for (String data : dataList) {
-            Resource[] resources
+            Resource[] resources = null
             Boolean isSerial = serialDataList.contains(data)
 
+            // try data/$env
             try {
                 resources = resolver.getResources("data/$env/$data/*.data")
             } catch (FileNotFoundException e) {
+                // not found, fallback to next candidate
+            }
+
+            // try data/$baseEnv
+            if (resources == null && baseEnv != env) {
+                try {
+                    resources = resolver.getResources("data/$baseEnv/$data/*.data")
+                } catch (FileNotFoundException e) {
+                    // not found, fallback to next candidate
+                }
+            }
+
+            // try data/_default
+            if (resources == null) {
                 try {
                     resources = resolver.getResources("data/_default/$data/*.data")
                 } catch (Exception ex) {
@@ -126,7 +142,7 @@ class DataLoader {
                 }
             }
 
-            if (resources.length == 0) {
+            if (resources == null || resources.length == 0) {
                 continue
             }
 
