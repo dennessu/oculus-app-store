@@ -13,8 +13,6 @@ import java.math.BigDecimal;
 public class CsrRefundInfo {
     private String currency;
     private BigDecimal amount;
-    private String accountNumber;
-    private String accountType;
     private Boolean success;
 
     public String getCurrency() {
@@ -31,22 +29,6 @@ public class CsrRefundInfo {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
-    }
-
-    public String getAccountNumber() {
-        return accountNumber;
-    }
-
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
-    }
-
-    public String getAccountType() {
-        return accountType;
-    }
-
-    public void setAccountType(String accountType) {
-        this.accountType = accountType;
     }
 
     public Boolean getSuccess() {
