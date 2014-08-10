@@ -223,20 +223,25 @@ abstract class AbstractAuthorizeCallback<T> implements AuthorizeCallback<T> {
             return (boolean) cachedElement.objectValue
         }
 
-        def assignee = []
+        def assignees = []
 
-        assignee.add(IdUtil.toHref(userId))
+        assignees.add(IdUtil.toHref(userId))
         for (GroupId groupId : groupIds) {
-            assignee.add(IdUtil.toHref(groupId))
+            assignees.add(IdUtil.toHref(groupId))
         }
 
-        Results<RoleAssignment> roleAssignments =
-                factory.roleAssignmentResource.list(new RoleAssignmentListOptions(
-                        roleId: roleId,
-                        assignee: assignee.join(',')
-                )).get();
-
-        boolean result = !roleAssignments.items.empty
+        boolean result = false
+        for (String assignee : assignees) {
+            Results<RoleAssignment> roleAssignments =
+                    factory.roleAssignmentResource.list(new RoleAssignmentListOptions(
+                            roleId: roleId,
+                            assignee: assignee
+                    )).get();
+            if (!roleAssignments.items.empty) {
+                result = true
+                break
+            }
+        }
 
         factory.roleAssignmentCache.put(new Element(tuple, result))
         return result

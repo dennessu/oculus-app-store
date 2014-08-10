@@ -19,6 +19,21 @@
     <bean id="groupAuthorizeCallbackFactory"
           class="com.junbo.identity.auth.GroupAuthorizeCallbackFactory"
           parent="abstractAuthorizeCallbackFactory">
+        <property name="organizationResource" ref="identityAuthOrganizationResource"/>
+    </bean>
+
+    <bean id="identityAuthAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
+        <property name="scope" value="identity.service"/>
+        <property name="deflectionInSeconds" value="300"/>
+        <property name="clientSecret" value="${identity.clientproxy.service.clientSecret}"/>
+        <property name="clientId" value="${identity.clientproxy.service.clientId}"/>
+        <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
+    </bean>
+
+    <bean id="identityAuthOrganizationResource"
+          class="com.junbo.identity.spec.v1.resource.proxy.OrganizationResourceClientProxy"
+          parent="organizationResourceClientProxy">
+        <property name="accessTokenProvider" ref="identityAuthAccessTokenProvider"/>
     </bean>
 
     <bean id="organizationOwnerCallback" class="com.junbo.identity.auth.OrganizationOwnerCallback">

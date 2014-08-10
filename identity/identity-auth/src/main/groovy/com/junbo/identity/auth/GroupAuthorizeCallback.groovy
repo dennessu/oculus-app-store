@@ -6,7 +6,10 @@
 package com.junbo.identity.auth
 
 import com.junbo.authorization.AbstractAuthorizeCallback
+import com.junbo.authorization.AuthorizeContext
+import com.junbo.common.error.AppErrorException
 import com.junbo.identity.spec.v1.model.Group
+import com.junbo.identity.spec.v1.option.model.OrganizationGetOptions
 import groovy.transform.CompileStatic
 
 /**
@@ -35,5 +38,30 @@ class GroupAuthorizeCallback extends AbstractAuthorizeCallback<Group> {
         }
 
         return null
+    }
+
+    Boolean ownedByCurrentUser(String propertyPath) {
+        def currentUserId = AuthorizeContext.currentUserId
+        if (currentUserId == null) {
+            return false
+        }
+
+        Group entity = getEntity()
+        if (entity != null) {
+            if (propertyPath == "organization") {
+                try {
+                    def organization = (factory as GroupAuthorizeCallbackFactory).organizationResource
+                            .get(entity.getOrganizationId(), new OrganizationGetOptions()).get()
+
+                    if (organization != null) {
+                        return currentUserId == organization.getOwnerId()
+                    }
+                } catch (AppErrorException e) {
+                    return false
+                }
+            }
+        }
+
+        return false
     }
 }

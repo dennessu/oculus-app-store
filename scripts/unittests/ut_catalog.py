@@ -6,6 +6,88 @@ from silkcloudut import *
 oauth = ut_oauth.OAuthTests('testRegister')
 class CatalogTests(ut.TestBase):
 
+    def testOrganization(self):
+        # create the user
+        user = oauth.testRegister('identity catalog catalog.developer')
+
+        # create the organization
+        organization = curlJson('POST', ut.test_uri, '/v1/organizations', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = {
+            "owner": {
+                "href": user.href,
+                "id": user.id
+            },
+            "isValidated": False,
+            "name": randomstr(10)
+        })
+
+        # create the role
+        role = curlJson('POST', ut.test_uri, '/v1/roles', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = {
+            "self": None,
+            "rev": None,
+            "name": "developer",
+            "target": {
+                "targetType": "organizations",
+                "filterType": "SINGLEINSTANCEFILTER",
+                "filterLink": organization['self']
+            },
+            "futureExpansion": {},
+            "createdTime": None,
+            "updatedTime": None,
+            "adminInfo": None
+        })
+
+        # create the group
+        group = curlJson('POST', ut.test_uri, '/v1/groups', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = {
+            "name": "developer",
+            "organization": {
+                "href": organization['self']['href'],
+                "id": organization['self']['id']
+            }
+        })
+
+        # create the group membership
+        groupMembership = curlJson('POST', ut.test_uri, '/v1/user-group-memberships', headers =  {
+            "Authorization": "Bearer " + user.access_token
+        }, data = {
+            "user": {
+                "href": user.href,
+                "id": user.id
+            },
+            "group": {
+                "href": group['self']['href'],
+                "id": group['self']['id']
+            }
+        })
+
+        roleAssignment = curlJson('POST', ut.test_uri, '/v1/role-assignments', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = {
+            "assignee": group['self'],
+            "role": role['self'],
+            "futureExpansion": {}
+        })
+
+        # wait 5 seconds for the couch db index update
+        time.sleep(5)
+        # publish an item
+        item = curlJson('POST', ut.test_uri, '/v1/items', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = {
+            "genres": [],
+            "defaultOffer": None,
+            "rev": None,
+            "currentRevision": None,
+            "revisions": None,
+            "type": "APP",
+            "developer": organization['self']
+        })
+
     def testDeveloper(self):
         user1 = oauth.testRegister('identity catalog catalog.developer')
 
