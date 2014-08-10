@@ -224,7 +224,7 @@ chmod 600 /etc/silkcloud/configuration.properties
   * `10.24.12.50`
 Run the following commands:
 ```
-echo profile=apphost-identity >> /etc/silkcloud/configuration.properties
+echo profile=apphost-rest >> /etc/silkcloud/configuration.properties
 ```
 
 1. Setup profile to crypto app servers

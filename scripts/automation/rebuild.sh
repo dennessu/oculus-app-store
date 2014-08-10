@@ -18,6 +18,13 @@ if [[ -z "$OAUTH_CRYPTO_KEY" ]]; then
   echo
 fi
 
+if [[ -z "$DATABASE_PASSWORD_HASH" ]]; then
+  echo -n 'DATABASE_PASSWORD_HASH: '
+  read -s DATABASE_PASSWORD_HASH
+  export DATABASE_PASSWORD_HASH
+  echo
+fi
+
 export ENV=${ENV:-$1}
 if [[ -z "$ENV" ]]; then
   echo -n 'ENV: '
@@ -48,6 +55,7 @@ if [[ -z "SOURCETREE_HOME" ]]; then
 fi
 
 ./reset-config.sh
+./setup-dbauth.sh
 ./refresh-couch.sh
 ./refresh-dbs.sh
 ./refresh-apps.sh

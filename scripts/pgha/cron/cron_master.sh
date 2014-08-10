@@ -13,7 +13,7 @@ echo "generate script for sync master archive log to slave..."
 cat > $CRON_PATH/sync_archive_log.sh <<EOF
 #!/bin/bash
 echo "sync log from master to slave..."
-rsync -azhv $MASTER_ARCHIVE_PATH/* $DEPLOYMENT_ACCOUNT@$SLAVE_HOST:$SLAVE_ARCHIVE_PATH
+rsync -e "ssh -o StrictHostKeyChecking=no" -azhv $MASTER_ARCHIVE_PATH/* $DEPLOYMENT_ACCOUNT@$SLAVE_HOST:$SLAVE_ARCHIVE_PATH
 EOF
 
 chmod 744 $CRON_PATH/sync_archive_log.sh 

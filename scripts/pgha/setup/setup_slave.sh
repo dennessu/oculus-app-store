@@ -24,7 +24,7 @@ echo "[SETUP][SLAVE] configure SLAVE role"
 echo "SLAVE" > $PGHA_BASE/role.conf
 
 echo "[SETUP][SLAVE] copy backup file from remote master"
-rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_BACKUP_PATH/* $SLAVE_DATA_PATH
+rsync -e "ssh -o StrictHostKeyChecking=no" -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_BACKUP_PATH/* $SLAVE_DATA_PATH
 
 echo "[SETUP][SLAVE] configure recovery.conf"
 cat > $SLAVE_DATA_PATH/recovery.conf <<EOF

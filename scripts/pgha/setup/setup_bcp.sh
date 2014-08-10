@@ -24,7 +24,7 @@ echo "[SETUP][BCP] configure BCP role"
 echo "BCP" > $PGHA_BASE/role.conf
 
 echo "[SETUP][BCP] copy backup file from remote master"
-rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_BACKUP_PATH/* $BCP_DATA_PATH
+rsync -e "ssh -o StrictHostKeyChecking=no" -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_BACKUP_PATH/* $BCP_DATA_PATH
 
 echo "[SETUP][BCP] configure recovery.conf"
 cat > $BCP_DATA_PATH/recovery.conf <<EOF

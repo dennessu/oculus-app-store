@@ -21,7 +21,7 @@ echo "[SETUP][REPLCIA] configure REPLCIA role"
 echo "REPLICA" > $PGHA_BASE/role.conf
 
 echo "[SETUP][REPLICA] copy backup file from remote master"
-rsync -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_BACKUP_PATH/* $REPLICA_DATA_PATH
+rsync -e "ssh -o StrictHostKeyChecking=no" -azhv $DEPLOYMENT_ACCOUNT@$MASTER_HOST:$MASTER_BACKUP_PATH/* $REPLICA_DATA_PATH
 
 echo "[SETUP][REPLICA] configure recovery.conf"
 cat > $REPLICA_DATA_PATH/recovery.conf <<EOF
