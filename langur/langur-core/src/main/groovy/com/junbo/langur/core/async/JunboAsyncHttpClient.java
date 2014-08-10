@@ -43,6 +43,10 @@ public class JunboAsyncHttpClient implements Closeable {
         this.isDebugMode = "true".equalsIgnoreCase(configService.getConfigValue("common.conf.debugMode"));
     }
 
+    public AsyncHttpClient getAsyncHttpClient() {
+        return asyncHttpClient;
+    }
+
     /**
      * The BoundRequestBuilder used to build the request.
      */

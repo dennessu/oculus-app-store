@@ -187,4 +187,5 @@
         </property>
     </bean>
 
+    <bean id="sqlDataSourceConnectionInfoProvider" class="com.junbo.sharding.health.SqlDataSourceConnectionInfoProvider"/>
 </beans>
