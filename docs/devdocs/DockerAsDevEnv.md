@@ -1,12 +1,12 @@
 #Use docker to run development environment
 
-Today we need to run couchdb and postgresql in our local dev machine, we might have to run more open source services such as ElasticSearch, memcached, etc in the future. It would be nice if we can have a simple way to setup all these external dependencies, and if everyone can run on the same environments, we can avoid introducing platform specific bugs.
+Today we need to run couchdb, postgresql and memcached in our local dev machine, we might have to run more open source services such as ElasticSearch, Redis, etc in the future. It would be nice if we can have a simple way to setup all these external dependencies, and if everyone can run on the same environments, we can avoid introducing platform specific bugs.
 
 Docker is the answer.
 
 We can now run postgresql and couchdb in docker containers, and here is the instructions.
 
-**To set it up, you need to stop/uninstall your local postgres couchdb first.**
+**To set it up, you need to stop/uninstall your local postgres/couchdb/memcached first.**
 
 ## Mac OSX Users
 
@@ -174,6 +174,8 @@ VMWare player has a great feature called Unity, check it out. The whole experien
 
 Docker has quite a few concept, you can check their fantastic doc site: https://docs.docker.com/userguide/
 
+Our docker images are based on phusion-base, please checkout their site for more information: http://phusion.github.io/baseimage-docker/
+
 Our `devenv.sh` can simplify your work with docker, just run it without any argument to see what it supports.
 
 Our docker images are based on phusionbase, it supports both ssh and nsenter. To enter the running container, you can:
@@ -193,4 +195,6 @@ The source code of the docker images:
 ```
 docker/images/onebox-psql
 docker/images/onebox-couchdb
+docker/images/onebox-memcached
+docker/images/jdk7base
 ```

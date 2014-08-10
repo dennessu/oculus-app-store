@@ -1,6 +1,6 @@
 # Environment Setup Guide
 
-**You don't have to install postgresql and couchdb in your desktop/laptop, check out the docker solution**
+**You don't have to install postgresql/couchdb/memcached in your desktop/laptop, check out the docker solution**
 
 [Use docker to run dev environment](docs/devdocs/DockerAsDevEnv.md)
 
