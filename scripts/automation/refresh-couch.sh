@@ -14,7 +14,7 @@ fi
 APP_NAME=apphost-cli-0.0.1-SNAPSHOT
 : ${SOURCETREE_HOME?"Need to set SOURCETREE_HOME"}
 : ${ENV_BASE:?"Need to set ENV_BASE"}
-: ${ENV_PREFIX:?"Need to set ENV_PREFIX"}
+: ${ENV_PREFIX?"Need to set ENV_PREFIX"}
 
 echo Copying files...
 COUCH_SETUP_SERVER=`head -n 1 $ENV/crypto-apps.txt`
