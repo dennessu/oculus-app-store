@@ -10,11 +10,11 @@ APP_NAME=apphost-cli-0.0.1-SNAPSHOT
 
 echo Copying files...
 cp $SOURCETREE_HOME/apphost/apphost-cli/build/distributions/$APP_NAME.zip /home/silkcloud
-for var in $ENV/apps.txt $ENV/crypto-apps.txt; do
+for var in $ENV/apps.txt $ENV/crypto-apps.txt $ENV/utils.txt; do
     for p in `cat $var`; do
         if [[ ! -z "$p" && ! $p == \#* ]]; then
             echo copying apphost to $p
-            scp /home/silkcloud/$APP_NAME.zip $p:/var/silkcloud
+            scp -o "StrictHostKeyChecking no" /home/silkcloud/$APP_NAME.zip $p:/var/silkcloud
         fi
     done
 done
