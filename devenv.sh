@@ -43,6 +43,7 @@ dockerenter(){
 }
 
 start(){
+  # CouchDB
   mkdir -p $DATADIR/couchdb/data
   mkdir -p $DATADIR/couchdb/logs
   sudo docker rm couchdb > /dev/null 2>&1 || true
@@ -57,6 +58,7 @@ start(){
     silkcloud/onebox-couchdb)
   echo "Started COUCHDB in container $COUCHDB"
 
+  # Postgresql
   mkdir -p $DATADIR/psql/data
   mkdir -p $DATADIR/psql/logs
   sudo docker rm psql > /dev/null 2>&1 || true
@@ -71,6 +73,17 @@ start(){
     -e PSQL_PASS='#Bugsfor$' \
     silkcloud/onebox-psql)
   echo "Started PSQL in container $PSQL"
+
+  # Memcached
+  sudo docker rm memcached > /dev/null 2>&1 || true
+  echo "Pulling latest image - silkcloud/onebox-memcached ..."
+  sudo docker pull silkcloud/onebox-memcached > /dev/null
+  MEMCACHED=$(sudo docker run \
+    -d \
+    -p 11211:11211 \
+    --name=memcached \
+    silkcloud/onebox-memcached)
+  echo "Started MEMCACHED in container $MEMCACHED"
 
   sudo docker ps
 }

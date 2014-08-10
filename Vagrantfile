@@ -36,7 +36,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network "forwarded_port", guest: 8081, host: 8081
   config.vm.network "forwarded_port", guest: 5984, host: 5984
   config.vm.network "forwarded_port", guest: 5432, host: 5432
-  config.vm.network "forwarded_port", guest: 9401, host: 9401
   config.vm.network "forwarded_port", guest: 11211, host: 11211
 
   config.vm.provider "virtualbox" do |v|
@@ -95,9 +94,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # make silkcloud dirs
     mkdir -p /var/silkcloud; chown -R vagrant:vagrant /var/silkcloud
     mkdir -p /etc/silkcloud; chown -R vagrant:vagrant /etc/silkcloud
-
-    # work around to install memcached
-    apt-get update; apt-get install memcached -y
 
     echo "* PROVISIONING COMPLETED:"
     echo "** type 'vagrant ssh' to connect to sc-localdev"

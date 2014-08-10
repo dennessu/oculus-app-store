@@ -22,7 +22,11 @@ def main():
     except OSError as e:
         error(e + "\nUnable to change current directory to : " + currentDir + ". Aborting...")
 
-    mc = memcache.Client(['127.0.0.1:11211'], debug=0)
+    mc = memcache.Client(['127.0.0.1:11211'], debug=1)
+    # set and get a dummy key to ensure memcached is up and running
+    mc.set("dummy_test_key", "dummy_value")
+    if not mc.get("dummy_test_key"):
+        error("memcached server is not working properly, please check your environment")
     mc.flush_all()
     info("Local memcache is cleared.")
 
@@ -53,7 +57,7 @@ def readJsonFile(filename):
         error("File %s not found." % filename)
 
     with open (filename, "r") as configFile:
-        data = configFile.read() 
+        data = configFile.read()
         return json.loads(data)
 
 gIsVerbose = False
