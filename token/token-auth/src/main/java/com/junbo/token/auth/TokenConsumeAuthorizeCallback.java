@@ -8,7 +8,6 @@ package com.junbo.token.auth;
 import com.junbo.authorization.AbstractAuthorizeCallback;
 import com.junbo.common.id.UserId;
 import com.junbo.token.spec.model.TokenConsumption;
-import com.junbo.token.spec.model.TokenItem;
 
 /**
  * TokenItemAuthorizeCallbackFactory.
