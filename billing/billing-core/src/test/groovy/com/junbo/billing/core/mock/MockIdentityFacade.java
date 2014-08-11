@@ -10,6 +10,7 @@ import com.junbo.billing.clientproxy.IdentityFacade;
 import com.junbo.common.enumid.CountryId;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.identity.spec.v1.model.Address;
 import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.identity.spec.v1.model.User;
@@ -22,6 +23,7 @@ public class MockIdentityFacade implements IdentityFacade {
     @Override
     public Promise<User> getUser(Long userId) {
         User user = new User();
+        user.setUsername(new UserPersonalInfoId(0L));
         user.setId(new UserId(userId));
         user.setStatus("ACTIVE");
 
@@ -39,5 +41,10 @@ public class MockIdentityFacade implements IdentityFacade {
         address.setPostalCode("94065");
 
         return Promise.pure(address);
+    }
+
+    @Override
+    public Promise<String> getUsername(Long usernameId) {
+        return Promise.pure("FakeUserName");
     }
 }

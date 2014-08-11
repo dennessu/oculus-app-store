@@ -182,8 +182,7 @@ class MigrationResourceImpl implements MigrationResource {
             // Create user name
             UserName userName = new UserName(
                 givenName: oculusInput.firstName,
-                familyName: oculusInput.lastName,
-                nickName: oculusInput.nickname
+                familyName: oculusInput.lastName
             )
             UserPersonalInfo name = new UserPersonalInfo(
                     userId: (UserId)createdUser.id,
@@ -194,10 +193,8 @@ class MigrationResourceImpl implements MigrationResource {
             )
 
             return userPersonalInfoRepository.create(name).then { UserPersonalInfo userPersonalInfo ->
-                createdUser.name = new UserPersonalInfoLink(
-                        isDefault: true,
-                        value: (UserPersonalInfoId)userPersonalInfo.id
-                )
+
+                createdUser.name = (UserPersonalInfoId)userPersonalInfo.id
                 return Promise.pure(createdUser)
             }
         }.then { User createdUser ->
@@ -239,10 +236,7 @@ class MigrationResourceImpl implements MigrationResource {
             )
 
             return userPersonalInfoRepository.create(gender).then { UserPersonalInfo userPersonalInfo ->
-                createdUser.gender = new UserPersonalInfoLink(
-                        isDefault: true,
-                        value: (UserPersonalInfoId)userPersonalInfo.id
-                )
+                createdUser.gender = (UserPersonalInfoId)userPersonalInfo.id
                 return Promise.pure(createdUser)
             }
         }.then { User createdUser ->
@@ -262,10 +256,7 @@ class MigrationResourceImpl implements MigrationResource {
             )
 
             return userPersonalInfoRepository.create(dob).then { UserPersonalInfo userPersonalInfo ->
-                createdUser.dob = new UserPersonalInfoLink(
-                        isDefault: true,
-                        value: (UserPersonalInfoId)userPersonalInfo.id
-                )
+                createdUser.dob = (UserPersonalInfoId)userPersonalInfo.id
                 return Promise.pure(createdUser)
             }
         }.then { User createdUser ->
@@ -359,8 +350,7 @@ class MigrationResourceImpl implements MigrationResource {
 
     Promise<User> saveOrUpdateUser(OculusInput oculusInput) {
         User user = new User(
-                username: oculusInput.username,
-                canonicalUsername: normalizeService.normalize(oculusInput.username),
+                nickName: oculusInput.nickname,
                 preferredLocale: new LocaleId(oculusInput.language),
                 preferredTimezone: timeZoneMap.get(oculusInput.timezone),
                 status: getMappedUserStatus(oculusInput),
@@ -373,10 +363,25 @@ class MigrationResourceImpl implements MigrationResource {
 
         return userRepository.searchUserByMigrateId(oculusInput.currentId).then { User existing ->
             if (existing == null) {
-                return userRepository.create(user)
+                return userRepository.create(user).then { User createdUser ->
+                    UserLoginName loginName = new UserLoginName(
+                            userName: oculusInput.username,
+                            canonicalUsername: normalizeService.normalize(oculusInput.username)
+                    )
+                    UserPersonalInfo userPersonalInfo = new UserPersonalInfo(
+                            userId: (UserId)createdUser.id,
+                            type: UserPersonalInfoType.USERNAME.toString(),
+                            value: ObjectMapperProvider.instance().valueToTree(loginName),
+                            createdTime: oculusInput.createdDate,
+                            updatedTime: oculusInput.updateDate
+                    )
+
+                    return userPersonalInfoRepository.create(userPersonalInfo).then { UserPersonalInfo createdUserPersonalInfo ->
+                        createdUser.username = createdUserPersonalInfo.getId()
+                        return userRepository.update(createdUser, createdUser)
+                    }
+                }
             } else {
-                existing.username = user.username
-                existing.canonicalUsername = user.canonicalUsername
                 existing.preferredLocale = user.preferredLocale
                 existing.preferredTimezone = user.preferredTimezone
                 existing.status = user.status
@@ -385,7 +390,30 @@ class MigrationResourceImpl implements MigrationResource {
                 existing.migratedUserId = user.migratedUserId
                 existing.createdTime = user.createdTime
                 existing.updatedTime = user.updatedTime
-                return userRepository.update(existing, existing)
+                return userPersonalInfoRepository.get(existing.username).then { UserPersonalInfo userPersonalInfo ->
+                    UserLoginName loginName = (UserLoginName)JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserLoginName)
+                    if (loginName.userName == oculusInput.username) {
+                        // Do nothing
+                        return userRepository.update(existing, existing)
+                    } else {
+                        // Update username
+                        loginName = new UserLoginName(
+                                userName: oculusInput.username,
+                                canonicalUsername: normalizeService.normalize(oculusInput.username)
+                        )
+                        userPersonalInfo = new UserPersonalInfo(
+                                userId: (UserId)existing.id,
+                                type: UserPersonalInfoType.USERNAME.toString(),
+                                value: ObjectMapperProvider.instance().valueToTree(loginName),
+                                createdTime: oculusInput.createdDate,
+                                updatedTime: oculusInput.updateDate
+                        )
+                        return userPersonalInfoRepository.create(userPersonalInfo).then { UserPersonalInfo createdUserPersonalInfo ->
+                            existing.username = createdUserPersonalInfo.getId()
+                            return userRepository.update(existing, existing)
+                        }
+                    }
+                }
             }
         }
     }
@@ -487,16 +515,41 @@ class MigrationResourceImpl implements MigrationResource {
         }
 
         return userRepository.searchUserByMigrateId(oculusInput.currentId).then { User existingUser ->
-            if (existingUser != null && existingUser.canonicalUsername == normalizeService.normalize(oculusInput.username)) {
+            if (existingUser != null && existingUser.username != null) {
+                return userPersonalInfoRepository.get(existingUser.username).then { UserPersonalInfo userPersonalInfo ->
+                    if (userPersonalInfo == null) {
+                        return Promise.pure(null)
+                    }
+
+                    UserLoginName loginName = (UserLoginName)JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserLoginName)
+                    if (loginName.canonicalUsername == normalizeService.normalize(oculusInput.username)) {
+                        return Promise.pure(null)
+                    }
+
+                    return checkCanonicalUsernameNotExists(oculusInput.username)
+                }
+            }
+
+            return checkCanonicalUsernameNotExists(oculusInput.username)
+        }
+    }
+
+    Promise<Void> checkCanonicalUsernameNotExists(String inputUserName) {
+        return userPersonalInfoRepository.searchByCanonicalUsername(normalizeService.normalize(inputUserName), Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
+            if (CollectionUtils.isEmpty(userPersonalInfoList)) {
                 return Promise.pure(null)
             }
 
-            return userRepository.searchUserByCanonicalUsername(normalizeService.normalize(oculusInput.username)).then { User newUser ->
-                if (newUser == null) {
+            return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo userPersonalInfo ->
+                return userRepository.get(userPersonalInfo.getUserId()).then { User existing ->
+                    if (existing.username == userPersonalInfo.getId()) {
+                        throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'username is already used by others').exception()
+                    }
+
                     return Promise.pure(null)
                 }
-
-                throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'username is already used by others').exception()
+            }.then {
+                return Promise.pure(null)
             }
         }
     }

@@ -6,31 +6,29 @@
 package com.junbo.test.catalog.itemRevision;
 
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
+import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
 import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.catalog.impl.ItemServiceImpl;
+import com.junbo.test.catalog.enums.LocaleAccuracy;
 import com.junbo.test.catalog.ItemRevisionService;
 import com.junbo.test.catalog.util.BaseTestClass;
+import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.catalog.ItemService;
-import com.junbo.common.id.ItemRevisionId;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.test.common.property.*;
 import com.junbo.common.model.Results;
-import com.junbo.common.id.ItemId;
 
 import org.testng.annotations.Test;
 import org.testng.Assert;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Jason
@@ -39,11 +37,12 @@ import java.util.List;
  */
 public class TestGetItemRevision extends BaseTestClass {
 
+    private ItemService itemService = ItemServiceImpl.instance();
     private LogHelper logger = new LogHelper(TestGetItemRevision.class);
     private ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
-    private ItemService itemService = ItemServiceImpl.instance();
-    private OrganizationId organizationId;
     private Item testItem;
+    private final String defaultLocale = "en_US";
+    private OrganizationId organizationId;
 
     private void prepareTestData() throws Exception {
         OrganizationService organizationService = OrganizationServiceImpl.instance();
@@ -88,6 +87,96 @@ public class TestGetItemRevision extends BaseTestClass {
 
         //verify the invalid Id scenario
         verifyInvalidScenarios(invalidId);
+
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Get v1/item-revisions/{itemRevisionId}?locale={locale}",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Test Get an item revision by itemRevisionId and locale",
+            steps = {
+                    "1. Prepare an item revision",
+                    "2. Get it id and locale",
+                    "3. Verify localeAccuracy and itemRevision locale property"
+            }
+    )
+    @Test
+    public void testGetAnItemRevisionByIdLocale() throws Exception {
+        this.prepareTestData();
+
+        HashMap<String, List<String>> httpPara = new HashMap<>();
+        List<String> locale = new ArrayList<>();
+
+        //Prepare an item revision
+        ItemRevision itemRevision = itemRevisionService.postDefaultItemRevision(testItem);
+        ItemRevisionLocaleProperties itemRevisionLocaleProperties = itemRevision.getLocales().get(defaultLocale);
+
+        //Get default locale
+        locale.add(defaultLocale);
+        httpPara.put("locale", locale);
+        ItemRevision itemRevisionRtn = itemRevisionService.getItemRevision(itemRevision.getRevisionId(), httpPara);
+        Assert.assertTrue(LocaleAccuracy.HIGH.is(itemRevisionRtn.getLocaleAccuracy()));
+        Assert.assertEquals(itemRevisionRtn.getLocales().get(defaultLocale).getName(), itemRevisionLocaleProperties.getName());
+
+        //Get fr_FR
+        locale.clear();
+        locale.add("fr_FR");
+        httpPara.put("locale", locale);
+        itemRevisionRtn = itemRevisionService.getItemRevision(itemRevision.getRevisionId(), httpPara);
+        Assert.assertTrue(LocaleAccuracy.LOW.is(itemRevisionRtn.getLocaleAccuracy()));
+        Assert.assertEquals(itemRevisionRtn.getLocales().get("fr_FR").getName(), itemRevisionLocaleProperties.getName());
+
+        //get zh_CN
+        locale.clear();
+        locale.add("zh_CN");
+        httpPara.put("locale", locale);
+        itemRevisionRtn = itemRevisionService.getItemRevision(itemRevision.getRevisionId(), httpPara);
+        Assert.assertTrue(LocaleAccuracy.LOW.is(itemRevisionRtn.getLocaleAccuracy()));
+        Assert.assertEquals(itemRevisionRtn.getLocales().get("zh_CN").getName(), itemRevisionLocaleProperties.getName());
+
+        //Add fr_FR locale to the item revision
+        Map<String, ItemRevisionLocaleProperties> locales = itemRevision.getLocales();
+        ItemRevisionLocaleProperties itemRevisionLocalePropertiesFR = new ItemRevisionLocaleProperties();
+        itemRevisionLocalePropertiesFR.setName("testItemRevision_fr_FR_" + RandomFactory.getRandomStringOfAlphabet(10));
+        locales.put("fr_FR", itemRevisionLocalePropertiesFR);
+
+        itemRevision.setLocales(locales);
+        itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
+
+        //try get default locale
+        locale.clear();
+        locale.add(defaultLocale);
+        httpPara.put("locale", locale);
+        itemRevisionRtn = itemRevisionService.getItemRevision(itemRevision.getRevisionId(), httpPara);
+        Assert.assertTrue(LocaleAccuracy.HIGH.is(itemRevisionRtn.getLocaleAccuracy()));
+        Assert.assertEquals(itemRevisionRtn.getLocales().get(defaultLocale).getName(), itemRevisionLocaleProperties.getName());
+
+        //Get fr_FR
+        locale.clear();
+        locale.add("fr_FR");
+        httpPara.put("locale", locale);
+        itemRevisionRtn = itemRevisionService.getItemRevision(itemRevision.getRevisionId(), httpPara);
+        Assert.assertTrue(LocaleAccuracy.MEDIUM.is(itemRevisionRtn.getLocaleAccuracy()));
+        Assert.assertEquals(itemRevisionRtn.getLocales().get("fr_FR").getName(), itemRevisionLocalePropertiesFR.getName());
+
+        //Get fr_CA
+        locale.clear();
+        locale.add("fr_CA");
+        httpPara.put("locale", locale);
+        itemRevisionRtn = itemRevisionService.getItemRevision(itemRevision.getRevisionId(), httpPara);
+        Assert.assertTrue(LocaleAccuracy.LOW.is(itemRevisionRtn.getLocaleAccuracy()));
+        Assert.assertEquals(itemRevisionRtn.getLocales().get("fr_CA").getName(), itemRevisionLocalePropertiesFR.getName());
+
+        //get zh_CN
+        locale.clear();
+        locale.add("zh_CN");
+        httpPara.put("locale", locale);
+        itemRevisionRtn = itemRevisionService.getItemRevision(itemRevision.getRevisionId(), httpPara);
+        Assert.assertTrue(LocaleAccuracy.LOW.is(itemRevisionRtn.getLocaleAccuracy()));
+        Assert.assertEquals(itemRevisionRtn.getLocales().get("zh_CN").getName(), itemRevisionLocaleProperties.getName());
     }
 
     @Property(
@@ -124,6 +213,12 @@ public class TestGetItemRevision extends BaseTestClass {
         ItemRevision itemRevision3 = itemRevisionService.postDefaultItemRevision(item2);
         ItemRevision itemRevision4 = itemRevisionService.postDefaultItemRevision(item2);
 
+        //release the item revisions as if status is not specified, it will be set to APPROVED
+        releaseItemRevision(itemRevision1);
+        releaseItemRevision(itemRevision2);
+        releaseItemRevision(itemRevision3);
+        releaseItemRevision(itemRevision4);
+
         //get revisions by itemId
         itemIds.add(itemId1);
         getOptions.put("itemId", itemIds);
@@ -139,7 +234,7 @@ public class TestGetItemRevision extends BaseTestClass {
         verifyGetResults(getOptions, 2, itemRevision3, itemRevision4);
 
         //get revisions by itemId and revisionId, only revisionId works
-        revisionIds.add(IdConverter.idToUrlString(ItemRevisionId.class, itemRevision4.getRevisionId()));
+        revisionIds.add(itemRevision4.getRevisionId());
         getOptions.put("revisionId", revisionIds);
         verifyGetResults(getOptions, 1, itemRevision4);
 
@@ -147,8 +242,8 @@ public class TestGetItemRevision extends BaseTestClass {
         getOptions.put("revisionId", revisionIds);
         verifyGetResults(getOptions, 1, itemRevision4);
 
-        revisionIds.add(IdConverter.idToUrlString(ItemRevisionId.class, itemRevision1.getRevisionId()));
-        revisionIds.add(IdConverter.idToUrlString(ItemRevisionId.class, itemRevision2.getRevisionId()));
+        revisionIds.add(itemRevision1.getRevisionId());
+        revisionIds.add(itemRevision2.getRevisionId());
         getOptions.put("revisionId", revisionIds);
         verifyGetResults(getOptions, 3, itemRevision1, itemRevision2, itemRevision4);
 
@@ -197,32 +292,34 @@ public class TestGetItemRevision extends BaseTestClass {
         //Prepare some item revisions
         ItemRevision itemRevision1 = itemRevisionService.postDefaultItemRevision(item1);
         ItemRevision itemRevision2 = itemRevisionService.postDefaultItemRevision(item2);
-        String itemRevisionId1 = IdConverter.idToUrlString(ItemRevisionId.class, itemRevision1.getRevisionId());
-        String itemRevisionId2 = IdConverter.idToUrlString(ItemRevisionId.class, itemRevision2.getRevisionId());
+        String itemRevisionId1 = itemRevision1.getRevisionId();
+        String itemRevisionId2 = itemRevision2.getRevisionId();
 
         revisionIds.add(itemRevisionId1);
         revisionIds.add(itemRevisionId2);
         getOptions.put("revisionId", revisionIds);
 
-        setSearchStatus(CatalogEntityStatus.DRAFT.getEntityStatus(), getOptions, 2, itemRevision1, itemRevision2);
-        setSearchStatus(CatalogEntityStatus.APPROVED.getEntityStatus(), getOptions, 0);
-        setSearchStatus("invalidStatus", getOptions, 0);
+        //For the status specified is not approved, you must specify the developerId as well.
+        String developer = IdConverter.idToHexString(organizationId);
+        setSearchStatus(CatalogEntityStatus.DRAFT.getEntityStatus(), developer, getOptions, 2, itemRevision1, itemRevision2);
+        setSearchStatus(CatalogEntityStatus.APPROVED.getEntityStatus(), null, getOptions, 0);
+        setSearchStatus("invalidStatus", developer, getOptions, 0);
 
         //release one item revision
         releaseItemRevision(itemRevision1);
 
-        setSearchStatus(CatalogEntityStatus.DRAFT.getEntityStatus(), getOptions, 1, itemRevision2);
-        setSearchStatus(CatalogEntityStatus.APPROVED.getEntityStatus(), getOptions, 1, itemRevision1);
-        setSearchStatus(CatalogEntityStatus.PENDING_REVIEW.getEntityStatus(), getOptions, 0);
-        setSearchStatus("invalidStatus", getOptions, 0);
+        setSearchStatus(CatalogEntityStatus.DRAFT.getEntityStatus(), developer, getOptions, 1, itemRevision2);
+        setSearchStatus(CatalogEntityStatus.APPROVED.getEntityStatus(), null, getOptions, 1, itemRevision1);
+        setSearchStatus(CatalogEntityStatus.PENDING_REVIEW.getEntityStatus(), developer, getOptions, 0);
+        setSearchStatus("invalidStatus", developer, getOptions, 0);
 
         //release the both two item revisions
         releaseItemRevision(itemRevision2);
 
-        setSearchStatus(CatalogEntityStatus.DRAFT.getEntityStatus(), getOptions, 0);
-        setSearchStatus(CatalogEntityStatus.APPROVED.getEntityStatus(), getOptions, 2, itemRevision1, itemRevision2);
-        setSearchStatus(CatalogEntityStatus.PENDING_REVIEW.getEntityStatus(), getOptions, 0);
-        setSearchStatus("invalidStatus", getOptions, 0);
+        setSearchStatus(CatalogEntityStatus.DRAFT.getEntityStatus(), developer, getOptions, 0);
+        setSearchStatus(CatalogEntityStatus.APPROVED.getEntityStatus(), null, getOptions, 2, itemRevision1, itemRevision2);
+        setSearchStatus(CatalogEntityStatus.PENDING_REVIEW.getEntityStatus(), developer, getOptions, 0);
+        setSearchStatus("invalidStatus", developer, getOptions, 0);
     }
 
     @Property(
@@ -249,8 +346,8 @@ public class TestGetItemRevision extends BaseTestClass {
         //Prepare two items
         Item item1 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
         Item item2 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
-        String itemId1 = IdConverter.idToUrlString(ItemId.class, item1.getItemId());
-        String itemId2 = IdConverter.idToUrlString(ItemId.class, item2.getItemId());
+        String itemId1 = item1.getItemId();
+        String itemId2 = item2.getItemId();
         //Prepare some item revisions
         ItemRevision itemRevision1 = itemRevisionService.postDefaultItemRevision(item1);
         ItemRevision itemRevision2 = itemRevisionService.postDefaultItemRevision(item1);
@@ -285,7 +382,7 @@ public class TestGetItemRevision extends BaseTestClass {
         verifyGetResults(getOptions, 1, itemRevision2);
 
         //set revisionId, but revisionId should not work, still get itemRevision2
-        revisionIds.add(IdConverter.idToUrlString(ItemRevisionId.class, itemRevision3.getRevisionId()));
+        revisionIds.add(itemRevision3.getRevisionId());
         getOptions.put("revisionId", revisionIds);
         verifyGetResults(getOptions, 1, itemRevision2);
 
@@ -301,9 +398,71 @@ public class TestGetItemRevision extends BaseTestClass {
 
     }
 
+    @Property(
+            priority = Priority.Dailies,
+            features = "Get v1/item-revisions?revisionId=&locale=",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Test Get item revisions by revisionId and locale",
+            steps = {
+                    "1. Prepare some item revision",
+                    "2. Get them by id and locale",
+                    "3. Verify localeAccuracy and itemRevision locale property"
+            }
+    )
+    @Test
+    public void testGetItemRevisionsByRevisionIdLocale() throws Exception {
+        this.prepareTestData();
+
+        HashMap<String, List<String>> getOptions = new HashMap<>();
+        List<String> revisionIds = new ArrayList<>();
+        List<String> locales = new ArrayList<>();
+
+        //Prepare two items
+        Item item1 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
+        Item item2 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
+
+        //Prepare some item revisions
+        ItemRevision itemRevision1 = itemRevisionService.postDefaultItemRevision(item1);
+        ItemRevision itemRevision2 = itemRevisionService.postDefaultItemRevision(item1);
+        ItemRevision itemRevision3 = itemRevisionService.postDefaultItemRevision(item2);
+        ItemRevision itemRevision4 = itemRevisionService.postDefaultItemRevision(item2);
+
+        //release the item revisions as if status is not specified, it will be set to APPROVED
+        releaseItemRevision(itemRevision1);
+        releaseItemRevision(itemRevision2);
+        releaseItemRevision(itemRevision3);
+        releaseItemRevision(itemRevision4);
+
+        //set locale
+        locales.add(defaultLocale);
+        getOptions.put("locale", locales);
+
+        //get revisions by revisionId
+        revisionIds.add(itemRevision4.getRevisionId());
+        getOptions.put("revisionId", revisionIds);
+
+        verifyGetResultsInLocale(getOptions, LocaleAccuracy.HIGH, itemRevision4);
+
+        //get revisions by revisionId
+        revisionIds.add(itemRevision2.getRevisionId());
+        revisionIds.add(itemRevision3.getRevisionId());
+        getOptions.put("revisionId", revisionIds);
+
+        verifyGetResultsInLocale(getOptions, LocaleAccuracy.HIGH, itemRevision2, itemRevision3, itemRevision4);
+
+        //set locale
+        locales.clear();
+        locales.add("fr_FR");
+        getOptions.put("locale", locales);
+
+        verifyGetResultsInLocale(getOptions, LocaleAccuracy.LOW, itemRevision2, itemRevision3, itemRevision4);
+    }
+
     private void verifyInvalidScenarios(String itemRevisionId) throws Exception {
         try {
-            itemRevisionService.getItemRevision(itemRevisionId, 404);
+            itemRevisionService.getItemRevision(itemRevisionId, null, 404);
             Assert.fail("Shouldn't get item revision with wrong id");
         }
         catch (Exception e) {
@@ -311,11 +470,19 @@ public class TestGetItemRevision extends BaseTestClass {
         }
     }
 
-    private void setSearchStatus(String status, HashMap<String, List<String>> getOptions, int expectedRtnSize, ItemRevision... itemRevisions)
+    private void setSearchStatus(String status, String developer, HashMap<String, List<String>> getOptions, int expectedRtnSize, ItemRevision... itemRevisions)
             throws Exception {
         List<String> searchStatus = new ArrayList<>();
         searchStatus.add(status);
         getOptions.put("status", searchStatus);
+        if (developer != null && developer.length() > 0) {
+            List<String> developerIds = new ArrayList<>();
+            developerIds.add(developer);
+            getOptions.put("developerId", developerIds);
+        }
+        else {
+            getOptions.remove("developerId");
+        }
 
         verifyGetResults(getOptions, expectedRtnSize, itemRevisions);
     }
@@ -325,6 +492,21 @@ public class TestGetItemRevision extends BaseTestClass {
         Assert.assertEquals(itemRevisionsRtn.getItems().size(), expectedRtnSize);
         for (ItemRevision temp : itemRevisions) {
             Assert.assertTrue(isContain(itemRevisionsRtn, temp));
+        }
+    }
+
+    private void verifyGetResultsInLocale(HashMap<String, List<String>> getOptions, LocaleAccuracy expectedLocaleAccuracy, ItemRevision... itemRevisions) throws Exception {
+        String locale = getOptions.get("locale").get(0);
+
+        Results<ItemRevision> itemRevisionsRtn = itemRevisionService.getItemRevisions(getOptions);
+
+        for (ItemRevision temp : itemRevisions) {
+            Assert.assertTrue(isContain(itemRevisionsRtn, temp));
+        }
+
+        for (ItemRevision temp : itemRevisionsRtn.getItems()) {
+            Assert.assertNotNull(temp.getLocales().get(locale));
+            Assert.assertEquals(temp.getLocaleAccuracy(), expectedLocaleAccuracy.name());
         }
     }
 

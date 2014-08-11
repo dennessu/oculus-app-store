@@ -14,17 +14,11 @@ import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.test.catalog.OfferRevisionService;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.offer.Offer;
-import com.junbo.test.common.property.Component;
-import com.junbo.test.common.property.Priority;
-import com.junbo.test.common.property.Property;
-import com.junbo.test.common.property.Status;
-import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.catalog.OfferService;
-import com.junbo.common.id.OfferRevisionId;
 import com.junbo.common.id.OrganizationId;
+import com.junbo.test.common.property.*;
 import com.junbo.common.model.Results;
-import com.junbo.common.id.OfferId;
 
 import org.testng.annotations.Test;
 import org.testng.Assert;
@@ -141,7 +135,7 @@ public class TestGetOfferRevision extends BaseTestClass {
         verifyGetResults(getOptions, 2, offerRevision3, offerRevision4);
 
         //get revisions by offerId and revisionId, only revisionId works
-        revisionIds.add(IdConverter.idToUrlString(OfferRevisionId.class, offerRevision4.getRevisionId()));
+        revisionIds.add(offerRevision4.getRevisionId());
         getOptions.put("revisionId", revisionIds);
         verifyGetResults(getOptions, 1, offerRevision4);
 
@@ -149,8 +143,8 @@ public class TestGetOfferRevision extends BaseTestClass {
         getOptions.put("revisionId", revisionIds);
         verifyGetResults(getOptions, 1, offerRevision4);
 
-        revisionIds.add(IdConverter.idToUrlString(OfferRevisionId.class, offerRevision1.getRevisionId()));
-        revisionIds.add(IdConverter.idToUrlString(OfferRevisionId.class, offerRevision2.getRevisionId()));
+        revisionIds.add(offerRevision1.getRevisionId());
+        revisionIds.add(offerRevision2.getRevisionId());
         getOptions.put("revisionId", revisionIds);
         verifyGetResults(getOptions, 3, offerRevision1, offerRevision2, offerRevision4);
 
@@ -199,8 +193,8 @@ public class TestGetOfferRevision extends BaseTestClass {
         //Prepare some offer revisions
         OfferRevision offerRevision1 = offerRevisionService.postDefaultOfferRevision(offer1);
         OfferRevision offerRevision2 = offerRevisionService.postDefaultOfferRevision(offer2);
-        String offerRevisionId1 = IdConverter.idToUrlString(OfferRevisionId.class, offerRevision1.getRevisionId());
-        String offerRevisionId2 = IdConverter.idToUrlString(OfferRevisionId.class, offerRevision2.getRevisionId());
+        String offerRevisionId1 = offerRevision1.getRevisionId();
+        String offerRevisionId2 = offerRevision2.getRevisionId();
 
         revisionIds.add(offerRevisionId1);
         revisionIds.add(offerRevisionId2);
@@ -251,8 +245,8 @@ public class TestGetOfferRevision extends BaseTestClass {
         //Prepare two offers
         Offer offer1 = offerService.postDefaultOffer(organizationId);
         Offer offer2 = offerService.postDefaultOffer(organizationId);
-        String offerId1 = IdConverter.idToUrlString(OfferId.class, offer1.getOfferId());
-        String offerId2 = IdConverter.idToUrlString(OfferId.class, offer2.getOfferId());
+        String offerId1 = offer1.getOfferId();
+        String offerId2 = offer2.getOfferId();
         //Prepare some offer revisions
         OfferRevision offerRevision1 = offerRevisionService.postDefaultOfferRevision(offer1);
         OfferRevision offerRevision2 = offerRevisionService.postDefaultOfferRevision(offer1);
@@ -287,7 +281,7 @@ public class TestGetOfferRevision extends BaseTestClass {
         verifyGetResults(getOptions, 1, offerRevision2);
 
         //set revisionId, but revisionId should not work, still get offerRevision2
-        revisionIds.add(IdConverter.idToUrlString(OfferRevisionId.class, offerRevision3.getRevisionId()));
+        revisionIds.add(offerRevision3.getRevisionId());
         getOptions.put("revisionId", revisionIds);
         verifyGetResults(getOptions, 1, offerRevision2);
 
@@ -305,7 +299,7 @@ public class TestGetOfferRevision extends BaseTestClass {
 
     private void verifyInvalidScenarios(String offerRevisionId) throws Exception {
         try {
-            offerRevisionService.getOfferRevision(offerRevisionId, 404);
+            offerRevisionService.getOfferRevision(offerRevisionId, null, 404);
             Assert.fail("Shouldn't get offer revision with wrong id");
         }
         catch (Exception e) {

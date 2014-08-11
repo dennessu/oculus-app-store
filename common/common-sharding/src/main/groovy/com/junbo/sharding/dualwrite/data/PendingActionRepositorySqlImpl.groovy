@@ -154,7 +154,7 @@ public class PendingActionRepositorySqlImpl implements PendingActionRepository {
 
     static Date calcEndTime(int millionSec) {
         Calendar calendar = Calendar.getInstance()
-        calendar.add(Calendar.MILLISECOND, millionSec)
+        calendar.add(Calendar.MILLISECOND, -millionSec)
         return calendar.getTime()
     }
 }

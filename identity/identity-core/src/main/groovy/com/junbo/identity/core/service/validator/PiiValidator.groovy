@@ -14,4 +14,5 @@ interface PiiValidator {
     boolean handles(String type)
     Promise<Void> validateCreate(JsonNode value, UserId userId, OrganizationId organizationId)
     Promise<Void> validateUpdate(JsonNode value, JsonNode oldValue)
+    JsonNode updateJsonNode(JsonNode value)
 }

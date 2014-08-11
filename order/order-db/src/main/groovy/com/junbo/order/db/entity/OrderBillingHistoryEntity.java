@@ -27,6 +27,7 @@ public class OrderBillingHistoryEntity extends CommonDbEntityWithDate {
     private BillingAction billingEventId;
     private BigDecimal totalAmount;
     private Boolean success;
+    private String note;
 
     @Id
     @Column(name = "HISTORY_ID")
@@ -93,5 +94,14 @@ public class OrderBillingHistoryEntity extends CommonDbEntityWithDate {
 
     public void setSuccess(Boolean success) {
         this.success = success;
+    }
+
+    @Column(name = "NOTE")
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }

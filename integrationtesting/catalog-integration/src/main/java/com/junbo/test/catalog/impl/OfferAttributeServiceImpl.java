@@ -5,20 +5,17 @@
  */
 package com.junbo.test.catalog.impl;
 
-import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
-import com.junbo.common.id.OfferAttributeId;
-import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.common.model.Results;
-import com.junbo.langur.core.client.TypeReference;
-import com.junbo.test.catalog.OfferAttributeService;
 import com.junbo.test.catalog.enums.CatalogOfferAttributeType;
-import com.junbo.test.common.ConfigHelper;
+import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.test.catalog.OfferAttributeService;
+import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.libs.RandomFactory;
-import com.junbo.test.common.libs.IdConverter;
-
+import com.junbo.test.common.ConfigHelper;
+import com.junbo.common.model.Results;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +47,7 @@ public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAt
     }
 
     public OfferAttribute getOfferAttribute(String attributeId, int expectedResponseCode) throws Exception {
-        String url = catalogServerURL + "/" + IdConverter.idToUrlString(OfferAttributeId.class, attributeId);
+        String url = catalogServerURL + "/" + attributeId;
         String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode, isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<OfferAttribute>() {}, responseBody);
     }
@@ -94,8 +91,7 @@ public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAt
 
     public OfferAttribute updateOfferAttribute(String offerAttributeId, OfferAttribute attribute,
                                                int expectedResponseCode) throws Exception {
-        String putUrl = catalogServerURL + "/" + IdConverter.idToUrlString(OfferAttributeId.class,
-                offerAttributeId);
+        String putUrl = catalogServerURL + "/" + offerAttributeId;
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, attribute, expectedResponseCode, isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<OfferAttribute>() {}, responseBody);
     }
@@ -105,8 +101,7 @@ public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAt
     }
 
     public void deleteOfferAttribute(String offerAttributeId, int expectedResponseCode) throws Exception {
-        String strOfferAttributeId = IdConverter.idToUrlString(OfferAttributeId.class, offerAttributeId);
-        String url = catalogServerURL + "/" + strOfferAttributeId;
+        String url = catalogServerURL + "/" + offerAttributeId;
         restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode, isServiceScope);
     }
 }

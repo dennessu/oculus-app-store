@@ -10,9 +10,7 @@ import com.junbo.test.catalog.impl.ItemAttributeServiceImpl;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
 import com.junbo.test.catalog.ItemAttributeService;
 import com.junbo.test.catalog.util.BaseTestClass;
-import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
-import com.junbo.common.id.ItemAttributeId;
 import com.junbo.test.common.property.*;
 import com.junbo.common.model.Results;
 
@@ -90,22 +88,22 @@ public class TestGetItemAttribute extends BaseTestClass {
         ItemAttribute itemAttribute2 = itemAttributeService.postDefaultItemAttribute();
         ItemAttribute itemAttribute3 = itemAttributeService.postDefaultItemAttribute();
 
-        listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute1.getId()));
+        listItemAttributeId.add(itemAttribute1.getId());
         paraMap.put("attributeId", listItemAttributeId);
         verifyGetItemAttributes(paraMap, 1, itemAttribute1);
 
-        listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute2.getId()));
+        listItemAttributeId.add(itemAttribute2.getId());
         paraMap.put("attributeId", listItemAttributeId);
         verifyGetItemAttributes(paraMap, 2, itemAttribute1, itemAttribute2);
 
-        listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute3.getId()));
+        listItemAttributeId.add(itemAttribute3.getId());
         paraMap.put("attributeId", listItemAttributeId);
         verifyGetItemAttributes(paraMap, 3, itemAttribute1, itemAttribute2, itemAttribute3);
 
         listItemAttributeId.clear();
         listItemAttributeId.add("0000000000");
-        listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute2.getId()));
-        listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute3.getId()));
+        listItemAttributeId.add(itemAttribute2.getId());
+        listItemAttributeId.add(itemAttribute3.getId());
         paraMap.put("attributeId", listItemAttributeId);
         verifyGetItemAttributes(paraMap, 2, itemAttribute2, itemAttribute3);
 
@@ -142,17 +140,17 @@ public class TestGetItemAttribute extends BaseTestClass {
         ItemAttribute itemAttribute2 = itemAttributeService.postDefaultItemAttribute();
         ItemAttribute itemAttribute3 = itemAttributeService.postDefaultItemAttribute();
 
-        listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute1.getId()));
+        listItemAttributeId.add(itemAttribute1.getId());
         listType.add(CatalogItemAttributeType.GENRE.getType());
         paraMap.put("attributeId", listItemAttributeId);
         paraMap.put("type", listType);
         verifyGetItemAttributes(paraMap, 1, itemAttribute1);
 
-        listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute2.getId()));
+        listItemAttributeId.add(itemAttribute2.getId());
         paraMap.put("attributeId", listItemAttributeId);
         verifyGetItemAttributes(paraMap, 2, itemAttribute1, itemAttribute2);
 
-        listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute3.getId()));
+        listItemAttributeId.add(itemAttribute3.getId());
         paraMap.put("attributeId", listItemAttributeId);
         verifyGetItemAttributes(paraMap, 3, itemAttribute1, itemAttribute2, itemAttribute3);
 
@@ -163,8 +161,8 @@ public class TestGetItemAttribute extends BaseTestClass {
 
         listItemAttributeId.clear();
         listItemAttributeId.add("0000000000");
-        listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute2.getId()));
-        listItemAttributeId.add(IdConverter.idToUrlString(ItemAttributeId.class, itemAttribute3.getId()));
+        listItemAttributeId.add(itemAttribute2.getId());
+        listItemAttributeId.add(itemAttribute3.getId());
         listType.clear();
         listType.add(CatalogItemAttributeType.GENRE.getType());
         paraMap.put("attributeId", listItemAttributeId);

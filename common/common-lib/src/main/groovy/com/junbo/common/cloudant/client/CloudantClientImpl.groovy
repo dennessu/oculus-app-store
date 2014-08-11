@@ -8,6 +8,7 @@ import com.junbo.common.cloudant.exception.CloudantConnectException
 import com.junbo.common.cloudant.exception.CloudantException
 import com.junbo.common.cloudant.model.CloudantError
 import com.junbo.common.cloudant.model.CloudantQueryResult
+import com.junbo.common.cloudant.model.CloudantReduceQueryResult
 import com.junbo.common.cloudant.model.CloudantResponse
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.CloudantId
@@ -22,6 +23,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.util.Assert
+import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
 import javax.ws.rs.core.UriBuilder
@@ -251,6 +253,8 @@ class CloudantClientImpl implements CloudantClientInternal {
             query.put('include_docs', includeDocs.toString())
         }
 
+        query.put('reduce', 'false')
+
         return executeRequest(dbUri, HttpMethod.GET, Utils.combineUrl(VIEW_PATH, viewName), query, null).then({ Response response ->
 
             if (response.statusCode != HttpStatus.OK.value()) {
@@ -261,6 +265,32 @@ class CloudantClientImpl implements CloudantClientInternal {
 
             return Promise.pure(marshaller.unmarshall(response.responseBody, CloudantQueryResult, String, entityClass))
         })
+    }
+
+    @Override
+    public Promise<Integer> queryViewTotal(CloudantDbUri dbUri, String key, String viewName) {
+        def query = [:]
+        if (key != null) {
+            query.put('key', "\"$key\"")
+        }
+        query.put('include_docs', 'false')
+        query.put('reduce', 'true')
+
+        return executeRequest(dbUri, HttpMethod.GET, Utils.combineUrl(VIEW_PATH, viewName), query, null).then { Response response ->
+
+            if (response.statusCode != HttpStatus.OK.value()) {
+                CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
+                throw new CloudantException("Failed to query the view, error: $cloudantError.error," +
+                        " reason: $cloudantError.reason")
+            }
+
+            CloudantReduceQueryResult result = marshaller.unmarshall(response.responseBody, CloudantReduceQueryResult)
+            if (CollectionUtils.isEmpty(result.rows) || result.rows.size() != 1) {
+                return Promise.pure(0)
+            }
+
+            return Promise.pure(result.rows.get(0).value)
+        }
     }
 
     @Override
@@ -285,6 +315,7 @@ class CloudantClientImpl implements CloudantClientInternal {
         if (includeDocs) {
             query.put('include_docs', includeDocs.toString())
         }
+        query.put('reduce', 'false')
 
         return executeRequest(dbUri, HttpMethod.GET, Utils.combineUrl(VIEW_PATH, viewName), query, null).then({ Response response ->
 

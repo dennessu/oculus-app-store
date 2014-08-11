@@ -5,24 +5,25 @@ import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
+import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.csr.spec.def.CsrLogActionType
 import com.junbo.csr.spec.model.CsrLog
 import com.junbo.csr.spec.resource.CsrLogResource
 import com.junbo.identity.auth.UserAuthorizeCallbackFactory
+import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.filter.UserFilter
 import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.UserValidator
-import com.junbo.identity.data.repository.UserGroupRepository
-import com.junbo.identity.data.repository.UserPasswordRepository
-import com.junbo.identity.data.repository.UserPinRepository
-import com.junbo.identity.data.repository.UserRepository
+import com.junbo.identity.data.repository.*
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserGroup
+import com.junbo.identity.spec.v1.model.UserLoginName
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.resource.UserResource
@@ -42,6 +43,9 @@ class UserResourceImpl implements UserResource {
 
     @Autowired
     private UserRepository userRepository
+
+    @Autowired
+    private UserPersonalInfoRepository userPersonalInfoRepository
 
     @Autowired
     private UserGroupRepository userGroupRepository
@@ -107,7 +111,6 @@ class UserResourceImpl implements UserResource {
         }
 
         return userRepository.get(userId).then { User oldUser ->
-            String oldCanonicalUsername = oldUser.canonicalUsername
             if (oldUser == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
@@ -119,15 +122,15 @@ class UserResourceImpl implements UserResource {
                 }
 
                 if (AuthorizeContext.hasScopes('csr') && AuthorizeContext.currentUserId != null) {
-                    csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.CountryUpdated, property: oldUser.username)).get()
+                    csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.CountryUpdated,
+                            property: getUserNameStr(oldUser).get())).get()
                 }
 
                 user = userFilter.filterForPut(user, oldUser)
 
                 return userValidator.validateForUpdate(user, oldUser).then {
                     return userRepository.update(user, oldUser).then { User newUser ->
-                        String newCanonicalUsername = newUser.canonicalUsername
-                        return updateCredential(user.getId(), oldCanonicalUsername, newCanonicalUsername).then {
+                        return updateCredential(user.getId(), oldUser.username, newUser.username).then {
                             newUser = userFilter.filterForGet(newUser, null)
                             return Promise.pure(newUser)
                         }
@@ -148,7 +151,6 @@ class UserResourceImpl implements UserResource {
         }
 
         return userRepository.get(userId).then { User oldUser ->
-            String oldCanonicalUsername = oldUser.canonicalUsername
             if (oldUser == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
@@ -163,8 +165,7 @@ class UserResourceImpl implements UserResource {
 
                 return userValidator.validateForUpdate(user, oldUser).then {
                     return userRepository.update(user, oldUser).then { User newUser ->
-                        String newCanonicalUsername = newUser.canonicalUsername
-                        return updateCredential(user.getId(), oldCanonicalUsername, newCanonicalUsername).then {
+                        return updateCredential(user.getId(), oldUser.username, newUser.username).then {
                             newUser = userFilter.filterForGet(newUser, null)
                             return Promise.pure(newUser)
                         }
@@ -215,6 +216,10 @@ class UserResourceImpl implements UserResource {
                         throw AppCommonErrors.INSTANCE.forbidden().exception()
                     }
 
+                    if (user == null) {
+                        return Promise.pure(user)
+                    }
+
                     user = userFilter.filterForGet(user, listOptions.properties?.split(',') as List<String>)
 
                     if (user != null) {
@@ -228,13 +233,25 @@ class UserResourceImpl implements UserResource {
 
             if (listOptions.username != null) {
                 String canonicalUsername = normalizeService.normalize(listOptions.username)
-                return userRepository.searchUserByCanonicalUsername(canonicalUsername).then { User user ->
-                    if (user == null) {
-                        return Promise.pure(resultList)
-                    }
+                return userPersonalInfoRepository.searchByCanonicalUsername(canonicalUsername, Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
+                    User user = null
+                    return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo userPersonalInfo ->
+                        return userRepository.get(userPersonalInfo.userId).then { User existing ->
+                            if (existing.username == userPersonalInfo.getId()) {
+                                user = existing
+                                return Promise.pure(Promise.BREAK)
+                            }
 
-                    return filterUser(user).then {
-                        return Promise.pure(resultList)
+                            return Promise.pure(null)
+                        }
+                    }.then {
+                        if (user == null) {
+                            return Promise.pure(resultList)
+                        } else {
+                            filterUser(user).then {
+                                return Promise.pure(resultList)
+                            }
+                        }
                     }
                 }
             } else {
@@ -268,8 +285,8 @@ class UserResourceImpl implements UserResource {
         }
     }
 
-    Promise<Void> updateCredential(UserId userId, String oldCanonicalUsername, String newCanonicalUsername) {
-        if (oldCanonicalUsername == newCanonicalUsername) {
+    Promise<Void> updateCredential(UserId userId, UserPersonalInfoId oldUsername, UserPersonalInfoId newUsername) {
+        if (oldUsername == newUsername) {
             return Promise.pure(null)
         } else {
             // if username changes, will disable all passwords and pins. User needs to reset this.
@@ -300,6 +317,17 @@ class UserResourceImpl implements UserResource {
                         }
                 }
             }
+        }
+    }
+
+    Promise<String> getUserNameStr(User user) {
+        return userPersonalInfoRepository.get(user.username).then { UserPersonalInfo userPersonalInfo ->
+            if (userPersonalInfo == null) {
+                throw AppErrors.INSTANCE.userPersonalInfoNotFound(user.username).exception()
+            }
+
+            UserLoginName loginName = (UserLoginName)JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserLoginName)
+            return Promise.pure(loginName.userName)
         }
     }
 }

@@ -19,14 +19,13 @@ import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
+import com.junbo.common.id.OrganizationId;
 import com.junbo.test.common.property.*;
 import com.junbo.common.model.Results;
 import com.junbo.test.catalog.enums.*;
 import com.junbo.test.catalog.impl.*;
 import com.junbo.test.catalog.*;
-import com.junbo.common.id.*;
 
 import org.testng.annotations.Test;
 import org.testng.Assert;
@@ -95,7 +94,7 @@ public class Catalog extends BaseTestClass {
         List<String> listType = new ArrayList<>();
         listType.add(attributeRtn.getType());
         List<String> listAttributeId = new ArrayList<>();
-        String attributeId = IdConverter.idToUrlString(ItemAttributeId.class, attributeGet.getId());
+        String attributeId = attributeGet.getId();
         listAttributeId.add(attributeId);
 
         paraMap.put("type", listType);
@@ -155,7 +154,7 @@ public class Catalog extends BaseTestClass {
         List<String> listType = new ArrayList<>();
         listType.add(attributeRtn.getType());
         List<String> listAttributeId = new ArrayList<>();
-        String attributeId = IdConverter.idToUrlString(OfferAttributeId.class, attributeGet.getId());
+        String attributeId = attributeGet.getId();
         listAttributeId.add(attributeId);
 
         paraMap.put("type", listType);
@@ -215,7 +214,7 @@ public class Catalog extends BaseTestClass {
         //Get item by id and status
         logger.LogSample("Get item(s) by id");
         List<String> listItemId = new ArrayList<>();
-        String itemId = IdConverter.idToUrlString(ItemId.class, itemRtn.getItemId());
+        String itemId = itemRtn.getItemId();
         listItemId.add(itemId);
 
         paraMap.put("id", listItemId);
@@ -290,7 +289,7 @@ public class Catalog extends BaseTestClass {
         //Get offer by id and status
         logger.LogSample("Get offers by id and published property");
         List<String> listOfferId = new ArrayList<>();
-        String offerId = IdConverter.idToUrlString(OfferId.class, offerGet.getOfferId());
+        String offerId = offerGet.getOfferId();
         listOfferId.add(offerId);
 
         paraMap.put("id", listOfferId);

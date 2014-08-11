@@ -130,8 +130,7 @@ public class IdentityModel {
 
     public static User DefaultUser() throws Exception {
         User user = new User();
-        user.setUsername(RandomHelper.randomAlphabetic(15));
-        user.setIsAnonymous(false);
+        user.setIsAnonymous(true);
         return user;
     }
 

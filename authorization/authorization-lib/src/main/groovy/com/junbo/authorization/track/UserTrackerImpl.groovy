@@ -19,7 +19,6 @@ class UserTrackerImpl implements Tracker {
     CloudantEntity trackCreate(CloudantEntity entity) {
         UserId userId = AuthorizeContext.currentUserId
         if (userId == null) {
-            LOGGER.warn('Failed to get userInfo during create ' + entity.class)
             entity.createdBy = null
         } else {
             entity.createdBy = AuthorizeContext.currentUserId.value
@@ -33,7 +32,6 @@ class UserTrackerImpl implements Tracker {
     CloudantEntity trackUpdate(CloudantEntity entity, CloudantEntity oldEntity) {
         UserId userId = AuthorizeContext.currentUserId
         if (userId == null) {
-            LOGGER.warn('Failed to get userInfo during update ' + entity.getId())
             entity.updatedBy = null
         } else {
             entity.updatedBy = AuthorizeContext.currentUserId.value

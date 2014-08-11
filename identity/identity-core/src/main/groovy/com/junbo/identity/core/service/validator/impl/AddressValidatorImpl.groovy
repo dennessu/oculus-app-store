@@ -43,4 +43,9 @@ class AddressValidatorImpl implements PiiValidator {
 
         return Promise.pure(null)
     }
+
+    @Override
+    JsonNode updateJsonNode(JsonNode value) {
+        return value
+    }
 }

@@ -52,7 +52,7 @@ public class TestDeleteItemRevision extends BaseTestClass {
 
         //Try to get the item, expected status code is 404.
         try {
-            itemRevisionService.getItemRevision(itemRevision.getRevisionId(), 404);
+            itemRevisionService.getItemRevision(itemRevision.getRevisionId(), null, 404);
             Assert.fail("Couldn't find the deleted item revision");
         }
         catch (Exception ex)

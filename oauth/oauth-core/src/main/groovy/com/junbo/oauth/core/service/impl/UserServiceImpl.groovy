@@ -5,6 +5,8 @@
  */
 package com.junbo.oauth.core.service.impl
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.ClientId
 import com.junbo.common.id.EmailTemplateId
 import com.junbo.common.id.UserId
@@ -15,10 +17,7 @@ import com.junbo.email.spec.model.EmailTemplate
 import com.junbo.email.spec.model.QueryParam
 import com.junbo.email.spec.resource.EmailResource
 import com.junbo.email.spec.resource.EmailTemplateResource
-import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserCredential
-import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
-import com.junbo.identity.spec.v1.model.UserPersonalInfo
+import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions
 import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.identity.spec.v1.option.list.UserPersonalInfoListOptions
@@ -201,10 +200,10 @@ class UserServiceImpl implements UserService {
         return userResource.get(new UserId(accessToken.userId), new UserGetOptions()).then { User user ->
             return this.getDefaultUserEmail(user).then { String email ->
                 if (email == null) {
-                    return Promise.pure(new UserInfo(sub: user.id.toString(), name: user.username, email: ''))
+                    return Promise.pure(new UserInfo(sub: user.id.toString(), name: getUserName(user).get(), email: ''))
                 }
 
-                return Promise.pure(new UserInfo(sub: user.id.toString(), name: user.username, email: email))
+                return Promise.pure(new UserInfo(sub: user.id.toString(), name: getUserName(user).get(), email: email))
             }
         }
     }
@@ -344,7 +343,7 @@ class UserServiceImpl implements UserService {
             if (userPersonalInfoLink.isDefault) {
                 return userPersonalInfoResource.get(userPersonalInfoLink.value, new UserPersonalInfoGetOptions()).then { UserPersonalInfo info ->
                     if (info == null) {
-                        return Promise.pure(new UserInfo(sub: user.id.toString(), name: user.username, email: ''))
+                        return Promise.pure(new UserInfo(sub: user.id.toString(), name: getUserName(user).get(), email: ''))
                     }
 
                     String userEmail
@@ -382,7 +381,7 @@ class UserServiceImpl implements UserService {
                     templateId: template.id as EmailTemplateId,
                     recipients: [email].asList(),
                     replacements: [
-                            'name': user.username,
+                            'name': getUserName(user).get(),
                             'link': uri
                     ]
             )
@@ -396,6 +395,25 @@ class UserServiceImpl implements UserService {
                 // Return success no matter the email has been successfully sent.
                 return Promise.pure(uri)
             }
+        }
+    }
+
+    private Promise<String> getUserName(User user) {
+        if (user.username == null) {
+            return Promise.pure(null)
+        } else {
+            return userPersonalInfoResource.get(user.username, new UserPersonalInfoGetOptions()).then { UserPersonalInfo userPersonalInfo ->
+                UserLoginName userLoginName = (UserLoginName)jsonNodeToObj(userPersonalInfo.value, UserLoginName)
+                return Promise.pure(userLoginName.userName)
+            }
+        }
+    }
+
+    public static Object jsonNodeToObj(JsonNode jsonNode, Class cls) {
+        try {
+            return ObjectMapperProvider.instance().treeToValue(jsonNode, cls);
+        } catch (Exception e) {
+            throw AppCommonErrors.INSTANCE.internalServerError(new Exception('Cannot convert JsonObject to ' + cls.toString() + ' e: ' + e.getMessage())).exception()
         }
     }
 }

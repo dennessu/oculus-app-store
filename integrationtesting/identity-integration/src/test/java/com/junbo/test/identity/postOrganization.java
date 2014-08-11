@@ -5,6 +5,7 @@
  */
 package com.junbo.test.identity;
 
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.JsonHelper;
@@ -69,4 +70,26 @@ public class postOrganization {
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
     }
 
+    @Test(groups = "dailies")
+    public void testOrganizationSearch() throws Exception {
+        Organization org = IdentityModel.DefaultOrganization();
+        for (int i=0; i < 10; i++) {
+            Identity.OrganizationPostDefault(org);
+        }
+        Results<Organization> results = Identity.OrganizationByName(org.getName(), null, null);
+        Validator.Validate("validate organization with no parameter", 10, results.getItems().size());
+        Validator.Validate("validate total organization size", 10L, results.getTotal());
+
+        results = Identity.OrganizationByName(org.getName(), 5, 15);
+        Validator.Validate("validate organization with offset", 0, results.getItems().size());
+        Validator.Validate("validate total organization size", 10L, results.getTotal());
+
+        results = Identity.OrganizationByName(org.getName(), 5, 5);
+        Validator.Validate("validate organization with offset and count", 5, results.getItems().size());
+        Validator.Validate("validate total organization size", 10L, results.getTotal());
+
+        results = Identity.OrganizationByName(org.getName() + "Fake", 0, 0);
+        Validator.Validate("validate organization with wrong name", 0, results.getItems().size());
+        Validator.Validate("validate total organization size", 0L, results.getTotal());
+    }
 }

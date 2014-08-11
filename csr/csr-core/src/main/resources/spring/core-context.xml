@@ -15,6 +15,7 @@
     <bean id="csrEmailService" class="com.junbo.csr.core.service.impl.EmailServiceImpl">
         <property name="emailResource" ref="csr_emailResource" />
         <property name="emailTemplateResource" ref="csr_emailTemplateResource" />
+        <property name="userPersonalInfoResource" ref="csr_userPersonalInfoResource" />
     </bean>
 
     <bean id="csrUpdateValidator" class="com.junbo.csr.core.validator.impl.CsrUpdateValidatorImpl">

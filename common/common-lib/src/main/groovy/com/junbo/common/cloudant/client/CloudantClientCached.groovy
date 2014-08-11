@@ -1,18 +1,15 @@
 package com.junbo.common.cloudant.client
-
 import com.junbo.common.cloudant.CloudantEntity
 import com.junbo.common.cloudant.CloudantMarshaller
 import com.junbo.common.cloudant.DefaultCloudantMarshaller
 import com.junbo.common.cloudant.model.CloudantQueryResult
 import com.junbo.common.id.CloudantId
+import com.junbo.common.memcached.JunboMemcachedClient
 import com.junbo.configuration.ConfigService
 import com.junbo.configuration.ConfigServiceManager
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
-import net.spy.memcached.*
-import net.spy.memcached.auth.AuthDescriptor
-import net.spy.memcached.auth.PlainCallbackHandler
-import net.spy.memcached.transcoders.SerializingTranscoder
+import net.spy.memcached.MemcachedClientIF
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -32,63 +29,18 @@ class CloudantClientCached implements CloudantClientInternal {
     private static CloudantClientImpl impl = CloudantClientImpl.instance()
     private static CloudantMarshaller marshaller = DefaultCloudantMarshaller.instance()
 
-    private MemcachedClientIF memcachedClient
-    private boolean enabled
-    private boolean asyncUpdate
-    private int timeout
-    private int maxEntitySize
-    private int expiration
+    private static MemcachedClientIF memcachedClient = JunboMemcachedClient.instance()
+    private Integer expiration
+    private Integer maxEntitySize
 
     private CloudantClientCached() {
         ConfigService configService = ConfigServiceManager.instance()
 
-        String servers = configService.getConfigValue("common.memcached.servers")
-        String strEnabled = configService.getConfigValue("common.memcached.enabled")
-        String strTimeout = configService.getConfigValue("common.memcached.timeout")
         String strMaxEntitySize = configService.getConfigValue("common.memcached.maxentitysize")
         String strExpiration = configService.getConfigValue("common.memcached.expiration")
-        String strCompression = configService.getConfigValue("common.memcached.compressionThreshold")
-        String strAsyncUpdate = configService.getConfigValue("common.memcached.asyncUpdate")
 
-        this.enabled = Boolean.parseBoolean(strEnabled)
-        if (enabled) {
-            this.timeout = Integer.parseInt(strTimeout)
-            this.expiration = Integer.parseInt(strExpiration)
-            this.maxEntitySize = Integer.parseInt(strMaxEntitySize)
-            this.asyncUpdate = Boolean.parseBoolean(strAsyncUpdate)
-
-            def connectionFactoryBuilder = new ConnectionFactoryBuilder()
-                    .setProtocol(ConnectionFactoryBuilder.Protocol.BINARY)
-                    .setFailureMode(FailureMode.Redistribute)
-                    .setLocatorType(ConnectionFactoryBuilder.Locator.CONSISTENT)
-                    .setHashAlg(DefaultHashAlgorithm.KETAMA_HASH)
-                    .setOpTimeout(this.timeout)
-                    .setOpQueueMaxBlockTime(this.timeout)
-
-            String username = configService.getConfigValue("common.memcached.username")
-            String password = configService.getConfigValue("common.memcached.password")
-            if (!StringUtils.isEmpty(username)) {
-                String authtype = configService.getConfigValue("common.memcached.auth")
-                def ad = new AuthDescriptor([ authtype ] as String[],
-                        new PlainCallbackHandler(username, password));
-                connectionFactoryBuilder.setAuthDescriptor(ad)
-            }
-
-            SerializingTranscoder transcoder = new SerializingTranscoder()
-            transcoder.setCharset("UTF-8")
-            if (!StringUtils.isEmpty(strCompression)) {
-                transcoder.setCompressionThreshold(Integer.parseInt(strCompression))
-            }
-            connectionFactoryBuilder.setTranscoder(transcoder)
-
-            try {
-                this.memcachedClient = new MemcachedClient(connectionFactoryBuilder.build(), AddrUtil.getAddresses(servers))
-            } catch (Exception ex) {
-                logger.warn("Error creating memcached client.", ex)
-            }
-        } else {
-            logger.info("CloudantClient memcached is globally disabled.")
-        }
+        this.expiration = safeParseInt(strExpiration)
+        this.maxEntitySize = safeParseInt(strMaxEntitySize)
     }
 
     @Override
@@ -183,6 +135,13 @@ class CloudantClientCached implements CloudantClientInternal {
     }
 
     @Override
+    Promise<Integer> queryViewTotal(CloudantDbUri dbUri, String key, String viewName) {
+        Promise<Integer> future = impl.queryViewTotal(dbUri, key, viewName)
+
+        return future
+    }
+
+    @Override
     def <T extends CloudantEntity> Promise<CloudantQueryResult> search(CloudantDbUri dbUri, Class<T> entityClass, String searchName, String queryString, Integer limit, String bookmark, boolean includeDocs) {
         Promise<CloudantQueryResult> future = impl.search(dbUri, entityClass, searchName, queryString, limit, bookmark, includeDocs)
         if (includeDocs) {
@@ -228,15 +187,9 @@ class CloudantClientCached implements CloudantClientInternal {
         try {
             String value = marshaller.marshall(entity)
             if (value.length() < this.maxEntitySize) {
-                def future = memcachedClient.set(getKey(dbUri, entity.cloudantId), this.expiration, value)
-                if (!asyncUpdate) {
-                    future.get()
-                }
+                memcachedClient.set(getKey(dbUri, entity.cloudantId), this.expiration, value).get()
             } else {
-                def future = memcachedClient.delete(getKey(dbUri, entity.cloudantId))
-                if (!asyncUpdate) {
-                    future.get()
-                }
+                memcachedClient.delete(getKey(dbUri, entity.cloudantId)).get()
                 logger.debug("Entity {} of type {} oversized for memcached. Entity size: {}", entity.cloudantId, entityClass, value.length())
             }
             if (logger.isDebugEnabled()) {
@@ -252,10 +205,7 @@ class CloudantClientCached implements CloudantClientInternal {
             return
         }
         try {
-            def future = memcachedClient.delete(getKey(dbUri, id))
-            if (!asyncUpdate) {
-                future.get()
-            }
+            memcachedClient.delete(getKey(dbUri, id)).get()
         } catch (Exception ex) {
             logger.warn("Error deleting from memcached.", ex)
         }
@@ -263,5 +213,10 @@ class CloudantClientCached implements CloudantClientInternal {
 
     private String getKey(CloudantDbUri dbUri, String id) {
         return id + ":" + dbUri.dbName + ":" + dbUri.cloudantUri.dc
+    }
+
+    private static Integer safeParseInt(String str) {
+        if (StringUtils.isEmpty(str)) return null
+        return Integer.parseInt(str)
     }
 }

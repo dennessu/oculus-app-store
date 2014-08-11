@@ -109,10 +109,7 @@ class CreateUserPii implements Action {
                 return Promise.pure(new ActionResult('error'))
             }
 
-            user.name = new UserPersonalInfoLink(
-                    isDefault: true,
-                    value: newNamePii.id as UserPersonalInfoId
-            )
+            user.name = newNamePii.id as UserPersonalInfoId
 
             return Promise.pure(new ActionResult('next'))
         }.then { ActionResult result ->
@@ -149,10 +146,7 @@ class CreateUserPii implements Action {
                         return Promise.pure(new ActionResult('error'))
                     }
 
-                    user.gender = new UserPersonalInfoLink(
-                            isDefault: true,
-                            value: newGenderPii.id as UserPersonalInfoId
-                    )
+                    user.gender = newGenderPii.id as UserPersonalInfoId
 
                     return Promise.pure(new ActionResult('next'))
                 }
@@ -172,10 +166,7 @@ class CreateUserPii implements Action {
                     return Promise.pure(new ActionResult('error'))
                 }
 
-                user.dob = new UserPersonalInfoLink(
-                        isDefault: true,
-                        value: newDobPii.id as UserPersonalInfoId
-                )
+                user.dob = newDobPii.id as UserPersonalInfoId
 
                 return Promise.pure(new ActionResult('next'))
             }

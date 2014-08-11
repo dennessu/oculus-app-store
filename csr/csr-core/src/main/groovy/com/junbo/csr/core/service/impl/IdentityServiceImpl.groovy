@@ -125,7 +125,7 @@ class IdentityServiceImpl implements IdentityService {
     String getUserNameByUser(User user) {
         String nameStr = ''
         if (user.name != null) {
-            UserPersonalInfo userPersonalInfo = userPersonalInfoResource.get(user.name.value, new UserPersonalInfoGetOptions()).get()
+            UserPersonalInfo userPersonalInfo = userPersonalInfoResource.get(user.name, new UserPersonalInfoGetOptions()).get()
             UserName name = ObjectMapperProvider.instance().treeToValue(userPersonalInfo.getValue(), UserName.class)
             if (name != null) {
                 nameStr = "$name.givenName $name.familyName"
@@ -153,7 +153,7 @@ class IdentityServiceImpl implements IdentityService {
                 throw AppErrors.INSTANCE.organizationNotFound(organizationOwner, organizationName).exception()
             }
             organizationResults.items.retainAll { Organization org ->
-                org.name == organizationName
+                org.name == organizationName && org.isValidated
             }
 
             if (organizationResults.items.isEmpty()) {

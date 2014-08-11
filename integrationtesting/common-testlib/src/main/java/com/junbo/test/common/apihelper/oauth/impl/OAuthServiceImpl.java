@@ -5,6 +5,8 @@
  */
 package com.junbo.test.common.apihelper.oauth.impl;
 
+import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.langur.core.client.TypeReference;
 import com.junbo.oauth.spec.model.AccessTokenResponse;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.enums.ComponentType;
@@ -12,8 +14,6 @@ import com.junbo.test.common.apihelper.Header;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.common.apihelper.oauth.enums.GrantType;
-import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.blueprint.Master;
 import com.ning.http.client.FluentCaseInsensitiveStringsMap;
 
@@ -28,6 +28,7 @@ import java.util.Set;
 public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
 
     private static String oauthUrl = ConfigHelper.getSetting("defaultIdentityEndPointV1");
+    private static String identityPiiUrl = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/personal-info";
 
     private static OAuthService instance;
 
@@ -102,19 +103,19 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
     }
 
     @Override
-    public String postUserAccessToken(String uid, String pwd) throws Exception {
-        return postUserAccessToken(uid, pwd, 200);
+    public String postUserAccessToken(String uid, String username, String pwd) throws Exception {
+        return postUserAccessToken(uid, username, pwd, 200);
     }
 
     @Override
-    public String postUserAccessToken(String uid, String pwd, int expectedResponseCode) throws Exception {
+    public String postUserAccessToken(String uid, String username, String pwd, int expectedResponseCode) throws Exception {
         Map<String, String> formParams = new HashMap<>();
         formParams.put("client_id", "client");
         formParams.put("client_secret", "secret");
         formParams.put("grant_type", GrantType.PASSWORD.toString());
-        formParams.put("scope", "identity commerce catalog identity.pii");
+        formParams.put("scope", "identity commerce catalog identity.pii catalog.developer");
         formParams.put("password", pwd);
-        formParams.put("username", Master.getInstance().getUser(uid).getUsername());
+        formParams.put("username", username);
 
         String responseBody = restApiCall(HTTPMethod.POST, oauthUrl + "/oauth2/token",
                 convertFormatToRequestString(formParams), expectedResponseCode);

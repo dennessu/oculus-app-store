@@ -5,6 +5,7 @@ import com.junbo.common.error.AppCommonErrors
 import com.junbo.identity.core.service.validator.DeviceTypeValidator
 import com.junbo.identity.data.repository.DeviceTypeRepository
 import com.junbo.identity.spec.error.AppErrors
+import com.junbo.identity.spec.v1.model.DeviceSoftware
 import com.junbo.identity.spec.v1.model.DeviceType
 import com.junbo.identity.spec.v1.option.list.DeviceTypeListOptions
 import com.junbo.langur.core.promise.Promise
@@ -23,14 +24,17 @@ class DeviceTypeValidatorImpl implements DeviceTypeValidator {
 
     private List<String> allowedDeviceTypeCodeList
 
-    private Integer minAvailableFirmwaresKeyLength
-    private Integer maxAvailableFirmwaresKeyLength
-
-    private Integer minAvailableFirmwaresValueLength
-    private Integer maxAvailableFirmwaresValueLength
-
     private Integer minInstructionManualLength
     private Integer maxInstructionManualLength
+
+    private Integer minAvailableSoftwareKeyLength
+    private Integer maxAvailableSoftwareKeyLength
+
+    private Integer minSoftwareObjectVersionLength
+    private Integer maxSoftwareObjectVersionLength
+
+    private Integer minSoftwareObjectHrefLength
+    private Integer maxSoftwareObjectHrefLength
 
     @Required
     void setDeviceTypeRepository(DeviceTypeRepository deviceTypeRepository) {
@@ -43,26 +47,6 @@ class DeviceTypeValidatorImpl implements DeviceTypeValidator {
     }
 
     @Required
-    void setMinAvailableFirmwaresKeyLength(Integer minAvailableFirmwaresKeyLength) {
-        this.minAvailableFirmwaresKeyLength = minAvailableFirmwaresKeyLength
-    }
-
-    @Required
-    void setMaxAvailableFirmwaresKeyLength(Integer maxAvailableFirmwaresKeyLength) {
-        this.maxAvailableFirmwaresKeyLength = maxAvailableFirmwaresKeyLength
-    }
-
-    @Required
-    void setMinAvailableFirmwaresValueLength(Integer minAvailableFirmwaresValueLength) {
-        this.minAvailableFirmwaresValueLength = minAvailableFirmwaresValueLength
-    }
-
-    @Required
-    void setMaxAvailableFirmwaresValueLength(Integer maxAvailableFirmwaresValueLength) {
-        this.maxAvailableFirmwaresValueLength = maxAvailableFirmwaresValueLength
-    }
-
-    @Required
     void setMinInstructionManualLength(Integer minInstructionManualLength) {
         this.minInstructionManualLength = minInstructionManualLength
     }
@@ -70,6 +54,36 @@ class DeviceTypeValidatorImpl implements DeviceTypeValidator {
     @Required
     void setMaxInstructionManualLength(Integer maxInstructionManualLength) {
         this.maxInstructionManualLength = maxInstructionManualLength
+    }
+
+    @Required
+    void setMinAvailableSoftwareKeyLength(Integer minAvailableSoftwareKeyLength) {
+        this.minAvailableSoftwareKeyLength = minAvailableSoftwareKeyLength
+    }
+
+    @Required
+    void setMaxAvailableSoftwareKeyLength(Integer maxAvailableSoftwareKeyLength) {
+        this.maxAvailableSoftwareKeyLength = maxAvailableSoftwareKeyLength
+    }
+
+    @Required
+    void setMinSoftwareObjectVersionLength(Integer minSoftwareObjectVersionLength) {
+        this.minSoftwareObjectVersionLength = minSoftwareObjectVersionLength
+    }
+
+    @Required
+    void setMaxSoftwareObjectVersionLength(Integer maxSoftwareObjectVersionLength) {
+        this.maxSoftwareObjectVersionLength = maxSoftwareObjectVersionLength
+    }
+
+    @Required
+    void setMinSoftwareObjectHrefLength(Integer minSoftwareObjectHrefLength) {
+        this.minSoftwareObjectHrefLength = minSoftwareObjectHrefLength
+    }
+
+    @Required
+    void setMaxSoftwareObjectHrefLength(Integer maxSoftwareObjectHrefLength) {
+        this.maxSoftwareObjectHrefLength = maxSoftwareObjectHrefLength
     }
 
     @Override
@@ -156,38 +170,6 @@ class DeviceTypeValidatorImpl implements DeviceTypeValidator {
             throw AppCommonErrors.INSTANCE.fieldInvalidEnum('typeCode', allowedDeviceTypeCodeList.join(',')).exception()
         }
 
-        if (deviceType.availableFirmwares == null || deviceType.availableFirmwares.isEmpty()) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('availableFirmwares').exception()
-        }
-        deviceType.availableFirmwares.each { Map.Entry<String, String> pair ->
-            String key = pair.key
-            String value = pair.value
-
-            if (StringUtils.isEmpty(key)) {
-                throw AppCommonErrors.INSTANCE.fieldRequired('availableFirmwares.key').exception()
-            }
-            if (key.length() < minAvailableFirmwaresKeyLength) {
-                throw AppCommonErrors.INSTANCE.fieldTooShort('availableFirmwares.key',
-                        minAvailableFirmwaresKeyLength).exception()
-            }
-            if (key.length() > maxAvailableFirmwaresKeyLength) {
-                throw AppCommonErrors.INSTANCE.fieldTooLong('availableFirmwares.key',
-                        maxAvailableFirmwaresKeyLength).exception()
-            }
-
-            if (StringUtils.isEmpty(value)) {
-                throw AppCommonErrors.INSTANCE.fieldRequired('availableFirmwares.value').exception()
-            }
-            if (value.length() < minAvailableFirmwaresValueLength) {
-                throw AppCommonErrors.INSTANCE.fieldTooShort('availableFirmwares.value',
-                        minAvailableFirmwaresValueLength).exception()
-            }
-            if (value.length() > maxAvailableFirmwaresValueLength) {
-                throw AppCommonErrors.INSTANCE.fieldTooLong('availableFirmwares.value',
-                        maxAvailableFirmwaresValueLength).exception()
-            }
-        }
-
         if (deviceType.instructionManual == null) {
             throw AppCommonErrors.INSTANCE.fieldRequired('instructionManual').exception()
         }
@@ -209,6 +191,69 @@ class DeviceTypeValidatorImpl implements DeviceTypeValidator {
                 }
             }.then {
                 return Promise.pure(null)
+            }
+        }
+
+        if (deviceType.availableSoftware == null || deviceType.availableSoftware.isEmpty()) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('availableSoftware').exception()
+        }
+
+        deviceType.availableSoftware.entrySet().each { Map.Entry<String, DeviceSoftware> entry ->
+            String key = entry.key
+            DeviceSoftware deviceSoftware = entry.value
+
+            if (StringUtils.isEmpty(key)) {
+                throw AppCommonErrors.INSTANCE.fieldRequired('availableSoftware.key').exception()
+            }
+
+            if (key.length() > maxAvailableSoftwareKeyLength) {
+                throw AppCommonErrors.INSTANCE.fieldTooLong('availableSoftware.key', maxAvailableSoftwareKeyLength).exception()
+            }
+
+            if (key.length() < minAvailableSoftwareKeyLength) {
+                throw AppCommonErrors.INSTANCE.fieldTooShort('availableSoftware.key', minAvailableSoftwareKeyLength).exception()
+            }
+
+            if (deviceSoftware == null) {
+                throw AppCommonErrors.INSTANCE.fieldRequired('availableSoftware.value').exception()
+            }
+
+            if (deviceSoftware.dev != null) {
+                if (deviceSoftware.dev.href != null) {
+                    if (deviceSoftware.dev.href.length() > maxSoftwareObjectHrefLength) {
+                        throw AppCommonErrors.INSTANCE.fieldTooLong('availableSoftware.dev.href', maxSoftwareObjectHrefLength).exception()
+                    }
+                    if (deviceSoftware.dev.href.length() < minSoftwareObjectHrefLength) {
+                        throw AppCommonErrors.INSTANCE.fieldTooShort('availableSoftware.dev.href', minSoftwareObjectHrefLength).exception()
+                    }
+                }
+                if (deviceSoftware.dev.version != null) {
+                    if (deviceSoftware.dev.version.length() > maxSoftwareObjectVersionLength) {
+                        throw AppCommonErrors.INSTANCE.fieldTooLong('availableSoftware.dev.version', maxSoftwareObjectVersionLength).exception()
+                    }
+                    if (deviceSoftware.dev.version.length() < minSoftwareObjectVersionLength) {
+                        throw AppCommonErrors.INSTANCE.fieldTooShort('availableSoftware.dev.version', minSoftwareObjectVersionLength).exception()
+                    }
+                }
+            }
+
+            if (deviceSoftware.stable != null) {
+                if (deviceSoftware.stable.href != null) {
+                    if (deviceSoftware.stable.href.length() > maxSoftwareObjectHrefLength) {
+                        throw AppCommonErrors.INSTANCE.fieldTooLong('availableSoftware.stable.href', maxSoftwareObjectHrefLength).exception()
+                    }
+                    if (deviceSoftware.stable.href.length() < minSoftwareObjectHrefLength) {
+                        throw AppCommonErrors.INSTANCE.fieldTooShort('availableSoftware.dev.href', minSoftwareObjectHrefLength).exception()
+                    }
+                }
+                if (deviceSoftware.stable.version != null) {
+                    if (deviceSoftware.stable.version.length() > maxSoftwareObjectVersionLength) {
+                        throw AppCommonErrors.INSTANCE.fieldTooLong('availableSoftware.dev.version', maxSoftwareObjectVersionLength).exception()
+                    }
+                    if (deviceSoftware.stable.version.length() < minSoftwareObjectVersionLength) {
+                        throw AppCommonErrors.INSTANCE.fieldTooShort('availableSoftware.dev.version', minSoftwareObjectVersionLength).exception()
+                    }
+                }
             }
         }
 

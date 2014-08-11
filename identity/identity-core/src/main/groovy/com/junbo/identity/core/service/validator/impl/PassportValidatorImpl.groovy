@@ -48,6 +48,11 @@ class PassportValidatorImpl implements PiiValidator {
         return Promise.pure(null)
     }
 
+    @Override
+    JsonNode updateJsonNode(JsonNode value) {
+        return value
+    }
+
     private void checkUserPassport(UserPassport userPassport) {
         if (userPassport.info != null) {
             if (userPassport.info.length() > maxPassportLength) {

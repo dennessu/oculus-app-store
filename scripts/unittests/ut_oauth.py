@@ -75,7 +75,8 @@ class OAuthTests(ut.TestBase):
         user_href = token_info['sub']['href']
 
         user_info = curlJson('GET', ut.test_uri, user_href, headers = auth_header)
-        assert user.username == user_info['username']
+        user_name_personal_info = curlJson('GET', ut.test_uri, str(user_info['username']['href']), headers = auth_header)
+        assert user_name_personal_info['value']['userName'] == user.username
 
         # add additional information to user
         user.id = token_info['sub']['id']
@@ -110,7 +111,8 @@ class OAuthTests(ut.TestBase):
         token_info = curlJson('GET', ut.test_uri, '/v1/oauth2/tokeninfo', query = { 'access_token': access_token })
         user_href = token_info['sub']['href']
         user_info = curlJson('GET', ut.test_uri, user_href, headers = auth_header)
-        assert user.username == user_info['username']
+        user_name_personal_info = curlJson('GET', ut.test_uri, str(user_info['username']['href']), headers = auth_header)
+        assert user_name_personal_info['value']['userName'] == user.username
 
         # logout
         curl('GET', ut.test_uri, '/v1/oauth2/end-session', query = {
@@ -188,7 +190,8 @@ class OAuthTests(ut.TestBase):
         user_href = token_info['sub']['href']
 
         user_info = curlJson('GET', ut.test_uri, user_href, headers = auth_header)
-        assert user.username == user_info['username']
+        user_name_personal_info = curlJson('GET', ut.test_uri, str(user_info['username']['href']), headers = auth_header)
+        assert user_name_personal_info['value']['userName'] == user.username
 
         # add additional information to user
         user.id = token_info['sub']['id']
@@ -213,7 +216,8 @@ class OAuthTests(ut.TestBase):
         token_info = curlJson('GET', ut.test_uri, '/v1/oauth2/tokeninfo', query = { 'access_token': access_token })
         user_href = token_info['sub']['href']
         user_info = curlJson('GET', ut.test_uri, user_href, headers = auth_header)
-        assert user.username == user_info['username']
+        user_name_personal_info = curlJson('GET', ut.test_uri, str(user_info['username']['href']), headers = auth_header)
+        assert user_name_personal_info['value']['userName'] == user.username
 
         # logout
         curl('GET', ut.test_uri, '/v1/oauth2/end-session', query = {

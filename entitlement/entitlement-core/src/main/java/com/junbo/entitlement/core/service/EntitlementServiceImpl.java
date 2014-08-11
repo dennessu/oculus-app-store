@@ -43,9 +43,11 @@ import org.springframework.util.StringUtils;
 import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.security.PrivateKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
@@ -400,9 +402,13 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     }
 
     private String generateCloudantFrontUrl(String urlString, String filename, Date expiration) {
-        return CloudFrontUrlSigner.getSignedURLWithCannedPolicy(
-                urlString + "?" + "response-content-disposition=attachment;filename=\"" + filename + "\"",
-                privateKeyId, privateKey, expiration);    //TODO: null should be the keyPairId which is not provided yet
+        try {
+            return CloudFrontUrlSigner.getSignedURLWithCannedPolicy(
+                    urlString + (filename == null ? "" : ("?" + "response-content-disposition=attachment;" + URLEncoder.encode("filename=\"" + filename + "\"", "UTF-8"))),
+                    privateKeyId, privateKey, expiration);    //TODO: null should be the keyPairId which is not provided yet
+        } catch (UnsupportedEncodingException ignore) {
+            return null;
+        }
     }
 
     private String generateS3Url(String bucketName, String objectKey, String filename, Date expiration) {
@@ -420,7 +426,7 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
 
     private String getExtension(String objectKey) {
         String[] parts = objectKey.split("\\.");
-        if (parts.length == 0) {
+        if (parts.length == 1) {
             return null;
         }
 

@@ -47,6 +47,11 @@ class SMSValidatorImpl implements PiiValidator {
         return Promise.pure(null)
     }
 
+    @Override
+    JsonNode updateJsonNode(JsonNode value) {
+        return value
+    }
+
     private void checkUserSMS(UserSMS userSMS) {
         if (userSMS.info != null) {
             if (userSMS.info.length() > maxTextMessageLength) {

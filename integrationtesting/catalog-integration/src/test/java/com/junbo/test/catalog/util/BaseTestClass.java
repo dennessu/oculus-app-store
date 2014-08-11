@@ -44,6 +44,8 @@ import java.util.Map;
 public class BaseTestClass extends TestClass {
 
     protected Item releaseItem(Item item) throws Exception {
+        this.prepareCatalogAdminToken();
+
         ItemService itemService = ItemServiceImpl.instance();
         ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
 
@@ -58,6 +60,8 @@ public class BaseTestClass extends TestClass {
     }
 
     protected ItemRevision releaseItemRevision(ItemRevision itemRevision) throws Exception {
+        this.prepareCatalogAdminToken();
+
         ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
 
         //Approve the item revision
@@ -66,6 +70,8 @@ public class BaseTestClass extends TestClass {
     }
 
     protected Offer releaseOffer(Offer offer) throws Exception {
+        this.prepareCatalogAdminToken();
+
         OfferService offerService = OfferServiceImpl.instance();
         OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
 
@@ -80,6 +86,8 @@ public class BaseTestClass extends TestClass {
     }
 
     protected OfferRevision releaseOfferRevision(OfferRevision offerRevision) throws Exception {
+        this.prepareCatalogAdminToken();
+
         OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
 
         //Approve the offer revision

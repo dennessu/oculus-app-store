@@ -163,10 +163,12 @@ class OrganizationResourceImpl implements OrganizationResource {
     Promise<Results<Organization>> list(OrganizationListOptions listOptions) {
         return organizationValidator.validateForSearch(listOptions).then {
             def resultList = new Results<Organization>(items: [])
-            return search(listOptions).then { List<Organization> newOrganizations ->
+            return search(listOptions).then { Results<Organization> results ->
+                List<Organization> newOrganizations = results.items
                 if (newOrganizations == null) {
                     return Promise.pure(resultList)
                 }
+                resultList.total = results.total
 
                 return Promise.each(newOrganizations) { Organization newOrganization ->
                     if (newOrganization != null) {
@@ -193,7 +195,7 @@ class OrganizationResourceImpl implements OrganizationResource {
         }
     }
 
-    Promise<List<Organization>> search(OrganizationListOptions listOptions) {
+    Promise<Results<Organization>> search(OrganizationListOptions listOptions) {
         if (listOptions.ownerId != null) {
             return organizationRepository.searchByOwner(listOptions.ownerId, listOptions.limit, listOptions.offset)
         } else if (!StringUtils.isEmpty(listOptions.name)) {

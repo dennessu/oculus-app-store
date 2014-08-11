@@ -25,6 +25,7 @@ dependencies {
     compile junboProject(':csr-db')
     compile junboProject(':oauth-spec')
     compile junboProject(':authorization-lib')
+    compile junboProject(':identity-spec')
 
     processor junboProject(':oom-processor')
 }

@@ -17,6 +17,10 @@ class ShardMultiTenantConnectionProvider implements MultiTenantConnectionProvide
     // tenantIdentifier will be as dataCenterId:shardId
     private final Map<String, SimpleDataSourceProxy> dataSourceMap
 
+    Map<String, SimpleDataSourceProxy> getDataSourceMap() {
+        return dataSourceMap
+    }
+
     ShardMultiTenantConnectionProvider(
             Map<String, SimpleDataSourceProxy> dataSourceMap) {
 

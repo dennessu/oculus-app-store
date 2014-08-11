@@ -5,7 +5,10 @@
  */
 package com.junbo.test.identity;
 
+import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.identity.spec.v1.model.User;
+import com.junbo.identity.spec.v1.model.UserLoginName;
+import com.junbo.identity.spec.v1.model.UserPersonalInfo;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.RandomHelper;
 import com.junbo.test.common.Validator;
@@ -43,27 +46,24 @@ public class postCredentialAttempts {
         User user = Identity.UserPostDefault();
         String password = RandomHelper.randomNumeric(6) + RandomHelper.randomAlphabetic(6);
         Identity.UserCredentialPostDefault(user.getId(), password);
-        CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(user.getUsername(), password);
+        UserPersonalInfo userPersonalInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(user.getUsername());
+        UserLoginName loginName = ObjectMapperProvider.instance().treeToValue(userPersonalInfo.getValue(), UserLoginName.class);
+        CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(loginName.getUserName(), password);
         Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
     }
 
     @Test(groups = "dailies")
     public void postUserCredentitalAttemptsMaxRetrySameUser() throws Exception {
         User user = Identity.UserPostDefault();
-        String password = RandomHelper.randomAlphabetic(4).toLowerCase() +
-                RandomHelper.randomNumeric(6) +
-                RandomHelper.randomAlphabetic(4).toUpperCase();
-        CloseableHttpResponse response = Identity.UserCredentialPostDefault(user.getId(), password);
-        response.close();
+        String password = RandomHelper.randomNumeric(6) + RandomHelper.randomAlphabetic(6);
+        Identity.UserCredentialPostDefault(user.getId(), password);
 
-        String wrongPassword = RandomHelper.randomAlphabetic(4).toLowerCase() +
-                RandomHelper.randomNumeric(6) +
-                RandomHelper.randomAlphabetic(4).toUpperCase();
-        response = Identity.UserCredentialPostDefault(user.getId(), password);
-        response.close();
-        for (int i = 0; i < 1; i++) {
-            response = Identity.UserCredentialAttemptesPostDefault(
-                    user.getUsername(), wrongPassword, false);
+        String newPassword = RandomHelper.randomNumeric(6) + RandomHelper.randomAlphabetic(6);
+        for (int i = 0; i < 3; i++) {
+            UserPersonalInfo userPersonalInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(user.getUsername());
+            UserLoginName loginName = ObjectMapperProvider.instance().treeToValue(userPersonalInfo.getValue(), UserLoginName.class);
+            CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
+                    loginName.getUserName(), newPassword, false);
             Validator.Validate("validate response error code", 412, response.getStatusLine().getStatusCode());
             String errorMessage = "User Password Incorrect";
             Validator.Validate("validate response error message", true,
@@ -71,8 +71,10 @@ public class postCredentialAttempts {
             response.close();
         }
 
-        response = Identity.UserCredentialAttemptesPostDefault(
-                user.getUsername(), wrongPassword, false);
+        UserPersonalInfo userPersonalInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(user.getUsername());
+        UserLoginName loginName = ObjectMapperProvider.instance().treeToValue(userPersonalInfo.getValue(), UserLoginName.class);
+        CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
+                loginName.getUserName(), newPassword, false);
         Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
         String errorMessage = "User reaches maximum allowed retry count";
         Validator.Validate("validate response error message", true,
@@ -86,9 +88,7 @@ public class postCredentialAttempts {
         for (int i = 0; i < 101; i++) {
             CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
                     RandomHelper.randomAlphabetic(15), RandomHelper.randomAlphabetic(15), ip, false);
-            if (i < 100) {
-                Validator.Validate("validate response error code", 412, response.getStatusLine().getStatusCode());
-            }
+            Validator.Validate("validate response error code", 412, response.getStatusLine().getStatusCode());
             response.close();
         }
         CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(

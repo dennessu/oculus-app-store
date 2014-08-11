@@ -9,7 +9,11 @@ import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
+import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserLoginName
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
+import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
@@ -28,10 +32,16 @@ import org.springframework.beans.factory.annotation.Required
 @CompileStatic
 class CreateUser implements Action {
     private UserResource userResource
+    private UserPersonalInfoResource userPersonalInfoResource
 
     @Required
     void setUserResource(UserResource userResource) {
         this.userResource = userResource
+    }
+
+    @Required
+    void setUserPersonalInfoResource(UserPersonalInfoResource userPersonalInfoResource) {
+        this.userPersonalInfoResource = userPersonalInfoResource
     }
 
     @Override
@@ -57,8 +67,7 @@ class CreateUser implements Action {
         }
 
         User user = new User(
-                username: username,
-                isAnonymous: false,
+                isAnonymous: true,
                 countryOfResidence: countryOfResidence == null ? null : new CountryId(countryOfResidence),
                 preferredLocale: preferLocale == null ? null : new LocaleId(preferLocale)
         )
@@ -76,8 +85,25 @@ class CreateUser implements Action {
                 return Promise.pure(new ActionResult('error'))
             }
 
-            contextWrapper.user = newUser
-            return Promise.pure(new ActionResult('success'))
+            UserLoginName userLoginName = new UserLoginName(
+                    userName: username
+            )
+
+            UserPersonalInfo userLoginNamePerInfo = new UserPersonalInfo(
+                    userId: newUser.getId(),
+                    type: 'USERNAME',
+                    value: ObjectMapperProvider.instance().valueToTree(userLoginName)
+            )
+
+            return userPersonalInfoResource.create(userLoginNamePerInfo).then { UserPersonalInfo personalInfo ->
+                newUser.username = personalInfo.getId()
+                newUser.isAnonymous = false
+
+                return userResource.put(newUser.getId(), newUser).then { User createdUser ->
+                    contextWrapper.user = createdUser
+                    return Promise.pure(new ActionResult('success'))
+                }
+            }
         }
     }
 }

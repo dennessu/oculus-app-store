@@ -83,7 +83,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     Promise<List<UserPersonalInfo>> searchByUserIdAndType(UserId userId, String type, Integer limit, Integer offset) {
         return searchByUserId(userId, limit, offset).then { List<UserPersonalInfo> userPersonalInfoList ->
             if (CollectionUtils.isEmpty(userPersonalInfoList)) {
-                return Promise.pure(null)
+                return Promise.pure(new ArrayList())
             }
             userPersonalInfoList.removeAll { UserPersonalInfo userPersonalInfo ->
                 return userPersonalInfo.type != type
@@ -97,24 +97,22 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     Promise<List<UserPersonalInfo>> searchByEmail(String email, Boolean isValidated, Integer limit, Integer offset) {
         PiiHash hash = getPiiHash(UserPersonalInfoType.EMAIL.toString())
 
+        List<UserPersonalInfo> infos = new ArrayList<>()
         return hashUserPersonalInfoRepository.searchByHashValue(hash.generateHash(email.toLowerCase(Locale.ENGLISH))).then {
             List<HashUserPersonalInfo> userPersonalInfos ->
                 if (CollectionUtils.isEmpty(userPersonalInfos)) {
-                    return Promise.pure(null)
+                    return Promise.pure(infos)
                 }
 
-                List<UserPersonalInfo> infos = new ArrayList<>()
                 return Promise.each(userPersonalInfos) { HashUserPersonalInfo personalInfo ->
                     return get(personalInfo.getId()).then { UserPersonalInfo userPersonalInfo ->
-                        if (userPersonalInfo == null ||
-                            userPersonalInfo.type != UserPersonalInfoType.EMAIL.toString()) {
-                            return Promise.pure(null)
+                        if (userPersonalInfo == null || userPersonalInfo.type != UserPersonalInfoType.EMAIL.toString()) {
+                            return Promise.pure(infos)
                         }
 
                         if (isValidated != null) {
-                            if ((isValidated && userPersonalInfo.lastValidateTime == null)
-                                    || (!isValidated && userPersonalInfo.lastValidateTime != null)) {
-                                return Promise.pure(null)
+                            if ((isValidated && userPersonalInfo.lastValidateTime == null) || (!isValidated && userPersonalInfo.lastValidateTime != null)) {
+                                return Promise.pure(infos)
                             }
                         }
 
@@ -122,7 +120,36 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
                         if (emailObj.info.toLowerCase(Locale.ENGLISH) == email.toLowerCase(Locale.ENGLISH)) {
                             infos.add(userPersonalInfo)
                         }
-                        return Promise.pure(null)
+                        return Promise.pure(infos)
+                    }
+                }.then {
+                    return Promise.pure(infos)
+                }
+        }
+    }
+
+    @Override
+    Promise<List<UserPersonalInfo>> searchByCanonicalUsername(String canonicalUsername, Integer limit, Integer offset) {
+        PiiHash hash = getPiiHash(UserPersonalInfoType.USERNAME.toString())
+
+        List<UserPersonalInfo> infos = new ArrayList<>()
+        return hashUserPersonalInfoRepository.searchByHashValue(hash.generateHash(canonicalUsername)).then {
+            List<HashUserPersonalInfo> userPersonalInfos ->
+                if (CollectionUtils.isEmpty(userPersonalInfos)) {
+                    return Promise.pure(infos)
+                }
+
+                return Promise.each(userPersonalInfos) { HashUserPersonalInfo personalInfo ->
+                    return get(personalInfo.getId()).then { UserPersonalInfo userPersonalInfo ->
+                        if (userPersonalInfo == null || userPersonalInfo.type != UserPersonalInfoType.USERNAME.toString()) {
+                            return Promise.pure(infos)
+                        }
+
+                        UserLoginName loginNameObj = (UserLoginName)JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserLoginName)
+                        if (loginNameObj.canonicalUsername == canonicalUsername) {
+                            infos.add(userPersonalInfo)
+                        }
+                        return Promise.pure(infos)
                     }
                 }.then {
                     return Promise.pure(infos)
@@ -134,24 +161,24 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     Promise<List<UserPersonalInfo>> searchByPhoneNumber(String phoneNumber, Boolean isValidated, Integer limit, Integer offset) {
         PiiHash hash = getPiiHash(UserPersonalInfoType.PHONE.toString())
 
+        List<UserPersonalInfo> infos = new ArrayList<>()
         return hashUserPersonalInfoRepository.searchByHashValue(hash.generateHash(phoneNumber)).then {
             List<HashUserPersonalInfo> userPersonalInfos ->
                 if (CollectionUtils.isEmpty(userPersonalInfos)) {
-                    return Promise.pure(null)
+                    return Promise.pure(infos)
                 }
 
-                List<UserPersonalInfo> infos = new ArrayList<>()
                 return Promise.each(userPersonalInfos) { HashUserPersonalInfo personalInfo ->
                     return get(personalInfo.getId()).then { UserPersonalInfo userPersonalInfo ->
                         if (userPersonalInfo == null ||
                             userPersonalInfo.type != UserPersonalInfoType.PHONE.toString()) {
-                            return Promise.pure(null)
+                            return Promise.pure(infos)
                         }
 
                         if (isValidated != null) {
                             if ((isValidated && userPersonalInfo.lastValidateTime == null)
                                     || (!isValidated && userPersonalInfo.lastValidateTime != null)) {
-                                return Promise.pure(null)
+                                return Promise.pure(infos)
                             }
                         }
 
@@ -160,7 +187,7 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
                         if (phoneObj.info == phoneNumber) {
                             infos.add(userPersonalInfo)
                         }
-                        return Promise.pure(null)
+                        return Promise.pure(infos)
                     }
                 }.then {
                     return Promise.pure(infos)
@@ -172,25 +199,25 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     Promise<List<UserPersonalInfo>> searchByName(String name, Integer limit, Integer offset) {
         PiiHash hash = getPiiHash(UserPersonalInfoType.NAME.toString())
 
+        List<UserPersonalInfo> infos = new ArrayList<>()
         return hashUserPersonalInfoRepository.searchByHashValue(hash.generateHash(name)).then {
             List<HashUserPersonalInfo> userPersonalInfos ->
                 if (CollectionUtils.isEmpty(userPersonalInfos)) {
-                    return Promise.pure(null)
+                    return Promise.pure(infos)
                 }
 
-                List<UserPersonalInfo> infos = new ArrayList<>()
                 return Promise.each(userPersonalInfos) { HashUserPersonalInfo personalInfo ->
                     return get(personalInfo.getId()).then { UserPersonalInfo userPersonalInfo ->
                         if (userPersonalInfo == null ||
                                 userPersonalInfo.type != UserPersonalInfoType.NAME.toString()) {
-                            return Promise.pure(null)
+                            return Promise.pure(infos)
                         }
 
                         UserName nameObj = (UserName) JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserName)
                         if (name.contains(nameObj.givenName) || name.contains(nameObj.familyName)) {
                             infos.add(userPersonalInfo)
                         }
-                        return Promise.pure(null)
+                        return Promise.pure(infos)
                     }
                 }.then {
                     return Promise.pure(infos)
@@ -288,9 +315,11 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
     @Override
     Promise<List<UserPersonalInfo>> searchByUserIdAndValidateStatus(UserId userId, String type, Boolean isValidated,
                                                                     Integer limit, Integer offset) {
+
+        List<UserPersonalInfo> list = new ArrayList<>()
         return searchCandidatesByUserIdAndType(userId, type).then { List<UserPersonalInfo> userPersonalInfoList ->
             if (CollectionUtils.isEmpty(userPersonalInfoList)) {
-                return Promise.pure(null)
+                return Promise.pure(list)
             }
 
             userPersonalInfoList.retainAll { UserPersonalInfo userPersonalInfo ->
@@ -298,7 +327,6 @@ class UserPersonalInfoEncryptRepositoryCloudantImpl extends CloudantClient<UserP
                     || (userPersonalInfo.lastValidateTime == null && !isValidated))
             }
 
-            List<UserPersonalInfo> list = new ArrayList<>()
             Integer calLimit = limit == null ? Integer.MAX_VALUE : limit
             Integer calOffset = offset == null ? 0 : offset
             for (int index = 0; index < userPersonalInfoList.size() && index < calLimit + calOffset; index ++) {

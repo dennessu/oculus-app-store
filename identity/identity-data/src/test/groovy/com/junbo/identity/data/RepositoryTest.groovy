@@ -10,6 +10,7 @@ import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.DeviceTypeId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.id.*
+import com.junbo.common.model.Results
 import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.*
 import com.junbo.identity.spec.model.users.UserPassword
@@ -176,9 +177,6 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
     public void testUserRepository() throws Exception {
         User user = new User()
         user.setIsAnonymous(true)
-        def random = UUID.randomUUID().toString()
-        user.setCanonicalUsername(random)
-        user.setUsername(random)
         user.setPreferredLocale(new LocaleId("en_US"))
         user.setPreferredTimezone(UUID.randomUUID().toString())
         user.setCreatedTime(new Date())
@@ -204,9 +202,6 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
         newUser.setPreferredLocale(newPreferredLocale)
         newUser = userRepository.update(newUser, user).get()
         Assert.assertEquals(newUser.getPreferredLocale(), newPreferredLocale)
-
-        User findUser = userRepository.searchUserByCanonicalUsername(newUser.getUsername()).get()
-        Assert.assertNotNull(findUser)
     }
 
     @Test
@@ -641,8 +636,8 @@ public class RepositoryTest extends AbstractTestNGSpringContextTests {
 
         assert organization.id == newOrganization.id
 
-        List<Organization> organizationList = organizationRepository.searchByOwner(ownerId, Integer.MAX_VALUE, 0).get()
+        Results<Organization> organizationList = organizationRepository.searchByOwner(ownerId, Integer.MAX_VALUE, 0).get()
 
-        assert organizationList.size() != 0
+        assert organizationList.items.size() != 0
     }
 }

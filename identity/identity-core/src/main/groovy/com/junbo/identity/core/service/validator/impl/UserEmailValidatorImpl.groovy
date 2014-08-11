@@ -65,6 +65,11 @@ class UserEmailValidatorImpl implements PiiValidator {
         return Promise.pure(null)
     }
 
+    @Override
+    JsonNode updateJsonNode(JsonNode value) {
+        return value
+    }
+
     private void checkUserEmail(Email email) {
         if (email.info == null) {
             throw AppCommonErrors.INSTANCE.fieldInvalid('value.info').exception()

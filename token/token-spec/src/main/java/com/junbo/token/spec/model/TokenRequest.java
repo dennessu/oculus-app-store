@@ -9,6 +9,7 @@ package com.junbo.token.spec.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.OrganizationId;
 import com.junbo.common.jackson.annotation.TokenOrderId;
+import com.junbo.common.model.ResourceMetaForDualWrite;
 import com.junbo.token.common.FilterIn;
 import com.junbo.token.common.FilterOut;
 import com.junbo.token.common.InnerFilter;
@@ -19,7 +20,7 @@ import java.util.List;
 /**
  * order request from developer.
  */
-public class TokenRequest {
+public class TokenRequest extends ResourceMetaForDualWrite<String> {
     @JsonProperty("self")
     @TokenOrderId
     private String id;

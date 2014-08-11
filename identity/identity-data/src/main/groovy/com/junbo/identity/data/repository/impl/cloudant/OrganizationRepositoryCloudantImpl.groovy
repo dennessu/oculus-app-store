@@ -1,7 +1,9 @@
 package com.junbo.identity.data.repository.impl.cloudant
+
 import com.junbo.common.cloudant.CloudantClient
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
+import com.junbo.common.model.Results
 import com.junbo.identity.data.repository.OrganizationRepository
 import com.junbo.identity.spec.v1.model.Organization
 import com.junbo.langur.core.promise.Promise
@@ -9,6 +11,7 @@ import com.junbo.sharding.IdGenerator
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Required
+
 /**
  * Created by liangfu on 5/22/14.
  */
@@ -22,13 +25,31 @@ class OrganizationRepositoryCloudantImpl extends CloudantClient<Organization> im
     }
 
     @Override
-    Promise<List<Organization>> searchByOwner(UserId ownerId, Integer limit, Integer offset) {
-        return queryView('by_owner_id', ownerId.toString(), limit, offset, false)
+    Promise<Results<Organization>> searchByOwner(UserId ownerId, Integer limit, Integer offset) {
+        Results<Organization> results = new Results<>();
+        return queryView('by_owner_id', ownerId.toString(), limit, offset, false).then { List<Organization> organizationList ->
+            results.items = organizationList
+
+            return queryViewTotal('by_owner_id', ownerId.toString()).then { Integer total ->
+                results.total = total
+
+                return Promise.pure(results)
+            }
+        }
     }
 
     @Override
-    Promise<List<Organization>> searchByCanonicalName(String name, Integer limit, Integer offset) {
-        return super.queryView('by_canonical_name', name, limit, offset, false)
+    Promise<Results<Organization>> searchByCanonicalName(String name, Integer limit, Integer offset) {
+        Results<Organization> results = new Results<>();
+        return queryView('by_canonical_name', name, limit, offset, false).then { List<Organization> organizationList ->
+            results.items = organizationList
+
+            return queryViewTotal('by_canonical_name', name).then { Integer total ->
+                results.total = total
+
+                return Promise.pure(results)
+            }
+        }
     }
 
     @Override

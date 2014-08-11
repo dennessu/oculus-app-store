@@ -2,18 +2,22 @@ package com.junbo.identity.core.service.validator.impl
 
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
+import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.validator.UserCredentialValidator
 import com.junbo.identity.core.service.validator.UserPasswordValidator
 import com.junbo.identity.core.service.validator.UserPinValidator
 import com.junbo.identity.data.identifiable.CredentialType
 import com.junbo.identity.data.identifiable.UserStatus
 import com.junbo.identity.data.mapper.ModelMapper
+import com.junbo.identity.data.repository.UserPersonalInfoRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserCredential
+import com.junbo.identity.spec.v1.model.UserLoginName
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
@@ -33,6 +37,8 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
     private UserPinValidator userPinValidator
 
     private UserRepository userRepository
+
+    private UserPersonalInfoRepository userPersonalInfoRepository
 
     private ModelMapper modelMapper
 
@@ -91,12 +97,18 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
                         throw new IllegalArgumentException('mapping to password exception')
                     }
 
-                    if (userCredential.value.toLowerCase().contains(user.username.toLowerCase())) {
-                        throw AppCommonErrors.INSTANCE.fieldInvalid('value', 'password can\'t contain username').exception()
-                    }
+                    return userPersonalInfoRepository.get(user.username).then { UserPersonalInfo userPersonalInfo ->
+                        if (userPersonalInfo == null) {
+                            throw AppCommonErrors.INSTANCE.fieldInvalid('username').exception()
+                        }
 
-                    return userPasswordValidator.validateForCreate(userId, userPassword).then {
-                        return Promise.pure(userPassword)
+                        UserLoginName loginName = (UserLoginName)JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserLoginName)
+                        if (userCredential.value.toLowerCase().contains(loginName.userName.toLowerCase())) {
+                            throw AppCommonErrors.INSTANCE.fieldInvalid('value', 'password can\'t contain username').exception()
+                        }
+                        return userPasswordValidator.validateForCreate(userId, userPassword).then {
+                            return Promise.pure(userPassword)
+                        }
                     }
                 }
             } else if (userCredential.type == CredentialType.PIN.toString()) {
@@ -127,6 +139,11 @@ class UserCredentialValidatorImpl implements UserCredentialValidator {
     @Required
     void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository
+    }
+
+    @Required
+    void setUserPersonalInfoRepository(UserPersonalInfoRepository userPersonalInfoRepository) {
+        this.userPersonalInfoRepository = userPersonalInfoRepository
     }
 
     @Required

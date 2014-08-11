@@ -52,7 +52,7 @@ public class TestDeleteOfferRevision extends BaseTestClass {
 
         //Try to get the offer, expected status code is 404.
         try {
-            offerRevisionService.getOfferRevision(offerRevision.getRevisionId(), 404);
+            offerRevisionService.getOfferRevision(offerRevision.getRevisionId(), null, 404);
             Assert.fail("Couldn't find the deleted offer revision");
         }
         catch (Exception ex)

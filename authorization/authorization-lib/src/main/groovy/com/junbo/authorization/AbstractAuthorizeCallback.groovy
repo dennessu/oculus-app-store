@@ -156,6 +156,41 @@ abstract class AbstractAuthorizeCallback<T> implements AuthorizeCallback<T> {
         return hasRoleAssignments(roleId, currentUserId, groupIds)
     }
 
+    Boolean hasAnyRole(String propertyPath, String... roleNames) {
+        if (propertyPath == null || propertyPath.empty) {
+            throw new IllegalArgumentException('propertyPath is null or empty')
+        }
+
+        def currentUserId = AuthorizeContext.currentUserId
+        if (currentUserId == null) {
+            return false
+        }
+
+        Object objectId = getEntityIdByPropertyPath(propertyPath)
+        if (objectId == null) {
+            return false
+        }
+
+        if (!(objectId instanceof UniversalId)) {
+            throw new IllegalStateException("entityId: $objectId must be a UniversalId")
+        }
+
+        UniversalId entityId = (UniversalId) objectId
+
+        List<GroupId> groupIds = getGroupIdsByUserId(currentUserId)
+
+        for(String roleName : roleNames){
+            RoleId roleId = getRoleId(entityId, roleName)
+            if (roleId == null) {
+                continue
+            }
+            if(hasRoleAssignments(roleId, currentUserId, groupIds)){
+                return true
+            }
+        }
+        return false
+    }
+
     private List<GroupId> getGroupIdsByUserId(UserId userId) {
         Element cachedElement = factory.groupIdsByUserIdCache.get(userId)
         if (cachedElement != null) {

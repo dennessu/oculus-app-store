@@ -1,5 +1,6 @@
 package com.junbo.order.mock
 import com.junbo.common.id.UserId
+import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.model.Results
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.option.list.UserListOptions
@@ -24,7 +25,7 @@ class MockIdentityResource implements UserResource {
 
     static Promise<User> generateUser() {
         User user = new User()
-        user.username = 'fake_user'
+        user.username = new UserPersonalInfoId(0L)
         return Promise.pure(user)
     }
 

@@ -30,7 +30,7 @@ public class DeviceType extends PropertyAssignedAwareResourceMeta<DeviceTypeId> 
     private String typeCode;
 
     @ApiModelProperty(position = 3, required = true, value = "Map from available firmware version to firmware URL for this DeviceType.")
-    private Map<String, String> availableFirmwares = new HashMap<>();
+    private Map<String, DeviceSoftware> availableSoftware = new HashMap<>();
 
     @XSSFreeRichText
     @ApiModelProperty(position = 4, required = true, value = "[Nullable] The static URL for Instruction Manual.")
@@ -58,13 +58,13 @@ public class DeviceType extends PropertyAssignedAwareResourceMeta<DeviceTypeId> 
         support.setPropertyAssigned("typeCode");
     }
 
-    public Map<String, String> getAvailableFirmwares() {
-        return availableFirmwares;
+    public Map<String, DeviceSoftware> getAvailableSoftware() {
+        return availableSoftware;
     }
 
-    public void setAvailableFirmwares(Map<String, String> availableFirmwares) {
-        this.availableFirmwares = availableFirmwares;
-        support.setPropertyAssigned("availableFirmwares");
+    public void setAvailableSoftware(Map<String, DeviceSoftware> availableSoftware) {
+        this.availableSoftware = availableSoftware;
+        support.setPropertyAssigned("availableSoftware");
     }
 
     public String getInstructionManual() {

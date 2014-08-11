@@ -7,5 +7,4 @@ class UserGroupData {
     String username
     String groupName
     String organizationName
-    String organizationOwner
 }

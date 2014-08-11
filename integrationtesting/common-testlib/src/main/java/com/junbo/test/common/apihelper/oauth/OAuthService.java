@@ -22,9 +22,9 @@ public interface OAuthService {
     String postAccessToken(String clientId, String clientSecret, GrantType grantType, ComponentType componentType,
                            int expectedResponseCode) throws Exception;
 
-    String postUserAccessToken(String uid, String pwd) throws Exception;
+    String postUserAccessToken(String uid, String username, String pwd) throws Exception;
 
-    String postUserAccessToken(String uid, String pwd, int expectedResponseCode) throws Exception;
+    String postUserAccessToken(String uid, String username, String pwd, int expectedResponseCode) throws Exception;
 
     String postEmailVerification(String uid, String country, String locale) throws Exception;
 

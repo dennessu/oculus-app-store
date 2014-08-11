@@ -53,7 +53,9 @@ public class postImportUserPersonalInfo {
         OculusOutput oculusOutput = Identity.ImportMigrationData(oculusInput);
 
         User user = Identity.UserGetByUserId(oculusOutput.getUserId());
-        Validator.Validate("validate user name", oculusInput.getUsername(), user.getUsername());
+        UserPersonalInfo userLoginInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(user.getUsername());
+        UserLoginName userLoginName = (UserLoginName)JsonHelper.JsonNodeToObject(userLoginInfo.getValue(), UserLoginName.class);
+        Validator.Validate("validate user name", oculusInput.getUsername(), userLoginName.getUserName());
         Validator.Validate("validate user status",
                 oculusInput.getStatus().equals(IdentityModel.MigrateUserStatus.ARCHIVE.name()) ?
                         "DELETED" : "ACTIVE", user.getStatus()
@@ -69,7 +71,6 @@ public class postImportUserPersonalInfo {
                 UserName userName = (UserName) JsonHelper.JsonNodeToObject(upi.getValue(), UserName.class);
                 Validator.Validate("validate given name", oculusInput.getFirstName(), userName.getGivenName());
                 Validator.Validate("validate family name", oculusInput.getLastName(), userName.getFamilyName());
-                Validator.Validate("validate nick name", oculusInput.getNickname(), userName.getNickName());
             } else if (upi.getType().equals("EMAIL")) {
                 Email email = (Email) JsonHelper.JsonNodeToObject(upi.getValue(), Email.class);
                 Validator.Validate("validate email", oculusInput.getEmail(), email.getInfo());
@@ -177,7 +178,9 @@ public class postImportUserPersonalInfo {
         oculusInput.setEmail(newUserEmail);
         Identity.ImportMigrationData(oculusInput);
         User user2 = Identity.UserGetByUserId(oculusOutput.getUserId());
-        Validator.Validate("validate user name is updated", newUserName, user2.getUsername());
+        UserPersonalInfo userPersonalInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(user2.getUsername());
+        UserLoginName userLoginName = (UserLoginName)JsonHelper.JsonNodeToObject(userPersonalInfo.getValue(), UserLoginName.class);
+        Validator.Validate("validate user name is updated", newUserName, userLoginName.getUserName());
         UserPersonalInfoLink upil2 = user2.getEmails().get(0);
         UserPersonalInfo upi2 = Identity.UserPersonalInfoGetByUserPersonalInfoId(upil2.getValue());
         Validator.Validate("validate original email", true, upi2.getValue().toString().contains(newUserEmail));

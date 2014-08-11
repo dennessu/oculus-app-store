@@ -47,6 +47,11 @@ class UserWhatsAppValidatorImpl implements PiiValidator {
         return Promise.pure(null)
     }
 
+    @Override
+    JsonNode updateJsonNode(JsonNode value) {
+        return value
+    }
+
     private void checkUserWhatsApp(UserWhatsApp userWhatsApp) {
         if (userWhatsApp.info != null) {
             if (userWhatsApp.info.length() > maxWhatsAppLength) {

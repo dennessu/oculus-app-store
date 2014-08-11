@@ -1,8 +1,11 @@
 package com.junbo.csr.rest.resource
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.GroupId
 import com.junbo.common.id.UserGroupId
 import com.junbo.common.id.UserId
+import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
 import com.junbo.csr.core.service.EmailService
 import com.junbo.csr.core.service.IdentityService
@@ -18,6 +21,10 @@ import com.junbo.email.spec.model.QueryParam
 import com.junbo.identity.spec.v1.model.Group
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.identity.spec.v1.model.UserGroup
+import com.junbo.identity.spec.v1.model.UserLoginName
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
+import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
+import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.glassfish.jersey.server.ContainerRequest
@@ -47,6 +54,7 @@ class CsrUserResourceImpl implements CsrUserResource {
     private CsrInvitationCodeRepository csrInvitationCodeRepository
     private CsrGroupResource csrGroupResource
     private String pendingGroupName
+    private UserPersonalInfoResource userPersonalInfoResource
 
     @Required
     void setCsrGroupResource(CsrGroupResource csrGroupResource) {
@@ -73,6 +81,11 @@ class CsrUserResourceImpl implements CsrUserResource {
         this.csrInvitationCodeRepository = csrInvitationCodeRepository
     }
 
+    @Required
+    void setUserPersonalInfoResource(UserPersonalInfoResource userPersonalInfoResource) {
+        this.userPersonalInfoResource = userPersonalInfoResource
+    }
+
     @Override
     Promise<Results<CsrUser>> list() {
         return csrGroupResource.list(new CsrGroupListOptions()).then { Results<CsrGroup> csrGroupResults ->
@@ -83,7 +96,7 @@ class CsrUserResourceImpl implements CsrUserResource {
                 return identityService.getUserByGroupId(csrGroup.groupId).then { Results<User> userResults ->
                     for (User user in userResults.items) {
                         def csrUser = new CsrUser(userId: user.getId() ,
-                                username: user.username,
+                                username: getUserName(user).get(),
                                 countryCode: user.countryOfResidence?.toString(),
                                 tier: csrGroup.tier)
                         csrUser.name = identityService.getUserNameByUser(user)
@@ -198,5 +211,24 @@ class CsrUserResourceImpl implements CsrUserResource {
         identityService.updateUserGroupMembership(csrInvitationCode.userGroupId, csrInvitationCode.userId, csrInvitationCode.inviteGroupId)
 
         return Promise.pure(Response.ok().entity('You have joined OculusVR CSR group').build())
+    }
+
+    private Promise<String> getUserName(User user) {
+        if (user.username == null) {
+            return Promise.pure(null)
+        } else {
+            return userPersonalInfoResource.get(user.username, new UserPersonalInfoGetOptions()).then { UserPersonalInfo userPersonalInfo ->
+                UserLoginName userLoginName = (UserLoginName)jsonNodeToObj(userPersonalInfo.value, UserLoginName)
+                return Promise.pure(userLoginName.userName)
+            }
+        }
+    }
+
+    public static Object jsonNodeToObj(JsonNode jsonNode, Class cls) {
+        try {
+            return ObjectMapperProvider.instance().treeToValue(jsonNode, cls);
+        } catch (Exception e) {
+            throw AppCommonErrors.INSTANCE.internalServerError(new Exception('Cannot convert JsonObject to ' + cls.toString() + ' e: ' + e.getMessage())).exception()
+        }
     }
 }

@@ -128,8 +128,7 @@ class CheckoutTests(ut.TestBase):
             "value": {
                 "givenName": "Johann",
                 "middleName": None,
-                "familyName": "Smith",
-                "nickName": "John"
+                "familyName": "Smith"
             },
             "user": user.json['self']
         })
@@ -151,9 +150,7 @@ class CheckoutTests(ut.TestBase):
         })
 
         user.json.update({
-            "name": {
-                "value": name['self']
-            },
+            "name": name['self'],
             "addresses": [{
                 "value": address['self'],
                 "isDefault": True,

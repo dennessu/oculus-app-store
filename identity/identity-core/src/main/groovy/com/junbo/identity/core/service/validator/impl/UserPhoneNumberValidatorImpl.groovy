@@ -65,6 +65,11 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
         return Promise.pure(null)
     }
 
+    @Override
+    JsonNode updateJsonNode(JsonNode value) {
+        return value
+    }
+
     private void checkUserPhone(PhoneNumber phoneNumber) {
         if (phoneNumber.info == null) {
             throw AppCommonErrors.INSTANCE.fieldRequired('value.info').exception()
@@ -87,7 +92,7 @@ class UserPhoneNumberValidatorImpl implements PiiValidator {
     private Promise<Void> checkAdvanceUserPhone(PhoneNumber phoneNumber, UserId userId) {
         return userPersonalInfoRepository.searchByPhoneNumber(phoneNumber.info, null, Integer.MAX_VALUE, 0).then {
             List<UserPersonalInfo> existing ->
-                if (existing != null) {
+                if (!CollectionUtils.isEmpty(existing)) {
                     // check this phone number is not used by this user
                     if (existing.any { UserPersonalInfo userPersonalInfo ->
                         return userPersonalInfo.userId == userId

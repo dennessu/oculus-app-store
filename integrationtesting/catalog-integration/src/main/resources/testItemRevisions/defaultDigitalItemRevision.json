@@ -56,9 +56,10 @@
             "credits": "credits",
             "copyright": "copyright",
             "knownBugs": "knownBugs",
-            "color": "black",
-            "size": "small",
             "supportEmail": "jasonfu@silkcloud.com",
+            "website": "http://www.google.com",
+            "manualDocument": "http://www.google.com/manual.pdf",
+            "communityForumLink": "http://www.google.com",
             "images":{
                 "thumbnail": {
                     "id": "id of image",
@@ -75,9 +76,15 @@
                     "y":15
                 }
             },
-            "videos":[],
-            "manualDocument": "http://www.google.com/manual.pdf",
-            "communityForumLink": "http://www.google.com"
+            "videos":[
+                {
+                    "service": "YOUTUBE",
+                    "id": "id of the video",
+                    "title": "title of the video"
+                }
+            ],
+            "color": "black",
+            "size": "small"
         }
     },
     "countries": {

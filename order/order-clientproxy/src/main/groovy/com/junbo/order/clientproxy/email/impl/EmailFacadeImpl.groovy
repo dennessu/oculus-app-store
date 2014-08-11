@@ -1,6 +1,9 @@
 package com.junbo.order.clientproxy.email.impl
 
+import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.catalog.spec.model.offer.OfferRevision
+import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
 import com.junbo.email.spec.model.Email
 import com.junbo.email.spec.model.EmailTemplate
@@ -8,6 +11,10 @@ import com.junbo.email.spec.model.QueryParam
 import com.junbo.email.spec.resource.EmailResource
 import com.junbo.email.spec.resource.EmailTemplateResource
 import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserLoginName
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
+import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
+import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.common.FacadeBuilder
 import com.junbo.order.clientproxy.email.EmailFacade
@@ -35,6 +42,9 @@ class EmailFacadeImpl implements EmailFacade {
     @Resource(name = 'order.emailTemplateClient')
     EmailTemplateResource emailTemplateResource
 
+    @Resource(name = 'order.identityUserPersonalInfoClient')
+    UserPersonalInfoResource userPersonalInfoResource
+
     private final static Logger LOGGER = LoggerFactory.getLogger(EmailFacadeImpl)
 
     @Override
@@ -51,7 +61,8 @@ class EmailFacadeImpl implements EmailFacade {
                 LOGGER.info('name=Get_Email_Template_Empty_Templates')
                 return Promise.pure(null)
             }
-            Email email = FacadeBuilder.buildOrderConfirmationEmail(order, user, offers, templates[0])
+            String username = getUserName(user).get()
+            Email email = FacadeBuilder.buildOrderConfirmationEmail(order, user, username, offers, templates[0])
             return emailResource.postEmail(email)
         }
     }
@@ -69,5 +80,24 @@ class EmailFacadeImpl implements EmailFacade {
         param.action = action
         param.locale = locale
         return param
+    }
+
+    private Promise<String> getUserName(User user) {
+        if (user.username == null) {
+            return Promise.pure(null)
+        } else {
+            return userPersonalInfoResource.get(user.username, new UserPersonalInfoGetOptions()).then { UserPersonalInfo userPersonalInfo ->
+                UserLoginName userLoginName = (UserLoginName)jsonNodeToObj(userPersonalInfo.value, UserLoginName)
+                return Promise.pure(userLoginName.userName)
+            }
+        }
+    }
+
+    public static Object jsonNodeToObj(JsonNode jsonNode, Class cls) {
+        try {
+            return ObjectMapperProvider.instance().treeToValue(jsonNode, cls);
+        } catch (Exception e) {
+            throw AppCommonErrors.INSTANCE.internalServerError(new Exception('Cannot convert JsonObject to ' + cls.toString() + ' e: ' + e.getMessage())).exception()
+        }
     }
 }

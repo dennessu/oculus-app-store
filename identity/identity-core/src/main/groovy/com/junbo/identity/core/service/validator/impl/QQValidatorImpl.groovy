@@ -46,6 +46,11 @@ class QQValidatorImpl implements PiiValidator {
         return Promise.pure(null)
     }
 
+    @Override
+    JsonNode updateJsonNode(JsonNode value) {
+        return value
+    }
+
     private void checkUserQQ(UserQQ userQQ) {
         if (userQQ.info != null) {
             if (userQQ.info.length() > maxQQLength) {

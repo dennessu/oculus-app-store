@@ -19,4 +19,6 @@ public interface IdentityFacade {
     Promise<User> getUser(Long userId);
 
     Promise<Address> getAddress(Long addressId);
+
+    Promise<String> getUsername(Long usernameId);
 }

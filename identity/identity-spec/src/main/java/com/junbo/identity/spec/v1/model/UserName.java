@@ -25,8 +25,8 @@ public class UserName {
     private String familyName;
 
     @XSSFreeString
-    @ApiModelProperty(position = 5, required = false, value = "[Nullable] Null or the preferred-name / nick-name.")
-    private String nickName;
+    @ApiModelProperty(position = 1, required = false, value = "The full name, or at least as much of it as we know")
+    private String fullName;
 
     public String getMiddleName() {
         return middleName;
@@ -34,14 +34,6 @@ public class UserName {
 
     public void setMiddleName(String middleName) {
         this.middleName = middleName;
-    }
-
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
     }
 
     public String getGivenName() {
@@ -60,6 +52,14 @@ public class UserName {
         this.familyName = familyName;
     }
 
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -70,7 +70,7 @@ public class UserName {
         if (familyName != null ? !familyName.equals(userName.familyName) : userName.familyName != null) return false;
         if (givenName != null ? !givenName.equals(userName.givenName) : userName.givenName != null) return false;
         if (middleName != null ? !middleName.equals(userName.middleName) : userName.middleName != null) return false;
-        if (nickName != null ? !nickName.equals(userName.nickName) : userName.nickName != null) return false;
+        if (fullName != null ? !fullName.equals(userName.fullName) : userName.fullName != null) return false;
 
         return true;
     }
@@ -80,7 +80,7 @@ public class UserName {
         int result = givenName != null ? givenName.hashCode() : 0;
         result = 31 * result + (middleName != null ? middleName.hashCode() : 0);
         result = 31 * result + (familyName != null ? familyName.hashCode() : 0);
-        result = 31 * result + (nickName != null ? nickName.hashCode() : 0);
+        result = 31 * result + (fullName != null ? fullName.hashCode() : 0);
         return result;
     }
 }

@@ -12,6 +12,7 @@ import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
+import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.common.jackson.annotation.HateoasLink;
 import com.junbo.common.model.Link;
 import com.junbo.common.model.PropertyAssignedAwareResourceMeta;
@@ -30,8 +31,11 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> implements C
     private UserId id;
 
     @ApiModelProperty(position = 2, required = true,
-            value = "[Nullable] The username of the user, or null if isAnonymous or if this user logs in only through authenticators.")
-    private String username;
+            value = "[Nullable] PII Link with type USERNAME, or null if isAnonymous or if this user logs in only through authenticators.")
+    private UserPersonalInfoId username;
+
+    @ApiModelProperty(position = 3, required = false, value = " [Nullable] Null or the preferred-name / nick-name")
+    private String nickName;
 
     @ApiModelProperty(position = 3, required = false, value = "Link to the the User's preferred Locale.")
     private LocaleId preferredLocale;
@@ -58,15 +62,15 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> implements C
             "the Links to the current email list that the user has,every link has a label such as \"business email\".")
     private List<UserPersonalInfoLink> emails;
 
-    @ApiModelProperty(position = 6, required = false, value = "The PersonalInfo resource that contains the user's name (given name, family name, etc.).")
-    private UserPersonalInfoLink name;
+    @ApiModelProperty(position = 6, required = false, value = "The PersonalInfo resource that contains the user's name (given name, family name, etc.)")
+    private UserPersonalInfoId name;
 
     @ApiModelProperty(position = 6, required = false, value = "Country Link to User's Country of Residence.")
     @JsonProperty("cor")
     private CountryId countryOfResidence;
 
     @ApiModelProperty(position = 7, required = false, value = "The personalInfo Link to the personalInfo resource, which is date of birth of the user.")
-    private UserPersonalInfoLink dob;
+    private UserPersonalInfoId dob;
 
     @ApiModelProperty(position = 8, required = false, value = "The textMsg list, an array of personalInfo Links, " +
             "the Links to the current txtMessage list that the user has,every link has a label such as \"secret1\".")
@@ -81,16 +85,16 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> implements C
     private List<UserPersonalInfoLink> whatsApps;
 
     @ApiModelProperty(position = 11, required = false, value = "The personalInfo Link to the personalInfo resource, which is Passport of the user.")
-    private UserPersonalInfoLink passport;
+    private UserPersonalInfoId passport;
 
     @ApiModelProperty(position = 12, required = false, value = "The personalInfo Link to the personalInfo resource, which is Government ID of the user.")
-    private UserPersonalInfoLink governmentId;
+    private UserPersonalInfoId governmentId;
 
     @ApiModelProperty(position = 13, required = false, value = "The personalInfo Link to the personalInfo resource, which is Driver License of the user.")
-    private UserPersonalInfoLink driversLicense;
+    private UserPersonalInfoId driversLicense;
 
     @ApiModelProperty(position = 14, required = false, value = "The personalInfo Link to the personalInfo resource, which is Gender of the user.")
-    private UserPersonalInfoLink gender;
+    private UserPersonalInfoId gender;
 
     @ApiModelProperty(position = 15, required = false, value = "A mapping between country code and User VAT number, country code must be exist valid country code.")
     private Map<String, UserVAT> vat = new HashMap<>();
@@ -170,9 +174,6 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> implements C
             "on Android and in VR,")
     private PaymentInstrumentId defaultPI;
 
-    @JsonIgnore
-    private String canonicalUsername;
-
     // This field is just for migration only, please don't use it in any API
     @JsonIgnore
     private Long migratedUserId;
@@ -187,13 +188,13 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> implements C
         support.setPropertyAssigned("self");
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
+    public void setUsername(UserPersonalInfoId username) {
         this.username = username;
         support.setPropertyAssigned("username");
+    }
+
+    public UserPersonalInfoId getUsername() {
+        return username;
     }
 
     public LocaleId getPreferredLocale() {
@@ -349,15 +350,6 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> implements C
         // support.setPropertyAssigned("entitlements");
     }
 
-    public String getCanonicalUsername() {
-        return canonicalUsername;
-    }
-
-    public void setCanonicalUsername(String canonicalUsername) {
-        this.canonicalUsername = canonicalUsername;
-        support.setPropertyAssigned("canonicalUsername");
-    }
-
     public Boolean getIsAnonymous() {
         return isAnonymous;
     }
@@ -394,20 +386,20 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> implements C
         support.setPropertyAssigned("emails");
     }
 
-    public UserPersonalInfoLink getName() {
+    public UserPersonalInfoId getName() {
         return name;
     }
 
-    public void setName(UserPersonalInfoLink name) {
+    public void setName(UserPersonalInfoId name) {
         this.name = name;
         support.setPropertyAssigned("name");
     }
 
-    public UserPersonalInfoLink getDob() {
+    public UserPersonalInfoId getDob() {
         return dob;
     }
 
-    public void setDob(UserPersonalInfoLink dob) {
+    public void setDob(UserPersonalInfoId dob) {
         this.dob = dob;
         support.setPropertyAssigned("dob");
     }
@@ -439,38 +431,38 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> implements C
         support.setPropertyAssigned("whatsApps");
     }
 
-    public UserPersonalInfoLink getPassport() {
+    public UserPersonalInfoId getPassport() {
         return passport;
     }
 
-    public void setPassport(UserPersonalInfoLink passport) {
+    public void setPassport(UserPersonalInfoId passport) {
         this.passport = passport;
         support.setPropertyAssigned("passport");
     }
 
-    public UserPersonalInfoLink getGovernmentId() {
+    public UserPersonalInfoId getGovernmentId() {
         return governmentId;
     }
 
-    public void setGovernmentId(UserPersonalInfoLink governmentId) {
+    public void setGovernmentId(UserPersonalInfoId governmentId) {
         this.governmentId = governmentId;
         support.setPropertyAssigned("governmentId");
     }
 
-    public UserPersonalInfoLink getDriversLicense() {
+    public UserPersonalInfoId getDriversLicense() {
         return driversLicense;
     }
 
-    public void setDriversLicense(UserPersonalInfoLink driversLicense) {
+    public void setDriversLicense(UserPersonalInfoId driversLicense) {
         this.driversLicense = driversLicense;
         support.setPropertyAssigned("driversLicense");
     }
 
-    public UserPersonalInfoLink getGender() {
+    public UserPersonalInfoId getGender() {
         return gender;
     }
 
-    public void setGender(UserPersonalInfoLink gender) {
+    public void setGender(UserPersonalInfoId gender) {
         this.gender = gender;
         support.setPropertyAssigned("gender");
     }
@@ -483,6 +475,15 @@ public class User extends PropertyAssignedAwareResourceMeta<UserId> implements C
         this.countryOfResidence = countryOfResidence;
         support.setPropertyAssigned("cor");
         support.setPropertyAssigned("countryOfResidence");
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+        support.setPropertyAssigned("nickName");
     }
 
     public Map<String, UserVAT> getVat() {

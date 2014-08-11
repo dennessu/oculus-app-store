@@ -56,7 +56,7 @@ class TestBuilder {
         def userId = new UserId()
         userId.value = generateLong()
         user.setId(userId)
-        user.setUsername('fake_user')
+        user.setUsername(new UserPersonalInfoId(0L))
         return user
     }
 

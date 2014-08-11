@@ -59,6 +59,11 @@ class DriverLicenseValidatorImpl implements PiiValidator {
         }
     }
 
+    @Override
+    JsonNode updateJsonNode(JsonNode value) {
+        return value
+    }
+
     @Required
     void setMinDriverLicenseLength(Integer minDriverLicenseLength) {
         this.minDriverLicenseLength = minDriverLicenseLength

@@ -111,6 +111,8 @@
                 <entry key="SubscriptionResource" value="commerce subscription.service"/>
                 <!-- token -->
                 <entry key="TokenResource" value="token token.service"/>
+                <entry key="TokenResource.getToken" value="crs token.service"/>
+                <entry key="TokenResource.updateToken" value="csr token.service"/>
             </map>
         </property>
     </bean>

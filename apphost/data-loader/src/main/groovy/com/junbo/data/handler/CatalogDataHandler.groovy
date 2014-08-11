@@ -190,6 +190,10 @@ class CatalogDataHandler extends BaseDataHandler {
         //Get organization info
         try {
             Results<Organization> results = organizationResource.list(new OrganizationListOptions(name: organizationName)).get()
+            results.items.retainAll { Organization org ->
+                org.isValidated
+            }
+
             if (results != null && results.items != null && results.items.size() > 0) {
                 organization = results.items.get(0)
             }
