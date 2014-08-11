@@ -9,14 +9,7 @@ import com.junbo.common.model.Results
 import com.junbo.data.model.UserAddressData
 import com.junbo.data.model.UserData
 import com.junbo.data.model.UserNameData
-import com.junbo.identity.spec.v1.model.Address
-import com.junbo.identity.spec.v1.model.Email
-import com.junbo.identity.spec.v1.model.PhoneNumber
-import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserCredential
-import com.junbo.identity.spec.v1.model.UserName
-import com.junbo.identity.spec.v1.model.UserPersonalInfo
-import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
+import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.identity.spec.v1.resource.UserCredentialResource
 import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
@@ -69,9 +62,8 @@ class UserDataHandler extends BaseDataHandler {
         UserNameData userNameData = userData.name
 
         User user = new User()
-        user.username = username
         user.status = 'ACTIVE'
-        user.isAnonymous = false
+        user.isAnonymous = true
         user.countryOfResidence = cor
 
         User existing = null
@@ -86,9 +78,20 @@ class UserDataHandler extends BaseDataHandler {
 
         if (existing == null) {
             User created = null
+            UserPersonalInfo createdPersonalInfo = null
             logger.debug("Create new user with username: $username")
             try {
                 created = userResource.create(user).get()
+                createdPersonalInfo = userPersonalInfoResource.create(new UserPersonalInfo(
+                        userId: created.getId(),
+                        type: 'USERNAME',
+                        value: ObjectMapperProvider.instance().valueToTree(new UserLoginName(
+                                userName: userData.username
+                        ))
+                )).get()
+                created.username = createdPersonalInfo.getId()
+                created.isAnonymous = false
+                created = userResource.put(created.getId(), created).get()
             } catch (Exception e) {
                 logger.error("Error creating user $user.username.", e)
             }
@@ -165,10 +168,7 @@ class UserDataHandler extends BaseDataHandler {
                         value: newAddressPii.id as UserPersonalInfoId
                 )]
 
-                created.name = new UserPersonalInfoLink(
-                        isDefault: true,
-                        value: newNamePii.id as UserPersonalInfoId
-                )
+                created.name = newNamePii.id as UserPersonalInfoId
 
                 userResource.put(created.id as UserId, created).get()
 

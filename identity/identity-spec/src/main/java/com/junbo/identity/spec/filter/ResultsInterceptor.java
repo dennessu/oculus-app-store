@@ -50,8 +50,9 @@ public class ResultsInterceptor implements ContainerResponseFilter {
         Link self = getSelf(responseContext);
         resultList.setSelf(self);
 
-        if(resultList.hasNext()) {
-            resultList.setNext(getNext(self));
+        if((resultList.hasNext())
+        || (resultList.getTotal() != null && resultList.getItems() != null && resultList.getTotal() != resultList.getItems().size())) {
+            resultList.setNext(getNext(resultList.getTotal(), self));
         }
     }
 
@@ -72,7 +73,7 @@ public class ResultsInterceptor implements ContainerResponseFilter {
         return ref;
     }
 
-    private Link getNext(Link self) {
+    private Link getNext(Long total, Link self) {
         if(self == null || StringUtils.isEmpty(self.getHref()))    {
             return null;
         }
@@ -80,6 +81,11 @@ public class ResultsInterceptor implements ContainerResponseFilter {
 
         Integer selfCount = extract(selfUrl, COUNT_FORMAT);
         Integer selfCursor = extract(selfUrl, CURSOR_FORMAT);
+
+        Integer nextCursor = (selfCount == null ? 0 : selfCount) + (selfCursor == null ? 0 : selfCursor);
+        if (nextCursor > total) {
+            return null;
+        }
 
         Link next = new Link();
         next.setId("");

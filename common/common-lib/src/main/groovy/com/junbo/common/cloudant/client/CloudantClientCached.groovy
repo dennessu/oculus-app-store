@@ -135,6 +135,13 @@ class CloudantClientCached implements CloudantClientInternal {
     }
 
     @Override
+    Promise<Integer> queryViewTotal(CloudantDbUri dbUri, String key, String viewName) {
+        Promise<Integer> future = impl.queryViewTotal(dbUri, key, viewName)
+
+        return future
+    }
+
+    @Override
     def <T extends CloudantEntity> Promise<CloudantQueryResult> search(CloudantDbUri dbUri, Class<T> entityClass, String searchName, String queryString, Integer limit, String bookmark, boolean includeDocs) {
         Promise<CloudantQueryResult> future = impl.search(dbUri, entityClass, searchName, queryString, limit, bookmark, includeDocs)
         if (includeDocs) {

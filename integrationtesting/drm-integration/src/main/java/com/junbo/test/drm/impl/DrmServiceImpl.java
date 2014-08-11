@@ -5,13 +5,13 @@
  */
 package com.junbo.test.drm.impl;
 
-import com.junbo.test.common.Entities.enums.ComponentType;
-import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.langur.core.client.TypeReference;
 import com.junbo.drm.spec.model.LicenseRequest;
 import com.junbo.drm.spec.model.SignedLicense;
+import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.ConfigHelper;
+import com.junbo.test.common.Entities.enums.ComponentType;
+import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.drm.DrmService;
 
 /**

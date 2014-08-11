@@ -153,6 +153,7 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
         if (iterator.hasNext()) {
             PiiValidator piiValidator = iterator.next()
             if (piiValidator.handles(userPersonalInfo.type)) {
+                userPersonalInfo.value = piiValidator.updateJsonNode(userPersonalInfo.value)
                 return piiValidator.validateCreate(userPersonalInfo.value, userPersonalInfo.userId, userPersonalInfo.organizationId).then {
                     return iterateValidateCreate(iterator, userPersonalInfo)
                 }
@@ -174,6 +175,7 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
         if (iterator.hasNext()) {
             PiiValidator piiValidator = iterator.next()
             if (piiValidator.handles(userPersonalInfo.type)) {
+                userPersonalInfo.value = piiValidator.updateJsonNode(userPersonalInfo.value)
                 return piiValidator.validateUpdate(userPersonalInfo.value, oldUserPersonalInfo.value).then {
                     return iterateValidateUpdate(iterator, userPersonalInfo, oldUserPersonalInfo)
                 }

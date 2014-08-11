@@ -25,7 +25,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         useBulk.set(value)
     }
 
-    protected CloudantClientInternal getEffective() {
+    public CloudantClientInternal getEffective() {
         // There are two layer of overriding:
         // 1. Use per instance setting to specify whether cache is used or not.
         // 2. Use the thread static setUseBulk to specify whether bulk is used or not.
@@ -37,23 +37,23 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         return bulk
     }
 
-    protected static String dbNamePrefix = ConfigServiceManager.instance().getConfigValue("common.cloudant.dbNamePrefix")
-    protected static CloudantMarshaller marshaller = DefaultCloudantMarshaller.instance()
-    protected static CloudantUniqueClient cloudantUniqueClient = CloudantUniqueClient.instance()
-    protected static CloudantClientBulk bulk = CloudantClientBulk.instance()
+    public static String dbNamePrefix = ConfigServiceManager.instance().getConfigValue("common.cloudant.dbNamePrefix")
+    public static CloudantMarshaller marshaller = DefaultCloudantMarshaller.instance()
+    public static CloudantUniqueClient cloudantUniqueClient = CloudantUniqueClient.instance()
+    public static CloudantClientBulk bulk = CloudantClientBulk.instance()
 
-    protected CloudantClientInternal internal
+    public CloudantClientInternal internal
 
-    protected CloudantGlobalUri cloudantGlobalUri
-    protected CloudantDbUri cloudantDbUri
-    protected Class<T> entityClass
-    protected String dbName
-    protected Tracker tracker
+    public CloudantGlobalUri cloudantGlobalUri
+    public CloudantDbUri cloudantDbUri
+    public Class<T> entityClass
+    public String dbName
+    public Tracker tracker
 
-    protected boolean enableCache
-    protected boolean includeDocs
+    public boolean enableCache
+    public boolean includeDocs
 
-    protected CloudantClientBase() {
+    public CloudantClientBase() {
         entityClass = (Class<T>) ((ParameterizedType) getClass().genericSuperclass).actualTypeArguments[0]
     }
 
@@ -99,7 +99,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         return cloudantDbUri
     }
 
-    protected Promise<T> cloudantPost(T entity) {
+    public Promise<T> cloudantPost(T entity) {
         if (entity.id != null) {
             entity.cloudantId = entity.id.toString()
         }
@@ -120,11 +120,11 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         return getEffective().cloudantPost(getDbUri(entity.cloudantId), entityClass, entity)
     }
 
-    protected Promise<T> cloudantGet(String id) {
+    public Promise<T> cloudantGet(String id) {
         return getEffective().cloudantGet(getDbUri(id), entityClass, id.toString())
     }
 
-    protected Promise<T> cloudantPut(T entity, T oldEntity) {
+    public Promise<T> cloudantPut(T entity, T oldEntity) {
         if (entity.id != null) {
             entity.cloudantId = entity.id.toString()
         }
@@ -137,13 +137,13 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         return getEffective().cloudantPut(getDbUri(entity.cloudantId), entityClass, entity)
     }
 
-    protected Promise<Void> cloudantDelete(String id) {
+    public Promise<Void> cloudantDelete(String id) {
         return cloudantGet(id.toString()).then { T entity ->
             return cloudantDelete(entity)
         }
     }
 
-    protected Promise<Void> cloudantDelete(T entity) {
+    public Promise<Void> cloudantDelete(T entity) {
         if (entity == null) {
             return Promise.pure(null)
         }
@@ -159,7 +159,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         }
     }
 
-    protected Promise<List<T>> cloudantGetAll(Integer limit, Integer skip, boolean descending) {
+    public Promise<List<T>> cloudantGetAll(Integer limit, Integer skip, boolean descending) {
         def future = getEffective().cloudantGetAll(getDbUri(null), entityClass, limit, skip, descending, this.includeDocs)
         if (!this.includeDocs) {
             future = future.then { CloudantQueryResult result ->
@@ -176,7 +176,11 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         }
     }
 
-    protected Promise<CloudantQueryResult> queryView(String viewName, String key, Integer limit, Integer skip,
+    public Promise<Integer> queryViewTotal(String viewName, String key) {
+        return getEffective().queryViewTotal(getDbUri(null), key, viewName)
+    }
+
+    public Promise<CloudantQueryResult> queryView(String viewName, String key, Integer limit, Integer skip,
                                            boolean descending, boolean includeDocs) {
         if (includeDocs && !this.includeDocs) {
             // pass false to implementation method and try to fetch results one by one.
@@ -188,7 +192,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         return getEffective().queryView(getDbUri(null), entityClass, viewName, key, limit, skip, descending, includeDocs)
     }
 
-    protected Promise<List<T>> queryView(String viewName, String key, Integer limit, Integer skip,
+    public Promise<List<T>> queryView(String viewName, String key, Integer limit, Integer skip,
                                boolean descending) {
         return getEffective().queryView(getDbUri(null), entityClass, viewName, key, limit, skip, descending, true).syncThen { CloudantQueryResult searchResult ->
             if (searchResult.rows != null) {
@@ -201,15 +205,15 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         }
     }
 
-    protected Promise<List<T>> queryView(String viewName, String key) {
+    public Promise<List<T>> queryView(String viewName, String key) {
         return queryView(viewName, key, null, null, false)
     }
 
-    protected Promise<CloudantQueryResult> queryView(String viewName, String key, boolean includeDocs) {
+    public Promise<CloudantQueryResult> queryView(String viewName, String key, boolean includeDocs) {
         return queryView(viewName, key, null, null, false, includeDocs)
     }
 
-    protected Promise<List<T>> queryView(String viewName, Object[] startKey, Object[] endKey, boolean withHighKey,
+    public Promise<List<T>> queryView(String viewName, Object[] startKey, Object[] endKey, boolean withHighKey,
                                          Integer limit, Integer skip, boolean descending) {
         return getEffective().queryView(getDbUri(null), entityClass, viewName, startKey, endKey, withHighKey,
                 limit, skip, descending, true).syncThen { CloudantQueryResult searchResult ->
@@ -223,7 +227,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         }
     }
 
-    protected Promise<List<T>> queryView(String viewName, String startKey, String endKey, Integer limit, Integer skip,
+    public Promise<List<T>> queryView(String viewName, String startKey, String endKey, Integer limit, Integer skip,
                                boolean descending) {
         return getEffective().queryView(getDbUri(null), entityClass, viewName, startKey, endKey, limit, skip, descending, true).syncThen { CloudantQueryResult searchResult ->
             if (searchResult.rows != null) {
@@ -236,7 +240,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         }
     }
 
-    protected Promise<CloudantQueryResult> queryView(String viewName, Object[] startKey, Object[] endKey, boolean withHighKey, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
+    public Promise<CloudantQueryResult> queryView(String viewName, Object[] startKey, Object[] endKey, boolean withHighKey, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
         if (includeDocs && !this.includeDocs) {
             // pass false to implementation method and try to fetch results one by one.
             // this means to allow higher cache hit rate
@@ -247,7 +251,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         return getEffective().queryView(getDbUri(null), entityClass, viewName, startKey, endKey, withHighKey, limit, skip, descending, includeDocs)
     }
 
-    protected Promise<CloudantSearchResult<T>> search(String searchName, String queryString, Integer limit, String bookmark) {
+    public Promise<CloudantSearchResult<T>> search(String searchName, String queryString, Integer limit, String bookmark) {
         return getEffective().search(getDbUri(null), entityClass, searchName, queryString, limit, bookmark, true).syncThen { CloudantQueryResult searchResult ->
             if (searchResult.rows != null) {
                 return new CloudantSearchResult<T>(
@@ -268,7 +272,7 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         }
     }
 
-    protected Promise<CloudantQueryResult> search(String searchName, String queryString, Integer limit, String bookmark,
+    public Promise<CloudantQueryResult> search(String searchName, String queryString, Integer limit, String bookmark,
                                                   boolean includeDocs) {
         if (includeDocs && !this.includeDocs) {
             // pass false to implementation method and try to fetch results one by one.
@@ -295,67 +299,67 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
 
     //region sync mode
 
-    protected T cloudantPostSync(T entity) {
+    public T cloudantPostSync(T entity) {
         return (T) cloudantPost(entity).get()
     }
 
-    protected T cloudantGetSync(String id) {
+    public T cloudantGetSync(String id) {
         return (T) cloudantGet(id).get()
     }
 
-    protected T cloudantPutSync(T entity, T oldEntity) {
+    public T cloudantPutSync(T entity, T oldEntity) {
         return (T) cloudantPut(entity, oldEntity).get()
     }
 
-    protected void cloudantDeleteSync(String id) {
+    public void cloudantDeleteSync(String id) {
         cloudantDelete(id).get()
     }
 
-    protected void cloudantDeleteSync(T entity) {
+    public void cloudantDeleteSync(T entity) {
         cloudantDelete(entity).get()
     }
 
-    protected List<T> cloudantGetAllSync(Integer limit, Integer skip, boolean descending) {
+    public List<T> cloudantGetAllSync(Integer limit, Integer skip, boolean descending) {
         return cloudantGetAll(limit, skip, descending).get()
     }
 
-    protected CloudantQueryResult queryViewSync(String viewName, String key, Integer limit, Integer skip,
+    public CloudantQueryResult queryViewSync(String viewName, String key, Integer limit, Integer skip,
                                                      boolean descending, boolean includeDocs) {
         return queryView(viewName, key, limit, skip, descending, includeDocs).get()
     }
 
-    protected List<T> queryViewSync(String viewName, String key, Integer limit, Integer skip,
+    public List<T> queryViewSync(String viewName, String key, Integer limit, Integer skip,
                                          boolean descending) {
         return queryView(viewName, key, limit, skip, descending).get()
     }
 
-    protected List<T> queryViewSync(String viewName, String key) {
+    public List<T> queryViewSync(String viewName, String key) {
         return queryView(viewName, key).get()
     }
 
-    protected CloudantQueryResult queryViewSync(String viewName, String key, boolean includeDocs) {
+    public CloudantQueryResult queryViewSync(String viewName, String key, boolean includeDocs) {
         return queryView(viewName, key, includeDocs).get()
     }
 
-    protected List<T> queryViewSync(String viewName, Object[] startKey, Object[] endKey, boolean withHighKey,
+    public List<T> queryViewSync(String viewName, Object[] startKey, Object[] endKey, boolean withHighKey,
                                          Integer limit, Integer skip, boolean descending) {
         return queryView(viewName, startKey, endKey, withHighKey, limit, skip, descending).get()
     }
 
-    protected List<T> queryViewSync(String viewName, String startKey, String endKey, Integer limit, Integer skip,
+    public List<T> queryViewSync(String viewName, String startKey, String endKey, Integer limit, Integer skip,
                                          boolean descending) {
         return queryView(viewName, startKey, endKey, limit, skip, descending).get()
     }
 
-    protected CloudantQueryResult queryViewSync(String viewName, Object[] startKey, Object[] endKey, boolean withHighKey, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
+    public CloudantQueryResult queryViewSync(String viewName, Object[] startKey, Object[] endKey, boolean withHighKey, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
         return queryView(viewName, startKey, endKey, withHighKey, limit, skip, descending, includeDocs).get()
     }
 
-    protected CloudantSearchResult<T> searchSync(String searchName, String queryString, Integer limit, String bookmark) {
+    public CloudantSearchResult<T> searchSync(String searchName, String queryString, Integer limit, String bookmark) {
         return search(searchName, queryString, limit, bookmark).get()
     }
 
-    protected CloudantQueryResult searchSync(String searchName, String queryString, Integer limit, String bookmark, boolean includeDocs) {
+    public CloudantQueryResult searchSync(String searchName, String queryString, Integer limit, String bookmark, boolean includeDocs) {
         return search(searchName, queryString, limit, bookmark, includeDocs).get()
     }
 

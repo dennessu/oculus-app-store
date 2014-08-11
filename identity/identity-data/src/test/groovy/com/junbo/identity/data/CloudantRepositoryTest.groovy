@@ -389,10 +389,8 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         user.setStatus('ACTIVE')
         user.setIsAnonymous(false)
         def random = UUID.randomUUID().toString()
-        user.setUsername(random)
         user.setPreferredLocale(new LocaleId("en_US"))
         user.setPreferredTimezone(UUID.randomUUID().toString())
-        user.setCanonicalUsername(random)
         user.setCreatedTime(new Date())
         user.setCreatedBy(123L)
         user = userRepository.create(user).get()
@@ -404,9 +402,6 @@ public class CloudantRepositoryTest extends AbstractTestNGSpringContextTests {
         newUser.setPreferredTimezone(newPreferredTimeZone)
         newUser = userRepository.update(newUser, user).get()
         Assert.assertEquals(newUser.getPreferredTimezone(), newPreferredTimeZone)
-
-        User findUser = userRepository.searchUserByCanonicalUsername(newUser.getUsername()).get()
-        Assert.assertNotNull(findUser)
     }
 
     @Test

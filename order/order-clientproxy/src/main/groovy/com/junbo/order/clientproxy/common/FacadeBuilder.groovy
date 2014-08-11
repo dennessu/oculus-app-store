@@ -16,6 +16,7 @@ import groovy.transform.CompileStatic
 import groovy.transform.TypeChecked
 
 import java.text.SimpleDateFormat
+
 /**
  * Created by LinYi on 14-3-4.
  */
@@ -97,7 +98,7 @@ class FacadeBuilder {
         return request
     }
 
-    static Email buildOrderConfirmationEmail(Order order, User user, List<Offer> offers, EmailTemplate template) {
+    static Email buildOrderConfirmationEmail(Order order, User user, String username, List<Offer> offers, EmailTemplate template) {
         Email email = new Email()
         email.userId = (UserId)(user.id)
         email.templateId = template.getId()
@@ -106,7 +107,7 @@ class FacadeBuilder {
         properties.put(ORDER_NUMBER, order.getId().value.toString())
         Date now = new Date()
         properties.put(ORDER_DATE, DATE_FORMATTER.get().format(now))
-        properties.put(NAME, user.username)
+        properties.put(NAME, username)
         properties.put(SUBTOTAL, order.totalAmount?.toString())
         properties.put(TAX, BigDecimal.ZERO.toString())
         def grandTotal = order.totalAmount

@@ -4,6 +4,7 @@ import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
+import com.junbo.common.model.Results
 import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.OrganizationValidator
 import com.junbo.identity.data.identifiable.OrganizationTaxType
@@ -176,10 +177,12 @@ class OrganizationValidatorImpl implements OrganizationValidator {
 
     private Promise<Void> checkValidOrganizationNameUnique(Organization organization) {
 
-        return organizationRepository.searchByCanonicalName(organization.canonicalName, Integer.MAX_VALUE, 0).then { List<Organization> organizationList ->
-            if (CollectionUtils.isEmpty(organizationList)) {
+        return organizationRepository.searchByCanonicalName(organization.canonicalName, Integer.MAX_VALUE, 0).then { Results<Organization> results ->
+            if (results == null || CollectionUtils.isEmpty(results.items)) {
                 return Promise.pure(null)
             }
+
+            def organizationList = results.items
 
             organizationList.removeAll { Organization org ->
                 return !org.isValidated || org.id == organization.id

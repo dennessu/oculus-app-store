@@ -67,7 +67,7 @@ public class TokenClientProxyTest extends BaseTest {
         tokenOfferRevisionClient.createOfferRevision(revision).get();
         User userRequest = new User(){
             {
-                setUsername("ut" + generateLong());
+
             }
         };
         final User userResult = tokenUserClient.create(userRequest).get();
@@ -135,7 +135,6 @@ public class TokenClientProxyTest extends BaseTest {
         tokenOfferRevisionClient.createOfferRevision(revision).get();
         User userRequest = new User(){
             {
-                setUsername("ut" + generateLong());
             }
         };
         final User userResult = tokenUserClient.create(userRequest).get();

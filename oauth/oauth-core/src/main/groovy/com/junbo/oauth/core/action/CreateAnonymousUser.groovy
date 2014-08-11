@@ -54,7 +54,10 @@ class CreateAnonymousUser implements Action {
         def thirdPartyAccount = contextWrapper.thirdPartyAccount
 
         Assert.notNull(thirdPartyAccount, 'thirdPartyAccount is null')
-        User user = new User(isAnonymous: true)
+        User user = new User(
+                isAnonymous: true,
+                nickName: thirdPartyAccount.nickName
+        )
 
         return userResource.create(user).recover { Throwable e ->
             handleException(e, contextWrapper)
@@ -74,8 +77,7 @@ class CreateAnonymousUser implements Action {
 
             UserName name = new UserName(
                     givenName: thirdPartyAccount.firstName,
-                    familyName: thirdPartyAccount.lastName,
-                    nickName: thirdPartyAccount.nickName
+                    familyName: thirdPartyAccount.lastName
             )
 
             UserPersonalInfo namePii = new UserPersonalInfo(
@@ -92,10 +94,7 @@ class CreateAnonymousUser implements Action {
                     return Promise.pure(new ActionResult('error'))
                 }
 
-                user.name = new UserPersonalInfoLink(
-                        isDefault: true,
-                        value: newUserPii.id as UserPersonalInfoId
-                )
+                user.name = newUserPii.id as UserPersonalInfoId
 
                 return Promise.pure(new ActionResult('next'))
             }

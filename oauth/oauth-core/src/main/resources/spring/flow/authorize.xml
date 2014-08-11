@@ -378,6 +378,7 @@
 
     <bean id="createUser" class="com.junbo.oauth.core.action.CreateUser">
         <property name="userResource" ref="oauth_userResource"/>
+        <property name="userPersonalInfoResource" ref="oauth_userPersonalInfoResource" />
     </bean>
 
     <bean id="createUserCredential" class="com.junbo.oauth.core.action.CreateUserCredential">

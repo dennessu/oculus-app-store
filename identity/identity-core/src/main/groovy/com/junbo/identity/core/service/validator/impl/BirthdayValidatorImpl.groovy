@@ -68,6 +68,11 @@ class BirthdayValidatorImpl implements PiiValidator {
         }
     }
 
+    @Override
+    JsonNode updateJsonNode(JsonNode value) {
+        return value
+    }
+
     @Required
     void setTimespanInYears(Integer timespanInYears) {
         this.timespanInYears = timespanInYears

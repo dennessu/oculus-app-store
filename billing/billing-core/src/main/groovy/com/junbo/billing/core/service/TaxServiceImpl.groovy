@@ -6,6 +6,7 @@
 
 package com.junbo.billing.core.service
 
+import com.fasterxml.jackson.databind.JsonNode
 import com.junbo.billing.clientproxy.CatalogFacade
 import com.junbo.billing.clientproxy.IdentityFacade
 import com.junbo.billing.clientproxy.PaymentFacade
@@ -20,9 +21,13 @@ import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.PIType
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
+import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.spec.v1.model.Address
 import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserLoginName
+import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.model.UserVAT
+import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.model.PaymentInstrument
 import groovy.transform.CompileStatic
@@ -113,8 +118,10 @@ class TaxServiceImpl implements TaxService {
                 LOGGER.error('name=Error_Get_User. user id: ' + userId, throwable)
                 throw AppErrors.INSTANCE.userNotFound("balance.userId", userId).exception()
             }.then { User user ->
-                balance.propertySet.put(PropertyKey.CUSTOMER_NAME.name(), user.username)
-                return calculateTax(balance, pi.billingAddressId, user)
+                return identityFacade.getUsername(user.username.value).then { String username ->
+                    balance.propertySet.put(PropertyKey.CUSTOMER_NAME.name(), username)
+                    return calculateTax(balance, pi.billingAddressId, user)
+                }
             }
         }
     }

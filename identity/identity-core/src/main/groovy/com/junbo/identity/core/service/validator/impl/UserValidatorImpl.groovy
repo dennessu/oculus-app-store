@@ -5,6 +5,7 @@ import com.junbo.billing.spec.resource.VatResource
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.PITypeId
 import com.junbo.common.id.UserId
+import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.common.util.ValidatorUtil
 import com.junbo.identity.core.service.normalize.NormalizeService
@@ -23,6 +24,7 @@ import com.junbo.payment.spec.resource.PaymentInstrumentResource
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.CollectionUtils
+import org.springframework.util.StringUtils
 
 import java.util.Locale
 
@@ -69,17 +71,7 @@ class UserValidatorImpl implements UserValidator {
         }
         return validateUserInfo(user).then {
             if (user.username != null) {
-                usernameValidator.validateUsername(user.username)
-
-                user.canonicalUsername = normalizeService.normalize(user.username)
-
-                return userRepository.searchUserByCanonicalUsername(user.canonicalUsername).then { User existingUser ->
-                    if (existingUser != null) {
-                        throw AppCommonErrors.INSTANCE.fieldDuplicate('username').exception()
-                    }
-
-                    return Promise.pure(null)
-                }
+                return validateUserNameDuplicate(user, user)
             }
 
             return Promise.pure(null)
@@ -110,18 +102,7 @@ class UserValidatorImpl implements UserValidator {
 
         return validateUserInfo(user).then {
             if (user.username != oldUser.username) {
-                user.canonicalUsername = normalizeService.normalize(user.username)
-                if (user.canonicalUsername != oldUser.canonicalUsername) {
-                    return userRepository.searchUserByCanonicalUsername(user.canonicalUsername).then { User existingUser ->
-                        if (existingUser != null) {
-                            throw AppCommonErrors.INSTANCE.fieldDuplicate('username').exception()
-                        }
-
-                        return Promise.pure(null)
-                    }
-                }
-
-                return Promise.pure(null)
+                return validateUserNameDuplicate(user, oldUser)
             }
 
             return Promise.pure(null)
@@ -168,7 +149,6 @@ class UserValidatorImpl implements UserValidator {
             if (user.isAnonymous) {
                 throw AppCommonErrors.INSTANCE.fieldNotWritable('isAnonymous', user.isAnonymous, "false").exception()
             }
-            usernameValidator.validateUsername(user.username)
         } else {
             if (user.isAnonymous == null) {
                 user.isAnonymous = true
@@ -199,37 +179,39 @@ class UserValidatorImpl implements UserValidator {
             }
         }
 
-        return validateLocale(user).then {
-            return validateAddresses(user)
-        }.then {
-            return validateEmails(user)
-        }.then {
-            return validatePhones(user)
-        }.then {
-            return validateName(user)
-        }.then {
-            return validateDob(user)
-        }.then {
-            return validateSMS(user)
-        }.then {
-            return validateQQ(user)
-        }.then {
-            return validateWhatsApp(user)
-        }.then {
-            return validatePassport(user)
-        }.then {
-            return validateGovernmentId(user)
-        }.then {
-            return validateDriversLicense(user)
-        }.then {
-            return validateGender(user)
-        }.then {
-            return validateCountryOfResidence(user)
-        }.then {
-            return validateVat(user)
-        }.then {
-            return validateDefaultPI(user)
-        }
+        return validateUserName(user).then {
+                return validateLocale(user)
+            }.then {
+                return validateAddresses(user)
+            }.then {
+                return validateEmails(user)
+            }.then {
+                return validatePhones(user)
+            }.then {
+                return validateName(user)
+            }.then {
+                return validateDob(user)
+            }.then {
+                return validateSMS(user)
+            }.then {
+                return validateQQ(user)
+            }.then {
+                return validateWhatsApp(user)
+            }.then {
+                return validatePassport(user)
+            }.then {
+                return validateGovernmentId(user)
+            }.then {
+                return validateDriversLicense(user)
+            }.then {
+                return validateGender(user)
+            }.then {
+                return validateCountryOfResidence(user)
+            }.then {
+                return validateVat(user)
+            }.then {
+                return validateDefaultPI(user)
+            }
     }
 
     Promise<Void> validateUserPersonalInfoLinkIterator(User user, Iterator<UserPersonalInfoLink> iter, String type) {
@@ -310,22 +292,51 @@ class UserValidatorImpl implements UserValidator {
         }
     }
 
-    Promise<Void> validateUserPersonalInfoLink(UserPersonalInfoLink userPersonalInfoLink, String type) {
-        if (userPersonalInfoLink.value == null) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('value').exception()
+    Promise<Void> validateUserPersonalInfoId(User user, UserPersonalInfoId userPersonalInfoId, String type) {
+        if (userPersonalInfoId == null) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('userPersonalInfoId is null').exception()
         }
-        return userPersonalInfoRepository.get(userPersonalInfoLink.value).
-                then { UserPersonalInfo userPersonalInfo ->
-                    if (userPersonalInfo == null) {
-                        throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPersonalInfoLink.value).exception()
-                    }
+        return userPersonalInfoRepository.get(userPersonalInfoId).then { UserPersonalInfo userPersonalInfo ->
+            if (userPersonalInfo == null) {
+                throw AppErrors.INSTANCE.userPersonalInfoNotFound(userPersonalInfoId).exception()
+            }
 
-                    if (userPersonalInfo.type != type) {
-                        throw AppCommonErrors.INSTANCE.fieldInvalid(userPersonalInfoLink.value.toString()).exception()
-                    }
+            if (userPersonalInfo.userId != user.getId()) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid('userPersonalInfoId', 'userPersonalInfoId : ' +
+                        userPersonalInfo.getId() + ' doesn\'t belong to current user.').exception()
+            }
 
-                    return Promise.pure(userPersonalInfo)
+            if (userPersonalInfo.type != type) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid(userPersonalInfoId.toString()).exception()
+            }
+
+            return Promise.pure(userPersonalInfo)
+        }
+    }
+
+    Promise<Void> validateUserName(User user) {
+        if (user.username != null) {
+            return userPersonalInfoRepository.get(user.username).then { UserPersonalInfo userPersonalInfo ->
+                if (userPersonalInfo == null) {
+                    throw AppErrors.INSTANCE.userPersonalInfoNotFound(user.username).exception()
                 }
+
+                if (userPersonalInfo.type != UserPersonalInfoType.USERNAME.toString()) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('user.username', 'UserPersonalInfo must be USERNAME type').exception()
+                }
+
+                if (!StringUtils.isEmpty(user.nickName)) {
+                    UserLoginName userLoginName = (UserLoginName)JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserLoginName)
+                    if (userLoginName.userName.equalsIgnoreCase(user.nickName)) {
+                        throw AppCommonErrors.INSTANCE.fieldInvalid('nickName', 'nickName can\'t be the same as username').exception()
+                    }
+                }
+
+                return Promise.pure(null)
+            }
+        }
+
+        return Promise.pure(null)
     }
 
     Promise<Void> validateLocale(User user) {
@@ -387,7 +398,7 @@ class UserValidatorImpl implements UserValidator {
 
     Promise<Void> validateName(User user) {
         if (user.name != null) {
-            return validateUserPersonalInfoLink(user.name, UserPersonalInfoType.NAME.toString())
+            return validateUserPersonalInfoId(user, user.name, UserPersonalInfoType.NAME.toString())
         }
 
         return Promise.pure(null)
@@ -395,7 +406,7 @@ class UserValidatorImpl implements UserValidator {
 
     Promise<Void> validateDob(User user) {
         if (user.dob != null) {
-            return validateUserPersonalInfoLink(user.dob, UserPersonalInfoType.DOB.toString())
+            return validateUserPersonalInfoId(user, user.dob, UserPersonalInfoType.DOB.toString())
         }
 
         return Promise.pure(null)
@@ -429,28 +440,28 @@ class UserValidatorImpl implements UserValidator {
 
     Promise<Void> validatePassport(User user) {
         if (user.passport != null) {
-            return validateUserPersonalInfoLink(user.passport, UserPersonalInfoType.PASSPORT.toString())
+            return validateUserPersonalInfoId(user, user.passport, UserPersonalInfoType.PASSPORT.toString())
         }
         return Promise.pure(null)
     }
 
     Promise<Void> validateGovernmentId(User user) {
         if (user.governmentId != null) {
-            return validateUserPersonalInfoLink(user.governmentId, UserPersonalInfoType.GOVERNMENT_ID.toString())
+            return validateUserPersonalInfoId(user, user.governmentId, UserPersonalInfoType.GOVERNMENT_ID.toString())
         }
         return Promise.pure(null)
     }
 
     Promise<Void> validateDriversLicense(User user) {
         if (user.driversLicense != null) {
-            return validateUserPersonalInfoLink(user.driversLicense, UserPersonalInfoType.DRIVERS_LICENSE.toString())
+            return validateUserPersonalInfoId(user, user.driversLicense, UserPersonalInfoType.DRIVERS_LICENSE.toString())
         }
         return Promise.pure(null)
     }
 
     Promise<Void> validateGender(User user) {
         if (user.gender != null) {
-            return validateUserPersonalInfoLink(user.gender, UserPersonalInfoType.GENDER.toString())
+            return validateUserPersonalInfoId(user, user.gender, UserPersonalInfoType.GENDER.toString())
         }
 
         return Promise.pure(null)
@@ -525,6 +536,38 @@ class UserValidatorImpl implements UserValidator {
         }
     }
 
+    Promise<Void> validateUserNameDuplicate(User user, User oldUser) {
+        if (oldUser == null) {
+            throw new IllegalArgumentException('oldUser is null')
+        }
+        return userPersonalInfoRepository.get(user.username).then { UserPersonalInfo userPersonalInfo ->
+            UserLoginName loginName = (UserLoginName)JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserLoginName)
+            return userPersonalInfoRepository.searchByCanonicalUsername(loginName.canonicalUsername, Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
+                if (CollectionUtils.isEmpty(userPersonalInfoList)) {
+                    return Promise.pure(null)
+                }
+
+                List<UserPersonalInfo> userPersonalInfos = new ArrayList<>()
+                return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo personalInfo ->
+                    return userRepository.get(personalInfo.userId).then { User existing ->
+                        if (existing.username == user.username && existing.getId() != oldUser.getId()) {
+                            userPersonalInfos.add(personalInfo)
+                            return Promise.pure(Promise.BREAK)
+                        }
+
+                        return Promise.pure(null)
+                    }
+                }.then {
+                    if (!CollectionUtils.isEmpty(userPersonalInfos)) {
+                        throw AppCommonErrors.INSTANCE.fieldDuplicate('username').exception()
+                    }
+
+                    return Promise.pure(null)
+                }
+            }
+        }
+    }
+
     @Required
     void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository
@@ -579,4 +622,5 @@ class UserValidatorImpl implements UserValidator {
     void setEnableVatValidation(Boolean enableVatValidation) {
         this.enableVatValidation = enableVatValidation
     }
+
 }

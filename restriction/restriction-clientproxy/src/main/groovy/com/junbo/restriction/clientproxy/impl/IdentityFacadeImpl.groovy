@@ -47,7 +47,7 @@ class IdentityFacadeImpl implements IdentityFacade {
     Promise<Date> getUserDob(Long userId) {
         return userResource.get(new UserId(userId), new UserGetOptions()).then { User user ->
             if (user.dob != null && user.dob.value != null) {
-                return userPersonalInfoResource.get(user.dob.value, new UserPersonalInfoGetOptions()).then { UserPersonalInfo info ->
+                return userPersonalInfoResource.get(user.dob, new UserPersonalInfoGetOptions()).then { UserPersonalInfo info ->
                     if (info != null && info.type.equalsIgnoreCase('dob')) {
                         try {
                             Date date = ObjectMapperProvider.instance().treeToValue(info.value, Date)

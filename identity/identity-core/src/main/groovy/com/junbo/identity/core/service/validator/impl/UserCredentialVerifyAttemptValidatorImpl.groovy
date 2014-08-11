@@ -200,7 +200,26 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     }
                 }
         } else {
-            return userRepository.searchUserByCanonicalUsername(normalizeService.normalize(userLoginAttempt.username))
+            return userPersonalInfoRepository.searchByCanonicalUsername(normalizeService.normalize(userLoginAttempt.username),
+                    Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
+                if (CollectionUtils.isEmpty(userPersonalInfoList)) {
+                    return Promise.pure(null)
+                }
+
+                User user = null;
+                return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo userPersonalInfo ->
+                    return userRepository.get(userPersonalInfo.userId).then { User existing ->
+                        if (existing.username == userPersonalInfo.getId()) {
+                            user = existing
+                            return Promise.pure(Promise.BREAK)
+                        }
+
+                        return Promise.pure(null)
+                    }
+                }.then {
+                    return Promise.pure(user)
+                }
+            }
         }
     }
 

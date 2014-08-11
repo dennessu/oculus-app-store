@@ -44,6 +44,11 @@ class GenderValidatorImpl implements PiiValidator {
         return null
     }
 
+    @Override
+    JsonNode updateJsonNode(JsonNode value) {
+        return value
+    }
+
     private void checkUserGender(UserGender userGender) {
         if (userGender.info != null) {
             if (!(userGender.info in allowedValues)) {

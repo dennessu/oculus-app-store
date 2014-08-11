@@ -23,6 +23,8 @@ import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RandomFactory;
+import com.junbo.test.common.JsonHelper;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -34,6 +36,7 @@ import java.util.*;
 public class UserServiceImpl extends HttpClientBase implements UserService {
 
     private final String identityServerURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/users";
+    private final String identityPiiURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/personal-info";
     private static UserService instance;
     private String userPassword = "Test1234";
 
@@ -60,7 +63,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         Master.getInstance().setCurrentUid(null);
         oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY);
         User userForPost = new User();
-        userForPost.setIsAnonymous(false);
+        userForPost.setIsAnonymous(true);
         userForPost.setStatus("ACTIVE");
         if (vat != null) {
             UserVAT userVAT = new UserVAT();
@@ -70,18 +73,27 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
             userForPost.setVat(vats);
         }
 
-        if (userName != null && !userName.isEmpty()) {
-            userForPost.setUsername(userName);
-        } else {
-            userForPost.setUsername(RandomFactory.getRandomStringOfAlphabet(10));
-        }
-
         String responseBody = restApiCall(HTTPMethod.POST, identityServerURL, userForPost, 201, true);
         User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {
         },
                 responseBody);
 
         String userId = IdConverter.idToHexString(userGet.getId());
+
+        UserPersonalInfo userLoginNamePersonalInfo = null;
+        if (userName != null && !userName.isEmpty()) {
+            userLoginNamePersonalInfo = postUserName(userName, userGet.getId());
+            userGet.setUsername(userLoginNamePersonalInfo.getId());
+            userGet.setIsAnonymous(false);
+            this.PutUser(userId, userGet);
+        } else {
+            userLoginNamePersonalInfo = postUserName(RandomFactory.getRandomStringOfAlphabet(10), userGet.getId());
+            userGet.setUsername(userLoginNamePersonalInfo.getId());
+            userGet.setIsAnonymous(false);
+            this.PutUser(userId, userGet);
+        }
+
+        userGet = Master.getInstance().getUser(userId);
         Master.getInstance().addUser(userId, userGet);
         Master.getInstance().setCurrentUid(userId);
         String password;
@@ -91,7 +103,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
             password = postPassword(userId, userPassword);
         }
 
-        oAuthTokenClient.postUserAccessToken(userId, password);
+        oAuthTokenClient.postUserAccessToken(userId, userName, password);
 
         List<UserPersonalInfoLink> addresses = new ArrayList<>();
         List<UserPersonalInfoLink> emails = new ArrayList<>();
@@ -134,18 +146,13 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         piPhone.setUserId(userIdDefault);
         piPhone.setValue(phone.getId());
 
-        UserPersonalInfoLink piName = new UserPersonalInfoLink();
-        piName.setIsDefault(true);
-        piName.setUserId(userIdDefault);
-        piName.setValue(name.getId());
-
         emails.add(piEmail);
         phones.add(piPhone);
 
         userGet.setAddresses(addresses);
         userGet.setEmails(emails);
         userGet.setPhones(phones);
-        userGet.setName(piName);
+        userGet.setName(name.getId());
 
         this.PutUser(userId, userGet);
 
@@ -194,14 +201,24 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         return postUserPersonalInfo(userPersonalInfo);
     }
 
+    private UserPersonalInfo postUserName(String userName, UserId userId) throws Exception {
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+        userPersonalInfo.setType("USERNAME");
+        userPersonalInfo.setUserId(userId);
+        String str = "{\"userName\":\"" + userName + "\"}";
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode value = mapper.readTree(str);
+        userPersonalInfo.setValue(value);
+        return postUserPersonalInfo(userPersonalInfo);
+    }
+
     private UserPersonalInfo postName(UserId userId) throws Exception {
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
         userPersonalInfo.setType("NAME");
         userPersonalInfo.setUserId(userId);
         String str = "{\"givenName\":\"" + RandomFactory.getRandomStringOfAlphabet(5) +
                 "\",\"middleName\":\"" + RandomFactory.getRandomStringOfAlphabet(5) +
-                "\",\"familyName\":\"" + RandomFactory.getRandomStringOfAlphabet(5) + "\"," +
-                "\"nickName\":\"" + RandomFactory.getRandomStringOfAlphabet(5) + "\"}";
+                "\",\"familyName\":\"" + RandomFactory.getRandomStringOfAlphabet(5) + "\"}";
         ObjectMapper mapper = new ObjectMapper();
         JsonNode value = mapper.readTree(str);
         userPersonalInfo.setValue(value);
@@ -252,7 +269,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     private UserPersonalInfo postUserPersonalInfo(UserPersonalInfo userPersonalInfo,
                                                   int expectedResponseCode) throws Exception {
         String serverURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/personal-info";
-        String responseBody = restApiCall(HTTPMethod.POST, serverURL, userPersonalInfo, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, serverURL, userPersonalInfo, expectedResponseCode, true);
         return new JsonMessageTranscoder().decode(new TypeReference<UserPersonalInfo>() {
         }, responseBody);
     }
@@ -294,12 +311,8 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     @Override
     public String PostUser(String userName, String emailAddress) throws Exception {
         User userForPost = new User();
-        userForPost.setIsAnonymous(false);
+        userForPost.setIsAnonymous(true);
         userForPost.setStatus("ACTIVE");
-        userForPost.setUsername(RandomFactory.getRandomStringOfAlphabet(10));
-        if (userName != null && !userName.isEmpty()) {
-            userForPost.setUsername(userName);
-        }
 
         String responseBody = restApiCall(HTTPMethod.POST, identityServerURL, userForPost, 201);
         User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {
@@ -307,6 +320,13 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
                 responseBody);
 
         String userId = IdConverter.idToHexString(userGet.getId());
+
+        UserPersonalInfo userPersonalInfo = this.postUserName(StringUtils.isEmpty(userName) ? RandomFactory.getRandomStringOfAlphabet(10) : userName, userGet.getId());
+        userGet.setIsAnonymous(false);
+        userGet.setUsername(userPersonalInfo.getId());
+        this.PutUser(userId, userGet);
+
+        userGet = Master.getInstance().getUser(userId);
         Master.getInstance().addUser(userId, userGet);
 
         UserId userIdDefault = userGet.getId();
@@ -353,10 +373,20 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         User userGet = new JsonMessageTranscoder().decode(new TypeReference<User>() {
         },
                 responseBody);
+
+
+        String userPiiId = IdConverter.idToHexString(userGet.getUsername());
+        String piiURL = identityPiiURL + "/" + userPiiId;
+        String piiResponseBody = restApiCall(HTTPMethod.GET, piiURL);
+        UserPersonalInfo userLoginName = new JsonMessageTranscoder().decode(new TypeReference<UserPersonalInfo>() {
+        },
+                piiResponseBody);
+        UserLoginName loginName = (UserLoginName)JsonHelper.JsonNodeToObject(userLoginName.getValue(), UserLoginName.class);
+
         String userRtnId = IdConverter.idToHexString(userGet.getId());
         Master.getInstance().addUser(userRtnId, userGet);
         if (Master.getInstance().getUserAccessToken(userId) == null) {
-            oAuthTokenClient.postUserAccessToken(userRtnId, userPassword);
+            oAuthTokenClient.postUserAccessToken(userRtnId, loginName.getUserName(), userPassword);
         }
         return userRtnId;
     }
@@ -383,10 +413,10 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
             Master.getInstance().addUser(IdConverter.idToHexString(user.getId()), user);
             if (Master.getInstance().getUserAccessToken(IdConverter.idToHexString(user.getId())) == null) {
                 if (Master.getInstance().getUserPassword() != null && !Master.getInstance().getUserPassword().isEmpty())
-                    oAuthTokenClient.postUserAccessToken(IdConverter.idToHexString(user.getId()),
+                    oAuthTokenClient.postUserAccessToken(IdConverter.idToHexString(user.getId()), userName,
                             Master.getInstance().getUserPassword());
                 else {
-                    oAuthTokenClient.postUserAccessToken(IdConverter.idToHexString(user.getId()), userPassword);
+                    oAuthTokenClient.postUserAccessToken(IdConverter.idToHexString(user.getId()), userName, userPassword);
                 }
             }
             listUserId.add(IdConverter.idToHexString(user.getId()));
@@ -405,7 +435,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     public String PutUser(String userId, User user, int expectedResponseCode) throws Exception {
 
         String putUrl = identityServerURL + "/" + userId;
-        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, user, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, user, expectedResponseCode, true);
         User userPut = new JsonMessageTranscoder().decode(new TypeReference<User>() {
         },
                 responseBody);

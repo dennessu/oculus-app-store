@@ -7,16 +7,19 @@ package com.junbo.test.identity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.id.*;
+import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.common.model.Results;
 import com.junbo.common.util.IdFormatter;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.identity.spec.v1.model.migration.OculusInput;
 import com.junbo.identity.spec.v1.model.migration.OculusOutput;
+import com.junbo.identity.spec.v1.option.list.OrganizationListOptions;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.JsonHelper;
 import com.junbo.test.common.Validator;
 import com.junbo.test.common.libs.IdConverter;
+import com.junbo.test.common.RandomHelper;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
@@ -154,7 +157,17 @@ public class Identity {
     }
 
     public static User UserPostDefault() throws Exception {
-        return UserPostDefault(IdentityModel.DefaultUser());
+        User user = UserPostDefault(IdentityModel.DefaultUser());
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+        userPersonalInfo.setUserId(user.getId());
+        userPersonalInfo.setType("USERNAME");
+        UserLoginName loginName = new UserLoginName();
+        loginName.setUserName(RandomHelper.randomAlphabetic(15));
+        userPersonalInfo.setValue(ObjectMapperProvider.instance().valueToTree(loginName));
+        UserPersonalInfo loginInfo = UserPersonalInfoPost(user.getId(), userPersonalInfo);
+        user.setIsAnonymous(false);
+        user.setUsername(loginInfo.getId());
+        return UserPut(user);
     }
 
     public static User UserPostDefault(User user) throws Exception {
@@ -259,6 +272,11 @@ public class Identity {
                 JsonHelper.JsonSerializer(organization), Organization.class);
     }
 
+    public static Results<Organization> OrganizationByName(String name, Integer limit, Integer offset) throws Exception {
+        return IdentityGet(
+                IdentityV1OrganizationURI + "?name=" + name.toLowerCase() + buildIdentityCount(limit) + buildIdentityCursor(offset), Results.class);
+    }
+
     public static CloseableHttpResponse UserCredentialPostDefault(UserId userId, String password) throws Exception {
         return UserCredentialPostDefault(userId, password, true);
     }
@@ -332,5 +350,21 @@ public class Identity {
 
     public static void StartLoggingAPISample(String message) {
         System.out.println(message);
+    }
+
+    public static String buildIdentityCount(Integer count) {
+        if (count == null) {
+            return "";
+        } else {
+            return "&count=" + count.toString();
+        }
+    }
+
+    public static String buildIdentityCursor(Integer cursor) {
+        if (cursor == null) {
+            return "";
+        } else {
+            return "&cursor=" + cursor.toString();
+        }
     }
 }

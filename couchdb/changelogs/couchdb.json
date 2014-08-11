@@ -183,20 +183,22 @@
           "map": "function(doc) {if (doc.orderItemId) {emit(doc.orderItemId, doc._id)}}"
         }
       }
-    }, 
+    },
     "organization": {
       "views": {
         "by_canonical_name": {
-          "map": "function(doc) {  emit(doc.canonicalName, doc._id)}"
-        }, 
+          "map": "function(doc) {  emit(doc.canonicalName, doc._id)}",
+          "reduce": "_count"
+        },
         "by_owner_id": {
-          "map": "function(doc) {  emit(doc.ownerId, doc._id)}"
+          "map": "function(doc) {  emit(doc.ownerId, doc._id)}",
+          "reduce": "_count"
         },
         "by_migrate_company_id": {
           "map": "function(doc) {  emit(doc.migratedCompanyId.toString(), doc._id)}"
         }
       }
-    }, 
+    },
     "pitype": {
       "views": {
         "by_typeCode": {
@@ -252,9 +254,6 @@
     "error_info": {},
     "user": {
       "views": {
-        "by_canonical_username": {
-          "map": "function(doc) {  emit(doc.canonicalUsername, doc._id)}"
-        },
         "by_migrate_user_id": {
           "map": "function(doc) {  emit(doc.migratedUserId.toString(), doc._id) }"
         },
@@ -711,7 +710,7 @@
           "map": "function(doc) {if (doc.subOffers) {for (var idx in doc.subOffers) {emit(doc.subOffers[idx], doc._id);}}}"
         }
       }
-    }, 
+    },
     "price_tier": {
       "views": {
         "by_tierId": {

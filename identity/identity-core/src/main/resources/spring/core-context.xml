@@ -239,7 +239,7 @@
             <list>
                 <value>id</value>
                 <value>typeCode</value>
-                <value>availableFirmwares</value>
+                <value>availableSoftware</value>
                 <value>instructionManual</value>
                 <value>componentTypes</value>
                 <value>futureExpansion</value>
@@ -256,7 +256,7 @@
         <property name="writablePropertiesForCreate">
             <list>
                 <value>typeCode</value>
-                <value>availableFirmwares</value>
+                <value>availableSoftware</value>
                 <value>instructionManual</value>
                 <value>componentTypes</value>
                 <value>futureExpansion</value>
@@ -271,7 +271,7 @@
             <list>
                 <value>id</value>
                 <value>typeCode</value>
-                <value>availableFirmwares</value>
+                <value>availableSoftware</value>
                 <value>instructionManual</value>
                 <value>componentTypes</value>
                 <value>futureExpansion</value>
@@ -746,6 +746,7 @@
                     <list>
                         <value>id</value>
                         <value>username</value>
+                        <value>nickName</value>
                         <value>preferredLocale</value>
                         <value>preferredTimezone</value>
                         <value>isAnonymous</value>
@@ -787,6 +788,7 @@
                 <entry key="create">
                     <list>
                         <value>username</value>
+                        <value>nickName</value>
                         <value>preferredLocale</value>
                         <value>preferredTimezone</value>
                         <value>isAnonymous</value>
@@ -826,6 +828,7 @@
                     <list>
                         <value>id</value>
                         <value>username</value>
+                        <value>nickName</value>
                         <value>preferredLocale</value>
                         <value>preferredTimezone</value>
                         <value>isAnonymous</value>

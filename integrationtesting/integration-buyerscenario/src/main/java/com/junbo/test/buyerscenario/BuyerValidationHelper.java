@@ -5,31 +5,35 @@
  */
 package com.junbo.test.buyerscenario;
 
+import com.junbo.cart.spec.model.Cart;
+import com.junbo.cart.spec.model.item.OfferItem;
+import com.junbo.common.id.OfferRevisionId;
+import com.junbo.common.id.OrderId;
+import com.junbo.common.id.PaymentInstrumentId;
+import com.junbo.common.id.UserId;
+import com.junbo.common.json.ObjectMapperProvider;
+import com.junbo.common.model.Results;
+import com.junbo.email.spec.model.EmailStatus;
+import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.fulfilment.spec.model.FulfilmentItem;
 import com.junbo.fulfilment.spec.model.FulfilmentRequest;
+import com.junbo.identity.spec.v1.model.UserLoginName;
+import com.junbo.identity.spec.v1.model.UserPersonalInfo;
 import com.junbo.order.spec.model.FulfillmentHistory;
-import com.junbo.test.common.Utility.BaseValidationHelper;
-import com.junbo.test.common.exception.TestException;
-import com.junbo.test.common.Entities.enums.Currency;
-import com.junbo.entitlement.spec.model.Entitlement;
-import com.junbo.test.common.Entities.enums.Country;
-import com.junbo.test.common.libs.ShardIdHelper;
-import com.junbo.cart.spec.model.item.OfferItem;
-import com.junbo.common.id.PaymentInstrumentId;
-import com.junbo.email.spec.model.EmailStatus;
-import com.junbo.test.common.blueprint.Master;
-import com.junbo.test.common.libs.IdConverter;
-import com.junbo.order.spec.model.OrderItem;
-import com.junbo.test.common.libs.DBHelper;
-import com.junbo.common.id.OfferRevisionId;
 import com.junbo.order.spec.model.Order;
-import com.junbo.cart.spec.model.Cart;
-import com.junbo.common.model.Results;
-import com.junbo.common.id.OrderId;
-import com.junbo.common.id.UserId;
+import com.junbo.order.spec.model.OrderItem;
+import com.junbo.test.common.Entities.enums.Country;
+import com.junbo.test.common.Entities.enums.Currency;
+import com.junbo.test.common.Utility.BaseValidationHelper;
+import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.exception.TestException;
+import com.junbo.test.common.libs.DBHelper;
+import com.junbo.test.common.libs.IdConverter;
+import com.junbo.test.common.libs.ShardIdHelper;
+import com.junbo.test.identity.Identity;
 
-import java.math.RoundingMode;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 /**
@@ -178,8 +182,9 @@ public class BuyerValidationHelper extends BaseValidationHelper {
         Long orderIdLong = IdConverter.hexStringToId(OrderId.class, orderId);
         //verify payload
         verifyEqual(resultPayload.indexOf(orderIdLong.toString()) >= 0, true, "verify order Id");
-        verifyEqual(resultPayload.indexOf(
-                Master.getInstance().getUser(uid).getUsername()) >= 0, true, "verify email receipt correct");
+        UserPersonalInfo personalInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(Master.getInstance().getUser(uid).getUsername());
+        UserLoginName loginName = ObjectMapperProvider.instance().treeToValue(personalInfo.getValue(), UserLoginName.class);
+        verifyEqual(resultPayload.indexOf(loginName.getUserName()) >= 0, true, "verify email receipt correct");
         verifyEqual(resultPayload.indexOf(
                 IdConverter.hexStringToId(UserId.class, uid).toString()) >= 0, true, "verify user id");
 

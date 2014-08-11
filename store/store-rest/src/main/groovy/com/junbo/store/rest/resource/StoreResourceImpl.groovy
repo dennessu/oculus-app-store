@@ -149,7 +149,7 @@ class StoreResourceImpl implements StoreResource {
                     return resourceContainer.userPersonalInfoResource.create(new UserPersonalInfo(
                             userId: user.getId(), type: Constants.PersonalInfoType.NAME, value: updateValue.value
                     )).then { UserPersonalInfo added ->
-                        user.name = new UserPersonalInfoLink(value: added.getId())
+                        user.name = added.getId()
                         return Promise.pure(null)
                     }
             }
@@ -778,8 +778,8 @@ class StoreResourceImpl implements StoreResource {
             }
         }.then {
             if (user.name != null) {
-                return resourceContainer.userPersonalInfoResource.get(user.name.value, new UserPersonalInfoGetOptions()).syncThen { UserPersonalInfo info ->
-                    userProfile.name = dataConvertor.toStorePersonalInfo(info, user.name)
+                return resourceContainer.userPersonalInfoResource.get(user.name, new UserPersonalInfoGetOptions()).syncThen { UserPersonalInfo info ->
+                    userProfile.name = dataConvertor.toStorePersonalInfo(info, new UserPersonalInfoLink(value: user.name))
                 }
             }
             return Promise.pure(null)

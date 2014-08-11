@@ -12,6 +12,7 @@ import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.identity.spec.v1.model.Address
 import com.junbo.identity.spec.v1.model.User
+import com.junbo.identity.spec.v1.model.UserLoginName
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
@@ -58,5 +59,27 @@ class IdentityFacadeImpl implements IdentityFacade {
             }
         }
 
+    }
+
+    @Override
+    Promise<String> getUsername(Long usernameId) {
+        if (usernameId == null) {
+            return Promise.pure(null)
+        }
+
+
+        return userPersonalInfoResource.get(new UserPersonalInfoId(usernameId), new UserPersonalInfoGetOptions())
+                .then { UserPersonalInfo info ->
+            if (info == null || !info.type.equalsIgnoreCase('USERNAME')) {
+                return Promise.pure(null)
+            }
+
+            try {
+                UserLoginName userLoginName = ObjectMapperProvider.instance().treeToValue(info.value, UserLoginName)
+                return Promise.pure(userLoginName.userName)
+            } catch (Exception ex) {
+                return Promise.pure(null)
+            }
+        }
     }
 }

@@ -49,6 +49,11 @@ class UserTINValidatorImpl implements PiiValidator {
         return Promise.pure(null)
     }
 
+    @Override
+    JsonNode updateJsonNode(JsonNode value) {
+        return value
+    }
+
     private void checkBasicUserTIN(UserTIN userTIN) {
         if (userTIN.info == null) {
             throw AppCommonErrors.INSTANCE.fieldRequired('value.info').exception()

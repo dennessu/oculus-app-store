@@ -8,6 +8,11 @@
         <property name="algorithm" value="${identity.conf.indexHashAlgorithm}" />
     </bean>
 
+    <bean id="usernameHash" class="com.junbo.identity.data.hash.impl.UserNameImpl">
+        <property name="salt" value="${identity.conf.indexHashSalt}" />
+        <property name="algorithm" value="${identity.conf.indexHashAlgorithm}" />
+    </bean>
+
     <bean id="phoneHash" class="com.junbo.identity.data.hash.impl.PhoneHashImpl">
         <property name="salt" value="${identity.conf.indexHashSalt}" />
         <property name="algorithm" value="${identity.conf.indexHashAlgorithm}" />
@@ -85,6 +90,7 @@
                 <ref bean="userSSNHash" />
                 <ref bean="userTINHash" />
                 <ref bean="userEINHash" />
+                <ref bean="usernameHash" />
             </list>
         </constructor-arg>
     </bean>

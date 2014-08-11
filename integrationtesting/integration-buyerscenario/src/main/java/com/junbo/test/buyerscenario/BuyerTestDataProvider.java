@@ -247,7 +247,7 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         if (hasPhysicalGood) {
             order.setShippingMethod("1L");
             order.setShippingAddress(Master.getInstance().getUser(uid).getAddresses().get(0).getValue());
-            order.setShippingToName(Master.getInstance().getUser(uid).getName().getValue());
+            order.setShippingToName(Master.getInstance().getUser(uid).getName());
             order.setShippingToPhone(Master.getInstance().getUser(uid).getPhones().get(0).getValue());
         }
         order.setOrderItems(orderItemList);

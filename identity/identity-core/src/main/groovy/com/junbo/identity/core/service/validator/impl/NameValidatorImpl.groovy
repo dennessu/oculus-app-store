@@ -5,7 +5,6 @@ import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.identity.common.util.JsonHelper
-import com.junbo.identity.core.service.validator.NickNameValidator
 import com.junbo.identity.core.service.validator.PiiValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.repository.UserRepository
@@ -35,7 +34,9 @@ class NameValidatorImpl implements PiiValidator {
     private Integer minGivenNameLength
     private Integer maxGivenNameLength
 
-    private NickNameValidator nickNameValidator
+    private Integer minFullNameLength
+    private Integer maxFullNameLength
+
     private UserRepository userRepository
 
     @Override
@@ -50,14 +51,10 @@ class NameValidatorImpl implements PiiValidator {
     Promise<Void> validateCreate(JsonNode value, UserId userId, OrganizationId organizationId) {
         UserName name = (UserName)JsonHelper.jsonNodeToObj(value, UserName)
         checkName(name)
-        if (userId != null && !StringUtils.isEmpty(name.nickName)) {
+        if (userId != null && !StringUtils.isEmpty(name.fullName)) {
             return userRepository.get(userId).then { User user ->
                 if (user == null) {
                     throw AppErrors.INSTANCE.userNotFound(userId).exception()
-                }
-
-                if (user.username.equalsIgnoreCase(name.nickName)) {
-                    throw AppCommonErrors.INSTANCE.fieldInvalid('nickName', 'nickName can\'t be the same as username').exception()
                 }
 
                 return Promise.pure(null)
@@ -76,6 +73,11 @@ class NameValidatorImpl implements PiiValidator {
             throw AppCommonErrors.INSTANCE.fieldInvalid('value', 'value can\'t be updated.').exception()
         }
         return Promise.pure(null)
+    }
+
+    @Override
+    JsonNode updateJsonNode(JsonNode value) {
+        return value
     }
 
     private void checkName(UserName name) {
@@ -106,8 +108,14 @@ class NameValidatorImpl implements PiiValidator {
             }
         }
 
-        if (name.nickName != null) {
-            nickNameValidator.validateNickName(name.nickName)
+        if (name.fullName != null) {
+            if (name.fullName.length() > maxFullNameLength) {
+                throw AppCommonErrors.INSTANCE.fieldTooLong('value.fullName', maxFullNameLength).exception()
+            }
+
+            if (name.fullName.length() < minFullNameLength) {
+                throw AppCommonErrors.INSTANCE.fieldTooShort('value.fullName', minFullNameLength).exception()
+            }
         }
     }
 
@@ -142,12 +150,17 @@ class NameValidatorImpl implements PiiValidator {
     }
 
     @Required
-    void setNickNameValidator(NickNameValidator nickNameValidator) {
-        this.nickNameValidator = nickNameValidator
+    void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository
     }
 
     @Required
-    void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository
+    void setMinFullNameLength(Integer minFullNameLength) {
+        this.minFullNameLength = minFullNameLength
+    }
+
+    @Required
+    void setMaxFullNameLength(Integer maxFullNameLength) {
+        this.maxFullNameLength = maxFullNameLength
     }
 }

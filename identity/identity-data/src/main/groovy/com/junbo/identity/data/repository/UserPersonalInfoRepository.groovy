@@ -31,4 +31,7 @@ interface UserPersonalInfoRepository extends BaseRepository<UserPersonalInfo, Us
     @ReadMethod
     Promise<List<UserPersonalInfo>> searchByUserIdAndValidateStatus(UserId userId, String type, Boolean isValidated,
                                                                     Integer limit, Integer offset)
+
+    @ReadMethod
+    Promise<List<UserPersonalInfo>> searchByCanonicalUsername(String canonicalUsername, Integer limit, Integer offset)
 }

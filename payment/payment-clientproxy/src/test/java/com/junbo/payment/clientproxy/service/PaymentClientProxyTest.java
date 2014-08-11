@@ -27,6 +27,7 @@ import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 public class PaymentClientProxyTest extends BaseTest {
@@ -234,8 +235,22 @@ public class PaymentClientProxyTest extends BaseTest {
 
     private PaymentInstrument getPaymentInstrument() {
         User user = new User();
-        user.setUsername("utTest" + getLongId());
+        user.setNickName(UUID.randomUUID().toString());
         user = userClient.create(user).get();
+        final Long createdUserId = user.getId().getValue();
+        final UserLoginName userLoginName = new UserLoginName();
+        userLoginName.setUserName("utTest" + getLongId());
+        UserPersonalInfo userLoginNameInfo = new UserPersonalInfo() {
+            {
+                setUserId(new UserId(createdUserId));
+                setType("USERNAME");
+                setValue(ObjectMapperProvider.instance().valueToTree(userLoginName));
+            }
+        };
+
+        UserPersonalInfo userLoginNamePerInfo = piiClient.create(userLoginNameInfo).get();
+        user.setUsername(userLoginNamePerInfo.getId());
+        user = userClient.put(new UserId(createdUserId), user).get();
         final Long userId = user.getId().getValue();
         final Email email = new Email();
         email.setInfo("uttest" + userId + "@junbo.com");
@@ -259,10 +274,7 @@ public class PaymentClientProxyTest extends BaseTest {
             }
         };
         UserPersonalInfo userNamePerInfo = piiClient.create(userNameInfo).get();
-        UserPersonalInfoLink nameLink = new UserPersonalInfoLink();
-        nameLink.setValue(userNamePerInfo.getId());
-        nameLink.setUserId(new UserId(userId));
-        user.setName(nameLink);
+        user.setName(userNamePerInfo.getId());
         UserPersonalInfoLink emailLink = new UserPersonalInfoLink();
         emailLink.setValue(emailPerInfo.getId());
         emailLink.setUserId(new UserId(userId));

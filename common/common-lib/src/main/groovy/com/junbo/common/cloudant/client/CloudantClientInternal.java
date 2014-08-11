@@ -46,4 +46,6 @@ public interface CloudantClientInternal {
     <T extends CloudantEntity>
     Promise<CloudantQueryResult> search(CloudantDbUri dbUri, Class<T> entityClass, String searchName,
                                         String queryString, Integer limit, String bookmark, boolean includeDocs);
+
+    Promise<Integer> queryViewTotal(CloudantDbUri dbUri, String key, String viewName);
 }

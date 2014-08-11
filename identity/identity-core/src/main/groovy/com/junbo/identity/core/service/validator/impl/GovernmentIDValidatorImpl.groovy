@@ -49,6 +49,11 @@ class GovernmentIDValidatorImpl implements PiiValidator {
         return Promise.pure(null)
     }
 
+    @Override
+    JsonNode updateJsonNode(JsonNode value) {
+        return value
+    }
+
     private void checkUserGovernmentId(UserGovernmentID userGovernmentID) {
         if (userGovernmentID.info != null) {
             if (userGovernmentID.info.length() > maxGovernmentIDLength) {

@@ -49,6 +49,11 @@ class UserSSNValidatorImpl implements PiiValidator {
         return Promise.pure(null)
     }
 
+    @Override
+    JsonNode updateJsonNode(JsonNode value) {
+        return value
+    }
+
     private void checkBasicUserSSN(UserSSN userSSN) {
         if (userSSN.info == null) {
             throw AppCommonErrors.INSTANCE.fieldRequired('value.info').exception()

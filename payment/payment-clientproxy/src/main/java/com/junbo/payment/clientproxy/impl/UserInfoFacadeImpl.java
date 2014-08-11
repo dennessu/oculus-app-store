@@ -60,7 +60,7 @@ public class UserInfoFacadeImpl implements UserInfoFacade{
         if(user.getName() == null){
             return Promise.pure(result);
         }
-        return piiClient.get(user.getName().getValue(), new UserPersonalInfoGetOptions())
+        return piiClient.get(user.getName(), new UserPersonalInfoGetOptions())
                 .then(new Promise.Func<UserPersonalInfo, Promise<UserInfo>>() {
                     @Override
                     public Promise<UserInfo> apply(UserPersonalInfo userPersonalInfo) {

@@ -48,6 +48,11 @@ class UserEINValidatorImpl implements PiiValidator {
         return Promise.pure(null)
     }
 
+    @Override
+    JsonNode updateJsonNode(JsonNode value) {
+        return value
+    }
+
     private void checkBasicUserEIN(UserEIN userEIN) {
         if (userEIN.info == null) {
             throw AppCommonErrors.INSTANCE.fieldRequired('value.info').exception()

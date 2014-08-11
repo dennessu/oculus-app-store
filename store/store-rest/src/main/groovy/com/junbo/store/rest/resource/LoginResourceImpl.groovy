@@ -6,18 +6,14 @@ import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppError
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.error.ErrorDetail
+import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
 import com.junbo.common.util.IdFormatter
-import com.junbo.identity.spec.v1.model.Email
-import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
-import com.junbo.identity.spec.v1.model.UserDOB
-import com.junbo.identity.spec.v1.model.UserName
-import com.junbo.identity.spec.v1.model.UserPersonalInfo
-import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
+import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
+import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.spec.model.AccessTokenRequest
 import com.junbo.oauth.spec.model.AccessTokenResponse
@@ -32,13 +28,9 @@ import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
-import javax.ws.rs.POST
-import javax.ws.rs.Path
-import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.ext.Provider
 
 @Provider
@@ -122,22 +114,32 @@ class LoginResourceImpl implements  LoginResource {
         Promise.pure(null).then { // create user
             requestValidator.validateCreateUserRequest(createUserRequest).then {
                 user = new User(
-                        username: createUserRequest.username,
                         preferredLocale: new LocaleId(createUserRequest.preferredLocale),
                         countryOfResidence: new CountryId(createUserRequest.cor),
+                        nickName: createUserRequest.nickName
                 )
-                resourceContainer.userResource.create(user).then { User u ->
+                return resourceContainer.userResource.create(user).then { User u ->
                     user = u
-                    return Promise.pure(null)
+                    return resourceContainer.userPersonalInfoResource.create(
+                            new UserPersonalInfo(
+                                    type: 'USERNAME',
+                                    userId: user.getId(),
+                                    value: ObjectMapperProvider.instance().valueToTree(new UserLoginName(
+                                            userName: createUserRequest.username
+                                    ))
+                            )
+                    )
+                }.then { UserPersonalInfo userPersonalInfo ->
+                    user.username = userPersonalInfo.getId()
+                    user.isAnonymous = false
+                    return resourceContainer.userResource.put(user.getId(), user)
                 }.then {
-                    fieldName = 'password'
-                    resourceContainer.userCredentialResource.create(
+                    return resourceContainer.userCredentialResource.create(
                             user.getId(),
                             new com.junbo.identity.spec.v1.model.UserCredential(type: 'PASSWORD', value: createUserRequest.password)
                     )
                 }.then {
-                    fieldName = 'pinCode'
-                    resourceContainer.userCredentialResource.create(
+                    return resourceContainer.userCredentialResource.create(
                             user.getId(),
                             new com.junbo.identity.spec.v1.model.UserCredential(type: 'PIN', value: createUserRequest.pinCode)
                     )
@@ -172,7 +174,7 @@ class LoginResourceImpl implements  LoginResource {
                             value:  ObjectMapperProvider.instance().valueToTree(new UserDOB(info: createUserRequest.dob))
                     )
             ).then { UserPersonalInfo dobInfo ->
-                user.dob = new UserPersonalInfoLink(isDefault: true, value: dobInfo.getId())
+                user.dob = dobInfo.getId()
                 resourceContainer.userResource.put(user.getId(), user).then { User u ->
                     user = u
                     return Promise.pure(user)
@@ -188,13 +190,12 @@ class LoginResourceImpl implements  LoginResource {
                                     new UserName(
                                             givenName: createUserRequest.firstName,
                                             middleName: createUserRequest.middleName,
-                                            familyName: createUserRequest.lastName,
-                                            nickName: createUserRequest.nickName
+                                            familyName: createUserRequest.lastName
                                     )
                             )
                     )
             ).then { UserPersonalInfo nameInfo ->
-                user.name = new UserPersonalInfoLink(isDefault: true, value: nameInfo.getId())
+                user.name = nameInfo.getId()
                 resourceContainer.userResource.put(user.getId(), user).then { User u ->
                     user = u
                     return Promise.pure(user)
@@ -277,8 +278,21 @@ class LoginResourceImpl implements  LoginResource {
         }
     }
 
-    private Promise<AuthTokenResponse>  innerSignIn(String username, String password) {
-        return resourceContainer.tokenEndpoint.postToken( // todo : may need call credential verification first since post token does not return meaningful error when user credential is invalid
+    private Promise<AuthTokenResponse> innerSignIn(String username, String password) {
+        return resourceContainer.userResource.list(new UserListOptions(
+                username: username
+        )).then { Results<User> userResults ->
+            if (userResults.items == null || userResults.items.size() != 1) {
+                throw AppErrors.INSTANCE.userNotFoundByUsername().exception()
+            }
+
+            return innerSignIn(userResults.items.get(0).username, password)
+        }
+    }
+
+    private Promise<AuthTokenResponse>  innerSignIn(UserPersonalInfoId usernameId, String password) {
+        return getUsername(usernameId.value).then { String username ->
+            return resourceContainer.tokenEndpoint.postToken( // todo : may need call credential verification first since post token does not return meaningful error when user credential is invalid
                     new AccessTokenRequest(
                             username: username,
                             password: password,
@@ -296,6 +310,27 @@ class LoginResourceImpl implements  LoginResource {
                     return Promise.pure(response)
                 }
             }
+        }
+    }
+
+    Promise<String> getUsername(Long usernameId) {
+        if (usernameId == null) {
+            return Promise.pure(null)
+        }
+
+        return resourceContainer.userPersonalInfoResource.get(new UserPersonalInfoId(usernameId), new UserPersonalInfoGetOptions())
+                .then { UserPersonalInfo info ->
+            if (info == null || !info.type.equalsIgnoreCase('USERNAME')) {
+                return Promise.pure(null)
+            }
+
+            try {
+                UserLoginName userLoginName = ObjectMapperProvider.instance().treeToValue(info.value, UserLoginName)
+                return Promise.pure(userLoginName.userName)
+            } catch (Exception ex) {
+                return Promise.pure(null)
+            }
+        }
     }
 
 
@@ -309,7 +344,8 @@ class LoginResourceImpl implements  LoginResource {
 
     private Promise<Void> rollBackUser(User user) {
         String originalName = user.username
-        user.username = "storerb${IdFormatter.encodeId(user.getId())}"
+        user.username = null // remove the username field
+        user.isAnonymous = true // set the user to be anonymous
         user.emails = []
         user.phones = []
         user.addresses = []

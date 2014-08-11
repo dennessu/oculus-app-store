@@ -53,6 +53,7 @@
         <property name="userPinValidator" ref="userPinValidator"/>
         <property name="userPasswordValidator" ref="userPasswordValidator"/>
         <property name="userRepository" ref="userRepository" />
+        <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
     </bean>
 
     <bean id="userCredentialVerifyAttemptValidator"
@@ -197,7 +198,6 @@
     </bean>
 
     <bean id="nameValidator" class="com.junbo.identity.core.service.validator.impl.NameValidatorImpl">
-        <property name="nickNameValidator" ref="nickNameValidator" />
         <property name="minFamilyNameLength" value="1" />
         <property name="maxFamilyNameLength" value="255" />
         <property name="minGivenNameLength" value="1" />
@@ -205,6 +205,8 @@
         <property name="minMiddleNameLength" value="1" />
         <property name="maxMiddleNameLength" value="255" />
         <property name="userRepository" ref="userRepository" />
+        <property name="minFullNameLength" value="1" />
+        <property name="maxFullNameLength" value="255" />
     </bean>
 
     <bean id="passportValidator" class="com.junbo.identity.core.service.validator.impl.PassportValidatorImpl">
@@ -244,6 +246,11 @@
 
     <bean id="userEINValidator" class="com.junbo.identity.core.service.validator.impl.UserEINValidatorImpl">
         <property name="allowedPattern" value="^[0-9]{9}$" />
+    </bean>
+
+    <bean id="userLoginNameValidator" class="com.junbo.identity.core.service.validator.impl.UserLoginNameValidatorImpl">
+        <property name="normalizeService" ref="normalizeService" />
+        <property name="usernameValidator" ref="usernameValidator" />
     </bean>
 
     <bean id="userPhoneNumberValidator" class="com.junbo.identity.core.service.validator.impl.UserPhoneNumberValidatorImpl">
@@ -398,14 +405,17 @@
                 <value>CV1</value>
                 <value>HMD</value>
                 <value>DK2_CAMERA</value>
+                <value>NOTE4</value>
             </list>
         </property>
-        <property name="minAvailableFirmwaresKeyLength" value="1" />
-        <property name="maxAvailableFirmwaresKeyLength" value="255" />
-        <property name="minAvailableFirmwaresValueLength" value="1" />
-        <property name="maxAvailableFirmwaresValueLength" value="255" />
         <property name="maxInstructionManualLength" value="255" />
         <property name="minInstructionManualLength" value="1" />
+        <property name="minAvailableSoftwareKeyLength" value="1" />
+        <property name="maxAvailableSoftwareKeyLength" value="255" />
+        <property name="minSoftwareObjectHrefLength" value="1" />
+        <property name="maxSoftwareObjectHrefLength" value="255" />
+        <property name="minSoftwareObjectVersionLength" value="1" />
+        <property name="maxSoftwareObjectVersionLength" value="255" />
     </bean>
 
     <bean id="tosValidator" class="com.junbo.identity.core.service.validator.impl.TosValidatorImpl">
@@ -449,6 +459,7 @@
     <bean id="tinAdvanceFilter" class="com.junbo.identity.core.service.filter.pii.impl.TINAdvanceFilter" />
     <bean id="whatsappAdvanceFilter" class="com.junbo.identity.core.service.filter.pii.impl.WHATSAPPAdvanceFilter" />
     <bean id="wipedAdvanceFilter" class="com.junbo.identity.core.service.filter.pii.impl.WipedAdvanceFilter" />
+    <bean id="userLoginNameFilter" class="com.junbo.identity.core.service.filter.pii.impl.UserLoginNameFilter" />
 
     <bean id="piiAdvanceFilterFactory" class="com.junbo.identity.core.service.filter.pii.impl.PIIAdvanceFilterFactoryImpl">
         <constructor-arg>
@@ -469,6 +480,7 @@
                 <ref bean="tinAdvanceFilter" />
                 <ref bean="whatsappAdvanceFilter" />
                 <ref bean="wipedAdvanceFilter" />
+                <ref bean="userLoginNameFilter" />
             </list>
         </constructor-arg>
     </bean>
@@ -491,6 +503,7 @@
                 <ref bean="userSSNValidator" />
                 <ref bean="userTINValidator" />
                 <ref bean="userEINValidator" />
+                <ref bean="userLoginNameValidator" />
             </list>
         </constructor-arg>
     </bean>
