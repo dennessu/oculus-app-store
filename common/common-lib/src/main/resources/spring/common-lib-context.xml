@@ -12,6 +12,9 @@
     <bean id="commonAsyncHttpClient" class="com.junbo.langur.core.async.JunboAsyncHttpClient" factory-method="instance" />
 
     <bean id="commonMemcachedClient" class="com.junbo.common.memcached.JunboMemcachedClient" factory-method="instance" />
+
+    <bean id="memcachedConnectionInfoProvider" class="com.junbo.common.memcached.MemcachedClientConnectionInfoProvider"/>
+
     <bean id="asyncHttpClientConnectionInfoProvider" class="com.junbo.common.http.AsyncHttpClientConnectionInfoProvider">
         <property name="junboAsyncHttpClient" ref="commonAsyncHttpClient"/>
     </bean>

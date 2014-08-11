@@ -36,7 +36,8 @@ class SqlDataSourceConnectionInfoProvider implements ConnectionInfoProvider, App
     private Map<String, ShardMultiTenantConnectionProvider> connectionProviders
 
     @Override
-    Map<String, String> getConnectionInfo() {
+    Map getConnectionInfo() {
+        Map<String, String> keyMap = [:] as Map<String, String>
         Map<String, String> result = [:] as Map<String, String>
         for (Map.Entry<String, ShardMultiTenantConnectionProvider> entry : connectionProviders.entrySet()) {
             Map<String, SimpleDataSourceProxy> dataSources = entry.value.dataSourceMap
@@ -50,13 +51,14 @@ class SqlDataSourceConnectionInfoProvider implements ConnectionInfoProvider, App
                                 "$hikariPool.activeConnections/$hikariPool.idleConnections/" +
                                 "$hikariPool.threadsAwaitingConnection"
                         String key = "$entry.key:$dataSourceEntry.key"
-                        result[key] = status
+                        keyMap[key] = hikariPool.toString()
+                        result[hikariPool.toString()] = status
                     }
                 }
             }
         }
 
-        return result
+        return [ "poolStatus": result, "shardMap": keyMap ] as Map
     }
 
     @Override

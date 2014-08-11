@@ -11,5 +11,5 @@ import java.util.Map;
  * ConnectionInfoProvider.
  */
 public interface ConnectionInfoProvider {
-    Map<String, String> getConnectionInfo();
+    Map getConnectionInfo();
 }

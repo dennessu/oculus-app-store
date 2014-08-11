@@ -24,7 +24,7 @@ class AsyncHttpClientConnectionInfoProvider implements ConnectionInfoProvider {
     }
 
     @Override
-    Map<String, String> getConnectionInfo() {
+    Map getConnectionInfo() {
         AsyncHttpClient client = junboAsyncHttpClient.getAsyncHttpClient()
         return ['asyncHttpClient' : client.getProvider().toString()] as Map<String, String>
     }

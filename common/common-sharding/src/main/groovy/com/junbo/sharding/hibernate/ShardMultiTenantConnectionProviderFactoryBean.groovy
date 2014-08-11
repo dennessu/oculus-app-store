@@ -112,7 +112,7 @@ class ShardMultiTenantConnectionProviderFactoryBean
                     if (dataCenter == null) {
                         throw new IllegalArgumentException("DataCenter $dataCenter does not exist.")
                     }
-                    dataSourceMap.put(dataCenter.getId() + ':' + i ,createDataSourceProxy(url, schema))
+                    dataSourceMap.put(dataCenter.getId() + ':' + i, createDataSourceProxy(url, schema))
                 }
             }
 
@@ -177,6 +177,8 @@ class ShardMultiTenantConnectionProviderFactoryBean
         dataSource.setJdbcUrl(url)
 
         dataSource.setMaximumPoolSize(maxPoolSize)
+        // Hikari Pool is using minIdle as min pool size...
+        dataSource.setMinimumIdle(minPoolSize)
 
         dataSource.setUsername(driverProperties.getProperty('user'))
         dataSource.setPassword(driverProperties.getProperty('password'))
