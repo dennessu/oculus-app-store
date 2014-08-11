@@ -153,7 +153,7 @@ class IdentityServiceImpl implements IdentityService {
                 throw AppErrors.INSTANCE.organizationNotFound(organizationOwner, organizationName).exception()
             }
             organizationResults.items.retainAll { Organization org ->
-                org.name == organizationName
+                org.name == organizationName && org.isValidated
             }
 
             if (organizationResults.items.isEmpty()) {

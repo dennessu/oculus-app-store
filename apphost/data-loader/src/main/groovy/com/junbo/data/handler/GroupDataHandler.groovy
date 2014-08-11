@@ -53,9 +53,15 @@ class GroupDataHandler extends BaseDataHandler {
         Organization org = null
         try {
             Results<Organization> results = organizationResource.list(new OrganizationListOptions(name: organizationName)).get()
-            if (results != null && results.items != null && results.items.size() == 1) {
+            results.items.retainAll {Organization organization ->
+                organization.isValidated
+            }
+
+            if (results.items.size() == 1) {
                 org = results.items.get(0)
             }
+
+            assert org != null
 
             Results<Group> groupResults = groupResource.list(new GroupListOptions(
                     organizationId: org.id as OrganizationId,

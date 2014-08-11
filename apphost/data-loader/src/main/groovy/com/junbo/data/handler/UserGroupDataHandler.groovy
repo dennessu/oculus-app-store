@@ -69,23 +69,12 @@ class UserGroupDataHandler extends BaseDataHandler {
         User user = null
         Group group = null
         Organization organization = null
-        User organizationOwner = null
         try {
-            Results<User> userResults = userResource.list(new UserListOptions(username: userGroupDataData.organizationOwner)).get()
-            if (userResults != null && userResults.items != null && userResults.items.size() > 0) {
-                organizationOwner = userResults.items.get(0)
+            Results<Organization> organizationResults = organizationResource.list(new OrganizationListOptions(name: userGroupDataData.organizationName)).get()
+            organizationResults.items.retainAll { Organization org ->
+                org.isValidated
             }
-
-            Results<Organization> organizationResults = organizationResource.list(new OrganizationListOptions(ownerId: organizationOwner.id as UserId)).get()
-            if (organizationResults != null && organizationResults.items != null && organizationResults.items.size() > 0) {
-                organizationResults.items.retainAll{ Organization organization1 ->
-                    organization1.name == userGroupDataData.organizationName
-                }
-
-                if (organizationResults.items.size() > 0) {
-                    organization = organizationResults.items.get(0)
-                }
-            }
+            organization = organizationResults.items.get(0)
 
             Results<Group> groupResults = groupResource.list(
                     new GroupListOptions(organizationId: organization.id as OrganizationId, name: userGroupDataData.groupName)).get()
@@ -109,18 +98,6 @@ class UserGroupDataHandler extends BaseDataHandler {
             if (userGroupResults != null && userGroupResults.items != null && userGroupResults.items.size() > 0) {
                 existing = userGroupResults.items.get(0)
             }
-
-            /*
-            Results<User> results2 = userResource.list(new UserListOptions(groupId: group.id as GroupId)).get()
-            if (results2 != null && results2.items != null && results2.items.size() > 0) {
-                results2.items.removeAll{ User u ->
-                    u.id != user.id
-                }
-
-                if (results.items.size() > 0) {
-                    exist = true
-                }
-            }*/
         } catch (AppErrorException e) {
             logger.debug('error happens', e)
         }

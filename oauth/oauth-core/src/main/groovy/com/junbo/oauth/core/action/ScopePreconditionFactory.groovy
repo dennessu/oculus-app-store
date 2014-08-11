@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Required
 @CompileStatic
 class ScopePreconditionFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(ScopePreconditionFactory)
+
     private GroupResource groupResource
 
     private OrganizationResource organizationResource
@@ -76,8 +77,11 @@ class ScopePreconditionFactory {
                 try {
                     Results<Organization> organizationResults = factory
                             .organizationResource.list(new OrganizationListOptions(name: organizationName)).get()
+                    organizationResults.items.retainAll { Organization organization ->
+                        organization.isValidated
+                    }
 
-                    assert !organizationResults.items.isEmpty()
+                    assert organizationResults.items.size() == 1
                     Organization organization = organizationResults.items.get(0)
 
                     GroupListOptions groupOptions = new GroupListOptions(

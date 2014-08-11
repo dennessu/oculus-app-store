@@ -78,7 +78,7 @@ class OrganizationDataHandler extends BaseDataHandler {
                 organization.ownerId = orgOwnerUser.id as UserId
                 organization = organizationResource.create(organization).get()
                 organization.isValidated = true
-                organizationResource.put(organization.getId(), organization)
+                organizationResource.put(organization.getId(), organization).get()
             } catch (Exception e) {
                 logger.error("Error creating organization $orgName.", e)
             }
@@ -86,7 +86,7 @@ class OrganizationDataHandler extends BaseDataHandler {
             logger.debug("update invalid organizaiton with name: $orgName")
             try {
                 existing.isValidated = true
-                organizationResource.put(existing.getId(), existing)
+                organizationResource.put(existing.getId(), existing).get()
             } catch (Exception e) {
                 logger.error("Error updating organization $orgName.", e)
             }
