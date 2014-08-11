@@ -9,7 +9,7 @@ RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-s
     echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections &&\
     add-apt-repository -y ppa:webupd8team/java &&\
     apt-get update -qq &&\
-    apt-get install -qqy --force-yes oracle-java7-installer &&\
+    apt-get install -qqy --force-yes oracle-java7-installer rinetd &&\
     rm -f -r /var/cache/oracle-jdk7-installer &&\
     apt-get clean &&\
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

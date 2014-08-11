@@ -55,11 +55,13 @@ if [ "$confirmflag" != "true" ]; then
   done
 fi
 
-echo "start building"
 # copy binaries to current folder
+echo "copying binaries..."
 rm -r -f $DIR/bin
 mkdir -p $DIR/bin/apphost
 cp -r -f -p $APPHOST_FOLDER/* $DIR/bin/apphost/
 rm -r -f $DIR/bin/apphost/logs
+rm -r -f $DIR/bin/apphost/activemq-data
 # run docker build
+echo "start building docker image..."
 #TODO
