@@ -15,16 +15,16 @@ import com.junbo.test.catalog.OfferRevisionService;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.catalog.ItemRevisionService;
+import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.catalog.enums.EventType;
 import com.junbo.catalog.spec.model.offer.*;
-import com.junbo.common.id.OfferRevisionId;
+import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.catalog.ItemService;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.common.model.Results;
-import com.junbo.test.common.libs.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,21 +57,23 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
     }
 
     private OfferRevisionServiceImpl() {
-        componentType = ComponentType.CATALOG;
+        componentType = ComponentType.CATALOGADMIN;
     }
 
     public OfferRevision getOfferRevision(String offerRevisionId) throws Exception {
-        return getOfferRevision(offerRevisionId, 200);
+        return getOfferRevision(offerRevisionId, null);
     }
 
-    public OfferRevision getOfferRevision(String offerRevisionId, int expectedResponseCode) throws Exception {
-        String url = catalogServerURL + "/" + IdConverter.idToUrlString(OfferRevisionId.class, offerRevisionId);
-        String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode);
+    public OfferRevision getOfferRevision(String offerRevisionId, HashMap<String, List<String>> httpPara) throws Exception {
+        return getOfferRevision(offerRevisionId, httpPara, 200);
+    }
+
+    public OfferRevision getOfferRevision(String offerRevisionId, HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception {
+        String url = catalogServerURL + "/" + offerRevisionId;
+        String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode, httpPara, false);
         OfferRevision offerRevisionGet = new JsonMessageTranscoder().decode(new TypeReference<OfferRevision>() {},
                 responseBody);
-        String offerRevisionRtnId = IdConverter.idToUrlString(OfferRevisionId.class,
-                offerRevisionGet.getRevisionId());
-        Master.getInstance().addOfferRevision(offerRevisionRtnId, offerRevisionGet);
+        Master.getInstance().addOfferRevision(offerRevisionGet.getRevisionId(), offerRevisionGet);
         return offerRevisionGet;
     }
 
@@ -80,13 +82,11 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
     }
 
     public Results<OfferRevision> getOfferRevisions(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara);
+        String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara, false);
         Results<OfferRevision> offerRevisionGet = new JsonMessageTranscoder().decode(
                 new TypeReference<Results<OfferRevision>>() {}, responseBody);
         for (OfferRevision offerRevision : offerRevisionGet.getItems()){
-            String offerRevisionRtnId = IdConverter.idToUrlString(OfferRevisionId.class,
-                    offerRevision.getRevisionId());
-            Master.getInstance().addOfferRevision(offerRevisionRtnId, offerRevision);
+            Master.getInstance().addOfferRevision(offerRevision.getRevisionId(), offerRevision);
         }
         return offerRevisionGet;
     }
@@ -96,12 +96,10 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
     }
 
     public OfferRevision postOfferRevision(OfferRevision offerRevision, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, offerRevision, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, offerRevision, expectedResponseCode, false);
         OfferRevision offerRevisionPost = new JsonMessageTranscoder().decode(
                 new TypeReference<OfferRevision>() {}, responseBody);
-        String offerRevisionRtnId = IdConverter.idToUrlString(OfferRevisionId.class,
-                offerRevisionPost.getRevisionId());
-        Master.getInstance().addOfferRevision(offerRevisionRtnId, offerRevisionPost);
+        Master.getInstance().addOfferRevision(offerRevisionPost.getRevisionId(), offerRevisionPost);
         return offerRevisionPost;
     }
 
@@ -110,14 +108,21 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
     }
 
     public OfferRevision updateOfferRevision(String offerRevisionId, OfferRevision offerRevision, int expectedResponseCode) throws Exception {
-        String putUrl = catalogServerURL + "/" + IdConverter.idToUrlString(OfferRevisionId.class,
-                offerRevisionId);
-        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, offerRevision, expectedResponseCode);
+        boolean isServiceScope;
+
+        String putUrl = catalogServerURL + "/" + offerRevisionId;
+        if (offerRevision.getStatus().equalsIgnoreCase(CatalogEntityStatus.APPROVED.name()) ||
+                offerRevision.getStatus().equalsIgnoreCase(CatalogEntityStatus.REJECTED.name())) {
+            isServiceScope = true;
+        }
+        else {
+            isServiceScope = false;
+        }
+
+        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, offerRevision, expectedResponseCode, isServiceScope);
         OfferRevision offerRevisionPut = new JsonMessageTranscoder().decode(
                 new TypeReference<OfferRevision>() {}, responseBody);
-        String offerRevisionRtnId = IdConverter.idToUrlString(OfferRevisionId.class,
-                offerRevisionPut.getRevisionId());
-        Master.getInstance().addOfferRevision(offerRevisionRtnId, offerRevisionPut);
+        Master.getInstance().addOfferRevision(offerRevisionPut.getRevisionId(), offerRevisionPut);
         return offerRevisionPut;
     }
 
@@ -220,10 +225,9 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
     }
 
     public void deleteOfferRevision(String offerRevisionId, int expectedResponseCode) throws Exception {
-        String strOfferRevisionId = IdConverter.idToUrlString(OfferRevisionId.class, offerRevisionId);
-        String url = catalogServerURL + "/" + strOfferRevisionId;
-        restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
-        Master.getInstance().removeOfferRevision(strOfferRevisionId);
+        String url = catalogServerURL + "/" + offerRevisionId;
+        restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode, false);
+        Master.getInstance().removeOfferRevision(offerRevisionId);
     }
 
     private Item prepareItem(CatalogItemType itemType, OrganizationId organizationId) throws Exception {

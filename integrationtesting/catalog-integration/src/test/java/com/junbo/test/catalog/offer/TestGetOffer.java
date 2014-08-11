@@ -10,12 +10,10 @@ import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.offer.Offer;
-import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.catalog.OfferService;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.test.common.property.*;
-import com.junbo.common.id.OfferId;
 
 import org.testng.annotations.Test;
 import org.testng.Assert;
@@ -103,9 +101,9 @@ public class TestGetOffer extends BaseTestClass {
         Offer offer1 = offerService.postDefaultOffer(organizationId);
         Offer offer2 = offerService.postDefaultOffer(organizationId);
         Offer offer3 = offerService.postDefaultOffer(organizationId);
-        String offerId1 = IdConverter.idToUrlString(OfferId.class, offer1.getOfferId());
-        String offerId2 = IdConverter.idToUrlString(OfferId.class, offer2.getOfferId());
-        String offerId3 = IdConverter.idToUrlString(OfferId.class, offer3.getOfferId());
+        String offerId1 = offer1.getOfferId();
+        String offerId2 = offer2.getOfferId();
+        String offerId3 = offer3.getOfferId();
 
         HashMap<String, List<String>> paraMap = new HashMap<>();
         List<String> listOfferId = new ArrayList<>();
@@ -208,9 +206,9 @@ public class TestGetOffer extends BaseTestClass {
         HashMap<String, List<String>> paraMap = new HashMap<>();
         List<String> listOfferId = new ArrayList<>();
         List<String> listStatus = new ArrayList<>();
-        String offerId1 = IdConverter.idToUrlString(OfferId.class, offer1.getOfferId());
-        String offerId2 = IdConverter.idToUrlString(OfferId.class, offer2.getOfferId());
-        String offerId3 = IdConverter.idToUrlString(OfferId.class, offer3.getOfferId());
+        String offerId1 = offer1.getOfferId();
+        String offerId2 = offer2.getOfferId();
+        String offerId3 = offer3.getOfferId();
         Boolean oppositeValue = !isPublished;
 
         //Set offer ids

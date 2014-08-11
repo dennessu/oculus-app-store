@@ -11,12 +11,10 @@ import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.test.catalog.impl.ItemServiceImpl;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.catalog.ItemService;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.test.common.property.*;
-import com.junbo.common.id.ItemId;
 
 import org.testng.annotations.Test;
 import org.testng.Assert;
@@ -103,7 +101,7 @@ public class TestGetItem extends BaseTestClass {
         String[] itemId = new String[5];
         for (int i = 0; i < items.length; i ++) {
             items[i] = itemService.postDefaultItem(CatalogItemType.getByIndex(i), organizationId);
-            itemId[i] = IdConverter.idToUrlString(ItemId.class, items[i].getItemId());
+            itemId[i] = items[i].getItemId();
         }
 
         HashMap<String, List<String>> paraMap = new HashMap<>();
@@ -192,7 +190,7 @@ public class TestGetItem extends BaseTestClass {
         String[] itemId = new String[5];
         for (int i = 0; i < items.length; i ++) {
             items[i] = itemService.postDefaultItem(CatalogItemType.getByIndex(i), organizationId);
-            itemId[i] = IdConverter.idToUrlString(ItemId.class, items[i].getItemId());
+            itemId[i] = items[i].getItemId();
         }
 
         performVerification(itemId[0], itemId[1], itemId[2], itemId[3], itemId[4]);

@@ -8,15 +8,13 @@ package com.junbo.test.catalog.impl;
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.test.catalog.enums.CatalogItemAttributeType;
 import com.junbo.catalog.spec.model.attribute.ItemAttribute;
-import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.catalog.ItemAttributeService;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.common.libs.RandomFactory;
-import com.junbo.test.common.libs.IdConverter;
-import com.junbo.common.id.ItemAttributeId;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.common.model.Results;
 
 import java.util.HashMap;
@@ -49,7 +47,7 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
     }
 
     public ItemAttribute getItemAttribute(String attributeId, int expectedResponseCode) throws Exception {
-        String url = catalogServerURL + "/" + IdConverter.idToUrlString(ItemAttributeId.class, attributeId);
+        String url = catalogServerURL + "/" + attributeId;
         String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode, isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {}, responseBody);
     }
@@ -94,8 +92,7 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
 
     public ItemAttribute updateItemAttribute(String itemAttributeId, ItemAttribute attribute, int expectedResponseCode)
             throws Exception {
-        String putUrl = catalogServerURL + "/" + IdConverter.idToUrlString(ItemAttributeId.class,
-                itemAttributeId);
+        String putUrl = catalogServerURL + "/" + itemAttributeId;
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, attribute, expectedResponseCode, isServiceScope);
         return new JsonMessageTranscoder().decode(new TypeReference<ItemAttribute>() {}, responseBody);
     }
@@ -105,8 +102,7 @@ public class ItemAttributeServiceImpl extends HttpClientBase implements ItemAttr
     }
 
     public void deleteItemAttribute(String itemAttributeId, int expectedResponseCode) throws Exception {
-        String strItemAttributeId = IdConverter.idToUrlString(ItemAttributeId.class, itemAttributeId);
-        String url = catalogServerURL + "/" + strItemAttributeId;
+        String url = catalogServerURL + "/" + itemAttributeId;
         restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode, isServiceScope);
     }
 

@@ -6,17 +6,17 @@
 package com.junbo.test.catalog.impl;
 
 import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
+import com.junbo.test.common.apihelper.HttpClientBase;
+import com.junbo.test.common.Entities.enums.Currency;
+import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.common.model.Results;
 import com.junbo.langur.core.client.TypeReference;
+import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.catalog.PriceTierService;
 import com.junbo.test.common.ConfigHelper;
-import com.junbo.test.common.Entities.enums.ComponentType;
-import com.junbo.test.common.Entities.enums.Country;
-import com.junbo.test.common.Entities.enums.Currency;
-import com.junbo.test.common.apihelper.HttpClientBase;
-import com.junbo.test.common.libs.RandomFactory;
+import com.junbo.common.model.Results;
 
 import java.math.BigDecimal;
 import java.util.HashMap;

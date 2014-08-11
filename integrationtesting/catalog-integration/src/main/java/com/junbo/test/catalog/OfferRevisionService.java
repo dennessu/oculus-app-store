@@ -22,7 +22,8 @@ import java.util.List;
 public interface OfferRevisionService {
 
     OfferRevision getOfferRevision(String offerRevisionId) throws Exception;
-    OfferRevision getOfferRevision(String offerRevisionId, int expectedResponseCode) throws Exception;
+    OfferRevision getOfferRevision(String offerRevisionId, HashMap<String, List<String>> httpPara) throws Exception;
+    OfferRevision getOfferRevision(String offerRevisionId, HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception;
 
     Results<OfferRevision> getOfferRevisions(HashMap<String, List<String>> httpPara) throws Exception;
     Results<OfferRevision> getOfferRevisions(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception;

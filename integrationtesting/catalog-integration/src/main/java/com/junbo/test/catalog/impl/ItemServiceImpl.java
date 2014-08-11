@@ -14,12 +14,10 @@ import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.blueprint.Master;
-import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.catalog.ItemService;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.common.model.Results;
-import com.junbo.common.id.ItemId;
 
 import java.util.HashMap;
 import java.util.List;
@@ -51,12 +49,10 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
     }
 
     public Item getItem(String itemId, int expectedResponseCode) throws Exception {
-        String url = catalogServerURL + "/" + IdConverter.idToUrlString(ItemId.class, itemId);
+        String url = catalogServerURL + "/" + itemId;
         String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode);
-        Item itemGet = new JsonMessageTranscoder().decode(new TypeReference<Item>() {
-        }, responseBody);
-        String itemRtnId = IdConverter.idToUrlString(ItemId.class, itemGet.getItemId());
-        Master.getInstance().addItem(itemRtnId, itemGet);
+        Item itemGet = new JsonMessageTranscoder().decode(new TypeReference<Item>() {}, responseBody);
+        Master.getInstance().addItem(itemGet.getItemId(), itemGet);
         return itemGet;
     }
 
@@ -66,12 +62,9 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
 
     public Results<Item> getItems(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara);
-        Results<Item> itemGet = new JsonMessageTranscoder().decode(new TypeReference<Results<Item>>() {
-        },
-                responseBody);
+        Results<Item> itemGet = new JsonMessageTranscoder().decode(new TypeReference<Results<Item>>() {}, responseBody);
         for (Item item : itemGet.getItems()) {
-            String itemRtnId = IdConverter.idToUrlString(ItemId.class, item.getItemId());
-            Master.getInstance().addItem(itemRtnId, item);
+            Master.getInstance().addItem(item.getItemId(), item);
         }
         return itemGet;
     }
@@ -83,8 +76,7 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
 
     public Item prepareItemEntity(String fileName, OrganizationId organizationId) throws Exception {
         String strItem = readFileContent(String.format("testItems/%s.json", fileName));
-        Item itemForPost = new JsonMessageTranscoder().decode(new TypeReference<Item>() {
-        }, strItem);
+        Item itemForPost = new JsonMessageTranscoder().decode(new TypeReference<Item>() {}, strItem);
         itemForPost.setOwnerId(organizationId);
         return itemForPost;
     }
@@ -109,11 +101,8 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
 
     public Item postItem(Item item, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, item, expectedResponseCode);
-        Item itemPost = new JsonMessageTranscoder().decode(new TypeReference<Item>() {
-        },
-                responseBody);
-        String itemRtnId = IdConverter.idToUrlString(ItemId.class, itemPost.getItemId());
-        Master.getInstance().addItem(itemRtnId, itemPost);
+        Item itemPost = new JsonMessageTranscoder().decode(new TypeReference<Item>() {}, responseBody);
+        Master.getInstance().addItem(itemPost.getItemId(), itemPost);
         return itemPost;
     }
 
@@ -122,13 +111,10 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
     }
 
     public Item updateItem(String itemId, Item item, int expectedResponseCode) throws Exception {
-        String putUrl = catalogServerURL + "/" + IdConverter.idToUrlString(ItemId.class, itemId);
+        String putUrl = catalogServerURL + "/" + itemId;
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, item, expectedResponseCode);
-        Item itemPut = new JsonMessageTranscoder().decode(new TypeReference<Item>() {
-        },
-                responseBody);
-        String itemRtnId = IdConverter.idToUrlString(ItemId.class, itemPut.getItemId());
-        Master.getInstance().addItem(itemRtnId, itemPut);
+        Item itemPut = new JsonMessageTranscoder().decode(new TypeReference<Item>() {}, responseBody);
+        Master.getInstance().addItem(itemPut.getItemId(), itemPut);
         return itemPut;
     }
 
@@ -137,10 +123,9 @@ public class ItemServiceImpl extends HttpClientBase implements ItemService {
     }
 
     public void deleteItem(String itemId, int expectedResponseCode) throws Exception {
-        String strItemId = IdConverter.idToUrlString(ItemId.class, itemId);
-        String url = catalogServerURL + "/" + strItemId;
+        String url = catalogServerURL + "/" + itemId;
         restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
-        Master.getInstance().removeItem(strItemId);
+        Master.getInstance().removeItem(itemId);
     }
 
 }

@@ -6,8 +6,9 @@
 package com.junbo.test.catalog.impl;
 
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
-import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.test.common.Entities.enums.ComponentType;
+import com.junbo.test.catalog.enums.CatalogEntityStatus;
+import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.catalog.enums.CatalogItemType;
 import com.junbo.common.json.JsonMessageTranscoder;
@@ -15,9 +16,7 @@ import com.junbo.langur.core.client.TypeReference;
 import com.junbo.test.catalog.ItemRevisionService;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.blueprint.Master;
-import com.junbo.common.id.ItemRevisionId;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.common.model.Results;
 
@@ -38,6 +37,7 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
     private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";
     private static ItemRevisionService instance;
     private final String defaultLocale = "en_US";
+    private boolean isServiceScope;
 
     public static synchronized ItemRevisionService instance() {
         if (instance == null) {
@@ -47,21 +47,24 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
     }
 
     private ItemRevisionServiceImpl() {
-        componentType = ComponentType.CATALOG;
+        componentType = ComponentType.CATALOGADMIN;
     }
 
     public ItemRevision getItemRevision(String revisionId) throws Exception {
-        return getItemRevision(revisionId, 200);
+        return getItemRevision(revisionId, null, 200);
     }
 
-    public ItemRevision getItemRevision(String revisionId, int expectedResponseCode) throws Exception {
-        String url = catalogServerURL + "/" + IdConverter.idToUrlString(ItemRevisionId.class, revisionId);
-        String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode);
-        ItemRevision itemRevision = new JsonMessageTranscoder().decode(new TypeReference<ItemRevision>() {
-        },
-                responseBody);
-        String itemRevisionRtnId = IdConverter.idToUrlString(ItemRevisionId.class, itemRevision.getRevisionId());
-        Master.getInstance().addItemRevision(itemRevisionRtnId, itemRevision);
+    public ItemRevision getItemRevision(String revisionId, HashMap<String, List<String>> httpPara) throws Exception {
+        return getItemRevision(revisionId, httpPara, 200);
+    }
+
+    public ItemRevision getItemRevision(String revisionId, HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception {
+        isServiceScope = false;
+
+        String url = catalogServerURL + "/" + revisionId;
+        String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode, httpPara, isServiceScope);
+        ItemRevision itemRevision = new JsonMessageTranscoder().decode(new TypeReference<ItemRevision>() {}, responseBody);
+        Master.getInstance().addItemRevision(itemRevision.getRevisionId(), itemRevision);
         return itemRevision;
     }
 
@@ -70,14 +73,13 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
     }
 
     public Results<ItemRevision> getItemRevisions(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara);
-        Results<ItemRevision> itemRevisionGet = new JsonMessageTranscoder().decode(
-                new TypeReference<Results<ItemRevision>>() {
-                }, responseBody);
+        isServiceScope = false;
+
+        String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara, isServiceScope);
+        Results<ItemRevision> itemRevisionGet = new JsonMessageTranscoder().decode(new TypeReference<Results<ItemRevision>>() {},
+                responseBody);
         for (ItemRevision itemRevision : itemRevisionGet.getItems()) {
-            String itemRevisionRtnId = IdConverter.idToUrlString(ItemRevisionId.class,
-                    itemRevision.getRevisionId());
-            Master.getInstance().addItemRevision(itemRevisionRtnId, itemRevision);
+            Master.getInstance().addItemRevision(itemRevision.getRevisionId(), itemRevision);
         }
 
         return itemRevisionGet;
@@ -146,13 +148,12 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
     }
 
     public ItemRevision postItemRevision(ItemRevision itemRevision, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, itemRevision, expectedResponseCode);
-        ItemRevision itemRevisionPost = new JsonMessageTranscoder().decode(
-                new TypeReference<ItemRevision>() {
-                }, responseBody);
-        String itemRevisionRtnId = IdConverter.idToUrlString(ItemRevisionId.class,
-                itemRevisionPost.getRevisionId());
-        Master.getInstance().addItemRevision(itemRevisionRtnId, itemRevisionPost);
+        isServiceScope = false;
+
+        String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, itemRevision, expectedResponseCode, isServiceScope);
+        ItemRevision itemRevisionPost = new JsonMessageTranscoder().decode(new TypeReference<ItemRevision>() {},
+                responseBody);
+        Master.getInstance().addItemRevision(itemRevisionPost.getRevisionId(), itemRevisionPost);
 
         return itemRevisionPost;
     }
@@ -162,14 +163,19 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
     }
 
     public ItemRevision updateItemRevision(String itemRevisionId, ItemRevision itemRevision, int expectedResponseCode) throws Exception {
-        String putUrl = catalogServerURL + "/" + IdConverter.idToUrlString(ItemRevisionId.class,
-                itemRevisionId);
-        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, itemRevision, expectedResponseCode);
-        ItemRevision itemRevisionPut = new JsonMessageTranscoder().decode(new TypeReference<ItemRevision>() {
-        },
+        String putUrl = catalogServerURL + "/" + itemRevisionId;
+        if (itemRevision.getStatus().equalsIgnoreCase(CatalogEntityStatus.APPROVED.name()) ||
+                itemRevision.getStatus().equalsIgnoreCase(CatalogEntityStatus.REJECTED.name())) {
+            isServiceScope = true;
+        }
+        else {
+            isServiceScope = false;
+        }
+
+        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, itemRevision, expectedResponseCode, isServiceScope);
+        ItemRevision itemRevisionPut = new JsonMessageTranscoder().decode(new TypeReference<ItemRevision>() {},
                 responseBody);
-        String itemRevisionRtnId = IdConverter.idToUrlString(ItemRevisionId.class, itemRevisionPut.getRevisionId());
-        Master.getInstance().addItemRevision(itemRevisionRtnId, itemRevisionPut);
+        Master.getInstance().addItemRevision(itemRevisionPut.getRevisionId(), itemRevisionPut);
         return itemRevisionPut;
     }
 
@@ -178,10 +184,11 @@ public class ItemRevisionServiceImpl extends HttpClientBase implements ItemRevis
     }
 
     public void deleteItemRevision(String itemRevisionId, int expectedResponseCode) throws Exception {
-        String strItemRevisionId = IdConverter.idToUrlString(ItemRevisionId.class, itemRevisionId);
-        String url = catalogServerURL + "/" + strItemRevisionId;
-        restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
-        Master.getInstance().removeItemRevision(strItemRevisionId);
+        isServiceScope = false;
+
+        String url = catalogServerURL + "/" + itemRevisionId;
+        restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode, isServiceScope);
+        Master.getInstance().removeItemRevision(itemRevisionId);
     }
 
 }

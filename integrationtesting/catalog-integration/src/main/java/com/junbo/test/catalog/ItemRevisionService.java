@@ -20,7 +20,8 @@ import java.util.List;
 public interface ItemRevisionService {
 
     ItemRevision getItemRevision(String revisionId) throws Exception;
-    ItemRevision getItemRevision(String revisionId, int expectedResponseCode) throws Exception;
+    ItemRevision getItemRevision(String revisionId, HashMap<String, List<String>> httpPara) throws Exception;
+    ItemRevision getItemRevision(String revisionId, HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception;
 
     Results<ItemRevision> getItemRevisions(HashMap<String, List<String>> httpPara) throws Exception;
     Results<ItemRevision> getItemRevisions(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception;

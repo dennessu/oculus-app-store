@@ -24,7 +24,6 @@ import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.catalog.enums.EventType;
 import com.junbo.test.common.blueprint.Master;
-import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.test.catalog.OfferService;
@@ -32,7 +31,6 @@ import com.junbo.common.id.OrganizationId;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.catalog.ItemService;
 import com.junbo.common.model.Results;
-import com.junbo.common.id.OfferId;
 
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
@@ -93,11 +91,11 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     }
 
     public Offer getOffer(String offerId, int expectedResponseCode) throws Exception {
-        String url = catalogServerURL + "/" + IdConverter.idToUrlString(OfferId.class, offerId);
+        String url = catalogServerURL + "/" + offerId;
         String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode);
         Offer offerGet = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {}, responseBody);
-        String offerRtnId = IdConverter.idToUrlString(OfferId.class, offerGet.getOfferId());
-        Master.getInstance().addOffer(offerRtnId, offerGet);
+
+        Master.getInstance().addOffer(offerGet.getOfferId(), offerGet);
         return offerGet;
     }
 
@@ -110,8 +108,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         Results<Offer> offerGet = new JsonMessageTranscoder().decode(new TypeReference<Results<Offer>>() {},
                 responseBody);
         for (Offer offer : offerGet.getItems()){
-            String offerRtnId = IdConverter.idToUrlString(OfferId.class, offer.getOfferId());
-            Master.getInstance().addOffer(offerRtnId, offer);
+            Master.getInstance().addOffer(offer.getOfferId(), offer);
         }
 
         return offerGet;
@@ -146,8 +143,8 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, offer, expectedResponseCode);
         Offer offerPost = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {},
                 responseBody);
-        String offerRtnId = IdConverter.idToUrlString(OfferId.class, offerPost.getOfferId());
-        Master.getInstance().addOffer(offerRtnId, offerPost);
+
+        Master.getInstance().addOffer(offerPost.getOfferId(), offerPost);
         return offerPost;
     }
 
@@ -156,12 +153,12 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     }
 
     public Offer updateOffer(String offerId, Offer offer, int expectedResponseCode) throws Exception {
-        String putUrl = catalogServerURL + "/" + IdConverter.idToUrlString(OfferId.class, offerId);
+        String putUrl = catalogServerURL + "/" + offerId;
         String responseBody = restApiCall(HTTPMethod.PUT, putUrl, offer, expectedResponseCode);
         Offer offerPut = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {},
                 responseBody);
-        String offerRtnId = IdConverter.idToUrlString(OfferId.class, offerPut.getOfferId());
-        Master.getInstance().addOffer(offerRtnId, offerPut);
+
+        Master.getInstance().addOffer(offerPut.getOfferId(), offerPut);
         return offerPut;
     }
 
@@ -170,10 +167,9 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     }
 
     public void deleteOffer(String offerId, int expectedResponseCode) throws Exception {
-        String strOfferId = IdConverter.idToUrlString(OfferId.class, offerId);
-        String url = catalogServerURL + "/" + strOfferId;
+        String url = catalogServerURL + "/" + offerId;
         restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
-        Master.getInstance().removeOffer(strOfferId);
+        Master.getInstance().removeOffer(offerId);
     }
 
     public String getOfferIdByName(String offerName) throws Exception {
