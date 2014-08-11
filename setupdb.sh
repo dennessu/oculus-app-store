@@ -18,7 +18,7 @@ if [[ "$1" == "" || "$1" == "couch" ]]; then
     dbPrefix=`cat $dbPrefixFile | grep '^common.cloudant.dbNamePrefix=' | awk -F= '{gsub(/^[ \t]+/, "", $2); print $2}'`
     echo "dbPrefix is $dbPrefix"
     pushd couchdb
-    python ./couchdbcmd.py purgedbs --prefix=$dbPrefix --key=$cipherKey --yes
+    python ./couchdbcmd.py dropdbs --prefix=$dbPrefix --key=$cipherKey --yes
     python ./couchdbcmd.py createdbs --prefix=$dbPrefix --key=$cipherKey --yes
     popd
 fi
