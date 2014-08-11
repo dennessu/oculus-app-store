@@ -58,8 +58,7 @@ archive_mode = on
 max_wal_senders = 10
 listen_addresses = '*'
 hot_standby = on
-max_prepared_transactions = 100
-max_connections = 100
+max_connections = $MAX_CONNECTIONS
 archive_command = 'cp %p $MASTER_ARCHIVE_PATH/%f'
 port = $MASTER_DB_PORT
 EOF

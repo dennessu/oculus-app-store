@@ -43,6 +43,7 @@ export PGLOCK_PATH='/run/postgresql'
 export PROMOTE_TRIGGER_FILE=$PGHA_BASE/bring_me_up
 export PGUSER='silkcloud'
 export DB_PORT=5432
+export MAX_CONNECTIONS=500
 
 #master info
 export MASTER_DB_PORT=$DB_PORT
@@ -84,8 +85,9 @@ export PGBOUNCER_PID=$PGBOUNCER_BASE/pgbouncer.pid
 export PGBOUNCER_AUTH_FILE=~/.pgbouncer_auth
 export PGBOUNCER_SOCKET_PATH='/tmp'
 
-export PGBOUNCER_MAX_CONNECTIONS=100
-export PGBOUNCER_DEFAULT_POOL_SIZE=100
+#http://pgbouncer.projects.pgfoundry.org/doc/config.html
+export PGBOUNCER_MAX_CONNECTIONS=$MAX_CONNECTIONS
+export PGBOUNCER_DEFAULT_POOL_SIZE=$MAX_CONNECTIONS
 
 # kill process with specified port
 function forceKill {
