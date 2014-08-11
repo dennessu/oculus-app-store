@@ -164,8 +164,9 @@ class CheckoutTests(ut.TestBase):
         cartUrl = curlRedirect('GET', ut.test_uri, user.href + '/carts/primary', headers = {
             "Authorization": "Bearer " + user.access_token
         })
+        cartId = cartUrl.rsplit('/')[-1]
 
-        cart = curlJson('GET', cartUrl, None, headers = {
+        cart = curlJson('GET', ut.test_uri, user.href + '/carts/' + cartId, headers = {
             "Authorization": "Bearer " + user.access_token
         })
 
@@ -197,7 +198,8 @@ class CheckoutTests(ut.TestBase):
         })
 
         order = curlJson('POST', ut.test_uri, '/v1/orders', headers = {
-            "Authorization": "Bearer " + user.access_token
+            "Authorization": "Bearer " + user.access_token, 
+            "oculus-end-user-ip": "127.0.0.1"
         }, data = {
             "user": user.json['self'],
             "tentative": True,
@@ -226,7 +228,8 @@ class CheckoutTests(ut.TestBase):
 
         order['tentative'] = False
         order = curlJson('PUT', ut.test_uri, order['self']['href'], headers = {
-            "Authorization": "Bearer " + user.access_token
+            "Authorization": "Bearer " + user.access_token,
+            "oculus-end-user-ip": "127.0.0.1"
         }, data = order)
 
         fulfilmentToken = oauth.getServiceAccessToken('fulfilment.service')

@@ -43,13 +43,15 @@ class OAuthTests(ut.TestBase):
 
         # click the email verification link
         link = view["model"]["link"]
-        curl('GET', link)
+        evc = getqueryparam(link, 'evc')
+        curl('GET', ut.test_uri, '/v1/oauth2/verify-email', query = { 'evc': evc })
 
         view = curlForm('POST', ut.test_uri, '/v1/oauth2/authorize', data = { 'cid': cid, 'event': 'next' })
         assert view["view"] == 'redirect'
         link = view["model"]["location"]
+	cid = getqueryparam(link, 'cid')
 
-        location = curlRedirect('GET', link)
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/authorize', query = { 'cid': cid})
         cid = getqueryparam(location, 'cid')
         if cid:
             # the TFA flow
@@ -174,7 +176,8 @@ class OAuthTests(ut.TestBase):
 
         # click the email verification link
         link = view["model"]["link"]
-        location = curlRedirect('GET', link)
+        evc = getqueryparam(link, 'evc')
+        location = curlRedirect('GET', ut.test_uri, '/v1/oauth2/verify-email', query = { 'evc': evc })
         assert location is not None
 
         view = curlForm('POST', ut.test_uri, '/v1/oauth2/authorize', data = { 'cid': cid, 'event': 'next' })
