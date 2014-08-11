@@ -9,6 +9,10 @@
 
     <bean id="defaultTokenResource" class="com.junbo.token.rest.resource.TokenResourceImpl">
         <property name="tokenService" ref="tokenKeyService"/>
+        <property name="authorizeService" ref="authorizeService"/>
+        <property name="consumeAuthCallbackFactory" ref="consumeAuthCallbackFactory"/>
+        <property name="itemAuthCallbackFactory" ref="itemAuthCallbackFactory"/>
+        <property name="requestAuthCallbackFactory" ref="requestAuthCallbackFactory"/>
     </bean>
 
     <bean id="defaultTokenResourceClientFactory" class="com.junbo.token.spec.resource.proxy.TokenResourceClientProxyFactory"/>

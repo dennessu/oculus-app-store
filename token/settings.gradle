@@ -2,6 +2,7 @@ include 'token-spec'
 
 include 'token-common'
 include 'token-db'
+include 'token-auth'
 include 'token-core'
 include 'token-rest'
 

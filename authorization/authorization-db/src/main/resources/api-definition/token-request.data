@@ -1,0 +1,32 @@
+{
+    "apiName": "token-request",
+    "scopes": {
+        "token.developer": [
+            {
+                "precondition": "hasAnyRole(\"organization\", \"developer\",\"publisher\",\"admin\")",
+                "rights": [
+                    "create",  "read"
+                ],
+                "scriptType": "SPEL"
+            }
+        ],
+        "token.service": [
+            {
+                "precondition": "true",
+                "rights": [
+                    "read", "create"
+                ],
+                "scriptType": "SPEL"
+            }
+        ],
+        "csr": [
+            {
+                "precondition": "true",
+                "rights": [
+                    "read", "create", "update"
+                ],
+                "scriptType": "SPEL"
+            }
+         ]
+    }
+}

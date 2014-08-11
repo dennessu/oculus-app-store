@@ -1,0 +1,32 @@
+{
+    "apiName": "token-consumption",
+    "scopes": {
+        "commerce": [
+            {
+                "precondition": "ownedByCurrentUser",
+                "rights": [
+                    "create",  "read"
+                ],
+                "scriptType": "SPEL"
+            }
+        ],
+        "token.service": [
+            {
+                "precondition": "true",
+                "rights": [
+                    "read", "create"
+                ],
+                "scriptType": "SPEL"
+            }
+        ],
+        "csr": [
+            {
+                "precondition": "true",
+                "rights": [
+                    "read", "create"
+                ],
+                "scriptType": "SPEL"
+            }
+         ]
+    }
+}
