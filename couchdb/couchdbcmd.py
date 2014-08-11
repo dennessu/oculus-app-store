@@ -33,7 +33,8 @@ def readParams():
             "   listdbs                 Show all databases\n" +
             "   dumpdbs                 Show all databases and the views\n" +
             "   createdbs               Create all databases\n" +
-            "   dropdbs                 Drop all databases\n")
+            "   dropdbs                 Drop all databases\n" +
+            "   purgedbs                Purge all databases\n")
         sys.stdout.flush()
     
     def printUsage():
@@ -78,7 +79,7 @@ def readParams():
 
     # Validate params
     command = command.lower()
-    if command not in set(["listdbs", "dumpdbs", "createdbs", "dropdbs", "diffdbs", "updatedbs"]):
+    if command not in set(["listdbs", "dumpdbs", "createdbs", "dropdbs", "purgedbs", "diffdbs"]):
         printValidCommands()
         error("Invalid command: " + command)
     
@@ -88,12 +89,14 @@ def readParams():
         if response.lower() != "yes":
             error("Aborting...")
 
-    if command == "dropdbs" and env in set(["onebox.owpint", "staging", "prod"]):
-        # Don't allow dropdbs in these environments
-        error("The command dropdbs is now allowed in env " + env)
+    if command in set(["dropdbs", "purgedbs"]) and env not in set(["onebox", "lt", "ppe"]):
+        answer = ''.join(random.choice(string.ascii_letters) for _ in range(10))
+        input = readInput("The environment is not test environment. Are you sure you want to delete data? Repeat '%s' to confirm: " % answer)
+        if answer != input:
+            # Don't allow dropdbs in these environments
+            error("The command " + command + " is now allowed in env " + env)
 
     verbose("Read parameters: (command, env, dbPrefix) = (%s, %s, %s)" % (command, env, dbPrefix))
-
     return (command, env, dbPrefix)
 
 def readConfig(env):
@@ -138,6 +141,8 @@ def executeDbCommand(command, env, dbPrefix):
         createdbs(envConf, dbPrefix)
     elif command == "dropdbs":
         dropdbs(envConf, dbPrefix)
+    elif command == "purgedbs":
+        purgedbs(envConf, dbPrefix)
 
 def listdbs(envConf, dbPrefix):
     if not dbPrefix:
@@ -233,6 +238,37 @@ def dropdbs(envConf, dbPrefix):
                 if fullDbName in existingDbs:
                     info("Dropping database '%s' from '%s[%d]'" % (fullDbName, key, index));
                     curl(url + "/" + fullDbName, "DELETE")
+
+def purgedbs(envConf, dbPrefix):
+    if not dbPrefix: dbPrefix = ''
+    dbs = readDbs()
+
+    for key, list in envConf.items():
+        index = -1
+        for url in list:
+            index += 1
+            if not key in dbs:
+                continue
+
+            existingDbs = [db for db in curlJson(url + "/_all_dbs") if not db.startswith("_")]
+            for db in dbs[key]:
+                fullDbName = dbPrefix + db
+
+                if fullDbName in existingDbs:
+                    info("Purging database '%s' from '%s[%d]'" % (fullDbName, key, index));
+                    allDocs = curlJson(url + "/" + fullDbName + '/_all_docs', "GET")
+                    docs = []
+                    for row in allDocs['rows']:
+                        docs.append({
+                            '_id': row['id'],
+                            '_rev': row['value']['rev'],
+                            '_deleted': True
+                        })
+                    bulkStr = json.dumps({ 'docs': docs }, indent = 2)
+                    if len(docs) > 0:
+                        curlJson(url + "/" + fullDbName + '/_bulk_docs', "POST", bulkStr)
+                    if '.cloudant.com' not in url:
+                        curl(url + "/" + fullDbName + '/_compact', "POST", raiseOnError = False)
 
 def curlJson(url, method = 'GET', body = None, headers = None, raiseOnError = True):
     if headers is None:
