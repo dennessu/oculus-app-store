@@ -98,8 +98,9 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
         }
 
         List<OfferRevision> revisions = offerService.getRevisions(options);
-        if (!StringUtils.isEmpty(options.getLocale())) {
-            for (final OfferRevision revision : revisions) {
+        for (final OfferRevision revision : revisions) {
+            revision.setLocaleAccuracy(LocaleAccuracy.HIGH.name());
+            if (!StringUtils.isEmpty(options.getLocale())) {
                 revision.setLocaleAccuracy(getLocaleAccuracy(revision.getLocales().get(options.getLocale())));
                 revision.setLocales(new HashMap<String, OfferRevisionLocaleProperties>() {{
                     put(options.getLocale(), getLocaleProperties(revision, options.getLocale()));
@@ -140,7 +141,7 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
     @Override
     public Promise<OfferRevision> getOfferRevision(final String revisionId, final OfferRevisionGetOptions options) {
         final OfferRevision revision = offerService.getRevision(revisionId);
-
+        revision.setLocaleAccuracy(LocaleAccuracy.HIGH.name());
         if (!StringUtils.isEmpty(options.getLocale())) {
             revision.setLocaleAccuracy(getLocaleAccuracy(revision.getLocales().get(options.getLocale())));
             revision.setLocales(new HashMap<String, OfferRevisionLocaleProperties>(){{

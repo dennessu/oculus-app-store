@@ -98,8 +98,9 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
         }
 
         List<ItemRevision> revisions = itemService.getRevisions(options);
-        if (!StringUtils.isEmpty(options.getLocale())) {
-            for (final ItemRevision revision : revisions) {
+        for (final ItemRevision revision : revisions) {
+            revision.setLocaleAccuracy(LocaleAccuracy.HIGH.name());
+            if (!StringUtils.isEmpty(options.getLocale())) {
                 revision.setLocaleAccuracy(getLocaleAccuracy(revision.getLocales().get(options.getLocale())));
                 revision.setLocales(new HashMap<String, ItemRevisionLocaleProperties>() {{
                         put(options.getLocale(), getLocaleProperties(revision, options.getLocale()));
@@ -140,7 +141,7 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
     @Override
     public Promise<ItemRevision> getItemRevision(final String revisionId, final ItemRevisionGetOptions options) {
         final ItemRevision itemRevision = itemService.getRevision(revisionId);
-
+        itemRevision.setLocaleAccuracy(LocaleAccuracy.HIGH.name());
         if (!StringUtils.isEmpty(options.getLocale())) {
             itemRevision.setLocaleAccuracy(getLocaleAccuracy(itemRevision.getLocales().get(options.getLocale())));
             itemRevision.setLocales(new HashMap<String, ItemRevisionLocaleProperties>(){{
