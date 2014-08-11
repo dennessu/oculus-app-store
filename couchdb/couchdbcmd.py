@@ -8,6 +8,7 @@ import re
 import httplib
 import json
 import string
+import random
 import AESCipher as cipher
 
 def main():
