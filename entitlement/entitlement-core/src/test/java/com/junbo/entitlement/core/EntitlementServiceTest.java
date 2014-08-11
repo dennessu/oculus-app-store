@@ -45,6 +45,7 @@ import javax.ws.rs.WebApplicationException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -175,8 +176,9 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
     @Test(enabled = false)
     //make sure the url and key info are valid and just check whether the url generated is valid
     public void testGenerateUrl() throws IOException, URISyntaxException, InvalidKeySpecException {
-        //   String url = "http://static.oculusvr.com/uploads/14013776640911fhvo9od2t9-pc.zip";
+//           String url = "http://static.oculusvr.com/uploads/14013776640911fhvo9od2t9-pc.zip";
         String url = "https://d1aifagf6hhneo.cloudfront.net/binaries/sr51r1VTfeqZFaFF0ZXy_SpotifyInstaller.zip";
+//        String url = "https://d3q6nt0as236wo.cloudfront.net/test";
         String result = generatePreSignedDownloadUrl(url, "xx", "1.0", "PC");
         System.out.println(result);
     }
@@ -205,7 +207,7 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
             return generateS3Url(domainName, objectKey, finalFilename, expiration);
         }
 
-        if (domainName.equalsIgnoreCase("d1aifagf6hhneo.cloudfront.net")) {
+        if (domainName.endsWith("cloudfront.net")) {
 //            String bucketName = "ovr_ink_uploader";
             return generateCloudantFrontUrl(urlString, finalFilename, expiration);
 //            return generateS3Url(bucketName, objectKey, finalFilename, expiration);
@@ -215,12 +217,9 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
     }
 
     private String generateCloudantFrontUrl(String urlString, String filename, Date expiration) throws InvalidKeySpecException, IOException {
-        //return CloudFrontUrlSigner.getSignedURLWithCannedPolicy(CloudFrontUrlSigner.Protocol.http, "d1aifagf6hhneo.cloudfront.net", new File("E:\\junbo\\pk-APKAJ3QVRQMSFBXFINKA.pem"), "binaries/sr51r1VTfeqZFaFF0ZXy_SpotifyInstaller.zip", "APKAJ3QVRQMSFBXFINKA", expiration);
-
         return CloudFrontUrlSigner.getSignedURLWithCannedPolicy(
-//                urlString,
-                urlString + (filename == null ? "" : ("?" + "response-content-disposition=attachment;filename=\"" + filename + "\"")),
-                EntitlementServiceImpl.getPrivateKeyId(), EntitlementServiceImpl.getPrivateKey(), expiration);   
+                urlString + (filename == null ? "" : ("?" + "response-content-disposition=attachment;" + URLEncoder.encode("filename=\"" + filename + "\"", "UTF-8"))),
+                EntitlementServiceImpl.getPrivateKeyId(), EntitlementServiceImpl.getPrivateKey(), expiration);
     }
 
     private String generateS3Url(String bucketName, String objectKey, String filename, Date expiration) {
@@ -238,7 +237,7 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
 
     private String getExtension(String objectKey) {
         String[] parts = objectKey.split("\\.");
-        if (parts.length == 0) {
+        if (parts.length == 1) {
             return null;
         }
 
