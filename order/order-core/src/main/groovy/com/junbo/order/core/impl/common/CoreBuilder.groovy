@@ -123,14 +123,7 @@ class CoreBuilder {
                 if (matched != null) {
                     def balanceItem = buildRefundBalanceItem(item)
                     balanceItem.orderItemId = matched.getId()
-                    balanceItem.propertySet.put(PropertyKey.ITEM_TYPE.name(), matched.type)
                     balanceItem.propertySet.put(PropertyKey.ITEM_QUANTITY.name(), matched.quantity.toString())
-                    balanceItem.propertySet.put(PropertyKey.OFFER_ID.name(), matched.offer.value)
-                    balanceItem.propertySet.put(PropertyKey.ORDER_ITEM_ID.name(), matched.getId().value.toString())
-                    balanceItem.propertySet.put(PropertyKey.ITEM_NAME.name(), matched.offerName)
-                    balanceItem.propertySet.put(PropertyKey.ITEM_DESCRIPTION.name(), matched.offerDescription)
-                    balanceItem.propertySet.put(PropertyKey.ORGANIZATION_ID.name(), matched.offerOrganization)
-                    balanceItem.propertySet.put(PropertyKey.VENDOR_NAME.name(), matched.offerOrganizationName)
                     balanceItem.taxAmount = matched.totalTax
                     balance.addBalanceItem(balanceItem)
                 }
@@ -244,6 +237,7 @@ class CoreBuilder {
         balanceItem.addDiscountItem(discountItem)
         balanceItem.orderItemId = item.orderItemId
         balanceItem.originalBalanceItemId = item.getId()
+        balanceItem.propertySet = item.propertySet
         return balanceItem
     }
 

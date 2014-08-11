@@ -143,6 +143,9 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
     @ApiModelProperty(required = true, position = 300, value = "[Client Immutable] The billing histories of the order. ")
     private List<BillingHistory> billingHistories;
 
+    @ApiModelProperty(required = true, position = 310, value = "The note of order updating. ")
+    private String note;
+
     @JsonIgnore
     private String paymentDescription;
 
@@ -421,5 +424,13 @@ public class Order extends ResourceMetaForDualWrite<OrderId> {
 
     public void setIsAudited(Boolean isAudited) {
         this.isAudited = isAudited;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }

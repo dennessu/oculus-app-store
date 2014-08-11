@@ -348,4 +348,11 @@
                 ]]>
         </sql>
     </changeSet>
+
+    <changeSet author="chriszhu" id = "1.2" context="PREDEPLOY">
+        <sql><![CDATA[
+                alter table order_billing_history add column note varchar(4000) default null;
+                ]]>
+        </sql>
+    </changeSet>
 </databaseChangeLog>
