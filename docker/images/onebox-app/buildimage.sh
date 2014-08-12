@@ -11,6 +11,7 @@ function error_exit {
 trap "error_exit 'Received signal SIGHUP'" SIGHUP
 trap "error_exit 'Received signal SIGINT'" SIGINT
 trap "error_exit 'Received signal SIGTERM'" SIGTERM
+trap "error_exit 'Error happened, failed to build image'" ERR
 shopt -s expand_aliases
 alias die='error_exit "Error ${0}(@`echo $(( $LINENO - 1 ))`):"'
 
@@ -39,7 +40,8 @@ echo "  commit   = $git_commit_id"
 echo "  message  = $git_commit_message"
 echo "  branch   = $git_branch"
 echo
-echo "Will build docker image from the drop..."
+echo "Will build docker image from the drop($APPHOST_FOLDER)"
+echo "Tags will be '$git_branch, $git_branch-$git_commit_id'"
 
 while getopts ':y' flag; do
   case "${flag}" in
@@ -61,12 +63,14 @@ if [ "$confirmflag" != "true" ]; then
 fi
 
 # copy binaries to current folder
-echo "copying binaries..."
+echo "## copying binaries..."
 rm -r -f $DIR/bin
 mkdir -p $DIR/bin/apphost
 cp -r -f -p $APPHOST_FOLDER/* $DIR/bin/apphost/
 rm -r -f $DIR/bin/apphost/logs
 rm -r -f $DIR/bin/apphost/activemq-data
 # run docker build
-echo "start building docker image..."
-#TODO run docker build
+echo "## building docker image..."
+sudo docker build --rm -t silkcloud/onebox-app:$git_branch .
+sudo docker tag silkcloud/onebox-app:$git_branch silkcloud/onebox-app:$git_branch-$git_commit_id
+echo "## finished building docker image"
