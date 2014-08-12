@@ -54,18 +54,28 @@ public class postOrganization {
     }
 
     @Test(groups = "dailies")
+    //https://oculus.atlassian.net/browse/SER-441
     public void postOrganizationDuplicateNameIsValidatedTrue() throws Exception {
         Organization org = IdentityModel.DefaultOrganization();
-        Organization posted = Identity.OrganizationPostDefault(org);
-        posted.setIsValidated(true);
-        Identity.OrganizationPut(posted);
-        org.setIsValidated(RandomHelper.randomBoolean());
+        org.setIsValidated(true);
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1OrganizationURI,
                 JsonHelper.JsonSerializer(org), HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("validate response error code", 400, response.getStatusLine().getStatusCode());
+        String errorMessage = "Can't create validated organization";
+        Validator.Validate("validate response error message", true,
+                EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+
+        org.setIsValidated(false);
+        Organization posted = Identity.OrganizationPostDefault(org);
+        posted.setIsValidated(true);
+        Identity.OrganizationPut(posted);
+        org.setIsValidated(RandomHelper.randomBoolean());
+        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1OrganizationURI,
+                JsonHelper.JsonSerializer(org), HttpclientHelper.HttpRequestType.post, nvps);
         Validator.Validate("validate response error code", 409, response.getStatusLine().getStatusCode());
-        String errorMessage = "Field value is duplicate";
+        errorMessage = "Field value is duplicate";
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
     }

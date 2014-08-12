@@ -6,14 +6,9 @@
 package com.junbo.test.identity;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.junbo.common.enumid.CountryId;
-import com.junbo.common.enumid.CurrencyId;
-import com.junbo.common.enumid.LocaleId;
-import com.junbo.common.enumid.RatingBoardId;
+import com.junbo.common.enumid.*;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.v1.model.*;
-import com.junbo.identity.spec.v1.model.Currency;
-import com.junbo.identity.spec.v1.model.Locale;
 import com.junbo.identity.spec.v1.model.migration.Company;
 import com.junbo.identity.spec.v1.model.migration.OculusInput;
 import com.junbo.identity.spec.v1.model.migration.ShareProfile;
@@ -23,7 +18,10 @@ import com.junbo.test.common.RandomHelper;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author dw
@@ -117,6 +115,14 @@ public class IdentityModel {
         PhoneNumber phoneNumber = new PhoneNumber();
         phoneNumber.setInfo("8613585830699");
         return phoneNumber;
+    }
+
+    public static String DefaultPassword() throws Exception {
+        String password = RandomHelper.randomAlphabetic(4).toLowerCase() +
+                RandomHelper.randomNumeric(6) +
+                RandomHelper.randomAlphabetic(4).toUpperCase();
+
+        return password;
     }
 
     public static Locale DefaultLocale() throws Exception {
@@ -213,8 +219,13 @@ public class IdentityModel {
     }
 
     public static UserCredential DefaultUserCredential(UserId userId, String password) throws Exception {
+        return DefaultUserCredential(userId, null, password);
+    }
+
+    public static UserCredential DefaultUserCredential(UserId userId, String oldPassword, String password) throws Exception {
         UserCredential userCredential = new UserCredential();
         userCredential.setUserId(userId);
+        userCredential.setCurrentPassword(oldPassword);
         userCredential.setValue(password);
         userCredential.setType("PASSWORD");
         userCredential.setChangeAtNextLogin(false);
@@ -248,10 +259,42 @@ public class IdentityModel {
         return userTFA;
     }
 
+    public static DeviceType DefaultDeviceType(List<DeviceTypeId> deviceTypeIds) throws Exception {
+        DeviceType deviceType = new DeviceType();
+        deviceType.setInstructionManual(RandomHelper.randomAlphabetic(100));
+        deviceType.setTypeCode(RandomDeviceTypeCode());
+        deviceType.setComponentTypes(deviceTypeIds);
+        Map<String, DeviceSoftware> availableSoftwareMap = new HashMap<>();
+        DeviceSoftware deviceSoftware = new DeviceSoftware();
+        SoftwareObject dev = new SoftwareObject();
+        dev.setHref(RandomHelper.randomAlphabetic(15));
+        dev.setVersion(RandomHelper.randomAlphabetic(15));
+        deviceSoftware.setDev(dev);
+        SoftwareObject stable = new SoftwareObject();
+        stable.setHref(RandomHelper.randomAlphabetic(15));
+        stable.setVersion(RandomHelper.randomAlphabetic(15));
+        deviceSoftware.setStable(stable);
+        availableSoftwareMap.put(RandomHelper.randomAlphabetic(15), deviceSoftware);
+        deviceType.setAvailableSoftware(availableSoftwareMap);
+        return deviceType;
+    }
+
     public static String RandomGender() {
         List<Object> array = new ArrayList<>();
         array.add("male");
         array.add("female");
+        return RandomHelper.randomValueFromList(array).toString();
+    }
+
+    public static String RandomDeviceTypeCode() {
+        List<Object> array = new ArrayList<>();
+        array.add(DeviceTypeCode.CV1.name());
+        array.add(DeviceTypeCode.DK1.name());
+        array.add(DeviceTypeCode.DK2.name());
+        array.add(DeviceTypeCode.DK2_CAMERA.name());
+        array.add(DeviceTypeCode.DKHD.name());
+        array.add(DeviceTypeCode.HMD.name());
+        array.add(DeviceTypeCode.NOTE4.name());
         return RandomHelper.randomValueFromList(array).toString();
     }
 
@@ -296,7 +339,8 @@ public class IdentityModel {
         QQ,
         SMS,
         WHATSAPP,
-        WIPED
+        WIPED,
+        USERNAME
     }
 
     /**
@@ -308,6 +352,16 @@ public class IdentityModel {
         PENDING,
         PENDING_EMAIL_VERIFICATION,
         VERIFIED
+    }
+
+    public static enum DeviceTypeCode {
+        DK1,
+        DKHD,
+        DK2,
+        CV1,
+        HMD,
+        DK2_CAMERA,
+        NOTE4
     }
 
     /**

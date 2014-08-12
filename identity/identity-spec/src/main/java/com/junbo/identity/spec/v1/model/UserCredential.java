@@ -69,6 +69,7 @@ public class UserCredential extends PropertyAssignedAwareResourceMeta<UserCreden
     public void setCurrentPassword(String currentPassword) {
         this.currentPassword = currentPassword;
         support.setPropertyAssigned("currentPassword");
+        support.setPropertyAssigned("oldValue");
     }
 
     public String getValue() {

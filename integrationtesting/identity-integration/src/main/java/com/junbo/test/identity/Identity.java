@@ -13,13 +13,8 @@ import com.junbo.common.util.IdFormatter;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.identity.spec.v1.model.migration.OculusInput;
 import com.junbo.identity.spec.v1.model.migration.OculusOutput;
-import com.junbo.identity.spec.v1.option.list.OrganizationListOptions;
-import com.junbo.test.common.ConfigHelper;
-import com.junbo.test.common.HttpclientHelper;
-import com.junbo.test.common.JsonHelper;
-import com.junbo.test.common.Validator;
+import com.junbo.test.common.*;
 import com.junbo.test.common.libs.IdConverter;
-import com.junbo.test.common.RandomHelper;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
@@ -37,6 +32,7 @@ public class Identity {
     public static final String IdentityEndPointV1 = ConfigHelper.getSetting("defaultIdentityEndPointV1");
     public static final String IdentityV1CountryURI = IdentityEndPointV1 + "/countries";
     public static final String IdentityV1CurrencyURI = IdentityEndPointV1 + "/currencies";
+    public static final String IdentityV1DeviceTypeURI = IdentityEndPointV1 + "/device-types";
     public static final String IdentityV1GroupURI = IdentityEndPointV1 + "/groups";
     public static final String IdentityV1ImportsURI = IdentityEndPointV1 + "/imports";
     public static final String IdentityV1LocaleURI = IdentityEndPointV1 + "/locales";
@@ -156,18 +152,22 @@ public class Identity {
         IdentityDelete(IdentityV1LocaleURI + "/" + localeId);
     }
 
-    public static User UserPostDefault() throws Exception {
+    public static User UserPostDefault(Integer nameLength) throws Exception {
         User user = UserPostDefault(IdentityModel.DefaultUser());
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
         userPersonalInfo.setUserId(user.getId());
         userPersonalInfo.setType("USERNAME");
         UserLoginName loginName = new UserLoginName();
-        loginName.setUserName(RandomHelper.randomAlphabetic(15));
+        loginName.setUserName(RandomHelper.randomAlphabetic(nameLength));
         userPersonalInfo.setValue(ObjectMapperProvider.instance().valueToTree(loginName));
         UserPersonalInfo loginInfo = UserPersonalInfoPost(user.getId(), userPersonalInfo);
         user.setIsAnonymous(false);
         user.setUsername(loginInfo.getId());
         return UserPut(user);
+    }
+
+    public static User UserPostDefault() throws Exception {
+        return UserPostDefault(15);
     }
 
     public static User UserPostDefault(User user) throws Exception {
@@ -277,13 +277,47 @@ public class Identity {
                 IdentityV1OrganizationURI + "?name=" + name.toLowerCase() + buildIdentityCount(limit) + buildIdentityCursor(offset), Results.class);
     }
 
-    public static CloseableHttpResponse UserCredentialPostDefault(UserId userId, String password) throws Exception {
-        return UserCredentialPostDefault(userId, password, true);
+    public static DeviceType DeviceTypeDefault(DeviceType deviceType) throws Exception {
+        DeviceType type = deviceType == null ? IdentityModel.DefaultDeviceType(null) : deviceType;
+        return IdentityPost(IdentityV1DeviceTypeURI, JsonHelper.JsonSerializer(type), DeviceType.class);
+    }
+
+    public static DeviceType DeviceTypePut(DeviceType deviceType) throws Exception {
+        return IdentityPut(IdentityV1DeviceTypeURI + "/" + deviceType.getTypeCode(),
+                JsonHelper.JsonSerializer(deviceType), DeviceType.class);
+    }
+
+    public static DeviceType DeviceTypeGet(String deviceTypeCode) throws Exception {
+        return IdentityGet(IdentityV1DeviceTypeURI + "/" + deviceTypeCode, DeviceType.class);
+    }
+
+    public static Results<DeviceType> DeviceTypeGetAll() throws Exception {
+        Results<DeviceType> results = new Results<>();
+        results.setItems(new ArrayList<DeviceType>());
+        Results res = IdentityGet(IdentityV1DeviceTypeURI, Results.class);
+        for (Object obj : res.getItems()) {
+            results.getItems().add((DeviceType) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
+                    DeviceType.class)
+            );
+        }
+        results.setTotal(res.getTotal());
+        results.setNext(res.getNext());
+        results.setSelf(res.getSelf());
+
+        return results;
+    }
+
+    public static void DeviceTypeDelete(String deviceTypeCode) throws Exception {
+        IdentityDelete(IdentityV1DeviceTypeURI + "/" + deviceTypeCode);
+    }
+
+    public static CloseableHttpResponse UserCredentialPostDefault(UserId userId, String oldPassword, String password) throws Exception {
+        return UserCredentialPostDefault(userId, oldPassword, password, true);
     }
 
     public static CloseableHttpResponse UserCredentialPostDefault(
-            UserId userId, String password, Boolean validResponse) throws Exception {
-        UserCredential uc = IdentityModel.DefaultUserCredential(userId, password);
+            UserId userId, String oldPassword, String password, Boolean validResponse) throws Exception {
+        UserCredential uc = IdentityModel.DefaultUserCredential(userId, oldPassword, password);
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(

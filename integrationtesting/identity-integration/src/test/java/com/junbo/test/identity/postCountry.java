@@ -7,9 +7,15 @@ package com.junbo.test.identity;
 
 import com.junbo.identity.spec.v1.model.Country;
 import com.junbo.test.common.HttpclientHelper;
+import com.junbo.test.common.JsonHelper;
 import com.junbo.test.common.Validator;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.testng.annotations.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -63,5 +69,16 @@ public class postCountry {
                 }
             }
         }
+    }
+
+    @Test(groups = "dailies")
+    // https://oculus.atlassian.net/browse/SER-456
+    public void testWORLDCountryNotExists() throws Exception {
+        String url = Identity.IdentityV1CountryURI + "/" + "WORLD";
+        List<NameValuePair> nvps = new ArrayList<>();
+        nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
+        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
+                url, null, HttpclientHelper.HttpRequestType.get, nvps);
+        Validator.Validate("validate response error code", 404, response.getStatusLine().getStatusCode());
     }
 }
