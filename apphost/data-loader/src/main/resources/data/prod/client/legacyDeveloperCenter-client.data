@@ -1,0 +1,11 @@
+{
+  "client_id" : "legacyDeveloperCenter-client",
+  "client_secret" : "5E44199FA0F6AAA67D87E9C8E16E0E50#CD52714ADA1BC3B49F7ED7CB3FFC3E1A",
+  "client_name" : "legacyDeveloperCenter-client",
+
+  "scopes" : [ "identity", "identity.pii", "offline" ],
+  "default_scopes" : [ "identity", "identity.pii", "offline" ]
+
+  "response_types" : [ "REFRESH_TOKEN" ],
+  "grant_types" : [ "PASSWORD" ]
+}
