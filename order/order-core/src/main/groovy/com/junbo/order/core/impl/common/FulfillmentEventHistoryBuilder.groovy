@@ -1,4 +1,3 @@
-package com.junbo.order.core.impl.common
 
 import com.junbo.fulfilment.spec.constant.FulfilmentStatus
 import com.junbo.fulfilment.spec.model.FulfilmentAction
@@ -9,6 +8,7 @@ import com.junbo.order.spec.model.OrderEvent
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.order.spec.model.enums.EventStatus
 import com.junbo.order.spec.model.enums.FulfillmentEventType
+import com.junbo.order.spec.model.enums.ItemType
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
@@ -38,7 +38,13 @@ class FulfillmentEventHistoryBuilder {
             FulfilmentAction fa ->
                 fa.status == FulfilmentStatus.PENDING
         }) {
-            fulfillmentHistory.fulfillmentEvent = FulfillmentEventType.REQUEST_FULFILL
+            if (orderItem.isPreorder) {
+                fulfillmentHistory.fulfillmentEvent = FulfillmentEventType.PREORDER.name()
+            } else if (orderItem.type == ItemType.PHYSICAL_GOODS.name()){
+                fulfillmentHistory.fulfillmentEvent = FulfillmentEventType.REQUEST_SHIP.name()
+            } else {
+                fulfillmentHistory.fulfillmentEvent = FulfillmentEventType.REQUEST_FULFILL.name()
+            }
         }
         return fulfillmentHistory
     }
@@ -59,7 +65,7 @@ class FulfillmentEventHistoryBuilder {
             FulfilmentAction fa ->
                 fa.status == FulfilmentStatus.PENDING
         }) {
-            fulfillmentHistory.fulfillmentEvent = FulfillmentEventType.REQUEST_FULFILL
+            fulfillmentHistory.fulfillmentEvent = FulfillmentEventType.REQUEST_SHIP
         }
         return fulfillmentHistory
     }
@@ -78,7 +84,7 @@ class FulfillmentEventHistoryBuilder {
         if (event == null) {
             return null
         }
-        return FulfillmentEventType.FULFILL.name()
+        return event.action
     }
 
     static EventStatus getFulfillmentEventStatus(FulfilmentItem fulfilmentItem) {

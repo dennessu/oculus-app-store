@@ -273,7 +273,7 @@ class OrderInternalServiceImpl implements OrderInternalService {
         order.setDiscounts(orderRepository.getDiscounts(order.getId().value))
         // tax
         return orderServiceContextBuilder.refreshBalances(orderServiceContext).then { List<Balance> balances ->
-            if (CollectionUtils.isEmpty(balances)) {
+            if (CollectionUtils.isEmpty(balances) && !CoreUtils.isFreeOrder(order)) {
                 return Promise.pure(order)
             }
             def taxedBalances = balances.findAll { Balance balance ->

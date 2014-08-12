@@ -9,6 +9,7 @@ package com.junbo.order.db.dao.impl;
 import com.junbo.order.db.dao.OrderBillingHistoryDao;
 import com.junbo.order.db.entity.OrderBillingHistoryEntity;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -22,6 +23,7 @@ public class OrderBillingHistoryDaoImpl extends BaseDaoImpl<OrderBillingHistoryE
     public List<OrderBillingHistoryEntity> readByOrderId(final Long orderId) {
         Criteria criteria = this.getSession(orderId).createCriteria(OrderBillingHistoryEntity.class);
         criteria.add(Restrictions.eq("orderId", orderId));
+        criteria.addOrder(Order.desc("createdTime"));
         return criteria.list();
     }
 }

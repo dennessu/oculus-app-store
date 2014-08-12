@@ -41,6 +41,7 @@ public class OrderItemEntity extends CommonDbEntityDeletable {
     private BigDecimal totalShippingFee;
     private BigDecimal totalShippingFeeDiscount;
     private BigDecimal developerRevenue;
+    private BigDecimal preorderAmount;
     private Long latestOrderItemRevisionId;
     private Date honorUntilTime;
     private Date honoredTime;
@@ -220,6 +221,15 @@ public class OrderItemEntity extends CommonDbEntityDeletable {
 
     public void setIsPreorder(Boolean isPreorder) {
         this.isPreorder = isPreorder;
+    }
+
+    @Column(name = "PREORDER_AMOUNT")
+    public BigDecimal getPreorderAmount() {
+        return preorderAmount;
+    }
+
+    public void setPreorderAmount(BigDecimal preorderAmount) {
+        this.preorderAmount = preorderAmount;
     }
 
     @Override

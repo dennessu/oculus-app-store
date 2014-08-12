@@ -305,7 +305,7 @@ class CoreUtils {
             case OrderActionType.CHARGE.name():
                 return order.status == OrderStatus.PENDING.name()
             case OrderActionType.FULFILL.name():
-                return order.status == OrderStatus.PENDING.name()
+                return order.status == OrderStatus.PENDING.name() || order.status == OrderStatus.PREORDERED.name()
             default:
                 throw AppErrors.INSTANCE.eventNotSupported(event.action, event.status).exception()
         }
@@ -322,6 +322,9 @@ class CoreUtils {
     }
 
     static Boolean isPendingOnFulfillment(Order order, OrderEvent event) {
+        if (CoreUtils.isPreorder(order)) {
+            return order.status == OrderStatus.PREORDERED.name()
+        }
         if (!CoreUtils.isChargeCompleted(order)) {
             LOGGER.info('name=Order_Not_Charged')
             return false
@@ -401,6 +404,23 @@ class CoreUtils {
             }
             if (!oi.fulfillmentHistories.any() { FulfillmentHistory fh ->
                 fh.fulfillmentEvent == FulfillmentEventType.FULFILL.name() && fh.success
+            }) {
+                fulfillCompleted = false
+            }
+        }
+        return fulfillCompleted
+    }
+
+    static Boolean isShipCompleted(Order order) {
+
+        def fulfillCompleted = true
+        order.orderItems.each { OrderItem oi ->
+            if (CollectionUtils.isEmpty(oi.fulfillmentHistories)) {
+                fulfillCompleted = false
+                return
+            }
+            if (!oi.fulfillmentHistories.any() { FulfillmentHistory fh ->
+                fh.fulfillmentEvent == FulfillmentEventType.SHIP.name() && fh.success
             }) {
                 fulfillCompleted = false
             }
