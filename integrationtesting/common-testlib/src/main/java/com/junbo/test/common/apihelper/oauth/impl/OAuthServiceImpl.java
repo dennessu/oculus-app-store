@@ -64,6 +64,9 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
 
     @Override
     public String postAccessToken(GrantType grantType, ComponentType componentType) throws Exception {
+        if (ConfigHelper.getSetting("client.secret") != null) {
+            return postAccessToken("service", ConfigHelper.getSetting("client.secret"), grantType, componentType);
+        }
         return postAccessToken("service", "secret", grantType, componentType);
     }
 

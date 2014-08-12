@@ -62,13 +62,46 @@ public class BuyerValidationHelper extends BaseValidationHelper {
         validateOrderInfoByCartId(uid, orderId, cartId, country, currency, paymentInstrumentId, false);
     }
 
+    public void validateFreeOrderInfo(String uid, String orderId, Country country, Currency currency, boolean hasPhysicalGood) throws Exception{
+        String fulfillmentId = testDataProvider.getFulfilmentsByOrderId(orderId);
+        Results<Entitlement> entitlementResults = testDataProvider.getEntitlementByUserId(uid);
+        testDataProvider.getOrder(orderId);
+        Order order = Master.getInstance().getOrder(orderId);
+
+        if (hasPhysicalGood) {
+            verifyEqual(order.getStatus(), "PENDING", "verify order status");
+        } else {
+            verifyEqual(order.getStatus(), "COMPLETED", "verify order status");
+        }
+
+        verifyEqual(order.getTentative(), false, "verify order tentative");
+        verifyEqual(order.getCurrency().getValue(), currency.toString(), "verify order currency");
+        verifyEqual(order.getCountry().getValue(), country.toString(), "verify order country");
+        verifyEqual(order.getLocale().getValue(), "en_US",  "verify locale");
+        verifyEqual(order.getTotalAmount(), new BigDecimal(0), "verify total amount");
+        verifyEqual(order.getTotalTax(), new BigDecimal(0),"verify total tax");
+        FulfillmentHistory fulfilmentHistory = order.getOrderItems().get(0).getFulfillmentHistories().get(0);
+        verifyEqual(fulfilmentHistory.getSuccess(), true, "verify fulfilment status");
+        verifyEqual(fulfilmentHistory.getFulfillmentEvent().toString(), "FULFILL","verify fulfillment event");
+
+
+
+
+
+
+
+
+
+
+    }
+
     public void validateOrderInfoByCartId(String uid, String orderId, String cartId, Country country, Currency currency,
                                           String paymentInstrumentId, boolean hasPhysicalGood) throws Exception {
         testDataProvider.getOrder(orderId);
         Order order = Master.getInstance().getOrder(orderId);
         Cart cart = Master.getInstance().getCart(cartId);
         String fulfilmentId = testDataProvider.getFulfilmentsByOrderId(orderId);
-        String balancecId = testDataProvider.getBalancesByOrderId(orderId).get(0);
+        //String balanceId = testDataProvider.getBalancesByOrderId(orderId).get(0);
         verifyEqual(order.getTentative(), false, "verify tentative after order complete");
         verifyEqual(order.getCountry().toString(), country.toString(), "verify country field in order");
         verifyEqual(order.getCurrency().toString(), currency.toString(), "verify currency field in order");
@@ -123,7 +156,7 @@ public class BuyerValidationHelper extends BaseValidationHelper {
                     expectedTotalTaxAmount = expectedTotalTaxAmount.add(orderItem.getTotalTax());
                     expectedTotalAmount = expectedTotalAmount.add(expectedOrderItemAmount);
 
-                   // validateFulfilmentHistory(orderItem, getFulfilmentItemByOfferId(fulfilmentId, offerId));
+                    validateFulfilmentHistory(orderItem, getFulfilmentItemByOfferId(fulfilmentId, offerId));
                     break;
                 }
             }
