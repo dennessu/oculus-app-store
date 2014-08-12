@@ -25,5 +25,7 @@ public enum Component {
     Rating,
     Token,
     Crypto,
+    CSR,
+    STORE,
     Subscription
 }

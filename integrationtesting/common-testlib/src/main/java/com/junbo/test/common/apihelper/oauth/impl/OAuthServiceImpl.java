@@ -32,6 +32,8 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
 
     private static OAuthService instance;
 
+    private boolean needAuthHeader;
+
     public static synchronized OAuthService getInstance() {
         if (instance == null) {
             instance = new OAuthServiceImpl();
@@ -41,12 +43,20 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
 
     private OAuthServiceImpl() {
         componentType = ComponentType.IDENTITY;
+        contentType = "application/x-www-form-urlencoded";
     }
 
-    @Override
-    protected FluentCaseInsensitiveStringsMap getHeader(boolean isRoleAPI) {
+    protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope) {
         FluentCaseInsensitiveStringsMap headers = new FluentCaseInsensitiveStringsMap();
-        headers.add(Header.CONTENT_TYPE, "application/x-www-form-urlencoded");
+        headers.add(Header.CONTENT_TYPE, contentType);
+        String uid = Master.getInstance().getCurrentUid();
+        if (needAuthHeader) {
+            if (isServiceScope) {
+                headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getServiceAccessToken(componentType));
+            } else if (uid != null && Master.getInstance().getUserAccessToken(uid) != null) {
+                headers.add(Header.AUTHORIZATION, "Bearer " + Master.getInstance().getUserAccessToken(uid));
+            }
+        }
 
         //for further header, we can set dynamic value from properties here
         return headers;
@@ -66,6 +76,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
     @Override
     public String postAccessToken(String clientId, String clientSecret, GrantType grantType,
                                   ComponentType componentType, int expectedResponseCode) throws Exception {
+        needAuthHeader = false;
         Map<String, String> formParams = new HashMap<>();
         switch (componentType) {
             case ORDER:
@@ -109,6 +120,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
 
     @Override
     public String postUserAccessToken(String uid, String username, String pwd, int expectedResponseCode) throws Exception {
+        needAuthHeader = true;
         Map<String, String> formParams = new HashMap<>();
         formParams.put("client_id", "client");
         formParams.put("client_secret", "secret");
@@ -137,13 +149,14 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
 
     @Override
     public String postEmailVerification(String uid, String country, String locale, int expectedResponseCode) throws Exception {
+        needAuthHeader = true;
         Map<String, String> formParams = new HashMap<>();
         formParams.put("userId", uid);
         formParams.put("country", country);
         formParams.put("locale", locale);
 
         String responseBody = restApiCall(HTTPMethod.POST, oauthUrl + "/oauth2/verify-email",
-                convertFormatToRequestString(formParams), expectedResponseCode);
+                convertFormatToRequestString(formParams), expectedResponseCode, true);
 
         return responseBody;
     }

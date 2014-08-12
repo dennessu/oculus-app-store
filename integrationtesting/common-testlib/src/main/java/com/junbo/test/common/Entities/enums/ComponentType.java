@@ -30,7 +30,7 @@ public enum ComponentType {
     OAUTH("oauth"),
     PAYMENT("payment"),
     ORDER("order"),
-    CSR("csr"),
+    CSR("testcase"),
     DRM("drm"),
     CRYPTO("crypto"),
     SUBSCRIPTION("subscription");

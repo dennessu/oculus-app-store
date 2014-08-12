@@ -34,7 +34,7 @@ public abstract class HttpClientBase {
     private LogHelper logger = new LogHelper(HttpClientBase.class);
     private AsyncHttpClient asyncClient = new AsyncHttpClient();
 
-    public static String contentType = "application/json";
+    public String contentType = "application/json";
 
     protected ComponentType componentType;
 
