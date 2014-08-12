@@ -1,3 +1,4 @@
+package com.junbo.order.core.impl.common
 
 import com.junbo.fulfilment.spec.constant.FulfilmentStatus
 import com.junbo.fulfilment.spec.model.FulfilmentAction
