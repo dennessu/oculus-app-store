@@ -12,26 +12,27 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class WalletLotRepositoryCloudantImpl extends BaseCloudantRepositoryForDualWrite<WalletLot, Long> implements WalletLotRepository {
     @Override
-    Promise<List<WalletLot>> getValidLot(Long walletId) {
-        return super.queryView('by_wallet_id', walletId.toString()).then { List<WalletLot> list ->
-            Date now = new Date()
-            list.retainAll { WalletLot walletLot ->
-                return walletLot.remainingAmount != 0 && walletLot.expirationDate > now
-            }
-
-            return Promise.pure(list)
+    Promise<WalletLot> update(WalletLot entity, WalletLot oldEntity) {
+        Date now = new Date()
+        if (entity.remainingAmount.compareTo(BigDecimal.ZERO) <= 0 || entity.expirationDate.compareTo(now) < 0) {
+            entity.isValid = Boolean.FALSE
+        } else {
+            entity.isValid = Boolean.TRUE
         }
+        return super.update(entity, oldEntity)
+    }
+
+    @Override
+    Promise<List<WalletLot>> getValidLot(Long walletId) {
+        return super.queryView('by_wallet_id_and_is_valid', walletId.toString() + ":true")
     }
 
     @Override
     Promise<BigDecimal> getValidAmount(Long walletId) {
-        return super.queryView('by_wallet_id', walletId.toString()).then { List<WalletLot> list ->
+        return super.queryView('by_wallet_id_and_is_valid', walletId.toString() + ":true").then { List<WalletLot> list ->
             BigDecimal v = BigDecimal.ZERO
-            Date now = new Date()
             list.each { WalletLot walletLot ->
-                if (walletLot.expirationDate > now && walletLot.remainingAmount != 0) {
-                    v = v.add(walletLot.remainingAmount)
-                }
+                v = v.add(walletLot.remainingAmount)
             }
 
             return Promise.pure(v)
