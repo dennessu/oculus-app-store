@@ -14,6 +14,11 @@ trap "error_exit 'Received signal SIGTERM'" SIGTERM
 shopt -s expand_aliases
 alias die='error_exit "Error ${0}(@`echo $(( $LINENO - 1 ))`):"'
 
+if [[ `uname` != 'Linux' ]]; then
+  die "OS is not linux, cannot run"
+fi
+hash docker >/dev/null 2>&1 || die "!! docker not installed, cannot continue"
+
 REPO_ROOT=`git rev-parse --show-toplevel`
 APPHOST_FOLDER=$REPO_ROOT/apphost/apphost-cli/build/install/apphost-cli
 SWAGGER_FOLDER=$REPO_ROOT/apphost/docs-bundle/build/install/docs-bundle
@@ -64,4 +69,4 @@ rm -r -f $DIR/bin/apphost/logs
 rm -r -f $DIR/bin/apphost/activemq-data
 # run docker build
 echo "start building docker image..."
-#TODO
+#TODO run docker build
