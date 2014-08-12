@@ -94,6 +94,7 @@ class CatalogDataHandler extends BaseDataHandler {
 
         itemRevision.id = null
         itemRevision.ownerId = ownerId
+        itemRevision.packageName = UUID.randomUUID().toString()
         String itemRevisionName = itemRevision.getLocales().get(defaultLocale).name
 
         //Judge if item and its revision have been loaded
@@ -119,6 +120,7 @@ class CatalogDataHandler extends BaseDataHandler {
                 String hostItemId = handle(hostItem)
 
                 hotsItemRevision.locales.get("en_US").name = "testItem_HostItem"
+                hotsItemRevision.packageName = UUID.randomUUID().toString()
                 hotsItemRevision.itemId = hostItemId
                 hotsItemRevision.downloadName = "download name"
                 hotsItemRevision.distributionChannels = ["STORE"]
