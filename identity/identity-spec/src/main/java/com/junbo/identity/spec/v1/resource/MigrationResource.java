@@ -10,6 +10,8 @@ import com.junbo.identity.spec.v1.model.migration.OculusOutput;
 import com.junbo.langur.core.InProcessCallable;
 import com.junbo.langur.core.RestResource;
 import com.junbo.langur.core.promise.Promise;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -22,15 +24,18 @@ import java.util.Map;
 /**
  * Created by liangfu on 6/6/14.
  */
+@Api("migration")
 @RestResource
 @InProcessCallable
 @Path("/imports")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public interface MigrationResource {
+    @ApiOperation("Migration single user")
     @POST
     Promise<OculusOutput> migrate(OculusInput oculusInput);
 
+    @ApiOperation("Migration multiple users")
     @POST
     @Path("/bulk")
     Promise<Map<String, OculusOutput>> bulkMigrate(List<OculusInput> oculusInputs);
