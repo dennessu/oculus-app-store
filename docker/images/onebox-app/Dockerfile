@@ -26,5 +26,7 @@ EXPOSE 8080 8081
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
 
+# TODO: Add runapphost.sh
+
 # Add apphost folder
 ADD bin/apphost/ /var/silkcloud/apphost/
