@@ -62,9 +62,11 @@ public class BuyerValidationHelper extends BaseValidationHelper {
         validateOrderInfoByCartId(uid, orderId, cartId, country, currency, paymentInstrumentId, false);
     }
 
-    public void validateFreeOrderInfo(String uid, String orderId, Country country, Currency currency, boolean hasPhysicalGood) throws Exception{
+    public void validateFreeOrderInfo(String uid, String orderId, Country country, Currency currency, boolean hasPhysicalGood) throws Exception {
         String fulfillmentId = testDataProvider.getFulfilmentsByOrderId(orderId);
         Results<Entitlement> entitlementResults = testDataProvider.getEntitlementByUserId(uid);
+
+        validateEntitlements(entitlementResults, 2);
         testDataProvider.getOrder(orderId);
         Order order = Master.getInstance().getOrder(orderId);
 
@@ -77,20 +79,21 @@ public class BuyerValidationHelper extends BaseValidationHelper {
         verifyEqual(order.getTentative(), false, "verify order tentative");
         verifyEqual(order.getCurrency().getValue(), currency.toString(), "verify order currency");
         verifyEqual(order.getCountry().getValue(), country.toString(), "verify order country");
-        verifyEqual(order.getLocale().getValue(), "en_US",  "verify locale");
+        verifyEqual(order.getLocale().getValue(), "en_US", "verify locale");
         verifyEqual(order.getTotalAmount(), new BigDecimal(0), "verify total amount");
-        verifyEqual(order.getTotalTax(), new BigDecimal(0),"verify total tax");
+        verifyEqual(order.getTotalTax(), new BigDecimal(0), "verify total tax");
         FulfillmentHistory fulfilmentHistory = order.getOrderItems().get(0).getFulfillmentHistories().get(0);
         verifyEqual(fulfilmentHistory.getSuccess(), true, "verify fulfilment status");
-        verifyEqual(fulfilmentHistory.getFulfillmentEvent().toString(), "FULFILL","verify fulfillment event");
-
-
-
-
-
-
-
-
+        if (hasPhysicalGood) {
+            verifyEqual(fulfilmentHistory.getFulfillmentEvent().toString(), "REQUEST_FULFILL", "verify fulfillment event");
+        } else {
+            verifyEqual(fulfilmentHistory.getFulfillmentEvent().toString(), "FULFILL", "verify fulfillment event");
+        }
+        if (entitlementResults.getItems().size() > 0) {
+            verifyEqual(fulfilmentHistory.getEntitlements().size(), entitlementResults.getItems().size(), "verify entitlement size");
+        } else if (fulfilmentHistory.getEntitlements() != null) {
+            throw new TestException("entitlement should be null");
+        }
 
 
     }

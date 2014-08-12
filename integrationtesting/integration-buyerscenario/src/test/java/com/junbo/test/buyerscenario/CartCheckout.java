@@ -422,9 +422,11 @@ public class CartCheckout extends BaseTestClass {
         String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
 
         String orderId = testDataProvider.postOrder(
-                uid, Country.DEFAULT, Currency.DEFAULT, creditCardId, false, offerList);
+                uid, Country.DEFAULT, Currency.DEFAULT, null, false, offerList);
 
         orderId = testDataProvider.updateOrderTentative(orderId, false);
+
+        validationHelper.validateFreeOrderInfo(uid, orderId, Country.DEFAULT, Currency.DEFAULT, false);
 
     }
 
@@ -455,21 +457,12 @@ public class CartCheckout extends BaseTestClass {
 
         offerList.put(offer_physical_free, 1);
 
-        String cartId = testDataProvider.postOffersToPrimaryCart(uid, offerList);
-
-        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
-        String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
-
-        String orderId = testDataProvider.postOrderByCartId(
-                uid, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, true);
+        String orderId = testDataProvider.postOrder(
+                uid, Country.DEFAULT, Currency.DEFAULT, null, true, offerList);
 
         orderId = testDataProvider.updateOrderTentative(orderId, false);
 
-        // validationHelper.validateOrderInfoByCartId(
-        //         uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, true);
-        Results<Entitlement> entitlementResults = testDataProvider.getEntitlementByUserId(uid);
-
-        validationHelper.validateEntitlements(entitlementResults, offerList.size());
+        validationHelper.validateFreeOrderInfo(uid, orderId, Country.DEFAULT, Currency.DEFAULT, true);
 
     }
 
