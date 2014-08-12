@@ -187,6 +187,7 @@ public class Catalog extends BaseTestClass {
     )
     @Test
     public void testItemManagement() throws Exception {
+        prepareCatalogAdminToken();
 
         HashMap<String, List<String>> paraMap = new HashMap<>();
         ItemService itemServiceAPI = ItemServiceImpl.instance();
@@ -262,6 +263,7 @@ public class Catalog extends BaseTestClass {
     )
     @Test
     public void testOfferManagement() throws Exception {
+        prepareCatalogAdminToken();
 
         HashMap<String, List<String>> paraMap = new HashMap<>();
         OfferService offerServiceAPI = OfferServiceImpl.instance();
@@ -333,6 +335,8 @@ public class Catalog extends BaseTestClass {
     )
     @Test
     public void testUploadingOfferToStore() throws Exception {
+        prepareCatalogAdminToken();
+
         ItemService itemService = ItemServiceImpl.instance();
         ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
         OfferService offerService = OfferServiceImpl.instance();
@@ -395,7 +399,7 @@ public class Catalog extends BaseTestClass {
         String offer9 = "testOffer_InAppConsumable2";
         String offer10 = "testOffer_Free_Digital";
         String offer11 = "testOffer_Free_Physical";
-        String offer12 = "testOfferForFB";
+
         String offer100 = "test";
 
         OfferService offerServiceAPI = OfferServiceImpl.instance();
@@ -433,9 +437,6 @@ public class Catalog extends BaseTestClass {
         String offerId11 = offerServiceAPI.getOfferIdByName(offer11);
         Assert.assertNotNull(offerId11);
         Assert.assertFalse(offerId11.equalsIgnoreCase("No such predefined offer"));
-        String offerId12 = offerServiceAPI.getOfferIdByName(offer12);
-        Assert.assertNotNull(offerId12);
-        Assert.assertFalse(offerId12.equalsIgnoreCase("No such predefined offer"));
 
         String offerId100 = offerServiceAPI.getOfferIdByName(offer100);
         if (offerId100 != null) {

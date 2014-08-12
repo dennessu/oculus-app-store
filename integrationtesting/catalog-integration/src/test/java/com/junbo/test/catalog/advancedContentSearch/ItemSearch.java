@@ -130,8 +130,7 @@ public class ItemSearch extends BaseTestClass {
         itemRevisionPrepared.setLocales(locales);
 
         ItemRevision itemRevisionPost = itemRevisionService.postItemRevision(itemRevisionPrepared);
-        itemRevisionPost.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
-        itemRevisionService.updateItemRevision(itemRevisionPost.getRevisionId(), itemRevisionPost);
+        releaseItemRevision(itemRevisionPost);
 
         item2 = itemService.getItem(item2.getItemId());
     }

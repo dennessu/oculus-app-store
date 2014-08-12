@@ -260,6 +260,7 @@ public class casesForBugs extends BaseTestClass {
         } catch (Exception ex) {
             logger.logInfo("Expected exception");
         }
+
         //release the revision for later use
         itemRevision.setOwnerId(organizationId2);
         itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);

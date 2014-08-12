@@ -138,8 +138,7 @@ public class OfferSearch extends BaseTestClass {
 
         //Post the offer revision and approve it
         OfferRevision offerRevisionPost = offerRevisionService.postOfferRevision(offerRevisionPrepared);
-        offerRevisionPost.setStatus("APPROVED");
-        offerRevisionService.updateOfferRevision(offerRevisionPost.getRevisionId(), offerRevisionPost);
+        releaseOfferRevision(offerRevisionPost);
 
         offer2 = offerService.getOffer(offer2.getOfferId());
     }
