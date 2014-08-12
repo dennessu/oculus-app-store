@@ -185,7 +185,9 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
                 return getById(paymentInstrument.getId()).then(new Promise.Func<PaymentInstrument, Promise<Void>>() {
                     @Override
                     public Promise<Void> apply(PaymentInstrument paymentInstrument) {
-                        detailedResults.add(paymentInstrument);
+                        if(!CommonUtil.isNullOrEmpty(paymentInstrument.getExternalToken())){
+                            detailedResults.add(paymentInstrument);
+                        }
                         return Promise.pure(null);
                     }
                 });
