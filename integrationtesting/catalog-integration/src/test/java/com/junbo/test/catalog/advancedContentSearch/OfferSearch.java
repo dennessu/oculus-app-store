@@ -149,6 +149,7 @@ public class OfferSearch extends BaseTestClass {
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
+            environment = "release",
             description = "Test Get offers by advanced query",
             steps = {
                     "1. Prepare some offers",
@@ -167,8 +168,8 @@ public class OfferSearch extends BaseTestClass {
         OfferRevision offerRevision = offerRevisionService.getOfferRevision(offer2.getCurrentRevisionId());
         OfferRevisionLocaleProperties offerRevisionLocaleProperties = offerRevision.getLocales().get(defaultLocale);
 
-        //offerId
-        buildSearchQuery("offerId:" + offerId1, 1, offerId1);
+        //when published is not specified, published is set to true; offer1 is not published, so won't get any offer
+        buildSearchQuery("offerId:" + offerId1, 0);
 
         //default -- offerId
         buildSearchQuery(offerId2, 1, offerId2);
@@ -176,6 +177,9 @@ public class OfferSearch extends BaseTestClass {
         //published is not default index
         buildSearchQuery("false", 0);
         buildSearchQuery("true", 0);
+
+        //release offer1
+        offer1 = releaseOffer(offer1);
 
         //categoryId
         buildSearchQuery("categoryId:" + offer1.getCategories().get(0), 1, offerId1);
@@ -230,6 +234,7 @@ public class OfferSearch extends BaseTestClass {
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
+            environment = "release",
             description = "Test Get offers by advanced query",
             steps = {
                     "1. Prepare some offers",

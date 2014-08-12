@@ -22,6 +22,7 @@ public @interface Property {
     String description() default "";
     String[] steps() default {};
     String bugNum() default "";
+    //the allowed values for environment is: onebox, release (all lower case)
     String environment() default "";
     Release release() default Release.Default;
 }

@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
  *            and testNG will run this test; else if test status is Manual, Disabled, Incomplete, set
  *            enabled=false and testNG will ignore this test.
  *         2. support running a specific group tests
+ *         3. support running tests according to environment provided
  *
  */
 public class PropertyTransformer implements IAnnotationTransformer {
@@ -55,19 +56,13 @@ public class PropertyTransformer implements IAnnotationTransformer {
                 annotation.setGroups(groups);
             }
             else {
-                String[] groups = new String[3];
+                String[] groups = new String[1];
                 if (caseProperty.priority().name().equalsIgnoreCase(Priority.BVT.name())) {
-                    groups[0] = Priority.BVT.name();
-                    groups[1] = Priority.BVT.name().toLowerCase();
-                    groups[2] = Priority.BVT.name().toUpperCase();
+                    groups[0] = Priority.BVT.name().toLowerCase();
                 } else if (caseProperty.priority().name().equalsIgnoreCase(Priority.Dailies.name())) {
-                    groups[0] = Priority.Dailies.name();
-                    groups[1] = Priority.Dailies.name().toLowerCase();
-                    groups[2] = Priority.Dailies.name().toUpperCase();
+                    groups[0] = Priority.Dailies.name().toLowerCase();
                 } else if (caseProperty.priority().name().equalsIgnoreCase(Priority.Comprehensive.name())) {
-                    groups[0] = Priority.Comprehensive.name();
-                    groups[1] = Priority.Comprehensive.name().toLowerCase();
-                    groups[2] = Priority.Comprehensive.name().toUpperCase();
+                    groups[0] = Priority.Comprehensive.name().toLowerCase();
                 }
                 annotation.setGroups(groups);
             }

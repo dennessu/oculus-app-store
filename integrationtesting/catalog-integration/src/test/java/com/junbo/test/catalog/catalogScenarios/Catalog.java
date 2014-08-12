@@ -18,6 +18,7 @@ import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.test.common.libs.RandomFactory;
+import com.junbo.test.common.libs.IdConverter;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.common.id.OrganizationId;
@@ -55,7 +56,6 @@ public class Catalog extends BaseTestClass {
             owner = "JasonFu",
             status = Status.Enable,
             description = "Test Item Attribute Post/Get",
-            environment = "onebox, integration",
             steps = {
                     "1. Post an attribute",
                     "2. Get the attribute by attribute ID",
@@ -323,6 +323,142 @@ public class Catalog extends BaseTestClass {
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
+            environment = "release",
+            description = "Test Offer Post/Get/Put",
+            steps = {
+                    "1. Post a default item",
+                    "2. Get it by all options",
+                    "3. Post a default item revision",
+                    "4. Get it by all options",
+                    "5. Post a default offer",
+                    "6. Get it by all options",
+                    "7. Post a default offer revision",
+                    "8. Get it by all options"
+            }
+    )
+    @Test
+    public void testGetOffers() throws Exception {
+        prepareCatalogAdminToken();
+
+        ItemService itemService = ItemServiceImpl.instance();
+        ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
+        OfferService offerService = OfferServiceImpl.instance();
+        OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
+        OrganizationService organizationService = OrganizationServiceImpl.instance();
+
+        OrganizationId organizationId = organizationService.postDefaultOrganization().getId();
+
+        Item item = itemService.postDefaultItem(CatalogItemType.APP, organizationId);
+        item = releaseItem(item);
+        ItemRevision itemRevision = itemRevisionService.getItemRevision(item.getCurrentRevisionId());
+
+        //Get item by id
+        Item itemRtn = itemService.getItem(item.getItemId());
+        Assert.assertEquals(item.getItemId(), itemRtn.getItemId());
+
+        HashMap<String, List<String>> paraMap = new HashMap<>();
+
+        //Get items by developerId
+        List<String> ownerId = new ArrayList<>();
+        ownerId.add(IdConverter.idToHexString(organizationId));
+        paraMap.put("developerId", ownerId);
+
+        Results<Item> itemsRtn = itemService.getItems(paraMap);
+        Assert.assertEquals(itemsRtn.getItems().size(), 1);
+        Assert.assertEquals(itemsRtn.getItems().get(0).getItemId(), item.getItemId());
+
+        //Get items by developerId + type
+        List<String> type = new ArrayList<>();
+        type.add(item.getType());
+
+        paraMap.put("type", type);
+
+        itemsRtn = itemService.getItems(paraMap);
+        Assert.assertEquals(itemsRtn.getItems().size(), 1);
+        Assert.assertEquals(itemsRtn.getItems().get(0).getItemId(), item.getItemId());
+
+        //Get item revisions by id
+        ItemRevision itemRevisionRtn = itemRevisionService.getItemRevision(itemRevision.getRevisionId());
+        Assert.assertEquals(itemRevision.getRevisionId(), itemRevisionRtn.getRevisionId());
+
+        //get item revision by itemId
+        List<String> itemId = new ArrayList<>();
+        itemId.add(item.getItemId());
+
+        paraMap.clear();
+        paraMap.put("itemId", itemId);
+
+        Results<ItemRevision> itemRevisionsRtn = itemRevisionService.getItemRevisions(paraMap);
+        Assert.assertEquals(itemRevisionsRtn.getItems().size(), 1);
+        Assert.assertEquals(itemRevisionsRtn.getItems().get(0).getRevisionId(), itemRevision.getRevisionId());
+
+        //get item revision by itemId + revisionId + developerId
+        List<String> itemRevisionId = new ArrayList<>();
+        itemRevisionId.add(itemRevision.getRevisionId());
+
+        paraMap.put("revisionId", itemRevisionId);
+        paraMap.put("developerId", ownerId);
+
+        itemRevisionsRtn = itemRevisionService.getItemRevisions(paraMap);
+        Assert.assertEquals(itemRevisionsRtn.getItems().size(), 1);
+        Assert.assertEquals(itemRevisionsRtn.getItems().get(0).getRevisionId(), itemRevision.getRevisionId());
+
+        //prepare a default offer
+        Offer offer = offerService.postDefaultOffer(organizationId);
+        OfferRevision offerRevision = offerRevisionService.postDefaultOfferRevision(offer, item);
+        offerRevision = releaseOfferRevision(offerRevision);
+
+        //Get offer by id
+        Offer offerRtn = offerService.getOffer(offer.getOfferId());
+        Assert.assertEquals(offerRtn.getOfferId(), offer.getOfferId());
+
+        //Get offers by publisherId
+        paraMap.put("publisherId", ownerId);
+
+        Results<Offer> offersRtn = offerService.getOffers(paraMap);
+        Assert.assertEquals(offersRtn.getItems().size(), 1);
+        Assert.assertEquals(offersRtn.getItems().get(0).getOfferId(), offer.getOfferId());
+
+        //Get offers by publisherId + itemId
+        paraMap.put("itemId", itemId);
+
+        offersRtn = offerService.getOffers(paraMap);
+        Assert.assertEquals(offersRtn.getItems().size(), 1);
+        Assert.assertEquals(offersRtn.getItems().get(0).getOfferId(), offer.getOfferId());
+
+        //Get offer revision by Id
+        OfferRevision offerRevisionRtn = offerRevisionService.getOfferRevision(offerRevision.getRevisionId());
+        Assert.assertEquals(offerRevision.getRevisionId(), offerRevisionRtn.getRevisionId());
+
+        //get offer revision by offerId
+        List<String> offerId = new ArrayList<>();
+        offerId.add(offer.getOfferId());
+
+        paraMap.clear();
+        paraMap.put("offerId", offerId);
+
+        Results<OfferRevision> offerRevisionsRtn = offerRevisionService.getOfferRevisions(paraMap);
+        Assert.assertEquals(offerRevisionsRtn.getItems().size(), 1);
+        Assert.assertEquals(offerRevisionsRtn.getItems().get(0).getRevisionId(), offerRevision.getRevisionId());
+
+        //get offer revision by offerId + revisionId + developerId
+        List<String> offerRevisionId = new ArrayList<>();
+        offerRevisionId.add(offerRevision.getRevisionId());
+
+        paraMap.put("revisionId", offerRevisionId);
+        paraMap.put("developerId", ownerId);
+
+        offerRevisionsRtn = offerRevisionService.getOfferRevisions(paraMap);
+        Assert.assertEquals(offerRevisionsRtn.getItems().size(), 1);
+        Assert.assertEquals(offerRevisionsRtn.getItems().get(0).getRevisionId(), offerRevision.getRevisionId());
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "catalogScenarios",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
             description = "Test uploading item and offer",
             steps = {
                     "1. View all previously submitted offers",
@@ -381,8 +517,8 @@ public class Catalog extends BaseTestClass {
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
-            description = "Test predefined offers",
             environment = "onebox",
+            description = "Test predefined offers",
             steps = {
             }
     )
@@ -450,6 +586,7 @@ public class Catalog extends BaseTestClass {
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Disable,
+            environment = "onebox",
             description = "Test predefined offers",
             steps = {
                     "1. Prepare item",
