@@ -235,6 +235,9 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         if(user == null){
             throw AppClientExceptions.INSTANCE.userNotFound(request.getUserId().toString()).exception();
         }
+        if(user.getAnonymous() != null && user.getAnonymous()){
+            throw AppClientExceptions.INSTANCE.userNotAllowed(request.getUserId().toString()).exception();
+        }
         request.setUserInfo(user);
         if(request.getType() == null){
             throw AppCommonErrors.INSTANCE.fieldRequired("payment_instrument_type").exception();
