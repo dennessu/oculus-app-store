@@ -189,7 +189,7 @@ class TestBuilder {
         order.orderItems.eachWithIndex { OrderItem item, int i ->
             def balanceItem = buildBalanceItem(item)
             if (item.id == null) {
-                balanceItem.orderItemId = new OrderItemId(i)
+                balanceItem.orderItemId = new OrderItemId(new Long(i))
             } else {
                 balanceItem.orderItemId = item.getId()
             }

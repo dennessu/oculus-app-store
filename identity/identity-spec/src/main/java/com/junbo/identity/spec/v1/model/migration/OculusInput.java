@@ -7,6 +7,7 @@ package com.junbo.identity.spec.v1.model.migration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.XSSFreeString;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 import java.util.List;
@@ -16,36 +17,67 @@ import java.util.Map;
  * Created by liangfu on 6/6/14.
  */
 public class OculusInput {
+    @ApiModelProperty(position = 1, required = true, value = "The original id of oculus database.")
     @JsonProperty("id")
     private Long currentId;
+
+    @ApiModelProperty(position = 2, required = false, value = "User's first name in oculus database.")
     @XSSFreeString
     private String firstName;
 
+    @ApiModelProperty(position = 3, required = false, value = "User's last name in oculus database.")
     @XSSFreeString
     private String lastName;
 
+    @ApiModelProperty(position = 4, required = true, value = "User's email in oculus database.")
     @XSSFreeString
     private String email;
 
+    @ApiModelProperty(position = 5, required = true, value = "User's username in oculus database.")
     @XSSFreeString
     private String username;
+
+    @ApiModelProperty(position = 6, required = true, value = "User's hashed password, it must be the format as 1:$salt:$pepper:$hashedValue")
     private String password;
 
+    @ApiModelProperty(position = 7, required = false, value = "User's gender information, it must be [MALE, FEMALE].")
     @XSSFreeString
     private String gender;
+
+    @ApiModelProperty(position = 8, required = false, value = "User's birthday information in oculus database.")
     private Date dob;
 
+    @ApiModelProperty(position = 9, required = false, value = "User's nick name in oculus database.")
     @XSSFreeString
     private String nickname;
+
+    @ApiModelProperty(position = 10, required = false, value = "User's timezone in oculus database.")
     private Number timezone;
+
+    @ApiModelProperty(position = 11, required = false, value = "User's language in oculus database, it should be the format as en_US.")
     private String language;
+
+    @ApiModelProperty(position = 12, required = false, value = "User's created time in oculus database.")
     private Date createdDate;
+
+    @ApiModelProperty(position = 13, required = false, value = "User's updated time in oculus database.")
     private Date updateDate;
+
+    @ApiModelProperty(position = 17, required = false, value = "User's company information in oculus database.")
     private Company company;
+
+    @ApiModelProperty(position = 18, required = false, value = "User's profile information in oculus database.")
     private ShareProfile profile;
+
+    @ApiModelProperty(position = 14, required = false, value = "Reset password flag in oculus database.")
     private Boolean forceResetPassword;
+
+    @ApiModelProperty(position = 15, required = true, value = "User's status in oculus database, it must be " +
+            "[ACTIVE, ARCHIVE, PENDING, PENDING_EMAIL_VERIFICATION, VERIFIED]")
     private String status;
     // the communication id that the user should have
+
+    @ApiModelProperty(position = 16, required = false, value = "User's communication map. It must be the format as communicationId:true/false")
     private List<Map<String, Boolean>> communications;
 
     public Long getCurrentId() {

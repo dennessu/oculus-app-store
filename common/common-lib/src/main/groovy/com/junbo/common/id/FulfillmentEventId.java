@@ -13,7 +13,7 @@ public class FulfillmentEventId extends Id {
 
     public FulfillmentEventId() {}
 
-    public FulfillmentEventId(long value) {
+    public FulfillmentEventId(Long value) {
         super(value);
     }
 }

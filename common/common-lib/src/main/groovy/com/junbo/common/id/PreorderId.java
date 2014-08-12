@@ -14,7 +14,7 @@ package com.junbo.common.id;
 public class PreorderId extends Id {
     public PreorderId() {}
 
-    public PreorderId(long value) {
+    public PreorderId(Long value) {
         super(value);
     }
 }

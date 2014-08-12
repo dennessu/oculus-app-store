@@ -15,7 +15,7 @@ package com.junbo.common.id;
 public class FulfilmentId extends Id {
 
     public FulfilmentId() {}
-    public FulfilmentId(long value) {
+    public FulfilmentId(Long value) {
         super(value);
     }
 }
