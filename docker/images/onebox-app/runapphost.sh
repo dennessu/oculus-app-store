@@ -1,2 +1,2 @@
 #!/bin/bash
-set -e
+/var/silkcloud/apphost/startup.sh

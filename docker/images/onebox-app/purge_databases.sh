@@ -7,7 +7,7 @@ function error_exit {
     exit 1
 }
 
-trap "error_exit 'Error happened, failed to init dbs'" ERR
+trap "error_exit 'Error happened, failed to purge dbs'" ERR
 shopt -s expand_aliases
 alias die='error_exit "Error ${0}(@`echo $(( $LINENO - 1 ))`):"'
 
@@ -24,22 +24,16 @@ nc -z 127.0.0.1 5984 || die "cannot reach couchdb via port 5984, cannot continue
 
 source /etc/my_init.d/checkdockerenv.sh
 
-echo "#### preparing databases....."
+echo "#### purging databases....."
 SC_APP_DIR=/var/silkcloud/apphost
 
 python $SC_APP_DIR/dbsetup/memcache/flush-all.py
 echo "## memcached cleared."
 
-$SC_APP_DIR/dbsetup/liquibase/createdb.sh -env:$SC_ENVIRONMENT -key:D58BA755FF96B35A6DABA7298F7A8CE2
-$SC_APP_DIR/dbsetup/liquibase/updatedb.sh -env:$SC_ENVIRONMENT -key:D58BA755FF96B35A6DABA7298F7A8CE2
-echo "## psql dbs created."
+$SC_APP_DIR/dbsetup/liquibase/dropdb.sh -env:$SC_ENVIRONMENT -key:D58BA755FF96B35A6DABA7298F7A8CE2
+echo "## psql dbs purged."
 
-python $SC_APP_DIR/dbsetup/couchdb/couchdbcmd.py createdbs $SC_ENVIRONMENT --prefix=$SC_CLOUDANT_PREFIX --yes
-echo "## couchdb/cloudant dbs created."
+python $SC_APP_DIR/dbsetup/couchdb/couchdbcmd.py dropdbs $SC_ENVIRONMENT --prefix=$SC_CLOUDANT_PREFIX --yes
+echo "## couchdb/cloudant dbs purged."
 
-/var/silkcloud/apphost/dataloader.sh masterkey
-echo "## masterkey loaded."
-/var/silkcloud/apphost/dataloader.sh
-echo "## domain data loaded."
-
-echo "#### finished preparing databases."
+echo "#### finished purging databases."

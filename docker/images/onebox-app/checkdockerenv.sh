@@ -35,9 +35,9 @@ if [ ! -f $SC_CONFIG_FILE ]; then
   die "$SC_CONFIG_FILE not found, please merge the config file into the container's volume."
 fi
 
-SC_ENVIRONMENT=`sed "/^\#/d" $SC_CONFIG_FILE | grep 'environment' | tail -n 1 | cut -d "=" -f2-`
+SC_ENVIRONMENT=`sed "/^\#/d" $SC_CONFIG_FILE | grep '^environment' | tail -n 1 | cut -d "=" -f2-`
 : ${SC_ENVIRONMENT:? "environment not defined in configuration.properties, cannot continue"}
-SC_CLOUDANT_PREFIX=`sed "/^\#/d" $SC_CONFIG_FILE | grep 'common.cloudant.dbNamePrefix' | tail -n 1 | cut -d "=" -f2-`
+SC_CLOUDANT_PREFIX=`sed "/^\#/d" $SC_CONFIG_FILE | grep '^common.cloudant.dbNamePrefix' | tail -n 1 | cut -d "=" -f2-`
 : ${SC_CLOUDANT_PREFIX:? "common.cloudant.dbNamePrefix not defined in configuration.properties, cannot continue"}
 
 # if config file is not 600, cannot run apphost
