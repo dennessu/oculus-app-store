@@ -130,19 +130,19 @@ class LoginResourceImpl implements LoginResource {
             fieldName = 'username'
             return resourceContainer.userPersonalInfoResource.create(
                         new UserPersonalInfo(
-							type: 'USERNAME',
-							userId: user.getId(),
-							value: ObjectMapperProvider.instance().valueToTree(new UserLoginName(
-								userName: createUserRequest.username
-							))
+                            type: 'USERNAME',
+                            userId: user.getId(),
+                            value: ObjectMapperProvider.instance().valueToTree(new UserLoginName(
+                                userName: createUserRequest.username
+                            ))
                           )
                          ).then { UserPersonalInfo userPersonalInfo ->
                      user.username = userPersonalInfo.getId()
                      user.isAnonymous = false
-					 return resourceContainer.userResource.put(user.getId(), user).then { User u ->
+                     return resourceContainer.userResource.put(user.getId(), user).then { User u ->
                         user = u
                         return Promise.pure()
-					}
+                    }
             }
         }.then {
             fieldName = 'password'
@@ -179,7 +179,7 @@ class LoginResourceImpl implements LoginResource {
 
                 return Promise.pure()
             }
-        }.then { // create 	 info
+        }.then { // create   info
             if (createUserRequest.dob == null) {
                 return Promise.pure()
             }
@@ -192,7 +192,7 @@ class LoginResourceImpl implements LoginResource {
                             value: ObjectMapperProvider.instance().valueToTree(new UserDOB(info: createUserRequest.dob))
                     )
             ).then { UserPersonalInfo dobInfo ->
-                user.dob = dobInfo.getId()	
+                user.dob = dobInfo.getId()  
                 return Promise.pure()
             }
         }.then { // create name info
@@ -222,11 +222,11 @@ class LoginResourceImpl implements LoginResource {
 
             // todo set the tos and newsPromotionsAgreed
         }.then {
-		    return resourceContainer.userResource.put(user.getId(), user).then { User u ->
-				user = u
-				return Promise.pure()
+            return resourceContainer.userResource.put(user.getId(), user).then { User u ->
+                user = u
+                return Promise.pure()
             }
-		}.recover { Throwable ex ->
+        }.recover { Throwable ex ->
             def promise = Promise.pure()
             
             if (user?.getId() != null) {
@@ -309,8 +309,8 @@ class LoginResourceImpl implements LoginResource {
 
     private Promise<Void> rollBackUser(User user) {
         String originalName = user.username
-		user.username = null
-		user.isAnonymous = true
+        user.username = null
+        user.isAnonymous = true
         user.emails = []
         user.phones = []
         user.addresses = []
