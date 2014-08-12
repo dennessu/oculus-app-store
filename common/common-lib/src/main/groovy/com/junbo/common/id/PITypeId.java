@@ -14,7 +14,7 @@ package com.junbo.common.id;
 public class PITypeId extends Id {
     public PITypeId() {}
 
-    public PITypeId(long value) {
+    public PITypeId(Long value) {
         super(value);
     }
 }

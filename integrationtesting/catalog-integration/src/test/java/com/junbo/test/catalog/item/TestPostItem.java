@@ -202,6 +202,8 @@ public class TestPostItem extends BaseTestClass {
     )
     @Test
     public void testPostDeveloperItem() throws Exception {
+        prepareCatalogAdminToken();
+
         ItemService itemService = ItemServiceImpl.instance();
         Item testItem = itemService.prepareItemEntity("developerItem");
         Item itemPosted = itemService.postItem(testItem);

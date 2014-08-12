@@ -15,7 +15,7 @@ package com.junbo.common.id;
 public class OrganizationId extends Id {
 
     public OrganizationId() {}
-    public OrganizationId(long value) {
+    public OrganizationId(Long value) {
         super(value);
     }
 }

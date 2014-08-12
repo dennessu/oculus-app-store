@@ -45,6 +45,7 @@ public class UserInfoFacadeImpl implements UserInfoFacade{
                         UserInfo userName = getUserName(user).get();
                         String email = getUserEmail(user).get();
                         userName.setEmail(email);
+                        userName.setAnonymous(user.getIsAnonymous());
                         return Promise.pure(userName);
                     };
                 });

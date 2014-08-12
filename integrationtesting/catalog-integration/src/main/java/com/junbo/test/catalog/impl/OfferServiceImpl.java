@@ -9,8 +9,11 @@ import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
 import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.Entities.enums.ComponentType;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.catalog.spec.model.item.ItemRevision;
@@ -501,6 +504,9 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         itemRevision.setLocales(locales);
 
         //Post and then approve the item revision
+        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
+        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
+
         ItemRevision itemRevisionPost = itemRevisionService.postItemRevision(itemRevision);
         itemRevisionPost.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
         itemRevisionService.updateItemRevision(itemRevisionPost.getRevisionId(), itemRevisionPost);

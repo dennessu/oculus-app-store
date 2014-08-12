@@ -514,6 +514,12 @@ class MigrationResourceImpl implements MigrationResource {
             throw AppCommonErrors.INSTANCE.fieldInvalid('currentId', 'Migration must have user\'s currentId').exception()
         }
 
+        if (oculusInput.gender != null) {
+            if(!oculusInput.gender.equals('MALE') && !oculusInput.gender.equals('FEMALE')) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid('gender', 'gender must be in [MALE, FEMALE]').exception()
+            }
+        }
+
         return userRepository.searchUserByMigrateId(oculusInput.currentId).then { User existingUser ->
             if (existingUser != null && existingUser.username != null) {
                 return userPersonalInfoRepository.get(existingUser.username).then { UserPersonalInfo userPersonalInfo ->

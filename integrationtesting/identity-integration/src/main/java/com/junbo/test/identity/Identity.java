@@ -33,6 +33,7 @@ public class Identity {
     public static final String IdentityV1CountryURI = IdentityEndPointV1 + "/countries";
     public static final String IdentityV1CurrencyURI = IdentityEndPointV1 + "/currencies";
     public static final String IdentityV1DeviceTypeURI = IdentityEndPointV1 + "/device-types";
+    public static final String IdentityV1ErrorInfoURI = IdentityEndPointV1 + "/error-info";
     public static final String IdentityV1GroupURI = IdentityEndPointV1 + "/groups";
     public static final String IdentityV1ImportsURI = IdentityEndPointV1 + "/imports";
     public static final String IdentityV1LocaleURI = IdentityEndPointV1 + "/locales";
@@ -309,6 +310,34 @@ public class Identity {
 
     public static void DeviceTypeDelete(String deviceTypeCode) throws Exception {
         IdentityDelete(IdentityV1DeviceTypeURI + "/" + deviceTypeCode);
+    }
+
+    public static ErrorInfo ErrorInfoDefault(ErrorInfo errorInfo) throws Exception {
+        ErrorInfo info = errorInfo == null ? IdentityModel.DefaultErrorInfo() : errorInfo;
+        return IdentityPost(IdentityV1ErrorInfoURI, JsonHelper.JsonSerializer(info), ErrorInfo.class);
+    }
+
+    public static ErrorInfo ErrorInfoPut(ErrorInfo errorInfo) throws Exception {
+        return IdentityPut(IdentityV1ErrorInfoURI + "/" + errorInfo.getErrorIdentifier(), JsonHelper.JsonSerializer(errorInfo), ErrorInfo.class);
+    }
+
+    public static ErrorInfo ErrorInfoGet(String errorIdentifier) throws Exception {
+        return IdentityGet(IdentityV1ErrorInfoURI + "/" + errorIdentifier, ErrorInfo.class);
+    }
+
+    public static Results<ErrorInfo> ErrorInfoGetAll() throws Exception {
+        Results<ErrorInfo> results = new Results<>();
+        results.setItems(new ArrayList<ErrorInfo>());
+        Results res = IdentityGet(IdentityV1ErrorInfoURI, Results.class);
+        for (Object obj : res.getItems()) {
+            results.getItems().add((ErrorInfo) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
+                    ErrorInfo.class));
+        }
+
+        results.setTotal(res.getTotal());
+        results.setNext(res.getNext());
+        results.setSelf(res.getSelf());
+        return results;
     }
 
     public static CloseableHttpResponse UserCredentialPostDefault(UserId userId, String oldPassword, String password) throws Exception {

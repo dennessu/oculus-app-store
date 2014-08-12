@@ -79,6 +79,7 @@ public class TestPutItemRevision extends BaseTestClass {
     @Test
     public void testPutItemRevision() throws Exception {
         this.prepareTestData();
+        prepareCatalogAdminToken();
 
         OrganizationService organizationService = OrganizationServiceImpl.instance();
         Organization organizationTmp = organizationService.postDefaultOrganization();

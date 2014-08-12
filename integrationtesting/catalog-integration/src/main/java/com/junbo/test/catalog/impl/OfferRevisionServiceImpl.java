@@ -5,6 +5,9 @@
  */
 package com.junbo.test.catalog.impl;
 
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.test.common.apihelper.HttpClientBase;
@@ -254,6 +257,9 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
         ItemRevision itemRevisionPost = itemRevisionService.postItemRevision(itemRevision);
 
         //Approve the item revision
+        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
+        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
+
         itemRevisionPost.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
         itemRevisionService.updateItemRevision(itemRevisionPost.getRevisionId(), itemRevisionPost);
 

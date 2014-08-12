@@ -1,3 +1,5 @@
+// CHECKSTYLE:OFF
+
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
@@ -278,6 +280,24 @@ public class IdentityModel {
         deviceType.setAvailableSoftware(availableSoftwareMap);
         return deviceType;
     }
+
+    public static ErrorInfo DefaultErrorInfo() throws Exception {
+        ErrorInfo errorInfo = new ErrorInfo();
+        String errorCode = RandomHelper.randomNumeric(3) + "." + RandomHelper.randomNumeric(2);
+        errorInfo.setErrorIdentifier(errorCode);
+        Map<String, JsonNode> locales = new HashMap<>();
+
+        ErrorDetail errorDetail = new ErrorDetail();
+        errorDetail.setErrorInformation(RandomHelper.randomAlphabetic(10));
+        errorDetail.setErrorSummary(RandomHelper.randomAlphabetic(10));
+        errorDetail.setErrorTitle(RandomHelper.randomAlphabetic(10));
+        errorDetail.setSupportLink(RandomHelper.randomAlphabetic(15));
+        locales.put("en_US", JsonHelper.ObjectToJsonNode(errorDetail));
+        errorInfo.setLocales(locales);
+
+        return errorInfo;
+    }
+
 
     public static String RandomGender() {
         List<Object> array = new ArrayList<>();

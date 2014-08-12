@@ -94,6 +94,7 @@ public class TestPutOfferRevision extends BaseTestClass {
     @Test
     public void testPutOfferRevision() throws Exception {
         this.prepareTestData();
+        prepareCatalogAdminToken();
 
         OfferRevision offerRevision = offerRevisionService.postDefaultOfferRevision(offer1);
 

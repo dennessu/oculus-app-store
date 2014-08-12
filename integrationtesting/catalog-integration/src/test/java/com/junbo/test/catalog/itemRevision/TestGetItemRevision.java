@@ -40,9 +40,10 @@ public class TestGetItemRevision extends BaseTestClass {
     private ItemService itemService = ItemServiceImpl.instance();
     private LogHelper logger = new LogHelper(TestGetItemRevision.class);
     private ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
+
     private Item testItem;
-    private final String defaultLocale = "en_US";
     private OrganizationId organizationId;
+    private final String defaultLocale = "en_US";
 
     private void prepareTestData() throws Exception {
         OrganizationService organizationService = OrganizationServiceImpl.instance();
@@ -114,10 +115,14 @@ public class TestGetItemRevision extends BaseTestClass {
         ItemRevision itemRevision = itemRevisionService.postDefaultItemRevision(testItem);
         ItemRevisionLocaleProperties itemRevisionLocaleProperties = itemRevision.getLocales().get(defaultLocale);
 
+        //Get without locale
+        ItemRevision itemRevisionRtn = itemRevisionService.getItemRevision(itemRevision.getRevisionId());
+        Assert.assertTrue(LocaleAccuracy.HIGH.is(itemRevisionRtn.getLocaleAccuracy()));
+
         //Get default locale
         locale.add(defaultLocale);
         httpPara.put("locale", locale);
-        ItemRevision itemRevisionRtn = itemRevisionService.getItemRevision(itemRevision.getRevisionId(), httpPara);
+        itemRevisionRtn = itemRevisionService.getItemRevision(itemRevision.getRevisionId(), httpPara);
         Assert.assertTrue(LocaleAccuracy.HIGH.is(itemRevisionRtn.getLocaleAccuracy()));
         Assert.assertEquals(itemRevisionRtn.getLocales().get(defaultLocale).getName(), itemRevisionLocaleProperties.getName());
 
@@ -435,13 +440,16 @@ public class TestGetItemRevision extends BaseTestClass {
         releaseItemRevision(itemRevision3);
         releaseItemRevision(itemRevision4);
 
-        //set locale
-        locales.add(defaultLocale);
-        getOptions.put("locale", locales);
-
         //get revisions by revisionId
         revisionIds.add(itemRevision4.getRevisionId());
         getOptions.put("revisionId", revisionIds);
+
+        //Get without locale
+        verifyGetResultsInLocale(getOptions, LocaleAccuracy.HIGH, itemRevision4);
+
+        //set locale
+        locales.add(defaultLocale);
+        getOptions.put("locale", locales);
 
         verifyGetResultsInLocale(getOptions, LocaleAccuracy.HIGH, itemRevision4);
 
@@ -496,7 +504,14 @@ public class TestGetItemRevision extends BaseTestClass {
     }
 
     private void verifyGetResultsInLocale(HashMap<String, List<String>> getOptions, LocaleAccuracy expectedLocaleAccuracy, ItemRevision... itemRevisions) throws Exception {
-        String locale = getOptions.get("locale").get(0);
+        String locale;
+
+        if (getOptions.get("locale") != null) {
+            locale = getOptions.get("locale").get(0);
+        } else {
+            locale = defaultLocale;
+        }
+
 
         Results<ItemRevision> itemRevisionsRtn = itemRevisionService.getItemRevisions(getOptions);
 

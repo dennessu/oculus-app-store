@@ -67,7 +67,7 @@ class CoreBuilder {
         order.orderItems.eachWithIndex { OrderItem item, int i ->
             def balanceItem = buildBalanceItem(item)
             if (item.id == null) {
-                balanceItem.orderItemId = new OrderItemId(i)
+                balanceItem.orderItemId = new OrderItemId(new Long(i))
             } else {
                 balanceItem.orderItemId = item.getId()
             }
@@ -96,7 +96,7 @@ class CoreBuilder {
             def balanceItem = buildOrUpdatePartialChargeBalanceItem(item, taxedBalance)
             if (taxedBalance == null) {
                 if (item.id == null) {
-                    balanceItem.orderItemId = new OrderItemId(i)
+                    balanceItem.orderItemId = new OrderItemId(new Long(i))
                 } else {
                     balanceItem.orderItemId = item.getId()
                 }
@@ -339,7 +339,7 @@ class CoreBuilder {
         }
 
         order.orderItems.eachWithIndex { OrderItem orderItem, int i ->
-            def orderItemId = orderItem.id == null ? new OrderItemId(i) : orderItem.id
+            def orderItemId = orderItem.id == null ? new OrderItemId(new Long(i)) : orderItem.id
             def balanceItem = balance.balanceItems.find { BalanceItem balanceItem ->
                 return balanceItem.orderItemId == orderItemId
             }

@@ -6,27 +6,36 @@
 package com.junbo.test.catalog.offerRevision;
 
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
+import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.catalog.impl.OfferRevisionServiceImpl;
+import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
 import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.catalog.spec.model.offer.OfferRevision;
+import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
+import com.junbo.test.catalog.enums.CatalogItemType;
+import com.junbo.test.catalog.impl.ItemServiceImpl;
 import com.junbo.test.catalog.OfferRevisionService;
+import com.junbo.test.catalog.enums.LocaleAccuracy;
+import com.junbo.test.catalog.ItemRevisionService;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.test.common.libs.IdConverter;
+import com.junbo.test.common.libs.RandomFactory;
+import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.catalog.OfferService;
 import com.junbo.common.id.OrganizationId;
+import com.junbo.test.catalog.ItemService;
+
 import com.junbo.test.common.property.*;
 import com.junbo.common.model.Results;
 
 import org.testng.annotations.Test;
 import org.testng.Assert;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Jason
@@ -36,15 +45,24 @@ import java.util.List;
 public class TestGetOfferRevision extends BaseTestClass {
 
     private LogHelper logger = new LogHelper(TestGetOfferRevision.class);
-    private OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
+
     private OfferService offerService = OfferServiceImpl.instance();
-    private OrganizationId organizationId;
+    private OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
+
+    private Item item;
     private Offer testOffer;
+    private OrganizationId organizationId;
+    private final String defaultLocale = "en_US";
 
     private void prepareTestData() throws Exception {
         OrganizationService organizationService = OrganizationServiceImpl.instance();
         organizationId = organizationService.postDefaultOrganization().getId();
         testOffer = offerService.postDefaultOffer(organizationId);
+
+        //Prepare an item
+        ItemService itemService = ItemServiceImpl.instance();
+        item = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
+        item = releaseItem(item);
     }
 
     @Property(
@@ -88,6 +106,118 @@ public class TestGetOfferRevision extends BaseTestClass {
 
     @Property(
             priority = Priority.Dailies,
+            features = "Get v1/offer-revisions/{offerRevisionId}?locale={locale}",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Test Get an offer revision by offerRevisionId and locale",
+            steps = {
+                    "1. Prepare an offer revision",
+                    "2. Get it id and locale",
+                    "3. Verify localeAccuracy and offerRevision locale property"
+            }
+    )
+    @Test
+    public void testGetAnOfferRevisionByIdLocale() throws Exception {
+        this.prepareTestData();
+
+        HashMap<String, List<String>> httpPara = new HashMap<>();
+        List<String> locale = new ArrayList<>();
+
+        //Prepare an offer revision
+        OfferRevision offerRevision = offerRevisionService.postDefaultOfferRevision(testOffer);
+        OfferRevisionLocaleProperties offerRevisionLocaleProperties = offerRevision.getLocales().get(defaultLocale);
+
+        //Get without locale
+        OfferRevision offerRevisionRtn = offerRevisionService.getOfferRevision(offerRevision.getRevisionId());
+        Assert.assertTrue(LocaleAccuracy.HIGH.is(offerRevisionRtn.getLocaleAccuracy()));
+
+        //Get default locale 1. Medium
+        locale.add(defaultLocale);
+        httpPara.put("locale", locale);
+        offerRevisionRtn = offerRevisionService.getOfferRevision(offerRevision.getRevisionId(), httpPara);
+        Assert.assertTrue(LocaleAccuracy.MEDIUM.is(offerRevisionRtn.getLocaleAccuracy()));
+        Assert.assertEquals(offerRevisionRtn.getLocales().get(defaultLocale).getName(), offerRevisionLocaleProperties.getName());
+
+        //Get default locale 2. High
+        ItemService itemService = ItemServiceImpl.instance();
+        ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
+
+        Item item = itemService.getItem(offerRevision.getItems().get(0).getItemId());
+        ItemRevision itemRevision = itemRevisionService.getItemRevision(item.getCurrentRevisionId());
+
+        Map<String, OfferRevisionLocaleProperties> locales = offerRevision.getLocales();
+        OfferRevisionLocaleProperties offerRevisionLocalePropertiesDefaultUS = locales.get(defaultLocale);
+        offerRevisionLocalePropertiesDefaultUS.setItems(itemRevision.getLocales());
+
+        locales.put(defaultLocale, offerRevisionLocalePropertiesDefaultUS);
+        offerRevision.setLocales(locales);
+        offerRevision = offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
+
+        offerRevisionRtn = offerRevisionService.getOfferRevision(offerRevision.getRevisionId(), httpPara);
+        Assert.assertTrue(LocaleAccuracy.HIGH.is(offerRevisionRtn.getLocaleAccuracy()));
+        Assert.assertEquals(offerRevisionRtn.getLocales().get(defaultLocale).getName(), offerRevisionLocaleProperties.getName());
+
+        //Get fr_FR
+        locale.clear();
+        locale.add("fr_FR");
+        httpPara.put("locale", locale);
+        offerRevisionRtn = offerRevisionService.getOfferRevision(offerRevision.getRevisionId(), httpPara);
+        Assert.assertTrue(LocaleAccuracy.LOW.is(offerRevisionRtn.getLocaleAccuracy()));
+        Assert.assertEquals(offerRevisionRtn.getLocales().get("fr_FR").getName(), offerRevisionLocaleProperties.getName());
+
+        //get zh_CN
+        locale.clear();
+        locale.add("zh_CN");
+        httpPara.put("locale", locale);
+        offerRevisionRtn = offerRevisionService.getOfferRevision(offerRevision.getRevisionId(), httpPara);
+        Assert.assertTrue(LocaleAccuracy.LOW.is(offerRevisionRtn.getLocaleAccuracy()));
+        Assert.assertEquals(offerRevisionRtn.getLocales().get("zh_CN").getName(), offerRevisionLocaleProperties.getName());
+
+        //Add fr_FR locale to the offer revision
+        locales = offerRevision.getLocales();
+        OfferRevisionLocaleProperties offerRevisionLocalePropertiesFR = new OfferRevisionLocaleProperties();
+        offerRevisionLocalePropertiesFR.setName("testOfferRevision_fr_FR_" + RandomFactory.getRandomStringOfAlphabet(10));
+        locales.put("fr_FR", offerRevisionLocalePropertiesFR);
+
+        offerRevision.setLocales(locales);
+        offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
+
+        //try get default locale
+        locale.clear();
+        locale.add(defaultLocale);
+        httpPara.put("locale", locale);
+        offerRevisionRtn = offerRevisionService.getOfferRevision(offerRevision.getRevisionId(), httpPara);
+        Assert.assertTrue(LocaleAccuracy.HIGH.is(offerRevisionRtn.getLocaleAccuracy()));
+        Assert.assertEquals(offerRevisionRtn.getLocales().get(defaultLocale).getName(), offerRevisionLocaleProperties.getName());
+
+        //Get fr_FR
+        locale.clear();
+        locale.add("fr_FR");
+        httpPara.put("locale", locale);
+        offerRevisionRtn = offerRevisionService.getOfferRevision(offerRevision.getRevisionId(), httpPara);
+        Assert.assertTrue(LocaleAccuracy.MEDIUM.is(offerRevisionRtn.getLocaleAccuracy()));
+        Assert.assertEquals(offerRevisionRtn.getLocales().get("fr_FR").getName(), offerRevisionLocalePropertiesFR.getName());
+
+        //Get fr_CA
+        locale.clear();
+        locale.add("fr_CA");
+        httpPara.put("locale", locale);
+        offerRevisionRtn = offerRevisionService.getOfferRevision(offerRevision.getRevisionId(), httpPara);
+        Assert.assertTrue(LocaleAccuracy.LOW.is(offerRevisionRtn.getLocaleAccuracy()));
+        Assert.assertEquals(offerRevisionRtn.getLocales().get("fr_CA").getName(), offerRevisionLocalePropertiesFR.getName());
+
+        //get zh_CN
+        locale.clear();
+        locale.add("zh_CN");
+        httpPara.put("locale", locale);
+        offerRevisionRtn = offerRevisionService.getOfferRevision(offerRevision.getRevisionId(), httpPara);
+        Assert.assertTrue(LocaleAccuracy.LOW.is(offerRevisionRtn.getLocaleAccuracy()));
+        Assert.assertEquals(offerRevisionRtn.getLocales().get("zh_CN").getName(), offerRevisionLocaleProperties.getName());
+    }
+
+    @Property(
+            priority = Priority.Dailies,
             features = "Get v1/offer-revisions?offerId=&revisionId=",
             component = Component.Catalog,
             owner = "JasonFu",
@@ -107,6 +237,8 @@ public class TestGetOfferRevision extends BaseTestClass {
         HashMap<String, List<String>> getOptions = new HashMap<>();
         List<String> offerIds = new ArrayList<>();
         List<String> revisionIds = new ArrayList<>();
+        List<String> status = new ArrayList<>();
+        List<String> publisher = new ArrayList<>();
 
         //Prepare two offers
         Offer offer1 = offerService.postDefaultOffer(organizationId);
@@ -115,10 +247,17 @@ public class TestGetOfferRevision extends BaseTestClass {
         String offerId2 = offer2.getOfferId();
 
         //Prepare some offer revisions
-        OfferRevision offerRevision1 = offerRevisionService.postDefaultOfferRevision(offer1);
-        OfferRevision offerRevision2 = offerRevisionService.postDefaultOfferRevision(offer1);
-        OfferRevision offerRevision3 = offerRevisionService.postDefaultOfferRevision(offer2);
-        OfferRevision offerRevision4 = offerRevisionService.postDefaultOfferRevision(offer2);
+        OfferRevision offerRevision1 = offerRevisionService.postDefaultOfferRevision(offer1, item);
+        OfferRevision offerRevision2 = offerRevisionService.postDefaultOfferRevision(offer1, item);
+        OfferRevision offerRevision3 = offerRevisionService.postDefaultOfferRevision(offer2, item);
+        OfferRevision offerRevision4 = offerRevisionService.postDefaultOfferRevision(offer2, item);
+
+        //set status
+        status.add(CatalogEntityStatus.DRAFT.name());
+        getOptions.put("status", status);
+
+        publisher.add(IdConverter.idToHexString(organizationId));
+        getOptions.put("publisherId", publisher);
 
         //get revisions by offerId
         offerIds.add(offerId1);
@@ -191,8 +330,8 @@ public class TestGetOfferRevision extends BaseTestClass {
         Offer offer2 = offerService.postDefaultOffer(organizationId);
 
         //Prepare some offer revisions
-        OfferRevision offerRevision1 = offerRevisionService.postDefaultOfferRevision(offer1);
-        OfferRevision offerRevision2 = offerRevisionService.postDefaultOfferRevision(offer2);
+        OfferRevision offerRevision1 = offerRevisionService.postDefaultOfferRevision(offer1, item);
+        OfferRevision offerRevision2 = offerRevisionService.postDefaultOfferRevision(offer2, item);
         String offerRevisionId1 = offerRevision1.getRevisionId();
         String offerRevisionId2 = offerRevision2.getRevisionId();
 
@@ -248,10 +387,10 @@ public class TestGetOfferRevision extends BaseTestClass {
         String offerId1 = offer1.getOfferId();
         String offerId2 = offer2.getOfferId();
         //Prepare some offer revisions
-        OfferRevision offerRevision1 = offerRevisionService.postDefaultOfferRevision(offer1);
-        OfferRevision offerRevision2 = offerRevisionService.postDefaultOfferRevision(offer1);
-        OfferRevision offerRevision3 = offerRevisionService.postDefaultOfferRevision(offer2);
-        OfferRevision offerRevision4 = offerRevisionService.postDefaultOfferRevision(offer2);
+        OfferRevision offerRevision1 = offerRevisionService.postDefaultOfferRevision(offer1, item);
+        OfferRevision offerRevision2 = offerRevisionService.postDefaultOfferRevision(offer1, item);
+        OfferRevision offerRevision3 = offerRevisionService.postDefaultOfferRevision(offer2, item);
+        OfferRevision offerRevision4 = offerRevisionService.postDefaultOfferRevision(offer2, item);
 
         offerIds.add(offerId1);
         offerIds.add(offerId2);
@@ -297,6 +436,85 @@ public class TestGetOfferRevision extends BaseTestClass {
 
     }
 
+    @Property(
+            priority = Priority.Dailies,
+            features = "Get v1/offer-revisions?revisionId=&locale=",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Test Get offer revisions by revisionId and locale",
+            steps = {
+                    "1. Prepare some offer revision",
+                    "2. Get them by id and locale",
+                    "3. Verify localeAccuracy and offerRevision locale property"
+            }
+    )
+    @Test
+    public void testGetOfferRevisionsByRevisionIdLocale() throws Exception {
+        this.prepareTestData();
+
+        HashMap<String, List<String>> getOptions = new HashMap<>();
+        List<String> revisionIds = new ArrayList<>();
+        List<String> locales = new ArrayList<>();
+        List<String> status = new ArrayList<>();
+        List<String> publisher = new ArrayList<>();
+
+        //Prepare two offers
+        Offer offer1 = offerService.postDefaultOffer(organizationId);
+        Offer offer2 = offerService.postDefaultOffer(organizationId);
+
+        //Prepare some offer revisions
+        OfferRevision offerRevision1 = offerRevisionService.postDefaultOfferRevision(offer1, item);
+        OfferRevision offerRevision2 = offerRevisionService.postDefaultOfferRevision(offer1, item);
+        OfferRevision offerRevision3 = offerRevisionService.postDefaultOfferRevision(offer2, item);
+        OfferRevision offerRevision4 = offerRevisionService.postDefaultOfferRevision(offer2, item);
+
+        //set status to draft as if status is not specified, it will be set to APPROVED
+        status.add(CatalogEntityStatus.DRAFT.name());
+        getOptions.put("status", status);
+
+        publisher.add(IdConverter.idToHexString(organizationId));
+        getOptions.put("publisherId", publisher);
+
+        //get revisions by revisionId, without locale
+        revisionIds.add(offerRevision4.getRevisionId());
+        getOptions.put("revisionId", revisionIds);
+
+        verifyGetResultsInLocale(getOptions, LocaleAccuracy.HIGH, offerRevision4);
+
+        //set locale
+        locales.add(defaultLocale);
+        getOptions.put("locale", locales);
+
+        verifyGetResultsInLocale(getOptions, LocaleAccuracy.MEDIUM, offerRevision4);
+
+        //get revisions by revisionId
+        revisionIds.add(offerRevision2.getRevisionId());
+        revisionIds.add(offerRevision3.getRevisionId());
+        getOptions.put("revisionId", revisionIds);
+
+        verifyGetResultsInLocale(getOptions, LocaleAccuracy.MEDIUM, offerRevision2, offerRevision3, offerRevision4);
+
+        //set locale
+        locales.clear();
+        locales.add("fr_FR");
+        getOptions.put("locale", locales);
+
+        verifyGetResultsInLocale(getOptions, LocaleAccuracy.LOW, offerRevision2, offerRevision3, offerRevision4);
+
+        //set another locale
+        locales.clear();
+        locales.add("zh_CN");
+        getOptions.put("locale", locales);
+
+        revisionIds.clear();
+        revisionIds.add(offerRevision1.getRevisionId());
+        getOptions.put("revisionId", revisionIds);
+
+        verifyGetResultsInLocale(getOptions, LocaleAccuracy.LOW, offerRevision1);
+
+    }
+
     private void verifyInvalidScenarios(String offerRevisionId) throws Exception {
         try {
             offerRevisionService.getOfferRevision(offerRevisionId, null, 404);
@@ -310,6 +528,11 @@ public class TestGetOfferRevision extends BaseTestClass {
     private void setSearchStatus(String status, HashMap<String, List<String>> getOptions, int expectedRtnSize, OfferRevision... offerRevisions)
             throws Exception {
         List<String> searchStatus = new ArrayList<>();
+        List<String> publisher = new ArrayList<>();
+
+        publisher.add(IdConverter.idToHexString(organizationId));
+        getOptions.put("publisherId", publisher);
+
         searchStatus.add(status);
         getOptions.put("status", searchStatus);
 
@@ -324,5 +547,26 @@ public class TestGetOfferRevision extends BaseTestClass {
         }
     }
 
+    private void verifyGetResultsInLocale(HashMap<String, List<String>> getOptions, LocaleAccuracy expectedLocaleAccuracy,
+                                          OfferRevision... offerRevisions) throws Exception {
+        String locale;
+
+        if (getOptions.get("locale") != null) {
+            locale = getOptions.get("locale").get(0);
+        } else {
+            locale = defaultLocale;
+        }
+
+        Results<OfferRevision> offerRevisionsRtn = offerRevisionService.getOfferRevisions(getOptions);
+
+        for (OfferRevision temp : offerRevisions) {
+            Assert.assertTrue(isContain(offerRevisionsRtn, temp));
+        }
+
+        for (OfferRevision temp : offerRevisionsRtn.getItems()) {
+            Assert.assertNotNull(temp.getLocales().get(locale));
+            Assert.assertEquals(temp.getLocaleAccuracy(), expectedLocaleAccuracy.name());
+        }
+    }
 }
 

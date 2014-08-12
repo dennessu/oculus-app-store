@@ -7,36 +7,49 @@ package com.junbo.identity.spec.v1.model.migration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.jackson.annotation.XSSFreeString;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 6/18/14.
  */
 public class Company {
+    @ApiModelProperty(position = 1, required = true, value = "The company id in oculus database.")
     @JsonProperty("id")
     private Long companyId;
+
+    @ApiModelProperty(position = 2, required = true, value = "The company name in oculus database.")
     @XSSFreeString
     private String name;
 
+    @ApiModelProperty(position = 3, required = false, value = "The company address in oculus database.")
     @XSSFreeString
     private String address;
 
+    @ApiModelProperty(position = 4, required = false, value = "The company city in oculus database.")
     @XSSFreeString
     private String city;
 
+    @ApiModelProperty(position = 5, required = false, value = "The company state in oculus database.")
     @XSSFreeString
     private String state;
 
+    @ApiModelProperty(position = 6, required = false, value = "The company postalcode in oculus database.")
     @XSSFreeString
     private String postalCode;
 
+    @ApiModelProperty(position = 7, required = false, value = "The company country in oculus database.")
     @XSSFreeString
     private String country;
 
+    @ApiModelProperty(position = 8, required = false, value = "The company phone in oculus database.")
     @XSSFreeString
     private String phone;
 
+    @ApiModelProperty(position = 9, required = false, value = "The company type in oculus database, it must be [CORPORATE, INDIVIDUAL]")
     @XSSFreeString
     private String type;
+
+    @ApiModelProperty(position = 10, required = false, value = "Whether the user is the administrator of the company.")
     private Boolean isAdmin;
 
     public Long getCompanyId() {

@@ -115,6 +115,9 @@ public class DrmTesting extends TestClass {
         ItemService itemService = ItemServiceImpl.instance();
         ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
 
+        OAuthService oAuthTokenService = OAuthServiceImpl.getInstance();
+        oAuthTokenService.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
+
         //Attach item revision to the item
         ItemRevision itemRevision = itemRevisionService.postDefaultItemRevision(item);
 
