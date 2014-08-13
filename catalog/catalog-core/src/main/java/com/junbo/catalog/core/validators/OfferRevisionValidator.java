@@ -182,9 +182,9 @@ public class OfferRevisionValidator extends ValidationSupport {
             if (validateFieldNotNull("items.item.id", itemEntry.getItemId(), errors)) {
                 Item item = itemRepo.get(itemEntry.getItemId());
                 if (validateResourceExists("item", itemEntry.getItemId(), item, errors)) {
-                    if (revision.getOwnerId() != null && !revision.getOwnerId().equals(item.getOwnerId())) {
+                    /*if (revision.getOwnerId() != null && !revision.getOwnerId().equals(item.getOwnerId())) {
                         errors.add(AppCommonErrors.INSTANCE.fieldInvalid("items", "offer should only contains items of same owner"));
-                    }
+                    }*/
                     if (ItemType.STORED_VALUE.is(item.getType())) {
                         svItemId = item.getItemId();
                     }
