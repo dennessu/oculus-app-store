@@ -510,6 +510,18 @@ Be careful if you have concern that other people's change might conflict with yo
 ## What if I'm confused with what happened in my branch?
 If all above **HOWTO**s didn't help and you are confused with your branch status, turn to colleges who are more familiar with git for help. For example, you can ask [Kevin Gu](kg@silkcloud.com), [Tianxiang Chen](txchen@silkcloud.com) or [Shu Zhang](shuz@silkcloud.com) for help.
 
+## How to make a change to staging branch?
+The basic flow is the same as other changes. However you need to create your branch using:
+```
+arc feature my_urgent_fix origin/release
+```
+When commit, use the following command to land the changes:
+```
+arc land --onto release
+```
+Note: all changes to release branch MUST be reviewed by another person working on the same component and one person working on infra (for example, shuz). The check-in is only allowed after accepted by both of the reviewers. You still need to make sure the change is verified even it's code reviewed.
+We'll periodically reverse integrate to master. If you need your changes in master immediately, you can manually check-in the same change to master.
+
 # References
   * [Git Config Guide](https://silkcloud.atlassian.net/wiki/display/IN/Git+config+guide)
   * [Git Setup Guide](https://code.silkcloud.info/w/git_setup_guide/)
