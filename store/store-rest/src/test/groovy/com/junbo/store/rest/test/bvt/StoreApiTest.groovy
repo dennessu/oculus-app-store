@@ -155,7 +155,7 @@ class StoreApiTest extends AbstractTestNGSpringContextTests {
 
         assert billingProfile.instruments.size() == 1
 
-        OfferId offerId = testUtils.getByName('testOffer_CartCheckout_Digital1')
+        OfferId offerId = testUtils.getByName(digitalOfferName)
         result = storeResource.preparePurchase(new PreparePurchaseRequest(offer: offerId, country: new CountryId('US'), locale: new LocaleId('en_US'))).get()
         assert result.purchaseToken != null
         assert result.challenge.type == 'PIN'

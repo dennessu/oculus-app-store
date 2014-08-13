@@ -225,7 +225,7 @@ class CloudantClientImpl implements CloudantClientInternal {
 
             if (response.statusCode != HttpStatus.OK.value()) {
                 CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
-                throw new CloudantException("Failed to query the view, error: $cloudantError.error," +
+                throw new CloudantException("Failed to query the view $viewName, error: $cloudantError.error," +
                         " reason: $cloudantError.reason")
             }
 
@@ -259,7 +259,7 @@ class CloudantClientImpl implements CloudantClientInternal {
 
             if (response.statusCode != HttpStatus.OK.value()) {
                 CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
-                throw new CloudantException("Failed to query the view, error: $cloudantError.error," +
+                throw new CloudantException("Failed to query the view $viewName, error: $cloudantError.error," +
                         " reason: $cloudantError.reason")
             }
 
@@ -280,7 +280,7 @@ class CloudantClientImpl implements CloudantClientInternal {
 
             if (response.statusCode != HttpStatus.OK.value()) {
                 CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
-                throw new CloudantException("Failed to query the view, error: $cloudantError.error," +
+                throw new CloudantException("Failed to query the view $viewName, error: $cloudantError.error," +
                         " reason: $cloudantError.reason")
             }
 
@@ -321,7 +321,7 @@ class CloudantClientImpl implements CloudantClientInternal {
 
             if (response.statusCode != HttpStatus.OK.value()) {
                 CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
-                throw new CloudantException("Failed to query the view, error: $cloudantError.error," +
+                throw new CloudantException("Failed to query the view $viewName, error: $cloudantError.error," +
                         " reason: $cloudantError.reason")
             }
 
@@ -341,7 +341,7 @@ class CloudantClientImpl implements CloudantClientInternal {
         return executeRequest(dbUri, HttpMethod.POST, Utils.combineUrl(SEARCH_PATH, searchName), [:], searchRequest).then({ Response response ->
             if (response.statusCode != HttpStatus.OK.value()) {
                 CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
-                throw new CloudantException("Failed to query the view, error: $cloudantError.error," +
+                throw new CloudantException("Failed to query the view $searchName, error: $cloudantError.error," +
                         " reason: $cloudantError.reason")
             }
 
