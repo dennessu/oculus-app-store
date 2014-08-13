@@ -59,6 +59,5 @@ fi
 ./refresh-couch.sh
 ./refresh-dbs.sh
 ./refresh-apps.sh
-./dataloader.sh masterkey
-./copy-masterkey.sh
 ./dataloader.sh
+./copy-masterkey.sh

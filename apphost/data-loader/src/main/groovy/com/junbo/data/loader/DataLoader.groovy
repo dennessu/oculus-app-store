@@ -79,19 +79,17 @@ class DataLoader {
                 LOGGER.info("loading all data")
                 load(dataList, junboThreadPool)
                 LOGGER.info("loading data end")
-            } else if (args.length == 1 && args[0].equalsIgnoreCase("masterkey")) {
+            } else if (args.length == 1 && args[0].equalsIgnoreCase("newmasterkey")) {
                 try {
                     DataHandler handler = handlers["masterkey"];
-                    handler.handle(null)
+                    handler.handle("newkey")
                 } catch (Exception e) {
                     LOGGER.error("Error occured while generating masterkey", e)
                     fail()
                 }
             } else {
                 List<String> list = CollectionUtils.arrayToList(args)
-
                 checkData(list)
-
                 load(list, junboThreadPool)
                 LOGGER.info("loading data end")
             }

@@ -101,6 +101,7 @@
         </property>
         <property name="dataList">
             <list>
+                <value>masterkey</value>
                 <value>client</value>
                 <value>scope</value>
                 <value>locale</value>
@@ -108,7 +109,6 @@
                 <value>country</value>
                 <value>pitype</value>
                 <value>email-template</value>
-                <value>masterkey</value>
                 <value>user</value>
                 <value>organization</value>
                 <value>group</value>
