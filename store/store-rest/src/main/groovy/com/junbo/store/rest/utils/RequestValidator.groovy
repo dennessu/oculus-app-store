@@ -9,6 +9,7 @@ import com.junbo.common.id.OrderId
 import com.junbo.common.id.PIType
 import com.junbo.common.id.UserId
 import com.junbo.common.util.IdFormatter
+import com.junbo.identity.spec.v1.model.Country
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
@@ -17,7 +18,6 @@ import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.ChallengeAnswer
 import com.junbo.store.spec.model.billing.BillingProfileGetRequest
-import com.junbo.store.spec.model.billing.BillingProfileUpdateRequest
 import com.junbo.store.spec.model.billing.InstrumentUpdateRequest
 import com.junbo.store.spec.model.identity.UserProfileUpdateRequest
 import com.junbo.store.spec.model.identity.UserProfileUpdateResponse
@@ -25,13 +25,13 @@ import com.junbo.store.spec.model.login.*
 import com.junbo.store.spec.model.purchase.CommitPurchaseRequest
 import com.junbo.store.spec.model.purchase.MakeFreePurchaseRequest
 import com.junbo.store.spec.model.purchase.PreparePurchaseRequest
-import com.junbo.store.spec.model.purchase.SelectInstrumentRequest
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 
 import javax.annotation.Resource
+
 /**
  * The RequestValidator class.
  */
@@ -158,14 +158,18 @@ class RequestValidator {
 
     Promise validateBillingProfileGetRequest(BillingProfileGetRequest request) {
         notEmpty(request.country, 'country')
-        notEmpty(request.locale, 'locale')
         return Promise.pure(null)
     }
 
-    Promise validateCountryAndLocale(CountryId country, LocaleId locale) {
-        resourceContainer.countryResource.get(country, new CountryGetOptions()).then {
-            resourceContainer.localeResource.get(locale, new LocaleGetOptions())
+    Promise<Country> validateAndGetCountry(CountryId country) {
+        resourceContainer.countryResource.get(country, new CountryGetOptions())
+    }
+
+    Promise<com.junbo.identity.spec.v1.model.Locale> validateAndGetLocale(Country country, LocaleId locale) {
+        if (locale != null) {
+            return resourceContainer.localeResource.get(locale, new LocaleGetOptions())
         }
+        return resourceContainer.localeResource.get(country.defaultLocale, new LocaleGetOptions())
     }
 
     Promise validateOffer(OfferId offer) {
@@ -178,7 +182,6 @@ class RequestValidator {
         }
         notEmpty(request.instrument, 'instrument')
         notEmpty(request.country, 'country')
-        notEmpty(request.locale, 'locale')
         if (request.instrument.self == null) { // validate for create
             notEmpty(request.instrument.type, 'instrument.type')
             PIType piType
@@ -204,7 +207,6 @@ class RequestValidator {
         }
         notEmpty(request.offer, 'offer')
         notEmpty(request.country, 'country')
-        notEmpty(request.locale, 'locale')
         return Promise.pure(null)
     }
 
@@ -214,7 +216,6 @@ class RequestValidator {
         }
         notEmpty(request.offer, 'offerId')
         notEmpty(request.country, 'country')
-        notEmpty(request.locale, 'locale')
         if (request.iapParams != null) {
             notEmpty(request.iapParams.packageName, 'iapParams.packageName')
             notEmpty(request.iapParams.packageSignatureHash, 'iapParams.packageSignatureHash')

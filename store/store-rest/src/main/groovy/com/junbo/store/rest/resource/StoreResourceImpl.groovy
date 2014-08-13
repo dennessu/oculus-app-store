@@ -299,7 +299,7 @@ class StoreResourceImpl implements StoreResource {
     }
 
     @Override
-    Promise<BillingProfileGetResponse> getBillingProfile(@BeanParam BillingProfileGetRequest billingProfileGetRequest) {
+    Promise<BillingProfileGetResponse> getBillingProfile(@BeanParam BillingProfileGetRequest request) {
         User user
         BillingProfileGetResponse response = new BillingProfileGetResponse()
 
@@ -309,11 +309,16 @@ class StoreResourceImpl implements StoreResource {
                 return Promise.pure()
             }
         }.then {
-            requestValidator.validateBillingProfileGetRequest(billingProfileGetRequest).then {
-                requestValidator.validateCountryAndLocale(billingProfileGetRequest.country, billingProfileGetRequest.locale)
+            requestValidator.validateBillingProfileGetRequest(request).then {
+                requestValidator.validateAndGetCountry(request.country).then { Country country ->
+                    requestValidator.validateAndGetLocale(country, request.locale).then { Locale locale ->
+                        request.locale = locale.getId()
+                        return Promise.pure()
+                    }
+                }
             }
         }.then {
-            return innerGetBillingProfile(user, billingProfileGetRequest.locale, billingProfileGetRequest.country, billingProfileGetRequest.offer).syncThen { BillingProfile billingProfile ->
+            return innerGetBillingProfile(user, request.locale, request.country, request.offer).syncThen { BillingProfile billingProfile ->
                 response.billingProfile = billingProfile
                 return response
             }
@@ -321,19 +326,26 @@ class StoreResourceImpl implements StoreResource {
     }
 
     @Override
-    Promise<InstrumentUpdateResponse> updateInstrument(InstrumentUpdateRequest instrumentUpdateRequest) {
+    Promise<InstrumentUpdateResponse> updateInstrument(InstrumentUpdateRequest request) {
         User user
         Promise.pure().then {
-            requestValidator.validateInstrumentUpdateRequest(instrumentUpdateRequest)
+            requestValidator.validateInstrumentUpdateRequest(request).then {
+                requestValidator.validateAndGetCountry(request.country).then { Country country ->
+                    requestValidator.validateAndGetLocale(country, request.locale).then { Locale locale ->
+                        request.locale = locale.getId()
+                        return Promise.pure()
+                    }
+                }
+            }
         }.then {
             identityUtils.getUserFromToken().then { User u ->
                 user = u
                 return Promise.pure()
             }
         }.then {
-            instrumentUtils.updateInstrument(user, instrumentUpdateRequest)
+            instrumentUtils.updateInstrument(user, request)
         }.then {
-            innerGetBillingProfile(user, instrumentUpdateRequest.locale, instrumentUpdateRequest.country, null as OfferId).then { BillingProfile billingProfile ->
+            innerGetBillingProfile(user, request.locale, request.country, null as OfferId).then { BillingProfile billingProfile ->
                 InstrumentUpdateResponse response = new InstrumentUpdateResponse(
                         billingProfile: billingProfile
                 )
@@ -446,21 +458,28 @@ class StoreResourceImpl implements StoreResource {
     }
 
     @Override
-    Promise<MakeFreePurchaseResponse> makeFreePurchase(MakeFreePurchaseRequest makeFreePurchaseRequest) {
+    Promise<MakeFreePurchaseResponse> makeFreePurchase(MakeFreePurchaseRequest request) {
         User user
         identityUtils.getUserFromToken().then { User u ->
             user = u
             return Promise.pure(null)
         }.then {
-            requestValidator.validateMakeFreePurchaseRequest(makeFreePurchaseRequest)
+            requestValidator.validateMakeFreePurchaseRequest(request).then {
+                requestValidator.validateAndGetCountry(request.country).then { Country country ->
+                    requestValidator.validateAndGetLocale(country, request.locale).then { Locale locale ->
+                        request.locale = locale.getId()
+                        return Promise.pure()
+                    }
+                }
+            }
         }.then {
             Order order = new Order(
                     user: user.getId(),
-                    country: makeFreePurchaseRequest.country,
+                    country: request.country,
                     currency: new CurrencyId(FREE_PURCHASE_CURRENCY),
-                    locale: makeFreePurchaseRequest.locale,
+                    locale: request.locale,
                     tentative: true,
-                    orderItems: [new OrderItem(offer: makeFreePurchaseRequest.offer, quantity: 1)]
+                    orderItems: [new OrderItem(offer: request.offer, quantity: 1)]
             )
 
             return resourceContainer.orderResource.createOrder(order).syncThen { Order o ->
@@ -480,8 +499,8 @@ class StoreResourceImpl implements StoreResource {
     }
 
     @Override
-    Promise<PreparePurchaseResponse> preparePurchase(PreparePurchaseRequest preparePurchaseRequest) {
-        OfferId offerId = preparePurchaseRequest.offer
+    Promise<PreparePurchaseResponse> preparePurchase(PreparePurchaseRequest request) {
+        OfferId offerId = request.offer
         Item hostItem
         User user
         CurrencyId currencyId
@@ -494,50 +513,57 @@ class StoreResourceImpl implements StoreResource {
             user = u
             return Promise.pure(null)
         }.then {
-            requestValidator.validatePreparePurchaseRequest(preparePurchaseRequest)
+            requestValidator.validatePreparePurchaseRequest(request).then {
+                requestValidator.validateAndGetCountry(request.country).then { Country country ->
+                    requestValidator.validateAndGetLocale(country, request.locale).then { Locale locale ->
+                        request.locale = locale.getId()
+                        return Promise.pure()
+                    }
+                }
+            }
         }.then {
-            if (preparePurchaseRequest.purchaseToken == null) {
+            if (request.purchaseToken == null) {
                 purchaseState = new PurchaseState(timestamp: new Date())
                 return Promise.pure(null)
             }
-            purchaseTokenProcessor.toPurchaseState(preparePurchaseRequest.purchaseToken).then { PurchaseState ps ->
+            purchaseTokenProcessor.toPurchaseState(request.purchaseToken).then { PurchaseState ps ->
                 purchaseState = ps
                 return Promise.pure(null)
             }
         }.then {
-            fillPurchaseState(purchaseState, preparePurchaseRequest)
+            fillPurchaseState(purchaseState, request)
             return Promise.pure(null)
         }.then {
-            resourceContainer.countryResource.get(preparePurchaseRequest.country, new CountryGetOptions()).then { Country country ->
+            resourceContainer.countryResource.get(request.country, new CountryGetOptions()).then { Country country ->
                 currencyId = country.defaultCurrency
                 return Promise.pure(null)
             }
         }.then { // validate offer if inapp purchase
-            if (preparePurchaseRequest.iapParams != null) {
-                return getItemByPackageName(preparePurchaseRequest.iapParams.packageName).then { Item item ->
+            if (request.iapParams != null) {
+                return getItemByPackageName(request.iapParams.packageName).then { Item item ->
                     hostItem = item
                     return iapValidator.validateInAppOffer(offerId, hostItem)
                 }
             }
             return Promise.pure(null)
         }.then {
-            if (preparePurchaseRequest.instrument == null) {
+            if (request.instrument == null) {
                 return Promise.pure(null)
             }
-            return validateInstrumentForPreparePurchase(user, preparePurchaseRequest)
+            return validateInstrumentForPreparePurchase(user, request)
         }.then { // currently challenge is always needed
             if (purchaseState.prepareChallengePassed) { // challenge already passed
                 return Promise.pure(null)
             }
-            if (preparePurchaseRequest.challengeAnswer != null) {
-                if (preparePurchaseRequest.challengeAnswer.type != 'PIN') {
+            if (request.challengeAnswer != null) {
+                if (request.challengeAnswer.type != 'PIN') {
                     throw AppCommonErrors.INSTANCE.fieldInvalid('challengeAnswer.type', 'challengeAnswer could be only PIN').exception()
                 }
                 return resourceContainer.userCredentialVerifyAttemptResource.create(
                         new UserCredentialVerifyAttempt(
                                 userId: user.getId(),
-                                type: preparePurchaseRequest.challengeAnswer.type,
-                                value: preparePurchaseRequest.challengeAnswer.pin
+                                type: request.challengeAnswer.type,
+                                value: request.challengeAnswer.pin
                         )
                 ).then {
                     purchaseState.prepareChallengePassed = true
@@ -560,23 +586,23 @@ class StoreResourceImpl implements StoreResource {
 
             Order order = new Order(
                     user: user.getId(),
-                    country: preparePurchaseRequest.country,
+                    country: request.country,
                     currency: currencyId,
-                    locale: preparePurchaseRequest.locale,
+                    locale: request.locale,
                     tentative: true,
-                    orderItems: [new OrderItem(offer: preparePurchaseRequest.offer, quantity: 1)]
+                    orderItems: [new OrderItem(offer: request.offer, quantity: 1)]
             )
 
-            if (preparePurchaseRequest.instrument != null) {
-                order.payments = [new PaymentInfo(paymentInstrument : preparePurchaseRequest.instrument)]
-                selectedInstrument = preparePurchaseRequest.instrument
+            if (request.instrument != null) {
+                order.payments = [new PaymentInfo(paymentInstrument : request.instrument)]
+                selectedInstrument = request.instrument
             } else if (user.defaultPI != null) {
                 order.payments = [new PaymentInfo(paymentInstrument : user.defaultPI)]
                 selectedInstrument = user.defaultPI
             }
-            if (preparePurchaseRequest.iapParams != null) {
+            if (request.iapParams != null) {
                 order.properties = [:]
-                order.properties.put('iap.packageName', preparePurchaseRequest.iapParams.packageName)
+                order.properties.put('iap.packageName', request.iapParams.packageName)
                 order.properties.put('iap.hostItemId', hostItem.itemId)
             }
 

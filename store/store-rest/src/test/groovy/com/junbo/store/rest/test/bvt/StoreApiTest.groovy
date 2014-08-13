@@ -41,6 +41,7 @@ class StoreApiTest extends AbstractTestNGSpringContextTests {
 
     public static String packageName = 'com.oculusvr.store.iap.sample'
 
+    public static LocaleId locale = null // new LocaleId('en_US')
 
     @Autowired(required = true)
     @Qualifier('storeResourceClientProxy')
@@ -110,9 +111,9 @@ class StoreApiTest extends AbstractTestNGSpringContextTests {
 
         Instrument instrument = Generator.generateCreditCardInstrument()
 
-        result = storeResource.getBillingProfile(new BillingProfileGetRequest(locale: new LocaleId('en_US'), country: new CountryId('US'))).get()
+        result = storeResource.getBillingProfile(new BillingProfileGetRequest(locale: locale, country: new CountryId('US'))).get()
         def billingProfile = storeResource.updateInstrument(new InstrumentUpdateRequest(
-                locale: new LocaleId('en_US'), country: new CountryId('US'),
+                locale: locale, country: new CountryId('US'),
                 instrument: instrument),
         ).get().getBillingProfile()
         assert billingProfile.instruments.size() == 1
@@ -120,7 +121,7 @@ class StoreApiTest extends AbstractTestNGSpringContextTests {
         def defaultPI = billingProfile.instruments[0].self
 
         billingProfile = storeResource.updateInstrument(new InstrumentUpdateRequest(
-                locale: new LocaleId('en_US'), country: new CountryId('US'),
+                locale: locale, country: new CountryId('US'),
                 instrument: instrument)).get().billingProfile
         def newPI = billingProfile.instruments.find {Instrument pi -> pi.self != defaultPI}
         assert billingProfile.instruments.size() == 2
@@ -128,7 +129,7 @@ class StoreApiTest extends AbstractTestNGSpringContextTests {
         assert !newPI.isDefault
 
         newPI.isDefault = true
-        billingProfile = storeResource.updateInstrument(new InstrumentUpdateRequest(instrument: newPI, locale: new LocaleId('en_US'), country: new CountryId('US'))).get().billingProfile
+        billingProfile = storeResource.updateInstrument(new InstrumentUpdateRequest(instrument: newPI, locale: locale, country: new CountryId('US'))).get().billingProfile
         assert !billingProfile.instruments.find {Instrument pi -> pi.self != newPI.self}.isDefault
         assert billingProfile.instruments.find {Instrument pi -> pi.self == newPI.self}.isDefault
     }
@@ -147,32 +148,32 @@ class StoreApiTest extends AbstractTestNGSpringContextTests {
 
         Instrument instrument = Generator.generateCreditCardInstrument()
 
-        result = storeResource.getBillingProfile(new BillingProfileGetRequest(locale: new LocaleId('en_US'), country: new CountryId('US'))).get()
+        result = storeResource.getBillingProfile(new BillingProfileGetRequest(locale: locale, country: new CountryId('US'))).get()
         def billingProfile = storeResource.updateInstrument(new InstrumentUpdateRequest(
-                locale: new LocaleId('en_US'), country: new CountryId('US'),
+                locale: locale, country: new CountryId('US'),
                 instrument: instrument),
                 ).get().getBillingProfile()
 
         assert billingProfile.instruments.size() == 1
 
-        OfferId offerId = testUtils.getByName(digitalOfferName)
+        OfferId offerId = testUtils.getByName('testOffer_CartCheckout_Digital1')
         result = storeResource.preparePurchase(new PreparePurchaseRequest(offer: offerId, country: new CountryId('US'), locale: new LocaleId('en_US'))).get()
         assert result.purchaseToken != null
         assert result.challenge.type == 'PIN'
 
         try {
-            result = storeResource.preparePurchase(new PreparePurchaseRequest(offer: offerId, country: new CountryId('US'), locale: new LocaleId('en_US'), purchaseToken: result.purchaseToken,
+            result = storeResource.preparePurchase(new PreparePurchaseRequest(offer: offerId, country: new CountryId('US'), locale: locale, purchaseToken: result.purchaseToken,
                     challengeAnswer: new ChallengeAnswer(type: 'PIN', pin: pin + '1'))).get()
         } catch (AppErrorException ex) {
             assert ex != null
         }
 
-        result = storeResource.preparePurchase(new PreparePurchaseRequest(offer: offerId, country: new CountryId('US'), locale: new LocaleId('en_US'), purchaseToken: result.purchaseToken,
+        result = storeResource.preparePurchase(new PreparePurchaseRequest(offer: offerId, country: new CountryId('US'), locale: locale, purchaseToken: result.purchaseToken,
                 challengeAnswer: new ChallengeAnswer(type: 'PIN', pin: pin))).get()
         assert result.challenge == null
         assert result.instrument.self == billingProfile.instruments[0].self
 
-        result = storeResource.preparePurchase(new PreparePurchaseRequest(offer: offerId, country: new CountryId('US'), locale: new LocaleId('en_US'), purchaseToken: result.purchaseToken,
+        result = storeResource.preparePurchase(new PreparePurchaseRequest(offer: offerId, country: new CountryId('US'), locale: locale, purchaseToken: result.purchaseToken,
                 challengeAnswer: new ChallengeAnswer(type: 'PIN', pin: pin), instrument: billingProfile.instruments[0].self)).get()
         assert result.challenge == null
 
@@ -198,7 +199,7 @@ class StoreApiTest extends AbstractTestNGSpringContextTests {
         def userId = result.userId
 
         OfferId offerId = testUtils.getByName(freeOfferName)
-        result = storeResource.makeFreePurchase(new MakeFreePurchaseRequest(offer: offerId, country: new CountryId('US'), locale: new LocaleId('en_US'))).get()
+        result = storeResource.makeFreePurchase(new MakeFreePurchaseRequest(offer: offerId, country: new CountryId('US'), locale: locale)).get()
         assert result.entitlements.size() == 1
         assert result.order != null
 
@@ -221,7 +222,7 @@ class StoreApiTest extends AbstractTestNGSpringContextTests {
         Instrument instrument = Generator.generateCreditCardInstrument()
 
         def billingProfile = storeResource.updateBillingProfile(new BillingProfileUpdateRequest(
-                userId: userId, locale: new LocaleId('en_US'),
+                userId: userId, locale: locale,
                 action: BillingProfileUpdateRequest.UpdateAction.ADD_PI.name(), instrument: instrument),
         ).get().getBillingProfile()
 
@@ -233,7 +234,7 @@ class StoreApiTest extends AbstractTestNGSpringContextTests {
         //OfferId offerId = result.offers.items[0].offerId
         OfferId offerId = testUtils.getByName('10_Birds')
 
-        result = storeResource.preparePurchase(new PreparePurchaseRequest(userId: userId, offerId: offerId, country: new CountryId('US'), locale: new LocaleId('en_US'), currency: new CurrencyId('USD'),
+        result = storeResource.preparePurchase(new PreparePurchaseRequest(userId: userId, offerId: offerId, country: new CountryId('US'), locale: locale, currency: new CurrencyId('USD'),
                 iapParams: new IAPParams(packageName: packageName, packageVersion: '1.0', packageSignatureHash: 'abc'))).get()
         assert result.purchaseToken != null
 
