@@ -10,6 +10,7 @@ import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.catalog.OfferService;
 import com.junbo.common.id.OrganizationId;
@@ -184,9 +185,9 @@ public class TestGetOffer extends BaseTestClass {
         performVerification(offer1, offer2, offer3, false);
 
         //Release the 5 offers
-        releaseOffer(offer1);
-        releaseOffer(offer2);
-        releaseOffer(offer3);
+        offer1 = releaseOffer(offer1);
+        offer2 = releaseOffer(offer2);
+        offer3 = releaseOffer(offer3);
 
         performVerification(offer1, offer2, offer3, true);
     }
@@ -206,6 +207,13 @@ public class TestGetOffer extends BaseTestClass {
         HashMap<String, List<String>> paraMap = new HashMap<>();
         List<String> listOfferId = new ArrayList<>();
         List<String> listStatus = new ArrayList<>();
+        List<String> listPublisher = new ArrayList<>();
+
+        if (!isPublished) {
+            listPublisher.add(IdConverter.idToHexString(organizationId));
+            paraMap.put("publisherId", listPublisher);
+        }
+
         String offerId1 = offer1.getOfferId();
         String offerId2 = offer2.getOfferId();
         String offerId3 = offer3.getOfferId();
@@ -227,7 +235,6 @@ public class TestGetOffer extends BaseTestClass {
         listStatus.add(oppositeValue.toString());
         paraMap.put("published", listStatus);
         verifyGetOffersScenarios(paraMap, 0);
-
 
         listOfferId.clear();
         listOfferId.add("00000000");
