@@ -318,14 +318,6 @@ class StoreResourceImpl implements StoreResource {
                 }
             }
         }.then {
-            if (request.locale == null) {
-                return resourceContainer.countryResource.get(request.country, new CountryGetOptions()).then { Country country ->
-                    request.locale = country.defaultLocale
-                    return Promise.pure()
-                }
-            }
-            return Promise.pure()
-        }.then {
             return innerGetBillingProfile(user, request.locale, request.country, request.offer).syncThen { BillingProfile billingProfile ->
                 response.billingProfile = billingProfile
                 return response
