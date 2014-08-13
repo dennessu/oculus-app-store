@@ -118,7 +118,9 @@ public class OrderTestDataProvider {
                             boolean hasPhysicalGood, Map<String, Integer> offers, int expectedResponseCode)
             throws Exception {
         Order order = new Order();
-        order.setUser(new UserId(IdConverter.hexStringToId(UserId.class, uid)));
+        UserId userId = new UserId();
+        userId.setValue(IdConverter.hexStringToId(UserId.class, uid));
+        order.setUser(userId);
         order.setCountry(new CountryId(country.toString()));
         order.setCurrency(new CurrencyId(currency.toString()));
         List<PaymentInfo> paymentInfos = new ArrayList<>();
@@ -131,8 +133,8 @@ public class OrderTestDataProvider {
                 paymentInfo.setPaymentInstrument(new PaymentInstrumentId(
                         IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId)));
             }
+            paymentInfos.add(paymentInfo);
         }
-        paymentInfos.add(paymentInfo);
         order.setPayments(paymentInfos);
         order.setShippingMethod("0");
 

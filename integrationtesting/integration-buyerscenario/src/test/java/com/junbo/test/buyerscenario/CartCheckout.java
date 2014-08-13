@@ -418,9 +418,6 @@ public class CartCheckout extends BaseTestClass {
 
         offerList.put(offer_digital_free, 1);
 
-        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
-        String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
-
         String orderId = testDataProvider.postOrder(
                 uid, Country.DEFAULT, Currency.DEFAULT, null, false, offerList);
 
