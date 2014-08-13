@@ -5,13 +5,12 @@
  */
 package com.junbo.store.spec.model.identity;
 
-import com.junbo.store.spec.model.BaseResponse;
 import com.junbo.store.spec.model.Challenge;
 
 /**
  * The UserProfileUpdateResponse class.
  */
-public class UserProfileUpdateResponse extends BaseResponse {
+public class UserProfileUpdateResponse {
 
     private Challenge challenge;
 

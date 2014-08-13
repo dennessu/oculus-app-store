@@ -5,26 +5,23 @@
  */
 package com.junbo.store.spec.model.purchase;
 
-import com.junbo.common.id.UserId;
-import com.junbo.store.spec.model.ChallengeSolution;
+import com.junbo.store.spec.model.ChallengeAnswer;
 
 /**
  * The CommitPurchaseRequest class.
  */
 public class CommitPurchaseRequest {
 
-    private ChallengeSolution challengeSolution;
+    private ChallengeAnswer challengeAnswer;
 
     private String purchaseToken;
 
-    private UserId userId;
-
-    public ChallengeSolution getChallengeSolution() {
-        return challengeSolution;
+    public ChallengeAnswer getChallengeAnswer() {
+        return challengeAnswer;
     }
 
-    public void setChallengeSolution(ChallengeSolution challengeSolution) {
-        this.challengeSolution = challengeSolution;
+    public void setChallengeAnswer(ChallengeAnswer challengeAnswer) {
+        this.challengeAnswer = challengeAnswer;
     }
 
     public String getPurchaseToken() {
@@ -33,13 +30,5 @@ public class CommitPurchaseRequest {
 
     public void setPurchaseToken(String purchaseToken) {
         this.purchaseToken = purchaseToken;
-    }
-
-    public UserId getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UserId userId) {
-        this.userId = userId;
     }
 }

@@ -21,6 +21,7 @@ dependencies {
     compile (libraries.jersey_common)
 
     compile junboProject(':store-spec')
+    compile junboProject(':store-clientproxy')
     compile junboProject(':store-db')
 
     compile junboProject(':entitlement-spec')

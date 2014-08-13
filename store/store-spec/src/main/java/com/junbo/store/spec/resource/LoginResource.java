@@ -24,16 +24,15 @@ import javax.ws.rs.core.MediaType;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
-// This is temporal, remove it after the authorization for this component is done
 @AuthorizationNotRequired
 public interface LoginResource {
 
     @POST
-    @Path("/namecheck")
+    @Path("/name-check")
     Promise<UserNameCheckResponse> checkUserName(UserNameCheckRequest userNameCheckRequest);
 
     @POST
-    @Path("/ratecredential")
+    @Path("/rate-credential")
     Promise<UserCredentialRateResponse> rateUserCredential(UserCredentialRateRequest userCredentialRateRequest);
 
     @POST
@@ -41,16 +40,8 @@ public interface LoginResource {
     Promise<AuthTokenResponse> createUser(CreateUserRequest createUserRequest);
 
     @POST
-    @Path("/signIn")
+    @Path("/sign-in")
     Promise<AuthTokenResponse> signIn(UserSignInRequest userSignInRequest);
-
-    @POST
-    @Path("/checkcredential")
-    Promise<UserCredentialCheckResponse> checkUserCredential(UserCredentialCheckRequest userCredentialCheckRequest);
-
-    @POST
-    @Path("/changecredential")
-    Promise<UserCredentialChangeResponse> changeUserCredential(UserCredentialChangeRequest userCredentialChangeRequest);
 
     @POST
     @Path("/token")

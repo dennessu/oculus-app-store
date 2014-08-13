@@ -171,7 +171,7 @@ class DrmServiceImpl implements DrmService {
     }
 
     private Promise<SignedLicense> sign(String itemId, LicenseData licenseData) {
-        String jsonText = ObjectMapperProvider.instanceNoIdent().writeValueAsString(licenseData)
+        String jsonText = ObjectMapperProvider.instanceNoIndent().writeValueAsString(licenseData)
 
         itemCryptoResource.sign(itemId, new ItemCryptoMessage(message: jsonText)).then { ItemCryptoMessage itemCryptoMessage ->
 

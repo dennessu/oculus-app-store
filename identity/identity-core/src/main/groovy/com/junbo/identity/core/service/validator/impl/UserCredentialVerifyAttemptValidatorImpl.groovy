@@ -152,7 +152,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                         }
                     }
                 }
-                else {
+                else if (userLoginAttempt.type == CredentialType.PIN.toString()) {
                     return userPinRepository.searchByUserIdAndActiveStatus((UserId)user.id, true, Integer.MAX_VALUE,
                             0).then { List<UserPin> userPinList ->
                         if (userPinList == null || userPinList.size() > 1) {
@@ -169,12 +169,21 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                             return checkMaximumSameUserAttemptCount(user, userLoginAttempt)
                         }
                     }
+                } else if (userLoginAttempt.type == CredentialType.CHECK_NAME.toString()) {
+                    userLoginAttempt.setSucceeded(true)
+                    return Promise.pure()
+                } else {
+                    throw AppCommonErrors.INSTANCE.parameterInvalid("credentialType").exception()
                 }
             }
         }
     }
 
     private Promise<User> findUser(UserCredentialVerifyAttempt userLoginAttempt) {
+        if (userLoginAttempt.userId != null) {
+            return userRepository.get(userLoginAttempt.userId)
+        }
+
         if (isEmail(userLoginAttempt.username)) {
             return userPersonalInfoRepository.searchByEmail(userLoginAttempt.username.toLowerCase(Locale.ENGLISH), null, Integer.MAX_VALUE,
                     0).then { List<UserPersonalInfo> personalInfos ->

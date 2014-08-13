@@ -10,7 +10,9 @@ package com.junbo.store.spec.model;
  */
 public class Challenge {
 
-    private String type;
+    private String type; // PIN, PASSWORD, CAPTCHA
+
+    private String value;
 
     public String getType() {
         return type;
@@ -18,5 +20,13 @@ public class Challenge {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }

@@ -12,11 +12,7 @@ public class UserCredentialRateRequest {
 
     private UserCredential userCredential;
 
-    private String username;
-
-    private String realname;
-
-    private String useremail;
+    private UserCredentialRateContext context;
 
     public UserCredential getUserCredential() {
         return userCredential;
@@ -26,27 +22,11 @@ public class UserCredentialRateRequest {
         this.userCredential = userCredential;
     }
 
-    public String getUsername() {
-        return username;
+    public UserCredentialRateContext getContext() {
+        return context;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getRealname() {
-        return realname;
-    }
-
-    public void setRealname(String realname) {
-        this.realname = realname;
-    }
-
-    public String getUseremail() {
-        return useremail;
-    }
-
-    public void setUseremail(String useremail) {
-        this.useremail = useremail;
+    public void setContext(UserCredentialRateContext context) {
+        this.context = context;
     }
 }

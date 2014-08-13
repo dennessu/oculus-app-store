@@ -11,7 +11,9 @@ package com.junbo.store.spec.model.purchase;
 public class IAPParams {
 
     private String packageName;
+
     private String packageVersion;
+
     private String packageSignatureHash;
 
     public String getPackageName() {

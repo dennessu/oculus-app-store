@@ -6,7 +6,6 @@
 package com.junbo.store.spec.model.purchase;
 
 import com.junbo.common.id.OrderId;
-import com.junbo.store.spec.model.BaseResponse;
 import com.junbo.store.spec.model.Challenge;
 import com.junbo.store.spec.model.Entitlement;
 
@@ -15,11 +14,11 @@ import java.util.List;
 /**
  * The CommitPurchaseResponse class.
  */
-public class CommitPurchaseResponse extends BaseResponse {
+public class CommitPurchaseResponse {
 
     private Challenge challenge;
 
-    private OrderId orderId;
+    private OrderId order;
 
     private List<Entitlement> entitlements;
 
@@ -31,12 +30,12 @@ public class CommitPurchaseResponse extends BaseResponse {
         this.challenge = challenge;
     }
 
-    public OrderId getOrderId() {
-        return orderId;
+    public OrderId getOrder() {
+        return order;
     }
 
-    public void setOrderId(OrderId orderId) {
-        this.orderId = orderId;
+    public void setOrder(OrderId order) {
+        this.order = order;
     }
 
     public List<Entitlement> getEntitlements() {

@@ -5,25 +5,34 @@
  */
 package com.junbo.store.spec.model.identity;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.UserId;
-
-import java.util.List;
 
 /**
  * The UserProfile class.
  */
 public class StoreUserProfile {
 
+    @JsonProperty("user")
     private UserId userId;
+
     private String username;
-    private List<PersonalInfo> emails;
-    private List<PersonalInfo> phones;
-    private List<PersonalInfo> addresses;
-    private PersonalInfo name;
+
+    private StoreUserEmail email;
+
+    private String password;
+
+    private String pin;
+
     private Boolean tfaEnabled;
-    @JsonUnwrapped
-    private com.junbo.identity.spec.v1.model.UserProfile idUserProfile;
+
+    private Double ipd;
+
+    private Double height;
+
+    private String headline;
+
+    private String avatar;
 
     public UserId getUserId() {
         return userId;
@@ -41,36 +50,28 @@ public class StoreUserProfile {
         this.username = username;
     }
 
-    public List<PersonalInfo> getEmails() {
-        return emails;
+    public StoreUserEmail getEmail() {
+        return email;
     }
 
-    public void setEmails(List<PersonalInfo> emails) {
-        this.emails = emails;
+    public void setEmail(StoreUserEmail email) {
+        this.email = email;
     }
 
-    public List<PersonalInfo> getPhones() {
-        return phones;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPhones(List<PersonalInfo> phones) {
-        this.phones = phones;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public List<PersonalInfo> getAddresses() {
-        return addresses;
+    public String getPin() {
+        return pin;
     }
 
-    public void setAddresses(List<PersonalInfo> addresses) {
-        this.addresses = addresses;
-    }
-
-    public PersonalInfo getName() {
-        return name;
-    }
-
-    public void setName(PersonalInfo name) {
-        this.name = name;
+    public void setPin(String pin) {
+        this.pin = pin;
     }
 
     public Boolean getTfaEnabled() {
@@ -81,11 +82,35 @@ public class StoreUserProfile {
         this.tfaEnabled = tfaEnabled;
     }
 
-    public com.junbo.identity.spec.v1.model.UserProfile getIdUserProfile() {
-        return idUserProfile;
+    public Double getIpd() {
+        return ipd;
     }
 
-    public void setIdUserProfile(com.junbo.identity.spec.v1.model.UserProfile idUserProfile) {
-        this.idUserProfile = idUserProfile;
+    public void setIpd(Double ipd) {
+        this.ipd = ipd;
+    }
+
+    public Double getHeight() {
+        return height;
+    }
+
+    public void setHeight(Double height) {
+        this.height = height;
+    }
+
+    public String getHeadline() {
+        return headline;
+    }
+
+    public void setHeadline(String headline) {
+        this.headline = headline;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

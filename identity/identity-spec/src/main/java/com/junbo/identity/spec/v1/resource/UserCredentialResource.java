@@ -7,6 +7,8 @@ package com.junbo.identity.spec.v1.resource;
 
 import com.junbo.common.id.UserId;
 import com.junbo.common.model.Results;
+import com.junbo.identity.spec.v1.model.RateUserCredentialRequest;
+import com.junbo.identity.spec.v1.model.RateUserCredentialResponse;
 import com.junbo.identity.spec.v1.model.UserCredential;
 import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions;
 import com.junbo.langur.core.InProcessCallable;
@@ -38,4 +40,9 @@ public interface UserCredentialResource {
     @Path("/{userId}/credentials")
     Promise<Results<UserCredential>> list(@PathParam("userId") UserId userId,
                                           @BeanParam UserCredentialListOptions listOptions);
+
+    @POST
+    @Path("/rate-credential")
+    Promise<RateUserCredentialResponse> rateCredential(RateUserCredentialRequest request);
+
 }

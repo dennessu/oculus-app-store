@@ -4,24 +4,30 @@ import com.junbo.authorization.AuthorizeContext
 import com.junbo.authorization.AuthorizeService
 import com.junbo.authorization.RightsScope
 import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.UserId
 import com.junbo.common.model.Results
 import com.junbo.common.rs.Created201Marker
 import com.junbo.identity.auth.UserPropertyAuthorizeCallbackFactory
 import com.junbo.identity.core.service.filter.UserCredentialFilter
+import com.junbo.identity.core.service.util.CipherHelper
 import com.junbo.identity.core.service.validator.UserCredentialValidator
 import com.junbo.identity.data.identifiable.CredentialType
 import com.junbo.identity.data.mapper.ModelMapper
 import com.junbo.identity.data.repository.UserPasswordRepository
 import com.junbo.identity.data.repository.UserPinRepository
+import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
+import com.junbo.identity.spec.v1.model.RateUserCredentialRequest
+import com.junbo.identity.spec.v1.model.RateUserCredentialResponse
 import com.junbo.identity.spec.v1.model.UserCredential
 import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions
 import com.junbo.identity.spec.v1.resource.UserCredentialResource
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oom.core.MappingContext
 import groovy.transform.CompileStatic
+import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
 
@@ -192,5 +198,43 @@ class UserCredentialResourceImpl implements UserCredentialResource {
         }.then {
             return Promise.pure(resultList)
         }
+    }
+
+    @Override
+    Promise<RateUserCredentialResponse> rateCredential(RateUserCredentialRequest request) {
+        if (request == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
+        }
+
+        if (request.type == null) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('type').exception()
+        }
+
+        if (request.value == null) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('value').exception()
+        }
+
+        def response = new RateUserCredentialResponse()
+        if (request.type == 'PASSWORD') {
+            try {
+                CipherHelper.validatePassword(request.value)
+            } catch(AppErrorException ignore) {
+                response.strength = 'INVALID'
+            }
+
+            if (response.strength == null && !StringUtils.isEmpty(request.context?.username)) {
+                if (request.value.toLowerCase().contains(request.context.username.toLowerCase())) {
+                    response.strength = 'INVALID'
+                }
+            }
+
+            if (response.strength == null) {
+                response.strength = CipherHelper.calcPwdStrength(request.value)
+            }
+        } else {
+            throw AppCommonErrors.INSTANCE.fieldInvalidEnum('type', 'PASSWORD').exception()
+        }
+
+        return Promise.pure(response)
     }
 }
