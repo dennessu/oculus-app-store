@@ -28,13 +28,11 @@ import static com.ning.http.client.extra.ListenableFutureAdapter.asGuavaFuture;
 /**
  * CloudantSniffer.
  */
-public enum CloudantSniffer {
-    INSTANCE;
-
+public class CloudantSniffer {
     private static final String ALL_DB_PATH = "/_all_dbs";
-    private static final String LAST_CHANGE_PATH = "_changes?descending=true&limit=1";
-    private static final String CHANGE_PATH = "_changes?feed=continuous&heartbeat=60000&since=%s";
+    private static final String CHANGE_PATH = "/_changes";
 
+    private static final String CLOUDANT_PREFIX_KEY = "common.cloudant.dbNamePrefix";
     private static final String[] CLOUDANT_URI_KEYS = new String[]{
             "common.cloudant.url",
             "common.cloudantWithSearch.url",
@@ -43,13 +41,74 @@ public enum CloudantSniffer {
             "crypto.itemCryptoKey.cloudant.url"
     };
 
+    private static final String CLOUDANT_LASTSEQ_KEY = "last_seq";
+
     private List<CloudantUri> cloudantInstances;
 
     private JunboAsyncHttpClient asyncHttpClient = JunboAsyncHttpClient.instance();
     private ObjectMapper mapper = new ObjectMapper();
 
-    CloudantSniffer() {
+    private static CloudantSniffer cloudantSniffer = new CloudantSniffer();
+
+    public static CloudantSniffer instance() {
+        return cloudantSniffer;
+    }
+
+    private CloudantSniffer() {
         initialize();
+    }
+
+    public List<String> getAllDatabases(CloudantUri cloudantUri) {
+        Response response = executeGet(cloudantUri, ALL_DB_PATH, null).get();
+        List<String> databases = parse(response, List.class);
+
+        String prefix = ConfigServiceManager.instance().getConfigValue(CLOUDANT_PREFIX_KEY);
+
+        if (prefix == null || prefix.trim().isEmpty()) {
+            //TODO
+        }
+
+        List<String> filtered = new ArrayList<>();
+        for (String db : databases) {
+            if (db.startsWith(prefix)) {
+                filtered.add(db);
+            }
+        }
+
+        return filtered;
+    }
+
+    public String getLastChange(CloudantUri cloudantUri, String dbName) {
+        Response response = executeGet(cloudantUri, dbName, CHANGE_PATH,
+                new HashMap<String, String>() {{
+                    put("descending", "true");
+                    put("limit", "1");
+                }}).get();
+
+        Map<String, Object> result = parse(response, Map.class);
+        if (!result.containsKey(CLOUDANT_LASTSEQ_KEY)) {
+            throw new CloudantConnectException("Error occurred during get last change seq");
+        }
+
+
+        Object lastSeqObj = result.get(CLOUDANT_LASTSEQ_KEY);
+        String lastSeq;
+
+        if (!(lastSeqObj instanceof String)) {
+            lastSeq = String.valueOf(lastSeqObj);
+        } else {
+            lastSeq = lastSeqObj.toString();
+        }
+
+        return lastSeq;
+    }
+
+    public List<CloudantUri> getCloudantInstances() {
+        return cloudantInstances;
+    }
+
+    private Promise<Response> executeGet(CloudantUri cloudantUri, String path, Map<String, String> queryParams) {
+        return executeGet(cloudantUri, null, path, queryParams);
     }
 
     private void initialize() {
@@ -70,25 +129,6 @@ public enum CloudantSniffer {
         }
 
         cloudantInstances = new ArrayList(cloudantUriMap.values());
-    }
-
-    public void listen() {
-        for (CloudantUri cloudantUri : cloudantInstances) {
-            Response response = executeGet(cloudantUri, ALL_DB_PATH, null).get();
-            List<String> databases = parse(response, List.class);
-
-            for (String dbName : databases) {
-                process(dbName, cloudantUri);
-            }
-        }
-    }
-
-    private void process(String dbName, CloudantUri cloudantUri) {
-
-    }
-
-    private Promise<Response> executeGet(CloudantUri cloudantUri, String path, Map<String, String> queryParams) {
-        return executeGet(cloudantUri, null, path, queryParams);
     }
 
     private <T> T parse(Response response, Class<T> clazz) {

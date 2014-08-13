@@ -5,7 +5,10 @@
  */
 package com.junbo.common.job.cache;
 
+import com.junbo.common.cloudant.client.CloudantUri;
 import org.springframework.beans.factory.InitializingBean;
+
+import java.util.List;
 
 /**
  * CacheSnifferJob.
@@ -14,5 +17,17 @@ public class CacheSnifferJob implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
 
+    }
+
+    private void listen() {
+        List<CloudantUri> cloudantInstances = CloudantSniffer.instance().getCloudantInstances();
+
+        for (CloudantUri cloudantUri : cloudantInstances) {
+            List<String> databases = CloudantSniffer.instance().getAllDatabases(cloudantUri);
+
+            for (String database : databases) {
+                String lastChange = CloudantSniffer.instance().getLastChange(cloudantUri, database);
+            }
+        }
     }
 }
