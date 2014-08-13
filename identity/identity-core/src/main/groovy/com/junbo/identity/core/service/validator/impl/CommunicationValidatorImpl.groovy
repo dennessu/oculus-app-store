@@ -6,6 +6,7 @@ import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.CommunicationId
 import com.junbo.identity.common.util.JsonHelper
+import com.junbo.identity.common.util.ValidatorUtil
 import com.junbo.identity.core.service.validator.CommunicationValidator
 import com.junbo.identity.data.repository.CommunicationRepository
 import com.junbo.identity.data.repository.CountryRepository
@@ -151,6 +152,10 @@ class CommunicationValidatorImpl implements CommunicationValidator {
             return checkTranslations(communication)
         }.then {
             communication.locales.each { Map.Entry<String, JsonNode> entry ->
+                if (!ValidatorUtil.isValidLocale(entry.key)) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('value.key').exception()
+                }
+
                 CommunicationLocale locale = (CommunicationLocale)JsonHelper.jsonNodeToObj(entry.value,
                         CommunicationLocale)
                 if (locale.name == null) {

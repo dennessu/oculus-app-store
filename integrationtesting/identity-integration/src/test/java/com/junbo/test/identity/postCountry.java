@@ -7,13 +7,14 @@ package com.junbo.test.identity;
 
 import com.junbo.identity.spec.v1.model.Country;
 import com.junbo.test.common.HttpclientHelper;
-import com.junbo.test.common.JsonHelper;
 import com.junbo.test.common.Validator;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
