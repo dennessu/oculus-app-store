@@ -419,11 +419,11 @@ public class CartCheckout extends BaseTestClass {
         offerList.put(offer_digital_free, 1);
 
         String orderId = testDataProvider.postOrder(
-                uid, Country.DEFAULT, Currency.DEFAULT, null, false, offerList);
+                uid, Country.DEFAULT, Currency.FREE, null, false, offerList);
 
         orderId = testDataProvider.updateOrderTentative(orderId, false);
 
-        validationHelper.validateFreeOrderInfo(uid, orderId, Country.DEFAULT, Currency.DEFAULT, false);
+        validationHelper.validateFreeOrderInfo(uid, orderId, Country.DEFAULT, Currency.FREE, false);
 
     }
 
@@ -455,11 +455,11 @@ public class CartCheckout extends BaseTestClass {
         offerList.put(offer_physical_free, 1);
 
         String orderId = testDataProvider.postOrder(
-                uid, Country.DEFAULT, Currency.DEFAULT, null, true, offerList);
+                uid, Country.DEFAULT, Currency.FREE, null, true, offerList);
 
         orderId = testDataProvider.updateOrderTentative(orderId, false);
 
-        validationHelper.validateFreeOrderInfo(uid, orderId, Country.DEFAULT, Currency.DEFAULT, true);
+        validationHelper.validateFreeOrderInfo(uid, orderId, Country.DEFAULT, Currency.FREE, true);
 
     }
 

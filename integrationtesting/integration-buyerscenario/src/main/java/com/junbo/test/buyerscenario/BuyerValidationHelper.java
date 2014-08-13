@@ -31,6 +31,7 @@ import com.junbo.test.common.libs.DBHelper;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.ShardIdHelper;
 import com.junbo.test.identity.Identity;
+import com.junbo.fulfilment.spec.model.FulfilmentAction;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -85,13 +86,13 @@ public class BuyerValidationHelper extends BaseValidationHelper {
         FulfillmentHistory fulfilmentHistory = order.getOrderItems().get(0).getFulfillmentHistories().get(0);
         verifyEqual(fulfilmentHistory.getSuccess(), true, "verify fulfilment status");
         if (hasPhysicalGood) {
-            verifyEqual(fulfilmentHistory.getFulfillmentEvent().toString(), "REQUEST_FULFILL", "verify fulfillment event");
+            verifyEqual(fulfilmentHistory.getFulfillmentEvent().toString(), "REQUEST_SHIP", "verify fulfillment event");
         } else {
             verifyEqual(fulfilmentHistory.getFulfillmentEvent().toString(), "FULFILL", "verify fulfillment event");
         }
         if (entitlementResults.getItems().size() > 0) {
             verifyEqual(fulfilmentHistory.getEntitlements().size(), entitlementResults.getItems().size(), "verify entitlement size");
-        } else if (fulfilmentHistory.getEntitlements() != null) {
+        } else if (!fulfilmentHistory.getEntitlements().isEmpty()) {
             throw new TestException("entitlement should be null");
         }
 
@@ -177,8 +178,21 @@ public class BuyerValidationHelper extends BaseValidationHelper {
 
     private void validateFulfilmentHistory(OrderItem orderItem, FulfilmentItem fulfilmentItem) {
         List<FulfillmentHistory> fulfillmentHistories = orderItem.getFulfillmentHistories();
-        verifyEqual(fulfillmentHistories.size(), fulfilmentItem.getActions().size(), "verify fulfilment action size");
-        //TODO validate detail info
+        List<FulfilmentAction> fulfillmentActions = fulfilmentItem.getActions();
+
+        for (FulfilmentAction fulfilmentAction : fulfillmentActions) {
+            if (fulfilmentAction.getType().equals("DELIVER_PHYSICAL_GOODS")) {
+                for (FulfillmentHistory fulfillmentHistory : fulfillmentHistories) {
+                    verifyEqual(fulfillmentHistory.getFulfillmentEvent(), "REQUEST_SHIP", "verify fulfilment history");
+                    verifyEqual(fulfillmentHistory.getSuccess(), true, "verify fulfil status");
+                }
+            } else if (fulfilmentAction.getType().equals("GRANT_ENTITLEMENT")) {
+                for (FulfillmentHistory fulfillmentHistory : fulfillmentHistories) {
+                    verifyEqual(fulfillmentHistory.getFulfillmentEvent(), "FULFILL", "verify fulfilment history");
+                    verifyEqual(fulfillmentHistory.getSuccess(), true, "verify fulfil status");
+                }
+            }
+        }
 
     }
 

@@ -227,8 +227,9 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         List<PaymentInfo> paymentInfos = new ArrayList<>();
         PaymentInfo paymentInfo = new PaymentInfo();
         if (paymentInstrumentId != null) {
-            paymentInfo.setPaymentInstrument(new PaymentInstrumentId(
-                    IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId)));
+            PaymentInstrumentId pid = new PaymentInstrumentId();
+            pid.setValue(IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId));
+            paymentInfo.setPaymentInstrument(pid);
         }
         paymentInfos.add(paymentInfo);
         order.setPayments(paymentInfos);
