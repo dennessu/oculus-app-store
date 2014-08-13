@@ -9,6 +9,8 @@ import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateRequest;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
+import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
+import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.purchase.*;
@@ -38,7 +40,7 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
 
     @Override
     public BillingProfileUpdateResponse updateBillingProfile(BillingProfileUpdateRequest billingProfileUpdateRequest, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, storeUrl + "billingprofile", billingProfileUpdateRequest, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, storeUrl + "billing-profile", billingProfileUpdateRequest, expectedResponseCode);
         if (expectedResponseCode == 200) {
             BillingProfileUpdateResponse billingProfileUpdateResponse = new JsonMessageTranscoder().decode(new TypeReference<BillingProfileUpdateResponse>() {
             }, responseBody);
@@ -61,23 +63,6 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
             }, responseBody);
 
             return preparePurchaseResponse;
-        }
-        return null;
-    }
-
-    @Override
-    public SelectInstrumentResponse selectInstrumentForPurchase(SelectInstrumentRequest selectInstrumentRequest) throws Exception {
-        return selectInstrumentForPurchase(selectInstrumentRequest, 200);
-    }
-
-    @Override
-    public SelectInstrumentResponse selectInstrumentForPurchase(SelectInstrumentRequest selectInstrumentRequest, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, storeUrl + "purchase/select-instrument", selectInstrumentRequest, expectedResponseCode);
-        if (expectedResponseCode == 200) {
-            SelectInstrumentResponse selectInstrumentResponse = new JsonMessageTranscoder().decode(new TypeReference<SelectInstrumentResponse>() {
-            }, responseBody);
-
-            return selectInstrumentResponse;
         }
         return null;
     }

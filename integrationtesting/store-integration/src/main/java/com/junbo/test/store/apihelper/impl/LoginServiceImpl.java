@@ -7,8 +7,7 @@ package com.junbo.test.store.apihelper.impl;
 
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
-import com.junbo.store.spec.model.login.AuthTokenResponse;
-import com.junbo.store.spec.model.login.CreateUserRequest;
+import com.junbo.store.spec.model.login.*;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.blueprint.Master;
@@ -49,6 +48,35 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
         }
         return null;
 
+    }
+
+    @Override
+    public UserNameCheckResponse CheckUserName(UserNameCheckRequest userNameCheckRequest) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "name-check", userNameCheckRequest);
+        UserNameCheckResponse userNameCheckResponse = new JsonMessageTranscoder().decode(
+                new TypeReference<UserNameCheckResponse>() {}, responseBody);
+        return userNameCheckResponse;
+    }
+
+    @Override
+    public AuthTokenResponse signIn(UserSignInRequest userSignInRequest) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "sign-in", userSignInRequest);
+
+        AuthTokenResponse authTokenResponse = new JsonMessageTranscoder().decode(new TypeReference<AuthTokenResponse>() {
+        }, responseBody);
+        String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
+        Master.getInstance().addUserAccessToken(uid, authTokenResponse.getAccessToken());
+        Master.getInstance().setCurrentUid(uid);
+        return authTokenResponse;
+    }
+
+    @Override
+    public UserCredentialRateResponse rateUserCredential(UserCredentialRateRequest userCredentialCheckRequest) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "rate-credential", userCredentialCheckRequest);
+
+        UserCredentialRateResponse userCredentialRateResponse = new JsonMessageTranscoder().decode(
+                new TypeReference<UserCredentialRateResponse>() {}, responseBody);
+        return userCredentialRateResponse;
     }
 
 }
