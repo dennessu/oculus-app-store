@@ -540,6 +540,11 @@ class UserValidatorImpl implements UserValidator {
         if (oldUser == null) {
             throw new IllegalArgumentException('oldUser is null')
         }
+
+        if (user.username == null) { // do need to check duplicate if username is null.
+            return Promise.pure()
+        }
+
         return userPersonalInfoRepository.get(user.username).then { UserPersonalInfo userPersonalInfo ->
             UserLoginName loginName = (UserLoginName)JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserLoginName)
             return userPersonalInfoRepository.searchByCanonicalUsername(loginName.canonicalUsername, Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
@@ -550,7 +555,7 @@ class UserValidatorImpl implements UserValidator {
                 List<UserPersonalInfo> userPersonalInfos = new ArrayList<>()
                 return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo personalInfo ->
                     return userRepository.get(personalInfo.userId).then { User existing ->
-                        if (existing.username == user.username && existing.getId() != oldUser.getId()) {
+                        if (existing.username == personalInfo.id && existing.getId() != oldUser.getId()) {
                             userPersonalInfos.add(personalInfo)
                             return Promise.pure(Promise.BREAK)
                         }
