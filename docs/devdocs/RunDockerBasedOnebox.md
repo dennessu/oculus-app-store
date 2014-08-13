@@ -78,6 +78,7 @@ Run `sudo docker ps` to check if all of them are running.
 Make sure you have the access to pull onebox-app image.
 
 ```bash
+sudo docker login
 sudo docker pull silkcloud/onebox-app:master
 ```
 
