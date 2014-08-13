@@ -254,22 +254,24 @@ class LoginResourceImpl implements LoginResource {
 
     @Override
     Promise<AuthTokenResponse> getAuthToken(AuthTokenRequest tokenRequest) {
-        Promise.pure(null).then {
-            requestValidator.validateAuthTokenRequest(tokenRequest)
-        }.then {
-            return resourceContainer.tokenEndpoint.postToken(
-                    new AccessTokenRequest(
-                            refreshToken: tokenRequest.refreshToken,
-                            grantType: 'refresh_token',
-                            scope: 'offline storeapi entitlement',
-                            clientId: clientId,
-                            clientSecret: clientSecret
-                    )
-            ).then { AccessTokenResponse accessTokenResponse ->
-                def response = fromAuthTokenResponse(accessTokenResponse)
-                resourceContainer.tokenInfoEndpoint.getTokenInfo(accessTokenResponse.accessToken).then { TokenInfo tokenInfo ->
-                    resourceContainer.userResource.get(tokenInfo.sub, new UserGetOptions(properties : 'username')).then { User user ->
-                        response.username = user.username
+        requestValidator.validateAuthTokenRequest(tokenRequest)
+
+        return resourceContainer.tokenEndpoint.postToken(
+                new AccessTokenRequest(
+                        refreshToken: tokenRequest.refreshToken,
+                        grantType: 'refresh_token',
+                        scope: 'offline storeapi entitlement',
+                        clientId: clientId,
+                        clientSecret: clientSecret
+                )
+        ).then { AccessTokenResponse accessTokenResponse ->
+            def response = fromAuthTokenResponse(accessTokenResponse)
+            resourceContainer.tokenInfoEndpoint.getTokenInfo(accessTokenResponse.accessToken).then { TokenInfo tokenInfo ->
+                resourceContainer.userResource.get(tokenInfo.sub, new UserGetOptions()).then { User user ->
+                    resourceContainer.userPersonalInfoResource.get(user.username, new UserPersonalInfoGetOptions()).then { UserPersonalInfo usernamePersonalinfo ->
+                        def userLoginName = ObjectMapperProvider.instance().treeToValue(usernamePersonalinfo.value, UserLoginName)
+
+                        response.username = userLoginName.userName
                         response.userId = tokenInfo.sub
                         return Promise.pure(response)
                     }
@@ -280,24 +282,29 @@ class LoginResourceImpl implements LoginResource {
 
     private Promise<AuthTokenResponse> innerSignIn(String username, String password) {
         return resourceContainer.tokenEndpoint.postToken( // todo : may need call credential verification first since post token does not return meaningful error when user credential is invalid
-                    new AccessTokenRequest(
-                            username: username,
-                            password: password,
-                            clientId: clientId,
-                            clientSecret: clientSecret,
-                            grantType: 'password',
-                            scope: 'offline storeapi entitlement'
-                    )
-            ).then { AccessTokenResponse accessTokenResponse ->
-                resourceContainer.tokenInfoEndpoint.getTokenInfo(accessTokenResponse.accessToken).then { TokenInfo tokenInfo ->
-                    def response = fromAuthTokenResponse(accessTokenResponse)
-                    response.username = username // todo: this could be email. call getUesr to get the real username.
-                    response.userId = tokenInfo.sub
-                    return Promise.pure(response)
+                new AccessTokenRequest(
+                        username: username,
+                        password: password,
+                        clientId: clientId,
+                        clientSecret: clientSecret,
+                        grantType: 'password',
+                        scope: 'offline storeapi entitlement'
+                )
+        ).then { AccessTokenResponse accessTokenResponse ->
+            def response = fromAuthTokenResponse(accessTokenResponse)
+            resourceContainer.tokenInfoEndpoint.getTokenInfo(accessTokenResponse.accessToken).then { TokenInfo tokenInfo ->
+                resourceContainer.userResource.get(tokenInfo.sub, new UserGetOptions()).then { User user ->
+                    resourceContainer.userPersonalInfoResource.get(user.username, new UserPersonalInfoGetOptions()).then { UserPersonalInfo usernamePersonalinfo ->
+                        def userLoginName = ObjectMapperProvider.instance().treeToValue(usernamePersonalinfo.value, UserLoginName)
+
+                        response.username = userLoginName.userName
+                        response.userId = tokenInfo.sub
+                        return Promise.pure(response)
+                    }
                 }
             }
+        }
     }
-
 
     private AuthTokenResponse fromAuthTokenResponse(AccessTokenResponse accessTokenResponse) {
         return new AuthTokenResponse(
