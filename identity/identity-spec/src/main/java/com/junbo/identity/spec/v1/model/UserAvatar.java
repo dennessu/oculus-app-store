@@ -24,4 +24,21 @@ public class UserAvatar {
     public void setHref(String href) {
         this.href = href;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserAvatar that = (UserAvatar) o;
+
+        if (href != null ? !href.equals(that.href) : that.href != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return href != null ? href.hashCode() : 0;
+    }
 }

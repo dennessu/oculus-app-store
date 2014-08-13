@@ -5,11 +5,6 @@
  */
 package com.junbo.identity.spec.v1.model;
 
-import com.junbo.common.id.UserCredentialId;
-import com.junbo.common.id.UserId;
-
-import java.util.Date;
-
 /**
  * Created by kg on 4/3/14.
  */

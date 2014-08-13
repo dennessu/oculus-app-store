@@ -6,6 +6,7 @@
 package com.junbo.identity.spec.v1.model.migration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.junbo.common.id.UserId;
 import com.junbo.common.jackson.annotation.XSSFreeString;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
@@ -17,7 +18,7 @@ import java.util.Map;
  * Created by liangfu on 6/6/14.
  */
 public class OculusInput {
-    @ApiModelProperty(position = 1, required = true, value = "The original id of oculus database.")
+    @ApiModelProperty(position = 1, required = false, value = "The original id of oculus database.")
     @JsonProperty("id")
     private Long currentId;
 
@@ -79,6 +80,10 @@ public class OculusInput {
 
     @ApiModelProperty(position = 16, required = false, value = "User's communication map. It must be the format as communicationId:true/false")
     private List<Map<String, Boolean>> communications;
+
+    @ApiModelProperty(position = 17, required = false, value = "User Id in identity system")
+    @JsonProperty("user")
+    private UserId userId;
 
     public Long getCurrentId() {
         return currentId;
@@ -222,5 +227,13 @@ public class OculusInput {
 
     public void setCommunications(List<Map<String, Boolean>> communications) {
         this.communications = communications;
+    }
+
+    public UserId getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UserId userId) {
+        this.userId = userId;
     }
 }

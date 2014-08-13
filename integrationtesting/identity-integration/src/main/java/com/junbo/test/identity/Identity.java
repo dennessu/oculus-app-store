@@ -81,6 +81,22 @@ public class Identity {
         HttpclientHelper.SimpleHttpDelete(httpDelete);
     }
 
+    public static void GetHttpAuthorizationHeaderForMigration() throws Exception {
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("grant_type", "client_credentials"));
+        nvps.add(new BasicNameValuePair("client_id", "migration"));
+        nvps.add(new BasicNameValuePair("client_secret", "secret"));
+        nvps.add(new BasicNameValuePair("scope", "identity.service identity.migration"));
+        CloseableHttpResponse response = HttpclientHelper.SimplePost(ConfigHelper.getSetting("defaultTokenURI"), nvps);
+        String[] results = EntityUtils.toString(response.getEntity(), "UTF-8").split(",");
+        for (String s : results) {
+            if (s.contains("access_token")) {
+                httpAuthorizationHeader = "Bearer" + s.split(":")[1].replace("\"", "");
+                break;
+            }
+        }
+    }
+
     public static void GetHttpAuthorizationHeader() throws Exception {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("grant_type", "client_credentials"));
