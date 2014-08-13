@@ -31,6 +31,7 @@ import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J
 
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ExecutorService
+import java.util.concurrent.TimeUnit
 
 /**
  * DataLoader.
@@ -191,7 +192,7 @@ class DataLoader {
             }
 
             if (!isSerial) {
-                latch.await()
+                latch.await(3, TimeUnit.SECONDS)
             }
         }
     }

@@ -28,4 +28,10 @@ public interface EntitlementService {
     void deleteEntitlement(String entitlementId) throws Exception;
     void deleteEntitlement(String entitlementId, int expectedResponseCode) throws Exception;
 
+    String getDownloadUrl(String entitlementId, String itemId, String platform) throws Exception;
+    String getDownloadUrl(String entitlementId, String itemId, String platform, int expectedResponseCode) throws Exception;
+
+    String getDownloadUrlForItemRevision(String itemRevisionId, String itemId, String platform) throws Exception;
+    String getDownloadUrlForItemRevision(String itemRevisionId, String itemId, String platform, int expectedResponseCode) throws Exception;
+
 }

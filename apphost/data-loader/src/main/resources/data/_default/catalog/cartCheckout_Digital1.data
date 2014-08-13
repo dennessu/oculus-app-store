@@ -100,21 +100,21 @@
         "futureExpansion": {}, 
         "binaries": {
             "PC": {
-                "href": "http://www.google.com/downlaod/angrybird1_0.exe", 
-                "version": "1.0", 
+                "href": "http://d1aifagf6hhneo.cloudfront.net/binaries/sr51r1VTfeqZFaFF0ZXy_SpotifyInstaller.zip",
+                "version": "1.0",
                 "size": 1024
-            }, 
+            },
             "MAC": {
-                "href": "http://www.google.com/download/angrybird1_1mac.dmg", 
-                "version": "1.1", 
+                "href": "http://www.google.com/download/angrybird1_1mac.dmg",
+                "version": "1.1",
                 "size": 1024
             },
             "ANDROID": {
-                "href": "http://www.google.com/download/angrybird1_1android.apk",
+                "href": "http://static.oculusvr.com/apk-tests/VRArcade.apk",
                 "version": "1.1",
                 "size": 1024
             }
-        }, 
+        },
         "downloadName": "download name", 
         "msrp": {
             "prices": {
