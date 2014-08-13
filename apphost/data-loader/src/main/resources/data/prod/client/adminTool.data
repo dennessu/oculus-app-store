@@ -29,7 +29,8 @@
     "csr.service",
     "catalog.admin",
     "token.service",
-    "email.admin"
+    "email.admin",
+    "cms.service"
   ],
 
   "default_scopes" : [
