@@ -10,6 +10,15 @@
                 "scriptType": "SPEL"
             }
         ],
+        "entitlement": [
+            {
+                "precondition": "ownedByCurrentUser",
+                "rights": [
+                    "read", "search"
+                ],
+                "scriptType": "SPEL"
+            }
+        ],
         "entitlement.service": [
             {
                 "precondition": "true",

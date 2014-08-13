@@ -261,7 +261,7 @@ class LoginResourceImpl implements LoginResource {
                     new AccessTokenRequest(
                             refreshToken: tokenRequest.refreshToken,
                             grantType: 'refresh_token',
-                            scope: 'offline',
+                            scope: 'offline storeapi entitlement',
                             clientId: clientId,
                             clientSecret: clientSecret
                     )
@@ -286,7 +286,7 @@ class LoginResourceImpl implements LoginResource {
                             clientId: clientId,
                             clientSecret: clientSecret,
                             grantType: 'password',
-                            scope: 'offline storeapi'
+                            scope: 'offline storeapi entitlement'
                     )
             ).then { AccessTokenResponse accessTokenResponse ->
                 resourceContainer.tokenInfoEndpoint.getTokenInfo(accessTokenResponse.accessToken).then { TokenInfo tokenInfo ->
