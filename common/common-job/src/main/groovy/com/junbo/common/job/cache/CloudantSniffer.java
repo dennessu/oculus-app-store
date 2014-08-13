@@ -90,17 +90,8 @@ public class CloudantSniffer {
             throw new CloudantConnectException("Error occurred during get last change seq");
         }
 
-
         Object lastSeqObj = result.get(CLOUDANT_LASTSEQ_KEY);
-        String lastSeq;
-
-        if (!(lastSeqObj instanceof String)) {
-            lastSeq = String.valueOf(lastSeqObj);
-        } else {
-            lastSeq = lastSeqObj.toString();
-        }
-
-        return lastSeq;
+        return (lastSeqObj instanceof String) ? lastSeqObj.toString() : String.valueOf(lastSeqObj);
     }
 
     public List<CloudantUri> getCloudantInstances() {
