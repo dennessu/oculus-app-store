@@ -12,3 +12,5 @@ sudo docker push silkcloud/onebox-app
 ```
 
 DockerHub page: https://registry.hub.docker.com/u/silkcloud/onebox-app/
+
+How to run docker based onebox: https://github.com/junbo/main/blob/master/docs/devdocs/RunDockerBasedOnebox.md
