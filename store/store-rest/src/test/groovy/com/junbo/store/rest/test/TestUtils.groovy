@@ -33,7 +33,7 @@ class TestUtils {
                 OfferRevision offerRevision = offerRevisionResource.getOfferRevision(offer.currentRevisionId, new OfferRevisionGetOptions(locale: 'en_US')).get()
                 String offerName = offerRevision.locales['en_US'].name
                 if (nameToOfferIds.containsKey(offerName)) {
-                    // assert false, "Duplicate offers with same name ${offerName}"
+                    System.err.println("Duplicate offers with same name ${offerName}")
                 }
                 nameToOfferIds[offerName] = new OfferId(offer.getId())
             }
