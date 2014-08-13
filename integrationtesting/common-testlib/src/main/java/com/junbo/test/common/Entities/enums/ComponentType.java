@@ -22,6 +22,7 @@ public enum ComponentType {
     BILLING("billing"),
     CART("cart"),
     EMAIL("email"),
+    EMAILADMIN("email.admin"),
     ENTITLEMENT("entitlement"),
     EWALLET("ewallet"),
     FULFILMENT("fulfilment"),

@@ -91,6 +91,9 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
             case CATALOGADMIN:
                 formParams.put("scope", "catalog.admin");
                 break;
+            case EMAILADMIN:
+                formParams.put("scope", "email.admin");
+                break;
             case DRM:
                 formParams.put("scope", "drm");
                 clientId = "client";
