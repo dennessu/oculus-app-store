@@ -5,37 +5,40 @@
  */
 package com.junbo.test.entitlement;
 
-import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
-import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
-import com.junbo.test.entitlement.impl.EntitlementServiceImpl;
-import com.junbo.test.common.apihelper.oauth.enums.GrantType;
-import com.junbo.test.common.apihelper.identity.UserService;
-import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
-import com.junbo.test.common.apihelper.oauth.OAuthService;
-import com.junbo.test.common.Entities.enums.ComponentType;
-import com.junbo.test.catalog.enums.CatalogEntityStatus;
+import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.common.id.EntitlementId;
+import com.junbo.common.id.OfferRevisionId;
+import com.junbo.common.model.Results;
 import com.junbo.entitlement.spec.model.Entitlement;
-import com.junbo.test.catalog.enums.EntitlementType;
-import com.junbo.test.catalog.impl.OfferServiceImpl;
-import com.junbo.test.catalog.impl.ItemServiceImpl;
+import com.junbo.identity.spec.v1.model.User;
 import com.junbo.test.catalog.ItemRevisionService;
+import com.junbo.test.catalog.ItemService;
+import com.junbo.test.catalog.OfferService;
+import com.junbo.test.catalog.enums.CatalogEntityStatus;
+import com.junbo.test.catalog.enums.EntitlementType;
+import com.junbo.test.catalog.impl.ItemRevisionServiceImpl;
+import com.junbo.test.catalog.impl.ItemServiceImpl;
+import com.junbo.test.catalog.impl.OfferServiceImpl;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.Utility.TestClass;
+import com.junbo.test.common.apihelper.identity.UserService;
+import com.junbo.test.common.apihelper.identity.impl.UserServiceImpl;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
-import com.junbo.catalog.spec.model.item.Item;
-import com.junbo.identity.spec.v1.model.User;
 import com.junbo.test.common.libs.LogHelper;
-import com.junbo.common.id.OfferRevisionId;
-import com.junbo.test.catalog.OfferService;
-import com.junbo.test.catalog.ItemService;
-import com.junbo.common.id.EntitlementId;
-import com.junbo.test.common.property.*;
-import com.junbo.common.model.Results;
+import com.junbo.test.common.property.Component;
+import com.junbo.test.common.property.Priority;
+import com.junbo.test.common.property.Property;
+import com.junbo.test.common.property.Status;
+import com.junbo.test.entitlement.impl.EntitlementServiceImpl;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 import static org.testng.AssertJUnit.*;
-import org.testng.annotations.Test;
-import org.testng.Assert;
 
 /**
  * @author jifeng
@@ -210,6 +213,48 @@ public class EntitlementTesting extends TestClass {
         Master.getInstance().setCurrentUid(developerId2);
         Results<Entitlement> etGets = entitlementService.getEntitlements(developerId2);
         assertEquals("One entitlement should be returned", 1, etGets.getItems().size());
+    }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "GET item-binary/{itemId}?entitlementId={entitlementId}&itemRevisionId={itemRevisionId}&platform={platform}",
+            component = Component.Entitlement,
+            owner = "JieFeng",
+            status = Status.Enable,
+            description = "get downloadUrl",
+            steps = {
+                    "1. post an entitlement" +
+                            "/n 2. check the downloadUrl for every platform with entitlementId" +
+                            "/n 3. check the downloadUrl for PC with itemRevisionId"
+            }
+    )
+    @Test
+    public void testGetDownloadUrl() throws Exception {
+        this.prepareTestData();
+        Entitlement etCreated = this.CreateEntitlement(defaultUser, EntitlementType.DOWNLOAD.getType());
+        EntitlementService entitlementService = EntitlementServiceImpl.instance();
+        Master.getInstance().setCurrentUid(defaultUserId);
+
+        logger.LogSample("get downloadUrl for http://d1aifagf6hhneo.cloudfront.net/binaries/sr51r1VTfeqZFaFF0ZXy_SpotifyInstaller.zip");
+        String downloadUrl = entitlementService.getDownloadUrl(etCreated.getId(), etCreated.getItemId(), "PC");
+        assertTrue("return downloadUrl should contain the signature part", downloadUrl.indexOf("Signature=") != -1);
+
+        logger.LogSample("get downloadUrl for http://static.oculusvr.com/apk-tests/VRArcade.apk");
+        downloadUrl = entitlementService.getDownloadUrl(etCreated.getId(), etCreated.getItemId(), "ANDROID");
+        assertTrue("return downloadUrl should contain the signature part", downloadUrl.indexOf("Signature=") != -1);
+
+        logger.LogSample("get downloadUrl for http://www.google.com/download/angrybird1_1mac.dmg");
+        downloadUrl = entitlementService.getDownloadUrl(etCreated.getId(), etCreated.getItemId(), "MAC");
+        assertTrue("return downloadUrl should not contain the signature part", downloadUrl.indexOf("Signature=") == -1);
+
+        logger.LogSample("get downloadUrl for non-existing platform");
+        entitlementService.getDownloadUrl(etCreated.getId(), etCreated.getItemId(), "LINUX",  400);
+
+        ItemService itemClient = ItemServiceImpl.instance();
+        String itemRevisionId = itemClient.getItem(etCreated.getItemId()).getCurrentRevisionId();
+        logger.LogSample("get downloadUrl with specific itemRevisionId");
+        downloadUrl = entitlementService.getDownloadUrlForItemRevision(itemRevisionId, etCreated.getItemId(), "PC");
+        assertNotNull("return downloadUrl should not be null", downloadUrl);
     }
 
     //help function

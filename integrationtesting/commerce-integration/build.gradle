@@ -57,10 +57,13 @@ test {
 
 dependencies {
     compile(libraries.asyncclient)
-    compile junboProject(':email-spec')
+    compile(libraries.postgresql)
+
+    compile junboProject(':integration-buyerscenario')
     compile junboProject(':common-testlib')
 
     testCompile(libraries.asyncclient)
+    testCompile(libraries.junit)
     testCompile(libraries.slf4j_api)
     testCompile(libraries.testng)
 }

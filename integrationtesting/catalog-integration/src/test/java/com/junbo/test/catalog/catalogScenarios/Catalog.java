@@ -327,7 +327,6 @@ public class Catalog extends BaseTestClass {
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
-            environment = "release",
             description = "Test Offer Post/Get/Put",
             steps = {
                     "1. Post a default item",
@@ -534,11 +533,13 @@ public class Catalog extends BaseTestClass {
         String offer4 = "testOffer_CartCheckout_Physical2";
         String offer5 = "testOffer_CartCheckout_Stored_Value";
         String offer6 = "testOffer_PreOrder_Digital1";
-        String offer7 = "testOffer_PreOrder_Digital1";
+        String offer7 = "testOffer_PreOrder_Physical1";
         String offer8 = "testOffer_InAppConsumable1";
         String offer9 = "testOffer_InAppConsumable2";
         String offer10 = "testOffer_Free_Digital";
         String offer11 = "testOffer_Free_Physical";
+        String offer12 = "testOffer_IAP";
+        String offer13 = "testOffer_IAPFree";
 
         String offer100 = "test";
 
@@ -577,6 +578,12 @@ public class Catalog extends BaseTestClass {
         String offerId11 = offerServiceAPI.getOfferIdByName(offer11);
         Assert.assertNotNull(offerId11);
         Assert.assertFalse(offerId11.equalsIgnoreCase("No such predefined offer"));
+        String offerId12 = offerServiceAPI.getOfferIdByName(offer12);
+        Assert.assertNotNull(offerId12);
+        Assert.assertFalse(offerId12.equalsIgnoreCase("No such predefined offer"));
+        String offerId13 = offerServiceAPI.getOfferIdByName(offer13);
+        Assert.assertNotNull(offerId13);
+        Assert.assertFalse(offerId13.equalsIgnoreCase("No such predefined offer"));
 
         String offerId100 = offerServiceAPI.getOfferIdByName(offer100);
         if (offerId100 != null) {

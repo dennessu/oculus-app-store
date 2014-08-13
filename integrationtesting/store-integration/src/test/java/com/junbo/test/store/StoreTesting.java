@@ -15,7 +15,9 @@ import com.junbo.store.spec.model.login.UserCredentialChangeResponse;
 import com.junbo.store.spec.model.login.UserCredentialCheckResponse;
 import com.junbo.store.spec.model.login.UserNameCheckResponse;
 import com.junbo.store.spec.model.purchase.CommitPurchaseResponse;
+import com.junbo.store.spec.model.purchase.MakeFreePurchaseResponse;
 import com.junbo.store.spec.model.purchase.PreparePurchaseResponse;
+import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.property.Component;
@@ -82,6 +84,38 @@ public class StoreTesting extends BaseTestClass {
         validationHelper.verifyCommitPurchase(commitPurchaseResponse, offerId);
 
         EntitlementId entitlementId = commitPurchaseResponse.getEntitlements().get(0).getSelf();
+        IAPEntitlementConsumeResponse iapEntitlementConsumeResponse = testDataProvider.iapConsumeEntitlement(entitlementId, offer_iap_normal);
+
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "Store checkout",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test iap offer checkout",
+            steps = {
+                    "1. Create user",
+                    "2. Make free purchase",
+                    "3. Verify purchase response",
+                    "4. Consume iap entitlement",
+                    "5. Get entitlement",
+                    "6. Verify entitlement response"
+            }
+    )
+    @Test
+    public void testMakeFreePurchase() throws Exception {
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser();
+        String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
+
+        String offerId = testDataProvider.getOfferIdByName(offer_digital_free);
+        //post order without set payment instrument
+        MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, Country.DEFAULT);
+
+        String purchaseToken = IdConverter.idToHexString(freePurchaseResponse.getOrder()); //get order id
+
+        EntitlementId entitlementId = freePurchaseResponse.getEntitlements().get(0).getSelf();
         IAPEntitlementConsumeResponse iapEntitlementConsumeResponse = testDataProvider.iapConsumeEntitlement(entitlementId, offer_iap_normal);
 
     }

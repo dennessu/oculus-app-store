@@ -222,10 +222,8 @@ public class TestGetOffer extends BaseTestClass {
         List<String> listStatus = new ArrayList<>();
         List<String> listPublisher = new ArrayList<>();
 
-        if (!isPublished) {
-            listPublisher.add(IdConverter.idToHexString(organizationId));
-            paraMap.put("publisherId", listPublisher);
-        }
+        listPublisher.add(IdConverter.idToHexString(organizationId));
+        paraMap.put("publisherId", listPublisher);
 
         String offerId1 = offer1.getOfferId();
         String offerId2 = offer2.getOfferId();

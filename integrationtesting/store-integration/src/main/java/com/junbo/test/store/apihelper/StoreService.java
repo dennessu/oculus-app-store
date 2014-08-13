@@ -34,4 +34,8 @@ public interface StoreService {
 
     IAPEntitlementConsumeResponse iapConsumeEntitlement(IAPEntitlementConsumeRequest iapEntitlementConsumeRequest, int expectedResponseCode) throws Exception;
 
+    MakeFreePurchaseResponse makeFreePurchase(MakeFreePurchaseRequest request) throws Exception;
+
+    MakeFreePurchaseResponse makeFreePurchase(MakeFreePurchaseRequest request, int expectedResponseCode) throws Exception;
+
 }

@@ -5,6 +5,7 @@
  */
 package com.junbo.test.entitlement.impl;
 
+import com.junbo.entitlement.spec.model.DownloadUrlResponse;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.entitlement.EntitlementService;
@@ -22,6 +23,7 @@ import com.junbo.common.model.Results;
 public class EntitlementServiceImpl  extends HttpClientBase implements EntitlementService {
 
     private String entitlementUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "entitlements";
+    private String itemBinariesUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "item-binary";
     private static EntitlementService instance;
     private boolean isServiceScope = true;
 
@@ -73,6 +75,40 @@ public class EntitlementServiceImpl  extends HttpClientBase implements Entitleme
     public void deleteEntitlement(String entitlementId, int expectedResponseCode) throws Exception {
         String entitlementDeleteUrl = entitlementUrl + "/" + entitlementId;
         restApiCall(HTTPMethod.DELETE, entitlementDeleteUrl, null, expectedResponseCode, isServiceScope);
+    }
+
+    @Override
+    public String getDownloadUrl(String entitlementId, String itemId, String platform) throws Exception {
+        return getDownloadUrl(entitlementId, itemId, platform, 200);
+    }
+
+    @Override
+    public String getDownloadUrl(String entitlementId, String itemId, String platform, int expectedResponseCode) throws Exception {
+        String getDownloadUrl = itemBinariesUrl + "/" + itemId + "?entitlementId=" + entitlementId + "&platform=" + platform;
+        String responseBody = restApiCall(HTTPMethod.GET, getDownloadUrl, null, expectedResponseCode, isServiceScope);
+        try{
+            DownloadUrlResponse response =  new JsonMessageTranscoder().decode(new TypeReference<DownloadUrlResponse>() {}, responseBody);
+            return response.getRedirectUrl();
+        } catch (Exception ignore){
+        }
+        return null;
+    }
+
+    @Override
+    public String getDownloadUrlForItemRevision(String itemRevisionId, String itemId, String platform) throws Exception {
+        return getDownloadUrlForItemRevision(itemRevisionId, itemId, platform, 200);
+    }
+
+    @Override
+    public String getDownloadUrlForItemRevision(String itemRevisionId, String itemId, String platform, int expectedResponseCode) throws Exception {
+        String getDownloadUrl = itemBinariesUrl + "/" + itemId + "?itemRevisionId=" + itemRevisionId + "&platform=" + platform;
+        String responseBody = restApiCall(HTTPMethod.GET, getDownloadUrl, null, expectedResponseCode, isServiceScope);
+        try{
+            DownloadUrlResponse response =  new JsonMessageTranscoder().decode(new TypeReference<DownloadUrlResponse>() {}, responseBody);
+            return response.getRedirectUrl();
+        } catch (Exception ignore){
+        }
+        return null;
     }
 
     public Results<Entitlement> getEntitlements(String userId) throws Exception {
