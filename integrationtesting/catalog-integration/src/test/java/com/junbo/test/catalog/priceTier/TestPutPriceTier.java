@@ -133,6 +133,7 @@ public class TestPutPriceTier extends BaseTestClass {
         verifyExpectedError(priceTierId, priceTier);
 
         //test rev
+        priceTier.setId(priceTierId);
         priceTier.setRev("0");
         verifyExpectedError(priceTierId, priceTier);
 

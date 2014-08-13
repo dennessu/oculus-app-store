@@ -5,6 +5,7 @@
  */
 package com.junbo.test.catalog.offer;
 
+import com.junbo.test.catalog.enums.CatalogEntityStatus;
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
@@ -108,6 +109,15 @@ public class TestGetOffer extends BaseTestClass {
 
         HashMap<String, List<String>> paraMap = new HashMap<>();
         List<String> listOfferId = new ArrayList<>();
+        List<String> listPublished = new ArrayList<>();
+        List<String> listPublisher = new ArrayList<>();
+
+        //set published and publisher for searching not released offers.
+        listPublished.add("false");
+        paraMap.put("published", listPublished);
+
+        listPublisher.add(IdConverter.idToHexString(organizationId));
+        paraMap.put("publisherId", listPublisher);
 
         //Set 1 offer by its Id, verify 1 offer could be gotten
         listOfferId.add(offerId1);
@@ -137,6 +147,9 @@ public class TestGetOffer extends BaseTestClass {
         releaseOffer(offer1);
         releaseOffer(offer2);
         releaseOffer(offer3);
+
+        paraMap.remove("published");
+        paraMap.remove("publisherId");
 
         //Set 2 offers by their Ids, verify 2 offers could be gotten
         listOfferId.clear();

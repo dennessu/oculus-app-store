@@ -284,7 +284,11 @@ public class Catalog extends BaseTestClass {
         List<String> listStatus = new ArrayList<>();
         listStatus.add("false");
 
+        List<String> listPublisher = new ArrayList<>();
+        listPublisher.add(IdConverter.idToHexString(offer.getOwnerId()));
+
         paraMap.put("published", listStatus);
+        paraMap.put("publisherId", listPublisher);
         Results<Offer> offerResult = offerServiceAPI.getOffers(paraMap);
         Assert.assertNotNull(offerResult);
 

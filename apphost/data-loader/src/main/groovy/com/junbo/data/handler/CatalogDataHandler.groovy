@@ -111,7 +111,7 @@ class CatalogDataHandler extends BaseDataHandler {
 
         if (itemExisting == null) {
             logger.info("----loading item $itemRevisionName and its revision")
-            if (itemRevisionName == "testItem_IAP") {
+            if (itemRevisionName.contains("testItem_IAP")) {
                 //Post an IAP host item firstly
                 Item hostItem = CloneUtils.clone(item)
                 ItemRevision hotsItemRevision = CloneUtils.clone(itemRevision)
