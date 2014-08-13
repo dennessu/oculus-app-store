@@ -1,6 +1,6 @@
 {
   "scopes" : [ "identity", "identity.pii", "scope.manage", "catalog", "developer", "openid", "scope.info",
-  "client.info", "commerce", "offline", "consent.manage", "api.info", "drm", "token" ],
+  "client.info", "commerce", "offline", "consent.manage", "api.info", "drm", "token", "storeapi", "entitlement" ],
   "client_id" : "client",
   "client_secret" : "7FE423D6CBDFB063F98DFDC4B84A6A43#60A22E8812F9FE6D88321386AD2476FF",
   "client_name" : "client",
