@@ -119,7 +119,7 @@ class CatalogDataHandler extends BaseDataHandler {
                 hostItem.type = ItemType.APP
                 String hostItemId = handle(hostItem)
 
-                hotsItemRevision.locales.get("en_US").name = "testItem_HostItem"
+                hotsItemRevision.locales.get("en_US").name = "testItem_HostItem_" + UUID.randomUUID().toString()
                 hotsItemRevision.packageName = UUID.randomUUID().toString()
                 hotsItemRevision.itemId = hostItemId
                 hotsItemRevision.downloadName = "download name"

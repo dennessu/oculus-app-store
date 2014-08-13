@@ -141,7 +141,6 @@ public class ItemSearch extends BaseTestClass {
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
-            environment = "release",
             description = "Test Get items by advanced query",
             steps = {
                     "1. Prepare some items",
@@ -247,7 +246,6 @@ public class ItemSearch extends BaseTestClass {
 
         //default -- shortDescription
         buildSearchQuery(shortDescription, 1, itemId2);
-
     }
 
     @Property(
@@ -256,7 +254,6 @@ public class ItemSearch extends BaseTestClass {
             component = Component.Catalog,
             owner = "JasonFu",
             status = Status.Enable,
-            environment = "release",
             description = "Test Get items by advanced query",
             steps = {
                     "1. Prepare some items",
