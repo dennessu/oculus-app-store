@@ -285,6 +285,7 @@ public class PaymentTesting extends BaseTestClass {
             priority = Priority.Dailies,
             features = "initial user",
             component = Component.Payment,
+            environment = "release",
             owner = "Yunlongzhao",
             status = Status.Enable,
             description = "prepare onebox user data",

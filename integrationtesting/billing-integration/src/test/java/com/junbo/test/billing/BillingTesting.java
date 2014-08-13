@@ -33,6 +33,7 @@ public class BillingTesting extends BaseTestClass {
             features = "POST /balances/quote",
             component = Component.Billing,
             owner = "Yunlongzhao",
+            environment = "onebox",
             status = Status.Enable,
             description = "post balance by order Id",
             steps = {
@@ -62,6 +63,7 @@ public class BillingTesting extends BaseTestClass {
             priority = Priority.Dailies,
             features = "POST /balances",
             component = Component.Billing,
+            environment = "onebox",
             owner = "Yunlongzhao",
             status = Status.Enable,
             description = "post balance by order Id",
