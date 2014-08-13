@@ -548,10 +548,10 @@
     "wallet_lot": {
         "views": {
             "by_wallet_id": {
-                "map": "function(doc) {  emit(doc.walletId, doc._id)}"
+                "map": "function(doc) { emit(doc.walletId, doc._id)}"
             },
             "by_wallet_id_and_is_valid": {
-                "map": "function(doc) {  if(doc.isValid){  emit(doc.walletId + ':' + doc.isValid, doc._id)}else{  emit(doc.walletId + ':true', doc._id} }"
+                "map": "function(doc) { if(doc.isValid) { emit(doc.walletId + ':' + doc.isValid, doc._id) } else { emit(doc.walletId + ':true', doc._id) } }"
             }
         }
     },

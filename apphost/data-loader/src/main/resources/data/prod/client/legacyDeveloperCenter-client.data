@@ -4,8 +4,8 @@
   "client_name" : "legacyDeveloperCenter-client",
 
   "scopes" : [ "identity", "identity.pii", "offline" ],
-  "default_scopes" : [ "identity", "identity.pii", "offline" ]
+  "default_scopes" : [ "identity", "identity.pii", "offline" ],
 
-  "response_types" : [ "REFRESH_TOKEN" ],
-  "grant_types" : [ "PASSWORD" ]
+  "response_types" : [ ],
+  "grant_types" : [ "PASSWORD", "REFRESH_TOKEN" ]
 }

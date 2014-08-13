@@ -59,8 +59,9 @@
     "csr.service",
     "catalog.admin",
     "token.service",
-    "email.admin"
-  ]
+    "email.admin",
+    "cms.service"
+  ],
 
   "response_types" : [ ],
   "grant_types" : [ "CLIENT_CREDENTIALS" ]

@@ -4,7 +4,7 @@
   "client_name" : "legacyDeveloperCenter-service",
 
   "scopes" : [ "identity.migration" ],
-  "default_scopes" : [ "identity.migration" ]
+  "default_scopes" : [ "identity.migration" ],
 
   "response_types" : [ ],
   "grant_types" : [ "CLIENT_CREDENTIALS" ]
