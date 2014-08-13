@@ -33,7 +33,7 @@ echo "## memcached cleared."
 $SC_APP_DIR/dbsetup/liquibase/dropdb.sh -env:$SC_ENVIRONMENT -key:D58BA755FF96B35A6DABA7298F7A8CE2
 echo "## psql dbs purged."
 
-python $SC_APP_DIR/dbsetup/couchdb/couchdbcmd.py dropdbs $SC_ENVIRONMENT --prefix=$SC_CLOUDANT_PREFIX --yes
+python $SC_APP_DIR/dbsetup/couchdb/couchdbcmd.py dropdbs $SC_ENVIRONMENT --prefix=$SC_CLOUDANT_PREFIX --yes --key=D58BA755FF96B35A6DABA7298F7A8CE2
 echo "## couchdb/cloudant dbs purged."
 
 echo "#### finished purging databases."

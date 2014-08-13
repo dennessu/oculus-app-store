@@ -34,7 +34,7 @@ $SC_APP_DIR/dbsetup/liquibase/createdb.sh -env:$SC_ENVIRONMENT -key:D58BA755FF96
 $SC_APP_DIR/dbsetup/liquibase/updatedb.sh -env:$SC_ENVIRONMENT -key:D58BA755FF96B35A6DABA7298F7A8CE2
 echo "## psql dbs created."
 
-python $SC_APP_DIR/dbsetup/couchdb/couchdbcmd.py createdbs $SC_ENVIRONMENT --prefix=$SC_CLOUDANT_PREFIX --yes
+python $SC_APP_DIR/dbsetup/couchdb/couchdbcmd.py createdbs $SC_ENVIRONMENT --prefix=$SC_CLOUDANT_PREFIX --yes --key=D58BA755FF96B35A6DABA7298F7A8CE2
 echo "## couchdb/cloudant dbs created."
 
 /var/silkcloud/apphost/dataloader.sh masterkey
