@@ -100,4 +100,21 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
         }
         return null;
     }
+
+    @Override
+    public MakeFreePurchaseResponse makeFreePurchase(MakeFreePurchaseRequest request) throws Exception {
+        return makeFreePurchase(request, 200);
+    }
+
+    @Override
+    public MakeFreePurchaseResponse makeFreePurchase(MakeFreePurchaseRequest request, int expectedResponseCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, storeUrl + "purchase/free", request, expectedResponseCode);
+        if (expectedResponseCode == 200) {
+            MakeFreePurchaseResponse response = new JsonMessageTranscoder().decode(new TypeReference<MakeFreePurchaseResponse>() {
+            }, responseBody);
+
+            return response;
+        }
+        return null;
+    }
 }

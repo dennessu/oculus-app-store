@@ -27,6 +27,7 @@ import com.junbo.store.spec.model.purchase.*;
 import com.junbo.test.catalog.OfferService;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.test.common.Entities.enums.Country;
+import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
 import com.junbo.test.common.blueprint.Master;
@@ -199,6 +200,14 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         address.setSubCountry("TX");
         address.setCountry("US");
         return address;
+    }
+
+    public MakeFreePurchaseResponse makeFreePurchase(String offerId, Country country) throws Exception{
+        MakeFreePurchaseRequest request = new MakeFreePurchaseRequest();
+        request.setLocale(new LocaleId("en_US"));
+        request.setCountry(new CountryId(country.toString()));
+        request.setOffer(new OfferId(offerId));
+        return storeClient.makeFreePurchase(request);
     }
 
 }
