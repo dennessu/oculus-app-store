@@ -20,6 +20,7 @@ import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,7 @@ public class Identity {
     public static final String IdentityV1CurrencyURI = IdentityEndPointV1 + "/currencies";
     public static final String IdentityV1DeviceTypeURI = IdentityEndPointV1 + "/device-types";
     public static final String IdentityV1ErrorInfoURI = IdentityEndPointV1 + "/error-info";
+    public static final String IdentityV1CommunicationURI = IdentityEndPointV1 + "/communications";
     public static final String IdentityV1GroupURI = IdentityEndPointV1 + "/groups";
     public static final String IdentityV1ImportsURI = IdentityEndPointV1 + "/imports";
     public static final String IdentityV1LocaleURI = IdentityEndPointV1 + "/locales";
@@ -338,6 +340,54 @@ public class Identity {
         results.setNext(res.getNext());
         results.setSelf(res.getSelf());
         return results;
+    }
+
+    public static Communication CommunicationDefault(Communication communication) throws Exception {
+        Communication newCommunication = communication == null ? IdentityModel.DefaultCommunication() : communication;
+        return IdentityPost(IdentityV1CommunicationURI, JsonHelper.JsonSerializer(communication), Communication.class);
+    }
+
+    public static Communication CommunicationPut(Communication communication) throws Exception {
+        return IdentityPut(IdentityV1CommunicationURI + "/" + communication.getId().toString(), JsonHelper.JsonSerializer(communication), Communication.class);
+    }
+
+    public static Communication CommunicationGet(String communicationId, String locale) throws Exception {
+        return IdentityGet(IdentityV1CommunicationURI + "/" + communicationId + buildCommunicationLocale(locale), Communication.class);
+    }
+
+    public static Results<Communication> CommunicationSearch(String region, String translation) throws Exception {
+        Results<Communication> results = new Results<>();
+        results.setItems(new ArrayList<Communication>());
+        Results res = IdentityGet(IdentityV1CommunicationURI + buildCommunicationQueryUrl(region, translation), Results.class);
+        for (Object obj : res.getItems()) {
+            results.getItems().add((Communication) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
+                    Communication.class));
+        }
+
+        results.setTotal(res.getTotal());
+        results.setNext(res.getNext());
+        results.setSelf(res.getSelf());
+        return results;
+    }
+
+    public static String buildCommunicationLocale(String locale) {
+        if (StringUtils.isEmpty(locale)) {
+            return "";
+        } else {
+            return "?locale=" + locale;
+        }
+    }
+
+    public static String buildCommunicationQueryUrl(String region, String translation) {
+        if (StringUtils.isEmpty(region) && StringUtils.isEmpty(translation)) {
+            return "";
+        } else if (!StringUtils.isEmpty(region) && !StringUtils.isEmpty(translation)) {
+            return "?region=" + region + "&translation=" + translation;
+        } else if (!StringUtils.isEmpty(region)) {
+            return "?region=" + region;
+        } else {
+            return "?translation=" + translation;
+        }
     }
 
     public static CloseableHttpResponse UserCredentialPostDefault(UserId userId, String oldPassword, String password) throws Exception {

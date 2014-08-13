@@ -299,10 +299,35 @@ public class IdentityModel {
     }
 
 
+    public static Communication DefaultCommunication() throws Exception {
+        Communication communication = new Communication();
+        List<CountryId> regions = new ArrayList<>();
+        regions.add(new CountryId("US"));
+        regions.add(new CountryId("CN"));
+        communication.setRegions(regions);
+
+        List<LocaleId> translations = new ArrayList<>();
+        translations.add(new LocaleId("en_US"));
+        translations.add(new LocaleId("zh_CN"));
+        communication.setTranslations(translations);
+
+        CommunicationLocale communicationLocale = new CommunicationLocale();
+        communicationLocale.setDescription(RandomHelper.randomAlphabetic(100));
+        communicationLocale.setName(RandomHelper.randomAlphabetic(100));
+
+        Map<String, JsonNode> locales = new HashMap<>();
+        locales.put("en_US", JsonHelper.ObjectToJsonNode(communicationLocale));
+        locales.put("zh_CN", JsonHelper.ObjectToJsonNode(communicationLocale));
+        communication.setLocales(locales);
+
+        return communication;
+    }
+
+
     public static String RandomGender() {
         List<Object> array = new ArrayList<>();
-        array.add("male");
-        array.add("female");
+        array.add("MALE");
+        array.add("FEMALE");
         return RandomHelper.randomValueFromList(array).toString();
     }
 
