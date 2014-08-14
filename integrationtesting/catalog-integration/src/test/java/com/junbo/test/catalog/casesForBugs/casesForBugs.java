@@ -234,6 +234,7 @@ public class casesForBugs extends BaseTestClass {
     )
     @Test
     public void testSameOwnerId() throws Exception {
+        prepareCatalogAdminToken();
 
         //item and item revision
         Organization organization1 = organizationService.postDefaultOrganization();
@@ -294,11 +295,9 @@ public class casesForBugs extends BaseTestClass {
         offerRevision.setItems(itemEntities);
         offerRevision.setOwnerId(organizationId2);
         Master.getInstance().setCurrentUid(IdConverter.idToHexString(organization2.getOwnerId()));
-        try {
-            offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision, 400);
-        } catch (Exception ex) {
-            logger.logInfo("Expected exception");
-        }
+
+        //Due to bug 460, Item and offer could have different ownerId
+        offerRevision = offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
 
         itemEntry.setItemId(item.getItemId());
         itemEntities.clear();
