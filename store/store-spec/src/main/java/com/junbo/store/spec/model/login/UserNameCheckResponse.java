@@ -5,22 +5,18 @@
  */
 package com.junbo.store.spec.model.login;
 
-import com.junbo.store.spec.model.BaseResponse;
-
-import java.util.List;
-
 /**
  * The UserNameCheckResponse class.
  */
-public class UserNameCheckResponse extends BaseResponse {
+public class UserNameCheckResponse {
 
-    private List<String> userNameSuggestions;
+    private Boolean isAvailable;
 
-    public List<String> getUserNameSuggestions() {
-        return userNameSuggestions;
+    public Boolean getIsAvailable() {
+        return isAvailable;
     }
 
-    public void setUserNameSuggestions(List<String> userNameSuggestions) {
-        this.userNameSuggestions = userNameSuggestions;
+    public void setIsAvailable(Boolean isAvailable) {
+        this.isAvailable = isAvailable;
     }
 }

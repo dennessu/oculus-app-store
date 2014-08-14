@@ -224,6 +224,9 @@ class OrderRepositorySqlImpl implements OrderRepository {
     }
 
     private void savePaymentInstrument(OrderId orderId, PaymentInfo paymentInfo, Long oldEntityId) {
+        if (paymentInfo.paymentInstrument == null) {
+            return
+        }
         def entity = modelMapper.toOrderPaymentInfoEntity(paymentInfo, new MappingContext())
         entity.orderId = orderId == null ? null : orderId.value
         entity.paymentInstrumentType = 'CREDIT_CAR' // todo may not need to save this field in db

@@ -5,12 +5,14 @@
  */
 package com.junbo.oauth.spec.model
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import groovy.transform.CompileStatic
 
 /**
  * Javadoc.
  */
 @CompileStatic
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 class AccessToken extends ExpirableToken {
     String tokenValue
     String clientId
@@ -18,6 +20,7 @@ class AccessToken extends ExpirableToken {
     Long userId
     String refreshTokenValue
     String ipAddress
+    Boolean debugEnabled
 
     @Override
     String getId() {

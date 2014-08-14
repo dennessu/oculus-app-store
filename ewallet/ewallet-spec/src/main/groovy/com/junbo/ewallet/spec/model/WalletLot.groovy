@@ -1,5 +1,6 @@
 package com.junbo.ewallet.spec.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.junbo.common.model.ResourceMetaForDualWrite
 import groovy.transform.CompileStatic
@@ -16,4 +17,6 @@ class WalletLot extends ResourceMetaForDualWrite<Long> {
     BigDecimal totalAmount
     BigDecimal remainingAmount
     Date expirationDate
+    @JsonIgnore
+    Boolean isValid
 }

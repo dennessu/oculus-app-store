@@ -177,90 +177,214 @@ class MigrationResourceImpl implements MigrationResource {
         }
     }
 
-    Promise<Void> createOrUpdateMigrateUser(OculusInput oculusInput) {
-        return saveOrUpdateUser(oculusInput).then { User createdUser ->
-            // Create user name
-            UserName userName = new UserName(
+    Promise<Boolean> saveOrUpdateUserName(OculusInput oculusInput, User user) {
+        UserName userName = new UserName(
                 givenName: oculusInput.firstName,
                 familyName: oculusInput.lastName
-            )
-            UserPersonalInfo name = new UserPersonalInfo(
-                    userId: (UserId)createdUser.id,
-                    type: UserPersonalInfoType.NAME.toString(),
-                    value: ObjectMapperProvider.instance().valueToTree(userName),
-                    createdTime: oculusInput.createdDate,
-                    updatedTime: oculusInput.updateDate
-            )
+        )
+        UserPersonalInfo name = new UserPersonalInfo(
+                userId: (UserId)user.id,
+                type: UserPersonalInfoType.NAME.toString(),
+                value: ObjectMapperProvider.instance().valueToTree(userName),
+                createdTime: oculusInput.createdDate,
+                updatedTime: oculusInput.updateDate
+        )
 
-            return userPersonalInfoRepository.create(name).then { UserPersonalInfo userPersonalInfo ->
-
-                createdUser.name = (UserPersonalInfoId)userPersonalInfo.id
-                return Promise.pure(createdUser)
+        if (user.name != null) {
+            return userPersonalInfoRepository.get(user.name).then { UserPersonalInfo userPersonalInfo ->
+                if (userPersonalInfo == null) {
+                    return userPersonalInfoRepository.create(name).then { UserPersonalInfo userNamePII ->
+                        user.name = (UserPersonalInfoId)userNamePII.id
+                        return Promise.pure(true)
+                    }
+                } else {
+                    UserName existingUserName = (UserName)JsonHelper.jsonNodeToObj(userPersonalInfo.getValue(), UserName)
+                    if (userName.givenName == existingUserName.givenName && userName.familyName == existingUserName.familyName) {
+                        return Promise.pure(false)
+                    } else {
+                        return userPersonalInfoRepository.create(name).then { UserPersonalInfo userNamePII ->
+                            user.name = (UserPersonalInfoId)userNamePII.id
+                            return Promise.pure(true)
+                        }
+                    }
+                }
             }
-        }.then { User createdUser ->
-            Email userEmail = new Email(
-                    info: oculusInput.email
-            )
-            UserPersonalInfo email = new UserPersonalInfo(
-                    userId: (UserId)createdUser.id,
-                    type: UserPersonalInfoType.EMAIL.toString(),
-                    value: ObjectMapperProvider.instance().valueToTree(userEmail),
-                    lastValidateTime: getMappedEmailValidateTime(oculusInput),
-                    createdTime: oculusInput.createdDate,
-                    updatedTime: oculusInput.updateDate
-            )
+        } else {
+            return userPersonalInfoRepository.create(name).then { UserPersonalInfo userNamePII ->
+                user.name = (UserPersonalInfoId)userNamePII.id
+                return Promise.pure(true)
+            }
+        }
+    }
 
+    Promise<Boolean> saveOrUpdateMail(OculusInput oculusInput, User user) {
+        Email userEmail = new Email(
+                info: oculusInput.email
+        )
+        UserPersonalInfo email = new UserPersonalInfo(
+                userId: (UserId)user.id,
+                type: UserPersonalInfoType.EMAIL.toString(),
+                value: ObjectMapperProvider.instance().valueToTree(userEmail),
+                lastValidateTime: getMappedEmailValidateTime(oculusInput),
+                createdTime: oculusInput.createdDate,
+                updatedTime: oculusInput.updateDate
+        )
+
+        if (!CollectionUtils.isEmpty(user.emails)) {
+            UserPersonalInfoLink userPersonalInfoLink = user.emails.get(0)
+            return userPersonalInfoRepository.get(userPersonalInfoLink.value).then { UserPersonalInfo emailPII ->
+                if (emailPII == null) {
+                    return userPersonalInfoRepository.create(email).then { UserPersonalInfo userPersonalInfo ->
+                        user.emails = new ArrayList<>()
+                        UserPersonalInfoLink emailLink = new UserPersonalInfoLink(
+                                isDefault: true,
+                                value: (UserPersonalInfoId)userPersonalInfo.id
+                        )
+                        user.emails.add(emailLink)
+                        return Promise.pure(true)
+                    }
+                } else {
+                    Email existingEmail = (Email)JsonHelper.jsonNodeToObj(emailPII.value, Email)
+                    if (existingEmail.info == userEmail.info) {
+                        return Promise.pure(false)
+                    } else {
+                        return userPersonalInfoRepository.create(email).then { UserPersonalInfo userPersonalInfo ->
+                            user.emails = new ArrayList<>()
+                            UserPersonalInfoLink emailLink = new UserPersonalInfoLink(
+                                    isDefault: true,
+                                    value: (UserPersonalInfoId)userPersonalInfo.id
+                            )
+                            user.emails.add(emailLink)
+                            return Promise.pure(true)
+                        }
+                    }
+                }
+            }
+        } else {
             return userPersonalInfoRepository.create(email).then { UserPersonalInfo userPersonalInfo ->
-                createdUser.emails = new ArrayList<>()
+                user.emails = new ArrayList<>()
                 UserPersonalInfoLink emailLink = new UserPersonalInfoLink(
                         isDefault: true,
                         value: (UserPersonalInfoId)userPersonalInfo.id
                 )
-                createdUser.emails.add(emailLink)
+                user.emails.add(emailLink)
+                return Promise.pure(true)
+            }
+        }
+    }
+
+    Promise<Boolean> saveOrUpdateGender(OculusInput oculusInput, User user) {
+        UserGender userGender = new UserGender(
+                info: oculusInput.gender
+        )
+        UserPersonalInfo gender = new UserPersonalInfo(
+                userId: (UserId)user.id,
+                type: UserPersonalInfoType.GENDER.toString(),
+                value: ObjectMapperProvider.instance().valueToTree(userGender),
+                createdTime: oculusInput.createdDate,
+                updatedTime: oculusInput.updateDate
+        )
+
+        if (user.gender != null) {
+            return userPersonalInfoRepository.get(user.gender).then { UserPersonalInfo userPersonalInfo ->
+                if (userPersonalInfo == null) {
+                    return userPersonalInfoRepository.create(gender).then { UserPersonalInfo genderPII ->
+                        user.gender = (UserPersonalInfoId)genderPII.id
+                        return Promise.pure(true)
+                    }
+                } else {
+                    UserGender existingGender = (UserGender)JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserGender)
+                    if (userGender.info == existingGender.info) {
+                        return Promise.pure(false)
+                    } else {
+                        return userPersonalInfoRepository.create(gender).then { UserPersonalInfo genderPII ->
+                            user.gender = (UserPersonalInfoId)genderPII.id
+                            return Promise.pure(false)
+                        }
+                    }
+                }
+            }
+        } else {
+            return userPersonalInfoRepository.create(gender).then { UserPersonalInfo userPersonalInfo ->
+                user.gender = (UserPersonalInfoId)userPersonalInfo.id
+                return Promise.pure(true)
+            }
+        }
+    }
+
+    Promise<Boolean> saveOrUpdateDob(OculusInput oculusInput, User user) {
+        UserDOB userDOB = new UserDOB(
+                info: oculusInput.dob
+        )
+        UserPersonalInfo dob = new UserPersonalInfo(
+                userId: (UserId)user.id,
+                type: UserPersonalInfoType.DOB.toString(),
+                value: ObjectMapperProvider.instance().valueToTree(userDOB),
+                createdTime: oculusInput.createdDate,
+                updatedTime: oculusInput.updateDate
+        )
+
+        if (user.dob != null) {
+            return userPersonalInfoRepository.get(user.dob).then { UserPersonalInfo userPersonalInfo ->
+                if (userPersonalInfo == null) {
+                    return userPersonalInfoRepository.create(dob).then { UserPersonalInfo dobPII ->
+                        user.dob = (UserPersonalInfoId)dobPII.id
+                        return Promise.pure(true)
+                    }
+                } else {
+                    UserDOB existingDob = (UserDOB)JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserDOB)
+                    if (existingDob.info == userDOB.info) {
+                        return Promise.pure(false)
+                    } else {
+                        return userPersonalInfoRepository.create(dob).then { UserPersonalInfo dobPII ->
+                            user.dob = (UserPersonalInfoId)dobPII.id
+                            return Promise.pure(true)
+                        }
+                    }
+                }
+            }
+        } else {
+            return userPersonalInfoRepository.create(dob).then { UserPersonalInfo userPersonalInfo ->
+                user.dob = (UserPersonalInfoId)userPersonalInfo.id
+                return Promise.pure(true)
+            }
+        }
+    }
+
+    Promise<Void> createOrUpdateMigrateUser(OculusInput oculusInput) {
+        Boolean flag = false
+        return saveOrUpdateUser(oculusInput).then { User createdUser ->
+            return saveOrUpdateUserName(oculusInput, createdUser).then { Boolean aBoolean ->
+                flag = flag || aBoolean
+                return Promise.pure(createdUser)
+            }
+        }.then { User createdUser ->
+            return saveOrUpdateMail(oculusInput, createdUser).then { Boolean aBoolean ->
+                flag = flag || aBoolean;
                 return Promise.pure(createdUser)
             }
         }.then { User createdUser ->
             if (StringUtils.isEmpty(oculusInput.gender)) {
                 return Promise.pure(createdUser)
             }
-
-            UserGender userGender = new UserGender(
-                    info: oculusInput.gender
-            )
-            UserPersonalInfo gender = new UserPersonalInfo(
-                    userId: (UserId)createdUser.id,
-                    type: UserPersonalInfoType.GENDER.toString(),
-                    value: ObjectMapperProvider.instance().valueToTree(userGender),
-                    createdTime: oculusInput.createdDate,
-                    updatedTime: oculusInput.updateDate
-            )
-
-            return userPersonalInfoRepository.create(gender).then { UserPersonalInfo userPersonalInfo ->
-                createdUser.gender = (UserPersonalInfoId)userPersonalInfo.id
+            return saveOrUpdateGender(oculusInput, createdUser).then { Boolean aBoolean ->
+                flag = flag || aBoolean
                 return Promise.pure(createdUser)
             }
         }.then { User createdUser ->
             if (oculusInput.dob == null) {
                 return Promise.pure(createdUser)
             }
-
-            UserDOB userDOB = new UserDOB(
-                    info: oculusInput.dob
-            )
-            UserPersonalInfo dob = new UserPersonalInfo(
-                    userId: (UserId)createdUser.id,
-                    type: UserPersonalInfoType.DOB.toString(),
-                    value: ObjectMapperProvider.instance().valueToTree(userDOB),
-                    createdTime: oculusInput.createdDate,
-                    updatedTime: oculusInput.updateDate
-            )
-
-            return userPersonalInfoRepository.create(dob).then { UserPersonalInfo userPersonalInfo ->
-                createdUser.dob = (UserPersonalInfoId)userPersonalInfo.id
+            return saveOrUpdateDob(oculusInput, createdUser).then { Boolean aBoolean ->
+                flag = flag || aBoolean
                 return Promise.pure(createdUser)
             }
         }.then { User createdUser ->
-            return userRepository.update(createdUser, createdUser)
+            if (flag) {
+                return userRepository.update(createdUser, createdUser)
+            } else {
+                return Promise.pure(createdUser)
+            }
         }.then { User createdUser ->
             return saveOrUpdatePassword(oculusInput, createdUser).then {
                 return Promise.pure(createdUser)
@@ -295,10 +419,15 @@ class MigrationResourceImpl implements MigrationResource {
                     return userPassword.active
                 }
 
-                activePassword.changeAtNextLogin = oculusInput.forceResetPassword
-                activePassword.passwordHash = oculusInput.password
+                if (activePassword.changeAtNextLogin == oculusInput.forceResetPassword
+                 && activePassword.passwordHash == oculusInput.password) {
+                    return Promise.pure(activePassword)
+                } else {
+                    activePassword.changeAtNextLogin = oculusInput.forceResetPassword
+                    activePassword.passwordHash = oculusInput.password
 
-                return userPasswordRepository.update(activePassword, activePassword)
+                    return userPasswordRepository.update(activePassword, activePassword)
+                }
             }
         }
     }
@@ -331,9 +460,12 @@ class MigrationResourceImpl implements MigrationResource {
                         UserCommunication userCommunication = userCommunicationList.get(0)
                         if (entry.value) {
                             // update
-                            userCommunication.setUserId(user.getId())
-                            userCommunication.setCommunicationId(new CommunicationId(entry.key))
-                            return userCommunicationRepository.update(userCommunication, userCommunication)
+                            if (userCommunication.userId != user.getId() || userCommunication.communicationId != new CommunicationId(entry.key)) {
+                                userCommunication.setUserId(user.getId())
+                                userCommunication.setCommunicationId(new CommunicationId(entry.key))
+                                return userCommunicationRepository.update(userCommunication, userCommunication)
+                            }
+                            return Promise.pure(null)
                         } else {
                             // delete
                             return userCommunicationRepository.delete(userCommunication.getId())
@@ -382,6 +514,16 @@ class MigrationResourceImpl implements MigrationResource {
                     }
                 }
             } else {
+                // Should not use equals due to user has no adminInfo...
+                Boolean flag = (existing.preferredLocale == user.preferredLocale)
+                flag = flag && (existing.preferredTimezone == user.preferredTimezone)
+                flag = flag && (existing.status == user.status)
+                flag = flag && (existing.isAnonymous == user.isAnonymous)
+                flag = flag && (existing.profile == user.profile)
+                flag = flag && (existing.migratedUserId == user.migratedUserId)
+                flag = flag && (existing.nickName == user.nickName)
+
+                existing.nickName = user.nickName
                 existing.preferredLocale = user.preferredLocale
                 existing.preferredTimezone = user.preferredTimezone
                 existing.status = user.status
@@ -394,7 +536,11 @@ class MigrationResourceImpl implements MigrationResource {
                     UserLoginName loginName = (UserLoginName)JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserLoginName)
                     if (loginName.userName == oculusInput.username) {
                         // Do nothing
-                        return userRepository.update(existing, existing)
+                        if (!flag) {
+                            return userRepository.update(existing, existing)
+                        } else {
+                            return Promise.pure(existing)
+                        }
                     } else {
                         // Update username
                         loginName = new UserLoginName(
@@ -510,28 +656,83 @@ class MigrationResourceImpl implements MigrationResource {
             }
         }
 
-        if (oculusInput.currentId == null) {
-            throw AppCommonErrors.INSTANCE.fieldInvalid('currentId', 'Migration must have user\'s currentId').exception()
+        if (oculusInput.currentId == null && oculusInput.userId == null) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('currentId', 'Migration must have user\'s currentId or userId').exception()
         }
 
-        return userRepository.searchUserByMigrateId(oculusInput.currentId).then { User existingUser ->
-            if (existingUser != null && existingUser.username != null) {
-                return userPersonalInfoRepository.get(existingUser.username).then { UserPersonalInfo userPersonalInfo ->
-                    if (userPersonalInfo == null) {
-                        return Promise.pure(null)
-                    }
+        if (oculusInput.gender != null) {
+            if(!oculusInput.gender.equals('MALE') && !oculusInput.gender.equals('FEMALE')) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid('gender', 'gender must be in [MALE, FEMALE]').exception()
+            }
+        }
 
-                    UserLoginName loginName = (UserLoginName)JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserLoginName)
-                    if (loginName.canonicalUsername == normalizeService.normalize(oculusInput.username)) {
-                        return Promise.pure(null)
-                    }
+        return checkMigrateIdAndUserId(oculusInput).then {
+            return userRepository.searchUserByMigrateId(oculusInput.currentId).then { User existingUser ->
+                if (existingUser != null && existingUser.username != null) {
+                    return userPersonalInfoRepository.get(existingUser.username).then { UserPersonalInfo userPersonalInfo ->
+                        if (userPersonalInfo == null) {
+                            return Promise.pure(null)
+                        }
 
-                    return checkCanonicalUsernameNotExists(oculusInput.username)
+                        UserLoginName loginName = (UserLoginName)JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserLoginName)
+                        if (loginName.canonicalUsername == normalizeService.normalize(oculusInput.username)) {
+                            return Promise.pure(null)
+                        }
+
+                        return checkCanonicalUsernameNotExists(oculusInput.username)
+                    }
+                }
+
+                return checkCanonicalUsernameNotExists(oculusInput.username)
+            }
+        }
+    }
+
+    Promise<Void> checkMigrateIdAndUserId(OculusInput oculusInput) {
+        if (oculusInput.userId != null) {
+            return userRepository.get(oculusInput.userId).then { User existingUser ->
+                if (existingUser == null) {
+                    return Promise.pure(null)
+                } else {
+                    if (existingUser.migratedUserId != null && oculusInput.currentId != null) {
+                        // check whether the migratedUserId is the same as currentId
+                        if (existingUser.migratedUserId != oculusInput.currentId) {
+                            throw AppCommonErrors.INSTANCE.fieldInvalid('userId', 'currentId has conflict with saved currentId').exception()
+                        }
+                        return Promise.pure(null)
+                    } else if (existingUser.migratedUserId != null && oculusInput.currentId == null) {
+                        // assign to currentId
+                        oculusInput.currentId = existingUser.migratedUserId
+                        return Promise.pure(null)
+                    } else if (existingUser.migratedUserId == null && oculusInput.currentId != null) {
+                        // assign to existing migratedUserId
+                        existingUser.migratedUserId = oculusInput.currentId
+                        return userRepository.update(existingUser, existingUser).then {
+                            List<Integer> list = new ArrayList<>()
+                            list.add(1)
+                            list.add(2)
+                            list.add(3)
+                            list.add(4)
+                            list.add(5)
+                            return Promise.each(list.iterator()) { Integer integer ->
+                                return userRepository.searchUserByMigrateId(existingUser.migratedUserId).then { User migratedUser ->
+                                    if (migratedUser != null) {
+                                        return Promise.pure(Promise.BREAK)
+                                    }
+                                    return Promise.pure(null)
+                                }
+                            }.then {
+                                return Promise.pure(null)
+                            }
+                        }
+                    } else {
+                        throw AppCommonErrors.INSTANCE.fieldInvalid('userId', 'No CurrentId found during migration').exception()
+                    }
                 }
             }
-
-            return checkCanonicalUsernameNotExists(oculusInput.username)
         }
+
+        return Promise.pure(null)
     }
 
     Promise<Void> checkCanonicalUsernameNotExists(String inputUserName) {

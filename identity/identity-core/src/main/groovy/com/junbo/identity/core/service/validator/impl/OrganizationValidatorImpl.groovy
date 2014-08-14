@@ -58,11 +58,11 @@ class OrganizationValidatorImpl implements OrganizationValidator {
         }
 
         if (options.ownerId == null && StringUtils.isEmpty(options.name)) {
-            throw AppCommonErrors.INSTANCE.parameterRequired('owner or name').exception()
+            throw AppCommonErrors.INSTANCE.parameterRequired('ownerId or name').exception()
         }
 
         if (options.ownerId != null && !StringUtils.isEmpty(options.name)) {
-            throw AppCommonErrors.INSTANCE.parameterInvalid('owner and name can\'t be exist at the same time').exception()
+            throw AppCommonErrors.INSTANCE.parameterInvalid('ownerId and name', 'owner and name can\'t be exist at the same time').exception()
         }
 
         return Promise.pure(null)

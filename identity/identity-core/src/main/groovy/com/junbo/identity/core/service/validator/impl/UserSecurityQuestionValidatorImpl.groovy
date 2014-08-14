@@ -68,7 +68,7 @@ class UserSecurityQuestionValidatorImpl implements UserSecurityQuestionValidator
 
                 if (userId != userSecurityQuestion.userId) {
                     throw AppCommonErrors.INSTANCE.
-                            parameterInvalid('userId and userSecurityQuestionId doesn\'t match.').exception()
+                            parameterInvalid('userId', 'userId and userSecurityQuestion.userId doesn\'t match.').exception()
                 }
 
                 return Promise.pure(userSecurityQuestion)

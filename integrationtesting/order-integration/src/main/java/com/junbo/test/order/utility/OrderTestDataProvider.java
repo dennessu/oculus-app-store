@@ -118,19 +118,23 @@ public class OrderTestDataProvider {
                             boolean hasPhysicalGood, Map<String, Integer> offers, int expectedResponseCode)
             throws Exception {
         Order order = new Order();
-        order.setUser(new UserId(IdConverter.hexStringToId(UserId.class, uid)));
+        UserId userId = new UserId();
+        userId.setValue(IdConverter.hexStringToId(UserId.class, uid));
+        order.setUser(userId);
         order.setCountry(new CountryId(country.toString()));
         order.setCurrency(new CurrencyId(currency.toString()));
         List<PaymentInfo> paymentInfos = new ArrayList<>();
         PaymentInfo paymentInfo = new PaymentInfo();
 
-        if (paymentInstrumentId.equals("Invalid")) {
-            paymentInfo.setPaymentInstrument(new PaymentInstrumentId(0L));
-        } else {
-            paymentInfo.setPaymentInstrument(new PaymentInstrumentId(
-                    IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId)));
+        if (paymentInstrumentId != null) {
+            if (paymentInstrumentId.equals("Invalid")) {
+                paymentInfo.setPaymentInstrument(new PaymentInstrumentId(0L));
+            } else {
+                paymentInfo.setPaymentInstrument(new PaymentInstrumentId(
+                        IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId)));
+            }
+            paymentInfos.add(paymentInfo);
         }
-        paymentInfos.add(paymentInfo);
         order.setPayments(paymentInfos);
         order.setShippingMethod("0");
 
@@ -556,7 +560,7 @@ public class OrderTestDataProvider {
         return providerConfirmUrl.substring(tokenIndex + 6);
     }
 
-    public String getProviderConfirmUrl(String orderId) throws Exception{
+    public String getProviderConfirmUrl(String orderId) throws Exception {
         Order order = Master.getInstance().getOrder(orderId);
         order.getPayments().get(0).setSuccessRedirectUrl("http://www.abc.com/");
         order.getPayments().get(0).setCancelRedirectUrl("http://www.abc.com/cancel/");
@@ -587,7 +591,7 @@ public class OrderTestDataProvider {
         orderEventClient.postOrderEvent(orderEvent);
     }
 
-    public void  emulateAdyenCallBack(String orderId) throws Exception{
+    public void emulateAdyenCallBack(String orderId) throws Exception {
         String successRedirectUrl = "";
         String paymentTransactionId = "";
         String authResult = "AUTHORISED";

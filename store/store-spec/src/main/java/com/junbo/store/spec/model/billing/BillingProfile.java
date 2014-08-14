@@ -6,9 +6,6 @@
 
 package com.junbo.store.spec.model.billing;
 
-import com.junbo.common.id.PaymentInstrumentId;
-import com.junbo.common.id.UserId;
-
 import java.util.List;
 
 /**
@@ -16,29 +13,9 @@ import java.util.List;
  */
 public class BillingProfile {
 
-    private UserId userId;
-
-    private PaymentInstrumentId defaultInstrumentId;
-
     private List<PaymentOption> paymentOptions;
 
     private List<Instrument> instruments;
-
-    public UserId getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UserId userId) {
-        this.userId = userId;
-    }
-
-    public PaymentInstrumentId getDefaultInstrumentId() {
-        return defaultInstrumentId;
-    }
-
-    public void setDefaultInstrumentId(PaymentInstrumentId defaultInstrumentId) {
-        this.defaultInstrumentId = defaultInstrumentId;
-    }
 
     public List<PaymentOption> getPaymentOptions() {
         return paymentOptions;
@@ -47,6 +24,8 @@ public class BillingProfile {
     public void setPaymentOptions(List<PaymentOption> paymentOptions) {
         this.paymentOptions = paymentOptions;
     }
+
+
 
     public List<Instrument> getInstruments() {
         return instruments;

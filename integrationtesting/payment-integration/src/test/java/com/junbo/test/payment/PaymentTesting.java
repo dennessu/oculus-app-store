@@ -285,8 +285,9 @@ public class PaymentTesting extends BaseTestClass {
             priority = Priority.Dailies,
             features = "initial user",
             component = Component.Payment,
+            environment = "release",
             owner = "Yunlongzhao",
-            status = Status.Disable,
+            status = Status.Enable,
             description = "prepare onebox user data",
             steps = {
                     "1. Prepare 10 users",
@@ -295,7 +296,7 @@ public class PaymentTesting extends BaseTestClass {
     @Test
     public void prepareOneBoxUsers() throws Exception {
         final String userPrefix = "user";
-        final String password = "1234";
+        final String password = "Test1234";
         final String emailAddress = "onebox_user#@163.com";
         List<String> userList = new ArrayList<>();
 
@@ -305,6 +306,7 @@ public class PaymentTesting extends BaseTestClass {
             if (uidList.size() != 0) {
                 userList.add(uidList.get(0));
             } else {
+
                 userList.add(testDataProvider.CreateUser(
                         userPrefix + i, password, emailAddress.replace("#", String.valueOf(i))));
             }

@@ -34,7 +34,8 @@ public class FulfilmentTesting extends BaseTestClass {
     @Property(
             priority = Priority.Dailies,
             features = "POST /fulfilments",
-            component = Component.Billing,
+            component = Component.Fulfilment,
+            environment = "onebox",
             owner = "Yunlongzhao",
             status = Status.Enable,
             description = "post fulfilment",
@@ -66,7 +67,8 @@ public class FulfilmentTesting extends BaseTestClass {
     @Property(
             priority = Priority.Dailies,
             features = "Get /fulfilments?orderId={key}",
-            component = Component.Billing,
+            component = Component.Fulfilment,
+            environment = "onebox",
             owner = "Yunlongzhao",
             status = Status.Enable,
             description = "get fulfilment by order Id",
@@ -103,7 +105,8 @@ public class FulfilmentTesting extends BaseTestClass {
     @Property(
             priority = Priority.Dailies,
             features = "Get /fulfilments/{key}",
-            component = Component.Billing,
+            component = Component.Fulfilment,
+            environment = "onebox",
             owner = "Yunlongzhao",
             status = Status.Enable,
             description = "post fulfilment",

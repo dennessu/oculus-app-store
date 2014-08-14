@@ -5,6 +5,7 @@
  */
 package com.junbo.store.spec.model;
 
+import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.id.OfferId;
 
 /**
@@ -12,22 +13,32 @@ import com.junbo.common.id.OfferId;
  */
 public class Offer {
 
-    private OfferId offerId;
+    private OfferId self;
+
     private String title;
+
     private String description;
+
     private String price;
-    private String originalPrice;
-    private String currencyCode;
-    private Boolean isConsumable;
-    private String type;
+
+    private CurrencyId currency;
+
     private String sku;
 
-    public OfferId getOfferId() {
-        return offerId;
+    public OfferId getSelf() {
+        return self;
     }
 
-    public void setOfferId(OfferId offerId) {
-        this.offerId = offerId;
+    public void setSelf(OfferId self) {
+        this.self = self;
+    }
+
+    public CurrencyId getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(CurrencyId currency) {
+        this.currency = currency;
     }
 
     public String getTitle() {
@@ -52,22 +63,6 @@ public class Offer {
 
     public void setPrice(String price) {
         this.price = price;
-    }
-
-    public Boolean getIsConsumable() {
-        return isConsumable;
-    }
-
-    public void setIsConsumable(Boolean isConsumable) {
-        this.isConsumable = isConsumable;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getSku() {

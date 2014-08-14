@@ -117,10 +117,11 @@ class CatalogFacadeImpl implements CatalogFacade {
                 }
             }.then {
                 offer.type = getType(items)
+                offer.items = items
                 return identityFacade.getOrganization(or.ownerId?.value).syncRecover {
                     /* organization is not required, return offer directly if the organization is unavailable.*/
                     LOGGER.error('CatalogFacadeImpl_Get_Organization_Error, offerId: {}', offerId)
-                    return offer
+                    return null
                 }.syncThen { Organization org ->
                     offer.owner = org
                     return offer

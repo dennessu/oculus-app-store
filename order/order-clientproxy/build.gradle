@@ -18,6 +18,7 @@ dependencies {
     compile junboProject(':email-spec')
     compile junboProject(':oauth-spec')
     compile junboProject(':csr-spec')
+    compile junboProject(':entitlement-spec')
     compile (libraries.ehcache)
     compile (libraries.spring_context_support)
     compile (libraries.javax_jta)

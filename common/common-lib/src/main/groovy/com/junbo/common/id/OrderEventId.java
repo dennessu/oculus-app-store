@@ -16,7 +16,7 @@ public class OrderEventId extends Id {
 
     public OrderEventId() {}
 
-    public OrderEventId(long value) {
+    public OrderEventId(Long value) {
         super(value);
     }
 }

@@ -15,7 +15,7 @@ package com.junbo.common.id;
 public class SubscriptionId extends Id {
 
     public SubscriptionId() {}
-    public SubscriptionId(long value) {
+    public SubscriptionId(Long value) {
         super(value);
     }
 }

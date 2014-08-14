@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
  */
 public class UserInfoFacadeImpl implements UserInfoFacade{
     private static final Logger LOGGER = LoggerFactory.getLogger(UserInfoFacadeImpl.class);
+    private static final String USER_ACTIVE = "ACTIVE";
     private UserPersonalInfoResource piiClient;
     private UserResource userResource;
 
@@ -42,9 +43,13 @@ public class UserInfoFacadeImpl implements UserInfoFacade{
                 .then(new Promise.Func<User, Promise<UserInfo>>() {
                     @Override
                     public Promise<UserInfo> apply(final User user) {
+                        if(!user.getStatus().equalsIgnoreCase(USER_ACTIVE)){
+                            throw AppClientExceptions.INSTANCE.userNotAllowed(userId.toString()).exception();
+                        }
                         UserInfo userName = getUserName(user).get();
                         String email = getUserEmail(user).get();
                         userName.setEmail(email);
+                        userName.setAnonymous(user.getIsAnonymous());
                         return Promise.pure(userName);
                     };
                 });

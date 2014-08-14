@@ -17,6 +17,8 @@ import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
+import java.util.regex.Pattern
+
 /**
  * Check user's pin minimum and maximum length
  * Created by liangfu on 3/31/14.
@@ -32,8 +34,7 @@ class UserPinValidatorImpl implements UserPinValidator {
 
     private Integer currentCredentialVersion
 
-    private Integer valueMinLength
-    private Integer valueMaxLength
+    private Pattern allowedPattern
 
     @Override
     Promise<UserPin> validateForGet(UserId userId, UserPinId userPinId) {
@@ -56,7 +57,7 @@ class UserPinValidatorImpl implements UserPinValidator {
                 }
 
                 if (userId != userPin.userId) {
-                    throw AppCommonErrors.INSTANCE.parameterInvalid('userId and userPinId doesn\'t match.').exception()
+                    throw AppCommonErrors.INSTANCE.parameterInvalid('userId', 'userId and userPin.userId doesn\'t match.').exception()
                 }
 
                 return Promise.pure(userPin)
@@ -147,12 +148,8 @@ class UserPinValidatorImpl implements UserPinValidator {
             throw new IllegalArgumentException('value is null')
         }
 
-        if (userPin.value.size() > valueMaxLength) {
-            throw AppCommonErrors.INSTANCE.fieldTooLong('value', valueMaxLength).exception()
-        }
-
-        if (userPin.value.size() < valueMinLength) {
-            throw AppCommonErrors.INSTANCE.fieldTooShort('value', valueMinLength).exception()
+        if (!allowedPattern.matcher(userPin.value).matches()) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('vale', 'Invalid Pin Pattern').exception()
         }
 
         if (userPin.expiresBy != null) {
@@ -183,12 +180,7 @@ class UserPinValidatorImpl implements UserPinValidator {
     }
 
     @Required
-    void setValueMinLength(Integer valueMinLength) {
-        this.valueMinLength = valueMinLength
-    }
-
-    @Required
-    void setValueMaxLength(Integer valueMaxLength) {
-        this.valueMaxLength = valueMaxLength
+    void setAllowedPattern(String allowedPattern) {
+        this.allowedPattern = Pattern.compile(allowedPattern)
     }
 }

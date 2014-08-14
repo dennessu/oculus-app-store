@@ -5,6 +5,7 @@
  */
 package com.junbo.test.catalog.advancedContentSearch;
 
+import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
@@ -20,15 +21,18 @@ import com.junbo.test.catalog.enums.EventActionType;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.offer.Action;
 import com.junbo.catalog.spec.model.offer.Offer;
+import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.test.catalog.enums.EventType;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.common.id.OrganizationId;
 import com.junbo.test.common.property.*;
+import com.junbo.common.model.Results;
 import com.junbo.test.catalog.impl.*;
 import com.junbo.test.catalog.*;
 
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -52,10 +56,10 @@ public class OfferSearch extends BaseTestClass {
     private OrganizationId organizationId;
     private final String defaultLocale = "en_US";
 
-    private OfferService offerService = OfferServiceImpl.instance();
-    private OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
-
     private void prepareTestData() throws Exception {
+        OfferService offerService = OfferServiceImpl.instance();
+        OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
+
         final String defaultOfferRevisionFileName = "defaultOfferRevision";
         final String defaultStoredValueOfferRevisionFileName = "defaultStoredValueOfferRevision";
 
@@ -138,8 +142,7 @@ public class OfferSearch extends BaseTestClass {
 
         //Post the offer revision and approve it
         OfferRevision offerRevisionPost = offerRevisionService.postOfferRevision(offerRevisionPrepared);
-        offerRevisionPost.setStatus("APPROVED");
-        offerRevisionService.updateOfferRevision(offerRevisionPost.getRevisionId(), offerRevisionPost);
+        releaseOfferRevision(offerRevisionPost);
 
         offer2 = offerService.getOffer(offer2.getOfferId());
     }
@@ -160,6 +163,8 @@ public class OfferSearch extends BaseTestClass {
     )
     @Test
     public void testGetOffersByOnlyOneOption() throws Exception {
+        OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
+
         this.prepareTestData();
 
         String offerId1 = offer1.getOfferId();
@@ -168,8 +173,8 @@ public class OfferSearch extends BaseTestClass {
         OfferRevision offerRevision = offerRevisionService.getOfferRevision(offer2.getCurrentRevisionId());
         OfferRevisionLocaleProperties offerRevisionLocaleProperties = offerRevision.getLocales().get(defaultLocale);
 
-        //offerId
-        buildSearchQuery("offerId:" + offerId1, 1, offerId1);
+        //when published is not specified, published is set to true; offer1 is not published, so won't get any offer
+        buildSearchQuery("offerId:" + offerId1, 0);
 
         //default -- offerId
         buildSearchQuery(offerId2, 1, offerId2);
@@ -177,6 +182,9 @@ public class OfferSearch extends BaseTestClass {
         //published is not default index
         buildSearchQuery("false", 0);
         buildSearchQuery("true", 0);
+
+        //release offer1
+        offer1 = releaseOffer(offer1);
 
         //categoryId
         buildSearchQuery("categoryId:" + offer1.getCategories().get(0), 1, offerId1);
@@ -241,6 +249,8 @@ public class OfferSearch extends BaseTestClass {
     )
     @Test
     public void testGetOffersByCombinedOption() throws Exception {
+        OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
+
         this.prepareTestData();
 
         final String defaultEnvironment = "DEV";
@@ -274,6 +284,113 @@ public class OfferSearch extends BaseTestClass {
         buildSearchQuery("offerId:" + offerId1 + "%20OR%20name:" + name, 2, offerId1, offerId2);
         buildSearchQuery(longDescription + "%20AND%20" + shortDescription, 1, offerId2);
         buildSearchQuery(longDescription + "%20OR%20" + shortDescription, 1, offerId2);
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "get /v1/offers",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            environment = "release",
+            description = "Test get predefined offers",
+            steps = {
+            }
+    )
+    @Test
+    public void testGetOffersByDataloader() throws Exception {
+        OfferService offerService = OfferServiceImpl.instance();
+        HashMap<String, List<String>> paraMap = new HashMap<>();
+        List<String> query = new ArrayList<>();
+        List<String> offerIds = new ArrayList<>();
+        List<String> publisherIds = new ArrayList<>();
+        List<String> packageName = new ArrayList<>();
+        List<String> itemType = new ArrayList<>();
+        List<String> itemIds = new ArrayList<>();
+        List<String> itemRevisionIds = new ArrayList<>();
+
+        String offerName1 = "testOffer_Free_Digital";
+        String offerName2 = "testOffer_Free_Physical";
+
+        String strQuery = offerName1 + "%20AND%20" + offerName2;
+        query.add(strQuery);
+        paraMap.put("q", query);
+
+        Results<Offer> offersRtn = offerService.getOffers(paraMap);
+        Assert.assertEquals(offersRtn.getItems().size(), 0);
+
+        strQuery = offerName1 + "%20OR%20" + offerName2;
+        query.clear();
+        query.add(strQuery);
+        paraMap.put("q", query);
+
+        offersRtn = offerService.getOffers(paraMap);
+        Assert.assertEquals(offersRtn.getItems().size(), 2);
+        Offer offer1 = offersRtn.getItems().get(0);
+        Offer offer2 = offersRtn.getItems().get(1);
+
+        Offer offerRtn1 = offerService.getOffer(offer1.getOfferId());
+        Assert.assertEquals(offerRtn1.getOfferId(), offer1.getOfferId());
+
+        Offer offerRtn2 = offerService.getOffer(offer2.getOfferId());
+        Assert.assertEquals(offerRtn2.getOfferId(), offer2.getOfferId());
+
+        offerIds.add(offer1.getOfferId());
+        offerIds.add(offer2.getOfferId());
+
+        paraMap.clear();
+        paraMap.put("offerId", offerIds);
+
+        offersRtn = offerService.getOffers(paraMap);
+        Assert.assertEquals(offersRtn.getItems().size(), 2);
+
+        publisherIds.add(IdConverter.idToHexString(offer1.getOwnerId()));
+        paraMap.put("publisherId", publisherIds);
+
+        offersRtn = offerService.getOffers(paraMap);
+        Assert.assertTrue(isContain(offersRtn, offer1));
+
+        //get offer revisions
+        OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
+        OfferRevision offerRevision1 = offerRevisionService.getOfferRevision(offer1.getCurrentRevisionId());
+
+        Results<OfferRevision> offerRevisionsRtn = offerRevisionService.getOfferRevisions(paraMap);
+        Assert.assertTrue(isContain(offerRevisionsRtn, offerRevision1));
+
+        ItemService itemService = ItemServiceImpl.instance();
+        ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
+        Item item1 = itemService.getItem(offerRevisionsRtn.getItems().get(0).getItems().get(0).getItemId());
+
+        ItemRevision itemRevision1 = itemRevisionService.getItemRevision(item1.getCurrentRevisionId());
+
+        paraMap.clear();
+        paraMap.put("developerId", publisherIds);
+
+        itemIds.add(item1.getItemId());
+        paraMap.put("itemId", itemIds);
+
+        itemType.add(item1.getType());
+        packageName.add(itemRevision1.getPackageName());
+        paraMap.put("type", itemType);
+        paraMap.put("packageName", packageName);
+
+        Results<Item> itemsRtn = itemService.getItems(paraMap);
+        Assert.assertEquals(itemsRtn.getItems().size(), 1);
+        Assert.assertTrue(isContain(itemsRtn, item1));
+
+        paraMap.clear();
+        itemIds.clear();
+
+        itemRevisionIds.add(itemRevision1.getRevisionId());
+
+        itemIds.add(item1.getItemId());
+
+        paraMap.put("itemId", itemIds);
+        paraMap.put("developerId", publisherIds);
+        paraMap.put("revisionId", itemRevisionIds);
+
+        Results<ItemRevision> itemRevisionsRtn = itemRevisionService.getItemRevisions(paraMap);
+        Assert.assertTrue(isContain(itemRevisionsRtn, itemRevision1));
     }
 
     private void buildSearchQuery(String queryOption, int expectedRtnSize, String... offerId) throws Exception {

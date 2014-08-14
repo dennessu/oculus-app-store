@@ -75,7 +75,7 @@ class GroupValidatorImpl implements GroupValidator {
 
         if (options.userId != null) {
             if (options.name != null || options.organizationId != null) {
-                throw AppCommonErrors.INSTANCE.parameterInvalid('userId can\'t be search together with organizationId or name').exception()
+                throw AppCommonErrors.INSTANCE.parameterInvalid('name and organizationId', 'userId can\'t be search together with organizationId or name').exception()
             }
 
             return Promise.pure(null)

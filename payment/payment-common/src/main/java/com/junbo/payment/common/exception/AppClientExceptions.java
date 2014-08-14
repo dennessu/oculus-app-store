@@ -73,4 +73,8 @@ public interface AppClientExceptions {
             reason = "{0} is not allow to be updated")
     AppError updateNotAllowed(String fieldName);
 
+    @ErrorDef(httpStatusCode = 412, code = "114", message = "invalid user to call the api",
+            reason = "{0} is not allowed")
+    AppError userNotAllowed(String userId);
+
 }

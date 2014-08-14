@@ -323,7 +323,7 @@ class UserResourceImpl implements UserResource {
     Promise<String> getUserNameStr(User user) {
         return userPersonalInfoRepository.get(user.username).then { UserPersonalInfo userPersonalInfo ->
             if (userPersonalInfo == null) {
-                throw AppErrors.INSTANCE.userPersonalInfoNotFound(user.username).exception()
+                return Promise.pure(null)
             }
 
             UserLoginName loginName = (UserLoginName)JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserLoginName)

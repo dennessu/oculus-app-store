@@ -3,7 +3,8 @@ package com.junbo.store.rest.test
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.id.PIType
 import com.junbo.common.json.ObjectMapperProvider
-import com.junbo.identity.spec.v1.model.Address
+import com.junbo.identity.spec.v1.model.Email
+import com.junbo.store.spec.model.Address
 import com.junbo.store.spec.model.billing.Instrument
 import com.junbo.store.spec.model.identity.PersonalInfo
 import com.junbo.store.spec.model.login.CreateUserRequest
@@ -13,7 +14,7 @@ import org.apache.commons.lang.RandomStringUtils
  */
 class Generator {
 
-    public static String cardNum = 'adyenjs_0_1_4$eB7SFZPd76Hc0cWWHgHUKYPCAQdoCQMXpHCLexH2GW+UtjIkJbd0YLPBX3qdz5MSnslN22+iuUbu9Q1ByewDwcrB0zMtd1/OXyDwdcj0FB0C6qtvB/45r4cyHiHnxL678SXkjH6/HRRpU4lk79iNnaXrGj6CHtRVI3OzHf4N+8aCp0ckC/JtDOFzqARddvjiwC6pXJ8KaCYKU3fdQGebduQ55E6IGNgLcSvX7XIRfZbzRHEHfOpzp8faE2bkZg2VXCWORf8ZjMC7zDeOf3w5zL0GIgtjANRo1Rducc+rJhCBn8xRiV0qCLaDY9RwyferElFX68BH7qQfHrwXZaeELQ==$ShHxmtfYn+ojmRML6hzti+YrwPrWw0YEXGD70lKBsdAL4+M+/7FB9HfAiOcWv6e508wuC/gxI5WOLux6yuWFlq0YiBgTUHzC4y5+GOZwsh63NOW5cjxjtk4qW5+quSklJc/s/56TrfQu9g0hCsPFe0vEbgLqpkieSJFe+gaJG4rDA6N02MrX4p4A1BX91bi62PJwOmk1LiNfqHbQJ5+eZtiq6dJeLqyZ'
+    public static String cardNum = 'adyenjs_0_1_4$XOvON6cMdleOStk49ASS1gPzqoe/YLlcBMqp5fzN5uq3qnfWoJlwyXsxMpgDHh72lQ+iu1fzs9i/8B54wsTuuIf6VSKosK+XAAnhLb17M7SbNp5s02riwXpgAux3Kcm3JziiWDtKEgdsTL9xz+0z79QYbb7++q8hdwBKWc06UHWYaWPOzkCTV2Z+hkosfjTSpiO9lLNRLB8Jd61ppKR/Xq+XxFcoIoUFmgBOWPUXyHFvNzKusBxm0XUCZjkHm3VI/GJWuEG69l/U1lt6OMMWQYqG73ustctunVKY9AcUfO5ofSK0wzAHt9wN4Un1Po3On5j8f7chYWDmSEmKpi9qTg==$MFzbnMtpdO7GOMlFe3vxroxg+r5HWIiSdJ1C2v4yJrBcpcCWiqfLiiDhmAdt3e0XPFBtoDDV8za8GhZmSxTIj1RRRTiqRCYs4dKdtlQjaXlpBBohOc21UeY0dFYeHRX/H8SQ9B0mVWXi5lVsRtMtpMQi9CPpAZyd8MGk3n22+Eg6XIRkK9eaddpbPLkZ5JUqtnhpF5bNbtHJTYJVxvhEUaS1Pn2szxHg'
 
     static String genUserName() {
         return RandomStringUtils.randomAlphabetic(20)
@@ -21,6 +22,10 @@ class Generator {
 
     static String genPassword() {
         return RandomStringUtils.randomAlphabetic(10).toLowerCase() + RandomStringUtils.randomAlphabetic(2).toUpperCase() + RandomStringUtils.randomNumeric(1) + '$'
+    }
+
+    static String genHeadline() {
+        return RandomStringUtils.randomAlphabetic(20)
     }
 
     static String genEmail() {
@@ -31,13 +36,19 @@ class Generator {
         return RandomStringUtils.randomNumeric(4)
     }
 
+    static Email genEmailModel() {
+        Email email = new Email()
+        email.info = genEmail()
+        return email
+    }
+
     static CreateUserRequest genCreateUserRequest(String username, String password, String email, String pinCode) {
         return new CreateUserRequest(
                 username: username,
                 firstName: 'First',
                 lastName: 'Last',
                 password: password,
-                pinCode: pinCode,
+                pin: pinCode,
                 dob: new Date(System.currentTimeMillis() - 8 * 365L * 24 * 3600 * 1000),
                 preferredLocale: 'en_US',
                 email: email,
@@ -47,10 +58,9 @@ class Generator {
 
     static Instrument generateCreditCardInstrument() {
         Instrument instrument = new Instrument()
-        instrument.accountName = RandomStringUtils.randomAlphabetic(5)
+        instrument.accountName = 'John Doe'
         instrument.accountNum = cardNum
         instrument.type = PIType.CREDITCARD.name()
-        instrument.creditCardType = 'VISA'
 
         Address billingAddres = new Address(
             street1: '1600 Amphitheatre Parkway',
@@ -59,9 +69,9 @@ class Generator {
             postalCode: '94043',
             city: 'Mountain View',
             subCountry: 'CA',
-            countryId: new CountryId('US')
+            country: new CountryId('US')
         )
-        instrument.billingAddress = new PersonalInfo(type: 'ADDRESS', value: ObjectMapperProvider.instance().valueToTree(billingAddres))
+        instrument.billingAddress = billingAddres
         return instrument
     }
 

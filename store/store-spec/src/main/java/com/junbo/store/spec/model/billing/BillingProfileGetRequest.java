@@ -5,8 +5,9 @@
  */
 package com.junbo.store.spec.model.billing;
 
+import com.junbo.common.enumid.CountryId;
 import com.junbo.common.enumid.LocaleId;
-import com.junbo.common.id.UserId;
+import com.junbo.common.id.OfferId;
 
 import javax.ws.rs.QueryParam;
 
@@ -18,8 +19,11 @@ public class BillingProfileGetRequest {
     @QueryParam("locale")
     private LocaleId locale;
 
-    @QueryParam("userId")
-    private UserId userId;
+    @QueryParam("country")
+    private CountryId country;
+
+    @QueryParam("offer")
+    private OfferId offer;
 
     public LocaleId getLocale() {
         return locale;
@@ -29,11 +33,19 @@ public class BillingProfileGetRequest {
         this.locale = locale;
     }
 
-    public UserId getUserId() {
-        return userId;
+    public CountryId getCountry() {
+        return country;
     }
 
-    public void setUserId(UserId userId) {
-        this.userId = userId;
+    public void setCountry(CountryId country) {
+        this.country = country;
+    }
+
+    public OfferId getOffer() {
+        return offer;
+    }
+
+    public void setOffer(OfferId offer) {
+        this.offer = offer;
     }
 }

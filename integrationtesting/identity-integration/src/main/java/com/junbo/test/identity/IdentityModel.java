@@ -1,3 +1,5 @@
+// CHECKSTYLE:OFF
+
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
@@ -6,14 +8,9 @@
 package com.junbo.test.identity;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.junbo.common.enumid.CountryId;
-import com.junbo.common.enumid.CurrencyId;
-import com.junbo.common.enumid.LocaleId;
-import com.junbo.common.enumid.RatingBoardId;
+import com.junbo.common.enumid.*;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.v1.model.*;
-import com.junbo.identity.spec.v1.model.Currency;
-import com.junbo.identity.spec.v1.model.Locale;
 import com.junbo.identity.spec.v1.model.migration.Company;
 import com.junbo.identity.spec.v1.model.migration.OculusInput;
 import com.junbo.identity.spec.v1.model.migration.ShareProfile;
@@ -23,7 +20,10 @@ import com.junbo.test.common.RandomHelper;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author dw
@@ -117,6 +117,19 @@ public class IdentityModel {
         PhoneNumber phoneNumber = new PhoneNumber();
         phoneNumber.setInfo("8613585830699");
         return phoneNumber;
+    }
+
+    public static String DefaultPassword() throws Exception {
+        String password = RandomHelper.randomAlphabetic(4).toLowerCase() +
+                RandomHelper.randomNumeric(6) +
+                RandomHelper.randomAlphabetic(4).toUpperCase();
+
+        return password;
+    }
+
+    public static String DefaultPin() throws Exception {
+        String pin = RandomHelper.randomNumeric(4);
+        return pin;
     }
 
     public static Locale DefaultLocale() throws Exception {
@@ -213,10 +226,25 @@ public class IdentityModel {
     }
 
     public static UserCredential DefaultUserCredential(UserId userId, String password) throws Exception {
+        return DefaultUserCredential(userId, null, password);
+    }
+
+    public static UserCredential DefaultUserCredential(UserId userId, String oldPassword, String password) throws Exception {
         UserCredential userCredential = new UserCredential();
         userCredential.setUserId(userId);
+        userCredential.setCurrentPassword(oldPassword);
         userCredential.setValue(password);
         userCredential.setType("PASSWORD");
+        userCredential.setChangeAtNextLogin(false);
+        return userCredential;
+    }
+
+    public static UserCredential DefaultUserPin(UserId userId, String oldPassword, String pin) throws Exception {
+        UserCredential userCredential = new UserCredential();
+        userCredential.setUserId(userId);
+        userCredential.setCurrentPassword(oldPassword);
+        userCredential.setValue(pin);
+        userCredential.setType("PIN");
         userCredential.setChangeAtNextLogin(false);
         return userCredential;
     }
@@ -227,6 +255,15 @@ public class IdentityModel {
         ucva.setUsername(userName);
         ucva.setValue(password);
         ucva.setType("PASSWORD");
+        ucva.setIpAddress(RandomHelper.randomIP());
+        return ucva;
+    }
+
+    public static UserCredentialVerifyAttempt DefaultUserPinAttempts(String username, String pin) throws Exception{
+        UserCredentialVerifyAttempt ucva = new UserCredentialVerifyAttempt();
+        ucva.setUsername(username);
+        ucva.setValue(pin);
+        ucva.setType("PIN");
         ucva.setIpAddress(RandomHelper.randomIP());
         return ucva;
     }
@@ -248,10 +285,85 @@ public class IdentityModel {
         return userTFA;
     }
 
+    public static DeviceType DefaultDeviceType(List<DeviceTypeId> deviceTypeIds) throws Exception {
+        DeviceType deviceType = new DeviceType();
+        deviceType.setInstructionManual(RandomHelper.randomAlphabetic(100));
+        deviceType.setTypeCode(RandomDeviceTypeCode());
+        deviceType.setComponentTypes(deviceTypeIds);
+        Map<String, DeviceSoftware> availableSoftwareMap = new HashMap<>();
+        DeviceSoftware deviceSoftware = new DeviceSoftware();
+        SoftwareObject dev = new SoftwareObject();
+        dev.setHref(RandomHelper.randomAlphabetic(15));
+        dev.setVersion(RandomHelper.randomAlphabetic(15));
+        deviceSoftware.setDev(dev);
+        SoftwareObject stable = new SoftwareObject();
+        stable.setHref(RandomHelper.randomAlphabetic(15));
+        stable.setVersion(RandomHelper.randomAlphabetic(15));
+        deviceSoftware.setStable(stable);
+        availableSoftwareMap.put(RandomHelper.randomAlphabetic(15), deviceSoftware);
+        deviceType.setAvailableSoftware(availableSoftwareMap);
+        return deviceType;
+    }
+
+    public static ErrorInfo DefaultErrorInfo() throws Exception {
+        ErrorInfo errorInfo = new ErrorInfo();
+        String errorCode = RandomHelper.randomNumeric(3) + "." + RandomHelper.randomNumeric(2);
+        errorInfo.setErrorIdentifier(errorCode);
+        Map<String, JsonNode> locales = new HashMap<>();
+
+        ErrorDetail errorDetail = new ErrorDetail();
+        errorDetail.setErrorInformation(RandomHelper.randomAlphabetic(10));
+        errorDetail.setErrorSummary(RandomHelper.randomAlphabetic(10));
+        errorDetail.setErrorTitle(RandomHelper.randomAlphabetic(10));
+        errorDetail.setSupportLink(RandomHelper.randomAlphabetic(15));
+        locales.put("en_US", JsonHelper.ObjectToJsonNode(errorDetail));
+        errorInfo.setLocales(locales);
+
+        return errorInfo;
+    }
+
+
+    public static Communication DefaultCommunication() throws Exception {
+        Communication communication = new Communication();
+        List<CountryId> regions = new ArrayList<>();
+        regions.add(new CountryId("US"));
+        regions.add(new CountryId("CN"));
+        communication.setRegions(regions);
+
+        List<LocaleId> translations = new ArrayList<>();
+        translations.add(new LocaleId("en_US"));
+        translations.add(new LocaleId("zh_CN"));
+        communication.setTranslations(translations);
+
+        CommunicationLocale communicationLocale = new CommunicationLocale();
+        communicationLocale.setDescription(RandomHelper.randomAlphabetic(100));
+        communicationLocale.setName(RandomHelper.randomAlphabetic(100));
+
+        Map<String, JsonNode> locales = new HashMap<>();
+        locales.put("en_US", JsonHelper.ObjectToJsonNode(communicationLocale));
+        locales.put("zh_CN", JsonHelper.ObjectToJsonNode(communicationLocale));
+        communication.setLocales(locales);
+
+        return communication;
+    }
+
+
     public static String RandomGender() {
         List<Object> array = new ArrayList<>();
-        array.add("male");
-        array.add("female");
+        array.add("MALE");
+        array.add("FEMALE");
+        return RandomHelper.randomValueFromList(array).toString();
+    }
+
+    public static String RandomDeviceTypeCode() {
+        List<Object> array = new ArrayList<>();
+        array.add(DeviceTypeCode.CV1.name());
+        array.add(DeviceTypeCode.DK1.name());
+        array.add(DeviceTypeCode.DK2.name());
+        array.add(DeviceTypeCode.DK2_CAMERA.name());
+        array.add(DeviceTypeCode.DKHD.name());
+        array.add(DeviceTypeCode.HMD.name());
+        array.add(DeviceTypeCode.NOTE4.name());
         return RandomHelper.randomValueFromList(array).toString();
     }
 
@@ -296,7 +408,8 @@ public class IdentityModel {
         QQ,
         SMS,
         WHATSAPP,
-        WIPED
+        WIPED,
+        USERNAME
     }
 
     /**
@@ -308,6 +421,16 @@ public class IdentityModel {
         PENDING,
         PENDING_EMAIL_VERIFICATION,
         VERIFIED
+    }
+
+    public static enum DeviceTypeCode {
+        DK1,
+        DKHD,
+        DK2,
+        CV1,
+        HMD,
+        DK2_CAMERA,
+        NOTE4
     }
 
     /**

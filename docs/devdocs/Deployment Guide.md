@@ -410,12 +410,13 @@ ln -sf apphost-cli-0.0.1-SNAPSHOT apphost
 sudo start silkcloud-apphost
 ```
 
-### Generate Master Key
+### Load Initial Data
   * `10.24.32.10`
+
 Run the following command on crypto servers:
 ```
-cd /var/silkcloud/apphost-cli-0.0.1-SNAPSHOT
-./dataloader.sh masterkey
+cd /var/silkcloud/apphost
+./dataloader.sh
 ```
 
 ### Sync Master Keys in SQL
@@ -457,22 +458,6 @@ If the diff didn't show any output, the sync is completed successfully. Backup t
 ```
 rm backup1.sql.gz
 rm backup2.sql.gz
-```
-
-### Load Initial Data
-  * `10.24.32.10`
-
-Run the following command on bastion servers using silkcloud:
-```
-scp /home/$YOUR_USER/apphost-cli-0.0.1-SNAPSHOT.zip 10.24.32.10:/var/silkcloud
-```
-Run the following command on crypto servers:
-```
-cd /var/silkcloud
-rm -rf apphost-cli-0.0.1-SNAPSHOT
-unzip -o apphost-cli-0.0.1-SNAPSHOT.zip
-cd apphost-cli-0.0.1-SNAPSHOT
-./dataloader.sh
 ```
 
 # Appendix

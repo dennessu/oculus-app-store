@@ -16,7 +16,7 @@ public class ClientId extends Id {
 
     public ClientId() {}
 
-    public ClientId(long value) {
+    public ClientId(Long value) {
         super(value);
     }
 }

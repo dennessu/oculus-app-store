@@ -15,6 +15,7 @@ public class UserInfo {
     private String middleName;
     private String lastName;
     private String email;
+    private Boolean anonymous;
 
     public String getEmail() {
         return email;
@@ -54,5 +55,13 @@ public class UserInfo {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public Boolean getAnonymous() {
+        return anonymous;
+    }
+
+    public void setAnonymous(Boolean anonymous) {
+        this.anonymous = anonymous;
     }
 }

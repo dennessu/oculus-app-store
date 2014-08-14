@@ -74,6 +74,8 @@ class UserGroupDataHandler extends BaseDataHandler {
             organizationResults.items.retainAll { Organization org ->
                 org.isValidated
             }
+
+            assert organizationResults.items.size() == 1
             organization = organizationResults.items.get(0)
 
             Results<Group> groupResults = groupResource.list(

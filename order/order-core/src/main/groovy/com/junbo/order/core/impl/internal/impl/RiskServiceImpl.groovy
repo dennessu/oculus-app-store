@@ -48,6 +48,8 @@ class RiskServiceImpl implements RiskService {
     @Resource(name = 'orderServiceContextBuilder')
     OrderServiceContextBuilder orderServiceContextBuilder
 
+    Boolean riskEnable;
+
     int merchantId
 
     String kountUrl
@@ -55,6 +57,11 @@ class RiskServiceImpl implements RiskService {
     String kountKeyFileName
 
     String kountKeyFilePass
+
+    @Required
+    void setRiskEnable(Boolean enable) {
+        this.riskEnable = enable;
+    }
 
     @Required
     void setMerchantId(int merchantId) {
@@ -85,6 +92,11 @@ class RiskServiceImpl implements RiskService {
     @Override
     @Transactional
     Promise<RiskReviewResult> reviewOrder(OrderServiceContext orderContext) {
+
+        if (!riskEnable) {
+            return Promise.pure(RiskReviewResult.APPROVED);
+        }
+
         def order = orderContext.order
         def ip = orderContext.apiContext.userIp
 
@@ -222,6 +234,11 @@ class RiskServiceImpl implements RiskService {
 
     @Override
     Promise<Void> updateReview(OrderServiceContext orderContext) {
+
+        if (!riskEnable) {
+            return Promise.pure(null);
+        }
+
         def order = orderContext.order
 
         if (order.properties != null && order.properties.containsKey('riskTransactionId')) {

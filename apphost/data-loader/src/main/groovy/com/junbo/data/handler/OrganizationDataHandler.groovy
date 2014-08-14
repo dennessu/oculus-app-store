@@ -14,6 +14,7 @@ import com.junbo.langur.core.client.TypeReference
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.core.io.Resource
+import org.springframework.util.CollectionUtils
 
 /**
  * Created by haomin on 14-7-11.
@@ -58,14 +59,20 @@ class OrganizationDataHandler extends BaseDataHandler {
                 orgOwnerUser = results.items.get(0)
             }
 
-            Results<Organization> orgResults = organizationResource.list(new OrganizationListOptions(ownerId: orgOwnerUser.id as UserId)).get()
-            if (orgResults != null && orgResults.items != null && orgResults.items.size() > 0) {
-                orgResults.items.retainAll{ Organization organization1 ->
-                    organization1.name == orgName
+            Results<Organization> orgResults = organizationResource.list(new OrganizationListOptions(name: orgName)).get()
+            if (orgResults != null && !CollectionUtils.isEmpty(orgResults.items)) {
+                existing = orgResults.items.find { Organization existingOrganization ->
+                    if (existingOrganization.isValidated) {
+                        existing = existingOrganization
+                    }
                 }
 
-                if (orgResults.items.size() > 0) {
-                    existing = orgResults.items.get(0)
+                if (existing == null) {
+                    existing = orgResults.items.find { Organization existingOrganization ->
+                        if (existingOrganization.ownerId == orgOwnerUser.getId()) {
+                            existing = existingOrganization
+                        }
+                    }
                 }
             }
         } catch (AppErrorException e) {
@@ -89,6 +96,15 @@ class OrganizationDataHandler extends BaseDataHandler {
                 organizationResource.put(existing.getId(), existing).get()
             } catch (Exception e) {
                 logger.error("Error updating organization $orgName.", e)
+            }
+        } else if (existing.isValidated && existing.ownerId != orgOwnerUser.getId()) {
+            logger.debug("update orgnization with ownerId")
+
+            try {
+                existing.ownerId = orgOwnerUser.getId()
+                organizationResource.put(existing.getId(), existing).get()
+            } catch (Exception e) {
+                logger.error("Error updating validate organization ", e)
             }
         }
     }

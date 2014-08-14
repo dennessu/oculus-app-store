@@ -37,13 +37,13 @@ def readParams():
             "   dropdbs                 Drop all databases\n" +
             "   purgedbs                Purge all databases\n")
         sys.stdout.flush()
-    
+
     def printUsage():
         error("Usage: python ./couchdbcmd.py <command> [<env>] [--yes] [--verbose] [--prefix={prefix}] [--key={key}]\n")
-    
+
     # Read input params
     sys.argv.pop(0)     # skip argv[0]
-    
+
     # Read flags
     global cipherKey
 
@@ -65,7 +65,7 @@ def readParams():
         else:
             cleanArgv.append(arg)
     sys.argv = cleanArgv
-    
+
     if len(sys.argv) < 1:
         printValidCommands()
         printUsage()
@@ -83,14 +83,14 @@ def readParams():
     if command not in set(["listdbs", "dumpdbs", "createdbs", "dropdbs", "purgedbs", "diffdbs"]):
         printValidCommands()
         error("Invalid command: " + command)
-    
+
     if command in set(["createdbs", "dropdbs"]) and not confirmed:
         # Ask for confirmation
         response = readInput("WARNING! The command will make changes to couchdb in env %s. Are you absolutely sure? ('yes'/'no'): " % env)
         if response.lower() != "yes":
             error("Aborting...")
 
-    if command in set(["dropdbs", "purgedbs"]) and env not in set(["onebox", "lt", "ppe"]):
+    if command in set(["dropdbs", "purgedbs"]) and env not in set(["onebox", "lt", "onebox.int"]):
         answer = ''.join(random.choice(string.ascii_letters) for _ in range(10))
         input = readInput("The environment is not test environment. Are you sure you want to delete data? Repeat '%s' to confirm: " % answer)
         if answer != input:
@@ -268,8 +268,6 @@ def purgedbs(envConf, dbPrefix):
                     bulkStr = json.dumps({ 'docs': docs }, indent = 2)
                     if len(docs) > 0:
                         curlJson(url + "/" + fullDbName + '/_bulk_docs', "POST", bulkStr)
-                    if '.cloudant.com' not in url:
-                        curl(url + "/" + fullDbName + '/_compact', "POST", raiseOnError = False)
 
 def curlJson(url, method = 'GET', body = None, headers = None, raiseOnError = True):
     if headers is None:
@@ -325,7 +323,7 @@ def curlRaw(url, method = 'GET', body = None, headers = None):
             else:
                 conn = httplib.HTTPConnection(host, port)
             connCache[cacheKey] = conn
- 
+
         if userpass:
             import base64
             base64String = base64.encodestring(userpass).strip()
@@ -392,7 +390,7 @@ def readJsonFile(filename):
         error("File %s not found." % filename)
 
     with open (filename, "r") as configFile:
-        data = configFile.read() 
+        data = configFile.read()
         return json.loads(data)
 
 gIsVerbose = False

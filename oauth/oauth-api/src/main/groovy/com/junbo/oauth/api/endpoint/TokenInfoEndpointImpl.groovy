@@ -70,6 +70,12 @@ class TokenInfoEndpointImpl implements TokenInfoEndpoint {
                 ipAddress: accessToken.ipAddress
         )
 
+        if (Boolean.TRUE.equals(accessToken.debugEnabled)) {
+            tokenInfo.debugEnabled = true
+        } else {
+            tokenInfo.debugEnabled = null
+        }
+
         return Promise.pure(tokenInfo)
     }
 }

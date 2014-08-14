@@ -22,7 +22,11 @@ class OrderStatusBuilder {
         if (CoreUtils.isRefunded(order)) { return OrderStatus.REFUNDED }
 
         if (CoreUtils.isFulfillCompleted(order) && CoreUtils.isChargeCompleted(order)) {
-            return CoreUtils.hasPhysicalOffer(order) ? OrderStatus.SHIPPED : OrderStatus.COMPLETED
+            return OrderStatus.COMPLETED
+        }
+
+        if (CoreUtils.isShipCompleted(order) && CoreUtils.isChargeCompleted(order)) {
+            return OrderStatus.SHIPPED
         }
 
         if (CoreUtils.isFulfillCompleted(order)) { return OrderStatus.PENDING }

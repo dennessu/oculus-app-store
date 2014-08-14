@@ -26,7 +26,7 @@ public interface IdentityService {
     Promise<User> getUserByVerifiedEmail(String userEmail)
     Promise<Results<User>> getUserByGroupId(GroupId groupId)
     Promise<Group> getGroupById(GroupId groupId)
-    Promise<Organization> getOrganizationByOwerIdAndOrgName(UserId organizationOwner, String organizationName)
+    Promise<Organization> getOrganizationByOrgName(String organizationName)
     Promise<Results<Group>> getGroupByOrganization(OrganizationId organizationId)
     
     String getUserNameByUser(User user)

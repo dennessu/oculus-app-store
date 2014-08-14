@@ -94,6 +94,7 @@ class CatalogDataHandler extends BaseDataHandler {
 
         itemRevision.id = null
         itemRevision.ownerId = ownerId
+        itemRevision.packageName = UUID.randomUUID().toString()
         String itemRevisionName = itemRevision.getLocales().get(defaultLocale).name
 
         //Judge if item and its revision have been loaded
@@ -110,7 +111,7 @@ class CatalogDataHandler extends BaseDataHandler {
 
         if (itemExisting == null) {
             logger.info("----loading item $itemRevisionName and its revision")
-            if (itemRevisionName == "testItem_IAP") {
+            if (itemRevisionName.contains("testItem_IAP")) {
                 //Post an IAP host item firstly
                 Item hostItem = CloneUtils.clone(item)
                 ItemRevision hotsItemRevision = CloneUtils.clone(itemRevision)
@@ -118,7 +119,8 @@ class CatalogDataHandler extends BaseDataHandler {
                 hostItem.type = ItemType.APP
                 String hostItemId = handle(hostItem)
 
-                hotsItemRevision.locales.get("en_US").name = "testItem_HostItem"
+                hotsItemRevision.locales.get("en_US").name = "testItem_HostItem_" + UUID.randomUUID().toString()
+                hotsItemRevision.packageName = UUID.randomUUID().toString()
                 hotsItemRevision.itemId = hostItemId
                 hotsItemRevision.downloadName = "download name"
                 hotsItemRevision.distributionChannels = ["STORE"]

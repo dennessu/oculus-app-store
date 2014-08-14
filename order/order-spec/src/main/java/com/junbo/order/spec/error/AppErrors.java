@@ -166,4 +166,10 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 500, code = "144", message = "Catalog Result Invalid.", reason = "Catalog result invalid: {0}.")
     AppError catalogResultInvalid(String cause);
+
+    @ErrorDef(httpStatusCode = 500, code = "145", message = "Entitlement Connection Error.")
+    AppError entitlementConnectionError();
+
+    @ErrorDef(httpStatusCode = 412, code = "146", message = "Duplicate Purchase.")
+    AppError duplicatePurchase();
 }

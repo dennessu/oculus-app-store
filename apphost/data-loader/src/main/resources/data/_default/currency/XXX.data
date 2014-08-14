@@ -1,0 +1,18 @@
+{
+	"locales": {
+		"en_US": {
+			"shortName": "XXX",
+			"longName": "XXX Dollar"
+		}
+	},
+	"countries": {
+		"href": "/v1/countries?defaultCurrencyId=USD",
+		"id": null
+	},
+	"currencyCode": "XXX",
+	"symbol": "$",
+	"symbolPosition": "BEFORE",
+	"numberAfterDecimal": "2",
+	"minimalAuthorizeAmount": "1",
+	"futureExpansion": {}
+}

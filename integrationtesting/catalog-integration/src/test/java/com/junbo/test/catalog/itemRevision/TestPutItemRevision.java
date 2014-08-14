@@ -79,6 +79,7 @@ public class TestPutItemRevision extends BaseTestClass {
     @Test
     public void testPutItemRevision() throws Exception {
         this.prepareTestData();
+        prepareCatalogAdminToken();
 
         OrganizationService organizationService = OrganizationServiceImpl.instance();
         Organization organizationTmp = organizationService.postDefaultOrganization();
@@ -101,15 +102,8 @@ public class TestPutItemRevision extends BaseTestClass {
         item1 = itemService.getItem(item1.getItemId());
 
         itemRevision = itemRevisionService.postDefaultItemRevision(item1);
+        itemRevision.setPackageName("PackageName_" + RandomFactory.getRandomStringOfAlphabet(10));
         itemRevision.setItemId(item2.getItemId());
-        itemRevision = itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
-
-        //update developer field
-        Master.getInstance().setCurrentUid(IdConverter.idToHexString(organizationTmp.getOwnerId()));
-        item2.setOwnerId(organizationIdTmp);
-        itemService.updateItem(item2.getItemId(), item2);
-
-        itemRevision.setOwnerId(organizationIdTmp);
         itemRevision = itemRevisionService.updateItemRevision(itemRevision.getRevisionId(), itemRevision);
 
         //update platforms
@@ -218,12 +212,6 @@ public class TestPutItemRevision extends BaseTestClass {
 
         itemRevision.setStatus(CatalogEntityStatus.DRAFT.name());
 
-        //set publisher to null
-        itemRevision.setOwnerId(null);
-        verifyExpectedFailure(itemRevisionId, itemRevision);
-
-        itemRevision.setOwnerId(organizationId);
-
         //ItemId to null or not existed value or to another item
         itemRevision.setItemId(null);
         verifyExpectedFailure(itemRevisionId, itemRevision);
@@ -233,6 +221,7 @@ public class TestPutItemRevision extends BaseTestClass {
 
         item2 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
         itemRevision.setItemId(item2.getItemId());
+        itemRevision.setPackageName("PackageName_" + RandomFactory.getRandomStringOfAlphabet(10));
         if (item2.getType().equalsIgnoreCase(CatalogItemType.APP.name()) ||
                 item2.getType().equalsIgnoreCase(CatalogItemType.DOWNLOADED_ADDITION.name())) {
             Map<String, Binary> binaries = new HashMap<>();
@@ -251,7 +240,44 @@ public class TestPutItemRevision extends BaseTestClass {
 
         itemRevision = itemRevisionService.updateItemRevision(itemRevisionId, itemRevision);
 
+        //set publisher to null
+        itemRevision.setOwnerId(null);
+        verifyExpectedFailure(itemRevisionId, itemRevision);
+
+        //update developer field to another value
+        OrganizationService organizationService = OrganizationServiceImpl.instance();
+        Organization organizationTmp = organizationService.postDefaultOrganization();
+        OrganizationId organizationIdTmp = organizationTmp.getId();
+
+        Master.getInstance().setCurrentUid(IdConverter.idToHexString(organizationTmp.getOwnerId()));
+
+        item2 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationIdTmp);
+        itemRevision.setItemId(item2.getItemId());
+        itemRevision.setPackageName("PackageName_" + RandomFactory.getRandomStringOfAlphabet(10));
+        if (item2.getType().equalsIgnoreCase(CatalogItemType.APP.name()) ||
+                item2.getType().equalsIgnoreCase(CatalogItemType.DOWNLOADED_ADDITION.name())) {
+            Map<String, Binary> binaries = new HashMap<>();
+            Binary binary = new Binary();
+            binary.setVersion("1");
+            binary.setSize(1024L);
+            binary.setMd5("abcdabcdabcdabcdabcdabcdabcdabcd");
+            binary.setHref("http://www.google.com/downlaod/angrybird1_0.exe");
+            binaries.put("PC", binary);
+            itemRevision.setBinaries(binaries);
+            itemRevision.setDownloadName(RandomFactory.getRandomStringOfAlphabet(10));
+        } else {
+            itemRevision.setBinaries(null);
+            itemRevision.setDownloadName(null);
+        }
+
+        itemRevision.setOwnerId(organizationIdTmp);
+        verifyExpectedFailure(itemRevisionId, itemRevision);
+
+        itemRevision.setItemId(item1.getItemId());
+        itemRevision.setOwnerId(organizationId);
+
         //check futureExpansion
+        Master.getInstance().setCurrentUid(IdConverter.idToHexString(organization.getOwnerId()));
         Map<String, JsonNode> futureExpansion = new HashMap<>();
 
         String str = "{\"subCountry\":\"TX\",\"street1\":\"800 West Campbell Road\"," +

@@ -62,6 +62,8 @@ class CartServiceImpl implements CartService {
 
     @Override
     Promise<Cart> addCart(Cart cart, String clientId, UserId userId) {
+        cart.user = userId
+        cart.setId(null)
         return identityClient.getUser(userId).then { User user ->
             validation.validateUser(userId, user).validateCartAdd(clientId, userId, cart)
             def callback = authorizeCallbackFactory.create(userId)

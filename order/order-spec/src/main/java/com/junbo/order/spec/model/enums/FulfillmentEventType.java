@@ -16,7 +16,9 @@ public enum FulfillmentEventType implements Identifiable<Short> {
     FULFILL(0),
     REVERSE_FULFILL(1),
     PREORDER(2),
-    REQUEST_FULFILL(3);
+    REQUEST_FULFILL(3),
+    SHIP(4),
+    REQUEST_SHIP(5);
 
     private FulfillmentEventType(int id) {
         this.id = (short) id;

@@ -3,14 +3,9 @@ package com.junbo.test.buyerscenario;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.order.model.enums.EventStatus;
 import com.junbo.test.order.model.enums.OrderActionType;
-import com.junbo.test.payment.apihelper.impl.PaymentCallbackServiceImpl;
 import com.junbo.test.common.Entities.paymentInstruments.EwalletInfo;
 import com.junbo.test.common.Entities.paymentInstruments.PayPalInfo;
 import com.junbo.test.common.Entities.paymentInstruments.AdyenInfo;
-import com.junbo.test.order.apihelper.impl.OrderEventServiceImpl;
-import com.junbo.test.payment.apihelper.PaymentCallbackService;
-import com.junbo.payment.spec.model.PaymentCallbackParams;
-import com.junbo.test.order.apihelper.OrderEventService;
 import com.junbo.test.buyerscenario.util.BaseTestClass;
 import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.catalog.enums.CatalogItemType;
@@ -19,9 +14,7 @@ import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.test.common.libs.ShardIdHelper;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
-import com.junbo.order.spec.model.OrderEvent;
 import com.junbo.test.common.libs.DBHelper;
-import com.junbo.order.spec.model.Order;
 import com.junbo.test.common.property.*;
 import com.junbo.common.model.Results;
 import com.junbo.common.id.UserId;
@@ -402,6 +395,7 @@ public class CartCheckout extends BaseTestClass {
             priority = Priority.BVT,
             features = "BuyerScenarios",
             component = Component.Order,
+            environment = "release",
             owner = "ZhaoYunlong",
             status = Status.Enable,
             description = "Test checkout free offer",
@@ -425,21 +419,12 @@ public class CartCheckout extends BaseTestClass {
 
         offerList.put(offer_digital_free, 1);
 
-        String cartId = testDataProvider.postOffersToPrimaryCart(uid, offerList);
-
-        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
-        String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
-
-        String orderId = testDataProvider.postOrderByCartId(
-                uid, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, null);
+        String orderId = testDataProvider.postOrder(
+                uid, Country.DEFAULT, Currency.FREE, null, false, offerList);
 
         orderId = testDataProvider.updateOrderTentative(orderId, false);
 
-        //validationHelper.validateOrderInfoByCartId(
-        //        uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, false);
-        Results<Entitlement> entitlementResults = testDataProvider.getEntitlementByUserId(uid);
-
-        validationHelper.validateEntitlements(entitlementResults, offerList.size());
+        validationHelper.validateFreeOrderInfo(uid, orderId, Country.DEFAULT, Currency.FREE, false);
 
     }
 
@@ -447,6 +432,7 @@ public class CartCheckout extends BaseTestClass {
             priority = Priority.BVT,
             features = "BuyerScenarios",
             component = Component.Order,
+            environment = "release",
             owner = "ZhaoYunlong",
             status = Status.Enable,
             description = "Test checkout free offer",
@@ -470,21 +456,12 @@ public class CartCheckout extends BaseTestClass {
 
         offerList.put(offer_physical_free, 1);
 
-        String cartId = testDataProvider.postOffersToPrimaryCart(uid, offerList);
-
-        CreditCardInfo creditCardInfo = CreditCardInfo.getRandomCreditCardInfo(Country.DEFAULT);
-        String creditCardId = testDataProvider.postPaymentInstrument(uid, creditCardInfo);
-
-        String orderId = testDataProvider.postOrderByCartId(
-                uid, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, true);
+        String orderId = testDataProvider.postOrder(
+                uid, Country.DEFAULT, Currency.FREE, null, true, offerList);
 
         orderId = testDataProvider.updateOrderTentative(orderId, false);
 
-        // validationHelper.validateOrderInfoByCartId(
-        //         uid, orderId, cartId, Country.DEFAULT, Currency.DEFAULT, creditCardId, true);
-        Results<Entitlement> entitlementResults = testDataProvider.getEntitlementByUserId(uid);
-
-        validationHelper.validateEntitlements(entitlementResults, offerList.size());
+        validationHelper.validateFreeOrderInfo(uid, orderId, Country.DEFAULT, Currency.FREE, true);
 
     }
 

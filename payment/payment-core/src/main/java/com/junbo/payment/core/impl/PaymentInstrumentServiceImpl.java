@@ -185,7 +185,9 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
                 return getById(paymentInstrument.getId()).then(new Promise.Func<PaymentInstrument, Promise<Void>>() {
                     @Override
                     public Promise<Void> apply(PaymentInstrument paymentInstrument) {
-                        detailedResults.add(paymentInstrument);
+                        if(!CommonUtil.isNullOrEmpty(paymentInstrument.getExternalToken())){
+                            detailedResults.add(paymentInstrument);
+                        }
                         return Promise.pure(null);
                     }
                 });
@@ -234,6 +236,9 @@ public class PaymentInstrumentServiceImpl implements PaymentInstrumentService {
         UserInfo user = userInfoFacade.getUserInfo(request.getUserId()).get();
         if(user == null){
             throw AppClientExceptions.INSTANCE.userNotFound(request.getUserId().toString()).exception();
+        }
+        if(user.getAnonymous() != null && user.getAnonymous()){
+            throw AppClientExceptions.INSTANCE.userNotAllowed(request.getUserId().toString()).exception();
         }
         request.setUserInfo(user);
         if(request.getType() == null){

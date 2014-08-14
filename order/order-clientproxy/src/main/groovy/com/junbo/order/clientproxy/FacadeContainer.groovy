@@ -3,6 +3,7 @@ package com.junbo.order.clientproxy
 import com.junbo.order.clientproxy.billing.BillingFacade
 import com.junbo.order.clientproxy.catalog.CatalogFacade
 import com.junbo.order.clientproxy.email.EmailFacade
+import com.junbo.order.clientproxy.entitlement.EntitlementFacade
 import com.junbo.order.clientproxy.fulfillment.FulfillmentFacade
 import com.junbo.order.clientproxy.identity.CountryFacade
 import com.junbo.order.clientproxy.identity.CurrencyFacade
@@ -49,4 +50,7 @@ class FacadeContainer {
     @Autowired
     @Qualifier('orderCurrencyFacade')
     CurrencyFacade currencyFacade
+    @Autowired
+    @Qualifier('orderEntitlementFacade')
+    EntitlementFacade entitlementFacade
 }

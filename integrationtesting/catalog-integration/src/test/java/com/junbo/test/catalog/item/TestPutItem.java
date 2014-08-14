@@ -5,6 +5,7 @@
  */
 package com.junbo.test.catalog.item;
 
+import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
 import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
@@ -23,6 +24,8 @@ import com.junbo.test.catalog.impl.ItemServiceImpl;
 import com.junbo.test.catalog.util.BaseTestClass;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.test.common.blueprint.Master;
+import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.LogHelper;
 import com.junbo.test.catalog.OfferService;
 import com.junbo.common.id.OrganizationId;
@@ -45,10 +48,12 @@ public class TestPutItem extends BaseTestClass {
     private LogHelper logger = new LogHelper(TestGetItem.class);
     private ItemService itemService = ItemServiceImpl.instance();
     private OrganizationId organizationId;
+    private Organization organization;
 
     private void prepareTestData() throws Exception {
         OrganizationService organizationService = OrganizationServiceImpl.instance();
-        organizationId = organizationService.postDefaultOrganization().getId();
+        organization = organizationService.postDefaultOrganization();
+        organizationId = organization.getId();
     }
 
     @Property(
@@ -128,6 +133,21 @@ public class TestPutItem extends BaseTestClass {
         verifyExpectedError(item.getItemId(), item);
 
         //can't update current revision id
+        item = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
+        item.setCurrentRevisionId("0L");
+        verifyExpectedError(item.getItemId(), item);
+
+        //can't update developerId
+        item = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
+
+        OrganizationService organizationService = OrganizationServiceImpl.instance();
+        Organization organizationTmp = organizationService.postDefaultOrganization();
+
+        item.setOwnerId(organizationTmp.getId());
+        verifyExpectedError(item.getItemId(), item);
+
+        //can't update current revision id
+        Master.getInstance().setCurrentUid(IdConverter.idToHexString(organization.getOwnerId()));
         item = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
         item.setCurrentRevisionId("0L");
         verifyExpectedError(item.getItemId(), item);

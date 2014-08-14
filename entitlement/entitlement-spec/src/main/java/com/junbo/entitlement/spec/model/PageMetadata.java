@@ -12,7 +12,8 @@ import javax.ws.rs.QueryParam;
  * PageMetaData Model.
  */
 public class PageMetadata {
-    @QueryParam("start")
+//    @QueryParam("start")
+    @Deprecated
     private Integer start;
 
     @QueryParam("count")
@@ -21,10 +22,12 @@ public class PageMetadata {
     @QueryParam("bookmark")
     private String bookmark;
 
+    @Deprecated
     public Integer getStart() {
         return start;
     }
 
+    @Deprecated
     public void setStart(Integer start) {
         this.start = start;
     }

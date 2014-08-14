@@ -13,18 +13,14 @@ import com.junbo.common.util.IdFormatter;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.identity.spec.v1.model.migration.OculusInput;
 import com.junbo.identity.spec.v1.model.migration.OculusOutput;
-import com.junbo.identity.spec.v1.option.list.OrganizationListOptions;
-import com.junbo.test.common.ConfigHelper;
-import com.junbo.test.common.HttpclientHelper;
-import com.junbo.test.common.JsonHelper;
-import com.junbo.test.common.Validator;
+import com.junbo.test.common.*;
 import com.junbo.test.common.libs.IdConverter;
-import com.junbo.test.common.RandomHelper;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +33,9 @@ public class Identity {
     public static final String IdentityEndPointV1 = ConfigHelper.getSetting("defaultIdentityEndPointV1");
     public static final String IdentityV1CountryURI = IdentityEndPointV1 + "/countries";
     public static final String IdentityV1CurrencyURI = IdentityEndPointV1 + "/currencies";
+    public static final String IdentityV1DeviceTypeURI = IdentityEndPointV1 + "/device-types";
+    public static final String IdentityV1ErrorInfoURI = IdentityEndPointV1 + "/error-info";
+    public static final String IdentityV1CommunicationURI = IdentityEndPointV1 + "/communications";
     public static final String IdentityV1GroupURI = IdentityEndPointV1 + "/groups";
     public static final String IdentityV1ImportsURI = IdentityEndPointV1 + "/imports";
     public static final String IdentityV1LocaleURI = IdentityEndPointV1 + "/locales";
@@ -82,6 +81,22 @@ public class Identity {
         HttpclientHelper.SimpleHttpDelete(httpDelete);
     }
 
+    public static void GetHttpAuthorizationHeaderForMigration() throws Exception {
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("grant_type", "client_credentials"));
+        nvps.add(new BasicNameValuePair("client_id", "migration"));
+        nvps.add(new BasicNameValuePair("client_secret", "secret"));
+        nvps.add(new BasicNameValuePair("scope", "identity.service identity.migration"));
+        CloseableHttpResponse response = HttpclientHelper.SimplePost(ConfigHelper.getSetting("defaultTokenURI"), nvps);
+        String[] results = EntityUtils.toString(response.getEntity(), "UTF-8").split(",");
+        for (String s : results) {
+            if (s.contains("access_token")) {
+                httpAuthorizationHeader = "Bearer" + s.split(":")[1].replace("\"", "");
+                break;
+            }
+        }
+    }
+
     public static void GetHttpAuthorizationHeader() throws Exception {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("grant_type", "client_credentials"));
@@ -104,6 +119,14 @@ public class Identity {
 
     public static Country CountryPostDefault(Country country) throws Exception {
         return (Country) IdentityPost(IdentityV1CountryURI, JsonHelper.JsonSerializer(country), Country.class);
+    }
+
+    public static Country CountryGetByCountryId(String countryId, String locale) throws Exception {
+        if (StringUtils.isEmpty(locale)) {
+            return CountryGetByCountryId(countryId);
+        } else {
+            return IdentityGet(IdentityV1CountryURI + "/" + countryId + "?locale=" + locale, Country.class);
+        }
     }
 
     public static Country CountryGetByCountryId(String countryId) throws Exception {
@@ -132,6 +155,14 @@ public class Identity {
         return (Currency) IdentityPost(IdentityV1CurrencyURI, JsonHelper.JsonSerializer(currency), Currency.class);
     }
 
+    public static Currency CurrencyGetByCurrencyCode(String currencyCode, String locale) throws Exception {
+        if (StringUtils.isEmpty(locale)) {
+            return CurrencyGetByCurrencyCode(currencyCode);
+        } else {
+            return IdentityGet(IdentityV1CurrencyURI + "/" + currencyCode + "?locale=" + locale, Currency.class);
+        }
+    }
+
     public static Currency CurrencyGetByCurrencyCode(String currencyCode) throws Exception {
         return (Currency) IdentityGet(IdentityV1CurrencyURI + "/" + currencyCode, Currency.class);
     }
@@ -152,22 +183,42 @@ public class Identity {
         return (Locale) IdentityGet(IdentityV1LocaleURI + "/" + localeId, Locale.class);
     }
 
+    public static Results<Locale> LocaleGetAll() throws Exception {
+        Results<Locale> results = new Results<>();
+        results.setItems(new ArrayList<Locale>());
+        Results res = IdentityGet(IdentityV1LocaleURI, Results.class);
+        for (Object obj : res.getItems()) {
+            results.getItems().add((Locale) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
+                    Locale.class)
+            );
+        }
+        results.setTotal(res.getTotal());
+        results.setNext(res.getNext());
+        results.setSelf(res.getSelf());
+
+        return results;
+    }
+
     public static void LocaleDeleteByLocaleId(String localeId) throws Exception {
         IdentityDelete(IdentityV1LocaleURI + "/" + localeId);
     }
 
-    public static User UserPostDefault() throws Exception {
+    public static User UserPostDefault(Integer nameLength) throws Exception {
         User user = UserPostDefault(IdentityModel.DefaultUser());
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
         userPersonalInfo.setUserId(user.getId());
         userPersonalInfo.setType("USERNAME");
         UserLoginName loginName = new UserLoginName();
-        loginName.setUserName(RandomHelper.randomAlphabetic(15));
+        loginName.setUserName(RandomHelper.randomAlphabetic(nameLength));
         userPersonalInfo.setValue(ObjectMapperProvider.instance().valueToTree(loginName));
         UserPersonalInfo loginInfo = UserPersonalInfoPost(user.getId(), userPersonalInfo);
         user.setIsAnonymous(false);
         user.setUsername(loginInfo.getId());
         return UserPut(user);
+    }
+
+    public static User UserPostDefault() throws Exception {
+        return UserPostDefault(15);
     }
 
     public static User UserPostDefault(User user) throws Exception {
@@ -277,13 +328,123 @@ public class Identity {
                 IdentityV1OrganizationURI + "?name=" + name.toLowerCase() + buildIdentityCount(limit) + buildIdentityCursor(offset), Results.class);
     }
 
-    public static CloseableHttpResponse UserCredentialPostDefault(UserId userId, String password) throws Exception {
-        return UserCredentialPostDefault(userId, password, true);
+    public static DeviceType DeviceTypeDefault(DeviceType deviceType) throws Exception {
+        DeviceType type = deviceType == null ? IdentityModel.DefaultDeviceType(null) : deviceType;
+        return IdentityPost(IdentityV1DeviceTypeURI, JsonHelper.JsonSerializer(type), DeviceType.class);
+    }
+
+    public static DeviceType DeviceTypePut(DeviceType deviceType) throws Exception {
+        return IdentityPut(IdentityV1DeviceTypeURI + "/" + deviceType.getTypeCode(),
+                JsonHelper.JsonSerializer(deviceType), DeviceType.class);
+    }
+
+    public static DeviceType DeviceTypeGet(String deviceTypeCode) throws Exception {
+        return IdentityGet(IdentityV1DeviceTypeURI + "/" + deviceTypeCode, DeviceType.class);
+    }
+
+    public static Results<DeviceType> DeviceTypeGetAll() throws Exception {
+        Results<DeviceType> results = new Results<>();
+        results.setItems(new ArrayList<DeviceType>());
+        Results res = IdentityGet(IdentityV1DeviceTypeURI, Results.class);
+        for (Object obj : res.getItems()) {
+            results.getItems().add((DeviceType) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
+                    DeviceType.class)
+            );
+        }
+        results.setTotal(res.getTotal());
+        results.setNext(res.getNext());
+        results.setSelf(res.getSelf());
+
+        return results;
+    }
+
+    public static void DeviceTypeDelete(String deviceTypeCode) throws Exception {
+        IdentityDelete(IdentityV1DeviceTypeURI + "/" + deviceTypeCode);
+    }
+
+    public static ErrorInfo ErrorInfoDefault(ErrorInfo errorInfo) throws Exception {
+        ErrorInfo info = errorInfo == null ? IdentityModel.DefaultErrorInfo() : errorInfo;
+        return IdentityPost(IdentityV1ErrorInfoURI, JsonHelper.JsonSerializer(info), ErrorInfo.class);
+    }
+
+    public static ErrorInfo ErrorInfoPut(ErrorInfo errorInfo) throws Exception {
+        return IdentityPut(IdentityV1ErrorInfoURI + "/" + errorInfo.getErrorIdentifier(), JsonHelper.JsonSerializer(errorInfo), ErrorInfo.class);
+    }
+
+    public static ErrorInfo ErrorInfoGet(String errorIdentifier) throws Exception {
+        return IdentityGet(IdentityV1ErrorInfoURI + "/" + errorIdentifier, ErrorInfo.class);
+    }
+
+    public static Results<ErrorInfo> ErrorInfoGetAll() throws Exception {
+        Results<ErrorInfo> results = new Results<>();
+        results.setItems(new ArrayList<ErrorInfo>());
+        Results res = IdentityGet(IdentityV1ErrorInfoURI, Results.class);
+        for (Object obj : res.getItems()) {
+            results.getItems().add((ErrorInfo) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
+                    ErrorInfo.class));
+        }
+
+        results.setTotal(res.getTotal());
+        results.setNext(res.getNext());
+        results.setSelf(res.getSelf());
+        return results;
+    }
+
+    public static Communication CommunicationDefault(Communication communication) throws Exception {
+        Communication newCommunication = communication == null ? IdentityModel.DefaultCommunication() : communication;
+        return IdentityPost(IdentityV1CommunicationURI, JsonHelper.JsonSerializer(communication), Communication.class);
+    }
+
+    public static Communication CommunicationPut(Communication communication) throws Exception {
+        return IdentityPut(IdentityV1CommunicationURI + "/" + communication.getId().toString(), JsonHelper.JsonSerializer(communication), Communication.class);
+    }
+
+    public static Communication CommunicationGet(String communicationId, String locale) throws Exception {
+        return IdentityGet(IdentityV1CommunicationURI + "/" + communicationId + buildCommunicationLocale(locale), Communication.class);
+    }
+
+    public static Results<Communication> CommunicationSearch(String region, String translation) throws Exception {
+        Results<Communication> results = new Results<>();
+        results.setItems(new ArrayList<Communication>());
+        Results res = IdentityGet(IdentityV1CommunicationURI + buildCommunicationQueryUrl(region, translation), Results.class);
+        for (Object obj : res.getItems()) {
+            results.getItems().add((Communication) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
+                    Communication.class));
+        }
+
+        results.setTotal(res.getTotal());
+        results.setNext(res.getNext());
+        results.setSelf(res.getSelf());
+        return results;
+    }
+
+    public static String buildCommunicationLocale(String locale) {
+        if (StringUtils.isEmpty(locale)) {
+            return "";
+        } else {
+            return "?locale=" + locale;
+        }
+    }
+
+    public static String buildCommunicationQueryUrl(String region, String translation) {
+        if (StringUtils.isEmpty(region) && StringUtils.isEmpty(translation)) {
+            return "";
+        } else if (!StringUtils.isEmpty(region) && !StringUtils.isEmpty(translation)) {
+            return "?region=" + region + "&translation=" + translation;
+        } else if (!StringUtils.isEmpty(region)) {
+            return "?region=" + region;
+        } else {
+            return "?translation=" + translation;
+        }
+    }
+
+    public static CloseableHttpResponse UserCredentialPostDefault(UserId userId, String oldPassword, String password) throws Exception {
+        return UserCredentialPostDefault(userId, oldPassword, password, true);
     }
 
     public static CloseableHttpResponse UserCredentialPostDefault(
-            UserId userId, String password, Boolean validResponse) throws Exception {
-        UserCredential uc = IdentityModel.DefaultUserCredential(userId, password);
+            UserId userId, String oldPassword, String password, Boolean validResponse) throws Exception {
+        UserCredential uc = IdentityModel.DefaultUserCredential(userId, oldPassword, password);
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
@@ -295,9 +456,28 @@ public class Identity {
         return response;
     }
 
+    public static CloseableHttpResponse UserPinCredentialPostDefault(UserId userId, String oldPassword,
+                                                                     String pin, Boolean validReponse) throws Exception {
+        UserCredential pinCredential = IdentityModel.DefaultUserPin(userId, oldPassword, pin);
+        List<NameValuePair> nvps = new ArrayList<>();
+        nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
+        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
+                IdentityV1UserURI + "/" + GetHexLongId(userId.getValue()) + "/change-credentials",
+                JsonHelper.JsonSerializer(pinCredential), HttpclientHelper.HttpRequestType.post, nvps);
+        if (validReponse) {
+            Validator.Validate("validate response code", 201, response.getStatusLine().getStatusCode());
+        }
+
+        return response;
+    }
+
     public static CloseableHttpResponse UserCredentialAttemptesPostDefault(
             String userName, String password) throws Exception {
         return UserCredentialAttemptesPostDefault(userName, password, true);
+    }
+
+    public static CloseableHttpResponse UserPinCredentialAttemptPostDefault(String username, String pin) throws Exception {
+        return UserPinCredentialAttemptPostDefault(username, pin, true);
     }
 
     public static CloseableHttpResponse UserCredentialAttemptesPostDefault(
@@ -305,9 +485,30 @@ public class Identity {
         return UserCredentialAttemptesPostDefault(userName, password, null, validResponse);
     }
 
+    public static CloseableHttpResponse UserPinCredentialAttemptPostDefault(String username, String pin,
+                                                                            Boolean validateResponse) throws Exception {
+        return UserPinCredentialAttemptPostDefault(username, pin, null, validateResponse);
+    }
+
     public static CloseableHttpResponse UserCredentialAttemptesPostDefault(
             String userName, String password, String ip, Boolean validResponse) throws Exception {
         UserCredentialVerifyAttempt ucva = IdentityModel.DefaultUserCredentialAttempts(userName, password);
+        if (ip != null) {
+            ucva.setIpAddress(ip);
+        }
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
+        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(IdentityV1UserCredentialAttemptsURI,
+                JsonHelper.JsonSerializer(ucva), HttpclientHelper.HttpRequestType.post, nvps);
+        if (validResponse) {
+            Validator.Validate("validate response code", 201, response.getStatusLine().getStatusCode());
+        }
+        return response;
+    }
+
+    public static CloseableHttpResponse UserPinCredentialAttemptPostDefault(String username, String pin, String ip,
+                                                                            Boolean validResponse) throws Exception {
+        UserCredentialVerifyAttempt ucva = IdentityModel.DefaultUserPinAttempts(username, pin);
         if (ip != null) {
             ucva.setIpAddress(ip);
         }

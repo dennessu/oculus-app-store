@@ -20,7 +20,7 @@ RUN sed -i -e"s/^#listen_addresses =.*$/listen_addresses = '*'/" /etc/postgresql
 RUN echo "host    all    all    0.0.0.0/0    md5" >> /etc/postgresql/9.3/main/pg_hba.conf
 # Tune connection settings
 RUN sed -i -e"s/^#max_prepared_transactions =.*$/max_prepared_transactions = 100/" /etc/postgresql/9.3/main/postgresql.conf
-RUN sed -i -e"s/^max_connections =.*$/max_connections = 200/" /etc/postgresql/9.3/main/postgresql.conf
+RUN sed -i -e"s/^max_connections =.*$/max_connections = 500/" /etc/postgresql/9.3/main/postgresql.conf
 
 # Add daemon to be run by runit
 RUN mkdir /etc/service/postgresql

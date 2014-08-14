@@ -22,6 +22,7 @@ public enum ComponentType {
     BILLING("billing"),
     CART("cart"),
     EMAIL("email"),
+    EMAILADMIN("email.admin"),
     ENTITLEMENT("entitlement"),
     EWALLET("ewallet"),
     FULFILMENT("fulfilment"),
@@ -30,7 +31,7 @@ public enum ComponentType {
     OAUTH("oauth"),
     PAYMENT("payment"),
     ORDER("order"),
-    CSR("csr"),
+    CSR("testcase"),
     DRM("drm"),
     CRYPTO("crypto"),
     SUBSCRIPTION("subscription");

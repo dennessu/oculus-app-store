@@ -5,15 +5,29 @@
  */
 package com.junbo.store.spec.model.purchase;
 
-import com.junbo.store.spec.model.BaseResponse;
+import com.junbo.store.spec.model.Challenge;
+import com.junbo.store.spec.model.billing.Instrument;
 
 /**
  * The PreparePurchaseResponse class.
  */
-public class PreparePurchaseResponse extends BaseResponse {
+public class PreparePurchaseResponse {
 
     private String formattedTotalPrice;
+
+    private Instrument instrument;
+
     private String purchaseToken;
+
+    private Challenge challenge;
+
+    public Instrument getInstrument() {
+        return instrument;
+    }
+
+    public void setInstrument(Instrument instrument) {
+        this.instrument = instrument;
+    }
 
     public String getFormattedTotalPrice() {
         return formattedTotalPrice;
@@ -29,5 +43,13 @@ public class PreparePurchaseResponse extends BaseResponse {
 
     public void setPurchaseToken(String purchaseToken) {
         this.purchaseToken = purchaseToken;
+    }
+
+    public Challenge getChallenge() {
+        return challenge;
+    }
+
+    public void setChallenge(Challenge challenge) {
+        this.challenge = challenge;
     }
 }

@@ -355,4 +355,11 @@
                 ]]>
         </sql>
     </changeSet>
+
+    <changeSet author="chriszhu" id = "1.3" context="PREDEPLOY">
+        <sql><![CDATA[
+                alter table order_item add column preorder_amount decimal default null;
+                ]]>
+        </sql>
+    </changeSet>
 </databaseChangeLog>

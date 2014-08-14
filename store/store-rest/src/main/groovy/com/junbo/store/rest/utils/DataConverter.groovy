@@ -24,16 +24,13 @@ class DataConverter {
     private ResourceContainer resourceContainer
 
     Instrument toInstrument(PaymentInstrument paymentInstrument, Instrument instrument) {
-        instrument.instrumentId = paymentInstrument.getId() == null ? null : new PaymentInstrumentId(paymentInstrument.getId())
-
+        instrument.self = paymentInstrument.getId() == null ? null : new PaymentInstrumentId(paymentInstrument.getId())
         instrument.type = com.junbo.common.id.PIType.get(paymentInstrument.type).name()
         instrument.accountName = paymentInstrument.accountName
         instrument.accountNum = paymentInstrument.accountNumber
 
         instrument.creditCardType = paymentInstrument.typeSpecificDetails?.creditCardType
         instrument.expireDate = paymentInstrument.typeSpecificDetails?.expireDate
-        instrument.encryptedCvmCode = paymentInstrument.typeSpecificDetails?.encryptedCvmCode
-
         instrument.storedValueCurrency = paymentInstrument.typeSpecificDetails?.storedValueCurrency
         instrument.storedValueBalance = paymentInstrument.typeSpecificDetails?.storedValueBalance
         instrument.paymentInstrument = paymentInstrument
@@ -41,8 +38,7 @@ class DataConverter {
     }
 
     PaymentInstrument toPaymentInstrument(Instrument instrument, PaymentInstrument paymentInstrument) {
-        paymentInstrument.id = instrument.instrumentId?.value
-
+        paymentInstrument.setId(instrument.self?.value)
         paymentInstrument.type = com.junbo.common.id.PIType.valueOf(instrument.type).id
         paymentInstrument.accountName = instrument.accountName
         paymentInstrument.accountNumber = instrument.accountNum
@@ -52,7 +48,6 @@ class DataConverter {
         }
 
         paymentInstrument.typeSpecificDetails.expireDate = instrument.expireDate
-        paymentInstrument.typeSpecificDetails.encryptedCvmCode = instrument.encryptedCvmCode
         paymentInstrument.typeSpecificDetails.storedValueCurrency = instrument.storedValueCurrency
         paymentInstrument.typeSpecificDetails.storedValueBalance = instrument.storedValueBalance
         return paymentInstrument
@@ -93,7 +88,7 @@ class DataConverter {
 
     PersonalInfo toStorePersonalInfo(UserPersonalInfo userPersonalInfo, UserPersonalInfoLink link) {
         return new PersonalInfo(
-                userPersonalInfoId: userPersonalInfo.getId(),
+                self: userPersonalInfo.getId(),
                 value: userPersonalInfo.value,
                 isDefault: link == null ? false : link.isDefault,
                 type: userPersonalInfo.type

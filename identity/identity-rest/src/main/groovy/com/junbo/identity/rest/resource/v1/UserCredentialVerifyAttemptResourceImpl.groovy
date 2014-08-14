@@ -62,24 +62,27 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
 
         return credentialVerifyAttemptValidator.validateForCreate(userCredentialAttempt).recover { Throwable e ->
             userCredentialAttempt.succeeded = false
-            return createInNewTran(userCredentialAttempt).then{
+            return createInNewTran(userCredentialAttempt).then {
                 throw e
             }
         }.then {
             return createInNewTran(userCredentialAttempt).then { UserCredentialVerifyAttempt attempt ->
-
                 if (attempt.succeeded) {
-                    Created201Marker.mark(attempt.getId())
+                    if (attempt.id != null) {
+                        Created201Marker.mark(attempt.getId())
+                    }
 
                     attempt = userCredentialVerifyAttemptFilter.filterForGet(attempt, null)
                     attempt = RightsScope.filterForAdminInfo(attempt as ResourceMetaBase) as UserCredentialVerifyAttempt
                     return Promise.pure(attempt)
                 }
+
                 if (userCredentialAttempt.type == CredentialType.PASSWORD.toString()) {
                     throw AppErrors.INSTANCE.userPasswordIncorrect().exception()
-                }
-                else {
+                } else if (userCredentialAttempt.type == CredentialType.PIN.toString()) {
                     throw AppErrors.INSTANCE.userPinIncorrect().exception()
+                } else {
+                    throw new RuntimeException("Should never be here.")
                 }
             }
         }
@@ -139,6 +142,10 @@ class UserCredentialVerifyAttemptResourceImpl implements UserCredentialVerifyAtt
     }
 
     Promise<UserCredentialVerifyAttempt> createInNewTran(UserCredentialVerifyAttempt userLoginAttempt) {
+        if (userLoginAttempt.type == CredentialType.CHECK_NAME.toString()) {
+            return Promise.pure(userLoginAttempt)
+        }
+
         AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager)
         template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
         return template.execute(new TransactionCallback<Promise<UserCredentialVerifyAttempt>>() {

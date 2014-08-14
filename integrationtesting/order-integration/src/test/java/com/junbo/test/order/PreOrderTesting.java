@@ -77,6 +77,7 @@ public class PreOrderTesting extends BaseOrderTestClass {
 
         testDataProvider.postOrderEvent(orderId, EventStatus.COMPLETED, OrderActionType.FULFILL);
 
+        testDataProvider.getOrder(orderId);
 
     }
 
@@ -202,7 +203,7 @@ public class PreOrderTesting extends BaseOrderTestClass {
 
         testDataProvider.postOrderEvent(orderId, EventStatus.COMPLETED, OrderActionType.FULFILL);
 
-        //TODO Validation
+        testDataProvider.getOrder(orderId);
     }
 
 

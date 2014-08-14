@@ -70,7 +70,7 @@ class UserTFAValidatorImpl implements UserTFAValidator {
                 }
 
                 if (existingUserTFACode.userId != userId) {
-                    throw AppCommonErrors.INSTANCE.parameterInvalid('userTFACodeId and userId doesn\'t match.').exception()
+                    throw AppCommonErrors.INSTANCE.parameterInvalid('userId', 'userTFACode.userId and userId doesn\'t match.').exception()
                 }
 
                 return Promise.pure(existingUserTFACode)

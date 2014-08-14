@@ -31,6 +31,7 @@ import com.junbo.test.common.libs.DBHelper;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.ShardIdHelper;
 import com.junbo.test.identity.Identity;
+import com.junbo.fulfilment.spec.model.FulfilmentAction;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -62,13 +63,47 @@ public class BuyerValidationHelper extends BaseValidationHelper {
         validateOrderInfoByCartId(uid, orderId, cartId, country, currency, paymentInstrumentId, false);
     }
 
+    public void validateFreeOrderInfo(String uid, String orderId, Country country, Currency currency, boolean hasPhysicalGood) throws Exception {
+        Results<Entitlement> entitlementResults = testDataProvider.getEntitlementByUserId(uid);
+
+        validateEntitlements(entitlementResults, 2);
+        testDataProvider.getOrder(orderId);
+        Order order = Master.getInstance().getOrder(orderId);
+
+        if (hasPhysicalGood) {
+            verifyEqual(order.getStatus(), "PENDING", "verify order status");
+        } else {
+            verifyEqual(order.getStatus(), "COMPLETED", "verify order status");
+        }
+
+        verifyEqual(order.getTentative(), false, "verify order tentative");
+        verifyEqual(order.getCurrency().getValue(), currency.toString(), "verify order currency");
+        verifyEqual(order.getCountry().getValue(), country.toString(), "verify order country");
+        verifyEqual(order.getLocale().getValue(), "en_US", "verify locale");
+        verifyEqual(order.getTotalAmount(), new BigDecimal(0), "verify total amount");
+        verifyEqual(order.getTotalTax(), new BigDecimal(0), "verify total tax");
+        FulfillmentHistory fulfilmentHistory = order.getOrderItems().get(0).getFulfillmentHistories().get(0);
+        verifyEqual(fulfilmentHistory.getSuccess(), true, "verify fulfilment status");
+        if (hasPhysicalGood) {
+            verifyEqual(fulfilmentHistory.getFulfillmentEvent().toString(), "REQUEST_SHIP", "verify fulfillment event");
+        } else {
+            verifyEqual(fulfilmentHistory.getFulfillmentEvent().toString(), "FULFILL", "verify fulfillment event");
+        }
+        if (entitlementResults.getItems().size() > 0) {
+            verifyEqual(fulfilmentHistory.getEntitlements().size(), entitlementResults.getItems().size(), "verify entitlement size");
+        } else if (!fulfilmentHistory.getEntitlements().isEmpty()) {
+            throw new TestException("entitlement should be null");
+        }
+
+    }
+
     public void validateOrderInfoByCartId(String uid, String orderId, String cartId, Country country, Currency currency,
                                           String paymentInstrumentId, boolean hasPhysicalGood) throws Exception {
         testDataProvider.getOrder(orderId);
         Order order = Master.getInstance().getOrder(orderId);
         Cart cart = Master.getInstance().getCart(cartId);
         String fulfilmentId = testDataProvider.getFulfilmentsByOrderId(orderId);
-        String balancecId = testDataProvider.getBalancesByOrderId(orderId).get(0);
+        //String balanceId = testDataProvider.getBalancesByOrderId(orderId).get(0);
         verifyEqual(order.getTentative(), false, "verify tentative after order complete");
         verifyEqual(order.getCountry().toString(), country.toString(), "verify country field in order");
         verifyEqual(order.getCurrency().toString(), currency.toString(), "verify currency field in order");
@@ -123,7 +158,7 @@ public class BuyerValidationHelper extends BaseValidationHelper {
                     expectedTotalTaxAmount = expectedTotalTaxAmount.add(orderItem.getTotalTax());
                     expectedTotalAmount = expectedTotalAmount.add(expectedOrderItemAmount);
 
-                   // validateFulfilmentHistory(orderItem, getFulfilmentItemByOfferId(fulfilmentId, offerId));
+                    validateFulfilmentHistory(orderItem, getFulfilmentItemByOfferId(fulfilmentId, offerId));
                     break;
                 }
             }
@@ -141,8 +176,21 @@ public class BuyerValidationHelper extends BaseValidationHelper {
 
     private void validateFulfilmentHistory(OrderItem orderItem, FulfilmentItem fulfilmentItem) {
         List<FulfillmentHistory> fulfillmentHistories = orderItem.getFulfillmentHistories();
-        verifyEqual(fulfillmentHistories.size(), fulfilmentItem.getActions().size(), "verify fulfilment action size");
-        //TODO validate detail info
+        List<FulfilmentAction> fulfillmentActions = fulfilmentItem.getActions();
+
+        for (FulfilmentAction fulfilmentAction : fulfillmentActions) {
+            if (fulfilmentAction.getType().equals("DELIVER_PHYSICAL_GOODS")) {
+                for (FulfillmentHistory fulfillmentHistory : fulfillmentHistories) {
+                    verifyEqual(fulfillmentHistory.getFulfillmentEvent(), "REQUEST_SHIP", "verify fulfilment history");
+                    verifyEqual(fulfillmentHistory.getSuccess(), true, "verify fulfil status");
+                }
+            } else if (fulfilmentAction.getType().equals("GRANT_ENTITLEMENT")) {
+                for (FulfillmentHistory fulfillmentHistory : fulfillmentHistories) {
+                    verifyEqual(fulfillmentHistory.getFulfillmentEvent(), "FULFILL", "verify fulfilment history");
+                    verifyEqual(fulfillmentHistory.getSuccess(), true, "verify fulfil status");
+                }
+            }
+        }
 
     }
 
@@ -158,13 +206,15 @@ public class BuyerValidationHelper extends BaseValidationHelper {
         throw new TestException("Can not find specific offer id in fulfilment item");
     }
 
-    public void validateEntitlements(Results<Entitlement> entitlementResults, int expectedCount) {
+    public void validateEntitlements(Results<Entitlement> entitlementResults, int expectedCount) throws Exception{
         List<Entitlement> entitlements = entitlementResults.getItems();
         for (int i = 0; i < entitlements.size(); i++) {
             Entitlement entitlement = entitlements.get(i);
+            testDataProvider.getBinariesUrl(entitlement);
             verifyEqual(true, entitlement.getIsActive(), "verify entitlement active is true");
             verifyEqual(false, entitlement.getIsBanned(), "verify entilement banned is false");
         }
+
     }
 
 

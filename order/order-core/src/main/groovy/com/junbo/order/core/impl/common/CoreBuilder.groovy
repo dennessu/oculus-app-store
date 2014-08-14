@@ -67,7 +67,7 @@ class CoreBuilder {
         order.orderItems.eachWithIndex { OrderItem item, int i ->
             def balanceItem = buildBalanceItem(item)
             if (item.id == null) {
-                balanceItem.orderItemId = new OrderItemId(i)
+                balanceItem.orderItemId = new OrderItemId(new Long(i))
             } else {
                 balanceItem.orderItemId = item.getId()
             }
@@ -87,16 +87,16 @@ class CoreBuilder {
         if (taxedBalance == null) {
             balance = buildBalance(order)
             balance.type = balanceType.toString()
-            balance.skipTaxCalculation = true
         } else {
             balance = taxedBalance
         }
+        balance.skipTaxCalculation = true
 
         order.orderItems.eachWithIndex { OrderItem item, int i ->
             def balanceItem = buildOrUpdatePartialChargeBalanceItem(item, taxedBalance)
             if (taxedBalance == null) {
                 if (item.id == null) {
-                    balanceItem.orderItemId = new OrderItemId(i)
+                    balanceItem.orderItemId = new OrderItemId(new Long(i))
                 } else {
                     balanceItem.orderItemId = item.getId()
                 }
@@ -247,17 +247,16 @@ class CoreBuilder {
         }
 
         BalanceItem balanceItem = null
-        BigDecimal partialChargeAmount = item.totalAmount
         if (taxedBalance != null) {
             // complete charge
             balanceItem = taxedBalance.balanceItems.find { BalanceItem taxedItem ->
                 taxedItem.orderItemId.value == item.getId().value
             }
-            balanceItem.amount = item.totalAmount - partialChargeAmount
-            taxedBalance.totalAmount -= partialChargeAmount
+            balanceItem.amount = item.totalAmount - item.preorderAmount
+            taxedBalance.totalAmount -= item.preorderAmount
         } else {
             balanceItem = new BalanceItem()
-            balanceItem.amount = partialChargeAmount
+            balanceItem.amount = item.preorderAmount
         }
         return balanceItem
     }
@@ -270,7 +269,6 @@ class CoreBuilder {
         order.totalShippingFeeDiscount = BigDecimal.ZERO
         // TODO the honorUntilTime is not exposed by rating yet
         order.honorUntilTime = null
-        // TODO support preorder amount
         for (OrderItem i in order.orderItems) {
             buildItemRatingInfo(i, ratingRequest)
         }
@@ -317,11 +315,9 @@ class CoreBuilder {
         if (ratingItem == null) {
             return item
         }
+        item.totalAmount = ratingItem.finalTotalAmount
         if (ratingItem.preOrderPrice != null && ratingItem.preOrderPrice != BigDecimal.ZERO) {
-            item.totalAmount = ratingItem.preOrderPrice
-        }
-        else {
-            item.totalAmount = ratingItem.finalTotalAmount
+            item.preorderAmount = ratingItem.preOrderPrice
         }
         item.developerRevenue = ratingItem.developerRevenue
         item.totalDiscount = ratingItem.totalDiscountAmount
@@ -339,7 +335,7 @@ class CoreBuilder {
         }
 
         order.orderItems.eachWithIndex { OrderItem orderItem, int i ->
-            def orderItemId = orderItem.id == null ? new OrderItemId(i) : orderItem.id
+            def orderItemId = orderItem.id == null ? new OrderItemId(new Long(i)) : orderItem.id
             def balanceItem = balance.balanceItems.find { BalanceItem balanceItem ->
                 return balanceItem.orderItemId == orderItemId
             }

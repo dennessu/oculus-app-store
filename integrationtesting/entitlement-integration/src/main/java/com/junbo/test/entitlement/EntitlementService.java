@@ -7,6 +7,7 @@ package com.junbo.test.entitlement;
 
 import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.common.model.Results;
+import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 
 /**
  * Created by jiefeng on 14-3-25.
@@ -27,5 +28,16 @@ public interface EntitlementService {
 
     void deleteEntitlement(String entitlementId) throws Exception;
     void deleteEntitlement(String entitlementId, int expectedResponseCode) throws Exception;
+
+    String getDownloadUrl(String entitlementId, String itemId, String platform) throws Exception;
+    String getDownloadUrl(String entitlementId, String itemId, String platform, int expectedResponseCode) throws Exception;
+
+    String getDownloadUrlForItemRevision(String itemRevisionId, String itemId, String platform) throws Exception;
+    String getDownloadUrlForItemRevision(String itemRevisionId, String itemId, String platform, int expectedResponseCode) throws Exception;
+
+    Results<Entitlement> searchEntitlements(EntitlementSearchParam param, String cursor, Integer count) throws Exception;
+    Results<Entitlement> searchEntitlements(EntitlementSearchParam param, String cursor, Integer count, int expectedResponseCode) throws Exception;
+
+    void getBinariesUrl(Entitlement entitlement) throws Exception;
 
 }

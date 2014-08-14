@@ -58,4 +58,28 @@ public class UserProfile {
     public void setAvatar(UserAvatar avatar) {
         this.avatar = avatar;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserProfile that = (UserProfile) o;
+
+        if (avatar != null ? !avatar.equals(that.avatar) : that.avatar != null) return false;
+        if (headline != null ? !headline.equals(that.headline) : that.headline != null) return false;
+        if (summary != null ? !summary.equals(that.summary) : that.summary != null) return false;
+        if (webpage != null ? !webpage.equals(that.webpage) : that.webpage != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = headline != null ? headline.hashCode() : 0;
+        result = 31 * result + (summary != null ? summary.hashCode() : 0);
+        result = 31 * result + (webpage != null ? webpage.hashCode() : 0);
+        result = 31 * result + (avatar != null ? avatar.hashCode() : 0);
+        return result;
+    }
 }

@@ -15,12 +15,11 @@ import com.junbo.test.common.RandomHelper;
 import com.junbo.test.common.Validator;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,10 +29,10 @@ import java.util.List;
  */
 public class postImportUserPersonalInfo {
 
-    @BeforeSuite
+    @BeforeClass
     public void run() throws Exception {
         HttpclientHelper.CreateHttpClient();
-        Identity.GetHttpAuthorizationHeader();
+        Identity.GetHttpAuthorizationHeaderForMigration();
         HttpclientHelper.CloseHttpClient();
     }
 
@@ -294,5 +293,73 @@ public class postImportUserPersonalInfo {
                 + "b87637b9ec5abd43db01d7a299612a49550230a813239fb3e28eec2a88c0df67");
         Identity.ImportMigrationData(oculusInput);
         Identity.UserCredentialAttemptesPostDefault(oculusInput.getUsername(), "radiant555");
+    }
+
+    @Test(groups = "dailies")
+    public void importMigrationDataNoDuplicateUpdate() throws Exception {
+        OculusInput oculusInput = IdentityModel.DefaultOculusInput();
+        OculusOutput oculusOutput = Identity.ImportMigrationData(oculusInput);
+
+        User user1 = Identity.UserGetByUserId(oculusOutput.getUserId());
+        Organization organization1 = Identity.OrganizationGetByOrganizationId(oculusOutput.getOrganizationId());
+
+        oculusOutput = Identity.ImportMigrationData(oculusInput);
+        User user2 = Identity.UserGetByUserId(oculusOutput.getUserId());
+        Organization organization2 = Identity.OrganizationGetByOrganizationId(oculusOutput.getOrganizationId());
+
+        Validator.Validate("Validate username not updated", user1.getUsername(), user2.getUsername());
+        Validator.Validate("Validate name not updated", user1.getName(), user2.getName());
+        Validator.Validate("Validate dob not updated", user1.getDob(), user2.getDob());
+        Validator.Validate("Validate emails not updated", user1.getEmails().get(0).getValue(), user2.getEmails().get(0).getValue());
+        Validator.Validate("Validate userId not updated", user1.getId(), user2.getId());
+        Validator.Validate("Validate version not updated", user1.getRev(), user2.getRev());
+
+        Validator.Validate("Validate organization Id", organization1.getId(), organization2.getId());
+        Validator.Validate("Validate organization revision", organization1.getRev(), organization2.getRev());
+    }
+
+    @Test(groups = "dailies")
+    public void importMigrationDataWithUserId() throws Exception {
+        User user = IdentityModel.DefaultUser();
+        User userPosted = createUser(RandomHelper.randomAlphabetic(15), RandomHelper.randomAlphabetic(15));
+
+        OculusInput oculusInput = IdentityModel.DefaultOculusInput();
+        oculusInput.setUserId(userPosted.getId());
+        OculusOutput oculusOutput = Identity.ImportMigrationData(oculusInput);
+
+        User migratedUser = Identity.UserGetByUserId(oculusOutput.getUserId());
+        Validator.Validate("Validate userId correct", userPosted.getId(), migratedUser.getId());
+
+        oculusInput = IdentityModel.DefaultOculusInput();
+        oculusInput.setCurrentId(null);
+
+        List<NameValuePair> nvps = new ArrayList<>();
+        nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
+        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
+                Identity.IdentityV1ImportsURI, JsonHelper.JsonSerializer(oculusInput), HttpclientHelper.HttpRequestType.post, nvps);
+
+        String errorMessage = "Migration must have user's currentId or userId";
+        Validator.Validate("Validate response code", 400, response.getStatusLine().getStatusCode());
+
+        Validator.Validate("validate response error message", true,
+                EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+
+        response.close();
+    }
+
+    protected static User createUser(String username, String nickName) throws Exception{
+        User user = IdentityModel.DefaultUser();
+        user.setNickName(nickName);
+        user = Identity.UserPostDefault(user);
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+        userPersonalInfo.setUserId(user.getId());
+        userPersonalInfo.setType(IdentityModel.UserPersonalInfoType.USERNAME.toString());
+        UserLoginName loginName = new UserLoginName();
+        loginName.setUserName(username);
+        userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(loginName));
+        UserPersonalInfo loginInfo = Identity.UserPersonalInfoPost(user.getId(), userPersonalInfo);
+        user.setIsAnonymous(false);
+        user.setUsername(loginInfo.getId());
+        return Identity.UserPut(user);
     }
 }

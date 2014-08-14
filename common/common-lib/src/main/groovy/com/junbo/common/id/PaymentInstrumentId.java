@@ -16,7 +16,7 @@ public class PaymentInstrumentId extends Id {
     public PaymentInstrumentId() {} {
     }
 
-    public PaymentInstrumentId(long value) {
+    public PaymentInstrumentId(Long value) {
         super(value);
     }
 }

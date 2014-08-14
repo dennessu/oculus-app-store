@@ -189,7 +189,7 @@ abstract class CouchBaseDAO<T extends BaseEntity> implements InitializingBean, B
 
         if (response.statusCode != HttpStatus.OK.value()) {
             CouchError couchError = JsonMarshaller.unmarshall(response.responseBody, CouchError)
-            throw new DBException("Failed to query the view, error: $couchError.error," +
+            throw new DBException("Failed to query the view $viewName, error: $couchError.error," +
                     " reason: $couchError.reason")
         }
 

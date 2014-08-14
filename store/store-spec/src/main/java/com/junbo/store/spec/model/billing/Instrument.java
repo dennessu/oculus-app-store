@@ -7,9 +7,8 @@ package com.junbo.store.spec.model.billing;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.id.PaymentInstrumentId;
-import com.junbo.common.id.UserId;
 import com.junbo.payment.spec.model.PaymentInstrument;
-import com.junbo.store.spec.model.identity.PersonalInfo;
+import com.junbo.store.spec.model.Address;
 
 import java.math.BigDecimal;
 
@@ -18,36 +17,27 @@ import java.math.BigDecimal;
  */
 public class Instrument {
 
-    private PaymentInstrumentId instrumentId;
-    private UserId userId;
+    private PaymentInstrumentId self;
+    private Boolean isDefault;
     private String type;
     private String accountName;
     private String accountNum;
-    private String expireDate;
-    private String encryptedCvmCode;
     private String creditCardType;
-    private String storedValueCurrency;
+    private String expireDate;
     private BigDecimal storedValueBalance;
-    private PersonalInfo billingAddress;
-    private PersonalInfo phoneNumber;
-    private PersonalInfo email;
+    private String storedValueCurrency;
+    private Address billingAddress;
+    private String phoneNumber;
+
     @JsonIgnore
     private PaymentInstrument paymentInstrument;
 
-    public PaymentInstrumentId getInstrumentId() {
-        return instrumentId;
+    public PaymentInstrumentId getSelf() {
+        return self;
     }
 
-    public void setInstrumentId(PaymentInstrumentId instrumentId) {
-        this.instrumentId = instrumentId;
-    }
-
-    public UserId getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UserId userId) {
-        this.userId = userId;
+    public void setSelf(PaymentInstrumentId self) {
+        this.self = self;
     }
 
     public String getType() {
@@ -56,6 +46,14 @@ public class Instrument {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Boolean getIsDefault() {
+        return isDefault;
+    }
+
+    public void setIsDefault(Boolean isDefault) {
+        this.isDefault = isDefault;
     }
 
     public String getAccountName() {
@@ -74,28 +72,20 @@ public class Instrument {
         this.accountNum = accountNum;
     }
 
-    public String getExpireDate() {
-        return expireDate;
-    }
-
-    public void setExpireDate(String expireDate) {
-        this.expireDate = expireDate;
-    }
-
-    public String getEncryptedCvmCode() {
-        return encryptedCvmCode;
-    }
-
-    public void setEncryptedCvmCode(String encryptedCvmCode) {
-        this.encryptedCvmCode = encryptedCvmCode;
-    }
-
     public String getCreditCardType() {
         return creditCardType;
     }
 
     public void setCreditCardType(String creditCardType) {
         this.creditCardType = creditCardType;
+    }
+
+    public String getExpireDate() {
+        return expireDate;
+    }
+
+    public void setExpireDate(String expireDate) {
+        this.expireDate = expireDate;
     }
 
     public String getStoredValueCurrency() {
@@ -114,28 +104,20 @@ public class Instrument {
         this.storedValueBalance = storedValueBalance;
     }
 
-    public PersonalInfo getBillingAddress() {
+    public Address getBillingAddress() {
         return billingAddress;
     }
 
-    public void setBillingAddress(PersonalInfo billingAddress) {
+    public void setBillingAddress(Address billingAddress) {
         this.billingAddress = billingAddress;
     }
 
-    public PersonalInfo getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(PersonalInfo phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    public PersonalInfo getEmail() {
-        return email;
-    }
-
-    public void setEmail(PersonalInfo email) {
-        this.email = email;
     }
 
     public PaymentInstrument getPaymentInstrument() {

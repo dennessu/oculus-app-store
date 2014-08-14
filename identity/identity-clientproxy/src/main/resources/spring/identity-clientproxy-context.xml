@@ -28,6 +28,11 @@
         <property name="accessTokenProvider" ref="identityAccessTokenProvider"/>
     </bean>
 
+    <bean id="identityAddressValidatorResource" class="com.junbo.billing.spec.resource.proxy.AddressValidatorResourceClientProxy"
+          parent="addressValidatorResourceClientProxy">
+        <property name="accessTokenProvider" ref="identityAccessTokenProvider"/>
+    </bean>
+
     <bean id="identityEmailResource" class="com.junbo.email.spec.resource.proxy.EmailResourceClientProxy"
           parent="emailResourceClientProxy">
         <property name="accessTokenProvider" ref="identityAccessTokenProvider"/>

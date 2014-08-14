@@ -1,21 +1,37 @@
 package com.junbo.store.rest.utils
+
+import com.junbo.common.enumid.CountryId
+import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.error.AppErrorException
+import com.junbo.common.id.OfferId
 import com.junbo.common.id.OrderId
+import com.junbo.common.id.PIType
+import com.junbo.common.id.UserId
 import com.junbo.common.util.IdFormatter
+import com.junbo.identity.spec.v1.model.Country
+import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
+import com.junbo.identity.spec.v1.option.model.CountryGetOptions
+import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.store.spec.error.AppErrors
+import com.junbo.store.spec.model.Challenge
+import com.junbo.store.spec.model.ChallengeAnswer
 import com.junbo.store.spec.model.billing.BillingProfileGetRequest
-import com.junbo.store.spec.model.billing.BillingProfileUpdateRequest
+import com.junbo.store.spec.model.billing.InstrumentUpdateRequest
 import com.junbo.store.spec.model.identity.UserProfileUpdateRequest
+import com.junbo.store.spec.model.identity.UserProfileUpdateResponse
 import com.junbo.store.spec.model.login.*
 import com.junbo.store.spec.model.purchase.CommitPurchaseRequest
 import com.junbo.store.spec.model.purchase.MakeFreePurchaseRequest
 import com.junbo.store.spec.model.purchase.PreparePurchaseRequest
-import com.junbo.store.spec.model.purchase.SelectInstrumentRequest
 import groovy.transform.CompileStatic
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.util.StringUtils
 
 import javax.annotation.Resource
+
 /**
  * The RequestValidator class.
  */
@@ -23,102 +39,183 @@ import javax.annotation.Resource
 @Component('storeRequestValidator')
 class RequestValidator {
 
+    @Value('${store.login.requireDetailsForCreate}')
+    private boolean requireDetailsForCreate
+
     @Resource(name = 'storeResourceContainer')
     ResourceContainer resourceContainer
 
-    Promise validateUserNameCheckRequest(UserNameCheckRequest request) {
-        if (StringUtils.isEmpty(request.username)) {
-            throw AppCommonErrors.INSTANCE.fieldRequired('username').exception()
+    void validateUserNameCheckRequest(UserNameCheckRequest request) {
+        if (request == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
-        return Promise.pure(null)
+
+        notEmpty(request.username, 'username')
     }
 
-    Promise validateCreateUserRequest(CreateUserRequest request) {
+    void validateUserCredentialRateRequest(UserCredentialRateRequest request) {
+        if (request == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
+        }
+
+        if (request.userCredential == null) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('userCredential').exception()
+        }
+
+        notEmpty(request.userCredential.type, 'userCredential.type')
+        notEmpty(request.userCredential.value, 'userCredential.value')
+    }
+
+    void validateCreateUserRequest(CreateUserRequest request) {
+        if (request == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
+        }
+
         notEmpty(request.username, 'username')
         notEmpty(request.email, 'email')
         notEmpty(request.password, 'password')
-        notEmpty(request.pinCode, 'pinCode')
-        notEmpty(request.dob, 'dob')
         notEmpty(request.cor, 'cor')
         notEmpty(request.preferredLocale, 'preferredLocale')
-        notEmpty(request.firstName, 'firstName')
-        notEmpty(request.lastName, 'lastName')
-        return Promise.pure(null)
+
+        if (requireDetailsForCreate) {
+            notEmpty(request.pin, 'pin')
+            notEmpty(request.dob, 'dob')
+            notEmpty(request.firstName, 'firstName')
+            notEmpty(request.lastName, 'lastName')
+        }
     }
 
-    Promise validateUserSignInRequest(UserSignInRequest request) {
+    void validateUserSignInRequest(UserSignInRequest request) {
+        if (request == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
+        }
+
         notEmpty(request.username, 'username')
         notEmpty(request.userCredential, 'userCredential')
         notEmpty(request.userCredential.type, 'userCredential.type')
         notEmpty(request.userCredential.value, 'userCredential.value')
+
         if (!'PASSWORD'.equalsIgnoreCase(request.userCredential.type)) { //
             throw AppCommonErrors.INSTANCE.fieldInvalid('userCredential.type', 'type must be PASSWORD ').exception()
         }
-        return Promise.pure(null)
     }
 
-    Promise<Void> validateUserCredentialCheckRequest(UserCredentialCheckRequest request) {
-        notEmpty(request.username, 'username')
-        notEmpty(request.userCredential, 'userCredential')
-        notEmpty(request.userCredential.type, 'userCredential.type')
-        notEmpty(request.userCredential.value, 'userCredential.value')
-        return Promise.pure(null)
-    }
-
-    Promise validateAuthTokenRequest(AuthTokenRequest request) {
-        notEmpty(request.refreshToken, 'refreshToken')
-        return Promise.pure(null)
-    }
-
-    Promise<Void> validateUserProfileUpdateRequest(UserProfileUpdateRequest userProfileUpdateRequest) {
-        notEmpty(userProfileUpdateRequest.updateValue, 'updateValue')
-        notEmpty(userProfileUpdateRequest.userId, 'userId')
-        notEmpty(userProfileUpdateRequest.action, 'action')
-        try {
-            UserProfileUpdateRequest.UpdateAction.valueOf(userProfileUpdateRequest.action)
-        } catch (IllegalArgumentException ex) {
-            throw AppCommonErrors.INSTANCE.fieldInvalidEnum('action', CommonUtils.allowedEnumValues(UserProfileUpdateRequest.UpdateAction)).exception()
+    void validateAuthTokenRequest(AuthTokenRequest request) {
+        if (request == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
-        return Promise.pure(null)
+
+        notEmpty(request.refreshToken, 'refreshToken')
+    }
+
+    private Challenge ensurePasswordChallenge(UserId userId, ChallengeAnswer challengeAnswer) {
+        if (challengeAnswer == null) {
+            return new Challenge(type: 'PASSWORD')
+        }
+
+        if (challengeAnswer.type != 'PASSWORD' || org.apache.commons.lang3.StringUtils.isEmpty(challengeAnswer.password)) {
+            return new Challenge(type: 'PASSWORD')
+        }
+
+        try {
+            resourceContainer.userCredentialVerifyAttemptResource.create(
+                    new UserCredentialVerifyAttempt(
+                            userId: userId,
+                            type: 'PASSWORD',
+                            value: challengeAnswer.password
+                    )
+            ).get()
+        } catch (AppErrorException ex) {
+            def appError = ex.error.error()
+            if (appError.code == '131.109') { // userPasswordIncorrect
+                throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
+            }
+
+            throw ex
+        }
+
+        return null
+    }
+
+    UserProfileUpdateResponse validateUserProfileUpdateRequest(UserId userId, UserProfileUpdateRequest request) {
+        if (request == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
+        }
+
+        notEmpty(request.userProfile, 'userProfile')
+
+        if (!StringUtils.isEmpty(request.userProfile.password)
+                || !StringUtils.isEmpty(request.userProfile.pin)) {
+
+            Challenge challenge = ensurePasswordChallenge(userId, request.challengeAnswer)
+            if (challenge != null) {
+                return new UserProfileUpdateResponse(challenge: challenge)
+            }
+        }
+
+        return null
     }
 
     Promise validateBillingProfileGetRequest(BillingProfileGetRequest request) {
-        notEmpty(request.userId, 'userId')
-        notEmpty(request.locale, 'locale')
+        notEmpty(request.country, 'country')
         return Promise.pure(null)
     }
 
-    Promise validateBillingProfileUpdateRequest(BillingProfileUpdateRequest request) {
-        notEmpty(request.userId, 'userId')
-        notEmpty(request.locale, 'locale')
+    Promise<Country> validateAndGetCountry(CountryId country) {
+        resourceContainer.countryResource.get(country, new CountryGetOptions())
+    }
+
+    Promise<com.junbo.identity.spec.v1.model.Locale> validateAndGetLocale(Country country, LocaleId locale) {
+        if (locale != null) {
+            return resourceContainer.localeResource.get(locale, new LocaleGetOptions())
+        }
+        return resourceContainer.localeResource.get(country.defaultLocale, new LocaleGetOptions())
+    }
+
+    Promise validateOffer(OfferId offer) {
+        resourceContainer.offerResource.getOffer(offer.value)
+    }
+
+    Promise validateInstrumentUpdateRequest(InstrumentUpdateRequest request) {
+        if (request == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
+        }
         notEmpty(request.instrument, 'instrument')
-        try {
-            BillingProfileUpdateRequest.UpdateAction.valueOf(request.action)
-        } catch (IllegalArgumentException ex) {
-            throw AppCommonErrors.INSTANCE.fieldInvalidEnum('action', CommonUtils.allowedEnumValues(BillingProfileUpdateRequest.UpdateAction)).exception()
-        }
-
-        BillingProfileUpdateRequest.UpdateAction action = BillingProfileUpdateRequest.UpdateAction.valueOf(request.action)
-        if (action == BillingProfileUpdateRequest.UpdateAction.REMOVE_PI || action == BillingProfileUpdateRequest.UpdateAction.UPDATE_PI) {
-            notEmpty(request.instrument?.instrumentId, 'instrument.instrumentId')
+        notEmpty(request.country, 'country')
+        if (request.instrument.self == null) { // validate for create
+            notEmpty(request.instrument.type, 'instrument.type')
+            PIType piType
+            try {
+                piType = PIType.valueOf(request.instrument.type)
+                if (piType != PIType.CREDITCARD) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('instrument.type', 'Unsupported instrument type.').exception()
+                }
+            } catch (IllegalArgumentException ex) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid('instrument.type', 'Invalid instrument type.').exception()
+            }
+            notEmpty(request.instrument.accountName, 'instrument.accountName')
+            notEmpty(request.instrument.accountNum, 'instrument.accountNum')
+            notEmpty(request.instrument.billingAddress, 'instrument.billingAddress')
         }
         return Promise.pure(null)
     }
+
 
     Promise validateMakeFreePurchaseRequest(MakeFreePurchaseRequest request) {
-        notEmpty(request.userId, 'userId')
-        notEmpty(request.offerId, 'offerId')
+        if (request == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
+        }
+        notEmpty(request.offer, 'offer')
         notEmpty(request.country, 'country')
-        notEmpty(request.locale, 'locale')
         return Promise.pure(null)
     }
 
     Promise<Void> validatePreparePurchaseRequest(PreparePurchaseRequest request) {
-        notEmpty(request.userId, 'userId')
-        notEmpty(request.offerId, 'offerId')
+        if (request == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
+        }
+        notEmpty(request.offer, 'offerId')
         notEmpty(request.country, 'country')
-        notEmpty(request.locale, 'locale')
-        notEmpty(request.currency, 'currency')
         if (request.iapParams != null) {
             notEmpty(request.iapParams.packageName, 'iapParams.packageName')
             notEmpty(request.iapParams.packageSignatureHash, 'iapParams.packageSignatureHash')
@@ -127,38 +224,19 @@ class RequestValidator {
         return Promise.pure(null)
     }
 
-    Promise validateSelectInstrumentRequest(SelectInstrumentRequest request) {
-        notEmpty(request.userId, 'userId')
-        notEmpty(request.instrumentId, 'instrumentId')
-        notEmpty(request.purchaseToken, 'purchaseToken')
-        validatePurchaseToken(request.purchaseToken, 'purchaseToken')
-    }
 
     Promise validateCommitPurchaseRequest(CommitPurchaseRequest request) {
-        notEmpty(request.userId, 'userId')
-        notEmpty(request.purchaseToken, 'purchaseToken')
-        if (request.challengeSolution != null) {
-            notEmpty(request.challengeSolution.value, 'challengeSolution.value')
-            notEmpty(request.challengeSolution.type, 'challengeSolution.type')
+        if (request == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
-        validatePurchaseToken(request.purchaseToken, 'purchaseToken')
-    }
-
-    Promise validateUserCredentialChangeRequest(UserCredentialChangeRequest request) {
-        notEmpty(request.username, 'username')
-        notEmpty(request.newCredential, 'newCredential')
-        notEmpty(request.newCredential.type, 'newCredential.type')
-        notEmpty(request.newCredential.value, 'newCredential.value')
-        notEmpty(request.oldCredential, 'oldCredential')
-        notEmpty(request.oldCredential.type, 'oldCredential.type')
-        notEmpty(request.oldCredential.value, 'oldCredential.value')
-        if (request.oldCredential.type != request.newCredential.type) {
-            throw AppCommonErrors.INSTANCE.fieldInvalid('oldCredential.type', 'should be same as newCredential.type').exception()
+        notEmpty(request.purchaseToken, 'purchaseToken')
+        if (request.challengeAnswer != null) {
+            notEmpty(request.challengeAnswer.type, 'challengeSolution.type')
         }
         return Promise.pure(null)
     }
 
-    void notEmpty(Object val, String fieldName) {
+    private static void notEmpty(Object val, String fieldName) {
         if (StringUtils.isEmpty(val)) {
             throw AppCommonErrors.INSTANCE.fieldRequired(fieldName).exception()
         }

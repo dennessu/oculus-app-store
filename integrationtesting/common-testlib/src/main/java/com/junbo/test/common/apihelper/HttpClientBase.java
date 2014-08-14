@@ -34,7 +34,7 @@ public abstract class HttpClientBase {
     private LogHelper logger = new LogHelper(HttpClientBase.class);
     private AsyncHttpClient asyncClient = new AsyncHttpClient();
 
-    public static String contentType = "application/json";
+    public String contentType = "application/json";
 
     protected ComponentType componentType;
 
@@ -185,6 +185,9 @@ public abstract class HttpClientBase {
                     logger.logInfo(String.format("http response code: %s", nettyResponse.getStatusCode()));
 
                     String redirectUrl = nettyResponse.getHeaders().get("Location").get(0);
+                    if(redirectUrl.contains("cid")){
+                        return redirectUrl;
+                    }
                     req = new RequestBuilder("GET")
                             .setUrl(redirectUrl)
                             .setHeaders(getHeader(isServiceScope))

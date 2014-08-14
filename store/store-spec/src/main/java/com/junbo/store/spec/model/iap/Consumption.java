@@ -16,33 +16,32 @@ import com.junbo.common.model.ResourceMeta;
  */
 public class Consumption extends ResourceMeta<String> {
 
-    private UserId userId;
-    private EntitlementId entitlementId;
+    private UserId user;
+    private EntitlementId entitlement;
     private Integer useCountConsumed;
     private String sku;
-    private String type;
     private String trackingGuid;
     private String packageName;
     @CloudantIgnore
     private Long signatureTimestamp;
 
-    private String iapConsumptionData;
-    private String iapSignature;
+    private String payload;
+    private String signature;
 
-    public UserId getUserId() {
-        return userId;
+    public UserId getUser() {
+        return user;
     }
 
-    public void setUserId(UserId userId) {
-        this.userId = userId;
+    public void setUser(UserId user) {
+        this.user = user;
     }
 
-    public EntitlementId getEntitlementId() {
-        return entitlementId;
+    public EntitlementId getEntitlement() {
+        return entitlement;
     }
 
-    public void setEntitlementId(EntitlementId entitlementId) {
-        this.entitlementId = entitlementId;
+    public void setEntitlement(EntitlementId entitlement) {
+        this.entitlement = entitlement;
     }
 
     public Integer getUseCountConsumed() {
@@ -59,14 +58,6 @@ public class Consumption extends ResourceMeta<String> {
 
     public void setSku(String sku) {
         this.sku = sku;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getTrackingGuid() {
@@ -103,19 +94,19 @@ public class Consumption extends ResourceMeta<String> {
         setTrackingGuid(id);
     }
 
-    public String getIapConsumptionData() {
-        return iapConsumptionData;
+    public String getPayload() {
+        return payload;
     }
 
-    public void setIapConsumptionData(String iapConsumptionData) {
-        this.iapConsumptionData = iapConsumptionData;
+    public void setPayload(String payload) {
+        this.payload = payload;
     }
 
-    public String getIapSignature() {
-        return iapSignature;
+    public String getSignature() {
+        return signature;
     }
 
-    public void setIapSignature(String iapSignature) {
-        this.iapSignature = iapSignature;
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 }

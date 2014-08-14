@@ -18,7 +18,7 @@ public class MockCatalogFacade implements CatalogFacade {
     @Override
     public Promise<OfferRevision> getOfferRevision(String offerId) {
         OfferRevision offerRevision = new OfferRevision();
-        offerRevision.setOwnerId(new OrganizationId(123));
+        offerRevision.setOwnerId(new OrganizationId(123L));
         return Promise.pure(offerRevision);
     }
 }

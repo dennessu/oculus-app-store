@@ -77,36 +77,38 @@ class OrderServiceImpl implements OrderService {
         // rate the order
         // get the existing order with new rating
         return getOrderByOrderId(order.getId().value, true, orderServiceContext, false).then { Order ratedOrder ->
-            orderServiceContext.order = ratedOrder
-            if (ratedOrder.status == OrderStatus.PRICE_RATING_CHANGED.name()) {
-                throw AppErrors.INSTANCE.orderPriceChanged().exception()
-            }
-            // TODO: compare the reqeust and the order persisted
-            orderValidator.validateSettleOrderRequest(ratedOrder)
-
-            if (order.payments.size() > 0 && ratedOrder.payments.size() > 0) {
-                ratedOrder.payments[0].successRedirectUrl = order.payments[0].successRedirectUrl
-                ratedOrder.payments[0].cancelRedirectUrl = order.payments[0].cancelRedirectUrl
-            }
-
-            ratedOrder.purchaseTime = ratedOrder.honoredTime
-
-            Throwable error
-            return flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_TENTATIVE).then { String flowName ->
-                // Prepare Flow Request
-                Map<String, Object> requestScope = [:]
-                def orderActionContext = new OrderActionContext()
-                orderActionContext.orderServiceContext = orderServiceContext
-                orderActionContext.trackingUuid = UUID.randomUUID()
-                requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
-                return executeFlow(flowName, orderServiceContext, requestScope)
-            }.syncRecover { Throwable throwable ->
-                error = throwable
-            }.then {
-                if (error != null) {
-                    throw error
+            return validateDuplicatePurchase(ratedOrder, orderServiceContext).then {
+                orderServiceContext.order = ratedOrder
+                if (ratedOrder.status == OrderStatus.PRICE_RATING_CHANGED.name()) {
+                    throw AppErrors.INSTANCE.orderPriceChanged().exception()
                 }
-                return getOrderByOrderId(orderServiceContext.order.getId().value, false, orderServiceContext, true)
+                // TODO: compare the reqeust and the order persisted
+                orderValidator.validateSettleOrderRequest(ratedOrder)
+
+                if (order.payments.size() > 0 && ratedOrder.payments.size() > 0) {
+                    ratedOrder.payments[0].successRedirectUrl = order.payments[0].successRedirectUrl
+                    ratedOrder.payments[0].cancelRedirectUrl = order.payments[0].cancelRedirectUrl
+                }
+
+                ratedOrder.purchaseTime = ratedOrder.honoredTime
+
+                Throwable error
+                return flowSelector.select(orderServiceContext, OrderServiceOperation.SETTLE_TENTATIVE).then { String flowName ->
+                    // Prepare Flow Request
+                    Map<String, Object> requestScope = [:]
+                    def orderActionContext = new OrderActionContext()
+                    orderActionContext.orderServiceContext = orderServiceContext
+                    orderActionContext.trackingUuid = UUID.randomUUID()
+                    requestScope.put(ActionUtils.SCOPE_ORDER_ACTION_CONTEXT, (Object) orderActionContext)
+                    return executeFlow(flowName, orderServiceContext, requestScope)
+                }.syncRecover { Throwable throwable ->
+                    error = throwable
+                }.then {
+                    if (error != null) {
+                        throw error
+                    }
+                    return getOrderByOrderId(orderServiceContext.order.getId().value, false, orderServiceContext, true)
+                }
             }
         }
     }
@@ -322,14 +324,29 @@ class OrderServiceImpl implements OrderService {
 
     private Promise<Void> prepareOrder(Order order, OrderServiceContext context) {
         return Promise.each(order.orderItems) { OrderItem item -> // get item type from catalog
-            return orderServiceContextBuilder.getOffer(item.offer, context).syncThen { Offer offer ->
+            return orderServiceContextBuilder.getOffer(item.offer, context).then { Offer offer ->
                 if (offer == null) {
                     throw AppErrors.INSTANCE.offerNotFound(item.offer.value?.toString()).exception()
                 }
-                item.type = offer.type.name()
-                item.isPreorder = CoreUtils.isPreorder(offer, order.country.value)
-                updateOfferInfo(order, item, offer)
-                item.offerOrganizationName = offer.owner?.name
+                return orderInternalService.validateDuplicatePurchase(order, offer).syncThen {
+                    item.type = offer.type.name()
+                    item.isPreorder = CoreUtils.isPreorder(offer, order.country.value)
+                    updateOfferInfo(order, item, offer)
+                    item.offerOrganizationName = offer.owner?.name
+                }
+            }
+        }.syncThen {
+            return null
+        }
+    }
+
+    private Promise<Void> validateDuplicatePurchase(Order order, OrderServiceContext context) {
+        return Promise.each(order.orderItems) { OrderItem item -> // get item type from catalog
+            return orderServiceContextBuilder.getOffer(item.offer, context).then { Offer offer ->
+                if (offer == null) {
+                    throw AppErrors.INSTANCE.offerNotFound(item.offer.value?.toString()).exception()
+                }
+                return orderInternalService.validateDuplicatePurchase(order, offer)
             }
         }.syncThen {
             return null

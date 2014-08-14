@@ -9,6 +9,7 @@ import com.junbo.common.model.Link;
 import com.junbo.common.model.Results;
 import com.junbo.configuration.ConfigService;
 import com.junbo.configuration.ConfigServiceManager;
+import org.apache.commons.collections.CollectionUtils;
 import org.glassfish.jersey.server.ContainerResponse;
 import org.springframework.util.StringUtils;
 
@@ -47,12 +48,14 @@ public class ResultsInterceptor implements ContainerResponseFilter {
         }
 
         Results resultList = (Results)responseContext.getEntity();
-        Link self = getSelf(responseContext);
-        resultList.setSelf(self);
+        if (needResetNext(resultList)) {
+            Link self = getSelf(responseContext);
+            resultList.setSelf(self);
 
-        if((resultList.hasNext())
-        || (resultList.getTotal() != null && resultList.getItems() != null && resultList.getTotal() != resultList.getItems().size())) {
-            resultList.setNext(getNext(resultList.getTotal(), self));
+            if((resultList.hasNext())
+            || (resultList.getTotal() != null && resultList.getItems() != null && resultList.getTotal() != resultList.getItems().size())) {
+                resultList.setNext(getNext(resultList.getTotal(), self));
+            }
         }
     }
 
@@ -83,7 +86,7 @@ public class ResultsInterceptor implements ContainerResponseFilter {
         Integer selfCursor = extract(selfUrl, CURSOR_FORMAT);
 
         Integer nextCursor = (selfCount == null ? 0 : selfCount) + (selfCursor == null ? 0 : selfCursor);
-        if (nextCursor > total) {
+        if (nextCursor >= total) {
             return null;
         }
 
@@ -110,10 +113,10 @@ public class ResultsInterceptor implements ContainerResponseFilter {
             return null;
         }
         else if(selfCursor == null && selfCount != null) {
-            return selfCount + 1;
+            return selfCount;
         }
         else {
-            return selfCount + selfCursor + 1;
+            return selfCount + selfCursor;
         }
     }
 
@@ -140,5 +143,21 @@ public class ResultsInterceptor implements ContainerResponseFilter {
         }
 
         return nextURL;
+    }
+
+    private Boolean needResetNext(Results results) {
+        if (CollectionUtils.isEmpty(results.getItems())) {
+            return false;
+        }
+
+        try {
+            if (results.getItems().get(0).getClass().getPackage().getName().contains("com.junbo.identity.spec")) {
+                return true;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+
+        return false;
     }
 }

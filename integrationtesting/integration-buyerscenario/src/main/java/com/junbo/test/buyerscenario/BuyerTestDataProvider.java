@@ -226,8 +226,11 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
 
         List<PaymentInfo> paymentInfos = new ArrayList<>();
         PaymentInfo paymentInfo = new PaymentInfo();
-        paymentInfo.setPaymentInstrument(new PaymentInstrumentId(
-                IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId)));
+        if (paymentInstrumentId != null) {
+            PaymentInstrumentId pid = new PaymentInstrumentId();
+            pid.setValue(IdConverter.hexStringToId(PaymentInstrumentId.class, paymentInstrumentId));
+            paymentInfo.setPaymentInstrument(pid);
+        }
         paymentInfos.add(paymentInfo);
         order.setPayments(paymentInfos);
         order.setUser(cart.getUser());
@@ -290,6 +293,11 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         return entitlementService.getEntitlements(uid);
     }
 
+    public void getBinariesUrl(Entitlement entitlement) throws Exception{
+        EntitlementService entitlementService = EntitlementServiceImpl.instance();
+        entitlementService.getBinariesUrl(entitlement);
+    }
+
     public String getFulfilmentsByOrderId(String orderId) throws Exception {
         return fulfilmentProvider.getFulfilmentByOrderId(orderId);
     }
@@ -302,4 +310,5 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
             throws Exception {
         orderProvider.postOrderEvent(orderId, eventStatus, orderActionType);
     }
+
 }

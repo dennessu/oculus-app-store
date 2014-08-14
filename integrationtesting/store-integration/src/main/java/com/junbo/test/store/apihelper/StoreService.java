@@ -7,6 +7,8 @@ package com.junbo.test.store.apihelper;
 
 import com.junbo.store.spec.model.billing.BillingProfileUpdateRequest;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
+//import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
+//import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.purchase.*;
@@ -24,10 +26,6 @@ public interface StoreService {
 
     PreparePurchaseResponse preparePurchase(PreparePurchaseRequest preparePurchaseRequest, int expectedResponseCode) throws Exception;
 
-    SelectInstrumentResponse selectInstrumentForPurchase(SelectInstrumentRequest selectInstrumentRequest) throws Exception;
-
-    SelectInstrumentResponse selectInstrumentForPurchase(SelectInstrumentRequest selectInstrumentRequest, int expectedResponseCode) throws Exception;
-
     CommitPurchaseResponse commitPurchase(CommitPurchaseRequest commitPurchaseRequest) throws Exception;
 
     CommitPurchaseResponse commitPurchase(CommitPurchaseRequest commitPurchaseRequest, int expectedResponseCode) throws Exception;
@@ -35,5 +33,9 @@ public interface StoreService {
     IAPEntitlementConsumeResponse iapConsumeEntitlement(IAPEntitlementConsumeRequest iapEntitlementConsumeRequest) throws Exception;
 
     IAPEntitlementConsumeResponse iapConsumeEntitlement(IAPEntitlementConsumeRequest iapEntitlementConsumeRequest, int expectedResponseCode) throws Exception;
+
+    MakeFreePurchaseResponse makeFreePurchase(MakeFreePurchaseRequest request) throws Exception;
+
+    MakeFreePurchaseResponse makeFreePurchase(MakeFreePurchaseRequest request, int expectedResponseCode) throws Exception;
 
 }

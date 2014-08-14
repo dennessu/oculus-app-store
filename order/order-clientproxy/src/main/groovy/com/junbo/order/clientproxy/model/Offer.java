@@ -6,10 +6,12 @@
 
 package com.junbo.order.clientproxy.model;
 
+import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.identity.spec.v1.model.Organization;
 import com.junbo.order.spec.model.enums.ItemType;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,6 +23,7 @@ public class Offer {
     private ItemType type;
     private Map<String, Date> countryReleaseDates;
     private Map<String, OfferLocale> locales;
+    private List<Item> items;
 
     public String getId() {
         return id;
@@ -60,5 +63,13 @@ public class Offer {
 
     public void setLocales(Map<String, OfferLocale> locales) {
         this.locales = locales;
+    }
+
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
     }
 }

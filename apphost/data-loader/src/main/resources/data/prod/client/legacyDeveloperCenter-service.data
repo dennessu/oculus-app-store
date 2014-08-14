@@ -1,0 +1,11 @@
+{
+  "client_id" : "legacyDeveloperCenter-service",
+  "client_secret" : "5E44199FA0F6AAA67D87E9C8E16E0E50#CD52714ADA1BC3B49F7ED7CB3FFC3E1A",
+  "client_name" : "legacyDeveloperCenter-service",
+
+  "scopes" : [ "identity.migration" ],
+  "default_scopes" : [ "identity.migration" ],
+
+  "response_types" : [ ],
+  "grant_types" : [ "CLIENT_CREDENTIALS" ]
+}

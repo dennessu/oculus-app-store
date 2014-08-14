@@ -13,7 +13,7 @@ package com.junbo.common.id;
                 regex = "/personal-info/(?<id>[0-9A-Za-z]+)")
 public class UserPersonalInfoId extends Id {
     public UserPersonalInfoId() {}
-    public UserPersonalInfoId(long value) {
+    public UserPersonalInfoId(Long value) {
         super(value);
     }
 }

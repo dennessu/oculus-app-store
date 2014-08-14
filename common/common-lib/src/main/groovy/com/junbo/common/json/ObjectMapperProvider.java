@@ -93,7 +93,7 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
         return objectMapper;
     }
 
-    public static ObjectMapper instanceNoIdent() {
+    public static ObjectMapper instanceNoIndent() {
         return objectMapperNoIndent;
     }
 

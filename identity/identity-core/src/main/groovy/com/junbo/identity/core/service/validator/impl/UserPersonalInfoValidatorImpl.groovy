@@ -61,7 +61,7 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
         }
 
         if (options.userId != null && (options.email != null || options.phoneNumber != null || options.name != null)) {
-            throw AppCommonErrors.INSTANCE.parameterInvalid('userId can\'t be searched with email or phone or name').exception()
+            throw AppCommonErrors.INSTANCE.parameterInvalid('userId and (email or phone or name)', 'userId can\'t be searched with email or phone or name').exception()
         }
 
         if (options.isValidated != null && options.userId == null) {

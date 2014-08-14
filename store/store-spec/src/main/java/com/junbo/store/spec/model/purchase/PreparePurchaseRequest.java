@@ -6,36 +6,44 @@
 package com.junbo.store.spec.model.purchase;
 
 import com.junbo.common.enumid.CountryId;
-import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.OfferId;
-import com.junbo.common.id.UserId;
+import com.junbo.common.id.PaymentInstrumentId;
+import com.junbo.store.spec.model.ChallengeAnswer;
 
 /**
  * The PreparePurchaseRequest class.
  */
 public class PreparePurchaseRequest {
-    private UserId userId;
-    private OfferId offerId;
+
+    private PaymentInstrumentId instrument;
+
+    private String purchaseToken;
+
+    private OfferId offer;
+
     private CountryId country;
+
     private LocaleId locale;
-    private CurrencyId currency;
+
     private IAPParams iapParams;
 
-    public UserId getUserId() {
-        return userId;
+    private ChallengeAnswer challengeAnswer;
+
+    public PaymentInstrumentId getInstrument() {
+        return instrument;
     }
 
-    public void setUserId(UserId userId) {
-        this.userId = userId;
+    public void setInstrument(PaymentInstrumentId instrument) {
+        this.instrument = instrument;
     }
 
-    public OfferId getOfferId() {
-        return offerId;
+    public OfferId getOffer() {
+        return offer;
     }
 
-    public void setOfferId(OfferId offerId) {
-        this.offerId = offerId;
+    public void setOffer(OfferId offer) {
+        this.offer = offer;
     }
 
     public CountryId getCountry() {
@@ -54,12 +62,12 @@ public class PreparePurchaseRequest {
         this.locale = locale;
     }
 
-    public CurrencyId getCurrency() {
-        return currency;
+    public String getPurchaseToken() {
+        return purchaseToken;
     }
 
-    public void setCurrency(CurrencyId currency) {
-        this.currency = currency;
+    public void setPurchaseToken(String purchaseToken) {
+        this.purchaseToken = purchaseToken;
     }
 
     public IAPParams getIapParams() {
@@ -68,5 +76,13 @@ public class PreparePurchaseRequest {
 
     public void setIapParams(IAPParams iapParams) {
         this.iapParams = iapParams;
+    }
+
+    public ChallengeAnswer getChallengeAnswer() {
+        return challengeAnswer;
+    }
+
+    public void setChallengeAnswer(ChallengeAnswer challengeAnswer) {
+        this.challengeAnswer = challengeAnswer;
     }
 }

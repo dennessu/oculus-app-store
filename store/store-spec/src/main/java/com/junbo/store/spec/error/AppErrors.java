@@ -8,6 +8,7 @@ package com.junbo.store.spec.error;
 
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.ErrorDef;
+import com.junbo.common.error.ErrorDetail;
 import com.junbo.common.error.ErrorProxy;
 
 /**
@@ -35,4 +36,22 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "106", message = "Invalid billing update operation.")
     AppError invalidBillingUpdateOperation();
+
+    @ErrorDef(httpStatusCode = 400, code = "107", message = "User Not Found.")
+    AppError userNotFound();
+
+    @ErrorDef(httpStatusCode = 400, code = "108", message = "Invalid Challenge Answer.")
+    AppError invalidChallengeAnswer();
+
+    @ErrorDef(httpStatusCode = 412, code = "107", message = "Invalid user status.")
+    AppError invalidUserStatus();
+
+    @ErrorDef(httpStatusCode = 412, code = "108", message = "Unsupported payment instrument type.")
+    AppError unsupportedPaymentInstrumentType();
+
+    @ErrorDef(httpStatusCode = 412, code = "109", message = "Invalid purchase token.")
+    AppError invalidPurchaseToken(ErrorDetail[] details);
+
+    @ErrorDef(httpStatusCode = 412, code = "109", message = "Invalid purchase token.")
+    AppError invalidPurchaseToken();
 }

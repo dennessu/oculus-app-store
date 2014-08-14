@@ -8,6 +8,7 @@ package com.junbo.order.core.impl.internal;
 import com.junbo.billing.spec.model.Balance;
 import com.junbo.identity.spec.v1.model.UserPersonalInfo;
 import com.junbo.langur.core.promise.Promise;
+import com.junbo.order.clientproxy.model.Offer;
 import com.junbo.order.core.impl.order.OrderServiceContext;
 import com.junbo.order.spec.model.Order;
 import com.junbo.order.spec.model.OrderEvent;
@@ -45,4 +46,6 @@ public interface OrderInternalService {
     Promise<List<PaymentInstrument>> validatePayments(OrderServiceContext orderServiceContext);
 
     Promise<UserPersonalInfo> validateUserPersonalInfo(OrderServiceContext context);
+
+    Promise<Order> validateDuplicatePurchase(Order order, Offer offer);
 }

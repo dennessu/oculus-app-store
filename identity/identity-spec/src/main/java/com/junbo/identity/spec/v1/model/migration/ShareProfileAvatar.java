@@ -6,11 +6,13 @@
 package com.junbo.identity.spec.v1.model.migration;
 
 import com.junbo.common.jackson.annotation.XSSFreeString;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by liangfu on 6/19/14.
  */
 public class ShareProfileAvatar {
+    @ApiModelProperty(position = 1, required = false, value = "The href of shareProfile in oculus DB.")
     @XSSFreeString
     private String href;
 

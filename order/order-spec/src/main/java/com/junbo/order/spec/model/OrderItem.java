@@ -74,6 +74,9 @@ public class OrderItem extends ResourceMetaForDualWrite<OrderItemId> {
     private BigDecimal developerRevenue;
 
     @JsonIgnore
+    private BigDecimal preorderAmount;
+
+    @JsonIgnore
     private Date honorUntilTime;
 
     @JsonIgnore
@@ -318,5 +321,13 @@ public class OrderItem extends ResourceMetaForDualWrite<OrderItemId> {
 
     public void setOfferOrganizationName(String offerOrganizationName) {
         this.offerOrganizationName = offerOrganizationName;
+    }
+
+    public BigDecimal getPreorderAmount() {
+        return preorderAmount;
+    }
+
+    public void setPreorderAmount(BigDecimal preorderAmount) {
+        this.preorderAmount = preorderAmount;
     }
 }

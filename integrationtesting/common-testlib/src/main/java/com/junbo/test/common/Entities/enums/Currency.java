@@ -84,6 +84,8 @@ public enum Currency {
     YER("YER", "YER"),
     ZAR("ZAR", "R"),
 
+    FREE("XXX",""),
+
     //define USD as default currency for common test
     DEFAULT("USD", "$");
 

@@ -10,10 +10,7 @@ import com.junbo.identity.spec.v1.model.UserPersonalInfo;
 import com.junbo.identity.spec.v1.model.UserPersonalInfoLink;
 import com.junbo.identity.spec.v1.model.UserTFA;
 import com.junbo.test.common.HttpclientHelper;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +20,7 @@ import java.util.List;
  */
 public class postUserTFA {
 
-    @BeforeSuite
+    @BeforeClass
     public void run() throws Exception {
         HttpclientHelper.CreateHttpClient();
         Identity.GetHttpAuthorizationHeader();

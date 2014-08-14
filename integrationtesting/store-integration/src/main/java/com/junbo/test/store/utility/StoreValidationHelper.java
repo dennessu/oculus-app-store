@@ -28,10 +28,9 @@ import com.junbo.test.common.libs.IdConverter;
 public class StoreValidationHelper extends BaseValidationHelper {
     OfferService offerClient = OfferServiceImpl.instance();
 
-    public void verifyAddNewCreditCard(String uid, BillingProfileUpdateResponse response) {
+    public void verifyAddNewCreditCard(BillingProfileUpdateResponse response) {
         verifyEqual(response.getStatus(), String.format("SUCCESS"), "verify status");
         BillingProfile billingProfile = response.getBillingProfile();
-        verifyEqual(IdConverter.idToHexString(billingProfile.getUserId()), uid, "verify user id");
         if (billingProfile.getInstruments().size() <= 0) {
             throw new TestException("missing payment instrument");
         }
@@ -42,7 +41,6 @@ public class StoreValidationHelper extends BaseValidationHelper {
     }
 
     public void verifyPreparePurchase(PreparePurchaseResponse response) {
-        verifyEqual(response.getStatus(), String.format("SUCCESS"), "verify prepare purchase status");
         verifyEqual(response.getFormattedTotalPrice(), String.format("10.0$"), "verify formatted total price");
         if (response.getPurchaseToken() == null || response.getPurchaseToken().isEmpty()) {
             throw new TestException("missing purchase token in prepare purchase response");
@@ -55,11 +53,8 @@ public class StoreValidationHelper extends BaseValidationHelper {
         Item item = Master.getInstance().getItem(offerRevision.getItems().get(0).getItemId());
         Entitlement entitlement = response.getEntitlements().get(0);
 
-        verifyEqual(response.getStatus(), String.format("SUCCESS"), "verify commit status");
         verifyEqual(entitlement.getItemType(), item.getType(), "verify item type");
-        verifyEqual(IdConverter.idToHexString(entitlement.getItemId()), item.getId(), "verify item id");
-        verifyEqual(entitlement.getUseCount(), offerRevision.getEventActions().get("PURCHASE").get(0).getUseCount(), "verify user count");
-        verifyEqual(entitlement.getIsConsumable(), Boolean.valueOf(true), "verify is consumable");
+        verifyEqual(IdConverter.idToHexString(entitlement.getItem()), item.getId(), "verify item id");
 
     }
 

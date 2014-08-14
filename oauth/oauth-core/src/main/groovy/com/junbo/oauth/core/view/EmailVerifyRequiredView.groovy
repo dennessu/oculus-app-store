@@ -22,13 +22,16 @@ class EmailVerifyRequiredView extends AbstractView {
     @Override
     protected Promise<ViewModel> buildViewModel(ActionContext context) {
         def contextWrapper = new ActionContextWrapper(context)
+        def client = contextWrapper.client
+        assert client != null : 'client is null'
+
         def modelMap = [
                 'username': contextWrapper.user.username,
                 'email': contextWrapper.userDefaultEmail,
                 'locale': contextWrapper.viewLocale
         ]
 
-        if (debugEnabled) {
+        if (debugEnabled || client.debugEnabled) {
             modelMap['link'] = contextWrapper.emailVerifyLink
         }
 

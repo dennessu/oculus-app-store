@@ -5,110 +5,52 @@
  */
 package com.junbo.store.spec.model;
 
-import com.junbo.common.cloudant.json.annotations.CloudantIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.ItemId;
 import com.junbo.common.id.UserId;
-import com.junbo.store.spec.model.purchase.AppDeliveryData;
+import com.junbo.store.spec.model.iap.IAPEntitlement;
 
 /**
  * Entitlement used for IAP.
  */
 public class Entitlement {
-    private UserId userId;
-    private ItemId itemId;
+
+    private EntitlementId self;
+
+    @JsonIgnore
+    private UserId user;
+
+    private String entitlementType;
+
+    private ItemId item;
+
     private String itemType;
-    private EntitlementId entitlementId;
-    private AppDeliveryData appDeliveryData;
-    private Integer useCount;
-    private String type;
-    private String sku;
-    private Boolean isConsumable;
-    private String packageName;
-    private String iapEntitlementData;
-    private String iapSignature;
 
-    @CloudantIgnore
-    private Long signatureTimestamp;
+    private IAPEntitlement iapEntitlement;
 
-    public UserId getUserId() {
-        return userId;
+    public UserId getUser() {
+        return user;
     }
 
-    public void setUserId(UserId userId) {
-        this.userId = userId;
+    public void setUser(UserId user) {
+        this.user = user;
     }
 
-    public ItemId getItemId() {
-        return itemId;
+    public ItemId getItem() {
+        return item;
     }
 
-    public void setItemId(ItemId itemId) {
-        this.itemId = itemId;
+    public void setItem(ItemId item) {
+        this.item = item;
     }
 
-    public EntitlementId getEntitlementId() {
-        return entitlementId;
+    public EntitlementId getSelf() {
+        return self;
     }
 
-    public void setEntitlementId(EntitlementId entitlementId) {
-        this.entitlementId = entitlementId;
-    }
-
-    public AppDeliveryData getAppDeliveryData() {
-        return appDeliveryData;
-    }
-
-    public void setAppDeliveryData(AppDeliveryData appDeliveryData) {
-        this.appDeliveryData = appDeliveryData;
-    }
-
-    public Integer getUseCount() {
-        return useCount;
-    }
-
-    public void setUseCount(Integer useCount) {
-        this.useCount = useCount;
-    }
-
-    public String getSku() {
-        return sku;
-    }
-
-    public void setSku(String sku) {
-        this.sku = sku;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Boolean getIsConsumable() {
-        return isConsumable;
-    }
-
-    public void setIsConsumable(Boolean isConsumable) {
-        this.isConsumable = isConsumable;
-    }
-
-    public String getPackageName() {
-        return packageName;
-    }
-
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
-    }
-
-    public Long getSignatureTimestamp() {
-        return signatureTimestamp;
-    }
-
-    public void setSignatureTimestamp(Long signatureTimestamp) {
-        this.signatureTimestamp = signatureTimestamp;
+    public void setSelf(EntitlementId self) {
+        this.self = self;
     }
 
     public String getItemType() {
@@ -119,20 +61,19 @@ public class Entitlement {
         this.itemType = itemType;
     }
 
-    public String getIapEntitlementData() {
-        return iapEntitlementData;
+    public String getEntitlementType() {
+        return entitlementType;
     }
 
-    public void setIapEntitlementData(String iapEntitlementData) {
-        this.iapEntitlementData = iapEntitlementData;
+    public void setEntitlementType(String entitlementType) {
+        this.entitlementType = entitlementType;
     }
 
-    public String getIapSignature() {
-        return iapSignature;
+    public IAPEntitlement getIapEntitlement() {
+        return iapEntitlement;
     }
 
-    public void setIapSignature(String iapSignature) {
-        this.iapSignature = iapSignature;
+    public void setIapEntitlement(IAPEntitlement iapEntitlement) {
+        this.iapEntitlement = iapEntitlement;
     }
-
 }

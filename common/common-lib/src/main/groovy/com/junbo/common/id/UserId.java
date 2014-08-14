@@ -16,7 +16,7 @@ package com.junbo.common.id;
 public class UserId extends Id {
 
     public UserId() {}
-    public UserId(long value) {
+    public UserId(Long value) {
         super(value);
     }
 }

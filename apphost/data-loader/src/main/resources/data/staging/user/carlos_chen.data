@@ -1,0 +1,20 @@
+{
+    "username": "carloschen",
+    "email": "carlos.chen@oculus.com",
+    "cor":	{
+        "id" : "US"
+    },
+    "address": {
+        "street1": "19800 MacArthur Blvd Suite",
+        "city": "Irvine",
+        "subCountry": "CA",
+        "postalCode": "92612",
+        "countryId": {
+            "id" : "US"
+        }
+    },
+    "name": {
+        "givenName": "Carlos",
+        "familyName": "Chen"
+    }
+}

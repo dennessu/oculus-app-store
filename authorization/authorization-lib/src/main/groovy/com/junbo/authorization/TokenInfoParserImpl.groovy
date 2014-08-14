@@ -151,7 +151,7 @@ public class TokenInfoParserImpl implements TokenInfoParser, InitializingBean {
     @Override
     void afterPropertiesSet() throws Exception {
         defaultToken = new TokenInfo(
-                sub: new UserId(0),
+                sub: new UserId(0L),
                 clientId: DEFAULT_CLIENT,
                 scopes: defaultScopes,
                 expiresIn: defaultAccessTokenExpiration

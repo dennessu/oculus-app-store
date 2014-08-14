@@ -5,7 +5,6 @@ set -e
 t0=`date +%s`
 ./setupdb.sh
 ./build.sh "$@"
-./dataloader.sh masterkey
 ./dataloader.sh
 
 t1=`date +%s`

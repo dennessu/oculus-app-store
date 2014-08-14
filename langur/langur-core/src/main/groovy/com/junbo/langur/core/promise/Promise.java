@@ -11,6 +11,7 @@ import com.google.common.util.concurrent.*;
 import groovy.lang.Closure;
 import org.jboss.netty.util.Timeout;
 
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -66,6 +67,10 @@ public class Promise<T> {
 
     public static <T> Promise<T> wrap(ListenableFuture<T> future) {
         return new Promise<T>(future);
+    }
+
+    public static <Void> Promise<Void> pure() {
+        return pure(null);
     }
 
     public static <T> Promise<T> pure(T t) {
@@ -168,7 +173,12 @@ public class Promise<T> {
         return wrap(Futures.withFallback(future, new FutureFallback<T>() {
             @Override
             public ListenableFuture<T> create(Throwable t) {
-                return func.apply(t).wrapped();
+                Promise<T> result = func.apply(t);
+                if (result == null) {
+                    throw new RuntimeException("func " + funcToString(func) + " returns null");
+                }
+
+                return result.wrapped();
             }
         }, ExecutorContext.getExecutor()));
     }
@@ -177,7 +187,12 @@ public class Promise<T> {
         return wrap(Futures.transform(future, new AsyncFunction<T, R>() {
             @Override
             public ListenableFuture<R> apply(T input) {
-                return func.apply(input).wrapped();
+                Promise<R> result = func.apply(input);
+                if (result == null) {
+                    throw new RuntimeException("func " + funcToString(func) + " returns null");
+                }
+
+                return result.wrapped();
             }
         }, executor));
     }
@@ -346,5 +361,17 @@ public class Promise<T> {
                 closure.call(throwable);
             }
         });
+    }
+
+
+    private static String funcToString(Func func) {
+        try {
+            Field field = func.getClass().getDeclaredField("val$closure");
+
+            Object closure = field.get(func);
+            return closure.toString();
+        } catch (Exception e) {
+            return func.toString();
+        }
     }
 }
