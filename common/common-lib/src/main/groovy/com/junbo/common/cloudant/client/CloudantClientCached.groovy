@@ -182,12 +182,7 @@ class CloudantClientCached implements CloudantClientInternal {
         }
 
         // update cloudantId
-        if (entity.getId() != null) {
-            entity.setCloudantId(entity.getId().toString())
-        }
-        if (entity.getCloudantId() == null) {
-            return
-        }
+        entity.setCloudantId(entity.getId().toString());
 
         try {
             String value = marshaller.marshall(entity)
