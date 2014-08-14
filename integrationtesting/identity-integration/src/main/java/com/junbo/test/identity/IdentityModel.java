@@ -259,6 +259,15 @@ public class IdentityModel {
         return ucva;
     }
 
+    public static UserCredentialVerifyAttempt DefaultUserPinAttempts(String username, String pin) throws Exception{
+        UserCredentialVerifyAttempt ucva = new UserCredentialVerifyAttempt();
+        ucva.setUsername(username);
+        ucva.setValue(pin);
+        ucva.setType("PIN");
+        ucva.setIpAddress(RandomHelper.randomIP());
+        return ucva;
+    }
+
     public static UserSecurityQuestion DefaultUserSecurityQuestion() throws Exception {
         UserSecurityQuestion usq = new UserSecurityQuestion();
         usq.setSecurityQuestion(RandomHelper.randomAlphabetic(100));

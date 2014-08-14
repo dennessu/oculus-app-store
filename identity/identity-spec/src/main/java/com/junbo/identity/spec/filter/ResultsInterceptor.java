@@ -86,7 +86,7 @@ public class ResultsInterceptor implements ContainerResponseFilter {
         Integer selfCursor = extract(selfUrl, CURSOR_FORMAT);
 
         Integer nextCursor = (selfCount == null ? 0 : selfCount) + (selfCursor == null ? 0 : selfCursor);
-        if (nextCursor > total) {
+        if (nextCursor >= total) {
             return null;
         }
 
@@ -113,10 +113,10 @@ public class ResultsInterceptor implements ContainerResponseFilter {
             return null;
         }
         else if(selfCursor == null && selfCount != null) {
-            return selfCount + 1;
+            return selfCount;
         }
         else {
-            return selfCount + selfCursor + 1;
+            return selfCount + selfCursor;
         }
     }
 

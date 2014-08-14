@@ -86,17 +86,25 @@ public class postOrganization {
         Results<Organization> results = Identity.OrganizationByName(org.getName(), null, null);
         Validator.Validate("validate organization with no parameter", 10, results.getItems().size());
         Validator.Validate("validate total organization size", 10L, results.getTotal());
+        Validator.Validate("validate organization next null", true, results.getNext() == null);
 
         results = Identity.OrganizationByName(org.getName(), 5, 15);
         Validator.Validate("validate organization with offset", 0, results.getItems().size());
         Validator.Validate("validate total organization size", 10L, results.getTotal());
+        Validator.Validate("validate organization next null", true, results.getNext() == null);
 
         results = Identity.OrganizationByName(org.getName(), 5, 5);
         Validator.Validate("validate organization with offset and count", 5, results.getItems().size());
         Validator.Validate("validate total organization size", 10L, results.getTotal());
+        Validator.Validate("validate organization next null", true, results.getNext() == null);
 
         results = Identity.OrganizationByName(org.getName() + "Fake", 0, 0);
         Validator.Validate("validate organization with wrong name", 0, results.getItems().size());
         Validator.Validate("validate total organization size", 0L, results.getTotal());
+
+        results = Identity.OrganizationByName(org.getName(), 1, 2);
+        Validator.Validate("validate total organization size", 10L, results.getTotal());
+        Validator.Validate("validate organization count", true, results.getNext().getHref().contains("count=1"));
+        Validator.Validate("validate organization cursor", true, results.getNext().getHref().contains("cursor=3"));
     }
 }

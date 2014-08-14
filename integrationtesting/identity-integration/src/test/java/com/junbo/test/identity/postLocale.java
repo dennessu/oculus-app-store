@@ -5,10 +5,15 @@
  */
 package com.junbo.test.identity;
 
+import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.Locale;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.Validator;
-import org.testng.annotations.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 /**
  * @author dw
@@ -42,5 +47,8 @@ public class postLocale {
         Validator.Validate("validate locale name", locale.getLocaleName(), stored.getLocaleName());
         Validator.Validate("validate locale long name", locale.getLongName(), stored.getLongName());
         Validator.Validate("validate locale short name", locale.getShortName(), stored.getShortName());
+
+        Results<Locale> results = Identity.LocaleGetAll();
+        Validator.Validate("validate locale getAll", true, !CollectionUtils.isEmpty(results.getItems()));
     }
 }

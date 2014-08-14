@@ -155,6 +155,14 @@ public class Identity {
         return (Currency) IdentityPost(IdentityV1CurrencyURI, JsonHelper.JsonSerializer(currency), Currency.class);
     }
 
+    public static Currency CurrencyGetByCurrencyCode(String currencyCode, String locale) throws Exception {
+        if (StringUtils.isEmpty(locale)) {
+            return CurrencyGetByCurrencyCode(currencyCode);
+        } else {
+            return IdentityGet(IdentityV1CurrencyURI + "/" + currencyCode + "?locale=" + locale, Currency.class);
+        }
+    }
+
     public static Currency CurrencyGetByCurrencyCode(String currencyCode) throws Exception {
         return (Currency) IdentityGet(IdentityV1CurrencyURI + "/" + currencyCode, Currency.class);
     }
@@ -173,6 +181,22 @@ public class Identity {
 
     public static Locale LocaleGetByLocaleId(String localeId) throws Exception {
         return (Locale) IdentityGet(IdentityV1LocaleURI + "/" + localeId, Locale.class);
+    }
+
+    public static Results<Locale> LocaleGetAll() throws Exception {
+        Results<Locale> results = new Results<>();
+        results.setItems(new ArrayList<Locale>());
+        Results res = IdentityGet(IdentityV1LocaleURI, Results.class);
+        for (Object obj : res.getItems()) {
+            results.getItems().add((Locale) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
+                    Locale.class)
+            );
+        }
+        results.setTotal(res.getTotal());
+        results.setNext(res.getNext());
+        results.setSelf(res.getSelf());
+
+        return results;
     }
 
     public static void LocaleDeleteByLocaleId(String localeId) throws Exception {
@@ -452,14 +476,39 @@ public class Identity {
         return UserCredentialAttemptesPostDefault(userName, password, true);
     }
 
+    public static CloseableHttpResponse UserPinCredentialAttemptPostDefault(String username, String pin) throws Exception {
+        return UserPinCredentialAttemptPostDefault(username, pin, true);
+    }
+
     public static CloseableHttpResponse UserCredentialAttemptesPostDefault(
             String userName, String password, Boolean validResponse) throws Exception {
         return UserCredentialAttemptesPostDefault(userName, password, null, validResponse);
     }
 
+    public static CloseableHttpResponse UserPinCredentialAttemptPostDefault(String username, String pin,
+                                                                            Boolean validateResponse) throws Exception {
+        return UserPinCredentialAttemptPostDefault(username, pin, null, validateResponse);
+    }
+
     public static CloseableHttpResponse UserCredentialAttemptesPostDefault(
             String userName, String password, String ip, Boolean validResponse) throws Exception {
         UserCredentialVerifyAttempt ucva = IdentityModel.DefaultUserCredentialAttempts(userName, password);
+        if (ip != null) {
+            ucva.setIpAddress(ip);
+        }
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
+        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(IdentityV1UserCredentialAttemptsURI,
+                JsonHelper.JsonSerializer(ucva), HttpclientHelper.HttpRequestType.post, nvps);
+        if (validResponse) {
+            Validator.Validate("validate response code", 201, response.getStatusLine().getStatusCode());
+        }
+        return response;
+    }
+
+    public static CloseableHttpResponse UserPinCredentialAttemptPostDefault(String username, String pin, String ip,
+                                                                            Boolean validResponse) throws Exception {
+        UserCredentialVerifyAttempt ucva = IdentityModel.DefaultUserPinAttempts(username, pin);
         if (ip != null) {
             ucva.setIpAddress(ip);
         }

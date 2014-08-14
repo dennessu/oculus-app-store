@@ -103,7 +103,6 @@ public class postCredentialAttempts {
         response.close();
     }
 
-
     @Test(groups = "dailies")
     // https://oculus.atlassian.net/browse/SER-436
     // We will force a password change for a username change
@@ -261,6 +260,36 @@ public class postCredentialAttempts {
         }
 
         response = Identity.UserCredentialAttemptesPostDefault(loginName.getUserName(), password, true);
+        response.close();
+    }
+
+    @Test(groups = "dailies")
+    public void testUserPinAttempts() throws Exception {
+        User user = Identity.UserPostDefault();
+        String password = IdentityModel.DefaultPassword();
+        Identity.UserCredentialPostDefault(user.getId(), null, password);
+        UserPersonalInfo userPersonalInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(user.getUsername());
+        UserLoginName loginName = (UserLoginName)JsonHelper.JsonNodeToObject(userPersonalInfo.getValue(), UserLoginName.class);
+        CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(loginName.getUserName(), password);
+        Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
+        response.close();
+
+        String pin = IdentityModel.DefaultPin();
+        response = Identity.UserPinCredentialPostDefault(user.getId(), password, pin, true);
+        response.close();
+        response = Identity.UserPinCredentialAttemptPostDefault(loginName.getUserName(), pin);
+        response.close();
+
+        pin = IdentityModel.DefaultPin();
+        response = Identity.UserPinCredentialPostDefault(user.getId(), null, pin, true);
+        response.close();
+        response = Identity.UserPinCredentialAttemptPostDefault(loginName.getUserName(), pin);
+        response.close();
+
+        pin = IdentityModel.DefaultPin();
+        response = Identity.UserPinCredentialPostDefault(user.getId(), password, pin, true);
+        response.close();
+        response = Identity.UserPinCredentialAttemptPostDefault(loginName.getUserName(), pin);
         response.close();
     }
 }

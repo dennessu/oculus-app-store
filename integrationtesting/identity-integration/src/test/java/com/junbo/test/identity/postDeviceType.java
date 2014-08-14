@@ -35,7 +35,7 @@ public class postDeviceType {
     }
 
     @Test(groups = "bvt")
-    public void postCurrency() throws Exception {
+    public void postDeviceType() throws Exception {
         DeviceType deviceType = IdentityModel.DefaultDeviceType(null);
 
         DeviceType postedDeviceType = Identity.DeviceTypeDefault(deviceType);
