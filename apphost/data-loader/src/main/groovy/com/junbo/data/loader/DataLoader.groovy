@@ -4,7 +4,6 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 package com.junbo.data.loader
-
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.util.ContextInitializer
 import com.junbo.apphost.core.JunboApplication
@@ -31,8 +30,6 @@ import uk.org.lidalia.sysoutslf4j.context.SysOutOverSLF4J
 
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ExecutorService
-import java.util.concurrent.TimeUnit
-
 /**
  * DataLoader.
  */
@@ -190,7 +187,7 @@ class DataLoader {
             }
 
             if (!isSerial) {
-                latch.await(3, TimeUnit.SECONDS)
+                latch.await()
             }
         }
     }
