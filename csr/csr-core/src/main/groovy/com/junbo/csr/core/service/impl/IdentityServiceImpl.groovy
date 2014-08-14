@@ -147,19 +147,18 @@ class IdentityServiceImpl implements IdentityService {
     }
 
     @Override
-    Promise<Organization> getOrganizationByOwerIdAndOrgName(UserId organizationOwner, String organizationName) {
-        return organizationResource.list(new OrganizationListOptions(ownerId: organizationOwner)).then { Results<Organization> organizationResults ->
+    Promise<Organization> getOrganizationByOrgName(String organizationName) {
+        return organizationResource.list(new OrganizationListOptions(name: organizationName)).then { Results<Organization> organizationResults ->
             if (organizationResults == null || organizationResults.items == null) {
-                throw AppErrors.INSTANCE.organizationNotFound(organizationOwner, organizationName).exception()
+                throw AppErrors.INSTANCE.organizationNotFound(organizationName).exception()
             }
             organizationResults.items.retainAll { Organization org ->
-                org.name == organizationName && org.isValidated
+                org.isValidated
             }
 
             if (organizationResults.items.isEmpty()) {
-                throw AppErrors.INSTANCE.organizationNotFound(organizationOwner, organizationName).exception()
+                throw AppErrors.INSTANCE.organizationNotFound(organizationName).exception()
             }
-
             Organization organization = organizationResults.items.get(0)
 
             return Promise.pure(organization)

@@ -73,8 +73,8 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 412, code = "124", message = "User Not Found By Username", reason = "User not found with username {0}")
     AppError userNotFoundByUsername(String username);
 
-    @ErrorDef(httpStatusCode = 412, code = "125", message = "Organization Not Found", reason = "Organization not found with ownerId {0} orgName {1}")
-    AppError organizationNotFound(UserId userId, String organizationName);
+    @ErrorDef(httpStatusCode = 412, code = "125", message = "Organization Not Found", reason = "Validate organization not found with orgName {0}")
+    AppError organizationNotFound(String organizationName);
 
     @ErrorDef(httpStatusCode = 412, code = "126", message = "Invalid Email")
     AppError invalidEmail();

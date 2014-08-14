@@ -2,5 +2,5 @@
     "name": "csr",
     "description": "Scope for CSR operations.",
     "tfaRequired": false,
-    "validationCondition": "hasGroups(\"SilkCloud.CSR_T3\", \"SilkCloud.CSR_T2\", \"SilkCloud.CSR_T1\")"
+    "validationCondition": "hasGroups(\"Oculus.CSR_T3\", \"Oculus.CSR_T2\", \"Oculus.CSR_T1\")"
 }

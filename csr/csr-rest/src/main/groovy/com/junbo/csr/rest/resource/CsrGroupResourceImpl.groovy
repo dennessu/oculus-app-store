@@ -22,18 +22,12 @@ import org.springframework.beans.factory.annotation.Required
 class CsrGroupResourceImpl implements CsrGroupResource {
 
     private IdentityService identityService
-    private String organizationOwner
     private String organizationName
     private List<String> groupNameList
 
     @Required
     void setIdentityService(IdentityService identityService) {
         this.identityService = identityService
-    }
-
-    @Required
-    void setOrganizationOwner(String organizationOwner) {
-        this.organizationOwner = organizationOwner
     }
 
     @Required
@@ -53,43 +47,41 @@ class CsrGroupResourceImpl implements CsrGroupResource {
             identityService.getUserById(listOptions.userId).get()
         }
 
-        return identityService.getUserByUsername(organizationOwner).then { User organizationOwner ->
-            return identityService.getOrganizationByOwerIdAndOrgName(organizationOwner.id as UserId, organizationName).then { Organization organization ->
-                return identityService.getGroupByOrganization(organization.id as OrganizationId).then { Results<Group> groupResults ->
-                    // filter with csr group name list
-                    groupResults.items.retainAll{ Group group ->
-                        groupNameList.contains(group.name)
-                    }
-
-                    def resultList = new Results<CsrGroup>(items: [])
-
-                    // filter with groupName parameter
-                    if (listOptions.groupName != null) {
-                        groupResults.items.removeAll { Group group ->
-                            group.name != listOptions.groupName
-                        }
-                    }
-
-                    groupResults.items.each { Group group ->
-                        def csrGroup = new CsrGroup(groupId: group.id as GroupId, groupName: group.name)
-                        String[] splits = group.name.split('_')
-                        if (splits.size() > 1) {
-                            csrGroup.tier = splits[1]
-                        }
-                        resultList.items.add(csrGroup)
-                    }
-
-                    // filter with userId parameter
-                    if (listOptions.userId != null) {
-                        List<GroupId> groupIds = identityService.getGroupIdByUserId(listOptions.userId)
-
-                        resultList.items.retainAll { CsrGroup csrGroup ->
-                            groupIds.contains(csrGroup.groupId)
-                        }
-                    }
-
-                    return Promise.pure(resultList)
+        return identityService.getOrganizationByOrgName(organizationName).then { Organization organization ->
+            return identityService.getGroupByOrganization(organization.id as OrganizationId).then { Results<Group> groupResults ->
+                // filter with csr group name list
+                groupResults.items.retainAll{ Group group ->
+                    groupNameList.contains(group.name)
                 }
+
+                def resultList = new Results<CsrGroup>(items: [])
+
+                // filter with groupName parameter
+                if (listOptions.groupName != null) {
+                    groupResults.items.removeAll { Group group ->
+                        group.name != listOptions.groupName
+                    }
+                }
+
+                groupResults.items.each { Group group ->
+                    def csrGroup = new CsrGroup(groupId: group.id as GroupId, groupName: group.name)
+                    String[] splits = group.name.split('_')
+                    if (splits.size() > 1) {
+                        csrGroup.tier = splits[1]
+                    }
+                    resultList.items.add(csrGroup)
+                }
+
+                // filter with userId parameter
+                if (listOptions.userId != null) {
+                    List<GroupId> groupIds = identityService.getGroupIdByUserId(listOptions.userId)
+
+                    resultList.items.retainAll { CsrGroup csrGroup ->
+                        groupIds.contains(csrGroup.groupId)
+                    }
+                }
+
+                return Promise.pure(resultList)
             }
         }
     }

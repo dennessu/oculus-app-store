@@ -58,7 +58,10 @@ class UserDataHandler extends BaseDataHandler {
         }
 
         String username = userData.username
-        String password = userData.password
+        String password = UUID.randomUUID().toString()+'Ww0'
+        if (!StringUtils.isEmpty(userData.password)) {
+            password = userData.password
+        }
         String email = userData.email
         CountryId cor = userData.cor
         UserAddressData userAddressData = userData.address
@@ -178,6 +181,8 @@ class UserDataHandler extends BaseDataHandler {
                         type: 'EMAIL',
                         value: ObjectMapperProvider.instance().valueToTree(new Email(info: email))
                 )
+                // set as validated
+                emailPii.lastValidateTime = new Date()
                 UserPersonalInfo newEmailPii = userPersonalInfoResource.create(emailPii).get()
 
                 user.emails = [new UserPersonalInfoLink(
@@ -193,6 +198,8 @@ class UserDataHandler extends BaseDataHandler {
                     type: 'EMAIL',
                     value: ObjectMapperProvider.instance().valueToTree(new Email(info: email))
             )
+            // set as validated
+            emailPii.lastValidateTime = new Date()
             UserPersonalInfo newEmailPii = userPersonalInfoResource.create(emailPii).get()
 
             user.emails = [new UserPersonalInfoLink(

@@ -1,7 +1,6 @@
 {
-    "username": "csradmin",
-    "password": "Welcome123",
-    "email": "hao.min@oculusvr.com",
+    "username": "kevincrawford",
+    "email": "kevin.crawford@oculus.com",
     "cor":	{
         "id" : "US"
     },
@@ -15,7 +14,7 @@
         }
     },
     "name": {
-        "givenName": "Hao",
-        "familyName": "Min"
+        "givenName": "Kevin",
+        "familyName": "Crawford"
     }
 }

@@ -1,7 +1,6 @@
 {
-    "username": "silkcloud",
-    "password": "Welcome123",
-    "email": "haomin@wan-san.com",
+    "username": "philgreenspan",
+    "email": "phil.greenspan@oculus.com",
     "cor":	{
         "id" : "US"
     },
@@ -15,7 +14,7 @@
         }
     },
     "name": {
-        "givenName": "silkcloud",
-        "familyName": "admin"
+        "givenName": "Phil",
+        "familyName": "Greenspan"
     }
 }

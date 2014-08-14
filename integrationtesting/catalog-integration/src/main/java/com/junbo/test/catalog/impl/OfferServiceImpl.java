@@ -75,8 +75,6 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
     private final Integer defaultPagingSize = 10000;
     private final Integer start = 0;
-    private Boolean offerLoaded = false;
-    private String catalogDB;
 
     public static synchronized OfferService instance() {
         if (instance == null) {
@@ -176,50 +174,31 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     }
 
     public String getOfferIdByName(String offerName) throws Exception {
-        catalogDB = ConfigHelper.getSetting("catalogDB");
 
-        if (catalogDB != null && catalogDB.equalsIgnoreCase("cloudant")) {
-            Results<Offer> offerRtn = this.searchOfferByName(offerName);
+        Results<Offer> offerRtn = this.searchOfferByName(offerName);
 
-            if (offerRtn.getItems().size() <= 0) {
-                this.postPredefinedOffer();
-                offerRtn = this.searchOfferByName(offerName);
-            }
-            if (offerRtn.getItems().size() <= 0) {
-                return "No such predefined offer";
-            }
-            else {
-                OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
-                ItemService itemService = ItemServiceImpl.instance();
-                ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
-
-                OfferRevision offerRevision;
-                Item item;
-
-                offerRevision = offerRevisionService.getOfferRevision(offerRtn.getItems().get(0).getCurrentRevisionId());
-                if (offerRevision != null) {
-                    item = itemService.getItem(offerRevision.getItems().get(0).getItemId());
-                    itemRevisionService.getItemRevision(item.getCurrentRevisionId());
-                }
-
-                return offerRtn.getItems().get(0).getOfferId();
-            }
+        if (offerRtn.getItems().size() <= 0) {
+            return "No such predefined offer";
         }
         else {
-            if (!offerLoaded){
-                this.loadAllOffers();
-                this.loadAllOfferRevisions();
-                this.loadAllItems();
-                this.loadAllItemRevisions();
-                this.postPredefinedOffer();
-                offerLoaded = true;
+            OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
+            ItemService itemService = ItemServiceImpl.instance();
+            ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
+
+            OfferRevision offerRevision;
+            Item item;
+
+            offerRevision = offerRevisionService.getOfferRevision(offerRtn.getItems().get(0).getCurrentRevisionId());
+            if (offerRevision != null) {
+                item = itemService.getItem(offerRevision.getItems().get(0).getItemId());
+                itemRevisionService.getItemRevision(item.getCurrentRevisionId());
             }
 
-            return Master.getInstance().getOfferIdByName(offerName);
+            return offerRtn.getItems().get(0).getOfferId();
         }
     }
 
-    private void loadAllOffers() throws Exception {
+    /*private void loadAllOffers() throws Exception {
         HashMap<String, List<String>> paraMap = new HashMap<>();
         List<String> listStart = new ArrayList<>();
         listStart.add(start.toString());
@@ -275,7 +254,7 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
 
         ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
         itemRevisionService.getItemRevisions(paraMap);
-    }
+    }*/
 
     private Results<Offer> searchOfferByName(String offerName) throws Exception {
         HashMap<String, List<String>> paraMap = new HashMap<>();
@@ -308,17 +287,12 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
             while ((sCurrentLine = br.readLine()) != null) {
                 logger.logInfo(sCurrentLine);
                 String[] strLine = sCurrentLine.split(",");
-                if (catalogDB != null && catalogDB.equalsIgnoreCase("cloudant")) {
-                    offerRtn = this.searchOfferByName(strLine[0]);
-                    if (offerRtn.getItems().size() <= 0) {
-                        preparePredefinedOffer(strLine[0], strLine[1], strLine[2], strLine[3]);
-                    }
+
+                offerRtn = this.searchOfferByName(strLine[0]);
+                if (offerRtn.getItems().size() <= 0) {
+                    preparePredefinedOffer(strLine[0], strLine[1], strLine[2], strLine[3]);
                 }
-                else {
-                    if (Master.getInstance().getOfferIdByName(strLine[0]) == null) {
-                        preparePredefinedOffer(strLine[0], strLine[1], strLine[2], strLine[3]);
-                    }
-                }
+
             }
         } catch (IOException e) {
             throw e;
@@ -347,23 +321,13 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
         OrganizationId organizationId = getOrganizationId(userId);
 
         Item item;
-        if (catalogDB != null && catalogDB.equalsIgnoreCase("cloudant")) {
-            Results<Item> itemRtn = this.searchItemByName(itemName);
-            if (itemRtn.getItems().size() <= 0) {
-                item = prepareItem(organizationId, itemName, offerType);
-            }
-            else {
-                item = itemRtn.getItems().get(0);
-            }
+
+        Results<Item> itemRtn = this.searchItemByName(itemName);
+        if (itemRtn.getItems().size() <= 0) {
+            item = prepareItem(organizationId, itemName, offerType);
         }
         else {
-            String itemId = Master.getInstance().getItemIdByName(itemName);
-            if (itemId == null) {
-                item = prepareItem(organizationId, itemName, offerType);
-            }
-            else {
-                item = Master.getInstance().getItem(itemId);
-            }
+            item = itemRtn.getItems().get(0);
         }
 
         //Post offer

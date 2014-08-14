@@ -2,5 +2,5 @@
     "name": "scope.manage",
     "description": "Scope to manage the scope information.",
     "tfaRequired": false,
-    "validationCondition": "hasGroups(\"OculusVR.IdentityAdmin\")"
+    "validationCondition": "hasGroups(\"Oculus.IdentityAdmin\")"
 }

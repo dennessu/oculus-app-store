@@ -31,7 +31,6 @@
             </list>
         </property>
         <property name="organizationName" value="${csr.organization.name}"/>
-        <property name="organizationOwner" value="${csr.organization.owner}"/>
     </bean>
 
     <bean id="defaultCsrUserResource" class="com.junbo.csr.rest.resource.CsrUserResourceImpl">

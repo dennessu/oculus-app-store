@@ -2,5 +2,5 @@
     "name": "email.admin",
     "description": "Scope to manage the email system",
     "tfaRequired": false,
-    "validationCondition": "hasGroups(\"OculusVR.EmailAdmin\")"
+    "validationCondition": "hasGroups(\"Oculus.EmailAdmin\")"
 }

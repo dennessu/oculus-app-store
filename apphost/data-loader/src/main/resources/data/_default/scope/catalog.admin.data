@@ -2,5 +2,5 @@
     "name": "catalog.admin",
     "description": "Scope to manage the catalog system",
     "tfaRequired": false,
-    "validationCondition": "hasGroups(\"OculusVR.CatalogAdmin\")"
+    "validationCondition": "hasGroups(\"Oculus.CatalogAdmin\")"
 }

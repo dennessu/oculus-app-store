@@ -1,7 +1,6 @@
 {
-    "username": "oculusvr",
-    "password": "Welcome123",
-    "email": "dummy.admin@oculusvr.com",
+    "username": "carloschen",
+    "email": "carlos.chen@oculus.com",
     "cor":	{
         "id" : "US"
     },
@@ -15,7 +14,7 @@
         }
     },
     "name": {
-        "givenName": "admin",
-        "familyName": "oculus"
+        "givenName": "Carlos",
+        "familyName": "Chen"
     }
 }

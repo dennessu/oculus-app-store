@@ -4,6 +4,18 @@ source "$(git rev-parse --show-toplevel)/scripts/common.sh"; # this comment is n
 t0=`date +%s`
 cipherKey=D58BA755FF96B35A6DABA7298F7A8CE2
 
+dbPrefixFile=common/configuration-data/src/main/resources/junbo/conf/onebox/common/personal.properties
+dbPrefix=`cat $dbPrefixFile | grep '^common.cloudant.dbNamePrefix=' | awk -F= '{gsub(/^[ \t]+/, "", $2); print $2}'`
+if [[ -z "$dbPrefix" ]]; then
+    echo common.cloudant.dbNamePrefix=`./scripts/AESCipher.py genkey | cut -c1-7 | tr '[:upper:]' '[:lower:]'`_ >> $dbPrefixFile
+    dbPrefix=`cat $dbPrefixFile | grep '^common.cloudant.dbNamePrefix=' | awk -F= '{gsub(/^[ \t]+/, "", $2); print $2}'`
+    if [[ -z "$dbPrefix" ]]; then
+        echo Error generating dbPrefix
+        exit 1
+    fi
+fi
+echo "dbPrefix is $dbPrefix"
+
 if [[ "$1" == "" || "$1" == "memcache" ]]; then
     # setup cloudant db
     pushd memcache
@@ -14,9 +26,6 @@ fi
 
 if [[ "$1" == "" || "$1" == "couch" ]]; then
     # setup cloudant db
-    dbPrefixFile=common/configuration-data/src/main/resources/junbo/conf/onebox/common/personal.properties
-    dbPrefix=`cat $dbPrefixFile | grep '^common.cloudant.dbNamePrefix=' | awk -F= '{gsub(/^[ \t]+/, "", $2); print $2}'`
-    echo "dbPrefix is $dbPrefix"
     pushd couchdb
     python ./couchdbcmd.py dropdbs --prefix=$dbPrefix --key=$cipherKey --yes
     python ./couchdbcmd.py createdbs --prefix=$dbPrefix --key=$cipherKey --yes
