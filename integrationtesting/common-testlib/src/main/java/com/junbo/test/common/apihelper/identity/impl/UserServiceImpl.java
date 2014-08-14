@@ -269,7 +269,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     private UserPersonalInfo postUserPersonalInfo(UserPersonalInfo userPersonalInfo,
                                                   int expectedResponseCode) throws Exception {
         String serverURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/personal-info";
-        String responseBody = restApiCall(HTTPMethod.POST, serverURL, userPersonalInfo, expectedResponseCode, false);
+        String responseBody = restApiCall(HTTPMethod.POST, serverURL, userPersonalInfo, expectedResponseCode, true);
         return new JsonMessageTranscoder().decode(new TypeReference<UserPersonalInfo>() {
         }, responseBody);
     }
@@ -435,7 +435,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     public String PutUser(String userId, User user, int expectedResponseCode) throws Exception {
 
         String putUrl = identityServerURL + "/" + userId;
-        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, user, expectedResponseCode, false);
+        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, user, expectedResponseCode, true);
         User userPut = new JsonMessageTranscoder().decode(new TypeReference<User>() {
         },
                 responseBody);

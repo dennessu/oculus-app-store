@@ -30,10 +30,9 @@ public final class ConfigHelper {
 
             if (getSetting("testClientEncrypted") != null &&
                     getSetting("testClientEncrypted").equalsIgnoreCase("true")) {
-                if (getSetting("client_id") != null && getSetting("client_id").length() > 0 ) {
+                if (getSetting("client_id") != null && getSetting("client_id").length() > 0) {
                     ReadTestClientNameFromFile(getSetting("client_id"));
-                }
-                else {
+                } else {
                     Assert.fail("no client_id property defined or null value for it in PPE/PRDO environment");
                 }
             }

@@ -108,7 +108,7 @@ public class OauthServiceImpl extends HttpClientBase implements OauthService {
         needHeader = true;
         Map<String, String> formParams = new HashMap<>();
         formParams.put("client_id", "client");
-        formParams.put("client_secret", ConfigHelper.getSetting("TestClient"));
+        formParams.put("client_secret", ConfigHelper.getSetting("client_id"));
         formParams.put("grant_type", GrantType.PASSWORD.toString());
         formParams.put("scope", "identity commerce catalog identity.pii catalog.developer");
         formParams.put("password", pwd);
