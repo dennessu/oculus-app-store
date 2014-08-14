@@ -6,9 +6,12 @@
 package com.junbo.test.oauth;
 
 import com.junbo.identity.spec.v1.model.User;
+import com.junbo.identity.spec.v1.model.UserLoginName;
+import com.junbo.identity.spec.v1.model.UserName;
 import com.junbo.identity.spec.v1.model.UserPersonalInfo;
 import com.junbo.oauth.spec.model.TokenInfo;
 import com.junbo.test.common.HttpclientHelper;
+import com.junbo.test.common.JsonHelper;
 import com.junbo.test.common.RandomHelper;
 import com.junbo.test.identity.Identity;
 import org.testng.annotations.AfterMethod;
@@ -73,7 +76,9 @@ public class authorizeUser {
         assertEquals("validate token->client is correct", Oauth.DefaultClientId, tokenInfo.getClientId());
         assertEquals("validate token->scopes is correct", Oauth.DefaultClientScopes, tokenInfo.getScopes());
         User storedUser = Identity.UserGetByUserId(tokenInfo.getSub());
-        assertEquals("validate token->binded user is correct", userName, storedUser.getUsername());
+        UserPersonalInfo storedUPI = Identity.UserPersonalInfoGetByUserPersonalInfoId(storedUser.getUsername());
+        assertEquals("validate token->binded user is correct", userName,
+                ((UserLoginName) JsonHelper.JsonNodeToObject(storedUPI.getValue(), UserLoginName.class)).getUserName());
     }
 
     @Test(groups = "bvt")
@@ -105,7 +110,9 @@ public class authorizeUser {
         assertEquals("validate token->client is correct", Oauth.DefaultClientId, tokenInfo.getClientId());
         assertEquals("validate token->scopes is correct", Oauth.DefaultClientScopes, tokenInfo.getScopes());
         User storedUser = Identity.UserGetByUserId(tokenInfo.getSub());
-        assertEquals("validate token->binded user is correct", userName, storedUser.getUsername());
+        UserPersonalInfo storedUPI = Identity.UserPersonalInfoGetByUserPersonalInfoId(storedUser.getUsername());
+        assertEquals("validate token->binded user is correct", userName,
+                ((UserLoginName) JsonHelper.JsonNodeToObject(storedUPI.getValue(), UserLoginName.class)).getUserName());
     }
 
     @Test(groups = "bvt")
