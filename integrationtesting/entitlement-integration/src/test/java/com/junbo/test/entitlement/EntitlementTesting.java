@@ -8,9 +8,12 @@ package com.junbo.test.entitlement;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
 import com.junbo.common.id.EntitlementId;
+import com.junbo.common.id.ItemId;
 import com.junbo.common.id.OfferRevisionId;
+import com.junbo.common.id.UserId;
 import com.junbo.common.model.Results;
 import com.junbo.entitlement.spec.model.Entitlement;
+import com.junbo.entitlement.spec.model.EntitlementSearchParam;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.test.catalog.ItemRevisionService;
 import com.junbo.test.catalog.ItemService;
@@ -38,12 +41,16 @@ import com.junbo.test.entitlement.impl.EntitlementServiceImpl;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static org.testng.AssertJUnit.*;
 
 /**
  * @author jifeng
- * Time: 4/1/2014
- * For testing entitlement API
+ *         Time: 4/1/2014
+ *         For testing entitlement API
  */
 public class EntitlementTesting extends TestClass {
 
@@ -217,9 +224,117 @@ public class EntitlementTesting extends TestClass {
 
     @Property(
             priority = Priority.Dailies,
+            features = "GET entitlements?userId={userId}...",
+            component = Component.Entitlement,
+            owner = "NanXin",
+            status = Status.Enable,
+            description = "get entitlement by userId and other params",
+            steps = {
+                    "1. post 4 entitlements to one user with different params" +
+                            "/n 2. get entitlement by userId and other params" +
+                            "/n 3. verification"
+            }
+    )
+    @Test
+    public void testSearchEntitlement() throws Exception {
+        this.prepareTestData();
+
+        UserService userService = UserServiceImpl.instance();
+        User user = Master.getInstance().getUser(userService.PostUser());
+
+        ItemId itemId = new ItemId(this.CreateEntitlement(user, EntitlementType.DOWNLOAD.getType()).getItemId());
+        this.CreateEntitlement(user, EntitlementType.DOWNLOAD.getType());
+        this.CreateEntitlement(user, EntitlementType.RUN.getType());
+        this.CreateEntitlement(user, EntitlementType.RUN.getType());
+        this.CreateEntitlement(user, EntitlementType.RUN.getType());
+        UserId userId = user.getId();
+
+        EntitlementSearchParam param = new EntitlementSearchParam();
+        EntitlementService entitlementService = EntitlementServiceImpl.instance();
+
+        logger.LogSample("Get entitlement by userId");
+        param.setUserId(userId);
+        Results<Entitlement> etGets = entitlementService.searchEntitlements(param, null, null);
+        assertEquals("5 entitlement should be returned", 5, etGets.getItems().size());
+
+        logger.LogSample("Get entitlement by userId and isActive");
+        param.setIsActive(Boolean.TRUE);
+        etGets = entitlementService.searchEntitlements(param, null, null);
+        assertEquals("5 entitlement should be returned", 5, etGets.getItems().size());
+
+        logger.LogSample("Get entitlement by userId and isSuspended");
+        param.setIsBanned(Boolean.TRUE);
+        etGets = entitlementService.searchEntitlements(param, null, null, 400);
+        param.setIsActive(null);
+        etGets = entitlementService.searchEntitlements(param, null, null);
+        assertEquals("no entitlement should be returned", 0, etGets.getItems().size());
+
+        logger.LogSample("Get entitlement by userId and type");
+        param.setIsBanned(null);
+        param.setType(EntitlementType.DOWNLOAD.toString());
+        etGets = entitlementService.searchEntitlements(param, null, null);
+        assertEquals("2 entitlement should be returned", 2, etGets.getItems().size());
+
+        logger.LogSample("Get entitlement by userId and itemId");
+        param.setType(null);
+        param.setItemIds(Collections.singleton(itemId));
+        etGets = entitlementService.searchEntitlements(param, null, null);
+        assertEquals("5 entitlement should be returned", 5, etGets.getItems().size());
+
+        logger.LogSample("Get entitlement by userId, startGrantTime and endGrantTime");
+        param.setType(null);
+        param.setStartGrantTime("2013-07-07T23:24:21Z");
+        param.setEndGrantTime("2100-07-07T23:24:21Z");
+        etGets = entitlementService.searchEntitlements(param, null, null);
+        assertEquals("5 entitlement should be returned", 5, etGets.getItems().size());
+        param.setEndGrantTime("2013-08-07T23:24:21Z");
+        etGets = entitlementService.searchEntitlements(param, null, null);
+        assertEquals("no entitlement should be returned", 0, etGets.getItems().size());
+
+        logger.LogSample("Get entitlement by userId, startExpirationTime and endExpirationTime");
+        param.setEndGrantTime("2100-07-07T23:24:21Z");
+        param.setStartExpirationTime("2100-07-07T23:24:21Z");
+        etGets = entitlementService.searchEntitlements(param, null, null);
+        assertEquals("5 entitlement should be returned", 5, etGets.getItems().size());
+        param.setEndExpirationTime("2102-07-07T23:24:21Z");
+        etGets = entitlementService.searchEntitlements(param, null, null);
+        assertEquals("no entitlement should be returned", 0, etGets.getItems().size());
+
+        logger.LogSample("Get entitlement by userId and lastModifiedTime");
+        param.setEndExpirationTime(null);
+        param.setLastModifiedTime("2013-07-07T23:24:21Z");
+        etGets = entitlementService.searchEntitlements(param, null, null);
+        assertEquals("5 entitlement should be returned", 5, etGets.getItems().size());
+        param.setLastModifiedTime("2100-07-07T23:24:21Z");
+        etGets = entitlementService.searchEntitlements(param, null, null);
+        assertEquals("no entitlement should be returned", 0, etGets.getItems().size());
+
+        logger.LogSample("Get entitlement by userId with page params");
+        param = new EntitlementSearchParam();
+        param.setUserId(userId);
+        etGets = entitlementService.searchEntitlements(param, null, 2);
+        assertEquals("2 entitlement should be returned", 2, etGets.getItems().size());
+        String bookmark = parseBookmark(etGets.getNext().getHref());
+        etGets = entitlementService.searchEntitlements(param, bookmark, 2);
+        assertEquals("2 entitlement should be returned", 2, etGets.getItems().size());
+        bookmark = parseBookmark(etGets.getNext().getHref());
+        etGets = entitlementService.searchEntitlements(param, bookmark, 2);
+        assertEquals("1 entitlement should be returned", 1, etGets.getItems().size());
+    }
+
+    private String parseBookmark(String href) {
+        Matcher matcher = Pattern.compile(".*bookmark=(.*)&.*").matcher(href);
+        if(matcher.matches()){
+            return matcher.group(1);
+        }
+        return null;
+    }
+
+    @Property(
+            priority = Priority.Dailies,
             features = "GET item-binary/{itemId}?entitlementId={entitlementId}&itemRevisionId={itemRevisionId}&platform={platform}",
             component = Component.Entitlement,
-            owner = "JieFeng",
+            owner = "NanXin",
             status = Status.Enable,
             description = "get downloadUrl",
             steps = {
@@ -248,7 +363,7 @@ public class EntitlementTesting extends TestClass {
         assertTrue("return downloadUrl should not contain the signature part", downloadUrl.indexOf("Signature=") == -1);
 
         logger.LogSample("get downloadUrl for non-existing platform");
-        entitlementService.getDownloadUrl(etCreated.getId(), etCreated.getItemId(), "LINUX",  400);
+        entitlementService.getDownloadUrl(etCreated.getId(), etCreated.getItemId(), "LINUX", 400);
 
         ItemService itemClient = ItemServiceImpl.instance();
         String itemRevisionId = itemClient.getItem(etCreated.getItemId()).getCurrentRevisionId();
@@ -275,15 +390,12 @@ public class EntitlementTesting extends TestClass {
         Entitlement entitlement = new Entitlement();
         entitlement.setUserId(user.getId().getValue());
         entitlement.setType(entitlementType);
-        if (entitlementType.equalsIgnoreCase(EntitlementType.DOWNLOAD.getType()))
-        {
-            OfferService offerClient = OfferServiceImpl.instance();
-            String offerId = offerClient.getOfferIdByName("testOffer_CartCheckout_digital1");
-            String orId = IdConverter.idToUrlString(
-                    OfferRevisionId.class, Master.getInstance().getOffer(offerId).getCurrentRevisionId());
-            String itemId = Master.getInstance().getOfferRevision(orId).getItems().get(0).getItemId();
-            entitlement.setItemId(itemId);
-        }
+        OfferService offerClient = OfferServiceImpl.instance();
+        String offerId = offerClient.getOfferIdByName("testOffer_CartCheckout_digital1");
+        String orId = IdConverter.idToUrlString(
+                OfferRevisionId.class, Master.getInstance().getOffer(offerId).getCurrentRevisionId());
+        String itemId = Master.getInstance().getOfferRevision(orId).getItems().get(0).getItemId();
+        entitlement.setItemId(itemId);
         EntitlementService entitlementService = EntitlementServiceImpl.instance();
         return entitlementService.grantEntitlement(entitlement);
     }
@@ -301,7 +413,8 @@ public class EntitlementTesting extends TestClass {
 
         //Approve the item revision
         itemRevisionPosted.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
-        ItemRevision itemRevisionPut = itemRevisionService.updateItemRevision(itemRevisionPosted.getRevisionId(),itemRevisionPosted);
+        OAuthServiceImpl.getInstance().postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.CATALOGADMIN);
+        ItemRevision itemRevisionPut = itemRevisionService.updateItemRevision(itemRevisionPosted.getRevisionId(), itemRevisionPosted);
         this.developerItemId = itemRevisionPut.getItemId();
     }
 
