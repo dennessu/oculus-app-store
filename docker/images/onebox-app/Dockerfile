@@ -1,5 +1,19 @@
 FROM silkcloud/jdk7base:latest
 
+# include memcached, since we don't really care persistence of cache
+RUN apt-get update &&\
+    DEBIAN_FRONTEND=noninteractive apt-get install -y memcached &&\
+    apt-get clean &&\
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# memcached public variable
+ENV MAX_MEM 64
+ENV MAX_CONN 1024
+
+RUN mkdir /etc/service/memcached
+ADD runmemcached.sh /etc/service/memcached/run
+RUN chmod +x /etc/service/memcached/run
+
 # use rinetd to setup port forwarding
 ADD rinetd.conf /etc/service/rinetd/rinetd.conf
 ADD rinetd.sh /etc/service/rinetd/run
@@ -30,20 +44,6 @@ EXPOSE 8080 8081
 
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
-
-# include memcached, since we don't really care persistence of cache
-RUN apt-get update &&\
-    DEBIAN_FRONTEND=noninteractive apt-get install -y memcached &&\
-    apt-get clean &&\
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-# memcached public variable
-ENV MAX_MEM 64
-ENV MAX_CONN 1024
-
-RUN mkdir /etc/service/memcached
-ADD runmemcached.sh /etc/service/memcached/run
-RUN chmod +x /etc/service/memcached/run
 
 # apphost service
 ADD runapphost.sh /etc/service/apphost/run
