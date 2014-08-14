@@ -1,0 +1,21 @@
+{
+    "username": "haomin",
+    "password": "Welcome123",
+    "email": "haomin@silkcloud.com",
+    "cor":	{
+        "id" : "US"
+    },
+    "address": {
+        "street1": "19800 MacArthur Blvd Suite",
+        "city": "Irvine",
+        "subCountry": "CA",
+        "postalCode": "92612",
+        "countryId": {
+            "id" : "US"
+        }
+    },
+    "name": {
+        "givenName": "Hao",
+        "familyName": "Min"
+    }
+}
