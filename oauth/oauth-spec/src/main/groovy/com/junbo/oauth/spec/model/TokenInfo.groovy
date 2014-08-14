@@ -5,6 +5,7 @@
  */
 package com.junbo.oauth.spec.model
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.junbo.common.id.UserId
 import groovy.transform.CompileStatic
@@ -13,6 +14,7 @@ import groovy.transform.CompileStatic
  * Javadoc.
  */
 @CompileStatic
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 class TokenInfo {
     UserId sub
 
@@ -26,4 +28,7 @@ class TokenInfo {
 
     @JsonProperty('ip_address')
     String ipAddress
+
+    @JsonProperty('debug_enabled')
+    Boolean debugEnabled
 }

@@ -66,6 +66,9 @@ class Client extends ResourceMeta<String> {
     @JsonProperty('need_consent')
     Boolean needConsent
 
+    @JsonProperty('debug_enabled')
+    Boolean debugEnabled = false
+
     @JsonProperty('ip_whitelist')
     Set<String> ipWhitelist
 

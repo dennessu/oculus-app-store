@@ -52,7 +52,7 @@ def setUpModule():
         test_sleep = opts.sleep
     else:
         test_uri = 'http://localhost:8080/'
-        test_client_id = 'client'
+        test_client_id = 'smoketest'
         test_client_secret = 'secret'
         test_service_client_id = 'service'
         test_service_client_secret = 'secret'
@@ -76,7 +76,7 @@ def silkcloud_utmain(suite = None):
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-uri", nargs = '?', help = "The URI to the silkcloud service.", default = 'http://localhost:8080/')
-    parser.add_argument("-client", nargs = '?', help = "The client ID used in test cases.", default = 'client')
+    parser.add_argument("-client", nargs = '?', help = "The client ID used in test cases.", default = 'smoketest')
     parser.add_argument("-secret", nargs = '?', help = "The client secret used in the test cases.", default = 'secret')
     parser.add_argument("-sclient", nargs = '?', help = "The service client ID used in test cases.", default = 'service')
     parser.add_argument("-ssecret", nargs = '?', help = "The service client secret used in the test cases.", default = 'secret')
@@ -113,6 +113,8 @@ def curlFormRaw(method, baseUrl, url = None, query= None, headers = None, data =
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
         }
+    elif not headers.has_key('Content-Type'):
+        headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
 
     body = urlencode(data)
     return curl(method, baseUrl, url, query, headers, body, raiseOnError)

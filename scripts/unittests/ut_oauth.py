@@ -243,7 +243,9 @@ class OAuthTests(ut.TestBase):
 
     def testResetPassword(self):
         user = self.testRegisterImplicitFlow()
-        resetUrl = curlFormRaw('POST', ut.test_uri, '/v1/oauth2/reset-password', data = {
+        resetUrl = curlFormRaw('POST', ut.test_uri, '/v1/oauth2/reset-password', headers = {
+            'Authorization': 'Bearer ' + user.access_token
+        }, data = {
             'username': user.username,
             'locale': 'en_US'
         })
