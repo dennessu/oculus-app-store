@@ -42,6 +42,7 @@ public class CloudantSniffer {
     };
 
     private static final String CLOUDANT_LASTSEQ_KEY = "last_seq";
+    private static final String DEFAULT_PREFIX = "";
 
     private List<CloudantUri> cloudantInstances;
 
@@ -63,9 +64,8 @@ public class CloudantSniffer {
         List<String> databases = parse(response, List.class);
 
         String prefix = ConfigServiceManager.instance().getConfigValue(CLOUDANT_PREFIX_KEY);
-
-        if (prefix == null || prefix.trim().isEmpty()) {
-            //TODO
+        if (prefix == null) {
+            prefix = DEFAULT_PREFIX;
         }
 
         List<String> filtered = new ArrayList<>();
@@ -91,7 +91,7 @@ public class CloudantSniffer {
         }
 
         Object lastSeqObj = result.get(CLOUDANT_LASTSEQ_KEY);
-        return (lastSeqObj instanceof String) ? lastSeqObj.toString() : String.valueOf(lastSeqObj);
+        return lastSeqObj == null ? null : lastSeqObj.toString();
     }
 
     public List<CloudantUri> getCloudantInstances() {
