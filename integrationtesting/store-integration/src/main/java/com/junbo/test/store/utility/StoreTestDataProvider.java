@@ -27,7 +27,7 @@ import com.junbo.store.spec.model.purchase.*;
 import com.junbo.test.catalog.OfferService;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.test.common.Entities.enums.Country;
-import com.junbo.test.common.Entities.enums.Currency;
+//import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
 import com.junbo.test.common.blueprint.Master;
