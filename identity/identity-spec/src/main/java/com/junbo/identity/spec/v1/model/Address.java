@@ -42,7 +42,7 @@ public class Address{
     private CountryId countryId;
 
     @XSSFreeString
-    @ApiModelProperty(position = 7, required = false, value = "[Nullable] The address's postal/zip code, or null.")
+    @ApiModelProperty(position = 7, required = true, value = "The address's postal/zip code.")
     private String postalCode;
 
     public String getStreet1() {

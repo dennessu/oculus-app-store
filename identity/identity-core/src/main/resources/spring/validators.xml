@@ -167,6 +167,9 @@
     </bean>
 
     <bean id="addressValidator" class="com.junbo.identity.core.service.validator.impl.AddressValidatorImpl">
+        <property name="countryRepository" ref="countryRepository" />
+        <property name="addressValidatorResource" ref="" />
+        <property name="externalValidatorEnabled" value="${identity.conf.externalAddressValidator}" />
     </bean>
 
     <bean id="birthdayValidator" class="com.junbo.identity.core.service.validator.impl.BirthdayValidatorImpl">

@@ -17,4 +17,5 @@ dependencies {
 
     compile junboProject(':billing-core')
     compile junboProject(':billing-spec')
+    compile junboProject(':identity-spec')
 }

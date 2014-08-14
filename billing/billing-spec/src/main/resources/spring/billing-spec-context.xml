@@ -12,4 +12,10 @@
           parent="baseClientProxy" abstract="true">
         <property name="target" value="${clientproxy.billing.url}"/>
     </bean>
+
+    <bean id="addressValidatorResourceClientProxy" class="com.junbo.billing.spec.resource.proxy.AddressValidatorResourceClientProxy"
+          parent="baseClientProxy" abstract="true">
+        <property name="target" value="${clientproxy.billing.url}"/>
+    </bean>
+
 </beans>

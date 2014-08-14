@@ -6,8 +6,22 @@
 
 package com.junbo.billing.rest.resource;
 
+import com.junbo.billing.core.service.TaxService;
+import com.junbo.billing.spec.resource.AddressValidatorResource;
+import com.junbo.identity.spec.v1.model.Address;
+import com.junbo.langur.core.promise.Promise;
+import org.springframework.beans.factory.annotation.Autowired;
+
 /**
  * Created by xmchen on 14-8-14.
  */
-public class AddressValidatorResourceImpl {
+public class AddressValidatorResourceImpl implements AddressValidatorResource {
+
+    @Autowired
+    private TaxService taxService;
+
+    @Override
+    public Promise<Address> validateAddress(Address address) {
+        return taxService.validateAddress(address);
+    }
 }
