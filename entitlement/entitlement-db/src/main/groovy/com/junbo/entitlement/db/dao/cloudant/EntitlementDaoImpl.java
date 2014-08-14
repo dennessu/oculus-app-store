@@ -84,7 +84,7 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
             sb.append(" AND type:" + entitlementSearchParam.getType().toUpperCase());
         }
 
-        Long now = EntitlementContext.current().getNow().getTime();
+        Long now = EntitlementContext.current().getNow().getTime() + 60000L;
         if (Boolean.FALSE.equals(entitlementSearchParam.getIsActive())) {
             sb.append(" AND ( grantTime:[" + now + " TO " + EntitlementConsts.MAX_DATE + "]" +
                     " OR expirationTime:[" + EntitlementConsts.MIN_DATE + " TO " + now + "]" +
