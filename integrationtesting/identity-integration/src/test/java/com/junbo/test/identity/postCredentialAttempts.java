@@ -93,7 +93,7 @@ public class postCredentialAttempts {
             CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
                     RandomHelper.randomAlphabetic(15),  IdentityModel.DefaultPassword(), ip, false);
             if (i < 100) {
-                Validator.Validate("validate response error code", 412, response.getStatusLine().getStatusCode());
+                Validator.Validate("validate response error code", 404, response.getStatusLine().getStatusCode());
             }
             response.close();
         }

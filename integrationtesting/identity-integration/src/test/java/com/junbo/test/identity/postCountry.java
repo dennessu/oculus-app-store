@@ -6,18 +6,24 @@
 package com.junbo.test.identity;
 
 import com.junbo.identity.spec.v1.model.Country;
+import com.junbo.identity.spec.v1.model.CountryLocaleKey;
+import com.junbo.identity.spec.v1.model.SubCountryLocaleKey;
+import com.junbo.identity.spec.v1.model.SubCountryLocaleKeys;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.Validator;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.message.BasicNameValuePair;
+import org.springframework.util.CollectionUtils;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author dw
@@ -81,5 +87,91 @@ public class postCountry {
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
                 url, null, HttpclientHelper.HttpRequestType.get, nvps);
         Validator.Validate("validate response error code", 404, response.getStatusLine().getStatusCode());
+    }
+
+    @Test(groups = "dailies")
+    public void getCountryByLocale() throws Exception {
+        Country country = Identity.CountryGetByCountryId("CN");
+        Validator.Validate("Validate country subCountries not empty", true, !country.getSubCountries().isEmpty());
+        Validator.Validate("Validate country locales not empty", true, !country.getLocales().isEmpty());
+        List<String> expectedLocales = new ArrayList<>();
+        List<String> unexpectedLocales = new ArrayList<>();
+        expectedLocales.add("en_US");
+        expectedLocales.add("zh_CN");
+        checkCountryLocale(country, expectedLocales, unexpectedLocales);
+
+        country = Identity.CountryGetByCountryId("CN", "en_US");
+        expectedLocales.clear();
+        unexpectedLocales.clear();
+        expectedLocales.add("en_US");
+        unexpectedLocales.add("zh_CN");
+        checkCountryLocale(country, expectedLocales, unexpectedLocales);
+        checkCountryAccuracy(country, "HIGH");
+
+        country = Identity.CountryGetByCountryId("CN", "zh_CN");
+        expectedLocales.clear();
+        unexpectedLocales.clear();
+        expectedLocales.add("zh_CN");
+        unexpectedLocales.add("en_US");
+        checkCountryLocale(country, expectedLocales, unexpectedLocales);
+        checkCountryAccuracy(country, "HIGH");
+
+        country = Identity.CountryGetByCountryId("CN", "ja_JP");
+        expectedLocales.clear();
+        unexpectedLocales.clear();
+        expectedLocales.add("ja_JP");
+        unexpectedLocales.add("en_US");
+        unexpectedLocales.add("zh_CN");
+        checkCountryLocale(country, expectedLocales, unexpectedLocales);
+        checkCountryAccuracy(country, "LOW");
+    }
+
+    private void checkCountryLocale(Country country, List<String> expectedLocales, List<String> unexpectedLocales) throws Exception {
+        Iterator<Map.Entry<String, SubCountryLocaleKeys>> iterator = country.getSubCountries().entrySet().iterator();
+
+        while (iterator.hasNext()) {
+            Map.Entry<String, SubCountryLocaleKeys> entry = iterator.next();
+            SubCountryLocaleKeys subCountryLocaleKeys = entry.getValue();
+
+            if (!CollectionUtils.isEmpty(expectedLocales)) {
+                for (String expectedLocale : expectedLocales) {
+                    SubCountryLocaleKey subCountryLocaleKey = subCountryLocaleKeys.getLocales().get(expectedLocale);
+                    Validator.Validate("Validate " + expectedLocale + " locale exists", true, subCountryLocaleKey != null);
+                }
+            }
+
+            if (!CollectionUtils.isEmpty(unexpectedLocales)) {
+                for (String unexpectedLocale : unexpectedLocales) {
+                    SubCountryLocaleKey subCountryLocaleKey = subCountryLocaleKeys.getLocales().get(unexpectedLocale);
+                    Validator.Validate("Validate " + unexpectedLocale + " locale not exists", true, subCountryLocaleKey == null);
+                }
+            }
+        }
+
+        if (!CollectionUtils.isEmpty(expectedLocales)) {
+            for (String expectedLocale : expectedLocales) {
+                CountryLocaleKey countryLocaleKey = country.getLocales().get(expectedLocale);
+                Validator.Validate("Validate " + expectedLocale + " countryLocale exists", true, countryLocaleKey != null);
+            }
+        }
+
+        if (!CollectionUtils.isEmpty(unexpectedLocales)) {
+            for (String unexpectedLocale : unexpectedLocales) {
+                CountryLocaleKey countryLocaleKey = country.getLocales().get(unexpectedLocale);
+                Validator.Validate("Validate " + unexpectedLocale + " countryLocale not exists", true, countryLocaleKey == null);
+            }
+        }
+    }
+
+    private void checkCountryAccuracy(Country country, String accuracy) throws Exception {
+        Iterator<Map.Entry<String, SubCountryLocaleKeys>> iterator = country.getSubCountries().entrySet().iterator();
+
+        while (iterator.hasNext()) {
+            Map.Entry<String, SubCountryLocaleKeys> entry = iterator.next();
+            SubCountryLocaleKeys subCountryLocaleKeys = entry.getValue();
+            Validator.Validate("Validate subCountryLocaleKeys", subCountryLocaleKeys.getLocaleAccuracy(), accuracy);
+        }
+
+        Validator.Validate("Validae localeKeys", country.getLocaleAccuracy(), accuracy);
     }
 }
