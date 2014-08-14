@@ -233,6 +233,7 @@ Note: If you don't want to change the coreutils preference, you can create anoth
 
     ```bash
     brew install couchdb
+    brew switch erlang R16B03-1
     ```
 
     Refer to the [CouchDB Installation Guide](http://docs.couchdb.org/en/latest/install/mac.html) if there is any issue installing couchdb.
