@@ -73,7 +73,9 @@ public class Oauth {
 
     public static String GetRegistrationCid() throws Exception {
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI
-                        + "?client_id=client&response_type=code&scope=identity&redirect_uri=http://localhost",
+                        + "?client_id="
+                        + DefaultClientId
+                        + "&response_type=code&scope=identity&redirect_uri=http://localhost",
                 false);
         try {
             String tarHeader = "Location";
@@ -116,7 +118,9 @@ public class Oauth {
 
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(
                 DefaultAuthorizeURI
-                        + "?client_id=client&response_type=code&scope=identity&redirect_uri=http://localhost",
+                        + "?client_id="
+                        + DefaultClientId
+                        + "&response_type=code&scope=identity&redirect_uri=http://localhost",
                 nvpHeaders,
                 false);
         try {
@@ -269,7 +273,9 @@ public class Oauth {
 
     public static String GetLoginCid() throws Exception {
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI
-                        + "?client_id=client&response_type=token%20id_token&scope=openid%20identity&"
+                        + "?client_id="
+                        + DefaultClientId
+                        + "&response_type=token%20id_token&scope=openid%20identity&"
                         + "redirect_uri=http://localhost&nonce=randomstring&locale=en_US&state=randomstring",
                 false);
         try {
@@ -322,7 +328,7 @@ public class Oauth {
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultLogoutURI
                 + "?post_logout_redirect_uri=http://localhost&id_token_hint=" + idToken, false);
         try {
-            String tarHeader = "Location";
+            String tarHeader = "Location:";
             for (Header h : response.getAllHeaders()) {
                 if (h.toString().startsWith(tarHeader)) {
                     assertEquals("validate logout success", true, h.toString().contains("Location: http://localhost"));
