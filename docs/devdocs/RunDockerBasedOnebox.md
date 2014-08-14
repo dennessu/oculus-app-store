@@ -44,6 +44,12 @@ sudo docker run -v /data -v /var/lib/couchdb -v /var/silkcloud/logs \
   --name scdataonly busybox echo scdataonly
 ```
 
+Data-only container would not be running, so you can only use `sudo docker ps -a` to see it, but that's fine. To take a look at the files inside data-only container:
+
+```bash
+sudo docker run --rm -it --volumes-from scdataonly busybox /bin/sh
+```
+
 #### Launch postgresql container
 
 Now, launch psql instance. Our onebox config assumes the db password is #Bugsfor$, so we need to specify it.
@@ -138,6 +144,8 @@ sudo docker run -d -p 8080:8080 -p 8081:8081 \
   -v $(pwd)/appconfig:/etc/silkcloud -v $(pwd)/applogs:/var/silkcloud/logs \
   silkcloud/onebox-app:master
 ```
+
+Memcached service is also included in `onebox-app`, you can use Environment Var to control its config: `MAX_MEM` (default 64), `MAX_CONN` (default 1024)
 
 It would take about 1 minute to start up, after that, it would listen at 8080 and 8081 port. Open `http://localhost:8080/v1/offers` to check.
 
