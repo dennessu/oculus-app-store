@@ -9,7 +9,6 @@ class UserData {
     String username
     String password
     String email
-    String phone
     CountryId cor
     UserAddressData address
     UserNameData name
