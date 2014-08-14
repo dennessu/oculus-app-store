@@ -21,11 +21,13 @@ All of our docker images are based on phusion/baseimage, you can use phusion's `
 
 Make sure you have access to `onebox-app` before you continue.
 
-## Launch db/cache instances
+## Launch db instances
 
-It is recommended to create a folder to store database files and logs, so that when we upgrade docker images, data never got lost.
+It is recommended to create a folder or data-only container to store database files and logs, so that when we upgrade docker images, data never get lost.
 
-You can create these folders anywhere, here is just any example:
+#### Create folder or data-only container to store db/log
+
+To create local folder to store data/log:
 
 ```bash
 # create a folder to store data and log
@@ -35,23 +37,55 @@ cd /path/to/somewhere
 mkdir {psql,couchdb,applogs,appconfig}
 ```
 
-Now, launch psql instance. Our onebox assume the db password is #Bugsfor$, so we need to specify it.
-
-And You don't have to use -p 5432:5432, since the onebox-app would use link to connect to psql.
+Or, you can create a data-only container:
 
 ```bash
+sudo docker run -v /data -v /var/lib/couchdb -v /var/silkcloud/logs \
+  --name scdataonly busybox echo scdataonly
+```
+
+#### Launch postgresql container
+
+Now, launch psql instance. Our onebox config assumes the db password is #Bugsfor$, so we need to specify it.
+
+To mount host folder as data folder:
+
+```bash
+# NOTICE: if you are using boot2docker, this won't work because
+#   PSQL needs the data folder to be 700 permission, but chown cannot
+#   work in virtualbox shared folder.
+#   You can use data-only container to work around.
+#
 sudo docker run -d --name=psql -e PSQL_PASS='#Bugsfor$' \
   -v $(pwd)/psql:/data silkcloud/onebox-psql
 ```
 
-Then launch couchdb instance. Similarly you don't have to open port.
+Or, to use data-only container to store data:
+
+```bash
+sudo docker run -d --name=psql -e PSQL_PASS='#Bugsfor$' \
+   --volumes-from scdataonly silkcloud/onebox-psql
+```
+
+#### Launch couchdb container
+
+Then launch couchdb instance.
+
+To mount host folder as data folder:
 
 ```bash
 sudo docker run -d --name=couchdb \
   -v $(pwd)/couchdb:/var/lib/couchdb silkcloud/onebox-couchdb
 ```
 
-Run `sudo docker ps` to check if they are running.
+Or, to use data-only container to store data:
+
+```bash
+sudo docker run -d --name=couchdb \
+   --volumes-from scdataonly silkcloud/onebox-couchdb
+```
+
+Run `sudo docker ps` to check if `psql` and `couchdb` are running.
 
 ## Launch apphost
 
@@ -101,8 +135,7 @@ If there is no error, you will see `#### finished preparing databases.`, then yo
 ```bash
 sudo docker run -d -p 8080:8080 -p 8081:8081 \
   --link psql:psql --link couchdb:couchdb --name=onebox-app \
-  -v $(pwd)/appconfig:/etc/silkcloud \
-  -v $(pwd)/applogs:/var/silkcloud/logs \
+  -v $(pwd)/appconfig:/etc/silkcloud -v $(pwd)/applogs:/var/silkcloud/logs \
   silkcloud/onebox-app:master
 ```
 

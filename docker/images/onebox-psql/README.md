@@ -1,3 +1,5 @@
+https://registry.hub.docker.com/u/silkcloud/onebox-psql/
+
 Docker image to run a local dev postgresql server
 
 ## Features
@@ -5,12 +7,12 @@ Docker image to run a local dev postgresql server
 * Listen at 0.0.0.0, allow network connections from anywhere
 * Use default user "postgres"
 * Support changing password, by specify ENV 'PSQL_PASS'
-* /data as data folder
+* /data as data folder, during boot, the owner of folder would be changed to postgres, permission to 700
 
-## Volumes
-* /etc/postgresql
-* /var/log/postgresql
-* /data
+## Folders
+* /etc/postgresql (config folder)
+* /var/log/postgresql (log folder, exposed as Volume)
+* /data (data folder, exposed as Volume)
 
 ## Usage
 To run the image and bind to port 5432:
@@ -24,8 +26,8 @@ To persist the data, mount a folder from host to the data volume:
 ```
 sudo docker run -d -p 5432:5432 --name=psql -v /path/to/data/dir:/data silkcloud/onebox-psql
 ```
-If the folder is empty, container would initialize the db. Otherwise, the folder must be a valid postgresql data foler.
 
+If the folder is empty, container would initialize the db. Otherwise, the folder must be a valid postgresql data foler.
 
 To verify, run the following command and type password:
 
