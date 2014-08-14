@@ -67,7 +67,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         createUserRequest.setNickName(RandomFactory.getRandomStringOfAlphabet(4));
         createUserRequest.setPassword("Test1234");
         createUserRequest.setUsername(RandomFactory.getRandomStringOfAlphabet(6));
-        createUserRequest.setPinCode("1234");
+        createUserRequest.setPin("1234");
         createUserRequest.setCor(Country.DEFAULT.toString());
         createUserRequest.setPreferredLocale("en_US");
 
@@ -86,7 +86,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         createUserRequest.setNickName(RandomFactory.getRandomStringOfAlphabet(4));
         createUserRequest.setPassword("Test1234");
         createUserRequest.setUsername(userName);
-        createUserRequest.setPinCode("1234");
+        createUserRequest.setPin("1234");
         createUserRequest.setCor(Country.DEFAULT.toString());
         createUserRequest.setPreferredLocale("en_US");
 

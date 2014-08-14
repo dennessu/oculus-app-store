@@ -358,7 +358,7 @@ class StoreResourceImpl implements StoreResource {
     Promise<EntitlementsGetResponse> getEntitlements(PageParam pageParam) {
         return innerGetEntitlements(new EntitlementsGetRequest(), false, pageParam).then { Results<Entitlement> entitlementResults ->
             return Promise.pure(new EntitlementsGetResponse(
-                    entitlements : entitlementResults
+                    entitlements : entitlementResults.items
             ))
         }
     }
@@ -368,7 +368,7 @@ class StoreResourceImpl implements StoreResource {
         EntitlementsGetRequest request = new EntitlementsGetRequest(packageName: iapEntitlementGetRequest.packageName)
         return innerGetEntitlements(request, true, pageParam).then { Results<Entitlement> entitlementResults ->
             return new IAPEntitlementGetResponse(
-                    entitlements : entitlementResults
+                    entitlements : entitlementResults.items
             )
         }
     }

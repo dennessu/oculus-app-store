@@ -5,20 +5,20 @@
  */
 package com.junbo.store.spec.model;
 
-import com.junbo.common.model.Results;
+import java.util.List;
 
 /**
  * The EntitlementsGetResponse class.
  */
 public class EntitlementsGetResponse {
 
-    Results<Entitlement> entitlements;
+    List<Entitlement> entitlements;
 
-    public Results<Entitlement> getEntitlements() {
+    public List<Entitlement> getEntitlements() {
         return entitlements;
     }
 
-    public void setEntitlements(Results<Entitlement> entitlements) {
+    public void setEntitlements(List<Entitlement> entitlements) {
         this.entitlements = entitlements;
     }
 }
