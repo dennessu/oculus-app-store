@@ -18,12 +18,6 @@ if ! grep -q psql /etc/hosts; then
   die "psql not found in hosts"
 fi
 
-# check if memcached is linked correctly
-: ${MEMCACHED_PORT:? "Env var MEMCACHED_PORT not found, have you linked memcached container?"}
-if ! grep -q memcached /etc/hosts; then
-  die "memcached not found in hosts"
-fi
-
 # check if couchdb is linked correctly
 : ${COUCHDB_PORT:? "Env var COUCHDB_PORT not found, have you linked couchdb container?"}
 if ! grep -q couchdb /etc/hosts; then
