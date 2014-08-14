@@ -35,7 +35,7 @@ public class Oauth {
     }
 
     public static final String DefaultAuthorizeURI = ConfigHelper.getSetting("defaultAuthorizeURI");
-    public static final String DefaultClientId = "smoketest";
+    public static final String DefaultClientId = ConfigHelper.getSetting("client_id");
     public static final String DefaultClientScopes = "identity";
     public static final String DefaultClientSecret = "secret";
     public static final String DefaultGrantType = "authorization_code";

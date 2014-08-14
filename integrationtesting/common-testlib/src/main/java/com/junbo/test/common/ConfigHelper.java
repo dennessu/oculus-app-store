@@ -28,13 +28,13 @@ public final class ConfigHelper {
             }
             properties.load(loader.getResourceAsStream(configFile));
 
-            if (getSetting("TestEncrypted") != null &&
-                    getSetting("TestEncrypted").equalsIgnoreCase("true")) {
-                if (getSetting("TestClient") != null && getSetting("TestClient").length() > 0 ) {
-                    ReadTestClientNameFromFile(getSetting("TestClient"));
+            if (getSetting("testClientEncrypted") != null &&
+                    getSetting("testClientEncrypted").equalsIgnoreCase("true")) {
+                if (getSetting("client_id") != null && getSetting("client_id").length() > 0 ) {
+                    ReadTestClientNameFromFile(getSetting("client_id"));
                 }
                 else {
-                    Assert.fail("no TestClient property defined or null value for it in PPE/PRDO environment");
+                    Assert.fail("no client_id property defined or null value for it in PPE/PRDO environment");
                 }
             }
         } catch (IOException e) {
@@ -54,7 +54,7 @@ public final class ConfigHelper {
 
             //reading file content line by line
             String line = reader.readLine();
-            properties.put("TestClient", line);
+            properties.put("client_id", line);
         } catch (FileNotFoundException ex) {
             Assert.fail(ex.toString());
         } catch (IOException ex) {
