@@ -360,16 +360,13 @@ public class OfferSearch extends BaseTestClass {
         ItemService itemService = ItemServiceImpl.instance();
         ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
         Item item1 = itemService.getItem(offerRevisionsRtn.getItems().get(0).getItems().get(0).getItemId());
-        Item item2 = itemService.getItem(offerRevisionsRtn.getItems().get(1).getItems().get(0).getItemId());
 
         ItemRevision itemRevision1 = itemRevisionService.getItemRevision(item1.getCurrentRevisionId());
-        ItemRevision itemRevision2 = itemRevisionService.getItemRevision(item2.getCurrentRevisionId());
 
         paraMap.clear();
         paraMap.put("developerId", publisherIds);
 
         itemIds.add(item1.getItemId());
-        itemIds.add(item2.getItemId());
         paraMap.put("itemId", itemIds);
 
         itemType.add(item1.getType());
@@ -385,10 +382,8 @@ public class OfferSearch extends BaseTestClass {
         itemIds.clear();
 
         itemRevisionIds.add(itemRevision1.getRevisionId());
-        itemRevisionIds.add(itemRevision2.getRevisionId());
 
         itemIds.add(item1.getItemId());
-        itemIds.add(item2.getItemId());
 
         paraMap.put("itemId", itemIds);
         paraMap.put("developerId", publisherIds);
