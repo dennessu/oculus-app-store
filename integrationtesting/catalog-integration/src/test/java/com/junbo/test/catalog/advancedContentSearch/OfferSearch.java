@@ -309,10 +309,8 @@ public class OfferSearch extends BaseTestClass {
         List<String> itemIds = new ArrayList<>();
         List<String> itemRevisionIds = new ArrayList<>();
 
-        String offerName1 = "testOffer_CartCheckout_Stored_Value";
-        String offerName2 = "testOffer_PreOrder_Digital1";
-        String offerName3 = "testOffer_InAppConsumable2";
-        String offerName4 = "testOffer_Free_Physical";
+        String offerName1 = "testOffer_Free_Digital";
+        String offerName2 = "testOffer_Free_Physical";
 
         String strQuery = offerName1 + "%20AND%20" + offerName2;
         query.add(strQuery);
@@ -321,17 +319,15 @@ public class OfferSearch extends BaseTestClass {
         Results<Offer> offersRtn = offerService.getOffers(paraMap);
         Assert.assertEquals(offersRtn.getItems().size(), 0);
 
-        strQuery = offerName1 + "%20OR%20" + offerName2 + "%20OR%20" + offerName3 + "%20OR%20" + offerName4;
+        strQuery = offerName1 + "%20OR%20" + offerName2;
         query.clear();
         query.add(strQuery);
         paraMap.put("q", query);
 
         offersRtn = offerService.getOffers(paraMap);
-        Assert.assertEquals(offersRtn.getItems().size(), 4);
+        Assert.assertEquals(offersRtn.getItems().size(), 2);
         Offer offer1 = offersRtn.getItems().get(0);
         Offer offer2 = offersRtn.getItems().get(1);
-        Offer offer3 = offersRtn.getItems().get(2);
-        Offer offer4 = offersRtn.getItems().get(3);
 
         Offer offerRtn1 = offerService.getOffer(offer1.getOfferId());
         Assert.assertEquals(offerRtn1.getOfferId(), offer1.getOfferId());
@@ -341,48 +337,39 @@ public class OfferSearch extends BaseTestClass {
 
         offerIds.add(offer1.getOfferId());
         offerIds.add(offer2.getOfferId());
-        offerIds.add(offer3.getOfferId());
-        offerIds.add(offer4.getOfferId());
 
         paraMap.clear();
         paraMap.put("offerId", offerIds);
 
         offersRtn = offerService.getOffers(paraMap);
-        Assert.assertEquals(offersRtn.getItems().size(), 4);
+        Assert.assertEquals(offersRtn.getItems().size(), 2);
 
         publisherIds.add(IdConverter.idToHexString(offer1.getOwnerId()));
         paraMap.put("publisherId", publisherIds);
 
         offersRtn = offerService.getOffers(paraMap);
-        Assert.assertEquals(offersRtn.getItems().size(), 4);
+        Assert.assertTrue(isContain(offersRtn, offer1));
 
         //get offer revisions
         OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
         OfferRevision offerRevision1 = offerRevisionService.getOfferRevision(offer1.getCurrentRevisionId());
 
         Results<OfferRevision> offerRevisionsRtn = offerRevisionService.getOfferRevisions(paraMap);
-        Assert.assertEquals(offerRevisionsRtn.getItems().size(), 4);
         Assert.assertTrue(isContain(offerRevisionsRtn, offerRevision1));
 
         ItemService itemService = ItemServiceImpl.instance();
         ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
         Item item1 = itemService.getItem(offerRevisionsRtn.getItems().get(0).getItems().get(0).getItemId());
         Item item2 = itemService.getItem(offerRevisionsRtn.getItems().get(1).getItems().get(0).getItemId());
-        Item item3 = itemService.getItem(offerRevisionsRtn.getItems().get(2).getItems().get(0).getItemId());
-        Item item4 = itemService.getItem(offerRevisionsRtn.getItems().get(3).getItems().get(0).getItemId());
 
         ItemRevision itemRevision1 = itemRevisionService.getItemRevision(item1.getCurrentRevisionId());
         ItemRevision itemRevision2 = itemRevisionService.getItemRevision(item2.getCurrentRevisionId());
-        ItemRevision itemRevision3 = itemRevisionService.getItemRevision(item3.getCurrentRevisionId());
-        ItemRevision itemRevision4 = itemRevisionService.getItemRevision(item4.getCurrentRevisionId());
 
         paraMap.clear();
         paraMap.put("developerId", publisherIds);
 
         itemIds.add(item1.getItemId());
         itemIds.add(item2.getItemId());
-        itemIds.add(item3.getItemId());
-        itemIds.add(item4.getItemId());
         paraMap.put("itemId", itemIds);
 
         itemType.add(item1.getType());
@@ -399,8 +386,6 @@ public class OfferSearch extends BaseTestClass {
 
         itemRevisionIds.add(itemRevision1.getRevisionId());
         itemRevisionIds.add(itemRevision2.getRevisionId());
-        itemRevisionIds.add(itemRevision3.getRevisionId());
-        itemRevisionIds.add(itemRevision4.getRevisionId());
 
         itemIds.add(item1.getItemId());
         itemIds.add(item2.getItemId());
@@ -410,11 +395,7 @@ public class OfferSearch extends BaseTestClass {
         paraMap.put("revisionId", itemRevisionIds);
 
         Results<ItemRevision> itemRevisionsRtn = itemRevisionService.getItemRevisions(paraMap);
-        Assert.assertEquals(itemRevisionsRtn.getItems().size(), 4);
         Assert.assertTrue(isContain(itemRevisionsRtn, itemRevision1));
-        Assert.assertTrue(isContain(itemRevisionsRtn, itemRevision2));
-        Assert.assertTrue(isContain(itemRevisionsRtn, itemRevision3));
-        Assert.assertTrue(isContain(itemRevisionsRtn, itemRevision4));
     }
 
     private void buildSearchQuery(String queryOption, int expectedRtnSize, String... offerId) throws Exception {
