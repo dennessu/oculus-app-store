@@ -5,21 +5,22 @@
  */
 package com.junbo.store.spec.model.iap;
 
-import com.junbo.common.model.Results;
 import com.junbo.store.spec.model.Entitlement;
+
+import java.util.List;
 
 /**
  * The IAPEntitlementGetResponse class.
  */
 public class IAPEntitlementGetResponse {
 
-    private Results<Entitlement> entitlements;
+    private List<Entitlement> entitlements;
 
-    public Results<Entitlement> getEntitlements() {
+    public List<Entitlement> getEntitlements() {
         return entitlements;
     }
 
-    public void setEntitlements(Results<Entitlement> entitlements) {
+    public void setEntitlements(List<Entitlement> entitlements) {
         this.entitlements = entitlements;
     }
 }

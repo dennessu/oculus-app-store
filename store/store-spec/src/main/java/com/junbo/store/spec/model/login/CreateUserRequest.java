@@ -28,7 +28,7 @@ public class CreateUserRequest {
 
     private String password;
 
-    private String pinCode;
+    private String pin;
 
     private String cor;
 
@@ -98,12 +98,12 @@ public class CreateUserRequest {
         this.password = password;
     }
 
-    public String getPinCode() {
-        return pinCode;
+    public String getPin() {
+        return pin;
     }
 
-    public void setPinCode(String pinCode) {
-        this.pinCode = pinCode;
+    public void setPin(String pin) {
+        this.pin = pin;
     }
 
     public String getCor() {

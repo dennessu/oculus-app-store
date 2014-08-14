@@ -268,8 +268,6 @@ def purgedbs(envConf, dbPrefix):
                     bulkStr = json.dumps({ 'docs': docs }, indent = 2)
                     if len(docs) > 0:
                         curlJson(url + "/" + fullDbName + '/_bulk_docs', "POST", bulkStr)
-                    if '.cloudant.com' not in url:
-                        curl(url + "/" + fullDbName + '/_compact', "POST", raiseOnError = False)
 
 def curlJson(url, method = 'GET', body = None, headers = None, raiseOnError = True):
     if headers is None:

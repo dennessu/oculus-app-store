@@ -151,14 +151,14 @@ class LoginResourceImpl implements LoginResource {
                     new com.junbo.identity.spec.v1.model.UserCredential(type: 'PASSWORD', value: createUserRequest.password)
             )
         }.then {
-            if (createUserRequest.pinCode == null) {
+            if (createUserRequest.pin == null) {
                 return Promise.pure()
             }
 
-            fieldName = 'pinCode'
+            fieldName = 'pin'
             return resourceContainer.userCredentialResource.create(
                     user.getId(),
-                    new com.junbo.identity.spec.v1.model.UserCredential(type: 'PIN', value: createUserRequest.pinCode)
+                    new com.junbo.identity.spec.v1.model.UserCredential(type: 'PIN', value: createUserRequest.pin)
             )
         }.then { // create email info
             fieldName = 'email'

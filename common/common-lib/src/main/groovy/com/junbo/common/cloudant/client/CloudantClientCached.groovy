@@ -76,7 +76,10 @@ class CloudantClientCached implements CloudantClientInternal {
         entity.setCloudantId(entity.getId().toString())
         CloudantId.validate(entity.cloudantId)
 
-        return impl.cloudantPut(dbUri, entityClass, entity).then { T result ->
+        return impl.cloudantPut(dbUri, entityClass, entity).recover { Throwable ex ->
+            deleteCache(dbUri, entity.cloudantId)
+            throw ex
+        }.then { T result ->
             updateCache(dbUri, entityClass, result)
             return Promise.pure(result)
         }
@@ -91,7 +94,10 @@ class CloudantClientCached implements CloudantClientInternal {
         entity.setCloudantId(entity.getId().toString())
         CloudantId.validate(entity.cloudantId)
 
-        return impl.cloudantDelete(dbUri, entityClass, entity).then {
+        return impl.cloudantDelete(dbUri, entityClass, entity).recover { Throwable ex ->
+            deleteCache(dbUri, entity.cloudantId)
+            throw ex
+        }.then {
             deleteCache(dbUri, entity.cloudantId)
             return Promise.pure(null)
         }
@@ -136,9 +142,7 @@ class CloudantClientCached implements CloudantClientInternal {
 
     @Override
     Promise<Integer> queryViewTotal(CloudantDbUri dbUri, String key, String viewName) {
-        Promise<Integer> future = impl.queryViewTotal(dbUri, key, viewName)
-
-        return future
+        return impl.queryViewTotal(dbUri, key, viewName)
     }
 
     @Override
@@ -202,6 +206,7 @@ class CloudantClientCached implements CloudantClientInternal {
             }
         } catch (Exception ex) {
             logger.warn("Error writing to memcached.", ex)
+            deleteCache(dbUri, entity.cloudantId)
         }
     }
 

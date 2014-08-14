@@ -5,6 +5,8 @@
  */
 package com.junbo.test.common;
 
+import org.testng.annotations.Test;
+
 import java.io.IOException;
 import java.util.Properties;
 
@@ -16,7 +18,8 @@ public final class ConfigHelper {
 
     static {
         try {
-            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            //ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            ClassLoader loader = Test.class.getClassLoader();
             String configFile = "testConfig.properties";
             String profile = System.getProperty("profile", "test");
             if (!profile.equals("test") && !profile.equals("local") && !profile.trim().isEmpty()) {

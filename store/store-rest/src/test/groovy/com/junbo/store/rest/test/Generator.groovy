@@ -48,7 +48,7 @@ class Generator {
                 firstName: 'First',
                 lastName: 'Last',
                 password: password,
-                pinCode: pinCode,
+                pin: pinCode,
                 dob: new Date(System.currentTimeMillis() - 8 * 365L * 24 * 3600 * 1000),
                 preferredLocale: 'en_US',
                 email: email,

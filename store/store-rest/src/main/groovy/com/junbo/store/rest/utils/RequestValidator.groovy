@@ -78,7 +78,7 @@ class RequestValidator {
         notEmpty(request.preferredLocale, 'preferredLocale')
 
         if (requireDetailsForCreate) {
-            notEmpty(request.pinCode, 'pinCode')
+            notEmpty(request.pin, 'pin')
             notEmpty(request.dob, 'dob')
             notEmpty(request.firstName, 'firstName')
             notEmpty(request.lastName, 'lastName')

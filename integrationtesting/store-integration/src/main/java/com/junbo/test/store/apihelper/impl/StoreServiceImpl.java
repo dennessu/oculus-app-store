@@ -9,8 +9,8 @@ import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateRequest;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
-import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
-import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
+//import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
+//import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.purchase.*;
@@ -22,7 +22,7 @@ import com.junbo.test.store.apihelper.StoreService;
  * Created by weiyu_000 on 8/6/14.
  */
 public class StoreServiceImpl extends HttpClientBase implements StoreService {
-    private static String storeUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "storeapi/";
+    private static String storeUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "horizon-api/";
 
     private static StoreService instance;
 

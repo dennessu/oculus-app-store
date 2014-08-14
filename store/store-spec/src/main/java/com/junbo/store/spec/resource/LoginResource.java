@@ -20,7 +20,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * The wrapper api for store front.
  */
-@Path("/storeapi/id")
+@Path("/horizon-api/id")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource

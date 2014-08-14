@@ -7,8 +7,8 @@ package com.junbo.test.store.apihelper;
 
 import com.junbo.store.spec.model.billing.BillingProfileUpdateRequest;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
-import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
-import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
+//import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
+//import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.purchase.*;

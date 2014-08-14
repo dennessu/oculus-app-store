@@ -27,7 +27,7 @@ import com.junbo.store.spec.model.purchase.*;
 import com.junbo.test.catalog.OfferService;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
 import com.junbo.test.common.Entities.enums.Country;
-import com.junbo.test.common.Entities.enums.Currency;
+//import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
 import com.junbo.test.common.blueprint.Master;
@@ -67,7 +67,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         createUserRequest.setNickName(RandomFactory.getRandomStringOfAlphabet(4));
         createUserRequest.setPassword("Test1234");
         createUserRequest.setUsername(RandomFactory.getRandomStringOfAlphabet(6));
-        createUserRequest.setPinCode("1234");
+        createUserRequest.setPin("1234");
         createUserRequest.setCor(Country.DEFAULT.toString());
         createUserRequest.setPreferredLocale("en_US");
 
@@ -86,7 +86,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         createUserRequest.setNickName(RandomFactory.getRandomStringOfAlphabet(4));
         createUserRequest.setPassword("Test1234");
         createUserRequest.setUsername(userName);
-        createUserRequest.setPinCode("1234");
+        createUserRequest.setPin("1234");
         createUserRequest.setCor(Country.DEFAULT.toString());
         createUserRequest.setPreferredLocale("en_US");
 
