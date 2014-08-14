@@ -110,7 +110,7 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
                 return userService.getUserIdByUsername(username).then { UserId id ->
                     return userService.sendResetPassword(id, locale, country).then { String uri ->
                         csrActionAudit(id)
-                        if (debugEnabled) {
+                        if (debugEnabled || AuthorizeContext.debugEnabled) {
                             return Promise.pure(Response.ok().entity(uri).build())
                         }
 
@@ -124,7 +124,7 @@ class ResetPasswordEndpointImpl implements ResetPasswordEndpoint {
                 return userService.getUserIdByUserEmail(userEmail).then { UserId id ->
                     return userService.sendResetPassword(id, locale, country).then { String uri ->
                         csrActionAudit(id)
-                        if (debugEnabled) {
+                        if (debugEnabled || AuthorizeContext.debugEnabled) {
                             return Promise.pure(Response.ok().entity(uri).build())
                         }
 

@@ -46,6 +46,11 @@ class AuthorizeContext {
         return tokenInfo == null ? null : tokenInfo.clientId
     }
 
+    static Boolean getDebugEnabled() {
+        TokenInfo tokenInfo = CURRENT_TOKEN_INFO.get()
+        return tokenInfo == null ? false : tokenInfo.debugEnabled
+    }
+
     @PackageScope
     static Set<String> getCurrentScopes() {
         TokenInfo tokenInfo = CURRENT_TOKEN_INFO.get()

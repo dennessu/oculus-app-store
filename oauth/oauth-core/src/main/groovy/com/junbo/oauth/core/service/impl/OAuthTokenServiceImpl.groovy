@@ -110,7 +110,8 @@ class OAuthTokenServiceImpl implements OAuthTokenService {
                 clientId: client.clientId,
                 userId: userId,
                 scopes: scopes,
-                expiredBy: new Date(System.currentTimeMillis() + expiration * MILLISECONDS_PER_SECOND)
+                expiredBy: new Date(System.currentTimeMillis() + expiration * MILLISECONDS_PER_SECOND),
+                debugEnabled: client.debugEnabled
         )
 
         if (ipRestriction) {

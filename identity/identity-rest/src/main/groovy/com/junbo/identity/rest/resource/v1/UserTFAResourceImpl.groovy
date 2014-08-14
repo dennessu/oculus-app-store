@@ -99,7 +99,8 @@ class UserTFAResourceImpl implements UserTFAResource {
 
                         newUserTeleCode = userTFAFilter.filterForGet(newUserTeleCode, null)
                         if (!StringUtils.isEmpty(newUserTeleCode.verifyCode)
-                         && !Boolean.parseBoolean(ConfigServiceManager.instance().getConfigValue('common.conf.debugMode'))) {
+                         && !Boolean.parseBoolean(ConfigServiceManager.instance().getConfigValue('common.conf.debugMode'))
+                         && !Boolean.TRUE.equals(AuthorizeContext.debugEnabled)) {
                             newUserTeleCode.verifyCode = null
                         }
                         return Promise.pure(newUserTeleCode)
