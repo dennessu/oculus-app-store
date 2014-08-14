@@ -335,7 +335,7 @@ public class TokenServiceImpl implements TokenService {
             throw AppCommonErrors.INSTANCE.fieldRequired("user_id").exception();
         }
         User user = userClient.get(new UserId(consumption.getUserId()), new UserGetOptions()).get();
-        if (user == null) {
+        if (user == null || !user.getStatus().equalsIgnoreCase("ACTIVE")) {
             throw AppCommonErrors.INSTANCE.fieldInvalid("userId").exception();
         }
     }
