@@ -172,7 +172,7 @@ public class Oauth {
         nvps.add(new BasicNameValuePair(DefaultFNLastName, RandomHelper.randomAlphabetic(15)));
         nvps.add(new BasicNameValuePair(DefaultFNGender, "male"));
         nvps.add(new BasicNameValuePair(DefaultFNDoB, "1980-01-01"));
-        nvps.add(new BasicNameValuePair(DefaultFNPin, RandomHelper.randomNumeric(6)));
+        nvps.add(new BasicNameValuePair(DefaultFNPin, RandomHelper.randomNumeric(4)));
 
         CloseableHttpResponse response = HttpclientHelper.SimplePost(DefaultAuthorizeURI, nvps, false);
         try {

@@ -16,7 +16,7 @@ import org.testng.annotations.*;
  */
 public class postSecurityQuestions {
 
-    @BeforeSuite
+    @BeforeClass
     public void run() throws Exception {
         HttpclientHelper.CreateHttpClient();
         Identity.GetHttpAuthorizationHeader();

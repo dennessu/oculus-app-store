@@ -8,17 +8,14 @@ package com.junbo.test.identity;
 import com.junbo.identity.spec.v1.model.Currency;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.Validator;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 /**
  * @author dw
  */
 public class postCurrency {
 
-    @BeforeSuite
+    @BeforeClass
     public void run() throws Exception {
         HttpclientHelper.CreateHttpClient();
         Identity.GetHttpAuthorizationHeader();

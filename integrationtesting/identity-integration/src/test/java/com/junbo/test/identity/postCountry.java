@@ -15,10 +15,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.message.BasicNameValuePair;
 import org.springframework.util.CollectionUtils;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -30,7 +27,7 @@ import java.util.Map;
  */
 public class postCountry {
 
-    @BeforeSuite
+    @BeforeClass
     public void run() throws Exception {
         HttpclientHelper.CreateHttpClient();
         Identity.GetHttpAuthorizationHeader();

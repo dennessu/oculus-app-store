@@ -19,10 +19,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +30,8 @@ import java.util.Map;
  * Created by liangfu on 8/12/14.
  */
 public class postCommunication {
-    @BeforeSuite
+
+    @BeforeClass
     public void run() throws Exception {
         HttpclientHelper.CreateHttpClient();
         Identity.GetHttpAuthorizationHeader();
