@@ -22,6 +22,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 /**
  * Created by LinYi on 2014/8/14.
@@ -43,16 +45,34 @@ class EntitlementFacadeImpl implements EntitlementFacade {
                     new ItemId(item.id)
                 } as Set
         )
-        def pageMetadata = new PageMetadata(
-                start: 0,
-                count: 20
-        )
-        return entitlementResource.searchEntitlements(entitlementSearchParam, pageMetadata)
-                .syncRecover { Throwable throwable ->
-            LOGGER.error('EntitlementFacadeImpl_Get_Entitlements_error, userId: {}', userId?.value?.toString())
-            throw convertError(throwable).exception()
-        }.syncThen { Results<Entitlement> results ->
-            return results == null ? Collections.emptyList() : results.items
+        def count = offer.items.size() * 3
+        String href = null
+        def entitlements = []
+        def entitlementSearchResults = []
+        while ('END' != href) {
+            def pageMetadata = new PageMetadata(
+                    count: count,
+                    bookmark: getBookmark(href)
+            )
+            Results<Entitlement> results = entitlementResource.searchEntitlements(
+                    entitlementSearchParam, pageMetadata).get()
+            entitlementSearchResults = results == null ? Collections.emptyList() : results.items
+            entitlements.addAll(entitlementSearchResults)
+            href = results.next.href
+        }
+
+        return Promise.pure(entitlements)
+    }
+
+    private String getBookmark(String href) {
+        if (href == null) {
+            return null
+        }
+
+        Pattern p = Pattern.compile('.*bookmark=(.*)&count=\\d*')
+        Matcher m = p.matcher(href)
+        if (m.find()) {
+            return m.group(1)
         }
     }
 
