@@ -20,5 +20,6 @@ dependencies {
     compile junboProject(':fulfilment-spec')
     compile junboProject(':payment-spec')
     compile junboProject(':csr-spec')
+    compile junboProject(':entitlement-spec')
 }
 

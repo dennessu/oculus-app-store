@@ -37,4 +37,8 @@
         <property name="currencyResource" ref="mockCurrencyResource"/>
     </bean>
 
+    <bean id="mockEntitlementFacade" class="com.junbo.order.clientproxy.entitlement.impl.EntitlementFacadeImpl">
+        <property name="entitlementResource" ref="mockEntitlementResource"/>
+    </bean>
+
 </beans>

@@ -8,13 +8,16 @@ import com.junbo.billing.spec.enums.BalanceStatus
 import com.junbo.billing.spec.enums.BalanceType
 import com.junbo.billing.spec.enums.TaxStatus
 import com.junbo.billing.spec.model.Balance
+import com.junbo.catalog.spec.model.item.Item
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.PIType
+import com.junbo.entitlement.spec.model.Entitlement
 import com.junbo.fulfilment.spec.model.FulfilmentRequest
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.clientproxy.FacadeContainer
+import com.junbo.order.clientproxy.model.Offer
 import com.junbo.order.core.impl.common.*
 import com.junbo.order.core.impl.internal.OrderInternalService
 import com.junbo.order.core.impl.order.OrderServiceContext
@@ -477,6 +480,31 @@ class OrderInternalServiceImpl implements OrderInternalService {
                     return Promise.pure(null)
                 }
             }
+        }
+    }
+
+    @Override
+    Promise<Order> validateDuplicatePurchase(Order order, Offer offer) {
+        if (offer.items.any { Item item ->
+            !['APP', 'DOWNLOADED_ADDITION', 'PERMANENT_UNLOCK'].contains(item.type)
+        }) {
+            return Promise.pure(order)
+        }
+        return facadeContainer.entitlementFacade.getEntitlements(order.user, offer)
+                .syncThen { List<Entitlement> entitlements ->
+            if (entitlements == null || entitlements.size() == 0) {
+                return order
+            }
+
+            offer.items.each { Item item ->
+                if (entitlements.every { Entitlement entitlement ->
+                    entitlement.itemId != item.id
+                }) {
+                    return order
+                }
+            }
+
+            throw AppErrors.INSTANCE.duplicatePurchase().exception()
         }
     }
 }
