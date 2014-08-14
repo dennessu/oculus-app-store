@@ -293,6 +293,11 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
         return entitlementService.getEntitlements(uid);
     }
 
+    public void getBinariesUrl(Entitlement entitlement) throws Exception{
+        EntitlementService entitlementService = EntitlementServiceImpl.instance();
+        entitlementService.getBinariesUrl(entitlement);
+    }
+
     public String getFulfilmentsByOrderId(String orderId) throws Exception {
         return fulfilmentProvider.getFulfilmentByOrderId(orderId);
     }
@@ -305,4 +310,5 @@ public class BuyerTestDataProvider extends BaseTestDataProvider {
             throws Exception {
         orderProvider.postOrderEvent(orderId, eventStatus, orderActionType);
     }
+
 }

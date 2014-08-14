@@ -269,7 +269,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     private UserPersonalInfo postUserPersonalInfo(UserPersonalInfo userPersonalInfo,
                                                   int expectedResponseCode) throws Exception {
         String serverURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/personal-info";
-        String responseBody = restApiCall(HTTPMethod.POST, serverURL, userPersonalInfo, expectedResponseCode, true);
+        String responseBody = restApiCall(HTTPMethod.POST, serverURL, userPersonalInfo, expectedResponseCode, false);
         return new JsonMessageTranscoder().decode(new TypeReference<UserPersonalInfo>() {
         }, responseBody);
     }
@@ -381,7 +381,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         UserPersonalInfo userLoginName = new JsonMessageTranscoder().decode(new TypeReference<UserPersonalInfo>() {
         },
                 piiResponseBody);
-        UserLoginName loginName = (UserLoginName)JsonHelper.JsonNodeToObject(userLoginName.getValue(), UserLoginName.class);
+        UserLoginName loginName = (UserLoginName) JsonHelper.JsonNodeToObject(userLoginName.getValue(), UserLoginName.class);
 
         String userRtnId = IdConverter.idToHexString(userGet.getId());
         Master.getInstance().addUser(userRtnId, userGet);
@@ -435,7 +435,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     public String PutUser(String userId, User user, int expectedResponseCode) throws Exception {
 
         String putUrl = identityServerURL + "/" + userId;
-        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, user, expectedResponseCode, true);
+        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, user, expectedResponseCode, false);
         User userPut = new JsonMessageTranscoder().decode(new TypeReference<User>() {
         },
                 responseBody);
@@ -454,6 +454,48 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     public String PostEmailVerification(String userId, String country, String locale,
                                         int expectedResponseCode) throws Exception {
         return oAuthTokenClient.postEmailVerification(userId, country, locale, expectedResponseCode);
+    }
+
+    @Override
+    public String UpdateUserPersonalInfo(String uid, String userName, String password) throws Exception {
+        GetUserByUserId(uid);
+        User userGet = Master.getInstance().getUser(uid);
+
+        String userId = IdConverter.idToHexString(userGet.getId());
+
+        List<UserPersonalInfoLink> addresses = new ArrayList<>();
+        List<UserPersonalInfoLink> phones = new ArrayList<>();
+
+        UserId userIdDefault = userGet.getId();
+
+        UserPersonalInfo address;
+
+        address = postAddress(userIdDefault);
+        UserPersonalInfoLink piAddress = new UserPersonalInfoLink();
+        piAddress.setIsDefault(Boolean.TRUE);
+        piAddress.setUserId(userIdDefault);
+        piAddress.setValue(address.getId());
+        piAddress.setIsDefault(true);
+        addresses.add(piAddress);
+
+        UserPersonalInfo phone = postPhone(userIdDefault);
+        UserPersonalInfo name = postName(userIdDefault);
+
+
+        UserPersonalInfoLink piPhone = new UserPersonalInfoLink();
+        piPhone.setIsDefault(true);
+        piPhone.setUserId(userIdDefault);
+        piPhone.setValue(phone.getId());
+
+        phones.add(piPhone);
+
+        userGet.setAddresses(addresses);
+        userGet.setPhones(phones);
+        userGet.setName(name.getId());
+
+        this.PutUser(userId, userGet);
+
+        return userId;
     }
 
 }

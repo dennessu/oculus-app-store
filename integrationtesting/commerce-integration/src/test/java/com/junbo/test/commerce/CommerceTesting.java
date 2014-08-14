@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * Created by weiyu_000 on 8/13/14.
  */
-public class CommerceTesting  extends TestCaseBase{
+public class CommerceTesting extends TestCaseBase {
 
     @Property(
             priority = Priority.BVT,
@@ -40,16 +40,18 @@ public class CommerceTesting  extends TestCaseBase{
     )
     @Test
     public void testCheckoutFreeDigital() throws Exception {
-       String uid = null;
+        String uid = testDataProvider.createUser();
 
         Map<String, Integer> offerList = new HashedMap();
 
         offerList.put(offer_digital_free, 1);
 
-        String orderId = testDataProvider.postOrder(
+        String orderId = buyerProvider.postOrder(
                 uid, Country.DEFAULT, Currency.FREE, null, false, offerList);
 
-        orderId = testDataProvider.updateOrderTentative(orderId, false);
+        orderId = buyerProvider.updateOrderTentative(orderId, false);
+
+        buyerValidionHelper.validateFreeOrderInfo(uid, orderId, Country.DEFAULT, Currency.FREE, false);
 
     }
 
@@ -71,16 +73,18 @@ public class CommerceTesting  extends TestCaseBase{
     )
     @Test
     public void testCheckoutFreePhysical() throws Exception {
-        String uid = null;
+        String uid = testDataProvider.createUser();
 
         Map<String, Integer> offerList = new HashedMap();
 
         offerList.put(offer_physical_free, 1);
 
-        String orderId = testDataProvider.postOrder(
+        String orderId = buyerProvider.postOrder(
                 uid, Country.DEFAULT, Currency.FREE, null, true, offerList);
 
-        orderId = testDataProvider.updateOrderTentative(orderId, false);
+        orderId = buyerProvider.updateOrderTentative(orderId, false);
+
+        buyerValidionHelper.validateFreeOrderInfo(uid, orderId, Country.DEFAULT, Currency.FREE, true);
 
     }
 

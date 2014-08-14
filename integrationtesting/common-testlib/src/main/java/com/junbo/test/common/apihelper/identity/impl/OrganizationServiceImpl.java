@@ -47,7 +47,9 @@ public class OrganizationServiceImpl extends HttpClientBase implements Organizat
 
     public Organization postDefaultOrganization(String userId) throws Exception {
         Organization organization = new Organization();
-        organization.setOwnerId(new UserId(IdConverter.hexStringToId(UserId.class, userId)));
+        UserId uid = new UserId();
+        uid.setValue(IdConverter.hexStringToId(UserId.class, userId));
+        organization.setOwnerId(uid);
         organization.setName(RandomFactory.getRandomStringOfAlphabet(10));
         organization.setIsValidated(false);
         Organization organizationPost = this.postOrganization(organization);

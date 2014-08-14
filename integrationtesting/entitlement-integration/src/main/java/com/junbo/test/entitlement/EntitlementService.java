@@ -38,4 +38,6 @@ public interface EntitlementService {
     Results<Entitlement> searchEntitlements(EntitlementSearchParam param, String cursor, Integer count) throws Exception;
     Results<Entitlement> searchEntitlements(EntitlementSearchParam param, String cursor, Integer count, int expectedResponseCode) throws Exception;
 
+    void getBinariesUrl(Entitlement entitlement) throws Exception;
+
 }

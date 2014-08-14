@@ -61,6 +61,7 @@ dependencies {
 
     compile junboProject(':integration-buyerscenario')
     compile junboProject(':common-testlib')
+    compile junboProject(':oauth-spec')
 
     testCompile(libraries.asyncclient)
     testCompile(libraries.junit)

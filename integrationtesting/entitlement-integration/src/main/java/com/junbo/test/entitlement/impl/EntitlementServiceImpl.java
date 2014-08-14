@@ -6,24 +6,27 @@
 package com.junbo.test.entitlement.impl;
 
 import com.junbo.common.id.ItemId;
-import com.junbo.common.json.JsonMessageTranscoder;
-import com.junbo.common.model.Results;
 import com.junbo.entitlement.spec.model.DownloadUrlResponse;
-import com.junbo.entitlement.spec.model.Entitlement;
 import com.junbo.entitlement.spec.model.EntitlementSearchParam;
-import com.junbo.langur.core.client.TypeReference;
-import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.entitlement.EntitlementService;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
+import com.junbo.entitlement.spec.model.Entitlement;
+import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.langur.core.client.TypeReference;
+import com.junbo.test.common.ConfigHelper;
+import com.junbo.common.model.Results;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * @author Jason
- *         Time: 7/28/2014
- *         The implementation for entitlement related APIs
+ * Time: 7/28/2014
+ * The implementation for entitlement related APIs
  */
 public class EntitlementServiceImpl extends HttpClientBase implements EntitlementService {
 
@@ -174,6 +177,21 @@ public class EntitlementServiceImpl extends HttpClientBase implements Entitlemen
         } catch (Exception ignore) {
         }
         return null;
+    }
+
+    @Override
+    public void getBinariesUrl(Entitlement entitlement) throws Exception {
+        if (entitlement.getBinaries() == null) {
+            return;
+        }
+        Set<String> key = entitlement.getBinaries().keySet();
+
+        for (Iterator it = key.iterator(); it.hasNext(); ) {
+            String id = (String) it.next();
+            String url = ConfigHelper.getSetting("defaultCommerceEndpointV1");
+            String host = url.replace("/v1/", "");
+            restApiCall(HTTPMethod.GET, host + entitlement.getBinaries().get(id), 200);
+        }
     }
 
     public Results<Entitlement> getEntitlements(String userId) throws Exception {

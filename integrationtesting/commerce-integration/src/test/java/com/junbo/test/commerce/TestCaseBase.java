@@ -7,14 +7,18 @@ package com.junbo.test.commerce;
 
 import com.junbo.test.buyerscenario.BuyerTestDataProvider;
 import com.junbo.test.buyerscenario.BuyerValidationHelper;
+import com.junbo.test.commerce.apiHelper.impl.utility.CommerceTestDataHelper;
+import com.junbo.test.commerce.apiHelper.impl.utility.CommerceValidationHelper;
 import com.junbo.test.common.ConfigHelper;
 
 /**
  * Created by weiyu_000 on 8/13/14.
  */
 public class TestCaseBase {
-    protected BuyerTestDataProvider testDataProvider = new BuyerTestDataProvider();
-    protected BuyerValidationHelper validationHelper = new BuyerValidationHelper();
+    protected CommerceTestDataHelper testDataProvider = new CommerceTestDataHelper();
+    protected CommerceValidationHelper validationHelper = new CommerceValidationHelper();
+    protected BuyerTestDataProvider buyerProvider = new BuyerTestDataProvider();
+    protected BuyerValidationHelper buyerValidionHelper = new BuyerValidationHelper();
 
     protected String offer_digital_normal1;
     protected String offer_digital_normal2;

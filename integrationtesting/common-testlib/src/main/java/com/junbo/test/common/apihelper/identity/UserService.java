@@ -51,5 +51,6 @@ public interface UserService {
 
     String PostEmailVerification(String userId, String country, String locale, int expectedResponseCode) throws Exception;
 
+    String UpdateUserPersonalInfo(String uid, String userName, String password) throws Exception;
 
 }

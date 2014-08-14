@@ -64,7 +64,6 @@ public class BuyerValidationHelper extends BaseValidationHelper {
     }
 
     public void validateFreeOrderInfo(String uid, String orderId, Country country, Currency currency, boolean hasPhysicalGood) throws Exception {
-        String fulfillmentId = testDataProvider.getFulfilmentsByOrderId(orderId);
         Results<Entitlement> entitlementResults = testDataProvider.getEntitlementByUserId(uid);
 
         validateEntitlements(entitlementResults, 2);
@@ -95,7 +94,6 @@ public class BuyerValidationHelper extends BaseValidationHelper {
         } else if (!fulfilmentHistory.getEntitlements().isEmpty()) {
             throw new TestException("entitlement should be null");
         }
-
 
     }
 
@@ -208,13 +206,15 @@ public class BuyerValidationHelper extends BaseValidationHelper {
         throw new TestException("Can not find specific offer id in fulfilment item");
     }
 
-    public void validateEntitlements(Results<Entitlement> entitlementResults, int expectedCount) {
+    public void validateEntitlements(Results<Entitlement> entitlementResults, int expectedCount) throws Exception{
         List<Entitlement> entitlements = entitlementResults.getItems();
         for (int i = 0; i < entitlements.size(); i++) {
             Entitlement entitlement = entitlements.get(i);
+            testDataProvider.getBinariesUrl(entitlement);
             verifyEqual(true, entitlement.getIsActive(), "verify entitlement active is true");
             verifyEqual(false, entitlement.getIsBanned(), "verify entilement banned is false");
         }
+
     }
 
 
