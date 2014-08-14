@@ -7,15 +7,17 @@ package com.junbo.common.job.cache;
 
 import com.junbo.common.cloudant.client.CloudantUri;
 import com.junbo.common.memcached.JunboMemcachedClient;
-import com.junbo.configuration.ConfigService;
-import com.junbo.configuration.ConfigServiceManager;
 import net.spy.memcached.MemcachedClientIF;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Map;
 
 /**
  * CacheSnifferJob.
@@ -24,18 +26,21 @@ public class CacheSnifferJob implements InitializingBean {
     private static final Logger LOGGER = LoggerFactory.getLogger(CacheSnifferJob.class);
 
     private static MemcachedClientIF memcachedClient = JunboMemcachedClient.instance();
+
+    private static final String FEED_SEPARATOR = "\r\n";
+    private static final String MEMCACHED_EXPIRATION_KEY = "common.memcached.expiration";
+    private static final String SEQ_KEY = "seq";
+    private static final String ID_KEY = "id";
+
     private Integer expiration;
-    private Integer maxEntitySize;
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        ConfigService configService = ConfigServiceManager.instance();
+        // initialize configuration
+        this.expiration = SnifferUtils.safeParseInt(SnifferUtils.getConfig(MEMCACHED_EXPIRATION_KEY));
 
-        String strMaxEntitySize = configService.getConfigValue("common.memcached.maxentitysize");
-        String strExpiration = configService.getConfigValue("common.memcached.expiration");
-
-        this.expiration = safeParseInt(strExpiration);
-        this.maxEntitySize = safeParseInt(strMaxEntitySize);
+        // start listening cloudant change feed
+        listen();
     }
 
     private void listen() {
@@ -54,28 +59,60 @@ public class CacheSnifferJob implements InitializingBean {
                 }
 
                 // listen database continuous feed
-                listenDatabaseChanges(cloudantUri, database);
+                listenDatabaseChanges(cloudantUri, database, lastChange);
             }
         }
     }
 
-    private void listenDatabaseChanges(CloudantUri cloudantUri, String database) {
+    private void listenDatabaseChanges(final CloudantUri cloudantUri, final String database, final String lastChange) {
         String threadName = "cloudant-listener-" + database;
 
         new Thread(new Runnable() {
             public void run() {
-                //HttpClient httpclient = HttpClientBuilder.create().build();
+                InputStream feed = CloudantSniffer.instance().getChangeFeed(cloudantUri, database, lastChange);
 
+                BufferedReader reader = new BufferedReader(new InputStreamReader(feed));
+                String change;
+                while (true) {
+                    try {
+                        change = reader.readLine();
+
+                        if (change != null) {
+                            handleChange(cloudantUri, database, change);
+                        }
+                    } catch (Exception e) {
+                        LOGGER.error("Error occurred during receiving cloundant change feed.", e);
+                    }
+                }
             }
         }, threadName).start();
     }
 
-    private Integer safeParseInt(String str) {
-        if (StringUtils.isEmpty(str)) {
-            return null;
+    private void handleChange(CloudantUri cloudantUri, String database, String change) {
+        LOGGER.debug("Receive change feed " + change);
+
+        if (FEED_SEPARATOR.equals(change) || StringUtils.isEmpty(change)) {
+            LOGGER.info("Invalid change feed payload.");
+            return;
         }
 
-        return Integer.parseInt(str);
+        Map<String, Object> payload = SnifferUtils.parse(change, Map.class);
+
+        // update last seq in memcached
+        Object seqObj = payload.get(SEQ_KEY);
+        String seq = seqObj == null ? null : seqObj.toString();
+
+        updateCache(buildLastChangeKey(cloudantUri, database), seq);
+
+        // evict entity cache
+        Object entityId = payload.get(ID_KEY);
+
+        if (entityId != null) {
+            String entityKey = entityId.toString() + ":" + database + ":" + cloudantUri.getDc();
+            deleteCache(entityKey);
+        }
+
+        return;
     }
 
     private void updateCache(String key, String value) {
@@ -98,6 +135,16 @@ public class CacheSnifferJob implements InitializingBean {
         return (String) memcachedClient.get(key);
     }
 
+    void deleteCache(String key) {
+        checkCache(key);
+
+        try {
+            memcachedClient.delete(key).get();
+        } catch (Exception e) {
+            LOGGER.warn("Error deleting from memcached.", e);
+        }
+    }
+
     private boolean checkCache(String key) {
         if (memcachedClient == null) {
             LOGGER.warn("Memcached client should not be null.");
@@ -113,10 +160,9 @@ public class CacheSnifferJob implements InitializingBean {
     }
 
     private String buildLastChangeKey(CloudantUri uri, String database) {
-        return uri.getValue() + "#" + isNull(uri.getUsername(), "") + "#" + database;
-    }
-
-    private String isNull(String input, String replace) {
-        return input == null ? replace : input;
+        return String.format("%s/%s/%s/lastseq",
+                uri.getValue(),
+                SnifferUtils.isNull(uri.getUsername(), ""),
+                database);
     }
 }

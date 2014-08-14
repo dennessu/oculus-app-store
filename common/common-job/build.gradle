@@ -2,6 +2,8 @@ apply plugin: 'groovy'
 
 dependencies {
     compile (libraries.quartz_scheduler)
+    compile (libraries.http_client)
+    compile (libraries.http_core)
 
     compile junboProject(':common-sharding')
 }
