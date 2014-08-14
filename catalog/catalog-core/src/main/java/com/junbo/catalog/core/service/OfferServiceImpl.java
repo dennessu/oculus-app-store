@@ -144,7 +144,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     public List<OfferRevision> getRevisions(OfferRevisionsGetOptions options) {
         if (options.getTimestamp()!=null) {
             if (CollectionUtils.isEmpty(options.getOfferIds())) {
-                AppErrorException exception = AppCommonErrors.INSTANCE.parameterInvalid("offerId must be specified when timeInMillis is present.").exception();
+                AppErrorException exception = AppCommonErrors.INSTANCE.parameterInvalid("offerId", "offerId must be specified when timeInMillis is present.").exception();
                 LOGGER.error("Invalid request. ", exception);
                 throw exception;
             }

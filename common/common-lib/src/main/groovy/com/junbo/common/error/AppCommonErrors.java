@@ -52,8 +52,11 @@ public interface AppCommonErrors {
     @ErrorDef(httpStatusCode = 400, code = "001", message = "Input Error", field = "{0}", reason = "Query parameter is required")
     AppError parameterRequired(String paraName);
 
+    @ErrorDef(httpStatusCode = 400, code = "001", message = "Input Error", field = "{0}", reason = "Query parameter is invalid.")
+    AppError parameterInvalid(String field);
+
     @ErrorDef(httpStatusCode = 400, code = "001", message = "Input Error", field = "{0}", reason = "Query parameter is invalid. {1}")
-    AppError parameterInvalid(String message);
+    AppError parameterInvalid(String field, String message);
 
     @ErrorDef(httpStatusCode = 409, code = "002", message = "Input Validation Failure", field = "{0}", reason = "Field is not writable")
     AppError fieldNotWritable(String field);

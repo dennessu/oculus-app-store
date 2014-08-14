@@ -57,7 +57,7 @@ class UserPinValidatorImpl implements UserPinValidator {
                 }
 
                 if (userId != userPin.userId) {
-                    throw AppCommonErrors.INSTANCE.parameterInvalid('userId and userPinId doesn\'t match.').exception()
+                    throw AppCommonErrors.INSTANCE.parameterInvalid('userId', 'userId and userPin.userId doesn\'t match.').exception()
                 }
 
                 return Promise.pure(userPin)

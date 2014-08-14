@@ -55,7 +55,7 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
                 }
 
                 if (userId != userPassword.userId) {
-                    throw AppCommonErrors.INSTANCE.parameterInvalid('userId and userPasswordId doesn\'t match.').exception()
+                    throw AppCommonErrors.INSTANCE.parameterInvalid('userId', 'userId and userPassword.userId doesn\'t match.').exception()
                 }
 
                 return Promise.pure(userPassword)

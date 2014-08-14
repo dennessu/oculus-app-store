@@ -134,7 +134,7 @@ class UserValidatorImpl implements UserValidator {
         }
 
         if (options.username != null && options.groupId != null) {
-            throw AppCommonErrors.INSTANCE.parameterInvalid('username and groupId can\'t search together.').exception()
+            throw AppCommonErrors.INSTANCE.parameterInvalid('username and groupId', 'username and groupId can\'t search together.').exception()
         }
 
         return Promise.pure(null)

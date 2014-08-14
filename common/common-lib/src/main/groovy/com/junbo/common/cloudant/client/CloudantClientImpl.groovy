@@ -57,17 +57,7 @@ class CloudantClientImpl implements CloudantClientInternal {
             CloudantId.validate(entity.cloudantId)
         }
         return executeRequest(dbUri, HttpMethod.POST, '', [:], entity).then({ Response response ->
-            if (response.statusCode != HttpStatus.CREATED.value()) {
-                CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
-
-                if (response.statusCode == HttpStatus.CONFLICT.value()) {
-                    logger.error("Failed to save object to CloudantDB. db: $dbUri, error: $cloudantError.error, reason: $cloudantError.reason");
-                    throw AppCommonErrors.INSTANCE.updateConflict(dbUri.dbName, entity.cloudantId, entity.cloudantRev).exception();
-                }
-
-                throw new CloudantException("Failed to save object to CloudantDB, error: $cloudantError.error," +
-                        " reason: $cloudantError.reason")
-            }
+            checkWriteErrors("create", dbUri, entity, response)
 
             def cloudantResponse = marshaller.unmarshall(response.responseBody, CloudantResponse)
 
@@ -85,7 +75,12 @@ class CloudantClientImpl implements CloudantClientInternal {
         return executeRequest(dbUri, HttpMethod.GET, urlEncode(id), [:], null).then({ Response response ->
 
             if (response.statusCode != HttpStatus.OK.value()) {
-                return Promise.pure(null)
+                if (response.statusCode == HttpStatus.NOT_FOUND.value()) {
+                    return Promise.pure(null)
+                }
+                CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
+                logger.error("Failed to get object from CloudantDB. db: $dbUri, error: $cloudantError.error, reason: $cloudantError.reason")
+                throw new CloudantException("Failed to get object from Cloudant, error: $cloudantError.error, reason: $cloudantError.reason")
             }
 
             if (response.responseBody == null) {
@@ -102,17 +97,7 @@ class CloudantClientImpl implements CloudantClientInternal {
         entity.setCloudantId(entity.getId().toString())
         CloudantId.validate(entity.cloudantId)
         return executeRequest(dbUri, HttpMethod.PUT, urlEncode(entity.cloudantId), [:], entity).then({ Response response ->
-            if (response.statusCode != HttpStatus.CREATED.value()) {
-                CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
-
-                if (response.statusCode == HttpStatus.CONFLICT.value()) {
-                    logger.error("Failed to update object to CloudantDB. db: $dbUri, error: $cloudantError.error, reason: $cloudantError.reason");
-                    throw AppCommonErrors.INSTANCE.updateConflict(dbUri.dbName, entity.cloudantId, entity.cloudantRev).exception();
-                }
-
-                throw new CloudantException("Failed to update object to Cloudant, error: $cloudantError.error," +
-                        " reason: $cloudantError.reason")
-            }
+            checkWriteErrors("update", dbUri, entity, response)
 
             def cloudantResponse = marshaller.unmarshall(response.responseBody, CloudantResponse)
 
@@ -132,17 +117,7 @@ class CloudantClientImpl implements CloudantClientInternal {
             entity.setCloudantId(entity.getId().toString())
             CloudantId.validate(entity.cloudantId)
             return executeRequest(dbUri, HttpMethod.DELETE, urlEncode(entity.cloudantId), ['rev': entity.cloudantRev], null).then({ Response response ->
-                if (response.statusCode != HttpStatus.OK.value() && response.statusCode != HttpStatus.NOT_FOUND.value()) {
-                    CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
-
-                    if (response.statusCode == HttpStatus.CONFLICT.value()) {
-                        logger.error("Failed to delete object to CloudantDB. db: $dbUri, error: $cloudantError.error, reason: $cloudantError.reason");
-                        throw AppCommonErrors.INSTANCE.updateConflict(dbUri.dbName, entity.cloudantId, entity.cloudantRev).exception();
-                    }
-
-                    throw new CloudantException("Failed to delete object from Cloudant, error: $cloudantError.error," +
-                            " reason: $cloudantError.reason")
-                }
+                checkWriteErrors("delete", dbUri, entity, response)
                 return Promise.pure(null);
             })
         }
@@ -167,12 +142,7 @@ class CloudantClientImpl implements CloudantClientInternal {
         }
 
         return executeRequest(dbUri, HttpMethod.GET, '_all_docs', query, null).then { Response response ->
-            if (response.statusCode != HttpStatus.OK.value()) {
-                CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
-
-                throw new CloudantException("Failed to execute get all operation, error: $cloudantError.error," +
-                        " reason: $cloudantError.reason")
-            }
+            checkViewErrors("get all", dbUri, "_all_docs", response)
 
             def result = (CloudantQueryResult)marshaller.unmarshall(response.responseBody, CloudantQueryResult, CloudantQueryResult.AllResultEntity, JsonNode)
 
@@ -222,13 +192,7 @@ class CloudantClientImpl implements CloudantClientInternal {
         }
 
         return executeRequest(dbUri, HttpMethod.GET, Utils.combineUrl(VIEW_PATH, viewName), query, null).then({ Response response ->
-
-            if (response.statusCode != HttpStatus.OK.value()) {
-                CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
-                throw new CloudantException("Failed to query the view $viewName, error: $cloudantError.error," +
-                        " reason: $cloudantError.reason")
-            }
-
+            checkViewErrors("query view", dbUri, viewName, response)
             return Promise.pure(marshaller.unmarshall(response.responseBody, CloudantQueryResult, String, entityClass))
         })
     }
@@ -256,13 +220,7 @@ class CloudantClientImpl implements CloudantClientInternal {
         query.put('reduce', 'false')
 
         return executeRequest(dbUri, HttpMethod.GET, Utils.combineUrl(VIEW_PATH, viewName), query, null).then({ Response response ->
-
-            if (response.statusCode != HttpStatus.OK.value()) {
-                CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
-                throw new CloudantException("Failed to query the view $viewName, error: $cloudantError.error," +
-                        " reason: $cloudantError.reason")
-            }
-
+            checkViewErrors("query view", dbUri, viewName, response)
             return Promise.pure(marshaller.unmarshall(response.responseBody, CloudantQueryResult, String, entityClass))
         })
     }
@@ -277,12 +235,7 @@ class CloudantClientImpl implements CloudantClientInternal {
         query.put('reduce', 'true')
 
         return executeRequest(dbUri, HttpMethod.GET, Utils.combineUrl(VIEW_PATH, viewName), query, null).then { Response response ->
-
-            if (response.statusCode != HttpStatus.OK.value()) {
-                CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
-                throw new CloudantException("Failed to query the view $viewName, error: $cloudantError.error," +
-                        " reason: $cloudantError.reason")
-            }
+            checkViewErrors("query view total", dbUri, viewName, response)
 
             CloudantReduceQueryResult result = marshaller.unmarshall(response.responseBody, CloudantReduceQueryResult)
             if (CollectionUtils.isEmpty(result.rows) || result.rows.size() != 1) {
@@ -318,13 +271,7 @@ class CloudantClientImpl implements CloudantClientInternal {
         query.put('reduce', 'false')
 
         return executeRequest(dbUri, HttpMethod.GET, Utils.combineUrl(VIEW_PATH, viewName), query, null).then({ Response response ->
-
-            if (response.statusCode != HttpStatus.OK.value()) {
-                CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
-                throw new CloudantException("Failed to query the view $viewName, error: $cloudantError.error," +
-                        " reason: $cloudantError.reason")
-            }
-
+            checkViewErrors("query view", dbUri, viewName, response)
             return Promise.pure(marshaller.unmarshall(response.responseBody, CloudantQueryResult, String, entityClass))
         })
     }
@@ -339,12 +286,7 @@ class CloudantClientImpl implements CloudantClientInternal {
         )
 
         return executeRequest(dbUri, HttpMethod.POST, Utils.combineUrl(SEARCH_PATH, searchName), [:], searchRequest).then({ Response response ->
-            if (response.statusCode != HttpStatus.OK.value()) {
-                CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
-                throw new CloudantException("Failed to query the view $searchName, error: $cloudantError.error," +
-                        " reason: $cloudantError.reason")
-            }
-
+            checkViewErrors("search", dbUri, searchName, response)
             return Promise.pure(marshaller.unmarshall(response.responseBody, CloudantQueryResult, String, entityClass))
         })
     }
@@ -466,6 +408,37 @@ class CloudantClientImpl implements CloudantClientInternal {
 
     private static String urlEncode(String id) {
         return URLEncoder.encode(id, "UTF-8")
+    }
+
+    private static void checkViewErrors(String verb, CloudantDbUri dbUri, String viewName, Response response) {
+        if (response.statusCode != HttpStatus.OK.value()) {
+            CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
+
+            if (response.statusCode == HttpStatus.BAD_REQUEST.value()) {
+                if (cloudantError?.reason == "Invalid bookmark parameter supplied") {
+                    throw AppCommonErrors.INSTANCE.parameterInvalid("cursor").exception();
+                }
+            }
+
+            logger.error("Failed to $verb for view $viewName in CloudantDB. db: $dbUri, error: $cloudantError.error, reason: $cloudantError.reason")
+            throw new CloudantException("Failed to $verb for view $viewName, error: $cloudantError.error, reason: $cloudantError.reason")
+        }
+    }
+
+    private static void checkWriteErrors(String verb, CloudantDbUri dbUri, CloudantEntity entity, Response response) {
+        if (response.statusCode != HttpStatus.OK.value() &&
+                response.statusCode != HttpStatus.CREATED.value() &&
+                response.statusCode != HttpStatus.ACCEPTED.value()) {
+            CloudantError cloudantError = marshaller.unmarshall(response.responseBody, CloudantError)
+
+            if (response.statusCode == HttpStatus.CONFLICT.value()) {
+                logger.error("Failed to $verb object to CloudantDB. db: $dbUri, error: $cloudantError.error, reason: $cloudantError.reason");
+                throw AppCommonErrors.INSTANCE.updateConflict(dbUri.dbName, entity.cloudantId, entity.cloudantRev).exception();
+            }
+
+            throw new CloudantException("Failed to $verb object to Cloudant, error: $cloudantError.error," +
+                    " reason: $cloudantError.reason")
+        }
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

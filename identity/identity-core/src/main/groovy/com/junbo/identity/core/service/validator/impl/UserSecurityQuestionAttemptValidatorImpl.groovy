@@ -69,7 +69,7 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
             }
 
             if (userId != attempt.userId) {
-                throw AppCommonErrors.INSTANCE.parameterInvalid('userId and attemptId doesn\'t match').exception()
+                throw AppCommonErrors.INSTANCE.parameterInvalid('userId', 'userId and attempt.userId doesn\'t match').exception()
             }
 
             return Promise.pure(attempt)
