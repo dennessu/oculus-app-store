@@ -53,6 +53,10 @@ public class postCredential {
                         Math.abs(RandomHelper.randomInt()) % 1000 +
                         RandomHelper.randomAlphabetic(4).toLowerCase());
         Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = Identity.UserPinCredentialPostDefault(user.getId(), null, IdentityModel.DefaultPin(), true);
+        response.close();
     }
 
     @Test(groups = "dailies")
@@ -119,5 +123,42 @@ public class postCredential {
         response.close();
 
         Identity.UserCredentialPostDefault(user.getId(), newPassword, randomPassword);
+    }
+
+    @Test(groups = "dailies")
+    // https://oculus.atlassian.net/browse/SER-463
+    public void testInvalidPin() throws Exception {
+        User user = Identity.UserPostDefault();
+        String password = IdentityModel.DefaultPassword();
+        CloseableHttpResponse response = Identity.UserCredentialPostDefault(user.getId(), null, password);
+        Validator.Validate("validate response error code", 201, response.getStatusLine().getStatusCode());
+        response.close();
+
+        response = Identity.UserPinCredentialPostDefault(user.getId(), null, RandomHelper.randomNumeric(10), false);
+        Validator.Validate("Validate pin post response error code", 400, response.getStatusLine().getStatusCode());
+        String errorMessage = "Invalid Pin Pattern";
+        Validator.Validate("Validate pin post response error Message", true,
+                EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+        response.close();
+
+        response = Identity.UserPinCredentialPostDefault(user.getId(), null, IdentityModel.DefaultPin(), true);
+        response.close();
+
+        response = Identity.UserPinCredentialPostDefault(user.getId(), IdentityModel.DefaultPassword(), IdentityModel.DefaultPin(), false);
+        Validator.Validate("Validate pin change response error code", 412, response.getStatusLine().getStatusCode());
+        errorMessage = "User Password Incorrect";
+        Validator.Validate("Validate pin change response error message", true,
+                EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+        response.close();
+
+        response = Identity.UserPinCredentialPostDefault(user.getId(), password, IdentityModel.DefaultPin(), true);
+        response.close();
+
+        response = Identity.UserPinCredentialPostDefault(user.getId(), password, RandomHelper.randomNumeric(10), false);
+        Validator.Validate("Validate pin post response error code", 400, response.getStatusLine().getStatusCode());
+        errorMessage = "Invalid Pin Pattern";
+        Validator.Validate("Validate pin post response error Message", true,
+                EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+        response.close();
     }
 }

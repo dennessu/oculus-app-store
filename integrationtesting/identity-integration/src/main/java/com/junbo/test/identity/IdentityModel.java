@@ -127,6 +127,11 @@ public class IdentityModel {
         return password;
     }
 
+    public static String DefaultPin() throws Exception {
+        String pin = RandomHelper.randomNumeric(4);
+        return pin;
+    }
+
     public static Locale DefaultLocale() throws Exception {
         Locale locale = new Locale();
         locale.setLocaleCode(DefaultLocale);
@@ -230,6 +235,16 @@ public class IdentityModel {
         userCredential.setCurrentPassword(oldPassword);
         userCredential.setValue(password);
         userCredential.setType("PASSWORD");
+        userCredential.setChangeAtNextLogin(false);
+        return userCredential;
+    }
+
+    public static UserCredential DefaultUserPin(UserId userId, String oldPassword, String pin) throws Exception {
+        UserCredential userCredential = new UserCredential();
+        userCredential.setUserId(userId);
+        userCredential.setCurrentPassword(oldPassword);
+        userCredential.setValue(pin);
+        userCredential.setType("PIN");
         userCredential.setChangeAtNextLogin(false);
         return userCredential;
     }

@@ -33,8 +33,7 @@
     <bean id="userPinValidator" class="com.junbo.identity.core.service.validator.impl.UserPinValidatorImpl">
         <property name="userRepository" ref="userRepository"/>
         <property name="userPinRepository" ref="userPinRepository"/>
-        <property name="valueMinLength" value="4"/>
-        <property name="valueMaxLength" value="255"/>
+        <property name="allowedPattern" value="[0-9]{4}" />
         <property name="credentialHashFactory" ref="credentialHashFactory" />
         <property name="currentCredentialVersion" value="${identity.conf.currentCredentialVersion}" />
     </bean>

@@ -424,6 +424,21 @@ public class Identity {
         return response;
     }
 
+    public static CloseableHttpResponse UserPinCredentialPostDefault(UserId userId, String oldPassword,
+                                                                     String pin, Boolean validReponse) throws Exception {
+        UserCredential pinCredential = IdentityModel.DefaultUserPin(userId, oldPassword, pin);
+        List<NameValuePair> nvps = new ArrayList<>();
+        nvps.add(new BasicNameValuePair("Authorization", httpAuthorizationHeader));
+        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
+                IdentityV1UserURI + "/" + GetHexLongId(userId.getValue()) + "/change-credentials",
+                JsonHelper.JsonSerializer(pinCredential), HttpclientHelper.HttpRequestType.post, nvps);
+        if (validReponse) {
+            Validator.Validate("validate response code", 201, response.getStatusLine().getStatusCode());
+        }
+
+        return response;
+    }
+
     public static CloseableHttpResponse UserCredentialAttemptesPostDefault(
             String userName, String password) throws Exception {
         return UserCredentialAttemptesPostDefault(userName, password, true);
