@@ -9,7 +9,14 @@ import com.junbo.identity.spec.v1.model.Currency;
 import com.junbo.identity.spec.v1.model.CurrencyLocaleKey;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.Validator;
-import org.testng.annotations.*;
+import com.junbo.test.common.property.Component;
+import com.junbo.test.common.property.Priority;
+import com.junbo.test.common.property.Property;
+import com.junbo.test.common.property.Status;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +43,19 @@ public class postCurrency {
         HttpclientHelper.CloseHttpClient();
     }
 
+    @Property(
+            priority = Priority.BVT,
+            component = Component.Identity,
+            owner = "JieFeng",
+            status = Status.Enable,
+            description = "Test Currency POST/PUT/GET",
+            environment = "onebox",
+            steps = {
+                    "1. post a currency" +
+                 "/n 2. get the currency" +
+                 "/n 3. update the currency"
+            }
+    )
     @Test(groups = "bvt")
     public void postCurrency() throws Exception {
         Identity.CurrencyDeleteByCurrencyCode(IdentityModel.DefaultCurrency);

@@ -15,11 +15,18 @@ import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.JsonHelper;
 import com.junbo.test.common.RandomHelper;
 import com.junbo.test.common.Validator;
+import com.junbo.test.common.property.Component;
+import com.junbo.test.common.property.Priority;
+import com.junbo.test.common.property.Property;
+import com.junbo.test.common.property.Status;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,6 +55,20 @@ public class postCommunication {
         HttpclientHelper.CloseHttpClient();
     }
 
+    @Property(
+            priority = Priority.BVT,
+            component = Component.Identity,
+            owner = "JieFeng",
+            status = Status.Enable,
+            description = "Test communication POST/PUT/GET",
+            environment = "onebox",
+            steps = {
+                    "1. post a communication" +
+                 "/n 2. get the communication" +
+                 "/n 3. update the communication" +
+                 "/n 4. search the communication"
+            }
+    )
     @Test(groups = "bvt")
     public void testCommunication() throws Exception {
         Communication communication = IdentityModel.DefaultCommunication();
@@ -59,6 +80,17 @@ public class postCommunication {
         assert results.getItems().size() != 0;
     }
 
+    @Property(
+            priority = Priority.Dailies,
+            component = Component.Identity,
+            owner = "JieFeng",
+            status = Status.Enable,
+            description = "Test communication Not valid Locale POST",
+            environment = "onebox",
+            steps = {
+                    "1. post a communication that contains invalid locale"
+            }
+    )
     @Test(groups = "dailies")
     public void testCommunicationNotValidLocale() throws Exception {
         Communication communication = IdentityModel.DefaultCommunication();
@@ -84,6 +116,18 @@ public class postCommunication {
         Identity.CommunicationDefault(communication);
     }
 
+    @Property(
+            priority = Priority.Dailies,
+            component = Component.Identity,
+            owner = "JieFeng",
+            status = Status.Enable,
+            description = "Test posted communication Get by Locale",
+            environment = "onebox",
+            steps = {
+                    "1. post a communication" +
+                 "/n 2. test get communication by locale"
+            }
+    )
     @Test(groups = "dailies")
     public void testCommunicationGet() throws Exception {
         Communication communication = new Communication();
@@ -141,6 +185,18 @@ public class postCommunication {
         Validator.Validate("Validate Locale name value", communicationLocale.getName(), "SilkCloudTest_Name_enUS");
     }
 
+    @Property(
+            priority = Priority.Dailies,
+            component = Component.Identity,
+            owner = "JieFeng",
+            status = Status.Enable,
+            description = "Test communication Search",
+            environment = "onebox",
+            steps = {
+                    "1. post a communication" +
+                 "/n 2. search the communication"
+            }
+    )
     @Test(groups = "dailies")
     public void testCommunicationSearch() throws Exception {
         Communication communication = IdentityModel.DefaultCommunication();
