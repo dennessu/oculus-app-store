@@ -143,7 +143,7 @@ class CsrLogValidatorImpl implements CsrLogValidator {
                 if (csrLog.countryCode == null) {
                     csrLog.countryCode = user.countryOfResidence?.value
                 }
-                csrLog.username = user.username
+                csrLog.username = identityService.getUserNameByUser(user)
                 return Promise.pure(null)
             }
         }
