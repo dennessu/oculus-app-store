@@ -52,8 +52,32 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
 
     @Override
     public Promise<Results<ItemRevision>> getItemRevisions(final ItemRevisionsGetOptions options) {
+        checkRights(options);
+
+        List<ItemRevision> revisions = itemService.getRevisions(options);
+        for (final ItemRevision revision : revisions) {
+            revision.setLocaleAccuracy(LocaleAccuracy.HIGH.name());
+            if (!StringUtils.isEmpty(options.getLocale())) {
+                revision.setLocaleAccuracy(getLocaleAccuracy(revision.getLocales().get(options.getLocale())));
+                revision.setLocales(new HashMap<String, ItemRevisionLocaleProperties>() {{
+                        put(options.getLocale(), getLocaleProperties(revision, options.getLocale()));
+                }});
+            }
+        }
+        Results<ItemRevision> results = new Results<>();
+        results.setItems(revisions);
+        Link nextLink = new Link();
+        nextLink.setHref(buildNextUrl(options));
+        results.setNext(nextLink);
+        results.setTotal(options.getTotal());
+        return Promise.pure(results);
+    }
+
+    private void checkRights(final ItemRevisionsGetOptions options) {
         boolean isDeveloper = isDeveloper();
-        if (!isDeveloper || options.getDeveloperId() == null) {
+        if (isAdmin()) {
+            return;
+        } else if (!isDeveloper || options.getDeveloperId() == null) {
             // If the status is not provided, use default APPROVED filter
             if (options.getStatus() == null) {
                 options.setStatus(Status.APPROVED.name());
@@ -62,14 +86,14 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
                 // (falling into this branch means the options.getDeveloperId() is null)
                 if (isDeveloper) {
                     throw AppCommonErrors.INSTANCE.fieldRequired("developerId").exception();
-                // if a non-developer try to get non-APPROVED item revision, throw forbidden exception.
+                    // if a non-developer try to get non-APPROVED item revision, throw forbidden exception.
                 } else {
                     throw AppCommonErrors.INSTANCE.forbiddenWithMessage("User is not allowed to" +
                             " get item revisions that have not been approved").exception();
                 }
             }
-        // This is a developer and the developerId is provided
-        // Do the authorization check.
+            // This is a developer and the developerId is provided
+            // Do the authorization check.
         } else {
             AuthorizeCallback<Item> callback = itemAuthorizeCallbackFactory.create(options.getDeveloperId());
             RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<ItemRevision>>() {
@@ -96,24 +120,6 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
                 }
             });
         }
-
-        List<ItemRevision> revisions = itemService.getRevisions(options);
-        for (final ItemRevision revision : revisions) {
-            revision.setLocaleAccuracy(LocaleAccuracy.HIGH.name());
-            if (!StringUtils.isEmpty(options.getLocale())) {
-                revision.setLocaleAccuracy(getLocaleAccuracy(revision.getLocales().get(options.getLocale())));
-                revision.setLocales(new HashMap<String, ItemRevisionLocaleProperties>() {{
-                        put(options.getLocale(), getLocaleProperties(revision, options.getLocale()));
-                }});
-            }
-        }
-        Results<ItemRevision> results = new Results<>();
-        results.setItems(revisions);
-        Link nextLink = new Link();
-        nextLink.setHref(buildNextUrl(options));
-        results.setNext(nextLink);
-        results.setTotal(options.getTotal());
-        return Promise.pure(results);
     }
 
     private String buildNextUrl(ItemRevisionsGetOptions options) {
@@ -318,6 +324,10 @@ public class ItemRevisionResourceImpl implements ItemRevisionResource {
         } else {
             return LocaleAccuracy.HIGH.name();
         }
+    }
+
+    private boolean isAdmin() {
+        return AuthorizeContext.hasAnyScope(new String[] {"catalog.admin"});
     }
 
     private boolean isDeveloper() {
