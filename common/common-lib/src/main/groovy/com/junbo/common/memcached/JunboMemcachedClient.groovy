@@ -65,11 +65,12 @@ class JunboMemcachedClient implements InitializingBean {
         if (enabled) {
             def connectionFactoryBuilder = new ConnectionFactoryBuilder()
                     .setProtocol(ConnectionFactoryBuilder.Protocol.BINARY)
-                    .setFailureMode(FailureMode.Redistribute)
+                    .setFailureMode(FailureMode.Cancel)
                     .setLocatorType(ConnectionFactoryBuilder.Locator.CONSISTENT)
                     .setHashAlg(DefaultHashAlgorithm.KETAMA_HASH)
                     .setOpTimeout(this.timeout)
                     .setOpQueueMaxBlockTime(this.timeout)
+                    .setUseNagleAlgorithm(false)
 
             if (!StringUtils.isEmpty(username)) {
                 def ad = new AuthDescriptor([ authType ] as String[],
