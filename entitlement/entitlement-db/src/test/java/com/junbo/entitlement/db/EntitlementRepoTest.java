@@ -49,6 +49,7 @@ public class EntitlementRepoTest extends AbstractTestNGSpringContextTests {
         Entitlement entitlement = buildAnEntitlement();
         Entitlement insertedEntitlement = entitlementRepository.insert(entitlement);
         Assert.assertEquals(insertedEntitlement.getUseCount(), entitlement.getUseCount());
+        Assert.assertEquals(Boolean.TRUE, entitlement.getIsActive());
     }
 
     @Test
@@ -127,6 +128,9 @@ public class EntitlementRepoTest extends AbstractTestNGSpringContextTests {
         //test page
         Results<Entitlement> list1 = entitlementRepository.getBySearchParam(searchParam, pageMetadata);
         Assert.assertEquals(list1.getItems().size(), 3);
+        for(Entitlement entitlement : list1.getItems()){
+            Assert.assertEquals(Boolean.TRUE, entitlement.getIsActive());
+        }
 
         pageMetadata.setBookmark(list1.getNext().getHref());
         List<Entitlement> list2 = entitlementRepository.getBySearchParam(searchParam, pageMetadata).getItems();
@@ -144,6 +148,9 @@ public class EntitlementRepoTest extends AbstractTestNGSpringContextTests {
         searchParam.setIsBanned(null);
         List<Entitlement> list8 = entitlementRepository.getBySearchParam(searchParam, pageMetadata).getItems();
         Assert.assertEquals(list8.size(), 1);
+        for(Entitlement entitlement : list8){
+            Assert.assertEquals(Boolean.TRUE, entitlement.getIsActive());
+        }
 
         //test type
         searchParam.setType("download");
