@@ -88,7 +88,7 @@ class CatalogTests(ut.TestBase):
             "developer": organization['self']
         })
 
-    def testDeveloper(self):
+    def testItemOfferE2EFlow(self):
         user1 = oauth.testRegister('identity catalog catalog.developer')
 
         # create the organization
@@ -236,9 +236,28 @@ class CatalogTests(ut.TestBase):
                            + '&developerId=' + organization1['self']['id'])
         assert results['total'] == 0
 
+        adminToken = oauth.getServiceAccessToken('catalog.admin')
+
+        # verify admin user can search item revision with filter status=DRAFT
+        results = curlJson('GET', ut.test_uri, '/v1/item-revisions?itemId=' + item['self']['id'], headers={
+            "Authorization": "Bearer " + adminToken
+        }, raiseOnError = False)
+        print results
+        assert results['total'] == 1
+
+        # submit item for review
+        itemRev['status'] = 'PENDING_REVIEW'
+        itemRev = curlJson('PUT', ut.test_uri, itemRev['self']['href'], headers = {
+            "Authorization": "Bearer " + user1.access_token
+        }, data = itemRev)
+
+        # verify admin user can search item revision with filter status=PENDING_REVIEW
+        results = curlJson('GET', ut.test_uri, '/v1/item-revisions?itemId=' + item['self']['id'] + "&status=PENDING_REVIEW",
+                           headers={ "Authorization": "Bearer " + adminToken}, raiseOnError = False)
+        assert results['total'] == 1
+
         # approve the item revision
         itemRev['status'] = 'APPROVED'
-        adminToken = oauth.getServiceAccessToken('catalog.admin')
         itemRev = curlJson('PUT', ut.test_uri, itemRev['self']['href'], headers = {
             "Authorization": "Bearer " + adminToken
         }, data = itemRev)
@@ -290,11 +309,17 @@ class CatalogTests(ut.TestBase):
         })
 
         # verify user1 can search user1's unpublished offer
-        results = curlJson('GET', ut.test_uri, '/v1/offers?itemId=' + item['self']['id']
+        results = curlJson('GET', ut.test_uri, '/v1/offers?offerId=' + offer['self']['id']
                            + '&publisherId=' + organization1['self']['id'], headers={
             "Authorization": "Bearer " + user1.access_token
         })
-        assert results['total'] == 0
+        assert results['total'] == 1
+
+        # verify admin can search user1's unpublished offer
+        results = curlJson('GET', ut.test_uri, '/v1/offers?offerId=' + offer['self']['id'], headers={
+            "Authorization": "Bearer " + adminToken
+        })
+        assert results['total'] == 1
 
         # verify user2 can't get user1's unpublished offer
         errorResp = curlJson('GET', ut.test_uri, offer['self']['href'], headers = {
@@ -303,7 +328,7 @@ class CatalogTests(ut.TestBase):
         assert errorResp['message'] == 'Resource Not Found'
 
         # verify user2 can't search user1's unpublished offer
-        results = curlJson('GET', ut.test_uri, '/v1/offers?itemId=' + item['self']['id']
+        results = curlJson('GET', ut.test_uri, '/v1/offers?offerId=' + offer['self']['id']
                            + '&publisherId=' + organization1['self']['id'], headers={
             "Authorization": "Bearer " + user2.access_token
         })
@@ -315,6 +340,12 @@ class CatalogTests(ut.TestBase):
             "Authorization": "Bearer " + user2.access_token
         }, raiseOnError = False)
         assert errorResp['message'] == 'Forbidden'
+
+        # verify admin can search user1's DRAFT offer revision
+        results = curlJson('GET', ut.test_uri, '/v1/offer-revisions?publisherId=' + organization1['self']['id'], headers={
+            "Authorization": "Bearer " + adminToken
+        })
+        assert results['total'] > 0
 
         # verify user2 can't search user1's DRAFT offer revision
         results = curlJson('GET', ut.test_uri, '/v1/offer-revisions?publisherId=' + organization1['self']['id'], headers={

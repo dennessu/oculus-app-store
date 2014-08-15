@@ -44,8 +44,23 @@ public class OfferResourceImpl implements OfferResource {
 
     @Override
     public Promise<Results<Offer>> getOffers(final OffersGetOptions options) {
+        checkRights(options);
+
+        List<Offer> offers = offerService.getOffers(options);
+        Results<Offer> results = new Results<>();
+        results.setItems(offers);
+        Link nextLink = new Link();
+        nextLink.setHref(buildNextUrl(options));
+        results.setNext(nextLink);
+        results.setTotal(options.getTotal());
+        return Promise.pure(results);
+    }
+
+    private void checkRights(final OffersGetOptions options) {
         boolean isDeveloper = isDeveloper();
-        if (!isDeveloper || options.getOwnerId() == null) {
+        if (isAdmin()) {
+            return;
+        } else if (!isDeveloper || options.getOwnerId() == null) {
             // If the published status is not provided, use default published=true filter
             if (options.getPublished() == null) {
                 options.setPublished(true);
@@ -54,14 +69,14 @@ public class OfferResourceImpl implements OfferResource {
                 // (falling into this branch means the options.getOwnerId() is null)
                 if (isDeveloper) {
                     throw AppCommonErrors.INSTANCE.fieldRequired("publisherId").exception();
-                // if a non-developer try to get unpublished offer, throw forbidden exception.
+                    // if a non-developer try to get unpublished offer, throw forbidden exception.
                 } else {
                     throw AppCommonErrors.INSTANCE.forbiddenWithMessage("User is not allowed to" +
                             " get offers that have not been published").exception();
                 }
             }
-        // This is a developer and the publisherId is provided
-        // Do the authorization check.
+            // This is a developer and the publisherId is provided
+            // Do the authorization check.
         } else {
             AuthorizeCallback<Offer> callback = offerAuthorizeCallbackFactory.create(options.getOwnerId());
             RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<Offer>>() {
@@ -83,15 +98,6 @@ public class OfferResourceImpl implements OfferResource {
                 }
             });
         }
-
-        List<Offer> offers = offerService.getOffers(options);
-        Results<Offer> results = new Results<>();
-        results.setItems(offers);
-        Link nextLink = new Link();
-        nextLink.setHref(buildNextUrl(options));
-        results.setNext(nextLink);
-        results.setTotal(options.getTotal());
-        return Promise.pure(results);
     }
 
     @Override
@@ -197,6 +203,10 @@ public class OfferResourceImpl implements OfferResource {
         }
 
         return builder.toTemplate();
+    }
+
+    private boolean isAdmin() {
+        return AuthorizeContext.hasAnyScope(new String[] {"catalog.admin"});
     }
 
     private boolean isDeveloper() {

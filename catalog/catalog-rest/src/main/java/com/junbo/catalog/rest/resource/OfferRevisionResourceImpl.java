@@ -52,8 +52,32 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
 
     @Override
     public Promise<Results<OfferRevision>> getOfferRevisions(final OfferRevisionsGetOptions options) {
+        checkRights(options);
+
+        List<OfferRevision> revisions = offerService.getRevisions(options);
+        for (final OfferRevision revision : revisions) {
+            revision.setLocaleAccuracy(LocaleAccuracy.HIGH.name());
+            if (!StringUtils.isEmpty(options.getLocale())) {
+                revision.setLocaleAccuracy(getLocaleAccuracy(revision.getLocales().get(options.getLocale())));
+                revision.setLocales(new HashMap<String, OfferRevisionLocaleProperties>() {{
+                    put(options.getLocale(), getLocaleProperties(revision, options.getLocale()));
+                }});
+            }
+        }
+        Results<OfferRevision> results = new Results<>();
+        results.setItems(revisions);
+        results.setTotal(options.getTotal());
+        Link nextLink = new Link();
+        nextLink.setHref(buildNextUrl(options));
+        results.setNext(nextLink);
+        return Promise.pure(results);
+    }
+
+    private void checkRights(final OfferRevisionsGetOptions options) {
         boolean isDeveloper = isDeveloper();
-        if (!isDeveloper || options.getPublisherId() == null) {
+        if (isAdmin()) {
+            return;
+        } else if (!isDeveloper || options.getPublisherId() == null) {
             // If the status is not provided, use default APPROVED filter
             if (options.getStatus() == null) {
                 options.setStatus(Status.APPROVED.name());
@@ -68,8 +92,8 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
                             " get offer revisions that have not been approved").exception();
                 }
             }
-        // This is a developer and the publisherId is provided
-        // Do the authorization check.
+            // This is a developer and the publisherId is provided
+            // Do the authorization check.
         } else  {
             AuthorizeCallback<Offer> callback = offerAuthorizeCallbackFactory.create(options.getPublisherId());
             RightsScope.with(authorizeService.authorize(callback), new Promise.Func0<Promise<OfferRevision>>() {
@@ -96,24 +120,6 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
                 }
             });
         }
-
-        List<OfferRevision> revisions = offerService.getRevisions(options);
-        for (final OfferRevision revision : revisions) {
-            revision.setLocaleAccuracy(LocaleAccuracy.HIGH.name());
-            if (!StringUtils.isEmpty(options.getLocale())) {
-                revision.setLocaleAccuracy(getLocaleAccuracy(revision.getLocales().get(options.getLocale())));
-                revision.setLocales(new HashMap<String, OfferRevisionLocaleProperties>() {{
-                    put(options.getLocale(), getLocaleProperties(revision, options.getLocale()));
-                }});
-            }
-        }
-        Results<OfferRevision> results = new Results<>();
-        results.setItems(revisions);
-        results.setTotal(options.getTotal());
-        Link nextLink = new Link();
-        nextLink.setHref(buildNextUrl(options));
-        results.setNext(nextLink);
-        return Promise.pure(results);
     }
 
     private String buildNextUrl(OfferRevisionsGetOptions options) {
@@ -320,6 +326,10 @@ public class OfferRevisionResourceImpl implements OfferRevisionResource {
         } else {
             return LocaleAccuracy.HIGH.name();
         }
+    }
+
+    private boolean isAdmin() {
+        return AuthorizeContext.hasAnyScope(new String[] {"catalog.admin"});
     }
 
     private boolean isDeveloper() {
