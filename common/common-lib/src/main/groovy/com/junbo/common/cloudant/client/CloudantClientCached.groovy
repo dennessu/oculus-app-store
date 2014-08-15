@@ -77,7 +77,7 @@ class CloudantClientCached implements CloudantClientInternal {
         CloudantId.validate(entity.cloudantId)
 
         return impl.cloudantPut(dbUri, entityClass, entity).recover { Throwable ex ->
-            deleteCache(dbUri, entity.cloudantId)
+            deleteCacheOnError(dbUri, entity.cloudantId)
             throw ex
         }.then { T result ->
             updateCache(dbUri, entityClass, result)
@@ -95,7 +95,7 @@ class CloudantClientCached implements CloudantClientInternal {
         CloudantId.validate(entity.cloudantId)
 
         return impl.cloudantDelete(dbUri, entityClass, entity).recover { Throwable ex ->
-            deleteCache(dbUri, entity.cloudantId)
+            deleteCacheOnError(dbUri, entity.cloudantId)
             throw ex
         }.then {
             deleteCache(dbUri, entity.cloudantId)
@@ -169,11 +169,16 @@ class CloudantClientCached implements CloudantClientInternal {
         }
         try {
             String object = (String) memcachedClient.get(getKey(dbUri, id))
-            T result = (T) marshaller.unmarshall(object, entityClass)
-            if (result != null && logger.isDebugEnabled()) {
-                logger.debug("Found {} rev {} from memcached.", result.cloudantId, result.cloudantRev)
+            try {
+                T result = (T) marshaller.unmarshall(object, entityClass)
+                if (result != null && logger.isDebugEnabled()) {
+                    logger.debug("Found {} rev {} from memcached.", result.cloudantId, result.cloudantRev)
+                }
+                return result
+            } catch (Exception ex) {
+                logger.warn("Error unmarshalling from memcached.", ex)
+                deleteCacheOnError(dbUri, id)
             }
-            return result
         } catch (Exception ex) {
             logger.warn("Error getting from memcached.", ex)
         }
@@ -206,7 +211,7 @@ class CloudantClientCached implements CloudantClientInternal {
             }
         } catch (Exception ex) {
             logger.warn("Error writing to memcached.", ex)
-            deleteCache(dbUri, entity.cloudantId)
+            deleteCacheOnError(dbUri, entity.cloudantId)
         }
     }
 
@@ -218,6 +223,18 @@ class CloudantClientCached implements CloudantClientInternal {
             memcachedClient.delete(getKey(dbUri, id)).get()
         } catch (Exception ex) {
             logger.warn("Error deleting from memcached.", ex)
+        }
+    }
+
+    void deleteCacheOnError(CloudantDbUri dbUri, String id) {
+        if (memcachedClient == null) {
+            return
+        }
+        try {
+            // async delete
+            memcachedClient.delete(getKey(dbUri, id))
+        } catch (Exception ex) {
+            logger.warn("Error deleting key on error from memcached.", ex)
         }
     }
 
