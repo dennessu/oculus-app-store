@@ -38,23 +38,22 @@ public class CacheSnifferJob implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         // initialize configuration
         this.expiration = SnifferUtils.safeParseInt(SnifferUtils.getConfig(MEMCACHED_EXPIRATION_KEY));
-
-        // start listening cloudant change feed
-        listen();
     }
 
-    private void listen() {
+    public void listen() {
+        LOGGER.info("Start listening cloundant DB change feed");
+
         List<CloudantUri> cloudantInstances = CloudantSniffer.instance().getCloudantInstances();
 
         for (CloudantUri cloudantUri : cloudantInstances) {
             List<String> databases = CloudantSniffer.instance().getAllDatabases(cloudantUri);
 
             for (String database : databases) {
-                // first try to get last change token from memcached
+                LOGGER.debug("Try to fetch last change token from memcached.");
                 String lastChange = getCache(buildLastChangeKey(cloudantUri, database));
 
                 if (StringUtils.isEmpty(lastChange)) {
-                    // then try to get last change token from cloudant changes feed
+                    LOGGER.debug("Last change token is missing in memcached, fetch from cloudant instead.");
                     lastChange = CloudantSniffer.instance().getLastChange(cloudantUri, database);
                 }
 
@@ -92,7 +91,7 @@ public class CacheSnifferJob implements InitializingBean {
         LOGGER.debug("Receive change feed " + change);
 
         if (FEED_SEPARATOR.equals(change) || StringUtils.isEmpty(change)) {
-            LOGGER.info("Invalid change feed payload.");
+            LOGGER.debug("Invalid change feed payload.");
             return;
         }
 
@@ -122,6 +121,7 @@ public class CacheSnifferJob implements InitializingBean {
 
         try {
             memcachedClient.set(key, this.expiration, value).get();
+            LOGGER.debug("Memcached updated successfully. [key]" + key + " [value]" + value);
         } catch (Exception e) {
             LOGGER.warn("Error writing to memcached.", e);
         }
@@ -140,6 +140,7 @@ public class CacheSnifferJob implements InitializingBean {
 
         try {
             memcachedClient.delete(key).get();
+            LOGGER.debug("Memcached deleted successfully. [key]" + key);
         } catch (Exception e) {
             LOGGER.warn("Error deleting from memcached.", e);
         }
