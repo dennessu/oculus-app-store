@@ -3,5 +3,5 @@
     "action" : "Welcome",
     "locale" : "en_US",
     "providerName" : "mandrill",
-    "placeholderNames" : [ "accountname" ]
+    "placeholderNames" : [ "name" , "link"]
 }

@@ -42,6 +42,7 @@ class ActionContextWrapper {
     public static final String CONSENT = 'consent'
     public static final String ERRORS = 'errors'
     public static final String USER = 'user'
+    public static final String USERNAME = 'username'
     public static final String USER_TFA = 'user_tfa'
     public static final String DOB = 'dob'
     public static final String GENDER = 'gender'
@@ -252,6 +253,14 @@ class ActionContextWrapper {
 
     void setUser(User user) {
         actionContext.flowScope[USER] = user
+    }
+
+    String getUsername() {
+        return (String) actionContext.flowScope[USERNAME]
+    }
+
+    void setUsername(String username) {
+        actionContext.flowScope[USERNAME] = username
     }
 
     Date getDob() {

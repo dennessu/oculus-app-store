@@ -128,7 +128,7 @@
                 <wf:action ref="createUserCredential"/>
                 <wf:action ref="createUserPii"/>
                 <wf:action ref="createUserTosAgreement"/>
-                <wf:action ref="sendAccountVerifyEmail"/>
+                <wf:action ref="sendWelcomeEmail"/>
             </wf:transition>
             <wf:transition on="next2" to="EMAIL_VERIFY_REQUIRED_VIEW">
                 <wf:action ref="validateRegister"/>
@@ -401,6 +401,10 @@
     </bean>
 
     <bean id="sendAccountVerifyEmail" class="com.junbo.oauth.core.action.SendAccountVerifyEmail">
+        <property name="userService" ref="userService" />
+    </bean>
+
+    <bean id="sendWelcomeEmail" class="com.junbo.oauth.core.action.SendWelcomeEmail">
         <property name="userService" ref="userService" />
     </bean>
 
