@@ -121,12 +121,33 @@ class UserResourceImpl implements UserResource {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
 
-                if (AuthorizeContext.hasScopes('csr') && AuthorizeContext.currentUserId != null) {
-                    csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.CountryUpdated,
-                            property: getUserNameStr(oldUser).get())).get()
-                }
-
                 user = userFilter.filterForPut(user, oldUser)
+
+                if (AuthorizeContext.hasScopes('csr') && AuthorizeContext.currentUserId != null) {
+                    // country updated
+                    if (user.countryOfResidence != oldUser.countryOfResidence) {
+                        csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.CountryUpdated,
+                                property: getUserNameStr(oldUser).get())).get()
+                    }
+
+                    // deactive account
+                    if (oldUser.status == 'ACTIVE' && (user.status == 'SUSPEND' || user.status == 'BANNED')) {
+                        csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.DeactiveAccount,
+                                property: getUserNameStr(oldUser).get())).get()
+                    }
+
+                    // reactive account
+                    if (user.status == 'ACTIVE' && (oldUser.status == 'SUSPEND' || oldUser.status == 'BANNED' || oldUser.status == 'DELETED')) {
+                        csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.ReactiveAccount,
+                                property: getUserNameStr(oldUser).get())).get()
+                    }
+
+                    // flag for deletion
+                    if (user.status == 'DELETED') {
+                        csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.FlagForDelection,
+                                property: getUserNameStr(oldUser).get())).get()
+                    }
+                }
 
                 return userValidator.validateForUpdate(user, oldUser).then {
                     return userRepository.update(user, oldUser).then { User newUser ->
