@@ -1,7 +1,7 @@
 {
   "scopes" : [ "identity", "identity.pii", "catalog", "catalog.developer", "openid", "scope.info", "commerce", "offline", "storeapi", "entitlement" ],
-  "client_id" : "smoketest",
-  "client_secret" : "224112E90935C8FA4E3F66B96FACE79B",
+  "client_id" : "K0ahunDI9mFPGgiMyEjHGc4q",
+  "client_secret" : "7E7CA35799394FFB30D1BFAC2A13A3E8#D680DDBE8291E110E3B7CCFA2201604651FB4D3DFBC18F98D1C0ADDBB93A2E9A3068721D6CC64CA0F61CCB176BBAACCA",
   "client_name" : "smoketest",
   "redirect_uris" : [ "http://localhost:8080" ],
   "default_redirect_uri" : "http://localhost:8080",
