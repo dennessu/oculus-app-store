@@ -166,6 +166,10 @@ def readConfigFile(dbName, env):
                 error("%s not found or empty in %s" % (option, configFilePath))
             return result
 
+        if readOption("intended_empty") == "true":
+            # intended empty config file
+            sys.exit(0)
+
         configFile = ConfigFile()
         configFile.dbName = dbName
         configFile.env = env
