@@ -1,7 +1,7 @@
 {
   "scopes" : [ "identity.admin" ],
   "client_id" : "cms-admin-portal",
-  "client_secret" : "E07C77DCE578D9AB9021F4C5896A1132#F2DD24E8E5578A5A1B589E824CB2C262",
+  "client_secret" : "107DF374173ABF42B43EEC0BA9A8BFDA#7B05C116DA736FA6480BFB1AE84376681DA00A6615CA3E5D8FA1193BE4D4415D7F28F954A492B948DEE2CAF524A63320",
   "client_name" : "cms-admin-portal",
   "default_scopes" : [ "identity.admin" ],
   "response_types" : [],
