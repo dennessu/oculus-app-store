@@ -49,7 +49,7 @@ public class EntitlementRepoTest extends AbstractTestNGSpringContextTests {
         Entitlement entitlement = buildAnEntitlement();
         Entitlement insertedEntitlement = entitlementRepository.insert(entitlement);
         Assert.assertEquals(insertedEntitlement.getUseCount(), entitlement.getUseCount());
-        Assert.assertEquals(Boolean.TRUE, entitlement.getIsActive());
+        Assert.assertEquals(Boolean.FALSE, insertedEntitlement.getIsActive());
     }
 
     @Test
@@ -129,7 +129,7 @@ public class EntitlementRepoTest extends AbstractTestNGSpringContextTests {
         Results<Entitlement> list1 = entitlementRepository.getBySearchParam(searchParam, pageMetadata);
         Assert.assertEquals(list1.getItems().size(), 3);
         for(Entitlement entitlement : list1.getItems()){
-            Assert.assertEquals(Boolean.TRUE, entitlement.getIsActive());
+            Assert.assertEquals(Boolean.FALSE, entitlement.getIsActive());
         }
 
         pageMetadata.setBookmark(list1.getNext().getHref());
