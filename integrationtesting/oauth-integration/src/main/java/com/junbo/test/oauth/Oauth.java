@@ -37,7 +37,7 @@ public class Oauth {
     public static final String DefaultAuthorizeURI = ConfigHelper.getSetting("defaultAuthorizeURI");
     public static final String DefaultClientId = ConfigHelper.getSetting("client_id");
     public static final String DefaultClientScopes = "identity";
-    public static final String DefaultClientSecret = "secret";
+    public static final String DefaultClientSecret = ConfigHelper.getSetting("client_secret");
     public static final String DefaultGrantType = "authorization_code";
     public static final String DefaultRedirectURI = ConfigHelper.getSetting("defaultRedirectURI");
     public static final String DefaultRegisterEvent = "register";
