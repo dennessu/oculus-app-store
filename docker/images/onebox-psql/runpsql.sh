@@ -14,15 +14,21 @@ if [[ ! -d $POSTGRESQL_DATA ]]; then
   mkdir -p $POSTGRESQL_DATA
 fi
 
-chown -R postgres $POSTGRESQL_LOG_DIR
-chown -R postgres $POSTGRESQL_DATA
-chmod -R 700 $POSTGRESQL_DATA
-
 # if the data folder is empty, init the db by copying default generated db
 if [[ ! "$(ls -A $POSTGRESQL_DATA)" ]]; then
   echo "Initializing PostgreSQL at $POSTGRESQL_DATA"
   cp -R $POSTGRESQL_DATA_ORIG/* $POSTGRESQL_DATA
 fi
+
+chown -R postgres $POSTGRESQL_LOG_DIR
+chown -R postgres $POSTGRESQL_DATA
+chmod -R 700 $POSTGRESQL_DATA
+
+# workaround the snakeoil key issue
+sudo -u postgres ls /etc/ssl/private/ssl-cert-snakeoil.key || {
+  echo "user postgres cannot access snakoil.key, try to workaround AUFS bug"
+  mv /etc/ssl/private /etc/ssl/private~ && cp -pr /etc/ssl/private~ /etc/ssl/private && rm -rf /etc/ssl/private~
+}
 
 POSTGRESQL_SINGLE="sudo -u postgres $POSTGRESQL_BIN --single --config-file=$POSTGRESQL_CONFIG_FILE"
 

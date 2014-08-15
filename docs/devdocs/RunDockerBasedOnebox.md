@@ -21,6 +21,17 @@ All of our docker images are based on phusion/baseimage, you can use phusion's `
 
 Make sure you have access to `onebox-app` before you continue.
 
+## Install Docker
+
+If you are using ubuntu, you can run the following command to install docker and phusion docker tools
+
+```
+# from short url
+curl -s -L http://bit.ly/1vPArnJ | sudo sh
+# or from origin gist
+curl -s https://gist.githubusercontent.com/jubot/4dd5ea0d8789ddc0eaa5/raw/f4b979c342f69ebc93c5835a7680241e4bebcd86/installdocker.sh | sudo sh
+```
+
 ## Launch db instances
 
 It is recommended to create a folder or data-only container to store database files and logs, so that when we upgrade docker images, data never get lost.
