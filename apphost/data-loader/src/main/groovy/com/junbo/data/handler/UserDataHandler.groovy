@@ -23,6 +23,8 @@ import org.springframework.beans.factory.annotation.Required
 import org.springframework.core.io.Resource
 import org.springframework.util.StringUtils
 
+import java.security.SecureRandom
+
 /**
  * Created by haomin on 14-7-11.
  */
@@ -31,6 +33,8 @@ class UserDataHandler extends BaseDataHandler {
     private UserResource userResource
     private UserCredentialResource userCredentialResource
     private UserPersonalInfoResource userPersonalInfoResource
+    private static final char[] CHARSET =
+            "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray()
 
     @Required
     void setUserResource(UserResource userResource) {
@@ -58,7 +62,16 @@ class UserDataHandler extends BaseDataHandler {
         }
 
         String username = userData.username
-        String password = UUID.randomUUID().toString()+'Ww0'
+
+        int length = 10
+        Random random = new SecureRandom()
+        byte[] bytes = new byte[length]
+        random.nextBytes(bytes)
+        char[] chars = new char[length]
+        for (int i = 0; i < bytes.length; i++) {
+            chars[i] = (char)CHARSET[((bytes[i] & 0xFF) % CHARSET.length)];
+        }
+        String password = new String(chars) + 'Ww0'
         if (!StringUtils.isEmpty(userData.password)) {
             password = userData.password
         }
