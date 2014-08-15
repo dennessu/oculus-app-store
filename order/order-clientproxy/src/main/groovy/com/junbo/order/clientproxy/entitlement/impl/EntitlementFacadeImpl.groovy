@@ -42,7 +42,7 @@ class EntitlementFacadeImpl implements EntitlementFacade {
         def entitlementSearchParam = new EntitlementSearchParam(
                 userId: userId,
                 itemIds: offer.items.collect { Item item ->
-                    new ItemId(item.id)
+                    new ItemId(item.getId())
                 } as Set
         )
         def count = offer.items.size() * 3
