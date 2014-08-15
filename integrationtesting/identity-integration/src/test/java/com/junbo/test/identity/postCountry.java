@@ -11,11 +11,18 @@ import com.junbo.identity.spec.v1.model.SubCountryLocaleKey;
 import com.junbo.identity.spec.v1.model.SubCountryLocaleKeys;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.Validator;
+import com.junbo.test.common.property.Component;
+import com.junbo.test.common.property.Priority;
+import com.junbo.test.common.property.Property;
+import com.junbo.test.common.property.Status;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.message.BasicNameValuePair;
 import org.springframework.util.CollectionUtils;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -44,6 +51,19 @@ public class postCountry {
         HttpclientHelper.CloseHttpClient();
     }
 
+    @Property(
+            priority = Priority.BVT,
+            component = Component.Identity,
+            owner = "JieFeng",
+            status = Status.Enable,
+            description = "Test country POST/PUT/GET",
+            environment = "onebox",
+            steps = {
+                    "1. post a country" +
+                 "/n 2. get the country" +
+                 "/n 3. update the country"
+            }
+    )
     @Test(groups = "bvt")
     public void postCountry() throws Exception {
         Identity.CountryDeleteByCountryId(IdentityModel.DefaultCountry);
@@ -83,7 +103,7 @@ public class postCountry {
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
                 url, null, HttpclientHelper.HttpRequestType.get, nvps);
-        Validator.Validate("validate response error code", 404, response.getStatusLine().getStatusCode());
+        Validator.Validate("validate response error code", 412, response.getStatusLine().getStatusCode());
     }
 
     @Test(groups = "dailies")

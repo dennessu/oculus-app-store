@@ -10,7 +10,14 @@ import com.junbo.identity.spec.v1.model.DeviceType;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.RandomHelper;
 import com.junbo.test.common.Validator;
-import org.testng.annotations.*;
+import com.junbo.test.common.property.Component;
+import com.junbo.test.common.property.Priority;
+import com.junbo.test.common.property.Property;
+import com.junbo.test.common.property.Status;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 /**
  * Created by liangfu on 8/11/14.
@@ -34,6 +41,19 @@ public class postDeviceType {
         HttpclientHelper.CloseHttpClient();
     }
 
+    @Property(
+            priority = Priority.BVT,
+            component = Component.Identity,
+            owner = "JieFeng",
+            status = Status.Enable,
+            description = "Test deviceType POST/PUT/GET",
+            environment = "onebox",
+            steps = {
+                    "1. post a device type" +
+                 "/n 2. get the device type" +
+                 "/n 3. update the device type"
+            }
+    )
     @Test(groups = "bvt")
     public void postDeviceType() throws Exception {
         DeviceType deviceType = IdentityModel.DefaultDeviceType(null);

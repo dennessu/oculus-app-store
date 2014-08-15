@@ -7,7 +7,14 @@ import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.JsonHelper;
 import com.junbo.test.common.RandomHelper;
 import com.junbo.test.common.Validator;
-import org.testng.annotations.*;
+import com.junbo.test.common.property.Component;
+import com.junbo.test.common.property.Priority;
+import com.junbo.test.common.property.Property;
+import com.junbo.test.common.property.Status;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 /**
  * Created by liangfu on 8/12/14.
@@ -31,6 +38,19 @@ public class postErrorCodeDetail {
         HttpclientHelper.CloseHttpClient();
     }
 
+    @Property(
+            priority = Priority.BVT,
+            component = Component.Identity,
+            owner = "JieFeng",
+            status = Status.Enable,
+            description = "Test errorInfo POST/PUT/GET",
+            environment = "onebox",
+            steps = {
+                    "1. post a errorInfo" +
+                 "/n 2. get the errorInfo" +
+                 "/n 3. update the errorInfo"
+            }
+    )
     @Test(groups = "bvt")
     // https://oculus.atlassian.net/browse/SER-306
     // https://oculus.atlassian.net/browse/SER-305
