@@ -56,6 +56,7 @@ class UserServiceImpl implements UserService {
 
     private static final String EMAIL_SOURCE = 'Oculus'
     private static final String VERIFY_EMAIL_ACTION = 'EmailVerification'
+    private static final String WELCOME_ACTION = 'Welcome'
     private static final String RESET_PASSWORD_ACTION = 'PasswordReset'
     private static final String EMAIL_VERIFY_PATH = 'oauth2/verify-email'
     private static final String EMAIL_RESET_PASSWORD_PATH = 'oauth2/reset-password'
@@ -209,11 +210,22 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
+    Promise<String> sendWelcomeEmail(UserId userId, ActionContextWrapper contextWrapper) {
+        String locale = contextWrapper.viewLocale
+        String country = contextWrapper.viewCountry
+
+        return sendVerifyEmail(userId, locale, country, true).then { String link ->
+            contextWrapper.emailVerifyLink = link
+            return Promise.pure(link)
+        }
+    }
+
+    @Override
     Promise<String> sendVerifyEmail(UserId userId, ActionContextWrapper contextWrapper) {
         String locale = contextWrapper.viewLocale
         String country = contextWrapper.viewCountry
 
-        return sendVerifyEmail(userId, locale, country).then { String link ->
+        return sendVerifyEmail(userId, locale, country, null).then { String link ->
             contextWrapper.emailVerifyLink = link
             return Promise.pure(link)
         }
@@ -241,7 +253,7 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    Promise<String> sendVerifyEmail(UserId userId, String locale, String country) {
+    Promise<String> sendVerifyEmail(UserId userId, String locale, String country, Boolean welcome) {
         if (userId == null || userId.value == null) {
             throw AppErrors.INSTANCE.missingUserId().exception()
         }
@@ -267,11 +279,21 @@ class UserServiceImpl implements UserService {
                 uriBuilder.queryParam(OAuthParameters.EMAIL_VERIFY_CODE, code.code)
                 uriBuilder.queryParam(OAuthParameters.LOCALE, locale)
 
-                QueryParam queryParam = new QueryParam(
-                        source: EMAIL_SOURCE,
-                        action: VERIFY_EMAIL_ACTION,
-                        locale: locale
-                )
+                QueryParam queryParam
+                if (welcome == null || !welcome) {
+                    queryParam = new QueryParam(
+                            source: EMAIL_SOURCE,
+                            action: VERIFY_EMAIL_ACTION,
+                            locale: locale
+                    )
+                }
+                else {
+                    queryParam = new QueryParam(
+                            source: EMAIL_SOURCE,
+                            action: WELCOME_ACTION,
+                            locale: locale
+                    )
+                }
 
                 String link = uriBuilder.build().toString()
                 return this.sendEmail(queryParam, user, email, link)

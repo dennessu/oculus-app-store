@@ -57,7 +57,7 @@ class CreateUser implements Action {
         }
 
         // check username has been created or not
-        if (contextWrapper.user != null && contextWrapper.user.username == username) {
+        if (contextWrapper.user != null && contextWrapper.username == username) {
             return Promise.pure(new ActionResult('success'))
         }
 
@@ -101,6 +101,7 @@ class CreateUser implements Action {
 
                 return userResource.put(newUser.getId(), newUser).then { User createdUser ->
                     contextWrapper.user = createdUser
+                    contextWrapper.username = username
                     return Promise.pure(new ActionResult('success'))
                 }
             }

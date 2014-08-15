@@ -180,7 +180,7 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
 
     @Override
     Promise<Response> sendVerifyEmail(String locale, String country, UserId userId) {
-        return userService.sendVerifyEmail(userId, locale, country).then {
+        return userService.sendVerifyEmail(userId, locale, country, null).then {
             // audit csr action on success
             csrActionAudit(userId)
             return Promise.pure(Response.noContent().build())
