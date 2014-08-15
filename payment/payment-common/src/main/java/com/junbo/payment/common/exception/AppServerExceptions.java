@@ -66,4 +66,7 @@ public interface AppServerExceptions {
 
     @ErrorDef(httpStatusCode = 500, code = "517", message = "Error decode parameter", reason = "error decode: {0}")
     AppError errorDecode(String para);
+
+    @ErrorDef(httpStatusCode = 500, code = "518", message = "Error download file", reason = "error download file: {0}")
+    AppError errorDownloadFile(String filePath);
 }

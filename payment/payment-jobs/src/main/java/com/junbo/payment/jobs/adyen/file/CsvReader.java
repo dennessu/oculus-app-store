@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.payment.jobs.file;
+package com.junbo.payment.jobs.adyen.file;
 
 import com.junbo.payment.common.exception.AppServerExceptions;
 import org.slf4j.Logger;

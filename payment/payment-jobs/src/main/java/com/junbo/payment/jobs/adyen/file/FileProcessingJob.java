@@ -4,7 +4,7 @@
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
 
-package com.junbo.payment.jobs.file;
+package com.junbo.payment.jobs.adyen.file;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,11 +19,11 @@ public class FileProcessingJob {
     private static final Logger LOGGER = LoggerFactory.getLogger(FileProcessingJob.class);
 
     public void execute() {
-        LOGGER.info("Starting billing settlement job");
+        LOGGER.info("Starting Adyen File Processing job");
 
         fileProcessor.processFiles();
 
-        LOGGER.info("Billing settlement job finished");
+        LOGGER.info("Adyen File Processing finished");
     }
 
     @Required

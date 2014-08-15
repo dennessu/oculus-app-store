@@ -1,10 +1,10 @@
 package com.junbo.payment.jobs.service;
 
 import com.junbo.payment.jobs.BaseTest;
-import com.junbo.payment.jobs.file.FileProcessingJob;
-import com.junbo.payment.jobs.file.FileProcessor;
-import com.junbo.payment.jobs.reconcile.ReconcileJob;
-import com.junbo.payment.jobs.reconcile.ReconcileProcessor;
+import com.junbo.payment.jobs.adyen.file.FileProcessingJob;
+import com.junbo.payment.jobs.adyen.file.FileProcessor;
+import com.junbo.payment.jobs.adyen.reconcile.AdyenReconcileJob;
+import com.junbo.payment.jobs.adyen.reconcile.AdyenReconcileProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.Test;
 
@@ -14,7 +14,7 @@ public class PaymentJobTest extends BaseTest {
     @Autowired
     private FileProcessor fileProcessor;
     @Autowired
-    private ReconcileProcessor reconcileProcessor;
+    private AdyenReconcileProcessor reconcileProcessor;
 
     @Test(enabled = false)
     public void testFileProcessJob() throws ExecutionException, InterruptedException {
@@ -26,7 +26,7 @@ public class PaymentJobTest extends BaseTest {
 
     @Test(enabled = false)
     public void testReconcileJob() throws ExecutionException, InterruptedException {
-        ReconcileJob job = new ReconcileJob();
+        AdyenReconcileJob job = new AdyenReconcileJob();
         job.setReconcileProcessor(reconcileProcessor);
         job.execute();
     }
