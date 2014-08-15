@@ -155,10 +155,10 @@ public class authorizeUser {
         String cid = Oauth.GetLoginCid();
         String currentViewState = Oauth.GetViewStateByCid(cid);
         ValidateErrorFreeResponse(currentViewState);
-        //String loginResponseLink =
-        Oauth.UserLogin(cid, "kevincrawford", "Welcome123");
-        //String idToken = Oauth.GetLoginUserIdToken(loginResponseLink);
-        //Oauth.Logout(idToken);
+        String loginResponseLink = Oauth.UserLogin(cid, "lpFZNsoDZaoacRw", "1234qwerASDF");
+        //String loginResponseLink = Oauth.UserLogin(cid, "kevincrawford", "Welcome123");
+        String idToken = Oauth.GetLoginUserIdToken(loginResponseLink);
+        Oauth.Logout(idToken);
     }
 
     @Test(groups = "bvt")
