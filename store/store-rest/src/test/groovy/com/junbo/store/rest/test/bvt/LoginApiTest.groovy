@@ -15,16 +15,7 @@ import org.testng.annotations.Test
  * The LoginApiTest class.
  */
 @Test
-@ContextConfiguration(locations = ['classpath:spring/store-rest-test-context.xml'])
-class LoginApiTest extends AbstractTestNGSpringContextTests {
-
-    @Autowired(required = true)
-    @Qualifier('storeResourceClientProxy')
-    private StoreResource storeResource
-
-    @Autowired(required = true)
-    @Qualifier('loginResourceClientProxy')
-    private LoginResource loginResource
+class LoginApiTest extends TestBase {
 
     @Test
     public void testBVT() {

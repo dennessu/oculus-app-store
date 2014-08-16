@@ -54,4 +54,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "109", message = "Invalid purchase token.")
     AppError invalidPurchaseToken();
+
+    @ErrorDef(httpStatusCode = 412, code = "110", message = "Invalid offer: {0}")
+    AppError invalidOffer(String reason);
 }

@@ -14,6 +14,7 @@ import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
 import com.junbo.langur.core.promise.Promise
+import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.ChallengeAnswer
@@ -44,6 +45,9 @@ class RequestValidator {
 
     @Resource(name = 'storeResourceContainer')
     ResourceContainer resourceContainer
+
+    @Resource(name = 'storeFacadeContainer')
+    private FacadeContainer facadeContainer
 
     void validateUserNameCheckRequest(UserNameCheckRequest request) {
         if (request == null) {
@@ -115,23 +119,6 @@ class RequestValidator {
 
         if (challengeAnswer.type != 'PASSWORD' || org.apache.commons.lang3.StringUtils.isEmpty(challengeAnswer.password)) {
             return new Challenge(type: 'PASSWORD')
-        }
-
-        try {
-            resourceContainer.userCredentialVerifyAttemptResource.create(
-                    new UserCredentialVerifyAttempt(
-                            userId: userId,
-                            type: 'PASSWORD',
-                            value: challengeAnswer.password
-                    )
-            ).get()
-        } catch (AppErrorException ex) {
-            def appError = ex.error.error()
-            if (appError.code == '131.109') { // userPasswordIncorrect
-                throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
-            }
-
-            throw ex
         }
 
         return null
@@ -247,6 +234,21 @@ class RequestValidator {
             resourceContainer.orderResource.getOrderByOrderId(new OrderId(IdFormatter.decodeId(OrderId, purchaseToken)))
         }.recover {
             throw AppCommonErrors.INSTANCE.fieldInvalid(fieldName).exception()
+        }
+    }
+
+    private Promise validateOfferForPurchase(OfferId offerId, CountryId countryId, LocaleId locale, boolean free) {
+        return facadeContainer.catalogFacade.getOffer(offerId.value, locale).then { com.junbo.store.spec.model.catalog.Offer offer ->
+            if (offer.hasPhysicalItem) {
+                throw AppErrors.INSTANCE.invalidOffer('Offer has physical items.').exception()
+            }
+            if (free && !offer.isFree) {
+                throw AppErrors.INSTANCE.invalidOffer('Offer not free.').exception()
+            }
+            if (!free && offer.isFree) {
+                throw AppErrors.INSTANCE.invalidOffer('Offer is free.').exception()
+            }
+            return Promise.pure()
         }
     }
 }

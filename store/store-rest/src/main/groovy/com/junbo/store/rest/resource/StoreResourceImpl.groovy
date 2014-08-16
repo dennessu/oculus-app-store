@@ -12,6 +12,7 @@ import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.*
 import com.junbo.common.id.util.IdUtil
 import com.junbo.common.json.ObjectMapperProvider
@@ -165,8 +166,12 @@ class StoreResourceImpl implements StoreResource {
 
             return resourceContainer.userCredentialResource.create(userId, new UserCredential(
                     type: 'PASSWORD',
+                    currentPassword: request.challengeAnswer.password,
                     value: userProfile.password
-            ))
+            )).recover { Throwable ex ->
+                handleAndThrow(ex)
+                assert false, 'should not be there'
+            }
         }.then {
             if (StringUtils.isEmpty(userProfile.pin)) {
                 return Promise.pure()
@@ -174,8 +179,12 @@ class StoreResourceImpl implements StoreResource {
 
             return resourceContainer.userCredentialResource.create(userId, new UserCredential(
                     type: 'PIN',
+                    currentPassword: request.challengeAnswer.password,
                     value: userProfile.pin
-            ))
+            )).recover { Throwable ex ->
+                handleAndThrow(ex)
+                assert false, 'should not be there'
+            }
         }.then {
             if (StringUtils.isEmpty(userProfile.email?.value)) {
                 return Promise.pure()
@@ -471,6 +480,8 @@ class StoreResourceImpl implements StoreResource {
                         return Promise.pure()
                     }
                 }
+            }.then {
+                requestValidator.validateOfferForPurchase(request.offer, request.country, request.locale, true)
             }
         }.then {
             Order order = new Order(
@@ -520,6 +531,8 @@ class StoreResourceImpl implements StoreResource {
                         return Promise.pure()
                     }
                 }
+            }.then {
+                requestValidator.validateOfferForPurchase(request.offer, request.country, request.locale, false)
             }
         }.then {
             if (request.purchaseToken == null) {
@@ -1093,5 +1106,15 @@ class StoreResourceImpl implements StoreResource {
         if (purchaseState.offer == null) {
             purchaseState.offer = request.offer.value
         }
+    }
+
+    private void handleAndThrow(Throwable ex) {
+        if (ex instanceof  AppErrorException) {
+            def appError = ex.error.error()
+            if (appError.code == '131.109') { // userPasswordIncorrect
+                throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
+            }
+        }
+        throw ex
     }
 }
