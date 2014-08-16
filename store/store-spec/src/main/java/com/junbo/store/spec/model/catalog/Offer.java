@@ -5,6 +5,8 @@
  */
 package com.junbo.store.spec.model.catalog;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * The offer class from catalog.
  */
@@ -18,7 +20,13 @@ public class Offer {
     private String currencyCode;
     private Boolean isConsumable;
     private String type;
+    @JsonIgnore
     private Boolean hasStoreValueItem;
+    @JsonIgnore
+    private Boolean hasPhysicalItem;
+    @JsonIgnore
+    private Boolean isFree;
+
 
     public String getId() {
         return id;
@@ -90,5 +98,21 @@ public class Offer {
 
     public void setHasStoreValueItem(Boolean hasStoreValueItem) {
         this.hasStoreValueItem = hasStoreValueItem;
+    }
+
+    public Boolean getIsFree() {
+        return isFree;
+    }
+
+    public void setIsFree(Boolean isFree) {
+        this.isFree = isFree;
+    }
+
+    public Boolean getHasPhysicalItem() {
+        return hasPhysicalItem;
+    }
+
+    public void setHasPhysicalItem(Boolean hasPhysicalItem) {
+        this.hasPhysicalItem = hasPhysicalItem;
     }
 }

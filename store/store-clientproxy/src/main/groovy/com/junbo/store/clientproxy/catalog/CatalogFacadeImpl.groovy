@@ -1,6 +1,7 @@
 package com.junbo.store.clientproxy.catalog
 
 import com.junbo.catalog.spec.enums.ItemType
+import com.junbo.catalog.spec.enums.PriceType
 import com.junbo.catalog.spec.model.offer.ItemEntry
 import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
@@ -47,11 +48,12 @@ class CatalogFacadeImpl implements CatalogFacade {
     Promise<Offer> getOffer(String offerId, LocaleId locale) {
         com.junbo.catalog.spec.model.offer.Offer catalogOffer
         OfferRevision offerRevision
-        Offer result = new Offer()
+        Offer result = new Offer(hasPhysicalItem: false, hasStoreValueItem: false)
         offerResource.getOffer(offerId).then { com.junbo.catalog.spec.model.offer.Offer cof -> // todo fill other fields
             catalogOffer = cof
             offerRevisionResource.getOfferRevision(catalogOffer.currentRevisionId, new OfferRevisionGetOptions(locale: locale?.value)).then { OfferRevision it ->
                 offerRevision = it
+                loadPriceInfo(offerRevision, result)
                 return Promise.pure(null)
             }
         }.then {
@@ -61,9 +63,14 @@ class CatalogFacadeImpl implements CatalogFacade {
                     if (catalogItem.type == ItemType.STORED_VALUE.name()) {
                         result.hasStoreValueItem = true
                     }
+                    if (catalogItem.type == ItemType.PHYSICAL.name()) {
+                        result.hasPhysicalItem = true
+                    }
                     return Promise.pure(null)
                 }
             }
+        }.then {
+            return Promise.pure(result)
         }
     }
 
@@ -95,5 +102,23 @@ class CatalogFacadeImpl implements CatalogFacade {
     @Override
     Promise<Void> fillItemDocument(Item item, Document document) {
         return null
+    }
+
+    private void loadPriceInfo(OfferRevision offerRevision, Offer offer) {
+        PriceType priceType = PriceType.valueOf(offerRevision.price.priceType)
+        switch (priceType) {
+            case PriceType.FREE:
+                offer.price = null
+                offer.currencyCode = null
+                offer.isFree = true
+                break;
+            case PriceType.CUSTOM:
+                offer.isFree = false
+                break;
+            case PriceType.TIERED:
+                offer.isFree = false
+                break;
+            // todo handle non-free prices
+        }
     }
 }

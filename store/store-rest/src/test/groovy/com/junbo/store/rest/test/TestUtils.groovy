@@ -16,11 +16,11 @@ class TestUtils {
     private Map<String, OfferId> nameToOfferIds = null
 
     @Autowired(required = true)
-    @Qualifier('offerResourceClientProxy')
+    @Qualifier('offerClient')
     private OfferResource offerResource
 
     @Autowired(required = true)
-    @Qualifier('offerRevisionResourceClientProxy')
+    @Qualifier('offerRevisionClient')
     private OfferRevisionResource offerRevisionResource
 
     public OfferId getByName(String name) {

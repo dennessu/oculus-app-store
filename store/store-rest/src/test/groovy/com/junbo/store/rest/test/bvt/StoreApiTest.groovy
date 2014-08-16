@@ -32,32 +32,11 @@ import org.testng.annotations.Test
  * The StoreApiTest class.
  */
 @Test
-@ContextConfiguration(locations = ['classpath:spring/store-rest-test-context.xml'])
-class StoreApiTest extends AbstractTestNGSpringContextTests {
-
-    public static String freeOfferName = 'testOffer_Free_Digital'
-
-    public static String digitalOfferName = 'testOffer_CartCheckout_Digital1'
+class StoreApiTest extends TestBase {
 
     public static String packageName = 'com.oculusvr.store.iap.sample'
 
     public static LocaleId locale = null // new LocaleId('en_US')
-
-    @Autowired(required = true)
-    @Qualifier('storeResourceClientProxy')
-    private StoreResourceClientProxy storeResource
-
-    @Autowired(required = true)
-    @Qualifier('loginResourceClientProxy')
-    private LoginResource loginResource
-
-    @Autowired(required = true)
-    @Qualifier('storeRestTestUtils')
-    private TestUtils testUtils
-
-    @Autowired(required = true)
-    @Qualifier('testAccessTokenProvider')
-    private TestAccessTokenProvider testAccessTokenProvider
 
     @Test
     public void testUserProfile() {
@@ -178,28 +157,6 @@ class StoreApiTest extends AbstractTestNGSpringContextTests {
         assert result.challenge == null
 
         result = storeResource.commitPurchase(new CommitPurchaseRequest(purchaseToken: result.purchaseToken)).get()
-        assert result.entitlements.size() == 1
-        assert result.order != null
-
-        assert result.entitlements[0].entitlementType == 'DOWNLOAD'
-        assert result.entitlements[0].itemType == 'APP'
-        assert result.entitlements[0].item != null
-    }
-
-    @Test
-    public void testFreePurchase() {
-        String username = Generator.genUserName()
-        String email = Generator.genEmail()
-        String pin = Generator.genPIN()
-        String password = Generator.genPassword()
-
-        def createUserRequest = Generator.genCreateUserRequest(username, password, email, pin)
-        def result = loginResource.createUser(createUserRequest).get()
-        testAccessTokenProvider.token = result.accessToken
-        def userId = result.userId
-
-        OfferId offerId = testUtils.getByName(freeOfferName)
-        result = storeResource.makeFreePurchase(new MakeFreePurchaseRequest(offer: offerId, country: new CountryId('US'), locale: locale)).get()
         assert result.entitlements.size() == 1
         assert result.order != null
 
