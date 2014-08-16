@@ -7,5 +7,6 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class Constants {
-    public static final String COLON = ":";
+    public static final String COLON = ':'
+    public static final String HEADER_TRIGGER_EMAIL = 'X-Email-Notification'
 }
