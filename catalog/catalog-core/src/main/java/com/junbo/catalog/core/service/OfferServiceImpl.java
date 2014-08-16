@@ -185,7 +185,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
             if (Status.APPROVED.is(revision.getStatus())) {
                 Long timestamp = Utils.currentTimestamp();
                 revision.setTimestamp(timestamp);
-                if (revision.getStartTime() == null || revision.getCreatedTime().getTime() < timestamp) {
+                if (revision.getStartTime() == null || revision.getStartTime().getTime() < timestamp) {
                     revision.setStartTime(new Date(timestamp));
                 }
 
