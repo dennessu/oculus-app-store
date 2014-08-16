@@ -42,7 +42,7 @@ import org.springframework.util.StringUtils
 class UserTFAResourceImpl implements UserTFAResource {
 
     private static final String EMAIL_SOURCE = 'Oculus'
-    private static final String EMAIL_ACTION = 'EmailVerificationCode'
+    private static final String EMAIL_ACTION = 'TFAVerificationCode'
 
     @Autowired
     private UserTFAPhoneRepository userTFAPhoneRepository

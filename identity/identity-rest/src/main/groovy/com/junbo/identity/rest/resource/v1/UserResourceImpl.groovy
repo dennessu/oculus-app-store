@@ -11,7 +11,12 @@ import com.junbo.common.rs.Created201Marker
 import com.junbo.csr.spec.def.CsrLogActionType
 import com.junbo.csr.spec.model.CsrLog
 import com.junbo.csr.spec.resource.CsrLogResource
+import com.junbo.email.spec.model.EmailTemplate
+import com.junbo.email.spec.model.QueryParam
+import com.junbo.email.spec.resource.EmailResource
+import com.junbo.email.spec.resource.EmailTemplateResource
 import com.junbo.identity.auth.UserAuthorizeCallbackFactory
+import com.junbo.identity.common.util.Constants
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.filter.UserFilter
 import com.junbo.identity.core.service.normalize.NormalizeService
@@ -20,15 +25,15 @@ import com.junbo.identity.data.repository.*
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
-import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserGroup
-import com.junbo.identity.spec.v1.model.UserLoginName
-import com.junbo.identity.spec.v1.model.UserPersonalInfo
+import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.resource.UserResource
+import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.transaction.annotation.Transactional
@@ -40,6 +45,10 @@ import org.springframework.util.CollectionUtils
 @Transactional
 @CompileStatic
 class UserResourceImpl implements UserResource {
+    private static final String EMAIL_SOURCE = 'Oculus'
+    private static final String EMAIL_DEACTIVATE_ACCOUNT_ACTION = 'DeactivateAccount'
+    private static final String EMAIL_REACTIVATE_ACCOUNT_ACTION = 'ReactivateAccount'
+    private static final Logger logger = LoggerFactory.getLogger(UserResource)
 
     @Autowired
     private UserRepository userRepository
@@ -74,6 +83,14 @@ class UserResourceImpl implements UserResource {
     @Autowired
     @Qualifier('identityCsrLogResource')
     private CsrLogResource csrLogResource
+
+    @Autowired
+    @Qualifier('identityEmailResource')
+    private EmailResource emailResource
+
+    @Autowired
+    @Qualifier('identityEmailTemplateResource')
+    private EmailTemplateResource emailTemplateResource
 
     @Override
     Promise<User> create(User user) {
@@ -123,37 +140,16 @@ class UserResourceImpl implements UserResource {
 
                 user = userFilter.filterForPut(user, oldUser)
 
-                if (AuthorizeContext.hasScopes('csr') && AuthorizeContext.currentUserId != null) {
-                    // country updated
-                    if (user.countryOfResidence != oldUser.countryOfResidence) {
-                        csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.CountryUpdated,
-                                property: getUserNameStr(oldUser).get())).get()
-                    }
-
-                    // deactive account
-                    if (oldUser.status == 'ACTIVE' && (user.status == 'SUSPEND' || user.status == 'BANNED')) {
-                        csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.DeactiveAccount,
-                                property: getUserNameStr(oldUser).get())).get()
-                    }
-
-                    // reactive account
-                    if (user.status == 'ACTIVE' && (oldUser.status == 'SUSPEND' || oldUser.status == 'BANNED' || oldUser.status == 'DELETED')) {
-                        csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.ReactiveAccount,
-                                property: getUserNameStr(oldUser).get())).get()
-                    }
-
-                    // flag for deletion
-                    if (user.status == 'DELETED') {
-                        csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.FlagForDelection,
-                                property: getUserNameStr(oldUser).get())).get()
-                    }
-                }
+                auditCSR(user, oldUser)
 
                 return userValidator.validateForUpdate(user, oldUser).then {
                     return userRepository.update(user, oldUser).then { User newUser ->
                         return updateCredential(user.getId(), oldUser.username, newUser.username).then {
                             newUser = userFilter.filterForGet(newUser, null)
-                            return Promise.pure(newUser)
+                            // send email
+                            return triggerUserUpdateEmail(newUser, oldUser).then {
+                                return Promise.pure(newUser)
+                            }
                         }
                     }
                 }
@@ -184,11 +180,16 @@ class UserResourceImpl implements UserResource {
 
                 user = userFilter.filterForPatch(user, oldUser)
 
+                auditCSR(user, oldUser)
+
                 return userValidator.validateForUpdate(user, oldUser).then {
                     return userRepository.update(user, oldUser).then { User newUser ->
                         return updateCredential(user.getId(), oldUser.username, newUser.username).then {
                             newUser = userFilter.filterForGet(newUser, null)
-                            return Promise.pure(newUser)
+                            // send email
+                            return triggerUserUpdateEmail(newUser, oldUser).then {
+                                return Promise.pure(newUser)
+                            }
                         }
                     }
                 }
@@ -341,7 +342,7 @@ class UserResourceImpl implements UserResource {
         }
     }
 
-    Promise<String> getUserNameStr(User user) {
+    private Promise<String> getUserNameStr(User user) {
         return userPersonalInfoRepository.get(user.username).then { UserPersonalInfo userPersonalInfo ->
             if (userPersonalInfo == null) {
                 return Promise.pure(null)
@@ -349,6 +350,117 @@ class UserResourceImpl implements UserResource {
 
             UserLoginName loginName = (UserLoginName)JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserLoginName)
             return Promise.pure(loginName.userName)
+        }
+    }
+
+    private Promise<String> getUserEmail(User user) {
+        UserPersonalInfoId userPersonalInfoId = user.emails?.find { UserPersonalInfoLink link ->
+            link.isDefault
+        }?.value
+
+        if (userPersonalInfoId == null) {
+            return Promise.pure(null)
+        }
+
+        return userPersonalInfoRepository.get(userPersonalInfoId).then { UserPersonalInfo userPersonalInfo ->
+            if (userPersonalInfo == null) {
+                return Promise.pure(null)
+            }
+
+            com.junbo.identity.spec.v1.model.Email email = (com.junbo.identity.spec.v1.model.Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, com.junbo.identity.spec.v1.model.Email)
+            return Promise.pure(email.info)
+        }
+    }
+
+    private void auditCSR(User user, User oldUser) {
+        // csr audit log
+        if (AuthorizeContext.hasScopes('csr') && AuthorizeContext.currentUserId != null) {
+            // country updated
+            if (user.countryOfResidence != oldUser.countryOfResidence) {
+                csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.CountryUpdated,
+                        property: getUserNameStr(oldUser).get())).get()
+            }
+
+            // deactive account
+            if (oldUser.status == 'ACTIVE' && (user.status == 'SUSPEND' || user.status == 'BANNED')) {
+                csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.DeactiveAccount,
+                        property: getUserNameStr(oldUser).get())).get()
+            }
+
+            // reactive account
+            if (user.status == 'ACTIVE' && (oldUser.status == 'SUSPEND' || oldUser.status == 'BANNED' || oldUser.status == 'DELETED')) {
+                csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.ReactiveAccount,
+                        property: getUserNameStr(oldUser).get())).get()
+            }
+
+            // flag for deletion
+            if (user.status == 'DELETED') {
+                csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.FlagForDelection,
+                        property: getUserNameStr(oldUser).get())).get()
+            }
+        }
+    }
+
+    private Promise<Void> triggerUserUpdateEmail(User user, User oldUser) {
+        // check x-send-email header
+        if (JunboHttpContext.getRequestHeaders() == null
+                || CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(Constants.HEADER_TRIGGER_EMAIL))) {
+            return Promise.pure(null)
+        }
+
+        try {
+            QueryParam queryParam
+            // trigger update user update email
+            // deactive account
+            if (oldUser.status == 'ACTIVE' && (user.status == 'SUSPEND' || user.status == 'BANNED' || user.status == 'DELETED')) {
+                queryParam = new QueryParam(
+                        source: EMAIL_SOURCE,
+                        action: EMAIL_DEACTIVATE_ACCOUNT_ACTION,
+                        locale: 'en_US'   //todo: remove hardcode locale when email template is localized
+                )
+            }
+
+            // reactive account
+            if (user.status == 'ACTIVE' && (oldUser.status == 'SUSPEND' || oldUser.status == 'BANNED' || oldUser.status == 'DELETED')) {
+                queryParam = new QueryParam(
+                        source: EMAIL_SOURCE,
+                        action: EMAIL_REACTIVATE_ACCOUNT_ACTION,
+                        locale: 'en_US' //todo: remove hardcode locale when email template is localized
+                )
+            }
+
+            if (queryParam == null) {
+                return Promise.pure(null)
+            }
+
+            return emailTemplateResource.getEmailTemplates(queryParam).then { Results<EmailTemplate> results ->
+                if (results.items.isEmpty()) {
+                    throw AppCommonErrors.INSTANCE.internalServerError(new Exception('email template not found')).exception()
+                }
+
+                EmailTemplate template = results.items.get(0)
+
+                com.junbo.email.spec.model.Email emailToSend = new com.junbo.email.spec.model.Email(
+                        userId: user.getId(),
+                        templateId: template.getId(),
+                        recipients: [getUserEmail(user).get()],
+                        replacements: [
+                                'accountname': getUserNameStr(user).get()
+                        ]
+                )
+
+                return emailResource.postEmail(emailToSend).then {
+                    return Promise.pure(null)
+                }.recover {
+                    return Promise.pure(null)
+                }
+            }.recover {
+                return Promise.pure(null)
+            }
+        }
+        catch(Exception e) {
+            logger.error('Send user status update email failed', e)
+            return Promise.pure(null)
         }
     }
 }

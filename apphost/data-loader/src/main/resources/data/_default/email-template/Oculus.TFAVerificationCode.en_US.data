@@ -1,6 +1,6 @@
 {
     "source" : "Oculus",
-    "action" : "EmailVerificationCode",
+    "action" : "TFAVerificationCode",
     "locale" : "en_US",
     "providerName" : "mandrill",
     "placeholderNames" : [ "name", "code" ]
