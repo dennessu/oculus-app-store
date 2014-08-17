@@ -63,4 +63,12 @@ public final class SnifferUtils {
             throw new CloudantConnectException("Error occurred while parsing response from cloudant DB", e);
         }
     }
+
+    public static void sleep(long ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException e) {
+            //silently ignore
+        }
+    }
 }

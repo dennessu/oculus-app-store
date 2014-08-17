@@ -32,6 +32,8 @@ public class CacheSnifferJob implements InitializingBean {
     private static final String SEQ_KEY = "seq";
     private static final String ID_KEY = "id";
 
+    private static final int SAFE_SLEEP = 5000;
+
     private Integer expiration;
 
     @Override
@@ -49,38 +51,50 @@ public class CacheSnifferJob implements InitializingBean {
             List<String> databases = CloudantSniffer.instance().getAllDatabases(cloudantUri);
 
             for (String database : databases) {
-                LOGGER.debug("Try to fetch last change token from memcached.");
-                String lastChange = getCache(buildLastChangeKey(cloudantUri, database));
-
-                if (StringUtils.isEmpty(lastChange)) {
-                    LOGGER.debug("Last change token is missing in memcached, fetch from cloudant instead.");
-                    lastChange = CloudantSniffer.instance().getLastChange(cloudantUri, database);
-                }
-
                 // listen database continuous feed
-                listenDatabaseChanges(cloudantUri, database, lastChange);
+                listenDatabaseChanges(cloudantUri, database);
             }
         }
     }
 
-    private void listenDatabaseChanges(final CloudantUri cloudantUri, final String database, final String lastChange) {
+    private String getLastChange(CloudantUri cloudantUri, String database) {
+        LOGGER.debug("Try to fetch last change token from memcached.");
+        String lastChange = getCache(buildLastChangeKey(cloudantUri, database));
+
+        if (StringUtils.isEmpty(lastChange)) {
+            LOGGER.debug("Last change token is missing in memcached, fetch from cloudant instead.");
+            lastChange = CloudantSniffer.instance().getLastChange(cloudantUri, database);
+        }
+
+        return lastChange;
+    }
+
+    private void listenDatabaseChanges(final CloudantUri cloudantUri, final String database) {
         String threadName = "cloudant-listener-" + database;
 
         new Thread(new Runnable() {
             public void run() {
-                InputStream feed = CloudantSniffer.instance().getChangeFeed(cloudantUri, database, lastChange);
-
-                BufferedReader reader = new BufferedReader(new InputStreamReader(feed));
-                String change;
-                while (true) {
+                outer:
+                for (; ; SnifferUtils.sleep(SAFE_SLEEP)) {
                     try {
-                        change = reader.readLine();
+                        String lastChange = getLastChange(cloudantUri, database);
 
-                        if (change != null) {
+                        InputStream feed = CloudantSniffer.instance().getChangeFeed(cloudantUri, database, lastChange);
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(feed));
+
+                        String change;
+                        while (true) {
+                            change = reader.readLine();
+
+                            if (change == null) {
+                                continue outer;
+                            }
+
                             handleChange(cloudantUri, database, change);
                         }
                     } catch (Exception e) {
                         LOGGER.error("Error occurred during receiving cloundant change feed.", e);
+                        continue outer;
                     }
                 }
             }
