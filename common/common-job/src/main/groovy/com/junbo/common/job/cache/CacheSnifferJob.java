@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.*;
 
 /**
  * CacheSnifferJob.
@@ -31,15 +32,21 @@ public class CacheSnifferJob implements InitializingBean {
     private static final String MEMCACHED_EXPIRATION_KEY = "common.memcached.expiration";
     private static final String SEQ_KEY = "seq";
     private static final String ID_KEY = "id";
+    private static final String CLOUDANT_HEARTBEAT_KEY = "common.cloudant.heartbeat";
 
     private static final int SAFE_SLEEP = 5000;
 
     private Integer expiration;
+    private Integer connectionTimeout;
 
     @Override
     public void afterPropertiesSet() throws Exception {
         // initialize configuration
         this.expiration = SnifferUtils.safeParseInt(SnifferUtils.getConfig(MEMCACHED_EXPIRATION_KEY));
+
+        // initialize cloudant feed connection timeout
+        Integer cloudantHeartbeat = SnifferUtils.safeParseInt(SnifferUtils.getConfig(CLOUDANT_HEARTBEAT_KEY));
+        this.connectionTimeout = cloudantHeartbeat * 2;
     }
 
     public void listen() {
@@ -71,6 +78,7 @@ public class CacheSnifferJob implements InitializingBean {
 
     private void listenDatabaseChanges(final CloudantUri cloudantUri, final String database) {
         String threadName = "cloudant-listener-" + database;
+        final ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
 
         new Thread(new Runnable() {
             public void run() {
@@ -80,13 +88,20 @@ public class CacheSnifferJob implements InitializingBean {
                         String lastChange = getLastChange(cloudantUri, database);
 
                         InputStream feed = CloudantSniffer.instance().getChangeFeed(cloudantUri, database, lastChange);
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(feed));
+                        final BufferedReader reader = new BufferedReader(new InputStreamReader(feed));
 
                         String change;
                         while (true) {
-                            change = reader.readLine();
+                            change = executeWithTimeout(executor,
+                                    new Callable<String>() {
+                                        public String call() throws Exception {
+                                            return reader.readLine();
+                                        }
+                                    }, connectionTimeout);
 
                             if (change == null) {
+                                //theoretically, the code will not be reached
+                                LOGGER.error("Invalid cloudant chagne feed received.");
                                 continue outer;
                             }
 
@@ -101,11 +116,28 @@ public class CacheSnifferJob implements InitializingBean {
         }, threadName).start();
     }
 
+    private <T> T executeWithTimeout(ScheduledExecutorService executor, Callable<T> callable, Integer timeout)
+            throws ExecutionException, InterruptedException {
+        final Future<T> handler = executor.submit(callable);
+
+        executor.schedule(new Runnable() {
+            @Override
+            public void run() {
+                if (!handler.isDone()) {
+                    LOGGER.debug("Cloudant change feed connection is broken .");
+                    handler.cancel(true);
+                }
+            }
+        }, timeout, TimeUnit.MILLISECONDS);
+
+        return handler.get();
+    }
+
     private void handleChange(CloudantUri cloudantUri, String database, String change) {
         LOGGER.debug("Receive change feed " + change);
 
         if (FEED_SEPARATOR.equals(change) || StringUtils.isEmpty(change)) {
-            LOGGER.debug("Invalid change feed payload.");
+            LOGGER.debug("Cloundant heartbeat payload received.");
             return;
         }
 
