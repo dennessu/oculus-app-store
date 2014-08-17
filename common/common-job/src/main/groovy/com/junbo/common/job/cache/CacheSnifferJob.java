@@ -120,17 +120,25 @@ public class CacheSnifferJob implements InitializingBean {
             throws ExecutionException, InterruptedException {
         final Future<T> handler = executor.submit(callable);
 
-        executor.schedule(new Runnable() {
+        ScheduledFuture monitor = executor.schedule(new Runnable() {
             @Override
             public void run() {
                 if (!handler.isDone()) {
-                    LOGGER.debug("Cloudant change feed connection is broken .");
+                    LOGGER.debug("Cloudant change feed connection is broken.");
                     handler.cancel(true);
                 }
             }
         }, timeout, TimeUnit.MILLISECONDS);
 
-        return handler.get();
+        T result = handler.get();
+        try {
+            LOGGER.debug("Cancel feed change monitor thread.");
+            monitor.cancel(true);
+        } catch (Exception e) {
+            //silently ignore
+        }
+
+        return result;
     }
 
     private void handleChange(CloudantUri cloudantUri, String database, String change) {
