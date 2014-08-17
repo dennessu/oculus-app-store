@@ -5,7 +5,7 @@ apply plugin: 'application'
 
 mainClassName = "com.junbo.data.loader.DataLoader"
 applicationDefaultJvmArgs = [
-        "-Xmx1536m", "-XX:MaxPermSize=512m", "-Dspring.profiles.active=utility"
+        "-Xmx2048m", "-XX:MaxPermSize=512m", "-Dspring.profiles.active=utility"
 ]
 
 dependencies {

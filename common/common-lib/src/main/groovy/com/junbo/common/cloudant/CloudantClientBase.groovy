@@ -25,33 +25,34 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
         useBulk.set(value)
     }
 
-    public CloudantClientInternal getEffective() {
+    protected CloudantClientInternal getEffective() {
         // There are two layer of overriding:
         // 1. Use per instance setting to specify whether cache is used or not.
         // 2. Use the thread static setUseBulk to specify whether bulk is used or not.
         // When bulk is used, it will ignore cache setting. Now bulk is only used in migration.
         Boolean flag = useBulk.get()
-        if (flag == null || flag == false) {
+        if (flag == null || flag == false || localIgnoreBulk) {
             return internal
         }
         return bulk
     }
 
-    public static String dbNamePrefix = ConfigServiceManager.instance().getConfigValue("common.cloudant.dbNamePrefix")
-    public static CloudantMarshaller marshaller = DefaultCloudantMarshaller.instance()
-    public static CloudantUniqueClient cloudantUniqueClient = CloudantUniqueClient.instance()
-    public static CloudantClientBulk bulk = CloudantClientBulk.instance()
+    protected static String dbNamePrefix = ConfigServiceManager.instance().getConfigValue("common.cloudant.dbNamePrefix")
+    protected static CloudantMarshaller marshaller = DefaultCloudantMarshaller.instance()
+    protected static CloudantUniqueClient cloudantUniqueClient = CloudantUniqueClient.instance()
+    protected static CloudantClientBulk bulk = CloudantClientBulk.instance()
 
-    public CloudantClientInternal internal
+    private CloudantClientInternal internal
 
-    public CloudantGlobalUri cloudantGlobalUri
-    public CloudantDbUri cloudantDbUri
-    public Class<T> entityClass
-    public String dbName
-    public Tracker tracker
+    protected CloudantGlobalUri cloudantGlobalUri
+    protected CloudantDbUri cloudantDbUri
+    protected Class<T> entityClass
+    protected String dbName
+    protected Tracker tracker
 
-    public boolean enableCache
-    public boolean includeDocs
+    private boolean enableCache
+    private boolean includeDocs
+    private boolean localIgnoreBulk
 
     public CloudantClientBase() {
         entityClass = (Class<T>) ((ParameterizedType) getClass().genericSuperclass).actualTypeArguments[0]
@@ -78,6 +79,10 @@ abstract class CloudantClientBase<T extends CloudantEntity> implements Initializ
 
     void setIncludeDocs(boolean includeDocs) {
         this.includeDocs = includeDocs
+    }
+
+    void setLocalIgnoreBulk(boolean localIgnoreBulk) {
+        this.localIgnoreBulk = localIgnoreBulk
     }
 
     @Override

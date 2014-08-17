@@ -14,7 +14,6 @@ dependencies {
     compile junboProject(':apphost-crypto')
     compile junboProject(':apphost-jobs')
     compile junboProject(':apphost-dataloader')
-    compile junboProject(':apphost-identity')
 }
 
 configurations.compile.dependencies.each { dep ->
