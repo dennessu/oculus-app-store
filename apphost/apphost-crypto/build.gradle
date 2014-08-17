@@ -9,5 +9,5 @@ dependencies {
     compile junboProject(':configuration-data')
     compile junboProject(':crypto-rest')
     compile junboProject(':identity-rest')
-
+    compile junboProject(':oauth-api')
 }
