@@ -132,8 +132,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
 
     @Override
     public String postUserAccessToken(String uid, String username, String pwd, int expectedResponseCode) throws Exception {
-        needAuthHeader = true;
-        needOverrideRequestEntity = false;
+        needAuthHeader = false;
         Map<String, String> formParams = new HashMap<>();
         formParams.put("client_id", ConfigHelper.getSetting("client_id"));
         formParams.put("client_secret",  ConfigHelper.getSetting("secret"));
@@ -192,6 +191,9 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         needAuthHeader = false;
         needOverrideRequestEntity = false;
         String url = String.format("/authorize?client_id=%s&response_type=code&scope=identity&redirect_uri=http://localhost",ConfigHelper.getSetting("client_id"));
+        if(ConfigHelper.getSetting("client_id") != "client"){
+            url = url.concat(":8080");
+        }
         String responseBody = restApiCall(HTTPMethod.GET, oauthUrl + url);
 
         return responseBody.substring(responseBody.indexOf('=') + 1);
@@ -263,7 +265,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
 
     @Override
     public String postUserAccessToken(String username, String pwd) throws Exception {
-        needAuthHeader = true;
+        needAuthHeader = false;
         Map<String, String> formParams = new HashMap<>();
         formParams.put("client_id", ConfigHelper.getSetting("client_id"));
         formParams.put("client_secret", ConfigHelper.getSetting("client_secret"));
