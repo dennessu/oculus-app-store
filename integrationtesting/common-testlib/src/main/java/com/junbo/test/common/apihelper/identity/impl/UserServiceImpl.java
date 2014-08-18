@@ -12,9 +12,14 @@ import com.junbo.common.id.UserId;
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.common.model.Results;
 import com.junbo.identity.spec.v1.model.*;
+import com.junbo.identity.spec.v1.model.Address;
 import com.junbo.langur.core.client.TypeReference;
+import com.junbo.oauth.spec.model.TokenInfo;
 import com.junbo.test.common.ConfigHelper;
-import com.junbo.test.common.Entities.enums.ComponentType;
+import com.junbo.test.common.Entities.Identity.AddressInfo;
+import com.junbo.test.common.Entities.Identity.UserInfo;
+import com.junbo.test.common.Entities.enums.*;
+import com.junbo.test.common.Entities.paymentInstruments.*;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
@@ -40,7 +45,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     private static UserService instance;
     private String userPassword = "Test1234";
 
-    private OAuthService oAuthTokenClient = OAuthServiceImpl.getInstance();
+    private OAuthService oAuthClient = OAuthServiceImpl.getInstance();
 
     public static synchronized UserService instance() {
         if (instance == null) {
@@ -61,7 +66,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     private String PostUser(String userName, String pwd, String emailAddress, String vat,
                             List<Address> billingAddresses) throws Exception {
         Master.getInstance().setCurrentUid(null);
-        oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY);
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY);
         User userForPost = new User();
         userForPost.setIsAnonymous(true);
         userForPost.setStatus("ACTIVE");
@@ -103,7 +108,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
             password = postPassword(userId, userPassword);
         }
 
-        oAuthTokenClient.postUserAccessToken(userId, userName, password);
+        oAuthClient.postUserAccessToken(userId, userName, password);
 
         List<UserPersonalInfoLink> addresses = new ArrayList<>();
         List<UserPersonalInfoLink> emails = new ArrayList<>();
@@ -170,9 +175,59 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         return PostUser(null, null, null, vat, null);
     }
 
-    public String PostUser() throws Exception {
-        return PostUser(RandomFactory.getRandomStringOfAlphabet(10), null, null);
+    @Override
+    public String PostUser(UserInfo userInfo) throws Exception {
+        return PostUser(userInfo, 200);
     }
+
+    @Override
+    public String PostUser(UserInfo userInfo, int expectedResponseCode) throws Exception {
+        String cid = oAuthClient.getCid();
+        oAuthClient.authorizeLoginView(cid);
+        oAuthClient.authorizeRegister(cid);
+        oAuthClient.registerUser(userInfo, cid);
+        String accessToken = oAuthClient.postUserAccessToken(userInfo.getUserName(), userInfo.getPassword());
+        TokenInfo tokenInfo = oAuthClient.getTokenInfo(accessToken);
+        String uid = IdConverter.idToHexString(tokenInfo.getSub());
+        Master.getInstance().addUserAccessToken(uid, accessToken);
+        Master.getInstance().setCurrentUid(uid);
+
+        GetUserByUserId(uid);
+
+        User user = Master.getInstance().getUser(uid);
+
+        List<UserPersonalInfoLink> addresses = new ArrayList<>();
+
+        for (AddressInfo addressInfo : userInfo.getAddressInfos()) {
+            UserPersonalInfo address = postAddress(user.getId(), addressInfo);
+            UserPersonalInfoLink piAddress = new UserPersonalInfoLink();
+            piAddress.setIsDefault(Boolean.TRUE);
+            piAddress.setUserId(user.getId());
+            piAddress.setValue(address.getId());
+            piAddress.setIsDefault(addressInfo.isDefault());
+            addresses.add(piAddress);
+        }
+
+        user.setAddresses(addresses);
+
+        this.PutUser(uid, user);
+
+        return uid;
+    }
+
+    private UserPersonalInfo postAddress(UserId userId, AddressInfo addressInfo) throws Exception {
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+        userPersonalInfo.setType("ADDRESS");
+        userPersonalInfo.setUserId(userId);
+        userPersonalInfo.setValue(addressInfo.getJsonString());
+        return postUserPersonalInfo(userPersonalInfo);
+    }
+
+    @Override
+    public String PostUser() throws Exception {
+        return PostUser(UserInfo.getRandomUserInfo(), 200);
+    }
+
 
     private UserPersonalInfo postBillingAddress(UserId userId, Address address) throws Exception {
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
@@ -269,7 +324,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     private UserPersonalInfo postUserPersonalInfo(UserPersonalInfo userPersonalInfo,
                                                   int expectedResponseCode) throws Exception {
         String serverURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/personal-info";
-        String responseBody = restApiCall(HTTPMethod.POST, serverURL, userPersonalInfo, expectedResponseCode, true);
+        String responseBody = restApiCall(HTTPMethod.POST, serverURL, userPersonalInfo, expectedResponseCode);
         return new JsonMessageTranscoder().decode(new TypeReference<UserPersonalInfo>() {
         }, responseBody);
     }
@@ -386,7 +441,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         String userRtnId = IdConverter.idToHexString(userGet.getId());
         Master.getInstance().addUser(userRtnId, userGet);
         if (Master.getInstance().getUserAccessToken(userId) == null) {
-            oAuthTokenClient.postUserAccessToken(userRtnId, loginName.getUserName(), userPassword);
+            oAuthClient.postUserAccessToken(userRtnId, loginName.getUserName(), userPassword);
         }
         return userRtnId;
     }
@@ -396,7 +451,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     }
 
     public List<String> GetUserByUserName(String userName, int expectedResponseCode) throws Exception {
-        oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY);
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.IDENTITY);
         HashMap<String, List<String>> paraMap = new HashMap<>();
         List<String> listUsername = new ArrayList<>();
         listUsername.add(userName);
@@ -413,10 +468,10 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
             Master.getInstance().addUser(IdConverter.idToHexString(user.getId()), user);
             if (Master.getInstance().getUserAccessToken(IdConverter.idToHexString(user.getId())) == null) {
                 if (Master.getInstance().getUserPassword() != null && !Master.getInstance().getUserPassword().isEmpty())
-                    oAuthTokenClient.postUserAccessToken(IdConverter.idToHexString(user.getId()), userName,
+                    oAuthClient.postUserAccessToken(IdConverter.idToHexString(user.getId()), userName,
                             Master.getInstance().getUserPassword());
                 else {
-                    oAuthTokenClient.postUserAccessToken(IdConverter.idToHexString(user.getId()), userName, userPassword);
+                    oAuthClient.postUserAccessToken(IdConverter.idToHexString(user.getId()), userName, userPassword);
                 }
             }
             listUserId.add(IdConverter.idToHexString(user.getId()));
@@ -435,7 +490,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     public String PutUser(String userId, User user, int expectedResponseCode) throws Exception {
 
         String putUrl = identityServerURL + "/" + userId;
-        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, user, expectedResponseCode, true);
+        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, user, expectedResponseCode);
         User userPut = new JsonMessageTranscoder().decode(new TypeReference<User>() {
         },
                 responseBody);
@@ -453,7 +508,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
     @Override
     public String PostEmailVerification(String userId, String country, String locale,
                                         int expectedResponseCode) throws Exception {
-        return oAuthTokenClient.postEmailVerification(userId, country, locale, expectedResponseCode);
+        return oAuthClient.postEmailVerification(userId, country, locale, expectedResponseCode);
     }
 
     @Override

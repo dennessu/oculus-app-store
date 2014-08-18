@@ -108,7 +108,7 @@ public final class RandomFactory {
 
     public static Calendar nextDate() {
         GregorianCalendar gc = new GregorianCalendar();
-        int year = getRandomInteger(1970, 2970);
+        int year = getRandomInteger(1970, 1995);
         gc.set(gc.YEAR, year);
         int dayOfYear = getRandomInteger(1, gc.getActualMaximum(gc.DAY_OF_YEAR));
         gc.set(gc.DAY_OF_YEAR, dayOfYear);
