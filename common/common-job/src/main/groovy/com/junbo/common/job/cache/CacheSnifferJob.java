@@ -91,7 +91,6 @@ public class CacheSnifferJob implements InitializingBean {
 
     private void listenDatabaseChanges(final CloudantUri cloudantUri, final String database) {
         String threadName = "cloudant-listener-" + database;
-        final ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
 
         new Thread(new Runnable() {
             public void run() {
