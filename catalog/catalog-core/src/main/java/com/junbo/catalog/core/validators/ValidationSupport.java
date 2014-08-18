@@ -152,7 +152,7 @@ public abstract class ValidationSupport {
     }
 
     protected boolean validateOptionalUrl(String fieldName, String url, List<AppError> errors) {
-        if (!StringUtils.isEmpty(url) && !UrlValidator.getInstance().isValid(url)) {
+        if (url != null && !UrlValidator.getInstance().isValid(url)) {
             errors.add(AppCommonErrors.INSTANCE.fieldInvalid(fieldName, "invalid url format"));
             return false;
         }
