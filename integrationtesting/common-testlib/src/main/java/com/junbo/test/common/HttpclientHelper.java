@@ -300,7 +300,7 @@ public class HttpclientHelper {
     }
 
     public static void ResetHttpClient() throws Exception {
-        httpclient.close();
+        if (httpclient != null) httpclient.close();
         httpclient = HttpClients.createDefault();
     }
 

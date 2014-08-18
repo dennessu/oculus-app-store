@@ -34,19 +34,19 @@ import java.util.Map;
  */
 public class postCountry {
 
-    @BeforeClass
+    @BeforeClass(alwaysRun = true)
     public void run() throws Exception {
         HttpclientHelper.CreateHttpClient();
         Identity.GetHttpAuthorizationHeader();
         HttpclientHelper.CloseHttpClient();
     }
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void setup() throws Exception {
         HttpclientHelper.CreateHttpClient();
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void dispose() throws Exception {
         HttpclientHelper.CloseHttpClient();
     }
@@ -60,8 +60,8 @@ public class postCountry {
             environment = "onebox",
             steps = {
                     "1. post a country" +
-                 "/n 2. get the country" +
-                 "/n 3. update the country"
+                            "/n 2. get the country" +
+                            "/n 3. update the country"
             }
     )
     @Test(groups = "bvt")

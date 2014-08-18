@@ -14,10 +14,7 @@ import com.junbo.test.common.JsonHelper;
 import com.junbo.test.common.RandomHelper;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.identity.Identity;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import static org.testng.AssertJUnit.assertEquals;
 
@@ -26,19 +23,19 @@ import static org.testng.AssertJUnit.assertEquals;
  */
 public class authorizeUser {
 
-    @BeforeSuite
+    @BeforeClass(alwaysRun = true)
     public void run() throws Exception {
         HttpclientHelper.CreateHttpClient();
         Identity.GetHttpAuthorizationHeader();
         HttpclientHelper.CloseHttpClient();
     }
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void setup() {
         HttpclientHelper.CreateHttpClient();
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void dispose() throws Exception {
         HttpclientHelper.CloseHttpClient();
     }
@@ -115,7 +112,7 @@ public class authorizeUser {
                 ((UserLoginName) JsonHelper.JsonNodeToObject(storedUPI.getValue(), UserLoginName.class)).getUserName());
     }
 
-    //@Property(environment = "release")
+    @Property(environment = "release")
     @Test(groups = "bvt")
     public void login() throws Exception {
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
@@ -155,10 +152,11 @@ public class authorizeUser {
         String cid = Oauth.GetLoginCid();
         String currentViewState = Oauth.GetViewStateByCid(cid);
         ValidateErrorFreeResponse(currentViewState);
-        String loginResponseLink = Oauth.UserLogin(cid, "lpFZNsoDZaoacRw", "1234qwerASDF");
-        //String loginResponseLink = Oauth.UserLogin(cid, "kevincrawford", "Welcome123");
-        String idToken = Oauth.GetLoginUserIdToken(loginResponseLink);
-        Oauth.Logout(idToken);
+        //String loginResponseLink =
+        Oauth.UserLogin(cid, "kevincrawford", "Welcome123");
+        //Oauth.UserLogin(cid, RandomHelper.randomAlphabetic(10), "Welcome123");
+        //String idToken = Oauth.GetLoginUserIdToken(loginResponseLink);
+        //Oauth.Logout(idToken);
     }
 
     @Test(groups = "bvt")

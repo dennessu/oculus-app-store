@@ -21,19 +21,19 @@ import org.testng.annotations.Test;
  */
 public class postErrorCodeDetail {
 
-    @BeforeClass
+    @BeforeClass(alwaysRun = true)
     public void run() throws Exception {
         HttpclientHelper.CreateHttpClient();
         Identity.GetHttpAuthorizationHeader();
         HttpclientHelper.CloseHttpClient();
     }
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void setup() throws Exception {
         HttpclientHelper.CreateHttpClient();
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void dispose() throws Exception {
         HttpclientHelper.CloseHttpClient();
     }
@@ -47,8 +47,8 @@ public class postErrorCodeDetail {
             environment = "onebox",
             steps = {
                     "1. post a errorInfo" +
-                 "/n 2. get the errorInfo" +
-                 "/n 3. update the errorInfo"
+                            "/n 2. get the errorInfo" +
+                            "/n 3. update the errorInfo"
             }
     )
     @Test(groups = "bvt")
@@ -67,7 +67,7 @@ public class postErrorCodeDetail {
         posted.getLocales().put("zh_CN", JsonHelper.ObjectToJsonNode(errorDetail));
         ErrorInfo updated = Identity.ErrorInfoPut(posted);
         JsonNode jsonNode = updated.getLocales().get("zh_CN");
-        ErrorDetail errorDetailGotten = (ErrorDetail)JsonHelper.JsonNodeToObject(jsonNode, ErrorDetail.class);
+        ErrorDetail errorDetailGotten = (ErrorDetail) JsonHelper.JsonNodeToObject(jsonNode, ErrorDetail.class);
         Validator.Validate("Validate update errorInformation", errorDetail.getErrorInformation(), errorDetailGotten.getErrorInformation());
         Validator.Validate("Validate update errorSummary", errorDetail.getErrorSummary(), errorDetailGotten.getErrorSummary());
         Validator.Validate("Validate update supportLink", errorDetail.getSupportLink(), errorDetailGotten.getSupportLink());
@@ -75,7 +75,7 @@ public class postErrorCodeDetail {
 
         ErrorInfo gotten = Identity.ErrorInfoGet(updated.getErrorIdentifier());
         jsonNode = gotten.getLocales().get("zh_CN");
-        errorDetailGotten = (ErrorDetail)JsonHelper.JsonNodeToObject(jsonNode, ErrorDetail.class);
+        errorDetailGotten = (ErrorDetail) JsonHelper.JsonNodeToObject(jsonNode, ErrorDetail.class);
         Validator.Validate("Validate get errorInformation", errorDetail.getErrorInformation(), errorDetailGotten.getErrorInformation());
         Validator.Validate("Validate get errorSummary", errorDetail.getErrorSummary(), errorDetailGotten.getErrorSummary());
         Validator.Validate("Validate get supportLink", errorDetail.getSupportLink(), errorDetailGotten.getSupportLink());

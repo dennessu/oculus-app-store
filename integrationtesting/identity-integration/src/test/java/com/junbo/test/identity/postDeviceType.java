@@ -24,19 +24,19 @@ import org.testng.annotations.Test;
  */
 public class postDeviceType {
 
-    @BeforeClass
+    @BeforeClass(alwaysRun = true)
     public void run() throws Exception {
         HttpclientHelper.CreateHttpClient();
         Identity.GetHttpAuthorizationHeader();
         HttpclientHelper.CloseHttpClient();
     }
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void setup() throws Exception {
         HttpclientHelper.CreateHttpClient();
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void dispose() throws Exception {
         HttpclientHelper.CloseHttpClient();
     }
@@ -50,8 +50,8 @@ public class postDeviceType {
             environment = "onebox",
             steps = {
                     "1. post a device type" +
-                 "/n 2. get the device type" +
-                 "/n 3. update the device type"
+                            "/n 2. get the device type" +
+                            "/n 3. update the device type"
             }
     )
     @Test(groups = "bvt")
