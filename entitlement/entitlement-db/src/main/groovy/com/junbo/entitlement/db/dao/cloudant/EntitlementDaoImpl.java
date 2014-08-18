@@ -73,6 +73,7 @@ public class EntitlementDaoImpl extends CloudantClient<EntitlementEntity> implem
         Link next = new Link();
         next.setHref(searchResult.getBookmark());
         results.setNext(next);
+        results.setTotal(searchResult.getTotal());
         return results;
     }
 

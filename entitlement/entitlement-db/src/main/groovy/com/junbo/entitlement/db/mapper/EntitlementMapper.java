@@ -98,6 +98,7 @@ public class EntitlementMapper {
     public Results<Entitlement> toEntitlementResults(Results<EntitlementEntity> entityResults) {
         Results<Entitlement> results = new Results<>();
         results.setNext(entityResults.getNext());
+        results.setTotal(entityResults.getTotal());
         results.setItems(toEntitlementList(entityResults.getItems()));
         return results;
     }
