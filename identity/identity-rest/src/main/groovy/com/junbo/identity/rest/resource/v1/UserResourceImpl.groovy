@@ -142,8 +142,6 @@ class UserResourceImpl implements UserResource {
 
                 auditCSR(user, oldUser)
 
-                auditCSR(user, oldUser)
-
                 return userValidator.validateForUpdate(user, oldUser).then {
                     return userRepository.update(user, oldUser).then { User newUser ->
                         return updateCredential(user.getId(), oldUser.username, newUser.username).then {
