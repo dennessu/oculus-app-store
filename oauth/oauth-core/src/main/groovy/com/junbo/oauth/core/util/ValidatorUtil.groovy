@@ -1,5 +1,6 @@
 package com.junbo.oauth.core.util
 
+import com.junbo.common.error.AppCommonErrors
 import com.junbo.oauth.common.CountryCode
 import groovy.transform.CompileStatic
 
@@ -17,14 +18,12 @@ class ValidatorUtil {
 
         String[] parts = locale.split('_')
         switch (parts.length) {
-            case 3:
-                return new Locale(parts[0], parts[1], parts[2])
             case 2:
                 return new Locale(parts[0], parts[1])
             case 1:
                 return new Locale(parts[0])
             default:
-                throw new IllegalArgumentException("Invalid locale: $locale")
+                throw AppCommonErrors.INSTANCE.fieldInvalid('locale', "Invalid locale: $locale").exception()
         }
     }
 
@@ -37,14 +36,12 @@ class ValidatorUtil {
 
         String[] parts = locale.split('_')
         switch (parts.length) {
-            case 3:
-                return isValidLocale(new Locale(parts[0], parts[1], parts[2]))
             case 2:
                 return isValidLocale(new Locale(parts[0], parts[1]))
             case 1:
                 return isValidLocale(new Locale(parts[0]))
             default:
-                throw new IllegalArgumentException("Invalid locale: $locale")
+                return false
         }
     }
 

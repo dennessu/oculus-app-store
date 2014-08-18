@@ -109,12 +109,7 @@ class AuthenticateUser implements Action {
                     case HttpStatus.BAD_REQUEST.value():
                     case HttpStatus.UNAUTHORIZED.value():
                     case HttpStatus.PRECONDITION_FAILED.value():
-                        String reason = appError.error.error().message
-                        if (appError.error.error().details != null && appError.error.error().details.isEmpty()) {
-                            reason = appError.error.error().details[0].reason
-                        }
-
-                        handleAppError(contextWrapper, AppErrors.INSTANCE.invalidCredential(reason))
+                        handleAppError(contextWrapper, AppErrors.INSTANCE.invalidCredential())
                         break
                     // For response of FORBIDDEN, it suggests that captcha is required for user login.
                     case HttpStatus.FORBIDDEN.value():
@@ -136,7 +131,7 @@ class AuthenticateUser implements Action {
             return Promise.pure(null)
         }.then { UserCredentialVerifyAttempt loginAttempt ->
             if (loginAttempt == null || !loginAttempt.succeeded) {
-                handleAppError(contextWrapper, AppErrors.INSTANCE.invalidCredential('Login attempt failed'))
+                handleAppError(contextWrapper, AppErrors.INSTANCE.invalidCredential())
                 return Promise.pure(new ActionResult('error'))
             }
 

@@ -1,6 +1,5 @@
 package com.junbo.oauth.core.action
 
-import com.junbo.common.error.AppCommonErrors
 import com.junbo.langur.core.promise.Promise
 import com.junbo.langur.core.webflow.action.Action
 import com.junbo.langur.core.webflow.action.ActionContext
@@ -39,7 +38,7 @@ class ValidateLocale implements Action {
 
         if (StringUtils.hasText(locale)) {
             if (!ValidatorUtil.isValidLocale(locale)) {
-                throw AppCommonErrors.INSTANCE.fieldInvalid('locale', locale).exception()
+                locale = defaultLocale
             }
         }
         else {
