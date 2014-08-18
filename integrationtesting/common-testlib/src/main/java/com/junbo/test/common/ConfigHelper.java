@@ -52,10 +52,10 @@ public final class ConfigHelper {
             BufferedReader reader = new BufferedReader(new InputStreamReader(file));
 
             //reading file content line by line
-            String client_id = reader.readLine();
-            String client_secret = reader.readLine();
-            properties.put("client_id", client_id);
-            properties.put("client_secret", client_secret);
+            String Client_id = reader.readLine();
+            String Client_secret = reader.readLine();
+            properties.put("client_id", Client_id);
+            properties.put("client_secret", Client_secret);
         } catch (FileNotFoundException ex) {
             Assert.fail(ex.toString());
         } catch (IOException ex) {
