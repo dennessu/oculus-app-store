@@ -30,7 +30,7 @@ import java.util.Set;
  */
 public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
 
-    private static String oauthUrl = ConfigHelper.getSetting("defaultIdentityEndPointV1")+ "/oauth2";
+    private static String oauthUrl = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/oauth2";
     private static String identityPiiUrl = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/personal-info";
 
     private static OAuthService instance;
@@ -53,7 +53,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
     protected FluentCaseInsensitiveStringsMap getHeader(boolean isServiceScope) {
         FluentCaseInsensitiveStringsMap headers = new FluentCaseInsensitiveStringsMap();
         String uid = Master.getInstance().getCurrentUid();
-        if(needOverrideRequestEntity){
+        if (needOverrideRequestEntity) {
             headers.add(Header.CONTENT_TYPE, contentType);
         }
         if (needAuthHeader) {
@@ -135,7 +135,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         needAuthHeader = false;
         Map<String, String> formParams = new HashMap<>();
         formParams.put("client_id", ConfigHelper.getSetting("client_id"));
-        formParams.put("client_secret",  ConfigHelper.getSetting("secret"));
+        formParams.put("client_secret", ConfigHelper.getSetting("secret"));
         formParams.put("grant_type", GrantType.PASSWORD.toString());
         formParams.put("scope", "identity commerce catalog identity.pii catalog.developer");
         formParams.put("password", pwd);
@@ -190,10 +190,9 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
     public String getCid() throws Exception {
         needAuthHeader = false;
         needOverrideRequestEntity = false;
-        String url = String.format("/authorize?client_id=%s&response_type=code&scope=identity&redirect_uri=http://localhost",ConfigHelper.getSetting("client_id"));
-        if(ConfigHelper.getSetting("client_id") != "client"){
-            url = url.concat(":8080");
-        }
+        String url = String.format("/authorize?client_id=%s&response_type=code&scope=identity&redirect_uri=%s",
+                ConfigHelper.getSetting("client_id"), ConfigHelper.getSetting("oauth.redirect.uri"));
+
         String responseBody = restApiCall(HTTPMethod.GET, oauthUrl + url);
 
         return responseBody.substring(responseBody.indexOf('=') + 1);
@@ -242,7 +241,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
     }
 
     @Override
-    public void registerUser(UserInfo userInfo, String cid) throws Exception{
+    public void registerUser(UserInfo userInfo, String cid) throws Exception {
         needAuthHeader = true;
 
         Map<String, String> formParams = new HashMap<>();
