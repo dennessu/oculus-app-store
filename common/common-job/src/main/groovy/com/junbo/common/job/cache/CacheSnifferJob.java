@@ -46,7 +46,7 @@ public class CacheSnifferJob implements InitializingBean {
 
         // initialize cloudant feed connection timeout
         Integer cloudantHeartbeat = SnifferUtils.safeParseInt(SnifferUtils.getConfig(CLOUDANT_HEARTBEAT_KEY));
-        this.connectionTimeout = cloudantHeartbeat * 2;
+        this.connectionTimeout = cloudantHeartbeat + cloudantHeartbeat / 10;
     }
 
     public void listen() {
@@ -95,6 +95,7 @@ public class CacheSnifferJob implements InitializingBean {
                             change = executeWithTimeout(executor,
                                     new Callable<String>() {
                                         public String call() throws Exception {
+                                            // blocking read
                                             return reader.readLine();
                                         }
                                     }, connectionTimeout);
@@ -130,6 +131,7 @@ public class CacheSnifferJob implements InitializingBean {
             }
         }, timeout, TimeUnit.MILLISECONDS);
 
+        // blocking wait
         T result = handler.get();
         try {
             LOGGER.debug("Cancel feed change monitor thread.");
