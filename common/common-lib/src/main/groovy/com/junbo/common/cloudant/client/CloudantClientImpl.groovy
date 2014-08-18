@@ -418,6 +418,9 @@ class CloudantClientImpl implements CloudantClientInternal {
                 if (cloudantError?.reason == "Invalid bookmark parameter supplied") {
                     throw AppCommonErrors.INSTANCE.parameterInvalid("cursor").exception();
                 }
+                if (cloudantError?.reason == "Value for limit is too large, must not exceed 200") {
+                    throw AppCommonErrors.INSTANCE.parameterInvalid("count", "Should not exceed 200").exception();
+                }
             }
 
             logger.error("Failed to $verb for view $viewName in CloudantDB. db: $dbUri, error: $cloudantError.error, reason: $cloudantError.reason")
