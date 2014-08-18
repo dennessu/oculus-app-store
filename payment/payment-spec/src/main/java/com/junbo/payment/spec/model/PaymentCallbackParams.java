@@ -20,6 +20,7 @@ public class PaymentCallbackParams {
     private String pspReference;
     private String merchantReference;
     private String skinCode;
+    private String merchantReturnData;
     private String merchantSig;
 
     public String getPayerID() {
@@ -70,6 +71,14 @@ public class PaymentCallbackParams {
         this.skinCode = skinCode;
     }
 
+    public String getMerchantReturnData() {
+        return merchantReturnData;
+    }
+
+    public void setMerchantReturnData(String merchantReturnData) {
+        this.merchantReturnData = merchantReturnData;
+    }
+
     public String getMerchantSig() {
         return merchantSig;
     }
@@ -85,6 +94,7 @@ public class PaymentCallbackParams {
         pspReference = CommonUtil.urlDecode(pspReference);
         merchantReference = CommonUtil.urlDecode(merchantReference);
         skinCode = CommonUtil.urlDecode(skinCode);
+        merchantReturnData = CommonUtil.urlDecode(merchantReturnData);
         merchantSig = CommonUtil.urlDecode(merchantSig);
     }
 

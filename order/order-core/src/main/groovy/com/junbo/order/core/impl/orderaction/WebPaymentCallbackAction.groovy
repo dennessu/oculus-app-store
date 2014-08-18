@@ -75,6 +75,9 @@ class WebPaymentCallbackAction extends BaseOrderEventAwareAction {
                     if (eventMap.containsKey('skinCode')) {
                         params.setSkinCode(eventMap.get('skinCode'))
                     }
+                    if (eventMap.containsKey('merchantReturnData')) {
+                        params.setSkinCode(eventMap.get('merchantReturnData'))
+                    }
                     if (eventMap.containsKey('merchantSig')) {
                         params.setMerchantSig(eventMap.get('merchantSig'))
                     }

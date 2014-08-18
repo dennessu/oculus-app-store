@@ -194,6 +194,10 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
         //recurringContract
         strToSign.append(RECURRING);
         strRequest.append("&recurringContract=" + RECURRING);
+        //merchantReturnData: output the billing ref id(order id)
+        String billingRefId = paymentRequest.getBillingRefId();
+        strToSign.append(billingRefId);
+        strRequest.append("&merchantReturnData=" + billingRefId);
          //signature
         String merchantSig = CommonUtil.calHMCASHA1(strToSign.toString(), skinSecret);
         strRequest.append("&merchantSig=" + CommonUtil.urlEncode(merchantSig));
@@ -333,7 +337,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
         //validate signature: authResult + pspReference + merchantReference + skinCode + merchantReturnData
         if(!CommonUtil.isNullOrEmpty(properties.getPspReference()) && !CommonUtil.isNullOrEmpty(properties.getAuthResult())){
             String strToSign = properties.getAuthResult() + properties.getPspReference() +
-                    properties.getMerchantReference() + properties.getSkinCode();
+                    properties.getMerchantReference() + properties.getSkinCode() + properties.getMerchantReturnData();
             if(!CommonUtil.calHMCASHA1(strToSign, skinSecret).equals(properties.getMerchantSig())){
                 LOGGER.error("Signature is not matched for:" + strToSign);
                 throw AppServerExceptions.INSTANCE.errorCalculateHMCA().exception();

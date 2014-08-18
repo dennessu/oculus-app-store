@@ -44,11 +44,7 @@ public class AdyenProviderServiceTest extends BaseTest {
         Assert.assertEquals(result.getStatus(), PaymentStatus.UNCONFIRMED.toString());
         //manual pay through redirectURL
         PaymentCallbackParams properties = new PaymentCallbackParams();
-        properties.setPspReference("ut1234");
-        properties.setAuthResult("AUTHORISED");
-        properties.setMerchantReference("ut111");
-        properties.setSkinCode("0ceFRQOp");
-        String strToSign="AUTHORISEDut1234ut1110ceFRQOp";
+        String strToSign = getMockProperties(properties);
         properties.setMerchantSig(CommonUtil.calHMCASHA1(strToSign, "1234"));
         paymentCallbackService.addPaymentProperties(result.getId(), properties).get();
         result = paymentService.getUpdatedTransaction(result.getId()).get();
@@ -61,6 +57,15 @@ public class AdyenProviderServiceTest extends BaseTest {
         result = paymentService.charge(payment).get();
         Assert.assertNull(result.getWebPaymentInfo());
         Assert.assertEquals(result.getStatus(), PaymentStatus.SETTLED.toString());
+    }
+
+    private String getMockProperties(PaymentCallbackParams properties) {
+        properties.setPspReference("ut1234");
+        properties.setAuthResult("AUTHORISED");
+        properties.setMerchantReference("ut111");
+        properties.setSkinCode("0ceFRQOp");
+        properties.setMerchantReturnData("123");
+        return "AUTHORISEDut1234ut1110ceFRQOp123";
     }
 
     @Test(enabled = false)
