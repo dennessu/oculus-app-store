@@ -35,9 +35,12 @@ public class CacheSnifferJob implements InitializingBean {
     private static final String CLOUDANT_HEARTBEAT_KEY = "common.cloudant.heartbeat";
 
     private static final int SAFE_SLEEP = 5000;
+    private static final int MONITOR_THREADS = 10;
 
     private Integer expiration;
     private Integer connectionTimeout;
+
+    private ScheduledExecutorService executor;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -53,6 +56,16 @@ public class CacheSnifferJob implements InitializingBean {
         LOGGER.info("Start listening cloundant DB change feed");
 
         List<CloudantUri> cloudantInstances = CloudantSniffer.instance().getCloudantInstances();
+
+        int totalDatabases = 0;
+
+        // collect all databases
+        for (CloudantUri cloudantUri : cloudantInstances) {
+            List<String> databases = CloudantSniffer.instance().getAllDatabases(cloudantUri);
+            totalDatabases += databases.size();
+        }
+
+        executor = Executors.newScheduledThreadPool(totalDatabases + MONITOR_THREADS);
 
         for (CloudantUri cloudantUri : cloudantInstances) {
             List<String> databases = CloudantSniffer.instance().getAllDatabases(cloudantUri);
@@ -92,7 +105,7 @@ public class CacheSnifferJob implements InitializingBean {
 
                         String change;
                         while (true) {
-                            change = executeWithTimeout(executor,
+                            change = executeWithTimeout(
                                     new Callable<String>() {
                                         public String call() throws Exception {
                                             // blocking read
@@ -117,7 +130,7 @@ public class CacheSnifferJob implements InitializingBean {
         }, threadName).start();
     }
 
-    private <T> T executeWithTimeout(ScheduledExecutorService executor, Callable<T> callable, Integer timeout)
+    private <T> T executeWithTimeout(Callable<T> callable, Integer timeout)
             throws ExecutionException, InterruptedException {
         final Future<T> handler = executor.submit(callable);
 
