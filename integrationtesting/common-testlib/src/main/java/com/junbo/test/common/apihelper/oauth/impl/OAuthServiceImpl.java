@@ -190,7 +190,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
     public String getCid() throws Exception {
         needAuthHeader = false;
         needOverrideRequestEntity = false;
-        String url = String.format("/authorize?client_id=%s&response_type=code&scope=identity&redirect_uri=http://localhost",ConfigHelper.getSetting("client_id"));
+        String url = String.format("/authorize?client_id=%s&response_type=code&scope=identity&redirect_uri=http://localhost","client");
         String responseBody = restApiCall(HTTPMethod.GET, oauthUrl + url);
 
         return responseBody.substring(responseBody.indexOf('=') + 1);
