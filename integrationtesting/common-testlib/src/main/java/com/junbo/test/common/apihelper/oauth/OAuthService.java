@@ -6,7 +6,10 @@
 
 package com.junbo.test.common.apihelper.oauth;
 
+import com.junbo.oauth.spec.model.TokenInfo;
+import com.junbo.test.common.Entities.Identity.UserInfo;
 import com.junbo.test.common.Entities.enums.ComponentType;
+import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 
 /**
@@ -29,5 +32,19 @@ public interface OAuthService {
     String postEmailVerification(String uid, String country, String locale) throws Exception;
 
     String postEmailVerification(String uid, String country, String locale, int expectedResponseCode) throws Exception;
+
+    String getCid() throws Exception;
+
+    void authorizeLoginView(String cid) throws Exception;
+
+    void authorizeRegister(String cid) throws Exception;
+
+    void registerUser(String userName, String password, Country country, String cid) throws Exception;
+
+    void registerUser(UserInfo userInfo, String cid) throws Exception;
+
+    String postUserAccessToken(String username, String pwd) throws Exception;
+
+    TokenInfo getTokenInfo(String accessToken) throws Exception;
 
 }
