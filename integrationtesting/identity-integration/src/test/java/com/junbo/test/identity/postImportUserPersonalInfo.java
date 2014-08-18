@@ -29,19 +29,19 @@ import java.util.List;
  */
 public class postImportUserPersonalInfo {
 
-    @BeforeClass
+    @BeforeClass(alwaysRun = true)
     public void run() throws Exception {
         HttpclientHelper.CreateHttpClient();
         Identity.GetHttpAuthorizationHeaderForMigration();
         HttpclientHelper.CloseHttpClient();
     }
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void setup() throws Exception {
         HttpclientHelper.CreateHttpClient();
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void dispose() throws Exception {
         HttpclientHelper.CloseHttpClient();
     }
@@ -53,7 +53,7 @@ public class postImportUserPersonalInfo {
 
         User user = Identity.UserGetByUserId(oculusOutput.getUserId());
         UserPersonalInfo userLoginInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(user.getUsername());
-        UserLoginName userLoginName = (UserLoginName)JsonHelper.JsonNodeToObject(userLoginInfo.getValue(), UserLoginName.class);
+        UserLoginName userLoginName = (UserLoginName) JsonHelper.JsonNodeToObject(userLoginInfo.getValue(), UserLoginName.class);
         Validator.Validate("validate user name", oculusInput.getUsername(), userLoginName.getUserName());
         Validator.Validate("validate user status",
                 oculusInput.getStatus().equals(IdentityModel.MigrateUserStatus.ARCHIVE.name()) ?
@@ -178,7 +178,7 @@ public class postImportUserPersonalInfo {
         Identity.ImportMigrationData(oculusInput);
         User user2 = Identity.UserGetByUserId(oculusOutput.getUserId());
         UserPersonalInfo userPersonalInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(user2.getUsername());
-        UserLoginName userLoginName = (UserLoginName)JsonHelper.JsonNodeToObject(userPersonalInfo.getValue(), UserLoginName.class);
+        UserLoginName userLoginName = (UserLoginName) JsonHelper.JsonNodeToObject(userPersonalInfo.getValue(), UserLoginName.class);
         Validator.Validate("validate user name is updated", newUserName, userLoginName.getUserName());
         UserPersonalInfoLink upil2 = user2.getEmails().get(0);
         UserPersonalInfo upi2 = Identity.UserPersonalInfoGetByUserPersonalInfoId(upil2.getValue());
@@ -347,7 +347,7 @@ public class postImportUserPersonalInfo {
         response.close();
     }
 
-    protected static User createUser(String username, String nickName) throws Exception{
+    protected static User createUser(String username, String nickName) throws Exception {
         User user = IdentityModel.DefaultUser();
         user.setNickName(nickName);
         user = Identity.UserPostDefault(user);

@@ -24,19 +24,19 @@ import org.testng.annotations.Test;
  */
 public class postLocale {
 
-    @BeforeClass
+    @BeforeClass(alwaysRun = true)
     public void run() throws Exception {
         HttpclientHelper.CreateHttpClient();
         Identity.GetHttpAuthorizationHeader();
         HttpclientHelper.CloseHttpClient();
     }
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void setup() throws Exception {
         HttpclientHelper.CreateHttpClient();
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void dispose() throws Exception {
         HttpclientHelper.CloseHttpClient();
     }
@@ -50,8 +50,8 @@ public class postLocale {
             environment = "onebox",
             steps = {
                     "1. post a locale" +
-                 "/n 2. get the locale" +
-                 "/n 3. update the locale"
+                            "/n 2. get the locale" +
+                            "/n 3. update the locale"
             }
     )
     @Test(groups = "bvt")

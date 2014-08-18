@@ -25,19 +25,19 @@ import java.util.List;
  */
 public class postOrganization {
 
-    @BeforeClass
+    @BeforeClass(alwaysRun = true)
     public void run() throws Exception {
         HttpclientHelper.CreateHttpClient();
         Identity.GetHttpAuthorizationHeader();
         HttpclientHelper.CloseHttpClient();
     }
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void setup() throws Exception {
         HttpclientHelper.CreateHttpClient();
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void dispose() throws Exception {
         HttpclientHelper.CloseHttpClient();
     }
@@ -80,7 +80,7 @@ public class postOrganization {
     @Test(groups = "dailies")
     public void testOrganizationSearch() throws Exception {
         Organization org = IdentityModel.DefaultOrganization();
-        for (int i=0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             Identity.OrganizationPostDefault(org);
         }
         Results<Organization> results = Identity.OrganizationByName(org.getName(), null, null);

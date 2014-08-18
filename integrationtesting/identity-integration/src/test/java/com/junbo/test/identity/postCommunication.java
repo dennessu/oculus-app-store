@@ -38,19 +38,19 @@ import java.util.Map;
  */
 public class postCommunication {
 
-    @BeforeClass
+    @BeforeClass(alwaysRun = true)
     public void run() throws Exception {
         HttpclientHelper.CreateHttpClient();
         Identity.GetHttpAuthorizationHeader();
         HttpclientHelper.CloseHttpClient();
     }
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void setup() throws Exception {
         HttpclientHelper.CreateHttpClient();
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void dispose() throws Exception {
         HttpclientHelper.CloseHttpClient();
     }
@@ -64,9 +64,9 @@ public class postCommunication {
             environment = "onebox",
             steps = {
                     "1. post a communication" +
-                 "/n 2. get the communication" +
-                 "/n 3. update the communication" +
-                 "/n 4. search the communication"
+                            "/n 2. get the communication" +
+                            "/n 3. update the communication" +
+                            "/n 4. search the communication"
             }
     )
     @Test(groups = "bvt")
@@ -125,7 +125,7 @@ public class postCommunication {
             environment = "onebox",
             steps = {
                     "1. post a communication" +
-                 "/n 2. test get communication by locale"
+                            "/n 2. test get communication by locale"
             }
     )
     @Test(groups = "dailies")
@@ -160,7 +160,7 @@ public class postCommunication {
         assert gotten.getLocales().get("zh_CN") == null;
         assert gotten.getLocales().get("en_US") != null;
         Validator.Validate("Validate Locale Accuracy", gotten.getLocaleAccuracy(), "HIGH");
-        CommunicationLocale communicationLocale = (CommunicationLocale)JsonHelper.JsonNodeToObject(gotten.getLocales().get("en_US"),
+        CommunicationLocale communicationLocale = (CommunicationLocale) JsonHelper.JsonNodeToObject(gotten.getLocales().get("en_US"),
                 CommunicationLocale.class);
         Validator.Validate("Validate locale description value", communicationLocale.getDescription(), "SilkCloudTest_Description_enUS");
         Validator.Validate("Validate Locale name value", communicationLocale.getName(), "SilkCloudTest_Name_enUS");
@@ -169,7 +169,7 @@ public class postCommunication {
         assert gotten.getLocales().get("zh_CN") != null;
         assert gotten.getLocales().get("en_US") == null;
         Validator.Validate("Validate Locale Accuracy", gotten.getLocaleAccuracy(), "HIGH");
-        communicationLocale = (CommunicationLocale)JsonHelper.JsonNodeToObject(gotten.getLocales().get("zh_CN"),
+        communicationLocale = (CommunicationLocale) JsonHelper.JsonNodeToObject(gotten.getLocales().get("zh_CN"),
                 CommunicationLocale.class);
         Validator.Validate("Validate locale description value", communicationLocale.getDescription(), "SilkCloudTest_Description_zhCN");
         Validator.Validate("Validate Locale name value", communicationLocale.getName(), "SilkCloudTest_Name_zhCN");
@@ -179,7 +179,7 @@ public class postCommunication {
         assert gotten.getLocales().get("en_US") == null;
         assert gotten.getLocales().get("ja_JP") != null;
         Validator.Validate("Validate Locale Accuracy", gotten.getLocaleAccuracy(), "LOW");
-        communicationLocale = (CommunicationLocale)JsonHelper.JsonNodeToObject(gotten.getLocales().get("ja_JP"),
+        communicationLocale = (CommunicationLocale) JsonHelper.JsonNodeToObject(gotten.getLocales().get("ja_JP"),
                 CommunicationLocale.class);
         Validator.Validate("Validate locale description value", communicationLocale.getDescription(), "SilkCloudTest_Description_enUS");
         Validator.Validate("Validate Locale name value", communicationLocale.getName(), "SilkCloudTest_Name_enUS");
@@ -194,7 +194,7 @@ public class postCommunication {
             environment = "onebox",
             steps = {
                     "1. post a communication" +
-                 "/n 2. search the communication"
+                            "/n 2. search the communication"
             }
     )
     @Test(groups = "dailies")
@@ -207,7 +207,7 @@ public class postCommunication {
 
         communications = Identity.CommunicationSearch("US", null);
         assert communications.getItems().size() != 0;
-        for (int index = 0; index < communications.getItems().size(); index ++) {
+        for (int index = 0; index < communications.getItems().size(); index++) {
             Communication gotten = communications.getItems().get(index);
             assert gotten.getRegions().size() != 0;
             int regionIndex = 0;
@@ -222,7 +222,7 @@ public class postCommunication {
 
         communications = Identity.CommunicationSearch("US", "en_US");
         assert communications.getItems().size() != 0;
-        for (int index = 0; index < communications.getItems().size(); index ++) {
+        for (int index = 0; index < communications.getItems().size(); index++) {
             Communication gotten = communications.getItems().get(index);
             assert gotten.getRegions().size() != 0;
             int regionIndex = 0;
@@ -232,7 +232,7 @@ public class postCommunication {
                 }
             }
             assert regionIndex != gotten.getRegions().size();
-            for (regionIndex = 0; regionIndex < gotten.getTranslations().size(); regionIndex ++) {
+            for (regionIndex = 0; regionIndex < gotten.getTranslations().size(); regionIndex++) {
                 if (gotten.getTranslations().get(regionIndex).getValue().equalsIgnoreCase("en_US")) {
                     break;
                 }

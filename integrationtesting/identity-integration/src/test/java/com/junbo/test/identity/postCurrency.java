@@ -26,19 +26,19 @@ import java.util.List;
  */
 public class postCurrency {
 
-    @BeforeClass
+    @BeforeClass(alwaysRun = true)
     public void run() throws Exception {
         HttpclientHelper.CreateHttpClient();
         Identity.GetHttpAuthorizationHeader();
         HttpclientHelper.CloseHttpClient();
     }
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void setup() throws Exception {
         HttpclientHelper.CreateHttpClient();
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void dispose() throws Exception {
         HttpclientHelper.CloseHttpClient();
     }
@@ -52,8 +52,8 @@ public class postCurrency {
             environment = "onebox",
             steps = {
                     "1. post a currency" +
-                 "/n 2. get the currency" +
-                 "/n 3. update the currency"
+                            "/n 2. get the currency" +
+                            "/n 3. update the currency"
             }
     )
     @Test(groups = "bvt")
@@ -110,7 +110,7 @@ public class postCurrency {
     }
 
     private void checkCurrencyLocale(Currency currency, List<String> expectedLocales, List<String> unexpectedLocales) throws Exception {
-        for (String expectedLocale: expectedLocales) {
+        for (String expectedLocale : expectedLocales) {
             CurrencyLocaleKey currencyLocaleKey = currency.getLocales().get(expectedLocale);
             Validator.Validate("Validate " + expectedLocale + " has currency locale", true, currencyLocaleKey != null);
         }
