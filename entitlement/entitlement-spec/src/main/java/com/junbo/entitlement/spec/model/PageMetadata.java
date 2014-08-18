@@ -12,7 +12,9 @@ import javax.ws.rs.QueryParam;
  * PageMetaData Model.
  */
 public class PageMetadata {
-//    @QueryParam("start")
+    /**
+     * @deprecated Start is not used any more because start is only used for sql only and no longer available for cloudant.
+     */
     @Deprecated
     private Integer start;
 
@@ -22,11 +24,17 @@ public class PageMetadata {
     @QueryParam("bookmark")
     private String bookmark;
 
+    /**
+     * @deprecated Start is not used any more because start is only used for sql only and no longer available for cloudant.
+     */
     @Deprecated
     public Integer getStart() {
         return start;
     }
 
+    /**
+     * @deprecated Start is not used any more because start is only used for sql only and no longer available for cloudant.
+     */
     @Deprecated
     public void setStart(Integer start) {
         this.start = start;
