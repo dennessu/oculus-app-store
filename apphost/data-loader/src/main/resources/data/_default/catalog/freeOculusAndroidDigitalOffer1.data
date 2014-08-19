@@ -1,0 +1,393 @@
+{
+   "item": {
+        "type":"APP",
+        "genres":[],
+        "defaultOffer":null,
+        "rev": null,
+        "currentRevision": null,
+        "revisions": null,
+        "developer": {
+            "href": "https://api.oculusvr.com/v1/organizations/1234", 
+            "id": "1234"
+        }
+    }, 
+    "itemRevision": {
+        "status": "DRAFT",
+        "packageName": "com.oculusvr.Seven.Stars",
+        "downloadName": "rockettoss",
+        "sku": null,
+        "msrp": {
+            "priceType": "FREE",
+            "priceTier": null,
+            "prices": null
+        },
+        "supportedInputDevices": ["KEYBOARD",
+        "CONTROLLER"],
+        "userInteractionModes": ["MULTI_USER"],
+        "binaries": {
+            "ANDROID": {
+                "href": "http://static.oculusvr.com/apk-tests/RocketToss.apk",
+                "size": 13937898,
+                "version": "1",
+                "md5": "eb8014a72ea56d6b308e35b9f0d36cd1"
+            }
+        },
+        "platforms": ["ANDROID"],
+        "ageRatings": {
+            "ESRB": [{
+                "category": "t",
+                "descriptors": ["realGambling",
+                "bloodAndGore",
+                "comicMischief",
+                "animatedBlood"],
+                "certificate": "",
+                "online": false,
+                "provisional": false
+            }]
+        },
+        "localeAccuracy": null,
+        "supportedLocales": {
+            "de_DE": {
+                "audio": true,
+                "subtitles": false,
+                "interface": false
+            },
+            "es_MX": {
+                "audio": true,
+                "subtitles": false,
+                "interface": false
+            },
+            "zh_CN": {
+                "audio": false,
+                "subtitles": false,
+                "interface": false
+            },
+            "en_US": {
+                "audio": true,
+                "subtitles": false,
+                "interface": false
+            }
+        },
+        "locales": {
+            "en_US": {
+                "name": "testItem_FreeOculusAndroidDigital1",
+                "releaseNotes": {
+                    "shortNotes": "Seven Stars Alpha Build\r\n\r\n\n\r\nWin\\_OculusUnityDemoScene\r\n\r\n\n\r\n1\\. Running the game\r\n\r\n\n\r\nOpening the .exe opens the game configuration window. Have the Oculus plugged in and powered on before doing this. If this is not done, the game will run in the non-vr configuration.\r\n\r\n\n\r\n2.Controls\r\n\r\n\n\r\nThis game has been set up for a standard xbox 360 controller, but feel free to reconfigure it in the options menu. The xbox buttons are as follows:\r\n\r\n\n\r\nA: Speed Boost\r\n\r\n\n\r\nB: Brake\r\n\r\n\n\r\nY: Shield\r\n\r\n\n\r\nRT: Lasers\r\n\r\n\n\r\nLT: Missiles\r\n\r\n\n\r\nLeft Stick: Pitch and Rudder\r\n\r\n\n\r\nRight Stick: Roll (Or look in non-vr)\r\n\r\n\n\r\nNote: The Xbox controller should be turned on and connected to the computer before entering the main game.\r\n\r\n\n\r\n3.Display\r\n\r\n\n\r\nThe left side HUD displays health on the small blue bar, and the large blue bar will be visible when a missile is ready to be fired. The right hand display shows your heart rate, and will accelerate as you near death.\r\n\r\n\n\r\n4\\. Network Play\r\n\r\n\n\r\nAs is, network play is configured and will run automatically. If the maximum number of players is reached, you may be unable to connect. If this happens, the game will not run. This is one of the main things this demo is designed to test.\r\n\r\n\n\r\nIn this mode, you are able to shoot and kill both fellow players. When your health reaches 0, you will lose control of your ship and it will slowly crash. After this you will automatically respawn.\r\n\r\n\n\r\n5.This is a very alpha build; just to test the mechanics and engine we&apos;ve built. There are a plethora of bugs, and things we&apos;ve designed in on purpose for this test. If you brake to a stop, enemies will stay just out of range and will not fire on you. We would love feedback on positives and negatives you find, but please be mindful of the following known bug list:\r\n\r\n\n\r\na. Lasers fire straight. We&apos;ve toyed with options on making them fire with the direction you&apos;re looking, but we haven&apos;t quite worked out the mechanics yet.\r\n\r\n\n\r\nb. Missiles don&apos;t lock on, and just kinda fire in the general direction you&apos;re looking. That&apos;s getting fixed soon.\r\n\r\n\n\r\nc. Enemies sometimes float away above the vertical limit and get too far away to shoot. They don&apos;t respawn after that. Oops.\r\n\r\n\n\r\nd. Crashing into the mountains/ground doesn&apos;t do damage. If you hit the mountain and get stuck, just break fully and turn around. It&apos;ll be okay, trust me.\r\n\r\n\n\r\ne. Shield doesn&apos;t actually do anything. It&apos;s purely aesthetic right now. Do not attempt to use it to protect yourself.",
+                    "longNotes": "Seven Stars Alpha Build\r\n\r\n\n\r\nWin\\_OculusUnityDemoScene\r\n\r\n\n\r\n1\\. Running the game\r\n\r\n\n\r\nOpening the .exe opens the game configuration window. Have the Oculus plugged in and powered on before doing this. If this is not done, the game will run in the non-vr configuration.\r\n\r\n\n\r\n2.Controls\r\n\r\n\n\r\nThis game has been set up for a standard xbox 360 controller, but feel free to reconfigure it in the options menu. The xbox buttons are as follows:\r\n\r\n\n\r\nA: Speed Boost\r\n\r\n\n\r\nB: Brake\r\n\r\n\n\r\nY: Shield\r\n\r\n\n\r\nRT: Lasers\r\n\r\n\n\r\nLT: Missiles\r\n\r\n\n\r\nLeft Stick: Pitch and Rudder\r\n\r\n\n\r\nRight Stick: Roll (Or look in non-vr)\r\n\r\n\n\r\nNote: The Xbox controller should be turned on and connected to the computer before entering the main game.\r\n\r\n\n\r\n3.Display\r\n\r\n\n\r\nThe left side HUD displays health on the small blue bar, and the large blue bar will be visible when a missile is ready to be fired. The right hand display shows your heart rate, and will accelerate as you near death.\r\n\r\n\n\r\n4\\. Network Play\r\n\r\n\n\r\nAs is, network play is configured and will run automatically. If the maximum number of players is reached, you may be unable to connect. If this happens, the game will not run. This is one of the main things this demo is designed to test.\r\n\r\n\n\r\nIn this mode, you are able to shoot and kill both fellow players. When your health reaches 0, you will lose control of your ship and it will slowly crash. After this you will automatically respawn.\r\n\r\n\n\r\n5.This is a very alpha build; just to test the mechanics and engine we&apos;ve built. There are a plethora of bugs, and things we&apos;ve designed in on purpose for this test. If you brake to a stop, enemies will stay just out of range and will not fire on you. We would love feedback on positives and negatives you find, but please be mindful of the following known bug list:\r\n\r\n\n\r\na. Lasers fire straight. We&apos;ve toyed with options on making them fire with the direction you&apos;re looking, but we haven&apos;t quite worked out the mechanics yet.\r\n\r\n\n\r\nb. Missiles don&apos;t lock on, and just kinda fire in the general direction you&apos;re looking. That&apos;s getting fixed soon.\r\n\r\n\n\r\nc. Enemies sometimes float away above the vertical limit and get too far away to shoot. They don&apos;t respawn after that. Oops.\r\n\r\n\n\r\nd. Crashing into the mountains/ground doesn&apos;t do damage. If you hit the mountain and get stuck, just break fully and turn around. It&apos;ll be okay, trust me.\r\n\r\n\n\r\ne. Shield doesn&apos;t actually do anything. It&apos;s purely aesthetic right now. Do not attempt to use it to protect yourself.\r\n\n\r\nSeven Stars Alpha Build\r\n\r\n\n\r\nWin\\_OculusUnityDemoScene\r\n\r\n\n\r\n1\\. Running the game\r\n\r\n\n\r\nOpening the .exe opens the game configuration window. Have the Oculus plugged in and powered on before doing this. If this is not done, the game will run in the non-vr configuration.\r\n\r\n\n\r\n2.Controls\r\n\r\n\n\r\nThis game has been set up for a standard xbox 360 controller, but feel free to reconfigure it in the options menu. The xbox buttons are as follows:\r\n\r\n\n\r\nA: Speed Boost\r\n\r\n\n\r\nB: Brake\r\n\r\n\n\r\nY: Shield\r\n\r\n\n\r\nRT: Lasers\r\n\r\n\n\r\nLT: Missiles\r\n\r\n\n\r\nLeft Stick: Pitch and Rudder\r\n\r\n\n\r\nRight Stick: Roll (Or look in non-vr)\r\n\r\n\n\r\nNote: The Xbox controller should be turned on and connected to the computer before entering the main game.\r\n\r\n\n\r\n3.Display\r\n\r\n\n\r\nThe left side HUD displays health on the small blue bar, and the large blue bar will be visible when a missile is ready to be fired. The right hand display shows your heart rate, and will accelerate as you near death.\r\n\r\n\n\r\n4\\. Network Play\r\n\r\n\n\r\nAs is, network play is configured and will run automatically. If the maximum number of players is reached, you may be unable to connect. If this happens, the game will not run. This is one of the main things this demo is designed to test.\r\n\r\n\n\r\nIn this mode, you are able to shoot and kill both fellow players. When your health reaches 0, you will lose control of your ship and it will slowly crash. After this you will automatically respawn.\r\n\r\n\n\r\n5.This is a very alpha build; just to test the mechanics and engine we&apos;ve built. There are a plethora of bugs, and things we&apos;ve designed in on purpose for this test. If you brake to a stop, enemies will stay just out of range and will not fire on you. We would love feedback on positives and negatives you find, but please be mindful of the following known bug list:\r\n\r\n\n\r\na. Lasers fire straight. We&apos;ve toyed with options on making them fire with the direction you&apos;re looking, but we haven&apos;t quite worked out the mechanics yet.\r\n\r\n\n\r\nb. Missiles don&apos;t lock on, and just kinda fire in the general direction you&apos;re looking. That&apos;s getting fixed soon.\r\n\r\n\n\r\nc. Enemies sometimes float away above the vertical limit and get too far away to shoot. They don&apos;t respawn after that. Oops.\r\n\r\n\n\r\nd. Crashing into the mountains/ground doesn&apos;t do damage. If you hit the mountain and get stuck, just break fully and turn around. It&apos;ll be okay, trust me.\r\n\r\n\n\r\ne. Shield doesn&apos;t actually do anything. It&apos;s purely aesthetic right now. Do not attempt to use it to protect yourself."
+                },
+                "longDescription": "Right now, this is just a small test build of the mechanics for the engine and network play ability . We&apos;re looking for feedback on the interface, controls, and any motion sickness encountered. Please send all feedback to corneriastudios@gmail.com.",
+                "shortDescription": "This is an alpha build of a futuristic flight simulation called Seven Stars.",
+                "minimumSystemRequirements": {
+                    "ANDROID": {
+                        "operatingSystem": "Windows 7/8/8.1/XP/Vista (32 or 64 bit)",
+                        "processor": "2.4ghz Intel Core 2 Duo or equivalent",
+                        "memory": "4 GB RAM",
+                        "graphics": "Nvidia 260 GTS or Radeon HD 4850 - 512 MB of VRAM",
+                        "directX": "Version 9.0c",
+                        "hardDrive": "30 GB available space",
+                        "soundCard": "DirectX compatible sound card",
+                        "multiplayer": "Internet Connection",
+                        "other": "Other Information",
+                        "notice": "Notice text",
+                        "noticeImportant": "Important Notice TEXT"
+                    }
+                },
+                "recommendedSystemRequirements": {
+                    "ANDROID": {
+                        "operatingSystem": "Windows 7/8/8.1 64bit",
+                        "processor": "Intel i5 series or equivalent",
+                        "memory": "4 GB RAM",
+                        "graphics": "Nvidia 460 GTX / Redeon 5770 - 1 GB of VRAM",
+                        "directX": "Version 9.0c",
+                        "hardDrive": "30 GB available space",
+                        "soundCard": "DirectX compatible sound card",
+                        "multiplayer": "Internet Connection",
+                        "other": "Recommended other information",
+                        "notice": "Notice text Recommended",
+                        "noticeImportant": "Important Notice TEXT Recommended"
+                    }
+                },
+                "legalInformation": "Don&apos;t steal our stuff. I mean, it&apos;s free. Try hard not to copy it.",
+                "credits": "2014 Corneria Studios\r\n\r\n\n\r\nCameron Sutter\r\n\r\n\n\r\nTaylor Klemm\r\n\r\n\n\r\nMason Payne\r\n\r\n\n\r\nDallas Norton",
+                "copyright": "Corneria Studios",
+                "knownBugs": "a. Lasers fire straight. We&apos;ve toyed with options on making them fire with the direction you&apos;re looking, but we haven&apos;t quite worked out the mechanics yet.\r\n\r\n\n\r\nb. Missiles don&apos;t lock on, and just kinda fire in the general direction you&apos;re looking. That&apos;s getting fixed soon.\r\n\r\n\n\r\nc. Enemies sometimes float away above the vertical limit and get too far away to shoot. They don&apos;t respawn after that. Oops.\r\n\r\n\n\r\nd. Crashing into the mountains/ground doesn&apos;t do damage. If you hit the mountain and get stuck, just break fully and turn around. It&apos;ll be okay, trust me.\r\n\r\n\n\r\ne. Shield doesn&apos;t actually do anything. It&apos;s purely aesthetic right now. Do not attempt to use it to protect yourself.",
+                "supportEmail": "corneriastudios@gmail.com",
+                "website": "",
+                "manualDocument": "",
+                "communityForumLink": "",
+                "images": {
+                    "main": {
+                        "id": null,
+                        "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200909726.jpg",
+                        "size": 23012,
+                        "altText": null,
+                        "x": 641,
+                        "y": 530
+                    },
+                    "halfMain": {
+                        "id": null,
+                        "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200909726.jpg",
+                        "size": 23012,
+                        "altText": null,
+                        "x": 641,
+                        "y": 530
+                    },
+                    "thumbnail": {
+                        "id": null,
+                        "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200907958.jpg",
+                        "size": 23012,
+                        "altText": null,
+                        "x": 641,
+                        "y": 530
+                    },
+                    "halfThumbnail": {
+                        "id": null,
+                        "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200907958.jpg",
+                        "size": 23012,
+                        "altText": null,
+                        "x": 641,
+                        "y": 530
+                    },
+                    "background": {
+                        "id": null,
+                        "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200909726.jpg",
+                        "size": 23012,
+                        "altText": null,
+                        "x": 641,
+                        "y": 530
+                    },
+                    "featured": {
+                        "id": null,
+                        "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200909726.jpg",
+                        "size": 23012,
+                        "altText": null,
+                        "x": 641,
+                        "y": 530
+                    },
+                    "gallery": [{
+                        "thumbnail": {
+                            "id": null,
+                            "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200913457.jpg",
+                            "size": 31111,
+                            "altText": null,
+                            "x": 500,
+                            "y": 333
+                        },
+                        "full": {
+                            "id": null,
+                            "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200913457.jpg",
+                            "size": 31111,
+                            "altText": null,
+                            "x": 500,
+                            "y": 333
+                        }
+                    }]
+                },
+                "videos": [{
+                    "service": "YOUTUBE",
+                    "id": "M29wnB4c3ck",
+                    "title": "flyer animation"
+                },
+                {
+                    "service": "YOUTUBE",
+                    "id": "629KizOHwmA",
+                    "title": "Oculus Rift reactions at BYU IT"
+                },
+                {
+                    "service": "YOUTUBE",
+                    "id": "_85ioTThb78",
+                    "title": "Semester End Video"
+                }],
+                "color": "",
+                "size": ""
+            }
+        },
+        "countries": {
+        },
+        "entitlementDefs": [{
+            "type": "DOWNLOAD",
+            "isConsumable": false
+        },
+        {
+            "type": "RUN",
+            "isConsumable": false
+        }],
+        "distributionChannel": ["STORE"],
+        "iapHostItems": null,
+        "developer": {
+            "href": "/v1/organizations/6354f5d1fcdf",
+            "id": "6354f5d1fcdf"
+        },
+        "item": {
+            "href": "/v1/items/6f5b4a2c25b83381bf59b3ffd13649a2",
+            "id": "6f5b4a2c25b83381bf59b3ffd13649a2"
+        }
+    },
+    "offer": {
+        "environment": null,
+        "currentRevision": null,
+        "publisher": {
+            "href": "/v1/organizations/6354f5d1fcdf",
+            "id": "6354f5d1fcdf"
+        },
+        "isPublished": false,
+        "publisherRevenueRatio": 0.7,
+        "rev": null,
+        "currentRevision": null,
+        "categories": []
+     },
+     "offerRevision": {
+        "status": "DRAFT",
+        "price": {
+            "priceType": "FREE",
+            "priceTier": null,
+            "prices": null
+        },
+        "restrictions": {
+            "limitPerCustomer": 1,
+            "limitPerOrder": 1,
+            "preconditionItems": [],
+            "exclusionItems": []
+        },
+        "subOffers": [],
+        "items": [{
+            "quantity": 1,
+            "item": {
+                "href": "/v1/items/6f5b4a2c25b83381bf59b3ffd13649a2",
+                "id": "6f5b4a2c25b83381bf59b3ffd13649a2"
+            }
+        }],
+        "eventActions": {
+            "PURCHASE": [{
+                "type": "GRANT_ENTITLEMENT",
+                "condition": null,
+                "itemId": {
+                    "href": "/v1/items/6f5b4a2c25b83381bf59b3ffd13649a2",
+                    "id": "6f5b4a2c25b83381bf59b3ffd13649a2"
+                },
+                "storedValueCurrency": null,
+                "storedValueAmount": null,
+                "useCount": null,
+                "price": null
+            }]
+        },
+        "startTime": "2014-08-14T07:06:47Z",
+        "endTime": null,
+        "locales": {
+            "en_US": {
+                "name": "testOffer_FreeOculusAndroidDigital1",
+                "longDescription": "Right now, this is just a small test build of the mechanics for the engine and network play ability . We&apos;re looking for feedback on the interface, controls, and any motion sickness encountered. Please send all feedback to corneriastudios@gmail.com.",
+                "shortDescription": "This is an alpha build of a futuristic flight simulation called Seven Stars.",
+                "images": {
+                    "main": {
+                        "id": null,
+                        "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200909726.jpg",
+                        "size": 23012,
+                        "altText": null,
+                        "x": 641,
+                        "y": 530
+                    },
+                    "halfMain": {
+                        "id": null,
+                        "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200909726.jpg",
+                        "size": 23012,
+                        "altText": null,
+                        "x": 641,
+                        "y": 530
+                    },
+                    "thumbnail": {
+                        "id": null,
+                        "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200907958.jpg",
+                        "size": 23012,
+                        "altText": null,
+                        "x": 641,
+                        "y": 530
+                    },
+                    "halfThumbnail": {
+                        "id": null,
+                        "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200907958.jpg",
+                        "size": 23012,
+                        "altText": null,
+                        "x": 641,
+                        "y": 530
+                    },
+                    "background": {
+                        "id": null,
+                        "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200909726.jpg",
+                        "size": 23012,
+                        "altText": null,
+                        "x": 641,
+                        "y": 530
+                    },
+                    "featured": {
+                        "id": null,
+                        "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200909726.jpg",
+                        "size": 23012,
+                        "altText": null,
+                        "x": 641,
+                        "y": 530
+                    },
+                    "gallery": [{
+                        "thumbnail": {
+                            "id": null,
+                            "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200913457.jpg",
+                            "size": 31111,
+                            "altText": null,
+                            "x": 500,
+                            "y": 333
+                        },
+                        "full": {
+                            "id": null,
+                            "href": "http://static.oculusvr.com/shareuploads/apps/1396900603873n5l4vlsor/screens/13952005095928hx1yw7mn29_1395200913457.jpg",
+                            "size": 31111,
+                            "altText": null,
+                            "x": 500,
+                            "y": 333
+                        }
+                    }]
+                },
+                "videos": [{
+                    "service": "YOUTUBE",
+                    "id": "M29wnB4c3ck",
+                    "title": "flyer animation"
+                },
+                {
+                    "service": "YOUTUBE",
+                    "id": "629KizOHwmA",
+                    "title": "Oculus Rift reactions at BYU IT"
+                },
+                {
+                    "service": "YOUTUBE",
+                    "id": "_85ioTThb78",
+                    "title": "Semester End Video"
+                }],
+                "items": null
+            }
+        },
+        "ageRatings": null,
+        "preOrderPrice": null,
+        "distributionChannel": ["STORE"],
+        "publisher": {
+            "href": "/v1/organizations/6354f5d1fcdf",
+            "id": "6354f5d1fcdf"
+        },
+        "offer": {
+            "href": "/v1/offers/6f5b4a2c25b83381bf59b3ffd1362298",
+            "id": "6f5b4a2c25b83381bf59b3ffd1362298"
+        },
+        "regions": {
+            "US": {
+                "isPurchasable": true,
+                "releaseDate": "2014-08-14T05:52:08Z"
+            },
+            "RU": {
+                "isPurchasable": true,
+                "releaseDate": "2014-08-14T05:52:08Z"
+            },
+            "JP": {
+                "isPurchasable": true,
+                "releaseDate": "2014-08-14T05:52:08Z"
+            }
+        }
+    }
+}
