@@ -7,15 +7,18 @@ package com.junbo.common.job.cache;
 
 import com.junbo.common.cloudant.client.CloudantUri;
 import com.junbo.common.memcached.JunboMemcachedClient;
-import com.junbo.configuration.ConfigService;
-import com.junbo.configuration.ConfigServiceManager;
 import net.spy.memcached.MemcachedClientIF;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.*;
 
 /**
  * CacheSnifferJob.
@@ -24,58 +27,159 @@ public class CacheSnifferJob implements InitializingBean {
     private static final Logger LOGGER = LoggerFactory.getLogger(CacheSnifferJob.class);
 
     private static MemcachedClientIF memcachedClient = JunboMemcachedClient.instance();
+
+    private static final String FEED_SEPARATOR = "\r\n";
+    private static final String MEMCACHED_EXPIRATION_KEY = "common.memcached.expiration";
+    private static final String SEQ_KEY = "seq";
+    private static final String ID_KEY = "id";
+    private static final String CLOUDANT_HEARTBEAT_KEY = "common.cloudant.heartbeat";
+
+    private static final int SAFE_SLEEP = 5000;
+    private static final int MONITOR_THREADS = 10;
+
     private Integer expiration;
-    private Integer maxEntitySize;
+    private Integer connectionTimeout;
+
+    private ScheduledExecutorService executor;
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        ConfigService configService = ConfigServiceManager.instance();
+        // initialize configuration
+        this.expiration = SnifferUtils.safeParseInt(SnifferUtils.getConfig(MEMCACHED_EXPIRATION_KEY));
 
-        String strMaxEntitySize = configService.getConfigValue("common.memcached.maxentitysize");
-        String strExpiration = configService.getConfigValue("common.memcached.expiration");
-
-        this.expiration = safeParseInt(strExpiration);
-        this.maxEntitySize = safeParseInt(strMaxEntitySize);
+        // initialize cloudant feed connection timeout
+        Integer cloudantHeartbeat = SnifferUtils.safeParseInt(SnifferUtils.getConfig(CLOUDANT_HEARTBEAT_KEY));
+        this.connectionTimeout = cloudantHeartbeat + cloudantHeartbeat / 10;
     }
 
-    private void listen() {
+    public void listen() {
+        LOGGER.info("Start listening cloundant DB change feed");
+
         List<CloudantUri> cloudantInstances = CloudantSniffer.instance().getCloudantInstances();
+
+        int totalDatabases = 0;
+
+        // collect all databases
+        for (CloudantUri cloudantUri : cloudantInstances) {
+            List<String> databases = CloudantSniffer.instance().getAllDatabases(cloudantUri);
+            totalDatabases += databases.size();
+        }
+
+        executor = Executors.newScheduledThreadPool(totalDatabases + MONITOR_THREADS);
 
         for (CloudantUri cloudantUri : cloudantInstances) {
             List<String> databases = CloudantSniffer.instance().getAllDatabases(cloudantUri);
 
             for (String database : databases) {
-                // first try to get last change token from memcached
-                String lastChange = getCache(buildLastChangeKey(cloudantUri, database));
-
-                if (StringUtils.isEmpty(lastChange)) {
-                    // then try to get last change token from cloudant changes feed
-                    lastChange = CloudantSniffer.instance().getLastChange(cloudantUri, database);
-                }
-
                 // listen database continuous feed
                 listenDatabaseChanges(cloudantUri, database);
             }
         }
     }
 
-    private void listenDatabaseChanges(CloudantUri cloudantUri, String database) {
+    private String getLastChange(CloudantUri cloudantUri, String database) {
+        LOGGER.debug("Try to fetch last change token from memcached.");
+        String lastChange = getCache(buildLastChangeKey(cloudantUri, database));
+
+        if (StringUtils.isEmpty(lastChange)) {
+            LOGGER.debug("Last change token is missing in memcached, fetch from cloudant instead.");
+            lastChange = CloudantSniffer.instance().getLastChange(cloudantUri, database);
+        }
+
+        return lastChange;
+    }
+
+    private void listenDatabaseChanges(final CloudantUri cloudantUri, final String database) {
         String threadName = "cloudant-listener-" + database;
 
         new Thread(new Runnable() {
             public void run() {
-                //HttpClient httpclient = HttpClientBuilder.create().build();
+                outer:
+                for (; ; SnifferUtils.sleep(SAFE_SLEEP)) {
+                    try {
+                        String lastChange = getLastChange(cloudantUri, database);
 
+                        InputStream feed = CloudantSniffer.instance().getChangeFeed(cloudantUri, database, lastChange);
+                        final BufferedReader reader = new BufferedReader(new InputStreamReader(feed));
+
+                        String change;
+                        while (true) {
+                            change = executeWithTimeout(
+                                    new Callable<String>() {
+                                        public String call() throws Exception {
+                                            // blocking read
+                                            return reader.readLine();
+                                        }
+                                    }, connectionTimeout);
+
+                            if (change == null) {
+                                //theoretically, the code will not be reached
+                                LOGGER.error("Invalid cloudant chagne feed received.");
+                                continue outer;
+                            }
+
+                            handleChange(cloudantUri, database, change);
+                        }
+                    } catch (Exception e) {
+                        LOGGER.error("Error occurred during receiving cloundant change feed.", e);
+                        continue outer;
+                    }
+                }
             }
         }, threadName).start();
     }
 
-    private Integer safeParseInt(String str) {
-        if (StringUtils.isEmpty(str)) {
-            return null;
+    private <T> T executeWithTimeout(Callable<T> callable, Integer timeout)
+            throws ExecutionException, InterruptedException {
+        final Future<T> handler = executor.submit(callable);
+
+        ScheduledFuture monitor = executor.schedule(new Runnable() {
+            @Override
+            public void run() {
+                if (!handler.isDone()) {
+                    LOGGER.debug("Cloudant change feed connection is broken.");
+                    handler.cancel(true);
+                }
+            }
+        }, timeout, TimeUnit.MILLISECONDS);
+
+        // blocking wait
+        T result = handler.get();
+        try {
+            LOGGER.debug("Cancel feed change monitor thread.");
+            monitor.cancel(true);
+        } catch (Exception e) {
+            //silently ignore
         }
 
-        return Integer.parseInt(str);
+        return result;
+    }
+
+    private void handleChange(CloudantUri cloudantUri, String database, String change) {
+        LOGGER.debug("Receive change feed " + change);
+
+        if (FEED_SEPARATOR.equals(change) || StringUtils.isEmpty(change)) {
+            LOGGER.debug("Cloundant heartbeat payload received.");
+            return;
+        }
+
+        Map<String, Object> payload = SnifferUtils.parse(change, Map.class);
+
+        // update last seq in memcached
+        Object seqObj = payload.get(SEQ_KEY);
+        String seq = seqObj == null ? null : seqObj.toString();
+
+        updateCache(buildLastChangeKey(cloudantUri, database), seq);
+
+        // evict entity cache
+        Object entityId = payload.get(ID_KEY);
+
+        if (entityId != null) {
+            String entityKey = entityId.toString() + ":" + database + ":" + cloudantUri.getDc();
+            deleteCache(entityKey);
+        }
+
+        return;
     }
 
     private void updateCache(String key, String value) {
@@ -85,6 +189,7 @@ public class CacheSnifferJob implements InitializingBean {
 
         try {
             memcachedClient.set(key, this.expiration, value).get();
+            LOGGER.debug("Memcached updated successfully. [key]" + key + " [value]" + value);
         } catch (Exception e) {
             LOGGER.warn("Error writing to memcached.", e);
         }
@@ -96,6 +201,17 @@ public class CacheSnifferJob implements InitializingBean {
         }
 
         return (String) memcachedClient.get(key);
+    }
+
+    void deleteCache(String key) {
+        checkCache(key);
+
+        try {
+            memcachedClient.delete(key).get();
+            LOGGER.debug("Memcached deleted successfully. [key]" + key);
+        } catch (Exception e) {
+            LOGGER.warn("Error deleting from memcached.", e);
+        }
     }
 
     private boolean checkCache(String key) {
@@ -113,10 +229,9 @@ public class CacheSnifferJob implements InitializingBean {
     }
 
     private String buildLastChangeKey(CloudantUri uri, String database) {
-        return uri.getValue() + "#" + isNull(uri.getUsername(), "") + "#" + database;
-    }
-
-    private String isNull(String input, String replace) {
-        return input == null ? replace : input;
+        return String.format("%s/%s/%s/lastseq",
+                uri.getValue(),
+                SnifferUtils.isNull(uri.getUsername(), ""),
+                database);
     }
 }

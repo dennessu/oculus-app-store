@@ -103,6 +103,10 @@ ext {
             asyncclient: 'org.apache.httpcomponents:httpcomponents-asyncclient:4.0',
             async_http_client: 'com.ning:async-http-client:1.8.12',
 
+            // http component
+            http_client: 'org.apache.httpcomponents:httpclient:4.3.5',
+            http_core: 'org.apache.httpcomponents:httpcore:4.3.2',
+
             // free marker
             freemarker: 'org.freemarker:freemarker:2.3.20',
 

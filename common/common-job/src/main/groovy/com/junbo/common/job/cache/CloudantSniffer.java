@@ -5,7 +5,6 @@
  */
 package com.junbo.common.job.cache;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.junbo.common.cloudant.client.CloudantGlobalUri;
 import com.junbo.common.cloudant.client.CloudantUri;
 import com.junbo.common.cloudant.exception.CloudantConnectException;
@@ -14,10 +13,18 @@ import com.junbo.langur.core.async.JunboAsyncHttpClient;
 import com.junbo.langur.core.promise.Promise;
 import com.ning.http.client.Realm;
 import com.ning.http.client.Response;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.util.StringUtils;
 
 import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +40,8 @@ public class CloudantSniffer {
     private static final String CHANGE_PATH = "/_changes";
 
     private static final String CLOUDANT_PREFIX_KEY = "common.cloudant.dbNamePrefix";
+    private static final String CLOUDANT_HEARTBEAT_KEY = "common.cloudant.heartbeat";
+
     private static final String[] CLOUDANT_URI_KEYS = new String[]{
             "common.cloudant.url",
             "common.cloudantWithSearch.url",
@@ -42,12 +51,13 @@ public class CloudantSniffer {
     };
 
     private static final String CLOUDANT_LASTSEQ_KEY = "last_seq";
-    private static final String DEFAULT_PREFIX = "";
-
-    private List<CloudantUri> cloudantInstances;
+    private static final String CLOUDANT_DEFAULT_PREFIX = "";
 
     private JunboAsyncHttpClient asyncHttpClient = JunboAsyncHttpClient.instance();
-    private ObjectMapper mapper = new ObjectMapper();
+
+    private Integer cloudantHeartbeat;
+    private List<CloudantUri> cloudantInstances;
+
 
     private static CloudantSniffer cloudantSniffer = new CloudantSniffer();
 
@@ -61,11 +71,11 @@ public class CloudantSniffer {
 
     public List<String> getAllDatabases(CloudantUri cloudantUri) {
         Response response = executeGet(cloudantUri, ALL_DB_PATH, null).get();
-        List<String> databases = parse(response, List.class);
+        List<String> databases = SnifferUtils.parse(response, List.class);
 
         String prefix = ConfigServiceManager.instance().getConfigValue(CLOUDANT_PREFIX_KEY);
         if (prefix == null) {
-            prefix = DEFAULT_PREFIX;
+            prefix = CLOUDANT_DEFAULT_PREFIX;
         }
 
         List<String> filtered = new ArrayList<>();
@@ -85,7 +95,7 @@ public class CloudantSniffer {
                     put("limit", "1");
                 }}).get();
 
-        Map<String, Object> result = parse(response, Map.class);
+        Map<String, Object> result = SnifferUtils.parse(response, Map.class);
         if (!result.containsKey(CLOUDANT_LASTSEQ_KEY)) {
             throw new CloudantConnectException("Error occurred during get last change seq");
         }
@@ -98,11 +108,40 @@ public class CloudantSniffer {
         return cloudantInstances;
     }
 
+    public InputStream getChangeFeed(CloudantUri cloudantUri, String database, String lastChange) {
+        String url = String.format("%s/%s%s?feed=continuous&heartbeat=%d%s",
+                cloudantUri.getValue(),
+                database,
+                CHANGE_PATH,
+                cloudantHeartbeat,
+                StringUtils.isEmpty(lastChange) ? "" : "&since=" + lastChange);
+
+        CredentialsProvider credsProvider = null;
+
+        if (cloudantUri.getUsername() != null) {
+            credsProvider = new BasicCredentialsProvider();
+            credsProvider.setCredentials(AuthScope.ANY,
+                    new UsernamePasswordCredentials(cloudantUri.getUsername(), cloudantUri.getPassword()));
+        }
+
+        HttpClient client = HttpClientBuilder.create().setDefaultCredentialsProvider(credsProvider).build();
+
+        try {
+            return client.execute(new HttpGet(url)).getEntity().getContent();
+        } catch (IOException e) {
+            throw new CloudantConnectException("Error occurred while receiving cloudant change feed", e);
+        }
+    }
+
     private Promise<Response> executeGet(CloudantUri cloudantUri, String path, Map<String, String> queryParams) {
         return executeGet(cloudantUri, null, path, queryParams);
     }
 
     private void initialize() {
+        // initialize cloudant feed heartbeat interval
+        this.cloudantHeartbeat = SnifferUtils.safeParseInt(SnifferUtils.getConfig(CLOUDANT_HEARTBEAT_KEY));
+
+        // initialize cloudant instance
         Map<String, CloudantUri> cloudantUriMap = new HashMap<>();
 
         for (String key : CLOUDANT_URI_KEYS) {
@@ -114,25 +153,12 @@ public class CloudantSniffer {
 
             CloudantGlobalUri uri = new CloudantGlobalUri(value);
             String instanceKey = uri.getCurrentDcUri().getValue() + "#"
-                    + isNull(uri.getCurrentDcUri().getUsername(), "");
+                    + SnifferUtils.isNull(uri.getCurrentDcUri().getUsername(), "");
 
             cloudantUriMap.put(instanceKey, uri.getCurrentDcUri());
         }
 
         cloudantInstances = new ArrayList(cloudantUriMap.values());
-    }
-
-    private <T> T parse(Response response, Class<T> clazz) {
-        if (response == null) {
-            throw new CloudantConnectException("Response from cloudant DB is invalid");
-        }
-
-        try {
-            String payload = response.getResponseBody();
-            return (T) mapper.readValue(payload, clazz);
-        } catch (IOException e) {
-            throw new CloudantConnectException("Error occurred while parsing response from cloudant DB", e);
-        }
     }
 
     private Promise<Response> executeGet(CloudantUri cloudantUri, String dbName, String path, Map<String, String> queryParams) {
@@ -172,9 +198,5 @@ public class CloudantSniffer {
         } catch (IOException e) {
             throw new CloudantConnectException("Error occurred while executing request to cloudant DB", e);
         }
-    }
-
-    private String isNull(String input, String replace) {
-        return input == null ? replace : input;
     }
 }
