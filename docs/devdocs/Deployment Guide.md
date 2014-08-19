@@ -119,10 +119,11 @@ TODO: upstart scripts for DB servers
 
 1. Install other packages
 ```
-sudo apt-get install unzip
+sudo apt-get install unzip ntp
 sudo apt-get install default-jdk
 ```
 Java is used to run some tools on DB servers.
+NTP is used to sync time on servers. Network admin needs to make sure access to the NTP servers on 123 port for UDP is open.
 
 ### Prepare App Servers
   * `10.24.8.50`
@@ -183,8 +184,9 @@ sudo chmod 700 /etc/silkcloud
 
 1. Install other packages
 ```
-sudo apt-get install unzip
+sudo apt-get install unzip ntp
 ```
+NTP is used to sync time on servers. Network admin needs to make sure access to the NTP servers on 123 port for UDP is open.
 
 ## Deployment
 
@@ -272,6 +274,9 @@ chmod 600 /etc/silkcloud/*.jks
   ```
   echo '"silkcloud" "md5$DATABASE_PASSWORD_HASH"' > ~/.pgbouncer_auth
   chmod 600 ~/.pgbouncer_auth
+  sudo crontab - <<EOF
+  @reboot /var/silkcloud/pgha/util/superremedy.sh
+  EOF
   ```
 
   1. Go to the master and crypto servers using silkcloud account. For PPE, the servers are:

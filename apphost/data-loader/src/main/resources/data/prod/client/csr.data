@@ -1,7 +1,7 @@
 {
   "scopes" : [ "csr", "offline", "identity", "openid"],
   "client_id" : "csr",
-  "client_secret" : "224112E90935C8FA4E3F66B96FACE79B",
+  "client_secret" : "5C4597711D15190DD7FD22677BD00045#13B243E714740580AF1F766B7FEE1E642278C7DE3B86C61295539057D39346BCCC73CAB8C4577DA7E27FA8048BC94C6F",
   "client_name" : "csr",
   "redirect_uris" : [ "http://localhost" ],
   "default_redirect_uri" : "http://localhost",

@@ -1,6 +1,6 @@
 {
   "client_id" : "discourseForum",
-  "client_secret" : "5E44199FA0F6AAA67D87E9C8E16E0E50#CD52714ADA1BC3B49F7ED7CB3FFC3E1A",
+  "client_secret" : "85335A52E9045AF8FD2BA58F63D28A14#97404DBD4457DCFD457D242F683E870EE56B595E4D1BCEAFB75793BEFFF2251FD048DB7ABFECEAA3C18A82007CDADB7E",
   "client_name" : "discourseForum",
 
   "redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.dev/*" ],

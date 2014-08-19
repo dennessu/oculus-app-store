@@ -15,6 +15,7 @@ import org.springframework.context.event.ContextClosedEvent
 import org.springframework.context.support.ClassPathXmlApplicationContext
 import org.springframework.util.StopWatch
 
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CountDownLatch
 
 /**
@@ -120,48 +121,56 @@ class JunboApplication {
 
         private static final Logger LOGGER = LoggerFactory.getLogger(JunboBeanFactory)
 
-        private Stack<Long> latencyStack = new Stack<>()
+        private static final ThreadLocal<Stack<Long>> LATENCY_STACK = new ThreadLocal<Stack<Long>>() {
+            @Override
+            protected Stack<Long> initialValue() {
+                return new Stack<Long>()
+            }
+        }
 
-        private final Set<String> beanNames = new HashSet<>()
+        private final Set<String> beanNames = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
 
         JunboBeanFactory(BeanFactory parentBeanFactory) {
             super(parentBeanFactory)
+
             this.allowBeanDefinitionOverriding = false
         }
 
         @Override
         protected <T> T doGetBean(String name, Class<T> requiredType, Object[] args, boolean typeCheckOnly) throws BeansException {
 
-            if (beanNames.contains(name)) {
+            if (!beanNames.add(name)) {
                 return super.doGetBean(name, requiredType, args, typeCheckOnly)
             }
 
-            beanNames.add(name)
+            def latencyStack = LATENCY_STACK.get()
 
             latencyStack.push(0)
 
             long start = System.currentTimeMillis()
 
-            T result = super.doGetBean(name, requiredType, args, typeCheckOnly)
+            try {
+                T result = super.doGetBean(name, requiredType, args, typeCheckOnly)
 
-            long latency = System.currentTimeMillis() - start
+                return result
+            } finally {
+                long latency = System.currentTimeMillis() - start
 
-            long netLatency = latency + latencyStack.pop()
+                long netLatency = latency + latencyStack.pop()
 
-            def message = "doGetBean ${latency.toString().padLeft(5)} ${netLatency.toString().padLeft(5)} " +
-                    (".." * latencyStack.size()) + "$name"
+                def message = "doGetBean ${latency.toString().padLeft(5)} ${netLatency.toString().padLeft(5)} " +
+                        (".." * latencyStack.size()) + "$name"
 
-            if (netLatency < 200) {
-                LOGGER.info(message)
-            } else {
-                LOGGER.warn(message)
+                if (netLatency < 200) {
+                    LOGGER.info(message)
+                } else {
+                    LOGGER.warn(message)
+                }
+
+                if (!latencyStack.empty()) {
+                    latencyStack.push(latencyStack.pop() - latency)
+                }
             }
-
-            if (!latencyStack.empty()) {
-                latencyStack.push(latencyStack.pop() - latency)
-            }
-
-            return result
         }
     }
 }

@@ -9,6 +9,7 @@ set -e
 ARGS=${1:-all}
 
 ssh `head -n 1 $ENV/crypto-apps.txt` << EOF
+set -e
 cd /var/silkcloud/apphost
 ./dataloader.sh "$ARGS"
 EOF

@@ -151,8 +151,10 @@ public class OrderTestDataProvider {
             OfferId offerId;
             if (offerName.equals("Invalid")) {
                 offerId = new OfferId("123");
-            } else {
+            } else if(offerName.toLowerCase().contains("test")){
                 offerId = new OfferId(offerClient.getOfferIdByName(offerName));
+            }else {
+                offerId = new OfferId(offerName);
             }
             orderItem.setQuantity(offers.get(offerName));
             orderItem.setOffer(offerId);

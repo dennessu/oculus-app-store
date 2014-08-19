@@ -68,7 +68,7 @@ For example:
     [Unknown]:  Shanghai
   What is the two-letter country code for this unit?
     [Unknown]:  CN
-  Is CN=SilkCloud, OU=SilkCloud, O=SilkCloud, L=Shanghai, ST=Shanghai, C=CN correct?
+  Is CN=silkcloud, OU=silkcloud, O=silkcloud, L=Shanghai, ST=Shanghai, C=CN correct?
     [no]:  yes
 
   Enter key password for <silkcloud>

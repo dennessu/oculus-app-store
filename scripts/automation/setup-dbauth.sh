@@ -13,6 +13,7 @@ fi
 : ${ENV?"Need to set ENV"}
 
 ./foreach-here.sh $ENV/masters.txt $ENV/secondaries.txt $ENV/replicas.txt $ENV/crypto-dbs.txt << EOF
+set -e
 echo '"silkcloud" "md5$DATABASE_PASSWORD_HASH"' > ~/.pgbouncer_auth
 chmod 600 ~/.pgbouncer_auth
 EOF
