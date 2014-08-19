@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component
 class MockRatingResource extends BaseMock implements RatingResource {
 
     @Override
-    Promise<RatingRequest> priceRating(RatingRequest request) {
+    Promise<RatingRequest> offersRating(RatingRequest request) {
         request.ratingSummary = new RatingSummary()
         BigDecimal ten = BigDecimal.valueOf(10.00D)
         BigDecimal fifty = BigDecimal.valueOf(50.00D)

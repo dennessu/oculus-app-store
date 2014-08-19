@@ -23,18 +23,18 @@ import com.wordnik.swagger.annotations.ApiOperation;
 /**
  * Created by lizwu on 1/28/14.
  */
-@Api(value = "rating")
-@Path("/")
+@Api(value = "priceRating")
+@Path("/price-rating")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 @RestResource
 public interface RatingResource {
     @ApiOperation("Rate price for offers.")
     @POST
-    @Path("/price-rating")
-    Promise<RatingRequest> priceRating(@Valid RatingRequest request);
+    @Path("/offers")
+    Promise<RatingRequest> offersRating(@Valid RatingRequest request);
 
     @POST
-    @Path("/subs-rating")
+    @Path("/subs")
     Promise<SubsRatingRequest> subsRating(@Valid SubsRatingRequest request);
 }
