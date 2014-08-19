@@ -66,7 +66,7 @@ public class StoreTesting extends BaseTestClass {
         //get payment id in billing profile
         PaymentInstrumentId paymentId = billingProfileUpdateResponse.getBillingProfile().getInstruments().get(0).getSelf();
 
-        String offerId = testDataProvider.getOfferIdByName(offer_iap_normal);
+        String offerId = testDataProvider.getOfferIdByName(offer_iap_free);
         //post order without set payment instrument
         PreparePurchaseResponse preparePurchaseResponse = testDataProvider.preparePurchase(null, offerId, null, null);
 
@@ -109,7 +109,7 @@ public class StoreTesting extends BaseTestClass {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser();
         String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
 
-        String offerId = testDataProvider.getOfferIdByName(offer_digital_free);
+        String offerId = testDataProvider.getOfferIdByName(offer_iap_free);
         //post order without set payment instrument
         MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, Country.DEFAULT);
 
