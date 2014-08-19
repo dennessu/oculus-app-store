@@ -274,6 +274,9 @@ chmod 600 /etc/silkcloud/*.jks
   ```
   echo '"silkcloud" "md5$DATABASE_PASSWORD_HASH"' > ~/.pgbouncer_auth
   chmod 600 ~/.pgbouncer_auth
+  sudo crontab - <<EOF
+  @reboot /var/silkcloud/pgha/util/superremedy.sh
+  EOF
   ```
 
   1. Go to the master and crypto servers using silkcloud account. For PPE, the servers are:
