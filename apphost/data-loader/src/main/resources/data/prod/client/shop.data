@@ -1,6 +1,6 @@
 {
   "client_id" : "shop",
-  "client_secret" : "5E44199FA0F6AAA67D87E9C8E16E0E50#CD52714ADA1BC3B49F7ED7CB3FFC3E1A",
+  "client_secret" : "6C5C4C44AB681C365FD27C795F97269B#43FEC66540AEE645FC290A623BD01BC8811AFA28C14950A3EF4065C0565D90CFACD12DD8113C226EC2AF8BC7B5006E95",
   "client_name" : "shop",
 
   "redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.dev/*" ],
