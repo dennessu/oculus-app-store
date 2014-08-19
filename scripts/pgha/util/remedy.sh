@@ -31,9 +31,7 @@ else
     echo "[REMEDY][$role] postgresql instance is running"
 fi
 
-psql postgres -h ${!host} -p ${!port} -c "SELECT pg_is_in_recovery();" -t | grep "f"
-
-in_recovery=$?
+psql postgres -h ${!host} -p ${!port} -c "SELECT pg_is_in_recovery();" -t | grep "f" || in_recovery=$?
 
 # londiste root
 if [[ ($in_recovery -eq 0) && ($role != "REPLICA") ]] ; then
