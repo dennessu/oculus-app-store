@@ -93,6 +93,7 @@ public class StoreTesting extends BaseTestClass {
             features = "Store checkout",
             component = Component.Order,
             owner = "ZhaoYunlong",
+            environment = "release",
             status = Status.Enable,
             description = "Test iap offer checkout",
             steps = {
@@ -109,15 +110,11 @@ public class StoreTesting extends BaseTestClass {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser();
         String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
 
-        String offerId = testDataProvider.getOfferIdByName(offer_iap_free);
-        //post order without set payment instrument
+        String offerId = testDataProvider.getOfferIdByName(offer_digital_free);
+
         MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, Country.DEFAULT);
 
         String purchaseToken = IdConverter.idToHexString(freePurchaseResponse.getOrder()); //get order id
-
-        EntitlementId entitlementId = freePurchaseResponse.getEntitlements().get(0).getSelf();
-        IAPEntitlementConsumeResponse iapEntitlementConsumeResponse = testDataProvider.iapConsumeEntitlement(entitlementId, offer_iap_normal);
-
     }
 
     @Property(
