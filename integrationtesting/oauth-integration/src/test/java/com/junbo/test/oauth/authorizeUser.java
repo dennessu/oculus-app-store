@@ -24,13 +24,6 @@ import static org.testng.AssertJUnit.assertEquals;
  */
 public class authorizeUser {
 
-    @BeforeClass(alwaysRun = true)
-    public void run() throws Exception {
-        HttpclientHelper.CreateHttpClient();
-        Identity.GetHttpAuthorizationHeader();
-        HttpclientHelper.CloseHttpClient();
-    }
-
     @BeforeMethod(alwaysRun = true)
     public void setup() {
         HttpclientHelper.CreateHttpClient();
@@ -211,6 +204,8 @@ public class authorizeUser {
 
         HttpclientHelper.ResetHttpClient();
         String newPassword = "ASDFqwer1234";
+        // set identity authorization header
+        Oauth.GetAccessToken(Oauth.GetAuthCodeAfterRegisterUser(cid));
         UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
         String resetPasswordLink = Oauth.PostResetPassword(
                 Identity.GetHexLongId(upi.getUserId().getValue()), userName, null);

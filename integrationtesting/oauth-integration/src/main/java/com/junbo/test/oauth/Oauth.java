@@ -12,6 +12,7 @@ import com.junbo.oauth.spec.model.ViewModel;
 import com.junbo.test.common.*;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.ShardIdHelper;
+import com.junbo.test.identity.Identity;
 import org.apache.http.Header;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -102,7 +103,9 @@ public class Oauth {
         try {
             AccessTokenResponse accessTokenResponse = JsonHelper.JsonDeserializer(
                     new InputStreamReader(response.getEntity().getContent()), AccessTokenResponse.class);
-            return accessTokenResponse.getAccessToken();
+            String accessToken = accessTokenResponse.getAccessToken();
+            Identity.SetHttpAuthorizationHeader(accessToken);
+            return accessToken;
         } finally {
             response.close();
         }
@@ -165,7 +168,7 @@ public class Oauth {
 
     // pass in userName for validation purpose only
     public static String PostRegisterUser(String cid, String userName, String email) throws Exception {
-        return PostRegisterUser(cid, userName, email, false);
+        return PostRegisterUser(cid, userName, email, true);
     }
 
     // pass in userName for validation purpose only
