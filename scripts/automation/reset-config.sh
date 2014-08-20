@@ -56,7 +56,7 @@ EOFINNER
 chmod 600 /etc/silkcloud/*
 EOF
 
-./foreach-here.sh $ENV/crypto-dbs.txt $ENV/masters.txt $ENV/secondaries.txt $ENV/replicas.txt << EOF
+./foreach-here.sh $ENV/crypto-dbs.txt $ENV/masters.txt $ENV/secondaries.txt $ENV/bcps.txt $ENV/replicas.txt << EOF
 set -e
 cat << EOFINNER > /etc/silkcloud/configuration.properties
 environment=$ENV

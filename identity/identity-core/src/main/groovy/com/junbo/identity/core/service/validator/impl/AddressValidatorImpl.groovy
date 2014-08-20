@@ -54,9 +54,7 @@ class AddressValidatorImpl implements PiiValidator {
     @Override
     Promise<Void> validateCreate(JsonNode value, UserId userId, OrganizationId organizationId) {
         Address address = (Address)JsonHelper.jsonNodeToObj(value, Address)
-        checkAddress(address)
-
-        return Promise.pure(null)
+        return checkAddress(address)
     }
 
     @Override
@@ -109,6 +107,8 @@ class AddressValidatorImpl implements PiiValidator {
                     return Promise.pure(null)
                 }
             }
+
+            return Promise.pure(null)
         }
     }
 

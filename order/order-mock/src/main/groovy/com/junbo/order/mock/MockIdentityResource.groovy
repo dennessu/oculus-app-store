@@ -58,4 +58,14 @@ class MockIdentityResource implements UserResource {
     Promise<Void> delete(@PathParam("userId") UserId userId) {
         return null
     }
+
+    @Override
+    Promise<Void> checkUsername(String username) {
+        return Promise.pure(null)
+    }
+
+    @Override
+    Promise<Void> checkEmail(String email) {
+        return Promise.pure(null)
+    }
 }

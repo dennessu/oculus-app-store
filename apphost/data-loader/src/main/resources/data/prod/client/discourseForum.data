@@ -3,7 +3,7 @@
   "client_secret" : "85335A52E9045AF8FD2BA58F63D28A14#97404DBD4457DCFD457D242F683E870EE56B595E4D1BCEAFB75793BEFFF2251FD048DB7ABFECEAA3C18A82007CDADB7E",
   "client_name" : "discourseForum",
 
-  "redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.dev/*" ],
+  "redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.dev/*" ],
   "default_redirect_uri" : "http://localhost",
 
   "logout_redirect_uris" : [ "http://localhost", "http://localhost:8000/app/#/home" ],

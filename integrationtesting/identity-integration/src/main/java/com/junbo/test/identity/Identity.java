@@ -113,6 +113,10 @@ public class Identity {
         }
     }
 
+    public static void SetHttpAuthorizationHeader(String accessToken) {
+        httpAuthorizationHeader = "Bearer " + accessToken;
+    }
+
     public static Country CountryPostDefault() throws Exception {
         return CountryPostDefault(IdentityModel.DefaultCountry());
     }
@@ -189,7 +193,7 @@ public class Identity {
         Results res = IdentityGet(IdentityV1LocaleURI, Results.class);
         for (Object obj : res.getItems()) {
             results.getItems().add((Locale) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
-                    Locale.class)
+                            Locale.class)
             );
         }
         results.setTotal(res.getTotal());
@@ -348,7 +352,7 @@ public class Identity {
         Results res = IdentityGet(IdentityV1DeviceTypeURI, Results.class);
         for (Object obj : res.getItems()) {
             results.getItems().add((DeviceType) JsonHelper.JsonNodeToObject(JsonHelper.ObjectToJsonNode(obj),
-                    DeviceType.class)
+                            DeviceType.class)
             );
         }
         results.setTotal(res.getTotal());

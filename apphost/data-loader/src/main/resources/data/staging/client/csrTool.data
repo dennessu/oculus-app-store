@@ -3,7 +3,7 @@
   "client_secret" : "09824242F8A2A2461854783C3B726FB5#C7E81EC0609A9DAB38449FC2F26B1B7589E16CDA86D7C4FD79BBD3B516BFAD2E566ADE53F860603E041988D90B3458AF",
   "client_name" : "csrTool",
 
-  "redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.dev/*" ],
+  "redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.dev/*" ],
   "default_redirect_uri" : "http://localhost",
 
   "logout_redirect_uris" : [ "http://localhost", "http://localhost:8000/app/#/home" ],

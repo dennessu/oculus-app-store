@@ -4,7 +4,7 @@
   "client_id" : "client",
   "client_secret" : "224112E90935C8FA4E3F66B96FACE79B",
   "client_name" : "client",
-  "redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.dev/*" ],
+  "redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.dev/*" ],
   "default_redirect_uri" : "http://localhost",
   "default_scopes" : [ "identity", "openid" ],
   "response_types" : [ "ID_TOKEN", "CODE", "TOKEN" ],

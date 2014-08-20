@@ -3,7 +3,7 @@
   "client_secret" : "3B065B82E21CA034C29D94DE1E0D7412#4C3FC64AB70493A08977CF519ACC0756FEE95ABF588536B6241041DB714C2DB7E8F6DBF6E6279A4F6FEF703E84B9D018",
   "client_name" : "2dstore",
 
-  "redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.dev/*" ],
+  "redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.dev/*" ],
   "default_redirect_uri" : "http://localhost",
 
   "logout_redirect_uris" : [ "http://localhost", "http://localhost:8000/app/#/home" ],

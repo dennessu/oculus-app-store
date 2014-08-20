@@ -12,6 +12,7 @@ import com.junbo.oauth.spec.model.ViewModel;
 import com.junbo.test.common.*;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.ShardIdHelper;
+import com.junbo.test.identity.Identity;
 import org.apache.http.Header;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -75,7 +76,8 @@ public class Oauth {
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI
                         + "?client_id="
                         + DefaultClientId
-                        + "&response_type=code&scope=identity&redirect_uri=http://localhost",
+                        + "&response_type=code&scope=identity&redirect_uri="
+                        + DefaultRedirectURI,
                 false);
         try {
             String tarHeader = "Location";
@@ -102,7 +104,9 @@ public class Oauth {
         try {
             AccessTokenResponse accessTokenResponse = JsonHelper.JsonDeserializer(
                     new InputStreamReader(response.getEntity().getContent()), AccessTokenResponse.class);
-            return accessTokenResponse.getAccessToken();
+            String accessToken = accessTokenResponse.getAccessToken();
+            Identity.SetHttpAuthorizationHeader(accessToken);
+            return accessToken;
         } finally {
             response.close();
         }
@@ -120,7 +124,8 @@ public class Oauth {
                 DefaultAuthorizeURI
                         + "?client_id="
                         + DefaultClientId
-                        + "&response_type=code&scope=identity&redirect_uri=http://localhost",
+                        + "&response_type=code&scope=identity&redirect_uri="
+                        + DefaultRedirectURI,
                 nvpHeaders,
                 false);
         try {
@@ -165,6 +170,12 @@ public class Oauth {
 
     // pass in userName for validation purpose only
     public static String PostRegisterUser(String cid, String userName, String email) throws Exception {
+        return PostRegisterUser(cid, userName, email, true);
+    }
+
+    // pass in userName for validation purpose only
+    public static String PostRegisterUser(String cid, String userName, String email, Boolean verifyEmail)
+            throws Exception {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
         nvps.add(new BasicNameValuePair(DefaultFNEvent, "next"));
@@ -185,7 +196,7 @@ public class Oauth {
             return responseString;
         } finally {
             response.close();
-            RunPostRegistrationWithEmailVerification(cid);
+            if (verifyEmail) RunPostRegistrationWithEmailVerification(cid);
         }
     }
 
@@ -240,6 +251,8 @@ public class Oauth {
                 new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
         response.close();
         String emailLink = viewModelResponse.getModel().get("link").toString();
+        //emailLink = DefaultAuthorizeURI.replace("/authorize", "") + "/verify-email?"
+        //        + emailLink.split("/verify-email?")[1];
         VerifyEmail(emailLink);
         // goto next
         nvps = new ArrayList<NameValuePair>();
@@ -276,7 +289,9 @@ public class Oauth {
                         + "?client_id="
                         + DefaultClientId
                         + "&response_type=token%20id_token&scope=openid%20identity&"
-                        + "redirect_uri=http://localhost&nonce=randomstring&locale=en_US&state=randomstring",
+                        + "redirect_uri="
+                        + DefaultRedirectURI
+                        + "&nonce=randomstring&locale=en_US&state=randomstring",
                 false);
         try {
             String tarHeader = "Location";
@@ -326,7 +341,9 @@ public class Oauth {
 
     public static void Logout(String idToken) throws Exception {
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultLogoutURI
-                + "?post_logout_redirect_uri=http://localhost&id_token_hint=" + idToken, false);
+                + "?post_logout_redirect_uri="
+                + DefaultRedirectURI
+                + "&id_token_hint=" + idToken, false);
         try {
             String tarHeader = "Location:";
             for (Header h : response.getAllHeaders()) {

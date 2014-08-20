@@ -52,6 +52,11 @@ pause
 EOF
 pause
 
+./foreach-here.sh $ENV/bcps.txt << EOF
+/var/silkcloud/pgha/purge/purge_bcp.sh
+EOF
+pause
+
 ./foreach-here.sh $ENV/replicas.txt << EOF
 /var/silkcloud/pgha/purge/purge_replica.sh
 EOF

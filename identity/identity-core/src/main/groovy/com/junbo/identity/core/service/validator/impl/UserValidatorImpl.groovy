@@ -9,6 +9,7 @@ import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.common.util.ValidatorUtil
 import com.junbo.identity.core.service.normalize.NormalizeService
+import com.junbo.identity.core.service.validator.EmailValidator
 import com.junbo.identity.core.service.validator.TimezoneValidator
 import com.junbo.identity.core.service.validator.UserValidator
 import com.junbo.identity.core.service.validator.UsernameValidator
@@ -37,6 +38,8 @@ class UserValidatorImpl implements UserValidator {
     private UserRepository userRepository
 
     private UsernameValidator usernameValidator
+
+    private EmailValidator emailValidator
 
     private LocaleRepository localeRepository
 
@@ -138,6 +141,60 @@ class UserValidatorImpl implements UserValidator {
         }
 
         return Promise.pure(null)
+    }
+
+    @Override
+    Promise<Void> validateEmail(String email) {
+        emailValidator.validateEmail(email)
+
+        return userPersonalInfoRepository.searchByEmail(email.toLowerCase(Locale.ENGLISH), null, Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
+            if (CollectionUtils.isEmpty(userPersonalInfoList)) {
+                return Promise.pure(null)
+            }
+
+            return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo userPersonalInfo ->
+                return userRepository.get(userPersonalInfo.getUserId()).then { User existingUser ->
+                    if (CollectionUtils.isEmpty(existingUser.emails)) {
+                        return Promise.pure(null)
+                    }
+
+                    UserPersonalInfoLink link = existingUser.emails.find { UserPersonalInfoLink personalInfoLink ->
+                        return personalInfoLink.isDefault && personalInfoLink.value == userPersonalInfo.getId()
+                    }
+
+                    if (link != null) {
+                        throw AppCommonErrors.INSTANCE.fieldDuplicate('email').exception()
+                    }
+
+                    return Promise.pure(null)
+                }
+            }.then {
+                return Promise.pure(null)
+            }
+        }
+    }
+
+    @Override
+    Promise<Void> validateUsername(String username) {
+        usernameValidator.validateUsername(username);
+
+        return userPersonalInfoRepository.searchByCanonicalUsername(normalizeService.normalize(username), Integer.MAX_VALUE, 0).then { List<UserPersonalInfo> userPersonalInfoList ->
+            if (CollectionUtils.isEmpty(userPersonalInfoList)) {
+                return Promise.pure(null)
+            }
+
+            return Promise.each(userPersonalInfoList.iterator()) { UserPersonalInfo userPersonalInfo ->
+                return userRepository.get(userPersonalInfo.getUserId()).then { User existingUser ->
+                    if (existingUser.username == userPersonalInfo.getId()) {
+                        throw AppCommonErrors.INSTANCE.fieldDuplicate('username').exception()
+                    }
+
+                    return Promise.pure(null)
+                }
+            }.then {
+                return Promise.pure(null)
+            }
+        }
     }
 
     private Promise<Void> validateUserInfo(User user) {
@@ -581,6 +638,11 @@ class UserValidatorImpl implements UserValidator {
     @Required
     void setUsernameValidator(UsernameValidator usernameValidator) {
         this.usernameValidator = usernameValidator
+    }
+
+    @Required
+    void setEmailValidator(EmailValidator emailValidator) {
+        this.emailValidator = emailValidator
     }
 
     @Required
