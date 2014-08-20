@@ -34,6 +34,7 @@ public class authorizeUser {
         HttpclientHelper.CloseHttpClient();
     }
 
+    @Property(environment = "release")
     @Test(groups = "bvt")
     public void authorizeUser() throws Exception {
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
