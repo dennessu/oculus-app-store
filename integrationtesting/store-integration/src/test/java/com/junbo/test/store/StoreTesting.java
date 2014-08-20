@@ -109,8 +109,12 @@ public class StoreTesting extends BaseTestClass {
     public void testMakeFreePurchase() throws Exception {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser();
         String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
-
-        String offerId = testDataProvider.getOfferIdByName(offer_digital_free);
+        String offerId;
+        if (offer_iap_free.toLowerCase().contains("test")) {
+            offerId = testDataProvider.getOfferIdByName(offer_digital_free);
+        } else {
+            offerId = offer_digital_free;
+        }
 
         MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, Country.DEFAULT);
 
