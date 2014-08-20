@@ -14,6 +14,7 @@
         <property name="triggers">
             <list>
                 <ref bean="commonJobTrigger"/>
+                <ref bean="snifferJobTrigger"/>
             </list>
         </property>
     </bean>
@@ -90,5 +91,26 @@
         <property name="rejectedExecutionHandler">
             <bean class="java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy"/>
         </property>
+    </bean>
+
+    <!-- memcached sniffer job -->
+    <bean id="snifferJob" class="com.junbo.common.job.cache.CacheSnifferJob"/>
+
+    <bean id="snifferJobTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+        <property name="jobDetail" ref="snifferJobDetail" />
+        <property name="startDelay" value="2000" />
+        <property name="repeatCount" value="0" />
+    </bean>
+
+    <bean id="snifferJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <bean class="com.junbo.apphost.core.LazyInitProxyFactoryBean">
+                <property name="targetBeanName">
+                    <idref bean="snifferJob"/>
+                </property>
+            </bean>
+        </property>
+        <property name="targetMethod" value="listen" />
+        <property name="concurrent" value="false"/>
     </bean>
 </beans>
