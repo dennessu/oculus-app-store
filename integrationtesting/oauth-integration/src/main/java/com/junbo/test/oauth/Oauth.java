@@ -165,6 +165,12 @@ public class Oauth {
 
     // pass in userName for validation purpose only
     public static String PostRegisterUser(String cid, String userName, String email) throws Exception {
+        return PostRegisterUser(cid, userName, email, false);
+    }
+
+    // pass in userName for validation purpose only
+    public static String PostRegisterUser(String cid, String userName, String email, Boolean verifyEmail)
+            throws Exception {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         nvps.add(new BasicNameValuePair(DefaultFNCid, cid));
         nvps.add(new BasicNameValuePair(DefaultFNEvent, "next"));
@@ -185,7 +191,7 @@ public class Oauth {
             return responseString;
         } finally {
             response.close();
-            RunPostRegistrationWithEmailVerification(cid);
+            if (verifyEmail) RunPostRegistrationWithEmailVerification(cid);
         }
     }
 

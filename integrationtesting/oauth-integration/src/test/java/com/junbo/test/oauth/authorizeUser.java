@@ -113,7 +113,6 @@ public class authorizeUser {
                 ((UserLoginName) JsonHelper.JsonNodeToObject(storedUPI.getValue(), UserLoginName.class)).getUserName());
     }
 
-    @Property(environment = "release")
     @Test(groups = "bvt")
     public void login() throws Exception {
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
@@ -145,6 +144,32 @@ public class authorizeUser {
         String loginResponseLink = Oauth.UserLogin(cid, userName, null);
         String idToken = Oauth.GetLoginUserIdToken(loginResponseLink);
         Oauth.Logout(idToken);
+    }
+
+    @Property(environment = "release")
+    @Test(groups = "bvt")
+    public void RegisterWithoutEmailVerification() throws Exception {
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
+        String cid = Oauth.GetRegistrationCid();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        String currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        assertEquals("validate current view state is login", true, currentViewState.contains("\"view\" : \"login\""));
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
+        ValidateErrorFreeResponse(postRegisterViewResponse);
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        assertEquals("validate view state after post register view", postRegisterViewResponse, currentViewState);
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+        String userName = RandomHelper.randomAlphabetic(15);
+        String email = RandomFactory.getRandomEmailAddress();
+        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email, false);
+        ValidateErrorFreeResponse(postRegisterUserResponse);
     }
 
     @Property(environment = "release")
