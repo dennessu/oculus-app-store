@@ -251,6 +251,8 @@ public class Oauth {
                 new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
         response.close();
         String emailLink = viewModelResponse.getModel().get("link").toString();
+        emailLink = DefaultAuthorizeURI.replace("/authorize", "") + "/verify-email?"
+                + emailLink.split("/verify-email?")[1];
         VerifyEmail(emailLink);
         // goto next
         nvps = new ArrayList<NameValuePair>();
