@@ -76,7 +76,8 @@ public class Oauth {
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI
                         + "?client_id="
                         + DefaultClientId
-                        + "&response_type=code&scope=identity&redirect_uri=http://localhost",
+                        + "&response_type=code&scope=identity&redirect_uri="
+                        + DefaultRedirectURI,
                 false);
         try {
             String tarHeader = "Location";
@@ -123,7 +124,8 @@ public class Oauth {
                 DefaultAuthorizeURI
                         + "?client_id="
                         + DefaultClientId
-                        + "&response_type=code&scope=identity&redirect_uri=http://localhost",
+                        + "&response_type=code&scope=identity&redirect_uri="
+                        + DefaultRedirectURI,
                 nvpHeaders,
                 false);
         try {
@@ -285,7 +287,9 @@ public class Oauth {
                         + "?client_id="
                         + DefaultClientId
                         + "&response_type=token%20id_token&scope=openid%20identity&"
-                        + "redirect_uri=http://localhost&nonce=randomstring&locale=en_US&state=randomstring",
+                        + "redirect_uri="
+                        + DefaultRedirectURI
+                        + "&nonce=randomstring&locale=en_US&state=randomstring",
                 false);
         try {
             String tarHeader = "Location";
@@ -335,7 +339,9 @@ public class Oauth {
 
     public static void Logout(String idToken) throws Exception {
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultLogoutURI
-                + "?post_logout_redirect_uri=http://localhost&id_token_hint=" + idToken, false);
+                + "?post_logout_redirect_uri="
+                + DefaultRedirectURI
+                + "&id_token_hint=" + idToken, false);
         try {
             String tarHeader = "Location:";
             for (Header h : response.getAllHeaders()) {
