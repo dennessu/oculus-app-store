@@ -182,23 +182,10 @@ public class authorizeUser {
         assertEquals("validate view state after post register view", postRegisterViewResponse, currentViewState);
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
-        String userName = RandomHelper.randomAlphabetic(15);
-        String email = RandomFactory.getRandomEmailAddress();
+        String userName = "allEnvLoginUser";//RandomHelper.randomAlphabetic(15);
+        String email = "silkcloudtest+allEnvLoginUser@gmail.com";//RandomFactory.getRandomEmailAddress();
         String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
         ValidateErrorFreeResponse(postRegisterUserResponse);
-
-        Oauth.StartLoggingAPISample(Oauth.MessageGetAuthCodeByCidAfterRegisterUser);
-        String authCode = Oauth.GetAuthCodeAfterRegisterUser(cid);
-        Oauth.StartLoggingAPISample(Oauth.MessageGetAccessTokenByAuthCode);
-        String accessToken = Oauth.GetAccessToken(authCode);
-        Oauth.StartLoggingAPISample(Oauth.MessageGetTokenInfoByAccessToken);
-        TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken);
-        assertEquals("validate token->client is correct", Oauth.DefaultClientId, tokenInfo.getClientId());
-        assertEquals("validate token->scopes is correct", Oauth.DefaultClientScopes, tokenInfo.getScopes());
-        User storedUser = Identity.UserGetByUserId(tokenInfo.getSub());
-        UserPersonalInfo storedUPI = Identity.UserPersonalInfoGetByUserPersonalInfoId(storedUser.getUsername());
-        assertEquals("validate token->binded user is correct", userName,
-                ((UserLoginName) JsonHelper.JsonNodeToObject(storedUPI.getValue(), UserLoginName.class)).getUserName());
     }
 
     @Property(environment = "release")
