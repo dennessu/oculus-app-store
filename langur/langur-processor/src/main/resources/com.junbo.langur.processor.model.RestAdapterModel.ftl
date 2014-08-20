@@ -40,6 +40,9 @@ public class ${className} extends com.junbo.langur.core.adapter.AbstractRestAdap
     private com.junbo.langur.core.rest.ResourceScopeValidator __resourceScopeValidator;
     [/#if]
 
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    private com.junbo.langur.core.rest.ThrottleController __throttleController;
+
     public ${adapteeType} getAdaptee() {
         return __adaptee;
     }
