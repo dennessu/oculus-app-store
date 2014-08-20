@@ -47,6 +47,9 @@ public class AccessTokenRequest {
     @FormParam("ip_restriction")
     private String ipRestriction;
 
+    @FormParam("user_id")
+    private String userId;
+
     public String getClientId() {
         return clientId;
     }
@@ -133,5 +136,13 @@ public class AccessTokenRequest {
 
     public void setIpRestriction(String ipRestriction) {
         this.ipRestriction = ipRestriction;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

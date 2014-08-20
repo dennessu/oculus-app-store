@@ -30,4 +30,13 @@ public interface ApiDefinitionResource {
     @GET
     @Path("/{apiName}")
     Promise<ApiDefinition> get(@PathParam("apiName") String apiName);
+
+    @ApiOperation("Create an Api Definition")
+    @POST
+    Promise<ApiDefinition> create(ApiDefinition apiDefinition);
+
+    @ApiOperation("Update an Api Definition by name")
+    @PUT
+    @Path("/{apiName}")
+    Promise<ApiDefinition> update(@PathParam("apiName") String apiName, ApiDefinition apiDefinition);
 }

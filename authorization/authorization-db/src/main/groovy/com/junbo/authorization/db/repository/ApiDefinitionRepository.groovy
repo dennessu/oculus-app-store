@@ -14,4 +14,8 @@ import groovy.transform.CompileStatic
 @CompileStatic
 interface ApiDefinitionRepository {
     ApiDefinition getApi(String apiName)
+
+    ApiDefinition saveApi(ApiDefinition api)
+
+    ApiDefinition updateApi(ApiDefinition api, ApiDefinition oldApi)
 }

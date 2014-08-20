@@ -28,6 +28,8 @@
 
     <bean id="defaultTokenInfoEndpoint" class="com.junbo.oauth.api.endpoint.TokenInfoEndpointImpl">
         <property name="tokenService" ref="tokenService"/>
+        <property name="defaultScopes" value="${oauth.core.accessToken.default.scopes}"/>
+        <property name="defaultAccessTokenExpiration" value="${oauth.core.accessToken.default.expiration}"/>
     </bean>
 
     <bean id="defaultTokenInfoEndpointRouter" parent="routingRouterBase" />

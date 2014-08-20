@@ -76,9 +76,6 @@ class UriUtil {
     static boolean isValidRedirectUri(String uri) {
         try {
             URI uri1 = URI.create(uri)
-            if (StringUtils.hasText(uri1.fragment)) {
-                return false
-            }
             return true
         } catch (IllegalArgumentException e) {
             LOGGER.debug('Invalid uri format', e)

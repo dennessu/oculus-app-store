@@ -1,0 +1,5 @@
+{
+    "name": "entitlement",
+    "description": "Scope to call the entitlement.",
+    "tfaRequired": false
+}
