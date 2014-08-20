@@ -159,8 +159,8 @@ public class authorizeUser {
         assertEquals("validate view state after post register view", postRegisterViewResponse, currentViewState);
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
-        String userName = RandomHelper.randomAlphabetic(15);
-        String email = RandomFactory.getRandomEmailAddress();
+        String userName = "allTestLoginUser";//RandomHelper.randomAlphabetic(15);
+        String email = "silkcloudtest+allTestLoginUser@gmail.com";//RandomFactory.getRandomEmailAddress();
         String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email, false);
         ValidateErrorFreeResponse(postRegisterUserResponse);
     }
@@ -172,7 +172,7 @@ public class authorizeUser {
         String currentViewState = Oauth.GetViewStateByCid(cid);
         ValidateErrorFreeResponse(currentViewState);
         //String loginResponseLink =
-        Oauth.UserLogin(cid, "kevincrawford", "Welcome123");
+        Oauth.UserLogin(cid, "allTestLoginUser", Oauth.DefaultUserPwd);
         //Oauth.UserLogin(cid, RandomHelper.randomAlphabetic(10), "Welcome123");
         //String idToken = Oauth.GetLoginUserIdToken(loginResponseLink);
         //Oauth.Logout(idToken);
