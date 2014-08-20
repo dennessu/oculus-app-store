@@ -75,6 +75,14 @@ cd /var/silkcloud/pgha
 nc -zv localhost 113 5432 6543
 EOF
 
+./foreach-here.sh $ENV/bcps.txt << EOF
+set -e
+cd /var/silkcloud/pgha
+./setup/setup_bcp.sh
+./util/base.sh
+nc -zv localhost 113 5432 6543
+EOF
+
 ./foreach-here.sh $ENV/replicas.txt << EOF
 set -e
 cd /var/silkcloud/pgha
