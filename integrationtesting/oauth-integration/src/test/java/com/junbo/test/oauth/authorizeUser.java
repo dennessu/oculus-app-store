@@ -34,7 +34,6 @@ public class authorizeUser {
         HttpclientHelper.CloseHttpClient();
     }
 
-    @Property(environment = "release")
     @Test(groups = "bvt")
     public void authorizeUser() throws Exception {
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
@@ -107,7 +106,7 @@ public class authorizeUser {
                 ((UserLoginName) JsonHelper.JsonNodeToObject(storedUPI.getValue(), UserLoginName.class)).getUserName());
     }
 
-    @Test(groups = "bvt")
+    @Test(groups = "dailies")
     public void login() throws Exception {
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
         String cid = Oauth.GetRegistrationCid();
@@ -141,7 +140,7 @@ public class authorizeUser {
     }
 
     @Property(environment = "release")
-    @Test(groups = "bvt")
+    @Test(groups = "dailies")
     public void RegisterWithoutEmailVerification() throws Exception {
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
         String cid = Oauth.GetRegistrationCid();
@@ -169,7 +168,7 @@ public class authorizeUser {
     }
 
     @Property(environment = "release")
-    @Test(groups = "bvt")
+    @Test(groups = "dailies")
     public void loginExistingUser() throws Exception {
         String cid = Oauth.GetLoginCid();
         String currentViewState = Oauth.GetViewStateByCid(cid);
@@ -181,7 +180,7 @@ public class authorizeUser {
         //Oauth.Logout(idToken);
     }
 
-    @Test(groups = "bvt")
+    @Test(groups = "dailies")
     public void resetPassword() throws Exception {
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
         String cid = Oauth.GetRegistrationCid();
