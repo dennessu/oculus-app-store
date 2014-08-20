@@ -142,7 +142,6 @@ public class authorizeUser {
     @Property(environment = "release")
     @Test(groups = "bvt")
     public void RegisterWithoutEmailVerification() throws Exception {
-        /*
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
         String cid = Oauth.GetRegistrationCid();
 
@@ -160,31 +159,11 @@ public class authorizeUser {
         assertEquals("validate view state after post register view", postRegisterViewResponse, currentViewState);
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
-        String userName = "allTestLoginUser";//RandomHelper.randomAlphabetic(15);
-        String email = "silkcloudtest+allTestLoginUser@gmail.com";//RandomFactory.getRandomEmailAddress();
+        //String userName = "allEnvLoginUser";
+        //String email = "silkcloudtest+allEnvLoginUser@gmail.com";
+        String userName = RandomHelper.randomAlphabetic(15);
+        String email = RandomFactory.getRandomEmailAddress();
         String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email, false);
-        ValidateErrorFreeResponse(postRegisterUserResponse);
-        */
-        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
-        String cid = Oauth.GetRegistrationCid();
-
-        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        String currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        assertEquals("validate current view state is login", true, currentViewState.contains("\"view\" : \"login\""));
-
-        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
-        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
-        ValidateErrorFreeResponse(postRegisterViewResponse);
-        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
-        currentViewState = Oauth.GetViewStateByCid(cid);
-        ValidateErrorFreeResponse(currentViewState);
-        assertEquals("validate view state after post register view", postRegisterViewResponse, currentViewState);
-
-        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
-        String userName = "allEnvLoginUser";//RandomHelper.randomAlphabetic(15);
-        String email = "silkcloudtest+allEnvLoginUser@gmail.com";//RandomFactory.getRandomEmailAddress();
-        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
         ValidateErrorFreeResponse(postRegisterUserResponse);
     }
 
@@ -195,7 +174,7 @@ public class authorizeUser {
         String currentViewState = Oauth.GetViewStateByCid(cid);
         ValidateErrorFreeResponse(currentViewState);
         //String loginResponseLink =
-        Oauth.UserLogin(cid, "allTestLoginUser", Oauth.DefaultUserPwd);
+        Oauth.UserLogin(cid, "allEnvLoginUser", Oauth.DefaultUserPwd);
         //Oauth.UserLogin(cid, RandomHelper.randomAlphabetic(10), "Welcome123");
         //String idToken = Oauth.GetLoginUserIdToken(loginResponseLink);
         //Oauth.Logout(idToken);
