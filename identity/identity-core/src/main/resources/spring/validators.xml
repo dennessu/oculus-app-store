@@ -110,6 +110,7 @@
         <property name="userRepository" ref="userRepository" />
         <property name="normalizeService" ref="normalizeService" />
         <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
+        <property name="emailValidator" ref="identityEmailValidator" />
         <property name="localeRepository" ref="localeRepository" />
         <property name="timezoneValidator" ref="timezoneValidator" />
         <property name="usernameValidator" ref="usernameValidator" />
@@ -226,7 +227,7 @@
         <property name="maxTextMessageLength" value="255" />
     </bean>
 
-    <bean id="userEmailValidator" class="com.junbo.identity.core.service.validator.impl.UserEmailValidatorImpl">
+    <bean id="identityEmailValidator" class="com.junbo.identity.core.service.validator.impl.EmailValidatorImpl">
         <property name="allowedEmailPatterns">
             <list>
                 <value>^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$</value>
@@ -234,6 +235,10 @@
         </property>
         <property name="minEmailLength" value="3" />
         <property name="maxEmailLength" value="255" />
+    </bean>
+
+    <bean id="userEmailValidator" class="com.junbo.identity.core.service.validator.impl.UserEmailValidatorImpl">
+        <property name="emailValidator" ref="identityEmailValidator" />
         <property name="userPersonalInfoRepository" ref="userPersonalInfoRepository" />
         <property name="userRepository" ref="userRepository" />
     </bean>
