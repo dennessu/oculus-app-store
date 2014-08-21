@@ -2,35 +2,17 @@ package com.junbo.store.rest.resource
 
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
-import com.junbo.common.error.AppCommonErrors
-import com.junbo.common.error.AppError
-import com.junbo.common.error.AppErrorException
-import com.junbo.common.error.ErrorDetail
-import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.json.ObjectMapperProvider
-import com.junbo.common.model.Results
 import com.junbo.common.util.IdFormatter
-import com.junbo.identity.spec.v1.model.Email
-import com.junbo.identity.spec.v1.model.RateUserCredentialContext
-import com.junbo.identity.spec.v1.model.RateUserCredentialRequest
-import com.junbo.identity.spec.v1.model.RateUserCredentialResponse
-import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
-import com.junbo.identity.spec.v1.model.UserDOB
-import com.junbo.identity.spec.v1.model.UserName
-import com.junbo.identity.spec.v1.model.UserLoginName
-import com.junbo.identity.spec.v1.model.UserPersonalInfo
-import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
-import com.junbo.identity.spec.v1.option.list.UserListOptions
+import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.spec.model.AccessTokenRequest
 import com.junbo.oauth.spec.model.AccessTokenResponse
 import com.junbo.oauth.spec.model.TokenInfo
-import com.junbo.store.rest.utils.RequestValidator
-import com.junbo.store.rest.utils.ResourceContainer
-import com.junbo.store.spec.model.ResponseStatus
+import com.junbo.store.rest.context.ErrorContext
+import com.junbo.store.rest.utils.*
 import com.junbo.store.spec.model.login.*
 import com.junbo.store.spec.resource.LoginResource
 import groovy.transform.CompileStatic
@@ -38,6 +20,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import org.springframework.util.StringUtils
 
 import javax.annotation.Resource
 import javax.ws.rs.ext.Provider
@@ -64,33 +47,37 @@ class LoginResourceImpl implements LoginResource {
     @Resource(name = 'storeRequestValidator')
     private RequestValidator requestValidator
 
+    @Resource(name = 'storeAppErrorUtils')
+    private AppErrorUtils appErrorUtils
+
+    private class ApiContext {
+        User user
+    }
+
     @Override
     Promise<UserNameCheckResponse> checkUserName(UserNameCheckRequest userNameCheckRequest) {
         requestValidator.validateUserNameCheckRequest(userNameCheckRequest)
-
-        return resourceContainer.userCredentialVerifyAttemptResource.create(new UserCredentialVerifyAttempt(
-                username: userNameCheckRequest.username,
-                type: "CHECK_NAME",
-                value: ""
-        )).recover { Throwable ex ->
-            if (ex instanceof AppErrorException) {
-                def appError = ((AppErrorException) ex).error.error()
-                if (appError.code == '131.108') { // usernameNotFound
-                    return Promise.pure(new UserCredentialVerifyAttempt(
-                            succeeded: false
-                    ))
-                } else if (appError.code == '131.107') { // userInInvalidStatus
-                    return Promise.pure(new UserCredentialVerifyAttempt(
-                            succeeded: true
-                    ))
-                }
+        UserNameCheckResponse response
+        ErrorContext errorContext = new ErrorContext()
+        Promise.pure().then {
+            if (!StringUtils.isEmpty(userNameCheckRequest.email)) {
+                errorContext.fieldName = 'email'
+                return resourceContainer.userResource.checkEmail(userNameCheckRequest.email)
             }
-
-            throw ex
-        }.then { UserCredentialVerifyAttempt attempt ->
-            return Promise.pure(new UserNameCheckResponse(
-                    isAvailable: !attempt.succeeded
-            ))
+            errorContext.fieldName = 'username'
+            return resourceContainer.userResource.checkUsername(userNameCheckRequest.username)
+        }.recover { Throwable ex ->
+            if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.FieldDuplicate)) {
+                response = new UserNameCheckResponse(isAvailable : false)
+                return Promise.pure()
+            }
+            appErrorUtils.throwOnFieldInvalidError(errorContext, ex)
+            appErrorUtils.throwUnknownError('checkUserName', ex)
+        }.then {
+            if (response == null) {
+                return Promise.pure(new UserNameCheckResponse(isAvailable: true))
+            }
+            return Promise.pure(response)
         }
     }
 
@@ -112,136 +99,44 @@ class LoginResourceImpl implements LoginResource {
     }
 
     @Override
-    Promise<AuthTokenResponse> createUser(CreateUserRequest createUserRequest) {
-        requestValidator.validateCreateUserRequest(createUserRequest)
+    Promise<AuthTokenResponse> createUser(CreateUserRequest request) {
+        requestValidator.validateCreateUserRequest(request)
+        ApiContext apiContext = new ApiContext()
+        ErrorContext errorContext = new ErrorContext()
 
-        User user
-        user = new User(
-                nickName: createUserRequest.nickName,
-                preferredLocale: new LocaleId(createUserRequest.preferredLocale),
-                countryOfResidence: new CountryId(createUserRequest.cor),
-        )
-
-        String fieldName = null
-        resourceContainer.userResource.create(user).then { User u ->
-                user = u
-                return Promise.pure()
+        requestValidator.validateAndGetCountry(new CountryId(request.cor)).then {
+            requestValidator.validateAndGetLocale(new LocaleId(request.preferredLocale))
         }.then {
-            fieldName = 'username'
-            return resourceContainer.userPersonalInfoResource.create(
-                        new UserPersonalInfo(
-                            type: 'USERNAME',
-                            userId: user.getId(),
-                            value: ObjectMapperProvider.instance().valueToTree(new UserLoginName(
-                                userName: createUserRequest.username
-                            ))
-                          )
-                         ).then { UserPersonalInfo userPersonalInfo ->
-                     user.username = userPersonalInfo.getId()
-                     user.isAnonymous = false
-                     return resourceContainer.userResource.put(user.getId(), user).then { User u ->
-                        user = u
-                        return Promise.pure()
-                    }
-            }
+            createUserBasic(request, apiContext, errorContext)
         }.then {
-            fieldName = 'password'
-            return resourceContainer.userCredentialResource.create(
-                    user.getId(),
-                    new com.junbo.identity.spec.v1.model.UserCredential(type: 'PASSWORD', value: createUserRequest.password)
-            )
-        }.then {
-            if (createUserRequest.pin == null) {
-                return Promise.pure()
-            }
-
-            fieldName = 'pin'
-            return resourceContainer.userCredentialResource.create(
-                    user.getId(),
-                    new com.junbo.identity.spec.v1.model.UserCredential(type: 'PIN', value: createUserRequest.pin)
-            )
-        }.then { // create email info
-            fieldName = 'email'
-
-            return resourceContainer.userPersonalInfoResource.create(
-                    new UserPersonalInfo(
-                            type: 'EMAIL',
-                            userId: user.getId(),
-                            value: ObjectMapperProvider.instance().valueToTree(new Email(info: createUserRequest.email))
-                    )
-            ).then { UserPersonalInfo emailInfo ->
-                user.emails = [
-                        new UserPersonalInfoLink(
-                                isDefault: true,
-                                value: emailInfo.getId()
-                        )
-                ]
-
-                return Promise.pure()
-            }
-        }.then { // create   info
-            if (createUserRequest.dob == null) {
-                return Promise.pure()
-            }
-
-            fieldName = 'dob'
-            return resourceContainer.userPersonalInfoResource.create(
-                    new UserPersonalInfo(
-                            userId: user.getId(),
-                            type: 'DOB',
-                            value: ObjectMapperProvider.instance().valueToTree(new UserDOB(info: createUserRequest.dob))
-                    )
-            ).then { UserPersonalInfo dobInfo ->
-                user.dob = dobInfo.getId()  
-                return Promise.pure()
-            }
-        }.then { // create name info
-            if (createUserRequest.firstName == null
-                    && createUserRequest.middleName == null
-                    && createUserRequest.lastName == null) {
-                return Promise.pure()
-            }
-
-            fieldName = 'name'
-            return resourceContainer.userPersonalInfoResource.create(
-                    new UserPersonalInfo(
-                            userId: user.getId(),
-                            type: 'NAME',
-                            value: ObjectMapperProvider.instance().valueToTree(
-                                    new UserName(
-                                            givenName: createUserRequest.firstName,
-                                            middleName: createUserRequest.middleName,
-                                            familyName: createUserRequest.lastName
-                                    )
-                            )
-                    )
-            ).then { UserPersonalInfo nameInfo ->
-                user.name = nameInfo.getId()
-                return Promise.pure()
-            }
-
+            createUserPersonalInfo(request, apiContext, errorContext)
             // todo set the tos and newsPromotionsAgreed
         }.then {
-            return resourceContainer.userResource.put(user.getId(), user).then { User u ->
-                user = u
+            return resourceContainer.userResource.put(apiContext.user.getId(), apiContext.user).then { User u ->
+                apiContext.user = u
                 return Promise.pure()
             }
         }.recover { Throwable ex ->
             def promise = Promise.pure()
-            
-            if (user?.getId() != null) {
-                promise = rollBackUser(user)
+
+            if (apiContext.user?.getId() != null) {
+                promise = rollBackUser(apiContext.user)
             }
 
             promise.then {
-                handleError(fieldName, ex)
-                throw new RuntimeException("Shouldn't be here.")
+                appErrorUtils.throwOnFieldInvalidError(errorContext, ex)
+                if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.CountryNotFound,
+                        ErrorCodes.Identity.LocaleNotFound, ErrorCodes.Identity.InvalidPassword,
+                        ErrorCodes.Identity.FieldDuplicate)) {
+                    throw ex
+                }
+                appErrorUtils.throwUnknownError('createUser', ex)
             }
         }.then {
-            return resourceContainer.emailVerifyEndpoint.sendVerifyEmail(createUserRequest.preferredLocale, createUserRequest.cor, user.getId())
+            return resourceContainer.emailVerifyEndpoint.sendVerifyEmail(request.preferredLocale, request.cor, apiContext.user.getId())
         }.then {
             // get the auth token
-            innerSignIn(createUserRequest.username, createUserRequest.password)
+            innerSignIn(request.username, request.password)
         }
     }
 
@@ -249,7 +144,12 @@ class LoginResourceImpl implements LoginResource {
     Promise<AuthTokenResponse> signIn(UserSignInRequest userSignInRequest) {
         requestValidator.validateUserSignInRequest(userSignInRequest)
 
-        return innerSignIn(userSignInRequest.username, userSignInRequest.userCredential.value)
+        return innerSignIn(userSignInRequest.username, userSignInRequest.userCredential.value).recover { Throwable ex ->
+            if (appErrorUtils.isAppError(ex, ErrorCodes.OAuth.InvalidCredential)) {
+                throw ex
+            }
+            appErrorUtils.throwUnknownError('signIn', ex)
+        }
     }
 
     @Override
@@ -277,6 +177,11 @@ class LoginResourceImpl implements LoginResource {
                     }
                 }
             }
+        }.recover { Throwable ex ->
+            if (appErrorUtils.isAppError(ex, ErrorCodes.OAuth.RefreshTokenExpired, ErrorCodes.OAuth.RefreshTokenInvalid)) {
+                throw ex
+            }
+            appErrorUtils.throwUnknownError('getAuthToken', ex)
         }
     }
 
@@ -327,33 +232,117 @@ class LoginResourceImpl implements LoginResource {
         }
     }
 
-    private void handleError(String field, Throwable ex) {
-        if (!(ex instanceof AppErrorException)) {
-            throw ex
-        }
+    /**
+     * Create User with basic info: username, password, pin
+     *
+     */
+    private Promise createUserBasic(CreateUserRequest request, ApiContext apiContext, ErrorContext errorContext) {
 
-        AppError appError = ((AppErrorException) ex).error
-
-        String[] codes = appError.error().code.split('\\.')
-
-        if (codes.length == 2) {
-            if (codes[1] == '001') {
-                LOGGER.error('name=Invalid_Field_Error', ex)
-
-                AppError resultAppError
-                if (field != null) {
-                    resultAppError = AppCommonErrors.INSTANCE.fieldInvalid(
-                            appError.error().details.collect {ErrorDetail errorDetail -> return new ErrorDetail(field, errorDetail.reason)}.toArray(new ErrorDetail[0])
+        resourceContainer.userResource.create(new User(
+                nickName: request.nickName,
+                preferredLocale: new LocaleId(request.preferredLocale),
+                countryOfResidence: new CountryId(request.cor),
+        )).then { User u ->
+                apiContext.user = u
+                return Promise.pure()
+        }.then {
+            errorContext.fieldName = 'username'
+            return resourceContainer.userPersonalInfoResource.create(
+                    new UserPersonalInfo(
+                            type: 'USERNAME',
+                            userId: apiContext.user.getId(),
+                            value: ObjectMapperProvider.instance().valueToTree(new UserLoginName(
+                                    userName: request.username
+                            ))
                     )
-                } else {
-                    resultAppError = AppCommonErrors.INSTANCE.fieldInvalid(appError.error().details.toArray(new ErrorDetail[0]))
+            ).then { UserPersonalInfo userPersonalInfo ->
+                apiContext.user.username = userPersonalInfo.getId()
+                apiContext.user.isAnonymous = false
+                return resourceContainer.userResource.put(apiContext.user.getId(), apiContext.user).then { User u ->
+                    apiContext.user = u
+                    return Promise.pure()
                 }
-                throw resultAppError.exception()
             }
-        } else {
-            LOGGER.error('name=Invalid_Error_Code_Format, code={}', appError.error().code)
-        }
+        }.then {
+            errorContext.fieldName = 'password'
+            return resourceContainer.userCredentialResource.create(
+                    apiContext.user.getId(),
+                    new com.junbo.identity.spec.v1.model.UserCredential(type: 'PASSWORD', value: request.password)
+            )
+        }.then {
+            if (request.pin == null) {
+                return Promise.pure()
+            }
 
-        throw ex
+            errorContext.fieldName = 'pin'
+            return resourceContainer.userCredentialResource.create(
+                    apiContext.user.getId(),
+                    new com.junbo.identity.spec.v1.model.UserCredential(type: 'PIN', value: request.pin)
+            )
+        }
     }
+
+
+    private Promise createUserPersonalInfo(CreateUserRequest createUserRequest, ApiContext apiContext, ErrorContext errorContext) {
+        errorContext.fieldName = 'email'
+        return resourceContainer.userPersonalInfoResource.create(
+                new UserPersonalInfo(
+                        type: 'EMAIL',
+                        userId: apiContext.user.getId(),
+                        value: ObjectMapperProvider.instance().valueToTree(new Email(info: createUserRequest.email))
+                )
+        ).then { UserPersonalInfo emailInfo ->
+            apiContext.user.emails = [
+                    new UserPersonalInfoLink(
+                            isDefault: true,
+                            value: emailInfo.getId()
+                    )
+            ]
+            return Promise.pure()
+
+        }.then { // create  dob
+            if (createUserRequest.dob == null) {
+                return Promise.pure()
+            }
+
+            errorContext.fieldName = 'dob'
+            return resourceContainer.userPersonalInfoResource.create(
+                    new UserPersonalInfo(
+                            userId: apiContext.user.getId(),
+                            type: 'DOB',
+                            value: ObjectMapperProvider.instance().valueToTree(new UserDOB(info: createUserRequest.dob))
+                    )
+            ).then { UserPersonalInfo dobInfo ->
+                apiContext.user.dob = dobInfo.getId()
+                return Promise.pure()
+            }
+
+        }.then { // create name info
+            if (createUserRequest.firstName == null
+                    && createUserRequest.middleName == null
+                    && createUserRequest.lastName == null) {
+                return Promise.pure()
+            }
+
+            errorContext.fieldName = 'name'
+            return resourceContainer.userPersonalInfoResource.create(
+                    new UserPersonalInfo(
+                            userId: apiContext.user.getId(),
+                            type: 'NAME',
+                            value: ObjectMapperProvider.instance().valueToTree(
+                                    new UserName(
+                                            givenName: createUserRequest.firstName,
+                                            middleName: createUserRequest.middleName,
+                                            familyName: createUserRequest.lastName
+                                    )
+                            )
+                    )
+            ).then { UserPersonalInfo nameInfo ->
+                apiContext.user.name = nameInfo.getId()
+                return Promise.pure()
+            }
+
+        }
+    }
+
 }

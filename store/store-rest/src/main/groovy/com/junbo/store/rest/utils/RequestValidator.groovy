@@ -3,14 +3,12 @@ package com.junbo.store.rest.utils
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppCommonErrors
-import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.OfferId
 import com.junbo.common.id.OrderId
 import com.junbo.common.id.PIType
 import com.junbo.common.id.UserId
 import com.junbo.common.util.IdFormatter
 import com.junbo.identity.spec.v1.model.Country
-import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
 import com.junbo.langur.core.promise.Promise
@@ -54,7 +52,13 @@ class RequestValidator {
             throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
         }
 
-        notEmpty(request.username, 'username')
+        if (StringUtils.isEmpty(request.email) && StringUtils.isEmpty(request.username)) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('email or username').exception()
+        }
+
+        if (!StringUtils.isEmpty(request.email) && !StringUtils.isEmpty(request.username)) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('email or username', 'only one of the fields [email, username] could be specified at a time').exception()
+        }
     }
 
     void validateUserCredentialRateRequest(UserCredentialRateRequest request) {
@@ -159,6 +163,10 @@ class RequestValidator {
         return resourceContainer.localeResource.get(country.defaultLocale, new LocaleGetOptions())
     }
 
+    Promise<com.junbo.identity.spec.v1.model.Locale> validateAndGetLocale(LocaleId locale) {
+        return resourceContainer.localeResource.get(locale, new LocaleGetOptions())
+    }
+
     Promise validateOffer(OfferId offer) {
         resourceContainer.offerResource.getOffer(offer.value)
     }
@@ -237,7 +245,7 @@ class RequestValidator {
         }
     }
 
-    private Promise validateOfferForPurchase(OfferId offerId, CountryId countryId, LocaleId locale, boolean free) {
+    public Promise validateOfferForPurchase(OfferId offerId, CountryId countryId, LocaleId locale, boolean free) {
         return facadeContainer.catalogFacade.getOffer(offerId.value, locale).then { com.junbo.store.spec.model.catalog.Offer offer ->
             if (offer.hasPhysicalItem) {
                 throw AppErrors.INSTANCE.invalidOffer('Offer has physical items.').exception()

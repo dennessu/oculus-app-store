@@ -5,6 +5,7 @@ import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.OfferId
 import com.junbo.entitlement.spec.model.DownloadUrlGetOptions
 import com.junbo.store.rest.test.Generator
+import com.junbo.store.spec.model.PageParam
 import com.junbo.store.spec.model.purchase.MakeFreePurchaseRequest
 import org.testng.annotations.Test
 
@@ -24,18 +25,22 @@ class FreePurchaseTest extends TestBase {
         def result = loginResource.createUser(createUserRequest).get()
         testAccessTokenProvider.token = result.accessToken
 
-        OfferId offerId = testUtils.getByName(freeOfferName)
-        result = storeResource.makeFreePurchase(new MakeFreePurchaseRequest(offer: offerId, country: new CountryId('US'))).get()
-        assert result.entitlements.size() == 1
-        assert result.order != null
+        freeOfferNames.each { String offerName ->
+            OfferId offerId = testUtils.getByName(offerName)
+            result = storeResource.makeFreePurchase(new MakeFreePurchaseRequest(offer: offerId, country: new CountryId('US'))).get()
+            assert result.entitlements.size() == 1
+            assert result.order != null
 
-        def entitlement = result.entitlements[0]
-        assert entitlement.entitlementType == 'DOWNLOAD'
-        assert entitlement.itemType == 'APP'
-        assert entitlement.item != null
+            def entitlement = result.entitlements[0]
+            assert entitlement.entitlementType == 'DOWNLOAD'
+            assert entitlement.itemType == 'APP'
+            assert entitlement.item != null
 
-        result = downloadUrlResource.getDownloadUrl(entitlement.item, new DownloadUrlGetOptions(entitlementId: entitlement.self, platform: 'ANDROID')).get()
-        assert result.redirectUrl != null
+            assert storeResource.getEntitlements(new PageParam()).get().entitlements.size() != 0
+
+            result = downloadUrlResource.getDownloadUrl(entitlement.item, new DownloadUrlGetOptions(entitlementId: entitlement.self, platform: 'ANDROID')).get()
+            assert result.redirectUrl != null
+        }
     }
 
 
