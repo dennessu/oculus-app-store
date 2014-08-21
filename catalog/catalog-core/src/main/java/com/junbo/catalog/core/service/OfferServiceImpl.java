@@ -199,7 +199,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
 
     private void updateOfferForApprovedRevision(OfferRevision revision, Long timestamp) {
         Offer offer = offerRepo.get(revision.getOfferId());
-        offer.setPublished(true);
+        //offer.setPublished(true);
 
         if (revision.getStartTime().getTime() <= timestamp
                 && revision.getEndTime() == null || revision.getEndTime().after(Utils.maxDate())) {
@@ -323,14 +323,14 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         if (offer.getRev() != null) {
             errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("rev"));
         }
-        if (Boolean.TRUE.equals(offer.getPublished())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("isPublished", offer.getPublished(), Boolean.FALSE));
-        }
         if (offer.getCurrentRevisionId() != null) {
             errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("currentRevision"));
         }
         if (offer.getOwnerId()==null) {
             errors.add(AppCommonErrors.INSTANCE.fieldRequired("publisher"));
+        }
+        if (Boolean.TRUE.equals(offer.getPublished())) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("isPublished", "The offer does not have currentRevision"));
         }
 
         validateOfferCommon(offer, errors);
@@ -356,6 +356,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         }
         if (!oldOffer.getOwnerId().equals(offer.getOwnerId())) {
             errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("publisher", Utils.encodeId(offer.getOwnerId()), Utils.encodeId(oldOffer.getOwnerId())));
+        }
+        if (Boolean.TRUE.equals(offer.getPublished()) && !Boolean.TRUE.equals(oldOffer.getPublished()) && oldOffer.getCurrentRevisionId() == null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("isPublished", "The offer does not have currentRevision"));
         }
 
         validateOfferCommon(offer, errors);

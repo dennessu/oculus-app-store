@@ -7,7 +7,6 @@
 package com.junbo.catalog.core.service;
 
 import com.google.common.base.Joiner;
-import com.junbo.catalog.common.util.Utils;
 import com.junbo.catalog.core.BaseRevisionedService;
 import com.junbo.catalog.db.repo.BaseEntityRepository;
 import com.junbo.catalog.db.repo.BaseRevisionRepository;
@@ -17,7 +16,6 @@ import com.junbo.catalog.spec.model.common.BaseEntityModel;
 import com.junbo.catalog.spec.model.common.BaseModel;
 import com.junbo.catalog.spec.model.common.BaseRevisionModel;
 import com.junbo.catalog.spec.model.common.Price;
-import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.error.AppError;
 import com.junbo.common.error.AppErrorException;
@@ -71,26 +69,6 @@ public abstract class BaseRevisionedServiceImpl<E extends BaseEntityModel, T ext
         T revision = getRevisionRepo().get(revisionId);
         checkEntityNotNull(revisionId, revision, getRevisionType());
         return revision;
-    }
-
-    @Override
-    public T updateRevision(String revisionId, T revision) {
-        if (Status.APPROVED.is(revision.getStatus())) {
-            revision.setTimestamp(Utils.currentTimestamp());
-        }
-        T oldRevision = getRevisionRepo().get(revisionId);
-        getRevisionRepo().update(revision, oldRevision);
-        if (Status.APPROVED.is(revision.getStatus())) {
-            E entity = getEntityRepo().get(revision.getEntityId());
-            checkEntityNotNull(revision.getEntityId(), entity, getEntityType());
-            if (entity instanceof Offer) {
-                ((Offer) entity).setPublished(Boolean.TRUE);
-            }
-            String lastRevisionId = entity.getCurrentRevisionId();
-            entity.setCurrentRevisionId(revisionId);
-            getEntityRepo().update(entity, entity);
-        }
-        return getRevisionRepo().get(revisionId);
     }
 
     @Override

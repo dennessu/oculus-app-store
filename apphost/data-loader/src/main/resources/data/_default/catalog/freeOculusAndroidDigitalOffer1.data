@@ -112,9 +112,9 @@
                 "copyright": "Corneria Studios",
                 "knownBugs": "a. Lasers fire straight. We&apos;ve toyed with options on making them fire with the direction you&apos;re looking, but we haven&apos;t quite worked out the mechanics yet.\r\n\r\n\n\r\nb. Missiles don&apos;t lock on, and just kinda fire in the general direction you&apos;re looking. That&apos;s getting fixed soon.\r\n\r\n\n\r\nc. Enemies sometimes float away above the vertical limit and get too far away to shoot. They don&apos;t respawn after that. Oops.\r\n\r\n\n\r\nd. Crashing into the mountains/ground doesn&apos;t do damage. If you hit the mountain and get stuck, just break fully and turn around. It&apos;ll be okay, trust me.\r\n\r\n\n\r\ne. Shield doesn&apos;t actually do anything. It&apos;s purely aesthetic right now. Do not attempt to use it to protect yourself.",
                 "supportEmail": "corneriastudios@gmail.com",
-                "website": "",
-                "manualDocument": "",
-                "communityForumLink": "",
+                "website": null,
+                "manualDocument": null,
+                "communityForumLink": null,
                 "images": {
                     "main": {
                         "id": null,

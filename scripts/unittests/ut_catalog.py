@@ -6,6 +6,47 @@ from silkcloudut import *
 oauth = ut_oauth.OAuthTests('testRegister')
 class CatalogTests(ut.TestBase):
 
+    def createDevOrgnization(self):
+        user = oauth.testRegister('identity catalog catalog.developer')
+        # create the organization
+        organization = curlJson('POST', ut.test_uri, '/v1/organizations', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = {
+            "owner": {
+                "href": user.href,
+                "id": user.id
+            },
+            "isValidated": False,
+            "name": randomstr(10)
+        })
+
+        role = curlJson('POST', ut.test_uri, '/v1/roles', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = {
+            "self": None,
+            "rev": None,
+            "name": "developer",
+            "target": {
+                "targetType": "organizations",
+                "filterType": "SINGLEINSTANCEFILTER",
+                "filterLink": organization['self']
+            },
+            "futureExpansion": {},
+            "createdTime": None,
+            "updatedTime": None,
+            "adminInfo": None
+        })
+
+        roleAssignment = curlJson('POST', ut.test_uri, '/v1/role-assignments', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = {
+            "assignee": user.json['self'],
+            "role": role['self'],
+            "futureExpansion": {}
+        })
+
+        return (user, organization)
+
     def testOrganization(self):
         # create the user
         user = oauth.testRegister('identity catalog catalog.developer')
@@ -88,83 +129,66 @@ class CatalogTests(ut.TestBase):
             "developer": organization['self']
         })
 
+    def testPublishOffer(self):
+        user, organization = self.createDevOrgnization()
+        adminToken = oauth.getServiceAccessToken('catalog.admin')
+        item = curlJson('POST', ut.test_uri, '/v1/items', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = {
+            "genres": [],
+            "defaultOffer": None,
+            "rev": None,
+            "currentRevision": None,
+            "revisions": None,
+            "type": "APP",
+            "developer": organization['self']
+        })
+        offer = curlJson('POST', ut.test_uri, '/v1/offers', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = {
+            "publisher": organization['self'],
+            "rev": None,
+            "isPublished": False,
+            "environment": "DEV",
+            "currentRevision": None,
+            "categories": []
+        })
+
+        # publish offer with no currentRevision
+        offer['isPublished'] = True
+        errorResp = curlJson('PUT', ut.test_uri, offer['self']['href'], headers = {
+            "Authorization": "Bearer " + adminToken
+        }, data = offer, raiseOnError = False)
+        assert errorResp['message'] == 'Input Error'
+
+        offerRev = curlJson('POST', ut.test_uri, '/v1/offer-revisions', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = self.getDigitalOfferRevision(offer, item, organization))
+
+        offerRev['status'] = 'APPROVED'
+        offerRev = curlJson('PUT', ut.test_uri, offerRev['self']['href'], headers = {
+            "Authorization": "Bearer " + adminToken
+        }, data = offerRev)
+
+        # developer publish the offer
+        errorResp = curlJson('PUT', ut.test_uri, offer['self']['href'], headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = offer, raiseOnError = False)
+        assert errorResp['message'] == 'Forbidden'
+
+        # publish offer with currentRevision
+        offer = curlJson('GET', ut.test_uri, offer['self']['href'], headers = {
+            "Authorization": "Bearer " + user.access_token
+        })
+        offer['isPublished'] = True
+        offer = curlJson('PUT', ut.test_uri, offer['self']['href'], headers = {
+            "Authorization": "Bearer " + adminToken
+        }, data = offer)
+
+
     def testItemOfferE2EFlow(self):
-        user1 = oauth.testRegister('identity catalog catalog.developer')
-
-        # create the organization
-        organization1 = curlJson('POST', ut.test_uri, '/v1/organizations', headers = {
-            "Authorization": "Bearer " + user1.access_token
-        }, data = {
-            "owner": {
-                "href": user1.href,
-                "id": user1.id
-            },
-            "isValidated": False,
-            "name": randomstr(10)
-        })
-
-        role1 = curlJson('POST', ut.test_uri, '/v1/roles', headers = {
-            "Authorization": "Bearer " + user1.access_token
-        }, data = {
-            "self": None,
-            "rev": None,
-            "name": "developer",
-            "target": {
-                "targetType": "organizations",
-                "filterType": "SINGLEINSTANCEFILTER",
-                "filterLink": organization1['self']
-            },
-            "futureExpansion": {},
-            "createdTime": None,
-            "updatedTime": None,
-            "adminInfo": None
-        })
-
-        roleAssignment1 = curlJson('POST', ut.test_uri, '/v1/role-assignments', headers = {
-            "Authorization": "Bearer " + user1.access_token
-        }, data = {
-            "assignee": user1.json['self'],
-            "role": role1['self'],
-            "futureExpansion": {}
-        })
-
-        user2 = oauth.testRegister('identity catalog catalog.developer')
-        # create the organization
-        organization2 = curlJson('POST', ut.test_uri, '/v1/organizations', headers = {
-            "Authorization": "Bearer " + user2.access_token
-        }, data = {
-            "owner": {
-                "href": user2.href,
-                "id": user2.id
-            },
-            "isValidated": False,
-            "name": randomstr(10)
-        })
-
-        role2 = curlJson('POST', ut.test_uri, '/v1/roles', headers = {
-            "Authorization": "Bearer " + user2.access_token
-        }, data = {
-            "self": None,
-            "rev": None,
-            "name": "developer",
-            "target": {
-                "targetType": "organizations",
-                "filterType": "SINGLEINSTANCEFILTER",
-                "filterLink": organization2['self']
-            },
-            "futureExpansion": {},
-            "createdTime": None,
-            "updatedTime": None,
-            "adminInfo": None
-        })
-
-        roleAssignment2 = curlJson('POST', ut.test_uri, '/v1/role-assignments', headers = {
-            "Authorization": "Bearer " + user2.access_token
-        }, data = {
-            "assignee": user2.json['self'],
-            "role": role2['self'],
-            "futureExpansion": {}
-        })
+        user1, organization1 = self.createDevOrgnization()
+        user2, organization2 = self.createDevOrgnization()
 
         # publish an item
         item = curlJson('POST', ut.test_uri, '/v1/items', headers = {
@@ -385,6 +409,14 @@ class CatalogTests(ut.TestBase):
         offerRev = curlJson('PUT', ut.test_uri, offerRev['self']['href'], headers = {
             "Authorization": "Bearer " + adminToken
         }, data = offerRev)
+
+        offer = curlJson('GET', ut.test_uri, offer['self']['href'], headers = {
+            "Authorization": "Bearer " + user1.access_token
+        })
+        offer['isPublished'] = True
+        offer = curlJson('PUT', ut.test_uri, offer['self']['href'], headers = {
+            "Authorization": "Bearer " + adminToken
+        }, data = offer)
 
         # verify user2 can get user1's published offer
         offer = curlJson('GET', ut.test_uri, offer['self']['href'], headers = {

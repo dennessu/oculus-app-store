@@ -7,8 +7,6 @@
 package com.junbo.common.jackson.annotation;
 
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.junbo.common.jackson.deserializer.XSSFreeStringDeserializer;
 
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
@@ -20,6 +18,6 @@ import java.lang.annotation.RetentionPolicy;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @JacksonAnnotationsInside
-@JsonDeserialize(using = XSSFreeStringDeserializer.class)
+//@JsonDeserialize(using = XSSFreeStringDeserializer.class)
 public @interface XSSFreeString {
 }
