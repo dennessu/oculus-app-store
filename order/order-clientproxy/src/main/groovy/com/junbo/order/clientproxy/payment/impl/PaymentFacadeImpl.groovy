@@ -65,6 +65,7 @@ class PaymentFacadeImpl implements PaymentFacade {
             return AppErrors.INSTANCE.paymentInstrumentNotFound(paymentInstrumentId.toString())
         }
         if (e != null) {
+            return AppErrors.INSTANCE.paymentConnectionError(e)
         }
         return AppErrors.INSTANCE.paymentConnectionError(error.message)
     }
