@@ -230,7 +230,7 @@ public class postUser {
 
     @Test(groups = "dailies")
     public void testEmailChange() throws Exception {
-        User user = Identity.UserPostDefaultWithMail(15, RandomHelper.randomAlphabetic(10)+"@gmail.com");
+        User user = Identity.UserPostDefaultWithMail(15, RandomHelper.randomAlphabetic(10) + "@gmail.com");
 
         // change user email
         // todo:    Check mail is sent to mail
@@ -259,6 +259,30 @@ public class postUser {
         links.add(newLink);
         user.setEmails(links);
         user = Identity.UserPut(user);
+    }
+
+    @Test(groups = "dailes")
+    public void testCSRUserStatusUpdate() throws Exception {
+        User user = Identity.UserPostDefaultWithMail(15, "xia.wayne2+" + RandomHelper.randomAlphabetic(15) + "@gmail.com");
+
+        user.setStatus("SUSPEND");
+        List<NameValuePair> nvps = new ArrayList<>();
+        nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
+        nvps.add(new BasicNameValuePair("X-Email-Notification", "true"));
+
+        // todo:    check mail is sent
+        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()) ,
+                JsonHelper.JsonSerializer(user), HttpclientHelper.HttpRequestType.put, nvps);
+        Validator.Validate("Validator randomUsername valid", 200, response.getStatusLine().getStatusCode());
+        response.close();
+
+        // todo:    check mail is sent
+        user = Identity.UserGetByUserId(user.getId());
+        user.setStatus("ACTIVE");
+        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()) ,
+                JsonHelper.JsonSerializer(user), HttpclientHelper.HttpRequestType.put, nvps);
+        Validator.Validate("Validator randomUsername valid", 200, response.getStatusLine().getStatusCode());
+        response.close();
     }
 
     protected static User createUser(String username, String nickName) throws Exception{

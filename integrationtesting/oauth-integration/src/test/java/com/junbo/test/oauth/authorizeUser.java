@@ -15,7 +15,9 @@ import com.junbo.test.common.RandomHelper;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.identity.Identity;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import static org.testng.AssertJUnit.assertEquals;
 

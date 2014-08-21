@@ -330,7 +330,7 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
             }
             EmailTemplate template = results.items.get(0)
 
-            return getUserLoginName(user, userLoginAttempt).then { String userLoginName ->
+            return getUserName(user, userLoginAttempt).then { String userLoginName ->
                 return getUserEmail(user, userLoginAttempt).then { String userMail ->
                     if (StringUtils.isEmpty(userMail)) {
                         throw AppErrors.INSTANCE.userInInvalidStatus(user.getId()).exception()
@@ -357,18 +357,20 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         }
     }
 
-    private Promise<String> getUserLoginName(User user, UserCredentialVerifyAttempt userLoginAttempt) {
-        if (isEmail(userLoginAttempt.username)) {
-            if (user.username == null) {
-                LOGGER.warn('username is empty')
-                return Promise.pure(null)
-            }
-            return userPersonalInfoRepository.get(user.username).then { UserPersonalInfo userPersonalInfo ->
-                UserLoginName userLoginName = (UserLoginName)JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserLoginName)
-                return Promise.pure(userLoginName.userName)
-            }
+    private Promise<String> getUserName(User user, UserCredentialVerifyAttempt userLoginAttempt) {
+        if (user.name == null) {
+            return Promise.pure('')
         } else {
-            return Promise.pure(userLoginAttempt.username)
+            return userPersonalInfoRepository.get(user.name).then { UserPersonalInfo userPersonalInfo ->
+                if (userPersonalInfo == null) {
+                    return Promise.pure('')
+                }
+
+                UserName userName = (UserName)JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserName)
+                String firstName = StringUtils.isEmpty(userName.givenName) ? "" : userName.givenName
+                String lastName = StringUtils.isEmpty(userName.familyName) ? "" : userName.familyName
+                return Promise.pure(firstName + ' ' + lastName)
+            }
         }
     }
 

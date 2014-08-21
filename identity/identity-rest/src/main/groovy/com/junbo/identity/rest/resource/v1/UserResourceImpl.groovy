@@ -408,13 +408,38 @@ class UserResourceImpl implements UserResource {
     }
 
     private Promise<String> getUserNameStr(User user) {
-        return userPersonalInfoRepository.get(user.username).then { UserPersonalInfo userPersonalInfo ->
-            if (userPersonalInfo == null) {
-                return Promise.pure(null)
-            }
+        if (user.name == null) {
+            return Promise.pure('')
+        } else {
+            return userPersonalInfoRepository.get(user.name).then { UserPersonalInfo userPersonalInfo ->
+                if (userPersonalInfo == null) {
+                    return Promise.pure('')
+                }
 
-            UserLoginName loginName = (UserLoginName)JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserLoginName)
-            return Promise.pure(loginName.userName)
+                UserName userName = (UserName)JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserName)
+                // Please don't use "${} ${}"
+                // http://www.jworks.nl/2011/08/29/gstringimpl-cannot-be-cast-to-java-lang-string/
+                // Stupid groovy
+
+                String firstName = StringUtils.isEmpty(userName.givenName) ? "" : userName.givenName
+                String lastName = StringUtils.isEmpty(userName.familyName) ? "" : userName.familyName
+                return Promise.pure(firstName + ' ' + lastName)
+            }
+        }
+    }
+
+    private Promise<String> getUserLoginNameStr(User user) {
+        if (user.username == null) {
+            return Promise.pure('')
+        } else {
+            return userPersonalInfoRepository.get(user.username).then { UserPersonalInfo userPersonalInfo ->
+                if (userPersonalInfo == null) {
+                    return Promise.pure('')
+                }
+
+                UserLoginName loginName = (UserLoginName) JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserLoginName)
+                return Promise.pure(loginName.userName)
+            }
         }
     }
 
@@ -440,25 +465,25 @@ class UserResourceImpl implements UserResource {
             // country updated
             if (user.countryOfResidence != oldUser.countryOfResidence) {
                 csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.CountryUpdated,
-                        property: getUserNameStr(oldUser).get())).get()
+                        property: getUserLoginNameStr(oldUser).get())).get()
             }
 
             // deactive account
             if (oldUser.status == 'ACTIVE' && (user.status == 'SUSPEND' || user.status == 'BANNED')) {
                 csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.DeactiveAccount,
-                        property: getUserNameStr(oldUser).get())).get()
+                        property: getUserLoginNameStr(oldUser).get())).get()
             }
 
             // reactive account
             if (user.status == 'ACTIVE' && (oldUser.status == 'SUSPEND' || oldUser.status == 'BANNED' || oldUser.status == 'DELETED')) {
                 csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.ReactiveAccount,
-                        property: getUserNameStr(oldUser).get())).get()
+                        property: getUserLoginNameStr(oldUser).get())).get()
             }
 
             // flag for deletion
             if (user.status == 'DELETED') {
                 csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.FlagForDelection,
-                        property: getUserNameStr(oldUser).get())).get()
+                        property: getUserLoginNameStr(oldUser).get())).get()
             }
         }
     }
@@ -505,9 +530,10 @@ class UserResourceImpl implements UserResource {
                 com.junbo.email.spec.model.Email emailToSend = new com.junbo.email.spec.model.Email(
                         userId: user.getId(),
                         templateId: template.getId(),
-                        recipients: [getUserNameStr(user).get()],
+                        recipients: [getEmailStr(user).get()].asList(),
                         replacements: [
-                                'accountname': getUserNameStr(user).get()
+                                'name': getUserNameStr(user).get(),
+                                'username': getUserLoginNameStr(user).get()
                         ]
                 )
 
@@ -606,7 +632,7 @@ class UserResourceImpl implements UserResource {
             return 'defaultPI'
         }
 
-        return false
+        return null
     }
 
     private static String getChangeType(User oldUser, User user) {
@@ -670,10 +696,8 @@ class UserResourceImpl implements UserResource {
                         || oldInfoLink.label == newInfoLink.label)
                 }
             }
-        }
-
-        if (flag && (!CollectionUtils.isEmpty(oldInfoLinks) || !CollectionUtils.isEmpty(infoLinks))) {
-            return flag;
+        } else if(!CollectionUtils.isEmpty(oldInfoLinks) || !CollectionUtils.isEmpty(infoLinks)) {
+            return true
         }
 
         return !flag
@@ -736,7 +760,7 @@ class UserResourceImpl implements UserResource {
             }
             EmailTemplate template = results.items.get(0)
 
-            return getUserNameStr(user).then { String userLoginName ->
+            return getUserNameStr(user).then { String userName ->
                 return getEmailStr(user).then { String userMail ->
                     if (StringUtils.isEmpty(userMail)) {
                         throw AppErrors.INSTANCE.userInInvalidStatus(user.getId()).exception()
@@ -747,8 +771,7 @@ class UserResourceImpl implements UserResource {
                             templateId: template.getId(),
                             recipients: [userMail].asList(),
                             replacements: [
-                                    'name': userLoginName,
-                                    'informationtype': piiType
+                                    'name': userName
                             ]
                     )
 

@@ -3,5 +3,5 @@
     "action" : "ReactivateAccount",
     "locale" : "en_US",
     "providerName" : "mandrill",
-    "placeholderNames" : ["accountname"]
+    "placeholderNames" : ["name", "username"]
 }
