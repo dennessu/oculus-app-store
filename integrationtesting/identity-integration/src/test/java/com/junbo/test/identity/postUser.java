@@ -142,7 +142,6 @@ public class postUser {
         links.add(link);
         user.setEmails(links);
         user = Identity.UserPut(user);
-
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
 
@@ -183,7 +182,86 @@ public class postUser {
         response.close();
     }
 
-    protected static User createUser(String username, String nickName) throws Exception {
+    // All Below cases need to
+    @Test(groups = "dailies")
+    public void testUserPutAddress() throws Exception {
+        User user = Identity.UserPostDefaultWithMail(15, "xia.wayne2+" + RandomHelper.randomAlphabetic(15) + "@gmail.com");
+
+        // todo:    Need to check mail is sent
+        UserPersonalInfo addressPII = IdentityModel.DefaultUserPersonalInfoAddress();
+        addressPII = Identity.UserPersonalInfoPost(user.getId(), addressPII);
+        List<UserPersonalInfoLink> links = new ArrayList<>();
+        UserPersonalInfoLink link = new UserPersonalInfoLink();
+        link.setIsDefault(true);
+        link.setUserId(user.getId());
+        link.setLabel(RandomHelper.randomAlphabetic(15));
+        link.setValue(addressPII.getId());
+        links.add(link);
+        user.setAddresses(links);
+        user = Identity.UserPut(user);
+
+        // todo:    Need to check mail is sent
+        UserPersonalInfo addressPII2 = IdentityModel.DefaultUserPersonalInfoAddress();
+        addressPII2 = Identity.UserPersonalInfoPost(user.getId(), addressPII2);
+        UserPersonalInfoLink link2 = new UserPersonalInfoLink();
+        link2.setIsDefault(false);
+        link2.setUserId(user.getId());
+        link2.setLabel(RandomHelper.randomAlphabetic(15));
+        link2.setValue(addressPII2.getId());
+        user.getAddresses().add(link2);
+        user = Identity.UserPut(user);
+
+        // todo:    Need to check mail is sent
+        user.getAddresses().clear();
+        Identity.UserPut(user);
+    }
+
+    @Test(groups = "dailies")
+    public void testUserPutUsername() throws Exception {
+        User user = Identity.UserPostDefaultWithMail(15, "xia.wayne2+" + RandomHelper.randomAlphabetic(15) + "@gmail.com");
+
+        // Change username
+        // todo:    Add username check
+        UserPersonalInfo usernameInfo = IdentityModel.DefaultUserPersonalInfoUsername();
+        usernameInfo = Identity.UserPersonalInfoPost(user.getId(), usernameInfo);
+        user.setUsername(usernameInfo.getId());
+        Identity.UserPut(user);
+    }
+
+    @Test(groups = "dailies")
+    public void testEmailChange() throws Exception {
+        User user = Identity.UserPostDefaultWithMail(15, RandomHelper.randomAlphabetic(10)+"@gmail.com");
+
+        // change user email
+        // todo:    Check mail is sent to mail
+        UserPersonalInfo userPersonalInfo = IdentityModel.DefaultUserPersonalInfoEmail("xia.wayne2+" + RandomHelper.randomAlphabetic(15) + "@gmail.com");
+        userPersonalInfo.setLastValidateTime(new Date());
+        userPersonalInfo = Identity.UserPersonalInfoPost(user.getId(), userPersonalInfo);
+        List<UserPersonalInfoLink> links = new ArrayList<>();
+        UserPersonalInfoLink link = new UserPersonalInfoLink();
+        link.setValue(userPersonalInfo.getId());
+        link.setLabel(RandomHelper.randomAlphabetic(15));
+        link.setUserId(user.getId());
+        link.setIsDefault(true);
+        links.add(link);
+        user.setEmails(links);
+        user = Identity.UserPut(user);
+
+        // add one mail
+        // todo:    Check mail is sent
+        userPersonalInfo = IdentityModel.DefaultUserPersonalInfoEmail(RandomHelper.randomAlphabetic(15)+"@gmail.com");
+        userPersonalInfo = Identity.UserPersonalInfoPost(user.getId(), userPersonalInfo);
+        UserPersonalInfoLink newLink = new UserPersonalInfoLink();
+        newLink.setValue(userPersonalInfo.getId());
+        newLink.setLabel(RandomHelper.randomAlphabetic(15));
+        newLink.setUserId(user.getId());
+        newLink.setIsDefault(false);
+        links.add(newLink);
+        user.setEmails(links);
+        user = Identity.UserPut(user);
+    }
+
+    protected static User createUser(String username, String nickName) throws Exception{
         User user = IdentityModel.DefaultUser();
         user.setNickName(nickName);
         user = Identity.UserPostDefault(user);

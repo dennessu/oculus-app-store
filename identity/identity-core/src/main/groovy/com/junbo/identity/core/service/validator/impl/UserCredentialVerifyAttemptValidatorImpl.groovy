@@ -3,6 +3,15 @@ package com.junbo.identity.core.service.validator.impl
 import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserCredentialVerifyAttemptId
 import com.junbo.common.id.UserId
+import com.junbo.common.model.Results
+import com.junbo.configuration.ConfigServiceManager
+import com.junbo.email.spec.model.Email
+import com.junbo.email.spec.model.EmailTemplate
+import com.junbo.email.spec.model.QueryParam
+import com.junbo.email.spec.resource.EmailResource
+import com.junbo.email.spec.resource.EmailTemplateResource
+import com.junbo.identity.common.util.Constants
+import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.credential.CredentialHash
 import com.junbo.identity.core.service.credential.CredentialHashFactory
 import com.junbo.identity.core.service.normalize.NormalizeService
@@ -13,17 +22,23 @@ import com.junbo.identity.data.repository.*
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.UserPassword
 import com.junbo.identity.spec.model.users.UserPin
-import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
-import com.junbo.identity.spec.v1.model.UserPersonalInfo
-import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
+import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.UserCredentialAttemptListOptions
+import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
+import com.junbo.langur.core.transaction.AsyncTransactionTemplate
 import groovy.transform.CompileStatic
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.transaction.TransactionDefinition
+import org.springframework.transaction.TransactionStatus
+import org.springframework.transaction.support.TransactionCallback
 import org.springframework.util.CollectionUtils
 import org.springframework.util.StringUtils
 
+import java.util.Locale
 import java.util.regex.Pattern
 
 /**
@@ -36,7 +51,11 @@ import java.util.regex.Pattern
 @CompileStatic
 @SuppressWarnings('UnnecessaryGetter')
 class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAttemptValidator {
+    private static final String EMAIL_SOURCE = 'Oculus'
+    private static final String EMAIL_ACTION = 'UserLockout'
     private static final String MAIL_IDENTIFIER = "@"
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserCredentialVerifyAttemptValidatorImpl)
 
     private UserCredentialVerifyAttemptRepository userLoginAttemptRepository
     private UserRepository userRepository
@@ -61,6 +80,10 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
 
     private NormalizeService normalizeService
     private CredentialHashFactory credentialHashFactory
+
+    private EmailResource emailResource
+    private EmailTemplateResource emailTemplateResource
+    private PlatformTransactionManager transactionManager
 
     @Override
     Promise<UserCredentialVerifyAttempt> validateForGet(UserCredentialVerifyAttemptId userLoginAttemptId) {
@@ -274,7 +297,98 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                     return Promise.pure(null)
                 }
 
-                throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'User reaches maximum allowed retry count').exception()
+                return sendMaximumRetryReachedNotification(user, userLoginAttempt).recover { Throwable throwable ->
+                    LOGGER.error("Error sending Maximum retry reachable Notification")
+                    return Promise.pure(null)
+                }.then {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('username', 'User reaches maximum allowed retry count').exception()
+                }
+            }
+        }
+    }
+
+    private Promise<Void> sendMaximumRetryReachedNotification(User user, UserCredentialVerifyAttempt userLoginAttempt) {
+        // todo:    can remove this later due to mailenable is set to
+        if (!Boolean.parseBoolean(ConfigServiceManager.instance().getConfigValue("identity.conf.mailEnable"))) {
+            return Promise.pure(null)
+        }
+
+        if (JunboHttpContext.getRequestHeaders() == null
+                || !CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(Constants.HEADER_DISABLE_EMAIL))) {
+            return Promise.pure(null)
+        }
+
+        QueryParam queryParam = new QueryParam(
+                source: EMAIL_SOURCE,
+                action: EMAIL_ACTION,
+                locale: 'en_US'
+        )
+
+        return emailTemplateResource.getEmailTemplates(queryParam).then { Results<EmailTemplate> results ->
+            if (results.items.isEmpty()) {
+                throw AppCommonErrors.INSTANCE.internalServerError(new Exception(EMAIL_ACTION + ' with locale: en_US template not found')).exception()
+            }
+            EmailTemplate template = results.items.get(0)
+
+            return getUserLoginName(user, userLoginAttempt).then { String userLoginName ->
+                return getUserEmail(user, userLoginAttempt).then { String userMail ->
+                    if (StringUtils.isEmpty(userMail)) {
+                        throw AppErrors.INSTANCE.userInInvalidStatus(user.getId()).exception()
+                    }
+
+                    Email emailToSend = new Email(
+                            userId: user.getId(),
+                            templateId: template.getId(),
+                            recipients: [userMail].asList(),
+                            replacements: [
+                                    'name': userLoginName
+                            ]
+                    )
+
+                    return createInNewTran(emailToSend).then { Email emailSent ->
+                        if (emailSent == null) {
+                            throw AppCommonErrors.INSTANCE.internalServerError(new Exception('Failed to send mail')).exception()
+                        }
+
+                        return Promise.pure(null)
+                    }
+                }
+            }
+        }
+    }
+
+    private Promise<String> getUserLoginName(User user, UserCredentialVerifyAttempt userLoginAttempt) {
+        if (isEmail(userLoginAttempt.username)) {
+            if (user.username == null) {
+                LOGGER.warn('username is empty')
+                return Promise.pure(null)
+            }
+            return userPersonalInfoRepository.get(user.username).then { UserPersonalInfo userPersonalInfo ->
+                UserLoginName userLoginName = (UserLoginName)JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserLoginName)
+                return Promise.pure(userLoginName.userName)
+            }
+        } else {
+            return Promise.pure(userLoginAttempt.username)
+        }
+    }
+
+    private Promise<String> getUserEmail(User user, UserCredentialVerifyAttempt userLoginAttempt) {
+        if (isEmail(userLoginAttempt.username)) {
+            return Promise.pure(userLoginAttempt.username)
+        } else {
+            if (CollectionUtils.isEmpty(user.emails)) {
+                LOGGER.warn('user emails is empty')
+                return Promise.pure(null)
+            }
+            UserPersonalInfoLink link = user.emails.find { UserPersonalInfoLink infoLink ->
+                return infoLink.isDefault
+            }
+
+            link = link == null ? user.emails.get(0) : link;
+            return userPersonalInfoRepository.get(link.value).then { UserPersonalInfo userPersonalInfo ->
+                com.junbo.identity.spec.v1.model.Email email = (com.junbo.identity.spec.v1.model.Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value,
+                        com.junbo.identity.spec.v1.model.Email)
+                return Promise.pure(email.info)
             }
         }
     }
@@ -367,18 +481,21 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
         }
     }
 
+    Promise<UserCredentialVerifyAttempt> createInNewTran(Email emailToSend) {
+        AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager)
+        template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW)
+        return template.execute(new TransactionCallback<Promise<UserCredentialVerifyAttempt>>() {
+            Promise<UserCredentialVerifyAttempt> doInTransaction(TransactionStatus txnStatus) {
+                return emailResource.postEmail(emailToSend)
+            }
+        })
+    }
+
     static boolean isEmail(String value) {
         if (value.contains(MAIL_IDENTIFIER)) {
             return true
         }
         return false
-    }
-
-    static Date getTimeFrame(Integer timeFrame) {
-        Calendar calendar=Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.add(Calendar.SECOND, -timeFrame)
-        return calendar.time
     }
 
     @Required
@@ -461,5 +578,20 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
     @Required
     void setCredentialHashFactory(CredentialHashFactory credentialHashFactory) {
         this.credentialHashFactory = credentialHashFactory
+    }
+
+    @Required
+    void setEmailResource(EmailResource emailResource) {
+        this.emailResource = emailResource
+    }
+
+    @Required
+    void setEmailTemplateResource(EmailTemplateResource emailTemplateResource) {
+        this.emailTemplateResource = emailTemplateResource
+    }
+
+    @Required
+    void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = transactionManager
     }
 }

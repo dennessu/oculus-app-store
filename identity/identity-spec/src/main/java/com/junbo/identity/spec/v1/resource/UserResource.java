@@ -41,6 +41,11 @@ public interface UserResource {
     @RouteBy("userId")
     Promise<User> put(@PathParam("userId") UserId userId, User user);
 
+    @PUT
+    @Path("/slient-put/{userId}")
+    @RouteBy("userId")
+    Promise<User> silentPut(@PathParam("userId") UserId userId, User user);
+
     @POST
     @Path("/{userId}")
     @RouteBy("userId")

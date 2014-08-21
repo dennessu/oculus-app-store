@@ -40,10 +40,7 @@ import org.testng.annotations.Test;
 import org.testng.Assert;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Jason
@@ -442,6 +439,88 @@ public class TestPutOfferRevision extends BaseTestClass {
 
         offerRevision.setStatus(CatalogEntityStatus.PENDING_REVIEW.name());
         verifyExpectedFailure(offerRevisionId, offerRevision);
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "Put v1/offer-revisions/{offerRevisionId}",
+            component = Component.Catalog,
+            owner = "JasonFu",
+            status = Status.Enable,
+            description = "Test put offer revision successfully",
+            steps = {
+                    "1. Prepare a default offer revision",
+                    "2. Put the offer revision with corrected fields values",
+                    "3. Verify the action could be successful"
+            }
+    )
+    @Test
+    public void testOfferRevisionStartTimeEndTime() throws Exception {
+        OrganizationService organizationService = OrganizationServiceImpl.instance();
+        ItemService itemService = ItemServiceImpl.instance();
+        organizationId = organizationService.postDefaultOrganization().getId();
+
+        item1 = itemService.postDefaultItem(CatalogItemType.getRandom(), organizationId);
+        offer1 = offerService.postDefaultOffer(organizationId);
+
+        OfferRevision offerRevision1 = offerRevisionService.postDefaultOfferRevision(offer1, item1);
+
+        Long current;
+        Date startTime = new Date();
+        offerRevision1.setStartTime(startTime);
+
+        offerRevision1.setStatus(CatalogEntityStatus.APPROVED.name());
+        offerRevision1 = offerRevisionService.updateOfferRevision(offerRevision1.getRevisionId(), offerRevision1);
+
+        //verify the current revision id is offer revision1
+        Offer offer = offerService.getOffer(offer1.getOfferId());
+        Assert.assertEquals(offer.getCurrentRevisionId(), offerRevision1.getRevisionId());
+
+        OfferRevision offerRevision2 = offerRevisionService.postDefaultOfferRevision(offer1, item1);
+        offerRevision2.setStatus(CatalogEntityStatus.APPROVED.name());
+        offerRevision2 = offerRevisionService.updateOfferRevision(offerRevision2.getRevisionId(), offerRevision2);
+
+        //verify the current revision id is offer revision2
+        offer = offerService.getOffer(offer1.getOfferId());
+        Assert.assertEquals(offer.getCurrentRevisionId(), offerRevision2.getRevisionId());
+
+        //set endTime to offer revision and then verify the current revision
+        OfferRevision offerRevision3 = offerRevisionService.postDefaultOfferRevision(offer1, item1);
+        OfferRevision offerRevision4 = offerRevisionService.postDefaultOfferRevision(offer1, item1);
+
+        current = System.currentTimeMillis();
+        offerRevision3.setStartTime(new Date(current));
+        offerRevision3.setEndTime(new Date(current + 3600000)); // 1 hour
+
+        offerRevision3 = offerRevisionService.updateOfferRevision(offerRevision3.getRevisionId(), offerRevision3);
+
+        current = System.currentTimeMillis();
+        offerRevision4.setStartTime(new Date(current));
+        offerRevision4.setEndTime(new Date(current + 2000)); // 2 seconds
+
+        offerRevision4 = offerRevisionService.updateOfferRevision(offerRevision4.getRevisionId(), offerRevision4);
+        //wait two seconds:
+        Thread.sleep(2000);
+
+        offer = offerService.getOffer(offer1.getOfferId());
+        Assert.assertEquals(offer.getCurrentRevisionId(), offerRevision4.getRevisionId());
+
+        //set endTime to offer revision and then verify the current revision
+        OfferRevision offerRevision5 = offerRevisionService.postDefaultOfferRevision(offer1, item1);
+        OfferRevision offerRevision6 = offerRevisionService.postDefaultOfferRevision(offer1, item1);
+
+        current = System.currentTimeMillis();
+        offerRevision5.setStartTime(new Date(current));
+        offerRevision5.setEndTime(new Date(current + 3600000)); // 1 hour
+
+        offerRevision6.setStartTime(new Date(current));
+        offerRevision6.setEndTime(new Date(current + 3600000)); // 1 hour
+
+        offerRevision5 = offerRevisionService.updateOfferRevision(offerRevision5.getRevisionId(), offerRevision5);
+        offerRevision6 = offerRevisionService.updateOfferRevision(offerRevision6.getRevisionId(), offerRevision6);
+
+        offer = offerService.getOffer(offer1.getOfferId());
+        Assert.assertEquals(offer.getCurrentRevisionId(), offerRevision6.getRevisionId());
     }
 
     private void verifyExpectedFailure(String offerRevisionId, OfferRevision offerRevision) throws Exception {
