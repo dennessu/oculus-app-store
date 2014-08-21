@@ -456,6 +456,8 @@ public class TestPutOfferRevision extends BaseTestClass {
     )
     @Test
     public void testOfferRevisionStartTimeEndTime() throws Exception {
+        prepareCatalogAdminToken();
+
         OrganizationService organizationService = OrganizationServiceImpl.instance();
         ItemService itemService = ItemServiceImpl.instance();
         organizationId = organizationService.postDefaultOrganization().getId();
@@ -491,19 +493,21 @@ public class TestPutOfferRevision extends BaseTestClass {
         current = System.currentTimeMillis();
         offerRevision3.setStartTime(new Date(current));
         offerRevision3.setEndTime(new Date(current + 3600000)); // 1 hour
+        offerRevision3.setStatus(CatalogEntityStatus.APPROVED.name());
 
         offerRevision3 = offerRevisionService.updateOfferRevision(offerRevision3.getRevisionId(), offerRevision3);
 
         current = System.currentTimeMillis();
         offerRevision4.setStartTime(new Date(current));
         offerRevision4.setEndTime(new Date(current + 2000)); // 2 seconds
+        offerRevision4.setStatus(CatalogEntityStatus.APPROVED.name());
 
-        offerRevision4 = offerRevisionService.updateOfferRevision(offerRevision4.getRevisionId(), offerRevision4);
+        offerRevisionService.updateOfferRevision(offerRevision4.getRevisionId(), offerRevision4);
         //wait two seconds:
         Thread.sleep(2000);
 
         offer = offerService.getOffer(offer1.getOfferId());
-        Assert.assertEquals(offer.getCurrentRevisionId(), offerRevision4.getRevisionId());
+        Assert.assertEquals(offer.getCurrentRevisionId(), offerRevision3.getRevisionId());
 
         //set endTime to offer revision and then verify the current revision
         OfferRevision offerRevision5 = offerRevisionService.postDefaultOfferRevision(offer1, item1);
@@ -516,7 +520,10 @@ public class TestPutOfferRevision extends BaseTestClass {
         offerRevision6.setStartTime(new Date(current));
         offerRevision6.setEndTime(new Date(current + 3600000)); // 1 hour
 
-        offerRevision5 = offerRevisionService.updateOfferRevision(offerRevision5.getRevisionId(), offerRevision5);
+        offerRevision5.setStatus(CatalogEntityStatus.APPROVED.name());
+        offerRevision6.setStatus(CatalogEntityStatus.APPROVED.name());
+
+        offerRevisionService.updateOfferRevision(offerRevision5.getRevisionId(), offerRevision5);
         offerRevision6 = offerRevisionService.updateOfferRevision(offerRevision6.getRevisionId(), offerRevision6);
 
         offer = offerService.getOffer(offer1.getOfferId());
