@@ -10,9 +10,9 @@ import javax.ws.rs.QueryParam;
 /**
  * The GetDetailsRequest class.
  */
-public class GetDetailsRequest {
+public class DetailsRequest {
 
-    @QueryParam("docIid")
+    @QueryParam("docId")
     private String docId;
 
     public String getDocId() {

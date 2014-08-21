@@ -5,9 +5,9 @@
  */
 package com.junbo.store.spec.model.browse.document;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.ItemId;
-import com.junbo.store.spec.model.Offer;
-import com.junbo.store.spec.model.browse.Image;
+import com.junbo.store.spec.model.browse.ReviewsResponse;
 
 import java.util.List;
 
@@ -16,51 +16,51 @@ import java.util.List;
  */
 public class Document {
 
-    private String docId;
-    private String documentType;
-    private ContainerMetadata containerMetadata;
-    private List<Document> child;
+    private String docType; // CONTAINER, ITEM
+
     private String title;
-    private String subtitle;
+
     private String descriptionHtml;
-    private String reviewUrl;
-    private String author;
-    private ItemId itemId;
-    private DocumentDetails details;
-    private String detailsUrl;
+
+    private ContainerMetadata containerMetadata;
+
+    private List<Document> childDocs;
+
+    private AggregatedRatings aggregatedRatings;
+
+    private String creator;
+
     private List<Image> images;
+
+    private AppDetails appDetails;
+
+    private Review userReview;
+
+    private String detailsUrl;
+
+    private ReviewsResponse reviews;
+
+    private String shareUrl;
+
+    @JsonProperty("item")
+    private ItemId itemId;
+
     private List<Offer> offers;
 
-    public String getDocId() {
-        return docId;
+    public ItemId getItemId() {
+        return itemId;
     }
 
-    public void setDocId(String docId) {
-        this.docId = docId;
+    public void setItemId(ItemId itemId) {
+        this.itemId = itemId;
     }
 
-    public String getDocumentType() {
-        return documentType;
+    public String getDocType() {
+        return docType;
     }
 
-    public void setDocumentType(String documentType) {
-        this.documentType = documentType;
-    }
-
-    public ContainerMetadata getContainerMetadata() {
-        return containerMetadata;
-    }
-
-    public void setContainerMetadata(ContainerMetadata containerMetadata) {
-        this.containerMetadata = containerMetadata;
-    }
-
-    public List<Document> getChild() {
-        return child;
-    }
-
-    public void setChild(List<Document> child) {
-        this.child = child;
+    public void setDocType(String docType) {
+        this.docType = docType;
     }
 
     public String getTitle() {
@@ -71,14 +71,6 @@ public class Document {
         this.title = title;
     }
 
-    public String getSubtitle() {
-        return subtitle;
-    }
-
-    public void setSubtitle(String subtitle) {
-        this.subtitle = subtitle;
-    }
-
     public String getDescriptionHtml() {
         return descriptionHtml;
     }
@@ -87,36 +79,60 @@ public class Document {
         this.descriptionHtml = descriptionHtml;
     }
 
-    public String getReviewUrl() {
-        return reviewUrl;
+    public ContainerMetadata getContainerMetadata() {
+        return containerMetadata;
     }
 
-    public void setReviewUrl(String reviewUrl) {
-        this.reviewUrl = reviewUrl;
+    public void setContainerMetadata(ContainerMetadata containerMetadata) {
+        this.containerMetadata = containerMetadata;
     }
 
-    public String getAuthor() {
-        return author;
+    public List<Document> getChildDocs() {
+        return childDocs;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setChildDocs(List<Document> childDocs) {
+        this.childDocs = childDocs;
     }
 
-    public ItemId getItemId() {
-        return itemId;
+    public AggregatedRatings getAggregatedRatings() {
+        return aggregatedRatings;
     }
 
-    public void setItemId(ItemId itemId) {
-        this.itemId = itemId;
+    public void setAggregatedRatings(AggregatedRatings aggregatedRatings) {
+        this.aggregatedRatings = aggregatedRatings;
     }
 
-    public DocumentDetails getDetails() {
-        return details;
+    public String getCreator() {
+        return creator;
     }
 
-    public void setDetails(DocumentDetails details) {
-        this.details = details;
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
+
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
+    }
+
+    public AppDetails getAppDetails() {
+        return appDetails;
+    }
+
+    public void setAppDetails(AppDetails appDetails) {
+        this.appDetails = appDetails;
+    }
+
+    public Review getUserReview() {
+        return userReview;
+    }
+
+    public void setUserReview(Review userReview) {
+        this.userReview = userReview;
     }
 
     public String getDetailsUrl() {
@@ -127,12 +143,20 @@ public class Document {
         this.detailsUrl = detailsUrl;
     }
 
-    public List<Image> getImages() {
-        return images;
+    public ReviewsResponse getReviews() {
+        return reviews;
     }
 
-    public void setImages(List<Image> images) {
-        this.images = images;
+    public void setReviews(ReviewsResponse reviews) {
+        this.reviews = reviews;
+    }
+
+    public String getShareUrl() {
+        return shareUrl;
+    }
+
+    public void setShareUrl(String shareUrl) {
+        this.shareUrl = shareUrl;
     }
 
     public List<Offer> getOffers() {

@@ -5,15 +5,21 @@
  */
 package com.junbo.store.spec.model.browse;
 
+import com.junbo.common.enumid.CountryId;
+import com.junbo.common.enumid.LocaleId;
+
 import javax.ws.rs.QueryParam;
 
 /**
- * The GetListRequest class.
+ * The ListRequest class.
  */
-public class GetListRequest {
+public class ListRequest {
 
-    @QueryParam("corpus")
-    private String corpus;
+    @QueryParam("locale")
+    private LocaleId locale;
+
+    @QueryParam("country")
+    private CountryId country;
 
     @QueryParam("category")
     private String category;
@@ -27,12 +33,20 @@ public class GetListRequest {
     @QueryParam("count")
     private Integer count;
 
-    public String getCorpus() {
-        return corpus;
+    public LocaleId getLocale() {
+        return locale;
     }
 
-    public void setCorpus(String corpus) {
-        this.corpus = corpus;
+    public void setLocale(LocaleId locale) {
+        this.locale = locale;
+    }
+
+    public CountryId getCountry() {
+        return country;
+    }
+
+    public void setCountry(CountryId country) {
+        this.country = country;
     }
 
     public String getCategory() {

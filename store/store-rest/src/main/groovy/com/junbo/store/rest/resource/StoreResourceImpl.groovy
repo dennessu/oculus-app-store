@@ -750,22 +750,42 @@ class StoreResourceImpl implements StoreResource {
     }
 
     @Override
-    Promise<GetTocResponse> getToc(GetTocRequest getTocRequest) {
+    Promise<TocResponse> getToc(TocRequest request) {
         return null
     }
 
     @Override
-    Promise<GetSectionResponse> getSection(@BeanParam GetSectionRequest getSectionRequest) {
+    Promise<AcceptTosResponse> acceptTos(AcceptTosRequest request) {
         return null
     }
 
     @Override
-    Promise<GetListResponse> getList(@BeanParam GetListRequest getListRequest) {
+    Promise<LayoutResponse> getLayout(LayoutRequest request) {
         return null
     }
 
     @Override
-    Promise<GetDetailsResponse> getDetails(@BeanParam GetDetailsRequest getDetailsRequest) {
+    Promise<ListResponse> getList(ListRequest request) {
+        return null
+    }
+
+    @Override
+    Promise<LibraryResponse> getLibrary(LibraryRequest request) {
+        return null
+    }
+
+    @Override
+    Promise<DetailsResponse> getDetails(DetailsRequest request) {
+        return null
+    }
+
+    @Override
+    Promise<ReviewsResponse> getReviews(ReviewsRequest request) {
+        return null
+    }
+
+    @Override
+    Promise<AddReviewResponse> addReview(AddReviewRequest request) {
         return null
     }
 
