@@ -84,6 +84,9 @@
         <property name="attemptRetryInterval" value="${identity.conf.maxCredentialSameUserInterval}" />
         <property name="maxSameIPRetryCount" value="${identity.conf.maxCredentialSameIPRetryCount}" />
         <property name="sameIPRetryInterval" value="${identity.conf.maxCredentialSameIPInterval}" />
+        <property name="emailResource" ref="identityEmailResource" />
+        <property name="emailTemplateResource" ref="identityEmailTemplateResource" />
+        <property name="transactionManager" ref="transactionManager" />
     </bean>
 
     <bean id="userGroupValidator" class="com.junbo.identity.core.service.validator.impl.UserGroupValidatorImpl">

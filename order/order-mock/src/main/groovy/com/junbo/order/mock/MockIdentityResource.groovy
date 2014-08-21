@@ -68,4 +68,9 @@ class MockIdentityResource implements UserResource {
     Promise<Void> checkEmail(String email) {
         return Promise.pure(null)
     }
+
+    @Override
+    Promise<User> silentPut(UserId userId, User user) {
+        return Promise.pure(null)
+    }
 }

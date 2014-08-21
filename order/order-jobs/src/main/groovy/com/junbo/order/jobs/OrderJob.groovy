@@ -7,6 +7,7 @@
 package com.junbo.order.jobs
 
 import com.junbo.configuration.topo.DataCenters
+import com.junbo.configuration.topo.model.DataCenter
 import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.spec.model.Order
@@ -90,9 +91,10 @@ class OrderJob implements InitializingBean {
 
     private List<Order> readOrdersForProcess() {
         List<Order> ordersAllShard = []
-        allShards.each { Integer shardKey ->
+        DataCenter dataCenter = DataCenters.instance().getDataCenter(DataCenters.instance().currentDataCenterId())
+        for (int shardId = 0; shardId < dataCenter.numberOfShard; ++shardId) {
             def orders = transactionHelper.executeInTransaction {
-                orderRepository.getOrdersByStatus(DataCenters.instance().currentDataCenterId(), shardKey, statusToProcess, true, new PageParam(
+                orderRepository.getOrdersByStatus(DataCenters.instance().currentDataCenterId(), shardId, statusToProcess, true, new PageParam(
                         start: 0, count: pageSizePerShard
                 ))
             }
@@ -108,10 +110,6 @@ class OrderJob implements InitializingBean {
             map[order.id.toString()] = order
         }
         return new ArrayList<Order>(map.values())
-    }
-
-    private List<Integer> getAllShards() {
-        return [0, 1]
     }
 
     private void appendFuture(List<Future> futures, Future future) {

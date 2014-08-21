@@ -21,6 +21,7 @@ import com.junbo.identity.common.util.JsonHelper
 import com.junbo.identity.core.service.filter.UserFilter
 import com.junbo.identity.core.service.normalize.NormalizeService
 import com.junbo.identity.core.service.validator.UserValidator
+import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.repository.*
 import com.junbo.identity.spec.error.AppErrors
 import com.junbo.identity.spec.model.users.UserPassword
@@ -32,14 +33,14 @@ import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
-import org.apache.commons.lang3.StringUtils
-import org.codehaus.groovy.util.StringUtil
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.util.CollectionUtils
+import org.springframework.util.StringUtils
 
 /**
  * Created by liangfu on 4/10/14.
@@ -50,7 +51,9 @@ class UserResourceImpl implements UserResource {
     private static final String EMAIL_SOURCE = 'Oculus'
     private static final String EMAIL_DEACTIVATE_ACCOUNT_ACTION = 'DeactivateAccount'
     private static final String EMAIL_REACTIVATE_ACCOUNT_ACTION = 'ReactivateAccount'
-    private static final Logger logger = LoggerFactory.getLogger(UserResource)
+    private static final String EMAIL_PII_CHANGE_ACTION = 'UserPersonalInfoChange'
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserResource)
 
     @Autowired
     private UserRepository userRepository
@@ -94,6 +97,14 @@ class UserResourceImpl implements UserResource {
     @Qualifier('identityEmailTemplateResource')
     private EmailTemplateResource emailTemplateResource
 
+    @Autowired
+    @Value('${identity.conf.mailEnable}')
+    private Boolean identityMailSentEnable
+
+    void setIdentityMailSentEnable(Boolean identityMailSentEnable) {
+        this.identityMailSentEnable = identityMailSentEnable
+    }
+
     @Override
     Promise<User> create(User user) {
         if (user == null) {
@@ -130,6 +141,34 @@ class UserResourceImpl implements UserResource {
         }
 
         return userRepository.get(userId).then { User oldUser ->
+            return silentPut(userId, user).then { User newUser ->
+                return isMailSentRequired(oldUser, newUser).then { Boolean aBoolean ->
+                    //todo: Need to discuss with Hao to move all those mail trigger to service layer.
+                    if (!aBoolean) {
+                        return Promise.pure(newUser)
+                    }
+                    // send email
+                    return triggerCsrUserUpdateEmail(newUser, oldUser).then {
+                        return sendPIIChangeNotification(newUser, oldUser).then {
+                            return Promise.pure(newUser)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public Promise<User> silentPut(UserId userId, User user) {
+        if (userId == null) {
+            throw new IllegalArgumentException('userId is null')
+        }
+
+        if (user == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
+        }
+
+        return userRepository.get(userId).then { User oldUser ->
             if (oldUser == null) {
                 throw AppErrors.INSTANCE.userNotFound(userId).exception()
             }
@@ -148,10 +187,7 @@ class UserResourceImpl implements UserResource {
                     return userRepository.update(user, oldUser).then { User newUser ->
                         return updateCredential(user.getId(), oldUser.username, newUser.username).then {
                             newUser = userFilter.filterForGet(newUser, null)
-                            // send email
-                            return triggerUserUpdateEmail(newUser, oldUser).then {
-                                return Promise.pure(newUser)
-                            }
+                            return Promise.pure(newUser)
                         }
                     }
                 }
@@ -188,9 +224,18 @@ class UserResourceImpl implements UserResource {
                     return userRepository.update(user, oldUser).then { User newUser ->
                         return updateCredential(user.getId(), oldUser.username, newUser.username).then {
                             newUser = userFilter.filterForGet(newUser, null)
-                            // send email
-                            return triggerUserUpdateEmail(newUser, oldUser).then {
-                                return Promise.pure(newUser)
+
+                            return isMailSentRequired(oldUser, newUser).then { Boolean aBoolean ->
+                                if (!aBoolean) {
+                                    return Promise.pure(newUser)
+                                }
+
+                                // send email
+                                return triggerCsrUserUpdateEmail(newUser, oldUser).then {
+                                    return sendPIIChangeNotification(newUser, oldUser).then {
+                                        return Promise.pure(newUser)
+                                    }
+                                }
                             }
                         }
                     }
@@ -373,21 +418,18 @@ class UserResourceImpl implements UserResource {
         }
     }
 
-    private Promise<String> getUserEmail(User user) {
-        UserPersonalInfoId userPersonalInfoId = user.emails?.find { UserPersonalInfoLink link ->
-            link.isDefault
-        }?.value
-
-        if (userPersonalInfoId == null) {
+    Promise<String> getEmailStr(User user) {
+        if (CollectionUtils.isEmpty(user.emails)) {
+            LOGGER.warn('user emails is empty')
             return Promise.pure(null)
         }
+        UserPersonalInfoLink link = user.emails.find { UserPersonalInfoLink infoLink ->
+            return infoLink.isDefault
+        }
 
-        return userPersonalInfoRepository.get(userPersonalInfoId).then { UserPersonalInfo userPersonalInfo ->
-            if (userPersonalInfo == null) {
-                return Promise.pure(null)
-            }
-
-            com.junbo.identity.spec.v1.model.Email email = (com.junbo.identity.spec.v1.model.Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, com.junbo.identity.spec.v1.model.Email)
+        link = link == null ? user.emails.get(0) : link;
+        return userPersonalInfoRepository.get(link.value).then { UserPersonalInfo userPersonalInfo ->
+            Email email = (Email)JsonHelper.jsonNodeToObj(userPersonalInfo.value, Email)
             return Promise.pure(email.info)
         }
     }
@@ -421,7 +463,7 @@ class UserResourceImpl implements UserResource {
         }
     }
 
-    private Promise<Void> triggerUserUpdateEmail(User user, User oldUser) {
+    private Promise<Void> triggerCsrUserUpdateEmail(User user, User oldUser) {
         // check x-send-email header
         if (JunboHttpContext.getRequestHeaders() == null
                 || CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(Constants.HEADER_TRIGGER_EMAIL))) {
@@ -463,7 +505,7 @@ class UserResourceImpl implements UserResource {
                 com.junbo.email.spec.model.Email emailToSend = new com.junbo.email.spec.model.Email(
                         userId: user.getId(),
                         templateId: template.getId(),
-                        recipients: [getUserEmail(user).get()],
+                        recipients: [getUserNameStr(user).get()],
                         replacements: [
                                 'accountname': getUserNameStr(user).get()
                         ]
@@ -478,9 +520,247 @@ class UserResourceImpl implements UserResource {
                 return Promise.pure(null)
             }
         }
-        catch(Exception e) {
-            logger.error('Send user status update email failed', e)
+        catch (Exception e) {
+            LOGGER.error('Send user status update email failed', e)
             return Promise.pure(null)
+        }
+    }
+
+    private Promise<Void> sendPIIChangeNotification(User newUser, User oldUser) {
+        String piiChangedType = getChangeType(oldUser, newUser);
+        if (StringUtils.isEmpty(piiChangedType)) {
+            return Promise.pure(null)
+        }
+        return sendPIIChangeEmail(newUser, piiChangedType).recover { Throwable e ->
+            LOGGER.error("Send Mail failure")
+            return Promise.pure(null)
+        }
+    }
+
+    private static String getPIIDataType(User oldUser, User newUser) {
+        if (isPIIChanged(oldUser.username, newUser.username)) {
+            return UserPersonalInfoType.USERNAME.toString()
+        }
+        if (isPIIChanged(oldUser.name, newUser.name)) {
+            return UserPersonalInfoType.NAME.toString()
+        }
+        if (isPIIChanged(oldUser.dob, newUser.dob)) {
+            return UserPersonalInfoType.DOB.toString()
+        }
+        if (isPIIChanged(oldUser.passport, newUser.passport)) {
+            return UserPersonalInfoType.PASSPORT.toString()
+        }
+        if (isPIIChanged(oldUser.governmentId, newUser.governmentId)) {
+            return UserPersonalInfoType.GOVERNMENT_ID.toString()
+        }
+        if (isPIIChanged(oldUser.driversLicense, newUser.driversLicense)) {
+            return UserPersonalInfoType.DRIVERS_LICENSE.toString()
+        }
+        if (isPIIChanged(oldUser.gender, newUser.gender)){
+            return UserPersonalInfoType.GENDER.toString()
+        }
+        if (isPIILinkListChanged(oldUser.addresses, newUser.addresses)) {
+            return UserPersonalInfoType.ADDRESS.toString()
+        }
+        if (isPIILinkListChanged(oldUser.emails, newUser.emails)) {
+            return UserPersonalInfoType.EMAIL.toString()
+        }
+        if (isPIILinkListChanged(oldUser.phones, newUser.phones)) {
+            return UserPersonalInfoType.PHONE.toString()
+        }
+        if (isPIILinkListChanged(oldUser.textMessages, newUser.textMessages)) {
+            return UserPersonalInfoType.TEXT_MESSAGE.toString()
+        }
+        if (isPIILinkListChanged(oldUser.qqs, newUser.qqs)) {
+            return UserPersonalInfoType.QQ.toString()
+        }
+        if (isPIILinkListChanged(oldUser.whatsApps, newUser.whatsApps)) {
+            return UserPersonalInfoType.WHATSAPP.toString()
+        }
+
+        return null
+    }
+
+    private static String getNonPIIDataType(User oldUser, User newUser) {
+        if (oldUser.nickName != newUser.nickName) {
+            return 'nickName'
+        }
+
+        if (oldUser.preferredLocale != newUser.preferredLocale) {
+            return 'preferredLocale'
+        }
+
+        if (oldUser.preferredTimezone != newUser.preferredTimezone) {
+            return 'preferredLocale'
+        }
+
+        if (oldUser.countryOfResidence != newUser.countryOfResidence) {
+            return 'cor'
+        }
+
+        if (isVatChanged(oldUser.vat, newUser.vat)) {
+            return 'vat'
+        }
+
+        if (oldUser.defaultPI != newUser.defaultPI) {
+            return 'defaultPI'
+        }
+
+        return false
+    }
+
+    private static String getChangeType(User oldUser, User user) {
+        String piiDataType = getPIIDataType(oldUser, user)
+        if (!StringUtils.isEmpty(piiDataType)) {
+            return piiDataType
+        }
+        if (AuthorizeContext.hasScopes('csr') && AuthorizeContext.currentUserId != null) {
+            return getNonPIIDataType(oldUser, user)
+        }
+
+        return null
+    }
+
+    private Promise<Boolean> isMailSentRequired(User oldUser, User newUser) {
+        if (!identityMailSentEnable) {
+            return Promise.pure(false)
+        }
+
+        if (JunboHttpContext.getRequestHeaders() == null
+                || !CollectionUtils.isEmpty(JunboHttpContext.getRequestHeaders().get(Constants.HEADER_DISABLE_EMAIL))) {
+            return Promise.pure(false)
+        }
+
+        return hasVerifiedEmail(oldUser).then { Boolean aBoolean ->
+            if (!aBoolean) {
+                return Promise.pure(false)
+            }
+            return hasVerifiedEmail(newUser)
+        }
+    }
+
+    private Promise<Boolean> hasVerifiedEmail(User user) {
+        if (CollectionUtils.isEmpty(user.emails)) {
+            LOGGER.warn('user emails is empty')
+            return Promise.pure(false)
+        }
+        UserPersonalInfoLink link = user.emails.find { UserPersonalInfoLink infoLink ->
+            return infoLink.isDefault
+        }
+
+        link = link == null ? user.emails.get(0) : link;
+        return userPersonalInfoRepository.get(link.value).then { UserPersonalInfo userPersonalInfo ->
+            if (userPersonalInfo.lastValidateTime != null) {
+                return Promise.pure(true)
+            }
+            return Promise.pure(false)
+        }
+    }
+
+    private static Boolean isPIILinkListChanged(List<UserPersonalInfoLink> oldInfoLinks, List<UserPersonalInfoLink> infoLinks) {
+        Boolean flag = true
+        if (!CollectionUtils.isEmpty(oldInfoLinks) && !CollectionUtils.isEmpty(infoLinks)) {
+            if (oldInfoLinks.size() != infoLinks.size()) {
+                return true
+            }
+            oldInfoLinks.each { UserPersonalInfoLink oldInfoLink ->
+                flag = flag && infoLinks.find { UserPersonalInfoLink newInfoLink ->
+                    return (oldInfoLink.isDefault == newInfoLink.isDefault
+                        || oldInfoLink.value == newInfoLink.value
+                        || oldInfoLink.label == newInfoLink.label)
+                }
+            }
+        }
+
+        if (flag && (!CollectionUtils.isEmpty(oldInfoLinks) || !CollectionUtils.isEmpty(infoLinks))) {
+            return flag;
+        }
+
+        return !flag
+    }
+
+    private static Boolean isPIIChanged(UserPersonalInfoId oldPIIId, UserPersonalInfoId newPIIId) {
+        return oldPIIId != newPIIId
+    }
+
+    private static Boolean isVatChanged(Map<String, UserVAT> oldVat, Map<String, UserVAT> newVat) {
+        if ((oldVat == null || oldVat.isEmpty()) && (newVat == null || newVat.isEmpty())) {
+            return false
+        }
+
+        if ((oldVat == null || oldVat.isEmpty()) && !newVat.isEmpty()) {
+            return true
+        }
+
+        if (!oldVat.isEmpty() && (newVat == null || newVat.isEmpty())) {
+            return true
+        }
+
+        if (oldVat.size() != newVat.size()) {
+            return true
+        }
+
+        Boolean flag = true
+        oldVat.entrySet().each { Map.Entry<String, UserVAT> vatEntry ->
+            UserVAT userVAT = newVat.get(vatEntry.getKey())
+            if (userVAT == null) {
+                flag = false
+            } else {
+                if (userVAT.lastValidateTime != vatEntry.value.lastValidateTime || userVAT.vatNumber != vatEntry.value.vatNumber) {
+                    flag = false
+                }
+            }
+        }
+
+        if (!flag) return true
+    }
+
+    private Promise<Void> sendPIIChangeEmail(User user, String piiType) {
+        QueryParam queryParam = new QueryParam(
+                source: EMAIL_SOURCE,
+                action: EMAIL_PII_CHANGE_ACTION,
+                locale: 'en_US'
+        )
+
+        if (CollectionUtils.isEmpty(user.emails)) {
+            return Promise.pure(null)
+        }
+
+        if (user.username == null) {
+            throw AppCommonErrors.INSTANCE.internalServerError(new Exception('username is missing')).exception()
+        }
+
+        return emailTemplateResource.getEmailTemplates(queryParam).then { Results<EmailTemplate> results ->
+            if (results.items.isEmpty()) {
+                throw AppCommonErrors.INSTANCE.internalServerError(new Exception(EMAIL_PII_CHANGE_ACTION + ' with locale: en_US template not found')).exception()
+            }
+            EmailTemplate template = results.items.get(0)
+
+            return getUserNameStr(user).then { String userLoginName ->
+                return getEmailStr(user).then { String userMail ->
+                    if (StringUtils.isEmpty(userMail)) {
+                        throw AppErrors.INSTANCE.userInInvalidStatus(user.getId()).exception()
+                    }
+
+                    com.junbo.email.spec.model.Email emailToSend = new com.junbo.email.spec.model.Email(
+                            userId: user.getId(),
+                            templateId: template.getId(),
+                            recipients: [userMail].asList(),
+                            replacements: [
+                                    'name': userLoginName,
+                                    'informationtype': piiType
+                            ]
+                    )
+
+                    return emailResource.postEmail(emailToSend).then { Email emailSent ->
+                        if (emailSent == null) {
+                            throw AppCommonErrors.INSTANCE.internalServerError(new Exception('Failed to send mail')).exception()
+                        }
+
+                        return Promise.pure(null)
+                    }
+                }
+            }
         }
     }
 }

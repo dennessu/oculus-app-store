@@ -204,6 +204,15 @@ public class IdentityModel {
         return userPersonalInfo;
     }
 
+    public static UserPersonalInfo DefaultUserPersonalInfoEmail(String email) throws Exception {
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+        userPersonalInfo.setType(UserPersonalInfoType.EMAIL.toString());
+        Email email1 = new Email();
+        email1.setInfo(email);
+        userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(email1));
+        return userPersonalInfo;
+    }
+
     public static UserPersonalInfo DefaultUserPersonalInfoEmail() throws Exception {
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
         userPersonalInfo.setType(UserPersonalInfoType.EMAIL.name());
@@ -215,6 +224,15 @@ public class IdentityModel {
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
         userPersonalInfo.setType(UserPersonalInfoType.PHONE.name());
         userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(DefaultPhoneNumber()));
+        return userPersonalInfo;
+    }
+
+    public static UserPersonalInfo DefaultUserPersonalInfoUsername() throws Exception {
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+        UserLoginName loginName = new UserLoginName();
+        loginName.setUserName(RandomHelper.randomAlphabetic(15));
+        userPersonalInfo.setType(UserPersonalInfoType.USERNAME.toString());
+        userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(loginName));
         return userPersonalInfo;
     }
 
