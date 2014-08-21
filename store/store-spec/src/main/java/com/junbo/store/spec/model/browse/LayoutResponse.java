@@ -21,7 +21,7 @@ public class LayoutResponse {
 
     private String title;
 
-    private List<Document> contents;
+    private Document contents;
 
     public List<LayoutLink> getBreadcrumbs() {
         return breadcrumbs;
@@ -47,11 +47,11 @@ public class LayoutResponse {
         this.title = title;
     }
 
-    public List<Document> getContents() {
+    public Document getContents() {
         return contents;
     }
 
-    public void setContents(List<Document> contents) {
+    public void setContents(Document contents) {
         this.contents = contents;
     }
 }

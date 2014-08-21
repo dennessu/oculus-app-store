@@ -17,6 +17,8 @@ public class Offer {
 
     private String formattedPrice;
 
+    private String formattedDescription;
+
     private CurrencyId currency;
 
     public OfferId getSelf() {
@@ -33,6 +35,14 @@ public class Offer {
 
     public void setFormattedPrice(String formattedPrice) {
         this.formattedPrice = formattedPrice;
+    }
+
+    public String getFormattedDescription() {
+        return formattedDescription;
+    }
+
+    public void setFormattedDescription(String formattedDescription) {
+        this.formattedDescription = formattedDescription;
     }
 
     public CurrencyId getCurrency() {

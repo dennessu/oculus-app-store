@@ -12,8 +12,6 @@ public class ContainerMetadata {
 
     private String layoutUrl;
 
-    private String listUrl;
-
     private String nextPageUrl;
 
     private Boolean ordered;
@@ -24,14 +22,6 @@ public class ContainerMetadata {
 
     public void setLayoutUrl(String layoutUrl) {
         this.layoutUrl = layoutUrl;
-    }
-
-    public String getListUrl() {
-        return listUrl;
-    }
-
-    public void setListUrl(String listUrl) {
-        this.listUrl = listUrl;
     }
 
     public String getNextPageUrl() {

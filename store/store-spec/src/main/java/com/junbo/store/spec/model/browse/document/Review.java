@@ -12,7 +12,7 @@ import java.util.Date;
  */
 public class Review {
 
-    private String reviewId;
+    private String reviewId; // todo: make it "self"
 
     private String authorName;
 

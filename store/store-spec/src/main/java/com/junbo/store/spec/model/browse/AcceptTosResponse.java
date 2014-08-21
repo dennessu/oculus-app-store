@@ -5,11 +5,6 @@
  */
 package com.junbo.store.spec.model.browse;
 
-import com.junbo.common.enumid.CountryId;
-import com.junbo.common.enumid.LocaleId;
-
-import javax.ws.rs.QueryParam;
-
 /**
  * The GetTocRequest class.
  */

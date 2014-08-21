@@ -1,5 +1,7 @@
 package com.junbo.store.spec.model.browse.document;
 
+import java.util.Map;
+
 /**
  * Created by facebook on 8/20/14.
  */
@@ -11,15 +13,7 @@ public class AggregatedRatings {
 
     private Long commentsCount;
 
-    private Long oneStarRatings;
-
-    private Long twoStarRatings;
-
-    private Long threeStarRatings;
-
-    private Long fourStarRatings;
-
-    private Long fiveStarRatings;
+    private Map<Integer, Long> ratingsHistogram;
 
     public Double getAverageRating() {
         return averageRating;
@@ -45,43 +39,11 @@ public class AggregatedRatings {
         this.commentsCount = commentsCount;
     }
 
-    public Long getOneStarRatings() {
-        return oneStarRatings;
+    public Map<Integer, Long> getRatingsHistogram() {
+        return ratingsHistogram;
     }
 
-    public void setOneStarRatings(Long oneStarRatings) {
-        this.oneStarRatings = oneStarRatings;
-    }
-
-    public Long getTwoStarRatings() {
-        return twoStarRatings;
-    }
-
-    public void setTwoStarRatings(Long twoStarRatings) {
-        this.twoStarRatings = twoStarRatings;
-    }
-
-    public Long getThreeStarRatings() {
-        return threeStarRatings;
-    }
-
-    public void setThreeStarRatings(Long threeStarRatings) {
-        this.threeStarRatings = threeStarRatings;
-    }
-
-    public Long getFourStarRatings() {
-        return fourStarRatings;
-    }
-
-    public void setFourStarRatings(Long fourStarRatings) {
-        this.fourStarRatings = fourStarRatings;
-    }
-
-    public Long getFiveStarRatings() {
-        return fiveStarRatings;
-    }
-
-    public void setFiveStarRatings(Long fiveStarRatings) {
-        this.fiveStarRatings = fiveStarRatings;
+    public void setRatingsHistogram(Map<Integer, Long> ratingsHistogram) {
+        this.ratingsHistogram = ratingsHistogram;
     }
 }

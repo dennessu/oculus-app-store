@@ -16,7 +16,7 @@ public class ReviewsResponse {
 
     private List<Review> reviews;
 
-    private String reviewsNextPageUrl;
+    private String nextPageUrl;
 
     public List<Review> getReviews() {
         return reviews;
@@ -26,11 +26,11 @@ public class ReviewsResponse {
         this.reviews = reviews;
     }
 
-    public String getReviewsNextPageUrl() {
-        return reviewsNextPageUrl;
+    public String getNextPageUrl() {
+        return nextPageUrl;
     }
 
-    public void setReviewsNextPageUrl(String reviewsNextPageUrl) {
-        this.reviewsNextPageUrl = reviewsNextPageUrl;
+    public void setNextPageUrl(String nextPageUrl) {
+        this.nextPageUrl = nextPageUrl;
     }
 }

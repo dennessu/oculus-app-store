@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class Document {
 
-    private String docType; // CONTAINER, ITEM
+    private String docType; // CONTAINER, APP
 
     private String title;
 
@@ -34,8 +34,6 @@ public class Document {
 
     private AppDetails appDetails;
 
-    private Review userReview;
-
     private String detailsUrl;
 
     private ReviewsResponse reviews;
@@ -46,6 +44,10 @@ public class Document {
     private ItemId itemId;
 
     private List<Offer> offers;
+
+    private Boolean ownedByCurrentUser;
+
+    private Review currentUserReview; // only appears in getLibrary response, or in getDetails response.
 
     public ItemId getItemId() {
         return itemId;
@@ -127,12 +129,12 @@ public class Document {
         this.appDetails = appDetails;
     }
 
-    public Review getUserReview() {
-        return userReview;
+    public Review getCurrentUserReview() {
+        return currentUserReview;
     }
 
-    public void setUserReview(Review userReview) {
-        this.userReview = userReview;
+    public void setCurrentUserReview(Review currentUserReview) {
+        this.currentUserReview = currentUserReview;
     }
 
     public String getDetailsUrl() {
@@ -165,5 +167,13 @@ public class Document {
 
     public void setOffers(List<Offer> offers) {
         this.offers = offers;
+    }
+
+    public Boolean getOwnedByCurrentUser() {
+        return ownedByCurrentUser;
+    }
+
+    public void setOwnedByCurrentUser(Boolean ownedByCurrentUser) {
+        this.ownedByCurrentUser = ownedByCurrentUser;
     }
 }
