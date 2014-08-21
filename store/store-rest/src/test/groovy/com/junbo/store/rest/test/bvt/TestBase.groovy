@@ -20,7 +20,7 @@ class TestBase extends AbstractTestNGSpringContextTests {
 
     public static String digitalOfferName = 'testOffer_CartCheckout_Digital1'
 
-    public static String freeOfferName = 'testOffer_Free_Digital'
+    public static String[] freeOfferNames = ['testOffer_Free_Digital', 'testOffer_FreeOculusAndroidDigital1', 'testOffer_FreeOculusAndroidDigital2']
 
     public static String physicalOfferName = 'testOffer_CartCheckout_Physical1'
 

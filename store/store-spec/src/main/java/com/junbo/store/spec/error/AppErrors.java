@@ -15,10 +15,11 @@ import com.junbo.common.error.ErrorProxy;
  * AppErrors for iap.
  */
 public interface AppErrors {
+
     AppErrors INSTANCE = ErrorProxy.newProxyInstance(AppErrors.class);
 
-    @ErrorDef(httpStatusCode = 412, code = "101", message = "Item Not Found With Package Name.")
-    AppError itemNotFoundWithPackageName();
+    @ErrorDef(httpStatusCode = 412, code = "101", message = "Unknown Error.")
+    AppError unknownError();
 
     @ErrorDef(httpStatusCode = 412, code = "102", message = "Entitlement Not Consumable.",
             field = "entitlementId", reason = "Entitlement not consumable, entitlementId={0}.")
@@ -57,4 +58,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "110", message = "Invalid offer: {0}")
     AppError invalidOffer(String reason);
+
+    @ErrorDef(httpStatusCode = 412, code = "111", message = "Item Not Found With Package Name.")
+    AppError itemNotFoundWithPackageName();
 }

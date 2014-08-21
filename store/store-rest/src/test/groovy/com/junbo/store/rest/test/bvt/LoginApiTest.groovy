@@ -37,18 +37,18 @@ class LoginApiTest extends TestBase {
         def createUserRequest = Generator.genCreateUserRequest(username, '123456', email, pin)
         try {
             result = loginResource.createUser(createUserRequest).get()
+            assert false
         } catch (AppErrorException ex) {
-//            assert ex.error.error().code == '131.101'
-            // todo verify it's caused by password field
+            assert ex.error.error().code == '131.101'
         }
 
         // create user with invalid password (only characters)
         createUserRequest = Generator.genCreateUserRequest(username, 'abcedfcbda', email, pin)
         try {
             result = loginResource.createUser(createUserRequest).get()
+            assert false
         } catch (AppErrorException ex) {
-            //assert ex.error.error().code == '130.001'
-            // todo verify it's caused by password field
+            assert ex.error.error().code == '130.001'
         }
 
         createUserRequest = Generator.genCreateUserRequest(username, password, email, pin)
@@ -64,7 +64,7 @@ class LoginApiTest extends TestBase {
             loginResource.signIn(new UserSignInRequest(username : Generator.genUserName(), userCredential:  new UserCredential(type: 'PASSWORD', value: password))).get()
             assert false
         } catch (AppErrorException ex) {
-            // todo verify it's caused by invalid user field
+            assert ex.error.error().code == '132.103'
         }
 
         // login with invalid password
@@ -72,8 +72,7 @@ class LoginApiTest extends TestBase {
             loginResource.signIn(new UserSignInRequest(username : username, userCredential:  new UserCredential(type: 'PASSWORD', value: "${password}123"))).get()
             assert false
         } catch (AppErrorException ex) {
-            // todo verify it's caused by invalid user field
-            assert ex != null
+            assert ex.error.error().code == '132.103'
         }
 
         // login
@@ -97,6 +96,39 @@ class LoginApiTest extends TestBase {
         } catch (AppErrorException ex) {
             assert ex.error.error().code == '132.001'
         }
+
+        result = loginResource.checkUserName(new UserNameCheckRequest(username: username)).get()
+        assert !result.isAvailable
+
+        result = loginResource.checkUserName(new UserNameCheckRequest(email: email)).get()
+        assert !result.isAvailable
     }
 
+    @Test
+    public void testCheckUserNameInvalid() {
+        try {
+            loginResource.checkUserName(new UserNameCheckRequest(username: 'abc')).get()
+            assert false
+        } catch (AppErrorException ex) {
+            assert ex.error.error().code == '130.001'
+        }
+
+        try {
+            loginResource.checkUserName(new UserNameCheckRequest(username: '123')).get()
+            assert false
+        } catch (AppErrorException ex) {
+            assert ex.error.error().code == '130.001'
+        }
+
+    }
+
+    @Test
+    public void testCheckEmailInvalid() {
+        try {
+            loginResource.checkUserName(new UserNameCheckRequest(email: 'abcbcde')).get()
+            assert false
+        } catch (AppErrorException ex) {
+            assert ex.error.error().code == '130.001'
+        }
+    }
 }
