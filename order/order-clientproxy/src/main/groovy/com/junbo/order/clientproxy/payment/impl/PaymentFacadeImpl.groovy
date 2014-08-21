@@ -43,7 +43,7 @@ class PaymentFacadeImpl implements PaymentFacade {
 
     @Override
     Promise<PaymentInstrument> getPaymentInstrument(Long paymentInstrumentId) {
-        return paymentInstrumentResource.getById(new PaymentInstrumentId(paymentInstrumentId)).recover { Throwable ex
+        return paymentInstrumentResource.getById(new PaymentInstrumentId(paymentInstrumentId)).recover { Throwable ex ->
             LOGGER.error('name=PaymentFacadeImpl_Get_PI_Error', ex)
             throw convertError(ex, paymentInstrumentId).exception()
         }.then { PaymentInstrument pi ->
