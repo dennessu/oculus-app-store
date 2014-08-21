@@ -64,6 +64,7 @@ public class ItemRevisionValidator extends ValidationSupport {
         }
         validatePlatforms(revision.getPlatforms(), errors);
         validateUserInteractionModes(revision.getUserInteractionModes(), errors);
+        validateSupportedInputDevices(revision.getSupportedInputDevices(), errors);
         validatePackageName(revision.getPackageName(), revision.getItemId(), errors);
         validateLocales(revision.getLocales(), errors);
 
@@ -83,12 +84,14 @@ public class ItemRevisionValidator extends ValidationSupport {
         validateFieldNull("rev", revision.getRev(), errors);
         validateFieldNull("createdTime", revision.getCreatedTime(), errors);
         validateFieldNull("updatedTime", revision.getUpdatedTime(), errors);
+        validateFieldNull("localeAccuracy", revision.getLocaleAccuracy(), errors);
         validateFieldNotNull("developer", revision.getOwnerId(), errors);
         validateFieldMatch("status", revision.getStatus(), Status.DRAFT.name(), errors);
         validateItem(revision, errors);
 
         validatePlatforms(revision.getPlatforms(), errors);
         validateUserInteractionModes(revision.getUserInteractionModes(), errors);
+        validateSupportedInputDevices(revision.getSupportedInputDevices(), errors);
         validatePackageName(revision.getPackageName(), revision.getItemId(), errors);
         validateLocales(revision.getLocales(), errors);
 
@@ -112,6 +115,7 @@ public class ItemRevisionValidator extends ValidationSupport {
 
         validatePlatforms(revision.getPlatforms(), errors);
         validateUserInteractionModes(revision.getUserInteractionModes(), errors);
+        validateSupportedInputDevices(revision.getSupportedInputDevices(), errors);
         validatePackageName(revision.getPackageName(), revision.getItemId(), errors);
         validateLocales(revision.getLocales(), errors);
 
@@ -224,6 +228,16 @@ public class ItemRevisionValidator extends ValidationSupport {
                 if (!InteractionModes.contains(mode)) {
                     errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("userInteractionModes", Joiner.on(',').join(InteractionModes.values())));
                     return;
+                }
+            }
+        }
+    }
+
+    private void validateSupportedInputDevices(List<String> devices, List<AppError> errors) {
+        if (!CollectionUtils.isEmpty(devices)) {
+            for (String device : devices) {
+                if (!InputDevices.contains(device)) {
+                    errors.add(AppCommonErrors.INSTANCE.fieldInvalidEnum("supportedInputDevices", Joiner.on(',').join(InputDevices.values())));
                 }
             }
         }
