@@ -17,7 +17,6 @@ import com.junbo.identity.spec.v1.resource.UserCredentialResource
 import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.client.TypeReference
-import com.junbo.langur.core.context.JunboHttpContext
 import groovy.transform.CompileStatic
 import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Required
@@ -150,7 +149,6 @@ class UserDataHandler extends BaseDataHandler {
                 logger.error("Error creating user credential for $user.username.", e)
             }
         }
-        JunboHttpContext.requestHeaders.remove("X-DISABLE-EMAIL")
     }
 
     private User createUserNamePII(String username, User user) {
