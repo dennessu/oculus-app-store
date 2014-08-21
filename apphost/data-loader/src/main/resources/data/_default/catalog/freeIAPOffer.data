@@ -7,7 +7,7 @@
         "revisions": null, 
         "type": "CONSUMABLE_UNLOCK", 
         "developer": {
-            "href": "https://api.oculusvr.com/v1/organizations/1234", 
+            "href": "https://api.oculus.com/v1/organizations/1234",
             "id": "1234"
         }
     }, 
@@ -23,7 +23,7 @@
         }, 
         "rev": null,
         "item": {
-            "href": "https://api.oculusvr.com/v1/items/aabbccddeef7", 
+            "href": "https://api.oculus.com/v1/items/aabbccddeef7",
             "id": "aabbccddeef7"
         },
         "msrp": {
@@ -128,13 +128,13 @@
             "MOUSE"
         ],
         "developer": {
-            "href": "https://api.oculusvr.com/v1/organizations/1234", 
+            "href": "https://api.oculus.com/v1/organizations/1234",
             "id": "1234"
         }
     }, 
     "offer": {
         "publisher": {
-            "href": "https://api.oculusvr.com/v1/organizations/1234", 
+            "href": "https://api.oculus.com/v1/organizations/1234",
             "id": "1234"
         }, 
         "rev": null,
@@ -146,20 +146,20 @@
     "offerRevision": {
             "status": "DRAFT",
             "publisher": {
-                "href": "https://api.oculusvr.com/v1/organizations/1234",
+                "href": "https://api.oculus.com/v1/organizations/1234",
                 "id": "1234"
             },
             "distributionChannel": [
                 "INAPP", "STORE"
             ],
             "offer": {
-                "href": "https://api.oculusvr.com/v1/offers/bbaaccddeef7",
+                "href": "https://api.oculus.com/v1/offers/bbaaccddeef7",
                 "id": "bbaaccddeef7"
             },
             "items": [
                 {
                     "item": {
-                        "href": "https://api.oculusvr.com/v1/items/aabbccddeef7",
+                        "href": "https://api.oculus.com/v1/items/aabbccddeef7",
                         "id": "aabbccddeef7"
                     },
                     "quantity": 1
@@ -168,14 +168,14 @@
             "restrictions": {
                 "preconditionItems": [
                     {
-                        "href": "https://api.oculusvr.com/v1/items/1230",
+                        "href": "https://api.oculus.com/v1/items/1230",
                         "id": "1230"
                     }
                 ],
                 "limitPerOrder": 2,
                 "exclusionItems": [
                     {
-                        "href": "https://api.oculusvr.com/v1/items/120",
+                        "href": "https://api.oculus.com/v1/items/120",
                         "id": "120"
                     }
                 ],
@@ -186,7 +186,7 @@
                 "PURCHASE": [
                     {
                         "itemId": {
-                            "href": "https://api.oculusvr.com/v1/items/aabbccddeef7",
+                            "href": "https://api.oculus.com/v1/items/aabbccddeef7",
                             "id": "aabbccddeef7"
                         },
                         "type": "GRANT_ENTITLEMENT",

@@ -15,6 +15,6 @@
   "response_types" : [ "ID_TOKEN", "CODE", "TOKEN" ],
   "grant_types" : [ "PASSWORD", "REFRESH_TOKEN" ],
 
-  "id_token_issuer" : "api.oculusvr.com",
+  "id_token_issuer" : "api.oculus.com",
   "need_consent" : false
 }

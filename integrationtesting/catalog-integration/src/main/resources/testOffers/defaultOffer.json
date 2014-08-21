@@ -1,6 +1,6 @@
 {
     "isPublished": false,
-    "publisher": {"href": "https://api.oculusvr.com/v1/organizations/1234", "id": "1234"},
+    "publisher": {"href": "https://api.oculus.com/v1/organizations/1234", "id": "1234"},
     "currentRevision": null,
     "environment": "DEV",
     "categories":[],

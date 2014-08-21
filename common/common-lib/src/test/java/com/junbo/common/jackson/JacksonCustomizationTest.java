@@ -138,7 +138,7 @@ public class JacksonCustomizationTest {
 
         Assert.assertNull(order2.getSellerId(), "seller id should be null.");
 
-        String json2 = "{\"sellerId\":{\"href\":\"http://api.oculusvr.com/v1/users/6B54FFB0B84D\",\"id\":\"6B54FFB0B84D\"}}";
+        String json2 = "{\"sellerId\":{\"href\":\"http://api.oculus.com/v1/users/6B54FFB0B84D\",\"id\":\"6B54FFB0B84D\"}}";
         Order order3 = mapper.readValue(json2, Order.class);
         Assert.assertEquals((long) order3.getSellerId(), 1234L, "seller id should match.");
 

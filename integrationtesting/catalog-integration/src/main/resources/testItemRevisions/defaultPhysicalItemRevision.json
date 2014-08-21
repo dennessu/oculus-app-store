@@ -1,6 +1,6 @@
 {
-    "item": {"href": "https://api.oculusvr.com/v1/items/6B54DDA43C9F", "id": "6B54DDA43C9F"},
-    "developer": {"href": "https://api.oculusvr.com/v1/organizations/1234", "id": "1234"},
+    "item": {"href": "https://api.oculus.com/v1/items/6B54DDA43C9F", "id": "6B54DDA43C9F"},
+    "developer": {"href": "https://api.oculus.com/v1/organizations/1234", "id": "1234"},
     "status": "DRAFT",
     "msrp":{
         "priceType": "CUSTOM",
