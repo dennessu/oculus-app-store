@@ -5,6 +5,7 @@ import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.OrganizationId
 import com.junbo.common.id.UserId
 import com.junbo.identity.common.util.JsonHelper
+import com.junbo.identity.core.service.validator.EmailValidator
 import com.junbo.identity.core.service.validator.PiiValidator
 import com.junbo.identity.data.identifiable.UserPersonalInfoType
 import com.junbo.identity.data.repository.UserPersonalInfoRepository
@@ -19,18 +20,13 @@ import org.apache.commons.collections.CollectionUtils
 import org.springframework.beans.factory.annotation.Required
 import org.springframework.util.StringUtils
 
-import java.util.regex.Pattern
-
 /**
  * Please check resource.
  * Created by liangfu on 3/31/14.
  */
 @CompileStatic
 class UserEmailValidatorImpl implements PiiValidator {
-    private List<Pattern> allowedEmailPatterns
-    private Integer minEmailLength
-    private Integer maxEmailLength
-
+    private EmailValidator emailValidator
     private UserPersonalInfoRepository userPersonalInfoRepository
     private UserRepository userRepository
 
@@ -75,18 +71,7 @@ class UserEmailValidatorImpl implements PiiValidator {
             throw AppCommonErrors.INSTANCE.fieldInvalid('value.info').exception()
         }
 
-        if (email.info.length() < minEmailLength) {
-            throw AppCommonErrors.INSTANCE.fieldTooShort('value.info', minEmailLength).exception()
-        }
-        if (email.info.length() > maxEmailLength) {
-            throw AppCommonErrors.INSTANCE.fieldTooLong('value.info', maxEmailLength).exception()
-        }
-
-        if (!allowedEmailPatterns.any {
-            Pattern pattern -> pattern.matcher(email.info.toLowerCase(Locale.ENGLISH)).matches()
-        }) {
-            throw AppCommonErrors.INSTANCE.fieldInvalid('value.info').exception()
-        }
+        emailValidator.validateEmail(email.info)
     }
 
     private Promise<Void> checkAdvanceUserEmail(Email email) {
@@ -132,20 +117,8 @@ class UserEmailValidatorImpl implements PiiValidator {
     }
 
     @Required
-    void setAllowedEmailPatterns(List<String> allowedEmailPatterns) {
-        this.allowedEmailPatterns = allowedEmailPatterns.collect { String allowedEmailPattern ->
-            Pattern.compile(allowedEmailPattern)
-        }
-    }
-
-    @Required
-    void setMinEmailLength(Integer minEmailLength) {
-        this.minEmailLength = minEmailLength
-    }
-
-    @Required
-    void setMaxEmailLength(Integer maxEmailLength) {
-        this.maxEmailLength = maxEmailLength
+    void setEmailValidator(EmailValidator emailValidator) {
+        this.emailValidator = emailValidator
     }
 
     @Required

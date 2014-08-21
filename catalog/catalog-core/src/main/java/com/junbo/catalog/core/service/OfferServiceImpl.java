@@ -78,12 +78,7 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
 
     @Override
     public Offer updateEntity(String offerId, Offer offer) {
-        Offer oldOffer = offerRepo.get(offerId);
-        if (oldOffer == null) {
-            AppErrorException exception = AppCommonErrors.INSTANCE.resourceNotFound("offer", offerId).exception();
-            LOGGER.error("Error updating offer. ", exception);
-            throw exception;
-        }
+        Offer oldOffer = getEntity(offerId);
         validateOfferUpdate(offer, oldOffer);
 
         offer.setCurrentRevisionId(oldOffer.getCurrentRevisionId());
@@ -99,7 +94,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
     public Offer getEntity(String entityId) {
         Offer offer = getEntityRepo().get(entityId);
         checkEntityNotNull(entityId, offer, getEntityType());
-        offer.setCurrentRevisionId(getCurrentRevisionId(offer.getApprovedRevisions()));
+        if (offer.getCurrentRevisionId() == null){
+            offer.setCurrentRevisionId(getCurrentRevisionId(offer.getApprovedRevisions()));
+        }
         return offer;
     }
 
@@ -199,20 +196,23 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
 
     private void updateOfferForApprovedRevision(OfferRevision revision, Long timestamp) {
         Offer offer = offerRepo.get(revision.getOfferId());
-        offer.setPublished(true);
+        //offer.setPublished(true);
 
+        // revision has no endTime, so the currentRevisionId is determined and no need to resolve in every GET
         if (revision.getStartTime().getTime() <= timestamp
-                && revision.getEndTime() == null || revision.getEndTime().after(Utils.maxDate())) {
+                && (revision.getEndTime() == null || revision.getEndTime().after(Utils.maxDate()))) {
             offer.setCurrentRevisionId(revision.getRevisionId());
             offer.setActiveRevision(revision);
             if (offer.getApprovedRevisions() != null) {
                 offer.getApprovedRevisions().clear();
             }
         } else {
+            // dynamic resolve currentRevision
             offer.setCurrentRevisionId(null);
         }
-        if (revision.getStartTime().getTime() >= timestamp
-                && revision.getEndTime() == null || revision.getEndTime().getTime() >= timestamp) {
+        // set activeRevision for index
+        if (revision.getStartTime().getTime() <= timestamp
+                && (revision.getEndTime() == null || revision.getEndTime().getTime() >= timestamp)) {
             offer.setActiveRevision(revision);
         }
         if (offer.getApprovedRevisions() == null) {
@@ -323,14 +323,14 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         if (offer.getRev() != null) {
             errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("rev"));
         }
-        if (Boolean.TRUE.equals(offer.getPublished())) {
-            errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("isPublished", offer.getPublished(), Boolean.FALSE));
-        }
         if (offer.getCurrentRevisionId() != null) {
             errors.add(AppCommonErrors.INSTANCE.fieldMustBeNull("currentRevision"));
         }
         if (offer.getOwnerId()==null) {
             errors.add(AppCommonErrors.INSTANCE.fieldRequired("publisher"));
+        }
+        if (Boolean.TRUE.equals(offer.getPublished())) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("isPublished", "The offer does not have currentRevision"));
         }
 
         validateOfferCommon(offer, errors);
@@ -356,6 +356,9 @@ public class OfferServiceImpl extends BaseRevisionedServiceImpl<Offer, OfferRevi
         }
         if (!oldOffer.getOwnerId().equals(offer.getOwnerId())) {
             errors.add(AppCommonErrors.INSTANCE.fieldNotWritable("publisher", Utils.encodeId(offer.getOwnerId()), Utils.encodeId(oldOffer.getOwnerId())));
+        }
+        if (Boolean.TRUE.equals(offer.getPublished()) && !Boolean.TRUE.equals(oldOffer.getPublished()) && oldOffer.getCurrentRevisionId() == null) {
+            errors.add(AppCommonErrors.INSTANCE.fieldInvalid("isPublished", "The offer does not have currentRevision"));
         }
 
         validateOfferCommon(offer, errors);

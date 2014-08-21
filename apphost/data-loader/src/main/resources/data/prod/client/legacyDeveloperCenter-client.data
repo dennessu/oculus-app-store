@@ -1,6 +1,6 @@
 {
   "client_id" : "legacyDeveloperCenter-client",
-  "client_secret" : "5E44199FA0F6AAA67D87E9C8E16E0E50#CD52714ADA1BC3B49F7ED7CB3FFC3E1A",
+  "client_secret" : "7D0DCE5FF270CFEF3B467FF6668151E2#34F3560A452A1D5A8454D1B73D92F02244D6B32A3B278D938CD4445FC3A14F524B66374FB60E99A7E5E3B606A60D9BDD",
   "client_name" : "legacyDeveloperCenter-client",
 
   "scopes" : [ "identity", "identity.pii", "offline" ],

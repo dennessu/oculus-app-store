@@ -24,13 +24,6 @@ import static org.testng.AssertJUnit.assertEquals;
  */
 public class authorizeUser {
 
-    @BeforeClass(alwaysRun = true)
-    public void run() throws Exception {
-        HttpclientHelper.CreateHttpClient();
-        Identity.GetHttpAuthorizationHeader();
-        HttpclientHelper.CloseHttpClient();
-    }
-
     @BeforeMethod(alwaysRun = true)
     public void setup() {
         HttpclientHelper.CreateHttpClient();
@@ -113,8 +106,7 @@ public class authorizeUser {
                 ((UserLoginName) JsonHelper.JsonNodeToObject(storedUPI.getValue(), UserLoginName.class)).getUserName());
     }
 
-    @Property(environment = "release")
-    @Test(groups = "bvt")
+    @Test(groups = "dailies")
     public void login() throws Exception {
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
         String cid = Oauth.GetRegistrationCid();
@@ -148,19 +140,47 @@ public class authorizeUser {
     }
 
     @Property(environment = "release")
-    @Test(groups = "bvt")
+    @Test(groups = "dailies")
+    public void RegisterWithoutEmailVerification() throws Exception {
+        Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
+        String cid = Oauth.GetRegistrationCid();
+
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        String currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        assertEquals("validate current view state is login", true, currentViewState.contains("\"view\" : \"login\""));
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostViewRegister);
+        String postRegisterViewResponse = Oauth.PostViewRegisterByCid(cid);
+        ValidateErrorFreeResponse(postRegisterViewResponse);
+        Oauth.StartLoggingAPISample(Oauth.MessageGetViewState);
+        currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        assertEquals("validate view state after post register view", postRegisterViewResponse, currentViewState);
+
+        Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
+        //String userName = "allEnvLoginUser";
+        //String email = "silkcloudtest+allEnvLoginUser@gmail.com";
+        String userName = RandomHelper.randomAlphabetic(15);
+        String email = RandomFactory.getRandomEmailAddress();
+        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email, false);
+        ValidateErrorFreeResponse(postRegisterUserResponse);
+    }
+
+    @Property(environment = "release")
+    @Test(groups = "dailies")
     public void loginExistingUser() throws Exception {
         String cid = Oauth.GetLoginCid();
         String currentViewState = Oauth.GetViewStateByCid(cid);
         ValidateErrorFreeResponse(currentViewState);
         //String loginResponseLink =
-        Oauth.UserLogin(cid, "kevincrawford", "Welcome123");
+        Oauth.UserLogin(cid, "allEnvLoginUser", Oauth.DefaultUserPwd);
         //Oauth.UserLogin(cid, RandomHelper.randomAlphabetic(10), "Welcome123");
         //String idToken = Oauth.GetLoginUserIdToken(loginResponseLink);
         //Oauth.Logout(idToken);
     }
 
-    @Test(groups = "bvt")
+    @Test(groups = "dailies")
     public void resetPassword() throws Exception {
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
         String cid = Oauth.GetRegistrationCid();
@@ -186,6 +206,8 @@ public class authorizeUser {
 
         HttpclientHelper.ResetHttpClient();
         String newPassword = "ASDFqwer1234";
+        // set identity authorization header
+        Oauth.GetAccessToken(Oauth.GetAuthCodeAfterRegisterUser(cid));
         UserPersonalInfo upi = Identity.UserPersonalInfoGetByUserEmail(email);
         String resetPasswordLink = Oauth.PostResetPassword(
                 Identity.GetHexLongId(upi.getUserId().getValue()), userName, null);

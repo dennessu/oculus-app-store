@@ -13,4 +13,6 @@ interface UserValidator {
     Promise<Void> validateForCreate(User user)
     Promise<Void> validateForUpdate(User user, User oldUser)
     Promise<Void> validateForSearch(UserListOptions options)
+    Promise<Void> validateEmail(String email)
+    Promise<Void> validateUsername(String username)
 }

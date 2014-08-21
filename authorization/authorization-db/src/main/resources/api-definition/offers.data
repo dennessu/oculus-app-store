@@ -30,7 +30,7 @@
             {
                 "precondition": "true",
                 "rights": [
-                    "draft.read", "create", "read", "update", "delete", "approve", "reject"
+                    "draft.read", "create", "read", "update", "delete", "approve", "reject", "publish"
                 ],
                 "scriptType": "SPEL"
             }

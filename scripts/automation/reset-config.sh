@@ -21,6 +21,7 @@ fi
 : ${ENV?"Need to set ENV"}
 
 ./foreach-here.sh $ENV/crypto-apps.txt << EOF
+set -e
 cat << EOFINNER > /etc/silkcloud/configuration.properties
 profile=apphost-crypto
 environment=$ENV
@@ -32,6 +33,7 @@ chmod 600 /etc/silkcloud/*
 EOF
 
 ./foreach-here.sh $ENV/apps.txt << EOF
+set -e
 cat << EOFINNER > /etc/silkcloud/configuration.properties
 profile=apphost-rest
 environment=$ENV
@@ -43,6 +45,7 @@ chmod 600 /etc/silkcloud/*
 EOF
 
 ./foreach-here.sh $ENV/utils.txt << EOF
+set -e
 cat << EOFINNER > /etc/silkcloud/configuration.properties
 profile=apphost-jobs
 environment=$ENV
@@ -53,7 +56,8 @@ EOFINNER
 chmod 600 /etc/silkcloud/*
 EOF
 
-./foreach-here.sh $ENV/crypto-dbs.txt $ENV/masters.txt $ENV/secondaries.txt $ENV/replicas.txt << EOF
+./foreach-here.sh $ENV/crypto-dbs.txt $ENV/masters.txt $ENV/secondaries.txt $ENV/bcps.txt $ENV/replicas.txt << EOF
+set -e
 cat << EOFINNER > /etc/silkcloud/configuration.properties
 environment=$ENV
 crypto.core.key=$CRYPTO_KEY

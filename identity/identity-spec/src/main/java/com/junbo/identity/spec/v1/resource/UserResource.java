@@ -61,4 +61,12 @@ public interface UserResource {
     @Path("/{userId}")
     @RouteBy("userId")
     Promise<Void> delete(@PathParam("userId") UserId userId);
+
+    @POST
+    @Path("/check-username/{username}")
+    Promise<Void> checkUsername(@PathParam("username") String username);
+
+    @POST
+    @Path("/check-email/{email}")
+    Promise<Void> checkEmail(@PathParam("email") String email);
 }

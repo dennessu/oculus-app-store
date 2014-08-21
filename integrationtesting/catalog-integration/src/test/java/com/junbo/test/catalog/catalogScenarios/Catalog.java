@@ -315,10 +315,16 @@ public class Catalog extends BaseTestClass {
         offerRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
         offerRevisionServiceAPI.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
 
+        //updated due to bug SER-474
         //verify the offer published status and currentOfferRevisionId
         offerGet = offerServiceAPI.getOffer(offer.getOfferId());
-        Assert.assertEquals(offerGet.getPublished(), Boolean.TRUE);
+        Assert.assertEquals(offerGet.getPublished(), Boolean.FALSE);
         Assert.assertEquals(offerGet.getCurrentRevisionId(), offerRevision.getRevisionId());
+
+        //put offer to published
+        offerGet.setPublished(true);
+        offerGet = offerServiceAPI.updateOffer(offer.getOfferId(), offerGet);
+        Assert.assertEquals(offerGet.getPublished(), Boolean.TRUE);
     }
 
     @Property(
@@ -509,8 +515,12 @@ public class Catalog extends BaseTestClass {
         offerRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
         offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
 
-        //Check the offer status
+        //Check the offer status -- updated due to bug SER-474
         offer = offerService.getOffer(offer.getOfferId());
+        Assert.assertEquals(offer.getPublished(), Boolean.FALSE);
+
+        offer.setPublished(true);
+        offer = offerService.updateOffer(offer.getOfferId(), offer);
         Assert.assertEquals(offer.getPublished(), Boolean.TRUE);
     }
 

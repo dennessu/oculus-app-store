@@ -5,8 +5,8 @@
  */
 package com.junbo.test.catalog.util;
 
-import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
+import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
 import com.junbo.test.catalog.impl.OfferRevisionServiceImpl;
@@ -82,17 +82,28 @@ public class BaseTestClass extends TestClass {
         offerRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
         offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
 
-        return offerService.getOffer(offer.getOfferId());
+        //put offer to published(refer to bug SER-474
+        offer = offerService.getOffer(offer.getOfferId());
+        offer.setPublished(true);
+        return offerService.updateOffer(offer.getOfferId(), offer);
     }
 
     protected OfferRevision releaseOfferRevision(OfferRevision offerRevision) throws Exception {
         this.prepareCatalogAdminToken();
 
+        OfferService offerService = OfferServiceImpl.instance();
         OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
 
         //Approve the offer revision
         offerRevision.setStatus(CatalogEntityStatus.APPROVED.getEntityStatus());
-        return offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
+        offerRevision = offerRevisionService.updateOfferRevision(offerRevision.getRevisionId(), offerRevision);
+
+        //put offer to published(refer to bug SER-474
+        Offer offer = offerService.getOffer(offerRevision.getOfferId());
+        offer.setPublished(true);
+        offerService.updateOffer(offer.getOfferId(), offer);
+
+        return offerRevision;
     }
 
     protected void verifyGetItemsScenarios(HashMap<String, List<String>> paraMap, int expectedRtnSize, String... itemId) throws Exception {

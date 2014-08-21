@@ -7,7 +7,7 @@ checkAccount $DEPLOYMENT_ACCOUNT
 
 echo "[PURGE][BCP] kill postgres instance with port [$BCP_DB_PORT]..."
 forceKill $BCP_DB_PORT
-zai
+
 echo "[PURGE][BCP] kill pgbouncer instance with port [$PGBOUNCER_PORT]..."
 forceKill $PGBOUNCER_PORT
 

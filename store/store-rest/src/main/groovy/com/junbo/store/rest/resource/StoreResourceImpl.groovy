@@ -1,4 +1,4 @@
-package com.junbo.store.rest.resource
+package com.junbo.store.rest.resource.raw
 
 import com.junbo.authorization.AuthorizeContext
 import com.junbo.catalog.spec.enums.EntitlementType
@@ -12,7 +12,6 @@ import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.error.AppCommonErrors
-import com.junbo.common.error.AppErrorException
 import com.junbo.common.id.*
 import com.junbo.common.id.util.IdUtil
 import com.junbo.common.json.ObjectMapperProvider
@@ -38,11 +37,9 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.order.spec.model.PaymentInfo
-import com.junbo.payment.spec.model.PageMetaData
-import com.junbo.payment.spec.model.PaymentInstrument
-import com.junbo.payment.spec.model.PaymentInstrumentSearchParam
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.db.repo.ConsumptionRepository
+import com.junbo.store.rest.context.ErrorContext
 import com.junbo.store.rest.purchase.PurchaseTokenProcessor
 import com.junbo.store.rest.utils.*
 import com.junbo.store.spec.error.AppErrors
@@ -51,7 +48,6 @@ import com.junbo.store.spec.model.billing.*
 import com.junbo.store.spec.model.browse.*
 import com.junbo.store.spec.model.iap.*
 import com.junbo.store.spec.model.identity.*
-import com.junbo.store.spec.model.login.UserNameCheckResponse
 import com.junbo.store.spec.model.purchase.*
 import com.junbo.store.spec.resource.StoreResource
 import groovy.transform.CompileStatic
@@ -112,6 +108,9 @@ class StoreResourceImpl implements StoreResource {
 
     private List<com.junbo.identity.spec.v1.model.PIType> piTypes
 
+    @Resource(name = 'storeAppErrorUtils')
+    private AppErrorUtils appErrorUtils
+
     private static UserId getCurrentUserId() {
         UserId userId = AuthorizeContext.currentUserId
         if (userId == null || userId.value == 0) {
@@ -156,62 +155,14 @@ class StoreResourceImpl implements StoreResource {
 
         User user
         Boolean userPendingUpdate
-
+        ErrorContext errorContext = new ErrorContext()
         resourceContainer.userResource.get(userId, new UserGetOptions()).syncThen { User u ->
             user = u
         }.then {
-            if (StringUtils.isEmpty(userProfile.password)) {
-                return Promise.pure()
-            }
-
-            return resourceContainer.userCredentialResource.create(userId, new UserCredential(
-                    type: 'PASSWORD',
-                    currentPassword: request.challengeAnswer.password,
-                    value: userProfile.password
-            )).recover { Throwable ex ->
-                handleAndThrow(ex)
-                assert false, 'should not be there'
-            }
+            updateUserCredential(user.getId(), request, errorContext)
         }.then {
-            if (StringUtils.isEmpty(userProfile.pin)) {
-                return Promise.pure()
-            }
-
-            return resourceContainer.userCredentialResource.create(userId, new UserCredential(
-                    type: 'PIN',
-                    currentPassword: request.challengeAnswer.password,
-                    value: userProfile.pin
-            )).recover { Throwable ex ->
-                handleAndThrow(ex)
-                assert false, 'should not be there'
-            }
-        }.then {
-            if (StringUtils.isEmpty(userProfile.email?.value)) {
-                return Promise.pure()
-            }
-
-            return resourceContainer.userPersonalInfoResource.create(new UserPersonalInfo(
-                    userId: userId,
-                    type: 'EMAIL',
-                    value: ObjectMapperProvider.instance().valueToTree(new Email(
-                            info: userProfile.email.value
-                    ))
-            )).then { UserPersonalInfo emailUserPersonalInfo ->
-                if (user.emails == null) {
-                    user.emails = [] as List
-                }
-
-                def defaultLink = user.emails.find { UserPersonalInfoLink link -> link.isDefault }
-                if (defaultLink != null) {
-                    user.emails.remove(defaultLink)
-                }
-
-                user.emails.add(new UserPersonalInfoLink(
-                        value: emailUserPersonalInfo.getId(),
-                        isDefault: true
-                ))
-
-                userPendingUpdate = true
+            updateUserEmail(user, request, errorContext).then { Boolean changed ->
+                userPendingUpdate = (userPendingUpdate || changed)
                 return Promise.pure()
             }
         }.then {
@@ -253,7 +204,7 @@ class StoreResourceImpl implements StoreResource {
             }
         }
     }
-    
+
     private Promise<StoreUserProfile> innerGetUserProfile(UserId userId) {
         User user
         StoreUserProfile userProfile
@@ -1108,6 +1059,71 @@ class StoreResourceImpl implements StoreResource {
         return result
     }
 
+    private Promise updateUserCredential(UserId userId, UserProfileUpdateRequest request, ErrorContext errorContext) {
+        return Promise.pure().then {
+            if (StringUtils.isEmpty(request.userProfile.password)) {
+                return Promise.pure()
+            }
+            errorContext.fieldName = 'userProfile.password'
+            return resourceContainer.userCredentialResource.create(userId, new UserCredential(
+                    type: 'PASSWORD',
+                    currentPassword: request.challengeAnswer.password,
+                    value: request.userProfile.password
+            )).recover { Throwable ex ->
+                throwOnUserPasswordIncorrect(ex)
+                appErrorUtils.throwOnFieldInvalidError(errorContext, ex)
+                throw ex
+            }
+        }.then {
+            if (StringUtils.isEmpty(request.userProfile.pin)) {
+                return Promise.pure()
+            }
+            errorContext.fieldName = 'userProfile.pin'
+            return resourceContainer.userCredentialResource.create(userId, new UserCredential(
+                    type: 'PIN',
+                    currentPassword: request.challengeAnswer.password,
+                    value: request.userProfile.pin
+            )).recover { Throwable ex ->
+                throwOnUserPasswordIncorrect(ex)
+                appErrorUtils.throwOnFieldInvalidError(errorContext, ex)
+                throw ex
+            }
+        }
+    }
+
+    private Promise<Boolean> updateUserEmail(User user, UserProfileUpdateRequest request, ErrorContext errorContext) {
+        if (StringUtils.isEmpty(request.userProfile.email?.value)) {
+            return Promise.pure(false)
+        }
+
+        return resourceContainer.userPersonalInfoResource.create(new UserPersonalInfo(
+                userId: user.getId(),
+                type: 'EMAIL',
+                value: ObjectMapperProvider.instance().valueToTree(new Email(
+                        info: request.userProfile.email.value
+                ))
+        )).recover { Throwable ex ->
+            appErrorUtils.throwOnFieldInvalidError(errorContext, ex)
+            throw ex
+        }.then { UserPersonalInfo emailUserPersonalInfo ->
+            if (user.emails == null) {
+                user.emails = [] as List
+            }
+
+            def defaultLink = user.emails.find { UserPersonalInfoLink link -> link.isDefault }
+            if (defaultLink != null) {
+                user.emails.remove(defaultLink)
+            }
+
+            user.emails.add(new UserPersonalInfoLink(
+                    value: emailUserPersonalInfo.getId(),
+                    isDefault: true
+            ))
+
+            return Promise.pure(true)
+        }
+    }
+
     private String getPlatformName() {
         return 'ANDROID'
     }
@@ -1128,13 +1144,9 @@ class StoreResourceImpl implements StoreResource {
         }
     }
 
-    private void handleAndThrow(Throwable ex) {
-        if (ex instanceof  AppErrorException) {
-            def appError = ex.error.error()
-            if (appError.code == '131.109') { // userPasswordIncorrect
-                throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
-            }
+    private void throwOnUserPasswordIncorrect(Throwable ex) {
+        if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.UserPasswordIncorrect)) {
+            throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
         }
-        throw ex
     }
 }

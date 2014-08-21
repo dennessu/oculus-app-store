@@ -92,6 +92,8 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     }
 
     public Offer getOffer(String offerId, int expectedResponseCode) throws Exception {
+        componentType = ComponentType.CATALOG;
+
         String url = catalogServerURL + "/" + offerId;
         String responseBody = restApiCall(HTTPMethod.GET, url, null, expectedResponseCode);
         Offer offerGet = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {}, responseBody);
@@ -105,6 +107,8 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     }
 
     public Results<Offer> getOffers(HashMap<String, List<String>> httpPara, int expectedResponseCode) throws Exception {
+        componentType = ComponentType.CATALOG;
+
         String responseBody = restApiCall(HTTPMethod.GET, catalogServerURL, null, expectedResponseCode, httpPara);
         Results<Offer> offerGet = new JsonMessageTranscoder().decode(new TypeReference<Results<Offer>>() {},
                 responseBody);
@@ -141,6 +145,8 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     }
 
     public Offer postOffer(Offer offer, int expectedResponseCode) throws Exception {
+        componentType = ComponentType.CATALOG;
+
         String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, offer, expectedResponseCode);
         Offer offerPost = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {},
                 responseBody);
@@ -154,8 +160,12 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     }
 
     public Offer updateOffer(String offerId, Offer offer, int expectedResponseCode) throws Exception {
+        componentType = ComponentType.CATALOGADMIN;
+
+        boolean isServiceScope = offer.getPublished();
+
         String putUrl = catalogServerURL + "/" + offerId;
-        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, offer, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.PUT, putUrl, offer, expectedResponseCode, isServiceScope);
         Offer offerPut = new JsonMessageTranscoder().decode(new TypeReference<Offer>() {},
                 responseBody);
 
@@ -168,6 +178,8 @@ public class OfferServiceImpl extends HttpClientBase implements OfferService {
     }
 
     public void deleteOffer(String offerId, int expectedResponseCode) throws Exception {
+        componentType = ComponentType.CATALOG;
+
         String url = catalogServerURL + "/" + offerId;
         restApiCall(HTTPMethod.DELETE, url, null, expectedResponseCode);
         Master.getInstance().removeOffer(offerId);

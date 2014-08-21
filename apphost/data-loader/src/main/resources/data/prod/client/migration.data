@@ -1,7 +1,7 @@
 {
   "scopes" : [ "identity", "identity.pii", "identity.migration" ],
   "client_id" : "migration",
-  "client_secret" : "224112E90935C8FA4E3F66B96FACE79B",
+  "client_secret" : "04036686FD30922899D3C47E3A518520#9CCFF4C49F852FA3FC147F35E4A52449B278EAAA615F0F3376D51BCAD013F4C03EA2A54718A4510E2F427FC2B7D6ED86",
   "client_name" : "migration",
   "redirect_uris" : [],
   "default_scopes" : [ "identity", "identity.pii", "identity.migration" ],

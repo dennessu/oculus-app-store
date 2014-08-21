@@ -1,9 +1,9 @@
 {
   "client_id" : "curationTool",
-  "client_secret" : "5E44199FA0F6AAA67D87E9C8E16E0E50#CD52714ADA1BC3B49F7ED7CB3FFC3E1A",
+  "client_secret" : "7E522B23C48613D003594F40492D6DE2#3F8AB71C7C08A55A6DABAF2F7E907CA8095371AC1208853D4E837256DA2DEC8C76DC8D1FEB4D105179164CA529FC0EBD",
   "client_name" : "curationTool",
 
-  "redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.dev/*" ],
+  "redirect_uris" : [ "http://localhost", "https://*.oculusvr.com/*", "https://*.oculus.com/*", "https://*.dev/*" ],
   "default_redirect_uri" : "http://localhost",
 
   "logout_redirect_uris" : [ "http://localhost", "http://localhost:8000/app/#/home" ],

@@ -107,7 +107,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
             default:
                 formParams.put("scope", componentType.toString() + ".service");
         }
-        formParams.put("client_id", "service");
+        formParams.put("client_id", clientId);
         formParams.put("client_secret", clientSecret);
         formParams.put("grant_type", grantType.toString());
 
@@ -191,7 +191,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         needAuthHeader = false;
         needOverrideRequestEntity = false;
         String url = String.format("/authorize?client_id=%s&response_type=code&scope=identity&redirect_uri=%s",
-                ConfigHelper.getSetting("client_id"), ConfigHelper.getSetting("oauth.redirect.uri"));
+                ConfigHelper.getSetting("client_id"), ConfigHelper.getSetting("defaultRedirectURI"));
 
         String responseBody = restApiCall(HTTPMethod.GET, oauthUrl + url);
 

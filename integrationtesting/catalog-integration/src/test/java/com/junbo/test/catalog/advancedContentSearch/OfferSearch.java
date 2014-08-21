@@ -298,57 +298,35 @@ public class OfferSearch extends BaseTestClass {
             }
     )
     @Test
-    public void testGetOffer() throws Exception {
+    public void testGetOfferItemById() throws Exception {
         ItemService itemService = ItemServiceImpl.instance();
         OfferService offerService = OfferServiceImpl.instance();
         ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
         OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
 
-        HashMap<String, List<String>> paraMap = new HashMap<>();
-        List<String> query = new ArrayList<>();
-        String offerName1 = "testOffer_Free_Digital";
-        String offerName2 = "testOffer_Free_Physical";
-        String itemName1 = "testItem_Free_Digital";
-        String itemName2 = "testItem_Free_Physical";
+        String offerId1 = "2e03a63a3cf3a2ab1c36aeefce8b2587";
+        String offerId2 = "4cae0f09738e2aa1314143ea696f9955";
 
-        String strQuery = offerName1;
-        query.clear();
-        query.add(strQuery);
-        paraMap.put("q", query);
-
-        Results<Offer> offersRtn = offerService.getOffers(paraMap);
-        Assert.assertEquals(offersRtn.getItems().size(), 1);
-        Offer offer1 = offersRtn.getItems().get(0);
-
-        strQuery = offerName2;
-        query.clear();
-        query.add(strQuery);
-        paraMap.put("q", query);
-
-        offersRtn = offerService.getOffers(paraMap);
-        Assert.assertEquals(offersRtn.getItems().size(), 1);
-        Offer offer2 = offersRtn.getItems().get(0);
-
-        Offer offerRtn1 = offerService.getOffer(offer1.getOfferId());
-        Assert.assertEquals(offerRtn1.getOfferId(), offer1.getOfferId());
-
-        Offer offerRtn2 = offerService.getOffer(offer2.getOfferId());
-        Assert.assertEquals(offerRtn2.getOfferId(), offer2.getOfferId());
+        Offer offer1 = offerService.getOffer(offerId1);
+        Offer offer2 = offerService.getOffer(offerId2);
+        Assert.assertNotNull(offer1);
+        Assert.assertNotNull(offer2);
 
         //get offer revision
         OfferRevision offerRevision1 = offerRevisionService.getOfferRevision(offer1.getCurrentRevisionId());
         OfferRevision offerRevision2 = offerRevisionService.getOfferRevision(offer2.getCurrentRevisionId());
-        Assert.assertTrue(offerRevision1.getLocales().get(defaultLocale).getName().equalsIgnoreCase(offerName1));
-        Assert.assertTrue(offerRevision2.getLocales().get(defaultLocale).getName().equalsIgnoreCase(offerName2));
+        Assert.assertNotNull(offerRevision1);
+        Assert.assertNotNull(offerRevision2);
 
         Item item1 = itemService.getItem(offerRevision1.getItems().get(0).getItemId());
         Item item2 = itemService.getItem(offerRevision2.getItems().get(0).getItemId());
+        Assert.assertNotNull(item1);
+        Assert.assertNotNull(item2);
 
         ItemRevision itemRevision1 = itemRevisionService.getItemRevision(item1.getCurrentRevisionId());
         ItemRevision itemRevision2 = itemRevisionService.getItemRevision(item2.getCurrentRevisionId());
-
-        Assert.assertTrue(itemRevision1.getLocales().get(defaultLocale).getName().equalsIgnoreCase(itemName1));
-        Assert.assertTrue(itemRevision2.getLocales().get(defaultLocale).getName().equalsIgnoreCase(itemName2));
+        Assert.assertNotNull(itemRevision1);
+        Assert.assertNotNull(itemRevision2);
     }
 
     @Property(
@@ -363,10 +341,10 @@ public class OfferSearch extends BaseTestClass {
             }
     )
     @Test
-    public void testGetOffers() throws Exception {
+    public void testGetOffersItemsBySearchOptions() throws Exception {
         OfferService offerService = OfferServiceImpl.instance();
+
         HashMap<String, List<String>> paraMap = new HashMap<>();
-        List<String> query = new ArrayList<>();
         List<String> offerIds = new ArrayList<>();
         List<String> publisherIds = new ArrayList<>();
         List<String> packageName = new ArrayList<>();
@@ -374,25 +352,11 @@ public class OfferSearch extends BaseTestClass {
         List<String> itemIds = new ArrayList<>();
         List<String> itemRevisionIds = new ArrayList<>();
 
-        String offerName1 = "testOffer_Free_Digital";
-        String offerName2 = "testOffer_Free_Physical";
+        String offerId1 = "2e03a63a3cf3a2ab1c36aeefce8b2587";
+        String offerId2 = "4cae0f09738e2aa1314143ea696f9955";
 
-        String strQuery = offerName1 + "%20AND%20" + offerName2;
-        query.add(strQuery);
-        paraMap.put("q", query);
-
-        Results<Offer> offersRtn = offerService.getOffers(paraMap);
-        Assert.assertEquals(offersRtn.getItems().size(), 0);
-
-        strQuery = offerName1 + "%20OR%20" + offerName2;
-        query.clear();
-        query.add(strQuery);
-        paraMap.put("q", query);
-
-        offersRtn = offerService.getOffers(paraMap);
-        Assert.assertEquals(offersRtn.getItems().size(), 2);
-        Offer offer1 = offersRtn.getItems().get(0);
-        Offer offer2 = offersRtn.getItems().get(1);
+        Offer offer1 = offerService.getOffer(offerId1);
+        Offer offer2 = offerService.getOffer(offerId2);
 
         offerIds.add(offer1.getOfferId());
         offerIds.add(offer2.getOfferId());
@@ -400,7 +364,7 @@ public class OfferSearch extends BaseTestClass {
         paraMap.clear();
         paraMap.put("offerId", offerIds);
 
-        offersRtn = offerService.getOffers(paraMap);
+        Results<Offer> offersRtn = offerService.getOffers(paraMap);
         Assert.assertEquals(offersRtn.getItems().size(), 2);
 
         publisherIds.add(IdConverter.idToHexString(offer1.getOwnerId()));

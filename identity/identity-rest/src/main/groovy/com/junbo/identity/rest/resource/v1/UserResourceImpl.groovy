@@ -32,6 +32,8 @@ import com.junbo.identity.spec.v1.resource.UserResource
 import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
+import org.apache.commons.lang3.StringUtils
+import org.codehaus.groovy.util.StringUtil
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -305,6 +307,24 @@ class UserResourceImpl implements UserResource {
                 return userRepository.delete(userId)
             }
         }
+    }
+
+    @Override
+    Promise<Void> checkUsername(String username) {
+        if (StringUtils.isEmpty(username)) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('username').exception()
+        }
+
+        return userValidator.validateUsername(username)
+    }
+
+    @Override
+    Promise<Void> checkEmail(String email) {
+        if (StringUtils.isEmpty(email)) {
+            throw AppCommonErrors.INSTANCE.fieldRequired('email').exception()
+        }
+
+        return userValidator.validateEmail(email)
     }
 
     Promise<Void> updateCredential(UserId userId, UserPersonalInfoId oldUsername, UserPersonalInfoId newUsername) {

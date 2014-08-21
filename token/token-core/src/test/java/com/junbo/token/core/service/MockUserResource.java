@@ -43,4 +43,14 @@ public class MockUserResource implements UserResource {
     public Promise<Void> delete(UserId userId) {
         return null;
     }
+
+    @Override
+    public Promise<Void> checkUsername(String username) {
+        return Promise.pure(null);
+    }
+
+    @Override
+    public Promise<Void> checkEmail(String email) {
+        return Promise.pure(null);
+    }
 }
