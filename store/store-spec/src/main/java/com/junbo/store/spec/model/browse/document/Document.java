@@ -49,6 +49,8 @@ public class Document {
 
     private Review currentUserReview; // only appears in getLibrary response, or in getDetails response.
 
+    private String deliveryUrl;
+
     public ItemId getItemId() {
         return itemId;
     }
@@ -175,5 +177,13 @@ public class Document {
 
     public void setOwnedByCurrentUser(Boolean ownedByCurrentUser) {
         this.ownedByCurrentUser = ownedByCurrentUser;
+    }
+
+    public String getDeliveryUrl() {
+        return deliveryUrl;
+    }
+
+    public void setDeliveryUrl(String deliveryUrl) {
+        this.deliveryUrl = deliveryUrl;
     }
 }

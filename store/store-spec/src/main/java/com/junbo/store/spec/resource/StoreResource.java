@@ -113,4 +113,8 @@ public interface StoreResource {
     @POST
     @Path("/add-review")
     Promise<AddReviewResponse> addReview(AddReviewRequest request);
+
+    @GET
+    @Path("/delivery")
+    Promise<DeliveryResponse> getDelivery(@BeanParam DeliveryRequest request);
 }

@@ -740,6 +740,11 @@ class StoreResourceImpl implements StoreResource {
         return null
     }
 
+    @Override
+    Promise<DeliveryResponse> getDelivery(DeliveryRequest request) {
+        return null
+    }
+
     private Promise<BillingProfile> innerGetBillingProfile(User user, LocaleId locale, CountryId country, OfferId offerId) {
         com.junbo.store.spec.model.catalog.Offer offer
         Promise.pure(null).then {
