@@ -150,6 +150,7 @@ public class ItemRevisionValidator extends ValidationSupport {
                 validateOptionalEmail("supportEmail", properties.getSupportEmail(), errors);
                 validateOptionalUrl("communityForumLink", properties.getCommunityForumLink(), errors);
                 validateOptionalUrl("manualDocument", properties.getManualDocument(), errors);
+                validateOptionalUrl("website", properties.getWebsite(), errors);
                 validateImages(properties.getImages(), errors);
             }
         }

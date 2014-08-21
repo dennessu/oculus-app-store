@@ -101,6 +101,14 @@ class CheckoutTests(ut.TestBase):
             "Authorization": "Bearer " + adminToken
         }, data = offerRev)
 
+        offer = curlJson('GET', ut.test_uri, offer['self']['href'], headers = {
+            "Authorization": "Bearer " + user.access_token
+        })
+        offer['isPublished'] = True
+        offer = curlJson('PUT', ut.test_uri, offer['self']['href'], headers = {
+            "Authorization": "Bearer " + adminToken
+        }, data = offer)
+
         # verify the item is now available to public
         offer = curlJson('GET', ut.test_uri, offer['self']['href'])
         assert offer['currentRevision'] is not None

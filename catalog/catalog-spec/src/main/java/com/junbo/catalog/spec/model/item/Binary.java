@@ -6,6 +6,7 @@
 
 package com.junbo.catalog.spec.model.item;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
@@ -20,6 +21,8 @@ public class Binary {
     private String version;
     @ApiModelProperty(position = 4, required = true, value = "The MD5 signature/hash of the binary - 32 lowercase hex chars")
     private String md5;
+    @ApiModelProperty(position = 5, required = true, value = "Metadata, no server validations on this property.")
+    private JsonNode metadata;
 
     public String getHref() {
         return href;
@@ -51,5 +54,13 @@ public class Binary {
 
     public void setMd5(String md5) {
         this.md5 = md5;
+    }
+
+    public JsonNode getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(JsonNode metadata) {
+        this.metadata = metadata;
     }
 }
