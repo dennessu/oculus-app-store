@@ -31,6 +31,13 @@ public final class SnifferUtils {
         return Integer.parseInt(str);
     }
 
+    public static boolean safeParseBoolean(String str) {
+        if (StringUtils.isEmpty(str)) {
+            return false;
+        }
+        return Boolean.parseBoolean(str);
+    }
+
     public static String getConfig(String configKey) {
         return ConfigServiceManager.instance().getConfigValue(configKey);
     }
