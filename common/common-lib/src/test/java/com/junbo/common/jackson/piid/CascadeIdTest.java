@@ -86,7 +86,7 @@ public class CascadeIdTest {
 
     @Test
     public void testIncompleteDeserialize() throws Exception {
-        String json = "{\"testId\":{\"href\":\"http://api.oculusvr.com/v1/users/000000003039/test-ids/\",\"id\":\"\"}}";
+        String json = "{\"testId\":{\"href\":\"http://api.oculus.com/v1/users/000000003039/test-ids/\",\"id\":\"\"}}";
 
         PaymentTransaction trx = mapper.readValue(json, PaymentTransaction.class);
         Assert.assertNull(trx.getTestId().getTestId());

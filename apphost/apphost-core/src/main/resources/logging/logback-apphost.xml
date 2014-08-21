@@ -29,7 +29,7 @@
         <file>${logDir}/main.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${logDir}/main.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <maxHistory>90</maxHistory>
+            <maxHistory>30</maxHistory>
             <timeBasedFileNamingAndTriggeringPolicy
                     class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <!-- or whenever the file size reaches 100MB -->
@@ -53,7 +53,7 @@
         </filter>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${logDir}/alert.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <maxHistory>90</maxHistory>
+            <maxHistory>5</maxHistory>
             <timeBasedFileNamingAndTriggeringPolicy
                     class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <!-- or whenever the file size reaches 100MB -->
@@ -96,7 +96,7 @@
         <file>${logDir}/httpd.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${logDir}/alert.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <maxHistory>90</maxHistory>
+            <maxHistory>10</maxHistory>
             <timeBasedFileNamingAndTriggeringPolicy
                     class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <!-- or whenever the file size reaches 100MB -->

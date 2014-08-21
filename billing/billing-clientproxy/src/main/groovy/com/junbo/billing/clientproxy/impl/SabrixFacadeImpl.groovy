@@ -610,7 +610,7 @@ class SabrixFacadeImpl implements TaxFacade {
          */
         def sabrixAddress = new SabrixAddress()
         sabrixAddress.country = address.countryId.value
-        if (sabrixAddress.country == 'US') {
+        if (sabrixAddress.country in ['US', 'CA', 'GB']) {
             sabrixAddress.postcode = address.postalCode
         }
         return sabrixAddress
@@ -665,10 +665,18 @@ class SabrixFacadeImpl implements TaxFacade {
         }
 
         address.countryId = new CountryId(validatedAddress.country.code)
-        address.city = validatedAddress.city?.name
-        address.postalCode = validatedAddress.postcode?.name
-        address.subCountry = validatedAddress.state != null ?
-                validatedAddress.state.code : validatedAddress.province?.code
+        if (validatedAddress.city != null) {
+            address.city = validatedAddress.city.name
+        }
+        if (validatedAddress.postcode != null) {
+            address.postalCode = validatedAddress.postcode.name
+        }
+        if (validatedAddress.state != null) {
+            address.subCountry = validatedAddress.state.name
+        }
+        if (validatedAddress.province != null) {
+            address.subCountry = validatedAddress.province.name
+        }
         return address
     }
 

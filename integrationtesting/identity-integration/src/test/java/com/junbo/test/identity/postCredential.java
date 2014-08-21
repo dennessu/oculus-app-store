@@ -67,27 +67,45 @@ public class postCredential {
     // Require a minimum password length to 8 characters.
     public void testCredentialValid() throws Exception {
         User user = Identity.UserPostDefault();
-        String password = RandomHelper.randomAlphabetic(10);
+        String password = RandomHelper.randomAlphabetic(6);
         List<NameValuePair> nvps = new ArrayList<>();
         nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
         UserCredential uc = IdentityModel.DefaultUserCredential(user.getId(), password);
         CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(
                 Identity.IdentityV1UserURI + "/" + Identity.GetHexLongId(user.getId().getValue()) + "/change-credentials",
                 JsonHelper.JsonSerializer(uc), HttpclientHelper.HttpRequestType.post, nvps);
-        Validator.Validate("validate response code", 400, response.getStatusLine().getStatusCode());
-        String errorMessage = "Password must contain";
+        Validator.Validate("validate response code", 412, response.getStatusLine().getStatusCode());
+        String errorMessage = "Password should be between 8 and 16";
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
         response.close();
 
-        password = RandomHelper.randomNumeric(10);
+        password = RandomHelper.randomNumeric(6);
         uc = IdentityModel.DefaultUserCredential(user.getId(), password);
         response = HttpclientHelper.PureHttpResponse(
                 Identity.IdentityV1UserURI + "/" + Identity.GetHexLongId(user.getId().getValue()) + "/change-credentials",
                 JsonHelper.JsonSerializer(uc), HttpclientHelper.HttpRequestType.post, nvps);
-        Validator.Validate("validate response code", 400, response.getStatusLine().getStatusCode());
+        Validator.Validate("validate response code", 412, response.getStatusLine().getStatusCode());
         Validator.Validate("validate response error message", true,
                 EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+        response.close();
+
+        password = RandomHelper.randomNumeric(26);
+        uc = IdentityModel.DefaultUserCredential(user.getId(), password);
+        response = HttpclientHelper.PureHttpResponse(
+                Identity.IdentityV1UserURI + "/" + Identity.GetHexLongId(user.getId().getValue()) + "/change-credentials",
+                JsonHelper.JsonSerializer(uc), HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("validate response code", 412, response.getStatusLine().getStatusCode());
+        Validator.Validate("validate response error message", true,
+                EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+        response.close();
+
+        password = RandomHelper.randomNumeric(8);
+        uc = IdentityModel.DefaultUserCredential(user.getId(), password);
+        response = HttpclientHelper.PureHttpResponse(
+                Identity.IdentityV1UserURI + "/" + Identity.GetHexLongId(user.getId().getValue()) + "/change-credentials",
+                JsonHelper.JsonSerializer(uc), HttpclientHelper.HttpRequestType.post, nvps);
+        Validator.Validate("validate response code", 201, response.getStatusLine().getStatusCode());
         response.close();
     }
 

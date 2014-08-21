@@ -3,5 +3,5 @@
     "action" : "UserPersonalInfoChange",
     "locale" : "en_US",
     "providerName" : "mandrill",
-    "placeholderNames" : [ "name", "informationtype" ]
+    "placeholderNames" : [ "name" ]
 }

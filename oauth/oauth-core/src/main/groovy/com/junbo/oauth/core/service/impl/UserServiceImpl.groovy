@@ -201,10 +201,10 @@ class UserServiceImpl implements UserService {
         return userResource.get(new UserId(accessToken.userId), new UserGetOptions()).then { User user ->
             return this.getDefaultUserEmail(user).then { String email ->
                 if (email == null) {
-                    return Promise.pure(new UserInfo(sub: user.id.toString(), name: getUserName(user).get(), email: ''))
+                    return Promise.pure(new UserInfo(sub: user.id.toString(), name: getName(user).get(), email: ''))
                 }
 
-                return Promise.pure(new UserInfo(sub: user.id.toString(), name: getUserName(user).get(), email: email))
+                return Promise.pure(new UserInfo(sub: user.id.toString(), name: getName(user).get(), email: email))
             }
         }
     }
@@ -365,7 +365,7 @@ class UserServiceImpl implements UserService {
             if (userPersonalInfoLink.isDefault) {
                 return userPersonalInfoResource.get(userPersonalInfoLink.value, new UserPersonalInfoGetOptions()).then { UserPersonalInfo info ->
                     if (info == null) {
-                        return Promise.pure(new UserInfo(sub: user.id.toString(), name: getUserName(user).get(), email: ''))
+                        return Promise.pure(new UserInfo(sub: user.id.toString(), name: getName(user).get(), email: ''))
                     }
 
                     String userEmail
@@ -403,7 +403,7 @@ class UserServiceImpl implements UserService {
                     templateId: template.id as EmailTemplateId,
                     recipients: [email].asList(),
                     replacements: [
-                            'name': getUserName(user).get(),
+                            'name': getName(user).get(),
                             'link': uri
                     ]
             )
@@ -420,13 +420,19 @@ class UserServiceImpl implements UserService {
         }
     }
 
-    private Promise<String> getUserName(User user) {
-        if (user.username == null) {
-            return Promise.pure(null)
+    private Promise<String> getName(User user) {
+        if (user.name == null) {
+            return Promise.pure('')
         } else {
-            return userPersonalInfoResource.get(user.username, new UserPersonalInfoGetOptions()).then { UserPersonalInfo userPersonalInfo ->
-                UserLoginName userLoginName = (UserLoginName)jsonNodeToObj(userPersonalInfo.value, UserLoginName)
-                return Promise.pure(userLoginName.userName)
+            return userPersonalInfoResource.get(user.name, new UserPersonalInfoGetOptions()).then { UserPersonalInfo userPersonalInfo ->
+                if (userPersonalInfo == null) {
+                    return Promise.pure('')
+                }
+
+                UserName userName = (UserName)jsonNodeToObj(userPersonalInfo.value, UserName)
+                String firstName = StringUtils.isEmpty(userName.givenName) ? "" : userName.givenName
+                String lastName = StringUtils.isEmpty(userName.familyName) ? "" : userName.familyName
+                return Promise.pure(firstName + ' ' + lastName)
             }
         }
     }

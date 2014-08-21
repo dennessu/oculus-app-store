@@ -34,7 +34,7 @@ public class ResourceIdSerializer extends JsonSerializer<Object> implements Anno
 
     private ObjectMapper mapper = ObjectMapperProvider.instance();
 
-    protected String resourceUrlPrefix = "https://api.oculusvr.com/v1";
+    protected String resourceUrlPrefix = "https://api.oculus.com/v1";
 
     protected String resourcePath;
 

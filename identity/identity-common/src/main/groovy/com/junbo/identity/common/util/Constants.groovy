@@ -9,4 +9,5 @@ import groovy.transform.CompileStatic
 class Constants {
     public static final String COLON = ':'
     public static final String HEADER_TRIGGER_EMAIL = 'X-Email-Notification'
+    public static final String HEADER_DISABLE_EMAIL = 'X-DISABLE-EMAIL'
 }

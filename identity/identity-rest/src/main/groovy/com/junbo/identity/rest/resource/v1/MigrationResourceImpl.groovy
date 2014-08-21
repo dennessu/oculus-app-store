@@ -532,31 +532,50 @@ class MigrationResourceImpl implements MigrationResource {
                 existing.migratedUserId = user.migratedUserId
                 existing.createdTime = user.createdTime
                 existing.updatedTime = user.updatedTime
-                return userPersonalInfoRepository.get(existing.username).then { UserPersonalInfo userPersonalInfo ->
-                    UserLoginName loginName = (UserLoginName)JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserLoginName)
-                    if (loginName.userName == oculusInput.username) {
-                        // Do nothing
-                        if (!flag) {
-                            return userRepository.update(existing, existing)
+                if (existing.username == null) {
+                    UserLoginName loginName = new UserLoginName(
+                            userName: oculusInput.username,
+                            canonicalUsername: normalizeService.normalize(oculusInput.username)
+                    )
+                    UserPersonalInfo userPersonalInfo = new UserPersonalInfo(
+                            userId: (UserId)existing.id,
+                            type: UserPersonalInfoType.USERNAME.toString(),
+                            value: ObjectMapperProvider.instance().valueToTree(loginName),
+                            createdTime: oculusInput.createdDate,
+                            updatedTime: oculusInput.updateDate
+                    )
+
+                    return userPersonalInfoRepository.create(userPersonalInfo).then { UserPersonalInfo createdUserPersonalInfo ->
+                        existing.username = createdUserPersonalInfo.getId()
+                        return userRepository.update(existing, existing)
+                    }
+                } else {
+                    return userPersonalInfoRepository.get(existing.username).then { UserPersonalInfo userPersonalInfo ->
+                        UserLoginName loginName = (UserLoginName) JsonHelper.jsonNodeToObj(userPersonalInfo.value, UserLoginName)
+                        if (loginName.userName == oculusInput.username) {
+                            // Do nothing
+                            if (!flag) {
+                                return userRepository.update(existing, existing)
+                            } else {
+                                return Promise.pure(existing)
+                            }
                         } else {
-                            return Promise.pure(existing)
-                        }
-                    } else {
-                        // Update username
-                        loginName = new UserLoginName(
-                                userName: oculusInput.username,
-                                canonicalUsername: normalizeService.normalize(oculusInput.username)
-                        )
-                        userPersonalInfo = new UserPersonalInfo(
-                                userId: (UserId)existing.id,
-                                type: UserPersonalInfoType.USERNAME.toString(),
-                                value: ObjectMapperProvider.instance().valueToTree(loginName),
-                                createdTime: oculusInput.createdDate,
-                                updatedTime: oculusInput.updateDate
-                        )
-                        return userPersonalInfoRepository.create(userPersonalInfo).then { UserPersonalInfo createdUserPersonalInfo ->
-                            existing.username = createdUserPersonalInfo.getId()
-                            return userRepository.update(existing, existing)
+                            // Update username
+                            loginName = new UserLoginName(
+                                    userName: oculusInput.username,
+                                    canonicalUsername: normalizeService.normalize(oculusInput.username)
+                            )
+                            userPersonalInfo = new UserPersonalInfo(
+                                    userId: (UserId) existing.id,
+                                    type: UserPersonalInfoType.USERNAME.toString(),
+                                    value: ObjectMapperProvider.instance().valueToTree(loginName),
+                                    createdTime: oculusInput.createdDate,
+                                    updatedTime: oculusInput.updateDate
+                            )
+                            return userPersonalInfoRepository.create(userPersonalInfo).then { UserPersonalInfo createdUserPersonalInfo ->
+                                existing.username = createdUserPersonalInfo.getId()
+                                return userRepository.update(existing, existing)
+                            }
                         }
                     }
                 }

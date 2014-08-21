@@ -67,6 +67,10 @@
         <property name="salt" value="${identity.conf.indexHashSalt}" />
     </bean>
 
+    <bean id="textMessageHash" class="com.junbo.identity.data.hash.impl.TextMessageHashImpl">
+        <property name="salt" value="${identity.conf.indexHashSalt}" />
+    </bean>
+
     <bean id="userTINHash" class="com.junbo.identity.data.hash.impl.UserTINImpl" />
 
     <bean id="userEINHash" class="com.junbo.identity.data.hash.impl.UserEINImpl" />
@@ -91,6 +95,7 @@
                 <ref bean="userTINHash" />
                 <ref bean="userEINHash" />
                 <ref bean="usernameHash" />
+                <ref bean="textMessageHash" />
             </list>
         </constructor-arg>
     </bean>

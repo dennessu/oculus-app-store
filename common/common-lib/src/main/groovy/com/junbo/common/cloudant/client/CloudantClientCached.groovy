@@ -32,15 +32,18 @@ class CloudantClientCached implements CloudantClientInternal {
     private static MemcachedClientIF memcachedClient = JunboMemcachedClient.instance()
     private Integer expiration
     private Integer maxEntitySize
+    private boolean storeViewResults
 
     private CloudantClientCached() {
         ConfigService configService = ConfigServiceManager.instance()
 
-        String strMaxEntitySize = configService.getConfigValue("common.memcached.maxentitysize")
-        String strExpiration = configService.getConfigValue("common.memcached.expiration")
+        String strMaxEntitySize = configService.getConfigValue("common.cloudant.cache.maxentitysize")
+        String strExpiration = configService.getConfigValue("common.cloudant.cache.expiration")
+        String strStoreViewResults = configService.getConfigValue("common.cloudant.cache.storeviewresults")
 
         this.expiration = safeParseInt(strExpiration)
         this.maxEntitySize = safeParseInt(strMaxEntitySize)
+        this.storeViewResults = strStoreViewResults == "true"
     }
 
     @Override
@@ -106,7 +109,7 @@ class CloudantClientCached implements CloudantClientInternal {
     @Override
     def <T extends CloudantEntity> Promise<CloudantQueryResult> cloudantGetAll(CloudantDbUri dbUri, Class<T> entityClass, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
         Promise<CloudantQueryResult> future = impl.cloudantGetAll(dbUri, entityClass, limit, skip, descending, includeDocs)
-        if (includeDocs) {
+        if (includeDocs && storeViewResults) {
             future = updateCache(dbUri, entityClass, future)
         }
         return future
@@ -115,7 +118,7 @@ class CloudantClientCached implements CloudantClientInternal {
     @Override
     def <T extends CloudantEntity> Promise<CloudantQueryResult> queryView(CloudantDbUri dbUri, Class<T> entityClass, String viewName, String key, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
         Promise<CloudantQueryResult> future = impl.queryView(dbUri, entityClass, viewName, key, limit, skip, descending, includeDocs)
-        if (includeDocs) {
+        if (includeDocs && storeViewResults) {
             future = updateCache(dbUri, entityClass, future)
         }
         return future
@@ -124,7 +127,7 @@ class CloudantClientCached implements CloudantClientInternal {
     @Override
     def <T extends CloudantEntity> Promise<CloudantQueryResult> queryView(CloudantDbUri dbUri, Class<T> entityClass, String viewName, String startKey, String endKey, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
         Promise<CloudantQueryResult> future = impl.queryView(dbUri, entityClass, viewName, startKey, endKey, limit, skip, descending, includeDocs)
-        if (includeDocs) {
+        if (includeDocs && storeViewResults) {
             future = updateCache(dbUri, entityClass, future)
         }
         return future
@@ -134,7 +137,7 @@ class CloudantClientCached implements CloudantClientInternal {
     def <T extends CloudantEntity> Promise<CloudantQueryResult> queryView(CloudantDbUri dbUri, Class<T> entityClass, String viewName, Object[] startKey, Object[] endKey,
                                                                           boolean withHighKey, Integer limit, Integer skip, boolean descending, boolean includeDocs) {
         Promise<CloudantQueryResult> future = impl.queryView(dbUri, entityClass, viewName, startKey, endKey, withHighKey, limit, skip, descending, includeDocs)
-        if (includeDocs) {
+        if (includeDocs && storeViewResults) {
             future = updateCache(dbUri, entityClass, future)
         }
         return future
@@ -148,7 +151,7 @@ class CloudantClientCached implements CloudantClientInternal {
     @Override
     def <T extends CloudantEntity> Promise<CloudantQueryResult> search(CloudantDbUri dbUri, Class<T> entityClass, String searchName, String queryString, Integer limit, String bookmark, boolean includeDocs) {
         Promise<CloudantQueryResult> future = impl.search(dbUri, entityClass, searchName, queryString, limit, bookmark, includeDocs)
-        if (includeDocs) {
+        if (includeDocs && storeViewResults) {
             future = updateCache(dbUri, entityClass, future)
         }
         return future

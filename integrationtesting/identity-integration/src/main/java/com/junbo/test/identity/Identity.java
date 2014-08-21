@@ -23,6 +23,7 @@ import org.apache.http.util.EntityUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -205,6 +206,27 @@ public class Identity {
 
     public static void LocaleDeleteByLocaleId(String localeId) throws Exception {
         IdentityDelete(IdentityV1LocaleURI + "/" + localeId);
+    }
+
+    public static User UserPostDefaultWithMail(Integer nameLength, String email) throws Exception{
+        User user = UserPostDefault(nameLength);
+        Email mailPii = new Email();
+        mailPii.setInfo(email);
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+        userPersonalInfo.setLastValidateTime(new Date());
+        userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(mailPii));
+        userPersonalInfo.setUserId(user.getId());
+        userPersonalInfo.setType(IdentityModel.UserPersonalInfoType.EMAIL.toString());
+        UserPersonalInfo pii = UserPersonalInfoPost(user.getId(), userPersonalInfo);
+        UserPersonalInfoLink link = new UserPersonalInfoLink();
+        link.setValue(pii.getId());
+        link.setLabel(RandomHelper.randomAlphabetic(15));
+        link.setUserId(user.getId());
+        link.setIsDefault(true);
+        List<UserPersonalInfoLink> links = new ArrayList<>();
+        links.add(link);
+        user.setEmails(links);
+        return UserPut(user);
     }
 
     public static User UserPostDefault(Integer nameLength) throws Exception {

@@ -16,6 +16,9 @@ import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.apihelper.identity.RoleService;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 
 /**
  * @author Jason
@@ -28,15 +31,18 @@ public class RoleServiceImpl extends HttpClientBase implements RoleService {
     private static RoleService instance;
     private boolean isServiceScope = true;
 
-    public static synchronized RoleService instance() {
+    public static synchronized RoleService instance() throws Exception {
         if (instance == null) {
             instance = new RoleServiceImpl();
         }
         return instance;
     }
 
-    private RoleServiceImpl() {
+    private RoleServiceImpl() throws Exception {
         componentType = ComponentType.IDENTITY;
+
+        OAuthService oAuthService = OAuthServiceImpl.getInstance();
+        oAuthService.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType);
     }
 
     public Role postDefaultRole(String organizationId) throws Exception {

@@ -251,6 +251,11 @@ class CatalogDataHandler extends BaseDataHandler {
             logger.debug('put the offer revision to APPROVED')
             offerRevisionCreated.setStatus("APPROVED")
             offerRevisionResource.updateOfferRevision(offerRevisionCreated.revisionId, offerRevisionCreated).get()
+
+            //update due to bug SER-474
+            Offer offer = offerResource.getOffer(offerRevisionCreated.getOfferId()).get()
+            offer.published = true
+            offerResource.update(offer.getOfferId(), offer)
         } catch (Exception e) {
             logger.error("Error creating offer revision $offerRevision.revisionId.", e)
         }

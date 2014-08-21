@@ -6,4 +6,9 @@ dependencies {
     compile (libraries.http_core)
 
     compile junboProject(':common-sharding')
+
+    runtime junboProject(':billing-db')
+    runtime junboProject(':ewallet-db')
+    runtime junboProject(':order-db')
+    runtime junboProject(':payment-db')
 }

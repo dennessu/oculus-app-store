@@ -33,10 +33,12 @@ public class CacheSnifferJob implements InitializingBean {
     private static final String SEQ_KEY = "seq";
     private static final String ID_KEY = "id";
     private static final String CLOUDANT_HEARTBEAT_KEY = "common.cloudant.heartbeat";
+    private static final String SNIFFER_ENABLED_KEY = "common.jobs.sniffer.enabled";
 
     private static final int SAFE_SLEEP = 5000;
     private static final int MONITOR_THREADS = 10;
 
+    private boolean enabled;
     private Integer expiration;
     private Integer connectionTimeout;
 
@@ -45,6 +47,7 @@ public class CacheSnifferJob implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         // initialize configuration
+        this.enabled = SnifferUtils.safeParseBoolean(SnifferUtils.getConfig(SNIFFER_ENABLED_KEY));
         this.expiration = SnifferUtils.safeParseInt(SnifferUtils.getConfig(MEMCACHED_EXPIRATION_KEY));
 
         // initialize cloudant feed connection timeout
@@ -53,6 +56,11 @@ public class CacheSnifferJob implements InitializingBean {
     }
 
     public void listen() {
+        if (!this.enabled) {
+            LOGGER.info("Sniffer is OFF in current configuration.");
+            return;
+        }
+
         LOGGER.info("Start listening cloundant DB change feed");
 
         List<CloudantUri> cloudantInstances = CloudantSniffer.instance().getCloudantInstances();

@@ -13,8 +13,8 @@
   "default_scopes" : [ "identity", "identity.pii", "catalog", "catalog.admin", "openid", "offline" ],
 
   "response_types" : [ "ID_TOKEN", "CODE", "TOKEN" ],
-  "grant_types" : [ "AUTHORIZATION_CODE", "REFRESH_TOKEN" ],
+  "grant_types" : [ "AUTHORIZATION_CODE", "REFRESH_TOKEN", "PASSWORD" ],
 
-  "id_token_issuer" : "api.oculusvr.com",
+  "id_token_issuer" : "api.oculus.com",
   "need_consent" : false
 }

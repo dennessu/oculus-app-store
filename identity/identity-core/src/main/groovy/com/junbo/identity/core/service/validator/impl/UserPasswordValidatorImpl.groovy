@@ -7,7 +7,6 @@ import com.junbo.identity.core.service.credential.CredentialHash
 import com.junbo.identity.core.service.credential.CredentialHashFactory
 import com.junbo.identity.core.service.util.CipherHelper
 import com.junbo.identity.core.service.validator.UserPasswordValidator
-import com.junbo.identity.data.identifiable.UserPasswordStrength
 import com.junbo.identity.data.repository.UserPasswordRepository
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.error.AppErrors
@@ -102,9 +101,8 @@ class UserPasswordValidatorImpl implements UserPasswordValidator {
         }
 
         userPassword.setStrength(CipherHelper.calcPwdStrength(userPassword.value))
-        if (userPassword.getStrength() == UserPasswordStrength.WEAK.toString()) {
-            throw AppCommonErrors.INSTANCE.fieldInvalid('value',
-                    'Password must contain at least three of LowerCase character, Upper case character, Number and Special character').exception()
+        if (userPassword.value.length() < 8) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('value', 'Password must be equals or larger than 8 characters').exception()
         }
         userPassword.setPasswordHash(matched.hash(userPassword.value))
         userPassword.setUserId(userId)

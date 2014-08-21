@@ -7,7 +7,7 @@
         "revisions": null, 
         "type": "STORED_VALUE", 
         "developer": {
-            "href": "https://api.oculusvr.com/v1/organizations/1234", 
+            "href": "https://api.oculus.com/v1/organizations/1234",
             "id": "1234"
         }
     }, 
@@ -23,7 +23,7 @@
         }, 
         "rev": null,
         "item": {
-            "href": "https://api.oculusvr.com/v1/items/aabbccddeef4", 
+            "href": "https://api.oculus.com/v1/items/aabbccddeef4",
             "id": "aabbccddeef4"
         }, 
         "locales": {
@@ -111,13 +111,13 @@
             "priceType": "CUSTOM"
         }, 
         "developer": {
-            "href": "https://api.oculusvr.com/v1/organizations/1234", 
+            "href": "https://api.oculus.com/v1/organizations/1234",
             "id": "1234"
         }
     }, 
     "offer": {
         "publisher": {
-            "href": "https://api.oculusvr.com/v1/organizations/1234", 
+            "href": "https://api.oculus.com/v1/organizations/1234",
             "id": "1234"
         }, 
         "rev": null,
@@ -129,20 +129,20 @@
     "offerRevision": {
             "status": "DRAFT",
             "publisher": {
-                "href": "https://api.oculusvr.com/v1/organizations/1234",
+                "href": "https://api.oculus.com/v1/organizations/1234",
                 "id": "1234"
             },
             "distributionChannel": [
                 "STORE"
             ],
             "offer": {
-                "href": "https://api.oculusvr.com/v1/offers/bbaaccddeef4",
+                "href": "https://api.oculus.com/v1/offers/bbaaccddeef4",
                 "id": "bbaaccddeef4"
             },
             "items": [
                 {
                     "item": {
-                        "href": "https://api.oculusvr.com/v1/items/aabbccddeef4",
+                        "href": "https://api.oculus.com/v1/items/aabbccddeef4",
                         "id": "aabbccddeef4"
                     },
                     "quantity": 1
@@ -151,14 +151,14 @@
             "restrictions": {
                 "preconditionItems": [
                     {
-                        "href": "https://api.oculusvr.com/v1/items/1230",
+                        "href": "https://api.oculus.com/v1/items/1230",
                         "id": "1230"
                     }
                 ],
                 "limitPerOrder": 2,
                 "exclusionItems": [
                     {
-                        "href": "https://api.oculusvr.com/v1/items/120",
+                        "href": "https://api.oculus.com/v1/items/120",
                         "id": "120"
                     }
                 ],
@@ -171,7 +171,7 @@
                         "storedValueAmount": 1000,
                         "type": "CREDIT_WALLET",
                         "storedValueCurrency": {
-                            "href": "https://api.oculusvr.com/v1/currencies/USD",
+                            "href": "https://api.oculus.com/v1/currencies/USD",
                             "id": "USD"
                         }
                     }

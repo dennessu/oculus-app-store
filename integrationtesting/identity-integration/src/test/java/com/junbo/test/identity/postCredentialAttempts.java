@@ -18,6 +18,7 @@ import org.apache.http.util.EntityUtils;
 import org.testng.annotations.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -205,7 +206,7 @@ public class postCredentialAttempts {
         response.close();
 
         Boolean success = false;
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {
             Thread.sleep(i * 2 * 1000);
             response = Identity.UserCredentialAttemptesPostDefault(loginName.getUserName(), password, false);
             if (response.getStatusLine().getStatusCode() == 201) {
@@ -291,5 +292,42 @@ public class postCredentialAttempts {
         response.close();
         response = Identity.UserPinCredentialAttemptPostDefault(loginName.getUserName(), pin);
         response.close();
+    }
+
+    @Test(groups = "dailies")
+    public void testUserCredentialAttemptsRetryMaximumMail() throws Exception{
+        User user = Identity.UserPostDefaultWithMail(15, "xia.wayne2+" + RandomHelper.randomAlphabetic(15) + "@gmail.com");
+        String password = IdentityModel.DefaultPassword();
+        Identity.UserCredentialPostDefault(user.getId(), null, password);
+
+        String newPassword = IdentityModel.DefaultPassword();
+
+        for (int i = 0; i < 5; i++) {
+            UserPersonalInfo userPersonalInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(user.getUsername());
+            UserLoginName loginName = ObjectMapperProvider.instance().treeToValue(userPersonalInfo.getValue(), UserLoginName.class);
+            CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
+                    loginName.getUserName(), newPassword, false);
+            response.close();
+        }
+    }
+
+    @Test(groups = "dailies")
+    public void testUserCredentialAttemptsWithoutMail() throws Exception {
+        User user = Identity.UserPostDefault();
+        String password = IdentityModel.DefaultPassword();
+        Identity.UserCredentialPostDefault(user.getId(), null, password);
+        String newPassword = IdentityModel.DefaultPassword();
+
+        for (int i = 0; i < 3; i++) {
+            UserPersonalInfo userPersonalInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(user.getUsername());
+            UserLoginName loginName = ObjectMapperProvider.instance().treeToValue(userPersonalInfo.getValue(), UserLoginName.class);
+            CloseableHttpResponse response = Identity.UserCredentialAttemptesPostDefault(
+                    loginName.getUserName(), newPassword, false);
+            Validator.Validate("validate response error code", 412, response.getStatusLine().getStatusCode());
+            String errorMessage = "User Password Incorrect";
+            Validator.Validate("validate response error message", true,
+                    EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+            response.close();
+        }
     }
 }

@@ -57,8 +57,8 @@ rate an order
             "currency": "USD",
             "couponCodes":
             [
-                {"href": "http://api.oculusvr.com/coupons/111111", "id": "111111"},
-                {"href": "http://api.oculusvr.com/coupons/222222", "id": "222222"}
+                {"href": "http://api.oculus.com/coupons/111111", "id": "111111"},
+                {"href": "http://api.oculus.com/coupons/222222", "id": "222222"}
             ],
             "offers":
             [{ 
@@ -142,7 +142,7 @@ rate an order
                 "type": "COUPON_NOT_APPLIED",
                 "couponCodes":
                 [
-                    {"href": "http://api.oculusvr.com/coupons/111111", "id": "111111"}
+                    {"href": "http://api.oculus.com/coupons/111111", "id": "111111"}
                 ]
             },
             {

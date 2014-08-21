@@ -126,7 +126,7 @@ public class CustomBeanSerializer extends BeanSerializerBase {
         private static String resourceUrlPrefix;
 
         private static String readResourceUrlPrefix() {
-            String result = "https://api.oculusvr.com/v1";
+            String result = "https://api.oculus.com/v1";
             ConfigService configService = ConfigServiceManager.instance();
             if (configService != null) {
                 String prefixFromConfig = configService.getConfigValue("common.conf.resourceUrlPrefix");

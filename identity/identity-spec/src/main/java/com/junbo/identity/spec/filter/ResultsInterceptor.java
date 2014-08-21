@@ -27,7 +27,7 @@ public class ResultsInterceptor implements ContainerResponseFilter {
     private static final String COUNT_FORMAT = "count=";
     private static final String AND_FORMAT = "&";
 
-    private String selfHrefPrfix = "https://api.oculusvr.com/v1";
+    private String selfHrefPrfix = "https://api.oculus.com/v1";
 
     public ResultsInterceptor() {
         ConfigService configService = ConfigServiceManager.instance();

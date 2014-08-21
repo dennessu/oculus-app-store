@@ -9,6 +9,7 @@ package com.junbo.catalog.jobs.index;
 import com.junbo.catalog.core.OfferService;
 import com.junbo.catalog.spec.model.offer.Offer;
 import com.junbo.catalog.spec.model.offer.OffersGetOptions;
+import com.junbo.configuration.topo.DataCenters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
@@ -32,6 +33,11 @@ public class OfferIndexJob {
     }
 
     public void execute() {
+        if (DataCenters.instance().currentDataCenterId() != 0) {
+            LOGGER.info("OfferIndexJob only runs in first data center.");
+            return;
+        }
+
         if (running.compareAndSet(false, true)) {
             try {
                 LOGGER.info("Start OfferIndexJob");

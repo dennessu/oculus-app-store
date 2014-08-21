@@ -33,7 +33,7 @@ import java.util.Properties;
 public class EnumIdSerializer extends JsonSerializer<EnumId> {
     private static Logger logger = LoggerFactory.getLogger(IdSerializer.class);
 
-    private String selfHrefPrfix = "https://api.oculusvr.com/v1";
+    private String selfHrefPrfix = "https://api.oculus.com/v1";
 
     public EnumIdSerializer() {
         ConfigService configService = ConfigServiceManager.instance();

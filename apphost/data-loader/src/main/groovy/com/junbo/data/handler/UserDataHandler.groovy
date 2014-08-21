@@ -108,9 +108,6 @@ class UserDataHandler extends BaseDataHandler {
                 existing = createUserNamePII(username, existing)
             }
 
-            // always update credential
-            createUserCredential(password, existing)
-
             // create or update Email
             updated = false || createOrUpdateEmail(email, existing)
 
@@ -118,8 +115,10 @@ class UserDataHandler extends BaseDataHandler {
             updated = updated || createOrUpdateName(userNameData, existing)
 
             if (updated) {
-                userResource.put(existing.getId(), existing).get()
+                userResource.silentPut(existing.getId(), existing).get()
             }
+
+            // Existing user's credential won't be updated.
         } else {
             User created = null
             logger.debug("Create new user with username: $username")
@@ -144,7 +143,7 @@ class UserDataHandler extends BaseDataHandler {
                 //Name Pii
                 createOrUpdateName(userNameData, created)
 
-                userResource.put(created.id as UserId, created).get()
+                userResource.silentPut(created.id as UserId, created).get()
 
             } catch (Exception e) {
                 logger.error("Error creating user credential for $user.username.", e)
@@ -164,7 +163,7 @@ class UserDataHandler extends BaseDataHandler {
             )).get()
             user.username = createdPersonalInfo.getId()
             user.isAnonymous = false
-            return userResource.put(user.getId(), user).get()
+            return userResource.silentPut(user.getId(), user).get()
         } catch (Exception e) {
             logger.error("Error creating user $user.username.", e)
         }

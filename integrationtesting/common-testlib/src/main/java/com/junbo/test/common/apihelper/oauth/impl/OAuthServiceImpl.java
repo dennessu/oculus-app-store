@@ -107,7 +107,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
             default:
                 formParams.put("scope", componentType.toString() + ".service");
         }
-        formParams.put("client_id", "service");
+        formParams.put("client_id", clientId);
         formParams.put("client_secret", clientSecret);
         formParams.put("grant_type", grantType.toString());
 
