@@ -110,8 +110,8 @@
                 "knownBugs": "- Sometimes another application, especially chat apps, will force the game to minimise to desktop and steal focus if running full-screen. We suggest you disable chat apps whilst playing  \n\r\n- Currently not supporting OVR SDK 0.3.1 meaning that at present, the single player demo does not support Oculus Rift DK2 headsets (update coming soon!)",
                 "supportEmail": "info@radial-g.com",
                 "website": "http://www.radial-g.com",
-                "manualDocument": "",
-                "communityForumLink": "",
+                "manualDocument": null,
+                "communityForumLink": null,
                 "images": {
                     "main": {
                         "id": null,
