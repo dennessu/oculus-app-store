@@ -54,13 +54,19 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
     public UserNameCheckResponse CheckUserName(UserNameCheckRequest userNameCheckRequest) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "name-check", userNameCheckRequest);
         UserNameCheckResponse userNameCheckResponse = new JsonMessageTranscoder().decode(
-                new TypeReference<UserNameCheckResponse>() {}, responseBody);
+                new TypeReference<UserNameCheckResponse>() {
+                }, responseBody);
         return userNameCheckResponse;
     }
 
     @Override
     public AuthTokenResponse signIn(UserSignInRequest userSignInRequest) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "sign-in", userSignInRequest);
+        return signIn(userSignInRequest, 200);
+    }
+
+    @Override
+    public AuthTokenResponse signIn(UserSignInRequest userSignInRequest, int expectedResponseCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "sign-in", userSignInRequest, expectedResponseCode);
 
         AuthTokenResponse authTokenResponse = new JsonMessageTranscoder().decode(new TypeReference<AuthTokenResponse>() {
         }, responseBody);
@@ -75,8 +81,33 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
         String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "rate-credential", userCredentialCheckRequest);
 
         UserCredentialRateResponse userCredentialRateResponse = new JsonMessageTranscoder().decode(
-                new TypeReference<UserCredentialRateResponse>() {}, responseBody);
+                new TypeReference<UserCredentialRateResponse>() {
+                }, responseBody);
         return userCredentialRateResponse;
+    }
+
+    @Override
+    public UserCredentialRateResponse rateUserCredential(UserCredentialRateRequest userCredentialCheckRequest, int expectedResponseCode) throws Exception {
+        return null;
+    }
+
+    @Override
+    public AuthTokenResponse getToken(AuthTokenRequest request) throws Exception {
+        return getToken(request, 200);
+    }
+
+    @Override
+    public AuthTokenResponse getToken(AuthTokenRequest request, int expectedResponseCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "token", request);
+        if (expectedResponseCode == 200) {
+            AuthTokenResponse authTokenResponse = new JsonMessageTranscoder().decode(new TypeReference<AuthTokenResponse>() {
+            }, responseBody);
+            String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
+            Master.getInstance().addUserAccessToken(uid, authTokenResponse.getAccessToken());
+            Master.getInstance().setCurrentUid(uid);
+            return authTokenResponse;
+        }
+        return null;
     }
 
 }

@@ -10,6 +10,7 @@ import com.junbo.billing.db.repo.facade.BalanceRepositoryFacade;
 import com.junbo.billing.jobs.clientproxy.BillingFacade;
 import com.junbo.billing.spec.model.Balance;
 import com.junbo.common.id.BalanceId;
+import com.junbo.configuration.topo.DataCenters;
 import com.junbo.langur.core.promise.Promise;
 import groovy.transform.CompileStatic;
 import org.slf4j.Logger;
@@ -65,6 +66,11 @@ public class SettlementProcessor {
     }
 
     public void processBalances() {
+        if (DataCenters.instance().currentDataCenterId() != 0) {
+            LOGGER.info("The SettlementJob only runs in first datacenter.");
+            return;
+        }
+
         ExecutorService producer = Executors.newSingleThreadExecutor();
         ExecutorService consumers = Executors.newFixedThreadPool(concurrentCount);
 

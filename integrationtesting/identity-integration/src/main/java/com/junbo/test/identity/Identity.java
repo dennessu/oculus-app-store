@@ -22,6 +22,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.springframework.util.StringUtils;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -208,7 +209,7 @@ public class Identity {
         IdentityDelete(IdentityV1LocaleURI + "/" + localeId);
     }
 
-    public static User UserPostDefaultWithMail(Integer nameLength, String email) throws Exception{
+    public static User UserPostDefaultWithMail(Integer nameLength, String email) throws Exception {
         User user = UserPostDefault(nameLength);
         Email mailPii = new Email();
         mailPii.setInfo(email);
@@ -286,8 +287,9 @@ public class Identity {
     }
 
     public static UserPersonalInfo UserPersonalInfoGetByUserEmail(String email) throws Exception {
+        String requestURI = IdentityV1UserPersonalInfoURI + "?email=" + URLEncoder.encode(email, "UTF-8");
         JsonNode jsonNode = JsonHelper.ObjectToJsonNode((IdentityGet(
-                IdentityV1UserPersonalInfoURI + "?email=" + email, (Results.class))).getItems().get(0));
+                requestURI, (Results.class))).getItems().get(0));
         return (UserPersonalInfo) JsonHelper.JsonNodeToObject(jsonNode, UserPersonalInfo.class);
     }
 

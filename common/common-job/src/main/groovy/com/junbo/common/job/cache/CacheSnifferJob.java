@@ -29,7 +29,6 @@ public class CacheSnifferJob implements InitializingBean {
     private static MemcachedClientIF memcachedClient = JunboMemcachedClient.instance();
 
     private static final String FEED_SEPARATOR = "\r\n";
-    private static final String MEMCACHED_EXPIRATION_KEY = "common.memcached.expiration";
     private static final String SEQ_KEY = "seq";
     private static final String ID_KEY = "id";
     private static final String CLOUDANT_HEARTBEAT_KEY = "common.cloudant.heartbeat";
@@ -48,7 +47,7 @@ public class CacheSnifferJob implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         // initialize configuration
         this.enabled = SnifferUtils.safeParseBoolean(SnifferUtils.getConfig(SNIFFER_ENABLED_KEY));
-        this.expiration = SnifferUtils.safeParseInt(SnifferUtils.getConfig(MEMCACHED_EXPIRATION_KEY));
+        this.expiration = 0; //forever
 
         // initialize cloudant feed connection timeout
         Integer cloudantHeartbeat = SnifferUtils.safeParseInt(SnifferUtils.getConfig(CLOUDANT_HEARTBEAT_KEY));

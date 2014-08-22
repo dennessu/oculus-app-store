@@ -5,18 +5,24 @@
  */
 package com.junbo.test.store.apihelper;
 
+import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateRequest;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
 //import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
 //import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
+import com.junbo.store.spec.model.identity.UserProfileGetResponse;
 import com.junbo.store.spec.model.purchase.*;
 
 /**
  * Created by weiyu_000 on 8/6/14.
  */
 public interface StoreService {
+
+    UserProfileGetResponse getUserProfile() throws Exception;
+
+    UserProfileGetResponse getUserProfile(int expectedResponseCode) throws Exception;
 
     BillingProfileUpdateResponse updateBillingProfile(BillingProfileUpdateRequest billingProfileUpdateRequest) throws Exception;
 
@@ -37,5 +43,9 @@ public interface StoreService {
     MakeFreePurchaseResponse makeFreePurchase(MakeFreePurchaseRequest request) throws Exception;
 
     MakeFreePurchaseResponse makeFreePurchase(MakeFreePurchaseRequest request, int expectedResponseCode) throws Exception;
+
+    EntitlementsGetResponse getEntitlement() throws Exception;
+
+    EntitlementsGetResponse getEntitlement(int expectedResponseCode) throws Exception;
 
 }

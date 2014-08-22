@@ -22,4 +22,6 @@ dependencies {
     compile junboProject(':order-rest')
     compile junboProject(':authorization-rest')
     compile junboProject(':store-rest')
+
+    compile junboProject(':email-listener')
 }

@@ -34,7 +34,7 @@ public class OfferIndexJob {
 
     public void execute() {
         if (DataCenters.instance().currentDataCenterId() != 0) {
-            LOGGER.info("OfferIndexJob only runs in first data center.");
+            LOGGER.info("The OfferIndexJob only runs in first datacenter.");
             return;
         }
 

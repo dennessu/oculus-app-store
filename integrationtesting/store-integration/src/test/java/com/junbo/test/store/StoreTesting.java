@@ -8,8 +8,10 @@ package com.junbo.test.store;
 
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.PaymentInstrumentId;
+import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
+import com.junbo.store.spec.model.identity.UserProfileGetResponse;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.store.spec.model.login.UserCredentialChangeResponse;
 import com.junbo.store.spec.model.login.UserCredentialCheckResponse;
@@ -18,6 +20,7 @@ import com.junbo.store.spec.model.purchase.CommitPurchaseResponse;
 import com.junbo.store.spec.model.purchase.MakeFreePurchaseResponse;
 import com.junbo.store.spec.model.purchase.PreparePurchaseResponse;
 import com.junbo.test.common.Entities.enums.Country;
+import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.property.Component;
@@ -98,17 +101,29 @@ public class StoreTesting extends BaseTestClass {
             description = "Test iap offer checkout",
             steps = {
                     "1. Create user",
-                    "2. Make free purchase",
-                    "3. Verify purchase response",
-                    "4. Consume iap entitlement",
-                    "5. Get entitlement",
-                    "6. Verify entitlement response"
+                    "2. Sign in",
+                    "3. Get user profile",
+                    "4. Verify response",
+                    "5. Make free purchase",
+                    "6. Verify purchase response",
+                    "8. Get entitlement",
+                    "9. Verify entitlement response",
+                    "10. Refresh token",
             }
     )
     @Test
     public void testMakeFreePurchase() throws Exception {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser();
-        String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
+        String userName = authTokenResponse.getUsername();
+
+        AuthTokenResponse signInResponse =  testDataProvider.signIn(userName);
+
+        validationHelper.verifySignInResponse(authTokenResponse, signInResponse);
+
+        UserProfileGetResponse userProfileResponse = testDataProvider.getUserProfile();
+
+        validationHelper.verifyUserProfile(userProfileResponse, authTokenResponse);
+
         String offerId;
         if (offer_iap_free.toLowerCase().contains("test")) {
             offerId = testDataProvider.getOfferIdByName(offer_digital_free);
@@ -118,7 +133,15 @@ public class StoreTesting extends BaseTestClass {
 
         MakeFreePurchaseResponse freePurchaseResponse = testDataProvider.makeFreePurchase(offerId, Country.DEFAULT);
 
-        String purchaseToken = IdConverter.idToHexString(freePurchaseResponse.getOrder()); //get order id
+        //String purchaseToken = IdConverter.idToHexString(freePurchaseResponse.getOrder()); //get order id
+
+        EntitlementsGetResponse entitlementsResponse = testDataProvider.getEntitlement();
+        Master.getInstance().setCurrentUid(null);
+
+        AuthTokenResponse tokenResponse = testDataProvider.getToken(signInResponse.getRefreshToken());
+
+        validationHelper.verifySignInResponse(signInResponse, tokenResponse);
+
     }
 
     @Property(

@@ -17,11 +17,13 @@ import com.junbo.common.id.PaymentInstrumentId;
 import com.junbo.common.id.UserId;
 import com.junbo.store.spec.model.Address;
 import com.junbo.store.spec.model.ChallengeAnswer;
+import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateRequest;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
 import com.junbo.store.spec.model.billing.Instrument;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
+import com.junbo.store.spec.model.identity.UserProfileGetResponse;
 import com.junbo.store.spec.model.login.*;
 import com.junbo.store.spec.model.purchase.*;
 import com.junbo.test.catalog.OfferService;
@@ -208,6 +210,30 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         request.setCountry(new CountryId(country.toString()));
         request.setOffer(new OfferId(offerId));
         return storeClient.makeFreePurchase(request);
+    }
+
+    public AuthTokenResponse signIn(String userName) throws Exception{
+        UserSignInRequest request = new UserSignInRequest();
+        request.setUsername(userName);
+        UserCredential userCredential =  new UserCredential();
+        userCredential.setType("password");
+        userCredential.setValue("Test1234");
+        request.setUserCredential(userCredential);
+        return loginClient.signIn(request);
+    }
+
+    public UserProfileGetResponse getUserProfile() throws Exception{
+        return storeClient.getUserProfile();
+    }
+
+    public EntitlementsGetResponse getEntitlement() throws Exception{
+        return storeClient.getEntitlement();
+    }
+
+    public AuthTokenResponse getToken(String refreshToken) throws Exception{
+        AuthTokenRequest request = new AuthTokenRequest();
+        request.setRefreshToken(refreshToken);
+        return  loginClient.getToken(request);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.junbo.identity.job
 
+import com.junbo.configuration.topo.DataCenters
 import com.junbo.identity.data.repository.UserRepository
 import com.junbo.identity.spec.v1.model.User
 import com.junbo.langur.core.promise.Promise
@@ -29,6 +30,11 @@ class IdentityJob implements InitializingBean {
     private ThreadPoolTaskExecutor  threadPoolTaskExecutor
 
     void execute() {
+        if (DataCenters.instance().currentDataCenterId() != 0) {
+            LOGGER.info("The IdentityJob only runs in first datacenter.");
+            return;
+        }
+
         LOGGER.info('name=IdentityProcessJobStart')
         def start = System.currentTimeMillis()
         def count = 0, numSuccess = new AtomicInteger(), numFail = new AtomicInteger()

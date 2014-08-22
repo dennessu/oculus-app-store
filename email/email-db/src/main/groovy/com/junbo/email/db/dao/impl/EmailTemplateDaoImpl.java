@@ -5,6 +5,7 @@
  */
 package com.junbo.email.db.dao.impl;
 
+import com.junbo.configuration.topo.DataCenters;
 import com.junbo.email.common.util.Action;
 import com.junbo.email.db.dao.BaseDao;
 import com.junbo.email.db.dao.EmailTemplateDao;
@@ -35,7 +36,7 @@ public class EmailTemplateDaoImpl implements EmailTemplateDao, BaseDao<EmailTemp
     }
 
     protected Session currentSession() {
-        ShardScope shardScope = new ShardScope(0, 0);
+        ShardScope shardScope = new ShardScope(DataCenters.instance().currentDataCenterId(), 0);
         try {
             return sessionFactory.getCurrentSession();
         } finally {
