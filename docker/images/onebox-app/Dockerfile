@@ -1,11 +1,5 @@
 FROM silkcloud/jdk7base:latest
 
-# include memcached, since we don't really care persistence of cache
-RUN apt-get update &&\
-    DEBIAN_FRONTEND=noninteractive apt-get install -y memcached &&\
-    apt-get clean &&\
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
 # memcached public variable
 ENV MAX_MEM 64
 ENV MAX_CONN 1024
