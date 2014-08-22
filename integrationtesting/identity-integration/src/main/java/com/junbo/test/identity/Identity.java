@@ -209,7 +209,7 @@ public class Identity {
         IdentityDelete(IdentityV1LocaleURI + "/" + localeId);
     }
 
-    public static User UserPostDefaultWithMail(Integer nameLength, String email) throws Exception{
+    public static User UserPostDefaultWithMail(Integer nameLength, String email) throws Exception {
         User user = UserPostDefault(nameLength);
         Email mailPii = new Email();
         mailPii.setInfo(email);
@@ -287,7 +287,7 @@ public class Identity {
     }
 
     public static UserPersonalInfo UserPersonalInfoGetByUserEmail(String email) throws Exception {
-        String requestURI = URLEncoder.encode(IdentityV1UserPersonalInfoURI + "?email=" + email, "UTF-8");
+        String requestURI = IdentityV1UserPersonalInfoURI + "?email=" + URLEncoder.encode(email, "UTF-8");
         JsonNode jsonNode = JsonHelper.ObjectToJsonNode((IdentityGet(
                 requestURI, (Results.class))).getItems().get(0));
         return (UserPersonalInfo) JsonHelper.JsonNodeToObject(jsonNode, UserPersonalInfo.class);
