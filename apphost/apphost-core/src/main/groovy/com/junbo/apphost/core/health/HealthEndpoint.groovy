@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response
 @Produces(["application/json"])
 @CompileStatic
 class HealthEndpoint {
+    public static Boolean serviceOnline = true
 
     @Autowired
     private ApplicationContext applicationContext
@@ -26,7 +27,11 @@ class HealthEndpoint {
         def junboApplicationContext = (JunboApplication.JunboApplicationContext) applicationContext
 
         if (junboApplicationContext.isRefreshed) {
-            return Response.ok([status: "ok"]).build()
+            if (serviceOnline) {
+                return Response.ok([status: "ok"]).build()
+            } else {
+                return Response.status(Response.Status.SERVICE_UNAVAILABLE).build()
+            }
         }
 
         return Response.status(Response.Status.NOT_FOUND).build()

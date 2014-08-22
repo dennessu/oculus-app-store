@@ -78,6 +78,8 @@ class TokenEndpointImpl implements TokenEndpoint {
 
         requestScope[ActionContextWrapper.PARAMETER_MAP] = formParams
 
+        requestScope[ActionContextWrapper.REMOTE_ADDRESS] = JunboHttpContext.requestIpAddress
+
         requestScope[ActionContextWrapper.HEADER_MAP] = JunboHttpContext.requestHeaders
 
         // Start a new conversation of grantTokenFlow in the flowExecutor.

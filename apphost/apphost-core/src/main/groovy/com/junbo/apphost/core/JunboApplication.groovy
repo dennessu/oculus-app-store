@@ -1,7 +1,9 @@
 package com.junbo.apphost.core
 
+import com.junbo.apphost.core.health.HealthEndpoint
 import com.junbo.apphost.core.logging.Banner
 import com.junbo.apphost.core.logging.LoggerInitializer
+import com.junbo.configuration.ConfigServiceManager
 import groovy.transform.CompileStatic
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -114,6 +116,20 @@ class JunboApplication {
             super.initBeanDefinitionReader(reader)
 
             reader.documentReaderClass = JunboBeanDefinitionDocumentReader
+        }
+
+        @Override
+        protected void doClose() {
+            String gracePeriod = ConfigServiceManager.instance().getConfigValue('apphost.gracePeriod')
+            if (gracePeriod == null) {
+                gracePeriod = '30'
+            }
+
+            Long period = Long.parseLong(gracePeriod)
+            LOGGER.info("Wait $period seconds before shutdown, put the service offline right now.")
+            HealthEndpoint.serviceOnline = false
+            Thread.sleep(period * 1000)
+            super.doClose()
         }
     }
 
