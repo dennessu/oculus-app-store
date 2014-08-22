@@ -11,6 +11,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.enumid.*;
 import com.junbo.common.id.UserId;
 import com.junbo.identity.spec.v1.model.*;
+import com.junbo.identity.spec.v1.model.Currency;
+import com.junbo.identity.spec.v1.model.Locale;
 import com.junbo.identity.spec.v1.model.migration.Company;
 import com.junbo.identity.spec.v1.model.migration.OculusInput;
 import com.junbo.identity.spec.v1.model.migration.ShareProfile;
@@ -20,10 +22,7 @@ import com.junbo.test.common.RandomHelper;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author dw
@@ -47,6 +46,13 @@ public class IdentityModel {
         address.setPostalCode("92612");
         address.setStreet1("19800 MacArthur Blvd");
         return address;
+    }
+
+    public static UserDOB DefaultUserDob() throws Exception {
+        Calendar ca = Calendar.getInstance();
+        UserDOB userDOB = new UserDOB();
+        userDOB.setInfo(new Date(ca.getTime().getYear() - 30, ca.getTime().getMonth(), ca.getTime().getDay()));
+        return userDOB;
     }
 
     public static Country DefaultCountry() throws Exception {
@@ -115,7 +121,7 @@ public class IdentityModel {
 
     public static PhoneNumber DefaultPhoneNumber() throws Exception {
         PhoneNumber phoneNumber = new PhoneNumber();
-        phoneNumber.setInfo("8613585830699");
+        phoneNumber.setInfo("8613061982418");
         return phoneNumber;
     }
 
@@ -204,12 +210,19 @@ public class IdentityModel {
         return userPersonalInfo;
     }
 
+    public static UserPersonalInfo DefaultUserPersonalInfoDob() throws Exception {
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+        userPersonalInfo.setType(UserPersonalInfoType.DOB.name());
+        userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(DefaultUserDob()));
+        return userPersonalInfo;
+    }
+
     public static UserPersonalInfo DefaultUserPersonalInfoEmail(String email) throws Exception {
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
         userPersonalInfo.setType(UserPersonalInfoType.EMAIL.toString());
-        Email email1 = new Email();
-        email1.setInfo(email);
-        userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(email1));
+        Email tmpEmail = new Email();
+        tmpEmail.setInfo(email);
+        userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(tmpEmail));
         return userPersonalInfo;
     }
 
@@ -277,7 +290,7 @@ public class IdentityModel {
         return ucva;
     }
 
-    public static UserCredentialVerifyAttempt DefaultUserPinAttempts(String username, String pin) throws Exception{
+    public static UserCredentialVerifyAttempt DefaultUserPinAttempts(String username, String pin) throws Exception {
         UserCredentialVerifyAttempt ucva = new UserCredentialVerifyAttempt();
         ucva.setUsername(username);
         ucva.setValue(pin);
@@ -301,6 +314,12 @@ public class IdentityModel {
             userTFA.setTemplate(RandomHelper.randomAlphabetic(100));
         }
         return userTFA;
+    }
+
+    public static UserVAT DefaultUserVat() throws Exception {
+        UserVAT userVAT = new UserVAT();
+        userVAT.setVatNumber("IE6388047V");
+        return userVAT;
     }
 
     public static DeviceType DefaultDeviceType(List<DeviceTypeId> deviceTypeIds) throws Exception {

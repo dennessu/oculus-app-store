@@ -8,15 +8,20 @@ package com.junbo.test.oauth;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.identity.spec.v1.model.UserLoginName;
 import com.junbo.identity.spec.v1.model.UserPersonalInfo;
+import com.junbo.identity.spec.v1.model.UserVAT;
 import com.junbo.oauth.spec.model.TokenInfo;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.JsonHelper;
 import com.junbo.test.common.RandomHelper;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.identity.Identity;
+import com.junbo.test.identity.IdentityModel;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.testng.AssertJUnit.assertEquals;
 
@@ -166,6 +171,22 @@ public class authorizeUser {
         String email = RandomHelper.randomEmail();
         String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email, false);
         ValidateErrorFreeResponse(postRegisterUserResponse);
+
+        /*
+        String loginState = Oauth.GetLoginStateAfterRegisterUser(cid);
+        String authCode = Oauth.SSO2GetAuthCode(loginState);
+        String accessToken = Oauth.GetAccessToken(authCode);
+        TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken);
+        assertEquals("validate token->client is correct", Oauth.DefaultClientId, tokenInfo.getClientId());
+        assertEquals("validate token->scopes is correct", Oauth.DefaultClientScopes, tokenInfo.getScopes());
+        User storedUser = Identity.UserGetByUserId(tokenInfo.getSub());
+        Identity.UserPersonalInfoPost(storedUser.getId(), IdentityModel.DefaultUserPersonalInfoAddress());
+        Identity.UserPersonalInfoPost(storedUser.getId(), IdentityModel.DefaultUserPersonalInfoDob());
+        Map<String, UserVAT> vatMap = new HashMap<>();
+        vatMap.put("validVAT", IdentityModel.DefaultUserVat());
+        storedUser.setVat(vatMap);
+        Identity.UserPut(storedUser);
+        */
     }
 
     @Property(environment = "release")
