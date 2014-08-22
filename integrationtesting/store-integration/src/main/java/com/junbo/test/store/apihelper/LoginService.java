@@ -19,6 +19,14 @@ public interface LoginService {
 
     AuthTokenResponse signIn(UserSignInRequest userSignInRequest) throws Exception;
 
+    AuthTokenResponse signIn(UserSignInRequest userSignInRequest, int expectedResponseCode) throws Exception;
+
     UserCredentialRateResponse rateUserCredential(UserCredentialRateRequest userCredentialCheckRequest) throws Exception;
+
+    UserCredentialRateResponse rateUserCredential(UserCredentialRateRequest userCredentialCheckRequest, int expectedResponseCode) throws Exception;
+
+    AuthTokenResponse getToken(AuthTokenRequest request) throws Exception;
+
+    AuthTokenResponse getToken(AuthTokenRequest request, int expectedResponseCode) throws Exception;
 
 }

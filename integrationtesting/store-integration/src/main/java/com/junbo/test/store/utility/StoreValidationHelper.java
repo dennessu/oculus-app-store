@@ -13,6 +13,9 @@ import com.junbo.store.spec.model.Entitlement;
 import com.junbo.store.spec.model.billing.BillingProfile;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
 import com.junbo.store.spec.model.billing.Instrument;
+import com.junbo.store.spec.model.identity.StoreUserProfile;
+import com.junbo.store.spec.model.identity.UserProfileGetResponse;
+import com.junbo.store.spec.model.login.AuthTokenResponse;
 import com.junbo.store.spec.model.purchase.CommitPurchaseResponse;
 import com.junbo.store.spec.model.purchase.PreparePurchaseResponse;
 import com.junbo.test.catalog.OfferService;
@@ -58,5 +61,18 @@ public class StoreValidationHelper extends BaseValidationHelper {
 
     }
 
+    public void verifySignInResponse(AuthTokenResponse createResponse, AuthTokenResponse signInResponse) {
+        verifyEqual(signInResponse.getUsername(), createResponse.getUsername(), "verify user name");
+        verifyEqual(signInResponse.getExpiresIn(), createResponse.getExpiresIn(), "verify expires in");
+        verifyEqual(signInResponse.getUserId().getValue(), createResponse.getUserId().getValue(), "verify user id");
+    }
+
+    public void verifyUserProfile(UserProfileGetResponse userProfileGetResponse, AuthTokenResponse createResponse) {
+        StoreUserProfile userProfile = userProfileGetResponse.getUserProfile();
+        verifyEqual(userProfile.getUserId().getValue(), createResponse.getUserId().getValue(), "verify user id");
+        verifyEqual(userProfile.getUsername(), createResponse.getUsername(), "verify user name");
+        verifyEqual(userProfile.getPassword(), "******", "verify password");
+        verifyEqual(userProfile.getPin(), "****", "verify pin");
+    }
 
 }

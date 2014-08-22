@@ -7,12 +7,14 @@ package com.junbo.test.store.apihelper.impl;
 
 import com.junbo.common.json.JsonMessageTranscoder;
 import com.junbo.langur.core.client.TypeReference;
+import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateRequest;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
 //import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
 //import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
+import com.junbo.store.spec.model.identity.UserProfileGetResponse;
 import com.junbo.store.spec.model.purchase.*;
 import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.HttpClientBase;
@@ -31,6 +33,23 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
             instance = new StoreServiceImpl();
         }
         return instance;
+    }
+
+    @Override
+    public UserProfileGetResponse getUserProfile() throws Exception {
+        return getUserProfile(200);
+    }
+
+    @Override
+    public UserProfileGetResponse getUserProfile(int expectedResponseCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.GET, storeUrl + "user-profile", expectedResponseCode);
+        if (expectedResponseCode == 200) {
+            UserProfileGetResponse response = new JsonMessageTranscoder().decode(new TypeReference<UserProfileGetResponse>() {
+            }, responseBody);
+
+            return response;
+        }
+        return null;
     }
 
     @Override
@@ -111,6 +130,23 @@ public class StoreServiceImpl extends HttpClientBase implements StoreService {
         String responseBody = restApiCall(HTTPMethod.POST, storeUrl + "purchase/free", request, expectedResponseCode);
         if (expectedResponseCode == 200) {
             MakeFreePurchaseResponse response = new JsonMessageTranscoder().decode(new TypeReference<MakeFreePurchaseResponse>() {
+            }, responseBody);
+
+            return response;
+        }
+        return null;
+    }
+
+    @Override
+    public EntitlementsGetResponse getEntitlement() throws Exception {
+        return getEntitlement(200);
+    }
+
+    @Override
+    public EntitlementsGetResponse getEntitlement(int expectedResponseCode) throws Exception {
+        String responseBody = restApiCall(HTTPMethod.GET, storeUrl + "entitlements", expectedResponseCode);
+        if (expectedResponseCode == 200) {
+            EntitlementsGetResponse response = new JsonMessageTranscoder().decode(new TypeReference<EntitlementsGetResponse>() {
             }, responseBody);
 
             return response;
