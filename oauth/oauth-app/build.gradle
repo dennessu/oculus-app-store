@@ -17,6 +17,6 @@ dependencies {
     runtime junboProject(':data-loader')
 
     compile junboProject(':oauth-api')
-    compile junboProject(':email-jobs')
+    compile junboProject(':email-listener')
     compile junboProject(':authorization-rest')
 }

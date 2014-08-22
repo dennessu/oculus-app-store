@@ -7,6 +7,7 @@
 package com.junbo.order.jobs.tax
 
 import com.junbo.configuration.topo.DataCenters
+import com.junbo.configuration.topo.model.DataCenter
 import com.junbo.order.core.impl.common.TransactionHelper
 import com.junbo.order.db.repo.facade.OrderRepositoryFacade
 import com.junbo.order.jobs.OrderProcessor
@@ -91,8 +92,18 @@ class TaxAuditor {
     }
 
     private List<Order> readOrdersForProcess() {
+        DataCenter dc = DataCenters.instance().getDataCenter(DataCenters.instance().currentDataCenterId())
+        if (dc == null) {
+            throw new IllegalStateException('DataCenter doesn\'t exist')
+        }
+
+        List<Integer> shard = new ArrayList<>()
+        for (int index = 0; index < dc.numberOfShard; index++) {
+            shard.add(index)
+        }
+
         List<Order> ordersAllShard = []
-        allShards.each { Integer shardKey ->
+        shard.each { Integer shardKey ->
             def orders = transactionHelper.executeInTransaction {
                 orderRepository.getOrdersByTaxStatus(DataCenters.instance().currentDataCenterId(), shardKey,
                         statusToProcess, false, true, new PageParam(
@@ -111,9 +122,5 @@ class TaxAuditor {
             map[order.id.toString()] = order
         }
         return new ArrayList<Order>(map.values())
-    }
-
-    private List<Integer> getAllShards() {
-        return [0, 1]
     }
 }

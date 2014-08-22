@@ -6,15 +6,16 @@
 
 package com.junbo.payment.db.dao;
 
-import java.io.Serializable;
-import java.util.List;
-
+import com.junbo.configuration.topo.DataCenters;
 import com.junbo.sharding.ShardAlgorithm;
 import com.junbo.sharding.hibernate.ShardScope;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * generic dao.
@@ -37,7 +38,7 @@ public class GenericDAOImpl<T, ID extends Serializable> {
 
     //TODO: move all the configuration data to config DB and remove the generic DAO here
     public Session currentSession() {
-        ShardScope shardScope = new ShardScope(0, 0);
+        ShardScope shardScope = new ShardScope(DataCenters.instance().currentDataCenterId(), 0);
         try {
             return sessionFactory.getCurrentSession();
         } finally {
