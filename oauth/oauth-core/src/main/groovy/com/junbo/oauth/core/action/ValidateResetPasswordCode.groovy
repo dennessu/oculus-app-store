@@ -41,13 +41,12 @@ class ValidateResetPasswordCode implements Action {
             return Promise.pure(new ActionResult('error'))
         }
 
-        ResetPasswordCode resetPasswordCode = resetPasswordCodeRepository.getAndRemove(code)
+        ResetPasswordCode resetPasswordCode = resetPasswordCodeRepository.get(code)
         if (resetPasswordCode == null) {
             contextWrapper.errors.add(AppErrors.INSTANCE.invalidResetPasswordCode().error())
             return Promise.pure(new ActionResult('error'))
         }
 
-        resetPasswordCodeRepository.removeByUserIdEmail(resetPasswordCode.userId, resetPasswordCode.email)
         contextWrapper.resetPasswordCode = resetPasswordCode
 
         return Promise.pure(new ActionResult('success'))

@@ -184,4 +184,7 @@ interface AppErrors {
     @ErrorDef(httpStatusCode = 500, code = '139', message = 'Error Calling Recaptcha',
             reason = 'Error happened when calling recaptcha server', field = 'recaptcha')
     AppError errorCallingRecaptcha()
+
+    @ErrorDef(httpStatusCode = 412, code = '140', message = 'Reset Password Code already used')
+    AppError resetPasswordCodeAlreadyUsed()
 }

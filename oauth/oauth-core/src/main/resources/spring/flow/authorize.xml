@@ -383,6 +383,7 @@
 
     <bean id="createUserCredential" class="com.junbo.oauth.core.action.CreateUserCredential">
         <property name="userCredentialResource" ref="oauth_userCredentialResource"/>
+        <property name="resetPasswordCodeRepository" ref="resetPasswordCodeRepository" />
     </bean>
 
     <bean id="createUserPii" class="com.junbo.oauth.core.action.CreateUserPii">
