@@ -26,5 +26,4 @@ dependencies {
 
     testCompile(libraries.spring_test)
     testCompile junboProject(':authorization-lib')
-    testCompile 'org.apache.activemq:activemq-all:5.7.0'
 }
