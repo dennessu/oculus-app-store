@@ -341,7 +341,8 @@ class UserCredentialVerifyAttemptValidatorImpl implements UserCredentialVerifyAt
                             templateId: template.getId(),
                             recipients: [userMail].asList(),
                             replacements: [
-                                    'name': userLoginName
+                                    'name': userLoginName,
+                                    'link': ConfigServiceManager.instance().getConfigValue('identity.conf.oculusHelpLink')
                             ]
                     )
 

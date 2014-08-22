@@ -3,5 +3,5 @@
     "action" : "UserLockout",
     "locale" : "en_US",
     "providerName" : "mandrill",
-    "placeholderNames" : [ "name" ]
+    "placeholderNames" : [ "name" , "link" ]
 }
