@@ -6,6 +6,7 @@
 package com.junbo.test.catalog.advancedContentSearch;
 
 import com.junbo.catalog.spec.model.item.ItemRevision;
+import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.apihelper.identity.impl.OrganizationServiceImpl;
 import com.junbo.catalog.spec.model.offer.OfferRevisionLocaleProperties;
 import com.junbo.test.common.apihelper.identity.OrganizationService;
@@ -304,8 +305,8 @@ public class OfferSearch extends BaseTestClass {
         ItemRevisionService itemRevisionService = ItemRevisionServiceImpl.instance();
         OfferRevisionService offerRevisionService = OfferRevisionServiceImpl.instance();
 
-        String offerId1 = "2e03a63a3cf3a2ab1c36aeefce8b2587";
-        String offerId2 = "4cae0f09738e2aa1314143ea696f9955";
+        String offerId1 = ConfigHelper.getSetting("testdata.offer.digital.free");
+        String offerId2 = ConfigHelper.getSetting("testdata.offer.iap.free");
 
         Offer offer1 = offerService.getOffer(offerId1);
         Offer offer2 = offerService.getOffer(offerId2);
@@ -352,8 +353,8 @@ public class OfferSearch extends BaseTestClass {
         List<String> itemIds = new ArrayList<>();
         List<String> itemRevisionIds = new ArrayList<>();
 
-        String offerId1 = "2e03a63a3cf3a2ab1c36aeefce8b2587";
-        String offerId2 = "4cae0f09738e2aa1314143ea696f9955";
+        String offerId1 = ConfigHelper.getSetting("testdata.offer.digital.free");
+        String offerId2 = ConfigHelper.getSetting("testdata.offer.iap.free");
 
         Offer offer1 = offerService.getOffer(offerId1);
         Offer offer2 = offerService.getOffer(offerId2);
