@@ -301,6 +301,8 @@ class StoreResourceImpl implements StoreResource {
             identityUtils.getUserFromToken().then { User u ->
                 user = u
                 return Promise.pure()
+            }.then {
+                requestValidator.validateUserEmailVerified(user)
             }
         }.then {
             instrumentUtils.updateInstrument(user, request)
@@ -433,6 +435,8 @@ class StoreResourceImpl implements StoreResource {
                 }
             }.then {
                 requestValidator.validateOfferForPurchase(request.offer, request.country, request.locale, true)
+            }.then {
+                requestValidator.validateUserEmailVerified(user)
             }
         }.then {
             Order order = new Order(
@@ -484,6 +488,8 @@ class StoreResourceImpl implements StoreResource {
                 }
             }.then {
                 requestValidator.validateOfferForPurchase(request.offer, request.country, request.locale, false)
+            }.then {
+                requestValidator.validateUserEmailVerified(user)
             }
         }.then {
             if (request.purchaseToken == null) {
@@ -595,8 +601,14 @@ class StoreResourceImpl implements StoreResource {
     @Override
     Promise<CommitPurchaseResponse> commitPurchase(CommitPurchaseRequest commitPurchaseRequest) {
         PurchaseState purchaseState
-        Promise.pure(null).then {
-            requestValidator.validateCommitPurchaseRequest(commitPurchaseRequest)
+        User user
+        return identityUtils.getUserFromToken().then { User u ->
+            user = u
+            return Promise.pure()
+        }.then {
+            requestValidator.validateCommitPurchaseRequest(commitPurchaseRequest).then {
+                requestValidator.validateUserEmailVerified(user)
+            }
         }.then {
             purchaseTokenProcessor.toPurchaseState(commitPurchaseRequest.purchaseToken).then { PurchaseState e ->
                 purchaseState = e

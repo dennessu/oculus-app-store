@@ -85,6 +85,7 @@ class StoreApiTest extends TestBase {
 
         def createUserRequest = Generator.genCreateUserRequest(username, password, email, pin)
         def result = loginResource.createUser(createUserRequest).get()
+        testUtils.verifyUserEmail(result.userId)
         testAccessTokenProvider.setToken(result.accessToken)
         def userId = result.userId
 
@@ -122,6 +123,7 @@ class StoreApiTest extends TestBase {
 
         def createUserRequest = Generator.genCreateUserRequest(username, password, email, pin)
         def result = loginResource.createUser(createUserRequest).get()
+        testUtils.verifyUserEmail(result.userId)
         testAccessTokenProvider.setToken(result.accessToken)
         def userId = result.userId
 

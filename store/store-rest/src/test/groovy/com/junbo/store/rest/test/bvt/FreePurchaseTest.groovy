@@ -24,7 +24,7 @@ class FreePurchaseTest extends TestBase {
         def createUserRequest = Generator.genCreateUserRequest(username, password, email, pin)
         def result = loginResource.createUser(createUserRequest).get()
         testAccessTokenProvider.token = result.accessToken
-
+        testUtils.verifyUserEmail(result.userId)
         freeOfferNames.each { String offerName ->
             OfferId offerId = testUtils.getByName(offerName)
             result = storeResource.makeFreePurchase(new MakeFreePurchaseRequest(offer: offerId, country: new CountryId('US'))).get()
@@ -54,6 +54,7 @@ class FreePurchaseTest extends TestBase {
         def createUserRequest = Generator.genCreateUserRequest(username, password, email, pin)
         def result = loginResource.createUser(createUserRequest).get()
         testAccessTokenProvider.token = result.accessToken
+        testUtils.verifyUserEmail(result.userId)
 
         try {
             storeResource.makeFreePurchase(new MakeFreePurchaseRequest(offer: testUtils.getByName(digitalOfferName), country: new CountryId('US'))).get()
@@ -80,6 +81,7 @@ class FreePurchaseTest extends TestBase {
 
         def createUserRequest = Generator.genCreateUserRequest(username, password, email, pin)
         def result = loginResource.createUser(createUserRequest).get()
+        testUtils.verifyUserEmail(result.userId)
         testAccessTokenProvider.token = result.accessToken
 
         try {
@@ -87,6 +89,26 @@ class FreePurchaseTest extends TestBase {
             assert false
         } catch (AppErrorException ex) {
             assert ex.error.error().code == '123.004'
+        }
+    }
+
+    @Test
+    public void testFreePurchaseEmailNotVerified() {
+        String username = Generator.genUserName()
+        String email = Generator.genEmail()
+        String pin = Generator.genPIN()
+        String password = Generator.genPassword()
+
+        def createUserRequest = Generator.genCreateUserRequest(username, password, email, pin)
+        def result = loginResource.createUser(createUserRequest).get()
+        testAccessTokenProvider.token = result.accessToken
+
+        try {
+            OfferId offerId = testUtils.getByName(freeOfferNames[0])
+            storeResource.makeFreePurchase(new MakeFreePurchaseRequest(offer: offerId, country: new CountryId('US'))).get()
+            assert false
+        } catch (AppErrorException ex) {
+            assert ex.error.error().code == '130.112'
         }
     }
 }

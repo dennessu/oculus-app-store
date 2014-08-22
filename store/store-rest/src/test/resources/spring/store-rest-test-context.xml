@@ -12,6 +12,11 @@
     <bean id="testAccessTokenProvider" class="com.junbo.store.rest.test.TestAccessTokenProvider">
     </bean>
 
+    <bean id="tokenEndpointClientProxy" class="com.junbo.oauth.spec.endpoint.proxy.TokenEndpointClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.oauth.url}"/>
+    </bean>
+
     <bean id="storeClient" class="com.junbo.store.spec.resource.proxy.StoreResourceClientProxy"
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.store.url}"/>
@@ -39,6 +44,26 @@
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.catalog.url}"/>
         <property name="accessTokenProvider" ref="testAccessTokenProvider"/>
+    </bean>
+
+    <bean id="storeAccessTokenProvider" class="com.junbo.oauth.spec.provider.ClientCredentialsAccessTokenProvider">
+        <property name="scope" value="identity.service email.service payment.service order.service fulfilment.service entitlement.service"/>
+        <property name="deflectionInSeconds" value="300"/>
+        <property name="clientSecret" value="${store.clientproxy.service.clientSecret}"/>
+        <property name="clientId" value="${store.clientproxy.service.clientId}"/>
+        <property name="tokenEndpoint" ref="tokenEndpointClientProxy"/>
+    </bean>
+
+    <bean id="storetest.userClient" class="com.junbo.identity.spec.v1.resource.proxy.UserResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+    </bean>
+
+    <bean id="storetest.userPersonalInfoClient" class="com.junbo.identity.spec.v1.resource.proxy.UserPersonalInfoResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
     </bean>
 
 </beans>
