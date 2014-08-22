@@ -43,6 +43,11 @@ public class RandomHelper {
         return Boolean.parseBoolean(randomValueFromList(array).toString());
     }
 
+    public static String randomEmail() {
+        String email = "silkcloudtest+" + randomAlphabetic(8).toLowerCase() + String.format("@gmail.com");
+        return email;
+    }
+
     public static Object randomValueFromList(List<Object> values) {
         int rand = randomInt();
         int result = Math.abs(rand) % values.size();

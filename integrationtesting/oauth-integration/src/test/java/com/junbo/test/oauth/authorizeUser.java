@@ -12,7 +12,6 @@ import com.junbo.oauth.spec.model.TokenInfo;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.JsonHelper;
 import com.junbo.test.common.RandomHelper;
-import com.junbo.test.common.libs.RandomFactory;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.identity.Identity;
 import org.testng.annotations.AfterMethod;
@@ -56,7 +55,7 @@ public class authorizeUser {
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
-        String email = RandomFactory.getRandomEmailAddress();
+        String email = RandomHelper.randomEmail();
         String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
         ValidateErrorFreeResponse(postRegisterUserResponse);
 
@@ -90,7 +89,7 @@ public class authorizeUser {
         assertEquals("validate view state after post register view", postRegisterViewResponse, currentViewState);
 
         String userName = RandomHelper.randomAlphabetic(15);
-        String email = RandomFactory.getRandomEmailAddress();
+        String email = RandomHelper.randomEmail();
         String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
         ValidateErrorFreeResponse(postRegisterUserResponse);
 
@@ -128,7 +127,7 @@ public class authorizeUser {
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
-        String email = RandomFactory.getRandomEmailAddress();
+        String email = RandomHelper.randomEmail();
         String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
         ValidateErrorFreeResponse(postRegisterUserResponse);
 
@@ -164,7 +163,7 @@ public class authorizeUser {
         //String userName = "allEnvLoginUser";
         //String email = "silkcloudtest+allEnvLoginUser@gmail.com";
         String userName = RandomHelper.randomAlphabetic(15);
-        String email = RandomFactory.getRandomEmailAddress();
+        String email = RandomHelper.randomEmail();
         String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email, false);
         ValidateErrorFreeResponse(postRegisterUserResponse);
     }
@@ -202,7 +201,7 @@ public class authorizeUser {
 
         Oauth.StartLoggingAPISample(Oauth.MessagePostRegisterUser);
         String userName = RandomHelper.randomAlphabetic(15);
-        String email = RandomFactory.getRandomEmailAddress();
+        String email = RandomHelper.randomEmail();
         String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email);
         ValidateErrorFreeResponse(postRegisterUserResponse);
 
