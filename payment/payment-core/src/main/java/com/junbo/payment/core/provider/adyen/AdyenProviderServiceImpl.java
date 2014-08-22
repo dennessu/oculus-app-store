@@ -117,9 +117,7 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
                     String strRequest = getRedirectInfo(pi, paymentRequest);
                     paymentRequest.setWebPaymentInfo(new WebPaymentInfo());
                     paymentRequest.getWebPaymentInfo().setRedirectURL(redirectURL + "?" + strRequest);
-                    if(paymentRequest.getWebPaymentInfo() != null){
-                        paymentRequest.getWebPaymentInfo().setPlatform(paymentRequest.getWebPaymentInfo().getPlatform());
-                    }
+                    paymentRequest.getWebPaymentInfo().setPlatform(paymentRequest.getWebPaymentInfo().getPlatform());
                     paymentRequest.setStatus(PaymentStatus.UNCONFIRMED.toString());
                     return paymentRequest;
                 }else{
@@ -434,26 +432,25 @@ public class AdyenProviderServiceImpl extends AbstractAdyenProviderServiceImpl i
             return ;
         }
         String externalToken = notify.getPspReference();
-        if(notify.getSuccess().equalsIgnoreCase("true") && merchantAccount.equalsIgnoreCase(this.merchantAccount)
-                && externalToken.equalsIgnoreCase(transaction.getExternalToken())){
+        if(notify.getSuccess().equalsIgnoreCase("true") && merchantAccount.equalsIgnoreCase(this.merchantAccount)){
             if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.AUTHORISATION.name())){
                 //Ignore of Credit Card Auth as CC use API call directly
                 if(!transaction.getPaymentProvider().equalsIgnoreCase(PaymentProvider.AdyenCC.toString())){
                     paymentRepositoryFacade.updatePayment(paymentId, PaymentUtil.getPaymentStatus(
-                            PaymentStatus.SETTLEMENT_SUBMITTED.toString()), null);
+                            PaymentStatus.SETTLEMENT_SUBMITTED.toString()), externalToken);
                 }
             }else if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.CANCELLATION.name())){
                 paymentRepositoryFacade.updatePayment(paymentId, PaymentUtil.getPaymentStatus(
-                        PaymentStatus.REVERSED.toString()), null);
+                        PaymentStatus.REVERSED.toString()), externalToken);
             }else if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.REFUND.name())){
                 paymentRepositoryFacade.updatePayment(paymentId, PaymentUtil.getPaymentStatus(
-                        PaymentStatus.REFUNDED.toString()), null);
+                        PaymentStatus.REFUNDED.toString()), externalToken);
             }else if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.CAPTURE_FAILED.name())){
                 paymentRepositoryFacade.updatePayment(paymentId, PaymentUtil.getPaymentStatus(
-                        PaymentStatus.SETTLE_DECLINED.toString()), null);
+                        PaymentStatus.SETTLE_DECLINED.toString()), externalToken);
             }else if(notify.getEventCode().equalsIgnoreCase(AdyenEventCode.REFUND_FAILED.name())){
                 paymentRepositoryFacade.updatePayment(paymentId, PaymentUtil.getPaymentStatus(
-                        PaymentStatus.REFUND_DECLINED.toString()), null);
+                        PaymentStatus.REFUND_DECLINED.toString()), externalToken);
             }
         }
     }

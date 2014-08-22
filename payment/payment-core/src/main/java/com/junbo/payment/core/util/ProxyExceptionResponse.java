@@ -27,7 +27,7 @@ public class ProxyExceptionResponse {
         if(CommonUtil.isNullOrEmpty(body)){
             return ERROR_CODE;
         }
-        return body;
+        return String.format(ERROR_CODE, body);
     }
 
     public ProxyExceptionResponse(Throwable throwable){
