@@ -7,6 +7,7 @@
 package com.junbo.catalog.spec.resource;
 
 import com.junbo.catalog.spec.model.pricetier.PriceTier;
+import com.junbo.catalog.spec.model.pricetier.PriceTierGetOptions;
 import com.junbo.catalog.spec.model.pricetier.PriceTiersGetOptions;
 import com.junbo.common.filter.annotations.CacheMaxAge;
 import com.junbo.common.model.Results;
@@ -37,7 +38,7 @@ public interface PriceTierResource {
     @GET
     @Path("/{tierId}")
     @AuthorizationNotRequired
-    Promise<PriceTier> getPriceTier(@PathParam("tierId") String tierId);
+    Promise<PriceTier> getPriceTier(@PathParam("tierId") String tierId,  @BeanParam PriceTierGetOptions options);
 
     @CacheMaxAge(duration = 1, unit = TimeUnit.HOURS)
     @ApiOperation("Get all price tiers")

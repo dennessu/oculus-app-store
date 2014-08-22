@@ -39,6 +39,11 @@ public class ItemAttribute extends BaseModel implements Attribute {
     @ApiModelProperty(position = 4, required = true, value = "Locale properties")
     private Map<String, SimpleLocaleProperties> locales;
 
+    @ApiModelProperty(position = 5, required = true,
+            value = "This is the calculated value to give how accurate the localizable attributes is.",
+            allowableValues = "HIGH, MEDIUM, LOW")
+    private String localeAccuracy;
+
     @JsonIgnore
     public String getId() {
         return id;
@@ -70,5 +75,13 @@ public class ItemAttribute extends BaseModel implements Attribute {
 
     public void setLocales(Map<String, SimpleLocaleProperties> locales) {
         this.locales = locales;
+    }
+
+    public String getLocaleAccuracy() {
+        return localeAccuracy;
+    }
+
+    public void setLocaleAccuracy(String localeAccuracy) {
+        this.localeAccuracy = localeAccuracy;
     }
 }

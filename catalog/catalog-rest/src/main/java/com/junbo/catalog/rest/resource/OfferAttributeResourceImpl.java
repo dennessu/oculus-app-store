@@ -7,8 +7,11 @@
 package com.junbo.catalog.rest.resource;
 
 import com.junbo.catalog.core.OfferAttributeService;
+import com.junbo.catalog.spec.enums.LocaleAccuracy;
 import com.junbo.catalog.spec.model.attribute.OfferAttribute;
+import com.junbo.catalog.spec.model.attribute.OfferAttributeGetOptions;
 import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions;
+import com.junbo.catalog.spec.model.common.SimpleLocaleProperties;
 import com.junbo.catalog.spec.resource.OfferAttributeResource;
 import com.junbo.common.id.util.IdUtil;
 import com.junbo.common.model.Link;
@@ -21,29 +24,45 @@ import org.springframework.util.StringUtils;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import java.util.HashMap;
 import java.util.List;
 
 /**
  * Attribute resource implementation.
  */
-public class OfferAttributeResourceImpl implements OfferAttributeResource {
+public class OfferAttributeResourceImpl extends ResourceSupport implements OfferAttributeResource {
     @Autowired
     private OfferAttributeService attributeService;
 
     @Override
-    public Promise<OfferAttribute> getAttribute(String attributeId) {
-        return Promise.pure(attributeService.getAttribute(attributeId));
+    public Promise<OfferAttribute> getAttribute(String attributeId, final OfferAttributeGetOptions options) {
+        final OfferAttribute attribute = attributeService.getAttribute(attributeId);
+        filterLocale(attribute, options.getLocale());
+        return Promise.pure(attribute);
     }
 
     @Override
     public Promise<Results<OfferAttribute>> getAttributes(@BeanParam OfferAttributesGetOptions options) {
         List<OfferAttribute> attributes = attributeService.getAttributes(options);
+        for (final OfferAttribute attribute : attributes) {
+            filterLocale(attribute, options.getLocale());
+        }
         Results<OfferAttribute> results = new Results<>();
         results.setItems(attributes);
         Link nextLink = new Link();
         nextLink.setHref(buildNextUrl(options));
         results.setNext(nextLink);
         return Promise.pure(results);
+    }
+
+    private void filterLocale(final OfferAttribute attribute, final String locale) {
+        attribute.setLocaleAccuracy(LocaleAccuracy.HIGH.name());
+        if (!StringUtils.isEmpty(locale)) {
+            attribute.setLocaleAccuracy(calLocaleAccuracy(attribute.getLocales().get(locale)));
+            attribute.setLocales(new HashMap<String, SimpleLocaleProperties>() {{
+                put(locale, getLocaleProperties(attribute.getLocales(), locale));
+            }});
+        }
     }
 
     private String buildNextUrl(OfferAttributesGetOptions options) {

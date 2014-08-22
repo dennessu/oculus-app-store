@@ -17,6 +17,8 @@ import java.util.List;
 public class PriceTiersGetOptions extends PageableGetOptions {
     @QueryParam("tierId")
     private List<String> priceTierIds;
+    @QueryParam("locale")
+    private String locale;
 
     public List<String> getPriceTierIds() {
         return priceTierIds;
@@ -24,5 +26,13 @@ public class PriceTiersGetOptions extends PageableGetOptions {
 
     public void setPriceTierIds(List<String> priceTierIds) {
         this.priceTierIds = priceTierIds;
+    }
+
+    public String getLocale() {
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 }
