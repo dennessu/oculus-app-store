@@ -22,6 +22,9 @@ dependencies {
     compile junboProject(':order-rest')
     compile junboProject(':authorization-rest')
     compile junboProject(':store-rest')
+    compile junboProject(':token-rest')
+    compile junboProject(':csr-rest')
+    compile junboProject(':drm-rest')
 
     compile junboProject(':email-listener')
 }

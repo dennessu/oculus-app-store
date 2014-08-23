@@ -12,9 +12,6 @@ dependencies {
     compile junboProject(':order-jobs')
     compile junboProject(':catalog-jobs')
     compile junboProject(':identity-job')
-    compile junboProject(':token-rest')
-    compile junboProject(':csr-rest')
-    compile junboProject(':drm-rest')
     compile junboProject(':payment-jobs')
     compile junboProject(':common-job')
 }
