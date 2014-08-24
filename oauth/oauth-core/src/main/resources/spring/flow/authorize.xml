@@ -514,5 +514,7 @@
         <property name="userTFAAttemptResource" ref="oauth_userTFAAttemptResource"/>
     </bean>
 
-    <bean id="tfaRequiredView" class="com.junbo.oauth.core.view.TFARequiredView"/>
+    <bean id="tfaRequiredView" class="com.junbo.oauth.core.view.TFARequiredView">
+        <property name="debugEnabled" value="${common.conf.debugMode}"/>
+    </bean>
 </beans>
