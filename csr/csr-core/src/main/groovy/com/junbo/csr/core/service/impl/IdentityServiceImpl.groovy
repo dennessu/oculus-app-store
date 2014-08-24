@@ -232,6 +232,10 @@ class IdentityServiceImpl implements IdentityService {
     private Promise<Results<User>> getUsers(Results<UserPersonalInfo> results) {
         Results<User> users = new Results<User>(items: [])
         return Promise.each(results.items) { UserPersonalInfo userPersonalInfo ->
+            if (userPersonalInfo.userId == null) {
+                return Promise.pure(null)
+            }
+            
             return userResource.get(userPersonalInfo.userId as UserId, new UserGetOptions()).then { User user ->
                 if (user != null) {
                     users.items.add(user)
