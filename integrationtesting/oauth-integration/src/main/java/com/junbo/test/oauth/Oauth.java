@@ -339,6 +339,21 @@ public class Oauth {
         }
     }
 
+    public static String GetLoginAccessToken(String requestURI) throws Exception {
+        CloseableHttpResponse response = HttpclientHelper.SimpleGet(requestURI, false);
+        try {
+            String tarHeader = "Location";
+            for (Header h : response.getAllHeaders()) {
+                if (h.toString().startsWith(tarHeader)) {
+                    return h.toString().substring(h.toString().indexOf("access_token=") + "access_token=".length());
+                }
+            }
+            throw new NotFoundException("Did not found expected response header: " + tarHeader);
+        } finally {
+            response.close();
+        }
+    }
+
     public static void Logout(String idToken) throws Exception {
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultLogoutURI
                 + "?post_logout_redirect_uri="
