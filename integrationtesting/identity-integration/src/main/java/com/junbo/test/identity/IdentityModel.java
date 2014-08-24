@@ -10,6 +10,7 @@ package com.junbo.test.identity;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.junbo.common.enumid.*;
 import com.junbo.common.id.UserId;
+import com.junbo.common.id.UserSecurityQuestionId;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.identity.spec.v1.model.Currency;
 import com.junbo.identity.spec.v1.model.Locale;
@@ -304,6 +305,15 @@ public class IdentityModel {
         usq.setSecurityQuestion(RandomHelper.randomAlphabetic(100));
         usq.setAnswer(RandomHelper.randomAlphabetic(100));
         return usq;
+    }
+
+    public static UserSecurityQuestionVerifyAttempt DefaultUserSecurityQuestionVerifyAttempt(UserId userId,
+                                                                                             UserSecurityQuestionId securityQuestionId, String value) throws Exception {
+        UserSecurityQuestionVerifyAttempt attempt = new UserSecurityQuestionVerifyAttempt();
+        attempt.setUserId(userId);
+        attempt.setUserSecurityQuestionId(securityQuestionId);
+        attempt.setValue(value);
+        return attempt;
     }
 
     public static UserTFA DefaultUserTFA() throws Exception {

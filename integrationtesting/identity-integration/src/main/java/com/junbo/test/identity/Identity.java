@@ -569,6 +569,13 @@ public class Identity {
                         "/security-questions/" + usqId.getValue(), UserSecurityQuestion.class);
     }
 
+    public static UserSecurityQuestionVerifyAttempt UserSecurityQuestionVerifyAttemptPost(UserId userId, UserSecurityQuestionVerifyAttempt attempt)
+        throws Exception {
+        return IdentityPost(
+                IdentityEndPointV1 + "/users/" + GetHexLongId(userId.getValue()) + "/security-question-attempts",
+                JsonHelper.JsonSerializer(attempt), UserSecurityQuestionVerifyAttempt.class);
+    }
+
     public static String GetHexLongId(Long userId) throws Exception {
         return IdConverter.idToUrlString(UserId.class, userId);
     }
