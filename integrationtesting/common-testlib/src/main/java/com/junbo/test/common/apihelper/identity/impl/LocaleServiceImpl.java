@@ -20,7 +20,7 @@ import com.junbo.test.common.apihelper.identity.LocaleService;
  */
 public class LocaleServiceImpl extends HttpClientBase implements LocaleService {
 
-    private final String localeURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/locales";
+    private final String localeURL = ConfigHelper.getSetting("defaultIdentityEndpoint") + "/locales";
     private static LocaleService instance;
 
     public static synchronized LocaleService instance() {

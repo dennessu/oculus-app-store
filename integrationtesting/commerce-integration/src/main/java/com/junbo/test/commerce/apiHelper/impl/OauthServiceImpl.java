@@ -26,7 +26,7 @@ import java.util.Set;
  * Created by weiyu_000 on 8/14/14.
  */
 public class OauthServiceImpl extends HttpClientBase implements OauthService {
-    private final String oauthServerURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/oauth2";
+    private final String oauthServerURL = ConfigHelper.getSetting("defaultIdentityEndpoint") + "/oauth2";
 
     private static OauthService instance;
 

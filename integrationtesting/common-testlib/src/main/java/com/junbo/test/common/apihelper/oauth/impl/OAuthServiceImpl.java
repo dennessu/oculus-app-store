@@ -30,8 +30,8 @@ import java.util.Set;
  */
 public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
 
-    private static String oauthUrl = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/oauth2";
-    private static String identityPiiUrl = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/personal-info";
+    private static String oauthUrl = ConfigHelper.getSetting("defaultIdentityEndpoint") + "/oauth2";
+    private static String identityPiiUrl = ConfigHelper.getSetting("defaultIdentityEndpoint") + "/personal-info";
 
     private static OAuthService instance;
 

@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class TosServiceImpl extends HttpClientBase implements TosService {
 
-    private final String tosUrl = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/tos";
+    private final String tosUrl = ConfigHelper.getSetting("defaultIdentityEndpoint") + "/tos";
     private static TosService instance;
 
     public static synchronized TosService instance() {

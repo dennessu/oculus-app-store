@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class Identity {
 
-    public static final String IdentityEndPointV1 = ConfigHelper.getSetting("defaultIdentityEndPointV1");
+    public static final String IdentityEndPointV1 = ConfigHelper.getSetting("defaultIdentityEndpoint");
     public static final String IdentityV1CountryURI = IdentityEndPointV1 + "/countries";
     public static final String IdentityV1CurrencyURI = IdentityEndPointV1 + "/currencies";
     public static final String IdentityV1DeviceTypeURI = IdentityEndPointV1 + "/device-types";
@@ -89,7 +89,8 @@ public class Identity {
         nvps.add(new BasicNameValuePair("client_id", "migration"));
         nvps.add(new BasicNameValuePair("client_secret", "secret"));
         nvps.add(new BasicNameValuePair("scope", "identity.service identity.migration"));
-        CloseableHttpResponse response = HttpclientHelper.SimplePost(ConfigHelper.getSetting("defaultTokenURI"), nvps);
+        CloseableHttpResponse response = HttpclientHelper.SimplePost(
+                ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/token", nvps);
         String[] results = EntityUtils.toString(response.getEntity(), "UTF-8").split(",");
         for (String s : results) {
             if (s.contains("access_token")) {
@@ -105,7 +106,8 @@ public class Identity {
         nvps.add(new BasicNameValuePair("client_id", "service"));
         nvps.add(new BasicNameValuePair("client_secret", "secret"));
         nvps.add(new BasicNameValuePair("scope", "identity.service identity.admin"));
-        CloseableHttpResponse response = HttpclientHelper.SimplePost(ConfigHelper.getSetting("defaultTokenURI"), nvps);
+        CloseableHttpResponse response = HttpclientHelper.SimplePost(
+                ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/token", nvps);
         String[] results = EntityUtils.toString(response.getEntity(), "UTF-8").split(",");
         for (String s : results) {
             if (s.contains("access_token")) {
@@ -576,7 +578,7 @@ public class Identity {
     }
 
     public static UserSecurityQuestionVerifyAttempt UserSecurityQuestionVerifyAttemptPost(UserId userId, UserSecurityQuestionVerifyAttempt attempt)
-        throws Exception {
+            throws Exception {
         return IdentityPost(
                 IdentityEndPointV1 + "/users/" + GetHexLongId(userId.getValue()) + "/security-question-attempts",
                 JsonHelper.JsonSerializer(attempt), UserSecurityQuestionVerifyAttempt.class);

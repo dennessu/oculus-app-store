@@ -35,18 +35,25 @@ public class Oauth {
 
     }
 
-    public static final String DefaultAuthorizeURI = ConfigHelper.getSetting("defaultAuthorizeURI");
-    public static final String DefaultClientId = ConfigHelper.getSetting("client_id");
-    public static final String DefaultClientScopes = "identity";
-    public static final String DefaultClientSecret = ConfigHelper.getSetting("client_secret");
-    public static final String DefaultGrantType = "authorization_code";
-    public static final String DefaultRedirectURI = ConfigHelper.getSetting("defaultRedirectURI");
-    public static final String DefaultRegisterEvent = "register";
-    public static final String DefaultResetPasswordURI = ConfigHelper.getSetting("defaultResetPasswordURI");
-    public static final String DefaultTokenURI = ConfigHelper.getSetting("defaultTokenURI");
-    public static final String DefaultTokenInfoURI = ConfigHelper.getSetting("defaultTokenInfoURI");
-    public static final String DefaultLogoutURI = ConfigHelper.getSetting("defaultLogoutURI");
+    public static final String DefaultAuthorizeURI =
+            ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/authorize";
+    public static final String DefaultLogoutURI =
+            ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/end-session";
+    public static final String DefaultRedirectURI =
+            ConfigHelper.getSetting("defaultRedirectURI");
+    public static final String DefaultResetPasswordURI =
+            ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/reset-password";
+    public static final String DefaultTokenURI =
+            ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/token";
+    public static final String DefaultTokenInfoURI =
+            ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/tokeninfo";
 
+    public static final String DefaultClientId = ConfigHelper.getSetting("client_id");
+    public static final String DefaultClientSecret = ConfigHelper.getSetting("client_secret");
+
+    public static final String DefaultClientScopes = "identity";
+    public static final String DefaultGrantType = "authorization_code";
+    public static final String DefaultRegisterEvent = "register";
     public static final String DefaultFNCode = "code";
     public static final String DefaultFNCid = "cid";
     public static final String DefaultFNClientId = "client_id";
