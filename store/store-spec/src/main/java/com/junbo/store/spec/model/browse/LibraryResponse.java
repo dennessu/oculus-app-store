@@ -8,17 +8,17 @@ package com.junbo.store.spec.model.browse;
 import com.junbo.store.spec.model.browse.document.Document;
 
 /**
- * The GetListResponse class.
+ * The LibraryResponse class.
  */
-public class GetListResponse {
+public class LibraryResponse {
 
-    private Document document;
+    private Document doc;
 
-    public Document getDocument() {
-        return document;
+    public Document getDoc() {
+        return doc;
     }
 
-    public void setDocument(Document document) {
-        this.document = document;
+    public void setDoc(Document doc) {
+        this.doc = doc;
     }
 }

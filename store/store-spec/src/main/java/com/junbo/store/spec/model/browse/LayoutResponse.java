@@ -6,24 +6,37 @@
 package com.junbo.store.spec.model.browse;
 
 import com.junbo.store.spec.model.browse.document.Document;
+import com.junbo.store.spec.model.browse.document.LayoutLink;
 
 import java.util.List;
 
 /**
- * The GetSectionResponse class.
+ * The LayoutResponse class.
  */
-public class GetSectionResponse {
+public class LayoutResponse {
 
-    private List<Category> category;
+    private List<LayoutLink> breadcrumbs;
+
+    private List<LayoutLink> categories;
+
     private String title;
+
     private Document contents;
 
-    public List<Category> getCategory() {
-        return category;
+    public List<LayoutLink> getBreadcrumbs() {
+        return breadcrumbs;
     }
 
-    public void setCategory(List<Category> category) {
-        this.category = category;
+    public void setBreadcrumbs(List<LayoutLink> breadcrumbs) {
+        this.breadcrumbs = breadcrumbs;
+    }
+
+    public List<LayoutLink> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<LayoutLink> categories) {
+        this.categories = categories;
     }
 
     public String getTitle() {

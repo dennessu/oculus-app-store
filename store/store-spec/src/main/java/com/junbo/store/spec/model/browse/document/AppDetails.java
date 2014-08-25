@@ -12,41 +12,80 @@ import java.util.List;
  */
 public class AppDetails {
 
-    private String category;
-    private String appType;
+    private List<String> categories;
+
+    private List<String> genres;
+
+    private Long contentRating;
+
+    private String releaseDate;
+
+    private String website;
+
+    private String forumUrl;
+
     private String developerEmail;
     private String developerName;
     private String developerWebsite;
+
+    private String publisherEmail;
+    private String publisherName;
+    private String publisherWebsite;
+
     private String packageName;
-    private String numDownloads;
-    private String title;
-    private String recentChangesHtml;
-    private List<AppPermission> appPermissions;
-    private String uploadDate;
-    private Integer versionCode;
+    private String versionCode;
     private String versionString;
-    private List<FileMetadata> files;
+
     private Long installationSize;
-    private Integer majorVersionNumber;
-    private List<String> certificateHashList;
-    private Long contentRating;
-    private String contentRatingDescription;
-    private Boolean supportIAP;
 
-    public String getCategory() {
-        return category;
+    private List<RevisionNote> revisionNotes;
+
+    public List<String> getCategories() {
+        return categories;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setCategories(List<String> categories) {
+        this.categories = categories;
     }
 
-    public String getAppType() {
-        return appType;
+    public List<String> getGenres() {
+        return genres;
     }
 
-    public void setAppType(String appType) {
-        this.appType = appType;
+    public void setGenres(List<String> genres) {
+        this.genres = genres;
+    }
+
+    public Long getContentRating() {
+        return contentRating;
+    }
+
+    public void setContentRating(Long contentRating) {
+        this.contentRating = contentRating;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
+    }
+
+    public String getForumUrl() {
+        return forumUrl;
+    }
+
+    public void setForumUrl(String forumUrl) {
+        this.forumUrl = forumUrl;
     }
 
     public String getDeveloperEmail() {
@@ -73,6 +112,30 @@ public class AppDetails {
         this.developerWebsite = developerWebsite;
     }
 
+    public String getPublisherEmail() {
+        return publisherEmail;
+    }
+
+    public void setPublisherEmail(String publisherEmail) {
+        this.publisherEmail = publisherEmail;
+    }
+
+    public String getPublisherName() {
+        return publisherName;
+    }
+
+    public void setPublisherName(String publisherName) {
+        this.publisherName = publisherName;
+    }
+
+    public String getPublisherWebsite() {
+        return publisherWebsite;
+    }
+
+    public void setPublisherWebsite(String publisherWebsite) {
+        this.publisherWebsite = publisherWebsite;
+    }
+
     public String getPackageName() {
         return packageName;
     }
@@ -81,51 +144,11 @@ public class AppDetails {
         this.packageName = packageName;
     }
 
-    public String getNumDownloads() {
-        return numDownloads;
-    }
-
-    public void setNumDownloads(String numDownloads) {
-        this.numDownloads = numDownloads;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getRecentChangesHtml() {
-        return recentChangesHtml;
-    }
-
-    public void setRecentChangesHtml(String recentChangesHtml) {
-        this.recentChangesHtml = recentChangesHtml;
-    }
-
-    public List<AppPermission> getAppPermissions() {
-        return appPermissions;
-    }
-
-    public void setAppPermissions(List<AppPermission> appPermissions) {
-        this.appPermissions = appPermissions;
-    }
-
-    public String getUploadDate() {
-        return uploadDate;
-    }
-
-    public void setUploadDate(String uploadDate) {
-        this.uploadDate = uploadDate;
-    }
-
-    public Integer getVersionCode() {
+    public String getVersionCode() {
         return versionCode;
     }
 
-    public void setVersionCode(Integer versionCode) {
+    public void setVersionCode(String versionCode) {
         this.versionCode = versionCode;
     }
 
@@ -137,14 +160,6 @@ public class AppDetails {
         this.versionString = versionString;
     }
 
-    public List<FileMetadata> getFiles() {
-        return files;
-    }
-
-    public void setFiles(List<FileMetadata> files) {
-        this.files = files;
-    }
-
     public Long getInstallationSize() {
         return installationSize;
     }
@@ -153,43 +168,11 @@ public class AppDetails {
         this.installationSize = installationSize;
     }
 
-    public Integer getMajorVersionNumber() {
-        return majorVersionNumber;
+    public List<RevisionNote> getRevisionNotes() {
+        return revisionNotes;
     }
 
-    public void setMajorVersionNumber(Integer majorVersionNumber) {
-        this.majorVersionNumber = majorVersionNumber;
-    }
-
-    public List<String> getCertificateHashList() {
-        return certificateHashList;
-    }
-
-    public void setCertificateHashList(List<String> certificateHashList) {
-        this.certificateHashList = certificateHashList;
-    }
-
-    public Long getContentRating() {
-        return contentRating;
-    }
-
-    public void setContentRating(Long contentRating) {
-        this.contentRating = contentRating;
-    }
-
-    public String getContentRatingDescription() {
-        return contentRatingDescription;
-    }
-
-    public void setContentRatingDescription(String contentRatingDescription) {
-        this.contentRatingDescription = contentRatingDescription;
-    }
-
-    public Boolean getSupportIAP() {
-        return supportIAP;
-    }
-
-    public void setSupportIAP(Boolean supportIAP) {
-        this.supportIAP = supportIAP;
+    public void setRevisionNotes(List<RevisionNote> revisionNotes) {
+        this.revisionNotes = revisionNotes;
     }
 }
