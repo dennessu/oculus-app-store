@@ -21,7 +21,7 @@ import com.junbo.test.email.EmailTemplateService;
 public class EmailTemplateServiceImpl extends HttpClientBase implements EmailTemplateService {
 
     private static EmailTemplateService instance;
-    private static String emailTemplateUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "email-templates";
+    private static String emailTemplateUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "/email-templates";
     private boolean isServiceScope = true;
 
     private EmailTemplateServiceImpl() {
