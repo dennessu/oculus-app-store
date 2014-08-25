@@ -26,3 +26,5 @@ echo "Please verify new apps are taking traffic. Press enter to continue."
 read
 ./dataloader.sh
 
+./check-versions.sh
+
