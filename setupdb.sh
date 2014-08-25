@@ -7,7 +7,7 @@ cipherKey=D58BA755FF96B35A6DABA7298F7A8CE2
 dbPrefixFile=common/configuration-data/src/main/resources/junbo/conf/onebox/common/personal.properties
 dbPrefix=`cat $dbPrefixFile | grep '^common.cloudant.dbNamePrefix=' | awk -F= '{gsub(/^[ \t]+/, "", $2); print $2}'`
 if [[ -z "$dbPrefix" ]]; then
-    echo common.cloudant.dbNamePrefix=`./scripts/AESCipher.py genkey | cut -c1-7 | tr '[:upper:]' '[:lower:]'`_ >> $dbPrefixFile
+    echo common.cloudant.dbNamePrefix=p`./scripts/AESCipher.py genkey | cut -c1-7 | tr '[:upper:]' '[:lower:]'`_ >> $dbPrefixFile
     dbPrefix=`cat $dbPrefixFile | grep '^common.cloudant.dbNamePrefix=' | awk -F= '{gsub(/^[ \t]+/, "", $2); print $2}'`
     if [[ -z "$dbPrefix" ]]; then
         echo Error generating dbPrefix
