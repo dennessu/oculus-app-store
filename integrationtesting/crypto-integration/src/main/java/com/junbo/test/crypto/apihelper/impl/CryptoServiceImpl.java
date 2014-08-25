@@ -21,7 +21,7 @@ import com.junbo.test.common.ConfigHelper;
  */
 public class CryptoServiceImpl extends HttpClientBase implements CryptoService {
 
-    private static String cryptoUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "crypto/";
+    private static String cryptoUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "crypto/";
     private static CryptoService instance;
     private OAuthService oAuthTokenClient = OAuthServiceImpl.getInstance();
 
@@ -68,7 +68,7 @@ public class CryptoServiceImpl extends HttpClientBase implements CryptoService {
         CryptoMessage cryptoMessage = new CryptoMessage();
         cryptoMessage.setValue(msg);
 
-        String responseBody = restApiCall(HTTPMethod.POST, cryptoUrl + "decrypt", cryptoMessage,
+        String responseBody = restApiCall(HTTPMethod.POST, cryptoUrl + "/decrypt", cryptoMessage,
                 expectedResponseCode, true);
 
         cryptoMessage = new JsonMessageTranscoder().decode(

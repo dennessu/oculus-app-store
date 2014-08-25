@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class PaymentServiceImpl extends HttpClientBase implements PaymentService {
 
-    private static String paymentInstrumentUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1");
+    private static String paymentInstrumentUrl = ConfigHelper.getSetting("defaultCommerceEndpoint");
     private LogHelper logger = new LogHelper(PaymentServiceImpl.class);
 
     private OAuthService oAuthTokenClient = OAuthServiceImpl.getInstance();
@@ -58,7 +58,7 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
     public String getPaymentInstrumentByPaymentId(
             String paymentInstrumentId, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.GET, paymentInstrumentUrl +
-                "payment-instruments/" + paymentInstrumentId);
+                "/payment-instruments/" + paymentInstrumentId);
 
         PaymentInstrument paymentInstrumentResult = new JsonMessageTranscoder().decode(
                 new TypeReference<PaymentInstrument>() {
@@ -81,7 +81,7 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
     @Override
     public List<String> getPaymentInstrumentsByUserId(String uid, int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.GET, paymentInstrumentUrl +
-                "payment-instruments?userId=" + uid, expectedResponseCode);
+                "/payment-instruments?userId=" + uid, expectedResponseCode);
 
         Results<PaymentInstrument> paymentInstrumentResults = new JsonMessageTranscoder().decode(
                 new TypeReference<Results<PaymentInstrument>>() {
@@ -105,14 +105,14 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
         componentType = ComponentType.EWALLET;
         oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType);
         String responseBody = restApiCall(HTTPMethod.POST, paymentInstrumentUrl +
-                "wallets/credit", creditRequest, 200, true);
+                "/wallets/credit", creditRequest, 200, true);
     }
 
     @Override
     public String postPaymentInstrument(PaymentInstrument paymentInstrument,
                                         int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.POST, paymentInstrumentUrl
-                + "payment-instruments", paymentInstrument, expectedResponseCode);
+                + "/payment-instruments", paymentInstrument, expectedResponseCode);
 
         PaymentInstrument paymentInstrumentResult = new JsonMessageTranscoder().decode(
                 new TypeReference<PaymentInstrument>() {
@@ -137,7 +137,7 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
     public String updatePaymentInstrument(String uid, String paymentId, PaymentInstrument paymentInstrument,
                                           int expectedResponseCode) throws Exception {
         String responseBody = restApiCall(HTTPMethod.PUT, paymentInstrumentUrl
-                + "payment-instruments/" + paymentId, paymentInstrument, expectedResponseCode);
+                + "/payment-instruments/" + paymentId, paymentInstrument, expectedResponseCode);
 
         PaymentInstrument paymentInstrumentResult = new JsonMessageTranscoder().decode(
                 new TypeReference<PaymentInstrument>() {
@@ -158,7 +158,7 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
 
     @Override
     public void deletePaymentInstrument(String uid, String paymentId, int expectedResponseCode) throws Exception {
-        restApiCall(HTTPMethod.DELETE, paymentInstrumentUrl + "payment-instruments/" + paymentId, expectedResponseCode);
+        restApiCall(HTTPMethod.DELETE, paymentInstrumentUrl + "/payment-instruments/" + paymentId, expectedResponseCode);
         Master.getInstance().removePaymentInstrument(paymentId);
     }
 

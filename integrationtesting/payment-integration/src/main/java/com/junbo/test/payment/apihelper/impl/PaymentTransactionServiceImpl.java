@@ -22,7 +22,7 @@ import com.junbo.common.json.JsonMessageTranscoder;
  */
 public class PaymentTransactionServiceImpl extends HttpClientBase implements PaymentTransactionService {
 
-    private static String paymentTransactionUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "payment-transactions";
+    private static String paymentTransactionUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "/payment-transactions";
 
     private LogHelper logger = new LogHelper(PaymentServiceImpl.class);
 

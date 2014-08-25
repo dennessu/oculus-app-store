@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class BalanceServiceImpl extends HttpClientBase implements BalanceService {
 
-    private static String balanceUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1");
+    private static String balanceUrl = ConfigHelper.getSetting("defaultCommerceEndpoint");
     private static BalanceService instance;
     private String userId;
     private OAuthService oAuthTokenClient = OAuthServiceImpl.getInstance();
@@ -80,7 +80,7 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
     public String postBalance(String uid, Balance balance, int expectedResponseCode) throws Exception {
         setUserId(uid);
         oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType.BILLING);
-        String responseBody = restApiCall(HTTPMethod.POST, balanceUrl + "balances", balance, true);
+        String responseBody = restApiCall(HTTPMethod.POST, balanceUrl + "/balances", balance, true);
 
         Balance balanceResult =
                 new JsonMessageTranscoder().decode(
@@ -103,7 +103,7 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
         setUserId(uid);
         oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType.BILLING);
         String responseBody = restApiCall(HTTPMethod.GET, balanceUrl +
-                "balances/" + balanceId, expectedResponseCode, true);
+                "/balances/" + balanceId, expectedResponseCode, true);
 
         Balance balanceResult =
                 new JsonMessageTranscoder().decode(
@@ -125,7 +125,7 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
     public String quoteBalance(String uid, Balance balance, int expectedResponseCode) throws Exception {
         this.setUserId(uid);
         oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType.BILLING);
-        String responseBody = restApiCall(HTTPMethod.POST, balanceUrl + "balances/quote", balance);
+        String responseBody = restApiCall(HTTPMethod.POST, balanceUrl + "/balances/quote", balance);
 
         responseBody = responseBody.replace("\"self\" : null", fakeBalanceId);
 
@@ -150,7 +150,7 @@ public class BalanceServiceImpl extends HttpClientBase implements BalanceService
         //setUserId(uid);
         oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType.BILLING);
         String responseBody = restApiCall(HTTPMethod.GET, balanceUrl +
-                "balances?orderId=" + orderId, expectedResponseCode);
+                "/balances?orderId=" + orderId, expectedResponseCode);
 
         Results<Balance> balanceResults =
                 new JsonMessageTranscoder().decode(

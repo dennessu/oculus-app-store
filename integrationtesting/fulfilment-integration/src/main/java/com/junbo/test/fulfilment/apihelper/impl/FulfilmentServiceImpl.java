@@ -23,7 +23,7 @@ import com.junbo.langur.core.client.TypeReference;
  */
 public class FulfilmentServiceImpl extends HttpClientBase implements FulfilmentService {
 
-    private static String fulfilmentUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1");
+    private static String fulfilmentUrl = ConfigHelper.getSetting("defaultCommerceEndpoint");
     private static FulfilmentService instance;
     private OAuthService oAuthTokenClient = OAuthServiceImpl.getInstance();
 

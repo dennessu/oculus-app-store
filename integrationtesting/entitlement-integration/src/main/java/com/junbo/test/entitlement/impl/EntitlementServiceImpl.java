@@ -30,8 +30,8 @@ import java.util.Set;
  */
 public class EntitlementServiceImpl extends HttpClientBase implements EntitlementService {
 
-    private String entitlementUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "entitlements";
-    private String itemBinariesUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "item-binary";
+    private String entitlementUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "entitlements";
+    private String itemBinariesUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "item-binary";
     private static EntitlementService instance;
     private boolean isServiceScope = true;
 

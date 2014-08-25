@@ -19,7 +19,7 @@ import com.junbo.test.store.apihelper.LoginService;
  */
 public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
-    private static String loginUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "horizon-api/id/";
+    private static String loginUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "horizon-api/id/";
 
     private static LoginService instance;
 
@@ -37,7 +37,7 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
     @Override
     public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "create", createUserRequest);
+        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/create", createUserRequest);
         if (expectedResponseCode == 200) {
             AuthTokenResponse authTokenResponse = new JsonMessageTranscoder().decode(new TypeReference<AuthTokenResponse>() {
             }, responseBody);
@@ -52,7 +52,7 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
     @Override
     public UserNameCheckResponse CheckUserName(UserNameCheckRequest userNameCheckRequest) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "name-check", userNameCheckRequest);
+        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/name-check", userNameCheckRequest);
         UserNameCheckResponse userNameCheckResponse = new JsonMessageTranscoder().decode(
                 new TypeReference<UserNameCheckResponse>() {
                 }, responseBody);
@@ -66,7 +66,7 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
     @Override
     public AuthTokenResponse signIn(UserSignInRequest userSignInRequest, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "sign-in", userSignInRequest, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/sign-in", userSignInRequest, expectedResponseCode);
 
         AuthTokenResponse authTokenResponse = new JsonMessageTranscoder().decode(new TypeReference<AuthTokenResponse>() {
         }, responseBody);
@@ -78,7 +78,7 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
     @Override
     public UserCredentialRateResponse rateUserCredential(UserCredentialRateRequest userCredentialCheckRequest) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "rate-credential", userCredentialCheckRequest);
+        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/rate-credential", userCredentialCheckRequest);
 
         UserCredentialRateResponse userCredentialRateResponse = new JsonMessageTranscoder().decode(
                 new TypeReference<UserCredentialRateResponse>() {
@@ -98,7 +98,7 @@ public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
     @Override
     public AuthTokenResponse getToken(AuthTokenRequest request, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "token", request);
+        String responseBody = restApiCall(HTTPMethod.POST, loginUrl + "/token", request);
         if (expectedResponseCode == 200) {
             AuthTokenResponse authTokenResponse = new JsonMessageTranscoder().decode(new TypeReference<AuthTokenResponse>() {
             }, responseBody);

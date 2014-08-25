@@ -26,7 +26,7 @@ import com.junbo.test.order.apihelper.OrderEventService;
  */
 public class OrderEventServiceImpl extends HttpClientBase implements OrderEventService {
 
-    private static String orderEventUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "order-events";
+    private static String orderEventUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "order-events";
     private OAuthService oAuthTokenClient = OAuthServiceImpl.getInstance();
     private LogHelper logger = new LogHelper(OrderEventServiceImpl.class);
     private static OrderEventService instance;
