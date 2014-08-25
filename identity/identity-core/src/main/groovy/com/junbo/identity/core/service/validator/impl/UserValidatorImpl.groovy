@@ -551,7 +551,7 @@ class UserValidatorImpl implements UserValidator {
 
         return Promise.each(user.vat.entrySet()) { Map.Entry<String, UserVAT> entry ->
             UserVAT vat = entry.value
-            return vatResource.validateVatId(vat.vatNumber, user.countryOfResidence.value).then { VatIdValidationResponse response ->
+            return vatResource.validateVatId(vat.vatNumber, entry.key).then { VatIdValidationResponse response ->
                 if (response.status == 'VALID') {
                     vat.lastValidateTime = new Date()
                 } else if (response.status == 'INVALID') {
