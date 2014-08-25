@@ -36,7 +36,6 @@ public class authorizeUser {
     @BeforeMethod(alwaysRun = true)
     public void setup() throws Exception {
         HttpclientHelper.CreateHttpClient();
-        com.junbo.test.oauth.Identity.GetHttpAuthorizationHeaderForMigration();
     }
 
     @AfterMethod(alwaysRun = true)
@@ -118,9 +117,11 @@ public class authorizeUser {
 
     @Test(groups = "dailies")
     public void migrateAndLogin() throws Exception {
-        OculusInput input = com.junbo.test.oauth.IdentityModel.DefaultOculusInput(
-                "1:8UFAbK26VrPLL75jE9P2:PRo4D7r23hrfv3FBxqBv:b87637b9ec5abd43db01d7a299612a49550230a813239fb3e28eec2a88c0df67");
-        OculusOutput output = com.junbo.test.oauth.Identity.ImportMigrationData(input);
+        OculusInput input = IdentityModel.DefaultOculusInput();
+        input.setPassword("1:8UFAbK26VrPLL75jE9P2:PRo4D7r23hrfv3FBxqBv:b87637b9ec5abd43db01d7a299612a49550230a813239fb3e28eec2a88c0df67");
+        input.setStatus(IdentityModel.MigrateUserStatus.ACTIVE.name());
+        Identity.GetHttpAuthorizationHeaderForMigration();
+        OculusOutput output = Identity.ImportMigrationData(input);
 
         HttpclientHelper.ResetHttpClient();
         String cid = Oauth.GetLoginCid();
