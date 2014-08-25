@@ -435,7 +435,6 @@ smoketest: `encryptclient $SMOKETEST_CLIENT_SECRET`
 adminTool: `encryptclient $ADMIN_TOOL_CLIENT_SECRET`
 cms-admin-portal: `encryptclient $CMS_ADMIN_PORTAL_CLIENT_SECRET`
 csr: `encryptclient $CSR_CLIENT_SECRET`
-csrTool: `encryptclient $CSR_TOOL_CLIENT_SECRET`
 curationTool: `encryptclient $CURATION_TOOL_CLIENT_SECRET`
 developerCenter: `encryptclient $DEVELOPER_CENTER_CLIENT_SECRET`
 discourseForum: `encryptclient $DISCOURSE_FORUM_CLIENT_SECRET`
