@@ -13,7 +13,7 @@
         }],
         "identity.pii": [{
             "precondition": "ownedByCurrentUser",
-            "rights": ["read", "create", "update", "delete", "pii.read", "pii.create", "pii.update", "pii.delete"],
+            "rights": ["read", "create", "update", "delete", "pii.read", "pii.create"],
             "scriptType": "SPEL"
         }],
         "csr": [{

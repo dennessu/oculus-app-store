@@ -157,8 +157,15 @@ class UserGroupMembershipResourceImpl implements UserGroupMembershipResource {
 
     @Override
     Promise<Void> delete(UserGroupId userGroupId) {
-        return userGroupValidator.validateForGet(userGroupId).then {
-            return userGroupRepository.delete(userGroupId)
+        return userGroupValidator.validateForGet(userGroupId).then { UserGroup userGroup ->
+            def callback = authorizeCallbackFactory.create(userGroup.groupId)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('delete') && AuthorizeContext.currentUserId != userGroup.userId) {
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
+                }
+                return userGroupRepository.delete(userGroupId)
+            }
+
         }
     }
 
