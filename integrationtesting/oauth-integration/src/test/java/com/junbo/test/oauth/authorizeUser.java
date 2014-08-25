@@ -184,10 +184,9 @@ public class authorizeUser {
         //String email = "silkcloudtest+allEnvLoginUser@gmail.com";
         String userName = RandomHelper.randomAlphabetic(15);
         String email = RandomHelper.randomEmail();
-        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email, false);
+        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email, true);
         ValidateErrorFreeResponse(postRegisterUserResponse);
 
-        /*
         String loginState = Oauth.GetLoginStateAfterRegisterUser(cid);
         String authCode = Oauth.SSO2GetAuthCode(loginState);
         String accessToken = Oauth.GetAccessToken(authCode);
@@ -201,7 +200,6 @@ public class authorizeUser {
         vatMap.put("validVAT", IdentityModel.DefaultUserVat());
         storedUser.setVat(vatMap);
         Identity.UserPut(storedUser);
-        */
     }
 
     @Property(environment = "release")
