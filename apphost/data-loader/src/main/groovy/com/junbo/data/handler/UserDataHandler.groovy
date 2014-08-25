@@ -194,8 +194,9 @@ class UserDataHandler extends BaseDataHandler {
                         value: ObjectMapperProvider.instance().valueToTree(new Email(info: email))
                 )
                 // set as validated
-                emailPii.lastValidateTime = new Date()
                 UserPersonalInfo newEmailPii = userPersonalInfoResource.create(emailPii).get()
+                newEmailPii.lastValidateTime = new Date()
+                newEmailPii = userPersonalInfoResource.put(newEmailPii.getId(), newEmailPii).get()
 
                 user.emails = [new UserPersonalInfoLink(
                         isDefault: true,
@@ -211,8 +212,9 @@ class UserDataHandler extends BaseDataHandler {
                     value: ObjectMapperProvider.instance().valueToTree(new Email(info: email))
             )
             // set as validated
-            emailPii.lastValidateTime = new Date()
             UserPersonalInfo newEmailPii = userPersonalInfoResource.create(emailPii).get()
+            newEmailPii.lastValidateTime = new Date()
+            newEmailPii = userPersonalInfoResource.put(newEmailPii.getId(), newEmailPii).get()
 
             user.emails = [new UserPersonalInfoLink(
                     isDefault: true,
