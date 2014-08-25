@@ -47,4 +47,8 @@ public interface OAuthService {
 
     TokenInfo getTokenInfo(String accessToken) throws Exception;
 
+    String getEmailVerifyLink(String cid) throws Exception;
+
+    void accessEmailVerifyLink(String emailVerifyLink) throws Exception;
+
 }

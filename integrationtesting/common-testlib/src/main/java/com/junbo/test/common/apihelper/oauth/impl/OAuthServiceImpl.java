@@ -208,7 +208,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
 
     @Override
     public void authorizeRegister(String cid) throws Exception {
-        needAuthHeader = true;
+        needAuthHeader = false;
         Map<String, String> formParams = new HashMap<>();
         formParams.put("cid", cid);
         formParams.put("event", "register");
@@ -219,7 +219,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
 
     @Override
     public void registerUser(String userName, String password, Country country, String cid) throws Exception {
-        needAuthHeader = true;
+        needAuthHeader = false;
 
         Map<String, String> formParams = new HashMap<>();
         formParams.put("cid", cid);
@@ -296,6 +296,33 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
                 responseBody);
 
         return tokenInfo;
+    }
+
+    @Override
+    public String getEmailVerifyLink(String cid) throws Exception {
+        needAuthHeader = false;
+        Map<String, String> formParams = new HashMap<>();
+        formParams.put("cid", cid);
+        formParams.put("event", "skip");
+
+        String responseBody = restApiCall(HTTPMethod.POST, oauthUrl + "/authorize",
+                convertFormatToRequestString(formParams));
+
+        String[] values = responseBody.split("\"");
+        for(String value : values){
+            if(value.contains("verify-email")){
+                return value;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public void accessEmailVerifyLink(String emailVerifyLink) throws Exception {
+        needAuthHeader = false;
+        needOverrideRequestEntity  = false;
+        restApiCall(HTTPMethod.GET, emailVerifyLink, 302);
     }
 
 }
