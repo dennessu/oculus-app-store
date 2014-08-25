@@ -8,6 +8,7 @@ package com.junbo.test.oauth;
 import com.junbo.identity.spec.v1.model.User;
 import com.junbo.identity.spec.v1.model.UserLoginName;
 import com.junbo.identity.spec.v1.model.UserPersonalInfo;
+import com.junbo.identity.spec.v1.model.UserVAT;
 import com.junbo.identity.spec.v1.model.migration.OculusInput;
 import com.junbo.identity.spec.v1.model.migration.OculusOutput;
 import com.junbo.oauth.spec.model.TokenInfo;
@@ -17,9 +18,13 @@ import com.junbo.test.common.RandomHelper;
 import com.junbo.test.common.Validator;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.identity.Identity;
+import com.junbo.test.identity.IdentityModel;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.testng.AssertJUnit.assertEquals;
 
