@@ -44,10 +44,7 @@ import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.net.*;
 import java.security.PrivateKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.*;
@@ -365,7 +362,12 @@ public class EntitlementServiceImpl extends BaseService implements EntitlementSe
     }
 
     private String generatePreSignedDownloadUrl(String urlString, String filename, String version, String platform) throws MalformedURLException, URISyntaxException {
-        URL url = new URL(urlString);
+        URL url = null;
+        try {
+            url = new URL(URLDecoder.decode(urlString, "utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            url = new URL(urlString);
+        }
         String domainName = url.getHost();
         if (!isS3(domainName) && !isCloudFront(domainName)) {
             return urlString;

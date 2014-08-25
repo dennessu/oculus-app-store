@@ -45,6 +45,7 @@ import javax.ws.rs.WebApplicationException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
@@ -173,18 +174,19 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         resourceScopeValidator.setDisabled(true);
     }
 
-    @Test(enabled = false)
+    @Test(enabled = true)
     //make sure the url and key info are valid and just check whether the url generated is valid
     public void testGenerateUrl() throws IOException, URISyntaxException, InvalidKeySpecException {
-//           String url = "http://static.oculusvr.com/uploads/14013776640911fhvo9od2t9-pc.zip";
-        String url = "https://d1aifagf6hhneo.cloudfront.net/binaries/sr51r1VTfeqZFaFF0ZXy_SpotifyInstaller.zip";
+//           String url = "http://static.oculusvr.com/uploads%2F14013776640911fhvo9od2t9-pc.zip";
+        String url = "https://d1aifagf6hhneo.cloudfront.net/binaries%2Fsr51r1VTfeqZFaFF0ZXy_SpotifyInstaller.zip";
+//        url = URLEncoder.encode(url, "utf-8");
 //        String url = "https://d3q6nt0as236wo.cloudfront.net/test";
         String result = generatePreSignedDownloadUrl(url, "xx", "1.0", "PC");
         System.out.println(result);
     }
 
     private String generatePreSignedDownloadUrl(String urlString, String filename, String version, String platform) throws IOException, URISyntaxException, InvalidKeySpecException {
-        URL url = new URL(urlString);
+        URL url = new URL(URLDecoder.decode(urlString, "utf-8"));
         String domainName = url.getHost();
         String objectKey = url.getPath().substring(1);
         String extension = getExtension(objectKey);
@@ -208,9 +210,9 @@ public class EntitlementServiceTest extends AbstractTestNGSpringContextTests {
         }
 
         if (domainName.endsWith("cloudfront.net")) {
-//            String bucketName = "ovr_ink_uploader";
-            return generateCloudantFrontUrl(urlString, finalFilename, expiration);
-//            return generateS3Url(bucketName, objectKey, finalFilename, expiration);
+            String bucketName = "ovr_ink_uploader";
+//            return generateCloudantFrontUrl(urlString, finalFilename, expiration);
+            return generateS3Url(bucketName, objectKey, finalFilename, expiration);
         }
 
         return urlString;
