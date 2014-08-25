@@ -21,7 +21,7 @@ import com.junbo.test.common.ConfigHelper;
  */
 public class CryptoServiceImpl extends HttpClientBase implements CryptoService {
 
-    private static String cryptoUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "crypto/";
+    private static String cryptoUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "/crypto/";
     private static CryptoService instance;
     private OAuthService oAuthTokenClient = OAuthServiceImpl.getInstance();
 

@@ -24,7 +24,7 @@ import com.junbo.test.store.apihelper.StoreService;
  * Created by weiyu_000 on 8/6/14.
  */
 public class StoreServiceImpl extends HttpClientBase implements StoreService {
-    private static String storeUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "horizon-api/";
+    private static String storeUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "/horizon-api";
 
     private static StoreService instance;
 

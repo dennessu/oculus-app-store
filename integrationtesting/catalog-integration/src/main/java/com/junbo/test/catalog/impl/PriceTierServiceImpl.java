@@ -30,7 +30,7 @@ import java.util.Map;
  */
 public class PriceTierServiceImpl extends HttpClientBase implements PriceTierService {
 
-    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "price-tiers";
+    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpoint") + "/price-tiers";
     private static PriceTierService instance;
     private boolean isServiceScope = true;
 

@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class OfferAttributeServiceImpl extends HttpClientBase implements OfferAttributeService {
 
-    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "offer-attributes";
+    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpoint") + "/offer-attributes";
     private static OfferAttributeService instance;
     private boolean isServiceScope = true;
 

@@ -46,7 +46,7 @@ public class FulfilmentServiceImpl extends HttpClientBase implements FulfilmentS
     @Override
     public String postFulfilment(FulfilmentRequest fulfilment, int expectedResponseCode) throws Exception {
         oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType);
-        String responseBody = restApiCall(HTTPMethod.POST, fulfilmentUrl + "fulfilments", fulfilment,
+        String responseBody = restApiCall(HTTPMethod.POST, fulfilmentUrl + "/fulfilments", fulfilment,
                 expectedResponseCode, true);
 
         FulfilmentRequest fulfilmentResult =
@@ -68,7 +68,7 @@ public class FulfilmentServiceImpl extends HttpClientBase implements FulfilmentS
     @Override
     public String getFulfilmentByOrderId(String orderId, int expectedResponseCode) throws Exception {
         oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType);
-        String responseBody = restApiCall(HTTPMethod.GET, String.format(fulfilmentUrl + "fulfilments?orderId=%s",
+        String responseBody = restApiCall(HTTPMethod.GET, String.format(fulfilmentUrl + "/fulfilments?orderId=%s",
                 orderId), expectedResponseCode, true);
 
         FulfilmentRequest fulfilmentResult =
@@ -89,7 +89,7 @@ public class FulfilmentServiceImpl extends HttpClientBase implements FulfilmentS
     @Override
     public FulfilmentItem getFulfilment(String fulfilmentId, int expectedResponseCode) throws Exception {
         oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType);
-        String responseBody = restApiCall(HTTPMethod.GET, fulfilmentUrl + "fulfilments/" + fulfilmentId,
+        String responseBody = restApiCall(HTTPMethod.GET, fulfilmentUrl + "/fulfilments/" + fulfilmentId,
                 expectedResponseCode, true);
 
         FulfilmentItem fulfilmentItemResult =

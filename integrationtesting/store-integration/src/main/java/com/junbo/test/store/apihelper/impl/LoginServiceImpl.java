@@ -19,7 +19,7 @@ import com.junbo.test.store.apihelper.LoginService;
  */
 public class LoginServiceImpl extends HttpClientBase implements LoginService {
 
-    private static String loginUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "horizon-api/id/";
+    private static String loginUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "/horizon-api/id";
 
     private static LoginService instance;
 
