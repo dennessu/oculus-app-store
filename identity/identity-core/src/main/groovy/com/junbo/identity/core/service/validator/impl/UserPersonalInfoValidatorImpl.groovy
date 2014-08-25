@@ -79,6 +79,11 @@ class UserPersonalInfoValidatorImpl implements UserPersonalInfoValidator {
         if (userPersonalInfo.id != null) {
             throw AppCommonErrors.INSTANCE.fieldMustBeNull('id').exception()
         }
+
+        if (userPersonalInfo.lastValidateTime != null) {
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('lastValidateTime').exception()
+        }
+
         return checkBasicPersonalInfo(userPersonalInfo).then {
             return checkAdvancedCreate(userPersonalInfo)
         }

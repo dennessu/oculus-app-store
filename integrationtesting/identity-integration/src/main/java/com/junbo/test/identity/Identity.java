@@ -214,11 +214,12 @@ public class Identity {
         Email mailPii = new Email();
         mailPii.setInfo(email);
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
-        userPersonalInfo.setLastValidateTime(new Date());
         userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(mailPii));
         userPersonalInfo.setUserId(user.getId());
         userPersonalInfo.setType(IdentityModel.UserPersonalInfoType.EMAIL.toString());
         UserPersonalInfo pii = UserPersonalInfoPost(user.getId(), userPersonalInfo);
+        pii.setLastValidateTime(new Date());
+        pii = UserPersonalInfoPut(user.getId(), pii);
         UserPersonalInfoLink link = new UserPersonalInfoLink();
         link.setValue(pii.getId());
         link.setLabel(RandomHelper.randomAlphabetic(15));
@@ -264,6 +265,11 @@ public class Identity {
     public static UserPersonalInfo UserPersonalInfoPost(UserId userId, UserPersonalInfo upi) throws Exception {
         upi.setUserId(userId);
         return (UserPersonalInfo) IdentityPost(IdentityV1UserPersonalInfoURI,
+                JsonHelper.JsonSerializer(upi), UserPersonalInfo.class);
+    }
+
+    public static UserPersonalInfo UserPersonalInfoPut(UserId userId, UserPersonalInfo upi) throws Exception {
+        return IdentityPut(IdentityV1UserPersonalInfoURI + "/" + GetHexLongId(upi.getId().getValue()),
                 JsonHelper.JsonSerializer(upi), UserPersonalInfo.class);
     }
 
