@@ -167,7 +167,7 @@ public class authorizeUser {
 
     @Property(environment = "release")
     @Test(groups = "dailies")
-    public void RegisterWithoutEmailVerification() throws Exception {
+    public void RegisterWithUserPii() throws Exception {
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
         String cid = Oauth.GetRegistrationCid();
 
@@ -202,7 +202,7 @@ public class authorizeUser {
         Identity.UserPersonalInfoPost(storedUser.getId(), IdentityModel.DefaultUserPersonalInfoAddress());
         Identity.UserPersonalInfoPost(storedUser.getId(), IdentityModel.DefaultUserPersonalInfoDob());
         Map<String, UserVAT> vatMap = new HashMap<>();
-        vatMap.put("validVAT", IdentityModel.DefaultUserVat());
+        vatMap.put(IdentityModel.DefaultUserVat().getVatNumber().substring(0, 2), IdentityModel.DefaultUserVat());
         storedUser.setVat(vatMap);
         Identity.UserPut(storedUser);
     }
