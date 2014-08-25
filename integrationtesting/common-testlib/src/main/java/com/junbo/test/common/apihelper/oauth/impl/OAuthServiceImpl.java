@@ -309,8 +309,8 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
                 convertFormatToRequestString(formParams));
 
         String[] values = responseBody.split("\"");
-        for(String value : values){
-            if(value.contains("verify-email")){
+        for (String value : values) {
+            if (value.contains("verify-email")) {
                 return value;
             }
         }
@@ -321,8 +321,9 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
     @Override
     public void accessEmailVerifyLink(String emailVerifyLink) throws Exception {
         needAuthHeader = false;
-        needOverrideRequestEntity  = false;
-        restApiCall(HTTPMethod.GET, emailVerifyLink, 302);
+        needOverrideRequestEntity = false;
+        emailVerifyLink = emailVerifyLink.substring(emailVerifyLink.indexOf("verify"));
+        restApiCall(HTTPMethod.GET, oauthUrl + "/" + emailVerifyLink, 302);
     }
 
 }
