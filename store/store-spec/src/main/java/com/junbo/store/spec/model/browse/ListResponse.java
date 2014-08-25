@@ -5,7 +5,7 @@
  */
 package com.junbo.store.spec.model.browse;
 
-import com.junbo.store.spec.model.browse.document.Document;
+import com.junbo.store.spec.model.browse.document.Item;
 
 import java.util.List;
 
@@ -14,13 +14,22 @@ import java.util.List;
  */
 public class ListResponse {
 
-    private Document doc;
+    private List<Item> items;
+    private PageMeta next;
 
-    public Document getDoc() {
-        return doc;
+    public List<Item> getItems() {
+        return items;
     }
 
-    public void setDoc(Document doc) {
-        this.doc = doc;
+    public void setItems(List<Item> items) {
+        this.items = items;
+    }
+
+    public PageMeta getNext() {
+        return next;
+    }
+
+    public void setNext(PageMeta next) {
+        this.next = next;
     }
 }

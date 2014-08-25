@@ -5,26 +5,23 @@
  */
 package com.junbo.store.spec.model.browse.document;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.junbo.common.id.ItemId;
 import com.junbo.store.spec.model.browse.ReviewsResponse;
 
 import java.util.List;
 
 /**
- * The Document class.
+ * The Item class.
  */
-public class Document {
+public class Item {
 
-    private String docType; // CONTAINER, APP
+    private ItemId self;
+
+    private String itemType; // APP
 
     private String title;
 
     private String descriptionHtml;
-
-    private ContainerMetadata containerMetadata;
-
-    private List<Document> childDocs;
 
     private AggregatedRatings aggregatedRatings;
 
@@ -40,9 +37,6 @@ public class Document {
 
     private String shareUrl;
 
-    @JsonProperty("item")
-    private ItemId itemId;
-
     private List<Offer> offers;
 
     private Boolean ownedByCurrentUser;
@@ -51,20 +45,20 @@ public class Document {
 
     private String deliveryUrl;
 
-    public ItemId getItemId() {
-        return itemId;
+    public ItemId getSelf() {
+        return self;
     }
 
-    public void setItemId(ItemId itemId) {
-        this.itemId = itemId;
+    public void setSelf(ItemId self) {
+        this.self = self;
     }
 
-    public String getDocType() {
-        return docType;
+    public String getItemType() {
+        return itemType;
     }
 
-    public void setDocType(String docType) {
-        this.docType = docType;
+    public void setItemType(String itemType) {
+        this.itemType = itemType;
     }
 
     public String getTitle() {
@@ -81,22 +75,6 @@ public class Document {
 
     public void setDescriptionHtml(String descriptionHtml) {
         this.descriptionHtml = descriptionHtml;
-    }
-
-    public ContainerMetadata getContainerMetadata() {
-        return containerMetadata;
-    }
-
-    public void setContainerMetadata(ContainerMetadata containerMetadata) {
-        this.containerMetadata = containerMetadata;
-    }
-
-    public List<Document> getChildDocs() {
-        return childDocs;
-    }
-
-    public void setChildDocs(List<Document> childDocs) {
-        this.childDocs = childDocs;
     }
 
     public AggregatedRatings getAggregatedRatings() {

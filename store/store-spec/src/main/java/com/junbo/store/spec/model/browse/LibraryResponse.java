@@ -5,20 +5,22 @@
  */
 package com.junbo.store.spec.model.browse;
 
-import com.junbo.store.spec.model.browse.document.Document;
+import com.junbo.store.spec.model.browse.document.Item;
+
+import java.util.List;
 
 /**
  * The LibraryResponse class.
  */
 public class LibraryResponse {
 
-    private Document doc;
+    private List<Item> items;
 
-    public Document getDoc() {
-        return doc;
+    public List<Item> getItems() {
+        return items;
     }
 
-    public void setDoc(Document doc) {
-        this.doc = doc;
+    public void setItems(List<Item> items) {
+        this.items = items;
     }
 }

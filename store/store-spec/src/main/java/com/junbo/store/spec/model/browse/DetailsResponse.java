@@ -5,20 +5,20 @@
  */
 package com.junbo.store.spec.model.browse;
 
-import com.junbo.store.spec.model.browse.document.Document;
+import com.junbo.store.spec.model.browse.document.Item;
 
 /**
  * The DetailsResponse class.
  */
 public class DetailsResponse {
 
-    private Document doc;
+    private Item item;
 
-    public Document getDoc() {
-        return doc;
+    public Item getItem() {
+        return item;
     }
 
-    public void setDoc(Document doc) {
-        this.doc = doc;
+    public void setItem(Item item) {
+        this.item = item;
     }
 }

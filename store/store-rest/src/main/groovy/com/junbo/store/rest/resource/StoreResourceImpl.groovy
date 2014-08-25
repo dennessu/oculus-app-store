@@ -713,7 +713,7 @@ class StoreResourceImpl implements StoreResource {
     }
 
     @Override
-    Promise<TocResponse> getToc(TocRequest request) {
+    Promise<TocResponse> getToc() {
         return null
     }
 
@@ -723,7 +723,7 @@ class StoreResourceImpl implements StoreResource {
     }
 
     @Override
-    Promise<LayoutResponse> getLayout(LayoutRequest request) {
+    Promise<SectionLayoutResponse> getSectionLayout(@BeanParam SectionLayoutRequest request) {
         return null
     }
 
@@ -733,7 +733,7 @@ class StoreResourceImpl implements StoreResource {
     }
 
     @Override
-    Promise<LibraryResponse> getLibrary(LibraryRequest request) {
+    Promise<LibraryResponse> getLibrary() {
         return null
     }
 

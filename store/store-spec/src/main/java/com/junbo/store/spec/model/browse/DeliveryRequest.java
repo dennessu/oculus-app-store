@@ -5,9 +5,6 @@
  */
 package com.junbo.store.spec.model.browse;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.common.enumid.CountryId;
-import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.ItemId;
 
 import javax.ws.rs.QueryParam;

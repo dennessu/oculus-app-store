@@ -79,28 +79,25 @@ public interface StoreResource {
     @Path("/iap/consumption")
     Promise<IAPEntitlementConsumeResponse> iapConsumeEntitlement(IAPEntitlementConsumeRequest iapEntitlementConsumeRequest);
 
-
-
-
     @GET
     @Path("/toc")
-    Promise<TocResponse> getToc(@BeanParam TocRequest request);
+    Promise<TocResponse> getToc();
 
     @POST
     @Path("/accept-tos")
     Promise<AcceptTosResponse> acceptTos(AcceptTosRequest request);
 
     @GET
-    @Path("/layout")
-    Promise<LayoutResponse> getLayout(@BeanParam LayoutRequest request);
+    @Path("/section-layout")
+    Promise<SectionLayoutResponse> getSectionLayout(@BeanParam SectionLayoutRequest request);
 
     @GET
-    @Path("/list")
+    @Path("/section-list")
     Promise<ListResponse> getList(@BeanParam ListRequest request);
 
     @GET
     @Path("/library")
-    Promise<LibraryResponse> getLibrary(@BeanParam LibraryRequest request);
+    Promise<LibraryResponse> getLibrary();
 
     @GET
     @Path("/details")

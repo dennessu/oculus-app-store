@@ -5,24 +5,22 @@
  */
 package com.junbo.store.spec.model.browse;
 
-import javax.ws.rs.QueryParam;
+import java.util.List;
 
 /**
- * The ListRequest class.
+ * The Category class.
  */
-public class ListRequest {
+public class Category {
 
-    @QueryParam("category")
+    private String title;
+
     private String category;
 
-    @QueryParam("criteria")
     private String criteria;
 
-    @QueryParam("cursor")
-    private Integer cursor;
+    private List<Category> children;
 
-    @QueryParam("count")
-    private Integer count;
+
 
     public String getCategory() {
         return category;
@@ -40,19 +38,11 @@ public class ListRequest {
         this.criteria = criteria;
     }
 
-    public Integer getCursor() {
-        return cursor;
+    public List<Category> getChildren() {
+        return children;
     }
 
-    public void setCursor(Integer cursor) {
-        this.cursor = cursor;
-    }
-
-    public Integer getCount() {
-        return count;
-    }
-
-    public void setCount(Integer count) {
-        this.count = count;
+    public void setChildren(List<Category> children) {
+        this.children = children;
     }
 }

@@ -5,9 +5,10 @@
  */
 package com.junbo.store.spec.model.browse;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.common.id.TosId;
+import com.junbo.store.spec.model.browse.document.SectionInfoNode;
 import com.junbo.store.spec.model.browse.document.Tos;
+
+import java.util.List;
 
 /**
  * The TocResponse class.
@@ -16,9 +17,7 @@ public class TocResponse {
 
     private Tos tos;
 
-    private String homeUrl;
-
-    private String libraryUrl;
+    private List<SectionInfoNode> sections;
 
     public Tos getTos() {
         return tos;
@@ -28,19 +27,11 @@ public class TocResponse {
         this.tos = tos;
     }
 
-    public String getHomeUrl() {
-        return homeUrl;
+    public List<SectionInfoNode> getSections() {
+        return sections;
     }
 
-    public void setHomeUrl(String homeUrl) {
-        this.homeUrl = homeUrl;
-    }
-
-    public String getLibraryUrl() {
-        return libraryUrl;
-    }
-
-    public void setLibraryUrl(String libraryUrl) {
-        this.libraryUrl = libraryUrl;
+    public void setSections(List<SectionInfoNode> sections) {
+        this.sections = sections;
     }
 }

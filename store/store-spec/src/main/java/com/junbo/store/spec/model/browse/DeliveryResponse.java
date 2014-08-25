@@ -5,8 +5,6 @@
  */
 package com.junbo.store.spec.model.browse;
 
-import com.junbo.store.spec.model.browse.document.Review;
-
 /**
  * The AddReviewResponse class.
  */

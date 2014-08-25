@@ -5,43 +5,18 @@
  */
 package com.junbo.store.spec.model.browse;
 
-import com.junbo.common.enumid.CountryId;
-import com.junbo.common.enumid.LocaleId;
-
 import javax.ws.rs.QueryParam;
 
 /**
- * The LayoutRequest class.
+ * The SectionLayoutRequest class.
  */
-public class LayoutRequest {
-
-    @QueryParam("locale")
-    private LocaleId locale;
-
-    @QueryParam("country")
-    private CountryId country;
+public class SectionLayoutRequest {
 
     @QueryParam("category")
     private String category;
 
     @QueryParam("criteria")
     private String criteria;
-
-    public LocaleId getLocale() {
-        return locale;
-    }
-
-    public void setLocale(LocaleId locale) {
-        this.locale = locale;
-    }
-
-    public CountryId getCountry() {
-        return country;
-    }
-
-    public void setCountry(CountryId country) {
-        this.country = country;
-    }
 
     public String getCategory() {
         return category;

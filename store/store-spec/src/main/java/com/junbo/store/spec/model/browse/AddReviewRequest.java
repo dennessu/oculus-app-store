@@ -6,8 +6,6 @@
 package com.junbo.store.spec.model.browse;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.junbo.common.enumid.CountryId;
-import com.junbo.common.enumid.LocaleId;
 import com.junbo.common.id.ItemId;
 
 /**
@@ -17,10 +15,6 @@ public class AddReviewRequest {
 
     @JsonProperty("item")
     private ItemId itemId;
-
-    private LocaleId locale;
-
-    private CountryId country;
 
     private String title;
 
@@ -34,22 +28,6 @@ public class AddReviewRequest {
 
     public void setItemId(ItemId itemId) {
         this.itemId = itemId;
-    }
-
-    public LocaleId getLocale() {
-        return locale;
-    }
-
-    public void setLocale(LocaleId locale) {
-        this.locale = locale;
-    }
-
-    public CountryId getCountry() {
-        return country;
-    }
-
-    public void setCountry(CountryId country) {
-        this.country = country;
     }
 
     public String getTitle() {
