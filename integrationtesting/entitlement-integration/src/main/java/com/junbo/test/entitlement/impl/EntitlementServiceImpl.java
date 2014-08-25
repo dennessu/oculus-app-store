@@ -30,8 +30,8 @@ import java.util.Set;
  */
 public class EntitlementServiceImpl extends HttpClientBase implements EntitlementService {
 
-    private String entitlementUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "entitlements";
-    private String itemBinariesUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "item-binary";
+    private String entitlementUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "/entitlements";
+    private String itemBinariesUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "/item-binary";
     private static EntitlementService instance;
     private boolean isServiceScope = true;
 
@@ -188,8 +188,8 @@ public class EntitlementServiceImpl extends HttpClientBase implements Entitlemen
 
         for (Iterator it = key.iterator(); it.hasNext(); ) {
             String id = (String) it.next();
-            String url = ConfigHelper.getSetting("defaultCommerceEndpointV1");
-            String host = url.replace("/v1/", "");
+            String url = ConfigHelper.getSetting("defaultCommerceEndpoint");
+            String host = url.replace("/v1", "");
             restApiCall(HTTPMethod.GET, host + entitlement.getBinaries().get(id), 200);
         }
     }

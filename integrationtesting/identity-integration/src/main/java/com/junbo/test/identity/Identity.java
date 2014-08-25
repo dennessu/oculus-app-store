@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class Identity {
 
-    public static final String IdentityEndPointV1 = ConfigHelper.getSetting("defaultIdentityEndPointV1");
+    public static final String IdentityEndPointV1 = ConfigHelper.getSetting("defaultIdentityEndpoint");
     public static final String IdentityV1CountryURI = IdentityEndPointV1 + "/countries";
     public static final String IdentityV1CurrencyURI = IdentityEndPointV1 + "/currencies";
     public static final String IdentityV1DeviceTypeURI = IdentityEndPointV1 + "/device-types";
@@ -89,7 +89,8 @@ public class Identity {
         nvps.add(new BasicNameValuePair("client_id", "migration"));
         nvps.add(new BasicNameValuePair("client_secret", "secret"));
         nvps.add(new BasicNameValuePair("scope", "identity.service identity.migration"));
-        CloseableHttpResponse response = HttpclientHelper.SimplePost(ConfigHelper.getSetting("defaultTokenURI"), nvps);
+        CloseableHttpResponse response = HttpclientHelper.SimplePost(
+                ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/token", nvps);
         String[] results = EntityUtils.toString(response.getEntity(), "UTF-8").split(",");
         for (String s : results) {
             if (s.contains("access_token")) {
@@ -105,7 +106,8 @@ public class Identity {
         nvps.add(new BasicNameValuePair("client_id", "service"));
         nvps.add(new BasicNameValuePair("client_secret", "secret"));
         nvps.add(new BasicNameValuePair("scope", "identity.service identity.admin"));
-        CloseableHttpResponse response = HttpclientHelper.SimplePost(ConfigHelper.getSetting("defaultTokenURI"), nvps);
+        CloseableHttpResponse response = HttpclientHelper.SimplePost(
+                ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/token", nvps);
         String[] results = EntityUtils.toString(response.getEntity(), "UTF-8").split(",");
         for (String s : results) {
             if (s.contains("access_token")) {
@@ -214,11 +216,12 @@ public class Identity {
         Email mailPii = new Email();
         mailPii.setInfo(email);
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
-        userPersonalInfo.setLastValidateTime(new Date());
         userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(mailPii));
         userPersonalInfo.setUserId(user.getId());
         userPersonalInfo.setType(IdentityModel.UserPersonalInfoType.EMAIL.toString());
         UserPersonalInfo pii = UserPersonalInfoPost(user.getId(), userPersonalInfo);
+        pii.setLastValidateTime(new Date());
+        pii = UserPersonalInfoPut(user.getId(), pii);
         UserPersonalInfoLink link = new UserPersonalInfoLink();
         link.setValue(pii.getId());
         link.setLabel(RandomHelper.randomAlphabetic(15));
@@ -264,6 +267,11 @@ public class Identity {
     public static UserPersonalInfo UserPersonalInfoPost(UserId userId, UserPersonalInfo upi) throws Exception {
         upi.setUserId(userId);
         return (UserPersonalInfo) IdentityPost(IdentityV1UserPersonalInfoURI,
+                JsonHelper.JsonSerializer(upi), UserPersonalInfo.class);
+    }
+
+    public static UserPersonalInfo UserPersonalInfoPut(UserId userId, UserPersonalInfo upi) throws Exception {
+        return IdentityPut(IdentityV1UserPersonalInfoURI + "/" + GetHexLongId(upi.getId().getValue()),
                 JsonHelper.JsonSerializer(upi), UserPersonalInfo.class);
     }
 
@@ -567,6 +575,13 @@ public class Identity {
         return (UserSecurityQuestion) IdentityGet(
                 IdentityEndPointV1 + "/users/" + GetHexLongId(userId.getValue()) +
                         "/security-questions/" + usqId.getValue(), UserSecurityQuestion.class);
+    }
+
+    public static UserSecurityQuestionVerifyAttempt UserSecurityQuestionVerifyAttemptPost(UserId userId, UserSecurityQuestionVerifyAttempt attempt)
+            throws Exception {
+        return IdentityPost(
+                IdentityEndPointV1 + "/users/" + GetHexLongId(userId.getValue()) + "/security-question-attempts",
+                JsonHelper.JsonSerializer(attempt), UserSecurityQuestionVerifyAttempt.class);
     }
 
     public static String GetHexLongId(Long userId) throws Exception {

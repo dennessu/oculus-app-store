@@ -9,10 +9,13 @@ import com.junbo.identity.spec.v1.model.User;
 import com.junbo.identity.spec.v1.model.UserLoginName;
 import com.junbo.identity.spec.v1.model.UserPersonalInfo;
 import com.junbo.identity.spec.v1.model.UserVAT;
+import com.junbo.identity.spec.v1.model.migration.OculusInput;
+import com.junbo.identity.spec.v1.model.migration.OculusOutput;
 import com.junbo.oauth.spec.model.TokenInfo;
 import com.junbo.test.common.HttpclientHelper;
 import com.junbo.test.common.JsonHelper;
 import com.junbo.test.common.RandomHelper;
+import com.junbo.test.common.Validator;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.identity.Identity;
 import com.junbo.test.identity.IdentityModel;
@@ -31,7 +34,7 @@ import static org.testng.AssertJUnit.assertEquals;
 public class authorizeUser {
 
     @BeforeMethod(alwaysRun = true)
-    public void setup() {
+    public void setup() throws Exception {
         HttpclientHelper.CreateHttpClient();
     }
 
@@ -113,6 +116,24 @@ public class authorizeUser {
     }
 
     @Test(groups = "dailies")
+    public void migrateAndLogin() throws Exception {
+        OculusInput input = IdentityModel.DefaultOculusInput();
+        input.setPassword("1:8UFAbK26VrPLL75jE9P2:PRo4D7r23hrfv3FBxqBv:b87637b9ec5abd43db01d7a299612a49550230a813239fb3e28eec2a88c0df67");
+        input.setStatus(IdentityModel.MigrateUserStatus.ACTIVE.name());
+        Identity.GetHttpAuthorizationHeaderForMigration();
+        OculusOutput output = Identity.ImportMigrationData(input);
+
+        HttpclientHelper.ResetHttpClient();
+        String cid = Oauth.GetLoginCid();
+        String currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        String loginResponseLink = Oauth.UserLogin(cid, input.getUsername(), "radiant555");
+        String access_Token = Oauth.GetLoginAccessToken(loginResponseLink);
+        TokenInfo tokenInfo = Oauth.GetTokenInfo(access_Token);
+        Validator.Validate("Validate UserId same", output.getUserId(), tokenInfo.getSub());
+    }
+
+    @Test(groups = "dailies")
     public void login() throws Exception {
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
         String cid = Oauth.GetRegistrationCid();
@@ -147,7 +168,7 @@ public class authorizeUser {
 
     @Property(environment = "release")
     @Test(groups = "dailies")
-    public void RegisterWithoutEmailVerification() throws Exception {
+    public void RegisterWithUserPii() throws Exception {
         Oauth.StartLoggingAPISample(Oauth.MessageGetLoginCid);
         String cid = Oauth.GetRegistrationCid();
 
@@ -169,10 +190,9 @@ public class authorizeUser {
         //String email = "silkcloudtest+allEnvLoginUser@gmail.com";
         String userName = RandomHelper.randomAlphabetic(15);
         String email = RandomHelper.randomEmail();
-        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email, false);
+        String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email, true);
         ValidateErrorFreeResponse(postRegisterUserResponse);
 
-        /*
         String loginState = Oauth.GetLoginStateAfterRegisterUser(cid);
         String authCode = Oauth.SSO2GetAuthCode(loginState);
         String accessToken = Oauth.GetAccessToken(authCode);
@@ -183,10 +203,9 @@ public class authorizeUser {
         Identity.UserPersonalInfoPost(storedUser.getId(), IdentityModel.DefaultUserPersonalInfoAddress());
         Identity.UserPersonalInfoPost(storedUser.getId(), IdentityModel.DefaultUserPersonalInfoDob());
         Map<String, UserVAT> vatMap = new HashMap<>();
-        vatMap.put("validVAT", IdentityModel.DefaultUserVat());
+        vatMap.put(IdentityModel.DefaultUserVat().getVatNumber().substring(0, 2), IdentityModel.DefaultUserVat());
         storedUser.setVat(vatMap);
         Identity.UserPut(storedUser);
-        */
     }
 
     @Property(environment = "release")

@@ -1,5 +1,6 @@
 package com.junbo.apphost.core.logging
 
+import com.junbo.langur.core.IpUtil
 import groovy.transform.CompileStatic
 import org.glassfish.grizzly.Connection
 import org.glassfish.grizzly.http.Protocol
@@ -83,8 +84,8 @@ class AccessLogProbe extends HttpServerProbe.Adapter {
         String value = null
 
         try {
-            value = request.remoteAddr // request.remoteHost could timeout in some cases...
-        } catch (NullPointerException ignore) {
+            value = IpUtil.getClientIpFromRequest(request)
+        } catch (Exception ignore) {
         }
 
         return value == null ? '-' : value

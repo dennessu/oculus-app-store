@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class OrderServiceImpl extends HttpClientBase implements OrderService {
 
-    private static String orderUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1");
+    private static String orderUrl = ConfigHelper.getSetting("defaultCommerceEndpoint");
     private LogHelper logger = new LogHelper(OrderServiceImpl.class);
 
     private OAuthService oAuthTokenClient = OAuthServiceImpl.getInstance();
@@ -116,7 +116,7 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
 
     @Override
     public Results<Subledger> getSubledgers(String sellerId, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.GET, orderUrl + "subledgers?sellerId=" + sellerId, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.GET, orderUrl + "/subledgers?sellerId=" + sellerId, expectedResponseCode);
 
         Results<Subledger> subledgerResults = new JsonMessageTranscoder().decode(
                 new TypeReference<Results<Subledger>>() {
@@ -133,7 +133,7 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
 
     @Override
     public String postOrder(Order order, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, orderUrl + "orders/", order, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, orderUrl + "/orders/", order, expectedResponseCode);
 
         if (expectedResponseCode == 200) {
             Order orderResult = new JsonMessageTranscoder().decode(
@@ -156,7 +156,7 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
 
     @Override
     public List<String> getOrdersByUserId(String userId, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.GET, orderUrl + "orders?userId=" + userId, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.GET, orderUrl + "/orders?userId=" + userId, expectedResponseCode);
 
         Results<Order> orderResults = new JsonMessageTranscoder().decode(
                 new TypeReference<Results<Order>>() {
@@ -181,7 +181,7 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
     @Override
     public String getOrderByOrderId(String orderId, int expectedResponseCode) throws Exception {
 
-        String responseBody = restApiCall(HTTPMethod.GET, orderUrl + "orders/" + orderId, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.GET, orderUrl + "/orders/" + orderId, expectedResponseCode);
 
         Order orderResult = new JsonMessageTranscoder().decode(
                 new TypeReference<Order>() {
@@ -203,7 +203,7 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
     public String updateOrder(Order order, int expectedResponseCode) throws Exception {
         String orderId = IdConverter.idToHexString(order.getId());
 
-        String responseBody = restApiCall(HTTPMethod.PUT, orderUrl + "orders/" + orderId, order, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.PUT, orderUrl + "/orders/" + orderId, order, expectedResponseCode);
 
         if (expectedResponseCode == 200) {
             Order orderResult = new JsonMessageTranscoder().decode(
@@ -229,7 +229,7 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
         oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType);
         String orderId = IdConverter.idToHexString(order.getId());
 
-        String responseBody = restApiCall(HTTPMethod.PUT, orderUrl + "orders/" + orderId, order,
+        String responseBody = restApiCall(HTTPMethod.PUT, orderUrl + "/orders/" + orderId, order,
                 expectedResponseCode, true);
 
         if (expectedResponseCode == 200) {

@@ -35,18 +35,25 @@ public class Oauth {
 
     }
 
-    public static final String DefaultAuthorizeURI = ConfigHelper.getSetting("defaultAuthorizeURI");
-    public static final String DefaultClientId = ConfigHelper.getSetting("client_id");
-    public static final String DefaultClientScopes = "identity";
-    public static final String DefaultClientSecret = ConfigHelper.getSetting("client_secret");
-    public static final String DefaultGrantType = "authorization_code";
-    public static final String DefaultRedirectURI = ConfigHelper.getSetting("defaultRedirectURI");
-    public static final String DefaultRegisterEvent = "register";
-    public static final String DefaultResetPasswordURI = ConfigHelper.getSetting("defaultResetPasswordURI");
-    public static final String DefaultTokenURI = ConfigHelper.getSetting("defaultTokenURI");
-    public static final String DefaultTokenInfoURI = ConfigHelper.getSetting("defaultTokenInfoURI");
-    public static final String DefaultLogoutURI = ConfigHelper.getSetting("defaultLogoutURI");
+    public static final String DefaultAuthorizeURI =
+            ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/authorize";
+    public static final String DefaultLogoutURI =
+            ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/end-session";
+    public static final String DefaultRedirectURI =
+            ConfigHelper.getSetting("defaultRedirectURI");
+    public static final String DefaultResetPasswordURI =
+            ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/reset-password";
+    public static final String DefaultTokenURI =
+            ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/token";
+    public static final String DefaultTokenInfoURI =
+            ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/tokeninfo";
 
+    public static final String DefaultClientId = ConfigHelper.getSetting("client_id");
+    public static final String DefaultClientSecret = ConfigHelper.getSetting("client_secret");
+
+    public static final String DefaultClientScopes = "identity";
+    public static final String DefaultGrantType = "authorization_code";
+    public static final String DefaultRegisterEvent = "register";
     public static final String DefaultFNCode = "code";
     public static final String DefaultFNCid = "cid";
     public static final String DefaultFNClientId = "client_id";
@@ -251,8 +258,8 @@ public class Oauth {
                 new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
         response.close();
         String emailLink = viewModelResponse.getModel().get("link").toString();
-        //emailLink = DefaultAuthorizeURI.replace("/authorize", "") + "/verify-email?"
-        //        + emailLink.split("/verify-email?")[1];
+        emailLink = DefaultAuthorizeURI.replace("/authorize", "") + "/verify-email"
+                + emailLink.split("/verify-email?")[1];
         VerifyEmail(emailLink);
         // goto next
         nvps = new ArrayList<NameValuePair>();
@@ -331,6 +338,21 @@ public class Oauth {
             for (Header h : response.getAllHeaders()) {
                 if (h.toString().startsWith(tarHeader)) {
                     return GetPropertyValueFromString(h.toString(), DefaultFNIdToken, "&");
+                }
+            }
+            throw new NotFoundException("Did not found expected response header: " + tarHeader);
+        } finally {
+            response.close();
+        }
+    }
+
+    public static String GetLoginAccessToken(String requestURI) throws Exception {
+        CloseableHttpResponse response = HttpclientHelper.SimpleGet(requestURI, false);
+        try {
+            String tarHeader = "Location";
+            for (Header h : response.getAllHeaders()) {
+                if (h.toString().startsWith(tarHeader)) {
+                    return h.toString().substring(h.toString().indexOf("access_token=") + "access_token=".length());
                 }
             }
             throw new NotFoundException("Did not found expected response header: " + tarHeader);

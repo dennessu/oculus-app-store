@@ -204,6 +204,9 @@ class UserSecurityQuestionAttemptValidatorImpl implements UserSecurityQuestionAt
                     throw AppErrors.INSTANCE.userSecurityQuestionNotFound(attempt.userSecurityQuestionId).exception()
                 }
 
+                if (userSecurityQuestion.userId != attempt.userId) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('userSecurityQuestionId', 'userSecurityQuestionId and userId not match').exception()
+                }
                 return Promise.pure(null)
         }
     }

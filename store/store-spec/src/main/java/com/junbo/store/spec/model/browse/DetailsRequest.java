@@ -5,21 +5,23 @@
  */
 package com.junbo.store.spec.model.browse;
 
+import com.junbo.common.id.ItemId;
+
 import javax.ws.rs.QueryParam;
 
 /**
  * The GetDetailsRequest class.
  */
-public class GetDetailsRequest {
+public class DetailsRequest {
 
-    @QueryParam("docIid")
-    private String docId;
+    @QueryParam("itemId")
+    private ItemId itemId;
 
-    public String getDocId() {
-        return docId;
+    public ItemId getItemId() {
+        return itemId;
     }
 
-    public void setDocId(String docId) {
-        this.docId = docId;
+    public void setItemId(ItemId itemId) {
+        this.itemId = itemId;
     }
 }

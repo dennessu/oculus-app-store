@@ -54,7 +54,7 @@ public class Organization extends PropertyAssignedAwareResourceMeta<Organization
     private UserPersonalInfoId taxId;
 
     @ApiModelProperty(position = 12, required = false, value = "[Nullable] The payment Instrument link for the Payout protocal.")
-    private UserPersonalInfoId payoutInstrument;
+    private PaymentInstrumentId payoutInstrument;
 
     @ApiModelProperty(position = 13, required = false, value = "[Nullable] The payout tax profile.")
     private PayoutTaxProfileId payoutTaxProfile;
@@ -167,11 +167,11 @@ public class Organization extends PropertyAssignedAwareResourceMeta<Organization
         support.setPropertyAssigned("taxId");
     }
 
-    public UserPersonalInfoId getPayoutInstrument() {
+    public PaymentInstrumentId getPayoutInstrument() {
         return payoutInstrument;
     }
 
-    public void setPayoutInstrument(UserPersonalInfoId payoutInstrument) {
+    public void setPayoutInstrument(PaymentInstrumentId payoutInstrument) {
         this.payoutInstrument = payoutInstrument;
         support.setPropertyAssigned("payoutInstrument");
     }

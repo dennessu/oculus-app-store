@@ -13,6 +13,7 @@ import com.junbo.store.spec.model.billing.BillingProfileGetRequest;
 import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
 import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
 import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
+import com.junbo.store.spec.model.browse.*;
 import com.junbo.store.spec.model.iap.*;
 import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.purchase.*;
@@ -78,22 +79,39 @@ public interface StoreResource {
     @Path("/iap/consumption")
     Promise<IAPEntitlementConsumeResponse> iapConsumeEntitlement(IAPEntitlementConsumeRequest iapEntitlementConsumeRequest);
 
-
-    /*
     @GET
     @Path("/toc")
-    Promise<GetTocResponse> getToc(GetTocRequest getTocRequest);
+    Promise<TocResponse> getToc();
+
+    @POST
+    @Path("/accept-tos")
+    Promise<AcceptTosResponse> acceptTos(AcceptTosRequest request);
 
     @GET
-    @Path("/section")
-    Promise<GetSectionResponse> getSection(@BeanParam GetSectionRequest getSectionRequest);
+    @Path("/section-layout")
+    Promise<SectionLayoutResponse> getSectionLayout(@BeanParam SectionLayoutRequest request);
 
     @GET
-    @Path("/list")
-    Promise<GetListResponse> getList(@BeanParam GetListRequest getListRequest);
+    @Path("/section-list")
+    Promise<ListResponse> getList(@BeanParam ListRequest request);
+
+    @GET
+    @Path("/library")
+    Promise<LibraryResponse> getLibrary();
 
     @GET
     @Path("/details")
-    Promise<GetDetailsResponse> getDetails(@BeanParam GetDetailsRequest getDetailsRequest);
-    */
+    Promise<DetailsResponse> getDetails(@BeanParam DetailsRequest request);
+
+    @GET
+    @Path("/reviews")
+    Promise<ReviewsResponse> getReviews(@BeanParam ReviewsRequest request);
+
+    @POST
+    @Path("/add-review")
+    Promise<AddReviewResponse> addReview(AddReviewRequest request);
+
+    @GET
+    @Path("/delivery")
+    Promise<DeliveryResponse> getDelivery(@BeanParam DeliveryRequest request);
 }

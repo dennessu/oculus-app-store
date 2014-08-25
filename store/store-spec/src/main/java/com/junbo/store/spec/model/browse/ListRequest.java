@@ -8,12 +8,9 @@ package com.junbo.store.spec.model.browse;
 import javax.ws.rs.QueryParam;
 
 /**
- * The GetListRequest class.
+ * The ListRequest class.
  */
-public class GetListRequest {
-
-    @QueryParam("corpus")
-    private String corpus;
+public class ListRequest {
 
     @QueryParam("category")
     private String category;
@@ -26,14 +23,6 @@ public class GetListRequest {
 
     @QueryParam("count")
     private Integer count;
-
-    public String getCorpus() {
-        return corpus;
-    }
-
-    public void setCorpus(String corpus) {
-        this.corpus = corpus;
-    }
 
     public String getCategory() {
         return category;

@@ -130,10 +130,12 @@ public class postUser {
         Email email = IdentityModel.DefaultEmail();
         UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
         userPersonalInfo.setUserId(user.getId());
-        userPersonalInfo.setLastValidateTime(new Date());
         userPersonalInfo.setType(IdentityModel.UserPersonalInfoType.EMAIL.toString());
         userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(email));
         userPersonalInfo = Identity.UserPersonalInfoPost(user.getId(), userPersonalInfo);
+        userPersonalInfo.setLastValidateTime(new Date());
+        userPersonalInfo = Identity.UserPersonalInfoPut(user.getId(), userPersonalInfo);
+
         List<UserPersonalInfoLink> links = new ArrayList<>();
         UserPersonalInfoLink link = new UserPersonalInfoLink();
         link.setIsDefault(true);
@@ -235,8 +237,9 @@ public class postUser {
         // change user email
         // todo:    Check mail is sent to mail
         UserPersonalInfo userPersonalInfo = IdentityModel.DefaultUserPersonalInfoEmail("xia.wayne2+" + RandomHelper.randomAlphabetic(15) + "@gmail.com");
-        userPersonalInfo.setLastValidateTime(new Date());
         userPersonalInfo = Identity.UserPersonalInfoPost(user.getId(), userPersonalInfo);
+        userPersonalInfo.setLastValidateTime(new Date());
+        userPersonalInfo = Identity.UserPersonalInfoPut(user.getId(), userPersonalInfo);
         List<UserPersonalInfoLink> links = new ArrayList<>();
         UserPersonalInfoLink link = new UserPersonalInfoLink();
         link.setValue(userPersonalInfo.getId());

@@ -41,7 +41,7 @@ import java.util.Map;
  */
 public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRevisionService {
 
-    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpointV1") + "offer-revisions";
+    private final String catalogServerURL = ConfigHelper.getSetting("defaultCatalogEndpoint") + "/offer-revisions";
     private final String defaultStoredValueItemRevisionFileName = "defaultStoredValueItemRevision";
     private final String defaultPhysicalItemRevisionFileName = "defaultPhysicalItemRevision";
     private final String defaultDigitalItemRevisionFileName = "defaultDigitalItemRevision";

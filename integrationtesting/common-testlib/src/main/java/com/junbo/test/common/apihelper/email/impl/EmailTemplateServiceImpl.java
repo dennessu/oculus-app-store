@@ -19,7 +19,7 @@ import com.junbo.test.common.libs.LogHelper;
  */
 public class EmailTemplateServiceImpl extends HttpClientBase implements EmailTemplateService {
 
-    private static String emailTemplateUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "email-templates";
+    private static String emailTemplateUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "/email-templates";
 
     private LogHelper logger = new LogHelper(EmailTemplateServiceImpl.class);
 

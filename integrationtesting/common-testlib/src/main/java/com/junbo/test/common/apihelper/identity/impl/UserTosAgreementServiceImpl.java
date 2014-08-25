@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class UserTosAgreementServiceImpl extends HttpClientBase implements UserTosAgreementService {
 
-        private final String utaUrl = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/users/%s/tos-agreements";
+        private final String utaUrl = ConfigHelper.getSetting("defaultIdentityEndpoint") + "/users/%s/tos-agreements";
         private static UserTosAgreementService instance;
 
     public static synchronized UserTosAgreementService instance() {

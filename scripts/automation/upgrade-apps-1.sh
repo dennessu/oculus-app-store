@@ -16,7 +16,7 @@ fi
 
 echo Copying files...
 cp $SOURCETREE_HOME/apphost/apphost-cli/build/distributions/$APP_NAME.zip /home/silkcloud
-for var in $ENV/apps-1.txt $ENV/crypto-apps-1.txt do
+for var in $ENV/apps-1.txt $ENV/crypto-apps-1.txt; do
     for p in `cat $var`; do
         if [[ ! -z "$p" && ! $p == \#* ]]; then
             echo copying apphost to $p
@@ -35,7 +35,7 @@ EOF
 
 echo Copying newrelic files...
 cp $SOURCETREE_HOME/apphost/apphost-cli/build/distributions/$APP_NAME.zip /home/silkcloud
-for var in $ENV/crypto-apps-1.txt $ENV/apps-1.txt do
+for var in $ENV/crypto-apps-1.txt $ENV/apps-1.txt; do
     for p in `cat $var`; do
         if [[ ! -z "$p" && ! $p == \#* ]]; then
             echo copying newrelic to $p

@@ -26,7 +26,7 @@ import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
  */
 public class RoleAssignmentServiceImpl extends HttpClientBase implements RoleAssignmentService {
 
-    private final String roleAssignmentURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/role-assignments";
+    private final String roleAssignmentURL = ConfigHelper.getSetting("defaultIdentityEndpoint") + "/role-assignments";
     private static RoleAssignmentService instance;
     private boolean isServiceScope = true;
 

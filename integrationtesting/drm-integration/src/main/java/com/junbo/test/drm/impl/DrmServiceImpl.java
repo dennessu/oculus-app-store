@@ -21,7 +21,7 @@ import com.junbo.test.drm.DrmService;
  */
 public class DrmServiceImpl extends HttpClientBase implements DrmService {
 
-    private final String drmURL = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "licenses";
+    private final String drmURL = ConfigHelper.getSetting("defaultCommerceEndpoint") + "/licenses";
     private static DrmService instance;
 
     public static synchronized DrmService instance() {

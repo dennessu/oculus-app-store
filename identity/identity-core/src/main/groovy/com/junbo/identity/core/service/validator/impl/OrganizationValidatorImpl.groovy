@@ -115,6 +115,10 @@ class OrganizationValidatorImpl implements OrganizationValidator {
                 throw AppCommonErrors.INSTANCE.fieldInvalid('type').exception()
             }
         }
+        // todo:    Due to payout isn't ready in september, so disable this
+        if (organization.payoutInstrument != null) {
+            throw AppCommonErrors.INSTANCE.fieldNotWritable('payoutInstrument').exception()
+        }
         organization.canonicalName = normalizeService.normalize(organization.name)
 
         if (organization.publisherRevenueRatio != null) {

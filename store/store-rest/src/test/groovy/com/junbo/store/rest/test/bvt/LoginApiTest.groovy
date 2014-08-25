@@ -42,6 +42,7 @@ class LoginApiTest extends TestBase {
             assert ex.error.error().code == '131.101'
         }
 
+        /*
         // create user with invalid password (only characters)
         createUserRequest = Generator.genCreateUserRequest(username, 'abcedfcbda', email, pin)
         try {
@@ -49,7 +50,7 @@ class LoginApiTest extends TestBase {
             assert false
         } catch (AppErrorException ex) {
             assert ex.error.error().code == '130.001'
-        }
+        }*/
 
         createUserRequest = Generator.genCreateUserRequest(username, password, email, pin)
         result = loginResource.createUser(createUserRequest).get()

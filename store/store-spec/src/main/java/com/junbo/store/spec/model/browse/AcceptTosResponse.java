@@ -3,10 +3,10 @@
  *
  * Copyright (C) 2014 Junbo and/or its affiliates. All rights reserved.
  */
-package com.junbo.store.spec.model.review;
+package com.junbo.store.spec.model.browse;
 
 /**
- * The Review class.
+ * The GetTocRequest class.
  */
-public class Review {
+public class AcceptTosResponse {
 }

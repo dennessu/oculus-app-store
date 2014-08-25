@@ -19,7 +19,7 @@ import com.junbo.test.email.EmailService;
 public class EmailServiceImpl extends HttpClientBase implements EmailService {
 
     private static EmailService instance;
-    private static String emailUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "emails";
+    private static String emailUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "/emails";
     private boolean isServiceScope = true;
 
     private EmailServiceImpl() {

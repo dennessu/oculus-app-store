@@ -61,4 +61,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "111", message = "Item Not Found With Package Name.")
     AppError itemNotFoundWithPackageName();
+
+    @ErrorDef(httpStatusCode = 412, code = "112", message = "User Primary Email Not Verified.")
+    AppError userPrimaryEmailNotVerified();
 }

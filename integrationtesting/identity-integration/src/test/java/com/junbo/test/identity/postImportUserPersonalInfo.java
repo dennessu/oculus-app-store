@@ -120,6 +120,56 @@ public class postImportUserPersonalInfo {
     }
 
     @Test(groups = "dailies")
+    public void importMigrationDataWithActiveStatus() throws Exception {
+        OculusInput oculusInput = IdentityModel.DefaultOculusInput();
+        oculusInput.setStatus("ACTIVE");
+        OculusOutput oculusOutput = Identity.ImportMigrationData(oculusInput);
+
+        User user = Identity.UserGetByUserId(oculusOutput.getUserId());
+        UserPersonalInfo userLoginInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(user.getUsername());
+        UserLoginName userLoginName = (UserLoginName) JsonHelper.JsonNodeToObject(userLoginInfo.getValue(), UserLoginName.class);
+        Validator.Validate("validate user name", oculusInput.getUsername(), userLoginName.getUserName());
+        Validator.Validate("validate user status",
+                oculusInput.getStatus().equals(IdentityModel.MigrateUserStatus.ARCHIVE.name()) ?
+                        "DELETED" : "ACTIVE", user.getStatus()
+        );
+
+        UserCredential uc = Identity.CredentialsGetByUserId(user.getId());
+        Validator.Validate("validate forceResetPassword", oculusInput.getForceResetPassword(),
+                uc.getChangeAtNextLogin());
+
+        List<UserPersonalInfo> userPersonalInfos = Identity.UserPersonalInfosGetByUserId(user.getId());
+        for (UserPersonalInfo upi : userPersonalInfos) {
+            if (upi.getType().equals("NAME")) {
+                UserName userName = (UserName) JsonHelper.JsonNodeToObject(upi.getValue(), UserName.class);
+                Validator.Validate("validate given name", oculusInput.getFirstName(), userName.getGivenName());
+                Validator.Validate("validate family name", oculusInput.getLastName(), userName.getFamilyName());
+            } else if (upi.getType().equals("EMAIL")) {
+                Email email = (Email) JsonHelper.JsonNodeToObject(upi.getValue(), Email.class);
+                Validator.Validate("validate email", oculusInput.getEmail(), email.getInfo());
+                Validator.Validate("validate email verified", true, upi.getIsValidated());
+            } else if (upi.getType().equals("GENDER")) {
+                UserGender userGender = (UserGender) JsonHelper.JsonNodeToObject(upi.getValue(), UserGender.class);
+                Validator.Validate("validate gender", oculusInput.getGender(), userGender.getInfo());
+            } else if (upi.getType().equals("DOB")) {
+                UserDOB userDob = (UserDOB) JsonHelper.JsonNodeToObject(upi.getValue(), UserDOB.class);
+                Validator.Validate("validate dob", oculusInput.getDob(), userDob.getInfo());
+            } else if (upi.getType().equals("profile")) {
+                UserProfile userProfile = (UserProfile) JsonHelper.JsonNodeToObject(upi.getValue(), UserProfile.class);
+                Validator.Validate("validate user profile headline", oculusInput.getProfile().getHeadline(),
+                        userProfile.getHeadline());
+                Validator.Validate("validate user profile summary", oculusInput.getProfile().getSummary(),
+                        userProfile.getSummary());
+                Validator.Validate("validate user profile url", oculusInput.getProfile().getUrl(),
+                        userProfile.getWebpage());
+                Validator.Validate("validate user profile avatar",
+                        JsonHelper.ObjectToJsonNode(oculusInput.getProfile().getAvatar()),
+                        JsonHelper.ObjectToJsonNode(userProfile.getAvatar()));
+            }
+        }
+    }
+
+    @Test(groups = "dailies")
     public void importMigrationDataWithDuplicateUserNameDifferentCurrentId() throws Exception {
         OculusInput oculusInput = IdentityModel.DefaultOculusInput();
         Identity.ImportMigrationData(oculusInput);

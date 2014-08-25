@@ -30,8 +30,8 @@ import java.util.Set;
  */
 public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
 
-    private static String oauthUrl = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/oauth2";
-    private static String identityPiiUrl = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/personal-info";
+    private static String oauthUrl = ConfigHelper.getSetting("defaultIdentityEndpoint") + "/oauth2";
+    private static String identityPiiUrl = ConfigHelper.getSetting("defaultIdentityEndpoint") + "/personal-info";
 
     private static OAuthService instance;
 
@@ -208,7 +208,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
 
     @Override
     public void authorizeRegister(String cid) throws Exception {
-        needAuthHeader = true;
+        needAuthHeader = false;
         Map<String, String> formParams = new HashMap<>();
         formParams.put("cid", cid);
         formParams.put("event", "register");
@@ -219,7 +219,7 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
 
     @Override
     public void registerUser(String userName, String password, Country country, String cid) throws Exception {
-        needAuthHeader = true;
+        needAuthHeader = false;
 
         Map<String, String> formParams = new HashMap<>();
         formParams.put("cid", cid);
@@ -296,6 +296,34 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
                 responseBody);
 
         return tokenInfo;
+    }
+
+    @Override
+    public String getEmailVerifyLink(String cid) throws Exception {
+        needAuthHeader = false;
+        Map<String, String> formParams = new HashMap<>();
+        formParams.put("cid", cid);
+        formParams.put("event", "skip");
+
+        String responseBody = restApiCall(HTTPMethod.POST, oauthUrl + "/authorize",
+                convertFormatToRequestString(formParams));
+
+        String[] values = responseBody.split("\"");
+        for (String value : values) {
+            if (value.contains("verify-email")) {
+                return value;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public void accessEmailVerifyLink(String emailVerifyLink) throws Exception {
+        needAuthHeader = false;
+        needOverrideRequestEntity = false;
+        emailVerifyLink = emailVerifyLink.substring(emailVerifyLink.indexOf("verify"));
+        restApiCall(HTTPMethod.GET, oauthUrl + "/" + emailVerifyLink, 302);
     }
 
 }

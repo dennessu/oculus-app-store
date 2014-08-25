@@ -27,7 +27,7 @@ public class CartService extends HttpClientBase {
 
     private static CartService instance;
 
-    private static String commerceUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1");
+    private static String commerceUrl = ConfigHelper.getSetting("defaultCommerceEndpoint");
     private static LogHelper logger = new LogHelper(Cart.class);
     private static AsyncHttpClient asyncClient = new AsyncHttpClient(new AsyncHttpClientConfig.Builder().build());
 
@@ -47,10 +47,10 @@ public class CartService extends HttpClientBase {
 
     public Cart addCart(UserId userId, Cart cart, int expectedResponseCode) throws Exception {
 
-        String cartEndpointUrl = commerceUrl + "users/" + IdConverter.idToHexString(userId) + "/carts";
+        String cartEndpointUrl = commerceUrl + "/users/" + IdConverter.idToHexString(userId) + "/carts";
 
         String responseBody = restApiCall(HTTPMethod.POST, cartEndpointUrl, cart, expectedResponseCode);
-        if (responseBody != null && !responseBody.isEmpty() && expectedResponseCode==200) {
+        if (responseBody != null && !responseBody.isEmpty() && expectedResponseCode == 200) {
             return (new JsonMessageTranscoder().decode(new TypeReference<Cart>() {
             }, responseBody));
         }
@@ -63,7 +63,7 @@ public class CartService extends HttpClientBase {
 
     public Cart getCart(UserId userId, CartId cartId, int expectedResponseCode) throws Exception {
 
-        String cartEndpointUrl = commerceUrl + "users/" +
+        String cartEndpointUrl = commerceUrl + "/users/" +
                 IdConverter.idToHexString(userId) + "/carts/" + IdConverter.idToHexString(cartId);
 
         String responseBody = restApiCall(HTTPMethod.GET, cartEndpointUrl, expectedResponseCode);
@@ -79,11 +79,11 @@ public class CartService extends HttpClientBase {
     }
 
     public Cart getCartPrimary(UserId userId, int expectedResponseCode) throws Exception {
-        String cartEndpointUrl = commerceUrl + "users/" + IdConverter.idToHexString(userId) + "/carts/primary";
+        String cartEndpointUrl = commerceUrl + "/users/" + IdConverter.idToHexString(userId) + "/carts/primary";
 
         String responseBody = restApiCall(HTTPMethod.GET, cartEndpointUrl, expectedResponseCode);
 
-        if (responseBody != null && !responseBody.isEmpty() && expectedResponseCode==302) {
+        if (responseBody != null && !responseBody.isEmpty() && expectedResponseCode == 302) {
             return (new JsonMessageTranscoder().decode(new TypeReference<Cart>() {
             }, responseBody));
         }
@@ -96,11 +96,11 @@ public class CartService extends HttpClientBase {
 
     public Results<Cart> getCartByName(UserId userId, String cartName, int expectedResponseCode) throws Exception {
 
-        String cartEndpointUrl = commerceUrl + "users/" + IdConverter.idToHexString(userId) + "/carts?cartName=" + cartName;
+        String cartEndpointUrl = commerceUrl + "/users/" + IdConverter.idToHexString(userId) + "/carts?cartName=" + cartName;
 
         String responseBody = restApiCall(HTTPMethod.GET, cartEndpointUrl, expectedResponseCode);
 
-        if (responseBody != null && !responseBody.isEmpty() && expectedResponseCode==200) {
+        if (responseBody != null && !responseBody.isEmpty() && expectedResponseCode == 200) {
             Results<Cart> cartGet = new JsonMessageTranscoder().decode(new TypeReference<Results<Cart>>() {
             }, responseBody);
             return cartGet;
@@ -114,12 +114,12 @@ public class CartService extends HttpClientBase {
 
     public Cart updateCart(UserId userId, CartId cartId, Cart cart, int expectedResponseCode)
             throws Exception {
-        String cartEndpointUrl = commerceUrl + "users/" + IdConverter.idToHexString(userId)
+        String cartEndpointUrl = commerceUrl + "/users/" + IdConverter.idToHexString(userId)
                 + "/carts/" + IdConverter.idToHexString(cartId);
 
         String responseBody = restApiCall(HTTPMethod.PUT, cartEndpointUrl, cart, expectedResponseCode);
 
-        if (responseBody != null && !responseBody.isEmpty() && expectedResponseCode==200) {
+        if (responseBody != null && !responseBody.isEmpty() && expectedResponseCode == 200) {
             return (new JsonMessageTranscoder().decode(new TypeReference<Cart>() {
             }, responseBody));
         }
@@ -132,7 +132,7 @@ public class CartService extends HttpClientBase {
 
     public Cart mergeCart(UserId userId, CartId cartId, Cart fromCart, int expectedResponseCode)
             throws Exception {
-        String cartEndpointUrl = commerceUrl + "users/" + IdConverter.idToHexString(userId)
+        String cartEndpointUrl = commerceUrl + "/users/" + IdConverter.idToHexString(userId)
                 + "/carts/" + IdConverter.idToHexString(cartId) + "/merge";
 
         String responseBody = restApiCall(HTTPMethod.POST, cartEndpointUrl, fromCart, expectedResponseCode);

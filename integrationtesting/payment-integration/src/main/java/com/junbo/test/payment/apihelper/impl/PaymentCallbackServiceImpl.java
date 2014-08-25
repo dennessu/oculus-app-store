@@ -18,7 +18,7 @@ import com.junbo.test.common.libs.LogHelper;
  */
 public class PaymentCallbackServiceImpl extends HttpClientBase implements PaymentCallbackService {
 
-    private static String paymentCallbackUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "payment-callback";
+    private static String paymentCallbackUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "payment-callback";
 
     private LogHelper logger = new LogHelper(PaymentServiceImpl.class);
 

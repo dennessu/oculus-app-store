@@ -10,12 +10,7 @@ import com.junbo.catalog.spec.resource.OfferResource
 import com.junbo.catalog.spec.resource.OfferRevisionResource
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.model.Results
-import com.junbo.entitlement.common.lib.CommonUtils
 import com.junbo.langur.core.promise.Promise
-import com.junbo.store.spec.model.browse.document.AppDetails
-import com.junbo.store.spec.model.browse.document.Document
-import com.junbo.store.spec.model.browse.document.DocumentDetails
-import com.junbo.store.spec.model.browse.document.DocumentType
 import com.junbo.store.spec.model.catalog.Item
 import com.junbo.store.spec.model.catalog.Offer
 import com.junbo.store.spec.model.iap.IAPOfferGetRequest
@@ -23,6 +18,7 @@ import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
+
 /**
  * The CatalogFacadeImpl class.
  */
@@ -96,11 +92,6 @@ class CatalogFacadeImpl implements CatalogFacade {
 
     @Override
     Promise<List<Offer>> getInAppOffers(Item hostItem, IAPOfferGetRequest request) {
-        return null
-    }
-
-    @Override
-    Promise<Void> fillItemDocument(Item item, Document document) {
         return null
     }
 

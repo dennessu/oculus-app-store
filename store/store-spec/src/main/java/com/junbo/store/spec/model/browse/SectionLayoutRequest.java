@@ -8,26 +8,15 @@ package com.junbo.store.spec.model.browse;
 import javax.ws.rs.QueryParam;
 
 /**
- * The GetSectionRequest class.
+ * The SectionLayoutRequest class.
  */
-public class GetSectionRequest {
-
-    @QueryParam("corpus")
-    private String corpus;
+public class SectionLayoutRequest {
 
     @QueryParam("category")
     private String category;
 
     @QueryParam("criteria")
     private String criteria;
-
-    public String getCorpus() {
-        return corpus;
-    }
-
-    public void setCorpus(String corpus) {
-        this.corpus = corpus;
-    }
 
     public String getCategory() {
         return category;

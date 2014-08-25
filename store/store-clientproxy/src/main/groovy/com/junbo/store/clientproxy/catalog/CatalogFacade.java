@@ -11,7 +11,6 @@ import com.junbo.langur.core.promise.Promise;
 import com.junbo.store.spec.model.catalog.Category;
 import com.junbo.store.spec.model.catalog.Item;
 import com.junbo.store.spec.model.catalog.Offer;
-import com.junbo.store.spec.model.browse.document.Document;
 import com.junbo.store.spec.model.iap.IAPOfferGetRequest;
 
 import java.util.List;
@@ -34,6 +33,4 @@ public interface CatalogFacade {
     Promise<List<Category>> getCategoriesByParent(String parentId);
 
     Promise<List<Offer>> getInAppOffers(Item hostItem, IAPOfferGetRequest request);
-
-    Promise<Void> fillItemDocument(Item item, Document document);
 }

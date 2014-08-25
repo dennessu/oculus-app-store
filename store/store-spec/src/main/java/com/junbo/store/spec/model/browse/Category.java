@@ -12,31 +12,37 @@ import java.util.List;
  */
 public class Category {
 
-    private String name;
-    private String sectionUrl;
-    private List<Category> subCategories;
+    private String title;
 
-    public String getName() {
-        return name;
+    private String category;
+
+    private String criteria;
+
+    private List<Category> children;
+
+
+
+    public String getCategory() {
+        return category;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
-    public String getSectionUrl() {
-        return sectionUrl;
+    public String getCriteria() {
+        return criteria;
     }
 
-    public void setSectionUrl(String sectionUrl) {
-        this.sectionUrl = sectionUrl;
+    public void setCriteria(String criteria) {
+        this.criteria = criteria;
     }
 
-    public List<Category> getSubCategories() {
-        return subCategories;
+    public List<Category> getChildren() {
+        return children;
     }
 
-    public void setSubCategories(List<Category> subCategories) {
-        this.subCategories = subCategories;
+    public void setChildren(List<Category> children) {
+        this.children = children;
     }
 }

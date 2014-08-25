@@ -23,7 +23,7 @@ import com.junbo.token.spec.model.TokenRequest;
  */
 public class TokenServiceImpl extends HttpClientBase implements TokenService {
 
-    private static String tokenUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1") + "tokens/";
+    private static String tokenUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "/tokens/";
     private OAuthService oAuthTokenClient = OAuthServiceImpl.getInstance();
     private static TokenService instance;
 
@@ -48,7 +48,7 @@ public class TokenServiceImpl extends HttpClientBase implements TokenService {
         if (!isServiceTokenExist()) {
             oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType);
         }
-        String responseBody = restApiCall(HTTPMethod.POST, tokenUrl + "requests", tokenRequest,
+        String responseBody = restApiCall(HTTPMethod.POST, tokenUrl + "/requests", tokenRequest,
                 expectedResponseCode, true);
 
         if (expectedResponseCode == 200) {
@@ -69,7 +69,7 @@ public class TokenServiceImpl extends HttpClientBase implements TokenService {
         if (!isServiceTokenExist()) {
             oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType);
         }
-        String responseBody = restApiCall(HTTPMethod.GET, tokenUrl + "requests/" + tokenId, expectedResponseCode, true);
+        String responseBody = restApiCall(HTTPMethod.GET, tokenUrl + "/requests/" + tokenId, expectedResponseCode, true);
         if (expectedResponseCode == 200) {
             return new JsonMessageTranscoder().decode(new TypeReference<TokenRequest>() {
             }, responseBody);
@@ -85,7 +85,7 @@ public class TokenServiceImpl extends HttpClientBase implements TokenService {
     @Override
     public TokenConsumption postTokenConsumption(TokenConsumption tokenConsumption, int expectedResponseCode)
             throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, tokenUrl + "consumption", tokenConsumption, 200, false);
+        String responseBody = restApiCall(HTTPMethod.POST, tokenUrl + "/consumption", tokenConsumption, 200, false);
 
         TokenConsumption tokenConsumptionResult = new JsonMessageTranscoder().decode(
                 new TypeReference<TokenConsumption>() {
@@ -108,7 +108,7 @@ public class TokenServiceImpl extends HttpClientBase implements TokenService {
         if (!isServiceTokenExist()) {
             oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType);
         }
-        String responseBody = restApiCall(HTTPMethod.PUT, tokenUrl + tokenId,
+        String responseBody = restApiCall(HTTPMethod.PUT, tokenUrl + "/"+ tokenId,
                 tokenItem, expectedResponseCode, true);
 
         TokenItem tokenItemResult = new JsonMessageTranscoder().decode(
@@ -132,7 +132,7 @@ public class TokenServiceImpl extends HttpClientBase implements TokenService {
         if (!isServiceTokenExist()) {
             oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, componentType);
         }
-        String responseBody = restApiCall(HTTPMethod.GET, tokenUrl + tokenItemId, expectedResponseCode, true);
+        String responseBody = restApiCall(HTTPMethod.GET, tokenUrl + "/"+ tokenItemId, expectedResponseCode, true);
 
         TokenItem tokenItem = new JsonMessageTranscoder().decode(
                 new TypeReference<TokenItem>() {

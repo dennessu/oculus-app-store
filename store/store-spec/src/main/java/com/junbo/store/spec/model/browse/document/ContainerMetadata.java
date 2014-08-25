@@ -10,26 +10,18 @@ package com.junbo.store.spec.model.browse.document;
  */
 public class ContainerMetadata {
 
-    private String browseUrl;
-    private Long estimatedResults;
+    private String layoutUrl;
+
     private String nextPageUrl;
+
     private Boolean ordered;
-    private Double relevance;
 
-    public String getBrowseUrl() {
-        return browseUrl;
+    public String getLayoutUrl() {
+        return layoutUrl;
     }
 
-    public void setBrowseUrl(String browseUrl) {
-        this.browseUrl = browseUrl;
-    }
-
-    public Long getEstimatedResults() {
-        return estimatedResults;
-    }
-
-    public void setEstimatedResults(Long estimatedResults) {
-        this.estimatedResults = estimatedResults;
+    public void setLayoutUrl(String layoutUrl) {
+        this.layoutUrl = layoutUrl;
     }
 
     public String getNextPageUrl() {
@@ -46,13 +38,5 @@ public class ContainerMetadata {
 
     public void setOrdered(Boolean ordered) {
         this.ordered = ordered;
-    }
-
-    public Double getRelevance() {
-        return relevance;
-    }
-
-    public void setRelevance(Double relevance) {
-        this.relevance = relevance;
     }
 }

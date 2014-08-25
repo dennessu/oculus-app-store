@@ -19,7 +19,6 @@ import com.junbo.test.common.ConfigHelper;
 import com.junbo.test.common.Entities.Identity.AddressInfo;
 import com.junbo.test.common.Entities.Identity.UserInfo;
 import com.junbo.test.common.Entities.enums.*;
-import com.junbo.test.common.Entities.paymentInstruments.*;
 import com.junbo.test.common.apihelper.HttpClientBase;
 import com.junbo.test.common.apihelper.identity.UserService;
 import com.junbo.test.common.apihelper.oauth.OAuthService;
@@ -40,8 +39,8 @@ import java.util.*;
  */
 public class UserServiceImpl extends HttpClientBase implements UserService {
 
-    private final String identityServerURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/users";
-    private final String identityPiiURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/personal-info";
+    private final String identityServerURL = ConfigHelper.getSetting("defaultIdentityEndpoint") + "/users";
+    private final String identityPiiURL = ConfigHelper.getSetting("defaultIdentityEndpoint") + "/personal-info";
     private static UserService instance;
     private String userPassword = "Test1234";
 
@@ -186,6 +185,13 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
         oAuthClient.authorizeLoginView(cid);
         oAuthClient.authorizeRegister(cid);
         oAuthClient.registerUser(userInfo, cid);
+
+        String emailVerifyLink  = oAuthClient.getEmailVerifyLink(cid);
+        if(emailVerifyLink != null && !emailVerifyLink.isEmpty()){
+            oAuthClient.accessEmailVerifyLink(emailVerifyLink);
+        }
+
+
         String accessToken = oAuthClient.postUserAccessToken(userInfo.getUserName(), userInfo.getPassword());
         TokenInfo tokenInfo = oAuthClient.getTokenInfo(accessToken);
         String uid = IdConverter.idToHexString(tokenInfo.getSub());
@@ -323,7 +329,7 @@ public class UserServiceImpl extends HttpClientBase implements UserService {
 
     private UserPersonalInfo postUserPersonalInfo(UserPersonalInfo userPersonalInfo,
                                                   int expectedResponseCode) throws Exception {
-        String serverURL = ConfigHelper.getSetting("defaultIdentityEndPointV1") + "/personal-info";
+        String serverURL = ConfigHelper.getSetting("defaultIdentityEndpoint") + "/personal-info";
         String responseBody = restApiCall(HTTPMethod.POST, serverURL, userPersonalInfo, expectedResponseCode);
         return new JsonMessageTranscoder().decode(new TypeReference<UserPersonalInfo>() {
         }, responseBody);
