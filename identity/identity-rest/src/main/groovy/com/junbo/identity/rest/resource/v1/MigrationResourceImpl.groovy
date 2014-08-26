@@ -246,7 +246,14 @@ class MigrationResourceImpl implements MigrationResource {
                 } else {
                     Email existingEmail = (Email)JsonHelper.jsonNodeToObj(emailPII.value, Email)
                     if (existingEmail.info == userEmail.info) {
-                        return Promise.pure(false)
+                        if (emailPII.lastValidateTime == email.lastValidateTime) {
+                            return Promise.pure(false)
+                        } else {
+                            emailPII.lastValidateTime = email.lastValidateTime
+                            return userPersonalInfoRepository.update(emailPII, emailPII).then {
+                                return Promise.pure(false)
+                            }
+                        }
                     } else {
                         return userPersonalInfoRepository.create(email).then { UserPersonalInfo userPersonalInfo ->
                             user.emails = new ArrayList<>()
