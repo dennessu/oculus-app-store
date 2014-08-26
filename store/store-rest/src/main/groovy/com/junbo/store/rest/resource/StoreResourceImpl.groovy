@@ -30,7 +30,6 @@ import com.junbo.identity.spec.v1.option.list.UserCredentialListOptions
 import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.CurrencyGetOptions
-import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.client.PathParamTranscoder
 import com.junbo.langur.core.promise.Promise
@@ -122,10 +121,8 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<VerifyEmailResponse> verifyEmail(VerifyEmailRequest request) {
-        UserId userId = getCurrentUserId()
-
-        return resourceContainer.userResource.get(userId, new UserGetOptions()).then { User user ->
-            return resourceContainer.emailVerifyEndpoint.sendVerifyEmail(user.preferredLocale.value, user.countryOfResidence.value, userId).then {
+        return identityUtils.getActiveUserFromToken().then { User user->
+            return resourceContainer.emailVerifyEndpoint.sendVerifyEmail(user.preferredLocale.value, user.countryOfResidence.value, user.getId()).then {
                 return Promise.pure(new VerifyEmailResponse(
                         emailSent: true
                 ))
@@ -135,9 +132,7 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<UserProfileGetResponse> getUserProfile() {
-        UserId userId = getCurrentUserId()
-
-        return innerGetUserProfile(userId).syncThen { StoreUserProfile userProfile ->
+        return innerGetUserProfile().syncThen { StoreUserProfile userProfile ->
             return new UserProfileGetResponse(userProfile: userProfile)
         }
     }
@@ -156,7 +151,7 @@ class StoreResourceImpl implements StoreResource {
         User user
         Boolean userPendingUpdate
         ErrorContext errorContext = new ErrorContext()
-        resourceContainer.userResource.get(userId, new UserGetOptions()).syncThen { User u ->
+        return identityUtils.getVerifiedUserFromToken().syncThen { User u ->
             user = u
         }.then {
             updateUserCredential(user.getId(), request, errorContext)
@@ -199,20 +194,20 @@ class StoreResourceImpl implements StoreResource {
 
             return resourceContainer.userResource.put(userId, user)
         }.then {
-            return innerGetUserProfile(userId).syncThen { StoreUserProfile userProfileResponse ->
+            return innerGetUserProfile().syncThen { StoreUserProfile userProfileResponse ->
                 return new UserProfileUpdateResponse(userProfile: userProfileResponse)
             }
         }
     }
 
-    private Promise<StoreUserProfile> innerGetUserProfile(UserId userId) {
+    private Promise<StoreUserProfile> innerGetUserProfile() {
         User user
         StoreUserProfile userProfile
 
-        return resourceContainer.userResource.get(userId, new UserGetOptions()).syncThen { User u ->
+        return identityUtils.getVerifiedUserFromToken().then { User u ->
             user = u;
             userProfile = new StoreUserProfile(
-                    userId: userId,
+                    userId: u.getId(),
                     headline: user.profile?.headline,
                     avatar: user.profile?.avatar?.href
             )
@@ -236,7 +231,7 @@ class StoreResourceImpl implements StoreResource {
                 )
             }
         }.then {
-            return resourceContainer.userCredentialResource.list(userId, new UserCredentialListOptions(
+            return resourceContainer.userCredentialResource.list(user.getId(), new UserCredentialListOptions(
                     type: 'PASSWORD',
                     active: true
             )).syncThen { Results<UserCredential> results ->
@@ -245,7 +240,7 @@ class StoreResourceImpl implements StoreResource {
                 }
             }
         }.then {
-            return resourceContainer.userCredentialResource.list(userId, new UserCredentialListOptions(
+            return resourceContainer.userCredentialResource.list(user.getId(), new UserCredentialListOptions(
                     type: 'PIN',
                     active: true
             )).syncThen { Results<UserCredential> results ->
@@ -264,7 +259,7 @@ class StoreResourceImpl implements StoreResource {
         BillingProfileGetResponse response = new BillingProfileGetResponse()
 
         Promise.pure().then {
-            identityUtils.getUserFromToken().then { User u ->
+            identityUtils.getVerifiedUserFromToken().then { User u ->
                 user = u
                 return Promise.pure()
             }
@@ -298,11 +293,9 @@ class StoreResourceImpl implements StoreResource {
                 }
             }
         }.then {
-            identityUtils.getUserFromToken().then { User u ->
+            identityUtils.getVerifiedUserFromToken().then { User u ->
                 user = u
                 return Promise.pure()
-            }.then {
-                requestValidator.validateUserEmailVerified(user)
             }
         }.then {
             instrumentUtils.updateInstrument(user, request)
@@ -327,11 +320,13 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<IAPEntitlementGetResponse> iapGetEntitlements(IAPEntitlementGetRequest iapEntitlementGetRequest, PageParam pageParam) {
-        EntitlementsGetRequest request = new EntitlementsGetRequest(packageName: iapEntitlementGetRequest.packageName)
-        return innerGetEntitlements(request, true, pageParam).then { Results<Entitlement> entitlementResults ->
-            return new IAPEntitlementGetResponse(
-                    entitlements : entitlementResults.items
-            )
+        return identityUtils.getVerifiedUserFromToken().then {
+            EntitlementsGetRequest request = new EntitlementsGetRequest(packageName: iapEntitlementGetRequest.packageName)
+            return innerGetEntitlements(request, true, pageParam).then { Results<Entitlement> entitlementResults ->
+                return new IAPEntitlementGetResponse(
+                        entitlements : entitlementResults.items
+                )
+            }
         }
     }
 
@@ -344,7 +339,7 @@ class StoreResourceImpl implements StoreResource {
         EntitlementSearchParam entitlementSearchParam = null
         String itemType = entitlementsGetRequest.itemType == null ? ItemType.APP.name() : entitlementsGetRequest.itemType
         String entitlementType = entitlementsGetRequest.entitlementType == null ? EntitlementType.DOWNLOAD.name() : entitlementsGetRequest.entitlementType
-        identityUtils.getUserFromToken().then { User u ->
+        identityUtils.getVerifiedUserFromToken().then { User u ->
             user = u
             return Promise.pure(null)
         }.then {
@@ -422,7 +417,7 @@ class StoreResourceImpl implements StoreResource {
     @Override
     Promise<MakeFreePurchaseResponse> makeFreePurchase(MakeFreePurchaseRequest request) {
         User user
-        identityUtils.getUserFromToken().then { User u ->
+        identityUtils.getVerifiedUserFromToken().then { User u ->
             user = u
             return Promise.pure(null)
         }.then {
@@ -435,8 +430,6 @@ class StoreResourceImpl implements StoreResource {
                 }
             }.then {
                 requestValidator.validateOfferForPurchase(request.offer, request.country, request.locale, true)
-            }.then {
-                requestValidator.validateUserEmailVerified(user)
             }
         }.then {
             Order order = new Order(
@@ -475,7 +468,7 @@ class StoreResourceImpl implements StoreResource {
         PreparePurchaseResponse response = new PreparePurchaseResponse()
         PaymentInstrumentId selectedInstrument
 
-        return identityUtils.getUserFromToken().then { User u ->
+        return identityUtils.getVerifiedUserFromToken().then { User u ->
             user = u
             return Promise.pure(null)
         }.then {
@@ -488,8 +481,6 @@ class StoreResourceImpl implements StoreResource {
                 }
             }.then {
                 requestValidator.validateOfferForPurchase(request.offer, request.country, request.locale, false)
-            }.then {
-                requestValidator.validateUserEmailVerified(user)
             }
         }.then {
             if (request.purchaseToken == null) {
@@ -602,13 +593,11 @@ class StoreResourceImpl implements StoreResource {
     Promise<CommitPurchaseResponse> commitPurchase(CommitPurchaseRequest commitPurchaseRequest) {
         PurchaseState purchaseState
         User user
-        return identityUtils.getUserFromToken().then { User u ->
+        return identityUtils.getVerifiedUserFromToken().then { User u ->
             user = u
             return Promise.pure()
         }.then {
-            requestValidator.validateCommitPurchaseRequest(commitPurchaseRequest).then {
-                requestValidator.validateUserEmailVerified(user)
-            }
+            requestValidator.validateCommitPurchaseRequest(commitPurchaseRequest)
         }.then {
             purchaseTokenProcessor.toPurchaseState(commitPurchaseRequest.purchaseToken).then { PurchaseState e ->
                 purchaseState = e
@@ -651,13 +640,15 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<IAPOfferGetResponse> iapGetOffers(IAPOfferGetRequest iapOfferGetRequest) {
-        return getItemByPackageName(iapOfferGetRequest.packageName).then { Item hostItem ->
-            return getInAppOffers(hostItem, iapOfferGetRequest).then { List<Offer> offers ->
-                return Promise.pure(
-                        new IAPOfferGetResponse(
-                                offers: new Results<Offer>(items: offers)
-                        )
-                )
+        return identityUtils.getVerifiedUserFromToken().then {
+            return getItemByPackageName(iapOfferGetRequest.packageName).then { Item hostItem ->
+                return getInAppOffers(hostItem, iapOfferGetRequest).then { List<Offer> offers ->
+                    return Promise.pure(
+                            new IAPOfferGetResponse(
+                                    offers: new Results<Offer>(items: offers)
+                            )
+                    )
+                }
             }
         }
     }

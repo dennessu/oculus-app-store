@@ -32,51 +32,62 @@ public interface StoreResource {
 
     @POST
     @Path("/verify-email")
+    // This doesn't require email verification
     Promise<VerifyEmailResponse> verifyEmail(VerifyEmailRequest request);
 
     @GET
     @Path("/user-profile")
+    // This requires email verification
     Promise<UserProfileGetResponse> getUserProfile();
 
     @POST
     @Path("/user-profile")
+    // This requires email verification
     Promise<UserProfileUpdateResponse> updateUserProfile(UserProfileUpdateRequest userProfileUpdateRequest);
 
     @GET
     @Path("/billing-profile")
+    // This requires email verification
     Promise<BillingProfileGetResponse> getBillingProfile(@BeanParam BillingProfileGetRequest billingProfileGetRequest);
 
     @POST
     @Path("/billing-profile/instruments")
+    // This requires email verification
     Promise<InstrumentUpdateResponse> updateInstrument(InstrumentUpdateRequest instrumentUpdateRequest);
-
 
     @GET
     @Path("/entitlements")
+    // This requires email verification
     Promise<EntitlementsGetResponse> getEntitlements(@BeanParam PageParam pageParam);
 
     @POST
     @Path("/purchase/free")
+    // This requires email verification
     Promise<MakeFreePurchaseResponse> makeFreePurchase(MakeFreePurchaseRequest makeFreePurchaseRequest);
 
     @POST
     @Path("/purchase/prepare")
+    // This requires email verification
     Promise<PreparePurchaseResponse> preparePurchase(PreparePurchaseRequest preparePurchaseRequest);
 
     @POST
     @Path("/purchase/commit")
+    // This requires email verification
     Promise<CommitPurchaseResponse> commitPurchase(CommitPurchaseRequest commitPurchaseRequest);
 
     @GET
     @Path("/iap/offers")
+    // This requires email verification
     Promise<IAPOfferGetResponse> iapGetOffers(@BeanParam IAPOfferGetRequest iapOfferGetRequest);
 
     @GET
     @Path("/iap/entitlements")
+    // This requires email verification
     Promise<IAPEntitlementGetResponse> iapGetEntitlements(@BeanParam IAPEntitlementGetRequest iapEntitlementGetRequest, @BeanParam PageParam pageParam);
 
     @POST
     @Path("/iap/consumption")
+    // This requires email verification
     Promise<IAPEntitlementConsumeResponse> iapConsumeEntitlement(IAPEntitlementConsumeRequest iapEntitlementConsumeRequest);
 
     @GET

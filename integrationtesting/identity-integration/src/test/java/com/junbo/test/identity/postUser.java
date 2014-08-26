@@ -160,10 +160,11 @@ public class postUser {
         Email newEmail = IdentityModel.DefaultEmail();
         userPersonalInfo = new UserPersonalInfo();
         userPersonalInfo.setUserId(user.getId());
-        userPersonalInfo.setLastValidateTime(new Date());
         userPersonalInfo.setType(IdentityModel.UserPersonalInfoType.EMAIL.toString());
         userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(newEmail));
         userPersonalInfo = Identity.UserPersonalInfoPost(user.getId(), userPersonalInfo);
+        userPersonalInfo.setLastValidateTime(new Date());
+        userPersonalInfo = Identity.UserPersonalInfoPut(user.getId(), userPersonalInfo);
         links.get(0).setIsDefault(false);
         UserPersonalInfoLink newLink = new UserPersonalInfoLink();
         newLink.setIsDefault(true);
@@ -264,7 +265,7 @@ public class postUser {
         user = Identity.UserPut(user);
     }
 
-    @Test(groups = "dailes")
+    @Test(groups = "dailies")
     public void testCSRUserStatusUpdate() throws Exception {
         User user = Identity.UserPostDefaultWithMail(15, "xia.wayne2+" + RandomHelper.randomAlphabetic(15) + "@gmail.com");
 
@@ -285,6 +286,53 @@ public class postUser {
         response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()) ,
                 JsonHelper.JsonSerializer(user), HttpclientHelper.HttpRequestType.put, nvps);
         Validator.Validate("Validator randomUsername valid", 200, response.getStatusLine().getStatusCode());
+        response.close();
+    }
+
+    @Test(groups = "dailies")
+    // https://oculus.atlassian.net/browse/SER-499
+    public void testUserVerifyEmailUpdate() throws Exception {
+        User user = Identity.UserPostDefaultWithMail(15, "xia.wayne2+" + RandomHelper.randomAlphabetic(15) + "@gmail.com");
+
+        Email email = IdentityModel.DefaultEmail();
+        UserPersonalInfo userPersonalInfo = new UserPersonalInfo();
+        userPersonalInfo.setValue(JsonHelper.ObjectToJsonNode(email));
+        userPersonalInfo.setType(IdentityModel.UserPersonalInfoType.EMAIL.toString());
+        userPersonalInfo.setUserId(user.getId());
+        userPersonalInfo = Identity.UserPersonalInfoPost(user.getId(), userPersonalInfo);
+
+        UserPersonalInfoLink link = new UserPersonalInfoLink();
+        link.setIsDefault(true);
+        link.setLabel(RandomHelper.randomAlphabetic(15));
+        link.setValue(userPersonalInfo.getId());
+        user.getEmails().clear();
+        user.getEmails().add(link);
+
+        List<NameValuePair> nvps = new ArrayList<>();
+        nvps.add(new BasicNameValuePair("Authorization", Identity.httpAuthorizationHeader));
+        CloseableHttpResponse response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()) ,
+                JsonHelper.JsonSerializer(user), HttpclientHelper.HttpRequestType.put, nvps);
+        Validator.Validate("Validate Response code", 400, response.getStatusLine().getStatusCode());
+        String errorMessage = "Field value is invalid.";
+        Validator.Validate("Validate response error message", true, EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
+        response.close();
+
+        userPersonalInfo.setLastValidateTime(new Date());
+        user = Identity.UserGetByUserId(user.getId());
+        user.getEmails().clear();
+        user.getEmails().add(link);
+        userPersonalInfo = Identity.UserPersonalInfoPut(user.getId(), userPersonalInfo);
+        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()) ,
+                JsonHelper.JsonSerializer(user), HttpclientHelper.HttpRequestType.put, nvps);
+        Validator.Validate("Validate Response code", 200, response.getStatusLine().getStatusCode());
+        response.close();
+
+        user = Identity.UserGetByUserId(user.getId());
+        user.getEmails().clear();
+        response = HttpclientHelper.PureHttpResponse(Identity.IdentityV1UserURI + "/" + IdConverter.idToHexString(user.getId()) ,
+                JsonHelper.JsonSerializer(user), HttpclientHelper.HttpRequestType.put, nvps);
+        Validator.Validate("Validate Response code", 400, response.getStatusLine().getStatusCode());
+        Validator.Validate("Validate response error message", true, EntityUtils.toString(response.getEntity(), "UTF-8").contains(errorMessage));
         response.close();
     }
 

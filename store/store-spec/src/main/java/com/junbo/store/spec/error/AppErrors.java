@@ -64,4 +64,10 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "112", message = "User Primary Email Not Verified.")
     AppError userPrimaryEmailNotVerified();
+
+    @ErrorDef(httpStatusCode = 412, code = "113", message = "User Email Not found.")
+    AppError userEmailNotFound();
+
+    @ErrorDef(httpStatusCode = 413, code = "114", message = "User Primary Email Not found.")
+    AppError userEmailPrimaryEmailNotFound();
 }
