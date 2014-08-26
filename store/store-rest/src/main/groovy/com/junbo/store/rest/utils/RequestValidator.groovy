@@ -9,12 +9,8 @@ import com.junbo.common.id.PIType
 import com.junbo.common.id.UserId
 import com.junbo.common.util.IdFormatter
 import com.junbo.identity.spec.v1.model.Country
-import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserPersonalInfo
-import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
-import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.spec.error.AppErrors
@@ -262,22 +258,6 @@ class RequestValidator {
             }
             if (!free && offer.isFree) {
                 throw AppErrors.INSTANCE.invalidOffer('Offer is free.').exception()
-            }
-            return Promise.pure()
-        }
-    }
-
-    public Promise validateUserEmailVerified(User user) {
-        if (!emailVerificationCheckEnabled) {
-            return Promise.pure()
-        }
-        UserPersonalInfoLink emailLink = user.emails.find { UserPersonalInfoLink link -> link.isDefault }
-        if (emailLink == null) {
-            throw AppErrors.INSTANCE.userPrimaryEmailNotVerified().exception()
-        }
-        return resourceContainer.userPersonalInfoResource.get(emailLink.value, new UserPersonalInfoGetOptions()).then { UserPersonalInfo userPersonalInfo ->
-            if (!userPersonalInfo.isValidated) {
-                throw AppErrors.INSTANCE.userPrimaryEmailNotVerified().exception()
             }
             return Promise.pure()
         }

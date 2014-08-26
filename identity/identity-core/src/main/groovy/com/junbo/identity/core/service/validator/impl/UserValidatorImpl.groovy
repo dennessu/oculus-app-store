@@ -108,7 +108,7 @@ class UserValidatorImpl implements UserValidator {
                 return validateUserNameDuplicate(user, oldUser)
             }
 
-            return Promise.pure(null)
+            return validateEmailUpdate(user, oldUser)
         }
     }
 
@@ -626,6 +626,51 @@ class UserValidatorImpl implements UserValidator {
 
                     return Promise.pure(null)
                 }
+            }
+        }
+    }
+
+    // Only validated email can update validated email
+    Promise<Void> validateEmailUpdate(User user, User oldUser) {
+        if (CollectionUtils.isEmpty(oldUser.emails)) {
+            return Promise.pure(null)
+        }
+
+        UserPersonalInfoLink oldLink = oldUser.emails.find { UserPersonalInfoLink oldLink ->
+            return oldLink.isDefault
+        }
+
+        if (oldLink == null) {
+            return Promise.pure(null)
+        }
+
+        return userPersonalInfoRepository.get(oldLink.getValue()).then { UserPersonalInfo oldPII ->
+            if (oldPII == null || oldPII.lastValidateTime == null) {
+                return Promise.pure(null)
+            }
+
+            if (CollectionUtils.isEmpty(user.emails)) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid('emails', 'Only validated emails can update validated emails').exception()
+            }
+
+            UserPersonalInfoLink link = user.emails.find { UserPersonalInfoLink infoLink ->
+                return infoLink.isDefault
+            }
+
+            if (link == null) {
+                throw AppCommonErrors.INSTANCE.fieldInvalid('emails', 'No default emails found').exception()
+            }
+
+            if (oldLink.value == link.value) {
+                return Promise.pure(null)
+            }
+
+            return userPersonalInfoRepository.get(link.value).then { UserPersonalInfo pii ->
+                if (pii == null || pii.lastValidateTime == null) {
+                    throw AppCommonErrors.INSTANCE.fieldInvalid('emails', 'Only validated emails can update validated emails').exception()
+                }
+
+                return Promise.pure(null)
             }
         }
     }

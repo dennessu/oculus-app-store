@@ -107,7 +107,7 @@ class RoleValidatorImpl implements RoleValidator {
 
         return roleRepository.findByRoleName(role.name, role.target.targetType,
                 role.target.filterType, role.target.filterLinkIdType, role.target.filterLinkId).then { Role existing ->
-            if (existing != null) {
+            if (existing != null && existing.getId() != role.getId()) {
                 throw AppCommonErrors.INSTANCE.fieldDuplicate('name').exception()
             }
             return Promise.pure(null)

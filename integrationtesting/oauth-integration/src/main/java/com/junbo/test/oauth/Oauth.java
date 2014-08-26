@@ -24,8 +24,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.testng.AssertJUnit.assertEquals;
-
 /**
  * @author dw
  */
@@ -226,9 +224,9 @@ public class Oauth {
     public static String GetLoginStateAfterRegisterUser(String cid) throws Exception {
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid, false);
         try {
-            String tarHeader = "Set-Cookie";
+            String tarHeader = "set-cookie";
             for (Header h : response.getAllHeaders()) {
-                if (h.toString().startsWith(tarHeader)) {
+                if (h.toString().toLowerCase().startsWith(tarHeader)) {
                     return GetPropertyValueFromString(h.toString(), DefaultFNLoginState, ";");
                 }
             }
@@ -370,7 +368,7 @@ public class Oauth {
             String tarHeader = "Location:";
             for (Header h : response.getAllHeaders()) {
                 if (h.toString().startsWith(tarHeader)) {
-                    assertEquals("validate logout success", true, h.toString().contains("Location: http://localhost"));
+                    Validator.Validate("validate logout success", true, h.toString().contains("Location: http://localhost"));
                     return;
                 }
             }
@@ -387,7 +385,7 @@ public class Oauth {
             String tarHeader = "Location";
             for (Header h : response.getAllHeaders()) {
                 if (h.toString().startsWith(tarHeader)) {
-                    assertEquals("validate email verify success", true, h.toString().contains("email-verify-success"));
+                    Validator.Validate("validate email verify success", true, h.toString().contains("email-verify-success"));
                     return;
                 }
             }

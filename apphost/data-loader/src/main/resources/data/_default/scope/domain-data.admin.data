@@ -1,0 +1,5 @@
+{
+    "name": "domain-data.admin",
+    "description": "Admin scope to update domain data resources",
+    "tfaRequired": false
+}

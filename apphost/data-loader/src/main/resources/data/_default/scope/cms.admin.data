@@ -1,0 +1,5 @@
+{
+    "name": "cms.admin",
+    "description": "Admin scope to manage CMS resources",
+    "tfaRequired": false
+}

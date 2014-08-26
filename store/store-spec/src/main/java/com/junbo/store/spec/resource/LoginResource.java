@@ -29,21 +29,26 @@ public interface LoginResource {
 
     @POST
     @Path("/name-check")
+    // This doesn't require email verification
     Promise<UserNameCheckResponse> checkUserName(UserNameCheckRequest userNameCheckRequest);
 
     @POST
     @Path("/rate-credential")
+    // This doesn't require email verification
     Promise<UserCredentialRateResponse> rateUserCredential(UserCredentialRateRequest userCredentialRateRequest);
 
     @POST
     @Path("/create")
+    // This doesn't require email verification
     Promise<AuthTokenResponse> createUser(CreateUserRequest createUserRequest);
 
     @POST
     @Path("/sign-in")
+    // This doesn't require email verification
     Promise<AuthTokenResponse> signIn(UserSignInRequest userSignInRequest);
 
     @POST
     @Path("/token")
+    // This doesn't require email verification
     Promise<AuthTokenResponse> getAuthToken(AuthTokenRequest tokenRequest);
 }

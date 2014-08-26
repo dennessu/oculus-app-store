@@ -3,12 +3,12 @@
     "scopes": {
         "identity": [{
             "precondition": "getOwnedByCurrentUser()",
-            "rights": ["read", "write"],
+            "rights": ["read", "create", "update", "delete"],
             "scriptType": "SPEL"
         }],
         "identity.service": [{
             "precondition": "true",
-            "rights": ["read", "write"],
+            "rights": ["read", "create", "update", "delete"],
             "scriptType": "SPEL"
         }],
         "role.readonly.service": [

@@ -5,11 +5,7 @@ import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.common.model.Results
-import com.junbo.identity.spec.v1.model.Email
-import com.junbo.identity.spec.v1.model.PhoneNumber
-import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserPersonalInfo
-import com.junbo.identity.spec.v1.model.UserPersonalInfoLink
+import com.junbo.identity.spec.v1.model.*
 import com.junbo.identity.spec.v1.option.list.UserPersonalInfoListOptions
 import com.junbo.identity.spec.v1.option.model.UserGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
@@ -81,10 +77,39 @@ class IdentityUtils {
         }
     }
 
-    public Promise<User> getUserFromToken() {
-        // todo validate user status
+    public Promise<User> getActiveUserFromToken() {
         UserId userId = AuthorizeContext.currentUserId
-        resourceContainer.userResource.get(userId, new UserGetOptions())
+        return resourceContainer.userResource.get(userId, new UserGetOptions()).then { User user ->
+            if (user.isAnonymous || user.status != Constants.UserStatus.ACTIVE) {
+                throw AppErrors.INSTANCE.invalidUserStatus().exception()
+            }
+
+            return Promise.pure(user)
+        }
+    }
+
+    public Promise<User> getVerifiedUserFromToken() {
+        return getActiveUserFromToken().then { User user ->
+            if (CollectionUtils.isEmpty(user.emails)) {
+                throw AppErrors.INSTANCE.userEmailNotFound().exception()
+            }
+
+            UserPersonalInfoLink link = user.emails.find { UserPersonalInfoLink infoLink ->
+                return infoLink.isDefault
+            }
+
+            if (link == null) {
+                throw AppErrors.INSTANCE.userEmailPrimaryEmailNotFound().exception()
+            }
+
+            return resourceContainer.userPersonalInfoResource.get(link.value, new UserPersonalInfoGetOptions()).then { UserPersonalInfo pii ->
+                if (!pii.isValidated) {
+                    throw AppErrors.INSTANCE.userPrimaryEmailNotVerified().exception()
+                }
+
+                return Promise.pure(user)
+            }
+        }
     }
 
     public void setDefaultUserPersonalInfo(User user, UserPersonalInfoId id) {

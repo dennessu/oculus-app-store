@@ -80,7 +80,7 @@ class RoleAssignmentResourceImpl implements RoleAssignmentResource {
         return roleAssignmentValidator.validateForCreate(filtered).then { Role role ->
             def callback = roleAuthorizeCallbackFactory.create(role)
             return RightsScope.with(authorizeService.authorize(callback)) {
-                if (!AuthorizeContext.hasRights('write')) {
+                if (!AuthorizeContext.hasRights('create')) {
                     throw AppCommonErrors.INSTANCE.forbidden().exception()
                 }
                 return roleAssignmentRepository.create(filtered).then { RoleAssignment newRoleAssignment ->
@@ -93,7 +93,19 @@ class RoleAssignmentResourceImpl implements RoleAssignmentResource {
     }
 
     @Override
-    Promise<Role> get(RoleAssignmentId roleAssignmentId) {
+    Promise<RoleAssignment> get(RoleAssignmentId roleAssignmentId) {
+        return internalGet(roleAssignmentId).then { RoleAssignment roleAssignment ->
+            def callback = roleAuthorizeCallbackFactory.create(roleAssignment.getRoleId())
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('read')) {
+                    throw AppCommonErrors.INSTANCE.resourceNotFound('role-assignment', roleAssignmentId.toString()).exception()
+                }
+                return Promise.pure(roleAssignment)
+            }
+        }
+    }
+
+    Promise<RoleAssignment> internalGet(RoleAssignmentId roleAssignmentId) {
         return roleAssignmentValidator.validateForGet(roleAssignmentId).then {
             return roleAssignmentRepository.get(roleAssignmentId).then { RoleAssignment roleAssignment ->
                 if (roleAssignment == null) {
@@ -107,14 +119,17 @@ class RoleAssignmentResourceImpl implements RoleAssignmentResource {
 
     @Override
     Promise<Void> delete(RoleAssignmentId roleAssignmentId) {
-        return get(roleAssignmentId).then { RoleAssignment roleAssignment ->
-            if (roleAssignment == null) {
-                throw AppCommonErrors.INSTANCE.resourceNotFound('role-assignment', roleAssignmentId.toString()).exception()
-            }
+        return internalGet(roleAssignmentId).then { RoleAssignment roleAssignment ->
+            def callback = roleAuthorizeCallbackFactory.create(roleAssignment.getRoleId())
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('delete')) {
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
+                }
 
-            return roleAssignmentValidator.validateForDelete(roleAssignment).then {
-                return roleAssignmentRepository.delete(roleAssignmentId).then {
-                    return Promise.pure(null)
+                return roleAssignmentValidator.validateForDelete(roleAssignment).then {
+                    return roleAssignmentRepository.delete(roleAssignmentId).then {
+                        return Promise.pure(null)
+                    }
                 }
             }
         }
@@ -130,9 +145,14 @@ class RoleAssignmentResourceImpl implements RoleAssignmentResource {
                 RoleAssignment filtered = roleAssignmentFilter.filterForGet(roleAssignment)
 
                 if (filtered != null) {
-                    results.items.add(filtered)
+                    def callback = roleAuthorizeCallbackFactory.create(filtered.getRoleId())
+                    return RightsScope.with(authorizeService.authorize(callback)) {
+                        if (AuthorizeContext.hasRights('read')) {
+                            results.items.add(filtered)
+                        }
+                        return Promise.pure(results)
+                    }
                 }
-
                 return Promise.pure(results)
             }
         }
