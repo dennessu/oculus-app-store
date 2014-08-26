@@ -224,9 +224,9 @@ public class Oauth {
     public static String GetLoginStateAfterRegisterUser(String cid) throws Exception {
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI + "?cid=" + cid, false);
         try {
-            String tarHeader = "Set-Cookie";
+            String tarHeader = "set-cookie";
             for (Header h : response.getAllHeaders()) {
-                if (h.toString().startsWith(tarHeader)) {
+                if (h.toString().toLowerCase().startsWith(tarHeader)) {
                     return GetPropertyValueFromString(h.toString(), DefaultFNLoginState, ";");
                 }
             }
