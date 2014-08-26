@@ -154,7 +154,7 @@ class CsrUpdateValidatorImpl implements CsrUpdateValidator {
         }
         else {
             return identityService.getUserById(csrUpdate.userId).then{ User user ->
-                csrUpdate.postedBy = user.username
+                csrUpdate.postedBy = identityService.getUserNameByUser(user)
                 return Promise.pure(null)
             }
         }
