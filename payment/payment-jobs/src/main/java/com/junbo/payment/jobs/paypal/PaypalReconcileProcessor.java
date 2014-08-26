@@ -149,7 +149,7 @@ public class PaypalReconcileProcessor {
         event.setRequest(CommonUtil.toJson(row, null));
         event.setResponse(SUCCESS_EVENT_RESPONSE);
         try{
-            paymentTransactionService.reportPaymentEvent(event, null).get();
+            paymentTransactionService.reportPaymentEvent(event, null, null).get();
         }catch (Exception ex){
             LOGGER.error("Error in reconcile batch:" + row.getPaymentTrackingID() + " due to: " + ex.toString());
         }

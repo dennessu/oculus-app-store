@@ -38,7 +38,8 @@ public interface PaymentTransactionService {
     @Transactional(readOnly = true)
     Promise<PaymentTransaction> getProviderTransaction(Long paymentId);
     @Transactional
-    Promise<PaymentTransaction> reportPaymentEvent(PaymentEvent event, PaymentCallbackParams paymentCallbackParams);
+    Promise<PaymentTransaction> reportPaymentEvent(PaymentEvent event, PaymentTransaction payment,
+                                                   PaymentCallbackParams paymentCallbackParams);
     @Transactional
     Promise<PaymentTransaction> processNotification(PaymentProvider provider, String request);
 }

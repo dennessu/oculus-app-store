@@ -223,11 +223,11 @@ public abstract class AbstractPaymentTransactionServiceImpl implements PaymentTr
                                                          final List<PaymentEvent> events, final PaymentAPI api, final PaymentStatus status, final boolean saveUuid){
         AsyncTransactionTemplate template = new AsyncTransactionTemplate(transactionManager);
         template.setPropagationBehavior(TransactionTemplate.PROPAGATION_REQUIRES_NEW);
+        final String externalToken = CommonUtil.isNullOrEmpty(payment.getExternalToken()) ? null : payment.getExternalToken();
         return template.execute(new TransactionCallback<List<PaymentEvent>>() {
             public List<PaymentEvent> doInTransaction(TransactionStatus txnStatus) {
                 if(status != null){
-                    paymentRepositoryFacade.updatePayment(payment.getId()
-                            , status, payment.getExternalToken());
+                    paymentRepositoryFacade.updatePayment(payment.getId(), status, externalToken);
                 }
                 paymentRepositoryFacade.savePaymentEvent(payment.getId(), events);
                 if(saveUuid){

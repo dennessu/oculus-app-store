@@ -120,7 +120,7 @@ public class AdyenReconcileProcessor {
         event.setResponse(SUCCESS_EVENT_RESPONSE);
         String closeStatus = "Closed";
         try{
-            paymentTransactionService.reportPaymentEvent(event, null).get();
+            paymentTransactionService.reportPaymentEvent(event, null, null).get();
         }catch (Exception ex){
             LOGGER.error("Error in reconcile batch:" + settlementDetail.getModificationMerchantReference() + " due to: " + ex.toString());
             closeStatus = "ClosedWithError";

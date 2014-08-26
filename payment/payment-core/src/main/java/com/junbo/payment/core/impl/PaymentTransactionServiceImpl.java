@@ -322,15 +322,24 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
                             if (paymentTransaction == null) {
                                 return Promise.pure(result);
                             } else {
-                                PaymentStatus paymentStatus = PaymentStatus.valueOf(paymentTransaction.getStatus());
-                                if(paymentStatus.toString().equalsIgnoreCase(result.getStatus())){
-                                    return Promise.pure(result);
+                                boolean needUpdate = false;
+                                //update the external token only
+                                if(CommonUtil.isNullOrEmpty(result.getExternalToken()) &&
+                                        !CommonUtil.isNullOrEmpty(paymentTransaction.getExternalToken())){
+                                    needUpdate = true;
                                 }
-                                PaymentEvent reportEvent = createPaymentEvent(result
-                                        , PaymentEventType.REPORT_EVENT, paymentStatus, SUCCESS_EVENT_RESPONSE);
-                                reportPaymentEvent(reportEvent, null);
-                                result.setStatus(paymentStatus.toString());
-                                result.getPaymentEvents().add(reportEvent);
+                                PaymentStatus paymentStatus = PaymentStatus.valueOf(paymentTransaction.getStatus());
+                                if(!paymentStatus.toString().equalsIgnoreCase(result.getStatus())){
+                                    needUpdate = true;
+                                }
+                                //report a event as status changed.
+                                if(needUpdate){
+                                    PaymentEvent reportEvent = createPaymentEvent(result
+                                            , PaymentEventType.REPORT_EVENT, paymentStatus, SUCCESS_EVENT_RESPONSE);
+                                    reportPaymentEvent(reportEvent, paymentTransaction, null);
+                                    result.setStatus(paymentStatus.toString());
+                                    result.getPaymentEvents().add(reportEvent);
+                                }
                                 return Promise.pure(result);
                             }
                         }
@@ -355,7 +364,7 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
                     @Override
                     public Promise<PaymentTransaction> apply(Throwable throwable) {
                         ProxyExceptionResponse proxyResponse = new ProxyExceptionResponse(throwable);
-                        LOGGER.error("error get transaction for" + provider.getProviderName() +
+                        LOGGER.error("error get transaction for " + provider.getProviderName() +
                                 "; error detail: " + proxyResponse.getBody());
                         throw AppServerExceptions.INSTANCE.providerProcessError(
                                 provider.getProviderName(), proxyResponse.getBody()).exception();
@@ -364,12 +373,21 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
     }
 
     @Override
-    public Promise<PaymentTransaction> reportPaymentEvent(PaymentEvent event, PaymentCallbackParams paymentCallbackParams) {
+    public Promise<PaymentTransaction> reportPaymentEvent(PaymentEvent event, PaymentTransaction paymentNew,
+                                                          PaymentCallbackParams paymentCallbackParams) {
         if(event.getPaymentId() == null){
             LOGGER.error("the payment id is missing for the event.");
             throw AppClientExceptions.INSTANCE.paymentInstrumentNotFound("null paymentId").exception();
         }
         PaymentTransaction payment = getPaymentById(event.getPaymentId());
+        if(paymentNew != null){
+            if(!CommonUtil.isNullOrEmpty(paymentNew.getExternalToken())){
+                payment.setExternalToken(paymentNew.getExternalToken());
+            }
+            if(!CommonUtil.isNullOrEmpty(paymentNew.getStatus())){
+                payment.setStatus(paymentNew.getStatus());
+            }
+        }
         LOGGER.info("report event for payment:" + event.getPaymentId());
         updatePaymentAndSaveEvent(payment, Arrays.asList(event), PaymentAPI.ReportEvent,
                 PaymentUtil.getPaymentStatus(event.getStatus()), false);

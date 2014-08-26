@@ -46,7 +46,7 @@ public class PaymentCallbackServiceImpl implements PaymentCallbackService{
         event.setStatus(existedTransaction.getStatus());
         event.setRequest(CommonUtil.toJson(properties, null));
         event.setResponse(SUCCESS_EVENT_RESPONSE);
-        return paymentTransactionService.reportPaymentEvent(event, properties)
+        return paymentTransactionService.reportPaymentEvent(event, null, properties)
                 .then(new Promise.Func<PaymentTransaction, Promise<Void>>() {
                     @Override
                     public Promise<Void> apply(PaymentTransaction paymentTransaction) {
