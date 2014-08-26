@@ -1,0 +1,5 @@
+{
+    "name": "community.admin",
+    "description": "Admin scope for managing reviews, videos, content-objections, etc",
+    "tfaRequired": false
+}

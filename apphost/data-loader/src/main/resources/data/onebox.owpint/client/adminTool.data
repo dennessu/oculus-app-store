@@ -4,6 +4,7 @@
   "client_name" : "adminTool",
 
   "scopes" : [
+    "everyone",
     "identity.service",
     "catalog.service",
     "commerce.service",
@@ -30,10 +31,14 @@
     "catalog.admin",
     "token.service",
     "email.admin",
-    "cms.service"
+    "cms.service",
+    "cms.admin",
+    "community.admin",
+    "domain-data.admin"
   ],
 
   "default_scopes" : [
+    "everyone",
     "identity.service",
     "catalog.service",
     "commerce.service",
@@ -60,7 +65,10 @@
     "catalog.admin",
     "token.service",
     "email.admin",
-    "cms.service"
+    "cms.service",
+    "cms.admin",
+    "community.admin",
+    "domain-data.admin"
   ],
 
   "response_types" : [ ],
