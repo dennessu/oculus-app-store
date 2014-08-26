@@ -5,6 +5,7 @@
  */
 package com.junbo.test.identity;
 
+import com.junbo.common.id.UserPersonalInfoId;
 import com.junbo.identity.spec.v1.model.*;
 import com.junbo.identity.spec.v1.model.migration.Company;
 import com.junbo.identity.spec.v1.model.migration.OculusInput;
@@ -21,6 +22,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.testng.annotations.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -343,6 +345,39 @@ public class postImportUserPersonalInfo {
                 + "b87637b9ec5abd43db01d7a299612a49550230a813239fb3e28eec2a88c0df67");
         Identity.ImportMigrationData(oculusInput);
         Identity.UserCredentialAttemptesPostDefault(oculusInput.getUsername(), "radiant555");
+    }
+
+    @Test(groups = "dailies")
+    public void importMigrationDataUserStatusChange() throws Exception {
+        OculusInput oculusInput = IdentityModel.DefaultOculusInput();
+        oculusInput.setStatus(IdentityModel.MigrateUserStatus.PENDING.toString());
+        oculusInput.setPassword("1:lbQHMu5377aBJxK5xMDc:Ur8nE66R5Qr7S1a4b1bO:"
+                + "a9015659a978b37441d76d7839fa66b847e32311f5fd1da65130ca5051dd6ef1");
+        OculusOutput output = Identity.ImportMigrationData(oculusInput);
+        User user = Identity.UserGetByUserId(output.getUserId());
+        UserPersonalInfo userPersonalInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(user.getEmails().get(0).getValue());
+        UserPersonalInfoId id = user.getEmails().get(0).getValue();
+        Email email = (Email)JsonHelper.JsonNodeToObject(userPersonalInfo.getValue(), Email.class);
+        Validator.Validate("Validate Email equals", oculusInput.getEmail(), email.getInfo());
+        Validator.Validate("Validate EmailVerified status", true, userPersonalInfo.getLastValidateTime() == null);
+
+        oculusInput.setStatus(IdentityModel.MigrateUserStatus.ACTIVE.toString());
+        output = Identity.ImportMigrationData(oculusInput);
+        user = Identity.UserGetByUserId(output.getUserId());
+        userPersonalInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(user.getEmails().get(0).getValue());
+        email = (Email)JsonHelper.JsonNodeToObject(userPersonalInfo.getValue(), Email.class);
+        Validator.Validate("Validate Email equals", oculusInput.getEmail(), email.getInfo());
+        Validator.Validate("Validate EmailVerified status", true, userPersonalInfo.getLastValidateTime() != null);
+        Validator.Validate("Validate Update operation", id, user.getEmails().get(0).getValue());
+
+        oculusInput.setStatus(IdentityModel.MigrateUserStatus.PENDING.toString());
+        output = Identity.ImportMigrationData(oculusInput);
+        user = Identity.UserGetByUserId(output.getUserId());
+        userPersonalInfo = Identity.UserPersonalInfoGetByUserPersonalInfoId(user.getEmails().get(0).getValue());
+        email = (Email)JsonHelper.JsonNodeToObject(userPersonalInfo.getValue(), Email.class);
+        Validator.Validate("Validate Email equals", oculusInput.getEmail(), email.getInfo());
+        Validator.Validate("Validate EmailVerified status", true, userPersonalInfo.getLastValidateTime() == null);
+        Validator.Validate("Validate Update operation", id, user.getEmails().get(0).getValue());
     }
 
     @Test(groups = "dailies")

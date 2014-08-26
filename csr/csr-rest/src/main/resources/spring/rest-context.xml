@@ -40,6 +40,7 @@
         <property name="csrInvitationCodeRepository" ref="csrInvitaionCodeRepo" />
         <property name="pendingGroupName" value="CSR_PENDING"/>
         <property name="userPersonalInfoResource" ref="csr_userPersonalInfoResource" />
+        <property name="apiLinkBaseUri" value="${csr.api.link.baseUri}" />
     </bean>
 
     <bean id="defaultCsrUpdateResourceClientFactory" class="com.junbo.csr.spec.resource.proxy.CsrUpdateResourceClientProxyFactory"/>
