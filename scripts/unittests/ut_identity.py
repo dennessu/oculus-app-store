@@ -142,5 +142,119 @@ class IdentityTests(ut.TestBase):
             "Authorization": "Bearer " + userAdmin.access_token
         })
 
+    def testRoles(self):
+        user = oauth.testRegister('identity')
+        userAdmin = oauth.testRegister('identity')
+        userDeveloper = oauth.testRegister('identity')
+
+        # create the organization
+        organization = curlJson('POST', ut.test_uri, '/v1/organizations', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = {
+            "owner": {
+                "href": user.href,
+                "id": user.id
+            },
+            "isValidated": False,
+            "name": randomstr(10)
+        })
+
+        # create the admin role
+        roleAdmin = curlJson('POST', ut.test_uri, '/v1/roles', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = {
+            "self": None,
+            "rev": None,
+            "name": "admin",
+            "target": {
+                "targetType": "organizations",
+                "filterType": "SINGLEINSTANCEFILTER",
+                "filterLink": organization['self']
+            },
+            "futureExpansion": {},
+            "createdTime": None,
+            "updatedTime": None,
+            "adminInfo": None
+        })
+
+        # assign the admin user to admin role
+        roleAssignmentAdmin = curlJson('POST', ut.test_uri, '/v1/role-assignments', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = {
+            "assignee": userAdmin.json['self'],
+            "role": roleAdmin['self'],
+            "futureExpansion": {}
+        })
+
+        # create the developer role
+        roleDeveloper = curlJson('POST', ut.test_uri, '/v1/roles', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = {
+            "self": None,
+            "rev": None,
+            "name": "developer",
+            "target": {
+                "targetType": "organizations",
+                "filterType": "SINGLEINSTANCEFILTER",
+                "filterLink": organization['self']
+            },
+            "futureExpansion": {},
+            "createdTime": None,
+            "updatedTime": None,
+            "adminInfo": None
+        })
+
+        # assign the developer role to the developer group
+        roleAssignmentDeveloper = curlJson('POST', ut.test_uri, '/v1/role-assignments', headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = {
+            "assignee": userDeveloper.json['self'],
+            "role": roleDeveloper['self'],
+            "futureExpansion": {}
+        })
+
+        # test the admin user has permission to get the role
+        roleDeveloper = curlJson('GET', ut.test_uri, '/v1/roles/' + roleDeveloper['self']['id'], headers = {
+            "Authorization": "Bearer " + user.access_token
+        })
+
+        # test the developer doesn't have permission to get the role
+        errorResp = curlJson('GET', ut.test_uri, '/v1/roles/' + roleDeveloper['self']['id'], headers = {
+            "Authorization": "Bearer " + userDeveloper.access_token
+        }, raiseOnError = False)
+        assert errorResp['message'] == 'Resource Not Found'
+
+        # test the admin user has permission to update the role
+        roleDeveloper = curlJson('PUT', ut.test_uri, '/v1/roles/' + roleDeveloper['self']['id'], headers = {
+            "Authorization": "Bearer " + user.access_token
+        }, data = roleDeveloper)
+
+        # test the developer doesn't have permission to update the role
+        errorResp = curlJson('PUT', ut.test_uri, '/v1/roles/' + roleDeveloper['self']['id'], headers = {
+            "Authorization": "Bearer " + userDeveloper.access_token
+        }, raiseOnError = False, data = roleDeveloper)
+        assert errorResp['message'] == 'Forbidden'
+
+        # test the admin user can get the role assignment
+        roleAssignmentDeveloper = curlJson('GET', ut.test_uri, '/v1/role-assignments/' + roleAssignmentDeveloper['self']['id'], headers = {
+            "Authorization": "Bearer " + user.access_token
+        })
+
+        # test the developer can't get the role assignment
+        errorResp = curlJson('GET', ut.test_uri, '/v1/role-assignments/' + roleAssignmentDeveloper['self']['id'], headers = {
+            "Authorization": "Bearer " + userDeveloper.access_token
+        }, raiseOnError = False)
+        assert errorResp['message'] == 'Resource Not Found'
+
+        # test the developer can't delete the role assignment
+        errorResp = curlJson('DELETE', ut.test_uri, '/v1/role-assignments/' + roleAssignmentDeveloper['self']['id'], headers = {
+            "Authorization": "Bearer " + userDeveloper.access_token
+        }, raiseOnError = False)
+        assert errorResp['message'] == 'Forbidden'
+
+        # test the admin can delete the role assignment
+        resp = curl('DELETE', ut.test_uri, '/v1/role-assignments/' + roleAssignmentDeveloper['self']['id'], headers = {
+            "Authorization": "Bearer " + user.access_token
+        })
 if __name__ == '__main__':
     silkcloud_utmain()

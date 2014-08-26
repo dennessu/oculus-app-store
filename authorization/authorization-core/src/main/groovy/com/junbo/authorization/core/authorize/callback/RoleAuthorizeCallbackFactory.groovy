@@ -4,6 +4,7 @@ import com.junbo.authorization.AbstractAuthorizeCallbackFactory
 import com.junbo.authorization.AuthorizeCallback
 import com.junbo.authorization.OwnerCallback
 import com.junbo.authorization.spec.model.Role
+import com.junbo.common.id.RoleId
 import com.junbo.common.id.UniversalId
 import org.springframework.beans.factory.annotation.Required
 
@@ -26,5 +27,9 @@ class RoleAuthorizeCallbackFactory extends AbstractAuthorizeCallbackFactory<Role
     @Override
     AuthorizeCallback<Role> create(Role entity) {
         return new RoleAuthorizeCallback(this, entity)
+    }
+
+    AuthorizeCallback<Role> create(RoleId roleId) {
+        return create(roleResource.get(roleId).get())
     }
 }

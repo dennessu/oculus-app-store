@@ -68,7 +68,7 @@ class RoleResourceImpl implements RoleResource {
     Promise<Role> create(Role role) {
         def callback = roleAuthorizeCallbackFactory.create(role)
         return RightsScope.with(authorizeService.authorize(callback)) {
-            if (!AuthorizeContext.hasRights('write')) {
+            if (!AuthorizeContext.hasRights('create')) {
                 throw AppCommonErrors.INSTANCE.forbidden().exception()
             }
 
@@ -85,6 +85,18 @@ class RoleResourceImpl implements RoleResource {
 
     @Override
     Promise<Role> get(RoleId roleId) {
+        return internalGet(roleId).then { Role role ->
+            def callback = roleAuthorizeCallbackFactory.create(role)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('read')) {
+                    throw AppCommonErrors.INSTANCE.resourceNotFound('role', roleId.toString()).exception()
+                }
+                return Promise.pure(role)
+            }
+        }
+    }
+
+    Promise<Role> internalGet(RoleId roleId) {
         return roleValidator.validateForGet(roleId).then {
             return roleRepository.get(roleId).then { Role role ->
                 if (role == null) {
@@ -98,16 +110,19 @@ class RoleResourceImpl implements RoleResource {
 
     @Override
     Promise<Role> patch(RoleId roleId, Role role) {
-        return get(roleId).then { Role oldRole ->
-            if (oldRole == null) {
-                throw AppCommonErrors.INSTANCE.resourceNotFound('role', roleId.toString()).exception()
-            }
+        return internalGet(roleId).then { Role oldRole ->
+            def callback = roleAuthorizeCallbackFactory.create(oldRole)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('update')) {
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
+                }
 
-            Role filtered = roleFilter.filterForPatch(role, oldRole)
+                Role filtered = roleFilter.filterForPatch(role, oldRole)
 
-            return roleValidator.validateForUpdate(filtered, oldRole).then {
-                return roleRepository.update(filtered, oldRole).then { Role newRole ->
-                    return Promise.pure(roleFilter.filterForGet(newRole))
+                return roleValidator.validateForUpdate(filtered, oldRole).then {
+                    return roleRepository.update(filtered, oldRole).then { Role newRole ->
+                        return Promise.pure(roleFilter.filterForGet(newRole))
+                    }
                 }
             }
         }
@@ -115,16 +130,19 @@ class RoleResourceImpl implements RoleResource {
 
     @Override
     Promise<Role> put(RoleId roleId, Role role) {
-        return get(roleId).then { Role oldRole ->
-            if (oldRole == null) {
-                throw AppCommonErrors.INSTANCE.resourceNotFound('role', roleId.toString()).exception()
-            }
+        return internalGet(roleId).then { Role oldRole ->
+            def callback = roleAuthorizeCallbackFactory.create(oldRole)
+            return RightsScope.with(authorizeService.authorize(callback)) {
+                if (!AuthorizeContext.hasRights('update')) {
+                    throw AppCommonErrors.INSTANCE.forbidden().exception()
+                }
 
-            Role filtered = roleFilter.filterForPut(role, oldRole)
+                Role filtered = roleFilter.filterForPut(role, oldRole)
 
-            return roleValidator.validateForUpdate(filtered, oldRole).then {
-                return roleRepository.update(filtered, oldRole).then { Role newRole ->
-                    return Promise.pure(roleFilter.filterForGet(newRole))
+                return roleValidator.validateForUpdate(filtered, oldRole).then {
+                    return roleRepository.update(filtered, oldRole).then { Role newRole ->
+                        return Promise.pure(roleFilter.filterForGet(newRole))
+                    }
                 }
             }
         }
@@ -138,11 +156,16 @@ class RoleResourceImpl implements RoleResource {
             return roleRepository.findByRoleName(options.name, options.targetType,
                     options.filterType, options.filterLinkIdType, options.filterLinkId).then { Role role ->
                 Role filtered = roleFilter.filterForGet(role)
-
                 if (filtered != null) {
-                    results.items.add(filtered)
-                }
+                    def callback = roleAuthorizeCallbackFactory.create(filtered)
+                    return RightsScope.with(authorizeService.authorize(callback)) {
 
+                        if (AuthorizeContext.hasRights('read')) {
+                            results.items.add(filtered)
+                        }
+                        return Promise.pure(results)
+                    }
+                }
                 return Promise.pure(results)
             }
         }

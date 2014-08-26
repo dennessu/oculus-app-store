@@ -6,17 +6,13 @@
 package com.junbo.authorization.spec.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.junbo.common.json.PropertyAssignedAware;
-import com.junbo.common.json.PropertyAssignedAwareSupport;
 import com.junbo.common.model.Link;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 /**
  * Role Target.
  */
-public class RoleTarget implements PropertyAssignedAware {
-
-    protected final PropertyAssignedAwareSupport support = new PropertyAssignedAwareSupport();
+public class RoleTarget {
 
     @ApiModelProperty(position = 1, required = true, value = "The target type.")
     private String targetType;
@@ -39,7 +35,6 @@ public class RoleTarget implements PropertyAssignedAware {
 
     public void setTargetType(String targetType) {
         this.targetType = targetType;
-        support.setPropertyAssigned("targetType");
     }
 
     public String getFilterType() {
@@ -48,7 +43,6 @@ public class RoleTarget implements PropertyAssignedAware {
 
     public void setFilterType(String filterType) {
         this.filterType = filterType;
-        support.setPropertyAssigned("filterType");
     }
 
     public Link getFilterLink() {
@@ -57,7 +51,6 @@ public class RoleTarget implements PropertyAssignedAware {
 
     public void setFilterLink(Link filterLink) {
         this.filterLink = filterLink;
-        support.setPropertyAssigned("filterLink");
     }
 
     public String getFilterLinkIdType() {
@@ -74,10 +67,5 @@ public class RoleTarget implements PropertyAssignedAware {
 
     public void setFilterLinkId(String filterLinkId) {
         this.filterLinkId = filterLinkId;
-    }
-
-    @Override
-    public boolean isPropertyAssigned(String propertyName) {
-        return support.isPropertyAssigned(propertyName);
     }
 }
