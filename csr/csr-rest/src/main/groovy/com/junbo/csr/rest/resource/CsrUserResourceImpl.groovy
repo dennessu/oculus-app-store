@@ -55,6 +55,7 @@ class CsrUserResourceImpl implements CsrUserResource {
     private CsrGroupResource csrGroupResource
     private String pendingGroupName
     private UserPersonalInfoResource userPersonalInfoResource
+    private URI apiLinkBaseUri
 
     @Required
     void setCsrGroupResource(CsrGroupResource csrGroupResource) {
@@ -84,6 +85,11 @@ class CsrUserResourceImpl implements CsrUserResource {
     @Required
     void setUserPersonalInfoResource(UserPersonalInfoResource userPersonalInfoResource) {
         this.userPersonalInfoResource = userPersonalInfoResource
+    }
+
+    @Required
+    void setApiLinkBaseUri(URI apiLinkBaseUri) {
+        this.apiLinkBaseUri = apiLinkBaseUri
     }
 
     @Override
@@ -144,7 +150,6 @@ class CsrUserResourceImpl implements CsrUserResource {
             throw AppErrors.INSTANCE.invalidEmail().exception()
         }
 
-        URI baseUri = ((ContainerRequest)requestContext).baseUri
         return csrGroupResource.list(new CsrGroupListOptions(groupName: pendingGroupName)).then { Results<CsrGroup> csrGroupResults ->
             if (csrGroupResults.items.isEmpty()) {
                 throw AppErrors.INSTANCE.pendingCsrGroupNotFound().exception()
@@ -173,7 +178,7 @@ class CsrUserResourceImpl implements CsrUserResource {
 
                     csrInvitationCodeRepository.save(code)
 
-                    UriBuilder uriBuilder = UriBuilder.fromUri(baseUri)
+                    UriBuilder uriBuilder = UriBuilder.fromUri(apiLinkBaseUri)
                     uriBuilder.path(CSR_INVITATION_PATH)
                     uriBuilder.queryParam('code', code.code)
                     uriBuilder.queryParam('locale', locale == null ? 'en_US' : locale)
