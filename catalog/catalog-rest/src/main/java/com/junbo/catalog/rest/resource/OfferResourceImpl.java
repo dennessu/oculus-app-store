@@ -106,7 +106,7 @@ public class OfferResourceImpl implements OfferResource {
         boolean isDeveloper = isDeveloper();
         if (offer.getPublished() != Boolean.TRUE && !isDeveloper) {
             throw AppCommonErrors.INSTANCE.resourceNotFound("offer", offerId).exception();
-        } else if (offer.getPublished()) {
+        } else if (offer.getPublished() == Boolean.TRUE) {
             return Promise.pure(offer);
         } else {
             AuthorizeCallback<Offer> callback = offerAuthorizeCallbackFactory.create(offer);
