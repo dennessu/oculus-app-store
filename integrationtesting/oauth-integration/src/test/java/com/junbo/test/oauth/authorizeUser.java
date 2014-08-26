@@ -267,6 +267,6 @@ public class authorizeUser {
 
     private static void ValidateErrorFreeResponse(String responseString) throws Exception {
         assertEquals("validate no errors in response \r\n" + responseString,
-                true, responseString.contains("\"errors\" : [ ]") || responseString.contains("\"errors\":[ ]"));
+                true, responseString.contains("\"errors\" : [ ]") || responseString.contains("\"errors\":[]"));
     }
 }
