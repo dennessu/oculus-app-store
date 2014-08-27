@@ -256,6 +256,7 @@ public class Oauth {
                 new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
         response.close();
         String emailLink = viewModelResponse.getModel().get("link").toString();
+        emailLink = emailLink.replace(new URL(emailLink).getProtocol(), new URL(DefaultOauthEndpoint).getProtocol());
         emailLink = emailLink.replace(new URL(emailLink).getHost(), new URL(DefaultOauthEndpoint).getHost());
         VerifyEmail(emailLink);
         // goto next
@@ -318,8 +319,8 @@ public class Oauth {
 
     public static Map<String, String> GetLoginUser(String requestURI) throws Exception {
         Map<String, String> results = new HashMap<>();
-        requestURI = requestURI.replace(new URL(requestURI).getHost(),
-                new URL(DefaultOauthEndpoint).getHost());
+        requestURI = requestURI.replace(new URL(requestURI).getProtocol(), new URL(DefaultOauthEndpoint).getProtocol());
+        requestURI = requestURI.replace(new URL(requestURI).getHost(), new URL(DefaultOauthEndpoint).getHost());
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(requestURI, false);
         try {
             String tarHeader = "Location";
