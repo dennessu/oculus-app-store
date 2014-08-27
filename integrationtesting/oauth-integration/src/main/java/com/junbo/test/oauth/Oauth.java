@@ -256,7 +256,7 @@ public class Oauth {
                 new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
         response.close();
         String emailLink = viewModelResponse.getModel().get("link").toString();
-        emailLink = emailLink.replace(new URL(emailLink).getAuthority(), new URL(DefaultOauthEndpoint).getAuthority());
+        emailLink = emailLink.replace(new URL(emailLink).getHost(), new URL(DefaultOauthEndpoint).getHost());
         VerifyEmail(emailLink);
         // goto next
         nvps = new ArrayList<NameValuePair>();
@@ -274,18 +274,6 @@ public class Oauth {
             }
         }
         throw new NotFoundException("Did not found expected property: " + property + " in " + input);
-    }
-
-    public static String GetEmailVerificationLink(Long userId) throws Exception {
-        String query = String.format("select payload from shard_%s.email_history where user_id=%s;",
-                ShardIdHelper.getShardIdByUid(IdConverter.idToUrlString(UserId.class, userId)), userId);
-        String result = PostgresqlHelper.QuerySingleRowSingleColumn(query, "email");
-        for (String s : result.split(",")) {
-            if (s.contains("link")) {
-                return s.replace("\"link\":\"", "").replace("\"", "").replace("}", "");
-            }
-        }
-        throw new Exception("link is not found in:\r\n" + result);
     }
 
     public static String GetLoginCid() throws Exception {
@@ -330,8 +318,8 @@ public class Oauth {
 
     public static Map<String, String> GetLoginUser(String requestURI) throws Exception {
         Map<String, String> results = new HashMap<>();
-        requestURI = requestURI.replace(new URL(requestURI).getAuthority(),
-                new URL(DefaultOauthEndpoint).getAuthority());
+        requestURI = requestURI.replace(new URL(requestURI).getHost(),
+                new URL(DefaultOauthEndpoint).getHost());
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(requestURI, false);
         try {
             String tarHeader = "Location";
