@@ -256,8 +256,7 @@ public class Oauth {
                 new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
         response.close();
         String emailLink = viewModelResponse.getModel().get("link").toString();
-        emailLink = emailLink.replace(new URL(emailLink).getProtocol(), new URL(DefaultOauthEndpoint).getProtocol());
-        emailLink = emailLink.replace(new URL(emailLink).getAuthority(), new URL(DefaultOauthEndpoint).getAuthority());
+        emailLink = URLProtocolAuthorityReplace(emailLink, DefaultOauthEndpoint);
         VerifyEmail(emailLink);
         // goto next
         nvps = new ArrayList<NameValuePair>();
@@ -319,10 +318,7 @@ public class Oauth {
 
     public static Map<String, String> GetLoginUser(String requestURI) throws Exception {
         Map<String, String> results = new HashMap<>();
-        requestURI = requestURI.replace(new URL(requestURI).getProtocol(),
-                new URL(DefaultOauthEndpoint).getProtocol());
-        requestURI = requestURI.replace(new URL(requestURI).getAuthority(),
-                new URL(DefaultOauthEndpoint).getAuthority());
+        requestURI = URLProtocolAuthorityReplace(requestURI, DefaultOauthEndpoint);
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(requestURI, false);
         try {
             String tarHeader = "Location";
@@ -452,6 +448,12 @@ public class Oauth {
         } finally {
             response.close();
         }
+    }
+
+    public static String URLProtocolAuthorityReplace(String url1, String url2) throws Exception {
+        url1 = url1.replace(new URL(url1).getProtocol(), new URL(url2).getProtocol());
+        url1 = url1.replace(new URL(url1).getAuthority(), new URL(url2).getAuthority());
+        return url1;
     }
 
     // ****** start API sample logging ******
