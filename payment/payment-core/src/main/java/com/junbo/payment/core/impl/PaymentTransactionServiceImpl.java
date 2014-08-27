@@ -301,11 +301,26 @@ public class PaymentTransactionServiceImpl extends AbstractPaymentTransactionSer
         return Promise.pure(result);
     }
 
+    private boolean isOpenStatus(String paymentStatus){
+        if(PaymentStatus.AUTH_CREATED.toString().equalsIgnoreCase(paymentStatus) ||
+                PaymentStatus.AUTHORIZING.toString().equalsIgnoreCase(paymentStatus) ||
+                PaymentStatus.SETTLEMENT_SUBMIT_CREATED.toString().equalsIgnoreCase(paymentStatus) ||
+                PaymentStatus.SETTLE_CREATED.toString().equalsIgnoreCase(paymentStatus) ||
+                PaymentStatus.SETTLING.toString().equalsIgnoreCase(paymentStatus) ||
+                PaymentStatus.REVERSE_CREATED.toString().equalsIgnoreCase(paymentStatus) ||
+                PaymentStatus.REFUND_CREATED.toString().equalsIgnoreCase(paymentStatus) ||
+                PaymentStatus.UNCONFIRMED.toString().equalsIgnoreCase(paymentStatus) ||
+                PaymentStatus.CREDIT_CREATED.toString().equalsIgnoreCase(paymentStatus) ||
+                PaymentStatus.UNCONFIRMED.toString().equalsIgnoreCase(paymentStatus)){
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public Promise<PaymentTransaction> getUpdatedTransaction(Long paymentId) {
         final PaymentTransaction result = getPaymentAndEvents(paymentId);
-        if(result.getStatus().equalsIgnoreCase(PaymentStatus.SETTLED.toString()) ||
-                result.getStatus().equalsIgnoreCase(PaymentStatus.SETTLE_DECLINED.toString())){
+        if(!isOpenStatus(result.getStatus())){
             return Promise.pure(result);
         }else{
             return getProviderTransaction(paymentId)
