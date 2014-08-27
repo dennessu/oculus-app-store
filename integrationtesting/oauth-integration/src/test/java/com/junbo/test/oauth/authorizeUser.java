@@ -163,7 +163,7 @@ public class authorizeUser {
         currentViewState = Oauth.GetViewStateByCid(cid);
         ValidateErrorFreeResponse(currentViewState);
         String loginResponseLink = Oauth.UserLogin(cid, userName, null);
-        String idToken = Oauth.GetLoginUserIdToken(loginResponseLink);
+        String idToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNIdToken);
         Oauth.Logout(idToken);
     }
 
@@ -195,12 +195,16 @@ public class authorizeUser {
         String postRegisterUserResponse = Oauth.PostRegisterUser(cid, userName, email, true);
         ValidateErrorFreeResponse(postRegisterUserResponse);
 
-        String loginState = Oauth.GetLoginStateAfterRegisterUser(cid);
-        String authCode = Oauth.SSO2GetAuthCode(loginState);
-        String accessToken = Oauth.GetAccessToken(authCode);
+        HttpclientHelper.ResetHttpClient();
+        cid = Oauth.GetLoginCid();
+        currentViewState = Oauth.GetViewStateByCid(cid);
+        ValidateErrorFreeResponse(currentViewState);
+        String loginResponseLink = Oauth.UserLogin(cid, userName, null);
+        String accessToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNAccessToken);
         TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken);
         Validator.Validate("validate token->client is correct", Oauth.DefaultClientId, tokenInfo.getClientId());
-        Validator.Validate("validate token->scopes is correct", Oauth.DefaultClientScopes, tokenInfo.getScopes());
+        Validator.Validate("validate token->scopes is correct", Oauth.DefaultLoginScopes, tokenInfo.getScopes());
+        Identity.SetHttpAuthorizationHeader(accessToken);
         User storedUser = Identity.UserGetByUserId(tokenInfo.getSub());
         Identity.UserPersonalInfoPost(storedUser.getId(), IdentityModel.DefaultUserPersonalInfoAddress());
         Identity.UserPersonalInfoPost(storedUser.getId(), IdentityModel.DefaultUserPersonalInfoDob());
@@ -219,7 +223,7 @@ public class authorizeUser {
         //String loginResponseLink =
         Oauth.UserLogin(cid, "allEnvLoginUser", Oauth.DefaultUserPwd);
         //Oauth.UserLogin(cid, RandomHelper.randomAlphabetic(10), "Welcome123");
-        //String idToken = Oauth.GetLoginUserIdToken(loginResponseLink);
+        //String idToken = Oauth.GetLoginUser(loginResponseLink);
         //Oauth.Logout(idToken);
     }
 
@@ -264,7 +268,7 @@ public class authorizeUser {
         currentViewState = Oauth.GetViewStateByCid(cid);
         ValidateErrorFreeResponse(currentViewState);
         String loginResponseLink = Oauth.UserLogin(cid, userName, newPassword);
-        String idToken = Oauth.GetLoginUserIdToken(loginResponseLink);
+        String idToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNIdToken);
         Oauth.Logout(idToken);
     }
 
