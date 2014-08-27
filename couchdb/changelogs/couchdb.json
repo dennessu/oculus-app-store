@@ -589,6 +589,13 @@
               }
           }
       },
+      "token_pin": {
+          "views": {
+              "by_user_id_type": {
+                  "map": "function(doc) { emit([doc.userId, doc.type, Date.parse(doc.createdTime)], doc._id)}"
+              }
+          }
+      },
       "csr_update": {},
       "csr_log": {
           "views": {

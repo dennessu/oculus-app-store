@@ -30,6 +30,8 @@ public class Image {
     @XSSFreeString
     @ApiModelProperty(position = 6, required = true, value = "Alt text")
     private String altText;
+    @ApiModelProperty(position = 7, required = true, value = "The URL of the original user uploaded image")
+    private String hrefOriginal;
 
     public String getId() {
         return id;
@@ -77,5 +79,13 @@ public class Image {
 
     public void setAltText(String altText) {
         this.altText = altText;
+    }
+
+    public String getHrefOriginal() {
+        return hrefOriginal;
+    }
+
+    public void setHrefOriginal(String hrefOriginal) {
+        this.hrefOriginal = hrefOriginal;
     }
 }

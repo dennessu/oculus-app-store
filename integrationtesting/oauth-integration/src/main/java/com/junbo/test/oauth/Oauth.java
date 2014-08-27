@@ -21,8 +21,11 @@ import org.apache.http.util.EntityUtils;
 
 import javax.ws.rs.NotFoundException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author dw
@@ -33,49 +36,46 @@ public class Oauth {
 
     }
 
-    public static final String DefaultAuthorizeURI =
-            ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/authorize";
-    public static final String DefaultLogoutURI =
-            ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/end-session";
-    public static final String DefaultRedirectURI =
-            ConfigHelper.getSetting("defaultRedirectURI");
-    public static final String DefaultResetPasswordURI =
-            ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/reset-password";
-    public static final String DefaultTokenURI =
-            ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/token";
-    public static final String DefaultTokenInfoURI =
-            ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/tokeninfo";
+    public static final String DefaultOauthEndpoint = ConfigHelper.getSetting("defaultOauthEndpoint");
+    public static final String DefaultRedirectURI = ConfigHelper.getSetting("defaultRedirectURI");
+
+    public static final String DefaultAuthorizeURI = DefaultOauthEndpoint + "/oauth2/authorize";
+    public static final String DefaultLogoutURI = DefaultOauthEndpoint + "/oauth2/end-session";
+    public static final String DefaultResetPasswordURI = DefaultOauthEndpoint + "/oauth2/reset-password";
+    public static final String DefaultTokenURI = DefaultOauthEndpoint + "/oauth2/token";
+    public static final String DefaultTokenInfoURI = DefaultOauthEndpoint + "/oauth2/tokeninfo";
 
     public static final String DefaultClientId = ConfigHelper.getSetting("client_id");
     public static final String DefaultClientSecret = ConfigHelper.getSetting("client_secret");
 
     public static final String DefaultClientScopes = "identity";
     public static final String DefaultGrantType = "authorization_code";
+    public static final String DefaultLoginScopes = "identity openid";
     public static final String DefaultRegisterEvent = "register";
-    public static final String DefaultFNCode = "code";
+    public static final String DefaultUserPwd = "1234qwerASDF";
+
+    public static final String DefaultFNAccessToken = "access_token";
     public static final String DefaultFNCid = "cid";
     public static final String DefaultFNClientId = "client_id";
     public static final String DefaultFNClientSecret = "client_secret";
+    public static final String DefaultFNCode = "code";
+    public static final String DefaultFNDoB = "dob";
+    public static final String DefaultFNEmail = "email";
+    public static final String DefaultFNEvent = "event";
+    public static final String DefaultFNFirstName = "first_name";
+    public static final String DefaultFNGender = "gender";
     public static final String DefaultFNGrantType = "grant_type";
     public static final String DefaultFNIdToken = "id_token";
-    public static final String DefaultFNLoginState = "ls";
-    public static final String DefaultFNRedirectURI = "redirect_uri";
-    public static final String DefaultFNEvent = "event";
-
-    public static final String DefaultFNUserId = "userId";
-    public static final String DefaultFNLocale = "locale";
-    public static final String DefaultFNUserName = "username";
-    public static final String DefaultFNPassword = "password";
-    public static final String DefaultFNEmail = "email";
-    public static final String DefaultFNNickName = "nickname";
-    public static final String DefaultFNFirstName = "first_name";
     public static final String DefaultFNLastName = "last_name";
+    public static final String DefaultFNLocale = "locale";
     public static final String DefaultFNLogin = "login";
-    public static final String DefaultFNGender = "gender";
-    public static final String DefaultFNDoB = "dob";
+    public static final String DefaultFNLoginState = "ls";
+    public static final String DefaultFNNickName = "nickname";
+    public static final String DefaultFNPassword = "password";
     public static final String DefaultFNPin = "pin";
-
-    public static final String DefaultUserPwd = "1234qwerASDF";
+    public static final String DefaultFNRedirectURI = "redirect_uri";
+    public static final String DefaultFNUserId = "userId";
+    public static final String DefaultFNUserName = "username";
 
     public static String GetRegistrationCid() throws Exception {
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(DefaultAuthorizeURI
@@ -134,9 +134,9 @@ public class Oauth {
                 nvpHeaders,
                 false);
         try {
-            String tarHeader = "Location";
+            String tarHeader = "location";
             for (Header h : response.getAllHeaders()) {
-                if (h.toString().startsWith(tarHeader)) {
+                if (h.toString().toLowerCase().startsWith(tarHeader)) {
                     return GetPropertyValueFromString(h.toString(), DefaultFNCode, "&");
                 }
             }
@@ -256,8 +256,7 @@ public class Oauth {
                 new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
         response.close();
         String emailLink = viewModelResponse.getModel().get("link").toString();
-        emailLink = DefaultAuthorizeURI.replace("/authorize", "") + "/verify-email"
-                + emailLink.split("/verify-email?")[1];
+        emailLink = URLProtocolAuthorityReplace(emailLink, DefaultOauthEndpoint);
         VerifyEmail(emailLink);
         // goto next
         nvps = new ArrayList<NameValuePair>();
@@ -275,18 +274,6 @@ public class Oauth {
             }
         }
         throw new NotFoundException("Did not found expected property: " + property + " in " + input);
-    }
-
-    public static String GetEmailVerificationLink(Long userId) throws Exception {
-        String query = String.format("select payload from shard_%s.email_history where user_id=%s;",
-                ShardIdHelper.getShardIdByUid(IdConverter.idToUrlString(UserId.class, userId)), userId);
-        String result = PostgresqlHelper.QuerySingleRowSingleColumn(query, "email");
-        for (String s : result.split(",")) {
-            if (s.contains("link")) {
-                return s.replace("\"link\":\"", "").replace("\"", "").replace("}", "");
-            }
-        }
-        throw new Exception("link is not found in:\r\n" + result);
     }
 
     public static String GetLoginCid() throws Exception {
@@ -329,13 +316,19 @@ public class Oauth {
         }
     }
 
-    public static String GetLoginUserIdToken(String requestURI) throws Exception {
+    public static Map<String, String> GetLoginUser(String requestURI) throws Exception {
+        Map<String, String> results = new HashMap<>();
+        requestURI = URLProtocolAuthorityReplace(requestURI, DefaultOauthEndpoint);
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(requestURI, false);
         try {
             String tarHeader = "Location";
             for (Header h : response.getAllHeaders()) {
                 if (h.toString().startsWith(tarHeader)) {
-                    return GetPropertyValueFromString(h.toString(), DefaultFNIdToken, "&");
+                    results.put(DefaultFNAccessToken,
+                            GetPropertyValueFromString(h.toString(), DefaultFNAccessToken, "&"));
+                    results.put(DefaultFNIdToken,
+                            GetPropertyValueFromString(h.toString(), DefaultFNIdToken, "&"));
+                    return results;
                 }
             }
             throw new NotFoundException("Did not found expected response header: " + tarHeader);
@@ -455,6 +448,12 @@ public class Oauth {
         } finally {
             response.close();
         }
+    }
+
+    public static String URLProtocolAuthorityReplace(String url1, String url2) throws Exception {
+        url1 = url1.replace(new URL(url1).getProtocol(), new URL(url2).getProtocol());
+        url1 = url1.replace(new URL(url1).getAuthority(), new URL(url2).getAuthority());
+        return url1;
     }
 
     // ****** start API sample logging ******

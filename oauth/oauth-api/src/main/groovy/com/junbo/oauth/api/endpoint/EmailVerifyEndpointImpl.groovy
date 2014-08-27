@@ -187,6 +187,16 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
         }
     }
 
+    @Override
+    Promise<Response> sendVerifyEmail(String locale, String country, UserId userId, String targetMail) {
+        // todo:    This should be only service api can access
+        return userService.sendVerifyEmail(userId, locale, country, targetMail, null).then {
+            // audit csr action on success
+            csrActionAudit(userId)
+            return Promise.pure(Response.noContent().build())
+        }
+    }
+
     private Promise<Response> handleException(Throwable throwable) {
         LOGGER.error('Error calling the identity service', throwable)
         Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)

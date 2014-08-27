@@ -34,4 +34,11 @@ public interface EmailVerifyEndpoint {
     Promise<Response> sendVerifyEmail(@FormParam("locale") String locale,
                                       @FormParam("country") String country,
                                       @FormParam("userId") UserId userId);
+
+    @POST
+    @Path("/target-email")
+    Promise<Response> sendVerifyEmail(@FormParam("locale")String locale,
+                                     @FormParam("country")String country,
+                                     @FormParam("userId")UserId userId,
+                                     @FormParam("targetMail")String targetMail);
 }

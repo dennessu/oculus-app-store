@@ -37,6 +37,8 @@ interface UserService {
 
     Promise<String> sendVerifyEmail(UserId userId, String locale, String country, Boolean welcome)
 
+    Promise<String> sendVerifyEmail(UserId userId, String locale, String country, String targetEmail, Boolean welcome)
+
     Promise<String> sendResetPassword(UserId userId, ActionContextWrapper contextWrapper)
 
     Promise<String> sendResetPassword(UserId userId, String locale, String country)

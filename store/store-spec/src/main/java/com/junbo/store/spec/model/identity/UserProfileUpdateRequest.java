@@ -14,6 +14,8 @@ public class UserProfileUpdateRequest {
 
     private ChallengeAnswer challengeAnswer;
 
+    private String userProfileUpdateToken;
+
     private StoreUserProfile userProfile;
 
     public ChallengeAnswer getChallengeAnswer() {
@@ -22,6 +24,14 @@ public class UserProfileUpdateRequest {
 
     public void setChallengeAnswer(ChallengeAnswer challengeAnswer) {
         this.challengeAnswer = challengeAnswer;
+    }
+
+    public String getUserProfileUpdateToken() {
+        return userProfileUpdateToken;
+    }
+
+    public void setUserProfileUpdateToken(String userProfileUpdateToken) {
+        this.userProfileUpdateToken = userProfileUpdateToken;
     }
 
     public StoreUserProfile getUserProfile() {
