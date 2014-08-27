@@ -220,8 +220,11 @@ public class authorizeUser {
         String cid = Oauth.GetLoginCid();
         String currentViewState = Oauth.GetViewStateByCid(cid);
         ValidateErrorFreeResponse(currentViewState);
-        //String loginResponseLink =
-        Oauth.UserLogin(cid, "allEnvLoginUser", Oauth.DefaultUserPwd);
+        String loginResponseLink = Oauth.UserLogin(cid, "allEnvLoginUser", Oauth.DefaultUserPwd);
+        String accessToken = Oauth.GetLoginUser(loginResponseLink).get(Oauth.DefaultFNAccessToken);
+        TokenInfo tokenInfo = Oauth.GetTokenInfo(accessToken);
+        Validator.Validate("validate token->client is correct", Oauth.DefaultClientId, tokenInfo.getClientId());
+        Validator.Validate("validate token->scopes is correct", Oauth.DefaultLoginScopes, tokenInfo.getScopes());
         //Oauth.UserLogin(cid, RandomHelper.randomAlphabetic(10), "Welcome123");
         //String idToken = Oauth.GetLoginUser(loginResponseLink);
         //Oauth.Logout(idToken);
