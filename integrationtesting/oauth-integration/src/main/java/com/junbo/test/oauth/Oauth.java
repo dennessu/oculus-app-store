@@ -21,6 +21,7 @@ import org.apache.http.util.EntityUtils;
 
 import javax.ws.rs.NotFoundException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,18 +36,14 @@ public class Oauth {
 
     }
 
-    public static final String DefaultAuthorizeURI =
-            ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/authorize";
-    public static final String DefaultLogoutURI =
-            ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/end-session";
-    public static final String DefaultRedirectURI =
-            ConfigHelper.getSetting("defaultRedirectURI");
-    public static final String DefaultResetPasswordURI =
-            ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/reset-password";
-    public static final String DefaultTokenURI =
-            ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/token";
-    public static final String DefaultTokenInfoURI =
-            ConfigHelper.getSetting("defaultOauthEndpoint") + "/oauth2/tokeninfo";
+    public static final String DefaultOauthEndpoint = ConfigHelper.getSetting("defaultOauthEndpoint");
+    public static final String DefaultRedirectURI = ConfigHelper.getSetting("defaultRedirectURI");
+
+    public static final String DefaultAuthorizeURI = DefaultOauthEndpoint + "/oauth2/authorize";
+    public static final String DefaultLogoutURI = DefaultOauthEndpoint + "/oauth2/end-session";
+    public static final String DefaultResetPasswordURI = DefaultOauthEndpoint + "/oauth2/reset-password";
+    public static final String DefaultTokenURI = DefaultOauthEndpoint + "/oauth2/token";
+    public static final String DefaultTokenInfoURI = DefaultOauthEndpoint + "/oauth2/tokeninfo";
 
     public static final String DefaultClientId = ConfigHelper.getSetting("client_id");
     public static final String DefaultClientSecret = ConfigHelper.getSetting("client_secret");
@@ -259,8 +256,7 @@ public class Oauth {
                 new InputStreamReader(response.getEntity().getContent()), ViewModel.class);
         response.close();
         String emailLink = viewModelResponse.getModel().get("link").toString();
-        emailLink = DefaultAuthorizeURI.replace("/authorize", "") + "/verify-email"
-                + emailLink.split("/verify-email?")[1];
+        emailLink = emailLink.replace(new URL(emailLink).getAuthority(), new URL(DefaultOauthEndpoint).getAuthority());
         VerifyEmail(emailLink);
         // goto next
         nvps = new ArrayList<NameValuePair>();
@@ -334,6 +330,8 @@ public class Oauth {
 
     public static Map<String, String> GetLoginUser(String requestURI) throws Exception {
         Map<String, String> results = new HashMap<>();
+        requestURI = requestURI.replace(new URL(requestURI).getAuthority(),
+                new URL(DefaultOauthEndpoint).getAuthority());
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(requestURI, false);
         try {
             String tarHeader = "Location";
