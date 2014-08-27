@@ -12,6 +12,7 @@ import com.junbo.catalog.db.repo.ItemRepository;
 import com.junbo.catalog.db.repo.OfferRepository;
 import com.junbo.catalog.spec.enums.*;
 import com.junbo.catalog.spec.model.item.Item;
+import com.junbo.catalog.spec.model.item.ItemRevisionLocaleProperties;
 import com.junbo.catalog.spec.model.offer.*;
 import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.error.AppError;
@@ -136,6 +137,18 @@ public class OfferRevisionValidator extends ValidationSupport {
                 // TODO: check locale is a valid locale
                 if (validateFieldNotNull("locales." + locale, properties, errors)) {
                     validateStringNotEmpty("locales." + locale + ".name", properties.getName(), errors);
+                }
+
+                validateImages(properties.getImages(), errors);
+                if (properties.getItems() != null) {
+                    for (String itemId : properties.getItems().keySet()) {
+                        ItemRevisionLocaleProperties itemProperties = properties.getItems().get(itemId);
+                        validateOptionalEmail("supportEmail", itemProperties.getSupportEmail(), errors);
+                        validateOptionalUrl("communityForumLink", itemProperties.getCommunityForumLink(), errors);
+                        validateOptionalUrl("manualDocument", itemProperties.getManualDocument(), errors);
+                        validateOptionalUrl("website", itemProperties.getWebsite(), errors);
+                        validateImages(itemProperties.getImages(), errors);
+                    }
                 }
             }
         }

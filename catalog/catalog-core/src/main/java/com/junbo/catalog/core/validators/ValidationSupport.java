@@ -10,6 +10,8 @@ import com.google.common.base.Joiner;
 import com.junbo.catalog.spec.enums.PriceType;
 import com.junbo.catalog.spec.enums.Status;
 import com.junbo.catalog.spec.model.common.BaseModel;
+import com.junbo.catalog.spec.model.common.ImageGalleryEntry;
+import com.junbo.catalog.spec.model.common.Images;
 import com.junbo.catalog.spec.model.common.Price;
 import com.junbo.common.error.AppCommonErrors;
 import com.junbo.common.error.AppError;
@@ -173,6 +175,48 @@ public abstract class ValidationSupport {
         } else if (PriceType.CUSTOM.is(price.getPriceType())) {
             validateFieldNull("priceTier", price.getPriceTier(), errors);
             validateFieldNotNull("prices", price.getPrices(), errors);
+        }
+    }
+
+    protected void validateImages(Images images, List<AppError> errors) {
+        if (images == null) {
+            return;
+        }
+        if (images.getBackground() != null) {
+            validateOptionalUrl("images.background.href", images.getBackground().getHref(), errors);
+            validateOptionalUrl("images.background.hrefOriginal", images.getBackground().getHrefOriginal(), errors);
+        }
+        if (images.getFeatured() != null) {
+            validateOptionalUrl("images.featured.href", images.getFeatured().getHref(), errors);
+            validateOptionalUrl("images.featured.hrefOriginal", images.getFeatured().getHrefOriginal(), errors);
+        }
+        if (images.getHalfMain() != null) {
+            validateOptionalUrl("images.halfMain.href", images.getHalfMain().getHref(), errors);
+            validateOptionalUrl("images.halfMain.hrefOriginal", images.getHalfMain().getHrefOriginal(), errors);
+        }
+        if (images.getMain() != null) {
+            validateOptionalUrl("images.main.href", images.getMain().getHref(), errors);
+            validateOptionalUrl("images.main.hrefOriginal", images.getMain().getHrefOriginal(), errors);
+        }
+        if (images.getThumbnail() != null) {
+            validateOptionalUrl("images.thumbnail.href", images.getThumbnail().getHref(), errors);
+            validateOptionalUrl("images.thumbnail.hrefOriginal", images.getThumbnail().getHrefOriginal(), errors);
+        }
+        if (images.getHalfThumbnail() != null) {
+            validateOptionalUrl("images.halfThumbnail.href", images.getHalfThumbnail().getHref(), errors);
+            validateOptionalUrl("images.halfThumbnail.hrefOriginal", images.getHalfThumbnail().getHrefOriginal(), errors);
+        }
+        if (images.getGallery() != null) {
+            for (ImageGalleryEntry galleryEntry : images.getGallery()) {
+                if (galleryEntry.getThumbnail() != null) {
+                    validateOptionalUrl("images.gallery.thumbnail.href", galleryEntry.getThumbnail().getHref(), errors);
+                    validateOptionalUrl("images.gallery.thumbnail.hrefOriginal", galleryEntry.getThumbnail().getHrefOriginal(), errors);
+                }
+                if (galleryEntry.getFull() != null) {
+                    validateOptionalUrl("images.gallery.full.href", galleryEntry.getFull().getHref(), errors);
+                    validateOptionalUrl("images.gallery.full.hrefOriginal", galleryEntry.getFull().getHrefOriginal(), errors);
+                }
+            }
         }
     }
 

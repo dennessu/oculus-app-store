@@ -12,8 +12,6 @@ import com.junbo.catalog.db.repo.ItemRepository;
 import com.junbo.catalog.db.repo.ItemRevisionRepository;
 import com.junbo.catalog.spec.enums.*;
 import com.junbo.catalog.spec.error.AppErrors;
-import com.junbo.catalog.spec.model.common.ImageGalleryEntry;
-import com.junbo.catalog.spec.model.common.Images;
 import com.junbo.catalog.spec.model.item.Binary;
 import com.junbo.catalog.spec.model.item.Item;
 import com.junbo.catalog.spec.model.item.ItemRevision;
@@ -234,40 +232,6 @@ public class ItemRevisionValidator extends ValidationSupport {
             boolean valid = itemRevisionRepo.checkPackageName(itemId, packageName);
             if (!valid) {
                 errors.add(AppErrors.INSTANCE.duplicatePackageName(packageName));
-            }
-        }
-    }
-
-    private void validateImages(Images images, List<AppError> errors) {
-        if (images == null) {
-            return;
-        }
-        if (images.getBackground() != null) {
-            validateOptionalUrl("images.background.href", images.getBackground().getHref(), errors);
-        }
-        if (images.getFeatured() != null) {
-            validateOptionalUrl("images.featured.href", images.getFeatured().getHref(), errors);
-        }
-        if (images.getHalfMain() != null) {
-            validateOptionalUrl("images.halfMain.href", images.getHalfMain().getHref(), errors);
-        }
-        if (images.getMain() != null) {
-            validateOptionalUrl("images.main.href", images.getMain().getHref(), errors);
-        }
-        if (images.getThumbnail() != null) {
-            validateOptionalUrl("images.thumbnail.href", images.getThumbnail().getHref(), errors);
-        }
-        if (images.getHalfThumbnail() != null) {
-            validateOptionalUrl("images.halfThumbnail.href", images.getHalfThumbnail().getHref(), errors);
-        }
-        if (images.getGallery() != null) {
-            for (ImageGalleryEntry galleryEntry : images.getGallery()) {
-                if (galleryEntry.getThumbnail() != null) {
-                    validateOptionalUrl("images.gallery.thumbnail.href", galleryEntry.getThumbnail().getHref(), errors);
-                }
-                if (galleryEntry.getFull() != null) {
-                    validateOptionalUrl("images.gallery.full.href", galleryEntry.getFull().getHref(), errors);
-                }
             }
         }
     }
