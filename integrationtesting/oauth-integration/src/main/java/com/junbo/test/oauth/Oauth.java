@@ -257,7 +257,7 @@ public class Oauth {
         response.close();
         String emailLink = viewModelResponse.getModel().get("link").toString();
         emailLink = emailLink.replace(new URL(emailLink).getProtocol(), new URL(DefaultOauthEndpoint).getProtocol());
-        emailLink = emailLink.replace(new URL(emailLink).getHost(), new URL(DefaultOauthEndpoint).getHost());
+        emailLink = emailLink.replace(new URL(emailLink).getAuthority(), new URL(DefaultOauthEndpoint).getAuthority());
         VerifyEmail(emailLink);
         // goto next
         nvps = new ArrayList<NameValuePair>();
@@ -319,8 +319,10 @@ public class Oauth {
 
     public static Map<String, String> GetLoginUser(String requestURI) throws Exception {
         Map<String, String> results = new HashMap<>();
-        requestURI = requestURI.replace(new URL(requestURI).getProtocol(), new URL(DefaultOauthEndpoint).getProtocol());
-        requestURI = requestURI.replace(new URL(requestURI).getHost(), new URL(DefaultOauthEndpoint).getHost());
+        requestURI = requestURI.replace(new URL(requestURI).getProtocol(),
+                new URL(DefaultOauthEndpoint).getProtocol());
+        requestURI = requestURI.replace(new URL(requestURI).getAuthority(),
+                new URL(DefaultOauthEndpoint).getAuthority());
         CloseableHttpResponse response = HttpclientHelper.SimpleGet(requestURI, false);
         try {
             String tarHeader = "Location";
