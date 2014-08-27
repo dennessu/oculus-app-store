@@ -15,6 +15,8 @@ class ErrorCodes {
         static final String CountryNotFound = '131.122'
         static final String LocaleNotFound = '131.124'
         static final String InvalidPassword = '131.101'
+        static final String InvalidPin = '131.110'
+        static final String InvalidField = '131.001'
     }
 
     class OAuth {

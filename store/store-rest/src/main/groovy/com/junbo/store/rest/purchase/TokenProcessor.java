@@ -6,14 +6,13 @@
 package com.junbo.store.rest.purchase;
 
 import com.junbo.langur.core.promise.Promise;
-import com.junbo.store.spec.model.purchase.PurchaseState;
 
 /**
  * The PurchaseStateSerializer class.
  */
-public interface PurchaseTokenProcessor {
+public interface TokenProcessor {
 
-    Promise<String> toPurchaseToken(PurchaseState state);
+    Promise<String> toTokenString(Object obj);
 
-    Promise<PurchaseState> toPurchaseState(String purchaseToken);
+    Promise<Object> toTokenObject(String tokenString, Class cls);
 }

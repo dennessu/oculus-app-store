@@ -4,9 +4,9 @@ import com.junbo.common.json.ObjectMapperProvider
 import com.junbo.crypto.spec.model.CryptoMessage
 import com.junbo.langur.core.promise.Promise
 import com.junbo.store.rest.utils.ResourceContainer
-import com.junbo.store.spec.model.purchase.PurchaseState
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
+import org.springframework.util.StringUtils
 
 import javax.annotation.Resource
 
@@ -14,31 +14,31 @@ import javax.annotation.Resource
  * The PurchaseTokenProcessorImpl class.
  */
 @CompileStatic
-@Component('storePurchaseTokenProcessor')
-class PurchaseTokenProcessorImpl implements PurchaseTokenProcessor {
+@Component('storeTokenProcessor')
+class TokenProcessorImpl implements TokenProcessor {
 
     @Resource(name = 'storeResourceContainer')
     ResourceContainer resourceContainer
 
     @Override
-    Promise<String> toPurchaseToken(PurchaseState state) {
-        if (state == null) {
-            throw new IllegalArgumentException('state is null')
+    Promise<String> toTokenString(Object object) {
+        if (object == null) {
+            throw new IllegalArgumentException('object is null')
         }
 
-        String result = ObjectMapperProvider.instanceNoIndent().writeValueAsString(state)
+        String result = ObjectMapperProvider.instanceNoIndent().writeValueAsString(object)
         return encode(result)
     }
 
     @Override
-    Promise<PurchaseState> toPurchaseState(String purchaseToken) {
-        if (purchaseToken == null) {
-            throw new IllegalArgumentException('purchaseToken is null')
+    Promise<Object> toTokenObject(String tokenString, Class cls) {
+        if (StringUtils.isEmpty(tokenString)) {
+            throw new IllegalArgumentException('token is null')
         }
 
-        return decode(purchaseToken).then { String decoded ->
-            PurchaseState purchaseState = ObjectMapperProvider.instanceNoIndent().readValue(decoded, PurchaseState)
-            return Promise.pure(purchaseState)
+        return decode(tokenString).then { String decoded ->
+            Object obj = ObjectMapperProvider.instanceNoIndent().readValue(decoded, cls)
+            return Promise.pure(obj)
         }
     }
 

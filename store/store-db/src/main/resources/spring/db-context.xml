@@ -7,4 +7,8 @@
     <bean id="cloudantConsumptionRepository" class="com.junbo.store.db.repo.cloudant.ConsumptionCloudantRepository" parent="cloudantClient">
         <property name="dbName" value="iap_consumption"/>
     </bean>
+
+    <bean id="cloudantTokenPinRepository" class="com.junbo.store.db.repo.cloudant.TokenRepositoryCloudantRepository" parent="cloudantClient">
+        <property name="dbName" value="token_pin" />
+    </bean>
 </beans>

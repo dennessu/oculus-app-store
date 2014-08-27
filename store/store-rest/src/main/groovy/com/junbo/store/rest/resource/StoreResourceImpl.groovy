@@ -11,7 +11,7 @@ import com.junbo.catalog.spec.model.offer.OffersGetOptions
 import com.junbo.common.enumid.CountryId
 import com.junbo.common.enumid.CurrencyId
 import com.junbo.common.enumid.LocaleId
-import com.junbo.common.error.AppCommonErrors
+import com.junbo.common.error.AppError
 import com.junbo.common.id.*
 import com.junbo.common.id.util.IdUtil
 import com.junbo.common.json.ObjectMapperProvider
@@ -38,8 +38,9 @@ import com.junbo.order.spec.model.OrderItem
 import com.junbo.order.spec.model.PaymentInfo
 import com.junbo.store.clientproxy.FacadeContainer
 import com.junbo.store.db.repo.ConsumptionRepository
+import com.junbo.store.db.repo.TokenRepository
 import com.junbo.store.rest.context.ErrorContext
-import com.junbo.store.rest.purchase.PurchaseTokenProcessor
+import com.junbo.store.rest.purchase.TokenProcessor
 import com.junbo.store.rest.utils.*
 import com.junbo.store.spec.error.AppErrors
 import com.junbo.store.spec.model.*
@@ -48,11 +49,16 @@ import com.junbo.store.spec.model.browse.*
 import com.junbo.store.spec.model.iap.*
 import com.junbo.store.spec.model.identity.*
 import com.junbo.store.spec.model.purchase.*
+import com.junbo.store.spec.model.token.Token
 import com.junbo.store.spec.resource.StoreResource
 import groovy.transform.CompileStatic
+import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.time.DateUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
@@ -93,6 +99,9 @@ class StoreResourceImpl implements StoreResource {
     @Resource(name = 'cloudantConsumptionRepository')
     private ConsumptionRepository consumptionRepository
 
+    @Resource(name = 'cloudantTokenPinRepository')
+    private TokenRepository tokenRepository
+
     @Resource(name = 'storeRequestValidator')
     private RequestValidator requestValidator
 
@@ -102,13 +111,17 @@ class StoreResourceImpl implements StoreResource {
     @Resource(name = 'storeFacadeContainer')
     private FacadeContainer facadeContainer
 
-    @Resource(name = 'storePurchaseTokenProcessor')
-    private PurchaseTokenProcessor purchaseTokenProcessor
+    @Resource(name = 'storeTokenProcessor')
+    private TokenProcessor tokenProcessor
 
     private List<com.junbo.identity.spec.v1.model.PIType> piTypes
 
     @Resource(name = 'storeAppErrorUtils')
     private AppErrorUtils appErrorUtils
+
+    @Autowired
+    @Value('${store.conf.pinValidDuration}')
+    private Integer pinCodeValidateDuration
 
     private static UserId getCurrentUserId() {
         UserId userId = AuthorizeContext.currentUserId
@@ -139,63 +152,64 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<UserProfileUpdateResponse> updateUserProfile(UserProfileUpdateRequest request) {
-        UserId userId = getCurrentUserId()
+        return requestValidator.validateUserProfileUpdateRequest(request).then { UserProfileUpdateResponse response ->
+            if (response != null) {
+                return Promise.pure(response)
+            }
 
-        UserProfileUpdateResponse response = requestValidator.validateUserProfileUpdateRequest(userId, request)
-        if (response != null) {
-            return Promise.pure(response)
-        }
+            def userProfile = request.userProfile
 
-        def userProfile = request.userProfile
+            User user
+            Boolean userPendingUpdate
+            ErrorContext errorContext = new ErrorContext()
+            return identityUtils.getVerifiedUserFromToken().syncThen { User u ->
+                user = u
+            }.then {
 
-        User user
-        Boolean userPendingUpdate
-        ErrorContext errorContext = new ErrorContext()
-        return identityUtils.getVerifiedUserFromToken().syncThen { User u ->
-            user = u
-        }.then {
-            updateUserCredential(user.getId(), request, errorContext)
-        }.then {
-            updateUserEmail(user, request, errorContext).then { Boolean changed ->
-                userPendingUpdate = (userPendingUpdate || changed)
+            }.then {
+                updateUserCredential(user.getId(), request, errorContext)
+            }.then {
+                updateUserEmail(user, request, errorContext).then { Boolean changed ->
+                    userPendingUpdate = (userPendingUpdate || changed)
+                    return Promise.pure()
+                }
+            }.then {
+                if (StringUtils.isEmpty(userProfile.headline)) {
+                    return Promise.pure(null)
+                }
+
+                if (user.profile == null) {
+                    user.profile = new UserProfile()
+                }
+
+                user.profile.headline = userProfile.headline
+                userPendingUpdate = true
                 return Promise.pure()
-            }
-        }.then {
-            if (StringUtils.isEmpty(userProfile.headline)) {
-                return Promise.pure(null)
-            }
+            }.then {
+                if (StringUtils.isEmpty(userProfile.avatar)) {
+                    return Promise.pure(null)
+                }
 
-            if (user.profile == null) {
-                user.profile = new UserProfile()
-            }
+                if (user.profile == null) {
+                    user.profile = new UserProfile()
+                }
 
-            user.profile.headline = userProfile.headline
-            userPendingUpdate = true
-            return Promise.pure()
-        }.then {
-            if (StringUtils.isEmpty(userProfile.avatar)) {
-                return Promise.pure(null)
-            }
+                user.profile.avatar = new UserAvatar(
+                        href: userProfile.avatar
+                )
 
-            if (user.profile == null) {
-                user.profile = new UserProfile()
-            }
-
-            user.profile.avatar = new UserAvatar(
-                    href: userProfile.avatar
-            )
-
-            userPendingUpdate = true
-            return Promise.pure()
-        }.then {
-            if (!userPendingUpdate) {
+                userPendingUpdate = true
                 return Promise.pure()
-            }
+            }.then {
+                if (!userPendingUpdate) {
+                    return Promise.pure()
+                }
 
-            return resourceContainer.userResource.put(userId, user)
-        }.then {
-            return innerGetUserProfile().syncThen { StoreUserProfile userProfileResponse ->
-                return new UserProfileUpdateResponse(userProfile: userProfileResponse)
+                return resourceContainer.userResource.put(user.getId(), user)
+            }.then {
+                return innerGetUserProfile().syncThen { StoreUserProfile userProfileResponse ->
+                    return new UserProfileUpdateResponse(userProfile: userProfileResponse)
+                }
             }
         }
     }
@@ -487,7 +501,7 @@ class StoreResourceImpl implements StoreResource {
                 purchaseState = new PurchaseState(timestamp: new Date())
                 return Promise.pure(null)
             }
-            purchaseTokenProcessor.toPurchaseState(request.purchaseToken).then { PurchaseState ps ->
+            tokenProcessor.toTokenObject(request.purchaseToken, PurchaseState).then { PurchaseState ps ->
                 purchaseState = ps
                 return Promise.pure(null)
             }
@@ -512,33 +526,23 @@ class StoreResourceImpl implements StoreResource {
                 return Promise.pure(null)
             }
             return validateInstrumentForPreparePurchase(user, request)
-        }.then { // currently challenge is always needed
-            if (purchaseState.prepareChallengePassed) { // challenge already passed
-                return Promise.pure(null)
-            }
-            if (request.challengeAnswer != null) {
-                if (request.challengeAnswer.type != 'PIN') {
-                    throw AppCommonErrors.INSTANCE.fieldInvalid('challengeAnswer.type', 'challengeAnswer could be only PIN').exception()
-                }
-                return resourceContainer.userCredentialVerifyAttemptResource.create(
-                        new UserCredentialVerifyAttempt(
-                                userId: user.getId(),
-                                type: request.challengeAnswer.type,
-                                value: request.challengeAnswer.pin
-                        )
-                ).then {
-                    purchaseState.prepareChallengePassed = true
+        }.then {
+            return isPurchaseChallengeNeeded(user.getId(), request.challengeAnswer?.pin).then { Boolean purchaseChallengeNeeded ->
+                if (purchaseState.prepareChallengePassed && !purchaseChallengeNeeded) {
+                    askChallenge = false
                     return Promise.pure(null)
                 }
+
+                purchaseState.prepareChallengePassed = true
+                askChallenge = true
+                return Promise.pure(null)
             }
-            askChallenge = true
-            return Promise.pure(null)
         }.then {
             if (askChallenge) {
-                return purchaseTokenProcessor.toPurchaseToken(purchaseState).then { String token ->
+                return tokenProcessor.toTokenString(purchaseState).then { String token ->
                     return Promise.pure(
                             new PreparePurchaseResponse(
-                                    challenge : new Challenge(type: 'PIN'),
+                                    challenge : new Challenge(type: Constants.ChallengeType.PIN),
                                     purchaseToken: token
                             )
                     )
@@ -572,7 +576,7 @@ class StoreResourceImpl implements StoreResource {
                 return resourceContainer.currencyResource.get(currencyId, new CurrencyGetOptions()).then { Currency currency ->
                     response.formattedTotalPrice = order.totalAmount + currency.symbol
                     purchaseState.order = order.getId()
-                    return purchaseTokenProcessor.toPurchaseToken(purchaseState).then { String token ->
+                    return tokenProcessor.toTokenString(purchaseState).then { String token ->
                         response.purchaseToken = token
                         return Promise.pure(null)
                     }
@@ -593,20 +597,39 @@ class StoreResourceImpl implements StoreResource {
     Promise<CommitPurchaseResponse> commitPurchase(CommitPurchaseRequest commitPurchaseRequest) {
         PurchaseState purchaseState
         User user
+        boolean askChallenge = false
         return identityUtils.getVerifiedUserFromToken().then { User u ->
             user = u
             return Promise.pure()
         }.then {
             requestValidator.validateCommitPurchaseRequest(commitPurchaseRequest)
         }.then {
-            purchaseTokenProcessor.toPurchaseState(commitPurchaseRequest.purchaseToken).then { PurchaseState e ->
+            return isPurchaseChallengeNeeded(user.getId(), null).then { Boolean purchaseChallengeNeeded ->
+                askChallenge = purchaseChallengeNeeded
+                return Promise.pure(null)
+            }
+        }.then {
+            tokenProcessor.toTokenObject(commitPurchaseRequest.purchaseToken, PurchaseState).then { PurchaseState e ->
                 purchaseState = e
+                if (!purchaseState.prepareChallengePassed) {
+                    throw AppErrors.INSTANCE.invalidPurchaseToken([new com.junbo.common.error.ErrorDetail(reason: 'Challenge_Required')] as com.junbo.common.error.ErrorDetail[]).exception()
+                }
                 if (purchaseState.order == null) {
                     throw AppErrors.INSTANCE.invalidPurchaseToken([new com.junbo.common.error.ErrorDetail(reason: 'OrderId_Invalid')] as com.junbo.common.error.ErrorDetail[]).exception()
                 }
                 return Promise.pure(null)
             }
         }.then {
+            if (askChallenge) {
+                return tokenProcessor.toTokenString(purchaseState).then { String token ->
+                    return Promise.pure(
+                            new CommitPurchaseResponse(
+                                    challenge : new Challenge(type: Constants.ChallengeType.PIN),
+                                    purchaseToken: token
+                            )
+                    )
+                }
+            }
             OrderId orderId = purchaseState.order
             String iapPackageName = null, iapItemId = null
             CommitPurchaseResponse response = new CommitPurchaseResponse()
@@ -1155,6 +1178,61 @@ class StoreResourceImpl implements StoreResource {
     private void throwOnUserPasswordIncorrect(Throwable ex) {
         if (appErrorUtils.isAppError(ex, ErrorCodes.Identity.UserPasswordIncorrect)) {
             throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
+        }
+    }
+
+    private Promise<Boolean> isPurchaseChallengeNeeded(UserId userId, String pinCode) {
+        if (userId == null) {
+            throw new IllegalArgumentException('userId can\'t be null')
+        }
+
+        def askChallenge = false
+        if (pinCode == null) {
+            return tokenRepository.searchByUserIdAndType(userId, Constants.ChallengeType.PIN, 1, 0).then { List<Token> tokenList ->
+                if (CollectionUtils.isEmpty(tokenList)) {
+                    askChallenge = true
+                    return Promise.pure(null)
+                }
+
+                Token validToken = tokenList.find { Token token ->
+                    return token.expireTime.after(new Date())
+                }
+
+                askChallenge = validToken == null
+                return Promise.pure(null)
+            }.then {
+                return Promise.pure(askChallenge)
+            }
+        } else {
+            return resourceContainer.userCredentialVerifyAttemptResource.create(
+                    new UserCredentialVerifyAttempt(
+                            userId: userId,
+                            type: Constants.ChallengeType.PIN,
+                            value: pinCode
+                    )
+            ).recover { Throwable t ->
+                if (appErrorUtils.isAppError(t, ErrorCodes.Identity.InvalidPin)) {
+                    throw AppErrors.INSTANCE.invalidChallengeAnswer().exception()
+                }
+
+                if (appErrorUtils.isAppError(t, ErrorCodes.Identity.InvalidField)) {
+                    AppError appError = (AppError)t
+                    if (appError.error().message.contains('User reaches maximum allowed retry count')) {
+                        throw AppErrors.INSTANCE.maximumAttemptReached().exception()
+                    }
+                }
+
+                appErrorUtils.throwUnknownError('purchase', t)
+            }.then {
+                Token token = new Token(
+                    userId: userId,
+                    type: Constants.ChallengeType.PIN,
+                    expireTime: DateUtils.addSeconds(new Date(), pinCodeValidateDuration)
+                )
+                return tokenRepository.create(token).then {
+                    return Promise.pure(askChallenge)
+                }
+            }
         }
     }
 }

@@ -24,4 +24,9 @@ class Constants {
         public static final String PIN = 'PIN'
         public static final String EMAIL_VERIFICATION = 'EMAIL_VERIFICATION'
     }
+
+    public static class CredentialType {
+        public static final String PASSWORD = 'PASSWORD'
+        public static final String PIN = 'PIN'
+    }
 }

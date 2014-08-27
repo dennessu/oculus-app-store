@@ -253,6 +253,50 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
+    Promise<String> sendVerifyEmail(UserId userId, String locale, String country, String email, Boolean welcome) {
+        if (email == null) {
+            throw AppErrors.INSTANCE.missingDefaultUserEmail().exception()
+        }
+
+        EmailVerifyCode code = new EmailVerifyCode(
+                userId: userId.value,
+                email: email)
+
+        emailVerifyCodeRepository.save(code)
+
+        UriBuilder uriBuilder = UriBuilder.fromUri(emailLinkBaseUri)
+        uriBuilder.path(EMAIL_VERIFY_PATH)
+        uriBuilder.queryParam(OAuthParameters.EMAIL_VERIFY_CODE, code.code)
+        uriBuilder.queryParam(OAuthParameters.LOCALE, locale)
+
+        QueryParam queryParam
+        if (welcome == null || !welcome) {
+            queryParam = new QueryParam(
+                    source: EMAIL_SOURCE,
+                    action: VERIFY_EMAIL_ACTION,
+                    locale: locale
+            )
+        }
+        else {
+            queryParam = new QueryParam(
+                    source: EMAIL_SOURCE,
+                    action: WELCOME_ACTION,
+                    locale: locale
+            )
+        }
+
+        String link = uriBuilder.build().toString()
+        return userResource.get(userId, new UserGetOptions()).then { User user ->
+            if (user == null) {
+                throw AppErrors.INSTANCE.errorCallingIdentity().exception()
+            }
+
+            return this.sendEmail(queryParam, user, email, link)
+        }
+    }
+
+
+    @Override
     Promise<String> sendVerifyEmail(UserId userId, String locale, String country, Boolean welcome) {
         if (userId == null || userId.value == null) {
             throw AppErrors.INSTANCE.missingUserId().exception()
@@ -264,39 +308,7 @@ class UserServiceImpl implements UserService {
             }
 
             return this.getDefaultUserEmail(user).then { String email ->
-                if (email == null) {
-                    throw AppErrors.INSTANCE.missingDefaultUserEmail().exception()
-                }
-
-                EmailVerifyCode code = new EmailVerifyCode(
-                        userId: (user.id as UserId).value,
-                        email: email)
-
-                emailVerifyCodeRepository.save(code)
-
-                UriBuilder uriBuilder = UriBuilder.fromUri(emailLinkBaseUri)
-                uriBuilder.path(EMAIL_VERIFY_PATH)
-                uriBuilder.queryParam(OAuthParameters.EMAIL_VERIFY_CODE, code.code)
-                uriBuilder.queryParam(OAuthParameters.LOCALE, locale)
-
-                QueryParam queryParam
-                if (welcome == null || !welcome) {
-                    queryParam = new QueryParam(
-                            source: EMAIL_SOURCE,
-                            action: VERIFY_EMAIL_ACTION,
-                            locale: locale
-                    )
-                }
-                else {
-                    queryParam = new QueryParam(
-                            source: EMAIL_SOURCE,
-                            action: WELCOME_ACTION,
-                            locale: locale
-                    )
-                }
-
-                String link = uriBuilder.build().toString()
-                return this.sendEmail(queryParam, user, email, link)
+                return sendVerifyEmail(userId, locale, country, email, welcome)
             }
         }
     }

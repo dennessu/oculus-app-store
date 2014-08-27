@@ -96,6 +96,7 @@ class CatalogFacadeImpl implements CatalogFacade {
     }
 
     private void loadPriceInfo(OfferRevision offerRevision, Offer offer) {
+        // todo:    Need to call rating service to get the information
         PriceType priceType = PriceType.valueOf(offerRevision.price.priceType)
         switch (priceType) {
             case PriceType.FREE:

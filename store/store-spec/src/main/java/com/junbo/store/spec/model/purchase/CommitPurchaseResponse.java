@@ -18,12 +18,22 @@ public class CommitPurchaseResponse {
 
     private Challenge challenge;
 
+    private String purchaseToken;
+
     private OrderId order;
 
     private List<Entitlement> entitlements;
 
     public Challenge getChallenge() {
         return challenge;
+    }
+
+    public String getPurchaseToken() {
+        return purchaseToken;
+    }
+
+    public void setPurchaseToken(String purchaseToken) {
+        this.purchaseToken = purchaseToken;
     }
 
     public void setChallenge(Challenge challenge) {

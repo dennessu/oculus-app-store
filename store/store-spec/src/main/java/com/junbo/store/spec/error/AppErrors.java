@@ -68,6 +68,12 @@ public interface AppErrors {
     @ErrorDef(httpStatusCode = 412, code = "113", message = "User Email Not found.")
     AppError userEmailNotFound();
 
-    @ErrorDef(httpStatusCode = 413, code = "114", message = "User Primary Email Not found.")
+    @ErrorDef(httpStatusCode = 412, code = "114", message = "User Primary Email Not found.")
     AppError userEmailPrimaryEmailNotFound();
+
+    @ErrorDef(httpStatusCode = 412, code = "115", message = "User Reaches Maximum Attempt Count.")
+    AppError maximumAttemptReached();
+
+    @ErrorDef(httpStatusCode = 412, code = "116", message = "Invalid Update Profile Token.")
+    AppError invalidUpdateProfileToken();
 }
