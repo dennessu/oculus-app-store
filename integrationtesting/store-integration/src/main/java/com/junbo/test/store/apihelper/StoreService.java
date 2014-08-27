@@ -6,13 +6,15 @@
 package com.junbo.test.store.apihelper;
 
 import com.junbo.store.spec.model.EntitlementsGetResponse;
+import com.junbo.store.spec.model.billing.BillingProfileGetRequest;
+import com.junbo.store.spec.model.billing.BillingProfileGetResponse;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateRequest;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
 //import com.junbo.store.spec.model.billing.InstrumentUpdateRequest;
 //import com.junbo.store.spec.model.billing.InstrumentUpdateResponse;
-import com.junbo.store.spec.model.iap.IAPEntitlementConsumeRequest;
-import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
-import com.junbo.store.spec.model.identity.UserProfileGetResponse;
+import com.junbo.store.spec.model.browse.*;
+import com.junbo.store.spec.model.iap.*;
+import com.junbo.store.spec.model.identity.*;
 import com.junbo.store.spec.model.purchase.*;
 
 /**
@@ -20,9 +22,21 @@ import com.junbo.store.spec.model.purchase.*;
  */
 public interface StoreService {
 
+    VerifyEmailResponse verifyEmail(VerifyEmailRequest request) throws Exception;
+
+    VerifyEmailResponse verifyEmail(VerifyEmailRequest request, int expectedResponseCode) throws Exception;
+
     UserProfileGetResponse getUserProfile() throws Exception;
 
     UserProfileGetResponse getUserProfile(int expectedResponseCode) throws Exception;
+
+    UserProfileUpdateResponse updateUserProfile(UserProfileUpdateRequest request) throws Exception;
+
+    UserProfileUpdateResponse updateUserProfile(UserProfileUpdateRequest request, int expectedResponseCode) throws Exception;
+
+    BillingProfileGetResponse getBillingProfile(BillingProfileGetRequest request) throws Exception;
+
+    BillingProfileGetResponse getBillingProfile(BillingProfileGetRequest request, int expectedResponseCode) throws Exception;
 
     BillingProfileUpdateResponse updateBillingProfile(BillingProfileUpdateRequest billingProfileUpdateRequest) throws Exception;
 
@@ -47,5 +61,49 @@ public interface StoreService {
     EntitlementsGetResponse getEntitlement() throws Exception;
 
     EntitlementsGetResponse getEntitlement(int expectedResponseCode) throws Exception;
+
+    IAPOfferGetResponse getIAPOffers(IAPOfferGetRequest request) throws Exception;
+
+    IAPOfferGetResponse getIAPOffers(IAPOfferGetRequest request, int expectedResponseCode) throws Exception;
+
+    IAPEntitlementGetResponse getIAPEntitlement(IAPEntitlementGetRequest request) throws Exception;
+
+    IAPEntitlementGetResponse getIAPEntitlement(IAPEntitlementGetRequest request, int expectedResponseCode) throws Exception;
+
+    TocResponse getTOC() throws Exception;
+
+    TocResponse getTOC(int expectedResponseCode) throws Exception;
+
+    AcceptTosResponse acceptTos(AcceptTosRequest request) throws Exception;
+
+    AcceptTosResponse acceptTos(AcceptTosRequest request, int expectedResponseCode) throws Exception;
+
+    SectionLayoutResponse getSectionLayout(SectionLayoutRequest request) throws Exception;
+
+    SectionLayoutResponse getSectionLayout(SectionLayoutRequest request, int expectedResponseCode) throws Exception;
+
+    ListResponse getList(ListRequest request) throws Exception;
+
+    ListResponse getList(ListRequest request, int expectedResponseCode) throws Exception;
+
+    LibraryResponse getLibrary() throws Exception;
+
+    LibraryResponse getLibrary(int expectedResponseCode) throws Exception;
+
+    DetailsResponse getDetails(DetailsRequest request) throws Exception;
+
+    DetailsResponse getDetails(DetailsRequest request, int expectedResponseCode) throws Exception;
+
+    ReviewsResponse getReviews(ReviewsRequest request) throws Exception;
+
+    ReviewsResponse getReviews(ReviewsRequest request, int expectedResponseCode) throws Exception;
+
+    AddReviewResponse addReview(AddReviewRequest request) throws Exception;
+
+    AddReviewResponse addReview(AddReviewRequest request, int expectedResponseCode) throws Exception;
+
+    DeliveryResponse getDelivery(DeliveryRequest request) throws Exception;
+
+    DeliveryResponse getDelivery(DeliveryRequest request, int expectedResponseCode) throws Exception;
 
 }
