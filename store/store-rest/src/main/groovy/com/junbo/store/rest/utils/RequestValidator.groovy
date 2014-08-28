@@ -22,6 +22,8 @@ import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.ChallengeAnswer
 import com.junbo.store.spec.model.billing.BillingProfileGetRequest
 import com.junbo.store.spec.model.billing.InstrumentUpdateRequest
+import com.junbo.store.spec.model.browse.AcceptTosRequest
+import com.junbo.store.spec.model.browse.DetailsRequest
 import com.junbo.store.spec.model.identity.UserProfileUpdateRequest
 import com.junbo.store.spec.model.identity.UserProfileUpdateResponse
 import com.junbo.store.spec.model.login.*
@@ -423,6 +425,20 @@ class RequestValidator {
             }
             return Promise.pure()
         }
+    }
+
+    public void validateAcceptTosRequest(AcceptTosRequest request) {
+        if (request == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
+        }
+        notEmpty(request.tosId, 'tosId')
+    }
+
+    public void validateDetailsRequest(DetailsRequest request) {
+        if (request == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
+        }
+        notEmpty(request.itemId, 'itemId')
     }
 
 

@@ -11,7 +11,7 @@ package com.junbo.store.spec.model.browse;
 public class PageMeta {
 
     private String cursor;
-    private String count;
+    private Integer count;
 
     public String getCursor() {
         return cursor;
@@ -21,11 +21,11 @@ public class PageMeta {
         this.cursor = cursor;
     }
 
-    public String getCount() {
+    public Integer getCount() {
         return count;
     }
 
-    public void setCount(String count) {
+    public void setCount(Integer count) {
         this.count = count;
     }
 }

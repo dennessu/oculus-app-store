@@ -33,14 +33,19 @@ import com.junbo.identity.spec.v1.option.list.UserListOptions
 import com.junbo.identity.spec.v1.option.list.UserTosAgreementListOptions
 import com.junbo.identity.spec.v1.option.model.CountryGetOptions
 import com.junbo.identity.spec.v1.option.model.CurrencyGetOptions
+import com.junbo.identity.spec.v1.option.model.LocaleGetOptions
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.langur.core.client.PathParamTranscoder
+import com.junbo.langur.core.context.JunboHttpContext
 import com.junbo.langur.core.promise.Promise
 import com.junbo.order.spec.model.Order
 import com.junbo.order.spec.model.OrderItem
 import com.junbo.order.spec.model.PaymentInfo
 import com.junbo.store.clientproxy.FacadeContainer
+import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.db.repo.ConsumptionRepository
+import com.junbo.store.rest.browse.BrowseContext
+import com.junbo.store.rest.browse.BrowseService
 import com.junbo.store.db.repo.TokenRepository
 import com.junbo.store.rest.context.ErrorContext
 import com.junbo.store.rest.purchase.TokenProcessor
@@ -125,6 +130,9 @@ class StoreResourceImpl implements StoreResource {
 
     @Resource(name = 'storeAppErrorUtils')
     private AppErrorUtils appErrorUtils
+
+    @Resource(name = 'storeBrowseService')
+    private BrowseService browseService
 
     @Autowired
     @Value('${store.conf.pinValidDuration}')
@@ -383,7 +391,7 @@ class StoreResourceImpl implements StoreResource {
             return Promise.pure(null)
         }.then { // read entitlements from entitlement component
             PageMetadata entitlementPageMetaData = new PageMetadata(start: pageParam.start, count: pageParam.count != null  ? pageParam.count : PAGE_SIZE)
-            CommonUtils.iteratePageRead {
+            CommonUtils.loop {
                 return resourceContainer.entitlementResource.searchEntitlements(
                         entitlementSearchParam,
                         entitlementPageMetaData
@@ -403,9 +411,9 @@ class StoreResourceImpl implements StoreResource {
                         }
                     }.then { // check more entitlement to read
                         if ((pageParam.count != null && entitlements.size() >= pageParam.count) || results.items.size() < entitlementPageMetaData.count) {
-                            return Promise.pure(false)
+                            return Promise.pure(Promise.BREAK)
                         } else {
-                            return Promise.pure(true)
+                            return Promise.pure()
                         }
                     }
                 }
@@ -726,32 +734,53 @@ class StoreResourceImpl implements StoreResource {
 
     @Override
     Promise<TocResponse> getToc() {
-        return null
+        buildBrowseContext().then { BrowseContext browseContext ->
+            return browseService.getTocResponse(browseContext)
+        }
     }
 
     @Override
     Promise<AcceptTosResponse> acceptTos(AcceptTosRequest request) {
-        return null
+        User user
+        requestValidator.validateAcceptTosRequest(request)
+        return identityUtils.getVerifiedUserFromToken().then { User u ->
+            user = u
+            return Promise.pure()
+        }.then {
+            resourceContainer.userTosAgreementResource.create(new UserTosAgreement(userId: user.getId(), tosId: request.tosId))
+        }.then {
+            return Promise.pure(new AcceptTosResponse())
+        }
+
     }
 
     @Override
     Promise<SectionLayoutResponse> getSectionLayout(@BeanParam SectionLayoutRequest request) {
-        return null
+        buildBrowseContext().then { BrowseContext browseContext ->
+            return browseService.getSectionLayout(request, browseContext)
+        }
     }
 
     @Override
     Promise<ListResponse> getList(ListRequest request) {
-        return null
+        buildBrowseContext().then { BrowseContext browseContext ->
+            return browseService.getList(request, browseContext)
+        }
     }
 
     @Override
     Promise<LibraryResponse> getLibrary() {
-        return null
+        buildBrowseContext().then { BrowseContext browseContext ->
+            return browseService.getLibrary(browseContext)
+        }
     }
 
     @Override
     Promise<DetailsResponse> getDetails(DetailsRequest request) {
-        return null
+        requestValidator.validateDetailsRequest(request)
+        buildBrowseContext().then { BrowseContext browseContext ->
+            return browseService.getLibrary(browseContext)
+        }
     }
 
     @Override
@@ -1033,18 +1062,18 @@ class StoreResourceImpl implements StoreResource {
         )
 
         Map<String, Offer> offers = new HashMap<>()
-        return CommonUtils.iteratePageRead {
+        return CommonUtils.loop {
             return resourceContainer.itemResource.getItems(itemOption).then { Results<Item> itemResults ->
                 boolean hasMore = itemResults.items.size() >= itemOption.size
                 itemOption.cursor = String.valueOf(Integer.valueOf(itemOption.cursor) + itemResults.items.size())
                 return Promise.each(itemResults.items) { Item item ->
                     return resourceContainer.itemRevisionResource.getItemRevision(item.currentRevisionId, new ItemRevisionGetOptions()).then { ItemRevision itemRevision ->
                         return getOffersFromItem(item, itemRevision, iapOfferGetRequest, offers).then {
-                            return Promise.pure(hasMore)
+                            return Promise.pure(hasMore ? null : Promise.BREAK)
                         }
                     }
                 }.then {
-                    return Promise.pure(hasMore)
+                    return Promise.pure(hasMore ? null : Promise.BREAK)
                 }
             }
         }.syncThen {
@@ -1274,6 +1303,31 @@ class StoreResourceImpl implements StoreResource {
 
                 return Promise.pure(null)
             }
+        }
+    }
+
+    private Promise<BrowseContext> buildBrowseContext() {
+        BrowseContext result = new BrowseContext()
+        identityUtils.getVerifiedUserFromToken().then { User u ->
+            result.user = u
+            return Promise.pure()
+        }.then {
+            resourceContainer.countryResource.get(new CountryId('US'), new CountryGetOptions()).then { Country country ->
+                result.country = country
+                return Promise.pure()
+            }
+        }.then {
+            resourceContainer.localeResource.get(new LocaleId(JunboHttpContext.requestHeaders.getFirst(CommonHeaders.ACCEPT_LANGUAGE.value)), new LocaleGetOptions()).then { Locale locale ->
+                result.locale = locale
+                return Promise.pure()
+            }
+        }.then {
+            resourceContainer.currencyResource.get(result.country.defaultCurrency, new CurrencyGetOptions()).then { Currency currency ->
+                result.currency = currency
+                return Promise.pure()
+            }
+        }.then {
+            return Promise.pure(result)
         }
     }
 }

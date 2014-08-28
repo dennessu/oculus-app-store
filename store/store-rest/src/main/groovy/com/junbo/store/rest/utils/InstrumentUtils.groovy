@@ -15,6 +15,7 @@ import com.junbo.langur.core.promise.Promise
 import com.junbo.payment.spec.model.PageMetaData
 import com.junbo.payment.spec.model.PaymentInstrument
 import com.junbo.payment.spec.model.PaymentInstrumentSearchParam
+import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.spec.model.billing.Instrument
 import com.junbo.store.spec.model.billing.InstrumentUpdateRequest
 import com.junbo.store.spec.model.identity.PersonalInfo
@@ -188,11 +189,11 @@ class InstrumentUtils {
         PageMetaData pageMetaData = new PageMetaData(start: 0, count: PAGE_SIZE)
         List<PaymentInstrument> paymentInstruments = []
         List<Instrument> results = []
-        CommonUtils.iteratePageRead {
+        CommonUtils.loop {
             resourceContainer.paymentInstrumentResource.searchPaymentInstrument(new PaymentInstrumentSearchParam(userId: user.getId()), pageMetaData).then { Results<PaymentInstrument> paymentInstrumentResults ->
                 paymentInstruments.addAll(paymentInstrumentResults.items)
                 pageMetaData.start += PAGE_SIZE
-                return Promise.pure(paymentInstrumentResults.items.size() == PAGE_SIZE)
+                return Promise.pure(paymentInstrumentResults.items.size() == PAGE_SIZE ? null : Promise.BREAK)
             }
         }.then {
             Promise.each(paymentInstruments) { PaymentInstrument pi ->

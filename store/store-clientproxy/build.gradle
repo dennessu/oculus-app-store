@@ -18,7 +18,9 @@ dependencies {
     processor junboProject(':oom-processor')
 
     compile junboProject(':catalog-spec')
+    compile junboProject(':rating-spec')
     compile junboProject(':store-spec')
+    compile junboProject(':store-common')
     compile junboProject(':entitlement-spec')
     compile junboProject(':fulfilment-spec')
     compile junboProject(':payment-spec')

@@ -8,7 +8,7 @@ package com.junbo.store.spec.model.browse.document;
 import java.util.Date;
 
 /**
- * The Image class.
+ * The RevisionNote class.
  */
 public class RevisionNote {
 

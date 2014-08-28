@@ -33,4 +33,7 @@ public interface CatalogFacade {
     Promise<List<Category>> getCategoriesByParent(String parentId);
 
     Promise<List<Offer>> getInAppOffers(Item hostItem, IAPOfferGetRequest request);
+
+    Promise<String> getCategoryId(String categoryName);
+
 }

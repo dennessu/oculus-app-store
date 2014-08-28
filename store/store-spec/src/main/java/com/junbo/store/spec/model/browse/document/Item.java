@@ -6,9 +6,8 @@
 package com.junbo.store.spec.model.browse.document;
 
 import com.junbo.common.id.ItemId;
+import com.junbo.store.spec.model.browse.Images;
 import com.junbo.store.spec.model.browse.ReviewsResponse;
-
-import java.util.List;
 
 /**
  * The Item class.
@@ -27,23 +26,17 @@ public class Item {
 
     private String creator;
 
-    private List<Image> images;
+    private Images images;
 
     private AppDetails appDetails;
 
-    private String detailsUrl;
-
     private ReviewsResponse reviews;
 
-    private String shareUrl;
-
-    private List<Offer> offers;
+    private Offer offer;
 
     private Boolean ownedByCurrentUser;
 
     private Review currentUserReview; // only appears in getLibrary response, or in getDetails response.
-
-    private String deliveryUrl;
 
     public ItemId getSelf() {
         return self;
@@ -93,11 +86,11 @@ public class Item {
         this.creator = creator;
     }
 
-    public List<Image> getImages() {
+    public Images getImages() {
         return images;
     }
 
-    public void setImages(List<Image> images) {
+    public void setImages(Images images) {
         this.images = images;
     }
 
@@ -117,14 +110,6 @@ public class Item {
         this.currentUserReview = currentUserReview;
     }
 
-    public String getDetailsUrl() {
-        return detailsUrl;
-    }
-
-    public void setDetailsUrl(String detailsUrl) {
-        this.detailsUrl = detailsUrl;
-    }
-
     public ReviewsResponse getReviews() {
         return reviews;
     }
@@ -133,20 +118,12 @@ public class Item {
         this.reviews = reviews;
     }
 
-    public String getShareUrl() {
-        return shareUrl;
+    public Offer getOffer() {
+        return offer;
     }
 
-    public void setShareUrl(String shareUrl) {
-        this.shareUrl = shareUrl;
-    }
-
-    public List<Offer> getOffers() {
-        return offers;
-    }
-
-    public void setOffers(List<Offer> offers) {
-        this.offers = offers;
+    public void setOffer(Offer offer) {
+        this.offer = offer;
     }
 
     public Boolean getOwnedByCurrentUser() {
@@ -157,11 +134,4 @@ public class Item {
         this.ownedByCurrentUser = ownedByCurrentUser;
     }
 
-    public String getDeliveryUrl() {
-        return deliveryUrl;
-    }
-
-    public void setDeliveryUrl(String deliveryUrl) {
-        this.deliveryUrl = deliveryUrl;
-    }
 }

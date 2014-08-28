@@ -1,4 +1,5 @@
 include 'store-spec'
+include 'store-common'
 include 'store-db'
 include 'store-rest'
 include 'store-clientproxy'
