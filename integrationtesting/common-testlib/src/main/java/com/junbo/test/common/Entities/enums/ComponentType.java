@@ -34,7 +34,8 @@ public enum ComponentType {
     CSR("testcase"),
     DRM("drm"),
     CRYPTO("crypto"),
-    SUBSCRIPTION("subscription");
+    SUBSCRIPTION("subscription"),
+    SMOKETEST("smoketest");
 
     private String name;
 

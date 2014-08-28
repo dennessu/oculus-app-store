@@ -38,6 +38,8 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
     private boolean needAuthHeader;
     private boolean needOverrideRequestEntity;
 
+    private ComponentType componentType;
+
     public static synchronized OAuthService getInstance() {
         if (instance == null) {
             instance = new OAuthServiceImpl();
@@ -103,6 +105,10 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
             case DRM:
                 formParams.put("scope", "drm");
                 clientId = "client";
+                break;
+            case SMOKETEST:
+                formParams.put("scope","smoketest");
+                clientId = "smoketest";
                 break;
             default:
                 formParams.put("scope", componentType.toString() + ".service");
@@ -324,6 +330,16 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         needOverrideRequestEntity = false;
         emailVerifyLink = emailVerifyLink.substring(emailVerifyLink.indexOf("verify"));
         restApiCall(HTTPMethod.GET, oauthUrl + "/" + emailVerifyLink, 302);
+    }
+
+    @Override
+    public String getEmailVerifyLink(String uid, String emailAddress) throws Exception {
+        needAuthHeader = true;
+        needOverrideRequestEntity = false;
+        componentType = ComponentType.SMOKETEST;
+        String url = String.format(oauthUrl + "/verify-email/test?userId=%s&locale=en_US&email=%s", uid, emailAddress);
+        return  restApiCall(HTTPMethod.GET, url, null, true);
+
     }
 
 }
