@@ -12,10 +12,7 @@ import com.junbo.identity.spec.v1.model.UserVAT;
 import com.junbo.identity.spec.v1.model.migration.OculusInput;
 import com.junbo.identity.spec.v1.model.migration.OculusOutput;
 import com.junbo.oauth.spec.model.TokenInfo;
-import com.junbo.test.common.HttpclientHelper;
-import com.junbo.test.common.JsonHelper;
-import com.junbo.test.common.RandomHelper;
-import com.junbo.test.common.Validator;
+import com.junbo.test.common.*;
 import com.junbo.test.common.property.Property;
 import com.junbo.test.identity.Identity;
 import com.junbo.test.identity.IdentityModel;
@@ -215,8 +212,9 @@ public class authorizeUser {
     }
 
     @Property(environment = "release")
-    @Test(groups = "dailies")
+    @Test(groups = "int/ppe/prod/sewer")
     public void loginExistingUser() throws Exception {
+        if (Oauth.DefaultOauthEndpoint.contains("http://localhost:8080")) return;
         String cid = Oauth.GetLoginCid();
         String currentViewState = Oauth.GetViewStateByCid(cid);
         ValidateErrorFreeResponse(currentViewState);
