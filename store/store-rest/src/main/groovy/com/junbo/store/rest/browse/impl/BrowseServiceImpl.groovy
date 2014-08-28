@@ -148,7 +148,7 @@ class BrowseServiceImpl implements BrowseService {
                     return Promise.pure(Promise.BREAK)
                 }
 
-                Promise.each(result.items) { Entitlement entitlement ->
+                Promise.each(results.items) { Entitlement entitlement ->
                     if (itemIdSet.contains(entitlement.itemId)) {
                         return Promise.pure()
                     }
