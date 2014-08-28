@@ -116,7 +116,7 @@ public class StoreTesting extends BaseTestClass {
         AuthTokenResponse authTokenResponse = testDataProvider.CreateUser();
         String userName = authTokenResponse.getUsername();
 
-        AuthTokenResponse signInResponse =  testDataProvider.signIn(userName);
+        AuthTokenResponse signInResponse = testDataProvider.signIn(userName);
 
         validationHelper.verifySignInResponse(authTokenResponse, signInResponse);
 
@@ -230,4 +230,33 @@ public class StoreTesting extends BaseTestClass {
         assert authTokenResponse.getUsername().equals(userName);
         assert authTokenResponse.getAccessToken() != null;
     }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store checkout",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test gate user whose email not validate",
+            steps = {
+                    "1. Create user",
+                    "2. Sign in",
+                    "3. Attempt to make free purchase",
+                    "4. Verify response code is 415",
+                    "5. Attempt to get user profile",
+                    "6. Verify response code is 415",
+                    "7. Attempt to update billing profile",
+                    "8. Verify response code is 415",
+            }
+    )
+    @Test
+    public void testStoreEmailValidationGate() throws Exception {
+        String userName = RandomFactory.getRandomStringOfAlphabet(6);
+        String password = "Test1234";
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(userName);
+    }
+
+
+
+
 }

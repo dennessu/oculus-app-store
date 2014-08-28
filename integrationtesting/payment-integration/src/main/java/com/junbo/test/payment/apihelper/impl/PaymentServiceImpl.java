@@ -44,6 +44,10 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
         return instance;
     }
 
+    private PaymentServiceImpl() {
+        componentType = ComponentType.PAYMENT;
+    }
+
     @Override
     public String postPaymentInstrument(PaymentInstrument paymentInstrument) throws Exception {
         return postPaymentInstrument(paymentInstrument, 200);
@@ -57,19 +61,23 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
     @Override
     public String getPaymentInstrumentByPaymentId(
             String paymentInstrumentId, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.GET, paymentInstrumentUrl +
-                "/payment-instruments/" + paymentInstrumentId);
+        oAuthTokenClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.PAYMENT);
+        String responseBody = restApiCall(HTTPMethod.GET, paymentInstrumentUrl + "/payment-instruments/" + paymentInstrumentId, null, expectedResponseCode, true);
 
-        PaymentInstrument paymentInstrumentResult = new JsonMessageTranscoder().decode(
-                new TypeReference<PaymentInstrument>() {
-                }, responseBody
-        );
+        if (expectedResponseCode == 200) {
+            PaymentInstrument paymentInstrumentResult = new JsonMessageTranscoder().decode(
+                    new TypeReference<PaymentInstrument>() {
+                    }, responseBody
+            );
 
-        paymentInstrumentId = IdConverter.idToUrlString(
-                PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
-        Master.getInstance().addPaymentInstrument(paymentInstrumentId, paymentInstrumentResult);
+            paymentInstrumentId = IdConverter.idToUrlString(
+                    PaymentInstrumentId.class, paymentInstrumentResult.getId().longValue());
+            Master.getInstance().addPaymentInstrument(paymentInstrumentId, paymentInstrumentResult);
 
-        return paymentInstrumentId;
+            return paymentInstrumentId;
+        }
+
+        return null;
 
     }
 
@@ -153,7 +161,7 @@ public class PaymentServiceImpl extends HttpClientBase implements PaymentService
 
     @Override
     public void deletePaymentInstrument(String uid, String paymentId) throws Exception {
-        this.deletePaymentInstrument(uid, paymentId, 204);
+        this.deletePaymentInstrument(uid, paymentId, 200);
     }
 
     @Override

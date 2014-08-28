@@ -84,6 +84,10 @@ public abstract class HttpClientBase {
         return restApiCall(httpMethod, restUrl, requestBody, false);
     }
 
+    protected <T> String restApiCall(HTTPMethod httpMethod, String restUrl, boolean isServiceScope) throws Exception {
+        return restApiCall(httpMethod, restUrl, null, isServiceScope);
+    }
+
     protected <T> String restApiCall(HTTPMethod httpMethod, String restUrl, T t, boolean isServiceScope)
             throws Exception {
         byte[] bytes = new JsonMessageTranscoder().encode(t);
@@ -185,7 +189,7 @@ public abstract class HttpClientBase {
                     logger.logInfo(String.format("http response code: %s", nettyResponse.getStatusCode()));
 
                     String redirectUrl = nettyResponse.getHeaders().get("Location").get(0);
-                    if(redirectUrl.contains("cid")||redirectUrl.contains("email-verify-success")){
+                    if (redirectUrl.contains("cid") || redirectUrl.contains("email-verify-success")) {
                         return redirectUrl;
                     }
                     req = new RequestBuilder("GET")

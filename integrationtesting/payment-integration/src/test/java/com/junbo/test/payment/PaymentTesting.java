@@ -66,7 +66,7 @@ public class PaymentTesting extends BaseTestClass {
             features = "POST /users/{userId}/payment-instruments",
             component = Component.Payment,
             owner = "Yunlongzhao",
-            status = Status.Enable,
+            status = Status.Disable,
             description = "post credit card",
             steps = {
                     "1. Create an user",
@@ -124,7 +124,7 @@ public class PaymentTesting extends BaseTestClass {
     )
     @Test
     public void testGetPaymentInstrumentByInvalidId() throws Exception {
-        testDataProvider.getPaymentInstrument("0123", 404);
+        testDataProvider.getPaymentInstrument("1355efb43c9f", 412);
     }
 
 
@@ -287,7 +287,7 @@ public class PaymentTesting extends BaseTestClass {
             component = Component.Payment,
             environment = "release",
             owner = "Yunlongzhao",
-            status = Status.Enable,
+            status = Status.Disable,
             description = "prepare onebox user data",
             steps = {
                     "1. Prepare 10 users",
