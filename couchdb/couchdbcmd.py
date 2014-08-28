@@ -31,6 +31,7 @@ def readParams():
     def printValidCommands():
         info("Available Commands: ")
         info(
+            "   genkey                  Generate an API key of cloudant\n" +
             "   listdbs                 Show all databases\n" +
             "   dumpdbs                 Show all databases and the views\n" +
             "   createdbs               Create all databases\n" +
@@ -80,7 +81,7 @@ def readParams():
 
     # Validate params
     command = command.lower()
-    if command not in set(["listdbs", "dumpdbs", "createdbs", "dropdbs", "purgedbs", "diffdbs"]):
+    if command not in set(["genkey", "listdbs", "dumpdbs", "createdbs", "dropdbs", "purgedbs", "diffdbs"]):
         printValidCommands()
         error("Invalid command: " + command)
 
@@ -100,13 +101,20 @@ def readParams():
     verbose("Read parameters: (command, env, dbPrefix) = (%s, %s, %s)" % (command, env, dbPrefix))
     return (command, env, dbPrefix)
 
+dbsConfigKey = 'dbs'
+apiKeysConfigKey = 'apikeys'
+authDbsConfigKey = 'authdbs'
 def readConfig(env):
+    global dbsConfigKey, apiKeysConfigKey, authDbsConfigKey
     verbose("Reading configurations for " + env)
     envConf = readJsonFile("conf/%s.json" % env)
     finalEnvConf = {}
+    finalEnvConf[dbsConfigKey] = {}
+    finalEnvConf[apiKeysConfigKey] = envConf[apiKeysConfigKey] if apiKeysConfigKey in envConf else None
+    finalEnvConf[authDbsConfigKey] = envConf[authDbsConfigKey] if authDbsConfigKey in envConf else None
 
     encryptedSuffix = ".encrypted"
-    for k, v in envConf.items():
+    for k, v in envConf[dbsConfigKey].items():
         if isinstance(v, basestring):
             v = [ v ]
 
@@ -117,12 +125,12 @@ def readConfig(env):
             key = k
             isEncrypted = False
 
-        finalEnvConf[key] = []
+        finalEnvConf[dbsConfigKey][key] = []
         for item in v:
             if isEncrypted:
-                finalEnvConf[key].append(decrypt(item))
+                finalEnvConf[dbsConfigKey][key].append(decrypt(item))
             else:
-                finalEnvConf[key].append(item)
+                finalEnvConf[dbsConfigKey][key].append(item)
 
     return finalEnvConf
 
@@ -134,6 +142,8 @@ def readDbs():
 def executeDbCommand(command, env, dbPrefix):
     envConf = readConfig(env)
 
+    if command == "genkey":
+        genkey(envConf)
     if command == "listdbs":
         listdbs(envConf, dbPrefix)
     elif command == "dumpdbs":
@@ -145,25 +155,34 @@ def executeDbCommand(command, env, dbPrefix):
     elif command == "purgedbs":
         purgedbs(envConf, dbPrefix)
 
+def genkey(envConf):
+    global dbsConfigKey
+    url = envConf[dbsConfigKey]["cloudant"][0]
+    credentials = re.compile("https://(.*)@.*\.cloudant\.com").match(url).group(1)
+    result = curlJson("https://%s@cloudant.com/api/generate_api_key" % credentials, method = 'POST')
+    print json.dumps(result, indent = 2)
+
 def listdbs(envConf, dbPrefix):
+    global dbsConfigKey
     if not dbPrefix:
         dbPattern = '.*'
     else:
         dbPattern = dbPrefix
 
     result = []
-    for key, list in envConf.items():
+    for key, list in envConf[dbsConfigKey].items():
         for url in list:
             result.extend([db for db in curlJson(url + "/_all_dbs") if re.match(dbPattern, db) and not db.startswith("_")])
 
     print string.join(sorted(result), "\r\n")
 
 def dumpdbs(envConf, dbPrefix):
+    global dbsConfigKey
     if not dbPrefix: dbPrefix = ''
     dbs = readDbs()
 
     result = {}
-    for key, list in envConf.items():
+    for key, list in envConf[dbsConfigKey].items():
         for url in list:
             if not key in dbs:
                 continue
@@ -180,11 +199,13 @@ def dumpdbs(envConf, dbPrefix):
 
     print json.dumps(result, indent = 2, sort_keys = True)
 
+allRoles = ["_reader","_writer","_admin","_replicator"]
 def createdbs(envConf, dbPrefix):
+    global allRoles, dbsConfigKey, apiKeysConfigKey, authDbsConfigKey
     if not dbPrefix: dbPrefix = ''
     dbs = readDbs()
 
-    for key, list in envConf.items():
+    for key, list in envConf[dbsConfigKey].items():
         index = -1
         for url in list:
             index += 1
@@ -197,8 +218,49 @@ def createdbs(envConf, dbPrefix):
                 if not fullDbName in existingDbs:
                     info("Creating DB '%s' in '%s[%d]'" % (fullDbName, key, index))
                     curl(url + "/" + fullDbName, "PUT")
-
+                else:
+                    info("DB '%s' in '%s[%d]' exists" % (fullDbName, key, index))
+                
                 createviews(dbDef, url, fullDbName)
+                grantPermissions(envConf[apiKeysConfigKey], envConf[authDbsConfigKey], url, fullDbName)
+            
+def grantPermissions(apikeyConf, authdbs, url, fullDbName):
+    if not apikeyConf:
+        return
+    if isCloudantUrl(url):
+        for conf in apikeyConf:
+            apikey = conf['key']
+            permissionUrl = url + "/%s/_security" % fullDbName
+            username = parseUsername(url)
+            permissions = curlJson(permissionUrl)
+            if not permissions:
+                permissions['cloudant'] = {}
+                permissions['cloudant'][username] = allRoles
+                permissions['_id'] = "_security"
+            permissions['cloudant'][apikey] = [role for role in conf['roles']]
+            if authdbs and username in authdbs:
+                for authdb in authdbs[username]:
+                    info("Granting permissions for APIKEY '%s' of DB '%s' in '%s'" % (apikey, fullDbName, authdb))
+                    grantPermission(permissionUrl.replace(username + '.', authdb + '.'), permissions)
+            else:
+                info("Granting permissions for APIKEY '%s' of DB '%s'" % (apikey, fullDbName))
+                grantPermission(permissionUrl, permissions)
+
+def grantPermission(permissionUrl, permissions):
+    result = curlJson(permissionUrl, "PUT", json.dumps(permissions))
+    if "ok" not in result or result["ok"] is not True:
+        raise Exception(json.dumps(result, indent = 2))
+
+def isCloudantUrl(url):
+    return url.find("cloudant.com") != -1
+
+userNamePattern = re.compile("https://(.*):.*@.*\.cloudant\.com")
+def parseUsername(url):
+    global userNamePattern
+    match = userNamePattern.match(url)
+    if not match:
+        return None
+    return match.group(1)
 
 def createviews(dbDef, url, fullDbName):
     viewsResp, status, reason = curlRaw(url + "/" + fullDbName + "/_design/views")
@@ -222,10 +284,11 @@ def createviews(dbDef, url, fullDbName):
         curl(url + "/" + fullDbName + "/_design/views", "PUT", viewsRequestStr)
 
 def dropdbs(envConf, dbPrefix):
+    global dbsConfigKey
     if not dbPrefix: dbPrefix = ''
     dbs = readDbs()
 
-    for key, list in envConf.items():
+    for key, list in envConf[dbsConfigKey].items():
         index = -1
         for url in list:
             index += 1
@@ -241,10 +304,11 @@ def dropdbs(envConf, dbPrefix):
                     curl(url + "/" + fullDbName, "DELETE")
 
 def purgedbs(envConf, dbPrefix):
+    global dbsConfigKey
     if not dbPrefix: dbPrefix = ''
     dbs = readDbs()
 
-    for key, list in envConf.items():
+    for key, list in envConf[dbsConfigKey].items():
         index = -1
         for url in list:
             index += 1
