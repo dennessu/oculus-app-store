@@ -1,0 +1,20 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile junboProject(':langur-core')
+    compile junboProject(':common-lib')
+
+    compile (libraries.rs_api)
+    compile (libraries.guava)
+
+    compile (libraries.spring_beans)
+    compile (libraries.spring_context)
+
+    compile (libraries.jackson_annotations)
+    compile (libraries.jackson_databind)
+
+    processor junboProject(':langur-processor')
+    processor (libraries.log4j)
+}
+
+

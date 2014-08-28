@@ -168,7 +168,7 @@ public class OrderStatusTesting extends BaseOrderTestClass {
             features = "GET /Orders?userId={key}",
             component = Component.Order,
             owner = "ZhaoYunlong",
-            status = Status.Enable,
+            status = Status.Manual,
             description = "Test order status update - Price rating changed before payment charged",
             steps = {
                     "1. Post a new user",

@@ -12,6 +12,8 @@ import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.Entities.enums.Country;
 import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 
+import java.util.List;
+
 /**
  * Created by weiyu_000 on 7/9/14.
  */
@@ -50,5 +52,7 @@ public interface OAuthService {
     String getEmailVerifyLink(String cid) throws Exception;
 
     void accessEmailVerifyLink(String emailVerifyLink) throws Exception;
+
+    List<String> getEmailVerifyLink(String uid, String emailAddress) throws Exception;
 
 }

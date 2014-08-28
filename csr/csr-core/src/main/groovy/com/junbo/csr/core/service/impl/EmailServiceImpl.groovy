@@ -14,13 +14,14 @@ import com.junbo.email.spec.model.QueryParam
 import com.junbo.email.spec.resource.EmailResource
 import com.junbo.email.spec.resource.EmailTemplateResource
 import com.junbo.identity.spec.v1.model.User
-import com.junbo.identity.spec.v1.model.UserLoginName
+import com.junbo.identity.spec.v1.model.UserName
 import com.junbo.identity.spec.v1.model.UserPersonalInfo
 import com.junbo.identity.spec.v1.option.model.UserPersonalInfoGetOptions
 import com.junbo.identity.spec.v1.resource.UserPersonalInfoResource
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Required
+import org.springframework.util.StringUtils
 
 /**
  * Created by haomin on 7/19/14.
@@ -63,7 +64,7 @@ class EmailServiceImpl implements EmailService{
                     templateId: template.id as EmailTemplateId,
                     recipients: [recipient].asList(),
                     replacements: [
-                            'name': getUserName(user).get(),
+                            'name': getName(user).get(),
                             'link': link
                     ]
             )
@@ -79,13 +80,19 @@ class EmailServiceImpl implements EmailService{
         }
     }
 
-    private Promise<String> getUserName(User user) {
-        if (user.username == null) {
-            return Promise.pure(null)
+    private Promise<String> getName(User user) {
+        if (user.name == null) {
+            return Promise.pure('')
         } else {
-            return userPersonalInfoResource.get(user.username, new UserPersonalInfoGetOptions()).then { UserPersonalInfo userPersonalInfo ->
-                UserLoginName userLoginName = (UserLoginName)jsonNodeToObj(userPersonalInfo.value, UserLoginName)
-                return Promise.pure(userLoginName.userName)
+            return userPersonalInfoResource.get(user.name, new UserPersonalInfoGetOptions()).then { UserPersonalInfo userPersonalInfo ->
+                if (userPersonalInfo == null) {
+                    return Promise.pure('')
+                }
+
+                UserName userName = (UserName)jsonNodeToObj(userPersonalInfo.value, UserName)
+                String firstName = StringUtils.isEmpty(userName.givenName) ? "" : userName.givenName
+                String lastName = StringUtils.isEmpty(userName.familyName) ? "" : userName.familyName
+                return Promise.pure(firstName + ' ' + lastName)
             }
         }
     }

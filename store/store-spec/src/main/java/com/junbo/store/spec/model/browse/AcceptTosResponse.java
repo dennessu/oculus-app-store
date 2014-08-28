@@ -6,7 +6,7 @@
 package com.junbo.store.spec.model.browse;
 
 /**
- * The GetTocRequest class.
+ * The AcceptTosResponse class.
  */
 public class AcceptTosResponse {
 }

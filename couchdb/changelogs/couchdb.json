@@ -243,7 +243,13 @@
             }
         }
     },
-    "tos": {}, 
+    "tos": {
+        "views": {
+            "by_title" : {
+                "map": "function(doc) { emit(doc.title, doc._id)}"
+            }
+        }
+    },
     "unique": {
       "views": {
         "by_doc": {

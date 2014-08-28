@@ -1,0 +1,5 @@
+{
+    "name": "ewallet.service",
+    "description": "Scope for the service account to call the ewallet service.",
+    "tfaRequired": false
+}

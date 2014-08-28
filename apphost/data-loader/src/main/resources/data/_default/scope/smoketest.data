@@ -1,0 +1,5 @@
+{
+    "name": "smoketest",
+    "description": "Scope to get the smoketest information.",
+    "tfaRequired": false
+}

@@ -22,6 +22,8 @@ import com.junbo.store.spec.model.Challenge
 import com.junbo.store.spec.model.ChallengeAnswer
 import com.junbo.store.spec.model.billing.BillingProfileGetRequest
 import com.junbo.store.spec.model.billing.InstrumentUpdateRequest
+import com.junbo.store.spec.model.browse.AcceptTosRequest
+import com.junbo.store.spec.model.browse.DetailsRequest
 import com.junbo.store.spec.model.identity.UserProfileUpdateRequest
 import com.junbo.store.spec.model.identity.UserProfileUpdateResponse
 import com.junbo.store.spec.model.login.*
@@ -153,8 +155,12 @@ class RequestValidator {
             if (mailPIICreated) {
                 return Promise.pure(new Challenge(type: Constants.ChallengeType.EMAIL_VERIFICATION))
             } else {
-                return resourceContainer.emailVerifyEndpoint.sendVerifyEmail('en_US', 'US', user.getId(), request.userProfile?.email?.value).then {
-                    return Promise.pure(new Challenge(type: Constants.ChallengeType.EMAIL_VERIFICATION))
+                // todo:    Need to take tokenProcess as one single object
+                return tokenProcessor.toTokenObject(request.userProfileUpdateToken, UpdateProfileState).then { UpdateProfileState state ->
+                    // Need to resolve this locale and country? to User's preferredLocale or COR?
+                    return resourceContainer.emailVerifyEndpoint.sendVerifyEmail('en_US', 'US', user.getId(), state.emailPIIId).then {
+                        return Promise.pure(new Challenge(type: Constants.ChallengeType.EMAIL_VERIFICATION))
+                    }
                 }
             }
         }
@@ -421,9 +427,23 @@ class RequestValidator {
         }
     }
 
+    public void validateAcceptTosRequest(AcceptTosRequest request) {
+        if (request == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
+        }
+        notEmpty(request.tosId, 'tosId')
+    }
+
+    public void validateDetailsRequest(DetailsRequest request) {
+        if (request == null) {
+            throw AppCommonErrors.INSTANCE.requestBodyRequired().exception()
+        }
+        notEmpty(request.itemId, 'itemId')
+    }
+
 
     private Promise<Boolean> isMailChanged(UserProfileUpdateRequest request, User currentUser) {
-        if (org.apache.commons.lang3.StringUtils.isEmpty(request.userProfile?.email?.value)) {
+        if (StringUtils.isEmpty(request.userProfile?.email?.value)) {
             return Promise.pure(false)
         }
 

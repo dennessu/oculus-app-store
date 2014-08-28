@@ -1,0 +1,10 @@
+{
+    "title": "purchase_Tos",
+    "version":"1.0",
+    "content": "purchase_Content",
+    "type": "TOS",
+    "countries": [
+        "US",
+        "CN"
+    ]
+}

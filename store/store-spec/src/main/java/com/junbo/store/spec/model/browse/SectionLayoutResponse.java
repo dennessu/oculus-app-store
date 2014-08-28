@@ -25,7 +25,7 @@ public class SectionLayoutResponse {
 
     private List<Item> items;
 
-    private PageMeta next;
+    private ListResponse.NextOption next;
 
     public List<SectionInfo> getBreadcrumbs() {
         return breadcrumbs;
@@ -67,11 +67,11 @@ public class SectionLayoutResponse {
         this.items = items;
     }
 
-    public PageMeta getNext() {
+    public ListResponse.NextOption getNext() {
         return next;
     }
 
-    public void setNext(PageMeta next) {
+    public void setNext(ListResponse.NextOption next) {
         this.next = next;
     }
 }

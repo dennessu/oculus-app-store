@@ -1,5 +1,5 @@
 {
     "name": "entitlement",
-    "description": "Scope to call the entitlement.",
+    "description": "Client scope for entitlement resource",
     "tfaRequired": false
 }

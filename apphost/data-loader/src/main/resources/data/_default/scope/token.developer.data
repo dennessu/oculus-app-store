@@ -1,0 +1,5 @@
+{
+    "name": "token.developer",
+    "description": "Scope for the developer to call the token service",
+    "tfaRequired": false
+}

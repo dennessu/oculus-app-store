@@ -1,9 +1,12 @@
-package com.junbo.store.rest.utils
+package com.junbo.store.common.utils
 
 import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.apache.commons.lang3.StringUtils
 
+/**
+ * The CommonUtils class.
+ */
 @CompileStatic
 class CommonUtils {
 
@@ -15,12 +18,12 @@ class CommonUtils {
         return "[${StringUtils.join(values, ',')}]"
     }
 
-    public static Promise<Void> iteratePageRead(Closure<Promise> pageReadFunc) {
-        pageReadFunc.call().then { Boolean moreItem ->
-            if (!moreItem) {
-                return Promise.pure(null)
+    public static Promise<Void> loop(Closure<Promise> func) {
+        func.call().then { Object obj ->
+            if (obj == Promise.BREAK) {
+                return Promise.pure()
             }
-            return iteratePageRead(pageReadFunc)
+            return loop(func)
         }
     }
 }

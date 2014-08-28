@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class OrderServiceImpl extends HttpClientBase implements OrderService {
 
-    private static String orderUrl = ConfigHelper.getSetting("defaultCommerceEndpointV1");
+    private static String orderUrl = ConfigHelper.getSetting("defaultCommerceEndpoint") + "/orders/";
 
     private LogHelper logger = new LogHelper(OrderServiceImpl.class);
 
@@ -93,7 +93,7 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
 
     @Override
     public String postOrder(Order order, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, orderUrl + "orders/", order, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.POST, orderUrl, order, expectedResponseCode);
 
         Order orderResult = new JsonMessageTranscoder().decode(
                 new TypeReference<Order>() {
@@ -123,7 +123,7 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
     @Override
     public String getOrderByOrderId(String orderId, int expectedResponseCode) throws Exception {
 
-        String responseBody = restApiCall(HTTPMethod.GET, orderUrl + "orders/" + orderId, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.GET, orderUrl + orderId, expectedResponseCode);
 
         Order orderResult = new JsonMessageTranscoder().decode(
                 new TypeReference<Order>() {
@@ -144,7 +144,7 @@ public class OrderServiceImpl extends HttpClientBase implements OrderService {
     public String updateOrder(Order order, int expectedResponseCode) throws Exception {
         String orderId = IdConverter.idToHexString(order.getId());
 
-        String responseBody = restApiCall(HTTPMethod.PUT, orderUrl + "orders/" + orderId, order, expectedResponseCode);
+        String responseBody = restApiCall(HTTPMethod.PUT, orderUrl + orderId, order, expectedResponseCode);
 
         if (expectedResponseCode == 200) {
             Order orderResult = new JsonMessageTranscoder().decode(

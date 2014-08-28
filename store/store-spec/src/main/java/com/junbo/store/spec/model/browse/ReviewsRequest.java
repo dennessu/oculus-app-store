@@ -18,7 +18,7 @@ public class ReviewsRequest {
     private ItemId itemId;
 
     @QueryParam("cursor")
-    private Integer cursor;
+    private String cursor;
 
     @QueryParam("count")
     private Integer count;
@@ -31,11 +31,11 @@ public class ReviewsRequest {
         this.itemId = itemId;
     }
 
-    public Integer getCursor() {
+    public String getCursor() {
         return cursor;
     }
 
-    public void setCursor(Integer cursor) {
+    public void setCursor(String cursor) {
         this.cursor = cursor;
     }
 

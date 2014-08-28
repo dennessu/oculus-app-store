@@ -16,8 +16,6 @@ public class PurchaseState {
 
     private OrderId order;
 
-    private Boolean prepareChallengePassed;
-
     private String country;
 
     private String locale;
@@ -26,20 +24,14 @@ public class PurchaseState {
 
     private Date timestamp;
 
+    private Boolean tosAccept;
+
     public OrderId getOrder() {
         return order;
     }
 
     public void setOrder(OrderId order) {
         this.order = order;
-    }
-
-    public Boolean getPrepareChallengePassed() {
-        return prepareChallengePassed;
-    }
-
-    public void setPrepareChallengePassed(Boolean prepareChallengePassed) {
-        this.prepareChallengePassed = prepareChallengePassed;
     }
 
     public Date getTimestamp() {
@@ -72,5 +64,13 @@ public class PurchaseState {
 
     public void setOffer(String offer) {
         this.offer = offer;
+    }
+
+    public Boolean getTosAccept() {
+        return tosAccept;
+    }
+
+    public void setTosAccept(Boolean tosAccept) {
+        this.tosAccept = tosAccept;
     }
 }

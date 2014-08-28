@@ -20,6 +20,7 @@ import com.junbo.langur.core.promise.Promise
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.util.StringUtils
 
 /**
  * Created by liangfu on 4/9/14.
@@ -152,6 +153,10 @@ class TosResourceImpl implements TosResource {
     }
 
     private Promise<List<Tos>> search(TosListOptions listOptions) {
-        return tosRepository.searchAll(listOptions.limit, listOptions.offset)
+        if (!StringUtils.isEmpty(listOptions.title)) {
+            return tosRepository.searchByTitle(listOptions.title, listOptions.limit, listOptions.offset)
+        } else {
+            return tosRepository.searchAll(listOptions.limit, listOptions.offset)
+        }
     }
 }

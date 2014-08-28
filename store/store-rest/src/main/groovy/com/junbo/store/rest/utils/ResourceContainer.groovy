@@ -1,8 +1,6 @@
 package com.junbo.store.rest.utils
-import com.junbo.catalog.spec.resource.ItemResource
-import com.junbo.catalog.spec.resource.ItemRevisionResource
-import com.junbo.catalog.spec.resource.OfferResource
-import com.junbo.catalog.spec.resource.OfferRevisionResource
+
+import com.junbo.catalog.spec.resource.*
 import com.junbo.crypto.spec.resource.CryptoResource
 import com.junbo.crypto.spec.resource.ItemCryptoResource
 import com.junbo.entitlement.spec.resource.EntitlementResource
@@ -13,10 +11,13 @@ import com.junbo.oauth.spec.endpoint.TokenEndpoint
 import com.junbo.oauth.spec.endpoint.TokenInfoEndpoint
 import com.junbo.order.spec.resource.OrderResource
 import com.junbo.payment.spec.resource.PaymentInstrumentResource
+import com.junbo.rating.spec.resource.RatingResource
+import com.junbo.store.spec.resource.external.CaseyResource
 import groovy.transform.CompileStatic
 import org.springframework.stereotype.Component
 
 import javax.annotation.Resource
+
 /**
  * Class to hold all the other sources IAP depends on.
  */
@@ -86,4 +87,28 @@ class ResourceContainer {
 
     @Resource(name='store.localeClientProxy')
     LocaleResource localeResource
+
+    @Resource(name = 'store.tosResourceClientProxy')
+    TosResource tosResource
+
+    @Resource(name = 'store.userTosAgreementResourceClientProxy')
+    UserTosAgreementResource userTosAgreementResource
+
+    @Resource(name='store.organizationClientProxy')
+    OrganizationResource organizationResource
+
+    @Resource(name = 'store.offerAttributeClient')
+    OfferAttributeResource offerAttributeResource
+
+    @Resource(name = 'store.itemAttributeClient')
+    ItemAttributeResource itemAttributeResource
+
+    @Resource(name = 'store.priceTierClient')
+    PriceTierResource priceTierResource
+
+    @Resource(name = 'store.ratingClient')
+    RatingResource ratingResource
+
+    @Resource(name='store.caseyClientProxy')
+    CaseyResource caseyResource
 }

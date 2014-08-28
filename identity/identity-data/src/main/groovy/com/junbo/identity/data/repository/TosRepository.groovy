@@ -20,4 +20,7 @@ import groovy.transform.CompileStatic
 interface TosRepository extends BaseRepository<Tos, TosId> {
     @ReadMethod
     Promise<List<Tos>> searchAll(Integer limit, Integer offset)
+
+    @ReadMethod
+    Promise<List<Tos>> searchByTitle(String title, Integer limit, Integer offset)
 }

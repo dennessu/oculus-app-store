@@ -5,7 +5,9 @@
  */
 package com.junbo.test.common.apihelper.oauth.impl;
 
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.oauth.spec.model.AccessTokenResponse;
 import com.junbo.oauth.spec.model.TokenInfo;
@@ -20,10 +22,8 @@ import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.test.common.blueprint.Master;
 import com.ning.http.client.FluentCaseInsensitiveStringsMap;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.net.URLEncoder;
+import java.util.*;
 
 /**
  * Created by weiyu_000 on 7/9/14.
@@ -37,6 +37,8 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
 
     private boolean needAuthHeader;
     private boolean needOverrideRequestEntity;
+
+    private ComponentType componentType;
 
     public static synchronized OAuthService getInstance() {
         if (instance == null) {
@@ -103,6 +105,10 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
             case DRM:
                 formParams.put("scope", "drm");
                 clientId = "client";
+                break;
+            case SMOKETEST:
+                formParams.put("scope","smoketest");
+                clientId = "smoketest";
                 break;
             default:
                 formParams.put("scope", componentType.toString() + ".service");
@@ -324,6 +330,17 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
         needOverrideRequestEntity = false;
         emailVerifyLink = emailVerifyLink.substring(emailVerifyLink.indexOf("verify"));
         restApiCall(HTTPMethod.GET, oauthUrl + "/" + emailVerifyLink, 302);
+    }
+
+    @Override
+    public List<String> getEmailVerifyLink(String uid, String emailAddress) throws Exception {
+        needAuthHeader = true;
+        needOverrideRequestEntity = false;
+        componentType = ComponentType.SMOKETEST;
+        String url = String.format(oauthUrl + "/verify-email/test?userId=%s&locale=en_US&email=%s", uid, URLEncoder.encode(emailAddress, "UTF-8"));
+        String linkArray = restApiCall(HTTPMethod.GET, url, null, true);
+        List<String> links = ObjectMapperProvider.instance().readValue(linkArray, TypeFactory.defaultInstance().constructCollectionType(List.class, String.class));
+        return links;
     }
 
 }

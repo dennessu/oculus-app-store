@@ -26,6 +26,30 @@
         <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
     </bean>
 
+    <bean id="store.offerAttributeClient" class="com.junbo.catalog.spec.resource.proxy.OfferAttributeResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.catalog.url}"/>
+        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+    </bean>
+
+    <bean id="store.itemAttributeClient" class="com.junbo.catalog.spec.resource.proxy.ItemAttributeResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.catalog.url}"/>
+        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+    </bean>
+
+    <bean id="store.priceTierClient" class="com.junbo.catalog.spec.resource.proxy.PriceTierResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.catalog.url}"/>
+        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+    </bean>
+
+    <bean id="store.ratingClient" class="com.junbo.rating.spec.resource.proxy.RatingResourceClientProxy"
+          parent="baseClientProxy">
+        <property name="target" value="${clientproxy.rating.url}"/>
+        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+    </bean>
+
     <bean id="store.offerRevisionClient" class="com.junbo.catalog.spec.resource.proxy.OfferRevisionResourceClientProxy"
           parent="baseClientProxy">
         <property name="target" value="${clientproxy.catalog.url}"/>
@@ -110,6 +134,22 @@
         <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
     </bean>
 
+    <bean id="store.organizationClientProxy"
+          class="com.junbo.identity.spec.v1.resource.proxy.OrganizationResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+    </bean>
+
+    <bean id="store.tosResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.TosResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+    </bean>
+
+    <bean id="store.userTosAgreementResourceClientProxy" class="com.junbo.identity.spec.v1.resource.proxy.UserTosAgreementResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+    </bean>
+
     <bean id="store.tokenEndpointClientProxy"
           class="com.junbo.oauth.spec.endpoint.proxy.TokenEndpointClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.oauth.url}"/>
@@ -137,6 +177,17 @@
           class="com.junbo.identity.spec.v1.resource.proxy.LocaleResourceClientProxy" parent="baseClientProxy">
         <property name="target" value="${clientproxy.identity.url}"/>
         <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+    </bean>
+
+    <bean id="store.userTosAgreementClientProxy"
+          class="com.junbo.identity.spec.v1.resource.proxy.UserTosAgreementResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.identity.url}"/>
+        <property name="accessTokenProvider" ref="storeAccessTokenProvider"/>
+    </bean>
+
+    <bean id="store.caseyClientProxy"
+          class="com.junbo.store.spec.resource.external.proxy.CaseyResourceClientProxy" parent="baseClientProxy">
+        <property name="target" value="${clientproxy.casey.url}"/>
     </bean>
 
 </beans>

@@ -5,13 +5,10 @@
  */
 package com.junbo.test.oauth;
 
-import com.junbo.common.id.UserId;
 import com.junbo.oauth.spec.model.AccessTokenResponse;
 import com.junbo.oauth.spec.model.TokenInfo;
 import com.junbo.oauth.spec.model.ViewModel;
 import com.junbo.test.common.*;
-import com.junbo.test.common.libs.IdConverter;
-import com.junbo.test.common.libs.ShardIdHelper;
 import com.junbo.test.identity.Identity;
 import org.apache.http.Header;
 import org.apache.http.NameValuePair;

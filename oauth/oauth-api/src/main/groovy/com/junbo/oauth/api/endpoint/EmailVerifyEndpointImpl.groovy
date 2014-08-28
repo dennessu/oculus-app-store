@@ -10,6 +10,7 @@ import com.junbo.common.error.AppCommonErrors
 import com.junbo.common.id.UserId
 import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.common.json.ObjectMapperProvider
+import com.junbo.csr.spec.def.CsrLogActionType
 import com.junbo.csr.spec.model.CsrLog
 import com.junbo.csr.spec.resource.CsrLogResource
 import com.junbo.identity.spec.v1.model.Email
@@ -31,8 +32,8 @@ import com.junbo.oauth.spec.endpoint.EmailVerifyEndpoint
 import com.junbo.oauth.spec.model.EmailVerifyCode
 import com.junbo.oauth.spec.model.LoginState
 import com.junbo.oauth.spec.param.OAuthParameters
-import com.junbo.csr.spec.def.CsrLogActionType
 import groovy.transform.CompileStatic
+import org.apache.commons.collections.CollectionUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Required
@@ -41,6 +42,7 @@ import org.springframework.util.StringUtils
 
 import javax.ws.rs.core.Response
 import javax.ws.rs.core.UriBuilder
+
 /**
  * EmailVerifyEndpointImpl.
  */
@@ -141,55 +143,58 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
         return userResource.get(new UserId(emailVerifyCode.userId), new UserGetOptions()).recover { Throwable e ->
             return handleException(e)
         }.then { User user ->
-            UserPersonalInfoLink emailLink = user.emails.find { UserPersonalInfoLink link -> link.isDefault }
-            Assert.notNull(emailLink, 'emailLink is null')
-
-            return userPersonalInfoResource.get(emailLink.value as UserPersonalInfoId,
-                    new UserPersonalInfoGetOptions()).recover { Throwable e ->
-                return handleException(e)
-            }.then { UserPersonalInfo emailPii ->
+            return getTargetValidMailPII(user, emailVerifyCode).then { UserPersonalInfo emailPii ->
                 Email email = ObjectMapperProvider.instance().treeToValue(emailPii.value, Email)
 
-                if (email.info == emailVerifyCode.email) {
-                    emailPii.lastValidateTime = new Date()
-                    emailPii.value = ObjectMapperProvider.instance().valueToTree(email)
-                    return userPersonalInfoResource.put(emailPii.id as UserPersonalInfoId, emailPii)
-                            .recover { Throwable e ->
-                        return handleException(e)
-                    }.then { UserPersonalInfo updatedPersonalInfo ->
-                        LoginState loginState = new LoginState(
-                                userId: emailVerifyCode.userId,
-                                lastAuthDate: new Date()
-                        )
+                emailPii.lastValidateTime = new Date()
+                emailPii.value = ObjectMapperProvider.instance().valueToTree(email)
+                return userPersonalInfoResource.put(emailPii.id as UserPersonalInfoId, emailPii)
+                        .recover { Throwable e ->
+                    return handleException(e)
+                }.then { UserPersonalInfo updatedPersonalInfo ->
+                    LoginState loginState = new LoginState(
+                            userId: emailVerifyCode.userId,
+                            lastAuthDate: new Date()
+                    )
 
-                        loginStateRepository.save(loginState)
+                    loginStateRepository.save(loginState)
 
-                        Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)
-                                .location(UriBuilder.fromUri(successRedirectUri).build())
+                    Response.ResponseBuilder responseBuilder = Response.status(Response.Status.FOUND)
+                            .location(UriBuilder.fromUri(successRedirectUri).build())
 
-                        CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_LOGIN_STATE, loginState.getId(), -1)
-                        CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_SESSION_STATE,
-                                loginState.sessionId, -1, false)
+                    CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_LOGIN_STATE, loginState.getId(), -1)
+                    CookieUtil.setCookie(responseBuilder, OAuthParameters.COOKIE_SESSION_STATE,
+                            loginState.sessionId, -1, false)
 
-                        return Promise.pure(responseBuilder.build())
-                    }
+                    return Promise.pure(responseBuilder.build())
                 }
             }
         }
     }
 
     @Override
-    Promise<Response> sendVerifyEmail(String locale, String country, UserId userId) {
-        return userService.sendVerifyEmail(userId, locale, country, null).then {
-            // audit csr action on success
-            csrActionAudit(userId)
-            return Promise.pure(Response.noContent().build())
+    Promise<List<String>> getVerifyEmailLink(UserId userId, String locale, String email) {
+        List<String> links = new ArrayList<>();
+        List<EmailVerifyCode> verifyCodeList = emailVerifyCodeRepository.getByUserIdEmail(userId.value, email)
+        if (CollectionUtils.isEmpty(verifyCodeList)) {
+            return Promise.pure(links)
+        }
+
+        return Promise.each(verifyCodeList) { EmailVerifyCode code ->
+            return userService.buildResponseLink(code).then { String link ->
+                if (!StringUtils.isEmpty(link)) {
+                    links.add(link)
+                }
+
+                return Promise.pure(null)
+            }
+        }.then {
+            return Promise.pure(links)
         }
     }
 
     @Override
-    Promise<Response> sendVerifyEmail(String locale, String country, UserId userId, String targetMail) {
-        // todo:    This should be only service api can access
+    Promise<Response> sendVerifyEmail(String locale, String country, UserId userId, UserPersonalInfoId targetMail) {
         return userService.sendVerifyEmail(userId, locale, country, targetMail, null).then {
             // audit csr action on success
             csrActionAudit(userId)
@@ -208,6 +213,42 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
         if (AuthorizeContext.hasScopes('csr') && AuthorizeContext.currentUserId != null) {
             String email = userService.getUserEmailByUserId(userId).get()
             csrLogResource.create(new CsrLog(userId: AuthorizeContext.currentUserId, regarding: 'Account', action: CsrLogActionType.VerificationEmailSent, property: email)).get()
+        }
+    }
+
+    private Promise<UserPersonalInfo> getTargetValidMailPII(User user, EmailVerifyCode verifyCode) {
+        if (verifyCode.targetMailId == null) {
+            // Need to load default email and check whether this is the same as verifyCode's email
+            UserPersonalInfoLink emailLink = user.emails.find { UserPersonalInfoLink link -> link.isDefault }
+            Assert.notNull(emailLink, 'emailLink is null')
+
+            return userPersonalInfoResource.get(emailLink.value as UserPersonalInfoId,
+                    new UserPersonalInfoGetOptions()).recover { Throwable e ->
+                return handleException(e)
+            }.then { UserPersonalInfo userPersonalInfo ->
+                checkMailValid(userPersonalInfo, verifyCode.email)
+
+                return Promise.pure(userPersonalInfo)
+            }
+        } else {
+            // Need to load target email and check whether this is consistent with verifyCode's email
+            return userPersonalInfoResource.get(new UserPersonalInfoId(verifyCode.targetMailId), new UserPersonalInfoGetOptions()).recover { Throwable e ->
+                return handleException(e)
+            }.then { UserPersonalInfo userPersonalInfo ->
+                checkMailValid(userPersonalInfo, verifyCode.email)
+
+                return Promise.pure(userPersonalInfo)
+            }
+        }
+    }
+
+    private void checkMailValid(UserPersonalInfo mailPII, String email) {
+        Assert.notNull(mailPII, 'default email is null')
+
+        Email emailObj = ObjectMapperProvider.instance().treeToValue(mailPII.value, Email)
+
+        if (emailObj.info != email) {
+            throw AppCommonErrors.INSTANCE.fieldInvalid('userId').exception()
         }
     }
 }

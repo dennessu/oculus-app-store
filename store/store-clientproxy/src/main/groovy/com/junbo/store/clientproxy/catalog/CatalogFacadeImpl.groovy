@@ -2,15 +2,19 @@ package com.junbo.store.clientproxy.catalog
 
 import com.junbo.catalog.spec.enums.ItemType
 import com.junbo.catalog.spec.enums.PriceType
+import com.junbo.catalog.spec.model.attribute.OfferAttribute
+import com.junbo.catalog.spec.model.attribute.OfferAttributesGetOptions
 import com.junbo.catalog.spec.model.offer.ItemEntry
 import com.junbo.catalog.spec.model.offer.OfferRevision
 import com.junbo.catalog.spec.model.offer.OfferRevisionGetOptions
 import com.junbo.catalog.spec.resource.ItemResource
+import com.junbo.catalog.spec.resource.OfferAttributeResource
 import com.junbo.catalog.spec.resource.OfferResource
 import com.junbo.catalog.spec.resource.OfferRevisionResource
 import com.junbo.common.enumid.LocaleId
 import com.junbo.common.model.Results
 import com.junbo.langur.core.promise.Promise
+import com.junbo.store.common.utils.CommonUtils
 import com.junbo.store.spec.model.catalog.Item
 import com.junbo.store.spec.model.catalog.Offer
 import com.junbo.store.spec.model.iap.IAPOfferGetRequest
@@ -34,6 +38,11 @@ class CatalogFacadeImpl implements CatalogFacade {
 
     @Resource(name = 'store.offerRevisionClient')
     OfferRevisionResource offerRevisionResource
+
+    @Resource(name = 'store.offerAttributeClient')
+    OfferAttributeResource offerAttributeResource
+
+    private Map<String, OfferAttribute> nameToCategoryMap = null
 
     @Override
     Promise<Item> getItem(String itemId) {
@@ -93,6 +102,35 @@ class CatalogFacadeImpl implements CatalogFacade {
     @Override
     Promise<List<Offer>> getInAppOffers(Item hostItem, IAPOfferGetRequest request) {
         return null
+    }
+
+    @Override
+    Promise<String> getCategoryId(String categoryName) {
+        Promise.pure(null).then {
+            if (nameToCategoryMap != null) {
+                return Promise.pure()
+            }
+
+            nameToCategoryMap = [:]
+            OfferAttributesGetOptions options = new OfferAttributesGetOptions(attributeType: 'CATEGORY')
+            CommonUtils.loop {
+                offerAttributeResource.getAttributes(options).then { Results<OfferAttribute> results ->
+                    results.items.each { OfferAttribute offerAttribute ->
+                        String name = offerAttribute.locales['en_US']?.name
+                        if (name != null) {
+                            nameToCategoryMap[name] = offerAttribute
+                        }
+                    }
+                    if (results.items.isEmpty()) {
+                        return Promise.pure(Promise.BREAK)
+                    }
+                    options.nextCursor = options.cursor
+                    return Promise.pure()
+                }
+            }
+        }.then {
+            return Promise.pure(nameToCategoryMap[categoryName]?.id)
+        }
     }
 
     private void loadPriceInfo(OfferRevision offerRevision, Offer offer) {

@@ -5,6 +5,8 @@
  */
 package com.junbo.store.spec.model.browse.document;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.List;
 
 /**
@@ -12,16 +14,39 @@ import java.util.List;
  */
 public class SectionInfoNode {
 
-    private SectionInfo sectionInfo;
+    private String name;
+
+    private String category;
+
+    private String criteria;
+
+    @JsonIgnore
+    private Boolean ordered;
 
     private List<SectionInfoNode> children;
 
-    public SectionInfo getSectionInfo() {
-        return sectionInfo;
+    public String getName() {
+        return name;
     }
 
-    public void setSectionInfo(SectionInfo sectionInfo) {
-        this.sectionInfo = sectionInfo;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getCriteria() {
+        return criteria;
+    }
+
+    public void setCriteria(String criteria) {
+        this.criteria = criteria;
     }
 
     public List<SectionInfoNode> getChildren() {
@@ -30,5 +55,21 @@ public class SectionInfoNode {
 
     public void setChildren(List<SectionInfoNode> children) {
         this.children = children;
+    }
+
+    public Boolean getOrdered() {
+        return ordered;
+    }
+
+    public void setOrdered(Boolean ordered) {
+        this.ordered = ordered;
+    }
+
+    public SectionInfo getSectionInfo() {
+        SectionInfo sectionInfo = new SectionInfo();
+        sectionInfo.setCategory(category);
+        sectionInfo.setCriteria(criteria);
+        sectionInfo.setName(name);
+        return sectionInfo;
     }
 }

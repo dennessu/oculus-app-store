@@ -16,6 +16,7 @@ class EmailVerifyCode extends ResourceMeta<String> {
     String code
     String email
     Long userId
+    Long targetMailId
 
     @Override
     String getId() {

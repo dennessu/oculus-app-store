@@ -8,18 +8,27 @@ package com.junbo.test.store;
 
 import com.junbo.common.id.EntitlementId;
 import com.junbo.common.id.PaymentInstrumentId;
+import com.junbo.oauth.spec.endpoint.AccessTokenResource;
+import com.junbo.oauth.spec.model.AccessToken;
+import com.junbo.oauth.spec.model.AccessTokenResponse;
 import com.junbo.store.spec.model.EntitlementsGetResponse;
 import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.identity.UserProfileGetResponse;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
-import com.junbo.store.spec.model.login.UserCredentialChangeResponse;
-import com.junbo.store.spec.model.login.UserCredentialCheckResponse;
+import com.junbo.store.spec.model.login.CreateUserRequest;
+import com.junbo.store.spec.model.login.UserCredentialRateResponse;
 import com.junbo.store.spec.model.login.UserNameCheckResponse;
 import com.junbo.store.spec.model.purchase.CommitPurchaseResponse;
 import com.junbo.store.spec.model.purchase.MakeFreePurchaseResponse;
 import com.junbo.store.spec.model.purchase.PreparePurchaseResponse;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.Entities.enums.Country;
+import com.junbo.test.common.RandomHelper;
+import com.junbo.test.common.Validator;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RandomFactory;
@@ -29,12 +38,16 @@ import com.junbo.test.common.property.Property;
 import com.junbo.test.common.property.Status;
 import org.testng.annotations.Test;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created by weiyu_000 on 8/6/14.
  */
 public class StoreTesting extends BaseTestClass {
+
+    OAuthService oAuthClient = OAuthServiceImpl.getInstance();
 
     @Property(
             priority = Priority.BVT,
@@ -58,7 +71,8 @@ public class StoreTesting extends BaseTestClass {
     )
     @Test
     public void testIAPCheckoutByCreditCard() throws Exception {
-        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser();
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
         //add new credit card to user
 
@@ -92,6 +106,70 @@ public class StoreTesting extends BaseTestClass {
     }
 
     @Property(
+            priority = Priority.Dailies,
+            features = "Store checkout",
+            component = Component.STORE,
+            owner = "ZhaoYunlong",
+            environment = "release",
+            status = Status.Enable,
+            description = "Test email verification",
+            steps = {
+                    "Create user with no email verification",
+                    "Call smoke API to check one record only",
+                    "Call checkUserName with the created username, it should return error",
+                    "Call checkUserName with one random username, it should return success",
+                    "Call rateUserCredential to check it doesn't fail",
+                    "Call signIn to get one new AccessToken. Get and compare with the created return access_token",
+
+                    "Call EmailVerify with access_token, it should have two records",
+                    "Call all other store apis, it should return all error due to no valid token",
+                    "Call get userProfile with and without access_token"
+            }
+    )
+    @Test
+    public void testPrivilege() throws Exception {
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, false);
+
+        Validator.Validate("validate authtoken response correct", createUserRequest.getUsername(), authTokenResponse.getUsername());
+
+        oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
+        List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(authTokenResponse.getUserId()), createUserRequest.getEmail());
+        Validator.Validate("validate email was sent", 1, links.size());
+
+        UserNameCheckResponse userNameCheckResponse = testDataProvider.CheckUserName(createUserRequest.getUsername());
+        Validator.Validate("validate username is not available", false, userNameCheckResponse.getIsAvailable());
+
+        userNameCheckResponse = testDataProvider.CheckUserName(RandomHelper.randomAlphabetic(10));
+        Validator.Validate("validate username is available", true, userNameCheckResponse.getIsAvailable());
+
+        String password = "1234";
+        UserCredentialRateResponse userCredentialRateResponse = testDataProvider.RateUserCredential(password);
+        Validator.Validate("validate password invalid", "INVALID", userCredentialRateResponse.getStrength());
+
+        password = "11111111";
+        userCredentialRateResponse = testDataProvider.RateUserCredential(password);
+        Validator.Validate("validate repeated character password invalid", "INVALID", userCredentialRateResponse.getStrength());
+
+        password = "12345678";
+        userCredentialRateResponse = testDataProvider.RateUserCredential(password);
+        Validator.Validate("validate password weak", "WEAK", userCredentialRateResponse.getStrength());
+
+        password = "#Bugsfor$";
+        userCredentialRateResponse = testDataProvider.RateUserCredential(password);
+        Validator.Validate("validate password fair", "FAIR", userCredentialRateResponse.getStrength());
+
+        password = "#Bugsfor$1234";
+        userCredentialRateResponse = testDataProvider.RateUserCredential(password);
+        Validator.Validate("validate password strong", "STRONG", userCredentialRateResponse.getStrength());
+
+        AuthTokenResponse newAuthTokenResponse = testDataProvider.SignIn(createUserRequest.getUsername(), createUserRequest.getPassword());
+        Validator.Validate("validate token valid", authTokenResponse.getUsername(), newAuthTokenResponse.getUsername());
+
+        // todo:    Add other conditions
+    }
+
+    @Property(
             priority = Priority.BVT,
             features = "Store checkout",
             component = Component.Order,
@@ -113,10 +191,11 @@ public class StoreTesting extends BaseTestClass {
     )
     @Test
     public void testMakeFreePurchase() throws Exception {
-        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser();
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String userName = authTokenResponse.getUsername();
 
-        AuthTokenResponse signInResponse =  testDataProvider.signIn(userName);
+        AuthTokenResponse signInResponse = testDataProvider.signIn(userName);
 
         validationHelper.verifySignInResponse(authTokenResponse, signInResponse);
 
@@ -166,7 +245,8 @@ public class StoreTesting extends BaseTestClass {
     )
     @Test
     public void testIAPCheckoutByWallet() throws Exception {
-        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser();
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest();
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
         String uid = IdConverter.idToHexString(authTokenResponse.getUserId());
         //add new credit card to user
 
@@ -218,7 +298,8 @@ public class StoreTesting extends BaseTestClass {
     public void testStoreLoginResource() throws Exception {
         String userName = RandomFactory.getRandomStringOfAlphabet(6);
         String password = "Test1234";
-        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(userName);
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest(userName);
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
 
         assert authTokenResponse.getUsername().equals(userName);
         assert authTokenResponse.getAccessToken() != null;
@@ -230,4 +311,34 @@ public class StoreTesting extends BaseTestClass {
         assert authTokenResponse.getUsername().equals(userName);
         assert authTokenResponse.getAccessToken() != null;
     }
+
+    @Property(
+            priority = Priority.Dailies,
+            features = "Store checkout",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            status = Status.Enable,
+            description = "Test gate user whose email not validate",
+            steps = {
+                    "1. Create user",
+                    "2. Sign in",
+                    "3. Attempt to make free purchase",
+                    "4. Verify response code is 415",
+                    "5. Attempt to get user profile",
+                    "6. Verify response code is 415",
+                    "7. Attempt to update billing profile",
+                    "8. Verify response code is 415",
+            }
+    )
+    @Test
+    public void testStoreEmailValidationGate() throws Exception {
+        String userName = RandomFactory.getRandomStringOfAlphabet(6);
+        String password = "Test1234";
+        CreateUserRequest createUserRequest = testDataProvider.CreateUserRequest(userName);
+        AuthTokenResponse authTokenResponse = testDataProvider.CreateUser(createUserRequest, true);
+    }
+
+
+
+
 }

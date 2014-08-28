@@ -306,7 +306,7 @@ class CloudantClientImpl implements CloudantClientInternal {
             Realm realm = new Realm.RealmBuilder().setPrincipal(dbUri.cloudantUri.username).setPassword(dbUri.cloudantUri.password)
                     .setUsePreemptiveAuth(true).setScheme(Realm.AuthScheme.BASIC).build();
             requestBuilder.setRealm(realm);
-            requestBuilder.setHeader("X-Cloudant-User", dbUri.cloudantUri.username)
+            //requestBuilder.setHeader("X-Cloudant-User", dbUri.cloudantUri.username)
         }
 
         if (body != null) {

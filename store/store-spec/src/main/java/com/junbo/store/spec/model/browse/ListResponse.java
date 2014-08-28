@@ -14,8 +14,34 @@ import java.util.List;
  */
 public class ListResponse {
 
+    /**
+     * Java doc.
+     */
+    public static class NextOption extends PageMeta {
+
+        private String category;
+
+        private String criteria;
+
+        public String getCategory() {
+            return category;
+        }
+
+        public void setCategory(String category) {
+            this.category = category;
+        }
+
+        public String getCriteria() {
+            return criteria;
+        }
+
+        public void setCriteria(String criteria) {
+            this.criteria = criteria;
+        }
+    }
+
     private List<Item> items;
-    private PageMeta next;
+    private NextOption next;
 
     public List<Item> getItems() {
         return items;
@@ -25,11 +51,11 @@ public class ListResponse {
         this.items = items;
     }
 
-    public PageMeta getNext() {
+    public NextOption getNext() {
         return next;
     }
 
-    public void setNext(PageMeta next) {
+    public void setNext(NextOption next) {
         this.next = next;
     }
 }

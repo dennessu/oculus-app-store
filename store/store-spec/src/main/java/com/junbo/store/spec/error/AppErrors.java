@@ -76,4 +76,7 @@ public interface AppErrors {
 
     @ErrorDef(httpStatusCode = 412, code = "116", message = "Invalid Update Profile Token.")
     AppError invalidUpdateProfileToken();
+
+    @ErrorDef(httpStatusCode = 412, code = "117", message = "Section Not Found.")
+    AppError sectionNotFound();
 }

@@ -1,0 +1,5 @@
+{
+    "name": "group.readonly.service",
+    "description": "Server scope to read the group resource",
+    "tfaRequired": false
+}

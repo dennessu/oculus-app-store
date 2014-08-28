@@ -47,4 +47,9 @@ class CloudantEmailVerifyCodeRepositoryImpl extends CloudantClient<EmailVerifyCo
             cloudantDeleteSync(code)
         }
     }
+
+    @Override
+    List<EmailVerifyCode> getByUserIdEmail(Long userId, String email) {
+        return queryViewSync('by_user_id_email', "$userId:$email")
+    }
 }

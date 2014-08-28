@@ -1,5 +1,5 @@
 {
-  "scopes" : [ "identity", "identity.pii", "catalog", "catalog.developer", "openid", "scope.info", "commerce", "offline", "storeapi" ],
+  "scopes" : [ "identity", "identity.pii", "catalog", "catalog.developer", "openid", "scope.info", "commerce", "offline", "smoketest" ],
   "client_id" : "smoketest",
   "client_secret" : "224112E90935C8FA4E3F66B96FACE79B",
   "client_name" : "smoketest",
@@ -7,7 +7,7 @@
   "default_redirect_uri" : "http://localhost",
   "default_scopes" : [ "identity", "openid" ],
   "response_types" : [ "ID_TOKEN", "CODE", "TOKEN" ],
-  "grant_types" : [ "PASSWORD", "AUTHORIZATION_CODE", "REFRESH_TOKEN" ],
+  "grant_types" : [ "CLIENT_CREDENTIALS", "PASSWORD", "AUTHORIZATION_CODE", "REFRESH_TOKEN" ],
   "id_token_issuer" : "www.silkcloud.com",
   "logout_redirect_uris" : [ "http://localhost", "http://localhost:8000/app/#/home" ],
   "default_logout_redirect_uri" : "http://localhost",

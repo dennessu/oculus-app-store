@@ -8,6 +8,8 @@ package com.junbo.store.spec.model.browse.document;
 import com.junbo.common.enumid.CurrencyId;
 import com.junbo.common.id.OfferId;
 
+import java.math.BigDecimal;
+
 /**
  * The Offer class.
  */
@@ -15,7 +17,9 @@ public class Offer {
 
     private OfferId self;
 
-    private String formattedPrice;
+    private BigDecimal price;
+
+    private Boolean isFree;
 
     private String formattedDescription;
 
@@ -29,12 +33,20 @@ public class Offer {
         this.self = self;
     }
 
-    public String getFormattedPrice() {
-        return formattedPrice;
+    public BigDecimal getPrice() {
+        return price;
     }
 
-    public void setFormattedPrice(String formattedPrice) {
-        this.formattedPrice = formattedPrice;
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public Boolean getIsFree() {
+        return isFree;
+    }
+
+    public void setIsFree(Boolean isFree) {
+        this.isFree = isFree;
     }
 
     public String getFormattedDescription() {

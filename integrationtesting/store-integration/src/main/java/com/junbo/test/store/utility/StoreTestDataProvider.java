@@ -28,10 +28,13 @@ import com.junbo.store.spec.model.login.*;
 import com.junbo.store.spec.model.purchase.*;
 import com.junbo.test.catalog.OfferService;
 import com.junbo.test.catalog.impl.OfferServiceImpl;
+import com.junbo.test.common.Entities.enums.ComponentType;
 import com.junbo.test.common.Entities.enums.Country;
-//import com.junbo.test.common.Entities.enums.Currency;
 import com.junbo.test.common.Entities.paymentInstruments.CreditCardInfo;
 import com.junbo.test.common.Utility.BaseTestDataProvider;
+import com.junbo.test.common.apihelper.oauth.OAuthService;
+import com.junbo.test.common.apihelper.oauth.enums.GrantType;
+import com.junbo.test.common.apihelper.oauth.impl.OAuthServiceImpl;
 import com.junbo.test.common.blueprint.Master;
 import com.junbo.test.common.libs.IdConverter;
 import com.junbo.test.common.libs.RandomFactory;
@@ -44,6 +47,7 @@ import com.junbo.test.store.apihelper.impl.StoreServiceImpl;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -54,45 +58,47 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
     LoginService loginClient = LoginServiceImpl.getInstance();
     StoreService storeClient = StoreServiceImpl.getInstance();
     OfferService offerClient = OfferServiceImpl.instance();
+    OAuthService oAuthClient = OAuthServiceImpl.getInstance();
 
     PaymentTestDataProvider paymentProvider = new PaymentTestDataProvider();
 
-    public AuthTokenResponse CreateUser() throws Exception {
-        CreateUserRequest createUserRequest = new CreateUserRequest();
-        String dateString = "1990-01-01";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = sdf.parse(dateString);
-        createUserRequest.setDob(date);
-        createUserRequest.setEmail(RandomFactory.getRandomEmailAddress());
-        createUserRequest.setFirstName(RandomFactory.getRandomStringOfAlphabet(5));
-        createUserRequest.setLastName(RandomFactory.getRandomStringOfAlphabet(5));
-        createUserRequest.setNickName(RandomFactory.getRandomStringOfAlphabet(4));
-        createUserRequest.setPassword("Test1234");
-        createUserRequest.setUsername(RandomFactory.getRandomStringOfAlphabet(6));
-        createUserRequest.setPin("1234");
-        createUserRequest.setCor(Country.DEFAULT.toString());
-        createUserRequest.setPreferredLocale("en_US");
-
-        return loginClient.CreateUser(createUserRequest);
+    public CreateUserRequest CreateUserRequest() throws Exception {
+       return CreateUserRequest(RandomFactory.getRandomStringOfAlphabet(6));
     }
 
-    public AuthTokenResponse CreateUser(String userName) throws Exception {
+    public CreateUserRequest CreateUserRequest(String username) throws Exception{
         CreateUserRequest createUserRequest = new CreateUserRequest();
         String dateString = "1990-01-01";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = sdf.parse(dateString);
         createUserRequest.setDob(date);
-        createUserRequest.setEmail(RandomFactory.getRandomEmailAddress());
+        String emailAddress = RandomFactory.getRandomEmailAddress();
+        createUserRequest.setEmail(emailAddress);
         createUserRequest.setFirstName(RandomFactory.getRandomStringOfAlphabet(5));
         createUserRequest.setLastName(RandomFactory.getRandomStringOfAlphabet(5));
         createUserRequest.setNickName(RandomFactory.getRandomStringOfAlphabet(4));
         createUserRequest.setPassword("Test1234");
-        createUserRequest.setUsername(userName);
+        createUserRequest.setUsername(username);
         createUserRequest.setPin("1234");
         createUserRequest.setCor(Country.DEFAULT.toString());
         createUserRequest.setPreferredLocale("en_US");
 
-        return loginClient.CreateUser(createUserRequest);
+        return createUserRequest;
+    }
+
+    public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, boolean needVerifyEmail) throws Exception {
+        AuthTokenResponse response = loginClient.CreateUser(createUserRequest);
+
+        if (needVerifyEmail) {
+            oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
+            List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(response.getUserId()), createUserRequest.getEmail());
+            assert links != null;
+            for(String link : links) {
+                oAuthClient.accessEmailVerifyLink(link);
+            }
+        }
+
+        return response;
     }
 
     public UserNameCheckResponse CheckUserName(String userName) throws Exception {
@@ -169,7 +175,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.preparePurchase(request);
     }
 
-    public String getOfferIdByName(String offerName)throws Exception{
+    public String getOfferIdByName(String offerName) throws Exception {
         return offerClient.getOfferIdByName(offerName);
     }
 
@@ -180,7 +186,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.commitPurchase(commitPurchaseRequest);
     }
 
-    public IAPEntitlementConsumeResponse iapConsumeEntitlement(EntitlementId entitlementId, String offerId) throws Exception{
+    public IAPEntitlementConsumeResponse iapConsumeEntitlement(EntitlementId entitlementId, String offerId) throws Exception {
         IAPEntitlementConsumeRequest request = new IAPEntitlementConsumeRequest();
         request.setTrackingGuid(UUID.randomUUID().toString());
         request.setEntitlement(entitlementId);
@@ -204,7 +210,7 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return address;
     }
 
-    public MakeFreePurchaseResponse makeFreePurchase(String offerId, Country country) throws Exception{
+    public MakeFreePurchaseResponse makeFreePurchase(String offerId, Country country) throws Exception {
         MakeFreePurchaseRequest request = new MakeFreePurchaseRequest();
         request.setLocale(new LocaleId("en_US"));
         request.setCountry(new CountryId(country.toString()));
@@ -212,28 +218,28 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         return storeClient.makeFreePurchase(request);
     }
 
-    public AuthTokenResponse signIn(String userName) throws Exception{
+    public AuthTokenResponse signIn(String userName) throws Exception {
         UserSignInRequest request = new UserSignInRequest();
         request.setUsername(userName);
-        UserCredential userCredential =  new UserCredential();
+        UserCredential userCredential = new UserCredential();
         userCredential.setType("password");
         userCredential.setValue("Test1234");
         request.setUserCredential(userCredential);
         return loginClient.signIn(request);
     }
 
-    public UserProfileGetResponse getUserProfile() throws Exception{
+    public UserProfileGetResponse getUserProfile() throws Exception {
         return storeClient.getUserProfile();
     }
 
-    public EntitlementsGetResponse getEntitlement() throws Exception{
+    public EntitlementsGetResponse getEntitlement() throws Exception {
         return storeClient.getEntitlement();
     }
 
-    public AuthTokenResponse getToken(String refreshToken) throws Exception{
+    public AuthTokenResponse getToken(String refreshToken) throws Exception {
         AuthTokenRequest request = new AuthTokenRequest();
         request.setRefreshToken(refreshToken);
-        return  loginClient.getToken(request);
+        return loginClient.getToken(request);
     }
 
 }

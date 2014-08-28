@@ -6,10 +6,12 @@
 package com.junbo.oauth.core.service
 
 import com.junbo.common.id.UserId
+import com.junbo.common.id.UserPersonalInfoId
 import com.junbo.identity.spec.v1.model.UserCredential
 import com.junbo.identity.spec.v1.model.UserCredentialVerifyAttempt
 import com.junbo.langur.core.promise.Promise
 import com.junbo.oauth.core.context.ActionContextWrapper
+import com.junbo.oauth.spec.model.EmailVerifyCode
 import com.junbo.oauth.spec.model.UserInfo
 import groovy.transform.CompileStatic
 
@@ -37,10 +39,11 @@ interface UserService {
 
     Promise<String> sendVerifyEmail(UserId userId, String locale, String country, Boolean welcome)
 
-    Promise<String> sendVerifyEmail(UserId userId, String locale, String country, String targetEmail, Boolean welcome)
+    Promise<String> sendVerifyEmail(UserId userId, String locale, String country, UserPersonalInfoId targetEmailId, Boolean welcome)
 
     Promise<String> sendResetPassword(UserId userId, ActionContextWrapper contextWrapper)
 
     Promise<String> sendResetPassword(UserId userId, String locale, String country)
 
+    Promise<String> buildResponseLink(EmailVerifyCode emailVerifyCode)
 }

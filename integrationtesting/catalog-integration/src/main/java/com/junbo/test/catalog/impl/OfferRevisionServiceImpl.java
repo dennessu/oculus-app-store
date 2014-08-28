@@ -99,7 +99,8 @@ public class OfferRevisionServiceImpl extends HttpClientBase implements OfferRev
     }
 
     public OfferRevision postOfferRevision(OfferRevision offerRevision, int expectedResponseCode) throws Exception {
-        String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, offerRevision, expectedResponseCode, false);
+
+        String responseBody = restApiCall(HTTPMethod.POST, catalogServerURL, offerRevision, expectedResponseCode, true);
         OfferRevision offerRevisionPost = new JsonMessageTranscoder().decode(
                 new TypeReference<OfferRevision>() {}, responseBody);
         Master.getInstance().addOfferRevision(offerRevisionPost.getRevisionId(), offerRevisionPost);

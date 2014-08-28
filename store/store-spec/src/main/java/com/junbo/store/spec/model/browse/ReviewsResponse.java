@@ -5,6 +5,7 @@
  */
 package com.junbo.store.spec.model.browse;
 
+import com.junbo.common.id.ItemId;
 import com.junbo.store.spec.model.browse.document.Review;
 
 import java.util.List;
@@ -14,9 +15,25 @@ import java.util.List;
  */
 public class ReviewsResponse {
 
+    /**
+     * Java doc.
+     */
+    public static class NextOption extends PageMeta {
+
+        private ItemId itemId;
+
+        public ItemId getItemId() {
+            return itemId;
+        }
+
+        public void setItemId(ItemId itemId) {
+            this.itemId = itemId;
+        }
+    }
+
     private List<Review> reviews;
 
-    private PageMeta next;
+    private NextOption next;
 
     public List<Review> getReviews() {
         return reviews;
@@ -26,11 +43,11 @@ public class ReviewsResponse {
         this.reviews = reviews;
     }
 
-    public PageMeta getNext() {
+    public NextOption getNext() {
         return next;
     }
 
-    public void setNext(PageMeta next) {
+    public void setNext(NextOption next) {
         this.next = next;
     }
 }
