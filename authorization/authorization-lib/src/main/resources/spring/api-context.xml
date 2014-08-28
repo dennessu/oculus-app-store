@@ -11,7 +11,7 @@
                 <entry key="RoleAssignmentResource" value="identity identity.service role.readonly.service"/>
                 <entry key="RoleResource" value="identity identity.service role.readonly.service"/>
                 <!-- billing -->
-                <entry key="BalanceResource" value="commerce billing.service"/>
+                <entry key="BalanceResource" value="billing.service"/>
                 <entry key="VatResource" value="billing.service"/>
                 <!-- cart -->
                 <entry key="CartResource" value="commerce cart.service csr"/>
@@ -99,11 +99,12 @@
                 <!-- order -->
                 <entry key="OrderEventResource" value="commerce order.service csr"/>
                 <entry key="OrderResource" value="commerce order.service csr"/>
-                <entry key="SubledgerItemResource" value="subledger subledger.service"/>
+                <entry key="SubledgerItemResource" value="subledger.service"/>
+                <entry key="SubledgerResource.createSubledger" value="subledger.service"/>
                 <entry key="SubledgerResource" value="subledger subledger.service"/>
                 <!-- payment -->
                 <entry key="PaymentInstrumentResource" value="commerce payment.service csr"/>
-                <entry key="PaymentCallbackResource" value="commerce payment.service"/>
+                <entry key="PaymentCallbackResource" value="payment.service"/>
                 <entry key="PaymentTransactionResource" value="payment.service"/>
                 <!-- rating -->
                 <entry key="RatingResource" value="rating.service"/>
