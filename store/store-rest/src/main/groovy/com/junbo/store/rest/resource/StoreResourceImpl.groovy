@@ -238,6 +238,8 @@ class StoreResourceImpl implements StoreResource {
                     headline: user.profile?.headline,
                     avatar: user.profile?.avatar?.href
             )
+
+            return Promise.pure(null)
         }.then {
             return resourceContainer.userPersonalInfoResource.get(user.username, new UserPersonalInfoGetOptions()).then { UserPersonalInfo usernameInfo ->
                 userProfile.username = ObjectMapperProvider.instance().treeToValue(usernameInfo.value, UserLoginName).userName
@@ -256,6 +258,8 @@ class StoreResourceImpl implements StoreResource {
                         value: email.info,
                         isValidated: personalInfo.isValidated
                 )
+
+                return Promise.pure(null)
             }
         }.then {
             return resourceContainer.userCredentialResource.list(user.getId(), new UserCredentialListOptions(
