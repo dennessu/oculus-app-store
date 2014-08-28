@@ -37,6 +37,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network "forwarded_port", guest: 5984, host: 5984
   config.vm.network "forwarded_port", guest: 5432, host: 5432
   config.vm.network "forwarded_port", guest: 11211, host: 11211
+  config.vm.network "forwarded_port", guest: 9000, host: 9000
 
   config.vm.provider "virtualbox" do |v|
     v.name = "sc-localdev"

@@ -15,6 +15,7 @@ RUN cd /tmp && wget https://download.elasticsearch.org/elasticsearch/elasticsear
 RUN cd /tmp && wget https://download.elasticsearch.org/logstash/logstash/logstash-1.4.2.tar.gz -nv && \
     tar xzf logstash-1.4.2.tar.gz -C /var/elk/logstash --strip-components=1 && \
     rm /tmp/logstash-1.4.2.tar.gz
+RUN mkdir -p /inputlogs
 
 RUN cd /tmp && wget https://download.elasticsearch.org/kibana/kibana/kibana-3.1.0.tar.gz -nv && \
     tar xzf kibana-3.1.0.tar.gz -C /var/elk/kibana --strip-components=1 && \
@@ -24,11 +25,33 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -qq &&\
     DEBIAN_FRONTEND=noninteractive apt-get install -qqy --force-yes nginx &&\
     apt-get clean &&\
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+# make nginx run foreground
+RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+RUN rm /etc/nginx/sites-enabled/*
+
+EXPOSE 9000 9200
+
+# Expose data and log (to improve performance)
+VOLUME ["/var/elk/elasticsearch/logs", "/var/elk/logstash/data", "/var/elk/elasticsearch/data", "/var/log/nginx"]
+
+# Enable insecure key so that docker-ssh can work, it is ok in dev env
+RUN /usr/sbin/enable_insecure_key
+
+# Use baseimage-docker's init system.
+CMD ["/sbin/my_init"]
+
+# memcached public variable
+ENV KIBANA_PORT 9000
+
+ADD bootcheck.sh /etc/my_init.d/bootcheck.sh
+RUN chmod +x /etc/my_init.d/bootcheck.sh
 
 ADD runlogstash.sh /etc/service/logstash/run
 RUN chmod +x /etc/service/logstash/run
 ADD runelasticsearch.sh /etc/service/elasticsearch/run
 RUN chmod +x /etc/service/elasticsearch/run
+ADD runnginx.sh /etc/service/nginx/run
+RUN chmod +x /etc/service/nginx/run
 
-ADD purge_databases.sh /var/silkcloud/scripts/purge_databases.sh
-RUN chmod +x /var/silkcloud/scripts/purge_databases.sh
+ADD kibana_site.conf /etc/nginx/sites-enabled/kibana_site.conf
+ADD default_logstash.conf /config/logstash.conf
