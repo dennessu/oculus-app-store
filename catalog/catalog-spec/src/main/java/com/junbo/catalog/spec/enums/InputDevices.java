@@ -13,7 +13,7 @@ import java.util.List;
  * Input devices.
  */
 public enum InputDevices {
-    KEYBOARD, MOUSE, CONTROLLER, TOUCHPAD, GAMEPAD, HEAD_LOOK;
+    KEYBOARD, MOUSE, CONTROLLER, TOUCHPAD;
 
     public static final List<InputDevices> ALL = Arrays.asList(InputDevices.values());
 

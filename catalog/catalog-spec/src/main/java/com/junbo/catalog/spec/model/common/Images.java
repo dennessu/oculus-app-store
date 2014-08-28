@@ -9,56 +9,77 @@ package com.junbo.catalog.spec.model.common;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Images.
  */
 public class Images {
     @ApiModelProperty(position = 1, required = true, value = "Main image")
-    private Map<String, Image> main;
+    private Image main;
 
-    @ApiModelProperty(position = 2, required = true, value = "Thumbnail image")
-    private Map<String, Image> thumbnail;
+    @ApiModelProperty(position = 2, required = true, value = "Half-main image")
+    private Image halfMain;
 
-    @ApiModelProperty(position = 3, required = true, value = "Background image")
-    private Map<String, Image> background;
+    @ApiModelProperty(position = 3, required = true, value = "Thumbnail image")
+    private Image thumbnail;
 
-    @ApiModelProperty(position = 4, required = true, value = "Featured image")
-    private Map<String, Image> featured;
+    @ApiModelProperty(position = 4, required = true, value = "Half-thumbnail image")
+    private Image halfThumbnail;
 
-    @ApiModelProperty(position = 5, required = true, value = "Gallery images")
+    @ApiModelProperty(position = 5, required = true, value = "Background image")
+    private Image background;
+
+    @ApiModelProperty(position = 6, required = true, value = "Featured image")
+    private Image featured;
+
+    @ApiModelProperty(position = 7, required = true, value = "Gallery images")
     private List<ImageGalleryEntry> gallery;
 
-    public Map<String, Image> getMain() {
+    public Image getMain() {
         return main;
     }
 
-    public void setMain(Map<String, Image> main) {
+    public void setMain(Image main) {
         this.main = main;
     }
 
-    public Map<String, Image> getThumbnail() {
+    public Image getHalfMain() {
+        return halfMain;
+    }
+
+    public void setHalfMain(Image halfMain) {
+        this.halfMain = halfMain;
+    }
+
+    public Image getThumbnail() {
         return thumbnail;
     }
 
-    public void setThumbnail(Map<String, Image> thumbnail) {
+    public void setThumbnail(Image thumbnail) {
         this.thumbnail = thumbnail;
     }
 
-    public Map<String, Image> getBackground() {
+    public Image getHalfThumbnail() {
+        return halfThumbnail;
+    }
+
+    public void setHalfThumbnail(Image halfThumbnail) {
+        this.halfThumbnail = halfThumbnail;
+    }
+
+    public Image getBackground() {
         return background;
     }
 
-    public void setBackground(Map<String, Image> background) {
+    public void setBackground(Image background) {
         this.background = background;
     }
 
-    public Map<String, Image> getFeatured() {
+    public Image getFeatured() {
         return featured;
     }
 
-    public void setFeatured(Map<String, Image> featured) {
+    public void setFeatured(Image featured) {
         this.featured = featured;
     }
 

@@ -113,181 +113,197 @@
                 "manualDocument": null,
                 "communityForumLink": null,
                 "images": {
-                    "main": {"15x20":{
+                    "main": {
                         "id": null,
                         "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402935301063.png",
                         "size": 337686,
                         "altText": null,
                         "x": 700,
                         "y": 394
-                    }},
-                    "thumbnail": {"15x20":{
+                    },
+                    "halfMain": {
+                        "id": null,
+                        "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402935301063.png",
+                        "size": 337686,
+                        "altText": null,
+                        "x": 700,
+                        "y": 394
+                    },
+                    "thumbnail": {
                         "id": null,
                         "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402935234270.png",
                         "size": 96043,
                         "altText": null,
                         "x": 290,
                         "y": 163
-                    }},
-                    "background": {"15x20":{
+                    },
+                    "halfThumbnail": {
+                        "id": null,
+                        "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402935234270.png",
+                        "size": 96043,
+                        "altText": null,
+                        "x": 290,
+                        "y": 163
+                    },
+                    "background": {
                         "id": null,
                         "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402935301063.png",
                         "size": 337686,
                         "altText": null,
                         "x": 700,
                         "y": 394
-                    }},
-                    "featured": {"15x20":{
+                    },
+                    "featured": {
                         "id": null,
                         "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402935301063.png",
                         "size": 337686,
                         "altText": null,
                         "x": 700,
                         "y": 394
-                    }},
+                    },
                     "gallery": [{
-                        "thumbnail": {"15x20":{
+                        "thumbnail": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991746899.png",
                             "size": 337686,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }},
-                        "full": {"15x20":{
+                        },
+                        "full": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991746899.png",
                             "size": 337686,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }}
+                        }
                     },
                     {
-                        "thumbnail": {"15x20":{
+                        "thumbnail": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991673989.png",
                             "size": 371346,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }},
-                        "full": {"15x20":{
+                        },
+                        "full": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991673989.png",
                             "size": 371346,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }}
+                        }
                     },
                     {
-                        "thumbnail": {"15x20":{
+                        "thumbnail": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991760386.png",
                             "size": 530081,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }},
-                        "full": {"15x20":{
+                        },
+                        "full": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991760386.png",
                             "size": 530081,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }}
+                        }
                     },
                     {
-                        "thumbnail": {"15x20":{
+                        "thumbnail": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991684078.png",
                             "size": 502431,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }},
-                        "full": {"15x20":{
+                        },
+                        "full": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991684078.png",
                             "size": 502431,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }}
+                        }
                     },
                     {
-                        "thumbnail": {"15x20":{
+                        "thumbnail": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991687822.png",
                             "size": 402876,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }},
-                        "full": {"15x20":{
+                        },
+                        "full": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991687822.png",
                             "size": 402876,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }}
+                        }
                     },
                     {
-                        "thumbnail": {"15x20":{
+                        "thumbnail": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991696257.png",
                             "size": 420225,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }},
-                        "full": {"15x20":{
+                        },
+                        "full": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991696257.png",
                             "size": 420225,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }}
+                        }
                     },
                     {
-                        "thumbnail": {"15x20":{
+                        "thumbnail": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991781485.png",
                             "size": 361566,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }},
-                        "full": {"15x20":{
+                        },
+                        "full": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991781485.png",
                             "size": 361566,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }}
+                        }
                     },
                     {
-                        "thumbnail": {"15x20":{
+                        "thumbnail": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991786970.png",
                             "size": 538960,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }},
-                        "full": {"15x20":{
+                        },
+                        "full": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991786970.png",
                             "size": 538960,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }}
+                        }
                     }]
                 },
                 "videos": [{
@@ -375,181 +391,197 @@
                 "longDescription": "**Radial-G : Racing Revolved (Single Player Demo)**\r\n\r\n\n\r\nRadial-G is a high-octane sci-fi racer for the VR generation! Climb into the cockpit and tear up the track to set the fastest lap time in the world! Fully immerse yourself in intense races on tubular tracks featuring gut-wrenching twists, turns and drops.\r\n\r\n\n\r\nIn this single player demo, you&apos;ll get a taste of futuristic racing, being fully immersed in the cockpit as you race around the demo circuit, trying to chain as many speed boosts together whilst avoiding the red slow-down gates to cross the line with the fastest lap time in the world!\r\n\r\n\n\r\nPlug in your controller and rotate around the track to find the fastest line as you swoop and sweep around the circuit city.",
                 "shortDescription": "Radial-G is a high-octane sci-fi racer for the VR generation!",
                 "images": {
-                    "main": {"15x20":{
+                    "main": {
                         "id": null,
                         "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402935301063.png",
                         "size": 337686,
                         "altText": null,
                         "x": 700,
                         "y": 394
-                    }},
-                    "thumbnail": {"15x20":{
+                    },
+                    "halfMain": {
+                        "id": null,
+                        "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402935301063.png",
+                        "size": 337686,
+                        "altText": null,
+                        "x": 700,
+                        "y": 394
+                    },
+                    "thumbnail": {
                         "id": null,
                         "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402935234270.png",
                         "size": 96043,
                         "altText": null,
                         "x": 290,
                         "y": 163
-                    }},
-                    "background": {"15x20":{
+                    },
+                    "halfThumbnail": {
+                        "id": null,
+                        "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402935234270.png",
+                        "size": 96043,
+                        "altText": null,
+                        "x": 290,
+                        "y": 163
+                    },
+                    "background": {
                         "id": null,
                         "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402935301063.png",
                         "size": 337686,
                         "altText": null,
                         "x": 700,
                         "y": 394
-                    }},
-                    "featured": {"15x20":{
+                    },
+                    "featured": {
                         "id": null,
                         "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402935301063.png",
                         "size": 337686,
                         "altText": null,
                         "x": 700,
                         "y": 394
-                    }},
+                    },
                     "gallery": [{
-                        "thumbnail": {"15x20":{
+                        "thumbnail": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991746899.png",
                             "size": 337686,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }},
-                        "full": {"15x20":{
+                        },
+                        "full": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991746899.png",
                             "size": 337686,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }}
+                        }
                     },
                     {
-                        "thumbnail": {"15x20":{
+                        "thumbnail": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991673989.png",
                             "size": 371346,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }},
-                        "full": {"15x20":{
+                        },
+                        "full": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991673989.png",
                             "size": 371346,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }}
+                        }
                     },
                     {
-                        "thumbnail": {"15x20":{
+                        "thumbnail": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991760386.png",
                             "size": 530081,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }},
-                        "full": {"15x20":{
+                        },
+                        "full": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991760386.png",
                             "size": 530081,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }}
+                        }
                     },
                     {
-                        "thumbnail": {"15x20":{
+                        "thumbnail": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991684078.png",
                             "size": 502431,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }},
-                        "full": {"15x20":{
+                        },
+                        "full": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991684078.png",
                             "size": 502431,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }}
+                        }
                     },
                     {
-                        "thumbnail": {"15x20":{
+                        "thumbnail": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991687822.png",
                             "size": 402876,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }},
-                        "full": {"15x20":{
+                        },
+                        "full": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991687822.png",
                             "size": 402876,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }}
+                        }
                     },
                     {
-                        "thumbnail": {"15x20":{
+                        "thumbnail": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991696257.png",
                             "size": 420225,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }},
-                        "full": {"15x20":{
+                        },
+                        "full": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991696257.png",
                             "size": 420225,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }}
+                        }
                     },
                     {
-                        "thumbnail": {"15x20":{
+                        "thumbnail": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991781485.png",
                             "size": 361566,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }},
-                        "full": {"15x20":{
+                        },
+                        "full": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991781485.png",
                             "size": 361566,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }}
+                        }
                     },
                     {
-                        "thumbnail": {"15x20":{
+                        "thumbnail": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991786970.png",
                             "size": 538960,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }},
-                        "full": {"15x20":{
+                        },
+                        "full": {
                             "id": null,
                             "href": "http://static.oculusvr.com/shareuploads/apps/14043460654725tv3kawcdi/screens/140292239592496i53unxw29_1402991786970.png",
                             "size": 538960,
                             "altText": null,
                             "x": 700,
                             "y": 394
-                        }}
+                        }
                     }]
                 },
                 "videos": [{

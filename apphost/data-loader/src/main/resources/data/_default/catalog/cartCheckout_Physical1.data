@@ -58,20 +58,20 @@
                 "supportEmail": "jasonfu@silkcloud.com",
                 "videos": [], 
                 "images": {
-                    "main": {"15x20":{
+                    "main": {
                         "y": 15, 
                         "x": 20, 
                         "href": "http://www.google.com", 
                         "id": "id of image", 
                         "size": 300
-                    }},
-                    "thumbnail": {"15x20":{
+                    }, 
+                    "thumbnail": {
                         "y": 10, 
                         "x": 20, 
                         "href": "http://www.google.com", 
                         "id": "id of image", 
                         "size": 200
-                    }}
+                    }
                 }, 
                 "recommendedSystemRequirements": {
                     "PC": {
@@ -243,13 +243,13 @@
                 "en_US": {
                     "images": {
                         "main": {},
-                        "thumbnail": {"15x20":{
+                        "thumbnail": {
                             "y": 10,
                             "x": 20,
                             "href": "http://www.google.com",
                             "id": "id of image",
                             "size": 200
-                        }}
+                        }
                     },
                     "shortDescription": "short description",
                     "name": "testOffer_CartCheckout_Physical1",
