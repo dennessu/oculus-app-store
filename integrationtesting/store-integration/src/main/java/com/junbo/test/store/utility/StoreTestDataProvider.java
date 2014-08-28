@@ -62,15 +62,11 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
 
     PaymentTestDataProvider paymentProvider = new PaymentTestDataProvider();
 
-    public AuthTokenResponse CreateUser() throws Exception {
-       return CreateUser(RandomFactory.getRandomStringOfAlphabet(6), true);
+    public CreateUserRequest CreateUserRequest() throws Exception {
+       return CreateUserRequest(RandomFactory.getRandomStringOfAlphabet(6));
     }
 
-    public AuthTokenResponse CreateUser(String userName) throws Exception {
-        return CreateUser(userName, true);
-    }
-
-    public AuthTokenResponse CreateUser(String userName, boolean needVerifyEmail) throws Exception {
+    public CreateUserRequest CreateUserRequest(String username) throws Exception{
         CreateUserRequest createUserRequest = new CreateUserRequest();
         String dateString = "1990-01-01";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -82,16 +78,20 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
         createUserRequest.setLastName(RandomFactory.getRandomStringOfAlphabet(5));
         createUserRequest.setNickName(RandomFactory.getRandomStringOfAlphabet(4));
         createUserRequest.setPassword("Test1234");
-        createUserRequest.setUsername(userName);
+        createUserRequest.setUsername(username);
         createUserRequest.setPin("1234");
         createUserRequest.setCor(Country.DEFAULT.toString());
         createUserRequest.setPreferredLocale("en_US");
 
+        return createUserRequest;
+    }
+
+    public AuthTokenResponse CreateUser(CreateUserRequest createUserRequest, boolean needVerifyEmail) throws Exception {
         AuthTokenResponse response = loginClient.CreateUser(createUserRequest);
 
         if (needVerifyEmail) {
             oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
-            List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(response.getUserId()), emailAddress);
+            List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(response.getUserId()), createUserRequest.getEmail());
             assert links != null;
             for(String link : links) {
                 oAuthClient.accessEmailVerifyLink(link);
