@@ -210,6 +210,7 @@ public class PaymentTesting extends BaseTestClass {
     @Test
     public void testSearchPaymentInstrument() throws Exception {
         String randomUid = testDataProvider.CreateUser();
+        Master.getInstance().getPaymentInstruments().clear();
 
         CreditCardInfo creditCardInfo1 = CreditCardInfo.getRandomCreditCardInfo(country);
         testDataProvider.postPaymentInstrument(randomUid, creditCardInfo1);
