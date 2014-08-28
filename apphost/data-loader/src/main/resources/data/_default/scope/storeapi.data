@@ -1,0 +1,5 @@
+{
+    "name": "storeapi",
+    "description": "Scope to call the store api.",
+    "tfaRequired": false
+}

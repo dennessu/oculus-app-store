@@ -1,0 +1,5 @@
+{
+    "name": "subledger",
+    "description": "Scope for the developer to call the subledger resource.",
+    "tfaRequired": false
+}

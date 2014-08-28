@@ -1,0 +1,5 @@
+{
+    "name": "role.readonly.service",
+    "description": "Server scope to read the role resource",
+    "tfaRequired": false
+}
