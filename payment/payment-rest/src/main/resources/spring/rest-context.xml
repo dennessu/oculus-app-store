@@ -9,14 +9,12 @@
 
     <bean id="defaultPaymentInstrumentResource" class="com.junbo.payment.rest.resource.PaymentInstrumentResourceImpl"/>
     <bean id="defaultPaymentTransactionResource" class="com.junbo.payment.rest.resource.PaymentTransactionResourceImpl"/>
-    <bean id="defaultBrainTreeResource" class="com.junbo.payment.rest.resource.BrainTreeResourceImpl"/>
     <!--bean id="defaultPaymentInstrumentTypeResource" class="com.junbo.payment.rest.resource.PaymentInstrumentTypeResourceImpl"/-->
     <bean id="defaultPaymentCallbackResource" class="com.junbo.payment.rest.resource.PaymentCallbackResourceImpl"/>
     <bean id="defaultPaymentNotificationResource" class="com.junbo.payment.rest.resource.PaymentNotificationResourceImpl"/>
 
     <bean id="defaultPaymentInstrumentResourceClientFactory" class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentResourceClientProxyFactory"/>
     <bean id="defaultPaymentTransactionResourceClientFactory" class="com.junbo.payment.spec.resource.proxy.PaymentTransactionResourceClientProxyFactory"/>
-    <bean id="defaultBrainTreeResourceClientFactory" class="com.junbo.payment.spec.internal.proxy.BrainTreeResourceClientProxyFactory"/>
     <!--bean id="defaultPaymentInstrumentTypeResourceClientFactory" class="com.junbo.payment.spec.resource.proxy.PaymentInstrumentTypeResourceClientProxyFactory"/-->
     <bean id="defaultPaymentCallbackResourceClientFactory" class="com.junbo.payment.spec.resource.proxy.PaymentCallbackResourceClientProxyFactory"/>
     <bean id="defaultPaymentNotificationResourceClientFactory" class="com.junbo.payment.spec.resource.proxy.PaymentNotificationResourceClientProxyFactory"/>
