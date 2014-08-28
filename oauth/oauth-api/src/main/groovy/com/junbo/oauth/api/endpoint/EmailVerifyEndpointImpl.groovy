@@ -174,8 +174,6 @@ class EmailVerifyEndpointImpl implements EmailVerifyEndpoint {
 
     @Override
     Promise<List<String>> getVerifyEmailLink(UserId userId, String locale, String email) {
-
-
         List<String> links = new ArrayList<>();
         List<EmailVerifyCode> verifyCodeList = emailVerifyCodeRepository.getByUserIdEmail(userId.value, email)
         if (CollectionUtils.isEmpty(verifyCodeList)) {

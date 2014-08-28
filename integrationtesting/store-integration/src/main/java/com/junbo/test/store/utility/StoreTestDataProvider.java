@@ -47,6 +47,7 @@ import com.junbo.test.store.apihelper.impl.StoreServiceImpl;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -90,8 +91,11 @@ public class StoreTestDataProvider extends BaseTestDataProvider {
 
         if (needVerifyEmail) {
             oAuthClient.postAccessToken(GrantType.CLIENT_CREDENTIALS, ComponentType.SMOKETEST);
-            String links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(response.getUserId()), emailAddress);
+            List<String> links = oAuthClient.getEmailVerifyLink(IdConverter.idToHexString(response.getUserId()), emailAddress);
             assert links != null;
+            for(String link : links) {
+                oAuthClient.accessEmailVerifyLink(link);
+            }
         }
 
         return response;

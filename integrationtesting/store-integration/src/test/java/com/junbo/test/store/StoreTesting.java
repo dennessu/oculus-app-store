@@ -13,8 +13,6 @@ import com.junbo.store.spec.model.billing.BillingProfileUpdateResponse;
 import com.junbo.store.spec.model.iap.IAPEntitlementConsumeResponse;
 import com.junbo.store.spec.model.identity.UserProfileGetResponse;
 import com.junbo.store.spec.model.login.AuthTokenResponse;
-import com.junbo.store.spec.model.login.UserCredentialChangeResponse;
-import com.junbo.store.spec.model.login.UserCredentialCheckResponse;
 import com.junbo.store.spec.model.login.UserNameCheckResponse;
 import com.junbo.store.spec.model.purchase.CommitPurchaseResponse;
 import com.junbo.store.spec.model.purchase.MakeFreePurchaseResponse;
@@ -88,6 +86,38 @@ public class StoreTesting extends BaseTestClass {
 
         EntitlementId entitlementId = commitPurchaseResponse.getEntitlements().get(0).getSelf();
         IAPEntitlementConsumeResponse iapEntitlementConsumeResponse = testDataProvider.iapConsumeEntitlement(entitlementId, offer_iap_normal);
+
+    }
+
+    @Property(
+            priority = Priority.BVT,
+            features = "Store checkout",
+            component = Component.Order,
+            owner = "ZhaoYunlong",
+            environment = "release",
+            status = Status.Enable,
+            description = "Test iap offer checkout",
+            steps = {
+                    "Create user with no email verification",
+                    "Call smoke API to check one record only",
+                    "Call checkUserName with the created username, it should return error",
+                    "Call checkUserName with one random username, it should return success",
+                    "Call rateUserCredential to check it doesn't fail",
+                    "Call getAccessToken to check the token is valid",
+                    "Call signIn to get one new AccessToken. Get and compare with the created return access_token",
+                    // All the above operation should has no access_Token header. Call it with access_token header, it shouldn't fail
+
+                    "Call EmailVerify with access_token, it should have two records",
+                    "Call all other store apis, it should return all error due to no valid token",
+                    "4. Verify response",
+                    "5. Make free purchase",
+                    "6. Verify purchase response",
+                    "8. Get entitlement",
+                    "9. Verify entitlement response",
+                    "10. Refresh token",
+            }
+    )
+    public void testPrivilege() throws Exception {
 
     }
 

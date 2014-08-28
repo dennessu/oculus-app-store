@@ -5,7 +5,9 @@
  */
 package com.junbo.test.common.apihelper.oauth.impl;
 
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.junbo.common.json.JsonMessageTranscoder;
+import com.junbo.common.json.ObjectMapperProvider;
 import com.junbo.langur.core.client.TypeReference;
 import com.junbo.oauth.spec.model.AccessTokenResponse;
 import com.junbo.oauth.spec.model.TokenInfo;
@@ -20,10 +22,8 @@ import com.junbo.test.common.apihelper.oauth.enums.GrantType;
 import com.junbo.test.common.blueprint.Master;
 import com.ning.http.client.FluentCaseInsensitiveStringsMap;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.net.URLEncoder;
+import java.util.*;
 
 /**
  * Created by weiyu_000 on 7/9/14.
@@ -333,13 +333,14 @@ public class OAuthServiceImpl extends HttpClientBase implements OAuthService {
     }
 
     @Override
-    public String getEmailVerifyLink(String uid, String emailAddress) throws Exception {
+    public List<String> getEmailVerifyLink(String uid, String emailAddress) throws Exception {
         needAuthHeader = true;
         needOverrideRequestEntity = false;
         componentType = ComponentType.SMOKETEST;
-        String url = String.format(oauthUrl + "/verify-email/test?userId=%s&locale=en_US&email=%s", uid, emailAddress);
-        return  restApiCall(HTTPMethod.GET, url, null, true);
-
+        String url = String.format(oauthUrl + "/verify-email/test?userId=%s&locale=en_US&email=%s", uid, URLEncoder.encode(emailAddress, "UTF-8"));
+        String linkArray = restApiCall(HTTPMethod.GET, url, null, true);
+        List<String> links = ObjectMapperProvider.instance().readValue(linkArray, TypeFactory.defaultInstance().constructCollectionType(List.class, String.class));
+        return links;
     }
 
 }
